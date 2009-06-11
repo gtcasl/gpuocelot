@@ -16,7 +16,6 @@
 #include <ocelot/parser/interface/Parser.h>
 #include <FlexLexer.h>
 #include <ocelot/parser/interface/PTXLexer.h>
-#include <ptxgrammar.h>
 #include <unordered_map>
 #include <deque>
 

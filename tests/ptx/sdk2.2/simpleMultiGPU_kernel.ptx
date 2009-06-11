@@ -1,0 +1,110 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc built on 2009-04-09
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+
+	//-----------------------------------------------------------
+	// Compiling simpleMultiGPU_kernel.cpp3.i (/tmp/ccBI#.RuVOb7)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"simpleMultiGPU_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
+	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
+	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
+	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
+	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
+	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
+	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
+	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
+	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
+	.file	13	"/usr/include/bits/types.h"
+	.file	14	"/usr/include/time.h"
+	.file	15	"simpleMultiGPU_kernel.cu"
+	.file	16	"/home/normal/cuda/bin/../include/common_functions.h"
+	.file	17	"/home/normal/cuda/bin/../include/crt/func_macro.h"
+	.file	18	"/home/normal/cuda/bin/../include/math_functions.h"
+	.file	19	"/home/normal/cuda/bin/../include/device_functions.h"
+	.file	20	"/home/normal/cuda/bin/../include/math_constants.h"
+	.file	21	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/home/normal/cuda/bin/../include/common_types.h"
+	.file	25	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+	.file	26	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry _Z12reduceKernelPfS_i (
+		.param .u64 __cudaparm__Z12reduceKernelPfS_i_d_Result,
+		.param .u64 __cudaparm__Z12reduceKernelPfS_i_d_Input,
+		.param .s32 __cudaparm__Z12reduceKernelPfS_i_N)
+	{
+	.reg .u16 %rh<5>;
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<12>;
+	.reg .f32 %f<4>;
+	.reg .pred %p<4>;
+	.loc	15	59	0
+$LBB1__Z12reduceKernelPfS_i:
+	.loc	15	63	0
+	mov.u16 	%rh1, %ntid.x;       	// 
+	mov.u16 	%rh2, %ctaid.x;      	// 
+	mul.wide.u16 	%r1, %rh2, %rh1;	// 
+	cvt.u32.u16 	%r2, %tid.x;     	// 
+	add.u32 	%r3, %r2, %r1;       	// 
+	mov.s32 	%r4, %r3;            	// 
+	ld.param.s32 	%r5, [__cudaparm__Z12reduceKernelPfS_i_N];	// id:27 __cudaparm__Z12reduceKernelPfS_i_N+0x0
+	setp.le.s32 	%p1, %r5, %r3;   	// 
+	mov.f32 	%f1, 0f00000000;     	// 0
+	@%p1 bra 	$Lt_0_2306;         	// 
+	cvt.u64.s32 	%rd1, %r3;       	// 
+	mov.u16 	%rh3, %nctaid.x;     	// 
+	mul.wide.u16 	%r6, %rh3, %rh1;	// 
+	mul.lo.u64 	%rd2, %rd1, 4;    	// 
+	cvt.s64.u32 	%rd3, %r6;       	// 
+	ld.param.u64 	%rd4, [__cudaparm__Z12reduceKernelPfS_i_d_Input];	// id:33 __cudaparm__Z12reduceKernelPfS_i_d_Input+0x0
+	add.u64 	%rd5, %rd4, %rd2;    	// 
+	mul.lo.u64 	%rd6, %rd3, 4;    	// 
+$Lt_0_1794:
+ //<loop> Loop body line 63, nesting depth: 1, estimated iterations: unknown
+	.loc	15	64	0
+	ld.global.f32 	%f2, [%rd5+0]; 	// id:34
+	add.f32 	%f1, %f2, %f1;       	// 
+	add.s32 	%r4, %r4, %r6;       	// 
+	add.u64 	%rd5, %rd5, %rd6;    	// 
+	setp.lt.s32 	%p2, %r4, %r5;   	// 
+	@%p2 bra 	$Lt_0_1794;         	// 
+	bra.uni 	$Lt_0_1282;          	// 
+$Lt_0_2306:
+$Lt_0_1282:
+	.loc	15	66	0
+	ld.param.u64 	%rd7, [__cudaparm__Z12reduceKernelPfS_i_d_Result];	// id:35 __cudaparm__Z12reduceKernelPfS_i_d_Result+0x0
+	cvt.u64.s32 	%rd8, %r3;       	// 
+	mul.lo.u64 	%rd9, %rd8, 4;    	// 
+	add.u64 	%rd10, %rd7, %rd9;   	// 
+	st.global.f32 	[%rd10+0], %f1;	// id:36
+	.loc	15	67	0
+	exit;                         	// 
+$LDWend__Z12reduceKernelPfS_i:
+	} // _Z12reduceKernelPfS_i
+

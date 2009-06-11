@@ -1,0 +1,801 @@
+INFO     Reading in test file /home/gdiamos/checkout/gpuocelot/tests/regression/ocelotRegressionTests.txt
+INFO      Found the following tests:
+INFO       /home/gdiamos/checkout/gpuocelot/TestLexer
+INFO       /home/gdiamos/checkout/gpuocelot/TestParser
+INFO       /home/gdiamos/checkout/gpuocelot/TestEmulator
+INFO       /home/gdiamos/checkout/gpuocelot/TestInstructions
+INFO       /home/gdiamos/checkout/gpuocelot/TestKernels
+INFO     ==== INDIVIDUAL TEST RESULTS ====
+
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/TestLexer
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/TestParser
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/TestEmulator
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/TestKernels
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/TestInstructions
+INFO     Test /home/gdiamos/checkout/gpuocelot/TestInstructions seconds
+INFO     Test completed in 0.0116579532623 seconds
+INFO      It produced the following output:
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  tests/ptx/synthetic/sequence.ptx (66, 5): Parsed invalid instruction mov.u16 %rh1, %ctaid.x: no support for PTX version 1.0 less than 1.3
+(4.64916e-05) ArgumentParser.cpp:19: Formating string.
+(8.72612e-05) ArgumentParser.cpp:20:  Input stream is "No description provided.
+"
+(9.01222e-05) ArgumentParser.cpp:21:  First prefix is "        "
+(9.17912e-05) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.00010705) ArgumentParser.cpp:78: Formatted stream is "        No description provided. 
+"
+(0.00120759) PTXParser.cpp:678: Running main parse pass.
+
+INFO     Test /home/gdiamos/checkout/gpuocelot/TestEmulator seconds
+INFO     Test completed in 0.0164120197296 seconds
+INFO      It produced the following output:
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  tests/ptx/synthetic/sequence.ptx (66, 5): Parsed invalid instruction mov.u16 %rh1, %ctaid.x: no support for PTX version 1.0 less than 1.3
+(6.29425e-05) ArgumentParser.cpp:19: Formating string.
+(0.000110388) ArgumentParser.cpp:20:  Input stream is "No description provided.
+"
+(0.000115156) ArgumentParser.cpp:21:  First prefix is "        "
+(0.000118494) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000139236) ArgumentParser.cpp:78: Formatted stream is "        No description provided. 
+"
+(0.000162363) ArgumentParser.cpp:19: Formating string.
+(0.000166416) ArgumentParser.cpp:20:  Input stream is "
+"
+(0.000169516) ArgumentParser.cpp:21:  First prefix is "        "
+(0.0001719) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000178337) ArgumentParser.cpp:78: Formatted stream is "         
+"
+(0.000190496) ArgumentParser.h:202: Searching for s in /home/gdiamos/checkout/gpuocelot/TestEmulator
+(0.000196695) ArgumentParser.h:202: Searching for s in v
+(0.000204563) ArgumentParser.cpp:19: Formating string.
+(0.000207901) ArgumentParser.cpp:20:  Input stream is "Set the random seed, 0 implies seed with time.
+"
+(0.000210762) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.000213385) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000223398) ArgumentParser.cpp:78: Formatted stream is "                   Set the random seed, 0 implies seed with time. 
+"
+(0.000233412) ArgumentParser.cpp:108: Searching for -v
+(0.000237703) ArgumentParser.cpp:116: Found in -v
+(0.000240564) ArgumentParser.cpp:144:  is present
+(0.000246763) ArgumentParser.cpp:19: Formating string.
+(0.000250101) ArgumentParser.cpp:20:  Input stream is "Print out info after the test.
+"
+(0.000252724) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.000255585) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000263929) ArgumentParser.cpp:78: Formatted stream is "                   Print out info after the test. 
+"
+(0.000274181) ArgumentParser.cpp:108: Searching for -h
+(0.000277996) ArgumentParser.cpp:108: Searching for --help
+(0.000285149) ArgumentParser.cpp:19: Formating string.
+(0.000288486) ArgumentParser.cpp:20:  Input stream is "Print this help message.
+"
+(0.000291348) ArgumentParser.cpp:21:  First prefix is "           "
+(0.00029397) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.0003016) ArgumentParser.cpp:78: Formatted stream is "           Print this help message. 
+"
+(0.00205469) PTXParser.cpp:678: Running main parse pass.
+
+INFO     Test /home/gdiamos/checkout/gpuocelot/TestParser seconds
+INFO     Test completed in 0.0225229263306 seconds
+INFO      It produced the following output:
+(3.93391e-05) ArgumentParser.cpp:19: Formating string.
+(7.65324e-05) ArgumentParser.cpp:20:  Input stream is "No description provided.
+"
+(7.9155e-05) ArgumentParser.cpp:21:  First prefix is "        "
+(8.2016e-05) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(9.56059e-05) ArgumentParser.cpp:78: Formatted stream is "        No description provided. 
+"
+(0.000114918) ArgumentParser.cpp:19: Formating string.
+(0.000117302) ArgumentParser.cpp:20:  Input stream is "A test for the PTXParser class. Test Points: 1) Load a PTX file and run it through the parser generating a module.  Write the module to an intermediate stream.  Parse the stream again generating a new module, compare both to make sure that they match.
+"
+(0.000118971) ArgumentParser.cpp:21:  First prefix is "        "
+(0.00012064) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000133514) ArgumentParser.cpp:78: Formatted stream is "        A test for the PTXParser class. Test Points: 1) Load a PTX file and 
+                      run it through the parser generating a module.  Write the 
+                      module to an intermediate stream.  Parse the stream again 
+                      generating a new module, compare both to make sure that they 
+                      match. 
+"
+(0.000141144) ArgumentParser.h:202: Searching for i in /home/gdiamos/checkout/gpuocelot/TestParser
+(0.000144243) ArgumentParser.h:202: Searching for i in v
+(0.000148773) ArgumentParser.cpp:19: Formating string.
+(0.000150681) ArgumentParser.cpp:20:  Input stream is "Input directory to search for ptx files.
+"
+(0.000152349) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.00015378) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000159264) ArgumentParser.cpp:78: Formatted stream is "                   Input directory to search for ptx files. 
+"
+(0.00016284) ArgumentParser.cpp:108: Searching for -r
+(0.000166893) ArgumentParser.cpp:19: Formating string.
+(0.000169039) ArgumentParser.cpp:20:  Input stream is "Recursively search directories.
+"
+(0.000170469) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.0001719) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000176907) ArgumentParser.cpp:78: Formatted stream is "                   Recursively search directories. 
+"
+(0.00018239) ArgumentParser.cpp:108: Searching for -o
+(0.000186205) ArgumentParser.cpp:19: Formating string.
+(0.000187874) ArgumentParser.cpp:20:  Input stream is "Print out the internal representation of each parsed file.
+"
+(0.000189781) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.000191212) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000197172) ArgumentParser.cpp:78: Formatted stream is "                   Print out the internal representation of each parsed 
+                      file. 
+"
+(0.000200748) ArgumentParser.h:202: Searching for s in /home/gdiamos/checkout/gpuocelot/TestParser
+(0.000203133) ArgumentParser.h:202: Searching for s in v
+(0.000206709) ArgumentParser.cpp:19: Formating string.
+(0.000208616) ArgumentParser.cpp:20:  Input stream is "Set the random seed, 0 implies seed with time.
+"
+(0.000210047) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.000211716) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000216961) ArgumentParser.cpp:78: Formatted stream is "                   Set the random seed, 0 implies seed with time. 
+"
+(0.000221968) ArgumentParser.cpp:108: Searching for -v
+(0.000223637) ArgumentParser.cpp:116: Found in -v
+(0.000225544) ArgumentParser.cpp:144:  is present
+(0.000228643) ArgumentParser.cpp:19: Formating string.
+(0.000230312) ArgumentParser.cpp:20:  Input stream is "Print out info after the test.
+"
+(0.000231981) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.00023365) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000238419) ArgumentParser.cpp:78: Formatted stream is "                   Print out info after the test. 
+"
+(0.000244379) ArgumentParser.cpp:108: Searching for -h
+(0.000259399) ArgumentParser.cpp:108: Searching for --help
+(0.000264883) ArgumentParser.cpp:19: Formating string.
+(0.00026679) ArgumentParser.cpp:20:  Input stream is "Print this help message.
+"
+(0.000268221) ArgumentParser.cpp:21:  First prefix is "           "
+(0.00026989) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000274658) ArgumentParser.cpp:78: Formatted stream is "           Print this help message. 
+"
+(0.00175643) PTXParser.cpp:678: Running main parse pass.
+(0.00195551) PTXParser.cpp:692: Running secondary parse pass.
+(0.00197482) ptx1_4grammar.ypp:2591:  Lexer (2,5): VERSION ".version"
+(0.00199652) ptx1_4grammar.ypp:2591:  Lexer (2,14): DOUBLE_CONSTANT "1.4"
+(0.00200415) ptx1_4grammar.ypp:119:   Rule: VERSION DOUBLE_CONSTANT
+(0.00202203) ptx1_4grammar.ypp:180:    Parsed statement 0 ".version 1.4"
+(0.00204134) ptx1_4grammar.ypp:2591:  Lexer (3,5): TARGET ".target"
+(0.00205088) ptx1_4grammar.ypp:2591:  Lexer (3,13): IDENTIFIER "sm_10"
+(0.00205564) ptx1_4grammar.ypp:197:   Rule: IDENTIFIER
+(0.00205922) ptx1_4grammar.ypp:199:    Appending sm_10 to list.
+(0.00206852) ptx1_4grammar.ypp:2591:  Lexer (3,18): , ","
+(0.00207996) ptx1_4grammar.ypp:2591:  Lexer (3,20): IDENTIFIER "map_f64_to_f32"
+(0.00208306) ptx1_4grammar.ypp:205:   Rule: identifierList , IDENTIFIER
+(0.00208449) ptx1_4grammar.ypp:207:    Appending map_f64_to_f32 to list.
+(0.00214887) ptx1_4grammar.ypp:2591:  Lexer (7,5): REG ".reg"
+(0.0021522) ptx1_4grammar.ypp:309:   Rule: TARGET identifierList
+(0.00216436) ptx1_4grammar.ypp:318:    Parsed statement 1 ".target sm_10, map_f64_to_f32"
+(0.00217295) ptx1_4grammar.ypp:2591:  Lexer (7,10): U32 ".u32"
+(0.00217772) ptx1_4grammar.ypp:2591:  Lexer (7,15): IDENTIFIER "%ra"
+(0.00218081) ptx1_4grammar.ypp:2591:  Lexer (7,18): < "<"
+(0.00218987) ptx1_4grammar.ypp:2591:  Lexer (7,19): DECIMAL_CONSTANT "17"
+(0.00219297) ptx1_4grammar.ypp:2591:  Lexer (7,21): > ">"
+(0.00219822) ptx1_4grammar.ypp:2591:  Lexer (7,22): ; ";"
+(0.00220346) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00221229) ptx1_4grammar.ypp:566:    Parsed statement 2 ".reg .u32 %ra<17>;"
+(0.00226045) ptx1_4grammar.ypp:2591:  Lexer (8,5): REG ".reg"
+(0.00226521) ptx1_4grammar.ypp:2591:  Lexer (8,10): U64 ".u64"
+(0.00226974) ptx1_4grammar.ypp:2591:  Lexer (8,15): IDENTIFIER "%rda"
+(0.00227189) ptx1_4grammar.ypp:2591:  Lexer (8,19): < "<"
+(0.0022769) ptx1_4grammar.ypp:2591:  Lexer (8,20): DECIMAL_CONSTANT "17"
+(0.00227952) ptx1_4grammar.ypp:2591:  Lexer (8,22): > ">"
+(0.0022819) ptx1_4grammar.ypp:2591:  Lexer (8,23): ; ";"
+(0.00228405) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.0022881) ptx1_4grammar.ypp:566:    Parsed statement 3 ".reg .u64 %rda<17>;"
+(0.0023334) ptx1_4grammar.ypp:2591:  Lexer (9,5): REG ".reg"
+(0.00233793) ptx1_4grammar.ypp:2591:  Lexer (9,10): F32 ".f32"
+(0.00234175) ptx1_4grammar.ypp:2591:  Lexer (9,15): IDENTIFIER "%fa"
+(0.00234413) ptx1_4grammar.ypp:2591:  Lexer (9,18): < "<"
+(0.00234866) ptx1_4grammar.ypp:2591:  Lexer (9,19): DECIMAL_CONSTANT "17"
+(0.00235128) ptx1_4grammar.ypp:2591:  Lexer (9,21): > ">"
+(0.00235367) ptx1_4grammar.ypp:2591:  Lexer (9,22): ; ";"
+(0.00235558) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00236011) ptx1_4grammar.ypp:566:    Parsed statement 4 ".reg .f32 %fa<17>;"
+(0.00240636) ptx1_4grammar.ypp:2591:  Lexer (10,5): REG ".reg"
+(0.00241065) ptx1_4grammar.ypp:2591:  Lexer (10,10): F64 ".f64"
+(0.00241494) ptx1_4grammar.ypp:2591:  Lexer (10,15): IDENTIFIER "%fda"
+(0.00241709) ptx1_4grammar.ypp:2591:  Lexer (10,19): < "<"
+(0.00242186) ptx1_4grammar.ypp:2591:  Lexer (10,20): DECIMAL_CONSTANT "17"
+(0.002424) ptx1_4grammar.ypp:2591:  Lexer (10,22): > ">"
+(0.00242639) ptx1_4grammar.ypp:2591:  Lexer (10,23): ; ";"
+(0.00242829) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00243258) ptx1_4grammar.ypp:566:    Parsed statement 5 ".reg .f64 %fda<17>;"
+(0.00247455) ptx1_4grammar.ypp:2591:  Lexer (11,5): REG ".reg"
+(0.0024786) ptx1_4grammar.ypp:2591:  Lexer (11,10): U32 ".u32"
+(0.00249553) ptx1_4grammar.ypp:2591:  Lexer (11,15): IDENTIFIER "%rv"
+(0.00249863) ptx1_4grammar.ypp:2591:  Lexer (11,18): < "<"
+(0.00250387) ptx1_4grammar.ypp:2591:  Lexer (11,19): DECIMAL_CONSTANT "5"
+(0.00250649) ptx1_4grammar.ypp:2591:  Lexer (11,20): > ">"
+(0.00250912) ptx1_4grammar.ypp:2591:  Lexer (11,21): ; ";"
+(0.00251102) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00251508) ptx1_4grammar.ypp:566:    Parsed statement 6 ".reg .u32 %rv<5>;"
+(0.00253367) ptx1_4grammar.ypp:2591:  Lexer (12,5): REG ".reg"
+(0.00253749) ptx1_4grammar.ypp:2591:  Lexer (12,10): U64 ".u64"
+(0.00254178) ptx1_4grammar.ypp:2591:  Lexer (12,15): IDENTIFIER "%rdv"
+(0.00254416) ptx1_4grammar.ypp:2591:  Lexer (12,19): < "<"
+(0.00254822) ptx1_4grammar.ypp:2591:  Lexer (12,20): DECIMAL_CONSTANT "5"
+(0.00255084) ptx1_4grammar.ypp:2591:  Lexer (12,21): > ">"
+(0.00255275) ptx1_4grammar.ypp:2591:  Lexer (12,22): ; ";"
+(0.00255489) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00255871) ptx1_4grammar.ypp:566:    Parsed statement 7 ".reg .u64 %rdv<5>;"
+(0.00257635) ptx1_4grammar.ypp:2591:  Lexer (13,5): REG ".reg"
+(0.00258017) ptx1_4grammar.ypp:2591:  Lexer (13,10): F32 ".f32"
+(0.00258422) ptx1_4grammar.ypp:2591:  Lexer (13,15): IDENTIFIER "%fv"
+(0.0025866) ptx1_4grammar.ypp:2591:  Lexer (13,18): < "<"
+(0.00259089) ptx1_4grammar.ypp:2591:  Lexer (13,19): DECIMAL_CONSTANT "5"
+(0.00259352) ptx1_4grammar.ypp:2591:  Lexer (13,20): > ">"
+(0.0025959) ptx1_4grammar.ypp:2591:  Lexer (13,21): ; ";"
+(0.00259781) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00260162) ptx1_4grammar.ypp:566:    Parsed statement 8 ".reg .f32 %fv<5>;"
+(0.00261927) ptx1_4grammar.ypp:2591:  Lexer (14,5): REG ".reg"
+(0.00262356) ptx1_4grammar.ypp:2591:  Lexer (14,10): F64 ".f64"
+(0.00262761) ptx1_4grammar.ypp:2591:  Lexer (14,15): IDENTIFIER "%fdv"
+(0.00263023) ptx1_4grammar.ypp:2591:  Lexer (14,19): < "<"
+(0.00263453) ptx1_4grammar.ypp:2591:  Lexer (14,20): DECIMAL_CONSTANT "5"
+(0.00263667) ptx1_4grammar.ypp:2591:  Lexer (14,21): > ">"
+(0.00263906) ptx1_4grammar.ypp:2591:  Lexer (14,22): ; ";"
+(0.00264144) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00264525) ptx1_4grammar.ypp:566:    Parsed statement 9 ".reg .f64 %fdv<5>;"
+(0.00312209) ptx1_4grammar.ypp:2591:  Lexer (30,5): COMPLETE_FILE ".file	1	"<command-line>""
+(0.00312495) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00312877) ptx1_4grammar.ypp:616:    Parsed statement 10 ".file	1	"<command-line>""
+(0.00315309) ptx1_4grammar.ypp:2591:  Lexer (31,5): COMPLETE_FILE ".file	2	"particleSystem.cudafe2.gpu""
+(0.00315595) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00315738) ptx1_4grammar.ypp:616:    Parsed statement 11 ".file	2	"particleSystem.cudafe2.gpu""
+(0.00317693) ptx1_4grammar.ypp:2591:  Lexer (32,5): COMPLETE_FILE ".file	3	"particles_kernel.cuh""
+(0.00317955) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00318098) ptx1_4grammar.ypp:616:    Parsed statement 12 ".file	3	"particles_kernel.cuh""
+(0.00323391) ptx1_4grammar.ypp:2591:  Lexer (33,5): COMPLETE_FILE ".file	4	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h""
+(0.00323629) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.0032382) ptx1_4grammar.ypp:616:    Parsed statement 13 ".file	4	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h""
+(0.00329208) ptx1_4grammar.ypp:2591:  Lexer (34,5): COMPLETE_FILE ".file	5	"/home/normal/cuda/bin/../include/crt/device_runtime.h""
+(0.00329447) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.0032959) ptx1_4grammar.ypp:616:    Parsed statement 14 ".file	5	"/home/normal/cuda/bin/../include/crt/device_runtime.h""
+(0.00334191) ptx1_4grammar.ypp:2591:  Lexer (35,5): COMPLETE_FILE ".file	6	"/home/normal/cuda/bin/../include/host_defines.h""
+(0.0033443) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00334597) ptx1_4grammar.ypp:616:    Parsed statement 15 ".file	6	"/home/normal/cuda/bin/../include/host_defines.h""
+(0.00340199) ptx1_4grammar.ypp:2591:  Lexer (36,5): COMPLETE_FILE ".file	7	"/home/normal/cuda/bin/../include/builtin_types.h""
+(0.00340533) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00340724) ptx1_4grammar.ypp:616:    Parsed statement 16 ".file	7	"/home/normal/cuda/bin/../include/builtin_types.h""
+(0.00345325) ptx1_4grammar.ypp:2591:  Lexer (37,5): COMPLETE_FILE ".file	8	"/home/normal/cuda/bin/../include/device_types.h""
+(0.0034554) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00345731) ptx1_4grammar.ypp:616:    Parsed statement 17 ".file	8	"/home/normal/cuda/bin/../include/device_types.h""
+(0.00350308) ptx1_4grammar.ypp:2591:  Lexer (38,5): COMPLETE_FILE ".file	9	"/home/normal/cuda/bin/../include/driver_types.h""
+(0.00350547) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.0035069) ptx1_4grammar.ypp:616:    Parsed statement 18 ".file	9	"/home/normal/cuda/bin/../include/driver_types.h""
+(0.00355482) ptx1_4grammar.ypp:2591:  Lexer (39,5): COMPLETE_FILE ".file	10	"/home/normal/cuda/bin/../include/texture_types.h""
+(0.00355744) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00355887) ptx1_4grammar.ypp:616:    Parsed statement 19 ".file	10	"/home/normal/cuda/bin/../include/texture_types.h""
+(0.00360537) ptx1_4grammar.ypp:2591:  Lexer (40,5): COMPLETE_FILE ".file	11	"/home/normal/cuda/bin/../include/vector_types.h""
+(0.00360775) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00360966) ptx1_4grammar.ypp:616:    Parsed statement 20 ".file	11	"/home/normal/cuda/bin/../include/vector_types.h""
+(0.0036726) ptx1_4grammar.ypp:2591:  Lexer (41,5): COMPLETE_FILE ".file	12	"/home/normal/cuda/bin/../include/device_launch_parameters.h""
+(0.00367522) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00367665) ptx1_4grammar.ypp:616:    Parsed statement 21 ".file	12	"/home/normal/cuda/bin/../include/device_launch_parameters.h""
+(0.00372982) ptx1_4grammar.ypp:2591:  Lexer (42,5): COMPLETE_FILE ".file	13	"/home/normal/cuda/bin/../include/crt/storage_class.h""
+(0.0037322) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00373363) ptx1_4grammar.ypp:616:    Parsed statement 22 ".file	13	"/home/normal/cuda/bin/../include/crt/storage_class.h""
+(0.00375652) ptx1_4grammar.ypp:2591:  Lexer (43,5): COMPLETE_FILE ".file	14	"/usr/include/bits/types.h""
+(0.00375891) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00376058) ptx1_4grammar.ypp:616:    Parsed statement 23 ".file	14	"/usr/include/bits/types.h""
+(0.00377846) ptx1_4grammar.ypp:2591:  Lexer (44,5): COMPLETE_FILE ".file	15	"/usr/include/time.h""
+(0.00378108) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00378275) ptx1_4grammar.ypp:616:    Parsed statement 24 ".file	15	"/usr/include/time.h""
+(0.00380087) ptx1_4grammar.ypp:2591:  Lexer (45,5): COMPLETE_FILE ".file	16	"particles_kernel.cu""
+(0.00380301) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00380468) ptx1_4grammar.ypp:616:    Parsed statement 25 ".file	16	"particles_kernel.cu""
+(0.00385714) ptx1_4grammar.ypp:2591:  Lexer (46,5): COMPLETE_FILE ".file	17	"/home/normal/cuda/bin/../include/common_functions.h""
+(0.00385976) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00386119) ptx1_4grammar.ypp:616:    Parsed statement 26 ".file	17	"/home/normal/cuda/bin/../include/common_functions.h""
+(0.00391006) ptx1_4grammar.ypp:2591:  Lexer (47,5): COMPLETE_FILE ".file	18	"/home/normal/cuda/bin/../include/crt/func_macro.h""
+(0.00391269) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00391412) ptx1_4grammar.ypp:616:    Parsed statement 27 ".file	18	"/home/normal/cuda/bin/../include/crt/func_macro.h""
+(0.00396323) ptx1_4grammar.ypp:2591:  Lexer (48,5): COMPLETE_FILE ".file	19	"/home/normal/cuda/bin/../include/math_functions.h""
+(0.00396562) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00396729) ptx1_4grammar.ypp:616:    Parsed statement 28 ".file	19	"/home/normal/cuda/bin/../include/math_functions.h""
+(0.00401926) ptx1_4grammar.ypp:2591:  Lexer (49,5): COMPLETE_FILE ".file	20	"/home/normal/cuda/bin/../include/device_functions.h""
+(0.00402141) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00402331) ptx1_4grammar.ypp:616:    Parsed statement 29 ".file	20	"/home/normal/cuda/bin/../include/device_functions.h""
+(0.0040791) ptx1_4grammar.ypp:2591:  Lexer (50,5): COMPLETE_FILE ".file	21	"/home/normal/cuda/bin/../include/math_constants.h""
+(0.0040822) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00408387) ptx1_4grammar.ypp:616:    Parsed statement 30 ".file	21	"/home/normal/cuda/bin/../include/math_constants.h""
+(0.00414395) ptx1_4grammar.ypp:2591:  Lexer (51,5): COMPLETE_FILE ".file	22	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h""
+(0.0041461) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00414801) ptx1_4grammar.ypp:616:    Parsed statement 31 ".file	22	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h""
+(0.00420761) ptx1_4grammar.ypp:2591:  Lexer (52,5): COMPLETE_FILE ".file	23	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h""
+(0.00421023) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00421166) ptx1_4grammar.ypp:616:    Parsed statement 32 ".file	23	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h""
+(0.00427151) ptx1_4grammar.ypp:2591:  Lexer (53,5): COMPLETE_FILE ".file	24	"/home/normal/cuda/bin/../include/sm_13_double_functions.h""
+(0.00427413) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.0042758) ptx1_4grammar.ypp:616:    Parsed statement 33 ".file	24	"/home/normal/cuda/bin/../include/sm_13_double_functions.h""
+(0.00432181) ptx1_4grammar.ypp:2591:  Lexer (54,5): COMPLETE_FILE ".file	25	"/home/normal/cuda/bin/../include/common_types.h""
+(0.00432444) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00432587) ptx1_4grammar.ypp:616:    Parsed statement 34 ".file	25	"/home/normal/cuda/bin/../include/common_types.h""
+(0.00438714) ptx1_4grammar.ypp:2591:  Lexer (55,5): COMPLETE_FILE ".file	26	"/home/normal/cuda/bin/../include/texture_fetch_functions.h""
+(0.00438952) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00439119) ptx1_4grammar.ypp:616:    Parsed statement 35 ".file	26	"/home/normal/cuda/bin/../include/texture_fetch_functions.h""
+(0.00445294) ptx1_4grammar.ypp:2591:  Lexer (56,5): COMPLETE_FILE ".file	27	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h""
+(0.00445509) ptx1_4grammar.ypp:607:   Rule: COMPLETE_FILE
+(0.00445676) ptx1_4grammar.ypp:616:    Parsed statement 36 ".file	27	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h""
+(0.00446343) ptx1_4grammar.ypp:2591:  Lexer (58,5): EXTERN ".extern"
+(0.00447011) ptx1_4grammar.ypp:2591:  Lexer (58,16): SHARED ".shared"
+(0.00447464) ptx1_4grammar.ypp:2591:  Lexer (58,24): ALIGN ".align"
+(0.0044806) ptx1_4grammar.ypp:2591:  Lexer (58,31): DECIMAL_CONSTANT "4"
+(0.00448442) ptx1_4grammar.ypp:2591:  Lexer (58,33): B8 ".b8"
+(0.00449109) ptx1_4grammar.ypp:2591:  Lexer (58,37): IDENTIFIER "sharedHash"
+(0.004493) ptx1_4grammar.ypp:422:   Switching to V1
+(0.00449562) ptx1_4grammar.ypp:2591:  Lexer (58,47): [ "["
+(0.004498) ptx1_4grammar.ypp:2591:  Lexer (58,48): ] "]"
+(0.00450134) ptx1_4grammar.ypp:470:   Rule: arrayDimensions '[' ']'
+(0.00450325) ptx1_4grammar.ypp:473:    Got dimension 0
+(0.00450587) ptx1_4grammar.ypp:2591:  Lexer (58,49): ; ";"
+(0.0045085) ptx1_4grammar.ypp:904:   Rule: uninitializable addressableVariablePrefix IDENTIFIER arrayDimensions';'
+(0.00451708) ptx1_4grammar.ypp:922:    Parsed statement 37 ".extern .shared .align 4 .b8 sharedHash[];"
+(0.0045259) ptx1_4grammar.ypp:2591:  Lexer (59,5): TEX ".tex"
+(0.00453019) ptx1_4grammar.ypp:2591:  Lexer (59,10): U64 ".u64"
+(0.00453663) ptx1_4grammar.ypp:2591:  Lexer (59,15): IDENTIFIER "oldPosTex"
+(0.00453854) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00454068) ptx1_4grammar.ypp:2591:  Lexer (59,24): ; ";"
+(0.00454354) ptx1_4grammar.ypp:624:   Rule: initializable addressableVariablePrefix IDENTIFIER arrayDimensions initializer';'
+(0.00454521) ptx1_4grammar.ypp:631:    Name = oldPosTex
+(0.00455141) ptx1_4grammar.ypp:697:    Parsed statement 38 ".tex .u64 oldPosTex;"
+(0.00455904) ptx1_4grammar.ypp:2591:  Lexer (60,5): TEX ".tex"
+(0.00456333) ptx1_4grammar.ypp:2591:  Lexer (60,10): U64 ".u64"
+(0.00456929) ptx1_4grammar.ypp:2591:  Lexer (60,15): IDENTIFIER "oldVelTex"
+(0.00457144) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00458121) ptx1_4grammar.ypp:2591:  Lexer (60,24): ; ";"
+(0.00458407) ptx1_4grammar.ypp:624:   Rule: initializable addressableVariablePrefix IDENTIFIER arrayDimensions initializer';'
+(0.00458598) ptx1_4grammar.ypp:631:    Name = oldVelTex
+(0.00459075) ptx1_4grammar.ypp:697:    Parsed statement 39 ".tex .u64 oldVelTex;"
+(0.00459981) ptx1_4grammar.ypp:2591:  Lexer (61,5): TEX ".tex"
+(0.0046041) ptx1_4grammar.ypp:2591:  Lexer (61,10): U64 ".u64"
+(0.00461555) ptx1_4grammar.ypp:2591:  Lexer (61,15): IDENTIFIER "gridParticleHashTex"
+(0.00461793) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00461984) ptx1_4grammar.ypp:2591:  Lexer (61,34): ; ";"
+(0.00462222) ptx1_4grammar.ypp:624:   Rule: initializable addressableVariablePrefix IDENTIFIER arrayDimensions initializer';'
+(0.00462389) ptx1_4grammar.ypp:631:    Name = gridParticleHashTex
+(0.00462794) ptx1_4grammar.ypp:697:    Parsed statement 40 ".tex .u64 gridParticleHashTex;"
+(0.0046351) ptx1_4grammar.ypp:2591:  Lexer (62,5): TEX ".tex"
+(0.00463939) ptx1_4grammar.ypp:2591:  Lexer (62,10): U64 ".u64"
+(0.00464678) ptx1_4grammar.ypp:2591:  Lexer (62,15): IDENTIFIER "cellStartTex"
+(0.00464892) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00465107) ptx1_4grammar.ypp:2591:  Lexer (62,27): ; ";"
+(0.00465322) ptx1_4grammar.ypp:624:   Rule: initializable addressableVariablePrefix IDENTIFIER arrayDimensions initializer';'
+(0.00465512) ptx1_4grammar.ypp:631:    Name = cellStartTex
+(0.00465894) ptx1_4grammar.ypp:697:    Parsed statement 41 ".tex .u64 cellStartTex;"
+(0.00466609) ptx1_4grammar.ypp:2591:  Lexer (63,5): TEX ".tex"
+(0.00467014) ptx1_4grammar.ypp:2591:  Lexer (63,10): U64 ".u64"
+(0.00467658) ptx1_4grammar.ypp:2591:  Lexer (63,15): IDENTIFIER "cellEndTex"
+(0.00467896) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00468063) ptx1_4grammar.ypp:2591:  Lexer (63,25): ; ";"
+(0.00468302) ptx1_4grammar.ypp:624:   Rule: initializable addressableVariablePrefix IDENTIFIER arrayDimensions initializer';'
+(0.00468445) ptx1_4grammar.ypp:631:    Name = cellEndTex
+(0.00469375) ptx1_4grammar.ypp:697:    Parsed statement 42 ".tex .u64 cellEndTex;"
+(0.00470209) ptx1_4grammar.ypp:2591:  Lexer (64,5): CONST ".const"
+(0.0047071) ptx1_4grammar.ypp:2591:  Lexer (64,12): ALIGN ".align"
+(0.0047121) ptx1_4grammar.ypp:2591:  Lexer (64,19): DECIMAL_CONSTANT "4"
+(0.00471544) ptx1_4grammar.ypp:2591:  Lexer (64,21): B8 ".b8"
+(0.00472021) ptx1_4grammar.ypp:2591:  Lexer (64,25): IDENTIFIER "params"
+(0.00472236) ptx1_4grammar.ypp:422:   Switching to V1
+(0.0047245) ptx1_4grammar.ypp:2591:  Lexer (64,31): [ "["
+(0.00472927) ptx1_4grammar.ypp:2591:  Lexer (64,32): DECIMAL_CONSTANT "104"
+(0.00473166) ptx1_4grammar.ypp:2591:  Lexer (64,35): ] "]"
+(0.00473404) ptx1_4grammar.ypp:428:   Rule: '[' DECIMAL_CONSTANT ']'
+(0.00473571) ptx1_4grammar.ypp:444:    Got dimension 104
+(0.00474119) ptx1_4grammar.ypp:2591:  Lexer (64,36): ; ";"
+(0.00474358) ptx1_4grammar.ypp:624:   Rule: initializable addressableVariablePrefix IDENTIFIER arrayDimensions initializer';'
+(0.00474524) ptx1_4grammar.ypp:631:    Name = params
+(0.00475097) ptx1_4grammar.ypp:697:    Parsed statement 43 ".const .align 4 .b8 params[104];"
+(0.00476003) ptx1_4grammar.ypp:2591:  Lexer (66,5): ENTRY ".entry"
+(0.00477672) ptx1_4grammar.ypp:2591:  Lexer (66,12): IDENTIFIER "_Z9integrateP6float4S0_fj"
+(0.00477982) ptx1_4grammar.ypp:2591:  Lexer (66,38): ( "("
+(0.00478435) ptx1_4grammar.ypp:2591:  Lexer (67,9): PARAM ".param"
+(0.00478673) ptx1_4grammar.ypp:846: Hit rule : externOrVisible TOKEN_PARAM
+(0.00478983) ptx1_4grammar.ypp:2591:  Lexer (67,16): U64 ".u64"
+(0.00482845) ptx1_4grammar.ypp:2591:  Lexer (67,21): IDENTIFIER "__cudaparm__Z9integrateP6float4S0_fj_posArray"
+(0.00483036) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00483251) ptx1_4grammar.ypp:2591:  Lexer (67,66): , ","
+(0.00483489) ptx1_4grammar.ypp:940:   Rule: parameter addressableVariablePrefix identifier arrayDimensions';'
+(0.00484014) ptx1_4grammar.ypp:956:    Parsed statement 44 ".param .u64 __cudaparm__Z9integrateP6float4S0_fj_posArray;"
+(0.00484872) ptx1_4grammar.ypp:2591:  Lexer (68,9): PARAM ".param"
+(0.0048604) ptx1_4grammar.ypp:846: Hit rule : externOrVisible TOKEN_PARAM
+(0.00486445) ptx1_4grammar.ypp:2591:  Lexer (68,16): U64 ".u64"
+(0.00490308) ptx1_4grammar.ypp:2591:  Lexer (68,21): IDENTIFIER "__cudaparm__Z9integrateP6float4S0_fj_velArray"
+(0.00490522) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00490713) ptx1_4grammar.ypp:2591:  Lexer (68,66): , ","
+(0.00490952) ptx1_4grammar.ypp:940:   Rule: parameter addressableVariablePrefix identifier arrayDimensions';'
+(0.004915) ptx1_4grammar.ypp:956:    Parsed statement 45 ".param .u64 __cudaparm__Z9integrateP6float4S0_fj_velArray;"
+(0.00493383) ptx1_4grammar.ypp:729:   Hit rule parameterDeclaration | parameterList ',' parameterDeclaration
+(0.00493979) ptx1_4grammar.ypp:2591:  Lexer (69,9): PARAM ".param"
+(0.00494242) ptx1_4grammar.ypp:846: Hit rule : externOrVisible TOKEN_PARAM
+(0.00494504) ptx1_4grammar.ypp:2591:  Lexer (69,16): F32 ".f32"
+(0.00498486) ptx1_4grammar.ypp:2591:  Lexer (69,21): IDENTIFIER "__cudaparm__Z9integrateP6float4S0_fj_deltaTime"
+(0.004987) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00498915) ptx1_4grammar.ypp:2591:  Lexer (69,67): , ","
+(0.00499153) ptx1_4grammar.ypp:940:   Rule: parameter addressableVariablePrefix identifier arrayDimensions';'
+(0.0049963) ptx1_4grammar.ypp:956:    Parsed statement 46 ".param .f32 __cudaparm__Z9integrateP6float4S0_fj_deltaTime;"
+(0.00500226) ptx1_4grammar.ypp:729:   Hit rule parameterDeclaration | parameterList ',' parameterDeclaration
+(0.00500703) ptx1_4grammar.ypp:2591:  Lexer (70,9): PARAM ".param"
+(0.00500965) ptx1_4grammar.ypp:846: Hit rule : externOrVisible TOKEN_PARAM
+(0.00501251) ptx1_4grammar.ypp:2591:  Lexer (70,16): U32 ".u32"
+(0.00505686) ptx1_4grammar.ypp:2591:  Lexer (70,21): IDENTIFIER "__cudaparm__Z9integrateP6float4S0_fj_numParticles"
+(0.00505877) ptx1_4grammar.ypp:400:   Switching to V1
+(0.00506091) ptx1_4grammar.ypp:2591:  Lexer (70,70): ) ")"
+(0.00506282) ptx1_4grammar.ypp:940:   Rule: parameter addressableVariablePrefix identifier arrayDimensions';'
+(0.00506687) ptx1_4grammar.ypp:956:    Parsed statement 47 ".param .u32 __cudaparm__Z9integrateP6float4S0_fj_numParticles;"
+(0.00507236) ptx1_4grammar.ypp:729:   Hit rule parameterDeclaration | parameterList ',' parameterDeclaration
+(0.00507569) ptx1_4grammar.ypp:2591:  Lexer (71,5): { "{"
+(0.00507808) ptx1_4grammar.ypp:734:   Half Rule: ENTRY IDENTIFIER '(' parameterList ')' '{'
+(0.00508046) ptx1_4grammar.ypp:743:    Parsed statement 48 ".entry _Z9integrateP6float4S0_fj"
+(0.00508404) ptx1_4grammar.ypp:752:    Parsed statement 49 "{"
+(0.00508928) ptx1_4grammar.ypp:2591:  Lexer (72,5): REG ".reg"
+(0.0050931) ptx1_4grammar.ypp:2591:  Lexer (72,10): U32 ".u32"
+(0.00509667) ptx1_4grammar.ypp:2591:  Lexer (72,15): IDENTIFIER "%r"
+(0.00510144) ptx1_4grammar.ypp:2591:  Lexer (72,17): < "<"
+(0.00510669) ptx1_4grammar.ypp:2591:  Lexer (72,18): DECIMAL_CONSTANT "8"
+(0.00510931) ptx1_4grammar.ypp:2591:  Lexer (72,19): > ">"
+(0.00511146) ptx1_4grammar.ypp:2591:  Lexer (72,20): ; ";"
+(0.00511503) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00512028) ptx1_4grammar.ypp:566:    Parsed statement 50 ".reg .u32 %r<8>;"
+(0.0051465) ptx1_4grammar.ypp:2591:  Lexer (73,5): REG ".reg"
+(0.00515103) ptx1_4grammar.ypp:2591:  Lexer (73,10): U64 ".u64"
+(0.00515485) ptx1_4grammar.ypp:2591:  Lexer (73,15): IDENTIFIER "%rd"
+(0.00515771) ptx1_4grammar.ypp:2591:  Lexer (73,18): < "<"
+(0.005162) ptx1_4grammar.ypp:2591:  Lexer (73,19): DECIMAL_CONSTANT "8"
+(0.00516462) ptx1_4grammar.ypp:2591:  Lexer (73,20): > ">"
+(0.00516701) ptx1_4grammar.ypp:2591:  Lexer (73,21): ; ";"
+(0.00516939) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00517344) ptx1_4grammar.ypp:566:    Parsed statement 51 ".reg .u64 %rd<8>;"
+(0.00520682) ptx1_4grammar.ypp:2591:  Lexer (74,5): REG ".reg"
+(0.00521183) ptx1_4grammar.ypp:2591:  Lexer (74,10): F32 ".f32"
+(0.00521541) ptx1_4grammar.ypp:2591:  Lexer (74,15): IDENTIFIER "%f"
+(0.00521803) ptx1_4grammar.ypp:2591:  Lexer (74,17): < "<"
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  tests/ptx/sdk2.2/particleSystem.ptx (80, 5): Parsed invalid instruction cvt.u32.u16 %r1, %ctaid.x: no support for PTX version 1.0 less than 1.3
+(0.0052228) ptx1_4grammar.ypp:2591:  Lexer (74,18): DECIMAL_CONSTANT "63"
+(0.00523543) ptx1_4grammar.ypp:2591:  Lexer (74,20): > ">"
+(0.00523806) ptx1_4grammar.ypp:2591:  Lexer (74,21): ; ";"
+(0.00523996) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00524473) ptx1_4grammar.ypp:566:    Parsed statement 52 ".reg .f32 %f<63>;"
+(0.00539088) ptx1_4grammar.ypp:2591:  Lexer (75,5): REG ".reg"
+(0.00539589) ptx1_4grammar.ypp:2591:  Lexer (75,10): PRED ".pred"
+(0.0053997) ptx1_4grammar.ypp:2591:  Lexer (75,16): IDENTIFIER "%p"
+(0.00540209) ptx1_4grammar.ypp:2591:  Lexer (75,18): < "<"
+(0.00540662) ptx1_4grammar.ypp:2591:  Lexer (75,19): DECIMAL_CONSTANT "9"
+(0.00540924) ptx1_4grammar.ypp:2591:  Lexer (75,20): > ">"
+(0.00541162) ptx1_4grammar.ypp:2591:  Lexer (75,21): ; ";"
+(0.00541353) ptx1_4grammar.ypp:545:   Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'
+(0.00541782) ptx1_4grammar.ypp:566:    Parsed statement 53 ".reg .pred %p<9>;"
+(0.00545764) ptx1_4grammar.ypp:2591:  Lexer (78,5): LOC ".loc"
+(0.0054636) ptx1_4grammar.ypp:2591:  Lexer (78,13): DECIMAL_CONSTANT "16"
+(0.00546861) ptx1_4grammar.ypp:2591:  Lexer (78,19): DECIMAL_CONSTANT "61"
+(0.00547361) ptx1_4grammar.ypp:2591:  Lexer (78,25): DECIMAL_CONSTANT "0"
+(0.00547624) ptx1_4grammar.ypp:974:   Rule: LOC DECIMAL_CONSTANT DECIMAL_CONSTANT DECIMAL_CONSTANT
+(0.00548458) ptx1_4grammar.ypp:987:    Parsed statement 54 ".loc 16 61 0"
+(0.00551128) ptx1_4grammar.ypp:2591:  Lexer (79,1): LABEL "$LBB1__Z9integrateP6float4S0_fj:"
+(0.00551391) ptx1_4grammar.ypp:993:   Rule: LABEL
+(0.00551629) ptx1_4grammar.ypp:1002:    Parsed statement 55 "$LBB1__Z9integrateP6float4S0_fj:"
+(0.00552249) ptx1_4grammar.ypp:2591:  Lexer (80,5): OPCODE_CVT "cvt"
+(0.0055263) ptx1_4grammar.ypp:1259:   Rule: No guard predicate
+(0.00553012) ptx1_4grammar.ypp:2591:  Lexer (80,8): U32 ".u32"
+(0.00553513) ptx1_4grammar.ypp:2591:  Lexer (80,12): U16 ".u16"
+(0.00553966) ptx1_4grammar.ypp:2591:  Lexer (80,21): IDENTIFIER "%r1"
+(0.00554466) ptx1_4grammar.ypp:2591:  Lexer (80,24): , ","
+(0.00555038) ptx1_4grammar.ypp:2591:  Lexer (80,26): SPECIAL_REGISTER "%ctaid.x"
+(0.00555539) ptx1_4grammar.ypp:2591:  Lexer (80,34): ; ";"
+(0.00555968) ptx1_4grammar.ypp:1575:   Rule: OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
+(0.00558019) ptx1_4grammar.ypp:1614:    Parsed statement 56 "cvt.u32.u16 %r1, %ctaid.x;"
+(0.00558734) ptx1_4grammar.ypp:798:   Rule: guard instruction
+
+INFO     Test /home/gdiamos/checkout/gpuocelot/TestKernels seconds
+INFO     Test completed in 0.023738861084 seconds
+INFO      It produced the following output:
+(5.65052e-05) ArgumentParser.cpp:19: Formating string.
+(0.000102758) ArgumentParser.cpp:20:  Input stream is "No description provided.
+"
+(0.000106812) ArgumentParser.cpp:21:  First prefix is "        "
+(0.000110149) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.0001297) ArgumentParser.cpp:78: Formatted stream is "        No description provided. 
+"
+(0.00196576) ArgumentParser.cpp:19: Formating string.
+(0.00197196) ArgumentParser.cpp:20:  Input stream is "
+"
+(0.00197482) ArgumentParser.cpp:21:  First prefix is "        "
+(0.00197816) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.00198483) ArgumentParser.cpp:78: Formatted stream is "         
+"
+(0.00199747) ArgumentParser.h:202: Searching for s in /home/gdiamos/checkout/gpuocelot/TestKernels
+(0.00200367) ArgumentParser.h:202: Searching for s in v
+(0.00201082) ArgumentParser.cpp:19: Formating string.
+(0.00201416) ArgumentParser.cpp:20:  Input stream is "Set the random seed, 0 implies seed with time.
+"
+(0.00201678) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.00201964) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.00202942) ArgumentParser.cpp:78: Formatted stream is "                   Set the random seed, 0 implies seed with time. 
+"
+(0.00203872) ArgumentParser.cpp:108: Searching for -v
+(0.00204253) ArgumentParser.cpp:116: Found in -v
+(0.00204563) ArgumentParser.cpp:144:  is present
+(0.00205088) ArgumentParser.cpp:19: Formating string.
+(0.00205421) ArgumentParser.cpp:20:  Input stream is "Print out info after the test.
+"
+(0.00205731) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.00206017) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.00206852) ArgumentParser.cpp:78: Formatted stream is "                   Print out info after the test. 
+"
+(0.00207782) ArgumentParser.cpp:108: Searching for -h
+(0.00208187) ArgumentParser.cpp:108: Searching for --help
+(0.00208902) ArgumentParser.cpp:19: Formating string.
+(0.00209236) ArgumentParser.cpp:20:  Input stream is "Print this help message.
+"
+(0.00209522) ArgumentParser.cpp:21:  First prefix is "           "
+(0.00209785) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.00210619) ArgumentParser.cpp:78: Formatted stream is "           Print this help message. 
+"
+(0.00221229) PTXParser.cpp:678: Running main parse pass.
+context.loadModule() threw an exception
+  Test output:
+
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  tests/ptx/synthetic/kernels.ptx (66, 5): Parsed invalid instruction cvt.s32.u16 %r1, %tid.x: no support for PTX version 1.0 less than 1.3
+
+INFO     Test /home/gdiamos/checkout/gpuocelot/TestLexer seconds
+INFO     Test completed in 12.3144440651 seconds
+INFO      It produced the following output:
+(3.09944e-05) ArgumentParser.cpp:19: Formating string.
+(7.48634e-05) ArgumentParser.cpp:20:  Input stream is "No description provided.
+"
+(7.7486e-05) ArgumentParser.cpp:21:  First prefix is "        "
+(7.9155e-05) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(9.44138e-05) ArgumentParser.cpp:78: Formatted stream is "        No description provided. 
+"
+(0.000110626) ArgumentParser.cpp:19: Formating string.
+(0.00011301) ArgumentParser.cpp:20:  Input stream is "Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
+"
+(0.000114918) ArgumentParser.cpp:21:  First prefix is "        "
+(0.000116587) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000126362) ArgumentParser.cpp:78: Formatted stream is "        Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a 
+                      temp stream, scan the stream again and make sure that the 
+                      two sets of tokens match 
+"
+(0.000135183) ArgumentParser.h:202: Searching for i in /home/gdiamos/checkout/gpuocelot/TestLexer
+(0.00013876) ArgumentParser.h:202: Searching for i in v
+(0.000140905) ArgumentParser.h:202: Searching for input-file in /home/gdiamos/checkout/gpuocelot/TestLexer
+(0.000142574) ArgumentParser.h:202: Searching for input-file in v
+(0.000147104) ArgumentParser.cpp:19: Formating string.
+(0.000148773) ArgumentParser.cpp:20:  Input stream is "Input directory to search for ptx files.
+"
+(0.000150681) ArgumentParser.cpp:21:  First prefix is "     "
+(0.000151873) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000157356) ArgumentParser.cpp:78: Formatted stream is "     Input directory to search for ptx files. 
+"
+(0.000160933) ArgumentParser.cpp:108: Searching for -r
+(0.000163078) ArgumentParser.cpp:108: Searching for --not-recursive
+(0.000166893) ArgumentParser.cpp:19: Formating string.
+(0.0001688) ArgumentParser.cpp:20:  Input stream is "Dont recursively search directories.
+"
+(0.000170231) ArgumentParser.cpp:21:  First prefix is "  "
+(0.0001719) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000176668) ArgumentParser.cpp:78: Formatted stream is "  Dont recursively search directories. 
+"
+(0.000185251) ArgumentParser.h:202: Searching for s in /home/gdiamos/checkout/gpuocelot/TestLexer
+(0.000187874) ArgumentParser.h:202: Searching for s in v
+(0.000191212) ArgumentParser.cpp:19: Formating string.
+(0.000193357) ArgumentParser.cpp:20:  Input stream is "Set the random seed, 0 implies seed with time.
+"
+(0.000195026) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.000196457) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000201702) ArgumentParser.cpp:78: Formatted stream is "                   Set the random seed, 0 implies seed with time. 
+"
+(0.000207424) ArgumentParser.cpp:108: Searching for -v
+(0.00020957) ArgumentParser.cpp:116: Found in -v
+(0.000211239) ArgumentParser.cpp:144:  is present
+(0.000214577) ArgumentParser.cpp:19: Formating string.
+(0.000216484) ArgumentParser.cpp:20:  Input stream is "Print out info after the test.
+"
+(0.000218153) ArgumentParser.cpp:21:  First prefix is "                   "
+(0.000219822) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000224829) ArgumentParser.cpp:78: Formatted stream is "                   Print out info after the test. 
+"
+(0.000228167) ArgumentParser.cpp:108: Searching for -h
+(0.000230312) ArgumentParser.cpp:108: Searching for --help
+(0.000234127) ArgumentParser.cpp:19: Formating string.
+(0.000236034) ArgumentParser.cpp:20:  Input stream is "Print this help message.
+"
+(0.000237703) ArgumentParser.cpp:21:  First prefix is "           "
+(0.000238895) ArgumentParser.cpp:22:  Regular prefix is "                      "
+(0.000243425) ArgumentParser.cpp:78: Formatted stream is "           Print this help message. 
+"
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description : Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
+
+Test Seed : 1244755848
+Test time : 12.3047
+
+Status : For file tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-sigproc-corr1d.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-matrix-product.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-msigproc.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-melwise.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-cuda-support.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-histo.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-vector-copy.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-sigproc-conv.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-vector-elementwise.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-copy.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-cuda-mproc.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-fir.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-elementwise.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-sigproc-window.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-vector-ternary.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-vector-integer.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-vector-product.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-qrd-mgs.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-vector-celementwise.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-reduction.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-qrd.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-vector-complex.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-cholesky.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-sigproc.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-rand.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/vsipl/vsipl-matrix-qrd-house.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/particleSystem.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/clock.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/main.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/reduction.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleTexture.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/transpose.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/bitonic.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/BlackScholes.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/ParticleSystem.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/new_radixsort.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/scan.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/dxtc.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/threadMigration.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/scanLargeArray.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleTexture3D.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/histogram64.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/volumeRender.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/convolutionTexture.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
+
+
+
+INFO     
+Passing tests:
+ (12.314s) : /home/gdiamos/checkout/gpuocelot/TestLexer : Passed
+
+Failing tests:
+ (0.023s) : /home/gdiamos/checkout/gpuocelot/TestParser : Did not complete.
+ (0.024s) : /home/gdiamos/checkout/gpuocelot/TestKernels : Did not complete.
+ (0.016s) : /home/gdiamos/checkout/gpuocelot/TestEmulator : Did not complete.
+ (0.012s) : /home/gdiamos/checkout/gpuocelot/TestInstructions : Did not complete.
+
+Non-Existent tests:
+

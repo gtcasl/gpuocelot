@@ -1,0 +1,47 @@
+Ocelot
+
+1. INTRODUCTION
+2. FEATURES
+3. PREREQUISITES
+4. INSTALLATION
+5. USAGE
+6. CONTACT
+
+INTRODUCTION
+
+	Ocelot - A Binary translation framework for Parallel Thread Execution Isa 
+		(PTX)
+
+FEATURES
+
+	This release of Ocelot contains the following working features:
+
+		1) tools to parse PTX files
+		2) intermediate representation of PTX v1.3
+		3) control flow graph for PTX
+		4) dominator tree for PTX
+		5) PTX Emulator
+		6) CUDA high level API runtime 2.1 implementation
+		7) Various trace generators
+		8) Trace analysis tools for generated trace types
+
+PREREQUISITES
+
+	C++ Compiler
+	flex compatible lexer generator
+	bison compatible parser generator
+
+INSTALLATION
+
+	Tested with g++ 4.3.2, flex 2.5.35, bison 2.3
+
+	./configure; make; 
+
+USAGE
+
+	./ocelot -h
+
+CONTACT
+
+	Gregory Diamos <gregory.diamos@gatech.edu>
+

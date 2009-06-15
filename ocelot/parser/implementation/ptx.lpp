@@ -250,6 +250,8 @@ COMPLETE_FILE (".file"{WHITESPACE}{DECIMAL_CONSTANT}{WHITESPACE}{STRING})
                                     return TOKEN_SURF; }
 ".cta"                          { yylval->value = TOKEN_CTA; 
                                     return TOKEN_CTA; }
+".gl"                           { yylval->value = TOKEN_GL; 
+                                    return TOKEN_GL; }
 
 ".u32"				            { yylval->value = TOKEN_U32; return TOKEN_U32; }
 ".s32"				            { yylval->value = TOKEN_S32; return TOKEN_S32; }

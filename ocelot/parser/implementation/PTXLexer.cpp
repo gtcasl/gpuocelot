@@ -602,6 +602,11 @@ namespace parser
 				return "CTA";
 				break;
 			}
+			case TOKEN_GL:
+			{
+				return "GL";
+				break;
+			}
 			case TOKEN_CONST:
 			{
 				return "CONST";

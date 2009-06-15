@@ -196,7 +196,7 @@ namespace cuda
 		
 		try 
 		{
-			hydrazine::XmlParser parser("ocelot.config");
+			hydrazine::XmlParser parser("default.config");
 			hydrazine::XmlTree tree = parser.tree();
 		
 			hydrazine::XmlTree::iterator position = tree.begin();

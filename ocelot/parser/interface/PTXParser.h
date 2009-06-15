@@ -55,6 +55,7 @@ namespace parser
 						NotSupported,
 						NotVersion1_3,
 						NotVersion1_4,
+						UnknownVersion,
 						Invalid
 					};
 			
@@ -62,6 +63,7 @@ namespace parser
 					ir::Module module;
 					StringMap labels;
 					std::string fileName;
+					ir::PTXInstruction::Version ptxVersion;
 				
 				public:
 					std::string sectionType;
@@ -88,7 +90,8 @@ namespace parser
 					bool warnLexer;
 					
 				public:
-					void version( double version, YYLTYPE& location );
+					void version( double version, YYLTYPE& location, 
+						ir::PTXInstruction::Version expected );
 					void identifierList( const std::string& identifier );
 					void identifierList2( const std::string& identifier );
 					void decimalListSingle( long long int value );
@@ -101,6 +104,7 @@ namespace parser
 					void addressSpace( int token );
 					void dataType( int token );
 					void vectorType( int token );
+					void attribute( bool visible, bool external );
 					
 					void arrayDimensionSet( long long int value, 
 						YYLTYPE& location, bool add );
@@ -112,7 +116,9 @@ namespace parser
 					void fileDeclaration( const std::string& name );
 					void initializableDeclaration( const std::string& name, 
 						YYLTYPE& one, YYLTYPE& two );
-					void entry( const std::string& name, YYLTYPE& location );
+					void entry( const std::string& name, YYLTYPE& location, 
+						bool paramList = false );
+					void entryMid( YYLTYPE& location, bool paramList = false );
 					void entryEnd( YYLTYPE& location );
 					void entryDeclaration( YYLTYPE& location );
 					void locationAddress( int token );
@@ -148,6 +154,7 @@ namespace parser
 					void boolean( int token );
 					void geometry( int token );
 					void vote( int token );
+					void level( int token );
 					
 					void instruction();
 					void instruction( const std::string& opcode, int dataType, 
@@ -201,6 +208,7 @@ namespace parser
 			static ir::PTXInstruction::BoolOp tokenToBoolOp( int );
 			static ir::PTXInstruction::Geometry tokenToGeometry( int );
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );
+			static ir::PTXInstruction::Level tokenToLevel( int );
 			static ir::PTXOperand::DataType smallestType( long long int );
 			static ir::PTXOperand::DataType 
 				smallestType( long long unsigned int );

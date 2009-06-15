@@ -48,7 +48,9 @@ namespace ir {
 			Union,
 			Version,
 			StartEntry,		//< synthetic directive to indicate start of entry
-			EndEntry,			//< synthetic directive to indicate the end of an entry
+			EndEntry,		//< synthetic directive to indicate the end of an entry
+			StartParam,		//< synthetic directive to indicate start of a parameter list
+			EndParam,		//< synthetic directive to indicate end of a parameter list
 			Directive_invalid
 		};
 
@@ -108,6 +110,8 @@ namespace ir {
 		Directive directive;
 
 		PTXInstruction instruction;
+		
+		PTXInstruction::Version version;
 	
 		PTXOperand::DataType type;
 	

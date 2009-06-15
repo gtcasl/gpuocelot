@@ -45,7 +45,8 @@ namespace ptx1_3
 
 namespace parser
 {
-	void PTXParser::State::version( double version, YYLTYPE& location )
+	void PTXParser::State::version( double version, YYLTYPE& location, 
+		ir::PTXInstruction::Version expected )
 	{
 		report( "  Rule: VERSION DOUBLE_CONSTANT" );
 
@@ -89,12 +90,30 @@ namespace parser
 		}
 	
 		stream3 >> statement.minor;
-	
-		if( statement.minor != 3 || statement.major != 1 )
+
+		if( expected == ir::PTXInstruction::ptx1_3 )
+		{	
+			if( statement.minor != 3 || statement.major != 1 )
+			{
+				throw_exception( "Cannot parse PTX version " << statement.major 
+					<< "." << statement.minor << " with version 1.3 parser.", 
+					NotVersion1_3 );
+			}
+		}
+		else if( expected == ir::PTXInstruction::ptx1_4 )
 		{
-			throw_exception( "Cannot parse PTX version " << statement.major 
-				<< "." << statement.minor << " with version 1.3 parser.", 
-				NotVersion1_3 );
+			if( statement.minor != 4 || statement.major != 1 )
+			{
+				throw_exception( "Cannot parse PTX version " << statement.major 
+					<< "." << statement.minor << " with version 1.4 parser.", 
+					NotVersion1_4 );
+			}
+		}
+		else
+		{
+			throw_exception( "Unknown PTX version " 
+				<< ir::PTXInstruction::toString( expected ) 
+				<< ".", UnknownVersion );
 		}
 	}
 	
@@ -209,6 +228,23 @@ namespace parser
 	void PTXParser::State::vectorType( int value )
 	{
 		statement.instruction.vec = tokenToVec( value );
+	}
+	
+	void PTXParser::State::attribute( bool visible, bool external )
+	{
+		assert( !( visible && external ) );
+		if( visible )
+		{
+			statement.attribute = ir::PTXStatement::Visible;
+		}
+		else if( external )
+		{
+			statement.attribute = ir::PTXStatement::Extern;
+		}
+		else
+		{
+			statement.attribute = ir::PTXStatement::NoAttribute;
+		}
 	}
 
 	void PTXParser::State::arrayDimensionSet( long long int value, 
@@ -417,7 +453,8 @@ namespace parser
 		statement.name = name;
 	}
 
-	void PTXParser::State::entry( const std::string& name, YYLTYPE& location )
+	void PTXParser::State::entry( const std::string& name, YYLTYPE& location, 
+		bool paramList )
 	{
 		report( "  Half Rule: ENTRY IDENTIFIER '{'" );
 
@@ -426,6 +463,22 @@ namespace parser
 	
 		statementEnd( location );
 		
+		if( paramList )
+		{
+			statement.directive = ir::PTXStatement::StartParam;
+			statementEnd( location );		
+		}
+		
+	}
+	
+	void PTXParser::State::entryMid( YYLTYPE& location, bool paramList )
+	{
+		if( paramList )
+		{
+			statement.directive = ir::PTXStatement::EndParam;
+			statementEnd( location );		
+		}
+	
 		statement.directive = ir::PTXStatement::StartEntry;	
 		inEntry = true;
 		
@@ -859,11 +912,15 @@ namespace parser
 	{
 		statement.instruction.vote = tokenToVoteMode( token );
 	}
+	
+	void PTXParser::State::level( int token )
+	{
+		statement.instruction.level = tokenToLevel( token );
+	}
 
 	void PTXParser::State::instruction( )
 	{
-		statement.instruction = ir::PTXInstruction( 
-			ir::PTXInstruction::ptx1_3 );
+		statement.instruction = ir::PTXInstruction( ptxVersion );
 	}
 
 	void PTXParser::State::instruction( const std::string& opcode, int dataType, 
@@ -1162,9 +1219,12 @@ namespace parser
 		state.operandVector.clear();
 		state.module.statements.clear();
 		state.module.kernels.clear();
+		state.module.modulePath = fileName;
 		state.fileName = fileName;
 		
+		state.ptxVersion = version;
 		state.statement.instruction.version = version;
+		state.statement.version = version;
 		
 		ir::PTXOperand bucket;
 		bucket.identifier = "_";
@@ -1559,6 +1619,18 @@ namespace parser
 		return ir::PTXInstruction::VoteMode_Invalid;		
 	}
 	
+	ir::PTXInstruction::Level PTXParser::tokenToLevel( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_CTA: return ir::PTXInstruction::CtaLevel; break;
+			case TOKEN_GL: return ir::PTXInstruction::GlobalLevel; break;
+			default: break;
+		}
+		
+		return ir::PTXInstruction::Level_Invalid;		
+	}
+	
 	ir::PTXOperand::DataType PTXParser::smallestType( long long int value )
 	{
 		return ir::PTXOperand::s64;
@@ -1599,8 +1671,10 @@ namespace parser
 			{
 				input.seekg( 0, std::ios::beg );
 				temp.seekg( 0, std::ios::beg );
-				reset( ir::PTXInstruction::ptx1_4 );
+				parser::PTXLexer lexer( &input, &temp );
 				
+				reset( ir::PTXInstruction::ptx1_4 );
+								
 				report( "Running 1.4 parse pass." );
 				ptx1_4::yyparse( lexer, state );
 			}

@@ -34,7 +34,8 @@ namespace ir {
 		*/
 		enum Level {
 			CtaLevel,
-			GlobalLevel
+			GlobalLevel,
+			Level_Invalid
 		};
 
 		/*!

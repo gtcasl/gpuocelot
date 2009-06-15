@@ -72,7 +72,7 @@
 %token<value> TOKEN_SECTION
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_REG
-%token<value> TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA
+%token<value> TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA TOKEN_GL
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
 %token<value> TOKEN_U16 TOKEN_U64 TOKEN_B8 TOKEN_B16 TOKEN_B32 TOKEN_B64 
@@ -123,7 +123,7 @@ statements : statement | statements statement;
 
 version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT 
 { 
-	state.version( $<doubleFloat>2, @2 );
+	state.version( $<doubleFloat>2, @2, ir::PTXInstruction::ptx1_3 );
 };
 
 identifier : '_' | TOKEN_IDENTIFIER | opcode;
@@ -288,7 +288,12 @@ entryStart : TOKEN_ENTRY identifier
 	state.entry( $<text>2, @1 );
 };
 
-entry : entryStart '{' entryDeclarations '}'
+entryMid : '{'
+{
+	state.entryMid( @1 );
+};
+
+entry : entryStart entryMid entryDeclarations '}'
 {
 	state.entryEnd( @4 );
 };
@@ -318,17 +323,17 @@ entryDeclarations : entryDeclarations entryDeclaration;
 
 externOrVisible : TOKEN_EXTERN
 {
-	state.statement.attribute = ir::PTXStatement::Extern;
+	state.attribute( false, true );
 };
 
 externOrVisible : TOKEN_VISIBLE
 {
-	state.statement.attribute = ir::PTXStatement::Visible;
+	state.attribute( true, false );
 };
 
 externOrVisible : /* empty string */
 {
-	state.statement.attribute = ir::PTXStatement::NoAttribute;
+	state.attribute( false, false );
 };
 
 uninitializableAddress : TOKEN_LOCAL | TOKEN_SHARED | TOKEN_PARAM;
@@ -353,7 +358,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
-	| OPCODE_SHR | OPCODE_SHL;
+	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -549,11 +554,16 @@ brkpt : OPCODE_BRKPT ';'
 	state.instruction( $<text>1, 1 );
 };
 
-cvtModifier1 : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ | TOKEN_SAT 
+cvtModifier1 : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ 
 	| TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
 cvtModifier : /* empty string */
 {
+};
+
+cvtModifier : TOKEN_SAT
+{
+	state.modifier( $<value>1 );
 };
 
 cvtModifier : cvtModifier1
@@ -718,7 +728,7 @@ retUni : TOKEN_UNI
 
 ret : OPCODE_RET retUni ';'
 {
-	state.instruction( $<text>1, 2 );
+	state.instruction( $<text>1, 1 );
 };
 
 comparisonId : TOKEN_EQ | TOKEN_NE | TOKEN_LT | TOKEN_LE | TOKEN_GT | TOKEN_GE

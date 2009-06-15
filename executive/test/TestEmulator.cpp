@@ -31,10 +31,7 @@ namespace test {
 
 class TestEmulator: public Test {
 public:
-	bool verbose;
-
 	TestEmulator() {
-		verbose = false;
 		name = "TestEmulator";
 
 		status << "Test output:\n";
@@ -232,7 +229,7 @@ public:
 		// load and store to global memory
 		PTXU32 block[64];
 
-		PTXInstruction ld;
+		PTXInstruction ld( PTXInstruction::ptx1_3 );
 		ld.opcode = PTXInstruction::Ld;
 		ld.addressSpace = PTXInstruction::Global;
 		ld.d.reg = 0;
@@ -374,7 +371,7 @@ public:
 		PTXU32 u_block[4];
 		PTXF32 f_block[2];
 
-		PTXInstruction st;
+		PTXInstruction st( PTXInstruction::ptx1_3 );
 		st.opcode = PTXInstruction::St;
 		st.addressSpace = PTXInstruction::Global;
 		st.a.reg = 0;

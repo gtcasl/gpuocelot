@@ -1,7 +1,7 @@
 /*!
-	\file ptxgrammar.ypp
+	\file ptx1_4grammar.ypp
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
-	\date Saturday June 13, 2009
+	\date Monday June 15, 2009
 	\brief The YACC grammar file for PTX
 */
 
@@ -72,7 +72,7 @@
 %token<value> TOKEN_SECTION
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_REG
-%token<value> TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA
+%token<value> TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA TOKEN_GL
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
 %token<value> TOKEN_U16 TOKEN_U64 TOKEN_B8 TOKEN_B16 TOKEN_B32 TOKEN_B64 
@@ -109,135 +109,43 @@
 
 %%
 
+nonEntryStatements : version | target | registerDeclaration | fileDeclaration | 
+	initializableDeclaration | uninitializableDeclaration | unsupported;
+
+nonEntryStatement : nonEntryStatements
+{
+	state.statementEnd( @1 );
+};
+
+statement : nonEntryStatement | entry;
+
 statements : statement | statements statement;
 
-statement : version | target | registerDeclaration | fileDeclaration | entry | 
-	initializableDeclaration | uninitializableDeclaration | unsupported
-{
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT 
+{ 
+	state.version( $<doubleFloat>2, @2, ir::PTXInstruction::ptx1_4 );
 };
 
-version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
-{
-	report( "  Rule: VERSION DOUBLE_CONSTANT" );
-
-	std::stringstream stream1;
-	stream1 << $<doubleFloat>2;
-	std::string value;
-	
-	stream1 >> value;
-	
-	std::stringstream stream2;
-	std::string::iterator fi = value.begin();
-	
-	for( ; fi != value.end(); ++fi )
-	{
-		if( *fi == '.' )
-		{
-			++fi;
-			break;
-		}
-		stream2 << *fi;
-	}
-	
-	if( fi == value.end() )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @2, state ) 
-			<< "Malformed version number " << value;
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::MalformedVersion;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	state.statement.directive = ir::PTXStatement::Version;
-	stream2 >> state.statement.major;
-	
-	std::stringstream stream3;
-	
-	for( ; fi != value.end(); ++fi )
-	{
-		stream3 << *fi;
-	}
-	
-	if( stream3.str().empty() )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @2, state ) 
-			<< "Malformed version number " << value;
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::MalformedVersion;
-		exception.message = error.str();
-		throw exception;		
-	}
-	
-	stream3 >> state.statement.minor;
-	state.statement.section_type = state.sectionType;
-	state.statement.section_name = state.sectionName;
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-	
-	if( state.statement.minor != 4 || state.statement.major != 1 )
-	{
-		std::stringstream error;
-		error << "Cannot parse PTX version " << state.statement.major 
-			<< "." << state.statement.minor << " with version 1.4 parser.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NotVersion1_4;
-		exception.message = error.str();
-		throw exception;
-	}
-};
+identifier : '_' | TOKEN_IDENTIFIER | opcode;
 
 identifierList : identifier
 {
-	report( "  Rule: IDENTIFIER" );
-	state.identifiers.clear();
-	report( "   Appending " << $<text>1 << " to list." );
-	state.identifiers.push_back( $<text>1 );
+	state.identifierList( $<text>1 );
 };
 
 identifierList : identifierList ',' identifier
 {
-	report( "  Rule: identifierList , IDENTIFIER" );
-
-	report( "   Appending " << $<text>3 << " to list." );
-	state.identifiers.push_back( $<text>3 );
+	state.identifierList2( $<text>3 );
 };
 
 decimalListSingle : TOKEN_DECIMAL_CONSTANT
 {
-	report( "  Rule: DECIMAL_CONSTANT" );
-	
-	if( state.statement.array.stride.empty() )
-	{
-		state.statement.array.stride.push_back( 1 );
-	}
-	
-	report( "   Appending " << $<value>1 << " to decimal list.");
-	ir::PTXStatement::Data data;
-	data.s64 = $<value>1;
-	state.statement.array.values.push_back( data );
+	state.decimalListSingle( $<value>1 );
 };
 
 decimalListSingle : decimalListSingle ',' TOKEN_DECIMAL_CONSTANT
 {
-	report( "  Rule: decimalList ',' DECIMAL_CONSTANT" );
-	
-	report( "   Appending " << $<value>3 << " to decimal list.");
-	ir::PTXStatement::Data data;
-	data.s64 = $<value>3;
-	state.statement.array.values.push_back( data );
+	state.decimalListSingle2( $<value>3 );
 };
 
 decimalList : '{' decimalList '}' ',' '{' decimalList '}';
@@ -248,28 +156,12 @@ decimalInitializer : decimalList | '{' decimalList '}' |
 
 floatListSingle : TOKEN_DOUBLE_CONSTANT
 {
-	report( "  Rule: DOUBLE_CONSTANT" );
-	
-	if( state.statement.array.stride.empty() )
-	{
-		state.statement.array.stride.push_back( 1 );
-	}
-	
-	report( "   Appending " << $<doubleFloat>1 << " to float list.");
-	ir::PTXStatement::Data data;
-	data.f64 = $<doubleFloat>1;
-
-	state.statement.array.values.push_back( data );
+	state.floatList( $<doubleFloat>1 );
 };
 
 floatListSingle : floatListSingle ',' TOKEN_DOUBLE_CONSTANT
 {
-	report( "  Rule: floatList ',' DOUBLE_CONSTANT" );
-	
-	report( "   Appending " << $<doubleFloat>3 << " to float list.");
-	ir::PTXStatement::Data data;
-	data.f64 = $<doubleFloat>3;
-	state.statement.array.values.push_back( data );
+	state.floatList1( $<doubleFloat>3 );
 };
 
 floatList : '{' floatList '}' ',' '{' floatList '}';
@@ -280,27 +172,12 @@ floatInitializer : floatList |  '{' floatList '}' | '{' floatListSingle '}'
 
 singleListSingle : TOKEN_SINGLE_CONSTANT
 {
-	report( "  Rule: DOUBLE_CONSTANT" );
-	
-	if( state.statement.array.stride.empty() )
-	{
-		state.statement.array.stride.push_back( 1 );
-	}
-	
-	report( "   Appending " << $<singleFloat>1 << " to single list.");
-	ir::PTXStatement::Data data;
-	data.f64 = $<singleFloat>1;
-	state.statement.array.values.push_back( data );
+	state.singleList( $<singleFloat>1 );
 };
 
 singleListSingle : singleListSingle ',' TOKEN_SINGLE_CONSTANT
 {
-	report( "  Rule: singleList ',' SINGLE_CONSTANT" );
-	
-	report( "   Appending " << $<singleFloat>3 << " to single list.");
-	ir::PTXStatement::Data data;
-	data.f64 = $<singleFloat>3;
-	state.statement.array.values.push_back( data );
+	state.singleList1( $<singleFloat>3 );
 };
 
 singleList : '{' singleList '}' ',' '{' singleList '}';
@@ -311,51 +188,15 @@ singleInitializer : singleList |  '{' singleList '}' | '{' singleListSingle '}'
 
 target : TOKEN_TARGET identifierList
 {
-	report( "  Rule: TARGET identifierList" );
-	
-	state.statement.directive = ir::PTXStatement::Target;
-	state.statement.targets.assign ( state.identifiers.begin(), 
-		state.identifiers.end() );
+	state.target();
 };
 
-addressSpace : TOKEN_REG
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Reg;
-};
+addressSpaceIdentifier : TOKEN_REG | TOKEN_SREG | TOKEN_TEX | TOKEN_CONST 
+	| TOKEN_GLOBAL | TOKEN_LOCAL | TOKEN_PARAM | TOKEN_SHARED;
 
-addressSpace : TOKEN_SREG
+addressSpace : addressSpaceIdentifier
 {
-	state.statement.instruction.addressSpace = ir::PTXInstruction::SReg;
-};
-
-addressSpace : TOKEN_CONST
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Const;
-};
-
-addressSpace : TOKEN_GLOBAL
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Global;
-};
-
-addressSpace : TOKEN_LOCAL
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Local;
-};
-
-addressSpace : TOKEN_PARAM
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Param;
-};
-
-addressSpace : TOKEN_SHARED
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Shared;
-};
-
-addressSpace : TOKEN_TEX
-{
-	state.statement.instruction.addressSpace = ir::PTXInstruction::Texture;
+	state.addressSpace( $<value>1 );
 };
 
 dataTypeId : TOKEN_U8 | TOKEN_U16 | TOKEN_U32 | TOKEN_U64 | TOKEN_S8 
@@ -364,116 +205,48 @@ dataTypeId : TOKEN_U8 | TOKEN_U16 | TOKEN_U32 | TOKEN_U64 | TOKEN_S8
 
 dataType : dataTypeId
 {
-	state.operand.type = parser::PTXParser::tokenToDataType( $<value>1 );
-};
-	
-vectorType : TOKEN_V2
-{
-	report( "  Switching to V2" );
-	state.statement.instruction.vec = ir::PTXOperand::v2;
+	state.dataType( $<value>1 );
 };
 
-vectorType : TOKEN_V4
+vectorToken : TOKEN_V2 | TOKEN_V4;
+
+vectorType : vectorToken
 {
-	report( "  Switching to V4" );
-	state.statement.instruction.vec = ir::PTXOperand::v4;
+	state.vectorType( $<value>1 );
 };
 
-alignment : TOKEN_ALIGN TOKEN_DECIMAL_CONSTANT
-{
-	state.alignment = $<value>2;
-};
+alignment : TOKEN_ALIGN TOKEN_DECIMAL_CONSTANT { state.alignment = $<value>2; };
 
-addressableVariablePrefix : dataType vectorType
-{
-	state.alignment = 1;
-};
-
-addressableVariablePrefix : vectorType dataType
-{
-	state.alignment = 1;
-};
-
-addressableVariablePrefix : dataType
-{
-	report( "  Switching to V1" );
-	state.alignment = 1;
-	state.statement.instruction.vec = ir::PTXOperand::v1;
-};
-
+addressableVariablePrefix : dataType vectorType { state.alignment = 1; };
+addressableVariablePrefix : vectorType dataType { state.alignment = 1; };
+addressableVariablePrefix : dataType { state.alignment = 1; };
 addressableVariablePrefix : alignment dataType vectorType;
 addressableVariablePrefix : alignment vectorType dataType;
 addressableVariablePrefix : dataType alignment vectorType;
 addressableVariablePrefix : dataType vectorType alignment;
-
 addressableVariablePrefix : vectorType dataType alignment;
 addressableVariablePrefix : vectorType alignment dataType;
-
-addressableVariablePrefix : dataType alignment
-{
-	report( "  Switching to V1" );
-	state.statement.instruction.vec = ir::PTXOperand::v1;
-};
-
-addressableVariablePrefix : alignment dataType
-{
-	
-	report( "  Switching to V1" );
-	state.statement.instruction.vec = ir::PTXOperand::v1;
-};
+addressableVariablePrefix : dataType alignment;
+addressableVariablePrefix : alignment dataType;
 
 arrayDimensionSet : '[' TOKEN_DECIMAL_CONSTANT ']'
 {
-	report( "  Rule: '[' DECIMAL_CONSTANT ']'" );
-
-	state.statement.array.stride.clear();
-
-	if( $<value>2 <= 0 )
-	{	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @2, state ) 
-			<< "Invalid array dimension " << $<value>2;
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::MalformedVersion;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	report( "   Got dimension " << $<value>2 );
-	state.statement.array.stride.push_back( (unsigned int) $<value>2 );
+	state.arrayDimensionSet( $<value>2, @2, false );
 };
 
 arrayDimensionSet : arrayDimensionSet '[' TOKEN_DECIMAL_CONSTANT ']'
 {
-	report( "  Rule: arrayDimensions '[' DECIMAL_CONSTANT ']'" );
-
-	if( $<value>3 <= 0 )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @3, state ) 
-			<< "Invalid array dimension " << $<value>3;
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidVecType;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	report( "   Got dimension " << $<value>3 );
-	state.statement.array.stride.push_back( (unsigned int) $<value>3 );	
+	state.arrayDimensionSet( $<value>3, @3, true );
 };
 
 arrayDimensionSet : '[' ']'
 {
-	report( "  Rule: arrayDimensions '[' ']'" );
-	state.statement.array.stride.clear();
-	
-	report( "   Got dimension " << 0 );
-	state.statement.array.stride.push_back( 0 );	
+	state.arrayDimensionSet( );
 };
 
 arrayDimensions : /* empty string */
 {
-	state.statement.array.stride.clear();
+	state.arrayDimensions();
 };
 
 arrayDimensions : arrayDimensionSet;
@@ -482,8 +255,7 @@ initializer : /* empty string */;
 
 assignment : '='
 {
-	report( "  Clearing doubles" );
-	state.statement.array.values.clear();
+	state.assignment();
 };
 
 initializer : assignment decimalInitializer | assignment floatInitializer 
@@ -491,315 +263,84 @@ initializer : assignment decimalInitializer | assignment floatInitializer
 
 registerDeclaration : TOKEN_REG dataType identifier ';'
 {
-	report( "  Rule: REG dataType IDENTIFIER ';'" );
-
-	state.statement.directive = ir::PTXStatement::Reg;
-	state.statement.type = state.operand.type;
-	state.statement.name = $<text>3;
-	state.statement.array.vec = ir::PTXOperand::v1;
-	state.statement.attribute = ir::PTXStatement::NoAttribute;
-	
-	if( state.operand.type == ir::PTXOperand::pred )
-	{
-		state.operand.condition = ir::PTXOperand::Pred;
-	}
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	state.statement.array.stride.resize(1);
-	state.statement.array.stride[0] = 1;
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-	
-	if( state.operands.count( state.statement.name ) != 0 ) 
-	{	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @3, state ) 
-			<< "Variable name " << state.statement.name 
-			<< " already declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::DuplicateDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	state.operand.addressMode = ir::PTXOperand::Register;
-	state.operand.identifier = state.statement.name;
-	state.operand.vec = ir::PTXOperand::v1;
-
-	state.operands.insert( std::make_pair( state.statement.name, 
-		state.operand ) );
+	state.registerDeclaration( $<text>3, @3 );	
 };
 
 registerDeclaration : TOKEN_REG dataType identifier 
 	'<' TOKEN_DECIMAL_CONSTANT '>' ';'
 {
-	report( "  Rule: REG dataType IDENTIFIER '<' DECIMAL_CONSTANT '>' ';'" );
-
-	state.statement.directive = ir::PTXStatement::Reg;
-	state.statement.type = state.operand.type;
-	state.statement.name = $<text>3;
-	state.statement.array.vec = ir::PTXOperand::v1;
-	state.statement.attribute = ir::PTXStatement::NoAttribute;
-	
-	if( state.operand.type == ir::PTXOperand::pred )
-	{
-		state.operand.condition = ir::PTXOperand::Pred;
-	}
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	state.statement.array.stride.resize(1);
-	state.statement.array.stride[0] = $<value>5;
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-	state.operand.addressMode = ir::PTXOperand::Register;
-	state.operand.vec = ir::PTXOperand::v1;
-
-	for( unsigned int i = 0; i < state.statement.array.stride[0]; ++i )
-	{
-		std::stringstream name;
-		name << state.statement.name << i;
-	
-		if( state.operands.count( name.str() ) != 0 ) 
-		{
-	
-			std::stringstream error;
-			error << parser::PTXParser::toString( @3, state ) 
-				<< "Variable name " << name.str() 
-				<< " already declared in this scope.";
-			parser::PTXParser::Exception exception;
-			exception.error = parser::PTXParser::State::DuplicateDeclaration;
-			exception.message = error.str();
-			throw exception;
-			
-		}
-
-		state.operand.identifier = name.str();
-
-		state.operands.insert( std::make_pair( name.str(), 
-			state.operand ) );
-		
-		if( state.inEntry )
-		{
-			state.localOperands.push_back( name.str() );
-		}
-	}
+	state.registerDeclaration( $<text>3, @3, $<value>5 );	
 };
 
 fileDeclaration : TOKEN_COMPLETE_FILE
 {
-	report( "  Rule: COMPLETE_FILE" );
-
-	state.statement.directive = ir::PTXStatement::File;
-	state.statement.name = $<text>1;
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.fileDeclaration( $<text>1 );
 };
 
 initializableDeclaration : initializable addressableVariablePrefix 
 	identifier arrayDimensions initializer ';'
 {
-	report( "  Rule: initializable addressableVariablePrefix IDENTIFIER " 
-		<< "arrayDimensions initializer';'" );
-
-	assert( state.directive == ir::PTXStatement::Const 
-		|| state.directive == ir::PTXStatement::Global 
-		|| state.directive == ir::PTXStatement::Tex );
-
-	state.statement.directive = state.directive;
-	report( "   Name = " << $<text>3 );
-	state.statement.name = $<text>3;
-	state.statement.alignment = state.alignment;
-	state.statement.array.vec = state.statement.instruction.vec;
-	state.statement.type = state.operand.type;
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	// correct for single precision
-	if( state.statement.type == ir::PTXOperand::f32 )
-	{
-		for( ir::PTXStatement::ArrayVector::iterator 
-			fi = state.statement.array.values.begin();
-			fi != state.statement.array.values.end(); ++fi )
-		{
-			fi->f32 = fi->f64;
-		}	
-	}
-	
-	if( state.statement.array.values.size() != 0 )
-	{
-		unsigned int expected = 0;
-	
-		for( ir::PTXStatement::ArrayStrideVector::iterator 
-			fi = state.statement.array.stride.begin(); 
-			fi != state.statement.array.stride.end(); ++fi )
-		{
-			expected += *fi;
-		}
-		
-		if( state.statement.array.vec == ir::PTXOperand::v2 )
-		{
-			expected *= 2;
-		} 
-		else if( state.statement.array.vec == ir::PTXOperand::v4 )
-		{
-			expected *= 4;
-		}
-		
-		if( expected != state.statement.array.values.size() )
-		{
-			std::stringstream error;
-			error << parser::PTXParser::toString( @5, state ) 
-				<< "Array size " << expected 
-				<< " does not match initializer size " 
-				<< state.statement.array.values.size();
-			parser::PTXParser::Exception exception;
-			exception.error = parser::PTXParser::State::InitializerSizeMismatch;
-			exception.message = error.str();
-			throw exception;
-		}
-	}
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );		
-
-	if( state.operands.count( state.statement.name ) != 0 ) 
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @3, state ) 
-			<< "Variable name " << state.statement.name 
-			<< " already declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::DuplicateDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	state.operand.identifier = state.statement.name;
-
-	state.operands.insert( std::make_pair( 
-		state.statement.name, state.operand ) );
-	
-	if( state.inEntry )
-	{
-		state.localOperands.push_back( state.statement.name );
-	}
-	
-	state.statement.array.stride.clear();
-	state.statement.array.values.clear();
+	state.initializableDeclaration( $<text>3, @3, @5 );
 };
 
-parameterList : parameterDeclaration | parameterList ',' parameterDeclaration
+parameter : TOKEN_PARAM
 {
-	report( "  Hit rule parameterDeclaration | parameterList " 
-		<< "',' parameterDeclaration" );
+	state.locationAddress( $<value>1 );
 };
 
-entry : TOKEN_ENTRY identifier '(' parameterList ')' '{' 
+parameterDeclaration : parameter addressableVariablePrefix identifier 
+	arrayDimensions
 {
-	report( "  Half Rule: ENTRY IDENTIFIER '(' parameterList ')' '{'" );
-
-	state.statement.directive = ir::PTXStatement::Entry;
-	state.statement.name = $<text>2;
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );		
-
-	state.statement.directive = ir::PTXStatement::StartEntry;
-	
-	state.statement.line = @3.first_line;
-	state.statement.column = @3.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-	
-	state.inEntry = true;	
-
-} 
-entryDeclarations '}'
-{
-	report( "  Rule: ENTRY IDENTIFIER '{' entryDeclarations '}'" );
-
-	state.statement.directive = ir::PTXStatement::EndEntry;
-	
-	state.statement.line = @5.first_line;
-	state.statement.column = @5.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-	
-	state.inEntry = false;
-	
-	for( parser::PTXParser::State::StringList::iterator 
-		operand = state.localOperands.begin(); 
-		operand != state.localOperands.end(); ++operand )
-	{
-	
-		parser::PTXParser::State::OperandMap::iterator 
-			fi = state.operands.find( *operand );
-		assert( fi != state.operands.end() );
-	
-		state.operands.erase( fi );
-	}
-	
-	state.localOperands.clear();
+	state.statement.attribute = ir::PTXStatement::NoAttribute;
+	state.uninitializableDeclaration( $<text>3 );	
+	state.statementEnd( @1 );
 };
 
-instruction : basicInstruction2 | basicInstruction3 | branch | addOrSub 
-	| addCOrSubC | atom | bar | brkpt | cvt | div | exit | ld | mad | mad24 
-	| mov | mul24 | mul | red | ret | selp | set | setp | slct | st | tex 
-	| trap | vote;
+parameterList : parameterDeclaration;
+parameterList : parameterList ',' parameterDeclaration;
 
-entryDeclaration : registerDeclaration | uninitializableDeclaration | location 
-	| label;
+entryStart1 : TOKEN_ENTRY identifier
+{
+	state.entry( $<text>2, @1, true );
+};
+
+entryStart2 : TOKEN_ENTRY identifier
+{
+	state.entry( $<text>2, @1, false );
+};
+
+entryMid1 : '(' parameterList ')' '{'
+{
+	state.entryMid( @4, true );
+};
+
+entryMid2 : '{'
+{
+	state.entryMid( @1, false );
+};
+
+entry : entryStart1 entryMid1 entryDeclarations '}'
+{
+	state.entryEnd( @4 );
+};
+
+entry : entryStart2 entryMid2 entryDeclarations '}'
+{
+	state.entryEnd( @4 );
+};
+
+entryStatement : registerDeclaration | uninitializableDeclaration 
+	| location | label;
+
+entryDeclaration : entryStatement
+{
+	state.statementEnd( @1 );
+};
 
 entryDeclaration : guard instruction
 {
-	report( "  Rule: guard instruction" );
-	
-	// check for an error
-	assert( !state.module.statements.empty() );
-	assert( state.module.statements.back().directive 
-		== ir::PTXStatement::Instr );
-	
-	std::string message = 
-		state.module.statements.back().instruction.valid();
-	
-	if( message != "" )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @2, state ) 
-			<< "Parsed invalid instruction " 
-			<< state.module.statements.back().instruction.toString();
-		error << ": " << message;
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidInstruction;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	state.operandVector.clear();
+	state.entryDeclaration( @2 );
+	state.instruction();
 };
 
 entryDeclarations : entryDeclaration;
@@ -808,60 +349,30 @@ entryDeclarations : entryDeclarations entryDeclaration;
 
 externOrVisible : TOKEN_EXTERN
 {
-	state.statement.attribute = ir::PTXStatement::Extern;
+	state.attribute( false, true );
 };
 
 externOrVisible : TOKEN_VISIBLE
 {
-	state.statement.attribute = ir::PTXStatement::Visible;
+	state.attribute( true, false );
 };
 
 externOrVisible : /* empty string */
 {
-	state.statement.attribute = ir::PTXStatement::NoAttribute;
+	state.attribute( false, false );
 };
 
-parameter : externOrVisible TOKEN_PARAM
+uninitializableAddress : TOKEN_LOCAL | TOKEN_SHARED;
+initializableAddress : TOKEN_CONST | TOKEN_TEX | TOKEN_GLOBAL;
+
+uninitializable : externOrVisible uninitializableAddress
 {
-	report( "Hit rule : externOrVisible TOKEN_PARAM" );
-	state.directive = ir::PTXStatement::Param;
-	state.operand.addressMode = ir::PTXOperand::Address;
-	state.operand.offset = 0;
+	state.locationAddress( $<value>2 );
 };
 
-uninitializable : externOrVisible TOKEN_LOCAL
+initializable : externOrVisible initializableAddress
 {
-	state.directive = ir::PTXStatement::Local;
-	state.operand.addressMode = ir::PTXOperand::Address;
-	state.operand.offset = 0;
-};
-
-uninitializable : externOrVisible TOKEN_SHARED
-{
-	state.directive = ir::PTXStatement::Shared;
-	state.operand.addressMode = ir::PTXOperand::Address;
-	state.operand.offset = 0;
-};
-
-initializable : externOrVisible TOKEN_CONST
-{
-	state.directive = ir::PTXStatement::Const;
-	state.operand.addressMode = ir::PTXOperand::Address;
-	state.operand.offset = 0;
-};
-
-initializable : externOrVisible TOKEN_TEX
-{
-	state.directive = ir::PTXStatement::Tex;
-	state.operand.addressMode = ir::PTXOperand::Address;
-	state.operand.offset = 0;
-};
-
-initializable : externOrVisible TOKEN_GLOBAL
-{
-	state.directive = ir::PTXStatement::Global;
-	state.operand.addressMode = ir::PTXOperand::Address;
-	state.operand.offset = 0;
+	state.locationAddress( $<value>2 );
 };
 
 opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
@@ -873,223 +384,68 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
-	| OPCODE_SHR | OPCODE_SHL;
-
-identifier : '_' | TOKEN_IDENTIFIER | opcode;
+	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
 {
-	report( "  Rule: uninitializable addressableVariablePrefix IDENTIFIER " 
-		<< "arrayDimensions';'" );
-
-	assert( state.directive == ir::PTXStatement::Param || 
-		state.directive == ir::PTXStatement::Local ||
-		state.directive == ir::PTXStatement::Shared );
-
-	state.statement.directive = state.directive;
-	state.statement.name = $<text>3;
-	state.statement.alignment = state.alignment;
-	state.statement.array.vec = state.statement.instruction.vec;
-	state.statement.type = state.operand.type;
-	state.statement.array.stride.assign( state.statement.array.stride.begin(), 
-		state.statement.array.stride.end() );
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );		
-
-	state.operand.identifier = state.statement.name;
-	
-	state.operands.insert( std::make_pair( 
-		state.statement.name, state.operand ) );
-		
-	if( state.inEntry )
-	{
-		state.localOperands.push_back( state.statement.name );
-	}
+	state.uninitializableDeclaration( $<text>3 );
 };
-
-parameterDeclaration : parameter addressableVariablePrefix 
-	identifier arrayDimensions
-{
-	report( "  Rule: parameter addressableVariablePrefix identifier " 
-		<< "arrayDimensions';'" );
-
-	assert( state.directive == ir::PTXStatement::Param );
-
-	state.statement.directive = state.directive;
-	state.statement.name = $<text>3;
-	state.statement.alignment = state.alignment;
-	state.statement.array.vec = state.statement.instruction.vec;
-	state.statement.type = state.operand.type;
-	state.statement.array.stride.assign( state.statement.array.stride.begin(), 
-		state.statement.array.stride.end() );
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );		
-
-	state.operand.identifier = state.statement.name;
-	
-	state.operands.insert( std::make_pair( 
-		state.statement.name, state.operand ) );
-		
-	if( state.inEntry )
-	{
-		state.localOperands.push_back( state.statement.name );
-	}
-};
-
 
 location : TOKEN_LOC TOKEN_DECIMAL_CONSTANT TOKEN_DECIMAL_CONSTANT 
 	TOKEN_DECIMAL_CONSTANT
 {
-	report( "  Rule: LOC DECIMAL_CONSTANT DECIMAL_CONSTANT DECIMAL_CONSTANT" );
-
-	std::stringstream stream;
-	
-	stream << $<value>2 << " " << $<value>3 << " " << $<value>4;
-
-	state.statement.directive = ir::PTXStatement::Loc;
-	state.statement.name = stream.str();
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );		
+	state.location( $<value>2, $<value>3, $<value>4 );
 };
 
 label : TOKEN_LABEL
 {
-	report( "  Rule: LABEL" );
-
-	state.statement.directive = ir::PTXStatement::Label;
-	state.statement.name = $<text>1;
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );		
+	state.label( $<text>1 );
 };
 
 labelOperand : identifier
 {
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		state.operand.identifier = $<text>1;
-		state.operand.addressMode = ir::PTXOperand::Label;
-		state.operand.type = ir::PTXOperand::TypeSpecifier_invalid;
-	}
-	else
-	{
-		state.operand = mode->second;
-	}
-	
-	state.operandVector.push_back( state.operand );
+	state.labelOperand( $<text>1 );
 };
 
 nonLabelOperand : identifier
 {
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Operand " << $<text>1
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-	else
-	{
-		state.operand = mode->second;
-	}
-	
-	state.operandVector.push_back( state.operand );
+	state.nonLabelOperand( $<text>1, @1, false );
+};
+
+nonLabelOperand : '!' identifier
+{
+	state.nonLabelOperand( $<text>2, @1, true );
 };
 
 baseOperand : TOKEN_DECIMAL_CONSTANT
 {
-	state.operand.addressMode = ir::PTXOperand::Immediate;
-	state.operand.imm_int = $<value>1;
-	state.operand.vec = ir::PTXOperand::v1;
-	state.operand.type = 
-		parser::PTXParser::smallestType( state.operand.imm_int );
-	
-	state.operandVector.push_back( state.operand );
+	state.baseOperand( $<value>1 );
 };
 
 baseOperand : TOKEN_UNSIGNED_DECIMAL_CONSTANT
 {
-	state.operand.addressMode = ir::PTXOperand::Immediate;
-	state.operand.imm_int = $<uvalue>1;
-	state.operand.vec = ir::PTXOperand::v1;
-	state.operand.type = 
-		parser::PTXParser::smallestType( state.operand.imm_uint );
-	
-	state.operandVector.push_back( state.operand );
+	state.baseOperand( $<uvalue>1 );
 };
 
 baseOperand : TOKEN_DOUBLE_CONSTANT
 {
-	state.operand.addressMode = ir::PTXOperand::Immediate;
-	state.operand.imm_float = $<doubleFloat>1;
-	state.operand.vec = ir::PTXOperand::v1;
-	state.operand.type = ir::PTXOperand::f64;
-	
-	state.operandVector.push_back( state.operand );
+	state.baseOperand( $<doubleFloat>1 );
 };
 
 baseOperand : TOKEN_SINGLE_CONSTANT
 {
-	state.operand.addressMode = ir::PTXOperand::Immediate;
-	state.operand.imm_float = $<singleFloat>1;
-	state.operand.vec = ir::PTXOperand::v1;
-	state.operand.type = ir::PTXOperand::f32;
-	
-	state.operandVector.push_back( state.operand );
+	state.baseOperand( $<singleFloat>1 );
 };
 
 baseOperand : TOKEN_CLOCK
 {
-	state.operand.addressMode = ir::PTXOperand::Special;
-	state.operand.identifier = $<text>1;
-	state.operand.type = ir::PTXOperand::u32;
-	state.operand.special = parser::PTXParser::stringToSpecial( $<text>1 );
-	state.operand.vec = ir::PTXOperand::v1;
-	
-	state.operandVector.push_back( state.operand );	
+	state.clockOperand( $<text>1 );
 };
 
 baseOperand : TOKEN_SPECIAL_REGISTER
 {
-	state.operand.addressMode = ir::PTXOperand::Special;
-	state.operand.identifier = $<text>1;
-	state.operand.type = ir::PTXOperand::b16;
-	state.operand.special = parser::PTXParser::stringToSpecial( $<text>1 );
-	state.operand.vec = ir::PTXOperand::v1;
-	
-	state.operandVector.push_back( state.operand );	
+	state.specialOperand( $<text>1 );
 };
 
 operand : baseOperand | nonLabelOperand;
@@ -1098,332 +454,145 @@ memoryOperand : operand;
 
 memoryOperand : identifier '+' TOKEN_DECIMAL_CONSTANT
 {
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Operand " << $<text>1
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-	else
-	{
-		if( mode->second.addressMode == ir::PTXOperand::Register )
-		{
-		
-			state.operand.addressMode = ir::PTXOperand::Indirect;
-		
-		}
-		else
-		{
-		
-			state.operand.addressMode = ir::PTXOperand::Address;
-		
-		}
-	}
-	
-	state.operand.identifier = $<text>1;
-	state.operand.vec = ir::PTXOperand::v1;
-	state.operand.offset = $<value>3;
-	state.operand.type = ir::PTXOperand::u64;
-	
-	state.operandVector.push_back( state.operand );
+	state.memoryOperand( $<text>1, $<value>3, @1, false );
 };
 
 memoryOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
 {
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Operand " << $<text>1
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-	else
-	{
-		if( mode->second.addressMode == ir::PTXOperand::Register )
-		{
-		
-			state.operand.addressMode = ir::PTXOperand::Indirect;
-		
-		}
-		else
-		{
-		
-			state.operand.addressMode = ir::PTXOperand::Address;
-		
-		}
-	}
-	
-	state.operand.identifier = $<text>1;
-	state.operand.vec = ir::PTXOperand::v1;
-	state.operand.offset = -$<value>3;
-	state.operand.type = ir::PTXOperand::u64;
-	
-	state.operandVector.push_back( state.operand );
-}; 
-
-basicInstruction2Opcode : OPCODE_ABS | OPCODE_COS | OPCODE_CNOT | OPCODE_EX2 
-	| OPCODE_LG2 | OPCODE_NEG | OPCODE_NOT | OPCODE_RCP 
-	| OPCODE_RSQRT | OPCODE_SIN | OPCODE_SQRT;
+	state.memoryOperand( $<text>1, $<value>3, @1, true );
+};
 
 guard : TOKEN_PREDICATE_IDENTIFIER
 {
-	report( "  Rule: PREDICATE_IDENTIFIER" );
-
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Predicate " << $<text>1
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	state.operand = mode->second;
-	state.operand.condition = ir::PTXOperand::Pred;
-
-	state.operandVector.push_back( state.operand );
+	state.guard( $<text>1, @1, false );
 };
 
 guard : TOKEN_INV_PREDICATE_IDENTIFIER
 {
-	report( "  Rule: PREDICATE_IDENTIFIER" );
-
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Predicate " << $<text>1
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	state.operand = mode->second;
-	state.operand.condition = ir::PTXOperand::InvPred;
-
-	state.operandVector.push_back( state.operand );
+	state.guard( $<text>1, @1, true );
 };
 
 guard : /* empty string */
 {
-	report( "  Rule: No guard predicate" );
-
-	state.operand.addressMode = ir::PTXOperand::Register;
-	state.operand.type = ir::PTXOperand::pred;
-	state.operand.condition = ir::PTXOperand::PT;
-
-	state.operandVector.push_back( state.operand );
-
+	state.guard();
 }
 
-basicInstruction2 : basicInstruction2Opcode dataType operand ',' operand ';'
-{
-	report( "  Rule: basicInstruction2Opcode '.' dataType operand ',' " 
-		<< "operand ';'" );
+floatRounding : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ;
+intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
-	assert( state.operandVector.size() == 3 );
+instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
+	| basicInstruction3 | branch | addOrSub | addCOrSubC | atom | bar | brkpt 
+	| cvt | div | exit | ld | mad | mad24 | membar | mov | mul24 | mul 
+	| notInstruction | pmevent | rcpSqrtInstruction | red | ret | selp | set 
+	| setp | slct | st | tex | trap | vote;
 
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>2 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-	state.statement.instruction.modifier = 0;
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
-};
-
-basicInstruction3Opcode : OPCODE_AND | OPCODE_MAX | OPCODE_MIN | OPCODE_OR 
+basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR 
-	| OPCODE_ADD | OPCODE_MUL | OPCODE_ADDC | OPCODE_SUB;
+	| OPCODE_ADDC;
 
 basicInstruction3 : basicInstruction3Opcode dataType operand ',' operand ',' 
 	operand ';'
 {
-	report( "  Rule: basicInstruction3Opcode '.' dataType operand ',' " 
-		<< "operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>2 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-	state.statement.instruction.modifier = 0;
-	state.statement.instruction.carry = ir::PTXInstruction::None;
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>2, 4 );
 };
 
-branchOpcode : OPCODE_BRA | OPCODE_CALL;
+approxInstruction2Opcode : OPCODE_RSQRT | OPCODE_SIN | OPCODE_COS | OPCODE_LG2 
+	| OPCODE_EX2;
+
+approximate : TOKEN_APPROX
+{
+	state.modifier( $<value>1 );
+};
+
+approxInstruction2 : approxInstruction2Opcode approximate optionalFtz dataType 
+	operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>4, 3 );
+};
+
+optionalFtz : TOKEN_FTZ
+{
+	state.modifier( $<value>1 );
+};
+
+optionalFtz : /* empty string */;
+
+optionalSaturate : TOKEN_SAT
+{
+	state.modifier( $<value>1 );
+};
+
+optionalSaturate : /* empty string */;
+
+ftzInstruction2Opcode : OPCODE_ABS | OPCODE_NEG;
+
+ftzInstruction2 : ftzInstruction2Opcode optionalFtz dataType operand ',' 
+	operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
+};
+
+ftzInstruction3Opcode : OPCODE_ADD | OPCODE_MAX | OPCODE_MIN | OPCODE_SUB;
+
+ftzInstruction3 : ftzInstruction3Opcode optionalFtz dataType operand ',' 
+	operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 4 );
+};
 
 branchOperand : baseOperand | labelOperand;
 
-branch : branchOpcode branchOperand ';'
+optionalUni : /* empty string */
 {
-	report( "  Rule: branchOpcode operand ';'" );
-
-	assert( state.operandVector.size() == 2 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.uni = false;
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.uni( false );
 };
 
-branch : OPCODE_BRA TOKEN_UNI branchOperand ';'
+optionalUni : TOKEN_UNI
 {
-	report( "  Rule: branchOpcode TOKEN_UNI operand ';'" );
+	state.uni( true );
+};
 
-	assert( state.operandVector.size() == 2 );
+branch : OPCODE_BRA optionalUni branchOperand ';'
+{
+	state.instruction( $<text>1, 2 );
+};
 
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.uni = true;
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+branch : OPCODE_CALL branchOperand ';'
+{
+	state.instruction( $<text>1, 2 );
 };
 
 addModifier : TOKEN_CARRY
 {
-	state.statement.instruction.carry = ir::PTXInstruction::CC; 
-	state.statement.instruction.modifier = 0;
+	state.carry( true );
+};
 
-}
-
-addModifier : TOKEN_SAT
+addModifier : floatRounding optionalFtz optionalSaturate
 {
-	state.statement.instruction.modifier = 
-		parser::PTXParser::tokenToModifier( $<value>1 );
-	state.statement.instruction.carry = ir::PTXInstruction::None; 
-
-}
+	state.carry( false );
+	state.modifier( $<value>1 );
+	state.modifier( $<value>3 );
+};
 
 addOrSubOpcode : OPCODE_ADD | OPCODE_SUB;
 
 addOrSub : addOrSubOpcode addModifier dataType operand ',' operand ',' 
 	operand ';'
 {
-	report( "  Rule: addOrSubOpcode addModifier1 dataType operand ',' " 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 4 );
 };
 
 addCModifier : TOKEN_CARRY
 {
-	state.statement.instruction.carry = ir::PTXInstruction::CC; 
-		};
+	state.carry( true );
+};
 
 addCOrSubCOpcode : OPCODE_ADDC | OPCODE_SUBC;
 
 addCOrSubC : addCOrSubCOpcode addCModifier dataType operand ',' operand 
 	',' operand ';'
 {
-	report( "  Rule: addCOrSubCOpcode addCModifier dataType operand ',' " 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.modifier = 0;
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 4 );
 };
 
 atomicOperationId : TOKEN_AND | TOKEN_OR | TOKEN_XOR | TOKEN_CAS | TOKEN_EXCH 
@@ -1431,471 +600,185 @@ atomicOperationId : TOKEN_AND | TOKEN_OR | TOKEN_XOR | TOKEN_CAS | TOKEN_EXCH
 
 atomicOperation : atomicOperationId
 {
-	state.statement.instruction.atomicOperation = 
-		parser::PTXParser::tokenToAtomicOperation( $<value>1 );
+	state.atomic( $<value>1 );
 };
 
 atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ';'
 {
-	report( "  Rule: OPCODE_ATOM addressSpace atomicOperation dataType " 
-		<< "operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c.addressMode = ir::PTXOperand::Invalid;
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-	
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>4, 4 );
 };
 
 atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_ATOM addressSpace atomicOperation dataType " 
-		<< "operand ',' operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 5 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>4, 5 );
 };
 
 bar : OPCODE_BARSYNC operand ';'
 {
-	report( "  Rule: OPCODE_BARSYNC operand ';'" );
-
-	assert( state.operandVector.size() == 2 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.instruction( $<text>1, 2 );
 };
 
 brkpt : OPCODE_BRKPT ';'
 {
-	report( "  Rule: OPCODE_BRKPT ';'" );
-
-	assert( state.operandVector.size() == 1 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.instruction( $<text>1, 1 );
 };
 
-cvtModifier1 : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ | TOKEN_SAT 
-	| TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
+cvtModifier1 : floatRounding | intRounding;
 
-cvtModifier : /* empty string */
-{
-	state.statement.instruction.modifier = 0;
-};
+cvtModifier : optionalSaturate;
 
-cvtModifier : cvtModifier1
+cvtModifier : cvtModifier1 optionalFtz optionalSaturate
 {
-	state.statement.instruction.modifier = 
-		parser::PTXParser::tokenToModifier( $<value>1 );
-};
-
-cvtModifier : cvtModifier1 TOKEN_SAT
-{
-	state.statement.instruction.modifier = 
-		parser::PTXParser::tokenToModifier( $<value>1 )
-		| parser::PTXParser::tokenToModifier( $<value>2 );
+	state.modifier( $<value>1 );
 };
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_CVT cvtModifier dataType dataType operand "
-		<< "',' operand ';'" );
-
-	assert( state.operandVector.size() == 3 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.d.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	if( !ir::PTXOperand::valid( parser::PTXParser::tokenToDataType( $<value>4 ),
-		 state.statement.instruction.a.type ) )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Type of " << state.statement.instruction.a.identifier << " "
-			<< ir::PTXOperand::toString( state.statement.instruction.a.type ) 
-			<< " not convertable to type " 
-			<< ir::PTXOperand::toString( 
-			parser::PTXParser::tokenToDataType( $<value>4 ) ) << " .";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidDataType;
-		exception.message = error.str();
-		throw exception;	
-	}
-	
-	state.statement.instruction.a.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 3 );
+	state.convert( $<value>4, @1 );
 };
 
-divModifier : TOKEN_SAT
+divModifierType : TOKEN_FULL optionalFtz | TOKEN_APPROX optionalFtz | TOKEN_RN;
+
+divModifier : divModifierType
 {
-	state.statement.instruction.modifier = 0 | ir::PTXInstruction::sat;
+	state.modifier( $<value>1 );
 };
 
-divModifier : /* empty string */
-{
-	state.statement.instruction.modifier = 0;
-};
+divModifier : /* empty string */;
 
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_DIV divModifier dataType operand ',' " 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;		
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 4 );
 };
 
 exit : OPCODE_EXIT ';'
 {
-	report( "  Rule: OPCODE_EXIT ';'" );
-
-	assert( state.operandVector.size() == 1 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;		
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.instruction( $<text>1, 1 );
 };
 
 ldModifier : TOKEN_VOLATILE addressSpace
 {
-	state.statement.instruction.volatility = ir::PTXInstruction::Volatile;
-	state.statement.instruction.vec = ir::PTXOperand::v1;
-	state.statement.instruction.addressSpace = 
-		parser::PTXParser::tokenToAddressSpace( $<value>2 );
-		};
+	state.volatileFlag( true );
+};
 
 ldModifier : TOKEN_VOLATILE addressSpace vectorType
 {
-	state.statement.instruction.volatility = ir::PTXInstruction::Volatile;
-	state.statement.instruction.addressSpace = 
-		parser::PTXParser::tokenToAddressSpace( $<value>2 );
-		};
+	state.volatileFlag( true );
+};
 
 ldModifier : addressSpace vectorType
 {
-	state.statement.instruction.volatility = ir::PTXInstruction::Nonvolatile;
-	state.statement.instruction.addressSpace = 
-		parser::PTXParser::tokenToAddressSpace( $<value>1 );
-		};
+	state.volatileFlag( false );
+};
 
 ldModifier : addressSpace
 {
-	state.statement.instruction.volatility = ir::PTXInstruction::Nonvolatile;
-	state.statement.instruction.vec = ir::PTXOperand::v1;
-	state.statement.instruction.addressSpace = 
-		parser::PTXParser::tokenToAddressSpace( $<value>1 );
-		};
+	state.volatileFlag( false );		
+};
 
 ld : OPCODE_LD ldModifier dataType arrayOperand ',' '[' memoryOperand ']' ';'
 {
-	report( "  Rule: OPCODE_LD ldModifier dataType arrayOperand ',' " 
-		<< " '[' memoryOperand ']' ';'" );
-
-	assert( state.operandVector.size() == 3 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 3 );
 };
 
 hiOrLo : TOKEN_HI | TOKEN_LO;
 
-roundHiLoWide : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ | hiOrLo | TOKEN_WIDE;
+roundHiLoWide : floatRounding | hiOrLo | TOKEN_WIDE;
 
-madModifier : /*empty string */
+mulModifier : roundHiLoWide optionalFtz optionalSaturate
 {
-	state.statement.instruction.modifier = 0;
+	state.modifier( $<value>1 );
 };
 
-madModifier : mulModifier;
+mulModifier : optionalFtz optionalSaturate;;
 
-mulModifier : roundHiLoWide
-{
-	state.statement.instruction.modifier = 0 		
-		| parser::PTXParser::tokenToModifier( $<value>1 );
-};
+madOpcode : OPCODE_MAD | OPCODE_FMA;
 
-mulModifier : TOKEN_SAT
-{
-	state.statement.instruction.modifier = 0 
-		| ir::PTXInstruction::sat;
-};
-
-mulModifier : roundHiLoWide TOKEN_SAT
-{
-	state.statement.instruction.modifier = 0 
-		| parser::PTXParser::tokenToModifier( $<value>1 ) 
-		| ir::PTXInstruction::sat;
-};
-
-mad : OPCODE_MAD madModifier dataType operand ',' operand 
+mad : madOpcode mulModifier dataType operand ',' operand 
 	',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_MAD madModifier dataType operand " 
-		<< "',' operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 5 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 5 );
 };
 
-mad24Modifier : /* empty string */
-{
-	state.statement.instruction.modifier = 0;
-};
+mad24Modifier : optionalSaturate;
 
-mad24Modifier : hiOrLo
+mad24Modifier : hiOrLo optionalSaturate
 {
-	state.statement.instruction.modifier = 0 		
-		| parser::PTXParser::tokenToModifier( $<value>1 );
-};
-
-mad24Modifier : TOKEN_SAT
-{
-	state.statement.instruction.modifier = 0 
-		| ir::PTXInstruction::sat;
-};
-
-mad24Modifier : hiOrLo TOKEN_SAT
-{
-	state.statement.instruction.modifier = 0 
-		| parser::PTXParser::tokenToModifier( $<value>1 ) 
-		| ir::PTXInstruction::sat;
+	state.modifier( $<value>1 );
 };
 
 mad24 : OPCODE_MAD24 mad24Modifier dataType operand ',' operand 
 	',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_MAD24 mad24Modifier dataType operand " 
-		<< "',' operand ',' operand ',' operand ';'" );
+	state.instruction( $<text>1, $<value>3, 5 );
+};
 
-	assert( state.operandVector.size() == 5 );
+membarSpaceType : TOKEN_GL | TOKEN_CTA;
 
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
+membarSpace : membarSpaceType
+{
+	state.level( $<value>1 );
+};
 
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+membar : OPCODE_MEMBAR membarSpace ';'
+{
+	state.instruction( $<text>1, 1 );
 };
 
 mov : OPCODE_MOV dataType arrayOperand ',' arrayOperand ';'
 {
-	report( "  Rule: OPCODE_MOV '.' dataType arrayOperand ',' " 
-		<< "arrayOperand ';'" );
-
-	assert( state.operandVector.size() == 3 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>2 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-	state.statement.instruction.modifier = 0;
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.instruction( $<text>1, $<value>2, 3 );
 };
 
-mul24Modifier : /* empty string */
-{
-	state.statement.instruction.modifier = 0;
-};
+mul24Modifier : /* empty string */;
 
 mul24Modifier : hiOrLo
 {
-	state.statement.instruction.modifier = 0 		
-		| parser::PTXParser::tokenToModifier( $<value>1 );
+	state.modifier( $<value>1 );
 };
 
 mul24 : OPCODE_MUL24 mul24Modifier dataType operand ',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_MUL24 mul24Modifier dataType operand ',' " 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 4 );
 };
 
 mul : OPCODE_MUL mulModifier dataType operand ',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_MUL mulModifier dataType operand ',' " 
-		<< " operand ',' operand ';'" );
+	state.instruction( $<text>1, $<value>3, 4 );
+};
 
-	assert( state.operandVector.size() == 4 );
+notOpcode : OPCODE_CNOT | OPCODE_NOT;
 
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
+notInstruction : notOpcode dataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 3 );
+};
 
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
+pmevent : OPCODE_PMEVENT operand
+{
+	state.instruction( $<text>1, 2 );
+};
 
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+rcpSqrtModifier : TOKEN_APPROX optionalFtz
+{
+	state.modifier( $<value>1 );
+};
+
+rcpSqrtModifier : /* empty string */;
+rcpSqrtModifier : TOKEN_RN
+{
+	state.modifier( $<value>1 );
+};
+
+rcpSqrtOpcode : OPCODE_RCP | OPCODE_SQRT;
+
+rcpSqrtInstruction : rcpSqrtOpcode rcpSqrtModifier dataType operand ',' 
+	operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
 };
 
 reductionOperationId : TOKEN_AND | TOKEN_XOR | TOKEN_OR | TOKEN_ADD | TOKEN_INC
@@ -1903,61 +786,18 @@ reductionOperationId : TOKEN_AND | TOKEN_XOR | TOKEN_OR | TOKEN_ADD | TOKEN_INC
 	
 reductionOperation : reductionOperationId
 {
-	state.statement.instruction.reductionOperation = 
-		parser::PTXParser::tokenToReductionOperation( $<value>1 );
+	state.reduction( $<value>1 );
 };
 
 red : OPCODE_RED addressSpace reductionOperation dataType operand ',' 
 	operand ';'
 {
-	report( "  Rule: OPCODE_RED addressSpace reductionOperation dataType" 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 3 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];	
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>4, 3 );
 };
 
-retUni : /* empty string */
+ret : OPCODE_RET optionalUni ';'
 {
-	state.statement.instruction.uni = false;
-};
-
-retUni : TOKEN_UNI
-{
-	state.statement.instruction.uni = true;
-};
-
-ret : OPCODE_RET retUni ';'
-{
-	report( "  Rule: OPCODE_RET retUni ';'" );
-
-	assert( state.operandVector.size() == 2 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.instruction( $<text>1, 1 );
 };
 
 comparisonId : TOKEN_EQ | TOKEN_NE | TOKEN_LT | TOKEN_LE | TOKEN_GT | TOKEN_GE
@@ -1966,594 +806,115 @@ comparisonId : TOKEN_EQ | TOKEN_NE | TOKEN_LT | TOKEN_LE | TOKEN_GT | TOKEN_GE
 
 comparison : comparisonId
 {
-	state.statement.instruction.comparisonOperator = 
-		parser::PTXParser::tokenToCmpOp( $<value>1 );
-};
-
-set : OPCODE_SET comparison dataType dataType operand ',' operand ',' 
-	operand ';'
-{
-	report( "  Rule: OPCODE_SET comparison dataType dataType operand ',' " 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c.addressMode = ir::PTXOperand::Invalid;
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-	state.statement.instruction.booleanOperator = ir::PTXInstruction::BoolNop;
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	if( !ir::PTXOperand::valid( parser::PTXParser::tokenToDataType( $<value>4 ),
-		 state.statement.instruction.a.type ) )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Type of " << state.statement.instruction.a.identifier << " "
-			<< ir::PTXOperand::toString( state.statement.instruction.a.type ) 
-			<< " not convertable to type " 
-			<< ir::PTXOperand::toString( 
-			parser::PTXParser::tokenToDataType( $<value>4 ) ) << " .";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidDataType;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.comparison( $<value>1 );
 };
 
 boolOperatorId : TOKEN_AND | TOKEN_OR | TOKEN_XOR;
 
 boolOperator : boolOperatorId
 {
-	state.statement.instruction.booleanOperator = 
-		parser::PTXParser::tokenToBoolOp( $<value>1 );
+	state.boolean( $<value>1 );
 };
 
-selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' 
+selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 5 );
+};
+
+set : OPCODE_SET comparison optionalFtz dataType dataType operand ',' 
+	operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>4, 4 );
+	state.convert( $<value>5, @1 );
+};
+
+set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand 
+	',' operand ',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>5, 5 );
+	state.convert( $<value>6, @1 );
+};
+
+setp : OPCODE_SETP comparison optionalFtz dataType operand ',' operand ',' 
 	operand ';'
 {
-	report( "  Rule: basicInstruction3Opcode '.' dataType operand ',' " 
-		<< "operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 5 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>2 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>4, 4 );
 };
 
-
-set : OPCODE_SET comparison boolOperator dataType dataType operand ',' 
+setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand ',' 
 	operand ',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_SET comparison boolOperator dataType dataType " 
-		<< " operand ',' operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 5 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	if( !ir::PTXOperand::valid( parser::PTXParser::tokenToDataType( $<value>5 ),
-		 state.statement.instruction.a.type ) )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Type of " << state.statement.instruction.a.identifier << " "
-			<< ir::PTXOperand::toString( state.statement.instruction.a.type ) 
-			<< " not convertable to type " 
-			<< ir::PTXOperand::toString( 
-			parser::PTXParser::tokenToDataType( $<value>5 ) ) << " .";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidDataType;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>5, 5 );
 };
 
-setp : OPCODE_SETP comparison dataType operand ',' operand ',' 
-	operand ';'
-{
-	report( "  Rule: OPCODE_SET comparison dataType operand ',' " 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.pq.addressMode = ir::PTXOperand::Invalid;
-	state.statement.instruction.booleanOperator = ir::PTXInstruction::BoolNop;
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c.addressMode = ir::PTXOperand::Invalid;
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-};
-
-setp : OPCODE_SETP comparison boolOperator dataType operand ',' 
-	operand ',' operand ',' operand ';'
-{
-	report( "  Rule: OPCODE_SETP comparison boolOperator dataType " 
-		<< " operand ',' operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 5 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.pq.addressMode = ir::PTXOperand::Invalid;
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
-};
-
-setp : OPCODE_SETP comparison boolOperator dataType operand '|' 
+setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand '|' 
 	operand ',' operand ',' operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_SETP comparison boolOperator dataType " 
-		<< " operand | operand ',' operand ',' operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 6 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>4 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.pq = state.operandVector[2];
-	state.statement.instruction.a = state.operandVector[3];
-	state.statement.instruction.b = state.operandVector[4];
-	state.statement.instruction.c = state.operandVector[5];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>5, 6 );
 }; 
 
-slct : OPCODE_SLCT dataType dataType operand ',' operand ',' operand ',' 
-	operand ';'
+slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ',' 
+	operand ',' operand ';'
 {
-	report( "  Rule: OPCODE_SLCT dataType dataType operand ',' operand ','" 
-		<< " operand ',' operand ';'" );
-
-	assert( state.operandVector.size() == 5 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>2 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.b = state.operandVector[3];
-	state.statement.instruction.c = state.operandVector[4];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	if( !ir::PTXOperand::valid( parser::PTXParser::tokenToDataType( $<value>3 ),
-		 state.statement.instruction.c.type ) )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Type of " << state.statement.instruction.c.identifier << " "
-			<< ir::PTXOperand::toString( state.statement.instruction.c.type ) 
-			<< " not convertable to type " 
-			<< ir::PTXOperand::toString( 
-			parser::PTXParser::tokenToDataType( $<value>3 ) ) << " .";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidDataType;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 5 );
+	state.convertC( $<value>4, @1 );
 };
 
 arrayOperand : operand;
 arrayOperand : '{' identifierList '}'
 {
-	assert( !state.identifiers.empty() );
-
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( state.identifiers.front() );
-	
-	if( state.identifiers.size() > 4 )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Array operand \"" 
-			<< hydrazine::toString( state.identifiers.begin(), 
-			state.identifiers.end(), "," ) 
-			<< "\" has more than 4 elements.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidArray;
-		exception.message = error.str();
-		throw exception;
-	}
-
-	if( state.identifiers.size() == 3 )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Array operand \"" 
-			<< hydrazine::toString( state.identifiers.begin(), 
-			state.identifiers.end(), "," ) 
-			<< "\" has exactly 3 elements.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidArray;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	if( mode == state.operands.end() )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Identifier \"" << state.identifiers.front() 
-			<< "\" not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	state.operand = mode->second;
-	
-	if( state.identifiers.size() == 1 )
-	{
-		state.operand.vec = ir::PTXOperand::v1;
-		state.operand.array.push_back( mode->second );
-	}
-	else if( state.identifiers.size() >= 2 )
-	{
-		state.operand.vec = ir::PTXOperand::v2;
-		state.operand.array.push_back( mode->second );
-		
-		mode = state.operands.find( state.identifiers[1] );
-		
-		if( mode == state.operands.end() )
-		{
-			std::stringstream error;
-			error << parser::PTXParser::toString( @1, state ) 
-				<< "Identifier \"" << state.identifiers[1]
-				<< "\" not declared in this scope.";
-			parser::PTXParser::Exception exception;
-			exception.error = parser::PTXParser::State::NoDeclaration;
-			exception.message = error.str();
-			throw exception;
-		}
-		
-		state.operand.array.push_back( mode->second );
-	}
-	
-	if( state.identifiers.size() == 4 )
-	{
-	
-		state.operand.vec = ir::PTXOperand::v4;
-		
-		mode = state.operands.find( state.identifiers[2] );
-		
-		if( mode == state.operands.end() )
-		{
-			std::stringstream error;
-			error << parser::PTXParser::toString( @1, state ) 
-				<< "Identifier \"" << state.identifiers[2]
-				<< "\" not declared in this scope.";
-			parser::PTXParser::Exception exception;
-			exception.error = parser::PTXParser::State::NoDeclaration;
-			exception.message = error.str();
-			throw exception;
-		}
-		
-		state.operand.array.push_back( mode->second );
-		
-		mode = state.operands.find( state.identifiers[3] );
-		
-		if( mode == state.operands.end() )
-		{
-			std::stringstream error;
-			error << parser::PTXParser::toString( @1, state ) 
-				<< "Identifier \"" << state.identifiers[3]
-				<< "\" not declared in this scope.";
-			parser::PTXParser::Exception exception;
-			exception.error = parser::PTXParser::State::NoDeclaration;
-			exception.message = error.str();
-			throw exception;
-		}
-		
-		state.operand.array.push_back( mode->second );
-	}
-	
-	state.operandVector.push_back( state.operand );
-	
-	state.operand.array.clear();
+	state.arrayOperand( @1 );
 };
 
 st : OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' arrayOperand ';'
 {
-	report( "  Rule: OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' " 
-		<< "operand ';'" );
-
-	assert( state.operandVector.size() == 3 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>3 );
-	
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, $<value>3, 3 );
 };
 
 geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D;
 
 geometry : geometryId
 {
-	state.statement.instruction.geometry = 
-		parser::PTXParser::tokenToGeometry( $<value>1 );
+	state.geometry( $<value>1 );
 };
 
 tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '[' 
 	operand ',' arrayOperand ']' ';'
 {
-	report( "  Rule: OPCODE_TEX geometry TOKEN_V4 dataType dataType " 
-		<< "arrayOperand ',' '[' operand ',' arrayOperand ' ']' ;'" );
-
-	assert( state.operandVector.size() == 4 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = 
-		parser::PTXParser::tokenToDataType( $<value>5 );
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.c = state.operandVector[3];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	if( !ir::PTXOperand::valid( parser::PTXParser::tokenToDataType( $<value>4 ),
-		 state.statement.instruction.d.type ) )
-	{
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Type of " << state.statement.instruction.d.identifier << " "
-			<< ir::PTXOperand::toString( state.statement.instruction.d.type ) 
-			<< " not convertable to type " 
-			<< ir::PTXOperand::toString( 
-			parser::PTXParser::tokenToDataType( $<value>4 ) ) << " .";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::InvalidDataType;
-		exception.message = error.str();
-		throw exception;
-	}
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );	
+	state.tex( $<value>5 );
+	state.convertD( $<value>4, @1 );
 };
 
 trap : OPCODE_TRAP ';'
 {
-	report( "  Rule: OPCODE_TRAP ';'" );
-
-	assert( state.operandVector.size() == 1 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;		
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, 1 );
 };
 
 voteOperationId : TOKEN_ANY | TOKEN_ALL | TOKEN_UNI;
 
 voteOperation : voteOperationId
 {
-	state.statement.instruction.vote = 
-		parser::PTXParser::tokenToVoteMode( $<value>1 );
+	state.vote( $<value>1 );
 };
 
-voteOperand : identifier
+vote : OPCODE_VOTE voteOperation TOKEN_PRED operand ',' operand ';'
 {
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>1 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Operand " << $<text>1
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-	else
-	{
-		state.operand = mode->second;
-	}
-	
-	state.operand.condition = ir::PTXOperand::Pred;
-	
-	state.operandVector.push_back( state.operand );
-};
-
-voteOperand : '!' identifier
-{
-	parser::PTXParser::State::OperandMap::iterator 
-		mode = state.operands.find( $<text>2 );
-	
-	if( mode == state.operands.end() )
-	{
-	
-		std::stringstream error;
-		error << parser::PTXParser::toString( @2, state ) 
-			<< "Operand " << $<text>2
-			<< " not declared in this scope.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NoDeclaration;
-		exception.message = error.str();
-		throw exception;
-	}
-	else
-	{
-		state.operand = mode->second;
-	}
-	
-	state.operand.condition = ir::PTXOperand::InvPred;
-	
-	state.operandVector.push_back( state.operand );
-};
-
-vote : OPCODE_VOTE voteOperation TOKEN_PRED operand ',' voteOperand ';'
-{
-	report( "  Rule: OPCODE_VOTE voteOperation TOKEN_PRED operand ','" 
-		<< " operand ';'" );
-
-	assert( state.operandVector.size() == 3 );
-
-	state.statement.directive = ir::PTXStatement::Instr;
-	state.statement.instruction.type = ir::PTXOperand::pred;
-	state.statement.instruction.pg = state.operandVector[0];
-	state.statement.instruction.d = state.operandVector[1];
-	state.statement.instruction.a = state.operandVector[2];
-	state.statement.instruction.opcode = 
-		parser::PTXParser::stringToOpcode( $<text>1 );
-
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;	
-
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
+	state.instruction( $<text>1, TOKEN_PRED, 3 );
 };
 
 unsupported: TOKEN_STRUCT
 {
-	std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Structs not supported in this version.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NotSupported;
-		exception.message = error.str();
-		throw exception;
+	state.structure( @1 );
 };
 
 unsupported: TOKEN_UNION
 {
-	std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Unions not supported in this version.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NotSupported;
-		exception.message = error.str();
-		throw exception;
+	state.aUnion( @1 );
 };
 
 unsupported: TOKEN_FUNCTION
 {
-	std::stringstream error;
-		error << parser::PTXParser::toString( @1, state ) 
-			<< "Functions not supported in this version.";
-		parser::PTXParser::Exception exception;
-		exception.error = parser::PTXParser::State::NotSupported;
-		exception.message = error.str();
-		throw exception;
+	state.function( @1 );
 };
 
 %%
@@ -2571,12 +932,12 @@ int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer )
 		<< lexer.YYText() << "\"" );
 	
 	return tokenValue;
-
 }
 
 void yyerror( YYLTYPE* location, parser::PTXLexer& lexer, 
 	parser::PTXParser::State& state, char const* message )
 {
+
 	parser::PTXParser::Exception exception;
 	std::stringstream stream;
 	stream << parser::PTXParser::toString( *location, state ) 

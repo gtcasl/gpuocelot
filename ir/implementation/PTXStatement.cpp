@@ -308,7 +308,10 @@ namespace ir {
 				}
 				stream << " ." << PTXOperand::toString( type ) << " " << name;
 				stream << array.dimensions();
-				stream << ";";
+				if( version < PTXInstruction::ptx1_4 )
+				{
+					stream << ";";
+				}
 				return stream.str();
 				break;
 			}
@@ -405,7 +408,12 @@ namespace ir {
 			case EndEntry:
 				return "}";
 				break;			
-			case Directive_invalid:
+			case StartParam:
+				return "(";
+				break;		
+			case EndParam:
+				return ")";
+				break;				case Directive_invalid:
 				return "";
 				break;
 		

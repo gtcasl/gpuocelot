@@ -27,7 +27,7 @@ std::string ir::PTXInstruction::toString( Version v ) {
 std::string ir::PTXInstruction::toString( Level l ) {
 	switch( l ) {
 		case CtaLevel: return "cta"; break;
-		case GlobalLevel: return "global"; break;
+		case GlobalLevel: return "gl"; break;
 		default: break;
 	}
 	return "";
@@ -657,8 +657,8 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( a.addressMode ) 
 					+ " for operand A ";
 			}
-			if( !( ( addressSpace != Global && addressSpace != Shared ) 
-				|| volatility == Nonvolatile ) ) {
+			if( addressSpace != Global && addressSpace != Shared 
+				&& volatility == Volatile ) {
 				return "only shared and global address spaces supported " 
 					+ std::string( "for volatile loads" );
 			}

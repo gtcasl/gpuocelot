@@ -10,6 +10,7 @@
 
 #include <ocelot/ir/interface/Module.h>
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Version.h>
 #include <ocelot/parser/interface/PTXParser.h>
 
 #include <fstream>
@@ -124,16 +125,55 @@ bool ir::Module::load(std::istream& stream) {
 
 */
 void ir::Module::write( std::ostream& stream ) const {
-	for( StatementVector::const_iterator statement = statements.begin(); 
-		statement != statements.end(); ++statement ) {
-		report( "Line " << ( statement - statements.begin() ) 
-			<< ": " << statement->toString() );
-		if( statement->directive == PTXStatement::Instr )
-		{
-			stream << "\t";
-		}
-		stream << statement->toString() << "\n";
+	if( statements.empty() ) {
+		return;
 	}
+	
+	stream << "/*\n* AUTO GENERATED OCELOT PTX FILE\n";
+	stream << "* Ocelot Version : " << hydrazine::Version().toString() << "\n";
+	stream << "* From file : " << modulePath << "\n";
+	stream << "*/\n";
+	
+	PTXStatement::Directive previous = PTXStatement::Directive_invalid;
+	
+	if( statements[0].version == PTXInstruction::ptx1_4 ) {
+		for( StatementVector::const_iterator statement = statements.begin(); 
+			statement != statements.end(); ++statement ) {
+			report( "Line " << ( statement - statements.begin() ) 
+				<< ": " << statement->toString() );
+			if( statement->directive == PTXStatement::Param )
+			{
+				if( previous != PTXStatement::StartParam )
+				{
+					stream << ",\n\t" << statement->toString();
+				}
+				else
+				{
+					stream << "\n\t" << statement->toString();
+				}
+			}
+			else
+			{
+				stream << "\n";
+				if( statement->directive == PTXStatement::Instr 
+					|| statement->directive == PTXStatement::Loc ) {
+					stream << "\t";
+				}
+				stream << statement->toString();
+			}
+			previous = statement->directive;
+		}
+		stream << "\n";
+	}
+	else {
+		for( StatementVector::const_iterator statement = statements.begin(); 
+			statement != statements.end(); ++statement ) {
+			report( "Line " << ( statement - statements.begin() ) 
+				<< ": " << statement->toString() );
+			stream << statement->toString() << "\n";
+		}
+		stream << "\n";
+	}	
 }
 
 /*!

@@ -128,6 +128,10 @@ void ir::Module::write( std::ostream& stream ) const {
 		statement != statements.end(); ++statement ) {
 		report( "Line " << ( statement - statements.begin() ) 
 			<< ": " << statement->toString() );
+		if( statement->directive == PTXStatement::Instr )
+		{
+			stream << "\t";
+		}
 		stream << statement->toString() << "\n";
 	}
 }

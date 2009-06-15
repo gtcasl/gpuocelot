@@ -1,7 +1,7 @@
 /*!
 	\file ptxgrammar.ypp
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
-	\date Sunday January 18, 2009
+	\date Saturday June 13, 2009
 	\brief The YACC grammar file for PTX
 */
 
@@ -19,7 +19,7 @@
 	#undef REPORT_BASE
 	#endif
 
-	#define REPORT_BASE 1
+	#define REPORT_BASE 0
 
 	namespace ptx1_4
 	{
@@ -112,7 +112,15 @@
 statements : statement | statements statement;
 
 statement : version | target | registerDeclaration | fileDeclaration | entry | 
-	initializableDeclaration | uninitializableDeclaration | unsupported;
+	initializableDeclaration | uninitializableDeclaration | unsupported
+{
+	state.statement.line = @1.first_line;
+	state.statement.column = @1.first_column;
+	
+	report( "   Parsed statement " << state.module.statements.size() 
+		<< " \"" << state.statement.toString() << "\"" );
+	state.module.statements.push_back( state.statement );
+};
 
 version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
 {
@@ -137,7 +145,6 @@ version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
 		stream2 << *fi;
 	}
 	
-	
 	if( fi == value.end() )
 	{
 		std::stringstream error;
@@ -146,7 +153,7 @@ version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
 		parser::PTXParser::Exception exception;
 		exception.error = parser::PTXParser::State::MalformedVersion;
 		exception.message = error.str();
-		throw exception;		
+		throw exception;
 	}
 	
 	state.statement.directive = ir::PTXStatement::Version;
@@ -214,7 +221,6 @@ decimalListSingle : TOKEN_DECIMAL_CONSTANT
 	
 	if( state.statement.array.stride.empty() )
 	{
-	
 		state.statement.array.stride.push_back( 1 );
 	}
 	
@@ -246,7 +252,6 @@ floatListSingle : TOKEN_DOUBLE_CONSTANT
 	
 	if( state.statement.array.stride.empty() )
 	{
-	
 		state.statement.array.stride.push_back( 1 );
 	}
 	
@@ -311,12 +316,6 @@ target : TOKEN_TARGET identifierList
 	state.statement.directive = ir::PTXStatement::Target;
 	state.statement.targets.assign ( state.identifiers.begin(), 
 		state.identifiers.end() );
-	state.statement.line = @1.first_line;
-	state.statement.column = @1.first_column;
-	
-	report( "   Parsed statement " << state.module.statements.size() 
-		<< " \"" << state.statement.toString() << "\"" );
-	state.module.statements.push_back( state.statement );
 };
 
 addressSpace : TOKEN_REG
@@ -430,8 +429,7 @@ arrayDimensionSet : '[' TOKEN_DECIMAL_CONSTANT ']'
 	state.statement.array.stride.clear();
 
 	if( $<value>2 <= 0 )
-	{
-	
+	{	
 		std::stringstream error;
 		error << parser::PTXParser::toString( @2, state ) 
 			<< "Invalid array dimension " << $<value>2;
@@ -451,7 +449,6 @@ arrayDimensionSet : arrayDimensionSet '[' TOKEN_DECIMAL_CONSTANT ']'
 
 	if( $<value>3 <= 0 )
 	{
-	
 		std::stringstream error;
 		error << parser::PTXParser::toString( @3, state ) 
 			<< "Invalid array dimension " << $<value>3;
@@ -504,7 +501,6 @@ registerDeclaration : TOKEN_REG dataType identifier ';'
 	
 	if( state.operand.type == ir::PTXOperand::pred )
 	{
-	
 		state.operand.condition = ir::PTXOperand::Pred;
 	}
 	
@@ -519,17 +515,16 @@ registerDeclaration : TOKEN_REG dataType identifier ';'
 	state.module.statements.push_back( state.statement );
 	
 	if( state.operands.count( state.statement.name ) != 0 ) 
-	{
-	
-			std::stringstream error;
-			error << parser::PTXParser::toString( @3, state ) 
-				<< "Variable name " << state.statement.name 
-				<< " already declared in this scope.";
-			parser::PTXParser::Exception exception;
-			exception.error = parser::PTXParser::State::DuplicateDeclaration;
-			exception.message = error.str();
-			throw exception;
-			}
+	{	
+		std::stringstream error;
+		error << parser::PTXParser::toString( @3, state ) 
+			<< "Variable name " << state.statement.name 
+			<< " already declared in this scope.";
+		parser::PTXParser::Exception exception;
+		exception.error = parser::PTXParser::State::DuplicateDeclaration;
+		exception.message = error.str();
+		throw exception;
+	}
 
 	state.operand.addressMode = ir::PTXOperand::Register;
 	state.operand.identifier = state.statement.name;
@@ -537,7 +532,7 @@ registerDeclaration : TOKEN_REG dataType identifier ';'
 
 	state.operands.insert( std::make_pair( state.statement.name, 
 		state.operand ) );
-	};
+};
 
 registerDeclaration : TOKEN_REG dataType identifier 
 	'<' TOKEN_DECIMAL_CONSTANT '>' ';'
@@ -552,7 +547,6 @@ registerDeclaration : TOKEN_REG dataType identifier
 	
 	if( state.operand.type == ir::PTXOperand::pred )
 	{
-	
 		state.operand.condition = ir::PTXOperand::Pred;
 	}
 	
@@ -570,7 +564,6 @@ registerDeclaration : TOKEN_REG dataType identifier
 
 	for( unsigned int i = 0; i < state.statement.array.stride[0]; ++i )
 	{
-	
 		std::stringstream name;
 		name << state.statement.name << i;
 	
@@ -595,11 +588,9 @@ registerDeclaration : TOKEN_REG dataType identifier
 		
 		if( state.inEntry )
 		{
-		
 			state.localOperands.push_back( name.str() );
-		
 		}
-				}
+	}
 };
 
 fileDeclaration : TOKEN_COMPLETE_FILE
@@ -644,42 +635,32 @@ initializableDeclaration : initializable addressableVariablePrefix
 			fi = state.statement.array.values.begin();
 			fi != state.statement.array.values.end(); ++fi )
 		{
-			fi->f32 = fi->f64;			
-
+			fi->f32 = fi->f64;
 		}	
-
 	}
 	
 	if( state.statement.array.values.size() != 0 )
 	{
-	
 		unsigned int expected = 0;
 	
 		for( ir::PTXStatement::ArrayStrideVector::iterator 
 			fi = state.statement.array.stride.begin(); 
 			fi != state.statement.array.stride.end(); ++fi )
 		{
-	
 			expected += *fi;
-	
 		}
 		
 		if( state.statement.array.vec == ir::PTXOperand::v2 )
 		{
-		
 			expected *= 2;
-		
 		} 
 		else if( state.statement.array.vec == ir::PTXOperand::v4 )
 		{
-		
 			expected *= 4;
-		
 		}
 		
 		if( expected != state.statement.array.values.size() )
 		{
-	
 			std::stringstream error;
 			error << parser::PTXParser::toString( @5, state ) 
 				<< "Array size " << expected 
@@ -689,9 +670,8 @@ initializableDeclaration : initializable addressableVariablePrefix
 			exception.error = parser::PTXParser::State::InitializerSizeMismatch;
 			exception.message = error.str();
 			throw exception;
-	
 		}
-		}
+	}
 	
 	report( "   Parsed statement " << state.module.statements.size() 
 		<< " \"" << state.statement.toString() << "\"" );

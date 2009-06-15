@@ -236,13 +236,13 @@ namespace ir {
 		static std::string roundingMode( Modifier );
 		static std::string toString( Modifier );
 		static std::string toString( Geometry );
-		static std::string modifierString( unsigned int );
+		static std::string modifierString( unsigned int, CarryFlag = None );
 		static std::string toString( VoteMode );
 		static std::string toString( Opcode );
 		static bool isPt( const PTXOperand& );
 
 	public:
-		PTXInstruction();
+		PTXInstruction( Version v = ptx1_0 );
 		~PTXInstruction();
 
 		bool operator==( const PTXInstruction& ) const;

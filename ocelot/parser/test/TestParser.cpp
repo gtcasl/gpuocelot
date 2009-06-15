@@ -118,11 +118,12 @@ namespace test
 		report( " Dumping to stream" );
 		
 		first.write( stream );
+
+		std::string outputFile = ptxFile + ".parsed";
 		
 		if( output )
 		{
 		
-			std::string outputFile = ptxFile + ".parsed";
 			std::ofstream outFile( outputFile.c_str() );
 			first.write( outFile );
 			outFile.close();
@@ -130,7 +131,7 @@ namespace test
 		}
 		
 		report( " Running second parse pass" );
-		
+		parser.fileName = outputFile;
 		ir::Module second = parser.parse( stream );
 		
 		if( first.statements.size() != second.statements.size() )

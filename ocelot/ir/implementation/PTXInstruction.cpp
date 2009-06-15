@@ -101,7 +101,8 @@ std::string ir::PTXInstruction::roundingMode( Modifier modifier ) {
 	return "";
 }
 
-std::string ir::PTXInstruction::modifierString( unsigned int modifier ) {
+std::string ir::PTXInstruction::modifierString( unsigned int modifier, 
+	CarryFlag carry ) {
 	std::string result;
 	switch( modifier ) {
 		case approx: return result += "approx."; break;
@@ -120,7 +121,7 @@ std::string ir::PTXInstruction::modifierString( unsigned int modifier ) {
 	if( modifier & sat ) {
 		result += "sat.";
 	}
-	if( CC ) {
+	if( carry == CC ) {
 		result += "cc.";
 	}
 	return result;
@@ -262,7 +263,7 @@ bool ir::PTXInstruction::isPt( const PTXOperand& op )
 	return op.toString() == "%pt";
 }
 
-ir::PTXInstruction::PTXInstruction() {
+ir::PTXInstruction::PTXInstruction( Version v ) : version(v) {
 	ISA = Instruction::PTX;
 	opcode = Nop;
 	type = PTXOperand::s32;
@@ -272,8 +273,9 @@ ir::PTXInstruction::PTXInstruction() {
 	vec = PTXOperand::v1;
 	pg.condition = PTXOperand::PT;
 	pg.type = PTXOperand::pred;
-	booleanOperator = PTXInstruction::BoolNop;
-	version = ptx1_0;
+	booleanOperator = BoolNop;
+	carry = None;
+	divideFull = false;
 }
 
 ir::PTXInstruction::~PTXInstruction() {
@@ -557,6 +559,12 @@ std::string ir::PTXInstruction::valid() const {
 					return "only f32 supported for approximate";
 				}
 			}
+			if( divideFull ) {
+				if( version < ptx1_4 ) {
+					return "no support for full division in version " 
+						+ toString( version );
+				}
+			}			
 			if( type == PTXOperand::f64 ) {
 				if( version >= ptx1_4 ) {				
 					if( !( modifier & rn ) && !( modifier & rz ) 
@@ -655,7 +663,8 @@ std::string ir::PTXInstruction::valid() const {
 					+ std::string( "for volatile loads" );
 			}
 			if( d.addressMode != PTXOperand::Register ) {
-				return "operand D must be a register";
+				return "operand D must be a register not a " 
+					+ PTXOperand::toString( d.addressMode );
 			}
 			break;
 		}
@@ -1652,7 +1661,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Add: {
 			std::string result = guard() + "add.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " 
 					+ d.toString() + ", " + a.toString() + ", " 
 					+ b.toString();
@@ -1660,12 +1669,11 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case AddC: {
 			std::string result = guard() + "addc.";
-			if( carry == CC ) {
-				result += "cc.";
-			}
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " 
 					+ d.toString() + ", " + a.toString() + ", " 
 					+ b.toString();
+			return result;
 		}
 		case And: {
 			return guard() + "and." + PTXOperand::toString( type ) + " " 
@@ -1709,7 +1717,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Cos: {
 			std::string result = guard() + "cos.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() 
 				+ ", " + a.toString();
 			return result;
@@ -1717,7 +1725,7 @@ std::string ir::PTXInstruction::toString() const {
 		case Cvt: {
 			std::string result = guard() + "cvt.";
 			if( PTXOperand::isFloat( d.type ) ) {
-				result += modifierString( modifier );
+				result += modifierString( modifier, carry );
 			}
 			else {
 				if( modifier & rn ) {
@@ -1743,14 +1751,14 @@ std::string ir::PTXInstruction::toString() const {
 			if( divideFull ) {
 				result += "full.";
 			}
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString();
 			return result;
 		}
 		case Ex2: {
 			std::string result = guard() + "ex2.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() 
 				+ ", " + a.toString();
 			return result;
@@ -1773,21 +1781,21 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Lg2: {
 			std::string result = guard() + "lg2."; 
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() 
 				+ ", " + a.toString();
 			return result;
 		}
 		case Mad24: {
 			std::string result = guard() + "mad24.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString() + ", " + c.toString();
 			return result;
 		}
 		case Mad: {
 			std::string result = guard() + "mad.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString() + ", " + c.toString();
 			return result;
@@ -1809,14 +1817,14 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Mul24: {
 			std::string result = guard() + "mul24.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString();
 			return result;
 		}
 		case Mul: {
 			std::string result = guard() + "mul.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString();
 			return result;
@@ -1838,9 +1846,10 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Rcp: {
 			std::string result = guard() + "rcp.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
+			return result;
 		}
 		case Red: {
 			return guard() + "red." + toString( addressSpace ) + "." 
@@ -1861,7 +1870,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Rsqrt: {
 			std::string result = guard() + "rsqrt.";
-			result += modifierString( modifier );			
+			result += modifierString( modifier, carry );			
 			result += PTXOperand::toString( type ) + " " + d.toString() 
 				+ ", " + a.toString();			
 			return result;
@@ -1916,7 +1925,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Sin: {
 			std::string result = guard() + "sin.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() 
 				+ ", " + a.toString();
 			return result;
@@ -1928,7 +1937,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Sqrt: {
 			std::string result = guard() + "sqrt.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() 
 				+ ", " + a.toString();
 			return result;
@@ -1948,14 +1957,14 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Sub: {
 			std::string result = guard() + "sub.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;
 		}
 		case SubC: {
 			std::string result = guard() + "sub.";
-			result += modifierString( modifier );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;

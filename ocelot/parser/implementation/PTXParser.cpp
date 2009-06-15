@@ -17,11 +17,21 @@
 #include <cassert>
 #include <hydrazine/implementation/debug.h>
 
+#define throw_exception( messageData, type ) \
+	{\
+		std::stringstream error;\
+		error << messageData;\
+		parser::PTXParser::Exception exception;\
+		exception.error = type;\
+		exception.message = error.str();\
+		throw exception;\
+	}
+	
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace ptx1_4
 { 
@@ -35,18 +45,967 @@ namespace ptx1_3
 
 namespace parser
 {
+	void PTXParser::State::version( double version, YYLTYPE& location )
+	{
+		report( "  Rule: VERSION DOUBLE_CONSTANT" );
+
+		std::stringstream stream1;
+		stream1 << version;
+		std::string value( stream1.str() );
+	
+		std::stringstream stream2;
+		std::string::iterator fi = value.begin();
+	
+		for( ; fi != value.end(); ++fi )
+		{
+			if( *fi == '.' )
+			{
+				++fi;
+				break;
+			}
+			stream2 << *fi;
+		}
+		
+		if( fi == value.end() )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Malformed version number " << value, MalformedVersion );
+		}
+	
+		statement.directive = ir::PTXStatement::Version;
+		stream2 >> statement.major;
+	
+		std::stringstream stream3;
+	
+		for( ; fi != value.end(); ++fi )
+		{
+			stream3 << *fi;
+		}
+	
+		if( stream3.str().empty() )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Malformed version number " << value, MalformedVersion );
+		}
+	
+		stream3 >> statement.minor;
+	
+		if( statement.minor != 3 || statement.major != 1 )
+		{
+			throw_exception( "Cannot parse PTX version " << statement.major 
+				<< "." << statement.minor << " with version 1.3 parser.", 
+				NotVersion1_3 );
+		}
+	}
+	
+	void PTXParser::State::identifierList( const std::string& identifier )
+	{
+		report( "  Rule: IDENTIFIER" );
+		identifiers.clear();
+		report( "   Appending " << identifier << " to list." );
+		identifiers.push_back( identifier );
+	}
+
+	void PTXParser::State::identifierList2( const std::string& identifier )
+	{
+		report( "  Rule: identifierList , IDENTIFIER" );
+		report( "   Appending " << identifier << " to list." );
+		identifiers.push_back( identifier );
+	}
+
+	void PTXParser::State::decimalListSingle( long long int value )
+	{
+		report( "  Rule: DECIMAL_CONSTANT" );
+	
+		if( statement.array.stride.empty() )
+		{
+			statement.array.stride.push_back( 1 );
+		}
+	
+		report( "   Appending " << value << " to decimal list.");
+		ir::PTXStatement::Data data;
+		data.s64 = value;
+		statement.array.values.push_back( data );
+	}
+	
+	void PTXParser::State::decimalListSingle2( long long int value )
+	{
+		report( "  Rule: decimalList ',' DECIMAL_CONSTANT" );
+	
+		report( "   Appending " << value << " to decimal list.");
+		ir::PTXStatement::Data data;
+		data.s64 = value;
+		statement.array.values.push_back( data );
+	}
+
+	void PTXParser::State::floatList( double value )
+	{
+		report( "  Rule: DOUBLE_CONSTANT" );
+	
+		if( statement.array.stride.empty() )
+		{
+			statement.array.stride.push_back( 1 );
+		}
+	
+		report( "   Appending " << value << " to float list.");
+		ir::PTXStatement::Data data;
+		data.f64 = value;
+
+		statement.array.values.push_back( data );
+	}
+
+	void PTXParser::State::floatList1( double value )
+	{
+		report( "  Rule: floatList ',' DOUBLE_CONSTANT" );
+		report( "   Appending " << value << " to float list.");
+		ir::PTXStatement::Data data;
+		data.f64 = value;
+		statement.array.values.push_back( data );
+	}
+	
+	void PTXParser::State::singleList( float value )
+	{
+		report( "  Rule: DOUBLE_CONSTANT" );
+	
+		if( statement.array.stride.empty() )
+		{
+			statement.array.stride.push_back( 1 );
+		}
+	
+		report( "   Appending " << value << " to single list.");
+		ir::PTXStatement::Data data;
+		data.f64 = value;
+		statement.array.values.push_back( data );
+	}
+
+	void PTXParser::State::singleList1( float value )
+	{
+		report( "  Rule: singleList ',' SINGLE_CONSTANT" );
+	
+		report( "   Appending " << value << " to single list.");
+		ir::PTXStatement::Data data;
+		data.f64 = value;
+		statement.array.values.push_back( data );	
+	}
+	
+	void PTXParser::State::target()
+	{
+		report( "  Rule: TARGET identifierList" );
+		statement.directive = ir::PTXStatement::Target;
+		statement.targets.assign ( identifiers.begin(), 
+			identifiers.end() );
+	}
+	
+	void PTXParser::State::addressSpace( int value )
+	{
+		statement.instruction.addressSpace = tokenToAddressSpace( value );
+	}
+
+	void PTXParser::State::dataType( int value )
+	{
+		operand.type = tokenToDataType( value );
+	}
+	
+	void PTXParser::State::vectorType( int value )
+	{
+		statement.instruction.vec = tokenToVec( value );
+	}
+
+	void PTXParser::State::arrayDimensionSet( long long int value, 
+		YYLTYPE& location, bool add )
+	{
+		report( "  Rule: '[' DECIMAL_CONSTANT ']'" );
+
+		if( !add )
+		{
+			statement.array.stride.clear();
+		}
+		
+		if( value <= 0 )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Invalid array dimension " << value, InvalidArray );
+		}
+	
+		report( "   Got dimension " << value );
+		statement.array.stride.push_back( ( unsigned int ) value );
+	}
+
+	void PTXParser::State::arrayDimensionSet()
+	{
+		report( "  Rule: arrayDimensions '[' ']'" );
+		statement.array.stride.clear();
+	
+		report( "   Got dimension " << 0 );
+		statement.array.stride.push_back( 0 );
+	}
+	
+	void PTXParser::State::arrayDimensions()
+	{
+		statement.array.stride.clear();
+	}
+	
+	void PTXParser::State::statementEnd( YYLTYPE& location )
+	{
+		statement.line = location.first_line;
+		statement.column = location.first_column;		
+
+		report( "   At (" << statement.line << "," << statement.column
+			<< ") : Parsed statement " << module.statements.size() 
+			<< " \"" << statement.toString() << "\"" );
+		module.statements.push_back( statement );
+
+		operand = ir::PTXOperand();
+		statement.array.values.clear();
+		alignment = 1;
+	}
+	
+	void PTXParser::State::assignment()
+	{
+		report( "  Clearing doubles" );
+		statement.array.values.clear();
+	}
+	
+	void PTXParser::State::registerDeclaration( const std::string& name, 
+		YYLTYPE& location, unsigned int regs )
+	{
+		report( "  Rule: REG dataType IDENTIFIER ';' : " << name 
+			<< " ["  << regs << "]" );
+		statement.directive = ir::PTXStatement::Reg;
+		statement.type = operand.type;
+		statement.name = name;
+		statement.array.vec = ir::PTXOperand::v1;
+		statement.attribute = ir::PTXStatement::NoAttribute;
+	
+		if( operand.type == ir::PTXOperand::pred )
+		{
+			operand.condition = ir::PTXOperand::Pred;
+		}
+
+		statement.array.stride.resize(1);
+		
+		if( regs == 0 )
+		{
+			statement.array.stride[0] = 1;
+			
+			if( operands.count( statement.name ) != 0 ) 
+			{
+				throw_exception( toString( location, *this ) 
+					<< "Variable name " << statement.name 
+					<< " already declared in this scope.", 
+					DuplicateDeclaration );
+			}
+
+			operand.addressMode = ir::PTXOperand::Register;
+			operand.identifier = statement.name;
+			operand.vec = ir::PTXOperand::v1;
+
+			operands.insert( std::make_pair( statement.name, operand ) );
+		}
+		else
+		{
+			statement.array.stride[0] = regs;
+		}
+		
+		for( unsigned int i = 0; i < regs; ++i )
+		{
+	
+			std::stringstream name;
+			name << statement.name << i;
+	
+			if( operands.count( name.str() ) != 0 ) 
+			{
+				throw_exception( toString( location, *this ) 
+					<< "Variable name " << statement.name 
+					<< " already declared in this scope.", 
+					DuplicateDeclaration );
+			}
+
+			operand.identifier = name.str();
+			operand.addressMode = ir::PTXOperand::Register;
+			operand.vec = ir::PTXOperand::v1;
+
+			operands.insert( std::make_pair( name.str(), 
+				operand ) );
+		
+			if( inEntry )
+			{
+				localOperands.push_back( name.str() );
+			}
+		}
+	}
+
+	void PTXParser::State::initializableDeclaration( const std::string& name, 
+		YYLTYPE& one, YYLTYPE& two )
+	{
+		report( "  Rule: initializable addressableVariablePrefix IDENTIFIER " 
+			<< "arrayDimensions initializer';'" );
+
+		assert( directive == ir::PTXStatement::Const 
+			|| directive == ir::PTXStatement::Global 
+			|| directive == ir::PTXStatement::Tex );
+
+		statement.directive = directive;
+		report( "   Name = " << name );
+		statement.name = name;
+		statement.alignment = alignment;
+		statement.array.vec = statement.instruction.vec;
+		statement.type = operand.type;
+	
+		// correct for single precision
+		if( statement.type == ir::PTXOperand::f32 )
+		{
+			for( ir::PTXStatement::ArrayVector::iterator 
+				fi = statement.array.values.begin();
+				fi != statement.array.values.end(); ++fi )
+			{
+				fi->f32 = fi->f64;			
+			}	
+		}
+	
+		if( statement.array.values.size() != 0 )
+		{
+			unsigned int expected = 0;
+	
+			for( ir::PTXStatement::ArrayStrideVector::iterator 
+				fi = statement.array.stride.begin(); 
+				fi != statement.array.stride.end(); ++fi )
+			{
+				expected += *fi;
+			}
+		
+			if( statement.array.vec == ir::PTXOperand::v2 )
+			{
+				expected *= 2;
+			} 
+			else if( statement.array.vec == ir::PTXOperand::v4 )
+			{
+				expected *= 4;
+			}
+		
+			if( expected != statement.array.values.size() )
+			{
+				throw_exception( toString( two, *this ) 
+					<< "Array size " << expected 
+					<< " does not match initializer size " 
+					<< statement.array.values.size(), 
+					InitializerSizeMismatch );
+			}
+		}
+		
+		if( operands.count( statement.name ) != 0 ) 
+		{
+			throw_exception( toString( one, *this ) 
+				<< "Variable name " << statement.name 
+				<< " already declared in this scope.", 
+				DuplicateDeclaration );
+		}
+
+		operand.identifier = statement.name;
+		operands.insert( std::make_pair( statement.name, operand ) );
+	
+		if( inEntry )
+		{
+			localOperands.push_back( statement.name );
+		}
+	}
+
+	void PTXParser::State::fileDeclaration( const std::string& name )
+	{
+		report( "  Rule: COMPLETE_FILE: " << name );
+		statement.directive = ir::PTXStatement::File;
+		statement.name = name;
+	}
+
+	void PTXParser::State::entry( const std::string& name, YYLTYPE& location )
+	{
+		report( "  Half Rule: ENTRY IDENTIFIER '{'" );
+
+		statement.directive = ir::PTXStatement::Entry;
+		statement.name = name;
+	
+		statementEnd( location );
+		
+		statement.directive = ir::PTXStatement::StartEntry;	
+		inEntry = true;
+		
+		statementEnd( location );
+	}
+	
+	void PTXParser::State::entryEnd( YYLTYPE& location )
+	{
+		statement.directive = ir::PTXStatement::EndEntry;	
+		report( "  Rule: ENTRY IDENTIFIER '{' entryDeclarations '}'" );
+		statementEnd( location );
+	
+		inEntry = false;
+	
+		for( StringList::iterator operand = localOperands.begin(); 
+			operand != localOperands.end(); ++operand )
+		{
+			OperandMap::iterator fi = operands.find( *operand );
+			assert( fi != operands.end() );
+	
+			operands.erase( fi );
+		}
+	
+		localOperands.clear();	
+	}
+	
+	void PTXParser::State::entryDeclaration( YYLTYPE& location )
+	{
+		statementEnd( location );
+	
+		report( "  Rule: guard instruction : " 
+			<< module.statements.back().instruction.toString() );
+	
+		// check for an error
+		assert( !module.statements.empty() );
+		assert( module.statements.back().directive == ir::PTXStatement::Instr );
+	
+		std::string message = 
+			module.statements.back().instruction.valid();
+	
+		if( message != "" )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Parsed invalid instruction " 
+				<< module.statements.back().instruction.toString() 
+				<< " : " << message, InvalidInstruction );
+		}
+	
+		operandVector.clear();
+	}
+
+	void PTXParser::State::locationAddress( int token )
+	{
+		directive = tokenToDirective( token );
+		operand.addressMode = ir::PTXOperand::Address;
+		operand.offset = 0;
+	}
+	
+	void PTXParser::State::uninitializableDeclaration( const std::string& name )
+	{
+		report( "  Rule: uninitializable addressableVariablePrefix IDENTIFIER " 
+			<< "arrayDimensions';' : " << name );
+
+		assert( directive == ir::PTXStatement::Param || 
+			directive == ir::PTXStatement::Local ||
+			directive == ir::PTXStatement::Shared );
+
+		statement.directive = directive;
+		statement.name = name;
+		statement.alignment = alignment;
+		statement.array.vec = statement.instruction.vec;
+		statement.type = operand.type;
+		statement.array.stride.assign( 
+			statement.array.stride.begin(), 
+			statement.array.stride.end() );
+	
+		operand.identifier = statement.name;
+	
+		operands.insert( std::make_pair( 
+			statement.name, operand ) );
+		
+		if( inEntry )
+		{
+			localOperands.push_back( statement.name );
+		}		
+	}
+
+	void PTXParser::State::location( long long int one, long long int two, 
+		long long int three )
+	{
+		report( "  Rule: LOC DECIMAL_CONSTANT DECIMAL_CONSTANT " 
+			<< "DECIMAL_CONSTANT : " << one << ", " << two << ", " << three );
+
+		std::stringstream stream;
+	
+		stream << one << " " << two << " " << three;
+
+		statement.directive = ir::PTXStatement::Loc;
+		statement.name = stream.str();
+	}
+	
+	void PTXParser::State::label( const std::string& string )
+	{
+		report( "  Rule: LABEL : " << string );
+
+		statement.directive = ir::PTXStatement::Label;
+		statement.name = string;
+	}
+	
+	void PTXParser::State::labelOperand( const std::string& string )
+	{
+		OperandMap::iterator mode = operands.find( string );
+	
+		if( mode == operands.end() )
+		{
+			operand.identifier = string;
+			operand.addressMode = ir::PTXOperand::Label;
+			operand.type = ir::PTXOperand::TypeSpecifier_invalid;
+		}
+		else
+		{
+			operand = mode->second;
+		}
+	
+		operandVector.push_back( operand );
+	}
+	
+	void PTXParser::State::nonLabelOperand( const std::string& string, 
+		YYLTYPE& location, bool invert )
+	{
+		OperandMap::iterator mode = operands.find( string );
+	
+		if( mode == operands.end() )
+		{
+			throw_exception( toString( location, *this ) << "Operand " 
+				<< string << " not declared in this scope.", NoDeclaration );
+		}
+		else
+		{
+			operand = mode->second;
+		}
+		
+		if( invert )
+		{
+			if( operand.type != ir::PTXOperand::pred )
+			{
+				throw_exception( toString( location, *this ) << "Operand " 
+					<< string << " is not a predicate and can't be inverted.", 
+					NotPredicate );
+			}
+			operand.condition = ir::PTXOperand::InvPred;
+		}
+	
+		operandVector.push_back( operand );		
+	}
+			
+	void PTXParser::State::baseOperand( long long int value )
+	{
+		operand.addressMode = ir::PTXOperand::Immediate;
+		operand.imm_int = value;
+		operand.vec = ir::PTXOperand::v1;
+		operand.type = smallestType( operand.imm_int );
+		operandVector.push_back( operand );	
+	}
+	
+	void PTXParser::State::baseOperand( unsigned long long int value )
+	{
+		operand.addressMode = ir::PTXOperand::Immediate;
+		operand.imm_int = value;
+		operand.vec = ir::PTXOperand::v1;
+		operand.type = smallestType( operand.imm_uint );
+		operandVector.push_back( operand );
+	}
+	
+	void PTXParser::State::baseOperand( float value )
+	{
+		operand.addressMode = ir::PTXOperand::Immediate;
+		operand.imm_float = value;
+		operand.vec = ir::PTXOperand::v1;
+		operand.type = ir::PTXOperand::f32;	
+		operandVector.push_back( operand );
+	}
+	void PTXParser::State::baseOperand( double value )
+	{
+		operand.addressMode = ir::PTXOperand::Immediate;
+		operand.imm_float = value;
+		operand.vec = ir::PTXOperand::v1;
+		operand.type = ir::PTXOperand::f64;
+		operandVector.push_back( operand );
+	}
+	
+	void PTXParser::State::clockOperand( const std::string& value )
+	{
+		operand.addressMode = ir::PTXOperand::Special;
+		operand.identifier = value;
+		operand.type = ir::PTXOperand::u32;
+		operand.special = parser::PTXParser::stringToSpecial( value );
+		operand.vec = ir::PTXOperand::v1;
+		operandVector.push_back( operand );	
+	}
+	
+	void PTXParser::State::specialOperand( const std::string& value )
+	{
+		operand.addressMode = ir::PTXOperand::Special;
+		operand.identifier = value;
+		operand.type = ir::PTXOperand::b16;
+		operand.special = parser::PTXParser::stringToSpecial( value );
+		operand.vec = ir::PTXOperand::v1;
+		operandVector.push_back( operand );	
+	}
+	
+	void PTXParser::State::memoryOperand( const std::string& name, 
+		long long int value, YYLTYPE& location, bool invert )
+	{
+		OperandMap::iterator mode = operands.find( name );
+	
+		if( mode == operands.end() )
+		{
+			throw_exception( toString( location, *this ) << "Operand " 
+				<< name << " not declared in this scope.", NoDeclaration );
+		}
+		else
+		{
+			if( mode->second.addressMode == ir::PTXOperand::Register )
+			{
+				operand.addressMode = ir::PTXOperand::Indirect;
+			}
+			else
+			{
+				operand.addressMode = ir::PTXOperand::Address;
+			}
+		}
+	
+		operand.identifier = name;
+		operand.vec = ir::PTXOperand::v1;
+		if( invert )
+		{ 
+			value = -value;
+		}
+		operand.offset = value;
+		operand.type = ir::PTXOperand::u64;
+	
+		operandVector.push_back( operand );
+	}
+
+	void PTXParser::State::arrayOperand( YYLTYPE& location )
+	{
+		assert( !identifiers.empty() );
+
+		OperandMap::iterator mode = operands.find( identifiers.front() );
+	
+		if( identifiers.size() > 4 )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Array operand \"" 
+				<< hydrazine::toString( identifiers.begin(), 
+				identifiers.end(), "," ) 
+				<< "\" has more than 4 elements.", InvalidArray );
+		}
+
+		if( identifiers.size() == 3 )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Array operand \"" 
+				<< hydrazine::toString( identifiers.begin(), 
+				identifiers.end(), "," ) 
+				<< "\" has exactly 3 elements.", InvalidArray );
+		}
+	
+		if( mode == operands.end() )
+		{
+			throw_exception( toString( location, *this ) << "Operand " 
+				<< identifiers.front() << " not declared in this scope.", 
+				NoDeclaration );
+		}
+	
+		operand = mode->second;
+	
+		if( identifiers.size() == 1 )
+		{
+			operand.vec = ir::PTXOperand::v1;
+			operand.array.push_back( mode->second );
+		}
+		else if( identifiers.size() >= 2 )
+		{
+			operand.vec = ir::PTXOperand::v2;
+			operand.array.push_back( mode->second );
+		
+			mode = operands.find( identifiers[1] );
+		
+			if( mode == operands.end() )
+			{
+				throw_exception( toString( location, *this ) << "Operand " 
+					<< identifiers[1] << " not declared in this scope.", 
+					NoDeclaration );
+			}
+		
+			operand.array.push_back( mode->second );
+		}
+	
+		if( identifiers.size() == 4 )
+		{
+	
+			operand.vec = ir::PTXOperand::v4;
+		
+			mode = operands.find( identifiers[2] );
+		
+			if( mode == operands.end() )
+			{
+				throw_exception( toString( location, *this ) << "Operand " 
+					<< identifiers[2] << " not declared in this scope.", 
+					NoDeclaration );
+			}
+		
+			operand.array.push_back( mode->second );
+		
+			mode = operands.find( identifiers[3] );
+		
+			if( mode == operands.end() )
+			{
+				throw_exception( toString( location, *this ) << "Operand " 
+					<< identifiers[3] << " not declared in this scope.", 
+					NoDeclaration );
+			}
+		
+			operand.array.push_back( mode->second );
+		}
+	
+		operandVector.push_back( operand );
+		operand.array.clear();
+	}
+
+	void PTXParser::State::guard( const std::string& name, YYLTYPE& location, 
+		bool invert )
+	{
+		report( "  Rule: PREDICATE_IDENTIFIER : " << name  );
+
+		OperandMap::iterator mode = operands.find( name );
+	
+		if( mode == operands.end() )
+		{
+			throw_exception( toString( location, *this ) << "Predciate " 
+				<< name << " not declared in this scope.", NoDeclaration );
+		}
+
+		operand = mode->second;
+		if( invert )
+		{
+			operand.condition = ir::PTXOperand::InvPred;
+		}
+		else
+		{
+			operand.condition = ir::PTXOperand::Pred;
+		}
+		
+		operandVector.push_back( operand );
+	}
+
+	void PTXParser::State::guard()
+	{
+		report( "  Rule: No guard predicate" );
+		operand.addressMode = ir::PTXOperand::Register;
+		operand.type = ir::PTXOperand::pred;
+		operand.condition = ir::PTXOperand::PT;
+		operandVector.push_back( operand );
+	}
+	
+	void PTXParser::State::uni( bool condition )
+	{
+		statement.instruction.uni = condition;
+	}
+
+	void PTXParser::State::carry( bool condition )
+	{
+		if( condition )
+		{
+			report( "  Rule: Carry" );
+			statement.instruction.carry = ir::PTXInstruction::CC; 		
+		}
+		else
+		{
+			report( "  Rule: No Carry" );
+			statement.instruction.carry = ir::PTXInstruction::None;
+		}
+	}
+
+	void PTXParser::State::modifier( int token )
+	{
+		statement.instruction.modifier |= tokenToModifier( token );
+	}
+
+	void PTXParser::State::atomic( int token )
+	{
+		statement.instruction.atomicOperation = tokenToAtomicOperation( token );
+	}
+
+	void PTXParser::State::volatileFlag( bool condition )
+	{
+		if( condition )
+		{
+			statement.instruction.volatility = ir::PTXInstruction::Volatile;
+		}
+		else
+		{
+			statement.instruction.volatility = ir::PTXInstruction::Nonvolatile;
+		}
+	}
+	
+	void PTXParser::State::reduction( int token )
+	{
+		statement.instruction.reductionOperation 
+			= tokenToReductionOperation( token );
+	}
+	
+	void PTXParser::State::comparison( int token )
+	{
+		statement.instruction.comparisonOperator = tokenToCmpOp( token );
+	}
+
+	void PTXParser::State::boolean( int token )
+	{
+		statement.instruction.booleanOperator = tokenToBoolOp( token );
+	}
+
+	void PTXParser::State::geometry( int token )
+	{
+		statement.instruction.geometry = tokenToGeometry( token );
+	}
+
+	void PTXParser::State::vote( int token )
+	{
+		statement.instruction.vote = tokenToVoteMode( token );
+	}
+
+	void PTXParser::State::instruction( )
+	{
+		statement.instruction = ir::PTXInstruction( 
+			ir::PTXInstruction::ptx1_3 );
+	}
+
+	void PTXParser::State::instruction( const std::string& opcode, int dataType, 
+		unsigned int operands )
+	{
+		report( "  Rule: instruction : " << opcode );
+
+		assert( operandVector.size() == operands );
+
+		statement.directive = ir::PTXStatement::Instr;
+		statement.instruction.type = tokenToDataType( dataType );
+		statement.instruction.opcode = stringToOpcode( opcode );
+		statement.instruction.pg = operandVector[0];
+
+		if( operands == 6 )
+		{
+			statement.instruction.d = operandVector[1];
+			statement.instruction.pq = operandVector[2];
+			statement.instruction.a = operandVector[3];
+			statement.instruction.b = operandVector[4];
+			statement.instruction.c = operandVector[5];		
+		}
+		else
+		{
+			if( operands >= 2 )
+			{
+				statement.instruction.d = operandVector[1];
+			}
+			if( operands >= 3 )
+			{
+				statement.instruction.a = operandVector[2];
+			}
+			if( operands >= 4 )
+			{
+				statement.instruction.b = operandVector[3];
+			}
+			if( operands >= 5 )
+			{
+				statement.instruction.c = operandVector[4];
+			}
+		}
+	}
+	
+	void PTXParser::State::instruction( const std::string& opcode, 
+		unsigned int operands )
+	{
+		instruction( opcode, TOKEN_B64, operands );
+	}
+
+	void PTXParser::State::tex( int dataType )
+	{
+		report( "  Rule: instruction : tex" );
+
+		assert( operandVector.size() == 4 );
+
+		statement.directive = ir::PTXStatement::Instr;
+		statement.instruction.type = tokenToDataType( dataType );
+		statement.instruction.opcode = stringToOpcode( "tex" );
+		statement.instruction.pg = operandVector[0];
+		statement.instruction.d = operandVector[1];
+		statement.instruction.a = operandVector[2];
+		statement.instruction.c = operandVector[3];		
+	}
+	
+	void PTXParser::State::convert( int token, YYLTYPE& location )
+	{
+		if( !ir::PTXOperand::valid( tokenToDataType( token ),
+			statement.instruction.a.type ) )
+		{
+			throw_exception( parser::PTXParser::toString( location, *this ) 
+				<< "Type of " << statement.instruction.a.identifier << " " 
+				<< ir::PTXOperand::toString( statement.instruction.a.type ) 
+				<< " not convertable to type " 
+				<< ir::PTXOperand::toString( tokenToDataType( token ) ) 
+				<< " .", InvalidDataType );
+		}
+	
+		statement.instruction.a.type = tokenToDataType( token );
+	}
+
+	void PTXParser::State::convertC( int token, YYLTYPE& location )
+	{
+		if( !ir::PTXOperand::valid( tokenToDataType( token ),
+			statement.instruction.c.type ) )
+		{
+			throw_exception( parser::PTXParser::toString( location, *this ) 
+				<< "Type of " << statement.instruction.c.identifier << " " 
+				<< ir::PTXOperand::toString( statement.instruction.c.type ) 
+				<< " not convertable to type " 
+				<< ir::PTXOperand::toString( tokenToDataType( token ) ) 
+				<< " .", InvalidDataType );
+		}
+	
+		statement.instruction.c.type = tokenToDataType( token );
+	}
+
+	void PTXParser::State::convertD( int token, YYLTYPE& location )
+	{
+		if( !ir::PTXOperand::valid( tokenToDataType( token ),
+			statement.instruction.d.type ) )
+		{
+			throw_exception( parser::PTXParser::toString( location, *this ) 
+				<< "Type of " << statement.instruction.d.identifier << " " 
+				<< ir::PTXOperand::toString( statement.instruction.d.type ) 
+				<< " not convertable to type " 
+				<< ir::PTXOperand::toString( tokenToDataType( token ) ) 
+				<< " .", InvalidDataType );
+		}
+	
+		statement.instruction.d.type = tokenToDataType( token );
+	}
+
+	void PTXParser::State::structure( YYLTYPE& location )
+	{
+		throw_exception( parser::PTXParser::toString( location, *this ) 
+			<< "Structs not supported in this version.", NotSupported );
+	}
+	
+	void PTXParser::State::aUnion( YYLTYPE& location )
+	{
+		throw_exception( parser::PTXParser::toString( location, *this ) 
+			<< "Unions not supported in this version.", NotSupported );
+	}
+
+	void PTXParser::State::function( YYLTYPE& location )
+	{
+		throw_exception( parser::PTXParser::toString( location, *this ) 
+			<< "Functions not supported in this version.", NotSupported );
+	}
+
+}
+
+namespace parser
+{
 
 	const char* PTXParser::Exception::what() const throw()
 	{
-	
 		return message.c_str();
-	
 	}
 
 	PTXParser::Exception::~Exception() throw()
 	{
-	
-	
 	}
 
 	std::string PTXParser::toString( YYLTYPE& location, State& state )
@@ -71,10 +1030,8 @@ namespace parser
 			statement = state.module.statements.begin(); 
 			statement != state.module.statements.end(); ++statement )
 		{
-		
 			if( statement->directive == ir::PTXStatement::Label )
 			{
-			
 				report( " Found label " << statement->name );
 			
 				StatementMap::iterator label = 
@@ -98,29 +1055,23 @@ namespace parser
 				}
 				
 				labels.insert( std::make_pair( statement->name, *statement ) );
-			
 			}
-		
 		}
 		
 		for( ir::Module::StatementVector::iterator 
 			statement = state.module.statements.begin(); 
 			statement != state.module.statements.end(); ++statement )
 		{
-		
 			if( statement->directive == ir::PTXStatement::Instr )
 			{
-			
 				if( statement->instruction.a.addressMode 
 					== ir::PTXOperand::Label )
 				{
-				
 					StatementMap::iterator label = 
 						labels.find( statement->instruction.a.identifier );
 				
 					if( label == labels.end() )
 					{
-				
 						std::stringstream error;
 						error << state.fileName << " ("  << statement->line 
 							<< "," << statement->column << "): Label "
@@ -131,15 +1082,12 @@ namespace parser
 						exception.message = error.str();
 						exception.error = State::NoLabel;
 						throw exception;
-				
 					}
-				
 				}
 				
 				if( statement->instruction.b.addressMode 
 					== ir::PTXOperand::Label )
 				{
-				
 					StatementMap::iterator label = 
 						labels.find( statement->instruction.b.identifier );
 				
@@ -156,15 +1104,12 @@ namespace parser
 						exception.message = error.str();
 						exception.error = State::NoLabel;
 						throw exception;
-				
 					}
-				
 				}
 				
 				if( statement->instruction.c.addressMode 
 					== ir::PTXOperand::Label )
 				{
-				
 					StatementMap::iterator label = 
 						labels.find( statement->instruction.c.identifier );
 				
@@ -181,21 +1126,17 @@ namespace parser
 						exception.message = error.str();
 						exception.error = State::NoLabel;
 						throw exception;
-				
 					}
-				
 				}
 				
 				if( statement->instruction.d.addressMode 
 					== ir::PTXOperand::Label )
 				{
-				
 					StatementMap::iterator label = 
 						labels.find( statement->instruction.d.identifier );
 				
 					if( label == labels.end() )
 					{
-				
 						std::stringstream error;
 						error << state.fileName << " ("  << statement->line 
 							<< "," << statement->column << "): Label "
@@ -206,22 +1147,24 @@ namespace parser
 						exception.message = error.str();
 						exception.error = State::NoLabel;
 						throw exception;
-				
 					}
-				
 				}
-			
 			}
-		
 		}
-	
 	}
 	
-	void PTXParser::reset()
+	void PTXParser::reset( ir::PTXInstruction::Version version )
 	{
+		state.inEntry = false;
+		state.identifiers.clear();
+		state.operands.clear();
+		state.localOperands.clear();
+		state.operandVector.clear();
 		state.module.statements.clear();
 		state.module.kernels.clear();
 		state.fileName = fileName;
+		
+		state.statement.instruction.version = version;
 		
 		ir::PTXOperand bucket;
 		bucket.identifier = "_";
@@ -229,15 +1172,13 @@ namespace parser
 		bucket.addressMode = ir::PTXOperand::Register;
 		bucket.vec = ir::PTXOperand::v1;
 		
-		state.operands.insert( std::make_pair( "_", bucket ) );
+		state.operands.insert( std::make_pair( "_", bucket ) );		
 	}
 
 	ir::PTXOperand::DataType PTXParser::tokenToDataType( int token )
 	{
-	
 		switch( token )
 		{
-			
 			case TOKEN_U8: return ir::PTXOperand::u8; break;
 			case TOKEN_U16: return ir::PTXOperand::u16; break;
 			case TOKEN_U32: return ir::PTXOperand::u32; break;
@@ -256,7 +1197,6 @@ namespace parser
 			case TOKEN_F64: return ir::PTXOperand::f64; break;
 			default:
 			{
-			
 				Exception exception;
 				exception.error = State::InvalidDataType;
 				
@@ -265,26 +1205,20 @@ namespace parser
 				exception.message = "Got invalid data type " + stream.str();
 				throw exception;
 				break;
-			
 			}
-			
 		}
 		
 		return ir::PTXOperand::TypeSpecifier_invalid;
-	
 	}
 
 	ir::PTXOperand::Vec PTXParser::tokenToVec( int token )
 	{
-	
 		switch( token )
 		{
-					
 			case TOKEN_V2: return ir::PTXOperand::v2; break;
 			case TOKEN_V4: return ir::PTXOperand::v4; break;			
 			default:
 			{
-			
 				Exception exception;
 				exception.error = State::InvalidVecType;
 				
@@ -293,13 +1227,10 @@ namespace parser
 				exception.message = "Got invalid vector type " + stream.str();
 				throw exception;
 				break;
-			
 			}
-		
 		}
 		
 		return ir::PTXOperand::v1;
-	
 	}
 	
 	ir::PTXInstruction::Opcode PTXParser::stringToOpcode( std::string string )
@@ -362,7 +1293,6 @@ namespace parser
 	ir::PTXOperand::SpecialRegister 
 		PTXParser::stringToSpecial( std::string reg )
 	{
-	
 		if( reg == "%ctaid.x" )
 		{
 			return ir::PTXOperand::ctaIdX;
@@ -461,12 +1391,10 @@ namespace parser
 		}
 		
 		return ir::PTXOperand::SpecialRegister_invalid;
-		
 	}
 	
 	ir::PTXInstruction::Modifier PTXParser::tokenToModifier( int token )
 	{
-	
 		switch( token )
 		{
 			case TOKEN_HI: return ir::PTXInstruction::hi; break;
@@ -481,19 +1409,18 @@ namespace parser
 			case TOKEN_RM: return ir::PTXInstruction::rm; break;
 			case TOKEN_RPI: /* fall through */
 			case TOKEN_RP: return ir::PTXInstruction::rp; break;
+			case TOKEN_FTZ: return ir::PTXInstruction::ftz; break;
+			case TOKEN_APPROX: return ir::PTXInstruction::approx; break;			
 			default: break;
 		}
 		
 		return ir::PTXInstruction::Modifier_invalid;
-	
 	}
 	
 	ir::PTXInstruction::AddressSpace PTXParser::tokenToAddressSpace( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_REG: return ir::PTXInstruction::Reg; break;
 			case TOKEN_SREG: return ir::PTXInstruction::SReg; break;
 			case TOKEN_CONST: return ir::PTXInstruction::Const; break;
@@ -503,20 +1430,32 @@ namespace parser
 			case TOKEN_SHARED: return ir::PTXInstruction::Shared; break;
 			case TOKEN_TEX: return ir::PTXInstruction::Texture; break;
 			default: break;
-		
 		}
 		
 		return ir::PTXInstruction::AddressSpace_Invalid;
-	
 	}
-	
+
+	ir::PTXStatement::Directive PTXParser::tokenToDirective( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_CONST: return ir::PTXStatement::Const; break;
+			case TOKEN_GLOBAL: return ir::PTXStatement::Global; break;
+			case TOKEN_LOCAL: return ir::PTXStatement::Local; break;
+			case TOKEN_PARAM: return ir::PTXStatement::Param; break;
+			case TOKEN_SHARED: return ir::PTXStatement::Shared; break;
+			case TOKEN_TEX: return ir::PTXStatement::Tex; break;
+			default: break;
+		}
+		
+		return ir::PTXStatement::Directive_invalid;
+	}
+					
 	ir::PTXInstruction::ReductionOperation 
 		PTXParser::tokenToReductionOperation( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_AND: return ir::PTXInstruction::ReductionAnd; break;
 			case TOKEN_XOR: return ir::PTXInstruction::ReductionXor; break;
 			case TOKEN_OR: return ir::PTXInstruction::ReductionOr; break;
@@ -526,20 +1465,16 @@ namespace parser
 			case TOKEN_MIN: return ir::PTXInstruction::ReductionMin; break;
 			case TOKEN_MAX: return ir::PTXInstruction::ReductionMax; break;
 			default: break;
-		
 		}
 		
 		return ir::PTXInstruction::ReductionOperation_Invalid;
-	
 	}
 	
 	ir::PTXInstruction::AtomicOperation 
 		PTXParser::tokenToAtomicOperation( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_AND: return ir::PTXInstruction::AtomicAnd; break;
 			case TOKEN_XOR: return ir::PTXInstruction::AtomicXor; break;
 			case TOKEN_OR: return ir::PTXInstruction::AtomicOr; break;
@@ -551,19 +1486,15 @@ namespace parser
 			case TOKEN_CAS: return ir::PTXInstruction::AtomicCas; break;
 			case TOKEN_EXCH: return ir::PTXInstruction::AtomicExch; break;
 			default: break;
-		
 		}
 		
 		return ir::PTXInstruction::AtomicOperation_Invalid;		
-	
 	}
 	
 	ir::PTXInstruction::CmpOp PTXParser::tokenToCmpOp( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_EQ: return ir::PTXInstruction::Eq; break;
 			case TOKEN_NE: return ir::PTXInstruction::Ne; break;
 			case TOKEN_LT: return ir::PTXInstruction::Lt; break;
@@ -583,19 +1514,15 @@ namespace parser
 			case TOKEN_NUM: return ir::PTXInstruction::Num; break;
 			case TOKEN_NAN: return ir::PTXInstruction::Nan; break;
 			default: break;
-		
 		}
 		
 		return ir::PTXInstruction::CmpOp_Invalid;	
-	
 	}
 	
 	ir::PTXInstruction::BoolOp PTXParser::tokenToBoolOp( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_AND: return ir::PTXInstruction::BoolAnd; break;
 			case TOKEN_OR: return ir::PTXInstruction::BoolOr; break;
 			case TOKEN_XOR: return ir::PTXInstruction::BoolXor; break;
@@ -604,78 +1531,63 @@ namespace parser
 		}
 		
 		return ir::PTXInstruction::BoolOp_Invalid;		
-	
 	}
 
 	ir::PTXInstruction::Geometry PTXParser::tokenToGeometry( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_1D: return ir::PTXInstruction::_1d; break;
 			case TOKEN_2D: return ir::PTXInstruction::_2d; break;
 			case TOKEN_3D: return ir::PTXInstruction::_3d; break;
 			default: break;
-		
 		}
 		
 		return ir::PTXInstruction::Geometry_Invalid;		
-	
 	}
 	
 	ir::PTXInstruction::VoteMode PTXParser::tokenToVoteMode( int token )
 	{
-	
 		switch( token )
 		{
-		
 			case TOKEN_ANY: return ir::PTXInstruction::Any; break;
 			case TOKEN_ALL: return ir::PTXInstruction::All; break;
 			case TOKEN_UNI: return ir::PTXInstruction::Uni; break;
 			default: break;
-		
 		}
 		
 		return ir::PTXInstruction::VoteMode_Invalid;		
-	
 	}
 	
 	ir::PTXOperand::DataType PTXParser::smallestType( long long int value )
 	{
-	
 		return ir::PTXOperand::s64;
-	
 	}
 	
 	ir::PTXOperand::DataType 
 		PTXParser::smallestType( long long unsigned int value )
 	{
-	
 		return ir::PTXOperand::u64;
-	
 	}
 
 	PTXParser::PTXParser()
 	{
-	
 		state.warnLexer = false;
 		state.inEntry = false;
-	
 	}
 				
 	ir::Module PTXParser::parse( std::istream& input, 
 		ir::Instruction::Architecture language )
 	{
-	
 		assert( language == ir::Instruction::PTX );
 	
 		std::stringstream temp;
 		
 		parser::PTXLexer lexer( &input, &temp );
-		reset();
-			
-		report( "Running main parse pass." );
+		reset( ir::PTXInstruction::ptx1_3 );
+		
+		report( "Parsing file " << fileName );
+		report( "Running 1.3 main parse pass." );
 		
 		try
 		{
@@ -687,9 +1599,9 @@ namespace parser
 			{
 				input.seekg( 0, std::ios::beg );
 				temp.seekg( 0, std::ios::beg );
-				reset();
+				reset( ir::PTXInstruction::ptx1_4 );
 				
-				report( "Running secondary parse pass." );
+				report( "Running 1.4 parse pass." );
 				ptx1_4::yyparse( lexer, state );
 			}
 			else
@@ -699,24 +1611,15 @@ namespace parser
 		}
 		assert( temp.str().empty() );
 		
-		state.inEntry = false;
-		state.identifiers.clear();
-		state.operands.clear();
-		state.localOperands.clear();
-		state.operandVector.clear();
-		
 		checkLables();
 
 		return state.module;
-	
 	}
 		
 	void PTXParser::configure( const Configuration& configuration )
 	{
-	
 		hydrazine::Configurable::parse( "WarnLexer", state.warnLexer, 
 			false, configuration );
-	
 	}
 	
 }

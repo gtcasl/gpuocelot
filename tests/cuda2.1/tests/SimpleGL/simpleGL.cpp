@@ -94,6 +94,9 @@ int mouse_old_x, mouse_old_y;
 int mouse_buttons = 0;
 float rotate_x = 0.0, rotate_y = 0.0;
 float translate_z = -3.0;
+const unsigned int frameLimit = 3;
+unsigned int frame = 0;
+bool doTest = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 // kernels
@@ -127,7 +130,6 @@ void checkResultCuda(int argc, char** argv, const GLuint& vbo);
 int main(int argc, char** argv)
 {
     runTest(argc, argv);
-
     cutilExit(argc, argv);
 }
 
@@ -143,6 +145,7 @@ void runTest(int argc, char** argv)
     else
 	cudaSetDevice( cutGetMaxGflopsDeviceId() );
 
+	doTest = !cutCheckCmdLineFlag(argc, (const char **)argv, "noqatest");
 
     // Create GL context
     glutInit(&argc, argv);
@@ -290,6 +293,17 @@ void display()
     glutPostRedisplay();
 
     anim += 0.01;
+    
+    if( frame < frameLimit )
+    {
+    	++frame;
+    }
+    else if( doTest )
+    {
+    	printf( "TEST PASSED\n" );
+    	cudaThreadExit();
+    	exit(0);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -299,6 +313,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/)
 {
     switch(key) {
     case(27) :
+        printf( "TEST PASSED\n" );
         deleteVBO(&vbo);
         cudaThreadExit();
         exit(0);

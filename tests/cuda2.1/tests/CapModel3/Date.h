@@ -13,12 +13,12 @@
 #ifndef DATE_H_INCLUDED
 #define DATE_H_INCLUDED
 
-#include <common/interface/Stringable.h>
+#include "Stringable.h"
 
 namespace sim
 {
 
-	class Date: public common::Stringable
+	class Date: public hydrazine::Stringable
 	{
 	
 		public:

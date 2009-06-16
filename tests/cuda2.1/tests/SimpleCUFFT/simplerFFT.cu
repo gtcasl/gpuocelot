@@ -227,17 +227,17 @@ int main(int argc, char** argv) {
 	if (size) {
 		result = runTest(size);
 		if (result) {
-			printf("FFT size %d passed\n", size);
+			printf("TEST PASSED\nFFT size %d passed\n", size);
 		}
 		else {
-			printf("FAILED on FFT size %d\n", size);
+			printf("TEST FAILED on FFT size %d\n", size);
 		}
 	}
 	else {
 		result = runTest(1024);
 
 		if (result) {
-			printf("2^10 FFT size passed\n");
+			printf("TEST PASSED\n2^10 FFT size passed\n");
 		}
 	}
 

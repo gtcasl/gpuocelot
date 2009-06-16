@@ -14,9 +14,9 @@
 #define CAP_MODEL_3_CPP_INCLUDED
 
 #include "CapModel3.h"
-#include <common/implementation/Exception.h>
-#include <common/implementation/debug.h>
-#include <common/implementation/macros.h>
+#include "Exception.h"
+#include "debug.h"
+#include "macros.h"
 #include <cstring>
 #include <pthread.h>
 #include <cmath>
@@ -1207,7 +1207,7 @@ namespace sim
 		if( !file.is_open() )
 		{
 		
-			throw common::Exception( "Could not open ratings file " 
+			throw hydrazine::Exception( "Could not open ratings file " 
 				+ _ratingsFileName );
 		
 		}
@@ -1271,7 +1271,7 @@ namespace sim
 		if( !file.is_open() )
 		{
 		
-			throw common::Exception( "Could not open industry file " 
+			throw hydrazine::Exception( "Could not open industry file " 
 				+ _industryFileName );
 		
 		}
@@ -1321,7 +1321,7 @@ namespace sim
 		if( !file.is_open() )
 		{
 		
-			throw common::Exception( "Could not open obligors file " 
+			throw hydrazine::Exception( "Could not open obligors file " 
 				+ _obligorsFileName );
 		
 		}
@@ -1381,7 +1381,7 @@ namespace sim
 		if( !file.is_open() )
 		{
 		
-			throw common::Exception( "Could not open portfolio file " 
+			throw hydrazine::Exception( "Could not open portfolio file " 
 				+ _portfolioFileName );
 		
 		}
@@ -1469,7 +1469,7 @@ namespace sim
 		if( !file.is_open() )
 		{
 		
-			throw common::Exception( "Could not open twister file " 
+			throw hydrazine::Exception( "Could not open twister file " 
 				+ _twisterFileName );
 		
 		}

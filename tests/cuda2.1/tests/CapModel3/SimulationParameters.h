@@ -13,7 +13,7 @@
 #ifndef SIMULATION_PARAMETERS_H_INCLUDED
 #define SIMULATION_PARAMETERS_H_INCLUDED
 
-#include <common/interface/Stringable.h>
+#include "Stringable.h"
 #include "Date.h"
 
 #ifndef FLOAT
@@ -28,7 +28,7 @@
 namespace sim
 {
 
-	class SimulationParameters : public common::Stringable
+	class SimulationParameters : public hydrazine::Stringable
 	{
 	
 		public:

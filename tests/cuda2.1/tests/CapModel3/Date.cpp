@@ -15,7 +15,7 @@
 
 #include "Date.h"
 #include <cassert>
-#include <common/implementation/macros.h>
+#include "macros.h"
 
 namespace sim
 {

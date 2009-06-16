@@ -101,6 +101,9 @@ float rotate[3];
 bool enable_cuda = true;
 bool animate = true;
 int blur_radius = 8;
+bool doTest;
+const int frameLimit = 3;
+int frame = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 extern "C" void
@@ -189,6 +192,8 @@ void
 runTest(int argc, char** argv)
 {
     initCuda(argc, argv);
+
+	doTest = !cutCheckCmdLineFlag(argc, (const char **)argv, "noqatest");
 
     // Create GL context
     glutInit(&argc, argv);
@@ -409,6 +414,7 @@ void displayImage()
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
     CUT_CHECK_ERROR_GL();
+   
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -425,6 +431,20 @@ display()
     }
 
     glutSwapBuffers();
+    
+    if( doTest )
+    {
+    	if( frame < frameLimit )
+    	{
+    		++frame;
+    	}
+    	else
+    	{
+    		printf( "TEST PASSED\n" );
+    		cudaThreadExit();
+    		exit(0);
+    	}
+    }
 }
 
 void idle()

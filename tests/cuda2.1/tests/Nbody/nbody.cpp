@@ -604,7 +604,7 @@ main( int argc, char** argv)
     bool regression = 
         (cutCheckCmdLineFlag(argc, (const char**) argv, "regression") != 0);
 
-		bool visual = 
+	bool visual = 
         (cutCheckCmdLineFlag(argc, (const char**) argv, "visual") != 0);
 
     // default number of bodies is #SMs * 4 * CTA size

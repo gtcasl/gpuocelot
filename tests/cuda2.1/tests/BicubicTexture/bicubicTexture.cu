@@ -456,7 +456,7 @@ main( int argc, char** argv)
 
     // parse arguments
     char *filename;
-    bool benchmark = true;
+    bool benchmark = false;
 
     if (argc > 1) {
         if (cutGetCmdLineArgumentstr( argc, (const char**) argv, "file", &filename)) {
@@ -469,7 +469,7 @@ main( int argc, char** argv)
     }
 
     if (cutCheckCmdLineFlag(argc, (const char **)argv, "noqatest")) {
-        benchmark = false;
+        benchmark = true;
     }
 
     // load image from disk

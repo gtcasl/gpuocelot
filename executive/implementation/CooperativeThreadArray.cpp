@@ -2009,7 +2009,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::u16:
 			{
 				// u16 to one of the following
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::s16:
 					case PTXOperand::u16:
 						{
@@ -2056,7 +2056,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::s16:
 			{
 				// u16 to one of the following
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::s16:
 						break;
 					case PTXOperand::u16:
@@ -2113,7 +2113,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::u32:
 			{
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::u8: 
 						{
 							setRegAsU64(threadID, instr.d.reg,  
@@ -2183,7 +2183,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::s32:
 			{
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::s16: 
 						{
 							PTXS16 a = operandAsS16(threadID, instr.a);
@@ -2250,7 +2250,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::f32:
 			{
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::u32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
@@ -2354,7 +2354,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::s64:
 			{
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::u32: 
 						{
 							PTXS64 a = operandAsS64(threadID, instr.a);
@@ -2408,7 +2408,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::u64:
 			{
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::u32: 
 						{
 							PTXU64 a = operandAsU64(threadID, instr.a);
@@ -2460,7 +2460,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;			
 			case PTXOperand::f64:
 			{
-				switch (instr.d.type) {
+				switch (instr.type) {
 					case PTXOperand::s32: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);

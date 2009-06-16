@@ -14,9 +14,9 @@
 #define CAP_MODEL_3_CU_INCLUDED
 
 #include "capModel3.hu"
-#include <hydrazine/cuda/Cuda.h>
-#include <hydrazine/cuda/CudaException.h>
-#include <hydrazine/implementation/macros.h>
+#include "Cuda.h"
+#include "CudaException.h"
+#include "macros.h"
 #include <stdint.h>
 
 #define MAX_THREADS 512

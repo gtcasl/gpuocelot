@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00001baf_00000000-4_simplerFFT.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000614a_00000000-1_simplerFFT.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00001baf_00000000-4_simplerFFT.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000614a_00000000-1_simplerFFT.cudafe1.cpp"
 # 1 "simplerFFT.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -6841,511 +6841,521 @@ extern "C" CUresult cuStreamQuery(CUstream);
 extern "C" CUresult cuStreamSynchronize(CUstream);
 # 632 "/home/gdiamos/temp/cuda/bin//../include/cuda.h"
 extern "C" CUresult cuStreamDestroy(CUstream);
-# 64 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 65 "../../sdk/cutil.h"
 enum CUTBoolean {
-# 66 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 67 "../../sdk/cutil.h"
 CUTFalse,
-# 67 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 68 "../../sdk/cutil.h"
 CUTTrue
-# 68 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 69 "../../sdk/cutil.h"
 };
-# 76 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 77 "../../sdk/cutil.h"
 extern "C" void cutFree(void *);
-# 94 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 95 "../../sdk/cutil.h"
 extern "C" void cutCheckBankAccess(unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const char *, const int, const char *, const int);
-# 107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 108 "../../sdk/cutil.h"
 extern "C" char *cutFindFilePath(const char *, const char *);
-# 122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 123 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilef(const char *, float **, unsigned *, bool = false);
-# 138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 139 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFiled(const char *, double **, unsigned *, bool = false);
-# 154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 155 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilei(const char *, int **, unsigned *, bool = false);
-# 169 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 170 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileui(const char *, unsigned **, unsigned *, bool = false);
-# 185 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 186 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileb(const char *, char **, unsigned *, bool = false);
-# 201 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 202 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileub(const char *, unsigned char **, unsigned *, bool = false);
-# 215 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 216 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilef(const char *, const float *, unsigned, const float, bool = false);
-# 229 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 230 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFiled(const char *, const float *, unsigned, const double, bool = false);
-# 241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 242 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilei(const char *, const int *, unsigned, bool = false);
-# 253 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 254 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileui(const char *, const unsigned *, unsigned, bool = false);
-# 265 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 266 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileb(const char *, const char *, unsigned, bool = false);
-# 277 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 278 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileub(const char *, const unsigned char *, unsigned, bool = false);
-# 293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 294 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 306 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 307 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 320 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 321 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPM4ub(const char *, unsigned char **, unsigned *, unsigned *);
-# 336 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 337 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMi(const char *, unsigned **, unsigned *, unsigned *);
-# 352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 353 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMs(const char *, unsigned short **, unsigned *, unsigned *);
-# 367 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 368 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMf(const char *, float **, unsigned *, unsigned *);
-# 379 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 380 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMub(const char *, unsigned char *, unsigned, unsigned);
-# 391 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 392 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPMub(const char *, unsigned char *, unsigned, unsigned);
-# 404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 405 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPM4ub(const char *, unsigned char *, unsigned, unsigned);
-# 416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 417 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMi(const char *, unsigned *, unsigned, unsigned);
-# 428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 429 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMs(const char *, unsigned short *, unsigned, unsigned);
-# 440 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 441 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMf(const char *, float *, unsigned, unsigned);
-# 461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 462 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCmdLineFlag(const int, const char **, const char *);
-# 475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 476 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumenti(const int, const char **, const char *, int *);
-# 489 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 490 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentf(const int, const char **, const char *, float *);
-# 503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 504 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentstr(const int, const char **, const char *, char **);
-# 518 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 519 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentListstr(const int, const char **, const char *, char **, unsigned *);
-# 532 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 533 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCondition(int, const char *, const int);
-# 544 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 545 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutComparef(const float *, const float *, const unsigned);
-# 557 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 558 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutComparei(const int *, const int *, const unsigned);
-# 571 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutCompareuit(const unsigned *, const unsigned *, const unsigned, const float, const float);
-# 584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 571 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCompareub(const unsigned char *, const unsigned char *, const unsigned);
-# 599 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutCompareubt(const unsigned char *, const unsigned char *, const unsigned, const float, const float);
-# 613 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 585 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCompareube(const unsigned char *, const unsigned char *, const unsigned, const float);
-# 627 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 599 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutComparefe(const float *, const float *, const unsigned, const float);
-# 642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutComparefet(const float *, const float *, const unsigned, const float, const float);
-# 657 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 614 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCompareL2fe(const float *, const float *, const unsigned, const float);
-# 672 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutComparePPM(const char *, const char *, const float, const float, bool = false);
-# 685 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 627 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCreateTimer(unsigned *);
-# 694 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 636 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutDeleteTimer(unsigned);
-# 702 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 644 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutStartTimer(const unsigned);
-# 710 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 652 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutStopTimer(const unsigned);
-# 718 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 660 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutResetTimer(const unsigned);
-# 727 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 669 "../../sdk/cutil.h"
 extern "C" float cutGetTimerValue(const unsigned);
-# 738 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 680 "../../sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 19 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
+# 44 "../../sdk/cutil_inline.h"
 inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
-# 20 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
+# 45 "../../sdk/cutil_inline.h"
 bdimx, unsigned bdimy, unsigned bdimz, char *
-# 21 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
+# 46 "../../sdk/cutil_inline.h"
 aname, int index, char *file, int line)
-# 22 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
+# 47 "../../sdk/cutil_inline.h"
 {
-# 23 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
+# 48 "../../sdk/cutil_inline.h"
 cutCheckBankAccess(tidx, tidy, tidz, bdimx, bdimy, bdimz, file, line, aname, index);
-# 24 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
+# 49 "../../sdk/cutil_inline.h"
 }
-# 22 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 51 "../../sdk/cutil_inline.h"
 inline void __cutilCondition(int val, char *file, int line)
-# 23 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 52 "../../sdk/cutil_inline.h"
 {
-# 24 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 53 "../../sdk/cutil_inline.h"
 if ((CUTFalse) == (cutCheckCondition(val, file, line))) {
-# 25 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 54 "../../sdk/cutil_inline.h"
 exit(1);
-# 26 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 55 "../../sdk/cutil_inline.h"
 }
-# 27 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 56 "../../sdk/cutil_inline.h"
 }
-# 29 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 58 "../../sdk/cutil_inline.h"
 inline void __cutilExit(int argc, char **argv)
-# 30 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 59 "../../sdk/cutil_inline.h"
 {
-# 31 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 60 "../../sdk/cutil_inline.h"
 if (!(cutCheckCmdLineFlag(argc, (const char **)argv, "noprompt"))) {
-# 32 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 61 "../../sdk/cutil_inline.h"
 printf("\nPress ENTER to exit...\n");
-# 33 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 62 "../../sdk/cutil_inline.h"
 fflush(stdout);
-# 34 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 63 "../../sdk/cutil_inline.h"
 fflush(stderr);
-# 35 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 64 "../../sdk/cutil_inline.h"
 getchar();
-# 36 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 65 "../../sdk/cutil_inline.h"
 }
-# 37 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 66 "../../sdk/cutil_inline.h"
 exit(0);
-# 38 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 67 "../../sdk/cutil_inline.h"
 }
-# 41 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 72 "../../sdk/cutil_inline.h"
 inline int cutGetMaxGflopsDeviceId()
-# 42 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 73 "../../sdk/cutil_inline.h"
 {
-# 43 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 74 "../../sdk/cutil_inline.h"
 auto int device_count = 0;
-# 44 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 75 "../../sdk/cutil_inline.h"
 cudaGetDeviceCount(&device_count);
-# 46 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 77 "../../sdk/cutil_inline.h"
 auto cudaDeviceProp device_properties;
-# 47 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 78 "../../sdk/cutil_inline.h"
 auto int max_gflops_device = 0;
-# 48 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 79 "../../sdk/cutil_inline.h"
 auto int max_gflops = 0;
-# 50 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 81 "../../sdk/cutil_inline.h"
 auto int current_device = 0;
-# 51 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 82 "../../sdk/cutil_inline.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 52 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 83 "../../sdk/cutil_inline.h"
 max_gflops = device_properties.multiProcessorCount * device_properties.clockRate;
-# 53 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 84 "../../sdk/cutil_inline.h"
 ++current_device;
-# 55 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 86 "../../sdk/cutil_inline.h"
 while (current_device < device_count)
-# 56 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 87 "../../sdk/cutil_inline.h"
 {
-# 57 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 88 "../../sdk/cutil_inline.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 58 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 89 "../../sdk/cutil_inline.h"
 auto int gflops = (device_properties.multiProcessorCount * device_properties.clockRate);
-# 59 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 90 "../../sdk/cutil_inline.h"
 if (gflops > max_gflops)
-# 60 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 91 "../../sdk/cutil_inline.h"
 {
-# 61 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 92 "../../sdk/cutil_inline.h"
 max_gflops = gflops;
-# 62 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 93 "../../sdk/cutil_inline.h"
 max_gflops_device = current_device;
-# 63 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 94 "../../sdk/cutil_inline.h"
 }
-# 64 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 95 "../../sdk/cutil_inline.h"
 ++current_device;
-# 65 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 96 "../../sdk/cutil_inline.h"
 }
-# 67 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 98 "../../sdk/cutil_inline.h"
 return max_gflops_device;
-# 68 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 99 "../../sdk/cutil_inline.h"
 }
-# 70 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
-# 71 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 72 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 73 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 75 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 76 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 77 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 79 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cudaSafeCall(cudaError err, const char *file, const int line)
-# 80 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 81 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 82 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 84 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 85 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 86 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 88 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cudaSafeThreadSync(const char *file, const int line)
-# 89 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 90 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaError err = cudaThreadSynchronize();
-# 91 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 92 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 94 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 95 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 96 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 98 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
-# 99 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((CUFFT_SUCCESS) != err) {
-# 101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
-# 103 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 104 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 105 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
-# 108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 109 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((CUTTrue) != err) {
-# 110 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
-# 112 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 113 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 114 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 116 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
-# 117 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 118 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaError_t err = cudaGetLastError();
-# 119 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 120 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 123 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 132 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 133 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
-# 134 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 135 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if (!(pointer)) {
-# 136 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
-# 138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 140 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 145 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void cutilDeviceInit(int ARGC, char **ARGV)
-# 146 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 147 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto int deviceCount;
-# 148 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h", 148);
-# 149 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if (deviceCount == 0) {
-# 150 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
-# 151 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 152 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 153 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto int dev = 0;
-# 154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 155 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
-# 157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaDeviceProp deviceProp;
-# 158 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h", 158);
-# 159 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((deviceProp.major) < 1) {
-# 160 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cutil error: device does not support CUDA.\n");
-# 161 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1); }
-# 163 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 164 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
-# 165 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-__cudaSafeCall(cudaSetDevice(dev), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h", 165);
-# 166 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 171 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 172 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 173 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaError_t err = cudaGetLastError();
-# 174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 177 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 178 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 179 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-err = cudaThreadSynchronize();
-# 180 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 181 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 183 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 184 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 185 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 16 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 102 "../../sdk/cutil_inline.h"
 inline void __cuSafeCallNoSync(CUresult err, const char *file, const int line)
-# 17 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 103 "../../sdk/cutil_inline.h"
 {
-# 18 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 104 "../../sdk/cutil_inline.h"
+do {
+# 105 "../../sdk/cutil_inline.h"
 if ((CUDA_SUCCESS) != err) {
-# 19 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 106 "../../sdk/cutil_inline.h"
 fprintf(stderr, "cuSafeCallNoSync() Driver API error = %04d from file <%s>, line %i.\n", err, file, line);
-# 21 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 108 "../../sdk/cutil_inline.h"
 exit(-1);
-# 22 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 109 "../../sdk/cutil_inline.h"
 }
-# 23 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 110 "../../sdk/cutil_inline.h"
+} while (0);
+# 111 "../../sdk/cutil_inline.h"
 }
-# 24 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 112 "../../sdk/cutil_inline.h"
 inline void __cuSafeCall(CUresult err, const char *file, const int line)
-# 25 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 113 "../../sdk/cutil_inline.h"
 {
-# 26 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 114 "../../sdk/cutil_inline.h"
 __cuSafeCallNoSync(err, file, line);
-# 27 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 115 "../../sdk/cutil_inline.h"
 }
-# 29 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 117 "../../sdk/cutil_inline.h"
 inline void __cuCtxSync(const char *file, const int line)
-# 30 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 118 "../../sdk/cutil_inline.h"
 {
-# 31 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 119 "../../sdk/cutil_inline.h"
+do {
+# 120 "../../sdk/cutil_inline.h"
 auto CUresult err = cuCtxSynchronize();
-# 32 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 121 "../../sdk/cutil_inline.h"
 if ((CUDA_SUCCESS) != err) {
-# 33 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 122 "../../sdk/cutil_inline.h"
 fprintf(stderr, "cuCtxSynchronize() API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 35 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 124 "../../sdk/cutil_inline.h"
 exit(-1);
-# 36 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 125 "../../sdk/cutil_inline.h"
 }
-# 37 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 126 "../../sdk/cutil_inline.h"
+} while (0);
+# 127 "../../sdk/cutil_inline.h"
 }
-# 39 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-inline void __cuCheckMsg(const char *msg, const char *file, const int line)
-# 40 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 129 "../../sdk/cutil_inline.h"
+inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
+# 130 "../../sdk/cutil_inline.h"
 {
-# 41 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto CUresult err = cuCtxSynchronize();
-# 42 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if ((CUDA_SUCCESS) != err) {
-# 43 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-fprintf(stderr, "cutilDrvCheckMsg -> %s", msg);
-# 44 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 46 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 131 "../../sdk/cutil_inline.h"
+do {
+# 132 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 133 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
+# 135 "../../sdk/cutil_inline.h"
 exit(-1);
-# 47 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 136 "../../sdk/cutil_inline.h"
 }
-# 48 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 137 "../../sdk/cutil_inline.h"
+} while (0);
+# 138 "../../sdk/cutil_inline.h"
 }
-# 54 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
-# 55 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 140 "../../sdk/cutil_inline.h"
+inline void __cudaSafeCall(cudaError err, const char *file, const int line)
+# 141 "../../sdk/cutil_inline.h"
 {
-# 56 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-cuDevice = 0;
-# 57 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto int deviceCount = 0;
-# 58 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto CUresult err = cuInit(0);
-# 59 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if ((CUDA_SUCCESS) == err) {
-# 60 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h", 60); }
-# 61 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 142 "../../sdk/cutil_inline.h"
+do {
+# 143 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 144 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
+# 146 "../../sdk/cutil_inline.h"
+exit(-1);
+# 147 "../../sdk/cutil_inline.h"
+}
+# 148 "../../sdk/cutil_inline.h"
+} while (0);
+# 149 "../../sdk/cutil_inline.h"
+}
+# 151 "../../sdk/cutil_inline.h"
+inline void __cudaSafeThreadSync(const char *file, const int line)
+# 152 "../../sdk/cutil_inline.h"
+{
+# 153 "../../sdk/cutil_inline.h"
+do {
+# 154 "../../sdk/cutil_inline.h"
+auto cudaError err = cudaThreadSynchronize();
+# 155 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 156 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
+# 158 "../../sdk/cutil_inline.h"
+exit(-1);
+# 159 "../../sdk/cutil_inline.h"
+}
+# 160 "../../sdk/cutil_inline.h"
+} while (0);
+# 161 "../../sdk/cutil_inline.h"
+}
+# 163 "../../sdk/cutil_inline.h"
+inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
+# 164 "../../sdk/cutil_inline.h"
+{
+# 165 "../../sdk/cutil_inline.h"
+do {
+# 166 "../../sdk/cutil_inline.h"
+if ((CUFFT_SUCCESS) != err) {
+# 167 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
+# 169 "../../sdk/cutil_inline.h"
+exit(-1);
+# 170 "../../sdk/cutil_inline.h"
+}
+# 171 "../../sdk/cutil_inline.h"
+} while (0);
+# 172 "../../sdk/cutil_inline.h"
+}
+# 174 "../../sdk/cutil_inline.h"
+inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
+# 175 "../../sdk/cutil_inline.h"
+{
+# 176 "../../sdk/cutil_inline.h"
+if ((CUTTrue) != err) {
+# 177 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
+# 179 "../../sdk/cutil_inline.h"
+exit(-1);
+# 180 "../../sdk/cutil_inline.h"
+}
+# 181 "../../sdk/cutil_inline.h"
+}
+# 182 "../../sdk/cutil_inline.h"
+inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
+# 183 "../../sdk/cutil_inline.h"
+{
+# 184 "../../sdk/cutil_inline.h"
+do {
+# 185 "../../sdk/cutil_inline.h"
+auto cudaError_t err = cudaGetLastError();
+# 186 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 187 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 189 "../../sdk/cutil_inline.h"
+exit(-1);
+# 190 "../../sdk/cutil_inline.h"
+}
+# 191 "../../sdk/cutil_inline.h"
+err = cudaThreadSynchronize();
+# 192 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 193 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutilCheckMsg cudaThreadSynchronize error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 195 "../../sdk/cutil_inline.h"
+exit(-1);
+# 196 "../../sdk/cutil_inline.h"
+}
+# 197 "../../sdk/cutil_inline.h"
+} while (0);
+# 198 "../../sdk/cutil_inline.h"
+}
+# 199 "../../sdk/cutil_inline.h"
+inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
+# 200 "../../sdk/cutil_inline.h"
+{
+# 201 "../../sdk/cutil_inline.h"
+do {
+# 202 "../../sdk/cutil_inline.h"
+if (!(pointer)) {
+# 203 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
+# 205 "../../sdk/cutil_inline.h"
+exit(-1);
+# 206 "../../sdk/cutil_inline.h"
+}
+# 207 "../../sdk/cutil_inline.h"
+} while (0);
+# 208 "../../sdk/cutil_inline.h"
+}
+# 214 "../../sdk/cutil_inline.h"
+inline void cutilDeviceInit(int ARGC, char **ARGV)
+# 215 "../../sdk/cutil_inline.h"
+{
+# 216 "../../sdk/cutil_inline.h"
+auto int deviceCount;
+# 217 "../../sdk/cutil_inline.h"
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_inline.h", 217);
+# 218 "../../sdk/cutil_inline.h"
 if (deviceCount == 0) {
-# 62 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
-# 63 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 219 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
+# 220 "../../sdk/cutil_inline.h"
 exit(-1);
-# 64 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 221 "../../sdk/cutil_inline.h"
 }
-# 65 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 222 "../../sdk/cutil_inline.h"
 auto int dev = 0;
-# 66 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 223 "../../sdk/cutil_inline.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 67 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if (dev < 0) { dev = 0; }
-# 68 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
-# 69 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h", 69);
-# 70 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto char name[100];
-# 71 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-cuDeviceGetName(name, 100, cuDevice);
-# 72 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 224 "../../sdk/cutil_inline.h"
+if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+# 226 "../../sdk/cutil_inline.h"
+auto cudaDeviceProp deviceProp;
+# 227 "../../sdk/cutil_inline.h"
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_inline.h", 227);
+# 228 "../../sdk/cutil_inline.h"
+if ((deviceProp.major) < 1) {
+# 229 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutil error: device does not support CUDA.\n");
+# 230 "../../sdk/cutil_inline.h"
+exit(-1); }
+# 232 "../../sdk/cutil_inline.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 73 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 233 "../../sdk/cutil_inline.h"
+fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
+# 234 "../../sdk/cutil_inline.h"
+__cudaSafeCall(cudaSetDevice(dev), "../../sdk/cutil_inline.h", 234);
+# 235 "../../sdk/cutil_inline.h"
+}
+# 237 "../../sdk/cutil_inline.h"
+inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
+# 238 "../../sdk/cutil_inline.h"
+{
+# 239 "../../sdk/cutil_inline.h"
+cuDevice = 0;
+# 240 "../../sdk/cutil_inline.h"
+auto int deviceCount = 0;
+# 241 "../../sdk/cutil_inline.h"
+auto CUresult err = cuInit(0);
+# 242 "../../sdk/cutil_inline.h"
+if ((CUDA_SUCCESS) == err) {
+# 243 "../../sdk/cutil_inline.h"
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_inline.h", 243); }
+# 244 "../../sdk/cutil_inline.h"
+if (deviceCount == 0) {
+# 245 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
+# 246 "../../sdk/cutil_inline.h"
+exit(-1);
+# 247 "../../sdk/cutil_inline.h"
+}
+# 248 "../../sdk/cutil_inline.h"
+auto int dev = 0;
+# 249 "../../sdk/cutil_inline.h"
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+# 250 "../../sdk/cutil_inline.h"
+if (dev < 0) { dev = 0; }
+# 251 "../../sdk/cutil_inline.h"
+if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+# 252 "../../sdk/cutil_inline.h"
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_inline.h", 252);
+# 253 "../../sdk/cutil_inline.h"
+auto char name[100];
+# 254 "../../sdk/cutil_inline.h"
+cuDeviceGetName(name, 100, cuDevice);
+# 255 "../../sdk/cutil_inline.h"
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+# 256 "../../sdk/cutil_inline.h"
 fprintf(stderr, "Using device %d: %s\n", dev, name); }
-# 74 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 257 "../../sdk/cutil_inline.h"
 }
-# 78 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 262 "../../sdk/cutil_inline.h"
+inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
+# 263 "../../sdk/cutil_inline.h"
+{
+# 264 "../../sdk/cutil_inline.h"
+do {
+# 265 "../../sdk/cutil_inline.h"
+auto cudaError_t err = cudaGetLastError();
+# 266 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 267 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 269 "../../sdk/cutil_inline.h"
+exit(-1);
+# 270 "../../sdk/cutil_inline.h"
+}
+# 271 "../../sdk/cutil_inline.h"
+err = cudaThreadSynchronize();
+# 272 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 273 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 275 "../../sdk/cutil_inline.h"
+exit(-1);
+# 276 "../../sdk/cutil_inline.h"
+}
+# 277 "../../sdk/cutil_inline.h"
+} while (0);
+# 278 "../../sdk/cutil_inline.h"
+}
+# 282 "../../sdk/cutil_inline.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 79 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 283 "../../sdk/cutil_inline.h"
 {
-# 80 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 284 "../../sdk/cutil_inline.h"
+do {
+# 285 "../../sdk/cutil_inline.h"
 auto CUresult err = cuCtxSynchronize();
-# 81 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 286 "../../sdk/cutil_inline.h"
 if ((CUDA_ERROR_INVALID_CONTEXT) != err) {
-# 82 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 287 "../../sdk/cutil_inline.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 84 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 289 "../../sdk/cutil_inline.h"
 exit(-1);
-# 85 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 290 "../../sdk/cutil_inline.h"
 }
-# 86 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 291 "../../sdk/cutil_inline.h"
 err = cuCtxSynchronize();
-# 87 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 292 "../../sdk/cutil_inline.h"
 if ((CUDA_SUCCESS) != err) {
-# 88 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 293 "../../sdk/cutil_inline.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 90 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 295 "../../sdk/cutil_inline.h"
 exit(-1);
-# 91 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 296 "../../sdk/cutil_inline.h"
 }
-# 92 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-}
-# 12 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-inline void print_NVCC_min_spec(const char *sSDKsample, const char *sNVCCReq, const char *sDriverReq)
-# 13 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-{
-# 14 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf("CUDA %d.%02d Toolkit built this project.\n", 2010 / 1000, 2010 % 100);
-# 15 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf("  [ %s ] requirements:\n", sSDKsample);
-# 16 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf(" -> CUDA %s Toolkit\n", sNVCCReq);
-# 17 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
-# 18 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
+# 297 "../../sdk/cutil_inline.h"
+} while (0);
+# 298 "../../sdk/cutil_inline.h"
 }
 # 22 "simplerFFT.cu"
 typedef float2 Complex;
@@ -7602,13 +7612,13 @@ result = runTest(size);
 # 229 "simplerFFT.cu"
 if (result) {
 # 230 "simplerFFT.cu"
-printf("FFT size %d passed\n", size);
+printf("TEST PASSED\nFFT size %d passed\n", size);
 # 231 "simplerFFT.cu"
 } else
 # 232 "simplerFFT.cu"
 {
 # 233 "simplerFFT.cu"
-printf("FAILED on FFT size %d\n", size);
+printf("TEST FAILED on FFT size %d\n", size);
 # 234 "simplerFFT.cu"
 }
 # 235 "simplerFFT.cu"
@@ -7620,7 +7630,7 @@ result = runTest(1024);
 # 239 "simplerFFT.cu"
 if (result) {
 # 240 "simplerFFT.cu"
-printf("2^10 FFT size passed\n");
+printf("TEST PASSED\n2^10 FFT size passed\n");
 # 241 "simplerFFT.cu"
 }
 # 242 "simplerFFT.cu"
@@ -7630,11 +7640,11 @@ return 0;
 # 245 "simplerFFT.cu"
 }
 
-# 1 "/tmp/tmpxft_00001baf_00000000-4_simplerFFT.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000614a_00000000-1_simplerFFT.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00001baf_00000000-6_simplerFFT.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000614a_00000000-3_simplerFFT.fatbin.c" 1
 # 1 "/home/gdiamos/temp/cuda/bin//../include/__cudaFatFormat.h" 1
 # 83 "/home/gdiamos/temp/cuda/bin//../include/__cudaFatFormat.h"
 extern "C" {
@@ -7693,7 +7703,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00001baf_00000000-6_simplerFFT.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000614a_00000000-3_simplerFFT.fatbin.c" 2
 
 
 
@@ -7701,8 +7711,96 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 extern "C" {
 
 
-static const unsigned long long __deviceText_$sm_13$[] = {
-0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d33315full,0x206e6f6973726576ull,
+static const unsigned long long __deviceText_$compute_10$[] = {
+0x6f69737265762e09ull,0x2e090a332e31206eull,0x7320746567726174ull,0x616d202c30315f6dull,
+0x6f745f3436665f70ull,0x2f2f090a3233665full,0x656c69706d6f6320ull,0x2f20687469772064ull,
+0x6964672f656d6f68ull,0x6d65742f736f6d61ull,0x6f2f616475632f70ull,0x696c2f34366e6570ull,
+0x2f090a65622f2f62ull,0x6e65706f766e202full,0x746c697562206363ull,0x38303032206e6f20ull,
+0x0a0a33302d32312dull,0x752e206765722e09ull,0x313c617225203233ull,0x65722e090a3b3e37ull,
+0x25203436752e2067ull,0x3b3e37313c616472ull,0x2e206765722e090aull,0x3c61662520323366ull,
+0x722e090a3b3e3731ull,0x203436662e206765ull,0x3e37313c61646625ull,0x206765722e090a3bull,
+0x767225203233752eull,0x722e090a3b3e353cull,0x203436752e206765ull,0x3b3e353c76647225ull,
+0x2e206765722e090aull,0x3c76662520323366ull,0x65722e090a3b3e35ull,0x25203436662e2067ull,
+0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,0x2f20676e696c6970ull,0x78706d742f706d74ull,
+0x36303030305f7466ull,0x303030305f613431ull,0x735f372d30303030ull,0x464672656c706d69ull,
+0x692e337070632e54ull,0x632f706d742f2820ull,0x3153302e23494263ull,0x2f2f090a296b4f41ull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f2f090a0a2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x202f2f090a2d2d2dull,
+0x3a736e6f6974704full,0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x0a2d2d2d2d2d2d2dull,0x72615420202f2f09ull,0x2c7874703a746567ull,0x5f6d733a41534920ull,
+0x69646e45202c3031ull,0x6c7474696c3a6e61ull,0x746e696f50202c65ull,0x3a657a6953207265ull,
+0x20202f2f090a3436ull,0x74704f2809334f2dull,0x6f6974617a696d69ull,0x296c6576656c206eull,
+0x672d20202f2f090aull,0x6775626544280930ull,0x0a296c6576656c20ull,0x326d2d20202f2f09ull,
+0x74726f7065522809ull,0x726f736976646120ull,0x2f2f090a29736569ull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x662e090a0a2d2d2dull,0x3c22093109656c69ull,
+0x2d646e616d6d6f63ull,0x090a223e656e696cull,0x093209656c69662eull,0x6d742f706d742f22ull,
+0x3030305f74667870ull,0x30305f6134313630ull,0x362d303030303030ull,0x72656c706d69735full,
+0x616475632e544646ull,0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,
+0x2f6363672f62696cull,0x6c2d34365f363878ull,0x756e672d78756e69ull,0x692f332e332e342full,
+0x732f6564756c636eull,0x22682e6665646474ull,0x09656c69662e090aull,0x656d6f682f220934ull,
+0x736f6d616964672full,0x75632f706d65742full,0x2f2f6e69622f6164ull,0x756c636e692f2e2eull,
+0x642f7472632f6564ull,0x75725f6563697665ull,0x22682e656d69746eull,0x09656c69662e090aull,
+0x656d6f682f220935ull,0x736f6d616964672full,0x75632f706d65742full,0x2f2f6e69622f6164ull,
+0x756c636e692f2e2eull,0x5f74736f682f6564ull,0x2e73656e69666564ull,0x6c69662e090a2268ull,
+0x6f682f2209360965ull,0x6d616964672f656dull,0x2f706d65742f736full,0x6e69622f61647563ull,
+0x636e692f2e2e2f2full,0x6975622f6564756cull,0x7079745f6e69746cull,0x2e090a22682e7365ull,
+0x22093709656c6966ull,0x64672f656d6f682full,0x65742f736f6d6169ull,0x2f616475632f706dull,
+0x2f2e2e2f2f6e6962ull,0x2f6564756c636e69ull,0x745f656369766564ull,0x0a22682e73657079ull,
+0x3809656c69662e09ull,0x2f656d6f682f2209ull,0x2f736f6d61696467ull,0x6475632f706d6574ull,
+0x2e2f2f6e69622f61ull,0x64756c636e692f2eull,0x7265766972642f65ull,0x682e73657079745full,
+0x656c69662e090a22ull,0x6d6f682f22093909ull,0x6f6d616964672f65ull,0x632f706d65742f73ull,
+0x2f6e69622f616475ull,0x6c636e692f2e2e2full,0x747865742f656475ull,0x657079745f657275ull,
+0x662e090a22682e73ull,0x2209303109656c69ull,0x64672f656d6f682full,0x65742f736f6d6169ull,
+0x2f616475632f706dull,0x2f2e2e2f2f6e6962ull,0x2f6564756c636e69ull,0x745f726f74636576ull,
+0x0a22682e73657079ull,0x3109656c69662e09ull,0x656d6f682f220931ull,0x736f6d616964672full,
+0x75632f706d65742full,0x2f2f6e69622f6164ull,0x756c636e692f2e2eull,0x63697665642f6564ull,
+0x68636e75616c5f65ull,0x74656d617261705full,0x090a22682e737265ull,0x323109656c69662eull,
+0x2f656d6f682f2209ull,0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,
+0x64756c636e692f2eull,0x74732f7472632f65ull,0x6c635f656761726full,0x090a22682e737361ull,
+0x333109656c69662eull,0x692f7273752f2209ull,0x622f6564756c636eull,0x657079742f737469ull,
+0x662e090a22682e73ull,0x2209343109656c69ull,0x636e692f7273752full,0x6d69742f6564756cull,
+0x662e090a22682e65ull,0x2209353109656c69ull,0x64672f656d6f682full,0x65742f736f6d6169ull,
+0x2f616475632f706dull,0x2f2e2e2f2f6e6962ull,0x2f6564756c636e69ull,0x665f6e6f6d6d6f63ull,
+0x736e6f6974636e75ull,0x69662e090a22682eull,0x2f2209363109656cull,0x6964672f656d6f68ull,
+0x6d65742f736f6d61ull,0x622f616475632f70ull,0x692f2e2e2f2f6e69ull,0x632f6564756c636eull,
+0x5f636e75662f7472ull,0x22682e6f7263616dull,0x09656c69662e090aull,0x6d6f682f22093731ull,
+0x6f6d616964672f65ull,0x632f706d65742f73ull,0x2f6e69622f616475ull,0x6c636e692f2e2e2full,
+0x6874616d2f656475ull,0x6f6974636e75665full,0x2e090a22682e736eull,0x09383109656c6966ull,
+0x672f656d6f682f22ull,0x742f736f6d616964ull,0x616475632f706d65ull,0x2e2e2f2f6e69622full,
+0x6564756c636e692full,0x5f6563697665642full,0x6e6f6974636e7566ull,0x662e090a22682e73ull,
+0x2209393109656c69ull,0x64672f656d6f682full,0x65742f736f6d6169ull,0x2f616475632f706dull,
+0x2f2e2e2f2f6e6962ull,0x2f6564756c636e69ull,0x6e6f635f6874616dull,0x682e73746e617473ull,
+0x656c69662e090a22ull,0x6f682f2209303209ull,0x6d616964672f656dull,0x2f706d65742f736full,
+0x6e69622f61647563ull,0x636e692f2e2e2f2full,0x5f6d732f6564756cull,0x696d6f74615f3131ull,
+0x6974636e75665f63ull,0x090a22682e736e6full,0x313209656c69662eull,0x2f656d6f682f2209ull,
+0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,0x64756c636e692f2eull,
+0x5f32315f6d732f65ull,0x665f63696d6f7461ull,0x736e6f6974636e75ull,0x69662e090a22682eull,
+0x2f2209323209656cull,0x6964672f656d6f68ull,0x6d65742f736f6d61ull,0x622f616475632f70ull,
+0x692f2e2e2f2f6e69ull,0x732f6564756c636eull,0x756f645f33315f6dull,0x636e75665f656c62ull,
+0x22682e736e6f6974ull,0x09656c69662e090aull,0x6d6f682f22093332ull,0x6f6d616964672f65ull,
+0x632f706d65742f73ull,0x2f6e69622f616475ull,0x6c636e692f2e2e2full,0x747865742f656475ull,
+0x637465665f657275ull,0x6974636e75665f68ull,0x090a22682e736e6full,0x343209656c69662eull,
+0x2f656d6f682f2209ull,0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,
+0x64756c636e692f2eull,0x665f6874616d2f65ull,0x736e6f6974636e75ull,0x7874705f6c62645full,
+0x000a0a0a22682e31ull
+};
+
+
+}
+
+
+
+extern "C" {
+
+
+static const unsigned long long __deviceText_$sm_10$[] = {
+0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d30315full,0x206e6f6973726576ull,
 0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
 0x20656d616e090a7bull,0x6d6d75645f5f203dull,0x5f7972746e655f79ull,0x206d656d6c090a5full,
 0x656d73090a30203dull,0x72090a30203d206dull,0x0a30203d20206765ull,0x203d202072616209ull,
@@ -7714,101 +7812,14 @@ static const unsigned long long __deviceText_$sm_13$[] = {
 }
 
 
-
-extern "C" {
-
-
-static const unsigned long long __deviceText_$compute_13$[] = {
-0x6f69737265762e09ull,0x2e090a332e31206eull,0x7320746567726174ull,0x2f2f090a33315f6dull,
-0x656c69706d6f6320ull,0x2f20687469772064ull,0x6964672f656d6f68ull,0x6d65742f736f6d61ull,
-0x6f2f616475632f70ull,0x696c2f34366e6570ull,0x2f090a65622f2f62ull,0x6e65706f766e202full,
-0x746c697562206363ull,0x38303032206e6f20ull,0x0a0a33302d32312dull,0x752e206765722e09ull,
-0x313c617225203233ull,0x65722e090a3b3e37ull,0x25203436752e2067ull,0x3b3e37313c616472ull,
-0x2e206765722e090aull,0x3c61662520323366ull,0x722e090a3b3e3731ull,0x203436662e206765ull,
-0x3e37313c61646625ull,0x206765722e090a3bull,0x767225203233752eull,0x722e090a3b3e353cull,
-0x203436752e206765ull,0x3b3e353c76647225ull,0x2e206765722e090aull,0x3c76662520323366ull,
-0x65722e090a3b3e35ull,0x25203436662e2067ull,0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,
-0x2f20676e696c6970ull,0x78706d742f706d74ull,0x31303030305f7466ull,0x303030305f666162ull,
-0x5f37312d30303030ull,0x4672656c706d6973ull,0x2e337070632e5446ull,0x2f706d742f282069ull,
-0x4a742e2349426363ull,0x2f090a2955477849ull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2f090a0a2d2d2d2dull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2f2f090a2d2d2d2dull,0x736e6f6974704f20ull,0x2d2d2d2f2f090a3aull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x615420202f2f090aull,
-0x7874703a74656772ull,0x6d733a415349202cull,0x646e45202c33315full,0x7474696c3a6e6169ull,
-0x6e696f50202c656cull,0x657a695320726574ull,0x202f2f090a34363aull,0x704f2809334f2d20ull,
-0x6974617a696d6974ull,0x6c6576656c206e6full,0x2d20202f2f090a29ull,0x7562654428093067ull,
-0x296c6576656c2067ull,0x6d2d20202f2f090aull,0x726f706552280932ull,0x6f73697664612074ull,
-0x2f090a2973656972ull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2e090a0a2d2d2d2dull,0x22093109656c6966ull,0x646e616d6d6f633cull,0x0a223e656e696c2dull,
-0x3209656c69662e09ull,0x742f706d742f2209ull,0x30305f746678706dull,0x305f666162313030ull,
-0x2d30303030303030ull,0x6c706d69735f3631ull,0x75632e5446467265ull,0x70672e3265666164ull,
-0x6c69662e090a2275ull,0x73752f2209330965ull,0x63672f62696c2f72ull,0x34365f3638782f63ull,
-0x672d78756e696c2dull,0x332e332e342f756eull,0x6564756c636e692full,0x2e6665646474732full,
-0x6c69662e090a2268ull,0x6f682f2209340965ull,0x6d616964672f656dull,0x2f706d65742f736full,
-0x6e69622f61647563ull,0x636e692f2e2e2f2full,0x7472632f6564756cull,0x5f6563697665642full,
-0x2e656d69746e7572ull,0x6c69662e090a2268ull,0x6f682f2209350965ull,0x6d616964672f656dull,
-0x2f706d65742f736full,0x6e69622f61647563ull,0x636e692f2e2e2f2full,0x736f682f6564756cull,
-0x656e696665645f74ull,0x662e090a22682e73ull,0x2f22093609656c69ull,0x6964672f656d6f68ull,
-0x6d65742f736f6d61ull,0x622f616475632f70ull,0x692f2e2e2f2f6e69ull,0x622f6564756c636eull,
-0x745f6e69746c6975ull,0x0a22682e73657079ull,0x3709656c69662e09ull,0x2f656d6f682f2209ull,
-0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,0x64756c636e692f2eull,
-0x6563697665642f65ull,0x682e73657079745full,0x656c69662e090a22ull,0x6d6f682f22093809ull,
-0x6f6d616964672f65ull,0x632f706d65742f73ull,0x2f6e69622f616475ull,0x6c636e692f2e2e2full,
-0x766972642f656475ull,0x73657079745f7265ull,0x69662e090a22682eull,0x682f22093909656cull,
-0x616964672f656d6full,0x706d65742f736f6dull,0x69622f616475632full,0x6e692f2e2e2f2f6eull,
-0x65742f6564756c63ull,0x79745f6572757478ull,0x090a22682e736570ull,0x303109656c69662eull,
-0x2f656d6f682f2209ull,0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,
-0x64756c636e692f2eull,0x726f746365762f65ull,0x682e73657079745full,0x656c69662e090a22ull,
-0x6f682f2209313109ull,0x6d616964672f656dull,0x2f706d65742f736full,0x6e69622f61647563ull,
-0x636e692f2e2e2f2full,0x7665642f6564756cull,0x6e75616c5f656369ull,0x6d617261705f6863ull,
-0x22682e7372657465ull,0x09656c69662e090aull,0x6d6f682f22093231ull,0x6f6d616964672f65ull,
-0x632f706d65742f73ull,0x2f6e69622f616475ull,0x6c636e692f2e2e2full,0x2f7472632f656475ull,
-0x5f656761726f7473ull,0x22682e7373616c63ull,0x09656c69662e090aull,0x7273752f22093331ull,
-0x6564756c636e692full,0x79742f737469622full,0x090a22682e736570ull,0x343109656c69662eull,
-0x692f7273752f2209ull,0x742f6564756c636eull,0x090a22682e656d69ull,0x353109656c69662eull,
-0x2f656d6f682f2209ull,0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,
-0x64756c636e692f2eull,0x6e6f6d6d6f632f65ull,0x6f6974636e75665full,0x2e090a22682e736eull,
-0x09363109656c6966ull,0x672f656d6f682f22ull,0x742f736f6d616964ull,0x616475632f706d65ull,
-0x2e2e2f2f6e69622full,0x6564756c636e692full,0x6e75662f7472632full,0x2e6f7263616d5f63ull,
-0x6c69662e090a2268ull,0x682f220937310965ull,0x616964672f656d6full,0x706d65742f736f6dull,
-0x69622f616475632full,0x6e692f2e2e2f2f6eull,0x616d2f6564756c63ull,0x74636e75665f6874ull,
-0x0a22682e736e6f69ull,0x3109656c69662e09ull,0x656d6f682f220938ull,0x736f6d616964672full,
-0x75632f706d65742full,0x2f2f6e69622f6164ull,0x756c636e692f2e2eull,0x63697665642f6564ull,
-0x6974636e75665f65ull,0x090a22682e736e6full,0x393109656c69662eull,0x2f656d6f682f2209ull,
-0x2f736f6d61696467ull,0x6475632f706d6574ull,0x2e2f2f6e69622f61ull,0x64756c636e692f2eull,
-0x635f6874616d2f65ull,0x73746e6174736e6full,0x69662e090a22682eull,0x2f2209303209656cull,
-0x6964672f656d6f68ull,0x6d65742f736f6d61ull,0x622f616475632f70ull,0x692f2e2e2f2f6e69ull,
-0x732f6564756c636eull,0x6f74615f31315f6dull,0x636e75665f63696dull,0x22682e736e6f6974ull,
-0x09656c69662e090aull,0x6d6f682f22093132ull,0x6f6d616964672f65ull,0x632f706d65742f73ull,
-0x2f6e69622f616475ull,0x6c636e692f2e2e2full,0x315f6d732f656475ull,0x63696d6f74615f32ull,
-0x6f6974636e75665full,0x2e090a22682e736eull,0x09323209656c6966ull,0x672f656d6f682f22ull,
-0x742f736f6d616964ull,0x616475632f706d65ull,0x2e2e2f2f6e69622full,0x6564756c636e692full,
-0x645f33315f6d732full,0x75665f656c62756full,0x2e736e6f6974636eull,0x6c69662e090a2268ull,
-0x682f220933320965ull,0x616964672f656d6full,0x706d65742f736f6dull,0x69622f616475632full,
-0x6e692f2e2e2f2f6eull,0x65742f6564756c63ull,0x65665f6572757478ull,0x636e75665f686374ull,
-0x22682e736e6f6974ull,0x09656c69662e090aull,0x6d6f682f22093432ull,0x6f6d616964672f65ull,
-0x632f706d65742f73ull,0x2f6e69622f616475ull,0x6c636e692f2e2e2full,0x6874616d2f656475ull,
-0x6f6974636e75665full,0x705f6c62645f736eull,0x0a0a22682e337874ull,0x000000000000000aull
-};
-
-
-}
-
-
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
-static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_13",(char*)__deviceText_$sm_13$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
+static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_10",(char*)__deviceText_$sm_10$},{0,0}};
 static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"d5254446ac2d59fb",(char*)"simplerFFT.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0};
-# 5 "/tmp/tmpxft_00001baf_00000000-4_simplerFFT.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"117cb623092684c6",(char*)"simplerFFT.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0};
+# 5 "/tmp/tmpxft_0000614a_00000000-1_simplerFFT.cudafe1.stub.c" 2
 # 1 "/home/gdiamos/temp/cuda/bin//../include/crt/host_runtime.h" 1
 # 74 "/home/gdiamos/temp/cuda/bin//../include/crt/host_runtime.h"
 # 1 "/home/gdiamos/temp/cuda/bin//../include/host_defines.h" 1
@@ -8934,37 +8945,32 @@ static int __popcll(unsigned long long int a)
   alo = ((__umul24(alo, 0x808080) << 1) + alo) >> 24;
   return alo;
 }
-# 1426 "/home/gdiamos/temp/cuda/bin//../include/device_functions.h" 3
+# 1393 "/home/gdiamos/temp/cuda/bin//../include/device_functions.h" 3
 static double fdivide(double a, double b)
 {
-  return a / b;
+  return (double)fdividef((float)a, (float)b);
 }
 
 
 
-static int __internal_double2int(double a, enum cudaRoundMode rndMode);
-static unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode);
-static long long int __internal_double2ll(double a, enum cudaRoundMode rndMode);
-static unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode);
-
 static int __double2int_rz(double a)
 {
-  return __internal_double2int(a, cudaRoundZero);
+  return __float2int_rz((float)a);
 }
 
 static unsigned int __double2uint_rz(double a)
 {
-  return __internal_double2uint(a, cudaRoundZero);
+  return __float2uint_rz((float)a);
 }
 
 static long long int __double2ll_rz(double a)
 {
-  return __internal_double2ll(a, cudaRoundZero);
+  return __float2ll_rz((float)a);
 }
 
 static unsigned long long int __double2ull_rz(double a)
 {
-  return __internal_double2ull(a, cudaRoundZero);
+  return __float2ull_rz((float)a);
 }
 # 1470 "/home/gdiamos/temp/cuda/bin//../include/device_functions.h" 3
 # 1 "/home/gdiamos/temp/cuda/bin//../include/sm_11_atomic_functions.h" 1 3
@@ -10030,12 +10036,12 @@ static double __dadd_rd(double a, double b)
 
 static double __dmul_rz(double a, double b)
 {
-  return __fma_rz(a, b, __longlong_as_double(0x8000000000000000ULL));
+  return __fma_rz(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
 
 static double __dmul_ru(double a, double b)
 {
-  return __fma_ru(a, b, __longlong_as_double(0x8000000000000000ULL));
+  return __fma_ru(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
 
 static double __dmul_rd(double a, double b)
@@ -10050,7 +10056,7 @@ static double __dadd_rn(double a, double b)
 
 static double __dmul_rn(double a, double b)
 {
-  return __fma_rn(a, b, __longlong_as_double(0x8000000000000000ULL));
+  return __fma_rn(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
 # 1473 "/home/gdiamos/temp/cuda/bin//../include/device_functions.h" 2 3
 # 1 "/home/gdiamos/temp/cuda/bin//../include/texture_fetch_functions.h" 1 3
@@ -12283,2127 +12289,339 @@ extern __attribute__((__weak__)) float rsqrtf(float a); float rsqrtf(float a)
 {
   return (float)rsqrt((double)a);
 }
-# 3861 "/home/gdiamos/temp/cuda/bin//../include/math_functions.h" 3
-# 1 "/home/gdiamos/temp/cuda/bin//../include/math_functions_dbl_ptx3.h" 1 3
-# 59 "/home/gdiamos/temp/cuda/bin//../include/math_functions_dbl_ptx3.h" 3
+# 3855 "/home/gdiamos/temp/cuda/bin//../include/math_functions.h" 3
+# 1 "/home/gdiamos/temp/cuda/bin//../include/math_functions_dbl_ptx1.h" 1 3
+# 45 "/home/gdiamos/temp/cuda/bin//../include/math_functions_dbl_ptx1.h" 3
 static double __cuda_fabs(double a)
 {
-  return fabs(a);
+  return (float)__cuda_fabsf((float)a);
 }
 
 static double __cuda_fmax(double a, double b)
 {
-
-  volatile union {
-    double d;
-    unsigned long long int l;
-  } cvta, cvtb;
-  cvta.d = a;
-  cvtb.d = b;
-  if ((cvtb.l << 1) > 0xffe0000000000000ULL) return a;
-  if ((cvta.l << 1) > 0xffe0000000000000ULL) return b;
-  if ((cvta.d == 0.0) && (cvtb.d == 0.0)) {
-    cvta.l &= cvtb.l;
-    return cvta.d;
-  }
-  return a > b ? a : b;
-
-
-
+  return (float)__cuda_fmaxf((float)a, (float)b);
 }
 
 static double __cuda_fmin(double a, double b)
 {
-
-  volatile union {
-    double d;
-    unsigned long long int l;
-  } cvta, cvtb;
-  cvta.d = a;
-  cvtb.d = b;
-  if ((cvtb.l << 1) > 0xffe0000000000000ULL) return a;
-  if ((cvta.l << 1) > 0xffe0000000000000ULL) return b;
-  if ((cvta.l | cvtb.l) == 0x8000000000000000ULL) {
-    return __longlong_as_double(0x8000000000000000ULL) ;
-  }
-  return a < b ? a : b;
-
-
-
-}
-
-static double __cuda_ceil(double a)
-{
-  return ceil(a);
-}
-
-static double __cuda_floor(double a)
-{
-  return floor(a);
-}
-
-static double __cuda_trunc(double a)
-{
-  return trunc(a);
-}
-
-static double __cuda_nearbyint(double a)
-{
-
-
-
-  double res = nearbyint(a);
-
-
-
-
-
-  return res;
-
-}
-
-
-
-
-
-
-
-static double __cuda_rint(double a)
-{
-  return __cuda_nearbyint(a);
-}
-
-static long int __cuda_lrint(double a)
-{
-
-  return (long int)__double2ll_rn(a);
-
-
-
-}
-
-static long long int __cuda_llrint(double a)
-{
-  return __double2ll_rn(a);
-}
-
-static int __cuda___signbit(double a)
-{
-  return (int)((unsigned int)__double2hiint(a) >> 31);
+  return (float)__cuda_fminf((float)a, (float)b);
 }
 
 static int __cuda___finite(double a)
 {
-  return __cuda_fabs(a) < __longlong_as_double(0x7ff0000000000000ULL);
+  return __cuda___finitef((float)a);
 }
 
 static int __cuda___isinf(double a)
 {
-  return __cuda_fabs(a) == __longlong_as_double(0x7ff0000000000000ULL);
+  return __cuda___isinff((float)a);
 }
 
 static int __cuda___isnan(double a)
 {
-  return !(__cuda_fabs(a) <= __longlong_as_double(0x7ff0000000000000ULL));
+  return __cuda___isnanf((float)a);
 }
 
-static double __cuda_copysign(double a, double b)
+static int __cuda___signbit(double a)
 {
-  int alo, ahi, bhi;
-
-  bhi = __double2hiint(b);
-  alo = __double2loint(a);
-  ahi = __double2hiint(a);
-  ahi = (bhi & 0x80000000) | (ahi & ~0x80000000);
-  return __hiloint2double(ahi, alo);
-}
-
-
-static unsigned long long int __cudart_i2opi_d [] = {
-  0x6bfb5fb11f8d5d08ULL,
-  0x3d0739f78a5292eaULL,
-  0x7527bac7ebe5f17bULL,
-  0x4f463f669e5fea2dULL,
-  0x6d367ecf27cb09b7ULL,
-  0xef2f118b5a0a6d1fULL,
-  0x1ff897ffde05980fULL,
-  0x9c845f8bbdf9283bULL,
-  0x3991d639835339f4ULL,
-  0xe99c7026b45f7e41ULL,
-  0xe88235f52ebb4484ULL,
-  0xfe1deb1cb129a73eULL,
-  0x06492eea09d1921cULL,
-  0xb7246e3a424dd2e0ULL,
-  0xfe5163abdebbc561ULL,
-  0xdb6295993c439041ULL,
-  0xfc2757d1f534ddc0ULL,
-  0xa2f9836e4e441529ULL,
-};
-
-static double __internal_trig_reduction_kerneld(double a, int *quadrant)
-{
-  double j;
-  int q;
-  if (__cuda_fabs(a) > 2147483648.0) {
-
-    unsigned long long int ia;
-    unsigned long long int s;
-    unsigned long long int result[5];
-    unsigned long long int phi, plo;
-    unsigned long long int hi, lo;
-    unsigned int e;
-    int idx;
-
-    ia = __double_as_longlong(a);
-    s = ia & 0x8000000000000000ULL;
-    e = (unsigned int)(((ia >> 52) & 0x7ff) - 1024);
-    ia = (ia << 11) | 0x8000000000000000ULL;
-
-    idx = 16 - (e >> 6);
-    hi = 0;
-
-
-
-    for (q = (idx-1); q < min(18,idx+3); q++) {
-      plo = __cudart_i2opi_d[q] * ia;
-      phi = __umul64hi (__cudart_i2opi_d[q], ia);
-      lo = hi + plo;
-      hi = phi + (lo < plo);
-      result[q-(idx-1)] = lo;
-    }
-    result[q-(idx-1)] = hi;
-    e = e & 63;
-
-
-
-    hi = result[3];
-    lo = result[2];
-    if (e) {
-      q = 64 - e;
-      hi = (hi << e) | (lo >> q);
-      lo = (lo << e) | (result[1] >> q);
-    }
-    q = (int)(hi >> 62);
-
-    hi = (hi << 2) | (lo >> 62);
-    lo = (lo << 2);
-    e = (hi | (lo > 0)) > 0x8000000000000000ULL;
-    q += e;
-    if (s) q = -q;
-    if (e) {
-      unsigned long long int t;
-      hi = ~hi;
-      lo = -(long long int)lo;
-      t = (lo == 0ULL);
-      hi += t;
-      s = s ^ 0x8000000000000000ULL;
-    }
-    *quadrant = q;
-
-    e = 0;
-    while ((long long int)hi > 0) {
-      hi = (hi << 1) | (lo >> 63);
-      lo = (lo << 1);
-      e--;
-    }
-    lo = hi * 0xC90FDAA22168C235ULL;
-    hi = __umul64hi (hi, 0xC90FDAA22168C235ULL);
-    if ((long long int)hi > 0) {
-      hi = (hi << 1) | (lo >> 63);
-      lo = (lo << 1);
-      e--;
-    }
-    hi = hi + (lo > 0);
-    ia = s | ((((unsigned long long int)(e + 1022)) << 52) + (hi >> 11) +
-              ((hi << 53) >= 0x8000000000000000ULL));
-    return __longlong_as_double(ia);
-  }
-
-  q = __double2int_rn (a * 6.3661977236758138e-1);
-  j = (double)q;
-
-
-
-
-  a = __fma_rn (-j, 1.5707963267948966e+000, a);
-  a = __fma_rn (-j, 6.1232339957367574e-017, a);
-  a = __fma_rn (-j, 8.4784276603688985e-032, a);
-  *quadrant = q;
-  return a;
-}
-
-
-static double __internal_sin_kerneld(double x)
-{
-  double x2, z;
-  x2 = x * x;
-  z = 1.5896230157221844E-010;
-  z = __fma_rn (z, x2, -2.5050747762850355E-008);
-  z = __fma_rn (z, x2, 2.7557313621385676E-006);
-  z = __fma_rn (z, x2, -1.9841269829589539E-004);
-  z = __fma_rn (z, x2, 8.3333333333221182E-003);
-  z = __fma_rn (z, x2, -1.6666666666666630E-001);
-  z = z * x2;
-  z = __fma_rn (z, x, x);
-  return z;
-}
-
-
-static double __internal_cos_kerneld(double x)
-{
-  double x2, z;
-  x2 = x * x;
-  z = -1.136788825395985E-011;
-  z = __fma_rn (z, x2, 2.087588480545065E-009);
-  z = __fma_rn (z, x2, -2.755731555403950E-007);
-  z = __fma_rn (z, x2, 2.480158729365970E-005);
-  z = __fma_rn (z, x2, -1.388888888888074E-003);
-  z = __fma_rn (z, x2, 4.166666666666664E-002);
-  z = __fma_rn (z, x2, -5.000000000000000E-001);
-  z = __fma_rn (z, x2, 1.000000000000000E+000);
-  return z;
-}
-
-
-static double __internal_tan_kerneld(double x, int i)
-{
-  double x2, z, q;
-  x2 = x * x;
-  z = 9.8006287203286300E-006;
-  z = __fma_rn (z, x2, -2.4279526494179897E-005);
-  z = __fma_rn (z, x2, 4.8644173130937162E-005);
-  z = __fma_rn (z, x2, -2.5640012693782273E-005);
-  z = __fma_rn (z, x2, 6.7223984330880073E-005);
-  z = __fma_rn (z, x2, 8.3559287318211639E-005);
-  z = __fma_rn (z, x2, 2.4375039850848564E-004);
-  z = __fma_rn (z, x2, 5.8886487754856672E-004);
-  z = __fma_rn (z, x2, 1.4560454844672040E-003);
-  z = __fma_rn (z, x2, 3.5921008885857180E-003);
-  z = __fma_rn (z, x2, 8.8632379218613715E-003);
-  z = __fma_rn (z, x2, 2.1869488399337889E-002);
-  z = __fma_rn (z, x2, 5.3968253972902704E-002);
-  z = __fma_rn (z, x2, 1.3333333333325342E-001);
-  z = __fma_rn (z, x2, 3.3333333333333381E-001);
-  z = z * x2;
-  q = __fma_rn (z, x, x);
-  if (i) {
-    double s = q - x;
-    double w = __fma_rn (z, x, -s);
-    z = 1.0 / q;
-    z = -z;
-    s = __fma_rn (q, z, 1.0);
-    q = __fma_rn (z, __fma_rn (z, w, s), z);
-  }
-  return q;
+  return __cuda___signbitf((float)a);
 }
 
 static double __cuda_sqrt(double a)
 {
-  return sqrt(a);
+  return (double)__cuda_sqrtf((float)a);
 }
 
 static double __cuda_rsqrt(double a)
 {
-
-    return 1.0 / sqrt(a);
-
-
-
+  return (double)__cuda_rsqrtf((float)a);
 }
 
-
-static double __internal_expm1_kernel (double a)
+static double __cuda_ceil(double a)
 {
-  double t;
-  t = 2.08842685477913050E-009;
-  t = __fma_rn (t, a, 2.51366409033551950E-008);
-  t = __fma_rn (t, a, 2.75574612072447230E-007);
-  t = __fma_rn (t, a, 2.75571539284473460E-006);
-  t = __fma_rn (t, a, 2.48015869443077950E-005);
-  t = __fma_rn (t, a, 1.98412699878799470E-004);
-  t = __fma_rn (t, a, 1.38888888892029890E-003);
-  t = __fma_rn (t, a, 8.33333333327662860E-003);
-  t = __fma_rn (t, a, 4.16666666666656370E-002);
-  t = __fma_rn (t, a, 1.66666666666667380E-001);
-  t = __fma_rn (t, a, 5.00000000000000000E-001);
-  t = t * a;
-  t = __fma_rn (t, a, a);
-  return t;
+  return (double)__cuda_ceilf((float)a);
 }
 
-
-static double __internal_atanh_kernel (double a_1, double a_2)
+static double __cuda_trunc(double a)
 {
-  double a, a2, t;
-
-  a = a_1 + a_2;
-  a2 = a * a;
-  t = 7.597322383488143E-002/65536.0;
-  t = __fma_rn (t, a2, 6.457518383364042E-002/16384.0);
-  t = __fma_rn (t, a2, 7.705685707267146E-002/4096.0);
-  t = __fma_rn (t, a2, 9.090417561104036E-002/1024.0);
-  t = __fma_rn (t, a2, 1.111112158368149E-001/256.0);
-  t = __fma_rn (t, a2, 1.428571416261528E-001/64.0);
-  t = __fma_rn (t, a2, 2.000000000069858E-001/16.0);
-  t = __fma_rn (t, a2, 3.333333333333198E-001/4.0);
-  t = t * a2;
-  t = __fma_rn (t, a, a_2);
-  t = t + a_1;
-  return t;
+  return (double)__cuda_truncf((float)a);
 }
 
-static double __internal_exp2i_kernel(int b)
+static double __cuda_floor(double a)
 {
-  return __hiloint2double((b + 1023) << 20, 0);
+  return (double)__cuda_floorf((float)a);
 }
 
-static double __internal_half(double a)
+static double __cuda_copysign(double a, double b)
 {
-  unsigned int ihi, ilo;
-  ilo = __double2loint(a);
-  ihi = __double2hiint(a);
-  return __hiloint2double(ihi - 0x00100000, ilo);
-}
-
-static double __internal_twice(double a)
-{
-  unsigned int ihi, ilo;
-  ilo = __double2loint(a);
-  ihi = __double2hiint(a);
-  return __hiloint2double(ihi + 0x00100000, ilo);
+  return (double)__cuda_copysignf((float)a, (float)b);
 }
 
 static double __cuda_sin(double a)
 {
-  double z;
-  int i;
-  if (__cuda___isinf(a) || (a == 0.0)) {
-    return __dmul_rn(a, 0.0);
-  }
-  z = __internal_trig_reduction_kerneld(a, &i);
-
-  if (i & 1) {
-    z = __internal_cos_kerneld(z);
-  } else {
-    z = __internal_sin_kerneld(z);
-  }
-  if (i & 2) {
-    z = -z;
-  }
-  return z;
+  return (double)__cuda_sinf((float)a);
 }
 
 static double __cuda_cos(double a)
 {
-  double z;
-  int i;
-  if (__cuda___isinf(a)) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  }
-  z = __internal_trig_reduction_kerneld(a, &i);
-
-  i++;
-  if (i & 1) {
-    z = __internal_cos_kerneld(z);
-  } else {
-    z = __internal_sin_kerneld(z);
-  }
-  if (i & 2) {
-    z = -z;
-  }
-  return z;
+  return (double)__cuda_cosf((float)a);
 }
 
 static void __cuda_sincos(double a, double *sptr, double *cptr)
 {
-  double t, u, s, c;
-  int i;
-  if (__cuda___isinf(a)) {
-    *sptr = __longlong_as_double(0xfff8000000000000ULL);
-    *cptr = __longlong_as_double(0xfff8000000000000ULL);
-    return;
-  }
-  if (a == 0.0) {
-    *sptr = a;
-    *cptr = 1.0;
-    return;
-  }
-  t = __internal_trig_reduction_kerneld(a, &i);
-  u = __internal_cos_kerneld(t);
-  t = __internal_sin_kerneld(t);
-  if (i & 1) {
-    s = u;
-    c = t;
-  } else {
-    s = t;
-    c = u;
-  }
-  if (i & 2) {
-    s = -s;
-  }
-  i++;
-  if (i & 2) {
-    c = -c;
-  }
-  *sptr = s;
-  *cptr = c;
+  float fs, fc;
+
+  __cuda_sincosf((float)a, &fs, &fc);
+
+  *sptr = (double)fs;
+  *cptr = (double)fc;
 }
 
 static double __cuda_tan(double a)
 {
-  double z;
-  int i;
-  if (__cuda___isinf(a)) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  }
-  z = __internal_trig_reduction_kerneld(a, &i);
-
-  z = __internal_tan_kerneld(z, i & 1);
-  return z;
-}
-
-static double __cuda_log(double a)
-{
-  double m, f, g, u, v, tmp, q, ulo, log_lo, log_hi;
-  int ihi, ilo;
-  int e = 0;
-
-  ihi = __double2hiint(a);
-  ilo = __double2loint(a);
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-
-  if (a < 0.0) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  }
-
-  if (a == 0) {
-    return -__longlong_as_double(0x7ff0000000000000ULL);
-  }
-
-  if (__cuda___isinf(a)) {
-    return a;
-  }
-
-  if (a < 2.22507385850720140e-308) {
-    a = a * 18014398509481984.0;
-    e = -54;
-    ihi = __double2hiint(a);
-    ilo = __double2loint(a);
-  }
-
-
-
-  e += ((ihi >> 20) & 0x7ff) - 1023;
-  m = __hiloint2double ((ihi & 0x800fffff) | 0x3ff00000, ilo);
-  if (m > 1.4142135623730951e+0) {
-    m = __internal_half(m);
-    e = e + 1;
-  }
-
-  f = m - 1.0;
-  g = m + 1.0;
-  g = 1.0 / g;
-  u = f * g;
-  u = u + u;
-
-  v = u * u;
-  q = 6.7261411553826339E-2/65536.0;
-  q = __fma_rn (q, v, 6.6133829643643394E-2/16384.0);
-  q = __fma_rn (q, v, 7.6940931149150890E-2/4096.0);
-  q = __fma_rn (q, v, 9.0908745692137444E-2/1024.0);
-  q = __fma_rn (q, v, 1.1111111499059706E-1/256.0);
-  q = __fma_rn (q, v, 1.4285714283305975E-1/64.0);
-  q = __fma_rn (q, v, 2.0000000000007223E-1/16.0);
-  q = __fma_rn (q, v, 3.3333333333333326E-1/4.0);
-  tmp = __internal_twice (f - u);
-  tmp = __fma_rn (-u, f, tmp);
-  ulo = g * tmp;
-
-  q = q * v;
-  q = q * u;
-
-  log_hi = u;
-  log_lo = ulo + q;
-
-  q = __fma_rn ( e, 6.9314718055994529e-1, log_hi);
-  tmp = __fma_rn (-e, 6.9314718055994529e-1, q);
-  tmp = tmp - log_hi;
-  log_hi = q;
-  log_lo = log_lo - tmp;
-  log_lo = __fma_rn (e, 2.3190468138462996e-17, log_lo);
-  return log_hi + log_lo;
-}
-
-
-static double2 __internal_ddadd_xgty (double2 x, double2 y)
-{
-    double2 z;
-
-    volatile double r, s, e;
-
-
-
-    r = x.y + y.y;
-    e = x.y - r;
-    s = ((e + y.y) + y.x) + x.x;
-    z.y = e = r + s;
-    z.x = (r - e) + s;
-    return z;
-}
-
-
-static double2 __internal_ddmul (double2 x, double2 y)
-{
-
-    volatile double e;
-
-
-
-    double2 t, z;
-    t.y = x.y * y.y;
-    t.x = __fma_rn (x.y, y.y, -t.y);
-    t.x = __fma_rn (x.x, y.x, t.x);
-    t.x = __fma_rn (x.y, y.x, t.x);
-    t.x = __fma_rn (x.x, y.y, t.x);
-    z.y = e = t.y + t.x;
-    z.x = (t.y - e) + t.x;
-    return z;
-}
-
-static double2 __internal_log_ext_prec(double a)
-{
-  double2 res;
-  double2 qq, cc, uu, tt;
-  double f, g, u, v, q, ulo, tmp, m;
-  int ilo, ihi, expo;
-
-  ihi = __double2hiint(a);
-  ilo = __double2loint(a);
-  expo = (ihi >> 20) & 0x7ff;
-
-  if (expo == 0) {
-    a *= 18014398509481984.0;
-    ihi = __double2hiint(a);
-    ilo = __double2loint(a);
-    expo = (ihi >> 20) & 0x7ff;
-    expo -= 54;
-  }
-  expo -= 1023;
-
-
-
-
-  m = __hiloint2double((ihi & 0x800fffff) | 0x3ff00000, ilo);
-  if (m > 1.4142135623730951e+0) {
-    m = __internal_half(m);
-    expo = expo + 1;
-  }
-
-
-
-
-
-  f = m - 1.0;
-  g = m + 1.0;
-  g = 1.0 / g;
-  u = f * g;
-  u = u + u;
-
-  v = u * u;
-  q = 6.6253631649203309E-2/65536.0;
-  q = __fma_rn (q, v, 6.6250935587260612E-2/16384.0);
-  q = __fma_rn (q, v, 7.6935437806732829E-2/4096.0);
-  q = __fma_rn (q, v, 9.0908878711093280E-2/1024.0);
-  q = __fma_rn (q, v, 1.1111111322892790E-1/256.0);
-  q = __fma_rn (q, v, 1.4285714284546502E-1/64.0);
-  q = __fma_rn (q, v, 2.0000000000003113E-1/16.0);
-  q = q * v;
-
-  tmp = __internal_twice (f - u);
-  tmp = __fma_rn (-u, f, tmp);
-  ulo = g * tmp;
-
-  qq.y = q;
-  qq.x = 0.0;
-  uu.y = u;
-  uu.x = ulo;
-  cc.y = 3.3333333333333331E-1/4.0;
-  cc.x = -9.8201492846582465E-18/4.0;
-  qq = __internal_ddadd_xgty (cc, qq);
-
-  qq = __internal_ddmul(qq, uu);
-  qq = __internal_ddmul(qq, uu);
-  qq = __internal_ddmul(qq, uu);
-  uu = __internal_ddadd_xgty (uu, qq);
-  u = uu.y;
-  ulo = uu.x;
-
-  tt.y = expo * 6.9314718055966296e-001;
-  tt.x = expo * 2.8235290563031577e-013;
-
-  res = __internal_ddadd_xgty (tt, uu);
-  return res;
-}
-
-static double __cuda_log2(double a)
-{
-  double t;
-  t = __cuda_log(a);
-  return __fma_rn (t, 1.4426950408889634e+0, t * 2.0355273740931033e-17);
-}
-
-static double __cuda_log10(double a)
-{
-  double t;
-  t = __cuda_log(a);
-  return __fma_rn (t, 4.3429448190325182e-1, t * 1.09831965021676510e-17);
-}
-
-static double __cuda_log1p(double a)
-{
-  double t;
-
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-
-  if ((a < -0.4) || (a > 6.6666666666666667e-1)) {
-    return __cuda_log (a + 1.0);
-  }
-
-  t = a + 2.0;
-  t = a / t;
-  t = -a * t;
-  t = __internal_atanh_kernel(a, t);
-  return t;
-}
-
-static double __internal_exp_kernel(double a, int scale)
-{
-  double t, fac, z;
-  int i;
-
-  t = __cuda_rint (a * 1.4426950408889634e+0);
-  i = (int)t;
-  z = __fma_rn (t, -6.9314718055994529e-1, a);
-  z = __fma_rn (t, -2.3190468138462996e-17, z);
-  fac = 2.0;
-  if (i <= -1021) {
-    i += 55;
-    fac = 5.5511151231257827e-17;
-  }
-  t = __internal_expm1_kernel(z);
-
-  z = __hiloint2double((1022 + i + scale) << 20, 0);
-  t = __fma_rn (t, z, z);
-  t = t * fac;
-  return t;
+  return (double)__cuda_tanf((float)a);
 }
 
 static double __cuda_exp(double a)
 {
-  if (a > 7.0978271289338397e+2) {
-    return __longlong_as_double(0x7ff0000000000000ULL);
-  }
-  if (a <= -7.4513321910194122e+2) {
-    return 0.0;
-  }
-  a = __internal_exp_kernel(a, 0);
-  return a;
+  return (double)__cuda_expf((float)a);
 }
 
 static double __cuda_exp2(double a)
 {
-  double z;
-  double t;
-  double fac;
-  int i;
-
-  if (a >= 1024.0) {
-    return __longlong_as_double(0x7ff0000000000000ULL);
-  }
-  if (a < -1075.0) {
-    return 0.0;
-  }
-  t = __cuda_rint (a);
-  z = a - t;
-  i = (int)t;
-  fac = 2.0;
-  if (i <= -1021) {
-    i += 55;
-    fac = 5.5511151231257827e-17;
-  }
-
-  z = __fma_rn (z, 6.9314718055994529e-1, z * 2.3190468138462996e-17);
-  t = __internal_expm1_kernel(z);
-  z = __hiloint2double((1022 + i) << 20, 0);
-  t = __fma_rn (t, z, z);
-  t = t * fac;
-  return t;
+  return (double)__cuda_exp2f((float)a);
 }
 
 static double __cuda_exp10(double a)
 {
-  double z;
-  double t;
-  double fac;
-  int i;
-
-  if (a >= 3.0825471555991675e+2) {
-    return __longlong_as_double(0x7ff0000000000000ULL);
-  }
-  if (a < -3.2360724533877976e+2) {
-    return 0.0;
-  }
-  t = __cuda_rint (a * 3.3219280948873622e+0);
-  i = (int)t;
-  z = __fma_rn (t, -3.0102999566398120e-1, a);
-  z = __fma_rn (t, -(-2.8037281277851704e-18), z);
-  fac = 2.0;
-  if (i <= -1021) {
-    i += 55;
-    fac = 5.5511151231257827e-17;
-  }
-
-  z = __fma_rn (z, 2.3025850929940459e+0, z * (-2.1707562233822494e-16));
-  t = __internal_expm1_kernel(z);
-
-  z = __hiloint2double((1022 + i) << 20, 0);
-  t = __fma_rn (t, z, z);
-  t = t * fac;
-  return t;
+  return (double)__cuda_exp10f((float)a);
 }
 
 static double __cuda_expm1(double a)
 {
-  double t, z, u;
-  int i, j;
-  if (a > 7.0978271289338397e+2) {
-    return __longlong_as_double(0x7ff0000000000000ULL);
-  }
-  if (a < -53.0) {
-    return -1.0;
-  }
-  t = __cuda_rint (a * 1.4426950408889634e+0);
-  i = (int)t;
-  z = __fma_rn (t, -6.9314718055994529e-1, a);
-  z = __fma_rn (t, -2.3190468138462996e-17, z);
-  if (__cuda_fabs(a) < 0.405465108) {
-    z = a;
-    i = 0;
-  }
-  j = (i == 1024) ? (i - 1) : i;
-  t = __internal_expm1_kernel(z);
-  u = __hiloint2double((1023 + j) << 20, 0);
-  a = u - 1.0;
-  t = __fma_rn (t, u, a);
-  if (z == 0.0) t = z;
-  if (i == 1024) t = t + t;
-  return t;
+  return (double)__cuda_expm1f((float)a);
 }
 
 static double __cuda_cosh(double a)
 {
-  double z;
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-  a = __cuda_fabs(a);
-  z = __internal_exp_kernel(a, -2);
-  z = __fma_rn(2.0, z, 0.125 / z);
-  if (a >= 7.1047586007394398e+2) {
-    z = __int_as_float(0x7f800000);
-  }
-  return z;
+  return (double)__cuda_coshf((float)a);
 }
 
 static double __cuda_sinh(double a)
 {
-  double s, z;
-  s = a;
-  a = __cuda_fabs(a);
-  if (a < 1.0) {
-    double a2 = a * a;
-
-    z = 1.632386098183803E-010;
-    z = __fma_rn (z, a2, 2.504854501385687E-008);
-    z = __fma_rn (z, a2, 2.755734274788706E-006);
-    z = __fma_rn (z, a2, 1.984126976294102E-004);
-    z = __fma_rn (z, a2, 8.333333333452911E-003);
-    z = __fma_rn (z, a2, 1.666666666666606E-001);
-    z = z * a2;
-    z = __fma_rn (z, a, a);
-  } else if (a < 2.0) {
-    z = __cuda_expm1(a);
-    z = __internal_half (z + z / (z + 1.0));
-  } else {
-    z = __internal_exp_kernel(a, -1);
-    z = z + (1.0 / (-4.0 * z));
-    if (a >= 7.1047586007394398e+2) {
-      z = __longlong_as_double(0x7ff0000000000000ULL);
-    }
-  }
-  z = __cuda_copysign(z, s);
-  return z;
+  return (double)__cuda_sinhf((float)a);
 }
 
 static double __cuda_tanh(double a)
 {
-  double t;
-  t = __cuda_fabs(a);
-  if (t >= 0.55) {
-    double s;
-    s = 1.0 - 2.0 / (__internal_exp_kernel(2.0 * t, 0) + 1.0);
-    if (t > 350.0) {
-      s = 1.0;
-    }
-    a = __cuda_copysign(s, a);
-  } else {
-    double a2;
-    a2 = a * a;
-    t = 5.102147717274194E-005;
-    t = __fma_rn (t, a2, -2.103023983278533E-004);
-    t = __fma_rn (t, a2, 5.791370145050539E-004);
-    t = __fma_rn (t, a2, -1.453216755611004E-003);
-    t = __fma_rn (t, a2, 3.591719696944118E-003);
-    t = __fma_rn (t, a2, -8.863194503940334E-003);
-    t = __fma_rn (t, a2, 2.186948597477980E-002);
-    t = __fma_rn (t, a2, -5.396825387607743E-002);
-    t = __fma_rn (t, a2, 1.333333333316870E-001);
-    t = __fma_rn (t, a2, -3.333333333333232E-001);
-    t = t * a2;
-    t = __fma_rn (t, a, a);
-    a = __cuda_copysign(t, a);
-  }
-  return a;
-}
-
-static double __internal_atan_kernel(double a)
-{
-  double t, a2;
-  a2 = a * a;
-  t = -2.0258553044438358E-005 ;
-  t = __fma_rn (t, a2, 2.2302240345758510E-004);
-  t = __fma_rn (t, a2, -1.1640717779930576E-003);
-  t = __fma_rn (t, a2, 3.8559749383629918E-003);
-  t = __fma_rn (t, a2, -9.1845592187165485E-003);
-  t = __fma_rn (t, a2, 1.6978035834597331E-002);
-  t = __fma_rn (t, a2, -2.5826796814495994E-002);
-  t = __fma_rn (t, a2, 3.4067811082715123E-002);
-  t = __fma_rn (t, a2, -4.0926382420509971E-002);
-  t = __fma_rn (t, a2, 4.6739496199157994E-002);
-  t = __fma_rn (t, a2, -5.2392330054601317E-002);
-  t = __fma_rn (t, a2, 5.8773077721790849E-002);
-  t = __fma_rn (t, a2, -6.6658603633512573E-002);
-  t = __fma_rn (t, a2, 7.6922129305867837E-002);
-  t = __fma_rn (t, a2, -9.0909012354005225E-002);
-  t = __fma_rn (t, a2, 1.1111110678749424E-001);
-  t = __fma_rn (t, a2, -1.4285714271334815E-001);
-  t = __fma_rn (t, a2, 1.9999999999755019E-001);
-  t = __fma_rn (t, a2, -3.3333333333331860E-001);
-  t = t * a2;
-  t = __fma_rn (t, a, a);
-  return t;
-}
-
-static double __cuda_atan2(double a, double b)
-{
-  double t0, t1, t3;
-  if (__cuda___isnan(a) || __cuda___isnan(b)) {
-    return a + b;
-  }
-
-
-  t3 = __cuda_fabs(b);
-  t1 = __cuda_fabs(a);
-  if (t3 == 0.0 && t1 == 0.0) {
-    t3 = __cuda___signbit(b) ? 3.1415926535897931e+0 : 0;
-  } else if (__cuda___isinf(t3) && __cuda___isinf(t1)) {
-    t3 = __cuda___signbit(b) ? 2.3561944901923448e+0 : 7.8539816339744828e-1;
-  } else {
-    t0 = __cuda_fmax (t1, t3);
-    t1 = __cuda_fmin (t1, t3);
-    t3 = t1 / t0;
-    t3 = __internal_atan_kernel(t3);
-
-    if (__cuda_fabs(a) > __cuda_fabs(b)) t3 = 1.5707963267948966e+0 - t3;
-    if (b < 0.0) t3 = 3.1415926535897931e+0 - t3;
-  }
-  t3 = __cuda_copysign(t3, a);
-  return t3;
-}
-
-static double __cuda_atan(double a)
-{
-  double t0, t1;
-
-  t0 = __cuda_fabs(a);
-  t1 = t0;
-  if (t0 > 1.0) {
-    t1 = 1.0 / t1;
-  }
-
-  t1 = __internal_atan_kernel(t1);
-
-  if (t0 > 1.0) {
-    t1 = 1.5707963267948966e+0 - t1;
-  }
-  return __cuda_copysign (t1, a);
-}
-
-
-static double __internal_asin_kernel(double a, double b)
-{
-  double r;
-  r = 6.259798167646803E-002;
-  r = __fma_rn (r, b, -7.620591484676952E-002);
-  r = __fma_rn (r, b, 6.686894879337643E-002);
-  r = __fma_rn (r, b, -1.787828218369301E-002);
-  r = __fma_rn (r, b, 1.745227928732326E-002);
-  r = __fma_rn (r, b, 1.000422754245580E-002);
-  r = __fma_rn (r, b, 1.418108777515123E-002);
-  r = __fma_rn (r, b, 1.733194598980628E-002);
-  r = __fma_rn (r, b, 2.237350511593569E-002);
-  r = __fma_rn (r, b, 3.038188875134962E-002);
-  r = __fma_rn (r, b, 4.464285849810986E-002);
-  r = __fma_rn (r, b, 7.499999998342270E-002);
-  r = __fma_rn (r, b, 1.666666666667375E-001);
-  r = r * b;
-  return r;
+  return (double)__cuda_tanhf((float)a);
 }
 
 static double __cuda_asin(double a)
 {
-  double t0, t1;
-  t0 = __cuda_fabs(a);
-  if (t0 > 1.0) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  }
-  if (t0 > 0.575) {
-    t1 = __fma_rn (-0.5, t0, 0.5);
-    t0 = __cuda_sqrt (t1);
-    t1 = __internal_asin_kernel (t0, t1);
-    t0 = -2.0 * t0;
-    t1 = __fma_rn (t0, t1, 6.1232339957367660e-17);
-    t0 = t0 + 7.8539816339744828e-1;
-    t1 = t0 + t1;
-    t1 = t1 + 7.8539816339744828e-1;
-  } else {
-    t1 = t0 * t0;
-    t1 = __internal_asin_kernel (t0, t1);
-    t1 = __fma_rn (t1, t0, t0);
-  }
-  return __cuda_copysign(t1, a);
+  return (double)__cuda_asinf((float)a);
 }
 
 static double __cuda_acos(double a)
 {
-  double t0, t1;
+  return (double)__cuda_acosf((float)a);
+}
 
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
+static double __cuda_atan(double a)
+{
+  return (double)__cuda_atanf((float)a);
+}
 
-  t0 = __cuda_fabs (a);
-  if (t0 > 0.575) {
-    t1 = __fma_rn (-0.5, t0, 0.5);
-    t0 = __cuda_sqrt(t1);
-    t1 = __internal_asin_kernel (t0, t1);
-    t0 = __fma_rn (t1, t0, t0);
-    t0 = 2.0 * t0;
-    if (__cuda___signbit(a)) {
-      t0 = __fma_rn (1.0, t0, -1.2246467991473532e-16);
-      t0 = 3.1415926535897931e+0 - t0;
-    }
-  } else {
-    t1 = t0 * t0;
-    t1 = __internal_asin_kernel (t0, t1);
-    t0 = __fma_rn (t1, t0, t0);
-    if (__cuda___signbit(a)) {
-      t0 = __fma_rn (1.0, t0, +6.1232339957367660e-17);
-      t0 = 1.5707963267948966e+0 + t0;
-    } else {
-      t0 = __fma_rn (1.0, t0, -6.1232339957367660e-17);
-      t0 = 1.5707963267948966e+0 - t0;
-    }
-  }
-  return t0;
+static double __cuda_atan2(double a, double b)
+{
+  return (double)__cuda_atan2f((float)a, (float)b);
+}
+
+static double __cuda_log(double a)
+{
+  return (double)__cuda_logf((float)a);
+}
+
+static double __cuda_log2(double a)
+{
+  return (double)__cuda_log2f((float)a);
+}
+
+static double __cuda_log10(double a)
+{
+  return (double)__cuda_log10f((float)a);
+}
+
+static double __cuda_log1p(double a)
+{
+  return (double)__cuda_log1pf((float)a);
 }
 
 static double __cuda_acosh(double a)
 {
-  double t;
-
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-
-  t = a - 1.0;
-  if (__cuda_fabs(t) > 4503599627370496.0) {
-
-    return 6.9314718055994529e-1 + __cuda_log(a);
-  } else {
-    t = t + __cuda_sqrt(__fma_rn(a, t, t));
-    return __cuda_log1p(t);
-  }
+  return (double)__cuda_acoshf((float)a);
 }
 
 static double __cuda_asinh(double a)
 {
-# 1136 "/home/gdiamos/temp/cuda/bin//../include/math_functions_dbl_ptx3.h" 3
-  double fa, t;
-  fa = __cuda_fabs(a);
-  if (fa > 1.0e153) {
-    t = 6.9314718055994529e-1 + __cuda_log(fa);
-  } else {
-    t = fa * fa;
-    t = __cuda_log1p (fa + t / (1.0 + __cuda_sqrt(1.0 + t)));
-  }
-
-  return __cuda_copysign(t, a);
+  return (double)__cuda_asinhf((float)a);
 }
 
 static double __cuda_atanh(double a)
 {
-  double fa, t;
-
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-
-  fa = __cuda_fabs(a);
-  t = (2.0 * fa) / (1.0 - fa);
-  t = 0.5 * __cuda_log1p(t);
-
-  if (__cuda___isnan(t)) {
-    return t;
-  }
-
-  if (__cuda___signbit(a)) {
-    t = -t;
-  }
-  return t;
+  return (double)__cuda_atanhf((float)a);
 }
 
 static double __cuda_hypot(double a, double b)
 {
-  double v, w, t;
-  if (__cuda___isinf(a) || __cuda___isinf(b)) {
-    return __longlong_as_double(0x7ff0000000000000ULL);
-  }
-  if (__cuda___isnan(a) || __cuda___isnan(b)) {
-    return a + b;
-  }
-  a = __cuda_fabs(a);
-  b = __cuda_fabs(b);
-  v = __cuda_fmax(a, b);
-  w = __cuda_fmin(a, b);
-  t = w / v;
-  t = __fma_rn (t, t, 1.0);
-  t = v * __cuda_sqrt(t);
-  if (v == 0.0) {
-    t = v + w;
-  }
-  return t;
+  return (double)__cuda_hypotf((float)a, (float)b);
 }
 
 static double __cuda_cbrt(double a)
 {
-  float s;
-  double t, r;
-  int ilo, ihi, expo, nexpo, denorm;
-  if ((a == 0.0) || !(__cuda___finite(a))) {
-    return a + a;
-  }
-  t = __cuda_fabs(a);
-  ilo = __double2loint(t);
-  ihi = __double2hiint(t);
-  expo = ((int)((unsigned int)ihi >> 20) & 0x7ff);
-  denorm = 0;
-  if (expo == 0) {
-
-    t = t * 18014398509481984.0;
-    denorm = 18;
-    ilo = __double2loint(t);
-    ihi = __double2hiint(t);
-    expo = ((int)((unsigned int)ihi >> 20) & 0x7ff);
-  }
-
-  nexpo = __float2int_rn(0.333333333f * (float)(expo - 1022));
-  ihi -= (3 * nexpo) << 20;
-  r = __hiloint2double(ihi, ilo);
-
-  s = (float)r;
-  t = __cuda_exp2f(0.333333333f * __log2f(s));
-
-  t = t - (t - (r / (t * t))) * 3.3333333333333333e-1;
-  t = t - (t - (r / (t * t))) * 3.3333333333333333e-1;
-
-  ilo = __double2loint(t);
-  ihi = __double2hiint(t);
-  ihi += (nexpo - denorm) << 20;
-  t = __hiloint2double(ihi, ilo);
-  if (__cuda___signbit(a)) {
-     t = -t;
-  }
-  return t;
-}
-
-static double __internal_accurate_pow(double a, double b)
-{
-  double2 loga;
-  double2 prod;
-  double t_hi, t_lo;
-  double tmp;
-
-
-
-  double e;
-
-
-
-  loga = __internal_log_ext_prec(a);
-
-
-  if (__cuda_fabs(b) > 1e304) b *= 1.220703125e-4;
-
-  t_hi = loga.y * b;
-  t_lo = __fma_rn (loga.y, b, -t_hi);
-  t_lo = __fma_rn (loga.x, b, t_lo);
-  prod.y = e = t_hi + t_lo;
-  prod.x = (t_hi - e) + t_lo;
-
-
-  tmp = __cuda_exp(prod.y);
-
-  if (!__cuda___isinf(tmp)) {
-
-
-
-    tmp = __fma_rn (tmp, prod.x, tmp);
-  }
-  return tmp;
-}
-
-static double __cuda_pow(double a, double b)
-{
-  int bIsOddInteger;
-  double t;
-  if (a == 1.0 || b == 0.0) {
-    return 1.0;
-  }
-  if (__cuda___isnan(a) || __cuda___isnan(b)) {
-    return a + b;
-  }
-  if (a == __longlong_as_double(0x7ff0000000000000ULL)) {
-    return __cuda___signbit(b) ? 0.0 : __longlong_as_double(0x7ff0000000000000ULL);
-  }
-  if (__cuda___isinf(b)) {
-    if (a == -1.0) {
-      return 1.0;
-    }
-    t = __cuda_fabs(a) > 1.0 ? __longlong_as_double(0x7ff0000000000000ULL) : 0.0;
-    if (b < 0.0) {
-      t = 1.0 / t;
-    }
-    return t;
-  }
-  bIsOddInteger = (b - (2.0 * __cuda_floor(0.5 * b))) == 1.0;
-  if (a == 0.0) {
-    t = bIsOddInteger ? a : 0.0;
-    if (b < 0.0) {
-      t = 1.0 / t;
-    }
-    return t;
-  }
-  if (a == -__longlong_as_double(0x7ff0000000000000ULL)) {
-    t = (b < 0.0) ? -1.0/a : -a;
-    if (bIsOddInteger) {
-      t = __longlong_as_double(__double_as_longlong(t)^0x8000000000000000ULL);
-    }
-    return t;
-  }
-  if ((a < 0.0) && (b != __cuda_trunc(b))) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  }
-  t = __cuda_fabs(a);
-  t = __internal_accurate_pow(t, b);
-  if ((a < 0.0) && bIsOddInteger) {
-    t = __longlong_as_double(__double_as_longlong(t) ^ 0x8000000000000000ULL);
-  }
-  return t;
+  return (double)__cuda_cbrtf((float)a);
 }
 
 static double __cuda_erf(double a)
 {
-  double t, r, q;
-
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-
-  t = __cuda_fabs(a);
-  if (t >= 1.0) {
-    r = -1.28836351230756500E-019;
-    r = __fma_rn (r, t, 1.30597472161093370E-017);
-    r = __fma_rn (r, t, -6.33924401259620500E-016);
-    r = __fma_rn (r, t, 1.96231865908940140E-014);
-    r = __fma_rn (r, t, -4.35272243559990750E-013);
-    r = __fma_rn (r, t, 7.37083927929352150E-012);
-    r = __fma_rn (r, t, -9.91402142550461630E-011);
-    r = __fma_rn (r, t, 1.08817017167760820E-009);
-    r = __fma_rn (r, t, -9.93918713097634620E-009);
-    r = __fma_rn (r, t, 7.66739923255145500E-008);
-    r = __fma_rn (r, t, -5.05440278302806720E-007);
-    r = __fma_rn (r, t, 2.87474157099000620E-006);
-    r = __fma_rn (r, t, -1.42246725399722510E-005);
-    r = __fma_rn (r, t, 6.16994555079419460E-005);
-    r = __fma_rn (r, t, -2.36305221938908790E-004);
-    r = __fma_rn (r, t, 8.05032844055371070E-004);
-    r = __fma_rn (r, t, -2.45833366629108140E-003);
-    r = __fma_rn (r, t, 6.78340988296706120E-003);
-    r = __fma_rn (r, t, -1.70509103597554640E-002);
-    r = __fma_rn (r, t, 3.93322852515666300E-002);
-    r = __fma_rn (r, t, -8.37271292613764040E-002);
-    r = __fma_rn (r, t, 1.64870423707623280E-001);
-    r = __fma_rn (r, t, -2.99729521787681470E-001);
-    r = __fma_rn (r, t, 4.99394435612628580E-001);
-    r = __fma_rn (r, t, -7.52014596480123030E-001);
-    r = __fma_rn (r, t, 9.99933138314926250E-001);
-    r = __fma_rn (r, t, -1.12836725321102670E+000);
-    r = __fma_rn (r, t, 9.99998988715182450E-001);
-    q = __internal_exp_kernel(-t * t, 0);
-    r = __fma_rn (r, -q, 1.0);
-    if (t >= 6.5) {
-      r = 1.0;
-    }
-    a = __cuda_copysign (r, a);
-  } else {
-    q = t * t;
-    r = -7.77946848895991420E-010;
-    r = __fma_rn (r, q, 1.37109803980285950E-008);
-    r = __fma_rn (r, q, -1.62063137584932240E-007);
-    r = __fma_rn (r, q, 1.64471315712790040E-006);
-    r = __fma_rn (r, q, -1.49247123020098620E-005);
-    r = __fma_rn (r, q, 1.20552935769006260E-004);
-    r = __fma_rn (r, q, -8.54832592931448980E-004);
-    r = __fma_rn (r, q, 5.22397760611847340E-003);
-    r = __fma_rn (r, q, -2.68661706431114690E-002);
-    r = __fma_rn (r, q, 1.12837916709441850E-001);
-    r = __fma_rn (r, q, -3.76126389031835210E-001);
-    r = __fma_rn (r, q, 1.12837916709551260E+000);
-    a = r * a;
-  }
-  return a;
+  return (double)__cuda_erff((float)a);
 }
 
 static double __cuda_erfc(double a)
 {
-  double p, q, h, l;
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-  if (a <= 0.55) {
-    return 1.0 - __cuda_erf(a);
-  }
-  if (a > 27.3) {
-    return 0.0;
-  }
-  if (a <= 5.0) {
-    p = 5.64189549785304440E-001;
-    p = __fma_rn (p, a, 8.17405083437083490E+000);
-    p = __fma_rn (p, a, 5.68958722557864720E+001);
-    p = __fma_rn (p, a, 2.42568747802647010E+002);
-    p = __fma_rn (p, a, 6.80381374390412930E+002);
-    p = __fma_rn (p, a, 1.25873132236024590E+003);
-    p = __fma_rn (p, a, 1.43925353963809330E+003);
-    p = __fma_rn (p, a, 8.15949420587659230E+002);
-    q = a+ 1.44881247113239940E+001;
-    q = __fma_rn (q, a, 1.01345387970210510E+002);
-    q = __fma_rn (q, a, 4.37184684964009650E+002);
-    q = __fma_rn (q, a, 1.25588209225251330E+003);
-    q = __fma_rn (q, a, 2.43864015012647630E+003);
-    q = __fma_rn (q, a, 3.10570469008816280E+003);
-    q = __fma_rn (q, a, 2.35995386578953550E+003);
-    q = __fma_rn (q, a, 8.15949420692539320E+002);
-  } else {
-    p = 5.64189583545675280E-001;
-    p = __fma_rn (p, a, 2.04728556066513970E+000);
-    p = __fma_rn (p, a, 6.75128409662943610E+000);
-    p = __fma_rn (p, a, 1.10459345071747900E+001);
-    p = __fma_rn (p, a, 1.22570382896313600E+001);
-    p = __fma_rn (p, a, 6.01884641114116460E+000);
-    q = a+ 3.62871917534986780E+000;
-    q = __fma_rn (q, a, 1.24663395327043550E+001);
-    q = __fma_rn (q, a, 2.13927672803974790E+001);
-    q = __fma_rn (q, a, 2.72082423532866070E+001);
-    q = __fma_rn (q, a, 1.86422906830006700E+001);
-    q = __fma_rn (q, a, 6.13809834548870550E+000);
-  }
-  p = p / q;
-  h = -a * a;
-  l = __fma_rn (-a, a, -h);
-  q = __internal_exp_kernel(h, 0);
-  q = __fma_rn (q, l, q);
-  p = p * q;
-  return p;
-}
-
-
-static double __internal_tgamma_kernel(double a)
-{
-  double t;
-  t = -4.42689340712524750E-010;
-  t = __fma_rn (t, a, -2.02665918466589540E-007);
-  t = __fma_rn (t, a, 1.13812117211195270E-006);
-  t = __fma_rn (t, a, -1.25077348166307480E-006);
-  t = __fma_rn (t, a, -2.01365017404087710E-005);
-  t = __fma_rn (t, a, 1.28050126073544860E-004);
-  t = __fma_rn (t, a, -2.15241408115274180E-004);
-  t = __fma_rn (t, a, -1.16516754597046040E-003);
-  t = __fma_rn (t, a, 7.21894322484663810E-003);
-  t = __fma_rn (t, a, -9.62197153268626320E-003);
-  t = __fma_rn (t, a, -4.21977345547223940E-002);
-  t = __fma_rn (t, a, 1.66538611382503560E-001);
-  t = __fma_rn (t, a, -4.20026350341054440E-002);
-  t = __fma_rn (t, a, -6.55878071520257120E-001);
-  t = __fma_rn (t, a, 5.77215664901532870E-001);
-  t = __fma_rn (t, a, 1.00000000000000000E+000);
-  return t;
-}
-
-
-static double __internal_stirling_poly(double a)
-{
-  double x = 1.0 / a;
-  double z = 0.0;
-  z = __fma_rn (z, x, 8.3949872067208726e-004);
-  z = __fma_rn (z, x, -5.1717909082605919e-005);
-  z = __fma_rn (z, x, -5.9216643735369393e-004);
-  z = __fma_rn (z, x, 6.9728137583658571e-005);
-  z = __fma_rn (z, x, 7.8403922172006662e-004);
-  z = __fma_rn (z, x, -2.2947209362139917e-004);
-  z = __fma_rn (z, x, -2.6813271604938273e-003);
-  z = __fma_rn (z, x, 3.4722222222222220e-003);
-  z = __fma_rn (z, x, 8.3333333333333329e-002);
-  z = __fma_rn (z, x, 1.0000000000000000e+000);
-  return z;
-}
-
-static double __internal_tgamma_stirling(double a)
-{
-  if (a < 1.7162437695630274e+002) {
-
-    volatile double t_hi, t_lo, e;
-
-
-
-    double2 loga, prod;
-    double z = __internal_stirling_poly (a);
-    double b = a - 0.5;
-
-
-    loga = __internal_log_ext_prec(a);
-
-
-    t_hi = loga.y * b;
-    t_lo = __fma_rn (loga.y, b, -t_hi);
-    t_lo = __fma_rn (loga.x, b, t_lo);
-    prod.y = e = t_hi + t_lo;
-    prod.x = (t_hi - e) + t_lo;
-
-
-    loga.y = -a;
-    loga.x = 0.0;
-    prod = __internal_ddadd_xgty (prod, loga);
-
-
-    a = __cuda_exp(prod.y);
-
-    if (!__cuda___isinf(a)) {
-
-
-
-      a = __fma_rn (a, prod.x, a);
-    }
-    a = __fma_rn (a, 2.5066282746310007e+0, a * (-1.8328579980459167e-16));
-    return a * z;
-  } else {
-    return __longlong_as_double(0x7ff0000000000000ULL);
-  }
-}
-
-static double __cuda_tgamma(double a)
-{
-  double s, xx, x = a;
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-  if (__cuda_fabs(x) < 15.0) {
-
-
-
-
-    if (x >= 0.0) {
-      s = 1.0;
-      xx = x;
-      while (xx > 1.5) {
-        s = __fma_rn(s, xx, -s);
-        xx = xx - 1.0;
-      }
-      if (x >= 0.5) {
-        xx = xx - 1.0;
-      }
-      xx = __internal_tgamma_kernel (xx);
-      if (x < 0.5) {
-        xx = xx * x;
-      }
-      s = s / xx;
-    } else {
-      xx = x;
-      s = xx;
-      if (x == __cuda_floor(x)) {
-        return __longlong_as_double(0xfff8000000000000ULL);
-      }
-      while (xx < -0.5) {
-        s = __fma_rn (s, xx, s);
-        xx = xx + 1.0;
-      }
-      xx = __internal_tgamma_kernel (xx);
-      s = s * xx;
-      s = 1.0 / s;
-    }
-    return s;
-  } else {
-    if (x >= 0.0) {
-      return __internal_tgamma_stirling (x);
-    } else {
-      double t;
-      int quot;
-      if (x == __cuda_floor(x)) {
-        return __longlong_as_double(0xfff8000000000000ULL);
-      }
-      if (x < -185.0) {
-        int negative;
-        x = __cuda_floor(x);
-        negative = ((x - (2.0 * __cuda_floor(0.5 * x))) == 1.0);
-        return negative ? __longlong_as_double(0x8000000000000000ULL) : 0.0;
-      }
-
-      xx = __cuda_rint (__internal_twice(x));
-      quot = (int)xx;
-      xx = __fma_rn (-0.5, xx, x);
-      xx = xx * 3.1415926535897931e+0;
-      if (quot & 1) {
-        xx = __internal_cos_kerneld (xx);
-      } else {
-        xx = __internal_sin_kerneld (xx);
-      }
-      if (quot & 2) {
-        xx = -xx;
-      }
-      x = __cuda_fabs (x);
-      s = __cuda_exp (-x);
-      t = x - 0.5;
-      if (x > 140.0) t = __internal_half(t);
-      t = __cuda_pow (x, t);
-      if (x > 140.0) s = s * t;
-      s = s * __internal_stirling_poly (x);
-      s = s * x;
-      s = s * xx;
-      s = 1.0 / s;
-      s = __fma_rn (s, 1.2533141373155003e+0, (-9.1642899902295834e-17) * s);
-      s = s / t;
-      return s;
-    }
-  }
-}
-
-static double __internal_lgamma_pos(double a)
-{
-  double sum;
-  double s, t;
-
-  if (a == __longlong_as_double(0x7ff0000000000000ULL)) {
-    return a;
-  }
-  if (a >= 3.0) {
-    if (a >= 8.0) {
-
-
-
-      s = 1.0 / a;
-      t = s * s;
-      sum = -0.1633436431e-2;
-      sum = __fma_rn (sum, t, 0.83645878922e-3);
-      sum = __fma_rn (sum, t, -0.5951896861197e-3);
-      sum = __fma_rn (sum, t, 0.793650576493454e-3);
-      sum = __fma_rn (sum, t, -0.277777777735865004e-2);
-      sum = __fma_rn (sum, t, 0.833333333333331018375e-1);
-      sum = __fma_rn (sum, s, 0.918938533204672);
-      s = __internal_half(__cuda_log (a));
-      t = a - 0.5;
-      s = s * t;
-      t = s - a;
-      s = s + sum;
-      t = t + s;
-      return t;
-    } else {
-      a = a - 3.0;
-      s = -4.02412642744125560E+003;
-      s = __fma_rn (s, a, -2.97693796998962000E+005);
-      s = __fma_rn (s, a, -6.38367087682528790E+006);
-      s = __fma_rn (s, a, -5.57807214576539320E+007);
-      s = __fma_rn (s, a, -2.24585140671479230E+008);
-      s = __fma_rn (s, a, -4.70690608529125090E+008);
-      s = __fma_rn (s, a, -7.62587065363263010E+008);
-      s = __fma_rn (s, a, -9.71405112477113250E+008);
-      t = a -1.02277248359873170E+003;
-      t = __fma_rn (t, a, -1.34815350617954480E+005);
-      t = __fma_rn (t, a, -4.64321188814343610E+006);
-      t = __fma_rn (t, a, -6.48011106025542540E+007);
-      t = __fma_rn (t, a, -4.19763847787431360E+008);
-      t = __fma_rn (t, a, -1.25629926018000720E+009);
-      t = __fma_rn (t, a, -1.40144133846491690E+009);
-      t = s / t;
-      t = t + a;
-      return t;
-    }
-  } else if (a >= 1.5) {
-    a = a - 2.0;
-    t = 9.84839283076310610E-009;
-    t = __fma_rn (t, a, -6.69743850483466500E-008);
-    t = __fma_rn (t, a, 2.16565148880011450E-007);
-    t = __fma_rn (t, a, -4.86170275781575260E-007);
-    t = __fma_rn (t, a, 9.77962097401114400E-007);
-    t = __fma_rn (t, a, -2.03041287574791810E-006);
-    t = __fma_rn (t, a, 4.36119725805364580E-006);
-    t = __fma_rn (t, a, -9.43829310866446590E-006);
-    t = __fma_rn (t, a, 2.05106878496644220E-005);
-    t = __fma_rn (t, a, -4.49271383742108440E-005);
-    t = __fma_rn (t, a, 9.94570466342226000E-005);
-    t = __fma_rn (t, a, -2.23154589559238440E-004);
-    t = __fma_rn (t, a, 5.09669559149637430E-004);
-    t = __fma_rn (t, a, -1.19275392649162300E-003);
-    t = __fma_rn (t, a, 2.89051032936815490E-003);
-    t = __fma_rn (t, a, -7.38555102806811700E-003);
-    t = __fma_rn (t, a, 2.05808084278121250E-002);
-    t = __fma_rn (t, a, -6.73523010532073720E-002);
-    t = __fma_rn (t, a, 3.22467033424113040E-001);
-    t = __fma_rn (t, a, 4.22784335098467190E-001);
-    t = t * a;
-    return t;
-  } else if (a >= 0.7) {
-    a = 1.0 - a;
-    t = 1.17786911519331130E-002;
-    t = __fma_rn (t, a, 3.89046747413522300E-002);
-    t = __fma_rn (t, a, 5.90045711362049900E-002);
-    t = __fma_rn (t, a, 6.02143305254344420E-002);
-    t = __fma_rn (t, a, 5.61652708964839180E-002);
-    t = __fma_rn (t, a, 5.75052755193461370E-002);
-    t = __fma_rn (t, a, 6.21061973447320710E-002);
-    t = __fma_rn (t, a, 6.67614724532521880E-002);
-    t = __fma_rn (t, a, 7.14856037245421020E-002);
-    t = __fma_rn (t, a, 7.69311251313347100E-002);
-    t = __fma_rn (t, a, 8.33503129714946310E-002);
-    t = __fma_rn (t, a, 9.09538288991182800E-002);
-    t = __fma_rn (t, a, 1.00099591546322310E-001);
-    t = __fma_rn (t, a, 1.11334278141734510E-001);
-    t = __fma_rn (t, a, 1.25509666613462880E-001);
-    t = __fma_rn (t, a, 1.44049896457704160E-001);
-    t = __fma_rn (t, a, 1.69557177031481600E-001);
-    t = __fma_rn (t, a, 2.07385551032182120E-001);
-    t = __fma_rn (t, a, 2.70580808427600350E-001);
-    t = __fma_rn (t, a, 4.00685634386517050E-001);
-    t = __fma_rn (t, a, 8.22467033424113540E-001);
-    t = __fma_rn (t, a, 5.77215664901532870E-001);
-    t = t * a;
-    return t;
-  } else {
-    t= -9.04051686831357990E-008;
-    t = __fma_rn (t, a, 7.06814224969349250E-007);
-    t = __fma_rn (t, a, -3.80702154637902830E-007);
-    t = __fma_rn (t, a, -2.12880892189316100E-005);
-    t = __fma_rn (t, a, 1.29108470307156190E-004);
-    t = __fma_rn (t, a, -2.15932815215386580E-004);
-    t = __fma_rn (t, a, -1.16484324388538480E-003);
-    t = __fma_rn (t, a, 7.21883433044470670E-003);
-    t = __fma_rn (t, a, -9.62194579514229560E-003);
-    t = __fma_rn (t, a, -4.21977386992884450E-002);
-    t = __fma_rn (t, a, 1.66538611813682460E-001);
-    t = __fma_rn (t, a, -4.20026350606819980E-002);
-    t = __fma_rn (t, a, -6.55878071519427450E-001);
-    t = __fma_rn (t, a, 5.77215664901523870E-001);
-    t = t * a;
-    t = __fma_rn (t, a, a);
-    return -__cuda_log (t);
-  }
+  return (double)__cuda_erfcf((float)a);
 }
 
 static double __cuda_lgamma(double a)
 {
-  double t;
-  double i;
-  long long int quot;
-  if (__cuda___isnan(a)) {
-    return a + a;
-  }
-  t = __internal_lgamma_pos(__cuda_fabs(a));
-  if (a >= 0.0) return t;
-  a = __cuda_fabs(a);
-  i = __cuda_floor(a);
-  if (a == i) return __longlong_as_double(0x7ff0000000000000ULL);
-  if (a < 1e-19) return -__cuda_log(a);
-  i = __cuda_rint (2.0 * a);
-  quot = (long long int)i;
-  i = __fma_rn (-0.5, i, a);
-  i = i * 3.1415926535897931e+0;
-  if (quot & 1) {
-    i = __internal_cos_kerneld(i);
-  } else {
-    i = __internal_sin_kerneld(i);
-  }
-  i = __cuda_fabs(i);
-  t = __cuda_log(3.1415926535897931e+0 / (i * a)) - t;
-  return t;
+  return (double)__cuda_lgammaf((float)a);
+}
+
+static double __cuda_tgamma(double a)
+{
+  return (double)__cuda_tgammaf((float)a);
 }
 
 static double __cuda_ldexp(double a, int b)
 {
-  double fa = __cuda_fabs (a);
-  if ((fa == 0.0) || (fa == __longlong_as_double(0x7ff0000000000000ULL)) || (!(fa <= __longlong_as_double(0x7ff0000000000000ULL)))) {
-    return a + a;
-  }
-  if (b == 0) {
-    return a;
-  }
-  if (b > 2200) b = 2200;
-  if (b < -2200) b = -2200;
-  if (__cuda_abs (b) < 1022) {
-    return a * __internal_exp2i_kernel(b);
-  }
-  if (__cuda_abs (b) < 2044) {
-    int bhalf = b / 2;
-    return a * __internal_exp2i_kernel (bhalf) *
-           __internal_exp2i_kernel (b - bhalf);
-  } else {
-    int bquarter = b / 4;
-    double t = __internal_exp2i_kernel(bquarter);
-    return a * t * t * t *__internal_exp2i_kernel (b - 3 * bquarter);
-  }
+  return (double)__cuda_ldexpf((float)a, b);
 }
 
 static double __cuda_scalbn(double a, int b)
 {
-
-  return __cuda_ldexp(a, b);
+  return (double)__cuda_scalbnf((float)a, b);
 }
 
-static double __cuda_scalbln(double a, long int b)
+static double __cuda_scalbln(double a, long b)
 {
-
-
-  if (b < -2147483648L) b = -2147483648L;
-  if (b > 2147483647L) b = 2147483647L;
-
-  return __cuda_scalbn(a, (int)b);
+  return (double)__cuda_scalblnf((float)a, b);
 }
 
 static double __cuda_frexp(double a, int *b)
 {
-  double fa = __cuda_fabs(a);
-  unsigned int expo;
-  unsigned int denorm;
-
-  if (fa < 2.22507385850720140e-308) {
-    a *= 18014398509481984.0;
-    denorm = 54;
-  } else {
-    denorm = 0;
-  }
-  expo = (__double2hiint(a) >> 20) & 0x7ff;
-  if ((fa == 0.0) || (expo == 0x7ff)) {
-    expo = 0;
-    a = a + a;
-  } else {
-    expo = expo - denorm - 1022;
-    a = __longlong_as_double((__double_as_longlong(a) & 0x800fffffffffffffULL)|
-                              0x3fe0000000000000ULL);
-  }
-  *b = expo;
-  return a;
+  return (double)__cuda_frexpf((float)a, b);
 }
 
 static double __cuda_modf(double a, double *b)
 {
-  double t;
-  if (__cuda___finite(a)) {
-    t = __cuda_trunc(a);
-    *b = t;
-    t = a - t;
-    return __cuda_copysign(t, a);
-  } else if (__cuda___isinf(a)) {
-    t = 0.0;
-    *b = a;
-    return __cuda_copysign(t, a);
-  } else {
-    *b = a + a;
-    return a + a;
-  }
+  float fb;
+  float fa = __cuda_modff((float)a, &fb);
+
+  *b = (double)fb;
+
+  return (double)fa;
 }
 
 static double __cuda_fmod(double a, double b)
 {
-  double orig_a = a;
-  double orig_b = b;
-  a = __cuda_fabs(a);
-  b = __cuda_fabs(b);
-  if (!((a <= __longlong_as_double(0x7ff0000000000000ULL)) && (b <= __longlong_as_double(0x7ff0000000000000ULL)))) {
-      return orig_a + orig_b;
-  }
-  if (a == __longlong_as_double(0x7ff0000000000000ULL) || b == 0.0) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  } else if (a >= b) {
-    int bhi = __double2hiint(b);
-    int blo = __double2loint(b);
-    int ahi = __double2hiint(a);
-    double scaled_b = 0.0;
-    if (b < 2.22507385850720140e-308) {
-      double t = b;
-      while ((t < a) && (t < 2.22507385850720140e-308)) {
-        t = t + t;
-      }
-      bhi = __double2hiint(t);
-      blo = __double2loint(t);
-      scaled_b = t;
-    }
-    if (a >= 2.22507385850720140e-308) {
-      scaled_b = __hiloint2double ((bhi & 0x000fffff)|(ahi & 0x7ff00000), blo);
-    }
-    if (scaled_b > a) {
-      scaled_b *= 0.5;
-    }
-    while (scaled_b >= b) {
-      if (a >= scaled_b) {
-        a -= scaled_b;
-      }
-      scaled_b *= 0.5;
-    }
-    return __cuda_copysign (a, orig_a);
-  } else {
-    return orig_a;
-  }
+  return (double)__cuda_fmodf((float)a, (float)b);
 }
 
 static double __cuda_remainder(double a, double b)
 {
-  double orig_a;
-  double twoa = 0.0;
-  unsigned int quot0 = 0;
-  int bhi;
-  int blo;
-  int ahi;
-  if (__cuda___isnan(a) || __cuda___isnan(b)) {
-    return a + b;
-  }
-  orig_a = a;
-  a = __cuda_fabs(a);
-  b = __cuda_fabs(b);
-  if (a == __longlong_as_double(0x7ff0000000000000ULL) || b == 0.0) {
-    return __longlong_as_double(0xfff8000000000000ULL);
-  } else if (a >= b) {
-    double scaled_b = 0.0;
-    bhi = __double2hiint(b);
-    blo = __double2loint(b);
-    ahi = __double2hiint(a);
-    if (b < 2.22507385850720140e-308) {
-      double t = b;
-      while ((t < a) && (t < 2.22507385850720140e-308)) {
-        t = t + t;
-      }
-      bhi = __double2hiint(t);
-      blo = __double2loint(t);
-      scaled_b = t;
-    }
-    if (a >= 2.22507385850720140e-308) {
-      scaled_b = __hiloint2double ((bhi & 0x000fffff)|(ahi & 0x7ff00000), blo);
-    }
-    if (scaled_b > a) {
-      scaled_b *= 0.5;
-    }
-    while (scaled_b >= b) {
-      quot0 = 0;
-      if (a >= scaled_b) {
-        a -= scaled_b;
-        quot0 = 1;
-      }
-      scaled_b *= 0.5;
-    }
-  }
-
-  twoa = a + a;
-  if ((twoa > b) || ((twoa == b) && quot0)) {
-    a -= b;
-  }
-  bhi = __double2hiint(a);
-  blo = __double2loint(a);
-  ahi = __double2hiint(orig_a);
-  a = __hiloint2double((ahi & 0x80000000) ^ bhi, blo);
-  return a;
+  return (double)__cuda_remainderf((float)a, (float)b);
 }
 
 static double __cuda_remquo(double a, double b, int *c)
 {
-  double orig_a;
-  double twoa = 0.0;
-  unsigned int quot = 0;
-  unsigned int sign;
-  int bhi;
-  int blo;
-  int ahi;
-  if (__cuda___isnan(a) || __cuda___isnan(b)) {
-    *c = quot;
-    return a + b;
-  }
-  orig_a = a;
-  sign = 0 - (__cuda___signbit(a) != __cuda___signbit(b));
-  a = __cuda_fabs(a);
-  b = __cuda_fabs(b);
-  if (a == __longlong_as_double(0x7ff0000000000000ULL) || b == 0.0) {
-    *c = quot;
-    return __longlong_as_double(0xfff8000000000000ULL);
-  } else if (a >= b) {
-    double scaled_b = 0.0;
-    bhi = __double2hiint(b);
-    blo = __double2loint(b);
-    ahi = __double2hiint(a);
-    if (b < 2.22507385850720140e-308) {
-      double t = b;
-      while ((t < a) && (t < 2.22507385850720140e-308)) {
-        t = t + t;
-      }
-      bhi = __double2hiint(t);
-      blo = __double2loint(t);
-      scaled_b = t;
-    }
-    if (a >= 2.22507385850720140e-308) {
-      scaled_b = __hiloint2double ((bhi & 0x000fffff)|(ahi & 0x7ff00000), blo);
-    }
-    if (scaled_b > a) {
-      scaled_b *= 0.5;
-    }
-    while (scaled_b >= b) {
-      quot <<= 1;
-      if (a >= scaled_b) {
-        a -= scaled_b;
-        quot += 1;
-      }
-      scaled_b *= 0.5;
-    }
-  }
-
-  twoa = a + a;
-  if ((twoa > b) || ((twoa == b) && (quot & 1))) {
-    quot++;
-    a -= b;
-  }
-  bhi = __double2hiint(a);
-  blo = __double2loint(a);
-  ahi = __double2hiint(orig_a);
-  a = __hiloint2double((ahi & 0x80000000) ^ bhi, blo);
-  quot = quot & (~((~0)<<3));
-  quot = quot ^ sign;
-  quot = quot - sign;
-  *c = quot;
-  return a;
+  return (double)__cuda_remquof((float)a, (float)b, c);
 }
 
 static double __cuda_nextafter(double a, double b)
 {
-  unsigned long long int ia;
-  unsigned long long int ib;
-  ia = __double_as_longlong(a);
-  ib = __double_as_longlong(b);
-  if (__cuda___isnan(a) || __cuda___isnan(b)) return a + b;
-  if (((ia | ib) << 1) == 0ULL) return b;
-  if ((ia + ia) == 0ULL) {
-    return __cuda_copysign (__longlong_as_double(0x0000000000000001ULL), b);
-  }
-  if ((a < b) && (a < 0.0)) ia--;
-  if ((a < b) && (a > 0.0)) ia++;
-  if ((a > b) && (a < 0.0)) ia++;
-  if ((a > b) && (a > 0.0)) ia--;
-  a = __longlong_as_double(ia);
-  return a;
+  return (double)__cuda_nextafterf((float)a, (float)b);
 }
 
-static double __cuda_nan(const char *s)
+static double __cuda_nan(const char *tagp)
 {
-  unsigned long long i = 0;
-  int c;
-  int ovfl = 0;
-  int invld = 0;
-  if (*s == '0') {
-    s++;
-    if ((*s == 'x') || (*s == 'X')) {
-      s++;
-      while (*s == '0') s++;
-      while (*s) {
-        if (i > 0x0fffffffffffffffULL) {
-          ovfl = 1;
-        }
-        c = (((*s) >= 'A') && ((*s) <= 'F')) ? (*s + 'a' - 'A') : (*s);
-        if ((c >= 'a') && (c <= 'f')) {
-          c = c - 'a' + 10;
-          i = i * 16 + c;
-        } else if ((c >= '0') && (c <= '9')) {
-          c = c - '0';
-          i = i * 16 + c;
-        } else {
-          invld = 1;
-        }
-        s++;
-      }
-    } else {
-      while (*s == '0') s++;
-      while (*s) {
-        if (i > 0x1fffffffffffffffULL) {
-          ovfl = 1;
-        }
-        c = *s;
-        if ((c >= '0') && (c <= '7')) {
-          c = c - '0';
-          i = i * 8 + c;
-        } else {
-          invld = 1;
-        }
-        s++;
-      }
-    }
-  } else {
-    while (*s) {
-      c = *s;
-      if ((i > 1844674407370955161ULL) ||
-          ((i == 1844674407370955161ULL) && (c > '5'))) {
-        ovfl = 1;
-      }
-      if ((c >= '0') && (c <= '9')) {
-        c = c - '0';
-        i = i * 10 + c;
-      } else {
-        invld = 1;
-      }
-      s++;
-    }
-  }
-  if (ovfl) {
-    i = ~0ULL;
-  }
-  if (invld) {
-    i = 0ULL;
-  }
-  i = (i & 0x000fffffffffffffULL) | 0x7ff8000000000000ULL;
-  return __longlong_as_double(i);
+  return (double)__cuda_nanf(tagp);
+}
+
+static double __cuda_pow(double a, double b)
+{
+  return (double)__cuda_powf((float)a, (float)b);
 }
 
 static double __cuda_round(double a)
 {
-  double fa = __cuda_fabs(a);
-  if (fa > 4503599627370496.0) {
-    return a;
-  } else {
-    double u = __cuda_floor(fa + 0.5);
-    if (fa < 0.5) u = 0;
-    return __cuda_copysign(u, a);
-  }
+  return (double)__cuda_roundf((float)a);
 }
 
-static long long int __cuda_llround(double a)
+static long __cuda_lround(double a)
 {
-
-  if (a >= 9223372036854775807.0) return 0x7fffffffffffffffLL;
-  if (a <= -9223372036854775808.0) return 0x8000000000000000LL;
-
-  return (long long int)(__cuda_round(a));
+  return __cuda_lroundf((float)a);
 }
 
-static long int __cuda_lround(double a)
+static long long __cuda_llround(double a)
 {
+  return __cuda_llroundf((float)a);
+}
 
-  return (long int)(__cuda_llround(a));
-# 2124 "/home/gdiamos/temp/cuda/bin//../include/math_functions_dbl_ptx3.h" 3
+static double __cuda_rint(double a)
+{
+  return (double)__cuda_rintf((float)a);
+}
+
+static long __cuda_lrint(double a)
+{
+  return __cuda_lrintf((float)a);
+}
+
+static long long __cuda_llrint(double a)
+{
+  return __cuda_llrintf((float)a);
+}
+
+static double __cuda_nearbyint(double a)
+{
+  return (double)__cuda_nearbyintf((float)a);
 }
 
 static double __cuda_fdim(double a, double b)
 {
-  double t;
-  t = a - b;
-  if (a <= b) {
-    t = 0.0;
-  }
-  return t;
+  return (double)__cuda_fdimf((float)a, (float)b);
 }
 
 static int __cuda_ilogb(double a)
 {
-  unsigned long long int i;
-  unsigned int ihi;
-  unsigned int ilo;
-  if (__cuda___isnan(a)) return -((int)((unsigned int)-1 >> 1))-1;
-  if (__cuda___isinf(a)) return ((int)((unsigned int)-1 >> 1));
-  if (a == 0.0) return -((int)((unsigned int)-1 >> 1))-1;
-  a = __cuda_fabs(a);
-  ilo = __double2loint(a);
-  ihi = __double2hiint(a);
-  i = ((unsigned long long int)ihi) << 32 | (unsigned long long int)ilo;
-  if (a >= 2.22507385850720140e-308) {
-    return ((int)((ihi >> 20) & 0x7ff)) - 1023;
-  } else {
-    int expo = -1022;
-    while (i < 0x0010000000000000ULL) {
-      expo--;
-      i = i + i;
-    }
-    return expo;
-  }
+  return __cuda_ilogbf((float)a);
 }
 
 static double __cuda_logb(double a)
 {
-  unsigned long long int i;
-  unsigned int ihi;
-  unsigned int ilo;
-  if (__cuda___isnan(a)) return a + a;
-  a = __cuda_fabs(a);
-  if (a == __longlong_as_double(0x7ff0000000000000ULL)) return a;
-  if (a == 0.0) return -__longlong_as_double(0x7ff0000000000000ULL);
-  ilo = __double2loint(a);
-  ihi = __double2hiint(a);
-  i = ((unsigned long long int)ihi) << 32 | (unsigned long long int)ilo;
-  if (a >= 2.22507385850720140e-308) {
-    return (double)((int)((ihi >> 20) & 0x7ff)) - 1023;
-  } else {
-    int expo = -1022;
-    while (i < 0x0010000000000000ULL) {
-      expo--;
-      i = i + i;
-    }
-    return (double)expo;
-  }
+  return (double)__cuda_logbf((float)a);
 }
 
 static double __cuda_fma(double a, double b, double c)
 {
-  return __fma_rn(a, b, c);
+  return (double)__cuda_fmaf((float)a, (float)b, (float)c);
 }
-# 3862 "/home/gdiamos/temp/cuda/bin//../include/math_functions.h" 2 3
+# 3856 "/home/gdiamos/temp/cuda/bin//../include/math_functions.h" 2 3
 # 94 "/home/gdiamos/temp/cuda/bin//../include/common_functions.h" 2
 # 216 "/home/gdiamos/temp/cuda/bin//../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00001baf_00000000-4_simplerFFT.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_46_tmpxft_00001baf_00000000_14_simplerFFT_cpp1_ii_c14de7b3(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_46_tmpxft_00001baf_00000000_14_simplerFFT_cpp1_ii_c14de7b3(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_0000614a_00000000-1_simplerFFT.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_45_tmpxft_0000614a_00000000_4_simplerFFT_cpp1_ii_c14de7b3(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_45_tmpxft_0000614a_00000000_4_simplerFFT_cpp1_ii_c14de7b3(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 247 "simplerFFT.cu" 2

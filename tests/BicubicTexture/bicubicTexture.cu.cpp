@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.cpp"
 # 1 "bicubicTexture.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5879,711 +5879,713 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 889 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 212 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 230 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned GLenum; }
-# 213 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 231 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned GLbitfield; }
-# 214 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 232 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned GLuint; }
-# 215 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 233 "/usr/include/GL/glew.h" 3
 extern "C" { typedef int GLint; }
-# 216 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 234 "/usr/include/GL/glew.h" 3
 extern "C" { typedef int GLsizei; }
-# 218 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 236 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned char GLboolean; }
-# 219 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 237 "/usr/include/GL/glew.h" 3
 extern "C" { typedef signed char GLbyte; }
-# 220 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 238 "/usr/include/GL/glew.h" 3
 extern "C" { typedef short GLshort; }
-# 221 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 239 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned char GLubyte; }
-# 222 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 240 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned short GLushort; }
-# 223 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 241 "/usr/include/GL/glew.h" 3
+extern "C" { typedef unsigned long GLulong; }
+# 242 "/usr/include/GL/glew.h" 3
 extern "C" { typedef float GLfloat; }
-# 224 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 243 "/usr/include/GL/glew.h" 3
 extern "C" { typedef float GLclampf; }
-# 225 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 244 "/usr/include/GL/glew.h" 3
 extern "C" { typedef double GLdouble; }
-# 226 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 245 "/usr/include/GL/glew.h" 3
 extern "C" { typedef double GLclampd; }
-# 227 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 246 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void GLvoid; }
-# 237 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 251 "/usr/include/GL/glew.h" 3
 extern "C" { typedef signed long long GLint64EXT; }
-# 238 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 252 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned long long GLuint64EXT; }
-# 776 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 790 "/usr/include/GL/glew.h" 3
 extern "C" void glAccum(GLenum, GLfloat);
-# 777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 791 "/usr/include/GL/glew.h" 3
 extern "C" void glAlphaFunc(GLenum, GLclampf);
-# 778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 792 "/usr/include/GL/glew.h" 3
 extern "C" GLboolean glAreTexturesResident(GLsizei, const GLuint *, GLboolean *);
-# 779 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 793 "/usr/include/GL/glew.h" 3
 extern "C" void glArrayElement(GLint);
-# 780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 794 "/usr/include/GL/glew.h" 3
 extern "C" void glBegin(GLenum);
-# 781 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 795 "/usr/include/GL/glew.h" 3
 extern "C" void glBindTexture(GLenum, GLuint);
-# 782 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 796 "/usr/include/GL/glew.h" 3
 extern "C" void glBitmap(GLsizei, GLsizei, GLfloat, GLfloat, GLfloat, GLfloat, const GLubyte *);
-# 783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 797 "/usr/include/GL/glew.h" 3
 extern "C" void glBlendFunc(GLenum, GLenum);
-# 784 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 798 "/usr/include/GL/glew.h" 3
 extern "C" void glCallList(GLuint);
-# 785 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 799 "/usr/include/GL/glew.h" 3
 extern "C" void glCallLists(GLsizei, GLenum, const GLvoid *);
-# 786 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 800 "/usr/include/GL/glew.h" 3
 extern "C" void glClear(GLbitfield);
-# 787 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 801 "/usr/include/GL/glew.h" 3
 extern "C" void glClearAccum(GLfloat, GLfloat, GLfloat, GLfloat);
-# 788 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 802 "/usr/include/GL/glew.h" 3
 extern "C" void glClearColor(GLclampf, GLclampf, GLclampf, GLclampf);
-# 789 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 803 "/usr/include/GL/glew.h" 3
 extern "C" void glClearDepth(GLclampd);
-# 790 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 804 "/usr/include/GL/glew.h" 3
 extern "C" void glClearIndex(GLfloat);
-# 791 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 805 "/usr/include/GL/glew.h" 3
 extern "C" void glClearStencil(GLint);
-# 792 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 806 "/usr/include/GL/glew.h" 3
 extern "C" void glClipPlane(GLenum, const GLdouble *);
-# 793 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 807 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3b(GLbyte, GLbyte, GLbyte);
-# 794 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 808 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3bv(const GLbyte *);
-# 795 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 809 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3d(GLdouble, GLdouble, GLdouble);
-# 796 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 810 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3dv(const GLdouble *);
-# 797 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 811 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3f(GLfloat, GLfloat, GLfloat);
-# 798 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 812 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3fv(const GLfloat *);
-# 799 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 813 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3i(GLint, GLint, GLint);
-# 800 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 814 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3iv(const GLint *);
-# 801 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 815 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3s(GLshort, GLshort, GLshort);
-# 802 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 816 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3sv(const GLshort *);
-# 803 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 817 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3ub(GLubyte, GLubyte, GLubyte);
-# 804 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 818 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3ubv(const GLubyte *);
-# 805 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 819 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3ui(GLuint, GLuint, GLuint);
-# 806 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 820 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3uiv(const GLuint *);
-# 807 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 821 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3us(GLushort, GLushort, GLushort);
-# 808 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 822 "/usr/include/GL/glew.h" 3
 extern "C" void glColor3usv(const GLushort *);
-# 809 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 823 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4b(GLbyte, GLbyte, GLbyte, GLbyte);
-# 810 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 824 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4bv(const GLbyte *);
-# 811 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 825 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4d(GLdouble, GLdouble, GLdouble, GLdouble);
-# 812 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 826 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4dv(const GLdouble *);
-# 813 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 827 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4f(GLfloat, GLfloat, GLfloat, GLfloat);
-# 814 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 828 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4fv(const GLfloat *);
-# 815 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 829 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4i(GLint, GLint, GLint, GLint);
-# 816 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 830 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4iv(const GLint *);
-# 817 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 831 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4s(GLshort, GLshort, GLshort, GLshort);
-# 818 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 832 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4sv(const GLshort *);
-# 819 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 833 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4ub(GLubyte, GLubyte, GLubyte, GLubyte);
-# 820 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 834 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4ubv(const GLubyte *);
-# 821 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 835 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4ui(GLuint, GLuint, GLuint, GLuint);
-# 822 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 836 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4uiv(const GLuint *);
-# 823 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 837 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4us(GLushort, GLushort, GLushort, GLushort);
-# 824 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 838 "/usr/include/GL/glew.h" 3
 extern "C" void glColor4usv(const GLushort *);
-# 825 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 839 "/usr/include/GL/glew.h" 3
 extern "C" void glColorMask(GLboolean, GLboolean, GLboolean, GLboolean);
-# 826 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 840 "/usr/include/GL/glew.h" 3
 extern "C" void glColorMaterial(GLenum, GLenum);
-# 827 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 841 "/usr/include/GL/glew.h" 3
 extern "C" void glColorPointer(GLint, GLenum, GLsizei, const GLvoid *);
-# 828 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 842 "/usr/include/GL/glew.h" 3
 extern "C" void glCopyPixels(GLint, GLint, GLsizei, GLsizei, GLenum);
-# 829 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 843 "/usr/include/GL/glew.h" 3
 extern "C" void glCopyTexImage1D(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint);
-# 830 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 844 "/usr/include/GL/glew.h" 3
 extern "C" void glCopyTexImage2D(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint);
-# 831 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 845 "/usr/include/GL/glew.h" 3
 extern "C" void glCopyTexSubImage1D(GLenum, GLint, GLint, GLint, GLint, GLsizei);
-# 832 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 846 "/usr/include/GL/glew.h" 3
 extern "C" void glCopyTexSubImage2D(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei);
-# 833 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 847 "/usr/include/GL/glew.h" 3
 extern "C" void glCullFace(GLenum);
-# 834 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 848 "/usr/include/GL/glew.h" 3
 extern "C" void glDeleteLists(GLuint, GLsizei);
-# 835 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 849 "/usr/include/GL/glew.h" 3
 extern "C" void glDeleteTextures(GLsizei, const GLuint *);
-# 836 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 850 "/usr/include/GL/glew.h" 3
 extern "C" void glDepthFunc(GLenum);
-# 837 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 851 "/usr/include/GL/glew.h" 3
 extern "C" void glDepthMask(GLboolean);
-# 838 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 852 "/usr/include/GL/glew.h" 3
 extern "C" void glDepthRange(GLclampd, GLclampd);
-# 839 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 853 "/usr/include/GL/glew.h" 3
 extern "C" void glDisable(GLenum);
-# 840 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 854 "/usr/include/GL/glew.h" 3
 extern "C" void glDisableClientState(GLenum);
-# 841 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 855 "/usr/include/GL/glew.h" 3
 extern "C" void glDrawArrays(GLenum, GLint, GLsizei);
-# 842 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 856 "/usr/include/GL/glew.h" 3
 extern "C" void glDrawBuffer(GLenum);
-# 843 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 857 "/usr/include/GL/glew.h" 3
 extern "C" void glDrawElements(GLenum, GLsizei, GLenum, const GLvoid *);
-# 844 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 858 "/usr/include/GL/glew.h" 3
 extern "C" void glDrawPixels(GLsizei, GLsizei, GLenum, GLenum, const GLvoid *);
-# 845 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 859 "/usr/include/GL/glew.h" 3
 extern "C" void glEdgeFlag(GLboolean);
-# 846 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 860 "/usr/include/GL/glew.h" 3
 extern "C" void glEdgeFlagPointer(GLsizei, const GLvoid *);
-# 847 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 861 "/usr/include/GL/glew.h" 3
 extern "C" void glEdgeFlagv(const GLboolean *);
-# 848 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 862 "/usr/include/GL/glew.h" 3
 extern "C" void glEnable(GLenum);
-# 849 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 863 "/usr/include/GL/glew.h" 3
 extern "C" void glEnableClientState(GLenum);
-# 850 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 864 "/usr/include/GL/glew.h" 3
 extern "C" void glEnd();
-# 851 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 865 "/usr/include/GL/glew.h" 3
 extern "C" void glEndList();
-# 852 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 866 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord1d(GLdouble);
-# 853 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 867 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord1dv(const GLdouble *);
-# 854 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 868 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord1f(GLfloat);
-# 855 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 869 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord1fv(const GLfloat *);
-# 856 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 870 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord2d(GLdouble, GLdouble);
-# 857 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 871 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord2dv(const GLdouble *);
-# 858 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 872 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord2f(GLfloat, GLfloat);
-# 859 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 873 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalCoord2fv(const GLfloat *);
-# 860 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 874 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalMesh1(GLenum, GLint, GLint);
-# 861 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 875 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalMesh2(GLenum, GLint, GLint, GLint, GLint);
-# 862 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 876 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalPoint1(GLint);
-# 863 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 877 "/usr/include/GL/glew.h" 3
 extern "C" void glEvalPoint2(GLint, GLint);
-# 864 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 878 "/usr/include/GL/glew.h" 3
 extern "C" void glFeedbackBuffer(GLsizei, GLenum, GLfloat *);
-# 865 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 879 "/usr/include/GL/glew.h" 3
 extern "C" void glFinish();
-# 866 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 880 "/usr/include/GL/glew.h" 3
 extern "C" void glFlush();
-# 867 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 881 "/usr/include/GL/glew.h" 3
 extern "C" void glFogf(GLenum, GLfloat);
-# 868 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 882 "/usr/include/GL/glew.h" 3
 extern "C" void glFogfv(GLenum, const GLfloat *);
-# 869 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 883 "/usr/include/GL/glew.h" 3
 extern "C" void glFogi(GLenum, GLint);
-# 870 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 884 "/usr/include/GL/glew.h" 3
 extern "C" void glFogiv(GLenum, const GLint *);
-# 871 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 885 "/usr/include/GL/glew.h" 3
 extern "C" void glFrontFace(GLenum);
-# 872 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 886 "/usr/include/GL/glew.h" 3
 extern "C" void glFrustum(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble);
-# 873 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 887 "/usr/include/GL/glew.h" 3
 extern "C" GLuint glGenLists(GLsizei);
-# 874 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 888 "/usr/include/GL/glew.h" 3
 extern "C" void glGenTextures(GLsizei, GLuint *);
-# 875 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 889 "/usr/include/GL/glew.h" 3
 extern "C" void glGetBooleanv(GLenum, GLboolean *);
-# 876 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 890 "/usr/include/GL/glew.h" 3
 extern "C" void glGetClipPlane(GLenum, GLdouble *);
-# 877 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 891 "/usr/include/GL/glew.h" 3
 extern "C" void glGetDoublev(GLenum, GLdouble *);
-# 878 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 892 "/usr/include/GL/glew.h" 3
 extern "C" GLenum glGetError();
-# 879 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 893 "/usr/include/GL/glew.h" 3
 extern "C" void glGetFloatv(GLenum, GLfloat *);
-# 880 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 894 "/usr/include/GL/glew.h" 3
 extern "C" void glGetIntegerv(GLenum, GLint *);
-# 881 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 895 "/usr/include/GL/glew.h" 3
 extern "C" void glGetLightfv(GLenum, GLenum, GLfloat *);
-# 882 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 896 "/usr/include/GL/glew.h" 3
 extern "C" void glGetLightiv(GLenum, GLenum, GLint *);
-# 883 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 897 "/usr/include/GL/glew.h" 3
 extern "C" void glGetMapdv(GLenum, GLenum, GLdouble *);
-# 884 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 898 "/usr/include/GL/glew.h" 3
 extern "C" void glGetMapfv(GLenum, GLenum, GLfloat *);
-# 885 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 899 "/usr/include/GL/glew.h" 3
 extern "C" void glGetMapiv(GLenum, GLenum, GLint *);
-# 886 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 900 "/usr/include/GL/glew.h" 3
 extern "C" void glGetMaterialfv(GLenum, GLenum, GLfloat *);
-# 887 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 901 "/usr/include/GL/glew.h" 3
 extern "C" void glGetMaterialiv(GLenum, GLenum, GLint *);
-# 888 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 902 "/usr/include/GL/glew.h" 3
 extern "C" void glGetPixelMapfv(GLenum, GLfloat *);
-# 889 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 903 "/usr/include/GL/glew.h" 3
 extern "C" void glGetPixelMapuiv(GLenum, GLuint *);
-# 890 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 904 "/usr/include/GL/glew.h" 3
 extern "C" void glGetPixelMapusv(GLenum, GLushort *);
-# 891 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 905 "/usr/include/GL/glew.h" 3
 extern "C" void glGetPointerv(GLenum, GLvoid **);
-# 892 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 906 "/usr/include/GL/glew.h" 3
 extern "C" void glGetPolygonStipple(GLubyte *);
-# 893 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 907 "/usr/include/GL/glew.h" 3
 extern "C" const GLubyte *glGetString(GLenum);
-# 894 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 908 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexEnvfv(GLenum, GLenum, GLfloat *);
-# 895 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 909 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexEnviv(GLenum, GLenum, GLint *);
-# 896 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 910 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexGendv(GLenum, GLenum, GLdouble *);
-# 897 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 911 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexGenfv(GLenum, GLenum, GLfloat *);
-# 898 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 912 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexGeniv(GLenum, GLenum, GLint *);
-# 899 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 913 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexImage(GLenum, GLint, GLenum, GLenum, GLvoid *);
-# 900 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 914 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexLevelParameterfv(GLenum, GLint, GLenum, GLfloat *);
-# 901 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 915 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexLevelParameteriv(GLenum, GLint, GLenum, GLint *);
-# 902 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 916 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexParameterfv(GLenum, GLenum, GLfloat *);
-# 903 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 917 "/usr/include/GL/glew.h" 3
 extern "C" void glGetTexParameteriv(GLenum, GLenum, GLint *);
-# 904 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 918 "/usr/include/GL/glew.h" 3
 extern "C" void glHint(GLenum, GLenum);
-# 905 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 919 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexMask(GLuint);
-# 906 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 920 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexPointer(GLenum, GLsizei, const GLvoid *);
-# 907 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 921 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexd(GLdouble);
-# 908 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 922 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexdv(const GLdouble *);
-# 909 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 923 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexf(GLfloat);
-# 910 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 924 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexfv(const GLfloat *);
-# 911 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 925 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexi(GLint);
-# 912 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 926 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexiv(const GLint *);
-# 913 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 927 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexs(GLshort);
-# 914 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 928 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexsv(const GLshort *);
-# 915 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 929 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexub(GLubyte);
-# 916 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 930 "/usr/include/GL/glew.h" 3
 extern "C" void glIndexubv(const GLubyte *);
-# 917 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 931 "/usr/include/GL/glew.h" 3
 extern "C" void glInitNames();
-# 918 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 932 "/usr/include/GL/glew.h" 3
 extern "C" void glInterleavedArrays(GLenum, GLsizei, const GLvoid *);
-# 919 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 933 "/usr/include/GL/glew.h" 3
 extern "C" GLboolean glIsEnabled(GLenum);
-# 920 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 934 "/usr/include/GL/glew.h" 3
 extern "C" GLboolean glIsList(GLuint);
-# 921 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 935 "/usr/include/GL/glew.h" 3
 extern "C" GLboolean glIsTexture(GLuint);
-# 922 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 936 "/usr/include/GL/glew.h" 3
 extern "C" void glLightModelf(GLenum, GLfloat);
-# 923 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 937 "/usr/include/GL/glew.h" 3
 extern "C" void glLightModelfv(GLenum, const GLfloat *);
-# 924 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 938 "/usr/include/GL/glew.h" 3
 extern "C" void glLightModeli(GLenum, GLint);
-# 925 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 939 "/usr/include/GL/glew.h" 3
 extern "C" void glLightModeliv(GLenum, const GLint *);
-# 926 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 940 "/usr/include/GL/glew.h" 3
 extern "C" void glLightf(GLenum, GLenum, GLfloat);
-# 927 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 941 "/usr/include/GL/glew.h" 3
 extern "C" void glLightfv(GLenum, GLenum, const GLfloat *);
-# 928 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 942 "/usr/include/GL/glew.h" 3
 extern "C" void glLighti(GLenum, GLenum, GLint);
-# 929 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 943 "/usr/include/GL/glew.h" 3
 extern "C" void glLightiv(GLenum, GLenum, const GLint *);
-# 930 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 944 "/usr/include/GL/glew.h" 3
 extern "C" void glLineStipple(GLint, GLushort);
-# 931 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 945 "/usr/include/GL/glew.h" 3
 extern "C" void glLineWidth(GLfloat);
-# 932 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 946 "/usr/include/GL/glew.h" 3
 extern "C" void glListBase(GLuint);
-# 933 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 947 "/usr/include/GL/glew.h" 3
 extern "C" void glLoadIdentity();
-# 934 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 948 "/usr/include/GL/glew.h" 3
 extern "C" void glLoadMatrixd(const GLdouble *);
-# 935 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 949 "/usr/include/GL/glew.h" 3
 extern "C" void glLoadMatrixf(const GLfloat *);
-# 936 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 950 "/usr/include/GL/glew.h" 3
 extern "C" void glLoadName(GLuint);
-# 937 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 951 "/usr/include/GL/glew.h" 3
 extern "C" void glLogicOp(GLenum);
-# 938 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 952 "/usr/include/GL/glew.h" 3
 extern "C" void glMap1d(GLenum, GLdouble, GLdouble, GLint, GLint, const GLdouble *);
-# 939 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 953 "/usr/include/GL/glew.h" 3
 extern "C" void glMap1f(GLenum, GLfloat, GLfloat, GLint, GLint, const GLfloat *);
-# 940 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 954 "/usr/include/GL/glew.h" 3
 extern "C" void glMap2d(GLenum, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, const GLdouble *);
-# 941 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 955 "/usr/include/GL/glew.h" 3
 extern "C" void glMap2f(GLenum, GLfloat, GLfloat, GLint, GLint, GLfloat, GLfloat, GLint, GLint, const GLfloat *);
-# 942 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 956 "/usr/include/GL/glew.h" 3
 extern "C" void glMapGrid1d(GLint, GLdouble, GLdouble);
-# 943 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 957 "/usr/include/GL/glew.h" 3
 extern "C" void glMapGrid1f(GLint, GLfloat, GLfloat);
-# 944 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 958 "/usr/include/GL/glew.h" 3
 extern "C" void glMapGrid2d(GLint, GLdouble, GLdouble, GLint, GLdouble, GLdouble);
-# 945 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 959 "/usr/include/GL/glew.h" 3
 extern "C" void glMapGrid2f(GLint, GLfloat, GLfloat, GLint, GLfloat, GLfloat);
-# 946 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 960 "/usr/include/GL/glew.h" 3
 extern "C" void glMaterialf(GLenum, GLenum, GLfloat);
-# 947 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 961 "/usr/include/GL/glew.h" 3
 extern "C" void glMaterialfv(GLenum, GLenum, const GLfloat *);
-# 948 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 962 "/usr/include/GL/glew.h" 3
 extern "C" void glMateriali(GLenum, GLenum, GLint);
-# 949 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 963 "/usr/include/GL/glew.h" 3
 extern "C" void glMaterialiv(GLenum, GLenum, const GLint *);
-# 950 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 964 "/usr/include/GL/glew.h" 3
 extern "C" void glMatrixMode(GLenum);
-# 951 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 965 "/usr/include/GL/glew.h" 3
 extern "C" void glMultMatrixd(const GLdouble *);
-# 952 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 966 "/usr/include/GL/glew.h" 3
 extern "C" void glMultMatrixf(const GLfloat *);
-# 953 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 967 "/usr/include/GL/glew.h" 3
 extern "C" void glNewList(GLuint, GLenum);
-# 954 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 968 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3b(GLbyte, GLbyte, GLbyte);
-# 955 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 969 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3bv(const GLbyte *);
-# 956 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 970 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3d(GLdouble, GLdouble, GLdouble);
-# 957 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 971 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3dv(const GLdouble *);
-# 958 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 972 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3f(GLfloat, GLfloat, GLfloat);
-# 959 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 973 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3fv(const GLfloat *);
-# 960 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 974 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3i(GLint, GLint, GLint);
-# 961 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 975 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3iv(const GLint *);
-# 962 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 976 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3s(GLshort, GLshort, GLshort);
-# 963 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 977 "/usr/include/GL/glew.h" 3
 extern "C" void glNormal3sv(const GLshort *);
-# 964 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 978 "/usr/include/GL/glew.h" 3
 extern "C" void glNormalPointer(GLenum, GLsizei, const GLvoid *);
-# 965 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 979 "/usr/include/GL/glew.h" 3
 extern "C" void glOrtho(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble);
-# 966 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 980 "/usr/include/GL/glew.h" 3
 extern "C" void glPassThrough(GLfloat);
-# 967 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 981 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelMapfv(GLenum, GLsizei, const GLfloat *);
-# 968 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 982 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelMapuiv(GLenum, GLsizei, const GLuint *);
-# 969 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 983 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelMapusv(GLenum, GLsizei, const GLushort *);
-# 970 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 984 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelStoref(GLenum, GLfloat);
-# 971 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 985 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelStorei(GLenum, GLint);
-# 972 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 986 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelTransferf(GLenum, GLfloat);
-# 973 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 987 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelTransferi(GLenum, GLint);
-# 974 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 988 "/usr/include/GL/glew.h" 3
 extern "C" void glPixelZoom(GLfloat, GLfloat);
-# 975 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 989 "/usr/include/GL/glew.h" 3
 extern "C" void glPointSize(GLfloat);
-# 976 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 990 "/usr/include/GL/glew.h" 3
 extern "C" void glPolygonMode(GLenum, GLenum);
-# 977 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 991 "/usr/include/GL/glew.h" 3
 extern "C" void glPolygonOffset(GLfloat, GLfloat);
-# 978 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 992 "/usr/include/GL/glew.h" 3
 extern "C" void glPolygonStipple(const GLubyte *);
-# 979 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 993 "/usr/include/GL/glew.h" 3
 extern "C" void glPopAttrib();
-# 980 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 994 "/usr/include/GL/glew.h" 3
 extern "C" void glPopClientAttrib();
-# 981 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 995 "/usr/include/GL/glew.h" 3
 extern "C" void glPopMatrix();
-# 982 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 996 "/usr/include/GL/glew.h" 3
 extern "C" void glPopName();
-# 983 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 997 "/usr/include/GL/glew.h" 3
 extern "C" void glPrioritizeTextures(GLsizei, const GLuint *, const GLclampf *);
-# 984 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 998 "/usr/include/GL/glew.h" 3
 extern "C" void glPushAttrib(GLbitfield);
-# 985 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 999 "/usr/include/GL/glew.h" 3
 extern "C" void glPushClientAttrib(GLbitfield);
-# 986 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1000 "/usr/include/GL/glew.h" 3
 extern "C" void glPushMatrix();
-# 987 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1001 "/usr/include/GL/glew.h" 3
 extern "C" void glPushName(GLuint);
-# 988 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1002 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2d(GLdouble, GLdouble);
-# 989 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1003 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2dv(const GLdouble *);
-# 990 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1004 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2f(GLfloat, GLfloat);
-# 991 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1005 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2fv(const GLfloat *);
-# 992 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1006 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2i(GLint, GLint);
-# 993 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1007 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2iv(const GLint *);
-# 994 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1008 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2s(GLshort, GLshort);
-# 995 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1009 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos2sv(const GLshort *);
-# 996 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1010 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3d(GLdouble, GLdouble, GLdouble);
-# 997 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1011 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3dv(const GLdouble *);
-# 998 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1012 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3f(GLfloat, GLfloat, GLfloat);
-# 999 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1013 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3fv(const GLfloat *);
-# 1000 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1014 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3i(GLint, GLint, GLint);
-# 1001 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1015 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3iv(const GLint *);
-# 1002 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1016 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3s(GLshort, GLshort, GLshort);
-# 1003 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1017 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos3sv(const GLshort *);
-# 1004 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1018 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4d(GLdouble, GLdouble, GLdouble, GLdouble);
-# 1005 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1019 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4dv(const GLdouble *);
-# 1006 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1020 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4f(GLfloat, GLfloat, GLfloat, GLfloat);
-# 1007 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1021 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4fv(const GLfloat *);
-# 1008 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1022 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4i(GLint, GLint, GLint, GLint);
-# 1009 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1023 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4iv(const GLint *);
-# 1010 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1024 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4s(GLshort, GLshort, GLshort, GLshort);
-# 1011 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1025 "/usr/include/GL/glew.h" 3
 extern "C" void glRasterPos4sv(const GLshort *);
-# 1012 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1026 "/usr/include/GL/glew.h" 3
 extern "C" void glReadBuffer(GLenum);
-# 1013 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1027 "/usr/include/GL/glew.h" 3
 extern "C" void glReadPixels(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid *);
-# 1014 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1028 "/usr/include/GL/glew.h" 3
 extern "C" void glRectd(GLdouble, GLdouble, GLdouble, GLdouble);
-# 1015 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1029 "/usr/include/GL/glew.h" 3
 extern "C" void glRectdv(const GLdouble *, const GLdouble *);
-# 1016 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1030 "/usr/include/GL/glew.h" 3
 extern "C" void glRectf(GLfloat, GLfloat, GLfloat, GLfloat);
-# 1017 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1031 "/usr/include/GL/glew.h" 3
 extern "C" void glRectfv(const GLfloat *, const GLfloat *);
-# 1018 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1032 "/usr/include/GL/glew.h" 3
 extern "C" void glRecti(GLint, GLint, GLint, GLint);
-# 1019 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1033 "/usr/include/GL/glew.h" 3
 extern "C" void glRectiv(const GLint *, const GLint *);
-# 1020 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1034 "/usr/include/GL/glew.h" 3
 extern "C" void glRects(GLshort, GLshort, GLshort, GLshort);
-# 1021 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1035 "/usr/include/GL/glew.h" 3
 extern "C" void glRectsv(const GLshort *, const GLshort *);
-# 1022 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1036 "/usr/include/GL/glew.h" 3
 extern "C" GLint glRenderMode(GLenum);
-# 1023 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1037 "/usr/include/GL/glew.h" 3
 extern "C" void glRotated(GLdouble, GLdouble, GLdouble, GLdouble);
-# 1024 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1038 "/usr/include/GL/glew.h" 3
 extern "C" void glRotatef(GLfloat, GLfloat, GLfloat, GLfloat);
-# 1025 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1039 "/usr/include/GL/glew.h" 3
 extern "C" void glScaled(GLdouble, GLdouble, GLdouble);
-# 1026 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1040 "/usr/include/GL/glew.h" 3
 extern "C" void glScalef(GLfloat, GLfloat, GLfloat);
-# 1027 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1041 "/usr/include/GL/glew.h" 3
 extern "C" void glScissor(GLint, GLint, GLsizei, GLsizei);
-# 1028 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1042 "/usr/include/GL/glew.h" 3
 extern "C" void glSelectBuffer(GLsizei, GLuint *);
-# 1029 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1043 "/usr/include/GL/glew.h" 3
 extern "C" void glShadeModel(GLenum);
-# 1030 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1044 "/usr/include/GL/glew.h" 3
 extern "C" void glStencilFunc(GLenum, GLint, GLuint);
-# 1031 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1045 "/usr/include/GL/glew.h" 3
 extern "C" void glStencilMask(GLuint);
-# 1032 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1046 "/usr/include/GL/glew.h" 3
 extern "C" void glStencilOp(GLenum, GLenum, GLenum);
-# 1033 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1047 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1d(GLdouble);
-# 1034 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1048 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1dv(const GLdouble *);
-# 1035 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1049 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1f(GLfloat);
-# 1036 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1050 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1fv(const GLfloat *);
-# 1037 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1051 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1i(GLint);
-# 1038 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1052 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1iv(const GLint *);
-# 1039 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1053 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1s(GLshort);
-# 1040 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1054 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord1sv(const GLshort *);
-# 1041 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1055 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2d(GLdouble, GLdouble);
-# 1042 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1056 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2dv(const GLdouble *);
-# 1043 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1057 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2f(GLfloat, GLfloat);
-# 1044 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1058 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2fv(const GLfloat *);
-# 1045 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1059 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2i(GLint, GLint);
-# 1046 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1060 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2iv(const GLint *);
-# 1047 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1061 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2s(GLshort, GLshort);
-# 1048 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1062 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord2sv(const GLshort *);
-# 1049 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1063 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3d(GLdouble, GLdouble, GLdouble);
-# 1050 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1064 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3dv(const GLdouble *);
-# 1051 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1065 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3f(GLfloat, GLfloat, GLfloat);
-# 1052 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1066 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3fv(const GLfloat *);
-# 1053 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1067 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3i(GLint, GLint, GLint);
-# 1054 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1068 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3iv(const GLint *);
-# 1055 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1069 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3s(GLshort, GLshort, GLshort);
-# 1056 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1070 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord3sv(const GLshort *);
-# 1057 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1071 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4d(GLdouble, GLdouble, GLdouble, GLdouble);
-# 1058 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1072 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4dv(const GLdouble *);
-# 1059 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1073 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4f(GLfloat, GLfloat, GLfloat, GLfloat);
-# 1060 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1074 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4fv(const GLfloat *);
-# 1061 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1075 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4i(GLint, GLint, GLint, GLint);
-# 1062 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1076 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4iv(const GLint *);
-# 1063 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1077 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4s(GLshort, GLshort, GLshort, GLshort);
-# 1064 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1078 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoord4sv(const GLshort *);
-# 1065 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1079 "/usr/include/GL/glew.h" 3
 extern "C" void glTexCoordPointer(GLint, GLenum, GLsizei, const GLvoid *);
-# 1066 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1080 "/usr/include/GL/glew.h" 3
 extern "C" void glTexEnvf(GLenum, GLenum, GLfloat);
-# 1067 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1081 "/usr/include/GL/glew.h" 3
 extern "C" void glTexEnvfv(GLenum, GLenum, const GLfloat *);
-# 1068 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1082 "/usr/include/GL/glew.h" 3
 extern "C" void glTexEnvi(GLenum, GLenum, GLint);
-# 1069 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1083 "/usr/include/GL/glew.h" 3
 extern "C" void glTexEnviv(GLenum, GLenum, const GLint *);
-# 1070 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1084 "/usr/include/GL/glew.h" 3
 extern "C" void glTexGend(GLenum, GLenum, GLdouble);
-# 1071 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1085 "/usr/include/GL/glew.h" 3
 extern "C" void glTexGendv(GLenum, GLenum, const GLdouble *);
-# 1072 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1086 "/usr/include/GL/glew.h" 3
 extern "C" void glTexGenf(GLenum, GLenum, GLfloat);
-# 1073 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1087 "/usr/include/GL/glew.h" 3
 extern "C" void glTexGenfv(GLenum, GLenum, const GLfloat *);
-# 1074 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1088 "/usr/include/GL/glew.h" 3
 extern "C" void glTexGeni(GLenum, GLenum, GLint);
-# 1075 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1089 "/usr/include/GL/glew.h" 3
 extern "C" void glTexGeniv(GLenum, GLenum, const GLint *);
-# 1076 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1090 "/usr/include/GL/glew.h" 3
 extern "C" void glTexImage1D(GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, const GLvoid *);
-# 1077 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1091 "/usr/include/GL/glew.h" 3
 extern "C" void glTexImage2D(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *);
-# 1078 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1092 "/usr/include/GL/glew.h" 3
 extern "C" void glTexParameterf(GLenum, GLenum, GLfloat);
-# 1079 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1093 "/usr/include/GL/glew.h" 3
 extern "C" void glTexParameterfv(GLenum, GLenum, const GLfloat *);
-# 1080 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1094 "/usr/include/GL/glew.h" 3
 extern "C" void glTexParameteri(GLenum, GLenum, GLint);
-# 1081 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1095 "/usr/include/GL/glew.h" 3
 extern "C" void glTexParameteriv(GLenum, GLenum, const GLint *);
-# 1082 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1096 "/usr/include/GL/glew.h" 3
 extern "C" void glTexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const GLvoid *);
-# 1083 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1097 "/usr/include/GL/glew.h" 3
 extern "C" void glTexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *);
-# 1084 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1098 "/usr/include/GL/glew.h" 3
 extern "C" void glTranslated(GLdouble, GLdouble, GLdouble);
-# 1085 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1099 "/usr/include/GL/glew.h" 3
 extern "C" void glTranslatef(GLfloat, GLfloat, GLfloat);
-# 1086 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1100 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2d(GLdouble, GLdouble);
-# 1087 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1101 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2dv(const GLdouble *);
-# 1088 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1102 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2f(GLfloat, GLfloat);
-# 1089 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1103 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2fv(const GLfloat *);
-# 1090 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1104 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2i(GLint, GLint);
-# 1091 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1105 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2iv(const GLint *);
-# 1092 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1106 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2s(GLshort, GLshort);
-# 1093 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1107 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex2sv(const GLshort *);
-# 1094 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1108 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3d(GLdouble, GLdouble, GLdouble);
-# 1095 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1109 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3dv(const GLdouble *);
-# 1096 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1110 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3f(GLfloat, GLfloat, GLfloat);
-# 1097 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1111 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3fv(const GLfloat *);
-# 1098 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1112 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3i(GLint, GLint, GLint);
-# 1099 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1113 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3iv(const GLint *);
-# 1100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1114 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3s(GLshort, GLshort, GLshort);
-# 1101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1115 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex3sv(const GLshort *);
-# 1102 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1116 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4d(GLdouble, GLdouble, GLdouble, GLdouble);
-# 1103 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1117 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4dv(const GLdouble *);
-# 1104 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1118 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4f(GLfloat, GLfloat, GLfloat, GLfloat);
-# 1105 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1119 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4fv(const GLfloat *);
-# 1106 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1120 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4i(GLint, GLint, GLint, GLint);
-# 1107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1121 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4iv(const GLint *);
-# 1108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1122 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4s(GLshort, GLshort, GLshort, GLshort);
-# 1109 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1123 "/usr/include/GL/glew.h" 3
 extern "C" void glVertex4sv(const GLshort *);
-# 1110 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1124 "/usr/include/GL/glew.h" 3
 extern "C" void glVertexPointer(GLint, GLenum, GLsizei, const GLvoid *);
-# 1111 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1125 "/usr/include/GL/glew.h" 3
 extern "C" void glViewport(GLint, GLint, GLsizei, GLsizei);
 # 270 "/usr/include/GL/glu.h" 3
 class GLUnurbs;
@@ -6719,5538 +6721,5564 @@ extern "C" void gluTessVertex(GLUtesselator *, GLdouble *, GLvoid *);
 extern "C" GLint gluUnProject(GLdouble, GLdouble, GLdouble, const GLdouble *, const GLdouble *, const GLint *, GLdouble *, GLdouble *, GLdouble *);
 # 347 "/usr/include/GL/glu.h" 3
 extern "C" GLint gluUnProject4(GLdouble, GLdouble, GLdouble, GLdouble, const GLdouble *, const GLdouble *, const GLint *, GLdouble, GLdouble, GLdouble *, GLdouble *, GLdouble *, GLdouble *);
-# 1173 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1187 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE3DPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
-# 1174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1188 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTSPROC)(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid *); }
-# 1175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1189 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXIMAGE3DPROC)(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *); }
-# 1176 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1190 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE3DPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *); }
-# 1289 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1303 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVETEXTUREPROC)(GLenum); }
-# 1290 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1304 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLIENTACTIVETEXTUREPROC)(GLenum); }
-# 1291 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1305 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE1DPROC)(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const GLvoid *); }
-# 1292 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1306 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE2DPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *); }
-# 1293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1307 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE3DPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *); }
-# 1294 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1308 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC)(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, const GLvoid *); }
-# 1295 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1309 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, const GLvoid *); }
-# 1296 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1310 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, const GLvoid *); }
-# 1297 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1311 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMPRESSEDTEXIMAGEPROC)(GLenum, GLint, GLvoid *); }
-# 1298 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1312 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOADTRANSPOSEMATRIXDPROC)(const GLdouble [16]); }
-# 1299 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1313 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOADTRANSPOSEMATRIXFPROC)(const GLfloat [16]); }
-# 1300 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1314 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTTRANSPOSEMATRIXDPROC)(const GLdouble [16]); }
-# 1301 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1315 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTTRANSPOSEMATRIXFPROC)(const GLfloat [16]); }
-# 1302 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1316 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1DPROC)(GLenum, GLdouble); }
-# 1303 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1317 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1DVPROC)(GLenum, const GLdouble *); }
-# 1304 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1318 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1FPROC)(GLenum, GLfloat); }
-# 1305 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1319 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1FVPROC)(GLenum, const GLfloat *); }
-# 1306 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1320 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1IPROC)(GLenum, GLint); }
-# 1307 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1321 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1IVPROC)(GLenum, const GLint *); }
-# 1308 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1322 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1SPROC)(GLenum, GLshort); }
-# 1309 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1323 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1SVPROC)(GLenum, const GLshort *); }
-# 1310 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1324 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2DPROC)(GLenum, GLdouble, GLdouble); }
-# 1311 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1325 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2DVPROC)(GLenum, const GLdouble *); }
-# 1312 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1326 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2FPROC)(GLenum, GLfloat, GLfloat); }
-# 1313 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1327 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2FVPROC)(GLenum, const GLfloat *); }
-# 1314 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1328 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2IPROC)(GLenum, GLint, GLint); }
-# 1315 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1329 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2IVPROC)(GLenum, const GLint *); }
-# 1316 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1330 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2SPROC)(GLenum, GLshort, GLshort); }
-# 1317 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1331 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2SVPROC)(GLenum, const GLshort *); }
-# 1318 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1332 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3DPROC)(GLenum, GLdouble, GLdouble, GLdouble); }
-# 1319 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1333 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3DVPROC)(GLenum, const GLdouble *); }
-# 1320 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1334 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3FPROC)(GLenum, GLfloat, GLfloat, GLfloat); }
-# 1321 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1335 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3FVPROC)(GLenum, const GLfloat *); }
-# 1322 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1336 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3IPROC)(GLenum, GLint, GLint, GLint); }
-# 1323 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1337 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3IVPROC)(GLenum, const GLint *); }
-# 1324 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1338 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3SPROC)(GLenum, GLshort, GLshort, GLshort); }
-# 1325 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1339 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3SVPROC)(GLenum, const GLshort *); }
-# 1326 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1340 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4DPROC)(GLenum, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 1327 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1341 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4DVPROC)(GLenum, const GLdouble *); }
-# 1328 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1342 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4FPROC)(GLenum, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 1329 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1343 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4FVPROC)(GLenum, const GLfloat *); }
-# 1330 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1344 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4IPROC)(GLenum, GLint, GLint, GLint, GLint); }
-# 1331 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1345 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4IVPROC)(GLenum, const GLint *); }
-# 1332 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1346 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SPROC)(GLenum, GLshort, GLshort, GLshort, GLshort); }
-# 1333 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1347 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SVPROC)(GLenum, const GLshort *); }
-# 1334 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1348 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLECOVERAGEPROC)(GLclampf, GLboolean); }
-# 1432 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1446 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDCOLORPROC)(GLclampf, GLclampf, GLclampf, GLclampf); }
-# 1433 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1447 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDEQUATIONPROC)(GLenum); }
-# 1434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1448 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDFUNCSEPARATEPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 1435 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1449 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDPOINTERPROC)(GLenum, GLsizei, const GLvoid *); }
-# 1436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1450 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDDPROC)(GLdouble); }
-# 1437 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1451 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDDVPROC)(const GLdouble *); }
-# 1438 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1452 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDFPROC)(GLfloat); }
-# 1439 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1453 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDFVPROC)(const GLfloat *); }
-# 1440 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1454 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWARRAYSPROC)(GLenum, GLint *, GLsizei *, GLsizei); }
-# 1441 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1455 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWELEMENTSPROC)(GLenum, GLsizei *, GLenum, const GLvoid **, GLsizei); }
-# 1442 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1456 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFPROC)(GLenum, GLfloat); }
-# 1443 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1457 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFVPROC)(GLenum, GLfloat *); }
-# 1444 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1458 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPOINTPARAMETERIPROC)(GLenum, GLint); }
+# 1459 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPOINTPARAMETERIVPROC)(GLenum, GLint *); }
+# 1460 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3BPROC)(GLbyte, GLbyte, GLbyte); }
-# 1445 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1461 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3BVPROC)(const GLbyte *); }
-# 1446 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1462 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3DPROC)(GLdouble, GLdouble, GLdouble); }
-# 1447 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1463 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3DVPROC)(const GLdouble *); }
-# 1448 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1464 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3FPROC)(GLfloat, GLfloat, GLfloat); }
-# 1449 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1465 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3FVPROC)(const GLfloat *); }
-# 1450 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1466 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3IPROC)(GLint, GLint, GLint); }
-# 1451 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1467 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3IVPROC)(const GLint *); }
-# 1452 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1468 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3SPROC)(GLshort, GLshort, GLshort); }
-# 1453 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1469 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3SVPROC)(const GLshort *); }
-# 1454 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1470 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UBPROC)(GLubyte, GLubyte, GLubyte); }
-# 1455 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1471 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UBVPROC)(const GLubyte *); }
-# 1456 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1472 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UIPROC)(GLuint, GLuint, GLuint); }
-# 1457 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1473 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UIVPROC)(const GLuint *); }
-# 1458 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1474 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3USPROC)(GLushort, GLushort, GLushort); }
-# 1459 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1475 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3USVPROC)(const GLushort *); }
-# 1460 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1476 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLORPOINTERPROC)(GLint, GLenum, GLsizei, GLvoid *); }
-# 1461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1477 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DPROC)(GLdouble, GLdouble); }
-# 1462 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1478 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DVPROC)(const GLdouble *); }
-# 1463 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1479 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2FPROC)(GLfloat, GLfloat); }
-# 1464 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1480 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2FVPROC)(const GLfloat *); }
-# 1465 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1481 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2IPROC)(GLint, GLint); }
-# 1466 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1482 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2IVPROC)(const GLint *); }
-# 1467 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1483 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2SPROC)(GLshort, GLshort); }
-# 1468 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1484 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2SVPROC)(const GLshort *); }
-# 1469 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1485 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3DPROC)(GLdouble, GLdouble, GLdouble); }
-# 1470 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1486 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3DVPROC)(const GLdouble *); }
-# 1471 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1487 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3FPROC)(GLfloat, GLfloat, GLfloat); }
-# 1472 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1488 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3FVPROC)(const GLfloat *); }
-# 1473 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1489 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3IPROC)(GLint, GLint, GLint); }
-# 1474 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1490 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3IVPROC)(const GLint *); }
-# 1475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1491 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3SPROC)(GLshort, GLshort, GLshort); }
-# 1476 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1492 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3SVPROC)(const GLshort *); }
-# 1584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1602 "/usr/include/GL/glew.h" 3
 extern "C" { typedef ptrdiff_t GLsizeiptr; }
-# 1585 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1603 "/usr/include/GL/glew.h" 3
 extern "C" { typedef ptrdiff_t GLintptr; }
-# 1587 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1605 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINQUERYPROC)(GLenum, GLuint); }
-# 1588 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1606 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDBUFFERPROC)(GLenum, GLuint); }
-# 1589 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1607 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBUFFERDATAPROC)(GLenum, GLsizeiptr, const GLvoid *, GLenum); }
-# 1590 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1608 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBUFFERSUBDATAPROC)(GLenum, GLintptr, GLsizeiptr, const GLvoid *); }
-# 1591 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1609 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEBUFFERSPROC)(GLsizei, const GLuint *); }
-# 1592 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1610 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEQUERIESPROC)(GLsizei, const GLuint *); }
-# 1593 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1611 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDQUERYPROC)(GLenum); }
-# 1594 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1612 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENBUFFERSPROC)(GLsizei, GLuint *); }
-# 1595 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1613 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENQUERIESPROC)(GLsizei, GLuint *); }
-# 1596 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1614 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBUFFERPARAMETERIVPROC)(GLenum, GLenum, GLint *); }
-# 1597 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1615 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBUFFERPOINTERVPROC)(GLenum, GLenum, GLvoid **); }
-# 1598 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1616 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBUFFERSUBDATAPROC)(GLenum, GLintptr, GLsizeiptr, GLvoid *); }
-# 1599 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1617 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTIVPROC)(GLuint, GLenum, GLint *); }
-# 1600 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1618 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTUIVPROC)(GLuint, GLenum, GLuint *); }
-# 1601 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1619 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYIVPROC)(GLenum, GLenum, GLint *); }
-# 1602 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1620 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISBUFFERPROC)(GLuint); }
-# 1603 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1621 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISQUERYPROC)(GLuint); }
-# 1604 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1622 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLvoid *(*PFNGLMAPBUFFERPROC)(GLenum, GLenum); }
-# 1605 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1623 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLUNMAPBUFFERPROC)(GLenum); }
-# 1721 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1739 "/usr/include/GL/glew.h" 3
 extern "C" { typedef char GLchar; }
-# 1723 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1741 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLATTACHSHADERPROC)(GLuint, GLuint); }
-# 1724 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1742 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDATTRIBLOCATIONPROC)(GLuint, GLuint, const GLchar *); }
-# 1725 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1743 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDEQUATIONSEPARATEPROC)(GLenum, GLenum); }
-# 1726 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1744 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPILESHADERPROC)(GLuint); }
-# 1727 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1745 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLCREATEPROGRAMPROC)(void); }
-# 1728 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1746 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLCREATESHADERPROC)(GLenum); }
-# 1729 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1747 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEPROGRAMPROC)(GLuint); }
-# 1730 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1748 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETESHADERPROC)(GLuint); }
-# 1731 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1749 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDETACHSHADERPROC)(GLuint, GLuint); }
-# 1732 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1750 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDISABLEVERTEXATTRIBARRAYPROC)(GLuint); }
-# 1733 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1751 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWBUFFERSPROC)(GLsizei, const GLenum *); }
-# 1734 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1752 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENABLEVERTEXATTRIBARRAYPROC)(GLuint); }
-# 1735 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1753 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETACTIVEATTRIBPROC)(GLuint, GLuint, GLsizei, GLsizei *, GLint *, GLenum *, GLchar *); }
-# 1736 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1754 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETACTIVEUNIFORMPROC)(GLuint, GLuint, GLsizei, GLsizei *, GLint *, GLenum *, GLchar *); }
-# 1737 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1755 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETATTACHEDSHADERSPROC)(GLuint, GLsizei, GLsizei *, GLuint *); }
-# 1738 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1756 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETATTRIBLOCATIONPROC)(GLuint, const GLchar *); }
-# 1739 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1757 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMINFOLOGPROC)(GLuint, GLsizei, GLsizei *, GLchar *); }
-# 1740 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1758 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMIVPROC)(GLuint, GLenum, GLint *); }
-# 1741 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1759 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSHADERINFOLOGPROC)(GLuint, GLsizei, GLsizei *, GLchar *); }
-# 1742 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1760 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSHADERSOURCEPROC)(GLint, GLsizei, GLsizei *, GLchar *); }
-# 1743 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1761 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSHADERIVPROC)(GLuint, GLenum, GLint *); }
-# 1744 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1762 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETUNIFORMLOCATIONPROC)(GLint, const GLchar *); }
-# 1745 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1763 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETUNIFORMFVPROC)(GLuint, GLint, GLfloat *); }
-# 1746 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1764 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETUNIFORMIVPROC)(GLuint, GLint, GLint *); }
-# 1747 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1765 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBPOINTERVPROC)(GLuint, GLenum, GLvoid *); }
-# 1748 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1766 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBDVPROC)(GLuint, GLenum, GLdouble *); }
-# 1749 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1767 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBFVPROC)(GLuint, GLenum, GLfloat *); }
-# 1750 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1768 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIVPROC)(GLuint, GLenum, GLint *); }
-# 1751 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1769 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISPROGRAMPROC)(GLuint); }
-# 1752 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1770 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISSHADERPROC)(GLuint); }
-# 1753 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1771 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLINKPROGRAMPROC)(GLuint); }
-# 1754 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1772 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSHADERSOURCEPROC)(GLuint, GLsizei, const GLchar **, const GLint *); }
-# 1755 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1773 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTENCILFUNCSEPARATEPROC)(GLenum, GLenum, GLint, GLuint); }
-# 1756 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1774 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTENCILMASKSEPARATEPROC)(GLenum, GLuint); }
-# 1757 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1775 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTENCILOPSEPARATEPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 1758 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1776 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1FPROC)(GLint, GLfloat); }
-# 1759 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1777 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1FVPROC)(GLint, GLsizei, const GLfloat *); }
-# 1760 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1778 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1IPROC)(GLint, GLint); }
-# 1761 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1779 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1IVPROC)(GLint, GLsizei, const GLint *); }
-# 1762 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1780 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2FPROC)(GLint, GLfloat, GLfloat); }
-# 1763 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1781 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2FVPROC)(GLint, GLsizei, const GLfloat *); }
-# 1764 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1782 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2IPROC)(GLint, GLint, GLint); }
-# 1765 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1783 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2IVPROC)(GLint, GLsizei, const GLint *); }
-# 1766 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1784 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3FPROC)(GLint, GLfloat, GLfloat, GLfloat); }
-# 1767 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1785 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3FVPROC)(GLint, GLsizei, const GLfloat *); }
-# 1768 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1786 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3IPROC)(GLint, GLint, GLint, GLint); }
-# 1769 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1787 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3IVPROC)(GLint, GLsizei, const GLint *); }
-# 1770 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1788 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4FPROC)(GLint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 1771 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1789 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4FVPROC)(GLint, GLsizei, const GLfloat *); }
-# 1772 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1790 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4IPROC)(GLint, GLint, GLint, GLint, GLint); }
-# 1773 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1791 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4IVPROC)(GLint, GLsizei, const GLint *); }
-# 1774 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1792 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX2FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1775 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1793 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX3FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1776 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1794 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1795 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUSEPROGRAMPROC)(GLuint); }
-# 1778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1796 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVALIDATEPROGRAMPROC)(GLuint); }
-# 1779 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1797 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1DPROC)(GLuint, GLdouble); }
-# 1780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1798 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1DVPROC)(GLuint, const GLdouble *); }
-# 1781 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1799 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1FPROC)(GLuint, GLfloat); }
-# 1782 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1800 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1FVPROC)(GLuint, const GLfloat *); }
-# 1783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1801 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1SPROC)(GLuint, GLshort); }
-# 1784 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1802 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1SVPROC)(GLuint, const GLshort *); }
-# 1785 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1803 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2DPROC)(GLuint, GLdouble, GLdouble); }
-# 1786 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1804 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2DVPROC)(GLuint, const GLdouble *); }
-# 1787 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1805 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2FPROC)(GLuint, GLfloat, GLfloat); }
-# 1788 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1806 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2FVPROC)(GLuint, const GLfloat *); }
-# 1789 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1807 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2SPROC)(GLuint, GLshort, GLshort); }
-# 1790 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1808 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2SVPROC)(GLuint, const GLshort *); }
-# 1791 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1809 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3DPROC)(GLuint, GLdouble, GLdouble, GLdouble); }
-# 1792 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1810 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3DVPROC)(GLuint, const GLdouble *); }
-# 1793 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1811 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3FPROC)(GLuint, GLfloat, GLfloat, GLfloat); }
-# 1794 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1812 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3FVPROC)(GLuint, const GLfloat *); }
-# 1795 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1813 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3SPROC)(GLuint, GLshort, GLshort, GLshort); }
-# 1796 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1814 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3SVPROC)(GLuint, const GLshort *); }
-# 1797 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1815 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NBVPROC)(GLuint, const GLbyte *); }
-# 1798 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1816 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NIVPROC)(GLuint, const GLint *); }
-# 1799 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1817 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NSVPROC)(GLuint, const GLshort *); }
-# 1800 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1818 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUBPROC)(GLuint, GLubyte, GLubyte, GLubyte, GLubyte); }
-# 1801 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1819 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUBVPROC)(GLuint, const GLubyte *); }
-# 1802 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1820 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUIVPROC)(GLuint, const GLuint *); }
-# 1803 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1821 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUSVPROC)(GLuint, const GLushort *); }
-# 1804 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1822 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4BVPROC)(GLuint, const GLbyte *); }
-# 1805 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1823 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4DPROC)(GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 1806 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1824 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4DVPROC)(GLuint, const GLdouble *); }
-# 1807 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1825 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4FPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 1808 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1826 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4FVPROC)(GLuint, const GLfloat *); }
-# 1809 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1827 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4IVPROC)(GLuint, const GLint *); }
-# 1810 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1828 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4SPROC)(GLuint, GLshort, GLshort, GLshort, GLshort); }
-# 1811 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1829 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4SVPROC)(GLuint, const GLshort *); }
-# 1812 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1830 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UBVPROC)(GLuint, const GLubyte *); }
-# 1813 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1831 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UIVPROC)(GLuint, const GLuint *); }
-# 1814 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1832 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4USVPROC)(GLuint, const GLushort *); }
-# 1815 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1833 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBPOINTERPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid *); }
-# 1938 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1962 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX2X3FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1939 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1963 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX2X4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1940 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1964 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX3X2FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1941 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1965 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX3X4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1942 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1966 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4X2FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1943 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1967 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4X3FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1975 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 1999 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTBUFFERMASK3DFXPROC)(GLuint); }
-# 2015 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2039 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWELEMENTARRAYAPPLEPROC)(GLenum, GLint, GLsizei); }
-# 2016 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2040 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTARRAYAPPLEPROC)(GLenum, GLuint, GLuint, GLint, GLsizei); }
-# 2017 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2041 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLELEMENTPOINTERAPPLEPROC)(GLenum, const void *); }
-# 2018 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2042 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWELEMENTARRAYAPPLEPROC)(GLenum, const GLint *, const GLsizei *, GLsizei); }
-# 2019 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2043 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWRANGEELEMENTARRAYAPPLEPROC)(GLenum, GLuint, GLuint, const GLint *, const GLsizei *, GLsizei); }
-# 2039 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2063 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEFENCESAPPLEPROC)(GLsizei, const GLuint *); }
-# 2040 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2064 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFINISHFENCEAPPLEPROC)(GLuint); }
-# 2041 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2065 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFINISHOBJECTAPPLEPROC)(GLenum, GLint); }
-# 2042 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2066 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENFENCESAPPLEPROC)(GLsizei, GLuint *); }
-# 2043 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2067 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISFENCEAPPLEPROC)(GLuint); }
-# 2044 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2068 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSETFENCEAPPLEPROC)(GLuint); }
-# 2045 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2069 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLTESTFENCEAPPLEPROC)(GLuint); }
-# 2046 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2070 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLTESTOBJECTAPPLEPROC)(GLenum, GLuint); }
-# 2119 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2117 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBUFFERPARAMETERIAPPLEPROC)(GLenum, GLenum, GLint); }
+# 2118 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLFLUSHMAPPEDBUFFERRANGEAPPLEPROC)(GLenum, GLintptr, GLsizeiptr); }
+# 2161 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXPARAMETERPOINTERVAPPLEPROC)(GLenum, GLenum, GLvoid **); }
-# 2120 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2162 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTURERANGEAPPLEPROC)(GLenum, GLsizei, GLvoid *); }
-# 2147 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2189 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDVERTEXARRAYAPPLEPROC)(GLuint); }
-# 2148 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2190 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEVERTEXARRAYSAPPLEPROC)(GLsizei, const GLuint *); }
-# 2149 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2191 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENVERTEXARRAYSAPPLEPROC)(GLsizei, const GLuint *); }
-# 2150 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2192 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISVERTEXARRAYAPPLEPROC)(GLuint); }
-# 2174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2216 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHVERTEXARRAYRANGEAPPLEPROC)(GLsizei, void *); }
-# 2175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2217 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXARRAYPARAMETERIAPPLEPROC)(GLenum, GLint); }
-# 2176 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2218 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXARRAYRANGEAPPLEPROC)(GLsizei, void *); }
-# 2210 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2252 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLAMPCOLORARBPROC)(GLenum, GLenum); }
-# 2256 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2298 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWBUFFERSARBPROC)(GLsizei, const GLenum *); }
-# 2405 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2447 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORSUBTABLEPROC)(GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *); }
-# 2406 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2448 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *); }
-# 2407 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2449 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERFVPROC)(GLenum, GLenum, const GLfloat *); }
-# 2408 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2450 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERIVPROC)(GLenum, GLenum, const GLint *); }
-# 2409 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2451 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONFILTER1DPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *); }
-# 2410 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2452 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONFILTER2DPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *); }
-# 2411 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2453 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERFPROC)(GLenum, GLenum, GLfloat); }
-# 2412 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2454 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERFVPROC)(GLenum, GLenum, const GLfloat *); }
-# 2413 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2455 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERIPROC)(GLenum, GLenum, GLint); }
-# 2414 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2456 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERIVPROC)(GLenum, GLenum, const GLint *); }
-# 2415 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2457 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCOLORSUBTABLEPROC)(GLenum, GLsizei, GLint, GLint, GLsizei); }
-# 2416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2458 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCOLORTABLEPROC)(GLenum, GLenum, GLint, GLint, GLsizei); }
-# 2417 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2459 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCONVOLUTIONFILTER1DPROC)(GLenum, GLenum, GLint, GLint, GLsizei); }
-# 2418 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2460 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCONVOLUTIONFILTER2DPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei); }
-# 2419 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2461 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPROC)(GLenum, GLenum, GLenum, GLvoid *); }
-# 2420 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2462 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERFVPROC)(GLenum, GLenum, GLfloat *); }
-# 2421 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2463 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERIVPROC)(GLenum, GLenum, GLint *); }
-# 2422 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2464 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONFILTERPROC)(GLenum, GLenum, GLenum, GLvoid *); }
-# 2423 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2465 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONPARAMETERFVPROC)(GLenum, GLenum, GLfloat *); }
-# 2424 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2466 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONPARAMETERIVPROC)(GLenum, GLenum, GLint *); }
-# 2425 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2467 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPROC)(GLenum, GLboolean, GLenum, GLenum, GLvoid *); }
-# 2426 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2468 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPARAMETERFVPROC)(GLenum, GLenum, GLfloat *); }
-# 2427 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2469 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPARAMETERIVPROC)(GLenum, GLenum, GLint *); }
-# 2428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2470 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMINMAXPROC)(GLenum, GLboolean, GLenum, GLenum, GLvoid *); }
-# 2429 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2471 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMINMAXPARAMETERFVPROC)(GLenum, GLenum, GLfloat *); }
-# 2430 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2472 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMINMAXPARAMETERIVPROC)(GLenum, GLenum, GLint *); }
-# 2431 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2473 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSEPARABLEFILTERPROC)(GLenum, GLenum, GLenum, GLvoid *, GLvoid *, GLvoid *); }
-# 2432 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2474 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLHISTOGRAMPROC)(GLenum, GLsizei, GLenum, GLboolean); }
-# 2433 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2475 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMINMAXPROC)(GLenum, GLenum, GLboolean); }
-# 2434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2476 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRESETHISTOGRAMPROC)(GLenum); }
-# 2435 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2477 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRESETMINMAXPROC)(GLenum); }
-# 2436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2478 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSEPARABLEFILTER2DPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *, const GLvoid *); }
-# 2491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2533 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCURRENTPALETTEMATRIXARBPROC)(GLint); }
-# 2492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2534 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMATRIXINDEXPOINTERARBPROC)(GLint, GLenum, GLsizei, GLvoid *); }
-# 2493 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2535 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMATRIXINDEXUBVARBPROC)(GLint, GLubyte *); }
-# 2494 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2536 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMATRIXINDEXUIVARBPROC)(GLint, GLuint *); }
-# 2495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2537 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMATRIXINDEXUSVARBPROC)(GLint, GLushort *); }
-# 2522 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2564 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLECOVERAGEARBPROC)(GLclampf, GLboolean); }
-# 2571 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2613 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVETEXTUREARBPROC)(GLenum); }
-# 2572 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2614 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLIENTACTIVETEXTUREARBPROC)(GLenum); }
-# 2573 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2615 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1DARBPROC)(GLenum, GLdouble); }
-# 2574 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2616 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1DVARBPROC)(GLenum, const GLdouble *); }
-# 2575 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2617 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1FARBPROC)(GLenum, GLfloat); }
-# 2576 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2618 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1FVARBPROC)(GLenum, const GLfloat *); }
-# 2577 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2619 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1IARBPROC)(GLenum, GLint); }
-# 2578 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2620 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1IVARBPROC)(GLenum, const GLint *); }
-# 2579 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2621 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1SARBPROC)(GLenum, GLshort); }
-# 2580 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2622 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1SVARBPROC)(GLenum, const GLshort *); }
-# 2581 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2623 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2DARBPROC)(GLenum, GLdouble, GLdouble); }
-# 2582 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2624 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2DVARBPROC)(GLenum, const GLdouble *); }
-# 2583 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2625 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2FARBPROC)(GLenum, GLfloat, GLfloat); }
-# 2584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2626 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2FVARBPROC)(GLenum, const GLfloat *); }
-# 2585 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2627 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2IARBPROC)(GLenum, GLint, GLint); }
-# 2586 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2628 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2IVARBPROC)(GLenum, const GLint *); }
-# 2587 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2629 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2SARBPROC)(GLenum, GLshort, GLshort); }
-# 2588 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2630 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2SVARBPROC)(GLenum, const GLshort *); }
-# 2589 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2631 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3DARBPROC)(GLenum, GLdouble, GLdouble, GLdouble); }
-# 2590 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2632 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3DVARBPROC)(GLenum, const GLdouble *); }
-# 2591 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2633 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3FARBPROC)(GLenum, GLfloat, GLfloat, GLfloat); }
-# 2592 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2634 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3FVARBPROC)(GLenum, const GLfloat *); }
-# 2593 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2635 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3IARBPROC)(GLenum, GLint, GLint, GLint); }
-# 2594 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2636 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3IVARBPROC)(GLenum, const GLint *); }
-# 2595 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2637 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3SARBPROC)(GLenum, GLshort, GLshort, GLshort); }
-# 2596 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2638 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3SVARBPROC)(GLenum, const GLshort *); }
-# 2597 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2639 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4DARBPROC)(GLenum, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 2598 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2640 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4DVARBPROC)(GLenum, const GLdouble *); }
-# 2599 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2641 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4FARBPROC)(GLenum, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 2600 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2642 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4FVARBPROC)(GLenum, const GLfloat *); }
-# 2601 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2643 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4IARBPROC)(GLenum, GLint, GLint, GLint, GLint); }
-# 2602 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2644 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4IVARBPROC)(GLenum, const GLint *); }
-# 2603 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2645 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SARBPROC)(GLenum, GLshort, GLshort, GLshort, GLshort); }
-# 2604 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2646 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SVARBPROC)(GLenum, const GLshort *); }
-# 2656 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2698 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINQUERYARBPROC)(GLenum, GLuint); }
-# 2657 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2699 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEQUERIESARBPROC)(GLsizei, const GLuint *); }
-# 2658 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2700 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDQUERYARBPROC)(GLenum); }
-# 2659 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2701 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENQUERIESARBPROC)(GLsizei, GLuint *); }
-# 2660 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2702 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTIVARBPROC)(GLuint, GLenum, GLint *); }
-# 2661 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2703 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTUIVARBPROC)(GLuint, GLenum, GLuint *); }
-# 2662 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2704 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYIVARBPROC)(GLenum, GLenum, GLint *); }
-# 2663 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2705 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISQUERYARBPROC)(GLuint); }
-# 2702 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2744 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFARBPROC)(GLenum, GLfloat); }
-# 2703 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2745 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFVARBPROC)(GLenum, GLfloat *); }
-# 2764 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2806 "/usr/include/GL/glew.h" 3
 extern "C" { typedef char GLcharARB; }
-# 2765 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2807 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned GLhandleARB; }
-# 2767 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2809 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLATTACHOBJECTARBPROC)(GLhandleARB, GLhandleARB); }
-# 2768 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2810 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPILESHADERARBPROC)(GLhandleARB); }
-# 2769 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2811 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLhandleARB (*PFNGLCREATEPROGRAMOBJECTARBPROC)(void); }
-# 2770 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2812 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLhandleARB (*PFNGLCREATESHADEROBJECTARBPROC)(GLenum); }
-# 2771 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2813 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEOBJECTARBPROC)(GLhandleARB); }
-# 2772 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2814 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDETACHOBJECTARBPROC)(GLhandleARB, GLhandleARB); }
-# 2773 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2815 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETACTIVEUNIFORMARBPROC)(GLhandleARB, GLuint, GLsizei, GLsizei *, GLint *, GLenum *, GLcharARB *); }
-# 2774 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2816 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETATTACHEDOBJECTSARBPROC)(GLhandleARB, GLsizei, GLsizei *, GLhandleARB *); }
-# 2775 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2817 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLhandleARB (*PFNGLGETHANDLEARBPROC)(GLenum); }
-# 2776 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2818 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETINFOLOGARBPROC)(GLhandleARB, GLsizei, GLsizei *, GLcharARB *); }
-# 2777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2819 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETOBJECTPARAMETERFVARBPROC)(GLhandleARB, GLenum, GLfloat *); }
-# 2778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2820 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETOBJECTPARAMETERIVARBPROC)(GLhandleARB, GLenum, GLint *); }
-# 2779 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2821 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSHADERSOURCEARBPROC)(GLhandleARB, GLsizei, GLsizei *, GLcharARB *); }
-# 2780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2822 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETUNIFORMLOCATIONARBPROC)(GLhandleARB, const GLcharARB *); }
-# 2781 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2823 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETUNIFORMFVARBPROC)(GLhandleARB, GLint, GLfloat *); }
-# 2782 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2824 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETUNIFORMIVARBPROC)(GLhandleARB, GLint, GLint *); }
-# 2783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2825 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLINKPROGRAMARBPROC)(GLhandleARB); }
-# 2784 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2826 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSHADERSOURCEARBPROC)(GLhandleARB, GLsizei, const GLcharARB **, const GLint *); }
-# 2785 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2827 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1FARBPROC)(GLint, GLfloat); }
-# 2786 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2828 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1FVARBPROC)(GLint, GLsizei, const GLfloat *); }
-# 2787 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2829 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1IARBPROC)(GLint, GLint); }
-# 2788 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2830 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1IVARBPROC)(GLint, GLsizei, const GLint *); }
-# 2789 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2831 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2FARBPROC)(GLint, GLfloat, GLfloat); }
-# 2790 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2832 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2FVARBPROC)(GLint, GLsizei, const GLfloat *); }
-# 2791 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2833 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2IARBPROC)(GLint, GLint, GLint); }
-# 2792 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2834 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2IVARBPROC)(GLint, GLsizei, const GLint *); }
-# 2793 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2835 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3FARBPROC)(GLint, GLfloat, GLfloat, GLfloat); }
-# 2794 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2836 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3FVARBPROC)(GLint, GLsizei, const GLfloat *); }
-# 2795 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2837 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3IARBPROC)(GLint, GLint, GLint, GLint); }
-# 2796 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2838 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3IVARBPROC)(GLint, GLsizei, const GLint *); }
-# 2797 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2839 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4FARBPROC)(GLint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 2798 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2840 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4FVARBPROC)(GLint, GLsizei, const GLfloat *); }
-# 2799 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2841 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4IARBPROC)(GLint, GLint, GLint, GLint, GLint); }
-# 2800 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2842 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4IVARBPROC)(GLint, GLsizei, const GLint *); }
-# 2801 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2843 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX2FVARBPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 2802 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2844 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX3FVARBPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 2803 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2845 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4FVARBPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 2804 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2846 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUSEPROGRAMOBJECTARBPROC)(GLhandleARB); }
-# 2805 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2847 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVALIDATEPROGRAMARBPROC)(GLhandleARB); }
-# 2914 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2956 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE1DARBPROC)(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const void *); }
-# 2915 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2957 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *); }
-# 2916 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2958 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE3DARBPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const void *); }
-# 2917 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2959 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC)(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, const void *); }
-# 2918 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2960 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
-# 2919 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2961 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
-# 2920 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 2962 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)(GLenum, GLint, void *); }
-# 3094 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3136 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOADTRANSPOSEMATRIXDARBPROC)(GLdouble [16]); }
-# 3095 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3137 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOADTRANSPOSEMATRIXFARBPROC)(GLfloat [16]); }
-# 3096 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3138 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTTRANSPOSEMATRIXDARBPROC)(GLdouble [16]); }
-# 3097 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3139 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTTRANSPOSEMATRIXFARBPROC)(GLfloat [16]); }
-# 3156 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3198 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXBLENDARBPROC)(GLint); }
-# 3157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3199 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTPOINTERARBPROC)(GLint, GLenum, GLsizei, GLvoid *); }
-# 3158 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3200 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTBVARBPROC)(GLint, GLbyte *); }
-# 3159 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3201 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTDVARBPROC)(GLint, GLdouble *); }
-# 3160 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3202 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTFVARBPROC)(GLint, GLfloat *); }
-# 3161 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3203 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTIVARBPROC)(GLint, GLint *); }
-# 3162 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3204 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTSVARBPROC)(GLint, GLshort *); }
-# 3163 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3205 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTUBVARBPROC)(GLint, GLubyte *); }
-# 3164 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3206 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTUIVARBPROC)(GLint, GLuint *); }
-# 3165 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3207 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWEIGHTUSVARBPROC)(GLint, GLushort *); }
-# 3219 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3261 "/usr/include/GL/glew.h" 3
 extern "C" { typedef ptrdiff_t GLsizeiptrARB; }
-# 3220 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3262 "/usr/include/GL/glew.h" 3
 extern "C" { typedef ptrdiff_t GLintptrARB; }
-# 3222 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3264 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDBUFFERARBPROC)(GLenum, GLuint); }
-# 3223 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3265 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBUFFERDATAARBPROC)(GLenum, GLsizeiptrARB, const GLvoid *, GLenum); }
-# 3224 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3266 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBUFFERSUBDATAARBPROC)(GLenum, GLintptrARB, GLsizeiptrARB, const GLvoid *); }
-# 3225 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3267 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEBUFFERSARBPROC)(GLsizei, const GLuint *); }
-# 3226 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3268 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENBUFFERSARBPROC)(GLsizei, GLuint *); }
-# 3227 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3269 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBUFFERPARAMETERIVARBPROC)(GLenum, GLenum, GLint *); }
-# 3228 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3270 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBUFFERPOINTERVARBPROC)(GLenum, GLenum, GLvoid **); }
-# 3229 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3271 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBUFFERSUBDATAARBPROC)(GLenum, GLintptrARB, GLsizeiptrARB, GLvoid *); }
-# 3230 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3272 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISBUFFERARBPROC)(GLuint); }
-# 3231 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3273 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLvoid *(*PFNGLMAPBUFFERARBPROC)(GLenum, GLenum); }
-# 3232 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3274 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLUNMAPBUFFERARBPROC)(GLenum); }
-# 3335 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3377 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDPROGRAMARBPROC)(GLenum, GLuint); }
-# 3336 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3378 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEPROGRAMSARBPROC)(GLsizei, const GLuint *); }
-# 3337 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3379 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDISABLEVERTEXATTRIBARRAYARBPROC)(GLuint); }
-# 3338 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3380 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENABLEVERTEXATTRIBARRAYARBPROC)(GLuint); }
-# 3339 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3381 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENPROGRAMSARBPROC)(GLsizei, GLuint *); }
-# 3340 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3382 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMENVPARAMETERDVARBPROC)(GLenum, GLuint, GLdouble *); }
-# 3341 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3383 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMENVPARAMETERFVARBPROC)(GLenum, GLuint, GLfloat *); }
-# 3342 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3384 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMLOCALPARAMETERDVARBPROC)(GLenum, GLuint, GLdouble *); }
-# 3343 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3385 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMLOCALPARAMETERFVARBPROC)(GLenum, GLuint, GLfloat *); }
-# 3344 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3386 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMSTRINGARBPROC)(GLenum, GLenum, void *); }
-# 3345 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3387 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMIVARBPROC)(GLenum, GLenum, GLint *); }
-# 3346 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3388 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBPOINTERVARBPROC)(GLuint, GLenum, GLvoid **); }
-# 3347 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3389 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBDVARBPROC)(GLuint, GLenum, GLdouble *); }
-# 3348 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3390 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBFVARBPROC)(GLuint, GLenum, GLfloat *); }
-# 3349 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3391 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIVARBPROC)(GLuint, GLenum, GLint *); }
-# 3350 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3392 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISPROGRAMARBPROC)(GLuint); }
-# 3351 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3393 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETER4DARBPROC)(GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 3352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3394 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETER4DVARBPROC)(GLenum, GLuint, const GLdouble *); }
-# 3353 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3395 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETER4FARBPROC)(GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 3354 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3396 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETER4FVARBPROC)(GLenum, GLuint, const GLfloat *); }
-# 3355 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3397 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETER4DARBPROC)(GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 3356 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3398 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETER4DVARBPROC)(GLenum, GLuint, const GLdouble *); }
-# 3357 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3399 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETER4FARBPROC)(GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 3358 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3400 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)(GLenum, GLuint, const GLfloat *); }
-# 3359 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3401 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMSTRINGARBPROC)(GLenum, GLenum, GLsizei, const void *); }
-# 3360 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3402 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1DARBPROC)(GLuint, GLdouble); }
-# 3361 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3403 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1DVARBPROC)(GLuint, const GLdouble *); }
-# 3362 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3404 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1FARBPROC)(GLuint, GLfloat); }
-# 3363 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3405 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1FVARBPROC)(GLuint, const GLfloat *); }
-# 3364 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3406 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1SARBPROC)(GLuint, GLshort); }
-# 3365 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3407 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1SVARBPROC)(GLuint, const GLshort *); }
-# 3366 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3408 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2DARBPROC)(GLuint, GLdouble, GLdouble); }
-# 3367 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3409 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2DVARBPROC)(GLuint, const GLdouble *); }
-# 3368 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3410 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2FARBPROC)(GLuint, GLfloat, GLfloat); }
-# 3369 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3411 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2FVARBPROC)(GLuint, const GLfloat *); }
-# 3370 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3412 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2SARBPROC)(GLuint, GLshort, GLshort); }
-# 3371 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3413 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2SVARBPROC)(GLuint, const GLshort *); }
-# 3372 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3414 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3DARBPROC)(GLuint, GLdouble, GLdouble, GLdouble); }
-# 3373 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3415 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3DVARBPROC)(GLuint, const GLdouble *); }
-# 3374 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3416 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3FARBPROC)(GLuint, GLfloat, GLfloat, GLfloat); }
-# 3375 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3417 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3FVARBPROC)(GLuint, const GLfloat *); }
-# 3376 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3418 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3SARBPROC)(GLuint, GLshort, GLshort, GLshort); }
-# 3377 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3419 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3SVARBPROC)(GLuint, const GLshort *); }
-# 3378 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3420 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NBVARBPROC)(GLuint, const GLbyte *); }
-# 3379 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3421 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NIVARBPROC)(GLuint, const GLint *); }
-# 3380 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3422 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NSVARBPROC)(GLuint, const GLshort *); }
-# 3381 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3423 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUBARBPROC)(GLuint, GLubyte, GLubyte, GLubyte, GLubyte); }
-# 3382 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3424 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUBVARBPROC)(GLuint, const GLubyte *); }
-# 3383 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3425 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUIVARBPROC)(GLuint, const GLuint *); }
-# 3384 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3426 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4NUSVARBPROC)(GLuint, const GLushort *); }
-# 3385 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3427 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4BVARBPROC)(GLuint, const GLbyte *); }
-# 3386 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3428 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4DARBPROC)(GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 3387 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3429 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4DVARBPROC)(GLuint, const GLdouble *); }
-# 3388 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3430 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4FARBPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 3389 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3431 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4FVARBPROC)(GLuint, const GLfloat *); }
-# 3390 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3432 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4IVARBPROC)(GLuint, const GLint *); }
-# 3391 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3433 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4SARBPROC)(GLuint, GLshort, GLshort, GLshort, GLshort); }
-# 3392 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3434 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4SVARBPROC)(GLuint, const GLshort *); }
-# 3393 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3435 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UBVARBPROC)(GLuint, const GLubyte *); }
-# 3394 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3436 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UIVARBPROC)(GLuint, const GLuint *); }
-# 3395 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3437 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4USVARBPROC)(GLuint, const GLushort *); }
-# 3396 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3438 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBPOINTERARBPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, const void *); }
-# 3478 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3520 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDATTRIBLOCATIONARBPROC)(GLhandleARB, GLuint, const GLcharARB *); }
-# 3479 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3521 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETACTIVEATTRIBARBPROC)(GLhandleARB, GLuint, GLsizei, GLsizei *, GLint *, GLenum *, GLcharARB *); }
-# 3480 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3522 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETATTRIBLOCATIONARBPROC)(GLhandleARB, const GLcharARB *); }
-# 3495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3537 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DARBPROC)(GLdouble, GLdouble); }
-# 3496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3538 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DVARBPROC)(const GLdouble *); }
-# 3497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3539 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2FARBPROC)(GLfloat, GLfloat); }
-# 3498 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3540 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2FVARBPROC)(const GLfloat *); }
-# 3499 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3541 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2IARBPROC)(GLint, GLint); }
-# 3500 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3542 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2IVARBPROC)(const GLint *); }
-# 3501 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3543 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2SARBPROC)(GLshort, GLshort); }
-# 3502 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3544 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2SVARBPROC)(const GLshort *); }
-# 3503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3545 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3DARBPROC)(GLdouble, GLdouble, GLdouble); }
-# 3504 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3546 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3DVARBPROC)(const GLdouble *); }
-# 3505 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3547 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3FARBPROC)(GLfloat, GLfloat, GLfloat); }
-# 3506 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3548 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3FVARBPROC)(const GLfloat *); }
-# 3507 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3549 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3IARBPROC)(GLint, GLint, GLint); }
-# 3508 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3550 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3IVARBPROC)(const GLint *); }
-# 3509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3551 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3SARBPROC)(GLshort, GLshort, GLshort); }
-# 3510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3552 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3SVARBPROC)(const GLshort *); }
-# 3602 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3651 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWBUFFERSATIPROC)(GLsizei, const GLenum *); }
-# 3619 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3668 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWELEMENTARRAYATIPROC)(GLenum, GLsizei); }
-# 3620 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3669 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTARRAYATIPROC)(GLenum, GLuint, GLuint, GLsizei); }
-# 3621 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3670 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLELEMENTPOINTERATIPROC)(GLenum, const void *); }
-# 3645 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3694 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXBUMPPARAMETERFVATIPROC)(GLenum, GLfloat *); }
-# 3646 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3695 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXBUMPPARAMETERIVATIPROC)(GLenum, GLint *); }
-# 3647 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3696 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXBUMPPARAMETERFVATIPROC)(GLenum, GLfloat *); }
-# 3648 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3697 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXBUMPPARAMETERIVATIPROC)(GLenum, GLint *); }
-# 3719 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3768 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLALPHAFRAGMENTOP1ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 3720 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3769 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLALPHAFRAGMENTOP2ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 3721 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3770 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLALPHAFRAGMENTOP3ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 3722 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3771 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINFRAGMENTSHADERATIPROC)(void); }
-# 3723 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3772 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDFRAGMENTSHADERATIPROC)(GLuint); }
-# 3724 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3773 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORFRAGMENTOP1ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 3725 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3774 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORFRAGMENTOP2ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 3726 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3775 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORFRAGMENTOP3ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 3727 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3776 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEFRAGMENTSHADERATIPROC)(GLuint); }
-# 3728 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3777 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDFRAGMENTSHADERATIPROC)(void); }
-# 3729 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3778 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLGENFRAGMENTSHADERSATIPROC)(GLuint); }
-# 3730 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3779 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPASSTEXCOORDATIPROC)(GLuint, GLuint, GLenum); }
-# 3731 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3780 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEMAPATIPROC)(GLuint, GLuint, GLenum); }
-# 3732 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3781 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSETFRAGMENTSHADERCONSTANTATIPROC)(GLuint, const GLfloat *); }
-# 3758 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3807 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void *(*PFNGLMAPOBJECTBUFFERATIPROC)(GLuint); }
-# 3759 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3808 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNMAPOBJECTBUFFERATIPROC)(GLuint); }
-# 3783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3832 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPNTRIANGLESFATIPROC)(GLenum, GLfloat); }
-# 3784 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3833 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPNTRIANGLESIATIPROC)(GLenum, GLint); }
-# 3803 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3852 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTENCILFUNCSEPARATEATIPROC)(GLenum, GLenum, GLint, GLuint); }
-# 3804 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3853 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTENCILOPSEPARATEATIPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 3896 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3954 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLARRAYOBJECTATIPROC)(GLenum, GLint, GLenum, GLsizei, GLuint, GLuint); }
-# 3897 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3955 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFREEOBJECTBUFFERATIPROC)(GLuint); }
-# 3898 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3956 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETARRAYOBJECTFVATIPROC)(GLenum, GLenum, GLfloat *); }
-# 3899 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3957 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETARRAYOBJECTIVATIPROC)(GLenum, GLenum, GLint *); }
-# 3900 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3958 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETOBJECTBUFFERFVATIPROC)(GLuint, GLenum, GLfloat *); }
-# 3901 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3959 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETOBJECTBUFFERIVATIPROC)(GLuint, GLenum, GLint *); }
-# 3902 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3960 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVARIANTARRAYOBJECTFVATIPROC)(GLuint, GLenum, GLfloat *); }
-# 3903 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3961 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVARIANTARRAYOBJECTIVATIPROC)(GLuint, GLenum, GLint *); }
-# 3904 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3962 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISOBJECTBUFFERATIPROC)(GLuint); }
-# 3905 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3963 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLNEWOBJECTBUFFERATIPROC)(GLsizei, const void *, GLenum); }
-# 3906 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3964 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUPDATEOBJECTBUFFERATIPROC)(GLuint, GLuint, GLsizei, const void *, GLenum); }
-# 3907 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3965 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTARRAYOBJECTATIPROC)(GLuint, GLenum, GLsizei, GLuint, GLuint); }
-# 3931 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3989 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBARRAYOBJECTFVATIPROC)(GLuint, GLenum, GLfloat *); }
-# 3932 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3990 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBARRAYOBJECTIVATIPROC)(GLuint, GLenum, GLint *); }
-# 3933 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 3991 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBARRAYOBJECTATIPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, GLuint, GLuint); }
-# 3959 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4017 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC)(GLenum); }
-# 3960 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4018 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3BATIPROC)(GLenum, GLbyte, GLbyte, GLbyte); }
-# 3961 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4019 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3BVATIPROC)(GLenum, const GLbyte *); }
-# 3962 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4020 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3DATIPROC)(GLenum, GLdouble, GLdouble, GLdouble); }
-# 3963 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4021 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3DVATIPROC)(GLenum, const GLdouble *); }
-# 3964 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4022 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3FATIPROC)(GLenum, GLfloat, GLfloat, GLfloat); }
-# 3965 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4023 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3FVATIPROC)(GLenum, const GLfloat *); }
-# 3966 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4024 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3IATIPROC)(GLenum, GLint, GLint, GLint); }
-# 3967 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4025 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3IVATIPROC)(GLenum, const GLint *); }
-# 3968 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4026 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3SATIPROC)(GLenum, GLshort, GLshort, GLshort); }
-# 3969 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4027 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALSTREAM3SVATIPROC)(GLenum, const GLshort *); }
-# 3970 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4028 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXBLENDENVFATIPROC)(GLenum, GLfloat); }
-# 3971 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4029 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXBLENDENVIATIPROC)(GLenum, GLint); }
-# 3972 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4030 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2DATIPROC)(GLenum, GLdouble, GLdouble); }
-# 3973 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4031 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2DVATIPROC)(GLenum, const GLdouble *); }
-# 3974 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4032 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2FATIPROC)(GLenum, GLfloat, GLfloat); }
-# 3975 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4033 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2FVATIPROC)(GLenum, const GLfloat *); }
-# 3976 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4034 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2IATIPROC)(GLenum, GLint, GLint); }
-# 3977 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4035 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2IVATIPROC)(GLenum, const GLint *); }
-# 3978 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4036 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2SATIPROC)(GLenum, GLshort, GLshort); }
-# 3979 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4037 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM2SVATIPROC)(GLenum, const GLshort *); }
-# 3980 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4038 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3DATIPROC)(GLenum, GLdouble, GLdouble, GLdouble); }
-# 3981 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4039 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3DVATIPROC)(GLenum, const GLdouble *); }
-# 3982 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4040 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3FATIPROC)(GLenum, GLfloat, GLfloat, GLfloat); }
-# 3983 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4041 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3FVATIPROC)(GLenum, const GLfloat *); }
-# 3984 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4042 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3IATIPROC)(GLenum, GLint, GLint, GLint); }
-# 3985 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4043 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3IVATIPROC)(GLenum, const GLint *); }
-# 3986 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4044 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3SATIPROC)(GLenum, GLshort, GLshort, GLshort); }
-# 3987 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4045 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM3SVATIPROC)(GLenum, const GLshort *); }
-# 3988 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4046 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4DATIPROC)(GLenum, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 3989 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4047 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4DVATIPROC)(GLenum, const GLdouble *); }
-# 3990 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4048 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4FATIPROC)(GLenum, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 3991 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4049 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4FVATIPROC)(GLenum, const GLfloat *); }
-# 3992 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4050 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4IATIPROC)(GLenum, GLint, GLint, GLint, GLint); }
-# 3993 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4051 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4IVATIPROC)(GLenum, const GLint *); }
-# 3994 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4052 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4SATIPROC)(GLenum, GLshort, GLshort, GLshort, GLshort); }
-# 3995 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4053 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4SVATIPROC)(GLenum, const GLshort *); }
-# 4100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4158 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETUNIFORMBUFFERSIZEEXTPROC)(GLuint, GLint); }
-# 4101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4159 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLintptr (*PFNGLGETUNIFORMOFFSETEXTPROC)(GLuint, GLint); }
-# 4102 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4160 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMBUFFEREXTPROC)(GLuint, GLint, GLuint); }
-# 4123 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4181 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDCOLOREXTPROC)(GLclampf, GLclampf, GLclampf, GLclampf); }
-# 4139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4197 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDEQUATIONSEPARATEEXTPROC)(GLenum, GLenum); }
-# 4157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4215 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDFUNCSEPARATEEXTPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 4184 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4242 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDEQUATIONEXTPROC)(GLenum); }
-# 4234 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4292 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORSUBTABLEEXTPROC)(GLenum, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 4235 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4293 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCOLORSUBTABLEEXTPROC)(GLenum, GLsizei, GLint, GLint, GLsizei); }
-# 4249 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4307 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOCKARRAYSEXTPROC)(GLint, GLsizei); }
-# 4250 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4308 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNLOCKARRAYSEXTPROC)(void); }
-# 4285 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4343 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONFILTER1DEXTPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const void *); }
-# 4286 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4344 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONFILTER2DEXTPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 4287 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4345 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERFEXTPROC)(GLenum, GLenum, GLfloat); }
-# 4288 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4346 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
-# 4289 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4347 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERIEXTPROC)(GLenum, GLenum, GLint); }
-# 4290 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4348 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 4291 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4349 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCONVOLUTIONFILTER1DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei); }
-# 4292 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4350 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCONVOLUTIONFILTER2DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei); }
-# 4293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4351 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONFILTEREXTPROC)(GLenum, GLenum, GLenum, void *); }
-# 4294 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4352 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC)(GLenum, GLenum, GLfloat *); }
-# 4295 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4353 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 4296 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4354 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSEPARABLEFILTEREXTPROC)(GLenum, GLenum, GLenum, void *, void *, void *); }
-# 4297 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4355 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSEPARABLEFILTER2DEXTPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const void *, const void *); }
-# 4337 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4395 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINORMALPOINTEREXTPROC)(GLenum, GLsizei, void *); }
-# 4338 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4396 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTANGENTPOINTEREXTPROC)(GLenum, GLsizei, void *); }
-# 4352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4410 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXIMAGE1DEXTPROC)(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint); }
-# 4353 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4411 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXIMAGE2DEXTPROC)(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint); }
-# 4354 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4412 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE1DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei); }
-# 4355 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4413 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE2DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
-# 4356 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4414 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE3DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
-# 4373 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4431 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCULLPARAMETERDVEXTPROC)(GLenum, GLdouble *); }
-# 4374 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4432 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCULLPARAMETERFVEXTPROC)(GLenum, GLfloat *); }
-# 4391 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4449 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDEPTHBOUNDSEXTPROC)(GLclampd, GLclampd); }
-# 4404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4462 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORMASKINDEXEDEXTPROC)(GLuint, GLboolean, GLboolean, GLboolean, GLboolean); }
-# 4405 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4463 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDISABLEINDEXEDEXTPROC)(GLenum, GLuint); }
-# 4406 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4464 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENABLEINDEXEDEXTPROC)(GLenum, GLuint); }
-# 4407 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4465 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETBOOLEANINDEXEDVEXTPROC)(GLenum, GLuint, GLboolean *); }
-# 4408 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4466 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETINTEGERINDEXEDVEXTPROC)(GLenum, GLuint, GLint *); }
-# 4409 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4467 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISENABLEDINDEXEDEXTPROC)(GLenum, GLuint); }
-# 4427 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4485 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWARRAYSINSTANCEDEXTPROC)(GLenum, GLint, GLsizei, GLsizei); }
-# 4428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4486 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWELEMENTSINSTANCEDEXTPROC)(GLenum, GLsizei, GLenum, const GLvoid *, GLsizei); }
-# 4445 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4503 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTSEXTPROC)(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid *); }
-# 4467 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4525 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDPOINTEREXTPROC)(GLenum, GLsizei, const GLvoid *); }
-# 4468 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4526 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDDEXTPROC)(GLdouble); }
-# 4469 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4527 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDDVEXTPROC)(const GLdouble *); }
-# 4470 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4528 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDFEXTPROC)(GLfloat); }
-# 4471 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4529 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDFVEXTPROC)(const GLfloat *); }
-# 4503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4561 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTCOLORMATERIALEXTPROC)(GLenum, GLenum); }
-# 4504 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4562 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFEXTPROC)(GLenum, GLfloat); }
-# 4505 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4563 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFVEXTPROC)(GLenum, GLfloat *); }
-# 4506 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4564 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELIEXTPROC)(GLenum, GLint); }
-# 4507 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4565 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELIVEXTPROC)(GLenum, GLint *); }
-# 4508 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4566 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTFEXTPROC)(GLenum, GLenum, GLfloat); }
-# 4509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4567 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTFVEXTPROC)(GLenum, GLenum, GLfloat *); }
-# 4510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4568 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTIEXTPROC)(GLenum, GLenum, GLint); }
-# 4511 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4569 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 4512 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4570 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALFEXTPROC)(GLenum, GLenum, const GLfloat); }
-# 4513 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4571 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
-# 4514 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4572 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALIEXTPROC)(GLenum, GLenum, const GLint); }
-# 4515 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4573 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 4516 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4574 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTFVEXTPROC)(GLenum, GLenum, GLfloat *); }
-# 4517 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4575 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 4518 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4576 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
-# 4519 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4577 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 4520 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4578 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLIGHTENVIEXTPROC)(GLenum, GLint); }
-# 4555 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4613 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLITFRAMEBUFFEREXTPROC)(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum); }
-# 4572 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4630 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei); }
-# 4637 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4695 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDFRAMEBUFFEREXTPROC)(GLenum, GLuint); }
-# 4638 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4696 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDRENDERBUFFEREXTPROC)(GLenum, GLuint); }
-# 4639 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4697 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLenum (*PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)(GLenum); }
-# 4640 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4698 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEFRAMEBUFFERSEXTPROC)(GLsizei, const GLuint *); }
-# 4641 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4699 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETERENDERBUFFERSEXTPROC)(GLsizei, const GLuint *); }
-# 4642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4700 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)(GLenum, GLenum, GLenum, GLuint); }
-# 4643 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4701 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURE1DEXTPROC)(GLenum, GLenum, GLenum, GLuint, GLint); }
-# 4644 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4702 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURE2DEXTPROC)(GLenum, GLenum, GLenum, GLuint, GLint); }
-# 4645 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4703 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURE3DEXTPROC)(GLenum, GLenum, GLenum, GLuint, GLint, GLint); }
-# 4646 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4704 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENFRAMEBUFFERSEXTPROC)(GLsizei, GLuint *); }
-# 4647 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4705 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENRENDERBUFFERSEXTPROC)(GLsizei, GLuint *); }
-# 4648 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4706 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENERATEMIPMAPEXTPROC)(GLenum); }
-# 4649 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4707 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC)(GLenum, GLenum, GLenum, GLint *); }
-# 4650 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4708 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 4651 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4709 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISFRAMEBUFFEREXTPROC)(GLuint); }
-# 4652 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4710 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISRENDERBUFFEREXTPROC)(GLuint); }
-# 4653 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4711 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEEXTPROC)(GLenum, GLenum, GLsizei, GLsizei); }
-# 4715 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4773 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTUREEXTPROC)(GLenum, GLenum, GLuint, GLint); }
-# 4716 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4774 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTUREFACEEXTPROC)(GLenum, GLenum, GLuint, GLint, GLenum); }
-# 4717 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4775 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURELAYEREXTPROC)(GLenum, GLenum, GLuint, GLint, GLint); }
-# 4718 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4776 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETERIEXTPROC)(GLuint, GLenum, GLint); }
-# 4734 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4792 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERS4FVEXTPROC)(GLenum, GLuint, GLsizei, const GLfloat *); }
-# 4735 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4793 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERS4FVEXTPROC)(GLenum, GLuint, GLsizei, const GLfloat *); }
-# 4776 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4834 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDFRAGDATALOCATIONEXTPROC)(GLuint, GLuint, const GLchar *); }
-# 4777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4835 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETFRAGDATALOCATIONEXTPROC)(GLuint, const GLchar *); }
-# 4778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4836 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETUNIFORMUIVEXTPROC)(GLuint, GLint, GLuint *); }
-# 4779 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4837 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIIVEXTPROC)(GLuint, GLenum, GLint *); }
-# 4780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4838 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIUIVEXTPROC)(GLuint, GLenum, GLuint *); }
-# 4781 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4839 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1UIEXTPROC)(GLint, GLuint); }
-# 4782 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4840 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM1UIVEXTPROC)(GLint, GLsizei, const GLuint *); }
-# 4783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4841 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2UIEXTPROC)(GLint, GLuint, GLuint); }
-# 4784 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4842 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM2UIVEXTPROC)(GLint, GLsizei, const GLuint *); }
-# 4785 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4843 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3UIEXTPROC)(GLint, GLuint, GLuint, GLuint); }
-# 4786 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4844 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM3UIVEXTPROC)(GLint, GLsizei, const GLuint *); }
-# 4787 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4845 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4UIEXTPROC)(GLint, GLuint, GLuint, GLuint, GLuint); }
-# 4788 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4846 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORM4UIVEXTPROC)(GLint, GLsizei, const GLuint *); }
-# 4789 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4847 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI1IEXTPROC)(GLuint, GLint); }
-# 4790 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4848 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI1IVEXTPROC)(GLuint, const GLint *); }
-# 4791 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4849 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI1UIEXTPROC)(GLuint, GLuint); }
-# 4792 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4850 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI1UIVEXTPROC)(GLuint, const GLuint *); }
-# 4793 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4851 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI2IEXTPROC)(GLuint, GLint, GLint); }
-# 4794 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4852 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI2IVEXTPROC)(GLuint, const GLint *); }
-# 4795 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4853 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI2UIEXTPROC)(GLuint, GLuint, GLuint); }
-# 4796 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4854 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI2UIVEXTPROC)(GLuint, const GLuint *); }
-# 4797 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4855 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI3IEXTPROC)(GLuint, GLint, GLint, GLint); }
-# 4798 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4856 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI3IVEXTPROC)(GLuint, const GLint *); }
-# 4799 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4857 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI3UIEXTPROC)(GLuint, GLuint, GLuint, GLuint); }
-# 4800 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4858 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI3UIVEXTPROC)(GLuint, const GLuint *); }
-# 4801 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4859 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4BVEXTPROC)(GLuint, const GLbyte *); }
-# 4802 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4860 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4IEXTPROC)(GLuint, GLint, GLint, GLint, GLint); }
-# 4803 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4861 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4IVEXTPROC)(GLuint, const GLint *); }
-# 4804 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4862 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4SVEXTPROC)(GLuint, const GLshort *); }
-# 4805 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4863 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UBVEXTPROC)(GLuint, const GLubyte *); }
-# 4806 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4864 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UIEXTPROC)(GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 4807 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4865 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UIVEXTPROC)(GLuint, const GLuint *); }
-# 4808 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4866 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4USVEXTPROC)(GLuint, const GLushort *); }
-# 4809 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4867 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBIPOINTEREXTPROC)(GLuint, GLint, GLenum, GLsizei, const GLvoid *); }
-# 4869 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4927 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMEXTPROC)(GLenum, GLboolean, GLenum, GLenum, void *); }
-# 4870 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4928 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPARAMETERFVEXTPROC)(GLenum, GLenum, GLfloat *); }
-# 4871 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4929 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 4872 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4930 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMINMAXEXTPROC)(GLenum, GLboolean, GLenum, GLenum, void *); }
-# 4873 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4931 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMINMAXPARAMETERFVEXTPROC)(GLenum, GLenum, GLfloat *); }
-# 4874 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4932 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMINMAXPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 4875 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4933 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLHISTOGRAMEXTPROC)(GLenum, GLsizei, GLenum, GLboolean); }
-# 4876 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4934 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMINMAXEXTPROC)(GLenum, GLenum, GLboolean); }
-# 4877 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4935 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRESETHISTOGRAMEXTPROC)(GLenum); }
-# 4878 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4936 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRESETMINMAXEXTPROC)(GLenum); }
-# 4909 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4967 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINDEXFUNCEXTPROC)(GLenum, GLfloat); }
-# 4922 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 4980 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINDEXMATERIALEXTPROC)(GLenum, GLenum); }
-# 4955 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5013 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLAPPLYTEXTUREEXTPROC)(GLenum); }
-# 4956 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5014 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTURELIGHTEXTPROC)(GLenum); }
-# 4957 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5015 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTUREMATERIALEXTPROC)(GLenum, GLenum); }
-# 4981 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5039 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWARRAYSEXTPROC)(GLenum, GLint *, GLsizei *, GLsizei); }
-# 4982 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5040 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWELEMENTSEXTPROC)(GLenum, GLsizei *, GLenum, const GLvoid **, GLsizei); }
-# 5014 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5072 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEMASKEXTPROC)(GLclampf, GLboolean); }
-# 5015 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5073 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEPATTERNEXTPROC)(GLenum); }
-# 5095 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5153 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEEXTPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const void *); }
-# 5096 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5154 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEEXTPROC)(GLenum, GLenum, GLenum, void *); }
-# 5097 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5155 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERFVEXTPROC)(GLenum, GLenum, GLfloat *); }
-# 5098 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5156 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 5138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5196 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPIXELTRANSFORMPARAMETERFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
-# 5139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5197 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPIXELTRANSFORMPARAMETERIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 5140 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5198 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERFEXTPROC)(GLenum, GLenum, const GLfloat); }
-# 5141 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5199 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
-# 5142 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5200 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERIEXTPROC)(GLenum, GLenum, const GLint); }
-# 5143 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5201 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 5175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5233 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFEXTPROC)(GLenum, GLfloat); }
-# 5176 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5234 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFVEXTPROC)(GLenum, GLfloat *); }
-# 5194 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5252 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOLYGONOFFSETEXTPROC)(GLfloat, GLfloat); }
-# 5216 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5274 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINSCENEEXTPROC)(void); }
-# 5217 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5275 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDSCENEEXTPROC)(void); }
-# 5239 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5297 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3BEXTPROC)(GLbyte, GLbyte, GLbyte); }
-# 5240 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5298 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3BVEXTPROC)(const GLbyte *); }
-# 5241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5299 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3DEXTPROC)(GLdouble, GLdouble, GLdouble); }
-# 5242 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5300 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3DVEXTPROC)(const GLdouble *); }
-# 5243 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5301 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3FEXTPROC)(GLfloat, GLfloat, GLfloat); }
-# 5244 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5302 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3FVEXTPROC)(const GLfloat *); }
-# 5245 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5303 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3IEXTPROC)(GLint, GLint, GLint); }
-# 5246 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5304 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3IVEXTPROC)(const GLint *); }
-# 5247 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5305 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3SEXTPROC)(GLshort, GLshort, GLshort); }
-# 5248 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5306 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3SVEXTPROC)(const GLshort *); }
-# 5249 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5307 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UBEXTPROC)(GLubyte, GLubyte, GLubyte); }
-# 5250 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5308 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UBVEXTPROC)(const GLubyte *); }
-# 5251 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5309 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UIEXTPROC)(GLuint, GLuint, GLuint); }
-# 5252 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5310 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UIVEXTPROC)(const GLuint *); }
-# 5253 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5311 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3USEXTPROC)(GLushort, GLushort, GLushort); }
-# 5254 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5312 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3USVEXTPROC)(const GLushort *); }
-# 5255 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5313 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLORPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLvoid *); }
-# 5332 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5390 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVESTENCILFACEEXTPROC)(GLenum); }
-# 5357 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5415 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE1DEXTPROC)(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const void *); }
-# 5358 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5416 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE2DEXTPROC)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 5359 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5417 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE3DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 5436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5494 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXIMAGE3DEXTPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
-# 5473 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5531 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXBUFFEREXTPROC)(GLenum, GLenum, GLuint); }
-# 5706 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5764 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARCOLORIIEXTPROC)(GLint, GLint, GLint, GLint); }
-# 5707 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5765 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARCOLORIUIEXTPROC)(GLuint, GLuint, GLuint, GLuint); }
-# 5708 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5766 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXPARAMETERIIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 5709 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5767 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXPARAMETERIUIVEXTPROC)(GLenum, GLenum, GLuint *); }
-# 5710 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5768 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXPARAMETERIIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 5711 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5769 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXPARAMETERIUIVEXTPROC)(GLenum, GLenum, const GLuint *); }
-# 5761 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5819 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLARETEXTURESRESIDENTEXTPROC)(GLsizei, const GLuint *, GLboolean *); }
-# 5762 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5820 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDTEXTUREEXTPROC)(GLenum, GLuint); }
-# 5763 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5821 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETETEXTURESEXTPROC)(GLsizei, const GLuint *); }
-# 5764 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5822 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENTEXTURESEXTPROC)(GLsizei, GLuint *); }
-# 5765 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5823 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISTEXTUREEXTPROC)(GLuint); }
-# 5766 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5824 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPRIORITIZETEXTURESEXTPROC)(GLsizei, const GLuint *, const GLclampf *); }
-# 5787 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5845 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTURENORMALEXTPROC)(GLenum); }
-# 5855 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5913 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTI64VEXTPROC)(GLuint, GLenum, GLint64EXT *); }
-# 5856 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5914 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTUI64VEXTPROC)(GLuint, GLenum, GLuint64EXT *); }
-# 5904 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5962 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLARRAYELEMENTEXTPROC)(GLint); }
-# 5905 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5963 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLsizei, const void *); }
-# 5906 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5964 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWARRAYSEXTPROC)(GLenum, GLint, GLsizei); }
-# 5907 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5965 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLEDGEFLAGPOINTEREXTPROC)(GLsizei, GLsizei, const GLboolean *); }
-# 5908 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5966 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPOINTERVEXTPROC)(GLenum, void **); }
-# 5909 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5967 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINDEXPOINTEREXTPROC)(GLenum, GLsizei, GLsizei, const void *); }
-# 5910 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5968 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALPOINTEREXTPROC)(GLenum, GLsizei, GLsizei, const void *); }
-# 5911 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5969 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORDPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLsizei, const void *); }
-# 5912 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 5970 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLsizei, const void *); }
-# 6044 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6102 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINVERTEXSHADEREXTPROC)(void); }
-# 6045 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6103 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBINDLIGHTPARAMETEREXTPROC)(GLenum, GLenum); }
-# 6046 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6104 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBINDMATERIALPARAMETEREXTPROC)(GLenum, GLenum); }
-# 6047 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6105 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBINDPARAMETEREXTPROC)(GLenum); }
-# 6048 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6106 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBINDTEXGENPARAMETEREXTPROC)(GLenum, GLenum, GLenum); }
-# 6049 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6107 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBINDTEXTUREUNITPARAMETEREXTPROC)(GLenum, GLenum); }
-# 6050 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6108 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDVERTEXSHADEREXTPROC)(GLuint); }
-# 6051 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6109 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEVERTEXSHADEREXTPROC)(GLuint); }
-# 6052 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6110 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDISABLEVARIANTCLIENTSTATEEXTPROC)(GLuint); }
-# 6053 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6111 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENABLEVARIANTCLIENTSTATEEXTPROC)(GLuint); }
-# 6054 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6112 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDVERTEXSHADEREXTPROC)(void); }
-# 6055 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6113 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLEXTRACTCOMPONENTEXTPROC)(GLuint, GLuint, GLuint); }
-# 6056 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6114 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLGENSYMBOLSEXTPROC)(GLenum, GLenum, GLenum, GLuint); }
-# 6057 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6115 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLGENVERTEXSHADERSEXTPROC)(GLuint); }
-# 6058 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6116 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETINVARIANTBOOLEANVEXTPROC)(GLuint, GLenum, GLboolean *); }
-# 6059 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6117 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETINVARIANTFLOATVEXTPROC)(GLuint, GLenum, GLfloat *); }
-# 6060 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6118 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETINVARIANTINTEGERVEXTPROC)(GLuint, GLenum, GLint *); }
-# 6061 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6119 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETLOCALCONSTANTBOOLEANVEXTPROC)(GLuint, GLenum, GLboolean *); }
-# 6062 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6120 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETLOCALCONSTANTFLOATVEXTPROC)(GLuint, GLenum, GLfloat *); }
-# 6063 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6121 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETLOCALCONSTANTINTEGERVEXTPROC)(GLuint, GLenum, GLint *); }
-# 6064 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6122 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVARIANTBOOLEANVEXTPROC)(GLuint, GLenum, GLboolean *); }
-# 6065 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6123 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVARIANTFLOATVEXTPROC)(GLuint, GLenum, GLfloat *); }
-# 6066 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6124 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVARIANTINTEGERVEXTPROC)(GLuint, GLenum, GLint *); }
-# 6067 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6125 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVARIANTPOINTERVEXTPROC)(GLuint, GLenum, GLvoid **); }
-# 6068 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6126 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINSERTCOMPONENTEXTPROC)(GLuint, GLuint, GLuint); }
-# 6069 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6127 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISVARIANTENABLEDEXTPROC)(GLuint, GLenum); }
-# 6070 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6128 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSETINVARIANTEXTPROC)(GLuint, GLenum, GLvoid *); }
-# 6071 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6129 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSETLOCALCONSTANTEXTPROC)(GLuint, GLenum, GLvoid *); }
-# 6072 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6130 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSHADEROP1EXTPROC)(GLenum, GLuint, GLuint); }
-# 6073 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6131 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSHADEROP2EXTPROC)(GLenum, GLuint, GLuint, GLuint); }
-# 6074 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6132 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSHADEROP3EXTPROC)(GLenum, GLuint, GLuint, GLuint, GLuint); }
-# 6075 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6133 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSWIZZLEEXTPROC)(GLuint, GLuint, GLenum, GLenum, GLenum, GLenum); }
-# 6076 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6134 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTPOINTEREXTPROC)(GLuint, GLenum, GLuint, GLvoid *); }
-# 6077 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6135 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTBVEXTPROC)(GLuint, GLbyte *); }
-# 6078 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6136 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTDVEXTPROC)(GLuint, GLdouble *); }
-# 6079 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6137 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTFVEXTPROC)(GLuint, GLfloat *); }
-# 6080 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6138 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTIVEXTPROC)(GLuint, GLint *); }
-# 6081 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6139 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTSVEXTPROC)(GLuint, GLshort *); }
-# 6082 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6140 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTUBVEXTPROC)(GLuint, GLubyte *); }
-# 6083 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6141 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTUIVEXTPROC)(GLuint, GLuint *); }
-# 6084 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6142 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVARIANTUSVEXTPROC)(GLuint, GLushort *); }
-# 6085 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6143 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWRITEMASKEXTPROC)(GLuint, GLuint, GLenum, GLenum, GLenum, GLenum); }
-# 6153 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6211 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTPOINTEREXTPROC)(GLint, GLenum, GLsizei, void *); }
-# 6154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6212 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTFEXTPROC)(GLfloat); }
-# 6155 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6213 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTFVEXTPROC)(GLfloat *); }
-# 6170 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6228 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLFRAMETERMINATORGREMEDYPROC)(void); }
+# 6241 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTRINGMARKERGREMEDYPROC)(GLsizei, const void *); }
-# 6192 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6263 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC)(GLenum, GLenum, const GLfloat *); }
-# 6193 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6264 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC)(GLenum, GLenum, const GLint *); }
-# 6194 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6265 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERFHPPROC)(GLenum, GLenum, const GLfloat); }
-# 6195 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6266 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERFVHPPROC)(GLenum, GLenum, const GLfloat *); }
-# 6196 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6267 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERIHPPROC)(GLenum, GLenum, const GLint); }
-# 6197 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6268 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERIVHPPROC)(GLenum, GLenum, const GLint *); }
-# 6247 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6318 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIMODEDRAWARRAYSIBMPROC)(const GLenum *, const GLint *, const GLsizei *, GLsizei, GLint); }
-# 6248 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6319 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIMODEDRAWELEMENTSIBMPROC)(const GLenum *, const GLsizei *, GLenum, const GLvoid *const *, GLsizei, GLint); }
-# 6313 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6384 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
-# 6314 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6385 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLEDGEFLAGPOINTERLISTIBMPROC)(GLint, const GLboolean **, GLint); }
-# 6315 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6386 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDPOINTERLISTIBMPROC)(GLenum, GLint, const GLvoid **, GLint); }
-# 6316 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6387 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINDEXPOINTERLISTIBMPROC)(GLenum, GLint, const GLvoid **, GLint); }
-# 6317 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6388 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALPOINTERLISTIBMPROC)(GLenum, GLint, const GLvoid **, GLint); }
-# 6318 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6389 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLORPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
-# 6319 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6390 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORDPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
-# 6320 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6391 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
-# 6375 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6446 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORPOINTERVINTELPROC)(GLint, GLenum, const void **); }
-# 6376 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6447 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMALPOINTERVINTELPROC)(GLenum, const void **); }
-# 6377 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6448 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORDPOINTERVINTELPROC)(GLint, GLenum, const void **); }
-# 6378 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6449 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXPOINTERVINTELPROC)(GLint, GLenum, const void **); }
-# 6394 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6465 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSCISSORFUNCINTELPROC)(GLenum, GLenum, GLenum); }
-# 6395 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6466 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSCISSORINTELPROC)(GLenum, GLclampf, GLclampf); }
-# 6414 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6485 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBUFFERREGIONENABLEDEXTPROC)(void); }
-# 6415 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6486 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEBUFFERREGIONEXTPROC)(GLenum); }
-# 6416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6487 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWBUFFERREGIONEXTPROC)(GLuint, GLint, GLint, GLsizei, GLsizei, GLint, GLint); }
-# 6417 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6488 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLNEWBUFFERREGIONEXTPROC)(GLenum); }
-# 6418 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6489 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREADBUFFERREGIONEXTPROC)(GLuint, GLint, GLint, GLsizei, GLsizei); }
-# 6462 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6533 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRESIZEBUFFERSMESAPROC)(void); }
-# 6475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6546 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DMESAPROC)(GLdouble, GLdouble); }
-# 6476 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6547 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DVMESAPROC)(const GLdouble *); }
-# 6477 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6548 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2FMESAPROC)(GLfloat, GLfloat); }
-# 6478 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6549 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2FVMESAPROC)(const GLfloat *); }
-# 6479 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6550 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2IMESAPROC)(GLint, GLint); }
-# 6480 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6551 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2IVMESAPROC)(const GLint *); }
-# 6481 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6552 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2SMESAPROC)(GLshort, GLshort); }
-# 6482 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6553 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2SVMESAPROC)(const GLshort *); }
-# 6483 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6554 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3DMESAPROC)(GLdouble, GLdouble, GLdouble); }
-# 6484 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6555 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3DVMESAPROC)(const GLdouble *); }
-# 6485 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6556 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3FMESAPROC)(GLfloat, GLfloat, GLfloat); }
-# 6486 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6557 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3FVMESAPROC)(const GLfloat *); }
-# 6487 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6558 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3IMESAPROC)(GLint, GLint, GLint); }
-# 6488 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6559 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3IVMESAPROC)(const GLint *); }
-# 6489 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6560 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3SMESAPROC)(GLshort, GLshort, GLshort); }
-# 6490 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6561 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS3SVMESAPROC)(const GLshort *); }
-# 6491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6562 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4DMESAPROC)(GLdouble, GLdouble, GLdouble, GLdouble); }
-# 6492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6563 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4DVMESAPROC)(const GLdouble *); }
-# 6493 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6564 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4FMESAPROC)(GLfloat, GLfloat, GLfloat, GLfloat); }
-# 6494 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6565 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4FVMESAPROC)(const GLfloat *); }
-# 6495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6566 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4IMESAPROC)(GLint, GLint, GLint, GLint); }
-# 6496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6567 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4IVMESAPROC)(const GLint *); }
-# 6497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6568 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4SMESAPROC)(GLshort, GLshort, GLshort, GLshort); }
-# 6498 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6569 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS4SVMESAPROC)(const GLshort *); }
-# 6573 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6644 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARDEPTHDNVPROC)(GLdouble); }
-# 6574 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6645 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDEPTHBOUNDSDNVPROC)(GLdouble, GLdouble); }
-# 6575 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6646 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDEPTHRANGEDNVPROC)(GLdouble, GLdouble); }
-# 6641 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6712 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLEVALMAPSNVPROC)(GLenum, GLenum); }
-# 6642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6713 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMAPATTRIBPARAMETERFVNVPROC)(GLenum, GLuint, GLenum, GLfloat *); }
-# 6643 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6714 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMAPATTRIBPARAMETERIVNVPROC)(GLenum, GLuint, GLenum, GLint *); }
-# 6644 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6715 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMAPCONTROLPOINTSNVPROC)(GLenum, GLuint, GLenum, GLsizei, GLsizei, GLboolean, void *); }
-# 6645 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6716 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMAPPARAMETERFVNVPROC)(GLenum, GLenum, GLfloat *); }
-# 6646 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6717 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETMAPPARAMETERIVNVPROC)(GLenum, GLenum, GLint *); }
-# 6647 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6718 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMAPCONTROLPOINTSNVPROC)(GLenum, GLuint, GLenum, GLsizei, GLsizei, GLint, GLint, GLboolean, const void *); }
-# 6648 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6719 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMAPPARAMETERFVNVPROC)(GLenum, GLenum, const GLfloat *); }
-# 6649 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6720 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMAPPARAMETERIVNVPROC)(GLenum, GLenum, const GLint *); }
-# 6674 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6745 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEFENCESNVPROC)(GLsizei, const GLuint *); }
-# 6675 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6746 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFINISHFENCENVPROC)(GLuint); }
-# 6676 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6747 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENFENCESNVPROC)(GLsizei, GLuint *); }
-# 6677 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6748 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFENCEIVNVPROC)(GLuint, GLenum, GLint *); }
-# 6678 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6749 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISFENCENVPROC)(GLuint); }
-# 6679 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6750 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSETFENCENVPROC)(GLuint, GLenum); }
-# 6680 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6751 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLTESTFENCENVPROC)(GLuint); }
-# 6744 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6815 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC)(GLuint, GLsizei, const GLubyte *, GLdouble *); }
-# 6745 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6816 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC)(GLuint, GLsizei, const GLubyte *, GLfloat *); }
-# 6746 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6817 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4DNVPROC)(GLuint, GLsizei, const GLubyte *, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 6747 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6818 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC)(GLuint, GLsizei, const GLubyte *, const GLdouble []); }
-# 6748 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6819 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4FNVPROC)(GLuint, GLsizei, const GLubyte *, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 6749 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6820 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC)(GLuint, GLsizei, const GLubyte *, const GLfloat []); }
-# 6805 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6876 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC)(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei); }
-# 6849 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4INVPROC)(GLenum, GLuint, GLint, GLint, GLint, GLint); }
-# 6850 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4IVNVPROC)(GLenum, GLuint, const GLint *); }
-# 6851 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4UINVPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 6852 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4UIVNVPROC)(GLenum, GLuint, const GLuint *); }
-# 6853 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERSI4IVNVPROC)(GLenum, GLuint, GLsizei, const GLint *); }
-# 6854 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERSI4UIVNVPROC)(GLenum, GLuint, GLsizei, const GLuint *); }
-# 6855 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4INVPROC)(GLenum, GLuint, GLint, GLint, GLint, GLint); }
-# 6856 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4IVNVPROC)(GLenum, GLuint, const GLint *); }
-# 6857 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4UINVPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
-# 6858 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC)(GLenum, GLuint, const GLuint *); }
-# 6859 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC)(GLenum, GLuint, GLsizei, const GLint *); }
-# 6860 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC)(GLenum, GLuint, GLsizei, const GLuint *); }
-# 6861 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6893 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMVERTEXLIMITNVPROC)(GLenum, GLint); }
-# 6888 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6924 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4INVPROC)(GLenum, GLuint, GLint, GLint, GLint, GLint); }
+# 6925 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4IVNVPROC)(GLenum, GLuint, const GLint *); }
+# 6926 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4UINVPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
+# 6927 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4UIVNVPROC)(GLenum, GLuint, const GLuint *); }
+# 6928 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERSI4IVNVPROC)(GLenum, GLuint, GLsizei, const GLint *); }
+# 6929 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERSI4UIVNVPROC)(GLenum, GLuint, GLsizei, const GLuint *); }
+# 6930 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4INVPROC)(GLenum, GLuint, GLint, GLint, GLint, GLint); }
+# 6931 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4IVNVPROC)(GLenum, GLuint, const GLint *); }
+# 6932 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4UINVPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
+# 6933 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC)(GLenum, GLuint, const GLuint *); }
+# 6934 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC)(GLenum, GLuint, GLsizei, const GLint *); }
+# 6935 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC)(GLenum, GLuint, GLsizei, const GLuint *); }
+# 6961 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned short GLhalf; }
-# 6890 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6963 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR3HNVPROC)(GLhalf, GLhalf, GLhalf); }
-# 6891 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6964 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR3HVNVPROC)(const GLhalf *); }
-# 6892 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6965 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4HNVPROC)(GLhalf, GLhalf, GLhalf, GLhalf); }
-# 6893 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6966 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4HVNVPROC)(const GLhalf *); }
-# 6894 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6967 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDHNVPROC)(GLhalf); }
-# 6895 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6968 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDHVNVPROC)(const GLhalf *); }
-# 6896 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6969 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1HNVPROC)(GLenum, GLhalf); }
-# 6897 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6970 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1HVNVPROC)(GLenum, const GLhalf *); }
-# 6898 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6971 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2HNVPROC)(GLenum, GLhalf, GLhalf); }
-# 6899 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6972 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD2HVNVPROC)(GLenum, const GLhalf *); }
-# 6900 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6973 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3HNVPROC)(GLenum, GLhalf, GLhalf, GLhalf); }
-# 6901 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6974 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD3HVNVPROC)(GLenum, const GLhalf *); }
-# 6902 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6975 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4HNVPROC)(GLenum, GLhalf, GLhalf, GLhalf, GLhalf); }
-# 6903 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6976 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4HVNVPROC)(GLenum, const GLhalf *); }
-# 6904 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6977 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMAL3HNVPROC)(GLhalf, GLhalf, GLhalf); }
-# 6905 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6978 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMAL3HVNVPROC)(const GLhalf *); }
-# 6906 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6979 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3HNVPROC)(GLhalf, GLhalf, GLhalf); }
-# 6907 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6980 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3HVNVPROC)(const GLhalf *); }
-# 6908 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6981 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD1HNVPROC)(GLhalf); }
-# 6909 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6982 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD1HVNVPROC)(const GLhalf *); }
-# 6910 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6983 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2HNVPROC)(GLhalf, GLhalf); }
-# 6911 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6984 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2HVNVPROC)(const GLhalf *); }
-# 6912 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6985 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD3HNVPROC)(GLhalf, GLhalf, GLhalf); }
-# 6913 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6986 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD3HVNVPROC)(const GLhalf *); }
-# 6914 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6987 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD4HNVPROC)(GLhalf, GLhalf, GLhalf, GLhalf); }
-# 6915 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6988 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD4HVNVPROC)(const GLhalf *); }
-# 6916 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6989 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEX2HNVPROC)(GLhalf, GLhalf); }
-# 6917 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6990 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEX2HVNVPROC)(const GLhalf *); }
-# 6918 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6991 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEX3HNVPROC)(GLhalf, GLhalf, GLhalf); }
-# 6919 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6992 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEX3HVNVPROC)(const GLhalf *); }
-# 6920 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6993 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEX4HNVPROC)(GLhalf, GLhalf, GLhalf, GLhalf); }
-# 6921 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6994 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEX4HVNVPROC)(const GLhalf *); }
-# 6922 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6995 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1HNVPROC)(GLuint, GLhalf); }
-# 6923 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6996 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1HVNVPROC)(GLuint, const GLhalf *); }
-# 6924 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6997 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2HNVPROC)(GLuint, GLhalf, GLhalf); }
-# 6925 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6998 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2HVNVPROC)(GLuint, const GLhalf *); }
-# 6926 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 6999 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3HNVPROC)(GLuint, GLhalf, GLhalf, GLhalf); }
-# 6927 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7000 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3HVNVPROC)(GLuint, const GLhalf *); }
-# 6928 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7001 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4HNVPROC)(GLuint, GLhalf, GLhalf, GLhalf, GLhalf); }
-# 6929 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7002 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4HVNVPROC)(GLuint, const GLhalf *); }
-# 6930 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7003 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS1HVNVPROC)(GLuint, GLsizei, const GLhalf *); }
-# 6931 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7004 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS2HVNVPROC)(GLuint, GLsizei, const GLhalf *); }
-# 6932 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7005 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS3HVNVPROC)(GLuint, GLsizei, const GLhalf *); }
-# 6933 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7006 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4HVNVPROC)(GLuint, GLsizei, const GLhalf *); }
-# 6934 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7007 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTHNVPROC)(GLhalf); }
-# 6935 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7008 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTHVNVPROC)(const GLhalf *); }
-# 7021 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7094 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINOCCLUSIONQUERYNVPROC)(GLuint); }
-# 7022 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7095 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEOCCLUSIONQUERIESNVPROC)(GLsizei, const GLuint *); }
-# 7023 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7096 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDOCCLUSIONQUERYNVPROC)(void); }
-# 7024 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7097 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENOCCLUSIONQUERIESNVPROC)(GLsizei, GLuint *); }
-# 7025 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7098 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETOCCLUSIONQUERYIVNVPROC)(GLuint, GLenum, GLint *); }
-# 7026 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7099 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETOCCLUSIONQUERYUIVNVPROC)(GLuint, GLenum, GLuint *); }
-# 7027 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7100 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISOCCLUSIONQUERYNVPROC)(GLuint); }
-# 7064 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7137 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMBUFFERPARAMETERSIIVNVPROC)(GLenum, GLuint, GLuint, GLsizei, const GLint *); }
-# 7065 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7138 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMBUFFERPARAMETERSIUIVNVPROC)(GLenum, GLuint, GLuint, GLsizei, const GLuint *); }
-# 7066 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7139 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMBUFFERPARAMETERSFVNVPROC)(GLenum, GLuint, GLuint, GLsizei, const GLfloat *); }
-# 7088 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7161 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHPIXELDATARANGENVPROC)(GLenum); }
-# 7089 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7162 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELDATARANGENVPROC)(GLenum, GLsizei, void *); }
-# 7107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7180 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERINVPROC)(GLenum, GLint); }
-# 7108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7181 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERIVNVPROC)(GLenum, const GLint *); }
-# 7125 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7198 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPRIMITIVERESTARTINDEXNVPROC)(GLuint); }
-# 7126 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7199 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPRIMITIVERESTARTNVPROC)(void); }
-# 7192 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7265 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERINPUTNVPROC)(GLenum, GLenum, GLenum, GLenum, GLenum, GLenum); }
-# 7193 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7266 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINEROUTPUTNVPROC)(GLenum, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum, GLboolean, GLboolean, GLboolean); }
-# 7194 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7267 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERPARAMETERFNVPROC)(GLenum, GLfloat); }
-# 7195 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7268 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERPARAMETERFVNVPROC)(GLenum, const GLfloat *); }
-# 7196 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7269 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERPARAMETERINVPROC)(GLenum, GLint); }
-# 7197 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7270 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERPARAMETERIVNVPROC)(GLenum, const GLint *); }
-# 7198 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7271 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFINALCOMBINERINPUTNVPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 7199 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7272 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC)(GLenum, GLenum, GLenum, GLenum, GLfloat *); }
-# 7200 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7273 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC)(GLenum, GLenum, GLenum, GLenum, GLint *); }
-# 7201 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7274 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC)(GLenum, GLenum, GLenum, GLfloat *); }
-# 7202 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7275 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC)(GLenum, GLenum, GLenum, GLint *); }
-# 7203 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7276 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC)(GLenum, GLenum, GLfloat *); }
-# 7204 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7277 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC)(GLenum, GLenum, GLint *); }
-# 7231 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7304 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERSTAGEPARAMETERFVNVPROC)(GLenum, GLenum, const GLfloat *); }
-# 7232 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7305 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC)(GLenum, GLenum, GLfloat *); }
-# 7491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7564 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVEVARYINGNVPROC)(GLuint, const GLchar *); }
-# 7492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7565 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINTRANSFORMFEEDBACKNVPROC)(GLenum); }
-# 7493 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7566 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDBUFFERBASENVPROC)(GLenum, GLuint, GLuint); }
-# 7494 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7567 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDBUFFEROFFSETNVPROC)(GLenum, GLuint, GLuint, GLintptr); }
-# 7495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7568 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDBUFFERRANGENVPROC)(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr); }
-# 7496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7569 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLENDTRANSFORMFEEDBACKNVPROC)(void); }
-# 7497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7570 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETACTIVEVARYINGNVPROC)(GLuint, GLuint, GLsizei, GLsizei *, GLsizei *, GLenum *, GLchar *); }
-# 7498 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7571 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTRANSFORMFEEDBACKVARYINGNVPROC)(GLuint, GLuint, GLint *); }
-# 7499 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7572 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETVARYINGLOCATIONNVPROC)(GLuint, const GLchar *); }
-# 7500 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7573 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTRANSFORMFEEDBACKATTRIBSNVPROC)(GLuint, const GLint *, GLenum); }
-# 7501 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7574 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTRANSFORMFEEDBACKVARYINGSNVPROC)(GLuint, GLsizei, const GLint *, GLenum); }
-# 7530 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7603 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHVERTEXARRAYRANGENVPROC)(void); }
-# 7531 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7604 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXARRAYRANGENVPROC)(GLsizei, void *); }
-# 7640 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7713 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLAREPROGRAMSRESIDENTNVPROC)(GLsizei, const GLuint *, GLboolean *); }
-# 7641 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7714 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDPROGRAMNVPROC)(GLenum, GLuint); }
-# 7642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7715 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEPROGRAMSNVPROC)(GLsizei, const GLuint *); }
-# 7643 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7716 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLEXECUTEPROGRAMNVPROC)(GLenum, GLuint, const GLfloat *); }
-# 7644 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7717 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGENPROGRAMSNVPROC)(GLsizei, GLuint *); }
-# 7645 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7718 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMPARAMETERDVNVPROC)(GLenum, GLuint, GLenum, GLdouble *); }
-# 7646 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7719 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMPARAMETERFVNVPROC)(GLenum, GLuint, GLenum, GLfloat *); }
-# 7647 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7720 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMSTRINGNVPROC)(GLuint, GLenum, GLubyte *); }
-# 7648 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7721 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMIVNVPROC)(GLuint, GLenum, GLint *); }
-# 7649 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7722 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTRACKMATRIXIVNVPROC)(GLenum, GLuint, GLenum, GLint *); }
-# 7650 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7723 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBPOINTERVNVPROC)(GLuint, GLenum, GLvoid **); }
-# 7651 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7724 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBDVNVPROC)(GLuint, GLenum, GLdouble *); }
-# 7652 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7725 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBFVNVPROC)(GLuint, GLenum, GLfloat *); }
-# 7653 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7726 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIVNVPROC)(GLuint, GLenum, GLint *); }
-# 7654 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7727 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISPROGRAMNVPROC)(GLuint); }
-# 7655 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7728 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOADPROGRAMNVPROC)(GLenum, GLuint, GLsizei, const GLubyte *); }
-# 7656 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7729 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETER4DNVPROC)(GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 7657 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7730 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETER4DVNVPROC)(GLenum, GLuint, const GLdouble *); }
-# 7658 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7731 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETER4FNVPROC)(GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 7659 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7732 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETER4FVNVPROC)(GLenum, GLuint, const GLfloat *); }
-# 7660 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7733 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETERS4DVNVPROC)(GLenum, GLuint, GLuint, const GLdouble *); }
-# 7661 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7734 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETERS4FVNVPROC)(GLenum, GLuint, GLuint, const GLfloat *); }
-# 7662 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7735 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREQUESTRESIDENTPROGRAMSNVPROC)(GLsizei, GLuint *); }
-# 7663 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7736 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTRACKMATRIXNVPROC)(GLenum, GLuint, GLenum, GLenum); }
-# 7664 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7737 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1DNVPROC)(GLuint, GLdouble); }
-# 7665 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7738 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1DVNVPROC)(GLuint, const GLdouble *); }
-# 7666 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7739 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1FNVPROC)(GLuint, GLfloat); }
-# 7667 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7740 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1FVNVPROC)(GLuint, const GLfloat *); }
-# 7668 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7741 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1SNVPROC)(GLuint, GLshort); }
-# 7669 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7742 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB1SVNVPROC)(GLuint, const GLshort *); }
-# 7670 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7743 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2DNVPROC)(GLuint, GLdouble, GLdouble); }
-# 7671 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7744 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2DVNVPROC)(GLuint, const GLdouble *); }
-# 7672 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7745 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2FNVPROC)(GLuint, GLfloat, GLfloat); }
-# 7673 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7746 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2FVNVPROC)(GLuint, const GLfloat *); }
-# 7674 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7747 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2SNVPROC)(GLuint, GLshort, GLshort); }
-# 7675 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7748 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB2SVNVPROC)(GLuint, const GLshort *); }
-# 7676 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7749 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3DNVPROC)(GLuint, GLdouble, GLdouble, GLdouble); }
-# 7677 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7750 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3DVNVPROC)(GLuint, const GLdouble *); }
-# 7678 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7751 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3FNVPROC)(GLuint, GLfloat, GLfloat, GLfloat); }
-# 7679 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7752 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3FVNVPROC)(GLuint, const GLfloat *); }
-# 7680 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7753 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3SNVPROC)(GLuint, GLshort, GLshort, GLshort); }
-# 7681 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7754 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB3SVNVPROC)(GLuint, const GLshort *); }
-# 7682 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7755 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4DNVPROC)(GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
-# 7683 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7756 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4DVNVPROC)(GLuint, const GLdouble *); }
-# 7684 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7757 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4FNVPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 7685 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7758 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4FVNVPROC)(GLuint, const GLfloat *); }
-# 7686 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7759 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4SNVPROC)(GLuint, GLshort, GLshort, GLshort, GLshort); }
-# 7687 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7760 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4SVNVPROC)(GLuint, const GLshort *); }
-# 7688 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7761 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UBNVPROC)(GLuint, GLubyte, GLubyte, GLubyte, GLubyte); }
-# 7689 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7762 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UBVNVPROC)(GLuint, const GLubyte *); }
-# 7690 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7763 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBPOINTERNVPROC)(GLuint, GLint, GLenum, GLsizei, const void *); }
-# 7691 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7764 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS1DVNVPROC)(GLuint, GLsizei, const GLdouble *); }
-# 7692 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7765 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS1FVNVPROC)(GLuint, GLsizei, const GLfloat *); }
-# 7693 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7766 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS1SVNVPROC)(GLuint, GLsizei, const GLshort *); }
-# 7694 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7767 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS2DVNVPROC)(GLuint, GLsizei, const GLdouble *); }
-# 7695 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7768 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS2FVNVPROC)(GLuint, GLsizei, const GLfloat *); }
-# 7696 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7769 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS2SVNVPROC)(GLuint, GLsizei, const GLshort *); }
-# 7697 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7770 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS3DVNVPROC)(GLuint, GLsizei, const GLdouble *); }
-# 7698 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7771 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS3FVNVPROC)(GLuint, GLsizei, const GLfloat *); }
-# 7699 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7772 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS3SVNVPROC)(GLuint, GLsizei, const GLshort *); }
-# 7700 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7773 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4DVNVPROC)(GLuint, GLsizei, const GLdouble *); }
-# 7701 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7774 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4FVNVPROC)(GLuint, GLsizei, const GLfloat *); }
-# 7702 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7775 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4SVNVPROC)(GLuint, GLsizei, const GLshort *); }
-# 7703 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7776 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4UBVNVPROC)(GLuint, GLsizei, const GLubyte *); }
-# 7872 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7945 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARDEPTHFOESPROC)(GLclampd); }
-# 7873 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7946 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLIPPLANEFOESPROC)(GLenum, const GLfloat *); }
-# 7874 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7947 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDEPTHRANGEFOESPROC)(GLclampf, GLclampf); }
-# 7875 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7948 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRUSTUMFOESPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 7876 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7949 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCLIPPLANEFOESPROC)(GLenum, GLfloat *); }
-# 7877 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 7950 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLORTHOFOESPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8044 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8117 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDETAILTEXFUNCSGISPROC)(GLenum, GLsizei, const GLfloat *); }
-# 8045 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8118 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETDETAILTEXFUNCSGISPROC)(GLenum, GLfloat *); }
-# 8059 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8132 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGFUNCSGISPROC)(GLsizei, const GLfloat *); }
-# 8060 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8133 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFOGFUNCSGISPROC)(GLfloat *); }
-# 8104 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8177 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEMASKSGISPROC)(GLclampf, GLboolean); }
-# 8105 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8178 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEPATTERNSGISPROC)(GLenum); }
-# 8128 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8201 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSHARPENTEXFUNCSGISPROC)(GLenum, GLfloat *); }
-# 8129 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8202 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSHARPENTEXFUNCSGISPROC)(GLenum, GLsizei, const GLfloat *); }
-# 8143 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8216 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXIMAGE4DSGISPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
-# 8144 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8217 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE4DSGISPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 8180 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8253 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXFILTERFUNCSGISPROC)(GLenum, GLenum, GLfloat *); }
-# 8181 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8254 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXFILTERFUNCSGISPROC)(GLenum, GLenum, GLsizei, const GLfloat *); }
-# 8220 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8293 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLASYNCMARKERSGIXPROC)(GLuint); }
-# 8221 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8294 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEASYNCMARKERSSGIXPROC)(GLuint, GLsizei); }
-# 8222 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8295 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLFINISHASYNCSGIXPROC)(GLuint *); }
-# 8223 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8296 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLGENASYNCMARKERSSGIXPROC)(GLsizei); }
-# 8224 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8297 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLISASYNCMARKERSGIXPROC)(GLuint); }
-# 8225 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8298 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLPOLLASYNCSGIXPROC)(GLuint *); }
-# 8305 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8378 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHRASTERSGIXPROC)(void); }
-# 8334 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8407 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTUREFOGSGIXPROC)(GLenum); }
-# 8347 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8420 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTCOLORMATERIALSGIXPROC)(GLenum, GLenum); }
-# 8348 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8421 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFSGIXPROC)(GLenum, GLfloat); }
-# 8349 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8422 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFVSGIXPROC)(GLenum, GLfloat *); }
-# 8350 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8423 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELISGIXPROC)(GLenum, GLint); }
-# 8351 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8424 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELIVSGIXPROC)(GLenum, GLint *); }
-# 8352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8425 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTFSGIXPROC)(GLenum, GLenum, GLfloat); }
-# 8353 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8426 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTFVSGIXPROC)(GLenum, GLenum, GLfloat *); }
-# 8354 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8427 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTISGIXPROC)(GLenum, GLenum, GLint); }
-# 8355 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8428 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTIVSGIXPROC)(GLenum, GLenum, GLint *); }
-# 8356 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8429 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALFSGIXPROC)(GLenum, GLenum, const GLfloat); }
-# 8357 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8430 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALFVSGIXPROC)(GLenum, GLenum, const GLfloat *); }
-# 8358 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8431 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALISGIXPROC)(GLenum, GLenum, const GLint); }
-# 8359 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8432 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTMATERIALIVSGIXPROC)(GLenum, GLenum, const GLint *); }
-# 8360 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8433 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTFVSGIXPROC)(GLenum, GLenum, GLfloat *); }
-# 8361 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8434 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTIVSGIXPROC)(GLenum, GLenum, GLint *); }
-# 8362 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8435 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALFVSGIXPROC)(GLenum, GLenum, const GLfloat *); }
-# 8363 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8436 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALIVSGIXPROC)(GLenum, GLenum, const GLint *); }
-# 8392 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8465 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEZOOMSGIXPROC)(GLint); }
-# 8434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8507 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELTEXGENSGIXPROC)(GLenum); }
-# 8456 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8529 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREFERENCEPLANESGIXPROC)(const GLdouble *); }
-# 8509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8582 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERFSGIXPROC)(GLenum, GLfloat); }
-# 8510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8583 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERFVSGIXPROC)(GLenum, GLfloat *); }
-# 8511 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8584 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERISGIXPROC)(GLenum, GLint); }
-# 8512 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8585 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERIVSGIXPROC)(GLenum, GLint *); }
-# 8528 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8601 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTAGSAMPLEBUFFERSGIXPROC)(void); }
-# 8706 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8779 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERFVSGIPROC)(GLenum, GLenum, const GLfloat *); }
-# 8707 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8780 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERIVSGIPROC)(GLenum, GLenum, const GLint *); }
-# 8708 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8781 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLESGIPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const void *); }
-# 8709 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8782 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYCOLORTABLESGIPROC)(GLenum, GLenum, GLint, GLint, GLsizei); }
-# 8710 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8783 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERFVSGIPROC)(GLenum, GLenum, GLfloat *); }
-# 8711 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8784 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERIVSGIPROC)(GLenum, GLenum, GLint *); }
-# 8712 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8785 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETCOLORTABLESGIPROC)(GLenum, GLenum, GLenum, void *); }
-# 8746 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8819 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFINISHTEXTURESUNXPROC)(void); }
-# 8773 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8846 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORBSUNPROC)(GLbyte); }
-# 8774 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8847 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORDSUNPROC)(GLdouble); }
-# 8775 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8848 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORFSUNPROC)(GLfloat); }
-# 8776 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8849 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORISUNPROC)(GLint); }
-# 8777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8850 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORSSUNPROC)(GLshort); }
-# 8778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8851 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORUBSUNPROC)(GLubyte); }
-# 8779 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8852 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORUISUNPROC)(GLuint); }
-# 8780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8853 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORUSSUNPROC)(GLushort); }
-# 8812 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8885 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREADVIDEOPIXELSSUNPROC)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid *); }
-# 8854 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8927 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEPOINTERSUNPROC)(GLenum, GLsizei, const void *); }
-# 8855 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8928 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUBSUNPROC)(GLubyte); }
-# 8856 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8929 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUBVSUNPROC)(const GLubyte *); }
-# 8857 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8930 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUISUNPROC)(GLuint); }
-# 8858 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8931 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUIVSUNPROC)(const GLuint *); }
-# 8859 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8932 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUSSUNPROC)(GLushort); }
-# 8860 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8933 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUSVSUNPROC)(const GLushort *); }
-# 8879 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8952 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8880 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8953 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *); }
-# 8881 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8954 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8882 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8955 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4FNORMAL3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8883 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8956 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4UBVERTEX2FSUNPROC)(GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat); }
-# 8884 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8957 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4UBVERTEX2FVSUNPROC)(const GLubyte *, const GLfloat *); }
-# 8885 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8958 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4UBVERTEX3FSUNPROC)(GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat, GLfloat); }
-# 8886 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8959 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR4UBVERTEX3FVSUNPROC)(const GLubyte *, const GLfloat *); }
-# 8887 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8960 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMAL3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8888 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8961 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLNORMAL3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *); }
-# 8889 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8962 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8890 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8963 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *, const GLfloat *); }
-# 8891 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8964 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8892 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8965 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8893 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8966 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FSUNPROC)(GLuint, GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat, GLfloat); }
-# 8894 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8967 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FVSUNPROC)(const GLuint *, const GLubyte *, const GLfloat *); }
-# 8895 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8968 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8896 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8969 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *, const GLfloat *); }
-# 8897 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8970 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8898 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8971 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *, const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8899 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8972 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8900 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8973 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8901 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8974 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8902 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8975 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *, const GLfloat *); }
-# 8903 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8976 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUIVERTEX3FSUNPROC)(GLuint, GLfloat, GLfloat, GLfloat); }
-# 8904 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8977 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUIVERTEX3FVSUNPROC)(const GLuint *, const GLfloat *); }
-# 8905 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8978 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FCOLOR3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8906 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8979 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FCOLOR3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8907 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8980 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8908 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8981 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8909 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8982 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FCOLOR4UBVERTEX3FSUNPROC)(GLfloat, GLfloat, GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat, GLfloat); }
-# 8910 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8983 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FCOLOR4UBVERTEX3FVSUNPROC)(const GLfloat *, const GLubyte *, const GLfloat *); }
-# 8911 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8984 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FNORMAL3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8912 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8985 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FNORMAL3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8913 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8986 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8914 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8987 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD2FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *); }
-# 8915 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8988 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8916 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8989 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC)(const GLfloat *, const GLfloat *, const GLfloat *, const GLfloat *); }
-# 8917 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8990 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD4FVERTEX4FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8918 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 8991 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXCOORD4FVERTEX4FVSUNPROC)(const GLfloat *, const GLfloat *); }
-# 8993 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9066 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLADDSWAPHINTRECTWINPROC)(GLint, GLint, GLsizei, GLsizei); }
-# 9020 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9093 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXSUBIMAGE3DPROC __glewCopyTexSubImage3D; }
-# 9021 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9094 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWRANGEELEMENTSPROC __glewDrawRangeElements; }
-# 9022 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9095 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXIMAGE3DPROC __glewTexImage3D; }
-# 9023 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9096 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSUBIMAGE3DPROC __glewTexSubImage3D; }
-# 9025 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9098 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLACTIVETEXTUREPROC __glewActiveTexture; }
-# 9026 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9099 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLIENTACTIVETEXTUREPROC __glewClientActiveTexture; }
-# 9027 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9100 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE1DPROC __glewCompressedTexImage1D; }
-# 9028 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9101 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE2DPROC __glewCompressedTexImage2D; }
-# 9029 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9102 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE3DPROC __glewCompressedTexImage3D; }
-# 9030 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9103 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC __glewCompressedTexSubImage1D; }
-# 9031 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9104 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC __glewCompressedTexSubImage2D; }
-# 9032 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9105 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC __glewCompressedTexSubImage3D; }
-# 9033 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9106 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMPRESSEDTEXIMAGEPROC __glewGetCompressedTexImage; }
-# 9034 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9107 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLOADTRANSPOSEMATRIXDPROC __glewLoadTransposeMatrixd; }
-# 9035 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9108 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLOADTRANSPOSEMATRIXFPROC __glewLoadTransposeMatrixf; }
-# 9036 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9109 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTTRANSPOSEMATRIXDPROC __glewMultTransposeMatrixd; }
-# 9037 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9110 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTTRANSPOSEMATRIXFPROC __glewMultTransposeMatrixf; }
-# 9038 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9111 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1DPROC __glewMultiTexCoord1d; }
-# 9039 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9112 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1DVPROC __glewMultiTexCoord1dv; }
-# 9040 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9113 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1FPROC __glewMultiTexCoord1f; }
-# 9041 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9114 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1FVPROC __glewMultiTexCoord1fv; }
-# 9042 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9115 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1IPROC __glewMultiTexCoord1i; }
-# 9043 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9116 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1IVPROC __glewMultiTexCoord1iv; }
-# 9044 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9117 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1SPROC __glewMultiTexCoord1s; }
-# 9045 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9118 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1SVPROC __glewMultiTexCoord1sv; }
-# 9046 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9119 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2DPROC __glewMultiTexCoord2d; }
-# 9047 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9120 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2DVPROC __glewMultiTexCoord2dv; }
-# 9048 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9121 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2FPROC __glewMultiTexCoord2f; }
-# 9049 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9122 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2FVPROC __glewMultiTexCoord2fv; }
-# 9050 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9123 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2IPROC __glewMultiTexCoord2i; }
-# 9051 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9124 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2IVPROC __glewMultiTexCoord2iv; }
-# 9052 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9125 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2SPROC __glewMultiTexCoord2s; }
-# 9053 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9126 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2SVPROC __glewMultiTexCoord2sv; }
-# 9054 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9127 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3DPROC __glewMultiTexCoord3d; }
-# 9055 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9128 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3DVPROC __glewMultiTexCoord3dv; }
-# 9056 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9129 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3FPROC __glewMultiTexCoord3f; }
-# 9057 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9130 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3FVPROC __glewMultiTexCoord3fv; }
-# 9058 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9131 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3IPROC __glewMultiTexCoord3i; }
-# 9059 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9132 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3IVPROC __glewMultiTexCoord3iv; }
-# 9060 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9133 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3SPROC __glewMultiTexCoord3s; }
-# 9061 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9134 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3SVPROC __glewMultiTexCoord3sv; }
-# 9062 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9135 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4DPROC __glewMultiTexCoord4d; }
-# 9063 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9136 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4DVPROC __glewMultiTexCoord4dv; }
-# 9064 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9137 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4FPROC __glewMultiTexCoord4f; }
-# 9065 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9138 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4FVPROC __glewMultiTexCoord4fv; }
-# 9066 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9139 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4IPROC __glewMultiTexCoord4i; }
-# 9067 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9140 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4IVPROC __glewMultiTexCoord4iv; }
-# 9068 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9141 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4SPROC __glewMultiTexCoord4s; }
-# 9069 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9142 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4SVPROC __glewMultiTexCoord4sv; }
-# 9070 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9143 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLECOVERAGEPROC __glewSampleCoverage; }
-# 9072 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9145 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDCOLORPROC __glewBlendColor; }
-# 9073 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9146 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDEQUATIONPROC __glewBlendEquation; }
-# 9074 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9147 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDFUNCSEPARATEPROC __glewBlendFuncSeparate; }
-# 9075 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9148 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDPOINTERPROC __glewFogCoordPointer; }
-# 9076 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9149 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDDPROC __glewFogCoordd; }
-# 9077 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9150 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDDVPROC __glewFogCoorddv; }
-# 9078 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9151 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDFPROC __glewFogCoordf; }
-# 9079 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9152 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDFVPROC __glewFogCoordfv; }
-# 9080 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9153 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIDRAWARRAYSPROC __glewMultiDrawArrays; }
-# 9081 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9154 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIDRAWELEMENTSPROC __glewMultiDrawElements; }
-# 9082 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9155 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERFPROC __glewPointParameterf; }
-# 9083 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9156 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERFVPROC __glewPointParameterfv; }
-# 9084 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9157 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPOINTPARAMETERIPROC __glewPointParameteri; }
+# 9158 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPOINTPARAMETERIVPROC __glewPointParameteriv; }
+# 9159 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3BPROC __glewSecondaryColor3b; }
-# 9085 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9160 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3BVPROC __glewSecondaryColor3bv; }
-# 9086 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9161 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3DPROC __glewSecondaryColor3d; }
-# 9087 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9162 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3DVPROC __glewSecondaryColor3dv; }
-# 9088 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9163 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3FPROC __glewSecondaryColor3f; }
-# 9089 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9164 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3FVPROC __glewSecondaryColor3fv; }
-# 9090 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9165 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3IPROC __glewSecondaryColor3i; }
-# 9091 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9166 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3IVPROC __glewSecondaryColor3iv; }
-# 9092 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9167 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3SPROC __glewSecondaryColor3s; }
-# 9093 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9168 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3SVPROC __glewSecondaryColor3sv; }
-# 9094 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9169 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UBPROC __glewSecondaryColor3ub; }
-# 9095 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9170 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UBVPROC __glewSecondaryColor3ubv; }
-# 9096 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9171 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UIPROC __glewSecondaryColor3ui; }
-# 9097 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9172 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UIVPROC __glewSecondaryColor3uiv; }
-# 9098 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9173 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3USPROC __glewSecondaryColor3us; }
-# 9099 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9174 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3USVPROC __glewSecondaryColor3usv; }
-# 9100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9175 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLORPOINTERPROC __glewSecondaryColorPointer; }
-# 9101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9176 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2DPROC __glewWindowPos2d; }
-# 9102 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9177 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2DVPROC __glewWindowPos2dv; }
-# 9103 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9178 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2FPROC __glewWindowPos2f; }
-# 9104 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9179 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2FVPROC __glewWindowPos2fv; }
-# 9105 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9180 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2IPROC __glewWindowPos2i; }
-# 9106 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9181 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2IVPROC __glewWindowPos2iv; }
-# 9107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9182 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2SPROC __glewWindowPos2s; }
-# 9108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9183 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2SVPROC __glewWindowPos2sv; }
-# 9109 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9184 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3DPROC __glewWindowPos3d; }
-# 9110 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9185 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3DVPROC __glewWindowPos3dv; }
-# 9111 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9186 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3FPROC __glewWindowPos3f; }
-# 9112 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9187 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3FVPROC __glewWindowPos3fv; }
-# 9113 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9188 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3IPROC __glewWindowPos3i; }
-# 9114 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9189 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3IVPROC __glewWindowPos3iv; }
-# 9115 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9190 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3SPROC __glewWindowPos3s; }
-# 9116 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9191 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3SVPROC __glewWindowPos3sv; }
-# 9118 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9193 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINQUERYPROC __glewBeginQuery; }
-# 9119 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9194 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDBUFFERPROC __glewBindBuffer; }
-# 9120 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9195 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBUFFERDATAPROC __glewBufferData; }
-# 9121 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9196 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBUFFERSUBDATAPROC __glewBufferSubData; }
-# 9122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9197 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEBUFFERSPROC __glewDeleteBuffers; }
-# 9123 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9198 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEQUERIESPROC __glewDeleteQueries; }
-# 9124 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9199 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDQUERYPROC __glewEndQuery; }
-# 9125 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9200 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENBUFFERSPROC __glewGenBuffers; }
-# 9126 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9201 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENQUERIESPROC __glewGenQueries; }
-# 9127 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9202 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBUFFERPARAMETERIVPROC __glewGetBufferParameteriv; }
-# 9128 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9203 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBUFFERPOINTERVPROC __glewGetBufferPointerv; }
-# 9129 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9204 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBUFFERSUBDATAPROC __glewGetBufferSubData; }
-# 9130 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9205 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYOBJECTIVPROC __glewGetQueryObjectiv; }
-# 9131 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9206 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYOBJECTUIVPROC __glewGetQueryObjectuiv; }
-# 9132 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9207 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYIVPROC __glewGetQueryiv; }
-# 9133 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9208 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISBUFFERPROC __glewIsBuffer; }
-# 9134 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9209 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISQUERYPROC __glewIsQuery; }
-# 9135 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9210 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMAPBUFFERPROC __glewMapBuffer; }
-# 9136 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9211 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNMAPBUFFERPROC __glewUnmapBuffer; }
-# 9138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9213 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLATTACHSHADERPROC __glewAttachShader; }
-# 9139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9214 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDATTRIBLOCATIONPROC __glewBindAttribLocation; }
-# 9140 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9215 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDEQUATIONSEPARATEPROC __glewBlendEquationSeparate; }
-# 9141 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9216 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPILESHADERPROC __glewCompileShader; }
-# 9142 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9217 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCREATEPROGRAMPROC __glewCreateProgram; }
-# 9143 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9218 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCREATESHADERPROC __glewCreateShader; }
-# 9144 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9219 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEPROGRAMPROC __glewDeleteProgram; }
-# 9145 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9220 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETESHADERPROC __glewDeleteShader; }
-# 9146 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9221 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDETACHSHADERPROC __glewDetachShader; }
-# 9147 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9222 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDISABLEVERTEXATTRIBARRAYPROC __glewDisableVertexAttribArray; }
-# 9148 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9223 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWBUFFERSPROC __glewDrawBuffers; }
-# 9149 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9224 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENABLEVERTEXATTRIBARRAYPROC __glewEnableVertexAttribArray; }
-# 9150 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9225 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETACTIVEATTRIBPROC __glewGetActiveAttrib; }
-# 9151 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9226 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETACTIVEUNIFORMPROC __glewGetActiveUniform; }
-# 9152 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9227 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETATTACHEDSHADERSPROC __glewGetAttachedShaders; }
-# 9153 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9228 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETATTRIBLOCATIONPROC __glewGetAttribLocation; }
-# 9154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9229 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMINFOLOGPROC __glewGetProgramInfoLog; }
-# 9155 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9230 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMIVPROC __glewGetProgramiv; }
-# 9156 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9231 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSHADERINFOLOGPROC __glewGetShaderInfoLog; }
-# 9157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9232 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSHADERSOURCEPROC __glewGetShaderSource; }
-# 9158 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9233 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSHADERIVPROC __glewGetShaderiv; }
-# 9159 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9234 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMLOCATIONPROC __glewGetUniformLocation; }
-# 9160 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9235 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMFVPROC __glewGetUniformfv; }
-# 9161 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9236 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMIVPROC __glewGetUniformiv; }
-# 9162 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9237 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBPOINTERVPROC __glewGetVertexAttribPointerv; }
-# 9163 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9238 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBDVPROC __glewGetVertexAttribdv; }
-# 9164 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9239 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBFVPROC __glewGetVertexAttribfv; }
-# 9165 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9240 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBIVPROC __glewGetVertexAttribiv; }
-# 9166 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9241 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISPROGRAMPROC __glewIsProgram; }
-# 9167 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9242 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISSHADERPROC __glewIsShader; }
-# 9168 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9243 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLINKPROGRAMPROC __glewLinkProgram; }
-# 9169 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9244 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSHADERSOURCEPROC __glewShaderSource; }
-# 9170 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9245 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSTENCILFUNCSEPARATEPROC __glewStencilFuncSeparate; }
-# 9171 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9246 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSTENCILMASKSEPARATEPROC __glewStencilMaskSeparate; }
-# 9172 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9247 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSTENCILOPSEPARATEPROC __glewStencilOpSeparate; }
-# 9173 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9248 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1FPROC __glewUniform1f; }
-# 9174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9249 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1FVPROC __glewUniform1fv; }
-# 9175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9250 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1IPROC __glewUniform1i; }
-# 9176 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9251 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1IVPROC __glewUniform1iv; }
-# 9177 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9252 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2FPROC __glewUniform2f; }
-# 9178 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9253 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2FVPROC __glewUniform2fv; }
-# 9179 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9254 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2IPROC __glewUniform2i; }
-# 9180 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9255 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2IVPROC __glewUniform2iv; }
-# 9181 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9256 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3FPROC __glewUniform3f; }
-# 9182 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9257 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3FVPROC __glewUniform3fv; }
-# 9183 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9258 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3IPROC __glewUniform3i; }
-# 9184 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9259 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3IVPROC __glewUniform3iv; }
-# 9185 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9260 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4FPROC __glewUniform4f; }
-# 9186 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9261 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4FVPROC __glewUniform4fv; }
-# 9187 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9262 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4IPROC __glewUniform4i; }
-# 9188 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9263 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4IVPROC __glewUniform4iv; }
-# 9189 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9264 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX2FVPROC __glewUniformMatrix2fv; }
-# 9190 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9265 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX3FVPROC __glewUniformMatrix3fv; }
-# 9191 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9266 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX4FVPROC __glewUniformMatrix4fv; }
-# 9192 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9267 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUSEPROGRAMPROC __glewUseProgram; }
-# 9193 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9268 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVALIDATEPROGRAMPROC __glewValidateProgram; }
-# 9194 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9269 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1DPROC __glewVertexAttrib1d; }
-# 9195 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9270 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1DVPROC __glewVertexAttrib1dv; }
-# 9196 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9271 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1FPROC __glewVertexAttrib1f; }
-# 9197 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9272 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1FVPROC __glewVertexAttrib1fv; }
-# 9198 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9273 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1SPROC __glewVertexAttrib1s; }
-# 9199 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9274 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1SVPROC __glewVertexAttrib1sv; }
-# 9200 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9275 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2DPROC __glewVertexAttrib2d; }
-# 9201 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9276 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2DVPROC __glewVertexAttrib2dv; }
-# 9202 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9277 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2FPROC __glewVertexAttrib2f; }
-# 9203 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9278 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2FVPROC __glewVertexAttrib2fv; }
-# 9204 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9279 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2SPROC __glewVertexAttrib2s; }
-# 9205 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9280 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2SVPROC __glewVertexAttrib2sv; }
-# 9206 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9281 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3DPROC __glewVertexAttrib3d; }
-# 9207 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9282 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3DVPROC __glewVertexAttrib3dv; }
-# 9208 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9283 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3FPROC __glewVertexAttrib3f; }
-# 9209 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9284 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3FVPROC __glewVertexAttrib3fv; }
-# 9210 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9285 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3SPROC __glewVertexAttrib3s; }
-# 9211 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9286 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3SVPROC __glewVertexAttrib3sv; }
-# 9212 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9287 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NBVPROC __glewVertexAttrib4Nbv; }
-# 9213 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9288 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NIVPROC __glewVertexAttrib4Niv; }
-# 9214 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9289 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NSVPROC __glewVertexAttrib4Nsv; }
-# 9215 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9290 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUBPROC __glewVertexAttrib4Nub; }
-# 9216 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9291 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUBVPROC __glewVertexAttrib4Nubv; }
-# 9217 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9292 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUIVPROC __glewVertexAttrib4Nuiv; }
-# 9218 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9293 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUSVPROC __glewVertexAttrib4Nusv; }
-# 9219 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9294 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4BVPROC __glewVertexAttrib4bv; }
-# 9220 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9295 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4DPROC __glewVertexAttrib4d; }
-# 9221 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9296 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4DVPROC __glewVertexAttrib4dv; }
-# 9222 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9297 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4FPROC __glewVertexAttrib4f; }
-# 9223 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9298 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4FVPROC __glewVertexAttrib4fv; }
-# 9224 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9299 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4IVPROC __glewVertexAttrib4iv; }
-# 9225 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9300 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4SPROC __glewVertexAttrib4s; }
-# 9226 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9301 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4SVPROC __glewVertexAttrib4sv; }
-# 9227 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9302 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4UBVPROC __glewVertexAttrib4ubv; }
-# 9228 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9303 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4UIVPROC __glewVertexAttrib4uiv; }
-# 9229 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9304 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4USVPROC __glewVertexAttrib4usv; }
-# 9230 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9305 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBPOINTERPROC __glewVertexAttribPointer; }
-# 9232 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9307 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX2X3FVPROC __glewUniformMatrix2x3fv; }
-# 9233 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9308 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX2X4FVPROC __glewUniformMatrix2x4fv; }
-# 9234 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9309 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX3X2FVPROC __glewUniformMatrix3x2fv; }
-# 9235 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9310 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX3X4FVPROC __glewUniformMatrix3x4fv; }
-# 9236 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9311 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX4X2FVPROC __glewUniformMatrix4x2fv; }
-# 9237 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9312 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX4X3FVPROC __glewUniformMatrix4x3fv; }
-# 9239 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9314 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTBUFFERMASK3DFXPROC __glewTbufferMask3DFX; }
-# 9241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9316 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWELEMENTARRAYAPPLEPROC __glewDrawElementArrayAPPLE; }
-# 9242 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9317 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWRANGEELEMENTARRAYAPPLEPROC __glewDrawRangeElementArrayAPPLE; }
-# 9243 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9318 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLELEMENTPOINTERAPPLEPROC __glewElementPointerAPPLE; }
-# 9244 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9319 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIDRAWELEMENTARRAYAPPLEPROC __glewMultiDrawElementArrayAPPLE; }
-# 9245 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9320 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIDRAWRANGEELEMENTARRAYAPPLEPROC __glewMultiDrawRangeElementArrayAPPLE; }
-# 9247 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9322 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEFENCESAPPLEPROC __glewDeleteFencesAPPLE; }
-# 9248 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9323 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFINISHFENCEAPPLEPROC __glewFinishFenceAPPLE; }
-# 9249 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9324 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFINISHOBJECTAPPLEPROC __glewFinishObjectAPPLE; }
-# 9250 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9325 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENFENCESAPPLEPROC __glewGenFencesAPPLE; }
-# 9251 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9326 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISFENCEAPPLEPROC __glewIsFenceAPPLE; }
-# 9252 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9327 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSETFENCEAPPLEPROC __glewSetFenceAPPLE; }
-# 9253 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9328 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTESTFENCEAPPLEPROC __glewTestFenceAPPLE; }
-# 9254 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9329 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTESTOBJECTAPPLEPROC __glewTestObjectAPPLE; }
-# 9256 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9331 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLBUFFERPARAMETERIAPPLEPROC __glewBufferParameteriAPPLE; }
+# 9332 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLFLUSHMAPPEDBUFFERRANGEAPPLEPROC __glewFlushMappedBufferRangeAPPLE; }
+# 9334 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTEXPARAMETERPOINTERVAPPLEPROC __glewGetTexParameterPointervAPPLE; }
-# 9257 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9335 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXTURERANGEAPPLEPROC __glewTextureRangeAPPLE; }
-# 9259 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9337 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDVERTEXARRAYAPPLEPROC __glewBindVertexArrayAPPLE; }
-# 9260 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9338 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEVERTEXARRAYSAPPLEPROC __glewDeleteVertexArraysAPPLE; }
-# 9261 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9339 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENVERTEXARRAYSAPPLEPROC __glewGenVertexArraysAPPLE; }
-# 9262 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9340 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISVERTEXARRAYAPPLEPROC __glewIsVertexArrayAPPLE; }
-# 9264 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9342 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFLUSHVERTEXARRAYRANGEAPPLEPROC __glewFlushVertexArrayRangeAPPLE; }
-# 9265 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9343 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXARRAYPARAMETERIAPPLEPROC __glewVertexArrayParameteriAPPLE; }
-# 9266 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9344 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXARRAYRANGEAPPLEPROC __glewVertexArrayRangeAPPLE; }
-# 9268 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9346 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLAMPCOLORARBPROC __glewClampColorARB; }
-# 9270 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9348 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWBUFFERSARBPROC __glewDrawBuffersARB; }
-# 9272 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9350 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORSUBTABLEPROC __glewColorSubTable; }
-# 9273 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9351 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLEPROC __glewColorTable; }
-# 9274 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9352 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLEPARAMETERFVPROC __glewColorTableParameterfv; }
-# 9275 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9353 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLEPARAMETERIVPROC __glewColorTableParameteriv; }
-# 9276 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9354 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONFILTER1DPROC __glewConvolutionFilter1D; }
-# 9277 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9355 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONFILTER2DPROC __glewConvolutionFilter2D; }
-# 9278 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9356 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERFPROC __glewConvolutionParameterf; }
-# 9279 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9357 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERFVPROC __glewConvolutionParameterfv; }
-# 9280 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9358 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERIPROC __glewConvolutionParameteri; }
-# 9281 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9359 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERIVPROC __glewConvolutionParameteriv; }
-# 9282 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9360 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCOLORSUBTABLEPROC __glewCopyColorSubTable; }
-# 9283 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9361 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCOLORTABLEPROC __glewCopyColorTable; }
-# 9284 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9362 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCONVOLUTIONFILTER1DPROC __glewCopyConvolutionFilter1D; }
-# 9285 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9363 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCONVOLUTIONFILTER2DPROC __glewCopyConvolutionFilter2D; }
-# 9286 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9364 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPROC __glewGetColorTable; }
-# 9287 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9365 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPARAMETERFVPROC __glewGetColorTableParameterfv; }
-# 9288 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9366 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPARAMETERIVPROC __glewGetColorTableParameteriv; }
-# 9289 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9367 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCONVOLUTIONFILTERPROC __glewGetConvolutionFilter; }
-# 9290 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9368 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCONVOLUTIONPARAMETERFVPROC __glewGetConvolutionParameterfv; }
-# 9291 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9369 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCONVOLUTIONPARAMETERIVPROC __glewGetConvolutionParameteriv; }
-# 9292 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9370 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHISTOGRAMPROC __glewGetHistogram; }
-# 9293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9371 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHISTOGRAMPARAMETERFVPROC __glewGetHistogramParameterfv; }
-# 9294 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9372 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHISTOGRAMPARAMETERIVPROC __glewGetHistogramParameteriv; }
-# 9295 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9373 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMINMAXPROC __glewGetMinmax; }
-# 9296 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9374 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMINMAXPARAMETERFVPROC __glewGetMinmaxParameterfv; }
-# 9297 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9375 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMINMAXPARAMETERIVPROC __glewGetMinmaxParameteriv; }
-# 9298 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9376 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSEPARABLEFILTERPROC __glewGetSeparableFilter; }
-# 9299 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9377 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLHISTOGRAMPROC __glewHistogram; }
-# 9300 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9378 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMINMAXPROC __glewMinmax; }
-# 9301 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9379 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRESETHISTOGRAMPROC __glewResetHistogram; }
-# 9302 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9380 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRESETMINMAXPROC __glewResetMinmax; }
-# 9303 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9381 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSEPARABLEFILTER2DPROC __glewSeparableFilter2D; }
-# 9305 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9383 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCURRENTPALETTEMATRIXARBPROC __glewCurrentPaletteMatrixARB; }
-# 9306 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9384 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMATRIXINDEXPOINTERARBPROC __glewMatrixIndexPointerARB; }
-# 9307 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9385 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMATRIXINDEXUBVARBPROC __glewMatrixIndexubvARB; }
-# 9308 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9386 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMATRIXINDEXUIVARBPROC __glewMatrixIndexuivARB; }
-# 9309 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9387 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMATRIXINDEXUSVARBPROC __glewMatrixIndexusvARB; }
-# 9311 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9389 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLECOVERAGEARBPROC __glewSampleCoverageARB; }
-# 9313 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9391 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLACTIVETEXTUREARBPROC __glewActiveTextureARB; }
-# 9314 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9392 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLIENTACTIVETEXTUREARBPROC __glewClientActiveTextureARB; }
-# 9315 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9393 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1DARBPROC __glewMultiTexCoord1dARB; }
-# 9316 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9394 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1DVARBPROC __glewMultiTexCoord1dvARB; }
-# 9317 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9395 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1FARBPROC __glewMultiTexCoord1fARB; }
-# 9318 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9396 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1FVARBPROC __glewMultiTexCoord1fvARB; }
-# 9319 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9397 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1IARBPROC __glewMultiTexCoord1iARB; }
-# 9320 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9398 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1IVARBPROC __glewMultiTexCoord1ivARB; }
-# 9321 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9399 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1SARBPROC __glewMultiTexCoord1sARB; }
-# 9322 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9400 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1SVARBPROC __glewMultiTexCoord1svARB; }
-# 9323 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9401 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2DARBPROC __glewMultiTexCoord2dARB; }
-# 9324 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9402 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2DVARBPROC __glewMultiTexCoord2dvARB; }
-# 9325 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9403 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2FARBPROC __glewMultiTexCoord2fARB; }
-# 9326 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9404 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2FVARBPROC __glewMultiTexCoord2fvARB; }
-# 9327 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9405 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2IARBPROC __glewMultiTexCoord2iARB; }
-# 9328 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9406 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2IVARBPROC __glewMultiTexCoord2ivARB; }
-# 9329 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9407 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2SARBPROC __glewMultiTexCoord2sARB; }
-# 9330 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9408 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2SVARBPROC __glewMultiTexCoord2svARB; }
-# 9331 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9409 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3DARBPROC __glewMultiTexCoord3dARB; }
-# 9332 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9410 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3DVARBPROC __glewMultiTexCoord3dvARB; }
-# 9333 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9411 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3FARBPROC __glewMultiTexCoord3fARB; }
-# 9334 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9412 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3FVARBPROC __glewMultiTexCoord3fvARB; }
-# 9335 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9413 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3IARBPROC __glewMultiTexCoord3iARB; }
-# 9336 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9414 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3IVARBPROC __glewMultiTexCoord3ivARB; }
-# 9337 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9415 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3SARBPROC __glewMultiTexCoord3sARB; }
-# 9338 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9416 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3SVARBPROC __glewMultiTexCoord3svARB; }
-# 9339 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9417 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4DARBPROC __glewMultiTexCoord4dARB; }
-# 9340 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9418 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4DVARBPROC __glewMultiTexCoord4dvARB; }
-# 9341 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9419 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4FARBPROC __glewMultiTexCoord4fARB; }
-# 9342 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9420 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4FVARBPROC __glewMultiTexCoord4fvARB; }
-# 9343 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9421 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4IARBPROC __glewMultiTexCoord4iARB; }
-# 9344 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9422 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4IVARBPROC __glewMultiTexCoord4ivARB; }
-# 9345 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9423 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4SARBPROC __glewMultiTexCoord4sARB; }
-# 9346 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9424 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4SVARBPROC __glewMultiTexCoord4svARB; }
-# 9348 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9426 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINQUERYARBPROC __glewBeginQueryARB; }
-# 9349 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9427 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEQUERIESARBPROC __glewDeleteQueriesARB; }
-# 9350 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9428 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDQUERYARBPROC __glewEndQueryARB; }
-# 9351 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9429 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENQUERIESARBPROC __glewGenQueriesARB; }
-# 9352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9430 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYOBJECTIVARBPROC __glewGetQueryObjectivARB; }
-# 9353 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9431 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYOBJECTUIVARBPROC __glewGetQueryObjectuivARB; }
-# 9354 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9432 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYIVARBPROC __glewGetQueryivARB; }
-# 9355 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9433 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISQUERYARBPROC __glewIsQueryARB; }
-# 9357 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9435 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERFARBPROC __glewPointParameterfARB; }
-# 9358 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9436 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERFVARBPROC __glewPointParameterfvARB; }
-# 9360 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9438 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLATTACHOBJECTARBPROC __glewAttachObjectARB; }
-# 9361 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9439 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPILESHADERARBPROC __glewCompileShaderARB; }
-# 9362 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9440 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCREATEPROGRAMOBJECTARBPROC __glewCreateProgramObjectARB; }
-# 9363 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9441 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCREATESHADEROBJECTARBPROC __glewCreateShaderObjectARB; }
-# 9364 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9442 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEOBJECTARBPROC __glewDeleteObjectARB; }
-# 9365 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9443 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDETACHOBJECTARBPROC __glewDetachObjectARB; }
-# 9366 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9444 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETACTIVEUNIFORMARBPROC __glewGetActiveUniformARB; }
-# 9367 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9445 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETATTACHEDOBJECTSARBPROC __glewGetAttachedObjectsARB; }
-# 9368 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9446 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHANDLEARBPROC __glewGetHandleARB; }
-# 9369 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9447 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETINFOLOGARBPROC __glewGetInfoLogARB; }
-# 9370 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9448 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETOBJECTPARAMETERFVARBPROC __glewGetObjectParameterfvARB; }
-# 9371 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9449 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETOBJECTPARAMETERIVARBPROC __glewGetObjectParameterivARB; }
-# 9372 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9450 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSHADERSOURCEARBPROC __glewGetShaderSourceARB; }
-# 9373 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9451 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMLOCATIONARBPROC __glewGetUniformLocationARB; }
-# 9374 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9452 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMFVARBPROC __glewGetUniformfvARB; }
-# 9375 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9453 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMIVARBPROC __glewGetUniformivARB; }
-# 9376 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9454 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLINKPROGRAMARBPROC __glewLinkProgramARB; }
-# 9377 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9455 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSHADERSOURCEARBPROC __glewShaderSourceARB; }
-# 9378 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9456 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1FARBPROC __glewUniform1fARB; }
-# 9379 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9457 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1FVARBPROC __glewUniform1fvARB; }
-# 9380 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9458 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1IARBPROC __glewUniform1iARB; }
-# 9381 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9459 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1IVARBPROC __glewUniform1ivARB; }
-# 9382 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9460 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2FARBPROC __glewUniform2fARB; }
-# 9383 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9461 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2FVARBPROC __glewUniform2fvARB; }
-# 9384 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9462 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2IARBPROC __glewUniform2iARB; }
-# 9385 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9463 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2IVARBPROC __glewUniform2ivARB; }
-# 9386 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9464 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3FARBPROC __glewUniform3fARB; }
-# 9387 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9465 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3FVARBPROC __glewUniform3fvARB; }
-# 9388 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9466 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3IARBPROC __glewUniform3iARB; }
-# 9389 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9467 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3IVARBPROC __glewUniform3ivARB; }
-# 9390 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9468 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4FARBPROC __glewUniform4fARB; }
-# 9391 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9469 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4FVARBPROC __glewUniform4fvARB; }
-# 9392 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9470 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4IARBPROC __glewUniform4iARB; }
-# 9393 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9471 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4IVARBPROC __glewUniform4ivARB; }
-# 9394 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9472 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX2FVARBPROC __glewUniformMatrix2fvARB; }
-# 9395 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9473 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX3FVARBPROC __glewUniformMatrix3fvARB; }
-# 9396 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9474 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMMATRIX4FVARBPROC __glewUniformMatrix4fvARB; }
-# 9397 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9475 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUSEPROGRAMOBJECTARBPROC __glewUseProgramObjectARB; }
-# 9398 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9476 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVALIDATEPROGRAMARBPROC __glewValidateProgramARB; }
-# 9400 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9478 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE1DARBPROC __glewCompressedTexImage1DARB; }
-# 9401 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9479 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE2DARBPROC __glewCompressedTexImage2DARB; }
-# 9402 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9480 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE3DARBPROC __glewCompressedTexImage3DARB; }
-# 9403 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9481 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC __glewCompressedTexSubImage1DARB; }
-# 9404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9482 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC __glewCompressedTexSubImage2DARB; }
-# 9405 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9483 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC __glewCompressedTexSubImage3DARB; }
-# 9406 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9484 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMPRESSEDTEXIMAGEARBPROC __glewGetCompressedTexImageARB; }
-# 9408 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9486 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLOADTRANSPOSEMATRIXDARBPROC __glewLoadTransposeMatrixdARB; }
-# 9409 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9487 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLOADTRANSPOSEMATRIXFARBPROC __glewLoadTransposeMatrixfARB; }
-# 9410 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9488 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTTRANSPOSEMATRIXDARBPROC __glewMultTransposeMatrixdARB; }
-# 9411 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9489 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTTRANSPOSEMATRIXFARBPROC __glewMultTransposeMatrixfARB; }
-# 9413 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9491 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXBLENDARBPROC __glewVertexBlendARB; }
-# 9414 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9492 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTPOINTERARBPROC __glewWeightPointerARB; }
-# 9415 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9493 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTBVARBPROC __glewWeightbvARB; }
-# 9416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9494 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTDVARBPROC __glewWeightdvARB; }
-# 9417 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9495 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTFVARBPROC __glewWeightfvARB; }
-# 9418 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9496 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTIVARBPROC __glewWeightivARB; }
-# 9419 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9497 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTSVARBPROC __glewWeightsvARB; }
-# 9420 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9498 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTUBVARBPROC __glewWeightubvARB; }
-# 9421 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9499 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTUIVARBPROC __glewWeightuivARB; }
-# 9422 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9500 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWEIGHTUSVARBPROC __glewWeightusvARB; }
-# 9424 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9502 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDBUFFERARBPROC __glewBindBufferARB; }
-# 9425 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9503 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBUFFERDATAARBPROC __glewBufferDataARB; }
-# 9426 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9504 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBUFFERSUBDATAARBPROC __glewBufferSubDataARB; }
-# 9427 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9505 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEBUFFERSARBPROC __glewDeleteBuffersARB; }
-# 9428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9506 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENBUFFERSARBPROC __glewGenBuffersARB; }
-# 9429 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9507 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBUFFERPARAMETERIVARBPROC __glewGetBufferParameterivARB; }
-# 9430 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9508 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBUFFERPOINTERVARBPROC __glewGetBufferPointervARB; }
-# 9431 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9509 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBUFFERSUBDATAARBPROC __glewGetBufferSubDataARB; }
-# 9432 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9510 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISBUFFERARBPROC __glewIsBufferARB; }
-# 9433 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9511 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMAPBUFFERARBPROC __glewMapBufferARB; }
-# 9434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9512 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNMAPBUFFERARBPROC __glewUnmapBufferARB; }
-# 9436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9514 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDPROGRAMARBPROC __glewBindProgramARB; }
-# 9437 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9515 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEPROGRAMSARBPROC __glewDeleteProgramsARB; }
-# 9438 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9516 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDISABLEVERTEXATTRIBARRAYARBPROC __glewDisableVertexAttribArrayARB; }
-# 9439 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9517 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENABLEVERTEXATTRIBARRAYARBPROC __glewEnableVertexAttribArrayARB; }
-# 9440 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9518 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENPROGRAMSARBPROC __glewGenProgramsARB; }
-# 9441 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9519 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMENVPARAMETERDVARBPROC __glewGetProgramEnvParameterdvARB; }
-# 9442 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9520 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMENVPARAMETERFVARBPROC __glewGetProgramEnvParameterfvARB; }
-# 9443 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9521 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMLOCALPARAMETERDVARBPROC __glewGetProgramLocalParameterdvARB; }
-# 9444 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9522 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMLOCALPARAMETERFVARBPROC __glewGetProgramLocalParameterfvARB; }
-# 9445 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9523 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMSTRINGARBPROC __glewGetProgramStringARB; }
-# 9446 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9524 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMIVARBPROC __glewGetProgramivARB; }
-# 9447 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9525 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBPOINTERVARBPROC __glewGetVertexAttribPointervARB; }
-# 9448 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9526 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBDVARBPROC __glewGetVertexAttribdvARB; }
-# 9449 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9527 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBFVARBPROC __glewGetVertexAttribfvARB; }
-# 9450 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9528 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBIVARBPROC __glewGetVertexAttribivARB; }
-# 9451 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9529 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISPROGRAMARBPROC __glewIsProgramARB; }
-# 9452 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9530 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMENVPARAMETER4DARBPROC __glewProgramEnvParameter4dARB; }
-# 9453 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9531 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMENVPARAMETER4DVARBPROC __glewProgramEnvParameter4dvARB; }
-# 9454 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9532 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMENVPARAMETER4FARBPROC __glewProgramEnvParameter4fARB; }
-# 9455 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9533 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMENVPARAMETER4FVARBPROC __glewProgramEnvParameter4fvARB; }
-# 9456 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9534 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMLOCALPARAMETER4DARBPROC __glewProgramLocalParameter4dARB; }
-# 9457 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9535 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMLOCALPARAMETER4DVARBPROC __glewProgramLocalParameter4dvARB; }
-# 9458 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9536 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMLOCALPARAMETER4FARBPROC __glewProgramLocalParameter4fARB; }
-# 9459 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9537 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMLOCALPARAMETER4FVARBPROC __glewProgramLocalParameter4fvARB; }
-# 9460 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9538 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMSTRINGARBPROC __glewProgramStringARB; }
-# 9461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9539 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1DARBPROC __glewVertexAttrib1dARB; }
-# 9462 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9540 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1DVARBPROC __glewVertexAttrib1dvARB; }
-# 9463 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9541 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1FARBPROC __glewVertexAttrib1fARB; }
-# 9464 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9542 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1FVARBPROC __glewVertexAttrib1fvARB; }
-# 9465 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9543 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1SARBPROC __glewVertexAttrib1sARB; }
-# 9466 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9544 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1SVARBPROC __glewVertexAttrib1svARB; }
-# 9467 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9545 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2DARBPROC __glewVertexAttrib2dARB; }
-# 9468 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9546 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2DVARBPROC __glewVertexAttrib2dvARB; }
-# 9469 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9547 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2FARBPROC __glewVertexAttrib2fARB; }
-# 9470 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9548 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2FVARBPROC __glewVertexAttrib2fvARB; }
-# 9471 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9549 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2SARBPROC __glewVertexAttrib2sARB; }
-# 9472 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9550 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2SVARBPROC __glewVertexAttrib2svARB; }
-# 9473 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9551 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3DARBPROC __glewVertexAttrib3dARB; }
-# 9474 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9552 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3DVARBPROC __glewVertexAttrib3dvARB; }
-# 9475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9553 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3FARBPROC __glewVertexAttrib3fARB; }
-# 9476 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9554 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3FVARBPROC __glewVertexAttrib3fvARB; }
-# 9477 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9555 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3SARBPROC __glewVertexAttrib3sARB; }
-# 9478 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9556 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3SVARBPROC __glewVertexAttrib3svARB; }
-# 9479 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9557 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NBVARBPROC __glewVertexAttrib4NbvARB; }
-# 9480 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9558 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NIVARBPROC __glewVertexAttrib4NivARB; }
-# 9481 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9559 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NSVARBPROC __glewVertexAttrib4NsvARB; }
-# 9482 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9560 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUBARBPROC __glewVertexAttrib4NubARB; }
-# 9483 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9561 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUBVARBPROC __glewVertexAttrib4NubvARB; }
-# 9484 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9562 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUIVARBPROC __glewVertexAttrib4NuivARB; }
-# 9485 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9563 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4NUSVARBPROC __glewVertexAttrib4NusvARB; }
-# 9486 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9564 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4BVARBPROC __glewVertexAttrib4bvARB; }
-# 9487 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9565 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4DARBPROC __glewVertexAttrib4dARB; }
-# 9488 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9566 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4DVARBPROC __glewVertexAttrib4dvARB; }
-# 9489 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9567 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4FARBPROC __glewVertexAttrib4fARB; }
-# 9490 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9568 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4FVARBPROC __glewVertexAttrib4fvARB; }
-# 9491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9569 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4IVARBPROC __glewVertexAttrib4ivARB; }
-# 9492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9570 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4SARBPROC __glewVertexAttrib4sARB; }
-# 9493 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9571 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4SVARBPROC __glewVertexAttrib4svARB; }
-# 9494 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9572 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4UBVARBPROC __glewVertexAttrib4ubvARB; }
-# 9495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9573 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4UIVARBPROC __glewVertexAttrib4uivARB; }
-# 9496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9574 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4USVARBPROC __glewVertexAttrib4usvARB; }
-# 9497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9575 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBPOINTERARBPROC __glewVertexAttribPointerARB; }
-# 9499 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9577 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDATTRIBLOCATIONARBPROC __glewBindAttribLocationARB; }
-# 9500 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9578 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETACTIVEATTRIBARBPROC __glewGetActiveAttribARB; }
-# 9501 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9579 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETATTRIBLOCATIONARBPROC __glewGetAttribLocationARB; }
-# 9503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9581 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2DARBPROC __glewWindowPos2dARB; }
-# 9504 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9582 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2DVARBPROC __glewWindowPos2dvARB; }
-# 9505 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9583 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2FARBPROC __glewWindowPos2fARB; }
-# 9506 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9584 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2FVARBPROC __glewWindowPos2fvARB; }
-# 9507 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9585 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2IARBPROC __glewWindowPos2iARB; }
-# 9508 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9586 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2IVARBPROC __glewWindowPos2ivARB; }
-# 9509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9587 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2SARBPROC __glewWindowPos2sARB; }
-# 9510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9588 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2SVARBPROC __glewWindowPos2svARB; }
-# 9511 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9589 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3DARBPROC __glewWindowPos3dARB; }
-# 9512 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9590 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3DVARBPROC __glewWindowPos3dvARB; }
-# 9513 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9591 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3FARBPROC __glewWindowPos3fARB; }
-# 9514 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9592 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3FVARBPROC __glewWindowPos3fvARB; }
-# 9515 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9593 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3IARBPROC __glewWindowPos3iARB; }
-# 9516 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9594 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3IVARBPROC __glewWindowPos3ivARB; }
-# 9517 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9595 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3SARBPROC __glewWindowPos3sARB; }
-# 9518 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9596 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3SVARBPROC __glewWindowPos3svARB; }
-# 9520 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9598 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWBUFFERSATIPROC __glewDrawBuffersATI; }
-# 9522 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9600 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWELEMENTARRAYATIPROC __glewDrawElementArrayATI; }
-# 9523 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9601 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWRANGEELEMENTARRAYATIPROC __glewDrawRangeElementArrayATI; }
-# 9524 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9602 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLELEMENTPOINTERATIPROC __glewElementPointerATI; }
-# 9526 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9604 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTEXBUMPPARAMETERFVATIPROC __glewGetTexBumpParameterfvATI; }
-# 9527 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9605 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTEXBUMPPARAMETERIVATIPROC __glewGetTexBumpParameterivATI; }
-# 9528 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9606 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXBUMPPARAMETERFVATIPROC __glewTexBumpParameterfvATI; }
-# 9529 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9607 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXBUMPPARAMETERIVATIPROC __glewTexBumpParameterivATI; }
-# 9531 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9609 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLALPHAFRAGMENTOP1ATIPROC __glewAlphaFragmentOp1ATI; }
-# 9532 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9610 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLALPHAFRAGMENTOP2ATIPROC __glewAlphaFragmentOp2ATI; }
-# 9533 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9611 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLALPHAFRAGMENTOP3ATIPROC __glewAlphaFragmentOp3ATI; }
-# 9534 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9612 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINFRAGMENTSHADERATIPROC __glewBeginFragmentShaderATI; }
-# 9535 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9613 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDFRAGMENTSHADERATIPROC __glewBindFragmentShaderATI; }
-# 9536 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9614 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORFRAGMENTOP1ATIPROC __glewColorFragmentOp1ATI; }
-# 9537 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9615 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORFRAGMENTOP2ATIPROC __glewColorFragmentOp2ATI; }
-# 9538 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9616 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORFRAGMENTOP3ATIPROC __glewColorFragmentOp3ATI; }
-# 9539 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9617 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEFRAGMENTSHADERATIPROC __glewDeleteFragmentShaderATI; }
-# 9540 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9618 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDFRAGMENTSHADERATIPROC __glewEndFragmentShaderATI; }
-# 9541 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9619 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENFRAGMENTSHADERSATIPROC __glewGenFragmentShadersATI; }
-# 9542 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9620 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPASSTEXCOORDATIPROC __glewPassTexCoordATI; }
-# 9543 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9621 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLEMAPATIPROC __glewSampleMapATI; }
-# 9544 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9622 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSETFRAGMENTSHADERCONSTANTATIPROC __glewSetFragmentShaderConstantATI; }
-# 9546 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9624 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMAPOBJECTBUFFERATIPROC __glewMapObjectBufferATI; }
-# 9547 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9625 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNMAPOBJECTBUFFERATIPROC __glewUnmapObjectBufferATI; }
-# 9549 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9627 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPNTRIANGLESFATIPROC __glPNTrianglewesfATI; }
-# 9550 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9628 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPNTRIANGLESIATIPROC __glPNTrianglewesiATI; }
-# 9552 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9630 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSTENCILFUNCSEPARATEATIPROC __glewStencilFuncSeparateATI; }
-# 9553 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9631 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSTENCILOPSEPARATEATIPROC __glewStencilOpSeparateATI; }
-# 9555 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9633 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLARRAYOBJECTATIPROC __glewArrayObjectATI; }
-# 9556 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9634 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFREEOBJECTBUFFERATIPROC __glewFreeObjectBufferATI; }
-# 9557 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9635 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETARRAYOBJECTFVATIPROC __glewGetArrayObjectfvATI; }
-# 9558 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9636 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETARRAYOBJECTIVATIPROC __glewGetArrayObjectivATI; }
-# 9559 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9637 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETOBJECTBUFFERFVATIPROC __glewGetObjectBufferfvATI; }
-# 9560 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9638 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETOBJECTBUFFERIVATIPROC __glewGetObjectBufferivATI; }
-# 9561 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9639 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARIANTARRAYOBJECTFVATIPROC __glewGetVariantArrayObjectfvATI; }
-# 9562 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9640 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARIANTARRAYOBJECTIVATIPROC __glewGetVariantArrayObjectivATI; }
-# 9563 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9641 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISOBJECTBUFFERATIPROC __glewIsObjectBufferATI; }
-# 9564 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9642 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNEWOBJECTBUFFERATIPROC __glewNewObjectBufferATI; }
-# 9565 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9643 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUPDATEOBJECTBUFFERATIPROC __glewUpdateObjectBufferATI; }
-# 9566 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9644 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTARRAYOBJECTATIPROC __glewVariantArrayObjectATI; }
-# 9568 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9646 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBARRAYOBJECTFVATIPROC __glewGetVertexAttribArrayObjectfvATI; }
-# 9569 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9647 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBARRAYOBJECTIVATIPROC __glewGetVertexAttribArrayObjectivATI; }
-# 9570 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9648 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBARRAYOBJECTATIPROC __glewVertexAttribArrayObjectATI; }
-# 9572 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9650 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC __glewClientActiveVertexStreamATI; }
-# 9573 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9651 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3BATIPROC __glewNormalStream3bATI; }
-# 9574 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9652 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3BVATIPROC __glewNormalStream3bvATI; }
-# 9575 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9653 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3DATIPROC __glewNormalStream3dATI; }
-# 9576 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9654 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3DVATIPROC __glewNormalStream3dvATI; }
-# 9577 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9655 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3FATIPROC __glewNormalStream3fATI; }
-# 9578 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9656 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3FVATIPROC __glewNormalStream3fvATI; }
-# 9579 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9657 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3IATIPROC __glewNormalStream3iATI; }
-# 9580 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9658 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3IVATIPROC __glewNormalStream3ivATI; }
-# 9581 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9659 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3SATIPROC __glewNormalStream3sATI; }
-# 9582 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9660 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALSTREAM3SVATIPROC __glewNormalStream3svATI; }
-# 9583 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9661 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXBLENDENVFATIPROC __glewVertexBlendEnvfATI; }
-# 9584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9662 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXBLENDENVIATIPROC __glewVertexBlendEnviATI; }
-# 9585 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9663 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2DATIPROC __glewVertexStream2dATI; }
-# 9586 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9664 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2DVATIPROC __glewVertexStream2dvATI; }
-# 9587 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9665 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2FATIPROC __glewVertexStream2fATI; }
-# 9588 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9666 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2FVATIPROC __glewVertexStream2fvATI; }
-# 9589 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9667 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2IATIPROC __glewVertexStream2iATI; }
-# 9590 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9668 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2IVATIPROC __glewVertexStream2ivATI; }
-# 9591 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9669 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2SATIPROC __glewVertexStream2sATI; }
-# 9592 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9670 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM2SVATIPROC __glewVertexStream2svATI; }
-# 9593 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9671 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3DATIPROC __glewVertexStream3dATI; }
-# 9594 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9672 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3DVATIPROC __glewVertexStream3dvATI; }
-# 9595 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9673 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3FATIPROC __glewVertexStream3fATI; }
-# 9596 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9674 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3FVATIPROC __glewVertexStream3fvATI; }
-# 9597 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9675 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3IATIPROC __glewVertexStream3iATI; }
-# 9598 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9676 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3IVATIPROC __glewVertexStream3ivATI; }
-# 9599 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9677 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3SATIPROC __glewVertexStream3sATI; }
-# 9600 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9678 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM3SVATIPROC __glewVertexStream3svATI; }
-# 9601 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9679 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4DATIPROC __glewVertexStream4dATI; }
-# 9602 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9680 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4DVATIPROC __glewVertexStream4dvATI; }
-# 9603 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9681 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4FATIPROC __glewVertexStream4fATI; }
-# 9604 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9682 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4FVATIPROC __glewVertexStream4fvATI; }
-# 9605 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9683 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4IATIPROC __glewVertexStream4iATI; }
-# 9606 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9684 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4IVATIPROC __glewVertexStream4ivATI; }
-# 9607 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9685 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4SATIPROC __glewVertexStream4sATI; }
-# 9608 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9686 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXSTREAM4SVATIPROC __glewVertexStream4svATI; }
-# 9610 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9688 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMBUFFERSIZEEXTPROC __glewGetUniformBufferSizeEXT; }
-# 9611 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9689 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMOFFSETEXTPROC __glewGetUniformOffsetEXT; }
-# 9612 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9690 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORMBUFFEREXTPROC __glewUniformBufferEXT; }
-# 9614 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9692 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDCOLOREXTPROC __glewBlendColorEXT; }
-# 9616 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9694 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDEQUATIONSEPARATEEXTPROC __glewBlendEquationSeparateEXT; }
-# 9618 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9696 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDFUNCSEPARATEEXTPROC __glewBlendFuncSeparateEXT; }
-# 9620 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9698 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLENDEQUATIONEXTPROC __glewBlendEquationEXT; }
-# 9622 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9700 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORSUBTABLEEXTPROC __glewColorSubTableEXT; }
-# 9623 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9701 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCOLORSUBTABLEEXTPROC __glewCopyColorSubTableEXT; }
-# 9625 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9703 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLOCKARRAYSEXTPROC __glewLockArraysEXT; }
-# 9626 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9704 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNLOCKARRAYSEXTPROC __glewUnlockArraysEXT; }
-# 9628 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9706 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONFILTER1DEXTPROC __glewConvolutionFilter1DEXT; }
-# 9629 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9707 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONFILTER2DEXTPROC __glewConvolutionFilter2DEXT; }
-# 9630 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9708 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERFEXTPROC __glewConvolutionParameterfEXT; }
-# 9631 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9709 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERFVEXTPROC __glewConvolutionParameterfvEXT; }
-# 9632 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9710 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERIEXTPROC __glewConvolutionParameteriEXT; }
-# 9633 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9711 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCONVOLUTIONPARAMETERIVEXTPROC __glewConvolutionParameterivEXT; }
-# 9634 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9712 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCONVOLUTIONFILTER1DEXTPROC __glewCopyConvolutionFilter1DEXT; }
-# 9635 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9713 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCONVOLUTIONFILTER2DEXTPROC __glewCopyConvolutionFilter2DEXT; }
-# 9636 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9714 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCONVOLUTIONFILTEREXTPROC __glewGetConvolutionFilterEXT; }
-# 9637 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9715 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC __glewGetConvolutionParameterfvEXT; }
-# 9638 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9716 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC __glewGetConvolutionParameterivEXT; }
-# 9639 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9717 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSEPARABLEFILTEREXTPROC __glewGetSeparableFilterEXT; }
-# 9640 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9718 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSEPARABLEFILTER2DEXTPROC __glewSeparableFilter2DEXT; }
-# 9642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9720 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINORMALPOINTEREXTPROC __glewBinormalPointerEXT; }
-# 9643 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9721 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTANGENTPOINTEREXTPROC __glewTangentPointerEXT; }
-# 9645 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9723 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXIMAGE1DEXTPROC __glewCopyTexImage1DEXT; }
-# 9646 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9724 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXIMAGE2DEXTPROC __glewCopyTexImage2DEXT; }
-# 9647 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9725 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXSUBIMAGE1DEXTPROC __glewCopyTexSubImage1DEXT; }
-# 9648 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9726 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXSUBIMAGE2DEXTPROC __glewCopyTexSubImage2DEXT; }
-# 9649 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9727 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXSUBIMAGE3DEXTPROC __glewCopyTexSubImage3DEXT; }
-# 9651 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9729 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCULLPARAMETERDVEXTPROC __glewCullParameterdvEXT; }
-# 9652 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9730 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCULLPARAMETERFVEXTPROC __glewCullParameterfvEXT; }
-# 9654 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9732 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDEPTHBOUNDSEXTPROC __glewDepthBoundsEXT; }
-# 9656 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9734 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORMASKINDEXEDEXTPROC __glewColorMaskIndexedEXT; }
-# 9657 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9735 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDISABLEINDEXEDEXTPROC __glewDisableIndexedEXT; }
-# 9658 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9736 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENABLEINDEXEDEXTPROC __glewEnableIndexedEXT; }
-# 9659 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9737 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETBOOLEANINDEXEDVEXTPROC __glewGetBooleanIndexedvEXT; }
-# 9660 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9738 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETINTEGERINDEXEDVEXTPROC __glewGetIntegerIndexedvEXT; }
-# 9661 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9739 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISENABLEDINDEXEDEXTPROC __glewIsEnabledIndexedEXT; }
-# 9663 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9741 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWARRAYSINSTANCEDEXTPROC __glewDrawArraysInstancedEXT; }
-# 9664 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9742 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWELEMENTSINSTANCEDEXTPROC __glewDrawElementsInstancedEXT; }
-# 9666 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9744 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWRANGEELEMENTSEXTPROC __glewDrawRangeElementsEXT; }
-# 9668 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9746 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDPOINTEREXTPROC __glewFogCoordPointerEXT; }
-# 9669 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9747 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDDEXTPROC __glewFogCoorddEXT; }
-# 9670 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9748 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDDVEXTPROC __glewFogCoorddvEXT; }
-# 9671 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9749 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDFEXTPROC __glewFogCoordfEXT; }
-# 9672 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9750 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDFVEXTPROC __glewFogCoordfvEXT; }
-# 9674 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9752 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTCOLORMATERIALEXTPROC __glewFragmentColorMaterialEXT; }
-# 9675 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9753 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELFEXTPROC __glewFragmentLightModelfEXT; }
-# 9676 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9754 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELFVEXTPROC __glewFragmentLightModelfvEXT; }
-# 9677 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9755 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELIEXTPROC __glewFragmentLightModeliEXT; }
-# 9678 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9756 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELIVEXTPROC __glewFragmentLightModelivEXT; }
-# 9679 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9757 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTFEXTPROC __glewFragmentLightfEXT; }
-# 9680 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9758 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTFVEXTPROC __glewFragmentLightfvEXT; }
-# 9681 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9759 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTIEXTPROC __glewFragmentLightiEXT; }
-# 9682 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9760 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTIVEXTPROC __glewFragmentLightivEXT; }
-# 9683 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9761 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALFEXTPROC __glewFragmentMaterialfEXT; }
-# 9684 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9762 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALFVEXTPROC __glewFragmentMaterialfvEXT; }
-# 9685 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9763 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALIEXTPROC __glewFragmentMaterialiEXT; }
-# 9686 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9764 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALIVEXTPROC __glewFragmentMaterialivEXT; }
-# 9687 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9765 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTLIGHTFVEXTPROC __glewGetFragmentLightfvEXT; }
-# 9688 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9766 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTLIGHTIVEXTPROC __glewGetFragmentLightivEXT; }
-# 9689 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9767 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTMATERIALFVEXTPROC __glewGetFragmentMaterialfvEXT; }
-# 9690 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9768 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTMATERIALIVEXTPROC __glewGetFragmentMaterialivEXT; }
-# 9691 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9769 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLIGHTENVIEXTPROC __glewLightEnviEXT; }
-# 9693 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9771 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBLITFRAMEBUFFEREXTPROC __glewBlitFramebufferEXT; }
-# 9695 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9773 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC __glewRenderbufferStorageMultisampleEXT; }
-# 9697 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9775 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDFRAMEBUFFEREXTPROC __glewBindFramebufferEXT; }
-# 9698 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9776 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDRENDERBUFFEREXTPROC __glewBindRenderbufferEXT; }
-# 9699 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9777 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC __glewCheckFramebufferStatusEXT; }
-# 9700 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9778 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEFRAMEBUFFERSEXTPROC __glewDeleteFramebuffersEXT; }
-# 9701 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9779 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETERENDERBUFFERSEXTPROC __glewDeleteRenderbuffersEXT; }
-# 9702 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9780 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC __glewFramebufferRenderbufferEXT; }
-# 9703 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9781 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERTEXTURE1DEXTPROC __glewFramebufferTexture1DEXT; }
-# 9704 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9782 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERTEXTURE2DEXTPROC __glewFramebufferTexture2DEXT; }
-# 9705 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9783 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERTEXTURE3DEXTPROC __glewFramebufferTexture3DEXT; }
-# 9706 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9784 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENFRAMEBUFFERSEXTPROC __glewGenFramebuffersEXT; }
-# 9707 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9785 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENRENDERBUFFERSEXTPROC __glewGenRenderbuffersEXT; }
-# 9708 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9786 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENERATEMIPMAPEXTPROC __glewGenerateMipmapEXT; }
-# 9709 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9787 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC __glewGetFramebufferAttachmentParameterivEXT; }
-# 9710 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9788 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC __glewGetRenderbufferParameterivEXT; }
-# 9711 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9789 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISFRAMEBUFFEREXTPROC __glewIsFramebufferEXT; }
-# 9712 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9790 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISRENDERBUFFEREXTPROC __glewIsRenderbufferEXT; }
-# 9713 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9791 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRENDERBUFFERSTORAGEEXTPROC __glewRenderbufferStorageEXT; }
-# 9715 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9793 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERTEXTUREEXTPROC __glewFramebufferTextureEXT; }
-# 9716 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9794 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERTEXTUREFACEEXTPROC __glewFramebufferTextureFaceEXT; }
-# 9717 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9795 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEBUFFERTEXTURELAYEREXTPROC __glewFramebufferTextureLayerEXT; }
-# 9718 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9796 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETERIEXTPROC __glewProgramParameteriEXT; }
-# 9720 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9798 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMENVPARAMETERS4FVEXTPROC __glewProgramEnvParameters4fvEXT; }
-# 9721 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9799 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMLOCALPARAMETERS4FVEXTPROC __glewProgramLocalParameters4fvEXT; }
-# 9723 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9801 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDFRAGDATALOCATIONEXTPROC __glewBindFragDataLocationEXT; }
-# 9724 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9802 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGDATALOCATIONEXTPROC __glewGetFragDataLocationEXT; }
-# 9725 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9803 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETUNIFORMUIVEXTPROC __glewGetUniformuivEXT; }
-# 9726 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9804 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBIIVEXTPROC __glewGetVertexAttribIivEXT; }
-# 9727 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9805 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBIUIVEXTPROC __glewGetVertexAttribIuivEXT; }
-# 9728 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9806 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1UIEXTPROC __glewUniform1uiEXT; }
-# 9729 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9807 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM1UIVEXTPROC __glewUniform1uivEXT; }
-# 9730 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9808 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2UIEXTPROC __glewUniform2uiEXT; }
-# 9731 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9809 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM2UIVEXTPROC __glewUniform2uivEXT; }
-# 9732 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9810 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3UIEXTPROC __glewUniform3uiEXT; }
-# 9733 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9811 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM3UIVEXTPROC __glewUniform3uivEXT; }
-# 9734 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9812 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4UIEXTPROC __glewUniform4uiEXT; }
-# 9735 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9813 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLUNIFORM4UIVEXTPROC __glewUniform4uivEXT; }
-# 9736 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9814 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI1IEXTPROC __glewVertexAttribI1iEXT; }
-# 9737 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9815 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI1IVEXTPROC __glewVertexAttribI1ivEXT; }
-# 9738 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9816 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI1UIEXTPROC __glewVertexAttribI1uiEXT; }
-# 9739 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9817 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI1UIVEXTPROC __glewVertexAttribI1uivEXT; }
-# 9740 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9818 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI2IEXTPROC __glewVertexAttribI2iEXT; }
-# 9741 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9819 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI2IVEXTPROC __glewVertexAttribI2ivEXT; }
-# 9742 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9820 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI2UIEXTPROC __glewVertexAttribI2uiEXT; }
-# 9743 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9821 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI2UIVEXTPROC __glewVertexAttribI2uivEXT; }
-# 9744 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9822 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI3IEXTPROC __glewVertexAttribI3iEXT; }
-# 9745 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9823 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI3IVEXTPROC __glewVertexAttribI3ivEXT; }
-# 9746 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9824 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI3UIEXTPROC __glewVertexAttribI3uiEXT; }
-# 9747 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9825 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI3UIVEXTPROC __glewVertexAttribI3uivEXT; }
-# 9748 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9826 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4BVEXTPROC __glewVertexAttribI4bvEXT; }
-# 9749 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9827 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4IEXTPROC __glewVertexAttribI4iEXT; }
-# 9750 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9828 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4IVEXTPROC __glewVertexAttribI4ivEXT; }
-# 9751 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9829 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4SVEXTPROC __glewVertexAttribI4svEXT; }
-# 9752 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9830 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4UBVEXTPROC __glewVertexAttribI4ubvEXT; }
-# 9753 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9831 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4UIEXTPROC __glewVertexAttribI4uiEXT; }
-# 9754 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9832 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4UIVEXTPROC __glewVertexAttribI4uivEXT; }
-# 9755 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9833 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBI4USVEXTPROC __glewVertexAttribI4usvEXT; }
-# 9756 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9834 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBIPOINTEREXTPROC __glewVertexAttribIPointerEXT; }
-# 9758 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9836 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHISTOGRAMEXTPROC __glewGetHistogramEXT; }
-# 9759 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9837 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHISTOGRAMPARAMETERFVEXTPROC __glewGetHistogramParameterfvEXT; }
-# 9760 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9838 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETHISTOGRAMPARAMETERIVEXTPROC __glewGetHistogramParameterivEXT; }
-# 9761 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9839 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMINMAXEXTPROC __glewGetMinmaxEXT; }
-# 9762 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9840 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMINMAXPARAMETERFVEXTPROC __glewGetMinmaxParameterfvEXT; }
-# 9763 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9841 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMINMAXPARAMETERIVEXTPROC __glewGetMinmaxParameterivEXT; }
-# 9764 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9842 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLHISTOGRAMEXTPROC __glewHistogramEXT; }
-# 9765 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9843 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMINMAXEXTPROC __glewMinmaxEXT; }
-# 9766 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9844 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRESETHISTOGRAMEXTPROC __glewResetHistogramEXT; }
-# 9767 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9845 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRESETMINMAXEXTPROC __glewResetMinmaxEXT; }
-# 9769 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9847 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLINDEXFUNCEXTPROC __glewIndexFuncEXT; }
-# 9771 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9849 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLINDEXMATERIALEXTPROC __glewIndexMaterialEXT; }
-# 9773 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9851 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLAPPLYTEXTUREEXTPROC __glewApplyTextureEXT; }
-# 9774 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9852 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXTURELIGHTEXTPROC __glewTextureLightEXT; }
-# 9775 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9853 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXTUREMATERIALEXTPROC __glewTextureMaterialEXT; }
-# 9777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9855 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIDRAWARRAYSEXTPROC __glewMultiDrawArraysEXT; }
-# 9778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9856 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIDRAWELEMENTSEXTPROC __glewMultiDrawElementsEXT; }
-# 9780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9858 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLEMASKEXTPROC __glewSampleMaskEXT; }
-# 9781 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9859 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLEPATTERNEXTPROC __glewSamplePatternEXT; }
-# 9783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9861 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLEEXTPROC __glewColorTableEXT; }
-# 9784 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9862 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEEXTPROC __glewGetColorTableEXT; }
-# 9785 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9863 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPARAMETERFVEXTPROC __glewGetColorTableParameterfvEXT; }
-# 9786 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9864 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPARAMETERIVEXTPROC __glewGetColorTableParameterivEXT; }
-# 9788 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9866 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPIXELTRANSFORMPARAMETERFVEXTPROC __glewGetPixelTransformParameterfvEXT; }
-# 9789 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9867 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPIXELTRANSFORMPARAMETERIVEXTPROC __glewGetPixelTransformParameterivEXT; }
-# 9790 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9868 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPIXELTRANSFORMPARAMETERFEXTPROC __glewPixelTransformParameterfEXT; }
-# 9791 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9869 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC __glewPixelTransformParameterfvEXT; }
-# 9792 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9870 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPIXELTRANSFORMPARAMETERIEXTPROC __glewPixelTransformParameteriEXT; }
-# 9793 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9871 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC __glewPixelTransformParameterivEXT; }
-# 9795 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9873 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERFEXTPROC __glewPointParameterfEXT; }
-# 9796 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9874 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERFVEXTPROC __glewPointParameterfvEXT; }
-# 9798 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9876 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOLYGONOFFSETEXTPROC __glewPolygonOffsetEXT; }
-# 9800 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9878 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINSCENEEXTPROC __glewBeginSceneEXT; }
-# 9801 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9879 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDSCENEEXTPROC __glewEndSceneEXT; }
-# 9803 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9881 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3BEXTPROC __glewSecondaryColor3bEXT; }
-# 9804 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9882 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3BVEXTPROC __glewSecondaryColor3bvEXT; }
-# 9805 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9883 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3DEXTPROC __glewSecondaryColor3dEXT; }
-# 9806 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9884 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3DVEXTPROC __glewSecondaryColor3dvEXT; }
-# 9807 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9885 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3FEXTPROC __glewSecondaryColor3fEXT; }
-# 9808 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9886 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3FVEXTPROC __glewSecondaryColor3fvEXT; }
-# 9809 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9887 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3IEXTPROC __glewSecondaryColor3iEXT; }
-# 9810 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9888 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3IVEXTPROC __glewSecondaryColor3ivEXT; }
-# 9811 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9889 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3SEXTPROC __glewSecondaryColor3sEXT; }
-# 9812 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9890 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3SVEXTPROC __glewSecondaryColor3svEXT; }
-# 9813 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9891 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UBEXTPROC __glewSecondaryColor3ubEXT; }
-# 9814 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9892 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UBVEXTPROC __glewSecondaryColor3ubvEXT; }
-# 9815 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9893 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UIEXTPROC __glewSecondaryColor3uiEXT; }
-# 9816 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9894 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3UIVEXTPROC __glewSecondaryColor3uivEXT; }
-# 9817 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9895 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3USEXTPROC __glewSecondaryColor3usEXT; }
-# 9818 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9896 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3USVEXTPROC __glewSecondaryColor3usvEXT; }
-# 9819 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9897 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLORPOINTEREXTPROC __glewSecondaryColorPointerEXT; }
-# 9821 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9899 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLACTIVESTENCILFACEEXTPROC __glewActiveStencilFaceEXT; }
-# 9823 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9901 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSUBIMAGE1DEXTPROC __glewTexSubImage1DEXT; }
-# 9824 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9902 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSUBIMAGE2DEXTPROC __glewTexSubImage2DEXT; }
-# 9825 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9903 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSUBIMAGE3DEXTPROC __glewTexSubImage3DEXT; }
-# 9827 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9905 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXIMAGE3DEXTPROC __glewTexImage3DEXT; }
-# 9829 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9907 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXBUFFEREXTPROC __glewTexBufferEXT; }
-# 9831 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9909 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLEARCOLORIIEXTPROC __glewClearColorIiEXT; }
-# 9832 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9910 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLEARCOLORIUIEXTPROC __glewClearColorIuiEXT; }
-# 9833 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9911 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTEXPARAMETERIIVEXTPROC __glewGetTexParameterIivEXT; }
-# 9834 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9912 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTEXPARAMETERIUIVEXTPROC __glewGetTexParameterIuivEXT; }
-# 9835 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9913 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXPARAMETERIIVEXTPROC __glewTexParameterIivEXT; }
-# 9836 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9914 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXPARAMETERIUIVEXTPROC __glewTexParameterIuivEXT; }
-# 9838 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9916 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLARETEXTURESRESIDENTEXTPROC __glewAreTexturesResidentEXT; }
-# 9839 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9917 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDTEXTUREEXTPROC __glewBindTextureEXT; }
-# 9840 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9918 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETETEXTURESEXTPROC __glewDeleteTexturesEXT; }
-# 9841 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9919 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENTEXTURESEXTPROC __glewGenTexturesEXT; }
-# 9842 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9920 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISTEXTUREEXTPROC __glewIsTextureEXT; }
-# 9843 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9921 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPRIORITIZETEXTURESEXTPROC __glewPrioritizeTexturesEXT; }
-# 9845 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9923 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXTURENORMALEXTPROC __glewTextureNormalEXT; }
-# 9847 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9925 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYOBJECTI64VEXTPROC __glewGetQueryObjecti64vEXT; }
-# 9848 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9926 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETQUERYOBJECTUI64VEXTPROC __glewGetQueryObjectui64vEXT; }
-# 9850 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9928 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLARRAYELEMENTEXTPROC __glewArrayElementEXT; }
-# 9851 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9929 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORPOINTEREXTPROC __glewColorPointerEXT; }
-# 9852 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9930 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWARRAYSEXTPROC __glewDrawArraysEXT; }
-# 9853 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9931 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLEDGEFLAGPOINTEREXTPROC __glewEdgeFlagPointerEXT; }
-# 9854 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9932 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPOINTERVEXTPROC __glewGetPointervEXT; }
-# 9855 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9933 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLINDEXPOINTEREXTPROC __glewIndexPointerEXT; }
-# 9856 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9934 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALPOINTEREXTPROC __glewNormalPointerEXT; }
-# 9857 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9935 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORDPOINTEREXTPROC __glewTexCoordPointerEXT; }
-# 9858 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9936 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXPOINTEREXTPROC __glewVertexPointerEXT; }
-# 9860 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9938 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINVERTEXSHADEREXTPROC __glewBeginVertexShaderEXT; }
-# 9861 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9939 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDLIGHTPARAMETEREXTPROC __glewBindLightParameterEXT; }
-# 9862 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9940 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDMATERIALPARAMETEREXTPROC __glewBindMaterialParameterEXT; }
-# 9863 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9941 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDPARAMETEREXTPROC __glewBindParameterEXT; }
-# 9864 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9942 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDTEXGENPARAMETEREXTPROC __glewBindTexGenParameterEXT; }
-# 9865 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9943 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDTEXTUREUNITPARAMETEREXTPROC __glewBindTextureUnitParameterEXT; }
-# 9866 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9944 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDVERTEXSHADEREXTPROC __glewBindVertexShaderEXT; }
-# 9867 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9945 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEVERTEXSHADEREXTPROC __glewDeleteVertexShaderEXT; }
-# 9868 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9946 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDISABLEVARIANTCLIENTSTATEEXTPROC __glewDisableVariantClientStateEXT; }
-# 9869 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9947 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENABLEVARIANTCLIENTSTATEEXTPROC __glewEnableVariantClientStateEXT; }
-# 9870 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9948 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDVERTEXSHADEREXTPROC __glewEndVertexShaderEXT; }
-# 9871 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9949 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLEXTRACTCOMPONENTEXTPROC __glewExtractComponentEXT; }
-# 9872 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9950 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENSYMBOLSEXTPROC __glewGenSymbolsEXT; }
-# 9873 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9951 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENVERTEXSHADERSEXTPROC __glewGenVertexShadersEXT; }
-# 9874 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9952 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETINVARIANTBOOLEANVEXTPROC __glewGetInvariantBooleanvEXT; }
-# 9875 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9953 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETINVARIANTFLOATVEXTPROC __glewGetInvariantFloatvEXT; }
-# 9876 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9954 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETINVARIANTINTEGERVEXTPROC __glewGetInvariantIntegervEXT; }
-# 9877 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9955 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETLOCALCONSTANTBOOLEANVEXTPROC __glewGetLocalConstantBooleanvEXT; }
-# 9878 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9956 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETLOCALCONSTANTFLOATVEXTPROC __glewGetLocalConstantFloatvEXT; }
-# 9879 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9957 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETLOCALCONSTANTINTEGERVEXTPROC __glewGetLocalConstantIntegervEXT; }
-# 9880 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9958 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARIANTBOOLEANVEXTPROC __glewGetVariantBooleanvEXT; }
-# 9881 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9959 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARIANTFLOATVEXTPROC __glewGetVariantFloatvEXT; }
-# 9882 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9960 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARIANTINTEGERVEXTPROC __glewGetVariantIntegervEXT; }
-# 9883 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9961 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARIANTPOINTERVEXTPROC __glewGetVariantPointervEXT; }
-# 9884 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9962 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLINSERTCOMPONENTEXTPROC __glewInsertComponentEXT; }
-# 9885 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9963 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISVARIANTENABLEDEXTPROC __glewIsVariantEnabledEXT; }
-# 9886 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9964 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSETINVARIANTEXTPROC __glewSetInvariantEXT; }
-# 9887 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9965 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSETLOCALCONSTANTEXTPROC __glewSetLocalConstantEXT; }
-# 9888 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9966 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSHADEROP1EXTPROC __glewShaderOp1EXT; }
-# 9889 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9967 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSHADEROP2EXTPROC __glewShaderOp2EXT; }
-# 9890 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9968 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSHADEROP3EXTPROC __glewShaderOp3EXT; }
-# 9891 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9969 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSWIZZLEEXTPROC __glewSwizzleEXT; }
-# 9892 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9970 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTPOINTEREXTPROC __glewVariantPointerEXT; }
-# 9893 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9971 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTBVEXTPROC __glewVariantbvEXT; }
-# 9894 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9972 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTDVEXTPROC __glewVariantdvEXT; }
-# 9895 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9973 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTFVEXTPROC __glewVariantfvEXT; }
-# 9896 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9974 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTIVEXTPROC __glewVariantivEXT; }
-# 9897 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9975 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTSVEXTPROC __glewVariantsvEXT; }
-# 9898 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9976 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTUBVEXTPROC __glewVariantubvEXT; }
-# 9899 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9977 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTUIVEXTPROC __glewVariantuivEXT; }
-# 9900 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9978 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVARIANTUSVEXTPROC __glewVariantusvEXT; }
-# 9901 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9979 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWRITEMASKEXTPROC __glewWriteMaskEXT; }
-# 9903 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9981 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXWEIGHTPOINTEREXTPROC __glewVertexWeightPointerEXT; }
-# 9904 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9982 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXWEIGHTFEXTPROC __glewVertexWeightfEXT; }
-# 9905 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9983 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXWEIGHTFVEXTPROC __glewVertexWeightfvEXT; }
-# 9907 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9985 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLFRAMETERMINATORGREMEDYPROC __glewFrameTerminatorGREMEDY; }
+# 9987 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSTRINGMARKERGREMEDYPROC __glewStringMarkerGREMEDY; }
-# 9909 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9989 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC __glewGetImageTransformParameterfvHP; }
-# 9910 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9990 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC __glewGetImageTransformParameterivHP; }
-# 9911 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9991 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLIMAGETRANSFORMPARAMETERFHPPROC __glewImageTransformParameterfHP; }
-# 9912 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9992 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLIMAGETRANSFORMPARAMETERFVHPPROC __glewImageTransformParameterfvHP; }
-# 9913 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9993 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLIMAGETRANSFORMPARAMETERIHPPROC __glewImageTransformParameteriHP; }
-# 9914 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9994 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLIMAGETRANSFORMPARAMETERIVHPPROC __glewImageTransformParameterivHP; }
-# 9916 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9996 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIMODEDRAWARRAYSIBMPROC __glewMultiModeDrawArraysIBM; }
-# 9917 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9997 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTIMODEDRAWELEMENTSIBMPROC __glewMultiModeDrawElementsIBM; }
-# 9919 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 9999 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORPOINTERLISTIBMPROC __glewColorPointerListIBM; }
-# 9920 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10000 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLEDGEFLAGPOINTERLISTIBMPROC __glewEdgeFlagPointerListIBM; }
-# 9921 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10001 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDPOINTERLISTIBMPROC __glewFogCoordPointerListIBM; }
-# 9922 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10002 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLINDEXPOINTERLISTIBMPROC __glewIndexPointerListIBM; }
-# 9923 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10003 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALPOINTERLISTIBMPROC __glewNormalPointerListIBM; }
-# 9924 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10004 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLORPOINTERLISTIBMPROC __glewSecondaryColorPointerListIBM; }
-# 9925 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10005 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORDPOINTERLISTIBMPROC __glewTexCoordPointerListIBM; }
-# 9926 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10006 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXPOINTERLISTIBMPROC __glewVertexPointerListIBM; }
-# 9928 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10008 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORPOINTERVINTELPROC __glewColorPointervINTEL; }
-# 9929 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10009 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMALPOINTERVINTELPROC __glewNormalPointervINTEL; }
-# 9930 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10010 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORDPOINTERVINTELPROC __glewTexCoordPointervINTEL; }
-# 9931 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10011 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXPOINTERVINTELPROC __glewVertexPointervINTEL; }
-# 9933 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10013 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSCISSORFUNCINTELPROC __glewTexScissorFuncINTEL; }
-# 9934 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10014 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSCISSORINTELPROC __glewTexScissorINTEL; }
-# 9936 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10016 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBUFFERREGIONENABLEDEXTPROC __glewBufferRegionEnabledEXT; }
-# 9937 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10017 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEBUFFERREGIONEXTPROC __glewDeleteBufferRegionEXT; }
-# 9938 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10018 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDRAWBUFFERREGIONEXTPROC __glewDrawBufferRegionEXT; }
-# 9939 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10019 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNEWBUFFERREGIONEXTPROC __glewNewBufferRegionEXT; }
-# 9940 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10020 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREADBUFFERREGIONEXTPROC __glewReadBufferRegionEXT; }
-# 9942 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10022 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRESIZEBUFFERSMESAPROC __glewResizeBuffersMESA; }
-# 9944 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10024 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2DMESAPROC __glewWindowPos2dMESA; }
-# 9945 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10025 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2DVMESAPROC __glewWindowPos2dvMESA; }
-# 9946 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10026 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2FMESAPROC __glewWindowPos2fMESA; }
-# 9947 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10027 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2FVMESAPROC __glewWindowPos2fvMESA; }
-# 9948 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10028 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2IMESAPROC __glewWindowPos2iMESA; }
-# 9949 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10029 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2IVMESAPROC __glewWindowPos2ivMESA; }
-# 9950 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10030 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2SMESAPROC __glewWindowPos2sMESA; }
-# 9951 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10031 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS2SVMESAPROC __glewWindowPos2svMESA; }
-# 9952 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10032 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3DMESAPROC __glewWindowPos3dMESA; }
-# 9953 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10033 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3DVMESAPROC __glewWindowPos3dvMESA; }
-# 9954 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10034 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3FMESAPROC __glewWindowPos3fMESA; }
-# 9955 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10035 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3FVMESAPROC __glewWindowPos3fvMESA; }
-# 9956 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10036 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3IMESAPROC __glewWindowPos3iMESA; }
-# 9957 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10037 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3IVMESAPROC __glewWindowPos3ivMESA; }
-# 9958 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10038 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3SMESAPROC __glewWindowPos3sMESA; }
-# 9959 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10039 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS3SVMESAPROC __glewWindowPos3svMESA; }
-# 9960 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10040 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4DMESAPROC __glewWindowPos4dMESA; }
-# 9961 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10041 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4DVMESAPROC __glewWindowPos4dvMESA; }
-# 9962 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10042 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4FMESAPROC __glewWindowPos4fMESA; }
-# 9963 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10043 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4FVMESAPROC __glewWindowPos4fvMESA; }
-# 9964 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10044 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4IMESAPROC __glewWindowPos4iMESA; }
-# 9965 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10045 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4IVMESAPROC __glewWindowPos4ivMESA; }
-# 9966 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10046 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4SMESAPROC __glewWindowPos4sMESA; }
-# 9967 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10047 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLWINDOWPOS4SVMESAPROC __glewWindowPos4svMESA; }
-# 9969 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10049 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLEARDEPTHDNVPROC __glewClearDepthdNV; }
-# 9970 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10050 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDEPTHBOUNDSDNVPROC __glewDepthBoundsdNV; }
-# 9971 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10051 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDEPTHRANGEDNVPROC __glewDepthRangedNV; }
-# 9973 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10053 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLEVALMAPSNVPROC __glewEvalMapsNV; }
-# 9974 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10054 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMAPATTRIBPARAMETERFVNVPROC __glewGetMapAttribParameterfvNV; }
-# 9975 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10055 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMAPATTRIBPARAMETERIVNVPROC __glewGetMapAttribParameterivNV; }
-# 9976 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10056 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMAPCONTROLPOINTSNVPROC __glewGetMapControlPointsNV; }
-# 9977 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10057 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMAPPARAMETERFVNVPROC __glewGetMapParameterfvNV; }
-# 9978 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10058 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETMAPPARAMETERIVNVPROC __glewGetMapParameterivNV; }
-# 9979 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10059 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMAPCONTROLPOINTSNVPROC __glewMapControlPointsNV; }
-# 9980 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10060 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMAPPARAMETERFVNVPROC __glewMapParameterfvNV; }
-# 9981 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10061 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMAPPARAMETERIVNVPROC __glewMapParameterivNV; }
-# 9983 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10063 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEFENCESNVPROC __glewDeleteFencesNV; }
-# 9984 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10064 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFINISHFENCENVPROC __glewFinishFenceNV; }
-# 9985 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10065 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENFENCESNVPROC __glewGenFencesNV; }
-# 9986 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10066 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFENCEIVNVPROC __glewGetFenceivNV; }
-# 9987 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10067 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISFENCENVPROC __glewIsFenceNV; }
-# 9988 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10068 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSETFENCENVPROC __glewSetFenceNV; }
-# 9989 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10069 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTESTFENCENVPROC __glewTestFenceNV; }
-# 9991 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10071 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC __glewGetProgramNamedParameterdvNV; }
-# 9992 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10072 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC __glewGetProgramNamedParameterfvNV; }
-# 9993 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10073 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMNAMEDPARAMETER4DNVPROC __glewProgramNamedParameter4dNV; }
-# 9994 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10074 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC __glewProgramNamedParameter4dvNV; }
-# 9995 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10075 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMNAMEDPARAMETER4FNVPROC __glewProgramNamedParameter4fNV; }
-# 9996 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10076 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC __glewProgramNamedParameter4fvNV; }
-# 9998 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10078 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC __glewRenderbufferStorageMultisampleCoverageNV; }
-# 10000 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMENVPARAMETERI4INVPROC __glewProgramEnvParameterI4iNV; }
-# 10001 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMENVPARAMETERI4IVNVPROC __glewProgramEnvParameterI4ivNV; }
-# 10002 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMENVPARAMETERI4UINVPROC __glewProgramEnvParameterI4uiNV; }
-# 10003 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMENVPARAMETERI4UIVNVPROC __glewProgramEnvParameterI4uivNV; }
-# 10004 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMENVPARAMETERSI4IVNVPROC __glewProgramEnvParametersI4ivNV; }
-# 10005 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMENVPARAMETERSI4UIVNVPROC __glewProgramEnvParametersI4uivNV; }
-# 10006 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4INVPROC __glewProgramLocalParameterI4iNV; }
-# 10007 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4IVNVPROC __glewProgramLocalParameterI4ivNV; }
-# 10008 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4UINVPROC __glewProgramLocalParameterI4uiNV; }
-# 10009 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC __glewProgramLocalParameterI4uivNV; }
-# 10010 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC __glewProgramLocalParametersI4ivNV; }
-# 10011 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
-extern "C" { extern PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC __glewProgramLocalParametersI4uivNV; }
-# 10012 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10080 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMVERTEXLIMITNVPROC __glewProgramVertexLimitNV; }
-# 10014 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10082 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMENVPARAMETERI4INVPROC __glewProgramEnvParameterI4iNV; }
+# 10083 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMENVPARAMETERI4IVNVPROC __glewProgramEnvParameterI4ivNV; }
+# 10084 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMENVPARAMETERI4UINVPROC __glewProgramEnvParameterI4uiNV; }
+# 10085 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMENVPARAMETERI4UIVNVPROC __glewProgramEnvParameterI4uivNV; }
+# 10086 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMENVPARAMETERSI4IVNVPROC __glewProgramEnvParametersI4ivNV; }
+# 10087 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMENVPARAMETERSI4UIVNVPROC __glewProgramEnvParametersI4uivNV; }
+# 10088 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4INVPROC __glewProgramLocalParameterI4iNV; }
+# 10089 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4IVNVPROC __glewProgramLocalParameterI4ivNV; }
+# 10090 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4UINVPROC __glewProgramLocalParameterI4uiNV; }
+# 10091 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC __glewProgramLocalParameterI4uivNV; }
+# 10092 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC __glewProgramLocalParametersI4ivNV; }
+# 10093 "/usr/include/GL/glew.h" 3
+extern "C" { extern PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC __glewProgramLocalParametersI4uivNV; }
+# 10095 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR3HNVPROC __glewColor3hNV; }
-# 10015 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10096 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR3HVNVPROC __glewColor3hvNV; }
-# 10016 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10097 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4HNVPROC __glewColor4hNV; }
-# 10017 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10098 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4HVNVPROC __glewColor4hvNV; }
-# 10018 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10099 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDHNVPROC __glewFogCoordhNV; }
-# 10019 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10100 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGCOORDHVNVPROC __glewFogCoordhvNV; }
-# 10020 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10101 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1HNVPROC __glewMultiTexCoord1hNV; }
-# 10021 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10102 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD1HVNVPROC __glewMultiTexCoord1hvNV; }
-# 10022 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10103 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2HNVPROC __glewMultiTexCoord2hNV; }
-# 10023 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10104 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD2HVNVPROC __glewMultiTexCoord2hvNV; }
-# 10024 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10105 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3HNVPROC __glewMultiTexCoord3hNV; }
-# 10025 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10106 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD3HVNVPROC __glewMultiTexCoord3hvNV; }
-# 10026 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10107 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4HNVPROC __glewMultiTexCoord4hNV; }
-# 10027 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10108 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLMULTITEXCOORD4HVNVPROC __glewMultiTexCoord4hvNV; }
-# 10028 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10109 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMAL3HNVPROC __glewNormal3hNV; }
-# 10029 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10110 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMAL3HVNVPROC __glewNormal3hvNV; }
-# 10030 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10111 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3HNVPROC __glewSecondaryColor3hNV; }
-# 10031 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10112 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSECONDARYCOLOR3HVNVPROC __glewSecondaryColor3hvNV; }
-# 10032 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10113 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD1HNVPROC __glewTexCoord1hNV; }
-# 10033 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10114 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD1HVNVPROC __glewTexCoord1hvNV; }
-# 10034 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10115 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2HNVPROC __glewTexCoord2hNV; }
-# 10035 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10116 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2HVNVPROC __glewTexCoord2hvNV; }
-# 10036 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10117 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD3HNVPROC __glewTexCoord3hNV; }
-# 10037 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10118 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD3HVNVPROC __glewTexCoord3hvNV; }
-# 10038 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10119 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD4HNVPROC __glewTexCoord4hNV; }
-# 10039 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10120 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD4HVNVPROC __glewTexCoord4hvNV; }
-# 10040 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10121 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEX2HNVPROC __glewVertex2hNV; }
-# 10041 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10122 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEX2HVNVPROC __glewVertex2hvNV; }
-# 10042 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10123 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEX3HNVPROC __glewVertex3hNV; }
-# 10043 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10124 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEX3HVNVPROC __glewVertex3hvNV; }
-# 10044 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10125 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEX4HNVPROC __glewVertex4hNV; }
-# 10045 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10126 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEX4HVNVPROC __glewVertex4hvNV; }
-# 10046 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10127 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1HNVPROC __glewVertexAttrib1hNV; }
-# 10047 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10128 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1HVNVPROC __glewVertexAttrib1hvNV; }
-# 10048 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10129 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2HNVPROC __glewVertexAttrib2hNV; }
-# 10049 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10130 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2HVNVPROC __glewVertexAttrib2hvNV; }
-# 10050 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10131 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3HNVPROC __glewVertexAttrib3hNV; }
-# 10051 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10132 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3HVNVPROC __glewVertexAttrib3hvNV; }
-# 10052 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10133 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4HNVPROC __glewVertexAttrib4hNV; }
-# 10053 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10134 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4HVNVPROC __glewVertexAttrib4hvNV; }
-# 10054 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10135 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS1HVNVPROC __glewVertexAttribs1hvNV; }
-# 10055 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10136 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS2HVNVPROC __glewVertexAttribs2hvNV; }
-# 10056 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10137 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS3HVNVPROC __glewVertexAttribs3hvNV; }
-# 10057 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10138 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS4HVNVPROC __glewVertexAttribs4hvNV; }
-# 10058 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10139 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXWEIGHTHNVPROC __glewVertexWeighthNV; }
-# 10059 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10140 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXWEIGHTHVNVPROC __glewVertexWeighthvNV; }
-# 10061 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10142 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINOCCLUSIONQUERYNVPROC __glewBeginOcclusionQueryNV; }
-# 10062 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10143 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEOCCLUSIONQUERIESNVPROC __glewDeleteOcclusionQueriesNV; }
-# 10063 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10144 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDOCCLUSIONQUERYNVPROC __glewEndOcclusionQueryNV; }
-# 10064 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10145 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENOCCLUSIONQUERIESNVPROC __glewGenOcclusionQueriesNV; }
-# 10065 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10146 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETOCCLUSIONQUERYIVNVPROC __glewGetOcclusionQueryivNV; }
-# 10066 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10147 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETOCCLUSIONQUERYUIVNVPROC __glewGetOcclusionQueryuivNV; }
-# 10067 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10148 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISOCCLUSIONQUERYNVPROC __glewIsOcclusionQueryNV; }
-# 10069 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10150 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMBUFFERPARAMETERSIIVNVPROC __glewProgramBufferParametersIivNV; }
-# 10070 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10151 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMBUFFERPARAMETERSIUIVNVPROC __glewProgramBufferParametersIuivNV; }
-# 10071 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10152 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMBUFFERPARAMETERSFVNVPROC __glewProgramBufferParametersfvNV; }
-# 10073 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10154 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFLUSHPIXELDATARANGENVPROC __glewFlushPixelDataRangeNV; }
-# 10074 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10155 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPIXELDATARANGENVPROC __glewPixelDataRangeNV; }
-# 10076 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10157 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERINVPROC __glewPointParameteriNV; }
-# 10077 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10158 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOINTPARAMETERIVNVPROC __glewPointParameterivNV; }
-# 10079 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10160 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPRIMITIVERESTARTINDEXNVPROC __glewPrimitiveRestartIndexNV; }
-# 10080 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10161 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPRIMITIVERESTARTNVPROC __glewPrimitiveRestartNV; }
-# 10082 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10163 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINERINPUTNVPROC __glewCombinerInputNV; }
-# 10083 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10164 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINEROUTPUTNVPROC __glewCombinerOutputNV; }
-# 10084 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10165 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINERPARAMETERFNVPROC __glewCombinerParameterfNV; }
-# 10085 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10166 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINERPARAMETERFVNVPROC __glewCombinerParameterfvNV; }
-# 10086 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10167 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINERPARAMETERINVPROC __glewCombinerParameteriNV; }
-# 10087 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10168 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINERPARAMETERIVNVPROC __glewCombinerParameterivNV; }
-# 10088 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10169 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFINALCOMBINERINPUTNVPROC __glewFinalCombinerInputNV; }
-# 10089 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10170 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC __glewGetCombinerInputParameterfvNV; }
-# 10090 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10171 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC __glewGetCombinerInputParameterivNV; }
-# 10091 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10172 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC __glewGetCombinerOutputParameterfvNV; }
-# 10092 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10173 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC __glewGetCombinerOutputParameterivNV; }
-# 10093 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10174 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC __glewGetFinalCombinerInputParameterfvNV; }
-# 10094 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10175 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC __glewGetFinalCombinerInputParameterivNV; }
-# 10096 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10177 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOMBINERSTAGEPARAMETERFVNVPROC __glewCombinerStageParameterfvNV; }
-# 10097 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10178 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC __glewGetCombinerStageParameterfvNV; }
-# 10099 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10180 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLACTIVEVARYINGNVPROC __glewActiveVaryingNV; }
-# 10100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10181 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBEGINTRANSFORMFEEDBACKNVPROC __glewBeginTransformFeedbackNV; }
-# 10101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10182 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDBUFFERBASENVPROC __glewBindBufferBaseNV; }
-# 10102 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10183 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDBUFFEROFFSETNVPROC __glewBindBufferOffsetNV; }
-# 10103 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10184 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDBUFFERRANGENVPROC __glewBindBufferRangeNV; }
-# 10104 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10185 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLENDTRANSFORMFEEDBACKNVPROC __glewEndTransformFeedbackNV; }
-# 10105 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10186 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETACTIVEVARYINGNVPROC __glewGetActiveVaryingNV; }
-# 10106 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10187 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTRANSFORMFEEDBACKVARYINGNVPROC __glewGetTransformFeedbackVaryingNV; }
-# 10107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10188 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVARYINGLOCATIONNVPROC __glewGetVaryingLocationNV; }
-# 10108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10189 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTRANSFORMFEEDBACKATTRIBSNVPROC __glewTransformFeedbackAttribsNV; }
-# 10109 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10190 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTRANSFORMFEEDBACKVARYINGSNVPROC __glewTransformFeedbackVaryingsNV; }
-# 10111 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10192 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFLUSHVERTEXARRAYRANGENVPROC __glewFlushVertexArrayRangeNV; }
-# 10112 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10193 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXARRAYRANGENVPROC __glewVertexArrayRangeNV; }
-# 10114 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10195 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLAREPROGRAMSRESIDENTNVPROC __glewAreProgramsResidentNV; }
-# 10115 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10196 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLBINDPROGRAMNVPROC __glewBindProgramNV; }
-# 10116 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10197 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEPROGRAMSNVPROC __glewDeleteProgramsNV; }
-# 10117 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10198 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLEXECUTEPROGRAMNVPROC __glewExecuteProgramNV; }
-# 10118 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10199 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENPROGRAMSNVPROC __glewGenProgramsNV; }
-# 10119 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10200 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMPARAMETERDVNVPROC __glewGetProgramParameterdvNV; }
-# 10120 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10201 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMPARAMETERFVNVPROC __glewGetProgramParameterfvNV; }
-# 10121 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10202 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMSTRINGNVPROC __glewGetProgramStringNV; }
-# 10122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10203 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETPROGRAMIVNVPROC __glewGetProgramivNV; }
-# 10123 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10204 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTRACKMATRIXIVNVPROC __glewGetTrackMatrixivNV; }
-# 10124 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10205 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBPOINTERVNVPROC __glewGetVertexAttribPointervNV; }
-# 10125 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10206 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBDVNVPROC __glewGetVertexAttribdvNV; }
-# 10126 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10207 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBFVNVPROC __glewGetVertexAttribfvNV; }
-# 10127 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10208 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETVERTEXATTRIBIVNVPROC __glewGetVertexAttribivNV; }
-# 10128 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10209 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISPROGRAMNVPROC __glewIsProgramNV; }
-# 10129 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10210 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLLOADPROGRAMNVPROC __glewLoadProgramNV; }
-# 10130 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10211 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETER4DNVPROC __glewProgramParameter4dNV; }
-# 10131 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10212 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETER4DVNVPROC __glewProgramParameter4dvNV; }
-# 10132 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10213 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETER4FNVPROC __glewProgramParameter4fNV; }
-# 10133 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10214 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETER4FVNVPROC __glewProgramParameter4fvNV; }
-# 10134 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10215 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETERS4DVNVPROC __glewProgramParameters4dvNV; }
-# 10135 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10216 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPROGRAMPARAMETERS4FVNVPROC __glewProgramParameters4fvNV; }
-# 10136 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10217 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREQUESTRESIDENTPROGRAMSNVPROC __glewRequestResidentProgramsNV; }
-# 10137 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10218 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTRACKMATRIXNVPROC __glewTrackMatrixNV; }
-# 10138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10219 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1DNVPROC __glewVertexAttrib1dNV; }
-# 10139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10220 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1DVNVPROC __glewVertexAttrib1dvNV; }
-# 10140 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10221 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1FNVPROC __glewVertexAttrib1fNV; }
-# 10141 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10222 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1FVNVPROC __glewVertexAttrib1fvNV; }
-# 10142 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10223 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1SNVPROC __glewVertexAttrib1sNV; }
-# 10143 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10224 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB1SVNVPROC __glewVertexAttrib1svNV; }
-# 10144 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10225 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2DNVPROC __glewVertexAttrib2dNV; }
-# 10145 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10226 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2DVNVPROC __glewVertexAttrib2dvNV; }
-# 10146 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10227 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2FNVPROC __glewVertexAttrib2fNV; }
-# 10147 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10228 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2FVNVPROC __glewVertexAttrib2fvNV; }
-# 10148 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10229 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2SNVPROC __glewVertexAttrib2sNV; }
-# 10149 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10230 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB2SVNVPROC __glewVertexAttrib2svNV; }
-# 10150 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10231 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3DNVPROC __glewVertexAttrib3dNV; }
-# 10151 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10232 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3DVNVPROC __glewVertexAttrib3dvNV; }
-# 10152 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10233 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3FNVPROC __glewVertexAttrib3fNV; }
-# 10153 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10234 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3FVNVPROC __glewVertexAttrib3fvNV; }
-# 10154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10235 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3SNVPROC __glewVertexAttrib3sNV; }
-# 10155 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10236 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB3SVNVPROC __glewVertexAttrib3svNV; }
-# 10156 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10237 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4DNVPROC __glewVertexAttrib4dNV; }
-# 10157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10238 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4DVNVPROC __glewVertexAttrib4dvNV; }
-# 10158 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10239 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4FNVPROC __glewVertexAttrib4fNV; }
-# 10159 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10240 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4FVNVPROC __glewVertexAttrib4fvNV; }
-# 10160 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10241 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4SNVPROC __glewVertexAttrib4sNV; }
-# 10161 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10242 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4SVNVPROC __glewVertexAttrib4svNV; }
-# 10162 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10243 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4UBNVPROC __glewVertexAttrib4ubNV; }
-# 10163 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10244 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIB4UBVNVPROC __glewVertexAttrib4ubvNV; }
-# 10164 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10245 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBPOINTERNVPROC __glewVertexAttribPointerNV; }
-# 10165 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10246 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS1DVNVPROC __glewVertexAttribs1dvNV; }
-# 10166 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10247 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS1FVNVPROC __glewVertexAttribs1fvNV; }
-# 10167 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10248 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS1SVNVPROC __glewVertexAttribs1svNV; }
-# 10168 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10249 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS2DVNVPROC __glewVertexAttribs2dvNV; }
-# 10169 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10250 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS2FVNVPROC __glewVertexAttribs2fvNV; }
-# 10170 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10251 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS2SVNVPROC __glewVertexAttribs2svNV; }
-# 10171 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10252 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS3DVNVPROC __glewVertexAttribs3dvNV; }
-# 10172 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10253 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS3FVNVPROC __glewVertexAttribs3fvNV; }
-# 10173 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10254 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS3SVNVPROC __glewVertexAttribs3svNV; }
-# 10174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10255 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS4DVNVPROC __glewVertexAttribs4dvNV; }
-# 10175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10256 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS4FVNVPROC __glewVertexAttribs4fvNV; }
-# 10176 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10257 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS4SVNVPROC __glewVertexAttribs4svNV; }
-# 10177 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10258 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLVERTEXATTRIBS4UBVNVPROC __glewVertexAttribs4ubvNV; }
-# 10179 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10260 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLEARDEPTHFOESPROC __glewClearDepthfOES; }
-# 10180 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10261 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCLIPPLANEFOESPROC __glewClipPlanefOES; }
-# 10181 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10262 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDEPTHRANGEFOESPROC __glewDepthRangefOES; }
-# 10182 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10263 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRUSTUMFOESPROC __glewFrustumfOES; }
-# 10183 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10264 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCLIPPLANEFOESPROC __glewGetClipPlanefOES; }
-# 10184 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10265 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLORTHOFOESPROC __glewOrthofOES; }
-# 10186 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10267 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDETAILTEXFUNCSGISPROC __glewDetailTexFuncSGIS; }
-# 10187 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10268 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETDETAILTEXFUNCSGISPROC __glewGetDetailTexFuncSGIS; }
-# 10189 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10270 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFOGFUNCSGISPROC __glewFogFuncSGIS; }
-# 10190 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10271 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFOGFUNCSGISPROC __glewGetFogFuncSGIS; }
-# 10192 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10273 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLEMASKSGISPROC __glewSampleMaskSGIS; }
-# 10193 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10274 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSAMPLEPATTERNSGISPROC __glewSamplePatternSGIS; }
-# 10195 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10276 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETSHARPENTEXFUNCSGISPROC __glewGetSharpenTexFuncSGIS; }
-# 10196 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10277 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSHARPENTEXFUNCSGISPROC __glewSharpenTexFuncSGIS; }
-# 10198 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10279 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXIMAGE4DSGISPROC __glewTexImage4DSGIS; }
-# 10199 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10280 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXSUBIMAGE4DSGISPROC __glewTexSubImage4DSGIS; }
-# 10201 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10282 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETTEXFILTERFUNCSGISPROC __glewGetTexFilterFuncSGIS; }
-# 10202 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10283 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXFILTERFUNCSGISPROC __glewTexFilterFuncSGIS; }
-# 10204 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10285 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLASYNCMARKERSGIXPROC __glewAsyncMarkerSGIX; }
-# 10205 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10286 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLDELETEASYNCMARKERSSGIXPROC __glewDeleteAsyncMarkersSGIX; }
-# 10206 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10287 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFINISHASYNCSGIXPROC __glewFinishAsyncSGIX; }
-# 10207 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10288 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGENASYNCMARKERSSGIXPROC __glewGenAsyncMarkersSGIX; }
-# 10208 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10289 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLISASYNCMARKERSGIXPROC __glewIsAsyncMarkerSGIX; }
-# 10209 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10290 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPOLLASYNCSGIXPROC __glewPollAsyncSGIX; }
-# 10211 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10292 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFLUSHRASTERSGIXPROC __glewFlushRasterSGIX; }
-# 10213 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10294 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXTUREFOGSGIXPROC __glewTextureFogSGIX; }
-# 10215 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10296 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTCOLORMATERIALSGIXPROC __glewFragmentColorMaterialSGIX; }
-# 10216 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10297 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELFSGIXPROC __glewFragmentLightModelfSGIX; }
-# 10217 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10298 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELFVSGIXPROC __glewFragmentLightModelfvSGIX; }
-# 10218 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10299 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELISGIXPROC __glewFragmentLightModeliSGIX; }
-# 10219 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10300 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTMODELIVSGIXPROC __glewFragmentLightModelivSGIX; }
-# 10220 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10301 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTFSGIXPROC __glewFragmentLightfSGIX; }
-# 10221 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10302 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTFVSGIXPROC __glewFragmentLightfvSGIX; }
-# 10222 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10303 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTISGIXPROC __glewFragmentLightiSGIX; }
-# 10223 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10304 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTLIGHTIVSGIXPROC __glewFragmentLightivSGIX; }
-# 10224 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10305 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALFSGIXPROC __glewFragmentMaterialfSGIX; }
-# 10225 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10306 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALFVSGIXPROC __glewFragmentMaterialfvSGIX; }
-# 10226 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10307 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALISGIXPROC __glewFragmentMaterialiSGIX; }
-# 10227 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10308 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAGMENTMATERIALIVSGIXPROC __glewFragmentMaterialivSGIX; }
-# 10228 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10309 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTLIGHTFVSGIXPROC __glewGetFragmentLightfvSGIX; }
-# 10229 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10310 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTLIGHTIVSGIXPROC __glewGetFragmentLightivSGIX; }
-# 10230 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10311 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTMATERIALFVSGIXPROC __glewGetFragmentMaterialfvSGIX; }
-# 10231 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10312 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETFRAGMENTMATERIALIVSGIXPROC __glewGetFragmentMaterialivSGIX; }
-# 10233 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10314 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFRAMEZOOMSGIXPROC __glewFrameZoomSGIX; }
-# 10235 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10316 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLPIXELTEXGENSGIXPROC __glewPixelTexGenSGIX; }
-# 10237 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10318 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREFERENCEPLANESGIXPROC __glewReferencePlaneSGIX; }
-# 10239 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10320 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSPRITEPARAMETERFSGIXPROC __glewSpriteParameterfSGIX; }
-# 10240 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10321 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSPRITEPARAMETERFVSGIXPROC __glewSpriteParameterfvSGIX; }
-# 10241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10322 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSPRITEPARAMETERISGIXPROC __glewSpriteParameteriSGIX; }
-# 10242 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10323 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLSPRITEPARAMETERIVSGIXPROC __glewSpriteParameterivSGIX; }
-# 10244 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10325 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTAGSAMPLEBUFFERSGIXPROC __glewTagSampleBufferSGIX; }
-# 10246 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10327 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLEPARAMETERFVSGIPROC __glewColorTableParameterfvSGI; }
-# 10247 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10328 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLEPARAMETERIVSGIPROC __glewColorTableParameterivSGI; }
-# 10248 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10329 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLORTABLESGIPROC __glewColorTableSGI; }
-# 10249 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10330 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYCOLORTABLESGIPROC __glewCopyColorTableSGI; }
-# 10250 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10331 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPARAMETERFVSGIPROC __glewGetColorTableParameterfvSGI; }
-# 10251 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10332 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLEPARAMETERIVSGIPROC __glewGetColorTableParameterivSGI; }
-# 10252 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10333 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGETCOLORTABLESGIPROC __glewGetColorTableSGI; }
-# 10254 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10335 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLFINISHTEXTURESUNXPROC __glewFinishTextureSUNX; }
-# 10256 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10337 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORBSUNPROC __glewGlobalAlphaFactorbSUN; }
-# 10257 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10338 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORDSUNPROC __glewGlobalAlphaFactordSUN; }
-# 10258 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10339 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORFSUNPROC __glewGlobalAlphaFactorfSUN; }
-# 10259 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10340 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORISUNPROC __glewGlobalAlphaFactoriSUN; }
-# 10260 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10341 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORSSUNPROC __glewGlobalAlphaFactorsSUN; }
-# 10261 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10342 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORUBSUNPROC __glewGlobalAlphaFactorubSUN; }
-# 10262 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10343 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORUISUNPROC __glewGlobalAlphaFactoruiSUN; }
-# 10263 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10344 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLGLOBALALPHAFACTORUSSUNPROC __glewGlobalAlphaFactorusSUN; }
-# 10265 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10346 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREADVIDEOPIXELSSUNPROC __glewReadVideoPixelsSUN; }
-# 10267 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10348 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEPOINTERSUNPROC __glewReplacementCodePointerSUN; }
-# 10268 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10349 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUBSUNPROC __glewReplacementCodeubSUN; }
-# 10269 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10350 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUBVSUNPROC __glewReplacementCodeubvSUN; }
-# 10270 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10351 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUISUNPROC __glewReplacementCodeuiSUN; }
-# 10271 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10352 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUIVSUNPROC __glewReplacementCodeuivSUN; }
-# 10272 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10353 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUSSUNPROC __glewReplacementCodeusSUN; }
-# 10273 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10354 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUSVSUNPROC __glewReplacementCodeusvSUN; }
-# 10275 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10356 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR3FVERTEX3FSUNPROC __glewColor3fVertex3fSUN; }
-# 10276 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10357 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR3FVERTEX3FVSUNPROC __glewColor3fVertex3fvSUN; }
-# 10277 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10358 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC __glewColor4fNormal3fVertex3fSUN; }
-# 10278 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10359 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4FNORMAL3FVERTEX3FVSUNPROC __glewColor4fNormal3fVertex3fvSUN; }
-# 10279 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10360 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4UBVERTEX2FSUNPROC __glewColor4ubVertex2fSUN; }
-# 10280 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10361 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4UBVERTEX2FVSUNPROC __glewColor4ubVertex2fvSUN; }
-# 10281 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10362 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4UBVERTEX3FSUNPROC __glewColor4ubVertex3fSUN; }
-# 10282 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10363 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOLOR4UBVERTEX3FVSUNPROC __glewColor4ubVertex3fvSUN; }
-# 10283 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10364 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMAL3FVERTEX3FSUNPROC __glewNormal3fVertex3fSUN; }
-# 10284 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10365 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLNORMAL3FVERTEX3FVSUNPROC __glewNormal3fVertex3fvSUN; }
-# 10285 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10366 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FSUNPROC __glewReplacementCodeuiColor3fVertex3fSUN; }
-# 10286 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10367 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FVSUNPROC __glewReplacementCodeuiColor3fVertex3fvSUN; }
-# 10287 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10368 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FSUNPROC __glewReplacementCodeuiColor4fNormal3fVertex3fSUN; }
-# 10288 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10369 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FVSUNPROC __glewReplacementCodeuiColor4fNormal3fVertex3fvSUN; }
-# 10289 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10370 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FSUNPROC __glewReplacementCodeuiColor4ubVertex3fSUN; }
-# 10290 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10371 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FVSUNPROC __glewReplacementCodeuiColor4ubVertex3fvSUN; }
-# 10291 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10372 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FSUNPROC __glewReplacementCodeuiNormal3fVertex3fSUN; }
-# 10292 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10373 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FVSUNPROC __glewReplacementCodeuiNormal3fVertex3fvSUN; }
-# 10293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10374 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC __glewReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN; }
-# 10294 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10375 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC __glewReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN; }
-# 10295 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10376 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FSUNPROC __glewReplacementCodeuiTexCoord2fNormal3fVertex3fSUN; }
-# 10296 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10377 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FVSUNPROC __glewReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN; }
-# 10297 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10378 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FSUNPROC __glewReplacementCodeuiTexCoord2fVertex3fSUN; }
-# 10298 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10379 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FVSUNPROC __glewReplacementCodeuiTexCoord2fVertex3fvSUN; }
-# 10299 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10380 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUIVERTEX3FSUNPROC __glewReplacementCodeuiVertex3fSUN; }
-# 10300 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10381 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLREPLACEMENTCODEUIVERTEX3FVSUNPROC __glewReplacementCodeuiVertex3fvSUN; }
-# 10301 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10382 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FCOLOR3FVERTEX3FSUNPROC __glewTexCoord2fColor3fVertex3fSUN; }
-# 10302 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10383 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FCOLOR3FVERTEX3FVSUNPROC __glewTexCoord2fColor3fVertex3fvSUN; }
-# 10303 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10384 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC __glewTexCoord2fColor4fNormal3fVertex3fSUN; }
-# 10304 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10385 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC __glewTexCoord2fColor4fNormal3fVertex3fvSUN; }
-# 10305 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10386 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FCOLOR4UBVERTEX3FSUNPROC __glewTexCoord2fColor4ubVertex3fSUN; }
-# 10306 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10387 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FCOLOR4UBVERTEX3FVSUNPROC __glewTexCoord2fColor4ubVertex3fvSUN; }
-# 10307 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10388 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FNORMAL3FVERTEX3FSUNPROC __glewTexCoord2fNormal3fVertex3fSUN; }
-# 10308 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10389 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FNORMAL3FVERTEX3FVSUNPROC __glewTexCoord2fNormal3fVertex3fvSUN; }
-# 10309 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10390 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FVERTEX3FSUNPROC __glewTexCoord2fVertex3fSUN; }
-# 10310 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10391 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD2FVERTEX3FVSUNPROC __glewTexCoord2fVertex3fvSUN; }
-# 10311 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10392 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC __glewTexCoord4fColor4fNormal3fVertex4fSUN; }
-# 10312 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10393 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC __glewTexCoord4fColor4fNormal3fVertex4fvSUN; }
-# 10313 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10394 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD4FVERTEX4FSUNPROC __glewTexCoord4fVertex4fSUN; }
-# 10314 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10395 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLTEXCOORD4FVERTEX4FVSUNPROC __glewTexCoord4fVertex4fvSUN; }
-# 10316 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10397 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLADDSWAPHINTRECTWINPROC __glewAddSwapHintRectWIN; }
-# 10323 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10404 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_1_1; }
-# 10324 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10405 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_1_2; }
-# 10325 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10406 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_1_3; }
-# 10326 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10407 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_1_4; }
-# 10327 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10408 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_1_5; }
-# 10328 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10409 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_2_0; }
-# 10329 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10410 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_2_1; }
-# 10330 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10411 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_3DFX_multisample; }
-# 10331 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10412 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_3DFX_tbuffer; }
-# 10332 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10413 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_3DFX_texture_compression_FXT1; }
-# 10333 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10414 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_client_storage; }
-# 10334 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10415 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_element_array; }
-# 10335 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10416 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_fence; }
-# 10336 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10417 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_float_pixels; }
-# 10337 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10418 "/usr/include/GL/glew.h" 3
+extern "C" { extern GLboolean __GLEW_APPLE_flush_buffer_range; }
+# 10419 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_pixel_buffer; }
-# 10338 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10420 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_specular_vector; }
-# 10339 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10421 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_texture_range; }
-# 10340 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10422 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_transform_hint; }
-# 10341 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10423 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_vertex_array_object; }
-# 10342 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10424 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_vertex_array_range; }
-# 10343 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10425 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_APPLE_ycbcr_422; }
-# 10344 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10426 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_color_buffer_float; }
-# 10345 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10427 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_depth_texture; }
-# 10346 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10428 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_draw_buffers; }
-# 10347 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10429 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_fragment_program; }
-# 10348 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10430 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_fragment_program_shadow; }
-# 10349 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10431 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_fragment_shader; }
-# 10350 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10432 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_half_float_pixel; }
-# 10351 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10433 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_imaging; }
-# 10352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10434 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_matrix_palette; }
-# 10353 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10435 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_multisample; }
-# 10354 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10436 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_multitexture; }
-# 10355 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10437 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_occlusion_query; }
-# 10356 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10438 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_pixel_buffer_object; }
-# 10357 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10439 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_point_parameters; }
-# 10358 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10440 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_point_sprite; }
-# 10359 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10441 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_shader_objects; }
-# 10360 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10442 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_shading_language_100; }
-# 10361 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10443 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_shadow; }
-# 10362 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10444 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_shadow_ambient; }
-# 10363 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10445 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_border_clamp; }
-# 10364 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10446 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_compression; }
-# 10365 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10447 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_cube_map; }
-# 10366 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10448 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_env_add; }
-# 10367 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10449 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_env_combine; }
-# 10368 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10450 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_env_crossbar; }
-# 10369 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10451 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_env_dot3; }
-# 10370 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10452 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_float; }
-# 10371 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10453 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_mirrored_repeat; }
-# 10372 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10454 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_non_power_of_two; }
-# 10373 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10455 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_texture_rectangle; }
-# 10374 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10456 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_transpose_matrix; }
-# 10375 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10457 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_vertex_blend; }
-# 10376 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10458 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_vertex_buffer_object; }
-# 10377 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10459 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_vertex_program; }
-# 10378 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10460 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_vertex_shader; }
-# 10379 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10461 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ARB_window_pos; }
-# 10380 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10462 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATIX_point_sprites; }
-# 10381 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10463 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATIX_texture_env_combine3; }
-# 10382 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10464 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATIX_texture_env_route; }
-# 10383 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10465 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATIX_vertex_shader_output_point_size; }
-# 10384 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10466 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_draw_buffers; }
-# 10385 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10467 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_element_array; }
-# 10386 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10468 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_envmap_bumpmap; }
-# 10387 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10469 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_fragment_shader; }
-# 10388 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10470 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_map_object_buffer; }
-# 10389 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10471 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_pn_triangles; }
-# 10390 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10472 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_separate_stencil; }
-# 10391 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10473 "/usr/include/GL/glew.h" 3
+extern "C" { extern GLboolean __GLEW_ATI_shader_texture_lod; }
+# 10474 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_text_fragment_shader; }
-# 10392 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10475 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_texture_compression_3dc; }
-# 10393 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10476 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_texture_env_combine3; }
-# 10394 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10477 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_texture_float; }
-# 10395 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10478 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_texture_mirror_once; }
-# 10396 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10479 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_vertex_array_object; }
-# 10397 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10480 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_vertex_attrib_array_object; }
-# 10398 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10481 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_ATI_vertex_streams; }
-# 10399 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10482 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_422_pixels; }
-# 10400 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10483 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_Cg_shader; }
-# 10401 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10484 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_abgr; }
-# 10402 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10485 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_bgra; }
-# 10403 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10486 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_bindable_uniform; }
-# 10404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10487 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_blend_color; }
-# 10405 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10488 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_blend_equation_separate; }
-# 10406 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10489 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_blend_func_separate; }
-# 10407 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10490 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_blend_logic_op; }
-# 10408 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10491 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_blend_minmax; }
-# 10409 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10492 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_blend_subtract; }
-# 10410 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10493 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_clip_volume_hint; }
-# 10411 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10494 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_cmyka; }
-# 10412 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10495 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_color_subtable; }
-# 10413 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10496 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_compiled_vertex_array; }
-# 10414 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10497 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_convolution; }
-# 10415 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10498 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_coordinate_frame; }
-# 10416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10499 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_copy_texture; }
-# 10417 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10500 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_cull_vertex; }
-# 10418 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10501 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_depth_bounds_test; }
-# 10419 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10502 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_draw_buffers2; }
-# 10420 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10503 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_draw_instanced; }
-# 10421 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10504 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_draw_range_elements; }
-# 10422 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10505 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_fog_coord; }
-# 10423 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10506 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_fragment_lighting; }
-# 10424 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10507 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_framebuffer_blit; }
-# 10425 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10508 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_framebuffer_multisample; }
-# 10426 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10509 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_framebuffer_object; }
-# 10427 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10510 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_framebuffer_sRGB; }
-# 10428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10511 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_geometry_shader4; }
-# 10429 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10512 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_gpu_program_parameters; }
-# 10430 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10513 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_gpu_shader4; }
-# 10431 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10514 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_histogram; }
-# 10432 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10515 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_index_array_formats; }
-# 10433 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10516 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_index_func; }
-# 10434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10517 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_index_material; }
-# 10435 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10518 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_index_texture; }
-# 10436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10519 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_light_texture; }
-# 10437 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10520 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_misc_attribute; }
-# 10438 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10521 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_multi_draw_arrays; }
-# 10439 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10522 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_multisample; }
-# 10440 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10523 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_packed_depth_stencil; }
-# 10441 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10524 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_packed_float; }
-# 10442 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10525 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_packed_pixels; }
-# 10443 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10526 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_paletted_texture; }
-# 10444 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10527 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_pixel_buffer_object; }
-# 10445 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10528 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_pixel_transform; }
-# 10446 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10529 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_pixel_transform_color_table; }
-# 10447 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10530 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_point_parameters; }
-# 10448 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10531 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_polygon_offset; }
-# 10449 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10532 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_rescale_normal; }
-# 10450 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10533 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_scene_marker; }
-# 10451 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10534 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_secondary_color; }
-# 10452 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10535 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_separate_specular_color; }
-# 10453 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10536 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_shadow_funcs; }
-# 10454 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10537 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_shared_texture_palette; }
-# 10455 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10538 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_stencil_clear_tag; }
-# 10456 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10539 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_stencil_two_side; }
-# 10457 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10540 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_stencil_wrap; }
-# 10458 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10541 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_subtexture; }
-# 10459 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10542 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture; }
-# 10460 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10543 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture3D; }
-# 10461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10544 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_array; }
-# 10462 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10545 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_buffer_object; }
-# 10463 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10546 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_compression_dxt1; }
-# 10464 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10547 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_compression_latc; }
-# 10465 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10548 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_compression_rgtc; }
-# 10466 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10549 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_compression_s3tc; }
-# 10467 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10550 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_cube_map; }
-# 10468 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10551 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_edge_clamp; }
-# 10469 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10552 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_env; }
-# 10470 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10553 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_env_add; }
-# 10471 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10554 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_env_combine; }
-# 10472 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10555 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_env_dot3; }
-# 10473 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10556 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_filter_anisotropic; }
-# 10474 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10557 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_integer; }
-# 10475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10558 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_lod_bias; }
-# 10476 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10559 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_mirror_clamp; }
-# 10477 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10560 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_object; }
-# 10478 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10561 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_perturb_normal; }
-# 10479 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10562 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_rectangle; }
-# 10480 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10563 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_sRGB; }
-# 10481 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10564 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_texture_shared_exponent; }
-# 10482 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10565 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_timer_query; }
-# 10483 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10566 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_vertex_array; }
-# 10484 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10567 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_vertex_shader; }
-# 10485 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10568 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_EXT_vertex_weighting; }
-# 10486 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10569 "/usr/include/GL/glew.h" 3
+extern "C" { extern GLboolean __GLEW_GREMEDY_frame_terminator; }
+# 10570 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_GREMEDY_string_marker; }
-# 10487 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10571 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_HP_convolution_border_modes; }
-# 10488 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10572 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_HP_image_transform; }
-# 10489 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10573 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_HP_occlusion_test; }
-# 10490 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10574 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_HP_texture_lighting; }
-# 10491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10575 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_IBM_cull_vertex; }
-# 10492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10576 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_IBM_multimode_draw_arrays; }
-# 10493 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10577 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_IBM_rasterpos_clip; }
-# 10494 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10578 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_IBM_static_data; }
-# 10495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10579 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_IBM_texture_mirrored_repeat; }
-# 10496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10580 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_IBM_vertex_array_lists; }
-# 10497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10581 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_INGR_color_clamp; }
-# 10498 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10582 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_INGR_interlace_read; }
-# 10499 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10583 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_INTEL_parallel_arrays; }
-# 10500 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10584 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_INTEL_texture_scissor; }
-# 10501 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10585 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_KTX_buffer_region; }
-# 10502 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10586 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_MESAX_texture_stack; }
-# 10503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10587 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_MESA_pack_invert; }
-# 10504 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10588 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_MESA_resize_buffers; }
-# 10505 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10589 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_MESA_window_pos; }
-# 10506 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10590 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_MESA_ycbcr_texture; }
-# 10507 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10591 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_blend_square; }
-# 10508 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10592 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_copy_depth_to_color; }
-# 10509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10593 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_depth_buffer_float; }
-# 10510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10594 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_depth_clamp; }
-# 10511 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10595 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_depth_range_unclamped; }
-# 10512 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10596 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_evaluators; }
-# 10513 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10597 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_fence; }
-# 10514 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10598 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_float_buffer; }
-# 10515 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10599 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_fog_distance; }
-# 10516 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10600 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_fragment_program; }
-# 10517 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10601 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_fragment_program2; }
-# 10518 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10602 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_fragment_program4; }
-# 10519 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10603 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_fragment_program_option; }
-# 10520 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10604 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_framebuffer_multisample_coverage; }
-# 10521 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10605 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_geometry_program4; }
-# 10522 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10606 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_geometry_shader4; }
-# 10523 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10607 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_gpu_program4; }
-# 10524 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10608 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_half_float; }
-# 10525 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10609 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_light_max_exponent; }
-# 10526 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10610 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_multisample_filter_hint; }
-# 10527 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10611 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_occlusion_query; }
-# 10528 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10612 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_packed_depth_stencil; }
-# 10529 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10613 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_parameter_buffer_object; }
-# 10530 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10614 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_pixel_data_range; }
-# 10531 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10615 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_point_sprite; }
-# 10532 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10616 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_primitive_restart; }
-# 10533 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10617 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_register_combiners; }
-# 10534 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10618 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_register_combiners2; }
-# 10535 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10619 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texgen_emboss; }
-# 10536 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10620 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texgen_reflection; }
-# 10537 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10621 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_compression_vtc; }
-# 10538 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10622 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_env_combine4; }
-# 10539 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10623 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_expand_normal; }
-# 10540 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10624 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_rectangle; }
-# 10541 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10625 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_shader; }
-# 10542 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10626 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_shader2; }
-# 10543 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10627 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_texture_shader3; }
-# 10544 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10628 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_transform_feedback; }
-# 10545 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10629 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_array_range; }
-# 10546 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10630 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_array_range2; }
-# 10547 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10631 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_program; }
-# 10548 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10632 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_program1_1; }
-# 10549 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10633 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_program2; }
-# 10550 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10634 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_program2_option; }
-# 10551 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10635 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_program3; }
-# 10552 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10636 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_NV_vertex_program4; }
-# 10553 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10637 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OES_byte_coordinates; }
-# 10554 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10638 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OES_compressed_paletted_texture; }
-# 10555 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10639 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OES_read_format; }
-# 10556 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10640 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OES_single_precision; }
-# 10557 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10641 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OML_interlace; }
-# 10558 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10642 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OML_resample; }
-# 10559 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10643 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_OML_subsample; }
-# 10560 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10644 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_PGI_misc_hints; }
-# 10561 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10645 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_PGI_vertex_hints; }
-# 10562 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10646 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_REND_screen_coordinates; }
-# 10563 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10647 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_S3_s3tc; }
-# 10564 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10648 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_color_range; }
-# 10565 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10649 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_detail_texture; }
-# 10566 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10650 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_fog_function; }
-# 10567 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10651 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_generate_mipmap; }
-# 10568 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10652 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_multisample; }
-# 10569 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10653 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_pixel_texture; }
-# 10570 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10654 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_sharpen_texture; }
-# 10571 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10655 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_texture4D; }
-# 10572 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10656 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_texture_border_clamp; }
-# 10573 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10657 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_texture_edge_clamp; }
-# 10574 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10658 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_texture_filter4; }
-# 10575 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10659 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_texture_lod; }
-# 10576 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10660 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIS_texture_select; }
-# 10577 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10661 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_async; }
-# 10578 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10662 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_async_histogram; }
-# 10579 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10663 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_async_pixel; }
-# 10580 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10664 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_blend_alpha_minmax; }
-# 10581 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10665 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_clipmap; }
-# 10582 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10666 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_depth_texture; }
-# 10583 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10667 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_flush_raster; }
-# 10584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10668 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_fog_offset; }
-# 10585 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10669 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_fog_texture; }
-# 10586 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10670 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_fragment_specular_lighting; }
-# 10587 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10671 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_framezoom; }
-# 10588 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10672 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_interlace; }
-# 10589 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10673 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_ir_instrument1; }
-# 10590 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10674 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_list_priority; }
-# 10591 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10675 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_pixel_texture; }
-# 10592 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10676 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_pixel_texture_bits; }
-# 10593 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10677 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_reference_plane; }
-# 10594 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10678 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_resample; }
-# 10595 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10679 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_shadow; }
-# 10596 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10680 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_shadow_ambient; }
-# 10597 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10681 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_sprite; }
-# 10598 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10682 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_tag_sample_buffer; }
-# 10599 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10683 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_texture_add_env; }
-# 10600 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10684 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_texture_coordinate_clamp; }
-# 10601 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10685 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_texture_lod_bias; }
-# 10602 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10686 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_texture_multi_buffer; }
-# 10603 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10687 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_texture_range; }
-# 10604 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10688 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_texture_scale_bias; }
-# 10605 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10689 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_vertex_preclip; }
-# 10606 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10690 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_vertex_preclip_hint; }
-# 10607 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10691 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGIX_ycrcb; }
-# 10608 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10692 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGI_color_matrix; }
-# 10609 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10693 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGI_color_table; }
-# 10610 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10694 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SGI_texture_color_table; }
-# 10611 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10695 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUNX_constant_data; }
-# 10612 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10696 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_convolution_border_modes; }
-# 10613 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10697 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_global_alpha; }
-# 10614 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10698 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_mesh_array; }
-# 10615 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10699 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_read_video_pixels; }
-# 10616 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10700 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_slice_accum; }
-# 10617 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10701 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_triangle_list; }
-# 10618 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10702 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_SUN_vertex; }
-# 10619 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10703 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_WIN_phong_shading; }
-# 10620 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10704 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_WIN_specular_fog; }
-# 10621 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10705 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_WIN_swap_hint; }
-# 10660 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10746 "/usr/include/GL/glew.h" 3
 extern "C" GLenum glewInit();
-# 10661 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10747 "/usr/include/GL/glew.h" 3
 extern "C" GLboolean glewIsSupported(const char *);
-# 10669 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10755 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean glewExperimental; }
-# 10670 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10756 "/usr/include/GL/glew.h" 3
 extern "C" GLboolean glewGetExtension(const char *);
-# 10671 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10757 "/usr/include/GL/glew.h" 3
 extern "C" const GLubyte *glewGetErrorString(GLenum);
-# 10672 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glew.h"
+# 10758 "/usr/include/GL/glew.h" 3
 extern "C" const GLubyte *glewGetString(GLenum);
-# 231 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 200 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutStrokeRoman; }
-# 232 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 201 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutStrokeMonoRoman; }
-# 239 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 202 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmap9By15; }
-# 240 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 203 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmap8By13; }
-# 241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 204 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmapTimesRoman10; }
-# 242 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 205 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmapTimesRoman24; }
-# 243 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 206 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmapHelvetica10; }
-# 244 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 207 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmapHelvetica12; }
-# 245 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 208 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutBitmapHelvetica18; }
-# 394 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 384 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutInit(int *, char **);
-# 395 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutInitDisplayMode(unsigned);
-# 397 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutInitDisplayString(const char *);
-# 399 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 385 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutInitWindowPosition(int, int);
-# 400 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 386 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutInitWindowSize(int, int);
-# 401 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 387 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutInitDisplayMode(unsigned);
+# 388 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutInitDisplayString(const char *);
+# 393 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutMainLoop();
-# 404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 398 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutCreateWindow(const char *);
-# 405 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 399 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutCreateSubWindow(int, int, int, int, int);
-# 406 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 400 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutDestroyWindow(int);
-# 407 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutPostRedisplay();
-# 409 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutPostWindowRedisplay(int);
-# 411 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSwapBuffers();
-# 412 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" int glutGetWindow();
-# 413 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 401 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSetWindow(int);
-# 414 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 402 "/usr/include/GL/freeglut_std.h" 3
+extern "C" int glutGetWindow();
+# 403 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSetWindowTitle(const char *);
-# 415 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 404 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSetIconTitle(const char *);
-# 416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutPositionWindow(int, int);
-# 417 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 405 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutReshapeWindow(int, int);
-# 418 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutPopWindow();
-# 419 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutPushWindow();
-# 420 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutIconifyWindow();
-# 421 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 406 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutPositionWindow(int, int);
+# 407 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutShowWindow();
-# 422 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 408 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutHideWindow();
-# 424 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 409 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutIconifyWindow();
+# 410 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutPushWindow();
+# 411 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutPopWindow();
+# 412 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutFullScreen();
-# 425 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSetCursor(int);
-# 427 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 417 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutPostWindowRedisplay(int);
+# 418 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutPostRedisplay();
+# 419 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSwapBuffers();
+# 424 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWarpPointer(int, int);
-# 431 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 425 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSetCursor(int);
+# 430 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutEstablishOverlay();
-# 432 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 431 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutRemoveOverlay();
-# 433 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 432 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutUseLayer(GLenum);
-# 434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 433 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutPostOverlayRedisplay();
-# 436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 434 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutPostWindowOverlayRedisplay(int);
-# 438 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 435 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutShowOverlay();
-# 439 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 436 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutHideOverlay();
-# 443 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 441 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutCreateMenu(void (*)(int));
-# 444 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 442 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutDestroyMenu(int);
-# 445 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 443 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutGetMenu();
-# 446 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 444 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSetMenu(int);
-# 447 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 445 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutAddMenuEntry(const char *, int);
-# 448 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 446 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutAddSubMenu(const char *, int);
-# 449 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 447 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutChangeToMenuEntry(int, const char *, int);
-# 450 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 448 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutChangeToSubMenu(int, const char *, int);
-# 451 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 449 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutRemoveMenuItem(int);
-# 452 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 450 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutAttachMenu(int);
-# 453 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 451 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutDetachMenu(int);
-# 456 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutDisplayFunc(void (*)(void));
-# 457 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutReshapeFunc(void (*)(int, int));
-# 458 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutKeyboardFunc(void (*)(unsigned char, int, int));
-# 459 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutMouseFunc(void (*)(int, int, int, int));
-# 460 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutMotionFunc(void (*)(int, int));
-# 461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutPassiveMotionFunc(void (*)(int, int));
-# 462 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutEntryFunc(void (*)(int));
-# 463 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutVisibilityFunc(void (*)(int));
-# 464 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutIdleFunc(void (*)(void));
-# 465 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 456 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutTimerFunc(unsigned, void (*)(int), int);
-# 466 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutMenuStateFunc(void (*)(int));
-# 468 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 457 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutIdleFunc(void (*)(void));
+# 462 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutKeyboardFunc(void (*)(unsigned char, int, int));
+# 463 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSpecialFunc(void (*)(int, int, int));
-# 469 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSpaceballMotionFunc(void (*)(int, int, int));
-# 470 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSpaceballRotateFunc(void (*)(int, int, int));
-# 471 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSpaceballButtonFunc(void (*)(int, int));
-# 472 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutButtonBoxFunc(void (*)(int, int));
-# 473 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutDialsFunc(void (*)(int, int));
-# 474 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutTabletMotionFunc(void (*)(int, int));
-# 475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutTabletButtonFunc(void (*)(int, int, int, int));
-# 477 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutMenuStatusFunc(void (*)(int, int, int));
-# 478 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutOverlayDisplayFunc(void (*)(void));
-# 480 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutWindowStatusFunc(void (*)(int));
-# 483 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 464 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutReshapeFunc(void (*)(int, int));
+# 465 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutVisibilityFunc(void (*)(int));
+# 466 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutDisplayFunc(void (*)(void));
+# 467 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutMouseFunc(void (*)(int, int, int, int));
+# 468 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutMotionFunc(void (*)(int, int));
+# 469 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutPassiveMotionFunc(void (*)(int, int));
+# 470 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutEntryFunc(void (*)(int));
+# 472 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutKeyboardUpFunc(void (*)(unsigned char, int, int));
-# 484 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 473 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSpecialUpFunc(void (*)(int, int, int));
-# 485 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 474 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutJoystickFunc(void (*)(unsigned, int, int, int), int);
-# 491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSetColor(int, GLfloat, GLfloat, GLfloat);
-# 492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" GLfloat glutGetColor(int, int);
-# 493 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutCopyColormap(int);
-# 496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 475 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutMenuStateFunc(void (*)(int));
+# 476 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutMenuStatusFunc(void (*)(int, int, int));
+# 477 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutOverlayDisplayFunc(void (*)(void));
+# 478 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutWindowStatusFunc(void (*)(int));
+# 480 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSpaceballMotionFunc(void (*)(int, int, int));
+# 481 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSpaceballRotateFunc(void (*)(int, int, int));
+# 482 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSpaceballButtonFunc(void (*)(int, int));
+# 483 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutButtonBoxFunc(void (*)(int, int));
+# 484 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutDialsFunc(void (*)(int, int));
+# 485 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutTabletMotionFunc(void (*)(int, int));
+# 486 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutTabletButtonFunc(void (*)(int, int, int, int));
+# 491 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutGet(GLenum);
-# 497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 492 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutDeviceGet(GLenum);
-# 500 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" int glutExtensionSupported(const char *);
-# 503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 493 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutGetModifiers();
-# 504 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 494 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutLayerGet(GLenum);
-# 508 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 499 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutBitmapCharacter(void *, int);
-# 509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 500 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutBitmapWidth(void *, int);
-# 510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 501 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutStrokeCharacter(void *, int);
-# 511 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 502 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutStrokeWidth(void *, int);
-# 513 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 503 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutBitmapLength(void *, const unsigned char *);
-# 514 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 504 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutStrokeLength(void *, const unsigned char *);
-# 518 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutWireSphere(GLdouble, GLint, GLint);
-# 519 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSolidSphere(GLdouble, GLint, GLint);
-# 520 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutWireCone(GLdouble, GLdouble, GLint, GLint);
-# 521 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSolidCone(GLdouble, GLdouble, GLint, GLint);
-# 522 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 509 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWireCube(GLdouble);
-# 523 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 510 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSolidCube(GLdouble);
-# 524 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 511 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutWireSphere(GLdouble, GLint, GLint);
+# 512 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSolidSphere(GLdouble, GLint, GLint);
+# 513 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutWireCone(GLdouble, GLdouble, GLint, GLint);
+# 514 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSolidCone(GLdouble, GLdouble, GLint, GLint);
+# 516 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWireTorus(GLdouble, GLdouble, GLint, GLint);
-# 525 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 517 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSolidTorus(GLdouble, GLdouble, GLint, GLint);
-# 526 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 518 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWireDodecahedron();
-# 527 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 519 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSolidDodecahedron();
-# 528 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutWireTeapot(GLdouble);
-# 529 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSolidTeapot(GLdouble);
-# 530 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 520 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWireOctahedron();
-# 531 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 521 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSolidOctahedron();
-# 532 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 522 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWireTetrahedron();
-# 533 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 523 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSolidTetrahedron();
-# 534 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 524 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutWireIcosahedron();
-# 535 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 525 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutSolidIcosahedron();
-# 539 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" int glutVideoResizeGet(GLenum);
-# 540 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSetupVideoResizing();
-# 541 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutStopVideoResizing();
-# 542 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutVideoResize(int, int, int, int);
-# 543 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutVideoPan(int, int, int, int);
-# 546 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutReportErrors();
-# 562 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutIgnoreKeyRepeat(int);
-# 563 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutSetKeyRepeat(int);
-# 564 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
-extern "C" void glutForceJoystickFunc();
-# 576 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 530 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutWireTeapot(GLdouble);
+# 531 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSolidTeapot(GLdouble);
+# 536 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutGameModeString(const char *);
-# 577 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 537 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutEnterGameMode();
-# 578 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 538 "/usr/include/GL/freeglut_std.h" 3
 extern "C" void glutLeaveGameMode();
-# 579 "/usr/local/NVIDIA_CUDA_SDK/common/inc/GL/glut.h"
+# 539 "/usr/include/GL/freeglut_std.h" 3
 extern "C" int glutGameModeGet(GLenum);
+# 544 "/usr/include/GL/freeglut_std.h" 3
+extern "C" int glutVideoResizeGet(GLenum);
+# 545 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSetupVideoResizing();
+# 546 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutStopVideoResizing();
+# 547 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutVideoResize(int, int, int, int);
+# 548 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutVideoPan(int, int, int, int);
+# 553 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSetColor(int, GLfloat, GLfloat, GLfloat);
+# 554 "/usr/include/GL/freeglut_std.h" 3
+extern "C" GLfloat glutGetColor(int, int);
+# 555 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutCopyColormap(int);
+# 560 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutIgnoreKeyRepeat(int);
+# 561 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutSetKeyRepeat(int);
+# 562 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutForceJoystickFunc();
+# 567 "/usr/include/GL/freeglut_std.h" 3
+extern "C" int glutExtensionSupported(const char *);
+# 568 "/usr/include/GL/freeglut_std.h" 3
+extern "C" void glutReportErrors();
 # 67 "/home/gdiamos/temp/cuda/bin//../include/cuda_gl_interop.h"
 extern "C" cudaError_t cudaGLSetGLDevice(int);
 # 68 "/home/gdiamos/temp/cuda/bin//../include/cuda_gl_interop.h"
@@ -12833,126 +12861,106 @@ extern "C" CUresult cuStreamQuery(CUstream);
 extern "C" CUresult cuStreamSynchronize(CUstream);
 # 632 "/home/gdiamos/temp/cuda/bin//../include/cuda.h"
 extern "C" CUresult cuStreamDestroy(CUstream);
-# 64 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 65 "../../sdk/cutil.h"
 enum CUTBoolean {
-# 66 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 67 "../../sdk/cutil.h"
 CUTFalse,
-# 67 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 68 "../../sdk/cutil.h"
 CUTTrue
-# 68 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 69 "../../sdk/cutil.h"
 };
-# 76 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 77 "../../sdk/cutil.h"
 extern "C" void cutFree(void *);
-# 94 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 95 "../../sdk/cutil.h"
 extern "C" void cutCheckBankAccess(unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const char *, const int, const char *, const int);
-# 107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 108 "../../sdk/cutil.h"
 extern "C" char *cutFindFilePath(const char *, const char *);
-# 122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 123 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilef(const char *, float **, unsigned *, bool = false);
-# 138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 139 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFiled(const char *, double **, unsigned *, bool = false);
-# 154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 155 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilei(const char *, int **, unsigned *, bool = false);
-# 169 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 170 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileui(const char *, unsigned **, unsigned *, bool = false);
-# 185 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 186 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileb(const char *, char **, unsigned *, bool = false);
-# 201 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 202 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileub(const char *, unsigned char **, unsigned *, bool = false);
-# 215 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 216 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilef(const char *, const float *, unsigned, const float, bool = false);
-# 229 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 230 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFiled(const char *, const float *, unsigned, const double, bool = false);
-# 241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 242 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilei(const char *, const int *, unsigned, bool = false);
-# 253 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 254 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileui(const char *, const unsigned *, unsigned, bool = false);
-# 265 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 266 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileb(const char *, const char *, unsigned, bool = false);
-# 277 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 278 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileub(const char *, const unsigned char *, unsigned, bool = false);
-# 293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 294 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 306 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 307 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 320 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 321 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPM4ub(const char *, unsigned char **, unsigned *, unsigned *);
-# 336 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 337 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMi(const char *, unsigned **, unsigned *, unsigned *);
-# 352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 353 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMs(const char *, unsigned short **, unsigned *, unsigned *);
-# 367 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 368 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMf(const char *, float **, unsigned *, unsigned *);
-# 379 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 380 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMub(const char *, unsigned char *, unsigned, unsigned);
-# 391 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 392 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPMub(const char *, unsigned char *, unsigned, unsigned);
-# 404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 405 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPM4ub(const char *, unsigned char *, unsigned, unsigned);
-# 416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 417 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMi(const char *, unsigned *, unsigned, unsigned);
-# 428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 429 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMs(const char *, unsigned short *, unsigned, unsigned);
-# 440 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 441 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMf(const char *, float *, unsigned, unsigned);
-# 461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 462 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCmdLineFlag(const int, const char **, const char *);
-# 475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 476 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumenti(const int, const char **, const char *, int *);
-# 489 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 490 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentf(const int, const char **, const char *, float *);
-# 503 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 504 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentstr(const int, const char **, const char *, char **);
-# 518 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 519 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentListstr(const int, const char **, const char *, char **, unsigned *);
-# 532 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 533 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCondition(int, const char *, const int);
-# 544 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 545 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutComparef(const float *, const float *, const unsigned);
-# 557 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 558 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutComparei(const int *, const int *, const unsigned);
-# 571 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutCompareuit(const unsigned *, const unsigned *, const unsigned, const float, const float);
-# 584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 571 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCompareub(const unsigned char *, const unsigned char *, const unsigned);
-# 599 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutCompareubt(const unsigned char *, const unsigned char *, const unsigned, const float, const float);
-# 613 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 585 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCompareube(const unsigned char *, const unsigned char *, const unsigned, const float);
-# 627 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 599 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutComparefe(const float *, const float *, const unsigned, const float);
-# 642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutComparefet(const float *, const float *, const unsigned, const float, const float);
-# 657 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 614 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCompareL2fe(const float *, const float *, const unsigned, const float);
-# 672 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
-extern "C" CUTBoolean cutComparePPM(const char *, const char *, const float, const float, bool = false);
-# 685 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 627 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutCreateTimer(unsigned *);
-# 694 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 636 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutDeleteTimer(unsigned);
-# 702 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 644 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutStartTimer(const unsigned);
-# 710 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 652 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutStopTimer(const unsigned);
-# 718 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 660 "../../sdk/cutil.h"
 extern "C" CUTBoolean cutResetTimer(const unsigned);
-# 727 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 669 "../../sdk/cutil.h"
 extern "C" float cutGetTimerValue(const unsigned);
-# 738 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil.h"
+# 680 "../../sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 19 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
-inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
-# 20 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
-bdimx, unsigned bdimy, unsigned bdimz, char *
-# 21 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
-aname, int index, char *file, int line)
-# 22 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
-{
-# 23 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
-cutCheckBankAccess(tidx, tidy, tidz, bdimx, bdimy, bdimz, file, line, aname, index);
-# 24 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_bankchecker.h"
-}
 # 162 "/home/gdiamos/temp/cuda/bin//../include/cuComplex.h"
 extern "C" { typedef float2 cuFloatComplex; }
 # 164 "/home/gdiamos/temp/cuda/bin//../include/cuComplex.h"
@@ -13343,1479 +13351,1509 @@ extern "C" cufftResult cufftExecC2C(cufftHandle, cufftComplex *, cufftComplex *,
 extern "C" cufftResult cufftExecR2C(cufftHandle, cufftReal *, cufftComplex *);
 # 124 "/home/gdiamos/temp/cuda/bin//../include/cufft.h"
 extern "C" cufftResult cufftExecC2R(cufftHandle, cufftComplex *, cufftReal *);
-# 22 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 44 "../../sdk/cutil_inline.h"
+inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
+# 45 "../../sdk/cutil_inline.h"
+bdimx, unsigned bdimy, unsigned bdimz, char *
+# 46 "../../sdk/cutil_inline.h"
+aname, int index, char *file, int line)
+# 47 "../../sdk/cutil_inline.h"
+{
+# 48 "../../sdk/cutil_inline.h"
+cutCheckBankAccess(tidx, tidy, tidz, bdimx, bdimy, bdimz, file, line, aname, index);
+# 49 "../../sdk/cutil_inline.h"
+}
+# 51 "../../sdk/cutil_inline.h"
 inline void __cutilCondition(int val, char *file, int line)
-# 23 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 52 "../../sdk/cutil_inline.h"
 {
-# 24 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 53 "../../sdk/cutil_inline.h"
 if ((CUTFalse) == (cutCheckCondition(val, file, line))) {
-# 25 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 54 "../../sdk/cutil_inline.h"
 exit(1);
-# 26 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 55 "../../sdk/cutil_inline.h"
 }
-# 27 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 56 "../../sdk/cutil_inline.h"
 }
-# 29 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 58 "../../sdk/cutil_inline.h"
 inline void __cutilExit(int argc, char **argv)
-# 30 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 59 "../../sdk/cutil_inline.h"
 {
-# 31 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 60 "../../sdk/cutil_inline.h"
 if (!(cutCheckCmdLineFlag(argc, (const char **)argv, "noprompt"))) {
-# 32 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 61 "../../sdk/cutil_inline.h"
 printf("\nPress ENTER to exit...\n");
-# 33 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 62 "../../sdk/cutil_inline.h"
 fflush(stdout);
-# 34 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 63 "../../sdk/cutil_inline.h"
 fflush(stderr);
-# 35 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 64 "../../sdk/cutil_inline.h"
 getchar();
-# 36 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 65 "../../sdk/cutil_inline.h"
 }
-# 37 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 66 "../../sdk/cutil_inline.h"
 exit(0);
-# 38 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 67 "../../sdk/cutil_inline.h"
 }
-# 41 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 72 "../../sdk/cutil_inline.h"
 inline int cutGetMaxGflopsDeviceId()
-# 42 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 73 "../../sdk/cutil_inline.h"
 {
-# 43 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 74 "../../sdk/cutil_inline.h"
 auto int device_count = 0;
-# 44 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 75 "../../sdk/cutil_inline.h"
 cudaGetDeviceCount(&device_count);
-# 46 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 77 "../../sdk/cutil_inline.h"
 auto cudaDeviceProp device_properties;
-# 47 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 78 "../../sdk/cutil_inline.h"
 auto int max_gflops_device = 0;
-# 48 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 79 "../../sdk/cutil_inline.h"
 auto int max_gflops = 0;
-# 50 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 81 "../../sdk/cutil_inline.h"
 auto int current_device = 0;
-# 51 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 82 "../../sdk/cutil_inline.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 52 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 83 "../../sdk/cutil_inline.h"
 max_gflops = device_properties.multiProcessorCount * device_properties.clockRate;
-# 53 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 84 "../../sdk/cutil_inline.h"
 ++current_device;
-# 55 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 86 "../../sdk/cutil_inline.h"
 while (current_device < device_count)
-# 56 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 87 "../../sdk/cutil_inline.h"
 {
-# 57 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 88 "../../sdk/cutil_inline.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 58 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 89 "../../sdk/cutil_inline.h"
 auto int gflops = (device_properties.multiProcessorCount * device_properties.clockRate);
-# 59 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 90 "../../sdk/cutil_inline.h"
 if (gflops > max_gflops)
-# 60 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 91 "../../sdk/cutil_inline.h"
 {
-# 61 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 92 "../../sdk/cutil_inline.h"
 max_gflops = gflops;
-# 62 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 93 "../../sdk/cutil_inline.h"
 max_gflops_device = current_device;
-# 63 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 94 "../../sdk/cutil_inline.h"
 }
-# 64 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 95 "../../sdk/cutil_inline.h"
 ++current_device;
-# 65 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 96 "../../sdk/cutil_inline.h"
 }
-# 67 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 98 "../../sdk/cutil_inline.h"
 return max_gflops_device;
-# 68 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
+# 99 "../../sdk/cutil_inline.h"
 }
-# 70 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
-# 71 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 72 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 73 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 75 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 76 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 77 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 79 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cudaSafeCall(cudaError err, const char *file, const int line)
-# 80 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 81 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 82 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 84 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 85 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 86 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 88 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cudaSafeThreadSync(const char *file, const int line)
-# 89 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 90 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaError err = cudaThreadSynchronize();
-# 91 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 92 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 94 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 95 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 96 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 98 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
-# 99 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((CUFFT_SUCCESS) != err) {
-# 101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
-# 103 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 104 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 105 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
-# 108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 109 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((CUTTrue) != err) {
-# 110 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
-# 112 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 113 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 114 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 116 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
-# 117 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 118 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaError_t err = cudaGetLastError();
-# 119 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 120 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 123 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 132 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 133 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
-# 134 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 135 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if (!(pointer)) {
-# 136 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
-# 138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 140 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 145 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void cutilDeviceInit(int ARGC, char **ARGV)
-# 146 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 147 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto int deviceCount;
-# 148 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h", 148);
-# 149 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if (deviceCount == 0) {
-# 150 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
-# 151 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 152 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 153 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto int dev = 0;
-# 154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 155 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
-# 157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaDeviceProp deviceProp;
-# 158 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h", 158);
-# 159 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((deviceProp.major) < 1) {
-# 160 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "cutil error: device does not support CUDA.\n");
-# 161 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1); }
-# 163 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 164 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
-# 165 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-__cudaSafeCall(cudaSetDevice(dev), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h", 165);
-# 166 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 171 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 172 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-{
-# 173 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-auto cudaError_t err = cudaGetLastError();
-# 174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 177 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 178 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 179 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-err = cudaThreadSynchronize();
-# 180 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-if ((cudaSuccess) != err) {
-# 181 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 183 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-exit(-1);
-# 184 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 185 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_runtime.h"
-}
-# 16 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 102 "../../sdk/cutil_inline.h"
 inline void __cuSafeCallNoSync(CUresult err, const char *file, const int line)
-# 17 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 103 "../../sdk/cutil_inline.h"
 {
-# 18 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 104 "../../sdk/cutil_inline.h"
+do {
+# 105 "../../sdk/cutil_inline.h"
 if ((CUDA_SUCCESS) != err) {
-# 19 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 106 "../../sdk/cutil_inline.h"
 fprintf(stderr, "cuSafeCallNoSync() Driver API error = %04d from file <%s>, line %i.\n", err, file, line);
-# 21 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 108 "../../sdk/cutil_inline.h"
 exit(-1);
-# 22 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 109 "../../sdk/cutil_inline.h"
 }
-# 23 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 110 "../../sdk/cutil_inline.h"
+} while (0);
+# 111 "../../sdk/cutil_inline.h"
 }
-# 24 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 112 "../../sdk/cutil_inline.h"
 inline void __cuSafeCall(CUresult err, const char *file, const int line)
-# 25 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 113 "../../sdk/cutil_inline.h"
 {
-# 26 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 114 "../../sdk/cutil_inline.h"
 __cuSafeCallNoSync(err, file, line);
-# 27 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 115 "../../sdk/cutil_inline.h"
 }
-# 29 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 117 "../../sdk/cutil_inline.h"
 inline void __cuCtxSync(const char *file, const int line)
-# 30 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 118 "../../sdk/cutil_inline.h"
 {
-# 31 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 119 "../../sdk/cutil_inline.h"
+do {
+# 120 "../../sdk/cutil_inline.h"
 auto CUresult err = cuCtxSynchronize();
-# 32 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 121 "../../sdk/cutil_inline.h"
 if ((CUDA_SUCCESS) != err) {
-# 33 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 122 "../../sdk/cutil_inline.h"
 fprintf(stderr, "cuCtxSynchronize() API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 35 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 124 "../../sdk/cutil_inline.h"
 exit(-1);
-# 36 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 125 "../../sdk/cutil_inline.h"
 }
-# 37 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 126 "../../sdk/cutil_inline.h"
+} while (0);
+# 127 "../../sdk/cutil_inline.h"
 }
-# 39 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-inline void __cuCheckMsg(const char *msg, const char *file, const int line)
-# 40 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 129 "../../sdk/cutil_inline.h"
+inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
+# 130 "../../sdk/cutil_inline.h"
 {
-# 41 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto CUresult err = cuCtxSynchronize();
-# 42 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if ((CUDA_SUCCESS) != err) {
-# 43 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-fprintf(stderr, "cutilDrvCheckMsg -> %s", msg);
-# 44 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 46 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 131 "../../sdk/cutil_inline.h"
+do {
+# 132 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 133 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
+# 135 "../../sdk/cutil_inline.h"
 exit(-1);
-# 47 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 136 "../../sdk/cutil_inline.h"
 }
-# 48 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 137 "../../sdk/cutil_inline.h"
+} while (0);
+# 138 "../../sdk/cutil_inline.h"
 }
-# 54 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
-# 55 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 140 "../../sdk/cutil_inline.h"
+inline void __cudaSafeCall(cudaError err, const char *file, const int line)
+# 141 "../../sdk/cutil_inline.h"
 {
-# 56 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-cuDevice = 0;
-# 57 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto int deviceCount = 0;
-# 58 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto CUresult err = cuInit(0);
-# 59 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if ((CUDA_SUCCESS) == err) {
-# 60 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h", 60); }
-# 61 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 142 "../../sdk/cutil_inline.h"
+do {
+# 143 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 144 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
+# 146 "../../sdk/cutil_inline.h"
+exit(-1);
+# 147 "../../sdk/cutil_inline.h"
+}
+# 148 "../../sdk/cutil_inline.h"
+} while (0);
+# 149 "../../sdk/cutil_inline.h"
+}
+# 151 "../../sdk/cutil_inline.h"
+inline void __cudaSafeThreadSync(const char *file, const int line)
+# 152 "../../sdk/cutil_inline.h"
+{
+# 153 "../../sdk/cutil_inline.h"
+do {
+# 154 "../../sdk/cutil_inline.h"
+auto cudaError err = cudaThreadSynchronize();
+# 155 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 156 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
+# 158 "../../sdk/cutil_inline.h"
+exit(-1);
+# 159 "../../sdk/cutil_inline.h"
+}
+# 160 "../../sdk/cutil_inline.h"
+} while (0);
+# 161 "../../sdk/cutil_inline.h"
+}
+# 163 "../../sdk/cutil_inline.h"
+inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
+# 164 "../../sdk/cutil_inline.h"
+{
+# 165 "../../sdk/cutil_inline.h"
+do {
+# 166 "../../sdk/cutil_inline.h"
+if ((CUFFT_SUCCESS) != err) {
+# 167 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
+# 169 "../../sdk/cutil_inline.h"
+exit(-1);
+# 170 "../../sdk/cutil_inline.h"
+}
+# 171 "../../sdk/cutil_inline.h"
+} while (0);
+# 172 "../../sdk/cutil_inline.h"
+}
+# 174 "../../sdk/cutil_inline.h"
+inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
+# 175 "../../sdk/cutil_inline.h"
+{
+# 176 "../../sdk/cutil_inline.h"
+if ((CUTTrue) != err) {
+# 177 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
+# 179 "../../sdk/cutil_inline.h"
+exit(-1);
+# 180 "../../sdk/cutil_inline.h"
+}
+# 181 "../../sdk/cutil_inline.h"
+}
+# 182 "../../sdk/cutil_inline.h"
+inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
+# 183 "../../sdk/cutil_inline.h"
+{
+# 184 "../../sdk/cutil_inline.h"
+do {
+# 185 "../../sdk/cutil_inline.h"
+auto cudaError_t err = cudaGetLastError();
+# 186 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 187 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 189 "../../sdk/cutil_inline.h"
+exit(-1);
+# 190 "../../sdk/cutil_inline.h"
+}
+# 191 "../../sdk/cutil_inline.h"
+err = cudaThreadSynchronize();
+# 192 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 193 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutilCheckMsg cudaThreadSynchronize error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 195 "../../sdk/cutil_inline.h"
+exit(-1);
+# 196 "../../sdk/cutil_inline.h"
+}
+# 197 "../../sdk/cutil_inline.h"
+} while (0);
+# 198 "../../sdk/cutil_inline.h"
+}
+# 199 "../../sdk/cutil_inline.h"
+inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
+# 200 "../../sdk/cutil_inline.h"
+{
+# 201 "../../sdk/cutil_inline.h"
+do {
+# 202 "../../sdk/cutil_inline.h"
+if (!(pointer)) {
+# 203 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
+# 205 "../../sdk/cutil_inline.h"
+exit(-1);
+# 206 "../../sdk/cutil_inline.h"
+}
+# 207 "../../sdk/cutil_inline.h"
+} while (0);
+# 208 "../../sdk/cutil_inline.h"
+}
+# 214 "../../sdk/cutil_inline.h"
+inline void cutilDeviceInit(int ARGC, char **ARGV)
+# 215 "../../sdk/cutil_inline.h"
+{
+# 216 "../../sdk/cutil_inline.h"
+auto int deviceCount;
+# 217 "../../sdk/cutil_inline.h"
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_inline.h", 217);
+# 218 "../../sdk/cutil_inline.h"
 if (deviceCount == 0) {
-# 62 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
-# 63 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 219 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
+# 220 "../../sdk/cutil_inline.h"
 exit(-1);
-# 64 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 221 "../../sdk/cutil_inline.h"
 }
-# 65 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 222 "../../sdk/cutil_inline.h"
 auto int dev = 0;
-# 66 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 223 "../../sdk/cutil_inline.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 67 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if (dev < 0) { dev = 0; }
-# 68 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
-# 69 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h", 69);
-# 70 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-auto char name[100];
-# 71 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-cuDeviceGetName(name, 100, cuDevice);
-# 72 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 224 "../../sdk/cutil_inline.h"
+if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+# 226 "../../sdk/cutil_inline.h"
+auto cudaDeviceProp deviceProp;
+# 227 "../../sdk/cutil_inline.h"
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_inline.h", 227);
+# 228 "../../sdk/cutil_inline.h"
+if ((deviceProp.major) < 1) {
+# 229 "../../sdk/cutil_inline.h"
+fprintf(stderr, "cutil error: device does not support CUDA.\n");
+# 230 "../../sdk/cutil_inline.h"
+exit(-1); }
+# 232 "../../sdk/cutil_inline.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 73 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 233 "../../sdk/cutil_inline.h"
+fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
+# 234 "../../sdk/cutil_inline.h"
+__cudaSafeCall(cudaSetDevice(dev), "../../sdk/cutil_inline.h", 234);
+# 235 "../../sdk/cutil_inline.h"
+}
+# 237 "../../sdk/cutil_inline.h"
+inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
+# 238 "../../sdk/cutil_inline.h"
+{
+# 239 "../../sdk/cutil_inline.h"
+cuDevice = 0;
+# 240 "../../sdk/cutil_inline.h"
+auto int deviceCount = 0;
+# 241 "../../sdk/cutil_inline.h"
+auto CUresult err = cuInit(0);
+# 242 "../../sdk/cutil_inline.h"
+if ((CUDA_SUCCESS) == err) {
+# 243 "../../sdk/cutil_inline.h"
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_inline.h", 243); }
+# 244 "../../sdk/cutil_inline.h"
+if (deviceCount == 0) {
+# 245 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
+# 246 "../../sdk/cutil_inline.h"
+exit(-1);
+# 247 "../../sdk/cutil_inline.h"
+}
+# 248 "../../sdk/cutil_inline.h"
+auto int dev = 0;
+# 249 "../../sdk/cutil_inline.h"
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+# 250 "../../sdk/cutil_inline.h"
+if (dev < 0) { dev = 0; }
+# 251 "../../sdk/cutil_inline.h"
+if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+# 252 "../../sdk/cutil_inline.h"
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_inline.h", 252);
+# 253 "../../sdk/cutil_inline.h"
+auto char name[100];
+# 254 "../../sdk/cutil_inline.h"
+cuDeviceGetName(name, 100, cuDevice);
+# 255 "../../sdk/cutil_inline.h"
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+# 256 "../../sdk/cutil_inline.h"
 fprintf(stderr, "Using device %d: %s\n", dev, name); }
-# 74 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 257 "../../sdk/cutil_inline.h"
 }
-# 78 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 262 "../../sdk/cutil_inline.h"
+inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
+# 263 "../../sdk/cutil_inline.h"
+{
+# 264 "../../sdk/cutil_inline.h"
+do {
+# 265 "../../sdk/cutil_inline.h"
+auto cudaError_t err = cudaGetLastError();
+# 266 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 267 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 269 "../../sdk/cutil_inline.h"
+exit(-1);
+# 270 "../../sdk/cutil_inline.h"
+}
+# 271 "../../sdk/cutil_inline.h"
+err = cudaThreadSynchronize();
+# 272 "../../sdk/cutil_inline.h"
+if ((cudaSuccess) != err) {
+# 273 "../../sdk/cutil_inline.h"
+fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
+# 275 "../../sdk/cutil_inline.h"
+exit(-1);
+# 276 "../../sdk/cutil_inline.h"
+}
+# 277 "../../sdk/cutil_inline.h"
+} while (0);
+# 278 "../../sdk/cutil_inline.h"
+}
+# 282 "../../sdk/cutil_inline.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 79 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 283 "../../sdk/cutil_inline.h"
 {
-# 80 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 284 "../../sdk/cutil_inline.h"
+do {
+# 285 "../../sdk/cutil_inline.h"
 auto CUresult err = cuCtxSynchronize();
-# 81 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 286 "../../sdk/cutil_inline.h"
 if ((CUDA_ERROR_INVALID_CONTEXT) != err) {
-# 82 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 287 "../../sdk/cutil_inline.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 84 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 289 "../../sdk/cutil_inline.h"
 exit(-1);
-# 85 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 290 "../../sdk/cutil_inline.h"
 }
-# 86 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 291 "../../sdk/cutil_inline.h"
 err = cuCtxSynchronize();
-# 87 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 292 "../../sdk/cutil_inline.h"
 if ((CUDA_SUCCESS) != err) {
-# 88 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 293 "../../sdk/cutil_inline.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 90 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 295 "../../sdk/cutil_inline.h"
 exit(-1);
-# 91 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
+# 296 "../../sdk/cutil_inline.h"
 }
-# 92 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline_drvapi.h"
-}
-# 12 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-inline void print_NVCC_min_spec(const char *sSDKsample, const char *sNVCCReq, const char *sDriverReq)
-# 13 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-{
-# 14 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf("CUDA %d.%02d Toolkit built this project.\n", 2010 / 1000, 2010 % 100);
-# 15 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf("  [ %s ] requirements:\n", sSDKsample);
-# 16 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf(" -> CUDA %s Toolkit\n", sNVCCReq);
-# 17 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
-printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
-# 18 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_inline.h"
+# 297 "../../sdk/cutil_inline.h"
+} while (0);
+# 298 "../../sdk/cutil_inline.h"
 }
 # 77 "bicubicTexture.cu"
 extern "C" { typedef unsigned uint; }
 # 78 "bicubicTexture.cu"
 typedef unsigned char uchar;
-# 49 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 49 "../../sdk/cutil_math.h"
 extern "C" { typedef unsigned uint; }
-# 50 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 50 "../../sdk/cutil_math.h"
 extern "C" { typedef unsigned short ushort; }
-# 85 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 85 "../../sdk/cutil_math.h"
 inline float lerp(float a, float b, float t)
-# 86 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 86 "../../sdk/cutil_math.h"
 {
-# 87 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 87 "../../sdk/cutil_math.h"
 return a + t * (b - a);
-# 88 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 88 "../../sdk/cutil_math.h"
 }
-# 91 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 91 "../../sdk/cutil_math.h"
 inline float clamp(float f, float a, float b)
-# 92 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 92 "../../sdk/cutil_math.h"
 {
-# 93 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 93 "../../sdk/cutil_math.h"
 return fmaxf(a, fminf(f, b));
-# 94 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 94 "../../sdk/cutil_math.h"
 }
-# 100 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 100 "../../sdk/cutil_math.h"
 inline int2 operator-(int2 &a)
-# 101 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 101 "../../sdk/cutil_math.h"
 {
-# 102 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 102 "../../sdk/cutil_math.h"
 return make_int2(-(a.x), -(a.y));
-# 103 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 103 "../../sdk/cutil_math.h"
 }
-# 106 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 106 "../../sdk/cutil_math.h"
 inline int2 operator+(int2 a, int2 b)
-# 107 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 107 "../../sdk/cutil_math.h"
 {
-# 108 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 108 "../../sdk/cutil_math.h"
 return make_int2(a.x + b.x, a.y + b.y);
-# 109 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 109 "../../sdk/cutil_math.h"
 }
-# 110 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 110 "../../sdk/cutil_math.h"
 inline void operator+=(int2 &a, int2 b)
-# 111 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 111 "../../sdk/cutil_math.h"
 {
-# 112 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 112 "../../sdk/cutil_math.h"
 (a.x) += b.x; (a.y) += b.y;
-# 113 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 113 "../../sdk/cutil_math.h"
 }
-# 116 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 116 "../../sdk/cutil_math.h"
 inline int2 operator-(int2 a, int2 b)
-# 117 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 117 "../../sdk/cutil_math.h"
 {
-# 118 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 118 "../../sdk/cutil_math.h"
 return make_int2(a.x - b.x, a.y - b.y);
-# 119 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 119 "../../sdk/cutil_math.h"
 }
-# 120 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 120 "../../sdk/cutil_math.h"
 inline void operator-=(int2 &a, int2 b)
-# 121 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 121 "../../sdk/cutil_math.h"
 {
-# 122 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 122 "../../sdk/cutil_math.h"
 (a.x) -= b.x; (a.y) -= b.y;
-# 123 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 123 "../../sdk/cutil_math.h"
 }
-# 126 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 126 "../../sdk/cutil_math.h"
 inline int2 operator*(int2 a, int2 b)
-# 127 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 127 "../../sdk/cutil_math.h"
 {
-# 128 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 128 "../../sdk/cutil_math.h"
 return make_int2(a.x * b.x, a.y * b.y);
-# 129 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 129 "../../sdk/cutil_math.h"
 }
-# 130 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 130 "../../sdk/cutil_math.h"
 inline int2 operator*(int2 a, int s)
-# 131 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 131 "../../sdk/cutil_math.h"
 {
-# 132 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 132 "../../sdk/cutil_math.h"
 return make_int2(a.x * s, a.y * s);
-# 133 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 133 "../../sdk/cutil_math.h"
 }
-# 134 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 134 "../../sdk/cutil_math.h"
 inline int2 operator*(int s, int2 a)
-# 135 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 135 "../../sdk/cutil_math.h"
 {
-# 136 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 136 "../../sdk/cutil_math.h"
 return make_int2(a.x * s, a.y * s);
-# 137 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 137 "../../sdk/cutil_math.h"
 }
-# 138 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 138 "../../sdk/cutil_math.h"
 inline void operator*=(int2 &a, int s)
-# 139 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 139 "../../sdk/cutil_math.h"
 {
-# 140 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 140 "../../sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s;
-# 141 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 141 "../../sdk/cutil_math.h"
 }
-# 147 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 147 "../../sdk/cutil_math.h"
 inline float2 make_float2(float s)
-# 148 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 148 "../../sdk/cutil_math.h"
 {
-# 149 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 149 "../../sdk/cutil_math.h"
 return make_float2(s, s);
-# 150 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 150 "../../sdk/cutil_math.h"
 }
-# 151 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 151 "../../sdk/cutil_math.h"
 inline float2 make_float2(int2 a)
-# 152 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 152 "../../sdk/cutil_math.h"
 {
-# 153 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 153 "../../sdk/cutil_math.h"
 return make_float2((float)(a.x), (float)(a.y));
-# 154 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 154 "../../sdk/cutil_math.h"
 }
-# 157 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 157 "../../sdk/cutil_math.h"
 inline float2 operator-(float2 &a)
-# 158 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 158 "../../sdk/cutil_math.h"
 {
-# 159 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 159 "../../sdk/cutil_math.h"
 return make_float2(-(a.x), -(a.y));
-# 160 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 160 "../../sdk/cutil_math.h"
 }
-# 163 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 163 "../../sdk/cutil_math.h"
 inline float2 operator+(float2 a, float2 b)
-# 164 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 164 "../../sdk/cutil_math.h"
 {
-# 165 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 165 "../../sdk/cutil_math.h"
 return make_float2(a.x + b.x, a.y + b.y);
-# 166 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 166 "../../sdk/cutil_math.h"
 }
-# 167 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 167 "../../sdk/cutil_math.h"
 inline void operator+=(float2 &a, float2 b)
-# 168 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 168 "../../sdk/cutil_math.h"
 {
-# 169 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 169 "../../sdk/cutil_math.h"
 (a.x) += b.x; (a.y) += b.y;
-# 170 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 170 "../../sdk/cutil_math.h"
 }
-# 173 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 173 "../../sdk/cutil_math.h"
 inline float2 operator-(float2 a, float2 b)
-# 174 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 174 "../../sdk/cutil_math.h"
 {
-# 175 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 175 "../../sdk/cutil_math.h"
 return make_float2(a.x - b.x, a.y - b.y);
-# 176 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 176 "../../sdk/cutil_math.h"
 }
-# 177 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 177 "../../sdk/cutil_math.h"
 inline void operator-=(float2 &a, float2 b)
-# 178 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 178 "../../sdk/cutil_math.h"
 {
-# 179 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 179 "../../sdk/cutil_math.h"
 (a.x) -= b.x; (a.y) -= b.y;
-# 180 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 180 "../../sdk/cutil_math.h"
 }
-# 183 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 183 "../../sdk/cutil_math.h"
 inline float2 operator*(float2 a, float2 b)
-# 184 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 184 "../../sdk/cutil_math.h"
 {
-# 185 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 185 "../../sdk/cutil_math.h"
 return make_float2(a.x * b.x, a.y * b.y);
-# 186 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 186 "../../sdk/cutil_math.h"
 }
-# 187 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 187 "../../sdk/cutil_math.h"
 inline float2 operator*(float2 a, float s)
-# 188 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 188 "../../sdk/cutil_math.h"
 {
-# 189 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 189 "../../sdk/cutil_math.h"
 return make_float2(a.x * s, a.y * s);
-# 190 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 190 "../../sdk/cutil_math.h"
 }
-# 191 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 191 "../../sdk/cutil_math.h"
 inline float2 operator*(float s, float2 a)
-# 192 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 192 "../../sdk/cutil_math.h"
 {
-# 193 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 193 "../../sdk/cutil_math.h"
 return make_float2(a.x * s, a.y * s);
-# 194 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 194 "../../sdk/cutil_math.h"
 }
-# 195 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 195 "../../sdk/cutil_math.h"
 inline void operator*=(float2 &a, float s)
-# 196 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 196 "../../sdk/cutil_math.h"
 {
-# 197 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 197 "../../sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s;
-# 198 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 198 "../../sdk/cutil_math.h"
 }
-# 201 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 201 "../../sdk/cutil_math.h"
 inline float2 operator/(float2 a, float2 b)
-# 202 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 202 "../../sdk/cutil_math.h"
 {
-# 203 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 203 "../../sdk/cutil_math.h"
 return make_float2(a.x / b.x, a.y / b.y);
-# 204 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 204 "../../sdk/cutil_math.h"
 }
-# 205 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 205 "../../sdk/cutil_math.h"
 inline float2 operator/(float2 a, float s)
-# 206 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 206 "../../sdk/cutil_math.h"
 {
-# 207 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 207 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 208 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 208 "../../sdk/cutil_math.h"
 return (a * inv);
-# 209 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 209 "../../sdk/cutil_math.h"
 }
-# 210 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 210 "../../sdk/cutil_math.h"
 inline float2 operator/(float s, float2 a)
-# 211 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 211 "../../sdk/cutil_math.h"
 {
-# 212 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 212 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 213 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 213 "../../sdk/cutil_math.h"
 return (a * inv);
-# 214 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 214 "../../sdk/cutil_math.h"
 }
-# 215 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 215 "../../sdk/cutil_math.h"
 inline void operator/=(float2 &a, float s)
-# 216 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 216 "../../sdk/cutil_math.h"
 {
-# 217 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 217 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 218 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 218 "../../sdk/cutil_math.h"
 (a *= inv);
-# 219 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 219 "../../sdk/cutil_math.h"
 }
-# 222 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 222 "../../sdk/cutil_math.h"
 inline float2 lerp(float2 a, float2 b, float t)
-# 223 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 223 "../../sdk/cutil_math.h"
 {
-# 224 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 224 "../../sdk/cutil_math.h"
 return (a + (t * (b - a)));
-# 225 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 225 "../../sdk/cutil_math.h"
 }
-# 228 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 228 "../../sdk/cutil_math.h"
 inline float2 clamp(float2 v, float a, float b)
-# 229 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 229 "../../sdk/cutil_math.h"
 {
-# 230 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 230 "../../sdk/cutil_math.h"
 return make_float2(clamp(v.x, a, b), clamp(v.y, a, b));
-# 231 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 231 "../../sdk/cutil_math.h"
 }
-# 233 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 233 "../../sdk/cutil_math.h"
 inline float2 clamp(float2 v, float2 a, float2 b)
-# 234 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 234 "../../sdk/cutil_math.h"
 {
-# 235 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 235 "../../sdk/cutil_math.h"
 return make_float2(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y));
-# 236 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 236 "../../sdk/cutil_math.h"
 }
-# 239 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 239 "../../sdk/cutil_math.h"
 inline float dot(float2 a, float2 b)
-# 240 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 240 "../../sdk/cutil_math.h"
 {
-# 241 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 241 "../../sdk/cutil_math.h"
 return a.x * b.x + a.y * b.y;
-# 242 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 242 "../../sdk/cutil_math.h"
 }
-# 245 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 245 "../../sdk/cutil_math.h"
 inline float length(float2 v)
-# 246 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 246 "../../sdk/cutil_math.h"
 {
-# 247 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 247 "../../sdk/cutil_math.h"
 return sqrtf(dot(v, v));
-# 248 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 248 "../../sdk/cutil_math.h"
 }
-# 251 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 251 "../../sdk/cutil_math.h"
 inline float2 normalize(float2 v)
-# 252 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 252 "../../sdk/cutil_math.h"
 {
-# 253 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 253 "../../sdk/cutil_math.h"
 auto float invLen = rsqrtf(dot(v, v));
-# 254 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 254 "../../sdk/cutil_math.h"
 return (v * invLen);
-# 255 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 255 "../../sdk/cutil_math.h"
 }
-# 258 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 258 "../../sdk/cutil_math.h"
 inline float2 floor(const float2 v)
-# 259 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 259 "../../sdk/cutil_math.h"
 {
-# 260 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 260 "../../sdk/cutil_math.h"
 return make_float2(floor(v.x), floor(v.y));
-# 261 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 261 "../../sdk/cutil_math.h"
 }
-# 264 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 264 "../../sdk/cutil_math.h"
 inline float2 reflect(float2 i, float2 n)
-# 265 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 265 "../../sdk/cutil_math.h"
 {
-# 266 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 266 "../../sdk/cutil_math.h"
 return (i - (((2.0F) * n) * dot(n, i)));
-# 267 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 267 "../../sdk/cutil_math.h"
 }
-# 270 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 270 "../../sdk/cutil_math.h"
 inline float2 fabs(float2 v)
-# 271 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 271 "../../sdk/cutil_math.h"
 {
-# 272 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 272 "../../sdk/cutil_math.h"
 return make_float2(fabs(v.x), fabs(v.y));
-# 273 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 273 "../../sdk/cutil_math.h"
 }
-# 279 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 279 "../../sdk/cutil_math.h"
 inline float3 make_float3(float s)
-# 280 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 280 "../../sdk/cutil_math.h"
 {
-# 281 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 281 "../../sdk/cutil_math.h"
 return make_float3(s, s, s);
-# 282 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 282 "../../sdk/cutil_math.h"
 }
-# 283 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 283 "../../sdk/cutil_math.h"
 inline float3 make_float3(float2 a)
-# 284 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 284 "../../sdk/cutil_math.h"
 {
-# 285 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 285 "../../sdk/cutil_math.h"
 return make_float3(a.x, a.y, (0.0F));
-# 286 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 286 "../../sdk/cutil_math.h"
 }
-# 287 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 287 "../../sdk/cutil_math.h"
 inline float3 make_float3(float2 a, float s)
-# 288 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 288 "../../sdk/cutil_math.h"
 {
-# 289 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 289 "../../sdk/cutil_math.h"
 return make_float3(a.x, a.y, s);
-# 290 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 290 "../../sdk/cutil_math.h"
 }
-# 291 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 291 "../../sdk/cutil_math.h"
 inline float3 make_float3(float4 a)
-# 292 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 292 "../../sdk/cutil_math.h"
 {
-# 293 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 293 "../../sdk/cutil_math.h"
 return make_float3(a.x, a.y, a.z);
-# 294 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 294 "../../sdk/cutil_math.h"
 }
-# 295 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 295 "../../sdk/cutil_math.h"
 inline float3 make_float3(int3 a)
-# 296 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 296 "../../sdk/cutil_math.h"
 {
-# 297 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 297 "../../sdk/cutil_math.h"
 return make_float3((float)(a.x), (float)(a.y), (float)(a.z));
-# 298 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 298 "../../sdk/cutil_math.h"
 }
-# 301 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 301 "../../sdk/cutil_math.h"
 inline float3 operator-(float3 &a)
-# 302 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 302 "../../sdk/cutil_math.h"
 {
-# 303 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 303 "../../sdk/cutil_math.h"
 return make_float3(-(a.x), -(a.y), -(a.z));
-# 304 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 304 "../../sdk/cutil_math.h"
 }
-# 307 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 307 "../../sdk/cutil_math.h"
 static inline float3 fminf(float3 a, float3 b)
-# 308 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 308 "../../sdk/cutil_math.h"
 {
-# 309 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 309 "../../sdk/cutil_math.h"
 return make_float3(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z));
-# 310 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 310 "../../sdk/cutil_math.h"
 }
-# 313 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 313 "../../sdk/cutil_math.h"
 static inline float3 fmaxf(float3 a, float3 b)
-# 314 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 314 "../../sdk/cutil_math.h"
 {
-# 315 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 315 "../../sdk/cutil_math.h"
 return make_float3(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z));
-# 316 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 316 "../../sdk/cutil_math.h"
 }
-# 319 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 319 "../../sdk/cutil_math.h"
 inline float3 operator+(float3 a, float3 b)
-# 320 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 320 "../../sdk/cutil_math.h"
 {
-# 321 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 321 "../../sdk/cutil_math.h"
 return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
-# 322 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 322 "../../sdk/cutil_math.h"
 }
-# 323 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 323 "../../sdk/cutil_math.h"
 inline float3 operator+(float3 a, float b)
-# 324 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 324 "../../sdk/cutil_math.h"
 {
-# 325 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 325 "../../sdk/cutil_math.h"
 return make_float3(a.x + b, a.y + b, a.z + b);
-# 326 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 326 "../../sdk/cutil_math.h"
 }
-# 327 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 327 "../../sdk/cutil_math.h"
 inline void operator+=(float3 &a, float3 b)
-# 328 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 328 "../../sdk/cutil_math.h"
 {
-# 329 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 329 "../../sdk/cutil_math.h"
 (a.x) += b.x; (a.y) += b.y; (a.z) += b.z;
-# 330 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 330 "../../sdk/cutil_math.h"
 }
-# 333 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 333 "../../sdk/cutil_math.h"
 inline float3 operator-(float3 a, float3 b)
-# 334 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 334 "../../sdk/cutil_math.h"
 {
-# 335 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 335 "../../sdk/cutil_math.h"
 return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
-# 336 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 336 "../../sdk/cutil_math.h"
 }
-# 337 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 337 "../../sdk/cutil_math.h"
 inline float3 operator-(float3 a, float b)
-# 338 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 338 "../../sdk/cutil_math.h"
 {
-# 339 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 339 "../../sdk/cutil_math.h"
 return make_float3(a.x - b, a.y - b, a.z - b);
-# 340 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 340 "../../sdk/cutil_math.h"
 }
-# 341 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 341 "../../sdk/cutil_math.h"
 inline void operator-=(float3 &a, float3 b)
-# 342 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 342 "../../sdk/cutil_math.h"
 {
-# 343 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 343 "../../sdk/cutil_math.h"
 (a.x) -= b.x; (a.y) -= b.y; (a.z) -= b.z;
-# 344 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 344 "../../sdk/cutil_math.h"
 }
-# 347 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 347 "../../sdk/cutil_math.h"
 inline float3 operator*(float3 a, float3 b)
-# 348 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 348 "../../sdk/cutil_math.h"
 {
-# 349 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 349 "../../sdk/cutil_math.h"
 return make_float3(a.x * b.x, a.y * b.y, a.z * b.z);
-# 350 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 350 "../../sdk/cutil_math.h"
 }
-# 351 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 351 "../../sdk/cutil_math.h"
 inline float3 operator*(float3 a, float s)
-# 352 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 352 "../../sdk/cutil_math.h"
 {
-# 353 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 353 "../../sdk/cutil_math.h"
 return make_float3(a.x * s, a.y * s, a.z * s);
-# 354 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 354 "../../sdk/cutil_math.h"
 }
-# 355 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 355 "../../sdk/cutil_math.h"
 inline float3 operator*(float s, float3 a)
-# 356 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 356 "../../sdk/cutil_math.h"
 {
-# 357 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 357 "../../sdk/cutil_math.h"
 return make_float3(a.x * s, a.y * s, a.z * s);
-# 358 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 358 "../../sdk/cutil_math.h"
 }
-# 359 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 359 "../../sdk/cutil_math.h"
 inline void operator*=(float3 &a, float s)
-# 360 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 360 "../../sdk/cutil_math.h"
 {
-# 361 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 361 "../../sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s;
-# 362 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 362 "../../sdk/cutil_math.h"
 }
-# 365 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 365 "../../sdk/cutil_math.h"
 inline float3 operator/(float3 a, float3 b)
-# 366 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 366 "../../sdk/cutil_math.h"
 {
-# 367 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 367 "../../sdk/cutil_math.h"
 return make_float3(a.x / b.x, a.y / b.y, a.z / b.z);
-# 368 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 368 "../../sdk/cutil_math.h"
 }
-# 369 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 369 "../../sdk/cutil_math.h"
 inline float3 operator/(float3 a, float s)
-# 370 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 370 "../../sdk/cutil_math.h"
 {
-# 371 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 371 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 372 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 372 "../../sdk/cutil_math.h"
 return (a * inv);
-# 373 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 373 "../../sdk/cutil_math.h"
 }
-# 374 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 374 "../../sdk/cutil_math.h"
 inline float3 operator/(float s, float3 a)
-# 375 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 375 "../../sdk/cutil_math.h"
 {
-# 376 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 376 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 377 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 377 "../../sdk/cutil_math.h"
 return (a * inv);
-# 378 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 378 "../../sdk/cutil_math.h"
 }
-# 379 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 379 "../../sdk/cutil_math.h"
 inline void operator/=(float3 &a, float s)
-# 380 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 380 "../../sdk/cutil_math.h"
 {
-# 381 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 381 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 382 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 382 "../../sdk/cutil_math.h"
 (a *= inv);
-# 383 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 383 "../../sdk/cutil_math.h"
 }
-# 386 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 386 "../../sdk/cutil_math.h"
 inline float3 lerp(float3 a, float3 b, float t)
-# 387 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 387 "../../sdk/cutil_math.h"
 {
-# 388 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 388 "../../sdk/cutil_math.h"
 return (a + (t * (b - a)));
-# 389 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 389 "../../sdk/cutil_math.h"
 }
-# 392 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 392 "../../sdk/cutil_math.h"
 inline float3 clamp(float3 v, float a, float b)
-# 393 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 393 "../../sdk/cutil_math.h"
 {
-# 394 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 394 "../../sdk/cutil_math.h"
 return make_float3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-# 395 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 395 "../../sdk/cutil_math.h"
 }
-# 397 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 397 "../../sdk/cutil_math.h"
 inline float3 clamp(float3 v, float3 a, float3 b)
-# 398 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 398 "../../sdk/cutil_math.h"
 {
-# 399 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 399 "../../sdk/cutil_math.h"
 return make_float3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-# 400 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 400 "../../sdk/cutil_math.h"
 }
-# 403 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 403 "../../sdk/cutil_math.h"
 inline float dot(float3 a, float3 b)
-# 404 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 404 "../../sdk/cutil_math.h"
 {
-# 405 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 405 "../../sdk/cutil_math.h"
 return (a.x * b.x + a.y * b.y) + a.z * b.z;
-# 406 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 406 "../../sdk/cutil_math.h"
 }
-# 409 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 409 "../../sdk/cutil_math.h"
 inline float3 cross(float3 a, float3 b)
-# 410 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 410 "../../sdk/cutil_math.h"
 {
-# 411 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 411 "../../sdk/cutil_math.h"
 return make_float3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
-# 412 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 412 "../../sdk/cutil_math.h"
 }
-# 415 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 415 "../../sdk/cutil_math.h"
 inline float length(float3 v)
-# 416 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 416 "../../sdk/cutil_math.h"
 {
-# 417 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 417 "../../sdk/cutil_math.h"
 return sqrtf(dot(v, v));
-# 418 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 418 "../../sdk/cutil_math.h"
 }
-# 421 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 421 "../../sdk/cutil_math.h"
 inline float3 normalize(float3 v)
-# 422 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 422 "../../sdk/cutil_math.h"
 {
-# 423 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 423 "../../sdk/cutil_math.h"
 auto float invLen = rsqrtf(dot(v, v));
-# 424 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 424 "../../sdk/cutil_math.h"
 return (v * invLen);
-# 425 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 425 "../../sdk/cutil_math.h"
 }
-# 428 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 428 "../../sdk/cutil_math.h"
 inline float3 floor(const float3 v)
-# 429 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 429 "../../sdk/cutil_math.h"
 {
-# 430 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 430 "../../sdk/cutil_math.h"
 return make_float3(floor(v.x), floor(v.y), floor(v.z));
-# 431 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 431 "../../sdk/cutil_math.h"
 }
-# 434 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 434 "../../sdk/cutil_math.h"
 inline float3 reflect(float3 i, float3 n)
-# 435 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 435 "../../sdk/cutil_math.h"
 {
-# 436 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 436 "../../sdk/cutil_math.h"
 return (i - (((2.0F) * n) * dot(n, i)));
-# 437 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 437 "../../sdk/cutil_math.h"
 }
-# 440 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 440 "../../sdk/cutil_math.h"
 inline float3 fabs(float3 v)
-# 441 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 441 "../../sdk/cutil_math.h"
 {
-# 442 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 442 "../../sdk/cutil_math.h"
 return make_float3(fabs(v.x), fabs(v.y), fabs(v.z));
-# 443 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 443 "../../sdk/cutil_math.h"
 }
-# 449 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 449 "../../sdk/cutil_math.h"
 inline float4 make_float4(float s)
-# 450 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 450 "../../sdk/cutil_math.h"
 {
-# 451 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 451 "../../sdk/cutil_math.h"
 return make_float4(s, s, s, s);
-# 452 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 452 "../../sdk/cutil_math.h"
 }
-# 453 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 453 "../../sdk/cutil_math.h"
 inline float4 make_float4(float3 a)
-# 454 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 454 "../../sdk/cutil_math.h"
 {
-# 455 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 455 "../../sdk/cutil_math.h"
 return make_float4(a.x, a.y, a.z, (0.0F));
-# 456 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 456 "../../sdk/cutil_math.h"
 }
-# 457 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 457 "../../sdk/cutil_math.h"
 inline float4 make_float4(float3 a, float w)
-# 458 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 458 "../../sdk/cutil_math.h"
 {
-# 459 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 459 "../../sdk/cutil_math.h"
 return make_float4(a.x, a.y, a.z, w);
-# 460 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 460 "../../sdk/cutil_math.h"
 }
-# 461 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 461 "../../sdk/cutil_math.h"
 inline float4 make_float4(int4 a)
-# 462 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 462 "../../sdk/cutil_math.h"
 {
-# 463 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 463 "../../sdk/cutil_math.h"
 return make_float4((float)(a.x), (float)(a.y), (float)(a.z), (float)(a.w));
-# 464 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 464 "../../sdk/cutil_math.h"
 }
-# 467 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 467 "../../sdk/cutil_math.h"
 inline float4 operator-(float4 &a)
-# 468 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 468 "../../sdk/cutil_math.h"
 {
-# 469 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 469 "../../sdk/cutil_math.h"
 return make_float4(-(a.x), -(a.y), -(a.z), -(a.w));
-# 470 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 470 "../../sdk/cutil_math.h"
 }
-# 473 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 473 "../../sdk/cutil_math.h"
 static inline float4 fminf(float4 a, float4 b)
-# 474 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 474 "../../sdk/cutil_math.h"
 {
-# 475 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 475 "../../sdk/cutil_math.h"
 return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
-# 476 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 476 "../../sdk/cutil_math.h"
 }
-# 479 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 479 "../../sdk/cutil_math.h"
 static inline float4 fmaxf(float4 a, float4 b)
-# 480 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 480 "../../sdk/cutil_math.h"
 {
-# 481 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 481 "../../sdk/cutil_math.h"
 return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
-# 482 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 482 "../../sdk/cutil_math.h"
 }
-# 485 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 485 "../../sdk/cutil_math.h"
 inline float4 operator+(float4 a, float4 b)
-# 486 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 486 "../../sdk/cutil_math.h"
 {
-# 487 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 487 "../../sdk/cutil_math.h"
 return make_float4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
-# 488 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 488 "../../sdk/cutil_math.h"
 }
-# 489 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 489 "../../sdk/cutil_math.h"
 inline void operator+=(float4 &a, float4 b)
-# 490 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 490 "../../sdk/cutil_math.h"
 {
-# 491 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 491 "../../sdk/cutil_math.h"
 (a.x) += b.x; (a.y) += b.y; (a.z) += b.z; (a.w) += b.w;
-# 492 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 492 "../../sdk/cutil_math.h"
 }
-# 495 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 495 "../../sdk/cutil_math.h"
 inline float4 operator-(float4 a, float4 b)
-# 496 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 496 "../../sdk/cutil_math.h"
 {
-# 497 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 497 "../../sdk/cutil_math.h"
 return make_float4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
-# 498 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 498 "../../sdk/cutil_math.h"
 }
-# 499 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 499 "../../sdk/cutil_math.h"
 inline void operator-=(float4 &a, float4 b)
-# 500 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 500 "../../sdk/cutil_math.h"
 {
-# 501 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 501 "../../sdk/cutil_math.h"
 (a.x) -= b.x; (a.y) -= b.y; (a.z) -= b.z; (a.w) -= b.w;
-# 502 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 502 "../../sdk/cutil_math.h"
 }
-# 505 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 505 "../../sdk/cutil_math.h"
 inline float4 operator*(float4 a, float s)
-# 506 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 506 "../../sdk/cutil_math.h"
 {
-# 507 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 507 "../../sdk/cutil_math.h"
 return make_float4(a.x * s, a.y * s, a.z * s, a.w * s);
-# 508 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 508 "../../sdk/cutil_math.h"
 }
-# 509 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 509 "../../sdk/cutil_math.h"
 inline float4 operator*(float s, float4 a)
-# 510 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 510 "../../sdk/cutil_math.h"
 {
-# 511 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 511 "../../sdk/cutil_math.h"
 return make_float4(a.x * s, a.y * s, a.z * s, a.w * s);
-# 512 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 512 "../../sdk/cutil_math.h"
 }
-# 513 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 513 "../../sdk/cutil_math.h"
 inline void operator*=(float4 &a, float s)
-# 514 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 514 "../../sdk/cutil_math.h"
 {
-# 515 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 515 "../../sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s; (a.w) *= s;
-# 516 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 516 "../../sdk/cutil_math.h"
 }
-# 519 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 519 "../../sdk/cutil_math.h"
 inline float4 operator/(float4 a, float4 b)
-# 520 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 520 "../../sdk/cutil_math.h"
 {
-# 521 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 521 "../../sdk/cutil_math.h"
 return make_float4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
-# 522 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 522 "../../sdk/cutil_math.h"
 }
-# 523 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 523 "../../sdk/cutil_math.h"
 inline float4 operator/(float4 a, float s)
-# 524 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 524 "../../sdk/cutil_math.h"
 {
-# 525 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 525 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 526 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 526 "../../sdk/cutil_math.h"
 return (a * inv);
-# 527 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 527 "../../sdk/cutil_math.h"
 }
-# 528 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 528 "../../sdk/cutil_math.h"
 inline float4 operator/(float s, float4 a)
-# 529 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 529 "../../sdk/cutil_math.h"
 {
-# 530 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 530 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 531 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 531 "../../sdk/cutil_math.h"
 return (a * inv);
-# 532 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 532 "../../sdk/cutil_math.h"
 }
-# 533 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 533 "../../sdk/cutil_math.h"
 inline void operator/=(float4 &a, float s)
-# 534 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 534 "../../sdk/cutil_math.h"
 {
-# 535 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 535 "../../sdk/cutil_math.h"
 auto float inv = ((1.0F) / s);
-# 536 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 536 "../../sdk/cutil_math.h"
 (a *= inv);
-# 537 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 537 "../../sdk/cutil_math.h"
 }
-# 540 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 540 "../../sdk/cutil_math.h"
 inline float4 lerp(float4 a, float4 b, float t)
-# 541 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 541 "../../sdk/cutil_math.h"
 {
-# 542 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 542 "../../sdk/cutil_math.h"
 return (a + (t * (b - a)));
-# 543 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 543 "../../sdk/cutil_math.h"
 }
-# 546 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 546 "../../sdk/cutil_math.h"
 inline float4 clamp(float4 v, float a, float b)
-# 547 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 547 "../../sdk/cutil_math.h"
 {
-# 548 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 548 "../../sdk/cutil_math.h"
 return make_float4(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b), clamp(v.w, a, b));
-# 549 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 549 "../../sdk/cutil_math.h"
 }
-# 551 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 551 "../../sdk/cutil_math.h"
 inline float4 clamp(float4 v, float4 a, float4 b)
-# 552 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 552 "../../sdk/cutil_math.h"
 {
-# 553 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 553 "../../sdk/cutil_math.h"
 return make_float4(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z), clamp(v.w, a.w, b.w));
-# 554 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 554 "../../sdk/cutil_math.h"
 }
-# 557 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 557 "../../sdk/cutil_math.h"
 inline float dot(float4 a, float4 b)
-# 558 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 558 "../../sdk/cutil_math.h"
 {
-# 559 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 559 "../../sdk/cutil_math.h"
 return ((a.x * b.x + a.y * b.y) + a.z * b.z) + a.w * b.w;
-# 560 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 560 "../../sdk/cutil_math.h"
 }
-# 563 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 563 "../../sdk/cutil_math.h"
 inline float length(float4 r)
-# 564 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 564 "../../sdk/cutil_math.h"
 {
-# 565 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 565 "../../sdk/cutil_math.h"
 return sqrtf(dot(r, r));
-# 566 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 566 "../../sdk/cutil_math.h"
 }
-# 569 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 569 "../../sdk/cutil_math.h"
 inline float4 normalize(float4 v)
-# 570 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 570 "../../sdk/cutil_math.h"
 {
-# 571 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 571 "../../sdk/cutil_math.h"
 auto float invLen = rsqrtf(dot(v, v));
-# 572 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 572 "../../sdk/cutil_math.h"
 return (v * invLen);
-# 573 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 573 "../../sdk/cutil_math.h"
 }
-# 576 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 576 "../../sdk/cutil_math.h"
 inline float4 floor(const float4 v)
-# 577 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 577 "../../sdk/cutil_math.h"
 {
-# 578 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 578 "../../sdk/cutil_math.h"
 return make_float4(floor(v.x), floor(v.y), floor(v.z), floor(v.w));
-# 579 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 579 "../../sdk/cutil_math.h"
 }
-# 582 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 582 "../../sdk/cutil_math.h"
 inline float4 fabs(float4 v)
-# 583 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 583 "../../sdk/cutil_math.h"
 {
-# 584 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 584 "../../sdk/cutil_math.h"
 return make_float4(fabs(v.x), fabs(v.y), fabs(v.z), fabs(v.w));
-# 585 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 585 "../../sdk/cutil_math.h"
 }
-# 591 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 591 "../../sdk/cutil_math.h"
 inline int3 make_int3(int s)
-# 592 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 592 "../../sdk/cutil_math.h"
 {
-# 593 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 593 "../../sdk/cutil_math.h"
 return make_int3(s, s, s);
-# 594 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 594 "../../sdk/cutil_math.h"
 }
-# 595 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 595 "../../sdk/cutil_math.h"
 inline int3 make_int3(float3 a)
-# 596 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 596 "../../sdk/cutil_math.h"
 {
-# 597 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 597 "../../sdk/cutil_math.h"
 return make_int3((int)(a.x), (int)(a.y), (int)(a.z));
-# 598 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 598 "../../sdk/cutil_math.h"
 }
-# 601 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 601 "../../sdk/cutil_math.h"
 inline int3 operator-(int3 &a)
-# 602 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 602 "../../sdk/cutil_math.h"
 {
-# 603 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 603 "../../sdk/cutil_math.h"
 return make_int3(-(a.x), -(a.y), -(a.z));
-# 604 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 604 "../../sdk/cutil_math.h"
 }
-# 607 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 607 "../../sdk/cutil_math.h"
 inline int3 min(int3 a, int3 b)
-# 608 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 608 "../../sdk/cutil_math.h"
 {
-# 609 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 609 "../../sdk/cutil_math.h"
 return make_int3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
-# 610 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 610 "../../sdk/cutil_math.h"
 }
-# 613 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 613 "../../sdk/cutil_math.h"
 inline int3 max(int3 a, int3 b)
-# 614 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 614 "../../sdk/cutil_math.h"
 {
-# 615 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 615 "../../sdk/cutil_math.h"
 return make_int3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
-# 616 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 616 "../../sdk/cutil_math.h"
 }
-# 619 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 619 "../../sdk/cutil_math.h"
 inline int3 operator+(int3 a, int3 b)
-# 620 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 620 "../../sdk/cutil_math.h"
 {
-# 621 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 621 "../../sdk/cutil_math.h"
 return make_int3(a.x + b.x, a.y + b.y, a.z + b.z);
-# 622 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 622 "../../sdk/cutil_math.h"
 }
-# 623 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 623 "../../sdk/cutil_math.h"
 inline void operator+=(int3 &a, int3 b)
-# 624 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 624 "../../sdk/cutil_math.h"
 {
-# 625 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 625 "../../sdk/cutil_math.h"
 (a.x) += b.x; (a.y) += b.y; (a.z) += b.z;
-# 626 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 626 "../../sdk/cutil_math.h"
 }
-# 629 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 629 "../../sdk/cutil_math.h"
 inline int3 operator-(int3 a, int3 b)
-# 630 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 630 "../../sdk/cutil_math.h"
 {
-# 631 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 631 "../../sdk/cutil_math.h"
 return make_int3(a.x - b.x, a.y - b.y, a.z - b.z);
-# 632 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 632 "../../sdk/cutil_math.h"
 }
-# 634 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 634 "../../sdk/cutil_math.h"
 inline void operator-=(int3 &a, int3 b)
-# 635 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 635 "../../sdk/cutil_math.h"
 {
-# 636 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 636 "../../sdk/cutil_math.h"
 (a.x) -= b.x; (a.y) -= b.y; (a.z) -= b.z;
-# 637 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 637 "../../sdk/cutil_math.h"
 }
-# 640 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 640 "../../sdk/cutil_math.h"
 inline int3 operator*(int3 a, int3 b)
-# 641 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 641 "../../sdk/cutil_math.h"
 {
-# 642 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 642 "../../sdk/cutil_math.h"
 return make_int3(a.x * b.x, a.y * b.y, a.z * b.z);
-# 643 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 643 "../../sdk/cutil_math.h"
 }
-# 644 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 644 "../../sdk/cutil_math.h"
 inline int3 operator*(int3 a, int s)
-# 645 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 645 "../../sdk/cutil_math.h"
 {
-# 646 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 646 "../../sdk/cutil_math.h"
 return make_int3(a.x * s, a.y * s, a.z * s);
-# 647 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 647 "../../sdk/cutil_math.h"
 }
-# 648 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 648 "../../sdk/cutil_math.h"
 inline int3 operator*(int s, int3 a)
-# 649 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 649 "../../sdk/cutil_math.h"
 {
-# 650 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 650 "../../sdk/cutil_math.h"
 return make_int3(a.x * s, a.y * s, a.z * s);
-# 651 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 651 "../../sdk/cutil_math.h"
 }
-# 652 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 652 "../../sdk/cutil_math.h"
 inline void operator*=(int3 &a, int s)
-# 653 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 653 "../../sdk/cutil_math.h"
 {
-# 654 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 654 "../../sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s;
-# 655 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 655 "../../sdk/cutil_math.h"
 }
-# 658 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 658 "../../sdk/cutil_math.h"
 inline int3 operator/(int3 a, int3 b)
-# 659 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 659 "../../sdk/cutil_math.h"
 {
-# 660 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 660 "../../sdk/cutil_math.h"
 return make_int3(a.x / b.x, a.y / b.y, a.z / b.z);
-# 661 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 661 "../../sdk/cutil_math.h"
 }
-# 662 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 662 "../../sdk/cutil_math.h"
 inline int3 operator/(int3 a, int s)
-# 663 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 663 "../../sdk/cutil_math.h"
 {
-# 664 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 664 "../../sdk/cutil_math.h"
 return make_int3(a.x / s, a.y / s, a.z / s);
-# 665 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 665 "../../sdk/cutil_math.h"
 }
-# 666 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 666 "../../sdk/cutil_math.h"
 inline int3 operator/(int s, int3 a)
-# 667 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 667 "../../sdk/cutil_math.h"
 {
-# 668 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 668 "../../sdk/cutil_math.h"
 return make_int3(a.x / s, a.y / s, a.z / s);
-# 669 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 669 "../../sdk/cutil_math.h"
 }
-# 670 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 670 "../../sdk/cutil_math.h"
 inline void operator/=(int3 &a, int s)
-# 671 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 671 "../../sdk/cutil_math.h"
 {
-# 672 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 672 "../../sdk/cutil_math.h"
 (a.x) /= s; (a.y) /= s; (a.z) /= s;
-# 673 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 673 "../../sdk/cutil_math.h"
 }
-# 676 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 676 "../../sdk/cutil_math.h"
 inline int clamp(int f, int a, int b)
-# 677 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 677 "../../sdk/cutil_math.h"
 {
-# 678 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 678 "../../sdk/cutil_math.h"
 return max(a, min(f, b));
-# 679 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 679 "../../sdk/cutil_math.h"
 }
-# 681 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 681 "../../sdk/cutil_math.h"
 inline int3 clamp(int3 v, int a, int b)
-# 682 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 682 "../../sdk/cutil_math.h"
 {
-# 683 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 683 "../../sdk/cutil_math.h"
 return make_int3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-# 684 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 684 "../../sdk/cutil_math.h"
 }
-# 686 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 686 "../../sdk/cutil_math.h"
 inline int3 clamp(int3 v, int3 a, int3 b)
-# 687 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 687 "../../sdk/cutil_math.h"
 {
-# 688 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 688 "../../sdk/cutil_math.h"
 return make_int3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-# 689 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 689 "../../sdk/cutil_math.h"
 }
-# 696 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 696 "../../sdk/cutil_math.h"
 inline uint3 make_uint3(uint s)
-# 697 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 697 "../../sdk/cutil_math.h"
 {
-# 698 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 698 "../../sdk/cutil_math.h"
 return make_uint3(s, s, s);
-# 699 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 699 "../../sdk/cutil_math.h"
 }
-# 700 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 700 "../../sdk/cutil_math.h"
 inline uint3 make_uint3(float3 a)
-# 701 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 701 "../../sdk/cutil_math.h"
 {
-# 702 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 702 "../../sdk/cutil_math.h"
 return make_uint3((unsigned)(a.x), (unsigned)(a.y), (unsigned)(a.z));
-# 703 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 703 "../../sdk/cutil_math.h"
 }
-# 706 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 706 "../../sdk/cutil_math.h"
 inline uint3 min(uint3 a, uint3 b)
-# 707 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 707 "../../sdk/cutil_math.h"
 {
-# 708 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 708 "../../sdk/cutil_math.h"
 return make_uint3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
-# 709 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 709 "../../sdk/cutil_math.h"
 }
-# 712 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 712 "../../sdk/cutil_math.h"
 inline uint3 max(uint3 a, uint3 b)
-# 713 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 713 "../../sdk/cutil_math.h"
 {
-# 714 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 714 "../../sdk/cutil_math.h"
 return make_uint3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
-# 715 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 715 "../../sdk/cutil_math.h"
 }
-# 718 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 718 "../../sdk/cutil_math.h"
 inline uint3 operator+(uint3 a, uint3 b)
-# 719 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 719 "../../sdk/cutil_math.h"
 {
-# 720 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 720 "../../sdk/cutil_math.h"
 return make_uint3(a.x + b.x, a.y + b.y, a.z + b.z);
-# 721 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 721 "../../sdk/cutil_math.h"
 }
-# 722 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 722 "../../sdk/cutil_math.h"
 inline void operator+=(uint3 &a, uint3 b)
-# 723 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 723 "../../sdk/cutil_math.h"
 {
-# 724 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 724 "../../sdk/cutil_math.h"
 (a.x) += b.x; (a.y) += b.y; (a.z) += b.z;
-# 725 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 725 "../../sdk/cutil_math.h"
 }
-# 728 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 728 "../../sdk/cutil_math.h"
 inline uint3 operator-(uint3 a, uint3 b)
-# 729 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 729 "../../sdk/cutil_math.h"
 {
-# 730 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 730 "../../sdk/cutil_math.h"
 return make_uint3(a.x - b.x, a.y - b.y, a.z - b.z);
-# 731 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 731 "../../sdk/cutil_math.h"
 }
-# 733 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 733 "../../sdk/cutil_math.h"
 inline void operator-=(uint3 &a, uint3 b)
-# 734 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 734 "../../sdk/cutil_math.h"
 {
-# 735 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 735 "../../sdk/cutil_math.h"
 (a.x) -= b.x; (a.y) -= b.y; (a.z) -= b.z;
-# 736 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 736 "../../sdk/cutil_math.h"
 }
-# 739 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 739 "../../sdk/cutil_math.h"
 inline uint3 operator*(uint3 a, uint3 b)
-# 740 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 740 "../../sdk/cutil_math.h"
 {
-# 741 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 741 "../../sdk/cutil_math.h"
 return make_uint3(a.x * b.x, a.y * b.y, a.z * b.z);
-# 742 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 742 "../../sdk/cutil_math.h"
 }
-# 743 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 743 "../../sdk/cutil_math.h"
 inline uint3 operator*(uint3 a, uint s)
-# 744 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 744 "../../sdk/cutil_math.h"
 {
-# 745 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 745 "../../sdk/cutil_math.h"
 return make_uint3(a.x * s, a.y * s, a.z * s);
-# 746 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 746 "../../sdk/cutil_math.h"
 }
-# 747 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 747 "../../sdk/cutil_math.h"
 inline uint3 operator*(uint s, uint3 a)
-# 748 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 748 "../../sdk/cutil_math.h"
 {
-# 749 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 749 "../../sdk/cutil_math.h"
 return make_uint3(a.x * s, a.y * s, a.z * s);
-# 750 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 750 "../../sdk/cutil_math.h"
 }
-# 751 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 751 "../../sdk/cutil_math.h"
 inline void operator*=(uint3 &a, uint s)
-# 752 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 752 "../../sdk/cutil_math.h"
 {
-# 753 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 753 "../../sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s;
-# 754 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 754 "../../sdk/cutil_math.h"
 }
-# 757 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 757 "../../sdk/cutil_math.h"
 inline uint3 operator/(uint3 a, uint3 b)
-# 758 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 758 "../../sdk/cutil_math.h"
 {
-# 759 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 759 "../../sdk/cutil_math.h"
 return make_uint3(a.x / b.x, a.y / b.y, a.z / b.z);
-# 760 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 760 "../../sdk/cutil_math.h"
 }
-# 761 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 761 "../../sdk/cutil_math.h"
 inline uint3 operator/(uint3 a, uint s)
-# 762 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 762 "../../sdk/cutil_math.h"
 {
-# 763 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 763 "../../sdk/cutil_math.h"
 return make_uint3(a.x / s, a.y / s, a.z / s);
-# 764 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 764 "../../sdk/cutil_math.h"
 }
-# 765 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 765 "../../sdk/cutil_math.h"
 inline uint3 operator/(uint s, uint3 a)
-# 766 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 766 "../../sdk/cutil_math.h"
 {
-# 767 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 767 "../../sdk/cutil_math.h"
 return make_uint3(a.x / s, a.y / s, a.z / s);
-# 768 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 768 "../../sdk/cutil_math.h"
 }
-# 769 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 769 "../../sdk/cutil_math.h"
 inline void operator/=(uint3 &a, uint s)
-# 770 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 770 "../../sdk/cutil_math.h"
 {
-# 771 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 771 "../../sdk/cutil_math.h"
 (a.x) /= s; (a.y) /= s; (a.z) /= s;
-# 772 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 772 "../../sdk/cutil_math.h"
 }
-# 775 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 775 "../../sdk/cutil_math.h"
 inline uint clamp(uint f, uint a, uint b)
-# 776 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 776 "../../sdk/cutil_math.h"
 {
-# 777 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 777 "../../sdk/cutil_math.h"
 return max(a, min(f, b));
-# 778 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 778 "../../sdk/cutil_math.h"
 }
-# 780 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 780 "../../sdk/cutil_math.h"
 inline uint3 clamp(uint3 v, uint a, uint b)
-# 781 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 781 "../../sdk/cutil_math.h"
 {
-# 782 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 782 "../../sdk/cutil_math.h"
 return make_uint3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-# 783 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 783 "../../sdk/cutil_math.h"
 }
-# 785 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 785 "../../sdk/cutil_math.h"
 inline uint3 clamp(uint3 v, uint3 a, uint3 b)
-# 786 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 786 "../../sdk/cutil_math.h"
 {
-# 787 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 787 "../../sdk/cutil_math.h"
 return make_uint3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-# 788 "/usr/local/NVIDIA_CUDA_SDK/common/inc/cutil_math.h"
+# 788 "../../sdk/cutil_math.h"
 }
 # 43 "bicubicTexture_kernel.cuh"
 static texture< unsigned char, 2, cudaReadModeNormalizedFloat> tex;
@@ -14858,18 +14896,18 @@ return ((1.0F) / (6.0F)) * ((a * a) * a);
 
 
 
-# 1 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.h" 1
+# 1 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.h" 1
 
 extern "C" {
 
 
 extern void __device_stub__Z8d_renderP6uchar4jjfffff(uchar4 *, uint, uint, float, float, float, float, float);
-# 14 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.h"
+# 14 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.h"
 }
 # 80 "bicubicTexture_kernel.cuh" 2
 
 
-# 1 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.h" 1
+# 1 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.h" 1
 
 extern "C" {
 
@@ -14887,10 +14925,10 @@ extern void __device_stub__Z15d_renderBicubicP6uchar4jjfffff(uchar4 *, uint, uin
 # 83 "bicubicTexture_kernel.cuh" 2
 
 
-# 1 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.h" 1
+# 1 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.h" 1
 
 extern "C" {
-# 11 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.h"
+# 11 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.h"
 extern void __device_stub__Z19d_renderFastBicubicP6uchar4jjfffff(uchar4 *, uint, uint, float, float, float, float, float);
 
 
@@ -15433,7 +15471,7 @@ cudaSetDevice(cutGetMaxGflopsDeviceId()); }
 # 458 "bicubicTexture.cu"
 auto char *filename;
 # 459 "bicubicTexture.cu"
-auto bool benchmark = true;
+auto bool benchmark = false;
 # 461 "bicubicTexture.cu"
 if (argc > 1) {
 # 462 "bicubicTexture.cu"
@@ -15455,7 +15493,7 @@ benchmark = true;
 # 471 "bicubicTexture.cu"
 if (cutCheckCmdLineFlag(argc, (const char **)argv, "noqatest")) {
 # 472 "bicubicTexture.cu"
-benchmark = false;
+benchmark = true;
 # 473 "bicubicTexture.cu"
 }
 # 476 "bicubicTexture.cu"
@@ -15555,11 +15593,11 @@ return 0;
 # 552 "bicubicTexture.cu"
 }
 
-# 1 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00000822_00000000-3_bicubicTexture.fatbin.c" 1
+# 1 "/tmp/tmpxft_000018b5_00000000-3_bicubicTexture.fatbin.c" 1
 # 1 "/home/gdiamos/temp/cuda/bin//../include/__cudaFatFormat.h" 1
 # 83 "/home/gdiamos/temp/cuda/bin//../include/__cudaFatFormat.h"
 extern "C" {
@@ -15618,7 +15656,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00000822_00000000-3_bicubicTexture.fatbin.c" 2
+# 2 "/tmp/tmpxft_000018b5_00000000-3_bicubicTexture.fatbin.c" 2
 
 
 
@@ -15639,8 +15677,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,0x2f20676e696c6970ull,0x78706d742f706d74ull,
-0x30303030305f7466ull,0x303030305f323238ull,0x625f372d30303030ull,0x6554636962756369ull,
-0x70632e6572757478ull,0x742f2820692e3370ull,0x23494263632f706dull,0x2973616776594c2eull,
+0x31303030305f7466ull,0x303030305f356238ull,0x625f372d30303030ull,0x6554636962756369ull,
+0x70632e6572757478ull,0x742f2820692e3370ull,0x23494263632f706dull,0x296e6a3746586d2eull,
 0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,
 0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -15655,7 +15693,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,0x09656c69662e090aull,
 0x6d6d6f633c220931ull,0x656e696c2d646e61ull,0x6c69662e090a223eull,0x6d742f2209320965ull,
-0x746678706d742f70ull,0x323830303030305full,0x3030303030305f32ull,0x6369625f362d3030ull,
+0x746678706d742f70ull,0x623831303030305full,0x3030303030305f35ull,0x6369625f362d3030ull,
 0x7478655463696275ull,0x616475632e657275ull,0x227570672e326566ull,0x09656c69662e090aull,
 0x2f7273752f220933ull,0x2f6363672f62696cull,0x6c2d34365f363878ull,0x756e672d78756e69ull,
 0x692f332e332e342full,0x732f6564756c636eull,0x22682e6665646474ull,0x09656c69662e090aull,
@@ -16774,8 +16812,8 @@ static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"d2707b38dc3ebb59",(char*)"bicubicTexture.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0};
-# 5 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"8c09133a2a6b9f58",(char*)"bicubicTexture.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0};
+# 5 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.c" 2
 # 1 "/home/gdiamos/temp/cuda/bin//../include/crt/host_runtime.h" 1
 # 74 "/home/gdiamos/temp/cuda/bin//../include/crt/host_runtime.h"
 # 1 "/home/gdiamos/temp/cuda/bin//../include/host_defines.h" 1
@@ -21575,23 +21613,23 @@ static double __cuda_fma(double a, double b, double c)
 # 3856 "/home/gdiamos/temp/cuda/bin//../include/math_functions.h" 2 3
 # 94 "/home/gdiamos/temp/cuda/bin//../include/common_functions.h" 2
 # 216 "/home/gdiamos/temp/cuda/bin//../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.c" 2
 struct __T20;
 struct __T21;
 struct __T22;
 struct __T20 {uchar4 *__par0;uint __par1;uint __par2;float __par3;float __par4;float __par5;float __par6;float __par7;int __dummy_field;};
 struct __T21 {uchar4 *__par0;uint __par1;uint __par2;float __par3;float __par4;float __par5;float __par6;float __par7;int __dummy_field;};
 struct __T22 {uchar4 *__par0;uint __par1;uint __par2;float __par3;float __par4;float __par5;float __par6;float __par7;int __dummy_field;};
-# 21 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00000822_00000000_4_bicubicTexture_cpp1_ii_c14de7b3(void) __attribute__((__constructor__));
+# 21 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_000018b5_00000000_4_bicubicTexture_cpp1_ii_c14de7b3(void) __attribute__((__constructor__));
 void __device_stub__Z8d_renderP6uchar4jjfffff(uchar4 *__par0, uint __par1, uint __par2, float __par3, float __par4, float __par5, float __par6, float __par7){auto struct __T20 *__T23;
 char __[256]; *(char**)&__T23 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T23->__par2 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T23->__par3 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T23->__par4 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T23->__par5 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T23->__par6 - (size_t)__T23) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T23->__par7 - (size_t)__T23) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)__device_stub__Z8d_renderP6uchar4jjfffff); (void)cudaLaunch(((char *)__device_stub__Z8d_renderP6uchar4jjfffff)); };}
 void __device_stub__Z15d_renderBicubicP6uchar4jjfffff(uchar4 *__par0, uint __par1, uint __par2, float __par3, float __par4, float __par5, float __par6, float __par7){auto struct __T21 *__T24;
 char __[256]; *(char**)&__T24 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T24->__par3 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T24->__par4 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T24->__par5 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T24->__par6 - (size_t)__T24) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T24->__par7 - (size_t)__T24) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)__device_stub__Z15d_renderBicubicP6uchar4jjfffff); (void)cudaLaunch(((char *)__device_stub__Z15d_renderBicubicP6uchar4jjfffff)); };}
 void __device_stub__Z19d_renderFastBicubicP6uchar4jjfffff(uchar4 *__par0, uint __par1, uint __par2, float __par3, float __par4, float __par5, float __par6, float __par7){auto struct __T22 *__T2173;
 char __[256]; *(char**)&__T2173 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T2173->__par0 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T2173->__par1 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T2173->__par2 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T2173->__par3 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T2173->__par4 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T2173->__par5 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T2173->__par6 - (size_t)__T2173) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T2173->__par7 - (size_t)__T2173) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)__device_stub__Z19d_renderFastBicubicP6uchar4jjfffff); (void)cudaLaunch(((char *)__device_stub__Z19d_renderFastBicubicP6uchar4jjfffff)); };}
-# 37 "/tmp/tmpxft_00000822_00000000-1_bicubicTexture.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00000822_00000000_4_bicubicTexture_cpp1_ii_c14de7b3(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)__device_stub__Z19d_renderFastBicubicP6uchar4jjfffff, (char*)"_Z19d_renderFastBicubicP6uchar4jjfffff", "_Z19d_renderFastBicubicP6uchar4jjfffff", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)__device_stub__Z15d_renderBicubicP6uchar4jjfffff, (char*)"_Z15d_renderBicubicP6uchar4jjfffff", "_Z15d_renderBicubicP6uchar4jjfffff", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)__device_stub__Z8d_renderP6uchar4jjfffff, (char*)"_Z8d_renderP6uchar4jjfffff", "_Z8d_renderP6uchar4jjfffff", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, 0, "tex", 2, 1, 0);}
+# 37 "/tmp/tmpxft_000018b5_00000000-1_bicubicTexture.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_000018b5_00000000_4_bicubicTexture_cpp1_ii_c14de7b3(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)__device_stub__Z19d_renderFastBicubicP6uchar4jjfffff, (char*)"_Z19d_renderFastBicubicP6uchar4jjfffff", "_Z19d_renderFastBicubicP6uchar4jjfffff", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)__device_stub__Z15d_renderBicubicP6uchar4jjfffff, (char*)"_Z15d_renderBicubicP6uchar4jjfffff", "_Z15d_renderBicubicP6uchar4jjfffff", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)__device_stub__Z8d_renderP6uchar4jjfffff, (char*)"_Z8d_renderP6uchar4jjfffff", "_Z8d_renderP6uchar4jjfffff", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, 0, "tex", 2, 1, 0);}
 
 }
 # 554 "bicubicTexture.cu" 2

@@ -13,7 +13,7 @@
 #ifndef TEST_CAP_MODEL_3_H_INCLUDED
 #define TEST_CAP_MODEL_3_H_INCLUDED
 
-#include <common/interface/Test.h>
+#include "Test.h"
 #include "SimulationParameters.h"
 
 namespace test
@@ -34,9 +34,9 @@ namespace test
 	
 		private:
 		
-			bool _testCpuGpu( std::string& status );
+			bool _testCpuGpu( );
 		
-			bool doTest( std::string& status );
+			bool doTest();
 	
 		public:
 		

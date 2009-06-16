@@ -34,12 +34,12 @@ namespace sim
 			in C++ only.
 	
 	*/
-	class CapModel3 : common::Stringable
+	class CapModel3 : hydrazine::Stringable
 	{
 	
 		private:
 		
-			class Rating: public common::Stringable
+			class Rating: public hydrazine::Stringable
 			{
 			
 				public:
@@ -59,7 +59,7 @@ namespace sim
 			
 			};
 			
-			class Industry: public common::Stringable
+			class Industry: public hydrazine::Stringable
 			{
 			
 				public:
@@ -105,7 +105,7 @@ namespace sim
 			
 			};
 			
-			class Result : public common::Stringable
+			class Result : public hydrazine::Stringable
 			{
 			
 				public:
@@ -128,7 +128,7 @@ namespace sim
 			
 			};
 			
-			class Portfolio: public common::Stringable
+			class Portfolio: public hydrazine::Stringable
 			{
 			
 				public:

@@ -21,11 +21,6 @@ AM_INIT_AUTOMAKE([])
 ################################################################################
 
 ################################################################################
-## Global Variables
-
-################################################################################
-
-################################################################################
 ## Configure autoconf
 AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_MACRO_DIR([m4])
@@ -104,6 +99,34 @@ AC_CHECK_FUNCS([atexit bzero clock_gettime floor getdelim gettimeofday \
 	rint rpmatch select setenv sqrt stime stpcpy strcasecmp strchr strcspn \
 	strdup strerror strncasecmp strndup strpbrk strrchr strspn strstr strtol \
 	strtoul strtoull strverscmp tzset])
+################################################################################
+
+###############################################################################
+# Setup CUDA paths
+# 
+AC_ARG_WITH([cuda],
+	[--with-cuda=PATH prefix where cuda is installed [default=/usr/local/cuda]])
+
+if test -n "$with_cuda"
+then
+	CUDA_CFLAGS="-I$with_cuda/include"
+	CUDA_LIBS="-L$with_cuda/lib -lcudart -lcublas"
+	CUFFT_LIBS="-L$with_cuda/lib -lcufft"
+	CUBLAS_LIBS="-L$with_cuda/lib -lcublas"
+	NVCC="$with_cuda/bin/nvcc"
+else
+	CUDA_CFLAGS="-I/usr/local/cuda/include"
+	CUDA_LIBS="-L/usr/local/cuda/lib -lcudart -lcublas"
+	CUFFT_LIBS="-L/usr/local/cuda/lib -lcufft"
+	CUBLAS_LIBS="-L/usr/local/cuda/lib -lcublas"
+	NVCC="nvcc"
+fi
+
+AC_SUBST(CUDA_CFLAGS)
+AC_SUBST(CUDA_LIBS)
+AC_SUBST(CUFFT_LIBS)
+AC_SUBST(CUBLAS_LIBS)
+AC_SUBST(NVCC)
 ################################################################################
 
 ################################################################################

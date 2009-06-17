@@ -27,6 +27,9 @@
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/executive/interface/Device.h>
 
+/*!
+	\brief A namespace for classes that help execute programs
+*/
 namespace executive {
 	
 	/*!

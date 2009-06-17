@@ -33,11 +33,17 @@
 
 #define REPORT_BASE 0
 
+/*!
+	\brief A namespace for parsing PTX 1.4
+*/
 namespace ptx1_4
 { 
 	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );
 }
 
+/*!
+	\brief A namespace for parsing PTX 1.3
+*/
 namespace ptx1_3
 { 
 	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );

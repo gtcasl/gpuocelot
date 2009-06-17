@@ -19,6 +19,9 @@
 
 #include <ocelot/ir/test/SamplePTX.h>
 
+/*!
+	\brief A namespace for unit tests
+*/
 namespace test {
 
 class TestCFGAnalysis: public Test {

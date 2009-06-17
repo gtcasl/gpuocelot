@@ -50,7 +50,7 @@ namespace executive {
 		/*!
 			number of bytes of global memory available to the device
 		*/
-		unsigned int totalMemory;
+		size_t totalMemory;
 	
 		/*!
 			gets the number of multiprocessors/cores on the device

@@ -1031,7 +1031,35 @@ cudaError_t CUDARTAPI cudaLaunch(const char *symbol)
 cudaError_t CUDARTAPI cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 
 	const char *func)
 {
-	throw hydrazine::Exception("cudaFuncGetAttributes not implemented");
+	cuda::runtime.lock();
+	cuda::runtime.setContext();
+	
+	cudaError_t error = cudaSuccess;
+	
+	try
+	{
+		cuda::runtime.getAttributes( attr, func );
+		report( "Got attributes (constant " << attr->constSizeBytes 
+			<< ")(local" << attr->localSizeBytes << ")(threads " 
+			<< attr->maxThreadsPerBlock << ")(regs" << attr->numRegs 
+			<< ")(" << attr->sharedSizeBytes << ")" );
+	}
+	catch( const hydrazine::Exception& e )
+	{
+		if( e.code == cudaErrorInvalidDeviceFunction )
+		{
+			error = cudaErrorInvalidDeviceFunction;
+		}
+		else
+		{
+			cuda::runtime.unlock();
+			throw;
+		}
+	}
+	
+	cuda::runtime.unlock();
+	
+	return error;
 }
 
 cudaError_t CUDARTAPI cudaStreamCreate(cudaStream_t *stream)

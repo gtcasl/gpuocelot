@@ -73,10 +73,20 @@ namespace cuda
 
 		public:
 			
+			class Memory
+			{
+				public:
+					char* base;
+					size_t size;
+					bool portable;
+					bool mapped;
+					pthread_t owner;
+			};
+			
 			/*!
 				\brief Allocated memory
 			*/
-			typedef std::unordered_map< char*, unsigned int > MemoryMap;
+			typedef std::unordered_map< char*, Memory > MemoryMap;
 			
 			/*!
 				\brief GLobal variables			
@@ -195,6 +205,7 @@ namespace cuda
 					dim3 kernelDimensions;
 					unsigned int shared;
 					ParameterMap parameters;
+					int flags;
 					
 				public:
 				
@@ -431,6 +442,11 @@ namespace cuda
 					characteristics
 			*/
 			int bestDevice( const struct cudaDeviceProp *prop ) const;
+			
+			/*!
+				\brief Set the flags on the current context
+			*/
+			void setFlags( int flags );
 	
 			/*!
 				\brief Register a new FatBinary
@@ -529,8 +545,17 @@ namespace cuda
 			/*!
 				\brief Allocate some host pinned memory
 				\param size The number of bytes to allocate
+				\return a pointer to newly allocated memory on the host
 			*/
-			void* allocate( unsigned int size );
+			void* allocate( unsigned int size, bool portable = false, 
+				bool mappable = false );
+
+			/*!
+				\brief Look up allocated and mapped memory on the cuda device
+				\param pointer A pointer to mapped host memory
+				\return A pointer to the equiavlent device memory
+			*/
+			void* lookupMappedMemory( void* pointer );
 
 			/*!
 				\brief Free some host pinned memory			

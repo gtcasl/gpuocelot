@@ -28,7 +28,7 @@
 #endif
 
 #define REPORT_BASE 0
-#define REPORT_ALL_PTX 1
+#define REPORT_ALL_PTX 0
 #define CATCH_RUNTIME_EXCEPTIONS 1
 
 namespace cuda
@@ -131,6 +131,9 @@ namespace cuda
 		properties.deviceOverlap = device.memcpyOverlap;
 		properties.multiProcessorCount = device.multiprocessorCount;
 		properties.kernelExecTimeoutEnabled = false;
+		properties.computeMode = cudaComputeModeDefault;
+		properties.integrated = true;
+		properties.canMapHostMemory = true;
 		memset(properties.__cudaReserved, 0, sizeof(properties.__cudaReserved));
 		
 		return properties;
@@ -284,8 +287,8 @@ namespace cuda
 		{
 	
 			std::cerr << "==Ocelot Runtime== Pinned Memory Leak Detected\n";
-			std::cerr << "==Ocelot Runtime==  " << fi->second <<" bytes at " 
-				<< (int*)fi->first << " never freed.\n"; 
+			std::cerr << "==Ocelot Runtime==  " << fi->second.size 
+				<< " bytes at " << (int*)fi->first << " never freed.\n"; 
 			delete[] fi->first;
 	
 		}
@@ -355,6 +358,7 @@ namespace cuda
 			threadContext.kernelDimensions.y = 1;
 			threadContext.kernelDimensions.z = 1;
 			threadContext.shared = 0;
+			threadContext.flags = 0;
 			thread = _threads.insert( std::make_pair( id, 
 				threadContext ) ).first;
 		
@@ -415,6 +419,16 @@ namespace cuda
 		
 		thread->second.guid = context.devices[ device ].guid;
 			
+	}
+	
+	void CudaRuntime::setFlags( int flags )
+	{
+		pthread_t id = pthread_self();
+		
+		ThreadMap::iterator thread = _threads.find( id );
+		assert( thread != _threads.end() );
+		
+		thread->second.flags = flags;		
 	}
 	
 	int CudaRuntime::bestDevice( const cudaDeviceProp *prop ) const
@@ -1180,34 +1194,89 @@ namespace cuda
 	
 	}
 	
-	void* CudaRuntime::allocate( unsigned int size )
+	void* CudaRuntime::allocate( unsigned int size, bool portable, bool mapped )
 	{
 	
-		char* block = new char[size];
+		Memory memory;
 		
-		_memory.insert( std::make_pair( block, size ) );
+		if( mapped )
+		{
+			memory.base = ( char* ) context.malloc( size );
+			report( " Allocating " << size 
+				<< " bytes of device mapped host memory at " 
+				<< (void*) memory.base );
+		}
+		else
+		{
+			memory.base = new char[ size ];
+			report( " Allocating " << size 
+				<< " bytes of host memory at " 
+				<< (void*) memory.base );
+		}
 		
-		return block;
+		memory.mapped = mapped;
+		memory.portable = portable;
+		memory.owner = pthread_self();
+		memory.size = size;
 	
+		_memory.insert( std::make_pair( memory.base, memory ) );
+		
+		return memory.base;
+	
+	}
+	
+	void* CudaRuntime::lookupMappedMemory( void* pointer )
+	{
+		MemoryMap::iterator block = _memory.find( ( char* ) pointer );
+
+		if( block == _memory.end() )
+		{
+			std::stringstream stream;
+			stream << "Invalid lookup, address " << pointer 
+				<< " not allocated in host pinned memory.";
+			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+		}
+	
+		if( !block->second.mapped )
+		{
+			std::stringstream stream;
+			stream << "Invalid lookup, address " << pointer 
+				<< " is not mapped from host to device memory.";
+			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+		}
+		
+		return block->second.base;	
 	}
 
 	void CudaRuntime::free( void* pointer )
 	{
 	
-		MemoryMap::iterator block = _memory.find( 
-			( char* ) pointer );
+		MemoryMap::iterator block = _memory.find( ( char* ) pointer );
 
 		if( block == _memory.end() )
 		{
-					
 			std::stringstream stream;
 			stream << "Invalid free, address " << pointer 
 				<< " not allocated in host pinned memory.";
 			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
-	
 		}
 		
-		delete[] block->first;
+		if( block->second.owner != pthread_self() && !block->second.portable )
+		{
+			std::stringstream stream;
+			stream << "Invalid free, address " << pointer 
+				<< " allocated by another thread and not delcared portable.";
+			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+		}
+		
+		if( block->second.mapped )
+		{
+			context.free( pointer );
+		}
+		else
+		{
+			delete[] block->second.base;
+		}
 		
 		_memory.erase( block );
 	

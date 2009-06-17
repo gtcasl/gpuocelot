@@ -664,7 +664,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	// now visit every instruction and change the address mode from label to immediate, and assign
 	// the offset as an immediate value 
 	PTXOperand PTXInstruction:: *operands[] = {
-		&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c
+		&PTXInstruction::d, &PTXInstruction::a, &PTXInstruction::b, 
+		&PTXInstruction::c
 	};
 	vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
 	for (; i_it != KernelInstructions.end(); ++i_it) {
@@ -672,7 +673,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == PTXInstruction::Mov) {
-			for (int n = 0; n < 3; n++) {
+			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
 					map<string, unsigned int>::iterator 
 						l_it = constant.find((instr.*operands[n]).identifier);
@@ -688,7 +689,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		}
 		else if ( instr.opcode == PTXInstruction::Ld 
 			|| instr.opcode == PTXInstruction::St ) {
-			for (int n = 0; n < 3; n++) {
+			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
 					map<string, unsigned int>::iterator 
 						l_it = constant.find((instr.*operands[n]).identifier);
@@ -757,15 +758,15 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	// now visit every instruction and change the address mode from label to immediate, and assign
 	// the offset as an immediate value 
 	PTXOperand PTXInstruction:: *operands[] = {
-		&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c
-	};
+		&PTXInstruction::d, &PTXInstruction::a, &PTXInstruction::b, 
+		&PTXInstruction::c };
 	vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
 	for (; i_it != KernelInstructions.end(); ++i_it) {
 		PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == PTXInstruction::Mov) {
-			for (int n = 0; n < 3; n++) {
+			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
 					unordered_set<string>::iterator 
 						l_it = global.find((instr.*operands[n]).identifier);
@@ -778,14 +779,15 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 							(PTXU64)g_it->second.pointer;
 						report("Mapping global label " 
 							<< (instr.*operands[n]).identifier << " to " 
-							<< (instr.*operands[n]).imm_uint );
+							<< (instr.*operands[n]).imm_uint 
+							<< " for instruction " << instr.toString() );
 					}
 				}
 			}
 		}
 		else if ( instr.opcode == PTXInstruction::Ld 
 			|| instr.opcode == PTXInstruction::St ) {
-			for (int n = 0; n < 3; n++) {
+			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
 					unordered_set<string>::iterator 
 						l_it = global.find((instr.*operands[n]).identifier);
@@ -798,7 +800,8 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 							(PTXU64)g_it->second.pointer;
 						report("Mapping ld/st global label " 
 							<< (instr.*operands[n]).identifier << " to " 
-							<< (instr.*operands[n]).imm_uint );
+							<< (instr.*operands[n]).imm_uint
+							<< " for instruction " << instr.toString() );
 					}
 				}
 			}

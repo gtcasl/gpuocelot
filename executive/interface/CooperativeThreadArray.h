@@ -490,6 +490,7 @@ namespace executive {
 		void eval_Mad24(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Mad(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Max(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Membar(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Min(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Mov(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Mul24(CTAContext &context, const ir::PTXInstruction &instr);
@@ -497,6 +498,7 @@ namespace executive {
 		void eval_Neg(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Not(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Or(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Pmevent(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rcp(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Red(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rem(CTAContext &context, const ir::PTXInstruction &instr);		

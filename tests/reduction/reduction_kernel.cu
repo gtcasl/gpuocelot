@@ -354,7 +354,7 @@ FUNC(reduce)(int size, int threads, int blocks,
 {
     dim3 dimBlock(threads, 1, 1);
     dim3 dimGrid(blocks, 1, 1);
-    int smemSize = threads * sizeof(T);
+    int smemSize = 2 * threads * sizeof(T);
 
     // choose which of the optimized versions of reduction to launch
     switch (whichKernel)

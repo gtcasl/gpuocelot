@@ -262,7 +262,7 @@ runTest( int argc, char** argv) {
 #ifdef __DEVICE_EMULATION__
     unsigned int iters_timing = 1;
 #else
-    unsigned int iters_timing = 100;
+    unsigned int iters_timing = 1;
 #endif
     char*  result_file = "eigenvalues.dat";
     

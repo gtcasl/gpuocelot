@@ -47,7 +47,7 @@
 // a non-zero value, then all threads within this warp will return a non-zero value
 __global__ void VoteAnyKernel1(unsigned int *input, unsigned int *result, int size)
 {
-	int tx = threadIdx.x;
+	int tx = threadIdx.x + blockDim.x * blockIdx.x;
 
 	result[tx] = any(input[tx]);
 }
@@ -57,7 +57,7 @@ __global__ void VoteAnyKernel1(unsigned int *input, unsigned int *result, int si
 // a non-zero value, then all threads within this warp will return a non-zero value
 __global__ void VoteAllKernel2(unsigned int *input, unsigned int *result, int size)
 {
-	int tx = threadIdx.x;
+	int tx = threadIdx.x + blockDim.x * blockIdx.x;
 
 	result[tx] = all(input[tx]);
 }
@@ -66,7 +66,7 @@ __global__ void VoteAllKernel2(unsigned int *input, unsigned int *result, int si
 // This kernel will test for conditions across warps, and within half warps
 __global__ void VoteAnyKernel3(bool *info, int warp_size) 
 { 
-    int tx = threadIdx.x;
+    int tx = threadIdx.x + blockDim.x * blockIdx.x;
     bool *offs = info + (tx * 3);
 
     // The following should hold true for the second and third warp

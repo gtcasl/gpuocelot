@@ -234,8 +234,8 @@ int main(int argc, char **argv)
 	printf("\tRunning <<Vote.Any>> kernel1 ...\n");
 	{
 		cutilSafeCall( cudaThreadSynchronize() );
-		dim3 gridBlock(1, 1);
-		dim3 threadBlock(VOTE_DATA_GROUP*warp_size, 1);
+		dim3 gridBlock(VOTE_DATA_GROUP, 1);
+		dim3 threadBlock(warp_size, 1);
 		VoteAnyKernel1<<<gridBlock, threadBlock>>>(d_input, d_result, VOTE_DATA_GROUP*warp_size);
 		cutilCheckMsg("VoteAnyKernel() execution failed\n");
 		cutilSafeCall( cudaThreadSynchronize() );
@@ -248,8 +248,8 @@ int main(int argc, char **argv)
 	printf("\tRunning <<Vote.All>> kernel2 ...\n");
 	{
 		cutilSafeCall( cudaThreadSynchronize() );
-		dim3 gridBlock(1, 1);
-		dim3 threadBlock(VOTE_DATA_GROUP*warp_size, 1);
+		dim3 gridBlock(VOTE_DATA_GROUP, 1);
+		dim3 threadBlock(warp_size, 1);
 	    VoteAllKernel2<<<gridBlock, threadBlock>>>(d_input, d_result, VOTE_DATA_GROUP*warp_size);
 		cutilCheckMsg("VoteAllKernel() execution failed\n");
 		cutilSafeCall( cudaThreadSynchronize() );
@@ -267,7 +267,7 @@ int main(int argc, char **argv)
 	printf("\tRunning <<Vote.Any>> kernel3 ...\n");
 	{
 		cutilSafeCall( cudaThreadSynchronize() );
-		VoteAnyKernel3<<<1, warp_size*3>>>(dinfo, warp_size);
+		VoteAnyKernel3<<<3, warp_size>>>(dinfo, warp_size);
 		cutilSafeCall( cudaThreadSynchronize() );
 	}
 

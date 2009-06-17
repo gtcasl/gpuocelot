@@ -971,6 +971,15 @@ void runAutoTest(int argc, char **argv)
 		    g_TotalErrors++;
 	    }
     }
+	
+	if( g_TotalErrors == 0 )
+	{
+		printf( "TEST PASSED\n" );
+	}
+	else
+	{
+		printf( "TEST FAILED\n" );
+	}
 
     cutilSafeCall( cudaFree(d_dst) );
 }

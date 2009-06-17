@@ -346,7 +346,7 @@ void shmoo(int minN, int maxN, int maxThreads, int maxBlocks)
 #ifndef __DEVICE_EMULATION__
     // warm-up
     reduce(maxN, maxThreads, maxNumBlocks, d_idata, d_odata);
-    int testIterations = 100;
+    int testIterations = 1;
 #else
     int testIterations = 1;
 #endif
@@ -454,7 +454,7 @@ runTest( int argc, char** argv)
     #ifndef __DEVICE_EMULATION__
         // warm-up
         reduce(size, numThreads, numBlocks, d_idata, d_odata);
-        int testIterations = 100;
+        int testIterations = 1;
     #else
         int testIterations = 1;
     #endif

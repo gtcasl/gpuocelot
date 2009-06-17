@@ -43,9 +43,9 @@
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
-#define REPORT_FIRST_THREAD_ONLY 0
-#define REPORT_REGISTER_READS 0
-#define REPORT_REGISTER_WRITES 0
+#define REPORT_FIRST_THREAD_ONLY 1
+#define REPORT_REGISTER_READS 1
+#define REPORT_REGISTER_WRITES 1
 
 // individually turn on or off reporting for particular instructions
 #define REPORT_ABS 1
@@ -337,6 +337,8 @@ void executive::CooperativeThreadArray::execute(ir::dim3 block) {
 				eval_Mad(context, instr); break;
 			case PTXInstruction::Max:
 				eval_Max(context, instr); break;
+			case PTXInstruction::Membar:
+				eval_Membar(context, instr); break;
 			case PTXInstruction::Min:
 				eval_Min(context, instr); break;
 			case PTXInstruction::Mov:
@@ -351,6 +353,8 @@ void executive::CooperativeThreadArray::execute(ir::dim3 block) {
 				eval_Not(context, instr); break;
 			case PTXInstruction::Or:
 				eval_Or(context, instr); break;
+			case PTXInstruction::Pmevent:
+				eval_Pmevent(context, instr); break;
 			case PTXInstruction::Rcp:
 				eval_Rcp(context, instr); break;
 			case PTXInstruction::Red:
@@ -3397,6 +3401,13 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context, const PTXI
 	}
 }
 
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Membar(CTAContext &context, const PTXInstruction &instr) {
+	/*! No need to do anything here. */
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -4073,6 +4084,13 @@ void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXIn
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}
+}
+
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Pmevent(CTAContext &context, const PTXInstruction &instr) {
+	/*! No need to do anything here. */
 }
 
 /*!

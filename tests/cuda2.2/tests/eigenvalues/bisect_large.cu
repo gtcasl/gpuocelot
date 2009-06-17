@@ -372,7 +372,7 @@ processResultDataLargeMatrix( const InputData& input, const ResultDataLarge& res
     float tolerance = 1.0e-5f + 5.0e-6f;
 
     if( CUTTrue == cutComparefe( reference, eigenvals, mat_size, tolerance)) {
-      printf( "\nPASSED.\n");
+      printf( "\nTEST PASSED.\n");
     }
     else {
       printf( "FAILED.\n");

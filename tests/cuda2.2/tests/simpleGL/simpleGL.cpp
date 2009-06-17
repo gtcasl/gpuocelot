@@ -393,6 +393,10 @@ void display()
         if (!g_CheckRender->PPMvsPPM(sOriginal[g_Index], sReference[g_Index], MAX_EPSILON_ERROR, 0.15f)) {
             g_TotalErrors++;
         }
+        else
+        {
+        	printf( "TEST PASSED\n" );
+        }
         g_Verify = false;
     }
 

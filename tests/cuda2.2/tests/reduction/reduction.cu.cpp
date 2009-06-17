@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005a5e_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006ce0_00000000-1_reduction.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005a5e_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006ce0_00000000-1_reduction.cudafe1.cpp"
 # 1 "reduction.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -7294,8 +7294,34 @@ exit(-1);
 }
 
 
-inline void cutilDeviceInit(int ARGC, char **ARGV) { }
-# 171 "../../sdk/cutil_inline_runtime.h"
+
+
+inline void cutilDeviceInit(int ARGC, char **ARGV)
+{
+auto int deviceCount;
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_inline_runtime.h", 148);
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+
+auto cudaDeviceProp deviceProp;
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_inline_runtime.h", 158);
+if ((deviceProp.major) < 1) {
+fprintf(stderr, "cutil error: device does not support CUDA.\n");
+exit(-1); }
+
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
+__cudaSafeCall(cudaSetDevice(dev), "../../sdk/cutil_inline_runtime.h", 165);
+}
+
+
+
+
 inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
 {
 auto cudaError_t err = cudaGetLastError();
@@ -7345,11 +7371,31 @@ fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <
 exit(-1);
 }
 }
+# 54 "../../sdk/cutil_inline_drvapi.h"
+inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
+{
+cuDevice = 0;
+auto int deviceCount = 0;
+auto CUresult err = cuInit(0);
+if ((CUDA_SUCCESS) == err) {
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_inline_drvapi.h", 60); }
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; }
+if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_inline_drvapi.h", 69);
+auto char name[100];
+cuDeviceGetName(name, 100, cuDevice);
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, name); }
+}
 
 
 
-inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV) { }
-# 78 "../../sdk/cutil_inline_drvapi.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
 {
 auto CUresult err = cuCtxSynchronize();
@@ -7641,8 +7687,19 @@ __cudaSafeCallNoSync(cudaMalloc((void **)(&d_odata), maxNumBlocks * sizeof(T)), 
 
 __cudaSafeCallNoSync(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice), "reduction.cu", 366);
 __cudaSafeCallNoSync(cudaMemcpy(d_odata, h_idata, maxNumBlocks * sizeof(T), cudaMemcpyHostToDevice), "reduction.cu", 367);
-# 380 "reduction.cu"
-auto int testIterations = 1;
+
+
+
+for (int kernel = 0; kernel < 7; kernel++)
+{
+if (useSM13) {
+reduce_sm13< T> (maxN, maxThreads, maxNumBlocks, kernel, d_idata, d_odata); } else {
+
+reduce_sm10< T> (maxN, maxThreads, maxNumBlocks, kernel, d_idata, d_odata); }
+}
+auto int testIterations = 100;
+
+
 
 
 auto unsigned timer = (0);
@@ -7755,8 +7812,17 @@ __cudaSafeCallNoSync(cudaMalloc((void **)(&d_odata), numBlocks * sizeof(T)), "re
 
 __cudaSafeCallNoSync(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice), "reduction.cu", 491);
 __cudaSafeCallNoSync(cudaMemcpy(d_odata, h_idata, numBlocks * sizeof(T), cudaMemcpyHostToDevice), "reduction.cu", 492);
-# 503 "reduction.cu"
-auto int testIterations = 1;
+
+
+
+if (datatype == (REDUCE_DOUBLE)) {
+reduce_sm13< T> (size, numThreads, numBlocks, whichKernel, d_idata, d_odata); } else {
+
+reduce_sm10< T> (size, numThreads, numBlocks, whichKernel, d_idata, d_odata); }
+
+auto int testIterations = 100;
+
+
 
 
 auto unsigned timer = (0);
@@ -7805,11 +7871,11 @@ __cudaSafeCallNoSync(cudaFree(d_odata), "reduction.cu", 548);
 }
 }
 
-# 1 "/tmp/tmpxft_00005a5e_00000000-1_reduction.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00006ce0_00000000-1_reduction.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00005a5e_00000000-3_reduction.fatbin.c" 1
+# 1 "/tmp/tmpxft_00006ce0_00000000-3_reduction.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -7869,7 +7935,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00005a5e_00000000-3_reduction.fatbin.c" 2
+# 2 "/tmp/tmpxft_00006ce0_00000000-3_reduction.fatbin.c" 2
 
 
 
@@ -7906,9 +7972,9 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x25203436662e2067ull,0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,0x2f20676e696c6970ull,
-0x78706d742f706d74ull,0x35303030305f7466ull,0x303030305f653561ull,0x5f36312d30303030ull,
-0x6f69746375646572ull,0x692e337070632e6eull,0x632f706d742f2820ull,0x556c7a2e23494263ull,
-0x2f2f090a29767963ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x78706d742f706d74ull,0x36303030305f7466ull,0x303030305f306563ull,0x5f36312d30303030ull,
+0x6f69746375646572ull,0x692e337070632e6eull,0x632f706d742f2820ull,0x6363332e23494263ull,
+0x2f2f090a297a5a4cull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2f2f090a0a2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -7922,7 +7988,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x662e090a0a2d2d2dull,
 0x3c22093109656c69ull,0x2d646e616d6d6f63ull,0x090a223e656e696cull,0x093209656c69662eull,
-0x6d742f706d742f22ull,0x3030305f74667870ull,0x30305f6535613530ull,0x312d303030303030ull,
+0x6d742f706d742f22ull,0x3030305f74667870ull,0x30305f3065633630ull,0x312d303030303030ull,
 0x7463756465725f35ull,0x616475632e6e6f69ull,0x227570672e326566ull,0x09656c69662e090aull,
 0x2f7273752f220933ull,0x2f6363672f62696cull,0x6c2d34365f363878ull,0x756e672d78756e69ull,
 0x692f332e332e342full,0x732f6564756c636eull,0x22682e6665646474ull,0x09656c69662e090aull,
@@ -7978,8 +8044,8 @@ static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"a9964ce014edb6b7",(char*)"reduction.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0x8c05ed5e};
-# 5 "/tmp/tmpxft_00005a5e_00000000-1_reduction.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"f283b101e8357837",(char*)"reduction.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0xa7458992};
+# 5 "/tmp/tmpxft_00006ce0_00000000-1_reduction.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 85 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -16056,9 +16122,9 @@ static double __cuda_fma(double a, double b, double c)
 # 3735 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 227 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00005a5e_00000000-1_reduction.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_45_tmpxft_00005a5e_00000000_13_reduction_cpp1_ii_isPow2(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_45_tmpxft_00005a5e_00000000_13_reduction_cpp1_ii_isPow2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_00006ce0_00000000-1_reduction.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_45_tmpxft_00006ce0_00000000_13_reduction_cpp1_ii_isPow2(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_45_tmpxft_00006ce0_00000000_13_reduction_cpp1_ii_isPow2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 552 "reduction.cu" 2

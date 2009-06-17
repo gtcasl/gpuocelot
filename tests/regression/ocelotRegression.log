@@ -13,9 +13,9 @@ INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/TestInstruc
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/TestEmulator
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/TestKernels
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/TestKernels seconds
-INFO     Test completed in 0.0145750045776 seconds
+INFO     Test completed in 0.0153908729553 seconds
 INFO      It produced the following output:
-Kernel launch time was 4.36306e-05s (43749 ticks)
+Kernel launch time was 4.1008e-05s (41002 ticks)
 Pass/Fail : Pass
 
 
@@ -23,8 +23,8 @@ Name : TestKernels
 
 Description : 
 
-Test Seed : 1245098201
-Test time : 0.00505924
+Test Seed : 1245264389
+Test time : 0.00500727
 
 Status : Test output:
 divergent control flow succeeded
@@ -33,31 +33,8 @@ looping kernel succeeded
 
 
 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/TestEmulator seconds
-INFO     Test completed in 0.022429227829 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description : 
-
-Test Seed : 1245098201
-Test time : 0.013737
-
-Status : Test output:
-12 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/TestInstructions seconds
-INFO     Test completed in 0.0297198295593 seconds
+INFO     Test completed in 0.0167419910431 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -66,8 +43,8 @@ Name : TestInstructions
 
 Description : 
 
-Test Seed : 1245098202
-Test time : 0.000389099
+Test Seed : 1245264389
+Test time : 0.000383615
 
 Status : Test output:
 pass: load and store instructions
@@ -81,8 +58,31 @@ pass: control flow instructions
 
 
 
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/TestEmulator seconds
+INFO     Test completed in 0.0228760242462 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description : 
+
+Test Seed : 1245264389
+Test time : 0.0135734
+
+Status : Test output:
+12 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/TestLexer seconds
-INFO     Test completed in 4.80978798866 seconds
+INFO     Test completed in 4.84161996841 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -91,8 +91,8 @@ Name : TestLexer
 
 Description : Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
 
-Test Seed : 1245098201
-Test time : 4.8007
+Test Seed : 1245264389
+Test time : 4.82987
 
 Status : For file tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Scan): Passed
 For file tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -238,7 +238,7 @@ For file tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
 
 
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/TestParser seconds
-INFO     Test completed in 8.56109380722 seconds
+INFO     Test completed in 8.51825904846 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -247,8 +247,8 @@ Name : TestParser
 
 Description : A test for the PTXParser class. Test Points: 1) Load a PTX file and run it through the parser generating a module.  Write the module to an intermediate stream.  Parse the stream again generating a new module, compare both to make sure that they match.
 
-Test Seed : 1245098201
-Test time : 8.5527
+Test Seed : 1245264389
+Test time : 8.50808
 
 Status : For file tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Parse): Passed
 For file tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -395,11 +395,11 @@ For file tests/ptx/sdk/template.ptx, Test Point 1 (Parse): Passed
 
 INFO     
 Passing tests:
- (0.030s) : /home/gdiamos/checkout/gpuocelot/trunk/TestInstructions : Passed
- (8.561s) : /home/gdiamos/checkout/gpuocelot/trunk/TestParser : Passed
+ (0.017s) : /home/gdiamos/checkout/gpuocelot/trunk/TestInstructions : Passed
+ (8.518s) : /home/gdiamos/checkout/gpuocelot/trunk/TestParser : Passed
  (0.015s) : /home/gdiamos/checkout/gpuocelot/trunk/TestKernels : Passed
- (0.022s) : /home/gdiamos/checkout/gpuocelot/trunk/TestEmulator : Passed
- (4.810s) : /home/gdiamos/checkout/gpuocelot/trunk/TestLexer : Passed
+ (0.023s) : /home/gdiamos/checkout/gpuocelot/trunk/TestEmulator : Passed
+ (4.842s) : /home/gdiamos/checkout/gpuocelot/trunk/TestLexer : Passed
 
 Failing tests:
 

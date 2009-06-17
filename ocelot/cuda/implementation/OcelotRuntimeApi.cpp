@@ -228,13 +228,49 @@ cudaError_t CUDARTAPI cudaFreeArray(struct cudaArray *array)
 cudaError_t CUDARTAPI cudaHostAlloc(void **pHost, size_t bytes, 
 	unsigned int flags)
 {
-	throw hydrazine::Exception( "cudaHostAlloc not implemented." );
+	cuda::runtime.lock();
+	cuda::runtime.setContext();
+	
+	*pHost = cuda::runtime.allocate( bytes, flags & cudaHostAllocPortable, 
+		flags & cudaHostAllocMapped );
+	
+	cuda::runtime.unlock();
+	
+	return cudaSuccess;
+
 }
 
 cudaError_t CUDARTAPI cudaHostGetDevicePointer(void **pDevice, void *pHost, 
 	unsigned int flags)
 {
-	throw hydrazine::Exception( "cudaHostGetDevicePointer not implemented." );
+	if( flags != 0 )
+	{
+		return cudaErrorInvalidValue;
+	}
+
+	cuda::runtime.lock();
+	cuda::runtime.setContext();
+	
+	try
+	{
+		*pDevice = cuda::runtime.lookupMappedMemory( pHost );
+	}
+	catch( hydrazine::Exception& e )
+	{
+		cuda::runtime.unlock();
+		if( e.code == cudaErrorInvalidValue )
+		{
+			return cudaErrorInvalidValue;
+		}
+		else
+		{
+			throw;
+		}
+	}
+	
+	cuda::runtime.unlock();
+	
+	return cudaSuccess;
 }
 
 cudaError_t CUDARTAPI cudaMemcpy(void *dst, const void *src, 
@@ -732,7 +768,14 @@ cudaError_t CUDARTAPI cudaSetValidDevices(int *device_arr, int len)
 
 cudaError_t CUDARTAPI cudaSetDeviceFlags( int flags )
 {
-	throw hydrazine::Exception( "cudaSetDeviceFlags not implemented." );
+	cuda::runtime.lock();
+	cuda::runtime.setContext();
+	
+	cuda::runtime.setFlags( flags );
+	
+	cuda::runtime.unlock();
+	
+	return cudaSuccess;
 }
 
 cudaError_t CUDARTAPI cudaBindTexture(size_t *offset, 

@@ -71,12 +71,14 @@ namespace executive {
 		void freeAll();
 
 		/*!
-			From Kernel, analyze application and construct data structures necessary for emulation
+			From Kernel, analyze application and construct data structures 
+				necessary for emulation
 		*/
 		void initialize();
 
 		/*!
-			Deletes allocated regions of global, register, shared, and constant memory
+			Deletes allocated regions of global, register, shared, and 
+				constant memory
 		*/
 		void freeRegions();
 
@@ -91,14 +93,15 @@ namespace executive {
 		void registerAllocation();
 
 		/*!
-			Produces a packed vector of instructions, updates each operand, and changes labels
-			to indices.
+			Produces a packed vector of instructions, updates each operand, 
+			and changes labels to indices.
 		*/
 		void constructInstructionSequence();
 
 		/*!
-			After emitting the instruction sequence, visit each memory move operation and replace
-			references to parameters with offsets into parameter memory.
+			After emitting the instruction sequence, visit each memory move 
+			operation and replace references to parameters with offsets into 
+			parameter memory.
 		*/
 		void updateParamReferences();
 
@@ -108,12 +111,14 @@ namespace executive {
 		void initializeParameterMemory();
 
 		/*!
-			Allocates arrays in shared memory and maps identifiers to allocations.
+			Allocates arrays in shared memory and maps identifiers to 
+			allocations.
 		*/
 		void initializeSharedMemory();
 
 		/*!
-			Allocates arrays in local memory and maps identifiers to allocations.
+			Allocates arrays in local memory and maps identifiers to 
+			allocations.
 		*/
 		void initializeLocalMemory();
 

@@ -47,6 +47,64 @@ namespace cuda
 		
 	}
 
+	CudaRuntime::ArchitectureMap::iterator CudaRuntime::_getTranslatedKernel( 
+		SymbolMap::iterator kernel )
+	{	
+		FatBinaryMap::iterator binary = _binaries.find( kernel->second.handle );
+		assert( binary != _binaries.end() );
+		
+		KernelMap::iterator architectures = binary->second.kernels.find( 
+			kernel->second.kernel );
+		
+		if( architectures == binary->second.kernels.end() )
+		{
+	
+			ArchitectureMap map;
+		
+			architectures = binary->second.kernels.insert( 
+				std::make_pair( kernel->second.kernel, 
+				map ) ).first;
+		
+		}
+
+		ArchitectureMap::iterator translatedKernel = 
+			architectures->second.find( context.getSelectedISA() );
+		
+		// possilbly translate kernels
+		if( translatedKernel == architectures->second.end() )
+		{
+		
+			ir::Kernel* generated = context.getKernel( 
+				context.getSelectedISA(), binary->second.binary.ident, 
+				kernel->second.kernel );
+				
+			if( generated != 0 )
+			{
+									
+				translatedKernel = architectures->second.insert( 
+					std::make_pair( context.getSelectedISA(), 
+					generated ) ).first;
+			
+			}
+			
+			if( translatedKernel == architectures->second.end() )
+			{
+			
+				std::stringstream stream;
+				stream << "From Fat Binary \"" << binary->second.binary.ident 
+					<< "\" failed to translate kernel \"" 
+					<< kernel->second.kernel << "\"";
+					
+				throw hydrazine::Exception( stream.str(), 5 );
+			
+			}
+		
+		}
+		
+		report( "Obtained translated kernel." );
+		return translatedKernel;
+	}
+
 	cudaDeviceProp CudaRuntime::convert( const executive::Device& device )
 	{
 	
@@ -822,6 +880,49 @@ namespace cuda
 	
 	}
 
+	void CudaRuntime::getAttributes( cudaFuncAttributes* attributes, 
+		const char* symbol )
+	{
+		SymbolMap::iterator kernel = _symbols.find( symbol );
+		if( kernel == _symbols.end() )
+		{
+			throw hydrazine::Exception( "Could not find kernel function name.", 
+				cudaErrorInvalidDeviceFunction );
+		}
+		
+		ArchitectureMap::iterator translatedKernel = _getTranslatedKernel( 
+			kernel );
+		
+		// set up launch parameters and launch
+		switch( context.getSelectedISA() )
+		{
+		
+			case ir::Instruction::Emulated:
+			{
+				executive::EmulatedKernel* emulated = static_cast< 
+					executive::EmulatedKernel* >( translatedKernel->second );
+				attributes->constSizeBytes = emulated->ConstMemorySize;
+				attributes->localSizeBytes = emulated->LocalMemorySize;
+				attributes->maxThreadsPerBlock = context.devices[ 
+					context.getSelected() ].maxThreadsPerBlock;
+				attributes->numRegs = emulated->RegisterCount;
+				attributes->sharedSizeBytes = emulated->SharedMemorySize;
+				
+				break;
+			}
+
+			default:
+			{
+				std::stringstream stream;
+				stream << "Kernel type " << context.getSelectedISA() 
+					<< " not supported.";
+				throw hydrazine::Exception( stream.str(), 6 );
+			}
+		
+		}
+		
+	}
+
 	void CudaRuntime::registerFunction( const char* symbol, 
 		const std::string& name, unsigned int handle )
 	{
@@ -839,7 +940,7 @@ namespace cuda
 		}
 		
 		_symbols.insert( std::make_pair( symbol, kernel ) );
-	
+		
 	}
 
 	void CudaRuntime::launch( const char* symbol )
@@ -863,58 +964,8 @@ namespace cuda
 		SymbolMap::iterator kernel = _symbols.find( symbol );
 		assert( kernel != _symbols.end() );
 	
-		FatBinaryMap::iterator binary = _binaries.find( kernel->second.handle );
-		assert( binary != _binaries.end() );
-		
-		KernelMap::iterator architectures = binary->second.kernels.find( 
-			kernel->second.kernel );
-		
-		if( architectures == binary->second.kernels.end() )
-		{
-	
-			ArchitectureMap map;
-		
-			architectures = binary->second.kernels.insert( 
-				std::make_pair( kernel->second.kernel, 
-				map ) ).first;
-		
-		}
-
-		ArchitectureMap::iterator translatedKernel = 
-			architectures->second.find( context.getSelectedISA() );
-		
-		// possilbly translate kernels
-		if( translatedKernel == architectures->second.end() )
-		{
-		
-			ir::Kernel* generated = context.getKernel( 
-				context.getSelectedISA(), binary->second.binary.ident, 
-				kernel->second.kernel );
-				
-			if( generated != 0 )
-			{
-									
-				translatedKernel = architectures->second.insert( 
-					std::make_pair( context.getSelectedISA(), 
-					generated ) ).first;
-			
-			}
-			
-			if( translatedKernel == architectures->second.end() )
-			{
-			
-				std::stringstream stream;
-				stream << "From Fat Binary \"" << binary->second.binary.ident 
-					<< "\" failed to translate kernel \"" 
-					<< kernel->second.kernel << "\"";
-					
-				throw hydrazine::Exception( stream.str(), 5 );
-			
-			}
-		
-		}
-		
-		report( "Obtained translated kernel." );
+		ArchitectureMap::iterator translatedKernel 
+			= _getTranslatedKernel( kernel );
 		
 		// set up launch parameters and launch
 		switch( context.getSelectedISA() )

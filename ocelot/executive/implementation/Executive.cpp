@@ -18,6 +18,7 @@
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/macros.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -179,7 +180,7 @@ void executive::Executive::enumerateDevices() {
 		device.totalConstantMemory = 65536;
 		device.SIMDWidth = device.maxThreadsPerBlock;
 		device.memPitch = device.totalMemory;
-		device.regsPerBlock = (1 << 13);
+		device.regsPerBlock = MIN( INT_MAX, device.totalMemory );
 		device.clockRate = 2000000;
 		device.textureAlign = 1;
 		device.major = 1;

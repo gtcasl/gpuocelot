@@ -330,6 +330,14 @@ namespace cuda
 					trace generators
 			*/
 			std::string _traceGeneratorDatabase;
+			
+		private:
+			/*!
+				\brief Get an iterator to a translated kernel
+				\param kernel An iterator to the kernel name and handle.
+			*/
+			ArchitectureMap::iterator _getTranslatedKernel( 
+				SymbolMap::iterator kernel );
 		
 		public:
 		
@@ -458,6 +466,15 @@ namespace cuda
 			void setupArgument( const void *arg, unsigned int size, 
 				unsigned int offset );
 				
+			/*!
+				\brief Gte attributes associated with a function.
+				
+				\param attributes The attributes to fill int.
+				\param name The symbol of the function being looked up.							
+			*/
+			void getAttributes( cudaFuncAttributes* attributes, 
+				const char* symbol );
+			
 			/*!
 				\brief Register function names
 			

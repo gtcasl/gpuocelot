@@ -13,6 +13,9 @@
 
 #include <string>
 
+/*!
+	\brief A namespace for the Ocelot internal program representation
+*/
 namespace ir {
 
 	/*!

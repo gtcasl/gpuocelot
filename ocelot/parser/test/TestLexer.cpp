@@ -265,7 +265,7 @@ int main( int argc, char** argv )
 	test::TestLexer test;
 	parser.description( test.testDescription() );
 
-	parser.parse( "-i", "--input-file", test.input, "tests/ptx",
+	parser.parse( "-i", "--input-file", test.input, "../tests/ptx",
 		"Input directory to search for ptx files." );
 	parser.parse( "-r", "--not-recursive", test.recursive, false,
 		"Dont recursively search directories.");

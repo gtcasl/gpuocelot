@@ -50,7 +50,7 @@ public:
 
 		threadCount = 16;
 
-		module = "tests/ptx/synthetic/sequence.ptx";
+		module = "../tests/ptx/synthetic/sequence.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";

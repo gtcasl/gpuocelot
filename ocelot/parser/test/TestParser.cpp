@@ -221,7 +221,7 @@ int main( int argc, char** argv )
 	test::TestParser test;
 	parser.description( test.testDescription() );
 
-	parser.parse( "-i", test.input, "tests/ptx",
+	parser.parse( "-i", test.input, "../tests/ptx",
 		"Input directory to search for ptx files." );
 	parser.parse( "-r", test.recursive, true, 
 		"Recursively search directories.");

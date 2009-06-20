@@ -1,0 +1,5 @@
+../TestLexer
+../TestParser
+../TestEmulator
+../TestInstructions
+../TestKernels

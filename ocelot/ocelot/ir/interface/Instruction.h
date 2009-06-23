@@ -24,9 +24,9 @@ namespace ir {
 	class Instruction {
 	public:
 		enum Architecture {
-			PTX,								// ir/interface/Kernel
-			GPU,								// executive/interface/GPUKernel
-			Emulated,						// executive/interface/EmulatedKernel
+			PTX,						// ir/interface/Kernel
+			GPU,						// executive/interface/GPUKernel
+			Emulated,					// executive/interface/EmulatedKernel
 			LLVM,
 			x86,
 			x86_64,

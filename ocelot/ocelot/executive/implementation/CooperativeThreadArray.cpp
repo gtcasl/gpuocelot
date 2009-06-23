@@ -2258,19 +2258,27 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 					case PTXOperand::u32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
+							PTXF32 fd = 0;
 							PTXU32 d = 0;
 							if (instr.modifier & PTXInstruction::rn) {
-								d = nearbyintf(a);
+								fd = nearbyintf(a);
 							} else if (instr.modifier & PTXInstruction::rz) {
-								d = trunc(a);
+								fd = trunc(a);
 							} else if (instr.modifier & PTXInstruction::rm) {
-								d = floor(a);
+								fd = floor(a);
 							} else if (instr.modifier & PTXInstruction::rp) {
-								d = ceil(a);
+								fd = ceil(a);
 							}
 							if(instr.modifier & PTXInstruction::sat) {
-								d = min(UINT_MAX, d);
-								d = max(d, 0);
+								if( fd > UINT_MAX ) {
+									d = UINT_MAX;
+								}
+								else if( fd < 0 ) {
+									d = 0;
+								}
+							}
+							else {
+								d = fd;
 							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}
@@ -4678,29 +4686,16 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context, const PTX
 						break;
 
 					case PTXInstruction::Num:
+						t = !isF32NaN(a) && !isF32NaN(a);
+						break;
 					case PTXInstruction::Nan:
+						t = isF32NaN(a) || isF32NaN(a);					
 						break;
 
 					default:
 						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
 				}
-				
-				switch (instr.type) {
-					case PTXInstruction::Equ:
-					case PTXInstruction::Neu:
-					case PTXInstruction::Ltu:
-					case PTXInstruction::Leu:
-					case PTXInstruction::Gtu:
-					case PTXInstruction::Geu:
-					case PTXInstruction::Num:
-					case PTXInstruction::Nan:
-						// if either is NaN, set t to true
-						t = (isF32NaN(a) || isF32NaN(b) || t);
-						break;
-					default:
-						break;
-				}
-				
+								
 				// now apply the bool op
 				bool p = false, q = false;
 				switch (instr.booleanOperator) {
@@ -4787,28 +4782,16 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context, const PTX
 						break;
 
 					case PTXInstruction::Num:
+						t = !isF64NaN(a) && !isF64NaN(a);
+						break;
 					case PTXInstruction::Nan:
+						t = isF64NaN(a) || isF64NaN(a);					
 						break;
 
 					default:
 						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
 				}				
-				
-				switch (instr.type) {
-					case PTXInstruction::Equ:
-					case PTXInstruction::Neu:
-					case PTXInstruction::Ltu:
-					case PTXInstruction::Leu:
-					case PTXInstruction::Gtu:
-					case PTXInstruction::Geu:
-					case PTXInstruction::Num:
-					case PTXInstruction::Nan:
-						// if either is NaN, set t to true
-						t = (isF64NaN(a) || isF64NaN(b) || t);
-						break;
-					default:
-						break;
-				}
+
 				
 				// now apply the bool op
 				bool p = false, q = false;
@@ -5304,6 +5287,10 @@ void executive::CooperativeThreadArray::eval_Shl(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 16 )
+			{
+				b = 16;
+			}
 			d = a << b;
 			setRegAsB16(threadID, instr.d.reg, d);
 		}
@@ -5333,6 +5320,10 @@ void executive::CooperativeThreadArray::eval_Shl(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 32 )
+			{
+				b = 32;
+			}
 			d = a << b;
 			setRegAsB32(threadID, instr.d.reg, d);
 		}
@@ -5361,6 +5352,10 @@ void executive::CooperativeThreadArray::eval_Shl(CTAContext &context, const PTXI
 			else {
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
+			}
+			if( b > 64 )
+			{
+				b = 64;
 			}
 			d = a << b;
 			setRegAsB64(threadID, instr.d.reg, d);
@@ -5402,6 +5397,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 16 )
+			{
+				b = 16;
+			}
 			d = a >> b;
 			setRegAsB16(threadID, instr.d.reg, d);
 		}
@@ -5430,6 +5429,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 			else {
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
+			}
+			if( b > 32 )
+			{
+				b = 32;
 			}
 			d = a >> b;
 			setRegAsB32(threadID, instr.d.reg, d);
@@ -5460,6 +5463,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 64 )
+			{
+				b = 64;
+			}
 			d = a >> b;
 			setRegAsB64(threadID, instr.d.reg, d);
 		}
@@ -5488,6 +5495,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 			else {
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
+			}
+			if( b > 16 )
+			{
+				b = 16;
 			}
 			d = a >> b;
 			setRegAsS16(threadID, instr.d.reg, d);
@@ -5518,6 +5529,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 32 )
+			{
+				b = 32;
+			}
 			d = a >> b;
 			setRegAsS32(threadID, instr.d.reg, d);
 		}
@@ -5546,6 +5561,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 			else {
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
+			}
+			if( b > 64 )
+			{
+				b = 64;
 			}
 			d = a >> b;
 			setRegAsS64(threadID, instr.d.reg, d);
@@ -5576,6 +5595,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 16 )
+			{
+				b = 16;
+			}
 			d = a >> b;
 			setRegAsU16(threadID, instr.d.reg, d);
 		}
@@ -5605,6 +5628,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
 			}
+			if( b > 32 )
+			{
+				b = 32;
+			}
 			d = a >> b;
 			setRegAsU32(threadID, instr.d.reg, d);
 		}
@@ -5633,6 +5660,10 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 			else {
 				throw RuntimeException("unsupported data type", 
 					context.PC, instr);
+			}
+			if( b > 64 )
+			{
+				b = 64;
 			}
 			d = a >> b;
 			setRegAsU64(threadID, instr.d.reg, d);

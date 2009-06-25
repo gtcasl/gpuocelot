@@ -12,7 +12,7 @@
 #include <deque>
 #include <vector>
 #include <list>
-#include <map>
+#include <unordered_map>
 
 #include <ocelot/ir/interface/BasicBlock.h>
 #include <ocelot/ir/interface/Edge.h>
@@ -23,6 +23,12 @@ namespace ir {
 	Control flow graph
 */
 class ControlFlowGraph {
+public:
+	/*! \brief A vector of BasicBlock pointers */
+	typedef std::vector< BasicBlock * > BlockPointerVector;
+	/*! \brief A map from block to instruction ids */
+	typedef std::unordered_map< BasicBlock *, int > BlockMap;
+
 public:
 	ControlFlowGraph();
 	virtual ~ControlFlowGraph();
@@ -37,14 +43,14 @@ public:
 	/*!
 		Returns a list of BasicBlocks associated with the CFG
 	*/
-	virtual std::list< const ir::BasicBlock * > get_blocks() const;
+	virtual ir::BasicBlock::ConstBlockList get_blocks() const;
 
 	/*!
 		Returns a list of edges in the CFG
 
 		\return a list of edge objects
 	*/
-	virtual std::list< const ir::Edge * > get_edges() const;
+	virtual ir::BasicBlock::ConstEdgeList get_edges() const;
 
 	/*!
 		Inserts a basic block into the CFG
@@ -110,10 +116,11 @@ public:
 		write a graphviz-compatible file for visualizing the CFG
 	*/
 	template <typename IType>
-	std::ostream & write(std::ostream &out, const std::deque<IType> &instructions) {
+	std::ostream & write(std::ostream &out, 
+		const std::deque<IType>& instructions) {
 		using namespace std;
 	
-		map< BasicBlock *, int > blockIndices;
+		BlockMap blockIndices;
 	
 		out << "digraph {\n";
 	
@@ -128,7 +135,7 @@ public:
 		blockIndices[exit] = 1;
 	
 		int n = 0;
-		list< BasicBlock *>::iterator it = blocks.begin();
+		ir::BasicBlock::BlockList::iterator it = blocks.begin();
 		for (; it != blocks.end(); ++it, ++n) {
 			BasicBlock *block = *it;
 
@@ -139,9 +146,11 @@ public:
 			out << "  bb_" << n << " [shape=record,label=";
 			out << "\"{" << make_label_dot_friendly( (*it)->label );
 	
-			list<int>::const_iterator instrs = block->instructions.begin();	
+			ir::BasicBlock::InstructionList::const_iterator instrs 
+				= block->instructions.begin();	
 			for (; instrs != block->instructions.end(); ++instrs) {
-				out << " | " << make_label_dot_friendly(instructions[*instrs].toString() );
+				out << " | " << make_label_dot_friendly(
+				instructions[*instrs].toString() );
 			}
 			out << "}\"];\n";
 		}
@@ -149,7 +158,7 @@ public:
 		out << "\n\n  // edges\n\n";
 	
 		// emit edges
-		list< Edge *>::iterator e_it = edges.begin();
+		ir::BasicBlock::EdgeList::iterator e_it = edges.begin();
 		for (; e_it != edges.end(); ++e_it) {
 			const Edge *edge = *e_it;
 			out << "  " << "bb_" << blockIndices[edge->head] << " -> "
@@ -188,23 +197,22 @@ public:
 	
 	/*!
 		returns an ordered sequence of the nodes of the CFG including entry and exit
-		that would be encountered by a post order traversal
+		that would be encountered by a pre order traversal
 	*/
-	std::vector< BasicBlock * > pre_order_sequence();
+	BlockPointerVector pre_order_sequence();
 	
 	/*!
 		returns an ordered sequence of the nodes of the CFG including entry and exit
 		that would be encountered by a post order traversal
 	*/
-	std::vector< BasicBlock * > post_order_sequence();
+	BlockPointerVector post_order_sequence();
 
 	/*!
 		Returns an ordered sequence of basic blocks such that the entry node is first
 		and all fall-through edges produce adjacencies
 	*/
-	std::vector< BasicBlock * > executable_sequence();
+	BlockPointerVector executable_sequence();
 	
-
 	/*!
 		deep copy of ControlFlowGraph
 	*/
@@ -213,19 +221,19 @@ public:
 private:
 	
 	void pre_order_sequence_helper(
-		std::vector<BasicBlock*> &sequence, 
+		BlockPointerVector &sequence, 
 		BasicBlock *block,
-		std::map< BasicBlock *, int> &visited);
+		BlockMap& visited);
 
 	void post_order_sequence_helper(
-		std::vector<BasicBlock*> &sequence, 
+		BlockPointerVector &sequence, 
 		BasicBlock *block,
-		std::map< BasicBlock *, int> &visited);
+		BlockMap& visited);
 
 	ir::BasicBlock *entry, *exit;
 
-	std::list< ir::BasicBlock * > blocks;
-	std::list< ir::Edge * > edges;
+	ir::BasicBlock::BlockList blocks;
+	ir::BasicBlock::EdgeList edges;
 
 };
 

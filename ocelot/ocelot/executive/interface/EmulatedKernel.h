@@ -12,6 +12,7 @@
 #define EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 
 #include <list>
+#include <map>
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>

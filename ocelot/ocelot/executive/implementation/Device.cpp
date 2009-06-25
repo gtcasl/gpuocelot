@@ -43,41 +43,11 @@ executive::Device::~Device() {
 			Unknown
 		};
 */
-static std::string toString(ir::Instruction::Architecture ISA) {
-	using namespace ir;
-	std::string s;
-	switch (ISA) {
-		case Instruction::PTX:
-			s = "PTX";
-			break;
-		case Instruction::GPU:
-			s = "GPU";
-			break;
-		case Instruction::Emulated:
-			s = "emulated";
-			break;
-		case Instruction::LLVM:
-			s = "LLVM";
-			break;
-		case Instruction::x86:
-			s = "x86";
-			break;
-		case Instruction::x86_64:
-			s = "x86_64";
-			break;
-		case Instruction::SPU:
-			s = "Cell SPU";
-			break;
-		default:
-			s = "unknown";
-	}
-	return s;
-}
 
 std::ostream & executive::Device::write(std::ostream &out) const {
 	out << name << "( " << guid << " ):\n";
 	out << "  " << "total memory: " << (totalMemory >> 10) << " kB\n";
-	out << "  " << "ISA: " << toString(ISA) << "\n";
+	out << "  " << "ISA: " << ir::Instruction::toString(ISA) << "\n";
 	out << "  " << "multiprocessors: " << multiprocessorCount << "\n";
 	out << "  " << "max threads: " << maxThreadsPerBlock << "\n";
 	out << "  " << "shared memory: " << (sharedMemPerBlock >> 10) << " kB\n";

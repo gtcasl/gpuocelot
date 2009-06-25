@@ -18,12 +18,12 @@ ir::BasicBlock::~BasicBlock() {
 	instructions.clear();
 }
 
-std::list< const ir::BasicBlock * > ir::BasicBlock::get_successors() const {
+ir::BasicBlock::ConstBlockList ir::BasicBlock::get_successors() const {
 	using namespace std;
 	using namespace ir;
 
-	list< const BasicBlock *> blocks;
-	list< BasicBlock *>::const_iterator it = successors.begin();
+	ConstBlockList blocks;
+	BlockList::const_iterator it = successors.begin();
 	for (; it != successors.end(); ++it) {
 		blocks.push_back(*it);
 	}
@@ -31,12 +31,12 @@ std::list< const ir::BasicBlock * > ir::BasicBlock::get_successors() const {
 	return blocks;
 }
 
-std::list< const ir::BasicBlock *> ir::BasicBlock::get_predecessors() const {
+ir::BasicBlock::ConstBlockList ir::BasicBlock::get_predecessors() const {
 	using namespace ir;
 	using namespace std;
 
-	list< const BasicBlock *> blocks;
-	list< BasicBlock *>::const_iterator it = predecessors.begin();
+	ConstBlockList blocks;
+	BlockList::const_iterator it = predecessors.begin();
 	for (; it != predecessors.end(); ++it) {
 		blocks.push_back(*it);
 	}
@@ -44,12 +44,12 @@ std::list< const ir::BasicBlock *> ir::BasicBlock::get_predecessors() const {
 	return blocks;
 }
 
-std::list< const ir::Edge *> ir::BasicBlock::get_in_edges() const {
+ir::BasicBlock::ConstEdgeList ir::BasicBlock::get_in_edges() const {
 	using namespace std;
 	using namespace ir;
 
-	list< const Edge *> edges;
-	list< Edge *>::const_iterator it = in_edges.begin();
+	ConstEdgeList edges;
+	EdgeList::const_iterator it = in_edges.begin();
 	for (; it != in_edges.end(); ++it) {
 		edges.push_back(*it);
 	}
@@ -57,12 +57,12 @@ std::list< const ir::Edge *> ir::BasicBlock::get_in_edges() const {
 	return edges;
 }
 
-std::list< const ir::Edge *> ir::BasicBlock::get_out_edges() const {
+ir::BasicBlock::ConstEdgeList ir::BasicBlock::get_out_edges() const {
 	using namespace std;
 	using namespace ir;
 
-	list< const Edge *> edges;
-	list< Edge *>::const_iterator it = out_edges.begin();
+	ConstEdgeList edges;
+	EdgeList::const_iterator it = out_edges.begin();
 	for (; it != out_edges.end(); ++it) {
 		edges.push_back(*it);
 	}
@@ -70,12 +70,12 @@ std::list< const ir::Edge *> ir::BasicBlock::get_out_edges() const {
 	return edges;
 }
 
-std::list< ir::BasicBlock * > ir::BasicBlock::get_successors() {
+ir::BasicBlock::BlockList ir::BasicBlock::get_successors() {
 	using namespace std;
 	using namespace ir;
 
-	list< BasicBlock *> blocks;
-	list< BasicBlock *>::const_iterator it = successors.begin();
+	BlockList blocks;
+	BlockList::const_iterator it = successors.begin();
 	for (; it != successors.end(); ++it) {
 		blocks.push_back(*it);
 	}
@@ -83,12 +83,12 @@ std::list< ir::BasicBlock * > ir::BasicBlock::get_successors() {
 	return blocks;
 }
 
-std::list< ir::BasicBlock *> ir::BasicBlock::get_predecessors() {
+ir::BasicBlock::BlockList ir::BasicBlock::get_predecessors() {
 	using namespace ir;
 	using namespace std;
 
-	list< BasicBlock *> blocks;
-	list< BasicBlock *>::const_iterator it = predecessors.begin();
+	BlockList blocks;
+	BlockList::const_iterator it = predecessors.begin();
 	for (; it != predecessors.end(); ++it) {
 		blocks.push_back(*it);
 	}
@@ -96,12 +96,12 @@ std::list< ir::BasicBlock *> ir::BasicBlock::get_predecessors() {
 	return blocks;
 }
 
-std::list< ir::Edge *> ir::BasicBlock::get_in_edges() {
+ir::BasicBlock::EdgeList ir::BasicBlock::get_in_edges() {
 	using namespace std;
 	using namespace ir;
 
-	list< Edge *> edges;
-	list< Edge *>::const_iterator it = in_edges.begin();
+	EdgeList edges;
+	EdgeList::const_iterator it = in_edges.begin();
 	for (; it != in_edges.end(); ++it) {
 		edges.push_back(*it);
 	}
@@ -109,12 +109,12 @@ std::list< ir::Edge *> ir::BasicBlock::get_in_edges() {
 	return edges;
 }
 
-std::list< ir::Edge *> ir::BasicBlock::get_out_edges() {
+ir::BasicBlock::EdgeList ir::BasicBlock::get_out_edges() {
 	using namespace std;
 	using namespace ir;
 
-	list< Edge *> edges;
-	list< Edge *>::const_iterator it = out_edges.begin();
+	EdgeList edges;
+	EdgeList::const_iterator it = out_edges.begin();
 	for (; it != out_edges.end(); ++it) {
 		edges.push_back(*it);
 	}

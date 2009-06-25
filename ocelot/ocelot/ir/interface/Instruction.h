@@ -19,14 +19,14 @@
 namespace ir {
 
 	/*!
-		Instruction class
+		\brief Internal representation of an instruction.
 	*/
 	class Instruction {
 	public:
 		enum Architecture {
 			PTX,						// ir/interface/Kernel
-			GPU,						// executive/interface/GPUKernel
-			Emulated,					// executive/interface/EmulatedKernel
+			Emulated,					// ir/interface/Emulated
+			GPU, 						// ir/interface/GpuKernel
 			LLVM,
 			x86,
 			x86_64,
@@ -35,29 +35,33 @@ namespace ir {
 		};
 
 	public:
+		/*! \brief Get a string represention of an architecture */
+		static std::string toString( Architecture a );
+
+	public:
 		Instruction();
 		virtual ~Instruction();
 
 		/*!
-			Returns a string representation of the instruction
+			\brief Returns a string representation of the instruction
 		*/
 		virtual std::string toString() const = 0;
 
 		/*!
-			Determines if the instruction is valid, returns an empty string if
-				valid otherwise an error message.
+			\brief Determines if the instruction is valid, returns an empty 
+				string if valid otherwise an error message.
 		*/
 		virtual std::string valid() const = 0;
 
 	public:
 
 		/*!
-			Label that may identify the instruction
+			\brief Label that may identify the instruction
 		*/
 		std::string label;
 
 		/*!
-			Indicates ISA of the instruction
+			\brief Indicates ISA of the instruction
 		*/
 		Architecture ISA;
 	};

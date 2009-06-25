@@ -20,18 +20,24 @@ ACLOCAL_AMFLAGS = -I m4
 ################################################################################
 ## Programs and Libraries
 BUILT_SOURCES=ptx1_4grammar.h
-bin_PROGRAMS = CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
+bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator 
-lib_LTLIBRARIES = libir.la libparser.la libhydrazine.la libexecutive.la \
-	libtrace.la libcudart.la
+lib_LTLIBRARIES = libir.la libanalysis.la libparser.la libhydrazine.la \
+	libexecutive.la libtrace.la libcudart.la
+################################################################################
+
+################################################################################
+## libanalysis
+libanalysis_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+libanalysis_la_SOURCES = ocelot/analysis/implementation/DataflowGraph.cpp
 ################################################################################
 
 ################################################################################
 ## libir
-libir_la_CXXFLAGS = -I ocelot -Wall -ansi -pedantic -Werror -std=c++0x
+libir_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 libir_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 	ocelot/ir/implementation/ControlFlowGraph.cpp \
 	ocelot/ir/implementation/Edge.cpp \
@@ -51,7 +57,7 @@ libir_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 
 ################################################################################
 ## libhydrazine
-libhydrazine_la_CXXFLAGS = -I ocelot $(CUDA_CFLAGS) -Wall -ansi -pedantic \
+libhydrazine_la_CXXFLAGS = $(CUDA_CFLAGS) -Wall -ansi -pedantic \
 	-Werror -std=c++0x
 libhydrazine_la_SOURCES = \
 	hydrazine/implementation/Exception.cpp \
@@ -81,7 +87,7 @@ libhydrazine_la_SOURCES = \
 
 ################################################################################
 ## libtrace
-libtrace_la_CXXFLAGS = -I ocelot -Wall -ansi -pedantic -Werror -std=c++0x
+libtrace_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 libtrace_la_SOURCES = \
 	ocelot/trace/implementation/TraceEvent.cpp \
 	ocelot/trace/implementation/TraceGenerator.cpp \
@@ -95,7 +101,7 @@ libtrace_la_SOURCES = \
 
 ################################################################################
 ## libexecutive
-libexecutive_la_CXXFLAGS = -I ocelot -Wall -ansi -pedantic -Werror -std=c++0x
+libexecutive_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 libexecutive_la_SOURCES = \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/Executive.cpp \
@@ -118,19 +124,16 @@ libparser_la_SOURCES = \
 
 ################################################################################
 ## libcudart
-libcudart_la_CXXFLAGS = -I ocelot $(CUDA_CFLAGS) -Wall -ansi -pedantic -Werror \
-	-std=c++0x
+libcudart_la_CXXFLAGS = $(CUDA_CFLAGS) -Wall -ansi -pedantic -Werror -std=c++0x
 libcudart_la_SOURCES = \
 	ocelot/cuda/implementation/OcelotRuntimeApi.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp
 libcudart_la_LDFLAGS = -version-info 2:1:0
 ################################################################################
 
-
 ################################################################################
 ## ParallelismTraceAnalyzer
-ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
-	-std=c++0x
+ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 ParallelismTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/ParallelismTraceAnalyzer.cpp
 ParallelismTraceAnalyzer_LDADD = libhydrazine.la libir.la libparser.la \
@@ -169,6 +172,14 @@ SharedComputationAnalyzer_SOURCES = \
 SharedComputationAnalyzer_LDADD = libhydrazine.la libir.la libparser.la \
 	libtrace.la
 SharedComputationAnalyzer_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## DFG
+DFG_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+DFG_SOURCES = ocelot/analysis/test/DFG.cpp
+DFG_LDADD = libanalysis.la libir.la libparser.la libhydrazine.la
+DFG_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

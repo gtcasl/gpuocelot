@@ -41,7 +41,7 @@ namespace ir {
 	
 			for (int n = 0; n < (int)blocks.size(); n++) {
 				out << "  bb_" << n << " [shape=record,label=\"{" << blocks[n]->label << " | ";
-				list<int>::iterator instr_it = blocks[n]->instructions.begin();
+				BasicBlock::InstructionList::iterator instr_it = blocks[n]->instructions.begin();
 				for (int j = 0; instr_it != blocks[n]->instructions.end(); ++instr_it, ++j) {
 					out << (j > 0 ? " | " : "") << ControlFlowGraph::make_label_dot_friendly(
 						instructions[*instr_it].toString());
@@ -69,7 +69,7 @@ namespace ir {
 		/*!
 			store of the basic blocks in the CFG and dominator tree in post-order
 		*/
-		std::vector< BasicBlock * > blocks;
+		ControlFlowGraph::BlockPointerVector blocks;
 	
 		/*!
 			nth element stores the immediate post-dominator of node n or -1 if undefined
@@ -79,7 +79,7 @@ namespace ir {
 		/*!
 			Mapping from a BasicBlock pointer to an index into the blocks vector
 		*/
-		std::map< BasicBlock *, int > blocksToIndex;
+		ControlFlowGraph::BlockMap blocksToIndex;
 
 		/*!
 			Given a block known to be in the control flow graph, return the post dominator

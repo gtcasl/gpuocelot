@@ -27,9 +27,7 @@ void analyze(const char *filename) {
 	using namespace std;
 	using namespace ir;
 
-	string fname = filename;
-
-	ir::Module module(fname);
+	ir::Module module(filename);
 
 	Module::KernelVector::iterator k_it = module.begin(Instruction::PTX);
 

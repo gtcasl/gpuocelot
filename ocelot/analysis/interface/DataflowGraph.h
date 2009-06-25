@@ -8,6 +8,23 @@
 #ifndef DATAFLOW_GRAPH_H_INCLUDED
 #define DATAFLOW_GRAPH_H_INCLUDED
 
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
+#include <cassert>
+#include <unordered_set>
+
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
+#define MAX_INSTRUCTION_INPUTS 6
+#define MAX_INSTRUCTION_OUTPUTS 4
+#define INVALID_REGISTER ((analysis::DataflowGraph::RegisterId)-1)
+
 /*!
 	\brief A namespace for compiler analysis modules.
 */
@@ -22,9 +39,9 @@ namespace analysis
 	{
 		public:
 			/*! \brief A unique ID for a logical register */
-			typedef long long unsigned int RegisterId;
+			typedef unsigned int RegisterId;
 			/*! \brief A unique ID for a logical instruction */
-			typedef long long unsigned int InstructionId;
+			typedef unsigned int InstructionId;
 		
 			/*!
 				\brief A class for referring to a generic instruction.
@@ -32,12 +49,14 @@ namespace analysis
 			class Instruction
 			{
 				public:
+					/*! \brief The instruction text */
+					std::string label;
 					/*! \brief The id of the instruction */
 					InstructionId id;
 					/*! \brief Destination registers */
-					RegisterId d[4];
+					RegisterId d[ MAX_INSTRUCTION_OUTPUTS ];
 					/*! \brief Source registers */
-					RegisterId s[6];
+					RegisterId s[ MAX_INSTRUCTION_INPUTS ];
 			};
 			
 			/*! \brief A vector of Instructions */
@@ -45,8 +64,11 @@ namespace analysis
 			
 			class Block;
 			
+			/*! \brief A vector of blocks */
+			typedef std::list< Block > BlockVector;
+			
 			/*! \brief A vector of Block pointers */
-			typedef std::unordered_set< Block* > BlockPointerSet;
+			typedef std::unordered_set< BlockVector::iterator > BlockPointerSet;
 			
 			/*!
 				\brief A class for referring to a generic basic block of 
@@ -74,24 +96,35 @@ namespace analysis
 					/*! \brief Register that are alive exiting the block */
 					RegisterIdSet _aliveOut;
 					/*! \brief The fallthrough block */
-					Block* _fallthrough;
+					BlockVector::iterator _fallthrough;
 					/*! \brief The target block */
-					Block* _target;
+					BlockPointerSet _targets;
 					/*! \brief A list of predecessor blocks */
 					BlockPointerSet _predecessors;
 					/*! \brief The type of block */
 					Type _type;
 					/*! \brief Ordered set of instructions in the block */
 					InstructionVector _instructions;
+					/*! \brief Block label */
+					std::string _label;
+
+				private:
+					/*! \brief Compare two register sets */
+					static bool _equal( const RegisterIdSet& one, 
+						const RegisterIdSet& two );
 
 				private:
 					/*! \brief Private constructor */
 					Block( Type type );
+					
+					/*! \brief Update the live ranges */
+					bool compute();
 			
 				public:
 					/*! \brief Constructor from a sequence of instructions */
-					template< typename InstructionIterator >
-					Block( InstructionIterator begin, InstructionIterator end );
+					template< typename Inst >
+					Block( const ir::BasicBlock& block, 
+						const std::deque< Inst >& instructions  );
 					/*! \brief Default constructor */
 					Block();
 					
@@ -101,20 +134,20 @@ namespace analysis
 					/*! \brief Get registers that are alive exiting the block */
 					const RegisterIdSet& aliveOut() const;
 					/*! \brief Get the fallthrough block */
-					Block* fallthrough() const;
+					BlockVector::iterator fallthrough() const;
 					/*! \brief Get the target block */
-					Block* target() const;
+					const BlockPointerSet& targets() const;
 					/*! \brief Get a list of predecessor blocks */
-					const BlockPoitnerVector& predecessors() const;
+					const BlockPointerSet& predecessors() const;
 					/*! \brief Get the type of the block */
 					Type type() const;
 					/*! \brief Get an ordered set of instructions in the block*/
 					const InstructionVector& instructions() const;
+					/*! \brief Get the block label */
+					const std::string& label() const;
 			};
 			
-			/*! \brief A vector of blocks */
-			typedef std::list< Block > BlockVector;
-
+			
 		public:
 			
 			/*! \brief iterator */
@@ -127,15 +160,25 @@ namespace analysis
 			typedef BlockVector::value_type value_type;
 
 			/*! \brief Size type */
-			typedef BlockVector::size_type value_type;
+			typedef BlockVector::size_type size_type;
 
 		private:
 			BlockVector _blocks;
 			bool _consistent;
 
+		private:
+			/*! \brief Convert from a PTXInstruction to an Instruction  */
+			static Instruction _convert( const ir::PTXInstruction& i, 
+				InstructionId id  );
+
 		public:
 			/*! \brief Default constructor */
 			DataflowGraph();
+			
+			/*! \brief Build from a CFG */
+			template< typename Inst >
+			DataflowGraph( const ir::ControlFlowGraph& cfg, 
+				const std::deque< Inst >& instructions );
 
 		public:
 			/*! \brief Return an iterator to the program entry point */
@@ -146,7 +189,7 @@ namespace analysis
 			/*! \brief Return an iterator to the program exit point */
 			iterator end();
 			/*! \brief Return an iterator to the program exit point */
-			const_iterator end();
+			const_iterator end() const;
 
 		public:			
 			/*! \brief Is the graph empty? */
@@ -175,13 +218,98 @@ namespace analysis
 			void compute();
 	};
 
-	template< typename InstructionIterator >
-	DataflowGraph::Block::Block( InstructionIterator begin, 
-		InstructionIterator end )
+	template< typename Inst >
+	DataflowGraph::DataflowGraph( const ir::ControlFlowGraph& _cfg, 
+		const std::deque< Inst >& instructions )  
+		: _consistent( instructions.empty() )
 	{
+		typedef std::unordered_map< ir::BasicBlock*, iterator > BlockMap;
+		BlockMap map;
 		
+		ir::ControlFlowGraph& cfg = const_cast< ir::ControlFlowGraph& >( _cfg );
+		ir::ControlFlowGraph::BlockPointerVector blocks 
+			= cfg.executable_sequence();
+		assert( blocks.size() >= 2 );
+		assert( blocks.front() == cfg.get_entry_block() );
+		assert( blocks.back() == cfg.get_exit_block() );
+		
+		report( "Importing " << blocks.size() << " blocks from CFG." );
+		
+		unsigned int count = 1;
+		_blocks.push_back( Block( Block::Entry ) );
+		for( ir::ControlFlowGraph::BlockPointerVector::iterator 
+			bbi = blocks.begin() + 1; bbi != blocks.end() - 1; ++bbi, ++count )
+		{
+			Block newB( **bbi, instructions );
+			std::stringstream label;
+			label << "Block " << count << " " << (*bbi)->label;		
+			newB._label = label.str();
+			_blocks.push_back( newB );	
+		}
+		_blocks.push_back( Block( Block::Exit ) );
+		
+		iterator bi = _blocks.begin();
+		ir::ControlFlowGraph::BlockPointerVector::iterator bbi = blocks.begin();
+				
+		for( ; bi != _blocks.end(); ++bi, ++bbi )
+		{
+			map.insert( std::make_pair( *bbi, bi ) );
+		}
+		
+		bbi = blocks.begin();
+		for( ; bbi != blocks.end(); ++bbi )
+		{
+			BlockMap::iterator bi = map.find( *bbi );
+			assert( bi != map.end() );
+		
+			ir::BasicBlock::EdgeList inEdges = (*bbi)->get_in_edges();
+		
+			for( ir::BasicBlock::EdgeList::iterator ei = inEdges.begin(); 
+				ei != inEdges.end(); ++ei )
+			{
+				BlockMap::iterator begin = map.find( (*ei)->head );
+				assert( begin != map.end() );
+				
+				if( (*ei)->type == ir::Edge::FallThrough )
+				{
+					begin->second->_fallthrough = bi->second;
+					bi->second->_predecessors.insert( begin->second );
+				}
+				else if( (*ei)->type == ir::Edge::Branch )
+				{
+					begin->second->_targets.insert( bi->second );
+					bi->second->_predecessors.insert( begin->second );	
+				}
+			}
+							
+		}
 	}
 
+	template< typename Inst >
+	DataflowGraph::Block::Block( const ir::BasicBlock& block, 
+		const std::deque< Inst >& instructions ) : _type( Body )
+	{
+		for( ir::BasicBlock::InstructionList::const_iterator 
+			fi = block.instructions.begin(); 
+			fi != block.instructions.end(); ++fi )
+		{
+			assert( *fi < instructions.size() );
+			_instructions.push_back( _convert( instructions[ *fi ], *fi ) );
+		}
+		
+	}
+	
+	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
+}
+
+namespace std
+{
+	template<> inline size_t hash< 
+		analysis::DataflowGraph::iterator >::operator()( 
+		analysis::DataflowGraph::iterator it ) const
+	{
+		return ( size_t )&( *it );
+	}
 }
 
 #endif

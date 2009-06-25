@@ -229,6 +229,60 @@ bool ir::Kernel::constructCFG(
 	return true;
 }
 
+ir::PTXOperand::RegisterType ir::Kernel::assignRegisters() {
+	typedef std::unordered_map< std::string, 
+		PTXOperand::RegisterType > RegisterMap;
+	RegisterMap map;
+	
+	for (PTXInstructionVector::iterator i_it = instructions.begin();
+		i_it != instructions.end(); ++i_it) {
+		PTXInstruction & instr = *i_it;
+		PTXOperand PTXInstruction:: * operands[] = { 
+			&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c, 
+			&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq
+		};
+		
+		for (int i = 0; i < 6; i++) {
+			if ((instr.*operands[i]).addressMode == PTXOperand::Invalid) {
+				continue;
+			}
+			if ((instr.*operands[i]).addressMode == PTXOperand::Register 
+				|| (instr.*operands[i]).addressMode == PTXOperand::Indirect )  {
+				if ((instr.*operands[i]).vec != PTXOperand::v1) {
+					for (PTXOperand::Array::iterator 
+						a_it = (instr.*operands[i]).array.begin(); 
+						a_it != (instr.*operands[i]).array.end(); ++a_it) {
+						RegisterMap::iterator it = map.find(a_it->identifier);
+
+						PTXOperand::RegisterType reg = 0;
+						if (it == map.end()) {
+							reg = (PTXOperand::RegisterType)map.size();
+							map[a_it->identifier] = reg;
+						}
+						else {
+							reg = it->second;
+						}
+						a_it->reg = reg;
+					}
+				}
+				RegisterMap::iterator it 
+					= map.find((instr.*operands[i]).identifier);
+
+				PTXOperand::RegisterType reg = 0;
+				if (it == map.end()) {
+					reg = (PTXOperand::RegisterType)map.size();
+					map[(instr.*operands[i]).identifier] = reg;
+				}
+				else {
+					reg = it->second;
+				}
+				(instr.*operands[i]).reg = reg;
+			}
+		}
+	}
+	return (PTXOperand::RegisterType)map.size();
+}
+
 void ir::Kernel::clone(const Kernel &kernel) {
 	// deep copy the elements from a kernel to this one
 

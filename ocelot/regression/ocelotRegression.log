@@ -9,11 +9,32 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels seconds
+INFO     Test completed in 0.018040895462 seconds
+INFO      It produced the following output:
+Kernel launch time was 4.1008e-05s (40929 ticks)
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description : 
+
+Test Seed : 1245971470
+Test time : 0.00508285
+
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
+
+
+
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions seconds
-INFO     Test completed in 0.0141649246216 seconds
+INFO     Test completed in 0.0177698135376 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -22,8 +43,8 @@ Name : TestInstructions
 
 Description : 
 
-Test Seed : 1245778889
-Test time : 0.000262976
+Test Seed : 1245971470
+Test time : 0.000399828
 
 Status : Test output:
 pass: load and store instructions
@@ -37,29 +58,8 @@ pass: control flow instructions
 
 
 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels seconds
-INFO     Test completed in 0.0221610069275 seconds
-INFO      It produced the following output:
-Kernel launch time was 3.98159e-05s (39946 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description : 
-
-Test Seed : 1245778889
-Test time : 0.00502968
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator seconds
-INFO     Test completed in 0.0313110351562 seconds
+INFO     Test completed in 0.0324749946594 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -68,8 +68,8 @@ Name : TestEmulator
 
 Description : 
 
-Test Seed : 1245778889
-Test time : 0.0166821
+Test Seed : 1245971470
+Test time : 0.018291
 
 Status : Test output:
 12 registers
@@ -82,7 +82,7 @@ Full kernel test passed
 
 
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer seconds
-INFO     Test completed in 4.90432691574 seconds
+INFO     Test completed in 4.95059990883 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -91,8 +91,8 @@ Name : TestLexer
 
 Description : Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
 
-Test Seed : 1245778889
-Test time : 4.89146
+Test Seed : 1245971470
+Test time : 4.93324
 
 Status : For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -238,7 +238,7 @@ For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
 
 
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser seconds
-INFO     Test completed in 8.55418992043 seconds
+INFO     Test completed in 8.52479219437 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -247,8 +247,8 @@ Name : TestParser
 
 Description : A test for the PTXParser class. Test Points: 1) Load a PTX file and run it through the parser generating a module.  Write the module to an intermediate stream.  Parse the stream again generating a new module, compare both to make sure that they match.
 
-Test Seed : 1245778889
-Test time : 8.54232
+Test Seed : 1245971470
+Test time : 8.51132
 
 Status : For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -395,11 +395,11 @@ For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Parse): Passed
 
 INFO     
 Passing tests:
- (0.014s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions : Passed
- (4.904s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer : Passed
- (0.022s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels : Passed
- (0.031s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator : Passed
- (8.554s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser : Passed
+ (0.032s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator : Passed
+ (4.951s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer : Passed
+ (0.018s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels : Passed
+ (0.018s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions : Passed
+ (8.525s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser : Passed
 
 Failing tests:
 

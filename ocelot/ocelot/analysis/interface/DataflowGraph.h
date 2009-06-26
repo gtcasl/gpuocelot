@@ -21,10 +21,6 @@
 
 #define REPORT_BASE 0
 
-#define MAX_INSTRUCTION_INPUTS 6
-#define MAX_INSTRUCTION_OUTPUTS 4
-#define INVALID_REGISTER ((analysis::DataflowGraph::RegisterId)-1)
-
 /*!
 	\brief A namespace for compiler analysis modules.
 */
@@ -42,6 +38,9 @@ namespace analysis
 			typedef unsigned int RegisterId;
 			/*! \brief A unique ID for a logical instruction */
 			typedef unsigned int InstructionId;
+			
+			/*! \brief A vector of register IDs */
+			typedef std::vector< RegisterId* > RegisterVector;
 		
 			/*!
 				\brief A class for referring to a generic instruction.
@@ -54,9 +53,9 @@ namespace analysis
 					/*! \brief The id of the instruction */
 					InstructionId id;
 					/*! \brief Destination registers */
-					RegisterId d[ MAX_INSTRUCTION_OUTPUTS ];
+					RegisterVector d;
 					/*! \brief Source registers */
-					RegisterId s[ MAX_INSTRUCTION_INPUTS ];
+					RegisterVector s;
 			};
 			
 			/*! \brief A vector of Instructions */
@@ -123,8 +122,8 @@ namespace analysis
 				public:
 					/*! \brief Constructor from a sequence of instructions */
 					template< typename Inst >
-					Block( const ir::BasicBlock& block, 
-						const std::deque< Inst >& instructions  );
+					Block( ir::BasicBlock& block, 
+						std::deque< Inst >& instructions  );
 					/*! \brief Default constructor */
 					Block();
 					
@@ -168,7 +167,7 @@ namespace analysis
 
 		private:
 			/*! \brief Convert from a PTXInstruction to an Instruction  */
-			static Instruction _convert( const ir::PTXInstruction& i, 
+			static Instruction _convert( ir::PTXInstruction& i, 
 				InstructionId id  );
 
 		public:
@@ -177,8 +176,8 @@ namespace analysis
 			
 			/*! \brief Build from a CFG */
 			template< typename Inst >
-			DataflowGraph( const ir::ControlFlowGraph& cfg, 
-				const std::deque< Inst >& instructions );
+			DataflowGraph( ir::ControlFlowGraph& cfg, 
+				std::deque< Inst >& instructions );
 
 		public:
 			/*! \brief Return an iterator to the program entry point */
@@ -219,8 +218,8 @@ namespace analysis
 	};
 
 	template< typename Inst >
-	DataflowGraph::DataflowGraph( const ir::ControlFlowGraph& _cfg, 
-		const std::deque< Inst >& instructions )  
+	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& _cfg, 
+		std::deque< Inst >& instructions )  
 		: _consistent( instructions.empty() )
 	{
 		typedef std::unordered_map< ir::BasicBlock*, iterator > BlockMap;
@@ -286,8 +285,8 @@ namespace analysis
 	}
 
 	template< typename Inst >
-	DataflowGraph::Block::Block( const ir::BasicBlock& block, 
-		const std::deque< Inst >& instructions ) : _type( Body )
+	DataflowGraph::Block::Block( ir::BasicBlock& block, 
+		std::deque< Inst >& instructions ) : _type( Body )
 	{
 		for( ir::BasicBlock::InstructionList::const_iterator 
 			fi = block.instructions.begin(); 

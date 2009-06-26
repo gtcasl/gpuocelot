@@ -15,13 +15,10 @@ namespace analysis
 {
 
 	DataflowGraph::Instruction DataflowGraph::_convert( 
-		const ir::PTXInstruction& i, InstructionId id )
+		ir::PTXInstruction& i, InstructionId id )
 	{
 		Instruction result;
 	
-		unsigned int inputs = 0;
-		unsigned int outputs = 0;
-
 		ir::PTXOperand ir::PTXInstruction::* sources[ 5 ] 
 			= { &ir::PTXInstruction::pg, &ir::PTXInstruction::a, 
 			&ir::PTXInstruction::b, &ir::PTXInstruction::c, 
@@ -51,18 +48,16 @@ namespace analysis
 			
 				if( !( i.*sources[ j ] ).array.empty() )
 				{
-					for( ir::PTXOperand::Array::const_iterator 
+					for( ir::PTXOperand::Array::iterator 
 						fi = ( i.*sources[ j ] ).array.begin(); 
 						fi != ( i.*sources[ j ] ).array.end(); ++fi )
 					{
-						assert( inputs < MAX_INSTRUCTION_INPUTS );
-						result.s[ inputs++ ] = fi->reg;
+						result.s.push_back( &fi->reg );
 					}
 				}
 				else
 				{
-					assert( inputs < MAX_INSTRUCTION_INPUTS );
-					result.s[ inputs++ ] = ( i.*sources[ j ] ).reg;
+					result.s.push_back( &( i.*sources[ j ] ).reg );
 				}
 			}
 		}
@@ -70,11 +65,13 @@ namespace analysis
 		ir::PTXOperand ir::PTXInstruction::* destinations[ 2 ] 
 			= { &ir::PTXInstruction::pq, &ir::PTXInstruction::d };
 
-		limit = 2;
-		
 		if( ir::PTXInstruction::St == i.opcode )
 		{
 			limit = 1;
+		}
+		else
+		{
+			limit = 2;
 		}
 
 		for( unsigned int j = 0; j < limit; ++j )
@@ -94,30 +91,18 @@ namespace analysis
 			
 				if( !( i.*destinations[ j ] ).array.empty() )
 				{
-					for( ir::PTXOperand::Array::const_iterator 
+					for( ir::PTXOperand::Array::iterator 
 						fi = ( i.*destinations[ j ] ).array.begin(); 
 						fi != ( i.*destinations[ j ] ).array.end(); ++fi )
 					{
-						assert( outputs < MAX_INSTRUCTION_OUTPUTS );
-						result.d[ outputs++ ] = fi->reg;
+						result.d.push_back( &fi->reg );
 					}
 				}
 				else
 				{
-					assert( outputs < MAX_INSTRUCTION_OUTPUTS );
-					result.d[ outputs++ ] = ( i.*destinations[ j ] ).reg;
+					result.d.push_back( &( i.*destinations[ j ] ).reg );
 				}
 			}
-		}
-
-		for( ; outputs < MAX_INSTRUCTION_OUTPUTS; ++outputs )
-		{
-			result.d[ outputs ] = INVALID_REGISTER;
-		}
-
-		for( ; inputs < MAX_INSTRUCTION_INPUTS; ++inputs )
-		{
-			result.s[ inputs ] = INVALID_REGISTER;
 		}
 		
 		result.id = id;
@@ -169,20 +154,16 @@ namespace analysis
 		for( InstructionVector::reverse_iterator ii = _instructions.rbegin(); 
 			ii != _instructions.rend(); ++ii )
 		{
-			for( unsigned int d = 0; d < MAX_INSTRUCTION_OUTPUTS; ++d )
+			for( RegisterVector::iterator di = ii->d.begin(); 
+				di != ii->d.end(); ++di )
 			{
-				if( ii->d[ d ] != INVALID_REGISTER )
-				{
-					_aliveIn.erase( ii->d[ d ] );
-				}
+				_aliveIn.erase( **di );
 			}
 
-			for( unsigned int s = 0; s < MAX_INSTRUCTION_INPUTS; ++s )
+			for( RegisterVector::iterator si = ii->s.begin(); 
+				si != ii->s.end(); ++si )
 			{
-				if( ii->s[ s ] != INVALID_REGISTER )
-				{
-					_aliveIn.insert( ii->s[ s ] );
-				}
+				_aliveIn.insert( **si );
 			}
 		}
 		
@@ -366,6 +347,7 @@ namespace analysis
 
 	void DataflowGraph::clear()
 	{
+		_consistent = true;
 		_blocks.clear();
 		_blocks.push_back( Block( Block::Entry ) );
 		_blocks.push_back( Block( Block::Exit ) );
@@ -471,15 +453,13 @@ namespace analysis
 				instructionPrefix << "b_" << blockCount << "_instruction" 
 					<< ( ii - block->instructions().begin() );
 
-				for( unsigned int s = 0; s < MAX_INSTRUCTION_INPUTS; ++s )
+				for( DataflowGraph::RegisterVector::const_iterator 
+					si = ii->s.begin(); si != ii->s.end(); ++si )
 				{
-					if( ii->s[ s ] != INVALID_REGISTER )
-					{
-						assert( map.count( ii->s[ s ] ) != 0 );
-						out << "\t\t" << map[ ii->s[ s ] ] << "->" 
-							<< instructionPrefix.str() << ":rs" << ii->s[ s ] 
-							<< "[style = dashed, color = blue];\n";
-					}
+					assert( map.count( **si ) != 0 );
+					out << "\t\t" << map[ **si ] << "->" 
+						<< instructionPrefix.str() << ":rs" << **si 
+						<< "[style = dashed, color = blue];\n";				
 				}
 				
 				out << "\t\t" << instructionPrefix.str() << "[ label = \"{ " 
@@ -487,48 +467,51 @@ namespace analysis
 					ii->label ) << " | { ";
 				
 				bool any = false;
-				if( ii->s[ 0 ] != INVALID_REGISTER )
+				
+				DataflowGraph::RegisterVector::const_iterator 
+				 	si = ii->s.begin();
+				 	
+				if( si != ii->s.end() )
 				{
-					out << "<rs" << ii->s[ 0 ] << "> ";
-					out << "rs" << ii->s[ 0 ];
+					out << "<rs" << **si << "> ";
+					out << "rs" << **si;
+					any = true;
+					++si;
+				}
+				for( ; si != ii->s.end(); ++si )
+				{
+					if( any )
+					{
+						out << " | ";
+					}
+					out << "<rs" << **si << "> ";
+					out << "rs" << **si;
 					any = true;
 				}
-				for( unsigned int s = 1; s < MAX_INSTRUCTION_INPUTS; ++s )
-				{
-					if( ii->s[ s ] != INVALID_REGISTER )
-					{
-						if( any )
-						{
-							out << " | ";
-						}
-						out << "<rs" << ii->s[ s ] << "> ";
-						out << "rs" << ii->s[ s ];
-						any = true;
-					}
-				}
 				
-				if( ii->d[ 0 ] != INVALID_REGISTER )
+				DataflowGraph::RegisterVector::const_iterator 
+				 	di = ii->d.begin();
+				
+				if( di != ii->d.end() )
 				{
 					if( any )
 					{
 						out << " } | { ";
 					}
 					std::stringstream value;
-					value << "rd" << ii->d[ 0 ];
+					value << "rd" << **di;
 					out << "<" << value.str() << "> " << value.str();
-					map[ ii->d[ 0 ] ] = instructionPrefix.str() 
+					map[ **di ] = instructionPrefix.str() 
 						+ ":" + value.str();
+					++di;
 				}
-				for( unsigned int d = 1; d < MAX_INSTRUCTION_OUTPUTS; ++d )
+				for( ; di != ii->d.end(); ++di )
 				{
-					if( ii->d[ d ] != INVALID_REGISTER )
-					{
-						std::stringstream value;
-						value << "rd" << ii->d[ d ];
-						out << " | <" << value.str() << "> " << value.str();
-						map[ ii->d[ d ] ] = instructionPrefix.str() + ":" 
-							+ value.str();
-					}
+					std::stringstream value;
+					value << "rd" << **di;
+					out << " | <" << value.str() << "> " << value.str();
+					map[ **di ] = instructionPrefix.str() + ":" 
+						+ value.str();
 				}
 				
 				out << " } }\"];\n"; 

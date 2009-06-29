@@ -204,7 +204,7 @@ namespace executive {
 		/*!
 			Packed and allocated vector of instructions implementing kernel
 		*/
-		std::vector< ir::PTXInstruction > KernelInstructions;
+		PTXInstructionVector KernelInstructions;
 
 		/*!
 			Packed vector of mapped textures

@@ -229,7 +229,8 @@ bool ir::Kernel::constructCFG(
 	return true;
 }
 
-ir::Kernel::RegisterMap ir::Kernel::assignRegisters() {
+ir::Kernel::RegisterMap ir::Kernel::assignRegisters( 
+	PTXInstructionVector& instructions ) {
 	RegisterMap map;
 	
 	for (PTXInstructionVector::iterator i_it = instructions.begin();
@@ -280,7 +281,7 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters() {
 			}
 		}
 	}
-	return map;
+	return std::move( map );
 }
 
 void ir::Kernel::clone(const Kernel &kernel) {

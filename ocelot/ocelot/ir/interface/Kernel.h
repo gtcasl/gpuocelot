@@ -109,8 +109,9 @@ namespace ir {
 			PTXStatementVector::const_iterator kernelStart,
 			PTXStatementVector::const_iterator kernelEnd);
 
-		/*! \brief Assigns register IDs to named strings in the kernel */
-		RegisterMap assignRegisters();
+		/*! \brief Assigns register IDs to identifiers */
+		static RegisterMap assignRegisters( 
+			PTXInstructionVector& instructions );
 
 		void clone(const Kernel &kernel);
 

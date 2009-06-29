@@ -483,9 +483,9 @@ public:
 			// print register map
 			file << "Registers:\n";
 
-			for (map<string, PTXOperand::RegisterType>::iterator 
-				r_it = kernel->RegisterMap.begin();
-				r_it != kernel->RegisterMap.end(); ++r_it) {
+			for (ir::Kernel::RegisterMap::iterator 
+				r_it = kernel->registerMap.begin();
+				r_it != kernel->registerMap.end(); ++r_it) {
 				file << "  " << r_it->first << ": " << r_it->second << "\n";
 			}
 
@@ -502,13 +502,13 @@ public:
 				else if (it->opcode == PTXInstruction::Ld && it->addressSpace 
 					== PTXInstruction::Param) {
 					file << "[ " 
-					<< (kernel->RegisterMap.find(it->d.identifier))->second 
+					<< (kernel->registerMap.find(it->d.identifier))->second 
 					<< " param: " << it->a.offset << " ]";
 				}
 				else if (it->opcode == PTXInstruction::St && it->addressSpace 
 					== PTXInstruction::Param) {
 					file << "[ param: " << it->d.offset << " " 
-					<< (kernel->RegisterMap.find(it->a.identifier))->second 
+					<< (kernel->registerMap.find(it->a.identifier))->second 
 					<< " ]";
 				}
 				else {
@@ -524,8 +524,8 @@ public:
 							== PTXOperand::Register 
 							|| (instr.*operands[i]).addressMode 
 							== PTXOperand::Indirect ) {
-							map<string, PTXOperand::RegisterType>::iterator 
-								o_it = kernel->RegisterMap.find(
+							ir::Kernel::RegisterMap::iterator 
+								o_it = kernel->registerMap.find(
 								(instr.*operands[i]).identifier);
 							file << " " << o_it->second;
 						}

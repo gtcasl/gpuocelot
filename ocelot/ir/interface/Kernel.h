@@ -53,6 +53,10 @@ namespace ir {
 		*/
 		typedef std::vector<Parameter> ParameterVector;
 
+		/*! \brief A map from strings to registers */
+		typedef std::unordered_map< std::string, 
+			PTXOperand::RegisterType > RegisterMap;
+
 	public:
 
 		/*!
@@ -106,7 +110,7 @@ namespace ir {
 			PTXStatementVector::const_iterator kernelEnd);
 
 		/*! \brief Assigns register IDs to named strings in the kernel */
-		PTXOperand::RegisterType assignRegisters();
+		RegisterMap assignRegisters();
 
 		void clone(const Kernel &kernel);
 
@@ -141,7 +145,7 @@ namespace ir {
 			the CFG references this vector of instructions
 		*/
 		PTXInstructionVector instructions;
-	
+		
 		/*!
 			Global variable statements
 		*/

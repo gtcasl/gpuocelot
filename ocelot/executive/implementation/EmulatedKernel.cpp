@@ -353,13 +353,13 @@ void executive::EmulatedKernel::registerAllocation() {
 					for (PTXOperand::Array::iterator 
 						a_it = (instr.*operands[i]).array.begin(); 
 						a_it != (instr.*operands[i]).array.end(); ++a_it) {
-						map<string, PTXOperand::RegisterType>::iterator it = 
-							RegisterMap.find(a_it->identifier);
+						RegisterMap::iterator it = 
+							registerMap.find(a_it->identifier);
 
 						PTXOperand::RegisterType reg = 0;
-						if (it == RegisterMap.end()) {
-							reg = (PTXOperand::RegisterType)RegisterMap.size();
-							RegisterMap[a_it->identifier] = reg;
+						if (it == registerMap.end()) {
+							reg = (PTXOperand::RegisterType)registerMap.size();
+							registerMap[a_it->identifier] = reg;
 						}
 						else {
 							reg = it->second;
@@ -367,13 +367,13 @@ void executive::EmulatedKernel::registerAllocation() {
 						a_it->reg = reg;
 					}
 				}
-				map<string, PTXOperand::RegisterType>::iterator it = 
-					RegisterMap.find((instr.*operands[i]).identifier);
+				RegisterMap::iterator it = 
+					registerMap.find((instr.*operands[i]).identifier);
 
 				PTXOperand::RegisterType reg = 0;
-				if (it == RegisterMap.end()) {
-					reg = (PTXOperand::RegisterType)RegisterMap.size();
-					RegisterMap[(instr.*operands[i]).identifier] = reg;
+				if (it == registerMap.end()) {
+					reg = (PTXOperand::RegisterType)registerMap.size();
+					registerMap[(instr.*operands[i]).identifier] = reg;
 				}
 				else {
 					reg = it->second;
@@ -382,7 +382,7 @@ void executive::EmulatedKernel::registerAllocation() {
 			}
 		}
 	}
-	RegisterCount = (int)RegisterMap.size();
+	RegisterCount = (int)registerMap.size();
 }
 
 /*!

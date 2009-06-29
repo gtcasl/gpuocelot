@@ -38,15 +38,20 @@ namespace analysis
 			typedef unsigned int RegisterId;
 			/*! \brief A unique ID for a logical instruction */
 			typedef unsigned int InstructionId;
-			
-			/*! \brief A vector of register IDs */
+			/*! \brief A vector of register ID pointers */
 			typedef std::vector< RegisterId* > RegisterVector;
 		
-			/*!
-				\brief A class for referring to a generic instruction.
-			*/
+			/*! \brief A class for referring to a generic instruction. */
 			class Instruction
 			{
+				public:
+					/*! \brief The type of instruction for SSA graphs */
+					enum Type
+					{
+						risc,
+						phi
+					};
+					
 				public:
 					/*! \brief The instruction text */
 					std::string label;
@@ -58,14 +63,11 @@ namespace analysis
 					RegisterVector s;
 			};
 			
+			class Block;
 			/*! \brief A vector of Instructions */
 			typedef std::deque< Instruction > InstructionVector;
-			
-			class Block;
-			
 			/*! \brief A vector of blocks */
 			typedef std::list< Block > BlockVector;
-			
 			/*! \brief A vector of Block pointers */
 			typedef std::unordered_set< BlockVector::iterator > BlockPointerSet;
 			
@@ -148,22 +150,19 @@ namespace analysis
 			
 			
 		public:
-			
 			/*! \brief iterator */
 			typedef BlockVector::iterator iterator;
-					
 			/*! \brief const_iterator */
 			typedef BlockVector::const_iterator const_iterator;
-
 			/*! \brief Value type */
 			typedef BlockVector::value_type value_type;
-
 			/*! \brief Size type */
 			typedef BlockVector::size_type size_type;
 
 		private:
 			BlockVector _blocks;
 			bool _consistent;
+			bool _ssa;
 
 		private:
 			/*! \brief Convert from a PTXInstruction to an Instruction  */
@@ -173,7 +172,6 @@ namespace analysis
 		public:
 			/*! \brief Default constructor */
 			DataflowGraph();
-			
 			/*! \brief Build from a CFG */
 			template< typename Inst >
 			DataflowGraph( ir::ControlFlowGraph& cfg, 
@@ -184,7 +182,6 @@ namespace analysis
 			iterator begin();
 			/*! \brief Return an iterator to the program entry point */
 			const_iterator begin() const;
-			
 			/*! \brief Return an iterator to the program exit point */
 			iterator end();
 			/*! \brief Return an iterator to the program exit point */
@@ -215,6 +212,12 @@ namespace analysis
 		public:
 			/*! \brief Compute live ranges */
 			void compute();
+			
+		public:
+			/*! \brief Convert into ssa form */
+			void toSsa();
+			/*! \brief Convert out of ssa form */
+			void fromSsa();
 	};
 
 	template< typename Inst >

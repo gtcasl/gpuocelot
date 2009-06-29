@@ -491,7 +491,7 @@ public:
 
 			file << "Instructions:\n";
 
-			for (vector<PTXInstruction>::iterator 
+			for (ir::Kernel::PTXInstructionVector::iterator 
 				it = kernel->KernelInstructions.begin();
 				it != kernel->KernelInstructions.end(); ++it) {
 				file << PTXInstruction::toString((*it).opcode) << " ";

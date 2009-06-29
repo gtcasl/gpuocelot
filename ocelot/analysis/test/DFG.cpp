@@ -33,7 +33,7 @@ static void analyze( const std::string& ptx, const std::string& dot )
 		dfgFile << "// Kernel: " << kernel->name << "\n";
 		dfgFile << "// Dataflow flow graph\n";
 		
-		kernel->assignRegisters();
+		ir::Kernel::assignRegisters( kernel->instructions );
 		analysis::DataflowGraph graph( *kernel->ptxCFG, kernel->instructions );
 		
 		dfgFile << graph;

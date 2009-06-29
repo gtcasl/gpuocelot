@@ -264,7 +264,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 */
 void executive::EmulatedKernel::updateParamReferences() {
 	using namespace std;
-	for (vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
+	for (PTXInstructionVector::iterator i_it = KernelInstructions.begin();
 		i_it != KernelInstructions.end(); ++i_it) {
 		PTXInstruction & instr = *i_it;
 		if (instr.addressSpace == PTXInstruction::Param) {
@@ -334,54 +334,7 @@ void executive::EmulatedKernel::updateParameterMemory() {
 */
 void executive::EmulatedKernel::registerAllocation() {
 	using namespace std;
-
-	for (vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
-		i_it != KernelInstructions.end(); ++i_it) {
-		PTXInstruction & instr = *i_it;
-		PTXOperand PTXInstruction:: * operands[] = { 
-			&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c, 
-			&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq
-		};
-		
-		for (int i = 0; i < 6; i++) {
-			if ((instr.*operands[i]).addressMode == PTXOperand::Invalid) {
-				continue;
-			}
-			if ((instr.*operands[i]).addressMode == PTXOperand::Register 
-				|| (instr.*operands[i]).addressMode == PTXOperand::Indirect )  {
-				if ((instr.*operands[i]).vec != PTXOperand::v1) {
-					for (PTXOperand::Array::iterator 
-						a_it = (instr.*operands[i]).array.begin(); 
-						a_it != (instr.*operands[i]).array.end(); ++a_it) {
-						RegisterMap::iterator it = 
-							registerMap.find(a_it->identifier);
-
-						PTXOperand::RegisterType reg = 0;
-						if (it == registerMap.end()) {
-							reg = (PTXOperand::RegisterType)registerMap.size();
-							registerMap[a_it->identifier] = reg;
-						}
-						else {
-							reg = it->second;
-						}
-						a_it->reg = reg;
-					}
-				}
-				RegisterMap::iterator it = 
-					registerMap.find((instr.*operands[i]).identifier);
-
-				PTXOperand::RegisterType reg = 0;
-				if (it == registerMap.end()) {
-					reg = (PTXOperand::RegisterType)registerMap.size();
-					registerMap[(instr.*operands[i]).identifier] = reg;
-				}
-				else {
-					reg = it->second;
-				}
-				(instr.*operands[i]).reg = reg;
-			}
-		}
-	}
+	registerMap = ir::Kernel::assignRegisters( KernelInstructions );
 	RegisterCount = (int)registerMap.size();
 }
 
@@ -457,7 +410,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	PTXOperand PTXInstruction:: *operands[] = { &PTXInstruction::d,
 		&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c
 	};
-	vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
+	PTXInstructionVector::iterator i_it = KernelInstructions.begin();
 	for (; i_it != KernelInstructions.end(); ++i_it) {
 		PTXInstruction &instr = *i_it;
 
@@ -573,7 +526,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	PTXOperand PTXInstruction:: *operands[] = { &PTXInstruction::d,
 		&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c
 	};
-	vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
+	PTXInstructionVector::iterator i_it = KernelInstructions.begin();
 	for (; i_it != KernelInstructions.end(); ++i_it) {
 		PTXInstruction &instr = *i_it;
 
@@ -667,7 +620,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		&PTXInstruction::d, &PTXInstruction::a, &PTXInstruction::b, 
 		&PTXInstruction::c
 	};
-	vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
+	PTXInstructionVector::iterator i_it = KernelInstructions.begin();
 	for (; i_it != KernelInstructions.end(); ++i_it) {
 		PTXInstruction &instr = *i_it;
 
@@ -760,7 +713,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	PTXOperand PTXInstruction:: *operands[] = {
 		&PTXInstruction::d, &PTXInstruction::a, &PTXInstruction::b, 
 		&PTXInstruction::c };
-	vector<PTXInstruction>::iterator i_it = KernelInstructions.begin();
+	PTXInstructionVector::iterator i_it = KernelInstructions.begin();
 	for (; i_it != KernelInstructions.end(); ++i_it) {
 		PTXInstruction &instr = *i_it;
 
@@ -818,7 +771,7 @@ void executive::EmulatedKernel::initializeTextureMemory( ) {
 	textures.clear();
 	IndexMap indicies;
 	unsigned int next = 0;
-	for (std::vector< ir::PTXInstruction >::iterator 
+	for (PTXInstructionVector::iterator 
 		fi = KernelInstructions.begin(); 
 		fi != KernelInstructions.end(); ++fi) {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
@@ -844,7 +797,7 @@ void executive::EmulatedKernel::updateGlobals() {
 std::string executive::EmulatedKernel::toString() const {
 	std::stringstream stream;
 	stream << "Kernel " << name << "\n";
-	for( std::vector< ir::PTXInstruction >::const_iterator 
+	for( PTXInstructionVector::const_iterator 
 		fi = KernelInstructions.begin(); 
 		fi != KernelInstructions.end(); ++fi ) {
 		const PTXInstruction &instr = *fi;

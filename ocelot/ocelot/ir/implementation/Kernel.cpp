@@ -229,9 +229,7 @@ bool ir::Kernel::constructCFG(
 	return true;
 }
 
-ir::PTXOperand::RegisterType ir::Kernel::assignRegisters() {
-	typedef std::unordered_map< std::string, 
-		PTXOperand::RegisterType > RegisterMap;
+ir::Kernel::RegisterMap ir::Kernel::assignRegisters() {
 	RegisterMap map;
 	
 	for (PTXInstructionVector::iterator i_it = instructions.begin();
@@ -257,7 +255,8 @@ ir::PTXOperand::RegisterType ir::Kernel::assignRegisters() {
 						PTXOperand::RegisterType reg = 0;
 						if (it == map.end()) {
 							reg = (PTXOperand::RegisterType)map.size();
-							map[a_it->identifier] = reg;
+							map.insert( std::make_pair( 
+								a_it->identifier, reg ) );
 						}
 						else {
 							reg = it->second;
@@ -271,7 +270,8 @@ ir::PTXOperand::RegisterType ir::Kernel::assignRegisters() {
 				PTXOperand::RegisterType reg = 0;
 				if (it == map.end()) {
 					reg = (PTXOperand::RegisterType)map.size();
-					map[(instr.*operands[i]).identifier] = reg;
+					map.insert( std::make_pair( 
+						(instr.*operands[i]).identifier, reg ) );
 				}
 				else {
 					reg = it->second;
@@ -280,7 +280,7 @@ ir::PTXOperand::RegisterType ir::Kernel::assignRegisters() {
 			}
 		}
 	}
-	return (PTXOperand::RegisterType)map.size();
+	return map;
 }
 
 void ir::Kernel::clone(const Kernel &kernel) {

@@ -164,7 +164,7 @@ namespace executive {
 		/*!
 			A map of register name to register number
 		*/
-		std::map<std::string, ir::PTXOperand::RegisterType > RegisterMap;
+		Kernel::RegisterMap registerMap;
 
 		/*!
 			The number of registers allocated to each thread

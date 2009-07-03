@@ -1404,7 +1404,7 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTX
 			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
 			}
 		}
 	} break;
@@ -1421,7 +1421,7 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTX
 			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
 			}
 		}
 	} break;
@@ -3789,7 +3789,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			
 			if( a < 0 )
 			{
-				a |= 0xffffffffff000000;
+				a |= 0xffffffffff000000LLU;
 			}
 			else
 			{
@@ -3797,7 +3797,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			}
 			if( b < 0 )
 			{
-				b |= 0xffffffffff000000;
+				b |= 0xffffffffff000000LLU;
 			}
 			else
 			{
@@ -6201,7 +6201,7 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTX
 			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
 			}
 		}
 	} break;
@@ -6218,7 +6218,7 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTX
 			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
 			}
 		}
 	} break;

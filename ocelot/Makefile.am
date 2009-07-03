@@ -62,13 +62,11 @@ libhydrazine_la_CXXFLAGS = $(CUDA_CFLAGS) -Wall -ansi -pedantic \
 libhydrazine_la_SOURCES = \
 	hydrazine/implementation/Exception.cpp \
 	hydrazine/implementation/Package.cpp \
-	hydrazine/implementation/SerializationBuffer.cpp \
 	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \
 	hydrazine/implementation/LowLevelTimer.cpp \
 	hydrazine/implementation/ArgumentParser.cpp \
 	hydrazine/implementation/XmlParser.cpp \
-	hydrazine/implementation/SerializableArchive.cpp \
 	hydrazine/implementation/math.cpp \
 	hydrazine/implementation/debug.cpp \
 	hydrazine/implementation/XmlArgumentParser.cpp \
@@ -77,7 +75,6 @@ libhydrazine_la_SOURCES = \
 	hydrazine/cuda/Cuda.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
-	hydrazine/interface/Serializable.cpp \
 	hydrazine/interface/Stringable.cpp \
 	hydrazine/interface/ActiveTimer.cpp \
 	hydrazine/interface/Clonable.cpp \

@@ -10,6 +10,7 @@
 ## Global Parameters
 AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
+INCLUDE = -I ocelot/cuda/include
 ################################################################################
 
 ################################################################################
@@ -58,11 +59,9 @@ libir_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 
 ################################################################################
 ## libhydrazine
-libhydrazine_la_CXXFLAGS = $(CUDA_CFLAGS) -Wall -ansi -pedantic \
-	-Werror -std=c++0x
+libhydrazine_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
 libhydrazine_la_SOURCES = \
 	hydrazine/implementation/Exception.cpp \
-	hydrazine/implementation/Package.cpp \
 	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \
 	hydrazine/implementation/LowLevelTimer.cpp \
@@ -122,11 +121,11 @@ libparser_la_SOURCES = \
 
 ################################################################################
 ## libcudart
-libcudart_la_CXXFLAGS = $(CUDA_CFLAGS) -Wall -ansi -pedantic -Werror -std=c++0x
+libcudart_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
 libcudart_la_SOURCES = \
 	ocelot/cuda/implementation/OcelotRuntimeApi.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp
-libcudart_la_LDFLAGS = -version-info 2:1:0
+libcudart_la_LDFLAGS = -version-info 2:2:0
 ################################################################################
 
 ################################################################################
@@ -152,8 +151,7 @@ BranchTraceAnalyzer_LDFLAGS = -static
 
 ################################################################################
 ## MemoryTraceAnalyzer
-MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
-	-std=c++0x
+MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 MemoryTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
 MemoryTraceAnalyzer_LDADD = libhydrazine.la libir.la libparser.la libtrace.la \
@@ -241,19 +239,13 @@ TestTrace_LDFLAGS = -static
 
 ################################################################################
 ## TestMemoryTraceGenerator
-TestMemoryTraceGenerator_CXXFLAGS = $(CUDA_CFLAGS) -Wall \
-	-std=c++0x $(SDK_CFLAGS)
+TestMemoryTraceGenerator_CXXFLAGS = -Wall -std=c++0x
 TestMemoryTraceGenerator_SOURCES = \
 	ocelot/trace/test/TestMemoryTraceGenerator.cpp \
-	TestMemoryTraceGenerator_kernel.cu.cpp
-TestMemoryTraceGenerator_LDADD = $(SDK_LIBS) libcudart.la libexecutive.la \
-	libtrace.la libir.la \
-	libparser.la libhydrazine.la
+	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu.cpp
+TestMemoryTraceGenerator_LDADD = libcudart.la libexecutive.la \
+	libtrace.la libir.la libparser.la libhydrazine.la
 TestMemoryTraceGenerator_LDFLAGS = -static
-
-TestMemoryTraceGenerator_kernel.cu.cpp: \
-	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu
-	$(NVCC) -arch sm_13 --cuda -o $@ $< $(SDK_CFLAGS)
 ################################################################################
 
 ################################################################################
@@ -265,10 +257,87 @@ TestInstructions_LDADD = libcudart.la libexecutive.la libtrace.la libir.la \
 TestInstructions_LDFLAGS = -static
 ################################################################################
 
-
 ################################################################################
 ## Headers
-nobase_include_HEADERS = 
+nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
+	ocelot/executive/interface/CooperativeThreadArray.h \
+	ocelot/executive/interface/EmulatedKernel.h \
+	ocelot/executive/interface/RuntimeException.h \
+	ocelot/executive/interface/GPUKernel.h \
+	ocelot/executive/interface/Device.h \
+	ocelot/executive/interface/CTAContext.h \
+	ocelot/executive/test/TestEmulator.h \
+	ocelot/executive/test/TestGPUKernel.h \
+	ocelot/executive/test/sequence.ptx \
+	ocelot/executive/test/kernels.ptx \
+	ocelot/cuda/interface/CudaRuntime.h \
+	ocelot/trace/interface/MemoryTraceGenerator.h \
+	ocelot/trace/interface/TraceEvent.h \
+	ocelot/trace/interface/BranchTraceAnalyzer.h \
+	ocelot/trace/interface/TraceGenerator.h \
+	ocelot/trace/interface/SharedComputationGenerator.h \
+	ocelot/trace/interface/ParallelismTraceGenerator.h \
+	ocelot/trace/interface/MemoryTraceAnalyzer.h \
+	ocelot/trace/interface/SharedComputationAnalyzer.h \
+	ocelot/trace/interface/BranchTraceGenerator.h \
+	ocelot/trace/interface/ParallelismTraceAnalyzer.h \
+	ocelot/trace/interface/KernelEntry.h \
+	ocelot/parser/interface/PTXLexer.h \
+	ocelot/parser/interface/Parser.h \
+	ocelot/parser/interface/PTXParser.h \
+	ocelot/parser/test/TestLexer.h \
+	ocelot/parser/test/TestParser.h \
+	ocelot/analysis/interface/DataflowGraph.h \
+	ocelot/analysis/interface/SSAGraph.h \
+	ocelot/analysis/test/TestDataflowGraph.h \
+	ocelot/ir/interface/Kernel.h \
+	ocelot/ir/interface/Module.h \
+	ocelot/ir/interface/ControlFlowGraph.h \
+	ocelot/ir/interface/PostdominatorTree.h \
+	ocelot/ir/interface/Parameter.h \
+	ocelot/ir/interface/PTXKernel.h \
+	ocelot/ir/interface/ExecutableKernel.h \
+	ocelot/ir/interface/PTXStatement.h \
+	ocelot/ir/interface/PTXInstruction.h \
+	ocelot/ir/interface/Instruction.h \
+	ocelot/ir/interface/DominatorTree.h \
+	ocelot/ir/interface/Documentation.h \
+	ocelot/ir/interface/Edge.h \
+	ocelot/ir/interface/PTXOperand.h \
+	ocelot/ir/interface/BasicBlock.h \
+	ocelot/ir/interface/Global.h \
+	ocelot/ir/interface/Texture.h \
+	hydrazine/implementation/Exception.h \
+	hydrazine/implementation/XmlLexer.h \
+	hydrazine/implementation/Timer.h \
+	hydrazine/implementation/LowLevelTimer.h \
+	hydrazine/implementation/ArgumentParser.h \
+	hydrazine/implementation/XmlParser.h \
+	hydrazine/implementation/math.h \
+	hydrazine/implementation/debug.h \
+	hydrazine/implementation/XmlArgumentParser.h \
+	hydrazine/implementation/XmlTree.h \
+	hydrazine/implementation/string.h \
+	hydrazine/implementation/macros.h \
+	hydrazine/cuda/Cuda.h \
+	hydrazine/interface/Configurable.h \
+	hydrazine/interface/Test.h \
+	hydrazine/interface/Stringable.h \
+	hydrazine/interface/ActiveTimer.h \
+	hydrazine/interface/Clonable.h \
+	hydrazine/interface/Thread.h \
+	hydrazine/interface/Thread.hpp \
+	hydrazine/interface/Version.h \
+	hydrazine/python/RunRegression.py \
+	ocelot/cuda/include/builtin_types.h \
+	ocelot/cuda/include/__cudaFatFormat.h \
+	ocelot/cuda/include/cuda_runtime_api.h \
+	ocelot/cuda/include/device_types.h \
+	ocelot/cuda/include/driver_types.h \
+	ocelot/cuda/include/host_defines.h \
+	ocelot/cuda/include/texture_types.h \
+	ocelot/cuda/include/vector_types.h \
+	regression/ocelotRegressionTests.txt	
 
 ################################################################################
 
@@ -284,7 +353,6 @@ regression/ocelotRegression.log : check
 		-l regression/ocelotRegression.log -v
 
 test : ocelotTest
-
 ################################################################################
 
 ################################################################################

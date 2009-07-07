@@ -24,11 +24,14 @@ namespace analysis
 	
 	void SSAGraph::toSsa()
 	{
-	
+		assert( !_graph._ssa );
+		_graph._ssa = true;
 	}
 	
 	void SSAGraph::fromSsa()
 	{
+		assert( _graph._ssa );
+		_graph._ssa = false;
 	
 	}
 }

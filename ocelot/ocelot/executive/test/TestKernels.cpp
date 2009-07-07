@@ -83,7 +83,7 @@ public:
 		
 		bool result = true;
 		
-		string module = "../tests/ptx/synthetic/kernels.ptx";
+		string module = "ocelot/executive/test/kernels.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";

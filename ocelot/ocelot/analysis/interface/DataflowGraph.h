@@ -33,6 +33,7 @@ namespace analysis
 	*/
 	class DataflowGraph
 	{
+		friend class SSAGraph;
 		public:
 			/*! \brief A unique ID for a logical register */
 			typedef unsigned int RegisterId;

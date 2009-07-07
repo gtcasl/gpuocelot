@@ -51,7 +51,7 @@ public:
 		Kernel *rawKernel = 0;
 		Executive context;
 		
-		string module = "../tests/ptx/synthetic/sequence.ptx";
+		string module = "ocelot/executive/test/sequence.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";
@@ -89,7 +89,7 @@ public:
 		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
 		Executive context;
-		string module = "../tests/ptx/synthetic/sequence.ptx";
+		string module = "ocelot/executive/test/sequence.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";
@@ -197,7 +197,7 @@ public:
 		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
 		Executive context;
-		string module = "../tests/ptx/synthetic/sequence.ptx";
+		string module = "ocelot/executive/test/sequence.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";
@@ -338,7 +338,7 @@ public:
 		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
 		Executive context;
-		string module = "../tests/ptx/synthetic/sequence.ptx";
+		string module = "ocelot/executive/test/sequence.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";
@@ -451,7 +451,7 @@ public:
 		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
 		Executive context;
-		string module = "../tests/ptx/synthetic/sequence.ptx";
+		string module = "ocelot/executive/test/sequence.ptx";
 		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";

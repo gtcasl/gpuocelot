@@ -13,7 +13,7 @@ INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstruc
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestKernels
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions seconds
-INFO     Test completed in 0.0211589336395 seconds
+INFO     Test completed in 0.0260808467865 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -22,8 +22,8 @@ Name : TestInstructions
 
 Description : 
 
-Test Seed : 1246981985
-Test time : 0.000447989
+Test Seed : 1246984572
+Test time : 0.000404835
 
 Status : Test output:
 pass: load and store instructions
@@ -38,9 +38,9 @@ pass: control flow instructions
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestKernels seconds
-INFO     Test completed in 0.0369019508362 seconds
+INFO     Test completed in 0.0269091129303 seconds
 INFO      It produced the following output:
-Kernel launch time was 6.65188e-05s (66559 ticks)
+Kernel launch time was 4.1008e-05s (40717 ticks)
 Pass/Fail : Pass
 
 
@@ -48,8 +48,8 @@ Name : TestKernels
 
 Description : 
 
-Test Seed : 1246981985
-Test time : 0.0122819
+Test Seed : 1246984572
+Test time : 0.00750875
 
 Status : Test output:
 divergent control flow succeeded
@@ -59,7 +59,7 @@ looping kernel succeeded
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator seconds
-INFO     Test completed in 0.038782119751 seconds
+INFO     Test completed in 0.0370359420776 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -68,8 +68,8 @@ Name : TestEmulator
 
 Description : 
 
-Test Seed : 1246981985
-Test time : 0.0206423
+Test Seed : 1246984572
+Test time : 0.0166466
 
 Status : Test output:
 12 registers
@@ -82,7 +82,7 @@ Full kernel test passed
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer seconds
-INFO     Test completed in 4.93386483192 seconds
+INFO     Test completed in 4.90005087852 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -91,8 +91,8 @@ Name : TestLexer
 
 Description : Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
 
-Test Seed : 1246981985
-Test time : 4.91408
+Test Seed : 1246984572
+Test time : 4.88763
 
 Status : For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
@@ -238,7 +238,7 @@ For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestParser seconds
-INFO     Test completed in 8.59190297127 seconds
+INFO     Test completed in 8.60018897057 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -247,8 +247,8 @@ Name : TestParser
 
 Description : A test for the PTXParser class. Test Points: 1) Load a PTX file and run it through the parser generating a module.  Write the module to an intermediate stream.  Parse the stream again generating a new module, compare both to make sure that they match.
 
-Test Seed : 1246981985
-Test time : 8.57578
+Test Seed : 1246984572
+Test time : 8.58914
 
 Status : For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Parse): Passed
@@ -395,11 +395,11 @@ For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Parse): Passed
 
 INFO     
 Passing tests:
- (0.039s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
- (0.021s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
- (4.934s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
- (0.037s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
- (8.592s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
+ (0.037s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
+ (0.026s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
+ (4.900s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
+ (0.027s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
+ (8.600s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
 
 Failing tests:
 

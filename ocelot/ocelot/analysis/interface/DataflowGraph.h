@@ -27,6 +27,8 @@
 namespace analysis
 {
 
+	class SSAGraph;
+
 	/*!
 		\brief A class representing a graph of block of instructions, showing
 			which registers are alive in each basic block.
@@ -83,7 +85,8 @@ namespace analysis
 			*/
 			class Block
 			{
-				friend class DataflowGraph;			
+				friend class SSAGraph;
+				friend class DataflowGraph;
 				public:
 					/*! \brief The type of block */
 					enum Type

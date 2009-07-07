@@ -12,9 +12,32 @@
 
 namespace analysis
 {
-	bool SSAGraph::Block::process()
+	void SSAGraph::_initialize( Block& b, DataflowGraph::iterator block, 
+		DataflowGraph::RegisterId& current )
 	{
-		return false;
+		b.regs.clear();
+		for( DataflowGraph::Block::RegisterIdSet::iterator 
+			reg = block->_aliveIn.begin(); 
+			reg != block->_aliveIn.end(); ++reg )
+		{
+			b.regs.insert( std::make_pair( *reg, current++ ) );
+		}
+		
+		for( DataflowGraph::InstructionVector::iterator 
+			instruction = block->_instructions.begin(); 
+			instruction != block->_instructions.end(); ++instruction )
+		{
+			for( DataflowGraph::RegisterVector::iterator 
+				reg = instruction->s.begin(); 
+				reg != instruction->s.end(); ++reg )
+			{
+				RegisterMap::iterator mapping = b.regs.find( **reg );
+				assert( mapping != b.regs.end() );
+				**reg = mapping->second;
+			}
+			
+			
+		}
 	}
 	
 	SSAGraph::SSAGraph( DataflowGraph& graph ) : _graph( graph )
@@ -26,6 +49,16 @@ namespace analysis
 	{
 		assert( !_graph._ssa );
 		_graph._ssa = true;
+		_blocks.clear();
+		DataflowGraph::RegisterId current = 0;
+		
+		for( DataflowGraph::iterator fi = _graph.begin(); 
+			fi != _graph.end(); ++fi )
+		{
+			BlockMap::iterator block = _blocks.insert( 
+				std::make_pair( fi, Block() ) ).first;
+			_initialize( block->second, block->first, current );
+		}
 	}
 	
 	void SSAGraph::fromSsa()

@@ -19,20 +19,16 @@ namespace analysis
 	class SSAGraph
 	{
 		private:
+			typedef std::unordered_map< DataflowGraph::RegisterId, 
+				DataflowGraph::RegisterId > RegisterMap;
+			typedef std::unordered_map< DataflowGraph::RegisterId, 
+				DataflowGraph::Instruction > PhiMap;
+
 			class Block
 			{
 				public:
-					typedef std::unordered_map< DataflowGraph::RegisterId, 
-						DataflowGraph::RegisterId > RegisterMap;
-					typedef std::unordered_map< DataflowGraph::RegisterId, 
-						DataflowGraph::Instruction > PhiMap;
-		
-				public:
 					RegisterMap regs;
-					PhiMap phi;
-			
-				public:
-					bool process();
+					PhiMap phi;					
 			};
 		
 			typedef std::unordered_map< DataflowGraph::iterator, 
@@ -41,7 +37,9 @@ namespace analysis
 		private:
 			DataflowGraph& _graph;
 			BlockMap _blocks;
-		
+
+			void _initialize( Block& b, DataflowGraph::iterator it, 
+				DataflowGraph::RegisterId& current );		
 		public:
 			SSAGraph( DataflowGraph& graph );
 			void toSsa();

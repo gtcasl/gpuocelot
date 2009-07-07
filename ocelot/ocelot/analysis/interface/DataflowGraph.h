@@ -48,8 +48,8 @@ namespace analysis
 					/*! \brief The type of instruction for SSA graphs */
 					enum Type
 					{
-						risc,
-						phi
+						Risc,
+						Phi
 					};
 					
 				public:
@@ -61,6 +61,11 @@ namespace analysis
 					RegisterVector d;
 					/*! \brief Source registers */
 					RegisterVector s;
+					/*! \brief Phi instruction or generic */
+					Type type;
+				public:
+					/*! \brief Set the type */
+					Instruction( Type t = Risc );
 			};
 			
 			class Block;
@@ -218,6 +223,8 @@ namespace analysis
 			void toSsa();
 			/*! \brief Convert out of ssa form */
 			void fromSsa();
+			/*! \brief Is the graph in ssa form? */
+			bool ssa() const;
 	};
 
 	template< typename Inst >

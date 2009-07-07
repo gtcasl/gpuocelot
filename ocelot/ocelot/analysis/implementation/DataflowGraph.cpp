@@ -9,10 +9,16 @@
 #define DATAFLOW_GRAPH_CPP_INCLUDED
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/analysis/interface/SSAGraph.h>
 #include <unordered_map>
 
 namespace analysis
 {
+
+	DataflowGraph::Instruction::Instruction( Type t ) : type( t )
+	{
+		
+	}
 
 	DataflowGraph::Instruction DataflowGraph::_convert( 
 		ir::PTXInstruction& i, InstructionId id )
@@ -226,7 +232,7 @@ namespace analysis
 		return _label;
 	}
 		
-	DataflowGraph::DataflowGraph() : _consistent( true )
+	DataflowGraph::DataflowGraph() : _consistent( true ), _ssa( false )
 	{
 		_blocks.push_back( Block( Block::Entry ) );
 		_blocks.push_back( Block( Block::Exit ) );
@@ -394,7 +400,23 @@ namespace analysis
 				}
 			}
 		}
-		
+	}
+
+	void DataflowGraph::toSsa()
+	{
+		SSAGraph graph( *this );
+		graph.toSsa();		
+	}
+
+	void DataflowGraph::fromSsa()
+	{
+		SSAGraph graph( *this );
+		graph.fromSsa();		
+	}
+	
+	bool DataflowGraph::ssa() const
+	{
+		return _ssa;
 	}
 
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )

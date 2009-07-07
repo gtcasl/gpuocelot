@@ -10,7 +10,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/trunk/ocelot/TestLexer
 INFO     Running test program /home/normal/checkout/gpuocelot/trunk/ocelot/TestParser
 INFO     Test /home/normal/checkout/gpuocelot/trunk/ocelot/TestLexer seconds
-INFO     Test completed in 8.91195702553 seconds
+INFO     Test completed in 8.55498814583 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -19,8 +19,8 @@ Name : TestLexer
 
 Description : Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
 
-Test Seed : 1246645077
-Test time : 8.81306
+Test Seed : 1246976615
+Test time : 8.33184
 
 Status : For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
@@ -167,7 +167,7 @@ For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/trunk/ocelot/TestInstructions
 INFO     Test /home/normal/checkout/gpuocelot/trunk/ocelot/TestInstructions seconds
-INFO     Test completed in 0.0392069816589 seconds
+INFO     Test completed in 0.0391631126404 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -176,8 +176,8 @@ Name : TestInstructions
 
 Description : 
 
-Test Seed : 1246645086
-Test time : 0.0164881
+Test Seed : 1246976624
+Test time : 0.0196011
 
 Status : Test output:
 pass: load and store instructions
@@ -193,7 +193,7 @@ pass: control flow instructions
 
 INFO     Running test program /home/normal/checkout/gpuocelot/trunk/ocelot/TestEmulator
 INFO     Test /home/normal/checkout/gpuocelot/trunk/ocelot/TestEmulator seconds
-INFO     Test completed in 0.049026966095 seconds
+INFO     Test completed in 0.0322749614716 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -202,8 +202,8 @@ Name : TestEmulator
 
 Description : 
 
-Test Seed : 1246645086
-Test time : 0.0334022
+Test Seed : 1246976624
+Test time : 0.0168805
 
 Status : Test output:
 12 registers
@@ -217,9 +217,9 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/trunk/ocelot/TestKernels
 INFO     Test /home/normal/checkout/gpuocelot/trunk/ocelot/TestKernels seconds
-INFO     Test completed in 0.0324788093567 seconds
+INFO     Test completed in 0.0297911167145 seconds
 INFO      It produced the following output:
-Kernel launch time was 6.34193e-05s (63486 ticks)
+Kernel launch time was 6.4373e-05s (64114 ticks)
 Pass/Fail : Pass
 
 
@@ -227,8 +227,8 @@ Name : TestKernels
 
 Description : 
 
-Test Seed : 1246645086
-Test time : 0.00879979
+Test Seed : 1246976624
+Test time : 0.00878334
 
 Status : Test output:
 divergent control flow succeeded
@@ -238,7 +238,7 @@ looping kernel succeeded
 
 
 INFO     Test /home/normal/checkout/gpuocelot/trunk/ocelot/TestParser seconds
-INFO     Test completed in 15.2151558399 seconds
+INFO     Test completed in 15.5158901215 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -247,8 +247,8 @@ Name : TestParser
 
 Description : A test for the PTXParser class. Test Points: 1) Load a PTX file and run it through the parser generating a module.  Write the module to an intermediate stream.  Parse the stream again generating a new module, compare both to make sure that they match.
 
-Test Seed : 1246645077
-Test time : 15.1209
+Test Seed : 1246976615
+Test time : 15.2954
 
 Status : For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Parse): Passed
@@ -395,11 +395,11 @@ For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Parse): Passed
 
 INFO     
 Passing tests:
- (0.032s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestKernels : Passed
+ (0.030s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestKernels : Passed
  (0.039s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestInstructions : Passed
- (15.215s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestParser : Passed
- (0.049s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestEmulator : Passed
- (8.912s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestLexer : Passed
+ (15.516s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestParser : Passed
+ (0.032s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestEmulator : Passed
+ (8.555s) : /home/normal/checkout/gpuocelot/trunk/ocelot/TestLexer : Passed
 
 Failing tests:
 

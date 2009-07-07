@@ -32,7 +32,8 @@ lib_LTLIBRARIES = libir.la libanalysis.la libparser.la libhydrazine.la \
 ################################################################################
 ## libanalysis
 libanalysis_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-libanalysis_la_SOURCES = ocelot/analysis/implementation/DataflowGraph.cpp
+libanalysis_la_SOURCES = ocelot/analysis/implementation/DataflowGraph.cpp \
+	ocelot/analysis/implementation/SSAGraph.cpp
 ################################################################################
 
 ################################################################################

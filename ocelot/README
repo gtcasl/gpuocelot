@@ -1,47 +1,71 @@
-Ocelot
+Introduction
+	The emergence of GPGPU programming models such as CUDA and OpenCL 
+	provide avenues for general purpose application developers to leverage the 
+	computation capabilities of highly parallel SIMD GPU architectures. PTX 
+	defines a machine model and virtual ISA for these architectures that is 
+	used commercially by NVIDIA GPUs, but is also representative of other 
+	SIMD machine models. Ocelot seeks to develop a set of tools that enable 
+	the low level analysis of GPGPU applications as well a providing a JIT 
+	compiler for generic architectures. We have completed control and dataflow 
+	analysis modules for PTX as well as an emulator for the PTX 1.3-1.4 
+	virtual machine compatible with CUDA 2.1-2.2 applications. We are 
+	currently working on a back end binary translator from PTX to various 
+	architectures. 
 
-1. INTRODUCTION
-2. FEATURES
-3. PREREQUISITES
-4. INSTALLATION
-5. USAGE
-6. CONTACT
+Requirements
 
-INTRODUCTION
+	Compiler Tools
 
-	Ocelot - A Binary translation framework for Parallel Thread Execution Isa 
-		(PTX)
+		The following compiler tools are required (tested):
 
-FEATURES
+			* C++ Compiler (GCC 4.3.2)
+			* Lex Lexer Generator (Flex 2.5.35)
+			* YACC Parser Generator (Bison 2.3)
+			* Autoconf (2.63)
+			* Automake (1.10.2)
+			* Cuda toolkit (2.2)
+			* Libtool (2.2.6) 
 
-	This release of Ocelot contains the following working features:
+	Libraries
 
-		1) tools to parse PTX files
-		2) intermediate representation of PTX v1.3
-		3) control flow graph for PTX
-		4) dominator tree for PTX
-		5) PTX Emulator
-		6) CUDA high level API runtime 2.1 implementation
-		7) Various trace generators
-		8) Trace analysis tools for generated trace types
+		The following libraries are required to be installed:
 
-PREREQUISITES
+			* boost_system
+			* boost_filesystem
+			* boost_serialization
+			* GLEW
+			* rt 
 
-	C++ Compiler
-	flex compatible lexer generator
-	bison compatible parser generator
+	Library Headers
 
-INSTALLATION
+		The following external library headers are required to be on your 
+		search path:
 
-	Tested with g++ 4.3.2, flex 2.5.35, bison 2.3
+			* hydrazine (http://code.google.com/p/hydrazine/)
+			* boost (http://www.boost.org/) 
 
-	./configure; make; 
+Comments
 
-USAGE
+	We require a compiler that supports parts of the upcoming C++0x standard.
 
-	./ocelot -h
+	Ocelot is rigorously tested on Ubuntu 9.04 using GCC-4.3.3. We strive to be 
+	ANSI C++ compliant, but only the specified systems is actively tested.
 
-CONTACT
+Installing
+	Instructions
 
-	Gregory Diamos <gregory.diamos@gatech.edu>
+	Follow the standard autotools flow.
 
+		* libtoolize; aclocal; autoconf; automake; ./configure; make 
+
+	This will generate the following libtool libraries:
+
+		* libir.la
+		* libparser.la
+		* libhydrazine.la
+		* libexecutive.la
+		* libtrace.la
+		* libcudart.la 
+
+	These libraries can be used to access the tools within ocelot or linked 
+	against a CUDA application compiled with NVCC to emulate a CUDA device. 

@@ -126,6 +126,24 @@ namespace analysis
 				}
 			}
 			
+			for( DataflowGraph::Block::RegisterIdSet::iterator 
+				reg = block->first->_aliveIn.begin(); 
+				reg != block->first->_aliveIn.end(); ++reg )
+			{
+				RegisterMap::iterator mapping 
+					= block->second.aliveInMap.find( *reg );
+				assert( mapping != block->second.aliveInMap.end() );
+				IdMap::iterator phi = map.find( mapping->second );
+				if( phi == map.end() )
+				{
+					phi = map.insert( std::make_pair( mapping->second, 
+						IdVector() ) ).first;
+					report( "     Mapping phi source " << mapping->first 
+						<< " to destination " << mapping->second );
+					phi->second.push_back( mapping->first );
+				}				
+			}
+			
 			for( IdMap::iterator phi = map.begin(); phi != map.end(); ++phi )
 			{
 				DataflowGraph::PhiInstruction instruction;

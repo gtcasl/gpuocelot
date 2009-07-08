@@ -193,7 +193,6 @@ namespace ir {
 		unsigned int result = elements();
 		unsigned int elementsize = PTXOperand::bytes(type);
 		result *= elementsize;
-		result *= array.vec;
 		return result;
 	}
 
@@ -201,7 +200,6 @@ namespace ir {
 		unsigned int result = array.values.size();
 		unsigned int elementsize = PTXOperand::bytes(type);
 		result *= elementsize;
-		result *= array.vec;
 		return result;
 	}
 

@@ -1,13 +1,8 @@
 /*!
-
 	\file TestParser.cpp
-	
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
-	
 	\date Monday January 19, 2009
-	
 	\brief The source file for the TestParser class
-
 */
 
 
@@ -46,7 +41,6 @@ namespace test
 		
 		if( fs::is_directory( path ) )
 		{
-		
 			std::queue< fs::directory_iterator > directories;
 			directories.push( path );
 			
@@ -54,51 +48,34 @@ namespace test
 			
 			while( !directories.empty() )
 			{
-			
 				for( fs::directory_iterator 
 					file = directories.front(); 
 					file != end; ++file )
 				{
-				
 					if( fs::is_directory( file->status() ) && recursive )
 					{
-					
 						directories.push( file->path() );
-					
 					}
 					else if( fs::is_regular_file( file->status() ) )
 					{
-					
 						if( file->path().extension() == ".ptx" )
 						{
-			
 							names.push_back( file->path().string() );
-			
 						}
-					
 					}
-				
 				}
-				
 				directories.pop();
-			
 			}
-		
 		}
 		else if( fs::is_regular_file( path ) )
 		{
-		
 			if( path.extension() == ".ptx" )
 			{
-			
 				names.push_back( path.string() );
-			
 			}
-		
 		}
 		
 		return names;
-	
 	}
 
 

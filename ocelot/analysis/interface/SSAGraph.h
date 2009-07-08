@@ -21,14 +21,12 @@ namespace analysis
 		private:
 			typedef std::unordered_map< DataflowGraph::RegisterId, 
 				DataflowGraph::RegisterId > RegisterMap;
-			typedef std::unordered_map< DataflowGraph::RegisterId, 
-				DataflowGraph::Instruction > PhiMap;
 
 			class Block
 			{
 				public:
 					RegisterMap regs;
-					PhiMap phi;					
+					RegisterMap aliveInMap;
 			};
 		
 			typedef std::unordered_map< DataflowGraph::iterator, 
@@ -40,6 +38,10 @@ namespace analysis
 
 			void _initialize( Block& b, DataflowGraph::iterator it, 
 				DataflowGraph::RegisterId& current );		
+			void _insertPhis();
+			void _updateIn();
+			void _updateOut();
+			
 		public:
 			SSAGraph( DataflowGraph& graph );
 			void toSsa();

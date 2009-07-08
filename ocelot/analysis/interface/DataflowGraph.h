@@ -43,18 +43,12 @@ namespace analysis
 			typedef unsigned int InstructionId;
 			/*! \brief A vector of register ID pointers */
 			typedef std::vector< RegisterId* > RegisterVector;
-		
+			/*! \brief A vector of register IDs */
+			typedef std::vector< RegisterId > RegisterIdVector;
+			
 			/*! \brief A class for referring to a generic instruction. */
 			class Instruction
-			{
-				public:
-					/*! \brief The type of instruction for SSA graphs */
-					enum Type
-					{
-						Risc,
-						Phi
-					};
-					
+			{					
 				public:
 					/*! \brief The instruction text */
 					std::string label;
@@ -64,16 +58,23 @@ namespace analysis
 					RegisterVector d;
 					/*! \brief Source registers */
 					RegisterVector s;
-					/*! \brief Phi instruction or generic */
-					Type type;
+			};
+			
+			/*! \brief A class for referring to a phi instruction. */
+			class PhiInstruction
+			{					
 				public:
-					/*! \brief Set the type */
-					Instruction( Type t = Risc );
+					/*! \brief Destination register */
+					RegisterId d;
+					/*! \brief Source registers */
+					RegisterIdVector s;
 			};
 			
 			class Block;
 			/*! \brief A vector of Instructions */
 			typedef std::deque< Instruction > InstructionVector;
+			/*! \brief A vector of PhiInstructions */
+			typedef std::deque< PhiInstruction > PhiInstructionVector;
 			/*! \brief A vector of blocks */
 			typedef std::list< Block > BlockVector;
 			/*! \brief A vector of Block pointers */
@@ -113,6 +114,8 @@ namespace analysis
 					BlockPointerSet _predecessors;
 					/*! \brief The type of block */
 					Type _type;
+					/*! \brief Ordered set of phi instructions in the block */
+					PhiInstructionVector _phis;
 					/*! \brief Ordered set of instructions in the block */
 					InstructionVector _instructions;
 					/*! \brief Block label */
@@ -153,6 +156,8 @@ namespace analysis
 					Type type() const;
 					/*! \brief Get an ordered set of instructions in the block*/
 					const InstructionVector& instructions() const;
+					/*! \brief Get an ordered set of phis in the block*/
+					const PhiInstructionVector& phis() const;
 					/*! \brief Get the block label */
 					const std::string& label() const;
 			};
@@ -234,7 +239,7 @@ namespace analysis
 	template< typename Inst >
 	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& _cfg, 
 		std::deque< Inst >& instructions )  
-		: _consistent( instructions.empty() )
+		: _consistent( instructions.empty() ), _ssa( false )
 	{
 		typedef std::unordered_map< ir::BasicBlock*, iterator > BlockMap;
 		BlockMap map;
@@ -245,7 +250,7 @@ namespace analysis
 		assert( blocks.size() >= 2 );
 		assert( blocks.front() == cfg.get_entry_block() );
 		assert( blocks.back() == cfg.get_exit_block() );
-		
+				
 		report( "Importing " << blocks.size() << " blocks from CFG." );
 		
 		unsigned int count = 1;
@@ -261,6 +266,9 @@ namespace analysis
 		}
 		_blocks.push_back( Block( Block::Exit ) );
 		
+		_blocks.front()._label = "Entry";
+		_blocks.back()._label = "Exit";
+
 		iterator bi = _blocks.begin();
 		ir::ControlFlowGraph::BlockPointerVector::iterator bbi = blocks.begin();
 				

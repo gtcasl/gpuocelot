@@ -15,7 +15,7 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <fstream>
 
-static void analyze( const std::string& ptx, const std::string& dot )
+static void analyze( const std::string& ptx, const std::string& dot, bool ssa )
 {
 	ir::Module module( ptx );
 
@@ -36,6 +36,11 @@ static void analyze( const std::string& ptx, const std::string& dot )
 		ir::Kernel::assignRegisters( kernel->instructions );
 		analysis::DataflowGraph graph( *kernel->ptxCFG, kernel->instructions );
 		
+		if( ssa )
+		{
+			graph.toSsa();
+		}
+		
 		dfgFile << graph;
 	}
 }
@@ -47,9 +52,12 @@ int main( int argc, char** argv )
 
 	std::string ptx;
 	std::string dot;
+	bool ssa;
 	
 	parser.parse( "-i", "--input", ptx, "", "Input PTX file." );
 	parser.parse( "-o", "--output", dot, ptx, "Output base file name." );
+	parser.parse( "-s", "--ssa", ssa, false, 
+		"Convert to SSA after doing dataflow" );
 	parser.parse();
 
 	if( ptx == "" )
@@ -57,7 +65,7 @@ int main( int argc, char** argv )
 		throw hydrazine::Exception( "Input ptx file name required." );
 	}
 	
-	analyze( ptx, dot );
+	analyze( ptx, dot, ssa );
 }
 
 #endif

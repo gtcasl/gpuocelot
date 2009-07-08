@@ -25,7 +25,7 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
-	TestMemoryTraceGenerator 
+	TestMemoryTraceGenerator TestDataflowGraph
 lib_LTLIBRARIES = libir.la libanalysis.la libparser.la libhydrazine.la \
 	libexecutive.la libtrace.la libcudart.la
 ################################################################################
@@ -256,6 +256,16 @@ TestInstructions_LDADD = libcudart.la libexecutive.la libtrace.la libir.la \
 	libparser.la libhydrazine.la
 TestInstructions_LDFLAGS = -static
 ################################################################################
+
+################################################################################
+## TestDataflowGraph
+TestDataflowGraph_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+TestDataflowGraph_SOURCES = ocelot/analysis/test/TestDataflowGraph.cpp
+TestDataflowGraph_LDADD = libanalysis.la libir.la libparser.la \
+	libhydrazine.la
+TestDataflowGraph_LDFLAGS = -static
+################################################################################
+
 
 ################################################################################
 ## Headers

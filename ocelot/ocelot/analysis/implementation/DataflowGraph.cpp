@@ -15,11 +15,6 @@
 namespace analysis
 {
 
-	DataflowGraph::Instruction::Instruction( Type t ) : type( t )
-	{
-		
-	}
-
 	DataflowGraph::Instruction DataflowGraph::_convert( 
 		ir::PTXInstruction& i, InstructionId id )
 	{
@@ -226,6 +221,12 @@ namespace analysis
 	{
 		return _instructions;
 	}
+	
+	const DataflowGraph::PhiInstructionVector& 
+		DataflowGraph::Block::phis() const
+	{
+		return _phis;
+	}
 
 	const std::string& DataflowGraph::Block::label() const
 	{
@@ -404,12 +405,14 @@ namespace analysis
 
 	void DataflowGraph::toSsa()
 	{
+		compute();
 		SSAGraph graph( *this );
 		graph.toSsa();		
 	}
 
 	void DataflowGraph::fromSsa()
 	{
+		compute();
 		SSAGraph graph( *this );
 		graph.fromSsa();		
 	}
@@ -466,14 +469,58 @@ namespace analysis
 				out << " }";
 			}
 			out << " }\"];\n";
+			
+			for( DataflowGraph::PhiInstructionVector::const_iterator 
+				ii = block->phis().begin(); 
+				ii != block->phis().end(); ++ii )
+			{
+				std::stringstream instructionPrefix;
+				instructionPrefix << "b_" << blockCount << "_instruction" 
+					<< ( ii - block->phis().begin() );
 
+				for( DataflowGraph::RegisterIdVector::const_iterator 
+					si = ii->s.begin(); si != ii->s.end(); ++si )
+				{
+					assert( map.count( *si ) != 0 );
+					out << "\t\t" << map[ *si ] << "->" 
+						<< instructionPrefix.str() << ":rs" << *si 
+						<< "[style = dashed, color = blue];\n";				
+				}
+				
+				out << "\t\t" << instructionPrefix.str() 
+					<< "[ label = \"{ phi | { ";
+				
+				DataflowGraph::RegisterIdVector::const_iterator 
+				 	si = ii->s.begin();
+				 	
+				out << "<rs" << *si << "> ";
+				out << "rs" << *si;
+				++si;
+				for( ; si != ii->s.end(); ++si )
+				{
+					out << " | ";
+					out << "<rs" << *si << "> ";
+					out << "rs" << *si;
+				}
+				
+				out << " } | { ";
+				std::stringstream value;
+				value << "rd" << ii->d;
+				out << "<" << value.str() << "> " << value.str();
+				assert( map.count( ii->d ) == 0 );
+				map[ ii->d ] = instructionPrefix.str() 
+					+ ":" + value.str();
+				out << " } }\"];\n";
+			}
+			
 			for( DataflowGraph::InstructionVector::const_iterator 
 				ii = block->instructions().begin(); 
 				ii != block->instructions().end(); ++ii )
 			{
 				std::stringstream instructionPrefix;
 				instructionPrefix << "b_" << blockCount << "_instruction" 
-					<< ( ii - block->instructions().begin() );
+					<< ( ii - block->instructions().begin() 
+					+ block->phis().size() );
 
 				for( DataflowGraph::RegisterVector::const_iterator 
 					si = ii->s.begin(); si != ii->s.end(); ++si )

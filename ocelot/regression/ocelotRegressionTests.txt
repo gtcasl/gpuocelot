@@ -3,3 +3,6 @@
 ../TestEmulator
 ../TestInstructions
 ../TestKernels
+../TestTrace
+../TestMemoryTraceGenerator
+../TestDataflowGraph

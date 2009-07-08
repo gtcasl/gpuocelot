@@ -1,0 +1,5 @@
+Computation of a matrix Q, representing the scanner configuration, used in a 3D magnetic resonance image reconstruction algorithm in non-Cartesian space.
+
+See also:
+  Sam S. Stone, Justin P. Haldar, Stephanie C. Tsao, Wen-Mei W. Hwu, Zhi-Pei Liang, and Bradley P. Sutton.  "Accelerating Advanced MRI Reconstructions on GPUs."  In Computing Frontiers, 2008.
+

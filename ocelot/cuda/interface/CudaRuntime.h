@@ -48,9 +48,7 @@
 #endif
 
 /*!
-
 	\brief A namespace for the ocelot implementation of the CUDA API
-
 */
 namespace cuda
 {

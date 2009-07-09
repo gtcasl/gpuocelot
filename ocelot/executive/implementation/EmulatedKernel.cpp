@@ -15,6 +15,7 @@
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
@@ -35,7 +36,8 @@
 
 using namespace ir;
 
-executive::EmulatedKernel::EmulatedKernel(ir::Kernel *kernel) {
+executive::EmulatedKernel::EmulatedKernel(ir::Kernel *kernel, 
+	const Executive* c) : ExecutableKernel(c) {
 	ConstMemory = ParameterMemory = 0;
 	ConstMemorySize = ParameterMemorySize = SharedMemorySize = 0;
 
@@ -59,7 +61,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("EmulatedKernel::launchGrid called");
 	report("  " << RegisterCount << " registers");
 
-	gridDim = dim3( width, height, 1 );	
+	gridDim = dim3(width, height, 1);	
 	
 	// notify trace generator(s)
 	for (std::list<trace::TraceGenerator*>::iterator it = Traces.begin(); 
@@ -301,14 +303,17 @@ void executive::EmulatedKernel::initializeParameterMemory() {
 	}	
 }
 
+bool executive::EmulatedKernel::checkGlobalMemoryAccess(const void* base, 
+	size_t size) const {
+	if(context == 0) return false;
+	return context->checkGlobalMemoryAccess(context->getSelected(), base, size);
+}
+
 void executive::EmulatedKernel::updateParameterMemory() {
 	using namespace std;
 
-	if(ParameterMemory != 0)
-	{
-	
+	if(ParameterMemory != 0) {
 		delete[] ParameterMemory;
-	
 	}
 	
 	ParameterMemory = new char[ParameterMemorySize];

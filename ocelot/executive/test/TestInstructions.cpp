@@ -190,6 +190,8 @@ public:
 			}
 		}
 		
+		status << "Accessors test passed.\n";
+		
 		return result;
 	}
 
@@ -308,6 +310,8 @@ public:
 				}
 			}
 		}
+
+		status << "Abs test passed.\n";
 
 		return result;
 	}
@@ -3064,6 +3068,7 @@ public:
 		// register indirect
 		if (result) {
 			PTXU32 source[2] = { 0xaa551376 };
+			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a = reg("ra", PTXOperand::u64, 0);
 			ins.a.addressMode = PTXOperand::Indirect;
@@ -3082,11 +3087,13 @@ public:
 						<< cta.getRegAsU32(i, 5) << "\n";
 				}
 			}
+			context.free(source);
 		}
 
 		// register indirect with offset
 		if (result) {
 			PTXU32 source[4] = { 0xaa551376, 0x75320011, 0x9988aaff, 0x00};
+			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a = reg("ra", PTXOperand::u64, 0);
 			ins.a.addressMode = PTXOperand::Indirect;
@@ -3107,11 +3114,13 @@ public:
 						<< got << dec << "\n";
 				}
 			}
+			context.free(source);
 		}
 
 		// immediate
 		if (result) {
 			PTXU32 source[4] = { 0xaa551376, 0x75320011, 0x99b8aafd, 0x00};
+			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a.type = PTXOperand::u64;
 			ins.a.addressMode = PTXOperand::Immediate;
@@ -3133,6 +3142,7 @@ public:
 						<< got << dec << "\n";
 				}
 			}
+			context.free(source);
 		}
 		return result;
 	}
@@ -3349,6 +3359,7 @@ public:
 
 		if (result) {
 			PTXU32 source[2] = { 0x0aa551376, 0x091834321 };
+			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 1);
 			ins.d.vec = PTXOperand::v2;
 			ins.a = reg("ra", PTXOperand::u64, 0);
@@ -3379,10 +3390,12 @@ public:
 						<< d0 << ", 0x" << d1 << dec << "}\n";
 				}
 			}
+			context.free(source);
 		}		
 
 		if (result) {
 			PTXU32 source[4] = { 0x0aa551376, 0x091834321, 0x9f995432, 0x12345678 };
+			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 1);
 			ins.d.vec = PTXOperand::v4;
 			ins.d.array.resize( 4 );
@@ -3414,6 +3427,7 @@ public:
 					}
 				}
 			}
+			context.free(source);
 		}
 
 
@@ -3452,6 +3466,7 @@ public:
 		// register indirect
 		if (result) {
 			PTXU32 source[64] = { 0 };
+			context.registerExternal(source, 64*sizeof(PTXU32));
 			ins.d = reg("ra", PTXOperand::u64, 5);
 			ins.a = reg("rd", PTXOperand::u32, 0);
 			ins.d.addressMode = PTXOperand::Indirect;
@@ -3469,11 +3484,13 @@ public:
 					status << "st.u32.global [reg] failed\n";
 				}
 			}
+			context.free(source);
 		}
 
 		// register indirect + offset
 		if (result) {
 			PTXU32 source[65] = { 0 };
+			context.registerExternal(source, 65*sizeof(PTXU32));
 			ins.d = reg("ra", PTXOperand::u64, 5);
 			ins.a = reg("rd", PTXOperand::u32, 0);
 			ins.d.addressMode = PTXOperand::Indirect;
@@ -3492,11 +3509,13 @@ public:
 					status << "st.u32.global [reg+off] failed. Expected " << (i+1) << ", got " << source[i+1] << "\n";
 				}
 			}
+			context.free(source);
 		}
 
 		// register indirect + offset
 		if (result) {
 			PTXU32 source[65] = { 0 };
+			context.registerExternal(source, 65*sizeof(PTXU32));
 			ins.d = reg("ra", PTXOperand::u64, 5);
 			ins.a = reg("rd", PTXOperand::u32, 0);
 			ins.d.addressMode = PTXOperand::Immediate;
@@ -3514,6 +3533,7 @@ public:
 				result = false;
 				status << "st.u32.global [imm] failed\n";
 			}
+			context.free(source);
 		}
 
 		return result;
@@ -3540,6 +3560,7 @@ public:
 		if (result) {
 			PTXU32 block[128] = {0};
 
+			context.registerExternal(block, 128*sizeof(PTXU32));
 			ins.a = reg("rval", PTXOperand::u32, 1);
 			ins.a.array.resize( 4 );
 			ins.a.array[0] = reg("rval[0]", PTXOperand::u32, 1);
@@ -3569,6 +3590,7 @@ public:
 					}
 				}
 			}
+			context.free(block);
 		}
 
 		return result;
@@ -4200,6 +4222,7 @@ public:
 		// register indirect
 		if (result) {
 			PTXU32 source[2] = { 0xaa551376 };
+			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a = reg("ra", PTXOperand::u64, 0);
 			ins.a.addressMode = PTXOperand::Indirect;
@@ -4228,6 +4251,7 @@ public:
 					}
 				}
 			}
+			context.free(source);
 		}		
 
 		return result;

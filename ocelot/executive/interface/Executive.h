@@ -57,23 +57,21 @@ namespace executive {
 		/*!
 			The executive keeps a list of allocations for each device. This 
 			record indicates which device the allocation belongs to, its ISA, 
-			its size, and a pointer to the first usable byte. The global
-			flag refers to statically allocated memory
+			its size, and a pointer to the first usable byte. 
 		*/
 		class MemoryAllocation {
 		public:
 
 			ir::Instruction::Architecture isa;
-			int device;
-			ir::PTXU64 size;
-			void *ptr;
-			bool external;
+			int device; /*! \brief The device associated with the allocation */
+			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
+			void *ptr; /*! \brief A pointer to the base of the allocation */
+			bool external; /*! \brief Is the memory owned by the exective? */
 			ir::PTXInstruction::AddressSpace space;
 			std::string identifier;
 			std::string module;
 
 		public:
-
 			MemoryAllocation(ir::Instruction::Architecture, int, ir::PTXU64, 
 				void *);
 
@@ -241,8 +239,8 @@ namespace executive {
 			\param type Type of memory operation
 		
 		*/
-		void memcpy( void* dest, const void* src, size_t bytes, 
-			MemoryCopy type );
+		void memcpy(void* dest, const void* src, size_t bytes, 
+			MemoryCopy type);
 
 		/*!
 			Set a block of data 
@@ -252,7 +250,17 @@ namespace executive {
 			\param value Value to set to
 		
 		*/
-		void memset( void* dest, int value, size_t bytes );
+		void memset(void* dest, int value, size_t bytes);
+
+		/*! 
+			\brief Determine if a global memory access is valid 
+		
+			\param device The device doing the access
+			\param base Pointer to the base of the access
+			\param size The size of the access
+		*/
+		bool checkGlobalMemoryAccess(int device, 
+			const void* base, size_t size) const;
 
 		/*!
 			Given a pointer, determine the allocated block and 
@@ -263,7 +271,7 @@ namespace executive {
 			\return record of memory allocation; if nothing could be found, 
 				the record's ISA is Unknown
 		*/
-		MemoryAllocation getMemoryAllocation(int device, void *ptr) const;
+		MemoryAllocation getMemoryAllocation(int device, const void *ptr) const;
 
 		/*!
 			Gets a kernel by ISA, module, kernel name.

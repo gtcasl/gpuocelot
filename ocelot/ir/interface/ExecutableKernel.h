@@ -14,11 +14,17 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <unordered_map>
 
+namespace executive {
+	class Executive;
+}
+
 namespace ir {
 	
 	class ExecutableKernel : public Kernel {
 	public:
-		ExecutableKernel() {}
+		const executive::Executive* const context;
+	public:
+		ExecutableKernel(const executive::Executive* c = 0) : context(c) {}
 		virtual ~ExecutableKernel() { }
 	
 		/*!

@@ -83,7 +83,7 @@ bool executive::Executive::loadModule(const std::string& path,
 			}
 			for (Module::KernelVector::iterator k_it = it->second.begin();
 				k_it != it->second.end(); ++k_it) {
-				EmulatedKernel *emKern = new EmulatedKernel(*k_it);
+				EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
 				m_it->second->kernels[Instruction::Emulated].push_back(emKern);
 			} 
 		}
@@ -876,6 +876,20 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 	}
 	
 }
+
+bool executive::Executive::checkGlobalMemoryAccess(int device, 
+	const void* _base, size_t size) const {
+	MemoryAllocation allocation = getMemoryAllocation(device, _base);
+	const char* base = reinterpret_cast<const char*>(_base);
+	if( allocation.isa == ir::Instruction::Unknown ) {
+		return false;
+	}
+	assert(allocation.device == device || allocation.external);
+	const char* allocationBase = reinterpret_cast<const char*>(allocation.ptr);
+	return (base >= allocationBase) 
+		&& ((base + size) <= (allocationBase + allocation.size));
+}
+
 		
 /*!
 	Given a pointer, determine the allocated block and corresponding MemoryAllocation record
@@ -886,18 +900,30 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 	\param ptr pointer to some byte
 	\return record of memory allocation; if nothing could be found, the record's ISA is Unknown
 */
-executive::Executive::MemoryAllocation executive::Executive::getMemoryAllocation(int device, void *ptr) const {
+executive::Executive::MemoryAllocation 
+	executive::Executive::getMemoryAllocation(int device, 
+	const void *ptr) const {
 	using namespace std;
 
 	MemoryAllocation record;
 
 	DeviceAllocationMap::const_iterator l_it = 
-		memoryAllocations.find(getSelected());
+		memoryAllocations.find(device);
 	if (l_it != memoryAllocations.end()) {
-		AllocationMap::const_iterator it = l_it->second.lower_bound((char*)ptr);
-		if (it != l_it->second.end() 
-			&& ((char*)ptr < ((char*)it->second.ptr + it->second.size))) {
-			return it->second;
+		AllocationMap::const_iterator it = l_it->second.upper_bound((char*)ptr);
+		if (it != l_it->second.begin()) --it;
+		if (it != l_it->second.end()) {
+			report( "Determining if allocation " << it->second.ptr 
+				<< " to " << ((void*)((char*)it->second.ptr + it->second.size))
+				<< " contains " << ptr );
+			if( (char*)ptr < ((char*)it->second.ptr + it->second.size)) {
+				report(" it does");
+				return it->second;
+			}
+			else
+			{
+				report( " it does NOT" );
+			}
 		}
 	}
 	return record;

@@ -228,6 +228,7 @@ public:
 
 		// load and store to global memory
 		PTXU32 block[64];
+		context.registerExternal(block, sizeof(PTXU32)*64);
 
 		PTXInstruction ld( PTXInstruction::ptx1_3 );
 		ld.opcode = PTXInstruction::Ld;
@@ -260,6 +261,7 @@ public:
 			}
 		}
 		catch (RuntimeException &exp) {
+			status << "load test 1 failed\n";
 			status << "runtime exception on instruction " 
 				<< exp.instruction.toString() << ":\n";
 			status << "  " << exp.message << "\n";
@@ -279,6 +281,7 @@ public:
 			}
 		}
 		catch (RuntimeException &exp) {
+			status << "load test 2 failed\n";
 			status << "runtime exception on instruction " 
 				<< exp.instruction.toString() << ":\n";
 			status << "  " << exp.message << "\n";
@@ -312,6 +315,7 @@ public:
 			}
 		}
 		catch (RuntimeException &exp) {
+			status << "load test 3 failed\n";
 			status << "runtime exception on instruction " 
 				<< exp.instruction.toString() << ":\n";
 			status << "  " << exp.message << "\n";
@@ -321,6 +325,8 @@ public:
 		if (result) {
 			status << "Load test passed\n";
 		}
+
+		context.free(block);
 
 		return result;
 	}
@@ -371,6 +377,9 @@ public:
 		PTXU32 u_block[4];
 		PTXF32 f_block[2];
 
+		context.registerExternal(u_block, 4*sizeof(PTXU32));
+		context.registerExternal(f_block, 2*sizeof(PTXF32));
+
 		PTXInstruction st( PTXInstruction::ptx1_3 );
 		st.opcode = PTXInstruction::St;
 		st.addressSpace = PTXInstruction::Global;
@@ -403,6 +412,7 @@ public:
 			}
 		}
 		catch (RuntimeException &exp) {
+			status << "store test 1 failed\n";
 			status << "runtime exception on instruction " 
 				<< exp.instruction.toString() << ":\n";
 			status << "  " << exp.message << "\n";
@@ -424,6 +434,7 @@ public:
 			}
 		}
 		catch (RuntimeException &exp) {
+			status << "store test 2 failed\n";
 			status << "runtime exception on instruction " 
 				<< exp.instruction.toString() << ":\n";
 			status << "  " << exp.message << "\n";
@@ -433,6 +444,9 @@ public:
 		if (result) {
 			status << "Store test passed\n";
 		}
+		
+		context.free(u_block);
+		context.free(f_block);
 		
 		return result;
 	}
@@ -538,6 +552,7 @@ public:
 
 		const int N = 32;
 		int *inputSequence = new int[N];
+		context.registerExternal(inputSequence, N*sizeof(int));
 
 		// configure parameters
 		Parameter &param_A = kernel->getParameter(
@@ -556,6 +571,7 @@ public:
 			// context.synchronize();
 		}
 		catch (RuntimeException &exp) {
+			status << "Full kernel test failed\n";
 			status << "Runtime exception on instruction [ " 
 				<< exp.instruction.toString() << " ]:\n" 
 				<< exp.message << "\n";
@@ -578,6 +594,7 @@ public:
 			result = true;
 		}
 
+		context.free(inputSequence);
 		delete[] inputSequence; 
 
 		if (result) {

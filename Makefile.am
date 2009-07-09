@@ -27,13 +27,14 @@ check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
-	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libOcelotCuda.la
+	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la
 ################################################################################
 
 ################################################################################
 ## libOcelotAnalysis
 libOcelotAnalysis_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-libOcelotAnalysis_la_SOURCES = ocelot/analysis/implementation/DataflowGraph.cpp \
+libOcelotAnalysis_la_SOURCES = \
+	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp
 ################################################################################
 
@@ -120,12 +121,12 @@ libOcelotParser_la_SOURCES = \
 ################################################################################
 
 ################################################################################
-## libOcelotCuda
-libOcelotCuda_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
-libOcelotCuda_la_SOURCES = \
+## libcudart
+libcudart_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
+libcudart_la_SOURCES = \
 	ocelot/cuda/implementation/OcelotRuntimeApi.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp
-libOcelotCuda_la_LDFLAGS = -version-info 2:2:0
+libcudart_la_LDFLAGS = -version-info 2:2:0
 ################################################################################
 
 ################################################################################
@@ -350,6 +351,12 @@ nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
 	ocelot/cuda/include/vector_types.h \
 	regression/ocelotRegressionTests.txt	
 
+################################################################################
+
+################################################################################
+## EXTRA
+EXTRA_DIST = regression/ocelotRegressionTests.txt \
+	hydrazine/python/RunRegression.py
 ################################################################################
 
 ################################################################################

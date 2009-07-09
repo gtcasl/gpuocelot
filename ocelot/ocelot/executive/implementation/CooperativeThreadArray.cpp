@@ -2989,6 +2989,16 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context, const PTXIn
 				}
 				break;
 			case PTXInstruction::Global:
+				{	
+					if (!kernel->checkGlobalMemoryAccess(source,
+						elementSize * vectorSize)) {
+						std::stringstream stream;
+						stream << "Global memory address " 
+							<< (void*)(source + elementSize * vectorSize) 
+							<< " is out of any allocated or mapped range.";
+						throw RuntimeException(stream.str(), context.PC, instr);
+					}
+				}
 				break;
 			case PTXInstruction::Shared:
 				{
@@ -6047,7 +6057,17 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 					source += (PTXU64) kernel->ParameterMemory;
 				}
 				break;
-			case PTXInstruction::Global:
+			case PTXInstruction::Global:			
+				{	
+					if (!kernel->checkGlobalMemoryAccess(source,
+						elementSize * vectorSize)) {
+						std::stringstream stream;
+						stream << "Global memory address " 
+							<< (void*)(source + elementSize * vectorSize) 
+							<< " is out of any allocated or mapped range.";
+						throw RuntimeException(stream.str(), context.PC, instr);
+					}
+				}
 				break;
 			case PTXInstruction::Shared:
 				{

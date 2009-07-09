@@ -147,6 +147,7 @@ public:
 			// allocate some data
 			int N = ThreadCount;
 			float *sequence = (float *)malloc(sizeof(float)*N);
+			context.registerExternal(sequence, sizeof(float)*N);
 
 			for (int i = 0; i < N; i++) {
 				sequence[i] = -2;	
@@ -200,6 +201,7 @@ public:
 					}
 				}
 			}
+			context.free(sequence);
 			free(sequence);
 		}
 
@@ -230,6 +232,7 @@ public:
 			// allocate some data
 			int N = ThreadCount * 5;
 			float *sequence = (float *)malloc(sizeof(float)*N);
+			context.registerExternal(sequence, sizeof(float)*N);
 
 			for (int i = 0; i < N; i++) {
 				sequence[i] = -2;	
@@ -279,6 +282,7 @@ public:
 				}
 			}
 			
+			context.free(sequence);
 			free(sequence);
 		}
 		if (result) {
@@ -310,6 +314,10 @@ public:
 			float *A = new float[M * N];
 			float *V = new float[N];
 			float *R = new float[M];
+
+			context.registerExternal(A, sizeof(float)*N*M);
+			context.registerExternal(V, sizeof(float)*N);
+			context.registerExternal(R, sizeof(float)*M);
 
 			// initialize A and V
 			out << "A = [\n";
@@ -392,6 +400,9 @@ public:
 				out << "FAIL: R is incorrect\n";
 			}
 
+			context.free(R);
+			context.free(V);
+			context.free(A);
 			delete [] R;
 			delete [] V;
 			delete [] A;

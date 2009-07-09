@@ -33,29 +33,35 @@ namespace executive {
 		typedef std::vector< const ir::Texture* > TextureVector;
 
 	public:
-		EmulatedKernel(ir::Kernel *kernel);
+		EmulatedKernel(ir::Kernel *kernel, const Executive* c);
 		EmulatedKernel();
 		virtual ~EmulatedKernel();
 	
 		/*!
 			Launch a kernel on a 2D grid
 		*/
-		virtual void launchGrid(int width, int height);
+		void launchGrid(int width, int height);
 	
 		/*!
 			Sets the shape of a kernel
 		*/
-		virtual void setKernelShape(int x, int y, int z);
+		void setKernelShape(int x, int y, int z);
+
+	public:
+		/*!
+			Notifies all attached TraceGenerators of an event
+		*/
+		void traceEvent( const trace::TraceEvent & event) const;
 
 		/*!
 			adds a trace generator to the EmulatedKernel
 		*/
-		virtual void addTraceGenerator(trace::TraceGenerator *generator);
+		void addTraceGenerator(trace::TraceGenerator *generator);
 
 		/*!
 			removes a trace generator from an EmulatedKernel
 		*/
-		virtual void removeTraceGenerator(trace::TraceGenerator *generator);
+		void removeTraceGenerator(trace::TraceGenerator *generator);
 
 		/*!
 			Gets the configured dimensions of a block
@@ -210,19 +216,17 @@ namespace executive {
 			Packed vector of mapped textures
 		*/
 		TextureVector textures;
-		
-	public:
-
-		/*!
-			Notifies all attached TraceGenerators of an event
-		*/
-		void traceEvent( const trace::TraceEvent & event) const;
-
+	
 		/*!
 			set of all trace generators listening to kernel
 		*/
 		std::list< trace::TraceGenerator * > Traces;
 
+	public:
+		/*! \brief Check to see if a memory access is valid */
+		bool checkGlobalMemoryAccess(const void* base, size_t size) const;
+	
+	public:
 		/*!
 			Copies data from parameter objects into parameter memory
 		*/

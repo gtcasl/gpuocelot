@@ -185,6 +185,9 @@ public:
 		bool result = valid;
 
 		if (valid) {
+			context.registerExternal( A, sizeof(float) * SIZE * SIZE );
+			context.registerExternal( V, sizeof(float) * SIZE );
+			context.registerExternal( R, sizeof(float) * SIZE );
 			// configure trace generator
 			kernel->addTraceGenerator(&tracer);
 
@@ -244,7 +247,10 @@ public:
 					result = false;
 				}
 			}
-
+			
+			context.free(A);
+			context.free(R);
+			context.free(V);
 		}
 
 		return result;

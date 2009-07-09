@@ -9,9 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = ../../ocelot/libcudart.la ../../ocelot/libexecutive.la \
-	../../ocelot/libtrace.la ../../ocelot/libir.la ../../ocelot/libparser.la \
-	../../ocelot/libhydrazine.la libsdk.la
+OCELOT_LIBS = libsdk.la
 SDK_CFLAGS = -I sdk
 ################################################################################
 

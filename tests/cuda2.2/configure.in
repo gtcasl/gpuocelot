@@ -38,6 +38,21 @@ AC_CHECK_LIB([GLU], [gluGetString], [], \
 	AC_MSG_ERROR("libGLU required"))
 AC_CHECK_LIB([glut], [glutMainLoop], [], \
 	AC_MSG_ERROR("libglut required"))
+	
+AC_CHECK_LIB([hydrazine], [main], [], \
+	AC_MSG_ERROR("libhydrazine required"))
+AC_CHECK_LIB([OcelotParser], [main], [], \
+	AC_MSG_ERROR("libOcelotParser required"), [-lOcelotIr])	
+AC_CHECK_LIB([OcelotIr], [main], [], \
+	AC_MSG_ERROR("libOcelotIr required"))	
+AC_CHECK_LIB([OcelotTrace], [main], [], \
+	AC_MSG_ERROR("libOcelotTrace required"))	
+AC_CHECK_LIB([OcelotExecutive], [main], [], \
+	AC_MSG_ERROR("libOcelotExecutive required"))	
+AC_CHECK_LIB([OcelotAnalysis], [main], [], \
+	AC_MSG_ERROR("libOcelotAnalysis required"))	
+AC_CHECK_LIB([OcelotCuda], [main], [], \
+	AC_MSG_ERROR("libOcelotCuda required"))	
 ################################################################################
 
 ################################################################################

@@ -1,13 +1,8 @@
 /*!
-
 	\file Parser.h
-	
 	\date Wednesday January 14, 2009
-	
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
-
 	\brief The header file for the Parser class.
-
 */
 
 #ifndef PARSER_H_INCLUDED
@@ -17,38 +12,26 @@
 #include <hydrazine/interface/Configurable.h>
 
 /*!
-
 	\brief A namespace for parser related classes
-
 */
 namespace parser
 {
 
 	/*!
-	
 		\brief An interface that parses a text or binary file and generates
 			an internal representation of a program.
-	
 	*/
 	class Parser : public hydrazine::Configurable
 	{
 	
 		public:
 		
-			/*!
-			
-				\brief Name of the file being parsed
-			
-			*/
+			/*! \brief Name of the file being parsed */
 			std::string fileName;
 					
 		public:
 		
-			/*!
-				
-				\brief Virtual destructor
-			
-			*/
+			/*! \brief Virtual destructor */
 			virtual ~Parser() {};
 	
 			/*!

@@ -68,6 +68,28 @@
 /* Define to 1 if you have the `glut' library (-lglut). */
 #undef HAVE_LIBGLUT
 
+/* Define to 1 if you have the `hydrazine' library (-lhydrazine). */
+#undef HAVE_LIBHYDRAZINE
+
+/* Define to 1 if you have the `OcelotAnalysis' library (-lOcelotAnalysis). */
+#undef HAVE_LIBOCELOTANALYSIS
+
+/* Define to 1 if you have the `OcelotCuda' library (-lOcelotCuda). */
+#undef HAVE_LIBOCELOTCUDA
+
+/* Define to 1 if you have the `OcelotExecutive' library (-lOcelotExecutive).
+   */
+#undef HAVE_LIBOCELOTEXECUTIVE
+
+/* Define to 1 if you have the `OcelotIr' library (-lOcelotIr). */
+#undef HAVE_LIBOCELOTIR
+
+/* Define to 1 if you have the `OcelotParser' library (-lOcelotParser). */
+#undef HAVE_LIBOCELOTPARSER
+
+/* Define to 1 if you have the `OcelotTrace' library (-lOcelotTrace). */
+#undef HAVE_LIBOCELOTTRACE
+
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
 

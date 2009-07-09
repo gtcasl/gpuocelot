@@ -9,7 +9,11 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = libsdk.la
+OCELOT_LIBS = -lcudart -lOcelotExecutive -lOcelotTrace -lOcelotIr \
+	-lOcelotParser -lhydrazine libsdk.la
+CUFFT_LIBS = -lcufft
+CUBLAS_LIBS = -lcublas
+CUDA_CFLAGS = -I sdk
 SDK_CFLAGS = -I sdk
 ################################################################################
 
@@ -554,9 +558,195 @@ VolumeRender_LDFLAGS = -static
 
 ################################################################################
 ## Headers
-nobase_include_HEADERS = 
+nobase_include_HEADERS = sdk/stopwatch_base.h \
+	sdk/cutil.h \
+	sdk/cutil_math.h \
+	sdk/cuComplex.h \
+	sdk/param.h \
+	sdk/vector_types.h \
+	sdk/nvGLWidgets.h \
+	sdk/driver_types.h \
+	sdk/cutil_gl_inline.h \
+	sdk/nvVector.h \
+	sdk/exception.h \
+	sdk/channel_descriptor.h \
+	sdk/cuda_gl_interop.h \
+	sdk/rendercheck_gl.h \
+	sdk/nvShaderUtils.h \
+	sdk/cutil_inline_bankchecker.h \
+	sdk/cublas.h \
+	sdk/device_types.h \
+	sdk/host_config.h \
+	sdk/driver_functions.h \
+	sdk/texture_types.h \
+	sdk/cutil_inline_runtime.h \
+	sdk/error_checker.h \
+	sdk/cmd_arg_reader.h \
+	sdk/cutil_inline_drvapi.h \
+	sdk/cufft.h \
+	sdk/builtin_types.h \
+	sdk/cuda_runtime.h \
+	sdk/paramgl.h \
+	sdk/multithreading.h \
+	sdk/cutil_gl_error.h \
+	sdk/host_defines.h \
+	sdk/cuda.h \
+	sdk/nvGlutWidgets.h \
+	sdk/stopwatch.h \
+	sdk/stopwatch_base.inl \
+	sdk/cuda_runtime_api.h \
+	sdk/bank_checker.h \
+	sdk/nvMatrix.h \
+	sdk/stopwatch_linux.h \
+	sdk/nvWidgets.h \
+	sdk/nvMath.h \
+	sdk/nvQuaternion.h \
+	sdk/math_constants.h \
+	sdk/cutil_inline.h \
+	sdk/vector_functions.h \
+	tests/simpleMultiGPU/simpleMultiGPU.h \
+	tests/eigenvalues/gerschgorin.h \
+	tests/eigenvalues/util.h \
+	tests/eigenvalues/matlab.h \
+	tests/eigenvalues/structs.h \
+	tests/eigenvalues/config.h \
+	tests/MonteCarloMultiGPU/MonteCarlo_common.h \
+	tests/MonteCarloMultiGPU/realtype.h \
+	tests/matrixMul/matrixMul.h \
+	tests/histogram256/histogram256_common.h \
+	tests/threadFenceReduction/threadFenceReduction.h \
+	tests/SobolQRNG/sobol_gpu.h \
+	tests/SobolQRNG/sobol_gold.h \
+	tests/SobolQRNG/sobol.h \
+	tests/SobolQRNG/sobol_primitives.h \
+	tests/binomialOptions/binomialOptions_common.h \
+	tests/binomialOptions/realtype.h \
+	tests/MonteCarlo/MonteCarlo_common.h \
+	tests/MonteCarlo/realtype.h \
+	tests/reduction/reduction.h \
+	tests/imageDenoising/imageDenoising.h \
+	tests/dct8x8/DCT8x8_Gold.h \
+	tests/dct8x8/Common.h \
+	tests/dct8x8/BmpUtil.h \
+	tests/dxtc/dds.h \
+	tests/dxtc/permutations.h \
+	tests/dxtc/CudaMath.h \
+	tests/SobelFilter/SobelFilter_kernels.h \
+	tests/nbody/bodysystemcpu.h \
+	tests/nbody/render_particles.h \
+	tests/nbody/bodysystemcuda.h \
+	tests/nbody/bodysystem.h \
+	tests/Mandelbrot/Mandelbrot_gold.h \
+	tests/Mandelbrot/Mandelbrot_kernel.h \
+	tests/fluidsGL/fluidsGL_kernels.h \
+	tests/MersenneTwister/MersenneTwister.h \
+	tests/MersenneTwister/dci.h \
+	tests/quasirandomGenerator/quasirandomGenerator_common.h \
+	tests/quasirandomGenerator/realtype.h \
+	tests/eigenvalues/bisect_small.cuh \
+	tests/eigenvalues/bisect_large.cuh \
+	tests/MonteCarloMultiGPU/quasirandomGenerator_kernel.cuh \
+	tests/MonteCarloMultiGPU/MonteCarlo_reduction.cuh \
+	tests/MonteCarloMultiGPU/MonteCarlo_kernel.cuh \
+	tests/histogram256/histogram256_kernel.cuh \
+	tests/simpleTemplates/sharedmem.cuh \
+	tests/binomialOptions/binomialOptions_kernel.cuh \
+	tests/MonteCarlo/quasirandomGenerator_kernel.cuh \
+	tests/MonteCarlo/MonteCarlo_reduction.cuh \
+	tests/MonteCarlo/MonteCarlo_kernel.cuh \
+	tests/reduction/sharedmem.cuh \
+	tests/histogram64/histogram64_kernel.cuh \
+	tests/BlackScholes/BlackScholes_kernel.cuh \
+	tests/quasirandomGenerator/quasirandomGenerator_kernel.cuh \
+	tests/bicubicTexture/bicubicTexture_kernel.cuh
+
 
 ################################################################################
+
+################################################################################
+## Data
+EXTRA_DIST = data/regression_2_18.gold.dat \
+	data/diagonal.dat \
+	data/ref_nlm2.ppm \
+	data/ref_2.ppm \
+	data/lena_22.ppm \
+	data/signal_2_14.dat \
+	data/compVoxelArray.bin \
+	data/ref_18.ppm \
+	data/ref_16.ppm \
+	data/03_bicubic.ppm \
+	data/ref_rotated.pgm \
+	data/lorikeet-orig.ppm \
+	data/ref_orig.ppm \
+	data/01_nearest.ppm \
+	data/lena_bw.pgm \
+	data/ref_nlm.ppm \
+	data/Mandelbrot_fp32.ppm \
+	data/lena_ref.dds \
+	data/referenceJulia_fp32.ppm \
+	data/Mandelbrot_fp64.ppm \
+	data/posArray.bin \
+	data/ref_orig.pgm \
+	data/regression.gold.dat \
+	data/ref_particles.ppm \
+	data/ref_4.ppm \
+	data/ref_10.ppm \
+	data/portrait_noise.bmp \
+	data/lena-orig.ppm \
+	data/smokeParticles_ref.ppm \
+	data/ocean.frag \
+	data/04_fastbicubic.ppm \
+	data/lena_std.dds \
+	data/ref_spatialDomain_sm13.bin \
+	data/ref_texture3D.bin \
+	data/signal.dat \
+	data/referenceJulia_fp64.ppm \
+	data/ref_spatialDomain.bin \
+	data/particles_4.ppm \
+	data/ocean.vert \
+	data/ref_shared_tex.ppm \
+	data/barbara.ppm \
+	data/lena.ppm \
+	data/params.txt \
+	data/ref_slopeShading_sm13.bin \
+	data/MersenneTwister.dat \
+	data/ref_slopeShading.bin \
+	data/lena_bw_out.pgm \
+	data/barbara.bmp \
+	data/ref_particles.bin \
+	data/ref_shared.ppm \
+	data/lena_std.ppm \
+	data/ref_simpleTex3D.ppm \
+	data/ref_shared.pgm \
+	data/signal_2_18.dat \
+	data/ref_volume.ppm \
+	data/ref_march_cubes.ppm \
+	data/lena.pgm \
+	data/ref_simpleGL.ppm \
+	data/regression_2_14.gold.dat \
+	data/reference.ppm \
+	data/ref_22.ppm \
+	data/lena_18.ppm \
+	data/colors.ppm \
+	data/ref_passthru.ppm \
+	data/normalArray.bin \
+	data/Bucky.raw \
+	data/02_bilinear.ppm \
+	data/ref_8.ppm \
+	data/lena_14.ppm \
+	data/ref_shared_tex.pgm \
+	data/MersenneTwister.raw \
+	data/floortile.ppm \
+	data/lena_10.ppm \
+	data/superdiagonal.dat \
+	data/ref_knn.ppm \
+	data/reference.dat \
+	data/ref_14.ppm \
+	regression/tests.txt \
+	hydrazine/python/RunRegression.py
+
+################################################################################
+
 
 ################################################################################
 ## Regression tests

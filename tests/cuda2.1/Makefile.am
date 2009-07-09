@@ -9,8 +9,11 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = libsdk.la
-	
+OCELOT_LIBS = -lcudart -lOcelotExecutive -lOcelotTrace -lOcelotIr \
+	-lOcelotParser -lhydrazine libsdk.la
+CUFFT_LIBS = -lcufft
+CUBLAS_LIBS = -lcublas
+CUDA_CFLAGS = -I sdk
 SDK_CFLAGS = -I sdk
 ################################################################################
 
@@ -575,7 +578,184 @@ VolumeRender_LDFLAGS = -static
 
 ################################################################################
 ## Headers
-nobase_include_HEADERS = 
+include_HEADERS = sdk/stopwatch_base.h \
+	sdk/cutil.h \
+	sdk/cutil_math.h \
+	sdk/cuComplex.h \
+	sdk/param.h \
+	sdk/vector_types.h \
+	sdk/nvGLWidgets.h \
+	sdk/driver_types.h \
+	sdk/nvVector.h \
+	sdk/exception.h \
+	sdk/channel_descriptor.h \
+	sdk/cuda_gl_interop.h \
+	sdk/rendercheck_gl.h \
+	sdk/nvShaderUtils.h \
+	sdk/cublas.h \
+	sdk/device_types.h \
+	sdk/host_config.h \
+	sdk/driver_functions.h \
+	sdk/texture_types.h \
+	sdk/error_checker.h \
+	sdk/cmd_arg_reader.h \
+	sdk/cufft.h \
+	sdk/builtin_types.h \
+	sdk/cuda_runtime.h \
+	sdk/paramgl.h \
+	sdk/multithreading.h \
+	sdk/cutil_gl_error.h \
+	sdk/host_defines.h \
+	sdk/cuda.h \
+	sdk/nvGlutWidgets.h \
+	sdk/stopwatch.h \
+	sdk/cuda_runtime_api.h \
+	sdk/bank_checker.h \
+	sdk/nvMatrix.h \
+	sdk/stopwatch_linux.h \
+	sdk/stopwatch_base.inl \
+	sdk/nvWidgets.h \
+	sdk/nvMath.h \
+	sdk/nvQuaternion.h \
+	sdk/math_constants.h \
+	sdk/cutil_inline.h \
+	sdk/vector_functions.h \
+	tests/Eigenvalues/gerschgorin.h \
+	tests/Eigenvalues/util.h \
+	tests/Eigenvalues/matlab.h \
+	tests/Eigenvalues/structs.h \
+	tests/Eigenvalues/config.h \
+	tests/ImageDenoising/imageDenoising.h \
+	tests/CapModel3/macros.h \
+	tests/CapModel3/Exception.h \
+	tests/CapModel3/Test.h \
+	tests/CapModel3/MultiVariateNormal.h \
+	tests/CapModel3/Date.h \
+	tests/CapModel3/TestCapModel3.h \
+	tests/CapModel3/CapModel3.h \
+	tests/CapModel3/Stringable.h \
+	tests/CapModel3/Timer.h \
+	tests/CapModel3/CudaException.h \
+	tests/CapModel3/ArgumentParser.h \
+	tests/CapModel3/debug.h \
+	tests/CapModel3/SimulationParameters.h \
+	tests/CapModel3/LowLevelTimer.h \
+	tests/MarchingCubes/tables.h \
+	tests/MarchingCubes/defines.h \
+	tests/MonteCarloMultiGPU/MonteCarlo_common.h \
+	tests/MonteCarloMultiGPU/realtype.h \
+	tests/SimpleMultiGPU/simpleMultiGPU.h \
+	tests/Nbody/bodysystemcpu.h \
+	tests/Nbody/render_particles.h \
+	tests/Nbody/bodysystemcuda.h \
+	tests/Nbody/bodysystem.h \
+	tests/Dxtc/dds.h \
+	tests/Dxtc/permutations.h \
+	tests/Dxtc/CudaMath.h \
+	tests/BinomialOptions/binomialOptions_common.h \
+	tests/BinomialOptions/realtype.h \
+	tests/Particles/render_particles.h \
+	tests/Particles/particleSystem.h \
+	tests/Particles/shaders.h \
+	tests/QuasirandomGenerator/quasirandomGenerator_common.h \
+	tests/QuasirandomGenerator/realtype.h \
+	tests/Dct8x8/DCT8x8_Gold.h \
+	tests/Dct8x8/Common.h \
+	tests/Dct8x8/BmpUtil.h \
+	tests/MonteCarlo/MonteCarlo_common.h \
+	tests/MonteCarlo/realtype.h \
+	tests/FluidsGL/fluidsGL_kernels.h \
+	tests/Reduction/reduction.h \
+	tests/SobelFilter/SobelFilter_kernels.h \
+	tests/Histogram256/histogram256_common.h \
+	tests/matmult/vsipl-timer.h \
+	tests/matmult/matmult.h \
+	tests/Mandelbrot/Mandelbrot_gold.h \
+	tests/Mandelbrot/Mandelbrot_kernel.h \
+	tests/MatrixMul/matrixMul.h \
+	tests/MersenneTwister/MersenneTwister.h \
+	tests/MersenneTwister/dci.h \
+	tests/Eigenvalues/bisect_small.cuh \
+	tests/Eigenvalues/bisect_large.cuh \
+	tests/MonteCarloMultiGPU/quasirandomGenerator_kernel.cuh \
+	tests/MonteCarloMultiGPU/MonteCarlo_reduction.cuh \
+	tests/MonteCarloMultiGPU/MonteCarlo_kernel.cuh \
+	tests/SimpleTemplates/sharedmem.cuh \
+	tests/BinomialOptions/binomialOptions_kernel.cuh \
+	tests/Particles/particleSystem.cuh \
+	tests/Particles/radixsort.cuh \
+	tests/Particles/particles_kernel.cuh \
+	tests/QuasirandomGenerator/quasirandomGenerator_kernel.cuh \
+	tests/Histogram64/histogram64_kernel.cuh \
+	tests/MonteCarlo/quasirandomGenerator_kernel.cuh \
+	tests/MonteCarlo/MonteCarlo_reduction.cuh \
+	tests/MonteCarlo/MonteCarlo_kernel.cuh \
+	tests/Reduction/sharedmem.cuh \
+	tests/BicubicTexture/bicubicTexture_kernel.cuh \
+	tests/Histogram256/histogram256_kernel.cuh \
+	tests/BlackScholes/BlackScholes_kernel.cuh \
+	tests/CapModel3/capModel3.hu
+	
+################################################################################
+
+################################################################################
+## include data
+EXTRA_DIST = data/regression_2_18.gold.dat \
+	data/diagonal.dat \
+	data/ref_nlm2.ppm \
+	data/signal_2_14.dat \
+	data/reference_fp32.ppm \
+	data/ref_18.ppm \
+	data/ref_rotated.pgm \
+	data/lorikeet-orig.ppm \
+	data/ref_orig.ppm \
+	data/lena_bw.pgm \
+	data/ref_nlm.ppm \
+	data/lena_ref.dds \
+	data/mersenneTwisters.dat \
+	data/regression.gold.dat \
+	data/ref_10.ppm \
+	data/portrait_noise.bmp \
+	data/lena-orig.ppm \
+	data/ocean.frag \
+	data/lena_std.dds \
+	data/signal.dat \
+	data/industry.csv \
+	data/ocean.vert \
+	data/ref_shared_tex.ppm \
+	data/barbara.ppm \
+	data/lena.ppm \
+	data/portfolio.csv \
+	data/MersenneTwister.dat \
+	data/obligors.csv \
+	data/lena_bw_out.pgm \
+	data/barbara.bmp \
+	data/ref_shared.ppm \
+	data/lena_std.ppm \
+	data/ratings.csv \
+	data/signal_2_18.dat \
+	data/lena_sobel.pgm \
+	data/lena.pgm \
+	data/regression_2_14.gold.dat \
+	data/simplefft/T_filter.m \
+	data/simplefft/F_signal.m \
+	data/simplefft/F_output.m \
+	data/simplefft/T_output.m \
+	data/simplefft/T_signal.m \
+	data/simplefft/F_filter.m \
+	data/reference.ppm \
+	data/ref_22.ppm \
+	data/colors.ppm \
+	data/ref_passthru.ppm \
+	data/reference_fp64.ppm \
+	data/Bucky.raw \
+	data/MersenneTwister.raw \
+	data/superdiagonal.dat \
+	data/ref_knn.ppm \
+	data/reference.dat \
+	data/ref_14.ppm \
+	regression/tests.txt \
+	hydrazine/python/RunRegression.py
 
 ################################################################################
 

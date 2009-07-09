@@ -27,6 +27,15 @@
 /* Define to 1 if you have the `clock_gettime' function. */
 #undef HAVE_CLOCK_GETTIME
 
+/* "" */
+#undef HAVE_CUBLAS
+
+/* "" */
+#undef HAVE_CUDART
+
+/* "" */
+#undef HAVE_CUFFT
+
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
 #undef HAVE_DECL_STRERROR_R
@@ -53,6 +62,9 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* "" */
+#undef HAVE_HYDRAZINE
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -68,37 +80,11 @@
 /* Define to 1 if you have the `glut' library (-lglut). */
 #undef HAVE_LIBGLUT
 
-/* Define to 1 if you have the `hydrazine' library (-lhydrazine). */
-#undef HAVE_LIBHYDRAZINE
-
-/* Define to 1 if you have the `OcelotAnalysis' library (-lOcelotAnalysis). */
-#undef HAVE_LIBOCELOTANALYSIS
-
-/* Define to 1 if you have the `OcelotCuda' library (-lOcelotCuda). */
-#undef HAVE_LIBOCELOTCUDA
-
-/* Define to 1 if you have the `OcelotExecutive' library (-lOcelotExecutive).
-   */
-#undef HAVE_LIBOCELOTEXECUTIVE
-
-/* Define to 1 if you have the `OcelotIr' library (-lOcelotIr). */
-#undef HAVE_LIBOCELOTIR
-
-/* Define to 1 if you have the `OcelotParser' library (-lOcelotParser). */
-#undef HAVE_LIBOCELOTPARSER
-
-/* Define to 1 if you have the `OcelotTrace' library (-lOcelotTrace). */
-#undef HAVE_LIBOCELOTTRACE
-
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
-
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
 
 /* Define to 1 if you have the `mblen' function. */
 #undef HAVE_MBLEN
@@ -124,6 +110,21 @@
 /* Define to 1 if libc includes obstacks. */
 #undef HAVE_OBSTACK
 
+/* "" */
+#undef HAVE_OCELOT_ANALYSIS
+
+/* "" */
+#undef HAVE_OCELOT_EXECUTIVE
+
+/* "" */
+#undef HAVE_OCELOT_IR
+
+/* "" */
+#undef HAVE_OCELOT_PARSER
+
+/* "" */
+#undef HAVE_OCELOT_TRACE
+
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
 
@@ -132,10 +133,6 @@
 
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
-
-/* Define to 1 if your system has a GNU libc compatible `realloc' function,
-   and to 0 otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `realpath' function. */
 #undef HAVE_REALPATH
@@ -380,9 +377,6 @@
    a type exists and the standard includes do not define it. */
 #undef int8_t
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to `int' if <sys/types.h> does not define. */
 #undef mode_t
 
@@ -391,9 +385,6 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

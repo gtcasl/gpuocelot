@@ -11,7 +11,7 @@
 ## Package specification
 # Revision scheme is MajorFeatureSet.MinorFeatureSet.SVNChangelistNumber
 AC_PREREQ(2.61)
-AC_INIT(ocelotSdk2.2RegressionSuite, 0.1.7, gregory.diamos@gatech.edu)
+AC_INIT(ocelot_Sdk_2.2_Regression_Suite, 0.1.36, gregory.diamos@gatech.edu)
 AM_INIT_AUTOMAKE([])
 ################################################################################
 
@@ -39,20 +39,32 @@ AC_CHECK_LIB([GLU], [gluGetString], [], \
 AC_CHECK_LIB([glut], [glutMainLoop], [], \
 	AC_MSG_ERROR("libglut required"))
 	
-AC_CHECK_LIB([hydrazine], [main], [], \
+AC_CHECK_LIB([hydrazine], [main],[AC_DEFINE(HAVE_HYDRAZINE, [], [""])], \
 	AC_MSG_ERROR("libhydrazine required"))
-AC_CHECK_LIB([OcelotParser], [main], [], \
-	AC_MSG_ERROR("libOcelotParser required"), [-lOcelotIr])	
-AC_CHECK_LIB([OcelotIr], [main], [], \
-	AC_MSG_ERROR("libOcelotIr required"))	
-AC_CHECK_LIB([OcelotTrace], [main], [], \
-	AC_MSG_ERROR("libOcelotTrace required"))	
-AC_CHECK_LIB([OcelotExecutive], [main], [], \
-	AC_MSG_ERROR("libOcelotExecutive required"))	
-AC_CHECK_LIB([OcelotAnalysis], [main], [], \
-	AC_MSG_ERROR("libOcelotAnalysis required"))	
-AC_CHECK_LIB([OcelotCuda], [main], [], \
-	AC_MSG_ERROR("libOcelotCuda required"))	
+AC_CHECK_LIB([OcelotParser], [main], \
+	[AC_DEFINE(HAVE_OCELOT_PARSER, [], [""])], \
+	AC_MSG_ERROR("libOcelotParser required"), [-lOcelotIr -lhydrazine])	
+AC_CHECK_LIB([OcelotIr], [main], [AC_DEFINE(HAVE_OCELOT_IR, [], [""])], \
+	AC_MSG_ERROR("libOcelotIr required"), [-lOcelotParser -lhydrazine])	
+AC_CHECK_LIB([OcelotTrace], [main], [AC_DEFINE(HAVE_OCELOT_TRACE, [], [""])], \
+	AC_MSG_ERROR("libOcelotTrace required"), [-lhydrazine])	
+AC_CHECK_LIB([OcelotExecutive], [main], \
+	[AC_DEFINE(HAVE_OCELOT_EXECUTIVE, [], [""])], \
+	AC_MSG_ERROR("libOcelotExecutive required"), \
+	[-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+AC_CHECK_LIB([OcelotAnalysis], [main], \
+	[AC_DEFINE(HAVE_OCELOT_ANALYSIS, [], [""])], \
+	AC_MSG_ERROR("libOcelotAnalysis required"), \
+	[-lOcelotIr -lOcelotParser -lhydrazine])
+AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
+	AC_MSG_ERROR("libcudart required"), \
+	[-lOcelotExecutive -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
+	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelotExecutive \
+	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
+AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
+	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelotExecutive \
+	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
 ################################################################################
 
 ################################################################################
@@ -98,9 +110,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 # Checks for library functions.
 AC_FUNC_ALLOCA
 AC_FUNC_FSEEKO
-AC_FUNC_MALLOC
 AC_FUNC_MKTIME
-AC_FUNC_REALLOC
 AC_FUNC_STRCOLL
 AC_FUNC_STRERROR_R
 AC_FUNC_STRNLEN
@@ -110,34 +120,6 @@ AC_CHECK_FUNCS([atexit bzero clock_gettime floor getdelim gettimeofday \
 	rint rpmatch select setenv sqrt stime stpcpy strcasecmp strchr strcspn \
 	strdup strerror strncasecmp strndup strpbrk strrchr strspn strstr strtol \
 	strtoul strtoull strtoumax strverscmp tzset])
-################################################################################
-
-###############################################################################
-# Setup CUDA paths
-# 
-AC_ARG_WITH([cuda],
-	[--with-cuda=PATH prefix where cuda is installed [default=/usr/local/cuda]])
-
-if test -n "$with_cuda"
-then
-	CUDA_CFLAGS="-I$with_cuda/include"
-	CUDA_LIBS="-L$with_cuda/lib -lcudart -lcublas"
-	CUFFT_LIBS="-L$with_cuda/lib -lcufft"
-	CUBLAS_LIBS="-L$with_cuda/lib -lcublas"
-	NVCC="$with_cuda/bin/nvcc"
-else
-	CUDA_CFLAGS="-I/usr/local/cuda/include"
-	CUDA_LIBS="-L/usr/local/cuda/lib -lcudart -lcublas"
-	CUFFT_LIBS="-L/usr/local/cuda/lib -lcufft"
-	CUBLAS_LIBS="-L/usr/local/cuda/lib -lcublas"
-	NVCC="nvcc"
-fi
-
-AC_SUBST(CUDA_CFLAGS)
-AC_SUBST(CUDA_LIBS)
-AC_SUBST(CUFFT_LIBS)
-AC_SUBST(CUBLAS_LIBS)
-AC_SUBST(NVCC)
 ################################################################################
 
 ################################################################################

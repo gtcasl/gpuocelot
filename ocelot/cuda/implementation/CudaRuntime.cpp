@@ -407,6 +407,9 @@ namespace cuda
 		assert( thread != _threads.end() );
 		assert( (unsigned int)device < context.devices.size() );
 
+		report( "Setting device from " << context.getSelected() << " to " 
+			<< device );
+
 		bool pass = context.select( context.devices[ device ].guid );
 
 		if( !pass )

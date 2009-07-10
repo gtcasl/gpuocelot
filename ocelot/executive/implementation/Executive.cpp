@@ -26,6 +26,56 @@
 
 #define REPORT_BASE 0
 
+std::string executive::Executive::nearbyAllocationsToString( 
+	const AllocationMap& allocations, const void* ptr, unsigned int above,
+	unsigned int below ) {
+	if (allocations.empty()) return "No Allocations\n";
+	std::stringstream stream;
+	AllocationMap::const_iterator closest = allocations.upper_bound((char*)ptr);
+	if (closest != allocations.begin()) --closest;
+	
+	AllocationMap::const_iterator bi = closest;
+	for (unsigned int b = 0; b < below; ++b, --bi) {
+		if (bi == allocations.begin()) break;
+	}
+
+	for ( ; bi != closest; ++bi ) {
+		stream << "[" << bi->second.ptr << "] - [" 
+			<< ((void*)((char*)bi->second.ptr + bi->second.size)) << "]" 
+			<< " (" << ir::PTXInstruction::toString(bi->second.space) << ")"
+			<< std::endl;
+	}
+
+	stream << "[" << closest->second.ptr << "] - ";
+	
+	bool inRange = (char*)ptr < ((char*)closest->second.ptr 
+		+ closest->second.size) && ((char*)ptr >= (char*)closest->second.ptr);
+
+	if (inRange) {
+		stream << "****" << ptr << "**** -";
+	}
+	
+	stream << " [" << ((void*)((char*)closest->second.ptr 
+		+ closest->second.size)) << "]" 
+		<< " (" << ir::PTXInstruction::toString(closest->second.space) << ")"
+		<< std::endl;
+	
+	if (!inRange) {
+		stream << "****" << ptr << "****" << std::endl;
+	}
+	
+	AllocationMap::const_iterator ai = closest;
+	
+	for ( ; ai != allocations.end(); ++ai) {
+		stream << "[" << ai->second.ptr << "] - [" 
+			<< ((void*)((char*)ai->second.ptr + ai->second.size)) << "]" 
+			<< " (" << ir::PTXInstruction::toString(ai->second.space) << ")"
+			<< std::endl;		
+	}
+	
+	return stream.str();
+}
+
 executive::Executive::Executive() {
 	enumerateDevices();
 }
@@ -36,7 +86,9 @@ executive::Executive::~Executive() {
 		device != memoryAllocations.end(); ++device) {
 		for (AllocationMap::iterator allocation = device->second.begin(); 
 			allocation != device->second.end(); ++allocation ) {
-			delete[] (char*)allocation->second.ptr;
+			if (!allocation->second.external) {
+				delete [] (char *)allocation->second.ptr;
+			}
 		}
 	}
 	// free modules
@@ -302,6 +354,7 @@ void *executive::Executive::malloc(size_t bytes) {
 			{
 				MemoryAllocation record;
 				record.isa = ir::Instruction::Emulated;
+				record.space = ir::PTXInstruction::Global;
 				record.device = getSelected();
 				record.external = false;
 				record.size = bytes;
@@ -353,6 +406,7 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 			{
 				MemoryAllocation record;
 				record.isa = ir::Instruction::Emulated;
+				record.space = ir::PTXInstruction::Global;
 				record.device = getSelected();
 				record.size = bytes;
 				record.external = true;
@@ -402,7 +456,6 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 	switch (getSelectedISA()) {
 		case ir::Instruction::Emulated:
 			{
-
 				report( "Registering global variable " << name 
 					<< " in module " << modulePath );
 
@@ -442,7 +495,7 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 				}
 				
 				global->second.registered = true;
-
+				registerExternal(ptr, bytes);
 			}
 			break;
 /*

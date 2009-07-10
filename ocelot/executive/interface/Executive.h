@@ -97,7 +97,13 @@ namespace executive {
 			\brief Map from module name to object
 		*/
 		typedef std::unordered_map<std::string, ir::Module *> ModuleMap;
-		
+	
+	public:
+		/*! \brief Return a string of the memory allocations around a pointer */
+		static std::string nearbyAllocationsToString( 
+			const AllocationMap& allocations, const void* pointer, 
+			unsigned int above = 5, unsigned int below = 5 );
+	
 	public:
 		Executive();
 		~Executive();

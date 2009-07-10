@@ -21,6 +21,7 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/CTAContext.h>
 
 #include <hydrazine/implementation/debug.h>
@@ -32,6 +33,9 @@
 // global control for enabling reporting within the emulator
 #define REPORT_BASE 0
 
+// turn on checking of all global accesses... be prepared to take a perf hit
+#define CHECK_GLOBAL_ACCESSES 1
+					
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
 
@@ -2893,10 +2897,33 @@ void executive::CooperativeThreadArray::vectorLoad(int threadID,
 	}
 }
 
+static void globalMemoryError(const void* pointer, size_t size, 
+	const executive::EmulatedKernel* kernel, executive::CTAContext &context, 
+	const PTXInstruction &instr ) {
+	std::stringstream stream;
+	stream << "Global memory address " 
+		<< (void*)((char*)pointer) << " of size " << size
+		<< " is out of any allocated or mapped range." << std::endl;
+	stream << "Memory Map:" << std::endl;
+	executive::Executive::DeviceAllocationMap::const_iterator 
+		allocations = kernel->context->memoryAllocations.find(
+		kernel->context->getSelected());
+	if(allocations != kernel->context->memoryAllocations.end()) {
+		stream << executive::Executive::nearbyAllocationsToString(
+			allocations->second, pointer);
+	}
+	else {
+		stream << "No Allocations" << std::endl;
+	}
+	
+	throw executive::RuntimeException(stream.str(), context.PC, instr);	
+}
+
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Ld(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Ld(CTAContext &context, 
+	const PTXInstruction &instr) {
 
 	size_t elementSize = 0;
 	size_t vectorSize = instr.d.vec;
@@ -2990,14 +3017,13 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context, const PTXIn
 				break;
 			case PTXInstruction::Global:
 				{	
+					#if (CHECK_GLOBAL_ACCESSES==1)
 					if (!kernel->checkGlobalMemoryAccess(source,
 						elementSize * vectorSize)) {
-						std::stringstream stream;
-						stream << "Global memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is out of any allocated or mapped range.";
-						throw RuntimeException(stream.str(), context.PC, instr);
+						globalMemoryError(source, 
+							elementSize * vectorSize, kernel, context, instr);
 					}
+					#endif
 				}
 				break;
 			case PTXInstruction::Shared:
@@ -6059,14 +6085,13 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 				break;
 			case PTXInstruction::Global:			
 				{	
+					#if (CHECK_GLOBAL_ACCESSES==1)
 					if (!kernel->checkGlobalMemoryAccess(source,
 						elementSize * vectorSize)) {
-						std::stringstream stream;
-						stream << "Global memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is out of any allocated or mapped range.";
-						throw RuntimeException(stream.str(), context.PC, instr);
+						globalMemoryError(source, 
+							elementSize * vectorSize, kernel, context, instr);
 					}
+					#endif
 				}
 				break;
 			case PTXInstruction::Shared:

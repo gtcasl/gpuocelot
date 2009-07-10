@@ -1879,7 +1879,9 @@ namespace cuda
 	
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		mapping->second = glMapBuffer( GL_ARRAY_BUFFER, GL_READ_WRITE );
-		context.registerExternal(mapping->second, 1);
+		int bytes = 0;
+		glGetBufferParameteriv( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes );
+		context.registerExternal(mapping->second, bytes);
 		
 		GLenum error = glGetError();
 		if( error != GL_NO_ERROR )
@@ -1890,7 +1892,8 @@ namespace cuda
 		}
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		report("Buffer " << buffer << " mapped to address " << mapping->second);
+		report("Buffer " << buffer << ", size " << bytes 
+			<< ", mapped to address " << mapping->second);
 		return mapping->second;
 	}
 

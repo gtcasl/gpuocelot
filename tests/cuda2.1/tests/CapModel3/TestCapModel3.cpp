@@ -123,7 +123,7 @@ int main( int argc, char** argv )
 		"Debt parameter." );
 	parser.parse( "-c", "--debtRate", test.parameters.debtRate, 0.0, 
 		"Debt rate." );
-	parser.parse( "-c", "-optionExpense", test.parameters.optionExpense, 3000, 
+	parser.parse( "-c", "--optionExpense", test.parameters.optionExpense, 3000, 
 		"Option expense." );
 	parser.parse( "-c", "--optionInflation", test.parameters.optionInflation, 0.05, 
 		"Option inflation." );

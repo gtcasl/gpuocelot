@@ -21,6 +21,7 @@
 #include <string>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/Texture.h>
@@ -58,6 +59,8 @@ namespace executive {
 			The executive keeps a list of allocations for each device. This 
 			record indicates which device the allocation belongs to, its ISA, 
 			its size, and a pointer to the first usable byte. 
+			
+			This assumes that the address space is global device memory.
 		*/
 		class MemoryAllocation {
 		public:
@@ -67,9 +70,6 @@ namespace executive {
 			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
 			void *ptr; /*! \brief A pointer to the base of the allocation */
 			bool external; /*! \brief Is the memory owned by the exective? */
-			ir::PTXInstruction::AddressSpace space;
-			std::string identifier;
-			std::string module;
 
 		public:
 			MemoryAllocation(ir::Instruction::Architecture, int, ir::PTXU64, 
@@ -78,6 +78,21 @@ namespace executive {
 			MemoryAllocation();
 			~MemoryAllocation();
 		
+		};
+		
+		/*! \brief Set of strings */
+		typedef std::unordered_set< std::string > StringSet;
+		
+		/*!
+			\brief A global allocation valid on all devices.
+		*/
+		class GlobalMemoryAllocation {
+		public:
+			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
+			void *ptr; /*! \brief A pointer to the base of the allocation */
+			std::string identifier;
+			StringSet modules;
+			ir::PTXInstruction::AddressSpace space;
 		};
 		
 		/*!
@@ -97,13 +112,21 @@ namespace executive {
 			\brief Map from module name to object
 		*/
 		typedef std::unordered_map<std::string, ir::Module *> ModuleMap;
+		
+		/*! \brief Map from pointer to global allocations */
+		typedef std::map< char*, GlobalMemoryAllocation > GlobalAllocationMap;
 	
 	public:
 		/*! \brief Return a string of the memory allocations around a pointer */
 		static std::string nearbyAllocationsToString( 
-			const AllocationMap& allocations, const void* pointer, 
+			const Executive& executive, const void* pointer, 
 			unsigned int above = 5, unsigned int below = 5 );
-	
+		
+		/*! \brief Return a string of the global variables around a pointer */
+		static std::string nearbyGlobalsToString( 
+			const Executive& executive, const void* pointer, 
+			unsigned int above = 5, unsigned int below = 5 );
+				
 	public:
 		Executive();
 		~Executive();
@@ -259,14 +282,16 @@ namespace executive {
 		void memset(void* dest, int value, size_t bytes);
 
 		/*! 
-			\brief Determine if a global memory access is valid 
+			\brief Determine if a memory access is valid 
+		
+			This should search device specific allocations as well as 
+			global allocations.
 		
 			\param device The device doing the access
 			\param base Pointer to the base of the access
 			\param size The size of the access
 		*/
-		bool checkGlobalMemoryAccess(int device, 
-			const void* base, size_t size) const;
+		bool checkMemoryAccess(int device, const void* base, size_t size) const;
 
 		/*!
 			Given a pointer, determine the allocated block and 
@@ -299,10 +324,13 @@ namespace executive {
 		ModuleMap modules;
 
 		/*!
-			A vector indexable by device GUID of memory allocations on that 
+			A map indexable by device GUID of memory allocations on that 
 			device. For a given device, these are assumed to be non-overlapping.
 		*/
 		DeviceAllocationMap memoryAllocations;
+		
+		/*! \brief A map of registered global memory allocations */
+		GlobalAllocationMap globalAllocations;
 		
 	protected:
 		void enumerateDevices();

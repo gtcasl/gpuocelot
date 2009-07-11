@@ -18,17 +18,25 @@ executive::RuntimeException::RuntimeException( ):
 }
 
 executive::RuntimeException::RuntimeException(std::string msg): 
-	message(msg), PC(-1) {
+	message(msg), PC(-1), thread(0), cta(0) {
 
 }
 
-executive::RuntimeException::RuntimeException(std::string msg, ir::PTXInstruction instr):
-	message(msg), PC(0), instruction(instr) {
+executive::RuntimeException::RuntimeException(std::string msg, 
+	ir::PTXInstruction instr):
+	message(msg), PC(0), thread(0), cta(0), instruction(instr) {
 
 }
 
-executive::RuntimeException::RuntimeException(std::string msg, int pc, ir::PTXInstruction instr): 
-	message(msg), PC(pc), instruction(instr) {
+executive::RuntimeException::RuntimeException(std::string msg, 
+	int pc, ir::PTXInstruction instr): 
+	message(msg), PC(pc), thread(0), cta(0), instruction(instr) {
+
+}
+
+executive::RuntimeException::RuntimeException(std::string msg, int pc, int t, 
+	int c, ir::PTXInstruction instr): 
+	message(msg), PC(pc), thread(t), cta(c), instruction(instr) {
 
 }
 
@@ -37,7 +45,10 @@ std::string executive::RuntimeException::toString() const {
 	string error = message;
 	if (PC >= 0) {
 		stringstream ss;
-		ss << "[" << PC << "] " << instruction.toString() << " - " << message;
+		ss << "[PC " << PC << "] ";
+		ss << "[thread " << thread << "] ";
+		ss << "[cta " << cta << "] ";
+		ss << instruction.toString() << " - " << message;
 		error = ss.str();
 	}
 	return error;

@@ -390,6 +390,9 @@ namespace cuda
 			*/
 			static unsigned int bytes( const cudaChannelFormatDesc& desc );
 			
+			/*! \brief Convert an error message to an ocelot error message */
+			static std::string formatError( const std::string& message );
+			
 		public:
 		
 			/*!

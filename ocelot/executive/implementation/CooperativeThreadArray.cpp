@@ -2897,27 +2897,22 @@ void executive::CooperativeThreadArray::vectorLoad(int threadID,
 	}
 }
 
+#if (CHECK_GLOBAL_ACCESSES==1)
 static void globalMemoryError(const void* pointer, size_t size, 
 	const executive::EmulatedKernel* kernel, executive::CTAContext &context, 
-	const PTXInstruction &instr ) {
+	const PTXInstruction &instr, int thread, int cta ) {
 	std::stringstream stream;
 	stream << "Global memory address " 
 		<< (void*)((char*)pointer) << " of size " << size
 		<< " is out of any allocated or mapped range." << std::endl;
 	stream << "Memory Map:" << std::endl;
-	executive::Executive::DeviceAllocationMap::const_iterator 
-		allocations = kernel->context->memoryAllocations.find(
-		kernel->context->getSelected());
-	if(allocations != kernel->context->memoryAllocations.end()) {
-		stream << executive::Executive::nearbyAllocationsToString(
-			allocations->second, pointer);
-	}
-	else {
-		stream << "No Allocations" << std::endl;
-	}
+	stream << executive::Executive::nearbyAllocationsToString(
+		*kernel->context, pointer);
 	
-	throw executive::RuntimeException(stream.str(), context.PC, instr);	
+	throw executive::RuntimeException(stream.str(), context.PC, 
+		thread, cta, instr);	
 }
+#endif
 
 /*!
 
@@ -2996,7 +2991,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->ParameterMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+							threadID, blockId.x, instr);
 					}
 					source += (PTXU64) kernel->ParameterMemory;
 				}
@@ -3010,7 +3006,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->ConstMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+							threadID, blockId.x, instr);
 					}
 					source += (PTXU64) kernel->ConstMemory;				
 				}
@@ -3018,10 +3015,11 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			case PTXInstruction::Global:
 				{	
 					#if (CHECK_GLOBAL_ACCESSES==1)
-					if (!kernel->checkGlobalMemoryAccess(source,
+					if (!kernel->checkMemoryAccess(source,
 						elementSize * vectorSize)) {
 						globalMemoryError(source, 
-							elementSize * vectorSize, kernel, context, instr);
+							elementSize * vectorSize, kernel, context, instr, 
+								threadID, blockId.x );
 					}
 					#endif
 				}
@@ -3036,7 +3034,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->SharedMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+							threadID, blockId.x, instr);
 					}
 					source += (PTXU64) SharedMemory;
 				}
@@ -3050,7 +3049,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->LocalMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+							threadID, blockId.x, instr);
 					}
 					source += (PTXU64) LocalMemory 
 						+ threadID * kernel->LocalMemorySize;
@@ -6078,7 +6078,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->ParameterMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+								threadID, blockId.x, instr);
 					}					
 					source += (PTXU64) kernel->ParameterMemory;
 				}
@@ -6086,10 +6087,11 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 			case PTXInstruction::Global:			
 				{	
 					#if (CHECK_GLOBAL_ACCESSES==1)
-					if (!kernel->checkGlobalMemoryAccess(source,
+					if (!kernel->checkMemoryAccess(source,
 						elementSize * vectorSize)) {
 						globalMemoryError(source, 
-							elementSize * vectorSize, kernel, context, instr);
+							elementSize * vectorSize, kernel, context, instr, 
+							threadID, blockId.x);
 					}
 					#endif
 				}
@@ -6104,7 +6106,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->SharedMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+							threadID, blockId.x, instr);
 					}					
 					source += (PTXU64) SharedMemory;
 				}
@@ -6118,7 +6121,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->LocalMemorySize;
-						throw RuntimeException(stream.str(), context.PC, instr);
+						throw RuntimeException(stream.str(), context.PC, 
+							threadID, blockId.x, instr);
 					}					
 					source += (PTXU64) LocalMemory 
 						+ kernel->LocalMemorySize * threadID;

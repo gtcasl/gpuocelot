@@ -95,8 +95,7 @@ namespace cuda
 					<< "\" failed to translate kernel \"" 
 					<< kernel->second.kernel << "\"";
 					
-				throw hydrazine::Exception( stream.str(), 5 );
-			
+				throw hydrazine::Exception( formatError(stream.str()), 5 );			
 			}
 		
 		}
@@ -211,7 +210,21 @@ namespace cuda
 		}
 		return ir::Texture::Linear;
 	}
-
+	
+	std::string CudaRuntime::formatError( const std::string& message )
+	{
+		std::string result = "==Ocelot== ";
+		for(std::string::const_iterator mi = message.begin(); 
+			mi != message.end(); ++mi)
+		{
+			result.push_back(*mi);
+			if(*mi == '\n')
+			{
+				result.append("==Ocelot== ");
+			}
+		}
+		return result;
+	}
 
 	unsigned int CudaRuntime::bytes( const cudaChannelFormatDesc& desc )
 	{
@@ -286,8 +299,8 @@ namespace cuda
 			fi != _memory.end(); ++fi )
 		{
 	
-			std::cerr << "==Ocelot Runtime== Pinned Memory Leak Detected\n";
-			std::cerr << "==Ocelot Runtime==  " << fi->second.size 
+			std::cerr << "==Ocelot== Pinned Memory Leak Detected\n";
+			std::cerr << "==Ocelot==  " << fi->second.size 
 				<< " bytes at " << (int*)fi->first << " never freed.\n"; 
 			delete[] fi->first;
 	
@@ -296,8 +309,8 @@ namespace cuda
 		for( ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end();	++array )
 		{	
-			std::cerr << "==Ocelot Runtime== Array Memory Leak Detected\n";
-			std::cerr << "==Ocelot Runtime==  " << array->second.bytes() 
+			std::cerr << "==Ocelot== Array Memory Leak Detected\n";
+			std::cerr << "==Ocelot==  " << array->second.bytes() 
 				<<" bytes at " << array->second.array << " never freed.\n"; 
 			context.free( array->second.array );
 		}
@@ -306,14 +319,14 @@ namespace cuda
 			buffer != _openGLBuffers.end(); ++buffer )
 		{
 		
-			std::cerr << "==Ocelot Runtime== Open GL Buffer Error.\n";
-			std::cerr << "==Ocelot Runtime==  Never unregistered buffer " 
+			std::cerr << "==Ocelot== Open GL Buffer Error.\n";
+			std::cerr << "==Ocelot==  Never unregistered buffer " 
 				<< buffer->first << "\n";
 				
 			if( buffer->second != 0 )
 			{
 			
-				std::cerr << "==Ocelot Runtime==  still mapped to " 
+				std::cerr << "==Ocelot==  still mapped to " 
 					<< buffer->second << "\n";		
 		
 			}
@@ -367,7 +380,8 @@ namespace cuda
 		if( !context.select( thread->second.guid ) )
 		{
 		
-			throw hydrazine::Exception( "Failed to select ocelot device.", 
+			throw hydrazine::Exception( 
+				formatError( "Failed to select ocelot device." ), 
 				thread->second.guid );
 		
 		}
@@ -415,7 +429,8 @@ namespace cuda
 		if( !pass )
 		{
 		
-			throw hydrazine::Exception( "Tried to set to invalid device.", 
+			throw hydrazine::Exception( 
+				formatError( "Tried to set to invalid device." ), 
 				cudaErrorInvalidDevice );
 		
 		}
@@ -605,8 +620,9 @@ namespace cuda
 			if( bi->second.threads.count( id ) != 0 )
 			{
 			
-				throw hydrazine::Exception( "Fat Binary \"" + name->first + 
-					"\" already registered.", 2 );
+				throw hydrazine::Exception( 
+					formatError( "Fat Binary \"" + name->first + 
+					"\" already registered." ), 2 );
 			
 			}
 		
@@ -627,9 +643,9 @@ namespace cuda
 			}
 			else
 			{
-				throw hydrazine::Exception( "Fat Binary \"" 
+				throw hydrazine::Exception( formatError( "Fat Binary \"" 
 					+ std::string(binary.ident) + 
-					"\" contains no PTX.", 3 );
+					"\" contains no PTX." ), 3 );
 			}
 			
 			_binaryNames.insert( std::make_pair( binary.ident, _handle ) );
@@ -658,8 +674,9 @@ namespace cuda
 		
 			std::stringstream stream;
 			stream << handle;
-			throw hydrazine::Exception( "Invalid fat binary handle\"" + 
-				stream.str(), 3 );
+			throw hydrazine::Exception(
+				formatError( "Invalid fat binary handle\"" + stream.str() 
+				+ "\""), 3 );
 		
 		}
 
@@ -673,7 +690,7 @@ namespace cuda
 			stream << "Thread " << pthread_self() 
 				<< " never registered fat binary \"" 
 				<< binary->second.binary.ident << "\"";
-			throw hydrazine::Exception( stream.str(), 4 );
+			throw hydrazine::Exception( formatError( stream.str() ), 4 );
 		
 		}
 		
@@ -732,7 +749,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxGridSize[0] << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 
@@ -744,7 +761,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxGridSize[1] << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 
@@ -756,7 +773,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxGridSize[2] << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 
@@ -768,7 +785,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxThreadsDim[0] << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 
@@ -780,7 +797,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxThreadsDim[1] << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 
@@ -792,7 +809,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxThreadsDim[2] << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 
@@ -804,7 +821,7 @@ namespace cuda
 				<< " is greater than max " 
 				<< context.devices[ 
 				context.getSelected() ].maxThreadsPerBlock << ".";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidConfiguration );
 		}
 		
@@ -836,20 +853,16 @@ namespace cuda
 			--previous;
 		
 			if( previous->first + previous->second.size() > offset )
-			{
-			
+			{			
 				report( " Removed parameter at offset " << previous->first );
 				thread->second.parameters.erase( previous );
 				parameter = thread->second.parameters.lower_bound( offset );
 				previous = parameter;
 				--previous;
-			
 			}
 			else
 			{
-			
 				break;
-			
 			}
 		
 		}
@@ -865,27 +878,21 @@ namespace cuda
 			
 				if( next->first <= offset + size )
 				{
-				
 					report( " Removed parameter at offset " << next->first );
 					thread->second.parameters.erase( next );
 					parameter = thread->second.parameters.lower_bound( offset );
 
 					if( parameter == thread->second.parameters.end() )
 					{
-					
 						break;
-					
 					}
 
 					next = parameter;
 					++next;
-					
 				}
 				else
 				{
-				
 					break;
-				
 				}
 			
 			}
@@ -903,7 +910,8 @@ namespace cuda
 		SymbolMap::iterator kernel = _symbols.find( symbol );
 		if( kernel == _symbols.end() )
 		{
-			throw hydrazine::Exception( "Could not find kernel function name.", 
+			throw hydrazine::Exception( 
+				formatError( "Could not find kernel function name." ), 
 				cudaErrorInvalidDeviceFunction );
 		}
 		
@@ -933,7 +941,7 @@ namespace cuda
 				std::stringstream stream;
 				stream << "Kernel type " << context.getSelectedISA() 
 					<< " not supported.";
-				throw hydrazine::Exception( stream.str(), 6 );
+				throw hydrazine::Exception( formatError( stream.str() ), 6 );
 			}
 		
 		}
@@ -953,7 +961,8 @@ namespace cuda
 			
 		if(_symbols.count(symbol) != 0)
 		{
-			throw hydrazine::Exception("Registered symbol " + name + " twice.");		
+			throw hydrazine::Exception( 
+				formatError( "Registered symbol " + name + " twice." ) );		
 		}
 		
 		_symbols.insert( std::make_pair( symbol, kernel ) );
@@ -1067,7 +1076,8 @@ namespace cuda
 							<< ki->getSize() 
 							<< " does not match specified size " 
 							<< pi->second.size();
-						throw hydrazine::Exception( stream.str() );
+						throw hydrazine::Exception( formatError( 
+							stream.str() ) );
 					
 					}
 					
@@ -1092,38 +1102,30 @@ namespace cuda
 				
 				if( ki != emulated->parameters.end() )
 				{
-				
 					std::stringstream stream;
 					stream << "Parameters : ";
 					
 					for( ; ki != emulated->parameters.end(); ++ki )
 					{
-					
 						stream << ki->name << " ";
-					
 					}
 					
 					stream << "not set up for kernel " << emulated->name <<".";
-					throw hydrazine::Exception( stream.str() );					
-				
+					throw hydrazine::Exception( formatError( stream.str() ) );		
 				}
 
 				if( pi != thread->second.parameters.end() )
 				{
-				
 					std::stringstream stream;
 					stream << "Extra parameters added at offsets : ";
 					
 					for( ; pi != thread->second.parameters.end(); ++pi )
 					{
-					
 						stream << pi->first << " ";
-					
 					}
 					
 					stream << "for kernel " << emulated->name <<".";
-					throw hydrazine::Exception( stream.str() );					
-				
+					throw hydrazine::Exception( formatError( stream.str() ) );		
 				}
 
 				#if CUDA_GENERATE_TRACE == 1
@@ -1153,17 +1155,16 @@ namespace cuda
 				#if CATCH_RUNTIME_EXCEPTIONS == 1
 				catch( const executive::RuntimeException& e )
 				{
-				
 					#if CUDA_VERBOSE == 1
 					std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
 						<< emulated->name 
-						<< "\" with exception: \n==Ocelot==\t";
-					std::cerr << e.toString() << "\n" << std::flush;
+						<< "\" with exception: \n";
+					std::cerr << formatError( e.toString() ) 
+						<< "\n" << std::flush;
 					#endif
 					thread->second.lastError = cudaErrorLaunchFailure;
 					emulated->SharedMemorySize = staticSharedSize;
 					thread->second.parameters.clear();
-									
 				}
 				#else
 				catch( int nothing )
@@ -1189,7 +1190,7 @@ namespace cuda
 				std::stringstream stream;
 				stream << "Kernel type " << context.getSelectedISA() 
 					<< " not supported.";
-				throw hydrazine::Exception( stream.str(), 6 );
+				throw hydrazine::Exception( formatError( stream.str() ), 6 );
 			
 			}
 		
@@ -1237,7 +1238,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid lookup, address " << pointer 
 				<< " not allocated in host pinned memory.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 	
 		if( !block->second.mapped )
@@ -1245,7 +1247,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid lookup, address " << pointer 
 				<< " is not mapped from host to device memory.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		return block->second.base;	
@@ -1261,7 +1264,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid free, address " << pointer 
 				<< " not allocated in host pinned memory.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		if( block->second.owner != pthread_self() && !block->second.portable )
@@ -1269,7 +1273,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid free, address " << pointer 
 				<< " allocated by another thread and not delcared portable.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		if( block->second.mapped )
@@ -1310,7 +1315,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid operation, " << pointer
 				<< " is not a device array.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		if( height >= array->second.height )
@@ -1319,7 +1325,8 @@ namespace cuda
 			stream << "For array " << pointer 
 				<< " height index " << height 
 				<< " is beyong limit " << array->second.height;
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		if( width >= array->second.width )
@@ -1328,7 +1335,8 @@ namespace cuda
 			stream << "For array " << pointer 
 				<< " width index " << width 
 				<< " is beyong limit " << array->second.width;
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		if( length >= array->second.length )
@@ -1337,7 +1345,8 @@ namespace cuda
 			stream << "For array " << pointer 
 				<< " length index " << length 
 				<< " is beyong limit " << array->second.length;
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		unsigned int wFactor = 1;
@@ -1362,7 +1371,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid operation, " << pointer
 				<< " is not a device array.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 		}
 		
 		return array->second.channel;
@@ -1385,9 +1395,8 @@ namespace cuda
 			}
 		}
 		
-		throw hydrazine::Exception( "Invalid texture " + name, 
+		throw hydrazine::Exception( formatError( "Invalid texture " + name ), 
 					cudaErrorInvalidTexture );
-	
 	}
 	
 	void CudaRuntime::rebind( const textureReference *texref, 
@@ -1399,13 +1408,11 @@ namespace cuda
 		
 		if( texture == _textures.end() )
 		{
-					
 			std::stringstream stream;
 			stream << "Invalid bind texture to array, " << texref 
 				<< " is not a registered texture.";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidTexture );
-	
 		}
 	
 		try
@@ -1450,27 +1457,23 @@ namespace cuda
 			const_cast< cudaArray* >( pointer ) );
 
 		if( array == _arrays.end() )
-		{
-					
+		{	
 			std::stringstream stream;
 			stream << "Invalid bind texture to array, " << pointer 
 				<< " is not a device array.";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidDevicePointer );
-	
 		}
 		
 		TextureMap::iterator texture = _textures.find( texref );
 		
 		if( texture == _textures.end() )
 		{
-					
 			std::stringstream stream;
 			stream << "Invalid bind texture to array, " << texref 
 				<< " is not a registered texture.";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidTexture );
-	
 		}
 		
 		try
@@ -1493,14 +1496,14 @@ namespace cuda
 			{
 				std::stringstream stream;
 				stream << " " << texref;
-				e.message += stream.str();
+				e.message += formatError( stream.str() );
 				e.code = cudaErrorInvalidTexture;
 			}
 			else if( e.code == 2 )
 			{
 				std::stringstream stream;
 				stream << " " << pointer;
-				e.message += stream.str();
+				e.message += formatError( stream.str() );
 				e.code = cudaErrorInvalidDevicePointer;			
 			}
 		
@@ -1516,13 +1519,11 @@ namespace cuda
 		
 		if( texture == _textures.end() )
 		{
-					
 			std::stringstream stream;
 			stream << "Invalid bind texture to array, " << texref 
 				<< " is not a registered texture.";
-			throw hydrazine::Exception( stream.str(), 
+			throw hydrazine::Exception( formatError( stream.str() ), 
 				cudaErrorInvalidTexture );
-	
 		}
 		
 		texture->second.bound = false;
@@ -1544,7 +1545,7 @@ namespace cuda
 			}
 		}
 		
-		throw hydrazine::Exception( "Invalid Symbol " + name, 
+		throw hydrazine::Exception( formatError( "Invalid Symbol " + name ), 
 			cudaErrorInvalidSymbol );			
 	}
 
@@ -1564,7 +1565,8 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Invalid free, " << pointer 
 				<< " is not a device array.";
-			throw hydrazine::Exception( stream.str(), cudaErrorInvalidValue );
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
 	
 		}
 		
@@ -1594,7 +1596,8 @@ namespace cuda
 			{
 			
 				throw hydrazine::Exception( 
-					"Two globals regstered with the same name " + name );
+					formatError( "Two globals regstered with the same name " 
+					+ name ) );
 			
 			}
 		
@@ -1628,19 +1631,15 @@ namespace cuda
 		GlobalMap::iterator global = binary->second.globals.find( name );
 		if( global != binary->second.globals.end() )
 		{
-		
 			if( global->second != (void*) hostVar )
 			{
-			
 				throw hydrazine::Exception( 
-					"Two globals regstered with the same name " + name );
-			
+					formatError( "Two globals regstered with the same name " 
+					+ name ) );
 			}
-		
 		}
 		else
 		{
-		
 			assert( _textures.count( hostVar ) == 0 );
 			Texture t;
 			t.name = name;
@@ -1660,7 +1659,6 @@ namespace cuda
 				
 			context.registerTexture( texture, name, 
 				binary->second.binary.ident );
-		
 		}
 	
 	}
@@ -1685,7 +1683,6 @@ namespace cuda
 	
 	cudaStream_t CudaRuntime::createStream()
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1701,7 +1698,6 @@ namespace cuda
 			std::make_pair( thread->second.nextStream++, stream ) );
 			
 		return stream.handle;
-	
 	}
 
 	void CudaRuntime::destroyStream( cudaStream_t handle )
@@ -1716,9 +1712,8 @@ namespace cuda
 		
 		if( stream == thread->second.streams.end() ) 
 		{
-		
-			throw hydrazine::Exception( "Invalid stream handle.", handle );
-		
+			throw hydrazine::Exception( formatError( "Invalid stream handle." ), 
+			handle );
 		}
 		
 		thread->second.streams.erase( stream );
@@ -1727,26 +1722,21 @@ namespace cuda
 
 	bool CudaRuntime::streamValid( cudaStream_t handle ) const
 	{
-	
 		pthread_t id = pthread_self();
 
 		if( handle == 0 )
 		{
-		
 			return true;
-		
 		}
 		
 		ThreadMap::const_iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
 		
 		return ( thread->second.streams.count( handle ) != 0 ); 
-		
 	}
 
 	cudaEvent_t CudaRuntime::createEvent()
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1761,13 +1751,11 @@ namespace cuda
 		thread->second.events.insert( 
 			std::make_pair( thread->second.nextEvent++, event ) );
 			
-		return event.handle;	
-	
+		return event.handle;
 	}
 
 	void CudaRuntime::destroyEvent( cudaEvent_t handle )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1780,30 +1768,25 @@ namespace cuda
 		
 		if( event == thread->second.events.end() ) 
 		{
-		
-			throw hydrazine::Exception( "Invalid event handle.", handle );
-		
+			throw hydrazine::Exception( formatError( "Invalid event handle." ), 
+				handle );
 		}
 		
 		thread->second.events.erase( event );
-	
 	}
 
 	bool CudaRuntime::eventValid( cudaEvent_t handle ) const
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::const_iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
 		
-		return ( thread->second.events.count( handle ) != 0 ); 		
-	
+		return ( thread->second.events.count( handle ) != 0 ); 
 	}
 
 	void CudaRuntime::eventRecord( cudaEvent_t handle, cudaStream_t stream )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1813,18 +1796,15 @@ namespace cuda
 		
 		if( event == thread->second.events.end() ) 
 		{
-		
-			throw hydrazine::Exception( "Invalid event handle.", handle );
-		
+			throw hydrazine::Exception( formatError( "Invalid event handle." ),
+				handle );
 		}
 		
 		event->second.timer.stop();
-	
 	}
 	
 	double CudaRuntime::eventTime( cudaEvent_t _start, cudaEvent_t _end )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1834,18 +1814,16 @@ namespace cuda
 		
 		if( start == thread->second.events.end() ) 
 		{
-		
-			throw hydrazine::Exception( "Invalid event handle.", _start );
-		
+			throw hydrazine::Exception( formatError( "Invalid event handle."), 
+				_start );
 		}
 		
 		EventMap::iterator end = thread->second.events.find( _end );
 		
 		if( end == thread->second.events.end() ) 
 		{
-		
-			throw hydrazine::Exception( "Invalid event handle.", _end );
-		
+			throw hydrazine::Exception( formatError( "Invalid event handle."), 
+				_end );
 		}
 		
 		return ( end->second.timer.absolute() - 
@@ -1876,7 +1854,8 @@ namespace cuda
 		OpenGLBufferMap::iterator mapping = _openGLBuffers.find( buffer );
 		if( mapping == _openGLBuffers.end() )
 		{
-			throw hydrazine::Exception("Buffer is not registered.", 
+			throw hydrazine::Exception( 
+				formatError( "Buffer is not registered." ), 
 				cudaErrorMapBufferObjectFailed );		
 		}
 	
@@ -1890,7 +1869,7 @@ namespace cuda
 		if( error != GL_NO_ERROR )
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			throw hydrazine::Exception("Opengl call failed.", 
+			throw hydrazine::Exception(formatError( "Opengl call failed." ), 
 				cudaErrorMapBufferObjectFailed );
 		}
 		
@@ -1905,7 +1884,8 @@ namespace cuda
 		OpenGLBufferMap::iterator mapping = _openGLBuffers.find( buffer );
 		if( mapping == _openGLBuffers.end() )
 		{
-			throw hydrazine::Exception("Buffer is not registered.", 
+			throw hydrazine::Exception( 
+				formatError( "Buffer is not registered." ), 
 				cudaErrorInvalidDevicePointer );		
 		}
 
@@ -1915,7 +1895,7 @@ namespace cuda
 		if( !glUnmapBuffer( GL_ARRAY_BUFFER ) )
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			throw hydrazine::Exception("Opengl call failed.", 
+			throw hydrazine::Exception( formatError( "Opengl call failed." ), 
 				cudaErrorMapBufferObjectFailed );
 		}
 		

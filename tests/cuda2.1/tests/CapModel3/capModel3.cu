@@ -19,7 +19,7 @@
 #include "macros.h"
 #include <stdint.h>
 
-#define MAX_THREADS 512
+#define MAX_THREADS 64
 #define MAX_CTAS 65535
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1458,7 +1458,8 @@ void capModel3Cuda( CudaInvariants* invariants, CudaResult* results )
 		0, cudaMemcpyHostToDevice ) );	
 */
 	cudaDeviceProp properties;
-	hydrazine::cudaCheck( cudaGetDeviceProperties( &properties, invariants->device ) );
+	hydrazine::cudaCheck( cudaGetDeviceProperties( &properties, 
+		invariants->device ) );
 
 	unsigned int totalMemory = properties.totalGlobalMem;
 	unsigned int maxThreads = totalMemory - invariantSize( invariants, 0 );

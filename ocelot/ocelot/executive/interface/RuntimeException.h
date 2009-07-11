@@ -26,6 +26,7 @@ namespace executive {
 		RuntimeException(std::string);
 		RuntimeException(std::string, ir::PTXInstruction);
 		RuntimeException(std::string, int, ir::PTXInstruction);
+		RuntimeException(std::string, int, int, int, ir::PTXInstruction);
 		
 		std::string toString() const;
 
@@ -38,6 +39,12 @@ namespace executive {
 			PC of offending instruction
 		*/
 		int PC;
+
+		/*! \brief offending thread */
+		int thread;
+		
+		/*! \brief offending cta */
+		int cta;
 
 		/*!
 			offending PTX instruction

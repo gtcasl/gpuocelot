@@ -224,7 +224,7 @@ namespace executive {
 
 	public:
 		/*! \brief Check to see if a memory access is valid */
-		bool checkGlobalMemoryAccess(const void* base, size_t size) const;
+		bool checkMemoryAccess(const void* base, size_t size) const;
 	
 	public:
 		/*!

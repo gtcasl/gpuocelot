@@ -85,16 +85,17 @@ __global__ void generateSpectrumKernel(float2* h0, float2 *ht, unsigned int widt
     float k_len = sqrtf(k.x*k.x + k.y*k.y);
     float w = sqrtf(9.81f * k_len);
 
-    float2 h0_k = h0[i];
-    float2 h0_mk = h0[(((height-1)-y)*width)+x];
+	if ((x < width) && (y < height)) {
+		float2 h0_k = h0[i];
+		float2 h0_mk = h0[(((height-1)-y)*width)+x];
 
-    float2 h_tilda = complex_add( complex_mult(h0_k, complex_exp(w * t)),
-                                  complex_mult(conjugate(h0_mk), complex_exp(-w * t)) );
+		float2 h_tilda = complex_add( complex_mult(h0_k, complex_exp(w * t)),
+		                              complex_mult(conjugate(h0_mk), complex_exp(-w * t)) );
 
-    // output frequency-space complex values
-    if ((x < width) && (y < height)) {
-        ht[i] = h_tilda;
-    }
+		// output frequency-space complex values
+		
+		    ht[i] = h_tilda;
+	}
 }
 
 

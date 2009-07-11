@@ -105,7 +105,7 @@ int main( int argc, char** argv )
 	test.useGpu = !test.useGpu;
 	parser.parse( "-d", "--device", test.device, 0,
 		"The id of the gpu to use." );
-	parser.parse( "-s", "--simulations", test.parameters.numberOfSimulations, 10000, 
+	parser.parse( "-s", "--simulations", test.parameters.numberOfSimulations, 1000, 
 		"Number of monte carlo simulations to run." );
 	parser.parse( "-c", "--month", test.parameters.date.month, 9, 
 		"Starting month." );

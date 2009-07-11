@@ -1807,6 +1807,9 @@ namespace sim
 		
 		}
 		
+		report( "Simulating " << chunks << " chunks of size " 
+			<< _parameters.chunkSize );
+		
 		// TODO replace with parallel gpu code
 		for( DataVector::iterator fi = data.begin(); fi != data.end(); ++fi )
 		{

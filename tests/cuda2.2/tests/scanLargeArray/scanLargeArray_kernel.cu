@@ -257,7 +257,7 @@ __global__ void uniformAdd(float *g_data,
     
     // note two adds per thread
     g_data[address]              += uni;
-    g_data[address + blockDim.x] += (threadIdx.x + blockDim.x < n) * uni;
+    if(threadIdx.x + blockDim.x < n) g_data[address + blockDim.x] += uni;
 }
 
 

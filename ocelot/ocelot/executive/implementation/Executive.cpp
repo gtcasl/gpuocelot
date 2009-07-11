@@ -26,51 +26,125 @@
 
 #define REPORT_BASE 0
 
-std::string executive::Executive::nearbyAllocationsToString( 
-	const AllocationMap& allocations, const void* ptr, unsigned int above,
+std::string executive::Executive::nearbyGlobalsToString( 
+	const Executive& executive, const void* ptr, unsigned int above,
 	unsigned int below ) {
-	if (allocations.empty()) return "No Allocations\n";
 	std::stringstream stream;
-	AllocationMap::const_iterator closest = allocations.upper_bound((char*)ptr);
-	if (closest != allocations.begin()) --closest;
+	stream << " Nearby Global Variable Allocations" << std::endl;
+	if (executive.globalAllocations.empty()) {
+		stream << "  No Allocations." << std::endl;
+		return stream.str();
+	}
 	
-	AllocationMap::const_iterator bi = closest;
+	GlobalAllocationMap::const_iterator closest 
+		= executive.globalAllocations.upper_bound((char*)ptr);
+	if (closest != executive.globalAllocations.begin()) --closest;
+	
+	GlobalAllocationMap::const_iterator bi = closest;
 	for (unsigned int b = 0; b < below; ++b, --bi) {
-		if (bi == allocations.begin()) break;
+		if (bi == executive.globalAllocations.begin()) break;
 	}
 
 	for ( ; bi != closest; ++bi ) {
-		stream << "[" << bi->second.ptr << "] - [" 
+		stream << "  [" << bi->second.ptr << "] - [" 
 			<< ((void*)((char*)bi->second.ptr + bi->second.size)) << "]" 
-			<< " (" << ir::PTXInstruction::toString(bi->second.space) << ")"
+			<< " (" << bi->second.size << " bytes) (" 
+			<< ir::PTXInstruction::toString(bi->second.space) << ")"
 			<< std::endl;
 	}
 
-	stream << "[" << closest->second.ptr << "] - ";
+	stream << "  [" << closest->second.ptr << "] - ";
 	
 	bool inRange = (char*)ptr < ((char*)closest->second.ptr 
 		+ closest->second.size) && ((char*)ptr >= (char*)closest->second.ptr);
 
 	if (inRange) {
-		stream << "****" << ptr << "**** -";
+		stream << "   ****" << ptr << "**** -";
 	}
 	
 	stream << " [" << ((void*)((char*)closest->second.ptr 
 		+ closest->second.size)) << "]" 
-		<< " (" << ir::PTXInstruction::toString(closest->second.space) << ")"
+		<< " (" << closest->second.size << " bytes) (" 
+		<< ir::PTXInstruction::toString(closest->second.space) << ")"
 		<< std::endl;
 	
 	if (!inRange) {
-		stream << "****" << ptr << "****" << std::endl;
+		stream << "   ****" << ptr << "****" << std::endl;
+	}
+	
+	GlobalAllocationMap::const_iterator ai = closest;
+	if( ai != executive.globalAllocations.end() ) ++ai;
+
+	for ( unsigned int a = 0; a < above 
+		&& ai != executive.globalAllocations.end(); ++ai, ++a) {
+		stream << "  [" << ai->second.ptr << "] - [" 
+			<< ((void*)((char*)ai->second.ptr + ai->second.size)) << "]" 
+			<< " (" << ai->second.size << " bytes) (" 
+			<< ir::PTXInstruction::toString(ai->second.space) << ")"
+			<< std::endl;		
+	}
+	
+	return stream.str();
+}
+
+std::string executive::Executive::nearbyAllocationsToString( 
+	const Executive& executive, const void* ptr, unsigned int above,
+	unsigned int below ) {
+	std::stringstream stream;
+	stream << "Device " << executive.getSelected() << " : " 
+		<< executive.devices[executive.getSelected()].name << std::endl;
+	stream << nearbyGlobalsToString(executive, ptr, above, below) << std::endl;
+	
+	DeviceAllocationMap::const_iterator allocations 
+		= executive.memoryAllocations.find(executive.getSelected());
+	stream << " Nearby Device Memory Allocations" << std::endl;
+	if (allocations->second.empty()) {
+		stream << "  No Allocations" << std::endl;
+		return stream.str();
+	}
+	
+	AllocationMap::const_iterator closest 
+		= allocations->second.upper_bound((char*)ptr);
+	if (closest != allocations->second.begin()) --closest;
+	
+	AllocationMap::const_iterator bi = closest;
+	for (unsigned int b = 0; b < below; ++b, --bi) {
+		if (bi == allocations->second.begin()) break;
+	}
+
+	for ( ; bi != closest; ++bi ) {
+		stream << "  [" << bi->second.ptr << "] - [" 
+			<< ((void*)((char*)bi->second.ptr + bi->second.size)) 
+			<< "] (" << bi->second.size 
+			<< " bytes) (global)" << std::endl;
+	}
+
+	stream << "  [" << closest->second.ptr << "] - ";
+	
+	bool inRange = (char*)ptr < ((char*)closest->second.ptr 
+		+ closest->second.size) && ((char*)ptr >= (char*)closest->second.ptr);
+
+	if (inRange) {
+		stream << "   ****" << ptr << "**** -";
+	}
+	
+	stream << " [" << ((void*)((char*)closest->second.ptr 
+		+ closest->second.size)) << "] (" << closest->second.size 
+		<< " bytes) (global)" << std::endl;
+	
+	if (!inRange) {
+		stream << "   ****" << ptr << "****" << std::endl;
 	}
 	
 	AllocationMap::const_iterator ai = closest;
+	if( ai != allocations->second.end() ) ++ai;
 	
-	for ( ; ai != allocations.end(); ++ai) {
-		stream << "[" << ai->second.ptr << "] - [" 
-			<< ((void*)((char*)ai->second.ptr + ai->second.size)) << "]" 
-			<< " (" << ir::PTXInstruction::toString(ai->second.space) << ")"
-			<< std::endl;		
+	for ( unsigned int a = 0; a < above 
+		&& ai != allocations->second.end(); ++ai, ++a) {
+		stream << "  [" << ai->second.ptr << "] - [" 
+			<< ((void*)((char*)ai->second.ptr + ai->second.size)) 
+			<< "] (" << ai->second.size 
+			<< " bytes) (global)" << std::endl;		
 	}
 	
 	return stream.str();
@@ -354,15 +428,13 @@ void *executive::Executive::malloc(size_t bytes) {
 			{
 				MemoryAllocation record;
 				record.isa = ir::Instruction::Emulated;
-				record.space = ir::PTXInstruction::Global;
 				record.device = getSelected();
 				record.external = false;
 				record.size = bytes;
-				record.ptr = (void *)(new char[bytes]);	// change this with some other call if need be
+				record.ptr = (void *)(new char[bytes]);
 				memoryAllocations[getSelected()].insert(
 					std::make_pair((char*)record.ptr,record));
-				return record.ptr;
-				
+				return record.ptr;				
 			}
 			break;
 /*
@@ -406,14 +478,12 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 			{
 				MemoryAllocation record;
 				record.isa = ir::Instruction::Emulated;
-				record.space = ir::PTXInstruction::Global;
 				record.device = getSelected();
 				record.size = bytes;
 				record.external = true;
-				record.ptr = pointer;	// change this with some other call if need be
+				record.ptr = pointer;
 				memoryAllocations[getSelected()].insert(
 					std::make_pair((char*)record.ptr,record));
-				
 			}
 			break;
 /*
@@ -495,7 +565,27 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 				}
 				
 				global->second.registered = true;
-				registerExternal(ptr, bytes);
+				
+				if (global->second.statement.directive 
+					!= ir::PTXStatement::Tex) {
+					GlobalAllocationMap::iterator ai 
+						= globalAllocations.find((char*)ptr);
+					if (ai != globalAllocations.end()) {
+						assert(ai->second.modules.count(modulePath) == 0);
+						ai->second.modules.insert(modulePath);
+					}
+					else {
+						GlobalMemoryAllocation allocation;
+						allocation.ptr = ptr;
+						allocation.size = bytes;
+						allocation.space = space;
+						allocation.identifier = name;
+						allocation.modules.insert(modulePath);				
+					
+						globalAllocations.insert(std::make_pair((char*)ptr, 
+							allocation));
+					}
+				}
 			}
 			break;
 /*
@@ -566,7 +656,6 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 				texture->second = t;
 
 				global->second.registered = true;
-
 			}
 			break;
 /*
@@ -653,6 +742,7 @@ void executive::Executive::rebind(const std::string& modulePath,
 				
 				report( " Texture was previously bound to " 
 					<< m_it->second.data );
+									
 				m_it->second.data = target;
 				m_it->second.x = t.x;
 				m_it->second.y = t.y;
@@ -671,8 +761,7 @@ void executive::Executive::rebind(const std::string& modulePath,
 				
 				if( target == 0 ) {
 					m_it->second.type = ir::Texture::Invalid;
-				}
-				
+				}								
 			}
 			break;
 /*
@@ -730,7 +819,7 @@ void executive::Executive::free(void *ptr) {
 				assert((char*)ptr < ((char*)it->second.ptr + it->second.size));
 
 				if (!it->second.external) {
-					delete [] (char *)it->second.ptr;	// if another allocation scheme is required, modify this
+					delete [] (char *)it->second.ptr;
 				}
 				
 				l_it->second.erase(it);
@@ -781,7 +870,6 @@ void executive::Executive::freeGlobal(const std::string& name,
 	switch (getSelectedISA()) {
 		case ir::Instruction::Emulated:
 			{
-
 				report( "Freeing global variable " << name 
 					<< " from emulated kernels in module " << modulePath );
 
@@ -805,7 +893,6 @@ void executive::Executive::freeGlobal(const std::string& name,
 				}
 				
 				global->second.registered = false;
-
 			}
 			break;
 /*
@@ -846,6 +933,44 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 	switch (getSelectedISA()) {
 		case ir::Instruction::Emulated:
 			{
+				if (type == DeviceToDevice) {
+					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid destination " << dest << " (" 
+							<< bytes << " bytes) in device to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, dest, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+					if (!checkMemoryAccess(getSelected(), src, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid source " << src << " (" 
+							<< bytes << " bytes) in device to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, src, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+				}
+				else if (type == HostToDevice) {
+					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid destination " << dest << " (" 
+							<< bytes << " bytes) in host to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, dest, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+				}
+				else if (type == DeviceToHost) {
+					if (!checkMemoryAccess(getSelected(), src, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid source " << src << " ( " 
+							<< bytes << "bytes) in device to host memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, src, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+				}
 				std::memcpy( dest, src, bytes );
 			}
 			break;
@@ -890,6 +1015,14 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 	switch (getSelectedISA()) {
 		case ir::Instruction::Emulated:
 			{
+				if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+					std::stringstream stream;
+					stream << "Invalid destination " << dest << " (" 
+						<< bytes << " bytes) in device to device memcpy." 
+						<< std::endl;
+					stream << nearbyAllocationsToString(*this, dest, bytes);
+					throw hydrazine::Exception(stream.str());
+				}
 				std::memset( dest, value, bytes );
 			}
 			break;
@@ -930,10 +1063,19 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 	
 }
 
-bool executive::Executive::checkGlobalMemoryAccess(int device, 
+bool executive::Executive::checkMemoryAccess(int device, 
 	const void* _base, size_t size) const {
-	MemoryAllocation allocation = getMemoryAllocation(device, _base);
 	const char* base = reinterpret_cast<const char*>(_base);
+	
+	GlobalAllocationMap::const_iterator global 
+		= globalAllocations.upper_bound(const_cast<char*>(base));
+	if (global != globalAllocations.begin()) --global;
+	if (base + size <= ((char*)global->second.ptr + global->second.size) 
+		&& (base >= (char*)global->second.ptr)) {
+		return true;
+	}
+	
+	MemoryAllocation allocation = getMemoryAllocation(device, _base);
 	if( allocation.isa == ir::Instruction::Unknown ) {
 		return false;
 	}
@@ -943,16 +1085,6 @@ bool executive::Executive::checkGlobalMemoryAccess(int device,
 		&& ((base + size) <= (allocationBase + allocation.size));
 }
 
-		
-/*!
-	Given a pointer, determine the allocated block and corresponding MemoryAllocation record
-	to which it belongs. This merely performs a linear search, so uh a better data structure
-	might improve performance.
-
-	\param device GUID of device
-	\param ptr pointer to some byte
-	\return record of memory allocation; if nothing could be found, the record's ISA is Unknown
-*/
 executive::Executive::MemoryAllocation 
 	executive::Executive::getMemoryAllocation(int device, 
 	const void *ptr) const {
@@ -966,16 +1098,8 @@ executive::Executive::MemoryAllocation
 		AllocationMap::const_iterator it = l_it->second.upper_bound((char*)ptr);
 		if (it != l_it->second.begin()) --it;
 		if (it != l_it->second.end()) {
-			report( "Determining if allocation " << it->second.ptr 
-				<< " to " << ((void*)((char*)it->second.ptr + it->second.size))
-				<< " contains " << ptr );
-			if( (char*)ptr < ((char*)it->second.ptr + it->second.size)) {
-				report(" it does");
+			if ((char*)ptr < ((char*)it->second.ptr + it->second.size)) {
 				return it->second;
-			}
-			else
-			{
-				report( " it does NOT" );
 			}
 		}
 	}
@@ -985,13 +1109,13 @@ executive::Executive::MemoryAllocation
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::Executive::MemoryAllocation::MemoryAllocation( ): 
-	isa(ir::Instruction::Unknown), device(-1), size(0), ptr(0) {
+	isa(ir::Instruction::Unknown), device(-1), size(0), ptr(0), 
+	external(false) {
 }
 
 executive::Executive::MemoryAllocation::MemoryAllocation(
 	ir::Instruction::Architecture i, int d, ir::PTXU64 s, void *p):
-
-	isa(i), device(d), size(s), ptr(p) {
+	isa(i), device(d), size(s), ptr(p), external(false) {
 	
 }
 

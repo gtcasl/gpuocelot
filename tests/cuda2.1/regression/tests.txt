@@ -53,3 +53,4 @@
 ../SimplerFFT CUDA_SDK_STYLE
 ../Sequence
 ../MatrixMultiply
+../CapModel3

@@ -127,14 +127,11 @@ namespace cuda
 			*/
 			class FatBinaryContext
 			{
-			
 				public:
-				
 					FatBinary binary; //< The fat binary
 					ThreadSet threads; //< Registered threads
 					KernelMap kernels; //< Translated kernels
-					GlobalMap globals; //< Global variables
-			
+					GlobalMap globals; //< Global variables			
 			};
 			
 			/*!
@@ -142,9 +139,7 @@ namespace cuda
 			*/
 			class HandleAndKernel
 			{
-			
 				public:
-				
 					std::string kernel;
 					unsigned int handle;
 			
@@ -155,49 +150,33 @@ namespace cuda
 			*/
 			class Stream
 			{
-			
 				public:
-				
 					cudaStream_t handle;
-			
 			};
 			
-			/*!
-				\brief Event class
-			*/
+			/*! \brief Event class */
 			class Event
 			{
-			
 				public:
-				
 					cudaEvent_t handle;
 					hydrazine::Timer timer;
 			
 			};
 			
-			/*!
-				\brief Stream map
-			*/
+			/*! \brief Stream map */
 			typedef std::unordered_map< cudaStream_t, Stream > StreamMap;
 
-			/*!
-				\brief Event map
-			*/
+			/*! \brief Event map */
 			typedef std::unordered_map< cudaEvent_t, Event > EventMap;
 			
-			/*!
-				\brief Thread context
-			*/
+			/*!	\brief Thread context */
 			class ThreadContext
 			{
-			
 				public:
-				
 					typedef std::vector< char > Parameter;
 					typedef std::map< unsigned int, Parameter > ParameterMap;
 			
 				public:
-				
 					int guid;
 					dim3 ctaDimensions;
 					dim3 kernelDimensions;
@@ -206,20 +185,16 @@ namespace cuda
 					int flags;
 					
 				public:
-				
 					StreamMap streams;
 					EventMap events;
 					cudaStream_t nextStream;
 					cudaEvent_t nextEvent;
 
 				public:
-			
 					cudaError_t lastError;
 					
 				public:
-				
-					ThreadContext();
-				
+					ThreadContext();				
 			};
 			
 			/*!

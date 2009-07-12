@@ -22,6 +22,7 @@
 #include <cstring>
 
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/macros.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -1076,7 +1077,7 @@ namespace cuda
 						ir::Parameter::ValueVector::iterator 
 						vi = ki->arrayValues.begin();
 					
-						unsigned int copySize = std::min( pi->second.size(), 
+						unsigned int copySize = MIN( pi->second.size(), 
 							ki->getElementSize() );
 						unsigned int remainder = ki->getElementSize() 
 							- copySize;

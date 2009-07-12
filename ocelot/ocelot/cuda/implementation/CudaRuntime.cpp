@@ -37,15 +37,12 @@ namespace cuda
 
 	CudaRuntime::ThreadContext::ThreadContext() :
 		nextStream(1), nextEvent(1), lastError(cudaSuccess)
-	{
-	
+	{	
 	}
 
 	unsigned int CudaRuntime::Array::bytes() const
-	{
-		
-		return length * width * height * CudaRuntime::bytes( channel );
-		
+	{	
+		return length * width * height * CudaRuntime::bytes( channel );	
 	}
 
 	CudaRuntime::ArchitectureMap::iterator CudaRuntime::_getTranslatedKernel( 
@@ -1072,30 +1069,21 @@ namespace cuda
 							stream.str() ) );
 					}
 					
-					if( ki->arrayValues.size() == 1 )
-					{
-						ir::Parameter::ValueVector::iterator 
+					unsigned int size = 0;
+				
+					for( ir::Parameter::ValueVector::iterator 
 						vi = ki->arrayValues.begin();
-					
-						unsigned int copySize = MIN( pi->second.size(), 
+						vi != ki->arrayValues.end(); ++vi )
+					{
+						unsigned int end = MIN( pi->second.size(), 
+							size + ki->getElementSize() );
+						unsigned int copySize = MIN( end - size, 
 							ki->getElementSize() );
 						unsigned int remainder = ki->getElementSize() 
 							- copySize;
 						memcpy( &vi->val_b8, &pi->second[0], copySize );
 						memset( &vi->val_b8 + copySize, 0, remainder );
-					}
-					else
-					{
-						unsigned int size = 0;
-					
-						for( ir::Parameter::ValueVector::iterator 
-							vi = ki->arrayValues.begin();
-							vi != ki->arrayValues.end(); ++vi )
-						{
-							memcpy( &vi->val_b8, &pi->second[0] + size, 
-								ki->getElementSize() );
-							size += ki->getElementSize();
-						}
+						size += ki->getElementSize();
 					}
 					
 					report( " Set up parameter " << ki->name << " size " 

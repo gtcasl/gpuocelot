@@ -834,7 +834,6 @@ namespace cuda
 	void CudaRuntime::setupArgument( const void *arg, unsigned int size, 
 		unsigned int offset )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -848,7 +847,6 @@ namespace cuda
 
 		while( parameter != thread->second.parameters.begin() )
 		{
-
 			ThreadContext::ParameterMap::iterator previous = parameter;
 			--previous;
 		
@@ -864,18 +862,15 @@ namespace cuda
 			{
 				break;
 			}
-		
 		}
 			
 		if( parameter != thread->second.parameters.end() )
 		{
-		
 			ThreadContext::ParameterMap::iterator next = parameter;
 			++next;
 			
 			while( next != thread->second.parameters.end() )
 			{
-			
 				if( next->first <= offset + size )
 				{
 					report( " Removed parameter at offset " << next->first );
@@ -894,9 +889,7 @@ namespace cuda
 				{
 					break;
 				}
-			
 			}
-		
 		}		
 		
 		thread->second.parameters.insert( std::make_pair( offset, 
@@ -1067,37 +1060,46 @@ namespace cuda
 				for( ; ki != emulated->parameters.end() 
 					&& pi != thread->second.parameters.end(); ++ki, ++pi )
 				{
-										
-					if( ki->getSize() != pi->second.size() )
+					if( ki->getSize() < pi->second.size() )
 					{
-					
 						std::stringstream stream;
 						stream << "For parameter " << ki->name << " PTX size " 
 							<< ki->getSize() 
-							<< " does not match specified size " 
+							<< " is less than specified size " 
 							<< pi->second.size();
 						throw hydrazine::Exception( formatError( 
 							stream.str() ) );
-					
 					}
 					
-					unsigned int size = 0;
-					
-					for( ir::Parameter::ValueVector::iterator 
-						vi = ki->arrayValues.begin();
-						vi != ki->arrayValues.end(); ++vi )
+					if( ki->arrayValues.size() == 1 )
 					{
-						
-						memcpy( &vi->val_b16, &pi->second[0] + size, 
+						ir::Parameter::ValueVector::iterator 
+						vi = ki->arrayValues.begin();
+					
+						unsigned int copySize = std::min( pi->second.size(), 
 							ki->getElementSize() );
-						size += ki->getElementSize();
-						
+						unsigned int remainder = ki->getElementSize() 
+							- copySize;
+						memcpy( &vi->val_b8, &pi->second[0], copySize );
+						memset( &vi->val_b8 + copySize, 0, remainder );
+					}
+					else
+					{
+						unsigned int size = 0;
+					
+						for( ir::Parameter::ValueVector::iterator 
+							vi = ki->arrayValues.begin();
+							vi != ki->arrayValues.end(); ++vi )
+						{
+							memcpy( &vi->val_b8, &pi->second[0] + size, 
+								ki->getElementSize() );
+							size += ki->getElementSize();
+						}
 					}
 					
 					report( " Set up parameter " << ki->name << " size " 
 						<< ki->getSize() << " value " 
-						<< ir::Parameter::value( *ki ) );
-				
+						<< ir::Parameter::value( *ki ) );				
 				}
 				
 				if( ki != emulated->parameters.end() )

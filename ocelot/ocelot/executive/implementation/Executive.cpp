@@ -98,6 +98,10 @@ std::string executive::Executive::nearbyAllocationsToString(
 	DeviceAllocationMap::const_iterator allocations 
 		= executive.memoryAllocations.find(executive.getSelected());
 	stream << " Nearby Device Memory Allocations" << std::endl;
+	if (allocations == executive.memoryAllocations.end()) {
+		stream << "  No Allocations" << std::endl;
+		return stream.str();
+	}
 	if (allocations->second.empty()) {
 		stream << "  No Allocations" << std::endl;
 		return stream.str();

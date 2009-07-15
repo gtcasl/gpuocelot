@@ -1549,6 +1549,11 @@ void CUDARTAPI __cudaMutexOperation(int lock)
 	throw hydrazine::Exception( "__cudaMutexOperation not implemented." );
 }
 
+int CUDARTAPI __cudaSynchronizeThreads(void**, void*)
+{
+	throw hydrazine::Exception( "__cudaSynchronizeThreads not implemented." );
+}
+
 }
 
 #endif

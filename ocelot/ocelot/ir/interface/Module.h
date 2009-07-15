@@ -99,7 +99,7 @@ namespace ir {
 		/*!
 			Unloads module and loads PTX source file in given stream
 		*/
-		bool load(std::istream& source);
+		bool load(std::istream& source, std::string path = "::unknown path::");
 
 		/*!
 			Gets a kernel instance by ISA and name. Returned kernel is guaranteed to have ISA requested.

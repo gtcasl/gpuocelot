@@ -100,20 +100,19 @@ bool ir::Module::load(std::string path) {
 /*!
 	Unloads module and loads everything in path
 */
-bool ir::Module::load(std::istream& stream) {
+bool ir::Module::load(std::istream& stream, std::string path) {
 	using namespace std;
 
 	unload();
 	
 	{
-
 		parser::PTXParser parser;
-
+		modulePath = path;
+		parser.fileName = modulePath;
+		
 		ir::Module module = parser.parse( stream );
-
 		statements = module.statements;
 		extractPTXKernels();
-
 	}
 
 	return true;

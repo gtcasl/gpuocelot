@@ -890,7 +890,7 @@ int main( int argc, char** argv) {
 		
 	parser.parse( "", "--histogram", histogram, false, 
 		"Constructs a histogram document for each selected address space over all kernels");
-	parser.parse( "", "--preprend", prepend, "memory", 
+	parser.parse( "", "--prepend", prepend, "memory", 
 		"String prepended to generated filenames for histogram and other analysis");
 	parser.parse( "", "--binsize", binsize, 6, 
 		"Exponent to which 2 must be raised to specify bin size in bytes for histogram.");

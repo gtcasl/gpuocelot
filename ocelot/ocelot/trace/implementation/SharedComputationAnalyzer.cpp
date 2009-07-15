@@ -161,10 +161,8 @@ int main( int argc, char** argv) {
 	hydrazine::ArgumentParser parser( argc, argv );
 	
 	parser.description("Provides the ability to inspect and analyze a database created by" 
-		+ std::string( "a MemoryTraceGenerator" ) );
+		+ std::string( " a MemoryTraceGenerator" ) );
 	
-	bool help = false;
-	bool help_otherwise = false;
 	bool list = false;
 	bool verbose = false;
 	bool shared = false;
@@ -172,20 +170,17 @@ int main( int argc, char** argv) {
 
 	string database;
 
-	parser.parse( "-h", help, false, "Print this help message." );
-	parser.parse( "--help", help_otherwise, false, "Print this help message." );
-
 	parser.parse( "-l", list, false, "List all traces in the database." );
-	parser.parse( "-i", database, "traces/database.db", "Path to database file." );
-	parser.parse( "-v", verbose, false, "Prints an unmanagable amount of information.");
+	parser.parse( "-i", database, 
+		"traces/database.db", "Path to database file." );
+	parser.parse( "-v", verbose, false, 
+		"Prints an unmanagable amount of information.");
 
-	parser.parse( "--Shared", shared, false, "Examines traces from each kernel and determines the number of cross-thread words shared");
-	parser.parse( "-machine", machine_readable, false, " Indicates output must be machine-readable");
-		
-	if (help || help_otherwise) {
-		std::cout << parser.help();
-		return 0;	
-	}
+	parser.parse( "-s", shared, false, 
+		"Examines traces from each kernel and determines the number of cross-thread words shared");
+	parser.parse( "-m", machine_readable, false, 
+		" Indicates output must be machine-readable");
+	parser.parse();
 	
 	trace::SharedComputationAnalyzer analyzer( database );
 	analyzer.verbose = verbose;

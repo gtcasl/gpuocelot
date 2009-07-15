@@ -857,8 +857,6 @@ int main( int argc, char** argv) {
 	parser.description("Provides the ability to inspect and analyze a database created by" 
 		+ std::string( "a MemoryTraceGenerator" ) );
 	
-	bool help = false;
-	bool help_otherwise = false;
 	bool list = false;
 	bool histogram = false;
 	bool global = false;
@@ -878,41 +876,46 @@ int main( int argc, char** argv) {
 	int warpsize;
 	int segment_size_pow2;
 
-	parser.parse( "-h", help, false, "Print this help message." );
-	parser.parse( "--help", help_otherwise, false, "Print this help message." );
-
-	parser.parse( "-l", list, false, "List all traces in the database." );
+	parser.parse( "-l", "--list", list, false, 
+		"List all traces in the database." );
 	
-	parser.parse( "-machine", machine_readable, false, "Indicates output is intended to be machine-readable");
+	parser.parse( "-m", "--machine", machine_readable, false, 
+		"Indicates output is intended to be machine-readable");
+	parser.parse( "-i", "--input", database, "traces/database.db", 
+		"Path to database file." );	
+	parser.parse( "-v", "--verbose", verbose, false, 
+		"Prints an unmanagable amount of information.");
+	parser.parse("-s", "--spaces", spaces, "cglspt", 
+		"Selects address spaces of interest [cglspt]");
+		
+	parser.parse( "", "--histogram", histogram, false, 
+		"Constructs a histogram document for each selected address space over all kernels");
+	parser.parse( "", "--preprend", prepend, "memory", 
+		"String prepended to generated filenames for histogram and other analysis");
+	parser.parse( "", "--binsize", binsize, 6, 
+		"Exponent to which 2 must be raised to specify bin size in bytes for histogram.");
 
-	parser.parse( "-i", database, "traces/database.db", "Path to database file." );
+	parser.parse( "", "--Global", global, false, 
+		"Print global load/store statistics to stdout");
+	parser.parse( "", "--warpsize", warpsize, 32, 
+		"Number of threads per warp");
+		
+	parser.parse( "", "--Koverlapped", kernel_overlapped, false, 
+		"Analyzes overlapped working sets across CTAs within each kernel");
 	
-	parser.parse( "-v", verbose, false, "Prints an unmanagable amount of information.");
+	parser.parse( "", "--Apps", list_apps, false, 
+		"Lists kernels grouped by application");
+	parser.parse( "-f", "--filter", filter_apps_list, false, 
+		"Only print apps that call the same kernel more than once");
 
-	parser.parse("-spaces", spaces, "cglspt", "Selects address spaces of interest [cglspt]");
+	parser.parse( "", "--Aoverlapped", app_overlapped, false, 
+		"[DOESN'T WORK] Analyzes overlapped working sets across kernels within each application");
+	parser.parse( "", "--segsize", segment_size_pow2, 7, 
+		"Exponent to which 2 must be raised to specify segment size in Koverlapped and Aoverlapped metrics");
 		
-	parser.parse("--Histogram", histogram, false, "Constructs a histogram document for each selected address space over all kernels");
-	parser.parse("-preprend", prepend, "memory", "String prepended to generated filenames for histogram and other analysis");
-	parser.parse("-binsize", binsize, 6, "Exponent to which 2 must be raised to specify bin size in bytes for histogram.");
-
-	parser.parse("--Global", global, false, "Print global load/store statistics to stdout");
-	parser.parse("-warpsize", warpsize, 32, "Number of threads per warp");
-		
-	parser.parse("--Koverlapped", kernel_overlapped, false, "Analyzes overlapped working sets across CTAs within each kernel");
-	
-	parser.parse("--Apps", list_apps, false, "Lists kernels grouped by application");
-	parser.parse("-filter", filter_apps_list, false, "Only print apps that call the same kernel more than once");
-
-	parser.parse("--Aoverlapped", app_overlapped, false, "[DOESN'T WORK] Analyzes overlapped working sets across kernels within each application");
-	parser.parse("-segsize", segment_size_pow2, 7, "Exponent to which 2 must be raised to specify segment size in Koverlapped and Aoverlapped metrics");
-		
-	parser.parse("--MemIntensity", mem_intensity, false, 
+	parser.parse( "", "--MemIntensity", mem_intensity, false, 
 		"Computes [ld+st]/dynamic instructions for each kernel and aggregates, weighting by dynamic instructions");
-		
-	if (help || help_otherwise) {
-		std::cout << parser.help();
-		return 0;	
-	}
+	parser.parse();
 	
 	trace::MemoryTraceAnalyzer analyzer( database );
 	analyzer.spaces = spaces;

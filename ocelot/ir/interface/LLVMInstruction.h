@@ -72,6 +72,8 @@ namespace ir
 				Zext,
 				InvalidOpcode	
 			};
+			
+		
 	};
 }
 

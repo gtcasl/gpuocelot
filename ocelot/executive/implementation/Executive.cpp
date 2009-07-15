@@ -200,8 +200,7 @@ bool executive::Executive::loadModule(const std::string& path,
 	}
 	else {	
 		m_it = modules.insert(std::make_pair(path,new Module)).first;
-		m_it->second->load( *stream );
-		m_it->second->modulePath = path;
+		m_it->second->load(*stream, path);
 	}
 	if (translateToSelected) {
 		// translate the kernels of a module to the selected ISA

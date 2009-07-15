@@ -728,7 +728,9 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1, 1 );
 };
 
-mov : OPCODE_MOV dataType arrayOperand ',' arrayOperand ';'
+movSourceOperand : arrayOperand | memoryOperand;
+
+mov : OPCODE_MOV dataType arrayOperand ',' movSourceOperand ';'
 {
 	state.instruction( $<text>1, $<value>2, 3 );
 };

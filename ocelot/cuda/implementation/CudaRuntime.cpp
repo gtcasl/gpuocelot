@@ -337,21 +337,16 @@ namespace cuda
 	
 	void CudaRuntime::lock()
 	{
-	
 		pthread_mutex_lock( &_mutex );
-	
 	}
 	
 	void CudaRuntime::unlock()
 	{
-	
 		pthread_mutex_unlock( &_mutex );
-	
 	}
 	
 	void CudaRuntime::setContext()
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );		
@@ -383,36 +378,30 @@ namespace cuda
 				thread->second.guid );
 		
 		}
-	
 	}
 	
 	void CudaRuntime::destroyContext()
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
 		
 		_threads.erase( thread );
-	
 	}
 	
 	cudaError_t CudaRuntime::lastError() const
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::const_iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
 		
 		return thread->second.lastError;
-	
 	}
 
 	void CudaRuntime::setDevice( int device )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -426,15 +415,12 @@ namespace cuda
 
 		if( !pass )
 		{
-		
 			throw hydrazine::Exception( 
 				formatError( "Tried to set to invalid device." ), 
 				cudaErrorInvalidDevice );
-		
 		}
 		
 		thread->second.guid = context.devices[ device ].guid;
-			
 	}
 	
 	void CudaRuntime::setFlags( int flags )
@@ -600,7 +586,6 @@ namespace cuda
 
 	unsigned int CudaRuntime::registerFatBinary( const FatBinary& binary )
 	{
-	
 		report( "Registering fat binary " << binary.ident << " to handle " 
 			<< _handle );
 	
@@ -609,7 +594,6 @@ namespace cuda
 		
 		if( name != _binaryNames.end() )
 		{
-		
 			bi = _binaries.find( name->second );
 			assert( bi != _binaries.end() );
 			
@@ -617,27 +601,21 @@ namespace cuda
 			
 			if( bi->second.threads.count( id ) != 0 )
 			{
-			
 				throw hydrazine::Exception( 
 					formatError( "Fat Binary \"" + name->first + 
 					"\" already registered." ), 2 );
-			
 			}
-		
 		}
 		else
 		{
-		
 			// register all of the PTX files
 			report( "Loading PTX programs from \"" << binary.ident );
-			if( binary.ptx->ptx != 0 ) 
+			if( binary.ptx->ptx != 0 )
 			{
-			
 				std::stringstream ptx( binary.ptx->ptx );
 				reportE( REPORT_ALL_PTX, ptx.str() );
 		
 				context.loadModule( binary.ident, true, &ptx );
-				
 			}
 			else
 			{
@@ -659,12 +637,10 @@ namespace cuda
 		bi->second.threads.insert( pthread_self() );
 		
 		return bi->first;
-	
 	}
 
 	void CudaRuntime::unregisterFatBinary( unsigned int handle )
 	{
-	
 		FatBinaryMap::iterator binary = _binaries.find( handle );
 		
 		if( binary == _binaries.end() )
@@ -695,16 +671,13 @@ namespace cuda
 		for( GlobalMap::iterator global = binary->second.globals.begin(); 
 			global != binary->second.globals.end(); ++global )
 		{
-		
 			context.freeGlobal( global->first, binary->second.binary.ident );
-		
 		}
 		
 		binary->second.threads.erase( thread );
 		
 		if( binary->second.threads.empty() )
 		{
-		
 			StringMap::iterator 
 				name = _binaryNames.find( binary->second.binary.ident );
 			assert( name != _binaryNames.end() );
@@ -714,9 +687,7 @@ namespace cuda
 			
 			_binaryNames.erase( name );
 			_binaries.erase( binary );
-	
 		}
-	
 	}
 	
 	void CudaRuntime::configureCall( dim3 kernel, dim3 cta, 
@@ -1081,7 +1052,7 @@ namespace cuda
 							ki->getElementSize() );
 						unsigned int remainder = ki->getElementSize() 
 							- copySize;
-						memcpy( &vi->val_b8, &pi->second[0], copySize );
+						memcpy( &vi->val_b8, &pi->second[0] + size, copySize );
 						memset( &vi->val_b8 + copySize, 0, remainder );
 						size += ki->getElementSize();
 					}

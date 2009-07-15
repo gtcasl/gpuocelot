@@ -86,7 +86,7 @@
 #define REPORT_RET 1
 #define REPORT_RSQRT 1
 #define REPORT_SAD 1
-#define REPORT_SELP 1
+#define REPORT_SELP 0
 #define REPORT_SETP 0
 #define REPORT_SET 1
 #define REPORT_SHL 1
@@ -2192,6 +2192,12 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::s32:
 			{
 				switch (instr.type) {
+					case PTXOperand::s8: 
+						{
+							PTXS8 a = operandAsS8(threadID, instr.a);
+							setRegAsS64(threadID, instr.d.reg, a);
+						}
+						break;
 					case PTXOperand::s16: 
 						{
 							PTXS16 a = operandAsS16(threadID, instr.a);
@@ -2425,6 +2431,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::u64:
 			{
 				switch (instr.type) {
+					case PTXOperand::s32: 
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, UINT_MAX);
+							}
+							setRegAsS32(threadID, instr.d.reg, a);
+						}
+						break;
 					case PTXOperand::u32: 
 						{
 							PTXU64 a = operandAsU64(threadID, instr.a);
@@ -4438,7 +4453,7 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTX
 				bool c = getRegAsPredicate(threadID, instr.c.reg);	// read the predicate register
 				PTXU64 d = (c ? a : b);
 
-				report("  thread[" << threadID << "] d = 0x" << hex << d << ", " 
+				reportE( REPORT_SELP, "  thread[" << threadID << "] d = 0x" << hex << d << ", " 
 					<< instr.d.identifier << " = " << getRegAsU64(threadID, instr.d.reg) << dec);
 				
 				setRegAsU64(threadID, instr.d.reg, d);

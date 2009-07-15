@@ -343,6 +343,11 @@ namespace parser
 			operand.vec = ir::PTXOperand::v1;
 
 			operands.insert( std::make_pair( statement.name, operand ) );
+			
+			if( inEntry )
+			{
+				localOperands.push_back( statement.name );
+			}
 		}
 		else
 		{
@@ -504,11 +509,11 @@ namespace parser
 		{
 			OperandMap::iterator fi = operands.find( *operand );
 			assert( fi != operands.end() );
-	
+			report( "   Local variable " << fi->first << " went out of scope" );
 			operands.erase( fi );
 		}
 	
-		localOperands.clear();	
+		localOperands.clear();
 	}
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )

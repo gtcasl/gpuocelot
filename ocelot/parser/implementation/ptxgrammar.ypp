@@ -2,7 +2,7 @@
 	\file ptxgrammar.ypp
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Sunday January 18, 2009
-	\brief The YACC grammar file for PTX
+	\brief The YACC grammar file for PTX 1.3
 */
 
 %{
@@ -680,7 +680,7 @@ mad24 : OPCODE_MAD24 mad24Modifier dataType operand ',' operand
 	state.instruction( $<text>1, $<value>3, 5 );
 };
 
-mov : OPCODE_MOV dataType arrayOperand ',' arrayOperand ';'
+mov : OPCODE_MOV dataType arrayOperand ',' memoryArrayOperand ';'
 {
 	state.instruction( $<text>1, $<value>2, 3 );
 };
@@ -792,6 +792,12 @@ slct : OPCODE_SLCT dataType dataType operand ',' operand ',' operand ','
 
 arrayOperand : operand;
 arrayOperand : '{' identifierList '}'
+{
+	state.arrayOperand( @1 );
+};
+
+memoryArrayOperand : memoryOperand;
+memoryArrayOperand : '{' identifierList '}'
 {
 	state.arrayOperand( @1 );
 };

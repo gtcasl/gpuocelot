@@ -728,9 +728,7 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1, 1 );
 };
 
-movSourceOperand : arrayOperand | memoryOperand;
-
-mov : OPCODE_MOV dataType arrayOperand ',' movSourceOperand ';'
+mov : OPCODE_MOV dataType arrayOperand ',' memoryArrayOperand ';'
 {
 	state.instruction( $<text>1, $<value>2, 3 );
 };
@@ -864,6 +862,12 @@ slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ','
 
 arrayOperand : operand;
 arrayOperand : '{' identifierList '}'
+{
+	state.arrayOperand( @1 );
+};
+
+memoryArrayOperand : memoryOperand;
+memoryArrayOperand : '{' identifierList '}'
 {
 	state.arrayOperand( @1 );
 };

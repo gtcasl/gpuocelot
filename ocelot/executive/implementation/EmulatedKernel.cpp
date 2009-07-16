@@ -816,5 +816,48 @@ std::string executive::EmulatedKernel::toString() const {
 	}
 	return stream.str();
 }
+
+std::string executive::EmulatedKernel::fileName() const {
+	assert(module != 0);
+	return module->modulePath;
+}
+
+std::string executive::EmulatedKernel::location( unsigned int PC ) const {
+	assert(module != 0 );
+	assert(PC < KernelInstructions.size());
+	unsigned int statement = KernelInstructions[PC].statementIndex;
+	ir::Module::StatementVector::const_iterator s_it 
+		= module->statements.begin();
+	std::advance(s_it, statement);
+	ir::Module::StatementVector::const_reverse_iterator s_rit 
+		= ir::Module::StatementVector::const_reverse_iterator(s_it);
+	unsigned int program = 0;
+	unsigned int line = 0;
+	unsigned int col = 0;
+	for ( ; s_rit != module->statements.rend(); ++s_rit) {
+		if (s_rit->directive == ir::PTXStatement::Loc) {
+			line = s_rit->sourceLine;
+			col = s_rit->sourceColumn;
+			program = s_rit->sourceFile;
+			break;
+		}
+	}
+	
+	std::string fileName;
+	for ( s_it = module->statements.begin(); 
+		s_it != module->statements.end(); ++s_it ) {
+		if (s_it->directive == ir::PTXStatement::File) {
+			if (s_it->sourceFile == program) {
+				fileName = s_it->name;
+				break;
+			}
+		}
+	}
+	
+	std::stringstream stream;
+	stream << fileName << ":" << line << ":" << col;
+	return stream.str();
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

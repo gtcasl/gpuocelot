@@ -119,13 +119,24 @@ namespace ir {
 	
 		std::string name;
 
-		int alignment;
-
+		union {
+			unsigned int sourceFile;
+			int alignment;
+		};
+		
 		std::string section_type;
 
 		std::string section_name;
 
-		int major, minor;
+		union {
+			unsigned int sourceLine;
+			int major;
+		};
+		
+		union {
+			unsigned int sourceColumn;
+			int minor;
+		};
 		
 		unsigned int line;
 		unsigned int column;

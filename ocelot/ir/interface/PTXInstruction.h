@@ -396,16 +396,18 @@ namespace ir {
 				at analysis time
 		*/
 	public:
-		/*!
-			Index of post dominator instruction at which possibly divergent
-				branches reconverge
-		*/
+		/*! \brief Index of post dominator instruction at which possibly 
+			divergent branches reconverge */
 		int reconvergeInstruction;
 
-		/*!
-			Branch target instruction index
-		*/
+		/*! \brief Branch target instruction index */
 		int branchTargetInstruction;
+
+		/*!	The following are used for debugging information at runtime. */
+	public:
+		/*! \brief The index of the statement that this instruction was 
+			created from */
+		unsigned int statementIndex;
 	};
 
 }

@@ -114,7 +114,7 @@ namespace ir {
 			PTXInstructionVector& instructions );
 
 		void clone(const Kernel &kernel);
-
+		
 	public:
 
 		/*!

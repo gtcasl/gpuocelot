@@ -113,7 +113,8 @@ namespace parser
 					void assignment();
 					void registerDeclaration( const std::string& name, 
 						YYLTYPE& location, unsigned int regs = 0 );
-					void fileDeclaration( const std::string& name );
+					void fileDeclaration( unsigned int id, 
+						const std::string& name );
 					void initializableDeclaration( const std::string& name, 
 						YYLTYPE& one, YYLTYPE& two );
 					void entry( const std::string& name, YYLTYPE& location, 

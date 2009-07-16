@@ -81,7 +81,6 @@ TAB [\t]*
 SPACE [ ]*
 WHITESPACE [ \t]*
 
-COMPLETE_FILE (".file"{WHITESPACE}{DECIMAL_CONSTANT}{WHITESPACE}{STRING})
 /******************************************************************************/
 
 %%
@@ -384,8 +383,6 @@ COMPLETE_FILE (".file"{WHITESPACE}{DECIMAL_CONSTANT}{WHITESPACE}{STRING})
                                     return TOKEN_SPECIAL_REGISTER; }
 "%clock"                        { strlcpy( yylval->text, yytext, 1024 ); \
                                     return TOKEN_CLOCK; }
-{COMPLETE_FILE}                 { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return TOKEN_COMPLETE_FILE;}
 {IDENTIFIER}":"                 { strlcpy( yylval->text, yytext, \
                                     MIN( strlen( yytext ), 1024 ) ); \
                                     return TOKEN_LABEL; }

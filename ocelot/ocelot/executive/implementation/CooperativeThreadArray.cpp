@@ -2919,10 +2919,12 @@ static void globalMemoryError(const void* pointer, size_t size,
 	std::stringstream stream;
 	stream << "Global memory address " 
 		<< (void*)((char*)pointer) << " of size " << size
-		<< " is out of any allocated or mapped range." << std::endl;
-	stream << "Memory Map:" << std::endl;
+		<< " is out of any allocated or mapped range.\n";
+	stream << "Memory Map:\n";
 	stream << executive::Executive::nearbyAllocationsToString(
 		*kernel->context, pointer);
+	stream << "\n";
+	stream << "In " << kernel->location(context.PC) << "\n";
 	
 	throw executive::RuntimeException(stream.str(), context.PC, 
 		thread, cta, instr);	

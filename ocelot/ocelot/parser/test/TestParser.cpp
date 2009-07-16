@@ -78,7 +78,6 @@ namespace test
 		return names;
 	}
 
-
 	bool TestParser::_testParse()
 	{
 	

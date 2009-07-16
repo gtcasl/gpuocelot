@@ -236,9 +236,12 @@ namespace ir {
 				return ".entry " + name;
 				break;
 			}
-			case File:
-				return name;
+			case File: {
+				std::stringstream stream;
+				stream << ".file " << sourceFile << " \"" << name << "\"";
+				return stream.str();
 				break;
+			}
 			case Func:
 				return ".func" + name;
 				break;
@@ -287,9 +290,13 @@ namespace ir {
 				return stream.str();
 				break;
 			}
-			case Loc:
-				return ".loc " + name;
+			case Loc: {
+				std::stringstream stream;
+				stream << ".loc " << sourceFile << " " 
+					<< sourceLine << " " << sourceColumn;
+				return stream.str();
 				break;
+			}
 			case Param: {
 				assert( array.values.empty() );
 				std::stringstream stream;

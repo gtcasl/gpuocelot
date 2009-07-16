@@ -422,11 +422,6 @@ namespace parser
 				return "OPCODE_LD";
 				break;
 			}
-			case TOKEN_COMPLETE_FILE:
-			{
-				return "COMPLETE_FILE";
-				break;
-			}
 			case TOKEN_SINGLE_CONSTANT:
 			{
 				return "SINGLE_CONSTANT";

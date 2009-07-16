@@ -457,11 +457,14 @@ namespace parser
 		}
 	}
 
-	void PTXParser::State::fileDeclaration( const std::string& name )
+	void PTXParser::State::fileDeclaration( unsigned int file, 
+		const std::string& name )
 	{
-		report( "  Rule: COMPLETE_FILE: " << name );
+		report( "  Rule: TOKEN_FILE DECIMAL_CONSTANT TOKEN_STRING: .file " 
+			<< file << " " << name );
 		statement.directive = ir::PTXStatement::File;
 		statement.name = name;
+		statement.sourceFile = file;
 	}
 
 	void PTXParser::State::entry( const std::string& name, YYLTYPE& location, 
@@ -478,8 +481,7 @@ namespace parser
 		{
 			statement.directive = ir::PTXStatement::StartParam;
 			statementEnd( location );		
-		}
-		
+		}		
 	}
 	
 	void PTXParser::State::entryMid( YYLTYPE& location, bool paramList )
@@ -588,6 +590,10 @@ namespace parser
 		stream << one << " " << two << " " << three;
 
 		statement.directive = ir::PTXStatement::Loc;
+		statement.sourceFile = one;
+		statement.sourceLine = two;
+		statement.sourceColumn = three;
+		
 		statement.name = stream.str();
 	}
 	
@@ -929,9 +935,10 @@ namespace parser
 		statement.instruction.level = tokenToLevel( token );
 	}
 
-	void PTXParser::State::instruction( )
+	void PTXParser::State::instruction()
 	{
 		statement.instruction = ir::PTXInstruction( ptxVersion );
+		statement.instruction.statementIndex = module.statements.size();
 	}
 
 	void PTXParser::State::instruction( const std::string& opcode, int dataType, 

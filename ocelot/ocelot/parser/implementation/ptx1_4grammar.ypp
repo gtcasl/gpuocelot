@@ -49,7 +49,7 @@
 
 %token<text> TOKEN_SPECIAL_REGISTER TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
 %token<text> TOKEN_INV_PREDICATE_IDENTIFIER TOKEN_PREDICATE_IDENTIFIER
-%token<text> TOKEN_COMPLETE_FILE TOKEN_CLOCK
+%token<text> TOKEN_CLOCK
 
 %token<text> OPCODE_COS OPCODE_SQRT OPCODE_ADD OPCODE_RSQRT OPCODE_ADDC
 %token<text> OPCODE_MUL OPCODE_SAD OPCODE_SUB OPCODE_EX2 OPCODE_LG2
@@ -272,9 +272,9 @@ registerDeclaration : TOKEN_REG dataType identifier
 	state.registerDeclaration( $<text>3, @3, $<value>5 );	
 };
 
-fileDeclaration : TOKEN_COMPLETE_FILE
+fileDeclaration : TOKEN_FILE TOKEN_DECIMAL_CONSTANT TOKEN_STRING
 {
-	state.fileDeclaration( $<text>1 );
+	state.fileDeclaration( $<value>2, $<text>3 );
 };
 
 initializableDeclaration : initializable addressableVariablePrefix 

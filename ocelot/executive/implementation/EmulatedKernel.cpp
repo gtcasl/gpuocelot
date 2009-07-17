@@ -32,7 +32,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 using namespace ir;
 
@@ -343,69 +343,77 @@ void executive::EmulatedKernel::registerAllocation() {
 	RegisterCount = (int)registerMap.size();
 }
 
+void executive::EmulatedKernel::_computeOffset(
+	const PTXStatement& statement, unsigned int& offset, 
+	unsigned int& totalOffset) {
+	
+	unsigned int padding = ((statement.alignment - 
+		(totalOffset % statement.alignment)) % statement.alignment);
+	offset = totalOffset + padding;
+
+	totalOffset = offset;
+	if(statement.array.stride.empty()) {
+		totalOffset += statement.array.vec * 
+			ir::PTXOperand::bytes(statement.type);
+	}
+	else {
+		for (int i = 0; i < (int)statement.array.stride.size(); i++) {
+			totalOffset += statement.array.stride[i] * statement.array.vec * 
+				ir::PTXOperand::bytes(statement.type);
+		}
+	}
+}
+
 /*!
 	Allocates arrays in shared memory and maps identifiers to allocations.
 */
 void executive::EmulatedKernel::initializeSharedMemory() {
 	using namespace std;
-
+	typedef unordered_map<string, unsigned int> Map;
+	typedef unordered_map<std::string, 
+		ir::Module::GlobalMap::const_iterator> GlobalMap;
+	typedef unordered_set<std::string> StringSet;
+	typedef std::deque<PTXOperand*> OperandVector;
 	unsigned int sharedOffset = 0;
 
-	map<string, unsigned int> label_map;
+	report( "Initializing shared memory for kernel " << name );
+	Map label_map;
+	GlobalMap sharedGlobals;
+	StringSet external;
+	OperandVector externalOperands;
 	
 	if(module != 0) {
 		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
 			it != module->globals.end(); ++it) {
 			if (it->second.statement.directive == PTXStatement::Shared) {
-				// compute address given alignment requirements
-				unsigned int padding = ((it->second.statement.alignment - 
-					(sharedOffset % it->second.statement.alignment)) 
-					% it->second.statement.alignment);
-				unsigned int offset = sharedOffset + padding;
-
-				report("Found global shared variable " 
-					<< it->second.statement.name);
-				label_map[it->second.statement.name] = offset;
-
-				sharedOffset = offset;
-				if(it->second.statement.array.stride.empty()) {
-					sharedOffset += it->second.statement.array.vec * 
-						ir::PTXOperand::bytes(it->second.statement.type);
-				}
+				if(it->second.statement.attribute == PTXStatement::Extern) {
+					assert(external.count(it->second.statement.name) == 0);
+					external.insert(it->second.statement.name);
+				} 
 				else {
-					for (int i = 0; 
-						i < (int)it->second.statement.array.stride.size(); 
-						i++) {
-						sharedOffset += it->second.statement.array.stride[i] 
-							* it->second.statement.array.vec 
-							* ir::PTXOperand::bytes(it->second.statement.type);
-					}
+					report("Found global extern shared variable " 
+						<< it->second.statement.name);
+					sharedGlobals.insert( std::make_pair( 
+						it->second.statement.name, it ) );
 				}
-			}	
+			}
 		}
 	}
 	
 	PTXStatementVector::const_iterator it = start_iterator;
 	for (; it != end_iterator; ++it) {
 		if (it->directive == PTXStatement::Shared) {
-			// compute address given alignment requirements
-			unsigned int padding = ((it->alignment - 
-				(sharedOffset % it->alignment)) % it->alignment);
-			unsigned int offset = sharedOffset + padding;
-
-			report("Found local shared variable " << it->name);
-			label_map[it->name] = offset;
-
-			sharedOffset = offset;
-			if(it->array.stride.empty()) {
-				sharedOffset += it->array.vec * 
-					ir::PTXOperand::bytes(it->type);
+			if(it->attribute == PTXStatement::Extern) {
+				report("Found local external shared variable " << it->name);
+				assert(external.count(it->name) == 0);
+					external.insert(it->name);
 			}
 			else {
-				for (int i = 0; i < (int)it->array.stride.size(); i++) {
-					sharedOffset += it->array.stride[i] * it->array.vec * 
-						ir::PTXOperand::bytes(it->type);
-				}
+				unsigned int offset;
+
+				report("Found local shared variable " << it->name);
+				_computeOffset(*it, offset, sharedOffset);
+				label_map[it->name] = offset;
 			}
 		}
 	}
@@ -423,8 +431,30 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 		if (instr.opcode == PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = label_map.find((instr.*operands[n]).identifier);
+					StringSet::iterator si = external.find(
+						(instr.*operands[n]).identifier);
+					if (si != external.end()) {
+						externalOperands.push_back(&(instr.*operands[n]));
+						continue;
+					}
+					
+					GlobalMap::iterator gi = sharedGlobals.find(
+							(instr.*operands[n]).identifier);
+					if (gi != sharedGlobals.end()) {
+						ir::Module::GlobalMap::const_iterator 
+							it = gi->second;
+						sharedGlobals.erase(gi);
+						unsigned int offset;
+
+						report("Found global shared variable " 
+							<< it->second.statement.name);
+						_computeOffset(it->second.statement, 
+							offset, sharedOffset);						
+						label_map[it->second.statement.name] = offset;
+					}				
+					
+					Map::iterator l_it 
+						= label_map.find((instr.*operands[n]).identifier);
 					if (label_map.end() != l_it) {
 						(instr.*operands[n]).type = PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
@@ -439,8 +469,29 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 			|| instr.opcode == PTXInstruction::St) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = label_map.find((instr.*operands[n]).identifier);
+					StringSet::iterator si = external.find(
+						(instr.*operands[n]).identifier);
+					if (si != external.end()) {
+						externalOperands.push_back(&(instr.*operands[n]));
+						continue;
+					}
+					
+					GlobalMap::iterator gi = sharedGlobals.find(
+							(instr.*operands[n]).identifier);
+					if (gi != sharedGlobals.end()) {
+						ir::Module::GlobalMap::const_iterator it = gi->second;
+						sharedGlobals.erase(gi);
+						unsigned int offset;
+
+						report("Found global shared variable " 
+							<< it->second.statement.name);
+						_computeOffset(it->second.statement, 
+							offset, sharedOffset);						
+						label_map[it->second.statement.name] = offset;
+					}
+					
+					Map::iterator l_it 
+						= label_map.find((instr.*operands[n]).identifier);
 					if (label_map.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping shared label " << l_it->first 
@@ -451,6 +502,14 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 				}
 			}			
 		}
+	}
+	
+	for (OperandVector::iterator operand = externalOperands.begin(); 
+		operand != externalOperands.end(); ++operand) {
+		report( "Mapping external shared label " << (*operand)->identifier 
+			<< " to " << sharedOffset );
+		(*operand)->type = PTXOperand::u64;
+		(*operand)->imm_uint = sharedOffset;
 	}
 
 	// allocate shared memory object
@@ -473,56 +532,26 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
 			it != module->globals.end(); ++it) {
 			if (it->second.statement.directive == PTXStatement::Local) {
-				// compute address given alignment requirements
-				unsigned int padding = ((it->second.statement.alignment - 
-					(localOffset % it->second.statement.alignment)) 
-					% it->second.statement.alignment);
-				unsigned int offset = localOffset + padding;
+				unsigned int offset;
 
 				report("Found global local variable " 
 					<< it->second.statement.name);
+				_computeOffset(it->second.statement, 
+					offset, localOffset);						
 				label_map[it->second.statement.name] = offset;
-
-				localOffset = offset;
-				if(it->second.statement.array.stride.empty()) {
-					localOffset += it->second.statement.array.vec * 
-						ir::PTXOperand::bytes(it->second.statement.type);
-				}
-				else {
-					for (int i = 0; 
-						i < (int)it->second.statement.array.stride.size(); 
-						i++) {
-						localOffset += it->second.statement.array.stride[i] 
-							* it->second.statement.array.vec 
-							* ir::PTXOperand::bytes(it->second.statement.type);
-					}
-				}
-			}	
+			}
 		}
 	}
 	
 	PTXStatementVector::const_iterator it = start_iterator;
 	for (; it != end_iterator; ++it) {
 		if (it->directive == PTXStatement::Local) {
-			// compute address given alignment requirements
-			unsigned int padding = ((it->alignment - 
-				(localOffset % it->alignment)) % it->alignment);
-			unsigned int offset = localOffset + padding;
+			unsigned int offset;
 
-			report("Found local local variable " << it->name);
+			report("Found global local variable " 
+				<< it->name);
+			_computeOffset(*it, offset, localOffset);						
 			label_map[it->name] = offset;
-
-			localOffset = offset;
-			if(it->array.stride.empty()) {
-				localOffset += it->array.vec * 
-					ir::PTXOperand::bytes(it->type);
-			}
-			else {
-				for (int i = 0; i < (int)it->array.stride.size(); i++) {
-					localOffset += it->array.stride[i] * it->array.vec * 
-						ir::PTXOperand::bytes(it->type);
-				}
-			}
 		}
 	}
 
@@ -592,28 +621,13 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	for (; it != module->globals.end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Const) {
 			assert(it->second.registered || it->second.local);
-			report("Found global const variable " << it->first);
-			unsigned int padding = ((it->second.statement.alignment - 
-				(constantOffset % it->second.statement.alignment)) 
-				% it->second.statement.alignment);
-			unsigned int offset = constantOffset + padding;
-			assert( constant.count(it->first) == 0 );
-			constant[it->first] = offset;
+			unsigned int offset;
 
-			constantOffset = offset;
-			
-			if(it->second.statement.array.stride.empty()) {
-				constantOffset += it->second.statement.array.vec * 
-					ir::PTXOperand::bytes(it->second.statement.type);
-			}
-			else {
-				for (int i = 0; 
-					i < (int)it->second.statement.array.stride.size(); i++) {
-					constantOffset += it->second.statement.array.stride[i] 
-						* it->second.statement.array.vec 
-						* ir::PTXOperand::bytes(it->second.statement.type);
-				}
-			}
+			report("Found global const variable " 
+				<< it->second.statement.name);
+			_computeOffset(it->second.statement, 
+				offset, constantOffset);						
+			constant[it->second.statement.name] = offset;
 		}
 	}
 	

@@ -32,6 +32,10 @@ namespace executive {
 	public:
 		typedef std::vector< const ir::Texture* > TextureVector;
 
+	private:
+		static void _computeOffset(const ir::PTXStatement& it, 
+			unsigned int& offset, unsigned int& totalOffset);
+
 	public:
 		EmulatedKernel(ir::Kernel *kernel, const Executive* c);
 		EmulatedKernel();

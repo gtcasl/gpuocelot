@@ -18,9 +18,80 @@ INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/Test
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestMemoryTraceGenerator
 INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestTrace
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions seconds
-INFO     Test completed in 0.0338389873505 seconds
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels seconds
+INFO     Test completed in 0.0373351573944 seconds
 INFO      It produced the following output:
+(0.016640) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePi
+(0.016690) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePi
+(0.016714) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.016729) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePi
+(0.016739) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePi_ptr of size 8
+(0.016948) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z15k_sequenceMultiPii
+(0.016994) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z15k_sequenceMultiPii
+(0.017015) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.017027) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z15k_sequenceMultiPii
+(0.017037) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z15k_sequenceMultiPii___val_paramptr of size 8
+(0.017047) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z15k_sequenceMultiPii_N of size 4
+(0.017245) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z19k_sequenceDivergentPf
+(0.017288) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z19k_sequenceDivergentPf
+(0.017307) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.017318) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z19k_sequenceDivergentPf
+(0.017328) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z19k_sequenceDivergentPf_ptr of size 8
+(0.017635) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_sequenceLoopingPfi
+(0.017695) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_sequenceLoopingPfi
+(0.017716) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.017728) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_sequenceLoopingPfi
+(0.017737) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_sequenceLoopingPfi_ptr of size 8
+(0.017747) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_sequenceLoopingPfi_N of size 4
+(0.018180) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z21k_matrixVectorProductPKfS0_Pfii
+(0.018284) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z21k_matrixVectorProductPKfS0_Pfii
+(0.018299) EmulatedKernel.cpp:414:  Found local shared variable __cuda_V_buffer80
+(0.018330) EmulatedKernel.cpp:463:  For instruction mov.u64 %rd9, __cuda_V_buffer80, mapping shared label __cuda_V_buffer80 to 0
+(0.018347) EmulatedKernel.cpp:518:  Total shared memory size is 32
+(0.018358) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z21k_matrixVectorProductPKfS0_Pfii
+(0.018368) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA of size 8
+(0.018377) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV of size 8
+(0.018386) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R of size 8
+(0.018396) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M of size 4
+(0.018405) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N of size 4
+(0.018550) EmulatedKernel.cpp:61:   EmulatedKernel::launchGrid called
+(0.018561) EmulatedKernel.cpp:62:     14 registers
+Kernel launch time was 0.000119925s (120267 ticks)
+(0.018814) EmulatedKernel.cpp:61:   EmulatedKernel::launchGrid called
+(0.018825) EmulatedKernel.cpp:62:     21 registers
+(0.019368) EmulatedKernel.cpp:61:   EmulatedKernel::launchGrid called
+(0.019378) EmulatedKernel.cpp:62:     42 registers
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description : 
+
+Test Seed : 1247871547
+Test time : 0.0177579
+
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
+
+
+
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions seconds
+INFO     Test completed in 0.0379211902618 seconds
+INFO      It produced the following output:
+(0.008230) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePii
+(0.008295) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePii
+(0.008319) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.008331) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePii
+(0.008342) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_A of size 8
+(0.008352) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_N of size 4
+(0.008478) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_simple_sequencePi
+(0.008515) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_simple_sequencePi
+(0.008533) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.008545) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
+(0.008556) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
 Pass/Fail : Pass
 
 
@@ -28,8 +99,8 @@ Name : TestInstructions
 
 Description : 
 
-Test Seed : 1247770822
-Test time : 0.00101352
+Test Seed : 1247871547
+Test time : 0.00101113
 
 Status : Test output:
 Accessors test passed.
@@ -45,47 +116,66 @@ pass: control flow instructions
 
 
 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels seconds
-INFO     Test completed in 0.0359909534454 seconds
-INFO      It produced the following output:
-Kernel launch time was 0.000100136s (100190 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description : 
-
-Test Seed : 1247770822
-Test time : 0.015646
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestTrace seconds
-INFO     Test completed in 0.0375790596008 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestTrace
-
-Description : 
-
-Test Seed : 1247770822
-Test time : 0.000633717
-
-Status : Test output:
-
-
-
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator seconds
-INFO     Test completed in 0.052864074707 seconds
+INFO     Test completed in 0.0405268669128 seconds
 INFO      It produced the following output:
+(0.005796) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePii
+(0.005847) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePii
+(0.005863) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.005870) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePii
+(0.005876) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_A of size 8
+(0.005881) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_N of size 4
+(0.005967) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_simple_sequencePi
+(0.005992) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_simple_sequencePi
+(0.006002) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.006009) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
+(0.006014) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
+(0.010813) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePii
+(0.010847) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePii
+(0.010862) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.010869) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePii
+(0.010874) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_A of size 8
+(0.010879) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_N of size 4
+(0.010962) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_simple_sequencePi
+(0.010986) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_simple_sequencePi
+(0.010997) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.011003) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
+(0.011008) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
+(0.015841) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePii
+(0.015873) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePii
+(0.015886) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.015893) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePii
+(0.015898) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_A of size 8
+(0.015903) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_N of size 4
+(0.015986) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_simple_sequencePi
+(0.016011) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_simple_sequencePi
+(0.016021) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.016027) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
+(0.016032) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
+(0.020670) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePii
+(0.020701) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePii
+(0.020714) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.020720) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePii
+(0.020725) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_A of size 8
+(0.020731) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_N of size 4
+(0.020812) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_simple_sequencePi
+(0.020837) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_simple_sequencePi
+(0.020847) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.020854) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
+(0.020879) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
+(0.027313) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePii
+(0.027344) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePii
+(0.027357) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.027364) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePii
+(0.027369) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_A of size 8
+(0.027374) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePii_N of size 4
+(0.027456) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_simple_sequencePi
+(0.027481) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_simple_sequencePi
+(0.027491) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.027497) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
+(0.027502) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
+(0.027628) EmulatedKernel.cpp:61:   EmulatedKernel::launchGrid called
+(0.027636) EmulatedKernel.cpp:62:     12 registers
 Pass/Fail : Pass
 
 
@@ -93,8 +183,8 @@ Name : TestEmulator
 
 Description : 
 
-Test Seed : 1247770822
-Test time : 0.040493
+Test Seed : 1247871547
+Test time : 0.0276887
 
 Status : Test output:
 12 registers
@@ -106,9 +196,141 @@ Full kernel test passed
 
 
 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestMemoryTraceGenerator seconds
-INFO     Test completed in 0.0705900192261 seconds
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestTrace seconds
+INFO     Test completed in 0.0357391834259 seconds
 INFO      It produced the following output:
+(0.016707) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z10k_sequencePi
+(0.016756) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z10k_sequencePi
+(0.016777) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.016789) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z10k_sequencePi
+(0.016799) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z10k_sequencePi_ptr of size 8
+(0.017014) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z15k_sequenceMultiPii
+(0.017062) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z15k_sequenceMultiPii
+(0.017082) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.017093) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z15k_sequenceMultiPii
+(0.017103) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z15k_sequenceMultiPii___val_paramptr of size 8
+(0.017113) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z15k_sequenceMultiPii_N of size 4
+(0.017306) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z19k_sequenceDivergentPf
+(0.017349) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z19k_sequenceDivergentPf
+(0.017367) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.017378) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z19k_sequenceDivergentPf
+(0.017388) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z19k_sequenceDivergentPf_ptr of size 8
+(0.017679) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z17k_sequenceLoopingPfi
+(0.017738) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z17k_sequenceLoopingPfi
+(0.017760) EmulatedKernel.cpp:518:  Total shared memory size is 0
+(0.017772) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z17k_sequenceLoopingPfi
+(0.017781) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_sequenceLoopingPfi_ptr of size 8
+(0.017790) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z17k_sequenceLoopingPfi_N of size 4
+(0.018213) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z21k_matrixVectorProductPKfS0_Pfii
+(0.018316) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z21k_matrixVectorProductPKfS0_Pfii
+(0.018332) EmulatedKernel.cpp:414:  Found local shared variable __cuda_V_buffer80
+(0.018367) EmulatedKernel.cpp:463:  For instruction mov.u64 %rd9, __cuda_V_buffer80, mapping shared label __cuda_V_buffer80 to 0
+(0.018385) EmulatedKernel.cpp:518:  Total shared memory size is 32
+(0.018397) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z21k_matrixVectorProductPKfS0_Pfii
+(0.018407) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA of size 8
+(0.018416) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV of size 8
+(0.018426) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R of size 8
+(0.018436) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M of size 4
+(0.018445) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N of size 4
+(0.018619) EmulatedKernel.cpp:61:   EmulatedKernel::launchGrid called
+(0.018631) EmulatedKernel.cpp:62:     42 registers
+Pass/Fail : Pass
+
+
+Name : TestTrace
+
+Description : 
+
+Test Seed : 1247871547
+Test time : 0.000653267
+
+Status : Test output:
+
+
+
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestMemoryTraceGenerator seconds
+INFO     Test completed in 0.0790610313416 seconds
+INFO      It produced the following output:
+(0.030687) EmulatedKernel.cpp:789:  Initializing texture variables for kernel _Z12k_mv_productiiPKfS0_Pf
+(0.031272) EmulatedKernel.cpp:379:  Initializing shared memory for kernel _Z12k_mv_productiiPKfS0_Pf
+(0.031294) EmulatedKernel.cpp:414:  Found local shared variable __cuda_V_shared32
+(0.031357) EmulatedKernel.cpp:463:  For instruction mov.u64 %rd10, __cuda_V_shared32, mapping shared label __cuda_V_shared32 to 0
+(0.031384) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f4, [__cuda_V_shared32], mapping shared label __cuda_V_shared32 to 0
+(0.031404) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f6, [__cuda_V_shared32 + 4], mapping shared label __cuda_V_shared32 to 0
+(0.031423) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f8, [__cuda_V_shared32 + 8], mapping shared label __cuda_V_shared32 to 0
+(0.031442) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f10, [__cuda_V_shared32 + 12], mapping shared label __cuda_V_shared32 to 0
+(0.031459) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f12, [__cuda_V_shared32 + 16], mapping shared label __cuda_V_shared32 to 0
+(0.031477) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f14, [__cuda_V_shared32 + 20], mapping shared label __cuda_V_shared32 to 0
+(0.031494) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f16, [__cuda_V_shared32 + 24], mapping shared label __cuda_V_shared32 to 0
+(0.031512) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f18, [__cuda_V_shared32 + 28], mapping shared label __cuda_V_shared32 to 0
+(0.031529) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f20, [__cuda_V_shared32 + 32], mapping shared label __cuda_V_shared32 to 0
+(0.031547) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f22, [__cuda_V_shared32 + 36], mapping shared label __cuda_V_shared32 to 0
+(0.031565) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f24, [__cuda_V_shared32 + 40], mapping shared label __cuda_V_shared32 to 0
+(0.031583) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f26, [__cuda_V_shared32 + 44], mapping shared label __cuda_V_shared32 to 0
+(0.031601) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f28, [__cuda_V_shared32 + 48], mapping shared label __cuda_V_shared32 to 0
+(0.031619) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f30, [__cuda_V_shared32 + 52], mapping shared label __cuda_V_shared32 to 0
+(0.031637) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f32, [__cuda_V_shared32 + 56], mapping shared label __cuda_V_shared32 to 0
+(0.031654) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f34, [__cuda_V_shared32 + 60], mapping shared label __cuda_V_shared32 to 0
+(0.031673) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f36, [__cuda_V_shared32 + 64], mapping shared label __cuda_V_shared32 to 0
+(0.031690) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f38, [__cuda_V_shared32 + 68], mapping shared label __cuda_V_shared32 to 0
+(0.031709) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f40, [__cuda_V_shared32 + 72], mapping shared label __cuda_V_shared32 to 0
+(0.031727) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f42, [__cuda_V_shared32 + 76], mapping shared label __cuda_V_shared32 to 0
+(0.031744) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f44, [__cuda_V_shared32 + 80], mapping shared label __cuda_V_shared32 to 0
+(0.031763) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f46, [__cuda_V_shared32 + 84], mapping shared label __cuda_V_shared32 to 0
+(0.031781) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f48, [__cuda_V_shared32 + 88], mapping shared label __cuda_V_shared32 to 0
+(0.031798) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f50, [__cuda_V_shared32 + 92], mapping shared label __cuda_V_shared32 to 0
+(0.031816) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f52, [__cuda_V_shared32 + 96], mapping shared label __cuda_V_shared32 to 0
+(0.031833) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f54, [__cuda_V_shared32 + 100], mapping shared label __cuda_V_shared32 to 0
+(0.031880) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f56, [__cuda_V_shared32 + 104], mapping shared label __cuda_V_shared32 to 0
+(0.031901) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f58, [__cuda_V_shared32 + 108], mapping shared label __cuda_V_shared32 to 0
+(0.031919) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f60, [__cuda_V_shared32 + 112], mapping shared label __cuda_V_shared32 to 0
+(0.031937) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f62, [__cuda_V_shared32 + 116], mapping shared label __cuda_V_shared32 to 0
+(0.031954) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f64, [__cuda_V_shared32 + 120], mapping shared label __cuda_V_shared32 to 0
+(0.031972) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f66, [__cuda_V_shared32 + 124], mapping shared label __cuda_V_shared32 to 0
+(0.031990) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f68, [__cuda_V_shared32 + 128], mapping shared label __cuda_V_shared32 to 0
+(0.032008) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f70, [__cuda_V_shared32 + 132], mapping shared label __cuda_V_shared32 to 0
+(0.032026) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f72, [__cuda_V_shared32 + 136], mapping shared label __cuda_V_shared32 to 0
+(0.032043) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f74, [__cuda_V_shared32 + 140], mapping shared label __cuda_V_shared32 to 0
+(0.032061) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f76, [__cuda_V_shared32 + 144], mapping shared label __cuda_V_shared32 to 0
+(0.032079) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f78, [__cuda_V_shared32 + 148], mapping shared label __cuda_V_shared32 to 0
+(0.032098) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f80, [__cuda_V_shared32 + 152], mapping shared label __cuda_V_shared32 to 0
+(0.032115) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f82, [__cuda_V_shared32 + 156], mapping shared label __cuda_V_shared32 to 0
+(0.032133) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f84, [__cuda_V_shared32 + 160], mapping shared label __cuda_V_shared32 to 0
+(0.032151) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f86, [__cuda_V_shared32 + 164], mapping shared label __cuda_V_shared32 to 0
+(0.032168) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f88, [__cuda_V_shared32 + 168], mapping shared label __cuda_V_shared32 to 0
+(0.032186) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f90, [__cuda_V_shared32 + 172], mapping shared label __cuda_V_shared32 to 0
+(0.032217) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f92, [__cuda_V_shared32 + 176], mapping shared label __cuda_V_shared32 to 0
+(0.032234) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f94, [__cuda_V_shared32 + 180], mapping shared label __cuda_V_shared32 to 0
+(0.032245) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f96, [__cuda_V_shared32 + 184], mapping shared label __cuda_V_shared32 to 0
+(0.032256) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f98, [__cuda_V_shared32 + 188], mapping shared label __cuda_V_shared32 to 0
+(0.032266) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f100, [__cuda_V_shared32 + 192], mapping shared label __cuda_V_shared32 to 0
+(0.032277) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f102, [__cuda_V_shared32 + 196], mapping shared label __cuda_V_shared32 to 0
+(0.032287) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f104, [__cuda_V_shared32 + 200], mapping shared label __cuda_V_shared32 to 0
+(0.032297) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f106, [__cuda_V_shared32 + 204], mapping shared label __cuda_V_shared32 to 0
+(0.032307) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f108, [__cuda_V_shared32 + 208], mapping shared label __cuda_V_shared32 to 0
+(0.032317) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f110, [__cuda_V_shared32 + 212], mapping shared label __cuda_V_shared32 to 0
+(0.032327) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f112, [__cuda_V_shared32 + 216], mapping shared label __cuda_V_shared32 to 0
+(0.032354) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f114, [__cuda_V_shared32 + 220], mapping shared label __cuda_V_shared32 to 0
+(0.032365) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f116, [__cuda_V_shared32 + 224], mapping shared label __cuda_V_shared32 to 0
+(0.032375) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f118, [__cuda_V_shared32 + 228], mapping shared label __cuda_V_shared32 to 0
+(0.032385) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f120, [__cuda_V_shared32 + 232], mapping shared label __cuda_V_shared32 to 0
+(0.032396) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f122, [__cuda_V_shared32 + 236], mapping shared label __cuda_V_shared32 to 0
+(0.032406) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f124, [__cuda_V_shared32 + 240], mapping shared label __cuda_V_shared32 to 0
+(0.032416) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f126, [__cuda_V_shared32 + 244], mapping shared label __cuda_V_shared32 to 0
+(0.032426) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f128, [__cuda_V_shared32 + 248], mapping shared label __cuda_V_shared32 to 0
+(0.032436) EmulatedKernel.cpp:498:  For instruction ld.shared.f32 %f130, [__cuda_V_shared32 + 252], mapping shared label __cuda_V_shared32 to 0
+(0.032444) EmulatedKernel.cpp:518:  Total shared memory size is 256
+(0.032452) EmulatedKernel.cpp:292:  Initializing parameter memory for kernel _Z12k_mv_productiiPKfS0_Pf
+(0.032459) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z12k_mv_productiiPKfS0_Pf_M of size 4
+(0.032465) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z12k_mv_productiiPKfS0_Pf_N of size 4
+(0.032470) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z12k_mv_productiiPKfS0_Pf___val_paramA_gpu of size 8
+(0.032475) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z12k_mv_productiiPKfS0_Pf___val_paramV_gpu of size 8
+(0.032481) EmulatedKernel.cpp:301:   Initializing memory for paramter __cudaparm__Z12k_mv_productiiPKfS0_Pf___val_paramR_gpu of size 8
+(0.032961) EmulatedKernel.cpp:615:  Initializing constant variables for kernel _Z12k_mv_productiiPKfS0_Pf
+(0.032970) EmulatedKernel.cpp:634:  Total constant memory size is 0
+(0.033004) EmulatedKernel.cpp:717:  Initializing global variables for kernel _Z12k_mv_productiiPKfS0_Pf
+(0.033045) EmulatedKernel.cpp:61:   EmulatedKernel::launchGrid called
+(0.033050) EmulatedKernel.cpp:62:     226 registers
 Pass/Fail : Pass
 
 
@@ -116,15 +338,15 @@ Name : TestMemoryTraceGenerator
 
 Description : 
 
-Test Seed : 1247770822
-Test time : 0.0212495
+Test Seed : 1247871547
+Test time : 0.0237432
 
 Status : Test output:
 
 
 
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer seconds
-INFO     Test completed in 9.58298397064 seconds
+INFO     Test completed in 9.61159205437 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -133,8 +355,8 @@ Name : TestLexer
 
 Description : Tests for the PTX lexer. Test Point 1: Scan a PTX file and write out a temp stream, scan the stream again and make sure that the two sets of tokens match
 
-Test Seed : 1247770822
-Test time : 9.56688
+Test Seed : 1247871547
+Test time : 9.58054
 
 Status : For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -280,7 +502,7 @@ For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
 
 
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser seconds
-INFO     Test completed in 17.4049170017 seconds
+INFO     Test completed in 17.3047139645 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -289,8 +511,8 @@ Name : TestParser
 
 Description : A test for the PTXParser class. Test Points: 1) Load a PTX file and run it through the parser generating a module.  Write the module to an intermediate stream.  Parse the stream again generating a new module, compare both to make sure that they match.
 
-Test Seed : 1247770822
-Test time : 17.3871
+Test Seed : 1247871547
+Test time : 17.2807
 
 Status : For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -436,7 +658,7 @@ For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Parse): Passed
 
 
 INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestDataflowGraph seconds
-INFO     Test completed in 40.7731280327 seconds
+INFO     Test completed in 41.5447659492 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -445,8 +667,8 @@ Name : TestDataflowGraph
 
 Description : A test for the DataflowGraph class. Test Points: 1) Generic: load PTX files, convert them into dataflow graphs, verify that all live ranges spanning blocks are consistent. 2) SSA: convert to ssa form, verify that no register is declared more than once. 3) reverse SSA: convert to ssa then out of ssa, verify that all live ranges spanning blocks are consistent.
 
-Test Seed : 1247770822
-Test time : 40.7485
+Test Seed : 1247871547
+Test time : 41.5171
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/particleSystem.ptx
@@ -5358,14 +5580,14 @@ Testing SSA then back Dataflow
 
 INFO     
 Passing tests:
- (40.773s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestDataflowGraph : Passed
- (17.405s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser : Passed
- (0.036s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels : Passed
- (0.038s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestTrace : Passed
- (9.583s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer : Passed
- (0.071s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestMemoryTraceGenerator : Passed
- (0.053s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator : Passed
- (0.034s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions : Passed
+ (41.545s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestDataflowGraph : Passed
+ (17.305s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestParser : Passed
+ (0.037s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestKernels : Passed
+ (0.036s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestTrace : Passed
+ (9.612s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestLexer : Passed
+ (0.079s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestMemoryTraceGenerator : Passed
+ (0.041s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestEmulator : Passed
+ (0.038s) : /home/gdiamos/checkout/gpuocelot/trunk/ocelot/TestInstructions : Passed
 
 Failing tests:
 

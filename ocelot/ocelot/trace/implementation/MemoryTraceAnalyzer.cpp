@@ -138,7 +138,6 @@ namespace trace
 	
 	void MemoryTraceAnalyzer::list(bool machine) const {
 		using namespace std;
-		machine = true;
 		if (machine) {
 			cout << "(\n";
 			for(KernelVector::const_iterator kernel = _kernels.begin(); 
@@ -272,7 +271,6 @@ namespace trace
 		
 		int kernelIndex = 0;
 
-		machine = true;
 		if (machine) {
 			cout << "memIntensity = (\n";
 		}
@@ -379,7 +377,6 @@ namespace trace
 	void MemoryTraceAnalyzer::global_transactions(int warp_size, bool machine) {
 		using namespace ir;
 		
-		machine = true;
 		std::ostream &out = std::cout;
 		
 		ir::PTXU64 global_instructions = 0;

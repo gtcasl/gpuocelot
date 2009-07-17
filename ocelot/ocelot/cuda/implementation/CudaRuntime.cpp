@@ -296,12 +296,10 @@ namespace cuda
 		for( MemoryMap::iterator fi = _memory.begin(); 
 			fi != _memory.end(); ++fi )
 		{
-	
 			std::cerr << "==Ocelot== Pinned Memory Leak Detected\n";
 			std::cerr << "==Ocelot==  " << fi->second.size 
 				<< " bytes at " << (int*)fi->first << " never freed.\n"; 
 			delete[] fi->first;
-	
 		}
 		
 		for( ArrayMap::iterator array = _arrays.begin(); 
@@ -316,19 +314,15 @@ namespace cuda
 		for( OpenGLBufferMap::iterator buffer = _openGLBuffers.begin(); 
 			buffer != _openGLBuffers.end(); ++buffer )
 		{
-		
 			std::cerr << "==Ocelot== Open GL Buffer Error.\n";
 			std::cerr << "==Ocelot==  Never unregistered buffer " 
 				<< buffer->first << "\n";
 				
 			if( buffer->second != 0 )
 			{
-			
 				std::cerr << "==Ocelot==  still mapped to " 
-					<< buffer->second << "\n";		
-		
+					<< buffer->second << "\n";
 			}
-			
 		}
 		
 		report("Ocelot Runtime Destroyed.");
@@ -354,7 +348,6 @@ namespace cuda
 		
 		if( thread == _threads.end() )
 		{
-		
 			ThreadContext threadContext;
 			threadContext.guid = context.devices[0].guid;
 			threadContext.ctaDimensions.x = 1;
@@ -367,16 +360,13 @@ namespace cuda
 			threadContext.flags = 0;
 			thread = _threads.insert( std::make_pair( id, 
 				threadContext ) ).first;
-		
 		}
 		
 		if( !context.select( thread->second.guid ) )
 		{
-		
 			throw hydrazine::Exception( 
 				formatError( "Failed to select ocelot device." ), 
 				thread->second.guid );
-		
 		}
 	}
 	
@@ -988,8 +978,8 @@ namespace cuda
 				}
 				
 				unsigned int staticSharedSize = emulated->SharedMemorySize;
-				unsigned int dynamicSharedSize = std::max( staticSharedSize, 
-					thread->second.shared );
+				unsigned int dynamicSharedSize = staticSharedSize +
+					thread->second.shared;
 				
 				if( _preallocateAllSharedMemory )
 				{
@@ -1112,7 +1102,6 @@ namespace cuda
 					emulated->launchGrid( thread->second.kernelDimensions.x, 
 						thread->second.kernelDimensions.y );
 					thread->second.lastError = cudaSuccess;
-					
 				}
 				#if CATCH_RUNTIME_EXCEPTIONS == 1
 				catch( const executive::RuntimeException& e )

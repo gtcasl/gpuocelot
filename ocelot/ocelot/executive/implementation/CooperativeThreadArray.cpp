@@ -2387,6 +2387,16 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 							setRegAsU64(threadID, instr.d.reg, a);
 						}
 						break;
+					case PTXOperand::s32: 
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, (PTXS64)INT_MIN);
+								a = min(a, (PTXS64)INT_MAX);
+							}
+							setRegAsS64(threadID, instr.d.reg, a);
+						}
+						break;
 					case PTXOperand::f32: 
 						{
 							PTXS64 a = operandAsS64(threadID, instr.a);
@@ -3008,6 +3018,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->ParameterMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}
@@ -3023,6 +3035,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->ConstMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}
@@ -3051,6 +3065,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->SharedMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}
@@ -3066,6 +3082,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->LocalMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}
@@ -6095,6 +6113,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->ParameterMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 								threadID, blockId.x, instr);
 					}					
@@ -6123,6 +6143,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->SharedMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}					
@@ -6138,6 +6160,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
 							<< kernel->LocalMemorySize;
+						stream << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}					

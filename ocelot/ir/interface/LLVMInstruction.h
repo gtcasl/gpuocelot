@@ -8,6 +8,8 @@
 #ifndef LLVM_INSTRUCTION_H_INCLUDED
 #define LLVM_INSTRUCTION_H_INCLUDED
 
+#include <ocelot/ir/interface/Instruction.h>
+
 namespace ir
 {
 	/*! \brief A class used to represent any LLVM Instruction */
@@ -72,8 +74,19 @@ namespace ir
 				Zext,
 				InvalidOpcode	
 			};
-			
 		
+		
+		
+		public:
+			/*!	\brief Returns a string representation of the instruction */
+			std::string toString() const;
+
+			/*!
+				\brief Determines if the instruction is valid, returns an empty 
+					string if valid otherwise an error message.
+			*/
+			std::string valid() const;
+					
 	};
 }
 

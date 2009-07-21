@@ -17,7 +17,7 @@ namespace ir
 	{
 		public:
 			/*! \brief The opcode of the instruction */
-			enum opcode
+			enum Opcode
 			{
 				Alloca,
 				And,
@@ -75,7 +75,9 @@ namespace ir
 				InvalidOpcode	
 			};
 		
-		
+		public:
+		    /*! \brief The opcode of the instruction */
+		    Opcode opcode;
 		
 		public:
 			/*!	\brief Returns a string representation of the instruction */

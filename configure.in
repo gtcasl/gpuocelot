@@ -59,7 +59,6 @@ AC_PROG_YACC
 
 ################################################################################
 # Checks for header files.
-AC_FUNC_ALLOCA
 AC_HEADER_STDC
 AC_CHECK_HEADERS([fenv.h float.h memory.h unistd.h])
 ################################################################################
@@ -77,9 +76,9 @@ AC_CHECK_TYPES([ptrdiff_t])
 ################################################################################
 # Checks for library functions.
 AC_FUNC_FSEEKO
-AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_MKTIME
+AC_FUNC_ALLOCA
 AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_SETVBUF_REVERSED

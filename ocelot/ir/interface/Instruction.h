@@ -34,6 +34,9 @@ namespace ir {
 			Unknown
 		};
 
+		/*! \brief A type for a register identifier */
+		typedef unsigned int RegisterType;
+		
 	public:
 		/*! \brief Get a string represention of an architecture */
 		static std::string toString( Architecture a );
@@ -52,7 +55,6 @@ namespace ir {
 		virtual std::string valid() const = 0;
 
 	public:
-
 		/*! \brief Label that may identify the instruction */
 		std::string label;
 

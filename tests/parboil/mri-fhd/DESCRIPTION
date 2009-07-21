@@ -1,4 +1,0 @@
-Computation of a matrix FHd used in a 3D magnetic resonance image reconstruction algorithm in non-Cartesian space.  The vector d represents the scan data.  The vector FH represents the scan trajectory.
-
-See also:
-  Sam S. Stone, Justin P. Haldar, Stephanie C. Tsao, Wen-Mei W. Hwu, Zhi-Pei Liang, and Bradley P. Sutton.  "Accelerating Advanced MRI Reconstructions on GPUs."  In Computing Frontiers, 2008.

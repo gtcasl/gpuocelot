@@ -1,4 +1,0 @@
-A benchmark which implements a Rys Polynomial Equation Solver.  It calculates 2-electron repulsion integrals, which represent the Coulomb interaction between electrons in molecules.
-
-For more information about Rys polynomials:
-  J. Rys, M. Dupuis, H. F. King.  "Computation of Electron Repulsion Integrals Using the Rys Quadrature Method."  Journal of Computational Chemistry 4(2):154-157, 1983.

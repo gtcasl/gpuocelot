@@ -42,9 +42,7 @@ namespace ir {
 		Instruction();
 		virtual ~Instruction();
 
-		/*!
-			\brief Returns a string representation of the instruction
-		*/
+		/*!	\brief Returns a string representation of the instruction */
 		virtual std::string toString() const = 0;
 
 		/*!
@@ -55,14 +53,10 @@ namespace ir {
 
 	public:
 
-		/*!
-			\brief Label that may identify the instruction
-		*/
+		/*! \brief Label that may identify the instruction */
 		std::string label;
 
-		/*!
-			\brief Indicates ISA of the instruction
-		*/
+		/*!	\brief Indicates ISA of the instruction */
 		Architecture ISA;
 	};
 

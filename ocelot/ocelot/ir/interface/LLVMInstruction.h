@@ -12,8 +12,21 @@
 
 namespace ir
 {
+	typedef unsigned char LLVMU8;
+	typedef unsigned short LLVMU16;
+	typedef unsigned int LLVMU32;
+	typedef unsigned long long LLVMU64;
+	
+	typedef char LLVMS8;
+	typedef short LLVMS16;
+	typedef int LLVMS32;
+	typedef long long LLVMS64;
+	
+	typedef float LLVMF32;
+	typedef double LLVMF64;
+
 	/*! \brief A class used to represent any LLVM Instruction */
-	class LLVMInstruction
+	class LLVMInstruction : public Instruction
 	{
 		public:
 			/*! \brief The opcode of the instruction */
@@ -72,12 +85,99 @@ namespace ir
 				Va_arg,
 				Xor,
 				Zext,
-				InvalidOpcode	
+				InvalidOpcode
+			};
+			
+			/*! \brief Supported LLVM Types */
+			enum DataType
+			{
+				S8,
+				S16,
+				S32,
+				S64,
+				U8,
+				U16,
+				U32,
+				U64,
+				F32,
+				F64,
+				Invalid
+			};
+			
+			/*! \brief An llvm operand */
+			class Operand
+			{
+				public:
+					/*! \brief All possible operand modes */
+					enum Mode
+					{
+						Register,
+						Immediate,
+						Label,
+						Invalid
+					};
+					
+				public:
+					/*! \brief The Mode of operand */
+					Mode mode;
+					
+					/*! \brief The DataType of the operand */
+					DataType type;
+					
+					/*! \brief Vector width */
+					unsigned int vector;
+					
+					/*! \brief The value of the operand */
+					enum
+					{
+						LLVMU8 u8;
+						LLVMU16 u16;
+						LLVMU32 u32;
+						LLVMU64 u64;
+						LLVMS8 s8;
+						LLVMS16 s16;
+						LLVMS32 s32;
+						LLVMS64 s64;
+						LLVMF32 f32;
+						LLVMF64 f64;
+						RegisterType reg;
+					};
+					
+					/*! \brief The label of the operand if it has one */
+					std::string label;
+					
+				public:
+					/*! \brief Default constructor */
+					Operand( Mode m = Invalid, 
+						DataType type = LLVMInstruction::Invalid, 
+						unsigned int v = 1 );
+						
+					std::string toString() const;
 			};
 		
 		public:
 		    /*! \brief The opcode of the instruction */
 		    Opcode opcode;
+		
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The first source operand */
+			Operand a;
+			
+			/*! \brief The second operand */
+			Operand b;
+			
+			/*! \brief Alignment of operands */
+			unsigned int alignment;
+		
+		public:
+			/*! \brief Convert a datatype to a string parsable by LLVM */
+			static std::string toString( DataType d );
+		
+		public:
+			/*! \brief Default constructor */
+			LLVMInstruction( Opcdode op = InvalidOpcode );
 		
 		public:
 			/*!	\brief Returns a string representation of the instruction */

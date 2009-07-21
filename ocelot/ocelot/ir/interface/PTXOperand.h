@@ -116,7 +116,7 @@ namespace ir {
 
 		typedef std::vector< PTXOperand > Array;
 
-		typedef unsigned int RegisterType;
+		typedef Instruction::RegisterType RegisterType;
 
 	public:
 		static std::string toString( DataType );

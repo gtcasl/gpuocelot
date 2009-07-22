@@ -819,7 +819,7 @@ void executive::Executive::free(void *ptr) {
 				AllocationMap::iterator it = 
 					l_it->second.lower_bound((char*)ptr);
 				assert(it != l_it->second.end());
-				assert((char*)ptr < ((char*)it->second.ptr + it->second.size));
+				assert((char*)ptr <= ((char*)it->second.ptr + it->second.size));
 
 				if (!it->second.external) {
 					delete [] (char *)it->second.ptr;

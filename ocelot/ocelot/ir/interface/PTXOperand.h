@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <ocelot/ir/interface/Instruction.h>
 
 namespace ir {
 

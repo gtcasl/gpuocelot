@@ -154,6 +154,22 @@ namespace ir
 						
 					std::string toString() const;
 			};
+			
+			/*! \brief Supported attributes */
+			enum Attribute
+			{
+				Tail = 1,
+				CCallingConvention = 2,
+				FastCallingConvention = 4,
+				ColdCallingConvention = 8,
+				ZeroExtend = 16,
+				SignExtend = 32,
+				InReg = 64,
+				NoReturn = 128,
+				NoUnwind = 256,
+				ReadOnly = 512,
+				ReadNone = 1024
+			};
 		
 		public:
 		    /*! \brief The opcode of the instruction */
@@ -170,11 +186,22 @@ namespace ir
 			
 			/*! \brief Alignment of operands */
 			unsigned int alignment;
+			
+			/*! \brief Attributes */
+			Attribute attributes;
 		
 		public:
 			/*! \brief Convert a datatype to a string parsable by LLVM */
 			static std::string toString( DataType d );
-		
+			/*! \brief Check a flag for the Tail attribute */
+			static std::string tailToString( int attribute );
+			/*! \brief Check a flag for a calling convention attribute */
+			static std::string conventionToString( int attribute );
+			/*! \brief Check a flag for parameter attributes */
+			static std::string parameterAttributesToString( int attribute );
+			/*! \brief Check a flag for function attribute */
+			static std::string functionAttributesToString( int attribute );
+			
 		public:
 			/*! \brief Default constructor */
 			LLVMInstruction( Opcdode op = InvalidOpcode );

@@ -58,6 +58,37 @@ namespace ir
 		return "";
 	}
 
+	std::string LLVMInstruction::tailToString( int attribute )
+	{
+		if( attribute & Tail) return "tail";
+		return "";
+	}
+
+	std::string LLVMInstruction::conventionToString( int attribute )
+	{
+		if( attribute & FastCallingConvention) return "fastcc";
+		if( attribute & CCallingConvention) return "ccc";
+		if( attribute & ColdCallingConvention) return "coldcc";
+		return "";
+	}
+
+	std::string LLVMInstruction::parameterAttributesToString( int attribute )
+	{
+		if( attribute & ZeroExtend) return "zeroext";
+		if( attribute & SignExtend) return "signext";
+		if( attribute & InReg) return "inreg";
+		return "";		
+	}
+
+	std::string LLVMInstruction::functionAttributesToString( int attribute )
+	{
+		if( attribute & NoReturn) return "noreturn";
+		if( attribute & NoUnwind) return "nounwind";
+		if( attribute & ReadOnly) return "readonly";
+		if( attribute & ReadNone) return "readnone";
+		return "";
+	}
+
 	std::string LLVMInstruction::toString( DataType d )
 	{
 		switch( d )
@@ -100,19 +131,22 @@ namespace ir
 			}
 			case Ashr:
 			{
-			
+				return d.toString() + " = ashr " + toString( d.type ) + " " 
+					+ a.toString() + ", " + b.toString();
 			}
 			case Bitcast:
 			{
-			
+				return d.toString() + " = bitcast " + toString( a.type ) + " " 
+					+ a.toString() + " to " + toString( d.type );
 			}	
 			case Br:
 			{
-			
+				return "br " + toString( d.type ) + ", label " + a.toString() 
+					+ ", label " + b.toString();
 			}
 			case Call:
 			{
-			
+				return 
 			}
 			case Extractelement:
 			{

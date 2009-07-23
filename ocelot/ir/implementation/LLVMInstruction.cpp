@@ -19,6 +19,12 @@ namespace ir
 	
 	}
 
+	LLVMInstruction::Opeand::Parameter( Attribute a, Mode m, DataType t, 
+		unsigned int v ) : Operand( m, t, v), attribute( a )
+	{
+		
+	}
+
 	std::string LLVMInstruction::Opeand::toString() const
 	{
 		switch( mode )
@@ -72,7 +78,7 @@ namespace ir
 		return "";
 	}
 
-	std::string LLVMInstruction::parameterAttributesToString( int attribute )
+	std::string LLVMInstruction::toString( int attribute )
 	{
 		if( attribute & ZeroExtend) return "zeroext";
 		if( attribute & SignExtend) return "signext";
@@ -86,6 +92,23 @@ namespace ir
 		if( attribute & NoUnwind) return "nounwind";
 		if( attribute & ReadOnly) return "readonly";
 		if( attribute & ReadNone) return "readnone";
+		return "";
+	}
+	
+	std::string LLVMInstruction::toString( ParameterAttribute attribute )
+	{
+		switch( attribute )
+		{
+			case ZeroExtend: return "zeroext"; break;
+			case SignExtend: return "signext"; break;
+			case InReg: return "inreg"; break;
+			case ByValue: return "byval"; break;
+			case StructureReturn: return "sret"; break;
+			case NoAlias: return "noalias"; break;
+			case NoCapture: return "nocapture"; break;
+			case Nest: return "nest"; break;
+			case NoAttribute: return ""; break;
+		}
 		return "";
 	}
 
@@ -108,6 +131,30 @@ namespace ir
 		return "";
 	}
 
+	std::string LLVMInstruction::toString( Comparison comp )
+	{
+		switch( comp )
+		{
+			case False: return "false"; break;
+			case Oeq: return "oeq"; break;
+			case Ogt: return "ogt"; break;
+			case Oge: return "oge"; break;
+			case Olt: return "olt"; break;
+			case Ole: return "ole"; break;
+			case One: return "one"; break;
+			case Ord: return "ord"; break;
+			case Ueq: return "ueq"; break;
+			case Ugt: return "ugt"; break;
+			case Uge: return "uge"; break;
+			case Ult: return "ult"; break;
+			case Ule: return "ule"; break;
+			case Une: return "une"; break;
+			case Uno: return "uno"; break;
+			case True: return "true"; break;
+		}
+		return "";
+	}
+
 	LLVMInstruction::LLVMInstruction( Opcdode op ) : opcode( op )
 	{
 		
@@ -115,238 +162,12 @@ namespace ir
 
 	std::string LLVMInstruction::toString() const
 	{
-		switch( opcode )
-		{
-			case Alloca:
-			{
-				std::stringstream stream;
-				stream << d.toString() << " = alloca " << toString( d.type ) 
-					<< ", " << a.u64 << ", align " << allignment;
-				return stream.str();
-			}
-			case And:
-			{
-				return d.toString() + " = and " + toString( d.type ) 
-					+ " " + a.toString() + ", " + b.toString();
-			}
-			case Ashr:
-			{
-				return d.toString() + " = ashr " + toString( d.type ) + " " 
-					+ a.toString() + ", " + b.toString();
-			}
-			case Bitcast:
-			{
-				return d.toString() + " = bitcast " + toString( a.type ) + " " 
-					+ a.toString() + " to " + toString( d.type );
-			}	
-			case Br:
-			{
-				return "br " + toString( d.type ) + ", label " + a.toString() 
-					+ ", label " + b.toString();
-			}
-			case Call:
-			{
-				std::string tail = tailToString( attribute );
-				std::string convention = conventionToString( attribute );
-				std::string 
-				return d.toString() + " = " + tailToString( attribute ) + " " 
-					+
-			}
-			case Extractelement:
-			{
-			
-			}
-			case Extractvalue:
-			{
-			
-			}
-			case Fadd:
-			{
-			
-			}
-			case Fcmp:
-			{
-			
-			}
-			case Fdiv:
-			{
-			
-			}
-			case Fmul:
-			{
-			
-			}
-			case Fpext:
-			{
-			
-			}	
-			case Fptosi:
-			{
-			
-			}	
-			case Fptoui:
-			{
-			
-			}
-			case Fptrunc:
-			{
-			
-			}	
-			case Free:
-			{
-			
-			}
-			case Frem:
-			{
-			
-			}
-			case Fsub:
-			{
-			
-			}
-			case Getelementptr:
-			{
-			
-			}
-			case Icmp:
-			{
-			
-			}
-			case Insertelement:
-			{
-			
-			}
-			case Insertvalue:
-			{
-			
-			}
-			case Inttoptr:
-			{
-			
-			}
-			case Invoke:
-			{
-			
-			}
-			case Load:
-			{
-			
-			}
-			case Lshr:
-			{
-			
-			}
-			case Malloc:
-			{
-			
-			}
-			case Mul:
-			{
-			
-			}
-			case Or:
-			{
-			
-			}
-			case Phi:
-			{
-			
-			}
-			case Ptrtoint:
-			{
-			
-			}
-			case Ret:
-			{
-			
-			}
-			case Radd:
-			{
-			
-			}
-			case Sdiv:
-			{
-			
-			}
-			case Select:
-			{
-			
-			}
-			case Sext:
-			{
-			
-			}
-			case Shl:
-			{
-			
-			}
-			case Shufflevector:
-			{
-			
-			}
-			case Sitofp:
-			{
-			
-			}
-			case Srem:
-			{
-			
-			}
-			case Store:
-			{
-			
-			}
-			case Sub:
-			{
-			
-			}
-			case Switch:
-			{
-			
-			}
-			case Trunc:
-			{
-			
-			}
-			case Udiv:
-			{
-			
-			}
-			case Uitofp:
-			{
-			
-			}	
-			case Unreachable:
-			{
-			
-			}
-			case Unwind:
-			{
-			
-			}
-			case Urem:
-			{
-			
-			}
-			case Va_arg:
-			{
-			
-			}
-			case Xor:
-			{
-			
-			}
-			case Zext:
-			{
-			
-			}
-			case InvalidOpcode
-		}
+		return "";
 	}
 
 	std::string LLVMInstruction::valid() const
 	{
-		return "";
+		return "A base LLVMInstruction is not valid";
 	}
 }
 

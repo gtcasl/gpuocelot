@@ -104,79 +104,34 @@ namespace ir
 				Invalid
 			};
 			
-			/*! \brief An llvm operand */
-			class Operand
+			/*! \brief Comparison */
+			enum Comparison
 			{
-				public:
-					/*! \brief All possible operand modes */
-					enum Mode
-					{
-						Register,
-						Immediate,
-						Label,
-						Invalid
-					};
-					
-				public:
-					/*! \brief The Mode of operand */
-					Mode mode;
-					
-					/*! \brief The DataType of the operand */
-					DataType type;
-					
-					/*! \brief Vector width */
-					unsigned int vector;
-					
-					/*! \brief The value of the operand */
-					enum
-					{
-						LLVMU8 u8;
-						LLVMU16 u16;
-						LLVMU32 u32;
-						LLVMU64 u64;
-						LLVMS8 s8;
-						LLVMS16 s16;
-						LLVMS32 s32;
-						LLVMS64 s64;
-						LLVMF32 f32;
-						LLVMF64 f64;
-						RegisterType reg;
-					};
-					
-					/*! \brief The label of the operand if it has one */
-					std::string label;
-					
-				public:
-					/*! \brief Default constructor */
-					Operand( Mode m = Invalid, 
-						DataType type = LLVMInstruction::Invalid, 
-						unsigned int v = 1 );
-						
-					std::string toString() const;
+				False, // no comparison, always returns false
+				Oeq, // ordered and equal
+				Ogt, // ordered and greater than
+				Oge, // ordered and greater than or equal
+				Olt, // ordered and less than
+				Ole, // ordered and less than or equal
+				One, // ordered and not equal
+				Ord, // ordered (no nans)
+				Ueq, // unordered or equal
+				Ugt, // unordered or greater than
+				Uge, // unordered or greater than or equal
+				Ult, // unordered or less than
+				Ule, // unordered or less than or equal
+				Une, // unordered or not equal
+				Uno, // unordered (either nans)
+				True, // no comparison, always returns true
 			};
 			
-			/*! \brief Supported attributes */
-			enum Attribute
-			{
-				Tail = 1,
-				CCallingConvention = 2,
-				FastCallingConvention = 4,
-				ColdCallingConvention = 8,
-				ZeroExtend = 16,
-				SignExtend = 32,
-				InReg = 64,
-				NoReturn = 128,
-				NoUnwind = 256,
-				ReadOnly = 512,
-				ReadNone = 1024
-			};
-		
 		public:
 		    /*! \brief The opcode of the instruction */
 		    Opcode opcode;
 		
-			/*! \brief The destination operand */
-			Operand d;
+			/*! \brief The destination operand/parameter, 
+				this is the return value of a function call. */
+			Parameter d;
 			
 			/*! \brief The first source operand */
 			Operand a;
@@ -184,11 +139,20 @@ namespace ir
 			/*! \brief The second operand */
 			Operand b;
 			
-			/*! \brief Alignment of operands */
-			unsigned int alignment;
+			union
+			{
+				/*! \brief Comparisons */
+				Comparison comparison;
+				/*! \brief Alignment of operands */
+				unsigned int alignment;
+				/*! \brief Attributes */
+				Attribute attributes;
+				/*! \brief Index for insert element instructions */
+				unsigned int index;
+			};
 			
-			/*! \brief Attributes */
-			Attribute attributes;
+			/*! \brief A vector of Parameters for a function call instruction */
+			ParameterVector parameters;
 		
 		public:
 			/*! \brief Convert a datatype to a string parsable by LLVM */
@@ -197,15 +161,36 @@ namespace ir
 			static std::string tailToString( int attribute );
 			/*! \brief Check a flag for a calling convention attribute */
 			static std::string conventionToString( int attribute );
-			/*! \brief Check a flag for parameter attributes */
-			static std::string parameterAttributesToString( int attribute );
 			/*! \brief Check a flag for function attribute */
-			static std::string functionAttributesToString( int attribute );
+			static std::string functionAttributeToString( int attribute );
+			/*! \brief Convert a Parameter attribute to a string */
+			static std::string toString( ParameterAttribute attribute );
+			/*! \brief Convert a Comprarison to a string */
+			static std::string toString( Comparison comp );
 			
 		public:
 			/*! \brief Default constructor */
 			LLVMInstruction( Opcdode op = InvalidOpcode );
 		
+		public:
+			/*!	\brief Returns a string representation of the instruction */
+			virtual std::string toString() const;
+
+			/*!
+				\brief Determines if the instruction is valid, returns an empty 
+					string if valid otherwise an error message.
+			*/
+			virtual std::string valid() const;
+					
+	};
+	
+	/*! \brief A generic 3 op arithmetic instruction */
+	class LLVMArithmeticInstruction : public LLVMInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			LLVMArithmeticInstruction( Opcdode op = InvalidOpcode );
+			
 		public:
 			/*!	\brief Returns a string representation of the instruction */
 			std::string toString() const;
@@ -215,7 +200,6 @@ namespace ir
 					string if valid otherwise an error message.
 			*/
 			std::string valid() const;
-					
 	};
 }
 

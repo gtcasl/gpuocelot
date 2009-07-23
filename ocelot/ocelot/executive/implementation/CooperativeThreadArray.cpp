@@ -36,6 +36,9 @@
 // turn on checking of all global accesses... be prepared to take a perf hit
 #define CHECK_GLOBAL_ACCESSES 1
 					
+// turn on checking of memory accesses to make sure they are aligned
+#define CHECK_MEMORY_ALIGNMENT 1
+					
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
 
@@ -2934,7 +2937,7 @@ static void globalMemoryError(const void* pointer, size_t size,
 	stream << executive::Executive::nearbyAllocationsToString(
 		*kernel->context, pointer);
 	stream << "\n";
-	stream << "In " << kernel->location(context.PC) << "\n";
+	stream << " At: " << kernel->location(context.PC);
 	
 	throw executive::RuntimeException(stream.str(), context.PC, 
 		thread, cta, instr);	
@@ -3007,7 +3010,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 		}
 
 		source += instr.a.offset;
-				
+			
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
 				{
@@ -3096,6 +3099,17 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 					context.PC, instr);
 		}
 
+		#if (CHECK_MEMORY_ALIGNMENT==1)
+		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
+			std::stringstream stream;
+			stream << "Memory access at " << (void*)source 
+				<< " is not aligned to the access size (" 
+					<< ( elementSize * vectorSize ) << " bytes)\n";
+			stream << " At: " << kernel->location(context.PC);
+			throw RuntimeException(stream.str(), context.PC, instr);
+		}
+		#endif
+		
 		if( traceEvents ) {
 			currentEvent.memory_addresses.push_back(
 				(long long unsigned int)source);
@@ -6173,6 +6187,17 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 				throw RuntimeException("unsupported address space", 
 					context.PC, instr);
 		}
+
+		#if (CHECK_MEMORY_ALIGNMENT==1)
+		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
+			std::stringstream stream;
+			stream << "Memory access at " << (void*)source 
+				<< " is not aligned to the access size (" 
+					<< ( elementSize * vectorSize ) << " bytes)\n";
+			stream << " At: " << kernel->location(context.PC);
+			throw RuntimeException(stream.str(), context.PC, instr);
+		}
+		#endif
 
 		if ( traceEvents ) {
 			currentEvent.memory_addresses.push_back(

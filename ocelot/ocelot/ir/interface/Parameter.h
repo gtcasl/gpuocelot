@@ -62,39 +62,30 @@ namespace ir {
 		Parameter();
 		~Parameter();
 
-		/*!
-			Returns the size of a parameter
-		*/
+		/*!	Returns the size of a parameter */
 		unsigned int getSize() const;
 
-		/*!
-			Returns the size of a single element of a parameter
-		*/
+		/*!	Returns the size of a single element of a parameter */
 		unsigned int getElementSize() const;
+		
+		/*! \brief Return the alignment restriction of the parameter */
+		unsigned int getAlignment() const;
 
-		/*!
-			Data type of parameter
-		*/
+		/*!	Data type of parameter */
 		PTXOperand::DataType type;
 
-		/*!
-			Name of parameter
-		*/
+		/*!	Name of parameter */
 		std::string name;
 
-		/*
-			Runtime bindings
-		*/
-	public:
+		/*! \brief Alignment attribute */
+		unsigned int alignment;
 
-		/*!
-			Offset in bytes from the beginning of the parameter block
-		*/
+		/*	Runtime bindings */
+	public:
+		/*!	Offset in bytes from the beginning of the parameter block */
 		unsigned int offset;
 
-		/*!
-			Array containing union of values
-		*/
+		/*!	Array containing union of values */
 		ValueVector arrayValues;
 	};
 

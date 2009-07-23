@@ -97,16 +97,13 @@ namespace ir {
 			NoAttribute
 		};
 
-	public:
-	
+	public:	
 		static std::string toString( Attribute );
 		static std::string toString( Data, PTXOperand::DataType );
 	
 	public:
 
-		/*!
-			Indicates type of statement
-		*/
+		/*! Indicates type of statement */
 		Directive directive;
 
 		PTXInstruction instruction;

@@ -125,10 +125,10 @@ CheckRender *g_CheckRender = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
 // constants / global variables
-unsigned int window_width = 512;
-unsigned int window_height = 512;
-unsigned int image_width = 512;
-unsigned int image_height = 512;
+unsigned int window_width = 64;
+unsigned int window_height = 64;
+unsigned int image_width = 64;
+unsigned int image_height = 64;
 
 // pbo and fbo variables
 GLuint pbo_source;

@@ -72,6 +72,7 @@ ir::Parameter::Parameter(const PTXStatement& statement) {
 	if (statement.directive == PTXStatement::Param) {
 		type = statement.type;
 		name = statement.name;
+		alignment = statement.alignment;
 		arrayValues.resize(statement.elements());
 	}
 }
@@ -104,5 +105,9 @@ unsigned int ir::Parameter::getElementSize() const {
 			break;
 	}
 	return 0;
+}
+
+unsigned int ir::Parameter::getAlignment() const {
+	return std::max( getElementSize(), alignment );
 }
 

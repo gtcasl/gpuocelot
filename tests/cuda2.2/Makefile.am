@@ -750,8 +750,6 @@ EXTRA_DIST = data/regression_2_18.gold.dat \
 
 ################################################################################
 ## Regression tests
-sdkTest : regression/regression.log
-
 regression/regression.log : check
 	@echo
 	@echo "Running CUDA SDK 2.2 regression test"
@@ -759,7 +757,7 @@ regression/regression.log : check
 		-t regression/tests.txt \
 		-l regression/regression.log -v
 
-test : sdkTest
+test : regression/regression.log
 
 ################################################################################
 

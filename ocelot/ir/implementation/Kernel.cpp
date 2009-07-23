@@ -38,7 +38,6 @@ ir::Kernel::Kernel(
 
 	using namespace std;
 	int Icount = 0;
-	unsigned int paramOffset = 0;
 
 	ptxCFG = 0;
 	dom_tree = 0;
@@ -51,9 +50,7 @@ ir::Kernel::Kernel(
 		}
 		else if ((*it).directive == PTXStatement::Param) {
 			Parameter param(*it);
-			param.offset = paramOffset;
 			parameters.push_back(param);
-			paramOffset += param.getSize();
 		}
 		else if ((*it).directive == PTXStatement::Entry) {
 			name = (*it).name;

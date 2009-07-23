@@ -146,7 +146,11 @@ namespace ir
 			}
 			case Call:
 			{
-				return 
+				std::string tail = tailToString( attribute );
+				std::string convention = conventionToString( attribute );
+				std::string 
+				return d.toString() + " = " + tailToString( attribute ) + " " 
+					+
 			}
 			case Extractelement:
 			{

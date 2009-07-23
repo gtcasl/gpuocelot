@@ -147,10 +147,10 @@ void executive::EmulatedKernel::freeAll() {
 */
 void executive::EmulatedKernel::initialize() {
 	constructInstructionSequence();
-	updateParamReferences();
 	registerAllocation();
 	initializeSharedMemory();
 	initializeParameterMemory();
+	updateParamReferences();
 	initializeLocalMemory();
 }
 
@@ -299,6 +299,12 @@ void executive::EmulatedKernel::initializeParameterMemory() {
 		i_it != parameters.end(); ++i_it ) {
 		report( " Initializing memory for paramter " << i_it->name 
 			<< " of size " << i_it->getSize() );
+		//align parameter memory
+		unsigned int padding = i_it->getAlignment() 
+			- ( ParameterMemorySize % i_it->getAlignment() );
+		padding = (i_it->getAlignment() == padding) ? 0 : padding;
+		ParameterMemorySize += padding;
+		i_it->offset = ParameterMemorySize;
 		ParameterMemorySize += i_it->getSize();
 	}	
 }
@@ -321,6 +327,10 @@ void executive::EmulatedKernel::updateParameterMemory() {
 	unsigned int size = 0;
 	for(std::vector<ir::Parameter>::iterator i_it = parameters.begin();
 		i_it != parameters.end(); ++i_it ) {
+		unsigned int padding = i_it->getAlignment()
+			- ( size % i_it->getAlignment() );
+		padding = (i_it->getAlignment() == padding) ? 0 : padding;
+		size += padding;
 		for(ir::Parameter::ValueVector::iterator 
 			v_it = i_it->arrayValues.begin(); 
 			v_it != i_it->arrayValues.end(); ++v_it) {
@@ -375,6 +385,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	typedef unordered_set<std::string> StringSet;
 	typedef std::deque<PTXOperand*> OperandVector;
 	unsigned int sharedOffset = 0;
+	unsigned int externalAlignment = 1;
 
 	report( "Initializing shared memory for kernel " << name );
 	Map label_map;
@@ -387,11 +398,17 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 			it != module->globals.end(); ++it) {
 			if (it->second.statement.directive == PTXStatement::Shared) {
 				if(it->second.statement.attribute == PTXStatement::Extern) {
+					report("Found global external shared variable " 
+						<< it->second.statement.name);
 					assert(external.count(it->second.statement.name) == 0);
 					external.insert(it->second.statement.name);
+					externalAlignment = std::max( externalAlignment, 
+						(unsigned int) it->second.statement.alignment );
+					externalAlignment = std::max( externalAlignment, 
+						ir::PTXOperand::bytes( it->second.statement.type ) );
 				} 
 				else {
-					report("Found global extern shared variable " 
+					report("Found global shared variable " 
 						<< it->second.statement.name);
 					sharedGlobals.insert( std::make_pair( 
 						it->second.statement.name, it ) );
@@ -407,6 +424,10 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 				report("Found local external shared variable " << it->name);
 				assert(external.count(it->name) == 0);
 					external.insert(it->name);
+				externalAlignment = std::max( externalAlignment, 
+					(unsigned int) it->alignment );
+				externalAlignment = std::max( externalAlignment, 
+					ir::PTXOperand::bytes( it->type ) );
 			}
 			else {
 				unsigned int offset;
@@ -504,6 +525,15 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 		}
 	}
 	
+	// compute necessary padding for alignment of external shared memory
+	unsigned int padding = externalAlignment 
+		- ( sharedOffset % externalAlignment );
+	padding = ( padding == externalAlignment ) ? 0 : padding;
+	sharedOffset += padding;
+
+	report( "Padding shared memory by " << padding << " bytes to handle " 
+		<< externalAlignment << " byte alignment requirement." );
+		
 	for (OperandVector::iterator operand = externalOperands.begin(); 
 		operand != externalOperands.end(); ++operand) {
 		report( "Mapping external shared label " << (*operand)->identifier 

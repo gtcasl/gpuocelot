@@ -12,15 +12,10 @@
 
 namespace ir
 {
-	typedef unsigned char LLVMU8;
-	typedef unsigned short LLVMU16;
-	typedef unsigned int LLVMU32;
-	typedef unsigned long long LLVMU64;
-	
-	typedef char LLVMS8;
-	typedef short LLVMS16;
-	typedef int LLVMS32;
-	typedef long long LLVMS64;
+	typedef char LLVMI8;
+	typedef short LLVMI16;
+	typedef int LLVMI32;
+	typedef long long LLVMI64;
 	
 	typedef float LLVMF32;
 	typedef double LLVMF64;
@@ -32,6 +27,7 @@ namespace ir
 			/*! \brief The opcode of the instruction */
 			enum Opcode
 			{
+				Add,
 				Alloca,
 				And,
 				Ashr,
@@ -65,7 +61,6 @@ namespace ir
 				Phi,
 				Ptrtoint,
 				Ret,
-				Radd,
 				Sdiv,
 				Select,
 				Sext,
@@ -82,7 +77,7 @@ namespace ir
 				Unreachable,
 				Unwind,
 				Urem,
-				Va_arg,
+				VaArg,
 				Xor,
 				Zext,
 				InvalidOpcode
@@ -91,20 +86,16 @@ namespace ir
 			/*! \brief Supported LLVM Types */
 			enum DataType
 			{
-				S8,
-				S16,
-				S32,
-				S64,
-				U8,
-				U16,
-				U32,
-				U64,
+				I8,
+				I16,
+				I32,
+				I64,
 				F32,
 				F64,
-				Invalid
+				InvalidDataType
 			};
 			
-			/*! \brief Comparison */
+			/*! \brief Floating Point Comparison */
 			enum Comparison
 			{
 				False, // no comparison, always returns false
@@ -123,84 +114,908 @@ namespace ir
 				Une, // unordered or not equal
 				Uno, // unordered (either nans)
 				True, // no comparison, always returns true
+				Eq, // Integer equal
+				Ne, // Integer not equal
+				Sgt, // Signed greater than
+				Sge, // Signed greater equal
+				Slt, // Signed less than
+				Sle // Signed less or equal
+			};
+			
+			/*! \brief Valid calling conventions */
+			enum CallingConvention
+			{
+				CCallingConvention,
+				FastCallingConvention,
+				ColdCallingConvention,
+				DefaultCallingConvention,
+				InvalidCallingConvention
+			};
+			
+			/*! \brief Valid Parameter Attributes */
+			enum ParameterAttribute
+			{
+				ZeroExtend,
+				SignExtend,
+				InRegister,
+				ByValue,
+				StructureReturn,
+				NoAlias,
+				NoCapture,
+				Nested,
+				InvalidParameterAttribute
+			};
+			
+			/*! \brief Valid Function Attributes */
+			enum FunctionAttribute
+			{
+				AlwaysInline = 1,
+				NoInline = 2,
+				OptimizeSize = 4,
+				NoReturn = 8,
+				NoUnwind = 16,
+				ReadNone = 32,
+				ReadOnly = 64,
+				StackSmashingProtector = 128,
+				StackSmashingProtectorRequired = 256,
+				NoRedZone = 512,
+				NoImplicitFloat = 1024,
+				Naked = 2048
+			};
+			
+			/*! \brief A class for a basic LLVM Operand */
+			class Operand
+			{
+				public:
+					typedef std::vector< Operand > Vector;
+			
+				public:
+					/*! \brief The datatype of the operand */
+					DataType type;
+					/*! \brief The label of the operand */
+					std::string label;
+					/*! \brief Is the operand a pointer to a type */
+					bool pointer;
+					/*! \brief The vector width of the operand */
+					unsigned int vector;
+				
+				public:
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( DataType t = InvalidDataType, bool p = false, 
+						unsigned int v = 1 );			
 			};
 			
 		public:
 		    /*! \brief The opcode of the instruction */
-		    Opcode opcode;
-		
-			/*! \brief The destination operand/parameter, 
-				this is the return value of a function call. */
-			Parameter d;
-			
-			/*! \brief The first source operand */
-			Operand a;
-			
-			/*! \brief The second operand */
-			Operand b;
-			
-			union
-			{
-				/*! \brief Comparisons */
-				Comparison comparison;
-				/*! \brief Alignment of operands */
-				unsigned int alignment;
-				/*! \brief Attributes */
-				Attribute attributes;
-				/*! \brief Index for insert element instructions */
-				unsigned int index;
-			};
-			
-			/*! \brief A vector of Parameters for a function call instruction */
-			ParameterVector parameters;
+		    const Opcode opcode;
 		
 		public:
+			/*! \brief Convert an opcode to a string parsable by LLVM */
+			static std::string toString( Opcode o );
 			/*! \brief Convert a datatype to a string parsable by LLVM */
 			static std::string toString( DataType d );
-			/*! \brief Check a flag for the Tail attribute */
-			static std::string tailToString( int attribute );
-			/*! \brief Check a flag for a calling convention attribute */
-			static std::string conventionToString( int attribute );
-			/*! \brief Check a flag for function attribute */
-			static std::string functionAttributeToString( int attribute );
+			/*! \brief Convert a calling convention to a string */
+			static std::string toString( CallingConvention cc );
 			/*! \brief Convert a Parameter attribute to a string */
 			static std::string toString( ParameterAttribute attribute );
-			/*! \brief Convert a Comprarison to a string */
+			/*! \brief Convert a Comparison to a string */
 			static std::string toString( Comparison comp );
+			/*! \brief Convert a series of function attributes to a string */
+			static std::string functionAttributesToString( int attributes );
 			
 		public:
 			/*! \brief Default constructor */
 			LLVMInstruction( Opcdode op = InvalidOpcode );
-		
-		public:
-			/*!	\brief Returns a string representation of the instruction */
-			virtual std::string toString() const;
-
-			/*!
-				\brief Determines if the instruction is valid, returns an empty 
-					string if valid otherwise an error message.
-			*/
-			virtual std::string valid() const;
 					
 	};
 	
-	/*! \brief A generic 3 op arithmetic instruction */
-	class LLVMArithmeticInstruction : public LLVMInstruction
+	/*! \brief A generic 1 operand instruction */
+	class LLVMUnaryInstruction : public LLVMInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The source operand */
+			Operand a;
+	
+		public:
+			/*! \brief Default constructor */
+			LLVMUnaryInstruction( Opcdode op = InvalidOpcode );
+			
+		public:
+			virtual std::string toString() const;
+			virtual std::string valid() const;
+	};
+	
+	/*! \brief A generic 2 operand instruction */
+	class LLVMBinaryInstruction : public LLVMInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The first source operand */
+			Operand a;
+
+			/*! \brief The second source operand */
+			Operand b;
+
+		public:
+			/*! \brief Default constructor */
+			LLVMBinaryInstruction( Opcdode op = InvalidOpcode );
+			
+		public:
+			virtual std::string toString() const;
+			virtual std::string valid() const;
+	};
+	
+	/*! \brief A generic conversion instruction */
+	class LLVMConversionInstruction : public LLVMUnaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
-			LLVMArithmeticInstruction( Opcdode op = InvalidOpcode );
+			LLVMConversionInstruction( Opcode op = InvalidOpcode );
 			
 		public:
-			/*!	\brief Returns a string representation of the instruction */
+			virtual std::string toString() const;
+			virtual std::string valid() const;
+	};
+	
+	/*! \brief A generic comparison instruction */
+	class LLVMComparisonInstruction : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief Comparison operator */
+			Comparison comparison;
+		
+		public:
+			/*! \brief Default constructor */
+			LLVMConversionInstruction( Opcode op = InvalidOpcode );
+			
+		public:
+			virtual std::string toString() const;
+			virtual std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMAdd : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief No unsigned wrap */
+			bool noUnsignedWrap;
+			
+			/*! \brief No signed wrap */
+			bool noSignedWrap;
+	
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMAdd();
+			
+		public:
 			std::string toString() const;
-
-			/*!
-				\brief Determines if the instruction is valid, returns an empty 
-					string if valid otherwise an error message.
-			*/
 			std::string valid() const;
 	};
+	
+	/*! \brief The LLVM Alloca instruction */
+	class LLVMAlloca : public LLVMInstruction
+	{
+		public:
+			/*! \brief The number of elements allocated */
+			LLVMI32 elements;
+			
+			/*! \brief The alignment of elements */
+			LLVMI32 alignment;
+			
+			/*! \brief The destination operand */
+			Operand d;
+			
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMAlloca( LLVMI32 e = 1, LLVMI32 a = 1);
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMAnd : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMAnd();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMAshr : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMAshr();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMBitcast : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMBitcast();
+	};
+		
+	/*! \brief The LLVM Add instruction */
+	class LLVMBr : public LLVMInstruciton
+	{
+		public:
+			/*! \brief The condition operand or empty if none */
+			std::string condition;
+			
+			/*! \brief The iftrue label */
+			std::string iftrue;
+			
+			/*! \brief The iffale label */
+			std::string iffalse;
+	
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMBr();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;	
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMCall : public LLVMInstruction
+	{
+		public:
+			/*! \brief Is this call eligible for tail call optimization? */
+			bool tail;
+			
+			/*! \brief The calling convention */
+			CallingConvention convention;
+			
+			/*! \brief The return parameter attributes */
+			ParameterAttribute returnAttributes;
+			
+			/*! \brief The return function call signiture if it 
+				is a pointer to function */
+			std::string signiture;
+			
+			/*! \brief The return operand */
+			Operand d;
+			
+			/*! \brief The set of parameters */
+			Operand::Vector parameters;
+			
+			/*! \brief Function attributes of the call */
+			int functionAttributes;			
+			
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMCall();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMExtractelement : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMExtractelement();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMExtractvalue : public LLVMInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The source operand, must be an aggregate type */
+			Operand a;
+			
+			/*! \brief Indexes within the aggregate type */
+			Operand::Vector indices;
+	
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMExtractvalue();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFadd : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFadd();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFcmp : public LLVMComparisonInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFcmp();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFdiv : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFdiv();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFmul : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFmul();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFpext : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFpext();
+	};
+		
+	/*! \brief The LLVM Add instruction */
+	class LLVMFptosi : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFptosi();
+	};
+		
+	/*! \brief The LLVM Add instruction */
+	class LLVMFptoui : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFptoui();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFptrunc : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFptrunc();
+	};
+		
+	/*! \brief The LLVM Add instruction */
+	class LLVMFree : public LLVMUnaryInstruciton
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFree();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFrem : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFrem();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMFsub : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMFsub();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMGetelementptr : public LLVMInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The source operand, must be an aggregate type */
+			Operand a;
+			
+			/*! \brief Indexes within the aggregate type */
+			Operand::Vector indices;
+	
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMGetelementptr();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMIcmp : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMIcmp();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMInsertelement : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMInsertelement();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMInsertvalue : public LLVMInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The source operand, must be an aggregate type */
+			Operand a;
+			
+			/*! \brief Indexes within the aggregate type */
+			Operand::Vector indices;
+			
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMInsertvalue();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMInttoptr : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMInttoptr();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMInvoke
+	{
+		public:
+			/*! \brief The return operand */
+			Operand d;
+			
+			/*! \brief The calling convention */
+			CallingConvention convention;
+			
+			/*! \brief The return parameter attributes */
+			ParameterAttribute returnAttributes;
+			
+			/*! \brief The return function call signiture if it 
+				is a pointer to function */
+			std::string signiture;
+			
+			/*! \brief The set of parameters */
+			Operand::Vector parameters;
+			
+			/*! \brief Function attributes of the call */
+			int functionAttributes;
+			
+			/*! \brief The label reached when the callee returns */
+			std::string tolabel;
+			
+			/*! \brief The label reached when the callee hits unwind */	
+			std::string unwindlabel;
+
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMInvoke();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMLoad : public LLVMUnaryInstruction
+	{
+		public:
+			/*! \brief Is the load volatile */
+			bool isVolatile;
+	
+			/*! \brief The alignment requirement of the load */
+			unsigned int alignment;
+	
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMLoad();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMLshr : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMLshr();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMMalloc : public LLVMInstruction
+	{
+		public:
+			/*! \brief The number of elements allocated */
+			LLVMI32 elements;
+			
+			/*! \brief The alignment of elements */
+			LLVMI32 alignment;
+			
+			/*! \brief The destination operand */
+			Operand d;
+
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMMalloc();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMMul : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief No unsigned wrap */
+			bool noUnsignedWrap;
+			
+			/*! \brief No signed wrap */
+			bool noSignedWrap;
+		
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMMul();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMOr : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMOr();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMPhi : public LLVMInstruction
+	{
+		public:
+			/*! \brief Class for a combination of an operand and a label */
+			class Node
+			{
+				public:
+					/*! Operand */
+					Operand operand;
+					/*! Label of the BB that this operand comes from */
+					std::string label; 
+			};
+			
+			/*! \brief A vector of Nodes */
+			typedef std::vector< Node > NodeVector;
+		
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+			
+			/*! \brief The list of Phi Nodes */
+			NodeVector nodes;
+					
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMPhi();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMPtrtoint : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMPtrtoint();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMRet : public LLVMInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			Operand d;
+		
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMRet();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMSdiv : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief Should the division be gauranteed to be exact? */
+			bool exact;
+			
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSdiv();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMSelect : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The condition that determines which operand to select */
+			Operand condition;
+	
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSelect();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMSext : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSext();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMShl : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMShl();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMShufflevector : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief A Mask is a vector of indices */
+			typedef std::vector< LLVMI32 > Mask;
+	
+		public:
+			/*! \brief The shuffle mask */
+			Mask mask;
+		
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMShufflevector();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMSitofp : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSitofp();
+	};
+	
+	/*! \brief The LLVM Add instruction */
+	class LLVMSrem : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSrem();
+	};
+	
+	/*! \brief The LLVM store instruction */
+	class LLVMStore: public LLVMUnaryInstruction
+	{
+		public:
+			/*! \brief Is the load volatile */
+			bool isVolatile;
+	
+			/*! \brief The alignment requirement of the load */
+			unsigned int alignment;
+			
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMStore();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM sub instruction */
+	class LLVMSub: public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief No unsigned wrap */
+			bool noUnsignedWrap;
+			
+			/*! \brief No signed wrap */
+			bool noSignedWrap;
+			
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSub();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM switch instruction */
+	class LLVMSwitch
+	{
+		public:
+			/*! \brief Class for a combination of an operand and a label */
+			class Node
+			{
+				public:
+					/*! Operand */
+					Operand operand;
+					/*! Label of the BB that this operand comes from */
+					std::string label; 
+			};
+			
+			/*! \brief A vector of Nodes */
+			typedef std::vector< Node > NodeVector;
+			
+		public:
+			/*! \brief Comparison value */
+			Operand comparison;
+			
+			/*! \brief Default destination label */
+			std::string defaultTarget;
+			
+			/*! \brief List of possible other destinations */
+			NodeVector targets;
+		
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMSwitch();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM trunc instruction */
+	class LLVMTrunc : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMTrunc();
+	};
+	
+	/*! \brief The LLVM udiv instruction */
+	class LLVMUdiv : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMUdiv();
+	};
+	
+	/*! \brief The LLVM uitofp instruction */
+	class LLVMUitofp : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMUitofp();
+	};
+		
+	/*! \brief The LLVM unreachable instruction */
+	class LLVMUnreachable : public LLVMInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMUnreachable();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM unwind instruction */
+	class LLVMUnwind : public LLVMInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMUnwind();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM urem instruction */
+	class LLVMUrem : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMUrem();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM va_arg instruction */
+	class LLVMVaArg : public LLVMUnaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMVaArg();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
+	};
+	
+	/*! \brief The LLVM xor instruction */
+	class LLVMXor : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMXor();
+	};
+	
+	/*! \brief The LLVM zext instruction */
+	class LLVMZext : public LLVMConversionInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMZext();
+	};
+	
 }
 
 #endif

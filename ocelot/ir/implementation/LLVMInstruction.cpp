@@ -13,85 +13,79 @@
 
 namespace ir
 {
-	LLVMInstruction::Opeand::Operand( Mode m, DataType t, unsigned int v ) : 
-		mode( m ), type( t ), vector( v )
-	{
 	
-	}
-
-	LLVMInstruction::Opeand::Parameter( Attribute a, Mode m, DataType t, 
-		unsigned int v ) : Operand( m, t, v), attribute( a )
+	std::string LLVMInstruction::toString( Opcode code )
 	{
-		
-	}
-
-	std::string LLVMInstruction::Opeand::toString() const
-	{
-		switch( mode )
+		switch( code )
 		{
-			case Register:
-			{
-				std::stringstream stream;
-				stream << "r" << reg;
-				return stream.str();
-			}
-			case Immediate:
-			{
-				std::stringstream stream;
-				switch( type )
-				{
-					case S8: stream << s8; break;
-					case S16: stream << s16; break;
-					case S32: stream << s32; break;
-					case S64: stream << s64; break;
-					case U8: stream << u8; break;
-					case U16: stream << u16; break;
-					case U32: stream << u32; break;
-					case U64: stream << u64; break;
-					case F32: stream << f32; break;
-					case F64: stream << f64; break;
-					case LLVMInstruction::Invalid: 
-						assertM( 0, "Invalid LLVM Instruction DataType." );
-				}
-				return stream.str();
-			}
-			case Label:
-			{
-				return label;
-			}
-			case Invalid : assertM( 0, "Invalid LLVM Instruction Operand." );
+			case Add: return "add"; break;
+			case Alloca: return "alloca"; break;
+			case And: return "and"; break;
+			case Ashr: return "ashr"; break;
+			case Bitcast: return "bitcast"; break;
+			case Br: return "br"; break;
+			case Call: return "call"; break;
+			case Extractelement: return "extractelement"; break;
+			case Extractvalue: return "extractvalue"; break;
+			case Fadd: return "fadd"; break;
+			case Fcmp: return "fcmp"; break;
+			case Fdiv: return "fdiv"; break;
+			case Fmul: return "fmul"; break;
+			case Fpext: return "fpext"; break;
+			case Fptosi: return "fptosi"; break;
+			case Fptoui: return "fptoui"; break;
+			case Fptrunc: return "fptrunc"; break;
+			case Free: return "free"; break;
+			case Frem: return "frem"; break;
+			case Fsub: return "fsub"; break;
+			case Getelementptr: return "getelementptr"; break;
+			case Icmp: return "icmp"; break;
+			case Insertelement: return "insertelement"; break;
+			case Insertvalue: return "insertvalue"; break;
+			case Inttoptr: return "inttoptr"; break;
+			case Invoke: return "invoke"; break;
+			case Load: return "load"; break;
+			case Lshr: return "lshr"; break;
+			case Malloc: return "malloc"; break;
+			case Mul: return "mul"; break;
+			case Or: return "or"; break;
+			case Phi: return "phi"; break;
+			case Ptrtoint: return "ptrtoint"; break;
+			case Ret: return "ret"; break;
+			case Sdiv: return "sdiv"; break;
+			case Select: return "select"; break;
+			case Sext: return "sext"; break;
+			case Shl: return "shl"; break;
+			case Shufflevector: return "shufflevector"; break;
+			case Sitofp: return "sitofp"; break;
+			case Srem: return "srem"; break;
+			case Store: return "store"; break;
+			case Sub: return "sub"; break;
+			case Switch: return "switch"; break;
+			case Trunc: return "trunc"; break;
+			case Udiv: return "udiv"; break;
+			case Uitofp: return "uitofp"; break;
+			case Unreachable: return "unreachable"; break;
+			case Unwind: return "unwind"; break;
+			case Urem: return "urem"; break;
+			case VaArg: return "va_arg"; break;
+			case Xor: return "xor"; break;
+			case Zext: return "zext"; break;
+			case InvalidOpcode: return "INVALID_OPCODE"; break;
 		}
 		return "";
 	}
 
-	std::string LLVMInstruction::tailToString( int attribute )
+	std::string LLVMInstruction::toString( CallingConvention cc )
 	{
-		if( attribute & Tail) return "tail";
-		return "";
-	}
-
-	std::string LLVMInstruction::conventionToString( int attribute )
-	{
-		if( attribute & FastCallingConvention) return "fastcc";
-		if( attribute & CCallingConvention) return "ccc";
-		if( attribute & ColdCallingConvention) return "coldcc";
-		return "";
-	}
-
-	std::string LLVMInstruction::toString( int attribute )
-	{
-		if( attribute & ZeroExtend) return "zeroext";
-		if( attribute & SignExtend) return "signext";
-		if( attribute & InReg) return "inreg";
-		return "";		
-	}
-
-	std::string LLVMInstruction::functionAttributesToString( int attribute )
-	{
-		if( attribute & NoReturn) return "noreturn";
-		if( attribute & NoUnwind) return "nounwind";
-		if( attribute & ReadOnly) return "readonly";
-		if( attribute & ReadNone) return "readnone";
+		switch( cc )
+		{
+			case CCallingConvention: return "ccc"; break;
+			case FastCallingConvention: return "fastcc"; break;
+			case ColdCallingConvention: return "coldcc"; break;
+			case DefaultCallingConvention: return "ccc"; break;
+			case InvalidCallingConventio: return "INVALID_CC"; break;
+		}
 		return "";
 	}
 	
@@ -101,13 +95,13 @@ namespace ir
 		{
 			case ZeroExtend: return "zeroext"; break;
 			case SignExtend: return "signext"; break;
-			case InReg: return "inreg"; break;
+			case InRegister: return "inreg"; break;
 			case ByValue: return "byval"; break;
 			case StructureReturn: return "sret"; break;
 			case NoAlias: return "noalias"; break;
 			case NoCapture: return "nocapture"; break;
-			case Nest: return "nest"; break;
-			case NoAttribute: return ""; break;
+			case Nested: return "nest"; break;
+			case InvalidParameterAttribute: return "INVALID_PARAM_ATTR"; break;
 		}
 		return "";
 	}
@@ -116,14 +110,10 @@ namespace ir
 	{
 		switch( d )
 		{
-			case U8: /* fall through */
-			case S8: return "i8"; break;
-			case U16: /* fall through */
-			case S16: return "i16"; break;
-			case U32: /* fall through */
-			case S32: return "i32"; break;
-			case S64: /* fall through */
-			case U64: return "i64"; break;
+			case I8: return "i8"; break;
+			case I16: return "i16"; break;
+			case I32: return "i32"; break;
+			case I64: return "i64"; break;
 			case F32: return "f32"; break;
 			case F64: return "f64"; break;
 			default: break;
@@ -151,8 +141,79 @@ namespace ir
 			case Une: return "une"; break;
 			case Uno: return "uno"; break;
 			case True: return "true"; break;
+			case Eq: return "eq"; break;
+			case Ne: return "ne"; break;
+			case Sgt: return "sgt"; break;
+			case Sge: return "sge"; break;
+			case Slt: return "slt"; break;
+			case Sle: return "sle"; break;
 		}
 		return "";
+	}
+	
+	std::string LLVMInstruction::functionAttributesToString( int attributes )
+	{
+		std::string result;
+		if( attributes & AlwaysInline )
+		{
+			result += "alwaysinline;"
+		}
+		if( attributes & NoInline )
+		{
+			if( !result.empty() ) result += " ";
+			result += "noinline;"
+		}
+		if( attributes & OptimizeSize )
+		{
+			if( !result.empty() ) result += " ";
+			result += "optsize;"
+		}
+		if( attributes & NoReturn )
+		{
+			if( !result.empty() ) result += " ";
+			result += "noreturn;"
+		}
+		if( attributes & NoUnwind )
+		{
+			if( !result.empty() ) result += " ";
+			result += "nounwind;"
+		}
+		if( attributes & ReadNone )
+		{
+			if( !result.empty() ) result += " ";
+			result += "readnone;"
+		}
+		if( attributes & ReadOnly )
+		{
+			if( !result.empty() ) result += " ";
+			result += "readonly;"
+		}
+		if( attributes & StackSmashingProtector )
+		{
+			if( !result.empty() ) result += " ";
+			result += "ssp;"
+		}
+		if( attributes & StackSmashingProtectorRequired )
+		{
+			if( !result.empty() ) result += " ";
+			result += "sspreq;"
+		}
+		if( attributes & NoRedZone )
+		{
+			if( !result.empty() ) result += " ";
+			result += "noredzone;"
+		}
+		if( attributes & NoImplicitFloat )
+		{
+			if( !result.empty() ) result += " ";
+			result += "noimplicitfloat;"
+		}
+		if( attributes & Naked )
+		{
+			if( !result.empty() ) result += " ";
+			result += "naked;"
+		}
+		return result;
 	}
 
 	LLVMInstruction::LLVMInstruction( Opcdode op ) : opcode( op )

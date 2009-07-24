@@ -17,8 +17,18 @@
 
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
-
 #include <ocelot/trace/interface/KernelEntry.h>
+
+#include <boost/serialization/split_member.hpp>
+
+namespace boost
+{
+	namespace archive
+	{
+		class text_oarchive;
+	}
+}
+
 
 namespace trace {
 
@@ -74,13 +84,9 @@ namespace trace {
 
 		class Access {
 		public:
-
 			ir::PTXS32 threadID;			//! thread performing the load
-
 			ir::PTXS32 sourceThread;	//! last thread to write to the location being accessed
-
 			ir::PTXU32 address;				//! address in shared mem being accessed
-
 			ir::PTXU32 size;					//! size of load
 		};
 
@@ -134,14 +140,10 @@ namespace trace {
 			Event( );
 			~Event();
 			
-			ir::PTXU32 PC;
-			
+			ir::PTXU32 PC;			
 			ir::PTXInstruction::Opcode opcode;		//! type of instruction performing the access
-
 			ir::PTXOperand::DataType type;				//! data type of access
-
 			ir::PTXU32 blockId;										//! CTA id of the block that created the event
-
 			AccessVector accesses;								//! set of accesses (1 or more)
 
 		};	// end Event

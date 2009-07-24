@@ -11,31 +11,20 @@
 #define BRANCH_TRACE_GENERATOR_CPP_INCLUDED
 
 #include <ocelot/trace/interface/BranchTraceGenerator.h>
+#include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <hydrazine/implementation/Exception.h>
 #include <boost/filesystem.hpp>
 #include <fstream>
+#include <ocelot/trace/interface/BranchEvent.h>
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 namespace trace
 {
-	
-	BranchTraceGenerator::BranchEvent::BranchEvent()
-	{
-	
-	}
-	
-	BranchTraceGenerator::BranchEvent::BranchEvent( 
-		const TraceEvent::BitMask& _taken, 
-		const TraceEvent::BitMask& _fallthrough,
-		const unsigned int _pc,
-		const unsigned int _counter ) : 
-		taken( _taken ), fallthrough( _fallthrough ), pc( _pc ), 
-		counter( _counter )
-	{
-	
-	}
-
+		
 	unsigned int BranchTraceGenerator::BranchTraceGenerator::_counter = 0;
 
 	BranchTraceGenerator::BranchTraceGenerator()

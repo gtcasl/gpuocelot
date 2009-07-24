@@ -12,6 +12,14 @@
 
 #include <ocelot/trace/interface/KernelEntry.h>
 
+namespace boost
+{
+	namespace archive
+	{
+		class text_oarchive;
+	}
+}
+
 namespace trace
 {
 	

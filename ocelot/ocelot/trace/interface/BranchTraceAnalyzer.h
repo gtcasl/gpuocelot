@@ -12,6 +12,7 @@
 
 #include <ocelot/trace/interface/BranchTraceGenerator.h>
 #include <map>
+#include <deque>
 
 namespace trace
 {

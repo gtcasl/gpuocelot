@@ -12,6 +12,8 @@
 
 #include <ocelot/trace/interface/ParallelismTraceGenerator.h>
 #include <unordered_map>
+#include <deque>
+#include <map>
 
 namespace trace
 {

@@ -13,6 +13,7 @@
 #include <ocelot/trace/interface/MemoryTraceAnalyzer.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
+#include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include <cfloat>
 

@@ -981,15 +981,6 @@ namespace cuda
 				unsigned int dynamicSharedSize = staticSharedSize +
 					thread->second.shared;
 				
-				if( _preallocateAllSharedMemory )
-				{
-					dynamicSharedSize = std::max( dynamicSharedSize, 
-						(unsigned int) context.devices[ 
-						context.getSelected() ].sharedMemPerBlock );
-					report(" Setting shared memory size to " 
-						<< dynamicSharedSize );
-				}
-				
 				if( dynamicSharedSize > ( unsigned int ) context.devices[ 
 					context.getSelected() ].sharedMemPerBlock )
 				{
@@ -1080,11 +1071,21 @@ namespace cuda
 					throw hydrazine::Exception( formatError( stream.str() ) );		
 				}
 
-				#if CUDA_GENERATE_TRACE == 1
-					CUDA_TRACE_GENERATOR generator;
-					generator.database = _traceGeneratorDatabase;
-					emulated->addTraceGenerator( &generator );
-				#endif
+				for( TraceGeneratorVector::iterator 
+					generator = thread->second.nextTraceGenerators.begin(); 
+					generator != thread->second.nextTraceGenerators.end(); 
+					++generator )
+				{
+					emulated->addTraceGenerator( *generator );
+				}
+				
+				for( TraceGeneratorVector::iterator 
+					gen = thread->second.persistentTraceGenerators.begin(); 
+					gen != thread->second.persistentTraceGenerators.end(); 
+					++gen )
+				{
+					emulated->addTraceGenerator( *gen );
+				}
 				
 				emulated->updateParameterMemory();
 				emulated->updateGlobals();
@@ -1127,26 +1128,35 @@ namespace cuda
 				emulated->SharedMemorySize = staticSharedSize;
 				thread->second.parameters.clear();
 				
-				#if CUDA_GENERATE_TRACE == 1
-					emulated->removeTraceGenerator( &generator );
-				#endif
+				for( TraceGeneratorVector::iterator 
+					generator = thread->second.nextTraceGenerators.begin(); 
+					generator != thread->second.nextTraceGenerators.end(); 
+					++generator )
+				{
+					emulated->removeTraceGenerator( *generator );
+				}
 				
-				break;
-			
+				thread->second.nextTraceGenerators.clear();
+				
+				for( TraceGeneratorVector::iterator 
+					gen = thread->second.persistentTraceGenerators.begin(); 
+					gen != thread->second.persistentTraceGenerators.end(); 
+					++gen )
+				{
+					emulated->removeTraceGenerator( *gen );
+				}
+				
+				break;			
 			}
 
 			default:
 			{
-			
 				std::stringstream stream;
 				stream << "Kernel type " << context.getSelectedISA() 
 					<< " not supported.";
 				throw hydrazine::Exception( formatError( stream.str() ), 6 );
-			
 			}
-		
 		}
-	
 	}
 	
 	void* CudaRuntime::allocate( unsigned int size, bool portable, bool mapped )
@@ -1853,12 +1863,37 @@ namespace cuda
 		mapping->second = (void*)0;
 	}
 	
+	void CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, 
+		bool persistent )
+	{
+		pthread_t id = pthread_self();
+		
+		ThreadMap::iterator thread = _threads.find( id );
+		assert( thread != _threads.end() );
+		
+		if( persistent )
+		{
+			thread->second.persistentTraceGenerators.push_back( &gen );
+		}
+		else
+		{
+			thread->second.nextTraceGenerators.push_back( &gen );
+		}		
+	}
+		
+	void CudaRuntime::clearTraceGenerators()
+	{
+		pthread_t id = pthread_self();
+		
+		ThreadMap::iterator thread = _threads.find( id );
+		assert( thread != _threads.end() );
+		
+		thread->second.nextTraceGenerators.clear();
+		thread->second.persistentTraceGenerators.clear();
+	}
+
 	void CudaRuntime::configure( const Configuration& c )
 	{
-		parse("PreallocateAllSharedMemory", 
-			_preallocateAllSharedMemory, false, c);
-		parse("TraceGeneratorDatabase", _traceGeneratorDatabase, 
-			"traces/database.db", c);
 	}
 
 }

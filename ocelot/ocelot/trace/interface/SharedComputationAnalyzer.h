@@ -11,6 +11,7 @@
 
 #include <ocelot/trace/interface/SharedComputationGenerator.h>
 #include <string>
+#include <deque>
 
 namespace trace {
 

@@ -10,7 +10,12 @@
 #ifndef TRACE_TRACEGENERATOR_H_INCLUDED
 #define TRACE_TRACEGENERATOR_H_INCLUDED
 
-#include <ocelot/trace/interface/TraceEvent.h>
+#include <string>
+
+// forward declare TraceEvent
+namespace trace {
+	class TraceEvent;
+}
 
 // forward declare EmulatedKernel
 namespace executive {

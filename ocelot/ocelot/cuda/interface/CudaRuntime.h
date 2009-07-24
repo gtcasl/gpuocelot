@@ -18,53 +18,21 @@
 #include <pthread.h>
 #include <hydrazine/implementation/Timer.h>
 #include <hydrazine/interface/Configurable.h>
+#include <ocelot/trace/interface/TraceGenerator.h>
 #include <GL/glew.h>
 
 #define CUDA_VERBOSE 1
-#define CUDA_GENERATE_TRACE 0
-#define USE_BRANCH_TRACE_GENERATOR 0
-#define USE_MEMORY_TRACE_GENERATOR 0
-#define USE_PARALLELISM_TRACE_GENERATOR 0
-#define USE_SHARED_COMPUTATION_TRACE_GENERATOR 0
 
-#if CUDA_GENERATE_TRACE == 1
-
-#if USE_BRANCH_TRACE_GENERATOR == 1
-#include <ocelot/trace/interface/BranchTraceGenerator.h>
-#define CUDA_TRACE_GENERATOR trace::BranchTraceGenerator
-#elif USE_MEMORY_TRACE_GENERATOR == 1
-#include <ocelot/trace/interface/MemoryTraceGenerator.h>
-#define CUDA_TRACE_GENERATOR trace::MemoryTraceGenerator
-#elif USE_PARALLELISM_TRACE_GENERATOR == 1
-#include <ocelot/trace/interface/ParallelismTraceGenerator.h>
-#define CUDA_TRACE_GENERATOR trace::ParallelismTraceGenerator
-#elif USE_SHARED_COMPUTATION_TRACE_GENERATOR == 1
-#include <trace/interface/SharedComputationGenerator.h>
-#define CUDA_TRACE_GENERATOR trace::SharedComputationGenerator
-#else
-#include <ocelot/trace/interface/TraceGenerator.h>
-#define CUDA_TRACE_GENERATOR trace::TraceGenerator
-#endif
-#endif
-
-/*!
-	\brief A namespace for the ocelot implementation of the CUDA API
-*/
+/*! \brief A namespace for the ocelot implementation of the CUDA API */
 namespace cuda
 {
 
-	/*!
-
-		\brief Fat Binary shorthand
-
-	*/
+	/*!	\brief Fat Binary shorthand */
 	typedef __cudaFatCudaBinaryRec FatBinary;
 
-	/*!
-	
+	/*!	
 		\brief Thread safe class that contains the ocelot executive classes for
-			each context.
-	
+			each context.	
 	*/
 	class CudaRuntime : public hydrazine::Configurable
 	{
@@ -81,31 +49,21 @@ namespace cuda
 					pthread_t owner;
 			};
 			
-			/*!
-				\brief Allocated memory
-			*/
+			/*!	\brief Allocated memory	*/
 			typedef std::unordered_map< char*, Memory > MemoryMap;
 			
-			/*!
-				\brief GLobal variables			
-			*/
+			/*!	\brief GLobal variables	*/
 			typedef std::unordered_map< std::string, char* > GlobalMap;
 						
-			/*!
-				\brief Map from architecture type to kernel.
-			*/
+			/*!	\brief Map from architecture type to kernel. */
 			typedef std::unordered_map< unsigned int,
 				ir::Kernel* > ArchitectureMap;
 			
-			/*!
-				\brief A map from kernel name to architecture implementations
-			*/
+			/*!	\brief A map from kernel name to architecture implementations */
 			typedef std::unordered_map< std::string, 
 				ArchitectureMap > KernelMap;
 			
-			/*!
-				\brief Set of thread ids
-			*/
+			/*!	\brief Set of thread ids */
 			typedef std::unordered_set< pthread_t > ThreadSet;
 			
 			class Texture
@@ -116,15 +74,11 @@ namespace cuda
 					bool bound;
 			};
 			
-			/*!
-				\brief Map from pointer to texture name and module
-			*/
+			/*!	\brief Map from pointer to texture name and module */
 			typedef std::unordered_map< const textureReference*, 
 				Texture > TextureMap;
 			
-			/*!
-				\brief Class allowing sharing of a fat binary among threads
-			*/
+			/*!	\brief Class allowing sharing of a fat binary among threads	*/
 			class FatBinaryContext
 			{
 				public:
@@ -134,9 +88,7 @@ namespace cuda
 					GlobalMap globals; //< Global variables			
 			};
 			
-			/*!
-				\brief Kernel name and handle pair
-			*/
+			/*!	\brief Kernel name and handle pair */
 			class HandleAndKernel
 			{
 				public:
@@ -145,9 +97,7 @@ namespace cuda
 			
 			};
 			
-			/*!
-				\brief Stream class
-			*/
+			/*!	\brief Stream class	*/
 			class Stream
 			{
 				public:
@@ -169,6 +119,9 @@ namespace cuda
 			/*! \brief Event map */
 			typedef std::unordered_map< cudaEvent_t, Event > EventMap;
 			
+			/*! \brief A vector of trace generator pointers */
+			typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
+
 			/*!	\brief Thread context */
 			class ThreadContext
 			{
@@ -192,34 +145,30 @@ namespace cuda
 
 				public:
 					cudaError_t lastError;
+
+				public:
+					TraceGeneratorVector nextTraceGenerators;
+					TraceGeneratorVector persistentTraceGenerators;
 					
 				public:
 					ThreadContext();				
 			};
 			
-			/*!
-				\brief Map from pthreads to ocelot contexts.
-			*/
+			/*!	\brief Map from pthreads to ocelot contexts. */
 			typedef std::unordered_map< pthread_t, ThreadContext > ThreadMap;
 
 			
 			typedef std::unordered_map< const char*, HandleAndKernel > 
 				SymbolMap;
 
-			/*!
-				\brief A map of registered fat binaries.
-			*/
+			/*!	\brief A map of registered fat binaries. */
 			typedef std::unordered_map< unsigned int, FatBinaryContext > 
 				FatBinaryMap;
 
-			/*!
-				\brief Map from string to handle
-			*/
+			/*!	\brief Map from string to handle */
 			typedef std::unordered_map< std::string, unsigned int > StringMap;
 			
-			/*!
-				\brief Class for allocated CUDA arrays
-			*/
+			/*!	\brief Class for allocated CUDA arrays */
 			class Array
 			{
 				public:
@@ -232,88 +181,48 @@ namespace cuda
 					unsigned int bytes() const;						
 			};
 			
-			/*!
-				\brief A map of cudaArray pointers to Array objects 
-			*/
+			/*!	\brief A map of cudaArray pointers to Array objects */
 			typedef std::unordered_map< cudaArray*, Array > ArrayMap;
 
 		public:
-		
-			/*!
-				\brief OpenGL Buffers
-			*/
+			/*!	\brief OpenGL Buffers */
 			typedef void* OpenGLBuffer;
 
 		private:
-
-			/*!
-				\brief Set of OpenGL Buffers
-			*/
+			/*!	\brief Set of OpenGL Buffers */
 			typedef std::unordered_map< GLuint, OpenGLBuffer > OpenGLBufferMap;
 			
 		private:
 		
-			/*!
-				\brief Mutex to control access to the executive class.
-			*/
+			/*!	\brief Mutex to control access to the executive class. */
 			pthread_mutex_t _mutex;
 
-			/*!
-				\brief Map from all active threads to associated devices.
-			*/
+			/*!	\brief Map from all active threads to associated devices. */
 			ThreadMap _threads;
 	
-			/*!
-				\brief Next fat binary handle
-			*/
+			/*!	\brief Next fat binary handlem */
 			unsigned int _handle;
 			
-			/*!
-				\brief All registered fat binaries
-			*/
+			/*!	\brief All registered fat binaries */
 			FatBinaryMap _binaries;
 			
-			/*!
-				\brief Names of registered FatBinaries
-			*/
+			/*!	\brief Names of registered FatBinaries */
 			StringMap _binaryNames;
 			
-			/*!
-				\brief Host pinned memory
-			*/
+			/*!	\brief Host pinned memory */
 			MemoryMap _memory;
 			
-			/*!
-				\brief Registered buffers.
-			*/
+			/*!	\brief Registered buffers.*/
 			OpenGLBufferMap _openGLBuffers;
 			
-			/*!
-				\brief Allocated arrays
-			*/
+			/*!	\brief Allocated arrays	*/
 			ArrayMap _arrays;
 		
-			/*!
-				\brief Registered Textures
-			*/
+			/*!	\brief Registered Textures */
 			TextureMap _textures;
 			
-			/*!
-				\brief Registered Symbols
-			*/
+			/*!	\brief Registered Symbols */
 			SymbolMap _symbols;
-			
-		private:
-			/*!
-				\brief Should shared memory size be set to the device max
-			*/
-			bool _preallocateAllSharedMemory;
-			
-			/*!
-				\brief The relative path to the database file for 
-					trace generators
-			*/
-			std::string _traceGeneratorDatabase;
 			
 		private:
 			/*!
@@ -324,37 +233,23 @@ namespace cuda
 				SymbolMap::iterator kernel );
 		
 		public:
-		
-			/*!
-				\brief Ocelot state for all contexts.
-			*/
+			/*!	\brief Ocelot state for all contexts.*/
 			executive::Executive context;
 						
 		public:
-		
-			/*!
-				\brief Convert an ocelot device to a cuda equivalent
-			*/
+			/*!	\brief Convert an ocelot device to a cuda equivalent */
 			static cudaDeviceProp convert( const executive::Device& device );
 			
-			/*!
-				\brief Convert an ocelot texture to a cuda equivalent
-			*/
+			/*!	\brief Convert an ocelot texture to a cuda equivalent */
 			static cudaChannelFormatDesc convert( const ir::Texture& texture);
 
-			/*!
-				\brief Convert a cuda channel description to an ocelot texture
-			*/
+			/*!	\brief Convert a cuda channel description to a ocelot texture */
 			static ir::Texture convert( const cudaChannelFormatDesc& texture);
 
-			/*!
-				\brief Convert a cudaTextureAddressMode to a texture equivalent
-			*/
+			/*! \brief Convert a cudaTextureAddressMode to a texture */
 			static ir::Texture::AddressMode convert(cudaTextureAddressMode);
 
-			/*!
-				\brief Convert a cudaTextureFilterMode to a texture equivalent
-			*/
+			/*!	\brief Convert a cudaTextureFilterMode to texture equivalent */
 			static ir::Texture::Interpolation convert(cudaTextureFilterMode);
 
 			/*!
@@ -369,40 +264,25 @@ namespace cuda
 			static std::string formatError( const std::string& message );
 			
 		public:
-		
-			/*!
-				\brief Constructor for the mutex
-			*/
+			/*!	\brief Constructor for the mutex */
 			CudaRuntime();
 			
-			/*!
-				\brief Destructor to destroy the mutex
-			*/
+			/*!	\brief Destructor to destroy the mutex */
 			~CudaRuntime();
 			
-			/*!
-				\brief Lock the mutex
-			*/
+			/*!	\brief Lock the mutex */
 			void lock();
 			
-			/*!
-				\brief Unlock the mutex
-			*/
+			/*!	\brief Unlock the mutex */
 			void unlock();
 			
-			/*!
-				\brief Switch to the context of the calling thread.
-			*/
+			/*!	\brief Switch to the context of the calling thread.	*/
 			void setContext();
 
-			/*!
-				\brief Destroy the context of the calling thread.
-			*/
+			/*!	\brief Destroy the context of the calling thread. */
 			void destroyContext();
 						
-			/*!
-				\brief Last error code from cuda launch
-			*/
+			/*!	\brief Last error code from cuda launch	*/
 			cudaError_t lastError() const;
 			
 			/*!
@@ -413,15 +293,12 @@ namespace cuda
 			*/
 			void setDevice( int device );
 			
-			/*!
-				\brief Find the device that most closly matches the specified
+			/*!	\brief Find the device that most closly matches the specified
 					characteristics
 			*/
 			int bestDevice( const struct cudaDeviceProp *prop ) const;
 			
-			/*!
-				\brief Set the flags on the current context
-			*/
+			/*!	\brief Set the flags on the current context	*/
 			void setFlags( int flags );
 	
 			/*!
@@ -517,7 +394,6 @@ namespace cuda
 			void launch( const char* symbol );
 		
 		public:
-		
 			/*!
 				\brief Allocate some host pinned memory
 				\param size The number of bytes to allocate
@@ -614,7 +490,6 @@ namespace cuda
 			void* getSymbol(const std::string& name);
 			
 		public:
-		
 			/*!
 				\brief Create a new Stream in this context
 				\return A handle to the newly created Stream
@@ -674,32 +549,33 @@ namespace cuda
 			double eventTime( cudaEvent_t start, cudaEvent_t end );
 			
 		public:
-			
-			/*!
-				\brief Registers an openGL buffer
-			*/
+			/*!	\brief Registers an openGL buffer */
 			void registerOpenGLBuffer( GLuint buffer );
 
-			/*!
-				\brief Unregisters an openGL buffer
-			*/
+			/*!	\brief Unregisters an openGL buffer	*/
 			void unregisterOpenGLBuffer( GLuint buffer );
 
-			/*!
-				\brief Maps an openGL buffer
-			*/
+			/*!	\brief Maps an openGL buffer */
 			OpenGLBuffer mapOpenGLBuffer( GLuint buffer );
 
-			/*!
-				\brief Unmaps an openGL buffer
-			*/
+			/*!	\brief Unmaps an openGL buffer */
 			void unmapOpenGLBuffer( GLuint buffer );
+		
+		public:
+			/*! \brief Adds a trace generator for the next kernel launch 
+				\param gen The trace generator being added 
+				\param persistent Should the trace generator be used for 
+					all subsequent kernel launches?				
+				(note that the external program owns the generator)
+			*/
+			void addTraceGenerator( trace::TraceGenerator& gen, 
+				bool persistent );
+				
+			/*! \brief Clear all trace generators */
+			void clearTraceGenerators();
 			
 		public:
-		
-			/*!
-				\brief Read config file
-			*/
+			/*!	\brief Read config file	*/
 			void configure( const Configuration& );
 	};
 

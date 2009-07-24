@@ -10,12 +10,15 @@
 #ifndef KERNEL_ENTRY_CPP_INCLUDED
 #define KERNEL_ENTRY_CPP_INCLUDED
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 #include <ocelot/trace/interface/KernelEntry.h>
 #include <fstream>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 #include <unistd.h>
 #include <cstring>
+#include <deque>
 #include <boost/interprocess/sync/file_lock.hpp>
 
 namespace trace
@@ -56,7 +59,8 @@ namespace trace
 		int error = system( "touch trace_KernelEntry_lock" );
 		if( error < 0 )
 		{
-			throw hydrazine::Exception("Failed to create trace_KernelEntry_lock");
+			throw hydrazine::Exception(
+				"Failed to create trace_KernelEntry_lock");
 		}
 		boost::interprocess::file_lock flock( "trace_KernelEntry_lock" );
 		

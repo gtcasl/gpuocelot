@@ -19,8 +19,18 @@
 
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
-
 #include <ocelot/trace/interface/KernelEntry.h>
+
+#include <boost/serialization/split_member.hpp>
+
+namespace boost
+{
+	namespace archive
+	{
+		class text_oarchive;
+	}
+}
+
 
 namespace trace {
 
@@ -234,28 +244,6 @@ namespace boost
 			ar & header.global_min_address;
 			ar & header.global_max_address;
 		}
-		/*
-		template< class Archive >
-		void serialize( Archive& ar, 
-			trace::MemoryTraceGenerator::Event& event, 
-			const unsigned int version )
-		{
-			ir::PTXU32 accessCount = (ir::PTXU32)event.accesses.size();
-			
-			ar & event.PC;
-			ar & event.opcode;
-			ar & event.addressSpace;
-			ar & accessCount;
-			
-			for (std::vector<trace::MemoryTraceGenerator::Access>::const_iterator it = event.accesses.begin(); 
-				it != event.accesses.end(); ++it) {
-				const trace::MemoryTraceGenerator::Access &acc = *it;
-				ar & acc.threadID;
-				ar & acc.address;
-				ar & acc.size;
-			}
-		}
-		*/
 	}
 }
 

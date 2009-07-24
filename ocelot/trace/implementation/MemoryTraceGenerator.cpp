@@ -15,6 +15,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <cfloat>
+#include <boost/archive/text_oarchive.hpp>
 
 /////////////////////////////////////////////////////////////////////////////
 

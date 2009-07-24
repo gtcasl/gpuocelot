@@ -11,8 +11,6 @@
 #define KERNEL_ENTRY_H_INCLUDED
 
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 namespace trace
 {		

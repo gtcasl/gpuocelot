@@ -11,6 +11,7 @@
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 
+#include <deque>
 #include <string>
 
 namespace trace

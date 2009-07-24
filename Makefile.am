@@ -27,7 +27,8 @@ check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
-	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la
+	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la \
+	libOcelot.la
 ################################################################################
 
 ################################################################################
@@ -36,6 +37,12 @@ libOcelotAnalysis_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 libOcelotAnalysis_la_SOURCES = \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp
+################################################################################
+
+################################################################################
+## libOcelot
+libOcelot_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
+libOcelot_la_SOURCES = ocelot/api/implementation/ocelot.cpp
 ################################################################################
 
 ################################################################################
@@ -93,7 +100,9 @@ libOcelotTrace_la_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
-	ocelot/trace/implementation/KernelEntry.cpp
+	ocelot/trace/implementation/KernelEntry.cpp \
+	ocelot/trace/implementation/BranchEvent.cpp
+	
 	
 ################################################################################
 
@@ -268,10 +277,10 @@ TestDataflowGraph_LDADD = libOcelotAnalysis.la libOcelotIr.la \
 TestDataflowGraph_LDFLAGS = -static
 ################################################################################
 
-
 ################################################################################
 ## Headers
-nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
+nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
+	ocelot/executive/interface/Executive.h \
 	ocelot/executive/interface/CooperativeThreadArray.h \
 	ocelot/executive/interface/EmulatedKernel.h \
 	ocelot/executive/interface/RuntimeException.h \
@@ -285,6 +294,7 @@ nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
 	ocelot/cuda/interface/CudaRuntime.h \
 	ocelot/trace/interface/MemoryTraceGenerator.h \
 	ocelot/trace/interface/TraceEvent.h \
+	ocelot/trace/interface/BranchEvent.h \
 	ocelot/trace/interface/BranchTraceAnalyzer.h \
 	ocelot/trace/interface/TraceGenerator.h \
 	ocelot/trace/interface/SharedComputationGenerator.h \

@@ -13,8 +13,10 @@
 #include <ocelot/trace/interface/BranchTraceAnalyzer.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
+#include <ocelot/trace/interface/BranchEvent.h>
 #include <fstream>
 #include <cfloat>
+#include <boost/archive/text_iarchive.hpp>
 
 namespace trace
 {
@@ -135,7 +137,7 @@ namespace trace
 				{
 					try
 					{
-						BranchTraceGenerator::BranchEvent event;
+						BranchEvent event;
 						archive >> event;
 						unsigned int fallthrough = event.fallthrough.count();
 						unsigned int taken = event.taken.count();

@@ -12,6 +12,7 @@
 
 namespace ir
 {
+	typedef bool LLVMI1;
 	typedef char LLVMI8;
 	typedef short LLVMI16;
 	typedef int LLVMI32;
@@ -86,6 +87,7 @@ namespace ir
 			/*! \brief Supported LLVM Types */
 			enum DataType
 			{
+				I1,
 				I8,
 				I16,
 				I32,
@@ -175,14 +177,14 @@ namespace ir
 					/*! \brief The label of the operand */
 					std::string label;
 					/*! \brief Is the operand a pointer to a type */
-					bool pointer;
+					LLVMI1 pointer;
 					/*! \brief The vector width of the operand */
-					unsigned int vector;
+					LLVMI32 vector;
 				
 				public:
 					/*! \brief The constructor sets the type and pointer flag */
-					Operand( DataType t = InvalidDataType, bool p = false, 
-						unsigned int v = 1 );			
+					Operand( DataType t = InvalidDataType, LLVMI1 p = false, 
+						LLVMI32 v = 1 );			
 			};
 			
 		public:
@@ -205,7 +207,13 @@ namespace ir
 			
 		public:
 			/*! \brief Default constructor */
-			LLVMInstruction( Opcdode op = InvalidOpcode );
+			LLVMInstruction( Opcode op = InvalidOpcode );
+			
+			/*! \brief Copy constructor to prevent reassignment of opcode */
+			LLVMInstruction( const LLVMInstruction& i );
+			
+			/*! \brief Assignment operator to prevent modification of opcode */
+			const LLVMInstruction& operator=( const LLVMInstruction& i );
 					
 	};
 	
@@ -221,7 +229,7 @@ namespace ir
 	
 		public:
 			/*! \brief Default constructor */
-			LLVMUnaryInstruction( Opcdode op = InvalidOpcode );
+			LLVMUnaryInstruction( Opcode op = InvalidOpcode );
 			
 		public:
 			virtual std::string toString() const;
@@ -243,7 +251,7 @@ namespace ir
 
 		public:
 			/*! \brief Default constructor */
-			LLVMBinaryInstruction( Opcdode op = InvalidOpcode );
+			LLVMBinaryInstruction( Opcode op = InvalidOpcode );
 			
 		public:
 			virtual std::string toString() const;
@@ -278,15 +286,15 @@ namespace ir
 			virtual std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM add instruction */
 	class LLVMAdd : public LLVMBinaryInstruction
 	{
 		public:
 			/*! \brief No unsigned wrap */
-			bool noUnsignedWrap;
+			LLVMI1 noUnsignedWrap;
 			
 			/*! \brief No signed wrap */
-			bool noSignedWrap;
+			LLVMI1 noSignedWrap;
 	
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -297,7 +305,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Alloca instruction */
+	/*! \brief The LLVM alloca instruction */
 	class LLVMAlloca : public LLVMInstruction
 	{
 		public:
@@ -320,7 +328,7 @@ namespace ir
 
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM And instruction */
 	class LLVMAnd : public LLVMBinaryInstruction
 	{
 		public:
@@ -328,7 +336,7 @@ namespace ir
 			LLVMAnd();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM ashr instruction */
 	class LLVMAshr : public LLVMBinaryInstruction
 	{
 		public:
@@ -336,7 +344,7 @@ namespace ir
 			LLVMAshr();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM bitcast instruction */
 	class LLVMBitcast : public LLVMConversionInstruction
 	{
 		public:
@@ -344,7 +352,7 @@ namespace ir
 			LLVMBitcast();
 	};
 		
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM br instruction */
 	class LLVMBr : public LLVMInstruciton
 	{
 		public:
@@ -366,12 +374,12 @@ namespace ir
 			std::string valid() const;	
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM call instruction */
 	class LLVMCall : public LLVMInstruction
 	{
 		public:
 			/*! \brief Is this call eligible for tail call optimization? */
-			bool tail;
+			LLVMI1 tail;
 			
 			/*! \brief The calling convention */
 			CallingConvention convention;
@@ -390,7 +398,7 @@ namespace ir
 			Operand::Vector parameters;
 			
 			/*! \brief Function attributes of the call */
-			int functionAttributes;			
+			LLVMI32 functionAttributes;			
 			
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -401,7 +409,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM extractelement instruction */
 	class LLVMExtractelement : public LLVMBinaryInstruction
 	{
 		public:
@@ -413,7 +421,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM extractvalue instruction */
 	class LLVMExtractvalue : public LLVMInstruction
 	{
 		public:
@@ -435,7 +443,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fadd instruction */
 	class LLVMFadd : public LLVMBinaryInstruction
 	{
 		public:
@@ -443,7 +451,7 @@ namespace ir
 			LLVMFadd();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fcmp instruction */
 	class LLVMFcmp : public LLVMComparisonInstruction
 	{
 		public:
@@ -451,7 +459,7 @@ namespace ir
 			LLVMFcmp();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fdiv instruction */
 	class LLVMFdiv : public LLVMBinaryInstruction
 	{
 		public:
@@ -459,7 +467,7 @@ namespace ir
 			LLVMFdiv();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fmul instruction */
 	class LLVMFmul : public LLVMBinaryInstruction
 	{
 		public:
@@ -467,7 +475,7 @@ namespace ir
 			LLVMFmul();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fpext instruction */
 	class LLVMFpext : public LLVMConversionInstruction
 	{
 		public:
@@ -475,7 +483,7 @@ namespace ir
 			LLVMFpext();
 	};
 		
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fptosi instruction */
 	class LLVMFptosi : public LLVMConversionInstruction
 	{
 		public:
@@ -483,7 +491,7 @@ namespace ir
 			LLVMFptosi();
 	};
 		
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fptoui instruction */
 	class LLVMFptoui : public LLVMConversionInstruction
 	{
 		public:
@@ -491,7 +499,7 @@ namespace ir
 			LLVMFptoui();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fptrunc instruction */
 	class LLVMFptrunc : public LLVMConversionInstruction
 	{
 		public:
@@ -499,7 +507,7 @@ namespace ir
 			LLVMFptrunc();
 	};
 		
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM free instruction */
 	class LLVMFree : public LLVMUnaryInstruciton
 	{
 		public:
@@ -507,7 +515,7 @@ namespace ir
 			LLVMFree();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM frem instruction */
 	class LLVMFrem : public LLVMBinaryInstruction
 	{
 		public:
@@ -515,7 +523,7 @@ namespace ir
 			LLVMFrem();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM fsub instruction */
 	class LLVMFsub : public LLVMBinaryInstruction
 	{
 		public:
@@ -523,7 +531,7 @@ namespace ir
 			LLVMFsub();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM getelementptr instruction */
 	class LLVMGetelementptr : public LLVMInstruction
 	{
 		public:
@@ -545,7 +553,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM icmp instruction */
 	class LLVMIcmp : public LLVMConversionInstruction
 	{
 		public:
@@ -553,7 +561,7 @@ namespace ir
 			LLVMIcmp();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM insertelement instruction */
 	class LLVMInsertelement : public LLVMBinaryInstruction
 	{
 		public:
@@ -565,7 +573,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM insertvalue instruction */
 	class LLVMInsertvalue : public LLVMInstruction
 	{
 		public:
@@ -587,7 +595,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM intotoptr instruction */
 	class LLVMInttoptr : public LLVMConversionInstruction
 	{
 		public:
@@ -595,8 +603,8 @@ namespace ir
 			LLVMInttoptr();
 	};
 	
-	/*! \brief The LLVM Add instruction */
-	class LLVMInvoke
+	/*! \brief The LLVM invoke instruction */
+	class LLVMInvoke : public LLVMInstruction
 	{
 		public:
 			/*! \brief The return operand */
@@ -616,7 +624,7 @@ namespace ir
 			Operand::Vector parameters;
 			
 			/*! \brief Function attributes of the call */
-			int functionAttributes;
+			LLVMI32 functionAttributes;
 			
 			/*! \brief The label reached when the callee returns */
 			std::string tolabel;
@@ -633,15 +641,15 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM load instruction */
 	class LLVMLoad : public LLVMUnaryInstruction
 	{
 		public:
 			/*! \brief Is the load volatile */
-			bool isVolatile;
+			LLVMI1 isVolatile;
 	
 			/*! \brief The alignment requirement of the load */
-			unsigned int alignment;
+			LLVMI32 alignment;
 	
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -652,7 +660,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM lshr instruction */
 	class LLVMLshr : public LLVMBinaryInstruction
 	{
 		public:
@@ -660,7 +668,7 @@ namespace ir
 			LLVMLshr();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM malloc instruction */
 	class LLVMMalloc : public LLVMInstruction
 	{
 		public:
@@ -682,15 +690,15 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM mul instruction */
 	class LLVMMul : public LLVMBinaryInstruction
 	{
 		public:
 			/*! \brief No unsigned wrap */
-			bool noUnsignedWrap;
+			LLVMI1 noUnsignedWrap;
 			
 			/*! \brief No signed wrap */
-			bool noSignedWrap;
+			LLVMI1 noSignedWrap;
 		
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -701,7 +709,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM or instruction */
 	class LLVMOr : public LLVMBinaryInstruction
 	{
 		public:
@@ -713,7 +721,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM phi instruction */
 	class LLVMPhi : public LLVMInstruction
 	{
 		public:
@@ -746,7 +754,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM ptrtoint instruction */
 	class LLVMPtrtoint : public LLVMConversionInstruction
 	{
 		public:
@@ -770,12 +778,12 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM sdiv instruction */
 	class LLVMSdiv : public LLVMBinaryInstruction
 	{
 		public:
 			/*! \brief Should the division be gauranteed to be exact? */
-			bool exact;
+			LLVMI1 exact;
 			
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -786,7 +794,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM select instruction */
 	class LLVMSelect : public LLVMBinaryInstruction
 	{
 		public:
@@ -802,7 +810,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM sext instruction */
 	class LLVMSext : public LLVMConversionInstruction
 	{
 		public:
@@ -810,7 +818,7 @@ namespace ir
 			LLVMSext();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM shl instruction */
 	class LLVMShl : public LLVMBinaryInstruction
 	{
 		public:
@@ -818,7 +826,7 @@ namespace ir
 			LLVMShl();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM shufflevector instruction */
 	class LLVMShufflevector : public LLVMBinaryInstruction
 	{
 		public:
@@ -838,7 +846,7 @@ namespace ir
 			std::string valid() const;
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM sitofp instruction */
 	class LLVMSitofp : public LLVMConversionInstruction
 	{
 		public:
@@ -846,7 +854,7 @@ namespace ir
 			LLVMSitofp();
 	};
 	
-	/*! \brief The LLVM Add instruction */
+	/*! \brief The LLVM srem instruction */
 	class LLVMSrem : public LLVMBinaryInstruction
 	{
 		public:
@@ -859,10 +867,10 @@ namespace ir
 	{
 		public:
 			/*! \brief Is the load volatile */
-			bool isVolatile;
+			LLVMI1 isVolatile;
 	
 			/*! \brief The alignment requirement of the load */
-			unsigned int alignment;
+			LLVMI32 alignment;
 			
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -878,10 +886,10 @@ namespace ir
 	{
 		public:
 			/*! \brief No unsigned wrap */
-			bool noUnsignedWrap;
+			LLVMI1 noUnsignedWrap;
 			
 			/*! \brief No signed wrap */
-			bool noSignedWrap;
+			LLVMI1 noSignedWrap;
 			
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -893,7 +901,7 @@ namespace ir
 	};
 	
 	/*! \brief The LLVM switch instruction */
-	class LLVMSwitch
+	class LLVMSwitch : public LLVMInstruction
 	{
 		public:
 			/*! \brief Class for a combination of an operand and a label */

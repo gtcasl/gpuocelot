@@ -110,6 +110,7 @@ namespace ir
 	{
 		switch( d )
 		{
+			case I1: return "i1"; break;
 			case I8: return "i8"; break;
 			case I16: return "i16"; break;
 			case I32: return "i32"; break;
@@ -216,9 +217,20 @@ namespace ir
 		return result;
 	}
 
-	LLVMInstruction::LLVMInstruction( Opcdode op ) : opcode( op )
+	LLVMInstruction::LLVMInstruction( Opcode op ) : opcode( op )
 	{
 		
+	}
+
+	LLVMInstruction::LLVMInstruction( const LLVMInstruction& i )
+	{
+		/* intentionally empty */
+	}
+	
+	const LLVMInstruction& LLVMInstruction::operator=( 
+		const LLVMInstruction& i )
+	{
+		/* intentionally empty */
 	}
 
 	std::string LLVMInstruction::toString() const
@@ -228,10 +240,398 @@ namespace ir
 
 	std::string LLVMInstruction::valid() const
 	{
-		return "A base LLVMInstruction is not valid";
+		return "A base LLVMInstruction is not ::valid";
 	}
+
+	LLVMUnaryInstruction::LLVMUnaryInstruction( Opcode op ) 
+		: LLVMInstruction( op )
+	{
+	
+	}
+	
+	std::string LLVMUnaryInstruction::toString() const;
+	std::string LLVMUnaryInstruction::valid() const;
+
+	LLVMBinaryInstruction::LLVMBinaryInstruction( Opcode op )
+		: LLVMInstruction( op )
+	{
+	
+	}
+
+	std::string LLVMBinaryInstruction::toString() const;
+	std::string LLVMBinaryInstruction::valid() const;
+
+	LLVMConversionInstruction::LLVMConversionInstruction( Opcode op )
+		: LLVMUnaryInstruction( op )
+	{
+	
+	}
+
+	std::string LLVMConversionInstruction::toString() const;
+	std::string LLVMConversionInstruction::valid() const;
+
+	LLVMComparisonInstruction::LLVMComparisonInstruction( Opcode op )
+		: LLVMBinaryInstruction( op )
+	{
+	
+	}
+	
+	std::string LLVMComparisonInstruction::toString() const;
+	std::string LLVMComparisonInstruction::valid() const;
+
+	LLVMAdd::LLVMAdd() : LLVMBinaryInstruction( Add ), noUnsignedWrap( false ),
+		noSignedWrap( false )
+	{
+	
+	}
+	
+	std::string LLVMAdd::toString() const;
+	std::string LLVMAdd::valid() const;
+
+	LLVMAlloca::LLVMAlloca( LLVMI32 e, LLVMI32 a ) : LLVMInstruction( Alloca ), 
+		elements( e ), alignment( a )
+	{
+	
+	}
+	
+	std::string LLVMAlloca::toString() const;
+	std::string LLVMAlloca::valid() const;
+
+	LLVMAnd::LLVMAnd() : LLVMBinaryInstruction( And )
+	{
+	
+	}
+	
+	LLVMAshr::LLVMAshr() : LLVMBinaryInstruction( Ashr )
+	{
+	
+	}
+
+	LLVMBitcast::LLVMBitcast() : LLVMConversionInstruction( Bitcast )
+	{
+	
+	}
+
+	LLVMBr::LLVMBr() : LLVMInstruction( Br )
+	{
+	
+	}
+	
+	std::string LLVMBr::toString() const;
+	std::string LLVMBr::valid() const;	
+
+	LLVMCall::LLVMCall() : LLVMInstruction( Call ), tail( false ), 
+		convention( DefaultCallingConvention ), 
+		returnAttributes( InvalidParameterAttribute ),
+		functionAttributes( 0 )
+	{
+	
+	}
+	
+	std::string LLVMCall::toString() const;
+	std::string LLVMCall::valid() const;
+
+	LLVMExtractelement::LLVMExtractelement() 
+		: LLVMBinaryInstruction( ExtractElement )
+	{
+	
+	}
+	
+	std::string LLVMExtractelement::toString() const;
+	std::string LLVMExtractelement::valid() const;
+
+	LLVMExtractvalue::LLVMExtractvalue() : LLVMBinaryInstruction( Extractvalue )
+	{
+	
+	}
+	
+	std::string LLVMExtractvalue::toString() const;
+	std::string LLVMExtractvalue::valid() const;
+
+	LLVMFadd::LLVMFadd() : LLVMBinaryInstruction( Fadd )
+	{
+	
+	}
+	
+	LLVMFcmp::LLVMFcmp() : LLVMComparisonInstruction( Fcmp )
+	{
+	
+	}
+	
+	LLVMFdiv::LLVMFdiv() : LLVMBinaryInstruction( Fdiv )
+	{
+	
+	}
+	
+	LLVMFmul::LLVMFmul() : LLVMBinaryInstruction( Fmul )
+	{
+	
+	}
+	
+	LLVMFpext::LLVMFpext() : LLVMConversionInstruction( Fpext )
+	{
+	
+	}
+
+	LLVMFptosi::LLVMFptosi() : LLVMConversionInstruction( Fptosi )
+	{
+	
+	}
+
+	LLVMFptoui::LLVMFptoui() : LLVMConversionInstruction( Fptoui )
+	{
+	
+	}
+
+	LLVMFptrunc::LLVMFptrunc() : LLVMConversionInstruction( Fptrunc )
+	{
+	
+	}
+	
+	LLVMFree::LLVMFree() : LLVMUnaryInstruction( Free )
+	{
+	
+	}
+	
+	LLVMFrem::LLVMFrem() : LLVMBinaryInstruction( Frem )
+	{
+	
+	}
+
+	LLVMFsub::LLVMFsub() : LLVMBinaryInstruction( Fsub )
+	{
+	
+	}
+
+	LLVMGetelementptr::LLVMGetelementptr() : LLVMInstruction( Getelementptr )
+	{
+		
+	}
+	
+	std::string LLVMGetelementptr::toString() const;
+	std::string LLVMGetelementptr::valid() const;
+
+	LLVMIcmp::LLVMIcmp() : LLVMComparisonInstruction( Icmp )
+	{
+	
+	}
+
+	LLVMInsertelement::LLVMInsertelement() 
+		: LLVMBinaryInstruction( Insertelement )
+	{
+	
+	}
+	
+	std::string LLVMInsertelement::toString() const;
+	std::string LLVMInsertelement::valid() const;
+
+	LLVMInsertvalue::LLVMInsertvalue() : LLVMInstruction( Insertvalue )
+	{
+	
+	}
+	
+	std::string LLVMInsertvalue::toString() const;
+	std::string LLVMInsertvalue::valid() const;
+
+	LLVMInttoptr::LLVMInttoptr() : LLVMConversionInstruction( Inttoptr )
+	{
+	
+	}
+
+	LLVMInvoke::LLVMInvoke() : LLVMInstruction( Invoke )
+	{
+	
+	}
+	
+	std::string LLVMInvoke::toString() const;
+	std::string LLVMInvoke::valid() const;
+
+	LLVMLoad::LLVMLoad() : LLVMUnaryInstruction( Load ), isVolatile( false ), 
+		alignment( 1 )
+	{
+	
+	}
+	
+	std::string LLVMLoad::toString() const;
+	std::string LLVMLoad::valid() const;
+
+	LLVMLshr::LLVMLshr() : LLVMBinaryInstruction( Lshr )
+	{
+	
+	}
+
+	LLVMMalloc::LLVMMalloc() : LLVMInstruction( Malloc ), elements( 1 ), 
+		alignment( 1 )
+	{
+	
+	}
+	
+	std::string LLVMMalloc::toString() const;
+	std::string LLVMMalloc::valid() const;
+
+	LLVMMul::LLVMMul() : LLVMBinaryInstruction( Mul ), noUnsignedWrap( false ),
+		noSignedWrap( false )
+	{
+	
+	}
+	
+	std::string LLVMMul::toString() const;
+	std::string LLVMMul::valid() const;
+
+	LLVMOr::LLVMOr() : LLVMBinaryInstruction( Or )
+	{
+	
+	}
+	
+	std::string LLVMOr::toString() const;
+	std::string LLVMOr::valid() const;
+
+	LLVMPhi::LLVMPhi() : LLVMInstruction( Phi )
+	{
+	
+	} 
+	
+	std::string LLVMPhi::toString() const;
+	std::string LLVMPhi::valid() const;
+
+	LLVMPtrtoint::LLVMPtrtoint() : LLVMConversionInstruction( Ptrtoint )
+	{
+	
+	}
+
+	LLVMRet::LLVMRet() : LLVMInstruction( Ret )
+	{
+	
+	}
+	
+	std::string LLVMRet::toString() const;
+	std::string LLVMRet::valid() const;
+
+	LLVMSdiv::LLVMSdiv() : LLVMBinaryInstruction( Sdiv ), exact( false )
+	{
+	
+	}
+	
+	std::string LLVMSdiv::toString() const;
+	std::string LLVMSdiv::valid() const;
+
+	LLVMSelect::LLVMSelect() : LLVMBinaryInstruction( Select )
+	{
+	
+	}
+	
+	std::string LLVMSelect::toString() const;
+	std::string LLVMSelect::valid() const;
+
+	LLVMSext::LLVMSext() : LLVMConversionInstruction( Sext )
+	{
+	
+	}
+
+	LLVMShl::LLVMShl() : LLVMBinaryInstruction( Shl )
+	{
+	
+	}
+
+	LLVMShufflevector::LLVMShufflevector() 
+		: LLVMBinaryInstruction( ShuffleVector )
+	{
+	
+	}
+	
+	std::string LLVMShufflevector::toString() const;
+	std::string LLVMShufflevector::valid() const;
+
+	LLVMSitofp::LLVMSitofp() : LLVMConversionInstruction( Sitofp )
+	{
+	
+	}
+	
+	LLVMSrem::LLVMSrem() : LLVMBinaryInstruction( Srem )
+	{
+	
+	}
+	
+	LLVMStore::LLVMStore() : LLVMUnaryInstruction( Store ), isVolatile( false ),
+		alignment( 1 )
+	{
+	
+	}
+	
+	std::string LLVMStore::toString() const;
+	std::string LLVMStore::valid() const;
+
+	LLVMSub::LLVMSub() : LLVMBinaryInstruction( Sub ), noUnsignedWrap( false ),
+		noSignedWrap( false )
+	{
+	
+	}
+	
+	std::string LLVMSub::toString() const;
+	std::string LLVMSub::valid() const;
+
+	LLVMSwitch::LLVMSwitch() : LLVMInstruction( Switch )
+	{
+	
+	}
+	std::string LLVMSwitch::toString() const;
+	std::string LLVMSwitch::valid() const;
+
+	LLVMTrunc::LLVMTrunc() : LLVMConversionInstruction( Trunk )
+	{
+	
+	}
+
+	LLVMUdiv::LLVMUdiv() : LLVMBinaryInstruction( Udiv )
+	{
+	
+	}
+
+	LLVMUitofp::LLVMUitofp() : LLVMConversionInstruction( Uitofp )
+	{
+	
+	}
+
+	LLVMUnreachable::LLVMUnreachable() : LLVMInstruction( Unreachable )
+	{
+	
+	}
+	
+	std::string LLVMUnreachable::toString() const;
+	std::string LLVMUnreachable::valid() const;
+
+	LLVMUnwind::LLVMUnwind() : LLVMInstruction( Unwind )
+	{
+	
+	}
+	std::string LLVMUnwind::toString() const;
+	std::string LLVMUnwind::valid() const;
+
+	LLVMUrem::LLVMUrem() : LLVMBinaryInstruction( Urem )
+	{
+	
+	}
+	std::string LLVMUrem::toString() const;
+	std::string LLVMUrem::valid() const;
+
+	LLVMVaArg::LLVMVaArg() : LLVMUnaryInstruction( VaArg )
+	{
+	
+	}
+	std::string LLVMVaArg::toString() const;
+	std::string LLVMVaArg::valid() const;
+
+	LLVMXor::LLVMXor() : LLVMBinaryInstruction( Xor )
+	{
+	
+	}
+
+	LLVMZext::LLVMZext() : LLVMConversionInstruction( Zext )
+	{
+	
+	}
+	
 }
 
 #endif
-
 

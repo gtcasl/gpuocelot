@@ -13,7 +13,78 @@
 
 namespace ir
 {
+	LLVMInstruction::Type::Type( DataType t, Category c, LLVMI32 v ) 
+		: type( t ), category( c ), vector( v )
+	{
 	
+	}
+	
+	std::string LLVMInstruction::Type::toString() const
+	{
+		switch( category )
+		{
+			Element:
+			{
+				return toString( type );
+				break;
+			}
+			Array:
+			{
+				std::stringstream stream;
+				stream << "[ " << vector << " x " << toString( type ) << " ]";
+				return stream.str();
+				break;
+			}
+			Function:
+			{
+				assertM( false, "Basic LLVM Type does not support \
+					functions." );
+				break;
+			}
+			Structure:
+			{
+				assertM( false, "Basic LLVM Type does not support \
+					structures." );
+				break;
+			}
+			PackedStructure:
+			{
+				assertM( false, "Basic LLVM Type does not support \
+					packed structures." );
+				break;
+			}
+			Pointer:
+			{
+				return toString( type ) + "*";
+				break;
+			}
+			Vector:
+			{
+				std::stringstream stream;
+				stream << "< " << vector << " x " << toString( type ) << " >";
+				return stream.str();
+				break;
+			}
+			Opaque:
+			{
+				return label;
+				break;
+			}
+			InvalidCategory:
+			{
+				return "INVALID_CATEGORY";
+				break;
+			}
+		}
+		return "";
+	}
+		
+	LLVMInstruction::Operand::Operand( const std::string& n, const Type& t ) 
+		: name( n ), type( t )
+	{
+	
+	}
+
 	std::string LLVMInstruction::toString( Opcode code )
 	{
 		switch( code )
@@ -76,6 +147,22 @@ namespace ir
 		return "";
 	}
 
+	std::string LLVMInstruction::toString( DataType d )
+	{
+		switch( d )
+		{
+			case I1: return "i1"; break;
+			case I8: return "i8"; break;
+			case I16: return "i16"; break;
+			case I32: return "i32"; break;
+			case I64: return "i64"; break;
+			case F32: return "f32"; break;
+			case F64: return "f64"; break;
+			default: break;
+		}
+		return "";
+	}
+
 	std::string LLVMInstruction::toString( CallingConvention cc )
 	{
 		switch( cc )
@@ -102,22 +189,6 @@ namespace ir
 			case NoCapture: return "nocapture"; break;
 			case Nested: return "nest"; break;
 			case InvalidParameterAttribute: return "INVALID_PARAM_ATTR"; break;
-		}
-		return "";
-	}
-
-	std::string LLVMInstruction::toString( DataType d )
-	{
-		switch( d )
-		{
-			case I1: return "i1"; break;
-			case I8: return "i8"; break;
-			case I16: return "i16"; break;
-			case I32: return "i32"; break;
-			case I64: return "i64"; break;
-			case F32: return "f32"; break;
-			case F64: return "f64"; break;
-			default: break;
 		}
 		return "";
 	}
@@ -240,7 +311,7 @@ namespace ir
 
 	std::string LLVMInstruction::valid() const
 	{
-		return "A base LLVMInstruction is not ::valid";
+		return "A base LLVMInstruction is not valid";
 	}
 
 	LLVMUnaryInstruction::LLVMUnaryInstruction( Opcode op ) 
@@ -249,8 +320,21 @@ namespace ir
 	
 	}
 	
-	std::string LLVMUnaryInstruction::toString() const;
-	std::string LLVMUnaryInstruction::valid() const;
+	std::string LLVMUnaryInstruction::toString() const
+	{
+		return d.name + " = " + toString( opcode ) + " " + a.type.toString() 
+			+ " " + a.name;
+	}
+	std::string LLVMUnaryInstruction::valid() const
+	{
+		if( a.type.toString() != d.type.toString() )
+		{
+			return "Source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		return "";
+	}
 
 	LLVMBinaryInstruction::LLVMBinaryInstruction( Opcode op )
 		: LLVMInstruction( op )
@@ -258,17 +342,45 @@ namespace ir
 	
 	}
 
-	std::string LLVMBinaryInstruction::toString() const;
-	std::string LLVMBinaryInstruction::valid() const;
+	std::string LLVMBinaryInstruction::toString() const
+	{
+		return d.name + " = " + toString( opcode ) + " " + a.type.toString() 
+			+ " " + a.name + ", " + b.name;
+	}
 
+	std::string LLVMBinaryInstruction::valid() const
+	{
+		if( a.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		if( b.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		return "";
+	}
+	
 	LLVMConversionInstruction::LLVMConversionInstruction( Opcode op )
 		: LLVMUnaryInstruction( op )
 	{
-	
+		
 	}
 
-	std::string LLVMConversionInstruction::toString() const;
-	std::string LLVMConversionInstruction::valid() const;
+	std::string LLVMConversionInstruction::toString() const
+	{
+		return d.name + " = " + toString( opcode ) + " " 
+			+ a.type.toString() + " " + a.name + " to " + d.type.toString();
+	}
+
+	std::string LLVMConversionInstruction::valid() const
+	{
+		return "";
+	}
 
 	LLVMComparisonInstruction::LLVMComparisonInstruction( Opcode op )
 		: LLVMBinaryInstruction( op )
@@ -276,8 +388,28 @@ namespace ir
 	
 	}
 	
-	std::string LLVMComparisonInstruction::toString() const;
-	std::string LLVMComparisonInstruction::valid() const;
+	std::string LLVMComparisonInstruction::toString() const
+	{
+		return d.name + " = " + toString( opcode ) + " " + condition.name 
+			+ " " + a.type.toString() + " " + a.name + ", " + b.name;
+	}
+	
+	std::string LLVMComparisonInstruction::valid() const
+	{
+		if( a.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		if( b.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		return "";	
+	}
 
 	LLVMAdd::LLVMAdd() : LLVMBinaryInstruction( Add ), noUnsignedWrap( false ),
 		noSignedWrap( false )

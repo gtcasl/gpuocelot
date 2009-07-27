@@ -165,26 +165,61 @@ namespace ir
 				Naked = 2048
 			};
 			
-			/*! \brief A class for a basic LLVM Operand */
-			class Operand
+			/*! \brief A class for an LLVM basic or derived type */
+			class Type
 			{
 				public:
-					typedef std::vector< Operand > Vector;
+					/*! \brief All possible operand types */
+					Category
+					{
+						Element, //! A single element of a base type
+						Array, //! An array of elements
+						Function, //! A function pointer
+						Structure, //! An unconstrained ordered set of types
+						PackedStructure, //! Structure with no padding
+						Pointer, //! A pointer to a type
+						Vector, //! A vector for use in SIMD instructions
+						Opaque, //! An unknown type that has not been resolved
+						InvalidCategory
+					};
+				
+				public:
+					/*! \brief A vector for a set of Types for the aggregates */
+					typedef std::vector< Type > Vector;
 			
 				public:
-					/*! \brief The datatype of the operand */
+					/*! \brief The datatype of the Type */
 					DataType type;
+					/*! \brief The category of the Type */
+					Category category;
 					/*! \brief The label of the operand */
 					std::string label;
-					/*! \brief Is the operand a pointer to a type */
-					LLVMI1 pointer;
 					/*! \brief The vector width of the operand */
 					LLVMI32 vector;
 				
 				public:
 					/*! \brief The constructor sets the type and pointer flag */
-					Operand( DataType t = InvalidDataType, LLVMI1 p = false, 
-						LLVMI32 v = 1 );			
+					Type( DataType t = InvalidDataType, 
+						Category c = InvalidCategory, LLVMI32 v = 1 );			
+				
+				public:			
+					/*! \brief A parsable string representation of the Type */
+					std::string toString() const;
+			};
+			
+			/*! \brief A class for a basic LLVM Operand */
+			class Operand
+			{
+				public:
+					/*! \brief The type of the operand */
+					Type type;
+					/*! \brief The name of the operand */
+					std::string name;
+					
+				public:
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( const std::string& n = std::string(), 
+						const Type& t = Type() );					
 			};
 			
 		public:

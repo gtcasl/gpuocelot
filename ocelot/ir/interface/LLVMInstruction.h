@@ -215,11 +215,28 @@ namespace ir
 					Type type;
 					/*! \brief The name of the operand */
 					std::string name;
+					/*! \brief Is this a variable or a constant */
+					bool constant;
+					/*! \brief The value of the operand if it is a constant */
+					enum
+					{
+						LLVMI1 i1;
+						LLVMI8 i8;
+						LLVMI16 i16;
+						LLVMI32 i32;
+						LLVMI64 i64;
+						LLVMF32 f32;
+						LLVMF64 f64;
+					};
 					
 				public:
 					/*! \brief The constructor sets the type and pointer flag */
 					Operand( const std::string& n = std::string(), 
-						const Type& t = Type() );					
+						bool c = false, const Type& t = Type() );
+					/*! \brief Is this a valid operand ? */
+					bool valid() const;
+					/*! \brief Return a parsable represention of the Operand */
+					std::string toString() const;
 			};
 			
 		public:
@@ -239,6 +256,9 @@ namespace ir
 			static std::string toString( Comparison comp );
 			/*! \brief Convert a series of function attributes to a string */
 			static std::string functionAttributesToString( int attributes );
+			
+			/*! \brief Determine if a datatype is an int */
+			static bool isInt( DataType d );
 			
 		public:
 			/*! \brief Default constructor */
@@ -264,7 +284,9 @@ namespace ir
 	
 		public:
 			/*! \brief Default constructor */
-			LLVMUnaryInstruction( Opcode op = InvalidOpcode );
+			LLVMUnaryInstruction( Opcode op = InvalidOpcode, 
+				const Operand& d = Operand(), 
+				const Operand& a = Operand() );
 			
 		public:
 			virtual std::string toString() const;
@@ -286,7 +308,9 @@ namespace ir
 
 		public:
 			/*! \brief Default constructor */
-			LLVMBinaryInstruction( Opcode op = InvalidOpcode );
+			LLVMBinaryInstruction( Opcode op = InvalidOpcode, 
+				const Operand& _d = Operand(), const Operand& _a = Operand(), 
+				const Operand& _b = Operand() );
 			
 		public:
 			virtual std::string toString() const;
@@ -298,7 +322,9 @@ namespace ir
 	{
 		public:
 			/*! \brief Default constructor */
-			LLVMConversionInstruction( Opcode op = InvalidOpcode );
+			LLVMConversionInstruction( Opcode op = InvalidOpcode,
+				const Operand& d = Operand(), 
+				const Operand& a = Operand() );
 			
 		public:
 			virtual std::string toString() const;
@@ -333,7 +359,9 @@ namespace ir
 	
 		public:
 			/*! \brief The default constructor sets the opcode */
-			LLVMAdd();
+			LLVMAdd( const Operand& d = Operand(), 
+				const Operand& a = Operand(), const Operand& b = Operand(),
+				bool nur = false, bool nsr = false );
 			
 		public:
 			std::string toString() const;
@@ -392,12 +420,12 @@ namespace ir
 	{
 		public:
 			/*! \brief The condition operand or empty if none */
-			std::string condition;
+			Operand condition;
 			
-			/*! \brief The iftrue label */
+			/*! \brief The target label, default if condition is not specified */
 			std::string iftrue;
 			
-			/*! \brief The iffale label */
+			/*! \brief The iffalse label */
 			std::string iffalse;
 	
 		public:
@@ -421,10 +449,6 @@ namespace ir
 			
 			/*! \brief The return parameter attributes */
 			ParameterAttribute returnAttributes;
-			
-			/*! \brief The return function call signiture if it 
-				is a pointer to function */
-			std::string signiture;
 			
 			/*! \brief The return operand */
 			Operand d;
@@ -460,6 +484,10 @@ namespace ir
 	class LLVMExtractvalue : public LLVMInstruction
 	{
 		public:
+			/*! \brief A vector of indices */
+			typedef std::vector< LLVMI32 > IndexVector;
+	
+		public:
 			/*! \brief The destination operand */
 			Operand d;
 			
@@ -467,7 +495,7 @@ namespace ir
 			Operand a;
 			
 			/*! \brief Indexes within the aggregate type */
-			Operand::Vector indices;
+			IndexVector indices;
 	
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -600,6 +628,10 @@ namespace ir
 	class LLVMInsertelement : public LLVMBinaryInstruction
 	{
 		public:
+			/*! \brief Index operand */s
+			Operand c;
+				
+		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMInsertelement();
 			
@@ -617,6 +649,9 @@ namespace ir
 			
 			/*! \brief The source operand, must be an aggregate type */
 			Operand a;
+			
+			/*! \brief The source value to insert */
+			Operand b;
 			
 			/*! \brief Indexes within the aggregate type */
 			Operand::Vector indices;
@@ -650,10 +685,6 @@ namespace ir
 			
 			/*! \brief The return parameter attributes */
 			ParameterAttribute returnAttributes;
-			
-			/*! \brief The return function call signiture if it 
-				is a pointer to function */
-			std::string signiture;
 			
 			/*! \brief The set of parameters */
 			Operand::Vector parameters;
@@ -741,7 +772,6 @@ namespace ir
 			
 		public:
 			std::string toString() const;
-			std::string valid() const;
 	};
 	
 	/*! \brief The LLVM or instruction */
@@ -750,10 +780,6 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMOr();
-			
-		public:
-			std::string toString() const;
-			std::string valid() const;
 	};
 	
 	/*! \brief The LLVM phi instruction */
@@ -826,7 +852,6 @@ namespace ir
 			
 		public:
 			std::string toString() const;
-			std::string valid() const;
 	};
 	
 	/*! \brief The LLVM select instruction */
@@ -932,7 +957,6 @@ namespace ir
 			
 		public:
 			std::string toString() const;
-			std::string valid() const;
 	};
 	
 	/*! \brief The LLVM switch instruction */
@@ -1025,10 +1049,6 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMUrem();
-			
-		public:
-			std::string toString() const;
-			std::string valid() const;
 	};
 	
 	/*! \brief The LLVM va_arg instruction */

@@ -9,6 +9,7 @@
 #define TEST_LLVM_INSTRUCTIONS_H_INCLUDED
 
 #include <hydrazine/interface/Test.h>
+#include <ocelot/ir/interface/LLVMInstruction.h>
 
 namespace test
 {
@@ -24,15 +25,20 @@ namespace test
 	class TestLLVMInstructions : public Test
 	{
 		public:
+			typedef ir::LLVMInstruction Instruction;
 			typedef ir::LLVMInstruction::Type Type;
 			typedef ir::LLVMInstruction::Operand Operand;
 	
-		public:
+		private:
+			bool check( const ir::Instruction& i, 
+				const std::string& reference );
+	
+		private:
 			bool testAdd();
 			bool testAlloca();
 			bool testAnd();
 			bool testAshr();
-			bool testBitcast()	
+			bool testBitcast();
 			bool testBr();
 			bool testCall();
 			bool testExtractelement();
@@ -41,8 +47,8 @@ namespace test
 			bool testFcmp();
 			bool testFdiv();
 			bool testFmul();
-			bool testFpext()	
-			bool testFptosi()	
+			bool testFpext();
+			bool testFptosi();
 			bool testFptoui();
 			bool testFptrunc();
 			bool testFree();
@@ -74,7 +80,7 @@ namespace test
 			bool testSwitch();
 			bool testTrunc();
 			bool testUdiv();
-			bool testUitofp()	
+			bool testUitofp();
 			bool testUnreachable();
 			bool testUnwind();
 			bool testUrem();

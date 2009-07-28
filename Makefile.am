@@ -25,7 +25,7 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
-	TestMemoryTraceGenerator TestDataflowGraph
+	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
 	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la \
 	libOcelot.la
@@ -62,7 +62,8 @@ libOcelotIr_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 	ocelot/ir/implementation/PTXKernel.cpp \
 	ocelot/ir/implementation/Texture.cpp \
 	ocelot/ir/implementation/DominatorTree.cpp \
-	ocelot/ir/implementation/PostdominatorTree.cpp
+	ocelot/ir/implementation/PostdominatorTree.cpp \
+	ocelot/ir/implementation/LLVMInstruction.cpp
 ################################################################################
 
 ################################################################################
@@ -278,6 +279,14 @@ TestDataflowGraph_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## TestLLVMInstructions
+TestLLVMInstructions_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+TestLLVMInstructions_SOURCES = ocelot/ir/test/TestLLVMInstructions.cpp
+TestLLVMInstructions_LDADD = libOcelotIr.la libhydrazine.la
+TestLLVMInstructions_LDFLAGS = -static
+################################################################################
+
+################################################################################
 ## Headers
 nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/Executive.h \
@@ -329,6 +338,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/BasicBlock.h \
 	ocelot/ir/interface/Global.h \
 	ocelot/ir/interface/Texture.h \
+	ocelot/ir/test/TestLLVMInstructions.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/XmlLexer.h \
 	hydrazine/implementation/Timer.h \

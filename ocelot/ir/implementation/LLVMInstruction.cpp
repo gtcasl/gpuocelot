@@ -8,7 +8,7 @@
 #ifndef LLVM_INSTRUCTION_CPP_INCLUDED
 #define LLVM_INSTRUCTION_CPP_INCLUDED
 
-#include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/interface/LLVMInstruction.h>
 #include <hydrazine/implementation/debug.h>
 
 namespace ir
@@ -23,54 +23,56 @@ namespace ir
 	{
 		switch( category )
 		{
-			Element:
+			case Element:
 			{
-				return toString( type );
+				return LLVMInstruction::toString( type );
 				break;
 			}
-			Array:
+			case Array:
 			{
 				std::stringstream stream;
-				stream << "[ " << vector << " x " << toString( type ) << " ]";
+				stream << "[ " << vector << " x " 
+					<< LLVMInstruction::toString( type ) << " ]";
 				return stream.str();
 				break;
 			}
-			Function:
+			case Function:
 			{
 				assertM( false, "Basic LLVM Type does not support \
 					functions." );
 				break;
 			}
-			Structure:
+			case Structure:
 			{
 				assertM( false, "Basic LLVM Type does not support \
 					structures." );
 				break;
 			}
-			PackedStructure:
+			case PackedStructure:
 			{
 				assertM( false, "Basic LLVM Type does not support \
 					packed structures." );
 				break;
 			}
-			Pointer:
+			case Pointer:
 			{
-				return toString( type ) + "*";
+				return LLVMInstruction::toString( type ) + "*";
 				break;
 			}
-			Vector:
+			case Vector:
 			{
 				std::stringstream stream;
-				stream << "< " << vector << " x " << toString( type ) << " >";
+				stream << "< " << vector << " x " 
+					<< LLVMInstruction::toString( type ) << " >";
 				return stream.str();
 				break;
 			}
-			Opaque:
+			case Opaque:
 			{
 				return label;
 				break;
 			}
-			InvalidCategory:
+			case InvalidCategory:
 			{
 				return "INVALID_CATEGORY";
 				break;
@@ -87,31 +89,101 @@ namespace ir
 
 	bool LLVMInstruction::Operand::valid() const
 	{
-		return type.category != Type::CategoryInvalid;
+		return type.category != Type::InvalidCategory;
 	}
 
-	std::string LLVMInstruction::toString() const
+	std::string LLVMInstruction::Operand::toString() const
 	{
 		if( constant )
 		{
-			std::stringstream stream;
-			switch( type.type )
+			switch( type.category )
 			{
-				case I1: stream << i1; break;
-				case I8: stream << i8; break;
-				case I16: stream << i16; break;
-				case I32: stream << i32; break;
-				case I64: stream << i64; break;
-				case F32: stream << f32; break;
-				case F64: stream << f64; break;
-				case InvalidDataType: break;
+				case Type::Element:
+				{
+					std::stringstream stream;
+					switch( type.type )
+					{
+						case I1: stream << (((int) i1) & 0x1); break;
+						case I8: stream << (~((int) (~i8 + 1)) + 1); break;
+						case I16: stream << i16; break;
+						case I32: stream << i32; break;
+						case I64: stream << i64; break;
+						case F32: stream << f32; break;
+						case F64: stream << f64; break;
+						case InvalidDataType: break;
+					}
+					return stream.str();
+					break;
+				}
+				case Type::Array:
+				{
+					assertM( false, "Array constant not implemented." );
+					break;
+				}
+				case Type::Function:
+				{
+					assertM( false, "Function constant not implemented." );
+					break;
+				}
+				case Type::Structure:
+				{
+					assertM( false, "Structure constant not implemented." );
+					break;
+				}
+				case Type::PackedStructure:
+				{
+					assertM( false, 
+						"Packed Structure constant not implemented." );
+					break;
+				}
+				case Type::Pointer:
+				{
+					assertM( false, "Pointer constant not implemented." );
+					break;
+				}
+				case Type::Vector:
+				{
+					std::stringstream stream;
+					stream << "< ";
+					for( ValueVector::const_iterator fi = values.begin(); 
+						fi != values.end(); ++fi )
+					{
+						if( fi != values.begin() ) stream << ", ";
+						stream << LLVMInstruction::toString( type.type ) << " ";
+						switch( type.type )
+						{
+							case I1: stream << (((int) fi->i1) & 0x1); break;
+							case I8: stream << (~((int) (~fi->i8 + 1)) + 1); 
+								break;
+							case I16: stream << fi->i16; break;
+							case I32: stream << fi->i32; break;
+							case I64: stream << fi->i64; break;
+							case F32: stream << fi->f32; break;
+							case F64: stream << fi->f64; break;
+							case InvalidDataType: break;
+						}
+					}
+					stream << " >";
+					return stream.str();
+					break;
+				}
+				case Type::Opaque:
+				{
+					return "Opaque constant not implemented.";
+					break;
+				}
+				case Type::InvalidCategory:
+				{
+					return "INVALID_CATEGORY";
+					break;
+				}
 			}
-			return stream.str();
 		}
 		else
 		{
 			return name;
 		}
+		return "";
 	}
 
 	std::string LLVMInstruction::toString( Opcode code )
@@ -200,7 +272,7 @@ namespace ir
 			case FastCallingConvention: return "fastcc"; break;
 			case ColdCallingConvention: return "coldcc"; break;
 			case DefaultCallingConvention: return "ccc"; break;
-			case InvalidCallingConventio: return "INVALID_CC"; break;
+			case InvalidCallingConvention: return "INVALID_CC"; break;
 		}
 		return "";
 	}
@@ -257,62 +329,62 @@ namespace ir
 		std::string result;
 		if( attributes & AlwaysInline )
 		{
-			result += "alwaysinline;"
+			result += "alwaysinline";
 		}
 		if( attributes & NoInline )
 		{
 			if( !result.empty() ) result += " ";
-			result += "noinline;"
+			result += "noinline";
 		}
 		if( attributes & OptimizeSize )
 		{
 			if( !result.empty() ) result += " ";
-			result += "optsize;"
+			result += "optsize";
 		}
 		if( attributes & NoReturn )
 		{
 			if( !result.empty() ) result += " ";
-			result += "noreturn;"
+			result += "noreturn";
 		}
 		if( attributes & NoUnwind )
 		{
 			if( !result.empty() ) result += " ";
-			result += "nounwind;"
+			result += "nounwind";
 		}
 		if( attributes & ReadNone )
 		{
 			if( !result.empty() ) result += " ";
-			result += "readnone;"
+			result += "readnone";
 		}
 		if( attributes & ReadOnly )
 		{
 			if( !result.empty() ) result += " ";
-			result += "readonly;"
+			result += "readonly";
 		}
 		if( attributes & StackSmashingProtector )
 		{
 			if( !result.empty() ) result += " ";
-			result += "ssp;"
+			result += "ssp";
 		}
 		if( attributes & StackSmashingProtectorRequired )
 		{
 			if( !result.empty() ) result += " ";
-			result += "sspreq;"
+			result += "sspreq";
 		}
 		if( attributes & NoRedZone )
 		{
 			if( !result.empty() ) result += " ";
-			result += "noredzone;"
+			result += "noredzone";
 		}
 		if( attributes & NoImplicitFloat )
 		{
 			if( !result.empty() ) result += " ";
-			result += "noimplicitfloat;"
+			result += "noimplicitfloat";
 		}
 		if( attributes & Naked )
 		{
 			if( !result.empty() ) result += " ";
-			result += "naked;"
+			result += "naked";
 		}
 		return result;
 	}
@@ -338,25 +410,18 @@ namespace ir
 		
 	}
 
-	LLVMInstruction::LLVMInstruction( const LLVMInstruction& i )
+	LLVMInstruction::LLVMInstruction( const LLVMInstruction& i ) 
+		: opcode( i.opcode )
 	{
-		/* intentionally empty */
+	
 	}
 	
 	const LLVMInstruction& LLVMInstruction::operator=( 
 		const LLVMInstruction& i )
 	{
 		/* intentionally empty */
-	}
-
-	std::string LLVMInstruction::toString() const
-	{
-		return "";
-	}
-
-	std::string LLVMInstruction::valid() const
-	{
-		return "A base LLVMInstruction is not valid";
+		assert( i.opcode == opcode );
+		return *this;
 	}
 
 	LLVMUnaryInstruction::LLVMUnaryInstruction( Opcode op, 
@@ -368,7 +433,7 @@ namespace ir
 	
 	std::string LLVMUnaryInstruction::toString() const
 	{
-		return d.toString() + " = " + toString( opcode ) + " " 
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) + " " 
 			+ a.type.toString() + " " + a.toString();
 	}
 	std::string LLVMUnaryInstruction::valid() const
@@ -391,7 +456,7 @@ namespace ir
 
 	std::string LLVMBinaryInstruction::toString() const
 	{
-		return d.toString() + " = " + toString( opcode ) + " " 
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) + " " 
 			+ a.type.toString() + " " + a.toString() + ", " + b.toString();
 	}
 
@@ -420,7 +485,7 @@ namespace ir
 
 	std::string LLVMConversionInstruction::toString() const
 	{
-		return d.toString() + " = " + toString( opcode ) + " " 
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) + " " 
 			+ a.type.toString() + " " + a.toString() + " to " 
 			+ d.type.toString();
 	}
@@ -438,9 +503,9 @@ namespace ir
 	
 	std::string LLVMComparisonInstruction::toString() const
 	{
-		return d.toString() + " = " + toString( opcode ) + " " 
-			+ condition.toString() + " " + a.type.toString() + " " 
-			+ a.toString() + ", " + b.toString();
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) + " " 
+			+ LLVMInstruction::toString( comparison ) + " " 
+			+ a.type.toString() + " " + a.toString() + ", " + b.toString();
 	}
 	
 	std::string LLVMComparisonInstruction::valid() const
@@ -469,7 +534,8 @@ namespace ir
 	
 	std::string LLVMAdd::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " ";
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " ";
 		if( noUnsignedWrap ) result += "nuw ";
 		if( noSignedWrap ) result += "nsw ";
 		result += a.type.toString() + " " + a.toString() + ", " + b.toString();		
@@ -490,9 +556,10 @@ namespace ir
 	std::string LLVMAlloca::toString() const
 	{
 		std::stringstream stream;
-		stream << d.toString() << " = " << toString( opcode ) << " " 
-			<< a.type.toString();
-		if( elements != 1 ) stream << ", " << elements;
+		stream << d.toString() << " = " 
+			<< LLVMInstruction::toString( opcode ) << " " 
+			<< LLVMInstruction::toString( d.type.type );
+		if( elements != 1 ) stream << ", i32 " << elements;
 		if( alignment != 1 ) stream << ", align " << alignment;
 		return stream.str();		
 	}
@@ -502,6 +569,10 @@ namespace ir
 		if( alignment == 0 )
 		{
 			return "Alignment cannot be 0";
+		}
+		if( d.type.category != Type::Pointer )
+		{
+			return "Destination must be a pointer to a type";
 		}
 		return "";
 	}
@@ -528,9 +599,9 @@ namespace ir
 	
 	std::string LLVMBr::toString() const
 	{
-		std::string result = toString( opcode ) + " ";
-		if( condition.valid() ) result += toString( condition.type ) 
-			+ " " + condition.toString() + ", ";
+		std::string result = LLVMInstruction::toString( opcode ) + " ";
+		if( condition.valid() ) result += condition.type.toString() + " " 
+			+ condition.toString() + ", ";
 		result += "label " + iftrue;
 		if( condition.valid() ) result += ", label " + iffalse;
 		return result;		
@@ -549,8 +620,9 @@ namespace ir
 			}
 			if( condition.type.type != I1 )
 			{
-				return "Condition type " + toString( condition.type.type ) 
-					+ " not valid for Br, only i1 is valid."
+				return "Condition type " 
+					+ LLVMInstruction::toString( condition.type.type ) 
+					+ " not valid for Br, only i1 is valid.";
 			}
 		}
 		return "";
@@ -567,12 +639,12 @@ namespace ir
 	std::string LLVMCall::toString() const
 	{
 		std::string result;
-		if( d.valid() ) result += toString( d ) + " = ";
+		if( d.valid() ) result += d.name + " = ";
 		if( tail ) result += "tail ";
-		std::string cc = toString( convention );s
+		std::string cc = LLVMInstruction::toString( convention );
 		if( !cc.empty() ) result += cc + " ";
-		std::string retats = toString( returnAttributes );
-		if( !retats.empty() ) result += restats + " ";
+		std::string retats = LLVMInstruction::toString( returnAttributes );
+		if( !retats.empty() ) result += retats + " ";
 		if( !d.valid() )
 		{
 			result += "void ";
@@ -582,14 +654,15 @@ namespace ir
 			result += d.type.toString() + " ";
 		}
 		result += d.toString() + "( ";
-		for( Operand::Vector::const_iterator fi = parameters.begin(); 
+		for( OperandVector::const_iterator fi = parameters.begin(); 
 			fi != parameters.end(); ++fi )
 		{
 			if( fi != parameters.begin() ) result += ", ";
 			result += fi->type.toString();
 		}
 		result += ")";
-		std::string funats = toFunctionAttributesString( functionAttributes );
+		std::string funats = LLVMInstruction::functionAttributesToString( 
+			functionAttributes );
 		if( !funats.empty() ) result += " " + funats;
 		return result;
 	}
@@ -598,15 +671,15 @@ namespace ir
 	{
 		switch( returnAttributes )
 		{
-			ZeroExtend: /* fall through */
-			SignExtend: /* fall through */
-			InRegister: /* fall through */
-			InvalidParameterAttribute: break;
-			ByValue: /* fall through */
-			StructureReturn: /* fall through */
-			NoAlias: /* fall through */
-			NoCapture: /* fall through */
-			Nested: return toString( returnAttributes ) 
+			case ZeroExtend: /* fall through */
+			case SignExtend: /* fall through */
+			case InRegister: /* fall through */
+			case InvalidParameterAttribute: break;
+			case ByValue: /* fall through */
+			case StructureReturn: /* fall through */
+			case NoAlias: /* fall through */
+			case NoCapture: /* fall through */
+			case Nested: return LLVMInstruction::toString( returnAttributes ) 
 				+ " not allowed in call";
 		}
 		
@@ -644,7 +717,7 @@ namespace ir
 	}
 
 	LLVMExtractelement::LLVMExtractelement() 
-		: LLVMBinaryInstruction( ExtractElement )
+		: LLVMBinaryInstruction( Extractelement )
 	{
 	
 	}
@@ -666,13 +739,15 @@ namespace ir
 		}
 		if( a.type.type != d.type.type )
 		{
-			return "Destination primitive datatype " + toString( d.type.type ) 
-				+ " does not match source datatype " + toString( a.type.type );
+			return "Destination primitive datatype " 
+				+ LLVMInstruction::toString( d.type.type ) 
+				+ " does not match source datatype " 
+				+ LLVMInstruction::toString( a.type.type );
 		}
 		return "";
 	}
 
-	LLVMExtractvalue::LLVMExtractvalue() : LLVMBinaryInstruction( Extractvalue )
+	LLVMExtractvalue::LLVMExtractvalue() : LLVMInstruction( Extractvalue )
 	{
 		
 	}
@@ -680,8 +755,9 @@ namespace ir
 	std::string LLVMExtractvalue::toString() const
 	{
 		std::stringstream stream;
-		stream << d.toString() << " = " << toString( opcode ) << " " 
-			<< a.toString() << " " << a.toString();
+		stream << d.toString() << " = " 
+			<< LLVMInstruction::toString( opcode ) << " " << a.toString() 
+			<< " " << a.toString();
 		for( IndexVector::const_iterator fi = indices.begin(); 
 			fi != indices.end(); ++fi )
 		{
@@ -692,7 +768,7 @@ namespace ir
 	
 	std::string LLVMExtractvalue::valid() const
 	{
-		if( a.type.category != Structure )
+		if( a.type.category != Type::Structure )
 		{
 			return "Source operand must be a structure";
 		}
@@ -763,19 +839,20 @@ namespace ir
 	std::string LLVMGetelementptr::toString() const
 	{
 		std::stringstream stream;
-		stream << d.toString() << " = " << toString( opcode ) << " " 
+		stream << d.toString() << " = " 
+			<< LLVMInstruction::toString( opcode ) << " " 
 			<< a.toString() << " " << a.toString();
 		for( IndexVector::const_iterator fi = indices.begin(); 
 			fi != indices.end(); ++fi )
 		{
-			stream << ", " << *fi; 
+			stream << ", i32 " << *fi; 
 		}
 		return stream.str();		
 	}
 	
 	std::string LLVMGetelementptr::valid() const
 	{
-		if( a.type.category != Structure )
+		if( a.type.category != Type::Structure )
 		{
 			return "Source operand must be a structure";
 		}
@@ -796,7 +873,7 @@ namespace ir
 	
 	std::string LLVMInsertelement::toString() const
 	{
-		return d.toString() + " = " + toString( opcode ) + " " 
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) + " " 
 			+ a.type.toString() + " " + a.toString() + ", " + b.type.toString() 
 			+ ", " + c.type.toString() + " " + c.toString();
 	}
@@ -805,9 +882,10 @@ namespace ir
 	{
 		if( d.type.type != b.type.type )
 		{
-			return "Destination base type " + toString( d.type.type ) 
+			return "Destination base type " 
+				+ LLVMInstruction::toString( d.type.type ) 
 				+ " does not equal source element type " 
-				+ toString( b.type.type );
+				+ LLVMInstruction::toString( b.type.type );
 		}
 		if( d.type.category != Type::Vector )
 		{
@@ -836,9 +914,10 @@ namespace ir
 	
 	std::string LLVMInsertvalue::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " " 
-			+ a.type.toString() + " " + a.toString() + ", " + b.type.toString();
-		for( Operand::Vector::const_iterator fi = indices.begin(); 
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " " + a.type.toString() 
+			+ " " + a.toString() + ", " + b.type.toString();
+		for( OperandVector::const_iterator fi = indices.begin(); 
 			fi != indices.end(); ++fi )
 		{
 			result += ", " + fi->name;
@@ -848,11 +927,11 @@ namespace ir
 	
 	std::string LLVMInsertvalue::valid() const
 	{
-		if( d.type.category != Types::Structure )
+		if( d.type.category != Type::Structure )
 		{
 			return "Destination is not a structure";
 		}
-		if( a.type.category != Types::Structure )
+		if( a.type.category != Type::Structure )
 		{
 			return "Source is not a structure";
 		}
@@ -863,7 +942,7 @@ namespace ir
 		}
 		// TODO: Add a check to make sure that the inserted type matches 
 		//	the desintation's type
-		for( Operand::Vector::const_iterator fi = indices.begin(); 
+		for( OperandVector::const_iterator fi = indices.begin(); 
 			fi != indices.end(); ++fi )
 		{
 			if( fi->type.toString() != "i32" )
@@ -873,7 +952,8 @@ namespace ir
 					<< " type " << fi->type.toString() << " is not i32";
 				return stream.str();
 			}
-		}		
+		}
+		return "";
 	}
 
 	LLVMInttoptr::LLVMInttoptr() : LLVMConversionInstruction( Inttoptr )
@@ -890,10 +970,10 @@ namespace ir
 	{
 		std::string result;
 		if( d.valid() ) result += d.toString() + " = ";
-		std::string cc = toString( convention );s
+		std::string cc = LLVMInstruction::toString( convention );
 		if( !cc.empty() ) result += cc + " ";
-		std::string retats = toString( returnAttributes );
-		if( !retats.empty() ) result += restats + " ";
+		std::string retats = LLVMInstruction::toString( returnAttributes );
+		if( !retats.empty() ) result += retats + " ";
 		if( !d.valid() )
 		{
 			result += "void ";
@@ -903,14 +983,15 @@ namespace ir
 			result += d.type.toString() + " ";
 		}
 		result += d.toString() + "( ";
-		for( Operand::Vector::const_iterator fi = parameters.begin(); 
+		for( OperandVector::const_iterator fi = parameters.begin(); 
 			fi != parameters.end(); ++fi )
 		{
 			if( fi != parameters.begin() ) result += ", ";
 			result += fi->type.toString();
 		}
 		result += ")";
-		std::string funats = toFunctionAttributesString( functionAttributes );
+		std::string funats 
+			= LLVMInstruction::functionAttributesToString( functionAttributes );
 		if( !funats.empty() ) result += " " + funats;
 		result += " to label " + tolabel + " unwind label " + unwindlabel;
 		return result;
@@ -920,15 +1001,15 @@ namespace ir
 	{
 		switch( returnAttributes )
 		{
-			ZeroExtend: /* fall through */
-			SignExtend: /* fall through */
-			InRegister: /* fall through */
-			InvalidParameterAttribute: break;
-			ByValue: /* fall through */
-			StructureReturn: /* fall through */
-			NoAlias: /* fall through */
-			NoCapture: /* fall through */
-			Nested: return toString( returnAttributes ) 
+			case ZeroExtend: /* fall through */
+			case SignExtend: /* fall through */
+			case InRegister: /* fall through */
+			case InvalidParameterAttribute: break;
+			case ByValue: /* fall through */
+			case StructureReturn: /* fall through */
+			case NoAlias: /* fall through */
+			case NoCapture: /* fall through */
+			case Nested: return LLVMInstruction::toString( returnAttributes ) 
 				+ " not allowed in invoke";
 		}
 		
@@ -980,8 +1061,9 @@ namespace ir
 		std::stringstream stream;
 		stream << d.toString() << " = ";
 		if( isVolatile ) stream << "volatile ";
-		stream << toString( opcode ) << " " << a.type.toString() << " " 
-			<< a.toString() << ", align " << alignment;
+		stream << LLVMInstruction::toString( opcode ) << " " 
+			<< a.type.toString() << " " << a.toString() << ", align " 
+			<< alignment;
 		return stream.str();
 	}
 	
@@ -997,6 +1079,7 @@ namespace ir
 			return "Source " + a.type.toString() 
 				+ " is not a pointer to destination type " + d.type.toString();
 		}
+		return "";
 	}
 
 	LLVMLshr::LLVMLshr() : LLVMBinaryInstruction( Lshr )
@@ -1013,8 +1096,8 @@ namespace ir
 	std::string LLVMMalloc::toString() const
 	{
 		std::stringstream stream;
-		stream << d.toString() << " = " << toString( opcode ) << " " 
-			<< a.type.toString();
+		stream << d.toString() << " = " 
+			<< LLVMInstruction::toString( opcode ) << " " << d.type.toString();
 		if( elements != 1 ) stream << ", " << elements;
 		if( alignment != 1 ) stream << ", align " << alignment;
 		return stream.str();
@@ -1037,7 +1120,8 @@ namespace ir
 	
 	std::string LLVMMul::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " ";
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " ";
 		if( noUnsignedWrap ) result += "nuw ";
 		if( noSignedWrap ) result += "nsw ";
 		result += a.type.toString() + " " + a.toString() + ", " + b.toString();		
@@ -1056,7 +1140,8 @@ namespace ir
 	
 	std::string LLVMPhi::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " " 
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " " 
 			+ d.type.toString() + " ";
 		for( NodeVector::const_iterator ni = nodes.begin(); 
 			ni != nodes.end(); ++ni )
@@ -1100,11 +1185,11 @@ namespace ir
 	{
 		if( d.valid() )
 		{
-			return toString( opcode ) + " " + d.toString();
+			return LLVMInstruction::toString( opcode ) + " " + d.toString();
 		}
 		else
 		{
-			return toString( opcode ) + " void";
+			return LLVMInstruction::toString( opcode ) + " void";
 		}
 	}
 	
@@ -1120,7 +1205,8 @@ namespace ir
 	
 	std::string LLVMSdiv::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " ";
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " ";
 		if( exact ) result += "exact ";
 		result += d.type.toString() + " " + a.toString() + ", " + b.toString();
 		return result;
@@ -1133,10 +1219,12 @@ namespace ir
 	
 	std::string LLVMSelect::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " " 
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " " 
 			+ condition.type.toString() + " " + condition.toString() + ", " 
 			+ a.type.toString() + " " + a.toString() + ", " + b.type.toString() 
 			+ " " + b.toString();
+		return result;
 	}
 	
 	std::string LLVMSelect::valid() const
@@ -1156,7 +1244,7 @@ namespace ir
 	}
 
 	LLVMShufflevector::LLVMShufflevector() 
-		: LLVMBinaryInstruction( ShuffleVector )
+		: LLVMBinaryInstruction( Shufflevector )
 	{
 	
 	}
@@ -1164,7 +1252,7 @@ namespace ir
 	std::string LLVMShufflevector::toString() const
 	{
 		std::stringstream stream;
-		stream << d.toString() << " = " << toString( opcode ) 
+		stream << d.toString() << " = " << LLVMInstruction::toString( opcode ) 
 			<< a.type.toString() << " " << a.toString() << ", " 
 			<< b.type.toString() << " " << b.toString() << ", < ";
 		for( Mask::const_iterator fi = mask.begin(); fi != mask.end(); ++fi )
@@ -1178,19 +1266,19 @@ namespace ir
 	
 	std::string LLVMShufflevector::valid() const
 	{
-		if( d.type.category != type::Vector )
+		if( d.type.category != Type::Vector )
 		{
 			return "Destination must be a vector";
 		}
-		if( a.type.category != type::Vector && a.valid() )
+		if( a.type.category != Type::Vector && a.valid() )
 		{
 			return "Source A must be a vector or undef";
 		}
-		if( b.type.category != type::Vector && b.valid() )
+		if( b.type.category != Type::Vector && b.valid() )
 		{
 			return "Source B must be a vector or undef";
 		}
-		if( mask.size() != 2 * d.type.vector )
+		if( mask.size() != ( unsigned int ) 2 * d.type.vector )
 		{
 			std::stringstream stream;
 			stream << "Mask size " << mask.size() 
@@ -1232,8 +1320,9 @@ namespace ir
 	{
 		std::stringstream stream;
 		if( isVolatile ) stream << "volatile";
-		stream << toString( opcode ) << " " << a.type.toString() << " " 
-			<< a.toString() << ", " << b.type.toString() << " " << b.toString();
+		stream << LLVMInstruction::toString( opcode ) << " " 
+			<< a.type.toString() << " " << a.toString() << ", " 
+			<< d.type.toString() << " " << d.toString();
 		if( alignment != 1 ) stream << ", align " << alignment;
 		return stream.str();
 	}
@@ -1261,7 +1350,8 @@ namespace ir
 	
 	std::string LLVMSub::toString() const
 	{
-		std::string result = d.toString() + " = " + toString( opcode ) + " ";
+		std::string result = d.toString() + " = " 
+			+ LLVMInstruction::toString( opcode ) + " ";
 		if( noUnsignedWrap ) result += "nuw ";
 		if( noSignedWrap ) result += "nsw ";
 		result += a.type.toString() + " " + a.toString() + ", " + b.toString();		
@@ -1275,7 +1365,7 @@ namespace ir
 	
 	std::string LLVMSwitch::toString() const
 	{
-		std::string result = toString( opcode ) + " " 
+		std::string result = LLVMInstruction::toString( opcode ) + " " 
 			+ comparison.type.toString() + " " + comparison.toString() 
 			+ ", label " + defaultTarget + " [ ";
 		for( NodeVector::const_iterator fi = targets.begin(); 
@@ -1306,28 +1396,28 @@ namespace ir
 			{
 				std::stringstream stream;
 				stream << "Target " << std::distance( targets.begin(), fi ) 
-					<< " is not a basic element type"
+					<< " is not a basic element type";
 				return stream.str();
 			}
 			if( !isInt( fi->operand.type.type ) )
 			{
 				std::stringstream stream;
 				stream << "Target " << std::distance( targets.begin(), fi ) 
-					<< " is not an int type"
+					<< " is not an int type";
 				return stream.str();
 			}
 			if( fi->label.empty() )
 			{
 				std::stringstream stream;
 				stream << "Target " << std::distance( targets.begin(), fi ) 
-					<< " has an empty target label"
+					<< " has an empty target label";
 				return stream.str();
 			}
 		}
 		return "";
 	}
 
-	LLVMTrunc::LLVMTrunc() : LLVMConversionInstruction( Trunk )
+	LLVMTrunc::LLVMTrunc() : LLVMConversionInstruction( Trunc )
 	{
 	
 	}
@@ -1349,7 +1439,7 @@ namespace ir
 	
 	std::string LLVMUnreachable::toString() const
 	{
-		return toString( opcode );
+		return LLVMInstruction::toString( opcode );
 	}
 	
 	std::string LLVMUnreachable::valid() const
@@ -1364,7 +1454,7 @@ namespace ir
 	
 	std::string LLVMUnwind::toString() const
 	{
-		return toString( opcode );
+		return LLVMInstruction::toString( opcode );
 	}
 	
 	std::string LLVMUnwind::valid() const
@@ -1384,7 +1474,7 @@ namespace ir
 	
 	std::string LLVMVaArg::toString() const
 	{
-		return d.toString() + " = " + toString( opcode ) 
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) 
 			+ a.type.toString() + " " + a.toString() + ", " 
 			+ d.type.toString();
 	}

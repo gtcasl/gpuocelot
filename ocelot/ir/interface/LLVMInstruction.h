@@ -9,6 +9,7 @@
 #define LLVM_INSTRUCTION_H_INCLUDED
 
 #include <ocelot/ir/interface/Instruction.h>
+#include <vector>
 
 namespace ir
 {
@@ -170,7 +171,7 @@ namespace ir
 			{
 				public:
 					/*! \brief All possible operand types */
-					Category
+					enum Category
 					{
 						Element, //! A single element of a base type
 						Array, //! An array of elements
@@ -182,11 +183,7 @@ namespace ir
 						Opaque, //! An unknown type that has not been resolved
 						InvalidCategory
 					};
-				
-				public:
-					/*! \brief A vector for a set of Types for the aggregates */
-					typedef std::vector< Type > Vector;
-			
+							
 				public:
 					/*! \brief The datatype of the Type */
 					DataType type;
@@ -207,18 +204,30 @@ namespace ir
 					std::string toString() const;
 			};
 			
+			/*! \brief The value of the operand if it is a constant */
+			union Value
+			{
+				LLVMI1 i1;
+				LLVMI8 i8;
+				LLVMI16 i16;
+				LLVMI32 i32;
+				LLVMI64 i64;
+				LLVMF32 f32;
+				LLVMF64 f64;
+			};
+			
 			/*! \brief A class for a basic LLVM Operand */
 			class Operand
 			{
 				public:
-					/*! \brief The type of the operand */
-					Type type;
 					/*! \brief The name of the operand */
 					std::string name;
 					/*! \brief Is this a variable or a constant */
 					bool constant;
+					/*! \brief The type of the operand */
+					Type type;
 					/*! \brief The value of the operand if it is a constant */
-					enum
+					union
 					{
 						LLVMI1 i1;
 						LLVMI8 i8;
@@ -229,6 +238,12 @@ namespace ir
 						LLVMF64 f64;
 					};
 					
+					/*! \brief A vector of values for a constant vector type */
+					typedef std::vector< Value > ValueVector;
+					
+					/*! \brief If this is a constant vector type, the values */
+					ValueVector values;
+					
 				public:
 					/*! \brief The constructor sets the type and pointer flag */
 					Operand( const std::string& n = std::string(), 
@@ -238,6 +253,9 @@ namespace ir
 					/*! \brief Return a parsable represention of the Operand */
 					std::string toString() const;
 			};
+			
+			/*! \brief A vector of operands */
+			typedef std::vector< Operand > OperandVector;
 			
 		public:
 		    /*! \brief The opcode of the instruction */
@@ -269,7 +287,7 @@ namespace ir
 			
 			/*! \brief Assignment operator to prevent modification of opcode */
 			const LLVMInstruction& operator=( const LLVMInstruction& i );
-					
+								
 	};
 	
 	/*! \brief A generic 1 operand instruction */
@@ -340,7 +358,7 @@ namespace ir
 		
 		public:
 			/*! \brief Default constructor */
-			LLVMConversionInstruction( Opcode op = InvalidOpcode );
+			LLVMComparisonInstruction( Opcode op = InvalidOpcode );
 			
 		public:
 			virtual std::string toString() const;
@@ -416,7 +434,7 @@ namespace ir
 	};
 		
 	/*! \brief The LLVM br instruction */
-	class LLVMBr : public LLVMInstruciton
+	class LLVMBr : public LLVMInstruction
 	{
 		public:
 			/*! \brief The condition operand or empty if none */
@@ -454,7 +472,7 @@ namespace ir
 			Operand d;
 			
 			/*! \brief The set of parameters */
-			Operand::Vector parameters;
+			OperandVector parameters;
 			
 			/*! \brief Function attributes of the call */
 			LLVMI32 functionAttributes;			
@@ -571,7 +589,7 @@ namespace ir
 	};
 		
 	/*! \brief The LLVM free instruction */
-	class LLVMFree : public LLVMUnaryInstruciton
+	class LLVMFree : public LLVMUnaryInstruction
 	{
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -598,6 +616,10 @@ namespace ir
 	class LLVMGetelementptr : public LLVMInstruction
 	{
 		public:
+			/*! \brief */
+			typedef std::vector< LLVMI32 > IndexVector;
+	
+		public:
 			/*! \brief The destination operand */
 			Operand d;
 			
@@ -605,7 +627,7 @@ namespace ir
 			Operand a;
 			
 			/*! \brief Indexes within the aggregate type */
-			Operand::Vector indices;
+			IndexVector indices;
 	
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -617,7 +639,7 @@ namespace ir
 	};
 	
 	/*! \brief The LLVM icmp instruction */
-	class LLVMIcmp : public LLVMConversionInstruction
+	class LLVMIcmp : public LLVMComparisonInstruction
 	{
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -628,7 +650,7 @@ namespace ir
 	class LLVMInsertelement : public LLVMBinaryInstruction
 	{
 		public:
-			/*! \brief Index operand */s
+			/*! \brief Index operand */
 			Operand c;
 				
 		public:
@@ -654,7 +676,7 @@ namespace ir
 			Operand b;
 			
 			/*! \brief Indexes within the aggregate type */
-			Operand::Vector indices;
+			OperandVector indices;
 			
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -687,7 +709,7 @@ namespace ir
 			ParameterAttribute returnAttributes;
 			
 			/*! \brief The set of parameters */
-			Operand::Vector parameters;
+			OperandVector parameters;
 			
 			/*! \brief Function attributes of the call */
 			LLVMI32 functionAttributes;

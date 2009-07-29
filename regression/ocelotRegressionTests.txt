@@ -6,3 +6,4 @@
 ../TestTrace
 ../TestMemoryTraceGenerator
 ../TestDataflowGraph
+../TestLLVMInstructions

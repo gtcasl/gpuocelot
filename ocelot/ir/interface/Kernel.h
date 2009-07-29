@@ -1,10 +1,7 @@
 /*!
 	\file Kernel.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief implements the Kernel base class
 */
 
@@ -117,39 +114,28 @@ namespace ir {
 		
 	public:
 
-		/*!
-			[mangled] name of kernel within module
-		*/
+		/*!	[mangled] name of kernel within module */
 		std::string name;
 
-		/*!
-			Instruction Set Architecture of the kernel
-		*/
+		/*!	Instruction Set Architecture of the kernel */
 		Instruction::Architecture ISA;
 
-		/*!
-			Set of parameters in order specified in the kernel's definition
-		*/
+		/*!	Set of parameters in order specified in the kernel's definition */
 		ParameterVector parameters;
 
-		/*!
-			Iterator pointing to start of kernel in module's PTX statement vector
+		/*!	Iterator pointing to start of kernel in module's PTX statement 
+			vector
 		*/
 		PTXStatementVector::const_iterator start_iterator;
 		
-		/*!
-			Iterator pointing to end of kernel in module's PTX statement vector
+		/*! Iterator pointing to end of kernel in module's PTX statement vector
 		*/
 		PTXStatementVector::const_iterator end_iterator;
 
-		/*!
-			the CFG references this vector of instructions
-		*/
+		/*! the CFG references this vector of instructions */
 		PTXInstructionVector instructions;
 		
-		/*!
-			Global variable statements
-		*/
+		/*! Global variable statements */
 		PTXStatementVector globalStatements;
 	
 		/*!
@@ -158,19 +144,13 @@ namespace ir {
 		*/
 		ControlFlowGraph *ptxCFG;
 
-		/*!
-			Dominator tree constructed from ptxCFG
-		*/
+		/*!	Dominator tree constructed from ptxCFG */
 		DominatorTree *dom_tree;
 
-		/*!
-			Post-dominator tree constructed from ptxCFG
-		*/
+		/*!	Post-dominator tree constructed from ptxCFG */
 		PostdominatorTree *pdom_tree;
 		
-		/*!
-			Pointer to the module this kernel belongs to
-		*/
+		/*!	Pointer to the module this kernel belongs to */
 		const Module* module;
 	
 	};

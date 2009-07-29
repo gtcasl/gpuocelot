@@ -128,8 +128,9 @@ namespace ir {
 
 	public:
 		/*!
-			Set of PTX statements loaded from PTX source file. This must not change after parsing, as
-			all kernels have const_iterators into this vector.
+			Set of PTX statements loaded from PTX source file. This must not 
+			change after parsing, as all kernels have const_iterators into 
+			this vector.
 		*/
 		StatementVector statements;
 

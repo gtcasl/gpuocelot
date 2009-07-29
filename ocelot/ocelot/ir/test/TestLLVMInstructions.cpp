@@ -200,18 +200,57 @@ namespace test
 		
 		if( !check( bitcast, reference ) ) return false;
 	
+		bitcast.d.type.category = Type::Element;
+		bitcast.d.type.type = Instruction::I64;
+		bitcast.d.name = "%Z";
+		
+		bitcast.a.type.category = Type::Vector;
+		bitcast.a.type.vector = 2;
+		bitcast.a.type.type = Instruction::I32;
+		bitcast.a.constant = false;
+		bitcast.a.name = "%V";
+	
+		reference = "%Z = bitcast < 2 x i32 > %V to i64";
+
+		if( !check( bitcast, reference ) ) return false;
+	
 		status << "Bitcast Instruction Passed\n";
 		return true;
 	}
 	
 	bool TestLLVMInstructions::testBr()
 	{
+		ir::LLVMBr br;
+		br.condition.name = "%cond";
+		br.condition.type.category = Type::Element;
+		br.condition.type.type = Instruction::I1;
+		br.iftrue = "%IfEqual";
+		br.iffalse = "%IfUnequal";
+	
+		std::string reference = "br i1 %cond, label %IfEqual, label %IfUnequal";
+		
+		if( !check( br, reference ) ) return false;
+	
 		status << "Br Instruction Passed\n";
-		return false;
+		return true;
 	}
 	
 	bool TestLLVMInstructions::testCall()
 	{
+		ir::LLVMCall call;
+		call.d.name = "%retval";
+		call.d.type.category = Type::Element;
+		call.d.type.type = Instruction::I32;
+		call.name = "@test";
+		call.parameters.resize( 1 );
+		call.parameters[0].type.category = Type::Element;
+		call.parameters[0].type.type = Instruction::I32;
+		call.parameters[0].name = "%argc";
+	
+		std::string reference = "%retval = call i32 @test(i32 %argc)";
+
+		if( !check( call, reference ) ) return false;
+	
 		status << "Call Instruction Passed\n";
 		return false;
 	}

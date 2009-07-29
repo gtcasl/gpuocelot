@@ -471,6 +471,9 @@ namespace ir
 			/*! \brief The return operand */
 			Operand d;
 			
+			/*!	\brief The function name called */
+			std::string name;
+			
 			/*! \brief The set of parameters */
 			OperandVector parameters;
 			

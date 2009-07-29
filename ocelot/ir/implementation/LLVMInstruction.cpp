@@ -271,7 +271,7 @@ namespace ir
 			case CCallingConvention: return "ccc"; break;
 			case FastCallingConvention: return "fastcc"; break;
 			case ColdCallingConvention: return "coldcc"; break;
-			case DefaultCallingConvention: return "ccc"; break;
+			case DefaultCallingConvention: return ""; break;
 			case InvalidCallingConvention: return "INVALID_CC"; break;
 		}
 		return "";
@@ -289,7 +289,7 @@ namespace ir
 			case NoAlias: return "noalias"; break;
 			case NoCapture: return "nocapture"; break;
 			case Nested: return "nest"; break;
-			case InvalidParameterAttribute: return "INVALID_PARAM_ATTR"; break;
+			case InvalidParameterAttribute: return ""; break;
 		}
 		return "";
 	}
@@ -641,6 +641,7 @@ namespace ir
 		std::string result;
 		if( d.valid() ) result += d.name + " = ";
 		if( tail ) result += "tail ";
+		result += LLVMInstruction::toString( opcode ) + " ";
 		std::string cc = LLVMInstruction::toString( convention );
 		if( !cc.empty() ) result += cc + " ";
 		std::string retats = LLVMInstruction::toString( returnAttributes );
@@ -653,12 +654,12 @@ namespace ir
 		{
 			result += d.type.toString() + " ";
 		}
-		result += d.toString() + "( ";
+		result += name + "(";
 		for( OperandVector::const_iterator fi = parameters.begin(); 
 			fi != parameters.end(); ++fi )
 		{
 			if( fi != parameters.begin() ) result += ", ";
-			result += fi->type.toString();
+			result += fi->type.toString() + " " + fi->name;
 		}
 		result += ")";
 		std::string funats = LLVMInstruction::functionAttributesToString( 

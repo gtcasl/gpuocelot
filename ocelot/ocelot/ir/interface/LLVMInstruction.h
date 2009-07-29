@@ -183,15 +183,23 @@ namespace ir
 						Opaque, //! An unknown type that has not been resolved
 						InvalidCategory
 					};
+				
+				public:
+					/*! \brief An ordered set of types */
+					typedef std::vector< Type > TypeVector;
+			
+				public:
+					/*! \brief The other types contained */
+					TypeVector members;
 							
 				public:
 					/*! \brief The datatype of the Type */
 					DataType type;
 					/*! \brief The category of the Type */
 					Category category;
-					/*! \brief The label of the operand */
+					/*! \brief The label of the Type */
 					std::string label;
-					/*! \brief The vector width of the operand */
+					/*! \brief The vector width of the Type */
 					LLVMI32 vector;
 				
 				public:
@@ -203,7 +211,7 @@ namespace ir
 					/*! \brief A parsable string representation of the Type */
 					std::string toString() const;
 			};
-			
+						
 			/*! \brief The value of the operand if it is a constant */
 			union Value
 			{
@@ -254,8 +262,23 @@ namespace ir
 					std::string toString() const;
 			};
 			
+			/*! \brief A parameter operand */
+			class Parameter : public Operand
+			{
+				public:
+					/*! \brief Attributes of the parameter */
+					ParameterAttribute attribute;
+					
+				public:
+					/*! \brief The constructor zeros out the attribute */
+					Parameter();
+			};
+			
 			/*! \brief A vector of operands */
 			typedef std::vector< Operand > OperandVector;
+			
+			/*! \brief A vector of Parameters */
+			typedef std::vector< Parameter > ParameterVector;
 			
 		public:
 		    /*! \brief The opcode of the instruction */
@@ -465,17 +488,17 @@ namespace ir
 			/*! \brief The calling convention */
 			CallingConvention convention;
 			
-			/*! \brief The return parameter attributes */
-			ParameterAttribute returnAttributes;
-			
 			/*! \brief The return operand */
-			Operand d;
+			Parameter d;
+			
+			/*! \brief The signature of the function pointer being called */
+			std::string signature;
 			
 			/*!	\brief The function name called */
 			std::string name;
 			
 			/*! \brief The set of parameters */
-			OperandVector parameters;
+			ParameterVector parameters;
 			
 			/*! \brief Function attributes of the call */
 			LLVMI32 functionAttributes;			
@@ -592,11 +615,19 @@ namespace ir
 	};
 		
 	/*! \brief The LLVM free instruction */
-	class LLVMFree : public LLVMUnaryInstruction
+	class LLVMFree : public LLVMInstruction
 	{
+		public:
+			/*! \brief The operand being freed */
+			Operand a;
+	
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFree();
+			
+		public:
+			std::string toString() const;
+			std::string valid() const;
 	};
 	
 	/*! \brief The LLVM frem instruction */
@@ -669,6 +700,10 @@ namespace ir
 	class LLVMInsertvalue : public LLVMInstruction
 	{
 		public:
+			/*! \brief */
+			typedef std::vector< LLVMI32 > IndexVector;
+	
+		public:
 			/*! \brief The destination operand */
 			Operand d;
 			
@@ -679,7 +714,7 @@ namespace ir
 			Operand b;
 			
 			/*! \brief Indexes within the aggregate type */
-			OperandVector indices;
+			IndexVector indices;
 			
 		public:
 			/*! \brief The default constructor sets the opcode */
@@ -703,7 +738,7 @@ namespace ir
 	{
 		public:
 			/*! \brief The return operand */
-			Operand d;
+			Parameter d;
 			
 			/*! \brief The calling convention */
 			CallingConvention convention;
@@ -712,7 +747,13 @@ namespace ir
 			ParameterAttribute returnAttributes;
 			
 			/*! \brief The set of parameters */
-			OperandVector parameters;
+			ParameterVector parameters;
+			
+			/*! \brief The name of the function being invoked */
+			std::string name;
+			
+			/*! \brief The signature of the function being invoked */
+			std::string signature;
 			
 			/*! \brief Function attributes of the call */
 			LLVMI32 functionAttributes;
@@ -764,7 +805,7 @@ namespace ir
 	{
 		public:
 			/*! \brief The number of elements allocated */
-			LLVMI32 elements;
+			Operand elements;
 			
 			/*! \brief The alignment of elements */
 			LLVMI32 alignment;

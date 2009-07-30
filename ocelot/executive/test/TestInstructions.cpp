@@ -3358,7 +3358,8 @@ public:
 		*/
 
 		if (result) {
-			PTXU32 source[2] = { 0x0aa551376, 0x091834321 };
+			PTXU32 source[2] __attribute__((aligned(2*sizeof(PTXU32)))) 
+				= { 0x0aa551376, 0x091834321 };
 			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 1);
 			ins.d.vec = PTXOperand::v2;
@@ -3394,7 +3395,8 @@ public:
 		}		
 
 		if (result) {
-			PTXU32 source[4] = { 0x0aa551376, 0x091834321, 0x9f995432, 0x12345678 };
+			PTXU32 source[4] __attribute__((aligned(4*sizeof(PTXU32)))) 
+				= { 0x0aa551376, 0x091834321, 0x9f995432, 0x12345678 };
 			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 1);
 			ins.d.vec = PTXOperand::v4;
@@ -3558,7 +3560,7 @@ public:
 
 		// register indirect
 		if (result) {
-			PTXU32 block[128] = {0};
+			PTXU32 block[128] __attribute__((aligned(4*sizeof(PTXU32)))) = {0};
 
 			context.registerExternal(block, 128*sizeof(PTXU32));
 			ins.a = reg("rval", PTXOperand::u32, 1);

@@ -70,7 +70,7 @@ namespace translator
 			virtual ir::Kernel* translate( const ir::Kernel* i ) = 0;
 			
 			/*! \brief Add profiling data for the translator */
-			virtual void addProfile( const ProfilingData& d );
+			virtual void addProfile( const ProfilingData& d ) = 0;
 	};
 }
 

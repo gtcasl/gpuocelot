@@ -308,8 +308,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 			break;
 		}
 		case pred: {
-			break;
 			return source == pred;
+			break;
 		}
 		default: break;
 		

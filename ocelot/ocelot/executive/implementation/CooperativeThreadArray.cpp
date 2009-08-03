@@ -7594,6 +7594,16 @@ void executive::CooperativeThreadArray::eval_Xor(CTAContext &context, const PTXI
 			setRegAsB64(threadID, instr.d.reg, d);
 		}
 	}
+	else if (instr.type == PTXOperand::pred) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
+				b = getRegAsPredicate(threadID, instr.b.reg);
+			d = a ^ b;
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}
+	}
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}

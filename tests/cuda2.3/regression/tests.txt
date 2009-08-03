@@ -1,0 +1,3 @@
+../3DFD CUDA_SDK_STYLE
+../SortingNetwork CUDA_SDK_STYLE
+

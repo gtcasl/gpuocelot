@@ -1,12 +1,9 @@
 /*!
 	\file CooperativeThreadArray.cpp
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date 5 February 2009
-
-	\brief defines the state of each cooperative thread array with associated code for emulating
-		its execution
+	\brief defines the state of each cooperative thread array 
+		with associated code for emulating its execution
 */
 
 #include <assert.h>
@@ -217,7 +214,6 @@ const ir::PTXInstruction& executive::CooperativeThreadArray::currentInstruction(
 ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue( 
 	const int threadId, const ir::PTXOperand::SpecialRegister reg ) const
 {
-	
 	assert( reg != ir::PTXOperand::SpecialRegister_invalid );
 	assert( reg != ir::PTXOperand::laneId );
 	assert( reg != ir::PTXOperand::pm0 );
@@ -251,7 +247,13 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	}
 	
 	return 0;
+}
 
+ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
+	if (modifier & ir::PTXInstruction::sat) {
+		return (f <= 0 ? 0 : (f >= 1.0f ? 1.0f : f));
+	}
+	return f;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

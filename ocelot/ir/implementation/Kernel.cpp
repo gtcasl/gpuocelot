@@ -1,10 +1,7 @@
 /*!
 	\file Kernel.cpp
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date 15 Jan 2009 ; 21 Jan 2009
-
 	\brief implements the Kernel base class
 */
 
@@ -63,6 +60,53 @@ ir::Kernel::Kernel(
 		dom_tree = new DominatorTree(ptxCFG);
 		pdom_tree = new PostdominatorTree(ptxCFG);
 	}
+}
+
+ir::Kernel::Kernel(const Kernel &kernel) {
+	// deep copy the elements from a kernel to this one
+
+	name = kernel.name;
+	ISA = kernel.ISA;
+	globalStatements = kernel.globalStatements;
+	parameters = kernel.parameters;
+	start_iterator = kernel.start_iterator;
+	end_iterator = kernel.end_iterator;
+	instructions = kernel.instructions;
+	module = kernel.module;
+
+	ptxCFG = 0; dom_tree = 0; pdom_tree = 0;
+	if (kernel.ptxCFG) {
+		ptxCFG = new ControlFlowGraph;
+		*ptxCFG = *kernel.ptxCFG;
+		dom_tree = new DominatorTree(ptxCFG);
+		pdom_tree = new PostdominatorTree(ptxCFG);
+	}
+}
+
+const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
+	// deep copy the elements from a kernel to this one
+	assert( &kernel != this );
+	name = kernel.name;
+	ISA = kernel.ISA;
+	globalStatements = kernel.globalStatements;
+	parameters = kernel.parameters;
+	start_iterator = kernel.start_iterator;
+	end_iterator = kernel.end_iterator;
+	instructions = kernel.instructions;
+	module = kernel.module;
+
+	if (ptxCFG) {
+		delete dom_tree; delete pdom_tree;
+		delete ptxCFG;
+	}
+	ptxCFG = 0; dom_tree = 0; pdom_tree = 0;
+	if (kernel.ptxCFG) {
+		ptxCFG = new ControlFlowGraph;
+		*ptxCFG = *kernel.ptxCFG;
+		dom_tree = new DominatorTree(ptxCFG);
+		pdom_tree = new PostdominatorTree(ptxCFG);
+	}
+	return *this;	
 }
 
 /*!
@@ -279,31 +323,6 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters(
 		}
 	}
 	return std::move( map );
-}
-
-void ir::Kernel::clone(const Kernel &kernel) {
-	// deep copy the elements from a kernel to this one
-
-	name = kernel.name;
-	ISA = kernel.ISA;
-	globalStatements = kernel.globalStatements;
-	parameters = kernel.parameters;
-	start_iterator = kernel.start_iterator;
-	end_iterator = kernel.end_iterator;
-	instructions = kernel.instructions;
-	module = kernel.module;
-
-	if (ptxCFG) {
-		delete dom_tree; delete pdom_tree;
-		delete ptxCFG;
-	}
-	ptxCFG = 0; dom_tree = 0; pdom_tree = 0;
-	if (kernel.ptxCFG) {
-		ptxCFG = new ControlFlowGraph;
-		*ptxCFG = *kernel.ptxCFG;
-		dom_tree = new DominatorTree(ptxCFG);
-		pdom_tree = new PostdominatorTree(ptxCFG);
-	}
 }
 
 /*!

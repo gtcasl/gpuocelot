@@ -41,14 +41,15 @@ namespace ir
 			/*! \brief Sets out the instruction pointer and sets the type */
 			LLVMStatement( Type type = InvalidType, 
 				const LLVMInstruction* i = 0 );
+			/*! \brief Construct a statement from an instruction */
+			explicit LLVMStatement( const LLVMInstruction& i );
 			/*! \brief Copy constructor for instruction */
 			LLVMStatement( const LLVMStatement& s );
 			/*! \brief Possibly cleans up the instruction pointer */
 			~LLVMStatement();
 			/*! \brief Assignment operator for instruction */
 			const LLVMStatement& operator=( const LLVMStatement& s );
-			
-			
+						
 	};
 
 }

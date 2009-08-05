@@ -564,6 +564,11 @@ namespace ir
 		return LLVMBinaryInstruction::valid();
 	}
 
+	LLVMInstruction* LLVMAdd::clone() const
+	{
+		return new LLVMAdd( *this );
+	}
+
 	LLVMAlloca::LLVMAlloca( LLVMI32 e, LLVMI32 a ) : LLVMInstruction( Alloca ), 
 		elements( e ), alignment( a )
 	{
@@ -594,9 +599,19 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMAlloca::clone() const
+	{
+		return new LLVMAlloca( *this );
+	}
+
 	LLVMAnd::LLVMAnd() : LLVMBinaryInstruction( And )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMAnd::clone() const
+	{
+		return new LLVMAnd( *this );
 	}
 	
 	LLVMAshr::LLVMAshr() : LLVMBinaryInstruction( Ashr )
@@ -604,9 +619,19 @@ namespace ir
 	
 	}
 
+	LLVMInstruction* LLVMAshr::clone() const
+	{
+		return new LLVMAshr( *this );
+	}
+
 	LLVMBitcast::LLVMBitcast() : LLVMConversionInstruction( Bitcast )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMBitcast::clone() const
+	{
+		return new LLVMBitcast( *this );
 	}
 
 	LLVMBr::LLVMBr() : LLVMInstruction( Br )
@@ -643,6 +668,11 @@ namespace ir
 			}
 		}
 		return "";
+	}
+
+	LLVMInstruction* LLVMBr::clone() const
+	{
+		return new LLVMBr( *this );
 	}
 
 	LLVMCall::LLVMCall() : LLVMInstruction( Call ), tail( false ), 
@@ -754,6 +784,11 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMCall::clone() const
+	{
+		return new LLVMCall( *this );
+	}
+
 	LLVMExtractelement::LLVMExtractelement() 
 		: LLVMBinaryInstruction( Extractelement )
 	{
@@ -785,6 +820,11 @@ namespace ir
 				+ LLVMInstruction::toString( a.type.type );
 		}
 		return "";
+	}
+
+	LLVMInstruction* LLVMExtractelement::clone() const
+	{
+		return new LLVMExtractelement( *this );
 	}
 
 	LLVMExtractvalue::LLVMExtractvalue() : LLVMInstruction( Extractvalue )
@@ -839,24 +879,49 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMExtractvalue::clone() const
+	{
+		return new LLVMExtractvalue( *this );
+	}
+
 	LLVMFadd::LLVMFadd() : LLVMBinaryInstruction( Fadd )
 	{
 		
+	}
+
+	LLVMInstruction* LLVMFadd::clone() const
+	{
+		return new LLVMFadd( *this );
 	}
 	
 	LLVMFcmp::LLVMFcmp() : LLVMComparisonInstruction( Fcmp )
 	{
 	
 	}
+
+	LLVMInstruction* LLVMFcmp::clone() const
+	{
+		return new LLVMFcmp( *this );
+	}
 	
 	LLVMFdiv::LLVMFdiv() : LLVMBinaryInstruction( Fdiv )
 	{
 	
 	}
+
+	LLVMInstruction* LLVMFdiv::clone() const
+	{
+		return new LLVMFdiv( *this );
+	}
 	
 	LLVMFmul::LLVMFmul() : LLVMBinaryInstruction( Fmul )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMFmul::clone() const
+	{
+		return new LLVMFmul( *this );
 	}
 	
 	LLVMFpext::LLVMFpext() : LLVMConversionInstruction( Fpext )
@@ -864,9 +929,19 @@ namespace ir
 	
 	}
 
+	LLVMInstruction* LLVMFpext::clone() const
+	{
+		return new LLVMFpext( *this );
+	}
+
 	LLVMFptosi::LLVMFptosi() : LLVMConversionInstruction( Fptosi )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMFptosi::clone() const
+	{
+		return new LLVMFptosi( *this );
 	}
 
 	LLVMFptoui::LLVMFptoui() : LLVMConversionInstruction( Fptoui )
@@ -874,9 +949,19 @@ namespace ir
 	
 	}
 
+	LLVMInstruction* LLVMFptoui::clone() const
+	{
+		return new LLVMFptoui( *this );
+	}
+
 	LLVMFptrunc::LLVMFptrunc() : LLVMConversionInstruction( Fptrunc )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMFptrunc::clone() const
+	{
+		return new LLVMFptrunc( *this );
 	}
 	
 	LLVMFree::LLVMFree() : LLVMInstruction( Free )
@@ -898,15 +983,30 @@ namespace ir
 		}
 		return "";
 	}
+
+	LLVMInstruction* LLVMFree::clone() const
+	{
+		return new LLVMFree( *this );
+	}
 	
 	LLVMFrem::LLVMFrem() : LLVMBinaryInstruction( Frem )
 	{
 	
 	}
 
+	LLVMInstruction* LLVMFrem::clone() const
+	{
+		return new LLVMFrem( *this );
+	}
+
 	LLVMFsub::LLVMFsub() : LLVMBinaryInstruction( Fsub )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMFsub::clone() const
+	{
+		return new LLVMFsub( *this );
 	}
 
 	LLVMGetelementptr::LLVMGetelementptr() : LLVMInstruction( Getelementptr )
@@ -941,9 +1041,19 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMGetelementptr::clone() const
+	{
+		return new LLVMGetelementptr( *this );
+	}
+
 	LLVMIcmp::LLVMIcmp() : LLVMComparisonInstruction( Icmp )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMIcmp::clone() const
+	{
+		return new LLVMIcmp( *this );
 	}
 
 	LLVMInsertelement::LLVMInsertelement() 
@@ -989,6 +1099,11 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMInsertelement::clone() const
+	{
+		return new LLVMInsertelement( *this );
+	}
+
 	LLVMInsertvalue::LLVMInsertvalue() : LLVMInstruction( Insertvalue )
 	{
 	
@@ -1029,13 +1144,24 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMInsertvalue::clone() const
+	{
+		return new LLVMInsertvalue( *this );
+	}
+
 	LLVMInttoptr::LLVMInttoptr() : LLVMConversionInstruction( Inttoptr )
 	{
 	
 	}
 
+	LLVMInstruction* LLVMInttoptr::clone() const
+	{
+		return new LLVMInttoptr( *this );
+	}
+
 	LLVMInvoke::LLVMInvoke() : LLVMInstruction( Invoke ), 
-		convention( DefaultCallingConvention ), functionAttributes( 0 )
+		convention( DefaultCallingConvention ), 
+		returnAttributes( InvalidParameterAttribute ), functionAttributes( 0 )
 	{
 	
 	}
@@ -1128,6 +1254,11 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMInvoke::clone() const
+	{
+		return new LLVMInvoke( *this );
+	}
+
 	LLVMLoad::LLVMLoad() : LLVMUnaryInstruction( Load ), isVolatile( false ), 
 		alignment( 1 )
 	{
@@ -1160,16 +1291,26 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMLoad::clone() const
+	{
+		return new LLVMLoad( *this );
+	}
+
 	LLVMLshr::LLVMLshr() : LLVMBinaryInstruction( Lshr )
 	{
 	
 	}
 
+	LLVMInstruction* LLVMLshr::clone() const
+	{
+		return new LLVMLshr( *this );
+	}
+	
 	LLVMMalloc::LLVMMalloc() : LLVMInstruction( Malloc ), alignment( 1 )
 	{
 	
 	}
-	
+
 	std::string LLVMMalloc::toString() const
 	{
 		std::stringstream stream;
@@ -1193,6 +1334,11 @@ namespace ir
 		return "";	
 	}
 
+	LLVMInstruction* LLVMMalloc::clone() const
+	{
+		return new LLVMMalloc( *this );
+	}
+
 	LLVMMul::LLVMMul() : LLVMBinaryInstruction( Mul ), noUnsignedWrap( false ),
 		noSignedWrap( false )
 	{
@@ -1208,10 +1354,20 @@ namespace ir
 		result += a.type.toString() + " " + a.toString() + ", " + b.toString();		
 		return result;	
 	}
+
+	LLVMInstruction* LLVMMul::clone() const
+	{
+		return new LLVMMul( *this );
+	}
 	
 	LLVMOr::LLVMOr() : LLVMBinaryInstruction( Or )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMOr::clone() const
+	{
+		return new LLVMOr( *this );
 	}
 	
 	LLVMPhi::LLVMPhi() : LLVMInstruction( Phi )
@@ -1252,9 +1408,19 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMPhi::clone() const
+	{
+		return new LLVMPhi( *this );
+	}
+
 	LLVMPtrtoint::LLVMPtrtoint() : LLVMConversionInstruction( Ptrtoint )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMPtrtoint::clone() const
+	{
+		return new LLVMPtrtoint( *this );
 	}
 
 	LLVMRet::LLVMRet() : LLVMInstruction( Ret )
@@ -1279,6 +1445,11 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMRet::clone() const
+	{
+		return new LLVMRet( *this );
+	}
+
 	LLVMSdiv::LLVMSdiv() : LLVMBinaryInstruction( Sdiv ), exact( false )
 	{
 	
@@ -1291,6 +1462,11 @@ namespace ir
 		if( exact ) result += "exact ";
 		result += d.type.toString() + " " + a.toString() + ", " + b.toString();
 		return result;
+	}
+
+	LLVMInstruction* LLVMSdiv::clone() const
+	{
+		return new LLVMSdiv( *this );
 	}
 
 	LLVMSelect::LLVMSelect() : LLVMBinaryInstruction( Select )
@@ -1314,14 +1490,29 @@ namespace ir
 		return LLVMBinaryInstruction::valid();
 	}
 
+	LLVMInstruction* LLVMSelect::clone() const
+	{
+		return new LLVMSelect( *this );
+	}
+
 	LLVMSext::LLVMSext() : LLVMConversionInstruction( Sext )
 	{
 	
 	}
 
+	LLVMInstruction* LLVMSext::clone() const
+	{
+		return new LLVMSext( *this );
+	}
+
 	LLVMShl::LLVMShl() : LLVMBinaryInstruction( Shl )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMShl::clone() const
+	{
+		return new LLVMShl( *this );
 	}
 
 	LLVMShufflevector::LLVMShufflevector() 
@@ -1382,14 +1573,29 @@ namespace ir
 		return LLVMBinaryInstruction::valid();
 	}
 
+	LLVMInstruction* LLVMShufflevector::clone() const
+	{
+		return new LLVMShufflevector( *this );
+	}
+
 	LLVMSitofp::LLVMSitofp() : LLVMConversionInstruction( Sitofp )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMSitofp::clone() const
+	{
+		return new LLVMSitofp( *this );
 	}
 	
 	LLVMSrem::LLVMSrem() : LLVMBinaryInstruction( Srem )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMSrem::clone() const
+	{
+		return new LLVMSrem( *this );
 	}
 	
 	LLVMStore::LLVMStore() : LLVMUnaryInstruction( Store ), isVolatile( false ),
@@ -1424,6 +1630,11 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMStore::clone() const
+	{
+		return new LLVMStore( *this );
+	}
+
 	LLVMSub::LLVMSub() : LLVMBinaryInstruction( Sub ), noUnsignedWrap( false ),
 		noSignedWrap( false )
 	{
@@ -1438,6 +1649,11 @@ namespace ir
 		if( noSignedWrap ) result += "nsw ";
 		result += a.type.toString() + " " + a.toString() + ", " + b.toString();		
 		return result;		
+	}
+
+	LLVMInstruction* LLVMSub::clone() const
+	{
+		return new LLVMSub( *this );
 	}
 
 	LLVMSwitch::LLVMSwitch() : LLVMInstruction( Switch )
@@ -1499,9 +1715,19 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMSwitch::clone() const
+	{
+		return new LLVMSwitch( *this );
+	}
+
 	LLVMTrunc::LLVMTrunc() : LLVMConversionInstruction( Trunc )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMTrunc::clone() const
+	{
+		return new LLVMTrunc( *this );
 	}
 
 	LLVMUdiv::LLVMUdiv() : LLVMBinaryInstruction( Udiv )
@@ -1509,9 +1735,19 @@ namespace ir
 	
 	}
 
+	LLVMInstruction* LLVMUdiv::clone() const
+	{
+		return new LLVMUdiv( *this );
+	}
+
 	LLVMUitofp::LLVMUitofp() : LLVMConversionInstruction( Uitofp )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMUitofp::clone() const
+	{
+		return new LLVMUitofp( *this );
 	}
 
 	LLVMUnreachable::LLVMUnreachable() : LLVMInstruction( Unreachable )
@@ -1529,6 +1765,11 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMUnreachable::clone() const
+	{
+		return new LLVMUnreachable( *this );
+	}
+
 	LLVMUnwind::LLVMUnwind() : LLVMInstruction( Unwind )
 	{
 	
@@ -1544,9 +1785,19 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMUnwind::clone() const
+	{
+		return new LLVMUnwind( *this );
+	}
+
 	LLVMUrem::LLVMUrem() : LLVMBinaryInstruction( Urem )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMUrem::clone() const
+	{
+		return new LLVMUrem( *this );
 	}
 
 	LLVMVaArg::LLVMVaArg() : LLVMUnaryInstruction( VaArg )
@@ -1568,14 +1819,29 @@ namespace ir
 		return "";
 	}
 
+	LLVMInstruction* LLVMVaArg::clone() const
+	{
+		return new LLVMVaArg( *this );
+	}
+
 	LLVMXor::LLVMXor() : LLVMBinaryInstruction( Xor )
 	{
 	
 	}
 
+	LLVMInstruction* LLVMXor::clone() const
+	{
+		return new LLVMXor( *this );
+	}
+
 	LLVMZext::LLVMZext() : LLVMConversionInstruction( Zext )
 	{
 	
+	}
+
+	LLVMInstruction* LLVMZext::clone() const
+	{
+		return new LLVMZext( *this );
 	}
 	
 }

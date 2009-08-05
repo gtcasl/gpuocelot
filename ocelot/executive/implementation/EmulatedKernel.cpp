@@ -1,10 +1,7 @@
 /*!
 	\file EmulatedKernel.cpp
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 19, 2009
-
 	\brief implements the Kernel base class
 */
 
@@ -40,14 +37,13 @@ executive::EmulatedKernel::EmulatedKernel(ir::Kernel *kernel,
 	const Executive* c) : ExecutableKernel(c) {
 	ConstMemory = ParameterMemory = 0;
 	ConstMemorySize = ParameterMemorySize = SharedMemorySize = 0;
-
-	clone(*kernel);
+	
+	Kernel::operator=(*kernel);
 	initialize();
 }
 
 executive::EmulatedKernel::EmulatedKernel() {
-	this->ISA = ir::Instruction::Emulated;
-
+	ISA = ir::Instruction::Emulated;
 }
 
 executive::EmulatedKernel::~EmulatedKernel() {

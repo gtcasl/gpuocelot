@@ -1,10 +1,7 @@
 /*!
 	\file Instruction.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief base class for all instructions
 */
 

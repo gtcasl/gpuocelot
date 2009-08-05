@@ -12,6 +12,12 @@
 
 namespace translator
 {
+	Translator::Exception::Exception( const std::string& message, int code ) 
+		: hydrazine::Exception( message, code )
+	{
+	
+	}
+		
 	Translator::Translator( ir::Instruction::Architecture s, 
 		ir::Instruction::Architecture t, 
 		OptimizationLevel l ) : optimizationLevel( l ), 

@@ -9,6 +9,7 @@
 #define TRANSLATOR_H_INCLUDED
 
 #include <ocelot/ir/interface/Instruction.h>
+#include <hydrazine/implementation/Exception.h>
 
 namespace ir
 {
@@ -28,6 +29,13 @@ namespace translator
 	class Translator
 	{
 		public:
+			/*! \brief An exception for distinguishing between exceptions */
+			class Exception : public hydrazine::Exception
+			{
+				public:
+					Exception( const std::string& message, int code = 0 );
+			};
+
 			/*! \brief All possible optimization levels */
 			enum OptimizationLevel
 			{
@@ -35,7 +43,7 @@ namespace translator
 				DebugOptimization,
 				BasicOptimization,
 				SpaceOptimization,
-				FullOptimization,
+				FullOptimization
 			};
 		
 		protected:

@@ -22,13 +22,13 @@ ACLOCAL_AMFLAGS = -I m4
 ## Programs and Libraries
 BUILT_SOURCES=ptx1_4grammar.h
 bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
-	ParallelismTraceAnalyzer SharedComputationAnalyzer
+	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
 	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la \
-	libOcelot.la
+	libOcelot.la libOcelotTranslator.la
 ################################################################################
 
 ################################################################################
@@ -63,7 +63,9 @@ libOcelotIr_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 	ocelot/ir/implementation/Texture.cpp \
 	ocelot/ir/implementation/DominatorTree.cpp \
 	ocelot/ir/implementation/PostdominatorTree.cpp \
-	ocelot/ir/implementation/LLVMInstruction.cpp
+	ocelot/ir/implementation/LLVMInstruction.cpp \
+	ocelot/ir/implementation/LLVMKernel.cpp \
+	ocelot/ir/implementation/LLVMStatement.cpp
 ################################################################################
 
 ################################################################################
@@ -102,9 +104,7 @@ libOcelotTrace_la_SOURCES = \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
 	ocelot/trace/implementation/KernelEntry.cpp \
-	ocelot/trace/implementation/BranchEvent.cpp
-	
-	
+	ocelot/trace/implementation/BranchEvent.cpp	
 ################################################################################
 
 ################################################################################
@@ -136,7 +136,15 @@ libcudart_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
 libcudart_la_SOURCES = \
 	ocelot/cuda/implementation/OcelotRuntimeApi.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp
-libcudart_la_LDFLAGS = -version-info 2:2:0
+libcudart_la_LDFLAGS = -version-info 2:3:0
+################################################################################
+
+################################################################################
+## libOcelotTranslator
+libOcelotTranslator_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+libOcelotTranslator_la_SOURCES = \
+	ocelot/translator/implementation/Translator.cpp \
+	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
 ################################################################################
 
 ################################################################################
@@ -204,6 +212,15 @@ Module_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 Module_SOURCES = ocelot/ir/test/Module.cpp
 Module_LDADD = libOcelotIr.la libOcelotParser.la libhydrazine.la
 Module_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## PtxToLlvmTranslator
+PtxToLlvmTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+PtxToLlvmTranslator_SOURCES = ocelot/translator/test/PtxToLlvmTranslator.cpp
+PtxToLlvmTranslator_LDADD = libOcelotTranslator.la libOcelotAnalysis.la \
+	libOcelotIr.la libOcelotParser.la libhydrazine.la
+PtxToLlvmTranslator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

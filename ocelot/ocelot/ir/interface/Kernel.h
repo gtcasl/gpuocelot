@@ -66,38 +66,38 @@ namespace ir {
 			PTXStatementVector::const_iterator start,
 			PTXStatementVector::const_iterator end);
 
-		/*!
-			Constructs an empty kernel
-		*/
+		/*!	Constructs an empty kernel */
 		Kernel();
 
-		/*!
-			Destructs kernel
-		*/
+		/*!	Destructs kernel */
 		virtual ~Kernel();
+
+		/*! \brief Copy constructor (deep) */
+		Kernel( const Kernel& k );
+		
+		/*! \brief Assignment operator (deep) */
+		const Kernel& operator=( const Kernel& k );
 	
-		/*!
-			Returns true if the kernel instance is derived from ExecutableKernel
-		*/
+		/*!	Returns true if the kernel instance is derived from 
+			ExecutableKernel */
 		virtual bool executable() const { return false; }
 
-		/*!
-			Returns a reference to a parameter identified by 'name'
-		*/		
-		Parameter & getParameter(const std::string& name);
+		/*!	Returns a reference to a parameter identified by 'name' */		
+		Parameter& getParameter(const std::string& name);
 
-		/*!
-			Returns a const reference to a parameter identified by 'name'
-		*/		
+		/*!	Returns a const reference to a parameter identified by 'name' */		
 		const Parameter & getParameter(const std::string& name) const;
 
 		/*!
-			Constructs a control flow graph from iterators into the Module's PTXStatement vector
+			Constructs a control flow graph from iterators into the 
+			Module's PTXStatement vector
 
 			\param reference to newly constructed CFG
 			\param count maximum number of instructions to allocate in CFG
-			\param kernelStart iterator to start of kernel [i.e. the entry statement]
-			\param kenelEnd iterator to end of kernel [i.e. the EndEntry statement]
+			\param kernelStart iterator to start of kernel 
+				[i.e. the entry statement]
+			\param kenelEnd iterator to end of kernel 
+				[i.e. the EndEntry statement]
 			\return true on successful creation
 		*/
 		static bool constructCFG(
@@ -109,11 +109,8 @@ namespace ir {
 		/*! \brief Assigns register IDs to identifiers */
 		static RegisterMap assignRegisters( 
 			PTXInstructionVector& instructions );
-
-		void clone(const Kernel &kernel);
-		
+					
 	public:
-
 		/*!	[mangled] name of kernel within module */
 		std::string name;
 

@@ -1,10 +1,7 @@
 /*!
 	\file PTXOperand.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief internal representation of a PTX operand
 */
 

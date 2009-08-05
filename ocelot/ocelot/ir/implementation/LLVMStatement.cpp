@@ -9,6 +9,7 @@
 #define LLVM_STATEMENT_CPP_INCLUDED
 
 #include <ocelot/ir/interface/LLVMStatement.h>
+#include <hydrazine/implementation/debug.h>
 
 namespace ir
 {
@@ -16,14 +17,14 @@ namespace ir
 	{
 		if( i != 0 )
 		{
-			instruction = i.clone();
+			instruction = i->clone();
 			assertM( type == Instruction, "Statement given non-zero " 
 				<< "instruction pointer, but not specified as an " 
 				<< "instruction statement." );
 		}
 		else
 		{
-			instru‭ction = 0;
+			instruction = 0;
 		}
 	}
 
@@ -31,15 +32,21 @@ namespace ir
 	{
 		if( s.instruction != 0 )
 		{
-			instruction = s.instruction.clone();
+			instruction = s.instruction->clone();
 			assertM( type == Instruction, "Statement given non-zero " 
 				<< "instruction pointer, but not specified as an " 
 				<< "instruction statement." );
 		}
 		else
 		{
-			instru‭ction = 0;
+			instruction = 0;
 		}
+	}
+
+	LLVMStatement::LLVMStatement( const LLVMInstruction& i ) 
+		: type( Instruction )
+	{
+		instruction = i.clone();
 	}
 	
 	LLVMStatement::~LLVMStatement()
@@ -54,15 +61,16 @@ namespace ir
 		type = s.type;
 		if( s.instruction != 0 )
 		{
-			instruction = s.instruction.clone();
+			instruction = s.instruction->clone();
 			assertM( type == Instruction, "Statement given non-zero " 
 				<< "instruction pointer, but not specified as an " 
 				<< "instruction statement." );
 		}
 		else
 		{
-			instru‭ction = 0;
-		}		
+			instruction = 0;
+		}
+		return *this;
 	}
 }
 

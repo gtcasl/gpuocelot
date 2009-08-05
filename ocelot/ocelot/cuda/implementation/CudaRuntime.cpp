@@ -903,7 +903,6 @@ namespace cuda
 	void CudaRuntime::registerFunction( const char* symbol, 
 		const std::string& name, unsigned int handle )
 	{
-	
 		HandleAndKernel kernel;
 		kernel.kernel = name;
 		kernel.handle = handle;
@@ -918,7 +917,6 @@ namespace cuda
 		}
 		
 		_symbols.insert( std::make_pair( symbol, kernel ) );
-		
 	}
 
 	void CudaRuntime::launch( const char* symbol )

@@ -159,12 +159,7 @@ namespace executive {
 	protected:
 		// execution helper functions
 
-		ir::PTXF32 sat(int modifier, ir::PTXF32 f) {
-			if (modifier & ir::PTXInstruction::sat) {
-				return (f <= 0 ? 0 : (f >= 1.0f ? 1.0f : f));
-			}
-			return f;
-		}
+		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
 
 	public:
 		// Register accessors

@@ -18,9 +18,7 @@ namespace ir {
 
 	class PTXInstruction: public Instruction {
 	public:
-		/*!
-			Version number of the instruction
-		*/
+		/*!	Version number of the instruction */
 		enum Version {
 			ptx1_0 = 0,
 			ptx1_1 = 1,
@@ -29,18 +27,14 @@ namespace ir {
 			ptx1_4 = 4
 		};
 		
-		/*!
-			Hierarchy Level
-		*/
+		/*! Hierarchy Level */
 		enum Level {
 			CtaLevel,
 			GlobalLevel,
 			Level_Invalid
 		};
 
-		/*!
-			List of opcodes for PTX instructions
-		*/
+		/*!	List of opcodes for PTX instructions */
 		enum Opcode {
 			Abs,
 			Add,

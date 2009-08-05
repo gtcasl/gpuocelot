@@ -311,6 +311,9 @@ namespace ir
 			/*! \brief Assignment operator to prevent modification of opcode */
 			const LLVMInstruction& operator=( const LLVMInstruction& i );
 								
+		public:
+			/*! \brief Return a pointer to a new Instruction */
+			virtual LLVMInstruction* clone() const = 0;
 	};
 	
 	/*! \brief A generic 1 operand instruction */
@@ -332,6 +335,9 @@ namespace ir
 		public:
 			virtual std::string toString() const;
 			virtual std::string valid() const;
+
+		public:
+			virtual LLVMInstruction* clone() const = 0;
 	};
 	
 	/*! \brief A generic 2 operand instruction */
@@ -356,6 +362,9 @@ namespace ir
 		public:
 			virtual std::string toString() const;
 			virtual std::string valid() const;
+
+		public:
+			virtual LLVMInstruction* clone() const = 0;
 	};
 	
 	/*! \brief A generic conversion instruction */
@@ -370,6 +379,9 @@ namespace ir
 		public:
 			virtual std::string toString() const;
 			virtual std::string valid() const;
+
+		public:
+			virtual LLVMInstruction* clone() const = 0;
 	};
 	
 	/*! \brief A generic comparison instruction */
@@ -386,6 +398,9 @@ namespace ir
 		public:
 			virtual std::string toString() const;
 			virtual std::string valid() const;
+
+		public:
+			virtual LLVMInstruction* clone() const = 0;
 	};
 	
 	/*! \brief The LLVM add instruction */
@@ -407,6 +422,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM alloca instruction */
@@ -430,6 +448,8 @@ namespace ir
 			std::string toString() const;
 			std::string valid() const;
 
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM And instruction */
@@ -438,6 +458,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMAnd();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM ashr instruction */
@@ -446,6 +469,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMAshr();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM bitcast instruction */
@@ -454,6 +480,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMBitcast();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 		
 	/*! \brief The LLVM br instruction */
@@ -476,6 +505,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;	
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM call instruction */
@@ -510,6 +542,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM extractelement instruction */
@@ -522,6 +557,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM extractvalue instruction */
@@ -548,6 +586,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fadd instruction */
@@ -556,6 +597,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFadd();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fcmp instruction */
@@ -564,6 +608,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFcmp();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fdiv instruction */
@@ -572,6 +619,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFdiv();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fmul instruction */
@@ -580,6 +630,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFmul();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fpext instruction */
@@ -588,6 +641,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFpext();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 		
 	/*! \brief The LLVM fptosi instruction */
@@ -596,6 +652,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFptosi();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 		
 	/*! \brief The LLVM fptoui instruction */
@@ -604,6 +663,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFptoui();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fptrunc instruction */
@@ -612,6 +674,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFptrunc();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 		
 	/*! \brief The LLVM free instruction */
@@ -628,6 +693,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM frem instruction */
@@ -636,6 +704,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFrem();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM fsub instruction */
@@ -644,6 +715,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMFsub();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM getelementptr instruction */
@@ -670,6 +744,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM icmp instruction */
@@ -678,6 +755,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMIcmp();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM insertelement instruction */
@@ -694,6 +774,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM insertvalue instruction */
@@ -723,6 +806,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM intotoptr instruction */
@@ -731,6 +817,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMInttoptr();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM invoke instruction */
@@ -771,6 +860,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM load instruction */
@@ -790,6 +882,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM lshr instruction */
@@ -798,6 +893,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMLshr();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM malloc instruction */
@@ -820,6 +918,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM mul instruction */
@@ -838,6 +939,9 @@ namespace ir
 			
 		public:
 			std::string toString() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM or instruction */
@@ -846,6 +950,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMOr();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM phi instruction */
@@ -879,6 +986,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM ptrtoint instruction */
@@ -887,6 +997,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMPtrtoint();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM Add instruction */
@@ -903,6 +1016,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM sdiv instruction */
@@ -918,6 +1034,9 @@ namespace ir
 			
 		public:
 			std::string toString() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM select instruction */
@@ -934,6 +1053,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM sext instruction */
@@ -942,6 +1064,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMSext();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM shl instruction */
@@ -950,6 +1075,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMShl();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM shufflevector instruction */
@@ -970,6 +1098,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM sitofp instruction */
@@ -978,6 +1109,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMSitofp();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM srem instruction */
@@ -986,6 +1120,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMSrem();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM store instruction */
@@ -1005,6 +1142,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM sub instruction */
@@ -1023,6 +1163,9 @@ namespace ir
 			
 		public:
 			std::string toString() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM switch instruction */
@@ -1059,6 +1202,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM trunc instruction */
@@ -1067,6 +1213,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMTrunc();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM udiv instruction */
@@ -1075,6 +1224,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMUdiv();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM uitofp instruction */
@@ -1083,6 +1235,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMUitofp();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 		
 	/*! \brief The LLVM unreachable instruction */
@@ -1095,6 +1250,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM unwind instruction */
@@ -1107,6 +1265,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM urem instruction */
@@ -1115,6 +1276,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMUrem();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM va_arg instruction */
@@ -1127,6 +1291,9 @@ namespace ir
 		public:
 			std::string toString() const;
 			std::string valid() const;
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM xor instruction */
@@ -1135,6 +1302,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMXor();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 	/*! \brief The LLVM zext instruction */
@@ -1143,6 +1313,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMZext();
+
+		public:
+			LLVMInstruction* clone() const;
 	};
 	
 }

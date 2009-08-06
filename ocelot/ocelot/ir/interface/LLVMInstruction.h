@@ -314,6 +314,10 @@ namespace ir
 		public:
 			/*! \brief Return a pointer to a new Instruction */
 			virtual LLVMInstruction* clone() const = 0;
+	
+		public:
+			virtual std::string toString() const = 0;
+			virtual std::string valid() const = 0;
 	};
 	
 	/*! \brief A generic 1 operand instruction */

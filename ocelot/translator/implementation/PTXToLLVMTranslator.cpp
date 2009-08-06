@@ -174,6 +174,8 @@ namespace translator
 	void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i )
 	{
 		report( " Translating: " << i.toString() );
+		assertM( i.valid() == "", "Instruction " << i.toString() 
+			<< " is not valid: " << i.valid() );
 		switch( i.opcode )
 		{
 			case ir::PTXInstruction::Abs: _translateAbs( i ); break;
@@ -243,26 +245,43 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateAdd( const ir::PTXInstruction& i )
 	{
-		ir::LLVMFadd add;
-		
 		if( ir::PTXOperand::isFloat( i.type ) )
 		{
+			ir::LLVMFadd add;
+		
 			add.d = _destination( i );
 			add.a = _translate( i.a );
 			add.b = _translate( i.b );
 		
-			_add( add );			
+			_add( add );	
+			
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				ir::LLVMFcmp compare;
+				
+				compare.d.name = _tempRegister();
+				compare.d.type.type = ir::LLVMInstruction::I1;
+				compare.d.type.category = ir::LLVMInstruction::Type::Element;
+				compare.comparison = ir::LLVMInstruction::Ule;
+				compare.a = add.d;
+//				compare.b.type.
+				
+			}
+				
+			_predicateEpilogue( i, add.d );
 		}
 		else
 		{
+			ir::LLVMAdd add;
+			
 			add.d = _destination( i );
 			add.a = _translate( i.a );
 			add.b = _translate( i.b );
 		
 			_add( add );
+			_predicateEpilogue( i, add.d );
 		}
 		
-		_predicateEpilogue( i, add.d );
 	}
 
 	void PTXToLLVMTranslator::_translateAddC( const ir::PTXInstruction& i )
@@ -642,6 +661,8 @@ namespace translator
 
 	void PTXToLLVMTranslator::_add( const ir::LLVMInstruction& i )
 	{
+		assertM( i.valid() == "", "Instruction " << i.toString() 
+			<< " is not valid " << i.valid() );
 		_llvmKernel->_statements.push_back( ir::LLVMStatement( i ) );	
 	}
 

@@ -174,9 +174,10 @@ namespace translator
 	{
 		report( " Doing basic PTX register allocation");
 		ir::Kernel::assignRegisters( _llvmKernel->instructions );
-		report( " Converting PTX to SSA form");
+		report( " Building the dataflow graph");
 		_graph = new analysis::DataflowGraph( *_llvmKernel->ptxCFG, 
 			_llvmKernel->instructions );
+		report( " Converting PTX to SSA form");
 		_graph->toSsa();
 	}
 

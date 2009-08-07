@@ -43,6 +43,8 @@ namespace ir
 				const LLVMInstruction* i = 0 );
 			/*! \brief Construct a statement from an instruction */
 			explicit LLVMStatement( const LLVMInstruction& i );
+			/*! \brief Construction a statement from a label */
+			explicit LLVMStatement( const std::string& l );
 			/*! \brief Copy constructor for instruction */
 			LLVMStatement( const LLVMStatement& s );
 			/*! \brief Possibly cleans up the instruction pointer */

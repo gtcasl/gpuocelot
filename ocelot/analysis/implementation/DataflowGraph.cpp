@@ -232,7 +232,14 @@ namespace analysis
 	{
 		return _label;
 	}
-		
+
+	DataflowGraph::BlockAndInstruction 
+		DataflowGraph::Block::producer( RegisterId r ) const
+	{
+		assertM( false, "producer not implemented" );
+		return DataflowGraph::BlockAndInstruction();
+	}
+	
 	DataflowGraph::DataflowGraph() : _consistent( true ), _ssa( false )
 	{
 		_blocks.push_back( Block( Block::Entry ) );

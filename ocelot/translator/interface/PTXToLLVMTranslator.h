@@ -10,6 +10,7 @@
 
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace ir
 {
@@ -27,6 +28,7 @@ namespace translator
 	{	
 		private:
 			ir::LLVMKernel* _llvmKernel;
+			analysis::DataflowGraph* _graph;
 			unsigned int _tempRegisterCount;
 		
 		private:
@@ -34,7 +36,10 @@ namespace translator
 				_translate( const ir::PTXOperand& o );
 		
 		private:
+			void _convertPtxToSsa();
 			void _translateInstructions();
+			void _newBlock( const std::string& name );
+			void _translate( const analysis::DataflowGraph::Instruction& i );
 			void _translate( const ir::PTXInstruction& i );
 			void _translateAbs( const ir::PTXInstruction& i );
 			void _translateAdd( const ir::PTXInstruction& i );

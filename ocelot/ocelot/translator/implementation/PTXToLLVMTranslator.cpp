@@ -51,7 +51,11 @@ namespace translator
 					case ir::PTXOperand::u8: /* fall through */
 					case ir::PTXOperand::u16: /* fall through */
 					case ir::PTXOperand::u32: /* fall through */
-					case ir::PTXOperand::u64:
+					case ir::PTXOperand::u64: /* fall through */
+					case ir::PTXOperand::b8: /* fall through */
+					case ir::PTXOperand::b16: /* fall through */
+					case ir::PTXOperand::b32: /* fall through */
+					case ir::PTXOperand::b64:
 					{
 						op.i64 = o.imm_uint;
 						break;
@@ -89,6 +93,7 @@ namespace translator
 			case ir::PTXOperand::Special:
 			{
 				op.name = ir::PTXOperand::toString( o.special );
+				break;
 			}
 			case ir::PTXOperand::Invalid:
 			{
@@ -98,25 +103,29 @@ namespace translator
 
 		switch( o.type )
 		{
-			case ir::PTXOperand::u8:
+			case ir::PTXOperand::b8: /* fall through */
+			case ir::PTXOperand::u8: /* fall through */
 			case ir::PTXOperand::s8:
 			{
 				op.type.type = ir::LLVMInstruction::I8;
 				break;
 			}
-			case ir::PTXOperand::s16:
+			case ir::PTXOperand::b16: /* fall through */
+			case ir::PTXOperand::s16: /* fall through */
 			case ir::PTXOperand::u16:
 			{
 				op.type.type = ir::LLVMInstruction::I16;
 				break;
 			}
-			case ir::PTXOperand::u32:
+			case ir::PTXOperand::b32: /* fall through */
+			case ir::PTXOperand::u32: /* fall through */
 			case ir::PTXOperand::s32:
 			{
 				op.type.type = ir::LLVMInstruction::I32;
 				break;
 			}
-			case ir::PTXOperand::s64:
+			case ir::PTXOperand::b64: /* fall through */
+			case ir::PTXOperand::s64: /* fall through */
 			case ir::PTXOperand::u64:
 			{
 				op.type.type = ir::LLVMInstruction::I64;
@@ -161,19 +170,77 @@ namespace translator
 		return stream.str();
 	}
 
+	void PTXToLLVMTranslator::_convertPtxToSsa()
+	{
+		report( " Doing basic PTX register allocation");
+		ir::Kernel::assignRegisters( _llvmKernel->instructions );
+		report( " Converting PTX to SSA form");
+		_graph = new analysis::DataflowGraph( *_llvmKernel->ptxCFG, 
+			_llvmKernel->instructions );
+		_graph->toSsa();
+	}
+
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
-		for( ir::Kernel::PTXInstructionVector::const_iterator 
-			fi = _llvmKernel->instructions.begin(); 
-			fi != _llvmKernel->instructions.end(); ++fi )
+		for( analysis::DataflowGraph::iterator block = _graph->begin(); 
+			block != _graph->end(); ++block )
 		{
-			_translate( *fi );
+			_newBlock( block->label() );
+			report( "  Translating Phi Instructions" );
+			for( analysis::DataflowGraph::PhiInstructionVector::const_iterator 
+				phi = block->phis().begin(); 
+				phi != block->phis().end(); ++phi )
+			{
+				ir::LLVMPhi p;
+				analysis::DataflowGraph::RegisterIdVector::const_iterator 
+					s = phi->s.begin();
+				for( ; s != phi->s.end(); ++s )
+				{
+					analysis::DataflowGraph::BlockAndInstruction 
+						producer = block->producer( *s );
+					
+					ir::LLVMPhi::Node node;
+					node.operand = _translate( _llvmKernel->instructions[ 
+						producer.instruction ].d );
+					node.label = producer.label;
+					
+					p.nodes.push_back( node );
+				}
+				
+				std::stringstream stream;
+				stream << "r" << phi->d;
+				
+				assert( !p.nodes.empty() );
+				p.d = p.nodes[0].operand;
+				p.d.name = stream.str();
+				_add( p );
+			}
+			report( "  Translating Instructions" );
+			for( analysis::DataflowGraph::InstructionVector::const_iterator 
+				instruction = block->instructions().begin();
+				instruction != block->instructions().end(); ++instruction )
+			{
+				_translate( *instruction );
+			}
 		}
+	}
+
+	void PTXToLLVMTranslator::_newBlock( const std::string& name )
+	{
+		report( " Translating basic block: " << name );
+		_llvmKernel->_statements.push_back( ir::LLVMStatement( name ) );
+	}
+
+	void PTXToLLVMTranslator::_translate( 
+		const analysis::DataflowGraph::Instruction& i )
+	{
+		assert( i.id < _llvmKernel->instructions.size() );
+		_translate( _llvmKernel->instructions[ i.id ] );
 	}
 
 	void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i )
 	{
-		report( " Translating: " << i.toString() );
+		report( "   Translating: " << i.toString() );
 		assertM( i.valid() == "", "Instruction " << i.toString() 
 			<< " is not valid: " << i.valid() );
 		switch( i.opcode )
@@ -240,7 +307,9 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateAbs( const ir::PTXInstruction& i )
 	{
-		ir::LLVMSub sub;
+		assertM( false, "Opcode " 
+			<< ir::PTXInstruction::toString( i.opcode ) 
+			<< " not supported." );
 	}
 
 	void PTXToLLVMTranslator::_translateAdd( const ir::PTXInstruction& i )
@@ -264,11 +333,35 @@ namespace translator
 				compare.d.type.category = ir::LLVMInstruction::Type::Element;
 				compare.comparison = ir::LLVMInstruction::Ule;
 				compare.a = add.d;
-//				compare.b.type.
+				compare.b.type.type = compare.a.type.type;
+				compare.b.type.category = ir::LLVMInstruction::Type::Element;
+				compare.b.constant = true;
+				if( compare.b.type.type == ir::LLVMInstruction::F32 )
+				{
+					compare.b.f32 = 0;
+				}
+				else
+				{
+					compare.b.f64 = 0;
+				}
 				
+				ir::LLVMSelect select;
+				
+				select.d.name = _tempRegister();
+				select.d.type.type = add.d.type.type;
+				select.d.type.category = add.d.type.category;
+				select.condition = compare.d;
+				select.a = compare.b;
+				select.b = add.d;
+				
+				_add( compare );
+				_add( select );
+				_predicateEpilogue( i, select.d );
 			}
-				
-			_predicateEpilogue( i, add.d );
+			else
+			{
+				_predicateEpilogue( i, add.d );
+			}
 		}
 		else
 		{
@@ -292,7 +385,7 @@ namespace translator
 	}
 
 	void PTXToLLVMTranslator::_translateAnd( const ir::PTXInstruction& i )
-	{
+	{						
 		assertM( false, "Opcode " 
 			<< ir::PTXInstruction::toString( i.opcode ) 
 			<< " not supported." );
@@ -426,9 +519,17 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMSelect select;
+		select.d = _destination( i );
+		select.a = _translate( i.a );
+		select.b = select.a;
+		select.condition.type.category = ir::LLVMInstruction::Type::Element;
+		select.condition.type.type = ir::LLVMInstruction::I1;
+		select.condition.constant = true;
+		select.condition.i1 = true;
+		
+		_add( select );
+		_predicateEpilogue( i, select.d );
 	}
 
 	void PTXToLLVMTranslator::_translateMul24( const ir::PTXInstruction& i )
@@ -663,6 +764,7 @@ namespace translator
 	{
 		assertM( i.valid() == "", "Instruction " << i.toString() 
 			<< " is not valid " << i.valid() );
+		report( "    Added instruction " << i.toString() );
 		_llvmKernel->_statements.push_back( ir::LLVMStatement( i ) );	
 	}
 
@@ -683,7 +785,10 @@ namespace translator
 		report( "Translating PTX kernel " << k->name );
 		_llvmKernel = new ir::LLVMKernel( *k );	
 		
+		_convertPtxToSsa();
 		_translateInstructions();
+		
+		delete _graph;
 		
 		return _llvmKernel;
 	}

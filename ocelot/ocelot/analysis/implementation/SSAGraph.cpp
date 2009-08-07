@@ -88,7 +88,6 @@ namespace analysis
 			IdMap map;
 			
 			report( "  For block " << block->first->label() );
-			
 			report( "   Processing " << block->first->_predecessors.size() 
 				<< " predecessors." );
 			

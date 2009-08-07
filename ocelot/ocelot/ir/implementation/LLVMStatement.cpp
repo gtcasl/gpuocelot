@@ -48,6 +48,11 @@ namespace ir
 	{
 		instruction = i.clone();
 	}
+
+	LLVMStatement::LLVMStatement( const std::string& l ) 
+		: instruction( 0 ), type( Label ), label( l )
+	{
+	}
 	
 	LLVMStatement::~LLVMStatement()
 	{

@@ -979,7 +979,6 @@ namespace ir
 		public:
 			/*! \brief The destination operand */
 			Operand d;
-			
 			/*! \brief The list of Phi Nodes */
 			NodeVector nodes;
 					

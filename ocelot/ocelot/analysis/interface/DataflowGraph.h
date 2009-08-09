@@ -80,16 +80,6 @@ namespace analysis
 			/*! \brief A vector of Block pointers */
 			typedef std::unordered_set< BlockVector::iterator > BlockPointerSet;
 			
-			/*! \brief A basic block and an instruction */
-			class BlockAndInstruction
-			{
-				public:
-					/*! \brief The label of a specific basic block */
-					std::string label;
-					/*! \brief An instruction id within the block */
-					InstructionId instruction;
-			};
-			
 			/*!
 				\brief A class for referring to a generic basic block of 
 					instructions.
@@ -170,10 +160,8 @@ namespace analysis
 					const PhiInstructionVector& phis() const;
 					/*! \brief Get the block label */
 					const std::string& label() const;
-					/*! \brief Determine the id of the instruction that 
-						produced the specified register
-					*/
-					BlockAndInstruction producer( RegisterId r ) const;
+					/*! \brief Determine the block that produced a register */
+					const std::string& producer( RegisterId r ) const;
 			};
 			
 			

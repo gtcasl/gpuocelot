@@ -233,11 +233,28 @@ namespace analysis
 		return _label;
 	}
 
-	DataflowGraph::BlockAndInstruction 
-		DataflowGraph::Block::producer( RegisterId r ) const
+	const std::string& DataflowGraph::Block::producer( RegisterId r ) const
 	{
-		assertM( false, "producer not implemented" );
-		return DataflowGraph::BlockAndInstruction();
+		assertM( aliveIn().count( r ) != 0, "Register " << r 
+			<< " is not in the alive-in set of block " << label() );
+
+		BlockPointerSet::const_iterator predecessor = predecessors().end();
+
+		for( BlockPointerSet::const_iterator pi = predecessors().begin();
+			pi != predecessors().end(); ++pi )
+		{
+			if( (*pi)->aliveOut().count( r ) != 0 )
+			{
+				predecessor = pi;
+				break;
+			}
+		}
+		
+		assertM( predecessor != predecessors().end(), "Register " << r 
+			<< " not found in the alive out-set of any predecessor of block " 
+			<< label() );
+		
+		return (*predecessor)->label();
 	}
 	
 	DataflowGraph::DataflowGraph() : _consistent( true ), _ssa( false )

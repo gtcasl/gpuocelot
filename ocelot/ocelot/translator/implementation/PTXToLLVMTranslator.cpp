@@ -14,6 +14,8 @@
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
+#include <queue>
+
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -163,6 +165,14 @@ namespace translator
 		return op;
 	}
 
+	void PTXToLLVMTranslator::_swapAllExceptName( 
+		ir::LLVMInstruction::Operand& o, const ir::PTXOperand& i )
+	{
+		std::string temp = o.name;
+		o = _translate( i );
+		o.name = temp;
+	}
+
 	std::string PTXToLLVMTranslator::_tempRegister()
 	{
 		std::stringstream stream;
@@ -196,24 +206,26 @@ namespace translator
 				analysis::DataflowGraph::RegisterIdVector::const_iterator 
 					s = phi->s.begin();
 				for( ; s != phi->s.end(); ++s )
-				{
-					analysis::DataflowGraph::BlockAndInstruction 
-						producer = block->producer( *s );
-					
+				{			
 					ir::LLVMPhi::Node node;
-					node.operand = _translate( _llvmKernel->instructions[ 
-						producer.instruction ].d );
-					node.label = producer.label;
+					node.label = block->producer( *s );
+					node.reg = *s;
+
+					std::stringstream stream;
+					stream << "r" << *s;
+					
+					node.operand.name = stream.str();
 					
 					p.nodes.push_back( node );
 				}
+
+				assert( !p.nodes.empty() );
 				
 				std::stringstream stream;
 				stream << "r" << phi->d;
-				
-				assert( !p.nodes.empty() );
-				p.d = p.nodes[0].operand;
 				p.d.name = stream.str();
+
+				_phiIndices.push_back( _llvmKernel->_statements.size() );
 				_add( p );
 			}
 			report( "  Translating Instructions" );
@@ -726,6 +738,11 @@ namespace translator
 		const ir::PTXInstruction& i )
 	{
 		ir::LLVMInstruction::Operand destination = _translate( i.d );
+		assertM( _producers.count( i.d.reg ) == 0, 
+			"PTX program is not in ssa form, register " << i.d.reg 
+			<< " assigned twice." );
+		_producers.insert( std::make_pair( i.d.reg, 
+			_llvmKernel->_statements.size() ) );
 		if( i.pg.condition != ir::PTXOperand::PT )
 		{
 			destination.name = _tempRegister();			
@@ -769,6 +786,62 @@ namespace translator
 		_llvmKernel->_statements.push_back( ir::LLVMStatement( i ) );	
 	}
 
+	void PTXToLLVMTranslator::_initializePhiInstructions()
+	{
+		typedef std::queue< ir::Instruction::RegisterType > RegisterQueue;
+		
+		for( IndexVector::const_iterator pi = _phiIndices.begin(); 
+			pi != _phiIndices.end(); ++pi )
+		{
+			RegisterQueue bfs;
+			
+			ir::LLVMPhi& phi = static_cast< ir::LLVMPhi& >( 
+				*_llvmKernel->_statements[ *pi ].instruction );
+			
+			for( ir::LLVMPhi::NodeVector::const_iterator 
+				node = phi.nodes.begin(); node != phi.nodes.end(); ++node )
+			{
+				bfs.push( node->reg );
+			}
+			
+			while( !bfs.empty() )
+			{
+				RegisterToIndexMap::const_iterator 
+					producer = _producers.find( bfs.front() );
+				if( producer != _producers.end() )
+				{
+					_swapAllExceptName( phi.d, 
+						_llvmKernel->instructions[ producer->second ].d );
+					for( ir::LLVMPhi::NodeVector::iterator 
+						node = phi.nodes.begin(); 
+						node != phi.nodes.end(); ++node )
+					{
+						_swapAllExceptName( node->operand, 
+							_llvmKernel->instructions[ producer->second ].d );
+					}
+					break;
+				}
+				else
+				{
+					RegisterToIndexMap::const_iterator 
+						pi = _phiProducers.find( bfs.front() );
+					assertM( pi != _phiProducers.end(), "Phi source register " 
+						<< bfs.front() 
+						<< " not destination of any phi or ptx instruction." );
+					const ir::LLVMPhi& phi = static_cast< const ir::LLVMPhi& >( 
+						*_llvmKernel->_statements[ pi->second ].instruction );
+					for( ir::LLVMPhi::NodeVector::const_iterator 
+						node = phi.nodes.begin(); node != phi.nodes.end(); 
+						++node )
+					{
+						bfs.push( node->reg );
+					}			
+				}
+				bfs.pop();
+			}
+		}
+	}
+
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
 		: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
 		_tempRegisterCount( 0 )
@@ -788,7 +861,12 @@ namespace translator
 		
 		_convertPtxToSsa();
 		_translateInstructions();
+		_initializePhiInstructions();
 		
+		_tempRegisterCount = 0;
+		_producers.clear();
+		_phiProducers.clear();
+		_phiIndices.clear();	
 		delete _graph;
 		
 		return _llvmKernel;

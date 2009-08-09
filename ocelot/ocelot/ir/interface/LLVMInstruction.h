@@ -970,7 +970,9 @@ namespace ir
 					/*! Operand */
 					Operand operand;
 					/*! Label of the BB that this operand comes from */
-					std::string label; 
+					std::string label;
+					/*! Register id of the operand */
+					Instruction::RegisterType reg; 
 			};
 			
 			/*! \brief A vector of Nodes */

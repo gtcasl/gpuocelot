@@ -25,16 +25,26 @@ namespace translator
 
 	/*! \brief A translator from PTX to LLVM */
 	class PTXToLLVMTranslator : public Translator
-	{	
+	{
+		private:
+			typedef std::unordered_map< ir::Instruction::RegisterType, 
+				unsigned int > RegisterToIndexMap;
+			typedef std::vector< unsigned int > IndexVector;
+			
 		private:
 			ir::LLVMKernel* _llvmKernel;
 			analysis::DataflowGraph* _graph;
 			unsigned int _tempRegisterCount;
+			RegisterToIndexMap _producers;
+			RegisterToIndexMap _phiProducers;
+			IndexVector _phiIndices;
 		
 		private:
 			static ir::LLVMInstruction::Operand 
 				_translate( const ir::PTXOperand& o );
-		
+			static void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
+				const ir::PTXOperand& i );
+			
 		private:
 			void _convertPtxToSsa();
 			void _translateInstructions();
@@ -98,6 +108,7 @@ namespace translator
 			void _predicateEpilogue( const ir::PTXInstruction& i, 
 				const ir::LLVMInstruction::Operand& temp );
 			void _add( const ir::LLVMInstruction& i );
+			void _initializePhiInstructions();
 
 		public:
 			PTXToLLVMTranslator( OptimizationLevel l = NoOptimization );

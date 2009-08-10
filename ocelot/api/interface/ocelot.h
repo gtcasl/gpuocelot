@@ -17,6 +17,12 @@ namespace ocelot
 {
 
 	/*! \brief Adds a trace generator for the next kernel invocation 
+	
+		\param gen A reference to the generator being added, it must not
+			be destroyed until the next kernel is executed.
+		\param persistent The trace generator will be associated with all
+			subsequent kernels until clear is called, otherwise it will
+			only be associated with the next kernel.
 	*/
 	void addTraceGenerator( trace::TraceGenerator& gen, 
 		bool persistent = false );

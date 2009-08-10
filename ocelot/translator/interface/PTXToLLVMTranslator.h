@@ -35,6 +35,8 @@ namespace translator
 			ir::LLVMKernel* _llvmKernel;
 			analysis::DataflowGraph* _graph;
 			unsigned int _tempRegisterCount;
+			unsigned int _tempBlockCount;
+			analysis::DataflowGraph::InstructionId _instructionId; 
 			RegisterToIndexMap _producers;
 			RegisterToIndexMap _phiProducers;
 			IndexVector _phiIndices;
@@ -44,20 +46,28 @@ namespace translator
 				_translate( const ir::PTXOperand& o );
 			static void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 				const ir::PTXOperand& i );
+			static void _doubleWidth( ir::LLVMInstruction::DataType& v );
+			static ir::LLVMInstruction::Comparison _translate( 
+				ir::PTXInstruction::CmpOp, bool isInt );
 			
 		private:
+			void _yield();
+
 			void _convertPtxToSsa();
 			void _translateInstructions();
 			void _newBlock( const std::string& name );
-			void _translate( const analysis::DataflowGraph::Instruction& i );
-			void _translate( const ir::PTXInstruction& i );
+			void _translate( const analysis::DataflowGraph::Instruction& i, 
+				const analysis::DataflowGraph::Block& block );
+			void _translate( const ir::PTXInstruction& i, 
+				const analysis::DataflowGraph::Block& block );
 			void _translateAbs( const ir::PTXInstruction& i );
 			void _translateAdd( const ir::PTXInstruction& i );
 			void _translateAddC( const ir::PTXInstruction& i );
 			void _translateAnd( const ir::PTXInstruction& i );
 			void _translateAtom( const ir::PTXInstruction& i );
 			void _translateBar( const ir::PTXInstruction& i );
-			void _translateBra( const ir::PTXInstruction& i );
+			void _translateBra( const ir::PTXInstruction& i, 
+				const analysis::DataflowGraph::Block& block );
 			void _translateBrkpt( const ir::PTXInstruction& i );
 			void _translateCall( const ir::PTXInstruction& i );
 			void _translateCNot( const ir::PTXInstruction& i );
@@ -103,8 +113,9 @@ namespace translator
 			void _translateXor( const ir::PTXInstruction& i );
 			std::string _tempRegister();
 			
+			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 
-				const ir::PTXInstruction& i );
+				const ir::PTXInstruction& i, bool pd = false );
 			void _predicateEpilogue( const ir::PTXInstruction& i, 
 				const ir::LLVMInstruction::Operand& temp );
 			void _add( const ir::LLVMInstruction& i );

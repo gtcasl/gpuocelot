@@ -51,6 +51,8 @@ namespace ir
 			~LLVMStatement();
 			/*! \brief Assignment operator for instruction */
 			const LLVMStatement& operator=( const LLVMStatement& s );
+			/*! \brief Convert this statement into a string */
+			std::string toString() const;
 						
 	};
 

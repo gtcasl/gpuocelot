@@ -51,6 +51,34 @@ namespace ptx1_3
 
 namespace parser
 {
+	void PTXParser::State::_setImmediateTypes()
+	{
+		ir::PTXOperand::DataType type = ir::PTXOperand::TypeSpecifier_invalid;
+		for( OperandVector::iterator operand = operandVector.begin(); 
+			operand != operandVector.end(); ++operand )
+		{
+			if( operand->addressMode != ir::PTXOperand::Immediate 
+				&& operand->addressMode != ir::PTXOperand::Invalid
+				&& operand->type != ir::PTXOperand::pred )
+			{
+				type = operand->type;
+			}
+		}
+		
+		if( type == ir::PTXOperand::TypeSpecifier_invalid ) return;
+		
+		for( OperandVector::iterator operand = operandVector.begin(); 
+			operand != operandVector.end(); ++operand )
+		{
+			if( operand->addressMode == ir::PTXOperand::Immediate 
+				&& ( ir::PTXOperand::isFloat( operand->type ) 
+				== ir::PTXOperand::isFloat( type ) ) )
+			{
+				operand->type = type;
+			}
+		}
+	}
+
 	void PTXParser::State::version( double version, YYLTYPE& location, 
 		ir::PTXInstruction::Version expected )
 	{
@@ -947,6 +975,7 @@ namespace parser
 		report( "  Rule: instruction : " << opcode );
 
 		assert( operandVector.size() == operands );
+		_setImmediateTypes();
 
 		statement.directive = ir::PTXStatement::Instr;
 		statement.instruction.type = tokenToDataType( dataType );

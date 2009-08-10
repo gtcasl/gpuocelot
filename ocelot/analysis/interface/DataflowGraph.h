@@ -262,7 +262,14 @@ namespace analysis
 		{
 			Block newB( **bbi, instructions );
 			std::stringstream label;
-			label << "Block_" << count << "_" << (*bbi)->label;		
+			if( (*bbi)->label.empty() )
+			{
+				label << "$__Block_" << count;		
+			}
+			else
+			{
+				label << (*bbi)->label;
+			}
 			newB._label = label.str();
 			_blocks.push_back( newB );	
 		}

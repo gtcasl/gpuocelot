@@ -152,8 +152,8 @@ libOcelotTranslator_la_SOURCES = \
 ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 ParallelismTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/ParallelismTraceAnalyzer.cpp
-ParallelismTraceAnalyzer_LDADD = libhydrazine.la libOcelotIr.la \
-	libOcelotParser.la libOcelotTrace.la
+ParallelismTraceAnalyzer_LDADD =libOcelotIr.la \
+	libOcelotParser.la libOcelotTrace.la libhydrazine.la 
 ParallelismTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
@@ -163,8 +163,8 @@ BranchTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
 	-std=c++0x
 BranchTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/BranchTraceAnalyzer.cpp
-BranchTraceAnalyzer_LDADD = libhydrazine.la libOcelotIr.la libOcelotParser.la \
-	libOcelotTrace.la 
+BranchTraceAnalyzer_LDADD = libOcelotIr.la libOcelotParser.la \
+	libOcelotTrace.la libhydrazine.la
 BranchTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
@@ -173,8 +173,8 @@ BranchTraceAnalyzer_LDFLAGS = -static
 MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 MemoryTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
-MemoryTraceAnalyzer_LDADD = libhydrazine.la libOcelotIr.la libOcelotParser.la \
-	libOcelotTrace.la 
+MemoryTraceAnalyzer_LDADD = libOcelotIr.la libOcelotParser.la \
+	libOcelotTrace.la libhydrazine.la 
 MemoryTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
@@ -184,8 +184,8 @@ SharedComputationAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
 	-std=c++0x
 SharedComputationAnalyzer_SOURCES = \
 	ocelot/trace/implementation/SharedComputationAnalyzer.cpp
-SharedComputationAnalyzer_LDADD = libhydrazine.la libOcelotIr.la \
-	libOcelotParser.la libOcelotTrace.la
+SharedComputationAnalyzer_LDADD = libOcelotIr.la \
+	libOcelotParser.la libOcelotTrace.la libhydrazine.la
 SharedComputationAnalyzer_LDFLAGS = -static
 ################################################################################
 

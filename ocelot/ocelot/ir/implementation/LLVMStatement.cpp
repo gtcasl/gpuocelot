@@ -28,7 +28,8 @@ namespace ir
 		}
 	}
 
-	LLVMStatement::LLVMStatement( const LLVMStatement& s ) : type( s.type )
+	LLVMStatement::LLVMStatement( const LLVMStatement& s ) : type( s.type ), 
+		label( s.label )
 	{
 		if( s.instruction != 0 )
 		{
@@ -64,6 +65,7 @@ namespace ir
 		if( &s == this ) return *this;
 		delete instruction;
 		type = s.type;
+		label = s.label;
 		if( s.instruction != 0 )
 		{
 			instruction = s.instruction->clone();
@@ -76,6 +78,25 @@ namespace ir
 			instruction = 0;
 		}
 		return *this;
+	}
+	
+	std::string LLVMStatement::toString() const
+	{
+		switch( type )
+		{
+			case Instruction:
+			{
+				return instruction->toString() + ";";
+				break;
+			}
+			case Label:
+			{
+				return label + ":";
+				break;
+			}
+			case InvalidType: break;
+		}
+		return "";
 	}
 }
 

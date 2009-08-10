@@ -4584,7 +4584,9 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context, const PTX
 						t = (a >= b);
 						break;
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException(
+							"invalid comparison operator for unsigned int type",
+							context.PC, instr);
 				}
 				
 				// now apply the bool op

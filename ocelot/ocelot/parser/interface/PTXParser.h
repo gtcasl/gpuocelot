@@ -16,11 +16,7 @@
 
 namespace parser
 {
-	/*!
-	
-		\brief An implementation of the Parser interface for PTX
-	
-	*/
+	/*! \brief An implementation of the Parser interface for PTX */
 	class PTXParser : public Parser
 	{
 		public:
@@ -88,7 +84,10 @@ namespace parser
 							the lexer
 					*/
 					bool warnLexer;
-					
+				
+				private:
+					void _setImmediateTypes();
+				
 				public:
 					void version( double version, YYLTYPE& location, 
 						ir::PTXInstruction::Version expected );

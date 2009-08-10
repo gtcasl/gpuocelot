@@ -6,6 +6,9 @@
 */
 
 #include <ocelot/ir/interface/PTXOperand.h>
+
+#include <hydrazine/implementation/debug.h>
+
 #include <cassert>
 #include <sstream>
 #include <iomanip>
@@ -80,7 +83,6 @@ std::string ir::PTXOperand::toString( AddressMode mode ) {
 }
 
 bool ir::PTXOperand::isFloat( DataType type ) {
-	assert( type != TypeSpecifier_invalid );
 	switch( type ) {
 		case f16: /* fall through */
 		case f32: /* fall through */
@@ -91,7 +93,6 @@ bool ir::PTXOperand::isFloat( DataType type ) {
 }
 
 bool ir::PTXOperand::isInt( DataType type ) {
-	assert( type != TypeSpecifier_invalid );
 	switch( type ) {
 		case s8:  /* fall through */
 		case s16: /* fall through */
@@ -366,13 +367,14 @@ std::string ir::PTXOperand::toString() const {
 			case b8:  /* fall through */
 			case b16: /* fall through */
 			case b32: /* fall through */
-			case b64: stream << imm_uint; break;
+			case b64: stream << imm_int; break;
 			case f16: /* fall through */
 			case f32: /* fall through */
 			case f64:stream << "0f" << std::setw(16) << std::setfill('0') 
 				<< std::hex << imm_uint; break;
 			case pred: /* fall through */
-			default: assert( "Invalid immediate type" == 0 ); break;
+			default: assertM( false, "Invalid immediate type " 
+				+ PTXOperand::toString( type ) ); break;
 		}
 		return stream.str();
 	} else if( addressMode == Special ) {

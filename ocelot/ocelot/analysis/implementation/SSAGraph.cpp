@@ -118,9 +118,13 @@ namespace analysis
 							phi = map.insert( std::make_pair( mapping->second, 
 								IdVector() ) ).first;
 						}
-						report( "     Mapping phi source " << mapping->first 
+						RegisterMap::iterator remapping 
+							= predecessorBlock->second.regs.find( *reg );
+						assert( remapping 
+							!= predecessorBlock->second.regs.end() );
+						report( "     Mapping phi source " << remapping->second 
 							<< " to destination " << mapping->second );
-						phi->second.push_back( mapping->first );
+						phi->second.push_back( remapping->second );
 					}
 				}
 			}

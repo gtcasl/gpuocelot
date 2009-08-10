@@ -10,6 +10,7 @@
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Version.h>
 
 namespace ir
 {
@@ -26,7 +27,24 @@ namespace ir
 		
 	void LLVMKernel::assemble()
 	{
-		assertM( false, "Assemble not implemented." );
+		_code.clear();
+		
+		hydrazine::Version version;
+		
+		_code += "// Code assembled by Ocelot LLVMKernel " + version.toString() 
+			+ "\n\n";
+		_code += "define @__ocelotTranslated_" + name + "() nounwind\n";
+		_code += "{\n";
+		
+		for( LLVMStatementVector::const_iterator 
+			statement = llvmStatements().begin(); 
+			statement != llvmStatements().end(); ++statement )
+		{
+			if( statement->type != LLVMStatement::Label ) _code += "\t";
+			_code += statement->toString() + "\n";
+		}
+		
+		_code += "}\n";
 	}
 	
 	bool LLVMKernel::assembled() const

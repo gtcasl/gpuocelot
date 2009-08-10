@@ -8,6 +8,7 @@
 #ifndef PTX_TO_LLVM_TRANSLATOR_BIN_CPP_INCLUDED
 #define PTX_TO_LLVM_TRANSLATOR_BIN_CPP_INCLUDED
 
+#include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/debug.h>
 #include <ocelot/translator/test/PtxToLlvmTranslator.h>
@@ -32,13 +33,16 @@ void PtxToLlvmTranslator::translate()
 
 		std::string llvm = kernel->name + ".ll";
 
-		std::ofstream llvmFile( llvm.c_str() );
-		
-		llvmFile << "// Kernel: " << kernel->name << "\n";
-		llvmFile << "// Translated LLVM Kernel (Ocelot)\n";
-		
 		ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
 			translator.translate( kernel ) );
+		translatedKernel->assemble();
+		std::ofstream llvmFile( llvm.c_str() );
+		
+		hydrazine::Version version;
+		
+		llvmFile << "// Kernel: " << kernel->name << "\n";
+		llvmFile << "// Translated from PTX to LLVM by Ocelot " 
+			<< version.toString() << " \n";		
 		llvmFile << translatedKernel->code();
 	}
 	

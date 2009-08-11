@@ -273,6 +273,7 @@ void trace::SharedComputationGenerator::event(const TraceEvent & event) {
 void trace::SharedComputationGenerator::finish() {
 	if (sharedMemoryOwners) {
 		delete [] sharedMemoryOwners;
+		sharedMemoryOwners = 0;
 	}	
 	if( _file ) {		
 		_entry.updateDatabase( database );

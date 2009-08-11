@@ -14,8 +14,8 @@ extern char *optarg;
 
 void usage(char *name)
 {
-  printf("Usage: %s <-d data_file_name> <-r rnd_file_name> "
-	 "<-m rnd_count> <-p count> <-o file_name>\n", name);
+  printf("Usage: %s <-i data_file_name, rnd_file_names> "
+	 "<-n rnd_count> <-p count> <-o file_name>\n", name);
   exit(0);
 }
 
@@ -29,14 +29,11 @@ void parse_args(int argc, char **argv, options* args)
   args->npoints = 0;
   args->output_name = NULL;
   
-  while ((c = getopt(argc, argv, "d:n:r:p:o:")) != EOF)
+  while ((c = getopt(argc, argv, "i:n:p:o:")) != EOF)
     {
       switch (c)
 	{
-        case 'd':
-          args->data_name = optarg;
-          break;
-        case 'r':
+        case 'i':
           args->random_name = optarg;
           break;
         case 'n':

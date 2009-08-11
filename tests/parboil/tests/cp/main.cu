@@ -214,6 +214,15 @@ int main(int argc, char** argv) {
     pb_SwitchToTimer(&timers, pb_TimerID_COMPUTE);
   }
 
+  if( pb_compareFiles(parameters->outFile, "data/ref.txt", 1) )
+  {
+    printf("TEST PASSED\n");
+  }
+  else
+  {
+  	printf("TEST FAILED\n");
+  }
+
   free(atoms);
   free(energy);
 

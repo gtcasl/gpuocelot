@@ -1087,6 +1087,7 @@ ir::PTXU32 executive::CooperativeThreadArray::operandAsU32(int threadID, const P
 			return getRegAsU32(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsU32(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXU32)(op.imm_uint);
 		case PTXOperand::Special:
@@ -1151,6 +1152,7 @@ ir::PTXS32 executive::CooperativeThreadArray::operandAsS32(int threadID, const P
 			return getRegAsS32(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsS32(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXS32)(op.imm_int);
 		case PTXOperand::Special:
@@ -1167,6 +1169,7 @@ ir::PTXS64 executive::CooperativeThreadArray::operandAsS64(int threadID, const P
 			return getRegAsS64(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsS64(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXS64)(op.imm_int);
 		default:
@@ -1205,6 +1208,7 @@ ir::PTXB8 executive::CooperativeThreadArray::operandAsB8(int threadID, const PTX
 			return getRegAsB8(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsB8(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXB8)(op.imm_uint);
 		case PTXOperand::Special:
@@ -1221,6 +1225,7 @@ ir::PTXB16 executive::CooperativeThreadArray::operandAsB16(int threadID, const P
 			return getRegAsB16(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsB16(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXB16)(op.imm_uint);
 		case PTXOperand::Special:
@@ -1237,6 +1242,7 @@ ir::PTXB32 executive::CooperativeThreadArray::operandAsB32(int threadID, const P
 			return getRegAsB32(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsB32(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXB32)(op.imm_uint);
 		case PTXOperand::Special:
@@ -1253,6 +1259,7 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 			return getRegAsB64(threadID, op.reg) + op.offset;
 		case PTXOperand::Register:
 			return getRegAsB64(threadID, op.reg);
+		case PTXOperand::Address:
 		case PTXOperand::Immediate:
 			return (PTXB64)(op.imm_uint);
 		default:
@@ -1265,7 +1272,8 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 
 /*!
 
-*/void executive::CooperativeThreadArray::eval_Abs(CTAContext &context, const PTXInstruction &instr) {
+*/void executive::CooperativeThreadArray::eval_Abs(CTAContext &context, 
+	const PTXInstruction &instr) {
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 

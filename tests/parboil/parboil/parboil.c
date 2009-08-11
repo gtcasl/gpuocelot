@@ -347,3 +347,65 @@ pb_PrintTimerSet(struct pb_TimerSet *timers)
   printf("Copy:    %f\n", pb_GetElapsedTime(&t[pb_TimerID_COPY]));
   printf("Compute: %f\n", pb_GetElapsedTime(&t[pb_TimerID_COMPUTE]));
 }
+
+int
+pb_compareFiles(const char* one, const char* two, double tol)
+{
+	FILE* first = fopen(one,"r");
+	FILE* second = fopen(two,"r");
+	
+	if( first == 0 ) return 0;
+	if( second == 0 ) return 0;
+	
+	float v1;
+	float v2;
+	
+	double error = 0;
+	unsigned int count = 0;
+	
+	while( fscanf( first, "%f", &v1 ) != EOF 
+		&& fscanf( second, "%f", &v2 ) != EOF )
+	{
+		error += (v1 - v2) * (v1 - v2);
+		++count;
+	}
+	
+	fclose(first);
+	fclose(second);
+	
+	error /= count;
+	
+	return error < tol;
+}
+
+int
+pb_compareFilesBin(const char* one, const char* two, double tol)
+{
+	FILE* first = fopen(one,"rb");
+	FILE* second = fopen(two,"rb");
+	
+	if( first == 0 ) return 0;
+	if( second == 0 ) return 0;
+	
+	float v1;
+	float v2;
+	
+	double error = 0;
+	unsigned int count = 0;
+	
+	while( fread( &v1, sizeof(float), 1, first ) != EOF 
+		&& fread( &v2, sizeof(float), 1, second ) != EOF )
+	{
+		error += (v1 - v2) * (v1 - v2);
+		++count;
+	}
+	
+	fclose(first);
+	fclose(second);
+	
+	error /= count;
+	
+	return error < tol;
+}
+
+////////////////////////////////////////////////////////////////////////////////

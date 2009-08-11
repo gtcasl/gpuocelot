@@ -7,6 +7,7 @@
  ***************************************************************************/
 #include <sys/time.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <strings.h>
 #include <math.h>
@@ -19,10 +20,16 @@ int readdatafile(char *fname, struct cartesian *data, int npoints)
   int lcount = 0;
   float ra, dec;
 
+  if(fname == 0)
+  {
+      fprintf(stderr, "Unable to open data file for reading\n");
+      exit(0);	
+  }
+
   if ((infile = fopen(fname, "r")) == NULL)
     {
       fprintf(stderr, "Unable to open data file %s for reading\n", fname);
-      return lcount;
+      exit(0);
     }
 
   for (lcount = 0; lcount < npoints; lcount++)

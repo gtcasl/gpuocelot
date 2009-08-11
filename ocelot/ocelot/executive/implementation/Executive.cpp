@@ -434,10 +434,16 @@ void *executive::Executive::malloc(size_t bytes) {
 				record.device = getSelected();
 				record.external = false;
 				record.size = bytes;
-				record.ptr = (void *)(new char[bytes]);
+				record.ptr = (void *)(new AllocationType[CEIL_DIV(bytes, 
+					sizeof(AllocationType)) + sizeof(AllocationType)]);
+				record.offset = (size_t)record.ptr 
+					% sizeof(AllocationType);
+				record.offset = (record.offset == 0) 
+					? 0 : sizeof(AllocationType) - record.offset;
+				record.ptr = (void*)((size_t)record.ptr + record.offset);
 				memoryAllocations[getSelected()].insert(
 					std::make_pair((char*)record.ptr,record));
-				return record.ptr;				
+				return record.ptr;
 			}
 			break;
 /*
@@ -485,6 +491,7 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 				record.size = bytes;
 				record.external = true;
 				record.ptr = pointer;
+				record.offset = 0;
 				memoryAllocations[getSelected()].insert(
 					std::make_pair((char*)record.ptr,record));
 			}
@@ -822,7 +829,7 @@ void executive::Executive::free(void *ptr) {
 				assert((char*)ptr <= ((char*)it->second.ptr + it->second.size));
 
 				if (!it->second.external) {
-					delete [] (char *)it->second.ptr;
+					delete [] ((char *)it->second.ptr - it->second.offset);
 				}
 				
 				l_it->second.erase(it);
@@ -1113,7 +1120,7 @@ executive::Executive::MemoryAllocation
 
 executive::Executive::MemoryAllocation::MemoryAllocation( ): 
 	isa(ir::Instruction::Unknown), device(-1), size(0), ptr(0), 
-	external(false) {
+	external(false), offset(0) {
 }
 
 executive::Executive::MemoryAllocation::MemoryAllocation(

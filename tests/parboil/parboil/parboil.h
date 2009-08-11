@@ -127,6 +127,14 @@ pb_SwitchToTimer(struct pb_TimerSet *timers, enum pb_TimerID timer);
 void
 pb_PrintTimerSet(struct pb_TimerSet *timers);
 
+/* Compare two files */
+int
+pb_compareFiles(const char* one, const char* two, double tol);
+
+/* Compare two bin files */
+int
+pb_compareFilesBin(const char* one, const char* two, double tol);
+
 #ifdef __cplusplus
 }
 #endif

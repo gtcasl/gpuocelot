@@ -1,0 +1,15 @@
+set parametric
+set isosamples 36,72
+set hidden
+
+#set title "Observed data"
+set urange [-pi/2:pi/2]
+set vrange [0:2*pi]
+set zrange [-1:1]
+set ztics nomirror -1.0,0.25,2.0
+set view 45,50,,1
+splot cos(u)*cos(v),cos(u)*sin(v),sin(u)
+
+#set noparametric
+replot "Datapnts.1" using (cos($1*0.01745)*cos($2*0.01745)):(sin($1*0.01745)*cos($2*0.01745)):(sin($2*0.01745))
+#replot "Randompnts.1" using (cos($1*0.01745)*cos($2*0.01745)):(sin($1*0.01745)*cos($2*0.01745)):(sin($2*0.01745))

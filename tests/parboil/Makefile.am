@@ -37,6 +37,63 @@ cp_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## mri-fhd
+mri_fhd_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+mri_fhd_SOURCES = tests/mri-fhd/main.cu.cpp \
+	tests/mri-fhd/file.cc
+mri_fhd_LDADD = $(OCELOT_LIBS)
+mri_fhd_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## mri-q
+mri_q_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+mri_q_SOURCES = tests/mri-q/main.cu.cpp \
+	tests/mri-q/file.cc
+mri_q_LDADD = $(OCELOT_LIBS)
+mri_q_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## pns
+pns_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+pns_SOURCES = tests/pns/main.cu.cpp \
+	tests/pns/rand_gen.cu.cpp
+pns_LDADD = $(OCELOT_LIBS)
+pns_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## rpes
+rpes_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+rpes_SOURCES = tests/rpes/main.cu.cpp
+rpes_LDADD = $(OCELOT_LIBS)
+rpes_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## sad
+sad_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+sad_SOURCES = tests/sad/main.cu.cpp \
+	tests/sad/largerBlocks.cu.cpp \
+	tests/sad/sad4.cu.cpp \
+	tests/sad/file.c \
+	tests/sad/image.c
+sad_LDADD = $(OCELOT_LIBS)
+sad_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## tpacf
+tpacf_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+tpacf_SOURCES = tests/tpacf/main.cu.cpp \
+	tests/tpacf/args.cc \
+	tests/tpacf/model_io.cc
+tpacf_LDADD = $(OCELOT_LIBS)
+tpacf_LDFLAGS = -static
+################################################################################
+
+################################################################################
 ## Headers
 nobase_include_HEADERS = 
 
@@ -60,5 +117,4 @@ regression/regression.log : check
 test : regression/regression.log
 
 ################################################################################
-
 

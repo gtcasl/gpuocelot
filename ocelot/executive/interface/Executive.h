@@ -39,6 +39,9 @@ namespace executive {
 	class Executive {
 	public:
 
+		/*! \brief basic type used for allocation */
+		class AllocationType{ char data[16]; };
+		
 		/*!
 			Vector of devices		
 		*/
@@ -70,7 +73,9 @@ namespace executive {
 			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
 			void *ptr; /*! \brief A pointer to the base of the allocation */
 			bool external; /*! \brief Is the memory owned by the exective? */
-
+			unsigned int offset; /*! \brief Offset from the allocated 
+				based for alignment */			
+						
 		public:
 			MemoryAllocation(ir::Instruction::Architecture, int, ir::PTXU64, 
 				void *);

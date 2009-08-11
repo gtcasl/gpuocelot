@@ -152,165 +152,183 @@ __device__ inline int CalcMandelbrot(const T xPos, const T yPos, const T xJParam
 
     do {
 		// Iteration 1
-		if (xx + yy > T(4.0))
-			return i - 1;
+       	if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 2
-		if (xx + yy > T(4.0))
-			return i - 2;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 3
-		if (xx + yy > T(4.0))
-			return i - 3;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 4
-		if (xx + yy > T(4.0))
-			return i - 4;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 5
-		if (xx + yy > T(4.0))
-			return i - 5;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 6
-		if (xx + yy > T(4.0))
-			return i - 6;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 7
-		if (xx + yy > T(4.0))
-			return i - 7;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 8
-		if (xx + yy > T(4.0))
-			return i - 8;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 9
-		if (xx + yy > T(4.0))
-			return i - 9;
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
 
 		// Iteration 10
-		if (xx + yy > T(4.0))
-			return i - 10;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 11
-		if (xx + yy > T(4.0))
-			return i - 11;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 12
-		if (xx + yy > T(4.0))
-			return i - 12;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 13
-		if (xx + yy > T(4.0))
-			return i - 13;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 14
-		if (xx + yy > T(4.0))
-			return i - 14;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 15
-		if (xx + yy > T(4.0))
-			return i - 15;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 16
-		if (xx + yy > T(4.0))
-			return i - 16;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 17
-		if (xx + yy > T(4.0))
-			return i - 17;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 18
-		if (xx + yy > T(4.0))
-			return i - 18;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 19
-		if (xx + yy > T(4.0))
-			return i - 19;
-        y = x * y * T(2.0) + yC;
-        x = xx - yy + xC;
-        yy = y * y;
-        xx = x * x;       
-
-		// Iteration 20
-        i -= 20;
+        i -= 1;
 		if ((i <= 0) || (xx + yy > T(4.0)))
 			return i;
         y = x * y * T(2.0) + yC;
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;       
+
+		// Iteration 11
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 12
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 13
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 14
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 15
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 16
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 17
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 18
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 19
+        i -= 1;
+		if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;       
+
+		// Iteration 20
+        i -= 1;
+        if ((i <= 0) || (xx + yy > T(4.0)))
+			return i;
+        y = x * y * T(2.0) + yC;
+        x = xx - yy + xC;
+        yy = y * y;
+        xx = x * x;
     } while (1);
 } // CalcMandelbrot
 

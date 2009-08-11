@@ -1,40 +1,6 @@
 ../cp -o cp.out CUDA_SDK_STYLE
 ../mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin CUDA_SDK_STYLE
 ../mri-q -i data/mriQIn.bin -o mriFQOut.bin CUDA_SDK_STYLE
-../pns 2000 2000 2000 -o pns.out
-../rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out
-../tpacf -n 100 -p 4096 -i "data/Datapnts.1,data/RandomPnts.1,\
-	data/RandomPnts.2,\
-	data/RandomPnts.3,data/RandomPnts.4,data/RandomPnts.5,\
-	data/RandomPnts.6,data/RandomPnts.7,data/RandomPnts.8,\
-	data/RandomPnts.9,data/RandomPnts.10,data/RandomPnts.11,\
-	data/RandomPnts.12,data/RandomPnts.13,data/RandomPnts.14,\
-	data/RandomPnts.15,data/RandomPnts.16,data/RandomPnts.17,\
-	data/RandomPnts.18,data/RandomPnts.19,data/RandomPnts.20,\
-	data/RandomPnts.21,data/RandomPnts.22,data/RandomPnts.23,\
-	data/RandomPnts.24,data/RandomPnts.25,data/RandomPnts.26,\
-	data/RandomPnts.27,data/RandomPnts.28,data/RandomPnts.29,\
-	data/RandomPnts.30,data/RandomPnts.31,data/RandomPnts.32,\
-	data/RandomPnts.33,data/RandomPnts.34,data/RandomPnts.35,\
-	data/RandomPnts.36,data/RandomPnts.37,data/RandomPnts.38,\
-	data/RandomPnts.39,data/RandomPnts.40,data/RandomPnts.41,\
-	data/RandomPnts.42,data/RandomPnts.43,data/RandomPnts.44,\
-	data/RandomPnts.45,data/RandomPnts.46,data/RandomPnts.47,\
-	data/RandomPnts.48,data/RandomPnts.49,data/RandomPnts.50,\
-	data/RandomPnts.51,data/RandomPnts.52,data/RandomPnts.53,\
-	data/RandomPnts.54,data/RandomPnts.55,data/RandomPnts.56,\
-	data/RandomPnts.57,data/RandomPnts.58,data/RandomPnts.59,\
-	data/RandomPnts.60,data/RandomPnts.61,data/RandomPnts.62,\
-	data/RandomPnts.63,data/RandomPnts.64,data/RandomPnts.65,\
-	data/RandomPnts.66,data/RandomPnts.67,data/RandomPnts.68,\
-	data/RandomPnts.69,data/RandomPnts.70,data/RandomPnts.71,\
-	data/RandomPnts.72,data/RandomPnts.73,data/RandomPnts.74,\
-	data/RandomPnts.75,data/RandomPnts.76,data/RandomPnts.77,\
-	data/RandomPnts.78,data/RandomPnts.79,data/RandomPnts.80,\
-	data/RandomPnts.81,data/RandomPnts.82,data/RandomPnts.83,\
-	data/RandomPnts.84,data/RandomPnts.85,data/RandomPnts.86,\
-	data/RandomPnts.87,data/RandomPnts.88,data/RandomPnts.89,\
-	data/RandomPnts.90,data/RandomPnts.91,data/RandomPnts.92,\
-	data/RandomPnts.93,data/RandomPnts.94,data/RandomPnts.95,\
-	data/RandomPnts.96,data/RandomPnts.97,data/RandomPnts.98,\
-	data/RandomPnts.99,data/RandomPnts.100"
+../pns 2000 2000 2000 -o pns.out CUDA_SDK_STYLE
+../rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out CUDA_SDK_STYLE
+../tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 CUDA_SDK_STYLE

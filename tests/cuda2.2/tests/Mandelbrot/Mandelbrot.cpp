@@ -125,7 +125,7 @@ bool haveDoubles = false;
 int numSMs = 0;          // number of multiprocessors
 
 // Auto-Verification Code
-const int frameCheckNumber = 60;
+const int frameCheckNumber = 2;
 int fpsCount = 0;        // FPS count for averaging
 int fpsLimit = 1;        // FPS limit for sampling
 unsigned int frameCount = 0;
@@ -889,10 +889,6 @@ void initData(int argc, char **argv)
     printf("Compute capability %d.%d\n", deviceProp.major, deviceProp.minor);
     int version = deviceProp.major*10 + deviceProp.minor;
     haveDoubles = (version >= 13);
-    if (inEmulationMode()) {
-        // workaround since SM13 kernel doesn't produce correct output in emulation mode
-        haveDoubles = false;
-    }
     if (haveDoubles && g_bOpenGLQA) {
 	    // running QA test, we want to use the double precision mode
 	    precisionMode = 2;
@@ -948,12 +944,10 @@ void runAutoTest(int argc, char **argv)
 
     // render Mandelbrot set and verify
     {
-        for (int i=0; i < 50; i++) {
-            renderImage(false);
-        }
+        renderImage(false);
         cudaMemcpy(g_CheckRender->imageData(), d_dst, (imageW * imageH * sizeof(uchar4)), cudaMemcpyDeviceToHost);
 	    g_CheckRender->savePPM ( sOriginal[0], true, NULL);
-	    if (!g_CheckRender->PPMvsPPM(sOriginal[0], sReference[haveDoubles], MAX_EPSILON, 0.30f)) {
+	    if (!g_CheckRender->PPMvsPPM(sOriginal[0], sReference[haveDoubles], MAX_EPSILON, 0.10f)) {
 		    g_TotalErrors++;
 	    }
     }
@@ -962,12 +956,10 @@ void runAutoTest(int argc, char **argv)
     {
         char *ref_path = cutFindFilePath("params.txt", argv[0]);
         startJulia(ref_path);
-        for (int i=0; i < 50; i++) {
-            renderImage(false);
-        }
+        renderImage(false);
         cudaMemcpy(g_CheckRender->imageData(), d_dst, (imageW * imageH * sizeof(uchar4)), cudaMemcpyDeviceToHost);
 	    g_CheckRender->savePPM ( sOriginal[1], true, NULL);
-	    if (!g_CheckRender->PPMvsPPM(sOriginal[1], sReferenceJulia[haveDoubles], MAX_EPSILON, 0.30f)) {
+	    if (!g_CheckRender->PPMvsPPM(sOriginal[1], sReferenceJulia[haveDoubles], MAX_EPSILON, 0.10f)) {
 		    g_TotalErrors++;
 	    }
     }

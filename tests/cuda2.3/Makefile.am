@@ -9,8 +9,8 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -lcudart -lOcelotExecutive -lOcelotTrace -lOcelotIr \
-	-lOcelotParser -lhydrazine libsdk.la
+OCELOT_LIBS =-lcudart -lOcelot -lOcelotExecutive -lOcelotTrace \
+	-lOcelotIr -lOcelotParser -lhydrazine libsdk.la
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I sdk
@@ -48,7 +48,7 @@ SortingNetwork_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SortingNetwork_SOURCES = tests/sortingNetworks/bitonicSort.cu.cpp \
 	tests/sortingNetworks/oddEvenMergeSort.cu.cpp \
 	tests/sortingNetworks/main.cpp \
-	tests/sortingNetworks/sortingNetworks_validate.cpp	
+	tests/sortingNetworks/sortingNetworks_validate.cpp
 SortingNetwork_LDADD = $(OCELOT_LIBS)
 SortingNetwork_LDFLAGS = -static
 ################################################################################

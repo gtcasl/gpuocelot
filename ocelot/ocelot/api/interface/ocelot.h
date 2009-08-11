@@ -23,12 +23,14 @@ namespace ocelot
 		\param persistent The trace generator will be associated with all
 			subsequent kernels until clear is called, otherwise it will
 			only be associated with the next kernel.
+		\param safe Make this a thread safe call
 	*/
 	void addTraceGenerator( trace::TraceGenerator& gen, 
-		bool persistent = false );
+		bool persistent = false, bool safe = true );
 				
-	/*! \brief Clear all trace generators */
-	void clearTraceGenerators();
+	/*! \brief Clear all trace generators 
+		\param safe Make this a thread safe call*/
+	void clearTraceGenerators(bool safe = true);
 }
 
 #endif

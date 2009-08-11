@@ -1,122 +1,90 @@
-INFO     Reading in test file /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/regression/tests.txt
+INFO     Reading in test file /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/regression/tests.txt
 INFO      Found the following tests:
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/3DFD
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/SortingNetwork
+INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/cp
+INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-fhd
+INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-q
+INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/pns
+INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/rpes
+INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/tpacf
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/3DFD
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/SortingNetwork
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/3DFD seconds
-INFO     Test completed in 0.560796976089 seconds
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/cp -o cp.out 
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-q -i data/mriQIn.bin -o mriFQOut.bin 
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin 
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/pns 2000 2000 2000 -o pns.out 
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 
+INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out 
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/cp
+INFO     Test completed in 5945.22056818 seconds
 INFO      It produced the following output:
-3DFD running on: Ocelot PTX Emulator
-Total GPU Memory: 8.2086 GB
-48x48x40
-allocated 0.7 MB on device
-(3,3)x(16,16) grid
--------------------------------
-time:         518.94 ms
-throughput:     0.14 MPoints/s
-CUDA: Success.
--------------------------------
-comparing to CPU result...
-  Result within epsilon
-  TEST PASSED!
+CUDA accelerated coulombic potential microbenchmark
+Original version by John E. Stone <johns@ks.uiuc.edu>
+This version maintained by Chris Rodrigues
+TEST PASSED
+IO:      0.008253
+GPU:     5945.173795
+Copy:    0.001890
+Compute: 0.010837
 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/SortingNetwork seconds
-INFO     Test completed in 62.0629019737 seconds
+INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/rpes
+INFO     Test completed in 7298.32165599 seconds
 INFO      It produced the following output:
-Starting up CUDA context...
-Allocating and initializing host arrays...
-Allocating and initializing CUDA arrays...
-Running GPU bitonic sort (1 identical iterations)...
-Testing array length 64 (1024 arrays per batch)...
-	Average time: 1628.970947 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 128 (512 arrays per batch)...
-	Average time: 2082.997070 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 256 (256 arrays per batch)...
-	Average time: 2584.461914 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 512 (128 arrays per batch)...
-	Average time: 3154.080078 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 1024 (64 arrays per batch)...
-	Average time: 3782.513916 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 2048 (32 arrays per batch)...
-	Average time: 4561.120117 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 4096 (16 arrays per batch)...
-	Average time: 5723.187012 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 8192 (8 arrays per batch)...
-	Average time: 7068.291016 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 16384 (4 arrays per batch)...
-	Average time: 8606.305664 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 32768 (2 arrays per batch)...
-	Average time: 10332.307617 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 65536 (1 arrays per batch)...
-	Average time: 12251.550781 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Shutting down...
 
-Press ENTER to exit...
+>>>>>>> STARTED BASIS SET OUTPUT <<<<<<<
 
-INFO     
-Passing tests:
- (0.561s) : /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/3DFD : Passed
- (62.063s) : /home/gdiamos/checkout/gpuocelot/trunk/tests/cuda2.3/SortingNetwork : Passed
+# OF KNOWN ATOMS:  2
+# OF KNOWN SHELLS: 5
 
-Failing tests:
 
-Non-Existent tests:
+Atom O (3 shells)
+	Shell O1: 8 primitives
+		primitive 1:   11720.00     0.00
+		primitive 2:    1759.00     0.01
+		primitive 3:     400.80     0.03
+		primitive 4:     113.70     0.10
+		primitive 5:      37.03     0.28
+		primitive 6:      13.27     0.45
+		primitive 7:       5.03     0.27
+		primitive 8:       1.01     0.02
+
+	Shell O2: 8 primitives
+		primitive 1:   11720.00    -0.00
+		primitive 2:    1759.00    -0.00
+		primitive 3:     400.80    -0.01
+		primitive 4:     113.70    -0.05
+		primitive 5:      37.03    -0.14
+		primitive 6:      13.27    -0.33
+		primitive 7:       5.03    -0.23
+		primitive 8:       1.01     1.10
+
+	Shell O3: 1 primitives
+		primitive 1:       0.30     1.00
+
+
+Atom H (2 shells)
+	Shell H1: 3 primitives
+		primitive 1:      13.01     0.03
+		primitive 2:       1.96     0.23
+		primitive 3:       0.44     0.81
+
+	Shell H2: 1 primitives
+		primitive 1:       0.12     1.00
+
+>>>>>>>> DONE BASIS SET OUTPUT <<<<<<<<
+
+
+Total # of integrals to compute: 187240905
+Total # of blocks allocated: 3510150
+Final array size: 1088430
+79.41 MB allocated
+maxblocks = 64
+54 computation cycles will be performed...
+done.
+
+17 reduction cycles will be performed...
+totReductionElements 1088430
+IO:      0.009859
+GPU:     7298.090995
+Copy:    0.047661
+Compute: 0.119446
 

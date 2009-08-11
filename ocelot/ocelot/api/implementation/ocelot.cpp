@@ -18,20 +18,35 @@ namespace cuda
 namespace ocelot
 {
 
-	void addTraceGenerator( trace::TraceGenerator& gen, bool persistent )
+	void addTraceGenerator( trace::TraceGenerator& gen, 
+		bool persistent, bool safe )
 	{
-		cuda::runtime.lock();
-		cuda::runtime.setContext();		
-		cuda::runtime.addTraceGenerator( gen, persistent );		
-		cuda::runtime.unlock();
+		if( safe )
+		{
+			cuda::runtime.lock();
+			cuda::runtime.setContext();		
+			cuda::runtime.addTraceGenerator( gen, persistent );
+			cuda::runtime.unlock();
+		}
+		else
+		{
+			cuda::runtime.addTraceGenerator( gen, persistent );
+		}
 	}
 				
-	void clearTraceGenerators()
+	void clearTraceGenerators( bool safe )
 	{
-		cuda::runtime.lock();
-		cuda::runtime.setContext();		
-		cuda::runtime.clearTraceGenerators();		
-		cuda::runtime.unlock();
+		if( safe )
+		{
+			cuda::runtime.lock();
+			cuda::runtime.setContext();		
+			cuda::runtime.clearTraceGenerators();		
+			cuda::runtime.unlock();
+		}
+		else
+		{
+			cuda::runtime.clearTraceGenerators();
+		}
 	}
 }
 

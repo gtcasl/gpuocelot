@@ -456,11 +456,11 @@ ir::PTXU8 executive::CooperativeThreadArray::getRegAsU8(int threadID, ir::PTXOpe
 	#if REPORT_FIRST_THREAD_ONLY == 1
 	if (threadID == 0) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-			<< " reg " << reg << " <= " << r);
+			<< " reg " << reg << " <= " << (int)r);
 	}
 	#else
 	reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-		<< " reg " << reg << " <= " << r);
+		<< " reg " << reg << " <= " << (int)r);
 	#endif
 	return r;
 }
@@ -536,11 +536,11 @@ ir::PTXS8 executive::CooperativeThreadArray::getRegAsS8(int threadID, ir::PTXOpe
 	#if REPORT_FIRST_THREAD_ONLY == 1
 	if (threadID == 0) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-			<< " reg " << reg << " <= " << r);
+			<< " reg " << reg << " <= " << (int)r);
 	}
 	#else
 	reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-		<< " reg " << reg << " <= " << r);
+		<< " reg " << reg << " <= " << (int)r);
 	#endif
 	return r;
 }
@@ -656,11 +656,11 @@ ir::PTXB8 executive::CooperativeThreadArray::getRegAsB8(int threadID, ir::PTXOpe
 	#if REPORT_FIRST_THREAD_ONLY == 1
 	if (threadID == 0) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-			<< " reg " << reg << " <= " << r);
+			<< " reg " << reg << " <= " << (int)r);
 	}
 	#else
 	reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-		<< " reg " << reg << " <= " << r);
+		<< " reg " << reg << " <= " << (int)r);
 	#endif
 	return r;
 }
@@ -758,11 +758,11 @@ void  executive::CooperativeThreadArray::setRegAsU8(int threadID, ir::PTXOperand
 	#if REPORT_FIRST_THREAD_ONLY == 1
 	if (threadID == 0) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-			<< " reg " << reg << " value " << " => " << value );
+			<< " reg " << reg << " value " << " => " << (int)value );
 	}
 	#else
 	reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-		<< " reg " << reg << " value " << " => " << value );
+		<< " reg " << reg << " value " << " => " << (int)value );
 	#endif
 	*r = value;
 }
@@ -838,11 +838,11 @@ void  executive::CooperativeThreadArray::setRegAsS8(int threadID, ir::PTXOperand
 	#if REPORT_FIRST_THREAD_ONLY == 1
 	if (threadID == 0) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-			<< " reg " << reg << " value " << " => " << value );
+			<< " reg " << reg << " value " << " => " << (int)value );
 	}
 	#else
 	reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-		<< " reg " << reg << " value " << " => " << value );
+		<< " reg " << reg << " value " << " => " << (int)value );
 	#endif
 	*r = value;
 }
@@ -958,11 +958,11 @@ void  executive::CooperativeThreadArray::setRegAsB8(int threadID, ir::PTXOperand
 	#if REPORT_FIRST_THREAD_ONLY == 1
 	if (threadID == 0) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-			<< " reg " << reg << " value " << " => " << value );
+			<< " reg " << reg << " value " << " => " << (int)value );
 	}
 	#else
 	reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-		<< " reg " << reg << " value " << " => " << value );
+		<< " reg " << reg << " value " << " => " << (int)value );
 	#endif
 	*r = value;
 }

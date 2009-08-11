@@ -64,7 +64,12 @@ namespace trace {
 			returns
 		*/
 		virtual void event(const TraceEvent & event);
-
+		
+		/*! 
+			\brief Called when a kernel is finished. There will be no more 
+				events for this kernel.
+		*/
+		virtual void finish();
 	};
 
 }

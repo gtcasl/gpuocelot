@@ -1,0 +1,19 @@
+<ocelot>
+	<OcelotRuntime>
+		<TraceDatabase>
+			"traces/database.trace"
+		</TraceDatabase>
+		<UseMemoryTraceGenerator>
+			1
+		</UseMemoryTraceGenerator>
+		<UseBranchTraceGenerator>
+			1
+		</UseBranchTraceGenerator>
+		<UseSharedComputationGenerator>
+			1
+		</UseSharedComputationGenerator>
+		<UseParallelismTraceGenerator>
+			1
+		</UseParallelismTraceGenerator>
+	</OcelotRuntime>
+</ocelot>

@@ -116,27 +116,6 @@ trace::MemoryTraceGenerator::MemoryTraceGenerator() {
 }
 
 trace::MemoryTraceGenerator::~MemoryTraceGenerator() {
-	if( _file ) {		
-		_entry.updateDatabase( database );
-		delete _archive;
-
-		_file->close();	
-		delete _file;
-		
-		std::ofstream hfile( _entry.header.c_str() );
-		boost::archive::text_oarchive harchive( hfile );
-	
-		if( !hfile.is_open() )
-		{
-			throw hydrazine::Exception(
-				"Failed to open MemoryTraceGenerator header file " 
-				+ _entry.header );
-		}
-		
-		harchive << _header;
-		
-		hfile.close();
-	}
 }
 
 void trace::MemoryTraceGenerator::initialize(const executive::EmulatedKernel *kernel) {
@@ -262,3 +241,27 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 	}
 }
 
+void trace::MemoryTraceGenerator::finish() {
+	if( _file ) {		
+		_entry.updateDatabase( database );
+		delete _archive;
+
+		_file->close();	
+		delete _file;
+		_file = 0;
+		
+		std::ofstream hfile( _entry.header.c_str() );
+		boost::archive::text_oarchive harchive( hfile );
+	
+		if( !hfile.is_open() )
+		{
+			throw hydrazine::Exception(
+				"Failed to open MemoryTraceGenerator header file " 
+				+ _entry.header );
+		}
+		
+		harchive << _header;
+		
+		hfile.close();
+	}
+}

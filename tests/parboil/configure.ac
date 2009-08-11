@@ -57,8 +57,11 @@ AC_CHECK_LIB([OcelotAnalysis], [main], \
 	AC_MSG_ERROR("libOcelotAnalysis required"), \
 	[-lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
-	AC_MSG_ERROR("libcudart required"), \
-	[-lOcelotExecutive -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
+	AC_MSG_ERROR("libcudart required"), [-lOcelot -lOcelotExecutive \
+		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
+	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
+		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
 ################################################################################
 
 ################################################################################

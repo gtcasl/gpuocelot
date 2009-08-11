@@ -34,30 +34,7 @@ namespace trace
 	
 	BranchTraceGenerator::~BranchTraceGenerator()
 	{
-		if( _file != 0 )
-		{		
-			
-			_entry.updateDatabase( database );
-			delete _archive;
-
-			_file->close();	
-			delete _file;
-			
-			std::ofstream hfile( _entry.header.c_str() );
-			boost::archive::text_oarchive harchive( hfile );
 		
-			if( !hfile.is_open() )
-			{
-				throw hydrazine::Exception(
-					"Failed to open BranchTraceGenerator header file " 
-					+ _entry.header );
-			}
-			
-			harchive << _header;
-			
-			hfile.close();
-			
-		}
 	}
 
 	void BranchTraceGenerator::initialize( 
@@ -126,6 +103,35 @@ namespace trace
 		}
 		++_header.instructions;
 		_header.activeThreads += event.active.count();
+	}
+	
+	void BranchTraceGenerator::finish()
+	{
+		if( _file != 0 )
+		{		
+			
+			_entry.updateDatabase( database );
+			delete _archive;
+
+			_file->close();	
+			delete _file;
+			_file = 0;
+			
+			std::ofstream hfile( _entry.header.c_str() );
+			boost::archive::text_oarchive harchive( hfile );
+		
+			if( !hfile.is_open() )
+			{
+				throw hydrazine::Exception(
+					"Failed to open BranchTraceGenerator header file " 
+					+ _entry.header );
+			}
+			
+			harchive << _header;
+			
+			hfile.close();
+			
+		}	
 	}
 	
 }

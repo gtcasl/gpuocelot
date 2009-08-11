@@ -42,7 +42,8 @@ libOcelotAnalysis_la_SOURCES = \
 ################################################################################
 ## libOcelot
 libOcelot_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
-libOcelot_la_SOURCES = ocelot/api/implementation/ocelot.cpp
+libOcelot_la_SOURCES = ocelot/api/implementation/ocelot.cpp \
+	ocelot/api/implementation/OcelotRuntime.cpp 
 ################################################################################
 
 ################################################################################

@@ -187,6 +187,8 @@ namespace trace {
 			Note, the const reference 'event' is only valid until event() returns
 		*/
 		void event(const TraceEvent & event);
+			
+		void finish();
 
 	protected:
 	

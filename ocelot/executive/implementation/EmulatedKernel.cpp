@@ -76,6 +76,12 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 			cta.execute(block);
 		}
 	}
+	
+	// notify trace generator(s)
+	for (std::list<trace::TraceGenerator*>::iterator it = Traces.begin(); 
+		it != Traces.end(); ++it) {
+		(*it)->finish();
+	}
 
 }
 

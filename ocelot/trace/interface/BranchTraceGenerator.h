@@ -114,6 +114,8 @@ namespace trace
 				returns
 			*/
 			void event( const TraceEvent& event );
+			
+			void finish();
 	
 	};
 	

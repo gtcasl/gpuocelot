@@ -40,34 +40,6 @@ namespace trace
 	
 	ParallelismTraceGenerator::~ParallelismTraceGenerator()
 	{
-		if( _file != 0 )
-		{		
-			
-			_entry.updateDatabase( database );
-			delete _archive;
-
-			_file->close();	
-			delete _file;
-			
-			std::ofstream hfile( _entry.header.c_str() );
-			boost::archive::text_oarchive harchive( hfile );
-		
-			if( !hfile.is_open() )
-			{
-				throw hydrazine::Exception(
-					"Failed to open ParallelismTraceGenerator header file " 
-					+ _entry.header );
-			}
-			
-			harchive << _header;
-			
-			hfile.close();
-			
-			assert( _event.instructions == 0 );
-			assert( _event.activity == 0 );
-			assert( _event.ctaid == _header.dimensions );
-			
-		}
 	}
 
 	void ParallelismTraceGenerator::initialize( 
@@ -140,6 +112,39 @@ namespace trace
 			++_event.instructions;
 		}		
 	}	
+	
+	void ParallelismTraceGenerator::finish()
+	{
+		if( _file != 0 )
+		{		
+			
+			_entry.updateDatabase( database );
+			delete _archive;
+
+			_file->close();	
+			delete _file;
+			_file = 0;
+			
+			std::ofstream hfile( _entry.header.c_str() );
+			boost::archive::text_oarchive harchive( hfile );
+		
+			if( !hfile.is_open() )
+			{
+				throw hydrazine::Exception(
+					"Failed to open ParallelismTraceGenerator header file " 
+					+ _entry.header );
+			}
+			
+			harchive << _header;
+			
+			hfile.close();
+			
+			assert( _event.instructions == 0 );
+			assert( _event.activity == 0 );
+			assert( _event.ctaid == _header.dimensions );
+			
+		}	
+	}
 }
 
 #endif

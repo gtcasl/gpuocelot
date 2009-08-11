@@ -19,6 +19,7 @@
 #include <hydrazine/implementation/Timer.h>
 #include <hydrazine/interface/Configurable.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/api/interface/OcelotRuntime.h>
 #include <GL/glew.h>
 
 #define CUDA_VERBOSE 1
@@ -193,6 +194,9 @@ namespace cuda
 			typedef std::unordered_map< GLuint, OpenGLBuffer > OpenGLBufferMap;
 			
 		private:
+		
+			/*! \brief A copy of the Ocelot runtime */
+			ocelot::OcelotRuntime _ocelotRuntime;
 		
 			/*!	\brief Mutex to control access to the executive class. */
 			pthread_mutex_t _mutex;

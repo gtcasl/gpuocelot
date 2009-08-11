@@ -50,3 +50,6 @@ void trace::TraceGenerator::event(const TraceEvent & event) {
 	report( "Default Trace: " << event.toString() );
 }
 
+void trace::TraceGenerator::finish() {
+}
+

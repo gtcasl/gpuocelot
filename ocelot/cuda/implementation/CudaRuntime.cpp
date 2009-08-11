@@ -268,7 +268,7 @@ namespace cuda
 		
 		try 
 		{
-			hydrazine::XmlParser parser("default.config");
+			hydrazine::XmlParser parser("config.ocelot");
 			hydrazine::XmlTree tree = parser.tree();
 		
 			hydrazine::XmlTree::iterator position = tree.begin();
@@ -361,6 +361,8 @@ namespace cuda
 			thread = _threads.insert( std::make_pair( id, 
 				threadContext ) ).first;
 		}
+		
+		_ocelotRuntime.initialize();
 		
 		if( !context.select( thread->second.guid ) )
 		{
@@ -1871,10 +1873,12 @@ namespace cuda
 		
 		if( persistent )
 		{
+			report( "Adding peristent trace generator" );
 			thread->second.persistentTraceGenerators.push_back( &gen );
 		}
 		else
 		{
+			report( "Adding non-peristent trace generator" );
 			thread->second.nextTraceGenerators.push_back( &gen );
 		}		
 	}

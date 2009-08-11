@@ -56,7 +56,7 @@ namespace trace
 	
 		typedef std::deque< KernelEntry > EntryVector;
 		
-		int error = system( "touch trace_KernelEntry_lock" );
+		int error = system( "touch KernelEntry_lock" );
 		if( error < 0 )
 		{
 			throw hydrazine::Exception(

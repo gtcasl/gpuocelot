@@ -57,30 +57,7 @@ trace::SharedComputationGenerator::SharedComputationGenerator() {
 }
 
 trace::SharedComputationGenerator::~SharedComputationGenerator() {
-	if (sharedMemoryOwners) {
-		delete [] sharedMemoryOwners;
-	}	
-	if( _file ) {		
-		_entry.updateDatabase( database );
-		delete _archive;
 
-		_file->close();	
-		delete _file;
-		
-		std::ofstream hfile( _entry.header.c_str() );
-		boost::archive::text_oarchive harchive( hfile );
-	
-		if( !hfile.is_open() )
-		{
-			throw hydrazine::Exception(
-				"Failed to open MemoryTraceGenerator header file " 
-				+ _entry.header );
-		}
-		
-		harchive << _header;
-		
-		hfile.close();
-	}
 }
 
 /*!
@@ -293,5 +270,32 @@ void trace::SharedComputationGenerator::event(const TraceEvent & event) {
 	}
 }
 
+void trace::SharedComputationGenerator::finish() {
+	if (sharedMemoryOwners) {
+		delete [] sharedMemoryOwners;
+	}	
+	if( _file ) {		
+		_entry.updateDatabase( database );
+		delete _archive;
+
+		_file->close();	
+		delete _file;
+		_file = 0;
+		
+		std::ofstream hfile( _entry.header.c_str() );
+		boost::archive::text_oarchive harchive( hfile );
+	
+		if( !hfile.is_open() )
+		{
+			throw hydrazine::Exception(
+				"Failed to open MemoryTraceGenerator header file " 
+				+ _entry.header );
+		}
+		
+		harchive << _header;
+		
+		hfile.close();
+	}
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////99
 

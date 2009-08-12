@@ -21,6 +21,14 @@
 #include <deque>
 #include <boost/interprocess/sync/file_lock.hpp>
 
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
+
 namespace trace
 {
 	std::string KernelEntry::_program()
@@ -60,12 +68,14 @@ namespace trace
 		if( error < 0 )
 		{
 			throw hydrazine::Exception(
-				"Failed to create trace_KernelEntry_lock");
+				"Failed to create KernelEntry_lock");
 		}
-		boost::interprocess::file_lock flock( "trace_KernelEntry_lock" );
+		boost::interprocess::file_lock flock( "KernelEntry_lock" );
+		
+		report( "Updating databsse " << name );
 		
 		flock.lock();
-		std::ifstream ifile( name.c_str() );
+		std::ifstream ifile( name.c_str() );		
 	
 		EntryVector entries;
 	
@@ -82,7 +92,7 @@ namespace trace
 			{
 				KernelEntry entry;
 				archive >> entry;
-				if( entry.path != path )
+				if( entry.header != header )
 				{
 					entries.push_back(entry);
 				}
@@ -95,10 +105,11 @@ namespace trace
 		boost::archive::text_oarchive archive( file );
 	
 		if( !file.is_open() )
-		{
+		{		
+			flock.unlock();
 			throw hydrazine::Exception(
 				"Failed to open trace database file " 
-				+ name );
+				+ name + " for writing" );
 		}
 		
 		unsigned int count = entries.size() + 1;

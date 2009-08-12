@@ -104,8 +104,7 @@ libOcelotTrace_la_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
-	ocelot/trace/implementation/KernelEntry.cpp \
-	ocelot/trace/implementation/BranchEvent.cpp	
+	ocelot/trace/implementation/KernelEntry.cpp
 ################################################################################
 
 ################################################################################
@@ -122,7 +121,7 @@ libOcelotExecutive_la_SOURCES = \
 
 ################################################################################
 ## libOcelotParser
-libOcelotParser_la_CXXFLAGS = -I ocelot -Wall -ansi -Werror -std=c++0x
+libOcelotParser_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
 libOcelotParser_la_SOURCES = \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
@@ -273,8 +272,9 @@ TestMemoryTraceGenerator_CXXFLAGS = -Wall -std=c++0x
 TestMemoryTraceGenerator_SOURCES = \
 	ocelot/trace/test/TestMemoryTraceGenerator.cpp \
 	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu.cpp
-TestMemoryTraceGenerator_LDADD = libcudart.la libOcelotExecutive.la \
-	libOcelotTrace.la libOcelotIr.la libOcelotParser.la libhydrazine.la
+TestMemoryTraceGenerator_LDADD = libcudart.la libOcelot.la \
+	libOcelotExecutive.la libOcelotTrace.la libOcelotIr.la libOcelotParser.la \
+	libhydrazine.la
 TestMemoryTraceGenerator_LDFLAGS = -static
 ################################################################################
 
@@ -321,7 +321,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/cuda/interface/CudaRuntime.h \
 	ocelot/trace/interface/MemoryTraceGenerator.h \
 	ocelot/trace/interface/TraceEvent.h \
-	ocelot/trace/interface/BranchEvent.h \
 	ocelot/trace/interface/BranchTraceAnalyzer.h \
 	ocelot/trace/interface/TraceGenerator.h \
 	ocelot/trace/interface/SharedComputationGenerator.h \

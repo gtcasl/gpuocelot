@@ -17,7 +17,6 @@
 #include <hydrazine/implementation/Exception.h>
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <ocelot/trace/interface/BranchEvent.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -44,9 +43,21 @@ namespace trace
 		_entry.module = kernel->module->modulePath;
 		_entry.format = BranchTraceFormat;
 
+		std::stringstream stream;
+		stream << _entry.format << "_" << _counter++;
+
+		boost::filesystem::path path( database );
+		path = path.parent_path();
+		path /= _entry.program + "_" + kernel->name + "_" + stream.str() 
+			+ ".header";
+		path = boost::filesystem::system_complete( path );
+		
+		_entry.header = path.string();
+		
 		_header.format = BranchTraceFormat;
 		_header.instructions = 0;
 		_header.branches = 0;
+		_header.divergent = 0;
 		_header.threads = kernel->threadCount;
 		_header.activeThreads = 0;
 		_header.maxContextStackSize = 0;
@@ -61,8 +72,8 @@ namespace trace
 
 		if( event.instruction->opcode == ir::PTXInstruction::Bra )
 		{
-			_header.divergent = ( event.taken.size() != 0 
-				&& event.fallthrough.size() != 0 ) 
+			_header.divergent = ( event.taken.count() != 0 
+				&& event.fallthrough.count() != 0 ) 
 				? _header.divergent + 1 : _header.divergent;
 			++_header.branches;
 		}

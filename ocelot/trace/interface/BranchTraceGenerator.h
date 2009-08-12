@@ -133,7 +133,7 @@ namespace boost
 		{
 			ar & header.format;
 			ar & header.branches;
-			ar & divergent;
+			ar & header.divergent;
 			ar & header.instructions;
 			ar & header.threads;
 			ar & header.activeThreads;

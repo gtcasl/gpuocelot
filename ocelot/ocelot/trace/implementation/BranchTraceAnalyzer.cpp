@@ -1,9 +1,7 @@
 /*!
 	\file BranchTraceAnalayzer.cpp
-	
 	\author Gregory Diamos
 	\date Monday April 13, 2009
-	
 	\brief The source file for the BranchTraceAnalayzer class
 */
 
@@ -77,7 +75,6 @@ namespace trace
 	
 	void BranchTraceAnalyzer::divergence() const
 	{
-	
 		long long unsigned int totalDivergence = 0;
 		long long unsigned int totalBranches = 0;
 		long long unsigned int totalInstructions = 0;
@@ -86,8 +83,7 @@ namespace trace
 
 		for( KernelMap::const_iterator vector = _kernels.begin(); 
 			vector != _kernels.end(); ++vector ) 
-		{
-		
+		{	
 			long long unsigned int localDivergence = 0;
 			long long unsigned int localBranches = 0;
 			long long unsigned int localInstructions = 0;
@@ -99,7 +95,6 @@ namespace trace
 			for( KernelVector::const_iterator kernel = vector->second.begin(); 
 				kernel != vector->second.end(); ++kernel )	
 			{
-
 				std::ifstream hstream( kernel->header.c_str() );
 				boost::archive::text_iarchive harchive( hstream );
 			
@@ -110,7 +105,7 @@ namespace trace
 			
 				hstream.close();
 
-				unsigned int divergence = 0;
+				unsigned int divergence = header.divergence;
 			
 				std::cout << " From file " << kernel->path << "\n";
 				std::cout << "  kernel: " << kernel->name << "\n";
@@ -122,32 +117,6 @@ namespace trace
 				std::cout << "   instructions: " << header.instructions << "\n";
 
 				localBranches += header.branches;
-
-				std::ifstream stream( kernel->path.c_str() );
-				boost::archive::text_iarchive archive( stream );
-			
-				if( !stream.is_open() )
-				{
-					throw hydrazine::Exception(
-						"Failed to open BranchTrace kernel trace file " 
-						+ kernel->path );
-				}
-			
-				while( true )
-				{
-					try
-					{
-						BranchEvent event;
-						archive >> event;
-						unsigned int fallthrough = event.fallthrough.count();
-						unsigned int taken = event.taken.count();
-						divergence += (fallthrough != 0 && taken != 0) ? 1 : 0;
-					}
-					catch( const boost::archive::archive_exception& e )
-					{
-						break;			
-					}
-				}
 			
 				double active = ( ( header.activeThreads * 100.0 ) 
 					/ ( header.instructions * header.threads + DBL_EPSILON ) );

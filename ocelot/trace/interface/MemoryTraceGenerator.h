@@ -77,6 +77,9 @@ namespace trace {
 			ir::PTXU64 global_bytes;
 			ir::PTXU64 texture_bytes;
 			
+			ir::PTXU64 global_words;
+			ir::PTXU64 texture_words;
+			
 			ir::PTXU64 global_segments;
 			ir::PTXU64 halfwarps;
 			
@@ -251,6 +254,9 @@ namespace boost
 			
 			ar & header.global_bytes;
 			ar & header.texture_bytes;
+			
+			ar & header.global_words;
+			ar & header.texture_words;
 			
 			ar & header.headerOnly;
 		}

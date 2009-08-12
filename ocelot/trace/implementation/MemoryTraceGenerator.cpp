@@ -55,6 +55,9 @@ trace::MemoryTraceGenerator::Header::Header() {
 	shared_bytes = 0;
 	texture_bytes = 0;
 	
+	global_words = 0;
+	texture_words = 0;
+	
 	global_segments = 0;
 	halfwarps = 0;
 	
@@ -74,13 +77,19 @@ void trace::MemoryTraceGenerator::Header::access(
 	switch (space) {
 	case PTXInstruction::Const: const_accesses++; break;
 	case PTXInstruction::Global: 
-		global_accesses++; global_bytes += bytes; break;
+		global_accesses++; 
+		global_bytes += bytes; 
+		++global_instructions; 
+		break;
 	case PTXInstruction::Local: local_accesses++; break;
 	case PTXInstruction::Param: param_accesses++; break;
 	case PTXInstruction::Shared: 
 		shared_accesses++; shared_bytes += bytes; break;
 	case PTXInstruction::Texture: 
-		texture_accesses++; texture_bytes += bytes; break;
+		texture_accesses++; 
+		texture_bytes += bytes;
+		++texture_instructions;
+		break;
 	default: break;
 	}
 }
@@ -102,7 +111,7 @@ void trace::MemoryTraceGenerator::Header::address(
 			if (!global_max_address || addr > global_max_address) {
 				global_max_address = addr;
 			}
-			++texture_instructions;
+			texture_words++;
 		}
 		break;
 	case PTXInstruction::Global: 
@@ -113,7 +122,7 @@ void trace::MemoryTraceGenerator::Header::address(
 			if (!global_max_address || addr > global_max_address) {
 				global_max_address = addr;
 			}
-			++global_instructions;
+			global_words++;
 		}
 		break;
 	case PTXInstruction::Local: 
@@ -149,18 +158,25 @@ void trace::MemoryTraceGenerator::initialize(const executive::EmulatedKernel *ke
 	_entry.module = kernel->module->modulePath;
 	_entry.format = MemoryTraceFormat;
 
+	std::string name = kernel->name;
+		
+	if( name.size() > 20 )
+	{
+		name.resize( 20 );
+	}
+
 	std::stringstream stream;
 	stream << _entry.format << "_" << _counter++;
 
 	boost::filesystem::path path( database );
 	path = path.parent_path();
-	path /= kernel->name + "_" + stream.str() + ".trace";
+	path /= name + "_" + stream.str() + ".trace";
 	path = boost::filesystem::system_complete( path );
 
 	_entry.path = path.string();
 
 	path = path.parent_path();
-	path /= kernel->name + "_" + stream.str() + ".header";
+	path /= name + "_" + stream.str() + ".header";
 	path = boost::filesystem::system_complete( path );
 
 	_entry.header = path.string();
@@ -198,7 +214,7 @@ void trace::MemoryTraceGenerator::initialize(const executive::EmulatedKernel *ke
 void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 	using namespace ir;
 
-	_header.dynamic_instructions ++;
+	_header.dynamic_instructions++;
 	_header.dynamic_operations += (PTXU64)event.active.count();
 	
 	if (event.instruction->opcode == PTXInstruction::Ld 

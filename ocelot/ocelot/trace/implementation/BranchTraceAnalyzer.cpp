@@ -11,7 +11,6 @@
 #include <ocelot/trace/interface/BranchTraceAnalyzer.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
-#include <ocelot/trace/interface/BranchEvent.h>
 #include <fstream>
 #include <cfloat>
 #include <boost/archive/text_iarchive.hpp>
@@ -66,7 +65,7 @@ namespace trace
 			for( KernelVector::const_iterator kernel = vector->second.begin(); 
 				kernel != vector->second.end(); ++kernel )	
 			{
-				std::cout << "  " << kernel->path << "\n";
+				std::cout << "  " << kernel->header << "\n";
 			}
 		}
 			
@@ -105,7 +104,7 @@ namespace trace
 			
 				hstream.close();
 
-				unsigned int divergence = header.divergence;
+				unsigned int divergence = header.divergent;
 			
 				std::cout << " From file " << kernel->path << "\n";
 				std::cout << "  kernel: " << kernel->name << "\n";

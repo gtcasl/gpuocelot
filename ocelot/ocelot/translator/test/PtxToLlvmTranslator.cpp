@@ -51,6 +51,9 @@ void PtxToLlvmTranslator::translate()
 int main( int argc, char** argv )
 {
 	hydrazine::ArgumentParser parser( argc, argv );
+	parser.description( 
+		std::string( "A front end for the PTX to LLVM JIT compiler." ) 
+		+ " Translates single .ptx files to .ll files." );
 	PtxToLlvmTranslator translator;
 	
 	parser.parse( "-p", "--ptx-file", translator.input, "", 

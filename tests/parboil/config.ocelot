@@ -6,7 +6,6 @@
 		<UseMemoryTraceGenerator>
 			0
 		</UseMemoryTraceGenerator>
-			0
 		<UseBranchTraceGenerator>
 			1
 		</UseBranchTraceGenerator>

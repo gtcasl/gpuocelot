@@ -1,33 +1,167 @@
-INFO     Reading in test file /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/regression/tests.txt
+INFO     Reading in test file /home/normal/checkout/gpuocelot/tests/parboil/regression/tests.txt
 INFO      Found the following tests:
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/cp
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-fhd
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-q
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/pns
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/rpes
-INFO       /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/tpacf
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/cp
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/mri-q
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/pns
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/rpes
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/tpacf
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/cp -o cp.out 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-q -i data/mriQIn.bin -o mriFQOut.bin 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/pns 2000 2000 2000 -o pns.out 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 
-INFO     Running test program /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/cp
-INFO     Test completed in 5945.22056818 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/cp -o cp.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/pns 2000 2000 2000 -o pns.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-q -i data/mriQIn.bin -o mriFQOut.bin 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/cp
+INFO     Test completed in 1252.74147296 seconds
 INFO      It produced the following output:
 CUDA accelerated coulombic potential microbenchmark
 Original version by John E. Stone <johns@ks.uiuc.edu>
 This version maintained by Chris Rodrigues
+(126.453019) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(252.631784) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(377.754747) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(502.211405) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(627.018678) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(752.312696) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(877.520870) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1003.172357) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1127.912878) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1252.694155) KernelEntry.cpp:75:   Updating databsse traces/database.trace
 TEST PASSED
-IO:      0.008253
-GPU:     5945.173795
-Copy:    0.001890
-Compute: 0.010837
+IO:      0.010777
+GPU:     1252.672352
+Copy:    0.004263
+Compute: 0.013323
 
-INFO     Test /home/gdiamos/checkout/gpuocelot/trunk/tests/parboil/rpes
-INFO     Test completed in 7298.32165599 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/pns
+INFO     Test completed in 4678.03149009 seconds
+INFO      It produced the following output:
+(42.578126) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(84.818117) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(127.346137) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(169.526130) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(211.714122) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(254.682116) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(296.718118) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(338.742131) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(380.762111) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(422.682125) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(464.790142) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(507.110133) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(549.186158) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(591.314116) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(633.370166) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(675.350130) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(717.562132) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(759.594121) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(801.590128) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(843.854117) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(886.042122) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(928.662621) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(971.114622) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1012.858613) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1054.626618) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1096.362622) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1138.698147) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1180.842121) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1222.442112) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1264.535289) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1306.362634) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1348.138627) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1390.014622) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1431.882624) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1473.802643) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1515.878895) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1558.239620) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1600.551627) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1642.655626) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1684.935631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1727.219619) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1769.394618) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1811.322607) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1853.511639) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1895.595634) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1937.619628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1979.691630) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2021.803625) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2064.003631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2106.083625) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2148.159616) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2190.171620) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2232.187619) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2274.295627) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2316.435628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2358.563613) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2400.563633) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2442.683628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2484.863623) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2526.903623) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2569.011628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2611.115618) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2653.083621) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2695.071623) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2736.995631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2779.291617) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2821.259629) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2863.275627) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2905.267620) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2947.255620) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(2989.323624) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3031.383701) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3073.339626) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3115.419631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3157.515625) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3199.755632) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3241.883631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3284.139631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3326.283615) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3368.363628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3410.383627) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3452.387631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3494.443629) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3536.723637) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3578.802120) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3621.002132) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3663.002126) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3705.082126) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3747.266123) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3789.498124) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3831.710128) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3873.771636) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3915.775635) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3957.791635) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(3999.843628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4041.883625) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4083.867636) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4125.995642) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4168.111628) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4210.151617) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4252.431627) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4294.547636) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4336.683634) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4378.843633) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4420.974619) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4462.866632) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4504.698620) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4546.403642) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4588.543631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4630.867629) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4673.183631) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(4677.871624) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+petri N=2000 s=2000 t=2000
+mean_vars: 0.002176    var_vars: 0.000000
+mean_maxs: 2.001500    var_maxs: 0.001498
+TEST PASSED
+IO:      0.005933
+GPU:     4677.828018
+Copy:    0.095913
+Compute: 0.000048
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/rpes
+INFO     Test completed in 1928.28847694 seconds
 INFO      It produced the following output:
 
 >>>>>>> STARTED BASIS SET OUTPUT <<<<<<<
@@ -79,12 +213,96 @@ Final array size: 1088430
 79.41 MB allocated
 maxblocks = 64
 54 computation cycles will be performed...
+(36.404090) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(70.948078) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(104.695008) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(138.540086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(172.688211) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(207.472096) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(242.208086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(275.948093) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(309.976098) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(343.887103) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(375.663094) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(404.874596) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(437.006577) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(468.862584) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(497.830581) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(529.603087) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(561.087086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(590.927167) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(626.927091) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(660.527097) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(694.807079) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(728.651078) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(764.015100) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(797.231108) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(831.035097) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(862.435088) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(892.766600) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(925.246587) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(955.270610) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(987.586582) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1018.046577) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1053.822592) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1088.460086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1123.232076) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1157.948082) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1192.512095) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1223.116091) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1255.568190) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1286.376097) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1317.840092) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1353.792192) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1388.080086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1423.080100) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1455.100094) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1487.048088) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1518.676084) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1553.744086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1588.036089) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1619.808079) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1651.928083) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1685.916092) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1716.896097) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1749.728087) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1769.068086) KernelEntry.cpp:75:   Updating databsse traces/database.trace
 done.
 
 17 reduction cycles will be performed...
+(1778.680079) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1788.324098) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1797.836173) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1807.372081) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1816.904091) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1826.436081) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1836.016085) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1845.552090) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1855.104093) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1864.712080) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1874.356081) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1883.956164) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1893.588079) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1903.188091) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1912.768090) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1922.376087) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+(1928.232088) KernelEntry.cpp:75:   Updating databsse traces/database.trace
 totReductionElements 1088430
-IO:      0.009859
-GPU:     7298.090995
-Copy:    0.047661
-Compute: 0.119446
+IO:      0.013491
+GPU:     1928.029603
+Copy:    0.088267
+Compute: 0.124322
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/tpacf
+INFO     Test completed in 7124.74622488 seconds
+INFO      It produced the following output:
+Min distance: 1.000000 arcmin
+Max distance: 10000.000000 arcmin
+Bins per dec: 5
+Total bins  : 20
+(7124.707951) KernelEntry.cpp:75:   Updating databsse traces/database.trace
+IO:      0.412987
+GPU:     7124.269549
+Copy:    0.005724
+Compute: 0.007494
 

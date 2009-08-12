@@ -37,6 +37,9 @@
 #undef HAVE_MEMORY_H
 
 /* "" */
+#undef HAVE_OCELOT
+
+/* "" */
 #undef HAVE_OCELOT_ANALYSIS
 
 /* "" */

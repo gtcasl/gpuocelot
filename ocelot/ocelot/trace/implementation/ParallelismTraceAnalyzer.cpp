@@ -149,7 +149,7 @@ namespace trace
 				
 				}
 			
-				activity /= totalInstructions;
+				activity /= totalInstructions + DBL_EPSILON;
 			
 				unsigned int previous = 0;
 				unsigned int count = header.dimensions;
@@ -164,7 +164,7 @@ namespace trace
 					--count;
 				}
 			
-				mimd /= *(--instructions.end());
+				mimd /= *(--instructions.end()) + DBL_EPSILON;
 			
 				std::cout << "   SIMD parallelism: " << activity 
 					<< "\n";		
@@ -176,9 +176,9 @@ namespace trace
 			
 			}
 
-			localSIMD /= vector->second.size();
-			localMIMD /= vector->second.size();
-			localCTAs /= vector->second.size();
+			localSIMD /= vector->second.size() + DBL_EPSILON;
+			localMIMD /= vector->second.size() + DBL_EPSILON;
+			localCTAs /= vector->second.size() + DBL_EPSILON;
 
 			std::cout << " Kernel " << vector->first << " statistics:\n";
 			std::cout << "  average CTAs: " << localCTAs << "\n";
@@ -190,9 +190,9 @@ namespace trace
 			averageCTAs += localCTAs;
 		}
 				
-		averageSIMD /= _kernels.size();
-		averageMIMD /= _kernels.size();
-		averageCTAs /= _kernels.size();
+		averageSIMD /= _kernels.size() + DBL_EPSILON;
+		averageMIMD /= _kernels.size() + DBL_EPSILON;
+		averageCTAs /= _kernels.size() + DBL_EPSILON;
 		
 		std::cout << "Aggregate statistics:\n";
 		std::cout << " average CTAs: " << averageCTAs << "\n";

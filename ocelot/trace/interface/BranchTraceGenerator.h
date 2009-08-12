@@ -51,6 +51,7 @@ namespace trace
 				public:
 					TraceFormat format; //! The trace format stored
 					long long unsigned int branches; //! Branch count
+					long long unsigned int divergent; //! divergent branches
 					long long unsigned int instructions; //! Instruction count
 					double activeThreads; //! Total active threads 
 					unsigned int threads; //! Threads in the cta
@@ -132,6 +133,7 @@ namespace boost
 		{
 			ar & header.format;
 			ar & header.branches;
+			ar & divergent;
 			ar & header.instructions;
 			ar & header.threads;
 			ar & header.activeThreads;

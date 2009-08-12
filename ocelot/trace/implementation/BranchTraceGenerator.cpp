@@ -44,41 +44,6 @@ namespace trace
 		_entry.module = kernel->module->modulePath;
 		_entry.format = BranchTraceFormat;
 
-		std::stringstream stream;
-		stream << _entry.format << "_" << _counter++;
-		
-		boost::filesystem::path path( database );
-		path = path.parent_path();
-		path /= _entry.program + "_" + kernel->name + "_" + stream.str() 
-			+ ".trace";
-		path = boost::filesystem::system_complete( path );
-		
-		_entry.path = path.string();
-		
-		path = path.parent_path();
-		path /= _entry.program + "_" + kernel->name + "_" + stream.str() 
-			+ ".header";
-		path = boost::filesystem::system_complete( path );
-		
-		_entry.header = path.string();
-		
-		if( _file != 0 )
-		{
-			delete _archive;
-			delete _file;
-		}
-		
-		_file = new std::ofstream( _entry.path.c_str() );
-		
-		if( !_file->is_open() )
-		{
-			throw hydrazine::Exception(
-				"Failed to open BranchTraceGenerator kernel trace file " 
-				+ _entry.path );
-		}
-		
-		_archive = new boost::archive::text_oarchive( *_file );
-		
 		_header.format = BranchTraceFormat;
 		_header.instructions = 0;
 		_header.branches = 0;
@@ -89,16 +54,16 @@ namespace trace
 
 	void BranchTraceGenerator::event( const TraceEvent& event )
 	{
-		if (event.contextStackSize > _header.maxContextStackSize) {
+		if (event.contextStackSize > _header.maxContextStackSize) 
+		{
 			_header.maxContextStackSize = event.contextStackSize;
 		}
 
 		if( event.instruction->opcode == ir::PTXInstruction::Bra )
 		{
-			BranchEvent entry( event.taken, event.fallthrough, event.PC, 
-				_header.instructions );
-			
-			*_archive << entry;
+			_header.divergent = ( event.taken.size() != 0 
+				&& event.fallthrough.size() != 0 ) 
+				? _header.divergent + 1 : _header.divergent;
 			++_header.branches;
 		}
 		++_header.instructions;
@@ -107,31 +72,21 @@ namespace trace
 	
 	void BranchTraceGenerator::finish()
 	{
-		if( _file != 0 )
-		{		
-			
-			_entry.updateDatabase( database );
-			delete _archive;
+		_entry.updateDatabase( database );
 
-			_file->close();	
-			delete _file;
-			_file = 0;
-			
-			std::ofstream hfile( _entry.header.c_str() );
-			boost::archive::text_oarchive harchive( hfile );
+		std::ofstream hfile( _entry.header.c_str() );
+		boost::archive::text_oarchive harchive( hfile );
+	
+		if( !hfile.is_open() )
+		{
+			throw hydrazine::Exception(
+				"Failed to open BranchTraceGenerator header file " 
+				+ _entry.header );
+		}
 		
-			if( !hfile.is_open() )
-			{
-				throw hydrazine::Exception(
-					"Failed to open BranchTraceGenerator header file " 
-					+ _entry.header );
-			}
-			
-			harchive << _header;
-			
-			hfile.close();
-			
-		}	
+		harchive << _header;
+		
+		hfile.close();
 	}
 	
 }

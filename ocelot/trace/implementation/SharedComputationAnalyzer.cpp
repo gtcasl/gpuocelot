@@ -86,53 +86,28 @@ void trace::SharedComputationAnalyzer::shared_computation(bool machine_readable)
 	
 		harchive >> header;
 		assert( header.format == TraceGenerator::SharedComputationTraceFormat );
-		if (header.format != TraceGenerator::SharedComputationTraceFormat) {
-			continue;
-		}
 		
 		hstream.close();	
 	
-		std::ifstream stream( kernel->path.c_str() );
-		boost::archive::text_iarchive archive( stream );
-		
-		PTXU64 sharedLoadCount = 0;
-		PTXU64 sharedLoadAccesses = 0;
-					
-		for(; true; ) {
-			try {
-				SharedComputationGenerator::Event event;
-				archive >> event;
-
-				++sharedLoadCount;
-				sharedLoadAccesses += (PTXU64)event.accesses.size();
-				
-				for (SharedComputationGenerator::AccessVector::iterator acc_it = event.accesses.begin();
-					acc_it != event.accesses.end(); ++acc_it) {
-
-				}	// end for(accesses)
-			}
-			catch( const boost::archive::archive_exception& e ) {
-				break;			
-			}
-		}	// end for(events)
-
 		agg_storeCount += header.storeSharedCount;
 		agg_loadCount += header.loadSharedCount;
-		agg_crossLdCount += sharedLoadAccesses;
+		agg_crossLdCount += header.crossThreadLds;
 		agg_Instr += header.dynamic_instructions;
 
 		if (machine_readable) {
 			out << "\t('" << kernel->name << "' , " << header.storeSharedCount << " , " 
-				<< header.loadSharedCount << " , " << sharedLoadAccesses
+				<< header.loadSharedCount << " , " << header.crossThreadLds
 				<< " , " << header.dynamic_instructions << "),\n";
 		}
 		else {
 			out << "Kernel " << kernel->name << "\n";
 			out << "           st.shared count: " << header.storeSharedCount << "\n";
 			out << "           ld.shared count: " << header.loadSharedCount << "\n";
-			out << "  x-thread ld.shared count: " << sharedLoadAccesses << "\n";
+			out << "  x-thread ld.shared count: " << header.crossThreadLds << "\n";
 			if (header.loadSharedCount) {
-				out << "                fraction: " << (double)sharedLoadAccesses / (double)header.loadSharedCount << "\n";
+				out << "                fraction: " 
+					<< (double)header.crossThreadLds 
+					/ (double)header.loadSharedCount << "\n";
 			}
 		}
 	}	// end for(kernels)

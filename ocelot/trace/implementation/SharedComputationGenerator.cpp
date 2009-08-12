@@ -32,6 +32,7 @@ trace::SharedComputationGenerator::Header::Header():
 	sharedMemorySize = 0;
 	storeSharedCount = 0;
 	loadSharedCount = 0;
+	crossThreadLds = 0;
 }
 
 trace::SharedComputationGenerator::Header::~Header() {
@@ -40,19 +41,10 @@ trace::SharedComputationGenerator::Header::~Header() {
 
 /////////////////////////////////////////////////////////////////////////////
 
-trace::SharedComputationGenerator::Event::Event() {
-
-}
-trace::SharedComputationGenerator::Event::~Event() {
-
-}
-
 /////////////////////////////////////////////////////////////////////////////
 
 trace::SharedComputationGenerator::SharedComputationGenerator() {
 	sharedMemoryOwners = 0;
-	_file = 0;
-
 	SharedMemoryMask = (16384 - 1);
 }
 
@@ -86,23 +78,6 @@ void trace::SharedComputationGenerator::initialize(const executive::EmulatedKern
 
 	_entry.header = path.string();
 
-	if( _file != 0 )
-	{
-		delete _archive;
-		delete _file;
-	}
-
-	_file = new std::ofstream( _entry.path.c_str() );
-
-	if( !_file->is_open() )
-	{
-		throw hydrazine::Exception(
-			"Failed to open SharedComputationGenerator kernel trace file " 
-			+ _entry.path );
-	}
-
-	_archive = new boost::archive::text_oarchive( *_file );
-	
 	_header = Header();	
 	_header.threadCount = kernel->threadCount;
 
@@ -148,7 +123,6 @@ void trace::SharedComputationGenerator::selectMaskedStSet(const executive::Emula
 					next_instr->opcode == PTXInstruction::Reconverge ||
 					next_instr->opcode == PTXInstruction::Bar ||
 					next_instr->opcode == PTXInstruction::Exit) {
-					
 					break;
 				}
 				
@@ -221,12 +195,6 @@ void trace::SharedComputationGenerator::event(const TraceEvent & event) {
 	else if (event.instruction->opcode == PTXInstruction::Ld && 
 		event.instruction->addressSpace == PTXInstruction::Shared) {
 
-		Event _event;
-		_event.blockId = blockId;
-		_event.PC = event.PC;
-		_event.opcode = event.instruction->opcode;
-		_event.type = event.instruction->d.type;
-
 		TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
 
 		PTXS32 threadID = 0;
@@ -245,15 +213,7 @@ void trace::SharedComputationGenerator::event(const TraceEvent & event) {
 			if (address < _header.sharedMemorySize) {
 				PTXS32 owningThread = sharedMemoryOwners[address];
 				if (owningThread >= 0 && owningThread != threadID) {
-
-					// loading data written by another thread
-					Access access;
-					access.threadID = threadID;
-					access.sourceThread = owningThread;
-					access.address = (PTXU32)address;
-					access.size = *size_it;
-			
-					_event.accesses.push_back(access);
+					++_header.crossThreadLds;
 				}
 			}
 			else {
@@ -262,9 +222,7 @@ void trace::SharedComputationGenerator::event(const TraceEvent & event) {
 			}
 		}
 
-		if (_event.accesses.size()) {
-			// emit event 
-			*_archive << _event;
+		if (event.memory_addresses.size()) {
 			++_header.sharedLoads;
 		}
 	}
@@ -274,29 +232,23 @@ void trace::SharedComputationGenerator::finish() {
 	if (sharedMemoryOwners) {
 		delete [] sharedMemoryOwners;
 		sharedMemoryOwners = 0;
-	}	
-	if( _file ) {		
-		_entry.updateDatabase( database );
-		delete _archive;
-
-		_file->close();	
-		delete _file;
-		_file = 0;
-		
-		std::ofstream hfile( _entry.header.c_str() );
-		boost::archive::text_oarchive harchive( hfile );
-	
-		if( !hfile.is_open() )
-		{
-			throw hydrazine::Exception(
-				"Failed to open MemoryTraceGenerator header file " 
-				+ _entry.header );
-		}
-		
-		harchive << _header;
-		
-		hfile.close();
 	}
+	
+	_entry.updateDatabase( database );
+
+	std::ofstream hfile( _entry.header.c_str() );
+	boost::archive::text_oarchive harchive( hfile );
+
+	if( !hfile.is_open() )
+	{
+		throw hydrazine::Exception(
+			"Failed to open MemoryTraceGenerator header file " 
+			+ _entry.header );
+	}
+	
+	harchive << _header;
+	
+	hfile.close();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////99
 

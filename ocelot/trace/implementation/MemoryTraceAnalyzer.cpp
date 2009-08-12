@@ -213,6 +213,15 @@ namespace trace
 			assert( header.format == TraceGenerator::MemoryTraceFormat );
 			hstream.close();	
 		
+			if( header.headerOnly )
+			{
+				std::stringstream error;
+				error << "Trace for Kernel " << kernel->name 
+					<< " was generated without support for recording " 
+					<< "individual accesses requried for histogram generation.";
+				throw hydrazine::Exception( error.str() );
+			}
+			
 			std::ifstream stream( kernel->path.c_str() );
 			boost::archive::text_iarchive archive( stream );
 						
@@ -280,9 +289,6 @@ namespace trace
 		for( KernelVector::const_iterator kernel = _kernels.begin(); 
 			kernel != _kernels.end(); ++kernel, ++kernelIndex)	{
 			
-			PTXU64 kernel_globalMemInstructions = 0;
-			PTXU64 kernel_globalMemWords = 0;
-			
 			// open the kernel's archive and visit every ld/st instruction
 			std::ifstream hstream( kernel->header.c_str() );
 			boost::archive::text_iarchive harchive( hstream );
@@ -295,27 +301,11 @@ namespace trace
 		
 			std::ifstream stream( kernel->path.c_str() );
 			boost::archive::text_iarchive archive( stream );
-						
-			for(; true; ) {
-				try {
-					MemoryTraceGenerator::Event event;
-					archive >> event;
-
-					if ((event.opcode == PTXInstruction::Ld || event.opcode == PTXInstruction::St) &&
-						event.addressSpace == PTXInstruction::Global) {
-						++kernel_globalMemInstructions;
-						kernel_globalMemWords += (PTXU64)event.accesses.size();
-					}
-					else if ((event.opcode == PTXInstruction::Tex)) {
-						++kernel_globalMemInstructions;
-						kernel_globalMemWords += (PTXU64)event.accesses.size();
-					}
-				}
-				catch( const boost::archive::archive_exception& e ) {
-					break;			
-				}
-			}	// end for(events)
 			
+			PTXU64 kernel_globalMemInstructions 
+				= header.global_instructions;
+			PTXU64 kernel_globalMemWords = header.global_bytes / 4;
+								
 			// accumulate statistics over the aggregate of kernels
 			agg_globalMemInstructions += kernel_globalMemInstructions;
 			agg_Instructions += header.dynamic_instructions;
@@ -333,12 +323,17 @@ namespace trace
 				cout << "  texture ops " << header.texture_accesses << "\n";
 				cout << "  module " << kernel->module << "\n";
 				cout << "  path " << kernel->path << "\n";
-				cout << "  mem instructions " << kernel_globalMemInstructions << "\n";
-				cout << "  instructions " << header.dynamic_instructions << "\n";
-				cout << "  memory instruction fraction " << (double)kernel_globalMemInstructions / (double)header.dynamic_instructions << "\n";
+				cout << "  mem instructions " << kernel_globalMemInstructions 
+					<< "\n";
+				cout << "  instructions " << header.dynamic_instructions 
+					<< "\n";
+				cout << "  memory instruction fraction " 
+					<< (double)kernel_globalMemInstructions 
+					/ (double)header.dynamic_instructions << "\n";
 				cout << "  mem words " << kernel_globalMemWords << "\n";
 				cout << "  operations " << header.dynamic_operations << "\n";
-				cout << "  words / operations " << (double)kernel_globalMemWords / (double)header.dynamic_operations << "\n";
+				cout << "  words / operations " << (double)kernel_globalMemWords
+					/ (double)header.dynamic_operations << "\n";
 			}
 			
 		}	// end for(kernels)
@@ -391,12 +386,6 @@ namespace trace
 		for( KernelVector::const_iterator kernel = _kernels.begin(); 
 			kernel != _kernels.end(); ++kernel)	{
 			
-			ir::PTXU64 kernel_instructions = 0;
-			ir::PTXU64 kernel_halfwarps = 0;
-			ir::PTXU64 kernel_transactions = 0;
-			ir::PTXU64 kernel_size = 0;
-			ir::PTXU64 kernel_access_counter = 0;
-			
 			// open the kernel's archive and visit every ld/st instruction
 			std::ifstream hstream( kernel->header.c_str() );
 			boost::archive::text_iarchive harchive( hstream );
@@ -415,63 +404,14 @@ namespace trace
 					"Failed to open MemoryTrace kernel trace file " 
 					+ kernel->path );
 			}
-
-			warp_size = header.thread_count;
-
-			while( true ) {
-				try {
-					MemoryTraceGenerator::Event event;
-					archive >> event;
-					
-					if (event.addressSpace == PTXInstruction::Global || event.opcode == PTXInstruction::Tex) {
-						kernel_instructions ++;					
-						
-						int lastHalfwarpID = 0;
-						std::map< ir::PTXU64, int > segments;
-
-						for (MemoryTraceGenerator::AccessVector::const_iterator acc_it = event.accesses.begin();
-							acc_it != event.accesses.end(); ++acc_it) {
-							
-							MemoryTraceGenerator::AccessVector::const_iterator next_it = acc_it;
-							++next_it;
-							
-							kernel_size += acc_it->size;
-							kernel_access_counter ++;
-							
-							ir::PTXU64 segmentSize = next_power_two(warp_size * 4) * (event.opcode == PTXInstruction::Tex ? 4 : 1);
-							
-							ir::PTXU64 segmentNumber = (acc_it->address & (~(segmentSize - 1)));
-							if (segments.find(segmentNumber) == segments.end()) {
-								segments[segmentNumber] = 1;
-							}
-							else {
-								++segments[segmentNumber];
-							}
-							
-							if (verbose) {
-								out << "[" << acc_it->threadID << "] - seg: 0x" << std::hex << segmentNumber 
-									<< " - addr: 0x" << acc_it->address << std::dec << "\n";
-							}
-							
-							int halfwarpID = acc_it->threadID / (warp_size);
-							if (lastHalfwarpID < halfwarpID || next_it == event.accesses.end()) {
-								kernel_halfwarps ++;
-								kernel_transactions += (ir::PTXU64)segments.size();
-								
-								if (verbose) {
-									out << (int)segments.size() << " transactions\n";
-								}
-								
-								lastHalfwarpID = halfwarpID;
-								segments.clear();
-							}
-						}
-					}
-				}
-				catch( const boost::archive::archive_exception& e ) {
-					break;			
-				}
-			}
+			
+			ir::PTXU64 kernel_instructions 
+				= header.global_instructions + header.texture_instructions;
+			ir::PTXU64 kernel_halfwarps = header.halfwarps;
+			ir::PTXU64 kernel_transactions = header.global_segments;
+			ir::PTXU64 kernel_size = header.global_bytes + header.shared_bytes;
+			ir::PTXU64 kernel_access_counter 
+				= header.global_accesses + header.texture_accesses;
 			
 			global_instructions += kernel_instructions;
 			global_halfwarps += kernel_halfwarps;
@@ -490,8 +430,12 @@ namespace trace
 						<< "            halfwarps: " << kernel_halfwarps << "\n"
 						<< "         transactions: " << kernel_transactions << "\n";
 				if (kernel_halfwarps) {
-					out << "  average access size: " << (double)kernel_size / (double)kernel_access_counter << " bytes\n";
-					out	<< "                  t/h: " << (double)kernel_transactions / (double)kernel_halfwarps << "\n";
+					out << "  average access size: " 
+						<< (double)kernel_size / (double)kernel_access_counter 
+						<< " bytes\n";
+					out	<< "                  t/h: " 
+						<< (double)kernel_transactions 
+						/ (double)kernel_halfwarps << "\n";
 				}
 			}
 		}
@@ -510,7 +454,9 @@ namespace trace
 					<< "            halfwarps: " << global_halfwarps << "\n"
 					<< "         transactions: " << global_transactions << "\n";
 			if (global_halfwarps) {
-				out << "                  t/h: " << (double)global_transactions / (double)global_halfwarps << "\n";
+				out << "                  t/h: " 
+					<< (double)global_transactions 
+					/ (double)global_halfwarps << "\n";
 			}
 		}
 	}
@@ -537,6 +483,16 @@ void trace::MemoryTraceAnalyzer::kernel_level_overlapped_global_memory(int segme
 		harchive >> header;
 		assert( header.format == TraceGenerator::MemoryTraceFormat );
 		hstream.close();	
+		
+		if( header.headerOnly )
+		{
+			std::stringstream error;
+			error << "Trace for Kernel " << kernel->name 
+				<< " was generated without support for recording " 
+				<< "individual accesses requried for computing " 
+				<< "kernel global memory overlaps.";
+			throw hydrazine::Exception( error.str() );
+		}
 		
 		std::ifstream stream( kernel->path.c_str() );
 		boost::archive::text_iarchive archive( stream );
@@ -704,7 +660,8 @@ public:
 		++count_Stores;
 
 		if (0x77e420 == addressBase) {
-			std::cout << " ::store(0x" << std::hex << base << std::dec << ", " << size << ", " << ctaID << ")\n" << std::flush;
+			std::cout << " ::store(0x" << std::hex << base << std::dec 
+				<< ", " << size << ", " << ctaID << ")\n" << std::flush;
 		}
 
 		for (int n = 0; n < size; n++) {
@@ -720,21 +677,14 @@ public:
 	}
 
 public:
-
 	ir::PTXU64 addressBase;
-
 	ir::PTXS32 *globalOwners;
-
 	ir::PTXU64 globalOwnersSize;
-
 	int segmentSize_pow2;
 
 public:
-
 	ir::PTXU64 count_Stores;
-
 	ir::PTXU64 count_Loads;
-
 	ir::PTXU64 count_crossCtaLoads;
 };
 
@@ -761,6 +711,16 @@ void trace::MemoryTraceAnalyzer::application_overlapped(
 				+ kernel->kernel.path );
 		}
 
+		if( kernel->header.headerOnly )
+		{
+			std::stringstream error;
+			error << "Trace for Kernel " << kernel->kernel.name 
+				<< " was generated without support for recording " 
+				<< "individual accesses requried for computing " 
+				<< "application global memory overlaps.";
+			throw hydrazine::Exception( error.str() );
+		}
+		
 		cout << "\nKernel " << kernel->kernel.name << "\n" << flush;
 
 		cout << " new base address: 0x" << hex << kernel->header.global_min_address << dec << "\n";
@@ -824,7 +784,8 @@ void trace::MemoryTraceAnalyzer::application_overlapped(
 	cout << "Application " << application.name << "\n";
 
 	// free ownership information for kernels
-	for (map<string,CTAData>::iterator it = kernelsCtaData.begin(); it != kernelsCtaData.end(); ++it) {
+	for (map<string,CTAData>::iterator it = kernelsCtaData.begin(); 
+		it != kernelsCtaData.end(); ++it) {
 		it->second.clear();
 
 		cout << "  kernel " << it->first << "\n";
@@ -839,12 +800,7 @@ void trace::MemoryTraceAnalyzer::application_overlapped(
 	For each application, examines how many times kernels refer to the same memory segments
 */
 void trace::MemoryTraceAnalyzer::application_level_overlapped_global_memory(int segmentSize_pow2) {
-	ApplicationVector applications = GetApplications(_kernels, true);
-
-	// list kernels by application
-	for (int n = 0; n < (int)applications.size(); n++) {
-		application_overlapped(applications[n], segmentSize_pow2);
-	}	
+	assertM( false, "application_level_overlapped_global_memory not implemented." );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

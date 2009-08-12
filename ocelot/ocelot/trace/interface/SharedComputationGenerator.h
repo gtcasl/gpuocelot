@@ -72,82 +72,18 @@ namespace trace {
 			ir::PTXU32 sharedMemorySize;
 			
 			/*!
-			
+				Number of shared stores
 			*/
 			ir::PTXU64 storeSharedCount;
 			
 			/*!
-			
+				Number of shared loads
 			*/
 			ir::PTXU64 loadSharedCount;
+			
+			/*! Number of cross CTA loads */
+			ir::PTXU64 crossThreadLds;
 		};
-
-		class Access {
-		public:
-			ir::PTXS32 threadID;			//! thread performing the load
-			ir::PTXS32 sourceThread;	//! last thread to write to the location being accessed
-			ir::PTXU32 address;				//! address in shared mem being accessed
-			ir::PTXU32 size;					//! size of load
-		};
-
-		typedef std::vector< Access > AccessVector;
-		
-		class Event {
-		private:
-			friend class boost::serialization::access;
-
-			template< class Archive > void save( Archive& ar, const unsigned int version ) const {
-
-				ir::PTXU32 accessCount = (ir::PTXU32)accesses.size();
-				
-				ar & PC;
-				ar & opcode;
-				ar & type;
-				ar & blockId;
-				ar & accessCount;
-			
-				for (std::vector<trace::SharedComputationGenerator::Access>::const_iterator it = accesses.begin(); 
-					it != accesses.end(); ++it) {
-					const trace::SharedComputationGenerator::Access &acc = *it;
-					ar & acc.threadID;
-					ar & acc.sourceThread;
-					ar & acc.address;
-					ar & acc.size;
-				}
-			}
-
-			template< class Archive > void load( Archive& ar, const unsigned int version ) {
-				ir::PTXU32 accessCount = 0;
-				
-				ar & PC;
-				ar & opcode;
-				ar & type;
-				ar & blockId;
-				ar & accessCount;
-			
-				for (ir::PTXU32 n = 0; n < accessCount; n++) {
-					SharedComputationGenerator::Access acc;
-					ar & acc.threadID;
-					ar & acc.sourceThread;
-					ar & acc.address;
-					ar & acc.size;
-					accesses.push_back(acc);
-				}
-			}
-			BOOST_SERIALIZATION_SPLIT_MEMBER()
-			
-		public:
-			Event( );
-			~Event();
-			
-			ir::PTXU32 PC;			
-			ir::PTXInstruction::Opcode opcode;		//! type of instruction performing the access
-			ir::PTXOperand::DataType type;				//! data type of access
-			ir::PTXU32 blockId;										//! CTA id of the block that created the event
-			AccessVector accesses;								//! set of accesses (1 or more)
-
-		};	// end Event
-
 		
 	private:
 		
@@ -187,38 +123,20 @@ namespace trace {
 
 			ir::PTXU32 SharedMemoryMask;
 	
-			/*!
-				\brief Pointer to the trace file being written to
-			*/
-			std::ofstream* _file;
-			
-			/*!
-				\brief Pointer to the archive being saved to the file.
-			*/
-			boost::archive::text_oarchive* _archive;
-			
-			/*!
-				\brief Entry for the current kernel
-			*/
+			/*!	\brief Entry for the current kernel */
 			KernelEntry _entry;
 			
-			/*!
-				\brief Header for the current kernel
-			*/
+			/*!	\brief Header for the current kernel */
 			Header _header;
 
-			/*!
-				Id of the current block
-			*/
+			/*!	Id of the current block */
 			ir::PTXU32 blockId;
 
-			/*!
-				Contains the threadID of the last thread to write to each byte of shared memory
-			*/
-			ir::PTXS32 *sharedMemoryOwners;
+			/*!	Contains the threadID of the last thread to write to 
+				each byte of shared memory */
+			ir::PTXS32* sharedMemoryOwners;
 			
 	public:
-	
 			std::set< ir::PTXU32 > maskedStSet;
 			
 	private:
@@ -245,6 +163,7 @@ namespace boost
 			ar & header.sharedMemorySize;
 			ar & header.storeSharedCount;
 			ar & header.loadSharedCount;
+			ar & header.crossThreadLds;
 		}
 	}
 }

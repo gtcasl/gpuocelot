@@ -3,17 +3,20 @@
 		<TraceDatabase>
 			"traces/database.trace"
 		</TraceDatabase>
-		<UseMemoryTraceGenerator>
+		<UseInPlaceTraces>
 			1
+		</UseInPlaceTraces>
+		<UseMemoryTraceGenerator>
+			0
 		</UseMemoryTraceGenerator>
 		<UseBranchTraceGenerator>
-			1
+			0
 		</UseBranchTraceGenerator>
 		<UseSharedComputationGenerator>
 			1
 		</UseSharedComputationGenerator>
 		<UseParallelismTraceGenerator>
-			1
+			0
 		</UseParallelismTraceGenerator>
 	</OcelotRuntime>
 </ocelot>

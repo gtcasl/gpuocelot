@@ -1,9 +1,7 @@
 /*!
 	\file BranchTraceGenerator.cpp
-	
 	\author Gregory Diamos
 	\date Monday April 13, 2009
-	
 	\brief The source file for the BranchTraceGenerator class
 */
 
@@ -28,7 +26,6 @@ namespace trace
 
 	BranchTraceGenerator::BranchTraceGenerator()
 	{
-		_file = 0;
 	}
 	
 	BranchTraceGenerator::~BranchTraceGenerator()

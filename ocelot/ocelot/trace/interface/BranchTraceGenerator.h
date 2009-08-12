@@ -1,9 +1,7 @@
 /*!
 	\file BranchTraceGenerator.h
-	
 	\author Gregory Diamos
 	\date Monday April 13, 2009
-	
 	\brief The header file for the BranchTraceGenerator class
 */
 
@@ -55,53 +53,29 @@ namespace trace
 					long long unsigned int instructions; //! Instruction count
 					double activeThreads; //! Total active threads 
 					unsigned int threads; //! Threads in the cta
-					unsigned int maxContextStackSize;	//! maximum number of elements in the call stack
+					//! maximum number of elements in the call stack
+					unsigned int maxContextStackSize; 
 			};
 			
 		private:
-			/*!
-				\brief Counter for creating unique file names.
-			*/
+			/*! \brief Counter for creating unique file names. */
 			static unsigned int _counter;
 		
 		private:
-		
-			/*!
-				\brief Pointer to the trace file being written to
-			*/
-			std::ofstream* _file;
-			
-			/*!
-				\brief Pointer to the archive being saved to the file.
-			*/
-			boost::archive::text_oarchive* _archive;
-			
-			/*!
-				\brief Entry for the current kernel
-			*/
+			/*!	\brief Entry for the current kernel	*/
 			KernelEntry _entry;
 			
-			/*!
-				\brief Header for the current kernel
-			*/
+			/*!	\brief Header for the current kernel */
 			Header _header;
 			
 		public:
 		
-			/*!
-				\brief Initialize the file pointer to 0
-			*/
+			/*!	\brief Initialize the file pointer to 0 */
 			BranchTraceGenerator();
 			
-			/*!
-				\brief Finalize the trace and dump the results to disk.
-				
-				Add a databse entry for the trace as well.
-			*/
 			~BranchTraceGenerator();
 		
-			/*!
-				\brief Initializes the trace generator when a new kernel is 
+			/*!	\brief Initializes the trace generator when a new kernel is 
 					about to be launched.
 				\param kernel The kernel used to initialize the generator
 			*/
@@ -116,6 +90,10 @@ namespace trace
 			*/
 			void event( const TraceEvent& event );
 			
+			/*!	\brief Finalize the trace and dump the results to disk.
+				
+				Add a databse entry for the trace as well.
+			*/
 			void finish();
 	
 	};

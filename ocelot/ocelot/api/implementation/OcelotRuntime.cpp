@@ -63,6 +63,7 @@ namespace ocelot
 		bool sharedTrace;
 		bool branchTrace;
 		bool parallelismTrace;
+		bool inPlaceTraces;
 		std::string database;
 		
 		report( "Parsing " << c.size() << " arguments" );
@@ -72,11 +73,13 @@ namespace ocelot
 		parse( "UseBranchTraceGenerator", branchTrace, false, c );
 		parse( "UseSharedComputationGenerator", sharedTrace, false, c );
 		parse( "UseParallelismTraceGenerator", parallelismTrace, false, c );
+		parse( "UseInPlaceTraces", inPlaceTraces, false, c );
 		
 		if( memoryTrace )
 		{
 			report( "Creating memory trace generator" );
 			_memoryTraceGenerator.database = database;
+			_memoryTraceGenerator.headerOnly = inPlaceTraces;
 			ocelot::addTraceGenerator( _memoryTraceGenerator, true, false );
 		}
 		if( sharedTrace )

@@ -47,6 +47,19 @@ trace::MemoryTraceGenerator::Header::Header() {
 	
 	global_min_address = 0;
 	global_max_address = 0;
+	
+	global_instructions = 0;
+	texture_instructions = 0;
+	
+	global_bytes = 0;
+	shared_bytes = 0;
+	texture_bytes = 0;
+	
+	global_segments = 0;
+	halfwarps = 0;
+	
+	headerOnly = false;
+	
 }
 
 trace::MemoryTraceGenerator::Header::~Header() {
@@ -54,19 +67,20 @@ trace::MemoryTraceGenerator::Header::~Header() {
 }
 
 void trace::MemoryTraceGenerator::Header::access(
-	ir::PTXInstruction::AddressSpace space) {
+	ir::PTXInstruction::AddressSpace space, ir::PTXU64 bytes) {
 	
 	using namespace ir;
 	
 	switch (space) {
-	case PTXInstruction::Const: const_accesses ++; break;
+	case PTXInstruction::Const: const_accesses++; break;
 	case PTXInstruction::Global: 
-		global_accesses ++;	
-		break;
+		global_accesses++; global_bytes += bytes; break;
 	case PTXInstruction::Local: local_accesses++; break;
 	case PTXInstruction::Param: param_accesses++; break;
-	case PTXInstruction::Shared: shared_accesses ++; break;
-	case PTXInstruction::Texture: texture_accesses ++; break;
+	case PTXInstruction::Shared: 
+		shared_accesses++; shared_bytes += bytes; break;
+	case PTXInstruction::Texture: 
+		texture_accesses++; texture_bytes += bytes; break;
 	default: break;
 	}
 }
@@ -80,7 +94,17 @@ void trace::MemoryTraceGenerator::Header::address(
 	switch (space) {
 	case PTXInstruction::Const: 
 		break;
-	case PTXInstruction::Texture: // fall through
+	case PTXInstruction::Texture:
+		{
+			if (!global_min_address || addr < global_min_address) {
+				global_min_address = addr;
+			}
+			if (!global_max_address || addr > global_max_address) {
+				global_max_address = addr;
+			}
+			++texture_instructions;
+		}
+		break;
 	case PTXInstruction::Global: 
 		{
 			if (!global_min_address || addr < global_min_address) {
@@ -89,6 +113,7 @@ void trace::MemoryTraceGenerator::Header::address(
 			if (!global_max_address || addr > global_max_address) {
 				global_max_address = addr;
 			}
+			++global_instructions;
 		}
 		break;
 	case PTXInstruction::Local: 
@@ -113,6 +138,7 @@ trace::MemoryTraceGenerator::Event::~Event() {
 
 trace::MemoryTraceGenerator::MemoryTraceGenerator() {
 	_file = 0;
+	headerOnly = false;
 }
 
 trace::MemoryTraceGenerator::~MemoryTraceGenerator() {
@@ -163,6 +189,7 @@ void trace::MemoryTraceGenerator::initialize(const executive::EmulatedKernel *ke
 	_header.blockDimY = kernel->getBlockDim().y;
 	_header.blockDimZ = kernel->getBlockDim().z;
 	_header.thread_count = kernel->threadCount;
+	_header.headerOnly = headerOnly;
 }
 
 /*!
@@ -174,70 +201,124 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 	_header.dynamic_instructions ++;
 	_header.dynamic_operations += (PTXU64)event.active.count();
 	
-	if (event.instruction->opcode == PTXInstruction::Ld || event.instruction->opcode == PTXInstruction::St) {
-		_event = Event();
-		_event.PC = event.PC;
-		_event.opcode = event.instruction->opcode;
-		_event.addressSpace = event.instruction->addressSpace;
-		_event.ctaX = event.blockId.x;
-		_event.ctaY = event.blockId.y;
-		_event.ctaZ = event.blockId.z;
+	if (event.instruction->opcode == PTXInstruction::Ld 
+		|| event.instruction->opcode == PTXInstruction::St) {
 		
-		// memory operation
-		PTXInstruction::AddressSpace addressSpace = event.instruction->addressSpace;
-		_header.access(addressSpace);
-
+		if( !headerOnly )
+		{
+			_event = Event();
+			_event.PC = event.PC;
+			_event.opcode = event.instruction->opcode;
+			_event.addressSpace = event.instruction->addressSpace;
+			_event.ctaX = event.blockId.x;
+			_event.ctaY = event.blockId.y;
+			_event.ctaZ = event.blockId.z;
+		}
+		
 		// form the accesses vector of the event
+		PTXU64 bytes = 0;
 		PTXU32 threadID = 0;
+		PTXU64 starting_address = -1;
+		PTXU32 halfwarpSize = _header.thread_count / 2;
+		
 		TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
 		for (TraceEvent::U64Vector::const_iterator it = event.memory_addresses.begin();
 			it != event.memory_addresses.end(); ++it, ++size_it, ++threadID) {
 		
-			for (; threadID < _header.thread_count && !event.active[threadID]; threadID++) { }
+			if( !headerOnly )
+			{
+				for (; threadID < _header.thread_count 
+					&& !event.active[threadID]; threadID++) { }
 			
-			Access access;
-			access.address = *it;
-			access.threadID = threadID;
-			access.size = *size_it;
-			
-			_header.address(event.instruction->addressSpace, access.address);
-			
-			_event.accesses.push_back(access);
-		}
-		
-		*_archive << _event;
-	}
-	else if (event.instruction->opcode == PTXInstruction::Tex) {
-		_event = Event();
-		_event.PC = event.PC;
-		_event.opcode = event.instruction->opcode;
-		_event.addressSpace = PTXInstruction::Texture;
-		_event.ctaX = event.blockId.x;
-		_event.ctaY = event.blockId.y;
-		_event.ctaZ = event.blockId.z;
-		
-		_header.access(PTXInstruction::Texture);
-		PTXU32 threadID = 0;
-		TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
-		TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin();
-		for (; addr_it != event.memory_addresses.end(); ++threadID) {
-			for (; threadID < _header.thread_count && !event.active[threadID]; ++threadID) { }
-			
-			for (int j = 0; j < 4; j++) {
 				Access access;
-				access.address = *addr_it;
-				access.size = *size_it;
+				access.address = *it;
 				access.threadID = threadID;
-				
-				_header.address(PTXInstruction::Texture, access.address);
-				
+				access.size = *size_it;
+
 				_event.accesses.push_back(access);
-				++addr_it;
-				++size_it;
+			}
+			
+			_header.address(event.instruction->addressSpace, *it);
+			bytes += *size_it;
+			
+			if( threadID > halfwarpSize )
+			{
+				++_header.global_segments;
+				++_header.halfwarps;
+				starting_address = *it + *size_it;
+			}
+			else if( starting_address != *it )
+			{
+				++_header.global_segments;
+				starting_address = *it + *size_it;
 			}
 		}
 		
-		*_archive << _event;
+		// memory operation
+		_header.access(event.instruction->addressSpace, bytes);
+
+		if( !headerOnly )
+		{
+			*_archive << _event;
+		}
+	}
+	else if (event.instruction->opcode == PTXInstruction::Tex) {
+		if( !headerOnly )
+		{
+			_event = Event();
+			_event.PC = event.PC;
+			_event.opcode = event.instruction->opcode;
+			_event.addressSpace = PTXInstruction::Texture;
+			_event.ctaX = event.blockId.x;
+			_event.ctaY = event.blockId.y;
+			_event.ctaZ = event.blockId.z;
+		}
+		
+		PTXU64 bytes = 0;
+		PTXU32 threadID = 0;
+		PTXU64 starting_address = -1;
+		PTXU32 halfwarpSize = _header.thread_count / 2;
+		TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
+		TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin();
+		for (; addr_it != event.memory_addresses.end(); ++threadID, ++addr_it,
+			++size_it) {
+			if( !headerOnly )
+			{
+				for (; threadID < _header.thread_count 
+					&& !event.active[threadID]; ++threadID) { }
+			
+				for (int j = 0; j < 4; j++) {
+					Access access;
+					access.address = *addr_it;
+					access.size = *size_it;
+					access.threadID = threadID;
+				
+					_event.accesses.push_back(access);
+				}
+			}
+			bytes += *size_it;
+			_header.address(PTXInstruction::Texture, *addr_it);
+			
+			if( threadID > halfwarpSize )
+			{
+				++_header.global_segments;
+				++_header.halfwarps;
+				starting_address = *addr_it + *size_it;
+			}
+			else if( starting_address != *addr_it )
+			{
+				++_header.global_segments;
+				starting_address = *addr_it + *size_it;
+			}
+			
+		}
+		
+		_header.access(PTXInstruction::Texture, bytes);
+		
+		if( !headerOnly )
+		{
+			*_archive << _event;
+		}
 	}
 }
 

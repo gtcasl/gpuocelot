@@ -7,7 +7,8 @@
 		emulator
 		
 		Reimplemented MemoryTraceGenerator class to be consistent with 
-		ParallelismTraceGenerator and BranchTraceGenerator approaches to trace recording.
+		ParallelismTraceGenerator and BranchTraceGenerator approaches 
+		to trace recording.
 */
 
 #ifndef TRACE_MEMORYTRACEGENERATOR_H_INCLUDED
@@ -43,10 +44,10 @@ namespace trace {
 			~Header();
 			
 		public:
-		
-			void access(ir::PTXInstruction::AddressSpace space);
-			
-			void address(ir::PTXInstruction::AddressSpace space, ir::PTXU64 addr);
+			void access(ir::PTXInstruction::AddressSpace space, 
+				ir::PTXU64 bytes);
+			void address(ir::PTXInstruction::AddressSpace space, 
+				ir::PTXU64 addr);
 		
 		public:
 			TraceFormat format;
@@ -66,18 +67,26 @@ namespace trace {
 			ir::PTXU64 shared_accesses;
 			ir::PTXU64 texture_accesses;
 
-			ir::PTXU64 global_min_address;
-			
+			ir::PTXU64 global_min_address;			
 			ir::PTXU64 global_max_address;
+			
+			ir::PTXU64 global_instructions;
+			ir::PTXU64 texture_instructions;
+			
+			ir::PTXU64 shared_bytes;
+			ir::PTXU64 global_bytes;
+			ir::PTXU64 texture_bytes;
+			
+			ir::PTXU64 global_segments;
+			ir::PTXU64 halfwarps;
+			
+			bool headerOnly;
 		};
 		
 		class Access {
 		public:
-			
 			int threadID;
-			
 			ir::PTXU64 address;
-			
 			ir::PTXU32 size;
 		};
 		
@@ -119,7 +128,8 @@ namespace trace {
 				}
 			}
 
-			template< class Archive > void load( Archive& ar, const unsigned int version ) {
+			template< class Archive > 
+			void load( Archive& ar, const unsigned int version ) {
 				ir::PTXU32 accessCount = 0;
 				
 				ar & PC;
@@ -145,13 +155,9 @@ namespace trace {
 			~Event();
 			
 			ir::PTXU32 PC;
-			
 			ir::PTXInstruction::Opcode opcode;
-			
 			ir::PTXInstruction::AddressSpace addressSpace;
-
 			ir::PTXU32 ctaX, ctaY, ctaZ;
-
 			AccessVector accesses;
 
 		};	// end Event
@@ -159,10 +165,12 @@ namespace trace {
 		
 	private:
 		
-		/*!
-			\brief Counter for creating unique file names.
-		*/
+		/*! \brief Counter for creating unique file names. */
 		static unsigned int _counter;
+		
+	public:
+		/*! \brief Record the header only */
+		bool headerOnly;
 	
 	public:
 
@@ -191,30 +199,19 @@ namespace trace {
 		void finish();
 
 	protected:
-	
-			/*!
-				\brief Pointer to the trace file being written to
-			*/
+			/*!	\brief Pointer to the trace file being written to */
 			std::ofstream* _file;
 			
-			/*!
-				\brief Pointer to the archive being saved to the file.
-			*/
+			/*!	\brief Pointer to the archive being saved to the file. */
 			boost::archive::text_oarchive* _archive;
 			
-			/*!
-				\brief Entry for the current kernel
-			*/
+			/*!	\brief Entry for the current kernel */
 			KernelEntry _entry;
 			
-			/*!
-				\brief Header for the current kernel
-			*/
+			/*!	\brief Header for the current kernel */
 			Header _header;
 			
-			/*!
-				\brief The current event
-			*/
+			/*!	\brief The current event */
 			Event _event;
 	};
 }
@@ -245,6 +242,17 @@ namespace boost
 			
 			ar & header.global_min_address;
 			ar & header.global_max_address;
+			
+			ar & header.halfwarps;
+			ar & header.global_segments;
+			
+			ar & header.global_instructions;
+			ar & header.texture_instructions;
+			
+			ar & header.global_bytes;
+			ar & header.texture_bytes;
+			
+			ar & header.headerOnly;
 		}
 	}
 }

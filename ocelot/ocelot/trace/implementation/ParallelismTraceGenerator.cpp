@@ -49,19 +49,26 @@ namespace trace
 		_entry.module = kernel->module->modulePath;
 		_entry.format = ParallelismTraceFormat;
 
+		std::string name = kernel->name;
+		
+		if( name.size() > 20 )
+		{
+			name.resize( 20 );
+		}
+		
 		std::stringstream stream;
 		stream << _entry.format << "_" << _counter++;
 		
 		boost::filesystem::path path( database );
 		path = path.parent_path();
-		path /= _entry.program + "_" + kernel->name + "_" + stream.str() 
+		path /= _entry.program + "_" + name + "_" + stream.str() 
 			+ ".trace";
 		path = boost::filesystem::system_complete( path );
 		
 		_entry.path = path.string();
 		
 		path = path.parent_path();
-		path /= _entry.program + "_" + kernel->name + "_" + stream.str() 
+		path /= _entry.program + "_" + name + "_" + stream.str() 
 			+ ".header";
 		path = boost::filesystem::system_complete( path );
 		

@@ -303,8 +303,9 @@ namespace trace
 			boost::archive::text_iarchive archive( stream );
 			
 			PTXU64 kernel_globalMemInstructions 
-				= header.global_instructions;
-			PTXU64 kernel_globalMemWords = header.global_bytes / 4;
+				= header.global_instructions + header.texture_instructions;
+			PTXU64 kernel_globalMemWords = header.global_words 
+				+ header.texture_words;
 								
 			// accumulate statistics over the aggregate of kernels
 			agg_globalMemInstructions += kernel_globalMemInstructions;

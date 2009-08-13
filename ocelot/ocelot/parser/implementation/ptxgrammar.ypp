@@ -9,11 +9,12 @@
 	
 	#include <iostream>
 	#include <ocelot/parser/interface/PTXParser.h>
-	#include <FlexLexer.h>
 	#include <ocelot/parser/interface/PTXLexer.h>
 	#include <hydrazine/implementation/debug.h>
 	#include <cassert>
 	#include <cstring>
+
+	#define YYERROR_VERBOSE 1
 
 	#ifdef REPORT_BASE
 	#undef REPORT_BASE
@@ -877,8 +878,7 @@ void yyerror( YYLTYPE* location, parser::PTXLexer& lexer,
 	parser::PTXParser::Exception exception;
 	std::stringstream stream;
 	stream << parser::PTXParser::toString( *location, state ) 
-		<< "Syntax error, could not match any rule for \"" << lexer.YYText() 
-		<< "\"";
+		<< " " << message;
 	exception.message = stream.str();
 	exception.error = parser::PTXParser::State::SyntaxError;
 	throw exception;

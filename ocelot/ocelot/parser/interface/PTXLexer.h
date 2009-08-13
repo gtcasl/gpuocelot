@@ -22,7 +22,7 @@ namespace parser
 		\brief A wrapper around yyFlexLexer to allow for a local variable
 	
 	*/
-	class PTXLexer : public yyFlexLexer
+	class PTXLexer : public ptxFlexLexer
 	{
 		
 		public:

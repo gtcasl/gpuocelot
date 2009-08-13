@@ -18,6 +18,8 @@
 #include <queue>
 #include <fstream>
 
+#undef yyFlexLexer
+#define yyFlexLexer ptxFlexLexer
 #include <FlexLexer.h>
 #include <ocelot/parser/interface/PTXLexer.h>
 

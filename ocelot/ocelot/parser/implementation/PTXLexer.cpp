@@ -13,6 +13,8 @@
 #ifndef PTX_LEXER_CPP_INCLUDED
 #define PTX_LEXER_CPP_INCLUDED
 
+#undef yyFlexLexer
+#define yyFlexLexer ptxFlexLexer
 #include <FlexLexer.h>
 #include <ocelot/parser/interface/PTXLexer.h>
 #include <cstring>
@@ -922,7 +924,6 @@ namespace parser
 				return "_";
 				break;
 			}
-			
 			default:
 			{
 				return "INVALID";

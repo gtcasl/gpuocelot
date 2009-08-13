@@ -9,7 +9,11 @@
 #define PTX_PARSER_H_INCLUDED
 
 #include <ocelot/parser/interface/Parser.h>
+
+#undef yyFlexLexer
+#define yyFlexLexer ptxFlexLexer
 #include <FlexLexer.h>
+
 #include <ocelot/parser/interface/PTXLexer.h>
 #include <unordered_map>
 #include <deque>

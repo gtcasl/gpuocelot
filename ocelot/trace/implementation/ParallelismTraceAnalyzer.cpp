@@ -164,8 +164,11 @@ namespace trace
 					--count;
 				}
 			
-				mimd /= *(--instructions.end()) + DBL_EPSILON;
-			
+				if( !instructions.empty() )
+				{
+					mimd /= *(--instructions.end()) + DBL_EPSILON;
+				}
+				
 				std::cout << "   SIMD parallelism: " << activity 
 					<< "\n";		
 				std::cout << "   MIMD parallelism: " << mimd << "\n";

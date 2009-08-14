@@ -150,8 +150,8 @@ void computeRhoPhi_GPU(int numK,
 
   dim3 DimRhoPhiBlock(KERNEL_RHO_PHI_THREADS_PER_BLOCK, 1);
   dim3 DimRhoPhiGrid(rhoPhiBlocks, 1);
-  //printf("Launch RhoPhi Kernel on GPU: Blocks (%d, %d), Threads Per Block %d\n",
-  //       rhoPhiBlocks, 1, KERNEL_RHO_PHI_THREADS_PER_BLOCK);
+  printf("Launch RhoPhi Kernel on GPU: Blocks (%d, %d), Threads Per Block %d\n",
+         rhoPhiBlocks, 1, KERNEL_RHO_PHI_THREADS_PER_BLOCK);
 
   ComputeRhoPhiGPU <<< DimRhoPhiGrid, DimRhoPhiBlock >>> 
       (numK, phiR_d, phiI_d, dR_d, dI_d, realRhoPhi_d, imagRhoPhi_d);
@@ -171,8 +171,8 @@ void computeFH_GPU(int numK, int numX,
   dim3 DimFHBlock(KERNEL_FH_THREADS_PER_BLOCK, 1);
   dim3 DimFHGrid(FHBlocks, 1);
 
-  //printf("Launch GPU Kernel: Grids %d, Blocks Per Grid (%d, %d), Threads Per Block (%d, %d), K Elems Per Thread %d\n",
-  //       FHGrids, DimFHGrid.x, DimFHGrid.y, DimFHBlock.x, DimFHBlock.y, KERNEL_FH_K_ELEMS_PER_GRID);
+  printf("Launch GPU Kernel: Grids %d, Blocks Per Grid (%d, %d), Threads Per Block (%d, %d), K Elems Per Thread %d\n",
+         FHGrids, DimFHGrid.x, DimFHGrid.y, DimFHBlock.x, DimFHBlock.y, KERNEL_FH_K_ELEMS_PER_GRID);
 
   for (int FHGrid = 0; FHGrid < FHGrids; FHGrid++) {
     // Put the tile of K values into constant mem
@@ -180,6 +180,7 @@ void computeFH_GPU(int numK, int numX,
 
     kValues* kValsTile = kVals + FHGridBase;
     int numElems = MIN(KERNEL_FH_K_ELEMS_PER_GRID, numK - FHGridBase);
+	printf("Copying %d bytes to constant memory\n", numElems * sizeof(kValues));
     cudaMemcpyToSymbol(c, kValsTile, numElems * sizeof(kValues), 0);
     CUDA_ERRCK;
 

@@ -114,13 +114,13 @@ int compareData(char* fName, float* outR, float* outI, int numX, float thold)
   
   if( error > thold )
   {
-  	printf("Real error is %f, greater than threshold %f", error, thold);
+  	printf("Real error is %f, greater than threshold %f\n", error, thold);
   	pass = 0;
   }
   
   if( errorI > thold )
   {
-  	printf("Imaginary error is %f, greater than threshold %f", errorI, thold);
+  	printf("Imaginary error is %f, greater than threshold %f\n", errorI, thold);
   	pass = 0;
   }
   

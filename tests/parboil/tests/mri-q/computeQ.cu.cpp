@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00007ca9_00000000-1_computeQ.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007686_00000000-1_computeQ.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00007ca9_00000000-1_computeQ.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007686_00000000-1_computeQ.cudafe1.cpp"
 # 1 "computeQ.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5724,11 +5724,11 @@ Qr, float **Qi)
 (*Qi) = (float *)malloc(numX * sizeof(float));
 }
 
-# 1 "/tmp/tmpxft_00007ca9_00000000-1_computeQ.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00007686_00000000-1_computeQ.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00007ca9_00000000-3_computeQ.fatbin.c" 1
+# 1 "/tmp/tmpxft_00007686_00000000-3_computeQ.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5790,7 +5790,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00007ca9_00000000-3_computeQ.fatbin.c" 2
+# 2 "/tmp/tmpxft_00007686_00000000-3_computeQ.fatbin.c" 2
 
 
 
@@ -5805,9 +5805,9 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3331ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
-0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3961633730ull,0x312d303030303030ull,
-0x7475706d6f635f30ull,0x2e337070632e5165ull,0x2f706d742f282069ull,0x515a2e2349426363ull,
-0x2f090a29737a4e6aull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3638363730ull,0x312d303030303030ull,
+0x7475706d6f635f30ull,0x2e337070632e5165ull,0x2f706d742f282069ull,0x66732e2349426363ull,
+0x2f090a2965797556ull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2f090a0a2d2d2d2dull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -5821,7 +5821,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2e090a0a2d2d2d2dull,
 0x22093109656c6966ull,0x646e616d6d6f633cull,0x0a223e656e696c2dull,0x3209656c69662e09ull,
-0x742f706d742f2209ull,0x30305f746678706dull,0x305f396163373030ull,0x2d30303030303030ull,
+0x742f706d742f2209ull,0x30305f746678706dull,0x305f363836373030ull,0x2d30303030303030ull,
 0x7475706d6f635f39ull,0x66616475632e5165ull,0x0a227570672e3265ull,0x3309656c69662e09ull,
 0x7475706d6f632209ull,0x090a2275632e5165ull,0x093409656c69662eull,0x696c2f7273752f22ull,
 0x38782f6363672f62ull,0x6e696c2d34365f36ull,0x342f756e672d7875ull,0x636e692f332e332eull,
@@ -6120,8 +6120,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"e292721347f5127d",(char*)"computeQ.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x749acea3};
-# 5 "/tmp/tmpxft_00007ca9_00000000-1_computeQ.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"d716b77321abef5d",(char*)"computeQ.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xb0b39487};
+# 5 "/tmp/tmpxft_00007686_00000000-1_computeQ.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -14094,7 +14094,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00007ca9_00000000-1_computeQ.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_00007686_00000000-1_computeQ.cudafe1.stub.c" 2
 
 
 
@@ -14105,7 +14105,7 @@ struct __T20 {float *__par0;float *__par1;float *__par2;int __par3;int __dummy_f
 
 
 struct __T21 {int __par0;int __par1;float *__par2;float *__par3;float *__par4;float *__par5;float *__par6;int __dummy_field;};
-static void __sti____cudaRegisterAll_43_tmpxft_00007ca9_00000000_7_computeQ_cpp1_ii_daef5873(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_00007686_00000000_7_computeQ_cpp1_ii_daef5873(void) __attribute__((__constructor__));
 void __device_stub__Z17ComputePhiMag_GPUPfS_S_i(float *__par0, float *__par1, float *__par2, int __par3){auto struct __T20 *__T24;
 *(void**)(void*)&__T24 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T24->__par3) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, int))ComputePhiMag_GPU__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, int))ComputePhiMag_GPU__entry))); };}
 
@@ -14121,8 +14121,8 @@ void __device_stub__Z12ComputeQ_GPUiiPfS_S_S_S_(int __par0, int __par1, float *_
 void ComputeQ_GPU__entry( int __cuda_0,int __cuda_1,float *__cuda_2,float *__cuda_3,float *__cuda_4,float *__cuda_5,float *__cuda_6)
 {__device_stub__Z12ComputeQ_GPUiiPfS_S_S_S_( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);}
 extern "C"{
-# 51 "/tmp/tmpxft_00007ca9_00000000-1_computeQ.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_00007ca9_00000000_7_computeQ_cpp1_ii_daef5873(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int, int, float *, float *, float *, float *, float *))ComputeQ_GPU__entry), (char*)"_Z12ComputeQ_GPUiiPfS_S_S_S_", "_Z12ComputeQ_GPUiiPfS_S_S_S_", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int))ComputePhiMag_GPU__entry), (char*)"_Z17ComputePhiMag_GPUPfS_S_i", "_Z17ComputePhiMag_GPUPfS_S_i", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&ck__cuda_shadow_variable__, (char*)"ck", "ck", 0, 16384, 1, 0);}
+# 51 "/tmp/tmpxft_00007686_00000000-1_computeQ.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_00007686_00000000_7_computeQ_cpp1_ii_daef5873(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int, int, float *, float *, float *, float *, float *))ComputeQ_GPU__entry), (char*)"_Z12ComputeQ_GPUiiPfS_S_S_S_", "_Z12ComputeQ_GPUiiPfS_S_S_S_", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int))ComputePhiMag_GPU__entry), (char*)"_Z17ComputePhiMag_GPUPfS_S_i", "_Z17ComputePhiMag_GPUPfS_S_i", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&ck__cuda_shadow_variable__, (char*)"ck", "ck", 0, 16384, 1, 0);}
 
 }
 # 151 "computeQ.cu" 2

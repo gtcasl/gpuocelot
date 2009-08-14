@@ -77,3 +77,56 @@ void outputData(char* fName, float* outR, float* outI, int numX)
   fwrite (outI, sizeof (float), numX, fid);
   fclose (fid);
 }
+
+int compareData(char* fName, float* outR, float* outI, int numX, float thold)
+{
+  FILE* fid = fopen(fName, "r");
+  uint32_t tmp32;
+
+  if (fid == NULL)
+    {
+      fprintf(stderr, "Cannot open output file\n");
+      exit(-1);
+    }
+
+  /* Write the data size */
+  tmp32 = 0;
+  fread(&tmp32, sizeof(uint32_t), 1, fid);
+
+  if( tmp32 != numX ) return 0;
+
+  float* tmpR = (float*) malloc(sizeof (float) * numX);
+  float* tmpI = (float*) malloc(sizeof (float) * numX);
+
+  int pass = 1;
+  float error = 0;
+  float errorI = 0;
+
+  /* Write the reconstructed data */
+  fread (tmpR, sizeof (float), numX, fid);
+  fread (tmpI, sizeof (float), numX, fid);
+  
+  for( unsigned int i = 0; i < numX; ++i)
+  {
+    error += ( tmpR[i] - outR[i] ) * ( tmpR[i] - outR[i] );
+    errorI += ( tmpI[i] - outI[i] ) * ( tmpI[i] - outI[i] );
+  }
+  
+  if( error > thold )
+  {
+  	printf("Real error is %f, greater than threshold %f", error, thold);
+  	pass = 0;
+  }
+  
+  if( errorI > thold )
+  {
+  	printf("Imaginary error is %f, greater than threshold %f", errorI, thold);
+  	pass = 0;
+  }
+  
+  fclose (fid);
+  free(tmpR);
+  free(tmpI);
+  
+  return pass;
+}

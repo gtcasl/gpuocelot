@@ -213,7 +213,7 @@ main (int argc, char *argv[])
       pb_SwitchToTimer(&timers, pb_TimerID_COMPUTE);
     }
 
-  if( pb_compareFilesBin(params->outFile, "data/mriFhdOut.bin", 1) )
+  if( compareData("data/mriFhdOut.bin", outR, outI, numX, 1) )
   {
     printf("TEST PASSED\n");
   }

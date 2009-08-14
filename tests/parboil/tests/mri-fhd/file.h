@@ -13,3 +13,6 @@ void inputData(char* fName, int* _numK, int* _numX,
                float** dR, float** dI);
 
 void outputData(char* fName, float* outR, float* outI, int numX);
+
+int compareData(char* fName, float* outR, float* outI, int numX, float error);
+

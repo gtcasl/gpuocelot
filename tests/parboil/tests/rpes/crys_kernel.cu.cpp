@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00007d74_00000000-1_crys_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d81_00000000-1_crys_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00007d74_00000000-1_crys_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d81_00000000-1_crys_kernel.cudafe1.cpp"
 # 1 "crys_kernel.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5669,11 +5669,11 @@ void ComputeX__entry(uint4 *d_Work, float *d_Output, int Offset);
 void DoReduction__entry(float *d_ReductionSum, float *d_Output, uint2 *
 d_FinalReduce, int block_size, int Offset);
 # 157 "crys_kernel.cu"
-# 1 "/tmp/tmpxft_00007d74_00000000-1_crys_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00006d81_00000000-1_crys_kernel.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00007d74_00000000-3_crys_kernel.fatbin.c" 1
+# 1 "/tmp/tmpxft_00006d81_00000000-3_crys_kernel.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5735,7 +5735,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00007d74_00000000-3_crys_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_00006d81_00000000-3_crys_kernel.fatbin.c" 2
 
 
 
@@ -5750,9 +5750,9 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3331ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
-0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3437643730ull,0x312d303030303030ull,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3138643630ull,0x312d303030303030ull,
 0x6b5f737972635f30ull,0x70632e6c656e7265ull,0x742f2820692e3370ull,0x23494263632f706dull,
-0x2975746a71485a2eull,0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x29664d6b4879362eull,0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x0a2d2d2d2d2d2d2dull,0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -5766,7 +5766,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,
 0x09656c69662e090aull,0x6d6d6f633c220931ull,0x656e696c2d646e61ull,0x6c69662e090a223eull,
-0x6d742f2209320965ull,0x746678706d742f70ull,0x376437303030305full,0x3030303030305f34ull,
+0x6d742f2209320965ull,0x746678706d742f70ull,0x386436303030305full,0x3030303030305f31ull,
 0x7972635f392d3030ull,0x6c656e72656b5f73ull,0x326566616475632eull,0x2e090a227570672eull,
 0x22093309656c6966ull,0x62696c2f7273752full,0x3638782f6363672full,0x756e696c2d34365full,
 0x2e342f756e672d78ull,0x6c636e692f332e33ull,0x646474732f656475ull,0x2e090a22682e6665ull,
@@ -6662,8 +6662,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"2ef7c08aa26fb03d",(char*)"crys_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x627b6ff9};
-# 5 "/tmp/tmpxft_00007d74_00000000-1_crys_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"a466d216f8bcfb83",(char*)"crys_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x64bb310c};
+# 5 "/tmp/tmpxft_00006d81_00000000-1_crys_kernel.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -14636,7 +14636,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00007d74_00000000-1_crys_kernel.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_00006d81_00000000-1_crys_kernel.cudafe1.stub.c" 2
 
 
 
@@ -14647,7 +14647,7 @@ struct __T20 {uint4 *__par0;float *__par1;int __par2;int __dummy_field;};
 
 
 struct __T21 {float *__par0;float *__par1;uint2 *__par2;int __par3;int __par4;int __dummy_field;};
-static void __sti____cudaRegisterAll_46_tmpxft_00007d74_00000000_7_crys_kernel_cpp1_ii_texCoors(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_46_tmpxft_00006d81_00000000_7_crys_kernel_cpp1_ii_texCoors(void) __attribute__((__constructor__));
 void __device_stub__Z8ComputeXP5uint4Pfi(uint4 *__par0, float *__par1, int __par2){auto struct __T20 *__T24;
 *(void**)(void*)&__T24 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint4 *, float *, int))ComputeX__entry)); (void)cudaLaunch(((char *)((void ( *)(uint4 *, float *, int))ComputeX__entry))); };}
 
@@ -14663,8 +14663,8 @@ void __device_stub__Z11DoReductionPfS_P5uint2ii(float *__par0, float *__par1, ui
 void DoReduction__entry( float *__cuda_0,float *__cuda_1,uint2 *__cuda_2,int __cuda_3,int __cuda_4)
 {__device_stub__Z11DoReductionPfS_P5uint2ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);}
 extern "C"{
-# 51 "/tmp/tmpxft_00007d74_00000000-1_crys_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_46_tmpxft_00007d74_00000000_7_crys_kernel_cpp1_ii_texCoors(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, uint2 *, int, int))DoReduction__entry), (char*)"_Z11DoReductionPfS_P5uint2ii", "_Z11DoReductionPfS_P5uint2ii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, float *, int))ComputeX__entry), (char*)"_Z8ComputeXP5uint4Pfi", "_Z8ComputeXP5uint4Pfi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texCoors, 0, "texCoors", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texSprms, 0, "texSprms", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texWghts, 0, "texWghts", 1, 0, 0);}
+# 51 "/tmp/tmpxft_00006d81_00000000-1_crys_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_46_tmpxft_00006d81_00000000_7_crys_kernel_cpp1_ii_texCoors(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, uint2 *, int, int))DoReduction__entry), (char*)"_Z11DoReductionPfS_P5uint2ii", "_Z11DoReductionPfS_P5uint2ii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, float *, int))ComputeX__entry), (char*)"_Z8ComputeXP5uint4Pfi", "_Z8ComputeXP5uint4Pfi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texCoors, 0, "texCoors", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texSprms, 0, "texSprms", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texWghts, 0, "texWghts", 1, 0, 0);}
 
 }
 # 157 "crys_kernel.cu" 2

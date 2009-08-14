@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00007d74_00000000-4_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d81_00000000-4_main.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00007d74_00000000-4_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d81_00000000-4_main.cudafe1.cpp"
 # 1 "main.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -7958,6 +7958,15 @@ fprintf(file, "%d\t%e\n", i, ReductionSum[i]);
 fclose(file);
 }
 
+if (pb_compareFiles(params->outFile, "data/rpes.out", 1))
+{
+printf("TEST PASSED\n");
+} else
+
+{
+printf("TEST FAILED\n");
+}
+
 pb_SwitchToTimer(&timers, pb_TimerID_NONE);
 pb_PrintTimerSet(&timers);
 pb_FreeParameters(params);
@@ -7981,7 +7990,7 @@ auto dim3 block(64, 1, 1);
 
 pb_SwitchToTimer(timers, pb_TimerID_GPU);
 cudaConfigureCall(grid, block) ? ((void)0) : ComputeX__entry(d_Block_Work, d_Output, StartBlock);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 178); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 187); exit(-1); } }
 if (params->synchronizeGpu) { cudaThreadSynchronize(); }
 pb_SwitchToTimer(timers, pb_TimerID_COMPUTE);
 
@@ -8002,7 +8011,7 @@ auto dim3 block(MaxBlocks, 1, 1);
 pb_SwitchToTimer(timers, pb_TimerID_GPU);
 cudaConfigureCall(grid, block) ? ((void)0) : DoReduction__entry(d_ReductionSum, d_Output, d_FinalReduce, MaxBlocks, Offset);
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 199); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 208); exit(-1); } }
 if (params->synchronizeGpu) { cudaThreadSynchronize(); }
 pb_SwitchToTimer(timers, pb_TimerID_COMPUTE);
 
@@ -8016,70 +8025,70 @@ reduction_mem, int final_mem, int
 numCoors, int numSprms)
 {
 cudaMalloc((void **)(&d_ReductionSum), reduction_mem);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 213); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 222); exit(-1); } }
 cudaMalloc((void **)(&d_Output), d_output_mem);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 215); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 224); exit(-1); } }
 cudaMalloc((void **)(&d_Block_Work), d_work_mem);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 217); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 226); exit(-1); } }
 cudaMalloc((void **)(&d_FinalReduce), final_mem);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 219); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 228); exit(-1); } }
 cudaMallocArray(&d_Coors, &(texCoors.channelDesc), numCoors, 1);
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 222); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 231); exit(-1); } }
 cudaMallocArray(&d_Sprms, &(texSprms.channelDesc), numSprms, 1);
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 225); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 234); exit(-1); } }
 cudaMallocArray(&d_Wghts, &(texWghts.channelDesc), 1 << 2, 2);
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 228); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 237); exit(-1); } }
 
 cudaMemcpy(d_Block_Work, Block_Work, d_work_mem, cudaMemcpyHostToDevice);
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 232); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 241); exit(-1); } }
 cudaMemcpy(d_FinalReduce, FinalReduce, final_mem, cudaMemcpyHostToDevice);
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 235); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 244); exit(-1); } }
 
 cudaMemcpyToArray(d_Coors, 0, 0, (void *)Coors, numCoors * sizeof(float4), cudaMemcpyHostToDevice);
 
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 240); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 249); exit(-1); } }
 cudaMemcpyToArray(d_Sprms, 0, 0, (void *)Sprms, numSprms * sizeof(float2), cudaMemcpyHostToDevice);
 
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 244); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 253); exit(-1); } }
 cudaMemcpyToArray(d_Wghts, 0, 0, (void *)(Wghts), (2) * sizeof(float), cudaMemcpyHostToDevice);
 
 
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 248); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 257); exit(-1); } }
 
 (texWghts.filterMode) = cudaFilterModeLinear;
 
 cudaBindTextureToArray(texCoors, d_Coors, texCoors.channelDesc);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 253); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 262); exit(-1); } }
 cudaBindTextureToArray(texSprms, d_Sprms, texSprms.channelDesc);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 255); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 264); exit(-1); } }
 cudaBindTextureToArray(texWghts, d_Wghts, texWghts.channelDesc);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 257); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 266); exit(-1); } }
 }
 
 void FreeAllData(pb_TimerSet *timers)
 {
 pb_SwitchToTimer(timers, pb_TimerID_COPY);
 cudaFree((void *)d_FinalReduce);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 264); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 273); exit(-1); } }
 cudaFree((void *)d_Block_Work);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 266); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 275); exit(-1); } }
 cudaFree((void *)d_Output);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 268); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 277); exit(-1); } }
 cudaFree((void *)d_ReductionSum);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 270); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 279); exit(-1); } }
 cudaFreeArray(d_Coors);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 272); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 281); exit(-1); } }
 cudaFreeArray(d_Wghts);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 274); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 283); exit(-1); } }
 cudaFreeArray(d_Sprms);
-{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 276); exit(-1); } }
+{ auto cudaError_t err; if ((err = cudaGetLastError()) != (cudaSuccess)) { printf("CUDA error: %s, line %d\n", cudaGetErrorString(err), 285); exit(-1); } }
 pb_SwitchToTimer(timers, pb_TimerID_COMPUTE);
 
 free((void *)Block_Work);
@@ -8327,11 +8336,11 @@ auto int offset2 = (((ComputeShell[shell2]).inList)[0]);
 auto int offset1 = (((ComputeShell[shell1]).inList)[0]);
 
 ((Block_Work[numElements]).y) = (((((ComputeShell[shell1]).myAtom) << 24) | (((ComputeShell[shell2]).myAtom) << 16)) | (((ComputeShell[shell3]).myAtom) << 8)) | ((ComputeShell[shell4]).myAtom);
-# 529 "main.cu"
+# 538 "main.cu"
 ((Block_Work[numElements]).z) = (((offset1 << 24) | (offset2 << 16)) | (offset3 << 8)) | offset4;
-# 535 "main.cu"
+# 544 "main.cu"
 ((Block_Work[numElements]).x) = (((a1 << 12) | (a2 << 8)) | (a3 << 4)) | a4;
-# 541 "main.cu"
+# 550 "main.cu"
 ((Block_Work[numElements]).w) = StartBlock;
 
 numElements++;
@@ -8367,7 +8376,7 @@ if (X < (3.0))
 {
 Y = X - (2.0);
 F1 = (((((((((((-(1.617027824255579922e-10)) * Y + (1.962152508657760185e-09)) * Y - (2.142344681984189847e-08)) * Y + (2.172165563363179881e-07)) * Y - (1.988501713293709805e-06)) * Y + (1.624293214389109833e-05)) * Y - (0.0001167402980398950067)) * Y + (0.0007248887320523319773)) * Y - (0.003794900037071560154)) * Y + (0.01617234886646609984)) * Y - (0.05294281483297359758)) * Y + (0.1157021808561670001);
-# 581 "main.cu"
+# 590 "main.cu"
 WW1 = (X + X) * F1 + exp(-X);
 
 } else {
@@ -8375,7 +8384,7 @@ if (X < (5.0))
 {
 Y = X - (4.0);
 F1 = (((((((((((-(2.624535647722989995e-11)) * Y + (3.240310416238230067e-10)) * Y - (3.614965656162999975e-09)) * Y + (3.760256799971000095e-08)) * Y - (3.553558319674999763e-07)) * Y + (3.022556449730999986e-06)) * Y - (2.290098979646999956e-05)) * Y + (0.000152653746114800006)) * Y - (0.0008819473758943789958)) * Y + (0.004332079495146109842)) * Y - (0.01752578216199260006)) * Y + (0.0528406320615584027);
-# 593 "main.cu"
+# 602 "main.cu"
 WW1 = (X + X) * F1 + exp(-X);
 
 } else {
@@ -8424,11 +8433,11 @@ auto float X = ((float)((((1.0) * i) * (10)) / (2 - 1)));
 }
 }
 
-# 1 "/tmp/tmpxft_00007d74_00000000-4_main.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00006d81_00000000-4_main.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00007d74_00000000-6_main.fatbin.c" 1
+# 1 "/tmp/tmpxft_00006d81_00000000-6_main.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -8490,7 +8499,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00007d74_00000000-6_main.fatbin.c" 2
+# 2 "/tmp/tmpxft_00006d81_00000000-6_main.fatbin.c" 2
 
 
 
@@ -8505,8 +8514,8 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3331ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
-0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3437643730ull,0x312d303030303030ull,
-0x632e6e69616d5f36ull,0x2f2820692e337070ull,0x494263632f706d74ull,0x6b744c4931592e23ull,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3138643630ull,0x312d303030303030ull,
+0x632e6e69616d5f36ull,0x2f2820692e337070ull,0x494263632f706d74ull,0x6239737847582e23ull,
 0x2d2d2d2f2f090a29ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -8521,7 +8530,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x656c69662e090a0aull,
 0x6d6f633c22093109ull,0x6e696c2d646e616dull,0x69662e090a223e65ull,0x742f22093209656cull,
-0x6678706d742f706dull,0x6437303030305f74ull,0x30303030305f3437ull,0x6d5f35312d303030ull,
+0x6678706d742f706dull,0x6436303030305f74ull,0x30303030305f3138ull,0x6d5f35312d303030ull,
 0x616475632e6e6961ull,0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,
 0x2f6363672f62696cull,0x6c2d34365f363878ull,0x756e672d78756e69ull,0x692f332e332e342full,
 0x732f6564756c636eull,0x22682e6665646474ull,0x09656c69662e090aull,0x2f7273752f220934ull,
@@ -9417,8 +9426,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"efb49c3c85b7dcd9",(char*)"main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x8f7a2171};
-# 5 "/tmp/tmpxft_00007d74_00000000-4_main.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"4c87aaf3aa754213",(char*)"main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xf94d6f1f};
+# 5 "/tmp/tmpxft_00006d81_00000000-4_main.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -17391,7 +17400,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00007d74_00000000-4_main.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_00006d81_00000000-4_main.cudafe1.stub.c" 2
 
 
 
@@ -17402,7 +17411,7 @@ struct __T20 {uint4 *__par0;float *__par1;int __par2;int __dummy_field;};
 
 
 struct __T21 {float *__par0;float *__par1;uint2 *__par2;int __par3;int __par4;int __dummy_field;};
-static void __sti____cudaRegisterAll_40_tmpxft_00007d74_00000000_13_main_cpp1_ii_texCoors(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_40_tmpxft_00006d81_00000000_13_main_cpp1_ii_texCoors(void) __attribute__((__constructor__));
 void __device_stub__Z8ComputeXP5uint4Pfi(uint4 *__par0, float *__par1, int __par2){auto struct __T20 *__T26;
 *(void**)(void*)&__T26 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T26->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T26->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T26->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint4 *, float *, int))ComputeX__entry)); (void)cudaLaunch(((char *)((void ( *)(uint4 *, float *, int))ComputeX__entry))); };}
 
@@ -17418,8 +17427,8 @@ void __device_stub__Z11DoReductionPfS_P5uint2ii(float *__par0, float *__par1, ui
 void DoReduction__entry( float *__cuda_0,float *__cuda_1,uint2 *__cuda_2,int __cuda_3,int __cuda_4)
 {__device_stub__Z11DoReductionPfS_P5uint2ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);}
 extern "C"{
-# 51 "/tmp/tmpxft_00007d74_00000000-4_main.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_40_tmpxft_00007d74_00000000_13_main_cpp1_ii_texCoors(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, uint2 *, int, int))DoReduction__entry), (char*)"_Z11DoReductionPfS_P5uint2ii", "_Z11DoReductionPfS_P5uint2ii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, float *, int))ComputeX__entry), (char*)"_Z8ComputeXP5uint4Pfi", "_Z8ComputeXP5uint4Pfi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texCoors, 0, "texCoors", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texSprms, 0, "texSprms", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texWghts, 0, "texWghts", 1, 0, 0);}
+# 51 "/tmp/tmpxft_00006d81_00000000-4_main.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_40_tmpxft_00006d81_00000000_13_main_cpp1_ii_texCoors(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, uint2 *, int, int))DoReduction__entry), (char*)"_Z11DoReductionPfS_P5uint2ii", "_Z11DoReductionPfS_P5uint2ii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, float *, int))ComputeX__entry), (char*)"_Z8ComputeXP5uint4Pfi", "_Z8ComputeXP5uint4Pfi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texCoors, 0, "texCoors", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texSprms, 0, "texSprms", 1, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texWghts, 0, "texWghts", 1, 0, 0);}
 
 }
-# 641 "main.cu" 2
+# 650 "main.cu" 2

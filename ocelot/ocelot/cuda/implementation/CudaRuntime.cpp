@@ -1500,11 +1500,15 @@ namespace cuda
 			GlobalMap::const_iterator global = 
 				binary->second.globals.find( name );
 		
+			report( "Found global symbol " << name );
+		
 			if( global != binary->second.globals.end() )
 			{
 				return global->second;
 			}
 		}
+		
+		report( "Global symbol " << name << " not found" );
 		
 		throw hydrazine::Exception( formatError( "Invalid Symbol " + name ), 
 			cudaErrorInvalidSymbol );			

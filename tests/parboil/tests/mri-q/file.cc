@@ -74,3 +74,43 @@ void outputData(char* fName, float* outR, float* outI, int numX)
   fwrite (outI, sizeof (float), numX, fid);
   fclose (fid);
 }
+
+extern "C"
+int compareData(char* fName, float* outR, float* outI, int numX, float error)
+{
+  FILE* fid = fopen(fName, "r");
+  uint32_t tmp32;
+
+  if (fid == NULL)
+    {
+      fprintf(stderr, "Cannot open output file\n");
+      exit(-1);
+    }
+
+  /* Write the data size */
+  tmp32 = 0;
+  fread(&tmp32, sizeof(uint32_t), 1, fid);
+
+  if( tmp32 != numX ) return 0;
+
+  float* tmpR = (float*) malloc(sizeof (float) * numX);
+  float* tmpI = (float*) malloc(sizeof (float) * numX);
+
+  int pass = 1;
+
+  /* Write the reconstructed data */
+  fread (tmpR, sizeof (float), numX, fid);
+  fread (tmpI, sizeof (float), numX, fid);
+  
+  for( unsigned int i = 0; i < numX; ++i)
+  {
+    if( ( tmpR[i] - outR[i] ) * ( tmpR[i] - outR[i] ) > error ) pass = 0;
+    if( ( tmpI[i] - outI[i] ) * ( tmpI[i] - outI[i] ) > error ) pass = 0;
+  }
+  
+  fclose (fid);
+  free(tmpR);
+  free(tmpI);
+  
+  return pass;
+}

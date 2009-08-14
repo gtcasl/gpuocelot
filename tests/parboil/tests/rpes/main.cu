@@ -151,6 +151,15 @@ int main(int argc, char* argv[])
         }
       fclose(file);
     }
+    
+  if( pb_compareFiles(params->outFile, "data/rpes.out", 1) )
+  {
+    printf("TEST PASSED\n");
+  }
+  else
+  {
+  	printf("TEST FAILED\n");
+  }
 
   pb_SwitchToTimer( &timers, pb_TimerID_NONE );
   pb_PrintTimerSet( &timers );

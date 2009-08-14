@@ -21,7 +21,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define REPORT_MEMORY 1
 
 namespace cuda
@@ -457,7 +457,7 @@ cudaError_t CUDARTAPI cudaMemcpyToSymbol(const char *symbol, const void *src,
 			if( cuda::runtime.isGlobal( symbol ) )
 			{
 				return cudaMemcpy( (char*)symbol + offset, src, count, kind );
-			}			
+			}
 			return cudaErrorInvalidSymbol;
 		}
 		else

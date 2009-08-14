@@ -7,16 +7,16 @@
 			1
 		</UseInPlaceTraces>
 		<UseMemoryTraceGenerator>
-			1
+			0
 		</UseMemoryTraceGenerator>
 		<UseBranchTraceGenerator>
-			1
+			0
 		</UseBranchTraceGenerator>
 		<UseSharedComputationGenerator>
-			1
+			0
 		</UseSharedComputationGenerator>
 		<UseParallelismTraceGenerator>
-			1
+			0
 		</UseParallelismTraceGenerator>
 	</OcelotRuntime>
 </ocelot>

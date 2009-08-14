@@ -191,7 +191,7 @@ main (int argc, char *argv[]) {
       pb_SwitchToTimer(&timers, pb_TimerID_COMPUTE);
     }
 
-  if( pb_compareFilesBin(params->outFile, "data/mriQOut.bin", 1) )
+  if( compareData("data/mriQOut.bin", Qr, Qi, numX, 1) )
   {
     printf("TEST PASSED\n");
   }

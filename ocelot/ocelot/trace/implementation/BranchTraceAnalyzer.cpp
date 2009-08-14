@@ -77,6 +77,7 @@ namespace trace
 		long long unsigned int totalDivergence = 0;
 		long long unsigned int totalBranches = 0;
 		long long unsigned int totalInstructions = 0;
+		long long unsigned int totalKernels = 0;
 		double averageActive = 0;
 		double averageThreads = 0;
 
@@ -146,19 +147,22 @@ namespace trace
 			totalDivergence += localDivergence;
 			totalInstructions += localInstructions;
 			totalBranches += localBranches;
+			totalKernels += vector->second.size();
 
-			std::cout << "Program " << vector->first << " local statistics:\n";
-			std::cout << " local instructions: " << localInstructions << "\n";
-			std::cout << " local branches: " << localBranches << "\n";
-			std::cout << " local average threads: " << localThreads << "\n";
-			std::cout << " local divergent branches: " 
+			std::cout << "Program " << vector->first << " statistics:\n";
+			std::cout << " kernels: " << vector->second.size() << "\n";
+			std::cout << " instructions: " << localInstructions << "\n";
+			std::cout << " branches: " << localBranches << "\n";
+			std::cout << " average threads: " << localThreads << "\n";
+			std::cout << " divergent branches: " 
 				<< ( ( localDivergence * 100.0 ) 
 				/ ( localBranches + DBL_EPSILON ) ) << "%\n";
-			std::cout << " local average active: " << localActive	<< "%\n\n";
+			std::cout << " average active: " << localActive	<< "%\n\n";
 		
 		}
 		
 		std::cout << "Aggregate statistics:\n";
+		std::cout << " total kernels: " << totalKernels << "\n";
 		std::cout << " total instructions: " << totalInstructions << "\n";
 		std::cout << " total branches: " << totalBranches << "\n";
 		std::cout << " average threads: " << averageThreads << "\n";

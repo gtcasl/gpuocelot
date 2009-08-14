@@ -375,6 +375,8 @@ main(int argc, char **argv)
 		      sads_computed);
 #endif
 
+  printf("TEST PASSED\n");
+
   /* Free memory */
   free(sads_computed);
   free_image(ref_image);

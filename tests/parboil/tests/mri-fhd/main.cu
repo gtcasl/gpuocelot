@@ -127,6 +127,7 @@ main (int argc, char *argv[])
     setupMemoryGPU(numK, sizeof(float), phiR_d, phiR);
     setupMemoryGPU(numK, sizeof(float), phiI_d, phiI);
     setupMemoryGPU(numK, sizeof(float), dR_d, dR);
+    printf( "First dR %f, %x, %x\n", *dR, dR, dR_d );
     setupMemoryGPU(numK, sizeof(float), dI_d, dI);
     cudaMalloc((void **)&realRhoPhi_d, numK * sizeof(float));
     CUDA_ERRCK;

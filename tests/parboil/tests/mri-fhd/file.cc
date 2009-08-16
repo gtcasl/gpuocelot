@@ -11,6 +11,8 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <assert.h>
+#include <string.h>
 
 #if __BYTE_ORDER != __LITTLE_ENDIAN
 # error "File I/O is not implemented for this system: wrong endianness."
@@ -30,30 +32,46 @@ void inputData(char* fName, int* _numK, int* _numX,
       fprintf(stderr, "Cannot open input file\n");
       exit(-1);
     }
-  fread (&numK, sizeof (int), 1, fid);
+  size_t count;
+  
+  count = fread (&numK, sizeof (int), 1, fid);
+  assert( count == 1 );
   *_numK = numK;
-  fread (&numX, sizeof (int), 1, fid);
+  count = fread (&numX, sizeof (int), 1, fid);
+  assert( count == 1 );
   *_numX = numX;
   *kx = (float *) memalign(16, numK * sizeof (float));
-  fread (*kx, sizeof (float), numK, fid);
+  count = fread (*kx, sizeof (float), numK, fid);
+  assert( count == numK );
   *ky = (float *) memalign(16, numK * sizeof (float));
-  fread (*ky, sizeof (float), numK, fid);
+  count = fread (*ky, sizeof (float), numK, fid);
+  assert( count == numK );
   *kz = (float *) memalign(16, numK * sizeof (float));
-  fread (*kz, sizeof (float), numK, fid);
+  count = fread (*kz, sizeof (float), numK, fid);
+  assert( count == numK );
   *x = (float *) memalign(16, numX * sizeof (float));
-  fread (*x, sizeof (float), numX, fid);
+  count = fread (*x, sizeof (float), numX, fid);
+  assert( count == numX );
   *y = (float *) memalign(16, numX * sizeof (float));
-  fread (*y, sizeof (float), numX, fid);
+  count = fread (*y, sizeof (float), numX, fid);
+  assert( count == numX );
   *z = (float *) memalign(16, numX * sizeof (float));
-  fread (*z, sizeof (float), numX, fid);
+  count = fread (*z, sizeof (float), numX, fid);
+  assert( count == numX );
   *phiR = (float *) memalign(16, numK * sizeof (float));
-  fread (*phiR, sizeof (float), numK, fid);
+  count = fread (*phiR, sizeof (float), numK, fid);
+  assert( count == numK );
   *phiI = (float *) memalign(16, numK * sizeof (float));
-  fread (*phiI, sizeof (float), numK, fid);
+  count = fread (*phiI, sizeof (float), numK, fid);
+  assert( count == numK );
   *dR = (float *) memalign(16, numK * sizeof (float));
-  fread (*dR, sizeof (float), numK, fid);
+  //count = fread (*dR, sizeof (float), numK, fid);
+  //assert( count == numK );
+  memset( *dR, 0, sizeof( float ) * numK );
   *dI = (float *) memalign(16, numK * sizeof (float));
-  fread (*dI, sizeof (float), numK, fid);
+  //count = fread (*dI, sizeof (float), numK, fid);
+  //assert( count == numK );
+  memset( *dI, 0, sizeof( float ) * numK );
   fclose (fid); 
 }
 

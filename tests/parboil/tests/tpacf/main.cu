@@ -186,6 +186,15 @@ main( int argc, char** argv)
   if(outfile != stdout)
     fclose(outfile);
 
+  if( pb_compareFiles(params->outFile, "data/tpacf.out", 1) )
+  {
+    printf("TEST PASSED\n");
+  }
+  else
+  {
+  	printf("TEST FAILED\n");
+  }
+
   // cleanup memory
   free(new_hists);
   free( h_x_data);

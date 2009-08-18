@@ -272,6 +272,10 @@ namespace ir
 				public:
 					/*! \brief The constructor zeros out the attribute */
 					Parameter();
+					/*! \brief Assignment operator from an Operand */
+					const Parameter& operator=( const Operand& op );
+					/*! \brief Assignment operator from an Operand */
+					const Parameter& operator=( const Parameter& op );
 			};
 			
 			/*! \brief A vector of operands */
@@ -297,7 +301,6 @@ namespace ir
 			static std::string toString( Comparison comp );
 			/*! \brief Convert a series of function attributes to a string */
 			static std::string functionAttributesToString( int attributes );
-			
 			/*! \brief Determine if a datatype is an int */
 			static bool isInt( DataType d );
 			

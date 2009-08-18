@@ -25,7 +25,8 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
-	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions
+	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
+	TestPTXToLLVMTranslator
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
 	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la \
 	libOcelot.la libOcelotTranslator.la
@@ -303,6 +304,17 @@ TestLLVMInstructions_SOURCES = ocelot/ir/test/TestLLVMInstructions.cpp
 TestLLVMInstructions_LDADD = libOcelotIr.la libhydrazine.la
 TestLLVMInstructions_LDFLAGS = -static
 ################################################################################
+
+################################################################################
+## TestPTXToLLVMTranslator
+TestPTXToLLVMTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+TestPTXToLLVMTranslator_SOURCES = \
+	ocelot/translator/test/TestPTXToLLVMTranslator.cpp
+TestPTXToLLVMTranslator_LDADD = libOcelotTranslator.la libOcelotAnalysis.la \
+	libOcelotIr.la libOcelotParser.la libhydrazine.la
+TestPTXToLLVMTranslator_LDFLAGS = -static
+################################################################################
+
 
 ################################################################################
 ## Headers

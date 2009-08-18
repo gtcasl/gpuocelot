@@ -208,6 +208,22 @@ namespace ir
 	
 	}
 
+	const LLVMInstruction::Parameter& LLVMInstruction::Parameter::operator=( 
+		const Operand& op )
+	{
+		Operand::operator=( op );
+		return *this;
+	}
+
+	const LLVMInstruction::Parameter& LLVMInstruction::Parameter::operator=( 
+		const Parameter& p )
+	{
+		attribute = p.attribute;
+		Operand::operator=( p );
+		return *this;
+	}
+
+
 	std::string LLVMInstruction::toString( Opcode code )
 	{
 		switch( code )

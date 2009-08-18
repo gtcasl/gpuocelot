@@ -34,7 +34,6 @@ namespace test
 
 	TestParser::StringVector TestParser::_getFileNames() const
 	{
-	
 		StringVector names;
 		
 		fs::path path = input;
@@ -80,7 +79,6 @@ namespace test
 
 	bool TestParser::_testParse()
 	{
-	
 		report( " Parsing file " << ptxFile );
 		
 		std::stringstream stream;
@@ -99,11 +97,9 @@ namespace test
 		
 		if( output )
 		{
-		
 			std::ofstream outFile( outputFile.c_str() );
 			first.write( outFile );
 			outFile.close();
-		
 		}
 		
 		report( " Running second parse pass" );
@@ -140,12 +136,10 @@ namespace test
 		}
 		
 		return true;
-	
 	}
 
 	bool TestParser::doTest()
 	{
-
 		StringVector files = _getFileNames();
 		
 		report( "Parsing the following files:\n " 
@@ -153,46 +147,38 @@ namespace test
 		
 		for( StringVector::iterator fi = files.begin(); 
 			fi != files.end(); ++fi )
-		{
-		
+		{	
 			ptxFile = *fi;
 		
 			if(  !_testParse( ) )
 			{
-		
 				status << "For file " << ptxFile 
 					<< ", Test Point 1 (Parse): Failed\n";
 				return false;
-		
 			}
 		
 			status << "For file " << ptxFile 
 				<< ", Test Point 1 (Parse): Passed\n";
-			
 		}
 			
 		return true;
-	
 	}
 
 	TestParser::TestParser()
 	{
-	
 		name = "TestParser";
 		
 		description = "A test for the PTXParser class. Test Points: 1) Load a";
 		description += " PTX file and run it through the parser generating a";
 		description += " module.  Write the module to an intermediate stream.";
 		description += "  Parse the stream again generating a new module, ";
-		description += "compare both to make sure that they match.";
-	
+		description += "compare both to make sure that they match.";	
 	}
 
 }
 
 int main( int argc, char** argv )
 {
-
 	hydrazine::ArgumentParser parser( argc, argv );
 	test::TestParser test;
 	parser.description( test.testDescription() );
@@ -211,7 +197,6 @@ int main( int argc, char** argv )
 	test.test();
 
 	return test.passed();
-
 }
 
 #endif

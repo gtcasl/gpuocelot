@@ -107,6 +107,17 @@ bool ir::PTXOperand::isInt( DataType type ) {
 	return false;
 }
 
+bool ir::PTXOperand::isSigned( DataType type ) {
+	switch( type ) {
+		case s8:  /* fall through */
+		case s16: /* fall through */
+		case s32: /* fall through */
+		case s64: return true; break;
+		default: break;
+	}
+	return false;
+}
+
 unsigned int ir::PTXOperand::bytes( DataType type ) {
 	assert( type != TypeSpecifier_invalid );
 	switch( type ) {

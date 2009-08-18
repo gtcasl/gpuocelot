@@ -122,6 +122,7 @@ namespace ir {
 		static std::string toString( AddressMode );
 		static bool isFloat( DataType );
 		static bool isInt( DataType );
+		static bool isSigned( DataType );
 		static unsigned int bytes( DataType );
 		static bool valid( DataType, DataType );
 		

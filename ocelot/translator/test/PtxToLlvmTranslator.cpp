@@ -44,8 +44,7 @@ void PtxToLlvmTranslator::translate()
 		llvmFile << "// Translated from PTX to LLVM by Ocelot " 
 			<< version.toString() << " \n";		
 		llvmFile << translatedKernel->code();
-	}
-	
+	}	
 }
 
 int main( int argc, char** argv )

@@ -359,6 +359,7 @@ namespace translator
 				
 				_phiProducers.insert( std::make_pair( phi->d, 
 					_llvmKernel->_statements.size() ) );
+				report( "   Adding phi destination $" << stream.str() );
 				_phiIndices.push_back( _llvmKernel->_statements.size() );
 				_add( p );
 			}
@@ -515,6 +516,9 @@ namespace translator
 		}
 		else
 		{
+			assertM( !(i.modifier & ir::PTXInstruction::sat), 
+				"Saturation for ptx int add not supported." );
+
 			ir::LLVMAdd add;
 			
 			add.d = _destination( i );
@@ -536,9 +540,14 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateAnd( const ir::PTXInstruction& i )
 	{						
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMAnd And;
+		
+		And.d = _destination( i );
+		And.a = _translate( i.a );
+		And.b = _translate( i.b );
+
+		_add( And );
+		_predicateEpilogue( i, And.d );
 	}
 
 	void PTXToLLVMTranslator::_translateAtom( const ir::PTXInstruction& i )
@@ -550,9 +559,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		_yield();
 	}
 
 	void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i, 
@@ -567,9 +574,11 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateBrkpt( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		call.name = "translator::breakpoint";
+		
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateCall( const ir::PTXInstruction& i )
@@ -581,16 +590,38 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateCNot( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMSelect select;
+		select.d = _destination( i );
+		select.condition = _translate( i.a );
+		select.a = select.condition;
+		select.a.constant = true;
+		select.a.i64 = 0;
+		select.b = select.a;		
+		select.b.i64 = -1;
+	
+		_add( select );
+		_predicateEpilogue( i, select.d );
 	}
 
 	void PTXToLLVMTranslator::_translateCos( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.name = "translator::cosFtz";
+		}
+		else
+		{
+			call.name = "translator::cos";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
@@ -1276,16 +1307,60 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateDiv( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		if( ir::PTXOperand::isFloat( i.type ) )
+		{
+			ir::LLVMFdiv div;
+			
+			div.d = _destination( i );
+			div.a = _translate( i.a );
+			div.b = _translate( i.b );
+			
+			_add( div );
+			_predicateEpilogue( i, div.d );		
+		}
+		else if( ir::PTXOperand::isSigned( i.type ) )
+		{
+			ir::LLVMSdiv div;
+			
+			div.d = _destination( i );
+			div.a = _translate( i.a );
+			div.b = _translate( i.b );
+			
+			_add( div );
+			_predicateEpilogue( i, div.d );		
+		}
+		else
+		{
+			ir::LLVMUdiv div;
+			
+			div.d = _destination( i );
+			div.a = _translate( i.a );
+			div.b = _translate( i.b );
+			
+			_add( div );
+			_predicateEpilogue( i, div.d );				
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateEx2( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.name = "translator::ex2Ftz";
+		}
+		else
+		{
+			call.name = "translator::ex2";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
@@ -1295,6 +1370,10 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 	{
+		ir::LLVMLoad load;
+		
+		load.d = _destination( i );
+
 		ir::LLVMInttoptr inttoptr;
 		
 		if( i.a.offset != 0 )
@@ -1311,7 +1390,7 @@ namespace translator
 			_add( add );
 			
 			inttoptr.a = add.d;
-			inttoptr.d = inttoptr.a;
+			inttoptr.d = load.d;
 			inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
 			inttoptr.d.name = _tempRegister();
 		
@@ -1320,16 +1399,13 @@ namespace translator
 		else
 		{
 			inttoptr.a = _translate( i.a );
-			inttoptr.d = inttoptr.a;
+			inttoptr.d = load.d;
 			inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
 			inttoptr.d.name = _tempRegister();
 		
 			_add( inttoptr );
 		}		
 				
-		ir::LLVMLoad load;
-		
-		load.d = _destination( i );
 		load.a = inttoptr.d;
 		
 		if( i.volatility == ir::PTXInstruction::Volatile )
@@ -1337,7 +1413,7 @@ namespace translator
 			load.isVolatile = true;
 		}
 		
-		load.alignment = i.a.bytes();
+		load.alignment = i.d.bytes();
 		
 		_add( load );
 		_predicateEpilogue( i, load.d );
@@ -1345,9 +1421,23 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.name = "translator::lg2Ftz";
+		}
+		else
+		{
+			call.name = "translator::lg2";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateMad24( const ir::PTXInstruction& i )
@@ -1373,9 +1463,21 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateMembar( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.level == ir::PTXInstruction::CtaLevel )
+		{
+			call.name = "translator::membarCta";
+		}
+		else
+		{
+			call.name = "translator::membarGlobal";
+		}
+		
+		call.d = _destination( i );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateMin( const ir::PTXInstruction& i )
@@ -1387,24 +1489,44 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 	{
-		ir::LLVMSelect select;
-		select.d = _destination( i );
-		select.a = _translate( i.a );
-		select.b = select.a;
-		select.condition.type.category = ir::LLVMInstruction::Type::Element;
-		select.condition.type.type = ir::LLVMInstruction::I1;
-		select.condition.constant = true;
-		select.condition.i1 = true;
+		if( i.d.bytes() == i.a.bytes() )
+		{
+			ir::LLVMSelect select;
+			select.d = _destination( i );
+			select.a = _translate( i.a );
+			select.b = select.a;
+			select.condition.type.category = ir::LLVMInstruction::Type::Element;
+			select.condition.type.type = ir::LLVMInstruction::I1;
+			select.condition.constant = true;
+			select.condition.i1 = true;
 		
-		_add( select );
-		_predicateEpilogue( i, select.d );
+			_add( select );
+			_predicateEpilogue( i, select.d );
+		}
+		else
+		{
+			_translateCvt( i );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateMul24( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		if( i.modifier & ir::PTXInstruction::lo )
+		{
+			// 24-bit lo is the same as 32-bit lo
+			ir::LLVMMul mul;
+					
+			mul.d = _destination( i );
+			mul.a = _translate( i.a );
+			mul.b = _translate( i.b );
+		
+			_add( mul );
+			_predicateEpilogue( i, mul.d );		
+		}
+		else
+		{
+			assertM( false, "No support for hi multiply" );
+		}	
 	}
 
 	void PTXToLLVMTranslator::_translateMul( const ir::PTXInstruction& i )
@@ -1476,37 +1598,76 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateNeg( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMSub sub;
+		
+		sub.d = _destination( i );
+		sub.b = _translate( i.a );
+		sub.a = sub.b;
+		sub.a.constant = true;
+		sub.a.i64 = 0;
+		
+		_add( sub );
+		_predicateEpilogue( i, sub.d );
 	}
 
 	void PTXToLLVMTranslator::_translateNot( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMXor Not;
+		
+		Not.d = _destination( i );
+		Not.a = _translate( i.a );
+		Not.b = Not.a;
+		Not.b.constant = true;
+		Not.b.i64 = -1;
+		
+		_add( Not );
+		_predicateEpilogue( i, Not.d );
 	}
 
 	void PTXToLLVMTranslator::_translateOr( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMOr Or;
+		
+		Or.d = _destination( i );
+		Or.a = _translate( i.a );
+		Or.b = _translate( i.b );
+
+		_add( Or );
+		_predicateEpilogue( i, Or.d );
 	}
 
 	void PTXToLLVMTranslator::_translatePmevent( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		call.name = "translator::pmevent";
+		
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateRcp( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMFdiv div;
+		
+		div.d = _destination( i );
+		div.b = _translate( i.a );
+		div.a = div.b;
+		div.a.constant = true;
+		
+		if( i.a.type == ir::PTXOperand::f32 )
+		{
+			div.a.f32 = 1.0;
+		}
+		else
+		{
+			div.a.f64 = 1.0;
+		}
+		
+		_add( div );
+		_predicateEpilogue( i, div.d );
 	}
 
 	void PTXToLLVMTranslator::_translateRed( const ir::PTXInstruction& i )
@@ -1525,16 +1686,28 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		_yield();
 	}
 
 	void PTXToLLVMTranslator::_translateRsqrt( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.name = "translator::rsqrtFtz";
+		}
+		else
+		{
+			call.name = "translator::rsqrt";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSad( const ir::PTXInstruction& i )
@@ -1546,9 +1719,15 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateSelP( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMSelect select;
+		
+		select.d = _destination( i );
+		select.a = _translate( i.a );
+		select.b = _translate( i.b );
+		select.condition = _translate( i.c );
+		
+		_add( select );
+		_predicateEpilogue( i, select.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSet( const ir::PTXInstruction& i )
@@ -1695,23 +1874,61 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateShl( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMShl shift;
+		
+		shift.d = _destination( i );
+		shift.a = _translate( i.a );
+		shift.b = _translate( i.b );
+		
+		_add( shift );
+		_predicateEpilogue( i, shift.d );
 	}
 
 	void PTXToLLVMTranslator::_translateShr( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		if( ir::PTXOperand::isSigned( i.type ) )
+		{
+			ir::LLVMLshr shift;
+			
+			shift.d = _destination( i );
+			shift.a = _translate( i.a );
+			shift.b = _translate( i.b );
+			
+			_add( shift );
+			_predicateEpilogue( i, shift.d );
+		}
+		else
+		{
+			ir::LLVMAshr shift;
+			
+			shift.d = _destination( i );
+			shift.a = _translate( i.a );
+			shift.b = _translate( i.b );
+			
+			_add( shift );
+			_predicateEpilogue( i, shift.d );		
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateSin( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.name = "translator::sinFtz";
+		}
+		else
+		{
+			call.name = "translator::sin";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSlCt( const ir::PTXInstruction& i )
@@ -1723,9 +1940,23 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateSqrt( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.name = "translator::sqrtFtz";
+		}
+		else
+		{
+			call.name = "translator::sqrt";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
@@ -1782,9 +2013,69 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateSub( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		if( ir::PTXOperand::isFloat( i.type ) )
+		{
+			ir::LLVMFsub sub;
+		
+			sub.d = _destination( i );
+			sub.a = _translate( i.a );
+			sub.b = _translate( i.b );
+		
+			_add( sub );
+			
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				ir::LLVMFcmp compare;
+				
+				compare.d.name = _tempRegister();
+				compare.d.type.type = ir::LLVMInstruction::I1;
+				compare.d.type.category = ir::LLVMInstruction::Type::Element;
+				compare.comparison = ir::LLVMInstruction::Ule;
+				compare.a = sub.d;
+				compare.b.type.type = compare.a.type.type;
+				compare.b.type.category = ir::LLVMInstruction::Type::Element;
+				compare.b.constant = true;
+				if( compare.b.type.type == ir::LLVMInstruction::F32 )
+				{
+					compare.b.f32 = 0;
+				}
+				else
+				{
+					compare.b.f64 = 0;
+				}
+				
+				ir::LLVMSelect select;
+				
+				select.d.name = _tempRegister();
+				select.d.type.type = sub.d.type.type;
+				select.d.type.category = sub.d.type.category;
+				select.condition = compare.d;
+				select.a = compare.b;
+				select.b = sub.d;
+				
+				_add( compare );
+				_add( select );
+				_predicateEpilogue( i, select.d );
+			}
+			else
+			{
+				_predicateEpilogue( i, sub.d );
+			}
+		}
+		else
+		{
+			assertM( !(i.modifier & ir::PTXInstruction::sat), 
+				"Saturation for ptx int sub not supported." );
+		
+			ir::LLVMSub sub;
+			
+			sub.d = _destination( i );
+			sub.a = _translate( i.a );
+			sub.b = _translate( i.b );
+		
+			_add( sub );
+			_predicateEpilogue( i, sub.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateSubC( const ir::PTXInstruction& i )
@@ -1803,9 +2094,12 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateTrap( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMCall call;
+		
+		call.name = "translator::trap";
+		
+		_add( call );
+		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateVote( const ir::PTXInstruction& i )
@@ -1817,9 +2111,14 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateXor( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Opcode " 
-			<< ir::PTXInstruction::toString( i.opcode ) 
-			<< " not supported." );
+		ir::LLVMXor Xor;
+		
+		Xor.d = _destination( i );
+		Xor.a = _translate( i.a );
+		Xor.b = _translate( i.b );
+
+		_add( Xor );
+		_predicateEpilogue( i, Xor.d );
 	}
 
 	std::string PTXToLLVMTranslator::_tempRegister()

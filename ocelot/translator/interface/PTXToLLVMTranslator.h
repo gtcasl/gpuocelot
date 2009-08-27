@@ -76,7 +76,6 @@ namespace translator
 			void _translateDiv( const ir::PTXInstruction& i );
 			void _translateEx2( const ir::PTXInstruction& i );
 			void _translateExit( const ir::PTXInstruction& i );
-			void _translateVectorLoad( const ir::PTXInstruction& i );
 			void _translateLd( const ir::PTXInstruction& i );
 			void _translateLg2( const ir::PTXInstruction& i );
 			void _translateMad24( const ir::PTXInstruction& i );
@@ -105,7 +104,6 @@ namespace translator
 			void _translateSin( const ir::PTXInstruction& i );
 			void _translateSlCt( const ir::PTXInstruction& i );
 			void _translateSqrt( const ir::PTXInstruction& i );
-			void _translateVectorStore( const ir::PTXInstruction& i );
 			void _translateSt( const ir::PTXInstruction& i );
 			void _translateSub( const ir::PTXInstruction& i );
 			void _translateSubC( const ir::PTXInstruction& i );

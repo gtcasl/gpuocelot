@@ -1368,23 +1368,21 @@ namespace translator
 		_yield();
 	}
 
-	void PTXToLLVMTranslator::_translateVectorLoad( 
-		const ir::PTXInstruction& i )
-	{
-		assertM( false, "No support for vector loads." );
-	}
-	
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
-	{
-		if( !i.d.array.empty() )
-		{
-			_translateVectorLoad( i );
-			return;
-		}
-		
+	{		
 		ir::LLVMLoad load;
 		
-		load.d = _destination( i );
+		if( i.d.vec != ir::PTXOperand::v1 )
+		{
+			load.d = _translate( i.d.array.front() );
+			load.d.type.category = ir::LLVMInstruction::Type::Vector;
+			load.d.type.vector = i.d.vec;
+			load.d.name = _tempRegister();
+		}
+		else
+		{
+			load.d = _destination( i );
+		}
 
 		ir::LLVMInttoptr inttoptr;
 		
@@ -1426,9 +1424,59 @@ namespace translator
 		}
 		
 		load.alignment = i.d.bytes();
-		
+				
 		_add( load );
-		_predicateEpilogue( i, load.d );
+		
+		for( ir::PTXOperand::Array::const_iterator 
+			destination = i.d.array.begin(); 
+			destination != i.d.array.end(); ++destination )
+		{
+			ir::LLVMInstruction::Operand target = _translate( *destination );
+
+			if( i.pg.condition != ir::PTXOperand::PT )
+			{
+				target.name = _tempRegister();			
+			}
+			
+			ir::LLVMExtractelement extract;
+			
+			extract.d = target;
+			extract.a = load.d;
+			extract.b.type.type = ir::LLVMInstruction::I32;
+			extract.b.type.category = ir::LLVMInstruction::Type::Element;
+			extract.b.constant = true;
+			extract.b.i32 = std::distance( destination, i.d.array.begin() );
+			
+			_add( extract );
+			if( i.pg.condition == ir::PTXOperand::PT ) continue;
+		
+			ir::LLVMSelect select;
+			select.condition = _translate( i.pg );
+			select.d = _translate( *destination );
+	
+			if( i.pg.condition == ir::PTXOperand::nPT )
+			{
+				select.a = select.d;
+				select.b = select.d;
+			}
+			else if( i.pg.condition == ir::PTXOperand::Pred )
+			{
+				select.a = extract.d;
+				select.b = select.d;
+			}
+			else
+			{
+				select.a = select.d;
+				select.b = extract.d;
+			}
+		
+			_add( select );
+		}
+		
+		if( i.d.vec == ir::PTXOperand::v1 )
+		{
+			_predicateEpilogue( i, load.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
@@ -1971,21 +2019,25 @@ namespace translator
 		_predicateEpilogue( i, call.d );
 	}
 
-	void PTXToLLVMTranslator::_translateVectorStore( 
-		const ir::PTXInstruction& i )
-	{
-		assertM( false, "No support for vector stores." );
-	}
-
 	void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
 	{
 		assertM( i.pg.condition == ir::PTXOperand::PT, 
 			"Predicated store instructions not supported." );
-
-		ir::LLVMStore store;
 		
-		store.a = _translate( i.a );
+		ir::LLVMStore store;
+
 		store.d = _translate( i.d );
+		
+		if( i.vec == ir::PTXOperand::v1 )
+		{
+			store.a = _translate( i.a );
+		}
+		else
+		{
+			store.a = _translate( i.a.array.front() );
+			store.a.type.vector = i.vec;
+			store.a.type.category = ir::LLVMInstruction::Type::Vector;
+		}
 
 		ir::LLVMInttoptr inttoptr;
 		
@@ -2003,17 +2055,15 @@ namespace translator
 			_add( add );
 			
 			inttoptr.a = add.d;
-			inttoptr.d = store.a;
-			inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			inttoptr.d.name = _tempRegister();		
 		}
 		else
 		{
 			inttoptr.a = store.d;
-			inttoptr.d = store.a;
-			inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			inttoptr.d.name = _tempRegister();
 		}		
+
+		inttoptr.d = store.a;
+		inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		inttoptr.d.name = _tempRegister();		
 
 		_add( inttoptr );
 						
@@ -2024,9 +2074,59 @@ namespace translator
 		
 		store.d = inttoptr.d;
 		store.alignment = i.a.bytes();
+
+		if( i.vec == ir::PTXOperand::v1 )
+		{
+			store.a = _translate( i.a );
+		}
+		else
+		{
+			store.a = _translate( i.a.array.front() );
+			store.a.type.vector = i.vec;
+			store.a.type.category = ir::LLVMInstruction::Type::Vector;
+
+			ir::PTXOperand::Array::const_iterator 
+				source = i.a.array.begin();
+
+			ir::LLVMInsertelement insertOne;
+		
+			insertOne.d = store.a;
+			insertOne.d.name = _tempRegister();
+			insertOne.a = store.a;
+			insertOne.b = _translate( *source );
+			insertOne.c.type.category = ir::LLVMInstruction::Type::Element;
+			insertOne.c.type.type = ir::LLVMInstruction::I32;
+			insertOne.c.constant = true;
+			insertOne.c.i32 = 0;
+			
+			_add( insertOne );
+			
+			std::string currentSource = insertOne.d.name;
+			
+			for( ++source; source != i.a.array.end(); ++source )
+			{
+				ir::LLVMInsertelement insert;
+
+				insert.d = store.a;
+				if( ++ir::PTXOperand::Array::const_iterator( source ) 
+					!= i.a.array.end() )
+				{
+					insert.d.name = _tempRegister();
+				}
+				insert.a = store.a;
+				insert.a.name = currentSource;
+				insert.b = _translate( *source );
+				insert.c.type.category = ir::LLVMInstruction::Type::Element;
+				insert.c.type.type = ir::LLVMInstruction::I32;
+				insert.c.constant = true;
+				insert.c.i32 = std::distance( i.a.array.begin(), source );
+				
+				_add( insert );
+				currentSource = insert.d.name;
+			}
+		}
 		
 		_add( store );
-		_predicateEpilogue( i, store.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSub( const ir::PTXInstruction& i )

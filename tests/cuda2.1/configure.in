@@ -43,7 +43,7 @@ AC_CHECK_LIB([GLU], [gluGetString], [], \
 	AC_MSG_ERROR("libGLU required"))
 AC_CHECK_LIB([glut], [glutMainLoop], [], \
 	AC_MSG_ERROR("libglut required"))
-
+	
 AC_CHECK_LIB([hydrazine], [main],[AC_DEFINE(HAVE_HYDRAZINE, [], [""])], \
 	AC_MSG_ERROR("libhydrazine required"))
 AC_CHECK_LIB([OcelotParser], [main], \
@@ -62,14 +62,17 @@ AC_CHECK_LIB([OcelotAnalysis], [main], \
 	AC_MSG_ERROR("libOcelotAnalysis required"), \
 	[-lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
-	AC_MSG_ERROR("libcudart required"), \
-	[-lOcelotExecutive -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+	AC_MSG_ERROR("libcudart required"), [-lOcelot -lOcelotExecutive \
+		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
+	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
+		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
-	AC_MSG_ERROR("libcufft required"), [-lOcelotExecutive -lOcelotTrace \
-	-lOcelotIr -lOcelotParser -lhydrazine -lcudart])
+	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelot -lOcelotExecutive \
+	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
-	AC_MSG_ERROR("libcublas required"), [-lOcelotExecutive -lOcelotTrace \
-	-lOcelotIr -lOcelotParser -lhydrazine -lcudart])
+	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelot -lOcelotExecutive \
+	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
 ################################################################################
 
 ################################################################################

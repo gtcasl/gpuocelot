@@ -57,13 +57,16 @@ AC_CHECK_LIB([OcelotAnalysis], [main], \
 	AC_MSG_ERROR("libOcelotAnalysis required"), \
 	[-lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
-	AC_MSG_ERROR("libcudart required"), \
-	[-lOcelotExecutive -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+	AC_MSG_ERROR("libcudart required"), [-lOcelot -lOcelotExecutive \
+		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
+	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
+		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
-	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelotExecutive \
+	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelot -lOcelotExecutive \
 	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
-	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelotExecutive \
+	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelot -lOcelotExecutive \
 	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
 ################################################################################
 

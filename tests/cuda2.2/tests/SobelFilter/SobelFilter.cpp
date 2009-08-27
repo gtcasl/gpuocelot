@@ -421,8 +421,6 @@ void runAutoTest(int argc, char **argv)
         cudaSetDevice( cutGetMaxGflopsDeviceId() );
     }
 
-    loadDefaultImage( argv[0] );
-
     if (argc > 1) {
         char *filename;
         if (cutGetCmdLineArgumentstr(argc, (const char **)argv, "file", &filename)) {

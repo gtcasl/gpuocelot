@@ -9,8 +9,8 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -lcudart -lOcelotExecutive -lOcelotTrace -lOcelotIr \
-	-lOcelotParser -lhydrazine libsdk.la
+OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTrace \
+	-lOcelotIr -lOcelotParser -lhydrazine libsdk.la
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I sdk

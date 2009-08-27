@@ -111,6 +111,9 @@
 #undef HAVE_OBSTACK
 
 /* "" */
+#undef HAVE_OCELOT
+
+/* "" */
 #undef HAVE_OCELOT_ANALYSIS
 
 /* "" */

@@ -1376,7 +1376,7 @@ namespace translator
 	
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 	{
-		if( !i.d.empty() )
+		if( !i.d.array.empty() )
 		{
 			_translateVectorLoad( i );
 			return;

@@ -12,6 +12,7 @@
 #include <ocelot/trace/interface/SharedComputationGenerator.h>
 #include <string>
 #include <deque>
+#include <map>
 
 namespace trace {
 
@@ -21,9 +22,10 @@ namespace trace {
 	class SharedComputationAnalyzer {
 	private:
 		typedef std::deque< KernelEntry > KernelVector;
+		typedef std::map< std::string, KernelVector > KernelMap;
 		
 	private:
-		KernelVector _kernels; //! Entries for the kernel traces
+		KernelMap _kernels; //! Entries for the kernel traces
 	
 	public:
 

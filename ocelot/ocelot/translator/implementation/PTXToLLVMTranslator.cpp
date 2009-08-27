@@ -1368,8 +1368,20 @@ namespace translator
 		_yield();
 	}
 
+	void PTXToLLVMTranslator::_translateVectorLoad( 
+		const ir::PTXInstruction& i )
+	{
+		assertM( false, "No support for vector loads." );
+	}
+	
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 	{
+		if( !i.d.empty() )
+		{
+			_translateVectorLoad( i );
+			return;
+		}
+		
 		ir::LLVMLoad load;
 		
 		load.d = _destination( i );
@@ -1957,6 +1969,12 @@ namespace translator
 		
 		_add( call );
 		_predicateEpilogue( i, call.d );
+	}
+
+	void PTXToLLVMTranslator::_translateVectorStore( 
+		const ir::PTXInstruction& i )
+	{
+		assertM( false, "No support for vector stores." );
 	}
 
 	void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )

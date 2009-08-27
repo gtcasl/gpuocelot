@@ -35,12 +35,10 @@ namespace trace {
 		If filter is true, only those applications in which some kernel is called more than once are
 		returned.
 	*/
-	ApplicationVector GetApplications(MemoryTraceAnalyzer::KernelVector _kernels, bool filter) {
+	ApplicationMap GetApplications(MemoryTraceAnalyzer::KernelVector _kernels, bool filter) {
 		using namespace std;
-
-		ApplicationVector applications;
-
-		ApplicationData app;	// current application
+		
+		ApplicationMap applications;
 
 		for(MemoryTraceAnalyzer::KernelVector::const_iterator kernel = _kernels.begin(); 
 			kernel != _kernels.end(); ++kernel)	{
@@ -55,30 +53,22 @@ namespace trace {
 			assert( header.format == TraceGenerator::MemoryTraceFormat );
 			hstream.close();	
 		
-			KernelData kData;
-			kData.kernel = *kernel;
-			kData.header = header;
-			if (app.name != kernel->program) {
-				if (app.kernels.size()) {
-					applications.push_back(app);
-				}
-				app = ApplicationData();
-				app.name = kernel->program;
-			}
-			app.kernels.push_back(kData);
-		}
-
-		if (app.kernels.size()) {
-			applications.push_back(app);
+			KernelData data;
+			data.kernel = *kernel;
+			data.header = header;
+		
+			applications[ kernel->program ].kernels.push_back( data );
+			applications[ kernel->program ].name = kernel->program;
 		}
 
 		if (filter) {
-			ApplicationVector applications_out;	
-			for (int n = 0; n < (int)applications.size(); n++) {
+			ApplicationMap applications_out;	
+			for (ApplicationMap::iterator fi = applications.begin(); 
+				fi != applications.end(); ++fi) {
 				bool print = false;
 				map< string, int > kernelCalls;
-				for (int j = 0; j < (int)applications[n].kernels.size(); j++) {
-					string name = applications[n].kernels[j].kernel.name;
+				for (int j = 0; j < (int)fi->second.kernels.size(); j++) {
+					string name = fi->second.kernels[j].kernel.name;
 					if (kernelCalls.find(name) == kernelCalls.end()) {
 						kernelCalls[name] = 1;
 					}
@@ -88,7 +78,7 @@ namespace trace {
 					}
 				}
 				if (print) {
-					applications_out.push_back(applications[n]);
+					applications_out.insert( *fi );
 				}
 			}
 			return applications_out;
@@ -273,59 +263,85 @@ namespace trace
 			cout << "memIntensity = (\n";
 		}
 		
-		// iterates over kernels in archive
-		for( KernelVector::const_iterator kernel = _kernels.begin(); 
-			kernel != _kernels.end(); ++kernel, ++kernelIndex)	{
+		ApplicationMap applications = GetApplications(_kernels, false);
+		
+		for( ApplicationMap::const_iterator application = applications.begin(); 
+			application != applications.end(); ++application ) {
+
+			PTXU64 app_globalMemInstructions = 0;
+			PTXU64 app_globalMemWords = 0;
+			PTXU64 app_Instructions = 0;
+			PTXU64 app_Operations = 0;
 			
-			// open the kernel's archive and visit every ld/st instruction
-			std::ifstream hstream( kernel->header.c_str() );
-			boost::archive::text_iarchive harchive( hstream );
-		
-			MemoryTraceGenerator::Header header;
-		
-			harchive >> header;
-			assert( header.format == TraceGenerator::MemoryTraceFormat );
-			hstream.close();	
-		
-			std::ifstream stream( kernel->path.c_str() );
-			boost::archive::text_iarchive archive( stream );
+			// iterates over kernels in archive
+			for( KernelDataVector::const_iterator 
+				kernel = application->second.kernels.begin(); 
+				kernel != application->second.kernels.end(); 
+				++kernel, ++kernelIndex )	{
 			
-			PTXU64 kernel_globalMemInstructions 
-				= header.global_instructions + header.texture_instructions;
-			PTXU64 kernel_globalMemWords = header.global_words 
-				+ header.texture_words;
+				MemoryTraceGenerator::Header header = kernel->header;
+		
+			
+				PTXU64 kernel_globalMemInstructions 
+					= header.global_instructions + header.texture_instructions;
+				PTXU64 kernel_globalMemWords = header.global_words 
+					+ header.texture_words;
 								
-			// accumulate statistics over the aggregate of kernels
-			agg_globalMemInstructions += kernel_globalMemInstructions;
-			agg_Instructions += header.dynamic_instructions;
-			agg_Operations += header.dynamic_operations;
-			agg_globalMemWords += kernel_globalMemWords;
+				// accumulate statistics over the aggregate of kernels
+				agg_globalMemInstructions += kernel_globalMemInstructions;
+				agg_Instructions += header.dynamic_instructions;
+				agg_Operations += header.dynamic_operations;
+				agg_globalMemWords += kernel_globalMemWords;
+
+				app_globalMemInstructions += kernel_globalMemInstructions;
+				app_Instructions += header.dynamic_instructions;
+				app_Operations += header.dynamic_operations;
+				app_globalMemWords += kernel_globalMemWords;					
+
+				if (machine) {
+					// kernel->name , kernel index , mem instructions , instructions , mem words , operations
+					cout << "  (" << kernelIndex << " , '" << dec <<  kernel->kernel.name << "' , "
+						<< kernel_globalMemInstructions << " , " 
+						<< header.dynamic_instructions << " , "
+						<< kernel_globalMemWords << " , " << header.dynamic_operations << "),\n";
+				}
+				else {
+					cout << "Kernel " << kernel->kernel.name << dec << "\n";
+					cout << "  texture ops " << header.texture_accesses << "\n";
+					cout << "  module " << kernel->kernel.module << "\n";
+					cout << "  path " << kernel->kernel.path << "\n";
+					cout << "  mem instructions " << kernel_globalMemInstructions 
+						<< "\n";
+					cout << "  instructions " << header.dynamic_instructions 
+						<< "\n";
+					cout << "  memory instruction fraction " 
+						<< (double)kernel_globalMemInstructions 
+						/ (double)header.dynamic_instructions << "\n";
+					cout << "  mem words " << kernel_globalMemWords << "\n";
+					cout << "  operations " << header.dynamic_operations << "\n";
+					cout << "  words / operations " << (double)kernel_globalMemWords
+						/ (double)header.dynamic_operations << "\n";
+				}
+			
+			}	// end for(kernels)
 
 			if (machine) {
-				// kernel->name , kernel index , mem instructions , instructions , mem words , operations
-				cout << "  (" << kernelIndex << " , '" << dec <<  kernel->name << "' , "
-					<< kernel_globalMemInstructions << " , " << header.dynamic_instructions << " , "
-					<< kernel_globalMemWords << " , " << header.dynamic_operations << "),\n";
+				cout << "  (0, '" << application->first << "' , "
+					<< app_globalMemInstructions << " , " << app_Instructions << " , "
+					<< app_globalMemWords << " , " << app_Operations << ")\n";
 			}
-			else {
-				cout << "Kernel " << kernel->name << dec << "\n";
-				cout << "  texture ops " << header.texture_accesses << "\n";
-				cout << "  module " << kernel->module << "\n";
-				cout << "  path " << kernel->path << "\n";
-				cout << "  mem instructions " << kernel_globalMemInstructions 
-					<< "\n";
-				cout << "  instructions " << header.dynamic_instructions 
-					<< "\n";
-				cout << "  memory instruction fraction " 
-					<< (double)kernel_globalMemInstructions 
-					/ (double)header.dynamic_instructions << "\n";
-				cout << "  mem words " << kernel_globalMemWords << "\n";
-				cout << "  operations " << header.dynamic_operations << "\n";
-				cout << "  words / operations " << (double)kernel_globalMemWords
-					/ (double)header.dynamic_operations << "\n";
+			else {		
+				cout << "\nAggregate for '" << application->first << "'\n";
+				cout << "    mem instructions: " << app_globalMemInstructions << "\n";
+				cout << "  dynamic instructions: " << app_Instructions << "\n";
+				cout << "    mem instr fraction: " << (double)app_globalMemInstructions / (double)agg_Instructions << "\n";
+				cout << " glob mem words: " << app_globalMemWords << "\n";
+				cout << "   operations: " << app_Operations << "\n";
+				cout << "   words / operations: " << (double)app_globalMemWords / (double)agg_Operations << "\n";
 			}
 			
-		}	// end for(kernels)
+
+		}
 
 		if (machine) {
 			cout << "  (" << dec << kernelIndex << " , 'aggregate'"  << " , "
@@ -371,64 +387,84 @@ namespace trace
 		if (machine) {
 			out << "memEfficiency = (\n";
 		}
+
+		ApplicationMap applications = GetApplications(_kernels, false);
 		
-		for( KernelVector::const_iterator kernel = _kernels.begin(); 
-			kernel != _kernels.end(); ++kernel)	{
+		for( ApplicationMap::const_iterator application = applications.begin(); 
+			application != applications.end(); ++application ) {
+
+			ir::PTXU64 app_instructions = 0;
+			ir::PTXU64 app_halfwarps = 0;
+			ir::PTXU64 app_transactions = 0;
+		
+			for( KernelDataVector::const_iterator 
+				kernel = application->second.kernels.begin(); 
+				kernel != application->second.kernels.end(); ++kernel)	{
 			
-			// open the kernel's archive and visit every ld/st instruction
-			std::ifstream hstream( kernel->header.c_str() );
-			boost::archive::text_iarchive harchive( hstream );
+				MemoryTraceGenerator::Header header = kernel->header;
 			
-			MemoryTraceGenerator::Header header;
+				ir::PTXU64 kernel_instructions 
+					= header.global_instructions + header.texture_instructions;
+				ir::PTXU64 kernel_halfwarps = header.halfwarps;
+				ir::PTXU64 kernel_transactions = header.global_segments;
+				ir::PTXU64 kernel_size = header.global_bytes + header.shared_bytes;
+				ir::PTXU64 kernel_access_counter 
+					= header.global_accesses + header.texture_accesses;
 			
-			harchive >> header;
-			assert( header.format == TraceGenerator::MemoryTraceFormat );
-			hstream.close();	
+				global_instructions += kernel_instructions;
+				global_halfwarps += kernel_halfwarps;
+				global_transactions += kernel_transactions;
+
+				app_instructions += kernel_instructions;
+				app_halfwarps += kernel_halfwarps;
+				app_transactions += kernel_transactions;
 			
-			std::ifstream stream( kernel->path.c_str() );
-			boost::archive::text_iarchive archive( stream );
-			
-			if (!stream.is_open()) {
-				throw hydrazine::Exception(
-					"Failed to open MemoryTrace kernel trace file " 
-					+ kernel->path );
+				if (machine) {
+					// (kernelName, threadCount, instructions, halfwarps, transactions) = result
+					out << "  ('" << kernel->kernel.name << "', " 
+						<< header.thread_count << " , " 
+						<< kernel_instructions << " , "
+						<< kernel_halfwarps << " , " 
+						<< kernel_transactions << "),\n";
+				}
+				else {
+					// finish kernel
+					out << "\nKernel " << kernel->kernel.name << "\n";
+					out << "         thread count: " << header.thread_count << "\n";
+					out << "  memory instructions: " << kernel_instructions << "\n"
+							<< "            halfwarps: " << kernel_halfwarps << "\n"
+							<< "         transactions: " << kernel_transactions << "\n";
+					if (kernel_halfwarps) {
+						out << "  average access size: " 
+							<< (double)kernel_size / (double)kernel_access_counter 
+							<< " bytes\n";
+						out	<< "                  t/h: " 
+							<< (double)kernel_transactions 
+							/ (double)kernel_halfwarps << "\n";
+					}
+				}
 			}
-			
-			ir::PTXU64 kernel_instructions 
-				= header.global_instructions + header.texture_instructions;
-			ir::PTXU64 kernel_halfwarps = header.halfwarps;
-			ir::PTXU64 kernel_transactions = header.global_segments;
-			ir::PTXU64 kernel_size = header.global_bytes + header.shared_bytes;
-			ir::PTXU64 kernel_access_counter 
-				= header.global_accesses + header.texture_accesses;
-			
-			global_instructions += kernel_instructions;
-			global_halfwarps += kernel_halfwarps;
-			global_transactions += kernel_transactions;
-			
+			// finished all kernels
 			if (machine) {
 				// (kernelName, threadCount, instructions, halfwarps, transactions) = result
-				out << "  ('" << kernel->name << "', " << header.thread_count << " , " << kernel_instructions << " , "
-					<< kernel_halfwarps << " , " << kernel_transactions << "),\n";
+				out << "  ('" << application->first << "', " << 0 << " , " 
+					<< app_instructions << " , "
+					<< app_halfwarps << " , " << app_transactions << "),\n";
 			}
 			else {
-				// finish kernel
-				out << "\nKernel " << kernel->name << "\n";
-				out << "         thread count: " << header.thread_count << "\n";
-				out << "  memory instructions: " << kernel_instructions << "\n"
-						<< "            halfwarps: " << kernel_halfwarps << "\n"
-						<< "         transactions: " << kernel_transactions << "\n";
-				if (kernel_halfwarps) {
-					out << "  average access size: " 
-						<< (double)kernel_size / (double)kernel_access_counter 
-						<< " bytes\n";
-					out	<< "                  t/h: " 
-						<< (double)kernel_transactions 
-						/ (double)kernel_halfwarps << "\n";
+				out << "\nAggregate '" << application->first << "'results:\n";
+				out << "            warp size: " << warp_size << "\n";
+				out << "  memory instructions: " << app_instructions << "\n"
+						<< "            halfwarps: " << app_halfwarps << "\n"
+						<< "         transactions: " << app_transactions << "\n";
+				if (app_halfwarps) {
+					out << "                  t/h: " 
+						<< (double)app_transactions 
+						/ (double)app_halfwarps << "\n";
 				}
 			}
 		}
-		
+				
 		// finished all kernels
 		if (machine) {
 			// (kernelName, threadCount, instructions, halfwarps, transactions) = result
@@ -583,18 +619,19 @@ void trace::MemoryTraceAnalyzer::application_list(bool filter) {
 	using namespace ir;
 	using namespace std;
 
-	ApplicationVector applications = GetApplications(_kernels, filter);
+	ApplicationMap applications = GetApplications(_kernels, filter);
 
 	cout << "--\nKernels grouped by application:\n";
 
 	// list kernels by application
-	for (int n = 0; n < (int)applications.size(); n++) {
-		cout << "\nApplication " << n << ": '" << applications[n].name << "' with " 
-			<< applications[n].kernels.size() << " kernels\n";
-		for (int j = 0; j < (int)applications[n].kernels.size(); j++) {
-			cout << "  kernel " << applications[n].kernels[j].kernel.name << hex
-				<< " - 0x" << applications[n].kernels[j].header.global_min_address 
-				<< " : 0x" << applications[n].kernels[j].header.global_max_address 
+	for (ApplicationMap::iterator fi = applications.begin(); 
+		fi != applications.end(); ++fi) {
+		cout << "\nApplication: '" << fi->second.name << "' with " 
+			<< fi->second.kernels.size() << " kernels\n";
+		for (int j = 0; j < (int)fi->second.kernels.size(); j++) {
+			cout << "  kernel " << fi->second.kernels[j].kernel.name << hex
+				<< " - 0x" << fi->second.kernels[j].header.global_min_address 
+				<< " : 0x" << fi->second.kernels[j].header.global_max_address 
 				<< dec << "\n";
 		}
 	}
@@ -872,7 +909,7 @@ int main( int argc, char** argv) {
 	}
 	
 	if (global) {
-		analyzer.global_transactions(warpsize);
+		analyzer.global_transactions(warpsize, machine_readable);
 	}
 	
 	if (kernel_overlapped) {

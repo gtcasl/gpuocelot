@@ -13,6 +13,7 @@
 
 #include <deque>
 #include <string>
+#include <map>
 
 namespace trace
 {
@@ -23,14 +24,16 @@ namespace trace
 		MemoryTraceGenerator::Header header;
 	};
 
+	typedef std::vector< KernelData > KernelDataVector;
+
 	class ApplicationData {
 	public:
 		std::string name;
 
-		std::vector< KernelData > kernels;
+		KernelDataVector kernels;
 	};
 
-	typedef std::vector< ApplicationData > ApplicationVector;
+	typedef std::map< std::string, ApplicationData > ApplicationMap;
 
 	/*!
 		\brief Provides the ability to inspect a database created by a MemoryTraceGenerator

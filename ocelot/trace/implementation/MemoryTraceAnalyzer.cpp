@@ -17,8 +17,6 @@
 #include <fstream>
 #include <cfloat>
 
-
-
 /*!
 Kernel _Z9matrixMulPfS_S_ii
  path: /home/andrew/repositories/casl/branches/projects/ocelot/traces/_Z9matrixMulPfS_S_ii_2_0.trace
@@ -57,26 +55,16 @@ namespace trace {
 			assert( header.format == TraceGenerator::MemoryTraceFormat );
 			hstream.close();	
 		
-			// examine kernel->module and determine if the kernel belongs to the current application
-			// or a new application assuming:
-			//
-			// tests/<appname>/<kernelsSource>.cu, where <appname> is the name of the application
-
 			KernelData kData;
 			kData.kernel = *kernel;
 			kData.header = header;
-			if (kernel->module.substr(0, 6) == "tests/") {
-				size_t appNameSize = kernel->module.find_last_of("/") - 6;
-				string appName = kernel->module.substr(6, appNameSize);
-
-				if (app.name != appName) {
-					if (app.kernels.size()) {
-						applications.push_back(app);
-					}
-					app = ApplicationData();
-					app.name = appName;
+			if (app.name != kernel->program) {
+				if (app.kernels.size()) {
+					applications.push_back(app);
 				}
-			}	
+				app = ApplicationData();
+				app.name = kernel->program;
+			}
 			app.kernels.push_back(kData);
 		}
 

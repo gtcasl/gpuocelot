@@ -35,6 +35,7 @@ namespace translator
 			ir::LLVMKernel* _llvmKernel;
 			analysis::DataflowGraph* _graph;
 			unsigned int _tempRegisterCount;
+			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
 			analysis::DataflowGraph::InstructionId _instructionId; 
 			RegisterToIndexMap _producers;
@@ -116,6 +117,10 @@ namespace translator
 			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 
 				const ir::PTXInstruction& i, bool pd = false );
+			ir::LLVMInstruction::Operand _destinationCC( 
+				const ir::PTXInstruction& i );
+			ir::LLVMInstruction::Operand _conditionCodeRegister( 
+				const ir::PTXOperand& op );
 			void _predicateEpilogue( const ir::PTXInstruction& i, 
 				const ir::LLVMInstruction::Operand& temp );
 			void _add( const ir::LLVMInstruction& i );

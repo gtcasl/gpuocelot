@@ -361,6 +361,9 @@ namespace ir {
 				Is this a divide full instruction?
 			*/
 			bool divideFull;
+			
+			/*! If the instruction updates the CC, what is the CC register */
+			PTXOperand::RegisterType cc;
 		};
 
 		/*!

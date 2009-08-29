@@ -83,16 +83,18 @@ std::string ir::PTXOperand::toString( AddressMode mode ) {
 }
 
 bool ir::PTXOperand::isFloat( DataType type ) {
+	bool result = false;
 	switch( type ) {
 		case f16: /* fall through */
 		case f32: /* fall through */
-		case f64: return true; break;
+		case f64: result = true;
 		default: break;
 	}
-	return false;
+	return result;
 }
 
 bool ir::PTXOperand::isInt( DataType type ) {
+	bool result = false;
 	switch( type ) {
 		case s8:  /* fall through */
 		case s16: /* fall through */
@@ -101,21 +103,22 @@ bool ir::PTXOperand::isInt( DataType type ) {
 		case u8:  /* fall through */
 		case u16: /* fall through */
 		case u32: /* fall through */
-		case u64: return true; break;
+		case u64: result = true; break;
 		default: break;
 	}
-	return false;
+	return result;
 }
 
 bool ir::PTXOperand::isSigned( DataType type ) {
+	bool result = false;
 	switch( type ) {
 		case s8:  /* fall through */
 		case s16: /* fall through */
 		case s32: /* fall through */
-		case s64: return true; break;
+		case s64: result = true; break;
 		default: break;
 	}
-	return false;
+	return result;
 }
 
 unsigned int ir::PTXOperand::bytes( DataType type ) {

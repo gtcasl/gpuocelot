@@ -29,7 +29,7 @@ namespace ir
 			typedef std::vector< LLVMInstruction* > LLVMInstructionVector;
 			
 			/*! \brief A vector of LLVM Statements */
-			typedef std::vector< LLVMStatement > LLVMStatementVector;
+			typedef std::deque< LLVMStatement > LLVMStatementVector;
 		
 		private:
 			/*! \brief The assembled LLVM kernel */

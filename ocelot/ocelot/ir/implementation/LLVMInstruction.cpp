@@ -126,6 +126,7 @@ namespace ir
 						case I64: stream << i64; break;
 						case F32: stream << f32; break;
 						case F64: stream << f64; break;
+						case F128: stream << f128; break;
 						case InvalidDataType: break;
 					}
 					return stream.str();
@@ -176,6 +177,7 @@ namespace ir
 							case I64: stream << fi->i64; break;
 							case F32: stream << fi->f32; break;
 							case F64: stream << fi->f64; break;
+							case F128: stream << f128; break;
 							case InvalidDataType: break;
 						}
 					}
@@ -297,6 +299,7 @@ namespace ir
 			case I64: return "i64"; break;
 			case F32: return "float"; break;
 			case F64: return "double"; break;
+			case F128: return "fp128"; break;
 			default: break;
 		}
 		return "";
@@ -438,6 +441,7 @@ namespace ir
 			case I64: return true; break;
 			case F32: /* fall through */
 			case F64: /* fall through */
+			case F128: /* fall through */
 			default: break;
 		}
 		return false;
@@ -633,6 +637,22 @@ namespace ir
 	LLVMAshr::LLVMAshr() : LLVMBinaryInstruction( Ashr )
 	{
 	
+	}
+	
+	std::string LLVMAshr::valid() const
+	{
+		if( a.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		if( !isInt( b.type.type ) )
+		{
+			return "Second source operand type " + b.type.toString() 
+				+ " is not an integer type";
+		}
+		return "";
 	}
 
 	LLVMInstruction* LLVMAshr::clone() const
@@ -1315,6 +1335,22 @@ namespace ir
 	LLVMLshr::LLVMLshr() : LLVMBinaryInstruction( Lshr )
 	{
 	
+	}
+
+	std::string LLVMLshr::valid() const
+	{
+		if( a.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		if( !isInt( b.type.type ) )
+		{
+			return "Second source operand type " + b.type.toString() 
+				+ " is not an integer type";
+		}
+		return "";
 	}
 
 	LLVMInstruction* LLVMLshr::clone() const

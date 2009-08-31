@@ -15,6 +15,24 @@
 namespace analysis
 {
 
+	DataflowGraph::NoProducerException::NoProducerException( 
+		RegisterId reg )
+	{
+		std::stringstream message;
+		message << "No producer exists for register " << reg;
+		_message = message.str();
+	}
+	
+	DataflowGraph::NoProducerException::~NoProducerException() throw()
+	{
+		
+	}
+	
+	const char* DataflowGraph::NoProducerException::what() const throw()
+	{
+		return _message.c_str();
+	}
+
 	DataflowGraph::Instruction DataflowGraph::_convert( 
 		ir::PTXInstruction& i, InstructionId id )
 	{
@@ -250,9 +268,10 @@ namespace analysis
 			}
 		}
 		
-		assertM( predecessor != predecessors().end(), "Register " << r 
-			<< " not found in the alive out-set of any predecessor of block " 
-			<< label() );
+		if( predecessor == predecessors().end() )
+		{
+			throw NoProducerException( r );
+		}
 		
 		return (*predecessor)->label();
 	}

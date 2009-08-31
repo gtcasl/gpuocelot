@@ -21,6 +21,7 @@ namespace ir
 	
 	typedef float LLVMF32;
 	typedef double LLVMF64;
+	typedef double LLVMF128;
 
 	/*! \brief A class used to represent any LLVM Instruction */
 	class LLVMInstruction : public Instruction
@@ -95,6 +96,7 @@ namespace ir
 				I64,
 				F32,
 				F64,
+				F128,
 				InvalidDataType
 			};
 			
@@ -222,6 +224,7 @@ namespace ir
 				LLVMI64 i64;
 				LLVMF32 f32;
 				LLVMF64 f64;
+				LLVMF128 f128;
 			};
 			
 			/*! \brief A class for a basic LLVM Operand */
@@ -244,6 +247,7 @@ namespace ir
 						LLVMI64 i64;
 						LLVMF32 f32;
 						LLVMF64 f64;
+						LLVMF128 f128;
 					};
 					
 					/*! \brief A vector of values for a constant vector type */
@@ -477,6 +481,9 @@ namespace ir
 			/*! \brief The default constructor sets the opcode */
 			LLVMAshr();
 
+		public:
+			std::string valid() const;
+		
 		public:
 			LLVMInstruction* clone() const;
 	};
@@ -900,7 +907,10 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMLshr();
-
+			
+		public:
+			std::string valid() const;
+			
 		public:
 			LLVMInstruction* clone() const;
 	};

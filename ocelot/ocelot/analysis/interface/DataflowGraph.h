@@ -36,7 +36,7 @@ namespace analysis
 	class DataflowGraph
 	{
 		friend class SSAGraph;
-		public:
+		public:			
 			/*! \brief A unique ID for a logical register */
 			typedef unsigned int RegisterId;
 			/*! \brief A unique ID for a logical instruction */
@@ -45,6 +45,18 @@ namespace analysis
 			typedef std::vector< RegisterId* > RegisterVector;
 			/*! \brief A vector of register IDs */
 			typedef std::vector< RegisterId > RegisterIdVector;
+			
+			/*! \brief An exception for potentially uninitialized regs */
+			class NoProducerException : public std::exception
+			{
+				private:
+					std::string _message;
+				public:
+					NoProducerException( RegisterId reg );
+					~NoProducerException() throw();
+					const char* what() const throw();
+			};
+
 			
 			/*! \brief A class for referring to a generic instruction. */
 			class Instruction

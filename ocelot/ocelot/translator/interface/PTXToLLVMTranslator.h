@@ -30,6 +30,7 @@ namespace translator
 			typedef std::unordered_map< ir::Instruction::RegisterType, 
 				unsigned int > RegisterToIndexMap;
 			typedef std::vector< unsigned int > IndexVector;
+			typedef std::vector< ir::Instruction::RegisterType > RegisterVector;
 			
 		private:
 			ir::LLVMKernel* _llvmKernel;
@@ -40,6 +41,7 @@ namespace translator
 			analysis::DataflowGraph::InstructionId _instructionId; 
 			RegisterToIndexMap _producers;
 			RegisterToIndexMap _phiProducers;
+			RegisterVector _uninitializedRegisters;
 			IndexVector _phiIndices;
 		
 		private:
@@ -112,6 +114,9 @@ namespace translator
 			void _translateTrap( const ir::PTXInstruction& i );
 			void _translateVote( const ir::PTXInstruction& i );
 			void _translateXor( const ir::PTXInstruction& i );
+			
+			void _bitcast( const ir::PTXInstruction& i );
+			
 			std::string _tempRegister();
 			
 			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
@@ -125,6 +130,7 @@ namespace translator
 				const ir::LLVMInstruction::Operand& temp );
 			void _add( const ir::LLVMInstruction& i );
 			void _initializePhiInstructions();
+			void _artificiallyInitializeRegisters();
 
 		public:
 			PTXToLLVMTranslator( OptimizationLevel l = NoOptimization );

@@ -209,12 +209,17 @@ namespace translator
 			}
 			case ir::LLVMInstruction::F32:
 			{
-				assertM( false, "Cannot double f32" );
+				t = ir::LLVMInstruction::F64;
 				break;
 			}
 			case ir::LLVMInstruction::F64:
 			{
-				assertM( false, "Cannot double f64" );
+				t = ir::LLVMInstruction::F128;
+				break;
+			}
+			case ir::LLVMInstruction::F128:
+			{
+				assertM( false, "Cannot double fp128" );
 				break;
 			}
 			case ir::LLVMInstruction::InvalidDataType:
@@ -340,7 +345,17 @@ namespace translator
 				for( ; s != phi->s.end(); ++s )
 				{			
 					ir::LLVMPhi::Node node;
-					node.label = block->producer( *s );
+					try
+					{
+						node.label = block->producer( *s );
+					}
+					catch( const 
+						analysis::DataflowGraph::NoProducerException& e )
+					{
+						_uninitializedRegisters.push_back( *s );
+						node.label = "$ArtificiallyInitializeRegistersBlock";
+					}
+					
 					node.reg = *s;
 
 					std::stringstream stream;
@@ -850,7 +865,7 @@ namespace translator
 		{
 			case ir::PTXOperand::s8:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s16:
@@ -875,7 +890,7 @@ namespace translator
 					case ir::PTXOperand::u8:
 					case ir::PTXOperand::b8:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -901,7 +916,7 @@ namespace translator
 			}
 			case ir::PTXOperand::s16:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::s8:
 					{
@@ -944,7 +959,7 @@ namespace translator
 					case ir::PTXOperand::b16:
 					case ir::PTXOperand::u16:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -970,7 +985,7 @@ namespace translator
 			}
 			case ir::PTXOperand::s32:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::b8:
@@ -992,7 +1007,7 @@ namespace translator
 					case ir::PTXOperand::b32:
 					case ir::PTXOperand::u32:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::s64:
@@ -1030,7 +1045,7 @@ namespace translator
 			}
 			case ir::PTXOperand::s64:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s8:
@@ -1055,7 +1070,7 @@ namespace translator
 					case ir::PTXOperand::b64:
 					case ir::PTXOperand::u64:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1083,7 +1098,7 @@ namespace translator
 			case ir::PTXOperand::b8:
 			case ir::PTXOperand::u8:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s16:
@@ -1108,7 +1123,7 @@ namespace translator
 					case ir::PTXOperand::b8:
 					case ir::PTXOperand::u8:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1135,7 +1150,7 @@ namespace translator
 			case ir::PTXOperand::b16:
 			case ir::PTXOperand::u16:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::b8:
 					case ir::PTXOperand::u8:
@@ -1169,7 +1184,7 @@ namespace translator
 					case ir::PTXOperand::b16:
 					case ir::PTXOperand::u16:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1200,7 +1215,7 @@ namespace translator
 			case ir::PTXOperand::b32:
 			case ir::PTXOperand::u32:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::b8:
@@ -1234,7 +1249,7 @@ namespace translator
 					case ir::PTXOperand::s32:
 					case ir::PTXOperand::u32:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1265,7 +1280,7 @@ namespace translator
 			case ir::PTXOperand::b64:
 			case ir::PTXOperand::u64:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s8:
@@ -1290,7 +1305,7 @@ namespace translator
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::u64:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1320,7 +1335,7 @@ namespace translator
 			}
 			case ir::PTXOperand::f16:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::s8:
 					case ir::PTXOperand::s16:
@@ -1355,7 +1370,7 @@ namespace translator
 					}
 					case ir::PTXOperand::f16:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f32:
@@ -1380,7 +1395,7 @@ namespace translator
 			}
 			case ir::PTXOperand::f32:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::s8:
 					case ir::PTXOperand::s16:
@@ -1425,7 +1440,7 @@ namespace translator
 					}
 					case ir::PTXOperand::f32:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::f64:
@@ -1449,7 +1464,7 @@ namespace translator
 			}
 			case ir::PTXOperand::f64:
 			{
-				switch( i.type )
+				switch( i.d.type )
 				{
 					case ir::PTXOperand::s8:
 					case ir::PTXOperand::s16:
@@ -1504,7 +1519,7 @@ namespace translator
 					}
 					case ir::PTXOperand::f64:
 					{
-						_translateMov( i );
+						_bitcast( i );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1791,63 +1806,135 @@ namespace translator
 			"No support for saturation in mad" );
 		assertM( !( i.modifier & ir::PTXInstruction::hi ), 
 			"No support for hi multiply in mad" );
-		assertM( !ir::PTXOperand::isFloat( i.d.type ), 
-			"No support for floating point mad." );
 		
 		ir::LLVMInstruction::Operand destination = _destination( i );
 		
-		ir::LLVMMul multiply;
-		
-		multiply.d = destination;
-		multiply.d.type.type = ir::LLVMInstruction::I64;
-		multiply.d.name = _tempRegister();
-		multiply.a = _translate( i.a );
-		multiply.b = _translate( i.b );
-		
-		_add( multiply );
-		
-		ir::LLVMInstruction::Operand c = _translate( i.c );
-		
-		if( ir::PTXOperand::isSigned( i.c.type ) )
+		if( !ir::PTXOperand::isFloat( i.type ) )
 		{
-			ir::LLVMSext extend;
+			ir::LLVMMul multiply;
+		
+			multiply.d = destination;
+			multiply.d.type.type = ir::LLVMInstruction::I64;
+			multiply.d.name = _tempRegister();
+			multiply.a = _translate( i.a );
+			multiply.b = _translate( i.b );
+		
+			_add( multiply );
+		
+			ir::LLVMInstruction::Operand c = _translate( i.c );
+		
+			if( ir::PTXOperand::isSigned( i.c.type ) )
+			{
+				ir::LLVMSext extend;
 			
-			extend.d = c;
-			extend.d.name = _tempRegister();
-			extend.d.type = ir::LLVMInstruction::I64;
-			extend.a = c;
+				extend.d = c;
+				extend.d.name = _tempRegister();
+				extend.d.type = ir::LLVMInstruction::I64;
+				extend.a = c;
 			
-			c = extend.d;
-			_add( extend );
+				c = extend.d;
+				_add( extend );
+			}
+			else
+			{
+				ir::LLVMZext extend;
+			
+				extend.d = c;
+				extend.d.name = _tempRegister();
+				extend.d.type = ir::LLVMInstruction::I64;
+				extend.a = c;
+			
+				c = extend.d;
+				_add( extend );
+			}
+		
+			ir::LLVMAdd add;
+		
+			add.d = destination;
+			add.d.name = _tempRegister();
+			add.a = multiply.d;
+			add.b = c;
+		
+			_add( add );
+		
+			ir::LLVMTrunc truncate;
+		
+			truncate.d = destination;
+			truncate.d.name = _tempRegister();
+			truncate.a = add.d;
+
+			_add( truncate );
+			_predicateEpilogue( i, truncate.d );
 		}
 		else
 		{
-			ir::LLVMZext extend;
+			ir::LLVMFpext extend;
 			
-			extend.d = c;
-			extend.d.name = _tempRegister();
-			extend.d.type = ir::LLVMInstruction::I64;
-			extend.a = c;
+			extend.a = _translate( i.a );
 			
-			c = extend.d;
+			ir::LLVMInstruction::Operand extendedA;
+			
+			extendedA = extend.a;
+			extendedA.name = _tempRegister();
+			_doubleWidth( extendedA.type.type );
+			
+			extend.d = extendedA;
+			
 			_add( extend );
-		}
+			
+			extend.a = _translate( i.b );
+			
+			ir::LLVMInstruction::Operand extendedB;
+			
+			extendedB = extend.a;
+			extendedB.name = _tempRegister();
+			_doubleWidth( extendedB.type.type );
+			
+			extend.d = extendedB;
+			
+			_add( extend );
+			
+			ir::LLVMFmul multiply;
 		
-		ir::LLVMAdd add;
+			multiply.d = destination;
+			multiply.d.type.type = extendedA.type.type;
+			multiply.d.name = _tempRegister();
+			multiply.a = extendedA;
+			multiply.b = extendedB;
 		
-		add.d = destination;
-		add.d.name = _tempRegister();
-		add.a = multiply.d;
-		add.b = c;
+			_add( multiply );
 		
-		ir::LLVMTrunc truncate;
+			extend.a = _translate( i.c );
+			
+			ir::LLVMInstruction::Operand extendedC;
+			
+			extendedC = extend.a;
+			extendedC.name = _tempRegister();
+			_doubleWidth( extendedC.type.type );
+			
+			extend.d = extendedC;
+			
+			_add( extend );
 		
-		truncate.d = destination;
-		truncate.d.name = _tempRegister();
-		truncate.a = add.d;
+			ir::LLVMFadd add;
+		
+			add.d = destination;
+			add.d.name = _tempRegister();
+			add.d.type = extendedC.type;
+			add.a = multiply.d;
+			add.b = extendedC;
+		
+			_add( add );
+		
+			ir::LLVMFptrunc truncate;
+		
+			truncate.d = destination;
+			truncate.d.name = _tempRegister();
+			truncate.a = add.d;
 
-		_add( truncate );
-		_predicateEpilogue( i, truncate.d );		
+			_add( truncate );
+			_predicateEpilogue( i, truncate.d );
+		}		
 	}
 
 	void PTXToLLVMTranslator::_translateMax( const ir::PTXInstruction& i )
@@ -1989,19 +2076,10 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 	{
-		if( i.d.bytes() == i.a.bytes() )
+		assertM( i.vec == ir::PTXOperand::v1, "No support for vector moves" );		
+		if( i.d.type == i.a.type )
 		{
-			ir::LLVMSelect select;
-			select.d = _destination( i );
-			select.a = _translate( i.a );
-			select.b = select.a;
-			select.condition.type.category = ir::LLVMInstruction::Type::Element;
-			select.condition.type.type = ir::LLVMInstruction::I1;
-			select.condition.constant = true;
-			select.condition.i1 = true;
-		
-			_add( select );
-			_predicateEpilogue( i, select.d );
+			_bitcast( i );
 		}
 		else
 		{
@@ -2053,27 +2131,55 @@ namespace translator
 		{
 			if( i.modifier & ir::PTXInstruction::wide )
 			{
-				ir::LLVMSext sextA;
-				sextA.a = _translate( i.a );
-				sextA.d = sextA.a;
-				_doubleWidth( sextA.d.type.type );
-				sextA.d.name = _tempRegister();
+				ir::LLVMInstruction::Operand extendedA = _translate( i.a );
+				ir::LLVMInstruction::Operand extendedB = _translate( i.b );
 				
-				_add( sextA );
-
-				ir::LLVMSext sextB;
-				sextB.a = _translate( i.b );
-				sextB.d = sextB.a;
-				_doubleWidth( sextB.d.type.type );
-				sextB.d.name = _tempRegister();
+				if( ir::PTXOperand::isSigned( i.a.type ) )
+				{
+					ir::LLVMSext sextA;
+					
+					sextA.a = extendedA;
+					_doubleWidth( extendedA.type.type );
+					extendedA.name = _tempRegister();
+					sextA.d = extendedA;
+					
+					_add( sextA );
 				
-				_add( sextB );
-
+					ir::LLVMSext sextB;
+					
+					sextB.a = extendedB;
+					_doubleWidth( extendedB.type.type );
+					extendedB.name = _tempRegister();
+					sextB.d = extendedB;
+					
+					_add( sextB );
+				}
+				else
+				{
+					ir::LLVMZext sextA;
+					
+					sextA.a = extendedA;
+					_doubleWidth( extendedA.type.type );
+					extendedA.name = _tempRegister();
+					sextA.d = extendedA;
+					
+					_add( sextA );
+				
+					ir::LLVMZext sextB;
+					
+					sextB.a = extendedB;
+					_doubleWidth( extendedB.type.type );
+					extendedB.name = _tempRegister();
+					sextB.d = extendedB;
+					
+					_add( sextB );
+				}
+				
 				ir::LLVMMul mul;
 						
 				mul.d = _destination( i );
-				mul.a = sextA.d;
-				mul.b = sextB.d;
+				mul.a = extendedA;
+				mul.b = extendedB;
 			
 				_add( mul );
 				_predicateEpilogue( i, mul.d );
@@ -2091,7 +2197,100 @@ namespace translator
 			}
 			else
 			{
-				assertM( false, "No support for hi multiply" );
+				ir::LLVMInstruction::Operand destination = _destination( i );
+				ir::LLVMInstruction::Operand extendedA = _translate( i.a );
+				ir::LLVMInstruction::Operand extendedB = _translate( i.b );
+				
+				if( ir::PTXOperand::isSigned( i.a.type ) )
+				{
+					ir::LLVMSext sextA;
+					
+					sextA.a = extendedA;
+					_doubleWidth( extendedA.type.type );
+					extendedA.name = _tempRegister();
+					sextA.d = extendedA;
+					
+					_add( sextA );
+				
+					ir::LLVMSext sextB;
+					
+					sextB.a = extendedB;
+					_doubleWidth( extendedB.type.type );
+					extendedB.name = _tempRegister();
+					sextB.d = extendedB;
+					
+					_add( sextB );
+				}
+				else
+				{
+					ir::LLVMZext sextA;
+					
+					sextA.a = extendedA;
+					_doubleWidth( extendedA.type.type );
+					extendedA.name = _tempRegister();
+					sextA.d = extendedA;
+					
+					_add( sextA );
+				
+					ir::LLVMZext sextB;
+					
+					sextB.a = extendedB;
+					_doubleWidth( extendedB.type.type );
+					extendedB.name = _tempRegister();
+					sextB.d = extendedB;
+					
+					_add( sextB );
+				}
+				
+				ir::LLVMMul mul;
+						
+				mul.d = extendedA;
+				mul.d.name = _tempRegister();
+				mul.a = extendedA;
+				mul.b = extendedB;
+			
+				_add( mul );
+				
+				ir::LLVMInstruction::Operand shiftedDestination = destination;
+				shiftedDestination.name = _tempRegister();
+				_doubleWidth( shiftedDestination.type.type );
+				
+				if( ir::PTXOperand::isSigned( i.a.type ) )
+				{
+					ir::LLVMAshr shift;
+					
+					shift.d = shiftedDestination;
+					shift.a = mul.d;
+					shift.b.constant = true;
+					shift.b.type.category = ir::LLVMInstruction::Type::Element;
+					shift.b.type.type = ir::LLVMInstruction::I32;
+					shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
+					
+					_add( shift );
+				
+				}
+				else
+				{
+					ir::LLVMLshr shift;
+					
+					shift.d = shiftedDestination;
+					shift.a = mul.d;
+					shift.b.constant = true;
+					shift.b.type.category = ir::LLVMInstruction::Type::Element;
+					shift.b.type.type = ir::LLVMInstruction::I32;
+					shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
+					
+					_add( shift );
+				}
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.d = destination;
+				truncate.a = shiftedDestination;
+				
+				_add( truncate );
+				
+				_predicateEpilogue( i, destination );
 			}
 		}
 	}
@@ -3051,7 +3250,31 @@ namespace translator
 		
 		call.name = "translator::tex";
 		
-		call.d = _destination( i );
+		for( unsigned int j = 0; j < 4; ++j )
+		{
+			assertM( _producers.count( i.d.array[j].reg ) == 0, 
+				"PTX program is not in ssa form, register " << i.d.array[j].reg 
+				<< " assigned twice." );
+			_producers.insert( std::make_pair( i.d.array[j].reg, 
+				_instructionId ) );
+		}
+		
+		ir::LLVMInstruction::Operand d1 = _translate( i.d.array[0] );
+		ir::LLVMInstruction::Operand d2 = _translate( i.d.array[1] );
+		ir::LLVMInstruction::Operand d3 = _translate( i.d.array[2] );
+		ir::LLVMInstruction::Operand d4 = _translate( i.d.array[3] );
+		
+		if( i.pg.condition != ir::PTXOperand::PT )
+		{
+			d1.name = _tempRegister();			
+			d2.name = _tempRegister();			
+			d3.name = _tempRegister();			
+			d4.name = _tempRegister();			
+		}
+		
+		call.d = d1;
+		call.d.type.category = ir::LLVMInstruction::Type::Vector;
+		call.d.type.vector = 4;
 		
 		switch( i.geometry )
 		{
@@ -3077,11 +3300,40 @@ namespace translator
 				call.parameters[4] = _translate( i.c.array[3] );
 				break;
 			default: assertM( false, "Invalid texture geometry" );
-			
 		}
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );		
+		
+		ir::LLVMExtractelement extract;
+			
+		extract.d = d1;
+		extract.a = call.d;
+		extract.b.type.type = ir::LLVMInstruction::I32;
+		extract.b.type.category = ir::LLVMInstruction::Type::Element;
+		extract.b.constant = true;
+		extract.b.i32 = 0;
+	
+		_add( extract );
+	
+		extract.d = d2;
+		extract.b.i32 = 1;
+	
+		_add( extract );
+		
+		extract.d = d3;
+		extract.b.i32 = 2;
+	
+		_add( extract );
+
+		extract.d = d4;
+		extract.b.i32 = 3;
+	
+		_add( extract );
+		
+		_predicateEpilogue( i, d1 );
+		_predicateEpilogue( i, d2 );
+		_predicateEpilogue( i, d3 );
+		_predicateEpilogue( i, d4 );
 	}
 
 	void PTXToLLVMTranslator::_translateTrap( const ir::PTXInstruction& i )
@@ -3126,6 +3378,21 @@ namespace translator
 		_add( Xor );
 		_predicateEpilogue( i, Xor.d );
 	}
+	
+	void PTXToLLVMTranslator::_bitcast( const ir::PTXInstruction& i )
+	{
+		ir::LLVMSelect select;
+		select.d = _destination( i );
+		select.a = _translate( i.a );
+		select.b = select.a;
+		select.condition.type.category = ir::LLVMInstruction::Type::Element;
+		select.condition.type.type = ir::LLVMInstruction::I1;
+		select.condition.constant = true;
+		select.condition.i1 = true;
+	
+		_add( select );
+		_predicateEpilogue( i, select.d );
+	}	
 
 	std::string PTXToLLVMTranslator::_tempRegister()
 	{
@@ -3254,7 +3521,7 @@ namespace translator
 	void PTXToLLVMTranslator::_add( const ir::LLVMInstruction& i )
 	{
 		assertM( i.valid() == "", "Instruction " << i.toString() 
-			<< " is not valid " << i.valid() );
+			<< " is not valid: " << i.valid() );
 		report( "    Added instruction " << i.toString() );
 		_llvmKernel->_statements.push_back( ir::LLVMStatement( i ) );	
 	}
@@ -3316,6 +3583,43 @@ namespace translator
 			}
 		}
 	}
+	
+	void PTXToLLVMTranslator::_artificiallyInitializeRegisters()
+	{
+		for( RegisterVector::const_iterator 
+			reg = _uninitializedRegisters.begin(); 
+			reg != _uninitializedRegisters.end(); ++reg )
+		{
+			RegisterToIndexMap::const_iterator 
+				producer = _producers.find( *reg );
+		
+			assertM( producer != _producers.end(), "Uninitialized register " 
+				<< *reg << " was never written to in the proram." )
+			assert( producer->second < _llvmKernel->instructions.size() );
+			
+			ir::LLVMSelect select;
+			select.d = _translate( 
+				_llvmKernel->instructions[ producer->second ].d );
+			
+			select.a.type.category = ir::LLVMInstruction::Type::Element;
+			select.a.type.type = select.d.type.type;
+			select.a.constant = true;
+			select.a.i64 = 0;		
+			
+			select.b = select.a;
+			select.condition.type.category = ir::LLVMInstruction::Type::Element;
+			select.condition.type.type = ir::LLVMInstruction::I1;
+			select.condition.constant = true;
+			select.condition.i1 = true;
+	
+			report( "    Added instruction " << select.toString() );
+			_llvmKernel->_statements.push_front( ir::LLVMStatement( select ) );	
+
+		}
+		
+		_llvmKernel->_statements.push_front( ir::LLVMStatement( 
+			"$ArtificiallyInitializeRegistersBlock" ) );		
+	}
 
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
 		: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
@@ -3337,6 +3641,7 @@ namespace translator
 		_convertPtxToSsa();
 		_translateInstructions();
 		_initializePhiInstructions();
+		_artificiallyInitializeRegisters();
 		
 		_tempRegisterCount = 0;
 		_tempCCRegisterCount = 0;
@@ -3344,6 +3649,7 @@ namespace translator
 		_producers.clear();
 		_phiProducers.clear();
 		_phiIndices.clear();
+		_uninitializedRegisters.clear();
 		delete _graph;
 		
 		return _llvmKernel;

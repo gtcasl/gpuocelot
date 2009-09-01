@@ -27,24 +27,21 @@ namespace translator
 	class PTXToLLVMTranslator : public Translator
 	{
 		private:
-			typedef std::unordered_map< ir::Instruction::RegisterType, 
-				unsigned int > RegisterToIndexMap;
-			typedef std::vector< unsigned int > IndexVector;
-			typedef std::vector< ir::Instruction::RegisterType > RegisterVector;
-			
+			typedef std::vector< analysis::DataflowGraph::Register > 
+				RegisterVector;
+		
 		private:
 			ir::LLVMKernel* _llvmKernel;
 			analysis::DataflowGraph* _graph;
 			unsigned int _tempRegisterCount;
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
-			analysis::DataflowGraph::InstructionId _instructionId; 
-			RegisterToIndexMap _producers;
-			RegisterToIndexMap _phiProducers;
-			RegisterVector _uninitializedRegisters;
-			IndexVector _phiIndices;
+			analysis::DataflowGraph::InstructionId _instructionId;
+			RegisterVector _uninitialized;
 		
 		private:
+			static ir::LLVMInstruction::DataType _translate( 
+				ir::PTXOperand::DataType type );
 			static ir::LLVMInstruction::Operand 
 				_translate( const ir::PTXOperand& o );
 			static void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
@@ -129,8 +126,8 @@ namespace translator
 			void _predicateEpilogue( const ir::PTXInstruction& i, 
 				const ir::LLVMInstruction::Operand& temp );
 			void _add( const ir::LLVMInstruction& i );
-			void _initializePhiInstructions();
-			void _artificiallyInitializeRegisters();
+			
+			void _initializeRegisters();
 
 		public:
 			PTXToLLVMTranslator( OptimizationLevel l = NoOptimization );

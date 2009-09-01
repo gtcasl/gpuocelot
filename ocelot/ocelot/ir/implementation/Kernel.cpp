@@ -11,6 +11,14 @@
 
 #include <iostream>
 
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 ir::Kernel::Kernel() {
@@ -274,6 +282,8 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters(
 	PTXInstructionVector& instructions ) {
 	RegisterMap map;
 	
+	report( "Allocating registers" );
+	
 	for (PTXInstructionVector::iterator i_it = instructions.begin();
 		i_it != instructions.end(); ++i_it) {
 		PTXInstruction & instr = *i_it;
@@ -282,8 +292,14 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters(
 			&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq
 		};
 		
+		report( " For instruction '" << instr.toString() << "'" );
+		
 		for (int i = 0; i < 6; i++) {
 			if ((instr.*operands[i]).addressMode == PTXOperand::Invalid) {
+				continue;
+			}
+			if ((instr.*operands[i]).type == PTXOperand::pred
+				&& (instr.*operands[i]).condition == PTXOperand::PT ) {
 				continue;
 			}
 			if ((instr.*operands[i]).addressMode == PTXOperand::Register 
@@ -304,6 +320,8 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters(
 							reg = it->second;
 						}
 						a_it->reg = reg;
+						report( "  Assigning register " << a_it->identifier 
+							<< " to " << a_it->reg );
 					}
 				}
 				RegisterMap::iterator it 
@@ -319,6 +337,8 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters(
 					reg = it->second;
 				}
 				(instr.*operands[i]).reg = reg;
+				report( "  Assigning register " 
+					<< (instr.*operands[i]).identifier << " to " << reg );
 			}
 		}
 	}

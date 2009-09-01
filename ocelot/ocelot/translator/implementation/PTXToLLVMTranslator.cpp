@@ -26,6 +26,64 @@
 
 namespace translator
 {
+	ir::LLVMInstruction::DataType PTXToLLVMTranslator::_translate( 
+		ir::PTXOperand::DataType type )
+	{
+		switch( type )
+		{
+			case ir::PTXOperand::pred:
+			{
+				return ir::LLVMInstruction::I1;
+				break;
+			}			
+			case ir::PTXOperand::b8: /* fall through */
+			case ir::PTXOperand::u8: /* fall through */
+			case ir::PTXOperand::s8:
+			{
+				return ir::LLVMInstruction::I8;
+				break;
+			}
+			case ir::PTXOperand::b16: /* fall through */
+			case ir::PTXOperand::s16: /* fall through */
+			case ir::PTXOperand::u16:
+			{
+				return ir::LLVMInstruction::I16;
+				break;
+			}
+			case ir::PTXOperand::b32: /* fall through */
+			case ir::PTXOperand::u32: /* fall through */
+			case ir::PTXOperand::s32:
+			{
+				return ir::LLVMInstruction::I32;
+				break;
+			}
+			case ir::PTXOperand::b64: /* fall through */
+			case ir::PTXOperand::s64: /* fall through */
+			case ir::PTXOperand::u64:
+			{
+				return ir::LLVMInstruction::I64;
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				return ir::LLVMInstruction::F32;
+				break;
+			}
+			case ir::PTXOperand::f64:
+			{
+				return ir::LLVMInstruction::F64;
+				break;
+			}
+			default:
+			{
+				assertM( false, "PTXOperand datatype " 
+					+ ir::PTXOperand::toString( type ) 
+					+ " not supported." );
+			}				
+		}
+		return ir::LLVMInstruction::InvalidDataType;
+	}
+
 	ir::LLVMInstruction::Operand 
 		PTXToLLVMTranslator::_translate( const ir::PTXOperand& o )
 	{
@@ -103,58 +161,7 @@ namespace translator
 			}
 		}
 
-		switch( o.type )
-		{
-			case ir::PTXOperand::pred:
-			{
-				op.type.type = ir::LLVMInstruction::I1;
-				break;
-			}			
-			case ir::PTXOperand::b8: /* fall through */
-			case ir::PTXOperand::u8: /* fall through */
-			case ir::PTXOperand::s8:
-			{
-				op.type.type = ir::LLVMInstruction::I8;
-				break;
-			}
-			case ir::PTXOperand::b16: /* fall through */
-			case ir::PTXOperand::s16: /* fall through */
-			case ir::PTXOperand::u16:
-			{
-				op.type.type = ir::LLVMInstruction::I16;
-				break;
-			}
-			case ir::PTXOperand::b32: /* fall through */
-			case ir::PTXOperand::u32: /* fall through */
-			case ir::PTXOperand::s32:
-			{
-				op.type.type = ir::LLVMInstruction::I32;
-				break;
-			}
-			case ir::PTXOperand::b64: /* fall through */
-			case ir::PTXOperand::s64: /* fall through */
-			case ir::PTXOperand::u64:
-			{
-				op.type.type = ir::LLVMInstruction::I64;
-				break;
-			}
-			case ir::PTXOperand::f32:
-			{
-				op.type.type = ir::LLVMInstruction::F32;
-				break;
-			}
-			case ir::PTXOperand::f64:
-			{
-				op.type.type = ir::LLVMInstruction::F64;
-				break;
-			}
-			default:
-			{
-				assertM( false, "PTXOperand datatype " 
-					+ ir::PTXOperand::toString( o.type ) 
-					+ " not supported." );
-			}				
-		}
+		op.type.type = _translate( o.type );
 
 		if( o.vec == ir::PTXOperand::v1 )
 		{
@@ -330,8 +337,8 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
-		for( analysis::DataflowGraph::iterator block = _graph->begin(); 
-			block != _graph->end(); ++block )
+		for( analysis::DataflowGraph::iterator 
+			block = _graph->begin(); block != _graph->end(); ++block )
 		{
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
@@ -340,28 +347,31 @@ namespace translator
 				phi != block->phis().end(); ++phi )
 			{
 				ir::LLVMPhi p;
-				analysis::DataflowGraph::RegisterIdVector::const_iterator 
+				analysis::DataflowGraph::RegisterVector::const_iterator 
 					s = phi->s.begin();
 				for( ; s != phi->s.end(); ++s )
 				{			
 					ir::LLVMPhi::Node node;
+					
 					try
 					{
 						node.label = block->producer( *s );
 					}
-					catch( const 
-						analysis::DataflowGraph::NoProducerException& e )
+					catch( analysis::DataflowGraph::NoProducerException& e )
 					{
-						_uninitializedRegisters.push_back( *s );
-						node.label = "$ArtificiallyInitializeRegistersBlock";
+						node.label = "$OcelotRegisterInitializerBlock";
+						_uninitialized.push_back( *s );
 					}
 					
-					node.reg = *s;
+					node.reg = s->id;
 
 					std::stringstream stream;
-					stream << "r" << *s;
+					stream << "r" << s->id;
 					
 					node.operand.name = stream.str();
+					node.operand.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					node.operand.type.type = _translate( s->type );
 					
 					p.nodes.push_back( node );
 				}
@@ -369,13 +379,11 @@ namespace translator
 				assert( !p.nodes.empty() );
 				
 				std::stringstream stream;
-				stream << "r" << phi->d;
+				stream << "r" << phi->d.id;
 				p.d.name = stream.str();
+				p.d.type.category = ir::LLVMInstruction::Type::Element;
+				p.d.type.type = _translate( phi->d.type );
 				
-				_phiProducers.insert( std::make_pair( phi->d, 
-					_llvmKernel->_statements.size() ) );
-				report( "   Adding phi destination $" << stream.str() );
-				_phiIndices.push_back( _llvmKernel->_statements.size() );
 				_add( p );
 			}
 			report( "  Translating Instructions" );
@@ -1667,9 +1675,7 @@ namespace translator
 			destination != i.d.array.end(); ++destination )
 		{
 			ir::LLVMInstruction::Operand target = _translate( *destination );
-			_producers.insert( std::make_pair( destination->reg, 
-				_instructionId ) );
-		
+			
 			if( i.pg.condition != ir::PTXOperand::PT )
 			{
 				target.name = _tempRegister();			
@@ -1678,11 +1684,12 @@ namespace translator
 			ir::LLVMExtractelement extract;
 			
 			extract.d = target;
+			extract.d.type.type = load.d.type.type;
 			extract.a = load.d;
 			extract.b.type.type = ir::LLVMInstruction::I32;
 			extract.b.type.category = ir::LLVMInstruction::Type::Element;
 			extract.b.constant = true;
-			extract.b.i32 = std::distance( destination, i.d.array.begin() );
+			extract.b.i32 = std::distance( i.d.array.begin(), destination );
 			
 			_add( extract );
 			if( i.pg.condition == ir::PTXOperand::PT ) continue;
@@ -2009,10 +2016,7 @@ namespace translator
 			call.name = "translator::membarGlobal";
 		}
 		
-		call.d = _destination( i );
-		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateMin( const ir::PTXInstruction& i )
@@ -3249,16 +3253,7 @@ namespace translator
 		ir::LLVMCall call;
 		
 		call.name = "translator::tex";
-		
-		for( unsigned int j = 0; j < 4; ++j )
-		{
-			assertM( _producers.count( i.d.array[j].reg ) == 0, 
-				"PTX program is not in ssa form, register " << i.d.array[j].reg 
-				<< " assigned twice." );
-			_producers.insert( std::make_pair( i.d.array[j].reg, 
-				_instructionId ) );
-		}
-		
+				
 		ir::LLVMInstruction::Operand d1 = _translate( i.d.array[0] );
 		ir::LLVMInstruction::Operand d2 = _translate( i.d.array[1] );
 		ir::LLVMInstruction::Operand d3 = _translate( i.d.array[2] );
@@ -3353,15 +3348,14 @@ namespace translator
 		call.name = "translator::vote";
 		
 		call.d = _destination( i );
-		call.parameters.resize( 4 );
+		call.parameters.resize( 3 );
 		call.parameters[0] = _translate( i.a );
-		call.parameters[1] = _translate( i.b );
-		call.parameters[2].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].i32 = i.vote;
+		call.parameters[2].type.type = ir::LLVMInstruction::I1;
 		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[2].i32 = i.vote;
-		call.parameters[3].type.type = ir::LLVMInstruction::I1;
-		call.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[3].i1 = i.b.condition == ir::PTXOperand::InvPred;
+		call.parameters[2].i1 = i.b.condition == ir::PTXOperand::InvPred;
 		
 		_add( call );
 		_predicateEpilogue( i, call.d );
@@ -3389,7 +3383,7 @@ namespace translator
 		select.condition.type.type = ir::LLVMInstruction::I1;
 		select.condition.constant = true;
 		select.condition.i1 = true;
-	
+		
 		_add( select );
 		_predicateEpilogue( i, select.d );
 	}	
@@ -3404,35 +3398,22 @@ namespace translator
 	void PTXToLLVMTranslator::_setFloatingPointRoundingMode( 
 		const ir::PTXInstruction& i )
 	{
-		if( i.modifier & ir::PTXInstruction::rn )
-		{
-			assertM( false, "Rn rounding mode not implemented" );
-		}
-		else if( i.modifier & ir::PTXInstruction::rz )
-		{
-			assertM( false, "Rz rounding mode not implemented" );
-		}
-		else if( i.modifier & ir::PTXInstruction::rm )
-		{
-			assertM( false, "Rm rounding mode not implemented" );
-		}
-		else if( i.modifier & ir::PTXInstruction::rp )
-		{
-			assertM( false, "Rp rounding mode not implemented" );
-		}
-		else if( i.modifier & ir::PTXInstruction::rz )
-		{
-			assertM( false, "Rz rounding mode not implemented" );
-		}
+		ir::LLVMCall call;
+		
+		call.name = "translator::setRoundingMode";
+		
+		call.parameters.resize( 2 );
+		call.parameters[0] = _translate( i.pg );
+		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].i32 = i.modifier;
+		
+		_add( call );
 	}
 
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_destination( 
 		const ir::PTXInstruction& i, bool pq )
 	{
-		assertM( _producers.count( i.d.reg ) == 0, 
-			"PTX program is not in ssa form, register " << i.d.reg 
-			<< " assigned twice." );
-		_producers.insert( std::make_pair( i.d.reg, _instructionId ) );
 		ir::LLVMInstruction::Operand destination;
 		if( pq )
 		{
@@ -3452,11 +3433,6 @@ namespace translator
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_destinationCC( 
 		const ir::PTXInstruction& i )
 	{
-		assertM( _producers.count( i.cc ) == 0, 
-			"PTX program is not in ssa form, CC register " << i.cc 
-			<< " assigned twice." );
-		_producers.insert( std::make_pair( i.cc, _instructionId ) );
-		
 		ir::LLVMInstruction::Operand destination;
 		destination.type.category = ir::LLVMInstruction::Type::Element;
 		destination.type.type = ir::LLVMInstruction::I64;
@@ -3522,103 +3498,42 @@ namespace translator
 	{
 		assertM( i.valid() == "", "Instruction " << i.toString() 
 			<< " is not valid: " << i.valid() );
-		report( "    Added instruction " << i.toString() );
+		report( "    Added instruction '" << i.toString() << "'" );
 		_llvmKernel->_statements.push_back( ir::LLVMStatement( i ) );	
 	}
 
-	void PTXToLLVMTranslator::_initializePhiInstructions()
+	void PTXToLLVMTranslator::_initializeRegisters()
 	{
-		typedef std::queue< ir::Instruction::RegisterType > RegisterQueue;
-		
-		for( IndexVector::const_iterator pi = _phiIndices.begin(); 
-			pi != _phiIndices.end(); ++pi )
+		report( " Adding initialization instructions." );
+		for( RegisterVector::const_iterator reg = _uninitialized.begin(); 
+			reg != _uninitialized.end(); ++reg )
 		{
-			RegisterQueue bfs;
-			
-			ir::LLVMPhi& phi = static_cast< ir::LLVMPhi& >( 
-				*_llvmKernel->_statements[ *pi ].instruction );
-			
-			for( ir::LLVMPhi::NodeVector::const_iterator 
-				node = phi.nodes.begin(); node != phi.nodes.end(); ++node )
-			{
-				bfs.push( node->reg );
-			}
-			
-			while( !bfs.empty() )
-			{
-				RegisterToIndexMap::const_iterator 
-					producer = _producers.find( bfs.front() );
-				if( producer != _producers.end() )
-				{
-					assert( producer->second 
-						< _llvmKernel->instructions.size() );
-					_swapAllExceptName( phi.d, 
-						_llvmKernel->instructions[ producer->second ].d );
-					for( ir::LLVMPhi::NodeVector::iterator 
-						node = phi.nodes.begin(); 
-						node != phi.nodes.end(); ++node )
-					{
-						_swapAllExceptName( node->operand, 
-							_llvmKernel->instructions[ producer->second ].d );
-					}
-					break;
-				}
-				else
-				{
-					RegisterToIndexMap::const_iterator 
-						pi = _phiProducers.find( bfs.front() );
-					assertM( pi != _phiProducers.end(), "Phi source register " 
-						<< bfs.front() 
-						<< " not destination of any phi or ptx instruction." );
-					const ir::LLVMPhi& phi = static_cast< const ir::LLVMPhi& >( 
-						*_llvmKernel->_statements[ pi->second ].instruction );
-					for( ir::LLVMPhi::NodeVector::const_iterator 
-						node = phi.nodes.begin(); node != phi.nodes.end(); 
-						++node )
-					{
-						bfs.push( node->reg );
-					}			
-				}
-				bfs.pop();
-			}
-		}
-	}
-	
-	void PTXToLLVMTranslator::_artificiallyInitializeRegisters()
-	{
-		for( RegisterVector::const_iterator 
-			reg = _uninitializedRegisters.begin(); 
-			reg != _uninitializedRegisters.end(); ++reg )
-		{
-			RegisterToIndexMap::const_iterator 
-				producer = _producers.find( *reg );
-		
-			assertM( producer != _producers.end(), "Uninitialized register " 
-				<< *reg << " was never written to in the proram." )
-			assert( producer->second < _llvmKernel->instructions.size() );
-			
 			ir::LLVMSelect select;
-			select.d = _translate( 
-				_llvmKernel->instructions[ producer->second ].d );
 			
-			select.a.type.category = ir::LLVMInstruction::Type::Element;
-			select.a.type.type = select.d.type.type;
-			select.a.constant = true;
-			select.a.i64 = 0;		
+			std::stringstream stream;
 			
-			select.b = select.a;
+			stream << "r" << reg->id;
+			
+			select.d.name = stream.str();
+			select.d.type.category = ir::LLVMInstruction::Type::Element;
+			select.d.type.type = _translate( reg->type );
+			
 			select.condition.type.category = ir::LLVMInstruction::Type::Element;
 			select.condition.type.type = ir::LLVMInstruction::I1;
 			select.condition.constant = true;
 			select.condition.i1 = true;
-	
-			report( "    Added instruction " << select.toString() );
-			_llvmKernel->_statements.push_front( ir::LLVMStatement( select ) );	
-
-		}
 		
-		_llvmKernel->_statements.push_front( ir::LLVMStatement( 
-			"$ArtificiallyInitializeRegistersBlock" ) );		
+			select.a = select.d;
+			select.a.constant = true;
+			select.a.i64 = 0;
+			select.b = select.a;
+			
+			report( "  Adding instruction '" << select.toString() << "'" );		
+			
+			_llvmKernel->_statements.push_front( ir::LLVMStatement( select ) );			
+		}
+		_llvmKernel->_statements.push_back( 
+			ir::LLVMStatement( "$OcelotRegisterInitializerBlock" ) );
 	}
 
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
@@ -3640,16 +3555,12 @@ namespace translator
 		
 		_convertPtxToSsa();
 		_translateInstructions();
-		_initializePhiInstructions();
-		_artificiallyInitializeRegisters();
+		_initializeRegisters();
 		
 		_tempRegisterCount = 0;
 		_tempCCRegisterCount = 0;
 		_tempBlockCount = 0;
-		_producers.clear();
-		_phiProducers.clear();
-		_phiIndices.clear();
-		_uninitializedRegisters.clear();
+		_uninitialized.clear();
 		delete _graph;
 		
 		return _llvmKernel;

@@ -32,9 +32,20 @@ namespace test
 	{
 		public:
 			unsigned int operator()( 
+				analysis::DataflowGraph::RegisterPointerVector::const_iterator 
+				it )
+			{
+				return *it->pointer;
+			}
+	};
+
+	class ToId
+	{
+		public:
+			unsigned int operator()( 
 				analysis::DataflowGraph::RegisterVector::const_iterator it )
 			{
-				return **it;
+				return it->id;
 			}
 	};
 
@@ -43,14 +54,14 @@ namespace test
 		for( analysis::DataflowGraph::const_iterator block = graph.begin(); 
 			block != graph.end(); ++block )
 		{
-			analysis::DataflowGraph::Block::RegisterIdSet defined;
+			analysis::DataflowGraph::Block::RegisterSet defined;
 			
 			report( " Alive in registers:" );
-			for( analysis::DataflowGraph::Block::RegisterIdSet::const_iterator 
+			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
 				reg = block->aliveIn().begin(); 
 				reg != block->aliveIn().end(); ++reg )
 			{
-				report( "  " << *reg );
+				report( "  " << reg->id );
 				defined.insert( *reg );
 			}
 				
@@ -71,14 +82,14 @@ namespace test
 					instruction->d.end(), Double() ) << " <- " 
 					<< hydrazine::toFormattedString( instruction->s.begin(), 
 					instruction->s.end(), Double() ) );
-				
-				for( analysis::DataflowGraph::RegisterVector::const_iterator
-					reg = instruction->s.begin(); 
-					reg != instruction->s.end(); ++reg )
+					
+				analysis::DataflowGraph::RegisterPointerVector::const_iterator
+					reg = instruction->s.begin();
+				for( ; reg != instruction->s.end(); ++reg )
 				{
-					if( !defined.count( **reg ) )
+					if( !defined.count( *reg ) )
 					{
-						status << "  Register " << **reg 
+						status << "  Register " << *reg->pointer 
 							<< " in instruction " << instruction->label 
 							<< " in block " << block->label() 
 							<< " used uninitialized." << std::endl;
@@ -86,21 +97,21 @@ namespace test
 					}
 				}
 				
-				for( analysis::DataflowGraph::RegisterVector::const_iterator 
-					reg = instruction->d.begin(); 
-					reg != instruction->d.end(); ++reg )
+				reg = instruction->d.begin();
+					
+				for( ; reg != instruction->d.end(); ++reg )
 				{
-					defined.insert( **reg );
+					defined.insert( *reg );
 				}
 			}
 			
-			for( analysis::DataflowGraph::Block::RegisterIdSet::const_iterator 
+			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
 				reg = block->aliveOut().begin(); 
 				reg != block->aliveOut().end(); ++reg )
 			{
 				if( !defined.count( *reg ) )
 				{
-					status << "  Register " << *reg 
+					status << "  Register " << reg->id 
 						<< " out set of block " << block->label() 
 						<< " used uninitialized." << std::endl;
 					return false;
@@ -112,19 +123,19 @@ namespace test
 
 	bool TestDataflowGraph::_verifySsa( const analysis::DataflowGraph& graph )
 	{
-		analysis::DataflowGraph::Block::RegisterIdSet global;
+		analysis::DataflowGraph::Block::RegisterSet global;
 		for( analysis::DataflowGraph::const_iterator block = graph.begin(); 
 			block != graph.end(); ++block )
 		{
-			analysis::DataflowGraph::Block::RegisterIdSet defined;
+			analysis::DataflowGraph::Block::RegisterSet defined;
 			
 			report( block->label() );
 			report( " Alive in registers:" );
-			for( analysis::DataflowGraph::Block::RegisterIdSet::const_iterator 
+			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
 				reg = block->aliveIn().begin(); 
 				reg != block->aliveIn().end(); ++reg )
 			{
-				report( "  " << *reg );
+				report( "  " << reg->id );
 				defined.insert( *reg );
 			}
 			
@@ -132,14 +143,15 @@ namespace test
 				phi = block->phis().begin(); 
 				phi != block->phis().end(); ++phi )
 			{
-				report( " phi " << phi->d << " <- " 
-					<< hydrazine::toString( phi->s.begin(), phi->s.end() ) );
-				for( analysis::DataflowGraph::RegisterIdVector::const_iterator
+				report( " phi " << phi->d.id << " <- " 
+					<< hydrazine::toFormattedString( phi->s.begin(), 
+						phi->s.end(), ToId() ) );
+				for( analysis::DataflowGraph::RegisterVector::const_iterator
 					reg = phi->s.begin(); reg != phi->s.end(); ++reg )
 				{
 					if( !defined.count( *reg ) )
 					{
-						status << "  Register " << *reg 
+						status << "  Register " << reg->id
 							<< " in phi instruction " 
 							<< ( phi - block->phis().begin() )
 							<< " in " << block->label() 
@@ -152,7 +164,8 @@ namespace test
 				{
 					status << "  In " << block->label() 
 						<< ", instruction phi " 
-						<< ( phi - block->phis().begin() ) << ", reg " << phi->d
+						<< ( phi - block->phis().begin() ) 
+						<< ", reg " << phi->d.id
 						<< " already defined globally." << std::endl;
 					return false;
 				}
@@ -167,14 +180,14 @@ namespace test
 					instruction->d.end(), Double() ) << " <- " 
 					<< hydrazine::toFormattedString( instruction->s.begin(), 
 					instruction->s.end(), Double() ) );
-				
-				for( analysis::DataflowGraph::RegisterVector::const_iterator
-					reg = instruction->s.begin(); 
-					reg != instruction->s.end(); ++reg )
+					
+				analysis::DataflowGraph::RegisterPointerVector::const_iterator
+					reg = instruction->s.begin();
+				for( ; reg != instruction->s.end(); ++reg )
 				{
-					if( !defined.count( **reg ) )
+					if( !defined.count( *reg ) )
 					{
-						status << "  Register " << **reg 
+						status << "  Register " << *reg->pointer 
 							<< " in instruction " << instruction->label 
 							<< " in " << block->label() 
 							<< " used uninitialized." << std::endl;
@@ -182,29 +195,28 @@ namespace test
 					}
 				}
 				
-				for( analysis::DataflowGraph::RegisterVector::const_iterator
-					reg = instruction->d.begin(); 
+				for( reg = instruction->d.begin(); 
 					reg != instruction->d.end(); ++reg )
 				{
-					defined.insert( **reg );
-					if( !global.insert( **reg ).second )
+					defined.insert( *reg );
+					if( !global.insert( *reg ).second )
 					{
 						status << "  In " << block->label() 
 							<< ", instruction " 
-							<< instruction->label << ", reg " << **reg
+							<< instruction->label << ", reg " << *reg->pointer
 							<< " already defined globally." << std::endl;
 						return false;
 					}
 				}
 			}
 			
-			for( analysis::DataflowGraph::Block::RegisterIdSet::const_iterator 
+			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
 				reg = block->aliveOut().begin(); 
 				reg != block->aliveOut().end(); ++reg )
 			{
 				if( !defined.count( *reg ) )
 				{
-					status << "  Register " << *reg 
+					status << "  Register " << reg->id 
 						<< " out set of block " << block->label() 
 						<< " used uninitialized." << std::endl;
 					return false;

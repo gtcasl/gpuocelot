@@ -25,13 +25,14 @@ namespace analysis
 	{
 		report( "  Initializing block: " << block->label() );
 		b.regs.clear();
-		for( DataflowGraph::Block::RegisterIdSet::iterator 
+		for( DataflowGraph::Block::RegisterSet::iterator 
 			reg = block->_aliveIn.begin(); 
 			reg != block->_aliveIn.end(); ++reg )
 		{
-			report( "   Mapping alive in register " << *reg 
+			report( "   Mapping alive in register " << reg->id 
 				<< " to " << current );
-			b.regs.insert( std::make_pair( *reg, current++ ) );
+			b.regs.insert( std::make_pair( *reg, 
+				DataflowGraph::Register( current++, reg->type ) ) );
 		}
 		
 		b.aliveInMap = b.regs;
@@ -41,44 +42,46 @@ namespace analysis
 			instruction != block->_instructions.end(); ++instruction )
 		{
 			report( "   Initializing instruction: " << instruction->label );
-			for( DataflowGraph::RegisterVector::iterator 
+			for( DataflowGraph::RegisterPointerVector::iterator 
 				reg = instruction->s.begin(); 
 				reg != instruction->s.end(); ++reg )
 			{
-				RegisterMap::iterator mapping = b.regs.find( **reg );
+				RegisterMap::iterator mapping = b.regs.find( *reg->pointer );
 				assert( mapping != b.regs.end() );
-				report( "    Mapping source register " << **reg 
-					<< " to " << mapping->second );
-				**reg = mapping->second;
+				report( "    Mapping source register " << *reg->pointer 
+					<< " to " << mapping->second.id );
+				*reg->pointer = mapping->second.id;
 			}
 			
-			for( DataflowGraph::RegisterVector::iterator 
+			for( DataflowGraph::RegisterPointerVector::iterator 
 				reg = instruction->d.begin(); 
 				reg != instruction->d.end(); ++reg )
 			{
-				RegisterMap::iterator mapping = b.regs.find( **reg );
+				RegisterMap::iterator mapping = b.regs.find( *reg->pointer );
 				if( mapping == b.regs.end() )
 				{
-					report( "    Mapping destination register " << **reg 
+					report( "    Mapping destination register " << *reg->pointer 
 						<< " to " << current );
-					mapping = b.regs.insert( std::make_pair( **reg, 
-						current++ ) ).first;
+					mapping = b.regs.insert( std::make_pair( *reg, 
+						DataflowGraph::Register( current++, 
+						reg->type ) ) ).first;
 				}
 				else
 				{
-					report( "   ReMapping destination register " << **reg 
-						<< " from " << mapping->second << " to " << current );
-					mapping->second = current++;
+					report( "   ReMapping destination register " 
+						<< *reg->pointer 
+						<< " from " << mapping->second.id << " to " << current );
+					mapping->second.id = current++;
 				}
-				**reg = mapping->second;
+				*reg->pointer = mapping->second.id;
 			}
 		}
 	}
 	
 	void SSAGraph::_insertPhis()
 	{
-		typedef std::vector< DataflowGraph::RegisterId > IdVector;
-		typedef std::unordered_map< DataflowGraph::RegisterId, IdVector > IdMap;
+		typedef std::vector< DataflowGraph::Register > IdVector;
+		typedef std::unordered_map< DataflowGraph::Register, IdVector > IdMap;
 		
 		report( " Inserting Phi instructions." );
 		
@@ -101,48 +104,49 @@ namespace analysis
 					= _blocks.find( *predecessor );
 				assert( predecessorBlock != _blocks.end() );
 				
-				for( DataflowGraph::Block::RegisterIdSet::iterator 
+				for( DataflowGraph::Block::RegisterSet::iterator 
 					reg = (*predecessor)->_aliveOut.begin(); 
 					reg != (*predecessor)->_aliveOut.end(); ++reg )
 				{
-					DataflowGraph::Block::RegisterIdSet::iterator in 
-						= block->first->_aliveIn.find( *reg );
+					DataflowGraph::Block::RegisterSet::iterator in 
+						= block->first->_aliveIn.find( reg->id );
 					if( in != block->first->_aliveIn.end() )
 					{
 						RegisterMap::iterator mapping 
-							= block->second.aliveInMap.find( *reg );
+							= block->second.aliveInMap.find( reg->id );
 						assert( mapping != block->second.aliveInMap.end() );
-						IdMap::iterator phi = map.find( mapping->second );
+						IdMap::iterator phi = map.find( mapping->second.id );
 						if( phi == map.end() )
 						{
-							phi = map.insert( std::make_pair( mapping->second, 
-								IdVector() ) ).first;
+							phi = map.insert( std::make_pair( 
+								mapping->second, IdVector() ) ).first;
 						}
 						RegisterMap::iterator remapping 
 							= predecessorBlock->second.regs.find( *reg );
 						assert( remapping 
 							!= predecessorBlock->second.regs.end() );
-						report( "     Mapping phi source " << remapping->second 
-							<< " to destination " << mapping->second );
+						report( "     Mapping phi source " 
+							<< remapping->second.id 
+							<< " to destination " << mapping->second.id );
 						phi->second.push_back( remapping->second );
 					}
 				}
 			}
 			
-			for( DataflowGraph::Block::RegisterIdSet::iterator 
+			for( DataflowGraph::Block::RegisterSet::iterator 
 				reg = block->first->_aliveIn.begin(); 
 				reg != block->first->_aliveIn.end(); ++reg )
 			{
 				RegisterMap::iterator mapping 
-					= block->second.aliveInMap.find( *reg );
+					= block->second.aliveInMap.find( reg->id );
 				assert( mapping != block->second.aliveInMap.end() );
 				IdMap::iterator phi = map.find( mapping->second );
 				if( phi == map.end() )
 				{
 					phi = map.insert( std::make_pair( mapping->second, 
 						IdVector() ) ).first;
-					report( "     Mapping phi source " << mapping->first 
-						<< " to destination " << mapping->second );
+					report( "     Mapping phi source " << mapping->first.id 
+						<< " to destination " << mapping->second.id );
 					phi->second.push_back( mapping->first );
 				}				
 			}
@@ -174,10 +178,10 @@ namespace analysis
 				phi = block->first->_phis.begin(); 
 				phi != block->first->_phis.end(); ++phi )
 			{
-				for( DataflowGraph::RegisterIdVector::iterator 
+				for( DataflowGraph::RegisterVector::iterator 
 					reg = phi->s.begin(); reg != phi->s.end(); ++reg )
 				{
-					report( "   Adding register " << *reg );
+					report( "   Adding register " << reg->id );
 					block->first->_aliveIn.insert( *reg );
 				}
 			}
@@ -191,15 +195,15 @@ namespace analysis
 			block != _blocks.end(); ++block )
 		{
 			report( "  Updating AliveOut for block " << block->first->label() );
-			DataflowGraph::Block::RegisterIdSet newAliveOut;
-			for( DataflowGraph::Block::RegisterIdSet::iterator 
+			DataflowGraph::Block::RegisterSet newAliveOut;
+			for( DataflowGraph::Block::RegisterSet::iterator 
 				reg = block->first->_aliveOut.begin(); 
 				reg != block->first->_aliveOut.end(); ++reg )
 			{
 				RegisterMap::iterator mapping = block->second.regs.find( *reg );
 				assert( mapping != block->second.regs.end() );
-				report( "   Mapping register " << mapping->first 
-					<< " to " << mapping->second );
+				report( "   Mapping alive out register " << mapping->first.id 
+					<< " to " << mapping->second.id );
 				newAliveOut.insert( mapping->second );
 			}
 			block->first->_aliveOut = std::move( newAliveOut );
@@ -262,32 +266,32 @@ namespace analysis
 				instruction = fi->_instructions.begin(); 
 				instruction != fi->_instructions.end(); ++instruction )
 			{
-				for( DataflowGraph::RegisterVector::iterator 
+				for( DataflowGraph::RegisterPointerVector::iterator 
 					reg = instruction->s.begin(); 
 					reg != instruction->s.end(); ++reg )
 				{
-					RegisterMap::iterator mapping = map.find( **reg );
+					RegisterMap::iterator mapping = map.find( *reg->pointer );
 					if( mapping != map.end() )
 					{
-						**reg = mapping->second;
+						*reg->pointer = mapping->second.id;
 					}
 				}
 
-				for( DataflowGraph::RegisterVector::iterator 
+				for( DataflowGraph::RegisterPointerVector::iterator 
 					reg = instruction->d.begin(); 
 					reg != instruction->d.end(); ++reg )
 				{
-					RegisterMap::iterator mapping = map.find( **reg );
+					RegisterMap::iterator mapping = map.find( *reg->pointer );
 					if( mapping != map.end() )
 					{
-						**reg = mapping->second;
+						*reg->pointer = mapping->second.id;
 					}
 				}
 			}
 			
-			DataflowGraph::Block::RegisterIdSet newAlive;
+			DataflowGraph::Block::RegisterSet newAlive;
 			
-			for( DataflowGraph::Block::RegisterIdSet::iterator 
+			for( DataflowGraph::Block::RegisterSet::iterator 
 				reg = fi->_aliveOut.begin(); 
 				reg != fi->_aliveOut.end(); ++reg )
 			{

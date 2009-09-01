@@ -19,8 +19,8 @@ namespace analysis
 	class SSAGraph
 	{
 		private:
-			typedef std::unordered_map< DataflowGraph::RegisterId, 
-				DataflowGraph::RegisterId > RegisterMap;
+			typedef std::unordered_map< DataflowGraph::Register, 
+				DataflowGraph::Register > RegisterMap;
 
 			class Block
 			{

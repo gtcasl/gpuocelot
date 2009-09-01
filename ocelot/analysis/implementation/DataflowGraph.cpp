@@ -15,6 +15,35 @@
 namespace analysis
 {
 
+	DataflowGraph::Register::Register( RegisterId _id, Type _type ) 
+		: type( _type ), id( _id )
+	{
+	
+	}
+	
+	DataflowGraph::Register::Register( const RegisterPointer& r ) 
+		: type( r.type ), id( *r.pointer )
+	{
+	
+	}
+	
+	DataflowGraph::RegisterPointer::RegisterPointer( 
+		RegisterId* _id, Type _type ) : type( _type ), pointer( _id )
+	{
+	
+	}
+	
+	bool DataflowGraph::Register::operator==( const Register& r ) const
+	{
+		return id == r.id;
+	}
+	
+	bool DataflowGraph::RegisterPointer::operator==( 
+		const RegisterPointer& r ) const
+	{
+		return *pointer == *r.pointer;
+	}
+
 	DataflowGraph::NoProducerException::NoProducerException( 
 		RegisterId reg )
 	{
@@ -71,12 +100,15 @@ namespace analysis
 						fi = ( i.*sources[ j ] ).array.begin(); 
 						fi != ( i.*sources[ j ] ).array.end(); ++fi )
 					{
-						result.s.push_back( &fi->reg );
+						result.s.push_back( 
+							RegisterPointer( &fi->reg, fi->type ) );
 					}
 				}
 				else
 				{
-					result.s.push_back( &( i.*sources[ j ] ).reg );
+					result.s.push_back( 
+						RegisterPointer( &( i.*sources[ j ] ).reg, 
+						( i.*sources[ j ] ).type ) );
 				}
 			}
 		}
@@ -114,12 +146,15 @@ namespace analysis
 						fi = ( i.*destinations[ j ] ).array.begin(); 
 						fi != ( i.*destinations[ j ] ).array.end(); ++fi )
 					{
-						result.d.push_back( &fi->reg );
+						result.d.push_back( 
+							RegisterPointer( &fi->reg, fi->type ) );
 					}
 				}
 				else
 				{
-					result.d.push_back( &( i.*destinations[ j ] ).reg );
+					result.d.push_back( 
+						RegisterPointer( &( i.*destinations[ j ] ).reg, 
+						( i.*destinations[ j ] ).type ) );
 				}
 			}
 		}
@@ -130,12 +165,12 @@ namespace analysis
 		return result;
 	}
 
-	bool DataflowGraph::Block::_equal( const RegisterIdSet& one, 
-		const RegisterIdSet& two )
+	bool DataflowGraph::Block::_equal( const RegisterSet& one, 
+		const RegisterSet& two )
 	{
 		if( one.size() != two.size() ) return false;
 		
-		for( RegisterIdSet::const_iterator fi = one.begin(); 
+		for( RegisterSet::const_iterator fi = one.begin(); 
 			fi != one.end(); ++fi )
 		{
 			if( two.count( *fi ) == 0 ) return false;
@@ -150,7 +185,7 @@ namespace analysis
 		
 		report( " Block name " << _label );
 		
-		RegisterIdSet previousIn = std::move( _aliveIn );
+		RegisterSet previousIn = std::move( _aliveIn );
 		assert( _aliveIn.empty() );
 		
 		report( "  Scanning targets: " );
@@ -161,7 +196,7 @@ namespace analysis
 			bi != _targets.end(); ++bi )
 		{
 			report( "   " << (*bi)->label() );		
-			for( RegisterIdSet::iterator ri = (*bi)->_aliveIn.begin(); 
+			for( RegisterSet::iterator ri = (*bi)->_aliveIn.begin(); 
 				ri != (*bi)->_aliveIn.end(); ++ri )
 			{
 				_aliveOut.insert( *ri );
@@ -173,16 +208,16 @@ namespace analysis
 		for( InstructionVector::reverse_iterator ii = _instructions.rbegin(); 
 			ii != _instructions.rend(); ++ii )
 		{
-			for( RegisterVector::iterator di = ii->d.begin(); 
+			for( RegisterPointerVector::iterator di = ii->d.begin(); 
 				di != ii->d.end(); ++di )
 			{
-				_aliveIn.erase( **di );
+				_aliveIn.erase( *di );
 			}
 
-			for( RegisterVector::iterator si = ii->s.begin(); 
+			for( RegisterPointerVector::iterator si = ii->s.begin(); 
 				si != ii->s.end(); ++si )
 			{
-				_aliveIn.insert( **si );
+				_aliveIn.insert( *si );
 			}
 		}
 		
@@ -199,13 +234,13 @@ namespace analysis
 		
 	}
 	
-	const DataflowGraph::Block::RegisterIdSet& 
+	const DataflowGraph::Block::RegisterSet& 
 		DataflowGraph::Block::aliveIn() const
 	{
 		return _aliveIn;
 	}
 	
-	const DataflowGraph::Block::RegisterIdSet& 
+	const DataflowGraph::Block::RegisterSet& 
 		DataflowGraph::Block::aliveOut() const
 	{
 		return _aliveOut;
@@ -251,9 +286,9 @@ namespace analysis
 		return _label;
 	}
 
-	const std::string& DataflowGraph::Block::producer( RegisterId r ) const
+	const std::string& DataflowGraph::Block::producer( const Register& r ) const
 	{
-		assertM( aliveIn().count( r ) != 0, "Register " << r 
+		assertM( aliveIn().count( r ) != 0, "Register " << r.id 
 			<< " is not in the alive-in set of block " << label() );
 
 		BlockPointerSet::const_iterator predecessor = predecessors().end();
@@ -270,7 +305,7 @@ namespace analysis
 		
 		if( predecessor == predecessors().end() )
 		{
-			throw NoProducerException( r );
+			throw NoProducerException( r.id );
 		}
 		
 		return (*predecessor)->label();
@@ -496,18 +531,19 @@ namespace analysis
 			if( !block->aliveIn().empty() )
 			{
 				out << " | { ";
-				DataflowGraph::Block::RegisterIdSet::const_iterator 
+				DataflowGraph::Block::RegisterSet::const_iterator 
 					ri = block->aliveIn().begin();
 				std::stringstream value;
-				value << "r" << *ri;
+				value << "r" << ri->id;
 				out << "<" << value.str() << "> " << value.str();
-				map[ *ri ] = aliveInPrefix.str() + ":" + value.str();
+				map[ ri->id ] = aliveInPrefix.str() + ":" + value.str();
 				for( ++ri; ri != block->aliveIn().end(); ++ri )
 				{
 					std::stringstream stream;
-					stream << "r" << *ri;
+					stream << "r" << ri->id;
 					out << " | <" << stream.str() << "> " << stream.str();
-					map[ *ri ] = aliveInPrefix.str() + ":" + stream.str();
+					map[ ri->id ] = aliveInPrefix.str() 
+						+ ":" + stream.str();
 				}
 				out << " }";
 			}
@@ -521,37 +557,37 @@ namespace analysis
 				instructionPrefix << "b_" << blockCount << "_instruction" 
 					<< ( ii - block->phis().begin() );
 
-				for( DataflowGraph::RegisterIdVector::const_iterator 
+				for( DataflowGraph::RegisterVector::const_iterator 
 					si = ii->s.begin(); si != ii->s.end(); ++si )
 				{
-					assert( map.count( *si ) != 0 );
-					out << "\t\t" << map[ *si ] << "->" 
-						<< instructionPrefix.str() << ":rs" << *si 
+					assert( map.count( si->id ) != 0 );
+					out << "\t\t" << map[ si->id ] << "->" 
+						<< instructionPrefix.str() << ":rs" << si->id 
 						<< "[style = dashed, color = blue];\n";				
 				}
 				
 				out << "\t\t" << instructionPrefix.str() 
 					<< "[ label = \"{ phi | { ";
 				
-				DataflowGraph::RegisterIdVector::const_iterator 
+				DataflowGraph::RegisterVector::const_iterator 
 				 	si = ii->s.begin();
 				 	
-				out << "<rs" << *si << "> ";
-				out << "rs" << *si;
+				out << "<rs" << si->id << "> ";
+				out << "rs" << si->id;
 				++si;
 				for( ; si != ii->s.end(); ++si )
 				{
 					out << " | ";
-					out << "<rs" << *si << "> ";
-					out << "rs" << *si;
+					out << "<rs" << si->id << "> ";
+					out << "rs" << si->id;
 				}
 				
 				out << " } | { ";
 				std::stringstream value;
-				value << "rd" << ii->d;
+				value << "rd" << ii->d.id;
 				out << "<" << value.str() << "> " << value.str();
-				assert( map.count( ii->d ) == 0 );
-				map[ ii->d ] = instructionPrefix.str() 
+				assert( map.count( ii->d.id ) == 0 );
+				map[ ii->d.id ] = instructionPrefix.str() 
 					+ ":" + value.str();
 				out << " } }\"];\n";
 			}
@@ -565,12 +601,12 @@ namespace analysis
 					<< ( ii - block->instructions().begin() 
 					+ block->phis().size() );
 
-				for( DataflowGraph::RegisterVector::const_iterator 
+				for( DataflowGraph::RegisterPointerVector::const_iterator 
 					si = ii->s.begin(); si != ii->s.end(); ++si )
 				{
-					assert( map.count( **si ) != 0 );
-					out << "\t\t" << map[ **si ] << "->" 
-						<< instructionPrefix.str() << ":rs" << **si 
+					assert( map.count( *si->pointer ) != 0 );
+					out << "\t\t" << map[ *si->pointer ] << "->" 
+						<< instructionPrefix.str() << ":rs" << *si->pointer
 						<< "[style = dashed, color = blue];\n";				
 				}
 				
@@ -580,13 +616,13 @@ namespace analysis
 				
 				bool any = false;
 				
-				DataflowGraph::RegisterVector::const_iterator 
+				DataflowGraph::RegisterPointerVector::const_iterator 
 				 	si = ii->s.begin();
 				 	
 				if( si != ii->s.end() )
 				{
-					out << "<rs" << **si << "> ";
-					out << "rs" << **si;
+					out << "<rs" << *si->pointer << "> ";
+					out << "rs" << *si->pointer;
 					any = true;
 					++si;
 				}
@@ -596,12 +632,12 @@ namespace analysis
 					{
 						out << " | ";
 					}
-					out << "<rs" << **si << "> ";
-					out << "rs" << **si;
+					out << "<rs" << *si->pointer << "> ";
+					out << "rs" << *si->pointer;
 					any = true;
 				}
 				
-				DataflowGraph::RegisterVector::const_iterator 
+				DataflowGraph::RegisterPointerVector::const_iterator 
 				 	di = ii->d.begin();
 				
 				if( di != ii->d.end() )
@@ -611,18 +647,18 @@ namespace analysis
 						out << " } | { ";
 					}
 					std::stringstream value;
-					value << "rd" << **di;
+					value << "rd" << *di->pointer;
 					out << "<" << value.str() << "> " << value.str();
-					map[ **di ] = instructionPrefix.str() 
+					map[ *di->pointer ] = instructionPrefix.str() 
 						+ ":" + value.str();
 					++di;
 				}
 				for( ; di != ii->d.end(); ++di )
 				{
 					std::stringstream value;
-					value << "rd" << **di;
+					value << "rd" << *di->pointer;
 					out << " | <" << value.str() << "> " << value.str();
-					map[ **di ] = instructionPrefix.str() + ":" 
+					map[ *di->pointer ] = instructionPrefix.str() + ":" 
 						+ value.str();
 				}
 				
@@ -635,26 +671,26 @@ namespace analysis
 			if( !block->aliveOut().empty() )
 			{
 				out << " | { ";
-				DataflowGraph::Block::RegisterIdSet::const_iterator 
+				DataflowGraph::Block::RegisterSet::const_iterator 
 					ri = block->aliveOut().begin();
-				out << "<r" << *ri << "> ";
-				out << "r" << *ri;
+				out << "<r" << ri->id << "> ";
+				out << "r" << ri->id;
 				for( ++ri; ri != block->aliveIn().end(); ++ri )
 				{
-					out << " | <r" << *ri << "> "; 
-					out << "r" << *ri << ""; 
+					out << " | <r" << ri->id << "> "; 
+					out << "r" << ri->id << ""; 
 				}
 				out << " }";
 			}
 			out << " }\"];\n";
 			
-			for( DataflowGraph::Block::RegisterIdSet::const_iterator 
+			for( DataflowGraph::Block::RegisterSet::const_iterator 
 				ri = block->aliveOut().begin(); 
 				ri != block->aliveOut().end(); ++ri )
 			{
-				assert( map.count( *ri ) != 0 );
-				out << "\t\t" << map[ *ri ] << "->b_" << blockCount 
-					<< "_AliveOut" << ":r" << *ri 
+				assert( map.count( ri->id ) != 0 );
+				out << "\t\t" << map[ ri->id ] << "->b_" << blockCount 
+					<< "_AliveOut" << ":r" << ri->id 
 					<< "[ style=dashed, color=blue];\n";
 			}
 

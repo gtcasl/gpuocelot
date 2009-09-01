@@ -37,14 +37,56 @@ namespace analysis
 	{
 		friend class SSAGraph;
 		public:			
+			/*! \brief Datatype, we use PTX */
+			typedef ir::PTXOperand::DataType Type;
 			/*! \brief A unique ID for a logical register */
 			typedef unsigned int RegisterId;
 			/*! \brief A unique ID for a logical instruction */
 			typedef unsigned int InstructionId;
+
+			/*! \brief A register with type info */
+			class RegisterPointer
+			{
+				public:
+					/*! \brief The type of the register */
+					Type type;
+					 /*! \brief Register id pointer */
+					RegisterId* pointer;
+					
+				public:
+					/*! \brief Constructor with type and pointer */
+					RegisterPointer( RegisterId* id, Type type );
+					
+				public:
+					/*! \brief Needed for comparisons */
+					bool operator==( const RegisterPointer& r ) const;
+			};
+			
+			/*! \brief A register with type info */
+			class Register
+			{
+				public:
+					/*! \brief The type of the register */
+					Type type;
+					/*! \brief The id of the register */
+					RegisterId id;
+					
+				public:
+					/*! \brief Constructor with type and id */
+					Register( RegisterId id = 0, 
+						Type type = ir::PTXOperand::TypeSpecifier_invalid );
+					/*! \brief Constructor from pointer */
+					Register( const RegisterPointer& r );
+					
+				public:
+					/*! \brief Needed for comparisons */
+					bool operator==( const Register& r ) const;
+			};
+			
 			/*! \brief A vector of register ID pointers */
-			typedef std::vector< RegisterId* > RegisterVector;
-			/*! \brief A vector of register IDs */
-			typedef std::vector< RegisterId > RegisterIdVector;
+			typedef std::vector< RegisterPointer > RegisterPointerVector;
+			/*! \brief A vector of register ID pointers */
+			typedef std::vector< Register > RegisterVector;
 			
 			/*! \brief An exception for potentially uninitialized regs */
 			class NoProducerException : public std::exception
@@ -67,9 +109,9 @@ namespace analysis
 					/*! \brief The id of the instruction */
 					InstructionId id;
 					/*! \brief Destination registers */
-					RegisterVector d;
+					RegisterPointerVector d;
 					/*! \brief Source registers */
-					RegisterVector s;
+					RegisterPointerVector s;
 			};
 			
 			/*! \brief A class for referring to a phi instruction. */
@@ -77,9 +119,9 @@ namespace analysis
 			{					
 				public:
 					/*! \brief Destination register */
-					RegisterId d;
+					Register d;
 					/*! \brief Source registers */
-					RegisterIdVector s;
+					RegisterVector s;
 			};
 			
 			class Block;
@@ -111,13 +153,13 @@ namespace analysis
 					};
 			
 					/*! \brief A unique set of register Ids */
-					typedef std::unordered_set< RegisterId > RegisterIdSet;
+					typedef std::unordered_set< Register > RegisterSet;
 
 				private:
 					/*! \brief Registers that are alive entering the block */
-					RegisterIdSet _aliveIn;
+					RegisterSet _aliveIn;
 					/*! \brief Register that are alive exiting the block */
-					RegisterIdSet _aliveOut;
+					RegisterSet _aliveOut;
 					/*! \brief The fallthrough block */
 					BlockVector::iterator _fallthrough;
 					/*! \brief The target block */
@@ -135,8 +177,8 @@ namespace analysis
 
 				private:
 					/*! \brief Compare two register sets */
-					static bool _equal( const RegisterIdSet& one, 
-						const RegisterIdSet& two );
+					static bool _equal( const RegisterSet& one, 
+						const RegisterSet& two );
 
 				private:
 					/*! \brief Private constructor */
@@ -155,9 +197,9 @@ namespace analysis
 					
 				public:
 					/*! \brief Get registers that are alive entering the block*/
-					const RegisterIdSet& aliveIn() const;
+					const RegisterSet& aliveIn() const;
 					/*! \brief Get registers that are alive exiting the block */
-					const RegisterIdSet& aliveOut() const;
+					const RegisterSet& aliveOut() const;
 					/*! \brief Get the fallthrough block */
 					BlockVector::iterator fallthrough() const;
 					/*! \brief Get the target block */
@@ -173,7 +215,7 @@ namespace analysis
 					/*! \brief Get the block label */
 					const std::string& label() const;
 					/*! \brief Determine the block that produced a register */
-					const std::string& producer( RegisterId r ) const;
+					const std::string& producer( const Register& r ) const;
 			};
 			
 			
@@ -195,7 +237,7 @@ namespace analysis
 		private:
 			/*! \brief Convert from a PTXInstruction to an Instruction  */
 			static Instruction _convert( ir::PTXInstruction& i, 
-				InstructionId id  );
+				InstructionId id );
 
 		public:
 			/*! \brief Default constructor */
@@ -351,6 +393,20 @@ namespace std
 		analysis::DataflowGraph::iterator it ) const
 	{
 		return ( size_t )&( *it );
+	}
+	
+	template<> inline size_t hash< 
+		analysis::DataflowGraph::Register >::operator()( 
+		analysis::DataflowGraph::Register r ) const
+	{
+		return r.id;
+	}
+	
+	template<> inline size_t hash< 
+		analysis::DataflowGraph::RegisterPointer >::operator()( 
+		analysis::DataflowGraph::RegisterPointer r ) const
+	{
+		return *r.pointer;
 	}
 }
 

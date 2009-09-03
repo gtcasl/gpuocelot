@@ -218,7 +218,6 @@ namespace analysis
 					const std::string& producer( const Register& r ) const;
 			};
 			
-			
 		public:
 			/*! \brief iterator */
 			typedef BlockVector::iterator iterator;

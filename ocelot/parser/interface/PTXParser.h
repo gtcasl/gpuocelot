@@ -106,7 +106,8 @@ namespace parser
 					void target();
 					void addressSpace( int token );
 					void dataType( int token );
-					void vectorType( int token );
+					void statementVectorType( int token );
+					void instructionVectorType( int token );
 					void attribute( bool visible, bool external );
 					
 					void arrayDimensionSet( long long int value, 

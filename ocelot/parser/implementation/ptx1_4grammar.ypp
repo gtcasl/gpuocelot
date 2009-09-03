@@ -211,22 +211,27 @@ dataType : dataTypeId
 
 vectorToken : TOKEN_V2 | TOKEN_V4;
 
-vectorType : vectorToken
+statementVectorType : vectorToken
 {
-	state.vectorType( $<value>1 );
+	state.statementVectorType( $<value>1 );
+};
+
+instructionVectorType : vectorToken
+{
+	state.instructionVectorType( $<value>1 );
 };
 
 alignment : TOKEN_ALIGN TOKEN_DECIMAL_CONSTANT { state.alignment = $<value>2; };
 
-addressableVariablePrefix : dataType vectorType { state.alignment = 1; };
-addressableVariablePrefix : vectorType dataType { state.alignment = 1; };
+addressableVariablePrefix : dataType statementVectorType { state.alignment = 1; };
+addressableVariablePrefix : statementVectorType dataType { state.alignment = 1; };
 addressableVariablePrefix : dataType { state.alignment = 1; };
-addressableVariablePrefix : alignment dataType vectorType;
-addressableVariablePrefix : alignment vectorType dataType;
-addressableVariablePrefix : dataType alignment vectorType;
-addressableVariablePrefix : dataType vectorType alignment;
-addressableVariablePrefix : vectorType dataType alignment;
-addressableVariablePrefix : vectorType alignment dataType;
+addressableVariablePrefix : alignment dataType statementVectorType;
+addressableVariablePrefix : alignment statementVectorType dataType;
+addressableVariablePrefix : dataType alignment statementVectorType;
+addressableVariablePrefix : dataType statementVectorType alignment;
+addressableVariablePrefix : statementVectorType dataType alignment;
+addressableVariablePrefix : statementVectorType alignment dataType;
 addressableVariablePrefix : dataType alignment;
 addressableVariablePrefix : alignment dataType;
 
@@ -665,12 +670,12 @@ ldModifier : TOKEN_VOLATILE addressSpace
 	state.volatileFlag( true );
 };
 
-ldModifier : TOKEN_VOLATILE addressSpace vectorType
+ldModifier : TOKEN_VOLATILE addressSpace instructionVectorType
 {
 	state.volatileFlag( true );
 };
 
-ldModifier : addressSpace vectorType
+ldModifier : addressSpace instructionVectorType
 {
 	state.volatileFlag( false );
 };

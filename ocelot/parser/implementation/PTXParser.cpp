@@ -259,9 +259,14 @@ namespace parser
 		operand.type = tokenToDataType( value );
 	}
 	
-	void PTXParser::State::vectorType( int value )
+	void PTXParser::State::instructionVectorType( int value )
 	{
 		statement.instruction.vec = tokenToVec( value );
+	}
+
+	void PTXParser::State::statementVectorType( int value )
+	{
+		statement.array.vec = tokenToVec( value );
 	}
 	
 	void PTXParser::State::attribute( bool visible, bool external )
@@ -328,6 +333,7 @@ namespace parser
 		operand = ir::PTXOperand();
 		statement.array.values.clear();
 		alignment = 1;
+		statement.array.vec = ir::PTXOperand::v1;
 	}
 	
 	void PTXParser::State::assignment()
@@ -424,7 +430,6 @@ namespace parser
 		report( "   Name = " << name );
 		statement.name = name;
 		statement.alignment = alignment;
-		statement.array.vec = statement.instruction.vec;
 		statement.type = operand.type;
 	
 		// correct for single precision
@@ -590,7 +595,6 @@ namespace parser
 		statement.directive = directive;
 		statement.name = name;
 		statement.alignment = alignment;
-		statement.array.vec = statement.instruction.vec;
 		statement.type = operand.type;
 		statement.array.stride.assign( 
 			statement.array.stride.begin(), 

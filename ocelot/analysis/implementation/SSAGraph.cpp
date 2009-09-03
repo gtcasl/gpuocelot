@@ -103,7 +103,7 @@ namespace analysis
 				BlockMap::iterator predecessorBlock 
 					= _blocks.find( *predecessor );
 				assert( predecessorBlock != _blocks.end() );
-				
+						
 				for( DataflowGraph::Block::RegisterSet::iterator 
 					reg = (*predecessor)->_aliveOut.begin(); 
 					reg != (*predecessor)->_aliveOut.end(); ++reg )
@@ -133,6 +133,8 @@ namespace analysis
 				}
 			}
 			
+			report( "     Mapping phis with no producer." );
+			
 			for( DataflowGraph::Block::RegisterSet::iterator 
 				reg = block->first->_aliveIn.begin(); 
 				reg != block->first->_aliveIn.end(); ++reg )
@@ -145,10 +147,10 @@ namespace analysis
 				{
 					phi = map.insert( std::make_pair( mapping->second, 
 						IdVector() ) ).first;
-					report( "     Mapping phi source " << mapping->first.id 
+					report( "      Mapping phi source " << mapping->second.id 
 						<< " to destination " << mapping->second.id );
-					phi->second.push_back( mapping->first );
-				}				
+					phi->second.push_back( mapping->second );
+				}
 			}
 			
 			for( IdMap::iterator phi = map.begin(); phi != map.end(); ++phi )
@@ -209,10 +211,9 @@ namespace analysis
 			block->first->_aliveOut = std::move( newAliveOut );
 		}
 	}
-
+	
 	SSAGraph::SSAGraph( DataflowGraph& graph ) : _graph( graph )
 	{
-	
 	}
 	
 	void SSAGraph::toSsa()

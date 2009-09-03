@@ -586,9 +586,7 @@ namespace analysis
 				std::stringstream value;
 				value << "rd" << ii->d.id;
 				out << "<" << value.str() << "> " << value.str();
-				assert( map.count( ii->d.id ) == 0 );
-				map[ ii->d.id ] = instructionPrefix.str() 
-					+ ":" + value.str();
+				map[ ii->d.id ] = instructionPrefix.str() + ":" + value.str();
 				out << " } }\"];\n";
 			}
 			

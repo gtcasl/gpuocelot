@@ -764,7 +764,7 @@ namespace parser
 			value = -value;
 		}
 		operand.offset = value;
-		operand.type = ir::PTXOperand::u64;
+		operand.type = mode->second.type;
 	
 		operandVector.push_back( operand );
 	}

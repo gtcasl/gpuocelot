@@ -12,10 +12,7 @@
 
 namespace analysis
 {
-
-	/*!
-		\brief SSA Graph
-	*/
+	/*! \brief SSA Graph */
 	class SSAGraph
 	{
 		private:

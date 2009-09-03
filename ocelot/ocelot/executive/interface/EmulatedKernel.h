@@ -1,10 +1,7 @@
 /*!
 	\file EmulatedKernel.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 19, 2009
-
 	\brief implements a kernel emulated on the host CPU
 */
 
@@ -67,9 +64,7 @@ namespace executive {
 		*/
 		void removeTraceGenerator(trace::TraceGenerator *generator);
 
-		/*!
-			Gets the configured dimensions of a block
-		*/
+		/*!	Gets the configured dimensions of a block */
 		ir::dim3 getBlockDim() const {
 			return blockDim;
 		}
@@ -155,74 +150,46 @@ namespace executive {
 		void initializeTextureMemory();
 
 	public:
-		/*!
-			Dimension of grid in blocks
-		*/
+		/*!	Dimension of grid in blocks */
 		ir::dim3 gridDim;
 
-		/*!
-			Dimension of block in threads
-		*/
+		/*!	Dimension of block in threads */
 		ir::dim3 blockDim;
 	
-		/*!
-			Number of threads in the block
-		*/
+		/*!	Number of threads in the block */
 		int threadCount;
 
-		/*!
-			A map of register name to register number
-		*/
+		/*! A map of register name to register number */
 		Kernel::RegisterMap registerMap;
 
-		/*!
-			The number of registers allocated to each thread
-		*/
+		/*!	The number of registers allocated to each thread */
 		int RegisterCount;
 
-		/*!
-			Pointer to block of memory used to store parameter data
-		*/
+		/*!	Pointer to block of memory used to store parameter data */
 		char *ParameterMemory;
 
-		/*!
-			Number of bytes in parameter region
-		*/
+		/*!	Number of bytes in parameter region */
 		unsigned int ParameterMemorySize;
 
-		/*!
-			Pointer to byte-addressable const memory
-		*/
+		/*!	Pointer to byte-addressable const memory */
 		char *ConstMemory;
 
-		/*!
-			Number of bytes in constant memory
-		*/
+		/*!	Number of bytes in constant memory */
 		unsigned int ConstMemorySize;
 
-		/*!
-			Number of bytes in shared memory
-		*/
+		/*!	Number of bytes in shared memory */
 		unsigned int SharedMemorySize;
 		
-		/*!
-			Local memory size
-		*/
+		/*!	Local memory size */
 		unsigned int LocalMemorySize;
 		
-		/*!
-			Packed and allocated vector of instructions implementing kernel
-		*/
+		/*!	Packed and allocated vector of instructions implementing kernel */
 		PTXInstructionVector KernelInstructions;
 
-		/*!
-			Packed vector of mapped textures
-		*/
+		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 	
-		/*!
-			set of all trace generators listening to kernel
-		*/
+		/*!	set of all trace generators listening to kernel */
 		std::list< trace::TraceGenerator * > Traces;
 
 	public:
@@ -230,21 +197,14 @@ namespace executive {
 		bool checkMemoryAccess(const void* base, size_t size) const;
 	
 	public:
-		/*!
-			Copies data from parameter objects into parameter memory
-		*/
+		/*!	Copies data from parameter objects into parameter memory */
 		void updateParameterMemory();	
 
-		/*!
-			Copies data from global objects into const and global memory
-		*/
+		/*! Copies data from global objects into const and global memory */
 		void updateGlobals();	
 
 	public:
-	
-		/*!
-			Print out every instruction
-		*/
+		/*!	Print out every instruction	*/
 		std::string toString() const;
 		
 		/*! \brief Get the file name that the kernel resides in */

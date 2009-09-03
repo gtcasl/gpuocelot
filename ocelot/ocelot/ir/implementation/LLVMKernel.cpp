@@ -20,11 +20,27 @@ namespace ir
 		ISA = Instruction::LLVM;
 	}
 
-	LLVMKernel::LLVMKernel( const Kernel& k ) : Kernel( k )
+	LLVMKernel::LLVMKernel( const Kernel& k, const executive::Executive* c ) 
+		: ExecutableKernel( k, c )
 	{
 		ISA = Instruction::LLVM;
 	}
-		
+
+	void LLVMKernel::launchGrid(int width, int height)
+	{
+		assertM( false, "launchGrid not implemented.");	
+	}	
+	
+	void LLVMKernel::setKernelShape(int x, int y, int z)
+	{
+		assertM( false, "setKernelShape not implemented.");
+	}
+
+	bool LLVMKernel::executable()
+	{
+		return true;
+	}
+
 	void LLVMKernel::assemble()
 	{
 		_code.clear();
@@ -33,7 +49,8 @@ namespace ir
 		
 		_code += "// Code assembled by Ocelot LLVMKernel " + version.toString() 
 			+ "\n\n";
-		_code += "define @__ocelotTranslated_" + name + "() nounwind\n";
+		_code += "define @__ocelotTranslated_" + name 
+			+ "() noreturn nounwind\n";
 		_code += "{\n";
 		
 		for( LLVMStatementVector::const_iterator 

@@ -24,24 +24,20 @@ namespace ir {
 	public:
 		const executive::Executive* const context;
 	public:
+		ExecutableKernel(const Kernel& k, const executive::Executive* c = 0) 
+			: Kernel(k), context(c) {}
 		ExecutableKernel(const executive::Executive* c = 0) : context(c) {}
-		virtual ~ExecutableKernel() { }
+		virtual ~ExecutableKernel() {}
 	
-		/*!
-			Determines whether kernel is executable
-		*/
+		/*!	Determines whether kernel is executable */
 		virtual bool executable() {
 			return false;
 		}
 	
-		/*!
-			Launch a kernel on a 2D grid
-		*/
+		/*!	Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height)=0;
 	
-		/*!
-			Sets the shape of a kernel
-		*/
+		/*!	Sets the shape of a kernel */
 		virtual void setKernelShape(int x, int y, int z)=0;
 	};
 	

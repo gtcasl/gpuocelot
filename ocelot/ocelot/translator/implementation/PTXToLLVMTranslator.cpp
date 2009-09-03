@@ -3532,8 +3532,12 @@ namespace translator
 			
 			_llvmKernel->_statements.push_front( ir::LLVMStatement( select ) );			
 		}
-		_llvmKernel->_statements.push_back( 
-			ir::LLVMStatement( "$OcelotRegisterInitializerBlock" ) );
+		
+		if( !_uninitialized.empty() )
+		{
+			_llvmKernel->_statements.push_front( 
+				ir::LLVMStatement( "$OcelotRegisterInitializerBlock" ) );
+		}
 	}
 
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 

@@ -9,12 +9,13 @@ INFO       /home/normal/checkout/gpuocelot/ocelot/TestTrace
 INFO       /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator
 INFO       /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
 INFO       /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator
-INFO     Test completed in 0.376195907593 seconds
+INFO     Test completed in 0.436590909958 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -24,16 +25,178 @@ Name : TestMemoryTraceGenerator
 Description: 
 
 
-Test Seed : 1251945505
-Test time : 0.127185
+Test Seed : 1251991991
+Test time : 0.134171
 
 Status : Test output:
 
 
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
+INFO     Test completed in 151.928858995 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1251991991
+Test time : 151.813
+
+Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/main.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/new_radixsort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/binomialOptions_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/dxtc.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/alignedTypes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/quasirandomGenerator_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/bisect_small.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleTemplates.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/quasirandomGenerator_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/histogram256_SM12.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/dct8x8.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/volumeRender.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleTexture_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/convolutionTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleMultiGPU_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/SobelFilter_kernels.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/MonteCarlo_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/histogram64.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/fastWalshTransform.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/threadMigration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleTexture3D.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/scanLargeArray.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleVoteIntrinsics.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/histogram256_SM11.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/reduction_kernel_sm10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/transpose.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/scan.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/binomialOptions_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/matrixMul.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/MersenneTwister.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/lineOfSight.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/fluidsGL.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/bodysystemcuda.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/bitonic.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/postProcessGL.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/oceanFFT_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleStreams.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/BlackScholes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/dwtHaar1D.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleCUFFT.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/Mandelbrot_sm10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/convolutionFFT2D.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/MonteCarlo_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/scalarProd.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/Mandelbrot_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/bandwidthTest.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/simpleGL_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/asyncAPI.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/clock.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/reduction_kernel_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/cppIntegration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/bisect_large.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/bicubicTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/recursiveGaussian.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/imageDenoising.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/ParticleSystem.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/histogram256_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/boxFilter_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/marchingCubes_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/convolutionSeparable.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/matrixMul_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/particleSystem.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Translate): Passed
+
+
+
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestParser
-INFO     Test completed in 132.856702089 seconds
+INFO     Test completed in 128.916520119 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -46,8 +209,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1251945506
-Test time : 132.835
+Test Seed : 1251992143
+Test time : 128.865
 
 Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Parse): Passed
@@ -195,7 +358,7 @@ For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Parse): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0323400497437 seconds
+INFO     Test completed in 0.0748651027679 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -209,8 +372,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1251945638
-Test time : 0.00717115
+Test Seed : 1251992272
+Test time : 0.00731611
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -343,9 +506,9 @@ Zext Instruction Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.131246089935 seconds
+INFO     Test completed in 0.120650053024 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.000324965s (325181 ticks)
+Kernel launch time was 0.000323534s (323505 ticks)
 Pass/Fail : Pass
 
 
@@ -354,8 +517,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1251945638
-Test time : 0.092077
+Test Seed : 1251992272
+Test time : 0.07758
 
 Status : Test output:
 divergent control flow succeeded
@@ -365,241 +528,8 @@ looping kernel succeeded
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLexer 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 71.5223181248 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1251945639
-Test time : 71.494
-
-Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/main.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/new_radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/dxtc.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/alignedTypes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/bisect_small.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleTemplates.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/dct8x8.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/volumeRender.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/convolutionTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/histogram64.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/threadMigration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleTexture3D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/scanLargeArray.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/transpose.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/scan.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/matrixMul.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/MersenneTwister.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/lineOfSight.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/fluidsGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/bitonic.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/postProcessGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleStreams.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/BlackScholes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/scalarProd.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/bandwidthTest.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/asyncAPI.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/clock.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/cppIntegration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/bisect_large.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/bicubicTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/imageDenoising.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/ParticleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/particleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Scan): Passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstructions 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0743980407715 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1251945710
-Test time : 0.00395989
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.157705068588 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1251945710
-Test time : 0.133839
-
-Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestTrace 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestTrace
-INFO     Test completed in 0.102154970169 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestTrace
-
-Description: 
-
-
-Test Seed : 1251945710
-Test time : 0.00245047
-
-Status : Test output:
-
-
-
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 262.772875071 seconds
+INFO     Test completed in 284.01159811 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -614,8 +544,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1251945505
-Test time : 262.722
+Test Seed : 1251991991
+Test time : 283.984
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/main.ptx
@@ -5531,17 +5461,251 @@ Testing SSA then back Dataflow
 
 
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions
+INFO     Test completed in 0.0863242149353 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1251992276
+Test time : 0.00439715
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator
+INFO     Test completed in 0.179728031158 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1251992276
+Test time : 0.142012
+
+Status : Test output:
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestTrace 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestTrace
+INFO     Test completed in 0.119364976883 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestTrace
+
+Description: 
+
+
+Test Seed : 1251992276
+Test time : 0.00294971
+
+Status : Test output:
+
+
+
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer
+INFO     Test completed in 43.4751429558 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1251992272
+Test time : 43.4365
+
+Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/particleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/main.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/new_radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/dxtc.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/volumeRender.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/convolutionTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/threadMigration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleTexture3D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/scanLargeArray.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/transpose.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/scan.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/bitonic.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/BlackScholes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/clock.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/ParticleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/particleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Scan): Passed
+
+
+
 INFO     
 Passing tests:
- (0.032s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (132.857s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
- (262.773s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Passed
- (0.102s) : /home/normal/checkout/gpuocelot/ocelot/TestTrace : Passed
- (0.376s) : /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
- (0.158s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
- (0.131s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
- (71.522s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
- (0.074s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
+ (0.075s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (128.917s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
+ (284.012s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (151.929s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
+ (0.119s) : /home/normal/checkout/gpuocelot/ocelot/TestTrace : Passed
+ (0.437s) : /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
+ (0.180s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
+ (0.121s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
+ (43.475s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
+ (0.086s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
 
 Failing tests:
 

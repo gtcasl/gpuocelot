@@ -56,7 +56,7 @@ namespace executive {
 
 		/*!
 			Overwrites member pointers to allocated memory with zero so 
-			~CooperativeThreadArray()
+			that ~CooperativeThreadArray()
 			
 			does not attempt to delete them.
 		*/

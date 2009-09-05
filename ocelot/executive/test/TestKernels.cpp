@@ -45,7 +45,6 @@ public:
 	int ThreadCount;
 
 	TestKernels() {
-		verbose = false;
 		name = "TestKernels";
 
 		status << "Test output:\n";

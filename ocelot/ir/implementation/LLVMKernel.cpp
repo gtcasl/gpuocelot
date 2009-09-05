@@ -12,33 +12,18 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Version.h>
 
+#include <configure.h>
+
 namespace ir
 {
-
 	LLVMKernel::LLVMKernel()
 	{
 		ISA = Instruction::LLVM;
 	}
 
-	LLVMKernel::LLVMKernel( const Kernel& k, const executive::Executive* c ) 
-		: ExecutableKernel( k, c )
+	LLVMKernel::LLVMKernel( const Kernel& k ) : Kernel( k )
 	{
 		ISA = Instruction::LLVM;
-	}
-
-	void LLVMKernel::launchGrid(int width, int height)
-	{
-		assertM( false, "launchGrid not implemented.");	
-	}	
-	
-	void LLVMKernel::setKernelShape(int x, int y, int z)
-	{
-		assertM( false, "setKernelShape not implemented.");
-	}
-
-	bool LLVMKernel::executable()
-	{
-		return true;
 	}
 
 	void LLVMKernel::assemble()
@@ -78,7 +63,6 @@ namespace ir
 	{
 		return _statements;
 	}
-
 }
 
 #endif

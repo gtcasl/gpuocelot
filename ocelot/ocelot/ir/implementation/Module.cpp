@@ -235,7 +235,8 @@ void ir::Module::extractPTXKernels() {
 ir::Kernel * ir::Module::getKernel(ir::Instruction::Architecture isa, std::string kernelName) {
 	using namespace std;
 	if (kernels.find(isa) != kernels.end()) {
-		for (KernelVector::const_iterator it = kernels[isa].begin(); it != kernels[isa].end(); ++it) {
+		for (KernelVector::const_iterator it = kernels[isa].begin(); 
+			it != kernels[isa].end(); ++it) {
 			if ((*it)->name == kernelName) {
 				return (*it);
 			}

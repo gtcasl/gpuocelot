@@ -14,6 +14,7 @@
 
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <cstring>
 
 #include <hydrazine/implementation/debug.h>
@@ -206,7 +207,8 @@ bool executive::Executive::loadModule(const std::string& path,
 		// translate the kernels of a module to the selected ISA
 		if (getSelectedISA() == Instruction::Emulated) {
 			// translate each PTX kernel to Emulated
-			Module::KernelMap::iterator it = m_it->second->kernels.find(Instruction::PTX);
+			Module::KernelMap::iterator 
+				it = m_it->second->kernels.find(Instruction::PTX);
 			if (it == m_it->second->kernels.end() ) {
 				return true;
 			}
@@ -214,7 +216,22 @@ bool executive::Executive::loadModule(const std::string& path,
 				k_it != it->second.end(); ++k_it) {
 				EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
 				m_it->second->kernels[Instruction::Emulated].push_back(emKern);
-			} 
+			}
+		}
+		else if (getSelectedISA() == Instruction::LLVM) {
+			Module::KernelMap::iterator 
+				it = m_it->second->kernels.find(Instruction::LLVM);
+			if (it == m_it->second->kernels.end() ) {
+				return true;
+			}
+			for (Module::KernelVector::iterator k_it = it->second.begin();
+				k_it != it->second.end(); ++k_it) {
+				ir::LLVMKernel* llvmKernel = static_cast< 
+					ir::LLVMKernel* >( _translator.translate( *k_it ) );
+				LLVMExecutableKernel* 
+					kernel = new LLVMExecutableKernel(*llvmKernel, this);
+				m_it->second->kernels[Instruction::LLVM].push_back(kernel);
+			}
 		}
 	}
 	return true;
@@ -240,61 +257,39 @@ void executive::Executive::synchronize() {
 	
 }
 
-/*!
-	Enumerate available devices
-*/
+/*! Enumerate available devices */
 void executive::Executive::enumerateDevices() {
-#if USE_CUDA_DRIVER_API
-	int cudaDevices = 0;
-	if (cuDeviceGetCount(&cudaDevices) == CUDA_SUCCESS) {
-		for (int i = 0; i < cudaDevices; i++) {
-			char devname[256] = {0};
-			Device deviceDesc;
-			CUdevice cudaDevice;
-			CUdevprop prop;
-			
-			if (cuGetDevice(&cudaDevice, i) != CUDA_SUCCESS) {
-				continue;
-			}
-			
-			cuDeviceGetProperties(&prop, cudaDevice);
-			cuGetDeviceName(devname, 255, i);
-			device.ISA = ir::Instruction::GPU;
-			device.name = std::string(devname);
-			device.guid = i;
-			device.maxThreadsPerBlock = prop.maxThreadsPerBlock;
-			for (int j = 0; j < 3; j++) {
-				device.maxThreadsDim[j] = prop.maxThreadsDim[j];
-				device.maxGridSize[j] = prop.maxGridSize[j];
-			}
-			device.sharedMemPerBlock = prop.sharedMemPerBlock;
-			device.totalConstantMemory = prop.totalConstantMemory;
-			device.SIMDWidth = prop.SIMDwidth;
-			device.memPitch = prop.memPitch;
-			device.regsPerBlock = prop.regsPerBlock;
-			device.clockRate = prop.clockRate;
-			device.textureAlign = prop.textureAlign;
-			device.major = prop.major;
-			device.minor = prop.minor;
-			
-			device.multiprocessorCount = 0;
-			cuDeviceGetAttribute(&device.multiprocessorCount,
-				CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, cudaDev);
-			
-			cuDeviceGetAttribute(&device.memcpyOverlap,
-				CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, cudaDev);
-			
-			cuDeviceGetTotalMem(&device.totalMemory, cudaDev);
-			
-			devices.push_back(device);
-		}
-	}
-#endif
 	{
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
 		device.name = "Ocelot PTX Emulator";
 		device.guid = 8803;
+		device.totalMemory = get_avphys_pages() * getpagesize();
+		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
+		device.memcpyOverlap = 0;
+		device.maxThreadsPerBlock = 512;
+		device.maxThreadsDim[0] = 512;
+		device.maxThreadsDim[1] = 512;
+		device.maxThreadsDim[2] = 64;
+		device.maxGridSize[0] = 65535;
+		device.maxGridSize[1] = 65535;
+		device.maxGridSize[2] = 1;
+		device.sharedMemPerBlock = 16384;
+		device.totalConstantMemory = 65536;
+		device.SIMDWidth = device.maxThreadsPerBlock;
+		device.memPitch = device.totalMemory;
+		device.regsPerBlock = MIN( INT_MAX, device.totalMemory );
+		device.clockRate = 2000000;
+		device.textureAlign = 1;
+		device.major = 1;
+		device.minor = 3;
+		devices.push_back(device);
+	}
+	{
+		Device device;
+		device.ISA = ir::Instruction::LLVM;
+		device.name = "Ocelot LLVM JIT-Compiler";
+		device.guid = 8833;
 		device.totalMemory = get_avphys_pages() * getpagesize();
 		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
 		device.memcpyOverlap = 0;
@@ -324,24 +319,9 @@ void executive::Executive::enumerateDevices() {
 bool executive::Executive::select(int device) {
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].guid == device) {
-			if (devices[i].ISA == ir::Instruction::GPU) {
-#if USE_CUDA_DRIVER_API
-				if (cuDeviceGet(&cudaDevice, device) == CUDA_SUCCESS) {
-					if (cuCtxCreate(&cudaContext, CU_CTX_SCHED_AUTO, 
-						cudaDevice) == CUDA_SUCCESS) {
-						selectedDevice = i;
-						return true;
-					}
-				}
-				else {
-					return false;
-				}
-#else
-			assert(0 == "The executive was compiled without support for CUDA");
-#endif
-			}
-			else if (devices[i].ISA == ir::Instruction::Emulated) {
-				selectedDevice=  i;
+			if (devices[i].ISA == ir::Instruction::Emulated
+				|| devices[i].ISA == ir::Instruction::LLVM) {
+				selectedDevice =  i;
 				return true;
 			}
 		}
@@ -355,26 +335,8 @@ bool executive::Executive::select(int device) {
 bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture ISA) {
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].ISA == ISA) {
-			if (devices[i].ISA == ir::Instruction::GPU) {
-#if USE_CUDA_DRIVER_API
-				if (cuDeviceGet(&cudaDevice, device) == CUDA_SUCCESS) {
-					if (cuCtxCreate(&cudaContext, CU_CTX_SCHED_AUTO, 
-						cudaDevice) == CUDA_SUCCESS) {
-						selectedDevice = i;
-						return true;
-					}
-				}
-				else {
-					return false;
-				}
-#else
-			assert(0 == "The executive was compiled without support for CUDA");
-#endif
-			}
-			else if (devices[i].ISA == ir::Instruction::Emulated) {
-				selectedDevice = i;
-				return true;
-			}
+			selectedDevice = i;
+			return true;
 		}
 	}
 	return false;
@@ -406,7 +368,7 @@ ir::Instruction::Architecture executive::Executive::getSelectedISA() const {
 
 	\return instance of kernel with requested ISA or 0 on failure.
 */
-ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa, 
+ir::Kernel* executive::Executive::getKernel(ir::Instruction::Architecture isa, 
 	const std::string& module, 
 	const std::string& kernelName) {
 	ModuleMap::iterator m_it = modules.find(module);
@@ -427,6 +389,7 @@ void *executive::Executive::malloc(size_t bytes) {
 	using namespace std;
 
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				MemoryAllocation record;
@@ -448,11 +411,6 @@ void *executive::Executive::malloc(size_t bytes) {
 			break;
 /*
 		case ir::Instruction::GPU:
-			{
-
-			}
-			break;
-		case ir::Instruction::LLVM:
 			{
 
 			}
@@ -483,10 +441,11 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 	using namespace std;
 
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				MemoryAllocation record;
-				record.isa = ir::Instruction::Emulated;
+				record.isa = getSelectedISA();
 				record.device = getSelected();
 				record.size = bytes;
 				record.external = true;
@@ -498,11 +457,6 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 			break;
 /*
 		case ir::Instruction::GPU:
-			{
-
-			}
-			break;
-		case ir::Instruction::LLVM:
 			{
 
 			}
@@ -534,6 +488,7 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 	using namespace std;
 
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				report( "Registering global variable " << name 
@@ -604,11 +559,6 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 
 			}
 			break;
-		case ir::Instruction::LLVM:
-			{
-
-			}
-			break;
 		case ir::Instruction::x86:
 			{
 
@@ -636,9 +586,9 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 	using namespace std;
 
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
-
 				report( "Registering texture variable " << name 
 					<< " in module " << modulePath );
 
@@ -670,11 +620,6 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 			break;
 /*
 		case ir::Instruction::GPU:
-			{
-
-			}
-			break;
-		case ir::Instruction::LLVM:
 			{
 
 			}
@@ -711,6 +656,7 @@ void executive::Executive::rebind(const std::string& modulePath,
 	const std::string& texture, void* target, unsigned int width, 
 	unsigned int height, unsigned int length, const ir::Texture& t) {
 		switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				report( "Rebinding texture " << texture
@@ -780,11 +726,6 @@ void executive::Executive::rebind(const std::string& modulePath,
 
 			}
 			break;
-		case ir::Instruction::LLVM:
-			{
-
-			}
-			break;
 		case ir::Instruction::x86:
 			{
 
@@ -816,10 +757,9 @@ void executive::Executive::free(void *ptr) {
 	using namespace std;
 
 	switch (getSelectedISA()) {
-
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
-				
 				DeviceAllocationMap::iterator l_it = 
 					memoryAllocations.find(getSelected());
 				assert (l_it != memoryAllocations.end());
@@ -844,12 +784,6 @@ void executive::Executive::free(void *ptr) {
 				// allocate on the GPU
 			}
 			break;
-		case ir::Instruction::LLVM:
-			{
-
-			}
-			break;
-
 		case ir::Instruction::x86:
 			{
 
@@ -878,6 +812,7 @@ void executive::Executive::freeGlobal(const std::string& name,
 	using namespace std;
 
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				report( "Freeing global variable " << name 
@@ -911,11 +846,6 @@ void executive::Executive::freeGlobal(const std::string& name,
 
 			}
 			break;
-		case ir::Instruction::LLVM:
-			{
-
-			}
-			break;
 		case ir::Instruction::x86:
 			{
 
@@ -941,6 +871,7 @@ void executive::Executive::freeGlobal(const std::string& name,
 void executive::Executive::memcpy( void* dest, const void* src, size_t bytes, 
 	MemoryCopy type ) {
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				if (type == DeviceToDevice) {
@@ -991,12 +922,6 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 				// copy on the GPU
 			}
 			break;
-		case ir::Instruction::LLVM:
-			{
-
-			}
-			break;
-
 		case ir::Instruction::x86:
 			{
 
@@ -1023,6 +948,7 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 
 void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 	switch (getSelectedISA()) {
+		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
 				if (!checkMemoryAccess(getSelected(), dest, bytes)) {
@@ -1043,12 +969,6 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 				// copy on the GPU
 			}
 			break;
-		case ir::Instruction::LLVM:
-			{
-
-			}
-			break;
-
 		case ir::Instruction::x86:
 			{
 

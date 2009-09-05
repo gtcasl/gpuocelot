@@ -27,6 +27,7 @@
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 
 /*!
 	\brief A namespace for classes that help execute programs
@@ -37,6 +38,9 @@ namespace executive {
 		Class wrapping the execution layer
 	*/
 	class Executive {
+	private:
+		translator::PTXToLLVMTranslator _translator;
+	
 	public:
 
 		/*! \brief basic type used for allocation */

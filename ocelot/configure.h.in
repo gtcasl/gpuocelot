@@ -74,6 +74,9 @@
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
 
+/* "Define to 1 if llvm is installed" */
+#undef HAVE_LLVM
+
 /* Define to 1 if you have the `memmove' function. */
 #undef HAVE_MEMMOVE
 

@@ -1,12 +1,8 @@
 /*!
-
 	\file CudaRuntime.cpp
-	
 	\date Wednesday March 25, 2009
 	\author Gregory Diamos
-	
 	\brief The source file for the CudaRuntime class.	
-
 */
 
 #ifndef CUDA_RUNTIME_CPP_INCLUDED

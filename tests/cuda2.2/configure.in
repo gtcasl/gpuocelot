@@ -48,26 +48,35 @@ AC_CHECK_LIB([OcelotIr], [main], [AC_DEFINE(HAVE_OCELOT_IR, [], [""])], \
 	AC_MSG_ERROR("libOcelotIr required"), [-lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([OcelotTrace], [main], [AC_DEFINE(HAVE_OCELOT_TRACE, [], [""])], \
 	AC_MSG_ERROR("libOcelotTrace required"), [-lhydrazine])	
+AC_CHECK_LIB([OcelotTranslator], [main], \
+	[AC_DEFINE(HAVE_OCELOT_TRANSLATOR, [], [""])], \
+	AC_MSG_ERROR("libOcelotTranslator required"), \
+	[-lOcelotAnalysis -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([OcelotExecutive], [main], \
 	[AC_DEFINE(HAVE_OCELOT_EXECUTIVE, [], [""])], \
 	AC_MSG_ERROR("libOcelotExecutive required"), \
-	[-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+	[-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr
+	-lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([OcelotAnalysis], [main], \
 	[AC_DEFINE(HAVE_OCELOT_ANALYSIS, [], [""])], \
 	AC_MSG_ERROR("libOcelotAnalysis required"), \
 	[-lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
 	AC_MSG_ERROR("libcudart required"), [-lOcelot -lOcelotExecutive \
-		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
 	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
-		-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])	
+	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
 	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelot -lOcelotExecutive \
-	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
+	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
 	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelot -lOcelotExecutive \
-	-lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
+	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotParser -lhydrazine])
 ################################################################################
 
 ################################################################################

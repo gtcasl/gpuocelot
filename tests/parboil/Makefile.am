@@ -9,8 +9,9 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTrace -lOcelotIr \
-	-lOcelotParser -lhydrazine libparboil.la
+OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTranslator \
+	-lOcelotAnalysis -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine \
+	libparboil.la
 CUDA_CFLAGS = -I parboil
 ################################################################################
 

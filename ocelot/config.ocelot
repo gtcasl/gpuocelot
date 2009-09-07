@@ -16,4 +16,14 @@
 			0
 		</UseParallelismTraceGenerator>
 	</OcelotRuntime>
+	<CudaRuntime>
+		<CudaRuntimeImplementation>
+			CudaRuntimeBase
+		</CudaRuntimeImplementation>
+		<TraceGeneratingCudaRuntime>
+			<CudaRuntimeApiTraceFile>
+				"traces/CudaApi.trace"
+			</CudaRuntimeApiTraceFile>
+		</TraceGeneratingCudaRuntime>
+	</CudaRuntime>
 </ocelot>

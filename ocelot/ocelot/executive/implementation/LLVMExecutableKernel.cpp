@@ -11,8 +11,6 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <hydrazine/implementation/debug.h>
 
-#ifdef HAVE_LLVM
-
 namespace executive
 {
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::LLVMKernel& k, 
@@ -43,8 +41,6 @@ namespace executive
 		assertM( false, "Updating parameter memory not implemented." );
 	}
 }
-
-#endif
 
 #endif
 

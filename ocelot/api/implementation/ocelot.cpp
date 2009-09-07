@@ -8,12 +8,7 @@
 #define OCELOT_CPP_INCLUDED
 
 #include <ocelot/api/interface/ocelot.h>
-#include <ocelot/cuda/interface/CudaRuntime.h>
-
-namespace cuda
-{
-	extern CudaRuntime runtime;
-}
+#include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 
 namespace ocelot
 {
@@ -21,32 +16,14 @@ namespace ocelot
 	void addTraceGenerator( trace::TraceGenerator& gen, 
 		bool persistent, bool safe )
 	{
-		if( safe )
-		{
-			cuda::runtime.lock();
-			cuda::runtime.setContext();		
-			cuda::runtime.addTraceGenerator( gen, persistent );
-			cuda::runtime.unlock();
-		}
-		else
-		{
-			cuda::runtime.addTraceGenerator( gen, persistent );
-		}
+		cuda::CudaRuntimeInterface::entryPoint.runtime()->addTraceGenerator( 
+			gen, persistent, safe );
 	}
 				
 	void clearTraceGenerators( bool safe )
 	{
-		if( safe )
-		{
-			cuda::runtime.lock();
-			cuda::runtime.setContext();		
-			cuda::runtime.clearTraceGenerators();		
-			cuda::runtime.unlock();
-		}
-		else
-		{
-			cuda::runtime.clearTraceGenerators();
-		}
+		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearTraceGenerators( 
+			safe );
 	}
 }
 

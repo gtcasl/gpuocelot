@@ -50,7 +50,7 @@ namespace ocelot
 			}
 			catch( const hydrazine::Exception& e )
 			{
-				report( "Failed to laod config file" );
+				report( "Failed to load config file" );
 			}
 		
 			configure( config );

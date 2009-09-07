@@ -100,7 +100,6 @@ namespace cuda
 
 	cudaDeviceProp CudaRuntime::convert( const executive::Device& device )
 	{
-	
 		cudaDeviceProp properties;
 		
 		hydrazine::strlcpy( properties.name, device.name.c_str(), 256 );
@@ -130,7 +129,6 @@ namespace cuda
 		memset(properties.__cudaReserved, 0, sizeof(properties.__cudaReserved));
 		
 		return properties;
-	
 	}
 	
 	ir::Texture CudaRuntime::convert( const cudaChannelFormatDesc& desc)

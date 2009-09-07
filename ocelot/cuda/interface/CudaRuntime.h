@@ -1,9 +1,7 @@
 /*!
 	\file CudaRuntime.h
-	
 	\date Thursday March 19, 2009
 	\author Gregory Diamos
-	
 	\brief The header file for the CudaRuntime class.	
 */
 
@@ -18,13 +16,11 @@
 #include <pthread.h>
 #include <hydrazine/implementation/Timer.h>
 #include <hydrazine/interface/Configurable.h>
-#include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/api/interface/OcelotRuntime.h>
 #include <GL/glew.h>
 
 #define CUDA_VERBOSE 1
 
-/*! \brief A namespace for the ocelot implementation of the CUDA API */
 namespace cuda
 {
 

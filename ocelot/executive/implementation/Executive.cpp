@@ -302,7 +302,7 @@ void executive::Executive::enumerateDevices() {
 		device.maxGridSize[2] = 1;
 		device.sharedMemPerBlock = 16384;
 		device.totalConstantMemory = 65536;
-		device.SIMDWidth = device.maxThreadsPerBlock;
+		device.SIMDWidth = 1;
 		device.memPitch = device.totalMemory;
 		device.regsPerBlock = MIN( INT_MAX, device.totalMemory );
 		device.clockRate = 2000000;

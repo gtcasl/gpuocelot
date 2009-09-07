@@ -8,10 +8,6 @@
 #ifndef LLVM_EXECUTABLE_KERNEL_H_INCLUDED
 #define LLVM_EXECUTABLE_KERNEL_H_INCLUDED
 
-#include <configure.h>
-
-#ifdef HAVE_LLVM
-
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
 
@@ -47,8 +43,6 @@ namespace executive
 			void updateParameterMemory();
 	};
 }
-
-#endif
 
 #endif
 

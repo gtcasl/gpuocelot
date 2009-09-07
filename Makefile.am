@@ -136,8 +136,11 @@ libOcelotParser_la_SOURCES = \
 ## libcudart
 libcudart_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
 libcudart_la_SOURCES = \
-	ocelot/cuda/implementation/OcelotRuntimeApi.cpp \
-	ocelot/cuda/implementation/CudaRuntime.cpp
+	ocelot/cuda/implementation/CudaRuntimeApi.cpp \
+	ocelot/cuda/implementation/CudaRuntime.cpp \
+	ocelot/cuda/implementation/CudaRuntimeBase.cpp \
+	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
+	ocelot/cuda/implementation/TraceGeneratingCudaRuntime.cpp
 libcudart_la_LDFLAGS = -version-info 2:3:0
 ################################################################################
 
@@ -265,7 +268,7 @@ TestKernels_LDFLAGS = -static
 ## TestTrace
 TestTrace_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestTrace_SOURCES = ocelot/executive/test/TestTrace.cpp
-TestTrace_LDADD = libcudart.la libOcelotExecutive.la libOcelotTranslator.la \  
+TestTrace_LDADD = libcudart.la libOcelotExecutive.la libOcelotTranslator.la \
 	libOcelotAnalysis.la libOcelotTrace.la libOcelotIr.la libOcelotParser.la \
 	libhydrazine.la
 TestTrace_LDFLAGS = -static

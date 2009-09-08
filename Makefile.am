@@ -110,7 +110,8 @@ libOcelotTrace_la_SOURCES = \
 
 ################################################################################
 ## libOcelotExecutive
-libOcelotExecutive_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+libOcelotExecutive_la_CXXFLAGS = $(LLVM_CFLAGS) -Wall -ansi -pedantic \
+	-Werror -std=c++0x
 libOcelotExecutive_la_SOURCES = \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/Executive.cpp \

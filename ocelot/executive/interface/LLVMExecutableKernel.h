@@ -11,6 +11,11 @@
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
 
+namespace llvm
+{
+	class Module;
+}
+
 namespace executive
 {
 	/*! \brief Executes an LLVMKernel using the LLVM JIT */
@@ -21,6 +26,16 @@ namespace executive
 			ir::dim3 _ctaDimensions;
 			/*! \brief The kernel dimensions */
 			ir::dim3 _kernelDimensions;
+			/*! \brief The LLVM assembly code for the kernel */
+			std::string _llvmCode;
+	
+		private:
+			/*! \brief LLVM module */
+			llvm::Module* _module;
+			
+		private:
+			/*! \brief Create the LLVM module from the code */
+			void _buildModule();
 
 		public:
 			/*! \brief Creates a new instance of the runtime bound to a kernel*/

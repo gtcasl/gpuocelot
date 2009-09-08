@@ -11,17 +11,40 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <hydrazine/implementation/debug.h>
 
+#include <configure.h>
+
+#ifdef HAVE_LLVM
+#include <llvm/Assembly/Parser.h>
+#include <llvm/Module.h>
+#endif
+
 namespace executive
 {
+	void LLVMExecutableKernel::_buildModule()
+	{
+		#ifdef HAVE_LLVM
+		if( _module == 0 )
+		{
+			llvm::ParseError error;
+			_module = new llvm::Module( name );
+			_module = llvm::ParseAssemblyString( _llvmCode.c_str(), 
+				_module, error );
+		}
+		#else
+		assertM( false, "Building LLVM Module requires LLVM support." );
+		#endif
+	}
+	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::LLVMKernel& k, 
-		const executive::Executive* c ) : ExecutableKernel( k, c )
+		const executive::Executive* c ) : ExecutableKernel( k, c ), 
+		_llvmCode( k.code() ), _module( 0 )
 	{
 	
 	}
 	
 	LLVMExecutableKernel::~LLVMExecutableKernel()
 	{
-	
+		delete _module;
 	}
 
 	void LLVMExecutableKernel::launchGrid( int width, int height )

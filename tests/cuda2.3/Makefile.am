@@ -11,7 +11,7 @@
 ACLOCAL_AMFLAGS = -I m4
 OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTranslator \
 	-lOcelotAnalysis -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine \
-	libsdk.la
+	libsdk.la $(LLVM_LDFLAGS)
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I sdk

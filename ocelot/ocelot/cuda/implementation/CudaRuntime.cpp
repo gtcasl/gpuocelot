@@ -52,13 +52,11 @@ namespace cuda
 		
 		if( architectures == binary->second.kernels.end() )
 		{
-	
 			ArchitectureMap map;
 		
 			architectures = binary->second.kernels.insert( 
 				std::make_pair( kernel->second.kernel, 
 				map ) ).first;
-		
 		}
 
 		ArchitectureMap::iterator translatedKernel = 
@@ -67,23 +65,19 @@ namespace cuda
 		// possilbly translate kernels
 		if( translatedKernel == architectures->second.end() )
 		{
-		
 			ir::Kernel* generated = context.getKernel( 
 				context.getSelectedISA(), binary->second.binary.ident, 
 				kernel->second.kernel );
 				
 			if( generated != 0 )
 			{
-									
 				translatedKernel = architectures->second.insert( 
 					std::make_pair( context.getSelectedISA(), 
 					generated ) ).first;
-			
 			}
 			
 			if( translatedKernel == architectures->second.end() )
 			{
-			
 				std::stringstream stream;
 				stream << "From Fat Binary \"" << binary->second.binary.ident 
 					<< "\" failed to translate kernel \"" 
@@ -601,7 +595,7 @@ namespace cuda
 				std::stringstream ptx( binary.ptx->ptx );
 				reportE( REPORT_ALL_PTX, ptx.str() );
 		
-				context.loadModule( binary.ident, true, &ptx );
+				context.loadModule( binary.ident, false, &ptx );
 			}
 			else
 			{

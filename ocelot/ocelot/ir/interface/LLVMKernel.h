@@ -49,6 +49,8 @@ namespace ir
 			bool assembled() const;
 			/*! \brief Get the assembly code */
 			const std::string& code() const;
+			/*! \brief Get the assembly code with line numbers */
+			std::string numberedCode() const;
 			/*! \brief Get the set of statements */
 			const LLVMStatementVector& llvmStatements() const;
 	};

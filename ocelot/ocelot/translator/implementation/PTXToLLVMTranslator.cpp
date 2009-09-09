@@ -96,7 +96,7 @@ namespace translator
 			case ir::PTXOperand::Indirect:
 			{
 				std::stringstream stream;
-				stream << "$r" << o.reg;
+				stream << "%r" << o.reg;
 				op.name = stream.str();
 				break;
 			}
@@ -318,7 +318,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::yield";
+		call.name = "@yield";
 		call.functionAttributes = ir::LLVMInstruction::NoReturn;
 		
 		_add( call );
@@ -366,7 +366,7 @@ namespace translator
 					node.reg = s->id;
 
 					std::stringstream stream;
-					stream << "r" << s->id;
+					stream << "%r" << s->id;
 					
 					node.operand.name = stream.str();
 					node.operand.type.category 
@@ -379,7 +379,7 @@ namespace translator
 				assert( !p.nodes.empty() );
 				
 				std::stringstream stream;
-				stream << "r" << phi->d.id;
+				stream << "%r" << phi->d.id;
 				p.d.name = stream.str();
 				p.d.type.category = ir::LLVMInstruction::Type::Element;
 				p.d.type.type = _translate( phi->d.type );
@@ -773,7 +773,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::atom";
+		call.name = "@atom";
 		
 		call.d = _destination( i );
 
@@ -809,7 +809,26 @@ namespace translator
 		const analysis::DataflowGraph::Block& block )
 	{
 		ir::LLVMBr branch;
-		branch.condition = _translate( i.pg );
+		if( ir::PTXOperand::PT != i.pg.condition 
+			&& ir::PTXOperand::nPT != i.pg.condition )
+		{
+			branch.condition = _translate( i.pg );
+		}
+		else
+		{
+			branch.condition.type.category = ir::LLVMInstruction::Type::Element;
+			branch.condition.type.type = ir::LLVMInstruction::I1;
+			branch.condition.constant = true;
+			
+			if( ir::PTXOperand::PT == i.pg.condition )
+			{
+				branch.condition.i1 = true;
+			}
+			else
+			{
+				branch.condition.i1 = false;
+			}
+		}
 		branch.iftrue = i.d.identifier;
 		branch.iffalse = block.fallthrough()->label();
 		_add( branch );
@@ -819,7 +838,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::breakpoint";
+		call.name = "@breakpoint";
 		
 		_add( call );
 	}
@@ -852,11 +871,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "translator::cosFtz";
+			call.name = "@cosFtz";
 		}
 		else
 		{
-			call.name = "translator::cos";
+			call.name = "@cos";
 		}
 		
 		call.d = _destination( i );
@@ -1591,11 +1610,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "translator::ex2Ftz";
+			call.name = "@ex2Ftz";
 		}
 		else
 		{
-			call.name = "translator::ex2";
+			call.name = "@ex2";
 		}
 		
 		call.d = _destination( i );
@@ -1729,11 +1748,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "translator::lg2Ftz";
+			call.name = "@lg2Ftz";
 		}
 		else
 		{
-			call.name = "translator::lg2";
+			call.name = "@lg2";
 		}
 		
 		call.d = _destination( i );
@@ -2009,11 +2028,11 @@ namespace translator
 		
 		if( i.level == ir::PTXInstruction::CtaLevel )
 		{
-			call.name = "translator::membarCta";
+			call.name = "@membarCta";
 		}
 		else
 		{
-			call.name = "translator::membarGlobal";
+			call.name = "@membarGlobal";
 		}
 		
 		_add( call );
@@ -2343,7 +2362,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::pmevent";
+		call.name = "@pmevent";
 		
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
@@ -2380,7 +2399,7 @@ namespace translator
 	
 		ir::LLVMCall call;
 		
-		call.name = "translator::reduction";
+		call.name = "@reduction";
 		
 		call.parameters.resize( 4 );
 		call.parameters[0].type.type = ir::LLVMInstruction::I32;
@@ -2436,11 +2455,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "translator::rsqrtFtz";
+			call.name = "@rsqrtFtz";
 		}
 		else
 		{
-			call.name = "translator::rsqrt";
+			call.name = "@rsqrt";
 		}
 		
 		call.d = _destination( i );
@@ -2891,11 +2910,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "translator::sinFtz";
+			call.name = "@sinFtz";
 		}
 		else
 		{
-			call.name = "translator::sin";
+			call.name = "@sin";
 		}
 		
 		call.d = _destination( i );
@@ -2958,11 +2977,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "translator::sqrtFtz";
+			call.name = "@sqrtFtz";
 		}
 		else
 		{
-			call.name = "translator::sqrt";
+			call.name = "@sqrt";
 		}
 		
 		call.d = _destination( i );
@@ -3252,7 +3271,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::tex";
+		call.name = "@tex";
 				
 		ir::LLVMInstruction::Operand d1 = _translate( i.d.array[0] );
 		ir::LLVMInstruction::Operand d2 = _translate( i.d.array[1] );
@@ -3335,7 +3354,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::trap";
+		call.name = "@trap";
 		
 		_add( call );
 		_predicateEpilogue( i, call.d );
@@ -3345,7 +3364,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::vote";
+		call.name = "@vote";
 		
 		call.d = _destination( i );
 		call.parameters.resize( 3 );
@@ -3391,7 +3410,7 @@ namespace translator
 	std::string PTXToLLVMTranslator::_tempRegister()
 	{
 		std::stringstream stream;
-		stream << "$rt" << _tempRegisterCount++;
+		stream << "%rt" << _tempRegisterCount++;
 		return stream.str();
 	}
 
@@ -3400,13 +3419,19 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "translator::setRoundingMode";
+		call.name = "@setRoundingMode";
 		
-		call.parameters.resize( 2 );
-		call.parameters[0] = _translate( i.pg );
-		call.parameters[1].type.type = ir::LLVMInstruction::I32;
-		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[1].i32 = i.modifier;
+		call.parameters.resize( 1 );
+		call.parameters[0].type.type = ir::LLVMInstruction::I32;
+		call.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[0].i32 = i.modifier;
+		call.parameters[0].constant = true;
+
+		if( ir::PTXOperand::PT != i.pg.condition )
+		{
+			call.parameters.resize( 2 );
+			call.parameters[1] = _translate( i.pg );
+		}
 		
 		_add( call );
 	}

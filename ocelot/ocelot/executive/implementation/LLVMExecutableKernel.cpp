@@ -50,27 +50,41 @@ namespace executive
 
 			translator::PTXToLLVMTranslator translator;
 			
-			report( "Translating to llvm." );
+			report( " Translating to llvm." );
 			ir::LLVMKernel* llvmKernel = static_cast< 
 					ir::LLVMKernel* >( translator.translate( this ) );
 
-			report( "Assembling llvm module." );
+			report( " Assembling llvm module." );
 			llvmKernel->assemble();
 
-			report( "Parsing llvm assembly." );
+			report( " Parsing llvm assembly." );
 			llvm::ParseError error;
 			_module = new llvm::Module( name );
 			_module = llvm::ParseAssemblyString( llvmKernel->code().c_str(), 
 				_module, error );
 			
+			int line = -1;
+			int column = -1;
+			error.getErrorLocation( line, column );
+			if( line != -1 )
+			{
+				report( "  Translated Kernel:\n" 
+					<< llvmKernel->numberedCode() );
+				std::stringstream message;
+				message << "LLVM Parser failed for kernel: \"" 
+					<< name << "\" : (" << line << ", " << column << ") : \"" 
+					<< error.getRawMessage() + "\"";
+				throw hydrazine::Exception( message.str() );
+			}
+			
 			delete llvmKernel;
 			
-			report( "Checking module for errors." );
+			report( " Checking module for errors." );
 			std::string verifyError;
 			if( llvm::verifyModule( *_module, 
 				llvm::ReturnStatusAction, &verifyError ) )
 			{
-				throw hydrazine::Exception( "LLVM Parser failed for kernel: " 
+				throw hydrazine::Exception( "LLVM Verifier failed for kernel: " 
 					+ name + " : \"" + verifyError + "\"" );
 			}
 			

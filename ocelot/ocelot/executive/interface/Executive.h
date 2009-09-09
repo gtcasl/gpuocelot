@@ -131,7 +131,11 @@ namespace executive {
 		static std::string nearbyGlobalsToString( 
 			const Executive& executive, const void* pointer, 
 			unsigned int above = 5, unsigned int below = 5 );
-				
+	
+	private:
+		/*! \brief Translate the kernels of a module to the selected ISA */
+		void _translateToSelected(ir::Module& m);
+		
 	public:
 		Executive();
 		~Executive();
@@ -183,7 +187,7 @@ namespace executive {
 		*/
 		bool loadModule(const std::string& path, bool translateToSelected=true, 
 			std::istream* stream = 0);
-		
+				
 		/*!
 			Unloads a module
 		*/

@@ -113,7 +113,9 @@ namespace executive
 	
 	LLVMExecutableKernel::~LLVMExecutableKernel()
 	{
+		#ifdef HAVE_LLVM
 		delete _module;
+		#endif
 	}
 
 	void LLVMExecutableKernel::launchGrid( int x, int y )

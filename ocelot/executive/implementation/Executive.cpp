@@ -1,10 +1,7 @@
 /*!
 	\file Executive.cpp
-	
 	\author Andrew Kerr <arkerr@gatech.edu>
-	
 	\date Jan 16, 2009
-	
 	\brief class definition for loading modules, enumerating devices,
 		and executing kernels on the selected device
 */
@@ -25,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 std::string executive::Executive::nearbyGlobalsToString( 
 	const Executive& executive, const void* ptr, unsigned int above,
@@ -204,39 +201,36 @@ bool executive::Executive::loadModule(const std::string& path,
 		m_it->second->load(*stream, path);
 	}
 	if (translateToSelected) {
+		Module::KernelMap::iterator 
+			it = m_it->second->kernels.find(Instruction::PTX);
+		if (it == m_it->second->kernels.end()) {
+			return true;
+		}
 		// translate the kernels of a module to the selected ISA
 		if (getSelectedISA() == Instruction::Emulated) {
+			report(" Translating to EmulatedKernel.");
 			// translate each PTX kernel to Emulated
-			Module::KernelMap::iterator 
-				it = m_it->second->kernels.find(Instruction::PTX);
-			if (it == m_it->second->kernels.end() ) {
-				return true;
-			}
 			for (Module::KernelVector::iterator k_it = it->second.begin();
 				k_it != it->second.end(); ++k_it) {
+				report("  Creating emulated kernel for : " << (*k_it)->name);
 				EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
 				m_it->second->kernels[Instruction::Emulated].push_back(emKern);
 			}
 		}
 		else if (getSelectedISA() == Instruction::LLVM) {
-			Module::KernelMap::iterator 
-				it = m_it->second->kernels.find(Instruction::LLVM);
-			if (it == m_it->second->kernels.end() ) {
-				return true;
-			}
+			report(" Translating all modules to LLVMKernel.");
 			for (Module::KernelVector::iterator k_it = it->second.begin();
 				k_it != it->second.end(); ++k_it) {
-				ir::LLVMKernel* llvmKernel = static_cast< 
-					ir::LLVMKernel* >( _translator.translate( *k_it ) );
+				report("  Creating LLVM kernel for : " << (*k_it)->name);
 				LLVMExecutableKernel* 
-					kernel = new LLVMExecutableKernel(*llvmKernel, this);
+					kernel = new LLVMExecutableKernel(**k_it, this);
 				m_it->second->kernels[Instruction::LLVM].push_back(kernel);
 			}
 		}
 	}
 	return true;
 }
-		
+
 /*!
 	Unloads a module
 */

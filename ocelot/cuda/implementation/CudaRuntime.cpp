@@ -117,8 +117,8 @@ namespace cuda
 		properties.maxGridSize[2] = device.maxGridSize[2];
 		properties.clockRate = device.clockRate;
 		properties.totalConstMem = device.totalConstantMemory;
-		properties.major = 1;
-		properties.minor = 3;
+		properties.major = device.major;
+		properties.minor = device.minor;
 		properties.textureAlignment = device.textureAlign;
 		properties.deviceOverlap = device.memcpyOverlap;
 		properties.multiProcessorCount = device.multiprocessorCount;

@@ -11,6 +11,7 @@
 #include <ocelot/cuda/interface/CudaRuntimeBase.h>
 #include <ocelot/cuda/interface/TraceGeneratingCudaRuntime.h>
 #include <hydrazine/implementation/XmlParser.h>
+#include <hydrazine/implementation/Exception.h>
 
 namespace cuda
 {

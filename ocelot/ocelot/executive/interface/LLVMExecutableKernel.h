@@ -10,6 +10,7 @@
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/LLVMContext.h>
 
 namespace llvm
 {
@@ -26,21 +27,25 @@ namespace executive
 			ir::dim3 _ctaDimensions;
 			/*! \brief The kernel dimensions */
 			ir::dim3 _kernelDimensions;
-			/*! \brief The LLVM assembly code for the kernel */
-			std::string _llvmCode;
 	
 		private:
 			/*! \brief LLVM module */
 			llvm::Module* _module;
-			
+			/*! \brief Context to run */
+			LLVMContext _context;
+		
+		private:
+			/*! \brief Determine the padding required to satisfy alignment */
+			void _pad( unsigned int& padding, 
+				unsigned int& size, unsigned int alignment );
+		
 		private:
 			/*! \brief Create the LLVM module from the code */
 			void _buildModule();
+			/*! \brief Scan the kernel and determine memory requirements */
+			void _allocateMemory();
 
 		public:
-			/*! \brief Creates a new instance of the runtime bound to a kernel*/
-			LLVMExecutableKernel( ir::LLVMKernel& kernel, 
-				const executive::Executive* c = 0 );
 			/*! \brief Creates a new instance of the runtime bound to a kernel*/
 			LLVMExecutableKernel( ir::Kernel& kernel, 
 				const executive::Executive* c = 0 );

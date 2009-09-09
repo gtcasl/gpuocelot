@@ -1795,6 +1795,7 @@ namespace cuda
 		timer.stop();
 
 		_trace << "cudaRegisterFatBinary";
+		_trace << " handle = " << handle;
 		_trace << " pointer = " << fatCubin;
 		_trace << " time = " << timer.seconds();
 		_trace << "\n";

@@ -297,11 +297,11 @@ namespace test
 		call.parameters[0].constant = true;
 		call.parameters[0].i8 = 97;
 		call.parameters[0].attribute = Instruction::SignExtend;
-		call.name = "%foo";
+		call.name = "@foo";
 		call.tail = false;
 		call.convention = Instruction::DefaultCallingConvention;
 		
-		reference = "call void %foo(i8 97 signext)";
+		reference = "call void @foo(i8 97 signext)";
 		
 		if( !check( call, reference ) ) return false;
 		

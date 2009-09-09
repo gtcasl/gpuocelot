@@ -752,9 +752,13 @@ namespace ir
 		if( !funats.empty() ) result += " " + funats;
 		return result;
 	}
-	
+
 	std::string LLVMCall::valid() const
 	{
+		if( name.find("@") == std::string::npos )
+		{
+			return "Function names must begin with global identifier '@'";
+		}
 		switch( d.attribute )
 		{
 			case ZeroExtend: /* fall through */

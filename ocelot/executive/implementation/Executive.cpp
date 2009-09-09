@@ -152,7 +152,39 @@ std::string executive::Executive::nearbyAllocationsToString(
 	return stream.str();
 }
 
-executive::Executive::Executive() {
+void executive::Executive::_translateToSelected(ir::Module& m) {
+	using namespace ir;
+	report("Translating all kernels in module " << m.modulePath );
+	Module::KernelMap::iterator 
+		it = m.kernels.find(Instruction::PTX);
+	if (it == m.kernels.end()) {
+		return;
+	}
+	// translate the kernels of a module to the selected ISA
+	if (getSelectedISA() == Instruction::Emulated) {
+		report(" Translating to EmulatedKernel.");
+		// translate each PTX kernel to Emulated
+		for (Module::KernelVector::iterator k_it = it->second.begin();
+			k_it != it->second.end(); ++k_it) {
+			report("  Creating emulated kernel for : " << (*k_it)->name);
+			EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
+			m.kernels[Instruction::Emulated].push_back(emKern);
+		}
+	}
+	else if (getSelectedISA() == Instruction::LLVM) {
+		report(" Translating all modules to LLVMKernel.");
+		for (Module::KernelVector::iterator k_it = it->second.begin();
+			k_it != it->second.end(); ++k_it) {
+			report("  Creating LLVM kernel for : " << (*k_it)->name);
+			LLVMExecutableKernel* 
+				kernel = new LLVMExecutableKernel(**k_it, this);
+			m.kernels[Instruction::LLVM].push_back(kernel);
+		}
+	}
+}
+
+
+executive::Executive::Executive() : selectedDevice( -1 ) {
 	enumerateDevices();
 }
 
@@ -201,32 +233,7 @@ bool executive::Executive::loadModule(const std::string& path,
 		m_it->second->load(*stream, path);
 	}
 	if (translateToSelected) {
-		Module::KernelMap::iterator 
-			it = m_it->second->kernels.find(Instruction::PTX);
-		if (it == m_it->second->kernels.end()) {
-			return true;
-		}
-		// translate the kernels of a module to the selected ISA
-		if (getSelectedISA() == Instruction::Emulated) {
-			report(" Translating to EmulatedKernel.");
-			// translate each PTX kernel to Emulated
-			for (Module::KernelVector::iterator k_it = it->second.begin();
-				k_it != it->second.end(); ++k_it) {
-				report("  Creating emulated kernel for : " << (*k_it)->name);
-				EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
-				m_it->second->kernels[Instruction::Emulated].push_back(emKern);
-			}
-		}
-		else if (getSelectedISA() == Instruction::LLVM) {
-			report(" Translating all modules to LLVMKernel.");
-			for (Module::KernelVector::iterator k_it = it->second.begin();
-				k_it != it->second.end(); ++k_it) {
-				report("  Creating LLVM kernel for : " << (*k_it)->name);
-				LLVMExecutableKernel* 
-					kernel = new LLVMExecutableKernel(**k_it, this);
-				m_it->second->kernels[Instruction::LLVM].push_back(kernel);
-			}
-		}
+		_translateToSelected( *m_it->second );
 	}
 	return true;
 }
@@ -253,6 +260,7 @@ void executive::Executive::synchronize() {
 
 /*! Enumerate available devices */
 void executive::Executive::enumerateDevices() {
+	report( "Initializing devices:" );
 	{
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
@@ -277,6 +285,7 @@ void executive::Executive::enumerateDevices() {
 		device.textureAlign = 1;
 		device.major = 1;
 		device.minor = 3;
+		report( " Initialized PTX emulated." );
 		devices.push_back(device);
 	}
 	{
@@ -303,6 +312,7 @@ void executive::Executive::enumerateDevices() {
 		device.textureAlign = 1;
 		device.major = 1;
 		device.minor = 3;
+		report( " Initialized PTX-To-LLVM JIT." );
 		devices.push_back(device);
 	}
 }
@@ -315,7 +325,7 @@ bool executive::Executive::select(int device) {
 		if (devices[i].guid == device) {
 			if (devices[i].ISA == ir::Instruction::Emulated
 				|| devices[i].ISA == ir::Instruction::LLVM) {
-				selectedDevice =  i;
+				selectedDevice = i;
 				return true;
 			}
 		}
@@ -366,8 +376,15 @@ ir::Kernel* executive::Executive::getKernel(ir::Instruction::Architecture isa,
 	const std::string& module, 
 	const std::string& kernelName) {
 	ModuleMap::iterator m_it = modules.find(module);
+	report( "From module " << module << " getting kernel " << kernelName 
+		<< " for architecture " << ir::Instruction::toString( isa ) );
 	if (m_it != modules.end()) {
-		return m_it->second->getKernel(isa, kernelName);
+		ir::Kernel* kernel = m_it->second->getKernel(isa, kernelName);
+		if (kernel == 0) {
+			_translateToSelected( *m_it->second );
+			kernel = m_it->second->getKernel(isa, kernelName);
+		}
+		return kernel;
 	}
 	return 0;
 }

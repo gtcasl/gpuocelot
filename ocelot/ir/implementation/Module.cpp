@@ -1,10 +1,7 @@
 /*!
 	\file Module.cpp
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief declares a Module loadable from a PTX source file and runable
 */
 

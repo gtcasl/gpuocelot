@@ -32,15 +32,17 @@ namespace ir
 		
 		hydrazine::Version version;
 		
-		_code += "// Code assembled by Ocelot LLVMKernel " + version.toString() 
+		_code += "; Code assembled by Ocelot LLVMKernel " + version.toString() 
 			+ "\n\n";
-		_code += "define @__ocelotTranslated_" + name 
+		_code += "define void @__ocelotTranslated_" + name 
 			+ "() noreturn nounwind\n";
 		_code += "{\n";
 		
+		LLVMStatementVector::const_iterator begin = ++llvmStatements().begin();
+		LLVMStatementVector::const_iterator end = --llvmStatements().end();
+		
 		for( LLVMStatementVector::const_iterator 
-			statement = llvmStatements().begin(); 
-			statement != llvmStatements().end(); ++statement )
+			statement = begin; statement != end; ++statement )
 		{
 			if( statement->type != LLVMStatement::Label ) _code += "\t";
 			_code += statement->toString() + "\n";
@@ -57,6 +59,28 @@ namespace ir
 	const std::string& LLVMKernel::code() const
 	{
 		return _code;
+	}
+	
+	std::string LLVMKernel::numberedCode() const
+	{
+		unsigned int line = 1;
+		std::stringstream result;
+		
+		result << line++ << " ";
+		
+		for( std::string::const_iterator c = _code.begin(); 
+			c != _code.end(); ++c )
+		{
+			if( *c == '\n' )
+			{
+				result << "\n" << line++ << " ";
+			}
+			else
+			{
+				result << *c;
+			}
+		}
+		return std::move( result.str() );
 	}
 	
 	const LLVMKernel::LLVMStatementVector& LLVMKernel::llvmStatements() const

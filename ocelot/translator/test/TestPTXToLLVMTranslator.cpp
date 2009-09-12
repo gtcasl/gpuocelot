@@ -106,6 +106,8 @@ namespace test
 				outFile << "\n";
 				outFile.close();
 			}
+			
+			delete translatedKernel;
 
 		}
 		

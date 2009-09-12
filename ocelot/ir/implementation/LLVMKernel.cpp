@@ -34,21 +34,14 @@ namespace ir
 		
 		_code += "; Code assembled by Ocelot LLVMKernel " + version.toString() 
 			+ "\n\n";
-		_code += "define void @__ocelotTranslated_" + name 
-			+ "() noreturn nounwind\n";
-		_code += "{\n";
-		
-		LLVMStatementVector::const_iterator begin = ++llvmStatements().begin();
-		LLVMStatementVector::const_iterator end = --llvmStatements().end();
 		
 		for( LLVMStatementVector::const_iterator 
-			statement = begin; statement != end; ++statement )
+			statement = llvmStatements().begin(); 
+			statement != llvmStatements().end(); ++statement )
 		{
-			if( statement->type != LLVMStatement::Label ) _code += "\t";
+			if( statement->type == LLVMStatement::Instruction ) _code += "\t";
 			_code += statement->toString() + "\n";
 		}
-		
-		_code += "}\n";
 	}
 	
 	bool LLVMKernel::assembled() const

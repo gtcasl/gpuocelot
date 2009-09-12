@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 std::string executive::Executive::nearbyGlobalsToString( 
 	const Executive& executive, const void* ptr, unsigned int above,

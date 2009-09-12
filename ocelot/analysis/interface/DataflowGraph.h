@@ -328,9 +328,6 @@ namespace analysis
 		}
 		_blocks.push_back( Block( Block::Exit ) );
 		
-		_blocks.front()._label = "Entry";
-		_blocks.back()._label = "Exit";
-
 		iterator bi = _blocks.begin();
 		ir::ControlFlowGraph::BlockPointerVector::iterator bbi = blocks.begin();
 				
@@ -364,8 +361,11 @@ namespace analysis
 					bi->second->_predecessors.insert( begin->second );	
 				}
 			}
-							
 		}
+
+		_blocks.front()._label = "Entry";
+		_blocks.back()._label = "Exit";
+		_blocks.back()._fallthrough = _blocks.end();
 	}
 
 	template< typename Inst >

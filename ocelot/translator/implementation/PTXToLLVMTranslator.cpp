@@ -14,8 +14,6 @@
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
-#include <queue>
-
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -79,110 +77,9 @@ namespace translator
 				assertM( false, "PTXOperand datatype " 
 					+ ir::PTXOperand::toString( type ) 
 					+ " not supported." );
-			}				
+			}
 		}
 		return ir::LLVMInstruction::InvalidDataType;
-	}
-
-	ir::LLVMInstruction::Operand 
-		PTXToLLVMTranslator::_translate( const ir::PTXOperand& o )
-	{
-		ir::LLVMInstruction::Operand op( o.identifier, 
-			o.addressMode == ir::PTXOperand::Immediate );
-		
-		switch( o.addressMode )
-		{
-			case ir::PTXOperand::Register: /* fall through */
-			case ir::PTXOperand::Indirect:
-			{
-				std::stringstream stream;
-				stream << "%r" << o.reg;
-				op.name = stream.str();
-				break;
-			}
-			case ir::PTXOperand::Immediate:
-			{
-				switch( o.type )
-				{
-					case ir::PTXOperand::s8: /* fall through */
-					case ir::PTXOperand::s16: /* fall through */
-					case ir::PTXOperand::s32: /* fall through */
-					case ir::PTXOperand::s64: /* fall through */
-					case ir::PTXOperand::u8: /* fall through */
-					case ir::PTXOperand::u16: /* fall through */
-					case ir::PTXOperand::u32: /* fall through */
-					case ir::PTXOperand::u64: /* fall through */
-					case ir::PTXOperand::b8: /* fall through */
-					case ir::PTXOperand::b16: /* fall through */
-					case ir::PTXOperand::b32: /* fall through */
-					case ir::PTXOperand::b64:
-					{
-						op.i64 = o.imm_uint;
-						break;
-					}
-					case ir::PTXOperand::f32:
-					{
-						op.f32 = o.imm_float;
-						break;
-					}
-					case ir::PTXOperand::f64:
-					{
-						op.f64 = o.imm_float;
-						break;
-					}
-					default:
-					{
-						assertM( false, "PTXOperand datatype " 
-							+ ir::PTXOperand::toString( o.type ) 
-							+ " not supported for immediate operand." );
-					}				
-				}
-				break;
-			}
-			case ir::PTXOperand::Address:
-			{
-				break;
-			}
-			case ir::PTXOperand::Label:
-			{
-				assertM( false, "PTXOperand datatype " 
-					+ ir::PTXOperand::toString( o.type ) 
-					+ " not supported." );
-				break;
-			}
-			case ir::PTXOperand::Special:
-			{
-				op.name = ir::PTXOperand::toString( o.special );
-				break;
-			}
-			case ir::PTXOperand::Invalid:
-			{
-				assertM( false, "Cannot translate invalid PTX operand." );
-			}
-		}
-
-		op.type.type = _translate( o.type );
-
-		if( o.vec == ir::PTXOperand::v1 )
-		{
-			op.type.category = ir::LLVMInstruction::Type::Element;
-		}
-		else
-		{
-			op.type.category = ir::LLVMInstruction::Type::Vector;
-		}
-		
-		op.type.vector = o.vec;
-		
-		return op;
-	}
-
-	void PTXToLLVMTranslator::_swapAllExceptName( 
-		ir::LLVMInstruction::Operand& o, const ir::PTXOperand& i )
-	{
-		std::string temp = o.name;
-		o = _translate( i );
-		o.name = temp;
 	}
 
 	void PTXToLLVMTranslator::_doubleWidth( ir::LLVMInstruction::DataType& t )
@@ -314,14 +211,152 @@ namespace translator
 		return ir::LLVMInstruction::True;
 	}
 
-	void PTXToLLVMTranslator::_yield()
+	ir::LLVMInstruction::Type PTXToLLVMTranslator::_getCtaContextType()
 	{
-		ir::LLVMCall call;
+		ir::LLVMInstruction::Type context;
 		
-		call.name = "@yield";
-		call.functionAttributes = ir::LLVMInstruction::NoReturn;
+		context.category = ir::LLVMInstruction::Type::Structure;
+		context.members.resize( 12 );
+
+		context.members[0].category = ir::LLVMInstruction::Type::Structure;
+		context.members[0].label = "%Dimension";
+
+		context.members[1] = context.members[0];
+		context.members[2] = context.members[0];
+		context.members[3] = context.members[0];
+
+		context.members[4].category = ir::LLVMInstruction::Type::Pointer;
+		context.members[4].type = ir::LLVMInstruction::I8;
+
+		context.members[5] = context.members[4];
+		context.members[6] = context.members[4];
+		context.members[7] = context.members[4];
 		
-		_add( call );
+		context.members[8].category = ir::LLVMInstruction::Type::Element;
+		context.members[8].type = ir::LLVMInstruction::I64;
+
+		context.members[9] = context.members[8];
+		context.members[10] = context.members[8];
+		context.members[11] = context.members[8];
+		
+		return context;
+	}
+
+	void PTXToLLVMTranslator::_yield( unsigned int continuation )
+	{
+		ir::LLVMRet ret;
+		
+		ret.d.constant = true;
+		ret.d.type.category = ir::LLVMInstruction::Type::Element;
+		ret.d.type.type = ir::LLVMInstruction::I32;
+		ret.d.i32 = continuation;
+		
+		_add( ret );
+	}
+
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate( 
+		const ir::PTXOperand& o, ir::PTXInstruction::AddressSpace space,
+		ir::PTXInstruction::Vec vector )
+	{
+		ir::LLVMInstruction::Operand op( o.identifier, 
+			o.addressMode == ir::PTXOperand::Immediate );
+
+		op.type.type = _translate( o.type );
+
+		if( o.vec == ir::PTXOperand::v1 )
+		{
+			op.type.category = ir::LLVMInstruction::Type::Element;
+		}
+		else
+		{
+			op.type.category = ir::LLVMInstruction::Type::Vector;
+		}
+		
+		switch( o.addressMode )
+		{
+			case ir::PTXOperand::Register: /* fall through */
+			case ir::PTXOperand::Indirect:
+			{
+				std::stringstream stream;
+				stream << "%r" << o.reg;
+				op.name = stream.str();
+				break;
+			}
+			case ir::PTXOperand::Immediate:
+			{
+				switch( o.type )
+				{
+					case ir::PTXOperand::s8: /* fall through */
+					case ir::PTXOperand::s16: /* fall through */
+					case ir::PTXOperand::s32: /* fall through */
+					case ir::PTXOperand::s64: /* fall through */
+					case ir::PTXOperand::u8: /* fall through */
+					case ir::PTXOperand::u16: /* fall through */
+					case ir::PTXOperand::u32: /* fall through */
+					case ir::PTXOperand::u64: /* fall through */
+					case ir::PTXOperand::b8: /* fall through */
+					case ir::PTXOperand::b16: /* fall through */
+					case ir::PTXOperand::b32: /* fall through */
+					case ir::PTXOperand::b64:
+					{
+						op.i64 = o.imm_uint;
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						op.f32 = o.imm_float;
+						break;
+					}
+					case ir::PTXOperand::f64:
+					{
+						op.f64 = o.imm_float;
+						break;
+					}
+					default:
+					{
+						assertM( false, "PTXOperand datatype " 
+							+ ir::PTXOperand::toString( o.type ) 
+							+ " not supported for immediate operand." );
+					}				
+				}
+				break;
+			}
+			case ir::PTXOperand::Address:
+			{
+				op.name = _loadMemoryBase( space, o.type, o.offset, vector );
+				if( op.name == "" ) op.name = "@" + o.identifier;
+				op.type.category = ir::LLVMInstruction::Type::Pointer;
+				break;
+			}
+			case ir::PTXOperand::Label:
+			{
+				assertM( false, "PTXOperand datatype " 
+					+ ir::PTXOperand::toString( o.type ) 
+					+ " not supported." );
+				break;
+			}
+			case ir::PTXOperand::Special:
+			{
+				op.name = _loadSpecialRegister( o.special );
+				break;
+			}
+			case ir::PTXOperand::Invalid:
+			{
+				assertM( false, "Cannot translate invalid PTX operand." );
+			}
+		}
+		
+		op.type.vector = o.vec;
+		
+		return op;
+	}
+
+	void PTXToLLVMTranslator::_swapAllExceptName( 
+		ir::LLVMInstruction::Operand& o, const ir::PTXOperand& i )
+	{
+		std::string temp = o.name;
+		o = _translate( i );
+		o.name = temp;
 	}
 
 	void PTXToLLVMTranslator::_convertPtxToSsa()
@@ -338,7 +373,7 @@ namespace translator
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
 		for( analysis::DataflowGraph::iterator 
-			block = _graph->begin(); block != _graph->end(); ++block )
+			block = ++_graph->begin(); block != _graph->end(); ++block )
 		{
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
@@ -355,11 +390,11 @@ namespace translator
 					
 					try
 					{
-						node.label = block->producer( *s );
+						node.label = "%" + block->producer( *s );
 					}
 					catch( analysis::DataflowGraph::NoProducerException& e )
 					{
-						node.label = "$OcelotRegisterInitializerBlock";
+						node.label = "%$OcelotRegisterInitializerBlock";
 						_uninitialized.push_back( *s );
 					}
 					
@@ -393,6 +428,21 @@ namespace translator
 			{
 				_instructionId = instruction->id;
 				_translate( *instruction, *block );
+			}
+			
+			if( block->targets().empty() )
+			{
+				if( block->fallthrough() != _graph->end() )
+				{
+					ir::LLVMBr branch;
+				
+					branch.iftrue = "%" + block->fallthrough()->label();
+					_add( branch );
+				}
+				else
+				{
+					_yield( 0 );
+				}
 			}
 		}
 	}
@@ -802,7 +852,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	{
-		_yield();
+		_yield( _continuation++ );
 	}
 
 	void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i, 
@@ -829,8 +879,8 @@ namespace translator
 				branch.condition.i1 = false;
 			}
 		}
-		branch.iftrue = i.d.identifier;
-		branch.iffalse = block.fallthrough()->label();
+		branch.iftrue = "%" + i.d.identifier;
+		branch.iffalse = "%" + block.fallthrough()->label();
 		_add( branch );
 	}
 
@@ -1627,7 +1677,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 	{
-		_yield();
+		_yield( 0 );
 	}
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
@@ -1646,39 +1696,36 @@ namespace translator
 			load.d = _destination( i );
 		}
 
-		ir::LLVMInttoptr inttoptr;
+		ir::LLVMGetelementptr get;
 		
-		if( i.a.offset != 0 )
+		if( i.a.addressMode == ir::PTXOperand::Address )
 		{
-			ir::LLVMAdd add;
-		
-			add.a = _translate( i.a );
-			add.b = add.a;
-			add.b.constant = true;
-			add.b.i64 = i.a.offset;
-			add.d = add.a;
-			add.d.name = _tempRegister();
-	
-			_add( add );
-			
-			inttoptr.a = add.d;
-			inttoptr.d = load.d;
-			inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			inttoptr.d.name = _tempRegister();
-		
-			_add( inttoptr );
+			get.a = _translate( i.a, i.addressSpace );
 		}
 		else
 		{
-			inttoptr.a = _translate( i.a );
-			inttoptr.d = load.d;
-			inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			inttoptr.d.name = _tempRegister();
+			ir::LLVMInttoptr cast;
+			
+			cast.a = _translate( i.a );
+			cast.d.type.members.push_back( load.d.type );
+			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			cast.d.name = _tempRegister();
+			
+			_add( cast );
+			
+			get.a = cast.d;
+		}
 		
-			_add( inttoptr );
-		}		
-				
-		load.a = inttoptr.d;
+		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.d.type.members.push_back( load.d.type );
+		get.d.name = _tempRegister();
+		
+		get.indices.resize( 1 );
+		get.indices[ 0 ] = i.a.offset;
+
+		_add( get );
+		
+		load.a = get.d;
 		
 		if( i.volatility == ir::PTXInstruction::Volatile )
 		{
@@ -2446,7 +2493,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i )
 	{
-		_yield();
+		assertM( false, "Return not supported" );
 	}
 
 	void PTXToLLVMTranslator::_translateRsqrt( const ir::PTXInstruction& i )
@@ -3414,6 +3461,281 @@ namespace translator
 		return stream.str();
 	}
 
+	std::string PTXToLLVMTranslator::_loadSpecialRegister( 
+		ir::PTXOperand::SpecialRegister s )
+	{
+		std::string reg;
+
+		ir::LLVMGetelementptr get;
+			
+		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.d.type.type = ir::LLVMInstruction::I16;
+		get.a.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.a.type.label = "%LLVMContext";
+		get.a.name = "%__ctaContext";
+		get.indices.push_back( 0 );
+		
+		switch( s )
+		{
+			case ir::PTXOperand::tidX:
+			{
+				get.indices.push_back( 0 );
+				get.indices.push_back( 0 );
+				break;
+			}
+			case ir::PTXOperand::tidY:
+			{
+				get.indices.push_back( 0 );
+				get.indices.push_back( 1 );
+				break;
+			}
+			case ir::PTXOperand::tidZ:
+			{
+				get.indices.push_back( 0 );
+				get.indices.push_back( 2 );
+				break;
+			}
+			case ir::PTXOperand::ntidX:
+			{
+				get.indices.push_back( 1 );
+				get.indices.push_back( 0 );
+				break;
+			}
+			case ir::PTXOperand::ntidY:
+			{
+				get.indices.push_back( 1 );
+				get.indices.push_back( 1 );
+				break;
+			}
+			case ir::PTXOperand::ntidZ:
+			{
+				get.indices.push_back( 1 );
+				get.indices.push_back( 2 );
+				break;
+			}
+			case ir::PTXOperand::laneId:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::warpId:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::warpSize:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::ctaIdX:
+			{
+				get.indices.push_back( 2 );
+				get.indices.push_back( 0 );
+				break;
+			}
+			case ir::PTXOperand::ctaIdY:
+			{
+				get.indices.push_back( 2 );
+				get.indices.push_back( 1 );
+				break;
+			}
+			case ir::PTXOperand::ctaIdZ:
+			{
+				get.indices.push_back( 2 );
+				get.indices.push_back( 2 );
+				break;
+			}
+			case ir::PTXOperand::nctaIdX:
+			{
+				get.indices.push_back( 3 );
+				get.indices.push_back( 0 );
+				break;
+			}
+			case ir::PTXOperand::nctaIdY:
+			{
+				get.indices.push_back( 3 );
+				get.indices.push_back( 1 );
+				break;
+			}
+			case ir::PTXOperand::nctaIdZ:
+			{
+				get.indices.push_back( 3 );
+				get.indices.push_back( 2 );
+				break;
+			}
+			case ir::PTXOperand::smId:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::nsmId:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::gridId:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::clock:
+			{
+				ir::LLVMCall call;
+				
+				call.name = "@clock";
+				call.d.type.category = ir::LLVMInstruction::Type::Element;
+				call.d.type.type = ir::LLVMInstruction::I32;
+				call.d.name = _tempRegister();
+				
+				_add( call );
+				
+				return call.d.name;
+				break;
+			}
+			case ir::PTXOperand::pm0:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::pm1:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::pm2:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			case ir::PTXOperand::pm3:
+			{
+				assertM( false, "Special register " 
+					<< ir::PTXOperand::toString( s ) << " not supported." );
+				break;
+			}
+			default: break;
+		}
+		
+		get.d.name = _tempRegister();
+		
+		_add( get );
+		
+		ir::LLVMLoad load;
+		
+		load.d.name = _tempRegister();;
+		load.d.type.category = ir::LLVMInstruction::Type::Element;
+		load.d.type.type = ir::LLVMInstruction::I16;
+		load.a = get.d;
+		
+		_add( load );
+		
+		return load.d.name;
+	}
+	
+	std::string PTXToLLVMTranslator::_loadMemoryBase( 
+		ir::PTXInstruction::AddressSpace space, ir::PTXOperand::DataType type, 
+		size_t offset, ir::PTXInstruction::Vec vector )
+	{
+		ir::LLVMGetelementptr get;
+		
+		get.d.name = _tempRegister();
+		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.d.type.members.resize( 1 );
+		get.d.type.members[0].category = ir::LLVMInstruction::Type::Pointer;
+		get.d.type.members[0].type = ir::LLVMInstruction::I8;
+		
+		get.a.type.label = "%LLVMContext";
+		get.a.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.a.name = "%__ctaContext";
+		get.indices.push_back( 0 );
+		
+		switch( space )
+		{
+			case ir::PTXInstruction::Const:
+			{
+				get.indices.push_back( 6 );
+				break;
+			}
+			case ir::PTXInstruction::Shared:
+			{
+				get.indices.push_back( 5 );
+				break;
+			}
+			case ir::PTXInstruction::Local:
+			{
+				get.indices.push_back( 4 );
+				break;
+			}
+			case ir::PTXInstruction::Param:
+			{
+				get.indices.push_back( 7 );
+				break;
+			}
+			default:
+			{
+				return "";				
+				break;
+			}			
+		}
+				
+		_add( get );
+		
+		ir::LLVMLoad load;
+		
+		load.d.name = _tempRegister();
+		load.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		load.d.type.type = ir::LLVMInstruction::I8;
+		
+		load.a = get.d;
+		
+		_add( load );
+		
+		ir::LLVMGetelementptr getIndex;
+		
+		getIndex.d.name = _tempRegister();
+		getIndex.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		getIndex.d.type.type = ir::LLVMInstruction::I8;
+		
+		getIndex.a = load.d;
+		getIndex.indices.push_back( offset );
+		
+		_add( getIndex );
+		
+		ir::LLVMBitcast cast;
+		
+		cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			
+		if( vector == ir::PTXOperand::v1 )
+		{
+			cast.d.type.type = _translate( type );
+		}
+		else
+		{
+			cast.d.type.members.resize( 1 );
+			cast.d.type.members[ 0 ].category 
+				= ir::LLVMInstruction::Type::Vector;
+			cast.d.type.members[ 0 ].type = _translate( type );
+			cast.d.type.members[ 0 ].vector = vector;		
+		}
+
+		cast.d.name = _tempRegister();
+		cast.a = getIndex.d;
+		
+		_add( cast );
+		
+		return cast.d.name;
+	}
+	
 	void PTXToLLVMTranslator::_setFloatingPointRoundingMode( 
 		const ir::PTXInstruction& i )
 	{
@@ -3565,9 +3887,120 @@ namespace translator
 		}
 	}
 
+	void PTXToLLVMTranslator::_addKernelPrefix()
+	{
+		ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
+		
+		dim3.label = "%Dimension";
+		dim3.operand.type.category = ir::LLVMInstruction::Type::Structure;
+		dim3.operand.type.members.resize( 3 );
+		dim3.operand.type.members[0].category 
+			= ir::LLVMInstruction::Type::Element;
+		dim3.operand.type.members[0].type = ir::LLVMInstruction::I16;
+		dim3.operand.type.members[1] = dim3.operand.type.members[0];
+		dim3.operand.type.members[2] = dim3.operand.type.members[0];
+		
+		_llvmKernel->_statements.push_back( dim3 );
+		
+		ir::LLVMStatement contextType( ir::LLVMStatement::TypeDeclaration );
+		
+		contextType.label = "%LLVMContext";
+		contextType.operand.type = _getCtaContextType();
+		
+		_llvmKernel->_statements.push_back( contextType );
+
+		_llvmKernel->_statements.push_back( 
+			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
+		
+		ir::LLVMStatement context( ir::LLVMStatement::VariableDeclaration );
+				
+		_llvmKernel->_statements.push_back( 
+			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
+
+		ir::LLVMStatement cos( ir::LLVMStatement::FunctionDeclaration );
+
+		cos.label = "cos";
+		cos.linkage = ir::LLVMStatement::InvalidLinkage;
+		cos.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		cos.visibility = ir::LLVMStatement::Default;
+		
+		cos.operand.type.category = ir::LLVMInstruction::Type::Element;
+		cos.operand.type.type = ir::LLVMInstruction::F32;
+		
+		cos.parameters.resize( 1 );
+		cos.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		cos.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_back( cos );		
+
+		ir::LLVMStatement sin( ir::LLVMStatement::FunctionDeclaration );
+
+		sin.label = "sin";
+		sin.linkage = ir::LLVMStatement::InvalidLinkage;
+		sin.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		sin.visibility = ir::LLVMStatement::Default;
+		
+		sin.operand.type.category = ir::LLVMInstruction::Type::Element;
+		sin.operand.type.type = ir::LLVMInstruction::F32;
+		
+		sin.parameters.resize( 1 );
+		sin.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		sin.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_back( sin );		
+
+		ir::LLVMStatement setRoundingMode( 
+			ir::LLVMStatement::FunctionDeclaration );
+
+		setRoundingMode.label = "setRoundingMode";
+		setRoundingMode.linkage = ir::LLVMStatement::InvalidLinkage;
+		setRoundingMode.convention 
+			= ir::LLVMInstruction::DefaultCallingConvention;
+		setRoundingMode.visibility = ir::LLVMStatement::Default;
+		
+		setRoundingMode.parameters.resize( 1 );
+		setRoundingMode.parameters[0].type.category 
+			= ir::LLVMInstruction::Type::Element;
+		setRoundingMode.parameters[0].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_back( setRoundingMode );
+
+		_llvmKernel->_statements.push_back( 
+			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
+		
+		ir::LLVMStatement kernel( ir::LLVMStatement::FunctionDefinition );
+
+		kernel.label = "_Z_ocelotTranslated_" + _llvmKernel->name;
+		kernel.linkage = ir::LLVMStatement::InvalidLinkage;
+		kernel.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		kernel.visibility = ir::LLVMStatement::Default;
+		kernel.functionAttributes = ir::LLVMInstruction::NoUnwind;
+	
+		kernel.operand.type.category = ir::LLVMInstruction::Type::Element;
+		kernel.operand.type.type = ir::LLVMInstruction::I32;
+		
+		kernel.parameters.resize( 1 );
+		kernel.parameters[ 0 ].attribute = ir::LLVMInstruction::NoAlias;
+		kernel.parameters[ 0 ].type.label = "%LLVMContext";
+		kernel.parameters[ 0 ].type.category 
+			= ir::LLVMInstruction::Type::Pointer;
+		kernel.parameters[ 0 ].name = "%__ctaContext";
+		
+		_llvmKernel->_statements.push_back( kernel );
+		_llvmKernel->_statements.push_back( 
+			ir::LLVMStatement( ir::LLVMStatement::BeginFunctionBody ) );
+	}
+	
+	void PTXToLLVMTranslator::_addKernelSuffix()
+	{
+		_llvmKernel->_statements.push_back( 
+			ir::LLVMStatement( ir::LLVMStatement::EndFunctionBody ) );	
+	}
+
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
 		: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
-		_tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ), _tempBlockCount( 0 )
+		_tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
+		_tempBlockCount( 0 ), _continuation( 1 )
 	{
 	
 	}
@@ -3582,13 +4015,16 @@ namespace translator
 		report( "Translating PTX kernel " << k->name );
 		_llvmKernel = new ir::LLVMKernel( *k );	
 		
+		_addKernelPrefix();
 		_convertPtxToSsa();
 		_translateInstructions();
 		_initializeRegisters();
+		_addKernelSuffix();
 		
 		_tempRegisterCount = 0;
 		_tempCCRegisterCount = 0;
 		_tempBlockCount = 0;
+		_continuation = 1;
 		_uninitialized.clear();
 		delete _graph;
 		

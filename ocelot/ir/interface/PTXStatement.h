@@ -1,12 +1,8 @@
 /*!
 	\file PTXStatement.h
-	
 	\date Monday January 19, 2009
-	
 	\author Andrew Kerr
-	
 	\brief The header file for the PTXStatement class
-
 */
 
 #ifndef IR_PTXSTATEMENT_H_INCLUDED

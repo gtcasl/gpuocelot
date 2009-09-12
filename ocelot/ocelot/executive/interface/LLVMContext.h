@@ -16,16 +16,32 @@ namespace executive
 	class LLVMContext
 	{
 		public:
-			char* local;
-			char* shared;
-			char* constant;
-			char* parameter;
+			/*! \brief A 3-D dimension corresponding to the CUDA notion */
+			class Dimension
+			{
+				public:
+					short x;
+					short y;
+					short z;
+			};
+	
+		public:
+			Dimension tid; //! Thread ids
+			Dimension ntid; //! CTA dimensions
+			Dimension ctaid; //! CTA ids
+			Dimension nctaid; //! Kernel dimensions
+		
+		public:
+			char* local; //! Pointer to local memory
+			char* shared; //! Pointer to shared memory
+			char* constant; //! Pointer to constant memory
+			char* parameter; //! Pointer to parameter memory
 			
 		public:
-			size_t localSize;
-			size_t sharedSize;
-			size_t constantSize;
-			size_t parameterSize;
+			size_t localSize; //! Local memory per thread
+			size_t sharedSize; //! Shared memory
+			size_t constantSize; //! Constant memory
+			size_t parameterSize; //! Parameter memory
 	};
 
 }

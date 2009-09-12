@@ -21,14 +21,55 @@ namespace ir
 			{
 				Instruction,
 				Label,
+				FunctionDefinition,
+				FunctionDeclaration,
+				TypeDeclaration,
+				VariableDeclaration,
+				BeginFunctionBody,
+				EndFunctionBody,
+				NewLine,
 				InvalidType
 			};
 			
+			/*! \brief An llvm linkage type */
+			enum Linkage
+			{
+				Private,
+				LinkerPrivate,
+				Internal,
+				AvailableExternally,
+				LinkOnce,
+				Weak,
+				Common,
+				Appending,
+				ExternWeak,
+				LinkOnceOdr,
+				WeakOdr,
+				ExternallyVisible,
+				DllImport,
+				DllExport,
+				InvalidLinkage
+			};
+			
+			/*! \brief An llvm visibility type */
+			enum Visibility
+			{
+				Default,
+				Hidden,
+				Protected,
+				InvalidVisibility
+			};
+		
+		public:
+			static std::string toString( Linkage linkage );
+			static std::string toString( Visibility visibility ); 
+		
 		public:
 			/*! \brieg If this is an instruction, a pointer to the instruction 
 				object.
 				
-				This pointer is owned by this class. */
+				The pointer is owned by this class. 
+			*/
 			LLVMInstruction* instruction;
 			
 			/*! \brief The type of statement */
@@ -36,6 +77,40 @@ namespace ir
 			
 			/*! \brief The string if this is a label */
 			std::string label;
+			
+			/*! \brief The linkage type if this is a declaration */
+			Linkage linkage;
+			
+			/*! \brief The calling convention if this is a function */
+			LLVMInstruction::CallingConvention convention;
+
+			/*! \brief The visibility if this is a declaration */
+			Visibility visibility;
+			
+			/*! \brief The operand if this is a variable declaration or the 
+				returned type of a function call */
+			LLVMInstruction::Operand operand;
+			
+			/*! \brief The return attribute if this is a function declaration */
+			LLVMInstruction::ParameterAttribute returnAttribute;
+			
+			/*! \brief The attributes if this is a function delcaration */
+			LLVMI32 functionAttributes;
+			
+			/*! \brief The section that this is delcared in */
+			std::string section;
+			
+			/*! \brief The alignment if this is a declaration */
+			LLVMI32 alignment;
+			
+			/*! \brief The set of parameter types if this is a function */
+			LLVMInstruction::ParameterVector parameters;
+			
+			/*! \brief The address space if this is a variable */
+			LLVMI32 space;
+
+			/*! \brief Is this variable constant? */
+			LLVMI1 constant;
 			
 		public:
 			/*! \brief Sets out the instruction pointer and sets the type */

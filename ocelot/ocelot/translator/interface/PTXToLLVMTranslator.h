@@ -36,23 +36,29 @@ namespace translator
 			unsigned int _tempRegisterCount;
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
+			unsigned int _continuation;
 			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 
 				ir::PTXOperand::DataType type );
-			static ir::LLVMInstruction::Operand 
-				_translate( const ir::PTXOperand& o );
-			static void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
-				const ir::PTXOperand& i );
 			static void _doubleWidth( ir::LLVMInstruction::DataType& v );
 			static ir::LLVMInstruction::Comparison _translate( 
 				ir::PTXInstruction::CmpOp, bool isInt );
 			
+			static ir::LLVMInstruction::Type _getCtaContextType();
+			
 		private:
-			void _yield();
+			void _yield( unsigned int continuation );
 
+			ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o, 
+				ir::PTXInstruction::AddressSpace space = 
+				ir::PTXInstruction::AddressSpace_Invalid, 
+				ir::PTXInstruction::Vec vector = ir::PTXOperand::v1 );
+			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
+				const ir::PTXOperand& i );
+			
 			void _convertPtxToSsa();
 			void _translateInstructions();
 			void _newBlock( const std::string& name );
@@ -115,6 +121,11 @@ namespace translator
 			void _bitcast( const ir::PTXInstruction& i );
 			
 			std::string _tempRegister();
+			std::string _loadSpecialRegister( 
+				ir::PTXOperand::SpecialRegister s );
+			std::string _loadMemoryBase( ir::PTXInstruction::AddressSpace space, 
+				ir::PTXOperand::DataType type, size_t offset, 
+				ir::PTXInstruction::Vec vector );
 			
 			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 
@@ -128,6 +139,9 @@ namespace translator
 			void _add( const ir::LLVMInstruction& i );
 			
 			void _initializeRegisters();
+
+			void _addKernelPrefix();
+			void _addKernelSuffix();
 
 		public:
 			PTXToLLVMTranslator( OptimizationLevel l = NoOptimization );

@@ -12,9 +12,14 @@
 #include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 
+#include <stack>
+
 namespace llvm
 {
+	class ExistingModuleProvider;
+	class ExecutionEngine;
 	class Module;
+	class Context;
 }
 
 namespace executive
@@ -23,25 +28,53 @@ namespace executive
 	class LLVMExecutableKernel : public ir::ExecutableKernel
 	{
 		private:
-			/*! \brief The CTA dimensions */
-			ir::dim3 _ctaDimensions;
-			/*! \brief The kernel dimensions */
-			ir::dim3 _kernelDimensions;
+			/*! \brief A map from a variable identifier to its allocation */
+			typedef std::unordered_map< std::string, size_t > AllocationMap;
+			/*! \brief A type for referring to a specific PTX thread */
+			typedef unsigned int ThreadContext;
+			/*! \brief A set of PTX threads */
+			typedef std::stack< unsigned int > ThreadSet;
+			/*! \brief A function pointer to the translated kernel */
+			typedef unsigned int (*Function)( LLVMContext* );
+		
+		private:
+			/*! \brief The memory requirements and execution context */
+			LLVMContext _context;
 	
 		private:
 			/*! \brief LLVM module */
 			llvm::Module* _module;
-			/*! \brief Context to run */
-			LLVMContext _context;
+			/*! \brief LLVM JIT Engine */
+			llvm::ExecutionEngine* _jit;
+			/*! \brief Module provider */
+			llvm::ExistingModuleProvider* _moduleProvider;
+			/*! \brief The translated function */
+			Function _function;
+			
+		private:
+			/*! \brief LLVM context */
+			llvm::Context* _llvmContext;
 		
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
-			void _pad( unsigned int& padding, 
-				unsigned int& size, unsigned int alignment );
+			unsigned int _pad( unsigned int& size, unsigned int alignment );
 		
 		private:
 			/*! \brief Create the LLVM module from the code */
 			void _buildModule();
+			
+			/*! \brief Run various LLVM optimizer passes on the kernel */
+			void _optimize();
+			
+			/*! \brief Launch a specific CTA within a kernel */
+			void _launchCta( unsigned int x, unsigned int y );
+			
+			/*! \brief Allocate parameter memory */
+			void _allocateParameterMemory( );
+
+			/*! \brief Allocate shared memory */
+			void _allocateSharedMemory( );
+			
 			/*! \brief Scan the kernel and determine memory requirements */
 			void _allocateMemory();
 

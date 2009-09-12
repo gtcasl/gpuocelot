@@ -65,7 +65,14 @@ namespace ir
 			{
 				if( members.empty() ) 
 				{
-					return LLVMInstruction::toString( type ) + "*";
+					if( type != InvalidDataType )
+					{
+						return LLVMInstruction::toString( type ) + "*";
+					}
+					else
+					{
+						return label + "*";
+					}
 				}
 				else
 				{
@@ -155,7 +162,9 @@ namespace ir
 				}
 				case Type::Pointer:
 				{
-					assertM( false, "Pointer constant not implemented." );
+					std::stringstream stream;
+					stream << i64;
+					return stream.str();
 					break;
 				}
 				case Type::Vector:
@@ -1323,7 +1332,7 @@ namespace ir
 		{
 			return "Address must be a pointer";
 		}
-		if( a.type.type != d.type.type )
+		if( a.type.toString() != ( d.type.toString() + "*" ) )
 		{
 			return "Source " + a.type.toString() 
 				+ " is not a pointer to destination type " + d.type.toString();
@@ -1488,7 +1497,8 @@ namespace ir
 	{
 		if( d.valid() )
 		{
-			return LLVMInstruction::toString( opcode ) + " " + d.toString();
+			return LLVMInstruction::toString( opcode ) + " " 
+				+ d.type.toString() + " " + d.toString();
 		}
 		else
 		{

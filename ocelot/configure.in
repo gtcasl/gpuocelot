@@ -59,17 +59,17 @@ AC_CHECK_HEADERS([fenv.h float.h memory.h unistd.h])
 
 ################################################################################
 # Check for non-compiler programs
-AC_CHECK_PROG(HAVE_LLVM_CONFIG, llvm-config, 1, 0)
+AC_CHECK_PROG(HAVE_LLVM_CONFIG, llvm-config, yes, no)
 
-if test $HAVE_LLVM_CONFIG = 1
+if test $HAVE_LLVM_CONFIG = yes
 then
 	AC_DEFINE(HAVE_LLVM, [], ["Define to 1 if llvm is installed"])
 	AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))
-	AC_SUBST(LLVM_LDFLAGS, $(llvm-config --ldflags --libs core jit native \
-		asmparser | tr '\n' ' '))
+	AC_SUBST(LLVM_LDFLAGS, "$(llvm-config --ldflags --libs core jit native \
+		asmparser | tr '\n' ' ') -rdynamic")
 else
 	AC_SUBST(LLVM_CFLAGS, "")
-	AC_SUBST(LLVM_LDFLAGS, "")	
+	AC_SUBST(LLVM_LDFLAGS, "")
 fi
 ################################################################################
 

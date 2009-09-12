@@ -35,7 +35,7 @@ namespace ir
 			std::string _code;
 			/*! \brief The set of statements representing the kernel */
 			LLVMStatementVector _statements;
-
+			
 		public:
 			/*! \brief Sets the ISA */
 			LLVMKernel();

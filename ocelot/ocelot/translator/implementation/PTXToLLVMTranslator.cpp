@@ -3895,85 +3895,9 @@ namespace translator
 
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
-		ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
-		
-		dim3.label = "%Dimension";
-		dim3.operand.type.category = ir::LLVMInstruction::Type::Structure;
-		dim3.operand.type.members.resize( 3 );
-		dim3.operand.type.members[0].category 
-			= ir::LLVMInstruction::Type::Element;
-		dim3.operand.type.members[0].type = ir::LLVMInstruction::I16;
-		dim3.operand.type.members[1] = dim3.operand.type.members[0];
-		dim3.operand.type.members[2] = dim3.operand.type.members[0];
-		
-		_llvmKernel->_statements.push_back( dim3 );
-		
-		ir::LLVMStatement contextType( ir::LLVMStatement::TypeDeclaration );
-		
-		contextType.label = "%LLVMContext";
-		contextType.operand.type = _getCtaContextType();
-		
-		_llvmKernel->_statements.push_back( contextType );
+		_llvmKernel->_statements.push_front( 
+			ir::LLVMStatement( ir::LLVMStatement::BeginFunctionBody ) );
 
-		_llvmKernel->_statements.push_back( 
-			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
-		
-		ir::LLVMStatement context( ir::LLVMStatement::VariableDeclaration );
-				
-		_llvmKernel->_statements.push_back( 
-			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
-
-		ir::LLVMStatement cos( ir::LLVMStatement::FunctionDeclaration );
-
-		cos.label = "cos";
-		cos.linkage = ir::LLVMStatement::InvalidLinkage;
-		cos.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		cos.visibility = ir::LLVMStatement::Default;
-		
-		cos.operand.type.category = ir::LLVMInstruction::Type::Element;
-		cos.operand.type.type = ir::LLVMInstruction::F32;
-		
-		cos.parameters.resize( 1 );
-		cos.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		cos.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_back( cos );		
-
-		ir::LLVMStatement sin( ir::LLVMStatement::FunctionDeclaration );
-
-		sin.label = "sin";
-		sin.linkage = ir::LLVMStatement::InvalidLinkage;
-		sin.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		sin.visibility = ir::LLVMStatement::Default;
-		
-		sin.operand.type.category = ir::LLVMInstruction::Type::Element;
-		sin.operand.type.type = ir::LLVMInstruction::F32;
-		
-		sin.parameters.resize( 1 );
-		sin.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		sin.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_back( sin );		
-
-		ir::LLVMStatement setRoundingMode( 
-			ir::LLVMStatement::FunctionDeclaration );
-
-		setRoundingMode.label = "setRoundingMode";
-		setRoundingMode.linkage = ir::LLVMStatement::InvalidLinkage;
-		setRoundingMode.convention 
-			= ir::LLVMInstruction::DefaultCallingConvention;
-		setRoundingMode.visibility = ir::LLVMStatement::Default;
-		
-		setRoundingMode.parameters.resize( 1 );
-		setRoundingMode.parameters[0].type.category 
-			= ir::LLVMInstruction::Type::Element;
-		setRoundingMode.parameters[0].type.type = ir::LLVMInstruction::I32;
-	
-		_llvmKernel->_statements.push_back( setRoundingMode );
-
-		_llvmKernel->_statements.push_back( 
-			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
-		
 		ir::LLVMStatement kernel( ir::LLVMStatement::FunctionDefinition );
 
 		kernel.label = "_Z_ocelotTranslated_" + _llvmKernel->name;
@@ -3992,9 +3916,87 @@ namespace translator
 			= ir::LLVMInstruction::Type::Pointer;
 		kernel.parameters[ 0 ].name = "%__ctaContext";
 		
-		_llvmKernel->_statements.push_back( kernel );
+		_llvmKernel->_statements.push_front( kernel );
+
+		ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
+		
+		dim3.label = "%Dimension";
+		dim3.operand.type.category = ir::LLVMInstruction::Type::Structure;
+		dim3.operand.type.members.resize( 3 );
+		dim3.operand.type.members[0].category 
+			= ir::LLVMInstruction::Type::Element;
+		dim3.operand.type.members[0].type = ir::LLVMInstruction::I16;
+		dim3.operand.type.members[1] = dim3.operand.type.members[0];
+		dim3.operand.type.members[2] = dim3.operand.type.members[0];
+		
+		_llvmKernel->_statements.push_front( dim3 );
+
+		_llvmKernel->_statements.push_front( 
+			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
+
+		ir::LLVMStatement cos( ir::LLVMStatement::FunctionDeclaration );
+
+		cos.label = "cos";
+		cos.linkage = ir::LLVMStatement::InvalidLinkage;
+		cos.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		cos.visibility = ir::LLVMStatement::Default;
+		
+		cos.operand.type.category = ir::LLVMInstruction::Type::Element;
+		cos.operand.type.type = ir::LLVMInstruction::F32;
+		
+		cos.parameters.resize( 1 );
+		cos.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		cos.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_front( cos );		
+
+		ir::LLVMStatement sin( ir::LLVMStatement::FunctionDeclaration );
+
+		sin.label = "sin";
+		sin.linkage = ir::LLVMStatement::InvalidLinkage;
+		sin.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		sin.visibility = ir::LLVMStatement::Default;
+		
+		sin.operand.type.category = ir::LLVMInstruction::Type::Element;
+		sin.operand.type.type = ir::LLVMInstruction::F32;
+		
+		sin.parameters.resize( 1 );
+		sin.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		sin.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_front( sin );		
+
+		ir::LLVMStatement setRoundingMode( 
+			ir::LLVMStatement::FunctionDeclaration );
+
+		setRoundingMode.label = "setRoundingMode";
+		setRoundingMode.linkage = ir::LLVMStatement::InvalidLinkage;
+		setRoundingMode.convention 
+			= ir::LLVMInstruction::DefaultCallingConvention;
+		setRoundingMode.visibility = ir::LLVMStatement::Default;
+		
+		setRoundingMode.parameters.resize( 1 );
+		setRoundingMode.parameters[0].type.category 
+			= ir::LLVMInstruction::Type::Element;
+		setRoundingMode.parameters[0].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( setRoundingMode );
+
 		_llvmKernel->_statements.push_back( 
-			ir::LLVMStatement( ir::LLVMStatement::BeginFunctionBody ) );
+			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
+		
+		ir::LLVMStatement contextType( ir::LLVMStatement::TypeDeclaration );
+		
+		contextType.label = "%LLVMContext";
+		contextType.operand.type = _getCtaContextType();
+		
+		_llvmKernel->_statements.push_front( contextType );
+
+		_llvmKernel->_statements.push_front( 
+			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
+		
+		ir::LLVMStatement context( ir::LLVMStatement::VariableDeclaration );
+
 	}
 	
 	void PTXToLLVMTranslator::_addKernelSuffix()
@@ -4022,10 +4024,10 @@ namespace translator
 		_llvmKernel = new ir::LLVMKernel( *k );	
 		
 		_addGlobalDeclarations();
-		_addKernelPrefix();
 		_convertPtxToSsa();
 		_translateInstructions();
 		_initializeRegisters();
+		_addKernelPrefix();
 		_addKernelSuffix();
 		
 		_tempRegisterCount = 0;

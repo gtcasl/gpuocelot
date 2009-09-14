@@ -191,10 +191,13 @@ namespace analysis
 		report( "  Scanning targets: " );
 		report( "   " << _fallthrough->label() );		
 		_aliveOut = _fallthrough->_aliveIn;
+
+		bool isOwnPredecessor = false;
 		
 		for( BlockPointerSet::iterator bi = _targets.begin(); 
 			bi != _targets.end(); ++bi )
 		{
+			isOwnPredecessor |= (this == &(**bi));
 			report( "   " << (*bi)->label() );		
 			for( RegisterSet::iterator ri = (*bi)->_aliveIn.begin(); 
 				ri != (*bi)->_aliveIn.end(); ++ri )
@@ -213,11 +216,20 @@ namespace analysis
 			{
 				_aliveIn.erase( *di );
 			}
-
+			
 			for( RegisterPointerVector::iterator si = ii->s.begin(); 
 				si != ii->s.end(); ++si )
 			{
 				_aliveIn.insert( *si );
+			}
+		}
+		
+		if( isOwnPredecessor )
+		{
+			for( RegisterSet::iterator ri = _aliveIn.begin(); 
+				ri != _aliveIn.end(); ++ri )
+			{
+				_aliveOut.insert( *ri );
 			}
 		}
 		

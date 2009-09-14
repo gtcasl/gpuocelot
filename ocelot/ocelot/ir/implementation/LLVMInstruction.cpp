@@ -131,8 +131,8 @@ namespace ir
 						case I16: stream << i16; break;
 						case I32: stream << i32; break;
 						case I64: stream << i64; break;
-						case F32: stream << f32; break;
-						case F64: stream << f64; break;
+						case F32: stream << std::scientific << f32; break;
+						case F64: stream << std::scientific << f64; break;
 						case F128: stream << f128; break;
 						case InvalidDataType: break;
 					}
@@ -184,8 +184,10 @@ namespace ir
 							case I16: stream << fi->i16; break;
 							case I32: stream << fi->i32; break;
 							case I64: stream << fi->i64; break;
-							case F32: stream << fi->f32; break;
-							case F64: stream << fi->f64; break;
+							case F32: stream << std::scientific << fi->f32; 
+								break;
+							case F64: stream << std::scientific << fi->f64; 
+								break;
 							case F128: stream << f128; break;
 							case InvalidDataType: break;
 						}

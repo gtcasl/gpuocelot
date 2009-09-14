@@ -36,6 +36,28 @@ namespace executive
 			typedef std::stack< unsigned int > ThreadSet;
 			/*! \brief A function pointer to the translated kernel */
 			typedef unsigned int (*Function)( LLVMContext* );
+			
+			/*! \brief A class for managing global llvm state */
+			class LLVMState
+			{
+				public:
+					/*! \brief LLVM module */
+					llvm::Module* module;
+					/*! \brief Module provider */
+					llvm::ExistingModuleProvider* moduleProvider;
+					/*! \brief LLVM JIT Engine */
+					llvm::ExecutionEngine* jit;
+
+				public:
+					/*! \brief Build the jit */
+					LLVMState();
+					/*! \brief Destroy the jit */
+					~LLVMState();
+			};
+
+		private:
+			/*! \brief Contains the LLVM JIT for all LLVM kernels */
+			static LLVMState _state;		
 		
 		private:
 			/*! \brief The memory requirements and execution context */
@@ -44,24 +66,18 @@ namespace executive
 		private:
 			/*! \brief LLVM module */
 			llvm::Module* _module;
-			/*! \brief LLVM JIT Engine */
-			llvm::ExecutionEngine* _jit;
 			/*! \brief Module provider */
 			llvm::ExistingModuleProvider* _moduleProvider;
 			/*! \brief The translated function */
 			Function _function;
 			
 		private:
-			/*! \brief LLVM context */
-			llvm::Context* _llvmContext;
-		
-		private:
 			/*! \brief Determine the padding required to satisfy alignment */
 			unsigned int _pad( unsigned int& size, unsigned int alignment );
 		
 		private:
 			/*! \brief Create the LLVM module from the code */
-			void _buildModule();
+			void _translateKernel();
 			
 			/*! \brief Run various LLVM optimizer passes on the kernel */
 			void _optimize();
@@ -74,6 +90,18 @@ namespace executive
 
 			/*! \brief Allocate shared memory */
 			void _allocateSharedMemory( );
+			
+			/*! \brief Allocate global memory */
+			void _allocateGlobalMemory( );
+			
+			/*! \brief Allocate local memory */
+			void _allocateLocalMemory( );
+			
+			/*! \brief Allocate constant memory */
+			void _allocateConstantMemory( );
+			
+			/*! \brief Allocate texture memory */
+			void _allocateTextureMemory( );
 			
 			/*! \brief Scan the kernel and determine memory requirements */
 			void _allocateMemory();

@@ -403,7 +403,7 @@ namespace test
 		i.b.type.type = Instruction::F32;
 		i.b.name = "%var";		
 		
-		std::string reference = "<result> = fadd float 4, %var";
+		std::string reference = "<result> = fadd float 4.000000e+00, %var";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fadd Instruction Passed\n";
@@ -427,24 +427,25 @@ namespace test
 		i.b.f32 = 5;
 		i.comparison = Instruction::Oeq;
 		
-		std::string reference = "<result> = fcmp oeq float 4, 5";
+		std::string reference = 
+			"<result> = fcmp oeq float 4.000000e+00, 5.000000e+00";
 		if( !check( i, reference ) ) return false;
 		
 		i.comparison = Instruction::One;
 		
-		reference = "<result> = fcmp one float 4, 5";
+		reference = "<result> = fcmp one float 4.000000e+00, 5.000000e+00";
 		if( !check( i, reference ) ) return false;
 		
 		i.comparison = Instruction::Olt;
 		
-		reference = "<result> = fcmp olt float 4, 5";
+		reference = "<result> = fcmp olt float 4.000000e+00, 5.000000e+00";
 		if( !check( i, reference ) ) return false;
 		
 		i.comparison = Instruction::Ueq;
 		i.a.f32 = 1;
 		i.b.f32 = 2;
 		
-		reference = "<result> = fcmp ueq float 1, 2";
+		reference = "<result> = fcmp ueq float 1.000000e+00, 2.000000e+00";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fcmp Instruction Passed\n";
@@ -466,7 +467,7 @@ namespace test
 		i.b.type.type = Instruction::F32;
 		i.b.name = "%var";		
 		
-		std::string reference = "<result> = fdiv float 4, %var";
+		std::string reference = "<result> = fdiv float 4.000000e+00, %var";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fdiv Instruction Passed\n";
@@ -488,7 +489,7 @@ namespace test
 		i.b.type.type = Instruction::F32;
 		i.b.name = "%var";		
 		
-		std::string reference = "<result> = fmul float 4, %var";
+		std::string reference = "<result> = fmul float 4.000000e+00, %var";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fmul Instruction Passed\n";
@@ -507,14 +508,14 @@ namespace test
 		i.a.type.type = Instruction::F32;
 		i.a.constant = true;		
 		
-		std::string reference = "%X = fpext float 3.1415 to double";
+		std::string reference = "%X = fpext float 3.141500e+00 to double";
 		if( !check( i, reference ) ) return false;
 		
 		i.d.name = "%Y";
 		i.d.type.type = Instruction::F32;
 		i.a.f32 = 1;
 		
-		reference = "%Y = fpext float 1 to float";
+		reference = "%Y = fpext float 1.000000e+00 to float";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fpext Instruction Passed\n";
@@ -533,7 +534,7 @@ namespace test
 		i.a.type.type = Instruction::F64;
 		i.a.constant = true;		
 		
-		std::string reference = "%X = fptosi double -123 to i32";
+		std::string reference = "%X = fptosi double -1.230000e+02 to i32";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fptosi Instruction Passed\n";
@@ -552,7 +553,7 @@ namespace test
 		i.a.type.type = Instruction::F64;
 		i.a.constant = true;		
 		
-		std::string reference = "%X = fptoui double 123 to i32";
+		std::string reference = "%X = fptoui double 1.230000e+02 to i32";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fptoui Instruction Passed\n";
@@ -571,7 +572,7 @@ namespace test
 		i.a.type.type = Instruction::F64;
 		i.a.constant = true;		
 		
-		std::string reference = "%X = fptrunc double 123 to float";
+		std::string reference = "%X = fptrunc double 1.230000e+02 to float";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fptrunc Instruction Passed\n";
@@ -611,7 +612,7 @@ namespace test
 		i.b.type.type = Instruction::F32;
 		i.b.name = "%var";		
 		
-		std::string reference = "<result> = frem float 4, %var";
+		std::string reference = "<result> = frem float 4.000000e+00, %var";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Frem Instruction Passed\n";
@@ -633,7 +634,7 @@ namespace test
 		i.b.type.type = Instruction::F32;
 		i.b.name = "%val";		
 		
-		std::string reference = "<result> = fsub float 0, %val";
+		std::string reference = "<result> = fsub float 0.000000e+00, %val";
 		if( !check( i, reference ) ) return false;
 		
 		status << "Fsub Instruction Passed\n";

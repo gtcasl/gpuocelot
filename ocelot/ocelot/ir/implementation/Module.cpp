@@ -169,7 +169,7 @@ void ir::Module::write( std::ostream& stream ) const {
 			stream << statement->toString() << "\n";
 		}
 		stream << "\n";
-	}	
+	}
 }
 
 /*!

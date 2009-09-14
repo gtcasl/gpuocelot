@@ -266,8 +266,8 @@ namespace test
 	{
 		bool result = _loadKernels();
 		
-		return result && testDivergent();// && testLooping() 
-			//&& testMatrixMultiply();
+		return result && testDivergent() && testLooping() ;
+//			&& testMatrixMultiply();
 	}
 	
 	TestLLVMKernels::TestLLVMKernels()

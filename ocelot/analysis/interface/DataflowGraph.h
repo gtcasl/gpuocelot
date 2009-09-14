@@ -216,6 +216,10 @@ namespace analysis
 					const std::string& label() const;
 					/*! \brief Determine the block that produced a register */
 					const std::string& producer( const Register& r ) const;
+					/*! \brief Determine the alive registers immediately
+						before a given instruction in the block */
+					RegisterSet alive( const 
+						InstructionVector::const_iterator& i );
 			};
 			
 		public:

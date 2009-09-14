@@ -73,7 +73,7 @@ namespace executive
 			
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
-			unsigned int _pad( unsigned int& size, unsigned int alignment );
+			unsigned int _pad( size_t& size, unsigned int alignment );
 		
 		private:
 			/*! \brief Create the LLVM module from the code */

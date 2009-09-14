@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define REPORT_ALL_PTX_SOURCE 1
 #define REPORT_ALL_LLVM_SOURCE 1
 #define REPORT_INSIDE_TRANSLATED_CODE 1
@@ -86,7 +86,7 @@ namespace executive
 		#endif
 	}
 	
-	unsigned int LLVMExecutableKernel::_pad( unsigned int& size, 
+	unsigned int LLVMExecutableKernel::_pad( size_t& size, 
 		unsigned int alignment )
 	{
 		unsigned int padding = alignment - ( size % alignment );
@@ -147,8 +147,12 @@ namespace executive
 			
 			report( " Successfully created LLVM Module from translated PTX." );
 			
-			reportE( REPORT_ALL_LLVM_SOURCE, 
-				" The initial code is:\n" << *_module );
+			#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
+			std::string m;
+			llvm::raw_string_ostream code( m );
+			code << *_module;
+			reportE( REPORT_ALL_LLVM_SOURCE, " The initial code is:\n" << m );
+			#endif
 			
 			_optimize();
 			
@@ -184,8 +188,12 @@ namespace executive
 				
 		manager.run( *function );
 
-		reportE( REPORT_ALL_LLVM_SOURCE, 
-				" The optimized code is:\n" << *_module );
+		#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
+		std::string m;
+		llvm::raw_string_ostream code( m );
+		code << *_module;
+		report( " The optimized code is:\n" << m );
+		#endif
 	
 		// This insanity is needed to avoid a warning on g++
 		union
@@ -573,7 +581,7 @@ namespace executive
 	{
 		_translateKernel();
 	
-		unsigned int size = 0;
+		size_t size = 0;
 		for( ParameterVector::iterator parameter = parameters.begin();
 			parameter != parameters.end(); ++parameter ) {
 			_pad( size, parameter->getAlignment() );

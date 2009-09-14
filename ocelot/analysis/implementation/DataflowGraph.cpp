@@ -323,6 +323,33 @@ namespace analysis
 		return (*predecessor)->label();
 	}
 	
+	DataflowGraph::Block::RegisterSet DataflowGraph::Block::alive( 
+		const InstructionVector::const_iterator& i )
+	{
+		RegisterSet alive( _aliveOut );
+		
+		InstructionVector::const_reverse_iterator 
+			end = InstructionVector::const_reverse_iterator( i );
+		
+		for( InstructionVector::reverse_iterator ii = _instructions.rbegin(); 
+			ii != end; ++ii )
+		{
+			for( RegisterPointerVector::iterator di = ii->d.begin(); 
+				di != ii->d.end(); ++di )
+			{
+				alive.erase( *di );
+			}
+			
+			for( RegisterPointerVector::iterator si = ii->s.begin(); 
+				si != ii->s.end(); ++si )
+			{
+				alive.insert( *si );
+			}
+		}
+		
+		return std::move( alive );
+	}
+	
 	DataflowGraph::DataflowGraph() : _consistent( true ), _ssa( false )
 	{
 		_blocks.push_back( Block( Block::Entry ) );

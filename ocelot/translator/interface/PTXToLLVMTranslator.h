@@ -37,6 +37,7 @@ namespace translator
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
 			unsigned int _continuation;
+			unsigned int _stackPointer;
 			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;
 		

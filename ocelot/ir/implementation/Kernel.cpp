@@ -11,6 +11,7 @@
 
 #include <iostream>
 
+#include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -375,3 +376,54 @@ const ir::Parameter & ir::Kernel::getParameter(const std::string& name) const {
 	assert( "Invalid parameter" == 0 );
 	return parameters.front();
 }
+std::ostream& operator<<( std::ostream& stream, const ir::Kernel& k ) {
+	stream << "/*\n* Ocelot Version : " 
+		<< hydrazine::Version().toString() << "\n";
+	stream << "*/\n";
+	
+	ir::PTXStatement::Directive previous = ir::PTXStatement::Directive_invalid;
+	
+	if( k.start_iterator->version == ir::PTXInstruction::ptx1_4 ) {
+		for( ir::Kernel::PTXStatementVector::const_iterator 
+			statement = k.start_iterator; 
+			statement != k.end_iterator; ++statement ) {
+			report( "Line " << ( statement - k.start_iterator ) 
+				<< ": " << statement->toString() );
+			if( statement->directive == ir::PTXStatement::Param )
+			{
+				if( previous != ir::PTXStatement::StartParam )
+				{
+					stream << ",\n\t" << statement->toString();
+				}
+				else
+				{
+					stream << "\n\t" << statement->toString();
+				}
+			}
+			else
+			{
+				stream << "\n";
+				if( statement->directive == ir::PTXStatement::Instr 
+					|| statement->directive == ir::PTXStatement::Loc ) {
+					stream << "\t";
+				}
+				stream << statement->toString();
+			}
+			previous = statement->directive;
+		}
+		stream << "\n";
+	}
+	else {
+		for( ir::Kernel::PTXStatementVector::const_iterator 
+			statement = k.start_iterator; 
+			statement != k.end_iterator; ++statement ) {
+			report( "Line " << ( statement - k.start_iterator ) 
+				<< ": " << statement->toString() );
+			stream << statement->toString() << "\n";
+		}
+		stream << "\n";
+	}
+	return stream;
+}
+
+

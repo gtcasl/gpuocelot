@@ -244,6 +244,8 @@ namespace translator
 
 	void PTXToLLVMTranslator::_yield( unsigned int continuation )
 	{
+		assertM( continuation == 0, 
+			"No support for yielding anywhere except the program exit" );
 		ir::LLVMRet ret;
 		
 		ret.d.constant = true;
@@ -879,7 +881,15 @@ namespace translator
 				branch.condition.i1 = false;
 			}
 		}
-		branch.iftrue = "%" + i.d.identifier;
+		
+		if( block.targets().empty() )
+		{
+			branch.iftrue = "%" + i.d.identifier;
+		}
+		else
+		{
+			branch.iftrue = "%" + (*block.targets().begin())->label();
+		}
 		branch.iffalse = "%" + block.fallthrough()->label();
 		_add( branch );
 	}
@@ -1696,11 +1706,9 @@ namespace translator
 			load.d = _destination( i );
 		}
 
-		ir::LLVMGetelementptr get;
-		
 		if( i.a.addressMode == ir::PTXOperand::Address )
 		{
-			get.a = _translate( i.a, i.addressSpace );
+			load.a = _translate( i.a, i.addressSpace );
 		}
 		else
 		{
@@ -1713,20 +1721,9 @@ namespace translator
 			
 			_add( cast );
 			
-			get.a = cast.d;
+			load.a = cast.d;
 		}
-		
-		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
-		get.d.type.members.push_back( load.d.type );
-		get.d.name = _tempRegister();
-		
-		get.indices.resize( 1 );
-		get.indices[ 0 ] = i.a.offset;
-
-		_add( get );
-		
-		load.a = get.d;
-		
+				
 		if( i.volatility == ir::PTXInstruction::Volatile )
 		{
 			load.isVolatile = true;
@@ -1866,7 +1863,6 @@ namespace translator
 		ir::LLVMTrunc truncate;
 		
 		truncate.d = destination;
-		truncate.d.name = _tempRegister();
 		truncate.a = add.d;
 
 		_add( truncate );
@@ -2002,7 +1998,6 @@ namespace translator
 			ir::LLVMFptrunc truncate;
 		
 			truncate.d = destination;
-			truncate.d.name = _tempRegister();
 			truncate.a = add.d;
 
 			_add( truncate );
@@ -2147,7 +2142,18 @@ namespace translator
 	void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 	{
 		assertM( i.vec == ir::PTXOperand::v1, "No support for vector moves" );		
-		if( i.d.type == i.a.type )
+		
+		if( i.a.addressMode == ir::PTXOperand::Address )
+		{
+			ir::LLVMPtrtoint cast;
+			
+			cast.d = _destination( i );
+			cast.a = _translate( i.a, i.addressSpace );
+			
+			_add( cast );
+			_predicateEpilogue( i, cast.d );
+		}
+		else if( i.d.type == i.a.type )
 		{
 			_bitcast( i );
 		}
@@ -2792,7 +2798,7 @@ namespace translator
 			tempD = d;
 		}
 
-		if( ir::PTXOperand::isFloat( i.type ) )
+		if( ir::PTXOperand::isFloat( i.a.type ) )
 		{
 			ir::LLVMFcmp fcmp;
 			
@@ -2810,7 +2816,7 @@ namespace translator
 			icmp.d = tempD;
 			icmp.a = _translate( i.a );
 			icmp.b = _translate( i.b );
-			icmp.comparison = _translate( i.comparisonOperator, false );
+			icmp.comparison = _translate( i.comparisonOperator, true );
 			
 			_add( icmp );		
 		}
@@ -3441,17 +3447,12 @@ namespace translator
 	
 	void PTXToLLVMTranslator::_bitcast( const ir::PTXInstruction& i )
 	{
-		ir::LLVMSelect select;
-		select.d = _destination( i );
-		select.a = _translate( i.a );
-		select.b = select.a;
-		select.condition.type.category = ir::LLVMInstruction::Type::Element;
-		select.condition.type.type = ir::LLVMInstruction::I1;
-		select.condition.constant = true;
-		select.condition.i1 = true;
+		ir::LLVMBitcast cast;
+		cast.d = _destination( i );
+		cast.a = _translate( i.a );
 		
-		_add( select );
-		_predicateEpilogue( i, select.d );
+		_add( cast );
+		_predicateEpilogue( i, cast.d );
 	}	
 
 	std::string PTXToLLVMTranslator::_tempRegister()
@@ -3887,6 +3888,11 @@ namespace translator
 		}
 	}
 
+	void PTXToLLVMTranslator::_addGlobalDeclarations()
+	{
+		
+	}
+
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
 		ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
@@ -4015,6 +4021,7 @@ namespace translator
 		report( "Translating PTX kernel " << k->name );
 		_llvmKernel = new ir::LLVMKernel( *k );	
 		
+		_addGlobalDeclarations();
 		_addKernelPrefix();
 		_convertPtxToSsa();
 		_translateInstructions();

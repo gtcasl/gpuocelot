@@ -141,6 +141,7 @@ namespace translator
 			void _initializeRegisters();
 
 			void _addKernelPrefix();
+			void _addGlobalDeclarations();
 			void _addKernelSuffix();
 
 		public:

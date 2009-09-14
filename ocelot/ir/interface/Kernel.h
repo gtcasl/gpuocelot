@@ -154,5 +154,7 @@ namespace ir {
 
 }
 
+std::ostream& operator<<( std::ostream& s, const ir::Kernel& k );
+
 #endif
 

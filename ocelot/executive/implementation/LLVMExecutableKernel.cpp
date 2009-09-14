@@ -20,8 +20,10 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
-#define REPORT_ALL_LLVM_SOURCE 0
+#define REPORT_BASE 0
+#define REPORT_ALL_PTX_SOURCE 1
+#define REPORT_ALL_LLVM_SOURCE 1
+#define REPORT_INSIDE_TRANSLATED_CODE 1
 
 #include <configure.h>
 
@@ -50,10 +52,40 @@ extern "C"
 	}
 }
 
-
-
 namespace executive
 {
+
+	LLVMExecutableKernel::LLVMState LLVMExecutableKernel::_state;
+
+	LLVMExecutableKernel::LLVMState::LLVMState()		
+	{
+		#ifdef HAVE_LLVM
+		report( "Bringing the LLVM JIT-Compiler online." );
+
+		module = new llvm::Module( "Ocelot-LLVM-JIT-Blank Module", 
+			llvm::getGlobalContext() );
+		
+		moduleProvider = new llvm::ExistingModuleProvider( module );
+		assertM( moduleProvider != 0, 
+			"Creating the global module provider failed.");
+		
+		llvm::InitializeNativeTarget();
+		
+		jit = llvm::EngineBuilder( moduleProvider ).create();
+	
+		assertM( jit != 0, "Creating the JIT failed.");
+		report( " The JIT is alive." );
+		#endif
+	}
+	
+	LLVMExecutableKernel::LLVMState::~LLVMState()
+	{
+		#ifdef HAVE_LLVM
+		report( "Deleting the LLVM JIT-Compiler." );
+		delete jit;
+		#endif
+	}
+	
 	unsigned int LLVMExecutableKernel::_pad( unsigned int& size, 
 		unsigned int alignment )
 	{
@@ -63,22 +95,24 @@ namespace executive
 		return padding;
 	}
 
-	void LLVMExecutableKernel::_buildModule()
+	void LLVMExecutableKernel::_translateKernel()
 	{
 		#ifdef HAVE_LLVM
 		if( _module == 0 )
 		{
-			report( "Building LLVM module for kernel \"" << name << "\"" );
+			report( "Translating PTX kernel \"" << name << "\" to LLVM" );
 			
 			_allocateMemory();
 
 			translator::PTXToLLVMTranslator translator;
 			
-			report( " Translating to llvm." );
+			reportE( REPORT_ALL_PTX_SOURCE, " PTX Source:\n" << *this );
+			
+			report( " Running translator" );
 			ir::LLVMKernel* llvmKernel = static_cast< 
-					ir::LLVMKernel* >( translator.translate( this ) );
+				ir::LLVMKernel* >( translator.translate( this ) );
 
-			report( " Assembling llvm module." );
+			report( " Assembling llvm module" );
 			llvmKernel->assemble();
 
 			report( " Parsing llvm assembly." );
@@ -89,7 +123,7 @@ namespace executive
 			
 			if( _module == 0 )
 			{
-				report( "  Translated Kernel:\n" 
+				report( "  Parsing kernel failed, dumping code:\n" 
 					<< llvmKernel->numberedCode() );
 				std::string m;
 				llvm::raw_string_ostream message( m );
@@ -105,7 +139,7 @@ namespace executive
 			if( llvm::verifyModule( *_module, 
 				llvm::ReturnStatusAction, &verifyError ) )
 			{
-				report( "  Translated Kernel:\n" 
+				report( "  Verifying kernel failed, dumping code:\n" 
 					<< llvmKernel->numberedCode() );
 				throw hydrazine::Exception( "LLVM Verifier failed for kernel: " 
 					+ name + " : \"" + verifyError + "\"" );
@@ -130,18 +164,13 @@ namespace executive
 		report( "Optimizing LLVM Code" );
 	
 		_moduleProvider = new llvm::ExistingModuleProvider( _module );
-
 		assertM( _moduleProvider != 0, "Creating the module provider failed.");
-
-		llvm::InitializeNativeTarget();
-			
-		_jit = llvm::EngineBuilder( _moduleProvider ).create();
-	
-		assertM( _jit != 0, "Creating the JIT failed.");
-	
+		
+		_state.jit->addModuleProvider( _moduleProvider );
+		
 		llvm::FunctionPassManager manager( _moduleProvider );
 		
-		manager.add( new llvm::TargetData( *_jit->getTargetData() ) );
+		manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
 		manager.add( llvm::createInstructionCombiningPass() );
 		manager.add( llvm::createReassociatePass() );
 		manager.add( llvm::createGVNPass() );
@@ -165,7 +194,7 @@ namespace executive
 			Function two;
 		} cast;
 	
-		cast.one = _jit->getPointerToFunction( function );
+		cast.one = _state.jit->getPointerToFunction( function );
 		_function = cast.two;
 		
 		report( " Successfully jit compiled the kernel." );
@@ -190,8 +219,16 @@ namespace executive
 				for( int x = 0; x < _context.ntid.x; ++x )
 				{
 					_context.tid.x = x;
+					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+						"  Launching thread ( x " << x << ", y " << y 
+						<< ", z " << z << " )" );
 					unsigned int continuation = _function( &_context );
-					if( continuation != 0 ) set.push( continuation );
+					if( continuation != 0 )
+					{
+						reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+							"   Thread blocked at " << continuation );
+						set.push( continuation );
+					}
 				}
 			}
 		}
@@ -202,8 +239,11 @@ namespace executive
 	
 	void LLVMExecutableKernel::_allocateParameterMemory( )
 	{
-		_context.parameterSize = 0;
 		report( "  Allocating parameter memory." );
+				
+		_context.parameterSize = 0;
+		
+		AllocationMap map;
 		
 		for( ParameterVector::iterator parameter = parameters.begin(); 
 			parameter != parameters.end(); ++parameter )
@@ -216,9 +256,47 @@ namespace executive
 			
 			parameter->offset = _context.parameterSize;
 			_context.parameterSize += parameter->getSize();
+			
+			map.insert( std::make_pair( parameter->name, parameter->offset ) );
 		}
 		
+		report( "  Allocated " << _context.parameterSize 
+			<< " for parameter memory." );
+		
 		_context.parameter = new char[ _context.parameterSize ];
+	
+		report( "  Determining offsets of operands that use parameters" );
+	
+		for( PTXInstructionVector::iterator 
+			instruction = instructions.begin(); 
+			instruction != instructions.end(); ++instruction )
+		{
+			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
+				&instruction->b, &instruction->c };
+		
+			if( instruction->opcode == ir::PTXInstruction::Mov
+				|| instruction->opcode == ir::PTXInstruction::Ld
+				|| instruction->opcode == ir::PTXInstruction::St )
+			{
+				for( unsigned int i = 0; i != 4; ++i )
+				{
+					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					{
+						AllocationMap::iterator 
+							parameter = map.find( operands[ i ]->identifier );
+						if( parameter != map.end() )
+						{
+							report( "   For instruction \"" 
+								<< instruction->toString() << "\" mapping \"" 
+								<< parameter->first << "\" to " 
+								<< parameter->second );
+							operands[ i ]->offset = parameter->second;
+						}
+					}
+				}
+			}
+			
+		}
 	}
 
 	void LLVMExecutableKernel::_allocateSharedMemory( )
@@ -265,6 +343,8 @@ namespace executive
 					}
 					else 
 					{
+						report( "   Allocating global shared variable " 
+							<< global->second.statement.name );
 						sharedGlobals.insert( std::make_pair( 
 							global->second.statement.name, global ) );
 					}
@@ -291,7 +371,8 @@ namespace executive
 				else
 				{
 					report( "   Found local shared variable " 
-						<< statement->name );
+						<< statement->name << " of size " 
+						<< statement->bytes() );
 					_pad( _context.sharedSize, statement->alignment );
 					map.insert( std::make_pair( statement->name, 
 						_context.sharedSize ) );
@@ -347,6 +428,8 @@ namespace executive
 							operands[ i ]->identifier );
 						if( map.end() != mapping ) 
 						{
+							instruction->addressSpace 
+								= ir::PTXInstruction::Shared;
 							operands[ i ]->offset = mapping->second;
 							report("   For instruction " 
 								<< instruction->toString() 
@@ -373,18 +456,73 @@ namespace executive
 
 	}
 	
+	void LLVMExecutableKernel::_allocateGlobalMemory( )
+	{
+		report( " Allocating global memory" );
+		for( PTXInstructionVector::iterator 
+			instruction = instructions.begin(); 
+			instruction != instructions.end(); ++instruction )
+		{
+			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
+				&instruction->b, &instruction->c };
+		
+			if( instruction->opcode == ir::PTXInstruction::Mov
+				|| instruction->opcode == ir::PTXInstruction::Ld
+				|| instruction->opcode == ir::PTXInstruction::St )
+			{
+				for( unsigned int i = 0; i != 4; ++i )
+				{
+					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					{
+						ir::Module::GlobalMap::const_iterator 
+							global = module->globals.find( 
+							operands[ i ]->identifier );
+						if( global != module->globals.end() )
+						{
+							operands[ i ]->imm_uint = 
+								(ir::PTXU64) global->second.pointer;
+							report("  Mapping global label " 
+								<< operands[ i ]->identifier << " to " 
+								<< operands[ i ]->imm_uint 
+								<< " for instruction \"" 
+								<< instruction->toString() << "\"" );
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	void LLVMExecutableKernel::_allocateLocalMemory( )
+	{
+	
+	}
+	
+	void LLVMExecutableKernel::_allocateConstantMemory( )
+	{
+	
+	}
+	
+	void LLVMExecutableKernel::_allocateTextureMemory( )
+	{
+	
+	}
+	
 	void LLVMExecutableKernel::_allocateMemory()
 	{
 		report( " Allocating Memory" );
 		
 		_allocateParameterMemory();
 		_allocateSharedMemory();
-		
+		_allocateGlobalMemory();
+		_allocateLocalMemory();
+		_allocateConstantMemory();
+		_allocateTextureMemory();
 	}
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
 		const executive::Executive* c ) : ExecutableKernel( k, c ), 
-		_module( 0 ), _jit( 0 ), _moduleProvider( 0 )
+		_module( 0 ), _moduleProvider( 0 )
 	{
 		_context.shared = 0;
 		_context.local = 0;
@@ -394,11 +532,13 @@ namespace executive
 	}
 	
 	LLVMExecutableKernel::~LLVMExecutableKernel()
-	{
+	{	
 		#ifdef HAVE_LLVM
-		delete _jit;
+		if( _moduleProvider != 0 )
+		{
+			_state.jit->deleteModuleProvider( _moduleProvider );
+		}
 		#endif
-		
 		delete[] _context.local;
 		delete[] _context.constant;
 		delete[] _context.parameter;
@@ -407,7 +547,7 @@ namespace executive
 
 	void LLVMExecutableKernel::launchGrid( int x, int y )
 	{	
-		_buildModule();
+		_translateKernel();
 		report( "Launching kernel \"" << name << "\" on grid ( x = " 
 			<< x << ", y = " << y << " )"  );
 		for( int i = 0; i < x; ++i )
@@ -422,8 +562,8 @@ namespace executive
 	
 	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )
 	{
-		report( "Setting CTA \"" << name << "\" shape ( x = " << x << ", y = " 
-			<< y << ", z = " << z << " )"  );
+		report( "Setting CTA shape to ( x = " << x << ", y = " 
+			<< y << ", z = " << z << " ) for kernel \"" << name << "\""  );
 		_context.ntid.x = x;
 		_context.ntid.y = y;
 		_context.ntid.z = z;
@@ -431,7 +571,7 @@ namespace executive
 
 	void LLVMExecutableKernel::updateParameterMemory()
 	{
-		_buildModule();
+		_translateKernel();
 	
 		unsigned int size = 0;
 		for( ParameterVector::iterator parameter = parameters.begin();

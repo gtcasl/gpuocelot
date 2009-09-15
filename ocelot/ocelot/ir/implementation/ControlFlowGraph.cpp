@@ -45,7 +45,16 @@ ir::BasicBlock::ConstBlockList ControlFlowGraph::get_blocks() const {
 	for (; it != blocks.end(); ++it) {
 		c_blocks.push_back(*it);
 	}
-	return c_blocks;
+	return std::move( c_blocks );
+}
+
+ir::BasicBlock::BlockList ControlFlowGraph::get_blocks() {
+	ir::BasicBlock::BlockList c_blocks;
+	ir::BasicBlock::BlockList::const_iterator it = blocks.begin();
+	for (; it != blocks.end(); ++it) {
+		c_blocks.push_back(*it);
+	}
+	return std::move( c_blocks );
 }
 ir::BasicBlock::ConstEdgeList ControlFlowGraph::get_edges() const {
 	ir::BasicBlock::ConstEdgeList c_edges;
@@ -53,7 +62,7 @@ ir::BasicBlock::ConstBlockList ControlFlowGraph::get_blocks() const {
 		it != edges.end(); ++it) {
 		c_edges.push_back(*it);
 	}
-	return c_edges;
+	return std::move( c_edges );
 }
 
 void ControlFlowGraph::insert_block(BasicBlock *block) {

@@ -288,6 +288,7 @@ void executive::Executive::enumerateDevices() {
 		report( " Initialized PTX emulated." );
 		devices.push_back(device);
 	}
+	#ifdef HAVE_LLVM
 	{
 		Device device;
 		device.ISA = ir::Instruction::LLVM;
@@ -315,6 +316,7 @@ void executive::Executive::enumerateDevices() {
 		report( " Initialized PTX-To-LLVM JIT." );
 		devices.push_back(device);
 	}
+	#endif
 }
 
 /*!

@@ -76,6 +76,9 @@ namespace executive
 			unsigned int _pad( size_t& size, unsigned int alignment );
 		
 		private:
+			/*! \brief Run various PTX optimizer passes on the kernel */
+			void _optimizePtx();
+			
 			/*! \brief Create the LLVM module from the code */
 			void _translateKernel();
 			

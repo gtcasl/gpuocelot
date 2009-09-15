@@ -13,6 +13,7 @@
 #include <hydrazine/implementation/Exception.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/analysis/interface/RemoveBarrierPass.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -95,6 +96,22 @@ namespace executive
 		return padding;
 	}
 
+	void LLVMExecutableKernel::_optimizePtx()
+	{
+		report( " Running PTX optimizer" );
+
+		report( "  Running remove barrier pass." );
+		reportE( REPORT_ALL_PTX_SOURCE, "   Code before pass:\n" << *this );
+
+		analysis::RemoveBarrierPass pass;
+		
+		pass.initialize( *module );
+		pass.runOnKernel( *this );
+		pass.finalize();
+
+		reportE( REPORT_ALL_PTX_SOURCE, "   Code after pass:\n" << *this );
+	}
+
 	void LLVMExecutableKernel::_translateKernel()
 	{
 		#ifdef HAVE_LLVM
@@ -102,11 +119,10 @@ namespace executive
 		{
 			report( "Translating PTX kernel \"" << name << "\" to LLVM" );
 			
+			_optimizePtx();
 			_allocateMemory();
 
 			translator::PTXToLLVMTranslator translator;
-			
-			reportE( REPORT_ALL_PTX_SOURCE, " PTX Source:\n" << *this );
 			
 			report( " Running translator" );
 			ir::LLVMKernel* llvmKernel = static_cast< 
@@ -324,38 +340,37 @@ namespace executive
 		unsigned int externalAlignment = 1;		
 		_context.sharedSize = 0;
 				
-		if( module != 0 ) 
+		assert( module != 0 ); 
+
+		for( ir::Module::GlobalMap::const_iterator 
+			global = module->globals.begin(); 
+			global != module->globals.end(); ++global ) 
 		{
-			for( ir::Module::GlobalMap::const_iterator 
-				global = module->globals.begin(); 
-				global != module->globals.end(); ++global ) 
+			if( global->second.statement.directive 
+				== ir::PTXStatement::Shared ) 
 			{
-				if( global->second.statement.directive 
-					== ir::PTXStatement::Shared ) 
+				if( global->second.statement.attribute 
+					== ir::PTXStatement::Extern )
 				{
-					if( global->second.statement.attribute 
-						== ir::PTXStatement::Extern )
-					{
-						report( "   Allocating global external shared variable " 
-							<< global->second.statement.name );
-						assertM( external.count( 
-							global->second.statement.name ) == 0, 
-							"External global " << global->second.statement.name 
-							<< " more than once." );
-						external.insert( global->second.statement.name );
-						externalAlignment = std::max( externalAlignment, 
-							(unsigned int) global->second.statement.alignment );
-						externalAlignment = std::max( externalAlignment, 
-							ir::PTXOperand::bytes( 
-							global->second.statement.type ) );
-					}
-					else 
-					{
-						report( "   Allocating global shared variable " 
-							<< global->second.statement.name );
-						sharedGlobals.insert( std::make_pair( 
-							global->second.statement.name, global ) );
-					}
+					report( "   Allocating global external shared variable " 
+						<< global->second.statement.name );
+					assertM( external.count( 
+						global->second.statement.name ) == 0, 
+						"External global " << global->second.statement.name 
+						<< " more than once." );
+					external.insert( global->second.statement.name );
+					externalAlignment = std::max( externalAlignment, 
+						(unsigned int) global->second.statement.alignment );
+					externalAlignment = std::max( externalAlignment, 
+						ir::PTXOperand::bytes( 
+						global->second.statement.type ) );
+				}
+				else 
+				{
+					report( "   Allocating global shared variable " 
+						<< global->second.statement.name );
+					sharedGlobals.insert( std::make_pair( 
+						global->second.statement.name, global ) );
 				}
 			}
 		}

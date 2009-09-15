@@ -33,7 +33,10 @@ void analyze(const char *filename) {
 
 	for (; k_it != module.end(Instruction::PTX); ++k_it) {
 
-		Kernel *kernel = (*k_it);
+		Kernel* kernel = (*k_it);
+		
+		kernel->buildPostDominatorTree();
+		kernel->buildDominatorTree();
 
 		string filename = kernel->name;
 		string cfg_fname = filename + "_cfg.dot";

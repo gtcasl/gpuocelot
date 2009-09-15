@@ -39,6 +39,9 @@ executive::EmulatedKernel::EmulatedKernel(ir::Kernel *kernel,
 	ConstMemorySize = ParameterMemorySize = SharedMemorySize = 0;
 	
 	Kernel::operator=(*kernel);
+
+	buildPostDominatorTree();
+	
 	initialize();
 }
 

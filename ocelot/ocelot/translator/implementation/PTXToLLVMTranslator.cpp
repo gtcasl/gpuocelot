@@ -364,18 +364,19 @@ namespace translator
 	void PTXToLLVMTranslator::_convertPtxToSsa()
 	{
 		report( " Doing basic PTX register allocation");
+		report( " Performing register allocation" );
 		ir::Kernel::assignRegisters( _llvmKernel->instructions );
 		report( " Building the dataflow graph");
-		_graph = new analysis::DataflowGraph( *_llvmKernel->ptxCFG, 
-			_llvmKernel->instructions );
+		_llvmKernel->buildDataflowGraph();
 		report( " Converting PTX to SSA form");
-		_graph->toSsa();
+		_llvmKernel->dfg->toSsa();
 	}
 
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
 		for( analysis::DataflowGraph::iterator 
-			block = ++_graph->begin(); block != _graph->end(); ++block )
+			block = ++_llvmKernel->dfg->begin(); 
+			block != _llvmKernel->dfg->end(); ++block )
 		{
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
@@ -434,7 +435,7 @@ namespace translator
 			
 			if( block->targets().empty() )
 			{
-				if( block->fallthrough() != _graph->end() )
+				if( block->fallthrough() != _llvmKernel->dfg->end() )
 				{
 					ir::LLVMBr branch;
 				
@@ -854,7 +855,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	{
-		_yield( _continuation++ );
+		_yield( i.reentryPoint );
 	}
 
 	void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i, 
@@ -884,13 +885,13 @@ namespace translator
 		
 		if( block.targets().empty() )
 		{
-			branch.iftrue = "%" + i.d.identifier;
+			branch.iftrue = "%" + block.fallthrough()->label();
 		}
 		else
 		{
 			branch.iftrue = "%" + (*block.targets().begin())->label();
+			branch.iffalse = "%" + block.fallthrough()->label();
 		}
-		branch.iffalse = "%" + block.fallthrough()->label();
 		_add( branch );
 	}
 
@@ -1709,6 +1710,20 @@ namespace translator
 		if( i.a.addressMode == ir::PTXOperand::Address )
 		{
 			load.a = _translate( i.a, i.addressSpace );
+		
+			if( load.a.type.type != load.d.type.type )
+			{
+				ir::LLVMBitcast cast;
+				cast.a = load.a;
+				cast.d = load.a;
+				cast.d.name = _tempRegister();
+				cast.d.type.type = load.d.type.type;
+				
+				_add( cast );
+				
+				load.a.type.type = load.d.type.type;
+				load.a.name = cast.d.name;
+			}
 		}
 		else
 		{
@@ -4008,7 +4023,7 @@ namespace translator
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
 		: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
 		_tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
-		_tempBlockCount( 0 ), _continuation( 1 )
+		_tempBlockCount( 0 )
 	{
 	
 	}
@@ -4021,7 +4036,7 @@ namespace translator
 	ir::Kernel* PTXToLLVMTranslator::translate( const ir::Kernel* k )
 	{
 		report( "Translating PTX kernel " << k->name );
-		_llvmKernel = new ir::LLVMKernel( *k );	
+		_llvmKernel = new ir::LLVMKernel( *k );
 		
 		_addGlobalDeclarations();
 		_convertPtxToSsa();
@@ -4033,9 +4048,7 @@ namespace translator
 		_tempRegisterCount = 0;
 		_tempCCRegisterCount = 0;
 		_tempBlockCount = 0;
-		_continuation = 1;
 		_uninitialized.clear();
-		delete _graph;
 		
 		return _llvmKernel;
 	}

@@ -34,14 +34,15 @@ static void analyze( const std::string& ptx, const std::string& dot, bool ssa )
 		dfgFile << "// Dataflow flow graph\n";
 		
 		ir::Kernel::assignRegisters( kernel->instructions );
-		analysis::DataflowGraph graph( *kernel->ptxCFG, kernel->instructions );
+		
+		kernel->buildDataflowGraph();
 		
 		if( ssa )
 		{
-			graph.toSsa();
+			kernel->dfg->toSsa();
 		}
 		
-		dfgFile << graph;
+		dfgFile << *kernel->dfg;
 	}
 }
 

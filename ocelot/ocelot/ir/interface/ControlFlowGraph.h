@@ -31,31 +31,36 @@ public:
 
 public:
 	ControlFlowGraph();
-	virtual ~ControlFlowGraph();
+	~ControlFlowGraph();
 
 public:
 
 	/*!
 		Gets the number of blocks within the graph
 	*/
-	virtual size_t size();
+	size_t size();
 
 	/*!
 		Returns a list of BasicBlocks associated with the CFG
 	*/
-	virtual ir::BasicBlock::ConstBlockList get_blocks() const;
+	ir::BasicBlock::ConstBlockList get_blocks() const;
+
+	/*!
+		Returns a list of BasicBlocks associated with the CFG
+	*/
+	ir::BasicBlock::BlockList get_blocks();
 
 	/*!
 		Returns a list of edges in the CFG
 
 		\return a list of edge objects
 	*/
-	virtual ir::BasicBlock::ConstEdgeList get_edges() const;
+	ir::BasicBlock::ConstEdgeList get_edges() const;
 
 	/*!
 		Inserts a basic block into the CFG
 	*/
-	virtual void insert_block(ir::BasicBlock *block);
+	void insert_block(ir::BasicBlock *block);
 	
 	/*!
 		Removes a basic block and associated edges. Any blocks dominated by
@@ -63,13 +68,13 @@ public:
 	
 		\param block block to remove from graph
 	*/
-	virtual void remove_block(ir::BasicBlock *block);
+	void remove_block(ir::BasicBlock *block);
 
 	/*!
 		Creates an edge between given basic blocks
 		\param edge edge to create
 	*/
-	virtual void insert_edge(ir::Edge *edge);
+	void insert_edge(ir::Edge *edge);
 
 	/*!
 		Removes the edge which may exist from head->tail. This may render tail
@@ -77,7 +82,7 @@ public:
 		
 		\param edge to remove
 	*/
-	virtual void remove_edge(ir::Edge *edge);
+	void remove_edge(ir::Edge *edge);
 	
 	/*!
 		Given an edge head->tail, retargets edge and creates new edge such that 
@@ -90,27 +95,27 @@ public:
 		\return implicily created edge from newblock->tail with same type as 
 			edge [may need modifying]
 	*/
-	virtual ir::Edge *split_edge(ir::Edge *edge, ir::BasicBlock *newblock);
+	ir::Edge *split_edge(ir::Edge *edge, ir::BasicBlock *newblock);
 
 	/*!
 		Returns the entry block of a control flow graph
 	*/
-	virtual ir::BasicBlock *get_entry_block();
+	ir::BasicBlock *get_entry_block();
 
 	/*!
 		Returns the exit block of a control flow graph
 	*/
-	virtual ir::BasicBlock *get_exit_block();
+	ir::BasicBlock *get_exit_block();
 	
 	/*!
 		Returns the entry block of a control flow graph
 	*/
-	virtual const ir::BasicBlock *get_entry_block() const;
+	const ir::BasicBlock *get_entry_block() const;
 
 	/*!
 		Returns the exit block of a control flow graph
 	*/
-	virtual const ir::BasicBlock *get_exit_block() const;
+	const ir::BasicBlock *get_exit_block() const;
 	
 	/*!
 		write a graphviz-compatible file for visualizing the CFG
@@ -181,14 +186,14 @@ public:
 	/*!
 		Returns true if block is reachable from head
 	*/
-	virtual bool is_reachable(ir::BasicBlock *head, ir::BasicBlock *block);
+	bool is_reachable(ir::BasicBlock *head, ir::BasicBlock *block);
 	
 	/*!
 		\brief Clears all basic blocks and edges in the CFG. Note: the CFG "owns" all
 		blocks and edges, so if you don't want the CFG destructor to delete all of
 		the blocks and edges it owns, you should clear it before deleting it.
 	*/
-	virtual void clear();
+	void clear();
 	
 	/*!
 		\brief Converts { to [ and } to ] for use in dot.

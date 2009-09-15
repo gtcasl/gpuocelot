@@ -6,10 +6,7 @@
 */
 
 #include <ocelot/ir/interface/Kernel.h>
-#include <map>
-#include <assert.h>
-
-#include <iostream>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
@@ -26,15 +23,15 @@ ir::Kernel::Kernel() {
 	ptxCFG = 0;
 	dom_tree = 0;
 	pdom_tree = 0;
+	dfg = 0;
 	module = 0;
 }
 
 ir::Kernel::~Kernel() {
-	if (ptxCFG) {
-		delete pdom_tree;
-		delete dom_tree;
-		delete ptxCFG;
-	}
+	delete pdom_tree;
+	delete dom_tree;
+	delete ptxCFG;
+	delete dfg;
 }
 
 ir::Kernel::Kernel(
@@ -43,18 +40,15 @@ ir::Kernel::Kernel(
 	start_iterator(start), end_iterator(end) {
 
 	using namespace std;
-	int Icount = 0;
-
+	
 	ptxCFG = 0;
 	dom_tree = 0;
 	pdom_tree = 0;
+	dfg = 0;
 
 	// count instructions, get parameters, extract kernel name
 	for (PTXStatementVector::const_iterator it = start; it != end; ++it) {
-		if ((*it).directive == PTXStatement::Instr) {
-			++Icount;
-		}
-		else if ((*it).directive == PTXStatement::Param) {
+		if ((*it).directive == PTXStatement::Param) {
 			Parameter param(*it);
 			parameters.push_back(param);
 		}
@@ -62,13 +56,8 @@ ir::Kernel::Kernel(
 			name = (*it).name;
 		}
 	}
-	
 	ptxCFG = new ControlFlowGraph;
-
-	if (constructCFG(*ptxCFG, instructions, start, end)) {
-		dom_tree = new DominatorTree(ptxCFG);
-		pdom_tree = new PostdominatorTree(ptxCFG);
-	}
+	constructCFG(*ptxCFG, instructions, start_iterator, end_iterator);
 }
 
 ir::Kernel::Kernel(const Kernel &kernel) {
@@ -83,18 +72,17 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 	instructions = kernel.instructions;
 	module = kernel.module;
 
-	ptxCFG = 0; dom_tree = 0; pdom_tree = 0;
-	if (kernel.ptxCFG) {
-		ptxCFG = new ControlFlowGraph;
-		*ptxCFG = *kernel.ptxCFG;
-		dom_tree = new DominatorTree(ptxCFG);
-		pdom_tree = new PostdominatorTree(ptxCFG);
-	}
+	ptxCFG = 0; dom_tree = 0; pdom_tree = 0; dfg = 0;
+	ptxCFG = new ControlFlowGraph;
+	*ptxCFG = *kernel.ptxCFG;
+	if (kernel.dom_tree) buildDominatorTree();
+	if (kernel.pdom_tree) buildPostDominatorTree();
+	if (kernel.dfg) buildDataflowGraph();
 }
 
 const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	// deep copy the elements from a kernel to this one
-	assert( &kernel != this );
+	if( &kernel == this ) return *this;
 	name = kernel.name;
 	ISA = kernel.ISA;
 	globalStatements = kernel.globalStatements;
@@ -104,25 +92,67 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	instructions = kernel.instructions;
 	module = kernel.module;
 
-	if (ptxCFG) {
-		delete dom_tree; delete pdom_tree;
-		delete ptxCFG;
-	}
-	ptxCFG = 0; dom_tree = 0; pdom_tree = 0;
-	if (kernel.ptxCFG) {
-		ptxCFG = new ControlFlowGraph;
-		*ptxCFG = *kernel.ptxCFG;
-		dom_tree = new DominatorTree(ptxCFG);
-		pdom_tree = new PostdominatorTree(ptxCFG);
-	}
+	delete dom_tree; delete pdom_tree;
+	delete ptxCFG; delete dfg;
+
+	ptxCFG = 0; dom_tree = 0; pdom_tree = 0; dfg = 0;
+	assert(kernel.ptxCFG);
+	ptxCFG = new ControlFlowGraph;
+	*ptxCFG = *kernel.ptxCFG;
+	if (kernel.dom_tree) buildDominatorTree();
+	if (kernel.pdom_tree) buildPostDominatorTree();
+	if (kernel.dfg) buildDataflowGraph();
+
 	return *this;	
 }
 
-/*!
-	Constructs a control flow graph from a kernel represented as a sequence
-	of instructions
-*/
-bool ir::Kernel::constructCFG(
+bool ir::Kernel::executable() const {
+	return false;
+}
+
+ir::Parameter& ir::Kernel::getParameter(const std::string& name) {
+	using namespace std;
+	for (vector<Parameter>::iterator p_it = parameters.begin(); 
+		p_it != parameters.end(); ++p_it) {
+		if (p_it->name == name) {
+			return *p_it;
+		}
+	}
+	assert( "Invalid parameter" == 0 );
+	return parameters.front();
+}
+
+const ir::Parameter& ir::Kernel::getParameter(const std::string& name) const {
+	using namespace std;
+	for (vector<Parameter>::const_iterator p_it = parameters.begin(); 
+		p_it != parameters.end(); ++p_it) {
+		if (p_it->name == name) {
+			return *p_it;
+		}
+	}
+	assert( "Invalid parameter" == 0 );
+	return parameters.front();
+}
+
+void ir::Kernel::buildPostDominatorTree() {
+	assertM(ptxCFG != 0, "Must create cfg before building postdominator tree.");
+	if (pdom_tree) return;
+	pdom_tree = new PostdominatorTree(ptxCFG);
+}
+
+void ir::Kernel::buildDominatorTree() {
+	assertM(ptxCFG != 0, "Must create cfg before building dominator tree.");
+	if (dom_tree) return;
+	dom_tree = new DominatorTree(ptxCFG);	
+}
+
+void ir::Kernel::buildDataflowGraph() {
+	assertM(ptxCFG != 0, "Must create cfg before building dataflow graph.");
+	if (dfg) return;
+	dfg = new analysis::DataflowGraph(*ptxCFG, instructions);
+}
+
+void ir::Kernel::constructCFG(
 	ControlFlowGraph &cfg,
 	PTXInstructionVector &instructions,
 	PTXStatementVector::const_iterator kernelStart,
@@ -130,8 +160,10 @@ bool ir::Kernel::constructCFG(
 			
 	using namespace ir;
 	using namespace std;
-		
-	map< string, BasicBlock *> blocksByLabel;
+	
+	typedef std::unordered_map< string, BasicBlock *> BlockToLabelMap;
+	
+	BlockToLabelMap blocksByLabel;
 	vector< BasicBlock *> branchBlocks;
 
 	BasicBlock *last_inserted_block = 0;
@@ -141,7 +173,7 @@ bool ir::Kernel::constructCFG(
 	edge->tail = block;
 	edge->type = Edge::FallThrough;
 	
-	for (int n = 0; kernelStart != kernelEnd; ++kernelStart) {
+	for (; kernelStart != kernelEnd; ++kernelStart) {
 		const PTXStatement &statement = *kernelStart;
 		
 		if (statement.directive == PTXStatement::Label) {
@@ -201,13 +233,11 @@ bool ir::Kernel::constructCFG(
 				edge = 0;
 			}
 			else if (statement.instruction.opcode == PTXInstruction::Call) {
-				assert(0 == "unhandled control flow instruction");
-				return false;
+				assertM(false, "Unhandled control flow instruction call");
 			}
 			else {
 				// any special handling with respect to control flow?
 			}
-			n++;
 		}
 	}
 
@@ -253,7 +283,7 @@ bool ir::Kernel::constructCFG(
 		it != branchBlocks.end(); ++it) {
 
 		PTXInstruction bra = instructions[(*it)->instructions.back()];
-		map< string, BasicBlock* >::iterator labeledBlockIt = 
+		BlockToLabelMap::iterator labeledBlockIt = 
 			blocksByLabel.find(bra.d.identifier);
 		
 		if (labeledBlockIt != blocksByLabel.end()) {
@@ -265,18 +295,9 @@ bool ir::Kernel::constructCFG(
 		}
 		else {
 			// undefined reference
-			assert(0 == "undefined reference");
-			return false;
+			assertM(false, "undefined label " << bra.d.identifier);
 		}
 	}
-	
-	// now, anneal the CFG by looking for pairs of basic blocks joined by a fall through
-	// edge, the first not terminated by a branch, and the second with only one predecessor.
-	
-	branchBlocks.clear();
-	blocksByLabel.clear();
-	
-	return true;
 }
 
 ir::Kernel::RegisterMap ir::Kernel::assignRegisters( 
@@ -346,36 +367,6 @@ ir::Kernel::RegisterMap ir::Kernel::assignRegisters(
 	return std::move( map );
 }
 
-/*!
-	Gets a parameter named by 'name.' Undefined result returned if parameter 
-		doesn't exist
-*/
-ir::Parameter & ir::Kernel::getParameter(const std::string& name) {
-	using namespace std;
-	for (vector<Parameter>::iterator p_it = parameters.begin(); 
-		p_it != parameters.end(); ++p_it) {
-		if (p_it->name == name) {
-			return *p_it;
-		}
-	}
-	assert( "Invalid parameter" == 0 );
-	return parameters.front();
-}
-/*!
-	Gets a parameter named by 'name.' Undefined result returned if parameter 
-		doesn't exist
-*/
-const ir::Parameter & ir::Kernel::getParameter(const std::string& name) const {
-	using namespace std;
-	for (vector<Parameter>::const_iterator p_it = parameters.begin(); 
-		p_it != parameters.end(); ++p_it) {
-		if (p_it->name == name) {
-			return *p_it;
-		}
-	}
-	assert( "Invalid parameter" == 0 );
-	return parameters.front();
-}
 std::ostream& operator<<( std::ostream& stream, const ir::Kernel& k ) {
 	stream << "/*\n* Ocelot Version : " 
 		<< hydrazine::Version().toString() << "\n";

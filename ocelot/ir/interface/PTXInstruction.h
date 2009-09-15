@@ -397,9 +397,13 @@ namespace ir {
 			divergent branches reconverge */
 		int reconvergeInstruction;
 
-		/*! \brief Branch target instruction index */
-		int branchTargetInstruction;
-
+		union
+		{
+			/*! \brief Branch target instruction index */
+			int branchTargetInstruction;
+			/*! \brief Context switch reentry point */
+			int reentryPoint;
+		};
 		/*!	The following are used for debugging information at runtime. */
 	public:
 		/*! \brief The index of the statement that this instruction was 

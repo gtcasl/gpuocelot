@@ -18,6 +18,10 @@
 #include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
 
+namespace analysis {
+	class DataflowGraph;
+}
+
 namespace ir {
 
 	class Module;
@@ -80,14 +84,24 @@ namespace ir {
 	
 		/*!	Returns true if the kernel instance is derived from 
 			ExecutableKernel */
-		virtual bool executable() const { return false; }
+		virtual bool executable() const;
 
 		/*!	Returns a reference to a parameter identified by 'name' */		
 		Parameter& getParameter(const std::string& name);
 
 		/*!	Returns a const reference to a parameter identified by 'name' */		
-		const Parameter & getParameter(const std::string& name) const;
+		const Parameter& getParameter(const std::string& name) const;
 
+		/*! \brief Builds the Pdom tree within the kernel */
+		void buildPostDominatorTree();
+		
+		/*! \brief Builds the dominator tree within the kernel */
+		void buildDominatorTree();
+		
+		/*! \brief Builds the data flow graph within the kernel */
+		void buildDataflowGraph();
+
+	public:
 		/*!
 			Constructs a control flow graph from iterators into the 
 			Module's PTXStatement vector
@@ -100,7 +114,7 @@ namespace ir {
 				[i.e. the EndEntry statement]
 			\return true on successful creation
 		*/
-		static bool constructCFG(
+		static void constructCFG(
 			ControlFlowGraph &cfg,
 			PTXInstructionVector &instructions,
 			PTXStatementVector::const_iterator kernelStart,
@@ -109,7 +123,7 @@ namespace ir {
 		/*! \brief Assigns register IDs to identifiers */
 		static RegisterMap assignRegisters( 
 			PTXInstructionVector& instructions );
-					
+		
 	public:
 		/*!	[mangled] name of kernel within module */
 		std::string name;
@@ -139,13 +153,16 @@ namespace ir {
 			Control flow graph of kernel - this is the primary store of 
 				instructions belonging to the kernel
 		*/
-		ControlFlowGraph *ptxCFG;
+		ControlFlowGraph* ptxCFG;
 
 		/*!	Dominator tree constructed from ptxCFG */
-		DominatorTree *dom_tree;
+		DominatorTree* dom_tree;
 
 		/*!	Post-dominator tree constructed from ptxCFG */
-		PostdominatorTree *pdom_tree;
+		PostdominatorTree* pdom_tree;
+		
+		/*! \brief Dataflow graph constructed from ptxCFG */
+		analysis::DataflowGraph* dfg;
 		
 		/*!	Pointer to the module this kernel belongs to */
 		const Module* module;

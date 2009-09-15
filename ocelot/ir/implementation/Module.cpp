@@ -195,7 +195,7 @@ void ir::Module::extractPTXKernels() {
 		else if (statement.directive == PTXStatement::EndEntry) {
 			// construct the kernel and push it onto something
 			inKernel = false;
-			endIterator = it;
+			endIterator = ++StatementVector::const_iterator(it);
 			if (instructionCount) {
 				Kernel *kernel = new Kernel(startIterator, endIterator);
 				kernel->module = this;

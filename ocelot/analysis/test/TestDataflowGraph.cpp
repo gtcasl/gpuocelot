@@ -283,10 +283,9 @@ namespace test
 			{
 				status << "  For Kernel: " << (*kernel)->name << std::endl;
 				ir::Kernel::assignRegisters( (*kernel)->instructions );
-				analysis::DataflowGraph graph( *(*kernel)->ptxCFG, 
-					(*kernel)->instructions );
-				graph.compute();
-				if( !_verify( graph ) )
+				(*kernel)->buildDataflowGraph();
+				(*kernel)->dfg->compute();
+				if( !_verify( *(*kernel)->dfg ) )
 				{
 					return false;
 				}
@@ -311,11 +310,10 @@ namespace test
 			{
 				status << "  For Kernel: " << (*kernel)->name << std::endl;
 				ir::Kernel::assignRegisters( (*kernel)->instructions );
-				analysis::DataflowGraph graph( *(*kernel)->ptxCFG, 
-					(*kernel)->instructions );
-				graph.compute();
-				graph.toSsa();
-				if( !_verifySsa( graph ) )
+				(*kernel)->buildDataflowGraph();
+				(*kernel)->dfg->compute();
+				(*kernel)->dfg->toSsa();
+				if( !_verifySsa( *(*kernel)->dfg ) )
 				{
 					return false;
 				}
@@ -340,12 +338,11 @@ namespace test
 			{
 				status << "  For Kernel: " << (*kernel)->name << std::endl;
 				ir::Kernel::assignRegisters( (*kernel)->instructions );
-				analysis::DataflowGraph graph( *(*kernel)->ptxCFG, 
-					(*kernel)->instructions );
-				graph.compute();
-				graph.toSsa();
-				graph.fromSsa();
-				if( !_verify( graph ) )
+				(*kernel)->buildDataflowGraph();
+				(*kernel)->dfg->compute();
+				(*kernel)->dfg->toSsa();
+				(*kernel)->dfg->fromSsa();
+				if( !_verify( *(*kernel)->dfg ) )
 				{
 					return false;
 				}

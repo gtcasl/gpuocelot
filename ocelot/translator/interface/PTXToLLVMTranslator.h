@@ -32,11 +32,9 @@ namespace translator
 		
 		private:
 			ir::LLVMKernel* _llvmKernel;
-			analysis::DataflowGraph* _graph;
 			unsigned int _tempRegisterCount;
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
-			unsigned int _continuation;
 			unsigned int _stackPointer;
 			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;

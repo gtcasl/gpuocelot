@@ -12,6 +12,7 @@
 #include <hydrazine/implementation/Exception.h>
 
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <fstream>
 
@@ -24,7 +25,7 @@ static void analyze( const std::string& ptx, const std::string& dot, bool ssa )
 
 	for (; k_it != module.end( ir::Instruction::PTX ); ++k_it) {
 
-		ir::Kernel* kernel = *k_it;
+		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(*k_it);
 
 		std::string dfg = dot + kernel->name + "_dfg.dot";
 
@@ -33,16 +34,14 @@ static void analyze( const std::string& ptx, const std::string& dot, bool ssa )
 		dfgFile << "// Kernel: " << kernel->name << "\n";
 		dfgFile << "// Dataflow flow graph\n";
 		
-		ir::Kernel::assignRegisters( kernel->instructions );
-		
-		kernel->buildDataflowGraph();
-		
+		ir::PTXKernel::assignRegisters( kernel->instructions );
+				
 		if( ssa )
 		{
-			kernel->dfg->toSsa();
+			kernel->dfg()->toSsa();
 		}
 		
-		dfgFile << *kernel->dfg;
+		dfgFile << *kernel->dfg();
 	}
 }
 

@@ -115,12 +115,14 @@ void trace::SharedComputationGenerator::selectMaskedStSet(const executive::Emula
 	
 	maskedStSet.clear();
 	
-	for (ir::Kernel::PTXInstructionVector::const_iterator instr_it = kernel->KernelInstructions.begin();
+	for (ir::PTXKernel::PTXInstructionVector::const_iterator 
+		instr_it = kernel->KernelInstructions.begin();
 		instr_it != kernel->KernelInstructions.end(); ++instr_it) {
 	
 		if (instr_it->opcode == PTXInstruction::Ld && instr_it->addressSpace == PTXInstruction::Global) {
 			// look for possible store instructions
-			ir::Kernel::PTXInstructionVector::const_iterator next_instr = instr_it; 
+			ir::PTXKernel::PTXInstructionVector::const_iterator 
+				next_instr = instr_it; 
 			++next_instr;
 			
 			for (; next_instr != kernel->KernelInstructions.end(); ++next_instr) {

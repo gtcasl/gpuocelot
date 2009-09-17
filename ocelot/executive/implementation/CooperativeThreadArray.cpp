@@ -193,7 +193,7 @@ void executive::CooperativeThreadArray::clear() {
 /*!
 	Returns CTA to initial state
 */
-void executive::CooperativeThreadArray::initialize(ir::dim3 grid, bool trace ) {
+void executive::CooperativeThreadArray::initialize(ir::Dim3 grid, bool trace ) {
 	CTAContext context(kernel, this);
 	runtimeStack.clear();
 	runtimeStack.push_back(context);
@@ -261,7 +261,7 @@ ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 /*!
 	Called by the worker thread to evaluate a block
 */
-void executive::CooperativeThreadArray::execute(ir::dim3 block) {
+void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 	using namespace ir;
 
 	bool running = true;

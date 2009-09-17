@@ -10,6 +10,7 @@
 
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace ir
@@ -29,6 +30,7 @@ namespace translator
 		private:
 			typedef std::vector< analysis::DataflowGraph::Register > 
 				RegisterVector;
+			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
 		
 		private:
 			ir::LLVMKernel* _llvmKernel;
@@ -38,6 +40,8 @@ namespace translator
 			unsigned int _stackPointer;
 			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;
+			PTXInstructionVector _ptx;
+			analysis::DataflowGraph* _dfg;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 
@@ -122,7 +126,7 @@ namespace translator
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
 				ir::PTXOperand::SpecialRegister s );
-			std::string _loadMemoryBase( ir::PTXInstruction::AddressSpace space, 
+			std::string _loadMemoryBase( ir::PTXInstruction::AddressSpace space,
 				ir::PTXOperand::DataType type, size_t offset, 
 				ir::PTXInstruction::Vec vector );
 			

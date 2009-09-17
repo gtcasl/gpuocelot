@@ -13,7 +13,6 @@
 
 #include <ocelot/ir/interface/PTXInstruction.h>
 
-
 namespace ir {
 
 	class PTXStatement {
@@ -23,7 +22,7 @@ namespace ir {
 			PTX directive types
 		*/
 		enum Directive {
-			Instr,			//< indicates the PTXInstruction is an actual instruction
+			Instr,			//< indicates the is an actual instruction
 			Const,
 			Entry,
 			File,
@@ -44,9 +43,9 @@ namespace ir {
 			Union,
 			Version,
 			StartEntry,		//< synthetic directive to indicate start of entry
-			EndEntry,		//< synthetic directive to indicate the end of an entry
-			StartParam,		//< synthetic directive to indicate start of a parameter list
-			EndParam,		//< synthetic directive to indicate end of a parameter list
+			EndEntry,		//< synthetic to indicate the end of an entry
+			StartParam,		//< synthetic to indicate start of a parameter list
+			EndParam,		//< synthetic to indicate end of a parameter list
 			Directive_invalid
 		};
 

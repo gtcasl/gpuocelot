@@ -12,6 +12,7 @@
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
 #include <hydrazine/implementation/debug.h>
@@ -363,18 +364,16 @@ namespace translator
 	{
 		report( " Doing basic PTX register allocation");
 		report( " Performing register allocation" );
-		ir::Kernel::assignRegisters( _llvmKernel->instructions );
-		report( " Building the dataflow graph");
-		_llvmKernel->buildDataflowGraph();
+		ir::PTXKernel::assignRegisters( _ptx );
 		report( " Converting PTX to SSA form");
-		_llvmKernel->dfg->toSsa();
+		_dfg->toSsa();
 	}
 
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
 		for( analysis::DataflowGraph::iterator 
-			block = ++_llvmKernel->dfg->begin(); 
-			block != _llvmKernel->dfg->end(); ++block )
+			block = ++_dfg->begin(); 
+			block != _dfg->end(); ++block )
 		{
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
@@ -433,7 +432,7 @@ namespace translator
 			
 			if( block->targets().empty() )
 			{
-				if( block->fallthrough() != _llvmKernel->dfg->end() )
+				if( block->fallthrough() != _dfg->end() )
 				{
 					ir::LLVMBr branch;
 				
@@ -458,8 +457,8 @@ namespace translator
 		const analysis::DataflowGraph::Instruction& i, 
 		const analysis::DataflowGraph::Block& block )
 	{
-		assert( i.id < _llvmKernel->instructions.size() );
-		_translate( _llvmKernel->instructions[ i.id ], block );
+		assert( i.id < _ptx.size() );
+		_translate( _ptx[ i.id ], block );
 	}
 
 	void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i, 
@@ -4034,7 +4033,16 @@ namespace translator
 	ir::Kernel* PTXToLLVMTranslator::translate( const ir::Kernel* k )
 	{
 		report( "Translating PTX kernel " << k->name );
+		
+		assertM( k->ISA == ir::Instruction::PTX, 
+			"Kernel must a PTXKernel to translate to an LLVMKernel" );
+		
+		const ir::PTXKernel& ptx = static_cast< const ir::PTXKernel& >( *k );
 		_llvmKernel = new ir::LLVMKernel( *k );
+		
+		_ptx = ptx.instructions;
+		report( " Building the dataflow graph");
+		_dfg = new analysis::DataflowGraph( *_llvmKernel->cfg(), _ptx );
 		
 		_addGlobalDeclarations();
 		_convertPtxToSsa();
@@ -4047,6 +4055,9 @@ namespace translator
 		_tempCCRegisterCount = 0;
 		_tempBlockCount = 0;
 		_uninitialized.clear();
+		_ptx.clear();
+		
+		delete _dfg;
 		
 		return _llvmKernel;
 	}

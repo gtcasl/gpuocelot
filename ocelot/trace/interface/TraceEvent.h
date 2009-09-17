@@ -1,8 +1,6 @@
 /*!
 	\file TraceEvent.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief declares TraceEvent class for recording runtime information
 */
 
@@ -10,9 +8,10 @@
 #define TRACE_TRACEEVENT_H_INCLUDED
 
 #include <boost/dynamic_bitset.hpp>
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <hydrazine/interface/Stringable.h>
+#include <deque>
 
 /*!
 	\brief A namespace for trace generation related classes
@@ -47,7 +46,7 @@ namespace trace {
 				issued by this instruction
 		*/
 		TraceEvent(
-			ir::dim3 blockId,
+			ir::Dim3 blockId,
 			ir::PTXU64 PC, 
 			const ir::PTXInstruction* instruction, 
 			const boost::dynamic_bitset<> & active,
@@ -58,7 +57,7 @@ namespace trace {
 		/*!
 			ID of the block that generated the event
 		*/
-		ir::dim3 blockId;
+		ir::Dim3 blockId;
 
 		/*!
 			PC index into EmulatedKernel's packed instruction sequence

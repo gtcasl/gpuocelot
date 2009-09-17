@@ -38,129 +38,93 @@ namespace executive {
 		EmulatedKernel();
 		virtual ~EmulatedKernel();
 	
-		/*!
-			Launch a kernel on a 2D grid
-		*/
+		/*!	Launch a kernel on a 2D grid */
 		void launchGrid(int width, int height);
 	
-		/*!
-			Sets the shape of a kernel
-		*/
+		/*!	Sets the shape of a kernel */
 		void setKernelShape(int x, int y, int z);
 
 	public:
-		/*!
-			Notifies all attached TraceGenerators of an event
-		*/
+		/*!	Notifies all attached TraceGenerators of an event */
 		void traceEvent( const trace::TraceEvent & event) const;
 
-		/*!
-			adds a trace generator to the EmulatedKernel
-		*/
+		/*!	adds a trace generator to the EmulatedKernel */
 		void addTraceGenerator(trace::TraceGenerator *generator);
 
-		/*!
-			removes a trace generator from an EmulatedKernel
-		*/
+		/*!	removes a trace generator from an EmulatedKernel */
 		void removeTraceGenerator(trace::TraceGenerator *generator);
 
 		/*!	Gets the configured dimensions of a block */
-		ir::dim3 getBlockDim() const {
+		ir::Dim3 getBlockDim() const {
 			return blockDim;
 		}
 	
 	protected:
-
-		/*!
-			Cleans up the EmulatedKernel instance
-		*/
+		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();
 
-		/*!
-			From Kernel, analyze application and construct data structures 
-				necessary for emulation
-		*/
-		void initialize();
+		/*!	From Kernel, analyze application and construct data structures 
+				necessary for emulation */
+		void initialize(ir::PTXKernel::PTXInstructionVector& instructions);
 
-		/*!
-			Deletes allocated regions of global, register, shared, and 
-				constant memory
-		*/
+		/*!	Deletes allocated regions of global, register, shared, and 
+				constant memory */
 		void freeRegions();
 
-		/*!
-			Configures the parameter block for the CUDA driver API
-		*/
+		/*!	Configures the parameter block for the CUDA driver API */
 		void configureParameters();
 	
-		/*!
-			On construction, allocates registers by computing live ranges
-		*/
+		/*!	On construction, allocates registers by computing live ranges */
 		void registerAllocation();
 
-		/*!
-			Produces a packed vector of instructions, updates each operand, 
+		/*!	Produces a packed vector of instructions, updates each operand, 
 			and changes labels to indices.
 		*/
-		void constructInstructionSequence();
+		void constructInstructionSequence(
+			ir::PTXKernel::PTXInstructionVector& instructions);
 
-		/*!
-			After emitting the instruction sequence, visit each memory move 
+		/*!	After emitting the instruction sequence, visit each memory move 
 			operation and replace references to parameters with offsets into 
 			parameter memory.
 		*/
 		void updateParamReferences();
 
-		/*!
-			Allocate parameter memory
-		*/
+		/*!	Allocate parameter memory*/	
 		void initializeParameterMemory();
 
-		/*!
-			Allocates arrays in shared memory and maps identifiers to 
-			allocations.
-		*/
+		/*!	Allocates arrays in shared memory and maps identifiers to 
+			allocations. */
 		void initializeSharedMemory();
 
-		/*!
-			Allocates arrays in local memory and maps identifiers to 
-			allocations.
-		*/
+		/*!	Allocates arrays in local memory and maps identifiers to 
+			allocations. */
 		void initializeLocalMemory();
 
-		/*!
-			Maps identifiers to const memory allocations.
-		*/
+		/*!	Maps identifiers to const memory allocations. */
 		void initializeConstMemory();
 
-		/*!
-			Maps identifiers to global memory allocations.
-		*/
+		/*!	Maps identifiers to global memory allocations. */
 		void initializeGlobalMemory();		
 
-		/*!
-			Maps identifiers to global shared memory allocations.
-		*/
+		/*!	Maps identifiers to global shared memory allocations. */
 		void initializeGlobalSharedMemory();
 		
-		/*!
-			Scans the kernel and builds the set of textures using references 
-				in tex instructions
-		*/
+		/*!	Scans the kernel and builds the set of textures using references 
+				in tex instructions */
 		void initializeTextureMemory();
 
 	public:
 		/*!	Dimension of grid in blocks */
-		ir::dim3 gridDim;
+		ir::Dim3 gridDim;
 
 		/*!	Dimension of block in threads */
-		ir::dim3 blockDim;
+		ir::Dim3 blockDim;
 	
 		/*!	Number of threads in the block */
 		int threadCount;
 
 		/*! A map of register name to register number */
-		Kernel::RegisterMap registerMap;
+		ir::PTXKernel::RegisterMap registerMap;
 
 		/*!	The number of registers allocated to each thread */
 		int RegisterCount;
@@ -184,7 +148,7 @@ namespace executive {
 		unsigned int LocalMemorySize;
 		
 		/*!	Packed and allocated vector of instructions implementing kernel */
-		PTXInstructionVector KernelInstructions;
+		ir::PTXKernel::PTXInstructionVector KernelInstructions;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

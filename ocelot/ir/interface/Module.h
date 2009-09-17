@@ -27,10 +27,10 @@ namespace ir {
 		typedef std::unordered_map< std::string, Texture > TextureMap;
 	
 		/*! \brief Typedef for a vector of PTXStatements */
-		typedef Kernel::PTXStatementVector StatementVector;
+		typedef std::deque< PTXStatement > StatementVector;
 
 		/*!	\brief Typedef for a vector of Kernel pointers */
-		typedef std::vector< Kernel *> KernelVector;
+		typedef std::vector< Kernel* > KernelVector;
 
 		/*! \brief Typedef for a map from an architecture to a KernelVector */
 		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;

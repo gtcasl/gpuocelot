@@ -497,7 +497,7 @@ public:
 			// print register map
 			file << "Registers:\n";
 
-			for (ir::Kernel::RegisterMap::iterator 
+			for (ir::PTXKernel::RegisterMap::iterator 
 				r_it = kernel->registerMap.begin();
 				r_it != kernel->registerMap.end(); ++r_it) {
 				file << "  " << r_it->first << ": " << r_it->second << "\n";
@@ -505,7 +505,7 @@ public:
 
 			file << "Instructions:\n";
 
-			for (ir::Kernel::PTXInstructionVector::iterator 
+			for (ir::PTXKernel::PTXInstructionVector::iterator 
 				it = kernel->KernelInstructions.begin();
 				it != kernel->KernelInstructions.end(); ++it) {
 				file << PTXInstruction::toString((*it).opcode) << " ";
@@ -538,7 +538,7 @@ public:
 							== PTXOperand::Register 
 							|| (instr.*operands[i]).addressMode 
 							== PTXOperand::Indirect ) {
-							ir::Kernel::RegisterMap::iterator 
+							ir::PTXKernel::RegisterMap::iterator 
 								o_it = kernel->registerMap.find(
 								(instr.*operands[i]).identifier);
 							file << " " << o_it->second;

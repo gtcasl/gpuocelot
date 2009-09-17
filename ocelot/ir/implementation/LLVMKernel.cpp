@@ -25,7 +25,7 @@ namespace ir
 	{
 		ISA = Instruction::LLVM;
 	}
-
+	
 	void LLVMKernel::assemble()
 	{
 		_code.clear();

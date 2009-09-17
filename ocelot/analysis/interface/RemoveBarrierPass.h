@@ -10,6 +10,11 @@
 #include <ocelot/analysis/interface/Pass.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
+namespace ir
+{
+	class PTXKernel;
+}
+
 namespace analysis
 {
 
@@ -30,7 +35,7 @@ namespace analysis
 	class RemoveBarrierPass : public KernelPass
 	{
 		private:
-			ir::Kernel* _kernel;
+			ir::PTXKernel* _kernel;
 			unsigned int _reentryPoint;
 			unsigned int _spillBytes;
 			

@@ -70,7 +70,8 @@ AC_CHECK_LIB([OcelotIr], [main], [AC_DEFINE(HAVE_OCELOT_IR, [], [""])], \
 	AC_MSG_ERROR("libOcelotIr required"), \
 	[-lOcelotAnalysis -lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([OcelotTrace], [main], [AC_DEFINE(HAVE_OCELOT_TRACE, [], [""])], \
-	AC_MSG_ERROR("libOcelotTrace required"), [-lhydrazine])	
+	AC_MSG_ERROR("libOcelotTrace required"), \
+	[ -lOcelotIr -lOcelotAnalysis -lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([OcelotTranslator], [main], \
 	[AC_DEFINE(HAVE_OCELOT_TRANSLATOR, [], [""])], \
 	AC_MSG_ERROR("libOcelotTranslator required"), \

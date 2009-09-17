@@ -1,10 +1,7 @@
 /*!
 	\file ExecutableKernel.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 19, 2009
-
 	\brief implements a kernel that is executable on some device
 */
 
@@ -12,7 +9,6 @@
 #define IR_EXECUTABLEKERNEL_H_INCLUDED
 
 #include <ocelot/ir/interface/Kernel.h>
-#include <unordered_map>
 
 namespace executive {
 	class Executive;

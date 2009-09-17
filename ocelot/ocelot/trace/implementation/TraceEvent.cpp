@@ -20,7 +20,7 @@ trace::TraceEvent::TraceEvent():
 	Constructs a TraceEvent object
 */
 trace::TraceEvent::TraceEvent(
-			ir::dim3 t_blockId,
+			ir::Dim3 t_blockId,
 			ir::PTXU64 t_PC, 
 			const ir::PTXInstruction * t_instruction, 
 			const boost::dynamic_bitset<> & t_active,

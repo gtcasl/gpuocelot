@@ -12,6 +12,7 @@
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <boost/filesystem.hpp>
 #include <queue>
@@ -278,14 +279,14 @@ namespace test
 			ir::Module module( *file );
 			
 			for( ir::Module::KernelVector::iterator 
-				kernel = module.begin( ir::Instruction::PTX ); 
-				kernel != module.end( ir::Instruction::PTX ); ++kernel )
+				ki = module.begin( ir::Instruction::PTX ); 
+				ki != module.end( ir::Instruction::PTX ); ++ki )
 			{
-				status << "  For Kernel: " << (*kernel)->name << std::endl;
-				ir::Kernel::assignRegisters( (*kernel)->instructions );
-				(*kernel)->buildDataflowGraph();
-				(*kernel)->dfg->compute();
-				if( !_verify( *(*kernel)->dfg ) )
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
+				status << "  For Kernel: " << kernel.name << std::endl;
+				ir::PTXKernel::assignRegisters( kernel.instructions );
+				kernel.dfg()->compute();
+				if( !_verify( *kernel.dfg() ) )
 				{
 					return false;
 				}
@@ -305,15 +306,15 @@ namespace test
 			ir::Module module( *file );
 			
 			for( ir::Module::KernelVector::iterator 
-				kernel = module.begin( ir::Instruction::PTX ); 
-				kernel != module.end( ir::Instruction::PTX ); ++kernel )
+				ki = module.begin( ir::Instruction::PTX ); 
+				ki != module.end( ir::Instruction::PTX ); ++ki )
 			{
-				status << "  For Kernel: " << (*kernel)->name << std::endl;
-				ir::Kernel::assignRegisters( (*kernel)->instructions );
-				(*kernel)->buildDataflowGraph();
-				(*kernel)->dfg->compute();
-				(*kernel)->dfg->toSsa();
-				if( !_verifySsa( *(*kernel)->dfg ) )
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
+				status << "  For Kernel: " << kernel.name << std::endl;
+				ir::PTXKernel::assignRegisters( kernel.instructions );
+				kernel.dfg()->compute();
+				kernel.dfg()->toSsa();
+				if( !_verifySsa( *kernel.dfg() ) )
 				{
 					return false;
 				}
@@ -333,16 +334,16 @@ namespace test
 			ir::Module module( *file );
 			
 			for( ir::Module::KernelVector::iterator 
-				kernel = module.begin( ir::Instruction::PTX ); 
-				kernel != module.end( ir::Instruction::PTX ); ++kernel )
+				ki = module.begin( ir::Instruction::PTX ); 
+				ki != module.end( ir::Instruction::PTX ); ++ki )
 			{
-				status << "  For Kernel: " << (*kernel)->name << std::endl;
-				ir::Kernel::assignRegisters( (*kernel)->instructions );
-				(*kernel)->buildDataflowGraph();
-				(*kernel)->dfg->compute();
-				(*kernel)->dfg->toSsa();
-				(*kernel)->dfg->fromSsa();
-				if( !_verify( *(*kernel)->dfg ) )
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
+				status << "  For Kernel: " << kernel.name << std::endl;
+				ir::PTXKernel::assignRegisters( kernel.instructions );
+				kernel.dfg()->compute();
+				kernel.dfg()->toSsa();
+				kernel.dfg()->fromSsa();
+				if( !_verify( *kernel.dfg() ) )
 				{
 					return false;
 				}

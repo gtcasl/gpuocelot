@@ -44,12 +44,11 @@ namespace ir {
 		typedef std::vector<ValueType> ValueVector;
 
 	public:
-	
 		/*!	\brief Get value */
 		static std::string value( const Parameter& p );
 
 	public:
-		Parameter(const PTXStatement& statement);
+		explicit Parameter(const PTXStatement& statement);
 		Parameter();
 		~Parameter();
 

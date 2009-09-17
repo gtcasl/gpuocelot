@@ -69,7 +69,9 @@ libOcelotIr_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 	ocelot/ir/implementation/PostdominatorTree.cpp \
 	ocelot/ir/implementation/LLVMInstruction.cpp \
 	ocelot/ir/implementation/LLVMKernel.cpp \
-	ocelot/ir/implementation/LLVMStatement.cpp
+	ocelot/ir/implementation/LLVMStatement.cpp \
+	ocelot/ir/implementation/Dim3.cpp \
+	ocelot/ir/implementation/Local.cpp
 ################################################################################
 
 ################################################################################

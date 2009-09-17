@@ -47,12 +47,12 @@ namespace executive {
 		/*!
 			Returns CTA to initial state
 		*/
-		void initialize(ir::dim3 grid = ir::dim3(0,0,0), bool trace = false);
+		void initialize(ir::Dim3 grid = ir::Dim3(0,0,0), bool trace = false);
 
 		/*!
 			Initializes the CTA and executes the kernel for a given block
 		*/
-		void execute(ir::dim3 block);
+		void execute(ir::Dim3 block);
 
 		/*!
 			Overwrites member pointers to allocated memory with zero so 
@@ -67,12 +67,12 @@ namespace executive {
 		/*!
 			Dimensions of the kernel
 		*/
-		ir::dim3 gridDim;
+		ir::Dim3 gridDim;
 
 		/*!
 			Dimensions of the cooperative thread array
 		*/
-		ir::dim3 blockDim;
+		ir::Dim3 blockDim;
 
 		/*!
 			Number of threads in CTA 
@@ -88,7 +88,7 @@ namespace executive {
 		/*!
 			ID of block implemented by this CooperativeThreadArray instance
 		*/
-		ir::dim3 blockId;
+		ir::Dim3 blockId;
 
 		/*!
 			Row-major matrix of registers; 

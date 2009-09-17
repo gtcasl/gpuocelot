@@ -295,8 +295,8 @@ namespace executive
 		report( "  Determining offsets of operands that use parameters" );
 	
 		for( PTXInstructionVector::iterator 
-			instruction = instructions.begin(); 
-			instruction != instructions.end(); ++instruction )
+			instruction = _instructions.begin(); 
+			instruction != _instructions.end(); ++instruction )
 		{
 			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
 				&instruction->b, &instruction->c };
@@ -378,38 +378,38 @@ namespace executive
 			}
 		}
 
-		PTXStatementVector::const_iterator statement = start_iterator;
-		for( ; statement != end_iterator; ++statement )
+		LocalMap::const_iterator local = locals.begin();
+		for( ; local != locals.end(); ++local )
 		{
-			if( statement->directive == ir::PTXStatement::Shared )
+			if( local->second.space == ir::PTXInstruction::Shared )
 			{
-				if( statement->attribute == ir::PTXStatement::Extern )
+				if( local->second.attribute == ir::PTXStatement::Extern )
 				{
 					report( "    Found local external shared variable " 
-						<< statement->name );
-					assert( external.count( statement->name ) == 0 );
-					external.insert( statement->name );
+						<< local->second.name );
+					assert( external.count( local->second.name ) == 0 );
+					external.insert( local->second.name );
 					externalAlignment = std::max( externalAlignment, 
-						( unsigned int ) statement->alignment );
+						( unsigned int ) local->second.alignment );
 					externalAlignment = std::max( externalAlignment, 
-						ir::PTXOperand::bytes( statement->type ) );
+						ir::PTXOperand::bytes( local->second.type ) );
 				}
 				else
 				{
 					report( "   Found local shared variable " 
-						<< statement->name << " of size " 
-						<< statement->bytes() );
-					_pad( _context.sharedSize, statement->alignment );
-					map.insert( std::make_pair( statement->name, 
+						<< local->second.name << " of size " 
+						<< local->second.getSize() );
+					_pad( _context.sharedSize, local->second.alignment );
+					map.insert( std::make_pair( local->second.name, 
 						_context.sharedSize ) );
-					_context.sharedSize += statement->bytes();
+					_context.sharedSize += local->second.getSize();
 				}
 			}
 		}
 		
 		for( PTXInstructionVector::iterator 
-			instruction = instructions.begin(); 
-			instruction != instructions.end(); ++instruction )
+			instruction = _instructions.begin(); 
+			instruction != _instructions.end(); ++instruction )
 		{
 			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
 				&instruction->b, &instruction->c };
@@ -486,8 +486,8 @@ namespace executive
 	{
 		report( " Allocating global memory" );
 		for( PTXInstructionVector::iterator 
-			instruction = instructions.begin(); 
-			instruction != instructions.end(); ++instruction )
+			instruction = _instructions.begin(); 
+			instruction != _instructions.end(); ++instruction )
 		{
 			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
 				&instruction->b, &instruction->c };
@@ -550,6 +550,12 @@ namespace executive
 		const executive::Executive* c ) : ExecutableKernel( k, c ), 
 		_module( 0 ), _moduleProvider( 0 )
 	{
+		assertM( k.ISA == ir::Instruction::PTX, 
+			"LLVMExecutable kernel must be constructed from a PTXKernel" );
+		
+		ir::PTXKernel& ptx = static_cast< ir::PTXKernel& >( k );
+		
+		_instructions = ptx.instructions;
 		_context.shared = 0;
 		_context.local = 0;
 		_context.parameter = 0;

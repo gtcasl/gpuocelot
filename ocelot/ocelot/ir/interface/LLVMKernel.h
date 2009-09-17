@@ -41,7 +41,7 @@ namespace ir
 			LLVMKernel();
 			/*! \brief Initialized the base class from a kernel and executive */
 			LLVMKernel( const Kernel& k );
-						
+			
 		public:
 			/*! \brief Assemble the LLVM kernel from the set of statements */
 			void assemble();

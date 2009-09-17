@@ -17,8 +17,10 @@
 #include <hydrazine/implementation/debug.h>
 
 #include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/DominatorTree.h>
+#include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/parser/interface/PTXParser.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,10 +35,7 @@ void analyze(const char *filename) {
 
 	for (; k_it != module.end(Instruction::PTX); ++k_it) {
 
-		Kernel* kernel = (*k_it);
-		
-		kernel->buildPostDominatorTree();
-		kernel->buildDominatorTree();
+		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(*k_it);
 
 		string filename = kernel->name;
 		string cfg_fname = filename + "_cfg.dot";
@@ -49,15 +48,15 @@ void analyze(const char *filename) {
 		
 		cfg_file << "// Kernel: " << kernel->name << "\n";
 		cfg_file << "// Control flow graph\n";
-		kernel->ptxCFG->write(cfg_file, kernel->instructions);
+		kernel->cfg()->write(cfg_file, kernel->instructions);
 
 		dom_file << "// Kernel: " << kernel->name << "\n";
 		dom_file << "// Dominator tree\n";
-		kernel->dom_tree->write(dom_file, kernel->instructions);
+		kernel->dom_tree()->write(dom_file, kernel->instructions);
 
 		pdom_file << "// Kernel: " << kernel->name << "\n";
 		pdom_file << "// Post dominator tree\n";
-		kernel->pdom_tree->write(pdom_file, kernel->instructions);
+		kernel->pdom_tree()->write(pdom_file, kernel->instructions);
 
 	}
 }

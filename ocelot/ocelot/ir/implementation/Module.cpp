@@ -6,6 +6,7 @@
 */
 
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Version.h>
 #include <ocelot/parser/interface/PTXParser.h>
@@ -197,7 +198,7 @@ void ir::Module::extractPTXKernels() {
 			inKernel = false;
 			endIterator = ++StatementVector::const_iterator(it);
 			if (instructionCount) {
-				Kernel *kernel = new Kernel(startIterator, endIterator);
+				Kernel *kernel = new PTXKernel(startIterator, endIterator);
 				kernel->module = this;
 				kernels[PTXInstruction::PTX].push_back(kernel);
 			}

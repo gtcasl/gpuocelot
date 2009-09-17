@@ -9,6 +9,7 @@
 #define LLVM_EXECUTABLE_KERNEL_H_INCLUDED
 
 #include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 
@@ -36,6 +37,9 @@ namespace executive
 			typedef std::stack< unsigned int > ThreadSet;
 			/*! \brief A function pointer to the translated kernel */
 			typedef unsigned int (*Function)( LLVMContext* );
+			/*! \brief Shorthand for a PTX instruction vector */
+			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
+			
 			
 			/*! \brief A class for managing global llvm state */
 			class LLVMState
@@ -70,6 +74,8 @@ namespace executive
 			llvm::ExistingModuleProvider* _moduleProvider;
 			/*! \brief The translated function */
 			Function _function;
+			/*! \brief The stored ptx instructions */
+			PTXInstructionVector _instructions;
 			
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
@@ -107,7 +113,7 @@ namespace executive
 			void _allocateTextureMemory( );
 			
 			/*! \brief Scan the kernel and determine memory requirements */
-			void _allocateMemory();
+			void _allocateMemory( );
 
 		public:
 			/*! \brief Creates a new instance of the runtime bound to a kernel*/

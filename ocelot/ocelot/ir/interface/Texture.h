@@ -11,6 +11,7 @@
 #define TEXTURE_H_INCLUDED
 
 #include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/Dim3.h>
 
 namespace ir
 {
@@ -49,7 +50,7 @@ namespace ir
 			bool normalize; //! Normalize accesses
 			bool normalizedFloat; //! Return a normalized float
 			Type type; //! Data type
-			dim3 size; //! Texture dimensions
+			Dim3 size; //! Texture dimensions
 			void* data; //! Pointer to mapped variable
 			
 			Interpolation interpolation; //! Interpolation mode

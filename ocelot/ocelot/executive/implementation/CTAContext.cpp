@@ -22,7 +22,7 @@ executive::CTAContext::CTAContext(const executive::EmulatedKernel *k, executive:
 	using namespace boost;
 	using namespace std;
 
-	ir::dim3 blockDim = kernel->getBlockDim();
+	ir::Dim3 blockDim = kernel->getBlockDim();
 	active = dynamic_bitset<>(blockDim.x * blockDim.y * blockDim.z, 1);
 	PC = 0;
 	running = true;

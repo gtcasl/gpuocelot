@@ -16,7 +16,7 @@ namespace ir
 {
 
 	Texture::Texture() : normalize(false), type( Invalid ), 
-		size( dim3(0, 0, 0) ), data( 0 )
+		size( Dim3(0, 0, 0) ), data( 0 )
 	{
 		
 	}

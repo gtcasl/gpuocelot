@@ -263,9 +263,9 @@ bool ir::PTXInstruction::isPt( const PTXOperand& op )
 	return op.toString() == "%pt";
 }
 
-ir::PTXInstruction::PTXInstruction( Version v ) : version(v) {
+ir::PTXInstruction::PTXInstruction( Version v, Opcode op ) : version(v), 
+	opcode(op) {
 	ISA = Instruction::PTX;
-	opcode = Nop;
 	type = PTXOperand::s32;
 	modifier = 0;
 	reconvergeInstruction = 0;

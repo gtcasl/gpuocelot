@@ -1,21 +1,19 @@
-/*!
-	\file BasicBlock.cpp
-
+/*! \file BasicBlock.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief implementation of BasicBlock class
-
 	\date 30 September 2008
 */
 
 #include <ocelot/ir/interface/BasicBlock.h>
+#include <ocelot/ir/interface/Edge.h>
+#include <hydrazine/implementation/debug.h>
 
 ir::BasicBlock::BasicBlock() {
 
 }
 
 ir::BasicBlock::~BasicBlock() {
-	instructions.clear();
+
 }
 
 ir::BasicBlock::ConstBlockList ir::BasicBlock::get_successors() const {
@@ -28,7 +26,7 @@ ir::BasicBlock::ConstBlockList ir::BasicBlock::get_successors() const {
 		blocks.push_back(*it);
 	}
 
-	return blocks;
+	return std::move( blocks );
 }
 
 ir::BasicBlock::ConstBlockList ir::BasicBlock::get_predecessors() const {
@@ -41,7 +39,7 @@ ir::BasicBlock::ConstBlockList ir::BasicBlock::get_predecessors() const {
 		blocks.push_back(*it);
 	}
 
-	return blocks;
+	return std::move( blocks );
 }
 
 ir::BasicBlock::ConstEdgeList ir::BasicBlock::get_in_edges() const {
@@ -54,7 +52,7 @@ ir::BasicBlock::ConstEdgeList ir::BasicBlock::get_in_edges() const {
 		edges.push_back(*it);
 	}
 
-	return edges;
+	return std::move( edges );
 }
 
 ir::BasicBlock::ConstEdgeList ir::BasicBlock::get_out_edges() const {
@@ -67,7 +65,7 @@ ir::BasicBlock::ConstEdgeList ir::BasicBlock::get_out_edges() const {
 		edges.push_back(*it);
 	}
 
-	return edges;
+	return std::move( edges );
 }
 
 ir::BasicBlock::BlockList ir::BasicBlock::get_successors() {
@@ -80,7 +78,7 @@ ir::BasicBlock::BlockList ir::BasicBlock::get_successors() {
 		blocks.push_back(*it);
 	}
 
-	return blocks;
+	return std::move( blocks );
 }
 
 ir::BasicBlock::BlockList ir::BasicBlock::get_predecessors() {
@@ -93,7 +91,7 @@ ir::BasicBlock::BlockList ir::BasicBlock::get_predecessors() {
 		blocks.push_back(*it);
 	}
 
-	return blocks;
+	return std::move( blocks );
 }
 
 ir::BasicBlock::EdgeList ir::BasicBlock::get_in_edges() {
@@ -106,7 +104,7 @@ ir::BasicBlock::EdgeList ir::BasicBlock::get_in_edges() {
 		edges.push_back(*it);
 	}
 
-	return edges;
+	return std::move( edges );
 }
 
 ir::BasicBlock::EdgeList ir::BasicBlock::get_out_edges() {
@@ -119,9 +117,48 @@ ir::BasicBlock::EdgeList ir::BasicBlock::get_out_edges() {
 		edges.push_back(*it);
 	}
 
-	return edges;
+	return std::move( edges );
 }
 
+ir::Edge* ir::BasicBlock::get_fallthrough_edge() {
+	EdgeList::iterator it = out_edges.begin();
+	for (; it != out_edges.end(); ++it) {
+		if ((*it)->type == ir::Edge::FallThrough) {
+			return *it;
+		}
+	}
+	assertM( false, "Block " << label << " contains no fallthrough edge." );
+}
 
+const ir::Edge* ir::BasicBlock::get_fallthrough_edge() const {
+	EdgeList::const_iterator it = out_edges.begin();
+	for (; it != out_edges.end(); ++it) {
+		if ((*it)->type == ir::Edge::FallThrough) {
+			return *it;
+		}
+	}
+	assertM( false, "Block " << label << " contains no fallthrough edge." );
+}
 
+ir::Edge* ir::BasicBlock::get_edge(BasicBlock* b) {
+	EdgeList::iterator it = out_edges.begin();
+	for (; it != out_edges.end(); ++it) {
+		if ((*it)->tail == b) {
+			return *it;
+		}
+	}
+	assertM( false, "Block " << label 
+		<< " is not connected to block " << b->label );
+}
+
+const ir::Edge* ir::BasicBlock::get_edge(BasicBlock* b) const {
+	EdgeList::const_iterator it = out_edges.begin();
+	for (; it != out_edges.end(); ++it) {
+		if ((*it)->tail == b) {
+			return *it;
+		}
+	}
+	assertM( false, "Block " << label 
+		<< " is not connected to block " << b->label );
+}
 

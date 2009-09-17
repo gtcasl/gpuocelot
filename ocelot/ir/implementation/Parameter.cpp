@@ -56,6 +56,7 @@ std::string ir::Parameter::value( const Parameter& p ) {
 ir::Parameter::Parameter() {
 	type = PTXOperand::u64;
 	offset = 0;
+	vector = PTXOperand::v1;
 }
 
 ir::Parameter::~Parameter() {
@@ -71,6 +72,7 @@ ir::Parameter::Parameter(const PTXStatement& statement) {
 		name = statement.name;
 		alignment = statement.alignment;
 		arrayValues.resize(statement.elements());
+		vector = statement.array.vec;
 	}
 }
 
@@ -83,21 +85,21 @@ unsigned int ir::Parameter::getElementSize() const {
 		case PTXOperand::b8:
 		case PTXOperand::u8:
 		case PTXOperand::s8:
-			return sizeof(PTXB8);
+			return sizeof(PTXB8) * vector;
 		case PTXOperand::u16:
 		case PTXOperand::s16:
 		case PTXOperand::b16:
-			return sizeof(PTXU16);
+			return sizeof(PTXU16) * vector;
 		case PTXOperand::u32:
 		case PTXOperand::s32:
 		case PTXOperand::b32:
 		case PTXOperand::f32:
-			return sizeof(PTXU32);
+			return sizeof(PTXU32) * vector;
 		case PTXOperand::u64:
 		case PTXOperand::s64:
 		case PTXOperand::b64:
 		case PTXOperand::f64:
-			return sizeof(PTXU64);
+			return sizeof(PTXU64) * vector;
 		default:
 			break;
 	}
@@ -106,5 +108,18 @@ unsigned int ir::Parameter::getElementSize() const {
 
 unsigned int ir::Parameter::getAlignment() const {
 	return std::max( getElementSize(), alignment );
+}
+
+std::string ir::Parameter::toString() const {
+	std::stringstream stream;
+	stream << ".param ";
+	if( alignment != 1 ) {
+		stream << ".align " << alignment;
+	}
+	if( vector != PTXOperand::v1 ) {
+		stream << "." << PTXInstruction::toString( vector );
+	}
+	stream << " ." << PTXOperand::toString( type ) << " " << name;
+	return stream.str();
 }
 

@@ -139,7 +139,7 @@ namespace ir {
 		std::vector< std::string > targets;
 
 	public:
-		PTXStatement();
+		PTXStatement( Directive directive = Directive_invalid );
 		~PTXStatement();
 		
 		unsigned int bytes() const;

@@ -1,8 +1,6 @@
 /*!
 	\file BasicBlock.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief Basic block class of the intermediate representation
 */
 
@@ -13,7 +11,6 @@
 #include <string>
 #include "Instruction.h"
 
-
 namespace ir {
 
 // forward declared to support get_in_edges()
@@ -21,9 +18,7 @@ class Edge;
 
 class ControlFlowGraph;
 
-/*!
-	Abstract base class for basic blocks
-*/
+/*! Abstract base class for basic blocks */
 class BasicBlock {
 public:
 	typedef std::list< const ir::Edge* > ConstEdgeList;
@@ -36,55 +31,47 @@ public:
 	BasicBlock();
 	~BasicBlock();
 
-	/*!
-		Gets direct predecessors of a basic block
-	*/
+	/*! Gets direct predecessors of a basic block */
 	BlockList get_predecessors();
 
-	/*!
-		Gets direct successors of a basic block
-	*/
+	/*!	Gets direct successors of a basic block */
 	BlockList get_successors();
 
-	/*!
-		Edges connecting predecessors to this block
-	*/
+	/*!	Edges connecting predecessors to this block */
 	EdgeList get_in_edges();
 
-	/*!
-		Edges connecting this block to successors
-	*/
+	/*!	Edges connecting this block to successors */
 	EdgeList get_out_edges();
 
-	/*!
-		Gets direct predecessors of a basic block
-	*/
+	/*!	Gets direct predecessors of a basic block */
 	ConstBlockList get_predecessors() const;
 
-	/*!
-		Gets direct successors of a basic block
-	*/
+	/*!	Gets direct successors of a basic block */
 	ConstBlockList get_successors() const;
 
-	/*!
-		Edges connecting predecessors to this block
-	*/
+	/*!	Edges connecting predecessors to this block */
 	ConstEdgeList get_in_edges() const;
 
-	/*!
-		Edges connecting this block to successors
-	*/
+	/*!	Edges connecting this block to successors */
 	ConstEdgeList get_out_edges() const;
+	
+	/*! \brief Get the fallthrough edge */
+	Edge* get_fallthrough_edge();
 
-	/*!
- 		list of instructions in BasicBlock. These are indices in a 
- 		vector of instructions maintained outside the CFG
-	*/
+	/*! \brief Get the fallthrough edge */
+	const Edge* get_fallthrough_edge() const;
+
+	/*! \brief Get the edge connecting to the specified block */
+	Edge* get_edge(BasicBlock* b);
+
+	/*! \brief Get the edge connecting to the specified block */
+	const Edge* get_edge(BasicBlock* b) const;
+
+	/*!	list of instructions in BasicBlock. These are indices in a 
+ 		vector of instructions maintained outside the CFG */
 	InstructionList instructions;
 
-	/*!
-		\brief Basic block label
-	*/
+	/*!	\brief Basic block label */
 	std::string label;
 	
 private:

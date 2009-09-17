@@ -14,7 +14,6 @@
 #include <iomanip>
 
 std::string ir::PTXOperand::toString( DataType type ) {
-	assert( type != TypeSpecifier_invalid );
 	switch( type ) {
 		case s8: return "s8"; break;
 		case s16: return "s16"; break;
@@ -38,7 +37,6 @@ std::string ir::PTXOperand::toString( DataType type ) {
 }
 
 std::string ir::PTXOperand::toString( SpecialRegister reg ) {
-	assert( reg != SpecialRegister_invalid );
 	switch( reg ) {
 		case tidX: return "%tid.x"; break;
 		case tidY: return "%tid.y"; break;
@@ -69,7 +67,6 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 }
 
 std::string ir::PTXOperand::toString( AddressMode mode ) {
-	assert( mode != Invalid );
 	switch( mode ) {
 		case Register: return "Register"; break;
 		case Indirect: return "Indirect"; break;
@@ -124,6 +121,7 @@ bool ir::PTXOperand::isSigned( DataType type ) {
 unsigned int ir::PTXOperand::bytes( DataType type ) {
 	assert( type != TypeSpecifier_invalid );
 	switch( type ) {
+		case pred: /*! fall through */
 		case b8: /* fall through */
 		case u8: /* fall through */
 		case s8: return 1; break;
@@ -349,11 +347,23 @@ std::string ir::PTXOperand::toString() const {
 	if( addressMode == Indirect ) {
 		std::stringstream stream;
 		if( offset < 0 ) {
-			stream << ( -offset );
-			return identifier + " - " + stream.str();
+			if ( identifier != "" ) {
+				stream << identifier;
+			}
+			else {
+				stream << "r" << reg;
+			}
+			stream << " - " << ( -offset );
+			return stream.str();
 		} else {
-			stream << offset;
-			return identifier + " + " + stream.str();
+			if ( identifier != "" ) {
+				stream << identifier;
+			}
+			else {
+				stream << "r" << reg;
+			}
+			stream << " + " << offset;
+			return stream.str();
 		}
 	} if( addressMode == Address ) {
 		std::stringstream stream;
@@ -414,7 +424,14 @@ std::string ir::PTXOperand::toString() const {
 		return result + "}";
 	}
 	
-	return identifier;
+	if( !identifier.empty() ) {
+		return identifier;
+	}
+	else {
+		std::stringstream stream;
+		stream << "r" << reg;
+		return stream.str();
+	}
 }
 
 unsigned int ir::PTXOperand::bytes() const {

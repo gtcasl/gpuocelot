@@ -1,10 +1,7 @@
 /*!
 	\file Module.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief declares a Module loadable from a PTX source file
 */
 
@@ -26,36 +23,26 @@ namespace ir {
 
 	class Module {
 	public:
-	
-		/*!
-			\brief Map from texture variable names to objects
-		*/
+		/*!	\brief Map from texture variable names to objects */
 		typedef std::unordered_map< std::string, Texture > TextureMap;
 	
-		/*!
-			\brief Typedef for a vector of PTXStatements
-		*/
+		/*! \brief Typedef for a vector of PTXStatements */
 		typedef Kernel::PTXStatementVector StatementVector;
 
-		/*!
-			\brief Typedef for a vector of Kernel pointers					
-		*/
+		/*!	\brief Typedef for a vector of Kernel pointers */
 		typedef std::vector< Kernel *> KernelVector;
 
-		/*!
-			\brief Typedef for a map from an architecture to a KernelVector
-		*/
+		/*! \brief Typedef for a map from an architecture to a KernelVector */
 		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;
 
-		/*!
-			\brief Map from unique identifier to global variable
-		*/
+		/*! \brief Map from unique identifier to global variable */
 		typedef std::unordered_map< std::string, Global > GlobalMap;
 		
 	public:
 
 		/*!
-			Given a path to a PTX source file, construct the Module, load and parse the PTX file,
+			Given a path to a PTX source file, construct the Module, 
+			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
 		Module(std::string path);
@@ -66,50 +53,39 @@ namespace ir {
 		*/
 		Module(std::istream& source);
 
-		/*!
-			Construct a Module from a name and a vector of PTXStatements
-		*/
+		/*! Construct a Module from a name and a vector of PTXStatements */
 		Module(std::string, const StatementVector &);
 
-		/*!
-			Construct an empty module
-		*/
+		/*!	Construct an empty module */
 		Module();
 
-		/*!
-			Deconstruct a module
-		*/
+		/*!	Deconstruct a module */
 		~Module();
 		
-		/*!
-			Write the module to an assembly file
-		*/
+		/*! Write the module to an assembly file */
 		void write( std::ostream& stream ) const;
 
-		/*!
-			Deletes everything associated with this particular module
-		*/
+		/*!	Deletes everything associated with this particular module */
 		void unload();
 
-		/*!
-			Unloads module and loads PTX source file in given path
-		*/
+		/*!	Unloads module and loads PTX source file in given path */
 		bool load(std::string path);
 
-		/*!
-			Unloads module and loads PTX source file in given stream
-		*/
+		/*!	Unloads module and loads PTX source file in given stream */
 		bool load(std::istream& source, std::string path = "::unknown path::");
 
 		/*!
-			Gets a kernel instance by ISA and name. Returned kernel is guaranteed to have ISA requested.
+			Gets a kernel instance by ISA and name. Returned kernel 
+			is guaranteed to have ISA requested.
 
 			\param isa instruction set architecture of desired kernel
 			\param kernelName [mangled] name of kernel
 
-			\return pointer to kernel instance with (isa, name) or 0 if kernel does not exist
+			\return pointer to kernel instance with (isa, name) 
+				or 0 if kernel does not exist
 		*/
-		Kernel *getKernel(Instruction::Architecture isa, std::string kernelName);
+		Kernel *getKernel(Instruction::Architecture isa, 
+			std::string kernelName);
 
 		Module::KernelVector::iterator begin(Instruction::Architecture isa) {
 			return kernels[isa].begin();
@@ -134,24 +110,16 @@ namespace ir {
 		*/
 		StatementVector statements;
 
-		/*!
-			Set of kernels belonging to Module
-		*/
+		/*! Set of kernels belonging to Module */
 		KernelMap kernels;	
 		
-		/*!
-			Set of textures in the module
-		*/
+		/*! Set of textures in the module */
 		TextureMap textures;
 
-		/*!
-			Set of global variables in the modules
-		*/
+		/*! Set of global variables in the modules */
 		GlobalMap globals;
 		
-		/*!
-			Path from which Module was loaded
-		*/
+		/*! Path from which Module was loaded */
 		std::string modulePath;
 	};
 

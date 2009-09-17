@@ -148,8 +148,6 @@ namespace executive
 				throw hydrazine::Exception( message.str() );
 			}
 			
-			delete llvmKernel;
-			
 			report( " Checking module for errors." );
 			std::string verifyError;
 			if( llvm::verifyModule( *_module, 
@@ -157,10 +155,15 @@ namespace executive
 			{
 				report( "  Verifying kernel failed, dumping code:\n" 
 					<< llvmKernel->numberedCode() );
+
+				delete llvmKernel;
+
 				throw hydrazine::Exception( "LLVM Verifier failed for kernel: " 
 					+ name + " : \"" + verifyError + "\"" );
 			}
-			
+
+			delete llvmKernel;
+						
 			report( " Successfully created LLVM Module from translated PTX." );
 			
 			#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )

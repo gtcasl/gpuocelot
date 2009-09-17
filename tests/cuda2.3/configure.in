@@ -59,19 +59,21 @@ AC_CHECK_LIB([hydrazine], [main],[AC_DEFINE(HAVE_HYDRAZINE, [], [""])], \
 	AC_MSG_ERROR("libhydrazine required"))
 AC_CHECK_LIB([OcelotParser], [main], \
 	[AC_DEFINE(HAVE_OCELOT_PARSER, [], [""])], \
-	AC_MSG_ERROR("libOcelotParser required"), [-lOcelotIr -lhydrazine])	
+	AC_MSG_ERROR("libOcelotParser required"), \
+	[-lOcelotIr -lOcelotAnalysis -lhydrazine])	
 AC_CHECK_LIB([OcelotIr], [main], [AC_DEFINE(HAVE_OCELOT_IR, [], [""])], \
-	AC_MSG_ERROR("libOcelotIr required"), [-lOcelotParser -lhydrazine])	
+	AC_MSG_ERROR("libOcelotIr required"), \
+	[-lOcelotAnalysis -lOcelotParser -lhydrazine])	
 AC_CHECK_LIB([OcelotTrace], [main], [AC_DEFINE(HAVE_OCELOT_TRACE, [], [""])], \
 	AC_MSG_ERROR("libOcelotTrace required"), [-lhydrazine])	
 AC_CHECK_LIB([OcelotTranslator], [main], \
 	[AC_DEFINE(HAVE_OCELOT_TRANSLATOR, [], [""])], \
 	AC_MSG_ERROR("libOcelotTranslator required"), \
-	[-lOcelotAnalysis -lOcelotTrace -lOcelotIr -lOcelotParser -lhydrazine])
+	[-lOcelotTrace -lOcelotIr -lOcelotAnalysis -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([OcelotExecutive], [main], \
 	[AC_DEFINE(HAVE_OCELOT_EXECUTIVE, [], [""])], \
 	AC_MSG_ERROR("libOcelotExecutive required"), \
-	[-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr
+	[-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis
 	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])	
 AC_CHECK_LIB([OcelotAnalysis], [main], \
 	[AC_DEFINE(HAVE_OCELOT_ANALYSIS, [], [""])], \
@@ -79,19 +81,19 @@ AC_CHECK_LIB([OcelotAnalysis], [main], \
 	[-lOcelotIr -lOcelotParser -lhydrazine])
 AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
 	AC_MSG_ERROR("libcudart required"), [-lOcelot -lOcelotExecutive \
-	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
 	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])	
 AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
 	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
-	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
 	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])	
 AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
 	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelot -lOcelotExecutive \
-	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
 	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])
 AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
 	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelot -lOcelotExecutive \
-	-lOcelotTranslator -lOcelotAnalysis -lOcelotTrace -lOcelotIr \
+	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
 	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])
 ################################################################################
 

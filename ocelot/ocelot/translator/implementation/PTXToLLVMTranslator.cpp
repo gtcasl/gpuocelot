@@ -7,7 +7,7 @@
 */
 
 #ifndef PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
-#define PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
+#define PTX_TO_LLVM_TRANSLATOR_CPP_INtCLUDED
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
@@ -244,8 +244,6 @@ namespace translator
 
 	void PTXToLLVMTranslator::_yield( unsigned int continuation )
 	{
-		assertM( continuation == 0, 
-			"No support for yielding anywhere except the program exit" );
 		ir::LLVMRet ret;
 		
 		ret.d.constant = true;
@@ -2514,7 +2512,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i )
 	{
-		assertM( false, "Return not supported" );
+		_yield( i.reentryPoint );
 	}
 
 	void PTXToLLVMTranslator::_translateRsqrt( const ir::PTXInstruction& i )
@@ -3875,7 +3873,7 @@ namespace translator
 			
 			std::stringstream stream;
 			
-			stream << "r" << reg->id;
+			stream << "%r" << reg->id;
 			
 			select.d.name = stream.str();
 			select.d.type.category = ir::LLVMInstruction::Type::Element;

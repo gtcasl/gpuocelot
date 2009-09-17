@@ -4522,7 +4522,8 @@ setp.CmpOp.BoolOp.type p[|q], a, b, [!]c;
 	.f32, .f64 };
 
 */
-void executive::CooperativeThreadArray::eval_SetP(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_SetP(CTAContext &context, 
+	const PTXInstruction &instr) {
 	
 	switch (instr.type) {
 		

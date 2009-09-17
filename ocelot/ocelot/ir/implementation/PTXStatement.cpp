@@ -166,9 +166,8 @@ namespace ir {
 		return stream.str();
 	}
 	
-	PTXStatement::PTXStatement() {
-	
-		directive = Directive_invalid;
+	PTXStatement::PTXStatement( Directive d ) {
+		directive = d;
 		alignment = 1;
 		array.vec = PTXOperand::v1;
 		attribute = NoAttribute;

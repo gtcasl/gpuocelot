@@ -8,6 +8,7 @@
 #define REMOVE_BARRIER_PASS_H_INCLUDED
 
 #include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace analysis
 {
@@ -28,6 +29,23 @@ namespace analysis
 	*/
 	class RemoveBarrierPass : public KernelPass
 	{
+		private:
+			ir::Kernel* _kernel;
+			unsigned int _reentryPoint;
+			unsigned int _spillBytes;
+			
+		private:
+			DataflowGraph::RegisterId _tempRegister( std::string& id );
+			void _addSpillCode( DataflowGraph::iterator block, 
+				const DataflowGraph::Block::RegisterSet& alive );
+			void _addRestoreCode( DataflowGraph::iterator block, 
+				const DataflowGraph::Block::RegisterSet& alive );
+			void _addEntryPoint( DataflowGraph::iterator block );
+			void _removeBarrier( DataflowGraph::iterator block, 
+				unsigned int instruction );
+			void _addLocalVariables();
+			void _runOnBlock( DataflowGraph::iterator block );
+		
 		public:
 			RemoveBarrierPass();
 			

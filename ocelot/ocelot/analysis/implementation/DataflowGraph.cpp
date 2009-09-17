@@ -12,6 +12,13 @@
 #include <ocelot/analysis/interface/SSAGraph.h>
 #include <unordered_map>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+#define REPORT_CONVERT 0
+
 namespace analysis
 {
 
@@ -62,10 +69,13 @@ namespace analysis
 		return _message.c_str();
 	}
 
-	DataflowGraph::Instruction DataflowGraph::_convert( 
+	DataflowGraph::Instruction DataflowGraph::convert( 
 		ir::PTXInstruction& i, InstructionId id )
 	{
 		Instruction result;
+	
+		reportE( REPORT_CONVERT, " Converting instruction \"" 
+			<< i.toString() << "\"" );
 	
 		ir::PTXOperand ir::PTXInstruction::* sources[ 5 ] 
 			= { &ir::PTXInstruction::pg, &ir::PTXInstruction::a, 
@@ -100,12 +110,21 @@ namespace analysis
 						fi = ( i.*sources[ j ] ).array.begin(); 
 						fi != ( i.*sources[ j ] ).array.end(); ++fi )
 					{
+						reportE( REPORT_CONVERT, "  Converting register \"" 
+							<< fi->identifier 
+							<< "\" to id " << fi->reg );
+						_maxRegister = std::max( _maxRegister, fi->reg );
 						result.s.push_back( 
 							RegisterPointer( &fi->reg, fi->type ) );
 					}
 				}
 				else
 				{
+					reportE( REPORT_CONVERT, "  Converting register \"" 
+						<< ( i.*sources[ j ] ).identifier 
+						<< "\" to id " << ( i.*sources[ j ] ).reg );
+					_maxRegister = std::max( _maxRegister, 
+						( i.*sources[ j ] ).reg );
 					result.s.push_back( 
 						RegisterPointer( &( i.*sources[ j ] ).reg, 
 						( i.*sources[ j ] ).type ) );
@@ -130,6 +149,7 @@ namespace analysis
 			if( ( i.*destinations[ j ] ).addressMode 
 				== ir::PTXOperand::Register )
 			{
+			
 				if( ( i.*destinations[ j ] ).type == ir::PTXOperand::pred )
 				{
 					if( ( i.*destinations[ j ] ).condition == ir::PTXOperand::PT
@@ -146,12 +166,21 @@ namespace analysis
 						fi = ( i.*destinations[ j ] ).array.begin(); 
 						fi != ( i.*destinations[ j ] ).array.end(); ++fi )
 					{
+						reportE( REPORT_CONVERT, "  Converting register \"" 
+							<< fi->identifier 
+							<< "\" to id " << fi->reg );
+						_maxRegister = std::max( _maxRegister, fi->reg );
 						result.d.push_back( 
 							RegisterPointer( &fi->reg, fi->type ) );
 					}
 				}
 				else
 				{
+					reportE( REPORT_CONVERT, "  Converting register \"" 
+						<< ( i.*destinations[ j ] ).identifier 
+						<< "\" to id " << ( i.*destinations[ j ] ).reg );
+					_maxRegister = std::max( _maxRegister, 
+						( i.*destinations[ j ] ).reg );
 					result.d.push_back( 
 						RegisterPointer( &( i.*destinations[ j ] ).reg, 
 						( i.*destinations[ j ] ).type ) );
@@ -236,14 +265,21 @@ namespace analysis
 		return !_equal( _aliveIn, previousIn );
 	}
 
-	DataflowGraph::Block::Block( Type type ) : _type( type )
+	DataflowGraph::Block::Block( Type t ) : _type( t )
 	{
 		
 	}
 	
-	DataflowGraph::Block::Block() : _type( Invalid )
+	DataflowGraph::Block::Block(  ir::BasicBlock& bb )
 	{
-		
+		assert( bb.instructions.empty() );
+		assert( bb.get_successors().empty() );
+		assert( bb.get_predecessors().empty() );
+		assert( bb.get_in_edges().empty() );
+		assert( bb.get_out_edges().empty() );
+	
+		_block = &bb;
+		_label = bb.label;
 	}
 	
 	const DataflowGraph::Block::RegisterSet& 
@@ -350,18 +386,6 @@ namespace analysis
 		return std::move( alive );
 	}
 	
-	DataflowGraph::DataflowGraph() : _consistent( true ), _ssa( false )
-	{
-		_blocks.push_back( Block( Block::Entry ) );
-		_blocks.push_back( Block( Block::Exit ) );
-		
-		_blocks.front()._fallthrough = --_blocks.end();
-		_blocks.front()._label = "entry";
-		_blocks.back()._predecessors.insert( _blocks.begin() );
-		_blocks.back()._fallthrough = end();
-		_blocks.back()._label = "exit";
-	}
-	
 	DataflowGraph::iterator DataflowGraph::begin()
 	{
 		return _blocks.begin();
@@ -403,26 +427,48 @@ namespace analysis
 		_consistent = false;
 		BlockVector::iterator successor = predecessor->_fallthrough;
 
+		report( "Inserting new block " << _b.label() << " between " 
+			<< predecessor->label() << " and " << successor->label() );
+		
 		assert( successor != begin() );
 		Block b = _b;
-		
-		b._fallthrough = successor;
 		
 		BlockPointerSet::iterator fi 
 			= successor->_predecessors.find( predecessor );
 		assert( fi != successor->_predecessors.end() );
 		successor->_predecessors.erase( fi );
+		_cfg->remove_edge( predecessor->_block->get_fallthrough_edge() );
 		
 		iterator current = _blocks.insert( successor, b );
+		current->_block = new ir::BasicBlock;
+		_cfg->insert_block( current->_block );
+		
+		ir::Edge* predecessorToCurrent = new ir::Edge;
+		predecessorToCurrent->type = ir::Edge::FallThrough;
+		predecessorToCurrent->head = predecessor->_block;
+		predecessorToCurrent->tail = current->_block;
+		
+		_cfg->insert_edge( predecessorToCurrent );
 		
 		predecessor->_fallthrough = current;
+		current->_predecessors.insert( predecessor );
+		current->_fallthrough = successor;
 		successor->_predecessors.insert( current );
+		
+		ir::Edge* currentToSuccessor = new ir::Edge;
+		currentToSuccessor->type = ir::Edge::FallThrough;
+		currentToSuccessor->head = current->_block;
+		currentToSuccessor->tail = successor->_block;
+		
+		_cfg->insert_edge( currentToSuccessor );
 		
 		return current;
 	}
 	
 	void DataflowGraph::target( iterator block, iterator target )
 	{
+		report( "Adding branch from " << block->label() 
+			<< " to " << target->label() );
 		_consistent = false;
 		std::pair< BlockPointerSet::iterator, bool > insertion 
 			= block->_targets.insert( target );
@@ -431,9 +477,116 @@ namespace analysis
 		{
 			assert( target->_predecessors.count( block ) == 0 );
 			target->_predecessors.insert( block );
+			
+			ir::Edge* edge = new ir::Edge;
+			
+			edge->type = ir::Edge::Branch;
+			edge->head = block->_block;
+			edge->tail = target->_block;
+			
+			_cfg->insert_edge( edge );
 		}
 	}
 
+	DataflowGraph::iterator DataflowGraph::split( iterator block, 
+		unsigned int instruction )
+	{
+		report( "Splitting block " << block->label() 
+			<< " at instruction " << instruction );
+		_consistent = false;
+		
+		assert( instruction < block->_instructions.size() );
+		
+		InstructionVector::iterator begin = block->_instructions.begin();
+		std::advance( begin, instruction );
+		InstructionVector::iterator end = block->_instructions.end();
+		
+		iterator added = _blocks.insert( ++iterator( block ), Block() );
+
+		added->_block = _cfg->split_block( block->_block, instruction );
+		added->_label = added->_block->label;
+		added->_predecessors.insert( block );
+		
+		added->_instructions.insert( added->_instructions.end(), begin, end );
+		block->_instructions.erase( begin, end );
+		
+		added->_fallthrough = block->_fallthrough;
+		
+		for( BlockPointerSet::iterator target = block->_targets.begin(); 
+			target != block->_targets.end(); ++target )
+		{
+			BlockPointerSet::iterator predecessor = 
+				(*target)->_predecessors.find( block );
+			assert( predecessor != (*target)->_predecessors.end() );
+			(*target)->_predecessors.erase( block );
+			(*target)->_predecessors.insert( added );
+		}
+		
+		added->_targets = block->_targets;
+		block->_targets.clear();
+		block->_targets.insert( added );
+		
+		return added;		
+	}
+
+	void DataflowGraph::redirect( iterator source, 
+		iterator destination, iterator newTarget )
+	{
+		report( "Redirecting " << source->label() << " from " 
+			<< destination->label() << " to " << newTarget->label() );
+		BlockPointerSet::iterator 
+			predecessor = destination->_predecessors.find( source );
+		assertM( predecessor != destination->_predecessors.end(),
+			"There is no edge between " << source->label() << " and " 
+			<< destination->label() );
+		destination->_predecessors.erase( predecessor );
+
+		if( source->_fallthrough == destination )
+		{
+			source->_fallthrough = newTarget;
+		}
+		else
+		{
+			BlockPointerSet::iterator 
+				target = source->_targets.find( destination );
+			assertM( target != source->_targets.end(), 
+				"There is no edge between " << source->label() << " and " 
+				<< destination->label() );
+			source->_targets.erase( target );
+			source->_targets.insert( newTarget );
+		}
+
+		newTarget->_predecessors.insert( source );
+
+		ir::Edge* existingEdge = source->_block->get_edge( 
+			destination->_block );
+
+		ir::Edge* edge = new ir::Edge;
+		edge->type = existingEdge->type;
+		edge->head = source->_block;
+		edge->tail = destination->_block;
+
+		_cfg->remove_edge( existingEdge );
+		_cfg->insert_edge( edge );
+	}
+
+	void DataflowGraph::insert( iterator block, 
+		const Instruction& instruction, unsigned int index )
+	{
+		_consistent = false;
+		
+		InstructionVector::iterator position = block->_instructions.begin();
+		std::advance( position, index );
+		
+		block->_instructions.insert( position, instruction );
+		
+		ir::BasicBlock::InstructionList::iterator 
+			bbPosition = block->_block->instructions.begin();
+		std::advance( bbPosition, index );
+		
+		block->_block->instructions.insert( bbPosition, instruction.id );
+	}
+	
 	DataflowGraph::iterator DataflowGraph::erase( iterator block )
 	{
 		_consistent = false;
@@ -450,10 +603,16 @@ namespace analysis
 		for( BlockPointerSet::iterator pi = block->_predecessors.begin(); 
 			pi != block->_predecessors.end(); ++pi )		
 		{
-
 			if( (*pi)->_fallthrough == block )
 			{
 				(*pi)->_fallthrough = fallthrough;
+			
+				ir::Edge* edge = new ir::Edge;
+				edge->type = ir::Edge::FallThrough;
+				edge->head = (*pi)->_block;
+				edge->tail = fallthrough->_block;
+				
+				_cfg->insert_edge( edge );
 			}
 
 			BlockPointerSet::iterator target 
@@ -463,10 +622,19 @@ namespace analysis
 			{
 				(*pi)->_targets.erase( target );
 				(*pi)->_targets.insert( fallthrough );
+				
+				ir::Edge* edge = new ir::Edge;
+				edge->type = ir::Edge::Branch;
+				edge->head = (*pi)->_block;
+				edge->tail = fallthrough->_block;
+			
+				_cfg->insert_edge( edge );
 			}
 		}
 		
-		return _blocks.erase( block );
+		_cfg->remove_block( block->_block );
+		
+		return fallthrough;
 	}
 
 	void DataflowGraph::clear()
@@ -475,25 +643,42 @@ namespace analysis
 		_blocks.clear();
 		_blocks.push_back( Block( Block::Entry ) );
 		_blocks.push_back( Block( Block::Exit ) );
-
+		
+		_cfg->clear();
+		
 		_blocks.front()._fallthrough = --_blocks.end();
 		_blocks.front()._label = "entry";
 		_blocks.back()._predecessors.insert( _blocks.begin() );
 		_blocks.back()._fallthrough = end();
 		_blocks.back()._label = "exit";
 	}
+
+	void DataflowGraph::erase( iterator block, unsigned int index )
+	{
+		assert( index < block->instructions().size() );
+	
+		_consistent = false;
+		
+		InstructionVector::iterator position = block->_instructions.begin();
+		std::advance( position, index );
+		
+		block->_instructions.erase( position );
+	}
 	
 	void DataflowGraph::compute()
 	{
 		if( _consistent ) return;		
 		_consistent = true;
-				
+		
 		BlockPointerSet worklist;
 		
 		for( iterator fi = begin(); fi != end(); ++fi )
 		{
-			if( !fi->instructions().empty() )
+			if( fi->type() == Block::Body )
 			{
+				fi->_aliveIn.clear();
+				fi->_aliveOut.clear();
+				fi->_phis.clear();
 				worklist.insert( fi );
 			}
 		}
@@ -518,6 +703,16 @@ namespace analysis
 				}
 			}
 		}
+	}
+
+	DataflowGraph::RegisterId DataflowGraph::maxRegister() const
+	{
+		return _maxRegister;
+	}
+
+	DataflowGraph::RegisterId DataflowGraph::newRegister()
+	{
+		return ++_maxRegister;
 	}
 
 	void DataflowGraph::toSsa()

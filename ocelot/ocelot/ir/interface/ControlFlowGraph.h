@@ -1,5 +1,4 @@
-/*!
-	\file ControlFlowGraph.h
+/*!	\file ControlFlowGraph.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief Interface for ControlFlowGraph
 	\date 28 September 2008; 21 Jan 2009
@@ -19,15 +18,13 @@
 
 namespace ir {
 
-/*!
-	Control flow graph
-*/
+/*! Control flow graph */
 class ControlFlowGraph {
 public:
 	/*! \brief A vector of BasicBlock pointers */
-	typedef std::vector< BasicBlock * > BlockPointerVector;
+	typedef std::vector< BasicBlock* > BlockPointerVector;
 	/*! \brief A map from block to instruction ids */
-	typedef std::unordered_map< BasicBlock *, int > BlockMap;
+	typedef std::unordered_map< BasicBlock*, int > BlockMap;
 
 public:
 	ControlFlowGraph();
@@ -35,31 +32,22 @@ public:
 
 public:
 
-	/*!
-		Gets the number of blocks within the graph
-	*/
+	/*!	Gets the number of blocks within the graph */
 	size_t size();
 
-	/*!
-		Returns a list of BasicBlocks associated with the CFG
-	*/
+	/*!	Returns a list of BasicBlocks associated with the CFG */
 	ir::BasicBlock::ConstBlockList get_blocks() const;
 
-	/*!
-		Returns a list of BasicBlocks associated with the CFG
-	*/
+	/*!	Returns a list of BasicBlocks associated with the CFG */
 	ir::BasicBlock::BlockList get_blocks();
 
-	/*!
-		Returns a list of edges in the CFG
+	/*!	Returns a list of edges in the CFG
 
 		\return a list of edge objects
 	*/
 	ir::BasicBlock::ConstEdgeList get_edges() const;
 
-	/*!
-		Inserts a basic block into the CFG
-	*/
+	/*!	Inserts a basic block into the CFG */
 	void insert_block(ir::BasicBlock *block);
 	
 	/*!
@@ -75,7 +63,7 @@ public:
 		\param edge edge to create
 	*/
 	void insert_edge(ir::Edge *edge);
-
+	
 	/*!
 		Removes the edge which may exist from head->tail. This may render tail
 		unreachable.
@@ -95,33 +83,36 @@ public:
 		\return implicily created edge from newblock->tail with same type as 
 			edge [may need modifying]
 	*/
-	ir::Edge *split_edge(ir::Edge *edge, ir::BasicBlock *newblock);
+	ir::Edge* split_edge(ir::Edge* edge, ir::BasicBlock* newblock);
 
-	/*!
-		Returns the entry block of a control flow graph
-	*/
-	ir::BasicBlock *get_entry_block();
-
-	/*!
-		Returns the exit block of a control flow graph
-	*/
-	ir::BasicBlock *get_exit_block();
+	/*! \brief Splits a basic block into two such that there is a fallthrough
+		edge from the original block to the newly split block.
 	
-	/*!
-		Returns the entry block of a control flow graph
+		This function will map all out_edges of the first block to the second
+		block.
+		
+		\param block The block being split
+		\param the instruction within the block to perform the split
+		\return A pointer to the newly allocated second block
 	*/
-	const ir::BasicBlock *get_entry_block() const;
+	ir::BasicBlock* split_block(ir::BasicBlock* block, 
+		unsigned int instruction );
 
-	/*!
-		Returns the exit block of a control flow graph
-	*/
-	const ir::BasicBlock *get_exit_block() const;
+	/*!	Returns the entry block of a control flow graph */
+	ir::BasicBlock* get_entry_block();
+
+	/*!	Returns the exit block of a control flow graph */
+	ir::BasicBlock* get_exit_block();
 	
-	/*!
-		write a graphviz-compatible file for visualizing the CFG
-	*/
+	/*! Returns the entry block of a control flow graph */
+	const ir::BasicBlock* get_entry_block() const;
+
+	/*!	Returns the exit block of a control flow graph */
+	const ir::BasicBlock* get_exit_block() const;
+	
+	/*!	write a graphviz-compatible file for visualizing the CFG */
 	template <typename IType>
-	std::ostream & write(std::ostream &out, 
+	std::ostream& write(std::ostream &out, 
 		const std::deque<IType>& instructions) {
 		using namespace std;
 	
@@ -142,7 +133,7 @@ public:
 		int n = 0;
 		ir::BasicBlock::BlockList::iterator it = blocks.begin();
 		for (; it != blocks.end(); ++it, ++n) {
-			BasicBlock *block = *it;
+			BasicBlock* block = *it;
 
 			if (block == entry || block == exit) continue;
 
@@ -183,59 +174,54 @@ public:
 		return out;
 	}
 
-	/*!
-		Returns true if block is reachable from head
-	*/
-	bool is_reachable(ir::BasicBlock *head, ir::BasicBlock *block);
+	/*! Returns true if block is reachable from head */
+	bool is_reachable(ir::BasicBlock* head, ir::BasicBlock* block);
 	
 	/*!
-		\brief Clears all basic blocks and edges in the CFG. Note: the CFG "owns" all
-		blocks and edges, so if you don't want the CFG destructor to delete all of
-		the blocks and edges it owns, you should clear it before deleting it.
+		\brief Clears all basic blocks and edges in the CFG. Note: the CFG 
+		"owns" all blocks and edges, so if you don't want the CFG destructor 
+		to delete all of the blocks and edges it owns, you should clear it 
+		before deleting it.
 	*/
 	void clear();
 	
-	/*!
-		\brief Converts { to [ and } to ] for use in dot.
-	*/
+	/* \brief Converts { to [ and } to ] for use in dot. */
 	static std::string make_label_dot_friendly( const std::string& string );
 	
 	/*!
-		returns an ordered sequence of the nodes of the CFG including entry and exit
-		that would be encountered by a pre order traversal
+		returns an ordered sequence of the nodes of the CFG including entry 
+		and exit that would be encountered by a pre order traversal
 	*/
 	BlockPointerVector pre_order_sequence();
 	
 	/*!
-		returns an ordered sequence of the nodes of the CFG including entry and exit
-		that would be encountered by a post order traversal
+		returns an ordered sequence of the nodes of the CFG including entry 
+		and exit that would be encountered by a post order traversal
 	*/
 	BlockPointerVector post_order_sequence();
 
 	/*!
-		Returns an ordered sequence of basic blocks such that the entry node is first
-		and all fall-through edges produce adjacencies
+		Returns an ordered sequence of basic blocks such that the entry node 
+		is first and all fall-through edges produce adjacencies
 	*/
 	BlockPointerVector executable_sequence();
 	
-	/*!
-		deep copy of ControlFlowGraph
-	*/
-	ControlFlowGraph & operator=(const ControlFlowGraph &);
+	/*!	deep copy of ControlFlowGraph */
+	ControlFlowGraph& operator=(const ControlFlowGraph &);
 
 private:
 	
 	void pre_order_sequence_helper(
 		BlockPointerVector &sequence, 
-		BasicBlock *block,
+		BasicBlock* block,
 		BlockMap& visited);
 
 	void post_order_sequence_helper(
 		BlockPointerVector &sequence, 
-		BasicBlock *block,
+		BasicBlock* block,
 		BlockMap& visited);
 
-	ir::BasicBlock *entry, *exit;
+	ir::BasicBlock* entry,* exit;
 
 	ir::BasicBlock::BlockList blocks;
 	ir::BasicBlock::EdgeList edges;

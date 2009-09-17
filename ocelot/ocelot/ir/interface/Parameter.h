@@ -1,10 +1,7 @@
 /*!
 	\file Parameter.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief describes a parameter declaration
 */
 
@@ -22,9 +19,7 @@ namespace ir {
 	class Parameter {
 	public:
 
-		/*!
-			Union of possible variables containing each value
-		*/		
+		/*! Union of possible variables containing each value */		
 		union ValueType {
 			PTXU8 val_u8;
 			PTXU16 val_u16;
@@ -45,16 +40,12 @@ namespace ir {
 			PTXB64 val_b64;
 		};
 		
-		/*!
-			A vector of values
-		*/
+		/*! A vector of values */
 		typedef std::vector<ValueType> ValueVector;
 
 	public:
 	
-		/*!
-			\brief Get value
-		*/
+		/*!	\brief Get value */
 		static std::string value( const Parameter& p );
 
 	public:
@@ -70,6 +61,9 @@ namespace ir {
 		
 		/*! \brief Return the alignment restriction of the parameter */
 		unsigned int getAlignment() const;
+		
+		/*! \brief Return a parsable string representing the parameter */
+		std::string toString() const;
 
 		/*!	Data type of parameter */
 		PTXOperand::DataType type;
@@ -79,6 +73,9 @@ namespace ir {
 
 		/*! \brief Alignment attribute */
 		unsigned int alignment;
+
+		/*! \brief Vector attribute */
+		ir::PTXInstruction::Vec vector;
 
 		/*	Runtime bindings */
 	public:

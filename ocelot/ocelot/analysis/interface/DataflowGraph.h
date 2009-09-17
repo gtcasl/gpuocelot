@@ -174,26 +174,26 @@ namespace analysis
 					InstructionVector _instructions;
 					/*! \brief Block label */
 					std::string _label;
+					/*! \brief A pointer to the underlying 
+						basic block in the cfg */
+					ir::BasicBlock* _block;
 
 				private:
 					/*! \brief Compare two register sets */
 					static bool _equal( const RegisterSet& one, 
 						const RegisterSet& two );
-
-				private:
-					/*! \brief Private constructor */
-					Block( Type type );
-					
 					/*! \brief Update the live ranges */
 					bool compute();
 			
 				public:
 					/*! \brief Constructor from a sequence of instructions */
 					template< typename Inst >
-					Block( ir::BasicBlock& block, 
+					Block( DataflowGraph& dfg, ir::BasicBlock& block, 
 						std::deque< Inst >& instructions  );
 					/*! \brief Default constructor */
-					Block();
+					Block( Type t = Invalid );
+					/*! \brief Consutructor from a blank bb */
+					Block( ir::BasicBlock& bb );
 					
 				public:
 					/*! \brief Get registers that are alive entering the block*/
@@ -214,6 +214,8 @@ namespace analysis
 					const PhiInstructionVector& phis() const;
 					/*! \brief Get the block label */
 					const std::string& label() const;
+
+				public:
 					/*! \brief Determine the block that produced a register */
 					const std::string& producer( const Register& r ) const;
 					/*! \brief Determine the alive registers immediately
@@ -234,17 +236,17 @@ namespace analysis
 
 		private:
 			BlockVector _blocks;
+			ir::ControlFlowGraph* _cfg;
 			bool _consistent;
 			bool _ssa;
+			RegisterId _maxRegister;
 
-		private:
+		public:
 			/*! \brief Convert from a PTXInstruction to an Instruction  */
-			static Instruction _convert( ir::PTXInstruction& i, 
+			Instruction convert( ir::PTXInstruction& i, 
 				InstructionId id );
 
 		public:
-			/*! \brief Default constructor */
-			DataflowGraph();
 			/*! \brief Build from a CFG */
 			template< typename Inst >
 			DataflowGraph( ir::ControlFlowGraph& cfg, 
@@ -255,9 +257,9 @@ namespace analysis
 			iterator begin();
 			/*! \brief Return an iterator to the program entry point */
 			const_iterator begin() const;
-			/*! \brief Return an iterator to the program exit point */
+			/*! \brief Return an iterator just beyond the program exit point */
 			iterator end();
-			/*! \brief Return an iterator to the program exit point */
+			/*! \brief Return an iterator just beyond the program exit point */
 			const_iterator end() const;
 
 		public:			
@@ -273,18 +275,38 @@ namespace analysis
 				\brief Insert a Block between two existing blocks.
 				\param predecessor An iterator to the previous block.
 				\return An iterator to the inserted block.
+				Note that this insert splits the fallthrough edge
 			*/
 			iterator insert( iterator predecessor, const Block& b );
+			/*! \brief Split a block into two starting at a given instruction */
+			iterator split( iterator block, unsigned int instruction );
+			/*! \brief Redirect an edge between two blocks to a third */
+			void redirect( iterator source, 
+				iterator destination, iterator newTarget );
 			/*! \brief Set the target of a block */
 			void target( iterator block, iterator target );
 			/*! \brief Delete a block, joining predecessors and successors */
 			iterator erase( iterator block );
 			/*! \brief Revert back to a single entry and exit block */
 			void clear();
+		
+		public:
+			/*! \brief Insert an instruction into a block 
+				immediately before the specified index */
+			void insert( iterator block, const Instruction& instruction, 
+				unsigned int index );
+			/*! \brief Erase an instruction from a block at the specified
+				index */
+			void erase( iterator block, unsigned int index );
 			
 		public:
 			/*! \brief Compute live ranges */
 			void compute();
+			/*! \brief Determine the max register used in the graph */
+			RegisterId maxRegister() const;
+			/*! \brief Allocate a new register that is not used elswhere 
+				in the graph */
+			RegisterId newRegister();
 			
 		public:
 			/*! \brief Convert into ssa form */
@@ -296,14 +318,14 @@ namespace analysis
 	};
 
 	template< typename Inst >
-	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& _cfg, 
+	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& cfg, 
 		std::deque< Inst >& instructions )  
-		: _consistent( instructions.empty() ), _ssa( false )
+		: _cfg( &cfg ), _consistent( instructions.empty() ), 
+		_ssa( false ), _maxRegister( 0 )
 	{
 		typedef std::unordered_map< ir::BasicBlock*, iterator > BlockMap;
 		BlockMap map;
 		
-		ir::ControlFlowGraph& cfg = const_cast< ir::ControlFlowGraph& >( _cfg );
 		ir::ControlFlowGraph::BlockPointerVector blocks 
 			= cfg.executable_sequence();
 		assert( blocks.size() >= 2 );
@@ -317,7 +339,7 @@ namespace analysis
 		for( ir::ControlFlowGraph::BlockPointerVector::iterator 
 			bbi = blocks.begin() + 1; bbi != blocks.end() - 1; ++bbi, ++count )
 		{
-			Block newB( **bbi, instructions );
+			Block newB( *this, **bbi, instructions );
 			std::stringstream label;
 			if( (*bbi)->label.empty() )
 			{
@@ -369,23 +391,25 @@ namespace analysis
 
 		_blocks.front()._label = "Entry";
 		_blocks.back()._label = "Exit";
+		_blocks.front()._block = cfg.get_entry_block();
+		_blocks.back()._block = cfg.get_exit_block();
 		_blocks.back()._fallthrough = _blocks.end();
 	}
 
 	template< typename Inst >
-	DataflowGraph::Block::Block( ir::BasicBlock& block, 
-		std::deque< Inst >& instructions ) : _type( Body )
+	DataflowGraph::Block::Block( DataflowGraph& dfg, ir::BasicBlock& block, 
+		std::deque< Inst >& instructions ) : _type( Body ), _block( &block )
 	{
 		for( ir::BasicBlock::InstructionList::const_iterator 
 			fi = block.instructions.begin(); 
 			fi != block.instructions.end(); ++fi )
 		{
 			assert( *fi < instructions.size() );
-			_instructions.push_back( _convert( instructions[ *fi ], *fi ) );
+			_instructions.push_back( dfg.convert( instructions[ *fi ], *fi ) );
 		}
 		
 	}
-	
+
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
 }
 

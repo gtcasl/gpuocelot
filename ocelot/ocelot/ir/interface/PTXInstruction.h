@@ -237,7 +237,7 @@ namespace ir {
 		static bool isPt( const PTXOperand& );
 
 	public:
-		PTXInstruction( Version v = ptx1_0 );
+		PTXInstruction( Version v = ptx1_0, Opcode op = Nop );
 		~PTXInstruction();
 
 		bool operator==( const PTXInstruction& ) const;

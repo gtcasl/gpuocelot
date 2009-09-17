@@ -39,24 +39,21 @@ namespace ir {
 	*/
 	class Kernel {
 	public:
-		/*!
-			\brief Vector of statements
-		*/
+		/*!	\brief Vector of statements */
 		typedef std::deque<PTXStatement> PTXStatementVector;
 
-		/*!
-			\brief Vector of instructions
-		*/
+		/*!	\brief Vector of instructions */
 		typedef std::deque<PTXInstruction> PTXInstructionVector;
 
-		/*!
-			\brief Vector of parameters
-		*/
+		/*!	\brief Vector of parameters */
 		typedef std::vector<Parameter> ParameterVector;
 
 		/*! \brief A map from strings to registers */
 		typedef std::unordered_map< std::string, 
 			PTXOperand::RegisterType > RegisterMap;
+
+		/*! \brief Unique identifier to statement representing a local variable */
+		typedef std::unordered_map< std::string, PTXStatement > StatementMap;
 
 	public:
 
@@ -81,6 +78,9 @@ namespace ir {
 		
 		/*! \brief Assignment operator (deep) */
 		const Kernel& operator=( const Kernel& k );
+		
+		/*! \brief Get the version of the PTX instruction set being used */
+		PTXInstruction::Version version() const;
 	
 		/*!	Returns true if the kernel instance is derived from 
 			ExecutableKernel */
@@ -100,6 +100,9 @@ namespace ir {
 		
 		/*! \brief Builds the data flow graph within the kernel */
 		void buildDataflowGraph();
+		
+		/*! \brief Adds a statement defining a local variable to the kernel */
+		void addLocalVariable( const PTXStatement& statement );
 
 	public:
 		/*!
@@ -146,13 +149,11 @@ namespace ir {
 		/*! the CFG references this vector of instructions */
 		PTXInstructionVector instructions;
 		
-		/*! Global variable statements */
-		PTXStatementVector globalStatements;
-	
-		/*!
-			Control flow graph of kernel - this is the primary store of 
-				instructions belonging to the kernel
-		*/
+		/*! \brief Local variables */
+		StatementMap locals;
+		
+		/*!	Control flow graph of kernel - this is the primary store of 
+				instructions belonging to the kernel */
 		ControlFlowGraph* ptxCFG;
 
 		/*!	Dominator tree constructed from ptxCFG */

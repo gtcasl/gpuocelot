@@ -65,7 +65,6 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 
 	name = kernel.name;
 	ISA = kernel.ISA;
-	globalStatements = kernel.globalStatements;
 	parameters = kernel.parameters;
 	start_iterator = kernel.start_iterator;
 	end_iterator = kernel.end_iterator;
@@ -85,7 +84,6 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	if( &kernel == this ) return *this;
 	name = kernel.name;
 	ISA = kernel.ISA;
-	globalStatements = kernel.globalStatements;
 	parameters = kernel.parameters;
 	start_iterator = kernel.start_iterator;
 	end_iterator = kernel.end_iterator;
@@ -104,6 +102,10 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	if (kernel.dfg) buildDataflowGraph();
 
 	return *this;	
+}
+
+ir::PTXInstruction::Version ir::Kernel::version() const {
+	return start_iterator->version;
 }
 
 bool ir::Kernel::executable() const {
@@ -149,7 +151,12 @@ void ir::Kernel::buildDominatorTree() {
 void ir::Kernel::buildDataflowGraph() {
 	assertM(ptxCFG != 0, "Must create cfg before building dataflow graph.");
 	if (dfg) return;
+	assignRegisters(instructions);
 	dfg = new analysis::DataflowGraph(*ptxCFG, instructions);
+}
+
+void ir::Kernel::addLocalVariable( const PTXStatement& statement ) {
+	locals.insert( std::make_pair( statement.name, statement ) );
 }
 
 void ir::Kernel::constructCFG(

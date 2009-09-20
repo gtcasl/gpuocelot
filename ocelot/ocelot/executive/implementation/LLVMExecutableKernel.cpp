@@ -14,6 +14,7 @@
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <fstream>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -21,10 +22,11 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 1
 #define REPORT_ALL_LLVM_SOURCE 1
 #define REPORT_INSIDE_TRANSLATED_CODE 1
+#define PRINT_OPTIMIZED_CFG 0
 
 #include <configure.h>
 
@@ -100,16 +102,23 @@ namespace executive
 	{
 		report( " Running PTX optimizer" );
 
+		report( "  Building dataflow graph." );
+		_ptx->dfg();
+
 		report( "  Running remove barrier pass." );
-		reportE( REPORT_ALL_PTX_SOURCE, "   Code before pass:\n" << *this );
+		
+		reportE( REPORT_ALL_PTX_SOURCE, "   Code before pass:\n" << *_ptx );
 
 		analysis::RemoveBarrierPass pass;
 		
 		pass.initialize( *module );
-		pass.runOnKernel( *this );
+		pass.runOnKernel( *_ptx );
 		pass.finalize();
+		
+		_barrierSupport = pass.barriers();
+		_resumePoint = pass.resume();
 
-		reportE( REPORT_ALL_PTX_SOURCE, "   Code after pass:\n" << *this );
+		reportE( REPORT_ALL_PTX_SOURCE, "   Code after pass:\n" << *_ptx );
 	}
 
 	void LLVMExecutableKernel::_translateKernel()
@@ -118,15 +127,27 @@ namespace executive
 		if( _module == 0 )
 		{
 			report( "Translating PTX kernel \"" << name << "\" to LLVM" );
+
+			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
+			std::ofstream file("ptxcfgoriginal.dot");
+			_ptx->cfg()->write(file, _ptx->instructions);
+			file.close();
+			#endif
 			
 			_optimizePtx();
 			_allocateMemory();
 
 			translator::PTXToLLVMTranslator translator;
-			
+
+			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
+			file.open("ptxcfgoptimized.dot");
+			_ptx->cfg()->write(file, _ptx->instructions);
+			file.close();
+			#endif
+							
 			report( " Running translator" );
 			ir::LLVMKernel* llvmKernel = static_cast< 
-				ir::LLVMKernel* >( translator.translate( this ) );
+				ir::LLVMKernel* >( translator.translate( _ptx ) );
 
 			report( " Assembling llvm module" );
 			llvmKernel->assemble();
@@ -145,17 +166,22 @@ namespace executive
 				llvm::raw_string_ostream message( m );
 				message << "LLVM Parser failed: ";
 				error.Print( name.c_str(), message );
+				
 				throw hydrazine::Exception( message.str() );
 			}
-			
+
+			#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
+			std::string m;
+			llvm::raw_string_ostream code( m );
+			code << *_module;
+			reportE( REPORT_ALL_LLVM_SOURCE, " The initial code is:\n" << m );
+			#endif
+						
 			report( " Checking module for errors." );
 			std::string verifyError;
 			if( llvm::verifyModule( *_module, 
 				llvm::ReturnStatusAction, &verifyError ) )
 			{
-				report( "  Verifying kernel failed, dumping code:\n" 
-					<< llvmKernel->numberedCode() );
-
 				delete llvmKernel;
 
 				throw hydrazine::Exception( "LLVM Verifier failed for kernel: " 
@@ -165,13 +191,6 @@ namespace executive
 			delete llvmKernel;
 						
 			report( " Successfully created LLVM Module from translated PTX." );
-			
-			#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
-			std::string m;
-			llvm::raw_string_ostream code( m );
-			code << *_module;
-			reportE( REPORT_ALL_LLVM_SOURCE, " The initial code is:\n" << m );
-			#endif
 			
 			_optimize();
 			
@@ -227,16 +246,11 @@ namespace executive
 		report( " Successfully jit compiled the kernel." );
 		#endif
 	}
-	
-	void LLVMExecutableKernel::_launchCta( unsigned int length, 
-		unsigned int width )
+
+	void LLVMExecutableKernel::_launchCtaNoBarriers( )
 	{
-		report( " Launching cta ( " << length << ", " << width << " )" );
-		_context.ctaid.x = length;
-		_context.ctaid.y = width;
-		
-		ThreadSet set;
-		
+		char* localBase = _context.local;
+		bool done = true;
 		for( int z = 0; z < _context.ntid.z; ++z )
 		{
 			_context.tid.z = z;
@@ -249,19 +263,82 @@ namespace executive
 					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
 						"  Launching thread ( x " << x << ", y " << y 
 						<< ", z " << z << " )" );
-					unsigned int continuation = _function( &_context );
-					if( continuation != 0 )
+					_context.local = localBase 
+						+ _context.localSize * threadId();
+					unsigned int resume = _function( &_context );
+					done &= resume == 0;
+					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+						"   Thread blocked at " << resume );
+				}
+			}
+		}	
+
+		_context.local = localBase;		
+		assertM( done, 
+			"Not all threads finished in kernel with no context switches" );
+	}
+	
+	void LLVMExecutableKernel::_launchCtaWithBarriers( )
+	{
+		char* localBase = _context.local;
+		bool done = false;
+		
+		for( unsigned int i = 0; i < threads(); ++i )
+		{
+			(*(unsigned int*)(localBase 
+				+ i * _context.localSize + _resumePointOffset)) = 0;
+		}
+		
+		while( !done )
+		{
+			done = true;
+			for( int z = 0; z < _context.ntid.z; ++z )
+			{
+				_context.tid.z = z;
+				for( int y = 0; y < _context.ntid.y; ++y )
+				{
+					_context.tid.y = y;
+					for( int x = 0; x < _context.ntid.x; ++x )
 					{
+						_context.tid.x = x;
+						_context.local = localBase 
+							+ _context.localSize * threadId();
 						reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-							"   Thread blocked at " << continuation );
-						set.push( continuation );
+							"  Launching thread ( x " << x << ", y " << y 
+							<< ", z " << z << " )" << " at resume point " 
+							<< *((unsigned int*)(_context.local 
+							+ _resumePointOffset)) );
+						unsigned int resume = _function( &_context );
+						done &= resume == 0;
+						*((unsigned int*)(_context.local 
+							+ _resumePointOffset)) = resume;
+						reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+							"   Thread blocked at " << resume );
 					}
 				}
 			}
 		}
+
+		_context.local = localBase;		
+	}
+	
+	void LLVMExecutableKernel::_launchCta( unsigned int length, 
+		unsigned int width )
+	{
+		report( " Launching cta ( " << length << ", " << width << " )" );
+		_context.ctaid.x = length;
+		_context.ctaid.y = width;
 		
-		assertM( set.empty(), 
-			"No support for continuing blocked PTX threads." );
+		if( _barrierSupport )
+		{
+			report( "  Barrier support enabled." );
+			_launchCtaWithBarriers();
+		}
+		else
+		{
+			report( "  Barrier support disabled." );
+			_launchCtaNoBarriers();
+		}
 	}
 	
 	void LLVMExecutableKernel::_allocateParameterMemory( )
@@ -272,8 +349,8 @@ namespace executive
 		
 		AllocationMap map;
 		
-		for( ParameterVector::iterator parameter = parameters.begin(); 
-			parameter != parameters.end(); ++parameter )
+		for( ParameterVector::iterator parameter = _ptx->parameters.begin(); 
+			parameter != _ptx->parameters.end(); ++parameter )
 		{
 			_pad( _context.parameterSize, parameter->alignment );
 			
@@ -295,8 +372,8 @@ namespace executive
 		report( "  Determining offsets of operands that use parameters" );
 	
 		for( PTXInstructionVector::iterator 
-			instruction = _instructions.begin(); 
-			instruction != _instructions.end(); ++instruction )
+			instruction = _ptx->instructions.begin(); 
+			instruction != _ptx->instructions.end(); ++instruction )
 		{
 			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
 				&instruction->b, &instruction->c };
@@ -378,8 +455,8 @@ namespace executive
 			}
 		}
 
-		LocalMap::const_iterator local = locals.begin();
-		for( ; local != locals.end(); ++local )
+		LocalMap::const_iterator local = _ptx->locals.begin();
+		for( ; local != _ptx->locals.end(); ++local )
 		{
 			if( local->second.space == ir::PTXInstruction::Shared )
 			{
@@ -408,8 +485,8 @@ namespace executive
 		}
 		
 		for( PTXInstructionVector::iterator 
-			instruction = _instructions.begin(); 
-			instruction != _instructions.end(); ++instruction )
+			instruction = _ptx->instructions.begin(); 
+			instruction != _ptx->instructions.end(); ++instruction )
 		{
 			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
 				&instruction->b, &instruction->c };
@@ -478,7 +555,9 @@ namespace executive
 			(*operand)->offset = _context.sharedSize;
 		}
 	
-		report( "   Total shared memory size is " << _context.sharedSize );
+		report( "   Total shared memory size is " << _context.sharedSize 
+			<< " declared plus " << _externalSharedSize << " external." );
+		_context.shared = new char[ _context.sharedSize + _externalSharedSize ];
 
 	}
 	
@@ -486,8 +565,8 @@ namespace executive
 	{
 		report( " Allocating global memory" );
 		for( PTXInstructionVector::iterator 
-			instruction = _instructions.begin(); 
-			instruction != _instructions.end(); ++instruction )
+			instruction = _ptx->instructions.begin(); 
+			instruction != _ptx->instructions.end(); ++instruction )
 		{
 			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
 				&instruction->b, &instruction->c };
@@ -521,12 +600,79 @@ namespace executive
 	
 	void LLVMExecutableKernel::_allocateLocalMemory( )
 	{
-	
+		report( " Allocating local memory" );
+		AllocationMap map;
+
+		_context.localSize = 0;
+		
+		for( LocalMap::iterator local = _ptx->locals.begin(); 
+			local != _ptx->locals.end(); ++local )
+		{
+			if( local->second.space == ir::PTXInstruction::Local )
+			{
+				report( "   Found local local variable " 
+					<< local->second.name << " of size " 
+					<< local->second.getSize() );
+				_pad( _context.localSize, local->second.alignment );
+				map.insert( std::make_pair( local->second.name,
+					_context.localSize ) );
+				_context.localSize += local->second.getSize();
+			}
+		}
+		
+		for( PTXInstructionVector::iterator 
+			instruction = _ptx->instructions.begin(); 
+			instruction != _ptx->instructions.end(); ++instruction )
+		{
+			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
+				&instruction->b, &instruction->c };
+		
+			if( instruction->opcode == ir::PTXInstruction::Mov
+				|| instruction->opcode == ir::PTXInstruction::Ld
+				|| instruction->opcode == ir::PTXInstruction::St )
+			{
+				for( unsigned int i = 0; i != 4; ++i )
+				{
+					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					{
+						AllocationMap::iterator mapping = map.find( 
+							operands[ i ]->identifier );
+						if( map.end() != mapping ) 
+						{
+							instruction->addressSpace 
+								= ir::PTXInstruction::Local;
+							operands[ i ]->offset = mapping->second;
+							report("   For instruction " 
+								<< instruction->toString() 
+								<< ", mapping local label " << mapping->first 
+								<< " to " << mapping->second );
+						}
+					}
+				}
+			}
+		}	
+
+		report( "   Total local memory size is " << _context.localSize 
+			<< " for " << threads() << " threads." );
+
+		_context.local = new char[ threads() * _context.localSize ];		
+
+		if( _barrierSupport )
+		{
+			report( "   Adding barrier sync point mapping." );
+			AllocationMap::iterator mapping = map.find( _resumePoint );
+			assert( mapping != map.end() );
+			report( "    Creating map from syncpoint variable " 
+				<< _resumePoint << " to local memory offset " 
+				<< mapping->second );
+			_resumePointOffset = mapping->second;
+			
+		}
 	}
 	
 	void LLVMExecutableKernel::_allocateConstantMemory( )
 	{
-	
+		_context.constantSize = 0;
 	}
 	
 	void LLVMExecutableKernel::_allocateTextureMemory( )
@@ -548,19 +694,23 @@ namespace executive
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
 		const executive::Executive* c ) : ExecutableKernel( k, c ), 
-		_module( 0 ), _moduleProvider( 0 )
+		_module( 0 ), _moduleProvider( 0 ), _externalSharedSize( 0 )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
+		ISA = ir::Instruction::LLVM;
 		
-		ir::PTXKernel& ptx = static_cast< ir::PTXKernel& >( k );
+		_ptx = new ir::PTXKernel( static_cast< ir::PTXKernel& >( k ) );
 		
-		_instructions = ptx.instructions;
 		_context.shared = 0;
 		_context.local = 0;
 		_context.parameter = 0;
 		_context.constant = 0;
 		_context.nctaid.z = 1;
+		
+		_context.ntid.x = 0;
+		_context.ntid.y = 0;
+		_context.ntid.z = 0;
 	}
 	
 	LLVMExecutableKernel::~LLVMExecutableKernel()
@@ -575,6 +725,7 @@ namespace executive
 		delete[] _context.constant;
 		delete[] _context.parameter;
 		delete[] _context.shared;
+		delete _ptx;
 	}
 
 	void LLVMExecutableKernel::launchGrid( int x, int y )
@@ -582,9 +733,12 @@ namespace executive
 		_translateKernel();
 		report( "Launching kernel \"" << name << "\" on grid ( x = " 
 			<< x << ", y = " << y << " )"  );
-		for( int i = 0; i < x; ++i )
+		
+		_context.nctaid.x = x;
+		_context.nctaid.y = y;
+		for( int j = 0; j < y; ++j )
 		{
-			for( int j = 0; j < y; ++j )
+			for( int i = 0; i < x; ++i )
 			{
 				_launchCta( i, j );
 			}
@@ -596,9 +750,56 @@ namespace executive
 	{
 		report( "Setting CTA shape to ( x = " << x << ", y = " 
 			<< y << ", z = " << z << " ) for kernel \"" << name << "\""  );
+		unsigned int previous = threads();
+		
 		_context.ntid.x = x;
 		_context.ntid.y = y;
 		_context.ntid.z = z;
+		
+		if( previous != threads() )
+		{
+			if( _context.local != 0 )
+			{
+				report( " Reallocating local memory of " << _context.localSize 
+					<< " bytes per thread" );
+				delete[] _context.local;
+				_context.local = new char[ threads() * _context.localSize ];
+			}
+		}
+	}
+	
+	unsigned int LLVMExecutableKernel::threads() const
+	{
+		return _context.ntid.x * _context.ntid.y * _context.ntid.z;
+	}
+	
+	unsigned int LLVMExecutableKernel::threadId() const
+	{
+		return _context.ntid.x * _context.ntid.y * _context.tid.z 
+			+ _context.ntid.x * _context.tid.y + _context.tid.x;
+	}
+
+	unsigned int LLVMExecutableKernel::constantMemorySize() const
+	{
+		return _context.constantSize;
+	}
+	
+	unsigned int LLVMExecutableKernel::sharedMemorySize() const
+	{
+		return _context.sharedSize;
+	}
+
+	void LLVMExecutableKernel::externSharedMemory( unsigned int bytes )
+	{
+		_translateKernel();
+		
+		if( bytes != _externalSharedSize )
+		{
+			delete[] _context.shared;
+			_externalSharedSize = bytes;
+			_context.shared = new char[ _externalSharedSize
+				+ _context.sharedSize ];
+		}
 	}
 
 	void LLVMExecutableKernel::updateParameterMemory()
@@ -618,6 +819,12 @@ namespace executive
 				size += parameter->getElementSize();
 			}
 		}
+	}
+	
+	void LLVMExecutableKernel::updateGlobalMemory()
+	{
+		assertM( module->globals.empty(), 
+			"No support for kernels with global variables." );
 	}
 }
 

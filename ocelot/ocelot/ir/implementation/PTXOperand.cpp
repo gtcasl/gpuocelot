@@ -351,7 +351,7 @@ std::string ir::PTXOperand::toString() const {
 				stream << identifier;
 			}
 			else {
-				stream << "r" << reg;
+				stream << "%r" << reg;
 			}
 			stream << " - " << ( -offset );
 			return stream.str();
@@ -360,7 +360,7 @@ std::string ir::PTXOperand::toString() const {
 				stream << identifier;
 			}
 			else {
-				stream << "r" << reg;
+				stream << "%r" << reg;
 			}
 			stream << " + " << offset;
 			return stream.str();
@@ -405,10 +405,20 @@ std::string ir::PTXOperand::toString() const {
 		return toString( special );
 	} else if( type == pred ) {
 		switch( condition ) {
-			case InvPred: return "!" + identifier; break;
 			case PT: return "%pt"; break;
-			case nPT: return "!%pt"; break;
-			default: break;
+			case nPT: return "%pt"; break;
+			default:
+			{
+				if( !identifier.empty() ) {
+					return identifier;
+				}
+				else {
+					std::stringstream stream;
+					stream << "%p" << reg;
+					return stream.str();
+				}
+				break;
+			}
 		}
 	} else if( vec != v1 && !array.empty() ) {
 		assert( ( vec == v2 && array.size() == 2 ) 
@@ -429,7 +439,35 @@ std::string ir::PTXOperand::toString() const {
 	}
 	else {
 		std::stringstream stream;
-		stream << "r" << reg;
+		stream << "%r" << reg;
+		return stream.str();
+	}
+}
+
+std::string ir::PTXOperand::registerName() const {
+	assert( addressMode == Indirect || addressMode == Register );
+	
+	if( !identifier.empty() ) {
+		return identifier;
+	}
+	else {
+		std::stringstream stream;
+		if(type == pred) {
+			switch( condition ) {
+				case PT: return "%pt"; break;
+				case nPT: return "%pt"; break;
+				default:
+				{
+					std::stringstream stream;
+					stream << "%p" << reg;
+					return stream.str();
+					break;
+				}
+			}
+		}
+		else {
+			stream << "%r" << reg;
+		}
 		return stream.str();
 	}
 }

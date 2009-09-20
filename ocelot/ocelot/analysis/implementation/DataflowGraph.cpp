@@ -208,7 +208,7 @@ namespace analysis
 		return true;
 	}
 
-	bool DataflowGraph::Block::compute()
+	bool DataflowGraph::Block::compute( bool hasFallthrough )
 	{
 		if( type() != Body ) return false;
 		
@@ -218,9 +218,13 @@ namespace analysis
 		assert( _aliveIn.empty() );
 		
 		report( "  Scanning targets: " );
-		report( "   " << _fallthrough->label() );		
-		_aliveOut = _fallthrough->_aliveIn;
-
+		
+		if( hasFallthrough )
+		{
+			report( "   " << _fallthrough->label() );		
+			_aliveOut = _fallthrough->_aliveIn;
+		}
+		
 		bool isOwnPredecessor = false;
 		
 		for( BlockPointerSet::iterator bi = _targets.begin(); 
@@ -270,7 +274,13 @@ namespace analysis
 		
 	}
 	
-	DataflowGraph::Block::Block(  ir::BasicBlock& bb )
+	DataflowGraph::Block::Block( const std::string& name ) : 
+		_type( Body ), _label( name )
+	{
+	
+	}
+	
+	DataflowGraph::Block::Block( ir::BasicBlock& bb )
 	{
 		assert( bb.instructions.empty() );
 		assert( bb.get_successors().empty() );
@@ -425,6 +435,9 @@ namespace analysis
 		const Block& _b )
 	{
 		_consistent = false;
+		assert( _b._phis.empty() );
+		assert( _b._instructions.empty() );
+		
 		BlockVector::iterator successor = predecessor->_fallthrough;
 
 		report( "Inserting new block " << _b.label() << " between " 
@@ -441,6 +454,7 @@ namespace analysis
 		
 		iterator current = _blocks.insert( successor, b );
 		current->_block = new ir::BasicBlock;
+		current->_block->label = b.label();
 		_cfg->insert_block( current->_block );
 		
 		ir::Edge* predecessorToCurrent = new ir::Edge;
@@ -511,6 +525,7 @@ namespace analysis
 		block->_instructions.erase( begin, end );
 		
 		added->_fallthrough = block->_fallthrough;
+		block->_fallthrough = added;
 		
 		for( BlockPointerSet::iterator target = block->_targets.begin(); 
 			target != block->_targets.end(); ++target )
@@ -522,9 +537,8 @@ namespace analysis
 			(*target)->_predecessors.insert( added );
 		}
 		
-		added->_targets = block->_targets;
+		added->_targets = std::move( block->_targets );
 		block->_targets.clear();
-		block->_targets.insert( added );
 		
 		return added;		
 	}
@@ -543,10 +557,12 @@ namespace analysis
 
 		if( source->_fallthrough == destination )
 		{
+			report( " Redirecting fallthrough edge." );
 			source->_fallthrough = newTarget;
 		}
 		else
 		{
+			report( " Redirecting branch edge." );
 			BlockPointerSet::iterator 
 				target = source->_targets.find( destination );
 			assertM( target != source->_targets.end(), 
@@ -562,9 +578,9 @@ namespace analysis
 			destination->_block );
 
 		ir::Edge* edge = new ir::Edge;
-		edge->type = existingEdge->type;
+		edge->type = ir::Edge::Branch;
 		edge->head = source->_block;
-		edge->tail = destination->_block;
+		edge->tail = newTarget->_block;
 
 		_cfg->remove_edge( existingEdge );
 		_cfg->insert_edge( edge );
@@ -648,9 +664,11 @@ namespace analysis
 		
 		_blocks.front()._fallthrough = --_blocks.end();
 		_blocks.front()._label = "entry";
+		_blocks.front()._block = _cfg->get_entry_block();
 		_blocks.back()._predecessors.insert( _blocks.begin() );
 		_blocks.back()._fallthrough = end();
 		_blocks.back()._label = "exit";
+		_blocks.back()._block = _cfg->get_exit_block();
 	}
 
 	void DataflowGraph::erase( iterator block, unsigned int index )
@@ -689,7 +707,7 @@ namespace analysis
 			worklist.erase( worklist.begin() );
 			
 			report( "Running dataflow for basic block " << block->label() );
-			bool changed = block->compute();
+			bool changed = block->compute( block->_fallthrough != end() );
 			
 			if( changed )
 			{

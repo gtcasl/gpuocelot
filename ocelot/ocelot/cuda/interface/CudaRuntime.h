@@ -231,6 +231,21 @@ namespace cuda
 			*/
 			ArchitectureMap::iterator _getTranslatedKernel( 
 				SymbolMap::iterator kernel );
+			
+			/*! \brief Copy parameter values from thread values to a kernel */
+			void _setParameters( ir::Kernel& k, ThreadMap::iterator thread );
+
+			/*! \brief Launch an emulated kernel
+				\param thread An iterator to the current thread
+				\param translatedKernel The kernel being launched */
+			void _launchEmulatedKernel( ThreadMap::iterator thread, 
+				ArchitectureMap::iterator translatedKernel );
+
+			/*! \brief Launch an llvm kernel
+				\param thread An iterator to the current thread
+				\param translatedKernel The kernel being launched */
+			void _launchLLVMKernel( ThreadMap::iterator thread, 
+				ArchitectureMap::iterator translatedKernel );
 		
 		public:
 			/*!	\brief Ocelot state for all contexts.*/
@@ -339,7 +354,7 @@ namespace cuda
 				\brief Gte attributes associated with a function.
 				
 				\param attributes The attributes to fill int.
-				\param name The symbol of the function being looked up.							
+				\param name The symbol of the function being looked up.	
 			*/
 			void getAttributes( cudaFuncAttributes* attributes, 
 				const char* symbol );

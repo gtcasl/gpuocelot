@@ -50,6 +50,18 @@ namespace test
 		_loopingKernel = static_cast< 
 			executive::LLVMExecutableKernel* >( kernel );
 		_loopingKernel->setKernelShape( 8, 1, 1 );
+
+		kernel = _context.getKernel( ir::Instruction::LLVM, 
+			kernelFile, "_Z7barrierPiS_" );
+		if( !kernel )
+		{
+			status << "Failed to get kernel _Z7barrierPiS_\n";
+			return false;
+		}
+		
+		_barrierKernel = static_cast< 
+			executive::LLVMExecutableKernel* >( kernel );
+		_barrierKernel->setKernelShape( 8, 1, 1 );
 		
 		kernel = _context.getKernel( ir::Instruction::LLVM, 
 			kernelFile, "_Z21k_matrixVectorProductPKfS0_Pfii" );
@@ -182,6 +194,56 @@ namespace test
 		
 		return true;
 	}
+
+	bool TestLLVMKernels::testBarrier()
+	{
+		executive::LLVMExecutableKernel* kernel = _barrierKernel;
+		
+		unsigned int N = 8;
+		int* in = new int[ N ];
+		int* out = new int[ N ];
+		_context.registerExternal( in, sizeof( int ) * N );
+		_context.registerExternal( out, sizeof( int ) * N );
+
+		for( unsigned int i = 0; i < N; ++i ) 
+		{
+			in[ i ] = i;
+			out[ i ] = -2;
+		}
+
+		ir::Parameter& param_A = kernel->getParameter(
+			"__cudaparm__Z7barrierPiS__in");
+		ir::Parameter& param_B = kernel->getParameter(
+			"__cudaparm__Z7barrierPiS__out");
+
+		param_A.arrayValues.resize( 1 );
+		param_A.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) in;
+		param_B.arrayValues.resize( 1 );
+		param_B.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) out;
+		kernel->updateParameterMemory();
+
+		kernel->setKernelShape( 8, 1, 1 );
+		kernel->launchGrid( 1, 1 );
+
+		for( unsigned int i = 0; i < N; ++i ) 
+		{
+			if( in[i] != out[ ( i + 1 ) % N ] )
+			{
+				status << "At index " << i << " input " 
+					<< in[ i ] 
+					<< " does not match output " 
+					<< out[ ( i + 1 ) % N ] << "\n";
+				return false;
+			}
+		}
+		
+		_context.free( out );
+		_context.free( in );
+		delete[] in;
+		delete[] out;
+		
+		return true;
+	}
 	
 	bool TestLLVMKernels::testMatrixMultiply()
 	{
@@ -197,8 +259,10 @@ namespace test
 		_context.registerExternal( V, sizeof( float ) * N );
 		_context.registerExternal( R, sizeof( float ) * M );
 
+		status << "A = [\n";
 		for( unsigned int i = 0; i < M; i++ ) 
 		{
+			status << " ";
 			for( unsigned int j = 0; j < N; j++ ) 
 			{
 				A[ i + j * N ] = 0;
@@ -207,10 +271,20 @@ namespace test
 					A[ i + j * N ] = 1.0f / ( float )( 1 + i - j );
 				}
 				V[ j ] = ( float )( 1 + j );
+				status << A[ i + j * N ] << " ";
 			}
 			R[ i ] = -2;
+			status << ";\n";
 		}
 
+		status << "];\n";
+
+		status << "V = [\n";
+		for (unsigned int j = 0; j < N; j++) {
+			status << " " << V[j] << " ;\n";
+		}
+		status << "];\n";
+			
 		ir::Parameter &param_A = kernel->getParameter(
 			"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA" );
 		ir::Parameter &param_V = kernel->getParameter(
@@ -238,6 +312,8 @@ namespace test
 		kernel->setKernelShape( 8, 1, 1 );
 		kernel->launchGrid( 1, 1 );
 
+		bool pass = true;
+		status << "R = [\n";
 		for( unsigned int i = 0; i < M; i++ ) 
 		{
 			float r_ref = 0;
@@ -247,9 +323,16 @@ namespace test
 			}
 			if( fabs( r_ref - R[ i ] ) > 0.01f ) 
 			{
-				status << "Computed and reference results do not match.\n";
-				return false;
+				pass = false;
 			}
+			status << " " << R[i] << " ;\n";
+		}
+		status << "];\n";
+		
+		if( !pass )
+		{
+			status << "Computed and reference results do not match.\n";
+			return false;		
 		}
 
 		_context.free( R );
@@ -266,8 +349,10 @@ namespace test
 	{
 		bool result = _loadKernels();
 		
-		return result && testDivergent() && testLooping()
+		return result //&& testDivergent() && testLooping()
+			//&& testBarrier() 
 			&& testMatrixMultiply();
+			
 	}
 	
 	TestLLVMKernels::TestLLVMKernels()

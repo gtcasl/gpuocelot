@@ -10,14 +10,20 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <hydrazine/implementation/debug.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 using namespace ir;
 
 ControlFlowGraph::ControlFlowGraph(): 
-	entry(new BasicBlock), exit(new BasicBlock) {
-	entry->label = "entry";
-	exit->label = "exit";
-	blocks.push_back(entry);
-	blocks.push_back(exit);
+	_entry(new BasicBlock), _exit(new BasicBlock) {
+	_entry->label = "entry";
+	_exit->label = "exit";
+	blocks.push_back(_entry);
+	blocks.push_back(_exit);
 }
 
 ControlFlowGraph::~ControlFlowGraph() {
@@ -65,14 +71,6 @@ BasicBlock::BlockList ControlFlowGraph::get_blocks() {
 
 void ControlFlowGraph::insert_block(BasicBlock *block) {
 	blocks.push_back(block);
-	if (blocks.size() == 1) {
-		// by definition, first block in CFG is successor to entry node
-		Edge *edge = new Edge;
-		edge->type = Edge::FallThrough;
-		edge->head = entry;
-		edge->tail = block;
-		insert_edge(edge);
-	}
 }
 
 void ControlFlowGraph::remove_block(BasicBlock *block) {
@@ -103,6 +101,8 @@ void ControlFlowGraph::insert_edge(Edge *edge) {
 		}	
 	}
 	#endif
+	report( "Created edge from " << edge->head->label 
+		<< " -> " << edge->tail->label );
 	edges.push_back(edge);
 	edge->head->out_edges.push_back(edge);
 	edge->tail->in_edges.push_back(edge);
@@ -111,6 +111,8 @@ void ControlFlowGraph::insert_edge(Edge *edge) {
 }
 
 void ControlFlowGraph::remove_edge(Edge *edge) {
+	report( "Removed edge from " << edge->head->label 
+		<< " -> " << edge->tail->label );
 	edges.remove(edge);
 	edge->head->out_edges.remove(edge);
 	edge->tail->in_edges.remove(edge);
@@ -144,10 +146,15 @@ BasicBlock* ControlFlowGraph::split_block(BasicBlock* block,
 	block->instructions.erase(begin, end);
 
 	for (BasicBlock::EdgeList::iterator edge = block->out_edges.begin(); 
-		edge != block->out_edges.end(); ++edge) {
-		(*edge)->head = newBlock;
-		(*edge)->tail->predecessors.remove(block);
-		(*edge)->tail->predecessors.push_back(newBlock);
+		edge != block->out_edges.end(); ) {
+		Edge* e = new Edge;
+		e->type = (*edge)->type;
+		e->head = newBlock;
+		e->tail = (*edge)->tail;
+		Edge* erase = *edge;
+		++edge;
+		remove_edge( erase );
+		insert_edge( e );
 	}
 
 	Edge* edge = new Edge;
@@ -159,28 +166,25 @@ BasicBlock* ControlFlowGraph::split_block(BasicBlock* block,
 	newBlock->label = block->label + "_split";
 
 	insert_edge( edge );
+	insert_block(newBlock);
 
-	newBlock->successors = std::move(block->successors);
-	block->successors.push_back(newBlock);
-	
-	blocks.push_back(newBlock);
 	return newBlock;
 }
 
 BasicBlock* ControlFlowGraph::get_entry_block() {
-	return entry;
+	return _entry;
 }
 
 BasicBlock* ControlFlowGraph::get_exit_block() {
-	return exit;
+	return _exit;
 }
 
 const BasicBlock* ControlFlowGraph::get_entry_block() const {
-	return entry;
+	return _entry;
 }
 
 const BasicBlock* ControlFlowGraph::get_exit_block() const {
-	return exit;
+	return _exit;
 }
 
 std::string ControlFlowGraph::make_label_dot_friendly( 
@@ -210,8 +214,8 @@ bool ControlFlowGraph::is_reachable(BasicBlock *head,
 
 void ControlFlowGraph::clear() {
 	blocks.clear();
-	blocks.push_back(entry);
-	blocks.push_back(exit);
+	blocks.push_back(_entry);
+	blocks.push_back(_exit);
 	edges.clear();
 }
 
@@ -339,37 +343,56 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
+	report( "Copying cfg" );
 	// copy basic blocks
 	using namespace std;
 	map<BasicBlock *, BasicBlock *> block_map; // (old, new)
 
+	BasicBlock::BlockList::iterator block_it = blocks.begin();
+	for (; block_it != blocks.end(); ++ block_it) {
+		delete *block_it;
+	}
+	
+	BasicBlock::EdgeList::iterator edge_it = edges.begin();
+	for (; edge_it != edges.end(); ++ edge_it) {
+		delete *edge_it;
+	}
+
+	_entry = new BasicBlock;
+	_exit = new BasicBlock;
+	_entry->label = "entry";
+	_exit->label = "exit";
+	
+	clear();
+
 	for (BasicBlock::BlockList::const_iterator bl_it = cfg.blocks.begin(); 
 		bl_it != cfg.blocks.end(); ++bl_it) {
-		BasicBlock *newBlock = new BasicBlock;
-		newBlock->label = (*bl_it)->label;
-		newBlock->instructions = (*bl_it)->instructions;
-		block_map[*bl_it] = newBlock;
-		insert_block(newBlock);
-
-		if (cfg.entry == (*bl_it)) {
-			entry = newBlock;
+		if (cfg._entry == (*bl_it) ) {
+			block_map[*bl_it] = _entry;
 		}
-		else if (cfg.exit == (*bl_it)) {
-			exit = newBlock;
+		else if( cfg._exit == (*bl_it)) {
+			block_map[*bl_it] = _exit;
+		}
+		else {
+			BasicBlock *newBlock = new BasicBlock;
+			newBlock->label = (*bl_it)->label;
+			newBlock->instructions = (*bl_it)->instructions;
+			block_map[*bl_it] = newBlock;
+			blocks.push_back(newBlock);
 		}
 	}
 
 	// duplicate edges using the block_map
 	for (BasicBlock::EdgeList::const_iterator e_it = cfg.edges.begin(); 
 		e_it != cfg.edges.end(); ++e_it) {
+		assert( block_map.count( (*e_it)->head ) );
+		assert( block_map.count( (*e_it)->tail ) );
 		Edge *edge = new Edge;
 		edge->type = (*e_it)->type;
 		edge->head = block_map[(*e_it)->head];
 		edge->tail = block_map[(*e_it)->tail];
 		insert_edge(edge);
 	}
-
-	block_map.clear();
 	
 	return *this;
 }

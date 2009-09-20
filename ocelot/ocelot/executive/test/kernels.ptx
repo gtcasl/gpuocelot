@@ -201,6 +201,41 @@ $Lt_3_8:
 $LDWend__Z17k_sequenceLoopingPfi:
 	} // _Z17k_sequenceLoopingPfi
 
+	.entry _Z7barrierPiS_
+	{
+	.param .u32 __cudaparm__Z7barrierPiS__in;
+	.param .u32 __cudaparm__Z7barrierPiS__out;
+	.reg .u32 %r<17>;
+	.shared .align 4 .b8 __cuda_shared8[32];
+	.loc	15	2	0
+$LBB1__Z7barrierPiS_:
+	mov.u32 	%r1, __cuda_shared8;
+	.loc	15	5	0
+	cvt.u32.u16 	%r2, %tid.x;
+	mul24.lo.u32 	%r3, %r2, 4;
+	ld.param.u32 	%r4, [__cudaparm__Z7barrierPiS__in];
+	add.u32 	%r5, %r4, %r3;
+	ld.global.s32 	%r6, [%r5+0];
+	add.u32 	%r7, %r2, 1;
+	cvt.u32.u16 	%r8, %ntid.x;
+	rem.u32 	%r9, %r7, %r8;
+	mul.lo.u32 	%r10, %r9, 4;
+	add.u32 	%r11, %r1, %r10;
+	st.shared.s32 	[%r11+0], %r6;
+	.loc	15	6	0
+	bar.sync 	0;
+	.loc	15	7	0
+	add.u32 	%r12, %r3, %r1;
+	ld.shared.s32 	%r13, [%r12+0];
+	ld.param.u32 	%r14, [__cudaparm__Z7barrierPiS__out];
+	add.u32 	%r15, %r14, %r3;
+	st.global.s32 	[%r15+0], %r13;
+	.loc	15	8	0
+	exit;
+$LDWend__Z7barrierPiS_:
+	} // _Z7barrierPiS_
+
+
 	.entry _Z21k_matrixVectorProductPKfS0_Pfii
 	{
 	.reg .u32 %r<15>;
@@ -248,7 +283,7 @@ $Lt_4_11:
 	ld.global.f32 	%f2, [%rd8+0]; 	// id:60
 	st.shared.f32 	[%rd12+0], %f2;	// id:61 __cuda_V_buffer80+0x0
 	.loc	15	86	0
-	bar.sync 	0;                  	// 
+	bar.sync 	0;                 	// 
 	@!%p2 bra 	$Lt_4_12;          	// 
  //<loop> Part of loop body line 80, head labeled $Lt_4_11
 	mov.s32 	%r10, %r1;           	// 

@@ -33,13 +33,10 @@ namespace executive
 			typedef std::unordered_map< std::string, size_t > AllocationMap;
 			/*! \brief A type for referring to a specific PTX thread */
 			typedef unsigned int ThreadContext;
-			/*! \brief A set of PTX threads */
-			typedef std::stack< unsigned int > ThreadSet;
 			/*! \brief A function pointer to the translated kernel */
 			typedef unsigned int (*Function)( LLVMContext* );
 			/*! \brief Shorthand for a PTX instruction vector */
 			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
-			
 			
 			/*! \brief A class for managing global llvm state */
 			class LLVMState
@@ -74,8 +71,16 @@ namespace executive
 			llvm::ExistingModuleProvider* _moduleProvider;
 			/*! \brief The translated function */
 			Function _function;
-			/*! \brief The stored ptx instructions */
-			PTXInstructionVector _instructions;
+			/*! \brief The stored ptx kernel used for translation */
+			ir::PTXKernel* _ptx;
+			/*! \brief Does this kernel require barrier support? */
+			bool _barrierSupport;
+			/*! \brief The barrier resume point variable */
+			std::string _resumePoint;
+			/*! \brief The resume point offset */
+			unsigned int _resumePointOffset;
+			/*! \brief External shared memory */
+			unsigned int _externalSharedSize;
 			
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
@@ -90,6 +95,12 @@ namespace executive
 			
 			/*! \brief Run various LLVM optimizer passes on the kernel */
 			void _optimize();
+			
+			/*! \brief Launch the CTA without barrier support */
+			void _launchCtaNoBarriers( );
+			
+			/*! \brief Launch the CTA with barrier support */
+			void _launchCtaWithBarriers( );
 			
 			/*! \brief Launch a specific CTA within a kernel */
 			void _launchCta( unsigned int x, unsigned int y );
@@ -129,8 +140,23 @@ namespace executive
 			void setKernelShape( int x, int y, int z );
 			
 		public:
-			/*! \brief Update parameter memory */
+			/*! \brief Get the number of threads per cta */
+			unsigned int threads() const;
+			/*! \brief Get the local id of the current thread */
+			unsigned int threadId() const;
+		public:
+			/*! \brief Get the constant memory size */
+			unsigned int constantMemorySize() const;
+			/*! \brief Get the shared memory size */
+			unsigned int sharedMemorySize() const;
+			
+		public:
+			/*! \brief Declare an amount of external shared memory */
+			void externSharedMemory( unsigned int bytes );
+			/*! \brief Reload parameter memory */
 			void updateParameterMemory();
+			/*! \brief Reload global memory */
+			void updateGlobalMemory();
 	};
 }
 

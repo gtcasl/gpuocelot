@@ -16,19 +16,13 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
-	DataflowGraph::RegisterId RemoveBarrierPass::_tempRegister( 
-		std::string& id )
+	DataflowGraph::RegisterId RemoveBarrierPass::_tempRegister()
 	{
-		std::stringstream stream;
-		
-		stream << "r" << _kernel->dfg()->newRegister();
-		id = stream.str();
-		
-		return _kernel->dfg()->maxRegister();
+		return _kernel->dfg()->newRegister();
 	}
 	
 	void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block, 
@@ -43,13 +37,15 @@ namespace analysis
 		move.a.addressMode = ir::PTXOperand::Address;
 		move.a.type = ir::PTXOperand::u64;
 		
-		move.d.reg = _tempRegister( move.d.identifier );
+		move.d.reg = _tempRegister();
 		move.d.addressMode = ir::PTXOperand::Register;
 		move.d.type = ir::PTXOperand::u64;
 		
-		_kernel->dfg()->insert( block, _kernel->dfg()->convert( move, 
-			_kernel->instructions.size() ),	block->instructions().size() - 1 );
 		_kernel->instructions.push_back( move );
+		_kernel->dfg()->insert( block, _kernel->dfg()->convert( 
+			_kernel->instructions.back(), 
+			_kernel->instructions.size() - 1 ),
+			block->instructions().size() - 1 );
 		
 		for( DataflowGraph::Block::RegisterSet::const_iterator 
 			reg = alive.begin(); reg != alive.end(); ++reg )
@@ -71,10 +67,11 @@ namespace analysis
 			save.a.type = reg->type;
 			save.a.reg = reg->id;
 			
-			_kernel->dfg()->insert( block, _kernel->dfg()->convert( save, 
-				_kernel->instructions.size() ), 
-				block->instructions().size() - 1 );
 			_kernel->instructions.push_back( save );
+			_kernel->dfg()->insert( block, _kernel->dfg()->convert( 
+				_kernel->instructions.back(), 
+				_kernel->instructions.size() - 1 ), 
+				block->instructions().size() - 1 );
 		}
 		
 		_spillBytes = std::max( bytes, _spillBytes );
@@ -92,7 +89,7 @@ namespace analysis
 		move.a.addressMode = ir::PTXOperand::Address;
 		move.a.type = ir::PTXOperand::u64;
 		
-		move.d.reg = _tempRegister( move.d.identifier );
+		move.d.reg = _tempRegister();
 		move.d.addressMode = ir::PTXOperand::Register;
 		move.d.type = ir::PTXOperand::u64;
 	
@@ -116,14 +113,16 @@ namespace analysis
 			load.d.type = reg->type;
 			load.d.reg = reg->id;
 			
-			_kernel->dfg()->insert( block, _kernel->dfg()->convert( load, 
-				_kernel->instructions.size() ), 0 );
 			_kernel->instructions.push_back( load );
+			_kernel->dfg()->insert( block, _kernel->dfg()->convert( 
+				_kernel->instructions.back(), 
+				_kernel->instructions.size() - 1 ), 0 );
 		}
 	
-		_kernel->dfg()->insert( block, _kernel->dfg()->convert( move, 
-			_kernel->instructions.size() ), 0 );
 		_kernel->instructions.push_back( move );
+		_kernel->dfg()->insert( block, _kernel->dfg()->convert( 
+			_kernel->instructions.back(), 
+			_kernel->instructions.size() - 1 ), 0 );
 	}
 	
 	void RemoveBarrierPass::_addEntryPoint( DataflowGraph::iterator block )
@@ -132,46 +131,62 @@ namespace analysis
 		
 		std::stringstream stream;
 		
-		stream << "__ocelot_remove_barrier_entry_" << _reentryPoint;
+		stream << "$__ocelot_remove_barrier_entry_" << _reentryPoint;
 		
 		entryBlock->label = stream.str();
 
 		DataflowGraph::iterator entry = _kernel->dfg()->insert( 
 			_kernel->dfg()->begin(), DataflowGraph::Block( *entryBlock ) );
 				
-		ir::PTXInstruction move ( _kernel->version(), ir::PTXInstruction::Mov );
+		ir::PTXInstruction move( _kernel->version(), ir::PTXInstruction::Mov );
 		
-		move.type = ir::PTXOperand::u32;
+		move.type = ir::PTXOperand::u64;
 		move.a.identifier = "__ocelot_remove_barrier_pass_syncpoint";
 		move.a.addressMode = ir::PTXOperand::Address;
 		move.a.type = ir::PTXOperand::u32;
 		
-		move.d.reg = _tempRegister( move.d.identifier );
+		move.d.reg = _tempRegister();
 		move.d.addressMode = ir::PTXOperand::Register;
-		move.d.type = ir::PTXOperand::u32;
+		move.d.type = ir::PTXOperand::u64;
 		
-		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( move, 
-			_kernel->instructions.size() ), 0 );
 		_kernel->instructions.push_back( move );
+		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( 
+			_kernel->instructions.back(), 
+			_kernel->instructions.size() - 1 ), 0 );
+
+		ir::PTXInstruction load( _kernel->version(), ir::PTXInstruction::Ld );
+
+		load.type = ir::PTXOperand::u32;
+		load.a = move.d;
+
+		load.d.reg = _tempRegister();
+		load.d.addressMode = ir::PTXOperand::Register;
+		load.d.type = ir::PTXOperand::u32;
 		
+		_kernel->instructions.push_back( load );
+		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( 
+			_kernel->instructions.back(), 
+			_kernel->instructions.size() - 1 ), 1 );
+
 		ir::PTXInstruction setp( _kernel->version(), ir::PTXInstruction::SetP );
 		
 		setp.type = ir::PTXOperand::u32;
 		setp.comparisonOperator = ir::PTXInstruction::Eq;
 
-		setp.d.reg = _tempRegister( setp.d.identifier );
+		setp.d.reg = _tempRegister();
 		setp.d.addressMode = ir::PTXOperand::Register;
 		setp.d.type = ir::PTXOperand::pred;
 		
-		setp.a = move.d;
+		setp.a = load.d;
 		
 		setp.b.addressMode = ir::PTXOperand::Immediate;
 		setp.b.type = ir::PTXOperand::u32;
 		setp.b.imm_uint = _reentryPoint;
 		
-		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( setp, 
-			_kernel->instructions.size() ), 1 );
 		_kernel->instructions.push_back( setp );
+		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( 
+			_kernel->instructions.back(), 
+			_kernel->instructions.size() - 1 ), 2 );
 		
 		ir::PTXInstruction branch( _kernel->version(), 
 			ir::PTXInstruction::Bra );
@@ -180,10 +195,11 @@ namespace analysis
 		branch.d.identifier = block->label();
 		branch.pg = setp.d;
 
-		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( branch, 
-			_kernel->instructions.size() ), 2 );
 		_kernel->instructions.push_back( branch );
-
+		_kernel->dfg()->insert( entry, _kernel->dfg()->convert( 
+			_kernel->instructions.back(), 
+			_kernel->instructions.size() - 1 ), 3 );
+		
 		_kernel->dfg()->target( entry, block );
 	}
 
@@ -212,14 +228,14 @@ namespace analysis
 		
 		RegisterSet alive = block->alive( instruction );
 		
-		DataflowGraph::iterator bottom = _kernel->dfg()->split( block, id );
+		DataflowGraph::iterator bottom = _kernel->dfg()->split( block, id + 1 );
 
 		_addSpillCode( block, alive );
 		_addRestoreCode( bottom, alive );
 		
 		_kernel->dfg()->redirect( block, bottom, exitBlock );
 		
-		_addEntryPoint( block );		
+		_addEntryPoint( bottom );		
 
 	}
 	
@@ -232,10 +248,14 @@ namespace analysis
 			if( _kernel->instructions[ instruction->id ].opcode 
 				== ir::PTXInstruction::Bar )
 			{
+				_barriers = true;
 				_kernel->instructions[ instruction->id ].reentryPoint 
 					= _reentryPoint;
+				unsigned int bytes = _spillBytes;
+				_spillBytes = 1;
 				_removeBarrier( block, std::distance( 
 					block->instructions().begin(), instruction ) );
+				_spillBytes = std::max( bytes, _spillBytes );
 				++_reentryPoint;
 			}
 		}
@@ -270,7 +290,7 @@ namespace analysis
 
 	void RemoveBarrierPass::initialize( const ir::Module& m )
 	{
-		
+		_barriers = false;
 	}
 	
 	void RemoveBarrierPass::runOnKernel( ir::Kernel& k )
@@ -278,7 +298,7 @@ namespace analysis
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"This pass is valid for PTX kernels only." );
 		_reentryPoint = 1;
-		_spillBytes = 0;
+		_spillBytes = 1;
 		_kernel = static_cast< ir::PTXKernel* >( &k );
 		k.dfg()->compute();
 		
@@ -294,6 +314,16 @@ namespace analysis
 	void RemoveBarrierPass::finalize( )
 	{
 	
+	}
+	
+	bool RemoveBarrierPass::barriers() const
+	{
+		return _barriers;
+	}
+	
+	std::string RemoveBarrierPass::resume() const
+	{
+		return "__ocelot_remove_barrier_pass_syncpoint";
 	}
 }
 

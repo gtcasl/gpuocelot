@@ -13,6 +13,7 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/XmlParser.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <cassert>
 #include <cstring>
@@ -90,6 +91,294 @@ namespace cuda
 		
 		report( "Obtained translated kernel." );
 		return translatedKernel;
+	}
+
+	void CudaRuntime::_setParameters( ir::Kernel& k, 
+		ThreadMap::iterator thread )
+	{
+		ir::Kernel::ParameterVector::iterator 
+			ki = k.parameters.begin();
+		ThreadContext::ParameterMap::iterator 
+			pi = thread->second.parameters.begin();
+		
+		for( ; ki != k.parameters.end() 
+			&& pi != thread->second.parameters.end(); ++ki, ++pi )
+		{
+			if( ki->getSize() < pi->second.size() )
+			{
+				std::stringstream stream;
+				stream << "For parameter " << ki->name << " PTX size " 
+					<< ki->getSize() 
+					<< " is less than specified size " 
+					<< pi->second.size();
+				throw hydrazine::Exception( formatError( 
+					stream.str() ) );
+			}
+			
+			unsigned int size = 0;
+		
+			for( ir::Parameter::ValueVector::iterator 
+				vi = ki->arrayValues.begin();
+				vi != ki->arrayValues.end(); ++vi )
+			{
+				unsigned int end = MIN( pi->second.size(), 
+					size + ki->getElementSize() );
+				unsigned int copySize = MIN( end - size, 
+					ki->getElementSize() );
+				unsigned int remainder = ki->getElementSize() 
+					- copySize;
+				memcpy( &vi->val_b8, &pi->second[0] + size, copySize );
+				memset( &vi->val_b8 + copySize, 0, remainder );
+				size += ki->getElementSize();
+			}
+			
+			report( " Set up parameter " << ki->name << " size " 
+				<< ki->getSize() << " value " 
+				<< ir::Parameter::value( *ki ) );				
+		}
+		
+		if( ki != k.parameters.end() )
+		{
+			std::stringstream stream;
+			stream << "Parameters : ";
+			
+			for( ; ki != k.parameters.end(); ++ki )
+			{
+				stream << ki->name << " ";
+			}
+			
+			stream << "not set up for kernel " << k.name <<".";
+			throw hydrazine::Exception( formatError( stream.str() ) );		
+		}
+
+		if( pi != thread->second.parameters.end() )
+		{
+			std::stringstream stream;
+			stream << "Extra parameters added at offsets : ";
+			
+			for( ; pi != thread->second.parameters.end(); ++pi )
+			{
+				stream << pi->first << " ";
+			}
+			
+			stream << "for kernel " << k.name <<".";
+			throw hydrazine::Exception( formatError( stream.str() ) );		
+		}
+	}
+
+	void CudaRuntime::_launchEmulatedKernel( ThreadMap::iterator thread, 
+		ArchitectureMap::iterator translatedKernel )
+	{			
+		executive::EmulatedKernel* emulated = static_cast< 
+			executive::EmulatedKernel* >( translatedKernel->second );
+
+		report( "Setting up parameters for emulated kernel \"" 
+			<< emulated->name << "\"." );
+		
+		if( emulated->ConstMemorySize 
+			> ( unsigned int ) context.devices[ 
+			context.getSelected() ].totalConstantMemory )
+		{
+			#if CUDA_VERBOSE == 1
+			std::cerr << "==Ocelot== Out of const memory for kernel \"" 
+				<< emulated->name 
+				<< "\" : \n==Ocelot==\tpreallocated ";
+			std::cerr << emulated->ConstMemorySize 
+				<< " is greater than available " 
+				<< context.devices[ 
+				context.getSelected() ].totalConstantMemory 
+				<< " for device " << context.devices[ 
+				context.getSelected() ].name << "\n" << std::flush;
+			#endif
+			thread->second.lastError = cudaErrorLaunchFailure;
+			return;
+		}
+		
+		unsigned int staticSharedSize = emulated->SharedMemorySize;
+		unsigned int dynamicSharedSize = staticSharedSize +
+			thread->second.shared;
+		
+		if( dynamicSharedSize > ( unsigned int ) context.devices[ 
+			context.getSelected() ].sharedMemPerBlock )
+		{
+			#if CUDA_VERBOSE == 1
+			std::cerr << "==Ocelot== Out of shared memory for kernel \""
+				<< emulated->name 
+				<< "\" : \n==Ocelot==\tpreallocated ";
+			std::cerr << emulated->SharedMemorySize << " + requested " 
+				<< thread->second.shared 
+				<< " is greater than available " 
+				<< context.devices[ 
+				context.getSelected() ].sharedMemPerBlock 
+				<< " for device " << context.devices[ 
+				context.getSelected() ].name << "\n" << std::flush;
+			#endif
+			thread->second.lastError = cudaErrorLaunchFailure;
+			return;
+		}
+		
+		emulated->SharedMemorySize = dynamicSharedSize;
+		
+		_setParameters( *emulated, thread );
+		
+		for( TraceGeneratorVector::iterator 
+			generator = thread->second.nextTraceGenerators.begin(); 
+			generator != thread->second.nextTraceGenerators.end(); 
+			++generator )
+		{
+			emulated->addTraceGenerator( *generator );
+		}
+		
+		for( TraceGeneratorVector::iterator 
+			gen = thread->second.persistentTraceGenerators.begin(); 
+			gen != thread->second.persistentTraceGenerators.end(); 
+			++gen )
+		{
+			emulated->addTraceGenerator( *gen );
+		}
+		
+		emulated->updateParameterMemory();
+		emulated->updateGlobals();
+		
+		try
+		{
+			emulated->setKernelShape( thread->second.ctaDimensions.x, 
+				thread->second.ctaDimensions.y, 
+				thread->second.ctaDimensions.z );
+			assert( thread->second.kernelDimensions.z == 1 );
+
+			report( "Launching emulated kernel \"" 
+				<< emulated->name << "\"." );
+
+			emulated->launchGrid( thread->second.kernelDimensions.x, 
+				thread->second.kernelDimensions.y );
+			thread->second.lastError = cudaSuccess;
+		}
+		#if CATCH_RUNTIME_EXCEPTIONS == 1
+		catch( const executive::RuntimeException& e )
+		{
+			#if CUDA_VERBOSE == 1
+			std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
+				<< emulated->name 
+				<< "\" with exception: \n";
+			std::cerr << formatError( e.toString() ) 
+				<< "\n" << std::flush;
+			#endif
+			thread->second.lastError = cudaErrorLaunchFailure;
+			emulated->SharedMemorySize = staticSharedSize;
+			thread->second.parameters.clear();
+		}
+		#else
+		catch( int nothing )
+		{
+		
+		}
+		#endif
+		
+		emulated->SharedMemorySize = staticSharedSize;
+		thread->second.parameters.clear();
+		
+		for( TraceGeneratorVector::iterator 
+			generator = thread->second.nextTraceGenerators.begin(); 
+			generator != thread->second.nextTraceGenerators.end(); 
+			++generator )
+		{
+			emulated->removeTraceGenerator( *generator );
+		}
+		
+		thread->second.nextTraceGenerators.clear();
+		
+		for( TraceGeneratorVector::iterator 
+			gen = thread->second.persistentTraceGenerators.begin(); 
+			gen != thread->second.persistentTraceGenerators.end(); 
+			++gen )
+		{
+			emulated->removeTraceGenerator( *gen );
+		}
+	}
+
+	void CudaRuntime::_launchLLVMKernel( ThreadMap::iterator thread, 
+		ArchitectureMap::iterator translatedKernel )
+	{
+		executive::LLVMExecutableKernel* llvm = static_cast< 
+			executive::LLVMExecutableKernel* >( translatedKernel->second );
+
+		report( "Setting up parameters for emulated kernel \"" 
+			<< llvm->name << "\"." );
+		
+		llvm->externSharedMemory( thread->second.shared );
+		
+		if( llvm->constantMemorySize() 
+			> ( unsigned int ) context.devices[ 
+			context.getSelected() ].totalConstantMemory )
+		{
+			#if CUDA_VERBOSE == 1
+			std::cerr << "==Ocelot== Out of const memory for kernel \"" 
+				<< llvm->name 
+				<< "\" : \n==Ocelot==\tpreallocated ";
+			std::cerr << llvm->constantMemorySize() 
+				<< " is greater than available " 
+				<< context.devices[ 
+				context.getSelected() ].totalConstantMemory 
+				<< " for device " << context.devices[ 
+				context.getSelected() ].name << "\n" << std::flush;
+			#endif
+			thread->second.lastError = cudaErrorLaunchFailure;
+			return;
+		}
+		
+		unsigned int dynamicSharedSize = llvm->sharedMemorySize() +
+			thread->second.shared;
+		
+		if( dynamicSharedSize > ( unsigned int ) context.devices[ 
+			context.getSelected() ].sharedMemPerBlock )
+		{
+			#if CUDA_VERBOSE == 1
+			std::cerr << "==Ocelot== Out of shared memory for kernel \""
+				<< llvm->name 
+				<< "\" : \n==Ocelot==\tpreallocated ";
+			std::cerr << llvm->sharedMemorySize() << " + requested " 
+				<< thread->second.shared 
+				<< " is greater than available " 
+				<< context.devices[ 
+				context.getSelected() ].sharedMemPerBlock 
+				<< " for device " << context.devices[ 
+				context.getSelected() ].name << "\n" << std::flush;
+			#endif
+			thread->second.lastError = cudaErrorLaunchFailure;
+			return;
+		}
+				
+		_setParameters( *llvm, thread );
+
+		assertM( thread->second.nextTraceGenerators.empty(), 
+			"Trace generators not supported for LLVM kernels." );
+		assertM( thread->second.persistentTraceGenerators.empty(), 
+			"Trace generators not supported for LLVM kernels." );
+		
+		llvm->updateParameterMemory();
+		llvm->updateGlobalMemory();
+		
+		try
+		{
+			llvm->setKernelShape( thread->second.ctaDimensions.x, 
+				thread->second.ctaDimensions.y, 
+				thread->second.ctaDimensions.z );
+			assert( thread->second.kernelDimensions.z == 1 );
+
+			report( "Launching emulated kernel \"" 
+				<< llvm->name << "\"." );
+
+			llvm->launchGrid( thread->second.kernelDimensions.x, 
+				thread->second.kernelDimensions.y );
+			thread->second.lastError = cudaSuccess;
+		}
+		catch( ... )
+		{
+			thread->second.lastError = cudaErrorLaunchFailure;
+		}
+		
+		thread->second.parameters.clear();
 	}
 
 	cudaDeviceProp CudaRuntime::convert( const executive::Device& device )
@@ -939,204 +1228,14 @@ namespace cuda
 		
 			case ir::Instruction::Emulated:
 			{
-			
-				executive::EmulatedKernel* emulated = static_cast< 
-					executive::EmulatedKernel* >( translatedKernel->second );
-
-				report( "Setting up parameters for emulated kernel \"" 
-					<< emulated->name << "\"." );
-				
-				if( emulated->ConstMemorySize 
-					> ( unsigned int ) context.devices[ 
-					context.getSelected() ].totalConstantMemory )
-				{
-					#if CUDA_VERBOSE == 1
-					std::cerr << "==Ocelot== Out of const memory for kernel \"" 
-						<< emulated->name 
-						<< "\" : \n==Ocelot==\tpreallocated ";
-					std::cerr << emulated->ConstMemorySize 
-						<< " is greater than available " 
-						<< context.devices[ 
-						context.getSelected() ].totalConstantMemory 
-						<< " for device " << context.devices[ 
-						context.getSelected() ].name << "\n" << std::flush;
-					#endif
-					thread->second.lastError = cudaErrorLaunchFailure;
-					break;
-				}
-				
-				unsigned int staticSharedSize = emulated->SharedMemorySize;
-				unsigned int dynamicSharedSize = staticSharedSize +
-					thread->second.shared;
-				
-				if( dynamicSharedSize > ( unsigned int ) context.devices[ 
-					context.getSelected() ].sharedMemPerBlock )
-				{
-					#if CUDA_VERBOSE == 1
-					std::cerr << "==Ocelot== Out of shared memory for kernel \""
-						<< emulated->name 
-						<< "\" : \n==Ocelot==\tpreallocated ";
-					std::cerr << emulated->SharedMemorySize << " + requested " 
-						<< thread->second.shared 
-						<< " is greater than available " 
-						<< context.devices[ 
-						context.getSelected() ].sharedMemPerBlock 
-						<< " for device " << context.devices[ 
-						context.getSelected() ].name << "\n" << std::flush;
-					#endif
-					thread->second.lastError = cudaErrorLaunchFailure;
-					break;
-				}
-				
-				emulated->SharedMemorySize = dynamicSharedSize;
-				
-				ir::Kernel::ParameterVector::iterator 
-					ki = emulated->parameters.begin();
-				ThreadContext::ParameterMap::iterator 
-					pi = thread->second.parameters.begin();
-				
-				for( ; ki != emulated->parameters.end() 
-					&& pi != thread->second.parameters.end(); ++ki, ++pi )
-				{
-					if( ki->getSize() < pi->second.size() )
-					{
-						std::stringstream stream;
-						stream << "For parameter " << ki->name << " PTX size " 
-							<< ki->getSize() 
-							<< " is less than specified size " 
-							<< pi->second.size();
-						throw hydrazine::Exception( formatError( 
-							stream.str() ) );
-					}
-					
-					unsigned int size = 0;
-				
-					for( ir::Parameter::ValueVector::iterator 
-						vi = ki->arrayValues.begin();
-						vi != ki->arrayValues.end(); ++vi )
-					{
-						unsigned int end = MIN( pi->second.size(), 
-							size + ki->getElementSize() );
-						unsigned int copySize = MIN( end - size, 
-							ki->getElementSize() );
-						unsigned int remainder = ki->getElementSize() 
-							- copySize;
-						memcpy( &vi->val_b8, &pi->second[0] + size, copySize );
-						memset( &vi->val_b8 + copySize, 0, remainder );
-						size += ki->getElementSize();
-					}
-					
-					report( " Set up parameter " << ki->name << " size " 
-						<< ki->getSize() << " value " 
-						<< ir::Parameter::value( *ki ) );				
-				}
-				
-				if( ki != emulated->parameters.end() )
-				{
-					std::stringstream stream;
-					stream << "Parameters : ";
-					
-					for( ; ki != emulated->parameters.end(); ++ki )
-					{
-						stream << ki->name << " ";
-					}
-					
-					stream << "not set up for kernel " << emulated->name <<".";
-					throw hydrazine::Exception( formatError( stream.str() ) );		
-				}
-
-				if( pi != thread->second.parameters.end() )
-				{
-					std::stringstream stream;
-					stream << "Extra parameters added at offsets : ";
-					
-					for( ; pi != thread->second.parameters.end(); ++pi )
-					{
-						stream << pi->first << " ";
-					}
-					
-					stream << "for kernel " << emulated->name <<".";
-					throw hydrazine::Exception( formatError( stream.str() ) );		
-				}
-
-				for( TraceGeneratorVector::iterator 
-					generator = thread->second.nextTraceGenerators.begin(); 
-					generator != thread->second.nextTraceGenerators.end(); 
-					++generator )
-				{
-					emulated->addTraceGenerator( *generator );
-				}
-				
-				for( TraceGeneratorVector::iterator 
-					gen = thread->second.persistentTraceGenerators.begin(); 
-					gen != thread->second.persistentTraceGenerators.end(); 
-					++gen )
-				{
-					emulated->addTraceGenerator( *gen );
-				}
-				
-				emulated->updateParameterMemory();
-				emulated->updateGlobals();
-				
-				try
-				{
-					emulated->setKernelShape( thread->second.ctaDimensions.x, 
-						thread->second.ctaDimensions.y, 
-						thread->second.ctaDimensions.z );
-					assert( thread->second.kernelDimensions.z == 1 );
-
-					report( "Launching emulated kernel \"" 
-						<< emulated->name << "\"." );
-
-					emulated->launchGrid( thread->second.kernelDimensions.x, 
-						thread->second.kernelDimensions.y );
-					thread->second.lastError = cudaSuccess;
-				}
-				#if CATCH_RUNTIME_EXCEPTIONS == 1
-				catch( const executive::RuntimeException& e )
-				{
-					#if CUDA_VERBOSE == 1
-					std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
-						<< emulated->name 
-						<< "\" with exception: \n";
-					std::cerr << formatError( e.toString() ) 
-						<< "\n" << std::flush;
-					#endif
-					thread->second.lastError = cudaErrorLaunchFailure;
-					emulated->SharedMemorySize = staticSharedSize;
-					thread->second.parameters.clear();
-				}
-				#else
-				catch( int nothing )
-				{
-				
-				}
-				#endif
-				
-				emulated->SharedMemorySize = staticSharedSize;
-				thread->second.parameters.clear();
-				
-				for( TraceGeneratorVector::iterator 
-					generator = thread->second.nextTraceGenerators.begin(); 
-					generator != thread->second.nextTraceGenerators.end(); 
-					++generator )
-				{
-					emulated->removeTraceGenerator( *generator );
-				}
-				
-				thread->second.nextTraceGenerators.clear();
-				
-				for( TraceGeneratorVector::iterator 
-					gen = thread->second.persistentTraceGenerators.begin(); 
-					gen != thread->second.persistentTraceGenerators.end(); 
-					++gen )
-				{
-					emulated->removeTraceGenerator( *gen );
-				}
-				
-				break;			
+				_launchEmulatedKernel( thread, translatedKernel );
+				break;
 			}
-
+			case ir::Instruction::LLVM:
+			{
+				_launchLLVMKernel( thread, translatedKernel );
+				break;
+			}
 			default:
 			{
 				std::stringstream stream;
@@ -1888,6 +1987,7 @@ namespace cuda
 
 	void CudaRuntime::configure( const Configuration& c )
 	{
+		
 	}
 
 }

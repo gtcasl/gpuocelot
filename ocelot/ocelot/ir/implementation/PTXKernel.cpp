@@ -9,7 +9,6 @@
 #define PTX_KERNEL_H_INCLUDED
 
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 
 #include <hydrazine/interface/Version.h>
@@ -71,10 +70,56 @@ namespace ir
 		return _version;
 	}
 
+	PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
+	{
+		report( "Getting list of all referenced registers" );				
+
+		typedef std::unordered_set< analysis::DataflowGraph::RegisterId > 
+			RegisterSet;
+		
+		RegisterSet encountered;
+		RegisterVector regs;
+		
+		for( analysis::DataflowGraph::const_iterator block = _dfg->begin(); 
+			block != _dfg->end(); ++block  )
+		{
+			report( " For block " << block->label() );
+			for( analysis::DataflowGraph::PhiInstructionVector::const_iterator 
+				phi = block->phis().begin(); phi != block->phis().end(); ++phi )
+			{
+				if( encountered.insert( phi->d.id ).second )
+				{
+					regs.push_back( phi->d );
+				}
+			}
+			
+			for( analysis::DataflowGraph::InstructionVector::const_iterator 
+				instruction = block->instructions().begin(); 
+				instruction != block->instructions().end(); ++instruction )
+			{
+				report( "  For instruction " 
+					<< instructions[ instruction->id ].toString() );
+				typedef analysis::DataflowGraph::RegisterPointerVector
+					RegisterPointerVector;
+				for( RegisterPointerVector::const_iterator 
+					d = instruction->d.begin(); d != instruction->d.end(); ++d )
+				{
+					if( encountered.insert( *d->pointer ).second )
+					{
+						regs.push_back( *d );
+					}
+				}
+			}
+		}
+		
+		return std::move( regs );
+	}
+
 	analysis::DataflowGraph* PTXKernel::dfg() 
 	{
 		assertM(_cfg != 0, "Must create cfg before building dfg.");
 		if(_dfg) return _dfg;
+		assignRegisters( instructions );
 		_dfg = new analysis::DataflowGraph( *_cfg, instructions );
 		return _dfg;
 	}
@@ -295,33 +340,35 @@ namespace ir
 							++a_it ) 
 						{
 							RegisterMap::iterator it 
-								= map.find( a_it->identifier );
+								= map.find( a_it->registerName() );
 
 							PTXOperand::RegisterType reg = 0;
 							if( it == map.end() ) 
 							{
 								reg = ( PTXOperand::RegisterType ) map.size();
 								map.insert( std::make_pair( 
-									a_it->identifier, reg ) );
+									a_it->registerName(), reg ) );
 							}
 							else 
 							{
 								reg = it->second;
 							}
 							a_it->reg = reg;
-							report( "  Assigning register " << a_it->identifier 
+							report( "  Assigning register " 
+								<< a_it->registerName() 
 								<< " to " << a_it->reg );
+							a_it->identifier.clear();
 						}
 					}
 					RegisterMap::iterator it 
-						= map.find( ( instr.*operands[ i ] ).identifier);
+						= map.find( ( instr.*operands[ i ] ).registerName());
 
 					PTXOperand::RegisterType reg = 0;
 					if( it == map.end() ) 
 					{
 						reg = ( PTXOperand::RegisterType ) map.size();
 						map.insert( std::make_pair( 
-							( instr.*operands[i] ).identifier, reg ) );
+							( instr.*operands[i] ).registerName(), reg ) );
 					}
 					else 
 					{
@@ -329,8 +376,9 @@ namespace ir
 					}
 					( instr.*operands[ i ] ).reg = reg;
 					report( "  Assigning register " 
-						<< ( instr.*operands[ i ] ).identifier 
+						<< ( instr.*operands[ i ] ).registerName() 
 						<< " to " << reg );
+					( instr.*operands[i] ).identifier.clear();
 				}
 			}
 		}
@@ -343,7 +391,74 @@ namespace ir
 			<< hydrazine::Version().toString() << "\n";
 		stream << "*/\n";
 	
-		assertM( false, "Write PTXKernel to stream not implemented" );
+		if( version() == ir::PTXInstruction::ptx1_3 )
+		{
+			stream << ".entry " << name << "\n";		
+			stream << "{\n";
+			for( ParameterVector::const_iterator parameter = parameters.begin();
+				parameter != parameters.end(); ++parameter )
+			{
+				stream << "\t" << parameter->toString() << ";\n";
+			}
+		}
+		else if( version() == ir::PTXInstruction::ptx1_4 )
+		{
+			stream << ".entry " << name << "( \n";
+			for( ParameterVector::const_iterator parameter = parameters.begin();
+				parameter != parameters.end(); ++parameter )
+			{
+				if( parameter != parameters.begin() )
+				{
+					stream << ",\n";
+				}
+				stream << "\t\t" << parameter->toString();
+			}
+			stream << ")\n";		
+			stream << "{\n";
+		}
+		else
+		{
+			assertM( false, "Version not supported." );
+		}
+		
+		for( LocalMap::const_iterator local = locals.begin(); 
+			local != locals.end(); ++local )
+		{
+			stream << "\t" << local->second.toString() << "\n";
+		}
+		
+		if( _dfg != 0 )
+		{
+			RegisterVector regs = getReferencedRegisters();
+		
+			for( RegisterVector::const_iterator reg = regs.begin(); 
+				reg != regs.end(); ++reg )
+			{
+				stream << "\t.reg ." 
+					<< PTXOperand::toString( reg->type ) << " " 
+					<< "%r" << reg->id << ";\n";
+			}
+		}
+		
+		if( _cfg != 0 )
+		{
+			ControlFlowGraph::BlockPointerVector 
+				blocks = _cfg->executable_sequence();
+		
+			for( ControlFlowGraph::BlockPointerVector::iterator 
+				block = blocks.begin(); block != blocks.end(); ++block )
+			{
+				stream << "\t" << (*block)->label << ":\n";
+				for( BasicBlock::InstructionList::iterator 
+					instruction = (*block)->instructions.begin(); 
+					instruction != (*block)->instructions.end(); ++instruction )
+				{
+					stream << "\t\t" << instructions[ *instruction ].toString() 
+						<< ";\n";
+				}
+			}
+		}		
+		stream << "}\n";
 	}
 
 }

@@ -124,18 +124,18 @@ public:
 	
 		out << "  // basic blocks\n\n";
 	
-		out << "  bb_0 [shape=Mdiamond,label=\"" << entry->label << "\"];\n";
-		out << "  bb_1 [shape=Msquare,label=\"" << exit->label << "\"];\n";
+		out << "  bb_0 [shape=Mdiamond,label=\"" << _entry->label << "\"];\n";
+		out << "  bb_1 [shape=Msquare,label=\"" << _exit->label << "\"];\n";
 	
-		blockIndices[entry] = 0;
-		blockIndices[exit] = 1;
+		blockIndices[_entry] = 0;
+		blockIndices[_exit] = 1;
 	
 		int n = 0;
 		ir::BasicBlock::BlockList::iterator it = blocks.begin();
 		for (; it != blocks.end(); ++it, ++n) {
 			BasicBlock* block = *it;
 
-			if (block == entry || block == exit) continue;
+			if (block == _entry || block == _exit) continue;
 
 			blockIndices[block] = n;
 		
@@ -221,7 +221,7 @@ private:
 		BasicBlock* block,
 		BlockMap& visited);
 
-	ir::BasicBlock* entry,* exit;
+	ir::BasicBlock* _entry, *_exit;
 
 	ir::BasicBlock::BlockList blocks;
 	ir::BasicBlock::EdgeList edges;

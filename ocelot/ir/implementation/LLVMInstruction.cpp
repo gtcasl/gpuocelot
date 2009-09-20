@@ -67,7 +67,17 @@ namespace ir
 				{
 					if( type != InvalidDataType )
 					{
-						return LLVMInstruction::toString( type ) + "*";
+						if( vector > 1 )
+						{
+							std::stringstream stream;
+							stream << "< " << vector << " x " 
+								<< LLVMInstruction::toString( type ) << " >*";
+							return stream.str();
+						}
+						else
+						{
+							return LLVMInstruction::toString( type ) + "*";
+						}
 					}
 					else
 					{

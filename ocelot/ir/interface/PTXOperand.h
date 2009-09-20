@@ -131,6 +131,7 @@ namespace ir {
 		~PTXOperand();
 
 		std::string toString() const;
+		std::string registerName() const;
 		unsigned int bytes() const;
 
 		//! identifier of operand

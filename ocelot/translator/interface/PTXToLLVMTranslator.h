@@ -40,8 +40,7 @@ namespace translator
 			unsigned int _stackPointer;
 			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;
-			PTXInstructionVector _ptx;
-			analysis::DataflowGraph* _dfg;
+			ir::PTXKernel* _ptx;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 

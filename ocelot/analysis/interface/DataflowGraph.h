@@ -183,7 +183,7 @@ namespace analysis
 					static bool _equal( const RegisterSet& one, 
 						const RegisterSet& two );
 					/*! \brief Update the live ranges */
-					bool compute();
+					bool compute( bool hasFallthrough );
 			
 				public:
 					/*! \brief Constructor from a sequence of instructions */
@@ -191,9 +191,11 @@ namespace analysis
 					Block( DataflowGraph& dfg, ir::BasicBlock& block, 
 						std::deque< Inst >& instructions  );
 					/*! \brief Default constructor */
-					Block( Type t = Invalid );
+					explicit Block( Type t = Invalid );
+					/*! \brief Constructor from a string */
+					explicit Block( const std::string& name ); 
 					/*! \brief Consutructor from a blank bb */
-					Block( ir::BasicBlock& bb );
+					explicit Block( ir::BasicBlock& bb );
 					
 				public:
 					/*! \brief Get registers that are alive entering the block*/
@@ -278,7 +280,8 @@ namespace analysis
 				Note that this insert splits the fallthrough edge
 			*/
 			iterator insert( iterator predecessor, const Block& b );
-			/*! \brief Split a block into two starting at a given instruction */
+			/*! \brief Split a block into two starting at a given instruction,
+				the split instruction goes in the first block */
 			iterator split( iterator block, unsigned int instruction );
 			/*! \brief Redirect an edge between two blocks to a third */
 			void redirect( iterator source, 
@@ -329,40 +332,43 @@ namespace analysis
 		ir::ControlFlowGraph::BlockPointerVector blocks 
 			= cfg.executable_sequence();
 		assert( blocks.size() >= 2 );
-		assert( blocks.front() == cfg.get_entry_block() );
-		assert( blocks.back() == cfg.get_exit_block() );
 				
 		report( "Importing " << blocks.size() << " blocks from CFG." );
 		
 		unsigned int count = 1;
-		_blocks.push_back( Block( Block::Entry ) );
+		map.insert( std::make_pair( cfg.get_entry_block(), 
+			_blocks.insert( _blocks.end(), Block( Block::Entry ) ) ) );	
 		for( ir::ControlFlowGraph::BlockPointerVector::iterator 
-			bbi = blocks.begin() + 1; bbi != blocks.end() - 1; ++bbi, ++count )
+			bbi = blocks.begin(); bbi != blocks.end(); ++bbi, ++count )
 		{
+			if( *bbi == cfg.get_exit_block() ) continue;
+			if( *bbi == cfg.get_entry_block() ) continue;
 			Block newB( *this, **bbi, instructions );
 			std::stringstream label;
 			if( (*bbi)->label.empty() )
 			{
-				label << "$__Block_" << count;		
+				label << "$__Block_" << count;
+				(*bbi)->label = label.str();
 			}
 			else
 			{
 				label << (*bbi)->label;
 			}
 			newB._label = label.str();
-			_blocks.push_back( newB );	
+			map.insert( std::make_pair( *bbi, 
+				_blocks.insert( _blocks.end(), newB ) ) );	
 		}
-		_blocks.push_back( Block( Block::Exit ) );
+		map.insert( std::make_pair( cfg.get_exit_block(), 
+			_blocks.insert( _blocks.end(), Block( Block::Exit ) ) ) );	
 		
-		iterator bi = _blocks.begin();
+		_blocks.front()._label = "Entry";
+		_blocks.back()._label = "Exit";
+		_blocks.front()._block = cfg.get_entry_block();
+		_blocks.back()._block = cfg.get_exit_block();
+		_blocks.back()._fallthrough = _blocks.end();
+
+		report( "Adding edges from CFG" );
 		ir::ControlFlowGraph::BlockPointerVector::iterator bbi = blocks.begin();
-				
-		for( ; bi != _blocks.end(); ++bi, ++bbi )
-		{
-			map.insert( std::make_pair( *bbi, bi ) );
-		}
-		
-		bbi = blocks.begin();
 		for( ; bbi != blocks.end(); ++bbi )
 		{
 			BlockMap::iterator bi = map.find( *bbi );
@@ -370,36 +376,46 @@ namespace analysis
 		
 			ir::BasicBlock::EdgeList inEdges = (*bbi)->get_in_edges();
 		
+			report( " Adding edges into " << (*bbi)->label );
+		
 			for( ir::BasicBlock::EdgeList::iterator ei = inEdges.begin(); 
 				ei != inEdges.end(); ++ei )
 			{
 				BlockMap::iterator begin = map.find( (*ei)->head );
 				assert( begin != map.end() );
 				
+				assert( (*ei)->head == begin->second->_block );
+				assert( (*ei)->tail == bi->second->_block );
+				
 				if( (*ei)->type == ir::Edge::FallThrough )
 				{
+					report( "  fallthrough " << begin->second->label() << " -> "
+						<< bi->second->label() );
 					begin->second->_fallthrough = bi->second;
 					bi->second->_predecessors.insert( begin->second );
 				}
 				else if( (*ei)->type == ir::Edge::Branch )
 				{
+					report( "  branch " << begin->second->label() << " -> "
+						<< bi->second->label() );
 					begin->second->_targets.insert( bi->second );
 					bi->second->_predecessors.insert( begin->second );	
 				}
+				else
+				{
+					assertM( false, "Got invalid edge type between " 
+						<< begin->second->label() << " and " 
+						<< bi->second->label() );
+				}
 			}
 		}
-
-		_blocks.front()._label = "Entry";
-		_blocks.back()._label = "Exit";
-		_blocks.front()._block = cfg.get_entry_block();
-		_blocks.back()._block = cfg.get_exit_block();
-		_blocks.back()._fallthrough = _blocks.end();
 	}
 
 	template< typename Inst >
 	DataflowGraph::Block::Block( DataflowGraph& dfg, ir::BasicBlock& block, 
 		std::deque< Inst >& instructions ) : _type( Body ), _block( &block )
 	{
+		_fallthrough = dfg.end();
 		for( ir::BasicBlock::InstructionList::const_iterator 
 			fi = block.instructions.begin(); 
 			fi != block.instructions.end(); ++fi )

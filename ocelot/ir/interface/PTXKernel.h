@@ -9,6 +9,7 @@
 #define IR_PTX_KERNEL_H_INCLUDED
 
 #include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace ir 
 {
@@ -26,9 +27,12 @@ namespace ir
 			typedef std::unordered_map< std::string, 
 				PTXOperand::RegisterType > RegisterMap;
 
+			/*! \brief A set of registers */
+			typedef analysis::DataflowGraph::RegisterVector RegisterVector;
+
 		private:
 			PTXInstruction::Version _version;
-		
+			
 		public:
 			/*! the CFG references this vector of instructions */
 			PTXInstructionVector instructions;
@@ -72,7 +76,12 @@ namespace ir
 		public:
 			/*! \brief Get the version of the PTX instruction set being used */
 			PTXInstruction::Version version() const;
+			
+			/*! \brief Get the set of all referenced 
+				registers in the instruction set */
+			RegisterVector getReferencedRegisters() const;
 
+		public:
 			/*! \brief Builds the data flow graph within the kernel */
 			virtual analysis::DataflowGraph* dfg();
 	

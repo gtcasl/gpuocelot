@@ -27,6 +27,7 @@ namespace test
 		private:
 			executive::LLVMExecutableKernel* _divergentKernel;
 			executive::LLVMExecutableKernel* _loopingKernel;
+			executive::LLVMExecutableKernel* _barrierKernel;
 			executive::LLVMExecutableKernel* _matrixMultiplyKernel;
 			executive::Executive _context;		
 
@@ -35,6 +36,7 @@ namespace test
 		
 			bool testDivergent();
 			bool testLooping();
+			bool testBarrier();
 			bool testMatrixMultiply();
 			
 			bool doTest();

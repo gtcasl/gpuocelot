@@ -363,17 +363,15 @@ namespace translator
 	void PTXToLLVMTranslator::_convertPtxToSsa()
 	{
 		report( " Doing basic PTX register allocation");
-		report( " Performing register allocation" );
-		ir::PTXKernel::assignRegisters( _ptx );
 		report( " Converting PTX to SSA form");
-		_dfg->toSsa();
+		_ptx->dfg()->toSsa();
 	}
 
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
 		for( analysis::DataflowGraph::iterator 
-			block = ++_dfg->begin(); 
-			block != _dfg->end(); ++block )
+			block = ++_ptx->dfg()->begin(); 
+			block != _ptx->dfg()->end(); ++block )
 		{
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
@@ -432,7 +430,7 @@ namespace translator
 			
 			if( block->targets().empty() )
 			{
-				if( block->fallthrough() != _dfg->end() )
+				if( block->fallthrough() != _ptx->dfg()->end() )
 				{
 					ir::LLVMBr branch;
 				
@@ -457,8 +455,8 @@ namespace translator
 		const analysis::DataflowGraph::Instruction& i, 
 		const analysis::DataflowGraph::Block& block )
 	{
-		assert( i.id < _ptx.size() );
-		_translate( _ptx[ i.id ], block );
+		assert( i.id < _ptx->instructions.size() );
+		_translate( _ptx->instructions[ i.id ], block );
 	}
 
 	void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i, 
@@ -859,26 +857,6 @@ namespace translator
 		const analysis::DataflowGraph::Block& block )
 	{
 		ir::LLVMBr branch;
-		if( ir::PTXOperand::PT != i.pg.condition 
-			&& ir::PTXOperand::nPT != i.pg.condition )
-		{
-			branch.condition = _translate( i.pg );
-		}
-		else
-		{
-			branch.condition.type.category = ir::LLVMInstruction::Type::Element;
-			branch.condition.type.type = ir::LLVMInstruction::I1;
-			branch.condition.constant = true;
-			
-			if( ir::PTXOperand::PT == i.pg.condition )
-			{
-				branch.condition.i1 = true;
-			}
-			else
-			{
-				branch.condition.i1 = false;
-			}
-		}
 		
 		if( block.targets().empty() )
 		{
@@ -887,7 +865,39 @@ namespace translator
 		else
 		{
 			branch.iftrue = "%" + (*block.targets().begin())->label();
-			branch.iffalse = "%" + block.fallthrough()->label();
+			if( block.fallthrough() != _ptx->dfg()->end() )
+			{
+				if( (*block.targets().begin()) != block.fallthrough() )
+				{
+					if( ir::PTXOperand::PT != i.pg.condition 
+						&& ir::PTXOperand::nPT != i.pg.condition )
+					{
+						branch.condition = _translate( i.pg );
+					}
+					else
+					{
+						branch.condition.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						branch.condition.type.type = ir::LLVMInstruction::I1;
+						branch.condition.constant = true;
+			
+						if( ir::PTXOperand::PT == i.pg.condition )
+						{
+							branch.condition.i1 = true;
+						}
+						else
+						{
+							branch.condition.i1 = false;
+						}
+					}
+					branch.iffalse = "%" + block.fallthrough()->label();
+				}
+				if( i.pg.condition == ir::PTXOperand::InvPred )
+				{
+					std::swap( branch.iftrue, branch.iffalse );
+				}
+			}
+			
 		}
 		_add( branch );
 	}
@@ -1697,6 +1707,7 @@ namespace translator
 			load.d = _translate( i.d.array.front() );
 			load.d.type.category = ir::LLVMInstruction::Type::Vector;
 			load.d.type.vector = i.d.vec;
+			load.d.type.type = _translate( i.type );
 			load.d.name = _tempRegister();
 		}
 		else
@@ -1726,14 +1737,35 @@ namespace translator
 		{
 			ir::LLVMInttoptr cast;
 			
-			cast.a = _translate( i.a );
+			if( i.a.offset != 0 )
+			{
+				ir::LLVMAdd add;
+			
+				add.a = _translate( i.a );
+				add.b.constant = true;
+				add.b.type.category = ir::LLVMInstruction::Type::Element;
+				add.b.type.type = add.a.type.type;
+				add.b.i64 = i.a.offset;
+				
+				add.d = add.a;
+				add.d.name = _tempRegister();
+				
+				_add( add );
+				
+				cast.a = add.d;
+			}
+			else
+			{
+				cast.a = _translate( i.a );
+			}
+			
 			cast.d.type.members.push_back( load.d.type );
 			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
 			cast.d.name = _tempRegister();
 			
 			_add( cast );
 			
-			load.a = cast.d;
+			load.a = cast.d;			
 		}
 				
 		if( i.volatility == ir::PTXInstruction::Volatile )
@@ -3075,6 +3107,7 @@ namespace translator
 			store.a = _translate( i.a.array.front() );
 			store.a.type.vector = i.vec;
 			store.a.type.category = ir::LLVMInstruction::Type::Vector;
+			store.a.type.type = _translate( i.type );
 		}
 
 		ir::LLVMInttoptr inttoptr;
@@ -3122,6 +3155,7 @@ namespace translator
 			store.a = _translate( i.a.array.front() );
 			store.a.type.vector = i.vec;
 			store.a.type.category = ir::LLVMInstruction::Type::Vector;
+			store.a.type.type = _translate( i.type );
 
 			ir::PTXOperand::Array::const_iterator 
 				source = i.a.array.begin();
@@ -3131,7 +3165,16 @@ namespace translator
 			insertOne.d = store.a;
 			insertOne.d.name = _tempRegister();
 			insertOne.a = store.a;
+			insertOne.a.constant = true;
+			
+			ir::LLVMInstruction::Value value;
+			value.i64 = 0;
+			
+			insertOne.a.values.assign( i.vec, value );
+			
 			insertOne.b = _translate( *source );
+			insertOne.b.type.type = _translate( i.type );
+
 			insertOne.c.type.category = ir::LLVMInstruction::Type::Element;
 			insertOne.c.type.type = ir::LLVMInstruction::I32;
 			insertOne.c.constant = true;
@@ -3146,14 +3189,16 @@ namespace translator
 				ir::LLVMInsertelement insert;
 
 				insert.d = store.a;
+				insert.d.name = _tempRegister();
 				if( ++ir::PTXOperand::Array::const_iterator( source ) 
-					!= i.a.array.end() )
+					== i.a.array.end() )
 				{
-					insert.d.name = _tempRegister();
+					store.a.name = insert.d.name;
 				}
 				insert.a = store.a;
 				insert.a.name = currentSource;
 				insert.b = _translate( *source );
+				insert.b.type.type = _translate( i.type );
 				insert.c.type.category = ir::LLVMInstruction::Type::Element;
 				insert.c.type.type = ir::LLVMInstruction::I32;
 				insert.c.constant = true;
@@ -4037,13 +4082,9 @@ namespace translator
 		assertM( k->ISA == ir::Instruction::PTX, 
 			"Kernel must a PTXKernel to translate to an LLVMKernel" );
 		
-		const ir::PTXKernel& ptx = static_cast< const ir::PTXKernel& >( *k );
+		_ptx = new ir::PTXKernel( *static_cast< const ir::PTXKernel* >( k ) );
 		_llvmKernel = new ir::LLVMKernel( *k );
-		
-		_ptx = ptx.instructions;
-		report( " Building the dataflow graph");
-		_dfg = new analysis::DataflowGraph( *_llvmKernel->cfg(), _ptx );
-		
+				
 		_addGlobalDeclarations();
 		_convertPtxToSsa();
 		_translateInstructions();
@@ -4055,10 +4096,9 @@ namespace translator
 		_tempCCRegisterCount = 0;
 		_tempBlockCount = 0;
 		_uninitialized.clear();
-		_ptx.clear();
-		
-		delete _dfg;
-		
+
+		delete _ptx;
+				
 		return _llvmKernel;
 	}
 	

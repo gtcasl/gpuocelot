@@ -38,9 +38,10 @@ namespace analysis
 			ir::PTXKernel* _kernel;
 			unsigned int _reentryPoint;
 			unsigned int _spillBytes;
+			bool _barriers;
 			
 		private:
-			DataflowGraph::RegisterId _tempRegister( std::string& id );
+			DataflowGraph::RegisterId _tempRegister( );
 			void _addSpillCode( DataflowGraph::iterator block, 
 				const DataflowGraph::Block::RegisterSet& alive );
 			void _addRestoreCode( DataflowGraph::iterator block, 
@@ -58,6 +59,12 @@ namespace analysis
 			void initialize( const ir::Module& m );
 			void runOnKernel( ir::Kernel& k );		
 			void finalize( );
+
+		public:
+			/*! \brief Does this kernel contain at least one barrier */
+			bool barriers() const;
+			/*! \brrief What is the name of the barrier resume point */
+			std::string resume() const;
 
 	};
 }

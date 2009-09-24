@@ -174,6 +174,7 @@ void executive::EmulatedKernel::configureParameters() {
 void executive::EmulatedKernel::constructInstructionSequence(
 	PTXKernel::PTXInstructionVector& instructions) {
 	using namespace std;
+	report("Constructing instruction sequence.");
 
 	// visit basic blocks and add reconverge instructions
 	ir::ControlFlowGraph::BlockPointerVector 
@@ -364,6 +365,7 @@ void executive::EmulatedKernel::updateParameterMemory() {
 */
 void executive::EmulatedKernel::registerAllocation() {
 	using namespace std;
+	report("Allocating registers");
 	registerMap = ir::PTXKernel::assignRegisters( KernelInstructions );
 	RegisterCount = (int)registerMap.size();
 }

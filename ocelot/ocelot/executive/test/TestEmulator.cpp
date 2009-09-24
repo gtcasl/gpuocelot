@@ -491,65 +491,6 @@ public:
 		trace::TraceGenerator generator;
 		kernel->addTraceGenerator( &generator );
 
-		{
-			ofstream file("emulated_kernel.ptx");
-
-			// print register map
-			file << "Registers:\n";
-
-			for (ir::PTXKernel::RegisterMap::iterator 
-				r_it = kernel->registerMap.begin();
-				r_it != kernel->registerMap.end(); ++r_it) {
-				file << "  " << r_it->first << ": " << r_it->second << "\n";
-			}
-
-			file << "Instructions:\n";
-
-			for (ir::PTXKernel::PTXInstructionVector::iterator 
-				it = kernel->KernelInstructions.begin();
-				it != kernel->KernelInstructions.end(); ++it) {
-				file << PTXInstruction::toString((*it).opcode) << " ";
-				if (it->opcode == PTXInstruction::Bra) {
-					file << "[target: " << it->branchTargetInstruction 
-					<< ", reconverge: " << it->reconvergeInstruction << "]";
-				}
-				else if (it->opcode == PTXInstruction::Ld && it->addressSpace 
-					== PTXInstruction::Param) {
-					file << "[ " 
-					<< (kernel->registerMap.find(it->d.identifier))->second 
-					<< " param: " << it->a.offset << " ]";
-				}
-				else if (it->opcode == PTXInstruction::St && it->addressSpace 
-					== PTXInstruction::Param) {
-					file << "[ param: " << it->d.offset << " " 
-					<< (kernel->registerMap.find(it->a.identifier))->second 
-					<< " ]";
-				}
-				else {
-					PTXInstruction &instr = *it;
-					PTXOperand PTXInstruction:: * operands[] = { 
-						&PTXInstruction::d, &PTXInstruction::a, 
-						&PTXInstruction::b, &PTXInstruction::c
-					};
-
-					file << "[";
-					for (int i = 0; i < 4; i++) {
-						if ((instr.*operands[i]).addressMode 
-							== PTXOperand::Register 
-							|| (instr.*operands[i]).addressMode 
-							== PTXOperand::Indirect ) {
-							ir::PTXKernel::RegisterMap::iterator 
-								o_it = kernel->registerMap.find(
-								(instr.*operands[i]).identifier);
-							file << " " << o_it->second;
-						}
-					}
-					file << " ]";
-				}
-				file << "\n";
-			}
-		}
-
 		const int N = 32;
 		int *inputSequence = new int[N];
 		context.registerExternal(inputSequence, N*sizeof(int));

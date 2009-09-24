@@ -305,7 +305,7 @@ namespace ir
 	{
 		RegisterMap map;
 	
-		report( "Allocating registers" );
+		report( "Allocating registers " );
 	
 		for( PTXInstructionVector::iterator i_it = instructions.begin();
 			i_it != instructions.end(); ++i_it ) 

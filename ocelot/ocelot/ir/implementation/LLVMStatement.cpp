@@ -210,7 +210,7 @@ namespace ir
 			}
 			case VariableDeclaration:
 			{
-				std::string result = "@" + operand.name + " = ";
+				std::string result = "@" + label + " = ";
 				
 				std::stringstream address;
 				address << "addrspace(" << space << ") ";

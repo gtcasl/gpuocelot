@@ -30,3 +30,10 @@
 		</TraceGeneratingCudaRuntime>
 	</CudaRuntime>
 </ocelot>
+<cuda>
+	<CudaRuntime>
+		<DefaultDevice>
+			1
+		</DefaultDevice>
+	</CudaRuntime>
+</cuda>

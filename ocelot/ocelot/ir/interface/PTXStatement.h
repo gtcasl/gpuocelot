@@ -17,10 +17,7 @@ namespace ir {
 
 	class PTXStatement {
 	public:
-
-		/*!
-			PTX directive types
-		*/
+		/*!	PTX directive types */
 		enum Directive {
 			Instr,			//< indicates the is an actual instruction
 			Const,
@@ -97,7 +94,6 @@ namespace ir {
 		static std::string toString( Data, PTXOperand::DataType );
 	
 	public:
-
 		/*! Indicates type of statement */
 		Directive directive;
 

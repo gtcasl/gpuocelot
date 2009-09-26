@@ -128,6 +128,8 @@ namespace translator
 			std::string _loadMemoryBase( ir::PTXInstruction::AddressSpace space,
 				ir::PTXOperand::DataType type, size_t offset, 
 				ir::PTXInstruction::Vec vector );
+			std::string _loadGlobalPointer( const ir::PTXOperand& o, 
+				ir::PTXInstruction::Vec vector );
 			
 			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 

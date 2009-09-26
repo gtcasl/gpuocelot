@@ -1,13 +1,8 @@
 /*!
-
 	\file PTXStatement.cpp
-	
 	\date Monday January 19, 2009
-	
 	\author Andrew Kerr
-	
 	\brief The header file for the PTXStatement class
-
 */
 
 #ifndef IR_PTXSTATEMENT_CPP_INCLUDED
@@ -23,7 +18,6 @@ namespace ir {
 
 	std::string PTXStatement::StaticArray::dimensions() const {
 		if( stride.size() == 0 ) {
-		
 			return "";
 		}
 		
@@ -32,28 +26,22 @@ namespace ir {
 			si != stride.end(); ++si ) {
 			
 			if( *si == 0 ) {
-			
 				stream << "[]";
 				continue; 
-			
 			}
 			
 			stream << "[" << *si << "]";
-			
 		}
 		
 		return stream.str();
-			
 	}
 	
 	std::string PTXStatement::StaticArray::initializer( 
 		PTXOperand::DataType t ) const {
 		std::stringstream stream;
 		if( stride.size() == 0 ) {
-		
 			assert( values.size() == 1 );
 			stream << PTXStatement::toString( values.front(), t );
-			
 		}
 		std::stack< unsigned int > stack;
 		stream << "{ ";

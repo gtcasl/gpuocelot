@@ -358,6 +358,7 @@ namespace cuda
 		
 		llvm->updateParameterMemory();
 		llvm->updateGlobalMemory();
+		llvm->updateConstantMemory();
 		
 		try
 		{
@@ -625,8 +626,10 @@ namespace cuda
 		
 		if( thread == _threads.end() )
 		{
+			report( "Setting default device to " 
+				<< context.devices[ _defaultDevice ].guid );
 			ThreadContext threadContext;
-			threadContext.guid = context.devices[0].guid;
+			threadContext.guid = context.devices[ _defaultDevice ].guid;
 			threadContext.ctaDimensions.x = 1;
 			threadContext.ctaDimensions.y = 1;
 			threadContext.ctaDimensions.z = 1;
@@ -1643,29 +1646,22 @@ namespace cuda
 		GlobalMap::iterator global = binary->second.globals.find( name );
 		if( global != binary->second.globals.end() )
 		{
-		
 			if( global->second != pointer )
 			{
-			
 				throw hydrazine::Exception( 
 					formatError( "Two globals regstered with the same name " 
 					+ name ) );
-			
 			}
-		
 		}
 		else
 		{
-		
 			assert( space != ir::PTXInstruction::Texture );
 
 			binary->second.globals.insert( std::make_pair( name, 
 				(char*)pointer ) );
 			context.registerGlobal( pointer, size, name, space, 
 				binary->second.binary.ident );
-		
 		}
-		
 	}
 
 	void CudaRuntime::registerTexture( const textureReference* hostVar, 
@@ -1987,7 +1983,7 @@ namespace cuda
 
 	void CudaRuntime::configure( const Configuration& c )
 	{
-		
+		parse( "DefaultDeviceId", _defaultDevice, 0, c );	
 	}
 
 }

@@ -39,7 +39,8 @@ libOcelotAnalysis_la_SOURCES = \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
-	ocelot/analysis/implementation/RemoveBarrierPass.cpp
+	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
+	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp
 ################################################################################
 
 ################################################################################

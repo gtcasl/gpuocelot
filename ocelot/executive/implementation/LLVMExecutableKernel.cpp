@@ -14,6 +14,7 @@
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <fstream>
 
 #include <hydrazine/implementation/debug.h>
@@ -22,10 +23,10 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
-#define REPORT_ALL_PTX_SOURCE 1
-#define REPORT_ALL_LLVM_SOURCE 1
-#define REPORT_INSIDE_TRANSLATED_CODE 1
+#define REPORT_BASE 1
+#define REPORT_ALL_PTX_SOURCE 0
+#define REPORT_ALL_LLVM_SOURCE 0
+#define REPORT_INSIDE_TRANSLATED_CODE 0
 #define PRINT_OPTIMIZED_CFG 0
 
 #include <configure.h>
@@ -52,6 +53,11 @@ extern "C"
 	void setRoundingMode( unsigned int mode )
 	{
 		assertM( mode == 0, "No support for setting exotic rounding modes." );
+	}
+	
+	float ex2( float value )
+	{
+		return std::pow( 2.0, value );
 	}
 }
 
@@ -105,18 +111,25 @@ namespace executive
 		report( "  Building dataflow graph." );
 		_ptx->dfg();
 
+		analysis::ConvertPredicationToSelectPass pass1;
+		report( "  Running convert predicate to conditional select" );
+		
+		pass1.initialize( *module );
+		pass1.runOnKernel( *_ptx );
+		pass1.finalize();
+		
 		report( "  Running remove barrier pass." );
 		
 		reportE( REPORT_ALL_PTX_SOURCE, "   Code before pass:\n" << *_ptx );
 
-		analysis::RemoveBarrierPass pass;
+		analysis::RemoveBarrierPass pass2;
 		
-		pass.initialize( *module );
-		pass.runOnKernel( *_ptx );
-		pass.finalize();
+		pass2.initialize( *module );
+		pass2.runOnKernel( *_ptx );
+		pass2.finalize();
 		
-		_barrierSupport = pass.barriers();
-		_resumePoint = pass.resume();
+		_barrierSupport = pass2.barriers();
+		_resumePoint = pass2.resume();
 
 		reportE( REPORT_ALL_PTX_SOURCE, "   Code after pass:\n" << *_ptx );
 	}
@@ -564,38 +577,6 @@ namespace executive
 	void LLVMExecutableKernel::_allocateGlobalMemory( )
 	{
 		report( " Allocating global memory" );
-		for( PTXInstructionVector::iterator 
-			instruction = _ptx->instructions.begin(); 
-			instruction != _ptx->instructions.end(); ++instruction )
-		{
-			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
-				&instruction->b, &instruction->c };
-		
-			if( instruction->opcode == ir::PTXInstruction::Mov
-				|| instruction->opcode == ir::PTXInstruction::Ld
-				|| instruction->opcode == ir::PTXInstruction::St )
-			{
-				for( unsigned int i = 0; i != 4; ++i )
-				{
-					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
-					{
-						ir::Module::GlobalMap::const_iterator 
-							global = module->globals.find( 
-							operands[ i ]->identifier );
-						if( global != module->globals.end() )
-						{
-							operands[ i ]->imm_uint = 
-								(ir::PTXU64) global->second.pointer;
-							report("  Mapping global label " 
-								<< operands[ i ]->identifier << " to " 
-								<< operands[ i ]->imm_uint 
-								<< " for instruction \"" 
-								<< instruction->toString() << "\"" );
-						}
-					}
-				}
-			}
-		}
 	}
 	
 	void LLVMExecutableKernel::_allocateLocalMemory( )
@@ -672,12 +653,69 @@ namespace executive
 	
 	void LLVMExecutableKernel::_allocateConstantMemory( )
 	{
+		report( " Allocating Constant Memory" );
 		_context.constantSize = 0;
+		_constants.clear();
+
+		for( ir::Module::GlobalMap::const_iterator 
+			global = module->globals.begin(); 
+			global != module->globals.end(); ++global ) 
+		{
+			if( global->second.statement.directive 
+				== ir::PTXStatement::Const ) 
+			{
+				report( "   Found global constant variable " 
+					<< global->second.statement.name << " of size " 
+					<< global->second.statement.bytes() );
+				_pad( _context.constantSize, 
+					global->second.statement.alignment );
+				_constants.insert( std::make_pair( 
+					global->second.statement.name, _context.constantSize ) );
+				_context.constantSize += global->second.statement.bytes();
+			}
+		}
+		
+		for( PTXInstructionVector::iterator 
+			instruction = _ptx->instructions.begin(); 
+			instruction != _ptx->instructions.end(); ++instruction )
+		{
+			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
+				&instruction->b, &instruction->c };
+		
+			if( instruction->opcode == ir::PTXInstruction::Mov
+				|| instruction->opcode == ir::PTXInstruction::Ld
+				|| instruction->opcode == ir::PTXInstruction::St )
+			{
+				for( unsigned int i = 0; i != 4; ++i )
+				{
+					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					{
+						AllocationMap::iterator mapping = _constants.find( 
+							operands[ i ]->identifier );
+						if( _constants.end() != mapping ) 
+						{
+							instruction->addressSpace 
+								= ir::PTXInstruction::Const;
+							operands[ i ]->offset = mapping->second;
+							report("   For instruction " 
+								<< instruction->toString() 
+								<< ", mapping constant label " << mapping->first 
+								<< " to " << mapping->second );
+						}
+					}
+				}
+			}
+		}	
+
+		report( "   Total constant memory size is " << _context.constantSize 
+			<< "." );
+
+		_context.constant = new char[ _context.constantSize ];
 	}
 	
 	void LLVMExecutableKernel::_allocateTextureMemory( )
 	{
-	
+		report( " Allocating Texture Memory" );
 	}
 	
 	void LLVMExecutableKernel::_allocateMemory()
@@ -823,8 +861,54 @@ namespace executive
 	
 	void LLVMExecutableKernel::updateGlobalMemory()
 	{
-		assertM( module->globals.empty(), 
-			"No support for kernels with global variables." );
+		_state.jit->clearAllGlobalMappings();
+		for( ir::Module::GlobalMap::const_iterator 
+			global = module->globals.begin(); 
+			global != module->globals.end(); ++global ) 
+		{
+			switch( global->second.statement.directive ) 
+			{
+				case ir::PTXStatement::Global:
+				{
+					llvm::GlobalValue* 
+						value = _module->getNamedValue( global->first );
+					assertM( value != 0, "Global variable " << global->first 
+						<< " not found in llvm module." );
+					_state.jit->addGlobalMapping( value, 
+						global->second.pointer );
+					break;
+				}
+				case ir::PTXStatement::Tex:
+				{
+					assertM( false, 
+						"No support for updating texture variables." );
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+		}
+	}
+	
+	void LLVMExecutableKernel::updateConstantMemory()
+	{
+		report( "Updating constant memory." );
+		for( AllocationMap::iterator constant = _constants.begin(); 
+			constant != _constants.end(); ++constant ) 
+		{
+			report( " Updating constant memory " << constant->first );
+			ir::Module::GlobalMap::const_iterator 
+				global = module->globals.find( constant->first );
+			assert( global != module->globals.end() );
+			assert( global->second.statement.directive 
+				== ir::PTXStatement::Const );
+			assert( global->second.statement.bytes() 
+				+ constant->second <= _context.constantSize );
+			memcpy( _context.constant + constant->second, 
+				global->second.pointer, global->second.statement.bytes() );
+		}
 	}
 }
 

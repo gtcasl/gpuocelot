@@ -14,6 +14,7 @@
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -21,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -324,8 +325,16 @@ namespace translator
 			}
 			case ir::PTXOperand::Address:
 			{
-				op.name = _loadMemoryBase( space, o.type, o.offset, vector );
-				if( op.name == "" ) op.name = "@" + o.identifier;
+				if( space == ir::PTXInstruction::Global )
+				{
+					op.name = _loadGlobalPointer( o, vector );
+				}
+				else
+				{
+					op.name = _loadMemoryBase( space, 
+						o.type, o.offset, vector );
+					if( op.name == "" ) op.name = "@" + o.identifier;
+				}
 				op.type.category = ir::LLVMInstruction::Type::Pointer;
 				break;
 			}
@@ -2085,7 +2094,7 @@ namespace translator
 			compare.a = _translate( i.a );
 			compare.b = _translate( i.b );
 			
-			if( ir::PTXOperand::isSigned( i.a.type ) )
+			if( ir::PTXOperand::isSigned( i.type ) )
 			{
 				compare.comparison = ir::LLVMInstruction::Sgt;
 			}
@@ -2160,7 +2169,7 @@ namespace translator
 			compare.a = _translate( i.a );
 			compare.b = _translate( i.b );
 			
-			if( ir::PTXOperand::isSigned( i.a.type ) )
+			if( ir::PTXOperand::isSigned( i.type ) )
 			{
 				compare.comparison = ir::LLVMInstruction::Slt;
 			}
@@ -2979,7 +2988,7 @@ namespace translator
 	{
 		if( ir::PTXOperand::isSigned( i.type ) )
 		{
-			ir::LLVMLshr shift;
+			ir::LLVMAshr shift;
 			
 			shift.d = _destination( i );
 			shift.a = _translate( i.a );
@@ -2990,7 +2999,7 @@ namespace translator
 		}
 		else
 		{
-			ir::LLVMAshr shift;
+			ir::LLVMLshr shift;
 			
 			shift.d = _destination( i );
 			shift.a = _translate( i.a );
@@ -3703,7 +3712,7 @@ namespace translator
 	std::string PTXToLLVMTranslator::_loadMemoryBase( 
 		ir::PTXInstruction::AddressSpace space, ir::PTXOperand::DataType type, 
 		size_t offset, ir::PTXInstruction::Vec vector )
-	{
+	{		
 		ir::LLVMGetelementptr get;
 		
 		get.d.name = _tempRegister();
@@ -3792,6 +3801,42 @@ namespace translator
 		_add( cast );
 		
 		return cast.d.name;
+	}
+
+	std::string PTXToLLVMTranslator::_loadGlobalPointer( 
+		const ir::PTXOperand& o, ir::PTXInstruction::Vec vector )
+	{
+		ir::Module::GlobalMap::const_iterator 
+			global = _llvmKernel->module->globals.find( o.identifier );
+		assert( global != _llvmKernel->module->globals.end() );
+
+		if( global->second.statement.elements() == 1 )
+		{
+			return "@" + o.identifier;
+		}
+
+		ir::LLVMGetelementptr get;
+		
+		get.a.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.a.type.members.resize( 1 );
+
+		get.a.type.members[0].category 
+			= ir::LLVMInstruction::Type::Array;
+		get.a.type.members[0].vector 
+			= global->second.statement.elements();
+		
+		get.a.type.members[0].type = _translate( 
+			global->second.statement.type );
+		get.a.name = "@" + o.identifier;
+		
+		get.d.type = get.a.type.members[0];
+		get.d.name = _tempRegister();
+		get.indices.push_back( 0 );
+		get.indices.push_back( 0 );
+		
+		_add( get );
+		
+		return get.d.name;
 	}
 	
 	void PTXToLLVMTranslator::_setFloatingPointRoundingMode( 
@@ -3947,7 +3992,49 @@ namespace translator
 
 	void PTXToLLVMTranslator::_addGlobalDeclarations()
 	{
+		for( ir::Module::GlobalMap::const_iterator 
+			global = _llvmKernel->module->globals.begin(); 
+			global != _llvmKernel->module->globals.end(); ++global )
+		{
+			if( global->second.statement.directive 
+				!= ir::PTXStatement::Global ) continue;
 		
+			ir::LLVMStatement statement( 
+				ir::LLVMStatement::VariableDeclaration );
+
+			statement.label = global->second.statement.name;
+			statement.linkage = ir::LLVMStatement::InvalidLinkage;
+			statement.visibility = ir::LLVMStatement::Default;
+		
+			if( global->second.statement.elements() == 1 )
+			{
+				statement.operand.type.category 
+					= ir::LLVMInstruction::Type::Element;
+			}
+			else
+			{
+				statement.operand.type.category 
+					= ir::LLVMInstruction::Type::Array;
+				if( global->second.statement.attribute 
+					== ir::PTXStatement::Extern )
+				{
+					statement.operand.type.vector = 0;
+				}
+				else
+				{
+					assert( global->second.statement.elements() > 0 );
+					statement.operand.type.vector 
+						= global->second.statement.elements();
+				}
+			}
+			
+			statement.operand.type.type = _translate( 
+				global->second.statement.type );
+			statement.alignment = ir::PTXOperand::bytes( 
+				global->second.statement.type );
+		
+			_llvmKernel->_statements.push_front( statement );
+		}
 	}
 
 	void PTXToLLVMTranslator::_addKernelPrefix()
@@ -4023,6 +4110,22 @@ namespace translator
 	
 		_llvmKernel->_statements.push_front( sin );		
 
+		ir::LLVMStatement ex2( ir::LLVMStatement::FunctionDeclaration );
+
+		ex2.label = "ex2";
+		ex2.linkage = ir::LLVMStatement::InvalidLinkage;
+		ex2.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		ex2.visibility = ir::LLVMStatement::Default;
+		
+		ex2.operand.type.category = ir::LLVMInstruction::Type::Element;
+		ex2.operand.type.type = ir::LLVMInstruction::F32;
+		
+		ex2.parameters.resize( 1 );
+		ex2.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		ex2.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_front( ex2 );		
+
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );
 
@@ -4051,9 +4154,6 @@ namespace translator
 
 		_llvmKernel->_statements.push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
-		
-		ir::LLVMStatement context( ir::LLVMStatement::VariableDeclaration );
-
 	}
 	
 	void PTXToLLVMTranslator::_addKernelSuffix()
@@ -4085,12 +4185,12 @@ namespace translator
 		_ptx = new ir::PTXKernel( *static_cast< const ir::PTXKernel* >( k ) );
 		_llvmKernel = new ir::LLVMKernel( *k );
 				
-		_addGlobalDeclarations();
 		_convertPtxToSsa();
 		_translateInstructions();
 		_initializeRegisters();
 		_addKernelPrefix();
 		_addKernelSuffix();
+		_addGlobalDeclarations();
 		
 		_tempRegisterCount = 0;
 		_tempCCRegisterCount = 0;

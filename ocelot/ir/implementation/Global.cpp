@@ -17,7 +17,6 @@
 namespace ir
 {
 
-	
 	Global::Global() : local(false), pointer(0), registered(false)
 	{
 		
@@ -105,6 +104,8 @@ namespace ir
 		}
 		return *this;
 	}
+
+	
 	
 }
 

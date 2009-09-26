@@ -224,6 +224,9 @@ namespace cuda
 			/*!	\brief Registered Symbols */
 			SymbolMap _symbols;
 			
+			/*! \brief Default device index */
+			unsigned int _defaultDevice;
+			
 		private:
 			/*!
 				\brief Get an iterator to a translated kernel

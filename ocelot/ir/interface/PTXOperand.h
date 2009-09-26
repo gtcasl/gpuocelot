@@ -155,9 +155,7 @@ namespace ir {
 			SpecialRegister special;
 		};
 
-		/*!
-			Identifier for register
-		*/
+		/*! Identifier for register */
 		RegisterType reg;
 		
 		//! Indicates whether target or source is a vector or scalar

@@ -81,6 +81,9 @@ namespace executive
 			unsigned int _resumePointOffset;
 			/*! \brief External shared memory */
 			unsigned int _externalSharedSize;
+			/*! \brief Constant memory mapping */
+			AllocationMap _constants;
+			
 			
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
@@ -157,6 +160,8 @@ namespace executive
 			void updateParameterMemory();
 			/*! \brief Reload global memory */
 			void updateGlobalMemory();
+			/*! \brief Reload constant memory */
+			void updateConstantMemory();
 	};
 }
 

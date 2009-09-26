@@ -27,13 +27,23 @@ namespace parser
 			class State
 			{
 				public:
+					class OperandWrapper
+					{
+						public:
+							OperandWrapper( const ir::PTXOperand& o, 
+								ir::PTXInstruction::AddressSpace s );
+						public:
+							ir::PTXOperand operand;
+							ir::PTXInstruction::AddressSpace space;
+					};
+				
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::deque< std::string > StringList;
 					typedef std::deque< unsigned int > DimensionVector;
 					typedef std::deque< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
-						ir::PTXOperand > OperandMap;
+						OperandWrapper > OperandMap;
 					typedef std::deque< ir::PTXOperand > OperandVector;
 			
 					enum Error
@@ -88,6 +98,10 @@ namespace parser
 							the lexer
 					*/
 					bool warnLexer;
+
+				private:
+					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
+						ir::PTXStatement::Directive directive );
 				
 				private:
 					void _setImmediateTypes();

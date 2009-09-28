@@ -367,7 +367,7 @@ namespace cuda
 				thread->second.ctaDimensions.z );
 			assert( thread->second.kernelDimensions.z == 1 );
 
-			report( "Launching emulated kernel \"" 
+			report( "Launching llvm kernel \"" 
 				<< llvm->name << "\"." );
 
 			llvm->launchGrid( thread->second.kernelDimensions.x, 

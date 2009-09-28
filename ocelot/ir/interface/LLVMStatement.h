@@ -38,6 +38,7 @@ namespace ir
 				LinkerPrivate,
 				Internal,
 				AvailableExternally,
+				External,
 				LinkOnce,
 				Weak,
 				Common,

@@ -7,7 +7,7 @@
 */
 
 #ifndef PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
-#define PTX_TO_LLVM_TRANSLATOR_CPP_INtCLUDED
+#define PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
@@ -403,6 +403,18 @@ namespace translator
 					{
 						node.label = "%$OcelotRegisterInitializerBlock";
 						_uninitialized.push_back( *s );
+						node.reg = s->id;
+
+						std::stringstream stream;
+						stream << "%ri" << s->id;
+					
+						node.operand.name = stream.str();
+						node.operand.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						node.operand.type.type = _translate( s->type );
+					
+						p.nodes.push_back( node );
+						continue;
 					}
 					
 					node.reg = s->id;
@@ -644,8 +656,6 @@ namespace translator
 			
 			_add( select );
 		}
-		
-		_predicateEpilogue( i, destination );
 	}
 
 	void PTXToLLVMTranslator::_translateAdd( const ir::PTXInstruction& i )
@@ -692,11 +702,6 @@ namespace translator
 				
 				_add( compare );
 				_add( select );
-				_predicateEpilogue( i, select.d );
-			}
-			else
-			{
-				_predicateEpilogue( i, add.d );
 			}
 		}
 		else
@@ -711,7 +716,6 @@ namespace translator
 			add.b = _translate( i.b );
 		
 			_add( add );
-			_predicateEpilogue( i, add.d );
 		}
 		
 	}
@@ -783,7 +787,6 @@ namespace translator
 		truncate.a = add1.d;
 		
 		_add( truncate );
-		_predicateEpilogue( i, truncate.d );
 		
 		if( i.modifier & ir::PTXInstruction::CC )
 		{
@@ -809,8 +812,6 @@ namespace translator
 			And.b.i64 = 1;
 		
 			_add( And );
-		
-			_predicateEpilogue( i, And.d );
 		}
 	}
 
@@ -823,7 +824,6 @@ namespace translator
 		And.b = _translate( i.b );
 
 		_add( And );
-		_predicateEpilogue( i, And.d );
 	}
 
 	void PTXToLLVMTranslator::_translateAtom( const ir::PTXInstruction& i )
@@ -854,7 +854,6 @@ namespace translator
 		}
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
@@ -939,7 +938,6 @@ namespace translator
 		select.b.i64 = -1;
 	
 		_add( select );
-		_predicateEpilogue( i, select.d );
 	}
 
 	void PTXToLLVMTranslator::_translateCos( const ir::PTXInstruction& i )
@@ -960,7 +958,6 @@ namespace translator
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
@@ -987,7 +984,6 @@ namespace translator
 						sext.a = _translate( i.a );
 	
 						_add( sext );
-						_predicateEpilogue( i, sext.d );
 						break;
 					}
 					case ir::PTXOperand::s8:
@@ -1006,7 +1002,6 @@ namespace translator
 						sitofp.a = _translate( i.a );
 						
 						_add( sitofp );
-						_predicateEpilogue( i, sitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1029,7 +1024,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 						
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::b32:
@@ -1044,7 +1038,6 @@ namespace translator
 						sext.a = _translate( i.a );
 						
 						_add( sext );
-						_predicateEpilogue( i, sext.d );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -1056,7 +1049,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 	
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::s16:
@@ -1075,7 +1067,6 @@ namespace translator
 						sitofp.a = _translate( i.a );
 						
 						_add( sitofp );
-						_predicateEpilogue( i, sitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1104,7 +1095,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 	
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::s32:
@@ -1123,7 +1113,6 @@ namespace translator
 						sext.a = _translate( i.a );
 						
 						_add( sext );
-						_predicateEpilogue( i, sext.d );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1135,7 +1124,6 @@ namespace translator
 						sitofp.a = _translate( i.a );
 						
 						_add( sitofp );
-						_predicateEpilogue( i, sitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1167,7 +1155,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 	
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::s64:
@@ -1186,7 +1173,6 @@ namespace translator
 						sitofp.a = _translate( i.a );
 						
 						_add( sitofp );
-						_predicateEpilogue( i, sitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1220,7 +1206,6 @@ namespace translator
 						zext.a = _translate( i.a );
 						
 						_add( zext );
-						_predicateEpilogue( i, zext.d );
 						break;
 					}
 					case ir::PTXOperand::s8:
@@ -1239,7 +1224,6 @@ namespace translator
 						uitofp.a = _translate( i.a );
 						
 						_add( uitofp );
-						_predicateEpilogue( i, uitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1266,7 +1250,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 	
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::s32:
@@ -1281,7 +1264,6 @@ namespace translator
 						zext.a = _translate( i.a );
 						
 						_add( zext );
-						_predicateEpilogue( i, zext.d );
 						break;
 					}
 					case ir::PTXOperand::s16:
@@ -1304,7 +1286,6 @@ namespace translator
 						uitofp.a = _translate( i.a );
 						
 						_add( uitofp );
-						_predicateEpilogue( i, uitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1334,7 +1315,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 	
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::b64:
@@ -1346,7 +1326,6 @@ namespace translator
 						zext.a = _translate( i.a );
 						
 						_add( zext );
-						_predicateEpilogue( i, zext.d );
 						break;
 					}
 					case ir::PTXOperand::b32:
@@ -1369,7 +1348,6 @@ namespace translator
 						uitofp.a = _translate( i.a );
 						
 						_add( uitofp );
-						_predicateEpilogue( i, uitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1402,7 +1380,6 @@ namespace translator
 						bitcast.a = _translate( i.a );
 	
 						_add( bitcast );
-						_predicateEpilogue( i, bitcast.d );
 						break;
 					}
 					case ir::PTXOperand::b64:
@@ -1425,7 +1402,6 @@ namespace translator
 						uitofp.a = _translate( i.a );
 						
 						_add( uitofp );
-						_predicateEpilogue( i, uitofp.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1451,7 +1427,6 @@ namespace translator
 						fptosi.a = _translate( i.a );
 						
 						_add( fptosi );
-						_predicateEpilogue( i, fptosi.d );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -1469,7 +1444,6 @@ namespace translator
 						fptoui.a = _translate( i.a );
 						
 						_add( fptoui );
-						_predicateEpilogue( i, fptoui.d );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1485,7 +1459,6 @@ namespace translator
 						fpext.a = _translate( i.a );
 						
 						_add( fpext );
-						_predicateEpilogue( i, fpext.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1511,7 +1484,6 @@ namespace translator
 						fptosi.a = _translate( i.a );
 						
 						_add( fptosi );
-						_predicateEpilogue( i, fptosi.d );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -1529,7 +1501,6 @@ namespace translator
 						fptoui.a = _translate( i.a );
 						
 						_add( fptoui );
-						_predicateEpilogue( i, fptoui.d );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1539,7 +1510,6 @@ namespace translator
 						fptrunc.a = _translate( i.a );
 						
 						_add( fptrunc );
-						_predicateEpilogue( i, fptrunc.d );
 						break;
 					}
 					case ir::PTXOperand::f32:
@@ -1554,7 +1524,6 @@ namespace translator
 						fpext.a = _translate( i.a );
 						
 						_add( fpext );
-						_predicateEpilogue( i, fpext.d );
 						break;
 					}
 					case ir::PTXOperand::TypeSpecifier_invalid:
@@ -1580,7 +1549,6 @@ namespace translator
 						fptosi.a = _translate( i.a );
 						
 						_add( fptosi );
-						_predicateEpilogue( i, fptosi.d );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -1598,7 +1566,6 @@ namespace translator
 						fptoui.a = _translate( i.a );
 						
 						_add( fptoui );
-						_predicateEpilogue( i, fptoui.d );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -1608,7 +1575,6 @@ namespace translator
 						fptrunc.a = _translate( i.a );
 						
 						_add( fptrunc );
-						_predicateEpilogue( i, fptrunc.d );
 						break;
 					}
 					case ir::PTXOperand::f32:
@@ -1618,7 +1584,6 @@ namespace translator
 						fptrunc.a = _translate( i.a );
 						
 						_add( fptrunc );
-						_predicateEpilogue( i, fptrunc.d );
 						break;
 					}
 					case ir::PTXOperand::f64:
@@ -1655,7 +1620,6 @@ namespace translator
 			div.b = _translate( i.b );
 			
 			_add( div );
-			_predicateEpilogue( i, div.d );		
 		}
 		else if( ir::PTXOperand::isSigned( i.type ) )
 		{
@@ -1666,7 +1630,6 @@ namespace translator
 			div.b = _translate( i.b );
 			
 			_add( div );
-			_predicateEpilogue( i, div.d );		
 		}
 		else
 		{
@@ -1677,7 +1640,6 @@ namespace translator
 			div.b = _translate( i.b );
 			
 			_add( div );
-			_predicateEpilogue( i, div.d );				
 		}
 	}
 
@@ -1699,7 +1661,6 @@ namespace translator
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
@@ -1792,11 +1753,6 @@ namespace translator
 		{
 			ir::LLVMInstruction::Operand target = _translate( *destination );
 			
-			if( i.pg.condition != ir::PTXOperand::PT )
-			{
-				target.name = _tempRegister();			
-			}
-			
 			ir::LLVMExtractelement extract;
 			
 			extract.d = target;
@@ -1808,34 +1764,6 @@ namespace translator
 			extract.b.i32 = std::distance( i.d.array.begin(), destination );
 			
 			_add( extract );
-			if( i.pg.condition == ir::PTXOperand::PT ) continue;
-		
-			ir::LLVMSelect select;
-			select.condition = _translate( i.pg );
-			select.d = _translate( *destination );
-	
-			if( i.pg.condition == ir::PTXOperand::nPT )
-			{
-				select.a = select.d;
-				select.b = select.d;
-			}
-			else if( i.pg.condition == ir::PTXOperand::Pred )
-			{
-				select.a = extract.d;
-				select.b = select.d;
-			}
-			else
-			{
-				select.a = select.d;
-				select.b = extract.d;
-			}
-		
-			_add( select );
-		}
-		
-		if( i.d.vec == ir::PTXOperand::v1 )
-		{
-			_predicateEpilogue( i, load.d );
 		}
 	}
 
@@ -1845,11 +1773,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@lg2Ftz";
+			call.name = "@log2Ftz";
 		}
 		else
 		{
-			call.name = "@lg2";
+			call.name = "@log2f";
 		}
 		
 		call.d = _destination( i );
@@ -1857,7 +1785,6 @@ namespace translator
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateMad24( const ir::PTXInstruction& i )
@@ -1919,7 +1846,6 @@ namespace translator
 		truncate.a = add.d;
 
 		_add( truncate );
-		_predicateEpilogue( i, truncate.d );		
 	}
 
 	void PTXToLLVMTranslator::_translateMad( const ir::PTXInstruction& i )
@@ -1986,7 +1912,6 @@ namespace translator
 			truncate.a = add.d;
 
 			_add( truncate );
-			_predicateEpilogue( i, truncate.d );
 		}
 		else
 		{
@@ -2054,7 +1979,6 @@ namespace translator
 			truncate.a = add.d;
 
 			_add( truncate );
-			_predicateEpilogue( i, truncate.d );
 		}		
 	}
 
@@ -2114,7 +2038,6 @@ namespace translator
 			_add( select );
 		}
 		
-		_predicateEpilogue( i, destination );
 	}
 
 	void PTXToLLVMTranslator::_translateMembar( const ir::PTXInstruction& i )
@@ -2189,7 +2112,6 @@ namespace translator
 			_add( select );
 		}
 		
-		_predicateEpilogue( i, destination );
 	}
 
 	void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
@@ -2204,7 +2126,6 @@ namespace translator
 			cast.a = _translate( i.a, i.addressSpace );
 			
 			_add( cast );
-			_predicateEpilogue( i, cast.d );
 		}
 		else if( i.d.type == i.a.type )
 		{
@@ -2228,7 +2149,6 @@ namespace translator
 			mul.b = _translate( i.b );
 		
 			_add( mul );
-			_predicateEpilogue( i, mul.d );		
 		}
 		else
 		{
@@ -2254,7 +2174,6 @@ namespace translator
 			}
 
 			_add( mul );
-			_predicateEpilogue( i, mul.d );
 		}
 		else
 		{
@@ -2265,43 +2184,72 @@ namespace translator
 				
 				if( ir::PTXOperand::isSigned( i.a.type ) )
 				{
-					ir::LLVMSext sextA;
+					if( i.a.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMSext sextA;
 					
-					sextA.a = extendedA;
-					_doubleWidth( extendedA.type.type );
-					extendedA.name = _tempRegister();
-					sextA.d = extendedA;
+						sextA.a = extendedA;
+						_doubleWidth( extendedA.type.type );
+						extendedA.name = _tempRegister();
+						sextA.d = extendedA;
 					
-					_add( sextA );
-				
-					ir::LLVMSext sextB;
+						_add( sextA );
+					}
+					else
+					{
+						_doubleWidth( extendedA.type.type );
+					}
 					
-					sextB.a = extendedB;
-					_doubleWidth( extendedB.type.type );
-					extendedB.name = _tempRegister();
-					sextB.d = extendedB;
+					if( i.b.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMSext sextB;
 					
-					_add( sextB );
+						sextB.a = extendedB;
+						_doubleWidth( extendedB.type.type );
+						extendedB.name = _tempRegister();
+						sextB.d = extendedB;
+					
+						_add( sextB );
+					}
+					else
+					{
+						_doubleWidth( extendedB.type.type );
+					}
 				}
 				else
 				{
-					ir::LLVMZext sextA;
+					if( i.a.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMZext sextA;
 					
-					sextA.a = extendedA;
-					_doubleWidth( extendedA.type.type );
-					extendedA.name = _tempRegister();
-					sextA.d = extendedA;
+						sextA.a = extendedA;
+						_doubleWidth( extendedA.type.type );
+						extendedA.name = _tempRegister();
+						sextA.d = extendedA;
 					
-					_add( sextA );
-				
-					ir::LLVMZext sextB;
+						_add( sextA );
+
+					}
+					else
+					{
+						_doubleWidth( extendedA.type.type );
+					}
 					
-					sextB.a = extendedB;
-					_doubleWidth( extendedB.type.type );
-					extendedB.name = _tempRegister();
-					sextB.d = extendedB;
+					if( i.b.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMZext sextB;
 					
-					_add( sextB );
+						sextB.a = extendedB;
+						_doubleWidth( extendedB.type.type );
+						extendedB.name = _tempRegister();
+						sextB.d = extendedB;
+					
+						_add( sextB );
+					}
+					else
+					{
+						_doubleWidth( extendedB.type.type );
+					}
 				}
 				
 				ir::LLVMMul mul;
@@ -2311,7 +2259,6 @@ namespace translator
 				mul.b = extendedB;
 			
 				_add( mul );
-				_predicateEpilogue( i, mul.d );
 			}
 			else if( i.modifier & ir::PTXInstruction::lo )
 			{
@@ -2322,7 +2269,6 @@ namespace translator
 				mul.b = _translate( i.b );
 			
 				_add( mul );
-				_predicateEpilogue( i, mul.d );		
 			}
 			else
 			{
@@ -2332,43 +2278,72 @@ namespace translator
 				
 				if( ir::PTXOperand::isSigned( i.a.type ) )
 				{
-					ir::LLVMSext sextA;
+					if( i.a.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMSext sextA;
 					
-					sextA.a = extendedA;
-					_doubleWidth( extendedA.type.type );
-					extendedA.name = _tempRegister();
-					sextA.d = extendedA;
+						sextA.a = extendedA;
+						_doubleWidth( extendedA.type.type );
+						extendedA.name = _tempRegister();
+						sextA.d = extendedA;
 					
-					_add( sextA );
-				
-					ir::LLVMSext sextB;
+						_add( sextA );
+					}
+					else
+					{
+						_doubleWidth( extendedA.type.type );
+					}
 					
-					sextB.a = extendedB;
-					_doubleWidth( extendedB.type.type );
-					extendedB.name = _tempRegister();
-					sextB.d = extendedB;
+					if( i.b.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMSext sextB;
 					
-					_add( sextB );
+						sextB.a = extendedB;
+						_doubleWidth( extendedB.type.type );
+						extendedB.name = _tempRegister();
+						sextB.d = extendedB;
+					
+						_add( sextB );
+					}
+					else
+					{
+						_doubleWidth( extendedB.type.type );
+					}
 				}
 				else
 				{
-					ir::LLVMZext sextA;
+					if( i.a.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMZext sextA;
 					
-					sextA.a = extendedA;
-					_doubleWidth( extendedA.type.type );
-					extendedA.name = _tempRegister();
-					sextA.d = extendedA;
+						sextA.a = extendedA;
+						_doubleWidth( extendedA.type.type );
+						extendedA.name = _tempRegister();
+						sextA.d = extendedA;
 					
-					_add( sextA );
-				
-					ir::LLVMZext sextB;
+						_add( sextA );
+
+					}
+					else
+					{
+						_doubleWidth( extendedA.type.type );
+					}
 					
-					sextB.a = extendedB;
-					_doubleWidth( extendedB.type.type );
-					extendedB.name = _tempRegister();
-					sextB.d = extendedB;
+					if( i.b.addressMode != ir::PTXOperand::Immediate )
+					{
+						ir::LLVMZext sextB;
 					
-					_add( sextB );
+						sextB.a = extendedB;
+						_doubleWidth( extendedB.type.type );
+						extendedB.name = _tempRegister();
+						sextB.d = extendedB;
+					
+						_add( sextB );
+					}
+					else
+					{
+						_doubleWidth( extendedB.type.type );
+					}
 				}
 				
 				ir::LLVMMul mul;
@@ -2418,8 +2393,6 @@ namespace translator
 				truncate.a = shiftedDestination;
 				
 				_add( truncate );
-				
-				_predicateEpilogue( i, destination );
 			}
 		}
 	}
@@ -2435,7 +2408,6 @@ namespace translator
 		sub.a.i64 = 0;
 		
 		_add( sub );
-		_predicateEpilogue( i, sub.d );
 	}
 
 	void PTXToLLVMTranslator::_translateNot( const ir::PTXInstruction& i )
@@ -2449,7 +2421,6 @@ namespace translator
 		Not.b.i64 = -1;
 		
 		_add( Not );
-		_predicateEpilogue( i, Not.d );
 	}
 
 	void PTXToLLVMTranslator::_translateOr( const ir::PTXInstruction& i )
@@ -2461,7 +2432,6 @@ namespace translator
 		Or.b = _translate( i.b );
 
 		_add( Or );
-		_predicateEpilogue( i, Or.d );
 	}
 
 	void PTXToLLVMTranslator::_translatePmevent( const ir::PTXInstruction& i )
@@ -2495,14 +2465,10 @@ namespace translator
 		}
 		
 		_add( div );
-		_predicateEpilogue( i, div.d );
 	}
 
 	void PTXToLLVMTranslator::_translateRed( const ir::PTXInstruction& i )
 	{
-		assertM( i.pg.condition == ir::PTXOperand::PT, 
-			"Predicated red instructions not supported." );
-	
 		ir::LLVMCall call;
 		
 		call.name = "@reduction";
@@ -2515,7 +2481,6 @@ namespace translator
 		call.parameters[1].type.type = ir::LLVMInstruction::I32;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		call.parameters[1].i32 = i.reductionOperation;
-
 
 		call.parameters[2] = _translate( i.a );
 		call.parameters[3] = _translate( i.b );
@@ -2547,7 +2512,6 @@ namespace translator
 			
 			_add( rem );			
 		}
-		_predicateEpilogue( i, destination );
 	}
 
 	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i )
@@ -2573,7 +2537,6 @@ namespace translator
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSad( const ir::PTXInstruction& i )
@@ -2686,7 +2649,6 @@ namespace translator
 			
 			_add( add );		
 		}
-		_predicateEpilogue( i, destination );
 	}
 
 	void PTXToLLVMTranslator::_translateSelP( const ir::PTXInstruction& i )
@@ -2699,7 +2661,6 @@ namespace translator
 		select.condition = _translate( i.c );
 		
 		_add( select );
-		_predicateEpilogue( i, select.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSet( const ir::PTXInstruction& i )
@@ -2711,7 +2672,7 @@ namespace translator
 		comparison.type.category = ir::LLVMInstruction::Type::Element;
 		comparison.type.type = ir::LLVMInstruction::I1;
 
-		if( ir::PTXOperand::isFloat( i.type ) )
+		if( ir::PTXOperand::isFloat( i.a.type ) )
 		{
 			ir::LLVMFcmp fcmp;
 			
@@ -2834,7 +2795,6 @@ namespace translator
 		}
 		
 		_add( select );
-		_predicateEpilogue( i, d );
 	}
 
 	void PTXToLLVMTranslator::_translateSetP( const ir::PTXInstruction& i )
@@ -2964,12 +2924,6 @@ namespace translator
 				}
 			}
 		}
-		
-		_predicateEpilogue( i, d );
-		if( i.pq.addressMode != ir::PTXOperand::Invalid )
-		{
-			_predicateEpilogue( i, tempD );
-		}
 	}
 
 	void PTXToLLVMTranslator::_translateShl( const ir::PTXInstruction& i )
@@ -2981,7 +2935,6 @@ namespace translator
 		shift.b = _translate( i.b );
 		
 		_add( shift );
-		_predicateEpilogue( i, shift.d );
 	}
 
 	void PTXToLLVMTranslator::_translateShr( const ir::PTXInstruction& i )
@@ -2995,7 +2948,6 @@ namespace translator
 			shift.b = _translate( i.b );
 			
 			_add( shift );
-			_predicateEpilogue( i, shift.d );
 		}
 		else
 		{
@@ -3006,7 +2958,6 @@ namespace translator
 			shift.b = _translate( i.b );
 			
 			_add( shift );
-			_predicateEpilogue( i, shift.d );		
 		}
 	}
 
@@ -3028,7 +2979,6 @@ namespace translator
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSlCt( const ir::PTXInstruction& i )
@@ -3074,7 +3024,6 @@ namespace translator
 		select.b = _translate( i.b );
 		
 		_add( select );
-		_predicateEpilogue( i, select.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSqrt( const ir::PTXInstruction& i )
@@ -3083,11 +3032,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@sqrtFtz";
+			call.name = "@sqrtfFtz";
 		}
 		else
 		{
-			call.name = "@sqrt";
+			call.name = "@sqrtf";
 		}
 		
 		call.d = _destination( i );
@@ -3095,14 +3044,10 @@ namespace translator
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
 	{
-		assertM( i.pg.condition == ir::PTXOperand::PT, 
-			"Predicated store instructions not supported." );
-		
 		ir::LLVMStore store;
 
 		store.d = _translate( i.d );
@@ -3265,11 +3210,6 @@ namespace translator
 				
 				_add( compare );
 				_add( select );
-				_predicateEpilogue( i, select.d );
-			}
-			else
-			{
-				_predicateEpilogue( i, sub.d );
 			}
 		}
 		else
@@ -3284,7 +3224,6 @@ namespace translator
 			sub.b = _translate( i.b );
 		
 			_add( sub );
-			_predicateEpilogue( i, sub.d );
 		}
 	}
 
@@ -3355,7 +3294,6 @@ namespace translator
 		truncate.a = sub.d;
 		
 		_add( truncate );
-		_predicateEpilogue( i, truncate.d );
 		
 		if( i.modifier & ir::PTXInstruction::CC )
 		{
@@ -3381,8 +3319,6 @@ namespace translator
 			And.b.i64 = 1;
 		
 			_add( And );
-		
-			_predicateEpilogue( i, And.d );
 		}
 	}
 
@@ -3396,14 +3332,6 @@ namespace translator
 		ir::LLVMInstruction::Operand d2 = _translate( i.d.array[1] );
 		ir::LLVMInstruction::Operand d3 = _translate( i.d.array[2] );
 		ir::LLVMInstruction::Operand d4 = _translate( i.d.array[3] );
-		
-		if( i.pg.condition != ir::PTXOperand::PT )
-		{
-			d1.name = _tempRegister();			
-			d2.name = _tempRegister();			
-			d3.name = _tempRegister();			
-			d4.name = _tempRegister();			
-		}
 		
 		call.d = d1;
 		call.d.type.category = ir::LLVMInstruction::Type::Vector;
@@ -3462,11 +3390,6 @@ namespace translator
 		extract.b.i32 = 3;
 	
 		_add( extract );
-		
-		_predicateEpilogue( i, d1 );
-		_predicateEpilogue( i, d2 );
-		_predicateEpilogue( i, d3 );
-		_predicateEpilogue( i, d4 );
 	}
 
 	void PTXToLLVMTranslator::_translateTrap( const ir::PTXInstruction& i )
@@ -3476,7 +3399,6 @@ namespace translator
 		call.name = "@trap";
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateVote( const ir::PTXInstruction& i )
@@ -3496,7 +3418,6 @@ namespace translator
 		call.parameters[2].i1 = i.b.condition == ir::PTXOperand::InvPred;
 		
 		_add( call );
-		_predicateEpilogue( i, call.d );
 	}
 
 	void PTXToLLVMTranslator::_translateXor( const ir::PTXInstruction& i )
@@ -3508,7 +3429,6 @@ namespace translator
 		Xor.b = _translate( i.b );
 
 		_add( Xor );
-		_predicateEpilogue( i, Xor.d );
 	}
 	
 	void PTXToLLVMTranslator::_bitcast( const ir::PTXInstruction& i )
@@ -3518,7 +3438,6 @@ namespace translator
 		cast.a = _translate( i.a );
 		
 		_add( cast );
-		_predicateEpilogue( i, cast.d );
 	}	
 
 	std::string PTXToLLVMTranslator::_tempRegister()
@@ -3873,10 +3792,10 @@ namespace translator
 		{
 			destination = _translate( i.d );
 		}
-		if( i.pg.condition != ir::PTXOperand::PT )
-		{
-			destination.name = _tempRegister();			
-		}
+
+		assertM( i.pg.condition == ir::PTXOperand::PT, 
+			"Predication not supported." )
+
 		return destination;
 	}
 	
@@ -3887,16 +3806,11 @@ namespace translator
 		destination.type.category = ir::LLVMInstruction::Type::Element;
 		destination.type.type = ir::LLVMInstruction::I64;
 		
-		if( i.pg.condition != ir::PTXOperand::PT )
-		{
-			destination.name = _tempRegister();			
-		}
-		else
-		{
-			std::stringstream stream;
-			stream << "rcc" << _tempCCRegisterCount++;
-			destination.name = stream.str();
-		}
+		assertM( i.pg.condition == ir::PTXOperand::PT, 
+			"Predication not supported." );
+		std::stringstream stream;
+		stream << "rcc" << _tempCCRegisterCount++;
+		destination.name = stream.str();
 		
 		return destination;
 	}
@@ -3915,34 +3829,6 @@ namespace translator
 	
 		return cc;
 	}
-	
-	void PTXToLLVMTranslator::_predicateEpilogue( const ir::PTXInstruction& i,
-		const ir::LLVMInstruction::Operand& temp )
-	{
-		if( i.pg.condition == ir::PTXOperand::PT ) return;
-		
-		ir::LLVMSelect select;
-		select.condition = _translate( i.pg );
-		select.d = _translate( i.d );
-	
-		if( i.pg.condition == ir::PTXOperand::nPT )
-		{
-			select.a = select.d;
-			select.b = select.d;
-		}
-		else if( i.pg.condition == ir::PTXOperand::Pred )
-		{
-			select.a = temp;
-			select.b = select.d;
-		}
-		else
-		{
-			select.a = select.d;
-			select.b = temp;
-		}
-		
-		_add( select );
-	}
 
 	void PTXToLLVMTranslator::_add( const ir::LLVMInstruction& i )
 	{
@@ -3955,32 +3841,36 @@ namespace translator
 	void PTXToLLVMTranslator::_initializeRegisters()
 	{
 		report( " Adding initialization instructions." );
+
+		if( !_uninitialized.empty() )
+		{
+			ir::LLVMBr branch;
+			branch.iftrue = "%" + (++_ptx->dfg()->begin())->label();
+		
+			_llvmKernel->_statements.push_front( 
+				ir::LLVMStatement( branch ) );
+		}
+
 		for( RegisterVector::const_iterator reg = _uninitialized.begin(); 
 			reg != _uninitialized.end(); ++reg )
 		{
-			ir::LLVMSelect select;
+			ir::LLVMBitcast move;
 			
 			std::stringstream stream;
 			
-			stream << "%r" << reg->id;
+			stream << "%ri" << reg->id;
 			
-			select.d.name = stream.str();
-			select.d.type.category = ir::LLVMInstruction::Type::Element;
-			select.d.type.type = _translate( reg->type );
+			move.d.name = stream.str();
+			move.d.type.category = ir::LLVMInstruction::Type::Element;
+			move.d.type.type = _translate( reg->type );
 			
-			select.condition.type.category = ir::LLVMInstruction::Type::Element;
-			select.condition.type.type = ir::LLVMInstruction::I1;
-			select.condition.constant = true;
-			select.condition.i1 = true;
-		
-			select.a = select.d;
-			select.a.constant = true;
-			select.a.i64 = 0;
-			select.b = select.a;
+			move.a = move.d;
+			move.a.constant = true;
+			move.a.i64 = 0;
 			
-			report( "  Adding instruction '" << select.toString() << "'" );		
+			report( "  Adding instruction '" << move.toString() << "'" );		
 			
-			_llvmKernel->_statements.push_front( ir::LLVMStatement( select ) );			
+			_llvmKernel->_statements.push_front( ir::LLVMStatement( move ) );
 		}
 		
 		if( !_uninitialized.empty() )
@@ -4003,7 +3893,7 @@ namespace translator
 				ir::LLVMStatement::VariableDeclaration );
 
 			statement.label = global->second.statement.name;
-			statement.linkage = ir::LLVMStatement::InvalidLinkage;
+			statement.linkage = ir::LLVMStatement::External;
 			statement.visibility = ir::LLVMStatement::Default;
 		
 			if( global->second.statement.elements() == 1 )
@@ -4125,6 +4015,38 @@ namespace translator
 		ex2.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
 		_llvmKernel->_statements.push_front( ex2 );		
+
+		ir::LLVMStatement log2f( ir::LLVMStatement::FunctionDeclaration );
+
+		log2f.label = "log2f";
+		log2f.linkage = ir::LLVMStatement::InvalidLinkage;
+		log2f.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		log2f.visibility = ir::LLVMStatement::Default;
+		
+		log2f.operand.type.category = ir::LLVMInstruction::Type::Element;
+		log2f.operand.type.type = ir::LLVMInstruction::F32;
+		
+		log2f.parameters.resize( 1 );
+		log2f.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		log2f.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_front( log2f );		
+
+		ir::LLVMStatement sqrtf( ir::LLVMStatement::FunctionDeclaration );
+
+		sqrtf.label = "sqrtf";
+		sqrtf.linkage = ir::LLVMStatement::InvalidLinkage;
+		sqrtf.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		sqrtf.visibility = ir::LLVMStatement::Default;
+		
+		sqrtf.operand.type.category = ir::LLVMInstruction::Type::Element;
+		sqrtf.operand.type.type = ir::LLVMInstruction::F32;
+		
+		sqrtf.parameters.resize( 1 );
+		sqrtf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		sqrtf.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_front( sqrtf );		
 
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );

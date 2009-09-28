@@ -156,6 +156,7 @@ namespace analysis
 
 		ir::PTXInstruction load( _kernel->version(), ir::PTXInstruction::Ld );
 
+		load.addressSpace = ir::PTXInstruction::Local;
 		load.type = ir::PTXOperand::u32;
 		load.a = move.d;
 

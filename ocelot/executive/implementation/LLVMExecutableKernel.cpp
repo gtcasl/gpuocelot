@@ -23,7 +23,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
 #define REPORT_ALL_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
@@ -57,7 +57,7 @@ extern "C"
 	
 	float ex2( float value )
 	{
-		return std::pow( 2.0, value );
+		return std::exp( value * 0.693147f );
 	}
 }
 
@@ -253,6 +253,7 @@ namespace executive
 			Function two;
 		} cast;
 	
+		updateGlobalMemory();
 		cast.one = _state.jit->getPointerToFunction( function );
 		_function = cast.two;
 		
@@ -333,25 +334,6 @@ namespace executive
 		}
 
 		_context.local = localBase;		
-	}
-	
-	void LLVMExecutableKernel::_launchCta( unsigned int length, 
-		unsigned int width )
-	{
-		report( " Launching cta ( " << length << ", " << width << " )" );
-		_context.ctaid.x = length;
-		_context.ctaid.y = width;
-		
-		if( _barrierSupport )
-		{
-			report( "  Barrier support enabled." );
-			_launchCtaWithBarriers();
-		}
-		else
-		{
-			report( "  Barrier support disabled." );
-			_launchCtaNoBarriers();
-		}
 	}
 	
 	void LLVMExecutableKernel::_allocateParameterMemory( )
@@ -774,12 +756,33 @@ namespace executive
 		
 		_context.nctaid.x = x;
 		_context.nctaid.y = y;
-		for( int j = 0; j < y; ++j )
+		if( _barrierSupport )
 		{
-			for( int i = 0; i < x; ++i )
+			report( " With barrier support." );
+			for( int j = 0; j < y; ++j )
 			{
-				_launchCta( i, j );
+				for( int i = 0; i < x; ++i )
+				{
+					report( " Launching cta ( " << i << ", " << j << " )" );
+					_context.ctaid.x = i;
+					_context.ctaid.y = j;
+					_launchCtaWithBarriers();
+				}
 			}
+		}
+		else
+		{
+			report( " Without barrier support." );
+			for( int j = 0; j < y; ++j )
+			{
+				for( int i = 0; i < x; ++i )
+				{
+					report( " Launching cta ( " << i << ", " << j << " )" );
+					_context.ctaid.x = i;
+					_context.ctaid.y = j;
+					_launchCtaNoBarriers();
+				}
+			}		
 		}
 		report( " Kernel \"" << name << "\" finished successfully"  );
 	}
@@ -861,6 +864,8 @@ namespace executive
 	
 	void LLVMExecutableKernel::updateGlobalMemory()
 	{
+		#ifdef HAVE_LLVM
+		report( "Updating global memory." );
 		_state.jit->clearAllGlobalMappings();
 		for( ir::Module::GlobalMap::const_iterator 
 			global = module->globals.begin(); 
@@ -874,6 +879,8 @@ namespace executive
 						value = _module->getNamedValue( global->first );
 					assertM( value != 0, "Global variable " << global->first 
 						<< " not found in llvm module." );
+					report( " Binding global variable " << global->first 
+						<< " to " << (void*)global->second.pointer );
 					_state.jit->addGlobalMapping( value, 
 						global->second.pointer );
 					break;
@@ -890,6 +897,7 @@ namespace executive
 				}
 			}
 		}
+		#endif
 	}
 	
 	void LLVMExecutableKernel::updateConstantMemory()
@@ -898,7 +906,7 @@ namespace executive
 		for( AllocationMap::iterator constant = _constants.begin(); 
 			constant != _constants.end(); ++constant ) 
 		{
-			report( " Updating constant memory " << constant->first );
+			report( " Updating constant variable " << constant->first );
 			ir::Module::GlobalMap::const_iterator 
 				global = module->globals.find( constant->first );
 			assert( global != module->globals.end() );

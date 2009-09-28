@@ -23,6 +23,7 @@ namespace ir
 			case Internal: return "internal"; break;
 			case AvailableExternally: return "available_externally"; break;
 			case LinkOnce: return "linkonce"; break;
+			case External: return "external"; break;
 			case Weak: return "weak"; break;
 			case Common: return "common"; break;
 			case Appending: return "appending"; break;
@@ -212,9 +213,15 @@ namespace ir
 			{
 				std::string result = "@" + label + " = ";
 				
-				std::stringstream address;
-				address << "addrspace(" << space << ") ";
-				result += address.str();
+				if( space != 0 )
+				{
+					std::stringstream address;
+					address << "addrspace(" << space << ") ";
+					result += address.str();
+				}
+				
+				std::string link = toString( linkage );
+				if( !link.empty() ) result += link + " ";
 				
 				if( constant )
 				{
@@ -225,12 +232,18 @@ namespace ir
 					result += "global ";
 				}
 				
-				result += operand.type.toString() + " zeroinitializer";
-
+				result += operand.type.toString();
+				
+				if( linkage != External )
+				{
+					result += " zeroinitializer";
+				}
+				
 				std::stringstream align;
 				align << ", align " << alignment;
-				
-				result += align.str() + ";";
+			
+				result += align.str();
+				result += ";";
 
 				return result;
 				break;

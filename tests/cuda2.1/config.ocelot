@@ -32,8 +32,8 @@
 </ocelot>
 <cuda>
 	<CudaRuntime>
-		<DefaultDevice>
+		<DefaultDeviceId>
 			1
-		</DefaultDevice>
+		</DefaultDeviceId>
 	</CudaRuntime>
 </cuda>

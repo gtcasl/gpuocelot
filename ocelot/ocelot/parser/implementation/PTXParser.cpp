@@ -675,6 +675,7 @@ namespace parser
 		{
 			if( mode->second.operand.addressMode == ir::PTXOperand::Address )
 			{
+				assert( mode->second.space != ir::PTXInstruction::Reg );
 				statement.instruction.addressSpace = mode->second.space;
 			}	
 			operand = mode->second.operand;

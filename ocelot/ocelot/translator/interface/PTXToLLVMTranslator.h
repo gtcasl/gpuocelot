@@ -138,8 +138,6 @@ namespace translator
 				const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _conditionCodeRegister( 
 				const ir::PTXOperand& op );
-			void _predicateEpilogue( const ir::PTXInstruction& i, 
-				const ir::LLVMInstruction::Operand& temp );
 			void _add( const ir::LLVMInstruction& i );
 			
 			void _initializeRegisters();

@@ -16,6 +16,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include <cfloat>
+#include <unordered_map>
 
 /*!
 Kernel _Z9matrixMulPfS_S_ii
@@ -656,39 +657,28 @@ void trace::MemoryTraceAnalyzer::application_list(bool filter) {
 
 class CTAData {
 public:
-	CTAData(): globalOwners(0), globalOwnersSize(0) {
+	CTAData() {
 		count_Stores = 0;
 		count_Loads = 0;
 		count_crossCtaLoads = 0;
 	}
+	~CTAData()
+	{
+	
+	}
 
 	void clear() {
-		if (globalOwners) {
-			delete [] globalOwners;
-		}
-		globalOwners = 0;
+		globalOwners.clear();
 	}
 
 	void initialize(ir::PTXU64 addressSpaceSize, ir::PTXU64 addressBase, int segmentSize_pow2) {
 		this->addressBase = addressBase;
 		this->segmentSize_pow2 = segmentSize_pow2;
-		if (globalOwners) {
-			delete [] globalOwners;
-		}
-		globalOwnersSize = (addressSpaceSize >> segmentSize_pow2) + 1;
-		globalOwners = new ir::PTXS32[globalOwnersSize];
-		for (ir::PTXU64 n = 0; n < globalOwnersSize; n++) {
-			globalOwners[n] = -1;
-		}
+		clear();
 	}
 
 	void store(ir::PTXU64 base, int size, int ctaID) {
 		++count_Stores;
-
-		if (0x77e420 == addressBase) {
-			std::cout << " ::store(0x" << std::hex << base << std::dec 
-				<< ", " << size << ", " << ctaID << ")\n" << std::flush;
-		}
 
 		for (int n = 0; n < size; n++) {
 			ir::PTXU64 offset = (base + (ir::PTXU64)n) - addressBase;
@@ -698,14 +688,23 @@ public:
 	}
 
 	ir::PTXS32 load(ir::PTXU64 address) {
+		++count_Loads;
 		ir::PTXU64 segmentNumber = ((address - addressBase) >> segmentSize_pow2);
-		return globalOwners[segmentNumber];
+		GlobalMap::iterator segment = globalOwners.find( segmentNumber );
+		if( segment == globalOwners.end() )
+		{
+			return -1;
+		}
+		else
+		{
+			return segment->second;
+		}
 	}
 
 public:
+	typedef std::unordered_map< ir::PTXU64, ir::PTXS32 > GlobalMap;
 	ir::PTXU64 addressBase;
-	ir::PTXS32 *globalOwners;
-	ir::PTXU64 globalOwnersSize;
+	GlobalMap globalOwners;
 	int segmentSize_pow2;
 
 public:
@@ -763,8 +762,6 @@ void trace::MemoryTraceAnalyzer::application_overlapped(
 		}
 
 		CTAData &ctaGlobalOwners = kernelsCtaData[kernel->kernel.name];
-
-		cout << "  globalOwnersSize = " << ctaGlobalOwners.globalOwnersSize << "\n" << flush;
 		
 		while (true) {
 			try {
@@ -805,8 +802,6 @@ void trace::MemoryTraceAnalyzer::application_overlapped(
 		}
 	}
 
-	cout << " event loop exited\n" << flush;
-
 	cout << "Application " << application.name << "\n";
 
 	// free ownership information for kernels
@@ -826,7 +821,30 @@ void trace::MemoryTraceAnalyzer::application_overlapped(
 	For each application, examines how many times kernels refer to the same memory segments
 */
 void trace::MemoryTraceAnalyzer::application_level_overlapped_global_memory(int segmentSize_pow2) {
-	assertM( false, "application_level_overlapped_global_memory not implemented." );
+	CTAData data;
+	using namespace std;
+	
+	ApplicationMap applications = GetApplications(_kernels, false);
+	
+	for( ApplicationMap::iterator app = applications.begin(); 
+		app != applications.end(); ++app )
+	{
+		ir::PTXU64 minAddress = -1;
+		ir::PTXU64 maxAddress = 0;
+	
+		for( vector< KernelData >::const_iterator 
+			kernel = app->second.kernels.begin(); 
+			kernel != app->second.kernels.end(); ++kernel)	{
+			minAddress = std::min( minAddress, 
+				kernel->header.global_min_address );
+			maxAddress = std::max( maxAddress, 
+				kernel->header.global_min_address );
+		}
+	
+		data.initialize( maxAddress - minAddress, minAddress, segmentSize_pow2 );
+		application_overlapped(app->second, segmentSize_pow2);
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

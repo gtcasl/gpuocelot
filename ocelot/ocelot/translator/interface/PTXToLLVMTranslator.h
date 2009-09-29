@@ -37,7 +37,7 @@ namespace translator
 			unsigned int _tempRegisterCount;
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
-			unsigned int _stackPointer;
+			bool _usesTextures;
 			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;
 			ir::PTXKernel* _ptx;
@@ -121,6 +121,13 @@ namespace translator
 			void _translateXor( const ir::PTXInstruction& i );
 			
 			void _bitcast( const ir::PTXInstruction& i );
+			void _bitcast( const ir::PTXOperand& d, const ir::PTXOperand& s );
+			void _bitcast( const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& s );
+			void _convert( const ir::LLVMInstruction::Operand& d, 
+				ir::PTXOperand::DataType dType, 
+				const ir::LLVMInstruction::Operand& s, 
+				ir::PTXOperand::DataType sType );
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
@@ -142,6 +149,8 @@ namespace translator
 			
 			void _initializeRegisters();
 
+			void _addStackAllocations();
+			void _addTextureCalls();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
 			void _addKernelSuffix();

@@ -4,10 +4,10 @@
 			"traces/database.trace"
 		</TraceDatabase>
 		<UseInPlaceTraces>
-			1
+			0
 		</UseInPlaceTraces>
 		<UseMemoryTraceGenerator>
-			0
+			1
 		</UseMemoryTraceGenerator>
 		<UseBranchTraceGenerator>
 			0

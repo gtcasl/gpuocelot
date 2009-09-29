@@ -87,14 +87,6 @@ AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
 AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
 	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
 	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
-	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])	
-AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
-	AC_MSG_ERROR("libcufft required"), [-lcudart -lOcelot -lOcelotExecutive \
-	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
-	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])
-AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
-	AC_MSG_ERROR("libcublas required"), [-lcudart -lOcelot -lOcelotExecutive \
-	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
 	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])
 ################################################################################
 

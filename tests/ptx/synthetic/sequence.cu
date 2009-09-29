@@ -14,3 +14,8 @@ __global__ void k_simple_sequence(int *A) {
 	A[n] = 2*n+1;
 }
 
+int main()
+{
+	k_sequence<<< 1, 1, 0 >>>( 0, 1);
+}
+

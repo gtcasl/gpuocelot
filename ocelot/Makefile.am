@@ -125,7 +125,8 @@ libOcelotExecutive_la_SOURCES = \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
-	ocelot/executive/implementation/LLVMContext.cpp
+	ocelot/executive/implementation/LLVMContext.cpp \
+	ocelot/executive/implementation/TextureOperations.cpp
 ################################################################################
 
 ################################################################################

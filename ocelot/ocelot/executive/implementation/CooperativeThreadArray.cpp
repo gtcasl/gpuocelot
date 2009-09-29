@@ -20,6 +20,7 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/CTAContext.h>
+#include <ocelot/executive/interface/TextureOperations.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -6356,647 +6357,6 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTX
 	}
 }
 
-typedef union {
-
-	PTXF32 f32;
-	PTXU32 u32;
-
-} type_F32_U32;
-
-static PTXF64 wrap(PTXF64 b, unsigned int limit, 
-	ir::Texture::AddressMode mode) {
-	if (mode == ir::Texture::Wrap) {
-		if (b < 0) {
-			b = fmod(-b, limit);
-			b = limit - b;
-		}
-		else {
-			b = fmod(b, limit);
-		}
-		if (b < 0) {
-			b = limit - 1 + b;
-		} else if (b > limit - 1) {
-			b = b - limit + 1;
-		}
-	}
-	else {
-		b = fmax(b, 0);
-		b = fmin(b, limit - 1);
-	}
-	
-	return b;
-}
-
-template<typename D> D channelRead( const ir::Texture& texture, 
-	unsigned int shift, unsigned int mask, unsigned int index )
-{
-	unsigned int bits = texture.x + texture.y + texture.z + texture.w;
-	unsigned int bytes = bits / 8;
-	unsigned int offset = shift / 8;
-	D value = *((D*)(((PTXB8*) texture.data) + index*bytes + offset));
-	value &= mask;
-	return value;
-}
-
-PTXF32 channelReadF32( const ir::Texture& texture, 
-	unsigned int shift, unsigned int mask, unsigned int index)
-{
-	unsigned int bits = texture.x + texture.y + texture.z + texture.w;
-	unsigned int bytes = bits / 8;
-	unsigned int offset = shift / 8;
-	type_F32_U32 value;
-
-	value.f32 = *((PTXF32*)(((PTXB8*) texture.data) + index*bytes + offset));
-	value.u32 &= mask;
-	return value.f32;
-}
-
-
-template<typename D> D channelRead( const ir::Texture& texture, 
-	unsigned int shift, unsigned int mask, unsigned int index, PTXB8 * &address )
-{
-	unsigned int bits = texture.x + texture.y + texture.z + texture.w;
-	unsigned int bytes = bits / 8;
-	unsigned int offset = shift / 8;
-	D value = *((D*)(address = ((PTXB8*) texture.data) + index*bytes + offset) );
-	value &= mask;
-	return value;
-}
-
-PTXF32 channelReadF32( const ir::Texture& texture, 
-	unsigned int shift, unsigned int mask, unsigned int index, PTXB8 * &address)
-{
-	unsigned int bits = texture.x + texture.y + texture.z + texture.w;
-	unsigned int bytes = bits / 8;
-	unsigned int offset = shift / 8;
-	type_F32_U32 value;
-
-	value.f32 = *((PTXF32*)(address = ((PTXB8*) texture.data) + index*bytes + offset) );
-	value.u32 &= mask;
-	return value.f32;
-}
-
-template<unsigned int dim, typename D, typename B>
-D executive::CooperativeThreadArray::sample(const ir::Texture& texture, B b0, PTXB8 * &address) {
-	D d = 0;
-	PTXF64 b = b0;
-	PTXB64 mask = 1;
-	unsigned int shift;
-
-	switch (dim) {
-		case 0: mask <<= (texture.x);
-			--mask; 
-			shift = 0; 
-			break;
-		case 1: mask <<= (texture.y);
-			--mask;
-			shift = texture.x; 
-			break;
-		case 2: mask <<= (texture.z);
-			--mask; 
-			shift = texture.x + texture.y; 
-			break;
-		case 3: mask <<= (texture.w);
-			--mask; 
-			shift = texture.z + texture.y + texture.x; 
-			break;
-		default: assert("Invalid texture index" == 0); 
-			break;
-	}
-	
-	if (texture.normalize) {
-		b = b * texture.size.x;
-	}
-	
-	if (texture.interpolation == ir::Texture::Nearest) {
-		PTXF64 index = b;
-		unsigned int windex = wrap(index, texture.size.x, 
-			texture.addressMode[0]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXU32 result = channelRead<PTXU32>(texture, shift, mask, windex, address);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXS32 result = channelRead<PTXS32>(texture, shift, mask, windex, address);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, index, address);
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	} 
-	else {
-		PTXF64 low = floor(b);
-		PTXF64 high = floor(b + 1);
-		unsigned int wlow = wrap(low, texture.size.x, 
-			texture.addressMode[0]);
-		unsigned int whigh = wrap(high, texture.size.x, 
-			texture.addressMode[0]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXU64 result = channelRead<PTXU32>(texture, shift, mask, wlow) * (high - b);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh) * (b - low);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXS64 result = channelRead<PTXS32>(texture, shift, mask, wlow) * (high - b);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh) * (b - low);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, wlow) * (high - b);
-				result += channelReadF32(texture, shift, mask, whigh) * (b - low);
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	}
-
-	if(texture.normalizedFloat)
-	{
-		PTXF32 f = ( d + 0.0 ) / (mask + 1);
-		PTXF32* dp = (PTXF32*)&d;
-		*dp = f;	
-	}
-	
-	return d;
-}
-
-
-template<unsigned int dim, typename D, typename B>
-D executive::CooperativeThreadArray::sample(const ir::Texture& texture, B b0) {
-	D d = 0;
-	PTXF64 b = b0;
-	PTXB64 mask = 1;
-	unsigned int shift;
-
-	switch (dim) {
-		case 0: mask <<= (texture.x);
-			--mask; 
-			shift = 0; 
-			break;
-		case 1: mask <<= (texture.y);
-			--mask;
-			shift = texture.x; 
-			break;
-		case 2: mask <<= (texture.z);
-			--mask; 
-			shift = texture.x + texture.y; 
-			break;
-		case 3: mask <<= (texture.w);
-			--mask; 
-			shift = texture.z + texture.y + texture.x; 
-			break;
-		default: assert("Invalid texture index" == 0); 
-			break;
-	}
-	
-	if (texture.normalize) {
-		b = b * texture.size.x;
-	}
-	
-	if (texture.interpolation == ir::Texture::Nearest) {
-		PTXF64 index = b;
-		unsigned int windex = wrap(index, texture.size.x, 
-			texture.addressMode[0]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXU32 result = channelRead<PTXU32>(texture, shift, mask, windex);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXS32 result = channelRead<PTXS32>(texture, shift, mask, windex);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, index);
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	} 
-	else {
-		PTXF64 low = floor(b);
-		PTXF64 high = floor(b + 1);
-		unsigned int wlow = wrap(low, texture.size.x, 
-			texture.addressMode[0]);
-		unsigned int whigh = wrap(high, texture.size.x, 
-			texture.addressMode[0]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXU64 result = channelRead<PTXU32>(texture, shift, mask, wlow) * (high - b);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh) * (b - low);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXS64 result = channelRead<PTXS32>(texture, shift, mask, wlow) * (high - b);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh) * (b - low);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, wlow) * (high - b);
-				result += channelReadF32(texture, shift, mask, whigh) * (b - low);
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	}
-
-	if(texture.normalizedFloat)
-	{
-		PTXF32 f = ( d + 0.0 ) / (mask + 1);
-		PTXF32* dp = (PTXF32*)&d;
-		*dp = f;	
-	}
-	
-	return d;
-}
-
-
-template<unsigned int dim, typename D, typename B>
-D executive::CooperativeThreadArray::sample(const ir::Texture& texture, 
-	B b0, B b1) {
-	D d = 0;
-	PTXF64 b[2] = {b0, b1};
-	PTXB64 mask = 1;
-	unsigned int shift;
-
-	switch (dim) {
-		case 0: mask <<= (texture.x);
-			--mask;
-			shift = 0; 
-			break;
-		case 1: mask <<= (texture.y);
-			--mask;
-			shift = texture.x;
-			break;
-		case 2: mask <<= (texture.z);
-			--mask;
-			shift = texture.x + texture.y; 
-			break;
-		case 3: mask <<= (texture.w);
-			--mask;
-			shift = texture.z + texture.y + texture.x; 
-			break;
-		default: assert("Invalid texture index" == 0); 
-			break;
-	}
-	
-	if (texture.normalize) {
-		b[0] = b[0] * texture.size.x;
-		b[1] = b[1] * texture.size.y;
-	}
-	
-	if (texture.interpolation == ir::Texture::Nearest) {
-		PTXF64 index[2] = {b[0], b[1]};
-		unsigned int windex[2];
-		windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
-		windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXU32 result = channelRead<PTXU32>(texture, shift, mask, 
-					windex[0] + windex[1] * texture.size.x);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXS32 result = channelRead<PTXS32>(texture, shift, mask, 
-					windex[0] + windex[1] * texture.size.x);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, 
-					windex[0] + windex[1] * texture.size.x);
-				d = result;
-
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	} 
-	else {
-		PTXF64 low[2] = {floor(b[0]), floor(b[1])};
-		PTXF64 high[2] = {floor(b[0] + 1), floor(b[1] + 1)};
-		unsigned int wlow[2];
-		unsigned int whigh[2];
-		wlow[0] = wrap(low[0], texture.size.x, texture.addressMode[0]);
-		wlow[1] = wrap(low[1], texture.size.y, texture.addressMode[1]);
-		whigh[0] = wrap(high[0], texture.size.x, texture.addressMode[0]);
-		whigh[1] = wrap(high[1], texture.size.y, texture.addressMode[1]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXF64 result = channelRead<PTXU32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1]) * (high[0] - b[0]) 
-					* (high[1] - b[1]);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1]) * (b[0] - low[0]) 
-					* (b[1] - low[1]);
-				result += channelRead<PTXU32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1]) * (high[0] - b[0]) 
-					* (b[1] - low[1]);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1]) * (b[0] - low[0]) 
-					* (high[1] - b[1]);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXF64 result = channelRead<PTXS32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1]) * (high[0] - b[0]) 
-					* (high[1] - b[1]);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1]) * (b[0] - low[0]) 
-					* (b[1] - low[1]);
-				result += channelRead<PTXS32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1]) * (high[0] - b[0]) 
-					* (b[1] - low[1]);
-				result += channelRead<PTXS32>(texture, shift, mask, high[0] 
-					+ texture.size.x * low[1]) * (b[0] - low[0]) 
-					* (high[1] - b[1]);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1]) * (high[0] - b[0]) 
-					* (high[1] - b[1]);
-				result += channelReadF32(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1]) * (b[0] - low[0]) 
-					* (b[1] - low[1]);
-				result += channelReadF32(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1]) * (high[0] - b[0]) 
-					* (b[1] - low[1]);
-				result += channelReadF32(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1]) * (b[0] - low[0]) 
-					* (high[1] - b[1]);
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	}
-
-	if(texture.normalizedFloat)
-	{
-		PTXF32 f = ( d + 0.0 ) / (mask + 1);
-		PTXF32* dp = (PTXF32*)&d;
-		*dp = f;	
-	}
-	
-	return d;
-}
-
-
-template<unsigned int dim, typename D, typename B>
-D executive::CooperativeThreadArray::sample(const ir::Texture& texture, 
-	B b0, B b1, B b2) {
-	D d = 0;
-	PTXF64 b[3] = {b0, b1, b2};
-	PTXB64 mask = 1;
-	unsigned int shift;
-
-	switch (dim) {
-		case 0: mask <<= (texture.x);
-			--mask;
-			shift = 0;
-			break;
-		case 1: mask <<= (texture.y);
-			--mask;
-			shift = texture.x;
-			break;
-		case 2: mask <<= (texture.z);
-			--mask;
-			shift = texture.x + texture.y;
-			break;
-		case 3: mask <<= (texture.w);
-			--mask;
-			shift = texture.z + texture.y + texture.x;
-			break;
-		default: assert("Invalid texture index" == 0); 
-			break;
-	}
-	
-	if (texture.normalize) {
-		b[0] = b[0] * texture.size.x;
-		b[1] = b[1] * texture.size.y;
-		b[2] = b[2] * texture.size.z;
-	}
-
-	if (texture.interpolation == ir::Texture::Nearest) {
-		PTXF64 index[3] = {b[0], b[1], b[2]};
-		unsigned int windex[3];
-		windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
-		windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
-		windex[2] = wrap(index[2], texture.size.z, texture.addressMode[2]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXU32 result = channelRead<PTXU32>(texture, shift, mask, 
-					windex[0] + windex[1]*texture.size.x 
-					+ index[2]*texture.size.x*texture.size.y);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXS32 result = channelRead<PTXS32>(texture, shift, mask, 
-					windex[0] + windex[1]*texture.size.x 
-					+ windex[2]*texture.size.x*texture.size.y);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, 
-					windex[0] + windex[1]*texture.size.x 
-					+ windex[2]*texture.size.x*texture.size.y);
-
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	} 
-	else {
-		PTXF64 low[3] = {floor(b[0]), floor(b[1]), floor(b[2])};
-		PTXF64 high[3] = {floor(b[0] + 1), floor(b[1] + 1), floor(b[2] + 1)};
-		unsigned int wlow[3];
-		unsigned int whigh[3];
-		wlow[0] = wrap(low[0], texture.size.x, texture.addressMode[0]);
-		wlow[1] = wrap(low[1], texture.size.y, texture.addressMode[1]);
-		wlow[2] = wrap(low[2], texture.size.z, texture.addressMode[2]);
-		whigh[0] = wrap(high[0], texture.size.x, texture.addressMode[0]);
-		whigh[1] = wrap(high[1], texture.size.y, texture.addressMode[1]);
-		whigh[2] = wrap(high[2], texture.size.z, texture.addressMode[2]);
-		switch (texture.type) {
-			case ir::Texture::Unsigned:
-			{
-				PTXF64 result = channelRead<PTXU32>(texture, shift, mask, 
-					wlow[0] + texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (high[0] - b[0]) * (high[1] - b[1]) * (high[2] - b[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (high[0] - b[0]) * (high[1] - b[1]) * (b[2] - low[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (high[0] - b[0]) * (b[1] - low[1]) * (high[2] - b[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (high[0] - b[0]) * (b[1] - low[1]) * (b[2] - low[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (b[0] - low[0]) * (high[1] - b[1]) * (high[2] - b[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (b[0] - low[0]) * (high[1] - b[1]) * (b[2] - low[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (b[0] - low[0]) * (b[1] - low[1]) * (high[2] - b[2]);
-				result += channelRead<PTXU32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (b[0] - low[0]) * (b[1] - low[1]) * (b[2] - low[2]);
-				d = result;
-				break;
-			}
-			case ir::Texture::Signed:
-			{
-				PTXF64 result = channelRead<PTXS32>(texture, shift, mask, 
-					wlow[0] + texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (high[0] - b[0]) * (high[1] - b[1]) * (high[2] - b[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (high[0] - b[0]) * (high[1] - b[1]) * (b[2] - low[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (high[0] - b[0]) * (b[1] - low[1]) * (high[2] - b[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (high[0] - b[0]) * (b[1] - low[1]) * (b[2] - low[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (b[0] - low[0]) * (high[1] - b[1]) * (high[2] - b[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (b[0] - low[0]) * (high[1] - b[1]) * (b[2] - low[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (b[0] - low[0]) * (b[1] - low[1]) * (high[2] - b[2]);
-				result += channelRead<PTXS32>(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (b[0] - low[0]) * (b[1] - low[1]) * (b[2] - low[2]);
-				d = result;
-				break;
-			}
-			case ir::Texture::Float:
-			{
-				PTXF32 result = channelReadF32(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (high[0] - b[0]) * (high[1] - b[1]) * (high[2] - b[2]);
-				result += channelReadF32(texture, shift, mask, wlow[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (high[0] - b[0]) * (high[1] - b[1]) * (b[2] - low[2]);
-				result += channelReadF32(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (high[0] - b[0]) * (b[1] - low[1]) * (high[2] - b[2]);
-				result += channelReadF32(texture, shift, mask, wlow[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (high[0] - b[0]) * (b[1] - low[1]) * (b[2] - low[2]);
-				result += channelReadF32(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (b[0] - low[0]) * (high[1] - b[1]) * (high[2] - b[2]);
-				result += channelReadF32(texture, shift, mask, whigh[0] 
-					+ texture.size.x * wlow[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (b[0] - low[0]) * (high[1] - b[1]) * (b[2] - low[2]);
-				result += channelReadF32(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * wlow[2]) 
-					* (b[0] - low[0]) * (b[1] - low[1]) * (high[2] - b[2]);
-				result += channelReadF32(texture, shift, mask, whigh[0] 
-					+ texture.size.x * whigh[1] 
-					+ texture.size.x * texture.size.y * whigh[2]) 
-					* (b[0] - low[0]) * (b[1] - low[1]) * (b[2] - low[2]);
-
-				d = result;
-				break;
-			}
-			default:
-				assert("Invalid texture data type" == 0);
-		}
-	}
-	
-	if(texture.normalizedFloat)
-	{
-		PTXF32 f = ( d + 0.0 ) / (mask + 1);
-		PTXF32* dp = (PTXF32*)&d;
-		*dp = f;
-	}
-	
-	return d;
-}
-
 /*!
 
 */		
@@ -7017,22 +6377,22 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXU32 d0 = sample<0,PTXU32>(texture, c, address);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXU32 d1 = sample<1,PTXU32>(texture, c, address);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXU32 d2 = sample<2,PTXU32>(texture, c, address);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXU32 d3 = sample<3,PTXU32>(texture, c, address);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
@@ -7047,22 +6407,22 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXU32 d0 = sample<0,PTXU32>(texture, c, address);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXU32 d1 = sample<1,PTXU32>(texture, c, address);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXU32 d2 = sample<2,PTXU32>(texture, c, address);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXU32 d3 = sample<3,PTXU32>(texture, c, address);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
@@ -7086,22 +6446,22 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXS32 d0 = sample<0,PTXS32>(texture, c, address);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXS32 d1 = sample<1,PTXS32>(texture, c, address);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXS32 d2 = sample<2,PTXS32>(texture, c, address);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXS32 d3 = sample<3,PTXS32>(texture, c, address);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
@@ -7116,22 +6476,22 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXS32 d0 = sample<0,PTXS32>(texture, c, address);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXS32 d1 = sample<1,PTXS32>(texture, c, address);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXS32 d2 = sample<2,PTXS32>(texture, c, address);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXS32 d3 = sample<3,PTXS32>(texture, c, address);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
@@ -7155,10 +6515,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXF32 d0 = sample<0,PTXF32>(texture, c);
-							PTXF32 d1 = sample<1,PTXF32>(texture, c);
-							PTXF32 d2 = sample<2,PTXF32>(texture, c);
-							PTXF32 d3 = sample<3,PTXF32>(texture, c);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c);
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7169,22 +6529,22 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXF32 d0 = sample<0,PTXF32>(texture, c, address);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXF32 d1 = sample<1,PTXF32>(texture, c, address);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXF32 d2 = sample<2,PTXF32>(texture, c, address);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
 							}
-							PTXF32 d3 = sample<3,PTXF32>(texture, c, address);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
 								currentEvent.memory_sizes.push_back(4);
@@ -7219,10 +6579,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[0].reg);
 							PTXS32 c1 = getRegAsS32(threadID, 
 								instr.c.array[1].reg);
-							PTXU32 d0 = sample<0,PTXU32>(texture, c0, c1);
-							PTXU32 d1 = sample<1,PTXU32>(texture, c0, c1);
-							PTXU32 d2 = sample<2,PTXU32>(texture, c0, c1);
-							PTXU32 d3 = sample<3,PTXU32>(texture, c0, c1);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1);
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7235,10 +6595,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[0].reg);
 							PTXF32 c1 = getRegAsF32(threadID, 
 								instr.c.array[1].reg);
-							PTXU32 d0 = sample<0,PTXU32>(texture, c0, c1);
-							PTXU32 d1 = sample<1,PTXU32>(texture, c0, c1);
-							PTXU32 d2 = sample<2,PTXU32>(texture, c0, c1);
-							PTXU32 d3 = sample<3,PTXU32>(texture, c0, c1);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1);
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7260,10 +6620,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[0].reg);
 							PTXS32 c1 = getRegAsS32(threadID, 
 								instr.c.array[1].reg);
-							PTXS32 d0 = sample<0,PTXS32>(texture, c0, c1);
-							PTXS32 d1 = sample<1,PTXS32>(texture, c0, c1);
-							PTXS32 d2 = sample<2,PTXS32>(texture, c0, c1);
-							PTXS32 d3 = sample<3,PTXS32>(texture, c0, c1);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1);
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7276,10 +6636,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[0].reg);
 							PTXF32 c1 = getRegAsF32(threadID, 
 								instr.c.array[1].reg);
-							PTXS32 d0 = sample<0,PTXS32>(texture, c0, c1);
-							PTXS32 d1 = sample<1,PTXS32>(texture, c0, c1);
-							PTXS32 d2 = sample<2,PTXS32>(texture, c0, c1);
-							PTXS32 d3 = sample<3,PTXS32>(texture, c0, c1);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1);
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7301,10 +6661,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[0].reg);
 							PTXS32 c1 = getRegAsS32(threadID, 
 								instr.c.array[1].reg);
-							PTXF32 d0 = sample<0,PTXF32>(texture, c0, c1);
-							PTXF32 d1 = sample<1,PTXF32>(texture, c0, c1);
-							PTXF32 d2 = sample<2,PTXF32>(texture, c0, c1);
-							PTXF32 d3 = sample<3,PTXF32>(texture, c0, c1);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1);
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7317,10 +6677,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[0].reg);
 							PTXF32 c1 = getRegAsF32(threadID, 
 								instr.c.array[1].reg);
-							PTXF32 d0 = sample<0,PTXF32>(texture, c0, c1);
-							PTXF32 d1 = sample<1,PTXF32>(texture, c0, c1);
-							PTXF32 d2 = sample<2,PTXF32>(texture, c0, c1);
-							PTXF32 d3 = sample<3,PTXF32>(texture, c0, c1);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1);
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7353,10 +6713,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXU32 d0 = sample<0,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d1 = sample<1,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d2 = sample<2,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d3 = sample<3,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1, c2);
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7371,10 +6731,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXU32 d0 = sample<0,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d1 = sample<1,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d2 = sample<2,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d3 = sample<3,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1, c2);
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7398,10 +6758,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXS32 d0 = sample<0,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d1 = sample<1,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d2 = sample<2,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d3 = sample<3,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1, c2);
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7416,10 +6776,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXS32 d0 = sample<0,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d1 = sample<1,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d2 = sample<2,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d3 = sample<3,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1, c2);
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7443,10 +6803,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXF32 d0 = sample<0,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d1 = sample<1,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d2 = sample<2,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d3 = sample<3,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1, c2);
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7461,10 +6821,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXF32 d0 = sample<0,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d1 = sample<1,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d2 = sample<2,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d3 = sample<3,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1, c2);
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);

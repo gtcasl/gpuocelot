@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace translator
 {
@@ -218,7 +218,7 @@ namespace translator
 		ir::LLVMInstruction::Type context;
 		
 		context.category = ir::LLVMInstruction::Type::Structure;
-		context.members.resize( 12 );
+		context.members.resize( 13 );
 
 		context.members[0].category = ir::LLVMInstruction::Type::Structure;
 		context.members[0].label = "%Dimension";
@@ -240,6 +240,9 @@ namespace translator
 		context.members[9] = context.members[8];
 		context.members[10] = context.members[8];
 		context.members[11] = context.members[8];
+		
+		context.members[12].category = ir::LLVMInstruction::Type::Pointer;
+		context.members[12].type = ir::LLVMInstruction::I8;		
 		
 		return context;
 	}
@@ -962,651 +965,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 	{
-		switch( i.a.type )
-		{
-			case ir::PTXOperand::s8:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::s64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMSext sext;
-						sext.d = _destination( i );
-						sext.a = _translate( i.a );
-	
-						_add( sext );
-						break;
-					}
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::b8:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMSitofp sitofp;
-						sitofp.d = _destination( i );
-						sitofp.a = _translate( i.a );
-						
-						_add( sitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::s16:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::s8:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-						
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					case ir::PTXOperand::s64:
-					{
-						ir::LLVMSext sext;
-						sext.d = _destination( i );
-						sext.a = _translate( i.a );
-						
-						_add( sext );
-						break;
-					}
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-	
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMSitofp sitofp;
-						sitofp.d = _destination( i );
-						sitofp.a = _translate( i.a );
-						
-						_add( sitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::s32:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::s16:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-	
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::s64:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMSext sext;
-						sext.d = _destination( i );
-						sext.a = _translate( i.a );
-						
-						_add( sext );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMSitofp sitofp;
-						sitofp.d = _destination( i );
-						sitofp.a = _translate( i.a );
-						
-						_add( sitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::s64:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-	
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::s64:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMSitofp sitofp;
-						sitofp.d = _destination( i );
-						sitofp.a = _translate( i.a );
-						
-						_add( sitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::pred:
-			case ir::PTXOperand::b8:
-			case ir::PTXOperand::u8:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::s64:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMZext zext;
-						zext.d = _destination( i );
-						zext.a = _translate( i.a );
-						
-						_add( zext );
-						break;
-					}
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMUitofp uitofp;
-						uitofp.d = _destination( i );
-						uitofp.a = _translate( i.a );
-						
-						_add( uitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::b16:
-			case ir::PTXOperand::u16:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::pred:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-	
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::s64:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMZext zext;
-						zext.d = _destination( i );
-						zext.a = _translate( i.a );
-						
-						_add( zext );
-						break;
-					}
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					{
-						assertM( false, "F16 type not supported" );
-						break;
-					}
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMUitofp uitofp;
-						uitofp.d = _destination( i );
-						uitofp.a = _translate( i.a );
-						
-						_add( uitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::b32:
-			case ir::PTXOperand::u32:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::s16:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-	
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					case ir::PTXOperand::s64:
-					{
-						ir::LLVMZext zext;
-						zext.d = _destination( i );
-						zext.a = _translate( i.a );
-						
-						_add( zext );
-						break;
-					}
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::u32:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					{
-						assertM( false, "F16 type not supported" );
-						break;
-					}
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMUitofp uitofp;
-						uitofp.d = _destination( i );
-						uitofp.a = _translate( i.a );
-						
-						_add( uitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::b64:
-			case ir::PTXOperand::u64:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::s32:
-					{
-						ir::LLVMBitcast bitcast;
-						bitcast.d = _destination( i );
-						bitcast.a = _translate( i.a );
-	
-						_add( bitcast );
-						break;
-					}
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::s64:
-					case ir::PTXOperand::u64:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					{
-						assertM( false, "F16 type not supported" );
-						break;
-					}
-					case ir::PTXOperand::f64:
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMUitofp uitofp;
-						uitofp.d = _destination( i );
-						uitofp.a = _translate( i.a );
-						
-						_add( uitofp );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::f16:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::s64:
-					{
-						ir::LLVMFptosi fptosi;
-						fptosi.d = _destination( i );
-						fptosi.a = _translate( i.a );
-						
-						_add( fptosi );
-						break;
-					}
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMFptoui fptoui;
-						fptoui.d = _destination( i );
-						fptoui.a = _translate( i.a );
-						
-						_add( fptoui );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f32:
-					case ir::PTXOperand::f64:
-					{
-						ir::LLVMFpext fpext;
-						fpext.d = _destination( i );
-						fpext.a = _translate( i.a );
-						
-						_add( fpext );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::f32:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::s64:
-					{
-						ir::LLVMFptosi fptosi;
-						fptosi.d = _destination( i );
-						fptosi.a = _translate( i.a );
-						
-						_add( fptosi );
-						break;
-					}
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMFptoui fptoui;
-						fptoui.d = _destination( i );
-						fptoui.a = _translate( i.a );
-						
-						_add( fptoui );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					{
-						ir::LLVMFptrunc fptrunc;
-						fptrunc.d = _destination( i );
-						fptrunc.a = _translate( i.a );
-						
-						_add( fptrunc );
-						break;
-					}
-					case ir::PTXOperand::f32:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::f64:
-					{
-						ir::LLVMFpext fpext;
-						fpext.d = _destination( i );
-						fpext.a = _translate( i.a );
-						
-						_add( fpext );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::f64:
-			{
-				switch( i.d.type )
-				{
-					case ir::PTXOperand::s8:
-					case ir::PTXOperand::s16:
-					case ir::PTXOperand::s32:
-					case ir::PTXOperand::s64:
-					{
-						ir::LLVMFptosi fptosi;
-						fptosi.d = _destination( i );
-						fptosi.a = _translate( i.a );
-						
-						_add( fptosi );
-						break;
-					}
-					case ir::PTXOperand::pred:
-					case ir::PTXOperand::b8:
-					case ir::PTXOperand::u8:
-					case ir::PTXOperand::b16:
-					case ir::PTXOperand::u16:
-					case ir::PTXOperand::b32:
-					case ir::PTXOperand::u32:
-					case ir::PTXOperand::b64:
-					case ir::PTXOperand::u64:
-					{
-						ir::LLVMFptoui fptoui;
-						fptoui.d = _destination( i );
-						fptoui.a = _translate( i.a );
-						
-						_add( fptoui );
-						break;
-					}
-					case ir::PTXOperand::f16:
-					{
-						ir::LLVMFptrunc fptrunc;
-						fptrunc.d = _destination( i );
-						fptrunc.a = _translate( i.a );
-						
-						_add( fptrunc );
-						break;
-					}
-					case ir::PTXOperand::f32:
-					{
-						ir::LLVMFptrunc fptrunc;
-						fptrunc.d = _destination( i );
-						fptrunc.a = _translate( i.a );
-						
-						_add( fptrunc );
-						break;
-					}
-					case ir::PTXOperand::f64:
-					{
-						_bitcast( i );
-						break;
-					}
-					case ir::PTXOperand::TypeSpecifier_invalid:
-					{
-						assertM( false, "Convert " << i.toString() 
-							<< " not implemented." );
-						break;
-					}
-				}
-				break;
-			}
-			case ir::PTXOperand::TypeSpecifier_invalid:
-			{
-				assertM( false, "Convert " << i.toString() 
-					<< " not implemented." );
-				break;
-			}
-		}
+		_convert( _translate( i.d ), i.d.type, _translate( i.a ), i.a.type );
 	}
 
 	void PTXToLLVMTranslator::_translateDiv( const ir::PTXInstruction& i )
@@ -1683,6 +1042,7 @@ namespace translator
 		else
 		{
 			load.d = _destination( i );
+			load.d.type.type = _translate( i.type );
 		}
 
 		if( i.a.addressMode == ir::PTXOperand::Address )
@@ -1744,8 +1104,26 @@ namespace translator
 		}
 		
 		load.alignment = i.d.bytes();
-				
-		_add( load );
+		
+		if( i.d.array.empty() )
+		{
+			if( i.d.type != i.type )
+			{
+				ir::LLVMInstruction::Operand temp = load.d;
+				temp.type.type = _translate( i.d.type );
+				load.d.name = _tempRegister();
+				_add( load );
+				_convert( temp, i.d.type, load.d, i.type );				
+			}
+			else
+			{
+				_add( load );
+			}
+		}
+		else
+		{
+			_add( load );
+		}
 		
 		for( ir::PTXOperand::Array::const_iterator 
 			destination = i.d.array.begin(); 
@@ -1763,7 +1141,17 @@ namespace translator
 			extract.b.constant = true;
 			extract.b.i32 = std::distance( i.d.array.begin(), destination );
 			
-			_add( extract );
+			if( destination->type != i.type )
+			{
+				ir::LLVMInstruction::Operand temp = target;
+				extract.d.name = _tempRegister();
+				_add( extract );
+				_convert( temp, destination->type, extract.d, i.type );				
+			}
+			else
+			{
+				_add( extract );
+			}
 		}
 	}
 
@@ -2690,7 +2078,7 @@ namespace translator
 			icmp.d = comparison;
 			icmp.a = _translate( i.a );
 			icmp.b = _translate( i.b );
-			icmp.comparison = _translate( i.comparisonOperator, false );
+			icmp.comparison = _translate( i.comparisonOperator, true );
 			
 			_add( icmp );		
 		}
@@ -3050,11 +2438,15 @@ namespace translator
 	{
 		ir::LLVMStore store;
 
-		store.d = _translate( i.d );
+		store.d = _translate( i.d, i.addressSpace );
 		
 		if( i.vec == ir::PTXOperand::v1 )
 		{
-			store.a = _translate( i.a );
+			ir::LLVMInstruction::Operand temp = _translate( i.a );
+			temp.name = _tempRegister();
+			temp.type.type = _translate( i.type );
+			_convert( temp, i.type, _translate( i.a ), i.a.type );
+			store.a = temp;		
 		}
 		else
 		{
@@ -3064,47 +2456,71 @@ namespace translator
 			store.a.type.type = _translate( i.type );
 		}
 
-		ir::LLVMInttoptr inttoptr;
-		
-		if( i.d.offset != 0 )
+		if( store.d.type.category == ir::LLVMInstruction::Type::Pointer )
 		{
-			ir::LLVMAdd add;
+			ir::LLVMBitcast cast;		
 		
-			add.a = store.d;
-			add.b = add.a;
-			add.b.constant = true;
-			add.b.i64 = i.d.offset;
-			add.d = add.a;
-			add.d.name = _tempRegister();
-	
-			_add( add );
+			cast.a = store.d;
+			cast.d = store.a;			
 			
-			inttoptr.a = add.d;
+			if( i.d.offset != 0 )
+			{
+				ir::LLVMGetelementptr get;
+			
+				get.d = cast.a;
+				get.d.name = _tempRegister();
+				get.a = cast.a;
+				
+				get.indices.push_back( i.d.offset );
+		
+				_add( get );
+				cast.a = get.d;
+			}
+			
+			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			cast.d.name = _tempRegister();		
+			
+			_add( cast );
+			store.d = cast.d;		
 		}
 		else
 		{
-			inttoptr.a = store.d;
-		}		
+			ir::LLVMInttoptr cast;		
+		
+			cast.a = store.d;
+			cast.d = store.a;
+			
+			if( i.d.offset != 0 )
+			{
+				ir::LLVMAdd add;
+			
+				add.d = cast.a;
+				add.d.name = _tempRegister();
+				add.a = cast.a;
+				
+				add.b = cast.a;
+				add.b.constant = true;
+				add.b.i64 = i.d.offset;
+		
+				_add( add );
+				cast.a = add.d;
+			}
+			
+			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			cast.d.name = _tempRegister();		
 
-		inttoptr.d = store.a;
-		inttoptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
-		inttoptr.d.name = _tempRegister();		
-
-		_add( inttoptr );
-						
+			_add( cast );
+			store.d = cast.d;		
+		}
+		
 		if( i.volatility == ir::PTXInstruction::Volatile )
 		{
 			store.isVolatile = true;
 		}
 		
-		store.d = inttoptr.d;
 		store.alignment = i.a.bytes();
 
-		if( i.vec == ir::PTXOperand::v1 )
-		{
-			store.a = _translate( i.a );
-		}
-		else
+		if( i.vec != ir::PTXOperand::v1 )
 		{
 			store.a = _translate( i.a.array.front() );
 			store.a.type.vector = i.vec;
@@ -3126,8 +2542,18 @@ namespace translator
 			
 			insertOne.a.values.assign( i.vec, value );
 			
-			insertOne.b = _translate( *source );
-			insertOne.b.type.type = _translate( i.type );
+			if( i.type != source->type )
+			{
+				ir::LLVMInstruction::Operand temp = _translate( *source );
+				temp.name = _tempRegister();
+				temp.type.type = _translate( i.type );
+				_convert( temp, i.type, _translate( *source ), source->type );
+				insertOne.b = temp;
+			}
+			else
+			{
+				insertOne.b = _translate( *source );
+			}
 
 			insertOne.c.type.category = ir::LLVMInstruction::Type::Element;
 			insertOne.c.type.type = ir::LLVMInstruction::I32;
@@ -3151,8 +2577,19 @@ namespace translator
 				}
 				insert.a = store.a;
 				insert.a.name = currentSource;
-				insert.b = _translate( *source );
-				insert.b.type.type = _translate( i.type );
+				if( i.type != source->type )
+				{
+					ir::LLVMInstruction::Operand temp = _translate( *source );
+					temp.name = _tempRegister();
+					temp.type.type = _translate( i.type );
+					_convert( temp, i.type, _translate( *source ), 
+						source->type );
+					insert.b = temp;
+				}
+				else
+				{
+					insert.b = _translate( *source );
+				}
 				insert.c.type.category = ir::LLVMInstruction::Type::Element;
 				insert.c.type.type = ir::LLVMInstruction::I32;
 				insert.c.constant = true;
@@ -3324,72 +2761,201 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateTex( const ir::PTXInstruction& i )
 	{
+		_usesTextures = true;
+	
 		ir::LLVMCall call;
 		
-		call.name = "@tex";
-				
 		ir::LLVMInstruction::Operand d1 = _translate( i.d.array[0] );
 		ir::LLVMInstruction::Operand d2 = _translate( i.d.array[1] );
 		ir::LLVMInstruction::Operand d3 = _translate( i.d.array[2] );
 		ir::LLVMInstruction::Operand d4 = _translate( i.d.array[3] );
 		
-		call.d = d1;
-		call.d.type.category = ir::LLVMInstruction::Type::Vector;
-		call.d.type.vector = 4;
+		ir::LLVMInstruction::Operand d;
+		d.type.category = ir::LLVMInstruction::Type::Pointer;
+		
+		switch( i.d.type )
+		{
+			case ir::PTXOperand::u32: /* fall through */
+			case ir::PTXOperand::s32:
+			{
+				d.name = "%integerTexture";
+				d.type.type = ir::LLVMInstruction::I32;
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				d.name = "%floatingPointTexture";
+				d.type.type = ir::LLVMInstruction::F32;
+				break;
+			}
+			default : assertM( false, "Invalid destination type " 
+				<< ir::PTXOperand::toString( i.d.type ) << " for tex" );
+		}
 		
 		switch( i.geometry )
 		{
 			case ir::PTXInstruction::_1d:
 			{
-				call.parameters.resize( 2 );
-				call.parameters[0] = _translate( i.a );
-				call.parameters[1] = _translate( i.c );
+				call.parameters.resize( 4 );
+				call.parameters[0] = d;
+				call.parameters[3] = _translate( i.c );
 				break;
 			}
 			case ir::PTXInstruction::_2d:
-				call.parameters.resize( 3 );
-				call.parameters[0] = _translate( i.a );
-				call.parameters[1] = _translate( i.c.array[0] );
-				call.parameters[2] = _translate( i.c.array[1] );
+				call.name = "@__ocelot_tex_2d";
+				call.parameters.resize( 5 );
+				call.parameters[0] = d;
+				call.parameters[3] = _translate( i.c.array[0] );
+				call.parameters[4] = _translate( i.c.array[1] );
 				break;
 			case ir::PTXInstruction::_3d:
-				call.parameters.resize( 5 );
-				call.parameters[0] = _translate( i.a );
-				call.parameters[1] = _translate( i.c.array[0] );
-				call.parameters[2] = _translate( i.c.array[1] );
-				call.parameters[3] = _translate( i.c.array[2] );
-				call.parameters[4] = _translate( i.c.array[3] );
+				call.name = "@__ocelot_tex_3d";
+				call.parameters.resize( 7 );
+				call.parameters[0] = d;
+				call.parameters[3] = _translate( i.c.array[0] );
+				call.parameters[4] = _translate( i.c.array[1] );
+				call.parameters[5] = _translate( i.c.array[2] );
+				call.parameters[6] = _translate( i.c.array[3] );
 				break;
 			default: assertM( false, "Invalid texture geometry" );
 		}
 		
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Pointer;
+		call.parameters[1].type.members.resize(1);
+		call.parameters[1].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		call.parameters[1].type.members[0].label = "%LLVMContext";
+		call.parameters[1].name = "%__ctaContext";
+		
+		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[2].type.type = ir::LLVMInstruction::I32;
+		call.parameters[2].constant = true;
+		call.parameters[2].i32 = i.a.reg;
+		
+		switch( i.d.type )
+		{
+			case ir::PTXOperand::u32:
+			{
+				switch( i.c.type )
+				{
+					case ir::PTXOperand::u32:
+					{
+						call.name += "_uu";
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						call.name += "_uf";
+						break;
+					}
+					case ir::PTXOperand::s32:
+					{
+						call.name += "_us";
+						break;
+					}
+					default : assertM( false, "Invalid source type " 
+						<< ir::PTXOperand::toString( i.c.type ) << " for tex" );
+				}
+				break;
+			}
+			case ir::PTXOperand::s32:
+			{
+				switch( i.c.type )
+				{
+					case ir::PTXOperand::u32:
+					{
+						call.name += "_su";
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						call.name += "_sf";
+						break;
+					}
+					case ir::PTXOperand::s32:
+					{
+						call.name += "_ss";
+						break;
+					}
+					default : assertM( false, "Invalid source type " 
+						<< ir::PTXOperand::toString( i.c.type ) << " for tex" );
+				}
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				switch( i.c.type )
+				{
+					case ir::PTXOperand::u32:
+					{
+						call.name += "_fu";
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						call.name += "_ff";
+						break;
+					}
+					case ir::PTXOperand::s32:
+					{
+						call.name += "_fs";
+						break;
+					}
+					default : assertM( false, "Invalid source type " 
+						<< ir::PTXOperand::toString( i.c.type ) << " for tex" );
+				}
+				break;
+			}
+			default : assertM( false, "Invalid destination type " 
+				<< ir::PTXOperand::toString( i.d.type ) << " for tex" );
+		}
+		
 		_add( call );
 		
-		ir::LLVMExtractelement extract;
+		ir::LLVMLoad load;
 			
-		extract.d = d1;
-		extract.a = call.d;
-		extract.b.type.type = ir::LLVMInstruction::I32;
-		extract.b.type.category = ir::LLVMInstruction::Type::Element;
-		extract.b.constant = true;
-		extract.b.i32 = 0;
+		load.d = d1;
+		load.a = d;
 	
-		_add( extract );
+		_add( load );
 	
-		extract.d = d2;
-		extract.b.i32 = 1;
-	
-		_add( extract );
+		ir::LLVMGetelementptr get;
 		
-		extract.d = d3;
-		extract.b.i32 = 2;
-	
-		_add( extract );
+		get.d = d;
+		get.d.name = _tempRegister();
+		get.a = d;
+		get.indices.push_back( 1 );
+		
+		_add( get );
 
-		extract.d = d4;
-		extract.b.i32 = 3;
+		load.d = d2;
+		load.a = get.d;
 	
-		_add( extract );
+		_add( load );
+	
+		get.d = d;
+		get.d.name = _tempRegister();
+		get.a = d;
+		get.indices.back() = 2;
+		
+		_add( get );
+
+		load.d = d3;
+		load.a = get.d;
+	
+		_add( load );		
+		
+		get.d = d;
+		get.d.name = _tempRegister();
+		get.a = d;
+		get.indices.back() = 3;
+		
+		_add( get );
+
+		load.d = d4;
+		load.a = get.d;
+	
+		_add( load );
 	}
 
 	void PTXToLLVMTranslator::_translateTrap( const ir::PTXInstruction& i )
@@ -3433,12 +2999,655 @@ namespace translator
 	
 	void PTXToLLVMTranslator::_bitcast( const ir::PTXInstruction& i )
 	{
+		_bitcast( i.d, i.a );
+	}
+	
+	void PTXToLLVMTranslator::_bitcast( const ir::PTXOperand& d, 
+		const ir::PTXOperand& a )
+	{
+		_bitcast( _translate( d ), _translate( a ) );
+	}
+	
+	void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a )
+	{
 		ir::LLVMBitcast cast;
-		cast.d = _destination( i );
-		cast.a = _translate( i.a );
+		cast.d = d;
+		cast.a = a;
 		
 		_add( cast );
-	}	
+	}
+		
+	void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d, 
+		ir::PTXOperand::DataType dType, const ir::LLVMInstruction::Operand& a, 
+		ir::PTXOperand::DataType aType )
+	{
+		switch( aType )
+		{
+			case ir::PTXOperand::s8:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMSext sext;
+						sext.d = d;
+						sext.a = a;
+	
+						_add( sext );
+						break;
+					}
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::b8:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMSitofp sitofp;
+						sitofp.d = d;
+						sitofp.a = a;
+						
+						_add( sitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::s16:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					{
+						ir::LLVMTrunc trunc;
+						trunc.d = d;
+						trunc.a = a;
+	
+						_add( trunc );
+						break;
+					}
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					case ir::PTXOperand::s64:
+					{
+						ir::LLVMSext sext;
+						sext.d = d;
+						sext.a = a;
+						
+						_add( sext );
+						break;
+					}
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMSitofp sitofp;
+						sitofp.d = d;
+						sitofp.a = a;
+						
+						_add( sitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::s32:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::s16:
+					{
+						ir::LLVMTrunc trunc;
+						trunc.d = d;
+						trunc.a = a;
+	
+						_add( trunc );
+						break;
+					}
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMSext sext;
+						sext.d = d;
+						sext.a = a;
+						
+						_add( sext );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMSitofp sitofp;
+						sitofp.d = d;
+						sitofp.a = a;
+						
+						_add( sitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::s64:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					{
+						ir::LLVMTrunc trunc;
+						trunc.d = d;
+						trunc.a = a;
+	
+						_add( trunc );
+						break;
+					}
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMSitofp sitofp;
+						sitofp.d = d;
+						sitofp.a = a;
+						
+						_add( sitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::pred:
+			case ir::PTXOperand::b8:
+			case ir::PTXOperand::u8:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMZext zext;
+						zext.d = d;
+						zext.a = a;
+						
+						_add( zext );
+						break;
+					}
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMUitofp uitofp;
+						uitofp.d = d;
+						uitofp.a = a;
+						
+						_add( uitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::b16:
+			case ir::PTXOperand::u16:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::pred:
+					{
+						ir::LLVMTrunc trunc;
+						trunc.d = d;
+						trunc.a = a;
+	
+						_add( trunc );
+						break;
+					}
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMZext zext;
+						zext.d = d;
+						zext.a = a;
+						
+						_add( zext );
+						break;
+					}
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					{
+						assertM( false, "F16 type not supported" );
+						break;
+					}
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMUitofp uitofp;
+						uitofp.d = d;
+						uitofp.a = a;
+						
+						_add( uitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::b32:
+			case ir::PTXOperand::u32:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::s16:
+					{
+						ir::LLVMTrunc trunc;
+						trunc.d = d;
+						trunc.a = a;
+	
+						_add( trunc );
+						break;
+					}
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					case ir::PTXOperand::s64:
+					{
+						ir::LLVMZext zext;
+						zext.d = d;
+						zext.a = a;
+						
+						_add( zext );
+						break;
+					}
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::u32:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					{
+						assertM( false, "F16 type not supported" );
+						break;
+					}
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMUitofp uitofp;
+						uitofp.d = d;
+						uitofp.a = a;
+						
+						_add( uitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::b64:
+			case ir::PTXOperand::u64:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::s32:
+					{
+						ir::LLVMTrunc trunc;
+						trunc.d = d;
+						trunc.a = a;
+	
+						_add( trunc );
+						break;
+					}
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::u64:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					{
+						assertM( false, "F16 type not supported" );
+						break;
+					}
+					case ir::PTXOperand::f64:
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMUitofp uitofp;
+						uitofp.d = d;
+						uitofp.a = a;
+						
+						_add( uitofp );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::f16:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::s64:
+					{
+						ir::LLVMFptosi fptosi;
+						fptosi.d = d;
+						fptosi.a = a;
+						
+						_add( fptosi );
+						break;
+					}
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMFptoui fptoui;
+						fptoui.d = d;
+						fptoui.a = a;
+						
+						_add( fptoui );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f32:
+					case ir::PTXOperand::f64:
+					{
+						ir::LLVMFpext fpext;
+						fpext.d = d;
+						fpext.a = a;
+						
+						_add( fpext );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::s64:
+					{
+						ir::LLVMFptosi fptosi;
+						fptosi.d = d;
+						fptosi.a = a;
+						
+						_add( fptosi );
+						break;
+					}
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMFptoui fptoui;
+						fptoui.d = d;
+						fptoui.a = a;
+						
+						_add( fptoui );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					{
+						ir::LLVMFptrunc fptrunc;
+						fptrunc.d = d;
+						fptrunc.a = a;
+						
+						_add( fptrunc );
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::f64:
+					{
+						ir::LLVMFpext fpext;
+						fpext.d = d;
+						fpext.a = a;
+						
+						_add( fpext );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false, "Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::f64:
+			{
+				switch( dType )
+				{
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::s64:
+					{
+						ir::LLVMFptosi fptosi;
+						fptosi.d = d;
+						fptosi.a = a;
+						
+						_add( fptosi );
+						break;
+					}
+					case ir::PTXOperand::pred:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::b32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::b64:
+					case ir::PTXOperand::u64:
+					{
+						ir::LLVMFptoui fptoui;
+						fptoui.d = d;
+						fptoui.a = a;
+						
+						_add( fptoui );
+						break;
+					}
+					case ir::PTXOperand::f16:
+					{
+						ir::LLVMFptrunc fptrunc;
+						fptrunc.d = d;
+						fptrunc.a = a;
+						
+						_add( fptrunc );
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						ir::LLVMFptrunc fptrunc;
+						fptrunc.d = d;
+						fptrunc.a = a;
+						
+						_add( fptrunc );
+						break;
+					}
+					case ir::PTXOperand::f64:
+					{
+						_bitcast( d, a );
+						break;
+					}
+					case ir::PTXOperand::TypeSpecifier_invalid:
+					{
+						assertM( false,"Invalid convert." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::TypeSpecifier_invalid:
+			{
+				assertM( false, "Invalid convert." );
+				break;
+			}
+		}
+	}
 
 	std::string PTXToLLVMTranslator::_tempRegister()
 	{
@@ -3927,6 +4136,188 @@ namespace translator
 		}
 	}
 
+	void PTXToLLVMTranslator::_addStackAllocations()
+	{
+		if( !_usesTextures ) return;
+		
+		ir::LLVMBr branch;
+		
+		if( _uninitialized.empty() )
+		{
+			branch.iftrue = "%" + (++_ptx->dfg()->begin())->label();
+		}
+		else
+		{
+			branch.iftrue = "$OcelotRegisterInitializerBlock";
+		}
+		
+		_llvmKernel->_statements.push_front( ir::LLVMStatement( branch ) );
+		
+		ir::LLVMAlloca allocate( 4, 16 );
+		
+		allocate.d.name = "%floatingPointTexture";
+		allocate.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		allocate.d.type.type = ir::LLVMInstruction::F32;
+		
+		_llvmKernel->_statements.push_front( 
+			ir::LLVMStatement( allocate ) );
+
+		allocate.d.name = "%integerTexture";
+		allocate.d.type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( ir::LLVMStatement( allocate ) );
+
+		_llvmKernel->_statements.push_front( 
+			ir::LLVMStatement( "$OcelotTextureAllocateBlock" ) );
+	}
+
+	void PTXToLLVMTranslator::_addTextureCalls()
+	{
+		ir::LLVMStatement tex( ir::LLVMStatement::FunctionDeclaration );
+
+		tex.label = "__ocelot_tex_1d_uu";
+		tex.linkage = ir::LLVMStatement::InvalidLinkage;
+		tex.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		tex.visibility = ir::LLVMStatement::Default;
+		
+		tex.parameters.resize( 4 );
+		tex.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		tex.parameters[0].type.type = ir::LLVMInstruction::I32;
+		
+		tex.parameters[1].type.category = ir::LLVMInstruction::Type::Pointer;
+		tex.parameters[1].type.members.resize(1);
+		tex.parameters[1].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		tex.parameters[1].type.members[0].label = "%LLVMContext";
+		
+		tex.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		tex.parameters[2].type.type = ir::LLVMInstruction::I32;
+
+		tex.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
+		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
+		
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_us";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_su";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_ss";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_uf";
+		tex.parameters[3].type.type = ir::LLVMInstruction::F32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_sf";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_ff";
+		tex.parameters[0].type.type = ir::LLVMInstruction::F32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_fu";
+		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_1d_fs";
+		_llvmKernel->_statements.push_front( tex );
+		
+
+		tex.label = "__ocelot_tex_2d_uu";
+		tex.parameters[0].type.type = ir::LLVMInstruction::I32;
+		
+		tex.parameters.resize( 5 );
+		
+		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
+
+		tex.parameters[4].type.category = ir::LLVMInstruction::Type::Element;
+		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
+		
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_us";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_su";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_ss";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_uf";
+		tex.parameters[3].type.type = ir::LLVMInstruction::F32;
+		tex.parameters[4].type.type = ir::LLVMInstruction::F32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_sf";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_ff";
+		tex.parameters[0].type.type = ir::LLVMInstruction::F32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_fu";
+		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
+		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_2d_fs";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_uu";
+		tex.parameters[0].type.type = ir::LLVMInstruction::I32;
+		
+		tex.parameters.resize( 7 );
+		
+		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
+
+		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
+
+		tex.parameters[5].type.category = ir::LLVMInstruction::Type::Element;
+		tex.parameters[5].type.type = ir::LLVMInstruction::I32;
+
+		tex.parameters[6].type.category = ir::LLVMInstruction::Type::Element;
+		tex.parameters[6].type.type = ir::LLVMInstruction::I32;
+		
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_us";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_su";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_ss";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_uf";
+		tex.parameters[3].type.type = ir::LLVMInstruction::F32;
+		tex.parameters[4].type.type = ir::LLVMInstruction::F32;
+		tex.parameters[5].type.type = ir::LLVMInstruction::F32;
+		tex.parameters[6].type.type = ir::LLVMInstruction::F32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_sf";
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_ff";
+		tex.parameters[0].type.type = ir::LLVMInstruction::F32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_fu";
+		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
+		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
+		tex.parameters[5].type.type = ir::LLVMInstruction::I32;
+		tex.parameters[6].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( tex );
+
+		tex.label = "__ocelot_tex_3d_fs";
+		_llvmKernel->_statements.push_front( tex );		
+	}
+
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
 		_llvmKernel->_statements.push_front( 
@@ -4064,6 +4455,8 @@ namespace translator
 	
 		_llvmKernel->_statements.push_front( setRoundingMode );
 
+		_addTextureCalls();
+
 		_llvmKernel->_statements.push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
 		
@@ -4087,7 +4480,7 @@ namespace translator
 	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
 		: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
 		_tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
-		_tempBlockCount( 0 )
+		_tempBlockCount( 0 ), _usesTextures( false )
 	{
 	
 	}
@@ -4110,6 +4503,7 @@ namespace translator
 		_convertPtxToSsa();
 		_translateInstructions();
 		_initializeRegisters();
+		_addStackAllocations();
 		_addKernelPrefix();
 		_addKernelSuffix();
 		_addGlobalDeclarations();
@@ -4118,6 +4512,7 @@ namespace translator
 		_tempCCRegisterCount = 0;
 		_tempBlockCount = 0;
 		_uninitialized.clear();
+		_usesTextures = false;
 
 		delete _ptx;
 				

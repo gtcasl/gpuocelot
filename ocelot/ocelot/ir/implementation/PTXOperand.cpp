@@ -426,7 +426,7 @@ std::string ir::PTXOperand::toString() const {
 		std::string result = "{";
 		for( Array::const_iterator fi = array.begin(); 
 			fi != array.end(); ++fi ) {
-			result += fi->identifier;
+			result += fi->toString();
 			if( fi != --array.end() ) {
 				result += ", ";
 			}

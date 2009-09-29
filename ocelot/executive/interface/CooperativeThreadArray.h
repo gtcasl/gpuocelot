@@ -450,21 +450,8 @@ namespace executive {
 		void vectorLoad(int, const ir::PTXInstruction &, const char*, 
 			unsigned int);
 
-	private:
-	
-		template<unsigned int index, typename D, typename B>
-		static D sample(const ir::Texture& texture, B b0);		
-		template<unsigned int index, typename D, typename B>
-		static D sample(const ir::Texture& texture, B b0, ir::PTXB8 *&address);
-		template<unsigned int index, typename D, typename B>
-		static D sample(const ir::Texture& texture, B b0, B b1);
-		template<unsigned int index, typename D, typename B>
-		static D sample(const ir::Texture& texture, B b0, B b1, B b2);
-
 	public:
-		/*
-			Handlers for each instruction
-		*/
+		/*Handlers for each instruction */
 		void eval_Abs(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Add(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_AddC(CTAContext &context, const ir::PTXInstruction &instr);

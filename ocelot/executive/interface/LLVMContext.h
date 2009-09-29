@@ -42,6 +42,10 @@ namespace executive
 			size_t sharedSize; //! Shared memory
 			size_t constantSize; //! Constant memory
 			size_t parameterSize; //! Parameter memory
+			
+		public:
+			/*! \brief Generic pointer back to other state */
+			char* other;
 	};
 
 }

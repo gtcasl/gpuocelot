@@ -834,7 +834,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	}
 }
 
-void executive::EmulatedKernel::initializeTextureMemory( ) {
+void executive::EmulatedKernel::initializeTextureMemory() {
 	typedef std::unordered_map<std::string, unsigned int> IndexMap;
 	if (module == 0) {
 		return;

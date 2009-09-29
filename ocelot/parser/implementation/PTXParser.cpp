@@ -836,7 +836,7 @@ namespace parser
 				<< identifiers.front() << " not declared in this scope.", 
 				NoDeclaration );
 		}
-			
+		
 		operand = mode->second.operand;
 	
 		if( identifiers.size() == 1 )

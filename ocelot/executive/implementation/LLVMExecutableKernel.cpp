@@ -9,6 +9,7 @@
 #define LLVM_EXECUTABLE_KERNEL_CPP_INCLUDED
 
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/TextureOperations.h>
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
@@ -25,7 +26,7 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
-#define REPORT_ALL_LLVM_SOURCE 0
+#define REPORT_ALL_LLVM_SOURCE 1
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define PRINT_OPTIMIZED_CFG 0
 
@@ -59,6 +60,157 @@ extern "C"
 	{
 		return std::exp( value * 0.693147f );
 	}
+	
+	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
+		unsigned int , 
+		unsigned int , unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_fu( float*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_ff( float*, executive::LLVMContext* context, unsigned int , float, float, float, float )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_sf( unsigned int*, executive::LLVMContext* context, unsigned int , float, float, float, float )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_uf( unsigned int*, executive::LLVMContext* context, unsigned int , float, float, float, float )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_ss( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_su( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_us( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_3d_uu( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_fs( float*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_fu( float*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_ff( float*, executive::LLVMContext* context, unsigned int , float, float )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_sf( unsigned int*, executive::LLVMContext* context, unsigned int , float, float )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_uf( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, 
+		float c0, float c1 )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, 
+			unsigned int >( texture, c0, c1 );
+		result[1] = executive::tex::sample< 1, 
+			unsigned int >( texture, c0, c1 );
+		result[2] = executive::tex::sample< 2, 
+			unsigned int >( texture, c0, c1 );
+		result[3] = executive::tex::sample< 3, 
+			unsigned int >( texture, c0, c1 );						
+	}
+
+	void __ocelot_tex_2d_ss( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_su( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_us( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_2d_uu( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_fs( float*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_fu( float*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_ff( float*, executive::LLVMContext* context, unsigned int , float )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_sf( unsigned int*, executive::LLVMContext* context, unsigned int , float )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_uf( unsigned int*, executive::LLVMContext* context, unsigned int , float )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_ss( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_su( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_us( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	{
+	
+	}
+
+	void __ocelot_tex_1d_uu( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	{
+	
+	}
+
 }
 
 namespace executive
@@ -698,6 +850,35 @@ namespace executive
 	void LLVMExecutableKernel::_allocateTextureMemory( )
 	{
 		report( " Allocating Texture Memory" );
+		_opaque.textures.clear();
+		
+		AllocationMap map;
+		unsigned int index = 0;
+		
+		for( PTXInstructionVector::iterator 
+			instruction = _ptx->instructions.begin(); 
+			instruction != _ptx->instructions.end(); ++instruction )
+		{
+			if( instruction->opcode == ir::PTXInstruction::Tex )
+			{
+				ir::Module::TextureMap::const_iterator 
+					texture = module->textures.find(
+					instruction->a.identifier );
+				assert( texture != module->textures.end() );
+		
+				AllocationMap::iterator 
+					allocation = map.find( texture->first );
+				if( allocation == map.end() )
+				{
+					report( "  Allocating texture " << texture->first 
+						<< " to index " << index );
+					allocation = map.insert( 
+						std::make_pair( texture->first, index++ ) ).first;
+					_opaque.textures.push_back( texture->second );
+				}
+				instruction->a.reg = allocation->second;
+			}
+		}
 	}
 	
 	void LLVMExecutableKernel::_allocateMemory()
@@ -731,6 +912,8 @@ namespace executive
 		_context.ntid.x = 0;
 		_context.ntid.y = 0;
 		_context.ntid.z = 0;
+		
+		_context.other = (char*) &_opaque;
 	}
 	
 	LLVMExecutableKernel::~LLVMExecutableKernel()
@@ -763,7 +946,8 @@ namespace executive
 			{
 				for( int i = 0; i < x; ++i )
 				{
-					report( " Launching cta ( " << i << ", " << j << " )" );
+					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+						" Launching cta ( " << i << ", " << j << " )" );
 					_context.ctaid.x = i;
 					_context.ctaid.y = j;
 					_launchCtaWithBarriers();
@@ -777,7 +961,8 @@ namespace executive
 			{
 				for( int i = 0; i < x; ++i )
 				{
-					report( " Launching cta ( " << i << ", " << j << " )" );
+					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+						" Launching cta ( " << i << ", " << j << " )" );
 					_context.ctaid.x = i;
 					_context.ctaid.y = j;
 					_launchCtaNoBarriers();
@@ -883,12 +1068,6 @@ namespace executive
 						<< " to " << (void*)global->second.pointer );
 					_state.jit->addGlobalMapping( value, 
 						global->second.pointer );
-					break;
-				}
-				case ir::PTXStatement::Tex:
-				{
-					assertM( false, 
-						"No support for updating texture variables." );
 					break;
 				}
 				default:

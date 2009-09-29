@@ -11,6 +11,7 @@
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/ir/interface/Texture.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 
 #include <stack>
@@ -37,6 +38,8 @@ namespace executive
 			typedef unsigned int (*Function)( LLVMContext* );
 			/*! \brief Shorthand for a PTX instruction vector */
 			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
+			/*! \brief A vector of texture variables */
+			typedef std::vector< ir::Texture > TextureVector;
 			
 			/*! \brief A class for managing global llvm state */
 			class LLVMState
@@ -54,6 +57,15 @@ namespace executive
 					LLVMState();
 					/*! \brief Destroy the jit */
 					~LLVMState();
+			};
+		
+		public:
+			/*! \brief A class of opaque thread visible state */
+			class OpaqueState
+			{
+				public:
+					/*! \brief Texture variables */
+					TextureVector textures;
 			};
 
 		private:
@@ -83,7 +95,8 @@ namespace executive
 			unsigned int _externalSharedSize;
 			/*! \brief Constant memory mapping */
 			AllocationMap _constants;
-			
+			/*! \brief Opaque state */
+			OpaqueState _opaque;
 			
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */

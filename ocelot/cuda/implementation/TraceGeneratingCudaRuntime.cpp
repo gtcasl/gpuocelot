@@ -1864,7 +1864,7 @@ namespace cuda
 		_trace << " texrefY = " << hostVar->channelDesc.y;
 		_trace << " texrefZ = " << hostVar->channelDesc.z;
 		_trace << " texrefFormat = " << hostVar->channelDesc.f;
-		_trace << " deviceAddress = " << *deviceAddress;
+		_trace << " deviceAddress = " << deviceAddress;
 		_trace << " deviceName = " << deviceName;
 		_trace << " dim = " << dim;
 		_trace << " norm = " << norm;

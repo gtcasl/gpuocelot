@@ -143,8 +143,14 @@ namespace ir
 						case I64: stream << i64; break;
 						case F32:
 						{
-							double value = f32;
-							stream << "0x" << std::hex << *((LLVMI64*)&value);
+							union
+							{
+								LLVMF64 f;
+								LLVMI64 i;
+							} convert;
+							
+							convert.f = f32;
+							stream << "0x" << std::hex << convert.i;
 							break;
 						}
 						case F64: stream << "0x" << std::hex << i64; break;
@@ -201,9 +207,14 @@ namespace ir
 							case I64: stream << fi->i64; break;
 							case F32:
 							{
-								double value = fi->f32;
-								stream << "0x" << std::hex 
-									<< *((LLVMI64*)&value);
+								union
+								{
+									LLVMF64 f;
+									LLVMI64 i;
+								} convert;
+							
+								convert.f = fi->f32;
+								stream << "0x" << std::hex << convert.i;
 								break;
 							}
 							case F64: stream << "0x" << std::hex << fi->i64; 

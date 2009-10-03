@@ -3238,7 +3238,6 @@ namespace translator
 			{
 				switch( dType )
 				{
-					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s16:
 					case ir::PTXOperand::s32:
 					case ir::PTXOperand::s64:
@@ -3256,6 +3255,7 @@ namespace translator
 						_add( zext );
 						break;
 					}
+					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s8:
 					case ir::PTXOperand::b8:
 					case ir::PTXOperand::u8:
@@ -3784,10 +3784,19 @@ namespace translator
 			{
 				ir::LLVMCall call;
 				
-				call.name = "@clock";
+				call.name = "@__ocelot_clock";
 				call.d.type.category = ir::LLVMInstruction::Type::Element;
 				call.d.type.type = ir::LLVMInstruction::I32;
 				call.d.name = _tempRegister();
+				
+				call.parameters.resize( 1 );
+				call.parameters[0].type.category 
+					= ir::LLVMInstruction::Type::Pointer;
+				call.parameters[0].type.members.resize(1);
+				call.parameters[0].type.members[0].category 
+					= ir::LLVMInstruction::Type::Structure;
+				call.parameters[0].type.members[0].label = "%LLVMContext";
+				call.parameters[0].name = "%__ctaContext";
 				
 				_add( call );
 				
@@ -4454,6 +4463,25 @@ namespace translator
 		setRoundingMode.parameters[0].type.type = ir::LLVMInstruction::I32;
 	
 		_llvmKernel->_statements.push_front( setRoundingMode );
+
+		ir::LLVMStatement clock( ir::LLVMStatement::FunctionDeclaration );
+
+		clock.label = "__ocelot_clock";
+		clock.linkage = ir::LLVMStatement::InvalidLinkage;
+		clock.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		clock.visibility = ir::LLVMStatement::Default;
+		
+		clock.operand.type.category = ir::LLVMInstruction::Type::Element;
+		clock.operand.type.type = ir::LLVMInstruction::I32;	
+		
+		clock.parameters.resize( 1 );
+		clock.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		clock.parameters[0].type.members.resize(1);
+		clock.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		clock.parameters[0].type.members[0].label = "%LLVMContext";
+
+		_llvmKernel->_statements.push_front( ir::LLVMStatement( clock ) );
 
 		_addTextureCalls();
 

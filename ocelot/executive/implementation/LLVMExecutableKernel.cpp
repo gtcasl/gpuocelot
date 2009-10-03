@@ -58,74 +58,189 @@ extern "C"
 	
 	float ex2( float value )
 	{
-		return std::exp( value * 0.693147f );
+		return exp( value * 0.693147f );
+	}
+
+	unsigned int __ocelot_clock( executive::LLVMContext* context )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		return state->timer.cycles();		
 	}
 	
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
-		unsigned int , 
-		unsigned int , unsigned int , unsigned int , unsigned int  )
+		unsigned int index, unsigned int c0, unsigned int c1, unsigned int c2,
+		unsigned int c3 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, float >( 
+			texture, c0, c1, c2 );
+		result[1] = executive::tex::sample< 1, float >( 
+			texture, c0, c1, c2 );
+		result[2] = executive::tex::sample< 2, float >( 
+			texture, c0, c1, c2 );
+		result[3] = executive::tex::sample< 3, float >( 
+			texture, c0, c1, c2 );			
 	}
 
-	void __ocelot_tex_3d_fu( float*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_3d_fu( float* result, executive::LLVMContext* context, 
+		unsigned int index, unsigned int c0, unsigned int c1, unsigned int c2, 
+		unsigned int c3 )
 	{
-	
+		__ocelot_tex_3d_fs( result, context, index, c0, c1, c2, c3 );
 	}
 
-	void __ocelot_tex_3d_ff( float*, executive::LLVMContext* context, unsigned int , float, float, float, float )
+	void __ocelot_tex_3d_ff( float* result, executive::LLVMContext* context, 
+		unsigned int index, float c0, float c1, float c2, float c3 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, float >( 
+			texture, c0, c1, c2 );
+		result[1] = executive::tex::sample< 1, float >( 
+			texture, c0, c1, c2 );
+		result[2] = executive::tex::sample< 2, float >( 
+			texture, c0, c1, c2 );
+		result[3] = executive::tex::sample< 3, float >( 
+			texture, c0, c1, c2 );	
 	}
 
-	void __ocelot_tex_3d_sf( unsigned int*, executive::LLVMContext* context, unsigned int , float, float, float, float )
+	void __ocelot_tex_3d_sf( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, float c0, 
+		float c1, float c2, float c3 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, int >( 
+			texture, c0, c1, c2 );
+		result[1] = executive::tex::sample< 1, int >( 
+			texture, c0, c1, c2 );
+		result[2] = executive::tex::sample< 2, int >( 
+			texture, c0, c1, c2 );
+		result[3] = executive::tex::sample< 3, int >( 
+			texture, c0, c1, c2 );				
 	}
 
-	void __ocelot_tex_3d_uf( unsigned int*, executive::LLVMContext* context, unsigned int , float, float, float, float )
+	void __ocelot_tex_3d_uf( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, float c0, 
+		float c1, float c2, float c3 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, unsigned int >( 
+			texture, c0, c1, c2 );
+		result[1] = executive::tex::sample< 1, unsigned int >( 
+			texture, c0, c1, c2 );
+		result[2] = executive::tex::sample< 2, unsigned int >( 
+			texture, c0, c1, c2 );
+		result[3] = executive::tex::sample< 3, unsigned int >( 
+			texture, c0, c1, c2 );				
 	}
 
-	void __ocelot_tex_3d_ss( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_3d_su( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
+		unsigned int c1, unsigned int c2, unsigned int c3 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, int >( 
+			texture, c0, c1, c2 );
+		result[1] = executive::tex::sample< 1, int >( 
+			texture, c0, c1, c2 );
+		result[2] = executive::tex::sample< 2, int >( 
+			texture, c0, c1, c2 );
+		result[3] = executive::tex::sample< 3, int >( 
+			texture, c0, c1, c2 );				
 	}
 
-	void __ocelot_tex_3d_su( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_3d_ss( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
+		unsigned int c1, unsigned int c2, unsigned int c3 )
 	{
-	
+		__ocelot_tex_3d_su( result, context, index, c0, c1, c2, c3 );
 	}
 
-	void __ocelot_tex_3d_us( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_3d_uu( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
+		unsigned int c1, unsigned int c2, unsigned int c3 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, unsigned int >( 
+			texture, c0, c1, c2 );
+		result[1] = executive::tex::sample< 1, unsigned int >( 
+			texture, c0, c1, c2 );
+		result[2] = executive::tex::sample< 2, unsigned int >( 
+			texture, c0, c1, c2 );
+		result[3] = executive::tex::sample< 3, unsigned int >( 
+			texture, c0, c1, c2 );				
 	}
 
-	void __ocelot_tex_3d_uu( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_3d_us( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
+		unsigned int c1, unsigned int c2, unsigned int c3 )
 	{
-	
+		__ocelot_tex_3d_uu( result, context, index, c0, c1, c2, c3 );
 	}
 
-	void __ocelot_tex_2d_fs( float*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_2d_fu( float* result, executive::LLVMContext* context, 
+		unsigned int index, unsigned int c0, unsigned int c1 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
+		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
+		result[2] = executive::tex::sample< 2, float >( texture, c0, c1 );
+		result[3] = executive::tex::sample< 3, float >( texture, c0, c1 );		
 	}
 
-	void __ocelot_tex_2d_fu( float*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_2d_fs( float* result, executive::LLVMContext* context, 
+		unsigned int index, unsigned int c0, unsigned int c1 )
 	{
-	
+		__ocelot_tex_2d_fu( result, context, index, c0, c1 );
 	}
 
-	void __ocelot_tex_2d_ff( float*, executive::LLVMContext* context, unsigned int , float, float )
+	void __ocelot_tex_2d_ff( float* result, executive::LLVMContext* context, 
+		unsigned int index, float c0, float c1 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
+		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
+		result[2] = executive::tex::sample< 2, float >( texture, c0, c1 );
+		result[3] = executive::tex::sample< 3, float >( texture, c0, c1 );	
 	}
 
-	void __ocelot_tex_2d_sf( unsigned int*, executive::LLVMContext* context, unsigned int , float, float )
+	void __ocelot_tex_2d_sf( unsigned int* result, 
+		executive::LLVMContext* context, 
+		unsigned int index, float c0, float c1 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, int >( texture, c0, c1 );
+		result[1] = executive::tex::sample< 1, int >( texture, c0, c1 );
+		result[2] = executive::tex::sample< 2, int >( texture, c0, c1 );
+		result[3] = executive::tex::sample< 3, int >( texture, c0, c1 );
 	}
 
 	void __ocelot_tex_2d_uf( unsigned int* result, 
@@ -146,69 +261,146 @@ extern "C"
 			unsigned int >( texture, c0, c1 );						
 	}
 
-	void __ocelot_tex_2d_ss( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_2d_us( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
+		unsigned int c1 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, 
+			unsigned int >( texture, c0, c1 );
+		result[1] = executive::tex::sample< 1, 
+			unsigned int >( texture, c0, c1 );
+		result[2] = executive::tex::sample< 2, 
+			unsigned int >( texture, c0, c1 );
+		result[3] = executive::tex::sample< 3, 
+			unsigned int >( texture, c0, c1 );						
 	}
 
-	void __ocelot_tex_2d_su( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_2d_uu( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, 
+		unsigned int c0, unsigned int c1 )
 	{
-	
+		__ocelot_tex_2d_us( result, context, index, c0, c1 );
 	}
 
-	void __ocelot_tex_2d_us( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_2d_su( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, 
+		unsigned int c0, unsigned int c1 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, int >( texture, c0, c1 );
+		result[1] = executive::tex::sample< 1, int >( texture, c0, c1 );
+		result[2] = executive::tex::sample< 2, int >( texture, c0, c1 );
+		result[3] = executive::tex::sample< 3, int >( texture, c0, c1 );	
 	}
 
-	void __ocelot_tex_2d_uu( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int , unsigned int  )
+	void __ocelot_tex_2d_ss( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, 
+		unsigned int c0, unsigned int c1 )
 	{
-	
+		__ocelot_tex_2d_su( result, context, index, c0, c1 );
 	}
 
-	void __ocelot_tex_1d_fs( float*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	void __ocelot_tex_1d_fs( float* result, executive::LLVMContext* context, 
+		unsigned int index, unsigned int c0 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, float >( texture, c0 );
+		result[1] = executive::tex::sample< 1, float >( texture, c0 );
+		result[2] = executive::tex::sample< 2, float >( texture, c0 );
+		result[3] = executive::tex::sample< 3, float >( texture, c0 );	
 	}
 
-	void __ocelot_tex_1d_fu( float*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	void __ocelot_tex_1d_fu( float* result, executive::LLVMContext* context, 
+		unsigned int index, unsigned int c0 )
 	{
-	
+		__ocelot_tex_1d_fs( result, context, index, c0 );
 	}
 
-	void __ocelot_tex_1d_ff( float*, executive::LLVMContext* context, unsigned int , float )
+	void __ocelot_tex_1d_ff( float* result, executive::LLVMContext* context, 
+		unsigned int index, float c0 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, float >( texture, c0 );
+		result[1] = executive::tex::sample< 1, float >( texture, c0 );
+		result[2] = executive::tex::sample< 2, float >( texture, c0 );
+		result[3] = executive::tex::sample< 3, float >( texture, c0 );		
 	}
 
-	void __ocelot_tex_1d_sf( unsigned int*, executive::LLVMContext* context, unsigned int , float )
+	void __ocelot_tex_1d_sf( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, float c0 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, int >( texture, c0 );
+		result[1] = executive::tex::sample< 1, int >( texture, c0 );
+		result[2] = executive::tex::sample< 2, int >( texture, c0 );
+		result[3] = executive::tex::sample< 3, int >( texture, c0 );	
 	}
 
-	void __ocelot_tex_1d_uf( unsigned int*, executive::LLVMContext* context, unsigned int , float )
+	void __ocelot_tex_1d_uf( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, float c0 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );
+		result[1] = executive::tex::sample< 1, unsigned int >( texture, c0 );
+		result[2] = executive::tex::sample< 2, unsigned int >( texture, c0 );
+		result[3] = executive::tex::sample< 3, unsigned int >( texture, c0 );	
 	}
 
-	void __ocelot_tex_1d_ss( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	void __ocelot_tex_1d_ss( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, int >( texture, c0 );
+		result[1] = executive::tex::sample< 1, int >( texture, c0 );
+		result[2] = executive::tex::sample< 2, int >( texture, c0 );
+		result[3] = executive::tex::sample< 3, int >( texture, c0 );	
 	}
 
-	void __ocelot_tex_1d_su( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	void __ocelot_tex_1d_su( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-	
+		__ocelot_tex_1d_ss( result, context, index, c0 );
 	}
 
-	void __ocelot_tex_1d_us( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	void __ocelot_tex_1d_us( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-	
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		const ir::Texture& texture = state->textures[ index ];
+		
+		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );
+		result[1] = executive::tex::sample< 1, unsigned int >( texture, c0 );
+		result[2] = executive::tex::sample< 2, unsigned int >( texture, c0 );
+		result[3] = executive::tex::sample< 3, unsigned int >( texture, c0 );	
 	}
 
-	void __ocelot_tex_1d_uu( unsigned int*, executive::LLVMContext* context, unsigned int , unsigned int  )
+	void __ocelot_tex_1d_uu( unsigned int* result, 
+		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-	
+		__ocelot_tex_1d_uu( result, context, index, c0 );
 	}
 
 }
@@ -245,6 +437,11 @@ namespace executive
 		report( "Deleting the LLVM JIT-Compiler." );
 		delete jit;
 		#endif
+	}
+	
+	LLVMExecutableKernel::OpaqueState::OpaqueState()
+	{
+		timer.start();
 	}
 	
 	unsigned int LLVMExecutableKernel::_pad( size_t& size, 

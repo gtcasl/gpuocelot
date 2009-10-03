@@ -66,6 +66,12 @@ namespace executive
 				public:
 					/*! \brief Texture variables */
 					TextureVector textures;
+					/*! \brief Clock timer */
+					hydrazine::Timer timer;
+			
+				public:
+					/*! \brief Starts the timer on creation */
+					OpaqueState();
 			};
 
 		private:

@@ -26,7 +26,7 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
-#define REPORT_ALL_LLVM_SOURCE 1
+#define REPORT_ALL_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define PRINT_OPTIMIZED_CFG 0
 
@@ -61,12 +61,17 @@ extern "C"
 		return exp( value * 0.693147f );
 	}
 
+	float rsqrt( float value )
+	{
+		return 1.0 / sqrtf( value );
+	}
+
 	unsigned int __ocelot_clock( executive::LLVMContext* context )
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
 		
-		return state->timer.cycles();		
+		return state->timer.cycles();
 	}
 	
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
@@ -412,22 +417,31 @@ namespace executive
 
 	LLVMExecutableKernel::LLVMState::LLVMState()		
 	{
-		#ifdef HAVE_LLVM
-		report( "Bringing the LLVM JIT-Compiler online." );
-
-		module = new llvm::Module( "Ocelot-LLVM-JIT-Blank Module", 
-			llvm::getGlobalContext() );
-		
-		moduleProvider = new llvm::ExistingModuleProvider( module );
-		assertM( moduleProvider != 0, 
-			"Creating the global module provider failed.");
-		
-		llvm::InitializeNativeTarget();
-		
-		jit = llvm::EngineBuilder( moduleProvider ).create();
+		jit = 0;
+	}
 	
-		assertM( jit != 0, "Creating the JIT failed.");
-		report( " The JIT is alive." );
+	void LLVMExecutableKernel::LLVMState::initialize()
+	{
+		#ifdef HAVE_LLVM
+		if( jit == 0 )
+		{
+			report( "Bringing the LLVM JIT-Compiler online." );
+
+			module = new llvm::Module( "Ocelot-LLVM-JIT-Blank Module", 
+				llvm::getGlobalContext() );
+			assertM( module != 0, "Creating global module failed." );
+		
+			moduleProvider = new llvm::ExistingModuleProvider( module );
+			assertM( moduleProvider != 0, 
+				"Creating the global module provider failed.");
+		
+			llvm::InitializeNativeTarget();
+		
+			jit = llvm::EngineBuilder( moduleProvider ).create();
+	
+			assertM( jit != 0, "Creating the JIT failed.");
+			report( " The JIT is alive." );
+		}
 		#endif
 	}
 	
@@ -696,7 +710,7 @@ namespace executive
 		for( ParameterVector::iterator parameter = _ptx->parameters.begin(); 
 			parameter != _ptx->parameters.end(); ++parameter )
 		{
-			_pad( _context.parameterSize, parameter->alignment );
+			_pad( _context.parameterSize, parameter->getAlignment() );
 			
 			report( "   Allocated parameter " << parameter->name << " from "
 				<< _context.parameterSize << " to " 
@@ -1111,6 +1125,8 @@ namespace executive
 		_context.ntid.z = 0;
 		
 		_context.other = (char*) &_opaque;
+		
+		_state.initialize();
 	}
 	
 	LLVMExecutableKernel::~LLVMExecutableKernel()
@@ -1174,7 +1190,7 @@ namespace executive
 		report( "Setting CTA shape to ( x = " << x << ", y = " 
 			<< y << ", z = " << z << " ) for kernel \"" << name << "\""  );
 		unsigned int previous = threads();
-		
+	
 		_context.ntid.x = x;
 		_context.ntid.y = y;
 		_context.ntid.z = z;
@@ -1206,10 +1222,15 @@ namespace executive
 	{
 		return _context.constantSize;
 	}
-	
+
 	unsigned int LLVMExecutableKernel::sharedMemorySize() const
 	{
 		return _context.sharedSize;
+	}
+	
+	unsigned int LLVMExecutableKernel::localMemorySize() const
+	{
+		return _context.localSize;
 	}
 
 	void LLVMExecutableKernel::externSharedMemory( unsigned int bytes )
@@ -1236,7 +1257,9 @@ namespace executive
 			for( ir::Parameter::ValueVector::iterator 
 				value = parameter->arrayValues.begin(); 
 				value != parameter->arrayValues.end(); ++value ) {
-				assert( size < _context.parameterSize );
+				assertM( size < _context.parameterSize, "Size " << size 
+					<< " not less than allocated parameter size " 
+					<< _context.parameterSize );
 				memcpy( _context.parameter + size, &value->val_b16, 
 					parameter->getElementSize() );
 				size += parameter->getElementSize();

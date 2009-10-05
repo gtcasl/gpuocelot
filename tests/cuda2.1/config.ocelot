@@ -35,5 +35,8 @@
 		<DefaultDeviceId>
 			1
 		</DefaultDeviceId>
+		<PreferredISA>
+			LLVM
+		</PreferredISA>
 	</CudaRuntime>
 </cuda>

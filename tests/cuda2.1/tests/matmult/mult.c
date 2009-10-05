@@ -12,7 +12,7 @@
 #include "matmult.h"
 #include "vsipl-timer.h"
 
-#define ELEMENTS 128
+#define ELEMENTS 64
 #define ITERATIONS 1
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ void init_matrix_lower(float *cpu, int M, int N) {
 	int i, j;
 	for (i = 0; i < M; i++) {
 		for (j = 0; j < N; j++) {
-			cpu[i * N + j] = (i >= j ? 1 + (float)(i - j) * 2 : 0);
+			cpu[i * N + j] = (i >= j ? 1 : 0);
 		}
 	}
 }
@@ -30,7 +30,7 @@ void init_matrix_upper(float *cpu, int M, int N ) {
 	int i, j;
 	for (i = 0; i < M; i++) {
 		for (j = 0; j < N; j++) {
-			cpu[i * N + j] = (i <= j ? fabs((float)(i - j)) * 3 : 0);
+			cpu[i * N + j] = (i <= j ? 1 : 0);
 		}
 	}
 }
@@ -149,6 +149,8 @@ int main() {
 		print_matrix(out, B_cpu, AN, BN);
 		fprintf(out, "\nC = ");
 		print_matrix(out, C_cpu, AM, BN);
+		fprintf(out, "\nref = ");
+		print_matrix(out, C_ref, AM, BN);
 		fclose(out);
 		printf("Pass/Fail : Fail\n");
 		printf("FAIL - matrix product incorrect\n");

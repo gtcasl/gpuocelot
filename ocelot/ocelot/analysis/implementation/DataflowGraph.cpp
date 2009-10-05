@@ -280,7 +280,7 @@ namespace analysis
 	
 	}
 	
-	DataflowGraph::Block::Block( ir::BasicBlock& bb )
+	DataflowGraph::Block::Block( ir::BasicBlock& bb ) : _type( Body )
 	{
 		assert( bb.instructions.empty() );
 		assert( bb.get_successors().empty() );
@@ -515,7 +515,8 @@ namespace analysis
 		std::advance( begin, instruction );
 		InstructionVector::iterator end = block->_instructions.end();
 		
-		iterator added = _blocks.insert( ++iterator( block ), Block() );
+		iterator added = _blocks.insert( ++iterator( block ), 
+			Block( Block::Body ) );
 
 		added->_block = _cfg->split_block( block->_block, instruction );
 		added->_label = added->_block->label;
@@ -546,6 +547,8 @@ namespace analysis
 	void DataflowGraph::redirect( iterator source, 
 		iterator destination, iterator newTarget )
 	{
+		_consistent = false;
+	
 		report( "Redirecting " << source->label() << " from " 
 			<< destination->label() << " to " << newTarget->label() );
 		BlockPointerSet::iterator 
@@ -721,6 +724,28 @@ namespace analysis
 				}
 			}
 		}
+
+		#if !defined(NDEBUG) && REPORT_BASE > 0
+		report( "Final Report" );
+		
+		for( iterator fi = begin(); fi != end(); ++fi )
+		{
+			report( " Block " << fi->label() );
+			report( "  Alive In" );
+			for( Block::RegisterSet::iterator ri = fi->_aliveIn.begin(); 
+				ri != fi->_aliveIn.end(); ++ri )
+			{
+				report( "   r" << ri->id );
+			}
+			report( "  Alive Out" );
+			for( Block::RegisterSet::iterator ri = fi->_aliveOut.begin(); 
+				ri != fi->_aliveOut.end(); ++ri )
+			{
+				report( "   r" << ri->id );
+			}
+		}
+		#endif
+		
 	}
 
 	DataflowGraph::RegisterId DataflowGraph::maxRegister() const

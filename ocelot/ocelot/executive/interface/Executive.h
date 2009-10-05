@@ -1,10 +1,7 @@
 /*!
 	\file Executive.h
-	
 	\author Andrew Kerr <arkerr@gatech.edu>
-	
 	\date Jan 16, 2009
-	
 	\brief class definition for loading modules, enumerating devices,
 		and executing kernels on the selected device
 */
@@ -140,9 +137,7 @@ namespace executive {
 		Executive();
 		~Executive();
 		
-		/*!
-			set of available devices enumerated by the executive
-		*/
+		/*! set of available devices enumerated by the executive */
 		DeviceVector devices;
 	
 		/*!
@@ -159,6 +154,10 @@ namespace executive {
 			\return true if selected
 		*/
 		bool selectDeviceByISA(ir::Instruction::Architecture ISA);
+	
+		/*! \brief Reorders devices such that devices with this ISA appear first
+		*/
+		void setPreferredISA(ir::Instruction::Architecture ISA);
 	
 		/*!
 			Returns the guid of the selected device or -1 if no device 

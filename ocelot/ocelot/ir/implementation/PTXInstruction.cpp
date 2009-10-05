@@ -1,10 +1,7 @@
 /*!
 	\file PTXInstruction.cpp
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief base class for all instructions
 */
 
@@ -1865,6 +1862,10 @@ std::string ir::PTXInstruction::toString() const {
 			std::string result = guard() + "ret";
 			if( uni ) {
 				result += ".uni";
+			}
+			if( d.addressMode != ir::PTXOperand::Invalid )
+			{
+				result += " " + d.toString();
 			}
 			return result;
 		}

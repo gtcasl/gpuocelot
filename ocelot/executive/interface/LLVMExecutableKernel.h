@@ -57,6 +57,10 @@ namespace executive
 					LLVMState();
 					/*! \brief Destroy the jit */
 					~LLVMState();
+
+				public:
+					/*! \brief Initialize the jit */
+					void initialize();
 			};
 		
 		public:
@@ -171,6 +175,8 @@ namespace executive
 			unsigned int constantMemorySize() const;
 			/*! \brief Get the shared memory size */
 			unsigned int sharedMemorySize() const;
+			/*! \brief Get the local memory size */
+			unsigned int localMemorySize() const;
 			
 		public:
 			/*! \brief Declare an amount of external shared memory */

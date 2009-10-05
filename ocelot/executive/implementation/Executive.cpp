@@ -335,9 +335,6 @@ bool executive::Executive::select(int device) {
 	return false;
 }
 
-/*!
-	Selects a device given an ISA
-*/
 bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture ISA) {
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].ISA == ISA) {
@@ -348,9 +345,25 @@ bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture ISA) 
 	return false;
 }
 
-/*!
-	Returns the index of the selected device
-*/
+void executive::Executive::setPreferredISA(ir::Instruction::Architecture ISA) {
+	DeviceVector newDevices;
+	
+	for (DeviceVector::const_iterator device = devices.begin(); 
+		device != devices.end(); ++device) {
+		if (device->ISA == ISA) {
+			newDevices.push_back(*device);
+		}
+	}
+	for (DeviceVector::const_iterator device = devices.begin(); 
+		device != devices.end(); ++device) {
+		if (device->ISA != ISA) {
+			newDevices.push_back(*device);
+		}
+	}
+	
+	devices = std::move(newDevices);
+}
+
 int executive::Executive::getSelected() const {
 	return selectedDevice;
 }

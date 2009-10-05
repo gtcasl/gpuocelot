@@ -137,31 +137,59 @@ namespace translator
 	}
 
 	ir::LLVMInstruction::Comparison PTXToLLVMTranslator::_translate( 
-		ir::PTXInstruction::CmpOp op, bool isInt )
+		ir::PTXInstruction::CmpOp op, bool isInt, bool isSigned )
 	{
 		if( isInt )
 		{
-			switch( op )
+			if( isSigned )
 			{
-				case ir::PTXInstruction::Eq: 
-					return ir::LLVMInstruction::Eq; break;
-				case ir::PTXInstruction::Ne: 
-					return ir::LLVMInstruction::Ne; break;
-				case ir::PTXInstruction::Lo: /* fall through */
-				case ir::PTXInstruction::Lt: 
-					return ir::LLVMInstruction::Slt; break;
-				case ir::PTXInstruction::Ls: /* fall through */
-				case ir::PTXInstruction::Le: 
-					return ir::LLVMInstruction::Sle; break;
-				case ir::PTXInstruction::Hi: /* fall through */
-				case ir::PTXInstruction::Gt: 
-					return ir::LLVMInstruction::Sgt; break;
-				case ir::PTXInstruction::Hs: /* fall through */
-				case ir::PTXInstruction::Ge: 
-					return ir::LLVMInstruction::Sge; break;
-				default: assertM( false, "Invalid comparison " 
-					<< ir::PTXInstruction::toString( op ) 
-					<< " for integer operand." );
+				switch( op )
+				{
+					case ir::PTXInstruction::Eq: 
+						return ir::LLVMInstruction::Eq; break;
+					case ir::PTXInstruction::Ne: 
+						return ir::LLVMInstruction::Ne; break;
+					case ir::PTXInstruction::Lo: /* fall through */
+					case ir::PTXInstruction::Lt: 
+						return ir::LLVMInstruction::Slt; break;
+					case ir::PTXInstruction::Ls: /* fall through */
+					case ir::PTXInstruction::Le: 
+						return ir::LLVMInstruction::Sle; break;
+					case ir::PTXInstruction::Hi: /* fall through */
+					case ir::PTXInstruction::Gt: 
+						return ir::LLVMInstruction::Sgt; break;
+					case ir::PTXInstruction::Hs: /* fall through */
+					case ir::PTXInstruction::Ge: 
+						return ir::LLVMInstruction::Sge; break;
+					default: assertM( false, "Invalid comparison " 
+						<< ir::PTXInstruction::toString( op ) 
+						<< " for integer operand." );
+				}
+			}
+			else
+			{
+				switch( op )
+				{
+					case ir::PTXInstruction::Eq: 
+						return ir::LLVMInstruction::Eq; break;
+					case ir::PTXInstruction::Ne: 
+						return ir::LLVMInstruction::Ne; break;
+					case ir::PTXInstruction::Lo: /* fall through */
+					case ir::PTXInstruction::Lt: 
+						return ir::LLVMInstruction::Ult; break;
+					case ir::PTXInstruction::Ls: /* fall through */
+					case ir::PTXInstruction::Le: 
+						return ir::LLVMInstruction::Ule; break;
+					case ir::PTXInstruction::Hi: /* fall through */
+					case ir::PTXInstruction::Gt: 
+						return ir::LLVMInstruction::Ugt; break;
+					case ir::PTXInstruction::Hs: /* fall through */
+					case ir::PTXInstruction::Ge: 
+						return ir::LLVMInstruction::Uge; break;
+					default: assertM( false, "Invalid comparison " 
+						<< ir::PTXInstruction::toString( op ) 
+						<< " for integer operand." );
+				}
 			}
 		}
 		else
@@ -953,7 +981,7 @@ namespace translator
 		}
 		else
 		{
-			call.name = "@cos";
+			call.name = "@cosf";
 		}
 		
 		call.d = _destination( i );
@@ -1107,7 +1135,7 @@ namespace translator
 		
 		if( i.d.array.empty() )
 		{
-			if( i.d.type != i.type )
+			if( _translate( i.d.type ) != _translate( i.type ) )
 			{
 				ir::LLVMInstruction::Operand temp = load.d;
 				temp.type.type = _translate( i.d.type );
@@ -1302,71 +1330,23 @@ namespace translator
 			_add( truncate );
 		}
 		else
-		{
-			ir::LLVMFpext extend;
-			
-			extend.a = _translate( i.a );
-			
-			ir::LLVMInstruction::Operand extendedA;
-			
-			extendedA = extend.a;
-			extendedA.name = _tempRegister();
-			_doubleWidth( extendedA.type.type );
-			
-			extend.d = extendedA;
-			
-			_add( extend );
-			
-			extend.a = _translate( i.b );
-			
-			ir::LLVMInstruction::Operand extendedB;
-			
-			extendedB = extend.a;
-			extendedB.name = _tempRegister();
-			_doubleWidth( extendedB.type.type );
-			
-			extend.d = extendedB;
-			
-			_add( extend );
-			
+		{			
 			ir::LLVMFmul multiply;
 		
 			multiply.d = destination;
-			multiply.d.type.type = extendedA.type.type;
 			multiply.d.name = _tempRegister();
-			multiply.a = extendedA;
-			multiply.b = extendedB;
+			multiply.a = _translate( i.a );
+			multiply.b = _translate( i.b );
 		
 			_add( multiply );
-		
-			extend.a = _translate( i.c );
-			
-			ir::LLVMInstruction::Operand extendedC;
-			
-			extendedC = extend.a;
-			extendedC.name = _tempRegister();
-			_doubleWidth( extendedC.type.type );
-			
-			extend.d = extendedC;
-			
-			_add( extend );
-		
+				
 			ir::LLVMFadd add;
 		
 			add.d = destination;
-			add.d.name = _tempRegister();
-			add.d.type = extendedC.type;
+			add.b = _translate( i.c );
 			add.a = multiply.d;
-			add.b = extendedC;
-		
+			
 			_add( add );
-		
-			ir::LLVMFptrunc truncate;
-		
-			truncate.d = destination;
-			truncate.a = add.d;
-
-			_add( truncate );
 		}		
 	}
 
@@ -1515,7 +1495,9 @@ namespace translator
 			
 			_add( cast );
 		}
-		else if( i.d.type == i.a.type )
+		else if( i.d.type == i.a.type || i.type == ir::PTXOperand::b32 
+			|| i.type == ir::PTXOperand::b64 || i.type == ir::PTXOperand::b16 
+			|| i.type == ir::PTXOperand::b8 )
 		{
 			_bitcast( i );
 		}
@@ -2067,7 +2049,7 @@ namespace translator
 			fcmp.d = comparison;
 			fcmp.a = _translate( i.a );
 			fcmp.b = _translate( i.b );
-			fcmp.comparison = _translate( i.comparisonOperator, false );
+			fcmp.comparison = _translate( i.comparisonOperator, false, false );
 			
 			_add( fcmp );
 		}
@@ -2078,7 +2060,8 @@ namespace translator
 			icmp.d = comparison;
 			icmp.a = _translate( i.a );
 			icmp.b = _translate( i.b );
-			icmp.comparison = _translate( i.comparisonOperator, true );
+			icmp.comparison = _translate( i.comparisonOperator, true, 
+				ir::PTXOperand::isSigned( i.type ) );
 			
 			_add( icmp );		
 		}
@@ -2206,7 +2189,7 @@ namespace translator
 			fcmp.d = tempD;
 			fcmp.a = _translate( i.a );
 			fcmp.b = _translate( i.b );
-			fcmp.comparison = _translate( i.comparisonOperator, false );
+			fcmp.comparison = _translate( i.comparisonOperator, false, false );
 			
 			_add( fcmp );
 		}
@@ -2217,9 +2200,10 @@ namespace translator
 			icmp.d = tempD;
 			icmp.a = _translate( i.a );
 			icmp.b = _translate( i.b );
-			icmp.comparison = _translate( i.comparisonOperator, true );
+			icmp.comparison = _translate( i.comparisonOperator, true, 
+				ir::PTXOperand::isSigned( i.type ) );
 			
-			_add( icmp );		
+			_add( icmp );
 		}
 		
 		ir::LLVMInstruction::Operand pd = d;
@@ -2359,7 +2343,7 @@ namespace translator
 		}
 		else
 		{
-			call.name = "@sin";
+			call.name = "@sinf";
 		}
 		
 		call.d = _destination( i );
@@ -2442,11 +2426,18 @@ namespace translator
 		
 		if( i.vec == ir::PTXOperand::v1 )
 		{
-			ir::LLVMInstruction::Operand temp = _translate( i.a );
-			temp.name = _tempRegister();
-			temp.type.type = _translate( i.type );
-			_convert( temp, i.type, _translate( i.a ), i.a.type );
-			store.a = temp;		
+			if( i.type != i.a.type )
+			{
+				ir::LLVMInstruction::Operand temp = _translate( i.a );
+				temp.name = _tempRegister();
+				temp.type.type = _translate( i.type );
+				_convert( temp, i.type, _translate( i.a ), i.a.type );
+				store.a = temp;		
+			}
+			else
+			{
+				store.a = _translate( i.a );
+			}
 		}
 		else
 		{
@@ -2463,25 +2454,11 @@ namespace translator
 			cast.a = store.d;
 			cast.d = store.a;			
 			
-			if( i.d.offset != 0 )
-			{
-				ir::LLVMGetelementptr get;
-			
-				get.d = cast.a;
-				get.d.name = _tempRegister();
-				get.a = cast.a;
-				
-				get.indices.push_back( i.d.offset );
-		
-				_add( get );
-				cast.a = get.d;
-			}
-			
 			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
 			cast.d.name = _tempRegister();		
 			
 			_add( cast );
-			store.d = cast.d;		
+			store.d = cast.d;
 		}
 		else
 		{
@@ -3922,6 +3899,10 @@ namespace translator
 		if( vector == ir::PTXOperand::v1 )
 		{
 			cast.d.type.type = _translate( type );
+			if( cast.d.type.type == ir::LLVMInstruction::I8 )
+			{
+				return getIndex.d.name;
+			}
 		}
 		else
 		{
@@ -3979,6 +3960,7 @@ namespace translator
 	void PTXToLLVMTranslator::_setFloatingPointRoundingMode( 
 		const ir::PTXInstruction& i )
 	{
+		#if USE_SPECIFIED_ROUNDING_MODES
 		ir::LLVMCall call;
 		
 		call.name = "@setRoundingMode";
@@ -3996,6 +3978,7 @@ namespace translator
 		}
 		
 		_add( call );
+		#endif
 	}
 
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_destination( 
@@ -4368,37 +4351,37 @@ namespace translator
 		_llvmKernel->_statements.push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
 
-		ir::LLVMStatement cos( ir::LLVMStatement::FunctionDeclaration );
+		ir::LLVMStatement cosf( ir::LLVMStatement::FunctionDeclaration );
 
-		cos.label = "cos";
-		cos.linkage = ir::LLVMStatement::InvalidLinkage;
-		cos.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		cos.visibility = ir::LLVMStatement::Default;
+		cosf.label = "cosf";
+		cosf.linkage = ir::LLVMStatement::InvalidLinkage;
+		cosf.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		cosf.visibility = ir::LLVMStatement::Default;
 		
-		cos.operand.type.category = ir::LLVMInstruction::Type::Element;
-		cos.operand.type.type = ir::LLVMInstruction::F32;
+		cosf.operand.type.category = ir::LLVMInstruction::Type::Element;
+		cosf.operand.type.type = ir::LLVMInstruction::F32;
 		
-		cos.parameters.resize( 1 );
-		cos.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		cos.parameters[0].type.type = ir::LLVMInstruction::F32;
+		cosf.parameters.resize( 1 );
+		cosf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		cosf.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
-		_llvmKernel->_statements.push_front( cos );		
+		_llvmKernel->_statements.push_front( cosf );		
 
-		ir::LLVMStatement sin( ir::LLVMStatement::FunctionDeclaration );
+		ir::LLVMStatement sinf( ir::LLVMStatement::FunctionDeclaration );
 
-		sin.label = "sin";
-		sin.linkage = ir::LLVMStatement::InvalidLinkage;
-		sin.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		sin.visibility = ir::LLVMStatement::Default;
+		sinf.label = "sinf";
+		sinf.linkage = ir::LLVMStatement::InvalidLinkage;
+		sinf.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		sinf.visibility = ir::LLVMStatement::Default;
 		
-		sin.operand.type.category = ir::LLVMInstruction::Type::Element;
-		sin.operand.type.type = ir::LLVMInstruction::F32;
+		sinf.operand.type.category = ir::LLVMInstruction::Type::Element;
+		sinf.operand.type.type = ir::LLVMInstruction::F32;
 		
-		sin.parameters.resize( 1 );
-		sin.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		sin.parameters[0].type.type = ir::LLVMInstruction::F32;
+		sinf.parameters.resize( 1 );
+		sinf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		sinf.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
-		_llvmKernel->_statements.push_front( sin );		
+		_llvmKernel->_statements.push_front( sinf );		
 
 		ir::LLVMStatement ex2( ir::LLVMStatement::FunctionDeclaration );
 
@@ -4447,6 +4430,22 @@ namespace translator
 		sqrtf.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
 		_llvmKernel->_statements.push_front( sqrtf );		
+
+		ir::LLVMStatement rsqrt( ir::LLVMStatement::FunctionDeclaration );
+
+		rsqrt.label = "rsqrt";
+		rsqrt.linkage = ir::LLVMStatement::InvalidLinkage;
+		rsqrt.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		rsqrt.visibility = ir::LLVMStatement::Default;
+		
+		rsqrt.operand.type.category = ir::LLVMInstruction::Type::Element;
+		rsqrt.operand.type.type = ir::LLVMInstruction::F32;
+		
+		rsqrt.parameters.resize( 1 );
+		rsqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		rsqrt.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		_llvmKernel->_statements.push_front( rsqrt );		
 
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );

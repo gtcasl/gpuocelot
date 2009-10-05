@@ -1169,6 +1169,22 @@ namespace cuda
 				
 				break;
 			}
+			
+			case ir::Instruction::LLVM:
+			{
+				executive::LLVMExecutableKernel* kernel = static_cast< 
+					executive::LLVMExecutableKernel* >( 
+					translatedKernel->second );
+				
+				attributes->constSizeBytes = kernel->constantMemorySize();
+				attributes->localSizeBytes = kernel->localMemorySize();
+				attributes->maxThreadsPerBlock = context.devices[ 
+					context.getSelected() ].maxThreadsPerBlock;
+				attributes->numRegs = 1;
+				attributes->sharedSizeBytes = kernel->sharedMemorySize();
+								
+				break;
+			}
 
 			default:
 			{
@@ -1983,7 +1999,24 @@ namespace cuda
 
 	void CudaRuntime::configure( const Configuration& c )
 	{
-		parse( "DefaultDeviceId", _defaultDevice, 0, c );	
+		parse( "DefaultDeviceId", _defaultDevice, 0, c );
+
+		std::string isa;
+		
+		parse( "PreferredISA", isa, "GPU", c );
+		
+		if( isa == "LLVM" )
+		{
+			context.setPreferredISA( ir::Instruction::LLVM );
+		}
+		else if( isa == "Emulated" )
+		{
+			context.setPreferredISA( ir::Instruction::Emulated );		
+		}
+		else
+		{
+			context.setPreferredISA( ir::Instruction::GPU );		
+		}
 	}
 
 }

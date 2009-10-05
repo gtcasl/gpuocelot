@@ -258,6 +258,8 @@ namespace analysis
 					block->instructions().begin(), instruction ) );
 				_spillBytes = std::max( bytes, _spillBytes );
 				++_reentryPoint;
+				_kernel->dfg()->compute();
+				break;
 			}
 		}
 	}

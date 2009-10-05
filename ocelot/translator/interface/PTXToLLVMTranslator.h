@@ -47,7 +47,7 @@ namespace translator
 				ir::PTXOperand::DataType type );
 			static void _doubleWidth( ir::LLVMInstruction::DataType& v );
 			static ir::LLVMInstruction::Comparison _translate( 
-				ir::PTXInstruction::CmpOp, bool isInt );
+				ir::PTXInstruction::CmpOp, bool isInt, bool isSigned );
 			
 			static ir::LLVMInstruction::Type _getCtaContextType();
 			

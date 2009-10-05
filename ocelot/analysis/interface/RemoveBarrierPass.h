@@ -20,10 +20,10 @@ namespace analysis
 
 	/*! \brief A class for a pass that removes all barriers from a PTX kernel
 	
-		This implementation leaves the barriers in as place holders, but
+		This implementation leaves identifies barriers and
 		splits the basic block containing them into two.  The first block
 		contains all of the code before the barrier, spill instructions to
-		a stack in local memory, the barrier, and a branch to the program exit.
+		a stack in local memory, and a branch to the program exit.
 		A local variable is allocated on the stack to indicate the program
 		entry point.
 		
@@ -61,9 +61,9 @@ namespace analysis
 			void finalize( );
 
 		public:
-			/*! \brief Does this kernel contain at least one barrier */
+			/*! \brief Does this kernel contain at least one barrier? */
 			bool barriers() const;
-			/*! \brrief What is the name of the barrier resume point */
+			/*! \brrief What is the name of the barrier resume point? */
 			std::string resume() const;
 
 	};

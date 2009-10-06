@@ -1,30 +1,40 @@
 /*!
-	\file GPUKernel.cpp
+	\file GPUExecutableKernel.cpp
 
 	\author Andrew Kerr <arkerr@gatech.edu>
 
-	\date Jan 19, 2009
+	\date October 6, 2009
 
 	\brief implements the GPU kernel callable by the executive
 */
 
-#include <ocelot/executive/interface/GPUKernel.h>
+#include <ocelot/executive/interface/GPUExecutableKernel.h>
 
-executive::GPUKernel::GPUKernel() {
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+executive::GPUExecutableKernel::GPUExecutableKernel(): ptxKernel(0) {
 	this->ISA = ir::Instruction::GPU;
 }
 
-executive::GPUKernel::~GPUKernel() {
-	
+executive::GPUExecutableKernel::~GPUExecutableKernel() {
+	if (ptxKernel) {
+		delete ptxKernel;
+	}
 }
 
 /*!
-	Construct a GPU Kernel from an existing kernel
+	Construct a GPUExecutableKernel from an existing kernel
 */
-executive::GPUKernel::GPUKernel( ir::Kernel& kernel, const executive::Executive* c ): 
-	ExecutableKernel(kernel, c) {
+executive::GPUExecutableKernel::GPUExecutableKernel(
+	ir::Kernel& kernel, const executive::Executive* c ): 
+		ExecutableKernel(kernel, c), ptxKernel(0) {
 	
-	assertM( kernel.getISA() == ir::Instruction::PTX);
+	if (kernel.ISA == ir::Instruction::PTX) {
+		throw hydrazine::Exception( "GPUExecutableKernel may only be constructed from PTXKernel" );
+	}
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
 }
@@ -32,7 +42,7 @@ executive::GPUKernel::GPUKernel( ir::Kernel& kernel, const executive::Executive*
 /*!
 	Launch a kernel on a 2D grid
 */
-void executive::GPUKernel::launchGrid(int width, int height) {
+void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 	configureParameters();
 	/*
 	cuLaunchGrid(cuFunc, width, height);
@@ -42,7 +52,7 @@ void executive::GPUKernel::launchGrid(int width, int height) {
 /*!
 	Sets the shape of a kernel
 */
-void executive::GPUKernel::setKernelShape(int x, int y, int z) {
+void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
 	/*
 	cuFuncSetBlockShape(cuFunc, x, y, z);
 	*/
@@ -60,7 +70,7 @@ executive::GPUKernel *executive::GPUKernel::fromKernel(ir::PTXKernel *source) {
 	return kernel;
 }*/
 
-void executive::GPUKernel::configureParameters() {
+void executive::GPUExecutableKernel::configureParameters() {
 	std::vector< ir::Parameter >::iterator it;
 	unsigned int paramSize = 0;
 	for (it = parameters.begin(); it != parameters.end(); ++it) {
@@ -101,3 +111,5 @@ void executive::GPUKernel::configureParameters() {
 	}
 	*/
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+

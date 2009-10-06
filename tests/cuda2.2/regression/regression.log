@@ -1,187 +1,85 @@
-INFO     Reading in test file /home/normal/checkout/gpuocelot/tests/cuda2.2/regression/tests.txt
+INFO     Reading in test file /home/andrew/repositories/gpuocelot/tests/cuda2.2/regression/tests.txt
 INFO      Found the following tests:
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Template
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/AlignedTypes
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/AsyncAPI
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/BandwidthTest
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/BicubicTexture
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/BinomialOptions
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Bitonic
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/BlackScholes
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/BoxFilter
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Clock
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionFFT2D
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionSeparable
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionTexture
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/CppIntegration
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dct8x8
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/DeviceQuery
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/DwtHaar1D
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dxtc
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Eigenvalues
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/FluidsGL
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/FastWalshTransform
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram256
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram64
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ImageDenoising
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Mandelbrot
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/MatrixMul
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/MersenneTwister
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarlo
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Nbody
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/OceanFFT
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/PostProcessGL
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/QuasirandomGenerator
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/RecursiveGaussian
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Reduction
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScalarProd
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Scan
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScanLargeArray
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUBLAS
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUFFT
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleGL
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleMultiGPU
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleStreams
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTemplates
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture3D
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleZeroCopy
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobelFilter
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobolQRNG
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Template
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/ThreadFenceReduction
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/Transpose
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/TransposeNew
+INFO       /home/andrew/repositories/gpuocelot/tests/cuda2.2/VolumeRender
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery
-INFO     Test completed in 0.0183069705963 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram256 
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleGL 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleGL
+INFO     Test completed in 8.14976406097 seconds
 INFO      It produced the following output:
-CUDA Device Query (Runtime API) version (CUDART static linking)
-There is 1 device supporting CUDA
-
-Device 0: "Ocelot PTX Emulator"
-  CUDA Capability Major revision number:         1
-  CUDA Capability Minor revision number:         3
-  Total amount of global memory:                 991227904 bytes
-  Number of multiprocessors:                     8
-  Number of cores:                               64
-  Total amount of constant memory:               65536 bytes
-  Total amount of shared memory per block:       16384 bytes
-  Total number of registers available per block: 991227904
-  Warp size:                                     512
-  Maximum number of threads per block:           512
-  Maximum sizes of each dimension of a block:    512 x 512 x 64
-  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
-  Maximum memory pitch:                          991227904 bytes
-  Texture alignment:                             1 bytes
-  Clock rate:                                    2.00 GHz
-  Concurrent copy and execution:                 No
-  Run time limit on kernels:                     No
-  Integrated:                                    Yes
-  Support host page-locked memory mapping:       Yes
-  Compute mode:                                  Default (multiple host threads can use this device simultaneously)
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic
-INFO     Test completed in 0.0692701339722 seconds
-INFO      It produced the following output:
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest
-INFO     Test completed in 0.579751014709 seconds
-INFO      It produced the following output:
-Running on......
-      device 0:Ocelot PTX Emulator
-Quick Mode
-Host to Device Bandwidth for Pageable memory
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		4073.8
-
-Quick Mode
-Device to Host Bandwidth for Pageable memory
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		3991.5
-
-Quick Mode
-Device to Device Bandwidth
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		8280.0
-
-&&&& Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D
-INFO     Test completed in 0.607706069946 seconds
-INFO      It produced the following output:
-[simpleTexture3D] (Automated Testing)
-Read 'data/Bucky.raw', 32768 bytes
-CheckRender::dumpBin: <simpleTexture3D.bin>
-> compareBin2Bin <unsigned int> nelements=1048576, epsilon=0.00, threshold=0.15
-   src_file <simpleTexture3D.bin>
-   ref_file <data/ref_texture3D.bin>
+> (Frame 3) Readback BackBuffer
+> Saving PPM: <simpleGL.ppm>
+   src_file <simpleGL.ppm>
+   ref_file <data/ref_simpleGL.ppm>
+> Compare (a)rendered:  <simpleGL.ppm>
+>         (b)reference: <data/ref_simpleGL.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(10), threshold(15%)
+1.10(%) of bytes mismatched (count=11543)
   PASSED!
-TEST PASSED!
+TEST PASSED
 
-Press ENTER to exit...
-==Ocelot== Array Memory Leak Detected
-==Ocelot==  131072 bytes at 0x2aaaaabd7010 never freed.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan
-INFO     Test completed in 0.764033794403 seconds
-INFO      It produced the following output:
-Running parallel prefix sum (scan) of 512 elements
-Comparing 3 versions:
-
-1. scan_naive -- not work efficient (O(n log n) adds).
-Average time: 3.144490 ms
-
-2. scan_workefficient -- Work efficient (O(n) adds), but many bank conflicts.
-Average time: 1.793800 ms
-
-3. scan_best -- work efficient with very few bank conflicts.
-Average time: 2.352630 ms
-
-scan_naive: Test PASSED
-scan_workefficient: Test PASSED
-scan_best: Test PASSED
-
-Check out the CUDA Data Parallel Primitives Library for more on scan.
-http://www.gpgpu.org/developer/cudpp
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture
-INFO     Test completed in 1.08396410942 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture
+INFO     Test completed in 4.68799996376 seconds
 INFO      It produced the following output:
 Loaded 'lena_bw.pgm', 512 x 512 pixels
-Processing time: 516.002014 (ms)
-0.51 Mpixels/sec
+Processing time: 649.166992 (ms)
+0.40 Mpixels/sec
 Wrote 'data/lena_bw_out.pgm'
 Comparing files
 	output:    <data/lena_bw_out.pgm>
@@ -190,111 +88,209 @@ Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT
-INFO     Test completed in 0.527323007584 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobolQRNG 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram256
+INFO     Test completed in 16.6371450424 seconds
 INFO      It produced the following output:
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration
-INFO     Test completed in 0.0941331386566 seconds
-INFO      It produced the following output:
-Test PASSED
-Hello World.
-Hello World.    
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI
-INFO     Test completed in 0.122224092484 seconds
-INFO      It produced the following output:
-time spent executing by the GPU: 25.75
-time spent by CPU in CUDA calls: 25.76
-CPU executed 0 iterations while waiting for GPU to finish
---------------------------------------------------------------
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc
-INFO     Test completed in 1.21279501915 seconds
-INFO      It produced the following output:
-Time 1055.223022 msec
-RMS(reference, result) = 0.000000
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D
-INFO     Test completed in 0.0762858390808 seconds
-INFO      It produced the following output:
-Reading signal from data/signal.dat
-Reading reference result from data/regression.gold.dat
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D
-INFO     Test completed in 3.11169219017 seconds
-INFO      It produced the following output:
-Input data size           : 200 x 200
-Convolution kernel size   : 7 x 7
-Padded image size         : 206 x 206
-Aligned padded image size : 256 x 256
-Allocating memory...
-Generating random input data...
-Creating FFT plan for 256 x 256...
-Uploading to GPU and padding convolution kernel and input data...
-...initializing padded kernel and data storage with zeroes...
-...copying input data and convolution kernel from host to CUDA arrays
-...binding CUDA arrays to texture references
-...padding convolution kernel
-...padding input data array
-Transforming convolution kernel...
-Running GPU FFT convolution...
-GPU time: 1583.598022 msecs. //0.025259 MPix/s
-Reading back GPU FFT results...
-Checking GPU results...
-...running reference CPU convolution
-...comparing the results
-Max delta / CPU value 8.143505E-07
-L2 norm: 1.432994E-07
+Initializing data...
+...allocating CPU memory.
+...generating input data
+...allocating GPU memory and copying input data
+Running CPU histogram...
+histogramCPU() time : 9.894000 msec // 963.891562 MB/sec
+Running GPU histogram using SM10...
+histogram256_SM10() time : 5189.181152 msec // 1.837813 MB/sec
+TEST PASSED
+Running GPU histogram using SM11...
+histogram256_SM11() time : 4849.799805 msec // 1.966420 MB/sec
+TEST PASSED
+Running GPU histogram using SM12...
+histogram256_SM12() time : 2063.797119 msec // 4.620969 MB/sec
 TEST PASSED
 Shutting down...
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT
-INFO     Test completed in 1.34212803841 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Reduction 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobolQRNG
+INFO     Test completed in 10.5612130165 seconds
 INFO      It produced the following output:
-[CUDA FFT Ocean Simulation]
-Compute capability 1.3
-CheckRender::dumpBin: <spatialDomain.bin>
-> compareBin2Bin <float> nelements=262144, epsilon=0.10, threshold=0.15
-   src_file <spatialDomain.bin>
-   ref_file <data/ref_spatialDomain_sm13.bin>
-0.03(%) of bytes mismatched (count=81)
-  PASSED!
-CheckRender::dumpBin: <slopeShading.bin>
-> compareBin2Bin <float> nelements=524288, epsilon=0.10, threshold=0.15
-   src_file <slopeShading.bin>
-   ref_file <data/ref_slopeShading_sm13.bin>
-  PASSED!
-Test PASSED!
+Allocating CPU memory...
+Allocating GPU memory...
+Initializing direction numbers...
+Copying direction numbers to device...
+Executing QRNG on GPU...
+Gsamples/s: 0.00124563
+Reading results from GPU...
+
+Executing QRNG on CPU...
+Gsamples/s: 0.111061
+Checking results...
+L1-Error: 0
+
+TEST PASSED
+
+Shutting down...
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter
-INFO     Test completed in 2.20958685875 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/MersenneTwister 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Reduction
+INFO     Test completed in 23.045388937 seconds
+INFO      It produced the following output:
+Reducing array of type int.
+Using Device 0: "Ocelot PTX Emulator"
+1048576 elements
+128 threads (max)
+64 blocks
+Average time: 193.309906 ms
+Bandwidth:    0.021697 GB/s
+
+GPU result = 133784454
+CPU result = 133784454
+TEST PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUFFT 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUFFT
+INFO     Test completed in 7.29819893837 seconds
+INFO      It produced the following output:
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/TransposeNew 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/TransposeNew
+INFO     Test completed in 10.4315729141 seconds
+INFO      It produced the following output:
+CUDA device has 2 Multi-Processors
+
+Matrix size: 128x128, tile size: 32x32, block size: 32x8
+
+Kernel			Loop over kernel	Loop within kernel
+------			----------------	------------------
+simple copy           	 0.02 GB/s		 0.05 GB/s
+shared memory copy    	 0.02 GB/s		 0.04 GB/s
+naive transpose       	 0.02 GB/s		 0.05 GB/s
+coalesced transpose   	 0.01 GB/s		 0.04 GB/s
+no bank conflict trans	 0.01 GB/s		 0.04 GB/s
+coarse-grained        	 0.02 GB/s		 0.04 GB/s
+fine-grained          	 0.02 GB/s		 0.04 GB/s
+diagonal transpose    	 0.01 GB/s		 0.04 GB/s
+
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/AlignedTypes 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/AlignedTypes
+INFO     Test completed in 2.26815319061 seconds
+INFO      It produced the following output:
+CUDA device has 2 Multi-Processors
+ Memory Size = 500000
+Allocating memory...
+Generating host input data array...
+Uploading input data to GPU memory...
+Testing misaligned types...
+uint8...
+Avg. time: 141.406006 ms / Copy throughput: 0.003293 GB/s.
+TEST PASSED
+uint16...
+Avg. time: 61.481998 ms / Copy throughput: 0.007574 GB/s.
+TEST PASSED
+RGBA8_misaligned...
+Avg. time: 86.921997 ms / Copy throughput: 0.005357 GB/s.
+TEST PASSED
+LA32_misaligned...
+Avg. time: 28.452000 ms / Copy throughput: 0.016367 GB/s.
+TEST PASSED
+RGB32_misaligned...
+Avg. time: 26.760000 ms / Copy throughput: 0.017401 GB/s.
+TEST PASSED
+RGBA32_misaligned...
+Avg. time: 25.908001 ms / Copy throughput: 0.017974 GB/s.
+TEST PASSED
+Testing aligned types...
+RGBA8...
+Avg. time: 37.080002 ms / Copy throughput: 0.012558 GB/s.
+TEST PASSED
+I32...
+Avg. time: 33.492001 ms / Copy throughput: 0.013904 GB/s.
+TEST PASSED
+LA32...
+Avg. time: 20.232000 ms / Copy throughput: 0.023016 GB/s.
+TEST PASSED
+RGB32...
+Avg. time: 15.520000 ms / Copy throughput: 0.030004 GB/s.
+TEST PASSED
+RGBA32...
+Avg. time: 13.334000 ms / Copy throughput: 0.034923 GB/s.
+TEST PASSED
+RGBA32_2...
+Avg. time: 11.917000 ms / Copy throughput: 0.039075 GB/s.
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/BandwidthTest 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/MersenneTwister
+INFO     Test completed in 39.2302961349 seconds
+INFO      It produced the following output:
+Initializing data for 24000000 samples...
+Loading CPU and GPU twisters configurations...
+Generating random numbers on GPU...
+Generated samples : 24002560 
+RandomGPU() time  : 24910.882812 
+Samples per second: 9.635371E+05 
+Applying Box-Muller transformation on GPU...
+Transformed samples : 24002560 
+BoxMullerGPU() time : 8674.213867 
+Samples per second  : 2.767116E+06 
+Reading back the results...
+Checking GPU results...
+...generating random numbers on CPU using reference generator
+...applying Box-Muller transformation on CPU
+...comparing the results
+Max absolute error: 4.768372E-07
+L1 norm: 1.117783E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/BlackScholes 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/BandwidthTest
+INFO     Test completed in 3.10817408562 seconds
+INFO      It produced the following output:
+Running on......
+      device 0:Ocelot PTX Emulator
+Quick Mode
+Host to Device Bandwidth for Pageable memory
+.
+Transfer Size (Bytes)	Bandwidth(MB/s)
+ 33554432		1182.8
+
+Quick Mode
+Device to Host Bandwidth for Pageable memory
+.
+Transfer Size (Bytes)	Bandwidth(MB/s)
+ 33554432		1176.9
+
+Quick Mode
+Device to Device Bandwidth
+.
+Transfer Size (Bytes)	Bandwidth(MB/s)
+ 33554432		2831.9
+
+&&&& Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobelFilter 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobelFilter
+INFO     Test completed in 6.04584598541 seconds
 INFO      It produced the following output:
 [CUDA Sobel Edge-Detection] (automated testing w/ readback)
 Reading image: lena.pgm
@@ -320,97 +316,672 @@ TEST PASSED!
 
 Press ENTER to exit...
 ==Ocelot== Array Memory Leak Detected
-==Ocelot==  1048576 bytes at 0x2aaaaaad6010 never freed.
+==Ocelot==  1048576 bytes at 0x2aaaaaada010 never freed.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64
-INFO     Test completed in 0.485776185989 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics
+INFO     Test completed in 1.70187091827 seconds
+INFO      It produced the following output:
+simpleVoteIntrinsics: Using Device 0: "Ocelot PTX Emulator"
+[VOTE Kernel Test 1/3]
+	Running <<Vote.Any>> kernel1 ...
+
+[VOTE Kernel Test 2/3]
+	Running <<Vote.All>> kernel2 ...
+
+[VOTE Kernel Test 3/3]
+	Running <<Vote.Any>> kernel3 ...
+	PASSED!
+
+TEST PASSED
+	Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Eigenvalues 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Eigenvalues
+INFO     Test completed in 2.4226667881 seconds
+INFO      It produced the following output:
+Matrix size: 2048 x 2048
+Precision: 0.000010
+Iterations to be timed: 1
+Result filename: 'eigenvalues.dat'
+Gerschgorin interval: -2.894310 / 2.923303
+==Ocelot== Emulator failed to run kernel "_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_" with exception: 
+==Ocelot== [PC 870] [thread 0] [cta 0] st.shared.u32 [offset_mult_lambda], %r538 - Memory access at 0x24bf34a is not aligned to the access size (4 bytes)
+==Ocelot==  At: bisect_kernel_large.cu:487:0
+cutilCheckMsg() CUTIL CUDA error: Kernel launch failed. in file <bisect_large.cu>, line 204 : Kernel launch failure..
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/OceanFFT 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/OceanFFT
+INFO     Test completed in 7.18227291107 seconds
+INFO      It produced the following output:
+[CUDA FFT Ocean Simulation]
+Compute capability 1.3
+CheckRender::dumpBin: <spatialDomain.bin>
+> compareBin2Bin <float> nelements=262144, epsilon=0.10, threshold=0.15
+   src_file <spatialDomain.bin>
+   ref_file <data/ref_spatialDomain_sm13.bin>
+0.03(%) of bytes mismatched (count=81)
+  PASSED!
+CheckRender::dumpBin: <slopeShading.bin>
+> compareBin2Bin <float> nelements=524288, epsilon=0.10, threshold=0.15
+   src_file <slopeShading.bin>
+   ref_file <data/ref_slopeShading_sm13.bin>
+  PASSED!
+Test PASSED!
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/PostProcessGL 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/BlackScholes
+INFO     Test completed in 17.8902819157 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory for options.
+...allocating GPU memory for options.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+Executing Black-Scholes GPU kernel (1 iterations)...
+Options count             : 8000000     
+BlackScholesGPU() time    : 12527.392578 msec
+Effective memory bandwidth: 0.006386 GB/s
+Gigaoptions per second    : 0.000639     
+Reading back GPU results...
+Checking the results...
+...running CPU calculations.
+Comparing the results...
+L1 norm: 2.047185E-07
+Max absolute error: 1.239777E-05
+TEST PASSED
+Shutting down...
+...releasing GPU memory.
+...releasing CPU memory.
+Shutdown done.
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/BoxFilter 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/BoxFilter
+INFO     Test completed in 8.77982091904 seconds
+INFO      It produced the following output:
+[CUDA Iterative Box Filter] (automated testing w/ readback)
+Loaded 'data/lena.ppm', 512 x 512 pixels
+AutoTest: CUDA Iterative Box Filter (radius=10)> Saving PPM: <lena_10.ppm>
+   src_file <lena_10.ppm>
+   ref_file <data/ref_10.ppm>
+> Compare (a)rendered:  <lena_10.ppm>
+>         (b)reference: <data/ref_10.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
+  PASSED!
+AutoTest: CUDA Iterative Box Filter (radius=14)> Saving PPM: <lena_14.ppm>
+   src_file <lena_14.ppm>
+   ref_file <data/ref_14.ppm>
+> Compare (a)rendered:  <lena_14.ppm>
+>         (b)reference: <data/ref_14.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
+  PASSED!
+AutoTest: CUDA Iterative Box Filter (radius=18)> Saving PPM: <lena_18.ppm>
+   src_file <lena_18.ppm>
+   ref_file <data/ref_18.ppm>
+> Compare (a)rendered:  <lena_18.ppm>
+>         (b)reference: <data/ref_18.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
+  PASSED!
+AutoTest: CUDA Iterative Box Filter (radius=22)> Saving PPM: <lena_22.ppm>
+   src_file <lena_22.ppm>
+   ref_file <data/ref_22.ppm>
+> Compare (a)rendered:  <lena_22.ppm>
+>         (b)reference: <data/ref_22.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
+  PASSED!
+TEST PASSED!
+
+Press ENTER to exit...
+==Ocelot== Array Memory Leak Detected
+==Ocelot==  4194304 bytes at 0x2aaaab2a0010 never freed.
+==Ocelot== Array Memory Leak Detected
+==Ocelot==  4194304 bytes at 0x2aaaaae9f010 never freed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUBLAS 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/PostProcessGL
+INFO     Test completed in 10.0278961658 seconds
+INFO      It produced the following output:
+CheckFBO::readback() PBO->m_pImageData
+> Saving PPM: <teapot_2.ppm>
+   src_file <teapot_2.ppm>
+   ref_file <data/ref_2.ppm>
+> Compare (a)rendered:  <teapot_2.ppm>
+>         (b)reference: <data/ref_2.ppm>
+PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
+PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
+  PASSED!
+CUDA GL Post Processing(64 x 64): 2.5 fps
+CheckFBO::readback() PBO->m_pImageData
+> Saving PPM: <teapot_4.ppm>
+   src_file <teapot_4.ppm>
+   ref_file <data/ref_4.ppm>
+> Compare (a)rendered:  <teapot_4.ppm>
+>         (b)reference: <data/ref_4.ppm>
+PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
+PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
+  PASSED!
+CheckFBO::readback() PBO->m_pImageData
+> Saving PPM: <teapot_8.ppm>
+   src_file <teapot_8.ppm>
+   ref_file <data/ref_8.ppm>
+> Compare (a)rendered:  <teapot_8.ppm>
+>         (b)reference: <data/ref_8.ppm>
+PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
+PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
+  PASSED!
+CUDA GL Post Processing(64 x 64): 1.5 fps
+CheckFBO::readback() PBO->m_pImageData
+> Saving PPM: <teapot_16.ppm>
+   src_file <teapot_16.ppm>
+   ref_file <data/ref_16.ppm>
+> Compare (a)rendered:  <teapot_16.ppm>
+>         (b)reference: <data/ref_16.ppm>
+PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
+PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
+  PASSED!
+Summary: 0 errors!
+Test PASSED!
+==Ocelot== Open GL Buffer Error.
+==Ocelot==  Never unregistered buffer 1
+==Ocelot== Open GL Buffer Error.
+==Ocelot==  Never unregistered buffer 2
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/FastWalshTransform 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/FastWalshTransform
+INFO     Test completed in 2.27929997444 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory
+...allocating GPU memory
+...generating data
+Data length: 32768; kernel length: 128
+Running GPU dyadic convolution using Fast Walsh Transform...
+GPU time: 294.927002 ms; GOP/s: 0.002500
+Reading back GPU results...
+Running straightforward CPU dyadic convolution...
+Comparing the results...
+L2 norm: 8.528954E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/VolumeRender 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUBLAS
+INFO     Test completed in 16.9734809399 seconds
+INFO      It produced the following output:
+simpleCUBLAS test running..
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTemplates 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTemplates
+INFO     Test completed in 1.93495702744 seconds
+INFO      It produced the following output:
+Processing time: 18.186001 (ms)
+Test PASSED
+Processing time: 0.051000 (ms)
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Mandelbrot 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Mandelbrot
+INFO     Test completed in 27.5055959225 seconds
+INFO      It produced the following output:
+CUDA Mandelbrot & Julia Set 
+AutoTest: <CUDA Mandelbrot & Julia Set>
+Compute capability 1.3
+Data initialization done.
+> Saving PPM: <mandelbrot.ppm>
+   src_file <mandelbrot.ppm>
+   ref_file <data/Mandelbrot_fp64.ppm>
+> Compare (a)rendered:  <mandelbrot.ppm>
+>         (b)reference: <data/Mandelbrot_fp64.ppm>
+PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
+0.76(%) of bytes mismatched (count=14563)
+  PASSED!
+> Saving PPM: <julia.ppm>
+   src_file <julia.ppm>
+   ref_file <data/referenceJulia_fp64.ppm>
+> Compare (a)rendered:  <julia.ppm>
+>         (b)reference: <data/referenceJulia_fp64.ppm>
+PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
+4.90(%) of bytes mismatched (count=94054)
+  PASSED!
+TEST PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleMultiGPU 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleMultiGPU
+INFO     Test completed in 6.03212285042 seconds
+INFO      It produced the following output:
+CUDA-capable device count: 2
+main(): generating input data...
+main(): waiting for GPU results...
+GPU Processing time: 3781.541016 (ms) 
+Checking the results...
+CPU Processing time: 54.484001 (ms) 
+GPU sum: 16777280.000000; CPU sum: 16777294.395033
+Relative difference: 8.580068E-07 
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleStreams 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleStreams
+INFO     Test completed in 2.71425914764 seconds
+INFO      It produced the following output:
+running on: Ocelot PTX Emulator
+
+memcopy:	127.72
+kernel:		9.32
+non-streamed:	39.46 (137.04 expected)
+4 streams:	38.91 (41.25 expected with compute capability 1.1 or later)
+-------------------------------
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Clock 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Clock
+INFO     Test completed in 1.81809711456 seconds
+INFO      It produced the following output:
+Test PASSED
+time = 976
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScalarProd 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScalarProd
+INFO     Test completed in 2.46586799622 seconds
 INFO      It produced the following output:
 Initializing data...
 ...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running GPU histogram (1 iterations)...
-histogram64GPU() time (average) : 357.803009 msec //2.794834 MB/sec
-Reading back GPU results...
-Comparing the results...
-...histogramCPU()
-histogram64CPU() time : 1.743000 msec //547.145324 MB/sec
-Total sum of histogram elements: 1000000
-Sum of absolute differences: 0
+...allocating GPU memory.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+Executing GPU kernel...
+GPU time: 613.817017 msecs.
+Reading back GPU result...
+Checking GPU results...
+..running CPU scalar product calculation
+...comparing the results
+L1 error: 3.070748E-08
 TEST PASSED
 Shutting down...
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose
-INFO     Test completed in 0.0393350124359 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Scan 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Scan
+INFO     Test completed in 2.15234804153 seconds
 INFO      It produced the following output:
-Transposing a 32 by 128 matrix of floats...
-Naive transpose average time:     3.796 ms
-Optimized transpose average time: 5.962 ms
+Running parallel prefix sum (scan) of 512 elements
+Comparing 3 versions:
 
-Test PASSED
+1. scan_naive -- not work efficient (O(n log n) adds).
+Average time: 2.577110 ms
+
+2. scan_workefficient -- Work efficient (O(n) adds), but many bank conflicts.
+Average time: 1.378730 ms
+
+3. scan_best -- work efficient with very few bank conflicts.
+Average time: 1.804110 ms
+
+scan_naive: Test PASSED
+scan_workefficient: Test PASSED
+scan_best: Test PASSED
+
+Check out the CUDA Data Parallel Primitives Library for more on scan.
+http://www.gpgpu.org/developer/cudpp
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions
-INFO     Test completed in 0.971817016602 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ThreadFenceReduction 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/VolumeRender
+INFO     Test completed in 60.7555119991 seconds
 INFO      It produced the following output:
-Using device 0: Ocelot PTX Emulator
-Using single precision...
-Generating input data...
-Running GPU binomial tree...
-Options count            : 1     
-Time steps               : 2048     
-binomialOptionsGPU() time: 930.971008 msec
-Options per second       : 1.074147     
-Running CPU binomial tree...
-Comparing the results...
-GPU binomial vs. Black-Scholes
-Avg. diff: 1.401298E-45
-CPU binomial vs. Black-Scholes
-Avg. diff: 0.000000E+00
-CPU binomial vs. GPU binomial
-Avg. diff: 1.401298E-45
+Read 'data/Bucky.raw', 32768 bytes
+Press '=' and '-' to change density
+      ']' and '[' to change brightness
+      ';' and ''' to modify transfer function offset
+      '.' and ',' to modify transfer function scale
+> (Frame 1) Readback BackBuffer
+> Saving PPM: <volume.ppm>
+   src_file <volume.ppm>
+   ref_file <data/ref_volume.ppm>
+> Compare (a)rendered:  <volume.ppm>
+>         (b)reference: <data/ref_volume.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(20%)
+18.51(%) of bytes mismatched (count=194141)
+  PASSED!
 TEST PASSED
-Shutting down...
+==Ocelot== Array Memory Leak Detected
+==Ocelot==  144 bytes at 0x13fbe40 never freed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleZeroCopy 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ThreadFenceReduction
+INFO     Test completed in 3.14104390144 seconds
+INFO      It produced the following output:
+[ threadFenceReduction ]
+Using Device 0: "Ocelot PTX Emulator"
+1048576 elements
+128 threads (max)
+64 blocks
+Average time: 173.740997 ms
+Bandwidth:    0.024141 GB/s
+
+GPU result = 0.062298238277
+CPU result = 0.062298242003
+TEST PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU
-INFO     Test completed in 7.15625119209 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/MatrixMul 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleZeroCopy
+INFO     Test completed in 3.1436650753 seconds
 INFO      It produced the following output:
-CUDA-capable device count: 1
-main(): generating input data...
-main(): waiting for GPU results...
-GPU Processing time: 6296.582031 (ms) 
+Adding vectors using mapped CPU memory...
 Checking the results...
-CPU Processing time: 73.012001 (ms) 
-GPU sum: 16777296.000000; CPU sum: 16777294.395033
-Relative difference: 9.566307E-08 
+Releasing CPU memory...
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/DeviceQuery 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/MatrixMul
+INFO     Test completed in 3.84714698792 seconds
+INFO      It produced the following output:
+Processing time: 154.942001 (ms) 
+Test PASSED 
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/DeviceQuery
+INFO     Test completed in 4.21733307838 seconds
+INFO      It produced the following output:
+CUDA Device Query (Runtime API) version (CUDART static linking)
+There are 2 devices supporting CUDA
+
+Device 0: "Ocelot PTX Emulator"
+  CUDA Capability Major revision number:         1
+  CUDA Capability Minor revision number:         3
+  Total amount of global memory:                 1146896384 bytes
+  Number of multiprocessors:                     2
+  Number of cores:                               16
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       16384 bytes
+  Total number of registers available per block: 1146896384
+  Warp size:                                     512
+  Maximum number of threads per block:           512
+  Maximum sizes of each dimension of a block:    512 x 512 x 64
+  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
+  Maximum memory pitch:                          1146896384 bytes
+  Texture alignment:                             1 bytes
+  Clock rate:                                    2.00 GHz
+  Concurrent copy and execution:                 No
+  Run time limit on kernels:                     No
+  Integrated:                                    Yes
+  Support host page-locked memory mapping:       Yes
+  Compute mode:                                  Default (multiple host threads can use this device simultaneously)
+
+Device 1: "Ocelot LLVM JIT-Compiler"
+  CUDA Capability Major revision number:         1
+  CUDA Capability Minor revision number:         3
+  Total amount of global memory:                 1146896384 bytes
+  Number of multiprocessors:                     2
+  Number of cores:                               16
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       16384 bytes
+  Total number of registers available per block: 1146896384
+  Warp size:                                     1
+  Maximum number of threads per block:           512
+  Maximum sizes of each dimension of a block:    512 x 512 x 64
+  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
+  Maximum memory pitch:                          1146896384 bytes
+  Texture alignment:                             1 bytes
+  Clock rate:                                    2.00 GHz
+  Concurrent copy and execution:                 No
+  Run time limit on kernels:                     No
+  Integrated:                                    Yes
+  Support host page-locked memory mapping:       Yes
+  Compute mode:                                  Default (multiple host threads can use this device simultaneously)
+
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Nbody 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics
+INFO     Test completed in 4.40637016296 seconds
+INFO      It produced the following output:
+Using Device 0: "Ocelot PTX Emulator"
+Processing time: 92.042999 (ms)
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionFFT2D 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Nbody
+INFO     Test completed in 9.90037584305 seconds
+INFO      It produced the following output:
+Run "nbody -benchmark [-n=<numBodies>]" to measure perfomance.
+
+Test PASSED
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarlo 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionFFT2D
+INFO     Test completed in 10.1411979198 seconds
+INFO      It produced the following output:
+Input data size           : 200 x 200
+Convolution kernel size   : 7 x 7
+Padded image size         : 206 x 206
+Aligned padded image size : 256 x 256
+Allocating memory...
+Generating random input data...
+Creating FFT plan for 256 x 256...
+Uploading to GPU and padding convolution kernel and input data...
+...initializing padded kernel and data storage with zeroes...
+...copying input data and convolution kernel from host to CUDA arrays
+...binding CUDA arrays to texture references
+...padding convolution kernel
+...padding input data array
+Transforming convolution kernel...
+Running GPU FFT convolution...
+GPU time: 1206.532959 msecs. //0.033153 MPix/s
+Reading back GPU FFT results...
+Checking GPU results...
+...running reference CPU convolution
+...comparing the results
+Max delta / CPU value 6.949807E-07
+L2 norm: 1.525766E-07
 TEST PASSED
 Shutting down...
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates
-INFO     Test completed in 0.0187699794769 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/FluidsGL 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/FluidsGL
+INFO     Test completed in 24.0166959763 seconds
 INFO      It produced the following output:
-Processing time: 0.107000 (ms)
-Test PASSED
-Processing time: 0.061000 (ms)
+TEST PASSED
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Bitonic 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Bitonic
+INFO     Test completed in 1.91354298592 seconds
+INFO      It produced the following output:
 Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture
-INFO     Test completed in 6.61066102982 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dxtc 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dxtc
+INFO     Test completed in 2.85228085518 seconds
+INFO      It produced the following output:
+Time 915.216003 msec
+RMS(reference, result) = 0.000000
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionSeparable 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionSeparable
+INFO     Test completed in 2.23459601402 seconds
+INFO      It produced the following output:
+256 x 256
+Initializing data...
+Warm up...
+GPU convolution...
+GPU convolution time : 284.226990 msec //0.230576 Mpixels/sec
+Reading back GPU results...
+Checking the results...
+...running convolutionRowCPU()
+...running convolutionColumnCPU()
+...comparing the results
+L1 norm: 6.351725E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/RecursiveGaussian 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/RecursiveGaussian
+INFO     Test completed in 16.609142065 seconds
+INFO      It produced the following output:
+[CUDA Recursive Gaussian] (Automated Testing)
+Loaded 'data/lena.ppm', 512 x 512 pixels
+> Saving PPM: <lena_10.ppm>
+   src_file <lena_10.ppm>
+   ref_file <data/ref_10.ppm>
+> Compare (a)rendered:  <lena_10.ppm>
+>         (b)reference: <data/ref_10.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
+32.37(%) of bytes mismatched (count=339435)
+  PASSED!
+> Saving PPM: <lena_14.ppm>
+   src_file <lena_14.ppm>
+   ref_file <data/ref_14.ppm>
+> Compare (a)rendered:  <lena_14.ppm>
+>         (b)reference: <data/ref_14.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
+37.41(%) of bytes mismatched (count=392281)
+  PASSED!
+> Saving PPM: <lena_18.ppm>
+   src_file <lena_18.ppm>
+   ref_file <data/ref_18.ppm>
+> Compare (a)rendered:  <lena_18.ppm>
+>         (b)reference: <data/ref_18.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
+41.69(%) of bytes mismatched (count=437127)
+  PASSED!
+> Saving PPM: <lena_22.ppm>
+   src_file <lena_22.ppm>
+   ref_file <data/ref_22.ppm>
+> Compare (a)rendered:  <lena_22.ppm>
+>         (b)reference: <data/ref_22.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
+43.99(%) of bytes mismatched (count=461239)
+  PASSED!
+Processing time: 11799.864258 (ms)
+0.09 Mpixels/sec
+Summary: 0 errors!
+Test PASSED!
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Template 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Template
+INFO     Test completed in 2.01016807556 seconds
+INFO      It produced the following output:
+Processing time: 7.869000 (ms)
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/AsyncAPI 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/AsyncAPI
+INFO     Test completed in 2.58036017418 seconds
+INFO      It produced the following output:
+time spent executing by the GPU: 117.71
+time spent by CPU in CUDA calls: 117.71
+CPU executed 0 iterations while waiting for GPU to finish
+--------------------------------------------------------------
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dct8x8 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarlo
+INFO     Test completed in 59.2261769772 seconds
+INFO      It produced the following output:
+Generating input data...
+Allocating memory...
+Generating normally distributed samples...
+Running GPU Monte Carlo...
+Options         : 256
+Simulation paths: 262144
+Time (ms.)      : 47791.945312
+GPU options per sec.: 5.356551
+GPU Monte Carlo vs. Black-Scholes statistics
+L1 norm        : 3.078539E-06
+Average reserve: 372.945601
+TEST PASSED
+CPU Monte Carlo vs. Black-Scholes statistics...
+L1 norm: 2.970427E-06
+Average reserve: 386.847267
+CPU vs. GPU Monte Carlo statistics...
+L1 norm: 1.091943E-07
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dct8x8
+INFO     Test completed in 5.35299396515 seconds
+INFO      It produced the following output:
+CUDA sample DCT/IDCT implementation
+===================================
+Loading test image: barbara.bmp... [512 x 512]... Success
+Running Gold 1 (CPU) version... Success
+Running Gold 2 (CPU) version... Success
+Running CUDA 1 (GPU) version... Success
+Running CUDA 2 (GPU) version... Success
+Running CUDA short (GPU) version... Success
+Dumping result to barbara_gold1.bmp... Success
+Dumping result to barbara_gold2.bmp... Success
+Dumping result to barbara_cuda1.bmp... Success
+Dumping result to barbara_cuda2.bmp... Success
+Dumping result to barbara_cuda_short.bmp... Success
+Processing time : not relevant in CUDA emulation mode
+PSNR Original    <---> CPU(Gold 1)    : 32.777073
+PSNR Original    <---> CPU(Gold 2)    : 32.777050
+PSNR Original    <---> GPU(CUDA 1)    : 32.777092
+PSNR Original    <---> GPU(CUDA 2)    : 32.777092
+PSNR Original    <---> GPU(CUDA short): 32.749447
+PSNR CPU(Gold 1) <---> GPU(CUDA 1)    : 77.264702
+PSNR CPU(Gold 2) <---> GPU(CUDA 2)    : 61.046452
+PSNR CPU(Gold 2) <---> GPU(CUDA short): 42.258053
+
+TEST PASSED!
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/BicubicTexture 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/BicubicTexture
+INFO     Test completed in 9.62310194969 seconds
 INFO      It produced the following output:
 [CUDA BicubicTexture] (automated testing w/ readback)
 Loaded 'lena_bw.pgm', 512 x 512 pixels
@@ -450,577 +1021,28 @@ TEST PASSED!
 
 Press ENTER to exit...
 ==Ocelot== Array Memory Leak Detected
-==Ocelot==  1048576 bytes at 0x2aaaaaad6010 never freed.
+==Ocelot==  1048576 bytes at 0x2aaaaaada010 never freed.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew
-INFO     Test completed in 10.5875480175 seconds
-INFO      It produced the following output:
-CUDA device has 8 Multi-Processors
-
-Matrix size: 128x128, tile size: 32x32, block size: 32x8
-
-Kernel			Loop over kernel	Loop within kernel
-------			----------------	------------------
-simple copy           	 0.02 GB/s		 0.04 GB/s
-shared memory copy    	 0.01 GB/s		 0.03 GB/s
-naive transpose       	 0.02 GB/s		 0.05 GB/s
-coalesced transpose   	 0.01 GB/s		 0.03 GB/s
-no bank conflict trans	 0.01 GB/s		 0.03 GB/s
-coarse-grained        	 0.01 GB/s		 0.03 GB/s
-fine-grained          	 0.01 GB/s		 0.03 GB/s
-diagonal transpose    	 0.01 GB/s		 0.03 GB/s
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture
-INFO     Test completed in 0.993666887283 seconds
-INFO      It produced the following output:
-Initializing data...
-convolutionRowGPU()
-...convolutionRowGPU() time: 478.992004 msecs; //0.136821 Mpix/s
-Copying convolutionRowGPU() output back to a_Data...
-...cudaMemcpyToArray() time: 0.054000 msecs; //1213.629598 Mpix/s
-convolutionColumnGPU()...
-...convolutionColumnGPU() time: 473.859985 msecs; //0.138302 Mpix/s
-Reading back GPU results...
-Checking GPU results...
-...convolutionRowCPU()
-...convolutionColumnCPU()
-...comparing the results
-L1 norm: 6.392177E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes
-INFO     Test completed in 13.6364400387 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory for options.
-...allocating GPU memory for options.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing Black-Scholes GPU kernel (1 iterations)...
-Options count             : 8000000     
-BlackScholesGPU() time    : 12178.300781 msec
-Effective memory bandwidth: 0.006569 GB/s
-Gigaoptions per second    : 0.000657     
-Reading back GPU results...
-Checking the results...
-...running CPU calculations.
-Comparing the results...
-L1 norm: 2.047185E-07
-Max absolute error: 1.239777E-05
-TEST PASSED
-Shutting down...
-...releasing GPU memory.
-...releasing CPU memory.
-Shutdown done.
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams
-INFO     Test completed in 0.648638010025 seconds
-INFO      It produced the following output:
-running on: Ocelot PTX Emulator
-
-memcopy:	67.62
-kernel:		7.41
-non-streamed:	20.02 (75.04 expected)
-4 streams:	20.06 (24.32 expected with compute capability 1.1 or later)
--------------------------------
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS
-INFO     Test completed in 12.5372049809 seconds
-INFO      It produced the following output:
-simpleCUBLAS test running..
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes
-INFO     Test completed in 2.39247703552 seconds
-INFO      It produced the following output:
-CUDA device has 8 Multi-Processors
- Memory Size = 2000000
-Allocating memory...
-Generating host input data array...
-Uploading input data to GPU memory...
-Testing misaligned types...
-uint8...
-Avg. time: 580.429993 ms / Copy throughput: 0.003209 GB/s.
-TEST PASSED
-uint16...
-Avg. time: 294.505005 ms / Copy throughput: 0.006325 GB/s.
-TEST PASSED
-RGBA8_misaligned...
-Avg. time: 409.001007 ms / Copy throughput: 0.004554 GB/s.
-TEST PASSED
-LA32_misaligned...
-Avg. time: 122.664001 ms / Copy throughput: 0.015185 GB/s.
-TEST PASSED
-RGB32_misaligned...
-Avg. time: 112.787003 ms / Copy throughput: 0.016515 GB/s.
-TEST PASSED
-RGBA32_misaligned...
-Avg. time: 107.429001 ms / Copy throughput: 0.017338 GB/s.
-TEST PASSED
-Testing aligned types...
-RGBA8...
-Avg. time: 167.705994 ms / Copy throughput: 0.011107 GB/s.
-TEST PASSED
-I32...
-Avg. time: 151.145004 ms / Copy throughput: 0.012324 GB/s.
-TEST PASSED
-LA32...
-Avg. time: 82.877998 ms / Copy throughput: 0.022475 GB/s.
-TEST PASSED
-RGB32...
-Avg. time: 57.411999 ms / Copy throughput: 0.032443 GB/s.
-TEST PASSED
-RGBA32...
-Avg. time: 47.498001 ms / Copy throughput: 0.039215 GB/s.
-TEST PASSED
-RGBA32_2...
-Avg. time: 40.355999 ms / Copy throughput: 0.046155 GB/s.
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics
-INFO     Test completed in 0.0296990871429 seconds
-INFO      It produced the following output:
-Using Device 0: "Ocelot PTX Emulator"
-Processing time: 11.710000 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator
-INFO     Test completed in 16.858134985 seconds
-INFO      It produced the following output:
-Allocating GPU memory...
-Allocating CPU memory...
-Initializing QRNG tables...
-Testing QRNG...
-Gsamples/s: 0.000251
-Reading GPU results...
-Comparing to the CPU results...
-L1 norm: 7.275964E-12
-Testing inverseCNDgpu()...
-Gsamples/s: 0.000939
-Reading GPU results...
-Comparing to the CPU results...
-L1 norm: 1.720123E-07
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy
-INFO     Test completed in 0.810156106949 seconds
-INFO      It produced the following output:
-Adding vectors using mapped CPU memory...
-Checking the results...
-Releasing CPU memory...
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics
-INFO     Test completed in 0.0296399593353 seconds
-INFO      It produced the following output:
-simpleVoteIntrinsics: Using Device 0: "Ocelot PTX Emulator"
-[VOTE Kernel Test 1/3]
-	Running <<Vote.Any>> kernel1 ...
-
-[VOTE Kernel Test 2/3]
-	Running <<Vote.All>> kernel2 ...
-
-[VOTE Kernel Test 3/3]
-	Running <<Vote.Any>> kernel3 ...
-	PASSED!
-
-TEST PASSED
-	Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL
-INFO     Test completed in 0.876913785934 seconds
-INFO      It produced the following output:
-> (Frame 3) Readback BackBuffer
-> Saving PPM: <simpleGL.ppm>
-   src_file <simpleGL.ppm>
-   ref_file <data/ref_simpleGL.ppm>
-> Compare (a)rendered:  <simpleGL.ppm>
->         (b)reference: <data/ref_simpleGL.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(10), threshold(15%)
-1.10(%) of bytes mismatched (count=11543)
-  PASSED!
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256
-INFO     Test completed in 14.3247759342 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running CPU histogram...
-histogramCPU() time : 13.568000 msec // 702.884970 MB/sec
-Running GPU histogram using SM10...
-histogram256_SM10() time : 5746.826172 msec // 1.659480 MB/sec
-TEST PASSED
-Running GPU histogram using SM11...
-histogram256_SM11() time : 5876.539062 msec // 1.622850 MB/sec
-TEST PASSED
-Running GPU histogram using SM12...
-histogram256_SM12() time : 2373.700928 msec // 4.017668 MB/sec
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd
-INFO     Test completed in 0.956202030182 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...allocating GPU memory.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing GPU kernel...
-GPU time: 785.692993 msecs.
-Reading back GPU result...
-Checking GPU results...
-..running CPU scalar product calculation
-...comparing the results
-L1 error: 3.070748E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction
-INFO     Test completed in 0.62185382843 seconds
-INFO      It produced the following output:
-[ threadFenceReduction ]
-Using Device 0: "Ocelot PTX Emulator"
-1048576 elements
-128 threads (max)
-64 blocks
-Average time: 219.326996 ms
-Bandwidth:    0.019124 GB/s
-
-GPU result = 0.062298238277
-CPU result = 0.062298242003
-TEST PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform
-INFO     Test completed in 0.368198156357 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory
-...allocating GPU memory
-...generating data
-Data length: 32768; kernel length: 128
-Running GPU dyadic convolution using Fast Walsh Transform...
-GPU time: 325.373993 ms; GOP/s: 0.002266
-Reading back GPU results...
-Running straightforward CPU dyadic convolution...
-Comparing the results...
-L2 norm: 8.528954E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian
-INFO     Test completed in 16.4133791924 seconds
-INFO      It produced the following output:
-[CUDA Recursive Gaussian] (Automated Testing)
-Loaded 'data/lena.ppm', 512 x 512 pixels
-> Saving PPM: <lena_10.ppm>
-   src_file <lena_10.ppm>
-   ref_file <data/ref_10.ppm>
-> Compare (a)rendered:  <lena_10.ppm>
->         (b)reference: <data/ref_10.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
-32.37(%) of bytes mismatched (count=339435)
-  PASSED!
-> Saving PPM: <lena_14.ppm>
-   src_file <lena_14.ppm>
-   ref_file <data/ref_14.ppm>
-> Compare (a)rendered:  <lena_14.ppm>
->         (b)reference: <data/ref_14.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
-37.41(%) of bytes mismatched (count=392281)
-  PASSED!
-> Saving PPM: <lena_18.ppm>
-   src_file <lena_18.ppm>
-   ref_file <data/ref_18.ppm>
-> Compare (a)rendered:  <lena_18.ppm>
->         (b)reference: <data/ref_18.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
-41.69(%) of bytes mismatched (count=437127)
-  PASSED!
-> Saving PPM: <lena_22.ppm>
-   src_file <lena_22.ppm>
-   ref_file <data/ref_22.ppm>
-> Compare (a)rendered:  <lena_22.ppm>
->         (b)reference: <data/ref_22.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
-43.99(%) of bytes mismatched (count=461239)
-  PASSED!
-Processing time: 13100.250977 (ms)
-0.08 Mpixels/sec
-Summary: 0 errors!
-Test PASSED!
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable
-INFO     Test completed in 0.893197059631 seconds
-INFO      It produced the following output:
-256 x 256
-Initializing data...
-Warm up...
-GPU convolution...
-GPU convolution time : 377.028992 msec //0.173822 Mpixels/sec
-Reading back GPU results...
-Checking the results...
-...running convolutionRowCPU()
-...running convolutionColumnCPU()
-...comparing the results
-L1 norm: 6.351725E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL
-INFO     Test completed in 5.07887387276 seconds
-INFO      It produced the following output:
-CheckFBO::readback() PBO->m_pImageData
-> Saving PPM: <teapot_2.ppm>
-   src_file <teapot_2.ppm>
-   ref_file <data/ref_2.ppm>
-> Compare (a)rendered:  <teapot_2.ppm>
->         (b)reference: <data/ref_2.ppm>
-PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
-PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
-  PASSED!
-CUDA GL Post Processing(64 x 64): 10.8 fps
-CheckFBO::readback() PBO->m_pImageData
-> Saving PPM: <teapot_4.ppm>
-   src_file <teapot_4.ppm>
-   ref_file <data/ref_4.ppm>
-> Compare (a)rendered:  <teapot_4.ppm>
->         (b)reference: <data/ref_4.ppm>
-PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
-PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
-  PASSED!
-CheckFBO::readback() PBO->m_pImageData
-> Saving PPM: <teapot_8.ppm>
-   src_file <teapot_8.ppm>
-   ref_file <data/ref_8.ppm>
-> Compare (a)rendered:  <teapot_8.ppm>
->         (b)reference: <data/ref_8.ppm>
-PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
-PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
-  PASSED!
-CheckFBO::readback() PBO->m_pImageData
-> Saving PPM: <teapot_16.ppm>
-   src_file <teapot_16.ppm>
-   ref_file <data/ref_16.ppm>
-> Compare (a)rendered:  <teapot_16.ppm>
->         (b)reference: <data/ref_16.ppm>
-PPMvsPPM: source and ref size mismatch (64,64)vs(512,512)
-PPMvsPPM: comparing images size (64,64) epsilon(10), threshold(30%)
-  PASSED!
-Summary: 0 errors!
-Test PASSED!
-==Ocelot== Open GL Buffer Error.
-==Ocelot==  Never unregistered buffer 1
-==Ocelot== Open GL Buffer Error.
-==Ocelot==  Never unregistered buffer 2
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8
-INFO     Test completed in 3.9172501564 seconds
-INFO      It produced the following output:
-CUDA sample DCT/IDCT implementation
-===================================
-Loading test image: barbara.bmp... [512 x 512]... Success
-Running Gold 1 (CPU) version... Success
-Running Gold 2 (CPU) version... Success
-Running CUDA 1 (GPU) version... Success
-Running CUDA 2 (GPU) version... Success
-Running CUDA short (GPU) version... Success
-Dumping result to barbara_gold1.bmp... Success
-Dumping result to barbara_gold2.bmp... Success
-Dumping result to barbara_cuda1.bmp... Success
-Dumping result to barbara_cuda2.bmp... Success
-Dumping result to barbara_cuda_short.bmp... Success
-Processing time : not relevant in CUDA emulation mode
-PSNR Original    <---> CPU(Gold 1)    : 32.777073
-PSNR Original    <---> CPU(Gold 2)    : 32.777050
-PSNR Original    <---> GPU(CUDA 1)    : 32.777092
-PSNR Original    <---> GPU(CUDA 2)    : 32.777092
-PSNR Original    <---> GPU(CUDA short): 32.749447
-PSNR CPU(Gold 1) <---> GPU(CUDA 1)    : 77.264702
-PSNR CPU(Gold 2) <---> GPU(CUDA 2)    : 61.046452
-PSNR CPU(Gold 2) <---> GPU(CUDA short): 42.258053
-
-TEST PASSED!
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Template 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Template
-INFO     Test completed in 0.0174589157104 seconds
-INFO      It produced the following output:
-Processing time: 0.105000 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock
-INFO     Test completed in 0.171457052231 seconds
-INFO      It produced the following output:
-Test PASSED
-time = 976
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody
-INFO     Test completed in 8.12794804573 seconds
-INFO      It produced the following output:
-Run "nbody -benchmark [-n=<numBodies>]" to measure perfomance.
-
-Test PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter
-INFO     Test completed in 4.88168907166 seconds
-INFO      It produced the following output:
-[CUDA Iterative Box Filter] (automated testing w/ readback)
-Loaded 'data/lena.ppm', 512 x 512 pixels
-AutoTest: CUDA Iterative Box Filter (radius=10)> Saving PPM: <lena_10.ppm>
-   src_file <lena_10.ppm>
-   ref_file <data/ref_10.ppm>
-> Compare (a)rendered:  <lena_10.ppm>
->         (b)reference: <data/ref_10.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA Iterative Box Filter (radius=14)> Saving PPM: <lena_14.ppm>
-   src_file <lena_14.ppm>
-   ref_file <data/ref_14.ppm>
-> Compare (a)rendered:  <lena_14.ppm>
->         (b)reference: <data/ref_14.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA Iterative Box Filter (radius=18)> Saving PPM: <lena_18.ppm>
-   src_file <lena_18.ppm>
-   ref_file <data/ref_18.ppm>
-> Compare (a)rendered:  <lena_18.ppm>
->         (b)reference: <data/ref_18.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA Iterative Box Filter (radius=22)> Saving PPM: <lena_22.ppm>
-   src_file <lena_22.ppm>
-   ref_file <data/ref_22.ppm>
-> Compare (a)rendered:  <lena_22.ppm>
->         (b)reference: <data/ref_22.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-TEST PASSED!
-
-Press ENTER to exit...
-==Ocelot== Array Memory Leak Detected
-==Ocelot==  4194304 bytes at 0x2aaaaae9b010 never freed.
-==Ocelot== Array Memory Leak Detected
-==Ocelot==  4194304 bytes at 0x2aaaab29c010 never freed.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction
-INFO     Test completed in 22.5976228714 seconds
-INFO      It produced the following output:
-Reducing array of type int.
-Using Device 0: "Ocelot PTX Emulator"
-1048576 elements
-128 threads (max)
-64 blocks
-Average time: 216.210388 ms
-Bandwidth:    0.019399 GB/s
-
-GPU result = 133784454
-CPU result = 133784454
-TEST PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul
-INFO     Test completed in 0.107161045074 seconds
-INFO      It produced the following output:
-Processing time: 64.285004 (ms) 
-Test PASSED 
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray
-INFO     Test completed in 0.235630989075 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScanLargeArray 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScanLargeArray
+INFO     Test completed in 1.99589419365 seconds
 INFO      It produced the following output:
 Running parallel prefix sum (prescan) of 10000 elements
 This version is work efficient (O(n) adds)
 and has very few shared memory bank conflicts
 
 Test PASSED
-Average GPU execution time: 45.974998 ms
-CPU execution time:         0.045000 ms
+Average GPU execution time: 38.702999 ms
+CPU execution time:         0.053000 ms
 
 Check out the CUDA Data Parallel Primitives Library for more on scan.
 http://www.gpgpu.org/developer/cudpp
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising
-INFO     Test completed in 4.25407004356 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ImageDenoising 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ImageDenoising
+INFO     Test completed in 5.65209817886 seconds
 INFO      It produced the following output:
 [CUDA ImageDenoising] (automated testing w/ readback)
 Allocating host and CUDA memory and loading image file...
@@ -1065,150 +1087,147 @@ TEST PASSED!
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL
-INFO     Test completed in 20.335285902 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/DwtHaar1D 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/DwtHaar1D
+INFO     Test completed in 2.11541104317 seconds
 INFO      It produced the following output:
-TEST PASSED
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG
-INFO     Test completed in 8.70565414429 seconds
-INFO      It produced the following output:
-Allocating CPU memory...
-Allocating GPU memory...
-Initializing direction numbers...
-Copying direction numbers to device...
-Executing QRNG on GPU...
-Gsamples/s: 0.00118184
-Reading results from GPU...
-
-Executing QRNG on CPU...
-Gsamples/s: 0.104361
-Checking results...
-L1-Error: 0
-
-TEST PASSED
-
-Shutting down...
+Reading signal from data/signal.dat
+Reading reference result from data/regression.gold.dat
+Test PASSED
 
 Press ENTER to exit...
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister
-INFO     Test completed in 39.4309608936 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionTexture 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionTexture
+INFO     Test completed in 2.51583194733 seconds
 INFO      It produced the following output:
-Initializing data for 24000000 samples...
-Loading CPU and GPU twisters configurations...
-Generating random numbers on GPU...
-Generated samples : 24002560 
-RandomGPU() time  : 29350.835938 
-Samples per second: 8.177811E+05 
-Applying Box-Muller transformation on GPU...
-Transformed samples : 24002560 
-BoxMullerGPU() time : 7659.779785 
-Samples per second  : 3.133584E+06 
-Reading back the results...
+Initializing data...
+convolutionRowGPU()
+...convolutionRowGPU() time: 394.394989 msecs; //0.166168 Mpix/s
+Copying convolutionRowGPU() output back to a_Data...
+...cudaMemcpyToArray() time: 0.050000 msecs; //1310.719980 Mpix/s
+convolutionColumnGPU()...
+...convolutionColumnGPU() time: 364.191010 msecs; //0.179950 Mpix/s
+Reading back GPU results...
 Checking GPU results...
-...generating random numbers on CPU using reference generator
-...applying Box-Muller transformation on CPU
+...convolutionRowCPU()
+...convolutionColumnCPU()
 ...comparing the results
-Max absolute error: 4.768372E-07
-L1 norm: 1.117783E-08
+L1 norm: 6.392177E-08
 TEST PASSED
 Shutting down...
 
 Press ENTER to exit...
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues
-INFO     Test completed in 22.4369990826 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Transpose 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Transpose
+INFO     Test completed in 1.90082287788 seconds
 INFO      It produced the following output:
-Matrix size: 2048 x 2048
-Precision: 0.000010
-Iterations to be timed: 1
-Result filename: 'eigenvalues.dat'
-Gerschgorin interval: -2.894310 / 2.923303
-Average time step 1: 824.846985 ms
-Average time step 2, one intervals: 946.690979 ms
-Average time step 2, mult intervals: 20551.355469 ms
-Average time TOTAL: 22322.914062 ms
+Transposing a 32 by 128 matrix of floats...
+Naive transpose average time:     2.950 ms
+Optimized transpose average time: 4.673 ms
 
-TEST PASSED.
+Test PASSED
 
 Press ENTER to exit...
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot
-INFO     Test completed in 26.642072916 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture3D 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture3D
+INFO     Test completed in 2.47658014297 seconds
 INFO      It produced the following output:
-CUDA Mandelbrot & Julia Set 
-AutoTest: <CUDA Mandelbrot & Julia Set>
-Compute capability 1.3
-Data initialization done.
-> Saving PPM: <mandelbrot.ppm>
-   src_file <mandelbrot.ppm>
-   ref_file <data/Mandelbrot_fp64.ppm>
-> Compare (a)rendered:  <mandelbrot.ppm>
->         (b)reference: <data/Mandelbrot_fp64.ppm>
-PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
-0.76(%) of bytes mismatched (count=14563)
-  PASSED!
-> Saving PPM: <julia.ppm>
-   src_file <julia.ppm>
-   ref_file <data/referenceJulia_fp64.ppm>
-> Compare (a)rendered:  <julia.ppm>
->         (b)reference: <data/referenceJulia_fp64.ppm>
-PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
-4.90(%) of bytes mismatched (count=94054)
-  PASSED!
-TEST PASSED
-
-Press ENTER to exit...
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
-INFO     Test completed in 43.7313299179 seconds
-INFO      It produced the following output:
-Generating input data...
-Allocating memory...
-Generating normally distributed samples...
-Running GPU Monte Carlo...
-Options         : 256
-Simulation paths: 262144
-Time (ms.)      : 37199.250000
-GPU options per sec.: 6.881859
-GPU Monte Carlo vs. Black-Scholes statistics
-L1 norm        : 3.078539E-06
-Average reserve: 372.945601
-TEST PASSED
-CPU Monte Carlo vs. Black-Scholes statistics...
-L1 norm: 2.970427E-06
-Average reserve: 386.847267
-CPU vs. GPU Monte Carlo statistics...
-L1 norm: 1.091943E-07
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender
-INFO     Test completed in 53.0620498657 seconds
-INFO      It produced the following output:
+[simpleTexture3D] (Automated Testing)
 Read 'data/Bucky.raw', 32768 bytes
-Press '=' and '-' to change density
-      ']' and '[' to change brightness
-      ';' and ''' to modify transfer function offset
-      '.' and ',' to modify transfer function scale
-> (Frame 1) Readback BackBuffer
-> Saving PPM: <volume.ppm>
-   src_file <volume.ppm>
-   ref_file <data/ref_volume.ppm>
-> Compare (a)rendered:  <volume.ppm>
->         (b)reference: <data/ref_volume.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(20%)
-18.51(%) of bytes mismatched (count=194141)
+CheckRender::dumpBin: <simpleTexture3D.bin>
+> compareBin2Bin <unsigned int> nelements=1048576, epsilon=0.00, threshold=0.15
+   src_file <simpleTexture3D.bin>
+   ref_file <data/ref_texture3D.bin>
   PASSED!
-TEST PASSED
-==Ocelot== Array Memory Leak Detected
-==Ocelot==  144 bytes at 0x278ca40 never freed.
+TEST PASSED!
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo
-INFO     Test completed in 38.8870749474 seconds
+Press ENTER to exit...
+==Ocelot== Array Memory Leak Detected
+==Ocelot==  131072 bytes at 0x2aaaaabdb010 never freed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/QuasirandomGenerator 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/QuasirandomGenerator
+INFO     Test completed in 15.5995399952 seconds
+INFO      It produced the following output:
+Allocating GPU memory...
+Allocating CPU memory...
+Initializing QRNG tables...
+Testing QRNG...
+Gsamples/s: 0.000322
+Reading GPU results...
+Comparing to the CPU results...
+L1 norm: 7.275964E-12
+Testing inverseCNDgpu()...
+Gsamples/s: 0.001094
+Reading GPU results...
+Comparing to the CPU results...
+L1 norm: 1.720123E-07
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/BinomialOptions 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/BinomialOptions
+INFO     Test completed in 2.8310508728 seconds
+INFO      It produced the following output:
+Using device 0: Ocelot PTX Emulator
+Using single precision...
+Generating input data...
+Running GPU binomial tree...
+Options count            : 1     
+Time steps               : 2048     
+binomialOptionsGPU() time: 811.302979 msec
+Options per second       : 1.232585     
+Running CPU binomial tree...
+Comparing the results...
+GPU binomial vs. Black-Scholes
+Avg. diff: 1.401298E-45
+CPU binomial vs. Black-Scholes
+Avg. diff: 0.000000E+00
+CPU binomial vs. GPU binomial
+Avg. diff: 1.401298E-45
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram64 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram64
+INFO     Test completed in 1.94784808159 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory.
+...generating input data
+...allocating GPU memory and copying input data
+Running GPU histogram (1 iterations)...
+histogram64GPU() time (average) : 285.851990 msec //3.498314 MB/sec
+Reading back GPU results...
+Comparing the results...
+...histogramCPU()
+histogram64CPU() time : 1.279000 msec //745.640566 MB/sec
+Total sum of histogram elements: 1000000
+Sum of absolute differences: 0
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/tests/cuda2.2/CppIntegration 
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/CppIntegration
+INFO     Test completed in 2.02116799355 seconds
+INFO      It produced the following output:
+Test PASSED
+Hello World.
+Hello World.    
+
+Press ENTER to exit...
+
+INFO     Test /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
+INFO     Test completed in 61.3602540493 seconds
 INFO      It produced the following output:
 Generating input data...
 Allocating memory...
@@ -1216,8 +1235,8 @@ Generating normally distributed samples...
 Running GPU Monte Carlo...
 Options         : 256
 Simulation paths: 262144
-Time (ms.)      : 32330.142578
-GPU options per sec.: 7.918307
+Time (ms.)      : 47830.269531
+GPU options per sec.: 5.352259
 GPU Monte Carlo vs. Black-Scholes statistics
 L1 norm        : 3.078539E-06
 Average reserve: 372.945601
@@ -1233,63 +1252,63 @@ Press ENTER to exit...
 
 INFO     
 Passing tests:
- (0.608s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D : Passed
- (38.887s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo : Passed
- (22.598s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction : Passed
- (4.882s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter : Passed
- (0.076s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D : Passed
- (0.893s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable : Passed
- (13.636s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes : Passed
- (3.112s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D : Passed
- (0.972s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions : Passed
- (0.810s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy : Passed
- (6.611s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture : Passed
- (0.527s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT : Passed
- (5.079s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL : Passed
- (1.084s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture : Passed
- (22.437s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues : Passed
- (0.236s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray : Passed
- (16.858s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator : Passed
- (0.107s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul : Passed
- (2.392s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes : Passed
- (0.094s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration : Passed
- (0.018s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery : Passed
- (10.588s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew : Passed
- (26.642s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot : Passed
- (0.019s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates : Passed
- (0.069s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic : Passed
- (0.039s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose : Passed
- (0.994s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture : Passed
- (0.486s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64 : Passed
- (2.210s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter : Passed
- (4.254s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising : Passed
- (0.622s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction : Passed
- (43.731s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU : Passed
- (53.062s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender : Passed
- (8.706s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG : Passed
- (12.537s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS : Passed
- (0.017s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Template : Passed
- (0.171s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock : Passed
- (0.649s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams : Passed
- (0.030s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics : Passed
- (0.580s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest : Passed
- (0.956s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd : Passed
- (0.122s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI : Passed
- (0.030s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics : Passed
- (7.156s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU : Passed
- (39.431s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister : Passed
- (0.764s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan : Passed
- (20.335s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL : Passed
- (0.368s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform : Passed
- (1.342s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT : Passed
- (14.325s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256 : Passed
- (16.413s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian : Passed
- (0.877s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL : Passed
- (8.128s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody : Passed
- (1.213s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc : Passed
- (3.917s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8 : Passed
+ (8.780s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/BoxFilter : Passed
+ (2.714s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleStreams : Passed
+ (16.637s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram256 : Passed
+ (4.688s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture : Passed
+ (2.279s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/FastWalshTransform : Passed
+ (1.702s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics : Passed
+ (2.235s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionSeparable : Passed
+ (3.108s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/BandwidthTest : Passed
+ (9.623s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/BicubicTexture : Passed
+ (6.032s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleMultiGPU : Passed
+ (3.144s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleZeroCopy : Passed
+ (1.996s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScanLargeArray : Passed
+ (2.852s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dxtc : Passed
+ (16.609s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/RecursiveGaussian : Passed
+ (10.432s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/TransposeNew : Passed
+ (2.580s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/AsyncAPI : Passed
+ (1.901s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Transpose : Passed
+ (1.818s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Clock : Passed
+ (2.021s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/CppIntegration : Passed
+ (2.831s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/BinomialOptions : Passed
+ (2.516s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionTexture : Passed
+ (10.141s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ConvolutionFFT2D : Passed
+ (3.847s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/MatrixMul : Passed
+ (16.973s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUBLAS : Passed
+ (5.353s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Dct8x8 : Passed
+ (1.948s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Histogram64 : Passed
+ (2.152s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Scan : Passed
+ (60.756s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/VolumeRender : Passed
+ (2.115s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/DwtHaar1D : Passed
+ (2.010s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Template : Passed
+ (4.217s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/DeviceQuery : Passed
+ (7.182s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/OceanFFT : Passed
+ (2.466s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ScalarProd : Passed
+ (10.028s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/PostProcessGL : Passed
+ (1.935s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTemplates : Passed
+ (15.600s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/QuasirandomGenerator : Passed
+ (2.268s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/AlignedTypes : Passed
+ (24.017s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/FluidsGL : Passed
+ (6.046s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobelFilter : Passed
+ (61.360s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU : Passed
+ (1.914s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Bitonic : Passed
+ (17.890s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/BlackScholes : Passed
+ (39.230s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/MersenneTwister : Passed
+ (9.900s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Nbody : Passed
+ (10.561s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SobolQRNG : Passed
+ (5.652s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ImageDenoising : Passed
+ (7.298s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleCUFFT : Passed
+ (3.141s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/ThreadFenceReduction : Passed
+ (4.406s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics : Passed
+ (27.506s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Mandelbrot : Passed
+ (2.477s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleTexture3D : Passed
+ (23.045s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Reduction : Passed
+ (8.150s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/SimpleGL : Passed
+ (59.226s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/MonteCarlo : Passed
 
 Failing tests:
+ (2.423s) : /home/andrew/repositories/gpuocelot/tests/cuda2.2/Eigenvalues : Did not complete.
 
 Non-Existent tests:
 

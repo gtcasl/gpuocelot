@@ -281,7 +281,7 @@ namespace ir
 		for( BlockPointerVector::iterator it = branchBlocks.begin();
 			it != branchBlocks.end(); ++it ) 
 		{
-			PTXInstruction bra = instructions[ (*it)->instructions.back() ];
+			PTXInstruction & bra = instructions[ (*it)->instructions.back() ];
 			BlockToLabelMap::iterator labeledBlockIt = 
 				blocksByLabel.find( bra.d.identifier );
 		
@@ -291,6 +291,7 @@ namespace ir
 				edge->head = *it;
 				edge->tail = labeledBlockIt->second;
 				edge->type = Edge::Branch;
+				bra.d.identifier = edge->tail->label;
 				cfg.insert_edge(edge);
 			}
 			else 
@@ -434,21 +435,38 @@ namespace ir
 			for( RegisterVector::const_iterator reg = regs.begin(); 
 				reg != regs.end(); ++reg )
 			{
-				stream << "\t.reg ." 
-					<< PTXOperand::toString( reg->type ) << " " 
-					<< "%r" << reg->id << ";\n";
+				if (reg->type == PTXOperand::pred) {
+					stream << "\t.reg .pred %p" << reg->id << ";\n";
+				}
+				else {
+					stream << "\t.reg ." 
+						<< PTXOperand::toString( reg->type ) << " " 
+						<< "%r" << reg->id << ";\n";
+				}
 			}
 		}
 		
 		if( _cfg != 0 )
 		{
-			ControlFlowGraph::BlockPointerVector 
-				blocks = _cfg->executable_sequence();
+			ControlFlowGraph::BlockPointerVector blocks = _cfg->executable_sequence();
 		
+			int blockIndex = 1;
 			for( ControlFlowGraph::BlockPointerVector::iterator 
-				block = blocks.begin(); block != blocks.end(); ++block )
+				block = blocks.begin(); block != blocks.end(); ++block, ++blockIndex )
 			{
-				stream << "\t" << (*block)->label << ":\n";
+				std::string label = (*block)->label;
+				if ((*block)->instructions.size() || (label != "entry" && label != "exit" && label != "")) {
+					if (label == "") {
+						std::stringstream ss;
+						ss << "$__Block_" << blockIndex;
+						label = ss.str();
+					}
+					else if (label[0] != '$') {
+						label = "$" + label;
+					}
+					stream << "\t" << label << ":\n";
+				}
+				
 				for( BasicBlock::InstructionList::iterator 
 					instruction = (*block)->instructions.begin(); 
 					instruction != (*block)->instructions.end(); ++instruction )

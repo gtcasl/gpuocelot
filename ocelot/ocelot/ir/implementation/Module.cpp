@@ -10,6 +10,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Version.h>
 #include <ocelot/parser/interface/PTXParser.h>
+#include <hydrazine/implementation/Exception.h>
 
 #include <fstream>
 #include <cassert>
@@ -29,7 +30,13 @@ ir::Module::Module(std::istream& stream) {
 }
 
 ir::Module::Module() {
-
+	PTXStatement version;
+	PTXStatement target;
+	version.directive = PTXStatement::Version;
+	version.major = 1; version.minor = 3;
+	target.targets.push_back("sm_13");
+	statements.push_back(version);
+	statements.push_back(target);
 }
 
 ir::Module::~Module() {
@@ -122,6 +129,7 @@ bool ir::Module::load(std::istream& stream, std::string path) {
 
 */
 void ir::Module::write( std::ostream& stream ) const {
+
 	if( statements.empty() ) {
 		return;
 	}
@@ -163,6 +171,7 @@ void ir::Module::write( std::ostream& stream ) const {
 		stream << "\n";
 	}
 	else {
+		/*
 		for( StatementVector::const_iterator statement = statements.begin(); 
 			statement != statements.end(); ++statement ) {
 			report( "Line " << ( statement - statements.begin() ) 
@@ -170,6 +179,49 @@ void ir::Module::write( std::ostream& stream ) const {
 			stream << statement->toString() << "\n";
 		}
 		stream << "\n";
+		
+		*/
+		
+		// header
+		for (int i = 0; i < 2; i++) {
+			stream << statements[i].toString() << "\n";
+		}
+		
+		// textures
+		
+		/*
+		stream << "\n// Textures\n";
+		for (TextureMap::const_iterator tex_it = this->textures.begin(); tex_it != this->textures.end(); ++tex_it ) {
+			stream << ".tex " << Texture::toString(tex_it->second.type) << " " << tex_it->first << ";\n";
+		}
+		*/
+		
+		// globals
+		stream << "\n// Globals\n";
+		for (GlobalMap::const_iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
+		
+			const Global &global = glb_it->second;
+			stream << global.statement.toString() << "\n";
+		}
+		stream << "\n";
+		
+		// kernels
+		KernelMap::const_iterator ptxKernelsIt = kernels.find(ir::Instruction::PTX);
+		if (ptxKernelsIt != kernels.end()) {
+			const KernelVector &kernelVector = ptxKernelsIt->second;
+			KernelVector::const_iterator ptxKernels = kernelVector.begin();
+			for (; ptxKernels != kernelVector.end(); ++ptxKernels) {
+			
+				ir::Kernel *kernel = *ptxKernels;
+				
+				// cast away constness so we can perform data flow
+				PTXKernel *ptxKernel = static_cast<PTXKernel *>(kernel);
+				
+				ptxKernel->dfg();
+				ptxKernel->write(stream);
+				stream << "\n";	
+			}
+		}
 	}
 }
 
@@ -198,7 +250,11 @@ void ir::Module::extractPTXKernels() {
 			inKernel = false;
 			endIterator = ++StatementVector::const_iterator(it);
 			if (instructionCount) {
-				Kernel *kernel = new PTXKernel(startIterator, endIterator);
+				PTXKernel *kernel = new PTXKernel(startIterator, endIterator);
+				
+				// you may not always want to perform data flow
+				//kernel->dfg();
+				
 				kernel->module = this;
 				kernels[PTXInstruction::PTX].push_back(kernel);
 			}

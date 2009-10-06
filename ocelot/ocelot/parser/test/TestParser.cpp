@@ -81,40 +81,48 @@ namespace test
 	{
 		report( " Parsing file " << ptxFile );
 		
-		std::stringstream stream;
+		std::stringstream stream, stream2;
 		std::ifstream file( ptxFile.c_str() );
 		
-		parser::PTXParser parser;
+		ir::Module base, first, second;
+		base.load(file);
 		
-		parser.fileName = ptxFile;
-		ir::Module first = parser.parse( file );
-		
-		report( " Dumping to stream" );
-		
-		first.write( stream );
-
+		base.write( stream );
 		std::string outputFile = ptxFile + ".parsed";
 		
 		if( output )
 		{
 			std::ofstream outFile( outputFile.c_str() );
+			base.write( outFile );
+			outFile.close();
+		}
+		
+		report("  - parsing first");
+		first.load(stream);
+		first.write(stream2);
+		
+		if( output )
+		{
+			std::string outputFile = ptxFile + ".parsed2";
+			std::ofstream outFile( outputFile.c_str() );
 			first.write( outFile );
 			outFile.close();
 		}
 		
-		report( " Running second parse pass" );
-		parser.fileName = outputFile;
-		ir::Module second = parser.parse( stream );
-		
-		if( first.statements.size() != second.statements.size() )
-		{
-		
-			status << "First pass parsed " << first.statements.size()
-				<< " statements while second parsed " 
-				<< second.statements.size() << "\n";
-			return false;
-		
-		}
+		report("  - parsing second");
+		second.load(stream2);
+	
+// This is no longer an error condition - unnecessary labels may have been removed
+//	
+//		if( first.statements.size() != second.statements.size() )
+//		{
+//		
+//			status << "First pass parsed " << first.statements.size()
+//				<< " statements while second parsed " 
+//				<< second.statements.size() << "\n";
+//			return false;
+//		
+//		}
 		
 		for( ir::Module::StatementVector::iterator 
 			fi = first.statements.begin(), 

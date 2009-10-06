@@ -1,5 +1,5 @@
 /*!
-	\file GPUKernel.h
+	\file GPUExecutableKernel.h
 
 	\author Andrew Kerr <arkerr@gatech.edu>
 
@@ -21,16 +21,11 @@
 
 namespace executive {
 	
-	class GPUKernel: public ir::ExecutableKernel {
+	class GPUExecutableKernel: public ir::ExecutableKernel {
 	public:
-		GPUKernel( ir::Kernel& kernel, const executive::Executive* c = 0 );
-		GPUKernel();
-		virtual ~GPUKernel();
-	
-		/*!
-			Constructs a GPUKernel from a PTXKernel
-		*/
-//		static GPUKernel *fromKernel(ir::PTXKernel *source);
+		GPUExecutableKernel( ir::Kernel& kernel, const executive::Executive* c = 0 );
+		GPUExecutableKernel();
+		virtual ~GPUExecutableKernel();
 	
 		/*!
 			Launch a kernel on a 2D grid
@@ -61,7 +56,6 @@ namespace executive {
 		ir::PTXKernel *ptxKernel;
 
 #if USE_CUDA_DRIVER_API
-	//	CUmodule cuModule;
 		CUfunction cuFunc;
 #endif
 

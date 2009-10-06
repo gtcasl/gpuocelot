@@ -14,6 +14,22 @@
 
 namespace ir
 {
+	std::string Texture::toString(Type type) {
+		std::string typeStr;
+		switch (type) {
+			case Signed:
+				typeStr = ".s32";
+				break;
+			case Float:
+				typeStr = ".f32";
+				break;
+			case ir::Texture::Unsigned:
+			default:
+				typeStr = ".u32";
+				break;
+		}
+		return typeStr;
+	}
 
 	Texture::Texture() : normalize(false), type( Invalid ), 
 		size( Dim3(0, 0, 0) ), data( 0 )

@@ -563,12 +563,10 @@ namespace cuda
 		}
 		
 		report("Ocelot Runtime Initialized.");
-	
 	}
 
 	CudaRuntime::~CudaRuntime()
 	{
-	
 		pthread_mutex_destroy( &_mutex );
 
 		for( MemoryMap::iterator fi = _memory.begin(); 
@@ -604,7 +602,6 @@ namespace cuda
 		}
 		
 		report("Ocelot Runtime Destroyed.");
-	
 	}
 	
 	void CudaRuntime::lock()
@@ -627,7 +624,8 @@ namespace cuda
 		if( thread == _threads.end() )
 		{
 			report( "Setting default device to " 
-				<< context.devices[ _defaultDevice ].guid );
+				<< context.devices[ _defaultDevice ].guid << " " 
+				<< context.devices[ _defaultDevice ].name );
 			ThreadContext threadContext;
 			threadContext.guid = context.devices[ _defaultDevice ].guid;
 			threadContext.ctaDimensions.x = 1;
@@ -2004,6 +2002,8 @@ namespace cuda
 		std::string isa;
 		
 		parse( "PreferredISA", isa, "GPU", c );
+		
+		report( "PreferredISA is " << isa );
 		
 		if( isa == "LLVM" )
 		{

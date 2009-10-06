@@ -2061,7 +2061,7 @@ namespace translator
 			icmp.a = _translate( i.a );
 			icmp.b = _translate( i.b );
 			icmp.comparison = _translate( i.comparisonOperator, true, 
-				ir::PTXOperand::isSigned( i.type ) );
+				ir::PTXOperand::isSigned( i.a.type ) );
 			
 			_add( icmp );		
 		}

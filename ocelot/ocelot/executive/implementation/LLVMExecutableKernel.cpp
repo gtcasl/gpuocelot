@@ -26,7 +26,7 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
-#define REPORT_ALL_LLVM_SOURCE 0
+#define REPORT_ALL_LLVM_SOURCE 1
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define PRINT_OPTIMIZED_CFG 0
 
@@ -752,7 +752,7 @@ namespace executive
 								<< instruction->toString() << "\" mapping \"" 
 								<< parameter->first << "\" to " 
 								<< parameter->second );
-							operands[ i ]->offset = parameter->second;
+							operands[ i ]->offset += parameter->second;
 						}
 					}
 				}
@@ -891,7 +891,7 @@ namespace executive
 						{
 							instruction->addressSpace 
 								= ir::PTXInstruction::Shared;
-							operands[ i ]->offset = mapping->second;
+							operands[ i ]->offset += mapping->second;
 							report("   For instruction " 
 								<< instruction->toString() 
 								<< ", mapping shared label " << mapping->first 
@@ -910,7 +910,7 @@ namespace executive
 		{
 			report( "    Mapping external shared label " 
 				<< (*operand)->identifier << " to " << _context.sharedSize );
-			(*operand)->offset = _context.sharedSize;
+			(*operand)->offset += _context.sharedSize;
 		}
 	
 		report( "   Total shared memory size is " << _context.sharedSize 
@@ -967,7 +967,7 @@ namespace executive
 						{
 							instruction->addressSpace 
 								= ir::PTXInstruction::Local;
-							operands[ i ]->offset = mapping->second;
+							operands[ i ]->offset += mapping->second;
 							report("   For instruction " 
 								<< instruction->toString() 
 								<< ", mapping local label " << mapping->first 

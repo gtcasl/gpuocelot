@@ -21,7 +21,7 @@
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>
-			TraceGeneratingCudaRuntime
+			CudaRuntimeBase
 		</CudaRuntimeImplementation>
 		<TraceGeneratingCudaRuntime>
 			<CudaRuntimeApiTraceFile>
@@ -33,7 +33,7 @@
 <cuda>
 	<CudaRuntime>
 		<DefaultDeviceId>
-			1
+			0
 		</DefaultDeviceId>
 		<PreferredISA>
 			LLVM

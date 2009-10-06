@@ -11,6 +11,7 @@
 
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/GPUKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <cstring>
 
@@ -170,6 +171,18 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 			EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
 			m.kernels[Instruction::Emulated].push_back(emKern);
 		}
+	}
+	else if (getSelectedISA() == Instruction::GPU) {
+		report(" Translating to GPUKernel.");
+		//
+		// translate each PTX kernel to GPUKernel
+		//
+		for (Module::KernelVector::iterator k_it = it->second.begin();
+			k_it != it->second.end(); ++k_it) {
+			report("  Creating GPU kernel for : " << (*k_it)->name);
+			executive::GPUKernel *gpuKern = new executive::GPUKernel(**k_it, this);
+			m.kernels[Instruction::GPU].push_back(gpuKern);
+		}		
 	}
 	else if (getSelectedISA() == Instruction::LLVM) {
 		report(" Translating all modules to LLVMKernel.");
@@ -435,12 +448,23 @@ void *executive::Executive::malloc(size_t bytes) {
 				return record.ptr;
 			}
 			break;
-/*
+#if USE_CUDA_DRIVER_API
 		case ir::Instruction::GPU:
 			{
-
+				MemoryAllocation record;
+				record.isa = ir::Instruction::GPU;
+				record.device = getSelected();
+				record.external = false;
+				record.size = bytes;
+				record.ptr = 0;
+				if (cuMemAlloc((CUdeviceptr *)&record.ptr, bytes) == CUDA_SUCCESS) {
+					record.offset = 0;
+					memoryAllocations[getSelected()].insert(std::make_pair((char *)record.ptr, record));
+				}
 			}
 			break;
+#endif
+/*
 		case ir::Instruction::x86:
 			{
 
@@ -774,6 +798,25 @@ void executive::Executive::rebind(const std::string& modulePath,
 	}
 }
 
+typedef struct {
+	union {
+		void *void_ptr;
+		CUdeviceptr device_ptr;
+	};
+} Union_device_ptr;
+
+static CUdeviceptr painful_cast(void *ptr) {
+	Union_device_ptr u_ptr;
+	u_ptr.void_ptr = ptr;
+	return u_ptr.device_ptr;
+}
+
+static CUdeviceptr painful_cast(const void *ptr) {
+	Union_device_ptr u_ptr;
+	u_ptr.void_ptr = const_cast<void *>(ptr);
+	return u_ptr.device_ptr;
+}
+
 /*!
 	Free a memory block allocated to this device.
 
@@ -804,12 +847,27 @@ void executive::Executive::free(void *ptr) {
 			}
 			break;
 
-/*
+#if USE_CUDA_DRIVER_API
 		case ir::Instruction::GPU:
 			{
-				// allocate on the GPU
+				DeviceAllocationMap::iterator l_it = 
+					memoryAllocations.find(getSelected());
+				assert (l_it != memoryAllocations.end());
+				AllocationMap::iterator it = 
+					l_it->second.lower_bound((char*)ptr);
+				assert(it != l_it->second.end());
+
+				if (!it->second.external) {
+					cuMemFree(painful_cast(it->second.ptr));
+				}
+				
+				l_it->second.erase(it);
+				return;
 			}
 			break;
+#endif
+
+/*
 		case ir::Instruction::x86:
 			{
 
@@ -942,12 +1000,55 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 			}
 			break;
 
-/*
+#if USE_CUDA_DRIVER_API
 		case ir::Instruction::GPU:
 			{
-				// copy on the GPU
+				if (type == DeviceToDevice) {
+					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid destination " << dest << " (" 
+							<< bytes << " bytes) in device to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, dest, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+					if (!checkMemoryAccess(getSelected(), src, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid source " << src << " (" 
+							<< bytes << " bytes) in device to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, src, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+					cuMemcpyDtoD(painful_cast(dest), painful_cast(src), bytes);
+				}
+				else if (type == HostToDevice) {
+					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid destination " << dest << " (" 
+							<< bytes << " bytes) in host to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, dest, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+					cuMemcpyHtoD(painful_cast(dest), (src), bytes);
+				}
+				else if (type == DeviceToHost) {
+					if (!checkMemoryAccess(getSelected(), src, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid source " << src << " ( " 
+							<< bytes << "bytes) in device to host memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, src, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+					cuMemcpyHtoD(painful_cast(dest), (src), bytes);
+				}
 			}
 			break;
+#endif
+			
+			/*
 		case ir::Instruction::x86:
 			{
 

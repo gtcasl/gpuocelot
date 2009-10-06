@@ -10,7 +10,8 @@
 ## Global Parameters
 AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
-INCLUDE = -I ocelot/cuda/include
+INCLUDE = -I ocelot/cuda/include -I $(CUDA_INSTALL_PATH)/include
+AM_LDFLAGS = -lcuda
 ################################################################################
 
 ################################################################################
@@ -122,6 +123,7 @@ libOcelotExecutive_la_SOURCES = \
 	ocelot/executive/implementation/Executive.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
+	ocelot/executive/implementation/GPUKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \

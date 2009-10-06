@@ -1163,15 +1163,17 @@ namespace parser
 		return stream.str();
 	}
 
-	void PTXParser::checkLables()
+	void PTXParser::checkLabels()
 	{
-	
 		typedef std::unordered_map< std::string, ir::PTXStatement > 
 			StatementMap;
 		
 		report( "Checking labels." );
 		
 		StatementMap labels;
+		
+		ir::Module::StatementVector::iterator 
+			begin = state.module.statements.begin();
 		
 		for( ir::Module::StatementVector::iterator 
 			statement = state.module.statements.begin(); 
@@ -1186,7 +1188,6 @@ namespace parser
 				
 				if( label != labels.end() )
 				{
-				
 					std::stringstream error;
 					error << state.fileName << " ("  << statement->line << "," 
 						<< statement->column << "): Duplicate label "
@@ -1198,106 +1199,53 @@ namespace parser
 					exception.message = error.str();
 					exception.error = State::DuplicateLabel;
 					throw exception;
-				
 				}
 				
 				labels.insert( std::make_pair( statement->name, *statement ) );
 			}
-		}
-		
-		for( ir::Module::StatementVector::iterator 
-			statement = state.module.statements.begin(); 
-			statement != state.module.statements.end(); ++statement )
-		{
-			if( statement->directive == ir::PTXStatement::Instr )
+			else if( statement->directive == ir::PTXStatement::EndEntry )
 			{
-				if( statement->instruction.a.addressMode 
-					== ir::PTXOperand::Label )
+				for( ir::Module::StatementVector::iterator 
+					s = begin; s != statement; ++s )
 				{
-					StatementMap::iterator label = 
-						labels.find( statement->instruction.a.identifier );
-				
-					if( label == labels.end() )
+					if( s->directive == ir::PTXStatement::Instr )
 					{
-						std::stringstream error;
-						error << state.fileName << " ("  << statement->line 
-							<< "," << statement->column << "): Label "
-							<< statement->instruction.a.identifier 
-							<< " not delcared in this scope";
+						ir::PTXOperand* operands[] = { &s->instruction.a, 
+							&s->instruction.b, &s->instruction.c, 
+							&s->instruction.d };
+				
+						for( unsigned int i = 0; i < 4; ++i )
+						{
+							ir::PTXOperand& operand = *operands[ i ];
+				
+							if( operand.addressMode == ir::PTXOperand::Label )
+							{
+								StatementMap::iterator label = 
+									labels.find( operand.identifier );
+				
+								if( label == labels.end() )
+								{
+									std::stringstream error;
+									error << state.fileName << " ("  
+										<< s->line << "," << s->column 
+										<< "): Label "
+										<< operand.identifier 
+										<< " not delcared in this scope";
 						
-						Exception exception;
-						exception.message = error.str();
-						exception.error = State::NoLabel;
-						throw exception;
+									Exception exception;
+									exception.message = error.str();
+									exception.error = State::NoLabel;
+									throw exception;
+								}
+							}
+						}
 					}
 				}
 				
-				if( statement->instruction.b.addressMode 
-					== ir::PTXOperand::Label )
-				{
-					StatementMap::iterator label = 
-						labels.find( statement->instruction.b.identifier );
-				
-					if( label == labels.end() )
-					{
-				
-						std::stringstream error;
-						error << state.fileName << " ("  << statement->line 
-							<< "," << statement->column << "): Label "
-							<< statement->instruction.b.identifier 
-							<< " not delcared in this scope";
-						
-						Exception exception;
-						exception.message = error.str();
-						exception.error = State::NoLabel;
-						throw exception;
-					}
-				}
-				
-				if( statement->instruction.c.addressMode 
-					== ir::PTXOperand::Label )
-				{
-					StatementMap::iterator label = 
-						labels.find( statement->instruction.c.identifier );
-				
-					if( label == labels.end() )
-					{
-				
-						std::stringstream error;
-						error << state.fileName << " ("  << statement->line 
-							<< "," << statement->column << "): Label "
-							<< statement->instruction.c.identifier 
-							<< " not delcared in this scope";
-						
-						Exception exception;
-						exception.message = error.str();
-						exception.error = State::NoLabel;
-						throw exception;
-					}
-				}
-				
-				if( statement->instruction.d.addressMode 
-					== ir::PTXOperand::Label )
-				{
-					StatementMap::iterator label = 
-						labels.find( statement->instruction.d.identifier );
-				
-					if( label == labels.end() )
-					{
-						std::stringstream error;
-						error << state.fileName << " ("  << statement->line 
-							<< "," << statement->column << "): Label "
-							<< statement->instruction.d.identifier 
-							<< " not delcared in this scope";
-						
-						Exception exception;
-						exception.message = error.str();
-						exception.error = State::NoLabel;
-						throw exception;
-					}
-				}
+				labels.clear();
+				begin = statement;
 			}
-		}
+		}	
 	}
 	
 	void PTXParser::reset( ir::PTXInstruction::Version version )
@@ -1777,7 +1725,7 @@ namespace parser
 		}
 		assert( temp.str().empty() );
 		
-		checkLables();
+		checkLabels();
 
 		return state.module;
 	}

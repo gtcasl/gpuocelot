@@ -206,7 +206,7 @@ namespace parser
 			State state;
 		
 		private:
-			void checkLables();
+			void checkLabels();
 			void reset( ir::PTXInstruction::Version version );
 		
 		public:

@@ -15,9 +15,9 @@
 namespace ir
 {
 	Local::Local( const PTXStatement& statement ): type( statement.type ), 
-		name( statement.name ), alignment( 1 ), vector( statement.array.vec ), 
-		elements( statement.elements() ), attribute( statement.attribute ), 
-		offset( 0 )
+		name( statement.name ), alignment( statement.alignment ), 
+		vector( statement.array.vec ), elements( statement.elements() ), 
+		attribute( statement.attribute ), offset( 0 )
 	{
 		switch( statement.directive )
 		{

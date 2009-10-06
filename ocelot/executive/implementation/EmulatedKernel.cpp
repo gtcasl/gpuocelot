@@ -374,8 +374,10 @@ void executive::EmulatedKernel::_computeOffset(
 	const PTXStatement& statement, unsigned int& offset, 
 	unsigned int& totalOffset) {
 	
-	unsigned int padding = ((statement.alignment - 
-		(totalOffset % statement.alignment)) % statement.alignment);
+	unsigned int padding = statement.accessAlignment() - 
+		(totalOffset % statement.accessAlignment());
+	padding = ( padding == (unsigned int) statement.accessAlignment() ) 
+		? 0 : padding;
 	offset = totalOffset + padding;
 
 	totalOffset = offset;
@@ -420,7 +422,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 					assert(external.count(it->second.statement.name) == 0);
 					external.insert(it->second.statement.name);
 					externalAlignment = std::max( externalAlignment, 
-						(unsigned int) it->second.statement.alignment );
+						(unsigned int) it->second.statement.accessAlignment() );
 					externalAlignment = std::max( externalAlignment, 
 						ir::PTXOperand::bytes( it->second.statement.type ) );
 				} 
@@ -443,16 +445,19 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 				assert(external.count(it->second.name) == 0);
 					external.insert(it->second.name);
 				externalAlignment = std::max( externalAlignment, 
-					(unsigned int) it->second.alignment );
+					(unsigned int) it->second.getAlignment() );
 				externalAlignment = std::max( externalAlignment, 
 					ir::PTXOperand::bytes( it->second.type ) );
 			}
 			else {
 				unsigned int offset;
 
-				report("Found local shared variable " << it->second.name);
 				_computeOffset(it->second.statement(), offset, sharedOffset);
 				label_map[it->second.name] = offset;
+				report("Found local shared variable " << it->second.name 
+					<< " at offset " << offset << " with alignment " 
+					<< it->second.getAlignment() << " of size " 
+					<< (sharedOffset - offset ));
 			}
 		}
 	}
@@ -491,7 +496,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 						_computeOffset(it->second.statement, 
 							offset, sharedOffset);						
 						label_map[it->second.statement.name] = offset;
-					}				
+					}
 					
 					Map::iterator l_it 
 						= label_map.find((instr.*operands[n]).identifier);

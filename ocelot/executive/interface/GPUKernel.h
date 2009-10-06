@@ -8,10 +8,13 @@
 	\brief implements the GPU kernel callable by the executive
 */
 
-#ifdef EXECUTIVE_GPUKERNEL_H_INCLUDED
+#ifndef EXECUTIVE_GPUKERNEL_H_INCLUDED
 #define EXECUTIVE_GPUKERNEL_H_INCLUDED
 
-#include <cuda.h>
+
+#if USE_CUDA_DRIVER_API
+#include <ocelot/cuda/interface/cuda.h>
+#endif
 
 #include <ocelot/ir/interface/ExecutableKernel.h>
 
@@ -19,13 +22,14 @@ namespace executive {
 	
 	class GPUKernel: public ir::ExecutableKernel {
 	public:
+		GPUKernel( ir::Kernel& kernel, const executive::Executive* c = 0 );
 		GPUKernel();
 		virtual ~GPUKernel();
 	
 		/*!
 			Constructs a GPUKernel from a PTXKernel
 		*/
-		static GPUKernel *fromKernel(ir::PTXKernel *source);
+//		static GPUKernel *fromKernel(ir::PTXKernel *source);
 	
 		/*!
 			Launch a kernel on a 2D grid
@@ -43,8 +47,12 @@ namespace executive {
 		*/
 		void configureParameters();
 	
-		CUmodule cuModule;
+	
+#if USE_CUDA_DRIVER_API
+	//	CUmodule cuModule;
 		CUfunction cuFunc;
+#endif
+
 	};
 	
 }

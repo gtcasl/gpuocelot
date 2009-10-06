@@ -9,10 +9,10 @@
 #ifndef EXECUTIVE_EXECUTIVE_H_INCLUDED
 #define EXECUTIVE_EXECUTIVE_H_INCLUDED
 
-#define USE_CUDA_DRIVER_API 0
+#define USE_CUDA_DRIVER_API 1
 
 #if USE_CUDA_DRIVER_API
-#include <cuda.h>
+#include <ocelot/cuda/interface/cuda.h>
 #endif
 
 #include <string>

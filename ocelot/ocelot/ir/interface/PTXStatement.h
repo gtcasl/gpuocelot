@@ -140,6 +140,7 @@ namespace ir {
 		unsigned int bytes() const;
 		unsigned int initializedBytes() const;
 		unsigned int elements() const;
+		unsigned int accessAlignment() const;
 		std::string toString() const;
 	};
 

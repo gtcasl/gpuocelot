@@ -3021,6 +3021,17 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 		}
 
 		source += instr.a.offset;
+
+		#if (CHECK_MEMORY_ALIGNMENT==1)
+		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
+			std::stringstream stream;
+			stream << "Memory access at " << (void*)source 
+				<< " is not aligned to the access size (" 
+					<< ( elementSize * vectorSize ) << " bytes)\n";
+			stream << " At: " << kernel->location(context.PC);
+			throw RuntimeException(stream.str(), context.PC, instr);
+		}
+		#endif
 			
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
@@ -3109,17 +3120,6 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 				throw RuntimeException("unsupported address space", 
 					context.PC, instr);
 		}
-
-		#if (CHECK_MEMORY_ALIGNMENT==1)
-		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
-			std::stringstream stream;
-			stream << "Memory access at " << (void*)source 
-				<< " is not aligned to the access size (" 
-					<< ( elementSize * vectorSize ) << " bytes)\n";
-			stream << " At: " << kernel->location(context.PC);
-			throw RuntimeException(stream.str(), context.PC, instr);
-		}
-		#endif
 		
 		if( traceEvents ) {
 			currentEvent.memory_addresses.push_back(
@@ -6131,6 +6131,17 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 
 		source += instr.d.offset;		
 
+		#if (CHECK_MEMORY_ALIGNMENT==1)
+		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
+			std::stringstream stream;
+			stream << "Memory access at " << (void*)source 
+				<< " is not aligned to the access size (" 
+					<< ( elementSize * vectorSize ) << " bytes)\n";
+			stream << " At: " << kernel->location(context.PC);
+			throw RuntimeException(stream.str(), context.PC, instr);
+		}
+		#endif
+
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
 				{
@@ -6201,17 +6212,6 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 				throw RuntimeException("unsupported address space", 
 					context.PC, instr);
 		}
-
-		#if (CHECK_MEMORY_ALIGNMENT==1)
-		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
-			std::stringstream stream;
-			stream << "Memory access at " << (void*)source 
-				<< " is not aligned to the access size (" 
-					<< ( elementSize * vectorSize ) << " bytes)\n";
-			stream << " At: " << kernel->location(context.PC);
-			throw RuntimeException(stream.str(), context.PC, instr);
-		}
-		#endif
 
 		if ( traceEvents ) {
 			currentEvent.memory_addresses.push_back(

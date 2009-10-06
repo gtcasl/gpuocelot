@@ -191,6 +191,11 @@ namespace ir {
 	}
 
 	
+	unsigned int PTXStatement::accessAlignment() const {
+		return std::max( (unsigned int) alignment, 
+			PTXOperand::bytes(type) * array.vec );
+	}
+	
 	std::string PTXStatement::toString() const {
 	
 		switch( directive ) {

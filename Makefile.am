@@ -123,7 +123,7 @@ libOcelotExecutive_la_SOURCES = \
 	ocelot/executive/implementation/Executive.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
-	ocelot/executive/implementation/GPUKernel.cpp \
+	ocelot/executive/implementation/GPUExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \

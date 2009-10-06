@@ -19,12 +19,14 @@
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/Global.h>
 
+//#define USE_CUDA_DRIVER_API 0
+
 namespace ir {
 
 	class Module {
 	public:
 		/*!	\brief Map from texture variable names to objects */
-		typedef std::unordered_map< std::string, Texture > TextureMap;
+		typedef std::map< std::string, Texture > TextureMap;
 	
 		/*! \brief Typedef for a vector of PTXStatements */
 		typedef std::deque< PTXStatement > StatementVector;
@@ -36,7 +38,7 @@ namespace ir {
 		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;
 
 		/*! \brief Map from unique identifier to global variable */
-		typedef std::unordered_map< std::string, Global > GlobalMap;
+		typedef std::map< std::string, Global > GlobalMap;
 		
 	public:
 
@@ -94,7 +96,7 @@ namespace ir {
 		Module::KernelVector::iterator end(Instruction::Architecture isa) {
 			return kernels[isa].end();
 		}
-	
+		
 	protected:
 
 		/*!
@@ -121,6 +123,11 @@ namespace ir {
 		
 		/*! Path from which Module was loaded */
 		std::string modulePath;
+
+
+#if USE_CUDA_DRIVER_API
+		CUmodule cuModule;
+#endif
 	};
 
 }

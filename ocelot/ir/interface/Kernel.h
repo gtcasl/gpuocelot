@@ -9,7 +9,7 @@
 #define IR_KERNEL_H_INCLUDED
 
 #include <deque>
-#include <unordered_map>
+#include <map>
 
 #include <ocelot/ir/interface/Local.h>
 #include <ocelot/ir/interface/Parameter.h>
@@ -35,7 +35,7 @@ namespace ir {
 
 		/*! \brief Unique identifier to statement representing 
 			a local variable */
-		typedef std::unordered_map< std::string, Local > LocalMap;
+		typedef std::map< std::string, Local > LocalMap;
 
 	protected:
 		/*!	Control flow graph of kernel - this is the primary store of 

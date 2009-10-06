@@ -58,7 +58,10 @@ namespace ir
 			
 		public:
 			Texture();
-			
+
+		public:
+		
+			static std::string toString(Type type);			
 	};
 }
 

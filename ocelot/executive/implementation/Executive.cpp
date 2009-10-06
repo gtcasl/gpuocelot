@@ -11,7 +11,7 @@
 
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/GPUKernel.h>
+#include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <cstring>
 
@@ -173,14 +173,14 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 		}
 	}
 	else if (getSelectedISA() == Instruction::GPU) {
-		report(" Translating to GPUKernel.");
+		report(" Translating to GPUExecutableKernel.");
 		//
-		// translate each PTX kernel to GPUKernel
+		// translate each PTX kernel to GPUExecutableKernel
 		//
 		for (Module::KernelVector::iterator k_it = it->second.begin();
 			k_it != it->second.end(); ++k_it) {
-			report("  Creating GPU kernel for : " << (*k_it)->name);
-			executive::GPUKernel *gpuKern = new executive::GPUKernel(**k_it, this);
+			report("  Creating GPUExecutableKernel for : " << (*k_it)->name);
+			executive::GPUExecutableKernel *gpuKern = new executive::GPUExecutableKernel(**k_it, this);
 			m.kernels[Instruction::GPU].push_back(gpuKern);
 		}		
 	}

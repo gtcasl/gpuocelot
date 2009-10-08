@@ -18,8 +18,9 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/Global.h>
+#include <ocelot/cuda/interface/cuda.h>
 
-//#define USE_CUDA_DRIVER_API 0
+namespace executive { class Executive; }
 
 namespace ir {
 
@@ -39,6 +40,13 @@ namespace ir {
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::map< std::string, Global > GlobalMap;
+		
+		enum CUModuleState {
+			Unloaded,
+			Loaded,
+			Dirty,
+			Invalid
+		};
 		
 	public:
 
@@ -124,10 +132,20 @@ namespace ir {
 		/*! Path from which Module was loaded */
 		std::string modulePath;
 
-
-#if USE_CUDA_DRIVER_API
+	protected:
+	
+		/*!
+			CUDA Module owning this kernel, others, and globals - this value is shared among
+			other GPUExecutableKernels of this module
+		*/
 		CUmodule cuModule;
-#endif
+		
+		/*!
+			state of cuModule 
+		*/
+		CUModuleState cuModuleState;
+		
+		friend class executive::Executive;
 	};
 
 }

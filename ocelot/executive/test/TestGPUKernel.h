@@ -14,7 +14,26 @@
 #ifndef TEST_GPUKERNEL_H_INCLUDED
 #define TEST_GPUKERNEL_H_INCLUDED
 
-#include <common/interface/Test.h>
+#include <cmath>
+
+#include <sstream>
+#include <fstream>
+
+#include <hydrazine/interface/Test.h>
+
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/debug.h>
+
+#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/GPUExecutableKernel.h>
+#include <ocelot/executive/interface/RuntimeException.h>
+#include <ocelot/executive/interface/CooperativeThreadArray.h>
+
+#include <ocelot/trace/interface/TraceGenerator.h>
+#include <hydrazine/implementation/Timer.h>
+
+#include <iostream>
 #include <deque>
 
 namespace test
@@ -30,22 +49,30 @@ namespace test
 				Configure and launch kernel grid. Compare results to expectations.
 	
 	*/
-	class TestGPUKernel : public Test
-	{
-				
+	class TestGPUKernel : public Test {
+	
 		private:
-			
-			bool doTest( std::string& status );
+			executive::GPUExecutableKernel *kernelDivergence;
+			executive::GPUExecutableKernel *kernelLooping;
+			executive::GPUExecutableKernel *kernelMVProduct;
+
+			executive::Executive context;
+
+			int ThreadCount;
+		
+		private:
+			bool loadKernels();	
+			virtual bool doTest();
 		
 		public:
 		
 			TestGPUKernel();
-	
 	};
-
 }
 
 int main( int arch, char** argv );
 
 #endif
+
+
 

@@ -9,17 +9,15 @@
 */
 
 #ifndef EXECUTIVE_GPUKERNEL_H_INCLUDED
-#define EXECUTIVE_GPUKERNEL_H_INCLUDED
-
-
-#if USE_CUDA_DRIVER_API
+#define EXECUTIVE_GPUKERNEL_H_INCLUDED
 #include <ocelot/cuda/interface/cuda.h>
-#endif
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
 
 namespace executive {
+
+	class Executive;
 	
 	class GPUExecutableKernel: public ir::ExecutableKernel {
 	public:
@@ -54,10 +52,13 @@ namespace executive {
 			PTX Kernel
 		*/
 		ir::PTXKernel *ptxKernel;
-
-#if USE_CUDA_DRIVER_API
-		CUfunction cuFunc;
-#endif
+		
+		/*!
+			CUDA function refering to this kernel
+		*/
+		CUfunction cuFunction;
+		
+		friend class executive::Executive;
 
 	};
 	

@@ -174,15 +174,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 	}
 	else if (getSelectedISA() == Instruction::GPU) {
 		report(" Translating to GPUExecutableKernel.");
-		//
-		// translate each PTX kernel to GPUExecutableKernel
-		//
-		for (Module::KernelVector::iterator k_it = it->second.begin();
-			k_it != it->second.end(); ++k_it) {
-			report("  Creating GPUExecutableKernel for : " << (*k_it)->name);
-			executive::GPUExecutableKernel *gpuKern = new executive::GPUExecutableKernel(**k_it, this);
-			m.kernels[Instruction::GPU].push_back(gpuKern);
-		}		
+		_translateToGPUExecutable(m);
 	}
 	else if (getSelectedISA() == Instruction::LLVM) {
 		report(" Translating all modules to LLVMKernel.");
@@ -196,6 +188,39 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 	}
 }
 
+void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
+	using namespace ir;
+	
+	Module::KernelMap::iterator 
+		it = m.kernels.find(Instruction::PTX);
+	if (it == m.kernels.end()) {
+		return;
+	}
+	if (m.cuModuleState != Module::Invalid) {
+		cuModuleUnload(m.cuModule);
+	}
+	std::stringstream ss;
+	
+	m.write(ss);
+	
+	if (cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str()) != CUDA_SUCCESS) {
+		throw hydrazine::Exception("cuModuleLoadData() failed for module " + m.modulePath);
+	}
+	m.cuModuleState = Module::Dirty;
+	
+	for (Module::KernelVector::iterator k_it = it->second.begin();
+		k_it != it->second.end(); ++k_it) {
+		report("  Creating GPUExecutableKernel for : " << (*k_it)->name);
+		executive::GPUExecutableKernel *gpuKern = new executive::GPUExecutableKernel(**k_it, this);
+		m.kernels[Instruction::GPU].push_back(gpuKern);
+		
+		if (cuModuleGetFunction(&gpuKern->cuFunction, m.cuModule, gpuKern->name.c_str()) != CUDA_SUCCESS) {
+			throw hydrazine::Exception("cuModuleGetFunction() failed for module " + m.modulePath 
+				+ ", kernel " + gpuKern->name);
+		}
+	}		
+	m.cuModuleState = Module::Loaded;
+}
 
 executive::Executive::Executive() : selectedDevice( -1 ) {
 	enumerateDevices();

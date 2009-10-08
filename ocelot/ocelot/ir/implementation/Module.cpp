@@ -21,15 +21,15 @@
 
 #define REPORT_BASE 0
 
-ir::Module::Module(std::string path) {
+ir::Module::Module(std::string path): cuModuleState(Invalid) {
 	load(path);
 }
 
-ir::Module::Module(std::istream& stream) {
+ir::Module::Module(std::istream& stream): cuModuleState(Invalid) {
 	load(stream);
 }
 
-ir::Module::Module() {
+ir::Module::Module(): cuModuleState(Invalid) {
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
@@ -44,7 +44,7 @@ ir::Module::~Module() {
 }
 
 
-ir::Module::Module(std::string name, const StatementVector & statements) {
+ir::Module::Module(std::string name, const StatementVector & statements): cuModuleState(Invalid) {
 	modulePath = name;
 	this->statements = statements;
 	extractPTXKernels();

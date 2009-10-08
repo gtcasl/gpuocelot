@@ -27,7 +27,7 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator TestLLVMKernels
+	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
 	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la \
 	libOcelot.la libOcelotTranslator.la
@@ -277,6 +277,16 @@ TestKernels_LDADD = libcudart.la libOcelotExecutive.la \
 	libOcelotTranslator.la libOcelotTrace.la libOcelotIr.la libOcelotParser.la \
 	libOcelotAnalysis.la libhydrazine.la $(LLVM_LDFLAGS)
 TestKernels_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestGPUKernel
+TestGPUKernel_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+TestGPUKernel_SOURCES = ocelot/executive/test/TestGPUKernel.cpp
+TestGPUKernel_LDADD = libcudart.la libOcelotExecutive.la \
+	libOcelotTranslator.la libOcelotTrace.la libOcelotIr.la libOcelotParser.la \
+	libOcelotAnalysis.la libhydrazine.la $(LLVM_LDFLAGS)
+TestGPUKernel_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

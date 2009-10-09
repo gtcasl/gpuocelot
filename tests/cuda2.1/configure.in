@@ -69,7 +69,7 @@ AC_CHECK_LIB([GLU], [gluGetString], [], \
 AC_CHECK_LIB([glut], [glutMainLoop], [], \
 	AC_MSG_ERROR("libglut required"))
 	
-AC_CHECK_LIB([hydrazine], [main],[AC_DEFINE(HAVE_HYDRAZINE, [], [""])], \
+AC_CHECK_LIB([hydrazine], [main], [AC_DEFINE(HAVE_HYDRAZINE, [], [""])], \
 	AC_MSG_ERROR("libhydrazine required"))
 AC_CHECK_LIB([OcelotParser], [main], \
 	[AC_DEFINE(HAVE_OCELOT_PARSER, [], [""])], \

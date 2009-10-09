@@ -39,6 +39,7 @@ AC_CHECK_LIB([GLEW], [glewInit], [], \
 	AC_MSG_ERROR("libglew required"))
 AC_CHECK_LIB([rt], [clock_gettime], [],\
 	AC_MSG_ERROR("librt required"))
+AC_CHECK_LIB([cuda], [cuInit], [AC_DEFINE(HAVE_CUDA_DRIVER_API, [], [""])], [])
 ################################################################################
 
 ################################################################################

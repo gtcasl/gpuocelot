@@ -275,6 +275,103 @@ namespace translator
 		return context;
 	}
 
+	void PTXToLLVMTranslator::_debug( const analysis::DataflowGraph::Block& b )
+	{
+		if( optimizationLevel != DebugOptimization ) return;
+				
+		ir::LLVMCall call;
+		
+		call.name = "@__ocelot_debug_block";
+		
+		call.parameters.resize( 2 );
+
+		call.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		call.parameters[0].type.members.resize(1);
+		call.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		call.parameters[0].type.members[0].label = "%LLVMContext";
+		call.parameters[0].name = "%__ctaContext";
+
+		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].constant = true;
+		call.parameters[1].i32 = b.id();
+		
+		_add( call );		
+	}
+
+	void PTXToLLVMTranslator::_debug( 
+		const analysis::DataflowGraph::Instruction& i )
+	{
+		if( optimizationLevel != DebugOptimization ) return;
+
+		ir::LLVMCall call;
+
+		call.name = "@__ocelot_debug_instruction";
+		
+		call.parameters.resize( 2 );
+
+		call.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		call.parameters[0].type.members.resize(1);
+		call.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		call.parameters[0].type.members[0].label = "%LLVMContext";
+		call.parameters[0].name = "%__ctaContext";
+
+		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].constant = true;
+		call.parameters[1].i32 = i.id;
+
+		_add( call );
+	}
+
+	void PTXToLLVMTranslator::_insertDebugSymbols()
+	{
+		if( optimizationLevel != DebugOptimization ) return;		
+
+		ir::LLVMStatement block( ir::LLVMStatement::FunctionDeclaration );
+
+		block.label = "__ocelot_debug_block";
+		block.linkage = ir::LLVMStatement::InvalidLinkage;
+		block.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		block.visibility = ir::LLVMStatement::Default;
+		
+		block.parameters.resize(2 );
+
+		block.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		block.parameters[0].type.members.resize(1);
+		block.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		block.parameters[0].type.members[0].label = "%LLVMContext";
+
+		block.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		block.parameters[1].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( block );
+
+		ir::LLVMStatement instruction( ir::LLVMStatement::FunctionDeclaration );
+
+		instruction.label = "__ocelot_debug_instruction";
+		instruction.linkage = ir::LLVMStatement::InvalidLinkage;
+		instruction.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		instruction.visibility = ir::LLVMStatement::Default;
+		
+		instruction.parameters.resize( 2 );
+		instruction.parameters[0].type.category 
+			= ir::LLVMInstruction::Type::Pointer;
+		instruction.parameters[0].type.members.resize(1);
+		instruction.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		instruction.parameters[0].type.members[0].label = "%LLVMContext";
+
+		instruction.parameters[1].type.category 
+			= ir::LLVMInstruction::Type::Element;
+		instruction.parameters[1].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( instruction );
+	}
+			
 	void PTXToLLVMTranslator::_yield( unsigned int continuation )
 	{
 		ir::LLVMRet ret;
@@ -471,6 +568,9 @@ namespace translator
 				
 				_add( p );
 			}
+
+			_debug( *block );
+
 			report( "  Translating Instructions" );
 			for( analysis::DataflowGraph::InstructionVector::const_iterator 
 				instruction = block->instructions().begin();
@@ -508,6 +608,7 @@ namespace translator
 		const analysis::DataflowGraph::Block& block )
 	{
 		assert( i.id < _ptx->instructions.size() );
+		_debug( i );
 		_translate( _ptx->instructions[ i.id ], block );
 	}
 
@@ -2426,7 +2527,7 @@ namespace translator
 		
 		if( i.vec == ir::PTXOperand::v1 )
 		{
-			if( i.type != i.a.type )
+			if( _translate( i.type ) != _translate( i.a.type ) )
 			{
 				ir::LLVMInstruction::Operand temp = _translate( i.a );
 				temp.name = _tempRegister();
@@ -2773,6 +2874,7 @@ namespace translator
 		{
 			case ir::PTXInstruction::_1d:
 			{
+				call.name = "@__ocelot_tex_1d";
 				call.parameters.resize( 4 );
 				call.parameters[0] = d;
 				call.parameters[3] = _translate( i.c );
@@ -3881,16 +3983,27 @@ namespace translator
 		
 		_add( load );
 		
-		ir::LLVMGetelementptr getIndex;
+		ir::LLVMInstruction::Operand index;
 		
-		getIndex.d.name = _tempRegister();
-		getIndex.d.type.category = ir::LLVMInstruction::Type::Pointer;
-		getIndex.d.type.type = ir::LLVMInstruction::I8;
+		if( offset != 0 )
+		{
+			ir::LLVMGetelementptr getIndex;
 		
-		getIndex.a = load.d;
-		getIndex.indices.push_back( offset );
+			getIndex.d.name = _tempRegister();
+			getIndex.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			getIndex.d.type.type = ir::LLVMInstruction::I8;
 		
-		_add( getIndex );
+			getIndex.a = load.d;
+			getIndex.indices.push_back( offset );
+		
+			_add( getIndex );
+			
+			index = getIndex.d;
+		}
+		else
+		{
+			index = load.d;
+		}
 		
 		ir::LLVMBitcast cast;
 		
@@ -3901,7 +4014,7 @@ namespace translator
 			cast.d.type.type = _translate( type );
 			if( cast.d.type.type == ir::LLVMInstruction::I8 )
 			{
-				return getIndex.d.name;
+				return index.name;
 			}
 		}
 		else
@@ -3914,7 +4027,7 @@ namespace translator
 		}
 
 		cast.d.name = _tempRegister();
-		cast.a = getIndex.d;
+		cast.a = index;
 		
 		_add( cast );
 		
@@ -4482,6 +4595,7 @@ namespace translator
 
 		_llvmKernel->_statements.push_front( ir::LLVMStatement( clock ) );
 
+		_insertDebugSymbols();
 		_addTextureCalls();
 
 		_llvmKernel->_statements.push_back( 

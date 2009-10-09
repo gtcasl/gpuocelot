@@ -194,7 +194,7 @@ void runTest(int argc, char** argv)
 		                        cudaMemcpyHostToDevice));
 
 	// CUFFT plan
-	cufftHandle plan;
+	cufftHandle plan = 0;
 	cufftSafeCall(cufftPlan1d(&plan, new_size, CUFFT_C2C, 1));
 
 	// Transform signal and kernel

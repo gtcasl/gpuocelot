@@ -26,9 +26,13 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
-#define REPORT_ALL_LLVM_SOURCE 1
+#define REPORT_ORIGINAL_LLVM_SOURCE 1
+#define REPORT_OPTIMIZED_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define PRINT_OPTIMIZED_CFG 0
+#define DEBUG_FIRST_THREAD_ONLY 0
+#define DEBUG_PTX_INSTRUCTION_TRACE 0
+#define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 
 #include <configure.h>
 
@@ -74,6 +78,55 @@ extern "C"
 		return state->timer.cycles();
 	}
 	
+	void __ocelot_debug_block( executive::LLVMContext* context, 
+		ir::BasicBlock::Id id )
+	{
+		#if(DEBUG_PTX_BASIC_BLOCK_TRACE == 1)
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		executive::LLVMExecutableKernel::OpaqueState::BlockIdMap::const_iterator
+			block = state->blocks.find( id );
+		assert( block != state->blocks.end() );
+		
+		#if(DEBUG_FIRST_THREAD_ONLY == 1)
+		if( context->tid.x == 0 && context->tid.y == 0 && context->tid.z == 0 )
+		{
+		#endif
+		
+		std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
+			<< ", " << context->tid.z << ") : Basic Block \"" << std::flush;
+		std::cout << block->second->label << "\"\n";
+
+		#if(DEBUG_FIRST_THREAD_ONLY == 1)
+		}
+		#endif
+		#endif
+	}
+
+	void __ocelot_debug_instruction( executive::LLVMContext* context, 
+		unsigned int instruction )
+	{
+		#if(DEBUG_PTX_INSTRUCTION_TRACE == 1)		
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+
+		#if(DEBUG_FIRST_THREAD_ONLY == 1)
+		if( context->tid.x == 0 && context->tid.y == 0 && context->tid.z == 0 )
+		{
+		#endif
+		
+		std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
+			<< ", " << context->tid.z << ") :  " << std::flush;
+		std::cout << (*state->instructions)[instruction].toString() << "\n";
+
+		#if(DEBUG_FIRST_THREAD_ONLY == 1)
+		}
+		#endif
+
+		#endif
+	}
+		
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
 		unsigned int index, unsigned int c0, unsigned int c1, unsigned int c2,
 		unsigned int c3 )
@@ -438,7 +491,7 @@ namespace executive
 			llvm::InitializeNativeTarget();
 		
 			jit = llvm::EngineBuilder( moduleProvider ).create();
-	
+		
 			assertM( jit != 0, "Creating the JIT failed.");
 			report( " The JIT is alive." );
 		}
@@ -511,9 +564,10 @@ namespace executive
 			#endif
 			
 			_optimizePtx();
+			_buildDebuggingInformation();
 			_allocateMemory();
 
-			translator::PTXToLLVMTranslator translator;
+			translator::PTXToLLVMTranslator translator( _optimizationLevel );
 
 			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
 			file.open("ptxcfgoptimized.dot");
@@ -546,11 +600,11 @@ namespace executive
 				throw hydrazine::Exception( message.str() );
 			}
 
-			#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
+			#if ( REPORT_ORIGINAL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
 			std::string m;
 			llvm::raw_string_ostream code( m );
 			code << *_module;
-			reportE( REPORT_ALL_LLVM_SOURCE, " The initial code is:\n" << m );
+			report( " The initial code is:\n" << m );
 			#endif
 						
 			report( " Checking module for errors." );
@@ -558,6 +612,8 @@ namespace executive
 			if( llvm::verifyModule( *_module, 
 				llvm::ReturnStatusAction, &verifyError ) )
 			{
+				report( "  Checking kernel failed, dumping code:\n" 
+					<< llvmKernel->numberedCode() );
 				delete llvmKernel;
 
 				throw hydrazine::Exception( "LLVM Verifier failed for kernel: " 
@@ -586,23 +642,26 @@ namespace executive
 		
 		_state.jit->addModuleProvider( _moduleProvider );
 		
-		llvm::FunctionPassManager manager( _moduleProvider );
-		
-		manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
-		manager.add( llvm::createInstructionCombiningPass() );
-		manager.add( llvm::createReassociatePass() );
-		manager.add( llvm::createGVNPass() );
-		manager.add( llvm::createCFGSimplificationPass() );
-
 		llvm::Function* function = 
 			_module->getFunction( "_Z_ocelotTranslated_" + name );
 
 		assertM( function != 0, 
 			"Could not find function _Z_ocelotTranslated_" + name );
-				
-		manager.run( *function );
 
-		#if ( REPORT_ALL_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
+		if( _optimizationLevel != translator::Translator::DebugOptimization )
+		{
+			llvm::FunctionPassManager manager( _moduleProvider );
+		
+			manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
+			manager.add( llvm::createInstructionCombiningPass() );
+			manager.add( llvm::createReassociatePass() );
+			manager.add( llvm::createGVNPass() );
+			manager.add( llvm::createCFGSimplificationPass() );
+				
+			manager.run( *function );
+		}
+		
+		#if ( REPORT_OPTIMIZED_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
 		std::string m;
 		llvm::raw_string_ostream code( m );
 		code << *_module;
@@ -1104,9 +1163,29 @@ namespace executive
 		_allocateTextureMemory();
 	}
 	
+	void LLVMExecutableKernel::_buildDebuggingInformation()
+	{
+		if( _optimizationLevel 
+			!= translator::Translator::DebugOptimization ) return;
+		
+		report( "Building debug information." );
+		
+		ir::BasicBlock::Id id = 0;
+		
+		for( analysis::DataflowGraph::iterator block = _ptx->dfg()->begin(); 
+			block != _ptx->dfg()->end(); ++block )
+		{
+			block->block()->id = id++;
+			_opaque.blocks.insert( std::make_pair( block->id(), 
+				block->block() ) );
+		}
+	}
+	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
-		const executive::Executive* c ) : ExecutableKernel( k, c ), 
-		_module( 0 ), _moduleProvider( 0 ), _externalSharedSize( 0 )
+		const executive::Executive* c, 
+		translator::Translator::OptimizationLevel l ) : 
+		ExecutableKernel( k, c ), _module( 0 ), _moduleProvider( 0 ), 
+		_externalSharedSize( 0 ), _optimizationLevel( l )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
@@ -1125,6 +1204,7 @@ namespace executive
 		_context.ntid.z = 0;
 		
 		_context.other = (char*) &_opaque;
+		_opaque.instructions = &_ptx->instructions;
 		
 		_state.initialize();
 	}
@@ -1200,7 +1280,8 @@ namespace executive
 			if( _context.local != 0 )
 			{
 				report( " Reallocating local memory of " << _context.localSize 
-					<< " bytes per thread" );
+					<< " bytes per thread ( " 
+					<< ( threads() * _context.localSize ) << " total )" );
 				delete[] _context.local;
 				_context.local = new char[ threads() * _context.localSize ];
 			}

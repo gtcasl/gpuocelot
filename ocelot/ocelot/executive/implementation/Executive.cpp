@@ -182,7 +182,8 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 			k_it != it->second.end(); ++k_it) {
 			report("  Creating LLVM kernel for : " << (*k_it)->name);
 			LLVMExecutableKernel* 
-				kernel = new LLVMExecutableKernel(**k_it, this);
+				kernel = new LLVMExecutableKernel(**k_it, this, 
+				optimizationLevel);
 			m.kernels[Instruction::LLVM].push_back(kernel);
 		}
 	}
@@ -190,7 +191,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 
 void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	using namespace ir;
-	
+	#if HAVE_CUDA_DRIVER_API
 	Module::KernelMap::iterator 
 		it = m.kernels.find(Instruction::PTX);
 	if (it == m.kernels.end()) {
@@ -203,26 +204,35 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	
 	m.write(ss);
 	
-	if (cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str()) != CUDA_SUCCESS) {
-		throw hydrazine::Exception("cuModuleLoadData() failed for module " + m.modulePath);
+	if (cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str()) 
+		!= CUDA_SUCCESS) {
+		throw hydrazine::Exception("cuModuleLoadData() failed for module " 
+			+ m.modulePath);
 	}
 	m.cuModuleState = Module::Dirty;
 	
 	for (Module::KernelVector::iterator k_it = it->second.begin();
 		k_it != it->second.end(); ++k_it) {
 		report("  Creating GPUExecutableKernel for : " << (*k_it)->name);
-		executive::GPUExecutableKernel *gpuKern = new executive::GPUExecutableKernel(**k_it, this);
+		executive::GPUExecutableKernel *gpuKern = 
+			new executive::GPUExecutableKernel(**k_it, this);
 		m.kernels[Instruction::GPU].push_back(gpuKern);
 		
-		if (cuModuleGetFunction(&gpuKern->cuFunction, m.cuModule, gpuKern->name.c_str()) != CUDA_SUCCESS) {
-			throw hydrazine::Exception("cuModuleGetFunction() failed for module " + m.modulePath 
+		if (cuModuleGetFunction(&gpuKern->cuFunction, m.cuModule, 
+			gpuKern->name.c_str()) != CUDA_SUCCESS) {
+			throw hydrazine::Exception(
+				"cuModuleGetFunction() failed for module " + m.modulePath 
 				+ ", kernel " + gpuKern->name);
 		}
-	}		
+	}
 	m.cuModuleState = Module::Loaded;
+	#else
+	throw hydrazine::Exception("CUDA Driver API Not Enabled");
+	#endif
 }
 
-executive::Executive::Executive() : selectedDevice( -1 ) {
+executive::Executive::Executive() : selectedDevice( -1 ), 
+	optimizationLevel( translator::Translator::NoOptimization ) {
 	enumerateDevices();
 }
 
@@ -1186,6 +1196,11 @@ executive::Executive::MemoryAllocation
 		}
 	}
 	return record;
+}
+
+void executive::Executive::setOptimizationLevel( 
+	translator::Translator::OptimizationLevel l) {
+	optimizationLevel = l;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

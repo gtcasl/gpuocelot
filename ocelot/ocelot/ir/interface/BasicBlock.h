@@ -26,6 +26,7 @@ public:
 	typedef std::list< BasicBlock* > BlockList;
 	typedef std::list< const BasicBlock* > ConstBlockList;
 	typedef std::list< unsigned int > InstructionList;
+	typedef unsigned int Id;
 	
 public:
 	BasicBlock();
@@ -73,6 +74,9 @@ public:
 
 	/*!	\brief Basic block label */
 	std::string label;
+	
+	/*! \brief Basic block unique identifier */
+	Id id;
 	
 private:
 	

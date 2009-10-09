@@ -18,6 +18,9 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
 
+#include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
@@ -92,6 +95,20 @@ namespace test
 		for (; k_it != module.end( ir::Instruction::PTX ); ++k_it) {
 
 			ir::Kernel* kernel = *k_it;
+
+			kernel->dfg();
+
+			analysis::ConvertPredicationToSelectPass pass1;
+		
+			pass1.initialize( module );
+			pass1.runOnKernel( *kernel );
+			pass1.finalize();
+		
+			analysis::RemoveBarrierPass pass2;
+		
+			pass2.initialize( module );
+			pass2.runOnKernel( *kernel );
+			pass2.finalize();
 
 			ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
 				translator.translate( kernel ) );

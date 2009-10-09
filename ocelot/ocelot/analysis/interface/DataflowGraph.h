@@ -172,8 +172,6 @@ namespace analysis
 					PhiInstructionVector _phis;
 					/*! \brief Ordered set of instructions in the block */
 					InstructionVector _instructions;
-					/*! \brief Block label */
-					std::string _label;
 					/*! \brief A pointer to the underlying 
 						basic block in the cfg */
 					ir::BasicBlock* _block;
@@ -216,6 +214,10 @@ namespace analysis
 					const PhiInstructionVector& phis() const;
 					/*! \brief Get the block label */
 					const std::string& label() const;
+					/*! \brief Get the id of the block */
+					ir::BasicBlock::Id id() const;
+					/*! \brief Get a pointer to the underlying block */
+					ir::BasicBlock* block();
 
 				public:
 					/*! \brief Determine the block that produced a register */
@@ -344,25 +346,18 @@ namespace analysis
 			if( *bbi == cfg.get_exit_block() ) continue;
 			if( *bbi == cfg.get_entry_block() ) continue;
 			Block newB( *this, **bbi, instructions );
-			std::stringstream label;
 			if( (*bbi)->label.empty() )
 			{
+				std::stringstream label;
 				label << "$__Block_" << count;
 				(*bbi)->label = label.str();
 			}
-			else
-			{
-				label << (*bbi)->label;
-			}
-			newB._label = label.str();
 			map.insert( std::make_pair( *bbi, 
 				_blocks.insert( _blocks.end(), newB ) ) );	
 		}
 		map.insert( std::make_pair( cfg.get_exit_block(), 
 			_blocks.insert( _blocks.end(), Block( Block::Exit ) ) ) );	
 		
-		_blocks.front()._label = "Entry";
-		_blocks.back()._label = "Exit";
 		_blocks.front()._block = cfg.get_entry_block();
 		_blocks.back()._block = cfg.get_exit_block();
 		_blocks.back()._fallthrough = _blocks.end();

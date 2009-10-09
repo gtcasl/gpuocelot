@@ -19,6 +19,8 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 
+#include <configure.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -191,7 +193,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 
 void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	using namespace ir;
-	#if HAVE_CUDA_DRIVER_API
+	#if HAVE_CUDA_DRIVER_API == 1
 	Module::KernelMap::iterator 
 		it = m.kernels.find(Instruction::PTX);
 	if (it == m.kernels.end()) {
@@ -483,7 +485,7 @@ void *executive::Executive::malloc(size_t bytes) {
 				return record.ptr;
 			}
 			break;
-#if USE_CUDA_DRIVER_API
+#if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
 				MemoryAllocation record;
@@ -492,9 +494,11 @@ void *executive::Executive::malloc(size_t bytes) {
 				record.external = false;
 				record.size = bytes;
 				record.ptr = 0;
-				if (cuMemAlloc((CUdeviceptr *)&record.ptr, bytes) == CUDA_SUCCESS) {
+				if (cuMemAlloc((CUdeviceptr *)&record.ptr, bytes) 
+					== CUDA_SUCCESS) {
 					record.offset = 0;
-					memoryAllocations[getSelected()].insert(std::make_pair((char *)record.ptr, record));
+					memoryAllocations[getSelected()].insert(
+						std::make_pair((char *)record.ptr, record));
 				}
 			}
 			break;

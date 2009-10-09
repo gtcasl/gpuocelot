@@ -39,7 +39,17 @@ AC_CHECK_LIB([GLEW], [glewInit], [], \
 	AC_MSG_ERROR("libglew required"))
 AC_CHECK_LIB([rt], [clock_gettime], [],\
 	AC_MSG_ERROR("librt required"))
-AC_CHECK_LIB([cuda], [cuInit], [AC_DEFINE(HAVE_CUDA_DRIVER_API, [], [""])], [])
+AC_CHECK_LIB([cuda], [cuInit], HAVE_CUDA_DRIVER_API=yes, \
+	HAVE_CUDA_DRIVER_API=no)
+
+if test $HAVE_CUDA_DRIVER_API = 1
+then
+	AC_DEFINE(HAVE_CUDA_DRIVER_API, [1], \
+		["Define to 1 if the cuda driver api is found"])
+	AC_SUBST(CUDA_DRIVER_API_LIBARY, "-lcuda")
+else
+	AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
+fi
 ################################################################################
 
 ################################################################################
@@ -67,7 +77,7 @@ then
 	LLVM_VERSION=$(llvm-config --version)
 	if test $LLVM_VERSION = 2.7svn
 	then
-		AC_DEFINE(HAVE_LLVM, [], ["Define to 1 if llvm is installed"])
+		AC_DEFINE(HAVE_LLVM, [1], ["Define to 1 if llvm is installed"])
 		AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))
 		AC_SUBST(LLVM_LDFLAGS, "$(llvm-config --ldflags --libs core jit native \
 			asmparser | tr '\n' ' ') -rdynamic")

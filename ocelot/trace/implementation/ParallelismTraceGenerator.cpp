@@ -123,8 +123,7 @@ namespace trace
 	void ParallelismTraceGenerator::finish()
 	{
 		if( _file != 0 )
-		{		
-			
+		{
 			_entry.updateDatabase( database );
 			delete _archive;
 
@@ -149,7 +148,6 @@ namespace trace
 			assert( _event.instructions == 0 );
 			assert( _event.activity == 0 );
 			assert( _event.ctaid == _header.dimensions );
-			
 		}	
 	}
 }

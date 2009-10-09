@@ -9,11 +9,6 @@
 #ifndef EXECUTIVE_EXECUTIVE_H_INCLUDED
 #define EXECUTIVE_EXECUTIVE_H_INCLUDED
 
-#define USE_CUDA_DRIVER_API 1
-
-#if USE_CUDA_DRIVER_API
-#include <ocelot/cuda/interface/cuda.h>
-#endif
 
 #include <string>
 #include <map>
@@ -24,6 +19,8 @@
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/cuda/include/cuda.h>
 
 /*!
 	\brief A namespace for classes that help execute programs
@@ -39,20 +36,16 @@ namespace executive {
 		/*! \brief basic type used for allocation */
 		class AllocationType{ char data[16]; };
 		
-		/*!
-			Vector of devices		
-		*/
+		/*!	Vector of devices */
 		typedef std::vector<Device> DeviceVector;
 
-		/*!
-			Memory copy types. Should be self explanatory
-		*/
+		/*! Memory copy types. Should be self explanatory */
 		enum MemoryCopy
 		{
 			HostToDevice,
 			DeviceToHost,
 			HostToHost,
-			DeviceToDevice		
+			DeviceToDevice
 		};
 
 		/*!
@@ -64,7 +57,6 @@ namespace executive {
 		*/
 		class MemoryAllocation {
 		public:
-
 			ir::Instruction::Architecture isa;
 			int device; /*! \brief The device associated with the allocation */
 			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
@@ -85,9 +77,7 @@ namespace executive {
 		/*! \brief Set of strings */
 		typedef std::unordered_set< std::string > StringSet;
 		
-		/*!
-			\brief A global allocation valid on all devices.
-		*/
+		/*! \brief A global allocation valid on all devices. */
 		class GlobalMemoryAllocation {
 		public:
 			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
@@ -97,22 +87,17 @@ namespace executive {
 			ir::PTXInstruction::AddressSpace space;
 		};
 		
-		/*!
-			\brief Map from pointer to memory allocation
+		/*!	\brief Map from pointer to memory allocation
 			
 			Note that this is supposed to be ordered to ease memory protection 
 				violation detections
 		*/
 		typedef std::map< char*, MemoryAllocation > AllocationMap;
 		
-		/*!
-			\brief Map from device to allocation map
-		*/
+		/* \brief Map from device to allocation map */
 		typedef std::unordered_map< int, AllocationMap > DeviceAllocationMap;
 
-		/*!
-			\brief Map from module name to object
-		*/
+		/*!	\brief Map from module name to object */
 		typedef std::unordered_map<std::string, ir::Module *> ModuleMap;
 		
 		/*! \brief Map from pointer to global allocations */
@@ -189,18 +174,13 @@ namespace executive {
 		bool loadModule(const std::string& path, bool translateToSelected=true, 
 			std::istream* stream = 0);
 				
-		/*!
-			Unloads a module
-		*/
+		/*!	Unloads a module */
 		bool unloadModule(const std::string& path);
 		
-		/*!
-			Blocks until all possibly executing kernels have completed.
-		*/
+		/*! Blocks until all possibly executing kernels have completed. */
 		void synchronize();
 
-		/*!
-			Allocate <bytes> of memory on the device
+		/*!	Allocate <bytes> of memory on the device
 
 			\return pointer to allocated memory block or NULL on error
 		*/
@@ -326,11 +306,16 @@ namespace executive {
 		ir::Kernel *getKernel(ir::Instruction::Architecture isa, 
 			const std::string& module, const std::string& kernelName);	
 
-	public:
-
 		/*!
-			Set of loaded PTX modules indexed by the module's filename
+			\brief This sets the optimization level 
+		
+			\param l The new optimization level.
 		*/
+		void setOptimizationLevel( 
+			translator::Translator::OptimizationLevel l );
+
+	public:
+		/*! Set of loaded PTX modules indexed by the module's filename */
 		ModuleMap modules;
 
 		/*!
@@ -343,15 +328,18 @@ namespace executive {
 		GlobalAllocationMap globalAllocations;
 		
 	protected:
+		/*! \brief This creates the set of devices available in the system */
 		void enumerateDevices();
-	
+		
+		/*! \brief This is the selected device */
 		int selectedDevice;
 
-#if USE_CUDA_DRIVER_API
+		/*! \brief The optimization level to use when translating kernels */
+		translator::Translator::OptimizationLevel optimizationLevel;
+		
+		/*! \brief Cuda specific state */
 		CUdevice cudaDevice;
-		CUcontext cudaContext;
-#endif
-	
+		CUcontext cudaContext;	
 	};
 	
 }

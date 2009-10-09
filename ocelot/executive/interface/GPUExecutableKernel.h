@@ -10,7 +10,7 @@
 
 #ifndef EXECUTIVE_GPUKERNEL_H_INCLUDED
 #define EXECUTIVE_GPUKERNEL_H_INCLUDED
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/include/cuda.h>
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>

@@ -13,6 +13,7 @@
 #include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/executive/interface/LLVMContext.h>
+#include <ocelot/translator/interface/Translator.h>
 
 #include <stack>
 
@@ -68,10 +69,19 @@ namespace executive
 			class OpaqueState
 			{
 				public:
+					/*! \brief A map from a basic block id to the block */
+					typedef std::unordered_map< ir::BasicBlock::Id, 
+						const ir::BasicBlock* > BlockIdMap;
+			
+				public:
 					/*! \brief Texture variables */
 					TextureVector textures;
 					/*! \brief Clock timer */
 					hydrazine::Timer timer;
+					/*! \brief Debugging information for blocks */
+					BlockIdMap blocks;
+					/*! \brief Debugging information for instructions */
+					ir::PTXKernel::PTXInstructionVector* instructions;				
 			
 				public:
 					/*! \brief Starts the timer on creation */
@@ -107,7 +117,9 @@ namespace executive
 			AllocationMap _constants;
 			/*! \brief Opaque state */
 			OpaqueState _opaque;
-			
+			/*! \brief Optimization level for this kernel */
+			translator::Translator::OptimizationLevel _optimizationLevel;
+
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
 			unsigned int _pad( size_t& size, unsigned int alignment );
@@ -152,10 +164,16 @@ namespace executive
 			/*! \brief Scan the kernel and determine memory requirements */
 			void _allocateMemory( );
 
+		private:
+			/*! \brief Build debugging information */
+			void _buildDebuggingInformation();
+
 		public:
 			/*! \brief Creates a new instance of the runtime bound to a kernel*/
 			LLVMExecutableKernel( ir::Kernel& kernel, 
-				const executive::Executive* c = 0 );
+				const executive::Executive* c = 0,
+				translator::Translator::OptimizationLevel 
+				l = translator::Translator::NoOptimization );
 			/*! \brief Clean up the runtime */
 			~LLVMExecutableKernel();
 

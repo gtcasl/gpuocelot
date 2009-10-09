@@ -212,7 +212,7 @@ namespace analysis
 	{
 		if( type() != Body ) return false;
 		
-		report( " Block name " << _label );
+		report( " Block name " << label() );
 		
 		RegisterSet previousIn = std::move( _aliveIn );
 		assert( _aliveIn.empty() );
@@ -269,27 +269,25 @@ namespace analysis
 		return !_equal( _aliveIn, previousIn );
 	}
 
-	DataflowGraph::Block::Block( Type t ) : _type( t )
+	DataflowGraph::Block::Block( Type t ) : _type( t ), _block( 0 )
 	{
 		
 	}
 	
-	DataflowGraph::Block::Block( const std::string& name ) : 
-		_type( Body ), _label( name )
+	DataflowGraph::Block::Block( const std::string& name ) : _type( Body ), 
+		_block( 0 )
 	{
 	
 	}
 	
-	DataflowGraph::Block::Block( ir::BasicBlock& bb ) : _type( Body )
+	DataflowGraph::Block::Block( ir::BasicBlock& bb ) : _type( Body ), 
+		_block( &bb )
 	{
 		assert( bb.instructions.empty() );
 		assert( bb.get_successors().empty() );
 		assert( bb.get_predecessors().empty() );
 		assert( bb.get_in_edges().empty() );
 		assert( bb.get_out_edges().empty() );
-	
-		_block = &bb;
-		_label = bb.label;
 	}
 	
 	const DataflowGraph::Block::RegisterSet& 
@@ -341,7 +339,8 @@ namespace analysis
 
 	const std::string& DataflowGraph::Block::label() const
 	{
-		return _label;
+		assert( _block != 0 );
+		return _block->label;
 	}
 
 	const std::string& DataflowGraph::Block::producer( const Register& r ) const
@@ -394,6 +393,17 @@ namespace analysis
 		}
 		
 		return std::move( alive );
+	}
+
+	ir::BasicBlock::Id DataflowGraph::Block::id() const
+	{
+		assert( _block != 0 );
+		return _block->id;
+	}
+
+	ir::BasicBlock* DataflowGraph::Block::block()
+	{
+		return _block;
 	}
 	
 	DataflowGraph::iterator DataflowGraph::begin()
@@ -519,7 +529,6 @@ namespace analysis
 			Block( Block::Body ) );
 
 		added->_block = _cfg->split_block( block->_block, instruction );
-		added->_label = added->_block->label;
 		added->_predecessors.insert( block );
 		
 		added->_instructions.insert( added->_instructions.end(), begin, end );
@@ -666,11 +675,9 @@ namespace analysis
 		_cfg->clear();
 		
 		_blocks.front()._fallthrough = --_blocks.end();
-		_blocks.front()._label = "entry";
 		_blocks.front()._block = _cfg->get_entry_block();
 		_blocks.back()._predecessors.insert( _blocks.begin() );
 		_blocks.back()._fallthrough = end();
-		_blocks.back()._label = "exit";
 		_blocks.back()._block = _cfg->get_exit_block();
 	}
 

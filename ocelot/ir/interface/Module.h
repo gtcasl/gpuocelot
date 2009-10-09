@@ -18,7 +18,7 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/Global.h>
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/include/cuda.h>
 
 namespace executive { class Executive; }
 

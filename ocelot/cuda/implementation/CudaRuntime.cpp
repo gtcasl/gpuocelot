@@ -2017,6 +2017,36 @@ namespace cuda
 		{
 			context.setPreferredISA( ir::Instruction::GPU );		
 		}
+		
+		std::string optimization;
+		
+		parse( "OptimizationLevel", optimization, "NoOptimization", c );
+		
+		if( optimization == "debug" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::DebugOptimization );
+		}
+		else if( optimization == "basic" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::BasicOptimization );
+		}
+		else if( optimization == "space" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::SpaceOptimization );
+		}
+		else if( optimization == "full" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::FullOptimization );
+		}
+		else
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::NoOptimization );
+		}
 	}
 
 }

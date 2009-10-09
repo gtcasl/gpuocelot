@@ -165,7 +165,7 @@ BasicBlock* ControlFlowGraph::split_block(BasicBlock* block,
 
 	newBlock->label = block->label + "_split";
 
-	insert_edge( edge );
+	insert_edge(edge);
 	insert_block(newBlock);
 
 	return newBlock;
@@ -213,6 +213,21 @@ bool ControlFlowGraph::is_reachable(BasicBlock *head,
 }
 
 void ControlFlowGraph::clear() {
+	BasicBlock::BlockList::iterator block_it = blocks.begin();
+	for (; block_it != blocks.end(); ++ block_it) {
+		delete *block_it;
+	}
+	
+	BasicBlock::EdgeList::iterator edge_it = edges.begin();
+	for (; edge_it != edges.end(); ++ edge_it) {
+		delete *edge_it;
+	}
+	
+	_entry = new BasicBlock;
+	_exit = new BasicBlock;
+	_entry->label = "entry";
+	_exit->label = "exit";
+
 	blocks.clear();
 	blocks.push_back(_entry);
 	blocks.push_back(_exit);
@@ -348,23 +363,11 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 	using namespace std;
 	map<BasicBlock *, BasicBlock *> block_map; // (old, new)
 
-	BasicBlock::BlockList::iterator block_it = blocks.begin();
-	for (; block_it != blocks.end(); ++ block_it) {
-		delete *block_it;
-	}
-	
-	BasicBlock::EdgeList::iterator edge_it = edges.begin();
-	for (; edge_it != edges.end(); ++ edge_it) {
-		delete *edge_it;
-	}
-
-	_entry = new BasicBlock;
-	_exit = new BasicBlock;
-	_entry->label = "entry";
-	_exit->label = "exit";
-	
 	clear();
-
+	
+	_entry->id = cfg._entry->id;
+	_exit->id = cfg._exit->id;
+	
 	for (BasicBlock::BlockList::const_iterator bl_it = cfg.blocks.begin(); 
 		bl_it != cfg.blocks.end(); ++bl_it) {
 		if (cfg._entry == (*bl_it) ) {
@@ -377,6 +380,7 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 			BasicBlock *newBlock = new BasicBlock;
 			newBlock->label = (*bl_it)->label;
 			newBlock->instructions = (*bl_it)->instructions;
+			newBlock->id = (*bl_it)->id;
 			block_map[*bl_it] = newBlock;
 			blocks.push_back(newBlock);
 		}

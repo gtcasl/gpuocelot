@@ -11,7 +11,7 @@
 AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
 INCLUDE = -I ocelot/cuda/include -I $(CUDA_INSTALL_PATH)/include
-AM_LDFLAGS = -lcuda
+AM_LDFLAGS =
 ################################################################################
 
 ################################################################################
@@ -253,7 +253,7 @@ TestLexer_LDFLAGS = -static
 ## TestParser
 TestParser_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestParser_SOURCES = ocelot/parser/test/TestParser.cpp
-TestParser_LDADD = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la\
+TestParser_LDADD = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
 	libhydrazine.la
 TestParser_LDFLAGS = -static
 ################################################################################

@@ -221,7 +221,8 @@ private:
 		BasicBlock* block,
 		BlockMap& visited);
 
-	ir::BasicBlock* _entry, *_exit;
+	ir::BasicBlock* _entry;
+	ir::BasicBlock* _exit;
 
 	ir::BasicBlock::BlockList blocks;
 	ir::BasicBlock::EdgeList edges;

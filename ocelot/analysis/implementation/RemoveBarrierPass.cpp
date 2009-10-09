@@ -236,8 +236,7 @@ namespace analysis
 		
 		_kernel->dfg()->redirect( block, bottom, exitBlock );
 		
-		_addEntryPoint( bottom );		
-
+		_addEntryPoint( bottom );
 	}
 	
 	void RemoveBarrierPass::_runOnBlock( DataflowGraph::iterator block )

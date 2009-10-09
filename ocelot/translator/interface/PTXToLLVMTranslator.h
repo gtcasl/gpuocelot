@@ -50,6 +50,11 @@ namespace translator
 				ir::PTXInstruction::CmpOp, bool isInt, bool isSigned );
 			
 			static ir::LLVMInstruction::Type _getCtaContextType();
+
+		private:
+			void _debug( const analysis::DataflowGraph::Block& b );
+			void _debug( const analysis::DataflowGraph::Instruction& i );
+			void _insertDebugSymbols();
 			
 		private:
 			void _yield( unsigned int continuation );

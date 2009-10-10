@@ -26,12 +26,12 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
-#define REPORT_ORIGINAL_LLVM_SOURCE 1
+#define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_FIRST_THREAD_ONLY 0
-#define DEBUG_PTX_INSTRUCTION_TRACE 0
+#define DEBUG_PTX_INSTRUCTION_TRACE 1
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 
 #include <configure.h>
@@ -959,7 +959,7 @@ namespace executive
 					}
 				}
 			}
-		}	
+		}
 
 		_pad( _context.sharedSize, externalAlignment );
 
@@ -1383,6 +1383,7 @@ namespace executive
 	void LLVMExecutableKernel::updateConstantMemory()
 	{
 		report( "Updating constant memory." );
+		
 		for( AllocationMap::iterator constant = _constants.begin(); 
 			constant != _constants.end(); ++constant ) 
 		{

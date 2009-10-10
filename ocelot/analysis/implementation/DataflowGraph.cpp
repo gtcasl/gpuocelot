@@ -392,7 +392,7 @@ namespace analysis
 			}
 		}
 		
-		return std::move( alive );
+		return alive;
 	}
 
 	ir::BasicBlock::Id DataflowGraph::Block::id() const
@@ -535,6 +535,16 @@ namespace analysis
 		block->_instructions.erase( begin, end );
 		
 		added->_fallthrough = block->_fallthrough;
+
+		if( added->_fallthrough != end() )
+		{
+			BlockPointerSet::iterator predecessor = 
+				added->_fallthrough->_predecessors.find( block );
+			assert( predecessor != added->_fallthrough->_predecessors.end() );
+			added->_fallthrough->_predecessors.erase( block );
+			added->_fallthrough->_predecessors.insert( added );
+		}
+		
 		block->_fallthrough = added;
 		
 		for( BlockPointerSet::iterator target = block->_targets.begin(); 

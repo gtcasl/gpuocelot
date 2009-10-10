@@ -46,10 +46,13 @@ namespace analysis
 			_kernel->instructions.back(), 
 			_kernel->instructions.size() - 1 ),
 			block->instructions().size() - 1 );
+
+		report( "   Saving Registers" );
 		
 		for( DataflowGraph::Block::RegisterSet::const_iterator 
 			reg = alive.begin(); reg != alive.end(); ++reg )
 		{
+			report( "    r" << reg->id );			
 			ir::PTXInstruction save( _kernel->version(), 
 				ir::PTXInstruction::St );
 		

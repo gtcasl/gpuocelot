@@ -1624,7 +1624,7 @@ namespace translator
 		else
 		{
 			assertM( false, "No support for hi multiply" );
-		}	
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateMul( const ir::PTXInstruction& i )

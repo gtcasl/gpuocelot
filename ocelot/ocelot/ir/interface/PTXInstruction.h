@@ -1,10 +1,7 @@
 /*!
 	\file PTXInstruction.h
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 15, 2009
-
 	\brief base class for all instructions
 */
 
@@ -167,9 +164,7 @@ namespace ir {
 			VoteMode_Invalid
 		};
 
-		/*!
-			comparison operator
-		*/
+		/*! comparison operator */
 		enum CmpOp {
 			Eq,
 			Ne,
@@ -192,14 +187,10 @@ namespace ir {
 			CmpOp_Invalid
 		};
 		
-		/*!
-			Vector operation		
-		*/
+		/*! Vector operation */
 		typedef PTXOperand::Vec Vec;
 		
-		/*!
-			boolean operator
-		*/
+		/*! boolean operator */
 		enum BoolOp {
 			BoolAnd,
 			BoolOr,
@@ -208,9 +199,7 @@ namespace ir {
 			BoolOp_Invalid
 		};
 		
-		/*!
-			geometry for textures		
-		*/
+		/*! geometry for textures */
 		enum Geometry {
 			_1d,
 			_2d,
@@ -250,46 +239,29 @@ namespace ir {
 		*/
 		std::string valid() const;
 
-		/*!
-			Instruction version.
-		*/
+		/*! Instruction version. */
 		Version version;
 
-		/*!
-			Returns the guard predicate representation for the 
-				instruction
-		*/
+		/*! Returns the guard predicate representation for the instruction */
 		std::string guard() const;
 
-		/*!
-			Returns a parsable string representation of the instruction
-		*/
+		/*! Returns a parsable string representation of the instruction */
 		std::string toString() const;
 
-		/*!
-			Opcode of PTX instruction
-		*/
+		/*! Opcode of PTX instruction */
 		Opcode opcode;
 
-		/*!
-			indicates data type of instruction
-		*/
+		/*! indicates data type of instruction */
 		PTXOperand::DataType type;
 	
-		/*!
-			optionally writes carry-out value to condition code register
-		*/
+		/*! optionally writes carry-out value to condition code register */
 		CarryFlag carry;
 
 		union {
-			/*!
-				Flag containing one or more floating-point modifiers
-			*/
+			/*! Flag containing one or more floating-point modifiers */
 			unsigned int modifier;
 
-			/*!
-				Comparison operator
-			*/
+			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
 			/*!
@@ -311,79 +283,51 @@ namespace ir {
 		*/
 		PTXOperand pg;
 				
-		/*!
-			Second destination register for SetP, otherwise unused
-		*/
+		/*! Second destination register for SetP, otherwise unused */
 		PTXOperand pq;
 		
-		/*!
-			Indicates whether target or source is a vector or scalar
-		*/
+		/*! Indicates whether target or source is a vector or scalar */
 		Vec vec;
 
 		union {
-			/*!
-				If instruction type is atomic, select this atomic operation
-			*/
+			/*! If instruction type is atomic, select this atomic operation */
 			AtomicOperation atomicOperation;
 			
-			/*!
-				If the instruction is a reduction, select this operation
-			*/
+			/*! If the instruction is a reduction, select this operation */
 			ReductionOperation reductionOperation;
 			
-			/*
-				If instruction type is vote, specifies the mode of voting
-			*/
+			/* If instruction type is vote, specifies the mode of voting */
 			VoteMode vote;
 			
-			/*
-				If instruction is a branch, is it .uni			
-			*/
+			/* If instruction is a branch, is it .uni */
 			bool uni;
 
-			/*!
-				Boolean operator
-			*/
+			/*! Boolean operator */
 			BoolOp booleanOperator;
 
-			/*!
-				Indicates whether the target address space is volatile
-			*/
+			/*! Indicates whether the target address space is volatile */
 			Volatility volatility;
 			
-			/*!
-				Geometry if this is a texture instruction
-			*/
+			/*! Geometry if this is a texture instruction */
 			Geometry geometry;
 			
-			/*!
-				Is this a divide full instruction?
-			*/
+			/*! Is this a divide full instruction? */
 			bool divideFull;
 			
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;
 		};
 
-		/*!
-			Destination operand
-		*/
+		/*! Destination operand */
 		PTXOperand d;
 
-		/*!
-			Source operand a
-		*/
+		/*! Source operand a */
 		PTXOperand a;
 
-		/*!
-			Source operand b
-		*/
+		/*! Source operand b */
 		PTXOperand b;
 
-		/*!
-			Source operand c
-		*/
+		/*! Source operand c */
 		PTXOperand c;
 
 		/* 

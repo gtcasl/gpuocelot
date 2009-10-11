@@ -458,7 +458,7 @@ extern "C"
 	void __ocelot_tex_1d_uu( unsigned int* result, 
 		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-		__ocelot_tex_1d_uu( result, context, index, c0 );
+		__ocelot_tex_1d_us( result, context, index, c0 );
 	}
 
 }

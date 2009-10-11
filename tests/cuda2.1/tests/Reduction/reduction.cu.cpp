@@ -1,27 +1,27 @@
-# 1 "/tmp/tmpxft_00006e15_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000d07_00000000-1_reduction.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006e15_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000d07_00000000-1_reduction.cudafe1.cpp"
 # 1 "reduction.cu"
-# 233 "/usr/include/c++/4.3/i486-linux-gnu/bits/c++config.h" 3
+# 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
-# 245 "/usr/include/c++/4.3/i486-linux-gnu/bits/c++config.h" 3
+# 245 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 }
-# 46 "/usr/local/cuda/bin/../include/device_types.h"
-# 152 "/usr/lib/gcc/i486-linux-gnu/4.3.3/include/stddef.h" 3
-typedef int ptrdiff_t;
-# 214 "/usr/lib/gcc/i486-linux-gnu/4.3.3/include/stddef.h" 3
-typedef unsigned size_t;
-# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
-# 107 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
-# 1 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 1 3
-# 53 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
-# 1 "/usr/local/cuda/bin/../include/host_defines.h" 1 3
-# 54 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
-# 42 "/usr/local/cuda/bin/../include/builtin_types.h" 3
-# 1 "/usr/local/cuda/bin/../include/device_types.h" 1 3
-# 46 "/usr/local/cuda/bin/../include/device_types.h" 3
+# 46 "/home/normal/cuda/bin/../include/device_types.h"
+# 152 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+typedef long ptrdiff_t;
+# 214 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+typedef unsigned long size_t;
+# 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1 3
+# 80 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 3
+# 1 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 1 3
+# 53 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+# 1 "/home/normal/cuda/bin/../include/host_defines.h" 1 3
+# 54 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/builtin_types.h" 1 3
+# 42 "/home/normal/cuda/bin/../include/builtin_types.h" 3
+# 1 "/home/normal/cuda/bin/../include/device_types.h" 1 3
+# 46 "/home/normal/cuda/bin/../include/device_types.h" 3
 enum cudaRoundMode
 {
   cudaRoundNearest,
@@ -29,9 +29,9 @@ enum cudaRoundMode
   cudaRoundPosInf,
   cudaRoundMinInf
 };
-# 43 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/driver_types.h" 1 3
-# 91 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 43 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/driver_types.h" 1 3
+# 90 "/home/normal/cuda/bin/../include/driver_types.h" 3
 enum cudaError
 {
   cudaSuccess = 0,
@@ -225,7 +225,7 @@ struct cudaDeviceProp
   int computeMode;
   int __cudaReserved[36];
 };
-# 319 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 318 "/home/normal/cuda/bin/../include/driver_types.h" 3
 typedef enum cudaError cudaError_t;
 
 
@@ -239,9 +239,9 @@ typedef int cudaStream_t;
 
 
 typedef int cudaEvent_t;
-# 44 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/texture_types.h" 1 3
-# 54 "/usr/local/cuda/bin/../include/texture_types.h" 3
+# 44 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/texture_types.h" 1 3
+# 54 "/home/normal/cuda/bin/../include/texture_types.h" 3
 enum cudaTextureAddressMode
 {
   cudaAddressModeWrap,
@@ -271,287 +271,247 @@ struct textureReference
   struct cudaChannelFormatDesc channelDesc;
   int __cudaReserved[16];
 };
-# 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/vector_types.h" 1 3
-# 82 "/usr/local/cuda/bin/../include/vector_types.h" 3
+# 45 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/vector_types.h" 1 3
+# 54 "/home/normal/cuda/bin/../include/vector_types.h" 3
 struct char1
 {
   signed char x;
- 
 };
 
 
 struct uchar1
 {
   unsigned char x;
- 
 };
 
 
-struct __attribute__((__aligned__(2))) char2
+struct char2
 {
   signed char x, y;
- 
 };
 
 
-struct __attribute__((__aligned__(2))) uchar2
+struct uchar2
 {
   unsigned char x, y;
- 
 };
 
 
 struct char3
 {
   signed char x, y, z;
- 
 };
 
 
 struct uchar3
 {
   unsigned char x, y, z;
- 
 };
 
 
-struct __attribute__((__aligned__(4))) char4
+struct char4
 {
   signed char x, y, z, w;
- 
 };
 
 
-struct __attribute__((__aligned__(4))) uchar4
+struct uchar4
 {
   unsigned char x, y, z, w;
- 
 };
 
 
 struct short1
 {
   short x;
- 
 };
 
 
 struct ushort1
 {
   unsigned short x;
- 
 };
 
 
-struct __attribute__((__aligned__(4))) short2
+struct short2
 {
   short x, y;
- 
 };
 
 
-struct __attribute__((__aligned__(4))) ushort2
+struct ushort2
 {
   unsigned short x, y;
- 
 };
 
 
 struct short3
 {
   short x, y, z;
- 
 };
 
 
 struct ushort3
 {
   unsigned short x, y, z;
- 
 };
 
 
-struct __attribute__((__aligned__(8))) short4 { short x, y, z, w; };
+struct short4
+{
+  short x, y, z, w;
+};
 
 
-struct __attribute__((__aligned__(8))) ushort4 { unsigned short x, y, z, w; };
+struct ushort4
+{
+  unsigned short x, y, z, w;
+};
 
 
 struct int1
 {
   int x;
- 
 };
 
 
 struct uint1
 {
   unsigned int x;
- 
 };
 
 
-struct __attribute__((__aligned__(8))) int2 { int x, y; };
+struct int2
+{
+  int x, y;
+};
 
 
-struct __attribute__((__aligned__(8))) uint2 { unsigned int x, y; };
+struct uint2
+{
+  unsigned int x, y;
+};
 
 
 struct int3
 {
   int x, y, z;
- 
 };
 
 
 struct uint3
 {
   unsigned int x, y, z;
- 
 };
 
 
-struct __attribute__((__aligned__(16))) int4
+struct int4
 {
   int x, y, z, w;
- 
 };
 
 
-struct __attribute__((__aligned__(16))) uint4
+struct uint4
 {
   unsigned int x, y, z, w;
- 
 };
 
 
 struct long1
 {
   long int x;
- 
 };
 
 
 struct ulong1
 {
   unsigned long x;
- 
 };
-# 258 "/usr/local/cuda/bin/../include/vector_types.h" 3
-struct __attribute__((__aligned__(2*sizeof(long int)))) long2
+
+
+struct
+
+
+
+      
+
+                                             long2
 {
   long int x, y;
- 
 };
 
 
-struct __attribute__((__aligned__(2*sizeof(unsigned long int)))) ulong2
+struct
+
+
+
+      
+
+                                                      ulong2
 {
   unsigned long int x, y;
- 
 };
-
-
-
-
-
-
-struct long3
-{
-  long int x, y, z;
- 
-};
-
-
-struct ulong3
-{
-  unsigned long int x, y, z;
- 
-};
-
-
-struct __attribute__((__aligned__(16))) long4
-{
-  long int x, y, z, w;
- 
-};
-
-
-struct __attribute__((__aligned__(16))) ulong4
-{
-  unsigned long int x, y, z, w;
- 
-};
-
-
-
-
+# 262 "/home/normal/cuda/bin/../include/vector_types.h" 3
 struct float1
 {
   float x;
- 
 };
 
 
-struct __attribute__((__aligned__(8))) float2 { float x, y; };
+struct float2
+{
+  float x, y;
+};
 
 
 struct float3
 {
   float x, y, z;
- 
 };
 
 
-struct __attribute__((__aligned__(16))) float4
+struct float4
 {
   float x, y, z, w;
- 
 };
 
 
 struct longlong1
 {
   long long int x;
- 
 };
 
 
 struct ulonglong1
 {
   unsigned long long int x;
- 
 };
 
 
-struct __attribute__((__aligned__(16))) longlong2
+struct longlong2
 {
   long long int x, y;
- 
 };
 
 
-struct __attribute__((__aligned__(16))) ulonglong2
+struct ulonglong2
 {
   unsigned long long int x, y;
- 
 };
 
 
 struct double1
 {
   double x;
- 
 };
 
 
-struct __attribute__((__aligned__(16))) double2
+struct double2
 {
   double x, y;
- 
 };
-# 378 "/usr/local/cuda/bin/../include/vector_types.h" 3
+# 328 "/home/normal/cuda/bin/../include/vector_types.h" 3
 typedef struct char1 char1;
 
 typedef struct uchar1 uchar1;
@@ -635,7 +595,10 @@ typedef struct ulonglong2 ulonglong2;
 typedef struct double1 double1;
 
 typedef struct double2 double2;
-# 469 "/usr/local/cuda/bin/../include/vector_types.h" 3
+# 419 "/home/normal/cuda/bin/../include/vector_types.h" 3
+typedef struct dim3 dim3;
+
+
 struct dim3
 {
     unsigned int x, y, z;
@@ -645,20 +608,17 @@ struct dim3
     operator uint3(void) { uint3 t; t.x = x; t.y = y; t.z = z; return t; }
 
 };
-
-
-typedef struct dim3 dim3;
-# 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
-# 55 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
-# 80 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+# 45 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
+# 55 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 2 3
+# 80 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
 extern "C" {
-# 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+# 89 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, struct cudaExtent extent);
 extern cudaError_t cudaMalloc3DArray(struct cudaArray** arrayPtr, const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 extern cudaError_t cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent);
 extern cudaError_t cudaMemcpy3D(const struct cudaMemcpy3DParms *p);
 extern cudaError_t cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream);
-# 102 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+# 102 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMalloc(void **devPtr, size_t size);
 extern cudaError_t cudaMallocHost(void **ptr, size_t size);
 extern cudaError_t cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height);
@@ -669,8 +629,7 @@ extern cudaError_t cudaFreeArray(struct cudaArray *array);
 
 extern cudaError_t cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags);
 extern cudaError_t cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-extern cudaError_t cudaHostGetFlags(unsigned int *pFlags, void *pHost);
-# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+# 120 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
 extern cudaError_t cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind);
 extern cudaError_t cudaMemcpyFromArray(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind);
@@ -825,122 +784,118 @@ extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 
 
 }
-# 108 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
-# 109 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 216 "/usr/lib/gcc/i486-linux-gnu/4.3.3/include/stddef.h" 2 3
-# 91 "/usr/local/cuda/bin/../include/driver_types.h"
-# 139 "/usr/local/cuda/bin/../include/driver_types.h"
-# 151 "/usr/local/cuda/bin/../include/driver_types.h"
-# 164 "/usr/local/cuda/bin/../include/driver_types.h"
-# 170 "/usr/local/cuda/bin/../include/driver_types.h"
-# 182 "/usr/local/cuda/bin/../include/driver_types.h"
-# 194 "/usr/local/cuda/bin/../include/driver_types.h"
-# 205 "/usr/local/cuda/bin/../include/driver_types.h"
-# 216 "/usr/local/cuda/bin/../include/driver_types.h"
-# 234 "/usr/local/cuda/bin/../include/driver_types.h"
-# 248 "/usr/local/cuda/bin/../include/driver_types.h"
-# 260 "/usr/local/cuda/bin/../include/driver_types.h"
-# 319 "/usr/local/cuda/bin/../include/driver_types.h"
-# 325 "/usr/local/cuda/bin/../include/driver_types.h"
-# 331 "/usr/local/cuda/bin/../include/driver_types.h"
-# 54 "/usr/local/cuda/bin/../include/texture_types.h"
-# 61 "/usr/local/cuda/bin/../include/texture_types.h"
-# 68 "/usr/local/cuda/bin/../include/texture_types.h"
-# 75 "/usr/local/cuda/bin/../include/texture_types.h"
-# 82 "/usr/local/cuda/bin/../include/vector_types.h"
-# 89 "/usr/local/cuda/bin/../include/vector_types.h"
-# 96 "/usr/local/cuda/bin/../include/vector_types.h"
-# 103 "/usr/local/cuda/bin/../include/vector_types.h"
-# 110 "/usr/local/cuda/bin/../include/vector_types.h"
-# 117 "/usr/local/cuda/bin/../include/vector_types.h"
-# 124 "/usr/local/cuda/bin/../include/vector_types.h"
-# 131 "/usr/local/cuda/bin/../include/vector_types.h"
-# 138 "/usr/local/cuda/bin/../include/vector_types.h"
-# 145 "/usr/local/cuda/bin/../include/vector_types.h"
-# 152 "/usr/local/cuda/bin/../include/vector_types.h"
-# 159 "/usr/local/cuda/bin/../include/vector_types.h"
-# 166 "/usr/local/cuda/bin/../include/vector_types.h"
-# 173 "/usr/local/cuda/bin/../include/vector_types.h"
-# 180 "/usr/local/cuda/bin/../include/vector_types.h"
-# 183 "/usr/local/cuda/bin/../include/vector_types.h"
-# 186 "/usr/local/cuda/bin/../include/vector_types.h"
-# 193 "/usr/local/cuda/bin/../include/vector_types.h"
-# 200 "/usr/local/cuda/bin/../include/vector_types.h"
-# 203 "/usr/local/cuda/bin/../include/vector_types.h"
-# 206 "/usr/local/cuda/bin/../include/vector_types.h"
-# 213 "/usr/local/cuda/bin/../include/vector_types.h"
-# 220 "/usr/local/cuda/bin/../include/vector_types.h"
-# 227 "/usr/local/cuda/bin/../include/vector_types.h"
-# 234 "/usr/local/cuda/bin/../include/vector_types.h"
-# 241 "/usr/local/cuda/bin/../include/vector_types.h"
-# 258 "/usr/local/cuda/bin/../include/vector_types.h"
-# 265 "/usr/local/cuda/bin/../include/vector_types.h"
-# 276 "/usr/local/cuda/bin/../include/vector_types.h"
-# 283 "/usr/local/cuda/bin/../include/vector_types.h"
-# 290 "/usr/local/cuda/bin/../include/vector_types.h"
-# 297 "/usr/local/cuda/bin/../include/vector_types.h"
-# 306 "/usr/local/cuda/bin/../include/vector_types.h"
-# 313 "/usr/local/cuda/bin/../include/vector_types.h"
-# 316 "/usr/local/cuda/bin/../include/vector_types.h"
-# 323 "/usr/local/cuda/bin/../include/vector_types.h"
-# 330 "/usr/local/cuda/bin/../include/vector_types.h"
-# 337 "/usr/local/cuda/bin/../include/vector_types.h"
-# 344 "/usr/local/cuda/bin/../include/vector_types.h"
-# 351 "/usr/local/cuda/bin/../include/vector_types.h"
-# 358 "/usr/local/cuda/bin/../include/vector_types.h"
-# 365 "/usr/local/cuda/bin/../include/vector_types.h"
-# 378 "/usr/local/cuda/bin/../include/vector_types.h"
-# 380 "/usr/local/cuda/bin/../include/vector_types.h"
-# 382 "/usr/local/cuda/bin/../include/vector_types.h"
-# 384 "/usr/local/cuda/bin/../include/vector_types.h"
-# 386 "/usr/local/cuda/bin/../include/vector_types.h"
-# 388 "/usr/local/cuda/bin/../include/vector_types.h"
-# 390 "/usr/local/cuda/bin/../include/vector_types.h"
-# 392 "/usr/local/cuda/bin/../include/vector_types.h"
-# 394 "/usr/local/cuda/bin/../include/vector_types.h"
-# 396 "/usr/local/cuda/bin/../include/vector_types.h"
-# 398 "/usr/local/cuda/bin/../include/vector_types.h"
-# 400 "/usr/local/cuda/bin/../include/vector_types.h"
-# 402 "/usr/local/cuda/bin/../include/vector_types.h"
-# 404 "/usr/local/cuda/bin/../include/vector_types.h"
-# 406 "/usr/local/cuda/bin/../include/vector_types.h"
-# 408 "/usr/local/cuda/bin/../include/vector_types.h"
-# 410 "/usr/local/cuda/bin/../include/vector_types.h"
-# 412 "/usr/local/cuda/bin/../include/vector_types.h"
-# 414 "/usr/local/cuda/bin/../include/vector_types.h"
-# 416 "/usr/local/cuda/bin/../include/vector_types.h"
-# 418 "/usr/local/cuda/bin/../include/vector_types.h"
-# 420 "/usr/local/cuda/bin/../include/vector_types.h"
-# 422 "/usr/local/cuda/bin/../include/vector_types.h"
-# 424 "/usr/local/cuda/bin/../include/vector_types.h"
-# 426 "/usr/local/cuda/bin/../include/vector_types.h"
-# 428 "/usr/local/cuda/bin/../include/vector_types.h"
-# 430 "/usr/local/cuda/bin/../include/vector_types.h"
-# 432 "/usr/local/cuda/bin/../include/vector_types.h"
-# 434 "/usr/local/cuda/bin/../include/vector_types.h"
-# 436 "/usr/local/cuda/bin/../include/vector_types.h"
-# 438 "/usr/local/cuda/bin/../include/vector_types.h"
-# 440 "/usr/local/cuda/bin/../include/vector_types.h"
-# 442 "/usr/local/cuda/bin/../include/vector_types.h"
-# 444 "/usr/local/cuda/bin/../include/vector_types.h"
-# 446 "/usr/local/cuda/bin/../include/vector_types.h"
-# 448 "/usr/local/cuda/bin/../include/vector_types.h"
-# 450 "/usr/local/cuda/bin/../include/vector_types.h"
-# 452 "/usr/local/cuda/bin/../include/vector_types.h"
-# 454 "/usr/local/cuda/bin/../include/vector_types.h"
-# 456 "/usr/local/cuda/bin/../include/vector_types.h"
-# 458 "/usr/local/cuda/bin/../include/vector_types.h"
-# 460 "/usr/local/cuda/bin/../include/vector_types.h"
-# 469 "/usr/local/cuda/bin/../include/vector_types.h"
-# 480 "/usr/local/cuda/bin/../include/vector_types.h"
-# 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 81 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/crt/storage_class.h" 1 3
+# 82 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 216 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 2 3
+# 90 "/home/normal/cuda/bin/../include/driver_types.h"
+# 138 "/home/normal/cuda/bin/../include/driver_types.h"
+# 150 "/home/normal/cuda/bin/../include/driver_types.h"
+# 163 "/home/normal/cuda/bin/../include/driver_types.h"
+# 169 "/home/normal/cuda/bin/../include/driver_types.h"
+# 181 "/home/normal/cuda/bin/../include/driver_types.h"
+# 193 "/home/normal/cuda/bin/../include/driver_types.h"
+# 204 "/home/normal/cuda/bin/../include/driver_types.h"
+# 215 "/home/normal/cuda/bin/../include/driver_types.h"
+# 233 "/home/normal/cuda/bin/../include/driver_types.h"
+# 247 "/home/normal/cuda/bin/../include/driver_types.h"
+# 259 "/home/normal/cuda/bin/../include/driver_types.h"
+# 318 "/home/normal/cuda/bin/../include/driver_types.h"
+# 324 "/home/normal/cuda/bin/../include/driver_types.h"
+# 330 "/home/normal/cuda/bin/../include/driver_types.h"
+# 54 "/home/normal/cuda/bin/../include/texture_types.h"
+# 61 "/home/normal/cuda/bin/../include/texture_types.h"
+# 68 "/home/normal/cuda/bin/../include/texture_types.h"
+# 75 "/home/normal/cuda/bin/../include/texture_types.h"
+# 54 "/home/normal/cuda/bin/../include/vector_types.h"
+# 60 "/home/normal/cuda/bin/../include/vector_types.h"
+# 66 "/home/normal/cuda/bin/../include/vector_types.h"
+# 72 "/home/normal/cuda/bin/../include/vector_types.h"
+# 78 "/home/normal/cuda/bin/../include/vector_types.h"
+# 84 "/home/normal/cuda/bin/../include/vector_types.h"
+# 90 "/home/normal/cuda/bin/../include/vector_types.h"
+# 96 "/home/normal/cuda/bin/../include/vector_types.h"
+# 102 "/home/normal/cuda/bin/../include/vector_types.h"
+# 108 "/home/normal/cuda/bin/../include/vector_types.h"
+# 114 "/home/normal/cuda/bin/../include/vector_types.h"
+# 120 "/home/normal/cuda/bin/../include/vector_types.h"
+# 126 "/home/normal/cuda/bin/../include/vector_types.h"
+# 132 "/home/normal/cuda/bin/../include/vector_types.h"
+# 138 "/home/normal/cuda/bin/../include/vector_types.h"
+# 144 "/home/normal/cuda/bin/../include/vector_types.h"
+# 150 "/home/normal/cuda/bin/../include/vector_types.h"
+# 156 "/home/normal/cuda/bin/../include/vector_types.h"
+# 162 "/home/normal/cuda/bin/../include/vector_types.h"
+# 168 "/home/normal/cuda/bin/../include/vector_types.h"
+# 174 "/home/normal/cuda/bin/../include/vector_types.h"
+# 180 "/home/normal/cuda/bin/../include/vector_types.h"
+# 186 "/home/normal/cuda/bin/../include/vector_types.h"
+# 192 "/home/normal/cuda/bin/../include/vector_types.h"
+# 198 "/home/normal/cuda/bin/../include/vector_types.h"
+# 204 "/home/normal/cuda/bin/../include/vector_types.h"
+# 216 "/home/normal/cuda/bin/../include/vector_types.h"
+# 228 "/home/normal/cuda/bin/../include/vector_types.h"
+# 262 "/home/normal/cuda/bin/../include/vector_types.h"
+# 268 "/home/normal/cuda/bin/../include/vector_types.h"
+# 274 "/home/normal/cuda/bin/../include/vector_types.h"
+# 280 "/home/normal/cuda/bin/../include/vector_types.h"
+# 286 "/home/normal/cuda/bin/../include/vector_types.h"
+# 292 "/home/normal/cuda/bin/../include/vector_types.h"
+# 298 "/home/normal/cuda/bin/../include/vector_types.h"
+# 304 "/home/normal/cuda/bin/../include/vector_types.h"
+# 310 "/home/normal/cuda/bin/../include/vector_types.h"
+# 316 "/home/normal/cuda/bin/../include/vector_types.h"
+# 328 "/home/normal/cuda/bin/../include/vector_types.h"
+# 330 "/home/normal/cuda/bin/../include/vector_types.h"
+# 332 "/home/normal/cuda/bin/../include/vector_types.h"
+# 334 "/home/normal/cuda/bin/../include/vector_types.h"
+# 336 "/home/normal/cuda/bin/../include/vector_types.h"
+# 338 "/home/normal/cuda/bin/../include/vector_types.h"
+# 340 "/home/normal/cuda/bin/../include/vector_types.h"
+# 342 "/home/normal/cuda/bin/../include/vector_types.h"
+# 344 "/home/normal/cuda/bin/../include/vector_types.h"
+# 346 "/home/normal/cuda/bin/../include/vector_types.h"
+# 348 "/home/normal/cuda/bin/../include/vector_types.h"
+# 350 "/home/normal/cuda/bin/../include/vector_types.h"
+# 352 "/home/normal/cuda/bin/../include/vector_types.h"
+# 354 "/home/normal/cuda/bin/../include/vector_types.h"
+# 356 "/home/normal/cuda/bin/../include/vector_types.h"
+# 358 "/home/normal/cuda/bin/../include/vector_types.h"
+# 360 "/home/normal/cuda/bin/../include/vector_types.h"
+# 362 "/home/normal/cuda/bin/../include/vector_types.h"
+# 364 "/home/normal/cuda/bin/../include/vector_types.h"
+# 366 "/home/normal/cuda/bin/../include/vector_types.h"
+# 368 "/home/normal/cuda/bin/../include/vector_types.h"
+# 370 "/home/normal/cuda/bin/../include/vector_types.h"
+# 372 "/home/normal/cuda/bin/../include/vector_types.h"
+# 374 "/home/normal/cuda/bin/../include/vector_types.h"
+# 376 "/home/normal/cuda/bin/../include/vector_types.h"
+# 378 "/home/normal/cuda/bin/../include/vector_types.h"
+# 380 "/home/normal/cuda/bin/../include/vector_types.h"
+# 382 "/home/normal/cuda/bin/../include/vector_types.h"
+# 384 "/home/normal/cuda/bin/../include/vector_types.h"
+# 386 "/home/normal/cuda/bin/../include/vector_types.h"
+# 388 "/home/normal/cuda/bin/../include/vector_types.h"
+# 390 "/home/normal/cuda/bin/../include/vector_types.h"
+# 392 "/home/normal/cuda/bin/../include/vector_types.h"
+# 394 "/home/normal/cuda/bin/../include/vector_types.h"
+# 396 "/home/normal/cuda/bin/../include/vector_types.h"
+# 398 "/home/normal/cuda/bin/../include/vector_types.h"
+# 400 "/home/normal/cuda/bin/../include/vector_types.h"
+# 402 "/home/normal/cuda/bin/../include/vector_types.h"
+# 404 "/home/normal/cuda/bin/../include/vector_types.h"
+# 406 "/home/normal/cuda/bin/../include/vector_types.h"
+# 408 "/home/normal/cuda/bin/../include/vector_types.h"
+# 410 "/home/normal/cuda/bin/../include/vector_types.h"
+# 419 "/home/normal/cuda/bin/../include/vector_types.h"
+# 422 "/home/normal/cuda/bin/../include/vector_types.h"
+# 89 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3D(cudaPitchedPtr *, cudaExtent);
 extern "C" cudaError_t cudaMalloc3DArray(cudaArray **, const cudaChannelFormatDesc *, cudaExtent);
 extern "C" cudaError_t cudaMemset3D(cudaPitchedPtr, int, cudaExtent);
 extern "C" cudaError_t cudaMemcpy3D(const cudaMemcpy3DParms *);
 extern "C" cudaError_t cudaMemcpy3DAsync(const cudaMemcpy3DParms *, cudaStream_t);
-# 102 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 102 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc(void **, size_t);
 extern "C" cudaError_t cudaMallocHost(void **, size_t);
 extern "C" cudaError_t cudaMallocPitch(void **, size_t *, size_t, size_t);
@@ -951,8 +906,7 @@ extern "C" cudaError_t cudaFreeArray(cudaArray *);
 
 extern "C" cudaError_t cudaHostAlloc(void **, size_t, unsigned);
 extern "C" cudaError_t cudaHostGetDevicePointer(void **, void *, unsigned);
-extern "C" cudaError_t cudaHostGetFlags(unsigned *, void *);
-# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 120 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy(void *, const void *, size_t, cudaMemcpyKind);
 extern "C" cudaError_t cudaMemcpyToArray(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind);
 extern "C" cudaError_t cudaMemcpyFromArray(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind);
@@ -963,7 +917,7 @@ extern "C" cudaError_t cudaMemcpy2DFromArray(void *, size_t, const cudaArray *, 
 extern "C" cudaError_t cudaMemcpy2DArrayToArray(cudaArray *, size_t, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind = cudaMemcpyDeviceToDevice);
 extern "C" cudaError_t cudaMemcpyToSymbol(const char *, const void *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyHostToDevice);
 extern "C" cudaError_t cudaMemcpyFromSymbol(void *, const char *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyDeviceToHost);
-# 138 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 137 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyAsync(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyFromArrayAsync(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
@@ -972,13 +926,13 @@ extern "C" cudaError_t cudaMemcpy2DToArrayAsync(cudaArray *, size_t, size_t, con
 extern "C" cudaError_t cudaMemcpy2DFromArrayAsync(void *, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyToSymbolAsync(const char *, const void *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyFromSymbolAsync(void *, const char *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 153 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 152 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset(void *, int, size_t);
 extern "C" cudaError_t cudaMemset2D(void *, size_t, int, size_t, size_t);
-# 162 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 161 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolAddress(void **, const char *);
 extern "C" cudaError_t cudaGetSymbolSize(size_t *, const char *);
-# 171 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 170 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceCount(int *);
 extern "C" cudaError_t cudaGetDeviceProperties(cudaDeviceProp *, int);
 extern "C" cudaError_t cudaChooseDevice(int *, const cudaDeviceProp *);
@@ -986,30 +940,30 @@ extern "C" cudaError_t cudaSetDevice(int);
 extern "C" cudaError_t cudaGetDevice(int *);
 extern "C" cudaError_t cudaSetValidDevices(int *, int);
 extern "C" cudaError_t cudaSetDeviceFlags(int);
-# 185 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 184 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t = (((2147483647) * 2U) + 1U));
 extern "C" cudaError_t cudaBindTexture2D(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t, size_t, size_t);
 extern "C" cudaError_t cudaBindTextureToArray(const textureReference *, const cudaArray *, const cudaChannelFormatDesc *);
 extern "C" cudaError_t cudaUnbindTexture(const textureReference *);
 extern "C" cudaError_t cudaGetTextureAlignmentOffset(size_t *, const textureReference *);
 extern "C" cudaError_t cudaGetTextureReference(const textureReference **, const char *);
-# 198 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 197 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetChannelDesc(cudaChannelFormatDesc *, const cudaArray *);
 extern "C" cudaChannelFormatDesc cudaCreateChannelDesc(int, int, int, int, cudaChannelFormatKind);
-# 207 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 206 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetLastError();
 extern "C" const char *cudaGetErrorString(cudaError_t);
-# 216 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 215 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaConfigureCall(dim3, dim3, size_t = (0), cudaStream_t = (0));
 extern "C" cudaError_t cudaSetupArgument(const void *, size_t, size_t);
 extern "C" cudaError_t cudaLaunch(const char *);
 extern "C" cudaError_t cudaFuncGetAttributes(cudaFuncAttributes *, const char *);
-# 227 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 226 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamCreate(cudaStream_t *);
 extern "C" cudaError_t cudaStreamDestroy(cudaStream_t);
 extern "C" cudaError_t cudaStreamSynchronize(cudaStream_t);
 extern "C" cudaError_t cudaStreamQuery(cudaStream_t);
-# 238 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 237 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreate(cudaEvent_t *);
 extern "C" cudaError_t cudaEventCreateWithFlags(cudaEvent_t *, int);
 extern "C" cudaError_t cudaEventRecord(cudaEvent_t, cudaStream_t);
@@ -1017,16 +971,16 @@ extern "C" cudaError_t cudaEventQuery(cudaEvent_t);
 extern "C" cudaError_t cudaEventSynchronize(cudaEvent_t);
 extern "C" cudaError_t cudaEventDestroy(cudaEvent_t);
 extern "C" cudaError_t cudaEventElapsedTime(float *, cudaEvent_t, cudaEvent_t);
-# 252 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 251 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForDevice(double *);
 extern "C" cudaError_t cudaSetDoubleForHost(double *);
-# 261 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 260 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaThreadExit();
 extern "C" cudaError_t cudaThreadSynchronize();
-# 270 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 269 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDriverGetVersion(int *);
 extern "C" cudaError_t cudaRuntimeGetVersion(int *);
-# 93 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+# 93 "/home/normal/cuda/bin/../include/channel_descriptor.h"
 template<class T> inline cudaChannelFormatDesc cudaCreateChannelDesc()
 {
 return cudaCreateChannelDesc(0, 0, 0, 0, cudaChannelFormatKindNone);
@@ -1210,67 +1164,7 @@ auto int e = (((int)sizeof(unsigned)) * 8);
 
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
 }
-
-
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long> ()
-{
-auto int e = (((int)sizeof(long)) * 8);
-
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned long> ()
-{
-auto int e = (((int)sizeof(unsigned long)) * 8);
-
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long1> ()
-{
-auto int e = (((int)sizeof(long)) * 8);
-
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong1> ()
-{
-auto int e = (((int)sizeof(unsigned long)) * 8);
-
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long2> ()
-{
-auto int e = (((int)sizeof(long)) * 8);
-
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong2> ()
-{
-auto int e = (((int)sizeof(unsigned long)) * 8);
-
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long4> ()
-{
-auto int e = (((int)sizeof(long)) * 8);
-
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-}
-
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong4> ()
-{
-auto int e = (((int)sizeof(unsigned long)) * 8);
-
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-}
-
-
-
+# 337 "/home/normal/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
 {
 auto int e = (((int)sizeof(float)) * 8);
@@ -1298,7 +1192,7 @@ auto int e = (((int)sizeof(float)) * 8);
 
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindFloat);
 }
-# 54 "/usr/local/cuda/bin/../include/driver_functions.h"
+# 54 "/home/normal/cuda/bin/../include/driver_functions.h"
 static inline cudaPitchedPtr make_cudaPitchedPtr(void *d, size_t p, size_t xsz, size_t ysz)
 {
 auto cudaPitchedPtr s;
@@ -1332,7 +1226,7 @@ auto cudaExtent e;
 
 return e;
 }
-# 54 "/usr/local/cuda/bin/../include/vector_functions.h"
+# 54 "/home/normal/cuda/bin/../include/vector_functions.h"
 static inline char1 make_char1(signed char x)
 {
 auto char1 t; (t.x) = x; return t;
@@ -1472,31 +1366,7 @@ static inline ulong2 make_ulong2(unsigned long x, unsigned long y)
 {
 auto ulong2 t; (t.x) = x; (t.y) = y; return t;
 }
-
-
-
-static inline long3 make_long3(long x, long y, long z)
-{
-auto long3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-}
-
-static inline ulong3 make_ulong3(unsigned long x, unsigned long y, unsigned long z)
-{
-auto ulong3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-}
-
-static inline long4 make_long4(long x, long y, long z, long w)
-{
-auto long4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-}
-
-static inline ulong4 make_ulong4(unsigned long x, unsigned long y, unsigned long z, unsigned long w)
-{
-auto ulong4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-}
-
-
-
+# 218 "/home/normal/cuda/bin/../include/vector_functions.h"
 static inline float1 make_float1(float x)
 {
 auto float1 t; (t.x) = x; return t;
@@ -1560,29 +1430,26 @@ extern "C" { typedef unsigned short __uint16_t; }
 extern "C" { typedef signed int __int32_t; }
 extern "C" { typedef unsigned __uint32_t; }
 
-
-
-
-extern "C" { typedef signed long long __int64_t; }
-extern "C" { typedef unsigned long long __uint64_t; }
-# 56 "/usr/include/bits/types.h" 3
-extern "C" { typedef long long __quad_t; }
-extern "C" { typedef unsigned long long __u_quad_t; }
+extern "C" { typedef signed long __int64_t; }
+extern "C" { typedef unsigned long __uint64_t; }
+# 53 "/usr/include/bits/types.h" 3
+extern "C" { typedef long __quad_t; }
+extern "C" { typedef unsigned long __u_quad_t; }
 # 134 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __dev_t; }
+extern "C" { typedef unsigned long __dev_t; }
 extern "C" { typedef unsigned __uid_t; }
 extern "C" { typedef unsigned __gid_t; }
 extern "C" { typedef unsigned long __ino_t; }
-extern "C" { typedef __u_quad_t __ino64_t; }
+extern "C" { typedef unsigned long __ino64_t; }
 extern "C" { typedef unsigned __mode_t; }
-extern "C" { typedef unsigned __nlink_t; }
+extern "C" { typedef unsigned long __nlink_t; }
 extern "C" { typedef long __off_t; }
-extern "C" { typedef __quad_t __off64_t; }
+extern "C" { typedef long __off64_t; }
 extern "C" { typedef int __pid_t; }
 extern "C" { typedef struct __fsid_t { int __val[2]; } __fsid_t; }
 extern "C" { typedef long __clock_t; }
 extern "C" { typedef unsigned long __rlim_t; }
-extern "C" { typedef __u_quad_t __rlim64_t; }
+extern "C" { typedef unsigned long __rlim64_t; }
 extern "C" { typedef unsigned __id_t; }
 extern "C" { typedef long __time_t; }
 extern "C" { typedef unsigned __useconds_t; }
@@ -1605,17 +1472,17 @@ extern "C" { typedef long __blksize_t; }
 
 
 extern "C" { typedef long __blkcnt_t; }
-extern "C" { typedef __quad_t __blkcnt64_t; }
+extern "C" { typedef long __blkcnt64_t; }
 
 
 extern "C" { typedef unsigned long __fsblkcnt_t; }
-extern "C" { typedef __u_quad_t __fsblkcnt64_t; }
+extern "C" { typedef unsigned long __fsblkcnt64_t; }
 
 
 extern "C" { typedef unsigned long __fsfilcnt_t; }
-extern "C" { typedef __u_quad_t __fsfilcnt64_t; }
+extern "C" { typedef unsigned long __fsfilcnt64_t; }
 
-extern "C" { typedef int __ssize_t; }
+extern "C" { typedef long __ssize_t; }
 
 
 
@@ -1624,7 +1491,7 @@ extern "C" { typedef __quad_t *__qaddr_t; }
 extern "C" { typedef char *__caddr_t; }
 
 
-extern "C" { typedef int __intptr_t; }
+extern "C" { typedef long __intptr_t; }
 
 
 extern "C" { typedef unsigned __socklen_t; }
@@ -1999,7 +1866,7 @@ extern "C" char *strfry(char *) throw();
 extern "C" void *memfrob(void *, size_t) throw();
 # 393 "/usr/include/string.h" 3
 extern "C" char *basename(const char *) throw();
-# 56 "/usr/local/cuda/bin/../include/common_functions.h"
+# 56 "/home/normal/cuda/bin/../include/common_functions.h"
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
 
 
@@ -2007,7 +1874,7 @@ extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
 
 
 extern "C" __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw();
-# 65 "/usr/local/cuda/bin/../include/math_functions.h"
+# 65 "/home/normal/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
@@ -2023,10 +1890,6 @@ extern "C" __attribute__((__weak__)) int min(int, int);
 
 extern "C" __attribute__((__weak__)) unsigned umin(unsigned, unsigned);
 
-extern "C" __attribute__((__weak__)) long long llmin(long long, long long);
-
-extern "C" __attribute__((__weak__)) unsigned long long ullmin(unsigned long long, unsigned long long);
-
 extern "C" __attribute__((__weak__)) float fminf(float, float) throw();
 
 extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
@@ -2035,10 +1898,6 @@ extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
 extern "C" __attribute__((__weak__)) int max(int, int);
 
 extern "C" __attribute__((__weak__)) unsigned umax(unsigned, unsigned);
-
-extern "C" __attribute__((__weak__)) long long llmax(long long, long long);
-
-extern "C" __attribute__((__weak__)) unsigned long long ullmax(unsigned long long, unsigned long long);
 
 extern "C" __attribute__((__weak__)) float fmaxf(float, float) throw();
 
@@ -2338,7 +2197,7 @@ extern "C" __attribute__((__weak__)) int __isinff(float) throw() __attribute__((
 extern "C" __attribute__((__weak__)) int __isnan(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanf(float) throw() __attribute__((__const__));
-# 408 "/usr/local/cuda/bin/../include/math_functions.h"
+# 400 "/home/normal/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finite(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __finitef(float) throw() __attribute__((__const__));
@@ -2354,10 +2213,9 @@ extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__
 extern "C" __attribute__((__weak__)) double fma(double, double, double) throw();
 
 extern "C" __attribute__((__weak__)) float fmaf(float, float, float) throw();
-# 38 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double float_t; }
-
-extern "C" { typedef long double double_t; }
+# 31 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef float float_t; }
+extern "C" { typedef double double_t; }
 # 55 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((__weak__)) double acos(double) throw(); extern "C" double __acos(double) throw();
 
@@ -3232,13 +3090,13 @@ extern "C" { typedef unsigned uint; }
 extern "C" { typedef signed char int8_t; }
 extern "C" { typedef short int16_t; }
 extern "C" { typedef int int32_t; }
-extern "C" { typedef long long int64_t; }
+extern "C" { typedef long int64_t; }
 
 
 extern "C" { typedef unsigned char u_int8_t; }
 extern "C" { typedef unsigned short u_int16_t; }
 extern "C" { typedef unsigned u_int32_t; }
-extern "C" { typedef unsigned long long u_int64_t; }
+extern "C" { typedef unsigned long u_int64_t; }
 
 extern "C" { typedef int register_t; }
 # 24 "/usr/include/bits/sigset.h" 3
@@ -3305,16 +3163,17 @@ extern "C" { typedef unsigned long pthread_t; }
 extern "C" { typedef
 # 54 "/usr/include/bits/pthreadtypes.h" 3
 union pthread_attr_t {
-char __size[36];
+char __size[56];
 long __align;
 } pthread_attr_t; }
-# 70 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 67 "/usr/include/bits/pthreadtypes.h" 3
-struct __pthread_internal_slist {
+# 61 "/usr/include/bits/pthreadtypes.h" 3
+struct __pthread_internal_list {
 
-__pthread_internal_slist *__next;
-} __pthread_slist_t; }
+__pthread_internal_list *__prev;
+__pthread_internal_list *__next;
+} __pthread_list_t; }
 # 104 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
 # 77 "/usr/include/bits/pthreadtypes.h" 3
@@ -3324,18 +3183,18 @@ struct __pthread_mutex_s {
 int __lock;
 unsigned __count;
 int __owner;
-# 88 "/usr/include/bits/pthreadtypes.h" 3
-int __kind;
-# 94 "/usr/include/bits/pthreadtypes.h" 3
+
 unsigned __nusers;
 
-union {
-int __spins;
-__pthread_slist_t __list;
-};
 
+
+int __kind;
+
+int __spins;
+__pthread_list_t __list;
+# 101 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
-char __size[24];
+char __size[40];
 long __align;
 } pthread_mutex_t; }
 # 110 "/usr/include/bits/pthreadtypes.h" 3
@@ -3382,7 +3241,8 @@ extern "C" { typedef int pthread_once_t; }
 extern "C" { typedef
 # 151 "/usr/include/bits/pthreadtypes.h" 3
 union pthread_rwlock_t {
-# 171 "/usr/include/bits/pthreadtypes.h" 3
+
+
 struct {
 int __lock;
 unsigned __nr_readers;
@@ -3390,16 +3250,16 @@ unsigned __readers_wakeup;
 unsigned __writer_wakeup;
 unsigned __nr_readers_queued;
 unsigned __nr_writers_queued;
-
-
-unsigned char __flags;
-unsigned char __shared;
-unsigned char __pad1;
-unsigned char __pad2;
 int __writer;
-} __data;
+int __shared;
+unsigned long __pad1;
+unsigned long __pad2;
 
-char __size[32];
+
+unsigned __flags;
+} __data;
+# 187 "/usr/include/bits/pthreadtypes.h" 3
+char __size[56];
 long __align;
 } pthread_rwlock_t; }
 # 195 "/usr/include/bits/pthreadtypes.h" 3
@@ -3415,7 +3275,7 @@ extern "C" { typedef volatile int pthread_spinlock_t; }
 extern "C" { typedef
 # 207 "/usr/include/bits/pthreadtypes.h" 3
 union pthread_barrier_t {
-char __size[20];
+char __size[32];
 long __align;
 } pthread_barrier_t; }
 # 216 "/usr/include/bits/pthreadtypes.h" 3
@@ -4824,15 +4684,15 @@ using __gnu_cxx::strtoull;
 using __gnu_cxx::strtold;
 
 }
-# 442 "/usr/local/cuda/bin/../include/math_functions.h"
+# 434 "/home/normal/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isinfl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanl(long double) throw() __attribute__((__const__));
-# 456 "/usr/local/cuda/bin/../include/math_functions.h"
+# 448 "/home/normal/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finitel(long double) throw() __attribute__((__const__));
-# 481 "/usr/local/cuda/bin/../include/math_functions.h"
+# 473 "/home/normal/cuda/bin/../include/math_functions.h"
 namespace __gnu_cxx {
 
 extern inline long long abs(long long) __attribute__((visibility("default")));
@@ -4867,7 +4727,7 @@ using std::atan;
 using std::atan2;
 using std::tan;
 using std::tanh;
-# 568 "/usr/local/cuda/bin/../include/math_functions.h"
+# 560 "/home/normal/cuda/bin/../include/math_functions.h"
 namespace std {
 
 
@@ -5108,26 +4968,6 @@ static inline unsigned min(unsigned a, int b)
 return umin(a, (unsigned)b);
 }
 
-static inline long long min(long long a, long long b)
-{
-return llmin(a, b);
-}
-
-static inline unsigned long long min(unsigned long long a, unsigned long long b)
-{
-return ullmin(a, b);
-}
-
-static inline unsigned long long min(long long a, unsigned long long b)
-{
-return ullmin((unsigned long long)a, b);
-}
-
-static inline unsigned long long min(unsigned long long a, long long b)
-{
-return ullmin(a, (unsigned long long)b);
-}
-
 static inline float min(float a, float b)
 {
 return fminf(a, b);
@@ -5163,26 +5003,6 @@ static inline unsigned max(unsigned a, int b)
 return umax(a, (unsigned)b);
 }
 
-static inline long long max(long long a, long long b)
-{
-return llmax(a, b);
-}
-
-static inline unsigned long long max(unsigned long long a, unsigned long long b)
-{
-return ullmax(a, b);
-}
-
-static inline unsigned long long max(long long a, unsigned long long b)
-{
-return ullmax((unsigned long long)a, b);
-}
-
-static inline unsigned long long max(unsigned long long a, long long b)
-{
-return ullmax(a, (unsigned long long)b);
-}
-
 static inline float max(float a, float b)
 {
 return fmaxf(a, b);
@@ -5202,7 +5022,7 @@ static inline double max(double a, float b)
 {
 return fmax(a, (double)b);
 }
-# 59 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
+# 59 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
 template<class T, int dim = 1, cudaTextureReadMode mode = cudaReadModeElementType>
 struct texture : public textureReference {
 
@@ -5231,12 +5051,12 @@ desc)
 (this->channelDesc) = desc;
 }
 };
-# 53 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-# 55 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-# 57 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-# 59 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-# 61 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-# 101 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 53 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
+# 55 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
+# 57 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
+# 59 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
+# 61 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
+# 98 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaSetupArgument(T
 arg, size_t
@@ -5245,56 +5065,7 @@ offset)
 {
 return cudaSetupArgument((const void *)(&arg), sizeof(T), offset);
 }
-
-template<class T> inline cudaError_t
-cudaHostAlloc(T **
-ptr, size_t
-size, unsigned
-flags)
-
-{
-return cudaHostAlloc((void **)((void *)ptr), size, flags);
-}
-
-template<class T> inline cudaError_t
-cudaHostGetDevicePointer(T **
-pDevice, void *
-pHost, unsigned
-flags)
-
-{
-return cudaHostGetDevicePointer((void **)((void *)pDevice), pHost, flags);
-}
-
-template<class T> inline cudaError_t
-cudaMalloc(T **
-devPtr, size_t
-size)
-
-{
-return cudaMalloc((void **)((void *)devPtr), size);
-}
-
-template<class T> inline cudaError_t
-cudaMallocHost(T **
-ptr, size_t
-size)
-
-{
-return cudaMallocHost((void **)((void *)ptr), size);
-}
-
-template<class T> inline cudaError_t
-cudaMallocPitch(T **
-devPtr, size_t *
-pitch, size_t
-width, size_t
-height)
-
-{
-return cudaMallocPitch((void **)((void *)devPtr), pitch, width, height);
-}
-# 172 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 120 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyToSymbol(char *
 symbol, const void *
 src, size_t
@@ -5342,7 +5113,7 @@ stream)
 {
 return cudaMemcpyToSymbolAsync((const char *)(&symbol), src, count, offset, kind, stream);
 }
-# 226 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 174 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyFromSymbol(void *
 dst, char *
 symbol, size_t
@@ -5398,7 +5169,7 @@ symbol)
 {
 return cudaGetSymbolAddress(devPtr, (const char *)symbol);
 }
-# 304 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 252 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaGetSymbolAddress(void **
 devPtr, const T &
@@ -5407,7 +5178,7 @@ symbol)
 {
 return cudaGetSymbolAddress(devPtr, (const char *)(&symbol));
 }
-# 319 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 267 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaGetSymbolSize(size_t *
 size, char *
 symbol)
@@ -5415,7 +5186,7 @@ symbol)
 {
 return cudaGetSymbolSize(size, (const char *)symbol);
 }
-# 348 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 296 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaGetSymbolSize(size_t *
 size, const T &
@@ -5424,7 +5195,7 @@ symbol)
 {
 return cudaGetSymbolSize(size, (const char *)(&symbol));
 }
-# 404 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 352 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5436,7 +5207,7 @@ size = (((2147483647) * 2U) + 1U))
 {
 return cudaBindTexture(offset, &tex, devPtr, (&desc), size);
 }
-# 448 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 396 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5447,7 +5218,7 @@ size = (((2147483647) * 2U) + 1U))
 {
 return cudaBindTexture(offset, tex, devPtr, (tex.channelDesc), size);
 }
-# 503 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 451 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture2D(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5461,7 +5232,7 @@ pitch)
 {
 return cudaBindTexture2D(offset, &tex, devPtr, (&desc), width, height, pitch);
 }
-# 545 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 493 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTextureToArray(const texture< T, dim, readMode> &
 tex, const cudaArray *
@@ -5471,7 +5242,7 @@ desc)
 {
 return cudaBindTextureToArray(&tex, array, (&desc));
 }
-# 582 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 530 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTextureToArray(const texture< T, dim, readMode> &
 tex, const cudaArray *
@@ -5483,7 +5254,7 @@ auto cudaError_t err = cudaGetChannelDesc(&desc, array);
 
 return (err == (cudaSuccess)) ? (cudaBindTextureToArray(tex, array, desc)) : err;
 }
-# 620 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 568 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaUnbindTexture(const texture< T, dim, readMode> &
 tex)
@@ -5491,7 +5262,7 @@ tex)
 {
 return cudaUnbindTexture(&tex);
 }
-# 659 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 607 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaGetTextureAlignmentOffset(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5500,22 +5271,13 @@ tex)
 {
 return cudaGetTextureAlignmentOffset(offset, &tex);
 }
-# 708 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 649 "/home/normal/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaLaunch(T *
 entry)
 
 {
 return cudaLaunch((const char *)entry);
-}
-# 744 "/usr/local/cuda/bin/../include/cuda_runtime.h"
-template<class T> inline cudaError_t
-cudaFuncGetAttributes(cudaFuncAttributes *
-attr, T *
-entry)
-
-{
-return cudaFuncGetAttributes(attr, (const char *)entry);
 }
 # 45 "/usr/include/stdio.h" 3
 struct _IO_FILE;
@@ -5562,7 +5324,7 @@ extern "C" { typedef short _G_int16_t; }
 extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 extern "C" { typedef unsigned _G_uint32_t; }
-# 43 "/usr/lib/gcc/i486-linux-gnu/4.3.3/include/stdarg.h" 3
+# 43 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -5970,7 +5732,7 @@ extern "C" int ftrylockfile(FILE *) throw();
 
 
 extern "C" void funlockfile(FILE *) throw();
-# 62 "/usr/local/cuda/bin/../include/cuda.h"
+# 62 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef unsigned CUdeviceptr; }
 
 extern "C" { typedef int CUdevice; }
@@ -5981,9 +5743,9 @@ extern "C" { typedef struct CUarray_st *CUarray; }
 extern "C" { typedef struct CUtexref_st *CUtexref; }
 extern "C" { typedef struct CUevent_st *CUevent; }
 extern "C" { typedef struct CUstream_st *CUstream; }
-# 90 "/usr/local/cuda/bin/../include/cuda.h"
+# 90 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 82 "/usr/local/cuda/bin/../include/cuda.h"
+# 82 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUctx_flags_enum {
 CU_CTX_SCHED_AUTO,
 CU_CTX_SCHED_SPIN,
@@ -5993,16 +5755,16 @@ CU_CTX_BLOCKING_SYNC,
 CU_CTX_MAP_HOST = 8,
 CU_CTX_FLAGS_MASK = 15
 } CUctx_flags; }
-# 98 "/usr/local/cuda/bin/../include/cuda.h"
+# 98 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 95 "/usr/local/cuda/bin/../include/cuda.h"
+# 95 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUevent_flags_enum {
 CU_EVENT_DEFAULT,
 CU_EVENT_BLOCKING_SYNC
 } CUevent_flags; }
-# 112 "/usr/local/cuda/bin/../include/cuda.h"
+# 112 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 103 "/usr/local/cuda/bin/../include/cuda.h"
+# 103 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUarray_format_enum {
 CU_AD_FORMAT_UNSIGNED_INT8 = 1,
 CU_AD_FORMAT_UNSIGNED_INT16,
@@ -6013,24 +5775,24 @@ CU_AD_FORMAT_SIGNED_INT32,
 CU_AD_FORMAT_HALF = 16,
 CU_AD_FORMAT_FLOAT = 32
 } CUarray_format; }
-# 121 "/usr/local/cuda/bin/../include/cuda.h"
+# 121 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 117 "/usr/local/cuda/bin/../include/cuda.h"
+# 117 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUaddress_mode_enum {
 CU_TR_ADDRESS_MODE_WRAP,
 CU_TR_ADDRESS_MODE_CLAMP,
 CU_TR_ADDRESS_MODE_MIRROR
 } CUaddress_mode; }
-# 129 "/usr/local/cuda/bin/../include/cuda.h"
+# 129 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 126 "/usr/local/cuda/bin/../include/cuda.h"
+# 126 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUfilter_mode_enum {
 CU_TR_FILTER_MODE_POINT,
 CU_TR_FILTER_MODE_LINEAR
 } CUfilter_mode; }
-# 158 "/usr/local/cuda/bin/../include/cuda.h"
+# 158 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 134 "/usr/local/cuda/bin/../include/cuda.h"
+# 134 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUdevice_attribute_enum {
 CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK = 1,
 CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X,
@@ -6056,9 +5818,9 @@ CU_DEVICE_ATTRIBUTE_INTEGRATED,
 CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY,
 CU_DEVICE_ATTRIBUTE_COMPUTE_MODE
 } CUdevice_attribute; }
-# 174 "/usr/local/cuda/bin/../include/cuda.h"
+# 174 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 163 "/usr/local/cuda/bin/../include/cuda.h"
+# 163 "/home/normal/cuda/bin/../include/cuda.h"
 struct CUdevprop_st {
 int maxThreadsPerBlock;
 int maxThreadsDim[3];
@@ -6071,15 +5833,15 @@ int regsPerBlock;
 int clockRate;
 int textureAlign;
 } CUdevprop; }
-# 211 "/usr/local/cuda/bin/../include/cuda.h"
+# 211 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 179 "/usr/local/cuda/bin/../include/cuda.h"
+# 179 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUfunction_attribute_enum {
-# 185 "/usr/local/cuda/bin/../include/cuda.h"
+# 185 "/home/normal/cuda/bin/../include/cuda.h"
 CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK,
-# 192 "/usr/local/cuda/bin/../include/cuda.h"
+# 192 "/home/normal/cuda/bin/../include/cuda.h"
 CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES,
-# 198 "/usr/local/cuda/bin/../include/cuda.h"
+# 198 "/home/normal/cuda/bin/../include/cuda.h"
 CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES,
 
 
@@ -6094,59 +5856,59 @@ CU_FUNC_ATTRIBUTE_NUM_REGS,
 
 CU_FUNC_ATTRIBUTE_MAX
 } CUfunction_attribute; }
-# 220 "/usr/local/cuda/bin/../include/cuda.h"
+# 220 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 216 "/usr/local/cuda/bin/../include/cuda.h"
+# 216 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUmemorytype_enum {
 CU_MEMORYTYPE_HOST = 1,
 CU_MEMORYTYPE_DEVICE,
 CU_MEMORYTYPE_ARRAY
 } CUmemorytype; }
-# 229 "/usr/local/cuda/bin/../include/cuda.h"
+# 229 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 225 "/usr/local/cuda/bin/../include/cuda.h"
+# 225 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUcomputemode_enum {
 CU_COMPUTEMODE_DEFAULT,
 CU_COMPUTEMODE_EXCLUSIVE,
 CU_COMPUTEMODE_PROHIBITED
 } CUcomputemode; }
-# 308 "/usr/local/cuda/bin/../include/cuda.h"
+# 308 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 234 "/usr/local/cuda/bin/../include/cuda.h"
+# 234 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUjit_option_enum {
 
 
 
 
 CU_JIT_MAX_REGISTERS,
-# 251 "/usr/local/cuda/bin/../include/cuda.h"
+# 251 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_THREADS_PER_BLOCK,
-# 257 "/usr/local/cuda/bin/../include/cuda.h"
+# 257 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_WALL_TIME,
-# 263 "/usr/local/cuda/bin/../include/cuda.h"
+# 263 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_INFO_LOG_BUFFER,
-# 270 "/usr/local/cuda/bin/../include/cuda.h"
+# 270 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES,
-# 276 "/usr/local/cuda/bin/../include/cuda.h"
+# 276 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_ERROR_LOG_BUFFER,
-# 283 "/usr/local/cuda/bin/../include/cuda.h"
+# 283 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES,
-# 289 "/usr/local/cuda/bin/../include/cuda.h"
+# 289 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_OPTIMIZATION_LEVEL,
-# 295 "/usr/local/cuda/bin/../include/cuda.h"
+# 295 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_TARGET_FROM_CUCONTEXT,
 
 
 
 
 CU_JIT_TARGET,
-# 306 "/usr/local/cuda/bin/../include/cuda.h"
+# 306 "/home/normal/cuda/bin/../include/cuda.h"
 CU_JIT_FALLBACK_STRATEGY
 
 } CUjit_option; }
-# 319 "/usr/local/cuda/bin/../include/cuda.h"
+# 319 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 313 "/usr/local/cuda/bin/../include/cuda.h"
+# 313 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUjit_target_enum {
 
 CU_TARGET_COMPUTE_10,
@@ -6154,9 +5916,9 @@ CU_TARGET_COMPUTE_11,
 CU_TARGET_COMPUTE_12,
 CU_TARGET_COMPUTE_13
 } CUjit_target; }
-# 332 "/usr/local/cuda/bin/../include/cuda.h"
+# 332 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 324 "/usr/local/cuda/bin/../include/cuda.h"
+# 324 "/home/normal/cuda/bin/../include/cuda.h"
 enum CUjit_fallback_enum {
 
 
@@ -6166,9 +5928,9 @@ CU_PREFER_PTX,
 CU_PREFER_BINARY
 
 } CUjit_fallback; }
-# 380 "/usr/local/cuda/bin/../include/cuda.h"
+# 380 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 343 "/usr/local/cuda/bin/../include/cuda.h"
+# 343 "/home/normal/cuda/bin/../include/cuda.h"
 enum cudaError_enum {
 
 CUDA_SUCCESS,
@@ -6207,9 +5969,9 @@ CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING,
 
 CUDA_ERROR_UNKNOWN = 999
 } CUresult; }
-# 426 "/usr/local/cuda/bin/../include/cuda.h"
+# 426 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 406 "/usr/local/cuda/bin/../include/cuda.h"
+# 406 "/home/normal/cuda/bin/../include/cuda.h"
 struct CUDA_MEMCPY2D_st {
 
 unsigned srcXInBytes;
@@ -6231,9 +5993,9 @@ unsigned dstPitch;
 unsigned WidthInBytes;
 unsigned Height;
 } CUDA_MEMCPY2D; }
-# 460 "/usr/local/cuda/bin/../include/cuda.h"
+# 460 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 431 "/usr/local/cuda/bin/../include/cuda.h"
+# 431 "/home/normal/cuda/bin/../include/cuda.h"
 struct CUDA_MEMCPY3D_st {
 
 unsigned srcXInBytes;
@@ -6264,9 +6026,9 @@ unsigned WidthInBytes;
 unsigned Height;
 unsigned Depth;
 } CUDA_MEMCPY3D; }
-# 473 "/usr/local/cuda/bin/../include/cuda.h"
+# 473 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 466 "/usr/local/cuda/bin/../include/cuda.h"
+# 466 "/home/normal/cuda/bin/../include/cuda.h"
 struct CUDA_ARRAY_DESCRIPTOR {
 unsigned Width;
 unsigned Height;
@@ -6275,9 +6037,9 @@ CUarray_format Format;
 
 unsigned NumChannels;
 } CUDA_ARRAY_DESCRIPTOR; }
-# 489 "/usr/local/cuda/bin/../include/cuda.h"
+# 489 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 479 "/usr/local/cuda/bin/../include/cuda.h"
+# 479 "/home/normal/cuda/bin/../include/cuda.h"
 struct CUDA_ARRAY3D_DESCRIPTOR {
 unsigned Width;
 unsigned Height;
@@ -6289,14 +6051,14 @@ unsigned NumChannels;
 
 unsigned Flags;
 } CUDA_ARRAY3D_DESCRIPTOR; }
-# 528 "/usr/local/cuda/bin/../include/cuda.h"
+# 528 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuInit(unsigned);
 
 
 
 
 extern "C" CUresult cuDriverGetVersion(int *);
-# 541 "/usr/local/cuda/bin/../include/cuda.h"
+# 541 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuDeviceGet(CUdevice *, int);
 extern "C" CUresult cuDeviceGetCount(int *);
 extern "C" CUresult cuDeviceGetName(char *, int, CUdevice);
@@ -6304,7 +6066,7 @@ extern "C" CUresult cuDeviceComputeCapability(int *, int *, CUdevice);
 extern "C" CUresult cuDeviceTotalMem(unsigned *, CUdevice);
 extern "C" CUresult cuDeviceGetProperties(CUdevprop *, CUdevice);
 extern "C" CUresult cuDeviceGetAttribute(int *, CUdevice_attribute, CUdevice);
-# 555 "/usr/local/cuda/bin/../include/cuda.h"
+# 555 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuCtxCreate(CUcontext *, unsigned, CUdevice);
 extern "C" CUresult cuCtxDestroy(CUcontext);
 extern "C" CUresult cuCtxAttach(CUcontext *, unsigned);
@@ -6313,7 +6075,7 @@ extern "C" CUresult cuCtxPushCurrent(CUcontext);
 extern "C" CUresult cuCtxPopCurrent(CUcontext *);
 extern "C" CUresult cuCtxGetDevice(CUdevice *);
 extern "C" CUresult cuCtxSynchronize();
-# 571 "/usr/local/cuda/bin/../include/cuda.h"
+# 571 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuModuleLoad(CUmodule *, const char *);
 extern "C" CUresult cuModuleLoadData(CUmodule *, const void *);
 extern "C" CUresult cuModuleLoadDataEx(CUmodule *, const void *, unsigned, CUjit_option *, void **);
@@ -6322,12 +6084,12 @@ extern "C" CUresult cuModuleUnload(CUmodule);
 extern "C" CUresult cuModuleGetFunction(CUfunction *, CUmodule, const char *);
 extern "C" CUresult cuModuleGetGlobal(CUdeviceptr *, unsigned *, CUmodule, const char *);
 extern "C" CUresult cuModuleGetTexRef(CUtexref *, CUmodule, const char *);
-# 586 "/usr/local/cuda/bin/../include/cuda.h"
+# 586 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemGetInfo(unsigned *, unsigned *);
 
 extern "C" CUresult cuMemAlloc(CUdeviceptr *, unsigned);
 extern "C" CUresult cuMemAllocPitch(CUdeviceptr *, unsigned *, unsigned, unsigned, unsigned);
-# 597 "/usr/local/cuda/bin/../include/cuda.h"
+# 597 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemFree(CUdeviceptr);
 extern "C" CUresult cuMemGetAddressRange(CUdeviceptr *, unsigned *, CUdeviceptr);
 
@@ -6337,8 +6099,7 @@ extern "C" CUresult cuMemFreeHost(void *);
 extern "C" CUresult cuMemHostAlloc(void **, size_t, unsigned);
 
 extern "C" CUresult cuMemHostGetDevicePointer(CUdeviceptr *, void *, unsigned);
-extern "C" CUresult cuMemHostGetFlags(unsigned *, void *);
-# 619 "/usr/local/cuda/bin/../include/cuda.h"
+# 618 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemcpyHtoD(CUdeviceptr, const void *, unsigned);
 extern "C" CUresult cuMemcpyDtoH(void *, CUdeviceptr, unsigned);
 
@@ -6364,7 +6125,7 @@ extern "C" CUresult cuMemcpy2DUnaligned(const CUDA_MEMCPY2D *);
 
 
 extern "C" CUresult cuMemcpy3D(const CUDA_MEMCPY3D *);
-# 658 "/usr/local/cuda/bin/../include/cuda.h"
+# 657 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemcpyHtoDAsync(CUdeviceptr, const void *, unsigned, CUstream);
 
 extern "C" CUresult cuMemcpyDtoHAsync(void *, CUdeviceptr, unsigned, CUstream);
@@ -6381,7 +6142,7 @@ extern "C" CUresult cuMemcpy2DAsync(const CUDA_MEMCPY2D *, CUstream);
 
 
 extern "C" CUresult cuMemcpy3DAsync(const CUDA_MEMCPY3D *, CUstream);
-# 680 "/usr/local/cuda/bin/../include/cuda.h"
+# 679 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemsetD8(CUdeviceptr, unsigned char, unsigned);
 extern "C" CUresult cuMemsetD16(CUdeviceptr, unsigned short, unsigned);
 extern "C" CUresult cuMemsetD32(CUdeviceptr, unsigned, unsigned);
@@ -6389,18 +6150,18 @@ extern "C" CUresult cuMemsetD32(CUdeviceptr, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D8(CUdeviceptr, unsigned, unsigned char, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D16(CUdeviceptr, unsigned, unsigned short, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D32(CUdeviceptr, unsigned, unsigned, unsigned, unsigned);
-# 695 "/usr/local/cuda/bin/../include/cuda.h"
+# 694 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuFuncSetBlockShape(CUfunction, int, int, int);
 extern "C" CUresult cuFuncSetSharedSize(CUfunction, unsigned);
 extern "C" CUresult cuFuncGetAttribute(int *, CUfunction_attribute, CUfunction);
-# 705 "/usr/local/cuda/bin/../include/cuda.h"
+# 704 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuArrayCreate(CUarray *, const CUDA_ARRAY_DESCRIPTOR *);
 extern "C" CUresult cuArrayGetDescriptor(CUDA_ARRAY_DESCRIPTOR *, CUarray);
 extern "C" CUresult cuArrayDestroy(CUarray);
 
 extern "C" CUresult cuArray3DCreate(CUarray *, const CUDA_ARRAY3D_DESCRIPTOR *);
 extern "C" CUresult cuArray3DGetDescriptor(CUDA_ARRAY3D_DESCRIPTOR *, CUarray);
-# 718 "/usr/local/cuda/bin/../include/cuda.h"
+# 717 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuTexRefCreate(CUtexref *);
 extern "C" CUresult cuTexRefDestroy(CUtexref);
 
@@ -6418,24 +6179,24 @@ extern "C" CUresult cuTexRefGetAddressMode(CUaddress_mode *, CUtexref, int);
 extern "C" CUresult cuTexRefGetFilterMode(CUfilter_mode *, CUtexref);
 extern "C" CUresult cuTexRefGetFormat(CUarray_format *, int *, CUtexref);
 extern "C" CUresult cuTexRefGetFlags(unsigned *, CUtexref);
-# 742 "/usr/local/cuda/bin/../include/cuda.h"
+# 741 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuParamSetSize(CUfunction, unsigned);
 extern "C" CUresult cuParamSeti(CUfunction, int, unsigned);
 extern "C" CUresult cuParamSetf(CUfunction, int, float);
 extern "C" CUresult cuParamSetv(CUfunction, int, void *, unsigned);
 extern "C" CUresult cuParamSetTexRef(CUfunction, int, CUtexref);
-# 754 "/usr/local/cuda/bin/../include/cuda.h"
+# 753 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuLaunch(CUfunction);
 extern "C" CUresult cuLaunchGrid(CUfunction, int, int);
 extern "C" CUresult cuLaunchGridAsync(CUfunction, int, int, CUstream);
-# 763 "/usr/local/cuda/bin/../include/cuda.h"
+# 762 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuEventCreate(CUevent *, unsigned);
 extern "C" CUresult cuEventRecord(CUevent, CUstream);
 extern "C" CUresult cuEventQuery(CUevent);
 extern "C" CUresult cuEventSynchronize(CUevent);
 extern "C" CUresult cuEventDestroy(CUevent);
 extern "C" CUresult cuEventElapsedTime(float *, CUevent, CUevent);
-# 775 "/usr/local/cuda/bin/../include/cuda.h"
+# 774 "/home/normal/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuStreamCreate(CUstream *, unsigned);
 extern "C" CUresult cuStreamQuery(CUstream);
 extern "C" CUresult cuStreamSynchronize(CUstream);
@@ -6538,7 +6299,7 @@ extern "C" CUTBoolean cutResetTimer(const unsigned);
 extern "C" float cutGetTimerValue(const unsigned);
 # 680 "../../sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 162 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 162 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { typedef float2 cuFloatComplex; }
 
 extern "C" { static inline float cuCrealf(cuFloatComplex x)
@@ -6577,7 +6338,7 @@ y)
 return make_cuFloatComplex(cuCrealf(x) - cuCrealf(y), cuCimagf(x) - cuCimagf(y));
 
 } }
-# 206 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 206 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuFloatComplex cuCmulf(cuFloatComplex x, cuFloatComplex
 y)
 {
@@ -6588,7 +6349,7 @@ prod = make_cuFloatComplex(cuCrealf(x) * cuCrealf(y) - cuCimagf(x) * cuCimagf(y)
 
 return prod;
 } }
-# 222 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 222 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuFloatComplex cuCdivf(cuFloatComplex x, cuFloatComplex
 y)
 {
@@ -6606,7 +6367,7 @@ quot = make_cuFloatComplex((ars * brs + ais * bis) * oos, (ais * brs - ars * bis
 
 return quot;
 } }
-# 248 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 248 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline float cuCabsf(cuFloatComplex x)
 {
 auto float a = cuCrealf(x);
@@ -6670,7 +6431,7 @@ y)
 return make_cuDoubleComplex(cuCreal(x) - cuCreal(y), cuCimag(x) - cuCimag(y));
 
 } }
-# 317 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 317 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuDoubleComplex cuCmul(cuDoubleComplex x, cuDoubleComplex
 y)
 {
@@ -6681,7 +6442,7 @@ prod = make_cuDoubleComplex(cuCreal(x) * cuCreal(y) - cuCimag(x) * cuCimag(y), c
 
 return prod;
 } }
-# 333 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 333 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuDoubleComplex cuCdiv(cuDoubleComplex x, cuDoubleComplex
 y)
 {
@@ -6698,7 +6459,7 @@ quot = make_cuDoubleComplex((ars * brs + ais * bis) * oos, (ais * brs - ars * bi
 
 return quot;
 } }
-# 356 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 356 "/home/normal/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline double cuCabs(cuDoubleComplex x)
 {
 auto double a = cuCreal(x);
@@ -6722,7 +6483,7 @@ t = v + w;
 }
 return t;
 } }
-# 387 "/usr/local/cuda/bin/../include/cuComplex.h"
+# 387 "/home/normal/cuda/bin/../include/cuComplex.h"
 typedef cuFloatComplex cuComplex;
 static inline cuComplex make_cuComplex(float x, float
 y)
@@ -6742,9 +6503,9 @@ c)
 {
 return make_cuFloatComplex((float)cuCreal(c), (float)cuCimag(c));
 }
-# 71 "/usr/local/cuda/bin/../include/cufft.h"
+# 69 "/home/normal/cuda/bin/../include/cufft.h"
 extern "C" { typedef
-# 61 "/usr/local/cuda/bin/../include/cufft.h"
+# 59 "/home/normal/cuda/bin/../include/cufft.h"
 enum cufftResult_t {
 CUFFT_SUCCESS,
 CUFFT_INVALID_PLAN,
@@ -6763,25 +6524,19 @@ CUFFT_INVALID_SIZE
 extern "C" { typedef unsigned cufftHandle; }
 
 
-
 extern "C" { typedef float cufftReal; }
-extern "C" { typedef double cufftDoubleReal; }
 
 
 
 
 extern "C" { typedef cuComplex cufftComplex; }
-extern "C" { typedef cuDoubleComplex cufftDoubleComplex; }
-# 101 "/usr/local/cuda/bin/../include/cufft.h"
+# 93 "/home/normal/cuda/bin/../include/cufft.h"
 extern "C" { typedef
-# 94 "/usr/local/cuda/bin/../include/cufft.h"
+# 89 "/home/normal/cuda/bin/../include/cufft.h"
 enum cufftType_t {
 CUFFT_R2C = 42,
 CUFFT_C2R = 44,
-CUFFT_C2C = 41,
-CUFFT_D2Z = 106,
-CUFFT_Z2D = 108,
-CUFFT_Z2Z = 105
+CUFFT_C2C = 41
 } cufftType; }
 
 extern "C" cufftResult cufftPlan1d(cufftHandle *, int, cufftType, int);
@@ -6809,23 +6564,6 @@ extern "C" cufftResult cufftExecR2C(cufftHandle, cufftReal *, cufftComplex *);
 
 
 extern "C" cufftResult cufftExecC2R(cufftHandle, cufftComplex *, cufftReal *);
-
-
-
-extern "C" cufftResult cufftExecZ2Z(cufftHandle, cufftDoubleComplex *, cufftDoubleComplex *, int);
-
-
-
-
-extern "C" cufftResult cufftExecD2Z(cufftHandle, cufftDoubleReal *, cufftDoubleComplex *);
-
-
-
-extern "C" cufftResult cufftExecZ2D(cufftHandle, cufftDoubleComplex *, cufftDoubleReal *);
-
-
-
-extern "C" cufftResult cufftSetStream(cufftHandle, cudaStream_t);
 # 44 "../../sdk/cutil_inline.h"
 inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
 bdimx, unsigned bdimy, unsigned bdimz, char *
@@ -7450,30 +7188,28 @@ __cudaSafeCallNoSync(cudaFree(d_odata), "reduction.cu", 534);
 }
 }
 
-# 1 "/tmp/tmpxft_00006e15_00000000-1_reduction.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000d07_00000000-1_reduction.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00006e15_00000000-3_reduction.fatbin.c" 1
-# 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
-# 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 1 "/tmp/tmpxft_00000d07_00000000-3_reduction.fatbin.c" 1
+# 1 "/home/normal/cuda/bin/../include/__cudaFatFormat.h" 1
+# 83 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
-# 97 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 97 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* gpuProfileName;
     char* cubin;
 } __cudaFatCubinEntry;
-# 113 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 113 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* gpuProfileName;
     char* ptx;
 } __cudaFatPtxEntry;
-# 125 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
-typedef struct __cudaFatDebugEntryRec {
+# 125 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+typedef struct {
     char* gpuProfileName;
     char* debug;
-    struct __cudaFatDebugEntryRec *next;
-    unsigned int size;
 } __cudaFatDebugEntry;
 
 
@@ -7482,11 +7218,11 @@ typedef enum {
       __cudaFatDontCacheFlag = (1 << 1),
       __cudaFatSassDebugFlag = (1 << 2)
 } __cudaFatCudaBinaryFlag;
-# 146 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 144 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* name;
 } __cudaFatSymbol;
-# 160 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 158 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct __cudaFatCudaBinaryRec {
     unsigned long magic;
     unsigned long version;
@@ -7504,19 +7240,19 @@ typedef struct __cudaFatCudaBinaryRec {
     struct __cudaFatCudaBinaryRec *dependends;
     unsigned int characteristic;
 } __cudaFatCudaBinary;
-# 196 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 194 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
     typedef enum {
         __cudaFatAvoidPTX,
         __cudaFatPreferBestCode
     } __cudaFatCompilationPolicy;
-# 219 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 217 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 void fatGetCubinForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *cubin, char* *dbgInfoFile );
-# 230 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 228 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00006e15_00000000-3_reduction.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000d07_00000000-3_reduction.fatbin.c" 2
 
 
 
@@ -7528,71 +7264,77 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6f69737265762e09ull,0x2e090a342e31206eull,0x7320746567726174ull,0x616d202c30315f6dull,
 0x6f745f3436665f70ull,0x2f2f090a3233665full,0x656c69706d6f6320ull,0x2f20687469772064ull,
 0x61636f6c2f727375ull,0x6f2f616475632f6cull,0x696c2f34366e6570ull,0x2f090a65622f2f62ull,
-0x6e65706f766e202full,0x6220332e32206363ull,0x206e6f20746c6975ull,0x2d37302d39303032ull,
-0x2d2f2f090a0a3230ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x6e65706f766e202full,0x746c697562206363ull,0x39303032206e6f20ull,0x0a0a39302d34302dull,
+0x752e206765722e09ull,0x313c617225203233ull,0x65722e090a3b3e37ull,0x25203436752e2067ull,
+0x3b3e37313c616472ull,0x2e206765722e090aull,0x3c61662520323366ull,0x722e090a3b3e3731ull,
+0x203436662e206765ull,0x3e37313c61646625ull,0x206765722e090a3bull,0x767225203233752eull,
+0x722e090a3b3e353cull,0x203436752e206765ull,0x3b3e353c76647225ull,0x2e206765722e090aull,
+0x3c76662520323366ull,0x65722e090a3b3e35ull,0x25203436662e2067ull,0x0a3b3e353c766466ull,
+0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f3531653630ull,0x372d303030303030ull,0x697463756465725full,0x2e337070632e6e6full,
-0x2f706d742f282069ull,0x34722e2349426363ull,0x2f090a2959417665ull,0x2d2d2d2d2d2d2d2full,
+0x6d6f43202f2f090aull,0x2f20676e696c6970ull,0x78706d742f706d74ull,0x30303030305f7466ull,
+0x303030305f373064ull,0x5f36312d30303030ull,0x6f69746375646572ull,0x692e337070632e6eull,
+0x632f706d742f2820ull,0x3042512e23494263ull,0x2f2f090a29733967ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f090a0a2d2d2d2dull,0x2d2d2d2d2d2d2d2full,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f2f090a0a2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f2f090a2d2d2d2dull,0x736e6f6974704f20ull,
-0x2d2d2d2f2f090a3aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x202f2f090a2d2d2dull,0x3a736e6f6974704full,
+0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,
+0x72615420202f2f09ull,0x2c7874703a746567ull,0x5f6d733a41534920ull,0x69646e45202c3031ull,
+0x6c7474696c3a6e61ull,0x746e696f50202c65ull,0x3a657a6953207265ull,0x20202f2f090a3436ull,
+0x74704f2809334f2dull,0x6f6974617a696d69ull,0x296c6576656c206eull,0x672d20202f2f090aull,
+0x6775626544280930ull,0x0a296c6576656c20ull,0x326d2d20202f2f09ull,0x74726f7065522809ull,
+0x726f736976646120ull,0x2f2f090a29736569ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x615420202f2f090aull,0x7874703a74656772ull,0x6d733a415349202cull,0x646e45202c30315full,
-0x7474696c3a6e6169ull,0x6e696f50202c656cull,0x657a695320726574ull,0x202f2f090a32333aull,
-0x704f2809334f2d20ull,0x6974617a696d6974ull,0x6c6576656c206e6full,0x2d20202f2f090a29ull,
-0x7562654428093067ull,0x296c6576656c2067ull,0x6d2d20202f2f090aull,0x726f706552280932ull,
-0x6f73697664612074ull,0x2f090a2973656972ull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2e090a0a2d2d2d2dull,0x22093109656c6966ull,0x646e616d6d6f633cull,
-0x0a223e656e696c2dull,0x3209656c69662e09ull,0x742f706d742f2209ull,0x30305f746678706dull,
-0x305f353165363030ull,0x2d30303030303030ull,0x7463756465725f36ull,0x616475632e6e6f69ull,
+0x2d2d2d2d2d2d2d2dull,0x662e090a0a2d2d2dull,0x3c22093109656c69ull,0x2d646e616d6d6f63ull,
+0x090a223e656e696cull,0x093209656c69662eull,0x6d742f706d742f22ull,0x3030305f74667870ull,
+0x30305f3730643030ull,0x312d303030303030ull,0x7463756465725f35ull,0x616475632e6e6f69ull,
 0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,0x2f6363672f62696cull,
-0x6e696c2d36383469ull,0x342f756e672d7875ull,0x636e692f332e332eull,0x6474732f6564756cull,
-0x090a22682e666564ull,0x093409656c69662eull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,
-0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x697665642f747263ull,0x69746e75725f6563ull,
-0x2e090a22682e656dull,0x22093509656c6966ull,0x636f6c2f7273752full,0x2f616475632f6c61ull,
-0x692f2e2e2f6e6962ull,0x682f6564756c636eull,0x696665645f74736full,0x090a22682e73656eull,
-0x093609656c69662eull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,0x2f2e2e2f6e69622full,
-0x2f6564756c636e69ull,0x5f6e69746c697562ull,0x22682e7365707974ull,0x09656c69662e090aull,
-0x2f7273752f220937ull,0x75632f6c61636f6cull,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,
-0x6563697665642f65ull,0x682e73657079745full,0x656c69662e090a22ull,0x7273752f22093809ull,
-0x632f6c61636f6c2full,0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x65766972642f6564ull,
-0x2e73657079745f72ull,0x6c69662e090a2268ull,0x73752f2209390965ull,0x2f6c61636f6c2f72ull,
-0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x747865742f656475ull,0x657079745f657275ull,
-0x662e090a22682e73ull,0x2209303109656c69ull,0x636f6c2f7273752full,0x2f616475632f6c61ull,
-0x692f2e2e2f6e6962ull,0x762f6564756c636eull,0x79745f726f746365ull,0x090a22682e736570ull,
-0x313109656c69662eull,0x6c2f7273752f2209ull,0x6475632f6c61636full,0x2e2e2f6e69622f61ull,
-0x6564756c636e692full,0x5f6563697665642full,0x705f68636e75616cull,0x726574656d617261ull,
-0x662e090a22682e73ull,0x2209323109656c69ull,0x636f6c2f7273752full,0x2f616475632f6c61ull,
-0x692f2e2e2f6e6962ull,0x632f6564756c636eull,0x61726f74732f7472ull,0x7373616c635f6567ull,
-0x69662e090a22682eull,0x2f2209333109656cull,0x6c636e692f727375ull,0x737469622f656475ull,
-0x682e73657079742full,0x656c69662e090a22ull,0x73752f2209343109ull,0x64756c636e692f72ull,
-0x682e656d69742f65ull,0x656c69662e090a22ull,0x73752f2209353109ull,0x2f6c61636f6c2f72ull,
-0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x6d6d6f632f656475ull,0x74636e75665f6e6full,
-0x0a22682e736e6f69ull,0x3109656c69662e09ull,0x2f7273752f220936ull,0x75632f6c61636f6cull,
-0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x75662f7472632f65ull,0x6f7263616d5f636eull,
-0x69662e090a22682eull,0x2f2209373109656cull,0x61636f6c2f727375ull,0x622f616475632f6cull,
-0x6e692f2e2e2f6e69ull,0x616d2f6564756c63ull,0x74636e75665f6874ull,0x0a22682e736e6f69ull,
-0x3109656c69662e09ull,0x2f7273752f220938ull,0x75632f6c61636f6cull,0x2e2f6e69622f6164ull,
-0x64756c636e692f2eull,0x6563697665642f65ull,0x6f6974636e75665full,0x2e090a22682e736eull,
-0x09393109656c6966ull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,0x2f2e2e2f6e69622full,
-0x2f6564756c636e69ull,0x6e6f635f6874616dull,0x682e73746e617473ull,0x656c69662e090a22ull,
-0x73752f2209303209ull,0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,0x6c636e692f2e2e2full,
+0x6c2d34365f363878ull,0x756e672d78756e69ull,0x692f332e332e342full,0x732f6564756c636eull,
+0x22682e6665646474ull,0x09656c69662e090aull,0x656d6f682f220934ull,0x2f6c616d726f6e2full,
+0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x2f7472632f656475ull,0x725f656369766564ull,
+0x682e656d69746e75ull,0x656c69662e090a22ull,0x6d6f682f22093509ull,0x6c616d726f6e2f65ull,
+0x69622f616475632full,0x636e692f2e2e2f6eull,0x736f682f6564756cull,0x656e696665645f74ull,
+0x662e090a22682e73ull,0x2f22093609656c69ull,0x726f6e2f656d6f68ull,0x616475632f6c616dull,
+0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x5f6e69746c697562ull,0x22682e7365707974ull,
+0x09656c69662e090aull,0x656d6f682f220937ull,0x2f6c616d726f6e2full,0x6e69622f61647563ull,
+0x6c636e692f2e2e2full,0x697665642f656475ull,0x73657079745f6563ull,0x69662e090a22682eull,
+0x682f22093809656cull,0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,
+0x642f6564756c636eull,0x79745f7265766972ull,0x090a22682e736570ull,0x093909656c69662eull,
+0x6e2f656d6f682f22ull,0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,
+0x7275747865742f65ull,0x2e73657079745f65ull,0x6c69662e090a2268ull,0x682f220930310965ull,
+0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x762f6564756c636eull,
+0x79745f726f746365ull,0x090a22682e736570ull,0x313109656c69662eull,0x2f656d6f682f2209ull,
+0x632f6c616d726f6eull,0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x63697665642f6564ull,
+0x68636e75616c5f65ull,0x74656d617261705full,0x090a22682e737265ull,0x323109656c69662eull,
+0x2f656d6f682f2209ull,0x632f6c616d726f6eull,0x2f6e69622f616475ull,0x756c636e692f2e2eull,
+0x732f7472632f6564ull,0x635f656761726f74ull,0x0a22682e7373616cull,0x3109656c69662e09ull,
+0x2f7273752f220933ull,0x2f6564756c636e69ull,0x7079742f73746962ull,0x2e090a22682e7365ull,
+0x09343109656c6966ull,0x6e692f7273752f22ull,0x69742f6564756c63ull,0x2e090a22682e656dull,
+0x09353109656c6966ull,0x6e2f656d6f682f22ull,0x75632f6c616d726full,0x2e2f6e69622f6164ull,
+0x64756c636e692f2eull,0x6e6f6d6d6f632f65ull,0x6f6974636e75665full,0x2e090a22682e736eull,
+0x09363109656c6966ull,0x6e2f656d6f682f22ull,0x75632f6c616d726full,0x2e2f6e69622f6164ull,
+0x64756c636e692f2eull,0x75662f7472632f65ull,0x6f7263616d5f636eull,0x69662e090a22682eull,
+0x2f2209373109656cull,0x726f6e2f656d6f68ull,0x616475632f6c616dull,0x2f2e2e2f6e69622full,
+0x2f6564756c636e69ull,0x6e75665f6874616dull,0x682e736e6f697463ull,0x656c69662e090a22ull,
+0x6f682f2209383109ull,0x616d726f6e2f656dull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,
+0x65642f6564756c63ull,0x6e75665f65636976ull,0x682e736e6f697463ull,0x656c69662e090a22ull,
+0x6f682f2209393109ull,0x616d726f6e2f656dull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,
+0x616d2f6564756c63ull,0x74736e6f635f6874ull,0x0a22682e73746e61ull,0x3209656c69662e09ull,
+0x656d6f682f220930ull,0x2f6c616d726f6e2full,0x6e69622f61647563ull,0x6c636e692f2e2e2full,
 0x315f6d732f656475ull,0x63696d6f74615f31ull,0x6f6974636e75665full,0x2e090a22682e736eull,
-0x09313209656c6966ull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,0x2f2e2e2f6e69622full,
-0x2f6564756c636e69ull,0x74615f32315f6d73ull,0x6e75665f63696d6full,0x682e736e6f697463ull,
-0x656c69662e090a22ull,0x73752f2209323209ull,0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,
-0x6c636e692f2e2e2full,0x315f6d732f656475ull,0x656c62756f645f33ull,0x6f6974636e75665full,
-0x2e090a22682e736eull,0x09333209656c6966ull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,
-0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x745f6e6f6d6d6f63ull,0x0a22682e73657079ull,
-0x3209656c69662e09ull,0x2f7273752f220934ull,0x75632f6c61636f6cull,0x2e2f6e69622f6164ull,
-0x64756c636e692f2eull,0x7275747865742f65ull,0x5f68637465665f65ull,0x6e6f6974636e7566ull,
-0x662e090a22682e73ull,0x2209353209656c69ull,0x636f6c2f7273752full,0x2f616475632f6c61ull,
-0x692f2e2e2f6e6962ull,0x6d2f6564756c636eull,0x636e75665f687461ull,0x62645f736e6f6974ull,
-0x682e317874705f6cull,0x000000000a0a0a22ull
+0x09313209656c6966ull,0x6e2f656d6f682f22ull,0x75632f6c616d726full,0x2e2f6e69622f6164ull,
+0x64756c636e692f2eull,0x5f32315f6d732f65ull,0x665f63696d6f7461ull,0x736e6f6974636e75ull,
+0x69662e090a22682eull,0x2f2209323209656cull,0x726f6e2f656d6f68ull,0x616475632f6c616dull,
+0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x6f645f33315f6d73ull,0x6e75665f656c6275ull,
+0x682e736e6f697463ull,0x656c69662e090a22ull,0x6f682f2209333209ull,0x616d726f6e2f656dull,
+0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x6f632f6564756c63ull,0x7079745f6e6f6d6dull,
+0x2e090a22682e7365ull,0x09343209656c6966ull,0x6e2f656d6f682f22ull,0x75632f6c616d726full,
+0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x7275747865742f65ull,0x5f68637465665f65ull,
+0x6e6f6974636e7566ull,0x662e090a22682e73ull,0x2209353209656c69ull,0x6f6e2f656d6f682full,
+0x6475632f6c616d72ull,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x75665f6874616d2full,
+0x5f736e6f6974636eull,0x317874705f6c6264ull,0x00000a0a0a22682eull
 };
 
 
@@ -7606,10 +7348,10 @@ extern "C" {
 static const unsigned long long __deviceText_$sm_10$[] = {
 0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d30315full,0x206e6f6973726576ull,
 0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
-0x20656d616e090a7bull,0x616475635f5f203dull,0x655f796d6d75645full,0x090a5f5f7972746eull,
-0x30203d206d656d6cull,0x3d206d656d73090aull,0x20676572090a3020ull,0x6162090a30203d20ull,
-0x090a30203d202072ull,0x2065646f636e6962ull,0x3066783009090a7bull,0x3020313030303030ull,
-0x3030303030306578ull,0x0a7d0a7d090a2031ull,0x0000000000000000ull
+0x20656d616e090a7bull,0x6d6d75645f5f203dull,0x5f7972746e655f79ull,0x206d656d6c090a5full,
+0x656d73090a30203dull,0x72090a30203d206dull,0x0a30203d20206765ull,0x203d202072616209ull,
+0x6f636e6962090a30ull,0x3009090a7b206564ull,0x3030303030306678ull,0x3030306578302031ull,
+0x7d090a2031303030ull,0x00000000000a7d0aull
 };
 
 
@@ -7618,17 +7360,17 @@ static const unsigned long long __deviceText_$sm_10$[] = {
 
 static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_10",(char*)__deviceText_$sm_10$},{0,0}};
-static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
+static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"405b4751bab279ee",(char*)"reduction.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x1e89ac6f};
-# 5 "/tmp/tmpxft_00006e15_00000000-1_reduction.cudafe1.stub.c" 2
-# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
-# 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
-# 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
-# 113 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 139 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"007da8fa9634c447",(char*)"reduction.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0x27bbc0ac};
+# 5 "/tmp/tmpxft_00000d07_00000000-1_reduction.cudafe1.stub.c" 2
+# 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1
+# 85 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
+# 1 "/home/normal/cuda/bin/../include/host_defines.h" 1
+# 86 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
+# 111 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
 
 
@@ -7658,15 +7400,6 @@ extern void __cudaRegisterTexture(
   const char *deviceName,
         int dim,
         int norm,
-        int ext
-);
-
-extern void __cudaRegisterSurface(
-        void **fatCubinHandle,
-  const struct surfaceReference *hostVar,
-  const void **deviceAddress,
-  const char *deviceName,
-        int dim,
         int ext
 );
 
@@ -7716,42 +7449,42 @@ static void __cudaUnregisterBinaryUtil(void)
 {
   __cudaUnregisterFatBinary(__cudaFatCubinHandle);
 }
-# 274 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
-# 1 "/usr/local/cuda/bin/../include/common_functions.h" 1
-# 68 "/usr/local/cuda/bin/../include/common_functions.h"
-# 1 "/usr/local/cuda/bin/../include/crt/func_macro.h" 1 3
-# 69 "/usr/local/cuda/bin/../include/common_functions.h" 2
+# 226 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
+# 1 "/home/normal/cuda/bin/../include/common_functions.h" 1
+# 68 "/home/normal/cuda/bin/../include/common_functions.h"
+# 1 "/home/normal/cuda/bin/../include/crt/func_macro.h" 1 3
+# 69 "/home/normal/cuda/bin/../include/common_functions.h" 2
 
-static __attribute__((__unused__)) clock_t __cuda_clock(void)
+static clock_t __cuda_clock(void)
 {
   return clock();
 }
 
-static __attribute__((__unused__)) void *__cuda_memset(void *s, int c, size_t n)
+static void *__cuda_memset(void *s, int c, size_t n)
 {
   return memset(s, c, n);
 }
 
-static __attribute__((__unused__)) void *__cuda_memcpy(void *d, const void *s, size_t n)
+static void *__cuda_memcpy(void *d, const void *s, size_t n)
 {
   return memcpy(d, s, n);
 }
-# 93 "/usr/local/cuda/bin/../include/common_functions.h"
-# 1 "/usr/local/cuda/bin/../include/math_functions.h" 1 3
-# 912 "/usr/local/cuda/bin/../include/math_functions.h" 3
-int __cuda_error_not_implememted(void);
-# 972 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static __attribute__((__unused__)) int __cuda_abs(int a)
+# 93 "/home/normal/cuda/bin/../include/common_functions.h"
+# 1 "/home/normal/cuda/bin/../include/math_functions.h" 1 3
+# 864 "/home/normal/cuda/bin/../include/math_functions.h" 3
+extern __attribute__((__weak__)) int __cuda_error_not_implememted(void); int __cuda_error_not_implememted(void);
+# 920 "/home/normal/cuda/bin/../include/math_functions.h" 3
+static int __cuda_abs(int a)
 {
   return abs(a);
 }
 
-static __attribute__((__unused__)) float __cuda_fabsf(float a)
+static float __cuda_fabsf(float a)
 {
   return fabsf(a);
 }
 
-static __attribute__((__unused__)) long long int __cuda_llabs(long long int a)
+static long long int __cuda_llabs(long long int a)
 {
 
   return ::llabs(a);
@@ -7760,18 +7493,18 @@ static __attribute__((__unused__)) long long int __cuda_llabs(long long int a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_exp2f(float a)
+static float __cuda_exp2f(float a)
 {
   return exp2f(a);
 }
 
-# 1 "/usr/local/cuda/bin/../include/device_functions.h" 1 3
-# 442 "/usr/local/cuda/bin/../include/device_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_constants.h" 1 3
-# 443 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 2384 "/usr/local/cuda/bin/../include/device_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/common_types.h" 1 3
-# 37 "/usr/local/cuda/bin/../include/common_types.h" 3
+# 1 "/home/normal/cuda/bin/../include/device_functions.h" 1 3
+# 426 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 1 "/home/normal/cuda/bin/../include/math_constants.h" 1 3
+# 427 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 2367 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 1 "/home/normal/cuda/bin/../include/common_types.h" 1 3
+# 37 "/home/normal/cuda/bin/../include/common_types.h" 3
 union __cudart_FloatUintCvt {
     float f;
     unsigned int i;
@@ -7801,7 +7534,7 @@ struct __cudart_UintUint {
     unsigned int lo;
     unsigned int hi;
 };
-# 2385 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 2368 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
 
 static const unsigned char __internal_rcpTab[128] =
 {
@@ -7851,7 +7584,7 @@ static const unsigned int __internal_invSqrtCubeTab[96] =
   0x21860882, 0x20c18081, 0x20c18081, 0x20000080
 };
 
-static __attribute__((__unused__)) float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
+static float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
 {
   unsigned long long prod;
   volatile union __cudart_FloatUintCvt arg;
@@ -7958,7 +7691,7 @@ static __attribute__((__unused__)) float __internal_frcp_kernel (float x,enum cu
   }
 }
 
-static __attribute__((__unused__)) float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
+static float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
 
 {
   unsigned long long prod;
@@ -8040,7 +7773,7 @@ static __attribute__((__unused__)) float __internal_fsqrt_kernel (float radicand
   }
 }
 
-static __attribute__((__unused__)) float __internal_fdiv_kernel (float dividend, float divisor, enum cudaRoundMode mode)
+static float __internal_fdiv_kernel (float dividend, float divisor, enum cudaRoundMode mode)
 
 {
   unsigned long long prod;
@@ -8355,11 +8088,12 @@ divide:
   }
 }
 
-static __attribute__((__unused__)) float __internal_fmul_kernel (float a, float b, enum cudaRoundMode mode)
+static float __internal_fmul_kernel2 (float a, float b, enum cudaRoundMode mode)
 
 {
   unsigned long long product;
   volatile union __cudart_FloatUintCvt xx, yy;
+
   unsigned expo_x, expo_y;
 
   xx.f = a;
@@ -8530,7 +8264,7 @@ multiply:
   }
 }
 
-static __attribute__((__unused__)) float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMode mode)
+static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMode mode)
 
 {
   unsigned long long product;
@@ -8570,7 +8304,7 @@ static __attribute__((__unused__)) float __internal_fmaf_kernel (float a, float 
     if ((xx << 1) > 0xff000000) {
       return a + a;
     }
-# 3164 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 3148 "/home/normal/cuda/bin/../include/device_functions.h" 3
     if ((((xx << 1) == 0) && ((yy << 1) == 0xff000000)) ||
         (((yy << 1) == 0) && ((xx << 1) == 0xff000000))) {
       cvt.i = 0xffc00000;
@@ -8841,7 +8575,8 @@ static __attribute__((__unused__)) float __internal_fmaf_kernel (float a, float 
   return cvt.f;
 }
 
-static __attribute__((__unused__)) float __internal_fadd_kernel (float a, float b, enum cudaRoundMode mode)
+
+static float __internal_fadd_kernel2 (float a, float b, enum cudaRoundMode mode)
 
 {
   volatile union __cudart_FloatUintCvt xx, yy;
@@ -8888,14 +8623,10 @@ add:
       if (xx.i & 0x00800000) {
         if (expo_x <= 0xFD) {
           xx.i = xx.i + (expo_x << 23);
-          if (mode == cudaRoundNearest) {
-            if (temp < 0x80000000) return xx.f;
-            xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
-          } else if (mode == cudaRoundZero) {
+          if (mode == cudaRoundMinInf) {
+            xx.i += (temp && (xx.i & 0x80000000));
           } else if (mode == cudaRoundPosInf) {
             xx.i += (temp && !(xx.i & 0x80000000));
-          } else if (mode == cudaRoundMinInf) {
-            xx.i += (temp && (xx.i & 0x80000000));
           }
           return xx.f;
         }
@@ -8904,7 +8635,7 @@ add:
 
           if (mode == cudaRoundMinInf) {
             xx.i = 0x80000000;
-          } else {
+          } else if (mode == cudaRoundPosInf) {
             xx.i = 0;
           }
           return xx.f;
@@ -8926,14 +8657,10 @@ add:
       if (!(xx.i & 0x01000000)) {
         if (expo_x <= 0xFD) {
           xx.i = xx.i + (expo_x << 23);
-          if (mode == cudaRoundNearest) {
-            if (temp < 0x80000000) return xx.f;
-            xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
-          } else if (mode == cudaRoundZero) {
+          if (mode == cudaRoundMinInf) {
+            xx.i += (temp && (xx.i & 0x80000000));
           } else if (mode == cudaRoundPosInf) {
             xx.i += (temp && !(xx.i & 0x80000000));
-          } else if (mode == cudaRoundMinInf) {
-            xx.i += (temp && (xx.i & 0x80000000));
           }
           return xx.f;
         }
@@ -8945,26 +8672,18 @@ add:
       }
     }
     if (expo_x <= 0xFD) {
-      xx.i = xx.i + (expo_x << 23);
-      if (mode == cudaRoundNearest) {
-        if (temp < 0x80000000) return xx.f;
-        xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
-      } else if (mode == cudaRoundZero) {
+      if (mode == cudaRoundMinInf) {
+        xx.i += (temp && (xx.i & 0x80000000));
       } else if (mode == cudaRoundPosInf) {
         xx.i += (temp && !(xx.i & 0x80000000));
-      } else if (mode == cudaRoundMinInf) {
-        xx.i += (temp && (xx.i & 0x80000000));
       }
+      xx.i = xx.i + (expo_x << 23);
       return xx.f;
     }
     if ((int)expo_x >= 254) {
 
       temp = xx.i & 0x80000000;
-      if (mode == cudaRoundNearest) {
-        xx.i = (temp) | 0x7f800000;
-      } else if (mode == cudaRoundZero) {
-        xx.i = (temp) | 0x7f7fffff;
-      } else if (mode == cudaRoundMinInf) {
+      if (mode == cudaRoundMinInf) {
         xx.i = (temp ? 0xFF800000 : 0x7f7fffff);
       } else if (mode == cudaRoundPosInf) {
         xx.i = (temp ? 0xff7fffff : 0x7F800000);
@@ -8978,13 +8697,10 @@ add:
     expo_x = (unsigned)(-((int)expo_x));
     temp = xx.i << expo_y | ((temp) ? 1 : 0);
     xx.i = yy.i | (xx.i >> expo_x);
-    if (mode == cudaRoundNearest) {
-      xx.i += (temp == 0x80000000) ? (xx.i & 1) : (temp >> 31);
-    } else if (mode == cudaRoundZero) {
+    if (mode == cudaRoundMinInf) {
+      xx.i += (temp && yy.i);
     } else if (mode == cudaRoundPosInf) {
       xx.i += (temp && !yy.i);
-    } else if (mode == cudaRoundMinInf) {
-      xx.i += (temp && yy.i);
     }
     return xx.f;
   } else {
@@ -8994,7 +8710,7 @@ add:
         if (!(xx.i << 1)) {
           xx.i = xx.i | yy.i;
         }
-      } else {
+      } else if (mode == cudaRoundPosInf) {
         if (xx.i == 0x80000000) {
           xx.i = yy.i;
         }
@@ -9059,128 +8775,128 @@ add:
   }
 }
 
-static __attribute__((__unused__)) float __frcp_rn (float a)
+static float __frcp_rn (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) float __frcp_rz (float a)
+static float __frcp_rz (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) float __frcp_rd (float a)
+static float __frcp_rd (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __frcp_ru (float a)
+static float __frcp_ru (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __fsqrt_rn (float a)
+static float __fsqrt_rn (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) float __fsqrt_rz (float a)
+static float __fsqrt_rz (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) float __fsqrt_rd (float a)
+static float __fsqrt_rd (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __fsqrt_ru (float a)
+static float __fsqrt_ru (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __fdiv_rn (float a, float b)
+static float __fdiv_rn (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) float __fdiv_rz (float a, float b)
+static float __fdiv_rz (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) float __fdiv_rd (float a, float b)
+static float __fdiv_rd (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __fdiv_ru (float a, float b)
+static float __fdiv_ru (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __fadd_rd (float a, float b)
+static float __fadd_rd (float a, float b)
 {
-  return __internal_fadd_kernel (a, b, cudaRoundMinInf);
+  return __internal_fadd_kernel2 (a, b, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __fadd_ru (float a, float b)
+static float __fadd_ru (float a, float b)
 {
-  return __internal_fadd_kernel (a, b, cudaRoundPosInf);
+  return __internal_fadd_kernel2 (a, b, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __fmul_rd (float a, float b)
+static float __fmul_rd (float a, float b)
 {
-  return __internal_fmul_kernel (a, b, cudaRoundMinInf);
+  return __internal_fmul_kernel2 (a, b, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __fmul_ru (float a, float b)
+static float __fmul_ru (float a, float b)
 {
-  return __internal_fmul_kernel (a, b, cudaRoundPosInf);
+  return __internal_fmul_kernel2 (a, b, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __fmaf_rn (float a, float b, float c)
+static float __fmaf_rn (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) float __fmaf_rz (float a, float b, float c)
+static float __fmaf_rz (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) float __fmaf_ru (float a, float b, float c)
+static float __fmaf_ru (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __fmaf_rd (float a, float b, float c)
+static float __fmaf_rd (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) int __cuda___isnan(double a);
-static __attribute__((__unused__)) int __cuda___isnanf(float a);
-static __attribute__((__unused__)) int __double2int_rz(double);
-static __attribute__((__unused__)) unsigned int __double2uint_rz(double);
-static __attribute__((__unused__)) long long int __double2ll_rz(double);
-static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double);
-# 3771 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static __attribute__((__unused__)) int __mulhi(int a, int b)
+static int __cuda___isnan(double a);
+static int __cuda___isnanf(float a);
+static int __double2int_rz(double);
+static unsigned int __double2uint_rz(double);
+static long long int __double2ll_rz(double);
+static unsigned long long int __double2ull_rz(double);
+# 3737 "/home/normal/cuda/bin/../include/device_functions.h" 3
+static int __mulhi(int a, int b)
 {
   long long int c = (long long int)a * (long long int)b;
 
   return (int)(c >> 32);
 }
 
-static __attribute__((__unused__)) unsigned int __umulhi(unsigned int a, unsigned int b)
+static unsigned int __umulhi(unsigned int a, unsigned int b)
 {
   unsigned long long int c = (unsigned long long int)a * (unsigned long long int)b;
 
   return (unsigned int)(c >> 32);
 }
 
-static __attribute__((__unused__)) unsigned long long int __umul64hi(unsigned long long int a, unsigned long long int b)
+static unsigned long long int __umul64hi(unsigned long long int a, unsigned long long int b)
 {
   unsigned int a_lo = (unsigned int)a;
   unsigned long long int a_hi = a >> 32;
@@ -9195,7 +8911,7 @@ static __attribute__((__unused__)) unsigned long long int __umul64hi(unsigned lo
   return a_hi * b_hi + (m1 >> 32) + (m2 >> 32) + carry;
 }
 
-static __attribute__((__unused__)) long long int __mul64hi(long long int a, long long int b)
+static long long int __mul64hi(long long int a, long long int b)
 {
   long long int res;
   res = __umul64hi(a, b);
@@ -9204,27 +8920,27 @@ static __attribute__((__unused__)) long long int __mul64hi(long long int a, long
   return res;
 }
 
-static __attribute__((__unused__)) float __saturatef(float a)
+static float __saturatef(float a)
 {
   if (__cuda___isnanf(a)) return 0.0f;
   return a >= 1.0f ? 1.0f : a <= 0.0f ? 0.0f : a;
 }
 
-static __attribute__((__unused__)) unsigned int __sad(int a, int b, unsigned int c)
+static unsigned int __sad(int a, int b, unsigned int c)
 {
   long long int diff = (long long int)a - (long long int)b;
 
   return (unsigned int)(__cuda_llabs(diff) + (long long int)c);
 }
 
-static __attribute__((__unused__)) unsigned int __usad(unsigned int a, unsigned int b, unsigned int c)
+static unsigned int __usad(unsigned int a, unsigned int b, unsigned int c)
 {
   long long int diff = (long long int)a - (long long int)b;
 
   return (unsigned int)(__cuda_llabs(diff) + (long long int)c);
 }
 
-static __attribute__((__unused__)) int __mul24(int a, int b)
+static int __mul24(int a, int b)
 {
 
   a &= 0xffffff;
@@ -9236,7 +8952,7 @@ static __attribute__((__unused__)) int __mul24(int a, int b)
   return a * b;
 }
 
-static __attribute__((__unused__)) unsigned int __umul24(unsigned int a, unsigned int b)
+static unsigned int __umul24(unsigned int a, unsigned int b)
 {
 
   a &= 0xffffff;
@@ -9246,7 +8962,7 @@ static __attribute__((__unused__)) unsigned int __umul24(unsigned int a, unsigne
   return a * b;
 }
 
-static __attribute__((__unused__)) float __int_as_float(int a)
+static float __int_as_float(int a)
 {
   volatile union __cudart_FloatIntCvt u;
 
@@ -9254,7 +8970,7 @@ static __attribute__((__unused__)) float __int_as_float(int a)
   return u.f;
 }
 
-static __attribute__((__unused__)) int __float_as_int(float a)
+static int __float_as_int(float a)
 {
   volatile union __cudart_FloatIntCvt u;
 
@@ -9262,7 +8978,7 @@ static __attribute__((__unused__)) int __float_as_int(float a)
   return u.i;
 }
 
-static __attribute__((__unused__)) long long int __internal_float2ll_kernel(float a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
+static long long int __internal_float2ll_kernel(float a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
 {
   unsigned long long int res, t = 0ULL;
   int shift;
@@ -9292,12 +9008,12 @@ static __attribute__((__unused__)) long long int __internal_float2ll_kernel(floa
   return (long long int)res;
 }
 
-static __attribute__((__unused__)) int __internal_float2int(float a, enum cudaRoundMode rndMode)
+static int __internal_float2int(float a, enum cudaRoundMode rndMode)
 {
   return (int)__internal_float2ll_kernel(a, 2147483647LL, -2147483648LL, 0LL, rndMode);
 }
 
-static __attribute__((__unused__)) int __float2int_rz(float a)
+static int __float2int_rz(float a)
 {
 
 
@@ -9306,27 +9022,27 @@ static __attribute__((__unused__)) int __float2int_rz(float a)
 
 }
 
-static __attribute__((__unused__)) int __float2int_ru(float a)
+static int __float2int_ru(float a)
 {
   return __internal_float2int(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) int __float2int_rd(float a)
+static int __float2int_rd(float a)
 {
   return __internal_float2int(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) int __float2int_rn(float a)
+static int __float2int_rn(float a)
 {
   return __internal_float2int(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) long long int __internal_float2ll(float a, enum cudaRoundMode rndMode)
+static long long int __internal_float2ll(float a, enum cudaRoundMode rndMode)
 {
   return __internal_float2ll_kernel(a, 9223372036854775807LL, -9223372036854775807LL -1LL, -9223372036854775807LL -1LL, rndMode);
 }
 
-static __attribute__((__unused__)) long long int __float2ll_rz(float a)
+static long long int __float2ll_rz(float a)
 {
 
 
@@ -9335,22 +9051,22 @@ static __attribute__((__unused__)) long long int __float2ll_rz(float a)
 
 }
 
-static __attribute__((__unused__)) long long int __float2ll_ru(float a)
+static long long int __float2ll_ru(float a)
 {
   return __internal_float2ll(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) long long int __float2ll_rd(float a)
+static long long int __float2ll_rd(float a)
 {
   return __internal_float2ll(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) long long int __float2ll_rn(float a)
+static long long int __float2ll_rn(float a)
 {
   return __internal_float2ll(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) unsigned long long int __internal_float2ull_kernel(float a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
+static unsigned long long int __internal_float2ull_kernel(float a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
 {
   unsigned long long int res, t = 0ULL;
   int shift;
@@ -9376,12 +9092,12 @@ static __attribute__((__unused__)) unsigned long long int __internal_float2ull_k
   return res;
 }
 
-static __attribute__((__unused__)) unsigned int __internal_float2uint(float a, enum cudaRoundMode rndMode)
+static unsigned int __internal_float2uint(float a, enum cudaRoundMode rndMode)
 {
   return (unsigned int)__internal_float2ull_kernel(a, 4294967295U, 0U, rndMode);
 }
 
-static __attribute__((__unused__)) unsigned int __float2uint_rz(float a)
+static unsigned int __float2uint_rz(float a)
 {
 
 
@@ -9390,27 +9106,27 @@ static __attribute__((__unused__)) unsigned int __float2uint_rz(float a)
 
 }
 
-static __attribute__((__unused__)) unsigned int __float2uint_ru(float a)
+static unsigned int __float2uint_ru(float a)
 {
   return __internal_float2uint(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) unsigned int __float2uint_rd(float a)
+static unsigned int __float2uint_rd(float a)
 {
   return __internal_float2uint(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) unsigned int __float2uint_rn(float a)
+static unsigned int __float2uint_rn(float a)
 {
   return __internal_float2uint(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) unsigned long long int __internal_float2ull(float a, enum cudaRoundMode rndMode)
+static unsigned long long int __internal_float2ull(float a, enum cudaRoundMode rndMode)
 {
   return __internal_float2ull_kernel(a, 18446744073709551615ULL, 9223372036854775808ULL, rndMode);
 }
 
-static __attribute__((__unused__)) unsigned long long int __float2ull_rz(float a)
+static unsigned long long int __float2ull_rz(float a)
 {
 
 
@@ -9419,22 +9135,22 @@ static __attribute__((__unused__)) unsigned long long int __float2ull_rz(float a
 
 }
 
-static __attribute__((__unused__)) unsigned long long int __float2ull_ru(float a)
+static unsigned long long int __float2ull_ru(float a)
 {
   return __internal_float2ull(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) unsigned long long int __float2ull_rd(float a)
+static unsigned long long int __float2ull_rd(float a)
 {
   return __internal_float2ull(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) unsigned long long int __float2ull_rn(float a)
+static unsigned long long int __float2ull_rn(float a)
 {
   return __internal_float2ull(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) int __internal_normalize64(unsigned long long int *a)
+static int __internal_normalize64(unsigned long long int *a)
 {
   int lz = 0;
 
@@ -9465,7 +9181,7 @@ static __attribute__((__unused__)) int __internal_normalize64(unsigned long long
   return lz;
 }
 
-static __attribute__((__unused__)) int __internal_normalize(unsigned int *a)
+static int __internal_normalize(unsigned int *a)
 {
   unsigned long long int t = (unsigned long long int)*a;
   int lz = __internal_normalize64(&t);
@@ -9475,7 +9191,7 @@ static __attribute__((__unused__)) int __internal_normalize(unsigned int *a)
   return lz - 32;
 }
 
-static __attribute__((__unused__)) float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
+static float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_FloatUintCvt res;
   int shift;
@@ -9500,22 +9216,22 @@ static __attribute__((__unused__)) float __internal_int2float_kernel(int a, enum
   return res.f;
 }
 
-static __attribute__((__unused__)) float __int2float_rz(int a)
+static float __int2float_rz(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) float __int2float_ru(int a)
+static float __int2float_ru(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __int2float_rd(int a)
+static float __int2float_rd(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __int2float_rn(int a)
+static float __int2float_rn(int a)
 {
 
 
@@ -9524,7 +9240,7 @@ static __attribute__((__unused__)) float __int2float_rn(int a)
 
 }
 
-static __attribute__((__unused__)) float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
+static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_FloatUintCvt res;
   int shift;
@@ -9535,7 +9251,7 @@ static __attribute__((__unused__)) float __internal_uint2float_kernel(unsigned i
   t = res.i << 24;
   res.i = (res.i >> 8);
   res.i += (127 + 30 - shift) << 23;
-  if (rndMode == cudaRoundNearest) {
+  if ((rndMode == cudaRoundNearest) && (t >= 0x80000000)) {
     res.i += (t == 0x80000000) ? (res.i & 1) : (t >> 31);
   }
   else if ((rndMode == cudaRoundPosInf) && t) {
@@ -9544,22 +9260,22 @@ static __attribute__((__unused__)) float __internal_uint2float_kernel(unsigned i
   return res.f;
 }
 
-static __attribute__((__unused__)) float __uint2float_rz(unsigned int a)
+static float __uint2float_rz(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) float __uint2float_ru(unsigned int a)
+static float __uint2float_ru(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) float __uint2float_rd(unsigned int a)
+static float __uint2float_rd(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) float __uint2float_rn(unsigned int a)
+static float __uint2float_rn(unsigned int a)
 {
 
 
@@ -9568,13 +9284,16 @@ static __attribute__((__unused__)) float __uint2float_rn(unsigned int a)
 
 }
 
-static __attribute__((__unused__)) float __ll2float_rn(long long int a)
+static float __ll2float_rn(long long int a)
 {
   return (float)a;
 }
 
-static __attribute__((__unused__)) float __internal_ull2float_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
+static float __ull2float_rn(unsigned long long int a)
 {
+
+
+
   unsigned long long int temp;
   unsigned int res, t;
   int shift;
@@ -9585,202 +9304,418 @@ static __attribute__((__unused__)) float __internal_ull2float_kernel(unsigned lo
   res = (unsigned int)(temp >> 32);
   t = (unsigned int)temp;
   res += (127 + 62 - shift) << 23;
-  if (rndMode == cudaRoundNearest) {
-    res += (t == 0x80000000) ? (res & 1) : (t >> 31);
-  } else if (rndMode == cudaRoundPosInf) {
-    res += (t != 0);
-  }
+  res += t == 0x80000000 ? res & 1 : t >> 31;
   return __int_as_float(res);
-}
-
-static __attribute__((__unused__)) float __ull2float_rn(unsigned long long int a)
-{
-
-
-
-  return __internal_ull2float_kernel(a, cudaRoundNearest);
 
 }
 
-static __attribute__((__unused__)) unsigned short __float2half_rn(float f)
+static float __internal_fmul_kernel(float a, float b, int rndNearest)
 {
-  unsigned int x = __float_as_int (f);
-  unsigned int u = (x & 0x7fffffff), remainder, shift, lsb, lsb_s1, lsb_m1;
-  unsigned int sign, exponent, mantissa;
+  unsigned long long product;
+  volatile union __cudart_FloatUintCvt xx, yy;
+  unsigned expo_x, expo_y;
 
+  xx.f = a;
+  yy.f = b;
 
-  if (u > 0x7f800000) {
-    return 0x7fff;
-  }
+  expo_y = 0xFF;
+  expo_x = expo_y & (xx.i >> 23);
+  expo_x = expo_x - 1;
+  expo_y = expo_y & (yy.i >> 23);
+  expo_y = expo_y - 1;
 
-  sign = ((x >> 16) & 0x8000);
+  if ((expo_x <= 0xFD) &&
+      (expo_y <= 0xFD)) {
+multiply:
+    expo_x = expo_x + expo_y;
+    expo_y = xx.i ^ yy.i;
+    xx.i = xx.i & 0x00ffffff;
+    yy.i = yy.i << 8;
+    xx.i = xx.i | 0x00800000;
+    yy.i = yy.i | 0x80000000;
 
+    product = ((unsigned long long)xx.i) * yy.i;
+    expo_x = expo_x - 127 + 2;
+    expo_y = expo_y & 0x80000000;
+    xx.i = (unsigned int)(product >> 32);
+    yy.i = (unsigned int)(product & 0xffffffff);
 
-  if (u > 0x477fefff) {
-    return sign | 0x7c00;
-  }
-  if (u < 0x33000001) {
-    return sign | 0x0000;
-  }
-
-  exponent = ((u >> 23) & 0xff);
-  mantissa = (u & 0x7fffff);
-
-  if (exponent > 0x70) {
-    shift = 13;
-    exponent -= 0x70;
-  } else {
-    shift = 0x7e - exponent;
-    exponent = 0;
-    mantissa |= 0x800000;
-  }
-  lsb = (1 << shift);
-  lsb_s1 = (lsb >> 1);
-  lsb_m1 = (lsb - 1);
-
-
-  remainder = (mantissa & lsb_m1);
-  mantissa >>= shift;
-  if (remainder > lsb_s1 || (remainder == lsb_s1 && (mantissa & 0x1))) {
-    ++mantissa;
-    if (!(mantissa & 0x3ff)) {
-      ++exponent;
-      mantissa = 0;
+    if (xx.i < 0x00800000) {
+      xx.i = (xx.i << 1) | (yy.i >> 31);
+      yy.i = (yy.i << 1);
+      expo_x--;
     }
-  }
+    if (expo_x <= 0xFD) {
+      xx.i = xx.i | expo_y;
+      xx.i = xx.i + (expo_x << 23);
 
-  return sign | (exponent << 10) | mantissa;
-}
+      if (yy.i < 0x80000000) return xx.f;
+      xx.i += (((yy.i == 0x80000000) ? (xx.i & 1) : (yy.i >> 31))
+               && rndNearest);
+      return xx.f;
+    } else if ((int)expo_x >= 254) {
 
-static __attribute__((__unused__)) float __half2float(unsigned short h)
-{
-  unsigned int sign = ((h >> 15) & 1);
-  unsigned int exponent = ((h >> 10) & 0x1f);
-  unsigned int mantissa = ((h & 0x3ff) << 13);
+      xx.i = (expo_y | 0x7F800000) - (!rndNearest);
+      return xx.f;
+    } else {
 
-  if (exponent == 0x1f) {
-    mantissa = (mantissa
-                ? (sign = 0, 0x7fffff)
-                : 0);
-    exponent = 0xff;
-  } else if (!exponent) {
-    if (mantissa) {
-      unsigned int msb;
-      exponent = 0x71;
-      do {
-        msb = (mantissa & 0x400000);
-        mantissa <<= 1;
-        --exponent;
-      } while (!msb);
-      mantissa &= 0x7fffff;
+      expo_x = ((unsigned int)-((int)expo_x));
+      if (expo_x > 25) {
+
+        xx.i = expo_y;
+        return xx.f;
+      } else {
+        yy.i = (xx.i << (32 - expo_x)) | ((yy.i) ? 1 : 0);
+        xx.i = expo_y + (xx.i >> expo_x);
+        xx.i += (((yy.i == 0x80000000) ? (xx.i & 1) : (yy.i >> 31))
+                 && rndNearest);
+        return xx.f;
+      }
     }
   } else {
-    exponent += 0x70;
+    product = xx.i ^ yy.i;
+    product = product & 0x80000000;
+    if (!(xx.i & 0x7fffffff)) {
+      if (expo_y != 254) {
+        xx.i = (unsigned int)product;
+        return xx.f;
+      }
+      expo_y = yy.i << 1;
+      if (expo_y == 0xFF000000) {
+        xx.i = expo_y | 0x00C00000;
+      } else {
+        xx.i = yy.i | 0x00400000;
+      }
+      return xx.f;
+    }
+    if (!(yy.i & 0x7fffffff)) {
+      if (expo_x != 254) {
+        xx.i = (unsigned int)product;
+        return xx.f;
+      }
+      expo_x = xx.i << 1;
+      if (expo_x == 0xFF000000) {
+        xx.i = expo_x | 0x00C00000;
+      } else {
+        xx.i = xx.i | 0x00400000;
+      }
+      return xx.f;
+    }
+    if ((expo_y != 254) && (expo_x != 254)) {
+      expo_y++;
+      expo_x++;
+      if (expo_x == 0) {
+        expo_y |= xx.i & 0x80000000;
+
+
+
+
+        xx.i = xx.i << 8;
+        while (!(xx.i & 0x80000000)) {
+          xx.i <<= 1;
+          expo_x--;
+        }
+        xx.i = (xx.i >> 8) | (expo_y & 0x80000000);
+        expo_y &= ~0x80000000;
+        expo_y--;
+        goto multiply;
+      }
+      if (expo_y == 0) {
+        expo_x |= yy.i & 0x80000000;
+        yy.i = yy.i << 8;
+        while (!(yy.i & 0x80000000)) {
+          yy.i <<= 1;
+          expo_y--;
+        }
+        yy.i = (yy.i >> 8) | (expo_x & 0x80000000);
+        expo_x &= ~0x80000000;
+        expo_x--;
+        goto multiply;
+      }
+    }
+    expo_x = xx.i << 1;
+    expo_y = yy.i << 1;
+
+    if (expo_x > 0xFF000000) {
+
+      xx.i = xx.i | 0x00400000;
+      return xx.f;
+    }
+
+    if (expo_y > 0xFF000000) {
+
+      xx.i = yy.i | 0x00400000;
+      return xx.f;
+    }
+    xx.i = (unsigned int)product | 0x7f800000;
+    return xx.f;
+  }
+}
+
+static float __internal_fadd_kernel(float a, float b, int rndNearest)
+{
+  volatile union __cudart_FloatUintCvt xx, yy;
+  unsigned int expo_x;
+  unsigned int expo_y;
+  unsigned int temp;
+
+  xx.f = a;
+  yy.f = b;
+
+
+  expo_y = yy.i << 1;
+  if (expo_y > (xx.i << 1)) {
+    expo_y = xx.i;
+    xx.i = yy.i;
+    yy.i = expo_y;
   }
 
-  return __int_as_float ((sign << 31) | (exponent << 23) | mantissa);
+  temp = 0xff;
+  expo_x = temp & (xx.i >> 23);
+  expo_x = expo_x - 1;
+  expo_y = temp & (yy.i >> 23);
+  expo_y = expo_y - 1;
+
+  if ((expo_x <= 0xFD) &&
+      (expo_y <= 0xFD)) {
+
+add:
+    expo_y = expo_x - expo_y;
+    if (expo_y > 25) {
+      expo_y = 31;
+    }
+    temp = xx.i ^ yy.i;
+    xx.i = xx.i & ~0x7f000000;
+    xx.i = xx.i | 0x00800000;
+    yy.i = yy.i & ~0xff000000;
+    yy.i = yy.i | 0x00800000;
+
+    if ((int)temp < 0) {
+
+      temp = 32 - expo_y;
+      temp = (expo_y) ? (yy.i << temp) : 0;
+      temp = (unsigned int)(-((int)temp));
+      xx.i = xx.i - (yy.i >> expo_y) - (temp ? 1 : 0);
+      if (xx.i & 0x00800000) {
+        if (expo_x <= 0xFD) {
+          xx.i = xx.i & ~0x00800000;
+          xx.i = (xx.i + (expo_x << 23)) + 0x00800000;
+          if (temp < 0x80000000) return xx.f;
+          xx.i += (((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31))
+                   && rndNearest);
+          return xx.f;
+        }
+      } else {
+        if ((temp | (xx.i << 1)) == 0) {
+
+          xx.i = 0;
+          return xx.f;
+        }
+
+        yy.i = xx.i & 0x80000000;
+        do {
+          xx.i = (xx.i << 1) | (temp >> 31);
+          temp <<= 1;
+          expo_x--;
+        } while (!(xx.i & 0x00800000));
+        xx.i = xx.i | yy.i;
+      }
+    } else {
+
+      temp = 32 - expo_y;
+      temp = (expo_y) ? (yy.i << temp) : 0;
+      xx.i = xx.i + (yy.i >> expo_y);
+      if (!(xx.i & 0x01000000)) {
+        if (expo_x <= 0xFD) {
+          expo_y = xx.i & 1;
+          xx.i = xx.i + (expo_x << 23);
+          if (temp < 0x80000000) return xx.f;
+          xx.i += (((temp == 0x80000000) ? expo_y : (temp >> 31))
+                   && rndNearest);
+          return xx.f;
+        }
+      } else {
+
+        temp = (xx.i << 31) | (temp >> 1);
+
+        xx.i = ((xx.i & 0x80000000) | (xx.i >> 1)) & ~0x40000000;
+        expo_x++;
+      }
+    }
+    if (expo_x <= 0xFD) {
+      expo_y = xx.i & 1;
+      xx.i += (((temp == 0x80000000) ? expo_y : (temp >> 31))
+               && rndNearest);
+      xx.i = xx.i + (expo_x << 23);
+      return xx.f;
+    }
+    if ((int)expo_x >= 254) {
+
+        xx.i = ((xx.i & 0x80000000) | 0x7f800000) - (!rndNearest);
+        return xx.f;
+    }
+
+    expo_y = expo_x + 32;
+    yy.i = xx.i & 0x80000000;
+    xx.i = xx.i & ~0xff000000;
+
+    expo_x = (unsigned int)(-((int)expo_x));
+    temp = xx.i << expo_y | ((temp) ? 1 : 0);
+    xx.i = yy.i | (xx.i >> expo_x);
+    xx.i += (((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31))
+             && rndNearest);
+    return xx.f;
+  } else {
+
+    if (!(yy.i << 1)) {
+      if (xx.i == 0x80000000) {
+        xx.i = yy.i;
+      }
+      if ((xx.i << 1) > 0xff000000) {
+        xx.i |= 0x00400000;
+      }
+      return xx.f;
+    }
+    if ((expo_y != 254) && (expo_x != 254)) {
+
+      if (expo_x == (unsigned int) -1) {
+        temp = xx.i & 0x80000000;
+        xx.i = xx.i << 8;
+        while (!(xx.i & 0x80000000)) {
+          xx.i <<= 1;
+          expo_x--;
+        }
+        expo_x++;
+        xx.i = (xx.i >> 8) | temp;
+      }
+      if (expo_y == (unsigned int) -1) {
+        temp = yy.i & 0x80000000;
+        yy.i = yy.i << 8;
+        while (!(yy.i & 0x80000000)) {
+          yy.i <<= 1;
+          expo_y--;
+        }
+        expo_y++;
+        yy.i = (yy.i >> 8) | temp;
+      }
+      goto add;
+    }
+    expo_x = xx.i << 1;
+    expo_y = yy.i << 1;
+
+    if (expo_x > 0xff000000) {
+
+      xx.i = xx.i | 0x00400000;
+      return xx.f;
+    }
+
+    if (expo_y > 0xff000000) {
+
+      xx.i = yy.i | 0x00400000;
+      return xx.f;
+    }
+    if ((expo_x == 0xff000000) && (expo_y == 0xff000000)) {
+
+
+
+
+      expo_x = xx.i ^ yy.i;
+      xx.i = xx.i | ((expo_x) ? 0xffc00000 : 0);
+      return xx.f;
+    }
+
+    if (expo_y == 0xff000000) {
+      xx.i = yy.i;
+    }
+    return xx.f;
+  }
 }
 
-static __attribute__((__unused__)) float __fadd_rz(float a, float b)
+static float __fadd_rz(float a, float b)
 {
-  return __internal_fadd_kernel(a, b, cudaRoundZero);
+  return __internal_fadd_kernel(a, b, 0);
 }
 
-static __attribute__((__unused__)) float __fmul_rz(float a, float b)
+static float __fmul_rz(float a, float b)
 {
-  return __internal_fmul_kernel(a, b, cudaRoundZero);
+  return __internal_fmul_kernel(a, b, 0);
 }
 
-static __attribute__((__unused__)) float __fadd_rn(float a, float b)
+static float __fadd_rn(float a, float b)
 {
-  return __internal_fadd_kernel(a, b, cudaRoundNearest);
+  return __internal_fadd_kernel(a, b, 1);
 }
 
-static __attribute__((__unused__)) float __fmul_rn(float a, float b)
+static float __fmul_rn(float a, float b)
 {
-  return __internal_fmul_kernel(a, b, cudaRoundNearest);
+  return __internal_fmul_kernel(a, b, 1);
 }
 
-static __attribute__((__unused__)) void __brkpt(int c)
+static void __brkpt(int c)
 {
 
 }
-# 4318 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 4518 "/home/normal/cuda/bin/../include/device_functions.h" 3
 extern int __cudaSynchronizeThreads(void**, void*);
 
 
 
-static __attribute__((__unused__)) inline __attribute__((always_inline)) void __syncthreads(void)
+static inline __attribute__((always_inline)) void __syncthreads(void)
 {
   volatile int _ = 0;
   L: if (__cudaSynchronizeThreads((void**)&&L, (void*)&_)) goto L;
 }
-# 4337 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static __attribute__((__unused__)) void __prof_trigger(int a)
+# 4537 "/home/normal/cuda/bin/../include/device_functions.h" 3
+static void __prof_trigger(int a)
 {
 }
 
-static __attribute__((__unused__)) void __threadfence(void)
+static void __threadfence(void)
 {
-  __syncthreads();
 }
 
-static __attribute__((__unused__)) void __threadfence_block(void)
+static void __threadfence_block(void)
 {
-  __syncthreads();
 }
 
 
 
-static __attribute__((__unused__)) void __trap(void)
+static void __trap(void)
 {
   __builtin_trap();
 }
-# 4375 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static __attribute__((__unused__)) float __fdividef(float a, float b)
+# 4573 "/home/normal/cuda/bin/../include/device_functions.h" 3
+static float __fdividef(float a, float b)
 {
 
 
 
-  volatile float aa = a;
-  volatile float bb = b;
 
-  if (__cuda_fabsf(bb) > 8.507059173e37f) {
-    if (__cuda_fabsf(aa) <= 3.402823466e38f) {
-      return ((aa / bb) / 3.402823466e38f) / 3.402823466e38f;
+
+
+  if (__cuda_fabsf(b) > 8.507059173e37f) {
+    if (__cuda_fabsf(a) <= 3.402823466e38f) {
+      return ((a / b) / 3.402823466e38f) / 3.402823466e38f;
     } else {
-      bb = 1.0f / bb;
-      bb = bb / 3.402823466e38f;
-      return aa * bb;
+      return __int_as_float(0xffc00000);
     }
   } else {
-    return aa / bb;
+    return a / b;
   }
 
 }
 
-
-static __attribute__((__unused__)) float __sinf(float a)
+static float __sinf(float a)
 {
-
-  if ((__float_as_int(a) << 1) == 0xff000000) {
-    return __fadd_rn (a, -a);
-  }
-
   return sinf(a);
 }
 
-static __attribute__((__unused__)) float __cosf(float a)
+static float __cosf(float a)
 {
-
-  if ((__float_as_int(a) << 1) == 0xff000000) {
-    return __fadd_rn (a, -a);
-  }
-
   return cosf(a);
 }
 
-static __attribute__((__unused__)) float __log2f(float a)
+static float __log2f(float a)
 {
   return log2f(a);
 }
@@ -9791,12 +9726,16 @@ static __attribute__((__unused__)) float __log2f(float a)
 
 
 
-static __attribute__((__unused__)) float __internal_accurate_fdividef(float a, float b)
+static float __internal_accurate_fdividef(float a, float b)
 {
-  return a / b;
+  if (__cuda_fabsf(b) > 8.507059173e37f) {
+    a *= .25f;
+    b *= .25f;
+  }
+  return __fdividef(a, b);
 }
 
-static __attribute__((__unused__)) float __tanf(float a)
+static float __tanf(float a)
 {
 
 
@@ -9805,7 +9744,7 @@ static __attribute__((__unused__)) float __tanf(float a)
 
 }
 
-static __attribute__((__unused__)) void __sincosf(float a, float *sptr, float *cptr)
+static void __sincosf(float a, float *sptr, float *cptr)
 {
 
 
@@ -9815,7 +9754,7 @@ static __attribute__((__unused__)) void __sincosf(float a, float *sptr, float *c
 
 }
 
-static __attribute__((__unused__)) float __expf(float a)
+static float __expf(float a)
 {
 
 
@@ -9824,7 +9763,7 @@ static __attribute__((__unused__)) float __expf(float a)
 
 }
 
-static __attribute__((__unused__)) float __exp10f(float a)
+static float __exp10f(float a)
 {
 
 
@@ -9833,7 +9772,7 @@ static __attribute__((__unused__)) float __exp10f(float a)
 
 }
 
-static __attribute__((__unused__)) float __log10f(float a)
+static float __log10f(float a)
 {
 
 
@@ -9842,7 +9781,7 @@ static __attribute__((__unused__)) float __log10f(float a)
 
 }
 
-static __attribute__((__unused__)) float __logf(float a)
+static float __logf(float a)
 {
 
 
@@ -9851,7 +9790,7 @@ static __attribute__((__unused__)) float __logf(float a)
 
 }
 
-static __attribute__((__unused__)) float __powf(float a, float b)
+static float __powf(float a, float b)
 {
 
 
@@ -9860,7 +9799,7 @@ static __attribute__((__unused__)) float __powf(float a, float b)
 
 }
 
-static __attribute__((__unused__)) float fdividef(float a, float b)
+static float fdividef(float a, float b)
 {
 
 
@@ -9871,12 +9810,12 @@ static __attribute__((__unused__)) float fdividef(float a, float b)
 
 }
 
-static __attribute__((__unused__)) int __clz(int a)
+static int __clz(int a)
 {
   return (a)?(158-(__float_as_int(__uint2float_rz((unsigned int)a))>>23)):32;
 }
 
-static __attribute__((__unused__)) int __clzll(long long int a)
+static int __clzll(long long int a)
 {
   int ahi = ((int)((unsigned long long)a >> 32));
   int alo = ((int)((unsigned long long)a & 0xffffffffULL));
@@ -9891,7 +9830,7 @@ static __attribute__((__unused__)) int __clzll(long long int a)
   return res;
 }
 
-static __attribute__((__unused__)) int __popc(unsigned int a)
+static int __popc(unsigned int a)
 {
   a = a - ((a >> 1) & 0x55555555);
   a = (a & 0x33333333) + ((a >> 2) & 0x33333333);
@@ -9900,7 +9839,7 @@ static __attribute__((__unused__)) int __popc(unsigned int a)
   return a;
 }
 
-static __attribute__((__unused__)) int __popcll(unsigned long long int a)
+static int __popcll(unsigned long long int a)
 {
   unsigned int ahi = ((unsigned int)(a >> 32));
   unsigned int alo = ((unsigned int)(a & 0xffffffffULL));
@@ -9914,7 +9853,7 @@ static __attribute__((__unused__)) int __popcll(unsigned long long int a)
   return alo;
 }
 
-static __attribute__((__unused__)) unsigned int __brev(unsigned int a)
+static unsigned int __brev(unsigned int a)
 {
   a = ((a >> 1) & 0x55555555) + ((a & 0x55555555) << 1);
   a = ((a >> 2) & 0x33333333) + ((a & 0x33333333) << 2);
@@ -9924,7 +9863,7 @@ static __attribute__((__unused__)) unsigned int __brev(unsigned int a)
   return a;
 }
 
-static __attribute__((__unused__)) unsigned long long int __brevll(unsigned long long int a)
+static unsigned long long int __brevll(unsigned long long int a)
 {
   unsigned int hi = (unsigned int)(a >> 32);
   unsigned int lo = (unsigned int)(a & 0xffffffffULL);
@@ -9934,45 +9873,45 @@ static __attribute__((__unused__)) unsigned long long int __brevll(unsigned long
   return ((unsigned long long int)t << 32) + (unsigned long long int)lo;
 }
 
-static __attribute__((__unused__)) int __ffs(int a)
+static int __ffs(int a)
 {
   return 32 - __clz (a & -a);
 }
 
-static __attribute__((__unused__)) int __ffsll(long long int a)
+static int __ffsll(long long int a)
 {
   return 64 - __clzll (a & -a);
 }
-# 4590 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static __attribute__((__unused__)) double fdivide(double a, double b)
+# 4779 "/home/normal/cuda/bin/../include/device_functions.h" 3
+static double fdivide(double a, double b)
 {
   return (double)fdividef((float)a, (float)b);
 }
 
 
 
-static __attribute__((__unused__)) int __double2int_rz(double a)
+static int __double2int_rz(double a)
 {
   return __float2int_rz((float)a);
 }
 
-static __attribute__((__unused__)) unsigned int __double2uint_rz(double a)
+static unsigned int __double2uint_rz(double a)
 {
   return __float2uint_rz((float)a);
 }
 
-static __attribute__((__unused__)) long long int __double2ll_rz(double a)
+static long long int __double2ll_rz(double a)
 {
   return __float2ll_rz((float)a);
 }
 
-static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double a)
+static unsigned long long int __double2ull_rz(double a)
 {
   return __float2ull_rz((float)a);
 }
-# 4667 "/usr/local/cuda/bin/../include/device_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
-# 257 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 3
+# 4856 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 1 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
+# 257 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h" 3
 extern void __cudaMutexOperation(int lock);
 
 
@@ -9980,7 +9919,7 @@ extern void __cudaMutexOperation(int lock);
 
 
 
-static __attribute__((__unused__)) int __iAtomicAdd(int *address, int val)
+static int __iAtomicAdd(int *address, int val)
 {
   int old;
 
@@ -9991,7 +9930,7 @@ static __attribute__((__unused__)) int __iAtomicAdd(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10003,7 +9942,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicAdd(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicExch(int *address, int val)
+static int __iAtomicExch(int *address, int val)
 {
   int old;
 
@@ -10015,7 +9954,7 @@ static __attribute__((__unused__)) int __iAtomicExch(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10027,7 +9966,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicExch(unsigned int *addr
   return old;
 }
 
-static __attribute__((__unused__)) float __fAtomicExch(float *address, float val)
+static float __fAtomicExch(float *address, float val)
 {
   float old;
 
@@ -10039,7 +9978,7 @@ static __attribute__((__unused__)) float __fAtomicExch(float *address, float val
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicMin(int *address, int val)
+static int __iAtomicMin(int *address, int val)
 {
   int old;
 
@@ -10051,7 +9990,7 @@ static __attribute__((__unused__)) int __iAtomicMin(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10063,7 +10002,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicMin(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicMax(int *address, int val)
+static int __iAtomicMax(int *address, int val)
 {
   int old;
 
@@ -10075,7 +10014,7 @@ static __attribute__((__unused__)) int __iAtomicMax(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10087,7 +10026,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicMax(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10099,7 +10038,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicInc(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10111,7 +10050,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicDec(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicAnd(int *address, int val)
+static int __iAtomicAnd(int *address, int val)
 {
   int old;
 
@@ -10123,7 +10062,7 @@ static __attribute__((__unused__)) int __iAtomicAnd(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10135,7 +10074,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicAnd(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicOr(int *address, int val)
+static int __iAtomicOr(int *address, int val)
 {
   int old;
 
@@ -10147,7 +10086,7 @@ static __attribute__((__unused__)) int __iAtomicOr(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10159,7 +10098,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicOr(unsigned int *addres
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicXor(int *address, int val)
+static int __iAtomicXor(int *address, int val)
 {
   int old;
 
@@ -10171,7 +10110,7 @@ static __attribute__((__unused__)) int __iAtomicXor(int *address, int val)
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
+static unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -10183,7 +10122,7 @@ static __attribute__((__unused__)) unsigned int __uAtomicXor(unsigned int *addre
   return old;
 }
 
-static __attribute__((__unused__)) int __iAtomicCAS(int *address, int compare, int val)
+static int __iAtomicCAS(int *address, int compare, int val)
 {
   int old;
 
@@ -10195,7 +10134,7 @@ static __attribute__((__unused__)) int __iAtomicCAS(int *address, int compare, i
   return old;
 }
 
-static __attribute__((__unused__)) unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, unsigned int val)
+static unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, unsigned int val)
 {
   unsigned int old;
 
@@ -10206,9 +10145,9 @@ static __attribute__((__unused__)) unsigned int __uAtomicCAS(unsigned int *addre
 
   return old;
 }
-# 4668 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
-# 118 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 3
+# 4857 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
+# 118 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h" 3
 extern void __cudaMutexOperation(int lock);
 
 
@@ -10216,7 +10155,7 @@ extern void __cudaMutexOperation(int lock);
 
 
 
-static __attribute__((__unused__)) unsigned long long int __ullAtomicAdd(unsigned long long int *address, unsigned long long int val)
+static unsigned long long int __ullAtomicAdd(unsigned long long int *address, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -10227,7 +10166,7 @@ static __attribute__((__unused__)) unsigned long long int __ullAtomicAdd(unsigne
   return old;
 }
 
-static __attribute__((__unused__)) unsigned long long int __ullAtomicExch(unsigned long long int *address, unsigned long long int val)
+static unsigned long long int __ullAtomicExch(unsigned long long int *address, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -10238,7 +10177,7 @@ static __attribute__((__unused__)) unsigned long long int __ullAtomicExch(unsign
   return old;
 }
 
-static __attribute__((__unused__)) unsigned long long int __ullAtomicCAS(unsigned long long int *address, unsigned long long int compare, unsigned long long int val)
+static unsigned long long int __ullAtomicCAS(unsigned long long int *address, unsigned long long int compare, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -10253,33 +10192,33 @@ static __attribute__((__unused__)) unsigned long long int __ullAtomicCAS(unsigne
 
 
 
-static __attribute__((__unused__)) int __any(int cond)
+static int __any(int cond)
 {
   return cond;
 }
 
-static __attribute__((__unused__)) int __all(int cond)
+static int __all(int cond)
 {
   return cond;
 }
-# 4669 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 1 3
-# 267 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
-static __attribute__((__unused__)) double __longlong_as_double(long long int a)
+# 4858 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 1 3
+# 267 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 3
+static double __longlong_as_double(long long int a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
   u.i = a;
   return u.d;
 }
 
-static __attribute__((__unused__)) long long int __double_as_longlong(double a)
+static long long int __double_as_longlong(double a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
   u.d = a;
   return u.i;
 }
 
-static __attribute__((__unused__)) float __internal_double2float_kernel(double a)
+static float __internal_double2float_kernel(double a)
 {
   volatile union __cudart_DoubleUlonglongCvt xx;
   volatile union __cudart_FloatUintCvt res;
@@ -10291,9 +10230,7 @@ static __attribute__((__unused__)) float __internal_double2float_kernel(double a
   if ((xx.i & 0x7ff0000000000000ULL) == 0x7ff0000000000000ULL) {
     if ((xx.i & 0x7fffffffffffffffULL) > 0x7ff0000000000000ULL) {
 
-      res.i = ((unsigned int)((xx.i >> 32) & 0x80000000) |
-               (255U << 23) | 0x00400000 |
-               (unsigned int)((xx.i >> (53 - 24)) & 0x007fffff));
+      res.i = 0x7f8fffff;
     } else {
 
       res.i |= 0x7f800000;
@@ -10313,7 +10250,7 @@ static __attribute__((__unused__)) float __internal_double2float_kernel(double a
       xx.i = 0;
     } else {
       xx.i |= 0x0010000000000000ULL;
-      xx.i >>= -126 - shift;
+      xx.i >>= 127 + shift;
     }
   } else {
     res.i |= (unsigned int) (127 + shift) << 23;
@@ -10323,7 +10260,7 @@ static __attribute__((__unused__)) float __internal_double2float_kernel(double a
   return res.f;
 }
 
-static __attribute__((__unused__)) double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rndMode)
+static double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt res;
   int shift;
@@ -10348,7 +10285,7 @@ static __attribute__((__unused__)) double __internal_ll2double_kernel(long long 
   return res.d;
 }
 
-static __attribute__((__unused__)) double __internal_ull2double_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
+static double __internal_ull2double_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt res;
   int shift;
@@ -10368,7 +10305,7 @@ static __attribute__((__unused__)) double __internal_ull2double_kernel(unsigned 
   return res.d;
 }
 
-static __attribute__((__unused__)) long long int __internal_double2ll_kernel(double a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
+static long long int __internal_double2ll_kernel(double a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt xx, res;
   unsigned long long int t = 0;
@@ -10401,7 +10338,7 @@ static __attribute__((__unused__)) long long int __internal_double2ll_kernel(dou
   return res.i;
 }
 
-static __attribute__((__unused__)) unsigned long long int __internal_double2ull_kernel(double a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
+static unsigned long long int __internal_double2ull_kernel(double a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt xx, res;
   unsigned long long int t = 0;
@@ -10429,7 +10366,7 @@ static __attribute__((__unused__)) unsigned long long int __internal_double2ull_
   return res.i;
 }
 
-static __attribute__((__unused__)) int __double2hiint(double a)
+static int __double2hiint(double a)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -10437,7 +10374,7 @@ static __attribute__((__unused__)) int __double2hiint(double a)
   return cvt.i[1];
 }
 
-static __attribute__((__unused__)) int __double2loint(double a)
+static int __double2loint(double a)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -10445,7 +10382,7 @@ static __attribute__((__unused__)) int __double2loint(double a)
   return cvt.i[0];
 }
 
-static __attribute__((__unused__)) double __hiloint2double(int a, int b)
+static double __hiloint2double(int a, int b)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -10454,142 +10391,142 @@ static __attribute__((__unused__)) double __hiloint2double(int a, int b)
   return cvt.d;
 }
 
-static __attribute__((__unused__)) float __double2float_rn(double a)
+static float __double2float_rn(double a)
 {
   return (float)a;
 }
 
-static __attribute__((__unused__)) float __double2float_rz(double a)
+static float __double2float_rz(double a)
 {
   return __internal_double2float_kernel(a);
 }
 
-static __attribute__((__unused__)) int __internal_double2int(double a, enum cudaRoundMode rndMode)
+static int __internal_double2int(double a, enum cudaRoundMode rndMode)
 {
   return (int)__internal_double2ll_kernel(a, 2147483647LL, -2147483648LL, -2147483648LL, rndMode);
 }
 
-static __attribute__((__unused__)) int __double2int_rn(double a)
+static int __double2int_rn(double a)
 {
   return __internal_double2int(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) int __double2int_ru(double a)
+static int __double2int_ru(double a)
 {
   return __internal_double2int(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) int __double2int_rd(double a)
+static int __double2int_rd(double a)
 {
   return __internal_double2int(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode)
+static unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode)
 {
   return (unsigned int)__internal_double2ull_kernel(a, 4294967295ULL, 2147483648ULL, rndMode);
 }
 
-static __attribute__((__unused__)) unsigned int __double2uint_rn(double a)
+static unsigned int __double2uint_rn(double a)
 {
   return __internal_double2uint(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) unsigned int __double2uint_ru(double a)
+static unsigned int __double2uint_ru(double a)
 {
   return __internal_double2uint(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) unsigned int __double2uint_rd(double a)
+static unsigned int __double2uint_rd(double a)
 {
   return __internal_double2uint(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) long long int __internal_double2ll(double a, enum cudaRoundMode rndMode)
+static long long int __internal_double2ll(double a, enum cudaRoundMode rndMode)
 {
   return __internal_double2ll_kernel(a, 9223372036854775807LL, -9223372036854775807LL -1LL, -9223372036854775807LL -1LL, rndMode);
 }
 
-static __attribute__((__unused__)) long long int __double2ll_rn(double a)
+static long long int __double2ll_rn(double a)
 {
   return __internal_double2ll(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) long long int __double2ll_ru(double a)
+static long long int __double2ll_ru(double a)
 {
   return __internal_double2ll(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) long long int __double2ll_rd(double a)
+static long long int __double2ll_rd(double a)
 {
   return __internal_double2ll(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode)
+static unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode)
 {
   return __internal_double2ull_kernel(a, 18446744073709551615ULL, 9223372036854775808ULL, rndMode);
 }
 
-static __attribute__((__unused__)) unsigned long long int __double2ull_rn(double a)
+static unsigned long long int __double2ull_rn(double a)
 {
   return __internal_double2ull(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) unsigned long long int __double2ull_ru(double a)
+static unsigned long long int __double2ull_ru(double a)
 {
   return __internal_double2ull(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) unsigned long long int __double2ull_rd(double a)
+static unsigned long long int __double2ull_rd(double a)
 {
   return __internal_double2ull(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) double __int2double_rn(int a)
+static double __int2double_rn(int a)
 {
   return (double)a;
 }
 
-static __attribute__((__unused__)) double __uint2double_rn(unsigned int a)
+static double __uint2double_rn(unsigned int a)
 {
   return (double)a;
 }
 
-static __attribute__((__unused__)) double __ll2double_rn(long long int a)
+static double __ll2double_rn(long long int a)
 {
   return (double)a;
 }
 
-static __attribute__((__unused__)) double __ll2double_rz(long long int a)
+static double __ll2double_rz(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) double __ll2double_rd(long long int a)
+static double __ll2double_rd(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) double __ll2double_ru(long long int a)
+static double __ll2double_ru(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) double __ull2double_rn(unsigned long long int a)
+static double __ull2double_rn(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) double __ull2double_rz(unsigned long long int a)
+static double __ull2double_rz(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) double __ull2double_rd(unsigned long long int a)
+static double __ull2double_rd(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) double __ull2double_ru(unsigned long long int a)
+static double __ull2double_ru(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundPosInf);
 }
@@ -10598,9 +10535,7 @@ static __attribute__((__unused__)) double __ull2double_ru(unsigned long long int
 
 
 
-
-
-static __attribute__((__unused__)) double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
+static double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
 {
 
 
@@ -10646,7 +10581,7 @@ static __attribute__((__unused__)) double __internal_fma_kernel(double x, double
       xx.hi |= 0x00080000;
       return __hiloint2double(xx.hi, xx.lo);
     }
-# 660 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
+# 656 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 3
     if (((((xx.hi << 1) | xx.lo) == 0) &&
          (((yy.hi << 1) | (yy.lo != 0)) == 0xffe00000)) ||
         ((((yy.hi << 1) | yy.lo) == 0) &&
@@ -11044,71 +10979,71 @@ static __attribute__((__unused__)) double __internal_fma_kernel(double x, double
   return __hiloint2double(xx.hi, xx.lo);
 }
 
-static __attribute__((__unused__)) double __fma_rn(double x, double y, double z)
+static double __fma_rn(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundNearest);
 }
 
-static __attribute__((__unused__)) double __fma_rd(double x, double y, double z)
+static double __fma_rd(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundMinInf);
 }
 
-static __attribute__((__unused__)) double __fma_ru(double x, double y, double z)
+static double __fma_ru(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundPosInf);
 }
 
-static __attribute__((__unused__)) double __fma_rz(double x, double y, double z)
+static double __fma_rz(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundZero);
 }
 
-static __attribute__((__unused__)) double __dadd_rz(double a, double b)
+static double __dadd_rz(double a, double b)
 {
   return __fma_rz(a, 1.0, b);
 }
 
-static __attribute__((__unused__)) double __dadd_ru(double a, double b)
+static double __dadd_ru(double a, double b)
 {
   return __fma_ru(a, 1.0, b);
 }
 
-static __attribute__((__unused__)) double __dadd_rd(double a, double b)
+static double __dadd_rd(double a, double b)
 {
   return __fma_rd(a, 1.0, b);
 }
 
-static __attribute__((__unused__)) double __dmul_rz(double a, double b)
+static double __dmul_rz(double a, double b)
 {
   return __fma_rz(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
 
-static __attribute__((__unused__)) double __dmul_ru(double a, double b)
+static double __dmul_ru(double a, double b)
 {
   return __fma_ru(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
 
-static __attribute__((__unused__)) double __dmul_rd(double a, double b)
+static double __dmul_rd(double a, double b)
 {
   return __fma_rd(a, b, 0.0);
 }
 
-static __attribute__((__unused__)) double __dadd_rn(double a, double b)
+static double __dadd_rn(double a, double b)
 {
   return __fma_rn(a, 1.0, b);
 }
 
-static __attribute__((__unused__)) double __dmul_rn(double a, double b)
+static double __dmul_rn(double a, double b)
 {
   return __fma_rn(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
-# 4670 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 1 3
-# 1910 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 3
+# 4859 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/home/normal/cuda/bin/../include/texture_fetch_functions.h" 1 3
+# 1910 "/home/normal/cuda/bin/../include/texture_fetch_functions.h" 3
 extern void __cudaTextureFetch(const void *tex, void *index, int integer, void *val);
 
-static __attribute__((__unused__)) int4 __itexfetchi(const void *tex, int4 index)
+static int4 __itexfetchi(const void *tex, int4 index)
 {
   int4 val;
 
@@ -11117,7 +11052,7 @@ static __attribute__((__unused__)) int4 __itexfetchi(const void *tex, int4 index
   return val;
 }
 
-static __attribute__((__unused__)) uint4 __utexfetchi(const void *tex, int4 index)
+static uint4 __utexfetchi(const void *tex, int4 index)
 {
   uint4 val;
 
@@ -11126,7 +11061,7 @@ static __attribute__((__unused__)) uint4 __utexfetchi(const void *tex, int4 inde
   return val;
 }
 
-static __attribute__((__unused__)) float4 __ftexfetchi(const void *tex, int4 index)
+static float4 __ftexfetchi(const void *tex, int4 index)
 {
   float4 val;
 
@@ -11135,7 +11070,7 @@ static __attribute__((__unused__)) float4 __ftexfetchi(const void *tex, int4 ind
   return val;
 }
 
-static __attribute__((__unused__)) int4 __itexfetch(const void *tex, float4 index, int dim)
+static int4 __itexfetch(const void *tex, float4 index, int dim)
 {
   int4 val;
 
@@ -11144,7 +11079,7 @@ static __attribute__((__unused__)) int4 __itexfetch(const void *tex, float4 inde
   return val;
 }
 
-static __attribute__((__unused__)) uint4 __utexfetch(const void *tex, float4 index, int dim)
+static uint4 __utexfetch(const void *tex, float4 index, int dim)
 {
   uint4 val;
 
@@ -11153,7 +11088,7 @@ static __attribute__((__unused__)) uint4 __utexfetch(const void *tex, float4 ind
   return val;
 }
 
-static __attribute__((__unused__)) float4 __ftexfetch(const void *tex, float4 index, int dim)
+static float4 __ftexfetch(const void *tex, float4 index, int dim)
 {
   float4 val;
 
@@ -11161,11 +11096,11 @@ static __attribute__((__unused__)) float4 __ftexfetch(const void *tex, float4 in
 
   return val;
 }
-# 4671 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 997 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 4860 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 945 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
 
 
-static __attribute__((__unused__)) int __cuda___signbitf(float a)
+static int __cuda___signbitf(float a)
 {
   return (int)((unsigned int)__float_as_int(a) >> 31);
 }
@@ -11173,30 +11108,18 @@ static __attribute__((__unused__)) int __cuda___signbitf(float a)
 
 
 
-static __attribute__((__unused__)) float __cuda_copysignf(float a, float b)
+static float __cuda_copysignf(float a, float b)
 {
   return __int_as_float((__float_as_int(b) & 0x80000000) |
                         (__float_as_int(a) & ~0x80000000));
 }
-# 1021 "/usr/local/cuda/bin/../include/math_functions.h" 3
-
-
+# 969 "/home/normal/cuda/bin/../include/math_functions.h" 3
 extern __attribute__((__weak__)) int min(int a, int b); int min(int a, int b)
 {
   return a < b ? a : b;
 }
 
 extern __attribute__((__weak__)) unsigned int umin(unsigned int a, unsigned int b); unsigned int umin(unsigned int a, unsigned int b)
-{
-  return a < b ? a : b;
-}
-
-extern __attribute__((__weak__)) long long int llmin(long long int a, long long int b); long long int llmin(long long int a, long long int b)
-{
-  return a < b ? a : b;
-}
-
-extern __attribute__((__weak__)) unsigned long long int ullmin(unsigned long long int a, unsigned long long int b); unsigned long long int ullmin(unsigned long long int a, unsigned long long int b)
 {
   return a < b ? a : b;
 }
@@ -11210,20 +11133,8 @@ extern __attribute__((__weak__)) unsigned int umax(unsigned int a, unsigned int 
 {
   return a > b ? a : b;
 }
-
-extern __attribute__((__weak__)) long long int llmax(long long int a, long long int b); long long int llmax(long long int a, long long int b)
-{
-  return a > b ? a : b;
-}
-
-extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long long int a, unsigned long long int b); unsigned long long int ullmax(unsigned long long int a, unsigned long long int b)
-{
-  return a > b ? a : b;
-}
-
-
-# 1135 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static __attribute__((__unused__)) float __internal_nearbyintf(float a)
+# 1055 "/home/normal/cuda/bin/../include/math_functions.h" 3
+static float __internal_nearbyintf(float a)
 {
   float fa = fabsf(a);
 
@@ -11237,7 +11148,7 @@ static __attribute__((__unused__)) float __internal_nearbyintf(float a)
   }
 }
 
-static __attribute__((__unused__)) float __internal_fminf(float a, float b)
+static float __internal_fminf(float a, float b)
 {
   volatile union {
     float f;
@@ -11258,7 +11169,7 @@ static __attribute__((__unused__)) float __internal_fminf(float a, float b)
   return a < b ? a : b;
 }
 
-static __attribute__((__unused__)) float __internal_fmaxf(float a, float b)
+static float __internal_fmaxf(float a, float b)
 {
   volatile union {
     float f;
@@ -11279,78 +11190,58 @@ static __attribute__((__unused__)) float __internal_fmaxf(float a, float b)
   }
   return a > b ? a : b;
 }
-# 1235 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static __attribute__((__unused__)) long int __cuda_labs(long int a)
+# 1151 "/home/normal/cuda/bin/../include/math_functions.h" 3
+static long int __cuda_labs(long int a)
 {
   return labs(a);
 }
 
-static __attribute__((__unused__)) float __cuda_ceilf(float a)
+static float __cuda_ceilf(float a)
 {
   return ceilf(a);
 }
 
-static __attribute__((__unused__)) float __cuda_floorf(float a)
+static float __cuda_floorf(float a)
 {
   return floorf(a);
 }
 
-static __attribute__((__unused__)) float __cuda_sqrtf(float a)
+static float __cuda_sqrtf(float a)
 {
   return sqrtf(a);
 }
 
-static __attribute__((__unused__)) float __cuda_rsqrtf(float a)
+static float __cuda_rsqrtf(float a)
 {
-  return rsqrtf(a);
+  return 1.0f / sqrtf(a);
 }
 
-static __attribute__((__unused__)) float __cuda_truncf(float a)
+static float __cuda_truncf(float a)
 {
   return truncf(a);
 }
 
-static __attribute__((__unused__)) int __cuda_max(int a, int b)
+static int __cuda_max(int a, int b)
 {
   return max(a, b);
 }
 
-static __attribute__((__unused__)) int __cuda_min(int a, int b)
+static int __cuda_min(int a, int b)
 {
   return min(a, b);
 }
 
-static __attribute__((__unused__)) unsigned int __cuda_umax(unsigned int a, unsigned int b)
+static unsigned int __cuda_umax(unsigned int a, unsigned int b)
 {
   return umax(a, b);
 }
 
-static __attribute__((__unused__)) unsigned int __cuda_umin(unsigned int a, unsigned int b)
+static unsigned int __cuda_umin(unsigned int a, unsigned int b)
 {
   return umin(a, b);
 }
 
-static __attribute__((__unused__)) long long int __cuda_llmax(long long int a, long long int b)
-{
-  return llmax(a, b);
-}
-
-static __attribute__((__unused__)) long long int __cuda_llmin(long long int a, long long int b)
-{
-  return llmin(a, b);
-}
-
-static __attribute__((__unused__)) unsigned long long int __cuda_ullmax(unsigned long long int a, unsigned long long int b)
-{
-  return ullmax(a, b);
-}
-
-static __attribute__((__unused__)) unsigned long long int __cuda_ullmin(unsigned long long int a, unsigned long long int b)
-{
-  return ullmin(a, b);
-}
-
-static __attribute__((__unused__)) long long int __cuda_llrintf(float a)
+static long long int __cuda_llrintf(float a)
 {
 
 
@@ -11359,20 +11250,20 @@ static __attribute__((__unused__)) long long int __cuda_llrintf(float a)
 
 }
 
-static __attribute__((__unused__)) long int __cuda_lrintf(float a)
+static long int __cuda_lrintf(float a)
 {
 
 
 
 
+  return (long int)__cuda_llrintf(a);
 
 
-  return (long int)__float2int_rn(a);
 
 
 }
 
-static __attribute__((__unused__)) float __cuda_nearbyintf(float a)
+static float __cuda_nearbyintf(float a)
 {
 
 
@@ -11383,7 +11274,7 @@ static __attribute__((__unused__)) float __cuda_nearbyintf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_fmaxf(float a, float b)
+static float __cuda_fmaxf(float a, float b)
 {
 
 
@@ -11394,7 +11285,7 @@ static __attribute__((__unused__)) float __cuda_fmaxf(float a, float b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_fminf(float a, float b)
+static float __cuda_fminf(float a, float b)
 {
 
 
@@ -11404,28 +11295,23 @@ static __attribute__((__unused__)) float __cuda_fminf(float a, float b)
   return __internal_fminf(a, b);
 
 }
-
-
-
-
-
-
-static __attribute__((__unused__)) int __cuda___finitef(float a)
+# 1272 "/home/normal/cuda/bin/../include/math_functions.h" 3
+static int __cuda___finitef(float a)
 {
   return __cuda_fabsf(a) < __int_as_float(0x7f800000);
 }
-# 1379 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static __attribute__((__unused__)) int __cuda___isinff(float a)
+# 1286 "/home/normal/cuda/bin/../include/math_functions.h" 3
+static int __cuda___isinff(float a)
 {
   return __cuda_fabsf(a) == __int_as_float(0x7f800000);
 }
 
-static __attribute__((__unused__)) int __cuda___isnanf(float a)
+static int __cuda___isnanf(float a)
 {
   return !(__cuda_fabsf(a) <= __int_as_float(0x7f800000));
 }
 
-static __attribute__((__unused__)) float __cuda_nextafterf(float a, float b)
+static float __cuda_nextafterf(float a, float b)
 {
   unsigned int ia;
   unsigned int ib;
@@ -11459,23 +11345,19 @@ static __attribute__((__unused__)) float __cuda_nextafterf(float a, float b)
   return a;
 }
 
-static __attribute__((__unused__)) float __cuda_nanf(const char *tagp)
+static float __cuda_nanf(const char *tagp)
 {
 
   return __int_as_float(0x7fffffff);
 }
 
-static __attribute__((__unused__)) float __internal_fmad(float a, float b, float c)
+static float __internal_fmad(float a, float b, float c)
 {
-
-  return __fmaf_rn (a, b, c);
-
-
-
+  return a * b + c;
 }
 
 
-static __attribute__((__unused__)) float __internal_atanhf_kernel(float a_1, float a_2)
+static float __internal_atanhf_kernel(float a_1, float a_2)
 {
   float a, a2, t;
 
@@ -11493,7 +11375,7 @@ static __attribute__((__unused__)) float __internal_atanhf_kernel(float a_1, flo
 
 
 
-static __attribute__((__unused__)) float __internal_atanf_kernel(float a)
+static float __internal_atanf_kernel(float a)
 {
   float t4, t0, t1;
 
@@ -11512,7 +11394,7 @@ static __attribute__((__unused__)) float __internal_atanf_kernel(float a)
 }
 
 
-static __attribute__((__unused__)) float __internal_tan_kernel(float a)
+static float __internal_tan_kernel(float a)
 {
   float a2, s, t;
 
@@ -11526,45 +11408,34 @@ static __attribute__((__unused__)) float __internal_tan_kernel(float a)
   return t;
 }
 
-static __attribute__((__unused__)) float __internal_accurate_logf(float a)
+static float __internal_accurate_logf(float a)
 {
   float t;
   float z;
   float m;
-  int ia;
+  int ia, e;
   ia = __float_as_int(a);
 
-  if ((a > 0.0f) && (a < __int_as_float(0x7f800000))) {
-    int e = -127;
-
-
-    if ((unsigned)ia < (unsigned)0x00800000) {
-      a = a * 16777216.0f;
-      e -= 24;
-      ia = __float_as_int(a);
-    }
-
-
-    m = __int_as_float((ia & 0x807fffff) | 0x3f800000);
-    e += ((unsigned)ia >> 23);
-    if (m > 1.414213562f) {
-      m = m * 0.5f;
-      e = e + 1;
-    }
-    t = m - 1.0f;
-    z = m + 1.0f;
-    z = __fdividef (t, z);
-    z = -t * z;
-    z = __internal_atanhf_kernel(t, z);
-    z = __internal_fmad ((float)e, 0.693147181f, z);
-    return z;
-  } else {
-
+  if ((ia < 0x00800000) || (ia > 0x7f7fffff)) {
     return __logf(a);
   }
+
+  m = __int_as_float((ia & 0x807fffff) | 0x3f800000);
+  e = ((unsigned)ia >> 23) - 127;
+  if (m > 1.414213562f) {
+    m = m * 0.5f;
+    e = e + 1;
+  }
+  t = m - 1.0f;
+  z = m + 1.0f;
+  z = __fdividef (t, z);
+  z = -t * z;
+  z = __internal_atanhf_kernel(t, z);
+  z = __internal_fmad ((float)e, 0.693147181f, z);
+  return z;
 }
 
-static __attribute__((__unused__)) float2 __internal_log_ep(float a)
+static float2 __internal_log_ep(float a)
 {
   float2 res;
   int expo;
@@ -11573,9 +11444,9 @@ static __attribute__((__unused__)) float2 __internal_log_ep(float a)
   float t_hi, t_lo;
   float f, g, u, v, q;
 
-  volatile float r, s, e;
 
 
+  float r, s, e;
 
   expo = (__float_as_int(a) >> 23) & 0xff;
 
@@ -11640,7 +11511,7 @@ static __attribute__((__unused__)) float2 __internal_log_ep(float a)
   return res;
 }
 
-static __attribute__((__unused__)) float __internal_accurate_log2f(float a)
+static float __internal_accurate_log2f(float a)
 {
   return 1.442695041f * __internal_accurate_logf(a);
 }
@@ -11648,7 +11519,7 @@ static __attribute__((__unused__)) float __internal_accurate_log2f(float a)
 
 
 
-static __attribute__((__unused__)) float2 __internal_dsmul (float2 x, float2 y)
+static float2 __internal_dsmul (float2 x, float2 y)
 {
     float2 z;
 
@@ -11681,7 +11552,7 @@ static unsigned int __cudart_i2opi_f [] = {
 };
 
 
-static __attribute__((__unused__)) float __internal_trig_reduction_kernel(float a, int *quadrant)
+static float __internal_trig_reduction_kernel(float a, int *quadrant)
 {
   float j;
   int q;
@@ -11758,19 +11629,14 @@ static __attribute__((__unused__)) float __internal_trig_reduction_kernel(float 
   q = __float2int_rn (a * 0.636619772f);
   j = (float)q;
   a = __internal_fmad (-j, 1.5703125000000000e+000f, a);
-
-
-  a = __fmaf_rn (-j, 4.8382673412561417e-004f, a);
-
-
-
-
+  a = __internal_fmad (-j, 4.8351287841796875e-004f, a);
+  a = __internal_fmad (-j, 3.1385570764541626e-007f, a);
   a = __internal_fmad (-j, 6.0771005065061922e-011f, a);
   *quadrant = q;
   return a;
 }
-# 1743 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static __attribute__((__unused__)) float __internal_expf_kernel(float a, float scale)
+# 1630 "/home/normal/cuda/bin/../include/math_functions.h" 3
+static float __internal_expf_kernel(float a, float scale)
 {
   float j, z;
 
@@ -11782,7 +11648,7 @@ static __attribute__((__unused__)) float __internal_expf_kernel(float a, float s
   return z;
 }
 
-static __attribute__((__unused__)) float __internal_accurate_expf(float a)
+static float __internal_accurate_expf(float a)
 {
   float z;
 
@@ -11792,7 +11658,7 @@ static __attribute__((__unused__)) float __internal_accurate_expf(float a)
   return z;
 }
 
-static __attribute__((__unused__)) float __internal_accurate_exp10f(float a)
+static float __internal_accurate_exp10f(float a)
 {
   float j, z;
 
@@ -11806,7 +11672,7 @@ static __attribute__((__unused__)) float __internal_accurate_exp10f(float a)
   return z;
 }
 
-static __attribute__((__unused__)) float __internal_lgammaf_pos(float a)
+static float __internal_lgammaf_pos(float a)
 {
   float sum;
   float s, t;
@@ -11891,7 +11757,7 @@ static __attribute__((__unused__)) float __internal_lgammaf_pos(float a)
 }
 
 
-static __attribute__((__unused__)) float __internal_sin_kernel(float x)
+static float __internal_sin_kernel(float x)
 {
   float x2, z;
 
@@ -11905,7 +11771,7 @@ static __attribute__((__unused__)) float __internal_sin_kernel(float x)
 }
 
 
-static __attribute__((__unused__)) float __internal_cos_kernel(float x)
+static float __internal_cos_kernel(float x)
 {
   float x2, z;
 
@@ -11918,7 +11784,7 @@ static __attribute__((__unused__)) float __internal_cos_kernel(float x)
   return z;
 }
 
-static __attribute__((__unused__)) float __internal_accurate_sinf(float a)
+static float __internal_accurate_sinf(float a)
 {
   float z;
   int i;
@@ -11945,7 +11811,7 @@ static __attribute__((__unused__)) float __internal_accurate_sinf(float a)
 
 
 
-static __attribute__((__unused__)) float __cuda_rintf(float a)
+static float __cuda_rintf(float a)
 {
 
 
@@ -11954,7 +11820,7 @@ static __attribute__((__unused__)) float __cuda_rintf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_sinf(float a)
+static float __cuda_sinf(float a)
 {
 
 
@@ -11965,7 +11831,7 @@ static __attribute__((__unused__)) float __cuda_sinf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_cosf(float a)
+static float __cuda_cosf(float a)
 {
 
 
@@ -11993,7 +11859,7 @@ static __attribute__((__unused__)) float __cuda_cosf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_tanf(float a)
+static float __cuda_tanf(float a)
 {
 
 
@@ -12004,7 +11870,7 @@ static __attribute__((__unused__)) float __cuda_tanf(float a)
   int i;
 
   if (__cuda___isinff(a)) {
-    return __fadd_rn (a, -a);
+    return __int_as_float(0x7fffffff);
   }
   z = __internal_trig_reduction_kernel(a, &i);
 
@@ -12016,7 +11882,7 @@ static __attribute__((__unused__)) float __cuda_tanf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_log2f(float a)
+static float __cuda_log2f(float a)
 {
 
 
@@ -12027,7 +11893,7 @@ static __attribute__((__unused__)) float __cuda_log2f(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_expf(float a)
+static float __cuda_expf(float a)
 {
 
 
@@ -12038,7 +11904,7 @@ static __attribute__((__unused__)) float __cuda_expf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_exp10f(float a)
+static float __cuda_exp10f(float a)
 {
 
 
@@ -12049,7 +11915,7 @@ static __attribute__((__unused__)) float __cuda_exp10f(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_coshf(float a)
+static float __cuda_coshf(float a)
 {
   float z;
 
@@ -12062,7 +11928,7 @@ static __attribute__((__unused__)) float __cuda_coshf(float a)
   return z;
 }
 
-static __attribute__((__unused__)) float __cuda_sinhf(float a)
+static float __cuda_sinhf(float a)
 {
   float s, z;
 
@@ -12087,7 +11953,7 @@ static __attribute__((__unused__)) float __cuda_sinhf(float a)
   return __cuda_copysignf(z, s);
 }
 
-static __attribute__((__unused__)) float __cuda_tanhf(float a)
+static float __cuda_tanhf(float a)
 {
   float s, t;
 
@@ -12111,7 +11977,7 @@ static __attribute__((__unused__)) float __cuda_tanhf(float a)
   return __cuda_copysignf(s, a);
 }
 
-static __attribute__((__unused__)) float __cuda_atan2f(float a, float b)
+static float __cuda_atan2f(float a, float b)
 {
 
 
@@ -12148,7 +12014,7 @@ static __attribute__((__unused__)) float __cuda_atan2f(float a, float b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_atanf(float a)
+static float __cuda_atanf(float a)
 {
   float t0, t1;
 
@@ -12168,7 +12034,7 @@ static __attribute__((__unused__)) float __cuda_atanf(float a)
 }
 
 
-static __attribute__((__unused__)) float __internal_asinf_kernel(float a)
+static float __internal_asinf_kernel(float a)
 {
   float t2, t3, t4;
 
@@ -12184,7 +12050,7 @@ static __attribute__((__unused__)) float __internal_asinf_kernel(float a)
   return a;
 }
 
-static __attribute__((__unused__)) float __cuda_asinf(float a)
+static float __cuda_asinf(float a)
 {
   float t0, t1, t2;
 
@@ -12201,7 +12067,7 @@ static __attribute__((__unused__)) float __cuda_asinf(float a)
   return __cuda_copysignf(t1, a);
 }
 
-static __attribute__((__unused__)) float __cuda_acosf(float a)
+static float __cuda_acosf(float a)
 {
   float t0, t1, t2;
 
@@ -12218,7 +12084,7 @@ static __attribute__((__unused__)) float __cuda_acosf(float a)
   return t1;
 }
 
-static __attribute__((__unused__)) float __cuda_logf(float a)
+static float __cuda_logf(float a)
 {
 
 
@@ -12229,7 +12095,7 @@ static __attribute__((__unused__)) float __cuda_logf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_log10f(float a)
+static float __cuda_log10f(float a)
 {
 
 
@@ -12240,7 +12106,7 @@ static __attribute__((__unused__)) float __cuda_log10f(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_log1pf(float a)
+static float __cuda_log1pf(float a)
 {
 
 
@@ -12263,7 +12129,7 @@ static __attribute__((__unused__)) float __cuda_log1pf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_acoshf(float a)
+static float __cuda_acoshf(float a)
 {
 
 
@@ -12281,7 +12147,7 @@ static __attribute__((__unused__)) float __cuda_acoshf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_asinhf(float a)
+static float __cuda_asinhf(float a)
 {
 
 
@@ -12300,7 +12166,7 @@ static __attribute__((__unused__)) float __cuda_asinhf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_atanhf(float a)
+static float __cuda_atanhf(float a)
 {
 
 
@@ -12314,7 +12180,7 @@ static __attribute__((__unused__)) float __cuda_atanhf(float a)
 
 }
 
-static __attribute__((__unused__)) float __cuda_expm1f(float a)
+static float __cuda_expm1f(float a)
 {
   float t, z, j, u;
 
@@ -12349,7 +12215,7 @@ static __attribute__((__unused__)) float __cuda_expm1f(float a)
   return u;
 }
 
-static __attribute__((__unused__)) float __cuda_hypotf(float a, float b)
+static float __cuda_hypotf(float a, float b)
 {
 
 
@@ -12379,7 +12245,7 @@ static __attribute__((__unused__)) float __cuda_hypotf(float a, float b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_cbrtf(float a)
+static float __cuda_cbrtf(float a)
 {
 
 
@@ -12388,22 +12254,18 @@ static __attribute__((__unused__)) float __cuda_cbrtf(float a)
 
   s = __cuda_fabsf(a);
   if ((a == 0.0f) || (s == __int_as_float(0x7f800000))) {
-    return a + a;
+    return a;
   }
   t = __cuda_exp2f(0.333333333f * __log2f(s));
   t = t-(t-(__fdividef(s,(t*t))))*0.333333333f;
-
-
-
-
-
-  t = __cuda_copysignf(t, a);
-
+  if (__cuda___signbitf(a)) {
+    t = -t;
+  }
   return t;
 
 }
 
-static __attribute__((__unused__)) float __cuda_erff(float a)
+static float __cuda_erff(float a)
 {
   float t, r, q;
 
@@ -12439,7 +12301,7 @@ static __attribute__((__unused__)) float __cuda_erff(float a)
   return a;
 }
 
-static __attribute__((__unused__)) float __cuda_erfinvf (float a)
+static float __cuda_erfinvf (float a)
 {
   float fa, t;
 
@@ -12505,14 +12367,11 @@ static __attribute__((__unused__)) float __cuda_erfinvf (float a)
   return t;
 }
 
-static __attribute__((__unused__)) float __cuda_erfcf(float a)
+static float __cuda_erfcf(float a)
 {
-
-    if (__cuda___isnanf(a)) return a + a;
-
-  if (a <= 0.813f) {
+  if (a <= 0.55f) {
     return 1.0f - __cuda_erff(a);
-  } else if (a > 10.055f) {
+  } else if (a > 10.0f) {
     return 0.0f;
   } else {
     float p;
@@ -12523,15 +12382,15 @@ static __attribute__((__unused__)) float __cuda_erfcf(float a)
 
 
 
-    p = 1.9997798317768276E-006f;
-    p = __internal_fmad (p, a, 5.6410849770777538E-001f);
-    p = __internal_fmad (p, a, 2.4579440583231387E+000f);
-    p = __internal_fmad (p, a, 4.9763988947448308E+000f);
-    p = __internal_fmad (p, a, 4.5767235962336885E+000f);
-    q = a + 4.3540863476555538E+000f;
-    q = __internal_fmad (q, a, 9.3453217404616584E+000f);
-    q = __internal_fmad (q, a, 1.0132282183545772E+001f);
-    q = __internal_fmad (q, a, 4.5781789912165518E+000f);
+    p = 4.014893410762552E-006f;
+    p = __internal_fmad (p, a, 5.640401259462436E-001f);
+    p = __internal_fmad (p, a, 2.626649872281140E+000f);
+    p = __internal_fmad (p, a, 5.486372652389673E+000f);
+    p = __internal_fmad (p, a, 5.250714831459401E+000f);
+    q = a + 4.651376250488319E+000f;
+    q = __internal_fmad (q, a, 1.026302828878470E+001f);
+    q = __internal_fmad (q, a, 1.140762166021288E+001f);
+    q = __internal_fmad (q, a, 5.251211619089947E+000f);
 
     h = 1.0f / q;
     q = __internal_fmad (-q * h, h, 2.0f * h);
@@ -12550,7 +12409,7 @@ static __attribute__((__unused__)) float __cuda_erfcf(float a)
   }
 }
 
-static __attribute__((__unused__)) float __cuda_erfcinvf (float a)
+static float __cuda_erfcinvf (float a)
 {
   float t;
   if (a <= 0.0f) {
@@ -12580,7 +12439,7 @@ static __attribute__((__unused__)) float __cuda_erfcinvf (float a)
   return t;
 }
 
-static __attribute__((__unused__)) float __cuda_lgammaf(float a)
+static float __cuda_lgammaf(float a)
 {
   float t;
   float i;
@@ -12605,7 +12464,7 @@ static __attribute__((__unused__)) float __cuda_lgammaf(float a)
   return t;
 }
 
-static __attribute__((__unused__)) float __cuda_ldexpf(float a, int b)
+static float __cuda_ldexpf(float a, int b)
 {
 
 
@@ -12628,7 +12487,7 @@ static __attribute__((__unused__)) float __cuda_ldexpf(float a, int b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_scalbnf(float a, int b)
+static float __cuda_scalbnf(float a, int b)
 {
 
 
@@ -12638,7 +12497,7 @@ static __attribute__((__unused__)) float __cuda_scalbnf(float a, int b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_scalblnf(float a, long int b)
+static float __cuda_scalblnf(float a, long int b)
 {
 
 
@@ -12655,7 +12514,7 @@ static __attribute__((__unused__)) float __cuda_scalblnf(float a, long int b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_frexpf(float a, int *b)
+static float __cuda_frexpf(float a, int *b)
 {
   float fa = __cuda_fabsf(a);
   unsigned int expo;
@@ -12679,7 +12538,7 @@ static __attribute__((__unused__)) float __cuda_frexpf(float a, int *b)
   return a;
 }
 
-static __attribute__((__unused__)) float __cuda_modff(float a, float *b)
+static float __cuda_modff(float a, float *b)
 {
 
 
@@ -12701,7 +12560,7 @@ static __attribute__((__unused__)) float __cuda_modff(float a, float *b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_fmodf(float a, float b)
+static float __cuda_fmodf(float a, float b)
 {
 
 
@@ -12748,7 +12607,7 @@ static __attribute__((__unused__)) float __cuda_fmodf(float a, float b)
 
 }
 
-static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
+static float __cuda_remainderf(float a, float b)
 {
 
   float twoa = 0.0f;
@@ -12774,12 +12633,12 @@ static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2758 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2638 "/home/normal/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot0 = 0;
       if (a >= scaled_b) {
-        twoa = __internal_fmad (a, 2.0f, -scaled_b) - scaled_b;
-        a = a - scaled_b;
+        twoa = (2.0f * a - scaled_b) - scaled_b;
+        a -= scaled_b;
         quot0 = 1;
       }
       scaled_b *= 0.5f;
@@ -12790,15 +12649,15 @@ static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
   twoa = 2.0f * a;
   if ((twoa > b) || ((twoa == b) && quot0)) {
     a -= b;
-    a = __int_as_float(__float_as_int(a) | 0x80000000);
+    a = __cuda_copysignf (a, -1.0f);
   }
-# 2790 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2670 "/home/normal/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   return a;
 }
 
-static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* quo)
+static float __cuda_remquof(float a, float b, int* quo)
 {
   float twoa = 0.0f;
   unsigned int quot = 0;
@@ -12829,7 +12688,7 @@ static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* q
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2846 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2723 "/home/normal/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot <<= 1;
       if (a >= scaled_b) {
@@ -12848,7 +12707,7 @@ static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* q
     a -= b;
     a = __cuda_copysignf (a, -1.0f);
   }
-# 2881 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2758 "/home/normal/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   quot = quot & (~((~0)<<3));
@@ -12858,12 +12717,12 @@ static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* q
   return a;
 }
 
-static __attribute__((__unused__)) float __cuda_fmaf(float a, float b, float c)
+static float __cuda_fmaf(float a, float b, float c)
 {
   return __fmaf_rn(a, b, c);
 }
 
-static __attribute__((__unused__)) float __internal_accurate_powf(float a, float b)
+static float __internal_accurate_powf(float a, float b)
 {
   float2 loga, prod;
 
@@ -12899,7 +12758,7 @@ static __attribute__((__unused__)) float __internal_accurate_powf(float a, float
   return t;
 }
 
-static __attribute__((__unused__)) float __cuda_powif(float a, int b)
+static float __cuda_powif(float a, int b)
 {
   unsigned int e = __cuda_abs(b);
   float r = 1.0f;
@@ -12916,7 +12775,7 @@ static __attribute__((__unused__)) float __cuda_powif(float a, int b)
   }
 }
 
-static __attribute__((__unused__)) double __cuda_powi(double a, int b)
+static double __cuda_powi(double a, int b)
 {
   unsigned int e = __cuda_abs(b);
   double r = 1.0;
@@ -12933,7 +12792,7 @@ static __attribute__((__unused__)) double __cuda_powi(double a, int b)
   }
 }
 
-static __attribute__((__unused__)) float __cuda_powf(float a, float b)
+static float __cuda_powf(float a, float b)
 {
 
 
@@ -12989,7 +12848,7 @@ static __attribute__((__unused__)) float __cuda_powf(float a, float b)
 }
 
 
-static __attribute__((__unused__)) float __internal_tgammaf_kernel(float a)
+static float __internal_tgammaf_kernel(float a)
 {
   float t;
   t = -1.05767296987211380E-003f;
@@ -13008,7 +12867,7 @@ static __attribute__((__unused__)) float __internal_tgammaf_kernel(float a)
 
 
 
-static __attribute__((__unused__)) float __cuda_tgammaf(float a)
+static float __cuda_tgammaf(float a)
 {
   float s, xx, x=a;
   if (x >= 0.0f) {
@@ -13073,7 +12932,7 @@ static __attribute__((__unused__)) float __cuda_tgammaf(float a)
   }
 }
 
-static __attribute__((__unused__)) float __cuda_roundf(float a)
+static float __cuda_roundf(float a)
 {
 
 
@@ -13087,13 +12946,12 @@ static __attribute__((__unused__)) float __cuda_roundf(float a)
 
 }
 
-static __attribute__((__unused__)) long long int __internal_llroundf_kernel(float a)
+static long long int __internal_llroundf_kernel(float a)
 {
   unsigned long long int res, t = 0LL;
   int shift;
   unsigned int ia = __float_as_int(a);
-
-  if ((ia << 1) > 0xff000000) return 0x8000000000000000LL;
+  if ((ia << 1) > 0xff000000) return 0LL;
   if ((int)ia >= 0x5f000000) return 0x7fffffffffffffffLL;
   if (ia >= 0xdf000000) return 0x8000000000000000LL;
   shift = 189 - ((ia >> 23) & 0xff);
@@ -13112,7 +12970,7 @@ static __attribute__((__unused__)) long long int __internal_llroundf_kernel(floa
   return (long long int)res;
 }
 
-static __attribute__((__unused__)) long long int __cuda_llroundf(float a)
+static long long int __cuda_llroundf(float a)
 {
 
 
@@ -13121,25 +12979,17 @@ static __attribute__((__unused__)) long long int __cuda_llroundf(float a)
 
 }
 
-static __attribute__((__unused__)) long int __cuda_lroundf(float a)
+static long int __cuda_lroundf(float a)
 {
 
 
 
 
-
-
-
-  if (__cuda___isnanf(a)) return 0L;
-  if (a >= 2147483648.0f) return 2147483647L;
-  if (a <= -2147483648.0f) return (-2147483647L - 1L);
-
-  return (long int)(__cuda_roundf(a));
-
-
+  return (long int)__cuda_llroundf(a);
+# 3045 "/home/normal/cuda/bin/../include/math_functions.h" 3
 }
 
-static __attribute__((__unused__)) float __cuda_fdimf(float a, float b)
+static float __cuda_fdimf(float a, float b)
 {
   float t;
   t = a - b;
@@ -13149,7 +12999,7 @@ static __attribute__((__unused__)) float __cuda_fdimf(float a, float b)
   return t;
 }
 
-static __attribute__((__unused__)) int __cuda_ilogbf(float a)
+static int __cuda_ilogbf(float a)
 {
   unsigned int i;
   int expo;
@@ -13180,7 +13030,7 @@ static __attribute__((__unused__)) int __cuda_ilogbf(float a)
   return expo;
 }
 
-static __attribute__((__unused__)) float __cuda_logbf(float a)
+static float __cuda_logbf(float a)
 {
 
 
@@ -13219,7 +13069,7 @@ static __attribute__((__unused__)) float __cuda_logbf(float a)
 
 }
 
-static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, float *cptr)
+static void __cuda_sincosf(float a, float *sptr, float *cptr)
 {
 
 
@@ -13228,12 +13078,14 @@ static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, flo
 
   float t, u, s, c;
   int quadrant;
-  t = __cuda_fabsf(a);
-  if ((t == __int_as_float(0x7f800000)) || (t == 0.0f)) {
-    s = __fmul_rn (a, 0.0f);
-    c = 1.0f + s;
-    *sptr = s;
-    *cptr = c;
+  if (__cuda___isinff(a)) {
+    *sptr = __int_as_float(0x7fffffff);
+    *cptr = __int_as_float(0x7fffffff);
+    return;
+  }
+  if (a == 0.0f) {
+    *sptr = a;
+    *cptr = 1.0f;
     return;
   }
   t = __internal_trig_reduction_kernel(a, &quadrant);
@@ -13257,9 +13109,7 @@ static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, flo
   *cptr = c;
 
 }
-# 3298 "/usr/local/cuda/bin/../include/math_functions.h" 3
-
-
+# 3176 "/home/normal/cuda/bin/../include/math_functions.h" 3
 extern __attribute__((__weak__)) double rsqrt(double a); double rsqrt(double a)
 {
   return 1.0 / sqrt(a);
@@ -13269,87 +13119,85 @@ extern __attribute__((__weak__)) float rsqrtf(float a); float rsqrtf(float a)
 {
   return (float)rsqrt((double)a);
 }
-
-
-# 3863 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
-# 45 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 3
-static __attribute__((__unused__)) double __cuda_fabs(double a)
+# 3728 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
+# 45 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h" 3
+static double __cuda_fabs(double a)
 {
   return (float)__cuda_fabsf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_fmax(double a, double b)
+static double __cuda_fmax(double a, double b)
 {
   return (float)__cuda_fmaxf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_fmin(double a, double b)
+static double __cuda_fmin(double a, double b)
 {
   return (float)__cuda_fminf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) int __cuda___finite(double a)
+static int __cuda___finite(double a)
 {
   return __cuda___finitef((float)a);
 }
 
-static __attribute__((__unused__)) int __cuda___isinf(double a)
+static int __cuda___isinf(double a)
 {
   return __cuda___isinff((float)a);
 }
 
-static __attribute__((__unused__)) int __cuda___isnan(double a)
+static int __cuda___isnan(double a)
 {
   return __cuda___isnanf((float)a);
 }
 
-static __attribute__((__unused__)) int __cuda___signbit(double a)
+static int __cuda___signbit(double a)
 {
   return __cuda___signbitf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_sqrt(double a)
+static double __cuda_sqrt(double a)
 {
   return (double)__cuda_sqrtf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_rsqrt(double a)
+static double __cuda_rsqrt(double a)
 {
   return (double)__cuda_rsqrtf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_ceil(double a)
+static double __cuda_ceil(double a)
 {
   return (double)__cuda_ceilf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_trunc(double a)
+static double __cuda_trunc(double a)
 {
   return (double)__cuda_truncf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_floor(double a)
+static double __cuda_floor(double a)
 {
   return (double)__cuda_floorf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_copysign(double a, double b)
+static double __cuda_copysign(double a, double b)
 {
   return (double)__cuda_copysignf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_sin(double a)
+static double __cuda_sin(double a)
 {
   return (double)__cuda_sinf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_cos(double a)
+static double __cuda_cos(double a)
 {
   return (double)__cuda_cosf((float)a);
 }
 
-static __attribute__((__unused__)) void __cuda_sincos(double a, double *sptr, double *cptr)
+static void __cuda_sincos(double a, double *sptr, double *cptr)
 {
   float fs, fc;
 
@@ -13359,162 +13207,162 @@ static __attribute__((__unused__)) void __cuda_sincos(double a, double *sptr, do
   *cptr = (double)fc;
 }
 
-static __attribute__((__unused__)) double __cuda_tan(double a)
+static double __cuda_tan(double a)
 {
   return (double)__cuda_tanf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_exp(double a)
+static double __cuda_exp(double a)
 {
   return (double)__cuda_expf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_exp2(double a)
+static double __cuda_exp2(double a)
 {
   return (double)__cuda_exp2f((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_exp10(double a)
+static double __cuda_exp10(double a)
 {
   return (double)__cuda_exp10f((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_expm1(double a)
+static double __cuda_expm1(double a)
 {
   return (double)__cuda_expm1f((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_cosh(double a)
+static double __cuda_cosh(double a)
 {
   return (double)__cuda_coshf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_sinh(double a)
+static double __cuda_sinh(double a)
 {
   return (double)__cuda_sinhf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_tanh(double a)
+static double __cuda_tanh(double a)
 {
   return (double)__cuda_tanhf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_asin(double a)
+static double __cuda_asin(double a)
 {
   return (double)__cuda_asinf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_acos(double a)
+static double __cuda_acos(double a)
 {
   return (double)__cuda_acosf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_atan(double a)
+static double __cuda_atan(double a)
 {
   return (double)__cuda_atanf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_atan2(double a, double b)
+static double __cuda_atan2(double a, double b)
 {
   return (double)__cuda_atan2f((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_log(double a)
+static double __cuda_log(double a)
 {
   return (double)__cuda_logf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_log2(double a)
+static double __cuda_log2(double a)
 {
   return (double)__cuda_log2f((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_log10(double a)
+static double __cuda_log10(double a)
 {
   return (double)__cuda_log10f((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_log1p(double a)
+static double __cuda_log1p(double a)
 {
   return (double)__cuda_log1pf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_acosh(double a)
+static double __cuda_acosh(double a)
 {
   return (double)__cuda_acoshf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_asinh(double a)
+static double __cuda_asinh(double a)
 {
   return (double)__cuda_asinhf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_atanh(double a)
+static double __cuda_atanh(double a)
 {
   return (double)__cuda_atanhf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_hypot(double a, double b)
+static double __cuda_hypot(double a, double b)
 {
   return (double)__cuda_hypotf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_cbrt(double a)
+static double __cuda_cbrt(double a)
 {
   return (double)__cuda_cbrtf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_erf(double a)
+static double __cuda_erf(double a)
 {
   return (double)__cuda_erff((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_erfinv(double a)
+static double __cuda_erfinv(double a)
 {
   return (double)__cuda_erfinvf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_erfc(double a)
+static double __cuda_erfc(double a)
 {
   return (double)__cuda_erfcf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_erfcinv(double a)
+static double __cuda_erfcinv(double a)
 {
   return (double)__cuda_erfcinvf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_lgamma(double a)
+static double __cuda_lgamma(double a)
 {
   return (double)__cuda_lgammaf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_tgamma(double a)
+static double __cuda_tgamma(double a)
 {
   return (double)__cuda_tgammaf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_ldexp(double a, int b)
+static double __cuda_ldexp(double a, int b)
 {
   return (double)__cuda_ldexpf((float)a, b);
 }
 
-static __attribute__((__unused__)) double __cuda_scalbn(double a, int b)
+static double __cuda_scalbn(double a, int b)
 {
   return (double)__cuda_scalbnf((float)a, b);
 }
 
-static __attribute__((__unused__)) double __cuda_scalbln(double a, long b)
+static double __cuda_scalbln(double a, long b)
 {
   return (double)__cuda_scalblnf((float)a, b);
 }
 
-static __attribute__((__unused__)) double __cuda_frexp(double a, int *b)
+static double __cuda_frexp(double a, int *b)
 {
   return (double)__cuda_frexpf((float)a, b);
 }
 
-static __attribute__((__unused__)) double __cuda_modf(double a, double *b)
+static double __cuda_modf(double a, double *b)
 {
   float fb;
   float fa = __cuda_modff((float)a, &fb);
@@ -13524,96 +13372,96 @@ static __attribute__((__unused__)) double __cuda_modf(double a, double *b)
   return (double)fa;
 }
 
-static __attribute__((__unused__)) double __cuda_fmod(double a, double b)
+static double __cuda_fmod(double a, double b)
 {
   return (double)__cuda_fmodf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_remainder(double a, double b)
+static double __cuda_remainder(double a, double b)
 {
   return (double)__cuda_remainderf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_remquo(double a, double b, int *c)
+static double __cuda_remquo(double a, double b, int *c)
 {
   return (double)__cuda_remquof((float)a, (float)b, c);
 }
 
-static __attribute__((__unused__)) double __cuda_nextafter(double a, double b)
+static double __cuda_nextafter(double a, double b)
 {
   return (double)__cuda_nextafterf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_nan(const char *tagp)
+static double __cuda_nan(const char *tagp)
 {
   return (double)__cuda_nanf(tagp);
 }
 
-static __attribute__((__unused__)) double __cuda_pow(double a, double b)
+static double __cuda_pow(double a, double b)
 {
   return (double)__cuda_powf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) double __cuda_round(double a)
+static double __cuda_round(double a)
 {
   return (double)__cuda_roundf((float)a);
 }
 
-static __attribute__((__unused__)) long __cuda_lround(double a)
+static long __cuda_lround(double a)
 {
   return __cuda_lroundf((float)a);
 }
 
-static __attribute__((__unused__)) long long __cuda_llround(double a)
+static long long __cuda_llround(double a)
 {
   return __cuda_llroundf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_rint(double a)
+static double __cuda_rint(double a)
 {
   return (double)__cuda_rintf((float)a);
 }
 
-static __attribute__((__unused__)) long __cuda_lrint(double a)
+static long __cuda_lrint(double a)
 {
   return __cuda_lrintf((float)a);
 }
 
-static __attribute__((__unused__)) long long __cuda_llrint(double a)
+static long long __cuda_llrint(double a)
 {
   return __cuda_llrintf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_nearbyint(double a)
+static double __cuda_nearbyint(double a)
 {
   return (double)__cuda_nearbyintf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_fdim(double a, double b)
+static double __cuda_fdim(double a, double b)
 {
   return (double)__cuda_fdimf((float)a, (float)b);
 }
 
-static __attribute__((__unused__)) int __cuda_ilogb(double a)
+static int __cuda_ilogb(double a)
 {
   return __cuda_ilogbf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_logb(double a)
+static double __cuda_logb(double a)
 {
   return (double)__cuda_logbf((float)a);
 }
 
-static __attribute__((__unused__)) double __cuda_fma(double a, double b, double c)
+static double __cuda_fma(double a, double b, double c)
 {
   return (double)__cuda_fmaf((float)a, (float)b, (float)c);
 }
-# 3864 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
-# 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
-# 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00006e15_00000000-1_reduction.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_44_tmpxft_00006e15_00000000_4_reduction_cpp1_ii_main(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_44_tmpxft_00006e15_00000000_4_reduction_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 3729 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
+# 94 "/home/normal/cuda/bin/../include/common_functions.h" 2
+# 227 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
+# 6 "/tmp/tmpxft_00000d07_00000000-1_reduction.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_45_tmpxft_00000d07_00000000_13_reduction_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_45_tmpxft_00000d07_00000000_13_reduction_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 538 "reduction.cu" 2

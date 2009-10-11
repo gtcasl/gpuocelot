@@ -1706,7 +1706,7 @@ namespace ir
 	std::string LLVMStore::toString() const
 	{
 		std::stringstream stream;
-		if( isVolatile ) stream << "volatile";
+		if( isVolatile ) stream << "volatile ";
 		stream << LLVMInstruction::toString( opcode ) << " " 
 			<< a.type.toString() << " " << a.toString() << ", " 
 			<< d.type.toString() << " " << d.toString();

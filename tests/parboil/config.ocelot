@@ -10,13 +10,13 @@
 			1
 		</UseMemoryTraceGenerator>
 		<UseBranchTraceGenerator>
-			0
+			1
 		</UseBranchTraceGenerator>
 		<UseSharedComputationGenerator>
-			0
+			1
 		</UseSharedComputationGenerator>
 		<UseParallelismTraceGenerator>
-			0
+			1
 		</UseParallelismTraceGenerator>
 	</OcelotRuntime>
 </ocelot>

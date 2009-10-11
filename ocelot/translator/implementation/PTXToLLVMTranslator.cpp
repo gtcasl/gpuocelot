@@ -2877,7 +2877,7 @@ namespace translator
 				call.name = "@__ocelot_tex_1d";
 				call.parameters.resize( 4 );
 				call.parameters[0] = d;
-				call.parameters[3] = _translate( i.c );
+				call.parameters[3] = _translate( i.c.array[0] );
 				break;
 			}
 			case ir::PTXInstruction::_2d:
@@ -4253,7 +4253,7 @@ namespace translator
 		}
 		else
 		{
-			branch.iftrue = "$OcelotRegisterInitializerBlock";
+			branch.iftrue = "%$OcelotRegisterInitializerBlock";
 		}
 		
 		_llvmKernel->_statements.push_front( ir::LLVMStatement( branch ) );

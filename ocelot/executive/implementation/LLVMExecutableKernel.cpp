@@ -558,7 +558,7 @@ namespace executive
 			report( "Translating PTX kernel \"" << name << "\" to LLVM" );
 
 			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
-			std::ofstream file("ptxcfgoriginal.dot");
+			std::ofstream file((name + "_cfg_original.dot").c_str());
 			_ptx->cfg()->write(file, _ptx->instructions);
 			file.close();
 			#endif
@@ -570,7 +570,7 @@ namespace executive
 			translator::PTXToLLVMTranslator translator( _optimizationLevel );
 
 			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
-			file.open("ptxcfgoptimized.dot");
+			file.open((name + "_cfg_optimized.dot").c_str());
 			_ptx->cfg()->write(file, _ptx->instructions);
 			file.close();
 			#endif
@@ -1100,7 +1100,7 @@ namespace executive
 						{
 							instruction->addressSpace 
 								= ir::PTXInstruction::Const;
-							operands[ i ]->offset = mapping->second;
+							operands[ i ]->offset += mapping->second;
 							report("   For instruction " 
 								<< instruction->toString() 
 								<< ", mapping constant label " << mapping->first 
@@ -1320,6 +1320,8 @@ namespace executive
 		
 		if( bytes != _externalSharedSize )
 		{
+			report( "Setting external shared memory to " << bytes 
+				<< " total size is " << (bytes + _context.sharedSize) );
 			delete[] _context.shared;
 			_externalSharedSize = bytes;
 			_context.shared = new char[ _externalSharedSize

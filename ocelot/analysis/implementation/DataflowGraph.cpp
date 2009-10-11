@@ -536,7 +536,7 @@ namespace analysis
 		
 		added->_fallthrough = block->_fallthrough;
 
-		if( added->_fallthrough != end() )
+		if( added->_fallthrough != this->end() )
 		{
 			BlockPointerSet::iterator predecessor = 
 				added->_fallthrough->_predecessors.find( block );

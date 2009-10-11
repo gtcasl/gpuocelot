@@ -21,9 +21,7 @@
 
 #define REPORT_BASE 0
 
-/*!
-	\brief A namespace for compiler analysis modules.
-*/
+/*! \brief A namespace for compiler analysis modules. */
 namespace analysis
 {
 

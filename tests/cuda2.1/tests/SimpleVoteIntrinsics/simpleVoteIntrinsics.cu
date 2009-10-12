@@ -122,66 +122,72 @@ int checkResultsVoteAllKernel2(unsigned int *h_result, int size, int warp_size)
 {
 	int error_count = 0;
 
-#ifdef __DEVICE_EMULATION__	// results behave differently because DEVICE_EMULATION has WARP size of 1
-	error_count += checkErrors1(h_result,                             0,   VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-	error_count += checkErrors2(h_result,   VOTE_DATA_GROUP*warp_size/4, 2*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-	error_count += checkErrors2(h_result, 2*VOTE_DATA_GROUP*warp_size/4, 3*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-	error_count += checkErrors2(h_result, 3*VOTE_DATA_GROUP*warp_size/4, 4*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-#else
-	error_count += checkErrors1(h_result,                             0,   VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-	error_count += checkErrors1(h_result,   VOTE_DATA_GROUP*warp_size/4, 2*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-	error_count += checkErrors1(h_result, 2*VOTE_DATA_GROUP*warp_size/4, 3*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-	error_count += checkErrors2(h_result, 3*VOTE_DATA_GROUP*warp_size/4, 4*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
-#endif
+	if( warp_size == 1 )
+	{
+		error_count += checkErrors1(h_result,                             0,   VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+		error_count += checkErrors2(h_result,   VOTE_DATA_GROUP*warp_size/4, 2*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+		error_count += checkErrors2(h_result, 2*VOTE_DATA_GROUP*warp_size/4, 3*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+		error_count += checkErrors2(h_result, 3*VOTE_DATA_GROUP*warp_size/4, 4*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+	}
+	else
+	{
+		error_count += checkErrors1(h_result,                             0,   VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+		error_count += checkErrors1(h_result,   VOTE_DATA_GROUP*warp_size/4, 2*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+		error_count += checkErrors1(h_result, 2*VOTE_DATA_GROUP*warp_size/4, 3*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+		error_count += checkErrors2(h_result, 3*VOTE_DATA_GROUP*warp_size/4, 4*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
+	}
 	return error_count;
 }
 
 // Verification code for Kernel #3
-int checkResultsVoteAnyKernel3(bool *hinfo, int size)
+int checkResultsVoteAnyKernel3(bool *hinfo, int size, int warp_size)
 {
 	int i, error_count = 0;
 
-#ifdef __DEVICE_EMULATION__	// comparison is different due to DEVICE_EMULATION having a WARP size of 1
-	for (i = 0; i < size * 3; i++)  {
-      // All warps should be all zeros.
-	  if (i >= 0 && i < size) {
-		  if (hinfo[i] != false) {
-			error_count++;
+	if( warp_size == 1 )
+	{
+		for (i = 0; i < size * 3; i++)  {
+		  // All warps should be all zeros.
+		  if (i >= 0 && i < size) {
+			  if (hinfo[i] != false) {
+				error_count++;
+			  }
+		  } else if (i >= size && i < 2*size) {
+		      if (hinfo[i] != true) {
+		        error_count++;
+		      }
+		  } else if (i >= 2*size && i < 3*size) {
+		      if (hinfo[i] != true) {
+		        error_count++;
+		      }
 		  }
-	  } else if (i >= size && i < 2*size) {
-          if (hinfo[i] != true) {
-            error_count++;
-          }
-	  } else if (i >= 2*size && i < 3*size) {
-          if (hinfo[i] != true) {
-            error_count++;
-          }
-	  }
+		}
 	}
-#else
-	for (i = 0; i < size * 3; i++)  {
-      switch(i % 3) {
-        case 0:
-          // First warp should be all zeros.
-          if (hinfo[i] != (i >= size * 1)) {
-            error_count++;
-          }
-          break;
-        case 1:
-          // First warp and half of second should be all zeros.
-          if (hinfo[i] != (i >= size * 3 / 2)) {
-            error_count++;
-          }
-          break;
-        case 2:
-          // First two warps should be all zeros.
-          if (hinfo[i] != (i >= size * 2)) {
-            error_count++;
-          }
-          break;
-      }
-    }
-#endif
+	else
+	{
+		for (i = 0; i < size * 3; i++)  {
+		  switch(i % 3) {
+		    case 0:
+		      // First warp should be all zeros.
+		      if (hinfo[i] != (i >= size * 1)) {
+		        error_count++;
+		      }
+		      break;
+		    case 1:
+		      // First warp and half of second should be all zeros.
+		      if (hinfo[i] != (i >= size * 3 / 2)) {
+		        error_count++;
+		      }
+		      break;
+		    case 2:
+		      // First two warps should be all zeros.
+		      if (hinfo[i] != (i >= size * 2)) {
+		        error_count++;
+		      }
+		      break;
+		  }
+		}
+	}
 	printf((error_count == 0) ? "\tPASSED!\n" : "\tFAILED!\n");
 	return error_count;
 }
@@ -206,9 +212,6 @@ int main(int argc, char **argv)
     cutilSafeCall(cudaChooseDevice(&dev, &deviceProp));
     cutilSafeCall(cudaGetDeviceProperties(&deviceProp, 0));
 
-#ifdef __DEVICE_EMULATION__
-	warp_size = 1;
-#else
 	if ((deviceProp.major > 1 || deviceProp.minor >= 2))
 	{
 		printf("simpleVoteIntrinsics: Using Device %d: \"%s\"\n", dev, deviceProp.name);
@@ -220,7 +223,6 @@ int main(int argc, char **argv)
 		cutilExit(argc,argv);
     }
 	warp_size = deviceProp.warpSize;
-#endif
 
     h_input  = (unsigned int *)malloc(             VOTE_DATA_GROUP*warp_size * sizeof(unsigned int));
     h_result = (unsigned int *)malloc(             VOTE_DATA_GROUP*warp_size * sizeof(unsigned int));
@@ -274,7 +276,7 @@ int main(int argc, char **argv)
     cudaMemcpy(hinfo, dinfo, warp_size * 3 * 3 * sizeof(bool),
                cudaMemcpyDeviceToHost);
 
-	error_count[2] = checkResultsVoteAnyKernel3(hinfo, warp_size * 3);
+	error_count[2] = checkResultsVoteAnyKernel3(hinfo, warp_size * 3, warp_size);
 
 	printf("\n");
     if (error_count[0] == 0 && 

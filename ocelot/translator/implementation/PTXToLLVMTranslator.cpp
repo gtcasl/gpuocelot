@@ -2502,7 +2502,7 @@ namespace translator
 		comparison.type.type = ir::LLVMInstruction::I1;
 		comparison.name = _tempRegister();
 	
-		if( ir::PTXOperand::isFloat( i.type ) )
+		if( ir::PTXOperand::isFloat( i.c.type ) )
 		{
 			ir::LLVMFcmp compare;
 			
@@ -2524,7 +2524,7 @@ namespace translator
 			compare.b = compare.a;
 			compare.b.constant = true;
 			compare.b.i32 = 0;
-			compare.comparison = ir::LLVMInstruction::Oge;
+			compare.comparison = ir::LLVMInstruction::Sge;
 			
 			_add( compare );		
 		}

@@ -29,6 +29,7 @@
 #define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
+#define REPORT_ATOMIC_OPERATIONS 0
 #define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_FIRST_THREAD_ONLY 0
 #define DEBUG_PTX_INSTRUCTION_TRACE 1
@@ -68,6 +69,280 @@ extern "C"
 	float rsqrt( float value )
 	{
 		return 1.0 / sqrtf( value );
+	}
+
+	bool __ocelot_vote( bool a, ir::PTXInstruction::VoteMode mode, bool invert )
+	{
+		a = invert ? !a : a;
+		
+		switch( mode )
+		{
+			case ir::PTXInstruction::All:
+			case ir::PTXInstruction::Any:
+			{
+				return a;
+				break;
+			}
+			case ir::PTXInstruction::Uni:
+			default: break;
+		}
+		return true;
+	}
+
+	ir::PTXF32 __ocelot_atom_f32( executive::LLVMContext* context, 
+		ir::PTXInstruction::AddressSpace space, 
+		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, ir::PTXF32 b )
+	{
+		ir::PTXF32 d = 0;
+		
+		switch( op )
+		{
+			case ir::PTXInstruction::AtomicAdd:
+			{
+				d = *((ir::PTXF32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d + b ) );
+				*((ir::PTXF32*) address) = d + b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicMin:
+			{
+				d = *((ir::PTXF32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << std::min( d, b ) );
+				*((ir::PTXF32*) address) = std::min( d, b );
+				break;
+			}
+			case ir::PTXInstruction::AtomicMax:
+			{
+				d = *((ir::PTXF32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << std::max( d, b ) );
+				*((ir::PTXF32*) address) = std::max( d, b );
+				break;
+			}
+			default: assertM( false, "Atomic " 
+				<< ir::PTXInstruction::toString( op ) 
+				<< " not supported for f32." );
+		}
+		
+		return d;
+	}
+
+	ir::PTXB32 __ocelot_atom_b32( executive::LLVMContext* context, 
+		ir::PTXInstruction::AddressSpace space, 
+		ir::PTXInstruction::AtomicOperation op, 
+		ir::PTXU64 address, ir::PTXB32 b )
+	{
+		ir::PTXB32 d = 0;
+		
+		switch( op )
+		{
+			case ir::PTXInstruction::AtomicAnd:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAnd: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d & b ) );
+				*((ir::PTXB32*) address) = d & b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicOr:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicOr: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d | b ) );
+				*((ir::PTXB32*) address) = d | b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicXor:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicXor: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d ^ b ) );
+				*((ir::PTXB32*) address) = d ^ b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicAdd:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d + b ) );
+				*((ir::PTXB32*) address) = d + b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicMin:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << std::min( d, b ) );
+				*((ir::PTXB32*) address) = std::min( d, b );
+				break;
+			}
+			case ir::PTXInstruction::AtomicMax:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMax: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << std::max( d, b ) );
+				*((ir::PTXB32*) address) = std::max( d, b );
+				break;
+			}
+			case ir::PTXInstruction::AtomicDec:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicDec: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( ((d == 0) || (d > b)) ? b : d - 1 ) );
+				*((ir::PTXB32*) address) = ((d == 0) || (d > b)) ? b : d - 1;
+				break;
+			}
+			case ir::PTXInstruction::AtomicInc:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicInc: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( (d >= b) ? 0 : d + 1 ) );
+				*((ir::PTXB32*) address) = (d >= b) ? 0 : d + 1;
+				break;
+			}
+			case ir::PTXInstruction::AtomicExch:
+			{
+				d = *((ir::PTXB32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicExch: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << b );
+				*((ir::PTXB32*) address) = b;
+				break;
+			}
+			default: assertM( false, "Atomic " 
+				<< ir::PTXInstruction::toString( op ) 
+				<< " not supported for b32." );
+		}
+		
+		return d;
+	}
+
+	ir::PTXS32 __ocelot_atom_s32( executive::LLVMContext* context, 
+		ir::PTXInstruction::AddressSpace space, 
+		ir::PTXInstruction::AtomicOperation op, 
+		ir::PTXU64 address, ir::PTXS32 b )
+	{
+		ir::PTXS32 d = 0;
+		
+		switch( op )
+		{
+			case ir::PTXInstruction::AtomicAdd:
+			{
+				d = *((ir::PTXS32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d + b ) );
+				*((ir::PTXS32*) address) = d + b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicMin:
+			{
+				d = *((ir::PTXS32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << std::min( d, b ) );
+				*((ir::PTXS32*) address) = std::min( d, b );
+				break;
+			}
+			case ir::PTXInstruction::AtomicMax:
+			{
+				d = *((ir::PTXS32*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMax: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << std::max( d, b ) );
+				*((ir::PTXS32*) address) = std::max( d, b );
+				break;
+			}
+			default: assertM( false, "Atomic " 
+				<< ir::PTXInstruction::toString( op ) 
+				<< " not supported for s32." );
+		}
+		
+		return d;
+	}
+
+	ir::PTXB64 __ocelot_atom_b64( executive::LLVMContext* context, 
+		ir::PTXInstruction::AddressSpace space, 
+		ir::PTXInstruction::AtomicOperation op, 
+		ir::PTXU64 address, ir::PTXB64 b )
+	{
+		ir::PTXB64 d = 0;
+		
+		switch( op )
+		{
+			case ir::PTXInstruction::AtomicAdd:
+			{
+				d = *((ir::PTXB64*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << ( d + b ) );
+				*((ir::PTXB64*) address) = d + b;
+				break;
+			}
+			case ir::PTXInstruction::AtomicExch:
+			{
+				d = *((ir::PTXB64*) address);
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicExch: address " 
+					<< (void*) address << " from " << d << " by " << b 
+					<< " to " << b );
+				*((ir::PTXB64*) address) = b;
+				break;
+			}
+			default: assertM( false, "Atomic " 
+				<< ir::PTXInstruction::toString( op ) 
+				<< " not supported for b64." );
+		}
+		
+		return d;
+	}
+
+	ir::PTXB32 __ocelot_atomcas_b32( executive::LLVMContext* context, 
+		ir::PTXInstruction::AddressSpace space, 
+		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
+		ir::PTXB32 b, ir::PTXB32 c )
+	{
+		ir::PTXB32 d = *((ir::PTXB32*) address);
+		
+		assert( op == ir::PTXInstruction::AtomicCas );
+
+		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicCas: address " 
+			<< (void*) address << " from " << d << " by " << b 
+			<< " to " << ( ( d == b ) ? c : d ) );
+
+		*((ir::PTXB32*) address) = ( d == b ) ? c : d;
+
+		return d;
+	}
+
+	ir::PTXB64 __ocelot_atomcas_b64( executive::LLVMContext* context, 
+		ir::PTXInstruction::AddressSpace space, 
+		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
+		ir::PTXB64 b, ir::PTXB64 c )
+	{
+		ir::PTXB64 d = *((ir::PTXB64*) address);
+		
+		assert( op == ir::PTXInstruction::AtomicCas );
+
+		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicCas: address " 
+			<< (void*) address << " from " << d << " by " << b 
+			<< " to " << ( ( d == b ) ? c : d ) );
+
+		*((ir::PTXB64*) address) = ( d == b ) ? c : d;
+
+		return d;
 	}
 
 	unsigned int __ocelot_clock( executive::LLVMContext* context )

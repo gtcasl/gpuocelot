@@ -962,27 +962,66 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "@atom";
-		
 		call.d = _destination( i );
 
-		call.parameters.resize( 4 );
-		call.parameters[0].type.type = ir::LLVMInstruction::I32;
-		call.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[0].i32 = i.addressSpace;
+		if( i.atomicOperation == ir::PTXInstruction::AtomicCas )
+		{
+			if( i.type == ir::PTXOperand::b32 
+				|| i.type == ir::PTXOperand::u32 )
+			{
+				call.name = "@__ocelot_atomcas_b32";
+			}
+			else
+			{
+				call.name = "@__ocelot_atomcas_b64";				
+			}
+			call.parameters.resize( 6 );
+		}
+		else
+		{
+			if( i.type == ir::PTXOperand::b32
+				|| i.type == ir::PTXOperand::u32 )
+			{
+				call.name = "@__ocelot_atom_b32";
+			}
+			else if( i.type == ir::PTXOperand::f32 )
+			{
+				call.name = "@__ocelot_atom_f32";
+			}
+			else if( i.type == ir::PTXOperand::s32 )
+			{
+				call.name = "@__ocelot_atom_s32";
+			}
+			else
+			{
+				call.name = "@__ocelot_atom_b64";
+			}
+			call.parameters.resize( 5 );
+		}
+		
+		call.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		call.parameters[0].type.members.resize(1);
+		call.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		call.parameters[0].type.members[0].label = "%LLVMContext";
+		call.parameters[0].name = "%__ctaContext";
 
 		call.parameters[1].type.type = ir::LLVMInstruction::I32;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[1].i32 = i.atomicOperation;
+		call.parameters[1].i32 = i.addressSpace;
+		call.parameters[1].constant = true;
 
+		call.parameters[2].type.type = ir::LLVMInstruction::I32;
+		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[2].i32 = i.atomicOperation;
+		call.parameters[2].constant = true;
 
-		call.parameters[2] = _translate( i.a );
-		call.parameters[3] = _translate( i.b );
+		call.parameters[3] = _translate( i.a );
+		call.parameters[4] = _translate( i.b );
 		
 		if( i.atomicOperation == ir::PTXInstruction::AtomicCas )
 		{
-			call.parameters.resize( 5 );
-			call.parameters[4] = _translate( i.c );
+			call.parameters[5] = _translate( i.c );
 		}
 		
 		_add( call );
@@ -3050,7 +3089,7 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		call.name = "@vote";
+		call.name = "@__ocelot_vote";
 		
 		call.d = _destination( i );
 		call.parameters.resize( 3 );
@@ -3058,9 +3097,11 @@ namespace translator
 		call.parameters[1].type.type = ir::LLVMInstruction::I32;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		call.parameters[1].i32 = i.vote;
+		call.parameters[1].constant = true;
 		call.parameters[2].type.type = ir::LLVMInstruction::I1;
 		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
 		call.parameters[2].i1 = i.b.condition == ir::PTXOperand::InvPred;
+		call.parameters[2].constant = true;
 		
 		_add( call );
 	}
@@ -4423,6 +4464,71 @@ namespace translator
 		_llvmKernel->_statements.push_front( tex );		
 	}
 
+	void PTXToLLVMTranslator::_addAtomicCalls()
+	{
+		ir::LLVMStatement atom( ir::LLVMStatement::FunctionDeclaration );
+
+		atom.label = "__ocelot_atom_b32";
+		atom.linkage = ir::LLVMStatement::InvalidLinkage;
+		atom.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		atom.visibility = ir::LLVMStatement::Default;
+		
+		atom.operand.type.category = ir::LLVMInstruction::Type::Element;
+		atom.operand.type.type = ir::LLVMInstruction::I32;
+		
+		atom.parameters.resize( 5 );
+
+		atom.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		atom.parameters[0].type.members.resize(1);
+		atom.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		atom.parameters[0].type.members[0].label = "%LLVMContext";
+
+		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
+
+		atom.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[2].type.type = ir::LLVMInstruction::I32;
+
+		atom.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[3].type.type = ir::LLVMInstruction::I64;
+
+		atom.parameters[4].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[4].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( atom );		
+
+		atom.label = "__ocelot_atom_s32";
+		
+		_llvmKernel->_statements.push_front( atom );
+
+		atom.parameters.resize( 6 );
+
+		atom.label = "__ocelot_atomcas_b32";
+		atom.parameters[5].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[5].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( atom );	
+
+		atom.label = "__ocelot_atomcas_b64";
+		atom.operand.type.type = ir::LLVMInstruction::I64;
+		atom.parameters[4].type.type = ir::LLVMInstruction::I64;
+		atom.parameters[5].type.type = ir::LLVMInstruction::I64;
+
+		_llvmKernel->_statements.push_front( atom );	
+
+		atom.label = "__ocelot_atom_b64";
+		atom.parameters.resize( 5 );
+
+		_llvmKernel->_statements.push_front( atom );
+
+		atom.label = "__ocelot_atom_f32";
+		atom.operand.type.type = ir::LLVMInstruction::F32;
+		atom.parameters[4].type.type = ir::LLVMInstruction::F32;
+			
+		_llvmKernel->_statements.push_front( atom );	
+	}
+
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
 		_llvmKernel->_statements.push_front( 
@@ -4595,8 +4701,29 @@ namespace translator
 
 		_llvmKernel->_statements.push_front( ir::LLVMStatement( clock ) );
 
+		ir::LLVMStatement vote( ir::LLVMStatement::FunctionDeclaration );
+
+		vote.label = "__ocelot_vote";
+		vote.linkage = ir::LLVMStatement::InvalidLinkage;
+		vote.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		vote.visibility = ir::LLVMStatement::Default;
+		
+		vote.operand.type.category = ir::LLVMInstruction::Type::Element;
+		vote.operand.type.type = ir::LLVMInstruction::I1;
+		
+		vote.parameters.resize( 3 );
+		vote.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		vote.parameters[0].type.type = ir::LLVMInstruction::I1;
+		vote.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		vote.parameters[1].type.type = ir::LLVMInstruction::I32;
+		vote.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		vote.parameters[2].type.type = ir::LLVMInstruction::I1;
+	
+		_llvmKernel->_statements.push_front( vote );		
+
 		_insertDebugSymbols();
 		_addTextureCalls();
+		_addAtomicCalls();
 
 		_llvmKernel->_statements.push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );

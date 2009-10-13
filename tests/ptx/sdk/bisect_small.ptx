@@ -336,7 +336,6 @@ $Lt_0_36866:
 	mov.f32 	%f34, 0f00000000;    	// 0
 	setp.lt.f32 	%p18, %f7, %f34;
 	mov.pred 	%p5, %p18;
-	mov.pred 	%p19, %p20;
 	mov.f32 	%f35, 0f00000000;    	// 0
 	setp.lt.f32 	%p21, %f5, %f35;
 	@!%p21 bra 	$Lt_0_40706;
@@ -405,7 +404,6 @@ $Lt_0_39682:
 	mov.f32 	%f48, 0f00000000;    	// 0
 	setp.lt.f32 	%p18, %f7, %f48;
 	mov.pred 	%p5, %p18;
-	mov.pred 	%p23, %p20;
 	mov.f32 	%f49, 0f00000000;    	// 0
 	setp.lt.f32 	%p24, %f5, %f49;
 	@!%p24 bra 	$Lt_0_42242;
@@ -460,7 +458,6 @@ $Lt_0_41218:
 	mov.f32 	%f63, 0f00000000;    	// 0
 	setp.lt.f32 	%p26, %f5, %f63;
 	mov.pred 	%p27, %p26;
-	mov.pred 	%p28, %p29;
 	mov.f32 	%f64, 0f00000000;    	// 0
 	setp.lt.f32 	%p30, %f6, %f64;
 	@!%p30 bra 	$Lt_0_43266;

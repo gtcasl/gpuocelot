@@ -404,17 +404,20 @@ namespace ir
 		}
 		else if( version() == ir::PTXInstruction::ptx1_4 )
 		{
-			stream << ".entry " << name << "( \n";
-			for( ParameterVector::const_iterator parameter = parameters.begin();
-				parameter != parameters.end(); ++parameter )
-			{
-				if( parameter != parameters.begin() )
+			stream << ".entry " << name;
+			if (parameters.size()) {
+				stream << "(";
+				for( ParameterVector::const_iterator parameter = parameters.begin();
+					parameter != parameters.end(); ++parameter )
 				{
-					stream << ",\n";
+					if( parameter != parameters.begin() )
+					{
+						stream << ",\n";
+					}
+					stream << "\t\t" << parameter->toString();
 				}
-				stream << "\t\t" << parameter->toString();
+				stream << ")\n";		
 			}
-			stream << ")\n";		
 			stream << "{\n";
 		}
 		else
@@ -455,6 +458,7 @@ namespace ir
 				block = blocks.begin(); block != blocks.end(); ++block, ++blockIndex )
 			{
 				std::string label = (*block)->label;
+				std::string comment = (*block)->comment;
 				if ((*block)->instructions.size() || (label != "entry" && label != "exit" && label != "")) {
 					if (label == "") {
 						std::stringstream ss;
@@ -464,7 +468,11 @@ namespace ir
 					else if (label[0] != '$') {
 						label = "$" + label;
 					}
-					stream << "\t" << label << ":\n";
+					stream << "\t" << label << ":";
+					if (comment != "") {
+						stream << "\t\t\t\t/* " << comment << " */ ";
+					}
+					stream << "\n";
 				}
 				
 				for( BasicBlock::InstructionList::iterator 
@@ -479,6 +487,40 @@ namespace ir
 		stream << "}\n";
 	}
 
+	/*! \brief renames all the blocks with canonical names */
+	void PTXKernel::canonicalBlockLabels(int kernelID) {
+
+		// visit every block and map the old label to the new label
+		std::map< std::string, std::string > labelMap;
+		
+
+		ControlFlowGraph::BlockPointerVector blocks = _cfg->executable_sequence();
+		int n = 1;
+
+		for (ControlFlowGraph::BlockPointerVector::iterator bb_it = blocks.begin(); 
+			bb_it != blocks.end(); ++bb_it) { 
+
+			BasicBlock *block = *bb_it;
+			if (block->label != "entry" && block->label != "exit") {
+				std::stringstream ss;
+				ss << "BB_" << kernelID << "_" << n;
+				labelMap[block->label] = ss.str();
+				block->comment = block->label;
+				block->label = ss.str();
+				n++;
+			}
+		}
+		
+		// visit every branch and rewrite the branch target according to the label map
+		for (PTXInstructionVector::iterator inst_it = instructions.begin(); 
+			inst_it != instructions.end();
+			++inst_it) {
+			PTXInstruction &instr = *inst_it;
+			if (instr.opcode == ir::PTXInstruction::Bra) {
+				instr.d.identifier = "$" + labelMap[instr.d.identifier];
+			}
+		}
+	}
 }
 
 #endif

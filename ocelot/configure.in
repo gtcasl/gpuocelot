@@ -42,7 +42,7 @@ AC_CHECK_LIB([rt], [clock_gettime], [],\
 AC_CHECK_LIB([cuda], [cuInit], HAVE_CUDA_DRIVER_API=yes, \
 	HAVE_CUDA_DRIVER_API=no)
 
-if test $HAVE_CUDA_DRIVER_API = 1
+if test $HAVE_CUDA_DRIVER_API = yes
 then
 	AC_DEFINE(HAVE_CUDA_DRIVER_API, [1], \
 		["Define to 1 if the cuda driver api is found"])

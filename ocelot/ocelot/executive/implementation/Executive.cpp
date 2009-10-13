@@ -193,7 +193,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 
 void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	using namespace ir;
-	#if HAVE_CUDA_DRIVER_API == 1
+#if HAVE_CUDA_DRIVER_API == 1
 	Module::KernelMap::iterator 
 		it = m.kernels.find(Instruction::PTX);
 	if (it == m.kernels.end()) {
@@ -205,11 +205,15 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	std::stringstream ss;
 	
 	m.write(ss);
-	
-	if (cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str()) 
-		!= CUDA_SUCCESS) {
-		throw hydrazine::Exception("cuModuleLoadData() failed for module " 
-			+ m.modulePath);
+
+	cudaError_enum result;
+
+	if ((result = cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str())) != CUDA_SUCCESS) {
+		report("PTX kernel representation:\n" << ss.str());
+
+		report("  cuModuleLoadData() returned " << result);
+		throw hydrazine::Exception("cuModuleLoadData() failed for module " + m.modulePath);
+
 	}
 	m.cuModuleState = Module::Dirty;
 	
@@ -218,19 +222,25 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 		report("  Creating GPUExecutableKernel for : " << (*k_it)->name);
 		executive::GPUExecutableKernel *gpuKern = 
 			new executive::GPUExecutableKernel(**k_it, this);
-		m.kernels[Instruction::GPU].push_back(gpuKern);
 		
-		if (cuModuleGetFunction(&gpuKern->cuFunction, m.cuModule, 
-			gpuKern->name.c_str()) != CUDA_SUCCESS) {
-			throw hydrazine::Exception(
-				"cuModuleGetFunction() failed for module " + m.modulePath 
-				+ ", kernel " + gpuKern->name);
+		report("    constructed GPUExecutableKernel");
+
+		if (cuModuleGetFunction(&gpuKern->cuFunction, m.cuModule, gpuKern->name.c_str()) != CUDA_SUCCESS) {
+			std::string exception = "cuModuleGetFunction() failed for module " + m.modulePath 
+				+ ", kernel " + gpuKern->name;
+			delete gpuKern;
+			throw hydrazine::Exception(exception);
+
 		}
-	}
+		report("    added kernel '" << gpuKern->name << "' to module");
+
+		m.kernels[Instruction::GPU].push_back(gpuKern);
+	}		
+
 	m.cuModuleState = Module::Loaded;
-	#else
+#else
 	throw hydrazine::Exception("CUDA Driver API Not Enabled");
-	#endif
+#endif
 }
 
 executive::Executive::Executive() : selectedDevice( -1 ), 
@@ -367,19 +377,93 @@ void executive::Executive::enumerateDevices() {
 		devices.push_back(device);
 	}
 	#endif
+
+#define USE_CUDA_DRIVER_API 0
+#if USE_CUDA_DRIVER_API
+	// enumerate actual CUDA-capable GPUs
+	int deviceCount = 0;
+
+	if (!cudaInitialized) {
+		cuInit(0);
+		// create a CUDA context as well
+
+		cudaInitialized = true;
+	}
+	if (cuDeviceGetCount(&deviceCount) != CUDA_SUCCESS) {
+		report("cuDeviceGetCount() - failed");
+		return;
+	}
+	for (int i = 0; i < deviceCount; i++) {
+		CUdevprop devProperties = {0};
+		char cudaDeviceName[128] = {0};
+		unsigned int totalMemoryBytes = 0;
+
+		Device device;
+		device.ISA = ir::Instruction::GPU;
+
+		cuDeviceGetName(cudaDeviceName, 127, i);
+		device.name = std::string(cudaDeviceName);
+
+		device.guid = i;
+
+		cuDeviceTotalMem(&totalMemoryBytes, i);
+		device.totalMemory = (size_t)totalMemoryBytes;
+
+		cuDeviceGetAttribute(&device.multiprocessorCount, 
+			CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, i);
+
+		cuDeviceGetProperties(&devProperties, i);
+
+		device.memcpyOverlap = 0;
+		device.maxThreadsPerBlock = devProperties.maxThreadsPerBlock;
+		device.maxThreadsDim[0] = devProperties.maxThreadsDim[0];
+		device.maxThreadsDim[1] = devProperties.maxThreadsDim[1];
+		device.maxThreadsDim[2] = devProperties.maxThreadsDim[2];
+		device.maxGridSize[0] = devProperties.maxGridSize[0];
+		device.maxGridSize[1] = devProperties.maxGridSize[1];
+		device.maxGridSize[2] = devProperties.maxGridSize[2];
+		device.sharedMemPerBlock = devProperties.sharedMemPerBlock;
+		device.totalConstantMemory = devProperties.totalConstantMemory;
+		device.SIMDWidth = devProperties.SIMDWidth;
+		device.memPitch = devProperties.memPitch;
+		device.regsPerBlock = devProperties.regsPerBlock;
+		device.clockRate = devProperties.clockRate;
+		device.textureAlign = devProperties.textureAlign;
+
+		cuDeviceComputeCapability(&device.major, &device.minor, i);
+
+		devices.push_back(device);
+	}
+#endif
 }
 
 /*!
 	Select a device by GUID
 */
 bool executive::Executive::select(int device) {
+	report("selecting device " << device);
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].guid == device) {
+			if (selectedDevice == i) {
+				return true;
+			}
 			if (devices[i].ISA == ir::Instruction::Emulated
 				|| devices[i].ISA == ir::Instruction::LLVM) {
 				selectedDevice = i;
 				return true;
 			}
+#if USE_CUDA_DRIVER_API
+			else if (devices[i].ISA == ir::Instruction::GPU) {
+				selectedDevice = i;
+
+				if (cuCtxCreate(&cudaContext, 0, devices[i].guid) == CUDA_SUCCESS) {
+					report("  selected CUDA device " << i);
+					return true;
+				}
+				report("cuCtxCreate(,0, " << devices[i].guid << " failed");
+				return false;
+			}
+#endif
 		}
 	}
 	return false;
@@ -388,8 +472,7 @@ bool executive::Executive::select(int device) {
 bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture ISA) {
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].ISA == ISA) {
-			selectedDevice = i;
-			return true;
+			return select(devices[i].guid);
 		}
 	}
 	return false;
@@ -642,12 +725,37 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 				}
 			}
 			break;
-/*
+
+#if HAVE_CUDA_DRIVER_API == 1
+		/*!
+			Register the GPU
+		*/
 		case ir::Instruction::GPU:
 			{
+				ModuleMap::iterator module = modules.find(modulePath);
+				if (module == modules.end()) {
+					throw hydrazine::Exception( "Module " + modulePath 
+						+ " does not exist." );
+				}
 
+				ir::Module::GlobalMap::iterator 
+					global = module->second->globals.find(name);
+				if (global == module->second->globals.end()) {
+					throw hydrazine::Exception("Global variable " 
+						+ name + " not declared in module " + modulePath);
+				}
+
+				if (global->second.registered) {
+					throw hydrazine::Exception("Duplicate global variable " 
+						+ name + " registered in module " + modulePath);
+				}
+
+				//throw hydrazine::Exception("Executive::registerGlobal() - not implemented for GPU device");
 			}
 			break;
+#endif
+
+/*
 		case ir::Instruction::x86:
 			{
 
@@ -837,6 +945,7 @@ void executive::Executive::rebind(const std::string& modulePath,
 	}
 }
 
+#if USE_CUDA_DRIVER_API
 typedef struct {
 	union {
 		void *void_ptr;
@@ -855,6 +964,7 @@ static CUdeviceptr painful_cast(const void *ptr) {
 	u_ptr.void_ptr = const_cast<void *>(ptr);
 	return u_ptr.device_ptr;
 }
+#endif
 
 /*!
 	Free a memory block allocated to this device.

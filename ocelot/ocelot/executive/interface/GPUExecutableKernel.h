@@ -34,6 +34,12 @@ namespace executive {
 			Sets the shape of a kernel
 		*/
 		virtual void setKernelShape(int x, int y, int z);
+
+		virtual void updateParameterMemory();
+
+		virtual void updateGlobalMemory();
+
+		virtual void updateConstantMemory();
 		
 	protected:
 		/*!

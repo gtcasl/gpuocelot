@@ -571,12 +571,13 @@ main( int argc, char** argv)
 
     // nBody has a mode that allows it to be run without using GL interop
     if (benchmark || compareToCPU || regression) {
+				/*
         if( cutCheckCmdLineFlag(argc, (const char**)argv, "device") ) {
             cutilDeviceInit(argc, argv);
         } else {
             devID = cutGetMaxGflopsDeviceId();
             cudaSetDevice( devID );
-        }
+        } */
     } 
     else 
     { 

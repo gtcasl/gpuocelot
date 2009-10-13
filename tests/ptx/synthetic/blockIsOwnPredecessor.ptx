@@ -16,6 +16,19 @@
 		.reg .u32 %r25;
 		.reg .pred %p5;
 		$Block1:
+			mov.u32 %r15, 0;
+			mov.u32 %r16, 0;
+			mov.u32 %r17, 0;
+			mov.u32 %r18, 0;
+			mov.u32 %r19, 0;
+			mov.u32 %r20, 0;
+			mov.u32 %r21, 0;
+			mov.u32 %r22, 0;
+			mov.u32 %r23, 0;
+			mov.u32 %r24, 0;
+			mov.u32 %r25, 0;
+			mov.pred %p5, 1;
+		$Block2:
 			ld.const.u32 	%r20, [%r15+0];
 			mul.lo.u32 	%r21, %r20, %r18;
 			add.u32 	%r22, %r21, %r19;
@@ -28,7 +41,7 @@
 			add.u32 	%r15, %r15, 4;
 			setp.ne.u32 	%p5, %r15, %r16;
 			@%p5 bra 	$Block1;
-		$Block2:
+		$Block3:
 			exit;
 	}
 	

@@ -353,7 +353,7 @@ std::string ir::PTXOperand::toString() const {
 			else {
 				stream << "%r" << reg;
 			}
-			stream << " - " << ( -offset );
+			stream << " + " << ( offset );
 			return stream.str();
 		} else {
 			if ( identifier != "" ) {
@@ -371,8 +371,8 @@ std::string ir::PTXOperand::toString() const {
 			return identifier;
 		}
 		else if( offset < 0 ) {
-			stream << ( -offset );
-			return identifier + " - " + stream.str();
+			stream << ( offset );
+			return identifier + " + " + stream.str();
 		} else {
 			stream << offset;
 			return identifier + " + " + stream.str();
@@ -393,7 +393,8 @@ std::string ir::PTXOperand::toString() const {
 			case b32: /* fall through */
 			case b64: stream << imm_int; break;
 			case f16: /* fall through */
-			case f32: /* fall through */
+			case f32: stream << "0f" << std::setw(8) << std::setfill('0') 
+				<< std::hex << imm_uint; break;
 			case f64:stream << "0f" << std::setw(16) << std::setfill('0') 
 				<< std::hex << imm_uint; break;
 			case pred: /* fall through */

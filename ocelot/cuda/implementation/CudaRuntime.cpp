@@ -14,6 +14,7 @@
 #include <hydrazine/implementation/XmlParser.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <cassert>
 #include <cstring>
@@ -381,6 +382,51 @@ namespace cuda
 		
 		thread->second.parameters.clear();
 	}
+
+//
+//
+//
+	void CudaRuntime::_launchGPUKernel( ThreadMap::iterator thread, 
+		ArchitectureMap::iterator translatedKernel )
+	{
+		executive::GPUExecutableKernel* gpuKernel = static_cast< 
+			executive::GPUExecutableKernel* >( translatedKernel->second );
+
+		_setParameters( *gpuKernel, thread );
+
+		assertM( thread->second.nextTraceGenerators.empty(), 
+			"Trace generators not supported for GPU kernels." );
+		assertM( thread->second.persistentTraceGenerators.empty(), 
+			"Trace generators not supported for GPU kernels." );
+		
+		gpuKernel->updateParameterMemory();
+		gpuKernel->updateGlobalMemory();
+		gpuKernel->updateConstantMemory();
+		
+		try
+		{
+			gpuKernel->setKernelShape( thread->second.ctaDimensions.x, 
+				thread->second.ctaDimensions.y, 
+				thread->second.ctaDimensions.z );
+			assert( thread->second.kernelDimensions.z == 1 );
+
+			report( "Launching GPU kernel \"" 
+				<< gpuKernel->name << "\"." );
+
+			gpuKernel->launchGrid( thread->second.kernelDimensions.x, 
+				thread->second.kernelDimensions.y );
+			thread->second.lastError = cudaSuccess;
+		}
+		catch( ... )
+		{
+			thread->second.lastError = cudaErrorLaunchFailure;
+		}
+		
+		thread->second.parameters.clear();
+	}
+//
+//
+//
 
 	cudaDeviceProp CudaRuntime::convert( const executive::Device& device )
 	{
@@ -1253,6 +1299,13 @@ namespace cuda
 				_launchLLVMKernel( thread, translatedKernel );
 				break;
 			}
+			/*
+			case ir::Instruction::GPU:
+			{
+				// launch GPU kernel
+				break;
+			}
+			*/
 			default:
 			{
 				std::stringstream stream;
@@ -2001,7 +2054,7 @@ namespace cuda
 
 		std::string isa;
 		
-		parse( "PreferredISA", isa, "GPU", c );
+		parse( "PreferredISA", isa, "Emulated", c );
 		
 		report( "PreferredISA is " << isa );
 		

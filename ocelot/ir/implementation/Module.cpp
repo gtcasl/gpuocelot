@@ -133,15 +133,10 @@ void ir::Module::write( std::ostream& stream ) const {
 	if( statements.empty() ) {
 		return;
 	}
-	
-	stream << "/*\n* AUTO GENERATED OCELOT PTX FILE\n";
-	stream << "* Ocelot Version : " << hydrazine::Version().toString() << "\n";
-	stream << "* From file : " << modulePath << "\n";
-	stream << "*/\n";
-	
+		
 	PTXStatement::Directive previous = PTXStatement::Directive_invalid;
 	
-	if( statements[0].version == PTXInstruction::ptx1_4 ) {
+	if(false && statements[0].version == PTXInstruction::ptx1_4 ) {
 		for( StatementVector::const_iterator statement = statements.begin(); 
 			statement != statements.end(); ++statement ) {
 			report( "Line " << ( statement - statements.begin() ) 
@@ -186,6 +181,11 @@ void ir::Module::write( std::ostream& stream ) const {
 		for (int i = 0; i < 2; i++) {
 			stream << statements[i].toString() << "\n";
 		}
+
+		stream << "\n\n/*\n* AUTO GENERATED OCELOT PTX FILE\n";
+		stream << "* Ocelot Version : " << hydrazine::Version().toString() << "\n";
+		stream << "* From file : " << modulePath << "\n";
+		stream << "*/\n";
 		
 		// textures
 		
@@ -235,6 +235,7 @@ void ir::Module::extractPTXKernels() {
 
 	bool inKernel = false;
 	int instructionCount = 0;
+	int kernelInstance = 1;
 
 	for (StatementVector::const_iterator it = statements.begin(); 
 		it != statements.end(); ++it) {
@@ -257,6 +258,7 @@ void ir::Module::extractPTXKernels() {
 				
 				kernel->module = this;
 				kernels[PTXInstruction::PTX].push_back(kernel);
+				kernel->canonicalBlockLabels(kernelInstance++);
 			}
 		}
 		if (inKernel) {

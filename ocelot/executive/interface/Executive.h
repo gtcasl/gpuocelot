@@ -9,7 +9,6 @@
 #ifndef EXECUTIVE_EXECUTIVE_H_INCLUDED
 #define EXECUTIVE_EXECUTIVE_H_INCLUDED
 
-
 #include <string>
 #include <map>
 #include <unordered_map>
@@ -333,6 +332,8 @@ namespace executive {
 		
 		/*! \brief This is the selected device */
 		int selectedDevice;
+
+		bool cudaInitialized;
 
 		/*! \brief The optimization level to use when translating kernels */
 		translator::Translator::OptimizationLevel optimizationLevel;

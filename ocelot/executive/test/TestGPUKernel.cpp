@@ -100,12 +100,11 @@ bool test::TestGPUKernel::loadKernels() {
 }
 
 bool test::TestGPUKernel::doTest() {
-	/*
+
 	bool result = loadKernels();
 	if (!result) {
 		return result;
 	}
-	*/
 
 	return true;
 }
@@ -121,12 +120,12 @@ test::TestGPUKernel::TestGPUKernel() {
 
 int main( int argc, char** argv ) {
 	test::TestGPUKernel testApp;
+	bool verbose = true;
 	/*
 	hydrazine::ArgumentParser parser( argc, argv );
 	parser.description( testApp.testDescription() );
 
 	bool help = false;
-	bool verbose = false;
 
 	parser.parse( "-h", help, "Display this help message.", false );
 	parser.parse( "-v", verbose, "Verbose output", false );
@@ -139,11 +138,9 @@ int main( int argc, char** argv ) {
 	
 	testApp.test();
 
-	/*
 	if( verbose ) {
 		std::cout << testApp.toString();
 	}
-	*/
 	
 	return testApp.passed();
 }

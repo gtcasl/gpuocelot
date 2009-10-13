@@ -12,6 +12,15 @@
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/macros.h>
+
+#include <configure.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,11 +41,11 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	ir::Kernel& kernel, const executive::Executive* c ): 
 		ExecutableKernel(kernel, c), ptxKernel(0) {
 	
-	if (kernel.ISA == ir::Instruction::PTX) {
-		throw hydrazine::Exception( "GPUExecutableKernel may only be constructed from PTXKernel" );
-	}
+	report("GPUExecutableKernel()");
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
+
+	report("  constructed new PTXKernel");
 }
 
 /*!
@@ -69,6 +78,19 @@ executive::GPUKernel *executive::GPUKernel::fromKernel(ir::PTXKernel *source) {
 	
 	return kernel;
 }*/
+
+
+void executive::GPUExecutableKernel::updateParameterMemory() {
+
+}
+
+void executive::GPUExecutableKernel::updateGlobalMemory() {
+
+}
+
+void executive::GPUExecutableKernel::updateConstantMemory() {
+
+}
 
 void executive::GPUExecutableKernel::configureParameters() {
 	std::vector< ir::Parameter >::iterator it;

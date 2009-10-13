@@ -74,7 +74,12 @@ public:
 
 	/*!	\brief Basic block label */
 	std::string label;
-	
+
+	/*!
+		\brief a comment appearing in the emitted PTX source file
+	*/
+	std::string comment;
+
 	/*! \brief Basic block unique identifier */
 	Id id;
 	

@@ -84,6 +84,9 @@ namespace ir
 		public:
 			/*! \brief Builds the data flow graph within the kernel */
 			virtual analysis::DataflowGraph* dfg();
+
+			/*! \brief renames all the blocks with canonical names */
+			virtual void canonicalBlockLabels(int kernelID=1);
 	
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */

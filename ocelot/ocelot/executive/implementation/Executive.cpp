@@ -577,11 +577,13 @@ void *executive::Executive::malloc(size_t bytes) {
 				record.external = false;
 				record.size = bytes;
 				record.ptr = 0;
-				if (cuMemAlloc((CUdeviceptr *)&record.ptr, bytes) 
-					== CUDA_SUCCESS) {
+				if (cuMemAlloc((CUdeviceptr *)&record.ptr, bytes) == CUDA_SUCCESS) {
 					record.offset = 0;
 					memoryAllocations[getSelected()].insert(
 						std::make_pair((char *)record.ptr, record));
+					report("executive::Executive::malloc() - cuMemAlloc() allocated " 
+						<< bytes << " on device " << record.device << " at 0x" << std::hex << record.ptr << std::dec);
+					return record.ptr;
 				}
 			}
 			break;
@@ -627,12 +629,23 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 					std::make_pair((char*)record.ptr,record));
 			}
 			break;
-/*
+#if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
-
+				MemoryAllocation record;
+				record.isa = getSelectedISA();
+				record.device = getSelected();
+				record.size = bytes;
+				record.external = true;
+				record.ptr = pointer;
+				record.offset = 0;
+				memoryAllocations[getSelected()].insert(
+					std::make_pair((char*)record.ptr,record));
 			}
 			break;
+#endif
+/*
+
 		case ir::Instruction::x86:
 			{
 
@@ -654,6 +667,17 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 	}
 }
 
+/*!
+	Makes a static array visible to the Executive class
+
+	\param ptr Pointer to the start of the memory
+	\param bytes Size of memory in bytes
+	\param name Identifier of the variable
+	\param module Path to the module with the variable
+	\param space The address space it should exist in
+	\param normalize If the global is a texture, 
+		should it be normalized?
+*/
 void executive::Executive::registerGlobal(void *ptr, size_t bytes, 
 	const std::string& name, ir::PTXInstruction::AddressSpace space, 
 	const std::string& modulePath) {
@@ -748,6 +772,33 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 				if (global->second.registered) {
 					throw hydrazine::Exception("Duplicate global variable " 
 						+ name + " registered in module " + modulePath);
+				}
+				
+				if (global->second.local) {
+					global->second.local = false;
+					std::memcpy(ptr, global->second.pointer, bytes);
+					delete[] global->second.pointer;
+				}
+
+				global->second.pointer = (char*) ptr;
+				global->second.registered = true;
+
+				if (global->second.statement.directive != ir::PTXStatement::Tex) {
+					GlobalAllocationMap::iterator ai = globalAllocations.find((char*)ptr);
+					if (ai != globalAllocations.end()) {
+						assert(ai->second.modules.count(modulePath) == 0);
+						ai->second.modules.insert(modulePath);
+					}
+					else {
+						GlobalMemoryAllocation allocation;
+						allocation.ptr = ptr;
+						allocation.size = bytes;
+						allocation.space = space;
+						allocation.identifier = name;
+						allocation.modules.insert(modulePath);				
+					
+						globalAllocations.insert(std::make_pair((char*)ptr, allocation));
+					}
 				}
 
 				//throw hydrazine::Exception("Executive::registerGlobal() - not implemented for GPU device");
@@ -945,7 +996,7 @@ void executive::Executive::rebind(const std::string& modulePath,
 	}
 }
 
-#if USE_CUDA_DRIVER_API
+#if HAVE_CUDA_DRIVER_API == 1
 typedef struct {
 	union {
 		void *void_ptr;
@@ -996,7 +1047,7 @@ void executive::Executive::free(void *ptr) {
 			}
 			break;
 
-#if USE_CUDA_DRIVER_API
+#if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
 				DeviceAllocationMap::iterator l_it = 
@@ -1073,12 +1124,38 @@ void executive::Executive::freeGlobal(const std::string& name,
 				global->second.registered = false;
 			}
 			break;
-/*
+
+#if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
+				report( "Freeing global variable " << name 
+					<< " from GPU kernels in module " << modulePath );
 
+				ModuleMap::iterator module = modules.find(modulePath);
+				if (module == modules.end()) {
+					throw hydrazine::Exception( "Module " + modulePath 
+						+ " is unknown." );
+				}
+
+				ir::Module::GlobalMap::iterator 
+					global = module->second->globals.find(name);
+				if (global == module->second->globals.end()) {
+					throw hydrazine::Exception("Global variable " 
+						+ name + " not declared in module " + modulePath);
+				}
+				
+				if (global->second.local) {
+					throw hydrazine::Exception(
+						"Cannot free preinitialized global " 
+						+ name + " in module " + modulePath);
+				}
+				
+				global->second.registered = false;
 			}
 			break;
+#endif
+
+/*
 		case ir::Instruction::x86:
 			{
 
@@ -1149,9 +1226,12 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 			}
 			break;
 
-#if USE_CUDA_DRIVER_API
+#if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
+				report("executive::Executive::memcpy(0x" << std::hex << dest 
+					<< ", 0x" << src << ", " << std::dec << bytes);
+
 				if (type == DeviceToDevice) {
 					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
 						std::stringstream stream;
@@ -1191,7 +1271,7 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 						stream << nearbyAllocationsToString(*this, src, bytes);
 						throw hydrazine::Exception(stream.str());
 					}
-					cuMemcpyHtoD(painful_cast(dest), (src), bytes);
+					cuMemcpyDtoH((dest), painful_cast(src), bytes);
 				}
 			}
 			break;

@@ -53,7 +53,7 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <transpose_kernel.cu>
+#include "transpose_kernel.cu"
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward

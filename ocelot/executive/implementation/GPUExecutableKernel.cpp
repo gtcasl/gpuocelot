@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,36 +52,18 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	Launch a kernel on a 2D grid
 */
 void executive::GPUExecutableKernel::launchGrid(int width, int height) {
-	configureParameters();
-	/*
-	cuLaunchGrid(cuFunc, width, height);
-	*/
+	cuLaunchGrid(cuFunction, width, height);
 }
 
 /*!
 	Sets the shape of a kernel
 */
 void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
-	/*
-	cuFuncSetBlockShape(cuFunc, x, y, z);
-	*/
+	cuFuncSetBlockShape(cuFunction, x, y, z);
 }
-/*
-executive::GPUKernel *executive::GPUKernel::fromKernel(ir::PTXKernel *source) {
-	GPUKernel *kernel = new GPUKernel();
-	
-	// emit the PTX kernel to a file
-	
-	// load the PTX kernel file as a module
-	
-	// get the kernel
-	
-	return kernel;
-}*/
-
 
 void executive::GPUExecutableKernel::updateParameterMemory() {
-
+	configureParameters();
 }
 
 void executive::GPUExecutableKernel::updateGlobalMemory() {
@@ -93,45 +75,103 @@ void executive::GPUExecutableKernel::updateConstantMemory() {
 }
 
 void executive::GPUExecutableKernel::configureParameters() {
-	std::vector< ir::Parameter >::iterator it;
+
+	report("executive::GPUExecutableKernel::configuraParameters()");
+
+	std::vector< ir::Parameter >::iterator it = parameters.begin();
 	unsigned int paramSize = 0;
-	for (it = parameters.begin(); it != parameters.end(); ++it) {
+	for (; it != parameters.end(); ++it) {
 		it->offset = paramSize;
 		paramSize += it->getSize();
 	}
-	/*
-	cuParamSetSize(cuFunc, paramSize);
+	if (cuParamSetSize(cuFunction, paramSize) != CUDA_SUCCESS) {
+		throw hydrazine::Exception(std::string("Failed to set parameter size for kernel ") + name);
+	}
+	else {
+		report("  set parameter size: " << paramSize);
+	}
 	for (it = parameters.begin(); it != parameters.end(); ++it) {
+		report("  configuring parameter " << it->name 
+			<< "\n                        " 
+			<< " - type: " << it->arrayValues.size() << " x " 
+			<< ir::PTXOperand::toString(it->type)
+			<< " - value: " << ir::Parameter::value(*it));
+
 		switch (it->type) {
-		case ir::Parameter::Int:
-			//cuParamSeti(cuFunc, it->offset, it->val_int);
-			break;
-		
-		case ir::Parameter::Float:
-			//cuParamSetf(cuFunc, it->offset, it->val_float);
-			break;
-		
-		case ir::Parameter::Float2:
-			//cuParamSetf(cuFunc, it->offset, it->val_float2[0]);
-			//cuParamSetf(cuFunc, it->offset+sizeof(float), it->val_float2[1]);
-			break;
-		
-		case ir::Parameter::Float4:
-			//cuParamSetf(cuFunc, it->offset, it->val_float2[0]);
-			//cuParamSetf(cuFunc, it->offset+sizeof(float), it->val_float2[1]);
-			//cuParamSetf(cuFunc, it->offset+sizeof(float)*2, it->val_float2[2]);
-			//cuParamSetf(cuFunc, it->offset+sizeof(float)*3, it->val_float2[3]);
-			break;
-		
-		case ir::Parameter::Pointer:
-			//cuParamSetv(cuFunc, it->offset, it->val_pointer, it->getSize());
-			break;
-		
-		default:
-			break;
+			case ir::PTXOperand::s8:	// fall through
+			case ir::PTXOperand::s16:	// fall through
+			case ir::PTXOperand::u8:	// fall through
+			case ir::PTXOperand::u16:
+			{
+				// use setv to copy a blob
+				unsigned int bytes = it->arrayValues.size() * it->getElementSize();
+				char *ptr = new char[bytes];
+				
+				for (size_t i = 0; i < it->arrayValues.size(); i++) {
+					switch (it->getElementSize()) {
+						case 2:
+							ptr[i*it->getElementSize()+1] = (it->arrayValues[i].val_u16 >> 8);
+						case 1:
+							ptr[i*it->getElementSize()] = it->arrayValues[i].val_u8;
+							break;
+						default:
+						{
+							delete [] ptr;
+							report("*** Unsupported parameter size");
+							throw hydrazine::Exception("unsupported parameter size");
+						}
+					}
+				}
+
+				if (cuParamSetv(cuFunction, it->offset, (void *)ptr, bytes) != CUDA_SUCCESS) {
+					report("*** failed to set binary parameter");
+					throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
+						" for kernel " + name);
+				}
+				delete [] ptr;
+				break;
+			}
+
+			case ir::PTXOperand::s32:	// fall through
+			case ir::PTXOperand::u32:	// fall through
+			case ir::PTXOperand::s64:	// fall through
+			case ir::PTXOperand::u64:
+			{
+				size_t offset = it->offset;
+				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
+					val_it != it->arrayValues.end(); ++val_it, offset += 8) {
+					unsigned int value = (unsigned int)val_it->val_u64;
+					if (cuParamSeti(cuFunction, offset, value) != CUDA_SUCCESS) {
+						report("*** failed to set integer parameter");
+						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
+							" for kernel " + name);
+					}
+				}
+				break;
+			}
+
+			case ir::PTXOperand::f32:
+			{
+				size_t offset = it->offset;
+				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
+					val_it != it->arrayValues.end(); ++val_it, offset += 4) {
+					unsigned int value = (unsigned int)val_it->val_u32;
+					if (cuParamSetf(cuFunction, offset, value) != CUDA_SUCCESS) {
+						report("*** failed to set floating point parameter");
+						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
+							" for kernel " + name);
+					}
+				}
+				break;
+			}
+
+			default:
+			{
+				throw hydrazine::Exception(std::string("Parameter type ") + 
+					ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
+			}
 		}
 	}
-	*/
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

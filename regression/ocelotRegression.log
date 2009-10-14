@@ -17,8 +17,37 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLex
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
+INFO     Test completed in 0.0247621536255 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1255553065
+Test time : 0.0003407
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0259959697723 seconds
+INFO     Test completed in 0.0319349765778 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -32,8 +61,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1255470746
-Test time : 0.000651121
+Test Seed : 1255553065
+Test time : 0.000679255
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -164,38 +193,9 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0299830436707 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1255470746
-Test time : 0.000337124
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
-
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0358700752258 seconds
+INFO     Test completed in 0.0409440994263 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -205,8 +205,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1255470746
-Test time : 0.0123744
+Test Seed : 1255553065
+Test time : 0.0160401
 
 Status : Test output:
 11 registers
@@ -220,9 +220,9 @@ Full kernel test passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.021754026413 seconds
+INFO     Test completed in 0.024759054184 seconds
 INFO      It produced the following output:
-Kernel launch time was 7.10487e-05s (70963 ticks)
+Kernel launch time was 4.72069e-05s (47112 ticks)
 Pass/Fail : Pass
 
 
@@ -231,8 +231,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1255470746
-Test time : 0.00650144
+Test Seed : 1255553065
+Test time : 0.0065248
 
 Status : Test output:
 divergent control flow succeeded
@@ -243,7 +243,7 @@ looping kernel succeeded
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 5.48098993301 seconds
+INFO     Test completed in 5.8235309124 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -255,8 +255,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1255470746
-Test time : 5.44602
+Test Seed : 1255553065
+Test time : 5.78237
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
@@ -405,7 +405,7 @@ For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestTrace 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestTrace
-INFO     Test completed in 0.041620016098 seconds
+INFO     Test completed in 0.0366699695587 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -415,8 +415,8 @@ Name : TestTrace
 Description: 
 
 
-Test Seed : 1255470752
-Test time : 0.000501394
+Test Seed : 1255553070
+Test time : 0.000246525
 
 Status : Test output:
 
@@ -424,7 +424,7 @@ Status : Test output:
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.0503721237183 seconds
+INFO     Test completed in 0.0193710327148 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -436,15 +436,15 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1255470752
-Test time : 5.48363e-06
+Test Seed : 1255553071
+Test time : 1.90735e-06
 
 Status : Failed to select llvm device.
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator
-INFO     Test completed in 0.0661029815674 seconds
+INFO     Test completed in 0.0507640838623 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -454,15 +454,15 @@ Name : TestMemoryTraceGenerator
 Description: 
 
 
-Test Seed : 1255470752
-Test time : 0.00466633
+Test Seed : 1255553071
+Test time : 0.00420403
 
 Status : Test output:
 
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 20.181319952 seconds
+INFO     Test completed in 21.0385191441 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -475,8 +475,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1255470746
-Test time : 20.1209
+Test Seed : 1255553065
+Test time : 20.9922
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Translate): Passed
@@ -624,7 +624,7 @@ For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Transla
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO     Test completed in 23.6989579201 seconds
+INFO     Test completed in 23.9374239445 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -637,8 +637,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1255470746
-Test time : 23.6846
+Test Seed : 1255553065
+Test time : 23.9226
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Parse): Passed
@@ -786,7 +786,7 @@ For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Parse):
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 25.8242571354 seconds
+INFO     Test completed in 27.0488960743 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -801,8 +801,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1255470746
-Test time : 25.8054
+Test Seed : 1255553065
+Test time : 27.0322
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx
@@ -5726,19 +5726,19 @@ Testing SSA then back Dataflow
 
 INFO     
 Passing tests:
- (23.699s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
- (25.824s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
- (0.066s) : /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
- (0.026s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.042s) : /home/andrew/repositories/gpuocelot/ocelot/TestTrace : Passed
- (0.030s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
- (5.481s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
- (0.022s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
- (20.181s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
+ (23.937s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
+ (0.041s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
+ (27.049s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (0.051s) : /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
+ (0.032s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.037s) : /home/andrew/repositories/gpuocelot/ocelot/TestTrace : Passed
+ (0.025s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
+ (5.824s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
+ (0.025s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
+ (21.039s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
 
 Failing tests:
- (0.050s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Failed
+ (0.019s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Failed
 
 Non-Existent tests:
 

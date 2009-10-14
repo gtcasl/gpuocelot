@@ -389,6 +389,8 @@ namespace cuda
 	void CudaRuntime::_launchGPUKernel( ThreadMap::iterator thread, 
 		ArchitectureMap::iterator translatedKernel )
 	{
+
+		report("CudaRuntime::_launchGPUKernel called");
 		executive::GPUExecutableKernel* gpuKernel = static_cast< 
 			executive::GPUExecutableKernel* >( translatedKernel->second );
 
@@ -1282,8 +1284,7 @@ namespace cuda
 		SymbolMap::iterator kernel = _symbols.find( symbol );
 		assert( kernel != _symbols.end() );
 	
-		ArchitectureMap::iterator translatedKernel 
-			= _getTranslatedKernel( kernel );
+		ArchitectureMap::iterator translatedKernel = _getTranslatedKernel( kernel );
 		
 		// set up launch parameters and launch
 		switch( context.getSelectedISA() )
@@ -1299,13 +1300,13 @@ namespace cuda
 				_launchLLVMKernel( thread, translatedKernel );
 				break;
 			}
-			/*
+#if HAVE_CUDA_DRIVER_API == 1
 			case ir::Instruction::GPU:
 			{
-				// launch GPU kernel
+				_launchGPUKernel( thread, translatedKernel );
 				break;
 			}
-			*/
+#endif
 			default:
 			{
 				std::stringstream stream;

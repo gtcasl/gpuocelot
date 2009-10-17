@@ -59,10 +59,7 @@ namespace translator
 		private:
 			void _yield( unsigned int continuation );
 
-			ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o, 
-				ir::PTXInstruction::AddressSpace space = 
-				ir::PTXInstruction::AddressSpace_Invalid, 
-				ir::PTXInstruction::Vec vector = ir::PTXOperand::v1 );
+			ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o );
 			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 				const ir::PTXOperand& i );
 			
@@ -137,11 +134,17 @@ namespace translator
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
 				ir::PTXOperand::SpecialRegister s );
-			std::string _loadMemoryBase( ir::PTXInstruction::AddressSpace space,
-				ir::PTXOperand::DataType type, size_t offset, 
-				ir::PTXInstruction::Vec vector );
-			std::string _loadGlobalPointer( const ir::PTXOperand& o, 
-				ir::PTXInstruction::Vec vector );
+			ir::LLVMInstruction::Operand 
+				_getMemoryBasePointer( ir::PTXInstruction::AddressSpace space );
+			ir::LLVMInstruction::Operand _getAddressableVariablePointer( 
+				ir::PTXInstruction::AddressSpace space,
+				const ir::PTXOperand& o );
+			ir::LLVMInstruction::Operand _getAddressableGlobalPointer( 
+				const ir::PTXOperand& o );
+			ir::LLVMInstruction::Operand _getLoadOrStorePointer( 
+				const ir::PTXOperand& o, 
+				ir::PTXInstruction::AddressSpace space, 
+				ir::LLVMInstruction::DataType type, unsigned int vector );
 			
 			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 

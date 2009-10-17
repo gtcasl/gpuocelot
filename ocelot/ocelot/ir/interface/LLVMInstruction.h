@@ -307,6 +307,10 @@ namespace ir
 			static std::string functionAttributesToString( int attributes );
 			/*! \brief Determine if a datatype is an int */
 			static bool isInt( DataType d );
+			/*! \brief Get an int with the specified number of bits */
+			static DataType getIntOfSize( unsigned int bits );
+			/*! \brief Get the number of bits in a DataType */
+			static unsigned int bits( DataType type );
 			
 		public:
 			/*! \brief Default constructor */
@@ -1093,6 +1097,9 @@ namespace ir
 		public:
 			/*! \brief The default constructor sets the opcode */
 			LLVMShl();
+		
+		public:
+			std::string valid() const;
 
 		public:
 			LLVMInstruction* clone() const;

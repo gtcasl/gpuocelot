@@ -385,8 +385,7 @@ namespace translator
 	}
 
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate( 
-		const ir::PTXOperand& o, ir::PTXInstruction::AddressSpace space,
-		ir::PTXInstruction::Vec vector )
+		const ir::PTXOperand& o )
 	{
 		ir::LLVMInstruction::Operand op( o.identifier, 
 			o.addressMode == ir::PTXOperand::Immediate );
@@ -453,17 +452,9 @@ namespace translator
 			}
 			case ir::PTXOperand::Address:
 			{
-				if( space == ir::PTXInstruction::Global )
-				{
-					op.name = _loadGlobalPointer( o, vector );
-				}
-				else
-				{
-					op.name = _loadMemoryBase( space, 
-						o.type, o.offset, vector );
-					if( op.name == "" ) op.name = "@" + o.identifier;
-				}
-				op.type.category = ir::LLVMInstruction::Type::Pointer;
+				assertM( false, 
+					"Addressable variables require context" 
+					<< " sensitive translation.  This is a bug in Ocelot." );
 				break;
 			}
 			case ir::PTXOperand::Label:
@@ -1117,11 +1108,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@cosFtz";
+			call.name = "@__ocelot_cosFtz";
 		}
 		else
 		{
-			call.name = "@cosf";
+			call.name = "@__ocelot_cosf";
 		}
 		
 		call.d = _destination( i );
@@ -1176,11 +1167,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@ex2Ftz";
+			call.name = "@__ocelot_ex2Ftz";
 		}
 		else
 		{
-			call.name = "@ex2";
+			call.name = "@__ocelot_ex2";
 		}
 		
 		call.d = _destination( i );
@@ -1213,65 +1204,15 @@ namespace translator
 			load.d.type.type = _translate( i.type );
 		}
 
-		if( i.a.addressMode == ir::PTXOperand::Address )
-		{
-			load.a = _translate( i.a, i.addressSpace );
+		load.a = _getLoadOrStorePointer( i.a, i.addressSpace, 
+			_translate( i.type ), i.vec );
 		
-			if( load.a.type.type != load.d.type.type )
-			{
-				ir::LLVMBitcast cast;
-				cast.a = load.a;
-				cast.d = load.a;
-				cast.d.name = _tempRegister();
-				cast.d.type.type = load.d.type.type;
-				
-				_add( cast );
-				
-				load.a.type.type = load.d.type.type;
-				load.a.name = cast.d.name;
-			}
-		}
-		else
-		{
-			ir::LLVMInttoptr cast;
-			
-			if( i.a.offset != 0 )
-			{
-				ir::LLVMAdd add;
-			
-				add.a = _translate( i.a );
-				add.b.constant = true;
-				add.b.type.category = ir::LLVMInstruction::Type::Element;
-				add.b.type.type = add.a.type.type;
-				add.b.i64 = i.a.offset;
-				
-				add.d = add.a;
-				add.d.name = _tempRegister();
-				
-				_add( add );
-				
-				cast.a = add.d;
-			}
-			else
-			{
-				cast.a = _translate( i.a );
-			}
-			
-			cast.d.type.members.push_back( load.d.type );
-			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			cast.d.name = _tempRegister();
-			
-			_add( cast );
-			
-			load.a = cast.d;			
-		}
-				
 		if( i.volatility == ir::PTXInstruction::Volatile )
 		{
 			load.isVolatile = true;
 		}
 		
-		load.alignment = i.d.bytes();
+		load.alignment = i.vec * ir::PTXOperand::bytes( i.d.type );
 		
 		if( i.d.array.empty() )
 		{
@@ -1329,11 +1270,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@log2Ftz";
+			call.name = "@__ocelot_log2Ftz";
 		}
 		else
 		{
-			call.name = "@log2f";
+			call.name = "@__ocelot_log2f";
 		}
 		
 		call.d = _destination( i );
@@ -1624,26 +1565,227 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 	{
-		assertM( i.vec == ir::PTXOperand::v1, "No support for vector moves" );		
-		
-		if( i.a.addressMode == ir::PTXOperand::Address )
+		switch( i.d.vec )
 		{
-			ir::LLVMPtrtoint cast;
+			case ir::PTXOperand::v1:
+			{
+				switch( i.a.vec )
+				{
+					case ir::PTXOperand::v1:
+					{
+						if( i.a.addressMode == ir::PTXOperand::Address )
+						{
+							if( i.addressSpace == ir::PTXInstruction::Global )
+							{
+								ir::LLVMPtrtoint toint;
+				
+								toint.a = _getAddressableGlobalPointer( i.a );
+								toint.d = _destination( i );
+				
+								_add( toint );
+							}
+							else
+							{
+								ir::LLVMBitcast cast;
 			
-			cast.d = _destination( i );
-			cast.a = _translate( i.a, i.addressSpace );
+								cast.d = _destination( i );
+								cast.a.type.category = cast.d.type.category;
+								cast.a.type.type = cast.d.type.type;
+								cast.a.constant = true;
+								cast.a.i64 = i.a.offset;
 			
-			_add( cast );
-		}
-		else if( i.d.type == i.a.type || i.type == ir::PTXOperand::b32 
-			|| i.type == ir::PTXOperand::b64 || i.type == ir::PTXOperand::b16 
-			|| i.type == ir::PTXOperand::b8 )
-		{
-			_bitcast( i );
-		}
-		else
-		{
-			_translateCvt( i );
+								_add( cast );
+							}
+						}
+						else if( i.d.type == i.a.type 
+							|| i.type == ir::PTXOperand::b32 
+							|| i.type == ir::PTXOperand::b64 
+							|| i.type == ir::PTXOperand::b16 
+							|| i.type == ir::PTXOperand::b8 )
+						{
+							_bitcast( i );
+						}
+						else
+						{
+							_translateCvt( i );
+						}
+						break;
+					}
+					case ir::PTXOperand::v2:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						
+						ir::LLVMInstruction::Operand temp;
+						
+						temp.name = _tempRegister();
+						temp.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						temp.type.type = ir::LLVMInstruction::getIntOfSize( 
+							ir::PTXOperand::bytes( i.d.type ) * 8 );
+						
+						_bitcast( temp, _translate( i.a.array[ 1 ] ) );
+						
+						ir::LLVMShl shift;
+						
+						shift.d = temp;
+						shift.d.name = _tempRegister();
+						shift.a = temp;
+						
+						shift.b.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						shift.b.type.type = ir::LLVMInstruction::I32;
+						shift.b.constant = true;
+						shift.b.i32 = ir::PTXOperand::bytes( 
+							i.a.array[ 1 ].type ) * 8;
+						
+						_add( shift );
+						
+						temp.name = _tempRegister();
+						_bitcast( temp, _translate( i.a.array[ 0 ] ) );
+						
+						ir::LLVMOr combine;
+						
+						combine.d = temp;
+						combine.d.name = _tempRegister();
+						combine.a = temp;
+						combine.b = shift.d;
+						
+						_add( combine );
+						
+						_bitcast( _destination( i ), combine.d );
+						
+						break;
+					}
+					case ir::PTXOperand::v4:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						assertM( false, 
+							"Vector move from v" << i.a.vec << " to v" 
+							<< i.d.vec << " not implemented." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::v2:
+			{
+				switch( i.a.vec )
+				{
+					case ir::PTXOperand::v1:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						ir::LLVMInstruction::Operand temp;
+						
+						temp.name = _tempRegister();
+						temp.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						temp.type.type = ir::LLVMInstruction::getIntOfSize( 
+							ir::PTXOperand::bytes( i.a.type ) * 8 );
+						
+						_bitcast( temp, _translate( i.a ) );
+						
+						ir::LLVMTrunc truncate;
+						
+						truncate.a = temp;
+						truncate.d.name = _tempRegister();
+						truncate.d.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						truncate.d.type.type 
+							= ir::LLVMInstruction::getIntOfSize( 
+							ir::PTXOperand::bytes( i.d.array[0].type ) * 8 );
+						
+						_add( truncate );
+						_bitcast( _translate( i.d.array[0] ), truncate.d );
+						
+						ir::LLVMLshr shift;
+						
+						shift.a = temp;
+						shift.d = temp;
+						shift.d.name = _tempRegister();
+						
+						shift.b.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						shift.b.type.type = ir::LLVMInstruction::I32;
+						shift.b.constant = true;
+						shift.b.i32 = ir::PTXOperand::bytes( 
+							i.d.array[ 0 ].type ) * 8;
+						
+						_add( shift );
+						
+						truncate.a = shift.d;
+						truncate.d.name = _tempRegister();
+						
+						_add( truncate );
+						_bitcast( _translate( i.d.array[1] ), truncate.d );
+						
+						break;
+					}
+					case ir::PTXOperand::v2:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						assertM( false, 
+							"Vector move from v" << i.a.vec << " to v" 
+							<< i.d.vec << " not implemented." );
+						break;
+					}
+					case ir::PTXOperand::v4:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						assertM( false, 
+							"Vector move from v" << i.a.vec << " to v" 
+							<< i.d.vec << " not implemented." );
+						break;
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::v4:
+			{
+				switch( i.a.vec )
+				{
+					case ir::PTXOperand::v1:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						assertM( false, 
+							"Vector move from v" << i.a.vec << " to v" 
+							<< i.d.vec << " not implemented." );
+						break;
+					}
+					case ir::PTXOperand::v2:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						assertM( false, 
+							"Vector move from v" << i.a.vec << " to v" 
+							<< i.d.vec << " not implemented." );
+						break;
+					}
+					case ir::PTXOperand::v4:
+					{
+						assertM( i.a.addressMode != ir::PTXOperand::Address, 
+							"Addressable variables not supported" 
+							<< " for vector moves." );
+						assertM( false, 
+							"Vector move from v" << i.a.vec << " to v" 
+							<< i.d.vec << " not implemented." );
+						break;
+					}
+				}
+				break;
+			}
 		}
 	}
 
@@ -2035,11 +2177,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@rsqrtFtz";
+			call.name = "@__ocelot_rsqrtFtz";
 		}
 		else
 		{
-			call.name = "@rsqrt";
+			call.name = "@__ocelot_rsqrt";
 		}
 		
 		call.d = _destination( i );
@@ -2479,11 +2621,11 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@sinFtz";
+			call.name = "@__ocelot_sinFtz";
 		}
 		else
 		{
-			call.name = "@sinf";
+			call.name = "@__ocelot_sinf";
 		}
 		
 		call.d = _destination( i );
@@ -2546,9 +2688,13 @@ namespace translator
 		{
 			call.name = "@sqrtfFtz";
 		}
+		else if( i.a.type == ir::PTXOperand::f64 )
+		{
+			call.name = "@__ocelot_sqrt";
+		}
 		else
 		{
-			call.name = "@sqrtf";
+			call.name = "@__ocelot_sqrtf";
 		}
 		
 		call.d = _destination( i );
@@ -2562,8 +2708,6 @@ namespace translator
 	{
 		ir::LLVMStore store;
 
-		store.d = _translate( i.d, i.addressSpace );
-		
 		if( i.vec == ir::PTXOperand::v1 )
 		{
 			if( _translate( i.type ) != _translate( i.a.type ) )
@@ -2587,55 +2731,15 @@ namespace translator
 			store.a.type.type = _translate( i.type );
 		}
 
-		if( store.d.type.category == ir::LLVMInstruction::Type::Pointer )
-		{
-			ir::LLVMBitcast cast;		
-		
-			cast.a = store.d;
-			cast.d = store.a;			
-			
-			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			cast.d.name = _tempRegister();		
-			
-			_add( cast );
-			store.d = cast.d;
-		}
-		else
-		{
-			ir::LLVMInttoptr cast;		
-		
-			cast.a = store.d;
-			cast.d = store.a;
-			
-			if( i.d.offset != 0 )
-			{
-				ir::LLVMAdd add;
-			
-				add.d = cast.a;
-				add.d.name = _tempRegister();
-				add.a = cast.a;
-				
-				add.b = cast.a;
-				add.b.constant = true;
-				add.b.i64 = i.d.offset;
-		
-				_add( add );
-				cast.a = add.d;
-			}
-			
-			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			cast.d.name = _tempRegister();		
-
-			_add( cast );
-			store.d = cast.d;		
-		}
+		store.d = _getLoadOrStorePointer( i.d, i.addressSpace, 
+			_translate( i.type ), i.vec );
 		
 		if( i.volatility == ir::PTXInstruction::Volatile )
 		{
 			store.isVolatile = true;
 		}
 		
-		store.alignment = i.a.bytes();
+		store.alignment = i.vec * ir::PTXOperand::bytes( i.type );
 
 		if( i.vec != ir::PTXOperand::v1 )
 		{
@@ -3131,11 +3235,60 @@ namespace translator
 	void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d, 
 		const ir::LLVMInstruction::Operand& a )
 	{
-		ir::LLVMBitcast cast;
-		cast.d = d;
-		cast.a = a;
+		if( ir::LLVMInstruction::bits( d.type.type ) 
+			== ir::LLVMInstruction::bits( a.type.type ) )
+		{
+			ir::LLVMBitcast cast;
+			cast.d = d;
+			cast.a = a;
 		
-		_add( cast );
+			_add( cast );
+		}
+		else
+		{
+			ir::LLVMInstruction::Operand temp;
+			
+			temp.name = _tempRegister();
+			temp.type.category = ir::LLVMInstruction::Type::Element;
+			temp.type.type = ir::LLVMInstruction::getIntOfSize( 
+				ir::LLVMInstruction::bits( a.type.type ) );
+			
+			_bitcast( temp, a );
+			
+			if( ir::LLVMInstruction::bits( d.type.type ) 
+				< ir::LLVMInstruction::bits( a.type.type ) )
+			{
+				ir::LLVMTrunc truncate;
+				
+				truncate.d.name = _tempRegister();
+				truncate.d.type.category = ir::LLVMInstruction::Type::Element;
+				truncate.d.type.type = ir::LLVMInstruction::getIntOfSize( 
+					ir::LLVMInstruction::bits( d.type.type ) );
+				
+				truncate.a = temp;
+				
+				_add( truncate );
+				
+				temp = truncate.d;
+			}
+			else
+			{
+				ir::LLVMZext extend;
+				
+				extend.d.name = _tempRegister();
+				extend.d.type.category = ir::LLVMInstruction::Type::Element;
+				extend.d.type.type = ir::LLVMInstruction::getIntOfSize( 
+					ir::LLVMInstruction::bits( d.type.type ) );
+				
+				extend.a = temp;
+				
+				_add( extend );
+				
+				temp = extend.d;
+			}
+			
+			_bitcast( d, temp );
+		}
 	}
 		
 	void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d, 
@@ -3966,10 +4119,9 @@ namespace translator
 		return load.d.name;
 	}
 	
-	std::string PTXToLLVMTranslator::_loadMemoryBase( 
-		ir::PTXInstruction::AddressSpace space, ir::PTXOperand::DataType type, 
-		size_t offset, ir::PTXInstruction::Vec vector )
-	{		
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryBasePointer( 
+		ir::PTXInstruction::AddressSpace space )
+	{
 		ir::LLVMGetelementptr get;
 		
 		get.d.name = _tempRegister();
@@ -4007,8 +4159,7 @@ namespace translator
 			}
 			default:
 			{
-				return "";				
-				break;
+				assertM( false, "Invalid memory space." );
 			}			
 		}
 				
@@ -4024,9 +4175,16 @@ namespace translator
 		
 		_add( load );
 		
+		return load.d;
+	}
+			
+	ir::LLVMInstruction::Operand 
+		PTXToLLVMTranslator::_getAddressableVariablePointer( 
+		ir::PTXInstruction::AddressSpace space, const ir::PTXOperand& o )
+	{		
 		ir::LLVMInstruction::Operand index;
 		
-		if( offset != 0 )
+		if( o.offset != 0 )
 		{
 			ir::LLVMGetelementptr getIndex;
 		
@@ -4034,8 +4192,8 @@ namespace translator
 			getIndex.d.type.category = ir::LLVMInstruction::Type::Pointer;
 			getIndex.d.type.type = ir::LLVMInstruction::I8;
 		
-			getIndex.a = load.d;
-			getIndex.indices.push_back( offset );
+			getIndex.a = _getMemoryBasePointer( space );
+			getIndex.indices.push_back( o.offset );
 		
 			_add( getIndex );
 			
@@ -4043,55 +4201,36 @@ namespace translator
 		}
 		else
 		{
-			index = load.d;
+			index = _getMemoryBasePointer( space );
 		}
 		
-		ir::LLVMBitcast cast;
-		
-		cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
-			
-		if( vector == ir::PTXOperand::v1 )
-		{
-			cast.d.type.type = _translate( type );
-			if( cast.d.type.type == ir::LLVMInstruction::I8 )
-			{
-				return index.name;
-			}
-		}
-		else
-		{
-			cast.d.type.members.resize( 1 );
-			cast.d.type.members[ 0 ].category 
-				= ir::LLVMInstruction::Type::Vector;
-			cast.d.type.members[ 0 ].type = _translate( type );
-			cast.d.type.members[ 0 ].vector = vector;		
-		}
-
-		cast.d.name = _tempRegister();
-		cast.a = index;
-		
-		_add( cast );
-		
-		return cast.d.name;
+		return index;
 	}
 
-	std::string PTXToLLVMTranslator::_loadGlobalPointer( 
-		const ir::PTXOperand& o, ir::PTXInstruction::Vec vector )
+	ir::LLVMInstruction::Operand 
+		PTXToLLVMTranslator::_getAddressableGlobalPointer( 
+		const ir::PTXOperand& o )
 	{
 		ir::Module::GlobalMap::const_iterator 
 			global = _llvmKernel->module->globals.find( o.identifier );
 		assert( global != _llvmKernel->module->globals.end() );
-
+		
 		if( global->second.statement.elements() == 1 )
 		{
-			return "@" + o.identifier;
+			ir::LLVMInstruction::Operand result;
+			
+			result.type.category = ir::LLVMInstruction::Type::Pointer;
+			result.type.type = _translate( global->second.statement.type );
+			result.name = "@" + o.identifier;
+			
+			return result;
 		}
-
-		ir::LLVMGetelementptr get;
 		
+		ir::LLVMGetelementptr get;
 		get.a.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.a.name = "@" + o.identifier;
+		
 		get.a.type.members.resize( 1 );
-
 		get.a.type.members[0].category 
 			= ir::LLVMInstruction::Type::Array;
 		get.a.type.members[0].vector 
@@ -4099,16 +4238,161 @@ namespace translator
 		
 		get.a.type.members[0].type = _translate( 
 			global->second.statement.type );
-		get.a.name = "@" + o.identifier;
 		
-		get.d.type = get.a.type.members[0];
+		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
+		get.d.type.type = get.a.type.members[0].type;
 		get.d.name = _tempRegister();
 		get.indices.push_back( 0 );
 		get.indices.push_back( 0 );
 		
 		_add( get );
 		
-		return get.d.name;
+		return get.d;
+	}
+	
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getLoadOrStorePointer( 
+		const ir::PTXOperand& o, ir::PTXInstruction::AddressSpace space, 
+		ir::LLVMInstruction::DataType type, unsigned int vector )
+	{
+		ir::LLVMInstruction::Operand pointer;
+		
+		if( o.addressMode == ir::PTXOperand::Address )
+		{
+			if( space == ir::PTXInstruction::Global )
+			{
+				pointer = _getAddressableGlobalPointer( o );
+			}
+			else
+			{
+				pointer = _getAddressableVariablePointer( space, o );
+			}
+			
+			if( type == ir::LLVMInstruction::I8 )
+			{
+				return pointer;
+			}
+			
+			ir::LLVMBitcast cast;
+			
+			cast.d.name = _tempRegister();
+			cast.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			cast.a = pointer;
+		
+			if( vector == ir::PTXOperand::v1 )
+			{
+				cast.d.type.type = type;
+			}
+			else
+			{
+				cast.d.type.members.resize( 1 );
+				cast.d.type.members[ 0 ].category 
+					= ir::LLVMInstruction::Type::Vector;
+				cast.d.type.members[ 0 ].type = type;
+				cast.d.type.members[ 0 ].vector = vector;		
+			}
+		
+			_add( cast );
+		
+			return cast.d;
+		}
+		else
+		{
+			assert( o.addressMode == ir::PTXOperand::Register 
+				|| o.addressMode == ir::PTXOperand::Indirect );
+
+			ir::LLVMInstruction::Operand reg = _translate( o );
+			
+			if( o.offset != 0 )
+			{
+				ir::LLVMAdd add;
+			
+				add.d.name = _tempRegister();
+				add.d.type.category = ir::LLVMInstruction::Type::Element;
+				add.d.type.type = reg.type.type;
+				
+				add.a = reg;
+				
+				add.b.type.category = ir::LLVMInstruction::Type::Element;
+				add.b.type.type = reg.type.type;
+				add.b.constant = true;
+				add.b.i64 = o.offset;
+		
+				_add( add );
+				
+				reg = add.d;
+			}
+			
+			if( space == ir::PTXInstruction::Shared )
+			{
+				ir::LLVMAnd mask;
+				
+				mask.d.name = _tempRegister();
+				mask.d.type.category = ir::LLVMInstruction::Type::Element;
+				mask.d.type.type = reg.type.type;
+				
+				mask.a = reg;
+				mask.b.type.category = ir::LLVMInstruction::Type::Element;
+				mask.b.type.type = reg.type.type;
+				mask.b.constant = true;
+				mask.b.i64 = 0x000000000000FFFFULL;
+				
+				_add( mask );
+				
+				reg = mask.d;
+			}
+			
+			if( space == ir::PTXInstruction::Global )
+			{
+				pointer = reg;
+			}
+			else
+			{
+				ir::LLVMPtrtoint toint;
+			
+				toint.a = _getMemoryBasePointer( space );
+				toint.d.name = _tempRegister();
+				toint.d.type.category = ir::LLVMInstruction::Type::Element;
+				toint.d.type.type = reg.type.type;
+			
+				_add( toint );
+			
+				ir::LLVMAdd add;
+			
+				add.d.name = _tempRegister();
+				add.d.type.category = ir::LLVMInstruction::Type::Element;
+				add.d.type.type = reg.type.type;
+			
+				add.a = reg;	
+				add.b = toint.d;
+	
+				_add( add );
+			
+				pointer = add.d;
+			}
+			
+			ir::LLVMInttoptr toptr;
+			
+			toptr.d.name = _tempRegister();
+			toptr.d.type.category = ir::LLVMInstruction::Type::Pointer;
+			toptr.a = pointer;
+		
+			if( vector == ir::PTXOperand::v1 )
+			{
+				toptr.d.type.type = type;
+			}
+			else
+			{
+				toptr.d.type.members.resize( 1 );
+				toptr.d.type.members[ 0 ].category 
+					= ir::LLVMInstruction::Type::Vector;
+				toptr.d.type.members[ 0 ].type = type;
+				toptr.d.type.members[ 0 ].vector = vector;		
+			}
+		
+			_add( toptr );
+		
+			return toptr.d;
+		}
 	}
 	
 	void PTXToLLVMTranslator::_setFloatingPointRoundingMode( 
@@ -4572,7 +4856,7 @@ namespace translator
 
 		ir::LLVMStatement cosf( ir::LLVMStatement::FunctionDeclaration );
 
-		cosf.label = "cosf";
+		cosf.label = "__ocelot_cosf";
 		cosf.linkage = ir::LLVMStatement::InvalidLinkage;
 		cosf.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		cosf.visibility = ir::LLVMStatement::Default;
@@ -4588,7 +4872,7 @@ namespace translator
 
 		ir::LLVMStatement sinf( ir::LLVMStatement::FunctionDeclaration );
 
-		sinf.label = "sinf";
+		sinf.label = "__ocelot_sinf";
 		sinf.linkage = ir::LLVMStatement::InvalidLinkage;
 		sinf.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		sinf.visibility = ir::LLVMStatement::Default;
@@ -4604,7 +4888,7 @@ namespace translator
 
 		ir::LLVMStatement ex2( ir::LLVMStatement::FunctionDeclaration );
 
-		ex2.label = "ex2";
+		ex2.label = "__ocelot_ex2";
 		ex2.linkage = ir::LLVMStatement::InvalidLinkage;
 		ex2.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		ex2.visibility = ir::LLVMStatement::Default;
@@ -4620,7 +4904,7 @@ namespace translator
 
 		ir::LLVMStatement log2f( ir::LLVMStatement::FunctionDeclaration );
 
-		log2f.label = "log2f";
+		log2f.label = "__ocelot_log2f";
 		log2f.linkage = ir::LLVMStatement::InvalidLinkage;
 		log2f.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		log2f.visibility = ir::LLVMStatement::Default;
@@ -4636,7 +4920,7 @@ namespace translator
 
 		ir::LLVMStatement sqrtf( ir::LLVMStatement::FunctionDeclaration );
 
-		sqrtf.label = "sqrtf";
+		sqrtf.label = "__ocelot_sqrtf";
 		sqrtf.linkage = ir::LLVMStatement::InvalidLinkage;
 		sqrtf.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		sqrtf.visibility = ir::LLVMStatement::Default;
@@ -4650,9 +4934,26 @@ namespace translator
 	
 		_llvmKernel->_statements.push_front( sqrtf );		
 
+		ir::LLVMStatement sqrt( ir::LLVMStatement::FunctionDeclaration );
+
+		sqrt.label = "__ocelot_sqrt";
+		sqrt.linkage = ir::LLVMStatement::InvalidLinkage;
+		sqrt.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		sqrt.visibility = ir::LLVMStatement::Default;
+		
+		sqrt.operand.type.category = ir::LLVMInstruction::Type::Element;
+		sqrt.operand.type.type = ir::LLVMInstruction::F64;
+		
+		sqrt.parameters.resize( 1 );
+		sqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		sqrt.parameters[0].type.type = ir::LLVMInstruction::F64;
+	
+		_llvmKernel->_statements.push_front( sqrt );		
+
+
 		ir::LLVMStatement rsqrt( ir::LLVMStatement::FunctionDeclaration );
 
-		rsqrt.label = "rsqrt";
+		rsqrt.label = "__ocelot_rsqrt";
 		rsqrt.linkage = ir::LLVMStatement::InvalidLinkage;
 		rsqrt.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		rsqrt.visibility = ir::LLVMStatement::Default;

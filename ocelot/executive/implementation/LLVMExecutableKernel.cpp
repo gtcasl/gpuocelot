@@ -32,7 +32,7 @@
 #define REPORT_ATOMIC_OPERATIONS 0
 #define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_FIRST_THREAD_ONLY 0
-#define DEBUG_PTX_INSTRUCTION_TRACE 1
+#define DEBUG_PTX_INSTRUCTION_TRACE 0
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 
 #include <configure.h>
@@ -61,14 +61,39 @@ extern "C"
 		assertM( mode == 0, "No support for setting exotic rounding modes." );
 	}
 	
-	float ex2( float value )
+	float __ocelot_ex2( float value )
 	{
 		return exp( value * 0.693147f );
 	}
 
-	float rsqrt( float value )
+	float __ocelot_rsqrt( float value )
 	{
-		return 1.0 / sqrtf( value );
+		return 1.0 / sqrt( value );
+	}
+	
+	double __ocelot_sqrt( double f )
+	{
+		return sqrt( f );
+	}
+	
+	float __ocelot_sqrtf( float f )
+	{
+		return sqrt( f );
+	}
+	
+	float __ocelot_log2f( float f )
+	{
+		return log2( f );
+	}
+
+	float __ocelot_sinf( float f )
+	{
+		return sin( f );
+	}
+
+	float __ocelot_cosf( float f )
+	{
+		return cos( f );
 	}
 
 	bool __ocelot_vote( bool a, ir::PTXInstruction::VoteMode mode, bool invert )
@@ -93,6 +118,11 @@ extern "C"
 		ir::PTXInstruction::AddressSpace space, 
 		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, ir::PTXF32 b )
 	{
+		if( space == ir::PTXInstruction::Shared )
+		{
+			address += ( ir::PTXU64 ) context->shared;
+		}
+		
 		ir::PTXF32 d = 0;
 		
 		switch( op )
@@ -137,6 +167,11 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, 
 		ir::PTXU64 address, ir::PTXB32 b )
 	{
+		if( space == ir::PTXInstruction::Shared )
+		{
+			address += ( ir::PTXU64 ) context->shared;
+		}
+		
 		ir::PTXB32 d = 0;
 		
 		switch( op )
@@ -235,6 +270,11 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, 
 		ir::PTXU64 address, ir::PTXS32 b )
 	{
+		if( space == ir::PTXInstruction::Shared )
+		{
+			address += ( ir::PTXU64 ) context->shared;
+		}
+		
 		ir::PTXS32 d = 0;
 		
 		switch( op )
@@ -279,6 +319,11 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, 
 		ir::PTXU64 address, ir::PTXB64 b )
 	{
+		if( space == ir::PTXInstruction::Shared )
+		{
+			address += ( ir::PTXU64 ) context->shared;
+		}
+		
 		ir::PTXB64 d = 0;
 		
 		switch( op )
@@ -314,6 +359,11 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
 		ir::PTXB32 b, ir::PTXB32 c )
 	{
+		if( space == ir::PTXInstruction::Shared )
+		{
+			address += ( ir::PTXU64 ) context->shared;
+		}
+		
 		ir::PTXB32 d = *((ir::PTXB32*) address);
 		
 		assert( op == ir::PTXInstruction::AtomicCas );
@@ -332,6 +382,11 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
 		ir::PTXB64 b, ir::PTXB64 c )
 	{
+		if( space == ir::PTXInstruction::Shared )
+		{
+			address += ( ir::PTXU64 ) context->shared;
+		}
+		
 		ir::PTXB64 d = *((ir::PTXB64*) address);
 		
 		assert( op == ir::PTXInstruction::AtomicCas );
@@ -776,7 +831,7 @@ namespace executive
 	LLVMExecutableKernel::LLVMState::~LLVMState()
 	{
 		#ifdef HAVE_LLVM
-		report( "Deleting the LLVM JIT-Compiler." );
+		reportE( jit != 0, "Deleting the LLVM JIT-Compiler." );
 		delete jit;
 		#endif
 	}

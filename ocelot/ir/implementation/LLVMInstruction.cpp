@@ -488,6 +488,37 @@ namespace ir
 		}
 		return false;
 	}
+	
+	LLVMInstruction::DataType LLVMInstruction::getIntOfSize( unsigned int bits )
+	{
+		switch( bits )
+		{
+			case 1: return I1; break;
+			case 8: return I8; break;
+			case 16: return I16; break;
+			case 32: return I32; break;
+			case 64: return I64; break;
+			default: break;
+		}
+		return InvalidDataType;
+	}
+	
+	unsigned int LLVMInstruction::bits( DataType type )
+	{
+		switch( type )
+		{
+			case I1: return 1; break;
+			case I8: return 8; break;
+			case I16: return 16; break;
+			case F32: /* fall through */
+			case I32: return 32; break;
+			case F64: /* fall through */
+			case I64: return 64; break;
+			case F128: return 128; break;
+			default: break;
+		}
+		return 0;
+	}
 
 	LLVMInstruction::LLVMInstruction( Opcode op ) : opcode( op )
 	{
@@ -1609,6 +1640,22 @@ namespace ir
 	
 	}
 
+	std::string LLVMShl::valid() const
+	{
+		if( a.type.toString() != d.type.toString() )
+		{
+			return "First source operand type " + a.type.toString() 
+				+ " does not equal destination operand type " 
+				+ d.type.toString();
+		}
+		if( !isInt( b.type.type ) )
+		{
+			return "Second source operand type " + b.type.toString() 
+				+ " is not an integer type";
+		}
+		return "";
+	}
+
 	LLVMInstruction* LLVMShl::clone() const
 	{
 		return new LLVMShl( *this );
@@ -1721,10 +1768,21 @@ namespace ir
 		{
 			return "Address must be a pointer";
 		}
-		if( a.type.type != d.type.type )
+		if( d.type.members.empty() )
 		{
-			return "Destination " + d.type.toString() 
-				+ " is not a pointer to source type " + a.type.toString();
+			if( a.type.type != d.type.type )
+			{
+				return "Destination " + d.type.toString() 
+					+ " is not a pointer to source type " + a.type.toString();
+			}
+		}
+		else
+		{
+			if( a.type.type != d.type.members[0].type )
+			{
+				return "Destination " + d.type.toString() 
+					+ " is not a pointer to source type " + a.type.toString();
+			}
 		}
 		return "";
 	}

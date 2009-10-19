@@ -40,8 +40,8 @@ void PtxToLlvmTranslator::translate()
 		
 		hydrazine::Version version;
 		
-		llvmFile << "// Kernel: " << kernel->name << "\n";
-		llvmFile << "// Translated from PTX to LLVM by Ocelot " 
+		llvmFile << "; Kernel: " << kernel->name << "\n";
+		llvmFile << "; Translated from PTX to LLVM by Ocelot " 
 			<< version.toString() << " \n";		
 		llvmFile << translatedKernel->code();
 	}	

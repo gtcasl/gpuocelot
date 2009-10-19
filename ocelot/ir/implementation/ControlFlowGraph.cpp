@@ -134,7 +134,7 @@ Edge* ControlFlowGraph::split_edge(Edge *edge,
 }
 
 BasicBlock* ControlFlowGraph::split_block(BasicBlock* block, 
-	unsigned int instruction) {	assert( instruction < block->instructions.size() );
+	unsigned int instruction) {	assert( instruction <= block->instructions.size() );
 	
 	BasicBlock* newBlock = new BasicBlock;
 	BasicBlock::InstructionList::iterator 
@@ -209,7 +209,7 @@ std::string ControlFlowGraph::make_label_dot_friendly(
 
 bool ControlFlowGraph::is_reachable(BasicBlock *head, 
 	BasicBlock *tail) {
-	assertM( false, "Not implemented." );
+	assertM( false, "is_reachable is not implemented." );
 }
 
 void ControlFlowGraph::clear() {

@@ -44,12 +44,11 @@ namespace executive
 			unsigned int bits = texture.x + texture.y + texture.z + texture.w;
 			unsigned int bytes = bits / 8;
 			unsigned int offset = shift / 8;
-			type_F32_U32 value;
-
-			value.f32 = *((ir::PTXF32*)(((ir::PTXB8*) texture.data) 
+			
+			float value = *((ir::PTXF32*)(((ir::PTXB8*) texture.data) 
 				+ index*bytes + offset));
-			value.u32 &= mask;
-			return value.f32;
+			mask &= hydrazine::bit_cast< unsigned int >( value );
+			return hydrazine::bit_cast< ir::PTXF32 >( mask );
 		}
 		
 		ir::PTXF32 channelReadF32( const ir::Texture& texture, 
@@ -59,12 +58,11 @@ namespace executive
 			unsigned int bits = texture.x + texture.y + texture.z + texture.w;
 			unsigned int bytes = bits / 8;
 			unsigned int offset = shift / 8;
-			type_F32_U32 value;
-
-			value.f32 = *((ir::PTXF32*)(address = ((ir::PTXB8*) texture.data) 
+			
+			float value = *((ir::PTXF32*)(address = ((ir::PTXB8*) texture.data) 
 				+ index*bytes + offset) );
-			value.u32 &= mask;
-			return value.f32;
+			mask &= hydrazine::bit_cast< unsigned int >( value );
+			return hydrazine::bit_cast< ir::PTXF32 >( mask );
 		}
 		
 	}

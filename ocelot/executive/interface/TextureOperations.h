@@ -13,6 +13,7 @@
 #include <math.h>
 #include <float.h>
 
+#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/debug.h>
 
 namespace executive
@@ -21,12 +22,6 @@ namespace executive
 	namespace tex
 	{
 		
-		typedef union 
-		{
-			ir::PTXF32 f32;
-			ir::PTXU32 u32;
-		} type_F32_U32;
-
 		ir::PTXF64 wrap( ir::PTXF64 b, unsigned int limit, 
 			ir::Texture::AddressMode mode );
 
@@ -173,8 +168,7 @@ namespace executive
 			if(texture.normalizedFloat)
 			{
 				ir::PTXF32 f = ( d + 0.0 ) / (mask + 1);
-				ir::PTXF32* dp = (ir::PTXF32*)&d;
-				*dp = f;	
+				d = hydrazine::bit_cast< D >( f );
 			}
 	
 			return d;
@@ -289,8 +283,7 @@ namespace executive
 			if(texture.normalizedFloat)
 			{
 				ir::PTXF32 f = ( d + 0.0 ) / (mask + 1);
-				ir::PTXF32* dp = (ir::PTXF32*)&d;
-				*dp = f;	
+				d = hydrazine::bit_cast< D >( f );
 			}
 	
 			return d;
@@ -448,8 +441,7 @@ namespace executive
 			if(texture.normalizedFloat)
 			{
 				ir::PTXF32 f = ( d + 0.0 ) / (mask + 1);
-				ir::PTXF32* dp = (ir::PTXF32*)&d;
-				*dp = f;	
+				d = hydrazine::bit_cast< D >( f );
 			}
 	
 			return d;
@@ -708,8 +700,7 @@ namespace executive
 			if( texture.normalizedFloat )
 			{
 				ir::PTXF32 f = ( d + 0.0 ) / (mask + 1);
-				ir::PTXF32* dp = (ir::PTXF32*)&d;
-				*dp = f;
+				d = hydrazine::bit_cast< D >( f );
 			}
 	
 			return d;

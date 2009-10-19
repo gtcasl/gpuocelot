@@ -519,7 +519,9 @@ namespace analysis
 			<< " at instruction " << instruction );
 		_consistent = false;
 		
-		assert( instruction < block->_instructions.size() );
+		assertM( instruction <= block->_instructions.size(), 
+			"Cannot split block of size " << block->_instructions.size() 
+			<< " at instruction " << instruction );
 		
 		InstructionVector::iterator begin = block->_instructions.begin();
 		std::advance( begin, instruction );

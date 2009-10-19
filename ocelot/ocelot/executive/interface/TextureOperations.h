@@ -68,7 +68,7 @@ namespace executive
 			B b0, ir::PTXB8* &address ) 
 		{
 			D d = 0;
-			ir::PTXF64 b = b0;
+			ir::PTXF64 b = ( ir::PTXF64 ) b0;
 			ir::PTXB64 mask = 1;
 			unsigned int shift;
 
@@ -182,11 +182,10 @@ namespace executive
 
 
 		template<unsigned int dim, typename D, typename B>
-		D sample(const ir::Texture& texture,
-			B b0) 
+		D sample(const ir::Texture& texture, B b0) 
 		{
 			D d = 0;
-			ir::PTXF64 b = b0;
+			ir::PTXF64 b = ( ir::PTXF64 ) b0;
 			ir::PTXB64 mask = 1;
 			unsigned int shift;
 
@@ -218,7 +217,7 @@ namespace executive
 	
 			if (texture.interpolation == ir::Texture::Nearest) 
 			{
-				ir::PTXF64 index = b;
+				ir::PTXF64 index = ( ir::PTXF64 ) b;
 				unsigned int windex = wrap(index, texture.size.x, 
 					texture.addressMode[0]);
 				switch (texture.type) {
@@ -302,7 +301,7 @@ namespace executive
 		D sample(const ir::Texture& texture, 
 			B b0, B b1) {
 			D d = 0;
-			ir::PTXF64 b[2] = {b0, b1};
+			ir::PTXF64 b[2] = { ( ir::PTXF64 ) b0, ( ir::PTXF64 ) b1 };
 			ir::PTXB64 mask = 1;
 			unsigned int shift;
 
@@ -333,7 +332,8 @@ namespace executive
 			}
 	
 			if (texture.interpolation == ir::Texture::Nearest) {
-				ir::PTXF64 index[2] = {b[0], b[1]};
+				ir::PTXF64 index[2] = { ( ir::PTXF64 ) b[0], 
+					( ir::PTXF64 ) b[1] };
 				unsigned int windex[2];
 				windex[0] = wrap(index[0], texture.size.x, 
 					texture.addressMode[0]);
@@ -460,7 +460,8 @@ namespace executive
 		D sample(const ir::Texture& texture, 
 			B b0, B b1, B b2) {
 			D d = 0;
-			ir::PTXF64 b[3] = {b0, b1, b2};
+			ir::PTXF64 b[3] = {( ir::PTXF64 ) b0, ( ir::PTXF64 ) b1, 
+				( ir::PTXF64 ) b2};
 			ir::PTXB64 mask = 1;
 			unsigned int shift;
 

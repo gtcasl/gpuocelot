@@ -265,23 +265,17 @@ __global__ void CUDAkernel2DCT(float *SrcDst, int ImgStride)
 
 	*(bl_ptr) = *(SrcDst);
 
-#ifdef __DEVICE_EMULATION__
 	__syncthreads();
-#endif
 
 	//process columns
 	CUDAsubroutineInplaceDCTvector(block + OffsThreadInCol * KER2_SMEMBLOCK_STRIDE + OffsThreadInRow, KER2_SMEMBLOCK_STRIDE);
 
-#ifdef __DEVICE_EMULATION__
 	__syncthreads();
-#endif
 
 	//process rows
 	CUDAsubroutineInplaceDCTvector(block + (OffsThreadInCol + threadIdx.x) * KER2_SMEMBLOCK_STRIDE + OffsThreadInRow - threadIdx.x, 1);
 
-#ifdef __DEVICE_EMULATION__
 	__syncthreads();
-#endif
 
 	bl_ptr = block + reg1;
 	SrcDst -= FMUL(ImgStride, 7);
@@ -395,23 +389,17 @@ __global__ void CUDAkernel2IDCT(float *SrcDst, int ImgStride)
 
 	*(bl_ptr) = *(SrcDst);
 
-#ifdef __DEVICE_EMULATION__
 	__syncthreads();
-#endif
 
 	//process columns
 	CUDAsubroutineInplaceIDCTvector(block + OffsThreadInCol * KER2_SMEMBLOCK_STRIDE + OffsThreadInRow, KER2_SMEMBLOCK_STRIDE);
 
-#ifdef __DEVICE_EMULATION__
 	__syncthreads();
-#endif
 
 	//process rows
 	CUDAsubroutineInplaceIDCTvector(block + (OffsThreadInCol + threadIdx.x) * KER2_SMEMBLOCK_STRIDE + OffsThreadInRow - threadIdx.x, 1);
 
-#ifdef __DEVICE_EMULATION__
 	__syncthreads();
-#endif
 
 	bl_ptr = block + reg1;
 	SrcDst -= FMUL(ImgStride, 7);

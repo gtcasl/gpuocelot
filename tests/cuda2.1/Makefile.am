@@ -14,8 +14,8 @@ OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTranslator \
 	libsdk.la $(LLVM_LDFLAGS)
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
-CUDA_CFLAGS = -I $(VPATH)/sdk
-SDK_CFLAGS = -I $(VPATH)/sdk
+CUDA_CFLAGS = -I $(srcdir)/sdk
+SDK_CFLAGS = -I $(srcdir)/sdk
 ################################################################################
 
 ################################################################################

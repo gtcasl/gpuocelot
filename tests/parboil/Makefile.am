@@ -12,7 +12,7 @@ ACLOCAL_AMFLAGS = -I m4
 OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTranslator \
 	-lOcelotTrace -lOcelotIr -lOcelotAnalysis -lOcelotParser -lhydrazine \
 	libparboil.la $(LLVM_LDFLAGS)
-CUDA_CFLAGS = -I parboil
+CUDA_CFLAGS = -I $(VPATH)/parboil
 ################################################################################
 
 ################################################################################

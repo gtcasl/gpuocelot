@@ -30,7 +30,7 @@
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define REPORT_ATOMIC_OPERATIONS 0
-#define PRINT_OPTIMIZED_CFG 0
+#define PRINT_OPTIMIZED_CFG 1
 #define DEBUG_FIRST_THREAD_ONLY 0
 #define DEBUG_PTX_INSTRUCTION_TRACE 0
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
@@ -1250,6 +1250,10 @@ namespace executive
 							operands[ i ]->identifier );
 						if( si != external.end() ) 
 						{
+							report("   For instruction \"" 
+								<< instruction->toString() 
+								<< "\", mapping shared label \"" << *si 
+								<< "\" to external shared memory." );
 							externalOperands.push_back( operands[ i ] );
 							continue;
 						}

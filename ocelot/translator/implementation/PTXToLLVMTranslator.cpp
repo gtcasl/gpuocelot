@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace translator
 {
@@ -1124,8 +1124,27 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 	{
-		_convert( _translate( i.d ), i.d.type, _translate( i.a ), i.a.type, 
-			i.modifier );
+		ir::LLVMInstruction::Operand destination;
+		ir::LLVMInstruction::Operand source = _translate( i.a );
+		
+		if( _translate( i.d.type ) != _translate( i.type ) )
+		{
+			destination.name = _tempRegister();
+			destination.type.category = ir::LLVMInstruction::Type::Element;
+			destination.type.type = _translate( i.type );
+		}
+		else
+		{
+			destination = _translate( i.d );
+		}
+
+		_convert( destination, i.type, source, i.a.type, i.modifier );
+
+		if( _translate( i.d.type ) != _translate( i.type ) )
+		{
+			_bitcast( _translate( i.d ), destination, 
+				ir::PTXOperand::isSigned( i.type ) );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateDiv( const ir::PTXInstruction& i )
@@ -3230,11 +3249,12 @@ namespace translator
 	void PTXToLLVMTranslator::_bitcast( const ir::PTXOperand& d, 
 		const ir::PTXOperand& a )
 	{
-		_bitcast( _translate( d ), _translate( a ) );
+		_bitcast( _translate( d ), _translate( a ), 
+			ir::PTXOperand::isSigned( d.type ) );
 	}
 	
 	void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d, 
-		const ir::LLVMInstruction::Operand& a )
+		const ir::LLVMInstruction::Operand& a, bool isSigned )
 	{
 		if( ir::LLVMInstruction::bits( d.type.type ) 
 			== ir::LLVMInstruction::bits( a.type.type ) )
@@ -3274,18 +3294,37 @@ namespace translator
 			}
 			else
 			{
-				ir::LLVMZext extend;
+				if( isSigned )
+				{
+					ir::LLVMSext extend;
 				
-				extend.d.name = _tempRegister();
-				extend.d.type.category = ir::LLVMInstruction::Type::Element;
-				extend.d.type.type = ir::LLVMInstruction::getIntOfSize( 
-					ir::LLVMInstruction::bits( d.type.type ) );
+					extend.d.name = _tempRegister();
+					extend.d.type.category = ir::LLVMInstruction::Type::Element;
+					extend.d.type.type = ir::LLVMInstruction::getIntOfSize( 
+						ir::LLVMInstruction::bits( d.type.type ) );
 				
-				extend.a = temp;
+					extend.a = temp;
 				
-				_add( extend );
+					_add( extend );
 				
-				temp = extend.d;
+					temp = extend.d;				
+				}
+				else
+				{
+					ir::LLVMZext extend;
+				
+					extend.d.name = _tempRegister();
+					extend.d.type.category = ir::LLVMInstruction::Type::Element;
+					extend.d.type.type = ir::LLVMInstruction::getIntOfSize( 
+						ir::LLVMInstruction::bits( d.type.type ) );
+				
+					extend.a = temp;
+				
+					_add( extend );
+				
+					temp = extend.d;				
+				}
+
 			}
 			
 			_bitcast( d, temp );
@@ -3855,12 +3894,45 @@ namespace translator
 					
 					tempA = sitofp.d;
 				}
-				else
+				else if( modifier & ir::PTXInstruction::rm )
 				{
-					assertM( !( modifier & ir::PTXInstruction::rp ), 
-						"Round towards infinity not supported." );
-					assertM( !( modifier & ir::PTXInstruction::rm ), 
-						"Round towards -infinity not supported." );
+					ir::LLVMFsub subtract;
+					
+					subtract.d.name = _tempRegister();
+					subtract.d.type.category = ir::LLVMInstruction::Type::Element;
+					subtract.d.type.type = ir::LLVMInstruction::F32;
+
+					subtract.a = tempA;
+					
+					subtract.b.constant = true;
+					subtract.b.f32 = 0.5;
+					subtract.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					subtract.b.type.type = ir::LLVMInstruction::F32;
+					
+					_add( subtract );
+					
+					tempA = subtract.d;
+				}
+				else if( modifier & ir::PTXInstruction::rp )
+				{
+					ir::LLVMFadd add;
+					
+					add.d.name = _tempRegister();
+					add.d.type.category = ir::LLVMInstruction::Type::Element;
+					add.d.type.type = ir::LLVMInstruction::F32;
+
+					add.a = tempA;
+					
+					add.b.constant = true;
+					add.b.f32 = 0.5;
+					add.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					add.b.type.type = ir::LLVMInstruction::F32;
+					
+					_add( add );
+					
+					tempA = add.d;
 				}
 				
 				if( ir::PTXInstruction::sat & modifier )

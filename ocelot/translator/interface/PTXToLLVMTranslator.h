@@ -125,7 +125,7 @@ namespace translator
 			void _bitcast( const ir::PTXInstruction& i );
 			void _bitcast( const ir::PTXOperand& d, const ir::PTXOperand& s );
 			void _bitcast( const ir::LLVMInstruction::Operand& d, 
-				const ir::LLVMInstruction::Operand& s );
+				const ir::LLVMInstruction::Operand& s, bool isSigned = false );
 			void _convert( const ir::LLVMInstruction::Operand& d, 
 				ir::PTXOperand::DataType dType, 
 				const ir::LLVMInstruction::Operand& s, 

@@ -41,11 +41,8 @@
 
 
 // Needed by the optimized sum reduction for correct execution in device emulation
-#ifdef __DEVICE_EMULATION__
-    #define EMUSYNC __syncthreads()
-#else
-    #define EMUSYNC
-#endif
+#define EMUSYNC __syncthreads()
+
 
 template<class T, unsigned int blockSize>
 __device__ void sumReduceSharedMem(T *sum, T *sum2, int tid)
@@ -55,9 +52,7 @@ __device__ void sumReduceSharedMem(T *sum, T *sum2, int tid)
     if (blockSize >= 256) { if (tid < 128) { sum[tid] += sum[tid + 128]; sum2[tid] += sum2[tid + 128]; } __syncthreads(); }
     if (blockSize >= 128) { if (tid <  64) { sum[tid] += sum[tid +  64]; sum2[tid] += sum2[tid +  64]; } __syncthreads(); }
     
-#ifndef __DEVICE_EMULATION__
-    if (tid < 32)
-#endif
+
     {
         if (blockSize >=  64) { sum[tid] += sum[tid + 32]; sum2[tid] += sum2[tid + 32]; EMUSYNC; }
         if (blockSize >=  32) { sum[tid] += sum[tid + 16]; sum2[tid] += sum2[tid + 16]; EMUSYNC; }

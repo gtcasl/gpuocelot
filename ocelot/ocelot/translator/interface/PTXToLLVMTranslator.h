@@ -129,7 +129,7 @@ namespace translator
 			void _convert( const ir::LLVMInstruction::Operand& d, 
 				ir::PTXOperand::DataType dType, 
 				const ir::LLVMInstruction::Operand& s, 
-				ir::PTXOperand::DataType sType );
+				ir::PTXOperand::DataType sType, int modifier = 0 );
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 

@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -1124,7 +1124,8 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 	{
-		_convert( _translate( i.d ), i.d.type, _translate( i.a ), i.a.type );
+		_convert( _translate( i.d ), i.d.type, _translate( i.a ), i.a.type, 
+			i.modifier );
 	}
 
 	void PTXToLLVMTranslator::_translateDiv( const ir::PTXInstruction& i )
@@ -3293,7 +3294,7 @@ namespace translator
 		
 	void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d, 
 		ir::PTXOperand::DataType dType, const ir::LLVMInstruction::Operand& a, 
-		ir::PTXOperand::DataType aType )
+		ir::PTXOperand::DataType aType, int modifier )
 	{
 		switch( aType )
 		{
@@ -3788,6 +3789,127 @@ namespace translator
 			}
 			case ir::PTXOperand::f32:
 			{
+				ir::LLVMInstruction::Operand tempA = a;
+				
+				if( modifier & ir::PTXInstruction::rn )
+				{
+					ir::LLVMFcmp compare;
+					
+					compare.d.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					compare.d.type.type = ir::LLVMInstruction::I1;
+					compare.d.name = _tempRegister();
+					compare.comparison = ir::LLVMInstruction::Olt;
+
+					compare.a = tempA;
+					compare.b.constant = true;
+					compare.b.f32 = 0.0;
+					compare.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					compare.b.type.type = ir::LLVMInstruction::F32;
+					
+					_add( compare );
+					
+					ir::LLVMSelect select;
+					
+					select.d = tempA;
+					select.d.name = _tempRegister();
+					
+					select.condition = compare.d;
+					select.a = compare.b;
+					select.a.f32 = -0.5;
+					select.b = compare.b;
+					select.b.f32 = 0.5;
+					
+					_add( select );
+					
+					ir::LLVMFadd add;
+					
+					add.d = tempA;
+					add.d.name = _tempRegister();
+					add.a = tempA;
+					
+					add.b = select.d;
+					
+					_add( add );
+
+					ir::LLVMFptosi fptosi;
+					
+					fptosi.d.name = _tempRegister();
+					fptosi.d.type.category = ir::LLVMInstruction::Type::Element;
+					fptosi.d.type.type = ir::LLVMInstruction::I32;
+
+					fptosi.a = add.d;
+					
+					_add( fptosi );
+
+					ir::LLVMSitofp sitofp;
+					
+					sitofp.d.name = _tempRegister();
+					sitofp.d.type.category = ir::LLVMInstruction::Type::Element;
+					sitofp.d.type.type = ir::LLVMInstruction::F32;
+
+					sitofp.a = fptosi.d;
+					
+					_add( sitofp );
+					
+					tempA = sitofp.d;
+				}
+				else
+				{
+					assertM( !( modifier & ir::PTXInstruction::rp ), 
+						"Round towards infinity not supported." );
+					assertM( !( modifier & ir::PTXInstruction::rm ), 
+						"Round towards -infinity not supported." );
+				}
+				
+				if( ir::PTXInstruction::sat & modifier )
+				{
+					ir::LLVMFcmp compare;
+					
+					compare.d.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					compare.d.type.type = ir::LLVMInstruction::I1;
+					compare.d.name = _tempRegister();
+					compare.comparison = ir::LLVMInstruction::Olt;
+
+					compare.a = tempA;
+					compare.b.constant = true;
+					compare.b.f32 = 1.0;
+					compare.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					compare.b.type.type = ir::LLVMInstruction::F32;
+					
+					_add( compare );
+					
+					ir::LLVMSelect select;
+					
+					select.d = tempA;
+					select.d.name = _tempRegister();
+					
+					select.condition = compare.d;
+					select.a = tempA;
+					select.b = compare.b;
+					
+					_add( select );
+					
+					compare.d.name = _tempRegister();
+					compare.a = select.d;
+					compare.b.f32 = 0.0;
+					
+					_add( compare );
+					
+					select.d.name = _tempRegister();
+					
+					select.condition = compare.d;
+					select.a = compare.b;
+					select.b = compare.a;
+					
+					_add( select );
+					
+					tempA = select.d;			
+				}
+				
 				switch( dType )
 				{
 					case ir::PTXOperand::s8:
@@ -3797,7 +3919,7 @@ namespace translator
 					{
 						ir::LLVMFptosi fptosi;
 						fptosi.d = d;
-						fptosi.a = a;
+						fptosi.a = tempA;
 						
 						_add( fptosi );
 						break;
@@ -3814,7 +3936,7 @@ namespace translator
 					{
 						ir::LLVMFptoui fptoui;
 						fptoui.d = d;
-						fptoui.a = a;
+						fptoui.a = tempA;
 						
 						_add( fptoui );
 						break;
@@ -3823,21 +3945,21 @@ namespace translator
 					{
 						ir::LLVMFptrunc fptrunc;
 						fptrunc.d = d;
-						fptrunc.a = a;
+						fptrunc.a = tempA;
 						
 						_add( fptrunc );
 						break;
 					}
 					case ir::PTXOperand::f32:
 					{
-						_bitcast( d, a );
+						_bitcast( d, tempA );
 						break;
 					}
 					case ir::PTXOperand::f64:
 					{
 						ir::LLVMFpext fpext;
 						fpext.d = d;
-						fpext.a = a;
+						fpext.a = tempA;
 						
 						_add( fpext );
 						break;

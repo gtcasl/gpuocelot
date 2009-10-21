@@ -676,14 +676,10 @@ int main(int argc, char** argv)
     }
 
     uint w, h;
-#if __DEVICE_EMULATION__
+
     // Reduce the image size so that it doesn't take so long on emulation.
     w = W;
     h = H;
-#else
-    w = W >> 4;
-    h = H >> 4;
-#endif
 
     // Allocate input image.
     const uint memSize = w * h * 4;

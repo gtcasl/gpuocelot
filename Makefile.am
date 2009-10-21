@@ -10,7 +10,7 @@
 ## Global Parameters
 AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
-INCLUDE = -I $(VPATH)/ocelot/cuda/include
+INCLUDE = -I $(srcdir)/ocelot/cuda/include
 AM_LDFLAGS = $(CUDA_DRIVER_API_LIBARY)
 ################################################################################
 

@@ -167,8 +167,8 @@ libOcelotTranslator_la_SOURCES = \
 ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 ParallelismTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/ParallelismTraceAnalyzer.cpp
-ParallelismTraceAnalyzer_LDADD =libOcelotIr.la libOcelotAnalysis.la\
-	libOcelotParser.la libOcelotTrace.la libhydrazine.la $(LLVM_LDFLAGS) 
+ParallelismTraceAnalyzer_LDADD = libOcelotTrace.la libOcelotIr.la \
+	libOcelotAnalysis.la libOcelotParser.la libhydrazine.la $(LLVM_LDFLAGS) 
 ParallelismTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
@@ -178,8 +178,8 @@ BranchTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
 	-std=c++0x
 BranchTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/BranchTraceAnalyzer.cpp
-BranchTraceAnalyzer_LDADD = libOcelotIr.la libOcelotAnalysis.la\
-	libOcelotParser.la libOcelotTrace.la libhydrazine.la
+BranchTraceAnalyzer_LDADD = libOcelotTrace.la libOcelotIr.la \
+	libOcelotAnalysis.la libOcelotParser.la libhydrazine.la
 BranchTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
@@ -188,8 +188,8 @@ BranchTraceAnalyzer_LDFLAGS = -static
 MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 MemoryTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
-MemoryTraceAnalyzer_LDADD = libOcelotIr.la libOcelotAnalysis.la\
-	libOcelotParser.la libOcelotTrace.la libhydrazine.la 
+MemoryTraceAnalyzer_LDADD = libOcelotTrace.la libOcelotIr.la \
+	libOcelotAnalysis.la libOcelotParser.la libhydrazine.la 
 MemoryTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 

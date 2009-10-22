@@ -156,7 +156,8 @@ namespace trace
 		map< ir::PTXInstruction::AddressSpace, Histogram > histograms;
 		for (unsigned int i = 0; i < (unsigned int)spaces.size(); i++) {
 			// cglspt
-			ir::PTXInstruction::AddressSpace space;
+			ir::PTXInstruction::AddressSpace 
+				space = ir::PTXInstruction::AddressSpace_Invalid;
 			switch (spaces[i]) {
 				case 'c': space = ir::PTXInstruction::Const; break;
 				case 'g': space = ir::PTXInstruction::Global; break;

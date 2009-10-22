@@ -199,8 +199,8 @@ SharedComputationAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
 	-std=c++0x
 SharedComputationAnalyzer_SOURCES = \
 	ocelot/trace/implementation/SharedComputationAnalyzer.cpp
-SharedComputationAnalyzer_LDADD = libOcelotIr.la libOcelotAnalysis.la \
-	libOcelotParser.la libOcelotTrace.la libhydrazine.la
+SharedComputationAnalyzer_LDADD = libOcelotTrace.la libOcelotIr.la \
+	libOcelotAnalysis.la libOcelotParser.la libhydrazine.la
 SharedComputationAnalyzer_LDFLAGS = -static
 ################################################################################
 
@@ -355,8 +355,8 @@ TestLLVMKernels_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestLLVMKernels_SOURCES = \
 	ocelot/executive/test/TestLLVMKernels.cpp
 TestLLVMKernels_LDADD = libOcelotExecutive.la \
-	libOcelotTranslator.la libOcelotIr.la libOcelotAnalysis.la \
-	libOcelotParser.la libhydrazine.la libOcelotTrace.la $(LLVM_LDFLAGS)
+	libOcelotTranslator.la libOcelotTrace.la libOcelotIr.la \
+	libOcelotAnalysis.la libOcelotParser.la libhydrazine.la $(LLVM_LDFLAGS)
 TestLLVMKernels_LDFLAGS = -static
 ################################################################################
 

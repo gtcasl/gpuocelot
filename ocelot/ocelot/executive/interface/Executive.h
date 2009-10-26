@@ -313,6 +313,13 @@ namespace executive {
 		void setOptimizationLevel( 
 			translator::Translator::OptimizationLevel l );
 
+		/*!
+			called to update global variables across all address spaces
+
+			\param copyType specifies direction data should be copied to update globals
+		*/
+		void fenceGlobalVariables(MemoryCopy copyType = HostToDevice);
+
 	public:
 		/*! Set of loaded PTX modules indexed by the module's filename */
 		ModuleMap modules;

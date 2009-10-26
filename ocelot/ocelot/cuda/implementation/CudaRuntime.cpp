@@ -400,7 +400,10 @@ namespace cuda
 			"Trace generators not supported for GPU kernels." );
 		assertM( thread->second.persistentTraceGenerators.empty(), 
 			"Trace generators not supported for GPU kernels." );
-		
+
+
+		context.fenceGlobalVariables();
+
 		gpuKernel->updateParameterMemory();
 		gpuKernel->updateGlobalMemory();
 		gpuKernel->updateConstantMemory();
@@ -410,10 +413,11 @@ namespace cuda
 			gpuKernel->setKernelShape( thread->second.ctaDimensions.x, 
 				thread->second.ctaDimensions.y, 
 				thread->second.ctaDimensions.z );
+			gpuKernel->setSharedMemorySize(thread->second.shared);
+
 			assert( thread->second.kernelDimensions.z == 1 );
 
-			report( "Launching GPU kernel \"" 
-				<< gpuKernel->name << "\"." );
+			report( "Launching GPU kernel \"" << gpuKernel->name << "\"." );
 
 			gpuKernel->launchGrid( thread->second.kernelDimensions.x, 
 				thread->second.kernelDimensions.y );
@@ -2074,7 +2078,7 @@ namespace cuda
 		
 		std::string optimization;
 		
-		parse( "OptimizationLevel", optimization, "NoOptimization", c );
+		parse( "OptimizationLevel", optimization, "full", c );
 		
 		if( optimization == "debug" )
 		{

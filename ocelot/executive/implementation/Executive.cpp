@@ -27,7 +27,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 std::string executive::Executive::nearbyGlobalsToString( 
 	const Executive& executive, const void* ptr, unsigned int above,
@@ -168,6 +168,7 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 	if (getSelectedISA() == ir::Instruction::GPU) {
 		// get it from the PTX module
 
+		// globals
 		for (GlobalAllocationMap::iterator glb_it = globalAllocations.begin();
 			glb_it != globalAllocations.end(); ++glb_it) {
 			std::string name(glb_it->second.identifier);
@@ -190,7 +191,8 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 					if (cuModuleGetGlobal(&devicePtr, &bytes, mod_it->second->cuModule, 
 						name.c_str()) == CUDA_SUCCESS) {
 						report("    obtained pointer to global variable '" << name << "' in GPU memory: 0x" 
-							<< std::hex << (unsigned int)devicePtr << ", \n\t\t\t\t\tcopying from host memory: 0x" << glb_it->second.ptr << std::dec);
+							<< std::hex << (unsigned int)devicePtr << ", \n\t\t\t\t\tcopying from host memory: 0x" 
+							<< glb_it->second.ptr << std::dec);
 						if (copyType == HostToDevice) {
 							cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size);
 						}
@@ -206,6 +208,29 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 				}
 			}
 		}
+
+		// textures
+		for (GlobalAllocationMap::iterator glb_it = globalAllocations.begin();
+			glb_it != globalAllocations.end(); ++glb_it) {
+			std::string name(glb_it->second.identifier);
+			
+			// filter variables according to name and state space
+			if (!(name.size() && 
+				(glb_it->second.space == ir::PTXInstruction::Texture) )) {
+				continue;
+			}
+
+			report("  binding texture variable '" << name << "' in address space " 
+				<< ir::PTXInstruction::toString(glb_it->second.space));
+
+			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+
+				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
+
+				}
+			}
+		}
+		
 	}
 #endif
 }
@@ -266,6 +291,13 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 		report("PTX kernel representation:\n" << ss.str());
 
 		report("  cuModuleLoadData() returned " << result);
+
+		// KERRDEBUG emit the ptx source file to a text file in the binary's directory
+		{
+			std::ofstream file("module.ptx");
+			file << ss.str();
+		}
+
 		throw hydrazine::Exception("cuModuleLoadData() failed for module " + m.modulePath);
 
 	}
@@ -926,12 +958,38 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 				global->second.registered = true;
 			}
 			break;
-/*
 		case ir::Instruction::GPU:
 			{
+				report( "Registering texture variable " << name 
+					<< " in module " << modulePath );
 
+				ModuleMap::iterator module = modules.find(modulePath);
+				if (module == modules.end()) {
+					throw hydrazine::Exception( "Module " + modulePath 
+						+ " does not exist." );
+				}
+
+				ir::Module::GlobalMap::iterator 
+					global = module->second->globals.find(name);
+				if (global == module->second->globals.end()) {
+					throw hydrazine::Exception("Global variable " 
+						+ name + " not declared in module " + modulePath);
+				}
+
+				if (global->second.registered) {
+					throw hydrazine::Exception("Duplicate texture variable " 
+						+ name + " registered in module " + modulePath);
+				}
+
+				ir::Module::TextureMap::iterator 
+					texture = module->second->textures.find(name);
+				assert(texture != module->second->textures.end());
+				texture->second = t;
+
+				global->second.registered = true;
 			}
 			break;
+/*
 		case ir::Instruction::x86:
 			{
 
@@ -1028,12 +1086,70 @@ void executive::Executive::rebind(const std::string& modulePath,
 				}								
 			}
 			break;
-/*
 		case ir::Instruction::GPU:
 			{
+				report( "Rebinding texture " << texture
+					<< " to variable " << target );
+				ModuleMap::iterator module = modules.find(modulePath);
 
+				if (module == modules.end()) {
+					throw hydrazine::Exception( "Module " + modulePath 
+						+ " does not exist." );
+				}
+
+				ir::Module::GlobalMap::iterator 
+					texture_it = module->second->globals.find(texture);
+				if (texture_it == module->second->globals.end()) {
+					throw hydrazine::Exception("Texture variable " 
+						+ texture + " not declared in module " + modulePath, 1);
+				}
+				else if( texture_it->second.statement.directive 
+					!= ir::PTXStatement::Tex ) {
+					throw hydrazine::Exception("Invalid texture reference", 1);
+				}
+				
+				if (!texture_it->second.registered) {
+					throw hydrazine::Exception("Texture variable " 
+						+ texture + " not registered in module " + modulePath);
+				}
+
+				if( target != 0 ) {
+					if( memoryAllocations[getSelected()].count( 
+						(char*) target ) == 0 ){
+						throw hydrazine::Exception(
+							"Invalid texture binding", 2);
+					}
+				}
+
+				ir::Module::TextureMap::iterator 
+					m_it = module->second->textures.find(texture);
+				assert(m_it != module->second->textures.end());
+				
+				report( " Texture was previously bound to " 
+					<< m_it->second.data );
+									
+				m_it->second.data = target;
+				m_it->second.x = t.x;
+				m_it->second.y = t.y;
+				m_it->second.z = t.z;
+				m_it->second.w = t.w;
+				m_it->second.type = t.type;
+				m_it->second.size.x = width;
+				m_it->second.size.y = height;
+				m_it->second.size.z = length;
+								
+				m_it->second.normalize = t.normalize;
+				m_it->second.interpolation = t.interpolation;
+				m_it->second.addressMode[0] = t.addressMode[0];
+				m_it->second.addressMode[1] = t.addressMode[1];
+				m_it->second.addressMode[2] = t.addressMode[2];
+				
+				if( target == 0 ) {
+					m_it->second.type = ir::Texture::Invalid;
+				}		
 			}
 			break;
+/*
 		case ir::Instruction::x86:
 			{
 

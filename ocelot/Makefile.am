@@ -27,7 +27,7 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel
+	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker
 lib_LTLIBRARIES = libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la \
 	libhydrazine.la libOcelotExecutive.la libOcelotTrace.la libcudart.la \
 	libOcelot.la libOcelotTranslator.la
@@ -287,6 +287,14 @@ TestGPUKernel_LDADD = libcudart.la libOcelotExecutive.la \
 	libOcelotTranslator.la libOcelotTrace.la libOcelotIr.la libOcelotParser.la \
 	libOcelotAnalysis.la libhydrazine.la $(LLVM_LDFLAGS)
 TestGPUKernel_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## PTXChecker
+PTXChecker_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+PTXChecker_SOURCES = ocelot/executive/test/PTXChecker.cpp
+PTXChecker_LDADD = libhydrazine.la $(CUDA_LDFLAGS)
+PTXChecker_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

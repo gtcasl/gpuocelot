@@ -343,6 +343,33 @@ ir::PTXOperand::~PTXOperand() {
 
 }
 
+/*!
+	Displays a binary represetation of a 32-bit floating-point value
+*/
+static std::ostream & write(std::ostream &stream, float value) {
+	union {
+		unsigned int imm_uint;
+		float value;
+	} float_union;
+	float_union.value = value;
+	stream << "0f" << std::setw(8) << std::setfill('0') 
+		<< std::hex << float_union.imm_uint << std::dec;
+	return stream;
+}
+
+/*!
+	Displays a binary represetation of a 64-bit floating-point value
+*/
+static std::ostream & write(std::ostream &stream, double value) {
+	union {
+		unsigned int imm_uint;
+		double value;
+	} double_union;
+	double_union.value = value;
+	stream << "0f" << std::setw(16) << std::setfill('0') << std::hex << double_union.imm_uint;
+	return stream;
+}
+
 std::string ir::PTXOperand::toString() const {
 	if( addressMode == Indirect ) {
 		std::stringstream stream;
@@ -393,10 +420,12 @@ std::string ir::PTXOperand::toString() const {
 			case b32: /* fall through */
 			case b64: stream << imm_int; break;
 			case f16: /* fall through */
-			case f32: stream << "0f" << std::setw(8) << std::setfill('0') 
-				<< std::hex << imm_uint; break;
-			case f64:stream << "0f" << std::setw(16) << std::setfill('0') 
-				<< std::hex << imm_uint; break;
+			case f32: {
+				write(stream, (float)imm_float);
+			} break;
+			case f64: {
+				write(stream, imm_float);
+			} break;
 			case pred: /* fall through */
 			default: assertM( false, "Invalid immediate type " 
 				+ PTXOperand::toString( type ) ); break;

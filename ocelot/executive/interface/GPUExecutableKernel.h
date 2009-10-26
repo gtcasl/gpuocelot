@@ -35,6 +35,11 @@ namespace executive {
 		*/
 		virtual void setKernelShape(int x, int y, int z);
 
+		/*!
+			sets the size of shared memory in bytes
+		*/
+		virtual void setSharedMemorySize(unsigned int bytes);
+
 		virtual void updateParameterMemory();
 
 		virtual void updateGlobalMemory();

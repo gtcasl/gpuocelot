@@ -19,6 +19,8 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 
+#include <fstream>
+
 #include <configure.h>
 
 #ifdef REPORT_BASE
@@ -155,6 +157,59 @@ std::string executive::Executive::nearbyAllocationsToString(
 	return stream.str();
 }
 
+/*!
+	called to update global variables across all address spaces
+
+	\param copyType specifies direction data should be copied to update globals
+*/
+void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
+#if HAVE_CUDA_DRIVER_API == 1
+		
+	if (getSelectedISA() == ir::Instruction::GPU) {
+		// get it from the PTX module
+
+		for (GlobalAllocationMap::iterator glb_it = globalAllocations.begin();
+			glb_it != globalAllocations.end(); ++glb_it) {
+			std::string name(glb_it->second.identifier);
+			
+			// filter variables according to name and state space
+			if (!(name.size() && 
+				(glb_it->second.space == ir::PTXInstruction::Const || 
+				 glb_it->second.space == ir::PTXInstruction::Global) )) {
+				continue;
+			}
+
+			report("  updating global variable '" << name << "' in address space " 
+				<< ir::PTXInstruction::toString(glb_it->second.space));
+
+			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+
+				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
+					unsigned int bytes;
+					CUdeviceptr devicePtr;
+					if (cuModuleGetGlobal(&devicePtr, &bytes, mod_it->second->cuModule, 
+						name.c_str()) == CUDA_SUCCESS) {
+						report("    obtained pointer to global variable '" << name << "' in GPU memory: 0x" 
+							<< std::hex << (unsigned int)devicePtr << ", \n\t\t\t\t\tcopying from host memory: 0x" << glb_it->second.ptr << std::dec);
+						if (copyType == HostToDevice) {
+							cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size);
+						}
+						else if (copyType == DeviceToHost) {
+							cuMemcpyDtoH(glb_it->second.ptr, devicePtr, glb_it->second.size);
+						}
+						else { 
+							throw hydrazine::Exception("ambiguous copyType for fence");
+						}
+					}
+					else {
+					}
+				}
+			}
+		}
+	}
+#endif
+}
+
 void executive::Executive::_translateToSelected(ir::Module& m) {
 	using namespace ir;
 	report("Translating all kernels in module " << m.modulePath );
@@ -202,12 +257,11 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	if (m.cuModuleState != Module::Invalid) {
 		cuModuleUnload(m.cuModule);
 	}
-	std::stringstream ss;
-	
+
+	std::stringstream ss;	
 	m.write(ss);
 
 	cudaError_enum result;
-
 	if ((result = cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str())) != CUDA_SUCCESS) {
 		report("PTX kernel representation:\n" << ss.str());
 
@@ -321,6 +375,7 @@ void executive::Executive::synchronize() {
 /*! Enumerate available devices */
 void executive::Executive::enumerateDevices() {
 	report( "Initializing devices:" );
+
 	{
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
@@ -348,6 +403,7 @@ void executive::Executive::enumerateDevices() {
 		report( " Initialized PTX emulated." );
 		devices.push_back(device);
 	}
+
 	#ifdef HAVE_LLVM
 	{
 		Device device;
@@ -452,7 +508,7 @@ bool executive::Executive::select(int device) {
 				selectedDevice = i;
 				return true;
 			}
-#if USE_CUDA_DRIVER_API
+#if HAVE_CUDA_DRIVER_API == 1
 			else if (devices[i].ISA == ir::Instruction::GPU) {
 				selectedDevice = i;
 
@@ -582,7 +638,7 @@ void *executive::Executive::malloc(size_t bytes) {
 					memoryAllocations[getSelected()].insert(
 						std::make_pair((char *)record.ptr, record));
 					report("executive::Executive::malloc() - cuMemAlloc() allocated " 
-						<< bytes << " on device " << record.device << " at 0x" << std::hex << record.ptr << std::dec);
+						<< bytes << " bytes on device " << record.device << " at 0x" << std::hex << record.ptr << std::dec);
 					return record.ptr;
 				}
 			}
@@ -687,8 +743,8 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
-				report( "Registering global variable " << name 
-					<< " in module " << modulePath );
+				report( "Registering global variable (LLVM,emulated) '" << name 
+					<< "' in module " << modulePath );
 
 				ModuleMap::iterator module = modules.find(modulePath);
 				if (module == modules.end()) {
@@ -756,6 +812,10 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 		*/
 		case ir::Instruction::GPU:
 			{
+
+				report( "Registering global variable (GPU) '" << name 
+					<< "' in module " << modulePath );
+
 				ModuleMap::iterator module = modules.find(modulePath);
 				if (module == modules.end()) {
 					throw hydrazine::Exception( "Module " + modulePath 
@@ -1229,9 +1289,6 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 #if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
-				report("executive::Executive::memcpy(0x" << std::hex << dest 
-					<< ", 0x" << src << ", " << std::dec << bytes);
-
 				if (type == DeviceToDevice) {
 					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
 						std::stringstream stream;
@@ -1272,6 +1329,17 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 						throw hydrazine::Exception(stream.str());
 					}
 					cuMemcpyDtoH((dest), painful_cast(src), bytes);
+				}
+				else if (type == HostToHost) {
+					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+						std::stringstream stream;
+						stream << "Invalid destination " << dest << " (" 
+							<< bytes << " bytes) in host to device memcpy." 
+							<< std::endl;
+						stream << nearbyAllocationsToString(*this, dest, bytes);
+						throw hydrazine::Exception(stream.str());
+					}
+					std::memcpy(dest, src, bytes);
 				}
 			}
 			break;

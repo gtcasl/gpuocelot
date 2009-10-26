@@ -52,7 +52,13 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	Launch a kernel on a 2D grid
 */
 void executive::GPUExecutableKernel::launchGrid(int width, int height) {
-	cuLaunchGrid(cuFunction, width, height);
+	report("executive::GPUExecutableKernel::launchGrid()");
+	CUresult result;
+
+	result = cuLaunchGrid(cuFunction, width, height);
+	if (result != CUDA_SUCCESS) {
+		report("  - cuLaunchGrid() failed: " << result);
+	}
 }
 
 /*!
@@ -60,6 +66,18 @@ void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 */
 void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
 	cuFuncSetBlockShape(cuFunction, x, y, z);
+}
+
+void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
+	CUresult result;
+
+	result = cuFuncSetSharedSize(cuFunction, bytes);
+	if (result != CUDA_SUCCESS) {
+		report("  - cuFuncSetSharedSize(" << bytes << ") FAILED: " << result);
+	}
+	else {
+		report("  - cuFuncSetSharedSize(" << bytes << ") succeeded");
+	}
 }
 
 void executive::GPUExecutableKernel::updateParameterMemory() {
@@ -91,8 +109,8 @@ void executive::GPUExecutableKernel::configureParameters() {
 		report("  set parameter size: " << paramSize);
 	}
 	for (it = parameters.begin(); it != parameters.end(); ++it) {
-		report("  configuring parameter " << it->name 
-			<< "\n                        " 
+		report("Configuring parameter " << it->name 
+			<< " " 
 			<< " - type: " << it->arrayValues.size() << " x " 
 			<< ir::PTXOperand::toString(it->type)
 			<< " - value: " << ir::Parameter::value(*it));
@@ -123,6 +141,7 @@ void executive::GPUExecutableKernel::configureParameters() {
 					}
 				}
 
+				report("  - GPUExecutableKernel::configureParameters() - cuParamSetv(offset: " << it->offset << ", size: " << bytes << " bytes)");
 				if (cuParamSetv(cuFunction, it->offset, (void *)ptr, bytes) != CUDA_SUCCESS) {
 					report("*** failed to set binary parameter");
 					throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
@@ -141,6 +160,8 @@ void executive::GPUExecutableKernel::configureParameters() {
 				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
 					val_it != it->arrayValues.end(); ++val_it, offset += 8) {
 					unsigned int value = (unsigned int)val_it->val_u64;
+				
+					report("  - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: " << it->offset << ", value: 0x" << std::hex << value << std::dec << ")");
 					if (cuParamSeti(cuFunction, offset, value) != CUDA_SUCCESS) {
 						report("*** failed to set integer parameter");
 						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
@@ -155,7 +176,8 @@ void executive::GPUExecutableKernel::configureParameters() {
 				size_t offset = it->offset;
 				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
 					val_it != it->arrayValues.end(); ++val_it, offset += 4) {
-					unsigned int value = (unsigned int)val_it->val_u32;
+					float value = val_it->val_f32;
+					report("  - GPUExecutableKernel::configureParameters() - cuParamSetf(offset: " << it->offset << ", value: " << value << ")");
 					if (cuParamSetf(cuFunction, offset, value) != CUDA_SUCCESS) {
 						report("*** failed to set floating point parameter");
 						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 

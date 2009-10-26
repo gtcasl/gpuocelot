@@ -131,15 +131,13 @@ namespace ir {
 		
 		/*! Path from which Module was loaded */
 		std::string modulePath;
-
-	protected:
 	
 		/*!
 			CUDA Module owning this kernel, others, and globals - this value is shared among
 			other GPUExecutableKernels of this module
 		*/
 		CUmodule cuModule;
-		
+
 		/*!
 			state of cuModule 
 		*/

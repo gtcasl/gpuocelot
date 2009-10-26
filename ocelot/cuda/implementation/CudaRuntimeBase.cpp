@@ -449,9 +449,12 @@ namespace cuda
 	{
 		try
 		{
+			if (std::string(symbol) == "softeningSquared") {
+				report("CudaRuntimeBase::cudaMemcpyToSymbol('softeningSquared', value = " << *((float *)src));				
+			}
 			return cudaMemcpy( 
 				( char* ) _runtime.getSymbol( symbol ) + offset, 
-				src, count, kind );
+				src, count, cudaMemcpyHostToHost );	// changed from kind
 		}
 		catch( const hydrazine::Exception& e )
 		{
@@ -478,7 +481,7 @@ namespace cuda
 		{
 			return cudaMemcpy( dst, 
 				( char* ) _runtime.getSymbol( symbol ) + offset, 
-				count, kind );
+				count, cudaMemcpyHostToHost );	// changed from kind
 		}
 		catch( const hydrazine::Exception& e )
 		{

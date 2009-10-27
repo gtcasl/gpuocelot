@@ -2058,8 +2058,30 @@ namespace cuda
 		parse( "DefaultDeviceId", _defaultDevice, 0, c );
 
 		std::string isa;
+		bool noGPU;
+		bool noEmulator;
+		bool noLLVM;
 		
 		parse( "PreferredISA", isa, "Emulated", c );
+		parse( "DisableGPUDevices", noGPU, false, c );
+		parse( "DisableEmulatorDevices", noEmulator, false, c );
+		parse( "DisableLLVMDevices", noLLVM, false, c );
+		
+		if( noGPU )
+		{
+			report( "Disabling GPU devices." );
+			context.filterDevicesByISA( ir::Instruction::GPU );
+		}
+		if( noEmulator )
+		{
+			report( "Disabling Emulator devices." );
+			context.filterDevicesByISA( ir::Instruction::Emulated );
+		}
+		if( noLLVM )
+		{
+			report( "Disabling LLVM devices." );
+			context.filterDevicesByISA( ir::Instruction::LLVM );
+		}
 		
 		report( "PreferredISA is " << isa );
 		

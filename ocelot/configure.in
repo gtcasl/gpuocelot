@@ -48,6 +48,8 @@ then
 		["Define to 1 if the cuda driver api is found"])
 	AC_SUBST(CUDA_DRIVER_API_LIBARY, "-lcuda")
 else
+	AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
+		["Define to 1 if the cuda driver api is found"])
 	AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
 fi
 ################################################################################

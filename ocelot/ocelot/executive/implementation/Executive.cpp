@@ -512,7 +512,7 @@ void executive::Executive::enumerateDevices() {
 		device.major = 1;
 		device.minor = 3;
 		report( " Initialized PTX emulated." );
-		devices.push_back(device);
+		allDevices.push_back(device);
 	}
 
 	#ifdef HAVE_LLVM
@@ -541,12 +541,10 @@ void executive::Executive::enumerateDevices() {
 		device.major = 1;
 		device.minor = 3;
 		report( " Initialized PTX-To-LLVM JIT." );
-		devices.push_back(device);
+		allDevices.push_back(device);
 	}
 	#endif
 
-#define USE_CUDA_DRIVER_API 0
-#if USE_CUDA_DRIVER_API
 	// enumerate actual CUDA-capable GPUs
 	int deviceCount = 0;
 
@@ -599,9 +597,10 @@ void executive::Executive::enumerateDevices() {
 
 		cuDeviceComputeCapability(&device.major, &device.minor, i);
 
-		devices.push_back(device);
+		allDevices.push_back(device);
 	}
-#endif
+	
+	restoreFilteredDevices();
 }
 
 /*!
@@ -662,6 +661,22 @@ void executive::Executive::setPreferredISA(ir::Instruction::Architecture ISA) {
 	}
 	
 	devices = std::move(newDevices);
+}
+
+void executive::Executive::filterDevicesByISA(
+	ir::Instruction::Architecture ISA) {
+	DeviceVector newDevices;
+	for (DeviceVector::const_iterator device = devices.begin(); 
+		device != devices.end(); ++device) {
+		if (device->ISA != ISA) {
+			newDevices.push_back(*device);
+		}
+	}
+	devices = newDevices;
+}
+
+void executive::Executive::restoreFilteredDevices() {
+	devices = allDevices;
 }
 
 int executive::Executive::getSelected() const {

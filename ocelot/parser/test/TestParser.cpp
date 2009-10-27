@@ -112,17 +112,16 @@ namespace test
 		report("  - parsing second");
 		second.load(stream2);
 	
-// This is no longer an error condition - unnecessary labels may have been removed
-//	
-//		if( first.statements.size() != second.statements.size() )
-//		{
-//		
-//			status << "First pass parsed " << first.statements.size()
-//				<< " statements while second parsed " 
-//				<< second.statements.size() << "\n";
-//			return false;
-//		
-//		}
+	
+		if( first.statements.size() != second.statements.size() )
+		{
+		
+			status << "First pass parsed " << first.statements.size()
+				<< " statements while second parsed " 
+				<< second.statements.size() << "\n";
+			return false;
+		
+		}
 		
 		for( ir::Module::StatementVector::iterator 
 			fi = first.statements.begin(), 

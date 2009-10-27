@@ -123,7 +123,9 @@ namespace executive {
 		Executive();
 		~Executive();
 		
-		/*! set of available devices enumerated by the executive */
+		/*! set of available devices enumerated by the executive, 
+			these present a filtered view into the total set of devices 
+			in the system */
 		DeviceVector devices;
 	
 		/*!
@@ -144,7 +146,16 @@ namespace executive {
 		/*! \brief Reorders devices such that devices with this ISA appear first
 		*/
 		void setPreferredISA(ir::Instruction::Architecture ISA);
-	
+		
+		/*! \brief Removes devices of the specific ISA from the filtered 
+			device list
+		*/
+		void filterDevicesByISA(ir::Instruction::Architecture ISA);
+		
+		/*! \brief Restores the filtered list of devices 
+			to reflect all devices */
+		void restoreFilteredDevices();
+		
 		/*!
 			Returns the guid of the selected device or -1 if no device 
 				is selected
@@ -319,7 +330,7 @@ namespace executive {
 			\param copyType specifies direction data should be copied to update globals
 		*/
 		void fenceGlobalVariables(MemoryCopy copyType = HostToDevice);
-
+		
 	public:
 		/*! Set of loaded PTX modules indexed by the module's filename */
 		ModuleMap modules;
@@ -340,6 +351,7 @@ namespace executive {
 		/*! \brief This is the selected device */
 		int selectedDevice;
 
+		/*! \brief Has the CUDA driver API been initialized? */
 		bool cudaInitialized;
 
 		/*! \brief The optimization level to use when translating kernels */
@@ -347,7 +359,9 @@ namespace executive {
 		
 		/*! \brief Cuda specific state */
 		CUdevice cudaDevice;
-		CUcontext cudaContext;	
+		CUcontext cudaContext;		
+		/*! \brief The actual set of devices */
+		DeviceVector allDevices;
 	};
 	
 }

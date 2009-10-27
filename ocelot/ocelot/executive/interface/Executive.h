@@ -352,7 +352,7 @@ namespace executive {
 		int selectedDevice;
 
 		/*! \brief Has the CUDA driver API been initialized? */
-		bool cudaInitialized;
+		static bool cudaInitialized;
 
 		/*! \brief The optimization level to use when translating kernels */
 		translator::Translator::OptimizationLevel optimizationLevel;

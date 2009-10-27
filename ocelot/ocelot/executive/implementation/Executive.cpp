@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <sys/sysinfo.h>
 
+#include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
@@ -18,6 +19,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
+#include <hydrazine/interface/Casts.h>
 
 #include <fstream>
 
@@ -157,6 +159,41 @@ std::string executive::Executive::nearbyAllocationsToString(
 	return stream.str();
 }
 
+static CUfilter_mode_enum textureFilterMode(ir::Texture::Interpolation interpolation) {
+	switch (interpolation) {
+		case ir::Texture::Linear:
+			return CU_TR_FILTER_MODE_LINEAR;
+		case ir::Texture::Nearest:
+			return CU_TR_FILTER_MODE_POINT;
+		default: break;
+	}
+	return CU_TR_FILTER_MODE_POINT;
+}
+
+static  CUaddress_mode textureAddressMode(ir::Texture::AddressMode addr) {
+	switch (addr) {
+		case ir::Texture::Wrap:
+			return CU_TR_ADDRESS_MODE_WRAP;
+		case ir::Texture::Clamp:
+			return CU_TR_ADDRESS_MODE_CLAMP;
+		default: break;
+	}
+	return CU_TR_ADDRESS_MODE_WRAP;
+}
+
+static CUarray_format textureDataFormat(ir::Texture::Type type) {
+	switch (type) {
+		case ir::Texture::Unsigned:
+			return CU_AD_FORMAT_UNSIGNED_INT32;
+		case ir::Texture::Signed:
+			return CU_AD_FORMAT_SIGNED_INT32;
+		case ir::Texture::Float:
+			return CU_AD_FORMAT_FLOAT;
+		default: break;
+	}
+	return CU_AD_FORMAT_FLOAT;
+}
+
 /*!
 	called to update global variables across all address spaces
 
@@ -209,28 +246,70 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 			}
 		}
 
-		// textures
-		for (GlobalAllocationMap::iterator glb_it = globalAllocations.begin();
-			glb_it != globalAllocations.end(); ++glb_it) {
-			std::string name(glb_it->second.identifier);
-			
-			// filter variables according to name and state space
-			if (!(name.size() && 
-				(glb_it->second.space == ir::PTXInstruction::Texture) )) {
-				continue;
-			}
+		for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+			if (mod_it->second->cuModuleState == ir::Module::Loaded) {
+				for (ir::Module::TextureMap::iterator t_it = mod_it->second->textures.begin();
+					t_it != mod_it->second->textures.end(); ++t_it) {
 
-			report("  binding texture variable '" << name << "' in address space " 
-				<< ir::PTXInstruction::toString(glb_it->second.space));
+					CUtexref texRef;
+					int textureFlags = (t_it->second.normalize ? CU_TRSF_NORMALIZED_COORDINATES:0);
+						// | (t_it->second.type != ir::Texture::Float ? CU_TRSF_READ_AS_INTEGER : 0);
+					if (cuModuleGetTexRef(&texRef, mod_it->second->cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
+						report("failed to get texture reference '"<< t_it->first 
+							<< "'from module '" << mod_it->first << "'\n");
+						throw hydrazine::Exception("FAILED to get texture reference");
+					}
+					for (int i = 0; i < 3; i++) {
+						cuTexRefSetAddressMode(texRef, i, textureAddressMode(t_it->second.addressMode[i]));
+					}
+					cuTexRefSetFilterMode(texRef, textureFilterMode(t_it->second.interpolation));
+					cuTexRefSetFormat(texRef, textureDataFormat(t_it->second.type), t_it->second.components());
+					cuTexRefSetFlags(texRef, textureFlags);
 
-			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+					report("  texture flags: " << textureFlags);
 
-				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
+					switch (t_it->second.dimensions()) {
+						case 1:
+							if (cuTexRefSetAddress(0, texRef, 
+								hydrazine::bit_cast<CUdeviceptr , void*>(t_it->second.data), 
+								t_it->second.bytes()) != CUDA_SUCCESS) {
 
+								report("failed to set texture '" << t_it->first << "' to array");
+								throw hydrazine::Exception("FAILED to bind texture");
+							}
+
+							report("  successfully bound texture '" << t_it->first << "' to pointer " 
+								<< std::hex << t_it->second.data << std::dec);
+							break;
+						case 2: 
+							{
+								CUDA_ARRAY_DESCRIPTOR desc;
+								desc.Width = t_it->second.size.x;
+								desc.Height = t_it->second.size.y;
+								desc.NumChannels = t_it->second.components();
+								desc.Format = textureDataFormat(t_it->second.type);
+
+								if (cuTexRefSetAddress2D(texRef, &desc,
+									hydrazine::bit_cast<CUdeviceptr , void*>(t_it->second.data), 
+									t_it->second.pitch()) != CUDA_SUCCESS) {
+
+									report("failed to set 2D texture '" << t_it->first << "' to array");
+									throw hydrazine::Exception("FAILED to bind texture");
+								}
+
+								report("  successfully bound 2D texture '" << t_it->first << "' to pointer " 
+									<< std::hex << t_it->second.data << std::dec << " with dimensions (" 
+									<< desc.Width << ", " << desc.Height << ") and " << t_it->second.components() << " components");
+							}
+							break;
+						default:
+							break;
+					}
+
+					// add the texture reference somewhere where it can be destroyed or reused
 				}
 			}
 		}
-		
 	}
 #endif
 }
@@ -1021,6 +1100,11 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 void executive::Executive::rebind(const std::string& modulePath, 
 	const std::string& texture, void* target, unsigned int width, 
 	unsigned int height, unsigned int length, const ir::Texture& t) {
+
+	report("Executive::rebind() - module: " << modulePath << ", texture: " << texture 
+		<< ", target: 0x" << std::hex << target << std::dec << ", width: " << width 
+		<< ", height: " << height << ", length: " << length);
+
 		switch (getSelectedISA()) {
 		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
@@ -1122,30 +1206,30 @@ void executive::Executive::rebind(const std::string& modulePath,
 				}
 
 				ir::Module::TextureMap::iterator 
-					m_it = module->second->textures.find(texture);
-				assert(m_it != module->second->textures.end());
+					t_it = module->second->textures.find(texture);
+				assert(t_it != module->second->textures.end());
 				
 				report( " Texture was previously bound to " 
-					<< m_it->second.data );
+					<< t_it->second.data );
 									
-				m_it->second.data = target;
-				m_it->second.x = t.x;
-				m_it->second.y = t.y;
-				m_it->second.z = t.z;
-				m_it->second.w = t.w;
-				m_it->second.type = t.type;
-				m_it->second.size.x = width;
-				m_it->second.size.y = height;
-				m_it->second.size.z = length;
+				t_it->second.data = target;
+				t_it->second.x = t.x;
+				t_it->second.y = t.y;
+				t_it->second.z = t.z;
+				t_it->second.w = t.w;
+				t_it->second.type = t.type;
+				t_it->second.size.x = width;
+				t_it->second.size.y = height;
+				t_it->second.size.z = length;
 								
-				m_it->second.normalize = t.normalize;
-				m_it->second.interpolation = t.interpolation;
-				m_it->second.addressMode[0] = t.addressMode[0];
-				m_it->second.addressMode[1] = t.addressMode[1];
-				m_it->second.addressMode[2] = t.addressMode[2];
+				t_it->second.normalize = t.normalize;
+				t_it->second.interpolation = t.interpolation;
+				t_it->second.addressMode[0] = t.addressMode[0];
+				t_it->second.addressMode[1] = t.addressMode[1];
+				t_it->second.addressMode[2] = t.addressMode[2];
 				
 				if( target == 0 ) {
-					m_it->second.type = ir::Texture::Invalid;
+					t_it->second.type = ir::Texture::Invalid;
 				}		
 			}
 			break;

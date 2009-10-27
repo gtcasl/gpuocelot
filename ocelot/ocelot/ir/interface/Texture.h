@@ -42,6 +42,21 @@ namespace ir
 				Clamp
 			};
 
+			unsigned int pitch() {
+				return ((x + y + z + w) / 8) * size.x;
+			}
+
+			unsigned int bytes() {
+				return pitch() * size.y * size.z;
+			}
+
+			unsigned int components() {
+				return (x ? 1 : 0) + (y ? 1 : 0) + (z ? 1 : 0) + (w ? 1 : 0);
+			}
+			unsigned int dimensions() {
+				return (size.x - 1 ? 1 : 0) + (size.y - 1 ? 1 : 0) + (size.z - 1 ? 1 : 0);
+			}
+
 		public:
 			unsigned int x; //! Bits in x dim
 			unsigned int y; //! Bits in y dim

@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 std::string executive::Executive::nearbyGlobalsToString( 
 	const Executive& executive, const void* ptr, unsigned int above,
@@ -408,6 +408,8 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 #endif
 }
 
+bool executive::Executive::cudaInitialized = false;
+
 executive::Executive::Executive() : selectedDevice( -1 ), 
 	optimizationLevel( translator::Translator::NoOptimization ) {
 	enumerateDevices();
@@ -544,16 +546,18 @@ void executive::Executive::enumerateDevices() {
 		allDevices.push_back(device);
 	}
 	#endif
-
+	
 	// enumerate actual CUDA-capable GPUs
 	int deviceCount = 0;
 
 	if (!cudaInitialized) {
 		cuInit(0);
 		// create a CUDA context as well
-
+		report("Created CUDA driver context.");
 		cudaInitialized = true;
 	}
+	
+	#if HAVE_CUDA_DRIVER_API == 1
 	if (cuDeviceGetCount(&deviceCount) != CUDA_SUCCESS) {
 		report("cuDeviceGetCount() - failed");
 		return;
@@ -599,7 +603,7 @@ void executive::Executive::enumerateDevices() {
 
 		allDevices.push_back(device);
 	}
-	
+	#endif
 	restoreFilteredDevices();
 }
 

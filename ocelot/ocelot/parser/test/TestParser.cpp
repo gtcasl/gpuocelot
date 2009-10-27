@@ -40,7 +40,7 @@ namespace test
 		
 		if( fs::is_directory( path ) )
 		{
-			std::queue< fs::directory_iterator > directories;
+			std::queue< fs::path > directories;
 			directories.push( path );
 			
 			fs::directory_iterator end;
@@ -48,7 +48,7 @@ namespace test
 			while( !directories.empty() )
 			{
 				for( fs::directory_iterator 
-					file = directories.front(); 
+					file( directories.front() );
 					file != end; ++file )
 				{
 					if( fs::is_directory( file->status() ) && recursive )

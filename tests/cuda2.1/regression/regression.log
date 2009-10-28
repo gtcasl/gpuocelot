@@ -58,77 +58,12 @@ INFO       /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleMultiGPU 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/RecursiveGaussian 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ImageDenoising 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUFFT 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUBLAS 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/PostProcessGL 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/FastWalshTransform 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/PostProcessGL
-INFO     Test completed in 0.880449056625 seconds
-INFO      It produced the following output:
-Using device 0: Ocelot LLVM JIT-Compiler
-TEST PASSED
-==Ocelot== Open GL Buffer Error.
-==Ocelot==  Never unregistered buffer 1
-==Ocelot== Open GL Buffer Error.
-==Ocelot==  Never unregistered buffer 2
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram256 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/RecursiveGaussian
-INFO     Test completed in 1.70143389702 seconds
-INFO      It produced the following output:
-Loaded 'data/lena.ppm', 512 x 512 pixels
-Processing time: 169.949997 (ms)
-1.54 Mpixels/sec
-Test PASSED
-
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BoxFilter 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SobelFilter 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ScanLargeArray 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply
-INFO     Test completed in 2.10150003433 seconds
-INFO      It produced the following output:
-Matrix multiplication example
-fill_matrix called ..
-  C_gpu = 0x0x23b7d30
-fill_matrix returned
-matrix_multiply returned
-Pass/Fail : Pass
-PASS - matrix product correct
-(64x64) * (64x64) in 0.566600 ms - 0.925323 GFLOP/s
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/AsyncAPI 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUFFT
-INFO     Test completed in 2.12527489662 seconds
-INFO      It produced the following output:
-CUFFT test entered
-While deleting: float (float)* %__ocelot_sinf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Test finished, checking results...
-Test PASSED
-
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/DwtHaar1D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ScanLargeArray
-INFO     Test completed in 0.754891872406 seconds
-INFO      It produced the following output:
-Running parallel prefix sum (prescan) of 10000 elements
-This version is work efficient (O(n) adds)
-and has very few shared memory bank conflicts
-
-Test PASSED
-Average GPU execution time: 2.915000 ms
-CPU execution time:         0.044000 ms
-
-Check out the CUDA Data Parallel Primitives Library for more on scan.
-http://www.gpgpu.org/developer/cudpp
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/DwtHaar1D
-INFO     Test completed in 0.338763952255 seconds
+INFO     Test completed in 0.79677605629 seconds
 INFO      It produced the following output:
 Reading signal from data/signal.dat
 Reading reference result from data/regression.gold.dat
@@ -136,74 +71,728 @@ Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/OceanFFT 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/AsyncAPI
-INFO     Test completed in 0.731168985367 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Nbody 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ScanLargeArray
+INFO     Test completed in 1.09308695793 seconds
 INFO      It produced the following output:
-time spent executing by the GPU: 439.17
-time spent by CPU in CUDA calls: 439.18
-CPU executed 0 iterations while waiting for GPU to finish
---------------------------------------------------------------
+Running parallel prefix sum (prescan) of 10000 elements
+This version is work efficient (O(n) adds)
+and has very few shared memory bank conflicts
+
+Test PASSED
+Average GPU execution time: 5.765000 ms
+CPU execution time:         0.146000 ms
+
+Check out the CUDA Data Parallel Primitives Library for more on scan.
+http://www.gpgpu.org/developer/cudpp
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/QuasirandomGenerator 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Nbody
+INFO     Test completed in 0.473729133606 seconds
+INFO      It produced the following output:
+While deleting: float (float)* %__ocelot_rsqrt
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+Run "nbody -benchmark -n=<numBodies>" to measure perfomance.
+
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BlackScholes 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BoxFilter
+INFO     Test completed in 2.2044570446 seconds
+INFO      It produced the following output:
+Loaded 'data/lena.ppm', 512 x 512 pixels
+Press '+' and '-' to change filter width
+Press ']' and '[' to change number of iterations
+While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+Summary: 0 errors!
+Test PASSED!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleStreams 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleStreams
+INFO     Test completed in 0.762981176376 seconds
+INFO      It produced the following output:
+running on: Ocelot LLVM JIT-Compiler
+
+memcopy:	193.59
+kernel:		20.18
+non-streamed:	20.97 (213.77 expected)
+4 streams:	20.81 (68.57 expected with compute capability 1.1 or later)
+-------------------------------
 Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleVoteIntrinsics 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/FluidsGL 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BlackScholes
+INFO     Test completed in 3.88076901436 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory for options.
+...allocating GPU memory for options.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+Executing Black-Scholes GPU kernel (1 iterations)...
+Options count             : 8000000     
+BlackScholesGPU() time    : 2040.468994 msec
+Effective memory bandwidth: 0.039207 GB/s
+Gigaoptions per second    : 0.003921     
+Reading back GPU results...
+Checking the results...
+...running CPU calculations.
+Comparing the results...
+L1 norm: 4.127446E-08
+Max absolute error: 1.525879E-05
+TEST PASSED
+Shutting down...
+...releasing GPU memory.
+...releasing CPU memory.
+Shutdown done.
+
+Press ENTER to exit...
+While deleting: float (float)* %__ocelot_sqrtf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleMultiGPU 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/QuasirandomGenerator
+INFO     Test completed in 4.51309704781 seconds
+INFO      It produced the following output:
+Allocating GPU memory...
+Allocating CPU memory...
+Initializing QRNG tables...
+Testing QRNG...
+Gsamples/s: 0.001525
+Reading GPU results...
+Comparing to the CPU results...
+L1 norm: 7.275964E-12
+Testing inverseCNDgpu()...
+Gsamples/s: 0.006921
+Reading GPU results...
+Comparing to the CPU results...
+L1 norm: 1.720123E-07
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+While deleting: float (float)* %__ocelot_log2f
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUBLAS 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SobelFilter
+INFO     Test completed in 10.1053049564 seconds
+INFO      It produced the following output:
+Reading image: lena.pgm
+I: display image
+T: display Sobel edge detection (computed with tex)
+S: display Sobel edge detection (computed with tex+shared memory)
+Use the '-' and '=' keys to change the brightness.
+While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+> (Frame 3) readback BackBuffer
+> Saving PPM: <lena_orig.ppm>
+> Comparing (a)rendered: <lena_orig.ppm>, (b)reference: <data/ref_orig.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5.0000)
+  PASSED!
+> (Frame 7) readback BackBuffer
+> Saving PPM: <lena_shared.ppm>
+> Comparing (a)rendered: <lena_shared.ppm>, (b)reference: <data/ref_shared.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5.0000)
+  PASSED!
+> (Frame 11) readback BackBuffer
+> Saving PPM: <lena_shared_tex.ppm>
+> Comparing (a)rendered: <lena_shared_tex.ppm>, (b)reference: <data/ref_shared_tex.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5.0000)
+  PASSED!
+Summary: 0 errors!
+Test PASSED!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Sequence 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Sequence
+INFO     Test completed in 0.145066976547 seconds
+INFO      It produced the following output:
+Simple Sequence: 1 3 5 7 9 11 13 15 17 19 21 
+K Sequence     : 1 3 5 7 9 11 13 15 17 19 21 
+KN Sequence     : 1 2 3 4 5 6 7 8 9 10 11 23 24 25 26 27 28 29 30 31 32 33 45 46 47 48 49 50 51 52 53 54 55 67 68 69 70 71 72 73 74 75 76 77 89 90 91 92 93 94 95 96 97 98 99 111 112 113 114 115 116 117 118 119 120 121 133 134 135 136 137 138 139 140 141 142 143 155 156 157 158 159 160 161 162 163 164 165 177 178 179 180 181 182 183 184 185 186 187 199 200 201 202 203 204 205 206 207 208 209 221 222 223 224 225 226 227 228 229 230 231 
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/DeviceQuery 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/DeviceQuery
+INFO     Test completed in 0.0389919281006 seconds
+INFO      It produced the following output:
+There are 2 devices supporting CUDA
+
+Device 0: "Ocelot LLVM JIT-Compiler"
+  Major revision number:                         1
+  Minor revision number:                         3
+  Total amount of global memory:                 416710656 bytes
+  Number of multiprocessors:                     4
+  Number of cores:                               32
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       16384 bytes
+  Total number of registers available per block: 416710656
+  Warp size:                                     1
+  Maximum number of threads per block:           512
+  Maximum sizes of each dimension of a block:    512 x 512 x 64
+  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
+  Maximum memory pitch:                          416710656 bytes
+  Texture alignment:                             1 bytes
+  Clock rate:                                    2.00 GHz
+  Concurrent copy and execution:                 No
+
+Device 1: "Ocelot PTX Emulator"
+  Major revision number:                         1
+  Minor revision number:                         3
+  Total amount of global memory:                 416886784 bytes
+  Number of multiprocessors:                     4
+  Number of cores:                               32
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       16384 bytes
+  Total number of registers available per block: 416886784
+  Warp size:                                     512
+  Maximum number of threads per block:           512
+  Maximum sizes of each dimension of a block:    512 x 512 x 64
+  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
+  Maximum memory pitch:                          416886784 bytes
+  Texture alignment:                             1 bytes
+  Clock rate:                                    2.00 GHz
+  Concurrent copy and execution:                 No
+
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionTexture 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/FluidsGL
+INFO     Test completed in 13.8655748367 seconds
+INFO      It produced the following output:
+While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram256 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram256
-INFO     Test completed in 2.06655621529 seconds
+INFO     Test completed in 1.99336886406 seconds
 INFO      It produced the following output:
 Initializing data...
 ...allocating CPU memory.
 ...generating input data
 ...allocating GPU memory and copying input data
 Running CPU histogram...
-histogramCPU() time : 12.777000 msec // 746.399221 MB/sec
+histogramCPU() time : 17.316999 msec // 550.715683 MB/sec
 Running GPU histogram using SM10...
-histogram256_SM10() time : 361.865997 msec // 26.354350 MB/sec
+histogram256_SM10() time : 563.556030 msec // 16.922440 MB/sec
 TEST PASSED
 Running GPU histogram using SM11...
-histogram256_SM11() time : 501.718994 msec // 19.008137 MB/sec
+histogram256_SM11() time : 268.990997 msec // 35.453763 MB/sec
 TEST PASSED
 Running GPU histogram using SM12...
-histogram256_SM12() time : 602.643005 msec // 15.824863 MB/sec
+histogram256_SM12() time : 402.341003 msec // 23.703135 MB/sec
 TEST PASSED
 Shutting down...
 
 Press ENTER to exit...
 While deleting: i32 ({ { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32, i64, i32)* %__ocelot_atom_b32
 An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
+UNREACHABLE executed at Value.cpp:505!
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarloMultiGPU 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleVoteIntrinsics
-INFO     Test completed in 0.257879018784 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/AlignedTypes 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/AlignedTypes
+INFO     Test completed in 1.28205919266 seconds
 INFO      It produced the following output:
-simpleVoteIntrinsics: Using Device 0: "Ocelot LLVM JIT-Compiler"
-[VOTE Kernel Test 1/3]
-	Running <<Vote.Any>> kernel1 ...
-
-[VOTE Kernel Test 2/3]
-	Running <<Vote.All>> kernel2 ...
-
-[VOTE Kernel Test 3/3]
-	Running <<Vote.Any>> kernel3 ...
-	PASSED!
-
+Allocating memory...
+Generating host input data array...
+Uploading input data to GPU memory...
+Testing misaligned types...
+uint8...
+Avg. time: 257.863007 ms / Copy throughput: 0.001806 GB/s.
 TEST PASSED
-	Shutting down...
+uint16...
+Avg. time: 57.762001 ms / Copy throughput: 0.008062 GB/s.
+TEST PASSED
+RGBA8_misaligned...
+Avg. time: 28.028999 ms / Copy throughput: 0.016614 GB/s.
+TEST PASSED
+LA32_misaligned...
+Avg. time: 23.056000 ms / Copy throughput: 0.020197 GB/s.
+TEST PASSED
+RGB32_misaligned...
+Avg. time: 24.761000 ms / Copy throughput: 0.018806 GB/s.
+TEST PASSED
+RGBA32_misaligned...
+Avg. time: 25.250000 ms / Copy throughput: 0.018442 GB/s.
+TEST PASSED
+Testing aligned types...
+RGBA8...
+Avg. time: 25.485001 ms / Copy throughput: 0.018272 GB/s.
+TEST PASSED
+I32...
+Avg. time: 28.784000 ms / Copy throughput: 0.016178 GB/s.
+TEST PASSED
+LA32...
+Avg. time: 22.288000 ms / Copy throughput: 0.020893 GB/s.
+TEST PASSED
+RGB32...
+Avg. time: 24.773001 ms / Copy throughput: 0.018797 GB/s.
+TEST PASSED
+RGBA32...
+Avg. time: 22.249001 ms / Copy throughput: 0.020930 GB/s.
+TEST PASSED
+RGBA32_2...
+Avg. time: 25.704000 ms / Copy throughput: 0.018116 GB/s.
+TEST PASSED
+Shutting down...
 
 Press ENTER to exit...
-While deleting: i1 (i1, i32, i1)* %__ocelot_vote
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/AsyncAPI 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/AsyncAPI
+INFO     Test completed in 1.50497102737 seconds
+INFO      It produced the following output:
+time spent executing by the GPU: 781.09
+time spent by CPU in CUDA calls: 781.09
+CPU executed 0 iterations while waiting for GPU to finish
+--------------------------------------------------------------
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Clock 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Clock
+INFO     Test completed in 0.157011032104 seconds
+INFO      It produced the following output:
+Test PASSED
+time = 8024564
+
+Press ENTER to exit...
+While deleting: i32 ({ { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*)* %__ocelot_clock
 An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/VolumeRender 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleMultiGPU
+INFO     Test completed in 22.4140710831 seconds
+INFO      It produced the following output:
+CUDA-capable device count: 2
+main(): generating input data...
+main(): waiting for GPU results...
+GPU Processing time: 21364.617188 (ms) 
+Checking the results...
+CPU Processing time: 75.156998 (ms) 
+GPU sum: 16777280.000000; CPU sum: 16777294.395033
+Relative difference: 8.580068E-07 
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionFFT2D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ImageDenoising
-INFO     Test completed in 4.93032407761 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUBLAS
+INFO     Test completed in 29.7093760967 seconds
+INFO      It produced the following output:
+While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32)* %__ocelot_tex_1d_fs
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+simpleCUBLAS test running..
+GPU error norm was 0.000000
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture3D 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture3D
+INFO     Test completed in 1.79973888397 seconds
+INFO      It produced the following output:
+While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float, float, float)* %__ocelot_tex_3d_uf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+Read 'data/Bucky.raw', 32768 bytes
+Press space to toggle animation
+Press '+' and '-' to change displayed slice
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ScalarProd 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ScalarProd
+INFO     Test completed in 0.295506954193 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory.
+...allocating GPU memory.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+Executing GPU kernel...
+GPU time: 135.619995 msecs.
+Reading back GPU result...
+Checking GPU results...
+..running CPU scalar product calculation
+...comparing the results
+L1 error: 3.070748E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleGL 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleGL
+INFO     Test completed in 1.9657330513 seconds
+INFO      It produced the following output:
+While deleting: float (float)* %__ocelot_sinf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarloMultiGPU 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionFFT2D
+INFO     Test completed in 14.9008021355 seconds
+INFO      It produced the following output:
+Input data size           : 1000 x 1000
+Convolution kernel size   : 7 x 7
+Padded image size         : 1006 x 1006
+Aligned padded image size : 1024 x 1024
+Allocating memory...
+Generating random input data...
+Creating FFT plan for 1024 x 1024...
+Uploading to GPU and padding convolution kernel and input data...
+...initializing padded kernel and data storage with zeroes...
+...copying input data and convolution kernel from host to CUDA arrays
+...binding CUDA arrays to texture references
+...padding convolution kernel
+...padding input data array
+Transforming convolution kernel...
+Running GPU FFT convolution...
+GPU time: 3454.416992 msecs. //0.289484 MPix/s
+Reading back GPU FFT results...
+Checking GPU results...
+...running reference CPU convolution
+...comparing the results
+Max delta / CPU value 8.773906E-07
+L2 norm: 1.673934E-07
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarloMultiGPU
+INFO     Test completed in 4.65284109116 seconds
+INFO      It produced the following output:
+Generating input data...
+Allocating memory...
+Generating normally distributed samples...
+Running GPU Monte Carlo...
+Options         : 64
+Simulation paths: 262144
+Time (ms.)      : 1735.843994
+GPU options per sec.: 36.869673
+GPU Monte Carlo vs. Black-Scholes statistics
+L1 norm        : 3.021213E-06
+Average reserve: 393.892936
+TEST PASSED
+CPU Monte Carlo vs. Black-Scholes statistics...
+L1 norm: 2.922498E-06
+Average reserve: 408.219084
+CPU vs. GPU Monte Carlo statistics...
+L1 norm: 9.872334E-08
+Shutting down...
+
+Press ENTER to exit...
+While deleting: float (float)* %__ocelot_ex2
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Scan 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Scan
+INFO     Test completed in 0.545948982239 seconds
+INFO      It produced the following output:
+Running parallel prefix sum (scan) of 512 elements
+Comparing 3 versions:
+
+1. scan_naive -- not work efficient (O(n log n) adds).
+Average time: 126.176003 ms
+
+2. scan_workefficient -- Work efficient (O(n) adds), but many bank conflicts.
+Average time: 155.113998 ms
+
+3. scan_best -- work efficient with very few bank conflicts.
+Average time: 172.697998 ms
+
+scan_naive: Test PASSED
+scan_workefficient: Test PASSED
+scan_best: Test PASSED
+
+Check out the CUDA Data Parallel Primitives Library for more on scan.
+http://www.gpgpu.org/developer/cudpp
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BicubicTexture 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BicubicTexture
+INFO     Test completed in 2.99910092354 seconds
 INFO      It produced the following output:
 While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
 An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
+UNREACHABLE executed at Value.cpp:505!
+Loaded 'lena_bw.pgm', 512 x 512 pixels
+Press '=' and '-' to zoom
+Press number keys to change filtering mode:
+1 - nearest filtering
+2 - bilinear filtering
+3 - bicubic filtering
+4 - fast bicubic filtering
+time: 2275.121 ms, 0.115222 Mpixels/sec
+Test PASSED!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/OceanFFT 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3
+INFO     Test completed in 5.16604089737 seconds
+INFO      It produced the following output:
+While deleting: double (double)* %__ocelot_sqrt
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+(0.404276) CapModel3.cpp:2371: Running CapModel3
+(0.404308) CapModel3.cpp:2376: Not initialized, loading files.
+(0.404311) CapModel3.cpp:1203: Reading in ratings file data/ratings.csv
+(0.42322) CapModel3.cpp:1267: Reading in industry file data/industry.csv
+(0.430754) CapModel3.cpp:1379: Reading in portfolio file data/portfolio.csv
+(0.434703) CapModel3.cpp:1319: Reading in obligors file data/obligors.csv
+(0.441618) CapModel3.cpp:1467: Reading in twisters file data/mersenneTwisters.dat
+(0.450399) CapModel3.cpp:1495:  Successfulyy read 4096 mersenne twister parameter sets.
+(0.450416) CapModel3.cpp:2387: Computing invariants.
+(0.453972) CapModel3.cpp:2398: Starting simulation.
+(0.453982) CapModel3.cpp:1811: Simulating 1 chunks of size 1000
+(0.453989) CapModel3.cpp:1181: Simulating chunk 0 on GPU.
+Simulation Results
+
+
+
+Num sims:     1000
+Equity:       90000
+Target Spread:40
+
+
+id obid counterparty           cnt  not    was  warf  wal        EL%      ELC%      ELD%       DProb       EL       LGD        Cprob       EC       CGC    max_claim max_claim(pv)     MM 
+-- ---- --------------------   --- ----- ------ ---- -----   --------- --------- ---------   --------- --------- ---------   --------- --------- --------- --------- ---------       -----
+ 0  132 J.P. Morgan Chase &     28   280  47.61  316  4.55    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    21.0938%   1187.50   5629.63     16539     15174        0.00
+ 1  287 Wachovia Corporation    43   430  44.52  356  4.53    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    41.9922%   2599.62   6190.72     22052     19750        0.00
+ 2   70 Credit Suisse First     35   350  39.14  250  4.57    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    22.0703%   1236.17   5601.04     11026     10623        0.00
+ 3  301 Counterparty - Bank1    27   270  38.80  253  4.45    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    18.3594%   1030.11   5610.83     11026     10623        0.00
+ 4  302 Counterparty - Bank2    30   300  38.63  319  4.56    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    24.6094%   1422.61   5780.75     16539     14929        0.00
+ 5  303 Counterparty - Bank3    31   310  40.03  302  4.55    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    23.5352%   1345.12   5715.38     16539     15174        0.00
+ 6  304 Counterparty - Bank4    34   340  41.63  287  4.52    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    24.8047%   1385.58   5585.96     16539     14941        0.00
+ 7  272 U.S. BANCORP            38   380  34.99  302  4.49    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    29.9805%   1765.91   5890.21     16539     15174        0.00
+ 8   53 Citigroup Inc           34   340  35.00  312  4.52    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    27.3438%   1530.17   5596.03     16539     14684        0.00
+ 9    0 Portfolio              300  3000  40.00  302  4.53    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    92.8711%  13502.80  14539.29     55130     49608        0.00
+(5.11) CapModel3.cpp:2402: Simulation finished.
+Pass/Fail : Pass
+
+
+Name : TestCapModel3
+
+Description : A test for the CapModel3 class. Test Points: 1) Run the simulation using the CPU C version and the GPU CUDA version, comparing the results.
+
+Test Seed : 1256767002
+Test time : 4.70243
+
+Status : Test Point 1 (cpu/gpu): passed.
+Test Passed.
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMul 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMul
+INFO     Test completed in 1.30132603645 seconds
+INFO      It produced the following output:
+Processing time: 606.981018 (ms) 
+Test PASSED 
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram64 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram64
+INFO     Test completed in 0.917718887329 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory.
+...generating input data
+...allocating GPU memory and copying input data
+Running GPU histogram (1 iterations)...
+histogram64GPU() time (average) : 258.825012 msec //36.846297 MB/sec
+Comparing the results...
+...histogramCPU()
+histogram64CPU() time : 17.184999 msec //554.945793 MB/sec
+Total sum of histogram elements: 10000000
+Sum of absolute differences: 0
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture
+INFO     Test completed in 1.81265592575 seconds
+INFO      It produced the following output:
+Loaded 'lena_bw.pgm', 512 x 512 pixels
+Processing time: 618.843018 (ms)
+0.42 Mpixels/sec
+Wrote 'data/lena_bw_out.pgm'
+Comparing files
+	output:    <data/lena_bw_out.pgm>
+	reference: <data/ref_rotated.pgm>
+Test PASSED
+
+Press ENTER to exit...
+While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarlo 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/OceanFFT
+INFO     Test completed in 8.10052609444 seconds
+INFO      It produced the following output:
+While deleting: float (float)* %__ocelot_sqrtf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+CUDA FFT Ocean Simulation
+
+Left mouse button          - rotate
+Middle mouse button        - pan
+Left + middle mouse button - zoom
+'w' key                    - toggle wireframe
+> (Frame 3) Readback BackBuffer
+> Saving PPM: <oceanFFT.ppm>
+> Comparing (a)rendered: <oceanFFT.ppm>, (b)reference: <data/reference.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(10.0000)
+  PASSED!
+Summary: 0 errors!
+Test PASSED!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ImageDenoising 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarlo
+INFO     Test completed in 5.36901092529 seconds
+INFO      It produced the following output:
+Generating input data...
+Allocating memory...
+Generating normally distributed samples...
+Running GPU Monte Carlo...
+Options         : 64
+Simulation paths: 262144
+Time (ms.)      : 1933.737061
+GPU options per sec.: 33.096537
+GPU Monte Carlo vs. Black-Scholes statistics
+L1 norm        : 3.021213E-06
+Average reserve: 393.892936
+TEST PASSED
+CPU Monte Carlo vs. Black-Scholes statistics...
+L1 norm: 2.922498E-06
+Average reserve: 408.219084
+CPU vs. GPU Monte Carlo statistics...
+L1 norm: 9.872334E-08
+Shutting down...
+
+Press ENTER to exit...
+While deleting: float (float)* %__ocelot_ex2
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/CppIntegration 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/CppIntegration
+INFO     Test completed in 0.519984960556 seconds
+INFO      It produced the following output:
+Test PASSED
+Hello World.
+Hello World.    
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Transpose 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Transpose
+INFO     Test completed in 0.659734964371 seconds
+INFO      It produced the following output:
+Transposing a 256 by 4096 matrix of floats...
+Naive transpose average time:     43.821 ms
+Optimized transpose average time: 140.607 ms
+
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Particles 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Particles
+INFO     Test completed in 3.59670090675 seconds
+INFO      It produced the following output:
+While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32)* %__ocelot_tex_1d_fs
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+grid: 64 x 64 x 64 = 262144 cells
+1024 particles, total time for 1 iterations: 2945.778 ms
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Reduction 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Reduction
+INFO     Test completed in 2.50353097916 seconds
+INFO      It produced the following output:
+Reducing array of type int.
+Using Device 0: "Ocelot LLVM JIT-Compiler"
+1048576 elements
+128 threads (max)
+64 blocks
+Average time: 526.013000 ms
+Bandwidth:    0.007974 GB/s
+
+GPU result = 133784454
+CPU result = 133784454
+TEST PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MersenneTwister 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MersenneTwister
+INFO     Test completed in 1.79997992516 seconds
+INFO      It produced the following output:
+Initializing data for 2400000 samples...
+Loading CPU and GPU twisters configurations...
+Generating random numbers on GPU...
+Generated samples : 2400256 
+RandomGPU() time  : 486.618011 
+Samples per second: 4.932526E+06 
+Applying Box-Muller transformation on GPU...
+Transformed samples : 2400256 
+BoxMullerGPU() time : 455.286987 
+Samples per second  : 5.271963E+06 
+Reading back the results...
+Checking GPU results...
+...generating random numbers on CPU using reference generator
+...applying Box-Muller transformation on CPU
+...comparing the results
+Max absolute error: 4.768372E-07
+L1 norm: 9.258834E-09
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+While deleting: float (float)* %__ocelot_sqrtf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Mandelbrot 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ImageDenoising
+INFO     Test completed in 12.4659509659 seconds
+INFO      It produced the following output:
+While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
 Allocating host and CUDA memory and loading image file...
 Loading data/portrait_noise.bmp...
 BMP width: 40
@@ -249,781 +838,13 @@ PPMvsPPM: comparing images size (40,40) epsilon(1.0000)
 Summary: 0 errors!
 Test PASSED!
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Eigenvalues 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/OceanFFT
-INFO     Test completed in 3.5428340435 seconds
-INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_sqrtf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-CUDA FFT Ocean Simulation
-
-Left mouse button          - rotate
-Middle mouse button        - pan
-Left + middle mouse button - zoom
-'w' key                    - toggle wireframe
-> (Frame 3) Readback BackBuffer
-> Saving PPM: <oceanFFT.ppm>
-> Comparing (a)rendered: <oceanFFT.ppm>, (b)reference: <data/reference.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(10.0000)
-  PASSED!
-Summary: 0 errors!
-Test PASSED!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleAtomicIntrinsics 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleAtomicIntrinsics
-INFO     Test completed in 0.370277881622 seconds
-INFO      It produced the following output:
-Using Device 0: "Ocelot LLVM JIT-Compiler"
-Processing time: 33.518002 (ms)
-Test PASSED
-
-Press ENTER to exit...
-While deleting: i32 ({ { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32, i64, i32, i32)* %__ocelot_atomcas_b32
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BinomialOptions 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleMultiGPU
-INFO     Test completed in 6.9847509861 seconds
-INFO      It produced the following output:
-CUDA-capable device count: 2
-main(): generating input data...
-main(): waiting for GPU results...
-GPU Processing time: 5516.586914 (ms) 
-Checking the results...
-CPU Processing time: 70.960999 (ms) 
-GPU sum: 16777280.000000; CPU sum: 16777294.395033
-Relative difference: 8.580068E-07 
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BoxFilter 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BoxFilter
-INFO     Test completed in 0.94066119194 seconds
-INFO      It produced the following output:
-Loaded 'data/lena.ppm', 512 x 512 pixels
-Press '+' and '-' to change filter width
-Press ']' and '[' to change number of iterations
-While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Summary: 0 errors!
-Test PASSED!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Sequence 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Sequence
-INFO     Test completed in 0.172915935516 seconds
-INFO      It produced the following output:
-Simple Sequence: 1 3 5 7 9 11 13 15 17 19 21 
-K Sequence     : 1 3 5 7 9 11 13 15 17 19 21 
-KN Sequence     : 1 2 3 4 5 6 7 8 9 10 11 23 24 25 26 27 28 29 30 31 32 33 45 46 47 48 49 50 51 52 53 54 55 67 68 69 70 71 72 73 74 75 76 77 89 90 91 92 93 94 95 96 97 98 99 111 112 113 114 115 116 117 118 119 120 121 133 134 135 136 137 138 139 140 141 142 143 155 156 157 158 159 160 161 162 163 164 165 177 178 179 180 181 182 183 184 185 186 187 199 200 201 202 203 204 205 206 207 208 209 221 222 223 224 225 226 227 228 229 230 231 
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/QuasirandomGenerator 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BinomialOptions
-INFO     Test completed in 1.9664580822 seconds
-INFO      It produced the following output:
-Using device 0: Ocelot LLVM JIT-Compiler
-Using single precision...
-Generating input data...
-Running GPU binomial tree...
-Options count            : 4     
-Time steps               : 2048     
-binomialOptionsGPU() time: 1802.629028 msec
-Options per second       : 2.218981     
-Running CPU binomial tree...
-Comparing the results...
-GPU binomial vs. Black-Scholes
-L1 norm: 1.432732E-02
-CPU binomial vs. Black-Scholes
-L1 norm: 1.434418E-02
-CPU binomial vs. GPU binomial
-L1 norm: 1.710677E-05
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-While deleting: float (float)* %__ocelot_ex2
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram64 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3
-INFO     Test completed in 6.16564702988 seconds
-INFO      It produced the following output:
-While deleting: double (double)* %__ocelot_sqrt
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-(0.163938) CapModel3.cpp:2371: Running CapModel3
-(0.163965) CapModel3.cpp:2376: Not initialized, loading files.
-(0.163972) CapModel3.cpp:1203: Reading in ratings file data/ratings.csv
-(0.164709) CapModel3.cpp:1267: Reading in industry file data/industry.csv
-(0.165181) CapModel3.cpp:1379: Reading in portfolio file data/portfolio.csv
-(0.169876) CapModel3.cpp:1319: Reading in obligors file data/obligors.csv
-(0.177453) CapModel3.cpp:1467: Reading in twisters file data/mersenneTwisters.dat
-(0.177513) CapModel3.cpp:1495:  Successfulyy read 4096 mersenne twister parameter sets.
-(0.177523) CapModel3.cpp:2387: Computing invariants.
-(0.181751) CapModel3.cpp:2398: Starting simulation.
-(0.181766) CapModel3.cpp:1811: Simulating 1 chunks of size 1000
-(0.181774) CapModel3.cpp:1181: Simulating chunk 0 on GPU.
-Simulation Results
-
-
-
-Num sims:     1000
-Equity:       90000
-Target Spread:40
-
-
-id obid counterparty           cnt  not    was  warf  wal        EL%      ELC%      ELD%       DProb       EL       LGD        Cprob       EC       CGC    max_claim max_claim(pv)     MM 
--- ---- --------------------   --- ----- ------ ---- -----   --------- --------- ---------   --------- --------- ---------   --------- --------- --------- --------- ---------       -----
- 0  132 J.P. Morgan Chase &     28   280  47.61  316  4.55    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    21.0938%   1187.50   5629.63     16539     15174        0.00
- 1  287 Wachovia Corporation    43   430  44.52  356  4.53    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    41.9922%   2599.62   6190.72     22052     19750        0.00
- 2   70 Credit Suisse First     35   350  39.14  250  4.57    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    22.0703%   1236.17   5601.04     11026     10623        0.00
- 3  301 Counterparty - Bank1    27   270  38.80  253  4.45    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    18.3594%   1030.11   5610.83     11026     10623        0.00
- 4  302 Counterparty - Bank2    30   300  38.63  319  4.56    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    24.6094%   1422.61   5780.75     16539     14929        0.00
- 5  303 Counterparty - Bank3    31   310  40.03  302  4.55    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    23.5352%   1345.12   5715.38     16539     15174        0.00
- 6  304 Counterparty - Bank4    34   340  41.63  287  4.52    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    24.8047%   1385.58   5585.96     16539     14941        0.00
- 7  272 U.S. BANCORP            38   380  34.99  302  4.49    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    29.9805%   1765.91   5890.21     16539     15174        0.00
- 8   53 Citigroup Inc           34   340  35.00  312  4.52    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    27.3438%   1530.17   5596.03     16539     14684        0.00
- 9    0 Portfolio              300  3000  40.00  302  4.53    0.00000%  0.00000%  0.00000%    0.00000%     0.000     0.000    92.8711%  13502.80  14539.29     55130     49608        0.00
-(6.13) CapModel3.cpp:2402: Simulation finished.
-Pass/Fail : Pass
-
-
-Name : TestCapModel3
-
-Description : A test for the CapModel3 class. Test Points: 1) Run the simulation using the CPU C version and the GPU CUDA version, comparing the results.
-
-Test Seed : 1256166145
-Test time : 5.96783
-
-Status : Test Point 1 (cpu/gpu): passed.
-Test Passed.
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BlackScholes 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram64
-INFO     Test completed in 0.823925018311 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running GPU histogram (1 iterations)...
-histogram64GPU() time (average) : 349.588013 msec //27.279949 MB/sec
-Comparing the results...
-...histogramCPU()
-histogram64CPU() time : 21.302000 msec //447.692383 MB/sec
-Total sum of histogram elements: 10000000
-Sum of absolute differences: 0
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleStreams 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleStreams
-INFO     Test completed in 0.72288608551 seconds
-INFO      It produced the following output:
-running on: Ocelot LLVM JIT-Compiler
-
-memcopy:	62.37
-kernel:		55.89
-non-streamed:	12.31 (118.26 expected)
-4 streams:	11.92 (71.48 expected with compute capability 1.1 or later)
--------------------------------
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/FluidsGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/FastWalshTransform
-INFO     Test completed in 10.7654118538 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory
-...allocating GPU memory
-...generating data
-Data length: 8388608; kernel length: 128
-Running GPU dyadic convolution using Fast Walsh Transform...
-GPU time: 4507.496094 ms; GOP/s: 0.064206
-Reading back GPU results...
-Running straightforward CPU dyadic convolution...
-Comparing the results...
-L2 norm: 1.021579E-07
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Scan 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/QuasirandomGenerator
-INFO     Test completed in 3.05578494072 seconds
-INFO      It produced the following output:
-Allocating GPU memory...
-Allocating CPU memory...
-Initializing QRNG tables...
-Testing QRNG...
-Gsamples/s: 0.006207
-Reading GPU results...
-Comparing to the CPU results...
-L1 norm: 7.275964E-12
-Testing inverseCNDgpu()...
-Gsamples/s: 0.005567
-Reading GPU results...
-Comparing to the CPU results...
-L1 norm: 1.720123E-07
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-While deleting: float (float)* %__ocelot_log2f
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/DeviceQuery 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Scan
-INFO     Test completed in 0.59498500824 seconds
-INFO      It produced the following output:
-Running parallel prefix sum (scan) of 512 elements
-Comparing 3 versions:
-
-1. scan_naive -- not work efficient (O(n log n) adds).
-Average time: 127.285004 ms
-
-2. scan_workefficient -- Work efficient (O(n) adds), but many bank conflicts.
-Average time: 174.449997 ms
-
-3. scan_best -- work efficient with very few bank conflicts.
-Average time: 139.311996 ms
-
-scan_naive: Test PASSED
-scan_workefficient: Test PASSED
-scan_best: Test PASSED
-
-Check out the CUDA Data Parallel Primitives Library for more on scan.
-http://www.gpgpu.org/developer/cudpp
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/DeviceQuery
-INFO     Test completed in 1.19423818588 seconds
-INFO      It produced the following output:
-There are 2 devices supporting CUDA
-
-Device 0: "Ocelot LLVM JIT-Compiler"
-  Major revision number:                         1
-  Minor revision number:                         3
-  Total amount of global memory:                 243585024 bytes
-  Number of multiprocessors:                     8
-  Number of cores:                               64
-  Total amount of constant memory:               65536 bytes
-  Total amount of shared memory per block:       16384 bytes
-  Total number of registers available per block: 243585024
-  Warp size:                                     1
-  Maximum number of threads per block:           512
-  Maximum sizes of each dimension of a block:    512 x 512 x 64
-  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
-  Maximum memory pitch:                          243585024 bytes
-  Texture alignment:                             1 bytes
-  Clock rate:                                    2.00 GHz
-  Concurrent copy and execution:                 No
-
-Device 1: "Ocelot PTX Emulator"
-  Major revision number:                         1
-  Minor revision number:                         3
-  Total amount of global memory:                 243785728 bytes
-  Number of multiprocessors:                     8
-  Number of cores:                               64
-  Total amount of constant memory:               65536 bytes
-  Total amount of shared memory per block:       16384 bytes
-  Total number of registers available per block: 243785728
-  Warp size:                                     512
-  Maximum number of threads per block:           512
-  Maximum sizes of each dimension of a block:    512 x 512 x 64
-  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
-  Maximum memory pitch:                          243785728 bytes
-  Texture alignment:                             1 bytes
-  Clock rate:                                    2.00 GHz
-  Concurrent copy and execution:                 No
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MersenneTwister 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUBLAS
-INFO     Test completed in 12.7045471668 seconds
-INFO      It produced the following output:
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32)* %__ocelot_tex_1d_fu
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-simpleCUBLAS test running..
-GPU error norm was 0.000000
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/AlignedTypes 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Eigenvalues
-INFO     Test completed in 8.43410301208 seconds
-INFO      It produced the following output:
-Matrix size: 2048 x 2048
-Precision: 0.000010
-Iterations to be timed: 1
-Result filename: 'eigenvalues.dat'
-Gerschgorin interval: -2.894310 / 2.923303
-Average time step 1: 5003.231934 ms
-Average time step 2, one intervals: 476.721008 ms
-Average time step 2, mult intervals: 2523.922119 ms
-Average time TOTAL: 8003.901855 ms
-
-Test PASSED.
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BicubicTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/AlignedTypes
-INFO     Test completed in 0.693956136703 seconds
-INFO      It produced the following output:
-Allocating memory...
-Generating host input data array...
-Uploading input data to GPU memory...
-Testing misaligned types...
-uint8...
-Avg. time: 28.271999 ms / Copy throughput: 0.016471 GB/s.
-TEST PASSED
-uint16...
-Avg. time: 65.154999 ms / Copy throughput: 0.007147 GB/s.
-TEST PASSED
-RGBA8_misaligned...
-Avg. time: 23.337999 ms / Copy throughput: 0.019953 GB/s.
-TEST PASSED
-LA32_misaligned...
-Avg. time: 18.457001 ms / Copy throughput: 0.025230 GB/s.
-TEST PASSED
-RGB32_misaligned...
-Avg. time: 18.657000 ms / Copy throughput: 0.024959 GB/s.
-TEST PASSED
-RGBA32_misaligned...
-Avg. time: 20.830000 ms / Copy throughput: 0.022355 GB/s.
-TEST PASSED
-Testing aligned types...
-RGBA8...
-Avg. time: 20.797001 ms / Copy throughput: 0.022391 GB/s.
-TEST PASSED
-I32...
-Avg. time: 18.621000 ms / Copy throughput: 0.025007 GB/s.
-TEST PASSED
-LA32...
-Avg. time: 17.309000 ms / Copy throughput: 0.026903 GB/s.
-TEST PASSED
-RGB32...
-Avg. time: 59.209999 ms / Copy throughput: 0.007865 GB/s.
-TEST PASSED
-RGBA32...
-Avg. time: 69.969002 ms / Copy throughput: 0.006655 GB/s.
-TEST PASSED
-RGBA32_2...
-Avg. time: 19.360001 ms / Copy throughput: 0.024053 GB/s.
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Nbody 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MersenneTwister
-INFO     Test completed in 1.2377140522 seconds
-INFO      It produced the following output:
-Initializing data for 2400000 samples...
-Loading CPU and GPU twisters configurations...
-Generating random numbers on GPU...
-Generated samples : 2400256 
-RandomGPU() time  : 212.634003 
-Samples per second: 1.128820E+07 
-Applying Box-Muller transformation on GPU...
-Transformed samples : 2400256 
-BoxMullerGPU() time : 231.098007 
-Samples per second  : 1.038631E+07 
-Reading back the results...
-Checking GPU results...
-...generating random numbers on CPU using reference generator
-...applying Box-Muller transformation on CPU
-...comparing the results
-Max absolute error: 4.768372E-07
-L1 norm: 2.175315E-09
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-While deleting: float (float)* %__ocelot_sqrtf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Reduction 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/FluidsGL
-INFO     Test completed in 4.69579100609 seconds
-INFO      It produced the following output:
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Test PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture3D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Nbody
-INFO     Test completed in 1.33793210983 seconds
-INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_rsqrt
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Run "nbody -benchmark -n=<numBodies>" to measure perfomance.
-
-Test PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Reduction
-INFO     Test completed in 1.28896403313 seconds
-INFO      It produced the following output:
-Reducing array of type int.
-Using Device 0: "Ocelot LLVM JIT-Compiler"
-1048576 elements
-128 threads (max)
-64 blocks
-Average time: 409.420013 ms
-Bandwidth:    0.010245 GB/s
-
-GPU result = 133784454
-CPU result = 133784454
-TEST PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Bitonic 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BicubicTexture
-INFO     Test completed in 1.71045684814 seconds
-INFO      It produced the following output:
-While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Loaded 'lena_bw.pgm', 512 x 512 pixels
-Press '=' and '-' to zoom
-Press number keys to change filtering mode:
-1 - nearest filtering
-2 - bilinear filtering
-3 - bicubic filtering
-4 - fast bicubic filtering
-time: 1138.296 ms, 0.230295 Mpixels/sec
-Test PASSED!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Template 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Template
-INFO     Test completed in 0.200190067291 seconds
-INFO      It produced the following output:
-Processing time: 44.851002 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Dxtc 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleGL
-INFO     Test completed in 0.536999940872 seconds
-INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_sinf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/VolumeRender 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionFFT2D
-INFO     Test completed in 12.2516770363 seconds
-INFO      It produced the following output:
-Input data size           : 1000 x 1000
-Convolution kernel size   : 7 x 7
-Padded image size         : 1006 x 1006
-Aligned padded image size : 1024 x 1024
-Allocating memory...
-Generating random input data...
-Creating FFT plan for 1024 x 1024...
-Uploading to GPU and padding convolution kernel and input data...
-...initializing padded kernel and data storage with zeroes...
-...copying input data and convolution kernel from host to CUDA arrays
-...binding CUDA arrays to texture references
-...padding convolution kernel
-...padding input data array
-Transforming convolution kernel...
-Running GPU FFT convolution...
-GPU time: 5358.494141 msecs. //0.186620 MPix/s
-Reading back GPU FFT results...
-Checking GPU results...
-...running reference CPU convolution
-...comparing the results
-Max delta / CPU value 9.846367E-07
-L2 norm: 1.698983E-07
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionSeparable 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarloMultiGPU
-INFO     Test completed in 12.4436838627 seconds
-INFO      It produced the following output:
-Generating input data...
-Allocating memory...
-Generating normally distributed samples...
-Running GPU Monte Carlo...
-Options         : 64
-Simulation paths: 262144
-Time (ms.)      : 8782.799805
-GPU options per sec.: 7.286970
-GPU Monte Carlo vs. Black-Scholes statistics
-L1 norm        : 3.021213E-06
-Average reserve: 393.892936
-TEST PASSED
-CPU Monte Carlo vs. Black-Scholes statistics...
-L1 norm: 2.922498E-06
-Average reserve: 408.219084
-CPU vs. GPU Monte Carlo statistics...
-L1 norm: 9.872334E-08
-Shutting down...
-
-Press ENTER to exit...
-While deleting: float (float)* %__ocelot_ex2
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTemplates 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTemplates
-INFO     Test completed in 0.207635164261 seconds
-INFO      It produced the following output:
-Processing time: 25.455999 (ms)
-Test PASSED
-Processing time: 60.931000 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ScalarProd 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Bitonic
-INFO     Test completed in 1.07590699196 seconds
-INFO      It produced the following output:
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Clock 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ScalarProd
-INFO     Test completed in 0.531787872314 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...allocating GPU memory.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing GPU kernel...
-GPU time: 283.576996 msecs.
-Reading back GPU result...
-Checking GPU results...
-..running CPU scalar product calculation
-...comparing the results
-L1 error: 3.070748E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMul 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture3D
-INFO     Test completed in 1.55772614479 seconds
-INFO      It produced the following output:
-While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float, float, float)* %__ocelot_tex_3d_uf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Read 'data/Bucky.raw', 32768 bytes
-Press space to toggle animation
-Press '+' and '-' to change displayed slice
-Test PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Clock
-INFO     Test completed in 0.33992099762 seconds
-INFO      It produced the following output:
-Test PASSED
-time = 4397207
-
-Press ENTER to exit...
-While deleting: i32 ({ { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*)* %__ocelot_clock
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarlo 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMul
-INFO     Test completed in 0.425652980804 seconds
-INFO      It produced the following output:
-Processing time: 266.852997 (ms) 
-Test PASSED 
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimplerFFT 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BlackScholes
-INFO     Test completed in 8.72401809692 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory for options.
-...allocating GPU memory for options.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing Black-Scholes GPU kernel (1 iterations)...
-Options count             : 8000000     
-BlackScholesGPU() time    : 6319.887207 msec
-Effective memory bandwidth: 0.012658 GB/s
-Gigaoptions per second    : 0.001266     
-Reading back GPU results...
-Checking the results...
-...running CPU calculations.
-Comparing the results...
-L1 norm: 4.127388E-08
-Max absolute error: 1.525879E-05
-TEST PASSED
-Shutting down...
-...releasing GPU memory.
-...releasing CPU memory.
-Shutdown done.
-
-Press ENTER to exit...
-While deleting: float (float)* %__ocelot_sqrtf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/CppIntegration 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/CppIntegration
-INFO     Test completed in 0.301797151566 seconds
-INFO      It produced the following output:
-Test PASSED
-Hello World.
-Hello World.    
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SobelFilter 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture
-INFO     Test completed in 2.03046393394 seconds
-INFO      It produced the following output:
-Loaded 'lena_bw.pgm', 512 x 512 pixels
-Processing time: 494.114990 (ms)
-0.53 Mpixels/sec
-Wrote 'data/lena_bw_out.pgm'
-Comparing files
-	output:    <data/lena_bw_out.pgm>
-	reference: <data/ref_rotated.pgm>
-Test PASSED
-
-Press ENTER to exit...
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Particles 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimplerFFT
-INFO     Test completed in 3.24422121048 seconds
-INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_sinf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-TEST PASSED
-2^10 FFT size passed
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Transpose 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Transpose
-INFO     Test completed in 0.504858016968 seconds
-INFO      It produced the following output:
-Transposing a 256 by 4096 matrix of floats...
-Naive transpose average time:     15.071 ms
-Optimized transpose average time: 48.676 ms
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BandwidthTest 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SobelFilter
-INFO     Test completed in 3.99160504341 seconds
-INFO      It produced the following output:
-Reading image: lena.pgm
-I: display image
-T: display Sobel edge detection (computed with tex)
-S: display Sobel edge detection (computed with tex+shared memory)
-Use the '-' and '=' keys to change the brightness.
-While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-> (Frame 3) readback BackBuffer
-> Saving PPM: <lena_orig.ppm>
-> Comparing (a)rendered: <lena_orig.ppm>, (b)reference: <data/ref_orig.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5.0000)
-  PASSED!
-> (Frame 7) readback BackBuffer
-> Saving PPM: <lena_shared.ppm>
-> Comparing (a)rendered: <lena_shared.ppm>, (b)reference: <data/ref_shared.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5.0000)
-  PASSED!
-> (Frame 11) readback BackBuffer
-> Saving PPM: <lena_shared_tex.ppm>
-> Comparing (a)rendered: <lena_shared_tex.ppm>, (b)reference: <data/ref_shared_tex.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5.0000)
-  PASSED!
-Summary: 0 errors!
-Test PASSED!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Mandelbrot 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionSeparable
-INFO     Test completed in 6.50904798508 seconds
-INFO      It produced the following output:
-3072 x 3072
-Initializing data...
-Warm up...
-GPU convolution...
-GPU convolution time : 2081.281982 msec //4.534313 Mpixels/sec
-Reading back GPU results...
-Checking the results...
-...running convolutionRowCPU()
-...running convolutionColumnCPU()
-...comparing the results
-L1 norm: 6.360504E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Dct8x8 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Particles
-INFO     Test completed in 4.3014831543 seconds
-INFO      It produced the following output:
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32)* %__ocelot_tex_1d_fu
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-grid: 64 x 64 x 64 = 262144 cells
-1024 particles, total time for 1 iterations: 3803.910 ms
-Test PASSED
-
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Mandelbrot
-INFO     Test completed in 1.19652700424 seconds
+INFO     Test completed in 2.08042478561 seconds
 INFO      It produced the following output:
 While deleting: i32 ({ { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32, i64, i32)* %__ocelot_atom_b32
 An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
+UNREACHABLE executed at Value.cpp:505!
 Compute capability 1.3
 Data init done.
 Initializing GLUT...
@@ -1045,18 +866,85 @@ Creating GL texture...
 Texture created.
 Creating PBO...
 PBO created.
-GPU = 0.17048301
-GPU = 0.00108400
+GPU = 0.76317108
+GPU = 0.46762800
 > (Frame 1) Readback BackBuffer
 > Saving PPM: <mandelbrot.ppm>
 > Comparing (a)rendered: <mandelbrot.ppm>, (b)reference: <data/reference_fp64.ppm>
-PPMvsPPM: comparing images size (600,800) epsilon(50.0000)
+PPMvsPPM: comparing images size (600,800) epsilon(0.5000)
   PASSED!
 Summary: 0 comparison error!
 Test PASSED!
 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Bitonic 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Bitonic
+INFO     Test completed in 0.231109142303 seconds
+INFO      It produced the following output:
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/RecursiveGaussian 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/RecursiveGaussian
+INFO     Test completed in 1.25232720375 seconds
+INFO      It produced the following output:
+Loaded 'data/lena.ppm', 512 x 512 pixels
+Processing time: 147.949997 (ms)
+1.77 Mpixels/sec
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/PostProcessGL 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/PostProcessGL
+INFO     Test completed in 0.647880077362 seconds
+INFO      It produced the following output:
+Using device 0: Ocelot LLVM JIT-Compiler
+TEST PASSED
+==Ocelot== Open GL Buffer Error.
+==Ocelot==  Never unregistered buffer 1
+==Ocelot== Open GL Buffer Error.
+==Ocelot==  Never unregistered buffer 2
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUFFT 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Dct8x8
+INFO     Test completed in 2.27844214439 seconds
+INFO      It produced the following output:
+CUDA sample DCT/IDCT implementation
+===================================
+Loading test image: barbara.bmp... [512 x 512]... Success
+Running Gold 1 (CPU) version... Success
+Running Gold 2 (CPU) version... Success
+Running CUDA 1 (GPU) version... Success
+Running CUDA 2 (GPU) version... Success
+Running CUDA short (GPU) version... Success
+Dumping result to barbara_gold1.bmp... Success
+Dumping result to barbara_gold2.bmp... Success
+Dumping result to barbara_cuda1.bmp... Success
+Dumping result to barbara_cuda2.bmp... Success
+Dumping result to barbara_cuda_short.bmp... Success
+Processing time (CPU 1)     : 9.434000 ms 
+Processing time (CPU 2)     : 3.427000 ms 
+Processing time (CUDA 1)    : 329.182007 ms 
+Processing time (CUDA 2)    : 163.589996 ms 
+Processing time (CUDA short): 227.589005 ms 
+PSNR Original    <---> CPU(Gold 1)    : 32.777073
+PSNR Original    <---> CPU(Gold 2)    : 32.777050
+PSNR Original    <---> GPU(CUDA 1)    : 32.669224
+PSNR Original    <---> GPU(CUDA 2)    : 32.669239
+PSNR Original    <---> GPU(CUDA short): 32.749447
+PSNR CPU(Gold 1) <---> GPU(CUDA 1)    : 31.106499
+PSNR CPU(Gold 2) <---> GPU(CUDA 2)    : 31.104010
+PSNR CPU(Gold 2) <---> GPU(CUDA short): 42.258053
+
+Test PASSED!
+
+Press ENTER to exit...
+While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BandwidthTest 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BandwidthTest
-INFO     Test completed in 2.85870909691 seconds
+INFO     Test completed in 1.81334900856 seconds
 INFO      It produced the following output:
 Running on......
       device 0:Ocelot LLVM JIT-Compiler
@@ -1064,28 +952,173 @@ Quick Mode
 Host to Device Bandwidth for Pageable memory
 .
 Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		2316.0
+ 33554432		2002.9
 
 Quick Mode
 Device to Host Bandwidth for Pageable memory
 .
 Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		2049.1
+ 33554432		2224.3
 
 Quick Mode
 Device to Device Bandwidth
 .
 Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		8594.6
+ 33554432		4211.0
 
 &&&& Test PASSED
 
 Press ENTER to exit...
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Dxtc
-INFO     Test completed in 8.76743507385 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/VolumeRender
+INFO     Test completed in 51.9793298244 seconds
 INFO      It produced the following output:
-Time 8663.484375 msec
+While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float, float, float)* %__ocelot_tex_3d_uf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+Read 'data/Bucky.raw', 32768 bytes
+Press '=' and '-' to change density
+      ']' and '[' to change brightness
+      ';' and ''' to modify transfer function offset
+      '.' and ',' to modify transfer function scale
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleAtomicIntrinsics 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply
+INFO     Test completed in 1.59010100365 seconds
+INFO      It produced the following output:
+Matrix multiplication example
+fill_matrix called ..
+  C_gpu = 0x0x2cbdf90
+fill_matrix returned
+matrix_multiply returned
+Pass/Fail : Pass
+PASS - matrix product correct
+(64x64) * (64x64) in 0.884400 ms - 0.592818 GFLOP/s
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/FastWalshTransform 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleAtomicIntrinsics
+INFO     Test completed in 0.113031148911 seconds
+INFO      It produced the following output:
+Using Device 0: "Ocelot LLVM JIT-Compiler"
+Processing time: 39.056000 (ms)
+Test PASSED
+
+Press ENTER to exit...
+While deleting: i32 ({ { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, i32, i64, i32, i32)* %__ocelot_atomcas_b32
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionSeparable 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUFFT
+INFO     Test completed in 8.3832321167 seconds
+INFO      It produced the following output:
+CUFFT test entered
+While deleting: float (float)* %__ocelot_sinf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+Test finished, checking results...
+Test PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Template 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Template
+INFO     Test completed in 0.544407844543 seconds
+INFO      It produced the following output:
+Processing time: 127.818001 (ms)
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTemplates 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTemplates
+INFO     Test completed in 0.123219013214 seconds
+INFO      It produced the following output:
+Processing time: 28.406000 (ms)
+Test PASSED
+Processing time: 20.483999 (ms)
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimplerFFT 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionSeparable
+INFO     Test completed in 7.78468704224 seconds
+INFO      It produced the following output:
+3072 x 3072
+Initializing data...
+Warm up...
+GPU convolution...
+GPU convolution time : 1909.560059 msec //4.942072 Mpixels/sec
+Reading back GPU results...
+Checking the results...
+...running convolutionRowCPU()
+...running convolutionColumnCPU()
+...comparing the results
+L1 norm: 6.360504E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Dxtc 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/FastWalshTransform
+INFO     Test completed in 11.7260119915 seconds
+INFO      It produced the following output:
+Initializing data...
+...allocating CPU memory
+...allocating GPU memory
+...generating data
+Data length: 8388608; kernel length: 128
+Running GPU dyadic convolution using Fast Walsh Transform...
+GPU time: 8130.783203 ms; GOP/s: 0.035594
+Reading back GPU results...
+Running straightforward CPU dyadic convolution...
+Comparing the results...
+L2 norm: 1.021579E-07
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleVoteIntrinsics 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleVoteIntrinsics
+INFO     Test completed in 0.107038974762 seconds
+INFO      It produced the following output:
+simpleVoteIntrinsics: Using Device 0: "Ocelot LLVM JIT-Compiler"
+[VOTE Kernel Test 1/3]
+	Running <<Vote.Any>> kernel1 ...
+
+[VOTE Kernel Test 2/3]
+	Running <<Vote.All>> kernel2 ...
+
+[VOTE Kernel Test 3/3]
+	Running <<Vote.Any>> kernel3 ...
+	PASSED!
+
+TEST PASSED
+	Shutting down...
+
+Press ENTER to exit...
+While deleting: i1 (i1, i32, i1)* %__ocelot_vote
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/Eigenvalues 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/SimplerFFT
+INFO     Test completed in 8.04262685776 seconds
+INFO      It produced the following output:
+While deleting: float (float)* %__ocelot_sinf
+An asserting value handle still pointed to this value!
+UNREACHABLE executed at Value.cpp:505!
+TEST PASSED
+2^10 FFT size passed
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.1/BinomialOptions 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Dxtc
+INFO     Test completed in 6.31167507172 seconds
+INFO      It produced the following output:
+Time 6106.733887 msec
 Error at (9, 1):	0.791667 rms
 Error at (99, 1):	1.041667 rms
 Error at (84, 3):	6.145833 rms
@@ -1205,93 +1238,60 @@ Test PASSED
 
 Press ENTER to exit...
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Dct8x8
-INFO     Test completed in 2.49595212936 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/BinomialOptions
+INFO     Test completed in 1.23018789291 seconds
 INFO      It produced the following output:
-CUDA sample DCT/IDCT implementation
-===================================
-Loading test image: barbara.bmp... [512 x 512]... Success
-Running Gold 1 (CPU) version... Success
-Running Gold 2 (CPU) version... Success
-Running CUDA 1 (GPU) version... Success
-Running CUDA 2 (GPU) version... Success
-Running CUDA short (GPU) version... Success
-Dumping result to barbara_gold1.bmp... Success
-Dumping result to barbara_gold2.bmp... Success
-Dumping result to barbara_cuda1.bmp... Success
-Dumping result to barbara_cuda2.bmp... Success
-Dumping result to barbara_cuda_short.bmp... Success
-Processing time (CPU 1)     : 10.411000 ms 
-Processing time (CPU 2)     : 6.753000 ms 
-Processing time (CUDA 1)    : 326.502991 ms 
-Processing time (CUDA 2)    : 314.967010 ms 
-Processing time (CUDA short): 361.994995 ms 
-PSNR Original    <---> CPU(Gold 1)    : 32.777073
-PSNR Original    <---> CPU(Gold 2)    : 32.777050
-PSNR Original    <---> GPU(CUDA 1)    : 32.669224
-PSNR Original    <---> GPU(CUDA 2)    : 32.669239
-PSNR Original    <---> GPU(CUDA short): 32.749447
-PSNR CPU(Gold 1) <---> GPU(CUDA 1)    : 31.106499
-PSNR CPU(Gold 2) <---> GPU(CUDA 2)    : 31.104010
-PSNR CPU(Gold 2) <---> GPU(CUDA short): 42.258053
-
-Test PASSED!
-
-Press ENTER to exit...
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarlo
-INFO     Test completed in 8.61104083061 seconds
-INFO      It produced the following output:
+Using device 0: Ocelot LLVM JIT-Compiler
+Using single precision...
 Generating input data...
-Allocating memory...
-Generating normally distributed samples...
-Running GPU Monte Carlo...
-Options         : 64
-Simulation paths: 262144
-Time (ms.)      : 6632.378906
-GPU options per sec.: 9.649630
-GPU Monte Carlo vs. Black-Scholes statistics
-L1 norm        : 3.021213E-06
-Average reserve: 393.892936
+Running GPU binomial tree...
+Options count            : 4     
+Time steps               : 2048     
+binomialOptionsGPU() time: 1123.892944 msec
+Options per second       : 3.559058     
+Running CPU binomial tree...
+Comparing the results...
+GPU binomial vs. Black-Scholes
+L1 norm: 1.432732E-02
+CPU binomial vs. Black-Scholes
+L1 norm: 1.434418E-02
+CPU binomial vs. GPU binomial
+L1 norm: 1.710677E-05
 TEST PASSED
-CPU Monte Carlo vs. Black-Scholes statistics...
-L1 norm: 2.922498E-06
-Average reserve: 408.219084
-CPU vs. GPU Monte Carlo statistics...
-L1 norm: 9.872334E-08
 Shutting down...
 
 Press ENTER to exit...
 While deleting: float (float)* %__ocelot_ex2
 An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
+UNREACHABLE executed at Value.cpp:505!
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/VolumeRender
-INFO     Test completed in 23.1461119652 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/Eigenvalues
+INFO     Test completed in 6.16694688797 seconds
 INFO      It produced the following output:
-While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float, float, float)* %__ocelot_tex_3d_uf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
-Read 'data/Bucky.raw', 32768 bytes
-Press '=' and '-' to change density
-      ']' and '[' to change brightness
-      ';' and ''' to modify transfer function offset
-      '.' and ',' to modify transfer function scale
-Test PASSED
+Matrix size: 2048 x 2048
+Precision: 0.000010
+Iterations to be timed: 1
+Result filename: 'eigenvalues.dat'
+Gerschgorin interval: -2.894310 / 2.923303
+Average time step 1: 3519.238037 ms
+Average time step 2, one intervals: 344.105011 ms
+Average time step 2, mult intervals: 1909.093018 ms
+Average time TOTAL: 5772.458008 ms
+
+Test PASSED.
+
+Press ENTER to exit...
 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionTexture
-INFO     Test completed in 55.7150101662 seconds
+INFO     Test completed in 194.627691031 seconds
 INFO      It produced the following output:
 Initializing data...
 convolutionRowGPU()
-...convolutionRowGPU() time: 32954.828125 msecs; //0.286367 Mpix/s
+...convolutionRowGPU() time: 96894.437500 msecs; //0.097397 Mpix/s
 Copying convolutionRowGPU() output back to a_Data...
-...cudaMemcpyToArray() time: 6.675000 msecs; //1413.810297 Mpix/s
+...cudaMemcpyToArray() time: 13.772000 msecs; //685.244248 Mpix/s
 convolutionColumnGPU()...
-...convolutionColumnGPU() time: 20419.636719 msecs; //0.462162 Mpix/s
+...convolutionColumnGPU() time: 94810.500000 msecs; //0.099537 Mpix/s
 Reading back GPU results...
 Checking GPU results...
 ...convolutionRowCPU()
@@ -1304,66 +1304,66 @@ Shutting down...
 Press ENTER to exit...
 While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
 An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:500!
+UNREACHABLE executed at Value.cpp:505!
 
 INFO     
 Passing tests:
- (2.496s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Dct8x8 : Passed
- (6.166s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3 : Passed
- (1.289s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Reduction : Passed
- (0.731s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/AsyncAPI : Passed
- (8.434s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Eigenvalues : Passed
- (23.146s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/VolumeRender : Passed
- (0.595s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Scan : Passed
- (0.694s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/AlignedTypes : Passed
- (4.696s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/FluidsGL : Passed
- (4.930s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ImageDenoising : Passed
- (2.067s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram256 : Passed
- (6.985s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleMultiGPU : Passed
- (12.444s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarloMultiGPU : Passed
- (0.339s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/DwtHaar1D : Passed
- (2.125s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUFFT : Passed
- (0.532s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ScalarProd : Passed
- (1.966s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BinomialOptions : Passed
- (0.880s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/PostProcessGL : Passed
- (1.710s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BicubicTexture : Passed
- (1.076s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Bitonic : Passed
- (3.992s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SobelFilter : Passed
- (3.244s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimplerFFT : Passed
- (0.537s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleGL : Passed
- (0.302s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/CppIntegration : Passed
- (3.543s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/OceanFFT : Passed
- (0.505s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Transpose : Passed
- (6.509s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionSeparable : Passed
- (0.941s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BoxFilter : Passed
- (2.859s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BandwidthTest : Passed
- (0.824s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram64 : Passed
- (0.173s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Sequence : Passed
- (1.701s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/RecursiveGaussian : Passed
- (1.197s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Mandelbrot : Passed
- (10.765s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/FastWalshTransform : Passed
- (0.200s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Template : Passed
- (12.252s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionFFT2D : Passed
- (2.102s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply : Passed
- (8.611s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarlo : Passed
- (4.301s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Particles : Passed
- (0.208s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTemplates : Passed
- (1.558s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture3D : Passed
- (2.030s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture : Passed
- (55.715s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionTexture : Passed
- (8.724s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BlackScholes : Passed
- (1.238s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MersenneTwister : Passed
- (0.723s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleStreams : Passed
- (0.755s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ScanLargeArray : Passed
- (1.194s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/DeviceQuery : Passed
- (0.426s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMul : Passed
- (0.370s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleAtomicIntrinsics : Passed
- (0.340s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Clock : Passed
- (0.258s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleVoteIntrinsics : Passed
- (3.056s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/QuasirandomGenerator : Passed
- (8.767s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Dxtc : Passed
- (12.705s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUBLAS : Passed
- (1.338s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Nbody : Passed
+ (2.278s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Dct8x8 : Passed
+ (0.145s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Sequence : Passed
+ (0.113s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleAtomicIntrinsics : Passed
+ (2.504s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Reduction : Passed
+ (1.993s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram256 : Passed
+ (1.505s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/AsyncAPI : Passed
+ (6.167s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Eigenvalues : Passed
+ (51.979s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/VolumeRender : Passed
+ (0.546s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Scan : Passed
+ (1.282s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/AlignedTypes : Passed
+ (13.866s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/FluidsGL : Passed
+ (12.466s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ImageDenoising : Passed
+ (0.296s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ScalarProd : Passed
+ (22.414s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleMultiGPU : Passed
+ (4.653s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarloMultiGPU : Passed
+ (0.797s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/DwtHaar1D : Passed
+ (8.383s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUFFT : Passed
+ (0.544s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Template : Passed
+ (1.230s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BinomialOptions : Passed
+ (0.648s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/PostProcessGL : Passed
+ (10.105s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SobelFilter : Passed
+ (0.231s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Bitonic : Passed
+ (2.999s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BicubicTexture : Passed
+ (8.043s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimplerFFT : Passed
+ (1.966s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleGL : Passed
+ (0.520s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/CppIntegration : Passed
+ (8.101s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/OceanFFT : Passed
+ (0.660s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Transpose : Passed
+ (7.785s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionSeparable : Passed
+ (2.204s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BoxFilter : Passed
+ (0.918s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Histogram64 : Passed
+ (5.166s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/CapModel3 : Passed
+ (3.881s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BlackScholes : Passed
+ (2.080s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Mandelbrot : Passed
+ (11.726s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/FastWalshTransform : Passed
+ (1.813s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/BandwidthTest : Passed
+ (14.901s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionFFT2D : Passed
+ (1.590s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMultiply : Passed
+ (5.369s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MonteCarlo : Passed
+ (3.597s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Particles : Passed
+ (0.123s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTemplates : Passed
+ (1.800s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture3D : Passed
+ (1.813s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleTexture : Passed
+ (194.628s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ConvolutionTexture : Passed
+ (1.800s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MersenneTwister : Passed
+ (0.763s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleStreams : Passed
+ (1.093s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/ScanLargeArray : Passed
+ (0.039s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/DeviceQuery : Passed
+ (1.301s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/MatrixMul : Passed
+ (1.252s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/RecursiveGaussian : Passed
+ (0.474s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Nbody : Passed
+ (0.107s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleVoteIntrinsics : Passed
+ (4.513s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/QuasirandomGenerator : Passed
+ (6.312s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Dxtc : Passed
+ (29.709s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/SimpleCUBLAS : Passed
+ (0.157s) : /home/normal/checkout/gpuocelot/tests/cuda2.1/Clock : Passed
 
 Failing tests:
 

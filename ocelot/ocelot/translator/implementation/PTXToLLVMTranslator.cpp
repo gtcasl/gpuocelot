@@ -3830,7 +3830,7 @@ namespace translator
 			{
 				ir::LLVMInstruction::Operand tempA = a;
 				
-				if( modifier & ir::PTXInstruction::rz )
+				if( modifier & ir::PTXInstruction::rn )
 				{
 					ir::LLVMFcmp compare;
 					
@@ -3856,9 +3856,9 @@ namespace translator
 					
 					select.condition = compare.d;
 					select.a = compare.b;
-					select.a.f32 = 0.5;
+					select.a.f32 = -0.5;
 					select.b = compare.b;
-					select.b.f32 = -0.5;
+					select.b.f32 = 0.5;
 					
 					_add( select );
 					
@@ -3912,27 +3912,7 @@ namespace translator
 					
 					_add( subtract );
 					
-					ir::LLVMFptosi fptosi;
-					
-					fptosi.d.name = _tempRegister();
-					fptosi.d.type.category = ir::LLVMInstruction::Type::Element;
-					fptosi.d.type.type = ir::LLVMInstruction::I32;
-
-					fptosi.a = subtract.d;
-					
-					_add( fptosi );
-
-					ir::LLVMSitofp sitofp;
-					
-					sitofp.d.name = _tempRegister();
-					sitofp.d.type.category = ir::LLVMInstruction::Type::Element;
-					sitofp.d.type.type = ir::LLVMInstruction::F32;
-
-					sitofp.a = fptosi.d;
-					
-					_add( sitofp );
-					
-					tempA = sitofp.d;
+					tempA = subtract.d;
 				}
 				else if( modifier & ir::PTXInstruction::rp )
 				{
@@ -3952,27 +3932,7 @@ namespace translator
 					
 					_add( add );
 					
-					ir::LLVMFptosi fptosi;
-					
-					fptosi.d.name = _tempRegister();
-					fptosi.d.type.category = ir::LLVMInstruction::Type::Element;
-					fptosi.d.type.type = ir::LLVMInstruction::I32;
-
-					fptosi.a = add.d;
-					
-					_add( fptosi );
-
-					ir::LLVMSitofp sitofp;
-					
-					sitofp.d.name = _tempRegister();
-					sitofp.d.type.category = ir::LLVMInstruction::Type::Element;
-					sitofp.d.type.type = ir::LLVMInstruction::F32;
-
-					sitofp.a = fptosi.d;
-					
-					_add( sitofp );
-					
-					tempA = sitofp.d;
+					tempA = add.d;
 				}
 				
 				if( ir::PTXInstruction::sat & modifier )
@@ -4064,32 +4024,6 @@ namespace translator
 					}
 					case ir::PTXOperand::f32:
 					{
-						if( modifier & ir::PTXInstruction::rn )
-						{
-							ir::LLVMFptosi fptosi;
-					
-							fptosi.d.name = _tempRegister();
-							fptosi.d.type.category 
-								= ir::LLVMInstruction::Type::Element;
-							fptosi.d.type.type = ir::LLVMInstruction::I32;
-
-							fptosi.a = tempA;
-					
-							_add( fptosi );
-
-							ir::LLVMSitofp sitofp;
-					
-							sitofp.d.name = _tempRegister();
-							sitofp.d.type.category 
-								= ir::LLVMInstruction::Type::Element;
-							sitofp.d.type.type = ir::LLVMInstruction::F32;
-
-							sitofp.a = fptosi.d;
-					
-							_add( sitofp );
-					
-							tempA = sitofp.d;
-						}
 						_bitcast( d, tempA );
 						break;
 					}

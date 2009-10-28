@@ -33,6 +33,9 @@
 /* "" */
 #undef HAVE_CUDART
 
+/* "Define to 1 if the cuda driver api is found" */
+#undef HAVE_CUDA_DRIVER_API
+
 /* "" */
 #undef HAVE_CUFFT
 

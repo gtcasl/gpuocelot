@@ -304,7 +304,7 @@ namespace cuda
 		executive::LLVMExecutableKernel* llvm = static_cast< 
 			executive::LLVMExecutableKernel* >( translatedKernel->second );
 
-		report( "Setting up parameters for emulated kernel \"" 
+		report( "Setting up parameters for llvm kernel \"" 
 			<< llvm->name << "\"." );
 		
 		llvm->externSharedMemory( thread->second.shared );

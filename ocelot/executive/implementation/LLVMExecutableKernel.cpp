@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 0 
 #define REPORT_ALL_PTX_SOURCE 0
 #define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
@@ -206,7 +206,9 @@ extern "C"
 			case ir::PTXInstruction::AtomicAdd:
 			{
 				d = *((ir::PTXB32*) address);
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
+				reportE( REPORT_ATOMIC_OPERATIONS, "(Thread: " 
+					<< executive::LLVMExecutableKernel::threadIdString( 
+					*context ) << ") AtomicAdd: address " 
 					<< (void*) address << " from " << d << " by " << b 
 					<< " to " << ( d + b ) );
 				*((ir::PTXB32*) address) = d + b;
@@ -463,7 +465,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( 
 			texture, c0, c1, c2 );
@@ -487,7 +489,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( 
 			texture, c0, c1, c2 );
@@ -505,7 +507,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( 
 			texture, c0, c1, c2 );
@@ -523,7 +525,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( 
 			texture, c0, c1, c2 );
@@ -541,7 +543,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( 
 			texture, c0, c1, c2 );
@@ -566,7 +568,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( 
 			texture, c0, c1, c2 );
@@ -590,7 +592,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
@@ -609,7 +611,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
@@ -623,7 +625,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, int >( texture, c0, c1 );
@@ -637,7 +639,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, 
 			unsigned int >( texture, c0, c1 );
@@ -655,7 +657,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, 
 			unsigned int >( texture, c0, c1 );
@@ -680,7 +682,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, int >( texture, c0, c1 );
@@ -696,11 +698,11 @@ extern "C"
 	}
 
 	void __ocelot_tex_1d_fs( float* result, executive::LLVMContext* context, 
-		unsigned int index, unsigned int c0 )
+		int index, int c0 )
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0 );
@@ -719,7 +721,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0 );
@@ -732,7 +734,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0 );
 		result[1] = executive::tex::sample< 1, int >( texture, c0 );
@@ -745,7 +747,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );
 		result[1] = executive::tex::sample< 1, unsigned int >( texture, c0 );
@@ -758,7 +760,7 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0 );
 		result[1] = executive::tex::sample< 1, int >( texture, c0 );
@@ -777,12 +779,13 @@ extern "C"
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		const ir::Texture& texture = state->textures[ index ];
+		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );
 		result[1] = executive::tex::sample< 1, unsigned int >( texture, c0 );
 		result[2] = executive::tex::sample< 2, unsigned int >( texture, c0 );
-		result[3] = executive::tex::sample< 3, unsigned int >( texture, c0 );	
+		result[3] = executive::tex::sample< 3, unsigned int >( texture, c0 );
+		
 	}
 
 	void __ocelot_tex_1d_uu( unsigned int* result, 
@@ -848,6 +851,16 @@ namespace executive
 		padding = ( alignment == padding ) ? 0 : padding;
 		size += padding;
 		return padding;
+	}
+	
+	std::string LLVMExecutableKernel::threadIdString( const LLVMContext& c )
+	{
+		std::stringstream stream;
+		
+		unsigned int id = c.ntid.x * c.ntid.y * c.tid.z + c.ntid.x * c.tid.y 
+			+ c.tid.x;
+		stream << id;
+		return stream.str();
 	}
 
 	void LLVMExecutableKernel::_optimizePtx()
@@ -1475,10 +1488,11 @@ namespace executive
 				if( allocation == map.end() )
 				{
 					report( "  Allocating texture " << texture->first 
-						<< " to index " << index );
+						<< " to index " << index << " with data " 
+						<< texture->second.data );
 					allocation = map.insert( 
 						std::make_pair( texture->first, index++ ) ).first;
-					_opaque.textures.push_back( texture->second );
+					_opaque.textures.push_back( &texture->second );
 				}
 				instruction->a.reg = allocation->second;
 			}

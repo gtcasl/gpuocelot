@@ -191,8 +191,10 @@ reorderDataAndFindCellStartD(uint2*  particleHash,  // particle id sorted by has
 	}
 
 	// Now use the sorted index to reorder the pos and vel data
-	float4 pos = oldPos[sortedData.y];       // macro does either global read or texture fetch
+	float4 pos = FETCH(oldPos, sortedData.y);       // macro does either global read or texture fetch
     float4 vel = FETCH(oldVel, sortedData.y);       // see particles_kernel.cuh
+
+	__syncthreads();
 
     sortedPos[index] = pos;
     sortedVel[index] = vel;

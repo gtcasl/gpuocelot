@@ -135,7 +135,7 @@ __global__ void RadixSum(KeyValuePair *pData, uint elements, uint elements_round
     //printf("pos: %d\n", pos);
     __syncthreads();
 
-    while (pos < end )
+    for (; pos < end; pos += RADIXTHREADS )
     {
         uint key = 0;
 
@@ -218,11 +218,11 @@ __global__ void RadixSum(KeyValuePair *pData, uint elements, uint elements_round
             sRadixSum[ppos]++; 
             SYNCIT;   
            
-        pos += RADIXTHREADS;
+       
                 
     }
 
-//    __syncthreads();
+    //__syncthreads();
 
     // Output radix sums into separate memory regions for each radix group
     // So this memory then is layed out:
@@ -315,7 +315,7 @@ __global__ void RadixPrefixSum()
         __syncthreads();
         m *= 2;
     } 
-//    __syncthreads();
+    //__syncthreads();
 
   
   

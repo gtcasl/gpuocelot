@@ -107,7 +107,7 @@ bool g_Verify = false, g_AutoQuit = false;
 // CheckFBO/BackBuffer class objects
 CheckRender       *g_CheckRender = NULL;
 
-#define MAX_EPSILON 50
+#define MAX_EPSILON .5
 
 #define MAX(a,b) ((a > b) ? a : b)
 

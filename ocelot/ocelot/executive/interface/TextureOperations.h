@@ -117,7 +117,7 @@ namespace executive
 					case ir::Texture::Float:
 					{
 						ir::PTXF32 result = channelReadF32(texture, 
-							shift, mask, index, address);
+							shift, mask, windex, address);
 						d = result;
 						break;
 					}
@@ -178,117 +178,9 @@ namespace executive
 		template<unsigned int dim, typename D, typename B>
 		D sample(const ir::Texture& texture, B b0) 
 		{
-			D d = 0;
-			ir::PTXF64 b = ( ir::PTXF64 ) b0;
-			ir::PTXB64 mask = 1;
-			unsigned int shift;
-
-			switch (dim) {
-				case 0: mask <<= (texture.x);
-					--mask; 
-					shift = 0; 
-					break;
-				case 1: mask <<= (texture.y);
-					--mask;
-					shift = texture.x; 
-					break;
-				case 2: mask <<= (texture.z);
-					--mask; 
-					shift = texture.x + texture.y; 
-					break;
-				case 3: mask <<= (texture.w);
-					--mask; 
-					shift = texture.z + texture.y + texture.x; 
-					break;
-				default: assert("Invalid texture index" == 0); 
-					break;
-			}
-	
-			if (texture.normalize) 
-			{
-				b = b * texture.size.x;
-			}
-	
-			if (texture.interpolation == ir::Texture::Nearest) 
-			{
-				ir::PTXF64 index = ( ir::PTXF64 ) b;
-				unsigned int windex = wrap(index, texture.size.x, 
-					texture.addressMode[0]);
-				switch (texture.type) {
-					case ir::Texture::Unsigned:
-					{
-						ir::PTXU32 result = channelRead<ir::PTXU32>(texture, 
-							shift, mask, windex);
-						d = result;
-						break;
-					}
-					case ir::Texture::Signed:
-					{
-						ir::PTXS32 result = channelRead<ir::PTXS32>(texture, 
-							shift, mask, windex);
-						d = result;
-						break;
-					}
-					case ir::Texture::Float:
-					{
-						ir::PTXF32 result = channelReadF32(texture, 
-							shift, mask, index);
-						d = result;
-						break;
-					}
-					default:
-						assert("Invalid texture data type" == 0);
-				}
-			} 
-			else {
-				ir::PTXF64 low = floor(b);
-				ir::PTXF64 high = floor(b + 1);
-				unsigned int wlow = wrap(low, texture.size.x, 
-					texture.addressMode[0]);
-				unsigned int whigh = wrap(high, texture.size.x, 
-					texture.addressMode[0]);
-				switch (texture.type) {
-					case ir::Texture::Unsigned:
-					{
-						ir::PTXU64 result = channelRead<ir::PTXU32>(texture, 
-							shift, mask, wlow) * (high - b);
-						result += channelRead<ir::PTXU32>(texture, shift, 
-							mask, whigh) * (b - low);
-						d = result;
-						break;
-					}
-					case ir::Texture::Signed:
-					{
-						ir::PTXS64 result = channelRead<ir::PTXS32>(texture, 
-							shift, mask, wlow) * (high - b);
-						result += channelRead<ir::PTXS32>(texture, shift, 
-							mask, whigh) * (b - low);
-						d = result;
-						break;
-					}
-					case ir::Texture::Float:
-					{
-						ir::PTXF32 result = channelReadF32(texture, 
-							shift, mask, wlow) * (high - b);
-						result += channelReadF32(texture, shift, 
-							mask, whigh) * (b - low);
-						d = result;
-						break;
-					}
-					default:
-						assert("Invalid texture data type" == 0);
-				}
-			}
-
-			if(texture.normalizedFloat)
-			{
-				ir::PTXF32 f = ( d + 0.0 ) / (mask + 1);
-				d = hydrazine::bit_cast< D >( f );
-			}
-	
-			return d;
+			ir::PTXB8* dummy;
+			return sample<dim, D>( texture, b0, dummy );
 		}
-
 
 		template<unsigned int dim, typename D, typename B>
 		D sample(const ir::Texture& texture, 

@@ -27,13 +27,15 @@ __global__ void Mandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH
     __shared__ unsigned int blockX, blockY;
     
     // loop until all blocks completed
-    while(1) {
+    for(int iter = 0; iter < numBlocks; ++iter) {
         if ((threadIdx.x==0) && (threadIdx.y==0)) {
             // get block to process
             blockIndex = atomicAdd(&blockCounter, 1);
             blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
             blockY = blockIndex / gridWidth;
         }
+        
+        __syncthreads();
         
         if (blockIndex >= numBlocks) break;  // finish
 

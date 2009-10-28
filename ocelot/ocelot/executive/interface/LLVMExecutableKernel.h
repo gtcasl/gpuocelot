@@ -40,7 +40,7 @@ namespace executive
 			/*! \brief Shorthand for a PTX instruction vector */
 			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
 			/*! \brief A vector of texture variables */
-			typedef std::vector< ir::Texture > TextureVector;
+			typedef std::vector< const ir::Texture* > TextureVector;
 			
 			/*! \brief A class for managing global llvm state */
 			class LLVMState
@@ -119,10 +119,14 @@ namespace executive
 			OpaqueState _opaque;
 			/*! \brief Optimization level for this kernel */
 			translator::Translator::OptimizationLevel _optimizationLevel;
-
+		
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
-			unsigned int _pad( size_t& size, unsigned int alignment );
+			static unsigned int _pad( size_t& size, unsigned int alignment );
+
+		public:
+			/*! \brief Get a string representation of a thread id */
+			static std::string threadIdString( const LLVMContext& c );
 		
 		private:
 			/*! \brief Run various PTX optimizer passes on the kernel */

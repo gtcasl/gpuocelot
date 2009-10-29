@@ -14,6 +14,7 @@
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 #include <ocelot/translator/interface/Translator.h>
+#include <hydrazine/interface/Thread.h>
 
 #include <stack>
 
@@ -63,6 +64,119 @@ namespace executive
 					/*! \brief Initialize the jit */
 					void initialize();
 			};
+			
+			/*! \brief A worker thread executes a subset of CTAs in a kernel */
+			class Worker : public hydrazine::Thread
+			{
+				public:
+					/*! \brief A message to the thread */
+					class Message
+					{
+						public:
+							/*! \brief A type for determining 
+								what kind of message is being sent */
+							enum Type
+							{
+								Kill,
+								LaunchKernelWithBarriers,
+								LaunchKernelWithoutBarriers,
+								Acknowledgement,
+								Invalid
+							};
+							
+						public:
+							/*! \brief The type of message to the thread */
+							Type type;
+							/*! \brief The LLVM code being executed */
+							Function function;
+							/*! \brief The context being executed */
+							LLVMContext* context;
+							/*! \brief The begining cta of the grid */
+							unsigned int begin;
+							/*! \brief The ending cta of the grid */
+							unsigned int end;
+							/*! \brief The resume point offset */
+							unsigned int resumePointOffset;
+							
+						public:
+							Message( Type t = Invalid, Function f = 0,
+								LLVMContext* c = 0, 
+								unsigned int begin = 0,
+								unsigned int end = 0,
+								unsigned int r = 0 );
+					};
+			
+				private:
+					/*! \brief This is the 'main' function for the worker */
+					void execute();
+					
+					/*! \brief Launch a series of ctas with barriers */
+					void launchKernelWithBarriers( Function f, LLVMContext* c, 
+						unsigned int begin,
+						unsigned int end,
+						unsigned int rp );
+
+					/*! \brief Launch a series of ctas without barriers */
+					void launchKernelWithoutBarriers( Function f, 
+						LLVMContext* c, 
+						unsigned int begin,
+						unsigned int end );
+					
+					/*! \brief Launch a specific cta with barriers */
+					void launchCtaWithBarriers( Function f, LLVMContext* c, 
+						unsigned int rp );
+
+					/*! \brief Launch a specific cta without barriers */
+					void launchCtaWithoutBarriers( Function f, LLVMContext* c );
+			};
+			
+			/*! \brief Controls the execution of worker threads */
+			class ExecutionManager
+			{
+				private:
+					/*! \brief A vector of created threads */
+					typedef std::vector< Worker > WorkerVector;
+					/*! \brief A vector of LLVM contexts */
+					typedef std::vector< LLVMContext > ContextVector;
+					/*! \brief A vector of messages */
+					typedef std::vector< Worker::Message > MessageVector;
+			
+				private:
+					/*! \brier The currently active worker threads */
+					WorkerVector _workers;
+					
+					/*! \brief One context for each worker */
+					ContextVector _contexts;
+					
+					/*! \brief One message for each worker */
+					MessageVector _messages;
+					
+					/*! \brief The max threads per CTA */
+					unsigned int _maxThreadsPerCta;
+			
+				public:
+					/*! \brief The constructor boots up the workers */
+					ExecutionManager();
+					/*! \brief The destructor tears down the workers */
+					~ExecutionManager();
+					
+				public:
+					/*! \brief Launches a kernel on a grid using a context */
+					void launch( Function f, LLVMContext* context, 
+						bool barriers, unsigned int resumePointOffset );
+					
+					/*! \brief Changes the number of worker threads */
+					void setThreadCount( unsigned int threads );
+					
+					/*! \brief Changes the max number of threads per cta */
+					void setMaxThreadsPerCta( unsigned int threads );
+
+					/*! \brief Clears all active threads */
+					void clear();
+					
+					/*! \brief Gets the current number of threads */
+					unsigned int threads() const;
+			};
 		
 		public:
 			/*! \brief A class of opaque thread visible state */
@@ -90,7 +204,9 @@ namespace executive
 
 		private:
 			/*! \brief Contains the LLVM JIT for all LLVM kernels */
-			static LLVMState _state;		
+			static LLVMState _state;
+			/*! \brief Contains the ExecutionManager for all LLVM kernels */
+			static ExecutionManager _manager;
 		
 		private:
 			/*! \brief The memory requirements and execution context */
@@ -127,7 +243,9 @@ namespace executive
 		public:
 			/*! \brief Get a string representation of a thread id */
 			static std::string threadIdString( const LLVMContext& c );
-		
+			/*! \brief Get a string representation of a thread id */
+			static unsigned int threadId( const LLVMContext& c );
+			
 		private:
 			/*! \brief Run various PTX optimizer passes on the kernel */
 			void _optimizePtx();
@@ -137,16 +255,7 @@ namespace executive
 			
 			/*! \brief Run various LLVM optimizer passes on the kernel */
 			void _optimize();
-			
-			/*! \brief Launch the CTA without barrier support */
-			void _launchCtaNoBarriers( );
-			
-			/*! \brief Launch the CTA with barrier support */
-			void _launchCtaWithBarriers( );
-			
-			/*! \brief Launch a specific CTA within a kernel */
-			void _launchCta( unsigned int x, unsigned int y );
-			
+						
 			/*! \brief Allocate parameter memory */
 			void _allocateParameterMemory( );
 
@@ -186,12 +295,15 @@ namespace executive
 			void launchGrid( int width, int height );
 			/*! \brief Sets the shape of a cta in the kernel */
 			void setKernelShape( int x, int y, int z );
+			/*! \brief Describes the device used to execute the kernel */
+			void setDevice( const Device* device );
 			
 		public:
 			/*! \brief Get the number of threads per cta */
 			unsigned int threads() const;
 			/*! \brief Get the local id of the current thread */
 			unsigned int threadId() const;
+
 		public:
 			/*! \brief Get the constant memory size */
 			unsigned int constantMemorySize() const;

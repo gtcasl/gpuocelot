@@ -95,10 +95,6 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	Sets the shape of a kernel
 */
 void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
-	typedef unsigned int uint;
-
-	freeRegions();
-
 	blockDim.x = x;
 	blockDim.y = y;
 	blockDim.z = z;
@@ -106,8 +102,7 @@ void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
 	threadCount = x*y*z;
 }
 
-void executive::EmulatedKernel::freeRegions() {
-
+void executive::EmulatedKernel::setDevice(const Device* device) {
 }
 
 /*!

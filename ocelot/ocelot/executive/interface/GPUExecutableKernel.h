@@ -17,8 +17,6 @@
 
 namespace executive {
 
-	class Executive;
-	
 	class GPUExecutableKernel: public ir::ExecutableKernel {
 	public:
 		GPUExecutableKernel( ir::Kernel& kernel, const executive::Executive* c = 0 );
@@ -34,6 +32,11 @@ namespace executive {
 			Sets the shape of a kernel
 		*/
 		virtual void setKernelShape(int x, int y, int z);
+
+		/*!
+			Sets the device used to execute the kernel
+		*/
+		virtual void setDevice(const Device* device);
 
 		/*!
 			sets the size of shared memory in bytes

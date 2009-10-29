@@ -347,6 +347,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 			LLVMExecutableKernel* 
 				kernel = new LLVMExecutableKernel(**k_it, this, 
 				optimizationLevel);
+				kernel->setDevice(&devices[getSelected()]);
 			m.kernels[Instruction::LLVM].push_back(kernel);
 		}
 	}

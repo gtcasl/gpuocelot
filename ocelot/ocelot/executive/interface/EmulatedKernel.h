@@ -44,6 +44,9 @@ namespace executive {
 		/*!	Sets the shape of a kernel */
 		void setKernelShape(int x, int y, int z);
 
+		/*!	Sets device used to execute the kernel */
+		void setDevice(const Device* device);
+
 	public:
 		/*!	Notifies all attached TraceGenerators of an event */
 		void traceEvent( const trace::TraceEvent & event) const;
@@ -66,10 +69,6 @@ namespace executive {
 		/*!	From Kernel, analyze application and construct data structures 
 				necessary for emulation */
 		void initialize(ir::PTXKernel::PTXInstructionVector& instructions);
-
-		/*!	Deletes allocated regions of global, register, shared, and 
-				constant memory */
-		void freeRegions();
 
 		/*!	Configures the parameter block for the CUDA driver API */
 		void configureParameters();

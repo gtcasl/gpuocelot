@@ -424,7 +424,8 @@ executive::Executive::~Executive() {
 		for (AllocationMap::iterator allocation = device->second.begin(); 
 			allocation != device->second.end(); ++allocation ) {
 			if (!allocation->second.external) {
-				delete [] (char *)allocation->second.ptr;
+				delete [] ((char *)allocation->second.ptr 
+					- allocation->second.offset);
 			}
 		}
 	}

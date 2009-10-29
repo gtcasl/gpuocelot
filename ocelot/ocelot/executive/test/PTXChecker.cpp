@@ -17,6 +17,12 @@
 
 #include <ocelot/cuda/include/cuda.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h> /* mmap() is defined in this header */
+#include <fcntl.h>
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class PTXChecker : public test::Test {
@@ -49,12 +55,39 @@ public:
 				return false;
 			}
 			CUmodule module;
-			result = cuModuleLoad(&module, ptxSourceFile.c_str());
+
+			void *src = 0;
+			int fdin;
+			struct stat statbuf;
+
+			/* open the input file */
+			if ((fdin = open (ptxSourceFile.c_str(), O_RDONLY)) < 0) {
+				printf("can't open %s for reading", ptxSourceFile.c_str());
+			}
+
+			/* find size of input file */
+			if (fstat (fdin,&statbuf) < 0) {
+				printf("fstat error");
+			}
+
+			/* mmap the input file */
+			if ((src = mmap (0, statbuf.st_size, PROT_READ, MAP_SHARED, fdin, 0))	== (caddr_t) -1) {
+				printf("mmap error");
+			}
+
+			CUjit_option options[] = { CU_JIT_ERROR_LOG_BUFFER, CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES };
+			const int errorLogSize = 2048;
+			int errorLogActualSize = errorLogSize;
+			char errorLogBuffer[errorLogSize] = {0};
+
+			void *optionValues[2] = { (void *)errorLogBuffer, (void *)errorLogActualSize };
+			result = cuModuleLoadDataEx(&module, src, 2, options, optionValues);
 			if (result == CUDA_SUCCESS) {
 				out << "Success" << std::endl;
 			}
 			else {
 				out << "cuModuleLoad() failed with result " << result << std::endl;
+				out << errorLogBuffer << "\n";
 			}
 		}
 		return result;

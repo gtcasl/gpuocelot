@@ -11,7 +11,7 @@
 ACLOCAL_AMFLAGS = -I m4
 OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTranslator \
 	-lOcelotTrace -lOcelotIr -lOcelotAnalysis -lOcelotParser -lhydrazine \
-	libsdk.la $(LLVM_LDFLAGS)
+	libsdk.la $(LLVM_LDFLAGS) $(CUDA_DRIVER_API_LIBARY)
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I $(srcdir)/sdk
@@ -21,7 +21,7 @@ SDK_CFLAGS = -I $(srcdir)/sdk
 ################################################################################
 ## Programs and Libraries
 bin_PROGRAMS = 
-check_PROGRAMS = 3DFD SortingNetwork
+check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory
 lib_LTLIBRARIES = libsdk.la
 ################################################################################
 
@@ -41,6 +41,15 @@ libsdk_la_SOURCES = sdk/stopwatch_linux.cpp \
 3DFD_SOURCES = tests/3DFD/3dfd.cu.cpp
 3DFD_LDADD = $(OCELOT_LIBS)
 3DFD_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## worleyTestExternalSharedMemory
+worleyTestExternalSharedMemory_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+worleyTestExternalSharedMemory_SOURCES = \
+	tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu.cpp
+worleyTestExternalSharedMemory_LDADD = $(OCELOT_LIBS)
+worleyTestExternalSharedMemory_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -83,11 +92,7 @@ nobase_include_HEADERS = sdk/stopwatch_base.h \
 	sdk/cutil_inline.h \
 	tests/sortingNetworks/sortingNetworks_common.h \
 	tests/3DFD/reference.h \
-	tests/sortingNetworks/sortingNetworks_common.cuh \
-	tests/sortingNetworks/bitonicSort.cu \
-	tests/sortingNetworks/oddEvenMergeSort.cu \
-	tests/3DFD/3dfd.cu
-
+	tests/sortingNetworks/sortingNetworks_common.cuh
 ################################################################################
 
 ################################################################################

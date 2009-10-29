@@ -6,6 +6,9 @@
 /* "" */
 #undef HAVE_CUDART
 
+/* "Define to 1 if the cuda driver api is found" */
+#undef HAVE_CUDA_DRIVER_API
+
 /* "" */
 #undef HAVE_CUFFT
 
@@ -33,11 +36,17 @@
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
 
+/* "Define to 1 if llvm is installed" */
+#undef HAVE_LLVM
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
+
+/* "" */
+#undef HAVE_OCELOT
 
 /* "" */
 #undef HAVE_OCELOT_ANALYSIS
@@ -53,6 +62,9 @@
 
 /* "" */
 #undef HAVE_OCELOT_TRACE
+
+/* "" */
+#undef HAVE_OCELOT_TRANSLATOR
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H

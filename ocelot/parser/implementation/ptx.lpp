@@ -1,13 +1,8 @@
 /*!
-
 	\file ptx.lpp
-	
 	\date Wednesday January 14, 2009
-	
 	\author Gregory Diamos
-	
 	\brief The flex lexical description of the PTX language
-
 */
 
 /******************************************************************************/
@@ -375,7 +370,7 @@ WHITESPACE [ \t]*
 {DOUBLE_CONSTANT}               { yytext[1] = 'x'; std::stringstream stream; \
                                     stream << std::hex << yytext; \
                                     stream >> yylval->uvalue; \
-                                    return TOKEN_DOUBLE_CONSTANT; }                                    
+                                    return TOKEN_DOUBLE_CONSTANT; }                  
 {FLOAT_CONSTANT}                { std::stringstream stream; stream << yytext; \
                                     stream >> yylval->doubleFloat; \
                                     return TOKEN_DOUBLE_CONSTANT; }

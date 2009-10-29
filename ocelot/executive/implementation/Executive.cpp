@@ -547,6 +547,7 @@ void executive::Executive::enumerateDevices() {
 	}
 	#endif
 	
+	#if HAVE_CUDA_DRIVER_API == 1
 	// enumerate actual CUDA-capable GPUs
 	int deviceCount = 0;
 
@@ -557,7 +558,6 @@ void executive::Executive::enumerateDevices() {
 		cudaInitialized = true;
 	}
 	
-	#if HAVE_CUDA_DRIVER_API == 1
 	if (cuDeviceGetCount(&deviceCount) != CUDA_SUCCESS) {
 		report("cuDeviceGetCount() - failed");
 		return;

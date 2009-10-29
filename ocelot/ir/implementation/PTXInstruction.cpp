@@ -1721,8 +1721,10 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Cvt: {
 			std::string result = guard() + "cvt.";
-			if( PTXOperand::isFloat( d.type ) ) {
-				result += modifierString( modifier, carry );
+			if( PTXOperand::isFloat( d.type )) {
+				if ((d.type == PTXOperand::f32 && a.type == PTXOperand::f64) || PTXOperand::isInt(a.type)) {
+					result += modifierString( modifier, carry );
+				}
 			}
 			else {
 				if( modifier & rn ) {

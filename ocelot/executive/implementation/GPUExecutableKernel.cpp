@@ -52,6 +52,7 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	Launch a kernel on a 2D grid
 */
 void executive::GPUExecutableKernel::launchGrid(int width, int height) {
+	#if HAVE_CUDA_DRIVER_API == 1
 	report("executive::GPUExecutableKernel::launchGrid()");
 	CUresult result;
 
@@ -59,16 +60,20 @@ void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
 	}
+	#endif
 }
 
 /*!
 	Sets the shape of a kernel
 */
 void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
+	#if HAVE_CUDA_DRIVER_API == 1
 	cuFuncSetBlockShape(cuFunction, x, y, z);
+	#endif
 }
 
 void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
+	#if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
 
 	result = cuFuncSetSharedSize(cuFunction, bytes);
@@ -78,6 +83,7 @@ void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
 	else {
 		report("  - cuFuncSetSharedSize(" << bytes << ") succeeded");
 	}
+	#endif
 }
 
 void executive::GPUExecutableKernel::updateParameterMemory() {
@@ -94,6 +100,7 @@ void executive::GPUExecutableKernel::updateConstantMemory() {
 
 void executive::GPUExecutableKernel::configureParameters() {
 
+	#if HAVE_CUDA_DRIVER_API == 1
 	report("executive::GPUExecutableKernel::configuraParameters()");
 
 	std::vector< ir::Parameter >::iterator it = parameters.begin();
@@ -194,6 +201,7 @@ void executive::GPUExecutableKernel::configureParameters() {
 			}
 		}
 	}
+	#endif
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

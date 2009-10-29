@@ -12,6 +12,7 @@
 
 namespace executive {
 	class Executive;
+	class Device;
 }
 
 namespace ir {
@@ -25,16 +26,19 @@ namespace ir {
 		ExecutableKernel(const executive::Executive* c = 0) : context(c) {}
 		virtual ~ExecutableKernel() {}
 	
-		/*!	Determines whether kernel is executable */
+		/*!	\brief Determines whether kernel is executable */
 		virtual bool executable() {
 			return false;
 		}
 	
-		/*!	Launch a kernel on a 2D grid */
+		/*!	\brief Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height)=0;
 	
-		/*!	Sets the shape of a kernel */
+		/*!	\brief Sets the shape of a kernel */
 		virtual void setKernelShape(int x, int y, int z)=0;
+		
+		/*! \brief Describes the device used to execute the kernel */
+		virtual void setDevice(const executive::Device* device)=0;
 	};
 	
 }

@@ -10,7 +10,8 @@
 
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
-#include <hydrazine/implementation/debug.h>
+#include <ocelot/executive/interface/Device.h>
+#include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/Exception.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
@@ -24,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0 
+#define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
 #define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
@@ -801,6 +802,8 @@ namespace executive
 
 	LLVMExecutableKernel::LLVMState LLVMExecutableKernel::_state;
 
+	LLVMExecutableKernel::ExecutionManager LLVMExecutableKernel::_manager;
+
 	LLVMExecutableKernel::LLVMState::LLVMState()		
 	{
 		jit = 0;
@@ -824,6 +827,7 @@ namespace executive
 			llvm::InitializeNativeTarget();
 		
 			jit = llvm::EngineBuilder( moduleProvider ).create();
+			jit->DisableLazyCompilation( true );
 		
 			assertM( jit != 0, "Creating the JIT failed.");
 			report( " The JIT is alive." );
@@ -837,6 +841,298 @@ namespace executive
 		reportE( jit != 0, "Deleting the LLVM JIT-Compiler." );
 		delete jit;
 		#endif
+	}
+
+	LLVMExecutableKernel::Worker::Message::Message( Type t, 
+		Function f, LLVMContext* c, unsigned int xb, unsigned int xe, 
+		unsigned int rp ) : type( t ), function( f ), context( c ), 
+		begin( xb ), end( xe ), resumePointOffset( rp )
+	{
+	
+	}
+
+	void LLVMExecutableKernel::Worker::execute()
+	{
+		Message* message;
+		
+		threadReceive( message );
+		
+		while( message->type != Message::Kill )
+		{
+			if( message->type == Message::LaunchKernelWithBarriers )
+			{
+				launchKernelWithBarriers( message->function, message->context, 
+					message->begin, message->end, message->resumePointOffset );
+			}
+			else
+			{
+				assertM( message->type == Message::LaunchKernelWithoutBarriers,
+					"Invalid message type received by worker thread." );
+				launchKernelWithoutBarriers( message->function, 
+					message->context, message->begin, message->end );				
+			}
+			message->type = Message::Acknowledgement;
+			threadSend( message );
+			threadReceive( message );
+		}
+		message->type = Message::Acknowledgement;
+		threadSend( message );
+	}
+
+	void LLVMExecutableKernel::Worker::launchKernelWithBarriers( 
+		Function f, LLVMContext* c, unsigned int begin, unsigned int end,
+		unsigned int rp )
+	{
+		for( unsigned int i = begin; i < end; ++i )
+		{
+			c->ctaid.x = i % c->nctaid.x;
+			c->ctaid.y = i / c->nctaid.x;
+			launchCtaWithBarriers( f, c, rp );
+		}
+	}
+
+	void LLVMExecutableKernel::Worker::launchKernelWithoutBarriers( 
+		Function f, LLVMContext* c, unsigned int begin, unsigned int end )
+	{
+		for( unsigned int i = begin; i < end; ++i )
+		{
+			c->ctaid.x = i % c->nctaid.x;
+			c->ctaid.y = i / c->nctaid.x;
+			launchCtaWithoutBarriers( f, c );
+		}
+	}
+
+	void LLVMExecutableKernel::Worker::launchCtaWithBarriers( 
+		Function function, LLVMContext* c, unsigned int resumePointOffset )
+	{
+		char* localBase = c->local;
+		bool done = false;
+		unsigned int threads = c->ntid.z * c->ntid.y * c->ntid.x;
+		
+		for( unsigned int i = 0; i < threads; ++i )
+		{
+			(*(unsigned int*)(localBase 
+				+ i * c->localSize + resumePointOffset)) = 0;
+		}
+		
+		while( !done )
+		{
+			done = true;
+			for( int z = 0; z < c->ntid.z; ++z )
+			{
+				c->tid.z = z;
+				for( int y = 0; y < c->ntid.y; ++y )
+				{
+					c->tid.y = y;
+					for( int x = 0; x < c->ntid.x; ++x )
+					{
+						c->tid.x = x;
+						c->local = localBase + c->localSize * threadId( *c );
+						reportE( REPORT_INSIDE_TRANSLATED_CODE,
+							"  Launching thread ( x " << x << ", y " << y 
+							<< ", z " << z << " )" << " at resume point " 
+							<< *((unsigned int*)(c->local 
+							+ resumePointOffset)) );
+						unsigned int resume = function( c );
+						done &= resume == 0;
+						*((unsigned int*)(c->local 
+							+ resumePointOffset)) = resume;
+						reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+							"   Thread blocked at " << resume );
+					}
+				}
+			}
+		}
+
+		c->local = localBase;
+	}
+
+	void LLVMExecutableKernel::Worker::launchCtaWithoutBarriers( 
+		Function function, LLVMContext* c )
+	{
+		char* localBase = c->local;
+		bool done = true;
+		for( int z = 0; z < c->ntid.z; ++z )
+		{
+			c->tid.z = z;
+			for( int y = 0; y < c->ntid.y; ++y )
+			{
+				c->tid.y = y;
+				for( int x = 0; x < c->ntid.x; ++x )
+				{
+					c->tid.x = x;
+					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+						"  Launching thread ( x " << x << ", y " << y 
+						<< ", z " << z << " )" );
+					c->local = localBase + c->localSize * threadId( *c );
+					unsigned int resume = function( c );
+					done &= resume == 0;
+					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
+						"   Thread blocked at " << resume );
+				}
+			}
+		}	
+
+		c->local = localBase;		
+		assertM( done, 
+			"Not all threads finished in kernel with no context switches" );
+	}
+	
+	LLVMExecutableKernel::ExecutionManager::ExecutionManager() 
+		: _maxThreadsPerCta( 512 )
+	{
+	
+	}
+
+	LLVMExecutableKernel::ExecutionManager::~ExecutionManager()
+	{
+		report( "Tearing down " << threads() << " LLVM worker threads." );
+		clear();	
+	}
+
+	void LLVMExecutableKernel::ExecutionManager::launch( Function f, 
+		LLVMContext* c, bool barriers, unsigned int resumePointOffset )
+	{
+		if( threads() == 0 ) setThreadCount( 1 );
+		for( ContextVector::iterator context = _contexts.begin(); 
+			context != _contexts.end(); ++context )
+		{
+		
+			if( c->localSize > context->localSize )
+			{
+				delete[] context->local;
+				context->localSize = c->localSize;
+				context->local 
+					= new char[ context->localSize * _maxThreadsPerCta ];
+			}
+
+			if( c->sharedSize > context->sharedSize )
+			{
+				delete[] context->shared;
+				context->sharedSize = c->sharedSize;
+				context->shared = new char[ context->sharedSize ];
+			}
+			
+			context->nctaid = c->nctaid;
+			context->ntid = c->ntid;
+
+			context->constant = c->constant;
+			context->parameter = c->parameter;
+			context->constantSize = c->constantSize;
+			context->parameterSize = c->parameterSize;
+
+			context->other = c->other;
+		}
+		
+		unsigned int step = CEIL_DIV( (unsigned int) c->nctaid.x * c->nctaid.y, 
+			_workers.size() );
+		unsigned int begin = 0;
+		
+		MessageVector::iterator message = _messages.begin();
+		for( WorkerVector::iterator worker = _workers.begin(); 
+			worker != _workers.end(); ++worker, ++message, begin += step )
+		{
+			if( barriers )
+			{
+				message->type = Worker::Message::LaunchKernelWithBarriers;
+				message->resumePointOffset = resumePointOffset;
+			}
+			else
+			{
+				message->type = Worker::Message::LaunchKernelWithoutBarriers;
+			}
+			
+			message->function = f;
+			message->begin = begin;
+			message->end = std::min( begin + step, 
+				(unsigned int) c->nctaid.x * c->nctaid.y );
+			
+			worker->send( &(*message) );
+		}
+
+		for( WorkerVector::iterator worker = _workers.begin(); 
+			worker != _workers.end(); ++worker, begin += step )
+		{
+			Worker::Message* message;
+			worker->receive( message );
+			assert( message->type == Worker::Message::Acknowledgement );
+		}
+		
+	}
+	
+	void LLVMExecutableKernel::ExecutionManager::setThreadCount( 
+		unsigned int t )
+	{
+		if( t == threads() ) return;
+		report( "Booting up " << t << " LLVM worker threads." );
+		clear();
+
+		_workers.resize( t );
+		_messages.resize( t );
+		_contexts.resize( t );
+
+		for( WorkerVector::iterator worker = _workers.begin(); 
+			worker != _workers.end(); ++worker )
+		{
+			worker->start();
+		}
+		
+		MessageVector::iterator message = _messages.begin();
+		for( ContextVector::iterator context = _contexts.begin(); 
+			context != _contexts.end(); ++context, ++message )
+		{
+			context->localSize = 0;
+			context->sharedSize = 0;
+			context->local = 0;
+			context->shared = 0;
+			message->context = &(*context);
+		}
+	}
+
+	void LLVMExecutableKernel::ExecutionManager::setMaxThreadsPerCta( 
+		unsigned int t )
+	{
+		if( t > _maxThreadsPerCta )
+		{
+			for( ContextVector::iterator context = _contexts.begin(); 
+				context != _contexts.end(); ++context )
+			{
+				delete context->local;
+				context->local = new char[ context->localSize * t ];
+			}
+		}
+		_maxThreadsPerCta = t;
+	}
+	
+	void LLVMExecutableKernel::ExecutionManager::clear()
+	{
+		MessageVector::iterator message = _messages.begin();
+		for( WorkerVector::iterator worker = _workers.begin(); 
+			worker != _workers.end(); ++worker, ++message )
+		{
+			message->type = Worker::Message::Kill;
+			worker->send( &(*message) );
+			Worker::Message* ack;
+			worker->receive( ack );
+			assert( ack->type == Worker::Message::Acknowledgement );
+			worker->join();
+		}
+		
+		_workers.clear();
+		_messages.clear();
+
+		for( ContextVector::iterator context = _contexts.begin(); 
+			context != _contexts.end(); ++context )
+		{
+			delete[] context->local;
+			delete[] context->shared;
+		}
+		_contexts.clear();
+	}
+
+	unsigned int LLVMExecutableKernel::ExecutionManager::threads() const
+	{
+		return _workers.size();
 	}
 	
 	LLVMExecutableKernel::OpaqueState::OpaqueState()
@@ -857,10 +1153,14 @@ namespace executive
 	{
 		std::stringstream stream;
 		
-		unsigned int id = c.ntid.x * c.ntid.y * c.tid.z + c.ntid.x * c.tid.y 
-			+ c.tid.x;
+		unsigned int id = threadId( c );
 		stream << id;
 		return stream.str();
+	}
+
+	unsigned int LLVMExecutableKernel::threadId( const LLVMContext& c )
+	{
+		return c.ntid.x * c.ntid.y * c.tid.z + c.ntid.x * c.tid.y + c.tid.x;
 	}
 
 	void LLVMExecutableKernel::_optimizePtx()
@@ -1024,81 +1324,6 @@ namespace executive
 		
 		report( " Successfully jit compiled the kernel." );
 		#endif
-	}
-
-	void LLVMExecutableKernel::_launchCtaNoBarriers( )
-	{
-		char* localBase = _context.local;
-		bool done = true;
-		for( int z = 0; z < _context.ntid.z; ++z )
-		{
-			_context.tid.z = z;
-			for( int y = 0; y < _context.ntid.y; ++y )
-			{
-				_context.tid.y = y;
-				for( int x = 0; x < _context.ntid.x; ++x )
-				{
-					_context.tid.x = x;
-					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-						"  Launching thread ( x " << x << ", y " << y 
-						<< ", z " << z << " )" );
-					_context.local = localBase 
-						+ _context.localSize * threadId();
-					unsigned int resume = _function( &_context );
-					done &= resume == 0;
-					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-						"   Thread blocked at " << resume );
-				}
-			}
-		}	
-
-		_context.local = localBase;		
-		assertM( done, 
-			"Not all threads finished in kernel with no context switches" );
-	}
-	
-	void LLVMExecutableKernel::_launchCtaWithBarriers( )
-	{
-		char* localBase = _context.local;
-		bool done = false;
-		
-		for( unsigned int i = 0; i < threads(); ++i )
-		{
-			(*(unsigned int*)(localBase 
-				+ i * _context.localSize + _resumePointOffset)) = 0;
-		}
-		
-		while( !done )
-		{
-			done = true;
-			for( int z = 0; z < _context.ntid.z; ++z )
-			{
-				_context.tid.z = z;
-				for( int y = 0; y < _context.ntid.y; ++y )
-				{
-					_context.tid.y = y;
-					for( int x = 0; x < _context.ntid.x; ++x )
-					{
-						_context.tid.x = x;
-						_context.local = localBase 
-							+ _context.localSize * threadId();
-						reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-							"  Launching thread ( x " << x << ", y " << y 
-							<< ", z " << z << " )" << " at resume point " 
-							<< *((unsigned int*)(_context.local 
-							+ _resumePointOffset)) );
-						unsigned int resume = _function( &_context );
-						done &= resume == 0;
-						*((unsigned int*)(_context.local 
-							+ _resumePointOffset)) = resume;
-						reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-							"   Thread blocked at " << resume );
-					}
-				}
-			}
-		}
-
-		_context.local = localBase;		
 	}
 	
 	void LLVMExecutableKernel::_allocateParameterMemory( )
@@ -1580,37 +1805,9 @@ namespace executive
 		
 		_context.nctaid.x = x;
 		_context.nctaid.y = y;
-		if( _barrierSupport )
-		{
-			report( " With barrier support." );
-			for( int j = 0; j < y; ++j )
-			{
-				for( int i = 0; i < x; ++i )
-				{
-					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-						" Launching cta ( " << i << ", " << j << " )" );
-					_context.ctaid.x = i;
-					_context.ctaid.y = j;
-					_launchCtaWithBarriers();
-				}
-			}
-		}
-		else
-		{
-			report( " Without barrier support." );
-			for( int j = 0; j < y; ++j )
-			{
-				for( int i = 0; i < x; ++i )
-				{
-					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
-						" Launching cta ( " << i << ", " << j << " )" );
-					_context.ctaid.x = i;
-					_context.ctaid.y = j;
-					_launchCtaNoBarriers();
-				}
-			}		
-		}
-		report( " Kernel \"" << name << "\" finished successfully"  );
+		
+		_manager.launch( _function, &_context, 
+			_barrierSupport, _resumePointOffset );
 	}
 	
 	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )
@@ -1634,6 +1831,12 @@ namespace executive
 				_context.local = new char[ threads() * _context.localSize ];
 			}
 		}
+	}
+
+	void LLVMExecutableKernel::setDevice( const Device* device )
+	{
+		_manager.setMaxThreadsPerCta( device->maxThreadsPerBlock );
+		_manager.setThreadCount( device->multiprocessorCount );
 	}
 	
 	unsigned int LLVMExecutableKernel::threads() const

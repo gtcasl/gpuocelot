@@ -72,6 +72,9 @@ void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
 	#endif
 }
 
+void executive::GPUExecutableKernel::setDevice(const Device* device) {
+}
+
 void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
 	#if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;

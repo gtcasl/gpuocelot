@@ -42,12 +42,23 @@ AC_CHECK_LIB([rt], [clock_gettime], [],\
 AC_CHECK_LIB([cuda], [cuInit], HAVE_CUDA_DRIVER_API=yes, \
 	HAVE_CUDA_DRIVER_API=no)
 
-if test $HAVE_CUDA_DRIVER_API = yes
-then
-	AC_DEFINE(HAVE_CUDA_DRIVER_API, [1], \
-		["Define to 1 if the cuda driver api is found"])
-	AC_SUBST(CUDA_DRIVER_API_LIBARY, "-lcuda")
+gpu_default="yes"
+AC_ARG_ENABLE(gpu, [  --enable-gpu=[no/yes] turn on NVIDIA GPU 
+	support [default=$gpu_default]],, enable_gpu=$gpu_default)
+
+if test "x$enable_gpu" = "xyes"; then
+	if test $HAVE_CUDA_DRIVER_API = yes
+	then
+		AC_DEFINE(HAVE_CUDA_DRIVER_API, [1], \
+			["Define to 1 if the cuda driver api is found"])
+		AC_SUBST(CUDA_DRIVER_API_LIBARY, "-lcuda")
+	else
+		AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
+			["Define to 1 if the cuda driver api is found"])
+		AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
+	fi
 else
+	AC_MSG_NOTICE(Disabled NVIDIA GPU support via libcuda)
 	AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
 		["Define to 1 if the cuda driver api is found"])
 	AC_SUBST(CUDA_DRIVER_API_LIBARY, "")

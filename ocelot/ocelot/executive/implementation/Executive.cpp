@@ -159,6 +159,7 @@ std::string executive::Executive::nearbyAllocationsToString(
 	return stream.str();
 }
 
+#if HAVE_CUDA_DRIVER_API == 1
 static CUfilter_mode_enum textureFilterMode(ir::Texture::Interpolation interpolation) {
 	switch (interpolation) {
 		case ir::Texture::Linear:
@@ -193,6 +194,7 @@ static CUarray_format textureDataFormat(ir::Texture::Type type) {
 	}
 	return CU_AD_FORMAT_FLOAT;
 }
+#endif
 
 /*!
 	called to update global variables across all address spaces

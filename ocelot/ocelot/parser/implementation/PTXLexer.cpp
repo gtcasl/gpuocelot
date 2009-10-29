@@ -1,13 +1,8 @@
 /*!
-
 	\file PTXLexer.cpp
-	
 	\date Monday January 19, 2009
-	
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
-
 	\brief The header file for the PTXLexer class.
-
 */
 
 #ifndef PTX_LEXER_CPP_INCLUDED
@@ -32,15 +27,10 @@ namespace parser
 	
 	int PTXLexer::yylexPosition()
 	{
-	
 		int token = yylex();
-	
 		column = nextColumn;
-		
 		nextColumn = column + strlen( YYText() );
-		
 		return token;
-	
 	}
 	
 	std::string PTXLexer::toString( int token )

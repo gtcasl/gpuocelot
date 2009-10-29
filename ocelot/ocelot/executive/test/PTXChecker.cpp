@@ -1,12 +1,9 @@
 /*!
 	\file PTXChecker.cpp
-
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date 26 October 2009
-
-	\brief uses the CUDA driver API to attempt to load a .ptx source module and print error messages
-		if it fails
+	\brief uses the CUDA driver API to attempt to load a .ptx source module 
+		and print error messages if it fails
 */
 
 #include <sstream>
@@ -27,7 +24,6 @@ public:
 
 	PTXChecker() {
 		name = "PTX Checker";
-
 		status << "Test output:\n";
 	}
 
@@ -37,9 +33,9 @@ public:
 		Test driver
 	*/
 	bool doTest() {
-		bool result = true;
 		std::ostream &out = std::cout;
-
+		#if HAVE_CUDA_DRIVER_API == 1
+		bool result = true;
 		if (ptxSourceFile != "") {
 			CUresult result = cuInit(0);
 			if (result != CUDA_SUCCESS) {
@@ -62,6 +58,10 @@ public:
 			}
 		}
 		return result;
+		#else
+			out << "No CUDA Driver API support\n";
+			return false;
+		#endif
 	}
 
 public:

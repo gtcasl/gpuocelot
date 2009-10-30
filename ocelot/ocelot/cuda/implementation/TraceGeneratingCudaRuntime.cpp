@@ -1382,7 +1382,7 @@ namespace cuda
 		_trace << " localBytes = " << attr->localSizeBytes;
 		_trace << " maxThreadsPerBlock = " << attr->maxThreadsPerBlock;
 		_trace << " numRegs = " << attr->numRegs;
-		_trace << " function = " << func;
+		_trace << " function = " << (void*)func;
 		_trace << " time = " << timer.seconds();
 		_trace << "\n";
 

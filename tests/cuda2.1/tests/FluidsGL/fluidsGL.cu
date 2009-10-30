@@ -328,7 +328,9 @@ int main(int argc, char** argv) {
 
 	if( cutCheckCmdLineFlag(argc, (const char**)argv, "noqatest") )
 		test = false;
-
+	else
+		test = true;
+		
     // Allocate and initialize host data
     GLint bsize;
 

@@ -63,7 +63,32 @@ AC_CHECK_LIB([GLU], [gluGetString], [], \
 	AC_MSG_ERROR("libGLU required"))
 AC_CHECK_LIB([glut], [glutMainLoop], [], \
 	AC_MSG_ERROR("libglut required"))
-	
+
+AC_CHECK_LIB([cuda], [cuInit], HAVE_CUDA_DRIVER_API=yes, \
+	HAVE_CUDA_DRIVER_API=no)
+
+gpu_default="yes"
+AC_ARG_ENABLE(gpu, [  --enable-gpu=[no/yes] turn on NVIDIA GPU 
+	support [default=$gpu_default]],, enable_gpu=$gpu_default)
+
+if test "x$enable_gpu" = "xyes"; then
+	if test $HAVE_CUDA_DRIVER_API = yes
+	then
+		AC_DEFINE(HAVE_CUDA_DRIVER_API, [1], \
+			["Define to 1 if the cuda driver api is found"])
+		AC_SUBST(CUDA_DRIVER_API_LIBARY, "-lcuda")
+	else
+		AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
+			["Define to 1 if the cuda driver api is found"])
+		AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
+	fi
+else
+	AC_MSG_NOTICE(Disabled NVIDIA GPU support via libcuda)
+	AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
+		["Define to 1 if the cuda driver api is found"])
+	AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
+fi
+
 AC_CHECK_LIB([hydrazine], [main],[AC_DEFINE(HAVE_HYDRAZINE, [], [""])], \
 	AC_MSG_ERROR("libhydrazine required"))
 AC_CHECK_LIB([OcelotParser], [main], \
@@ -84,7 +109,7 @@ AC_CHECK_LIB([OcelotExecutive], [main], \
 	[AC_DEFINE(HAVE_OCELOT_EXECUTIVE, [], [""])], \
 	AC_MSG_ERROR("libOcelotExecutive required"), \
 	[-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis
-	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])	
+	-lOcelotParser -lhydrazine $LLVM_LDFLAGS $CUDA_DRIVER_API_LIBARY])	
 AC_CHECK_LIB([OcelotAnalysis], [main], \
 	[AC_DEFINE(HAVE_OCELOT_ANALYSIS, [], [""])], \
 	AC_MSG_ERROR("libOcelotAnalysis required"), \
@@ -92,11 +117,11 @@ AC_CHECK_LIB([OcelotAnalysis], [main], \
 AC_CHECK_LIB([cudart], [main], [AC_DEFINE(HAVE_CUDART, [], [""])], \
 	AC_MSG_ERROR("libcudart required"), [-lOcelot -lOcelotExecutive \
 	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
-	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])	
+	-lOcelotParser -lhydrazine $LLVM_LDFLAGS $CUDA_DRIVER_API_LIBARY])	
 AC_CHECK_LIB([Ocelot], [main], [AC_DEFINE(HAVE_OCELOT, [], [""])], \
 	AC_MSG_ERROR("libOcelot required"), [-lcudart -lOcelotExecutive \
 	-lOcelotTranslator -lOcelotTrace -lOcelotIr -lOcelotAnalysis \
-	-lOcelotParser -lhydrazine $LLVM_LDFLAGS])
+	-lOcelotParser -lhydrazine $LLVM_LDFLAGS $CUDA_DRIVER_API_LIBARY])	
 ################################################################################
 
 ################################################################################

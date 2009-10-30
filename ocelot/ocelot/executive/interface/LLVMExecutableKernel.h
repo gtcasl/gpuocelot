@@ -128,6 +128,8 @@ namespace executive
 							unsigned int begin;
 							/*! \brief The ending cta of the grid */
 							unsigned int end;
+							/*! \brief The step */
+							unsigned int step;
 							/*! \brief The resume point offset */
 							unsigned int resumePointOffset;
 							
@@ -136,6 +138,7 @@ namespace executive
 								LLVMContext* c = 0, 
 								unsigned int begin = 0,
 								unsigned int end = 0,
+								unsigned int step = 0,
 								unsigned int r = 0 );
 					};
 			
@@ -147,13 +150,15 @@ namespace executive
 					void launchKernelWithBarriers( Function f, LLVMContext* c, 
 						unsigned int begin,
 						unsigned int end,
+						unsigned int step,
 						unsigned int rp );
 
 					/*! \brief Launch a series of ctas without barriers */
 					void launchKernelWithoutBarriers( Function f, 
 						LLVMContext* c, 
 						unsigned int begin,
-						unsigned int end );
+						unsigned int end,
+						unsigned int step );
 					
 					/*! \brief Launch a specific cta with barriers */
 					void launchCtaWithBarriers( Function f, LLVMContext* c, 
@@ -196,7 +201,8 @@ namespace executive
 				public:
 					/*! \brief Launches a kernel on a grid using a context */
 					void launch( Function f, LLVMContext* context, 
-						bool barriers, unsigned int resumePointOffset );
+						bool barriers, unsigned int resumePointOffset, 
+						unsigned int externalSharedMemory );
 					
 					/*! \brief Changes the number of worker threads */
 					void setThreadCount( unsigned int threads );

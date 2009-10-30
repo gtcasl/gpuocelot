@@ -27,7 +27,8 @@ __global__ void Mandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH
     __shared__ unsigned int blockX, blockY;
     
     // loop until all blocks completed
-    for(int iter = 0; iter < numBlocks; ++iter) {
+    while(1) {
+        __syncthreads();
         if ((threadIdx.x==0) && (threadIdx.y==0)) {
             // get block to process
             blockIndex = atomicAdd(&blockCounter, 1);
@@ -93,6 +94,7 @@ __global__ void MandelbrotDS0_sm13(uchar4 *dst, const int imageW, const int imag
     
     // loop until all blocks completed
     while(1) {
+        __syncthreads();
         if ((threadIdx.x==0) && (threadIdx.y==0)) {
             // get block to process
             blockIndex = atomicAdd(&blockCounter, 1);
@@ -159,6 +161,7 @@ __global__ void Mandelbrot1_sm13(uchar4 *dst, const int imageW, const int imageH
     
     // loop until all blocks completed
     while(1) {
+        __syncthreads();
         if ((threadIdx.x==0) && (threadIdx.y==0)) {
             // get block to process
             blockIndex = atomicAdd(&blockCounter, 1);
@@ -230,6 +233,7 @@ __global__ void MandelbrotDS1_sm13(uchar4 *dst, const int imageW, const int imag
     
     // loop until all blocks completed
     while(1) {
+        __syncthreads();
         if ((threadIdx.x==0) && (threadIdx.y==0)) {
             // get block to process
             blockIndex = atomicAdd(&blockCounter, 1);

@@ -6,7 +6,7 @@
 ../SimpleCUFFT CUDA_SDK_STYLE
 ../AsyncAPI CUDA_SDK_STYLE
 ../ConvolutionSeparable CUDA_SDK_STYLE
-../FluidsGL CUDA_SDK_STYLE
+../FluidsGL CUDA_SDK_STYLE -
 ../RecursiveGaussian CUDA_SDK_STYLE
 ../SimpleGL CUDA_SDK_STYLE
 ../SobelFilter CUDA_SDK_STYLE

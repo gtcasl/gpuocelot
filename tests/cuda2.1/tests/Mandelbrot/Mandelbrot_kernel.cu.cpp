@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000062e6_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000103c_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000062e6_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000103c_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
 # 1 "Mandelbrot_kernel.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -6834,11 +6834,11 @@ inline int iDivUp(int a, int b)
 return ((a % b) != 0) ? (a / b + 1) : (a / b);
 }
 
-# 1 "/tmp/tmpxft_000062e6_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000103c_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_000062e6_00000000-3_Mandelbrot_kernel.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000103c_00000000-3_Mandelbrot_kernel.fatbin.c" 1
 # 1 "/home/normal/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -6898,8 +6898,25 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_000062e6_00000000-3_Mandelbrot_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000103c_00000000-3_Mandelbrot_kernel.fatbin.c" 2
 
+
+
+
+extern "C" {
+
+
+static const unsigned long long __deviceText_$sm_13$[] = {
+0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d33315full,0x206e6f6973726576ull,
+0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
+0x20656d616e090a7bull,0x6d6d75645f5f203dull,0x5f7972746e655f79ull,0x206d656d6c090a5full,
+0x656d73090a30203dull,0x72090a30203d206dull,0x0a30203d20206765ull,0x203d202072616209ull,
+0x6f636e6962090a30ull,0x3009090a7b206564ull,0x3030303030306678ull,0x3030306578302031ull,
+0x7d090a2031303030ull,0x00000000000a7d0aull
+};
+
+
+}
 
 
 
@@ -6918,9 +6935,9 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x25203436662e2067ull,0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,0x2f20676e696c6970ull,
-0x78706d742f706d74ull,0x36303030305f7466ull,0x303030305f366532ull,0x5f33312d30303030ull,
+0x78706d742f706d74ull,0x31303030305f7466ull,0x303030305f633330ull,0x5f33312d30303030ull,
 0x72626c65646e614dull,0x656e72656b5f746full,0x692e337070632e6cull,0x632f706d742f2820ull,
-0x6277442e23494263ull,0x2f2f090a29444643ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x6733372e23494263ull,0x2f2f090a2939736bull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2f2f090a0a2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -6934,7 +6951,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2f2f090a29736569ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x662e090a0a2d2d2dull,0x3c22093109656c69ull,0x2d646e616d6d6f63ull,0x090a223e656e696cull,
-0x093209656c69662eull,0x6d742f706d742f22ull,0x3030305f74667870ull,0x30305f3665323630ull,
+0x093209656c69662eull,0x6d742f706d742f22ull,0x3030305f74667870ull,0x30305f6333303130ull,
 0x312d303030303030ull,0x6c65646e614d5f32ull,0x72656b5f746f7262ull,0x616475632e6c656eull,
 0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,0x2f6363672f62696cull,
 0x6c2d34365f363878ull,0x756e672d78756e69ull,0x692f332e332e342full,0x732f6564756c636eull,
@@ -6985,31 +7002,14 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 }
 
 
-
-extern "C" {
-
-
-static const unsigned long long __deviceText_$sm_13$[] = {
-0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d33315full,0x206e6f6973726576ull,
-0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
-0x20656d616e090a7bull,0x6d6d75645f5f203dull,0x5f7972746e655f79ull,0x206d656d6c090a5full,
-0x656d73090a30203dull,0x72090a30203d206dull,0x0a30203d20206765ull,0x203d202072616209ull,
-0x6f636e6962090a30ull,0x3009090a7b206564ull,0x3030303030306678ull,0x3030306578302031ull,
-0x7d090a2031303030ull,0x00000000000a7d0aull
-};
-
-
-}
-
-
 static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_13",(char*)__deviceText_$sm_13$},{0,0}};
 static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"c33bfc571e3f9c76",(char*)"Mandelbrot_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0xaa3c4621};
-# 5 "/tmp/tmpxft_000062e6_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"90578349fe3109b6",(char*)"Mandelbrot_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0x6292234c};
+# 5 "/tmp/tmpxft_0000103c_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
 # 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1
 # 85 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/home/normal/cuda/bin/../include/host_defines.h" 1
@@ -15086,9 +15086,9 @@ static double __cuda_fma(double a, double b, double c)
 # 3735 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/home/normal/cuda/bin/../include/common_functions.h" 2
 # 227 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_000062e6_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_53_tmpxft_000062e6_00000000_10_Mandelbrot_kernel_cpp1_ii_44c5553b(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_53_tmpxft_000062e6_00000000_10_Mandelbrot_kernel_cpp1_ii_44c5553b(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_0000103c_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_53_tmpxft_0000103c_00000000_10_Mandelbrot_kernel_cpp1_ii_3bb682ec(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_53_tmpxft_0000103c_00000000_10_Mandelbrot_kernel_cpp1_ii_3bb682ec(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 369 "Mandelbrot_kernel.cu" 2

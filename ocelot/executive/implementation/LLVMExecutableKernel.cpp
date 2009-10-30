@@ -30,10 +30,11 @@
 #define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
+#define REPORT_CTA_INSIDE_TRANSLATED_CODE 0
 #define REPORT_ATOMIC_OPERATIONS 0
-#define PRINT_OPTIMIZED_CFG 1
+#define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_FIRST_THREAD_ONLY 0
-#define DEBUG_PTX_INSTRUCTION_TRACE 0
+#define DEBUG_PTX_INSTRUCTION_TRACE 1
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 
 #include <configure.h>
@@ -233,9 +234,7 @@ extern "C"
 			case ir::PTXInstruction::AtomicAdd:
 			{
 				result = d + b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "(Thread: " 
-					<< executive::LLVMExecutableKernel::threadIdString( 
-					*context ) << ") AtomicAdd: address " 
+				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
 					<< (void*) address << " from " << d << " by " << b 
 					<< " to " << result );
 				break;
@@ -1015,8 +1014,8 @@ namespace executive
 
 	LLVMExecutableKernel::Worker::Message::Message( Type t, 
 		Function f, LLVMContext* c, unsigned int xb, unsigned int xe, 
-		unsigned int rp ) : type( t ), function( f ), context( c ), 
-		begin( xb ), end( xe ), resumePointOffset( rp )
+		unsigned int s, unsigned int rp ) : type( t ), function( f ), context( c ), 
+		begin( xb ), end( xe ), step( s ), resumePointOffset( rp )
 	{
 	
 	}
@@ -1032,14 +1031,16 @@ namespace executive
 			if( message->type == Message::LaunchKernelWithBarriers )
 			{
 				launchKernelWithBarriers( message->function, message->context, 
-					message->begin, message->end, message->resumePointOffset );
+					message->begin, message->end, message->step,
+					message->resumePointOffset );
 			}
 			else
 			{
 				assertM( message->type == Message::LaunchKernelWithoutBarriers,
 					"Invalid message type received by worker thread." );
 				launchKernelWithoutBarriers( message->function, 
-					message->context, message->begin, message->end );				
+					message->context, message->begin, message->end,
+					message->step );				
 			}
 			message->type = Message::Acknowledgement;
 			threadSend( message );
@@ -1050,24 +1051,31 @@ namespace executive
 	}
 
 	void LLVMExecutableKernel::Worker::launchKernelWithBarriers( 
-		Function f, LLVMContext* c, unsigned int begin, unsigned int end,
-		unsigned int rp )
+		Function f, LLVMContext* c, unsigned int begin, unsigned int end, 
+		unsigned int step, unsigned int rp )
 	{
-		for( unsigned int i = begin; i < end; ++i )
+		for( unsigned int i = begin; i < end; i += step )
 		{
 			c->ctaid.x = i % c->nctaid.x;
 			c->ctaid.y = i / c->nctaid.x;
+			reportE( REPORT_CTA_INSIDE_TRANSLATED_CODE,
+				"  Launching CTA ( x " << (unsigned int) c->ctaid.x << ", y " 
+				<< (unsigned int) c->ctaid.y << " )" );
 			launchCtaWithBarriers( f, c, rp );
 		}
 	}
 
 	void LLVMExecutableKernel::Worker::launchKernelWithoutBarriers( 
-		Function f, LLVMContext* c, unsigned int begin, unsigned int end )
+		Function f, LLVMContext* c, unsigned int begin, 
+		unsigned int end, unsigned int step )
 	{
-		for( unsigned int i = begin; i < end; ++i )
+		for( unsigned int i = begin; i < end; i += step )
 		{
 			c->ctaid.x = i % c->nctaid.x;
 			c->ctaid.y = i / c->nctaid.x;
+			reportE( REPORT_CTA_INSIDE_TRANSLATED_CODE,
+				"  Launching CTA ( x " << (unsigned int) c->ctaid.x << ", y " 
+				<< (unsigned int) c->ctaid.y << " )" );
 			launchCtaWithoutBarriers( f, c );
 		}
 	}
@@ -1157,17 +1165,17 @@ namespace executive
 	LLVMExecutableKernel::ExecutionManager::~ExecutionManager()
 	{
 		report( "Tearing down " << threads() << " LLVM worker threads." );
-		clear();	
+		clear();
 	}
 
 	void LLVMExecutableKernel::ExecutionManager::launch( Function f, 
-		LLVMContext* c, bool barriers, unsigned int resumePointOffset )
+		LLVMContext* c, bool barriers, unsigned int resumePointOffset,
+		unsigned int externalSharedMemory )
 	{
 		if( threads() == 0 ) setThreadCount( 1 );
 		for( ContextVector::iterator context = _contexts.begin(); 
 			context != _contexts.end(); ++context )
 		{
-		
 			if( c->localSize > context->localSize )
 			{
 				delete[] context->local;
@@ -1176,10 +1184,10 @@ namespace executive
 					= new char[ context->localSize * _maxThreadsPerCta ];
 			}
 
-			if( c->sharedSize > context->sharedSize )
+			if( c->sharedSize + externalSharedMemory > context->sharedSize )
 			{
 				delete[] context->shared;
-				context->sharedSize = c->sharedSize;
+				context->sharedSize = c->sharedSize + externalSharedMemory;
 				context->shared = new char[ context->sharedSize ];
 			}
 			
@@ -1194,13 +1202,12 @@ namespace executive
 			context->other = c->other;
 		}
 		
-		unsigned int step = CEIL_DIV( (unsigned int) c->nctaid.x * c->nctaid.y, 
-			_workers.size() );
+		unsigned int step = _workers.size();
 		unsigned int begin = 0;
 		
 		MessageVector::iterator message = _messages.begin();
 		for( WorkerVector::iterator worker = _workers.begin(); 
-			worker != _workers.end(); ++worker, ++message, begin += step )
+			worker != _workers.end(); ++worker, ++message, ++begin )
 		{
 			if( barriers )
 			{
@@ -1214,14 +1221,14 @@ namespace executive
 			
 			message->function = f;
 			message->begin = begin;
-			message->end = std::min( begin + step, 
-				(unsigned int) c->nctaid.x * c->nctaid.y );
+			message->end = (unsigned int) c->nctaid.x * c->nctaid.y;
+			message->step = step;
 			
 			worker->send( &(*message) );
 		}
 
 		for( WorkerVector::iterator worker = _workers.begin(); 
-			worker != _workers.end(); ++worker, begin += step )
+			worker != _workers.end(); ++worker )
 		{
 			Worker::Message* message;
 			worker->receive( message );
@@ -1978,7 +1985,8 @@ namespace executive
 		_context.nctaid.y = y;
 		
 		_manager.launch( _function, &_context, 
-			_barrierSupport, _resumePointOffset );
+			_barrierSupport, _resumePointOffset, _externalSharedSize );
+		_cache.flush();
 	}
 	
 	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

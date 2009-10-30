@@ -117,47 +117,66 @@ extern "C"
 
 	ir::PTXF32 __ocelot_atom_f32( executive::LLVMContext* context, 
 		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, ir::PTXF32 b )
+		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
+		ir::PTXF32 b )
 	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		ir::PTXF32 d = 0;
+		ir::PTXF32 result = 0;
+		
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
+			d = *((ir::PTXF32*) address);
 		}
-		
-		ir::PTXF32 d = 0;
+		else
+		{
+			state->cache->lock();
+			state->cache->read( &d, (void*) address, sizeof( ir::PTXF32 ) );
+		}
 		
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAdd:
 			{
-				d = *((ir::PTXF32*) address);
+				result = d + b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d + b ) );
-				*((ir::PTXF32*) address) = d + b;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicMin:
 			{
-				d = *((ir::PTXF32*) address);
+				result = std::min( d, b );
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << std::min( d, b ) );
-				*((ir::PTXF32*) address) = std::min( d, b );
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicMax:
 			{
-				d = *((ir::PTXF32*) address);
+				result = std::max( d, b );
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << std::max( d, b ) );
-				*((ir::PTXF32*) address) = std::max( d, b );
+					<< " to " << result );
 				break;
 			}
 			default: assertM( false, "Atomic " 
 				<< ir::PTXInstruction::toString( op ) 
 				<< " not supported for f32." );
+		}
+
+		if( space == ir::PTXInstruction::Shared )
+		{
+			*((ir::PTXF32*) address) = result;
+		}
+		else
+		{
+			state->cache->write( (void*) address, 
+				&result, sizeof( ir::PTXF32 ) );
+			state->cache->unlock();
 		}
 		
 		return d;
@@ -168,96 +187,97 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, 
 		ir::PTXU64 address, ir::PTXB32 b )
 	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		ir::PTXB32 d = 0;
+		ir::PTXB32 result = 0;
+
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
+			d = *((ir::PTXB32*) address);
 		}
-		
-		ir::PTXB32 d = 0;
+		else
+		{
+			state->cache->lock();
+			state->cache->read( &d, (void*) address, sizeof( ir::PTXB32 ) );
+		}
 		
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAnd:
 			{
-				d = *((ir::PTXB32*) address);
+				result = d & b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAnd: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d & b ) );
-				*((ir::PTXB32*) address) = d & b;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicOr:
 			{
-				d = *((ir::PTXB32*) address);
+				result = d | b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicOr: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d | b ) );
-				*((ir::PTXB32*) address) = d | b;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicXor:
 			{
-				d = *((ir::PTXB32*) address);
+				result = d ^ b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicXor: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d ^ b ) );
-				*((ir::PTXB32*) address) = d ^ b;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicAdd:
 			{
-				d = *((ir::PTXB32*) address);
+				result = d + b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "(Thread: " 
 					<< executive::LLVMExecutableKernel::threadIdString( 
 					*context ) << ") AtomicAdd: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d + b ) );
-				*((ir::PTXB32*) address) = d + b;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicMin:
 			{
-				d = *((ir::PTXB32*) address);
+				result = std::min( d, b );
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << std::min( d, b ) );
-				*((ir::PTXB32*) address) = std::min( d, b );
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicMax:
 			{
-				d = *((ir::PTXB32*) address);
+				result = std::max( d, b );
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMax: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << std::max( d, b ) );
-				*((ir::PTXB32*) address) = std::max( d, b );
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicDec:
 			{
-				d = *((ir::PTXB32*) address);
+				result = ((d == 0) || (d > b)) ? b : d - 1;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicDec: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( ((d == 0) || (d > b)) ? b : d - 1 ) );
-				*((ir::PTXB32*) address) = ((d == 0) || (d > b)) ? b : d - 1;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicInc:
 			{
-				d = *((ir::PTXB32*) address);
+				result = (d >= b) ? 0 : d + 1;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicInc: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( (d >= b) ? 0 : d + 1 ) );
-				*((ir::PTXB32*) address) = (d >= b) ? 0 : d + 1;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicExch:
 			{
-				d = *((ir::PTXB32*) address);
+				result = b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicExch: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << b );
-				*((ir::PTXB32*) address) = b;
+					<< " to " << result );
 				break;
 			}
 			default: assertM( false, "Atomic " 
@@ -265,6 +285,17 @@ extern "C"
 				<< " not supported for b32." );
 		}
 		
+		if( space == ir::PTXInstruction::Shared )
+		{
+			*((ir::PTXB32*) address) = result;
+		}
+		else
+		{
+			state->cache->write( (void*) address, 
+				&result, sizeof( ir::PTXB32 ) );
+			state->cache->unlock();
+		}
+
 		return d;
 	}
 
@@ -273,45 +304,63 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, 
 		ir::PTXU64 address, ir::PTXS32 b )
 	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		ir::PTXS32 d = 0;
+		ir::PTXS32 result = 0;
+
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
+			d = *((ir::PTXS32*) address);
 		}
-		
-		ir::PTXS32 d = 0;
+		else
+		{
+			state->cache->lock();
+			state->cache->read( &d, (void*) address, sizeof( ir::PTXS32 ) );
+		}
 		
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAdd:
 			{
-				d = *((ir::PTXS32*) address);
+				result = d + b;
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d + b ) );
-				*((ir::PTXS32*) address) = d + b;
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicMin:
 			{
-				d = *((ir::PTXS32*) address);
+				result = std::min( d, b );
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << std::min( d, b ) );
-				*((ir::PTXS32*) address) = std::min( d, b );
+					<< " to " << result );
 				break;
 			}
 			case ir::PTXInstruction::AtomicMax:
 			{
-				d = *((ir::PTXS32*) address);
+				result = std::max( d, b );
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMax: address " 
 					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << std::max( d, b ) );
-				*((ir::PTXS32*) address) = std::max( d, b );
+					<< " to " << result );
 				break;
 			}
 			default: assertM( false, "Atomic " 
 				<< ir::PTXInstruction::toString( op ) 
 				<< " not supported for s32." );
+		}
+
+		if( space == ir::PTXInstruction::Shared )
+		{
+			*((ir::PTXS32*) address) = result;
+		}
+		else
+		{
+			state->cache->write( (void*) address, 
+				&result, sizeof( ir::PTXS32 ) );
+			state->cache->unlock();
 		}
 		
 		return d;
@@ -322,22 +371,31 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, 
 		ir::PTXU64 address, ir::PTXB64 b )
 	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		ir::PTXB64 d = 0;
+		ir::PTXB64 result = 0;
+
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
+			d = *((ir::PTXB64*) address);
 		}
-		
-		ir::PTXB64 d = 0;
-		
+		else
+		{
+			state->cache->lock();
+			state->cache->read( &d, (void*) address, sizeof( ir::PTXB64 ) );
+		}
+				
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAdd:
 			{
-				d = *((ir::PTXB64*) address);
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
 					<< (void*) address << " from " << d << " by " << b 
 					<< " to " << ( d + b ) );
-				*((ir::PTXB64*) address) = d + b;
+				result = d + b;
 				break;
 			}
 			case ir::PTXInstruction::AtomicExch:
@@ -346,12 +404,23 @@ extern "C"
 				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicExch: address " 
 					<< (void*) address << " from " << d << " by " << b 
 					<< " to " << b );
-				*((ir::PTXB64*) address) = b;
+				result = b;
 				break;
 			}
 			default: assertM( false, "Atomic " 
 				<< ir::PTXInstruction::toString( op ) 
 				<< " not supported for b64." );
+		}
+
+		if( space == ir::PTXInstruction::Shared )
+		{
+			*((ir::PTXB64*) address) = result;
+		}
+		else
+		{
+			state->cache->write( (void*) address, 
+				&result, sizeof( ir::PTXB64 ) );
+			state->cache->unlock();
 		}
 		
 		return d;
@@ -362,21 +431,41 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
 		ir::PTXB32 b, ir::PTXB32 c )
 	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		ir::PTXB32 d = 0;
+		
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
+			d = *((ir::PTXB32*) address);
 		}
-		
-		ir::PTXB32 d = *((ir::PTXB32*) address);
-		
+		else
+		{
+			state->cache->lock();
+			state->cache->read( &d, (void*) address, sizeof( ir::PTXB32 ) );
+		}
+				
 		assert( op == ir::PTXInstruction::AtomicCas );
+
+		ir::PTXB32 result = ( d == b ) ? c : d;
 
 		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicCas: address " 
 			<< (void*) address << " from " << d << " by " << b 
-			<< " to " << ( ( d == b ) ? c : d ) );
+			<< " to " << result );
 
-		*((ir::PTXB32*) address) = ( d == b ) ? c : d;
-
+		if( space == ir::PTXInstruction::Shared )
+		{
+			*((ir::PTXB32*) address) = result;
+		}
+		else
+		{
+			state->cache->write( (void*) address, 
+				&result, sizeof( ir::PTXB32 ) );
+			state->cache->unlock();
+		}
+		
 		return d;
 	}
 
@@ -385,20 +474,40 @@ extern "C"
 		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
 		ir::PTXB64 b, ir::PTXB64 c )
 	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		ir::PTXB64 d = 0;
+		
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
+			d = *((ir::PTXB64*) address);
 		}
-		
-		ir::PTXB64 d = *((ir::PTXB64*) address);
-		
+		else
+		{
+			state->cache->lock();
+			state->cache->read( &d, (void*) address, sizeof( ir::PTXB64 ) );
+		}
+				
 		assert( op == ir::PTXInstruction::AtomicCas );
+
+		ir::PTXB64 result = ( d == b ) ? c : d;
 
 		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicCas: address " 
 			<< (void*) address << " from " << d << " by " << b 
 			<< " to " << ( ( d == b ) ? c : d ) );
 
-		*((ir::PTXB64*) address) = ( d == b ) ? c : d;
+		if( space == ir::PTXInstruction::Shared )
+		{
+			*((ir::PTXB64*) address) = result;
+		}
+		else
+		{
+			state->cache->write( (void*) address, 
+				&result, sizeof( ir::PTXB64 ) );
+			state->cache->unlock();
+		}
 
 		return d;
 	}
@@ -841,6 +950,67 @@ namespace executive
 		reportE( jit != 0, "Deleting the LLVM JIT-Compiler." );
 		delete jit;
 		#endif
+	}
+
+	LLVMExecutableKernel::AtomicOperationCache::AtomicOperationCache()
+	{
+		pthread_mutex_init( &_mutex, 0 );
+	}
+	
+	LLVMExecutableKernel::AtomicOperationCache::~AtomicOperationCache()
+	{
+		pthread_mutex_destroy( &_mutex );
+	}
+
+	void LLVMExecutableKernel::AtomicOperationCache::lock()
+	{
+		pthread_mutex_lock( &_mutex );
+	}
+
+	void LLVMExecutableKernel::AtomicOperationCache::unlock()
+	{
+		pthread_mutex_unlock( &_mutex );
+	}
+	
+	void LLVMExecutableKernel::AtomicOperationCache::write( 
+		void* _address, const void* _data, unsigned int bytes )
+	{
+		char* address = (char*) _address;
+		const char* data = (const char*) _data;
+		
+		for( unsigned int i = 0; i < bytes; ++i )
+		{
+			_cache[ address + i ] = data[ i ];
+			address[ i ] = data[ i ];
+		}
+	}
+
+	void LLVMExecutableKernel::AtomicOperationCache::read( 
+		void* _data, const void* _address, unsigned int bytes )
+	{
+		char* address = (char*) _address;
+		char* data = (char*) _data;
+		
+		for( unsigned int i = 0; i < bytes; ++i )
+		{
+			MemoryMap::iterator line = _cache.find( address + i );
+			if( line == _cache.end() )
+			{
+				line = _cache.insert( 
+					std::make_pair( address + i, address[ i ] ) ).first;
+			}
+			data[ i ] = line->second;
+		}
+	}
+
+	void LLVMExecutableKernel::AtomicOperationCache::flush()
+	{
+		for( MemoryMap::iterator line = _cache.begin(); 
+			line != _cache.end(); ++line )
+		{
+			*line->first = line->second;
+		}
+		_cache.clear();
 	}
 
 	LLVMExecutableKernel::Worker::Message::Message( Type t, 
@@ -1778,6 +1948,7 @@ namespace executive
 		
 		_context.other = (char*) &_opaque;
 		_opaque.instructions = &_ptx->instructions;
+		_opaque.cache = &_cache;
 		
 		_state.initialize();
 	}

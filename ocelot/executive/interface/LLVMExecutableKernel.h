@@ -65,6 +65,39 @@ namespace executive
 					void initialize();
 			};
 			
+			/*! \brief Used as a synchronization point for atomic operations */
+			class AtomicOperationCache
+			{
+				private:
+					typedef std::unordered_map< char*, char > MemoryMap;
+
+				private:
+					/*! \brief Controls access to the cache */
+					pthread_mutex_t _mutex;
+					/*! \brief The actual cache */
+					MemoryMap _cache;
+				
+				public:
+					/*! \brief Create the mutex */
+					AtomicOperationCache();
+					/*! \brief Destroy the mutex */
+					~AtomicOperationCache();
+				
+				public:
+					/*! \brief Locks access to the cache */
+					void lock();
+					/*! \brief Unlocks the cache */
+					void unlock();
+					/*! \brief Write a range of addresses to the cache */
+					void write( void* address, const void* data, 
+						unsigned int bytes );
+					/*! \brief Read an address if there is a hit */
+					void read( void* address, const void* data, 
+						unsigned int bytes );
+					/*! \brief Flush the cache to memory */
+					void flush();
+			};
+			
 			/*! \brief A worker thread executes a subset of CTAs in a kernel */
 			class Worker : public hydrazine::Thread
 			{
@@ -196,7 +229,9 @@ namespace executive
 					BlockIdMap blocks;
 					/*! \brief Debugging information for instructions */
 					ir::PTXKernel::PTXInstructionVector* instructions;				
-			
+					/*! \brief Atomic operation cache */
+					AtomicOperationCache* cache;
+					
 				public:
 					/*! \brief Starts the timer on creation */
 					OpaqueState();
@@ -235,6 +270,8 @@ namespace executive
 			OpaqueState _opaque;
 			/*! \brief Optimization level for this kernel */
 			translator::Translator::OptimizationLevel _optimizationLevel;
+			/*! \brief Cache atomics from different threads */
+			AtomicOperationCache _cache;
 		
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */

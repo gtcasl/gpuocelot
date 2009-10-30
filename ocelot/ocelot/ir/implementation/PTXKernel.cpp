@@ -76,8 +76,11 @@ namespace ir
 
 		typedef std::unordered_set< analysis::DataflowGraph::RegisterId > 
 			RegisterSet;
-		
+		typedef std::unordered_set< analysis::DataflowGraph::Register > DeadRegisterSet;
+
 		RegisterSet encountered;
+		DeadRegisterSet deadRegisters;
+		
 		RegisterVector regs;
 		
 		for( analysis::DataflowGraph::const_iterator block = _dfg->begin(); 
@@ -99,16 +102,58 @@ namespace ir
 			{
 				report( "  For instruction " 
 					<< instructions[ instruction->id ].toString() );
+
 				typedef analysis::DataflowGraph::RegisterPointerVector
 					RegisterPointerVector;
+
 				for( RegisterPointerVector::const_iterator 
 					d = instruction->d.begin(); d != instruction->d.end(); ++d )
 				{
 					if( encountered.insert( *d->pointer ).second )
 					{
-						regs.push_back( *d );
+						analysis::DataflowGraph::Register live_reg(*d->pointer, instructions[instruction->id].d.type);
+						regs.push_back( live_reg );
 					}
 				}
+			}
+		}
+
+		// we've marked all values, so identify instructions whose operands are dead
+		for( analysis::DataflowGraph::const_iterator block = _dfg->begin(); 
+			block != _dfg->end(); ++block  )
+		{
+			report( " For block " << block->label() );
+			
+			for( analysis::DataflowGraph::InstructionVector::const_iterator 
+				instruction = block->instructions().begin(); 
+				instruction != block->instructions().end(); ++instruction )
+			{
+				report( "  For instruction " 
+					<< instructions[ instruction->id ].toString() );
+
+				typedef analysis::DataflowGraph::RegisterPointerVector
+					RegisterPointerVector;
+
+				for( RegisterPointerVector::const_iterator 
+					s = instruction->s.begin(); s != instruction->s.end(); ++s )
+				{
+					analysis::DataflowGraph::RegisterId reg = *(s->pointer);
+					if(encountered.find(reg) == encountered.end())
+					{
+						// source operand was not produced by any instructions
+						analysis::DataflowGraph::Register dead_reg(reg, s->type);
+						deadRegisters.insert(dead_reg);
+					}
+				}
+			}
+		}
+
+		// either add the dead registers to regs or remove the instructions
+		
+		{
+			for (DeadRegisterSet::const_iterator dr = deadRegisters.begin(); 
+				dr != deadRegisters.end(); ++dr) {
+				regs.push_back(*dr);
 			}
 		}
 		

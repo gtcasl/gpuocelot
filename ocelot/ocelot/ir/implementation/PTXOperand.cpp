@@ -366,7 +366,7 @@ static std::ostream & write(std::ostream &stream, double value) {
 		double value;
 	} double_union;
 	double_union.value = value;
-	stream << "0f" << std::setw(16) << std::setfill('0') << std::hex << double_union.imm_uint;
+	stream << "0d" << std::setw(16) << std::setfill('0') << std::hex << double_union.imm_uint;
 	return stream;
 }
 

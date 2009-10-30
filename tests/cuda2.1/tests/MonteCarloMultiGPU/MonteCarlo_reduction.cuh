@@ -54,12 +54,18 @@ __device__ void sumReduceSharedMem(T *sum, T *sum2, int tid)
     
 
     {
-        if (blockSize >=  64) { sum[tid] += sum[tid + 32]; sum2[tid] += sum2[tid + 32]; EMUSYNC; }
-        if (blockSize >=  32) { sum[tid] += sum[tid + 16]; sum2[tid] += sum2[tid + 16]; EMUSYNC; }
-        if (blockSize >=  16) { sum[tid] += sum[tid +  8]; sum2[tid] += sum2[tid +  8]; EMUSYNC; }
-        if (blockSize >=   8) { sum[tid] += sum[tid +  4]; sum2[tid] += sum2[tid +  4]; EMUSYNC; }
-        if (blockSize >=   4) { sum[tid] += sum[tid +  2]; sum2[tid] += sum2[tid +  2]; EMUSYNC; }
-        if (blockSize >=   2) { sum[tid] += sum[tid +  1]; sum2[tid] += sum2[tid +  1]; EMUSYNC; }
+        if (blockSize >=  64 && tid < 32) { sum[tid] += sum[tid + 32]; sum2[tid] += sum2[tid + 32]; } 
+        EMUSYNC; 
+        if (blockSize >=  32 && tid < 32) { sum[tid] += sum[tid + 16]; sum2[tid] += sum2[tid + 16]; } 
+        EMUSYNC;
+        if (blockSize >=  16 && tid < 32) { sum[tid] += sum[tid +  8]; sum2[tid] += sum2[tid +  8]; }
+        EMUSYNC;
+        if (blockSize >=   8 && tid < 32) { sum[tid] += sum[tid +  4]; sum2[tid] += sum2[tid +  4]; }
+        EMUSYNC;
+        if (blockSize >=   4 && tid < 32) { sum[tid] += sum[tid +  2]; sum2[tid] += sum2[tid +  2]; }
+        EMUSYNC;
+        if (blockSize >=   2 && tid < 32) { sum[tid] += sum[tid +  1]; sum2[tid] += sum2[tid +  1]; }
+        EMUSYNC;
     }
 }
 

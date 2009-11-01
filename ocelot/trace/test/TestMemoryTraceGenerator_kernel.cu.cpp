@@ -984,11 +984,11 @@ extern "C" cudaError_t cudaRuntimeGetVersion(int *);
 template<class T> inline cudaChannelFormatDesc cudaCreateChannelDesc()
 {
 return cudaCreateChannelDesc(0, 0, 0, 0, cudaChannelFormatKindNone);
-}
 
+}
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< char> ()
 {
-auto int e = (((int)sizeof(char)) * 8);
+int e = (((int)sizeof(char)) * 8);
 
 
 

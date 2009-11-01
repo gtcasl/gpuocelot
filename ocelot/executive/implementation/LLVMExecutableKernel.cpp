@@ -40,6 +40,7 @@
 #include <configure.h>
 
 #ifdef HAVE_LLVM
+#include <llvm/LLVMContext.h>
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/Assembly/Parser.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>

@@ -309,7 +309,7 @@ TestTrace_LDFLAGS = -static
 
 ################################################################################
 ## TestMemoryTraceGenerator
-TestMemoryTraceGenerator_CXXFLAGS = -Wall -std=c++0x
+TestMemoryTraceGenerator_CXXFLAGS = -Wall
 TestMemoryTraceGenerator_SOURCES = \
 	ocelot/trace/test/TestMemoryTraceGenerator.cpp \
 	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu.cpp

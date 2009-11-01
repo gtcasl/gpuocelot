@@ -125,7 +125,7 @@ BoxFilter_LDFLAGS = -static
 
 ################################################################################
 ## CapModel3
-CapModel3_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS) -std=c++0x
+CapModel3_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 CapModel3_CFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS) -std=c99
 CapModel3_SOURCES = tests/CapModel3/capModel3.cu.cpp \
 	tests/CapModel3/TestCapModel3.cpp \

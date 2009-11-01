@@ -440,7 +440,7 @@ namespace sim
 		
 		}
 		
-		typedef std::unordered_map< unsigned int, CounterCf > 
+		typedef std::map< unsigned int, CounterCf > 
 			CounterCfVector;
 		
 		for( unsigned int simNumber = 0; 
@@ -1026,7 +1026,7 @@ namespace sim
 		invariants->obligorSize = data.obligors->size();
 		invariants->obligors = new CudaObligor[ invariants->obligorSize ];
 		
-		typedef std::unordered_map< unsigned int, unsigned int > IdMap;
+		typedef std::map< unsigned int, unsigned int > IdMap;
 		
 		IdMap obligorIds;
 		IdMap counterIds;

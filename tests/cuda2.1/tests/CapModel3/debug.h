@@ -107,11 +107,7 @@ namespace hydrazine
 	/*!
 		\brief Strip the front of a file	
 	*/
-	#ifdef __CUDACC__
 	template< char delimiter >
-	#else
-	template< char delimiter = '/' >
-	#endif
 	std::string stripReportPath( const std::string& string )
 	{
 	

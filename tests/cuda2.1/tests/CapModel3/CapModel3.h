@@ -15,8 +15,8 @@
 
 #include "SimulationParameters.h"
 #include "capModel3.hu"
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 #include <fstream>
 #include <deque>
 
@@ -150,16 +150,16 @@ namespace sim
 			
 			};
 			
-			typedef std::unordered_map< unsigned int, Rating > RatingMap;
-			typedef std::unordered_map< unsigned int, Industry >
+			typedef std::map< unsigned int, Rating > RatingMap;
+			typedef std::map< unsigned int, Industry >
 				IndustryMap;
-			typedef std::unordered_map< unsigned int, Obligor > 	
+			typedef std::map< unsigned int, Obligor > 	
 				ObligorMap;
-			typedef std::unordered_map< unsigned int, Portfolio > 	
+			typedef std::map< unsigned int, Portfolio > 	
 				PortfolioMap;
-			typedef std::unordered_map< unsigned int, unsigned int > 	
+			typedef std::map< unsigned int, unsigned int > 	
 				ReverseCounterMap;
-			typedef std::unordered_set< unsigned int > IdSet;
+			typedef std::set< unsigned int > IdSet;
 			typedef std::deque<unsigned int> ReverseMap;
 			typedef std::deque< Date > DateVector;
 			typedef std::deque< unsigned int > Vector;

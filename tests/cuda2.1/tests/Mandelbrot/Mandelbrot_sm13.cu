@@ -26,19 +26,16 @@ __global__ void Mandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH
     __shared__ unsigned int blockIndex;
     __shared__ unsigned int blockX, blockY;
     
+    if ((threadIdx.x==0) && (threadIdx.y==0)) {
+        // get block to process
+        blockIndex = atomicAdd(&blockCounter, 1);
+        blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+        blockY = blockIndex / gridWidth;
+    }
+    __syncthreads();
+
     // loop until all blocks completed
-    while(1) {
-        __syncthreads();
-        if ((threadIdx.x==0) && (threadIdx.y==0)) {
-            // get block to process
-            blockIndex = atomicAdd(&blockCounter, 1);
-            blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
-            blockY = blockIndex / gridWidth;
-        }
-        
-        __syncthreads();
-        
-        if (blockIndex >= numBlocks) break;  // finish
+    while(blockIndex < numBlocks) {
 
         // process this block
         const int ix = blockDim.x * blockX + threadIdx.x;
@@ -81,6 +78,14 @@ __global__ void Mandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH
             }
         }
 
+		__syncthreads();
+		if ((threadIdx.x==0) && (threadIdx.y==0)) {
+		    // get block to process
+		    blockIndex = atomicAdd(&blockCounter, 1);
+		    blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+		    blockY = blockIndex / gridWidth;
+		}
+		__syncthreads();
     }
     
 } // Mandelbrot0
@@ -91,20 +96,17 @@ __global__ void MandelbrotDS0_sm13(uchar4 *dst, const int imageW, const int imag
 {
     __shared__ unsigned int blockIndex;
     __shared__ unsigned int blockX, blockY;
+
+    if ((threadIdx.x==0) && (threadIdx.y==0)) {
+        // get block to process
+        blockIndex = atomicAdd(&blockCounter, 1);
+        blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+        blockY = blockIndex / gridWidth;
+    }
+    __syncthreads();
     
     // loop until all blocks completed
-    while(1) {
-        __syncthreads();
-        if ((threadIdx.x==0) && (threadIdx.y==0)) {
-            // get block to process
-            blockIndex = atomicAdd(&blockCounter, 1);
-            blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
-            blockY = blockIndex / gridWidth;
-        }
-        __syncthreads();
-        
-        if (blockIndex >= numBlocks) break;  // finish
-
+    while(blockIndex < numBlocks) {
         // process this block
         const int ix = blockDim.x * blockX + threadIdx.x;
         const int iy = blockDim.y * blockY + threadIdx.y;
@@ -149,6 +151,14 @@ __global__ void MandelbrotDS0_sm13(uchar4 *dst, const int imageW, const int imag
             }
         }
         
+        __syncthreads();
+        if ((threadIdx.x==0) && (threadIdx.y==0)) {
+            // get block to process
+            blockIndex = atomicAdd(&blockCounter, 1);
+            blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+            blockY = blockIndex / gridWidth;
+        }
+        __syncthreads();
     }
 } // MandelbrotDS0
 
@@ -159,18 +169,16 @@ __global__ void Mandelbrot1_sm13(uchar4 *dst, const int imageW, const int imageH
     __shared__ unsigned int blockIndex;
     __shared__ unsigned int blockX, blockY;
     
+    if ((threadIdx.x==0) && (threadIdx.y==0)) {
+        // get block to process
+        blockIndex = atomicAdd(&blockCounter, 1);
+        blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+        blockY = blockIndex / gridWidth;
+    }
+    __syncthreads();
+
     // loop until all blocks completed
-    while(1) {
-        __syncthreads();
-        if ((threadIdx.x==0) && (threadIdx.y==0)) {
-            // get block to process
-            blockIndex = atomicAdd(&blockCounter, 1);
-            blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
-            blockY = blockIndex / gridWidth;
-        }
-        __syncthreads();
-        
-        if (blockIndex >= numBlocks) break;  // finish
+    while(blockIndex < numBlocks) {
 
         // process this block
         const int ix = blockDim.x * blockX + threadIdx.x;
@@ -221,6 +229,15 @@ __global__ void Mandelbrot1_sm13(uchar4 *dst, const int imageW, const int imageH
 			    dst[pixel].z = (pixelColor.z * frame + color.z + frame2) / frame1;
 		    }
         }   
+		__syncthreads();
+		if ((threadIdx.x==0) && (threadIdx.y==0)) {
+		    // get block to process
+		    blockIndex = atomicAdd(&blockCounter, 1);
+		    blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+		    blockY = blockIndex / gridWidth;
+		}
+		__syncthreads();
+
     }
     
 } // Mandelbrot1
@@ -230,19 +247,17 @@ __global__ void MandelbrotDS1_sm13(uchar4 *dst, const int imageW, const int imag
 {
     __shared__ unsigned int blockIndex;
     __shared__ unsigned int blockX, blockY;
+
+    if ((threadIdx.x==0) && (threadIdx.y==0)) {
+        // get block to process
+        blockIndex = atomicAdd(&blockCounter, 1);
+        blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+        blockY = blockIndex / gridWidth;
+    }
+    __syncthreads();
     
     // loop until all blocks completed
-    while(1) {
-        __syncthreads();
-        if ((threadIdx.x==0) && (threadIdx.y==0)) {
-            // get block to process
-            blockIndex = atomicAdd(&blockCounter, 1);
-            blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
-            blockY = blockIndex / gridWidth;
-        }
-        __syncthreads();
-        
-        if (blockIndex >= numBlocks) break;  // finish
+    while(blockIndex < numBlocks) {
 
         // process this block
         const int ix = blockDim.x * blockX + threadIdx.x;
@@ -297,6 +312,15 @@ __global__ void MandelbrotDS1_sm13(uchar4 *dst, const int imageW, const int imag
 			    dst[pixel].z = (pixelColor.z * frame + color.z + frame2) / frame1;
 		    }
         }
+
+		__syncthreads();
+		if ((threadIdx.x==0) && (threadIdx.y==0)) {
+		    // get block to process
+		    blockIndex = atomicAdd(&blockCounter, 1);
+		    blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
+		    blockY = blockIndex / gridWidth;
+		}
+		__syncthreads();
     }
     
 } // MandelbrotDS1

@@ -182,18 +182,65 @@ static  CUaddress_mode textureAddressMode(ir::Texture::AddressMode addr) {
 	return CU_TR_ADDRESS_MODE_WRAP;
 }
 
+/*
 static CUarray_format textureDataFormat(ir::Texture::Type type) {
 	switch (type) {
 		case ir::Texture::Unsigned:
+			report("  tex format: unsigned");
 			return CU_AD_FORMAT_UNSIGNED_INT32;
 		case ir::Texture::Signed:
+			report("  tex format: signed");
 			return CU_AD_FORMAT_SIGNED_INT32;
 		case ir::Texture::Float:
+			report("  tex format: float");
 			return CU_AD_FORMAT_FLOAT;
 		default: break;
 	}
 	return CU_AD_FORMAT_FLOAT;
 }
+*/
+
+static CUarray_format textureDataFormat(const ir::Texture &texture) {
+	switch (texture.type) {
+		case ir::Texture::Unsigned:
+			report("  tex format: unsigned - " << texture.x << " bits");
+			switch (texture.x) {
+				case 8:
+					return CU_AD_FORMAT_UNSIGNED_INT8;
+				case 16:
+					return CU_AD_FORMAT_UNSIGNED_INT16;
+				case 32:
+				default:
+					return CU_AD_FORMAT_UNSIGNED_INT32;
+			}
+			return CU_AD_FORMAT_UNSIGNED_INT32;
+		case ir::Texture::Signed:
+			report("  tex format: signed - " << texture.x << " bits");
+			switch (texture.x) {
+				case 8:
+					return CU_AD_FORMAT_SIGNED_INT8;
+				case 16:
+					return CU_AD_FORMAT_SIGNED_INT16;
+				case 32:
+				default:
+					return CU_AD_FORMAT_SIGNED_INT32;
+			}
+			return CU_AD_FORMAT_SIGNED_INT32;
+		case ir::Texture::Float:
+			report("  tex format: float - " << texture.x << " bits");
+			switch (texture.x) {
+				case 16:
+					return CU_AD_FORMAT_HALF;
+				case 32:
+				default:
+					return CU_AD_FORMAT_FLOAT;
+			}
+			return CU_AD_FORMAT_FLOAT;
+		default: break;
+	}
+	return CU_AD_FORMAT_FLOAT;
+}
+
 #endif
 
 /*!
@@ -254,8 +301,8 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 					t_it != mod_it->second->textures.end(); ++t_it) {
 
 					CUtexref texRef;
-					int textureFlags = (t_it->second.normalize ? CU_TRSF_NORMALIZED_COORDINATES:0);
-						// | (t_it->second.type != ir::Texture::Float ? CU_TRSF_READ_AS_INTEGER : 0);
+					int textureFlags = (t_it->second.normalize ? CU_TRSF_NORMALIZED_COORDINATES:0)
+						 | (!t_it->second.normalizedFloat ? CU_TRSF_READ_AS_INTEGER : 0);
 					if (cuModuleGetTexRef(&texRef, mod_it->second->cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
 						report("failed to get texture reference '"<< t_it->first 
 							<< "'from module '" << mod_it->first << "'\n");
@@ -265,10 +312,12 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 						cuTexRefSetAddressMode(texRef, i, textureAddressMode(t_it->second.addressMode[i]));
 					}
 					cuTexRefSetFilterMode(texRef, textureFilterMode(t_it->second.interpolation));
-					cuTexRefSetFormat(texRef, textureDataFormat(t_it->second.type), t_it->second.components());
+					cuTexRefSetFormat(texRef, textureDataFormat(t_it->second), t_it->second.components());
 					cuTexRefSetFlags(texRef, textureFlags);
 
-					report("  texture flags: " << textureFlags);
+					report("  texture flags: " << textureFlags << " - " 
+						<< (textureFlags & CU_TRSF_READ_AS_INTEGER ? "read as integer " : "")
+						<< (textureFlags & CU_TRSF_NORMALIZED_COORDINATES ? "normalized coordinates" : ""));
 
 					switch (t_it->second.dimensions()) {
 						case 1:
@@ -289,7 +338,7 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 								desc.Width = t_it->second.size.x;
 								desc.Height = t_it->second.size.y;
 								desc.NumChannels = t_it->second.components();
-								desc.Format = textureDataFormat(t_it->second.type);
+								desc.Format = textureDataFormat(t_it->second);
 
 								if (cuTexRefSetAddress2D(texRef, &desc,
 									hydrazine::bit_cast<CUdeviceptr , void*>(t_it->second.data), 

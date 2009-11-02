@@ -1479,9 +1479,6 @@ void capModel3Cuda( CudaInvariants* invariants, CudaResult* results )
 	invariants->parameters->chunkSize = 
 		CEIL_DIV( invariants->parameters->chunkSize, threads );
 	
-	dim3 grid( maxCtas, 1, 1 );
-	dim3 cta( maxThreads, 1, 1 );
-
 	// memory
 	CudaScratch* deviceScratch;
 	CudaInvariants* hostInvariants;
@@ -1510,7 +1507,7 @@ void capModel3Cuda( CudaInvariants* invariants, CudaResult* results )
 		invariantBytes, cudaMemcpyHostToDevice, stream ) );
 			
 	// compute
-	capModel3Kernel<<< grid, cta, 0, stream >>>( deviceInvariants, 
+	capModel3Kernel<<< maxCtas, maxThreads, 0, stream >>>( deviceInvariants, 
 		deviceScratch, deviceResults );
 	
 	// copy

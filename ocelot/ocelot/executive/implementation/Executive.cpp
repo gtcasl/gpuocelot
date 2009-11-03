@@ -469,6 +469,7 @@ bool executive::Executive::cudaInitialized = false;
 
 executive::Executive::Executive() : selectedDevice( -1 ), 
 	optimizationLevel( translator::Translator::NoOptimization ) {
+	cudaGLInitialized = true;
 	enumerateDevices();
 }
 
@@ -666,15 +667,42 @@ void executive::Executive::enumerateDevices() {
 }
 
 /*!
+	idempotent - called to init GL interoperability
+*/
+bool executive::Executive::useGLInteroperability() {
+	if (!cudaGLInitialized) {
+		cudaGLInitialized = false;
+		if (cuGLInit() != CUDA_SUCCESS) {
+			report("  failed to initialize GL interoperability");
+			return false;
+		}
+		if (cuDeviceGet(&cudaDevice, devices[selectedDevice].guid) != CUDA_SUCCESS) {
+			report("  cuDeviceGet() failed");
+			return false;
+		}
+		if (cuGLCtxCreate(&cudaContext, 0, cudaDevice) == CUDA_SUCCESS) {
+			cudaGLInitialized = true;
+			report("  cuGLCtxCreate() - created a GL context");
+			return true;
+		}
+		else {
+			report("  CANNOT create select GL-capable CUDA context");
+			return false;
+		}
+	}
+	return true;
+}
+
+/*!
 	Select a device by GUID
 */
 bool executive::Executive::select(int device) {
+	if (devices[selectedDevice].guid == device) {
+		return true;	
+	}
 	report("selecting device " << device);
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].guid == device) {
-			if (selectedDevice == i) {
-				return true;
-			}
 			if (devices[i].ISA == ir::Instruction::Emulated
 				|| devices[i].ISA == ir::Instruction::LLVM) {
 				selectedDevice = i;
@@ -683,12 +711,13 @@ bool executive::Executive::select(int device) {
 #if HAVE_CUDA_DRIVER_API == 1
 			else if (devices[i].ISA == ir::Instruction::GPU) {
 				selectedDevice = i;
+				cudaGLInitialized = false;
 
 				if (cuCtxCreate(&cudaContext, 0, devices[i].guid) == CUDA_SUCCESS) {
 					report("  selected CUDA device " << i);
 					return true;
 				}
-				report("cuCtxCreate(,0, " << devices[i].guid << " failed");
+				report("cuGLCtxCreate(&context,0, " << devices[i].guid << ") failed");
 				return false;
 			}
 #endif

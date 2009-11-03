@@ -16,6 +16,11 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
+
+#if HAVE_CUDA_DRIVER_API == 1
+#include <ocelot/cuda/include/cudaGL.h>
+#endif
+
 #include <cassert>
 #include <cstring>
 
@@ -1979,23 +1984,47 @@ namespace cuda
 				cudaErrorMapBufferObjectFailed );		
 		}
 	
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		mapping->second = glMapBuffer( GL_ARRAY_BUFFER, GL_READ_WRITE );
-		int bytes = 0;
-		glGetBufferParameteriv( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes );
-		context.registerExternal(mapping->second, bytes);
-		
-		GLenum error = glGetError();
-		if( error != GL_NO_ERROR )
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			throw hydrazine::Exception(formatError( "Opengl call failed." ), 
-				cudaErrorMapBufferObjectFailed );
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+#if HAVE_CUDA_DRIVER_API == 1
+			if (context.useGLInteroperability()) {
+				CUresult result;
+				result = cuGLRegisterBufferObject(buffer);
+				if (result != CUDA_SUCCESS) {
+					throw hydrazine::Exception("cuGLRegisterBufferObject() failed");
+				}
+				CUdeviceptr devPtr;
+				unsigned int bufferSize;
+				result = cuGLMapBufferObject(&devPtr, &bufferSize, buffer);
+				if (result != CUDA_SUCCESS) {
+					throw hydrazine::Exception("cuGLMapBufferObject() - failed");
+				}
+				mapping->second = (void *)devPtr;
+				context.registerExternal(mapping->second, bufferSize);
+			}
+			else {
+				throw hydrazine::Exception("CUDA-GL interoperability not available for mapping GL buffers");
+			}
+#endif	
 		}
+		else {
+			glBindBuffer(GL_ARRAY_BUFFER, buffer);
+			mapping->second = glMapBuffer( GL_ARRAY_BUFFER, GL_READ_WRITE );
+			int bytes = 0;
+			glGetBufferParameteriv( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes );
+			context.registerExternal(mapping->second, bytes);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		report("Buffer " << buffer << ", size " << bytes 
-			<< ", mapped to address " << mapping->second);
+			GLenum error = glGetError();
+			if( error != GL_NO_ERROR )
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				throw hydrazine::Exception(formatError( "Opengl call failed." ), 
+					cudaErrorMapBufferObjectFailed );
+			}
+		
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			report("Buffer " << buffer << ", size " << bytes 
+				<< ", mapped to address " << mapping->second);
+		}
 		return mapping->second;
 	}
 
@@ -2009,16 +2038,42 @@ namespace cuda
 				cudaErrorInvalidDevicePointer );		
 		}
 
-		context.free(mapping->second);
-		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		if( !glUnmapBuffer( GL_ARRAY_BUFFER ) )
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			throw hydrazine::Exception( formatError( "Opengl call failed." ), 
-				cudaErrorMapBufferObjectFailed );
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+#if HAVE_CUDA_DRIVER_API == 1
+
+			if (context.useGLInteroperability()) {
+				CUresult result;
+
+				result = cuGLUnmapBufferObject(buffer);
+				if (result != CUDA_SUCCESS) {
+					report("  cuGLUnmapBufferObject() - failed: " << result);
+					throw hydrazine::Exception("cuGLUnmapBufferObject() - failed");
+				}
+			
+				result = cuGLUnregisterBufferObject(buffer);
+				if (result != CUDA_SUCCESS) {
+					report("  cuGLUnregisterBufferObject() - failed: " << result);
+					throw hydrazine::Exception("cuGLUnregisterBufferObject() failed");
+				}
+				context.free(mapping->second);
+			}
+			else {
+				throw hydrazine::Exception("CUDA-GL interoperability not available for UN-mapping GL buffers");
+			}
+#endif	
 		}
+		else {
+			context.free(mapping->second);
 		
+			glBindBuffer(GL_ARRAY_BUFFER, buffer);
+			if( !glUnmapBuffer( GL_ARRAY_BUFFER ) )
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				throw hydrazine::Exception( formatError( "Opengl call failed." ), 
+					cudaErrorMapBufferObjectFailed );
+			}
+		}
+
 		mapping->second = (void*)0;
 	}
 	

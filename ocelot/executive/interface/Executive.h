@@ -330,6 +330,11 @@ namespace executive {
 			\param copyType specifies direction data should be copied to update globals
 		*/
 		void fenceGlobalVariables(MemoryCopy copyType = HostToDevice);
+
+		/*!
+			idempotent - called to init GL interoperability
+		*/
+		bool useGLInteroperability();
 		
 	public:
 		/*! Set of loaded PTX modules indexed by the module's filename */
@@ -359,7 +364,8 @@ namespace executive {
 		
 		/*! \brief Cuda specific state */
 		CUdevice cudaDevice;
-		CUcontext cudaContext;		
+		CUcontext cudaContext;
+		bool cudaGLInitialized;		
 		/*! \brief The actual set of devices */
 		DeviceVector allDevices;
 	};

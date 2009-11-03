@@ -1378,7 +1378,12 @@ namespace cuda
 
 	cudaError_t CudaRuntimeBase::cudaGLSetGLDevice( int device )
 	{
-		return cudaSetDevice( device );
+		report("cudaGLSetGLDevice()");
+		cudaError_t result = cudaSetDevice(device);
+		if (result == cudaSuccess) {
+			_runtime.context.useGLInteroperability();
+		}
+		return result;
 	}
 
 	cudaError_t CudaRuntimeBase::cudaGLRegisterBufferObject( GLuint bufObj )

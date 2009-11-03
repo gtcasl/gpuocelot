@@ -14,6 +14,11 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+
+#if HAVE_CUDA_DRIVER_API == 1
+#include <ocelot/cuda/include/cudaGL.h>
+#endif
+
 #include <cstring>
 
 #include <hydrazine/implementation/debug.h>

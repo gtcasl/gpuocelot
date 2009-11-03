@@ -584,7 +584,7 @@ namespace cuda
 		timer.stop();
 
 		_trace << "cudaMemcpyToSymbol";
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " <<(void*) symbol;
 		_trace << " source = " << src;
 		_trace << " bytes = " << count;
 		_trace << " offset = " << offset;
@@ -607,7 +607,7 @@ namespace cuda
 
 		_trace << "cudaMemcpyFromSymbol";
 		_trace << " destination = " << dst;
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " << (void*) symbol;
 		_trace << " bytes = " << count;
 		_trace << " offset = " << offset;
 		_trace << " kind = " << kind;
@@ -784,7 +784,7 @@ namespace cuda
 		timer.stop();
 
 		_trace << "cudaMemcpyToSymbolAsync";
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " <<(void*) symbol;
 		_trace << " source = " << src;
 		_trace << " bytes = " << count;
 		_trace << " offset = " << offset;
@@ -809,7 +809,7 @@ namespace cuda
 
 		_trace << "cudaMemcpyFromSymbolAsync";
 		_trace << " destination = " << dst;
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " <<(void*) symbol;
 		_trace << " bytes = " << count;
 		_trace << " offset = " << offset;
 		_trace << " kind = " << kind;
@@ -874,7 +874,7 @@ namespace cuda
 
 		_trace << "cudaGetSymbolAddress";
 		_trace << " pointer = " << *devPtr;
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " <<(void*) symbol;
 		_trace << " time = " << timer.seconds();
 		_trace << "\n";
 
@@ -892,7 +892,7 @@ namespace cuda
 
 		_trace << "cudaGetSymbolSize";
 		_trace << " size = " << *size;
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " <<(void*) symbol;
 		_trace << " time = " << timer.seconds();
 		_trace << "\n";
 
@@ -1210,7 +1210,7 @@ namespace cuda
 		_trace << " texrefY = " << (*texref)->channelDesc.y;
 		_trace << " texrefZ = " << (*texref)->channelDesc.z;
 		_trace << " texrefFormat = " << (*texref)->channelDesc.f;
-		_trace << " symbol = \"" << symbol << "\"";
+		_trace << " symbol = " <<(void*) symbol;
 		_trace << " time = " << timer.seconds();
 		_trace << "\n";
 
@@ -1831,7 +1831,7 @@ namespace cuda
 
 		_trace << "cudaRegisterVar";
 		_trace << " handle = " << fatCubinHandle;
-		_trace << " hostVar = \"" << hostVar << "\"";
+		_trace << " hostVar = " << (void*)hostVar;
 		_trace << " deviceAddress = " << deviceAddress;
 		_trace << " deviceName = " << deviceName;
 		_trace << " ext = " << ext;

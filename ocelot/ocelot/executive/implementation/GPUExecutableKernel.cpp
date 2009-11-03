@@ -59,6 +59,7 @@ void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 	result = cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
+		throw hydrazine::Exception("cuLaunchGrid() failed ");
 	}
 	#endif
 }
@@ -102,17 +103,21 @@ void executive::GPUExecutableKernel::updateConstantMemory() {
 }
 
 void executive::GPUExecutableKernel::configureParameters() {
-
-	#if HAVE_CUDA_DRIVER_API == 1
+#if HAVE_CUDA_DRIVER_API == 1
 	report("executive::GPUExecutableKernel::configuraParameters()");
 
 	std::vector< ir::Parameter >::iterator it = parameters.begin();
 	unsigned int paramSize = 0;
+	cudaError_enum result;
 	for (; it != parameters.end(); ++it) {
 		it->offset = paramSize;
 		paramSize += it->getSize();
 	}
-	if (cuParamSetSize(cuFunction, paramSize) != CUDA_SUCCESS) {
+	if (!paramSize) {
+		return;
+	}
+	if ((result = cuParamSetSize(cuFunction, paramSize)) != CUDA_SUCCESS) {
+		report("** failed to set parameter size (" << paramSize << " bytes) for kernel " << name << "\n - cuParamSetSize returned " << result);
 		throw hydrazine::Exception(std::string("Failed to set parameter size for kernel ") + name);
 	}
 	else {
@@ -126,6 +131,7 @@ void executive::GPUExecutableKernel::configureParameters() {
 			<< " - value: " << ir::Parameter::value(*it));
 
 		switch (it->type) {
+			case ir::PTXOperand::b8:	// fall through
 			case ir::PTXOperand::s8:	// fall through
 			case ir::PTXOperand::s16:	// fall through
 			case ir::PTXOperand::u8:	// fall through
@@ -153,7 +159,7 @@ void executive::GPUExecutableKernel::configureParameters() {
 
 				report("  - GPUExecutableKernel::configureParameters() - cuParamSetv(offset: " << it->offset << ", size: " << bytes << " bytes)");
 				if (cuParamSetv(cuFunction, it->offset, (void *)ptr, bytes) != CUDA_SUCCESS) {
-					report("*** failed to set binary parameter");
+					report("*** failed to set binary parameter - offset: " << it->offset << ", size: " << bytes);
 					throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
 						" for kernel " + name);
 				}
@@ -189,7 +195,7 @@ void executive::GPUExecutableKernel::configureParameters() {
 					float value = val_it->val_f32;
 					report("  - GPUExecutableKernel::configureParameters() - cuParamSetf(offset: " << it->offset << ", value: " << value << ")");
 					if (cuParamSetf(cuFunction, offset, value) != CUDA_SUCCESS) {
-						report("*** failed to set floating point parameter");
+						report("*** failed to set floating point parameter" << std::flush);
 						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
 							" for kernel " + name);
 					}

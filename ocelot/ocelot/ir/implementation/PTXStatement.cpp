@@ -341,7 +341,8 @@ namespace ir {
 				}
 				stream << ".shared";
 				assert( alignment != 0);
-				if( alignment != 1 ) {
+//				if( alignment != 1 ) 
+				{
 					stream << " .align " << alignment;
 				}
 				if( array.vec != PTXOperand::v1 ) {

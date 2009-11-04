@@ -697,7 +697,7 @@ bool executive::Executive::useGLInteroperability() {
 	Select a device by GUID
 */
 bool executive::Executive::select(int device) {
-	if (devices[selectedDevice].guid == device) {
+	if (selectedDevice >= 0 && devices[selectedDevice].guid == device) {
 		return true;	
 	}
 	report("selecting device " << device);
@@ -714,7 +714,7 @@ bool executive::Executive::select(int device) {
 				cudaGLInitialized = false;
 
 				if (cuCtxCreate(&cudaContext, 0, devices[i].guid) == CUDA_SUCCESS) {
-					report("  selected CUDA device " << i);
+					report("  cuCtxCreate() successful - creaetd CUDA device " << i);
 					return true;
 				}
 				report("cuGLCtxCreate(&context,0, " << devices[i].guid << ") failed");

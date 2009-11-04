@@ -1034,7 +1034,16 @@ namespace cuda
 		timer.stop();
 
 		_trace << "cudaBindTexture";
-		_trace << " offset = " << *offset;
+		_trace << " offset = ";
+		
+		if( offset != 0 )
+		{
+			_trace << *offset;
+		}
+		else
+		{
+			_trace << 0;
+		}
 		
 		_trace << " normalized = " << texref->normalized;
 		_trace << " filterMode = " << texref->filterMode;

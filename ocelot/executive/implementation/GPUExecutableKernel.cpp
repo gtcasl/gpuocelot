@@ -77,17 +77,17 @@ void executive::GPUExecutableKernel::setDevice(const Device* device) {
 }
 
 void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
-	#if HAVE_CUDA_DRIVER_API == 1
+#if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
-
 	result = cuFuncSetSharedSize(cuFunction, bytes);
 	if (result != CUDA_SUCCESS) {
-		report("  - cuFuncSetSharedSize(" << bytes << ") FAILED: " << result);
+		report("  - cuFuncSetSharedSize(" << bytes << " bytes) FAILED: " << result);
+		throw hydrazine::Exception("cuFuncSetSharedSize() failed");
 	}
 	else {
-		report("  - cuFuncSetSharedSize(" << bytes << ") succeeded");
+		report("  - cuFuncSetSharedSize(" << bytes << " bytes) succeeded");
 	}
-	#endif
+#endif
 }
 
 void executive::GPUExecutableKernel::updateParameterMemory() {

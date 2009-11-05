@@ -670,6 +670,7 @@ void executive::Executive::enumerateDevices() {
 	idempotent - called to init GL interoperability
 */
 bool executive::Executive::useGLInteroperability() {
+	#if HAVE_CUDA_DRIVER_API == 1
 	if (!cudaGLInitialized) {
 		cudaGLInitialized = false;
 		if (cuGLInit() != CUDA_SUCCESS) {
@@ -691,6 +692,9 @@ bool executive::Executive::useGLInteroperability() {
 		}
 	}
 	return true;
+	#else
+	return false;
+	#endif
 }
 
 /*!

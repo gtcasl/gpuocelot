@@ -368,7 +368,7 @@ main(int argc, char **argv)
       pb_SwitchToTimer(&timers, pb_TimerID_COMPUTE);
     }
 
-#if 0  /* Debugging */
+#if 1  /* Debugging */
   print_test_sads(sads_computed, image_size_macroblocks);
   write_sads_directly("sad-debug.bin",
 		      ref_image->width / 16, ref_image->height / 16,

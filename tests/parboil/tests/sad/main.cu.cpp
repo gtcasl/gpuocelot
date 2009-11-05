@@ -1,16 +1,12 @@
-# 1 "/tmp/tmpxft_0000631e_00000000-1_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000631e_00000000-1_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.cpp"
 # 1 "main.cu"
-# 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
-namespace std __attribute__((visibility("default"))) {
-# 245 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
-}
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
-# 152 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+# 149 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 3
 typedef long ptrdiff_t;
-# 214 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+# 211 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 3
 typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 107 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
@@ -793,7 +789,7 @@ extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 # 108 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
 # 109 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 216 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 2 3
+# 213 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 2 3
 # 91 "/usr/local/cuda/bin/../include/driver_types.h"
 # 139 "/usr/local/cuda/bin/../include/driver_types.h"
 # 151 "/usr/local/cuda/bin/../include/driver_types.h"
@@ -1502,21 +1498,21 @@ extern "C" { typedef long __intptr_t; }
 
 
 extern "C" { typedef unsigned __socklen_t; }
-# 61 "/usr/include/time.h" 3
+# 60 "/usr/include/time.h" 3
 extern "C" { typedef __clock_t clock_t; }
-# 77 "/usr/include/time.h" 3
+# 76 "/usr/include/time.h" 3
 extern "C" { typedef __time_t time_t; }
-# 93 "/usr/include/time.h" 3
+# 92 "/usr/include/time.h" 3
 extern "C" { typedef __clockid_t clockid_t; }
-# 105 "/usr/include/time.h" 3
+# 104 "/usr/include/time.h" 3
 extern "C" { typedef __timer_t timer_t; }
-# 121 "/usr/include/time.h" 3
+# 120 "/usr/include/time.h" 3
 extern "C" { struct timespec {
 
 __time_t tv_sec;
 long tv_nsec;
 }; }
-# 134 "/usr/include/time.h" 3
+# 133 "/usr/include/time.h" 3
 extern "C" { struct tm {
 
 int tm_sec;
@@ -1537,7 +1533,7 @@ const char *tm_zone;
 
 
 }; }
-# 162 "/usr/include/time.h" 3
+# 161 "/usr/include/time.h" 3
 extern "C" { struct itimerspec {
 
 timespec it_interval;
@@ -1546,9 +1542,9 @@ timespec it_value;
 
 
 struct sigevent;
-# 175 "/usr/include/time.h" 3
+# 174 "/usr/include/time.h" 3
 extern "C" { typedef __pid_t pid_t; }
-# 184 "/usr/include/time.h" 3
+# 183 "/usr/include/time.h" 3
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
 
 
@@ -1560,9 +1556,9 @@ extern "C" double difftime(time_t, time_t) throw() __attribute__((__const__));
 
 
 extern "C" time_t mktime(tm *) throw();
-# 200 "/usr/include/time.h" 3
+# 199 "/usr/include/time.h" 3
 extern "C" size_t strftime(char *__restrict__, size_t, const char *__restrict__, const tm *__restrict__) throw();
-# 208 "/usr/include/time.h" 3
+# 207 "/usr/include/time.h" 3
 extern "C" char *strptime(const char *__restrict__, const char *__restrict__, tm *) throw();
 # 40 "/usr/include/xlocale.h" 3
 extern "C" { typedef
@@ -1580,38 +1576,38 @@ const int *__ctype_toupper;
 
 const char *__names[13];
 } *__locale_t; }
-# 218 "/usr/include/time.h" 3
+
+
+extern "C" { typedef __locale_t locale_t; }
+# 217 "/usr/include/time.h" 3
 extern "C" size_t strftime_l(char *__restrict__, size_t, const char *__restrict__, const tm *__restrict__, __locale_t) throw();
-
-
-
-
+# 224 "/usr/include/time.h" 3
 extern "C" char *strptime_l(const char *__restrict__, const char *__restrict__, tm *, __locale_t) throw();
-# 232 "/usr/include/time.h" 3
+# 233 "/usr/include/time.h" 3
 extern "C" tm *gmtime(const time_t *) throw();
 
 
 
 extern "C" tm *localtime(const time_t *) throw();
-# 242 "/usr/include/time.h" 3
+# 243 "/usr/include/time.h" 3
 extern "C" tm *gmtime_r(const time_t *__restrict__, tm *__restrict__) throw();
 
 
 
 
 extern "C" tm *localtime_r(const time_t *__restrict__, tm *__restrict__) throw();
-# 254 "/usr/include/time.h" 3
+# 255 "/usr/include/time.h" 3
 extern "C" char *asctime(const tm *) throw();
 
 
 extern "C" char *ctime(const time_t *) throw();
-# 265 "/usr/include/time.h" 3
+# 266 "/usr/include/time.h" 3
 extern "C" char *asctime_r(const tm *__restrict__, char *__restrict__) throw();
 
 
 
 extern "C" char *ctime_r(const time_t *__restrict__, char *__restrict__) throw();
-# 275 "/usr/include/time.h" 3
+# 276 "/usr/include/time.h" 3
 extern "C" { extern char *__tzname[2]; }
 extern "C" { extern int __daylight; }
 extern "C" { extern long __timezone; }
@@ -1629,9 +1625,9 @@ extern "C" void tzset() throw();
 
 extern "C" { extern int daylight; }
 extern "C" { extern long timezone; }
-# 297 "/usr/include/time.h" 3
+# 298 "/usr/include/time.h" 3
 extern "C" int stime(const time_t *) throw();
-# 312 "/usr/include/time.h" 3
+# 313 "/usr/include/time.h" 3
 extern "C" time_t timegm(tm *) throw();
 
 
@@ -1639,7 +1635,7 @@ extern "C" time_t timelocal(tm *) throw();
 
 
 extern "C" int dysize(int) throw() __attribute__((__const__));
-# 327 "/usr/include/time.h" 3
+# 328 "/usr/include/time.h" 3
 extern "C" int nanosleep(const timespec *, timespec *);
 
 
@@ -1652,7 +1648,7 @@ extern "C" int clock_gettime(clockid_t, timespec *) throw();
 
 
 extern "C" int clock_settime(clockid_t, const timespec *) throw();
-# 346 "/usr/include/time.h" 3
+# 347 "/usr/include/time.h" 3
 extern "C" int clock_nanosleep(clockid_t, int, const timespec *, timespec *);
 
 
@@ -1681,37 +1677,53 @@ extern "C" int timer_gettime(timer_t, itimerspec *) throw();
 
 
 extern "C" int timer_getoverrun(timer_t) throw();
-# 389 "/usr/include/time.h" 3
+# 390 "/usr/include/time.h" 3
 extern "C" { extern int getdate_err; }
-# 398 "/usr/include/time.h" 3
+# 399 "/usr/include/time.h" 3
 extern "C" tm *getdate(const char *);
-# 412 "/usr/include/time.h" 3
+# 413 "/usr/include/time.h" 3
 extern "C" int getdate_r(const char *__restrict__, tm *__restrict__);
-# 38 "/usr/include/string.h" 3
-extern "C" { extern inline __attribute__((__weak__)) void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 43 "/usr/include/string.h" 3
+extern "C" { extern inline void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
 
 
 extern "C" { extern inline void *memmove(void *, const void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 51 "/usr/include/string.h" 3
+# 56 "/usr/include/string.h" 3
 extern "C" void *memccpy(void *__restrict__, const void *__restrict__, int, size_t) throw();
-# 59 "/usr/include/string.h" 3
-extern "C" { extern inline __attribute__((__weak__)) void *memset(void *, int, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 64 "/usr/include/string.h" 3
+extern "C" { extern inline void *memset(void *, int, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
 extern "C" int memcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
+# 74 "/usr/include/string.h" 3
+extern inline void *memchr(void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+extern inline const void *memchr(const void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
 
 
 
-extern "C" void *memchr(const void *, int, size_t) throw() __attribute__((__pure__));
-# 73 "/usr/include/string.h" 3
-extern "C" void *rawmemchr(const void *, int) throw() __attribute__((__pure__));
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memchr(void *__s, int __c, size_t __n) throw()
+{
+return __builtin_memchr(__s, __c, __n);
+}
 
 
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const void *memchr(const void *__s, int __c, size_t __n) throw()
+{
+return __builtin_memchr(__s, __c, __n);
+}
+# 103 "/usr/include/string.h" 3
+extern void *rawmemchr(void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
 
-extern "C" void *memrchr(const void *, int, size_t) throw() __attribute__((__pure__));
-# 84 "/usr/include/string.h" 3
+extern const void *rawmemchr(const void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
+# 114 "/usr/include/string.h" 3
+extern void *memrchr(void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
+
+extern const void *memrchr(const void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
+# 127 "/usr/include/string.h" 3
 extern "C" { extern inline char *strcpy(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
@@ -1738,66 +1750,125 @@ extern "C" int strcoll(const char *, const char *) throw() __attribute__((__pure
 
 
 extern "C" size_t strxfrm(char *__restrict__, const char *__restrict__, size_t) throw();
-# 121 "/usr/include/string.h" 3
+# 164 "/usr/include/string.h" 3
 extern "C" int strcoll_l(const char *, const char *, __locale_t) throw() __attribute__((__pure__));
 
 
 extern "C" size_t strxfrm_l(char *, const char *, size_t, __locale_t) throw();
-# 130 "/usr/include/string.h" 3
+# 173 "/usr/include/string.h" 3
 extern "C" char *strdup(const char *) throw() __attribute__((__malloc__));
-# 138 "/usr/include/string.h" 3
+# 181 "/usr/include/string.h" 3
 extern "C" char *strndup(const char *, size_t) throw() __attribute__((__malloc__));
-# 167 "/usr/include/string.h" 3
-extern "C" char *strchr(const char *, int) throw() __attribute__((__pure__));
+# 213 "/usr/include/string.h" 3
+extern inline char *strchr(char *, int) throw() __asm__("strchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+extern inline const char *strchr(const char *, int) throw() __asm__("strchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
 
 
-extern "C" char *strrchr(const char *, int) throw() __attribute__((__pure__));
-# 177 "/usr/include/string.h" 3
-extern "C" char *strchrnul(const char *, int) throw() __attribute__((__pure__));
-# 184 "/usr/include/string.h" 3
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strchr(char *__s, int __c) throw()
+{
+return __builtin_strchr(__s, __c);
+}
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strchr(const char *__s, int __c) throw()
+{
+return __builtin_strchr(__s, __c);
+}
+# 240 "/usr/include/string.h" 3
+extern inline char *strrchr(char *, int) throw() __asm__("strrchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+extern inline const char *strrchr(const char *, int) throw() __asm__("strrchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strrchr(char *__s, int __c) throw()
+{
+return __builtin_strrchr(__s, __c);
+}
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strrchr(const char *__s, int __c) throw()
+{
+return __builtin_strrchr(__s, __c);
+}
+# 269 "/usr/include/string.h" 3
+extern char *strchrnul(char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
+
+extern const char *strchrnul(const char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
+# 282 "/usr/include/string.h" 3
 extern "C" size_t strcspn(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
 extern "C" size_t strspn(const char *, const char *) throw() __attribute__((__pure__));
+# 292 "/usr/include/string.h" 3
+extern inline char *strpbrk(char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
 
-
-extern "C" char *strpbrk(const char *, const char *) throw() __attribute__((__pure__));
-
-
-extern "C" char *strstr(const char *, const char *) throw() __attribute__((__pure__));
+extern inline const char *strpbrk(const char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
 
 
 
 
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strpbrk(char *__s, const char *__accept) throw()
+{
+return __builtin_strpbrk(__s, __accept);
+}
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strpbrk(const char *__s, const char *__accept) throw()
+{
+return __builtin_strpbrk(__s, __accept);
+}
+# 319 "/usr/include/string.h" 3
+extern inline char *strstr(char *, const char *) throw() __asm__("strstr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+extern inline const char *strstr(const char *, const char *) throw() __asm__("strstr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+# 327 "/usr/include/string.h" 3
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strstr(char *__haystack, const char *__needle) throw()
+{
+return __builtin_strstr(__haystack, __needle);
+}
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strstr(const char *__haystack, const char *__needle) throw()
+{
+return __builtin_strstr(__haystack, __needle);
+}
+# 346 "/usr/include/string.h" 3
 extern "C" char *strtok(char *__restrict__, const char *__restrict__) throw();
-# 205 "/usr/include/string.h" 3
+# 352 "/usr/include/string.h" 3
 extern "C" char *__strtok_r(char *__restrict__, const char *__restrict__, char **__restrict__) throw();
 
 
 
 
 extern "C" char *strtok_r(char *__restrict__, const char *__restrict__, char **__restrict__) throw();
-# 217 "/usr/include/string.h" 3
-extern "C" char *strcasestr(const char *, const char *) throw() __attribute__((__pure__));
-# 225 "/usr/include/string.h" 3
+# 365 "/usr/include/string.h" 3
+extern char *strcasestr(char *, const char *) throw() __asm__("strcasestr") __attribute__((__pure__));
+
+extern const char *strcasestr(const char *, const char *) throw() __asm__("strcasestr") __attribute__((__pure__));
+# 380 "/usr/include/string.h" 3
 extern "C" void *memmem(const void *, size_t, const void *, size_t) throw() __attribute__((__pure__));
-# 231 "/usr/include/string.h" 3
+# 386 "/usr/include/string.h" 3
 extern "C" void *__mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
 extern "C" { extern inline void *mempcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 242 "/usr/include/string.h" 3
+# 397 "/usr/include/string.h" 3
 extern "C" size_t strlen(const char *) throw() __attribute__((__pure__));
-# 249 "/usr/include/string.h" 3
+# 404 "/usr/include/string.h" 3
 extern "C" size_t strnlen(const char *, size_t) throw() __attribute__((__pure__));
-# 256 "/usr/include/string.h" 3
+# 411 "/usr/include/string.h" 3
 extern "C" char *strerror(int) throw();
-# 281 "/usr/include/string.h" 3
+# 436 "/usr/include/string.h" 3
 extern "C" char *strerror_r(int, char *, size_t) throw();
-# 288 "/usr/include/string.h" 3
+# 443 "/usr/include/string.h" 3
 extern "C" char *strerror_l(int, __locale_t) throw();
-# 294 "/usr/include/string.h" 3
+# 449 "/usr/include/string.h" 3
 extern "C" void __bzero(void *, size_t) throw();
 
 
@@ -1810,18 +1881,43 @@ extern "C" { extern inline void bzero(void *, size_t) throw() __attribute__((__a
 
 
 extern "C" int bcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
+# 467 "/usr/include/string.h" 3
+extern inline char *index(char *, int) throw() __asm__("index") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
 
-
-
-extern "C" char *index(const char *, int) throw() __attribute__((__pure__));
-
-
-
-extern "C" char *rindex(const char *, int) throw() __attribute__((__pure__));
+extern inline const char *index(const char *, int) throw() __asm__("index") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
 
 
 
 
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *index(char *__s, int __c) throw()
+{
+return __builtin_index(__s, __c);
+}
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *index(const char *__s, int __c) throw()
+{
+return __builtin_index(__s, __c);
+}
+# 495 "/usr/include/string.h" 3
+extern inline char *rindex(char *, int) throw() __asm__("rindex") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+extern inline const char *rindex(const char *, int) throw() __asm__("rindex") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+
+
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *rindex(char *__s, int __c) throw()
+{
+return __builtin_rindex(__s, __c);
+}
+
+
+inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *rindex(const char *__s, int __c) throw()
+{
+return __builtin_rindex(__s, __c);
+}
+# 521 "/usr/include/string.h" 3
 extern "C" int ffs(int) throw() __attribute__((__const__));
 
 
@@ -1830,25 +1926,21 @@ extern "C" int ffs(int) throw() __attribute__((__const__));
 extern "C" int ffsl(long) throw() __attribute__((__const__));
 
 extern "C" int ffsll(long long) throw() __attribute__((__const__));
-# 331 "/usr/include/string.h" 3
+# 534 "/usr/include/string.h" 3
 extern "C" int strcasecmp(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
 extern "C" int strncasecmp(const char *, const char *, size_t) throw() __attribute__((__pure__));
-# 342 "/usr/include/string.h" 3
+# 545 "/usr/include/string.h" 3
 extern "C" int strcasecmp_l(const char *, const char *, __locale_t) throw() __attribute__((__pure__));
 
 
 
 extern "C" int strncasecmp_l(const char *, const char *, size_t, __locale_t) throw() __attribute__((__pure__));
-# 354 "/usr/include/string.h" 3
+# 557 "/usr/include/string.h" 3
 extern "C" char *strsep(char **__restrict__, const char *__restrict__) throw();
-# 361 "/usr/include/string.h" 3
-extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
-
-
-
+# 564 "/usr/include/string.h" 3
 extern "C" char *strsignal(int) throw();
 
 
@@ -1863,7 +1955,8 @@ extern "C" char *__stpncpy(char *__restrict__, const char *__restrict__, size_t)
 
 
 extern "C" { extern inline char *stpncpy(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
+# 584 "/usr/include/string.h" 3
+extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
@@ -1871,12 +1964,14 @@ extern "C" char *strfry(char *) throw();
 
 
 extern "C" void *memfrob(void *, size_t) throw();
-# 393 "/usr/include/string.h" 3
-extern "C" char *basename(const char *) throw();
+# 599 "/usr/include/string.h" 3
+extern char *basename(char *) throw() __asm__("basename");
+
+extern const char *basename(const char *) throw() __asm__("basename");
 # 23 "/usr/include/bits/string3.h" 3
 extern "C" void __warn_memset_zero_len();
 # 49 "/usr/include/bits/string3.h" 3
-extern "C" { inline __attribute__((__weak__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memcpy(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
+extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memcpy(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
 
 {
 return __builtin___memcpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
@@ -1897,7 +1992,7 @@ extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inli
 return __builtin___mempcpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
 } }
 # 78 "/usr/include/bits/string3.h" 3
-extern "C" { inline __attribute__((__weak__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memset(void *__dest, int __ch, size_t __len) throw()
+extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memset(void *__dest, int __ch, size_t __len) throw()
 {
 if ((__builtin_constant_p(__len)) && (__len == (0)))
 {
@@ -1976,12 +2071,6 @@ return __builtin___strncat_chk(__dest, __src, __len, __builtin_object_size(__des
 } }
 # 56 "/usr/local/cuda/bin/../include/common_functions.h"
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
-
-
-extern "C" { extern inline __attribute__((__weak__)) void *memset(void *, int, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
-
-extern "C" { extern inline __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 # 65 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 
@@ -2317,15 +2406,7 @@ extern "C" __attribute__((__weak__)) int __isnanf(float) throw() __attribute__((
 extern "C" __attribute__((__weak__)) int __finite(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __finitef(float) throw() __attribute__((__const__));
-
-extern "C" { extern inline __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
-
-
-
-
-extern "C" { extern inline __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
-
-
+# 420 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fma(double, double, double) throw();
 
 extern "C" __attribute__((__weak__)) float fmaf(float, float, float) throw();
@@ -2538,7 +2619,7 @@ extern "C" int __fpclassify(double) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" { extern inline int __signbit(double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
 
 
 
@@ -2752,7 +2833,7 @@ extern "C" int __fpclassifyf(float) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" { extern inline int __signbitf(float) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
 
 
 
@@ -2966,7 +3047,7 @@ extern "C" int __fpclassifyl(long double) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" { extern inline int __signbitl(long double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
 
 
 
@@ -3020,19 +3101,19 @@ double retval;
 
 extern "C" int matherr(__exception *) throw();
 # 36 "/usr/include/bits/mathinline.h" 3
-extern "C" { inline __attribute__((__weak__)) __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitf(float __x) throw()
+extern "C" { inline __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitf(float __x) throw()
 {
 auto union { float __f; int __i; } __u = {__f: __x};
 return (__u.__i) < 0;
 } }
 
-extern "C" { inline __attribute__((__weak__)) __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbit(double __x) throw()
+extern "C" { inline __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbit(double __x) throw()
 {
 auto union { double __d; int __i[2]; } __u = {__d: __x};
 return ((__u.__i)[1]) < 0;
 } }
 
-extern "C" { inline __attribute__((__weak__)) __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitl(long double __x) throw()
+extern "C" { inline __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitl(long double __x) throw()
 {
 auto union { long double __l; int __i[3]; } __u = {__l: __x};
 return (((__u.__i)[2]) & 32768) != 0;
@@ -3586,48 +3667,52 @@ extern "C" void abort() throw() __attribute__((__noreturn__));
 
 
 extern "C" int atexit(void (*)(void)) throw();
-# 523 "/usr/include/stdlib.h" 3
+# 524 "/usr/include/stdlib.h" 3
+extern int at_quick_exit(void (*)(void)) throw() __asm__("at_quick_exit");
+# 535 "/usr/include/stdlib.h" 3
 extern "C" int on_exit(void (*)(int, void *), void *) throw();
-# 531 "/usr/include/stdlib.h" 3
+# 543 "/usr/include/stdlib.h" 3
 extern "C" void exit(int) throw() __attribute__((__noreturn__));
-# 538 "/usr/include/stdlib.h" 3
+# 551 "/usr/include/stdlib.h" 3
+extern "C" void quick_exit(int) throw() __attribute__((__noreturn__));
+# 559 "/usr/include/stdlib.h" 3
 extern "C" void _Exit(int) throw() __attribute__((__noreturn__));
-# 545 "/usr/include/stdlib.h" 3
+# 566 "/usr/include/stdlib.h" 3
 extern "C" char *getenv(const char *) throw();
 
 
 
 
 extern "C" char *__secure_getenv(const char *) throw();
-# 557 "/usr/include/stdlib.h" 3
+# 578 "/usr/include/stdlib.h" 3
 extern "C" int putenv(char *) throw();
-# 563 "/usr/include/stdlib.h" 3
+# 584 "/usr/include/stdlib.h" 3
 extern "C" int setenv(const char *, const char *, int) throw();
 
 
 
 extern "C" int unsetenv(const char *) throw();
-# 574 "/usr/include/stdlib.h" 3
+# 595 "/usr/include/stdlib.h" 3
 extern "C" int clearenv() throw();
-# 583 "/usr/include/stdlib.h" 3
-extern "C" char *mktemp(char *) throw();
-# 594 "/usr/include/stdlib.h" 3
-extern "C" int mkstemp(char *);
 # 604 "/usr/include/stdlib.h" 3
-extern "C" int mkstemp64(char *);
-# 614 "/usr/include/stdlib.h" 3
-extern "C" char *mkdtemp(char *) throw();
+extern "C" char *mktemp(char *) throw();
+# 615 "/usr/include/stdlib.h" 3
+extern "C" int mkstemp(char *);
 # 625 "/usr/include/stdlib.h" 3
-extern "C" int mkostemp(char *, int);
+extern "C" int mkstemp64(char *);
 # 635 "/usr/include/stdlib.h" 3
+extern "C" char *mkdtemp(char *) throw();
+# 646 "/usr/include/stdlib.h" 3
+extern "C" int mkostemp(char *, int);
+# 656 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp64(char *, int);
-# 645 "/usr/include/stdlib.h" 3
+# 666 "/usr/include/stdlib.h" 3
 extern "C" int system(const char *);
-# 652 "/usr/include/stdlib.h" 3
+# 673 "/usr/include/stdlib.h" 3
 extern "C" char *canonicalize_file_name(const char *) throw();
-# 662 "/usr/include/stdlib.h" 3
+# 683 "/usr/include/stdlib.h" 3
 extern "C" { extern inline char *realpath(const char *__restrict__, char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 670 "/usr/include/stdlib.h" 3
+# 691 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_fn_t)(const void *, const void *); }
 
 
@@ -3636,33 +3721,33 @@ extern "C" { typedef __compar_fn_t comparison_fn_t; }
 
 
 extern "C" { typedef int (*__compar_d_fn_t)(const void *, const void *, void *); }
-# 683 "/usr/include/stdlib.h" 3
+# 704 "/usr/include/stdlib.h" 3
 extern "C" void *bsearch(const void *, const void *, size_t, size_t, __compar_fn_t);
-# 689 "/usr/include/stdlib.h" 3
+# 710 "/usr/include/stdlib.h" 3
 extern "C" void qsort(void *, size_t, size_t, __compar_fn_t);
 
 
 extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *);
-# 699 "/usr/include/stdlib.h" 3
+# 720 "/usr/include/stdlib.h" 3
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
 
 
 
 extern "C" __attribute__((__weak__)) long long llabs(long long) throw() __attribute__((__const__));
-# 713 "/usr/include/stdlib.h" 3
+# 734 "/usr/include/stdlib.h" 3
 extern "C" div_t div(int, int) throw() __attribute__((__const__));
 
 extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
-# 721 "/usr/include/stdlib.h" 3
+# 742 "/usr/include/stdlib.h" 3
 extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
-# 735 "/usr/include/stdlib.h" 3
+# 756 "/usr/include/stdlib.h" 3
 extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw();
-# 741 "/usr/include/stdlib.h" 3
+# 762 "/usr/include/stdlib.h" 3
 extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw();
-# 747 "/usr/include/stdlib.h" 3
+# 768 "/usr/include/stdlib.h" 3
 extern "C" char *gcvt(double, int, char *) throw();
-# 753 "/usr/include/stdlib.h" 3
+# 774 "/usr/include/stdlib.h" 3
 extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw();
 
 
@@ -3670,7 +3755,7 @@ extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) t
 
 
 extern "C" char *qgcvt(long double, int, char *) throw();
-# 765 "/usr/include/stdlib.h" 3
+# 786 "/usr/include/stdlib.h" 3
 extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw();
 
 
@@ -3683,7 +3768,7 @@ extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, c
 
 
 extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw();
-# 787 "/usr/include/stdlib.h" 3
+# 808 "/usr/include/stdlib.h" 3
 extern "C" int mblen(const char *, size_t) throw();
 
 
@@ -3699,15 +3784,15 @@ extern "C" { extern inline size_t mbstowcs(wchar_t *__restrict__, const char *__
 
 
 extern "C" { extern inline size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 812 "/usr/include/stdlib.h" 3
+# 833 "/usr/include/stdlib.h" 3
 extern "C" int rpmatch(const char *) throw();
-# 823 "/usr/include/stdlib.h" 3
+# 844 "/usr/include/stdlib.h" 3
 extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw();
-# 832 "/usr/include/stdlib.h" 3
+# 853 "/usr/include/stdlib.h" 3
 extern "C" void setkey(const char *) throw();
-# 840 "/usr/include/stdlib.h" 3
+# 861 "/usr/include/stdlib.h" 3
 extern "C" int posix_openpt(int);
-# 848 "/usr/include/stdlib.h" 3
+# 869 "/usr/include/stdlib.h" 3
 extern "C" int grantpt(int) throw();
 
 
@@ -3718,13 +3803,13 @@ extern "C" int unlockpt(int) throw();
 
 
 extern "C" char *ptsname(int) throw();
-# 864 "/usr/include/stdlib.h" 3
+# 885 "/usr/include/stdlib.h" 3
 extern "C" { extern inline int ptsname_r(int, char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
 
 extern "C" int getpt();
-# 875 "/usr/include/stdlib.h" 3
+# 896 "/usr/include/stdlib.h" 3
 extern "C" int getloadavg(double [], int) throw();
 # 24 "/usr/include/bits/stdlib.h" 3
 extern "C" char *__realpath_chk(const char *__restrict__, char *__restrict__, size_t) throw();
@@ -3832,7 +3917,7 @@ return __wcstombs_chk_warn(__dst, __src, __len, __builtin_object_size(__dst, 2 >
 }
 return __wcstombs_alias(__dst, __src, __len);
 } }
-# 74 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 template<class _Iterator, class _Container> class __normal_iterator;
@@ -3860,15 +3945,6 @@ struct __traitor {
 
 enum __cuda___value { __value = (((bool)_Sp::__value) || ((bool)_Tp::__value))};
 typedef typename __truth_type< (((bool)_Sp::__value) || ((bool)_Tp::__value))> ::__type __type;
-};
-
-
-
-template<class _Sp, class _Tp>
-struct __traitand {
-
-enum __cuda___value { __value = (((bool)_Sp::__value) && ((bool)_Tp::__value))};
-typedef typename __truth_type< (((bool)_Sp::__value) && ((bool)_Tp::__value))> ::__type __type;
 };
 
 
@@ -3910,7 +3986,7 @@ struct __is_integer {
 enum __cuda___value { __value};
 typedef __false_type __type;
 };
-# 156 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 142 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< bool> {
 
 enum __cuda___value { __value = 1};
@@ -3945,9 +4021,7 @@ template<> struct __is_integer< wchar_t> {
 enum __cuda___value { __value = 1};
 typedef __true_type __type;
 };
-
-
-
+# 195 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< short> {
 
 enum __cuda___value { __value = 1};
@@ -4157,9 +4231,9 @@ struct __is_move_iterator {
 enum __cuda___value { __value};
 typedef __false_type __type;
 };
-# 415 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 417 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 }
-# 43 "/usr/include/c++/4.3/ext/type_traits.h" 3
+# 37 "/usr/include/c++/4.4/ext/type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 
@@ -4326,7 +4400,7 @@ public: typedef __typeof__((((__type1() + __type2()) + __type3()) + __type4())) 
 };
 
 }
-# 82 "/usr/include/c++/4.3/cmath" 3
+# 77 "/usr/include/c++/4.4/cmath" 3
 namespace std __attribute__((visibility("default"))) {
 
 
@@ -4416,8 +4490,8 @@ inline long double atan2(long double __y, long double __x)
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
-    typename __gnu_cxx :: __enable_if < __traitand < __is_arithmetic < _Tp >,
-            __is_arithmetic < _Up > > :: __value,
+    typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value
+        && __is_arithmetic < _Up > :: __value,
         _Tp > :: __type, _Up > :: __type
     atan2 ( _Tp __y, _Up __x )
     {
@@ -4614,9 +4688,7 @@ inline float pow(float __x, float __y)
 
 inline long double pow(long double __x, long double __y)
 { return __builtin_powl(__x, __y); }
-
-
-
+# 369 "/usr/include/c++/4.4/cmath" 3
 inline double pow(double __x, int __i)
 { return __builtin_powi(__x, __i); }
 
@@ -4628,11 +4700,12 @@ inline float pow(float __x, int __n)
 inline long double pow(long double __x, int __n)
 { return __builtin_powil(__x, __n); }
 
+
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
-    typename __gnu_cxx :: __enable_if < __traitand < __is_arithmetic < _Tp >,
-            __is_arithmetic < _Up > > :: __value,
+    typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value
+        && __is_arithmetic < _Up > :: __value,
         _Tp > :: __type, _Up > :: __type
     pow ( _Tp __x, _Up __y )
     {
@@ -4721,15 +4794,7 @@ template < typename _Tp >
     { return __builtin_tanh ( __x ); }
 
 }
-# 483 "/usr/include/c++/4.3/cmath" 3
-namespace __gnu_cxx __attribute__((visibility("default"))) {
-
-template < typename _Tp >
-    inline int
-    __capture_fpclassify ( _Tp __f ) { return ( sizeof ( __f ) == sizeof ( float ) ? __fpclassifyf ( __f ) : sizeof ( __f ) == sizeof ( double ) ? __fpclassify ( __f ) : __fpclassifyl ( __f ) ); }
-
-}
-# 505 "/usr/include/c++/4.3/cmath" 3
+# 492 "/usr/include/c++/4.4/cmath" 3
 namespace std __attribute__((visibility("default"))) {
 
 template < typename _Tp >
@@ -4738,7 +4803,8 @@ template < typename _Tp >
     fpclassify ( _Tp __f )
     {
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
-      return :: __gnu_cxx :: __capture_fpclassify ( __type ( __f ) );
+      return __builtin_fpclassify ( FP_NAN, FP_INFINITE, FP_NORMAL,
+      FP_SUBNORMAL, FP_ZERO, __type ( __f ) );
     }
 
 template < typename _Tp >
@@ -4841,7 +4907,7 @@ template < typename _Tp >
     }
 
 }
-# 40 "/usr/include/c++/4.3/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
 namespace std __attribute__((visibility("default"))) {
 
 template < typename _Tp >
@@ -4861,14 +4927,14 @@ template < typename _Tp >
     }
 
 }
-# 54 "/usr/include/c++/4.3/cstddef" 3
+# 49 "/usr/include/c++/4.4/cstddef" 3
 namespace std __attribute__((visibility("default"))) {
 
 using ::ptrdiff_t;
 using ::size_t;
 
 }
-# 105 "/usr/include/c++/4.3/cstdlib" 3
+# 100 "/usr/include/c++/4.4/cstdlib" 3
 namespace std __attribute__((visibility("default"))) {
 
 using ::div_t;
@@ -4914,12 +4980,12 @@ inline long abs(long __i) { return labs(__i); }
 inline ldiv_t div(long __i, long __j) { return ldiv(__i, __j); }
 
 }
-# 162 "/usr/include/c++/4.3/cstdlib" 3
+# 157 "/usr/include/c++/4.4/cstdlib" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 
 using ::lldiv_t;
-# 171 "/usr/include/c++/4.3/cstdlib" 3
+# 166 "/usr/include/c++/4.4/cstdlib" 3
 using ::_Exit;
 
 
@@ -4934,7 +5000,7 @@ inline lldiv_t div(long long __n, long long __d)
 { auto lldiv_t __q; (__q.quot) = __n / __d; (__q.rem) = __n % __d; return __q; }
 
 using ::lldiv;
-# 195 "/usr/include/c++/4.3/cstdlib" 3
+# 190 "/usr/include/c++/4.4/cstdlib" 3
 using ::atoll;
 using ::strtoll;
 using ::strtoull;
@@ -4963,9 +5029,7 @@ using __gnu_cxx::strtoull;
 using __gnu_cxx::strtold;
 
 }
-# 442 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" { extern inline __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
-
+# 444 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isinfl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanl(long double) throw() __attribute__((__const__));
@@ -5664,9 +5728,9 @@ struct _IO_FILE;
 extern "C" { typedef _IO_FILE FILE; }
 # 65 "/usr/include/stdio.h" 3
 extern "C" { typedef _IO_FILE __FILE; }
-# 90 "/usr/include/wchar.h" 3
+# 95 "/usr/include/wchar.h" 3
 extern "C" { typedef
-# 79 "/usr/include/wchar.h" 3
+# 84 "/usr/include/wchar.h" 3
 struct __mbstate_t {
 int __count;
 
@@ -5701,7 +5765,7 @@ extern "C" { typedef short _G_int16_t; }
 extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 extern "C" { typedef unsigned _G_uint32_t; }
-# 43 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stdarg.h" 3
+# 40 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -5900,44 +5964,41 @@ extern "C" FILE *freopen64(const char *__restrict__, const char *__restrict__, F
 extern "C" FILE *fdopen(int, const char *) throw();
 # 289 "/usr/include/stdio.h" 3
 extern "C" FILE *fopencookie(void *__restrict__, const char *__restrict__, _IO_cookie_io_functions_t) throw();
-
-
-
-
+# 296 "/usr/include/stdio.h" 3
 extern "C" FILE *fmemopen(void *, size_t, const char *) throw();
-# 300 "/usr/include/stdio.h" 3
+# 302 "/usr/include/stdio.h" 3
 extern "C" FILE *open_memstream(char **, size_t *) throw();
-# 307 "/usr/include/stdio.h" 3
+# 309 "/usr/include/stdio.h" 3
 extern "C" void setbuf(FILE *__restrict__, char *__restrict__) throw();
 
 
 
 extern "C" int setvbuf(FILE *__restrict__, char *__restrict__, int, size_t) throw();
-# 318 "/usr/include/stdio.h" 3
+# 320 "/usr/include/stdio.h" 3
 extern "C" void setbuffer(FILE *__restrict__, char *__restrict__, size_t) throw();
 
 
 
 extern "C" void setlinebuf(FILE *) throw();
-# 331 "/usr/include/stdio.h" 3
+# 333 "/usr/include/stdio.h" 3
 extern "C" { extern inline int fprintf(FILE *__restrict__, const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 337 "/usr/include/stdio.h" 3
+# 339 "/usr/include/stdio.h" 3
 extern "C" { extern inline int printf(const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 extern "C" { extern inline int sprintf(char *__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 346 "/usr/include/stdio.h" 3
+# 348 "/usr/include/stdio.h" 3
 extern "C" { extern inline int vfprintf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 352 "/usr/include/stdio.h" 3
+# 354 "/usr/include/stdio.h" 3
 extern "C" { extern inline int vprintf(const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 extern "C" { extern inline int vsprintf(char *__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 361 "/usr/include/stdio.h" 3
+# 363 "/usr/include/stdio.h" 3
 extern "C" { extern inline int snprintf(char *__restrict__, size_t, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
 
 extern "C" { extern inline int vsnprintf(char *__restrict__, size_t, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 374 "/usr/include/stdio.h" 3
+# 376 "/usr/include/stdio.h" 3
 extern "C" { extern inline int vasprintf(char **__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
@@ -5945,80 +6006,80 @@ extern "C" { extern inline int __asprintf(char **__restrict__, const char *__res
 
 
 extern "C" { extern inline int asprintf(char **__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 390 "/usr/include/stdio.h" 3
+# 394 "/usr/include/stdio.h" 3
 extern "C" { extern inline int vdprintf(int, const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
 extern "C" { extern inline int dprintf(int, const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 403 "/usr/include/stdio.h" 3
+# 407 "/usr/include/stdio.h" 3
 extern "C" int fscanf(FILE *__restrict__, const char *__restrict__, ...);
-# 409 "/usr/include/stdio.h" 3
+# 413 "/usr/include/stdio.h" 3
 extern "C" int scanf(const char *__restrict__, ...);
 
 extern "C" int sscanf(const char *__restrict__, const char *__restrict__, ...) throw();
-# 449 "/usr/include/stdio.h" 3
+# 453 "/usr/include/stdio.h" 3
 extern "C" int vfscanf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
-# 457 "/usr/include/stdio.h" 3
+# 461 "/usr/include/stdio.h" 3
 extern "C" int vscanf(const char *__restrict__, __gnuc_va_list);
 
 
 
 extern "C" int vsscanf(const char *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
-# 509 "/usr/include/stdio.h" 3
+# 513 "/usr/include/stdio.h" 3
 extern "C" int fgetc(FILE *);
 extern "C" int getc(FILE *);
-# 516 "/usr/include/stdio.h" 3
+# 520 "/usr/include/stdio.h" 3
 extern "C" { extern inline int getchar() __attribute__((__gnu_inline__)); }
-# 528 "/usr/include/stdio.h" 3
+# 532 "/usr/include/stdio.h" 3
 extern "C" { extern inline int getc_unlocked(FILE *) __attribute__((__gnu_inline__)); }
 extern "C" { extern inline int getchar_unlocked() __attribute__((__gnu_inline__)); }
-# 539 "/usr/include/stdio.h" 3
+# 543 "/usr/include/stdio.h" 3
 extern "C" { extern inline int fgetc_unlocked(FILE *) __attribute__((__gnu_inline__)); }
-# 551 "/usr/include/stdio.h" 3
+# 555 "/usr/include/stdio.h" 3
 extern "C" int fputc(int, FILE *);
 extern "C" int putc(int, FILE *);
-# 558 "/usr/include/stdio.h" 3
+# 562 "/usr/include/stdio.h" 3
 extern "C" { extern inline int putchar(int) __attribute__((__gnu_inline__)); }
-# 572 "/usr/include/stdio.h" 3
+# 576 "/usr/include/stdio.h" 3
 extern "C" { extern inline int fputc_unlocked(int, FILE *) __attribute__((__gnu_inline__)); }
-# 580 "/usr/include/stdio.h" 3
+# 584 "/usr/include/stdio.h" 3
 extern "C" { extern inline int putc_unlocked(int, FILE *) __attribute__((__gnu_inline__)); }
 extern "C" { extern inline int putchar_unlocked(int) __attribute__((__gnu_inline__)); }
-# 588 "/usr/include/stdio.h" 3
+# 592 "/usr/include/stdio.h" 3
 extern "C" int getw(FILE *);
 
 
 extern "C" int putw(int, FILE *);
-# 600 "/usr/include/stdio.h" 3
+# 604 "/usr/include/stdio.h" 3
 extern "C" { extern inline char *fgets(char *__restrict__, int, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 608 "/usr/include/stdio.h" 3
+# 612 "/usr/include/stdio.h" 3
 extern "C" { extern inline char *gets(char *) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 618 "/usr/include/stdio.h" 3
+# 622 "/usr/include/stdio.h" 3
 extern "C" { extern inline char *fgets_unlocked(char *__restrict__, int, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 634 "/usr/include/stdio.h" 3
+# 638 "/usr/include/stdio.h" 3
 extern "C" __ssize_t __getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
 
 
 extern "C" __ssize_t getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
-# 647 "/usr/include/stdio.h" 3
+# 651 "/usr/include/stdio.h" 3
 extern "C" { extern inline __ssize_t getline(char **__restrict__, size_t *__restrict__, FILE *__restrict__) __attribute__((__gnu_inline__)); }
-# 658 "/usr/include/stdio.h" 3
+# 662 "/usr/include/stdio.h" 3
 extern "C" int fputs(const char *__restrict__, FILE *__restrict__);
-# 664 "/usr/include/stdio.h" 3
+# 668 "/usr/include/stdio.h" 3
 extern "C" int puts(const char *);
-# 671 "/usr/include/stdio.h" 3
+# 675 "/usr/include/stdio.h" 3
 extern "C" int ungetc(int, FILE *);
-# 678 "/usr/include/stdio.h" 3
+# 682 "/usr/include/stdio.h" 3
 extern "C" { extern inline size_t fread(void *__restrict__, size_t, size_t, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 684 "/usr/include/stdio.h" 3
+# 688 "/usr/include/stdio.h" 3
 extern "C" size_t fwrite(const void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 695 "/usr/include/stdio.h" 3
+# 699 "/usr/include/stdio.h" 3
 extern "C" int fputs_unlocked(const char *__restrict__, FILE *__restrict__);
-# 706 "/usr/include/stdio.h" 3
+# 710 "/usr/include/stdio.h" 3
 extern "C" { extern inline size_t fread_unlocked(void *__restrict__, size_t, size_t, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 extern "C" size_t fwrite_unlocked(const void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 718 "/usr/include/stdio.h" 3
+# 722 "/usr/include/stdio.h" 3
 extern "C" int fseek(FILE *, long, int);
 
 
@@ -6030,21 +6091,21 @@ extern "C" long ftell(FILE *);
 
 
 extern "C" void rewind(FILE *);
-# 742 "/usr/include/stdio.h" 3
+# 746 "/usr/include/stdio.h" 3
 extern "C" int fseeko(FILE *, __off_t, int);
 
 
 
 
 extern "C" __off_t ftello(FILE *);
-# 767 "/usr/include/stdio.h" 3
+# 771 "/usr/include/stdio.h" 3
 extern "C" int fgetpos(FILE *__restrict__, fpos_t *__restrict__);
 
 
 
 
 extern "C" int fsetpos(FILE *, const fpos_t *);
-# 787 "/usr/include/stdio.h" 3
+# 791 "/usr/include/stdio.h" 3
 extern "C" int fseeko64(FILE *, __off64_t, int);
 extern "C" __off64_t ftello64(FILE *);
 extern "C" int fgetpos64(FILE *__restrict__, fpos64_t *__restrict__);
@@ -6065,7 +6126,7 @@ extern "C" int ferror(FILE *) throw();
 extern "C" void clearerr_unlocked(FILE *) throw();
 extern "C" { extern inline int feof_unlocked(FILE *) throw() __attribute__((__gnu_inline__)); }
 extern "C" { extern inline int ferror_unlocked(FILE *) throw() __attribute__((__gnu_inline__)); }
-# 815 "/usr/include/stdio.h" 3
+# 819 "/usr/include/stdio.h" 3
 extern "C" void perror(const char *);
 # 27 "/usr/include/bits/sys_errlist.h" 3
 extern "C" { extern int sys_nerr; }
@@ -6074,20 +6135,20 @@ extern "C" { extern const char *const sys_errlist[]; }
 
 extern "C" { extern int _sys_nerr; }
 extern "C" { extern const char *const _sys_errlist[]; }
-# 827 "/usr/include/stdio.h" 3
+# 831 "/usr/include/stdio.h" 3
 extern "C" int fileno(FILE *) throw();
 
 
 
 
 extern "C" int fileno_unlocked(FILE *) throw();
-# 842 "/usr/include/stdio.h" 3
+# 846 "/usr/include/stdio.h" 3
 extern "C" FILE *popen(const char *, const char *);
-# 848 "/usr/include/stdio.h" 3
+# 852 "/usr/include/stdio.h" 3
 extern "C" int pclose(FILE *);
-# 854 "/usr/include/stdio.h" 3
+# 858 "/usr/include/stdio.h" 3
 extern "C" char *ctermid(char *) throw();
-# 860 "/usr/include/stdio.h" 3
+# 864 "/usr/include/stdio.h" 3
 extern "C" char *cuserid(char *);
 
 
@@ -6100,7 +6161,7 @@ extern "C" { extern inline int obstack_printf(obstack *__restrict__, const char 
 
 
 extern "C" { extern inline int obstack_vprintf(obstack *__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 882 "/usr/include/stdio.h" 3
+# 886 "/usr/include/stdio.h" 3
 extern "C" void flockfile(FILE *) throw();
 
 
@@ -6342,7 +6403,7 @@ if (__builtin_object_size(__s, 2 > 1) != ((size_t)(-1)))
 if ((!(__builtin_constant_p(__n))) || (__n <= 0)) {
 return __fgets_chk(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
 
-if (((unsigned long)__n) > __builtin_object_size(__s, 2 > 1)) {
+if (((size_t)__n) > __builtin_object_size(__s, 2 > 1)) {
 return __fgets_chk_warn(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
 }
 return __fgets_alias(__s, __n, __stream);
@@ -6388,7 +6449,7 @@ if (__builtin_object_size(__s, 2 > 1) != ((size_t)(-1)))
 if ((!(__builtin_constant_p(__n))) || (__n <= 0)) {
 return __fgets_unlocked_chk(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
 
-if (((unsigned long)__n) > __builtin_object_size(__s, 2 > 1)) {
+if (((size_t)__n) > __builtin_object_size(__s, 2 > 1)) {
 return __fgets_unlocked_chk_warn(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
 }
 return __fgets_unlocked_alias(__s, __n, __stream);
@@ -6607,9 +6668,9 @@ extern "C" { inline __attribute__((__gnu_inline__)) uintmax_t wcstoumax(const wc
 {
 return __wcstoul_internal(nptr, endptr, base, 0);
 } }
-# 245 "/usr/include/unistd.h" 3
+# 247 "/usr/include/unistd.h" 3
 extern "C" { typedef __socklen_t socklen_t; }
-# 258 "/usr/include/unistd.h" 3
+# 260 "/usr/include/unistd.h" 3
 extern "C" int access(const char *, int) throw();
 
 
@@ -6620,44 +6681,44 @@ extern "C" int euidaccess(const char *, int) throw();
 
 
 extern "C" int eaccess(const char *, int) throw();
-# 275 "/usr/include/unistd.h" 3
+# 277 "/usr/include/unistd.h" 3
 extern "C" int faccessat(int, const char *, int, int) throw();
-# 301 "/usr/include/unistd.h" 3
+# 303 "/usr/include/unistd.h" 3
 extern "C" __off_t lseek(int, __off_t, int) throw();
-# 312 "/usr/include/unistd.h" 3
+# 314 "/usr/include/unistd.h" 3
 extern "C" __off64_t lseek64(int, __off64_t, int) throw();
-# 320 "/usr/include/unistd.h" 3
+# 322 "/usr/include/unistd.h" 3
 extern "C" int close(int);
-# 327 "/usr/include/unistd.h" 3
+# 329 "/usr/include/unistd.h" 3
 extern "C" { extern inline ssize_t read(int, void *, size_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 333 "/usr/include/unistd.h" 3
+# 335 "/usr/include/unistd.h" 3
 extern "C" ssize_t write(int, const void *, size_t);
-# 343 "/usr/include/unistd.h" 3
+# 345 "/usr/include/unistd.h" 3
 extern "C" { extern inline ssize_t pread(int, void *, size_t, __off_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 351 "/usr/include/unistd.h" 3
+# 353 "/usr/include/unistd.h" 3
 extern "C" ssize_t pwrite(int, const void *, size_t, __off_t);
-# 371 "/usr/include/unistd.h" 3
+# 373 "/usr/include/unistd.h" 3
 extern "C" { extern inline ssize_t pread64(int, void *, size_t, __off64_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
 
 extern "C" ssize_t pwrite64(int, const void *, size_t, __off64_t);
-# 384 "/usr/include/unistd.h" 3
+# 386 "/usr/include/unistd.h" 3
 extern "C" int pipe(int [2]) throw();
 
 
 
 
 extern "C" int pipe2(int [2], int) throw();
-# 399 "/usr/include/unistd.h" 3
+# 401 "/usr/include/unistd.h" 3
 extern "C" unsigned alarm(unsigned) throw();
-# 411 "/usr/include/unistd.h" 3
+# 413 "/usr/include/unistd.h" 3
 extern "C" unsigned sleep(unsigned);
-# 418 "/usr/include/unistd.h" 3
+# 420 "/usr/include/unistd.h" 3
 extern "C" __useconds_t ualarm(__useconds_t, __useconds_t) throw();
-# 426 "/usr/include/unistd.h" 3
+# 428 "/usr/include/unistd.h" 3
 extern "C" int usleep(__useconds_t);
-# 435 "/usr/include/unistd.h" 3
+# 437 "/usr/include/unistd.h" 3
 extern "C" int pause();
 
 
@@ -6673,21 +6734,21 @@ extern "C" int fchown(int, __uid_t, __gid_t) throw();
 
 
 extern "C" int lchown(const char *, __uid_t, __gid_t) throw();
-# 457 "/usr/include/unistd.h" 3
+# 459 "/usr/include/unistd.h" 3
 extern "C" int fchownat(int, const char *, __uid_t, __gid_t, int) throw();
-# 463 "/usr/include/unistd.h" 3
+# 465 "/usr/include/unistd.h" 3
 extern "C" int chdir(const char *) throw();
 
 
 
 extern "C" int fchdir(int) throw();
-# 477 "/usr/include/unistd.h" 3
+# 479 "/usr/include/unistd.h" 3
 extern "C" { extern inline char *getcwd(char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 483 "/usr/include/unistd.h" 3
+# 485 "/usr/include/unistd.h" 3
 extern "C" char *get_current_dir_name() throw();
-# 490 "/usr/include/unistd.h" 3
+# 492 "/usr/include/unistd.h" 3
 extern "C" { extern inline char *getwd(char *) throw() __attribute__((__deprecated__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 496 "/usr/include/unistd.h" 3
+# 498 "/usr/include/unistd.h" 3
 extern "C" int dup(int) throw();
 
 
@@ -6703,11 +6764,11 @@ extern "C" int dup3(int, int, int) throw();
 extern "C" { extern char **__environ; }
 
 extern "C" { extern char **environ; }
-# 516 "/usr/include/unistd.h" 3
+# 518 "/usr/include/unistd.h" 3
 extern "C" int execve(const char *, char *const [], char *const []) throw();
-# 522 "/usr/include/unistd.h" 3
+# 524 "/usr/include/unistd.h" 3
 extern "C" int fexecve(int, char *const [], char *const []) throw();
-# 528 "/usr/include/unistd.h" 3
+# 530 "/usr/include/unistd.h" 3
 extern "C" int execv(const char *, char *const []) throw();
 
 
@@ -6724,9 +6785,9 @@ extern "C" int execl(const char *, const char *, ...) throw();
 
 
 extern "C" int execvp(const char *, char *const []) throw();
-# 549 "/usr/include/unistd.h" 3
+# 551 "/usr/include/unistd.h" 3
 extern "C" int execlp(const char *, const char *, ...) throw();
-# 555 "/usr/include/unistd.h" 3
+# 557 "/usr/include/unistd.h" 3
 extern "C" int nice(int) throw();
 
 
@@ -7208,7 +7269,36 @@ _SC_LEVEL4_CACHE_LINESIZE,
 
 _SC_IPV6 = 235,
 
-_SC_RAW_SOCKETS
+_SC_RAW_SOCKETS,
+
+
+_SC_V7_ILP32_OFF32,
+
+_SC_V7_ILP32_OFFBIG,
+
+_SC_V7_LP64_OFF64,
+
+_SC_V7_LPBIG_OFFBIG,
+
+
+_SC_SS_REPL_MAX,
+
+
+_SC_TRACE_EVENT_NAME_MAX,
+
+_SC_TRACE_NAME_MAX,
+
+_SC_TRACE_SYS_MAX,
+
+_SC_TRACE_USER_EVENT_MAX,
+
+
+_SC_XOPEN_STREAMS,
+
+
+_SC_THREAD_ROBUST_PRIO_INHERIT,
+
+_SC_THREAD_ROBUST_PRIO_PROTECT
 
 };
 
@@ -7225,6 +7315,14 @@ _CS_V6_WIDTH_RESTRICTED_ENVS,
 _CS_GNU_LIBC_VERSION,
 
 _CS_GNU_LIBPTHREAD_VERSION,
+
+
+_CS_V5_WIDTH_RESTRICTED_ENVS,
+
+
+
+_CS_V7_WIDTH_RESTRICTED_ENVS,
+
 
 
 _CS_LFS_CFLAGS = 1000,
@@ -7307,10 +7405,43 @@ _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS,
 
 _CS_POSIX_V6_LPBIG_OFFBIG_LIBS,
 
-_CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS
+_CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS,
+
+
+_CS_POSIX_V7_ILP32_OFF32_CFLAGS,
+
+_CS_POSIX_V7_ILP32_OFF32_LDFLAGS,
+
+_CS_POSIX_V7_ILP32_OFF32_LIBS,
+
+_CS_POSIX_V7_ILP32_OFF32_LINTFLAGS,
+
+_CS_POSIX_V7_ILP32_OFFBIG_CFLAGS,
+
+_CS_POSIX_V7_ILP32_OFFBIG_LDFLAGS,
+
+_CS_POSIX_V7_ILP32_OFFBIG_LIBS,
+
+_CS_POSIX_V7_ILP32_OFFBIG_LINTFLAGS,
+
+_CS_POSIX_V7_LP64_OFF64_CFLAGS,
+
+_CS_POSIX_V7_LP64_OFF64_LDFLAGS,
+
+_CS_POSIX_V7_LP64_OFF64_LIBS,
+
+_CS_POSIX_V7_LP64_OFF64_LINTFLAGS,
+
+_CS_POSIX_V7_LPBIG_OFFBIG_CFLAGS,
+
+_CS_POSIX_V7_LPBIG_OFFBIG_LDFLAGS,
+
+_CS_POSIX_V7_LPBIG_OFFBIG_LIBS,
+
+_CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS
 
 };
-# 569 "/usr/include/unistd.h" 3
+# 571 "/usr/include/unistd.h" 3
 extern "C" long pathconf(const char *, int) throw();
 
 
@@ -7336,15 +7467,15 @@ extern "C" __pid_t getppid() throw();
 
 
 extern "C" __pid_t getpgrp() throw();
-# 603 "/usr/include/unistd.h" 3
+# 605 "/usr/include/unistd.h" 3
 extern "C" __pid_t __getpgid(__pid_t) throw();
 
 extern "C" __pid_t getpgid(__pid_t) throw();
-# 612 "/usr/include/unistd.h" 3
+# 614 "/usr/include/unistd.h" 3
 extern "C" int setpgid(__pid_t, __pid_t) throw();
-# 629 "/usr/include/unistd.h" 3
+# 631 "/usr/include/unistd.h" 3
 extern "C" int setpgrp() throw();
-# 646 "/usr/include/unistd.h" 3
+# 648 "/usr/include/unistd.h" 3
 extern "C" __pid_t setsid() throw();
 
 
@@ -7372,7 +7503,7 @@ extern "C" { extern inline int getgroups(int, __gid_t []) throw() __attribute__(
 
 
 extern "C" int group_member(__gid_t) throw();
-# 679 "/usr/include/unistd.h" 3
+# 681 "/usr/include/unistd.h" 3
 extern "C" int setuid(__uid_t) throw();
 
 
@@ -7384,7 +7515,7 @@ extern "C" int setreuid(__uid_t, __uid_t) throw();
 
 
 extern "C" int seteuid(__uid_t) throw();
-# 696 "/usr/include/unistd.h" 3
+# 698 "/usr/include/unistd.h" 3
 extern "C" int setgid(__gid_t) throw();
 
 
@@ -7396,7 +7527,7 @@ extern "C" int setregid(__gid_t, __gid_t) throw();
 
 
 extern "C" int setegid(__gid_t) throw();
-# 712 "/usr/include/unistd.h" 3
+# 714 "/usr/include/unistd.h" 3
 extern "C" int getresuid(__uid_t *, __uid_t *, __uid_t *) throw();
 
 
@@ -7413,11 +7544,11 @@ extern "C" int setresuid(__uid_t, __uid_t, __uid_t) throw();
 
 
 extern "C" int setresgid(__gid_t, __gid_t, __gid_t) throw();
-# 735 "/usr/include/unistd.h" 3
+# 737 "/usr/include/unistd.h" 3
 extern "C" __pid_t fork() throw();
-# 742 "/usr/include/unistd.h" 3
+# 744 "/usr/include/unistd.h" 3
 extern "C" __pid_t vfork() throw();
-# 748 "/usr/include/unistd.h" 3
+# 750 "/usr/include/unistd.h" 3
 extern "C" char *ttyname(int) throw();
 
 
@@ -7428,26 +7559,26 @@ extern "C" { extern inline int ttyname_r(int, char *, size_t) throw() __attribut
 
 
 extern "C" int isatty(int) throw();
-# 763 "/usr/include/unistd.h" 3
+# 765 "/usr/include/unistd.h" 3
 extern "C" int ttyslot() throw();
 
 
 
 
 extern "C" int link(const char *, const char *) throw();
-# 774 "/usr/include/unistd.h" 3
+# 776 "/usr/include/unistd.h" 3
 extern "C" int linkat(int, const char *, int, const char *, int) throw();
-# 781 "/usr/include/unistd.h" 3
+# 783 "/usr/include/unistd.h" 3
 extern "C" int symlink(const char *, const char *) throw();
-# 787 "/usr/include/unistd.h" 3
+# 789 "/usr/include/unistd.h" 3
 extern "C" { extern inline ssize_t readlink(const char *__restrict__, char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 794 "/usr/include/unistd.h" 3
+# 796 "/usr/include/unistd.h" 3
 extern "C" int symlinkat(const char *, int, const char *) throw();
 
 
 
 extern "C" { extern inline ssize_t readlinkat(int, const char *__restrict__, char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 804 "/usr/include/unistd.h" 3
+# 806 "/usr/include/unistd.h" 3
 extern "C" int unlink(const char *) throw();
 
 
@@ -7465,9 +7596,9 @@ extern "C" __pid_t tcgetpgrp(int) throw();
 
 
 extern "C" int tcsetpgrp(int, __pid_t) throw();
-# 827 "/usr/include/unistd.h" 3
+# 829 "/usr/include/unistd.h" 3
 extern "C" char *getlogin();
-# 835 "/usr/include/unistd.h" 3
+# 837 "/usr/include/unistd.h" 3
 extern "C" { extern inline int getlogin_r(char *, size_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 
@@ -7489,27 +7620,27 @@ extern "C" { extern int opterr; }
 extern "C" { extern int optopt; }
 # 152 "/usr/include/getopt.h" 3
 extern "C" int getopt(int, char *const *, const char *) throw();
-# 857 "/usr/include/unistd.h" 3
+# 859 "/usr/include/unistd.h" 3
 extern "C" { extern inline int gethostname(char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 864 "/usr/include/unistd.h" 3
+# 866 "/usr/include/unistd.h" 3
 extern "C" int sethostname(const char *, size_t) throw();
 
 
 
 
 extern "C" int sethostid(long) throw();
-# 875 "/usr/include/unistd.h" 3
+# 877 "/usr/include/unistd.h" 3
 extern "C" { extern inline int getdomainname(char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
 
 extern "C" int setdomainname(const char *, size_t) throw();
-# 884 "/usr/include/unistd.h" 3
+# 886 "/usr/include/unistd.h" 3
 extern "C" int vhangup() throw();
 
 
 extern "C" int revoke(const char *) throw();
-# 895 "/usr/include/unistd.h" 3
+# 897 "/usr/include/unistd.h" 3
 extern "C" int profil(unsigned short *, size_t, size_t, unsigned) throw();
-# 903 "/usr/include/unistd.h" 3
+# 905 "/usr/include/unistd.h" 3
 extern "C" int acct(const char *) throw();
 
 
@@ -7517,17 +7648,17 @@ extern "C" int acct(const char *) throw();
 extern "C" char *getusershell() throw();
 extern "C" void endusershell() throw();
 extern "C" void setusershell() throw();
-# 915 "/usr/include/unistd.h" 3
+# 917 "/usr/include/unistd.h" 3
 extern "C" int daemon(int, int) throw();
-# 922 "/usr/include/unistd.h" 3
+# 924 "/usr/include/unistd.h" 3
 extern "C" int chroot(const char *) throw();
 
 
 
 extern "C" char *getpass(const char *);
-# 935 "/usr/include/unistd.h" 3
+# 937 "/usr/include/unistd.h" 3
 extern "C" int fsync(int);
-# 942 "/usr/include/unistd.h" 3
+# 944 "/usr/include/unistd.h" 3
 extern "C" long gethostid();
 
 
@@ -7547,34 +7678,34 @@ extern "C" int getdtablesize() throw();
 
 
 extern "C" int truncate(const char *, __off_t) throw();
-# 972 "/usr/include/unistd.h" 3
+# 974 "/usr/include/unistd.h" 3
 extern "C" int truncate64(const char *, __off64_t) throw();
-# 982 "/usr/include/unistd.h" 3
+# 984 "/usr/include/unistd.h" 3
 extern "C" int ftruncate(int, __off_t) throw();
-# 992 "/usr/include/unistd.h" 3
+# 994 "/usr/include/unistd.h" 3
 extern "C" int ftruncate64(int, __off64_t) throw();
-# 1002 "/usr/include/unistd.h" 3
+# 1004 "/usr/include/unistd.h" 3
 extern "C" int brk(void *) throw();
-# 1008 "/usr/include/unistd.h" 3
+# 1010 "/usr/include/unistd.h" 3
 extern "C" void *sbrk(intptr_t) throw();
-# 1023 "/usr/include/unistd.h" 3
+# 1025 "/usr/include/unistd.h" 3
 extern "C" long syscall(long, ...) throw();
-# 1046 "/usr/include/unistd.h" 3
+# 1048 "/usr/include/unistd.h" 3
 extern "C" int lockf(int, int, __off_t);
-# 1056 "/usr/include/unistd.h" 3
+# 1058 "/usr/include/unistd.h" 3
 extern "C" int lockf64(int, int, __off64_t);
-# 1077 "/usr/include/unistd.h" 3
+# 1079 "/usr/include/unistd.h" 3
 extern "C" int fdatasync(int);
-# 1085 "/usr/include/unistd.h" 3
+# 1087 "/usr/include/unistd.h" 3
 extern "C" char *crypt(const char *, const char *) throw();
 
 
 
 
 extern "C" void encrypt(char *, int) throw();
-# 1097 "/usr/include/unistd.h" 3
+# 1099 "/usr/include/unistd.h" 3
 extern "C" void swab(const void *__restrict__, void *__restrict__, ssize_t) throw();
-# 1106 "/usr/include/unistd.h" 3
+# 1108 "/usr/include/unistd.h" 3
 extern "C" char *ctermid(char *) throw();
 # 24 "/usr/include/bits/unistd.h" 3
 extern "C" ssize_t __read_chk(int, void *, size_t, size_t);
@@ -8782,7 +8913,14 @@ pb_SwitchToTimer(&timers, pb_TimerID_IO);
 write_sads(params->outFile, image_size_macroblocks, sads_computed);
 pb_SwitchToTimer(&timers, pb_TimerID_COMPUTE);
 }
-# 378 "main.cu"
+
+
+print_test_sads(sads_computed, image_size_macroblocks);
+write_sads_directly((char *)("sad-debug.bin"), ref_image->width / 16, ref_image->height / 16, sads_computed);
+
+
+
+
 printf("TEST PASSED\n");
 
 
@@ -8797,11 +8935,11 @@ pb_FreeParameters(params);
 return 0;
 }
 
-# 1 "/tmp/tmpxft_0000631e_00000000-1_main.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_0000631e_00000000-3_main.fatbin.c" 1
+# 1 "/tmp/tmpxft_000039f7_00000000-6_main.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -8863,7 +9001,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_0000631e_00000000-3_main.fatbin.c" 2
+# 2 "/tmp/tmpxft_000039f7_00000000-6_main.fatbin.c" 2
 
 
 
@@ -8892,28 +9030,28 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x6f69737265762e09ull,0x2e090a342e31206eull,0x7320746567726174ull,0x2f2f090a33315f6dull,
 0x656c69706d6f6320ull,0x2f20687469772064ull,0x61636f6c2f727375ull,0x6f2f616475632f6cull,
 0x696c2f34366e6570ull,0x2f090a65622f2f62ull,0x6e65706f766e202full,0x6220332e32206363ull,
-0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3331ull,0x2d2d2d2d2d2d2d2dull,
+0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3230ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
-0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f6531333630ull,0x372d303030303030ull,
-0x70632e6e69616d5full,0x742f2820692e3370ull,0x23494263632f706dull,0x294354634f62332eull,
-0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,
-0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,
-0x6974704f202f2f09ull,0x2f2f090a3a736e6full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3766393330ull,0x312d303030303030ull,
+0x632e6e69616d5f39ull,0x2f2820692e337070ull,0x494263632f706d74ull,0x4334566859762e23ull,
+0x2d2d2d2f2f090a29ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x202f2f090a2d2d2dull,0x3a74656772615420ull,0x415349202c787470ull,
-0x202c33315f6d733aull,0x6c3a6e6169646e45ull,0x50202c656c747469ull,0x53207265746e696full,
-0x090a34363a657a69ull,0x09334f2d20202f2full,0x7a696d6974704f28ull,0x656c206e6f697461ull,
-0x2f2f090a296c6576ull,0x44280930672d2020ull,0x76656c2067756265ull,0x202f2f090a296c65ull,
-0x65522809326d2d20ull,0x7664612074726f70ull,0x29736569726f7369ull,0x2d2d2d2d2f2f090aull,
+0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,0x09656c69662e090aull,
-0x6d6d6f633c220931ull,0x656e696c2d646e61ull,0x6c69662e090a223eull,0x6d742f2209320965ull,
-0x746678706d742f70ull,0x313336303030305full,0x3030303030305f65ull,0x69616d5f362d3030ull,
-0x6566616475632e6eull,0x090a227570672e32ull,0x093309656c69662eull,0x696c2f7273752f22ull,
-0x38782f6363672f62ull,0x6e696c2d34365f36ull,0x342f756e672d7875ull,0x636e692f332e332eull,
+0x74704f202f2f090aull,0x2f090a3a736e6f69ull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2f2f090a2d2d2d2dull,0x7465677261542020ull,0x5349202c7874703aull,
+0x2c33315f6d733a41ull,0x3a6e6169646e4520ull,0x202c656c7474696cull,0x207265746e696f50ull,
+0x0a34363a657a6953ull,0x334f2d20202f2f09ull,0x696d6974704f2809ull,0x6c206e6f6974617aull,
+0x2f090a296c657665ull,0x280930672d20202full,0x656c206775626544ull,0x2f2f090a296c6576ull,
+0x522809326d2d2020ull,0x64612074726f7065ull,0x736569726f736976ull,0x2d2d2d2f2f090a29ull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x656c69662e090a0aull,
+0x6d6f633c22093109ull,0x6e696c2d646e616dull,0x69662e090a223e65ull,0x742f22093209656cull,
+0x6678706d742f706dull,0x3933303030305f74ull,0x30303030305f3766ull,0x6d5f38312d303030ull,
+0x616475632e6e6961ull,0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,
+0x2f6363672f62696cull,0x6e696c2d36383469ull,0x342f756e672d7875ull,0x636e692f312e342eull,
 0x6474732f6564756cull,0x090a22682e666564ull,0x093409656c69662eull,0x6f6c2f7273752f22ull,
 0x616475632f6c6163ull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x697665642f747263ull,
 0x69746e75725f6563ull,0x2e090a22682e656dull,0x22093509656c6966ull,0x636f6c2f7273752full,
@@ -8966,8 +9104,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"e03a1047a80ad5fa",(char*)"main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x7a7593af};
-# 5 "/tmp/tmpxft_0000631e_00000000-1_main.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"69c60711429b088a",(char*)"main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x5e279dd6};
+# 5 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -16940,9 +17078,9 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_0000631e_00000000-1_main.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_39_tmpxft_0000631e_00000000_4_main_cpp1_ii_09de59f8(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_39_tmpxft_0000631e_00000000_4_main_cpp1_ii_09de59f8(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_40_tmpxft_000039f7_00000000_16_main_cpp1_ii_09de59f8(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_40_tmpxft_000039f7_00000000_16_main_cpp1_ii_09de59f8(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 392 "main.cu" 2

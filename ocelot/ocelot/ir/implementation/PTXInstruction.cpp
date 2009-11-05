@@ -443,7 +443,7 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Bar: {
-			if( a.addressMode != PTXOperand::Immediate ) {
+			if( d.addressMode != PTXOperand::Immediate ) {
 				return "only support Immediate targets";
 			}
 			break;
@@ -1002,7 +1002,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "not supported in versions less than " 
 					+ toString( version ); 
 			}
-			if( a.addressMode != PTXOperand::Immediate ) {
+			if( d.addressMode != PTXOperand::Immediate ) {
 				return "only support Immediate targets";
 			}
 			break;
@@ -1722,7 +1722,8 @@ std::string ir::PTXInstruction::toString() const {
 		case Cvt: {
 			std::string result = guard() + "cvt.";
 			if( PTXOperand::isFloat( d.type )) {
-				if ((d.type == PTXOperand::f32 && a.type == PTXOperand::f64) || PTXOperand::isInt(a.type)) {
+				if ((d.type == PTXOperand::f32 && a.type == PTXOperand::f64) 
+					|| PTXOperand::isInt(a.type)) {
 					result += modifierString( modifier, carry );
 				}
 			}

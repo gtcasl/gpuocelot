@@ -36,10 +36,10 @@
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			Emulated
+			LLVM
 		</PreferredISA>
 		<OptimizationLevel>
-			none
+			basic
 		</OptimizationLevel>
 		<DisableGPUDevices>
 			1

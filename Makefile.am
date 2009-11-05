@@ -309,15 +309,18 @@ TestTrace_LDFLAGS = -static
 
 ################################################################################
 ## TestMemoryTraceGenerator
-TestMemoryTraceGenerator_CXXFLAGS = -Wall
+TestMemoryTraceGenerator_CXXFLAGS = -Wall -std=c++0x
 TestMemoryTraceGenerator_SOURCES = \
-	ocelot/trace/test/TestMemoryTraceGenerator.cpp \
-	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu.cpp
+	ocelot/trace/test/TestMemoryTraceGenerator.cpp
 TestMemoryTraceGenerator_LDADD = libcudart.la libOcelot.la \
 	libOcelotExecutive.la libOcelotTranslator.la libOcelotTrace.la \
 	libOcelotIr.la libOcelotAnalysis.la libOcelotParser.la libhydrazine.la \
-	 $(LLVM_LDFLAGS)
+	 $(LLVM_LDFLAGS) TestMemoryTraceGenerator_kernel.cu.o
 TestMemoryTraceGenerator_LDFLAGS = -static
+
+TestMemoryTraceGenerator_kernel.cu.o: \
+	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu.cpp
+	$(CC) $(CXXFLAGS) -c -Wall $< -o $@
 ################################################################################
 
 ################################################################################

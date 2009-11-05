@@ -23,6 +23,7 @@ namespace llvm
 	class ExistingModuleProvider;
 	class ExecutionEngine;
 	class Module;
+	class ModuleProvider;
 	class Context;
 }
 
@@ -288,6 +289,9 @@ namespace executive
 			static std::string threadIdString( const LLVMContext& c );
 			/*! \brief Get a string representation of a thread id */
 			static unsigned int threadId( const LLVMContext& c );
+			/*! \brief Optimize an llvm module using standard passes */
+			static void _optimizeLLVMFunction( llvm::ModuleProvider* provider, 
+				unsigned int level, bool space );
 			
 		private:
 			/*! \brief Run various PTX optimizer passes on the kernel */

@@ -42,6 +42,7 @@ namespace translator
 				NoOptimization,
 				DebugOptimization,
 				BasicOptimization,
+				AggressiveOptimization,
 				SpaceOptimization,
 				FullOptimization
 			};

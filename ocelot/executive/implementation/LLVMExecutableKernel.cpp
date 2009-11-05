@@ -1453,7 +1453,62 @@ namespace executive
 		#endif
 	}
 
-	void LLVMExecutableKernel::_optimize( )
+	void LLVMExecutableKernel::_optimizeLLVMFunction( 
+		llvm::ModuleProvider* provider, unsigned int level, bool space )
+	{
+		#ifdef HAVE_LLVM
+		llvm::PassManager manager;
+
+        manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
+	
+		if( level < 2 )
+		{
+		    manager.add( llvm::createInstructionCombiningPass() );
+		    manager.add( llvm::createReassociatePass() );
+		    manager.add( llvm::createGVNPass() );
+		    manager.add( llvm::createCFGSimplificationPass() );			
+		}
+		else
+		{
+			manager.add(llvm::createSimplifyLibCallsPass());    // Library Call Optimizations
+			manager.add(llvm::createInstructionCombiningPass());  // Cleanup for scalarrepl.
+			manager.add(llvm::createJumpThreadingPass());         // Thread jumps.
+			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
+			manager.add(llvm::createScalarReplAggregatesPass());  // Break up aggregate allocas
+			manager.add(llvm::createInstructionCombiningPass());  // Combine silly seq's
+			manager.add(llvm::createCondPropagationPass());       // Propagate conditionals
+			manager.add(llvm::createTailCallEliminationPass());   // Eliminate tail calls
+			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
+			manager.add(llvm::createReassociatePass());           // Reassociate expressions
+			manager.add(llvm::createLoopRotatePass());            // Rotate Loop
+			manager.add(llvm::createLICMPass());                  // Hoist loop invariants
+			manager.add(llvm::createLoopUnswitchPass(space || level < 3));
+			manager.add(llvm::createInstructionCombiningPass());  
+			manager.add(llvm::createIndVarSimplifyPass());        // Canonicalize indvars
+			manager.add(llvm::createLoopDeletionPass());          // Delete dead loops
+			if( level > 2 )
+			{
+				manager.add(llvm::createLoopUnrollPass());          // Unroll small loops
+			}
+			manager.add(llvm::createInstructionCombiningPass());  // Clean up after the unroller
+			manager.add(llvm::createGVNPass());                   // Remove redundancies
+			manager.add(llvm::createMemCpyOptPass());             // Remove memcpy / form memset
+			manager.add(llvm::createSCCPPass());                  // Constant prop with SCCP
+
+			// Run instcombine after redundancy elimination to exploit opportunities
+			// opened up by them.
+			manager.add(llvm::createInstructionCombiningPass());
+			manager.add(llvm::createCondPropagationPass());       // Propagate conditionals
+			manager.add(llvm::createDeadStoreEliminationPass());  // Delete dead stores
+			manager.add(llvm::createAggressiveDCEPass());         // Delete dead instructions
+			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
+
+		}
+		manager.run( *provider->getModule() );
+		#endif
+	}
+	
+	void LLVMExecutableKernel::_optimize()
 	{
 		#ifdef HAVE_LLVM
 		report( "Optimizing LLVM Code" );
@@ -1461,6 +1516,27 @@ namespace executive
 		_moduleProvider = new llvm::ExistingModuleProvider( _module );
 		assertM( _moduleProvider != 0, "Creating the module provider failed.");
 		
+		if( _optimizationLevel 
+			== translator::Translator::BasicOptimization )
+		{
+			_optimizeLLVMFunction( _moduleProvider, 1, false );
+		}
+		else if( _optimizationLevel 
+			== translator::Translator::AggressiveOptimization )
+		{
+			_optimizeLLVMFunction( _moduleProvider, 2, false );
+		}
+		else if( _optimizationLevel 
+			== translator::Translator::SpaceOptimization )
+		{
+			_optimizeLLVMFunction( _moduleProvider, 2, true );
+		}
+		else if( _optimizationLevel 
+			== translator::Translator::FullOptimization )
+		{
+			_optimizeLLVMFunction( _moduleProvider, 3, false );
+		}
+
 		_state.jit->addModuleProvider( _moduleProvider );
 		
 		llvm::Function* function = 
@@ -1469,19 +1545,6 @@ namespace executive
 		assertM( function != 0, 
 			"Could not find function _Z_ocelotTranslated_" + name );
 
-		if( _optimizationLevel != translator::Translator::DebugOptimization )
-		{
-			llvm::FunctionPassManager manager( _moduleProvider );
-		
-			manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
-			manager.add( llvm::createInstructionCombiningPass() );
-			manager.add( llvm::createReassociatePass() );
-			manager.add( llvm::createGVNPass() );
-			manager.add( llvm::createCFGSimplificationPass() );
-				
-			manager.run( *function );
-		}
-		
 		#if ( REPORT_OPTIMIZED_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
 		std::string m;
 		llvm::raw_string_ostream code( m );

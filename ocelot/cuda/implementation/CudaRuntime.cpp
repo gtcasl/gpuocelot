@@ -2167,6 +2167,11 @@ namespace cuda
 			context.setOptimizationLevel( 
 				translator::Translator::BasicOptimization );
 		}
+		else if( optimization == "aggressive" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::AggressiveOptimization );
+		}
 		else if( optimization == "space" )
 		{
 			context.setOptimizationLevel( 

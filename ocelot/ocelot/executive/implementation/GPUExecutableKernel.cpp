@@ -41,11 +41,12 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	ir::Kernel& kernel, const executive::Executive* c ): 
 		ExecutableKernel(kernel, c), ptxKernel(0) {
 	
+	this->ISA = ir::Instruction::GPU;
 	report("GPUExecutableKernel()");
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
 
-	report("  constructed new PTXKernel");
+	report("  constructed new GPUExecutableKernel");
 }
 
 /*!
@@ -79,6 +80,9 @@ void executive::GPUExecutableKernel::setDevice(const Device* device) {
 void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
 #if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
+	if (bytes == 0) {
+		bytes = 8192;
+	}
 	result = cuFuncSetSharedSize(cuFunction, bytes);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuFuncSetSharedSize(" << bytes << " bytes) FAILED: " << result);

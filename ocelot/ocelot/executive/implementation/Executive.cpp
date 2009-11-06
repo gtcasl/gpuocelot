@@ -258,6 +258,7 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 		
 	if (getSelectedISA() == ir::Instruction::GPU) {
 		// get it from the PTX module
+		std::map<std::string, ir::PTXInstruction::AddressSpace > globalsSet;
 
 		// globals
 		for (GlobalAllocationMap::iterator glb_it = globalAllocations.begin();
@@ -274,6 +275,14 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 			report("  updating global variable '" << name << "' in address space " 
 				<< ir::PTXInstruction::toString(glb_it->second.space));
 
+			if (globalsSet.find(name) == globalsSet.end()) {
+				globalsSet[name] = glb_it->second.space;
+			}
+			else {
+				report("  global variable allocation listed twice");
+				continue;
+			}
+
 			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
 
 				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
@@ -285,16 +294,21 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 							<< std::hex << (unsigned int)devicePtr << ", \n\t\t\t\t\tcopying from host memory: 0x" 
 							<< glb_it->second.ptr << std::dec);
 						if (copyType == HostToDevice) {
-							cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size);
+							if (cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size) != CUDA_SUCCESS) {
+								throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuMemcpyHtoD() failed");
+							}
 						}
 						else if (copyType == DeviceToHost) {
-							cuMemcpyDtoH(glb_it->second.ptr, devicePtr, glb_it->second.size);
+							if (cuMemcpyDtoH(glb_it->second.ptr, devicePtr, glb_it->second.size) != CUDA_SUCCESS) {
+								throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuMemcpyDtoH() failed");
+							}
 						}
 						else { 
 							throw hydrazine::Exception("ambiguous copyType for fence");
 						}
 					}
 					else {
+						throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuModuleGetGlobal() failed");
 					}
 				}
 			}
@@ -372,7 +386,7 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 
 void executive::Executive::_translateToSelected(ir::Module& m) {
 	using namespace ir;
-	report("Translating all kernels in module " << m.modulePath );
+	report("Translating all kernels in module " << m.modulePath << " to ISA " << ir::Instruction::toString(getSelectedISA()));
 	Module::KernelMap::iterator 
 		it = m.kernels.find(Instruction::PTX);
 	if (it == m.kernels.end()) {

@@ -51,9 +51,12 @@ namespace cuda
 	CudaRuntime::ArchitectureMap::iterator CudaRuntime::_getTranslatedKernel( 
 		SymbolMap::iterator kernel )
 	{	
+		ir::Instruction::Architecture targetISA = context.getSelectedISA();
 		FatBinaryMap::iterator binary = _binaries.find( kernel->second.handle );
 		assert( binary != _binaries.end() );
-		
+
+		report("Getting translated kernel with ISA: " << ir::Instruction::toString(targetISA));		
+
 		KernelMap::iterator architectures = binary->second.kernels.find( 
 			kernel->second.kernel );
 		
@@ -66,21 +69,17 @@ namespace cuda
 				map ) ).first;
 		}
 
-		ArchitectureMap::iterator translatedKernel = 
-			architectures->second.find( context.getSelectedISA() );
+		ArchitectureMap::iterator translatedKernel = architectures->second.find( targetISA );
 		
 		// possilbly translate kernels
 		if( translatedKernel == architectures->second.end() )
 		{
-			ir::Kernel* generated = context.getKernel( 
-				context.getSelectedISA(), binary->second.binary.ident, 
-				kernel->second.kernel );
+			ir::Kernel* generated = context.getKernel( targetISA, binary->second.binary.ident, kernel->second.kernel );
 				
 			if( generated != 0 )
 			{
-				translatedKernel = architectures->second.insert( 
-					std::make_pair( context.getSelectedISA(), 
-					generated ) ).first;
+				report("  got generated kernel with ISA " << ir::Instruction::toString(generated->ISA));
+				translatedKernel = architectures->second.insert( std::make_pair( targetISA, generated ) ).first;
 			}
 			
 			if( translatedKernel == architectures->second.end() )
@@ -94,8 +93,12 @@ namespace cuda
 			}
 		
 		}
+		else {
+			report("  found translated kernel with ISA " << ir::Instruction::toString(translatedKernel->second->ISA));
+		}
 		
-		report( "Obtained translated kernel." );
+		report( "Obtained translated kernel with ISA " << ir::Instruction::toString(translatedKernel->second->ISA));
+
 		return translatedKernel;
 	}
 
@@ -396,6 +399,10 @@ namespace cuda
 	{
 
 		report("CudaRuntime::_launchGPUKernel called");
+		if (translatedKernel->second->ISA != ir::Instruction::GPU) {
+			throw hydrazine::Exception("_launchGPUKernel() required translated kernel to have ISA: GPU");
+		}
+
 		executive::GPUExecutableKernel* gpuKernel = static_cast< 
 			executive::GPUExecutableKernel* >( translatedKernel->second );
 
@@ -405,14 +412,13 @@ namespace cuda
 			"Trace generators not supported for GPU kernels." );
 		assertM( thread->second.persistentTraceGenerators.empty(), 
 			"Trace generators not supported for GPU kernels." );
-
-
-		context.fenceGlobalVariables();
-
+		
 		gpuKernel->updateParameterMemory();
 		gpuKernel->updateGlobalMemory();
 		gpuKernel->updateConstantMemory();
-		
+
+		context.fenceGlobalVariables();
+
 		try
 		{
 			gpuKernel->setKernelShape( thread->second.ctaDimensions.x, 
@@ -424,12 +430,14 @@ namespace cuda
 
 			report( "Launching GPU kernel \"" << gpuKernel->name << "\"." );
 
+
 			gpuKernel->launchGrid( thread->second.kernelDimensions.x, 
 				thread->second.kernelDimensions.y );
 			thread->second.lastError = cudaSuccess;
 		}
-		catch( ... )
+		catch( hydrazine::Exception &exception )
 		{
+			report("  _launchGPUKernel() - failure " << exception.what());
 			thread->second.lastError = cudaErrorLaunchFailure;
 		}
 		

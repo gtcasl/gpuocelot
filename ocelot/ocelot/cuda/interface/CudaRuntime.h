@@ -79,7 +79,7 @@ namespace cuda
 			class FatBinaryContext
 			{
 				public:
-					FatBinary binary; //< The fat binary
+					std::string name; //< The fat binary name
 					ThreadSet threads; //< Registered threads
 					KernelMap kernels; //< Translated kernels
 					GlobalMap globals; //< Global variables			
@@ -226,7 +226,7 @@ namespace cuda
 			
 			/*! \brief Default device index */
 			unsigned int _defaultDevice;
-			
+						
 		private:
 			/*!
 				\brief Get an iterator to a translated kernel

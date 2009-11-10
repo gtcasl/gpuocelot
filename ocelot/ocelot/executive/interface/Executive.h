@@ -321,8 +321,7 @@ namespace executive {
 		
 			\param l The new optimization level.
 		*/
-		void setOptimizationLevel( 
-			translator::Translator::OptimizationLevel l );
+		void setOptimizationLevel(translator::Translator::OptimizationLevel l);
 
 		/*!
 			called to update global variables across all address spaces
@@ -335,6 +334,9 @@ namespace executive {
 			idempotent - called to init GL interoperability
 		*/
 		bool useGLInteroperability();
+		
+		/*! \brief Limit the number of threads launched per kernel */
+		void limitWorkerThreads(unsigned int limit);
 		
 	public:
 		/*! Set of loaded PTX modules indexed by the module's filename */
@@ -368,6 +370,9 @@ namespace executive {
 		bool cudaGLInitialized;		
 		/*! \brief The actual set of devices */
 		DeviceVector allDevices;
+		
+		/*! \brief The limit on CPU threads launched per kernel */
+		unsigned int threadLimit;
 	};
 	
 }

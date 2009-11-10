@@ -55,7 +55,8 @@ namespace cuda
 		FatBinaryMap::iterator binary = _binaries.find( kernel->second.handle );
 		assert( binary != _binaries.end() );
 
-		report("Getting translated kernel with ISA: " << ir::Instruction::toString(targetISA));		
+		report("Getting translated kernel with ISA: " 
+			<< ir::Instruction::toString(targetISA));		
 
 		KernelMap::iterator architectures = binary->second.kernels.find( 
 			kernel->second.kernel );
@@ -69,23 +70,27 @@ namespace cuda
 				map ) ).first;
 		}
 
-		ArchitectureMap::iterator translatedKernel = architectures->second.find( targetISA );
+		ArchitectureMap::iterator 
+			translatedKernel = architectures->second.find( targetISA );
 		
 		// possilbly translate kernels
 		if( translatedKernel == architectures->second.end() )
 		{
-			ir::Kernel* generated = context.getKernel( targetISA, binary->second.binary.ident, kernel->second.kernel );
+			ir::Kernel* generated = context.getKernel( targetISA, 
+				binary->second.name, kernel->second.kernel );
 				
 			if( generated != 0 )
 			{
-				report("  got generated kernel with ISA " << ir::Instruction::toString(generated->ISA));
-				translatedKernel = architectures->second.insert( std::make_pair( targetISA, generated ) ).first;
+				report("  got generated kernel with ISA " 
+					<< ir::Instruction::toString(generated->ISA));
+				translatedKernel = architectures->second.insert( 
+					std::make_pair( targetISA, generated ) ).first;
 			}
 			
 			if( translatedKernel == architectures->second.end() )
 			{
 				std::stringstream stream;
-				stream << "From Fat Binary \"" << binary->second.binary.ident 
+				stream << "From Fat Binary \"" << binary->second.name 
 					<< "\" failed to translate kernel \"" 
 					<< kernel->second.kernel << "\"";
 					
@@ -94,10 +99,12 @@ namespace cuda
 		
 		}
 		else {
-			report("  found translated kernel with ISA " << ir::Instruction::toString(translatedKernel->second->ISA));
+			report("  found translated kernel with ISA " 
+				<< ir::Instruction::toString(translatedKernel->second->ISA));
 		}
 		
-		report( "Obtained translated kernel with ISA " << ir::Instruction::toString(translatedKernel->second->ISA));
+		report( "Obtained translated kernel with ISA " 
+			<< ir::Instruction::toString(translatedKernel->second->ISA));
 
 		return translatedKernel;
 	}
@@ -962,7 +969,7 @@ namespace cuda
 			_binaryNames.insert( std::make_pair( binary.ident, _handle ) );
 			
 			FatBinaryContext binaryContext;
-			binaryContext.binary = binary;
+			binaryContext.name = binary.ident;
 		
 			bi = _binaries.insert( std::make_pair( _handle++, 
 				binaryContext ) ).first;
@@ -998,7 +1005,7 @@ namespace cuda
 			std::stringstream stream;
 			stream << "Thread " << pthread_self() 
 				<< " never registered fat binary \"" 
-				<< binary->second.binary.ident << "\"";
+				<< binary->second.name << "\"";
 			throw hydrazine::Exception( formatError( stream.str() ), 4 );
 		
 		}
@@ -1006,7 +1013,7 @@ namespace cuda
 		for( GlobalMap::iterator global = binary->second.globals.begin(); 
 			global != binary->second.globals.end(); ++global )
 		{
-			context.freeGlobal( global->first, binary->second.binary.ident );
+			context.freeGlobal( global->first, binary->second.name );
 		}
 		
 		binary->second.threads.erase( thread );
@@ -1014,11 +1021,11 @@ namespace cuda
 		if( binary->second.threads.empty() )
 		{
 			StringMap::iterator 
-				name = _binaryNames.find( binary->second.binary.ident );
+				name = _binaryNames.find( binary->second.name );
 			assert( name != _binaryNames.end() );
 
 			// unregister all of the PTX files
-			context.unloadModule( binary->second.binary.ident );
+			context.unloadModule( binary->second.name );
 			
 			_binaryNames.erase( name );
 			_binaries.erase( binary );
@@ -1282,7 +1289,6 @@ namespace cuda
 
 	void CudaRuntime::launch( const char* symbol )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1301,12 +1307,12 @@ namespace cuda
 		SymbolMap::iterator kernel = _symbols.find( symbol );
 		assert( kernel != _symbols.end() );
 	
-		ArchitectureMap::iterator translatedKernel = _getTranslatedKernel( kernel );
+		ArchitectureMap::iterator translatedKernel 
+			= _getTranslatedKernel( kernel );
 		
 		// set up launch parameters and launch
 		switch( context.getSelectedISA() )
 		{
-		
 			case ir::Instruction::Emulated:
 			{
 				_launchEmulatedKernel( thread, translatedKernel );
@@ -1317,13 +1323,11 @@ namespace cuda
 				_launchLLVMKernel( thread, translatedKernel );
 				break;
 			}
-#if HAVE_CUDA_DRIVER_API == 1
 			case ir::Instruction::GPU:
 			{
 				_launchGPUKernel( thread, translatedKernel );
 				break;
 			}
-#endif
 			default:
 			{
 				std::stringstream stream;
@@ -1336,7 +1340,6 @@ namespace cuda
 	
 	void* CudaRuntime::allocate( unsigned int size, bool portable, bool mapped )
 	{
-	
 		Memory memory;
 		
 		if( mapped )
@@ -1362,7 +1365,6 @@ namespace cuda
 		_memory.insert( std::make_pair( memory.base, memory ) );
 		
 		return memory.base;
-	
 	}
 	
 	void* CudaRuntime::lookupMappedMemory( void* pointer )
@@ -1745,7 +1747,7 @@ namespace cuda
 			binary->second.globals.insert( std::make_pair( name, 
 				(char*)pointer ) );
 			context.registerGlobal( pointer, size, name, space, 
-				binary->second.binary.ident );
+				binary->second.name );
 		}
 	}
 
@@ -1777,7 +1779,7 @@ namespace cuda
 			Texture t;
 			t.name = name;
 			t.bound = false;
-			t.module = binary->second.binary.ident;
+			t.module = binary->second.name;
 			_textures.insert( std::make_pair( hostVar, t ) );	
 
 			binary->second.globals.insert( std::make_pair( name, 
@@ -1791,7 +1793,7 @@ namespace cuda
 			texture.addressMode[2] = convert(hostVar->addressMode[2]);
 				
 			context.registerTexture( texture, name, 
-				binary->second.binary.ident );
+				binary->second.name );
 		}
 	
 	}

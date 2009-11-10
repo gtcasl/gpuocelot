@@ -1650,6 +1650,77 @@ namespace cuda
 		}	
 	}
 
+	void CudaRuntimeBase::limitWorkerThreads( unsigned int limit )
+	{
+		_runtime.context.limitWorkerThreads( limit );
+	}
+	
+	void CudaRuntimeBase::registerPTXModule(std::istream& stream, 
+		const std::string& name)
+	{
+		std::string module;
+		unsigned int length = 0;
+		
+		stream.seekg( 0, std::ios::end );
+		length = stream.tellg();
+		stream.seekg( 0, std::ios::beg );
+		
+		module.resize( length );
+		stream.read( const_cast< char* >( module.c_str() ), length );
+		
+		__cudaFatCudaBinaryRec fatbin;
+		__cudaFatPtxEntry ptx;
+		
+		ptx.ptx = const_cast< char* >( module.c_str() );
+		
+		fatbin.ident = const_cast< char* >( name.c_str() );
+		fatbin.ptx = &ptx;
+		
+		unsigned int handle = _runtime.registerFatBinary( fatbin );
+		
+		executive::Executive::ModuleMap::iterator 
+			mi = _runtime.context.modules.find(name);
+		assert( mi != _runtime.context.modules.end() );
+			
+		ir::Module::KernelMap::iterator kernels = mi->second->kernels.find( 
+			ir::Instruction::PTX );
+		assert( kernels != mi->second->kernels.end() );
+		
+		for( ir::Module::KernelVector::iterator 
+			kernel = kernels->second.begin(); 
+			kernel != kernels->second.end(); ++kernel )
+		{
+			std::hash<std::string> hash;
+			_runtime.registerFunction( reinterpret_cast<const char*>( 
+				hash( (*kernel)->name ) ), (*kernel)->name, handle );
+		}		
+	}
+		
+	const char* CudaRuntimeBase::getKernelPointer(const std::string& name, 
+		const std::string& module)
+	{
+		executive::Executive::ModuleMap::iterator 
+			mi = _runtime.context.modules.find(module);
+		assert( mi != _runtime.context.modules.end() );
+			
+		ir::Module::KernelMap::iterator kernels = mi->second->kernels.find( 
+			ir::Instruction::PTX );
+		assert( kernels != mi->second->kernels.end() );
+		
+		for( ir::Module::KernelVector::iterator 
+			kernel = kernels->second.begin(); 
+			kernel != kernels->second.end(); ++kernel )
+		{
+			if( (*kernel)->name == name )
+			{
+				std::hash<std::string> hash;
+				return reinterpret_cast<const char*>( hash( (*kernel)->name ) );
+			}
+		}
+		
+		throw hydrazine::Exception( "Could not find kernel " + name 
+			+ " in module " + module );		
+	}
 
 }
 

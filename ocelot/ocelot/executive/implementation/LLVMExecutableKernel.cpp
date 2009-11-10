@@ -2010,10 +2010,13 @@ namespace executive
 		}
 	}
 
-	void LLVMExecutableKernel::setDevice( const Device* device )
+	void LLVMExecutableKernel::setDevice( const Device* device, 
+		unsigned int threadLimit )
 	{
 		_manager.setMaxThreadsPerCta( device->maxThreadsPerBlock );
-		_manager.setThreadCount( device->multiprocessorCount );
+		_manager.setThreadCount( 
+			std::min( (unsigned int)device->multiprocessorCount, 
+			threadLimit ) );
 	}
 	
 	unsigned int LLVMExecutableKernel::threads() const

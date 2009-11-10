@@ -2025,7 +2025,23 @@ namespace cuda
 			"traces/CudaApi.trace", c );
 		_trace.open( tracefile.c_str() );
 	}
-
+	
+	void TraceGeneratingCudaRuntime::limitWorkerThreads( unsigned int limit )
+	{
+		_runtime.limitWorkerThreads( limit );
+	}
+	
+	void TraceGeneratingCudaRuntime::registerPTXModule( std::istream& stream, 
+		const std::string& name )
+	{
+		_runtime.registerPTXModule( stream, name );
+	}
+		
+	const char* TraceGeneratingCudaRuntime::getKernelPointer(
+		const std::string& name, const std::string& module )
+	{
+		return _runtime.getKernelPointer( name, module );
+	}
 }
 
 #endif

@@ -38,7 +38,8 @@ namespace ir {
 		virtual void setKernelShape(int x, int y, int z)=0;
 		
 		/*! \brief Describes the device used to execute the kernel */
-		virtual void setDevice(const executive::Device* device)=0;
+		virtual void setDevice(const executive::Device* device,
+			unsigned int limit)=0;
 	};
 	
 }

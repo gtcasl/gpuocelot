@@ -65,6 +65,7 @@ namespace ocelot
 		bool parallelismTrace;
 		bool inPlaceTraces;
 		std::string database;
+		unsigned int threadLimit;
 		
 		report( "Parsing " << c.size() << " arguments" );
 		
@@ -74,6 +75,9 @@ namespace ocelot
 		parse( "UseSharedComputationGenerator", sharedTrace, false, c );
 		parse( "UseParallelismTraceGenerator", parallelismTrace, false, c );
 		parse( "UseInPlaceTraces", inPlaceTraces, false, c );
+		parse( "LimitWorkerThreads", threadLimit, -1, c );
+		
+		ocelot::limitWorkerThreads( threadLimit );
 		
 		if( memoryTrace )
 		{

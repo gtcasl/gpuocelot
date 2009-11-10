@@ -45,7 +45,7 @@ namespace executive {
 		void setKernelShape(int x, int y, int z);
 
 		/*!	Sets device used to execute the kernel */
-		void setDevice(const Device* device);
+		void setDevice(const Device* device, unsigned int limit);
 
 	public:
 		/*!	Notifies all attached TraceGenerators of an event */

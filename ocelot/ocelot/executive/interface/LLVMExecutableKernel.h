@@ -330,7 +330,7 @@ namespace executive
 			/*! \brief Sets the shape of a cta in the kernel */
 			void setKernelShape( int x, int y, int z );
 			/*! \brief Describes the device used to execute the kernel */
-			void setDevice( const Device* device );
+			void setDevice( const Device* device, unsigned int threadLimit );
 			
 		public:
 			/*! \brief Get the number of threads per cta */

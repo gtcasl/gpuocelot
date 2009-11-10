@@ -131,14 +131,14 @@ extern "C"
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
-			d = *((ir::PTXF32*) address);
 		}
 		else
 		{
 			state->cache->lock();
-			state->cache->read( &d, (void*) address, sizeof( ir::PTXF32 ) );
 		}
 		
+		d = *((ir::PTXF32*) address);
+
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAdd:
@@ -170,14 +170,10 @@ extern "C"
 				<< " not supported for f32." );
 		}
 
-		if( space == ir::PTXInstruction::Shared )
+		*((ir::PTXF32*) address) = result;
+
+		if( space != ir::PTXInstruction::Shared )
 		{
-			*((ir::PTXF32*) address) = result;
-		}
-		else
-		{
-			state->cache->write( (void*) address, 
-				&result, sizeof( ir::PTXF32 ) );
 			state->cache->unlock();
 		}
 		
@@ -198,13 +194,13 @@ extern "C"
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
-			d = *((ir::PTXB32*) address);
 		}
 		else
 		{
 			state->cache->lock();
-			state->cache->read( &d, (void*) address, sizeof( ir::PTXB32 ) );
 		}
+
+		d = *((ir::PTXB32*) address);
 		
 		switch( op )
 		{
@@ -284,15 +280,11 @@ extern "C"
 				<< ir::PTXInstruction::toString( op ) 
 				<< " not supported for b32." );
 		}
+
+		*((ir::PTXB32*) address) = result;
 		
-		if( space == ir::PTXInstruction::Shared )
+		if( space != ir::PTXInstruction::Shared )
 		{
-			*((ir::PTXB32*) address) = result;
-		}
-		else
-		{
-			state->cache->write( (void*) address, 
-				&result, sizeof( ir::PTXB32 ) );
 			state->cache->unlock();
 		}
 
@@ -313,14 +305,14 @@ extern "C"
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
-			d = *((ir::PTXS32*) address);
 		}
 		else
 		{
 			state->cache->lock();
-			state->cache->read( &d, (void*) address, sizeof( ir::PTXS32 ) );
 		}
 		
+		d = *((ir::PTXS32*) address);
+
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAdd:
@@ -352,14 +344,10 @@ extern "C"
 				<< " not supported for s32." );
 		}
 
-		if( space == ir::PTXInstruction::Shared )
+		*((ir::PTXS32*) address) = result;
+
+		if( space != ir::PTXInstruction::Shared )
 		{
-			*((ir::PTXS32*) address) = result;
-		}
-		else
-		{
-			state->cache->write( (void*) address, 
-				&result, sizeof( ir::PTXS32 ) );
 			state->cache->unlock();
 		}
 		
@@ -380,14 +368,14 @@ extern "C"
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
-			d = *((ir::PTXB64*) address);
 		}
 		else
 		{
 			state->cache->lock();
-			state->cache->read( &d, (void*) address, sizeof( ir::PTXB64 ) );
 		}
 				
+		d = *((ir::PTXB64*) address);
+
 		switch( op )
 		{
 			case ir::PTXInstruction::AtomicAdd:
@@ -412,14 +400,10 @@ extern "C"
 				<< " not supported for b64." );
 		}
 
-		if( space == ir::PTXInstruction::Shared )
+		*((ir::PTXB64*) address) = result;
+
+		if( space != ir::PTXInstruction::Shared )
 		{
-			*((ir::PTXB64*) address) = result;
-		}
-		else
-		{
-			state->cache->write( (void*) address, 
-				&result, sizeof( ir::PTXB64 ) );
 			state->cache->unlock();
 		}
 		
@@ -439,14 +423,14 @@ extern "C"
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
-			d = *((ir::PTXB32*) address);
 		}
 		else
 		{
 			state->cache->lock();
-			state->cache->read( &d, (void*) address, sizeof( ir::PTXB32 ) );
 		}
 				
+		d = *((ir::PTXB32*) address);
+
 		assert( op == ir::PTXInstruction::AtomicCas );
 
 		ir::PTXB32 result = ( d == b ) ? c : d;
@@ -455,14 +439,10 @@ extern "C"
 			<< (void*) address << " from " << d << " by " << b 
 			<< " to " << result );
 
-		if( space == ir::PTXInstruction::Shared )
+		*((ir::PTXB32*) address) = result;
+
+		if( space != ir::PTXInstruction::Shared )
 		{
-			*((ir::PTXB32*) address) = result;
-		}
-		else
-		{
-			state->cache->write( (void*) address, 
-				&result, sizeof( ir::PTXB32 ) );
 			state->cache->unlock();
 		}
 		
@@ -482,14 +462,14 @@ extern "C"
 		if( space == ir::PTXInstruction::Shared )
 		{
 			address += ( ir::PTXU64 ) context->shared;
-			d = *((ir::PTXB64*) address);
 		}
 		else
 		{
 			state->cache->lock();
-			state->cache->read( &d, (void*) address, sizeof( ir::PTXB64 ) );
 		}
 				
+		d = *((ir::PTXB64*) address);
+
 		assert( op == ir::PTXInstruction::AtomicCas );
 
 		ir::PTXB64 result = ( d == b ) ? c : d;
@@ -498,14 +478,10 @@ extern "C"
 			<< (void*) address << " from " << d << " by " << b 
 			<< " to " << ( ( d == b ) ? c : d ) );
 
-		if( space == ir::PTXInstruction::Shared )
+		*((ir::PTXB64*) address) = result;
+
+		if( space != ir::PTXInstruction::Shared )
 		{
-			*((ir::PTXB64*) address) = result;
-		}
-		else
-		{
-			state->cache->write( (void*) address, 
-				&result, sizeof( ir::PTXB64 ) );
 			state->cache->unlock();
 		}
 
@@ -970,47 +946,6 @@ namespace executive
 	void LLVMExecutableKernel::AtomicOperationCache::unlock()
 	{
 		pthread_mutex_unlock( &_mutex );
-	}
-	
-	void LLVMExecutableKernel::AtomicOperationCache::write( 
-		void* _address, const void* _data, unsigned int bytes )
-	{
-		char* address = (char*) _address;
-		const char* data = (const char*) _data;
-		
-		for( unsigned int i = 0; i < bytes; ++i )
-		{
-			_cache[ address + i ] = data[ i ];
-			address[ i ] = data[ i ];
-		}
-	}
-
-	void LLVMExecutableKernel::AtomicOperationCache::read( 
-		void* _data, const void* _address, unsigned int bytes )
-	{
-		char* address = (char*) _address;
-		char* data = (char*) _data;
-		
-		for( unsigned int i = 0; i < bytes; ++i )
-		{
-			MemoryMap::iterator line = _cache.find( address + i );
-			if( line == _cache.end() )
-			{
-				line = _cache.insert( 
-					std::make_pair( address + i, address[ i ] ) ).first;
-			}
-			data[ i ] = line->second;
-		}
-	}
-
-	void LLVMExecutableKernel::AtomicOperationCache::flush()
-	{
-		for( MemoryMap::iterator line = _cache.begin(); 
-			line != _cache.end(); ++line )
-		{
-			*line->first = line->second;
-		}
-		_cache.clear();
 	}
 
 	LLVMExecutableKernel::Worker::Message::Message( Type t, 
@@ -2050,7 +1985,6 @@ namespace executive
 		
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externalSharedSize );
-		_cache.flush();
 	}
 	
 	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

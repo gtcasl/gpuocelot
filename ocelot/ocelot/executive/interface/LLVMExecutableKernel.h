@@ -70,13 +70,8 @@ namespace executive
 			class AtomicOperationCache
 			{
 				private:
-					typedef std::unordered_map< char*, char > MemoryMap;
-
-				private:
 					/*! \brief Controls access to the cache */
 					pthread_mutex_t _mutex;
-					/*! \brief The actual cache */
-					MemoryMap _cache;
 				
 				public:
 					/*! \brief Create the mutex */
@@ -89,14 +84,6 @@ namespace executive
 					void lock();
 					/*! \brief Unlocks the cache */
 					void unlock();
-					/*! \brief Write a range of addresses to the cache */
-					void write( void* address, const void* data, 
-						unsigned int bytes );
-					/*! \brief Read an address if there is a hit */
-					void read( void* address, const void* data, 
-						unsigned int bytes );
-					/*! \brief Flush the cache to memory */
-					void flush();
 			};
 			
 			/*! \brief A worker thread executes a subset of CTAs in a kernel */

@@ -415,7 +415,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 			LLVMExecutableKernel* 
 				kernel = new LLVMExecutableKernel(**k_it, this, 
 				optimizationLevel);
-				kernel->setDevice(&devices[getSelected()]);
+				kernel->setDevice(&devices[getSelected()], threadLimit);
 			m.kernels[Instruction::LLVM].push_back(kernel);
 		}
 	}
@@ -481,8 +481,9 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 
 bool executive::Executive::cudaInitialized = false;
 
-executive::Executive::Executive() : selectedDevice( -1 ), 
-	optimizationLevel( translator::Translator::NoOptimization ) {
+executive::Executive::Executive() : selectedDevice(-1), 
+	optimizationLevel( translator::Translator::NoOptimization ),
+	threadLimit(-1) {
 	cudaGLInitialized = true;
 	enumerateDevices();
 }
@@ -1787,6 +1788,10 @@ executive::Executive::MemoryAllocation
 void executive::Executive::setOptimizationLevel( 
 	translator::Translator::OptimizationLevel l) {
 	optimizationLevel = l;
+}
+
+void executive::Executive::limitWorkerThreads(unsigned int limit) {
+	threadLimit = limit;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

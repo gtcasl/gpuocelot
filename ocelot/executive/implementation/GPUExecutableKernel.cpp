@@ -74,7 +74,8 @@ void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
 	#endif
 }
 
-void executive::GPUExecutableKernel::setDevice(const Device* device) {
+void executive::GPUExecutableKernel::setDevice(const Device* device,
+	unsigned int limit) {
 }
 
 void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {

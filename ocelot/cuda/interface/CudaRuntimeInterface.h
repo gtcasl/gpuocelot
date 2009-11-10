@@ -272,6 +272,11 @@ namespace cuda
 			virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 				bool persistent, bool safe ) = 0;
 			virtual void clearTraceGenerators( bool safe ) = 0;
+			virtual void limitWorkerThreads( unsigned int limit ) = 0;
+			virtual void registerPTXModule(std::istream& stream, 
+				const std::string& name) = 0;
+			virtual const char* getKernelPointer(const std::string& name, 
+				const std::string& module) = 0;
 	
 	};
 

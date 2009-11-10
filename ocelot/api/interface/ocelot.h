@@ -7,6 +7,8 @@
 #ifndef OCELOT_H_INCLUDED
 #define OCELOT_H_INCLUDED
 
+#include <istream>
+
 namespace trace
 {
 	class TraceGenerator;
@@ -30,7 +32,35 @@ namespace ocelot
 				
 	/*! \brief Clear all trace generators 
 		\param safe Make this a thread safe call*/
-	void clearTraceGenerators(bool safe = true);
+	void clearTraceGenerators( bool safe = true );
+	
+	/*! \brief Sets a limit on the number of host worker threads to launch
+		when executing a CUDA kernel on a Multi-Core CPU.
+		\param limit The max number of worker threads to launch per kernel.
+	*/
+	void limitWorkerThreads( unsigned int limit = -1 );
+	
+	/*! \brief Register an istream containing a PTX module.
+		
+		\param stream An input stream containing a PTX module
+		\param The name of the module being registered.  Must be Unique.
+		\return A function pointer that can be passed to cudaLaunch
+	*/
+	void registerPTXModule(std::istream& stream, const std::string& name);
+	
+	typedef const char* KernelPointer;
+
+	/*! \brief Get a function pointer to a kernel in a registered module 
+		that can be passed directly to cudaLaunch
+		
+		This function will throw an exception if the kernel does not exist.
+		
+		\param name The name of the kernel to find. 
+		\param module The name of the module to find the kernel in.
+		\return A pointer to the named kernel.
+	*/
+	KernelPointer getKernelPointer(const std::string& name, 
+		const std::string& module);
 }
 
 #endif

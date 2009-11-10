@@ -9,6 +9,7 @@
 
 #include <ocelot/api/interface/ocelot.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
+#include <hydrazine/implementation/Exception.h>
 
 namespace ocelot
 {
@@ -25,6 +26,26 @@ namespace ocelot
 		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearTraceGenerators( 
 			safe );
 	}
+	
+	void limitWorkerThreads( unsigned int limit )
+	{
+		cuda::CudaRuntimeInterface::entryPoint.runtime()->
+			limitWorkerThreads( limit );
+	}
+
+	void registerPTXModule(std::istream& stream, const std::string& name)
+	{
+		cuda::CudaRuntimeInterface::entryPoint.runtime()->
+			registerPTXModule( stream, name );
+	}
+	
+	KernelPointer getKernelPointer(const std::string& name,
+		const std::string& module)
+	{
+		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
+			getKernelPointer( name, module );
+	}
+
 }
 
 #endif

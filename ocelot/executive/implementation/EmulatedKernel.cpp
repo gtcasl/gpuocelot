@@ -102,7 +102,8 @@ void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
 	threadCount = x*y*z;
 }
 
-void executive::EmulatedKernel::setDevice(const Device* device) {
+void executive::EmulatedKernel::setDevice(const Device* device,
+	unsigned int limit) {
 }
 
 /*!

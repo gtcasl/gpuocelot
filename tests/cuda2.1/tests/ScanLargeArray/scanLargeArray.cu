@@ -74,8 +74,8 @@ runTest( int argc, char** argv)
         cudaSetDevice( cutGetMaxGflopsDeviceId() );
 
 #ifndef __DEVICE_EMULATION__
-    unsigned int num_test_iterations = 100;
-    unsigned int num_elements = 1000000; // can support large, non-power-of-2 arrays!
+    unsigned int num_test_iterations = 1;
+    unsigned int num_elements = 10000; // can support large, non-power-of-2 arrays!
 #else
     unsigned int num_test_iterations = 1;
     unsigned int num_elements = 10000; // can support large, non-power-of-2 arrays!

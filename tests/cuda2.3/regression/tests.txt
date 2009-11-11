@@ -1,4 +1,5 @@
 ../3DFD CUDA_SDK_STYLE
 ../SortingNetwork CUDA_SDK_STYLE
 ../worleyTestExternalSharedMemory CUDA_SDK_STYLE
+../TestAtomics
 

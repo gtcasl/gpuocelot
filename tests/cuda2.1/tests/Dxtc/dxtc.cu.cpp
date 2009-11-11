@@ -1,27 +1,23 @@
-# 1 "/tmp/tmpxft_00007716_00000000-1_dxtc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000641b_00000000-1_dxtc.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00007716_00000000-1_dxtc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000641b_00000000-1_dxtc.cudafe1.cpp"
 # 1 "dxtc.cu"
-# 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
-namespace std __attribute__((visibility("default"))) {
-# 245 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
-}
-# 46 "/home/normal/cuda/bin/../include/device_types.h"
-# 152 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+# 46 "/usr/local/cuda/bin/../include/device_types.h"
+# 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
 typedef long ptrdiff_t;
-# 214 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+# 211 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
 typedef unsigned long size_t;
-# 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1 3
-# 80 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 3
-# 1 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 1 3
-# 53 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
-# 1 "/home/normal/cuda/bin/../include/host_defines.h" 1 3
-# 54 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/builtin_types.h" 1 3
-# 42 "/home/normal/cuda/bin/../include/builtin_types.h" 3
-# 1 "/home/normal/cuda/bin/../include/device_types.h" 1 3
-# 46 "/home/normal/cuda/bin/../include/device_types.h" 3
+# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
+# 107 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
+# 1 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 1 3
+# 53 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+# 1 "/usr/local/cuda/bin/../include/host_defines.h" 1 3
+# 54 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
+# 42 "/usr/local/cuda/bin/../include/builtin_types.h" 3
+# 1 "/usr/local/cuda/bin/../include/device_types.h" 1 3
+# 46 "/usr/local/cuda/bin/../include/device_types.h" 3
 enum cudaRoundMode
 {
   cudaRoundNearest,
@@ -29,9 +25,9 @@ enum cudaRoundMode
   cudaRoundPosInf,
   cudaRoundMinInf
 };
-# 43 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/driver_types.h" 1 3
-# 90 "/home/normal/cuda/bin/../include/driver_types.h" 3
+# 43 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/driver_types.h" 1 3
+# 91 "/usr/local/cuda/bin/../include/driver_types.h" 3
 enum cudaError
 {
   cudaSuccess = 0,
@@ -225,7 +221,7 @@ struct cudaDeviceProp
   int computeMode;
   int __cudaReserved[36];
 };
-# 318 "/home/normal/cuda/bin/../include/driver_types.h" 3
+# 319 "/usr/local/cuda/bin/../include/driver_types.h" 3
 typedef enum cudaError cudaError_t;
 
 
@@ -239,9 +235,9 @@ typedef int cudaStream_t;
 
 
 typedef int cudaEvent_t;
-# 44 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/texture_types.h" 1 3
-# 54 "/home/normal/cuda/bin/../include/texture_types.h" 3
+# 44 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/texture_types.h" 1 3
+# 54 "/usr/local/cuda/bin/../include/texture_types.h" 3
 enum cudaTextureAddressMode
 {
   cudaAddressModeWrap,
@@ -271,247 +267,252 @@ struct textureReference
   struct cudaChannelFormatDesc channelDesc;
   int __cudaReserved[16];
 };
-# 45 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/vector_types.h" 1 3
-# 54 "/home/normal/cuda/bin/../include/vector_types.h" 3
+# 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/vector_types.h" 1 3
+# 82 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct char1
 {
   signed char x;
+ 
 };
 
 
 struct uchar1
 {
   unsigned char x;
+ 
 };
 
 
-struct char2
+struct __attribute__((__aligned__(2))) char2
 {
   signed char x, y;
+ 
 };
 
 
-struct uchar2
+struct __attribute__((__aligned__(2))) uchar2
 {
   unsigned char x, y;
+ 
 };
 
 
 struct char3
 {
   signed char x, y, z;
+ 
 };
 
 
 struct uchar3
 {
   unsigned char x, y, z;
+ 
 };
 
 
-struct char4
+struct __attribute__((__aligned__(4))) char4
 {
   signed char x, y, z, w;
+ 
 };
 
 
-struct uchar4
+struct __attribute__((__aligned__(4))) uchar4
 {
   unsigned char x, y, z, w;
+ 
 };
 
 
 struct short1
 {
   short x;
+ 
 };
 
 
 struct ushort1
 {
   unsigned short x;
+ 
 };
 
 
-struct short2
+struct __attribute__((__aligned__(4))) short2
 {
   short x, y;
+ 
 };
 
 
-struct ushort2
+struct __attribute__((__aligned__(4))) ushort2
 {
   unsigned short x, y;
+ 
 };
 
 
 struct short3
 {
   short x, y, z;
+ 
 };
 
 
 struct ushort3
 {
   unsigned short x, y, z;
+ 
 };
 
 
-struct short4
-{
-  short x, y, z, w;
-};
+struct __attribute__((__aligned__(8))) short4 { short x, y, z, w; };
 
 
-struct ushort4
-{
-  unsigned short x, y, z, w;
-};
+struct __attribute__((__aligned__(8))) ushort4 { unsigned short x, y, z, w; };
 
 
 struct int1
 {
   int x;
+ 
 };
 
 
 struct uint1
 {
   unsigned int x;
+ 
 };
 
 
-struct int2
-{
-  int x, y;
-};
+struct __attribute__((__aligned__(8))) int2 { int x, y; };
 
 
-struct uint2
-{
-  unsigned int x, y;
-};
+struct __attribute__((__aligned__(8))) uint2 { unsigned int x, y; };
 
 
 struct int3
 {
   int x, y, z;
+ 
 };
 
 
 struct uint3
 {
   unsigned int x, y, z;
+ 
 };
 
 
-struct int4
+struct __attribute__((__aligned__(16))) int4
 {
   int x, y, z, w;
+ 
 };
 
 
-struct uint4
+struct __attribute__((__aligned__(16))) uint4
 {
   unsigned int x, y, z, w;
+ 
 };
 
 
 struct long1
 {
   long int x;
+ 
 };
 
 
 struct ulong1
 {
   unsigned long x;
+ 
 };
-
-
-struct
-
-
-
-      
-
-                                             long2
+# 258 "/usr/local/cuda/bin/../include/vector_types.h" 3
+struct __attribute__((__aligned__(2*sizeof(long int)))) long2
 {
   long int x, y;
+ 
 };
 
 
-struct
-
-
-
-      
-
-                                                      ulong2
+struct __attribute__((__aligned__(2*sizeof(unsigned long int)))) ulong2
 {
   unsigned long int x, y;
+ 
 };
-# 262 "/home/normal/cuda/bin/../include/vector_types.h" 3
+# 306 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct float1
 {
   float x;
+ 
 };
 
 
-struct float2
-{
-  float x, y;
-};
+struct __attribute__((__aligned__(8))) float2 { float x, y; };
 
 
 struct float3
 {
   float x, y, z;
+ 
 };
 
 
-struct float4
+struct __attribute__((__aligned__(16))) float4
 {
   float x, y, z, w;
+ 
 };
 
 
 struct longlong1
 {
   long long int x;
+ 
 };
 
 
 struct ulonglong1
 {
   unsigned long long int x;
+ 
 };
 
 
-struct longlong2
+struct __attribute__((__aligned__(16))) longlong2
 {
   long long int x, y;
+ 
 };
 
 
-struct ulonglong2
+struct __attribute__((__aligned__(16))) ulonglong2
 {
   unsigned long long int x, y;
+ 
 };
 
 
 struct double1
 {
   double x;
+ 
 };
 
 
-struct double2
+struct __attribute__((__aligned__(16))) double2
 {
   double x, y;
+ 
 };
-# 328 "/home/normal/cuda/bin/../include/vector_types.h" 3
+# 378 "/usr/local/cuda/bin/../include/vector_types.h" 3
 typedef struct char1 char1;
 
 typedef struct uchar1 uchar1;
@@ -595,10 +596,7 @@ typedef struct ulonglong2 ulonglong2;
 typedef struct double1 double1;
 
 typedef struct double2 double2;
-# 419 "/home/normal/cuda/bin/../include/vector_types.h" 3
-typedef struct dim3 dim3;
-
-
+# 469 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct dim3
 {
     unsigned int x, y, z;
@@ -608,17 +606,20 @@ struct dim3
     operator uint3(void) { uint3 t; t.x = x; t.y = y; t.z = z; return t; }
 
 };
-# 45 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 55 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 2 3
-# 80 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+
+
+typedef struct dim3 dim3;
+# 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 55 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
+# 80 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern "C" {
-# 89 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+# 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, struct cudaExtent extent);
 extern cudaError_t cudaMalloc3DArray(struct cudaArray** arrayPtr, const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 extern cudaError_t cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent);
 extern cudaError_t cudaMemcpy3D(const struct cudaMemcpy3DParms *p);
 extern cudaError_t cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream);
-# 102 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+# 102 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMalloc(void **devPtr, size_t size);
 extern cudaError_t cudaMallocHost(void **ptr, size_t size);
 extern cudaError_t cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height);
@@ -629,7 +630,8 @@ extern cudaError_t cudaFreeArray(struct cudaArray *array);
 
 extern cudaError_t cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags);
 extern cudaError_t cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-# 120 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+extern cudaError_t cudaHostGetFlags(unsigned int *pFlags, void *pHost);
+# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
 extern cudaError_t cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind);
 extern cudaError_t cudaMemcpyFromArray(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind);
@@ -784,118 +786,118 @@ extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 
 
 }
-# 81 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/crt/storage_class.h" 1 3
-# 82 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 216 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 2 3
-# 90 "/home/normal/cuda/bin/../include/driver_types.h"
-# 138 "/home/normal/cuda/bin/../include/driver_types.h"
-# 150 "/home/normal/cuda/bin/../include/driver_types.h"
-# 163 "/home/normal/cuda/bin/../include/driver_types.h"
-# 169 "/home/normal/cuda/bin/../include/driver_types.h"
-# 181 "/home/normal/cuda/bin/../include/driver_types.h"
-# 193 "/home/normal/cuda/bin/../include/driver_types.h"
-# 204 "/home/normal/cuda/bin/../include/driver_types.h"
-# 215 "/home/normal/cuda/bin/../include/driver_types.h"
-# 233 "/home/normal/cuda/bin/../include/driver_types.h"
-# 247 "/home/normal/cuda/bin/../include/driver_types.h"
-# 259 "/home/normal/cuda/bin/../include/driver_types.h"
-# 318 "/home/normal/cuda/bin/../include/driver_types.h"
-# 324 "/home/normal/cuda/bin/../include/driver_types.h"
-# 330 "/home/normal/cuda/bin/../include/driver_types.h"
-# 54 "/home/normal/cuda/bin/../include/texture_types.h"
-# 61 "/home/normal/cuda/bin/../include/texture_types.h"
-# 68 "/home/normal/cuda/bin/../include/texture_types.h"
-# 75 "/home/normal/cuda/bin/../include/texture_types.h"
-# 54 "/home/normal/cuda/bin/../include/vector_types.h"
-# 60 "/home/normal/cuda/bin/../include/vector_types.h"
-# 66 "/home/normal/cuda/bin/../include/vector_types.h"
-# 72 "/home/normal/cuda/bin/../include/vector_types.h"
-# 78 "/home/normal/cuda/bin/../include/vector_types.h"
-# 84 "/home/normal/cuda/bin/../include/vector_types.h"
-# 90 "/home/normal/cuda/bin/../include/vector_types.h"
-# 96 "/home/normal/cuda/bin/../include/vector_types.h"
-# 102 "/home/normal/cuda/bin/../include/vector_types.h"
-# 108 "/home/normal/cuda/bin/../include/vector_types.h"
-# 114 "/home/normal/cuda/bin/../include/vector_types.h"
-# 120 "/home/normal/cuda/bin/../include/vector_types.h"
-# 126 "/home/normal/cuda/bin/../include/vector_types.h"
-# 132 "/home/normal/cuda/bin/../include/vector_types.h"
-# 138 "/home/normal/cuda/bin/../include/vector_types.h"
-# 144 "/home/normal/cuda/bin/../include/vector_types.h"
-# 150 "/home/normal/cuda/bin/../include/vector_types.h"
-# 156 "/home/normal/cuda/bin/../include/vector_types.h"
-# 162 "/home/normal/cuda/bin/../include/vector_types.h"
-# 168 "/home/normal/cuda/bin/../include/vector_types.h"
-# 174 "/home/normal/cuda/bin/../include/vector_types.h"
-# 180 "/home/normal/cuda/bin/../include/vector_types.h"
-# 186 "/home/normal/cuda/bin/../include/vector_types.h"
-# 192 "/home/normal/cuda/bin/../include/vector_types.h"
-# 198 "/home/normal/cuda/bin/../include/vector_types.h"
-# 204 "/home/normal/cuda/bin/../include/vector_types.h"
-# 216 "/home/normal/cuda/bin/../include/vector_types.h"
-# 228 "/home/normal/cuda/bin/../include/vector_types.h"
-# 262 "/home/normal/cuda/bin/../include/vector_types.h"
-# 268 "/home/normal/cuda/bin/../include/vector_types.h"
-# 274 "/home/normal/cuda/bin/../include/vector_types.h"
-# 280 "/home/normal/cuda/bin/../include/vector_types.h"
-# 286 "/home/normal/cuda/bin/../include/vector_types.h"
-# 292 "/home/normal/cuda/bin/../include/vector_types.h"
-# 298 "/home/normal/cuda/bin/../include/vector_types.h"
-# 304 "/home/normal/cuda/bin/../include/vector_types.h"
-# 310 "/home/normal/cuda/bin/../include/vector_types.h"
-# 316 "/home/normal/cuda/bin/../include/vector_types.h"
-# 328 "/home/normal/cuda/bin/../include/vector_types.h"
-# 330 "/home/normal/cuda/bin/../include/vector_types.h"
-# 332 "/home/normal/cuda/bin/../include/vector_types.h"
-# 334 "/home/normal/cuda/bin/../include/vector_types.h"
-# 336 "/home/normal/cuda/bin/../include/vector_types.h"
-# 338 "/home/normal/cuda/bin/../include/vector_types.h"
-# 340 "/home/normal/cuda/bin/../include/vector_types.h"
-# 342 "/home/normal/cuda/bin/../include/vector_types.h"
-# 344 "/home/normal/cuda/bin/../include/vector_types.h"
-# 346 "/home/normal/cuda/bin/../include/vector_types.h"
-# 348 "/home/normal/cuda/bin/../include/vector_types.h"
-# 350 "/home/normal/cuda/bin/../include/vector_types.h"
-# 352 "/home/normal/cuda/bin/../include/vector_types.h"
-# 354 "/home/normal/cuda/bin/../include/vector_types.h"
-# 356 "/home/normal/cuda/bin/../include/vector_types.h"
-# 358 "/home/normal/cuda/bin/../include/vector_types.h"
-# 360 "/home/normal/cuda/bin/../include/vector_types.h"
-# 362 "/home/normal/cuda/bin/../include/vector_types.h"
-# 364 "/home/normal/cuda/bin/../include/vector_types.h"
-# 366 "/home/normal/cuda/bin/../include/vector_types.h"
-# 368 "/home/normal/cuda/bin/../include/vector_types.h"
-# 370 "/home/normal/cuda/bin/../include/vector_types.h"
-# 372 "/home/normal/cuda/bin/../include/vector_types.h"
-# 374 "/home/normal/cuda/bin/../include/vector_types.h"
-# 376 "/home/normal/cuda/bin/../include/vector_types.h"
-# 378 "/home/normal/cuda/bin/../include/vector_types.h"
-# 380 "/home/normal/cuda/bin/../include/vector_types.h"
-# 382 "/home/normal/cuda/bin/../include/vector_types.h"
-# 384 "/home/normal/cuda/bin/../include/vector_types.h"
-# 386 "/home/normal/cuda/bin/../include/vector_types.h"
-# 388 "/home/normal/cuda/bin/../include/vector_types.h"
-# 390 "/home/normal/cuda/bin/../include/vector_types.h"
-# 392 "/home/normal/cuda/bin/../include/vector_types.h"
-# 394 "/home/normal/cuda/bin/../include/vector_types.h"
-# 396 "/home/normal/cuda/bin/../include/vector_types.h"
-# 398 "/home/normal/cuda/bin/../include/vector_types.h"
-# 400 "/home/normal/cuda/bin/../include/vector_types.h"
-# 402 "/home/normal/cuda/bin/../include/vector_types.h"
-# 404 "/home/normal/cuda/bin/../include/vector_types.h"
-# 406 "/home/normal/cuda/bin/../include/vector_types.h"
-# 408 "/home/normal/cuda/bin/../include/vector_types.h"
-# 410 "/home/normal/cuda/bin/../include/vector_types.h"
-# 419 "/home/normal/cuda/bin/../include/vector_types.h"
-# 422 "/home/normal/cuda/bin/../include/vector_types.h"
-# 89 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 108 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
+# 109 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 213 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 2 3
+# 91 "/usr/local/cuda/bin/../include/driver_types.h"
+# 139 "/usr/local/cuda/bin/../include/driver_types.h"
+# 151 "/usr/local/cuda/bin/../include/driver_types.h"
+# 164 "/usr/local/cuda/bin/../include/driver_types.h"
+# 170 "/usr/local/cuda/bin/../include/driver_types.h"
+# 182 "/usr/local/cuda/bin/../include/driver_types.h"
+# 194 "/usr/local/cuda/bin/../include/driver_types.h"
+# 205 "/usr/local/cuda/bin/../include/driver_types.h"
+# 216 "/usr/local/cuda/bin/../include/driver_types.h"
+# 234 "/usr/local/cuda/bin/../include/driver_types.h"
+# 248 "/usr/local/cuda/bin/../include/driver_types.h"
+# 260 "/usr/local/cuda/bin/../include/driver_types.h"
+# 319 "/usr/local/cuda/bin/../include/driver_types.h"
+# 325 "/usr/local/cuda/bin/../include/driver_types.h"
+# 331 "/usr/local/cuda/bin/../include/driver_types.h"
+# 54 "/usr/local/cuda/bin/../include/texture_types.h"
+# 61 "/usr/local/cuda/bin/../include/texture_types.h"
+# 68 "/usr/local/cuda/bin/../include/texture_types.h"
+# 75 "/usr/local/cuda/bin/../include/texture_types.h"
+# 82 "/usr/local/cuda/bin/../include/vector_types.h"
+# 89 "/usr/local/cuda/bin/../include/vector_types.h"
+# 96 "/usr/local/cuda/bin/../include/vector_types.h"
+# 103 "/usr/local/cuda/bin/../include/vector_types.h"
+# 110 "/usr/local/cuda/bin/../include/vector_types.h"
+# 117 "/usr/local/cuda/bin/../include/vector_types.h"
+# 124 "/usr/local/cuda/bin/../include/vector_types.h"
+# 131 "/usr/local/cuda/bin/../include/vector_types.h"
+# 138 "/usr/local/cuda/bin/../include/vector_types.h"
+# 145 "/usr/local/cuda/bin/../include/vector_types.h"
+# 152 "/usr/local/cuda/bin/../include/vector_types.h"
+# 159 "/usr/local/cuda/bin/../include/vector_types.h"
+# 166 "/usr/local/cuda/bin/../include/vector_types.h"
+# 173 "/usr/local/cuda/bin/../include/vector_types.h"
+# 180 "/usr/local/cuda/bin/../include/vector_types.h"
+# 183 "/usr/local/cuda/bin/../include/vector_types.h"
+# 186 "/usr/local/cuda/bin/../include/vector_types.h"
+# 193 "/usr/local/cuda/bin/../include/vector_types.h"
+# 200 "/usr/local/cuda/bin/../include/vector_types.h"
+# 203 "/usr/local/cuda/bin/../include/vector_types.h"
+# 206 "/usr/local/cuda/bin/../include/vector_types.h"
+# 213 "/usr/local/cuda/bin/../include/vector_types.h"
+# 220 "/usr/local/cuda/bin/../include/vector_types.h"
+# 227 "/usr/local/cuda/bin/../include/vector_types.h"
+# 234 "/usr/local/cuda/bin/../include/vector_types.h"
+# 241 "/usr/local/cuda/bin/../include/vector_types.h"
+# 258 "/usr/local/cuda/bin/../include/vector_types.h"
+# 265 "/usr/local/cuda/bin/../include/vector_types.h"
+# 306 "/usr/local/cuda/bin/../include/vector_types.h"
+# 313 "/usr/local/cuda/bin/../include/vector_types.h"
+# 316 "/usr/local/cuda/bin/../include/vector_types.h"
+# 323 "/usr/local/cuda/bin/../include/vector_types.h"
+# 330 "/usr/local/cuda/bin/../include/vector_types.h"
+# 337 "/usr/local/cuda/bin/../include/vector_types.h"
+# 344 "/usr/local/cuda/bin/../include/vector_types.h"
+# 351 "/usr/local/cuda/bin/../include/vector_types.h"
+# 358 "/usr/local/cuda/bin/../include/vector_types.h"
+# 365 "/usr/local/cuda/bin/../include/vector_types.h"
+# 378 "/usr/local/cuda/bin/../include/vector_types.h"
+# 380 "/usr/local/cuda/bin/../include/vector_types.h"
+# 382 "/usr/local/cuda/bin/../include/vector_types.h"
+# 384 "/usr/local/cuda/bin/../include/vector_types.h"
+# 386 "/usr/local/cuda/bin/../include/vector_types.h"
+# 388 "/usr/local/cuda/bin/../include/vector_types.h"
+# 390 "/usr/local/cuda/bin/../include/vector_types.h"
+# 392 "/usr/local/cuda/bin/../include/vector_types.h"
+# 394 "/usr/local/cuda/bin/../include/vector_types.h"
+# 396 "/usr/local/cuda/bin/../include/vector_types.h"
+# 398 "/usr/local/cuda/bin/../include/vector_types.h"
+# 400 "/usr/local/cuda/bin/../include/vector_types.h"
+# 402 "/usr/local/cuda/bin/../include/vector_types.h"
+# 404 "/usr/local/cuda/bin/../include/vector_types.h"
+# 406 "/usr/local/cuda/bin/../include/vector_types.h"
+# 408 "/usr/local/cuda/bin/../include/vector_types.h"
+# 410 "/usr/local/cuda/bin/../include/vector_types.h"
+# 412 "/usr/local/cuda/bin/../include/vector_types.h"
+# 414 "/usr/local/cuda/bin/../include/vector_types.h"
+# 416 "/usr/local/cuda/bin/../include/vector_types.h"
+# 418 "/usr/local/cuda/bin/../include/vector_types.h"
+# 420 "/usr/local/cuda/bin/../include/vector_types.h"
+# 422 "/usr/local/cuda/bin/../include/vector_types.h"
+# 424 "/usr/local/cuda/bin/../include/vector_types.h"
+# 426 "/usr/local/cuda/bin/../include/vector_types.h"
+# 428 "/usr/local/cuda/bin/../include/vector_types.h"
+# 430 "/usr/local/cuda/bin/../include/vector_types.h"
+# 432 "/usr/local/cuda/bin/../include/vector_types.h"
+# 434 "/usr/local/cuda/bin/../include/vector_types.h"
+# 436 "/usr/local/cuda/bin/../include/vector_types.h"
+# 438 "/usr/local/cuda/bin/../include/vector_types.h"
+# 440 "/usr/local/cuda/bin/../include/vector_types.h"
+# 442 "/usr/local/cuda/bin/../include/vector_types.h"
+# 444 "/usr/local/cuda/bin/../include/vector_types.h"
+# 446 "/usr/local/cuda/bin/../include/vector_types.h"
+# 448 "/usr/local/cuda/bin/../include/vector_types.h"
+# 450 "/usr/local/cuda/bin/../include/vector_types.h"
+# 452 "/usr/local/cuda/bin/../include/vector_types.h"
+# 454 "/usr/local/cuda/bin/../include/vector_types.h"
+# 456 "/usr/local/cuda/bin/../include/vector_types.h"
+# 458 "/usr/local/cuda/bin/../include/vector_types.h"
+# 460 "/usr/local/cuda/bin/../include/vector_types.h"
+# 469 "/usr/local/cuda/bin/../include/vector_types.h"
+# 480 "/usr/local/cuda/bin/../include/vector_types.h"
+# 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3D(cudaPitchedPtr *, cudaExtent);
 extern "C" cudaError_t cudaMalloc3DArray(cudaArray **, const cudaChannelFormatDesc *, cudaExtent);
 extern "C" cudaError_t cudaMemset3D(cudaPitchedPtr, int, cudaExtent);
 extern "C" cudaError_t cudaMemcpy3D(const cudaMemcpy3DParms *);
 extern "C" cudaError_t cudaMemcpy3DAsync(const cudaMemcpy3DParms *, cudaStream_t);
-# 102 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 102 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc(void **, size_t);
 extern "C" cudaError_t cudaMallocHost(void **, size_t);
 extern "C" cudaError_t cudaMallocPitch(void **, size_t *, size_t, size_t);
@@ -906,7 +908,8 @@ extern "C" cudaError_t cudaFreeArray(cudaArray *);
 
 extern "C" cudaError_t cudaHostAlloc(void **, size_t, unsigned);
 extern "C" cudaError_t cudaHostGetDevicePointer(void **, void *, unsigned);
-# 120 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaHostGetFlags(unsigned *, void *);
+# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy(void *, const void *, size_t, cudaMemcpyKind);
 extern "C" cudaError_t cudaMemcpyToArray(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind);
 extern "C" cudaError_t cudaMemcpyFromArray(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind);
@@ -917,7 +920,7 @@ extern "C" cudaError_t cudaMemcpy2DFromArray(void *, size_t, const cudaArray *, 
 extern "C" cudaError_t cudaMemcpy2DArrayToArray(cudaArray *, size_t, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind = cudaMemcpyDeviceToDevice);
 extern "C" cudaError_t cudaMemcpyToSymbol(const char *, const void *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyHostToDevice);
 extern "C" cudaError_t cudaMemcpyFromSymbol(void *, const char *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyDeviceToHost);
-# 137 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 138 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyAsync(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyFromArrayAsync(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
@@ -926,13 +929,13 @@ extern "C" cudaError_t cudaMemcpy2DToArrayAsync(cudaArray *, size_t, size_t, con
 extern "C" cudaError_t cudaMemcpy2DFromArrayAsync(void *, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyToSymbolAsync(const char *, const void *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyFromSymbolAsync(void *, const char *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 152 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 153 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset(void *, int, size_t);
 extern "C" cudaError_t cudaMemset2D(void *, size_t, int, size_t, size_t);
-# 161 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 162 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolAddress(void **, const char *);
 extern "C" cudaError_t cudaGetSymbolSize(size_t *, const char *);
-# 170 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 171 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceCount(int *);
 extern "C" cudaError_t cudaGetDeviceProperties(cudaDeviceProp *, int);
 extern "C" cudaError_t cudaChooseDevice(int *, const cudaDeviceProp *);
@@ -940,30 +943,30 @@ extern "C" cudaError_t cudaSetDevice(int);
 extern "C" cudaError_t cudaGetDevice(int *);
 extern "C" cudaError_t cudaSetValidDevices(int *, int);
 extern "C" cudaError_t cudaSetDeviceFlags(int);
-# 184 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 185 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t = (((2147483647) * 2U) + 1U));
 extern "C" cudaError_t cudaBindTexture2D(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t, size_t, size_t);
 extern "C" cudaError_t cudaBindTextureToArray(const textureReference *, const cudaArray *, const cudaChannelFormatDesc *);
 extern "C" cudaError_t cudaUnbindTexture(const textureReference *);
 extern "C" cudaError_t cudaGetTextureAlignmentOffset(size_t *, const textureReference *);
 extern "C" cudaError_t cudaGetTextureReference(const textureReference **, const char *);
-# 197 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 198 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetChannelDesc(cudaChannelFormatDesc *, const cudaArray *);
 extern "C" cudaChannelFormatDesc cudaCreateChannelDesc(int, int, int, int, cudaChannelFormatKind);
-# 206 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 207 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetLastError();
 extern "C" const char *cudaGetErrorString(cudaError_t);
-# 215 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 216 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaConfigureCall(dim3, dim3, size_t = (0), cudaStream_t = (0));
 extern "C" cudaError_t cudaSetupArgument(const void *, size_t, size_t);
 extern "C" cudaError_t cudaLaunch(const char *);
 extern "C" cudaError_t cudaFuncGetAttributes(cudaFuncAttributes *, const char *);
-# 226 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 227 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamCreate(cudaStream_t *);
 extern "C" cudaError_t cudaStreamDestroy(cudaStream_t);
 extern "C" cudaError_t cudaStreamSynchronize(cudaStream_t);
 extern "C" cudaError_t cudaStreamQuery(cudaStream_t);
-# 237 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 238 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreate(cudaEvent_t *);
 extern "C" cudaError_t cudaEventCreateWithFlags(cudaEvent_t *, int);
 extern "C" cudaError_t cudaEventRecord(cudaEvent_t, cudaStream_t);
@@ -971,16 +974,16 @@ extern "C" cudaError_t cudaEventQuery(cudaEvent_t);
 extern "C" cudaError_t cudaEventSynchronize(cudaEvent_t);
 extern "C" cudaError_t cudaEventDestroy(cudaEvent_t);
 extern "C" cudaError_t cudaEventElapsedTime(float *, cudaEvent_t, cudaEvent_t);
-# 251 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 252 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForDevice(double *);
 extern "C" cudaError_t cudaSetDoubleForHost(double *);
-# 260 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 261 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaThreadExit();
 extern "C" cudaError_t cudaThreadSynchronize();
-# 269 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 270 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDriverGetVersion(int *);
 extern "C" cudaError_t cudaRuntimeGetVersion(int *);
-# 93 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 93 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<class T> inline cudaChannelFormatDesc cudaCreateChannelDesc()
 {
 return cudaCreateChannelDesc(0, 0, 0, 0, cudaChannelFormatKindNone);
@@ -1164,7 +1167,7 @@ auto int e = (((int)sizeof(unsigned)) * 8);
 
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
 }
-# 337 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 337 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
 {
 auto int e = (((int)sizeof(float)) * 8);
@@ -1192,7 +1195,7 @@ auto int e = (((int)sizeof(float)) * 8);
 
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindFloat);
 }
-# 54 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 54 "/usr/local/cuda/bin/../include/driver_functions.h"
 static inline cudaPitchedPtr make_cudaPitchedPtr(void *d, size_t p, size_t xsz, size_t ysz)
 {
 auto cudaPitchedPtr s;
@@ -1226,7 +1229,7 @@ auto cudaExtent e;
 
 return e;
 }
-# 54 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 54 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline char1 make_char1(signed char x)
 {
 auto char1 t; (t.x) = x; return t;
@@ -1366,7 +1369,7 @@ static inline ulong2 make_ulong2(unsigned long x, unsigned long y)
 {
 auto ulong2 t; (t.x) = x; (t.y) = y; return t;
 }
-# 218 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 218 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline float1 make_float1(float x)
 {
 auto float1 t; (t.x) = x; return t;
@@ -1495,21 +1498,21 @@ extern "C" { typedef long __intptr_t; }
 
 
 extern "C" { typedef unsigned __socklen_t; }
-# 61 "/usr/include/time.h" 3
+# 60 "/usr/include/time.h" 3
 extern "C" { typedef __clock_t clock_t; }
-# 77 "/usr/include/time.h" 3
+# 76 "/usr/include/time.h" 3
 extern "C" { typedef __time_t time_t; }
-# 93 "/usr/include/time.h" 3
+# 92 "/usr/include/time.h" 3
 extern "C" { typedef __clockid_t clockid_t; }
-# 105 "/usr/include/time.h" 3
+# 104 "/usr/include/time.h" 3
 extern "C" { typedef __timer_t timer_t; }
-# 121 "/usr/include/time.h" 3
+# 120 "/usr/include/time.h" 3
 extern "C" { struct timespec {
 
 __time_t tv_sec;
 long tv_nsec;
 }; }
-# 134 "/usr/include/time.h" 3
+# 133 "/usr/include/time.h" 3
 extern "C" { struct tm {
 
 int tm_sec;
@@ -1530,7 +1533,7 @@ const char *tm_zone;
 
 
 }; }
-# 162 "/usr/include/time.h" 3
+# 161 "/usr/include/time.h" 3
 extern "C" { struct itimerspec {
 
 timespec it_interval;
@@ -1539,9 +1542,9 @@ timespec it_value;
 
 
 struct sigevent;
-# 175 "/usr/include/time.h" 3
+# 174 "/usr/include/time.h" 3
 extern "C" { typedef __pid_t pid_t; }
-# 184 "/usr/include/time.h" 3
+# 183 "/usr/include/time.h" 3
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
 
 
@@ -1553,9 +1556,9 @@ extern "C" double difftime(time_t, time_t) throw() __attribute__((__const__));
 
 
 extern "C" time_t mktime(tm *) throw();
-# 200 "/usr/include/time.h" 3
+# 199 "/usr/include/time.h" 3
 extern "C" size_t strftime(char *__restrict__, size_t, const char *__restrict__, const tm *__restrict__) throw();
-# 208 "/usr/include/time.h" 3
+# 207 "/usr/include/time.h" 3
 extern "C" char *strptime(const char *__restrict__, const char *__restrict__, tm *) throw();
 # 40 "/usr/include/xlocale.h" 3
 extern "C" { typedef
@@ -1573,38 +1576,38 @@ const int *__ctype_toupper;
 
 const char *__names[13];
 } *__locale_t; }
-# 218 "/usr/include/time.h" 3
+
+
+extern "C" { typedef __locale_t locale_t; }
+# 217 "/usr/include/time.h" 3
 extern "C" size_t strftime_l(char *__restrict__, size_t, const char *__restrict__, const tm *__restrict__, __locale_t) throw();
-
-
-
-
+# 224 "/usr/include/time.h" 3
 extern "C" char *strptime_l(const char *__restrict__, const char *__restrict__, tm *, __locale_t) throw();
-# 232 "/usr/include/time.h" 3
+# 233 "/usr/include/time.h" 3
 extern "C" tm *gmtime(const time_t *) throw();
 
 
 
 extern "C" tm *localtime(const time_t *) throw();
-# 242 "/usr/include/time.h" 3
+# 243 "/usr/include/time.h" 3
 extern "C" tm *gmtime_r(const time_t *__restrict__, tm *__restrict__) throw();
 
 
 
 
 extern "C" tm *localtime_r(const time_t *__restrict__, tm *__restrict__) throw();
-# 254 "/usr/include/time.h" 3
+# 255 "/usr/include/time.h" 3
 extern "C" char *asctime(const tm *) throw();
 
 
 extern "C" char *ctime(const time_t *) throw();
-# 265 "/usr/include/time.h" 3
+# 266 "/usr/include/time.h" 3
 extern "C" char *asctime_r(const tm *__restrict__, char *__restrict__) throw();
 
 
 
 extern "C" char *ctime_r(const time_t *__restrict__, char *__restrict__) throw();
-# 275 "/usr/include/time.h" 3
+# 276 "/usr/include/time.h" 3
 extern "C" { extern char *__tzname[2]; }
 extern "C" { extern int __daylight; }
 extern "C" { extern long __timezone; }
@@ -1622,9 +1625,9 @@ extern "C" void tzset() throw();
 
 extern "C" { extern int daylight; }
 extern "C" { extern long timezone; }
-# 297 "/usr/include/time.h" 3
+# 298 "/usr/include/time.h" 3
 extern "C" int stime(const time_t *) throw();
-# 312 "/usr/include/time.h" 3
+# 313 "/usr/include/time.h" 3
 extern "C" time_t timegm(tm *) throw();
 
 
@@ -1632,7 +1635,7 @@ extern "C" time_t timelocal(tm *) throw();
 
 
 extern "C" int dysize(int) throw() __attribute__((__const__));
-# 327 "/usr/include/time.h" 3
+# 328 "/usr/include/time.h" 3
 extern "C" int nanosleep(const timespec *, timespec *);
 
 
@@ -1645,7 +1648,7 @@ extern "C" int clock_gettime(clockid_t, timespec *) throw();
 
 
 extern "C" int clock_settime(clockid_t, const timespec *) throw();
-# 346 "/usr/include/time.h" 3
+# 347 "/usr/include/time.h" 3
 extern "C" int clock_nanosleep(clockid_t, int, const timespec *, timespec *);
 
 
@@ -1674,37 +1677,39 @@ extern "C" int timer_gettime(timer_t, itimerspec *) throw();
 
 
 extern "C" int timer_getoverrun(timer_t) throw();
-# 389 "/usr/include/time.h" 3
+# 390 "/usr/include/time.h" 3
 extern "C" { extern int getdate_err; }
-# 398 "/usr/include/time.h" 3
+# 399 "/usr/include/time.h" 3
 extern "C" tm *getdate(const char *);
-# 412 "/usr/include/time.h" 3
+# 413 "/usr/include/time.h" 3
 extern "C" int getdate_r(const char *__restrict__, tm *__restrict__);
-# 38 "/usr/include/string.h" 3
+# 43 "/usr/include/string.h" 3
 extern "C" __attribute__((__weak__)) void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
 
 
 extern "C" void *memmove(void *, const void *, size_t) throw();
-# 51 "/usr/include/string.h" 3
+# 56 "/usr/include/string.h" 3
 extern "C" void *memccpy(void *__restrict__, const void *__restrict__, int, size_t) throw();
-# 59 "/usr/include/string.h" 3
+# 64 "/usr/include/string.h" 3
 extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
 
 
 extern "C" int memcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
+# 74 "/usr/include/string.h" 3
+extern void *memchr(void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__));
 
+extern const void *memchr(const void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__));
+# 103 "/usr/include/string.h" 3
+extern void *rawmemchr(void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
 
+extern const void *rawmemchr(const void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
+# 114 "/usr/include/string.h" 3
+extern void *memrchr(void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
 
-extern "C" void *memchr(const void *, int, size_t) throw() __attribute__((__pure__));
-# 73 "/usr/include/string.h" 3
-extern "C" void *rawmemchr(const void *, int) throw() __attribute__((__pure__));
-
-
-
-extern "C" void *memrchr(const void *, int, size_t) throw() __attribute__((__pure__));
-# 84 "/usr/include/string.h" 3
+extern const void *memrchr(const void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
+# 127 "/usr/include/string.h" 3
 extern "C" char *strcpy(char *__restrict__, const char *__restrict__) throw();
 
 
@@ -1731,66 +1736,72 @@ extern "C" int strcoll(const char *, const char *) throw() __attribute__((__pure
 
 
 extern "C" size_t strxfrm(char *__restrict__, const char *__restrict__, size_t) throw();
-# 121 "/usr/include/string.h" 3
+# 164 "/usr/include/string.h" 3
 extern "C" int strcoll_l(const char *, const char *, __locale_t) throw() __attribute__((__pure__));
 
 
 extern "C" size_t strxfrm_l(char *, const char *, size_t, __locale_t) throw();
-# 130 "/usr/include/string.h" 3
+# 173 "/usr/include/string.h" 3
 extern "C" char *strdup(const char *) throw() __attribute__((__malloc__));
-# 138 "/usr/include/string.h" 3
+# 181 "/usr/include/string.h" 3
 extern "C" char *strndup(const char *, size_t) throw() __attribute__((__malloc__));
-# 167 "/usr/include/string.h" 3
-extern "C" char *strchr(const char *, int) throw() __attribute__((__pure__));
+# 213 "/usr/include/string.h" 3
+extern char *strchr(char *, int) throw() __asm__("strchr") __attribute__((__pure__));
 
+extern const char *strchr(const char *, int) throw() __asm__("strchr") __attribute__((__pure__));
+# 240 "/usr/include/string.h" 3
+extern char *strrchr(char *, int) throw() __asm__("strrchr") __attribute__((__pure__));
 
-extern "C" char *strrchr(const char *, int) throw() __attribute__((__pure__));
-# 177 "/usr/include/string.h" 3
-extern "C" char *strchrnul(const char *, int) throw() __attribute__((__pure__));
-# 184 "/usr/include/string.h" 3
+extern const char *strrchr(const char *, int) throw() __asm__("strrchr") __attribute__((__pure__));
+# 269 "/usr/include/string.h" 3
+extern char *strchrnul(char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
+
+extern const char *strchrnul(const char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
+# 282 "/usr/include/string.h" 3
 extern "C" size_t strcspn(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
 extern "C" size_t strspn(const char *, const char *) throw() __attribute__((__pure__));
+# 292 "/usr/include/string.h" 3
+extern char *strpbrk(char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__));
 
+extern const char *strpbrk(const char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__));
+# 319 "/usr/include/string.h" 3
+extern char *strstr(char *, const char *) throw() __asm__("strstr") __attribute__((__pure__));
 
-extern "C" char *strpbrk(const char *, const char *) throw() __attribute__((__pure__));
-
-
-extern "C" char *strstr(const char *, const char *) throw() __attribute__((__pure__));
-
-
-
-
+extern const char *strstr(const char *, const char *) throw() __asm__("strstr") __attribute__((__pure__));
+# 346 "/usr/include/string.h" 3
 extern "C" char *strtok(char *__restrict__, const char *__restrict__) throw();
-# 205 "/usr/include/string.h" 3
+# 352 "/usr/include/string.h" 3
 extern "C" char *__strtok_r(char *__restrict__, const char *__restrict__, char **__restrict__) throw();
 
 
 
 
 extern "C" char *strtok_r(char *__restrict__, const char *__restrict__, char **__restrict__) throw();
-# 217 "/usr/include/string.h" 3
-extern "C" char *strcasestr(const char *, const char *) throw() __attribute__((__pure__));
-# 225 "/usr/include/string.h" 3
+# 365 "/usr/include/string.h" 3
+extern char *strcasestr(char *, const char *) throw() __asm__("strcasestr") __attribute__((__pure__));
+
+extern const char *strcasestr(const char *, const char *) throw() __asm__("strcasestr") __attribute__((__pure__));
+# 380 "/usr/include/string.h" 3
 extern "C" void *memmem(const void *, size_t, const void *, size_t) throw() __attribute__((__pure__));
-# 231 "/usr/include/string.h" 3
+# 386 "/usr/include/string.h" 3
 extern "C" void *__mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
 extern "C" void *mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
-# 242 "/usr/include/string.h" 3
+# 397 "/usr/include/string.h" 3
 extern "C" size_t strlen(const char *) throw() __attribute__((__pure__));
-# 249 "/usr/include/string.h" 3
+# 404 "/usr/include/string.h" 3
 extern "C" size_t strnlen(const char *, size_t) throw() __attribute__((__pure__));
-# 256 "/usr/include/string.h" 3
+# 411 "/usr/include/string.h" 3
 extern "C" char *strerror(int) throw();
-# 281 "/usr/include/string.h" 3
+# 436 "/usr/include/string.h" 3
 extern "C" char *strerror_r(int, char *, size_t) throw();
-# 288 "/usr/include/string.h" 3
+# 443 "/usr/include/string.h" 3
 extern "C" char *strerror_l(int, __locale_t) throw();
-# 294 "/usr/include/string.h" 3
+# 449 "/usr/include/string.h" 3
 extern "C" void __bzero(void *, size_t) throw();
 
 
@@ -1803,18 +1814,15 @@ extern "C" void bzero(void *, size_t) throw();
 
 
 extern "C" int bcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
+# 467 "/usr/include/string.h" 3
+extern char *index(char *, int) throw() __asm__("index") __attribute__((__pure__));
 
+extern const char *index(const char *, int) throw() __asm__("index") __attribute__((__pure__));
+# 495 "/usr/include/string.h" 3
+extern char *rindex(char *, int) throw() __asm__("rindex") __attribute__((__pure__));
 
-
-extern "C" char *index(const char *, int) throw() __attribute__((__pure__));
-
-
-
-extern "C" char *rindex(const char *, int) throw() __attribute__((__pure__));
-
-
-
-
+extern const char *rindex(const char *, int) throw() __asm__("rindex") __attribute__((__pure__));
+# 521 "/usr/include/string.h" 3
 extern "C" int ffs(int) throw() __attribute__((__const__));
 
 
@@ -1823,25 +1831,21 @@ extern "C" int ffs(int) throw() __attribute__((__const__));
 extern "C" int ffsl(long) throw() __attribute__((__const__));
 
 extern "C" int ffsll(long long) throw() __attribute__((__const__));
-# 331 "/usr/include/string.h" 3
+# 534 "/usr/include/string.h" 3
 extern "C" int strcasecmp(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
 extern "C" int strncasecmp(const char *, const char *, size_t) throw() __attribute__((__pure__));
-# 342 "/usr/include/string.h" 3
+# 545 "/usr/include/string.h" 3
 extern "C" int strcasecmp_l(const char *, const char *, __locale_t) throw() __attribute__((__pure__));
 
 
 
 extern "C" int strncasecmp_l(const char *, const char *, size_t, __locale_t) throw() __attribute__((__pure__));
-# 354 "/usr/include/string.h" 3
+# 557 "/usr/include/string.h" 3
 extern "C" char *strsep(char **__restrict__, const char *__restrict__) throw();
-# 361 "/usr/include/string.h" 3
-extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
-
-
-
+# 564 "/usr/include/string.h" 3
 extern "C" char *strsignal(int) throw();
 
 
@@ -1856,7 +1860,8 @@ extern "C" char *__stpncpy(char *__restrict__, const char *__restrict__, size_t)
 
 
 extern "C" char *stpncpy(char *__restrict__, const char *__restrict__, size_t) throw();
-
+# 584 "/usr/include/string.h" 3
+extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
@@ -1864,9 +1869,11 @@ extern "C" char *strfry(char *) throw();
 
 
 extern "C" void *memfrob(void *, size_t) throw();
-# 393 "/usr/include/string.h" 3
-extern "C" char *basename(const char *) throw();
-# 56 "/home/normal/cuda/bin/../include/common_functions.h"
+# 599 "/usr/include/string.h" 3
+extern char *basename(char *) throw() __asm__("basename");
+
+extern const char *basename(const char *) throw() __asm__("basename");
+# 56 "/usr/local/cuda/bin/../include/common_functions.h"
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
 
 
@@ -1874,7 +1881,7 @@ extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
 
 
 extern "C" __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw();
-# 65 "/home/normal/cuda/bin/../include/math_functions.h"
+# 65 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
@@ -1890,6 +1897,10 @@ extern "C" __attribute__((__weak__)) int min(int, int);
 
 extern "C" __attribute__((__weak__)) unsigned umin(unsigned, unsigned);
 
+extern "C" __attribute__((__weak__)) long long llmin(long long, long long);
+
+extern "C" __attribute__((__weak__)) unsigned long long ullmin(unsigned long long, unsigned long long);
+
 extern "C" __attribute__((__weak__)) float fminf(float, float) throw();
 
 extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
@@ -1898,6 +1909,10 @@ extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
 extern "C" __attribute__((__weak__)) int max(int, int);
 
 extern "C" __attribute__((__weak__)) unsigned umax(unsigned, unsigned);
+
+extern "C" __attribute__((__weak__)) long long llmax(long long, long long);
+
+extern "C" __attribute__((__weak__)) unsigned long long ullmax(unsigned long long, unsigned long long);
 
 extern "C" __attribute__((__weak__)) float fmaxf(float, float) throw();
 
@@ -2197,7 +2212,7 @@ extern "C" __attribute__((__weak__)) int __isinff(float) throw() __attribute__((
 extern "C" __attribute__((__weak__)) int __isnan(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanf(float) throw() __attribute__((__const__));
-# 400 "/home/normal/cuda/bin/../include/math_functions.h"
+# 408 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finite(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __finitef(float) throw() __attribute__((__const__));
@@ -3413,48 +3428,52 @@ extern "C" void abort() throw() __attribute__((__noreturn__));
 
 
 extern "C" int atexit(void (*)(void)) throw();
-# 523 "/usr/include/stdlib.h" 3
+# 524 "/usr/include/stdlib.h" 3
+extern int at_quick_exit(void (*)(void)) throw() __asm__("at_quick_exit");
+# 535 "/usr/include/stdlib.h" 3
 extern "C" int on_exit(void (*)(int, void *), void *) throw();
-# 531 "/usr/include/stdlib.h" 3
+# 543 "/usr/include/stdlib.h" 3
 extern "C" void exit(int) throw() __attribute__((__noreturn__));
-# 538 "/usr/include/stdlib.h" 3
+# 551 "/usr/include/stdlib.h" 3
+extern "C" void quick_exit(int) throw() __attribute__((__noreturn__));
+# 559 "/usr/include/stdlib.h" 3
 extern "C" void _Exit(int) throw() __attribute__((__noreturn__));
-# 545 "/usr/include/stdlib.h" 3
+# 566 "/usr/include/stdlib.h" 3
 extern "C" char *getenv(const char *) throw();
 
 
 
 
 extern "C" char *__secure_getenv(const char *) throw();
-# 557 "/usr/include/stdlib.h" 3
+# 578 "/usr/include/stdlib.h" 3
 extern "C" int putenv(char *) throw();
-# 563 "/usr/include/stdlib.h" 3
+# 584 "/usr/include/stdlib.h" 3
 extern "C" int setenv(const char *, const char *, int) throw();
 
 
 
 extern "C" int unsetenv(const char *) throw();
-# 574 "/usr/include/stdlib.h" 3
+# 595 "/usr/include/stdlib.h" 3
 extern "C" int clearenv() throw();
-# 583 "/usr/include/stdlib.h" 3
-extern "C" char *mktemp(char *) throw();
-# 594 "/usr/include/stdlib.h" 3
-extern "C" int mkstemp(char *);
 # 604 "/usr/include/stdlib.h" 3
-extern "C" int mkstemp64(char *);
-# 614 "/usr/include/stdlib.h" 3
-extern "C" char *mkdtemp(char *) throw();
+extern "C" char *mktemp(char *) throw();
+# 615 "/usr/include/stdlib.h" 3
+extern "C" int mkstemp(char *);
 # 625 "/usr/include/stdlib.h" 3
-extern "C" int mkostemp(char *, int);
+extern "C" int mkstemp64(char *);
 # 635 "/usr/include/stdlib.h" 3
+extern "C" char *mkdtemp(char *) throw();
+# 646 "/usr/include/stdlib.h" 3
+extern "C" int mkostemp(char *, int);
+# 656 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp64(char *, int);
-# 645 "/usr/include/stdlib.h" 3
+# 666 "/usr/include/stdlib.h" 3
 extern "C" int system(const char *);
-# 652 "/usr/include/stdlib.h" 3
+# 673 "/usr/include/stdlib.h" 3
 extern "C" char *canonicalize_file_name(const char *) throw();
-# 662 "/usr/include/stdlib.h" 3
+# 683 "/usr/include/stdlib.h" 3
 extern "C" char *realpath(const char *__restrict__, char *__restrict__) throw();
-# 670 "/usr/include/stdlib.h" 3
+# 691 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_fn_t)(const void *, const void *); }
 
 
@@ -3463,33 +3482,33 @@ extern "C" { typedef __compar_fn_t comparison_fn_t; }
 
 
 extern "C" { typedef int (*__compar_d_fn_t)(const void *, const void *, void *); }
-# 683 "/usr/include/stdlib.h" 3
+# 704 "/usr/include/stdlib.h" 3
 extern "C" void *bsearch(const void *, const void *, size_t, size_t, __compar_fn_t);
-# 689 "/usr/include/stdlib.h" 3
+# 710 "/usr/include/stdlib.h" 3
 extern "C" void qsort(void *, size_t, size_t, __compar_fn_t);
 
 
 extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *);
-# 699 "/usr/include/stdlib.h" 3
+# 720 "/usr/include/stdlib.h" 3
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
 
 
 
 extern "C" __attribute__((__weak__)) long long llabs(long long) throw() __attribute__((__const__));
-# 713 "/usr/include/stdlib.h" 3
+# 734 "/usr/include/stdlib.h" 3
 extern "C" div_t div(int, int) throw() __attribute__((__const__));
 
 extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
-# 721 "/usr/include/stdlib.h" 3
+# 742 "/usr/include/stdlib.h" 3
 extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
-# 735 "/usr/include/stdlib.h" 3
+# 756 "/usr/include/stdlib.h" 3
 extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw();
-# 741 "/usr/include/stdlib.h" 3
+# 762 "/usr/include/stdlib.h" 3
 extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw();
-# 747 "/usr/include/stdlib.h" 3
+# 768 "/usr/include/stdlib.h" 3
 extern "C" char *gcvt(double, int, char *) throw();
-# 753 "/usr/include/stdlib.h" 3
+# 774 "/usr/include/stdlib.h" 3
 extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw();
 
 
@@ -3497,7 +3516,7 @@ extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) t
 
 
 extern "C" char *qgcvt(long double, int, char *) throw();
-# 765 "/usr/include/stdlib.h" 3
+# 786 "/usr/include/stdlib.h" 3
 extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw();
 
 
@@ -3510,7 +3529,7 @@ extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, c
 
 
 extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw();
-# 787 "/usr/include/stdlib.h" 3
+# 808 "/usr/include/stdlib.h" 3
 extern "C" int mblen(const char *, size_t) throw();
 
 
@@ -3526,15 +3545,15 @@ extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size
 
 
 extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
-# 812 "/usr/include/stdlib.h" 3
+# 833 "/usr/include/stdlib.h" 3
 extern "C" int rpmatch(const char *) throw();
-# 823 "/usr/include/stdlib.h" 3
+# 844 "/usr/include/stdlib.h" 3
 extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw();
-# 832 "/usr/include/stdlib.h" 3
+# 853 "/usr/include/stdlib.h" 3
 extern "C" void setkey(const char *) throw();
-# 840 "/usr/include/stdlib.h" 3
+# 861 "/usr/include/stdlib.h" 3
 extern "C" int posix_openpt(int);
-# 848 "/usr/include/stdlib.h" 3
+# 869 "/usr/include/stdlib.h" 3
 extern "C" int grantpt(int) throw();
 
 
@@ -3545,15 +3564,15 @@ extern "C" int unlockpt(int) throw();
 
 
 extern "C" char *ptsname(int) throw();
-# 864 "/usr/include/stdlib.h" 3
+# 885 "/usr/include/stdlib.h" 3
 extern "C" int ptsname_r(int, char *, size_t) throw();
 
 
 
 extern "C" int getpt();
-# 875 "/usr/include/stdlib.h" 3
+# 896 "/usr/include/stdlib.h" 3
 extern "C" int getloadavg(double [], int) throw();
-# 74 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 template<class _Iterator, class _Container> class __normal_iterator;
@@ -3581,15 +3600,6 @@ struct __traitor {
 
 enum __cuda___value { __value = (((bool)_Sp::__value) || ((bool)_Tp::__value))};
 typedef typename __truth_type< (((bool)_Sp::__value) || ((bool)_Tp::__value))> ::__type __type;
-};
-
-
-
-template<class _Sp, class _Tp>
-struct __traitand {
-
-enum __cuda___value { __value = (((bool)_Sp::__value) && ((bool)_Tp::__value))};
-typedef typename __truth_type< (((bool)_Sp::__value) && ((bool)_Tp::__value))> ::__type __type;
 };
 
 
@@ -3631,7 +3641,7 @@ struct __is_integer {
 enum __cuda___value { __value};
 typedef __false_type __type;
 };
-# 156 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 142 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< bool> {
 
 enum __cuda___value { __value = 1};
@@ -3666,9 +3676,7 @@ template<> struct __is_integer< wchar_t> {
 enum __cuda___value { __value = 1};
 typedef __true_type __type;
 };
-
-
-
+# 195 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< short> {
 
 enum __cuda___value { __value = 1};
@@ -3878,9 +3886,9 @@ struct __is_move_iterator {
 enum __cuda___value { __value};
 typedef __false_type __type;
 };
-# 415 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 417 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 }
-# 43 "/usr/include/c++/4.3/ext/type_traits.h" 3
+# 37 "/usr/include/c++/4.4/ext/type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 
@@ -4047,7 +4055,7 @@ public: typedef __typeof__((((__type1() + __type2()) + __type3()) + __type4())) 
 };
 
 }
-# 82 "/usr/include/c++/4.3/cmath" 3
+# 77 "/usr/include/c++/4.4/cmath" 3
 namespace std __attribute__((visibility("default"))) {
 
 
@@ -4137,8 +4145,8 @@ inline long double atan2(long double __y, long double __x)
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
-    typename __gnu_cxx :: __enable_if < __traitand < __is_arithmetic < _Tp >,
-            __is_arithmetic < _Up > > :: __value,
+    typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value
+        && __is_arithmetic < _Up > :: __value,
         _Tp > :: __type, _Up > :: __type
     atan2 ( _Tp __y, _Up __x )
     {
@@ -4335,9 +4343,7 @@ inline float pow(float __x, float __y)
 
 inline long double pow(long double __x, long double __y)
 { return __builtin_powl(__x, __y); }
-
-
-
+# 369 "/usr/include/c++/4.4/cmath" 3
 inline double pow(double __x, int __i)
 { return __builtin_powi(__x, __i); }
 
@@ -4349,11 +4355,12 @@ inline float pow(float __x, int __n)
 inline long double pow(long double __x, int __n)
 { return __builtin_powil(__x, __n); }
 
+
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
-    typename __gnu_cxx :: __enable_if < __traitand < __is_arithmetic < _Tp >,
-            __is_arithmetic < _Up > > :: __value,
+    typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value
+        && __is_arithmetic < _Up > :: __value,
         _Tp > :: __type, _Up > :: __type
     pow ( _Tp __x, _Up __y )
     {
@@ -4442,15 +4449,7 @@ template < typename _Tp >
     { return __builtin_tanh ( __x ); }
 
 }
-# 483 "/usr/include/c++/4.3/cmath" 3
-namespace __gnu_cxx __attribute__((visibility("default"))) {
-
-template < typename _Tp >
-    inline int
-    __capture_fpclassify ( _Tp __f ) { return ( sizeof ( __f ) == sizeof ( float ) ? __fpclassifyf ( __f ) : sizeof ( __f ) == sizeof ( double ) ? __fpclassify ( __f ) : __fpclassifyl ( __f ) ); }
-
-}
-# 505 "/usr/include/c++/4.3/cmath" 3
+# 492 "/usr/include/c++/4.4/cmath" 3
 namespace std __attribute__((visibility("default"))) {
 
 template < typename _Tp >
@@ -4459,7 +4458,8 @@ template < typename _Tp >
     fpclassify ( _Tp __f )
     {
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
-      return :: __gnu_cxx :: __capture_fpclassify ( __type ( __f ) );
+      return __builtin_fpclassify ( FP_NAN, FP_INFINITE, FP_NORMAL,
+      FP_SUBNORMAL, FP_ZERO, __type ( __f ) );
     }
 
 template < typename _Tp >
@@ -4562,7 +4562,7 @@ template < typename _Tp >
     }
 
 }
-# 40 "/usr/include/c++/4.3/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
 namespace std __attribute__((visibility("default"))) {
 
 template < typename _Tp >
@@ -4582,14 +4582,14 @@ template < typename _Tp >
     }
 
 }
-# 54 "/usr/include/c++/4.3/cstddef" 3
+# 49 "/usr/include/c++/4.4/cstddef" 3
 namespace std __attribute__((visibility("default"))) {
 
 using ::ptrdiff_t;
 using ::size_t;
 
 }
-# 105 "/usr/include/c++/4.3/cstdlib" 3
+# 100 "/usr/include/c++/4.4/cstdlib" 3
 namespace std __attribute__((visibility("default"))) {
 
 using ::div_t;
@@ -4635,12 +4635,12 @@ inline long abs(long __i) { return labs(__i); }
 inline ldiv_t div(long __i, long __j) { return ldiv(__i, __j); }
 
 }
-# 162 "/usr/include/c++/4.3/cstdlib" 3
+# 157 "/usr/include/c++/4.4/cstdlib" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 
 using ::lldiv_t;
-# 171 "/usr/include/c++/4.3/cstdlib" 3
+# 166 "/usr/include/c++/4.4/cstdlib" 3
 using ::_Exit;
 
 
@@ -4655,7 +4655,7 @@ inline lldiv_t div(long long __n, long long __d)
 { auto lldiv_t __q; (__q.quot) = __n / __d; (__q.rem) = __n % __d; return __q; }
 
 using ::lldiv;
-# 195 "/usr/include/c++/4.3/cstdlib" 3
+# 190 "/usr/include/c++/4.4/cstdlib" 3
 using ::atoll;
 using ::strtoll;
 using ::strtoull;
@@ -4684,15 +4684,15 @@ using __gnu_cxx::strtoull;
 using __gnu_cxx::strtold;
 
 }
-# 434 "/home/normal/cuda/bin/../include/math_functions.h"
+# 442 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isinfl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanl(long double) throw() __attribute__((__const__));
-# 448 "/home/normal/cuda/bin/../include/math_functions.h"
+# 456 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finitel(long double) throw() __attribute__((__const__));
-# 473 "/home/normal/cuda/bin/../include/math_functions.h"
+# 481 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace __gnu_cxx {
 
 extern inline long long abs(long long) __attribute__((visibility("default")));
@@ -4727,7 +4727,7 @@ using std::atan;
 using std::atan2;
 using std::tan;
 using std::tanh;
-# 560 "/home/normal/cuda/bin/../include/math_functions.h"
+# 568 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace std {
 
 
@@ -4968,6 +4968,26 @@ static inline unsigned min(unsigned a, int b)
 return umin(a, (unsigned)b);
 }
 
+static inline long long min(long long a, long long b)
+{
+return llmin(a, b);
+}
+
+static inline unsigned long long min(unsigned long long a, unsigned long long b)
+{
+return ullmin(a, b);
+}
+
+static inline unsigned long long min(long long a, unsigned long long b)
+{
+return ullmin((unsigned long long)a, b);
+}
+
+static inline unsigned long long min(unsigned long long a, long long b)
+{
+return ullmin(a, (unsigned long long)b);
+}
+
 static inline float min(float a, float b)
 {
 return fminf(a, b);
@@ -5003,6 +5023,26 @@ static inline unsigned max(unsigned a, int b)
 return umax(a, (unsigned)b);
 }
 
+static inline long long max(long long a, long long b)
+{
+return llmax(a, b);
+}
+
+static inline unsigned long long max(unsigned long long a, unsigned long long b)
+{
+return ullmax(a, b);
+}
+
+static inline unsigned long long max(long long a, unsigned long long b)
+{
+return ullmax((unsigned long long)a, b);
+}
+
+static inline unsigned long long max(unsigned long long a, long long b)
+{
+return ullmax(a, (unsigned long long)b);
+}
+
 static inline float max(float a, float b)
 {
 return fmaxf(a, b);
@@ -5022,7 +5062,7 @@ static inline double max(double a, float b)
 {
 return fmax(a, (double)b);
 }
-# 59 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 59 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 template<class T, int dim = 1, cudaTextureReadMode mode = cudaReadModeElementType>
 struct texture : public textureReference {
 
@@ -5051,12 +5091,12 @@ desc)
 (this->channelDesc) = desc;
 }
 };
-# 53 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 55 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 57 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 59 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 61 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 98 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 53 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 55 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 57 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 59 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 61 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 101 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaSetupArgument(T
 arg, size_t
@@ -5065,7 +5105,56 @@ offset)
 {
 return cudaSetupArgument((const void *)(&arg), sizeof(T), offset);
 }
-# 120 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+
+template<class T> inline cudaError_t
+cudaHostAlloc(T **
+ptr, size_t
+size, unsigned
+flags)
+
+{
+return cudaHostAlloc((void **)((void *)ptr), size, flags);
+}
+
+template<class T> inline cudaError_t
+cudaHostGetDevicePointer(T **
+pDevice, void *
+pHost, unsigned
+flags)
+
+{
+return cudaHostGetDevicePointer((void **)((void *)pDevice), pHost, flags);
+}
+
+template<class T> inline cudaError_t
+cudaMalloc(T **
+devPtr, size_t
+size)
+
+{
+return cudaMalloc((void **)((void *)devPtr), size);
+}
+
+template<class T> inline cudaError_t
+cudaMallocHost(T **
+ptr, size_t
+size)
+
+{
+return cudaMallocHost((void **)((void *)ptr), size);
+}
+
+template<class T> inline cudaError_t
+cudaMallocPitch(T **
+devPtr, size_t *
+pitch, size_t
+width, size_t
+height)
+
+{
+return cudaMallocPitch((void **)((void *)devPtr), pitch, width, height);
+}
+# 172 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyToSymbol(char *
 symbol, const void *
 src, size_t
@@ -5113,7 +5202,7 @@ stream)
 {
 return cudaMemcpyToSymbolAsync((const char *)(&symbol), src, count, offset, kind, stream);
 }
-# 174 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 226 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyFromSymbol(void *
 dst, char *
 symbol, size_t
@@ -5169,7 +5258,7 @@ symbol)
 {
 return cudaGetSymbolAddress(devPtr, (const char *)symbol);
 }
-# 252 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 304 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaGetSymbolAddress(void **
 devPtr, const T &
@@ -5178,7 +5267,7 @@ symbol)
 {
 return cudaGetSymbolAddress(devPtr, (const char *)(&symbol));
 }
-# 267 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 319 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaGetSymbolSize(size_t *
 size, char *
 symbol)
@@ -5186,7 +5275,7 @@ symbol)
 {
 return cudaGetSymbolSize(size, (const char *)symbol);
 }
-# 296 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 348 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaGetSymbolSize(size_t *
 size, const T &
@@ -5195,7 +5284,7 @@ symbol)
 {
 return cudaGetSymbolSize(size, (const char *)(&symbol));
 }
-# 352 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 404 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5207,7 +5296,7 @@ size = (((2147483647) * 2U) + 1U))
 {
 return cudaBindTexture(offset, &tex, devPtr, (&desc), size);
 }
-# 396 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 448 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5218,7 +5307,7 @@ size = (((2147483647) * 2U) + 1U))
 {
 return cudaBindTexture(offset, tex, devPtr, (tex.channelDesc), size);
 }
-# 451 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 503 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture2D(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5232,7 +5321,7 @@ pitch)
 {
 return cudaBindTexture2D(offset, &tex, devPtr, (&desc), width, height, pitch);
 }
-# 493 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 545 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTextureToArray(const texture< T, dim, readMode> &
 tex, const cudaArray *
@@ -5242,7 +5331,7 @@ desc)
 {
 return cudaBindTextureToArray(&tex, array, (&desc));
 }
-# 530 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 582 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTextureToArray(const texture< T, dim, readMode> &
 tex, const cudaArray *
@@ -5254,7 +5343,7 @@ auto cudaError_t err = cudaGetChannelDesc(&desc, array);
 
 return (err == (cudaSuccess)) ? (cudaBindTextureToArray(tex, array, desc)) : err;
 }
-# 568 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 620 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaUnbindTexture(const texture< T, dim, readMode> &
 tex)
@@ -5262,7 +5351,7 @@ tex)
 {
 return cudaUnbindTexture(&tex);
 }
-# 607 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 659 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaGetTextureAlignmentOffset(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5271,13 +5360,22 @@ tex)
 {
 return cudaGetTextureAlignmentOffset(offset, &tex);
 }
-# 649 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 708 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaLaunch(T *
 entry)
 
 {
 return cudaLaunch((const char *)entry);
+}
+# 744 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+template<class T> inline cudaError_t
+cudaFuncGetAttributes(cudaFuncAttributes *
+attr, T *
+entry)
+
+{
+return cudaFuncGetAttributes(attr, (const char *)entry);
 }
 # 45 "/usr/include/stdio.h" 3
 struct _IO_FILE;
@@ -5287,9 +5385,9 @@ struct _IO_FILE;
 extern "C" { typedef _IO_FILE FILE; }
 # 65 "/usr/include/stdio.h" 3
 extern "C" { typedef _IO_FILE __FILE; }
-# 90 "/usr/include/wchar.h" 3
+# 95 "/usr/include/wchar.h" 3
 extern "C" { typedef
-# 79 "/usr/include/wchar.h" 3
+# 84 "/usr/include/wchar.h" 3
 struct __mbstate_t {
 int __count;
 
@@ -5324,7 +5422,7 @@ extern "C" { typedef short _G_int16_t; }
 extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 extern "C" { typedef unsigned _G_uint32_t; }
-# 43 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stdarg.h" 3
+# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -5523,44 +5621,41 @@ extern "C" FILE *freopen64(const char *__restrict__, const char *__restrict__, F
 extern "C" FILE *fdopen(int, const char *) throw();
 # 289 "/usr/include/stdio.h" 3
 extern "C" FILE *fopencookie(void *__restrict__, const char *__restrict__, _IO_cookie_io_functions_t) throw();
-
-
-
-
+# 296 "/usr/include/stdio.h" 3
 extern "C" FILE *fmemopen(void *, size_t, const char *) throw();
-# 300 "/usr/include/stdio.h" 3
+# 302 "/usr/include/stdio.h" 3
 extern "C" FILE *open_memstream(char **, size_t *) throw();
-# 307 "/usr/include/stdio.h" 3
+# 309 "/usr/include/stdio.h" 3
 extern "C" void setbuf(FILE *__restrict__, char *__restrict__) throw();
 
 
 
 extern "C" int setvbuf(FILE *__restrict__, char *__restrict__, int, size_t) throw();
-# 318 "/usr/include/stdio.h" 3
+# 320 "/usr/include/stdio.h" 3
 extern "C" void setbuffer(FILE *__restrict__, char *__restrict__, size_t) throw();
 
 
 
 extern "C" void setlinebuf(FILE *) throw();
-# 331 "/usr/include/stdio.h" 3
+# 333 "/usr/include/stdio.h" 3
 extern "C" int fprintf(FILE *__restrict__, const char *__restrict__, ...);
-# 337 "/usr/include/stdio.h" 3
+# 339 "/usr/include/stdio.h" 3
 extern "C" int printf(const char *__restrict__, ...);
 
 extern "C" int sprintf(char *__restrict__, const char *__restrict__, ...) throw();
-# 346 "/usr/include/stdio.h" 3
+# 348 "/usr/include/stdio.h" 3
 extern "C" int vfprintf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
-# 352 "/usr/include/stdio.h" 3
+# 354 "/usr/include/stdio.h" 3
 extern "C" int vprintf(const char *__restrict__, __gnuc_va_list);
 
 extern "C" int vsprintf(char *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
-# 361 "/usr/include/stdio.h" 3
+# 363 "/usr/include/stdio.h" 3
 extern "C" int snprintf(char *__restrict__, size_t, const char *__restrict__, ...) throw();
 
 
 
 extern "C" int vsnprintf(char *__restrict__, size_t, const char *__restrict__, __gnuc_va_list) throw();
-# 374 "/usr/include/stdio.h" 3
+# 376 "/usr/include/stdio.h" 3
 extern "C" int vasprintf(char **__restrict__, const char *__restrict__, __gnuc_va_list) throw();
 
 
@@ -5568,80 +5663,80 @@ extern "C" int __asprintf(char **__restrict__, const char *__restrict__, ...) th
 
 
 extern "C" int asprintf(char **__restrict__, const char *__restrict__, ...) throw();
-# 390 "/usr/include/stdio.h" 3
+# 394 "/usr/include/stdio.h" 3
 extern "C" int vdprintf(int, const char *__restrict__, __gnuc_va_list);
 
 
 extern "C" int dprintf(int, const char *__restrict__, ...);
-# 403 "/usr/include/stdio.h" 3
+# 407 "/usr/include/stdio.h" 3
 extern "C" int fscanf(FILE *__restrict__, const char *__restrict__, ...);
-# 409 "/usr/include/stdio.h" 3
+# 413 "/usr/include/stdio.h" 3
 extern "C" int scanf(const char *__restrict__, ...);
 
 extern "C" int sscanf(const char *__restrict__, const char *__restrict__, ...) throw();
-# 449 "/usr/include/stdio.h" 3
+# 453 "/usr/include/stdio.h" 3
 extern "C" int vfscanf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
-# 457 "/usr/include/stdio.h" 3
+# 461 "/usr/include/stdio.h" 3
 extern "C" int vscanf(const char *__restrict__, __gnuc_va_list);
 
 
 
 extern "C" int vsscanf(const char *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
-# 509 "/usr/include/stdio.h" 3
+# 513 "/usr/include/stdio.h" 3
 extern "C" int fgetc(FILE *);
 extern "C" int getc(FILE *);
-# 516 "/usr/include/stdio.h" 3
+# 520 "/usr/include/stdio.h" 3
 extern "C" int getchar();
-# 528 "/usr/include/stdio.h" 3
+# 532 "/usr/include/stdio.h" 3
 extern "C" int getc_unlocked(FILE *);
 extern "C" int getchar_unlocked();
-# 539 "/usr/include/stdio.h" 3
+# 543 "/usr/include/stdio.h" 3
 extern "C" int fgetc_unlocked(FILE *);
-# 551 "/usr/include/stdio.h" 3
+# 555 "/usr/include/stdio.h" 3
 extern "C" int fputc(int, FILE *);
 extern "C" int putc(int, FILE *);
-# 558 "/usr/include/stdio.h" 3
+# 562 "/usr/include/stdio.h" 3
 extern "C" int putchar(int);
-# 572 "/usr/include/stdio.h" 3
+# 576 "/usr/include/stdio.h" 3
 extern "C" int fputc_unlocked(int, FILE *);
-# 580 "/usr/include/stdio.h" 3
+# 584 "/usr/include/stdio.h" 3
 extern "C" int putc_unlocked(int, FILE *);
 extern "C" int putchar_unlocked(int);
-# 588 "/usr/include/stdio.h" 3
+# 592 "/usr/include/stdio.h" 3
 extern "C" int getw(FILE *);
 
 
 extern "C" int putw(int, FILE *);
-# 600 "/usr/include/stdio.h" 3
+# 604 "/usr/include/stdio.h" 3
 extern "C" char *fgets(char *__restrict__, int, FILE *__restrict__);
-# 608 "/usr/include/stdio.h" 3
+# 612 "/usr/include/stdio.h" 3
 extern "C" char *gets(char *);
-# 618 "/usr/include/stdio.h" 3
+# 622 "/usr/include/stdio.h" 3
 extern "C" char *fgets_unlocked(char *__restrict__, int, FILE *__restrict__);
-# 634 "/usr/include/stdio.h" 3
+# 638 "/usr/include/stdio.h" 3
 extern "C" __ssize_t __getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
 
 
 extern "C" __ssize_t getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
-# 647 "/usr/include/stdio.h" 3
+# 651 "/usr/include/stdio.h" 3
 extern "C" __ssize_t getline(char **__restrict__, size_t *__restrict__, FILE *__restrict__);
-# 658 "/usr/include/stdio.h" 3
+# 662 "/usr/include/stdio.h" 3
 extern "C" int fputs(const char *__restrict__, FILE *__restrict__);
-# 664 "/usr/include/stdio.h" 3
+# 668 "/usr/include/stdio.h" 3
 extern "C" int puts(const char *);
-# 671 "/usr/include/stdio.h" 3
+# 675 "/usr/include/stdio.h" 3
 extern "C" int ungetc(int, FILE *);
-# 678 "/usr/include/stdio.h" 3
+# 682 "/usr/include/stdio.h" 3
 extern "C" size_t fread(void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 684 "/usr/include/stdio.h" 3
+# 688 "/usr/include/stdio.h" 3
 extern "C" size_t fwrite(const void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 695 "/usr/include/stdio.h" 3
+# 699 "/usr/include/stdio.h" 3
 extern "C" int fputs_unlocked(const char *__restrict__, FILE *__restrict__);
-# 706 "/usr/include/stdio.h" 3
+# 710 "/usr/include/stdio.h" 3
 extern "C" size_t fread_unlocked(void *__restrict__, size_t, size_t, FILE *__restrict__);
 
 extern "C" size_t fwrite_unlocked(const void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 718 "/usr/include/stdio.h" 3
+# 722 "/usr/include/stdio.h" 3
 extern "C" int fseek(FILE *, long, int);
 
 
@@ -5653,21 +5748,21 @@ extern "C" long ftell(FILE *);
 
 
 extern "C" void rewind(FILE *);
-# 742 "/usr/include/stdio.h" 3
+# 746 "/usr/include/stdio.h" 3
 extern "C" int fseeko(FILE *, __off_t, int);
 
 
 
 
 extern "C" __off_t ftello(FILE *);
-# 767 "/usr/include/stdio.h" 3
+# 771 "/usr/include/stdio.h" 3
 extern "C" int fgetpos(FILE *__restrict__, fpos_t *__restrict__);
 
 
 
 
 extern "C" int fsetpos(FILE *, const fpos_t *);
-# 787 "/usr/include/stdio.h" 3
+# 791 "/usr/include/stdio.h" 3
 extern "C" int fseeko64(FILE *, __off64_t, int);
 extern "C" __off64_t ftello64(FILE *);
 extern "C" int fgetpos64(FILE *__restrict__, fpos64_t *__restrict__);
@@ -5688,7 +5783,7 @@ extern "C" int ferror(FILE *) throw();
 extern "C" void clearerr_unlocked(FILE *) throw();
 extern "C" int feof_unlocked(FILE *) throw();
 extern "C" int ferror_unlocked(FILE *) throw();
-# 815 "/usr/include/stdio.h" 3
+# 819 "/usr/include/stdio.h" 3
 extern "C" void perror(const char *);
 # 27 "/usr/include/bits/sys_errlist.h" 3
 extern "C" { extern int sys_nerr; }
@@ -5697,20 +5792,20 @@ extern "C" { extern const char *const sys_errlist[]; }
 
 extern "C" { extern int _sys_nerr; }
 extern "C" { extern const char *const _sys_errlist[]; }
-# 827 "/usr/include/stdio.h" 3
+# 831 "/usr/include/stdio.h" 3
 extern "C" int fileno(FILE *) throw();
 
 
 
 
 extern "C" int fileno_unlocked(FILE *) throw();
-# 842 "/usr/include/stdio.h" 3
+# 846 "/usr/include/stdio.h" 3
 extern "C" FILE *popen(const char *, const char *);
-# 848 "/usr/include/stdio.h" 3
+# 852 "/usr/include/stdio.h" 3
 extern "C" int pclose(FILE *);
-# 854 "/usr/include/stdio.h" 3
+# 858 "/usr/include/stdio.h" 3
 extern "C" char *ctermid(char *) throw();
-# 860 "/usr/include/stdio.h" 3
+# 864 "/usr/include/stdio.h" 3
 extern "C" char *cuserid(char *);
 
 
@@ -5723,7 +5818,7 @@ extern "C" int obstack_printf(obstack *__restrict__, const char *__restrict__, .
 
 
 extern "C" int obstack_vprintf(obstack *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
-# 882 "/usr/include/stdio.h" 3
+# 886 "/usr/include/stdio.h" 3
 extern "C" void flockfile(FILE *) throw();
 
 
@@ -5732,7 +5827,7 @@ extern "C" int ftrylockfile(FILE *) throw();
 
 
 extern "C" void funlockfile(FILE *) throw();
-# 62 "/home/normal/cuda/bin/../include/cuda.h"
+# 62 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef unsigned CUdeviceptr; }
 
 extern "C" { typedef int CUdevice; }
@@ -5743,9 +5838,9 @@ extern "C" { typedef struct CUarray_st *CUarray; }
 extern "C" { typedef struct CUtexref_st *CUtexref; }
 extern "C" { typedef struct CUevent_st *CUevent; }
 extern "C" { typedef struct CUstream_st *CUstream; }
-# 90 "/home/normal/cuda/bin/../include/cuda.h"
+# 91 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 82 "/home/normal/cuda/bin/../include/cuda.h"
+# 82 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUctx_flags_enum {
 CU_CTX_SCHED_AUTO,
 CU_CTX_SCHED_SPIN,
@@ -5753,18 +5848,19 @@ CU_CTX_SCHED_YIELD,
 CU_CTX_SCHED_MASK,
 CU_CTX_BLOCKING_SYNC,
 CU_CTX_MAP_HOST = 8,
-CU_CTX_FLAGS_MASK = 15
+CU_CTX_LMEM_RESIZE_TO_MAX = 16,
+CU_CTX_FLAGS_MASK = 31
 } CUctx_flags; }
-# 98 "/home/normal/cuda/bin/../include/cuda.h"
+# 99 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 95 "/home/normal/cuda/bin/../include/cuda.h"
+# 96 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUevent_flags_enum {
 CU_EVENT_DEFAULT,
 CU_EVENT_BLOCKING_SYNC
 } CUevent_flags; }
-# 112 "/home/normal/cuda/bin/../include/cuda.h"
+# 113 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 103 "/home/normal/cuda/bin/../include/cuda.h"
+# 104 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUarray_format_enum {
 CU_AD_FORMAT_UNSIGNED_INT8 = 1,
 CU_AD_FORMAT_UNSIGNED_INT16,
@@ -5775,24 +5871,24 @@ CU_AD_FORMAT_SIGNED_INT32,
 CU_AD_FORMAT_HALF = 16,
 CU_AD_FORMAT_FLOAT = 32
 } CUarray_format; }
-# 121 "/home/normal/cuda/bin/../include/cuda.h"
+# 122 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 117 "/home/normal/cuda/bin/../include/cuda.h"
+# 118 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUaddress_mode_enum {
 CU_TR_ADDRESS_MODE_WRAP,
 CU_TR_ADDRESS_MODE_CLAMP,
 CU_TR_ADDRESS_MODE_MIRROR
 } CUaddress_mode; }
-# 129 "/home/normal/cuda/bin/../include/cuda.h"
+# 130 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 126 "/home/normal/cuda/bin/../include/cuda.h"
+# 127 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUfilter_mode_enum {
 CU_TR_FILTER_MODE_POINT,
 CU_TR_FILTER_MODE_LINEAR
 } CUfilter_mode; }
-# 158 "/home/normal/cuda/bin/../include/cuda.h"
+# 159 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 134 "/home/normal/cuda/bin/../include/cuda.h"
+# 135 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUdevice_attribute_enum {
 CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK = 1,
 CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X,
@@ -5818,9 +5914,9 @@ CU_DEVICE_ATTRIBUTE_INTEGRATED,
 CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY,
 CU_DEVICE_ATTRIBUTE_COMPUTE_MODE
 } CUdevice_attribute; }
-# 174 "/home/normal/cuda/bin/../include/cuda.h"
+# 175 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 163 "/home/normal/cuda/bin/../include/cuda.h"
+# 164 "/usr/local/cuda/bin/../include/cuda.h"
 struct CUdevprop_st {
 int maxThreadsPerBlock;
 int maxThreadsDim[3];
@@ -5833,15 +5929,15 @@ int regsPerBlock;
 int clockRate;
 int textureAlign;
 } CUdevprop; }
-# 211 "/home/normal/cuda/bin/../include/cuda.h"
+# 212 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 179 "/home/normal/cuda/bin/../include/cuda.h"
+# 180 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUfunction_attribute_enum {
-# 185 "/home/normal/cuda/bin/../include/cuda.h"
+# 186 "/usr/local/cuda/bin/../include/cuda.h"
 CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK,
-# 192 "/home/normal/cuda/bin/../include/cuda.h"
+# 193 "/usr/local/cuda/bin/../include/cuda.h"
 CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES,
-# 198 "/home/normal/cuda/bin/../include/cuda.h"
+# 199 "/usr/local/cuda/bin/../include/cuda.h"
 CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES,
 
 
@@ -5856,59 +5952,59 @@ CU_FUNC_ATTRIBUTE_NUM_REGS,
 
 CU_FUNC_ATTRIBUTE_MAX
 } CUfunction_attribute; }
-# 220 "/home/normal/cuda/bin/../include/cuda.h"
+# 221 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 216 "/home/normal/cuda/bin/../include/cuda.h"
+# 217 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUmemorytype_enum {
 CU_MEMORYTYPE_HOST = 1,
 CU_MEMORYTYPE_DEVICE,
 CU_MEMORYTYPE_ARRAY
 } CUmemorytype; }
-# 229 "/home/normal/cuda/bin/../include/cuda.h"
+# 230 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 225 "/home/normal/cuda/bin/../include/cuda.h"
+# 226 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUcomputemode_enum {
 CU_COMPUTEMODE_DEFAULT,
 CU_COMPUTEMODE_EXCLUSIVE,
 CU_COMPUTEMODE_PROHIBITED
 } CUcomputemode; }
-# 308 "/home/normal/cuda/bin/../include/cuda.h"
+# 309 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 234 "/home/normal/cuda/bin/../include/cuda.h"
+# 235 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUjit_option_enum {
 
 
 
 
 CU_JIT_MAX_REGISTERS,
-# 251 "/home/normal/cuda/bin/../include/cuda.h"
+# 252 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_THREADS_PER_BLOCK,
-# 257 "/home/normal/cuda/bin/../include/cuda.h"
+# 258 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_WALL_TIME,
-# 263 "/home/normal/cuda/bin/../include/cuda.h"
+# 264 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_INFO_LOG_BUFFER,
-# 270 "/home/normal/cuda/bin/../include/cuda.h"
+# 271 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES,
-# 276 "/home/normal/cuda/bin/../include/cuda.h"
+# 277 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_ERROR_LOG_BUFFER,
-# 283 "/home/normal/cuda/bin/../include/cuda.h"
+# 284 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES,
-# 289 "/home/normal/cuda/bin/../include/cuda.h"
+# 290 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_OPTIMIZATION_LEVEL,
-# 295 "/home/normal/cuda/bin/../include/cuda.h"
+# 296 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_TARGET_FROM_CUCONTEXT,
 
 
 
 
 CU_JIT_TARGET,
-# 306 "/home/normal/cuda/bin/../include/cuda.h"
+# 307 "/usr/local/cuda/bin/../include/cuda.h"
 CU_JIT_FALLBACK_STRATEGY
 
 } CUjit_option; }
-# 319 "/home/normal/cuda/bin/../include/cuda.h"
+# 320 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 313 "/home/normal/cuda/bin/../include/cuda.h"
+# 314 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUjit_target_enum {
 
 CU_TARGET_COMPUTE_10,
@@ -5916,9 +6012,9 @@ CU_TARGET_COMPUTE_11,
 CU_TARGET_COMPUTE_12,
 CU_TARGET_COMPUTE_13
 } CUjit_target; }
-# 332 "/home/normal/cuda/bin/../include/cuda.h"
+# 333 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 324 "/home/normal/cuda/bin/../include/cuda.h"
+# 325 "/usr/local/cuda/bin/../include/cuda.h"
 enum CUjit_fallback_enum {
 
 
@@ -5928,9 +6024,9 @@ CU_PREFER_PTX,
 CU_PREFER_BINARY
 
 } CUjit_fallback; }
-# 380 "/home/normal/cuda/bin/../include/cuda.h"
+# 381 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 343 "/home/normal/cuda/bin/../include/cuda.h"
+# 344 "/usr/local/cuda/bin/../include/cuda.h"
 enum cudaError_enum {
 
 CUDA_SUCCESS,
@@ -5969,9 +6065,9 @@ CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING,
 
 CUDA_ERROR_UNKNOWN = 999
 } CUresult; }
-# 426 "/home/normal/cuda/bin/../include/cuda.h"
+# 427 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 406 "/home/normal/cuda/bin/../include/cuda.h"
+# 407 "/usr/local/cuda/bin/../include/cuda.h"
 struct CUDA_MEMCPY2D_st {
 
 unsigned srcXInBytes;
@@ -5993,9 +6089,9 @@ unsigned dstPitch;
 unsigned WidthInBytes;
 unsigned Height;
 } CUDA_MEMCPY2D; }
-# 460 "/home/normal/cuda/bin/../include/cuda.h"
+# 461 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 431 "/home/normal/cuda/bin/../include/cuda.h"
+# 432 "/usr/local/cuda/bin/../include/cuda.h"
 struct CUDA_MEMCPY3D_st {
 
 unsigned srcXInBytes;
@@ -6026,9 +6122,9 @@ unsigned WidthInBytes;
 unsigned Height;
 unsigned Depth;
 } CUDA_MEMCPY3D; }
-# 473 "/home/normal/cuda/bin/../include/cuda.h"
+# 474 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 466 "/home/normal/cuda/bin/../include/cuda.h"
+# 467 "/usr/local/cuda/bin/../include/cuda.h"
 struct CUDA_ARRAY_DESCRIPTOR {
 unsigned Width;
 unsigned Height;
@@ -6037,9 +6133,9 @@ CUarray_format Format;
 
 unsigned NumChannels;
 } CUDA_ARRAY_DESCRIPTOR; }
-# 489 "/home/normal/cuda/bin/../include/cuda.h"
+# 490 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef
-# 479 "/home/normal/cuda/bin/../include/cuda.h"
+# 480 "/usr/local/cuda/bin/../include/cuda.h"
 struct CUDA_ARRAY3D_DESCRIPTOR {
 unsigned Width;
 unsigned Height;
@@ -6051,14 +6147,14 @@ unsigned NumChannels;
 
 unsigned Flags;
 } CUDA_ARRAY3D_DESCRIPTOR; }
-# 528 "/home/normal/cuda/bin/../include/cuda.h"
+# 529 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuInit(unsigned);
 
 
 
 
 extern "C" CUresult cuDriverGetVersion(int *);
-# 541 "/home/normal/cuda/bin/../include/cuda.h"
+# 542 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuDeviceGet(CUdevice *, int);
 extern "C" CUresult cuDeviceGetCount(int *);
 extern "C" CUresult cuDeviceGetName(char *, int, CUdevice);
@@ -6066,7 +6162,7 @@ extern "C" CUresult cuDeviceComputeCapability(int *, int *, CUdevice);
 extern "C" CUresult cuDeviceTotalMem(unsigned *, CUdevice);
 extern "C" CUresult cuDeviceGetProperties(CUdevprop *, CUdevice);
 extern "C" CUresult cuDeviceGetAttribute(int *, CUdevice_attribute, CUdevice);
-# 555 "/home/normal/cuda/bin/../include/cuda.h"
+# 556 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuCtxCreate(CUcontext *, unsigned, CUdevice);
 extern "C" CUresult cuCtxDestroy(CUcontext);
 extern "C" CUresult cuCtxAttach(CUcontext *, unsigned);
@@ -6075,7 +6171,7 @@ extern "C" CUresult cuCtxPushCurrent(CUcontext);
 extern "C" CUresult cuCtxPopCurrent(CUcontext *);
 extern "C" CUresult cuCtxGetDevice(CUdevice *);
 extern "C" CUresult cuCtxSynchronize();
-# 571 "/home/normal/cuda/bin/../include/cuda.h"
+# 572 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuModuleLoad(CUmodule *, const char *);
 extern "C" CUresult cuModuleLoadData(CUmodule *, const void *);
 extern "C" CUresult cuModuleLoadDataEx(CUmodule *, const void *, unsigned, CUjit_option *, void **);
@@ -6084,12 +6180,12 @@ extern "C" CUresult cuModuleUnload(CUmodule);
 extern "C" CUresult cuModuleGetFunction(CUfunction *, CUmodule, const char *);
 extern "C" CUresult cuModuleGetGlobal(CUdeviceptr *, unsigned *, CUmodule, const char *);
 extern "C" CUresult cuModuleGetTexRef(CUtexref *, CUmodule, const char *);
-# 586 "/home/normal/cuda/bin/../include/cuda.h"
+# 587 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemGetInfo(unsigned *, unsigned *);
 
 extern "C" CUresult cuMemAlloc(CUdeviceptr *, unsigned);
 extern "C" CUresult cuMemAllocPitch(CUdeviceptr *, unsigned *, unsigned, unsigned, unsigned);
-# 597 "/home/normal/cuda/bin/../include/cuda.h"
+# 598 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemFree(CUdeviceptr);
 extern "C" CUresult cuMemGetAddressRange(CUdeviceptr *, unsigned *, CUdeviceptr);
 
@@ -6099,7 +6195,8 @@ extern "C" CUresult cuMemFreeHost(void *);
 extern "C" CUresult cuMemHostAlloc(void **, size_t, unsigned);
 
 extern "C" CUresult cuMemHostGetDevicePointer(CUdeviceptr *, void *, unsigned);
-# 618 "/home/normal/cuda/bin/../include/cuda.h"
+extern "C" CUresult cuMemHostGetFlags(unsigned *, void *);
+# 620 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemcpyHtoD(CUdeviceptr, const void *, unsigned);
 extern "C" CUresult cuMemcpyDtoH(void *, CUdeviceptr, unsigned);
 
@@ -6125,7 +6222,7 @@ extern "C" CUresult cuMemcpy2DUnaligned(const CUDA_MEMCPY2D *);
 
 
 extern "C" CUresult cuMemcpy3D(const CUDA_MEMCPY3D *);
-# 657 "/home/normal/cuda/bin/../include/cuda.h"
+# 659 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemcpyHtoDAsync(CUdeviceptr, const void *, unsigned, CUstream);
 
 extern "C" CUresult cuMemcpyDtoHAsync(void *, CUdeviceptr, unsigned, CUstream);
@@ -6142,7 +6239,7 @@ extern "C" CUresult cuMemcpy2DAsync(const CUDA_MEMCPY2D *, CUstream);
 
 
 extern "C" CUresult cuMemcpy3DAsync(const CUDA_MEMCPY3D *, CUstream);
-# 679 "/home/normal/cuda/bin/../include/cuda.h"
+# 681 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemsetD8(CUdeviceptr, unsigned char, unsigned);
 extern "C" CUresult cuMemsetD16(CUdeviceptr, unsigned short, unsigned);
 extern "C" CUresult cuMemsetD32(CUdeviceptr, unsigned, unsigned);
@@ -6150,18 +6247,18 @@ extern "C" CUresult cuMemsetD32(CUdeviceptr, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D8(CUdeviceptr, unsigned, unsigned char, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D16(CUdeviceptr, unsigned, unsigned short, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D32(CUdeviceptr, unsigned, unsigned, unsigned, unsigned);
-# 694 "/home/normal/cuda/bin/../include/cuda.h"
+# 696 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuFuncSetBlockShape(CUfunction, int, int, int);
 extern "C" CUresult cuFuncSetSharedSize(CUfunction, unsigned);
 extern "C" CUresult cuFuncGetAttribute(int *, CUfunction_attribute, CUfunction);
-# 704 "/home/normal/cuda/bin/../include/cuda.h"
+# 706 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuArrayCreate(CUarray *, const CUDA_ARRAY_DESCRIPTOR *);
 extern "C" CUresult cuArrayGetDescriptor(CUDA_ARRAY_DESCRIPTOR *, CUarray);
 extern "C" CUresult cuArrayDestroy(CUarray);
 
 extern "C" CUresult cuArray3DCreate(CUarray *, const CUDA_ARRAY3D_DESCRIPTOR *);
 extern "C" CUresult cuArray3DGetDescriptor(CUDA_ARRAY3D_DESCRIPTOR *, CUarray);
-# 717 "/home/normal/cuda/bin/../include/cuda.h"
+# 719 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuTexRefCreate(CUtexref *);
 extern "C" CUresult cuTexRefDestroy(CUtexref);
 
@@ -6179,24 +6276,24 @@ extern "C" CUresult cuTexRefGetAddressMode(CUaddress_mode *, CUtexref, int);
 extern "C" CUresult cuTexRefGetFilterMode(CUfilter_mode *, CUtexref);
 extern "C" CUresult cuTexRefGetFormat(CUarray_format *, int *, CUtexref);
 extern "C" CUresult cuTexRefGetFlags(unsigned *, CUtexref);
-# 741 "/home/normal/cuda/bin/../include/cuda.h"
+# 743 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuParamSetSize(CUfunction, unsigned);
 extern "C" CUresult cuParamSeti(CUfunction, int, unsigned);
 extern "C" CUresult cuParamSetf(CUfunction, int, float);
 extern "C" CUresult cuParamSetv(CUfunction, int, void *, unsigned);
 extern "C" CUresult cuParamSetTexRef(CUfunction, int, CUtexref);
-# 753 "/home/normal/cuda/bin/../include/cuda.h"
+# 755 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuLaunch(CUfunction);
 extern "C" CUresult cuLaunchGrid(CUfunction, int, int);
 extern "C" CUresult cuLaunchGridAsync(CUfunction, int, int, CUstream);
-# 762 "/home/normal/cuda/bin/../include/cuda.h"
+# 764 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuEventCreate(CUevent *, unsigned);
 extern "C" CUresult cuEventRecord(CUevent, CUstream);
 extern "C" CUresult cuEventQuery(CUevent);
 extern "C" CUresult cuEventSynchronize(CUevent);
 extern "C" CUresult cuEventDestroy(CUevent);
 extern "C" CUresult cuEventElapsedTime(float *, CUevent, CUevent);
-# 774 "/home/normal/cuda/bin/../include/cuda.h"
+# 776 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuStreamCreate(CUstream *, unsigned);
 extern "C" CUresult cuStreamQuery(CUstream);
 extern "C" CUresult cuStreamSynchronize(CUstream);
@@ -6299,7 +6396,7 @@ extern "C" CUTBoolean cutResetTimer(const unsigned);
 extern "C" float cutGetTimerValue(const unsigned);
 # 680 "../../sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 162 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 162 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { typedef float2 cuFloatComplex; }
 
 extern "C" { static inline float cuCrealf(cuFloatComplex x)
@@ -6338,7 +6435,7 @@ y)
 return make_cuFloatComplex(cuCrealf(x) - cuCrealf(y), cuCimagf(x) - cuCimagf(y));
 
 } }
-# 206 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 206 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuFloatComplex cuCmulf(cuFloatComplex x, cuFloatComplex
 y)
 {
@@ -6349,7 +6446,7 @@ prod = make_cuFloatComplex(cuCrealf(x) * cuCrealf(y) - cuCimagf(x) * cuCimagf(y)
 
 return prod;
 } }
-# 222 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 222 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuFloatComplex cuCdivf(cuFloatComplex x, cuFloatComplex
 y)
 {
@@ -6367,7 +6464,7 @@ quot = make_cuFloatComplex((ars * brs + ais * bis) * oos, (ais * brs - ars * bis
 
 return quot;
 } }
-# 248 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 248 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline float cuCabsf(cuFloatComplex x)
 {
 auto float a = cuCrealf(x);
@@ -6431,7 +6528,7 @@ y)
 return make_cuDoubleComplex(cuCreal(x) - cuCreal(y), cuCimag(x) - cuCimag(y));
 
 } }
-# 317 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 317 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuDoubleComplex cuCmul(cuDoubleComplex x, cuDoubleComplex
 y)
 {
@@ -6442,7 +6539,7 @@ prod = make_cuDoubleComplex(cuCreal(x) * cuCreal(y) - cuCimag(x) * cuCimag(y), c
 
 return prod;
 } }
-# 333 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 333 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline cuDoubleComplex cuCdiv(cuDoubleComplex x, cuDoubleComplex
 y)
 {
@@ -6459,7 +6556,7 @@ quot = make_cuDoubleComplex((ars * brs + ais * bis) * oos, (ais * brs - ars * bi
 
 return quot;
 } }
-# 356 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 356 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { static inline double cuCabs(cuDoubleComplex x)
 {
 auto double a = cuCreal(x);
@@ -6483,7 +6580,7 @@ t = v + w;
 }
 return t;
 } }
-# 387 "/home/normal/cuda/bin/../include/cuComplex.h"
+# 387 "/usr/local/cuda/bin/../include/cuComplex.h"
 typedef cuFloatComplex cuComplex;
 static inline cuComplex make_cuComplex(float x, float
 y)
@@ -6503,9 +6600,9 @@ c)
 {
 return make_cuFloatComplex((float)cuCreal(c), (float)cuCimag(c));
 }
-# 69 "/home/normal/cuda/bin/../include/cufft.h"
+# 71 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" { typedef
-# 59 "/home/normal/cuda/bin/../include/cufft.h"
+# 61 "/usr/local/cuda/bin/../include/cufft.h"
 enum cufftResult_t {
 CUFFT_SUCCESS,
 CUFFT_INVALID_PLAN,
@@ -6524,19 +6621,25 @@ CUFFT_INVALID_SIZE
 extern "C" { typedef unsigned cufftHandle; }
 
 
+
 extern "C" { typedef float cufftReal; }
+extern "C" { typedef double cufftDoubleReal; }
 
 
 
 
 extern "C" { typedef cuComplex cufftComplex; }
-# 93 "/home/normal/cuda/bin/../include/cufft.h"
+extern "C" { typedef cuDoubleComplex cufftDoubleComplex; }
+# 101 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" { typedef
-# 89 "/home/normal/cuda/bin/../include/cufft.h"
+# 94 "/usr/local/cuda/bin/../include/cufft.h"
 enum cufftType_t {
 CUFFT_R2C = 42,
 CUFFT_C2R = 44,
-CUFFT_C2C = 41
+CUFFT_C2C = 41,
+CUFFT_D2Z = 106,
+CUFFT_Z2D = 108,
+CUFFT_Z2Z = 105
 } cufftType; }
 
 extern "C" cufftResult cufftPlan1d(cufftHandle *, int, cufftType, int);
@@ -6564,6 +6667,23 @@ extern "C" cufftResult cufftExecR2C(cufftHandle, cufftReal *, cufftComplex *);
 
 
 extern "C" cufftResult cufftExecC2R(cufftHandle, cufftComplex *, cufftReal *);
+
+
+
+extern "C" cufftResult cufftExecZ2Z(cufftHandle, cufftDoubleComplex *, cufftDoubleComplex *, int);
+
+
+
+
+extern "C" cufftResult cufftExecD2Z(cufftHandle, cufftDoubleReal *, cufftDoubleComplex *);
+
+
+
+extern "C" cufftResult cufftExecZ2D(cufftHandle, cufftDoubleComplex *, cufftDoubleReal *);
+
+
+
+extern "C" cufftResult cufftSetStream(cufftHandle, cudaStream_t);
 # 44 "../../sdk/cutil_inline.h"
 inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
 bdimx, unsigned bdimy, unsigned bdimz, char *
@@ -6730,11 +6850,55 @@ exit(-1);
 }
 } while (0);
 }
+# 214 "../../sdk/cutil_inline.h"
+inline void cutilDeviceInit(int ARGC, char **ARGV)
+{
+auto int deviceCount;
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_inline.h", 217);
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+
+auto cudaDeviceProp deviceProp;
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_inline.h", 227);
+if ((deviceProp.major) < 1) {
+fprintf(stderr, "cutil error: device does not support CUDA.\n");
+exit(-1); }
+
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
+__cudaSafeCall(cudaSetDevice(dev), "../../sdk/cutil_inline.h", 234);
+}
+
+inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
+{
+cuDevice = 0;
+auto int deviceCount = 0;
+auto CUresult err = cuInit(0);
+if ((CUDA_SUCCESS) == err) {
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_inline.h", 243); }
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; }
+if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_inline.h", 252);
+auto char name[100];
+cuDeviceGetName(name, 100, cuDevice);
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, name); }
+}
 
 
-inline void cutilDeviceInit(int ARGC, char **ARGV) { }
-inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV) { }
-# 262 "../../sdk/cutil_inline.h"
+
+
 inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
 {
 do {
@@ -7468,7 +7632,7 @@ auto float z = ((v.x * matrix[2] + v.y * matrix[4]) + v.z * matrix[5]);
 auto float m = max(max(x, y), z);
 auto float iv = ((1.0F) / m);
 
-if (m == (0.0F)) { iv = (0.0F); }
+
 
 v = make_float3(x * iv, y * iv, z * iv);
 }
@@ -7637,12 +7801,12 @@ num++;
 __cutilCondition(num == 1024, (char *)("permutations.h"), 153);
 }
 # 79 "dxtc.cu"
-static float3 __shadow_kColorMetric;
+static float3 kColorMetric__cuda_shadow_variable__;
 # 200 "dxtc.cu"
-static float __shadow_alphaTable4[4];
-static float __shadow_alphaTable3[4];
-static int __shadow_prods4[4];
-static int __shadow_prods3[4];
+static float alphaTable4__cuda_shadow_variable__[4];
+static float alphaTable3__cuda_shadow_variable__[4];
+static int prods4__cuda_shadow_variable__[4];
+static int prods3__cuda_shadow_variable__[4];
 # 508 "dxtc.cu"
 void compress__entry(const uint *permutations, const uint *image, uint2 *result);
 # 544 "dxtc.cu"
@@ -7779,8 +7943,8 @@ exit(1);
 auto uint w; auto uint h;
 
 
-w = W;
-h = H;
+w = W >> 4;
+h = H >> 4;
 
 
 auto const uint memSize = ((w * h) * (4));
@@ -7927,7 +8091,7 @@ rms /= (w * h) * (3);
 
 printf("RMS(reference, result) = %f\n", rms);
 
-if (rms <= (0.1000000015F))
+if (rms <= (0.0F))
 {
 printf("Test PASSED\n");
 } else
@@ -7952,28 +8116,30 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 }
 
-# 1 "/tmp/tmpxft_00007716_00000000-1_dxtc.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000641b_00000000-1_dxtc.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00007716_00000000-3_dxtc.fatbin.c" 1
-# 1 "/home/normal/cuda/bin/../include/__cudaFatFormat.h" 1
-# 83 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 1 "/tmp/tmpxft_0000641b_00000000-3_dxtc.fatbin.c" 1
+# 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
+# 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
-# 97 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 97 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* gpuProfileName;
     char* cubin;
 } __cudaFatCubinEntry;
-# 113 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 113 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* gpuProfileName;
     char* ptx;
 } __cudaFatPtxEntry;
-# 125 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
-typedef struct {
+# 125 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+typedef struct __cudaFatDebugEntryRec {
     char* gpuProfileName;
     char* debug;
+    struct __cudaFatDebugEntryRec *next;
+    unsigned int size;
 } __cudaFatDebugEntry;
 
 
@@ -7982,11 +8148,11 @@ typedef enum {
       __cudaFatDontCacheFlag = (1 << 1),
       __cudaFatSassDebugFlag = (1 << 2)
 } __cudaFatCudaBinaryFlag;
-# 144 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 146 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* name;
 } __cudaFatSymbol;
-# 158 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 160 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct __cudaFatCudaBinaryRec {
     unsigned long magic;
     unsigned long version;
@@ -8004,1670 +8170,20 @@ typedef struct __cudaFatCudaBinaryRec {
     struct __cudaFatCudaBinaryRec *dependends;
     unsigned int characteristic;
 } __cudaFatCudaBinary;
-# 194 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 196 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
     typedef enum {
         __cudaFatAvoidPTX,
         __cudaFatPreferBestCode
     } __cudaFatCompilationPolicy;
-# 217 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 219 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 void fatGetCubinForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *cubin, char* *dbgInfoFile );
-# 228 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 230 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00007716_00000000-3_dxtc.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000641b_00000000-3_dxtc.fatbin.c" 2
 
-
-
-
-extern "C" {
-
-
-static const unsigned long long __deviceText_$compute_13$[] = {
-0x6f69737265762e09ull,0x2e090a342e31206eull,0x7320746567726174ull,0x2f2f090a33315f6dull,
-0x656c69706d6f6320ull,0x2f20687469772064ull,0x61636f6c2f727375ull,0x6f2f616475632f6cull,
-0x696c2f34366e6570ull,0x2f090a65622f2f62ull,0x6e65706f766e202full,0x746c697562206363ull,
-0x39303032206e6f20ull,0x0a0a39302d34302dull,0x752e206765722e09ull,0x313c617225203233ull,
-0x65722e090a3b3e37ull,0x25203436752e2067ull,0x3b3e37313c616472ull,0x2e206765722e090aull,
-0x3c61662520323366ull,0x722e090a3b3e3731ull,0x203436662e206765ull,0x3e37313c61646625ull,
-0x206765722e090a3bull,0x767225203233752eull,0x722e090a3b3e353cull,0x203436752e206765ull,
-0x3b3e353c76647225ull,0x2e206765722e090aull,0x3c76662520323366ull,0x65722e090a3b3e35ull,
-0x25203436662e2067ull,0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,0x2f20676e696c6970ull,
-0x78706d742f706d74ull,0x37303030305f7466ull,0x303030305f363137ull,0x5f30312d30303030ull,
-0x7070632e63747864ull,0x6d742f2820692e33ull,0x2e23494263632f70ull,0x0a29755439505374ull,
-0x2d2d2d2d2d2f2f09ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a0a2d2d2d2d2d2dull,
-0x2d2d2d2d2d2f2f09ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x090a2d2d2d2d2d2dull,
-0x6f6974704f202f2full,0x2d2f2f090a3a736eull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x20202f2f090a2d2dull,0x703a746567726154ull,0x3a415349202c7874ull,
-0x45202c33315f6d73ull,0x696c3a6e6169646eull,0x6f50202c656c7474ull,0x6953207265746e69ull,
-0x2f090a34363a657aull,0x2809334f2d20202full,0x617a696d6974704full,0x76656c206e6f6974ull,
-0x202f2f090a296c65ull,0x6544280930672d20ull,0x6576656c20677562ull,0x20202f2f090a296cull,
-0x7065522809326d2dull,0x697664612074726full,0x0a29736569726f73ull,0x2d2d2d2d2d2f2f09ull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a0a2d2d2d2d2d2dull,0x3109656c69662e09ull,
-0x616d6d6f633c2209ull,0x3e656e696c2d646eull,0x656c69662e090a22ull,0x706d742f22093209ull,
-0x5f746678706d742full,0x3631373730303030ull,0x303030303030305full,0x637478645f392d30ull,
-0x326566616475632eull,0x2e090a227570672eull,0x22093309656c6966ull,0x62696c2f7273752full,
-0x3638782f6363672full,0x756e696c2d34365full,0x2e342f756e672d78ull,0x6c636e692f332e33ull,
-0x646474732f656475ull,0x2e090a22682e6665ull,0x22093409656c6966ull,0x6f6e2f656d6f682full,
-0x6475632f6c616d72ull,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x7665642f7472632full,
-0x746e75725f656369ull,0x090a22682e656d69ull,0x093509656c69662eull,0x6e2f656d6f682f22ull,
-0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x645f74736f682f65ull,
-0x682e73656e696665ull,0x656c69662e090a22ull,0x6d6f682f22093609ull,0x6c616d726f6e2f65ull,
-0x69622f616475632full,0x636e692f2e2e2f6eull,0x6975622f6564756cull,0x7079745f6e69746cull,
-0x2e090a22682e7365ull,0x22093709656c6966ull,0x6f6e2f656d6f682full,0x6475632f6c616d72ull,
-0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x5f6563697665642full,0x22682e7365707974ull,
-0x09656c69662e090aull,0x656d6f682f220938ull,0x2f6c616d726f6e2full,0x6e69622f61647563ull,
-0x6c636e692f2e2e2full,0x766972642f656475ull,0x73657079745f7265ull,0x69662e090a22682eull,
-0x682f22093909656cull,0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,
-0x742f6564756c636eull,0x745f657275747865ull,0x0a22682e73657079ull,0x3109656c69662e09ull,
-0x656d6f682f220930ull,0x2f6c616d726f6e2full,0x6e69622f61647563ull,0x6c636e692f2e2e2full,
-0x746365762f656475ull,0x73657079745f726full,0x69662e090a22682eull,0x2f2209313109656cull,
-0x726f6e2f656d6f68ull,0x616475632f6c616dull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,
-0x6c5f656369766564ull,0x61705f68636e7561ull,0x73726574656d6172ull,0x69662e090a22682eull,
-0x2f2209323109656cull,0x726f6e2f656d6f68ull,0x616475632f6c616dull,0x2f2e2e2f6e69622full,
-0x2f6564756c636e69ull,0x726f74732f747263ull,0x73616c635f656761ull,0x662e090a22682e73ull,
-0x2209333109656c69ull,0x636e692f7273752full,0x7469622f6564756cull,0x2e73657079742f73ull,
-0x6c69662e090a2268ull,0x752f220934310965ull,0x756c636e692f7273ull,0x2e656d69742f6564ull,
-0x6c69662e090a2268ull,0x7543220935310965ull,0x682e6874614d6164ull,0x656c69662e090a22ull,
-0x7478642209363109ull,0x2e090a2275632e63ull,0x09373109656c6966ull,0x6e2f656d6f682f22ull,
-0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x6e6f6d6d6f632f65ull,
-0x6f6974636e75665full,0x2e090a22682e736eull,0x09383109656c6966ull,0x6e2f656d6f682f22ull,
-0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x75662f7472632f65ull,
-0x6f7263616d5f636eull,0x69662e090a22682eull,0x2f2209393109656cull,0x726f6e2f656d6f68ull,
-0x616475632f6c616dull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x6e75665f6874616dull,
-0x682e736e6f697463ull,0x656c69662e090a22ull,0x6f682f2209303209ull,0x616d726f6e2f656dull,
-0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x65642f6564756c63ull,0x6e75665f65636976ull,
-0x682e736e6f697463ull,0x656c69662e090a22ull,0x6f682f2209313209ull,0x616d726f6e2f656dull,
-0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x616d2f6564756c63ull,0x74736e6f635f6874ull,
-0x0a22682e73746e61ull,0x3209656c69662e09ull,0x656d6f682f220932ull,0x2f6c616d726f6e2full,
-0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x315f6d732f656475ull,0x63696d6f74615f31ull,
-0x6f6974636e75665full,0x2e090a22682e736eull,0x09333209656c6966ull,0x6e2f656d6f682f22ull,
-0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x5f32315f6d732f65ull,
-0x665f63696d6f7461ull,0x736e6f6974636e75ull,0x69662e090a22682eull,0x2f2209343209656cull,
-0x726f6e2f656d6f68ull,0x616475632f6c616dull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,
-0x6f645f33315f6d73ull,0x6e75665f656c6275ull,0x682e736e6f697463ull,0x656c69662e090a22ull,
-0x6f682f2209353209ull,0x616d726f6e2f656dull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,
-0x65742f6564756c63ull,0x65665f6572757478ull,0x636e75665f686374ull,0x22682e736e6f6974ull,
-0x09656c69662e090aull,0x6d6f682f22093632ull,0x6c616d726f6e2f65ull,0x69622f616475632full,
-0x636e692f2e2e2f6eull,0x74616d2f6564756cull,0x6974636e75665f68ull,0x5f6c62645f736e6full,
-0x0a22682e33787470ull,0x65726168732e090aull,0x6e67696c612e2064ull,0x692038622e203420ull,
-0x5f5f73656369646eull,0x0a3b5d3635325b30ull,0x6465726168732e09ull,0x206e67696c612e20ull,
-0x5f732038622e2034ull,0x746174756d726570ull,0x5b315f5f736e6f69ull,0x2e090a3b5d303436ull,
-0x2e20646572616873ull,0x2034206e67696c61ull,0x5f7370642038622eull,0x0a3b5d34365b325full,
-0x2074736e6f632e09ull,0x34206e67696c612eull,0x6f436b2038622e20ull,0x697274654d726f6cull,
-0x203d205d32315b63ull,0x3832312c302c307bull,0x2c302c302c33362cull,0x302c33362c383231ull,
-0x362c3832312c302cull,0x6f632e090a3b7d33ull,0x696c612e2074736eull,0x38622e2034206e67ull,
-0x61546168706c6120ull,0x5d36315b34656c62ull,0x2c302c307b203d20ull,0x2c302c35362c3631ull,
-0x2c302c302c302c30ull,0x34362c3239312c30ull,0x2c34362c302c302cull,0x632e090a3b7d3436ull,
-0x6c612e2074736e6full,0x622e2034206e6769ull,0x546168706c612038ull,0x36315b33656c6261ull,
-0x302c307b203d205dull,0x2c34362c3832312cull,0x2c302c302c302c30ull,0x34362c302c302c30ull,
-0x362c302c302c302cull,0x6f632e090a3b7d34ull,0x696c612e2074736eull,0x38622e2034206e67ull,
-0x5b3473646f727020ull,0x307b203d205d3631ull,0x302c302c392c302cull,0x322c302c302c392cull,
-0x322c302c342c312cull,0x3b7d302c312c342cull,0x74736e6f632e090aull,0x206e67696c612e20ull,
-0x72702038622e2034ull,0x5d36315b3373646full,0x2c302c307b203d20ull,0x2c342c302c302c34ull,
-0x2c312c312c302c30ull,0x2c342c312c302c34ull,0x090a0a3b7d302c31ull,0x5f207972746e652eull,
-0x6572706d6f63385aull,0x5f30536a4b507373ull,0x2032746e69753550ull,0x7261702e09090a28ull,
-0x203436752e206d61ull,0x6170616475635f5full,0x6f63385a5f5f6d72ull,0x4b5073736572706dull,
-0x697535505f30536aull,0x6d7265705f32746eull,0x736e6f6974617475ull,0x7261702e09090a2cull,
-0x203436752e206d61ull,0x6170616475635f5full,0x6f63385a5f5f6d72ull,0x4b5073736572706dull,
-0x697535505f30536aull,0x67616d695f32746eull,0x61702e09090a2c65ull,0x3436752e206d6172ull,
-0x70616475635f5f20ull,0x63385a5f5f6d7261ull,0x5073736572706d6full,0x7535505f30536a4bull,
-0x7365725f32746e69ull,0x0a7b090a29746c75ull,0x752e206765722e09ull,0x353c687225203631ull,
-0x6765722e090a3b3eull,0x7225203233752e20ull,0x090a3b3e3334323cull,0x36752e206765722eull,
-0x34363c6472252034ull,0x6765722e090a3b3eull,0x6625203233662e20ull,0x090a3b3e3832353cull,
-0x72702e206765722eull,0x31333c7025206465ull,0x6168732e090a3b3eull,0x696c612e20646572ull,
-0x38622e2034206e67ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,0x0a3b5d3239315b34ull,
-0x6465726168732e09ull,0x206e67696c612e20ull,0x75732038622e2034ull,0x3b5d3239315b736dull,
-0x65726168732e090aull,0x6e67696c612e2064ull,0x5f2038622e203420ull,0x72785f616475635full,
-0x5b38363331736665ull,0x732e090a3b5d3436ull,0x612e206465726168ull,0x2e2034206e67696cull,
-0x6475635f5f203862ull,0x73726f7272655f61ull,0x3635325b32333431ull,0x62202f2f090a3b5dull,
-0x7472617453747365ull,0x2f090a3233203d20ull,0x6e4574736562202full,0x090a3433203d2064ull,
-0x5074736562202f2full,0x69746174756d7265ull,0x0a3832203d206e6full,0x20706d74202f2f09ull,
-0x6c2e090a3631203dull,0x303509363109636full,0x42424c240a300938ull,0x6d6f63385a5f5f31ull,
-0x6a4b507373657270ull,0x6e697535505f3053ull,0x6f6c2e090a3a3274ull,0x3631350936310963ull,
-0x2e747663090a3009ull,0x203631752e323373ull,0x7425202c31722509ull,0x2020203b782e6469ull,
-0x090a202f2f092020ull,0x203233732e766f6dull,0x3531202c32722509ull,0x202020202020203bull,
-0x2f09202020202020ull,0x70746573090a202full,0x203233732e656c2eull,0x7225202c31702509ull,
-0x203b327225202c31ull,0x090a202f2f092020ull,0x2e3436752e747663ull,0x6472250920323373ull,
-0x203b317225202c31ull,0x2f09202020202020ull,0x70252140090a202full,0x2409206172622031ull,
-0x3139325f305f744cull,0x20202020203b3638ull,0x090a202f2f092020ull,0x09363109636f6c2eull,
-0x6d090a3009383431ull,0x09203436752e766full,0x5f5f202c32647225ull,0x6c6f635f61647563ull,
-0x093b34383973726full,0x2e646c090a202f2full,0x36752e6d61726170ull,0x2c33647225092034ull,
-0x616475635f5f5b20ull,0x385a5f5f6d726170ull,0x73736572706d6f63ull,0x35505f30536a4b50ull,
-0x6d695f32746e6975ull,0x2f2f093b5d656761ull,0x313330313a646920ull,0x70616475635f5f20ull,
-0x63385a5f5f6d7261ull,0x5073736572706d6full,0x7535505f30536a4bull,0x616d695f32746e69ull,
-0x090a3078302b6567ull,0x2e3233732e747663ull,0x3372250920363175ull,0x646961746325202cull,
-0x2f092020203b782eull,0x2e747663090a202full,0x203233752e363175ull,0x25202c3168722509ull,
-0x20202020203b3372ull,0x090a202f2f092020ull,0x656469772e6c756dull,0x722509203631752eull,
-0x2c31687225202c34ull,0x2f0920203b363120ull,0x2e646461090a202full,0x3572250920323373ull,
-0x25202c317225202cull,0x20202020203b3472ull,0x090a202f2f092020ull,0x2e3436732e747663ull,
-0x6472250920323373ull,0x203b357225202c34ull,0x2f09202020202020ull,0x2e6c756d090a202full,
-0x09203436752e6f6cull,0x7225202c35647225ull,0x20203b34202c3464ull,0x090a202f2f092020ull,
-0x203436752e646461ull,0x25202c3664722509ull,0x647225202c336472ull,0x2f09202020203b35ull,
-0x672e646c090a202full,0x33752e6c61626f6cull,0x202c367225092032ull,0x5d302b366472255bull,
-0x6469202f2f09203bull,0x2e090a333330313aull,0x3109363109636f6cull,0x756d090a30093035ull,
-0x3436752e6f6c2e6cull,0x202c376472250920ull,0x3231202c31647225ull,0x202f2f092020203bull,
-0x36752e646461090aull,0x2c38647225092034ull,0x25202c3264722520ull,0x202020203b376472ull,
-0x6e61090a202f2f09ull,0x2509203233622e64ull,0x2c367225202c3772ull,0x2020203b35353220ull,
-0x202f2f0920202020ull,0x6e722e747663090aull,0x3233752e3233662eull,0x25202c3166250920ull,
-0x20202020203b3772ull,0x6f6d090a202f2f09ull,0x2509203233662e76ull,0x62336630202c3266ull,
-0x203b313830383038ull,0x202f2f0920202020ull,0x3132393330302e30ull,0x2e6c756d090a3735ull,
-0x3366250920323366ull,0x25202c316625202cull,0x20202020203b3266ull,0x090a202f2f092020ull,
-0x65726168732e7473ull,0x5b09203233662e64ull,0x2c5d302b38647225ull,0x2f09203b33662520ull,
-0x3330313a6469202full,0x616475635f5f2034ull,0x3973726f6c6f635full,0x090a3078302b3438ull,
-0x09363109636f6c2eull,0x73090a3009313531ull,0x09203233622e6c68ull,0x367225202c387225ull,
-0x2020203b3631202cull,0x2f2f092020202020ull,0x752e726873090a20ull,0x2c39722509203233ull,
-0x3432202c38722520ull,0x202020202020203bull,0x63090a202f2f0920ull,0x33662e6e722e7476ull,
-0x2509203233752e32ull,0x3b397225202c3466ull,0x2f2f092020202020ull,0x662e766f6d090a20ull,
-0x2c35662509203233ull,0x3830386233663020ull,0x202020203b313830ull,0x302e30202f2f0920ull,
-0x0a37353132393330ull,0x3233662e6c756d09ull,0x25202c3666250920ull,0x3b356625202c3466ull,
-0x0920202020202020ull,0x2e7473090a202f2full,0x662e646572616873ull,0x6472255b09203233ull,
-0x6625202c5d342b38ull,0x69202f2f09203b36ull,0x5f20353330313a64ull,0x6f635f616475635full,
-0x2b34383973726f6cull,0x6f6c2e090a307830ull,0x3235310936310963ull,0x2e6c6873090a3009ull,
-0x3172250920323362ull,0x202c367225202c30ull,0x2020202020203b38ull,0x090a202f2f092020ull,
-0x203233752e726873ull,0x25202c3131722509ull,0x3b3432202c303172ull,0x2f09202020202020ull,
-0x2e747663090a202full,0x752e3233662e6e72ull,0x2c37662509203233ull,0x20203b3131722520ull,
-0x090a202f2f092020ull,0x203233662e766f6dull,0x6630202c38662509ull,0x3138303830386233ull,
-0x2f0920202020203bull,0x393330302e30202full,0x756d090a37353132ull,0x2509203233662e6cull,
-0x2c376625202c3966ull,0x2020203b38662520ull,0x202f2f0920202020ull,0x6168732e7473090aull,
-0x203233662e646572ull,0x382b386472255b09ull,0x203b396625202c5dull,0x313a6469202f2f09ull,
-0x75635f5f20363330ull,0x726f6c6f635f6164ull,0x3078302b34383973ull,0x325f305f744c240aull,
-0x6d090a3a36383139ull,0x09203436752e766full,0x5f5f202c32647225ull,0x6c6f635f61647563ull,
-0x093b34383973726full,0x6f6c2e090a202f2full,0x3635310936310963ull,0x2e726162090a3009ull,
-0x3b300920636e7973ull,0x2020202020202020ull,0x2020202020202020ull,0x090a202f2f092020ull,
-0x752e6f6c2e6c756dull,0x3964722509203436ull,0x202c31647225202cull,0x2f09202020203b34ull,
-0x70252140090a202full,0x2409206172622031ull,0x3639325f305f744cull,0x20202020203b3839ull,
-0x090a202f2f092020ull,0x09353109636f6c2eull,0x6c090a3009393631ull,0x6465726168732e64ull,
-0x662509203233662eull,0x635f5f5b202c3031ull,0x6f6c6f635f616475ull,0x34312b3438397372ull,
-0x69202f2f093b5d34ull,0x5f20373330313a64ull,0x6f635f616475635full,0x0a34383973726f6cull,
-0x726168732e646c09ull,0x09203233662e6465ull,0x5f5b202c31316625ull,0x6f635f616475635full,
-0x2b34383973726f6cull,0x2f2f093b5d323331ull,0x383330313a646920ull,0x5f616475635f5f20ull,
-0x383973726f6c6f63ull,0x68732e646c090a34ull,0x3233662e64657261ull,0x202c323166250920ull,
-0x5f616475635f5f5bull,0x383973726f6c6f63ull,0x093b5d3032312b34ull,0x30313a6469202f2full,
-0x6475635f5f203933ull,0x73726f6c6f635f61ull,0x2e646c090a343839ull,0x662e646572616873ull,
-0x3331662509203233ull,0x6475635f5f5b202cull,0x73726f6c6f635f61ull,0x5d3830312b343839ull,
-0x3a6469202f2f093bull,0x635f5f2030343031ull,0x6f6c6f635f616475ull,0x6c090a3438397372ull,
-0x6465726168732e64ull,0x662509203233662eull,0x635f5f5b202c3431ull,0x6f6c6f635f616475ull,
-0x36392b3438397372ull,0x6469202f2f093b5dull,0x5f5f20313430313aull,0x6c6f635f61647563ull,
-0x090a34383973726full,0x65726168732e646cull,0x2509203233662e64ull,0x5f5f5b202c353166ull,
-0x6c6f635f61647563ull,0x382b34383973726full,0x69202f2f093b5d34ull,0x5f20323430313a64ull,
-0x6f635f616475635full,0x0a34383973726f6cull,0x726168732e646c09ull,0x09203233662e6465ull,
-0x5f5b202c36316625ull,0x6f635f616475635full,0x2b34383973726f6cull,0x202f2f093b5d3237ull,
-0x20333430313a6469ull,0x635f616475635f5full,0x34383973726f6c6full,0x6168732e646c090aull,
-0x203233662e646572ull,0x5b202c3731662509ull,0x635f616475635f5full,0x34383973726f6c6full,
-0x2f2f093b5d30362bull,0x343430313a646920ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,
-0x68732e646c090a34ull,0x3233662e64657261ull,0x202c383166250920ull,0x5f616475635f5f5bull,
-0x383973726f6c6f63ull,0x2f093b5d38342b34ull,0x3430313a6469202full,0x616475635f5f2035ull,
-0x3973726f6c6f635full,0x732e646c090a3438ull,0x33662e6465726168ull,0x2c39316625092032ull,
-0x616475635f5f5b20ull,0x3973726f6c6f635full,0x093b5d36332b3438ull,0x30313a6469202f2full,
-0x6475635f5f203634ull,0x73726f6c6f635f61ull,0x2e646c090a343839ull,0x662e646572616873ull,
-0x3032662509203233ull,0x6475635f5f5b202cull,0x73726f6c6f635f61ull,0x3b5d34322b343839ull,
-0x313a6469202f2f09ull,0x75635f5f20373430ull,0x726f6c6f635f6164ull,0x646c090a34383973ull,
-0x2e6465726168732eull,0x3266250920323366ull,0x75635f5f5b202c31ull,0x726f6c6f635f6164ull,
-0x3b5d302b34383973ull,0x313a6469202f2f09ull,0x75635f5f20383430ull,0x726f6c6f635f6164ull,
-0x646c090a34383973ull,0x2e6465726168732eull,0x3266250920323366ull,0x75635f5f5b202c32ull,
-0x726f6c6f635f6164ull,0x5d32312b34383973ull,0x3a6469202f2f093bull,0x635f5f2039343031ull,
-0x6f6c6f635f616475ull,0x61090a3438397372ull,0x09203233662e6464ull,0x6625202c33326625ull,
-0x32326625202c3132ull,0x2f2f09202020203bull,0x662e646461090a20ull,0x3432662509203233ull,
-0x202c30326625202cull,0x2020203b33326625ull,0x61090a202f2f0920ull,0x09203233662e6464ull,
-0x6625202c35326625ull,0x34326625202c3931ull,0x2f2f09202020203bull,0x662e646461090a20ull,
-0x3632662509203233ull,0x202c38316625202cull,0x2020203b35326625ull,0x61090a202f2f0920ull,
-0x09203233662e6464ull,0x6625202c37326625ull,0x36326625202c3731ull,0x2f2f09202020203bull,
-0x662e646461090a20ull,0x3832662509203233ull,0x202c36316625202cull,0x2020203b37326625ull,
-0x61090a202f2f0920ull,0x09203233662e6464ull,0x6625202c39326625ull,0x38326625202c3531ull,
-0x2f2f09202020203bull,0x662e646461090a20ull,0x3033662509203233ull,0x202c34316625202cull,
-0x2020203b39326625ull,0x61090a202f2f0920ull,0x09203233662e6464ull,0x6625202c31336625ull,
-0x30336625202c3331ull,0x2f2f09202020203bull,0x662e646461090a20ull,0x3233662509203233ull,
-0x202c32316625202cull,0x2020203b31336625ull,0x61090a202f2f0920ull,0x09203233662e6464ull,
-0x6625202c33336625ull,0x32336625202c3131ull,0x2f2f09202020203bull,0x662e646461090a20ull,
-0x3433662509203233ull,0x202c30316625202cull,0x2020203b33336625ull,0x6c090a202f2f0920ull,
-0x6465726168732e64ull,0x662509203233662eull,0x635f5f5b202c3533ull,0x6f6c6f635f616475ull,
-0x34312b3438397372ull,0x69202f2f093b5d38ull,0x5f20303530313a64ull,0x6f635f616475635full,
-0x0a34383973726f6cull,0x726168732e646c09ull,0x09203233662e6465ull,0x5f5b202c36336625ull,
-0x6f635f616475635full,0x2b34383973726f6cull,0x2f2f093b5d363331ull,0x313530313a646920ull,
-0x5f616475635f5f20ull,0x383973726f6c6f63ull,0x68732e646c090a34ull,0x3233662e64657261ull,
-0x202c373366250920ull,0x5f616475635f5f5bull,0x383973726f6c6f63ull,0x093b5d3432312b34ull,
-0x30313a6469202f2full,0x6475635f5f203235ull,0x73726f6c6f635f61ull,0x2e646c090a343839ull,
-0x662e646572616873ull,0x3833662509203233ull,0x6475635f5f5b202cull,0x73726f6c6f635f61ull,
-0x5d3231312b343839ull,0x3a6469202f2f093bull,0x635f5f2033353031ull,0x6f6c6f635f616475ull,
-0x6c090a3438397372ull,0x6465726168732e64ull,0x662509203233662eull,0x635f5f5b202c3933ull,
-0x6f6c6f635f616475ull,0x30312b3438397372ull,0x69202f2f093b5d30ull,0x5f20343530313a64ull,
-0x6f635f616475635full,0x0a34383973726f6cull,0x726168732e646c09ull,0x09203233662e6465ull,
-0x5f5b202c30346625ull,0x6f635f616475635full,0x2b34383973726f6cull,0x202f2f093b5d3838ull,
-0x20353530313a6469ull,0x635f616475635f5full,0x34383973726f6c6full,0x6168732e646c090aull,
-0x203233662e646572ull,0x5b202c3134662509ull,0x635f616475635f5full,0x34383973726f6c6full,
-0x2f2f093b5d36372bull,0x363530313a646920ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,
-0x68732e646c090a34ull,0x3233662e64657261ull,0x202c323466250920ull,0x5f616475635f5f5bull,
-0x383973726f6c6f63ull,0x2f093b5d34362b34ull,0x3530313a6469202full,0x616475635f5f2037ull,
-0x3973726f6c6f635full,0x732e646c090a3438ull,0x33662e6465726168ull,0x2c33346625092032ull,
-0x616475635f5f5b20ull,0x3973726f6c6f635full,0x093b5d32352b3438ull,0x30313a6469202f2full,
-0x6475635f5f203835ull,0x73726f6c6f635f61ull,0x2e646c090a343839ull,0x662e646572616873ull,
-0x3434662509203233ull,0x6475635f5f5b202cull,0x73726f6c6f635f61ull,0x3b5d30342b343839ull,
-0x313a6469202f2f09ull,0x75635f5f20393530ull,0x726f6c6f635f6164ull,0x646c090a34383973ull,
-0x2e6465726168732eull,0x3466250920323366ull,0x75635f5f5b202c35ull,0x726f6c6f635f6164ull,
-0x5d38322b34383973ull,0x3a6469202f2f093bull,0x635f5f2030363031ull,0x6f6c6f635f616475ull,
-0x6c090a3438397372ull,0x6465726168732e64ull,0x662509203233662eull,0x635f5f5b202c3634ull,
-0x6f6c6f635f616475ull,0x5d342b3438397372ull,0x3a6469202f2f093bull,0x635f5f2031363031ull,
-0x6f6c6f635f616475ull,0x6c090a3438397372ull,0x6465726168732e64ull,0x662509203233662eull,
-0x635f5f5b202c3734ull,0x6f6c6f635f616475ull,0x36312b3438397372ull,0x6469202f2f093b5dull,
-0x5f5f20323630313aull,0x6c6f635f61647563ull,0x090a34383973726full,0x203233662e646461ull,
-0x25202c3834662509ull,0x346625202c363466ull,0x2f09202020203b37ull,0x2e646461090a202full,
-0x3466250920323366ull,0x2c35346625202c39ull,0x20203b3834662520ull,0x090a202f2f092020ull,
-0x203233662e646461ull,0x25202c3035662509ull,0x346625202c343466ull,0x2f09202020203b39ull,
-0x2e646461090a202full,0x3566250920323366ull,0x2c33346625202c31ull,0x20203b3035662520ull,
-0x090a202f2f092020ull,0x203233662e646461ull,0x25202c3235662509ull,0x356625202c323466ull,
-0x2f09202020203b31ull,0x2e646461090a202full,0x3566250920323366ull,0x2c31346625202c33ull,
-0x20203b3235662520ull,0x090a202f2f092020ull,0x203233662e646461ull,0x25202c3435662509ull,
-0x356625202c303466ull,0x2f09202020203b33ull,0x2e646461090a202full,0x3566250920323366ull,
-0x2c39336625202c35ull,0x20203b3435662520ull,0x090a202f2f092020ull,0x203233662e646461ull,
-0x25202c3635662509ull,0x356625202c383366ull,0x2f09202020203b35ull,0x2e646461090a202full,
-0x3566250920323366ull,0x2c37336625202c37ull,0x20203b3635662520ull,0x090a202f2f092020ull,
-0x203233662e646461ull,0x25202c3835662509ull,0x356625202c363366ull,0x2f09202020203b37ull,
-0x2e646461090a202full,0x3566250920323366ull,0x2c35336625202c39ull,0x20203b3835662520ull,
-0x090a202f2f092020ull,0x65726168732e646cull,0x2509203233662e64ull,0x5f5f5b202c303666ull,
-0x6c6f635f61647563ull,0x312b34383973726full,0x202f2f093b5d3235ull,0x20333630313a6469ull,
-0x635f616475635f5full,0x34383973726f6c6full,0x6168732e646c090aull,0x203233662e646572ull,
-0x5b202c3136662509ull,0x635f616475635f5full,0x34383973726f6c6full,0x2f093b5d3034312bull,
-0x3630313a6469202full,0x616475635f5f2034ull,0x3973726f6c6f635full,0x732e646c090a3438ull,
-0x33662e6465726168ull,0x2c32366625092032ull,0x616475635f5f5b20ull,0x3973726f6c6f635full,
-0x3b5d3832312b3438ull,0x313a6469202f2f09ull,0x75635f5f20353630ull,0x726f6c6f635f6164ull,
-0x646c090a34383973ull,0x2e6465726168732eull,0x3666250920323366ull,0x75635f5f5b202c33ull,
-0x726f6c6f635f6164ull,0x3631312b34383973ull,0x6469202f2f093b5dull,0x5f5f20363630313aull,
-0x6c6f635f61647563ull,0x090a34383973726full,0x65726168732e646cull,0x2509203233662e64ull,
-0x5f5f5b202c343666ull,0x6c6f635f61647563ull,0x312b34383973726full,0x202f2f093b5d3430ull,
-0x20373630313a6469ull,0x635f616475635f5full,0x34383973726f6c6full,0x6168732e646c090aull,
-0x203233662e646572ull,0x5b202c3536662509ull,0x635f616475635f5full,0x34383973726f6c6full,
-0x2f2f093b5d32392bull,0x383630313a646920ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,
-0x68732e646c090a34ull,0x3233662e64657261ull,0x202c363666250920ull,0x5f616475635f5f5bull,
-0x383973726f6c6f63ull,0x2f093b5d30382b34ull,0x3630313a6469202full,0x616475635f5f2039ull,
-0x3973726f6c6f635full,0x732e646c090a3438ull,0x33662e6465726168ull,0x2c37366625092032ull,
-0x616475635f5f5b20ull,0x3973726f6c6f635full,0x093b5d38362b3438ull,0x30313a6469202f2full,
-0x6475635f5f203037ull,0x73726f6c6f635f61ull,0x2e646c090a343839ull,0x662e646572616873ull,
-0x3836662509203233ull,0x6475635f5f5b202cull,0x73726f6c6f635f61ull,0x3b5d36352b343839ull,
-0x313a6469202f2f09ull,0x75635f5f20313730ull,0x726f6c6f635f6164ull,0x646c090a34383973ull,
-0x2e6465726168732eull,0x3666250920323366ull,0x75635f5f5b202c39ull,0x726f6c6f635f6164ull,
-0x5d34342b34383973ull,0x3a6469202f2f093bull,0x635f5f2032373031ull,0x6f6c6f635f616475ull,
-0x6c090a3438397372ull,0x6465726168732e64ull,0x662509203233662eull,0x635f5f5b202c3037ull,
-0x6f6c6f635f616475ull,0x32332b3438397372ull,0x6469202f2f093b5dull,0x5f5f20333730313aull,
-0x6c6f635f61647563ull,0x090a34383973726full,0x65726168732e646cull,0x2509203233662e64ull,
-0x5f5f5b202c313766ull,0x6c6f635f61647563ull,0x382b34383973726full,0x6469202f2f093b5dull,
-0x5f5f20343730313aull,0x6c6f635f61647563ull,0x090a34383973726full,0x65726168732e646cull,
-0x2509203233662e64ull,0x5f5f5b202c323766ull,0x6c6f635f61647563ull,0x322b34383973726full,
-0x69202f2f093b5d30ull,0x5f20353730313a64ull,0x6f635f616475635full,0x0a34383973726f6cull,
-0x3233662e64646109ull,0x202c333766250920ull,0x6625202c31376625ull,0x09202020203b3237ull,
-0x646461090a202f2full,0x662509203233662eull,0x30376625202c3437ull,0x203b33376625202cull,
-0x0a202f2f09202020ull,0x3233662e64646109ull,0x202c353766250920ull,0x6625202c39366625ull,
-0x09202020203b3437ull,0x646461090a202f2full,0x662509203233662eull,0x38366625202c3637ull,
-0x203b35376625202cull,0x0a202f2f09202020ull,0x3233662e64646109ull,0x202c373766250920ull,
-0x6625202c37366625ull,0x09202020203b3637ull,0x646461090a202f2full,0x662509203233662eull,
-0x36366625202c3837ull,0x203b37376625202cull,0x0a202f2f09202020ull,0x3233662e64646109ull,
-0x202c393766250920ull,0x6625202c35366625ull,0x09202020203b3837ull,0x646461090a202f2full,
-0x662509203233662eull,0x34366625202c3038ull,0x203b39376625202cull,0x0a202f2f09202020ull,
-0x3233662e64646109ull,0x202c313866250920ull,0x6625202c33366625ull,0x09202020203b3038ull,
-0x646461090a202f2full,0x662509203233662eull,0x32366625202c3238ull,0x203b31386625202cull,
-0x0a202f2f09202020ull,0x3233662e64646109ull,0x202c333866250920ull,0x6625202c31366625ull,
-0x09202020203b3238ull,0x646461090a202f2full,0x662509203233662eull,0x30366625202c3438ull,
-0x203b33386625202cull,0x0a202f2f09202020ull,0x726168732e646c09ull,0x09203233662e6465ull,
-0x5f5b202c35386625ull,0x6f635f616475635full,0x2b34383973726f6cull,0x2f2f093b5d363531ull,
-0x363730313a646920ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,0x662e646461090a34ull,
-0x3433662509203233ull,0x202c35386625202cull,0x2020203b34336625ull,0x6c090a202f2f0920ull,
-0x6465726168732e64ull,0x662509203233662eull,0x635f5f5b202c3638ull,0x6f6c6f635f616475ull,
-0x36312b3438397372ull,0x69202f2f093b5d30ull,0x5f20373730313a64ull,0x6f635f616475635full,
-0x0a34383973726f6cull,0x3233662e64646109ull,0x202c393566250920ull,0x6625202c36386625ull,
-0x09202020203b3935ull,0x2e646c090a202f2full,0x662e646572616873ull,0x3738662509203233ull,
-0x6475635f5f5b202cull,0x73726f6c6f635f61ull,0x5d3436312b343839ull,0x3a6469202f2f093bull,
-0x635f5f2038373031ull,0x6f6c6f635f616475ull,0x61090a3438397372ull,0x09203233662e6464ull,
-0x6625202c34386625ull,0x34386625202c3738ull,0x2f2f09202020203bull,0x68732e646c090a20ull,
-0x3233662e64657261ull,0x202c383866250920ull,0x5f616475635f5f5bull,0x383973726f6c6f63ull,
-0x093b5d3836312b34ull,0x30313a6469202f2full,0x6475635f5f203937ull,0x73726f6c6f635f61ull,
-0x646461090a343839ull,0x662509203233662eull,0x38386625202c3433ull,0x203b34336625202cull,
-0x0a202f2f09202020ull,0x726168732e646c09ull,0x09203233662e6465ull,0x5f5b202c39386625ull,
-0x6f635f616475635full,0x2b34383973726f6cull,0x2f2f093b5d323731ull,0x303830313a646920ull,
-0x5f616475635f5f20ull,0x383973726f6c6f63ull,0x662e646461090a34ull,0x3935662509203233ull,
-0x202c39386625202cull,0x2020203b39356625ull,0x6c090a202f2f0920ull,0x6465726168732e64ull,
-0x662509203233662eull,0x635f5f5b202c3039ull,0x6f6c6f635f616475ull,0x37312b3438397372ull,
-0x69202f2f093b5d36ull,0x5f20313830313a64ull,0x6f635f616475635full,0x0a34383973726f6cull,
-0x3233662e64646109ull,0x202c343866250920ull,0x6625202c30396625ull,0x09202020203b3438ull,
-0x2e646c090a202f2full,0x662e646572616873ull,0x3139662509203233ull,0x6475635f5f5b202cull,
-0x73726f6c6f635f61ull,0x5d3038312b343839ull,0x3a6469202f2f093bull,0x635f5f2032383031ull,
-0x6f6c6f635f616475ull,0x61090a3438397372ull,0x09203233662e6464ull,0x6625202c34336625ull,
-0x34336625202c3139ull,0x2f2f09202020203bull,0x68732e646c090a20ull,0x3233662e64657261ull,
-0x202c323966250920ull,0x5f616475635f5f5bull,0x383973726f6c6f63ull,0x093b5d3438312b34ull,
-0x30313a6469202f2full,0x6475635f5f203338ull,0x73726f6c6f635f61ull,0x646461090a343839ull,
-0x662509203233662eull,0x32396625202c3935ull,0x203b39356625202cull,0x0a202f2f09202020ull,
-0x726168732e646c09ull,0x09203233662e6465ull,0x5f5b202c33396625ull,0x6f635f616475635full,
-0x2b34383973726f6cull,0x2f2f093b5d383831ull,0x343830313a646920ull,0x5f616475635f5f20ull,
-0x383973726f6c6f63ull,0x662e646461090a34ull,0x3438662509203233ull,0x202c33396625202cull,
-0x2020203b34386625ull,0x2e090a202f2f0920ull,0x3109353109636f6cull,0x7473090a30093437ull,
-0x2e6465726168732eull,0x75735b0920323366ull,0x25202c5d302b736dull,0x202f2f093b343366ull,
-0x20353830313a6469ull,0x3078302b736d7573ull,0x6168732e7473090aull,0x203233662e646572ull,
-0x342b736d75735b09ull,0x3b39356625202c5dull,0x313a6469202f2f09ull,0x736d757320363830ull,
-0x7473090a3478302bull,0x2e6465726168732eull,0x75735b0920323366ull,0x25202c5d382b736dull,
-0x202f2f093b343866ull,0x20373830313a6469ull,0x3878302b736d7573ull,0x6168732e7473090aull,
-0x203233662e646572ull,0x312b736d75735b09ull,0x34336625202c5d32ull,0x3a6469202f2f093bull,
-0x6d75732038383031ull,0x68732e7473090a73ull,0x3233662e64657261ull,0x2b736d75735b0920ull,
-0x356625202c5d3631ull,0x6469202f2f093b39ull,0x757320393830313aull,0x732e7473090a736dull,
-0x33662e6465726168ull,0x736d75735b092032ull,0x6625202c5d30322bull,0x69202f2f093b3438ull,
-0x7320303930313a64ull,0x2e7473090a736d75ull,0x662e646572616873ull,0x6d75735b09203233ull,
-0x25202c5d34322b73ull,0x202f2f093b343366ull,0x20313930313a6469ull,0x7473090a736d7573ull,
-0x2e6465726168732eull,0x75735b0920323366ull,0x202c5d38322b736dull,0x2f2f093b39356625ull,
-0x323930313a646920ull,0x73090a736d757320ull,0x6465726168732e74ull,0x735b09203233662eull,
-0x2c5d32332b736d75ull,0x2f093b3438662520ull,0x3930313a6469202full,0x090a736d75732033ull,
-0x65726168732e7473ull,0x5b09203233662e64ull,0x5d36332b736d7573ull,0x093b34336625202cull,
-0x30313a6469202f2full,0x0a736d7573203439ull,0x726168732e747309ull,0x09203233662e6465ull,
-0x30342b736d75735bull,0x3b39356625202c5dull,0x313a6469202f2f09ull,0x736d757320353930ull,
-0x6168732e7473090aull,0x203233662e646572ull,0x342b736d75735b09ull,0x34386625202c5d34ull,
-0x3a6469202f2f093bull,0x6d75732036393031ull,0x68732e7473090a73ull,0x3233662e64657261ull,
-0x2b736d75735b0920ull,0x336625202c5d3834ull,0x6469202f2f093b34ull,0x757320373930313aull,
-0x732e7473090a736dull,0x33662e6465726168ull,0x736d75735b092032ull,0x6625202c5d32352bull,
-0x69202f2f093b3935ull,0x7320383930313a64ull,0x2e7473090a736d75ull,0x662e646572616873ull,
-0x6d75735b09203233ull,0x25202c5d36352b73ull,0x202f2f093b343866ull,0x20393930313a6469ull,
-0x7473090a736d7573ull,0x2e6465726168732eull,0x75735b0920323366ull,0x202c5d30362b736dull,
-0x2f2f093b34336625ull,0x303031313a646920ull,0x73090a736d757320ull,0x6465726168732e74ull,
-0x735b09203233662eull,0x2c5d34362b736d75ull,0x2f093b3935662520ull,0x3031313a6469202full,
-0x090a736d75732031ull,0x65726168732e7473ull,0x5b09203233662e64ull,0x5d38362b736d7573ull,
-0x093b34386625202cull,0x31313a6469202f2full,0x0a736d7573203230ull,0x726168732e747309ull,
-0x09203233662e6465ull,0x32372b736d75735bull,0x3b34336625202c5dull,0x313a6469202f2f09ull,
-0x736d757320333031ull,0x6168732e7473090aull,0x203233662e646572ull,0x372b736d75735b09ull,
-0x39356625202c5d36ull,0x3a6469202f2f093bull,0x6d75732034303131ull,0x68732e7473090a73ull,
-0x3233662e64657261ull,0x2b736d75735b0920ull,0x386625202c5d3038ull,0x6469202f2f093b34ull,
-0x757320353031313aull,0x732e7473090a736dull,0x33662e6465726168ull,0x736d75735b092032ull,
-0x6625202c5d34382bull,0x69202f2f093b3433ull,0x7320363031313a64ull,0x2e7473090a736d75ull,
-0x662e646572616873ull,0x6d75735b09203233ull,0x25202c5d38382b73ull,0x202f2f093b393566ull,
-0x20373031313a6469ull,0x7473090a736d7573ull,0x2e6465726168732eull,0x75735b0920323366ull,
-0x202c5d32392b736dull,0x2f2f093b34386625ull,0x383031313a646920ull,0x73090a736d757320ull,
-0x6465726168732e74ull,0x735b09203233662eull,0x2c5d36392b736d75ull,0x2f093b3433662520ull,
-0x3031313a6469202full,0x090a736d75732039ull,0x65726168732e7473ull,0x5b09203233662e64ull,
-0x3030312b736d7573ull,0x3b39356625202c5dull,0x313a6469202f2f09ull,0x736d757320303131ull,
-0x6168732e7473090aull,0x203233662e646572ull,0x312b736d75735b09ull,0x386625202c5d3430ull,
-0x6469202f2f093b34ull,0x757320313131313aull,0x732e7473090a736dull,0x33662e6465726168ull,
-0x736d75735b092032ull,0x25202c5d3830312bull,0x202f2f093b343366ull,0x20323131313a6469ull,
-0x7473090a736d7573ull,0x2e6465726168732eull,0x75735b0920323366ull,0x2c5d3231312b736dull,
-0x2f093b3935662520ull,0x3131313a6469202full,0x090a736d75732033ull,0x65726168732e7473ull,
-0x5b09203233662e64ull,0x3631312b736d7573ull,0x3b34386625202c5dull,0x313a6469202f2f09ull,
-0x736d757320343131ull,0x6168732e7473090aull,0x203233662e646572ull,0x312b736d75735b09ull,
-0x336625202c5d3032ull,0x6469202f2f093b34ull,0x757320353131313aull,0x732e7473090a736dull,
-0x33662e6465726168ull,0x736d75735b092032ull,0x25202c5d3432312bull,0x202f2f093b393566ull,
-0x20363131313a6469ull,0x7473090a736d7573ull,0x2e6465726168732eull,0x75735b0920323366ull,
-0x2c5d3832312b736dull,0x2f093b3438662520ull,0x3131313a6469202full,0x090a736d75732037ull,
-0x65726168732e7473ull,0x5b09203233662e64ull,0x3233312b736d7573ull,0x3b34336625202c5dull,
-0x313a6469202f2f09ull,0x736d757320383131ull,0x6168732e7473090aull,0x203233662e646572ull,
-0x312b736d75735b09ull,0x356625202c5d3633ull,0x6469202f2f093b39ull,0x757320393131313aull,
-0x732e7473090a736dull,0x33662e6465726168ull,0x736d75735b092032ull,0x25202c5d3034312bull,
-0x202f2f093b343866ull,0x20303231313a6469ull,0x7473090a736d7573ull,0x2e6465726168732eull,
-0x75735b0920323366ull,0x2c5d3434312b736dull,0x2f093b3433662520ull,0x3231313a6469202full,
-0x090a736d75732031ull,0x65726168732e7473ull,0x5b09203233662e64ull,0x3834312b736d7573ull,
-0x3b39356625202c5dull,0x313a6469202f2f09ull,0x736d757320323231ull,0x6168732e7473090aull,
-0x203233662e646572ull,0x312b736d75735b09ull,0x386625202c5d3235ull,0x6469202f2f093b34ull,
-0x757320333231313aull,0x732e7473090a736dull,0x33662e6465726168ull,0x736d75735b092032ull,
-0x25202c5d3635312bull,0x202f2f093b343366ull,0x20343231313a6469ull,0x7473090a736d7573ull,
-0x2e6465726168732eull,0x75735b0920323366ull,0x2c5d3036312b736dull,0x2f093b3935662520ull,
-0x3231313a6469202full,0x090a736d75732035ull,0x65726168732e7473ull,0x5b09203233662e64ull,
-0x3436312b736d7573ull,0x3b34386625202c5dull,0x313a6469202f2f09ull,0x736d757320363231ull,
-0x6168732e7473090aull,0x203233662e646572ull,0x312b736d75735b09ull,0x336625202c5d3836ull,
-0x6469202f2f093b34ull,0x757320373231313aull,0x732e7473090a736dull,0x33662e6465726168ull,
-0x736d75735b092032ull,0x25202c5d3237312bull,0x202f2f093b393566ull,0x20383231313a6469ull,
-0x7473090a736d7573ull,0x2e6465726168732eull,0x75735b0920323366ull,0x2c5d3637312b736dull,
-0x2f093b3438662520ull,0x3231313a6469202full,0x090a736d75732039ull,0x65726168732e7473ull,
-0x5b09203233662e64ull,0x3038312b736d7573ull,0x3b34336625202c5dull,0x313a6469202f2f09ull,
-0x736d757320303331ull,0x6168732e7473090aull,0x203233662e646572ull,0x312b736d75735b09ull,
-0x356625202c5d3438ull,0x6469202f2f093b39ull,0x757320313331313aull,0x732e7473090a736dull,
-0x33662e6465726168ull,0x736d75735b092032ull,0x25202c5d3838312bull,0x202f2f093b343866ull,
-0x20323331313a6469ull,0x6c2e090a736d7573ull,0x363109363109636full,0x2e646c090a300931ull,
-0x662e646572616873ull,0x3439662509203233ull,0x2b736d75735b202cull,0x69202f2f093b5d30ull,
-0x7320353830313a64ull,0x0a3078302b736d75ull,0x3233662e766f6d09ull,0x202c353966250920ull,
-0x3030303864336630ull,0x09202020203b3030ull,0x3236302e30202f2full,0x662e6c756d090a35ull,
-0x3639662509203233ull,0x202c34396625202cull,0x2020203b35396625ull,0x6c090a202f2f0920ull,
-0x6465726168732e64ull,0x662509203233662eull,0x6d75735b202c3739ull,0x2f2f093b5d342b73ull,
-0x363830313a646920ull,0x78302b736d757320ull,0x662e766f6d090a34ull,0x3839662509203233ull,
-0x303864336630202cull,0x2020203b30303030ull,0x302e30202f2f0920ull,0x6c756d090a353236ull,
-0x662509203233662eull,0x37396625202c3939ull,0x203b38396625202cull,0x0a202f2f09202020ull,
-0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3030316625ull,0x3b5d382b736d7573ull,
-0x313a6469202f2f09ull,0x736d757320373830ull,0x6f6d090a3878302bull,0x2509203233662e76ull,
-0x6630202c31303166ull,0x3030303030386433ull,0x202f2f092020203bull,0x090a353236302e30ull,
-0x203233662e6c756dull,0x202c323031662509ull,0x25202c3030316625ull,0x2f09203b31303166ull,
-0x2e766f6d090a202full,0x6472250920343673ull,0x32647225202c3031ull,0x202020202020203bull,
-0x090a202f2f092020ull,0x203233732e766f6dull,0x30202c3231722509ull,0x202020202020203bull,
-0x2f09202020202020ull,0x2e766f6d090a202full,0x3166250920323366ull,0x30306630202c3330ull,
-0x203b303030303030ull,0x0a30202f2f092020ull,0x3233662e766f6d09ull,0x2c34303166250920ull,
-0x3030303030663020ull,0x092020203b303030ull,0x6f6d090a30202f2full,0x2509203233662e76ull,
-0x6630202c35303166ull,0x3030303030303030ull,0x202f2f092020203bull,0x662e766f6d090a30ull,
-0x3031662509203233ull,0x3030306630202c36ull,0x20203b3030303030ull,0x090a30202f2f0920ull,
-0x203233662e766f6dull,0x202c373031662509ull,0x3030303030306630ull,0x2f092020203b3030ull,
-0x766f6d090a30202full,0x662509203233662eull,0x306630202c383031ull,0x3b30303030303030ull,
-0x30202f2f09202020ull,0x335f305f744c240aull,0x2f200a3a32323730ull,0x203e706f6f6c3c2full,
-0x646f6220706f6f4cull,0x3120656e696c2079ull,0x7473656e202c3136ull,0x7470656420676e69ull,
-0x7469202c31203a68ull,0x736e6f6974617265ull,0x6c2e090a3631203aull,0x393109353109636full,
-0x2e646c090a300937ull,0x662e646572616873ull,0x3031662509203233ull,0x316472255b202c39ull,
-0x2f2f093b5d302b30ull,0x333331313a646920ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,
-0x6c090a3078302b34ull,0x6465726168732e64ull,0x662509203233662eull,0x72255b202c303131ull,
-0x093b5d342b303164ull,0x31313a6469202f2full,0x6475635f5f203433ull,0x73726f6c6f635f61ull,
-0x0a3078302b343839ull,0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3131316625ull,
-0x5d382b3031647225ull,0x3a6469202f2f093bull,0x635f5f2035333131ull,0x6f6c6f635f616475ull,
-0x78302b3438397372ull,0x662e627573090a30ull,0x3131662509203233ull,0x3930316625202c32ull,
-0x203b36396625202cull,0x6d090a202f2f0920ull,0x09203233662e6461ull,0x25202c3830316625ull,
-0x6625202c32313166ull,0x316625202c323131ull,0x0a202f2f093b3830ull,0x3233662e62757309ull,
-0x2c33313166250920ull,0x202c303131662520ull,0x0920203b39396625ull,0x64616d090a202f2full,
-0x662509203233662eull,0x316625202c373031ull,0x31316625202c3231ull,0x3730316625202c33ull,
-0x73090a202f2f093bull,0x09203233662e6275ull,0x25202c3431316625ull,0x6625202c31313166ull,
-0x2f2f09203b323031ull,0x662e64616d090a20ull,0x3031662509203233ull,0x3231316625202c36ull,
-0x2c3431316625202cull,0x093b363031662520ull,0x64616d090a202f2full,0x662509203233662eull,
-0x316625202c353031ull,0x31316625202c3331ull,0x3530316625202c33ull,0x6d090a202f2f093bull,
-0x09203233662e6461ull,0x25202c3430316625ull,0x6625202c33313166ull,0x316625202c343131ull,
-0x0a202f2f093b3430ull,0x3233662e64616d09ull,0x2c33303166250920ull,0x202c343131662520ull,
-0x25202c3431316625ull,0x2f2f093b33303166ull,0x732e646461090a20ull,0x3231722509203233ull,
-0x202c32317225202cull,0x2020202020203b31ull,0x61090a202f2f0920ull,0x09203436752e6464ull,
-0x25202c3031647225ull,0x3231202c30316472ull,0x2f2f09202020203bull,0x752e766f6d090a20ull,
-0x3331722509203233ull,0x2020203b3631202cull,0x2020202020202020ull,0x73090a202f2f0920ull,
-0x732e656e2e707465ull,0x2c32702509203233ull,0x25202c3231722520ull,0x2f2f09203b333172ull,
-0x2032702540090a20ull,0x744c240920617262ull,0x32323730335f305full,0x202020202020203bull,
-0x2e090a202f2f0920ull,0x3209353109636f6cull,0x6f6d090a30093833ull,0x2509203436752e76ull,
-0x7064202c31316472ull,0x2020203b325f5f73ull,0x202f2f0920202020ull,0x33662e766f6d090aull,
-0x3531316625092032ull,0x303866336630202cull,0x2020203b30303030ull,0x6d090a31202f2f09ull,
-0x09203233662e6461ull,0x25202c3631316625ull,0x6625202c35313166ull,0x316625202c373031ull,
-0x0a202f2f093b3530ull,0x3233662e766f6d09ull,0x2c37313166250920ull,0x3030386633663020ull,
-0x092020203b303030ull,0x616d090a31202f2full,0x2509203233662e64ull,0x6625202c38313166ull,
-0x316625202c373131ull,0x30316625202c3630ull,0x090a202f2f093b34ull,0x203233662e766f6dull,
-0x202c393131662509ull,0x3030303866336630ull,0x2f092020203b3030ull,0x64616d090a31202full,
-0x662509203233662eull,0x316625202c303231ull,0x31316625202c3830ull,0x3730316625202c39ull,
-0x6d090a202f2f093bull,0x09203233662e766full,0x30202c3132316625ull,0x3030303038663366ull,
-0x2f2f092020203b30ull,0x2e64616d090a3120ull,0x3166250920323366ull,0x32316625202c3232ull,
-0x3430316625202c31ull,0x3b3631316625202cull,0x6f6d090a202f2f09ull,0x2509203233662e76ull,
-0x6630202c33323166ull,0x3030303030386633ull,0x202f2f092020203bull,0x662e64616d090a31ull,
-0x3231662509203233ull,0x3332316625202c34ull,0x2c3330316625202cull,0x093b383131662520ull,
-0x766f6d090a202f2full,0x662509203233662eull,0x336630202c353231ull,0x3b30303030303866ull,
-0x31202f2f09202020ull,0x33662e64616d090aull,0x3632316625092032ull,0x2c3630316625202cull,
-0x202c353231662520ull,0x2f093b3032316625ull,0x2e78616d090a202full,0x3166250920323366ull,
-0x32316625202c3732ull,0x3632316625202c32ull,0x090a202f2f09203bull,0x203233662e78616dull,
-0x202c383231662509ull,0x25202c3432316625ull,0x2f09203b37323166ull,0x2e766f6d090a202full,
-0x3166250920323366ull,0x30306630202c3932ull,0x203b303030303030ull,0x0a30202f2f092020ull,
-0x71652e7074657309ull,0x702509203233662eull,0x3832316625202c33ull,0x3b3932316625202cull,
-0x6372090a202f2f09ull,0x786f727070612e70ull,0x662509203233662eull,0x316625202c303331ull,
-0x202f2f09203b3832ull,0x33662e766f6d090aull,0x3133316625092032ull,0x303030306630202cull,
-0x2020203b30303030ull,0x73090a30202f2f09ull,0x203233662e706c65ull,0x202c323331662509ull,
-0x25202c3133316625ull,0x7025202c30333166ull,0x090a202f2f093b33ull,0x203233662e6c756dull,
-0x202c333331662509ull,0x25202c3232316625ull,0x2f09203b32333166ull,0x2e6c756d090a202full,
-0x3166250920323366ull,0x32316625202c3433ull,0x3233316625202c36ull,0x090a202f2f09203bull,
-0x203233662e6c756dull,0x202c353331662509ull,0x25202c3432316625ull,0x2f09203b32333166ull,
-0x2e6c756d090a202full,0x3166250920323366ull,0x33316625202c3633ull,0x3430316625202c33ull,
-0x090a202f2f09203bull,0x203233662e6c756dull,0x202c373331662509ull,0x25202c3333316625ull,
-0x2f09203b37303166ull,0x2e6c756d090a202full,0x3166250920323366ull,0x33316625202c3833ull,
-0x3530316625202c33ull,0x090a202f2f09203bull,0x203233662e64616dull,0x202c393331662509ull,
-0x25202c3433316625ull,0x6625202c36303166ull,0x202f2f093b363331ull,0x33662e64616d090aull,
-0x3034316625092032ull,0x2c3830316625202cull,0x202c343331662520ull,0x2f093b3733316625ull,
-0x2e64616d090a202full,0x3166250920323366ull,0x33316625202c3134ull,0x3730316625202c34ull,
-0x3b3833316625202cull,0x616d090a202f2f09ull,0x2509203233662e64ull,0x6625202c32343166ull,
-0x316625202c353331ull,0x33316625202c3330ull,0x090a202f2f093b39ull,0x203233662e64616dull,
-0x202c333431662509ull,0x25202c3630316625ull,0x6625202c35333166ull,0x202f2f093b303431ull,
-0x33662e64616d090aull,0x3434316625092032ull,0x2c3533316625202cull,0x202c343031662520ull,
-0x2f093b3134316625ull,0x2e78616d090a202full,0x3166250920323366ull,0x34316625202c3534ull,
-0x3434316625202c33ull,0x090a202f2f09203bull,0x203233662e78616dull,0x202c363431662509ull,
-0x25202c3234316625ull,0x2f09203b35343166ull,0x636f6c2e090a202full,0x0939343109353109ull,
-0x662e766f6d090a30ull,0x3431662509203233ull,0x3030306630202c37ull,0x20203b3030303030ull,
-0x090a30202f2f0920ull,0x2e71652e70746573ull,0x3470250920323366ull,0x2c3634316625202cull,
-0x093b373431662520ull,0x706372090a202f2full,0x2e786f727070612eull,0x3166250920323366ull,
-0x34316625202c3834ull,0x0a202f2f09203b36ull,0x3233662e766f6d09ull,0x2c39343166250920ull,
-0x3030303030663020ull,0x092020203b303030ull,0x6573090a30202f2full,0x09203233662e706cull,
-0x25202c3035316625ull,0x6625202c39343166ull,0x347025202c383431ull,0x6d090a202f2f093bull,
-0x09203233662e6c75ull,0x25202c3135316625ull,0x6625202c30353166ull,0x2f2f09203b323431ull,
-0x662e6c756d090a20ull,0x3531662509203233ull,0x3035316625202c32ull,0x3b3334316625202cull,
-0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3335316625ull,0x6625202c30353166ull,
-0x2f2f09203b343431ull,0x662e6c756d090a20ull,0x3531662509203233ull,0x3335316625202c34ull,
-0x3b3730316625202cull,0x6d090a202f2f0920ull,0x09203233662e6461ull,0x25202c3535316625ull,
-0x6625202c38303166ull,0x316625202c323531ull,0x0a202f2f093b3435ull,0x3233662e64616d09ull,
-0x2c36353166250920ull,0x202c363031662520ull,0x25202c3135316625ull,0x2f2f093b35353166ull,
-0x09636f6c2e090a20ull,0x3009303531093531ull,0x33662e6c756d090aull,0x3735316625092032ull,
-0x2c3335316625202cull,0x203b353031662520ull,0x616d090a202f2f09ull,0x2509203233662e64ull,
-0x6625202c38353166ull,0x316625202c323531ull,0x35316625202c3730ull,0x090a202f2f093b37ull,
-0x203233662e64616dull,0x202c393531662509ull,0x25202c3135316625ull,0x6625202c34303166ull,
-0x202f2f093b383531ull,0x3109636f6c2e090aull,0x0a30093135310935ull,0x3233662e6c756d09ull,
-0x2c30363166250920ull,0x202c333531662520ull,0x09203b3430316625ull,0x64616d090a202f2full,
-0x662509203233662eull,0x316625202c313631ull,0x30316625202c3235ull,0x3036316625202c36ull,
-0x6d090a202f2f093bull,0x09203233662e6461ull,0x25202c3236316625ull,0x6625202c31353166ull,
-0x316625202c333031ull,0x0a202f2f093b3136ull,0x353109636f6c2e09ull,0x090a300937353109ull,
-0x203233662e78616dull,0x202c333631662509ull,0x25202c3635316625ull,0x2f09203b39353166ull,
-0x2e78616d090a202full,0x3166250920323366ull,0x36316625202c3436ull,0x3236316625202c33ull,
-0x090a202f2f09203bull,0x203233662e766f6dull,0x202c353631662509ull,0x3030303030306630ull,
-0x2f092020203b3030ull,0x746573090a30202full,0x3233662e71652e70ull,0x25202c3570250920ull,
-0x6625202c34363166ull,0x202f2f093b353631ull,0x70612e706372090aull,0x3233662e786f7270ull,
-0x2c36363166250920ull,0x203b343631662520ull,0x6f6d090a202f2f09ull,0x2509203233662e76ull,
-0x6630202c37363166ull,0x3030303030303030ull,0x202f2f092020203bull,0x2e706c6573090a30ull,
-0x3166250920323366ull,0x36316625202c3836ull,0x3636316625202c37ull,0x2f093b357025202cull,
-0x2e6c756d090a202full,0x3166250920323366ull,0x36316625202c3936ull,0x3635316625202c38ull,
-0x090a202f2f09203bull,0x203233662e6c756dull,0x202c303731662509ull,0x25202c3836316625ull,
-0x2f09203b39353166ull,0x2e6c756d090a202full,0x3166250920323366ull,0x36316625202c3137ull,
-0x3236316625202c38ull,0x090a202f2f09203bull,0x09353109636f6c2eull,0x6d090a3009393431ull,
-0x09203233662e6c75ull,0x25202c3237316625ull,0x6625202c30373166ull,0x2f2f09203b373031ull,
-0x662e64616d090a20ull,0x3731662509203233ull,0x3830316625202c33ull,0x2c3936316625202cull,
-0x093b323731662520ull,0x64616d090a202f2full,0x662509203233662eull,0x316625202c363531ull,
-0x37316625202c3630ull,0x3337316625202c31ull,0x2e090a202f2f093bull,0x3109353109636f6cull,
-0x756d090a30093735ull,0x2509203233662e6cull,0x6625202c34373166ull,0x316625202c303731ull,
-0x202f2f09203b3530ull,0x33662e6c756d090aull,0x3537316625092032ull,0x2c3037316625202cull,
-0x203b343031662520ull,0x616d090a202f2f09ull,0x2509203233662e64ull,0x6625202c36373166ull,
-0x316625202c393631ull,0x37316625202c3730ull,0x090a202f2f093b34ull,0x203233662e64616dull,
-0x202c373731662509ull,0x25202c3936316625ull,0x6625202c36303166ull,0x202f2f093b353731ull,
-0x33662e64616d090aull,0x3837316625092032ull,0x2c3137316625202cull,0x202c343031662520ull,
-0x2f093b3637316625ull,0x2e64616d090a202full,0x3166250920323366ull,0x37316625202c3937ull,
-0x3330316625202c31ull,0x3b3737316625202cull,0x616d090a202f2f09ull,0x2509203233662e78ull,
-0x6625202c30383166ull,0x316625202c383731ull,0x202f2f09203b3635ull,0x33662e78616d090aull,
-0x3138316625092032ull,0x2c3937316625202cull,0x203b303831662520ull,0x6f6d090a202f2f09ull,
-0x2509203233662e76ull,0x6630202c32383166ull,0x3030303030303030ull,0x202f2f092020203bull,
-0x2e70746573090a30ull,0x09203233662e7165ull,0x316625202c367025ull,0x38316625202c3138ull,
-0x090a202f2f093b32ull,0x727070612e706372ull,0x09203233662e786full,0x25202c3338316625ull,
-0x2f09203b31383166ull,0x2e766f6d090a202full,0x3166250920323366ull,0x30306630202c3438ull,
-0x203b303030303030ull,0x0a30202f2f092020ull,0x33662e706c657309ull,0x3538316625092032ull,
-0x2c3438316625202cull,0x202c333831662520ull,0x202f2f093b367025ull,0x33662e6c756d090aull,
-0x3638316625092032ull,0x2c3837316625202cull,0x203b353831662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c37383166ull,0x316625202c393731ull,0x202f2f09203b3538ull,
-0x33662e6c756d090aull,0x3838316625092032ull,0x2c3538316625202cull,0x203b363531662520ull,
-0x6c2e090a202f2f09ull,0x353109353109636full,0x6c756d090a300931ull,0x662509203233662eull,
-0x316625202c393831ull,0x30316625202c3638ull,0x0a202f2f09203b34ull,0x3233662e64616d09ull,
-0x2c30393166250920ull,0x202c383831662520ull,0x25202c3630316625ull,0x2f2f093b39383166ull,
-0x662e64616d090a20ull,0x3931662509203233ull,0x3738316625202c31ull,0x2c3330316625202cull,
-0x093b303931662520ull,0x6f6c2e090a202f2full,0x3934310935310963ull,0x2e6c756d090a3009ull,
-0x3166250920323366ull,0x38316625202c3239ull,0x3730316625202c36ull,0x090a202f2f09203bull,
-0x203233662e6c756dull,0x202c333931662509ull,0x25202c3638316625ull,0x2f09203b35303166ull,
-0x2e64616d090a202full,0x3166250920323366ull,0x30316625202c3439ull,0x3838316625202c38ull,
-0x3b3239316625202cull,0x616d090a202f2f09ull,0x2509203233662e64ull,0x6625202c35393166ull,
-0x316625202c383831ull,0x39316625202c3730ull,0x090a202f2f093b33ull,0x203233662e64616dull,
-0x202c363931662509ull,0x25202c3630316625ull,0x6625202c37383166ull,0x202f2f093b343931ull,
-0x33662e64616d090aull,0x3739316625092032ull,0x2c3738316625202cull,0x202c343031662520ull,
-0x2f093b3539316625ull,0x2e78616d090a202full,0x3166250920323366ull,0x39316625202c3839ull,
-0x3739316625202c36ull,0x090a202f2f09203bull,0x203233662e78616dull,0x202c393931662509ull,
-0x25202c3839316625ull,0x2f09203b31393166ull,0x2e766f6d090a202full,0x3266250920323366ull,
-0x30306630202c3030ull,0x203b303030303030ull,0x0a30202f2f092020ull,0x71652e7074657309ull,
-0x702509203233662eull,0x3939316625202c37ull,0x3b3030326625202cull,0x6372090a202f2f09ull,
-0x786f727070612e70ull,0x662509203233662eull,0x316625202c313032ull,0x202f2f09203b3939ull,
-0x33662e766f6d090aull,0x3230326625092032ull,0x303030306630202cull,0x2020203b30303030ull,
-0x73090a30202f2f09ull,0x203233662e706c65ull,0x202c333032662509ull,0x25202c3230326625ull,
-0x7025202c31303266ull,0x090a202f2f093b37ull,0x09353109636f6c2eull,0x6d090a3009373531ull,
-0x09203233662e6c75ull,0x25202c3430326625ull,0x6625202c36393166ull,0x2f2f09203b333032ull,
-0x662e6c756d090a20ull,0x3831662509203233ull,0x3739316625202c36ull,0x3b3330326625202cull,
-0x2e090a202f2f0920ull,0x3109353109636f6cull,0x756d090a30093934ull,0x2509203233662e6cull,
-0x6625202c35303266ull,0x316625202c333032ull,0x202f2f09203b3139ull,0x33662e6c756d090aull,
-0x3630326625092032ull,0x2c3638316625202cull,0x203b373031662520ull,0x616d090a202f2f09ull,
-0x2509203233662e64ull,0x6625202c37303266ull,0x326625202c383031ull,0x30326625202c3430ull,
-0x090a202f2f093b36ull,0x203233662e64616dull,0x202c363531662509ull,0x25202c3630316625ull,
-0x6625202c35303266ull,0x202f2f093b373032ull,0x3109636f6c2e090aull,0x0a30093035310935ull,
-0x3233662e6c756d09ull,0x2c38303266250920ull,0x202c363831662520ull,0x09203b3530316625ull,
-0x64616d090a202f2full,0x662509203233662eull,0x326625202c393032ull,0x30316625202c3430ull,
-0x3830326625202c37ull,0x6d090a202f2f093bull,0x09203233662e6461ull,0x25202c3935316625ull,
-0x6625202c35303266ull,0x326625202c343031ull,0x0a202f2f093b3930ull,0x353109636f6c2e09ull,
-0x090a300931353109ull,0x203233662e6c756dull,0x202c303132662509ull,0x25202c3638316625ull,
-0x2f09203b34303166ull,0x2e64616d090a202full,0x3266250920323366ull,0x30326625202c3131ull,
-0x3630316625202c34ull,0x3b3031326625202cull,0x616d090a202f2f09ull,0x2509203233662e64ull,
-0x6625202c32363166ull,0x316625202c353032ull,0x31326625202c3330ull,0x090a202f2f093b31ull,
-0x09353109636f6c2eull,0x6d090a3009373531ull,0x09203233662e7861ull,0x25202c3336316625ull,
-0x6625202c36353166ull,0x2f2f09203b393531ull,0x662e78616d090a20ull,0x3631662509203233ull,
-0x3336316625202c34ull,0x3b3236316625202cull,0x6d090a202f2f0920ull,0x09203233662e766full,
-0x30202c3231326625ull,0x3030303030303066ull,0x2f2f092020203b30ull,0x70746573090a3020ull,
-0x203233662e71652eull,0x6625202c35702509ull,0x326625202c343631ull,0x0a202f2f093b3231ull,
-0x7070612e70637209ull,0x203233662e786f72ull,0x202c363631662509ull,0x09203b3436316625ull,
-0x766f6d090a202f2full,0x662509203233662eull,0x306630202c333132ull,0x3b30303030303030ull,
-0x30202f2f09202020ull,0x662e706c6573090aull,0x3631662509203233ull,0x3331326625202c38ull,
-0x2c3636316625202cull,0x2f2f093b35702520ull,0x662e6c756d090a20ull,0x3132662509203233ull,
-0x3836316625202c34ull,0x3b3635316625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,
-0x25202c3531326625ull,0x6625202c38363166ull,0x2f2f09203b393531ull,0x662e6c756d090a20ull,
-0x3132662509203233ull,0x3836316625202c36ull,0x3b3236316625202cull,0x2e090a202f2f0920ull,
-0x3109353109636f6cull,0x756d090a30093934ull,0x2509203233662e6cull,0x6625202c37313266ull,
-0x316625202c353132ull,0x202f2f09203b3730ull,0x33662e64616d090aull,0x3831326625092032ull,
-0x2c3830316625202cull,0x202c343132662520ull,0x2f093b3731326625ull,0x2e64616d090a202full,
-0x3166250920323366ull,0x30316625202c3635ull,0x3631326625202c36ull,0x3b3831326625202cull,
-0x6c2e090a202f2f09ull,0x353109353109636full,0x6c756d090a300937ull,0x662509203233662eull,
-0x326625202c343731ull,0x30316625202c3531ull,0x0a202f2f09203b35ull,0x3233662e6c756d09ull,
-0x2c35373166250920ull,0x202c353132662520ull,0x09203b3430316625ull,0x64616d090a202f2full,
-0x662509203233662eull,0x326625202c363731ull,0x30316625202c3431ull,0x3437316625202c37ull,
-0x6d090a202f2f093bull,0x09203233662e6461ull,0x25202c3737316625ull,0x6625202c34313266ull,
-0x316625202c363031ull,0x0a202f2f093b3537ull,0x3233662e64616d09ull,0x2c38373166250920ull,
-0x202c363132662520ull,0x25202c3430316625ull,0x2f2f093b36373166ull,0x662e64616d090a20ull,
-0x3731662509203233ull,0x3631326625202c39ull,0x2c3330316625202cull,0x093b373731662520ull,
-0x78616d090a202f2full,0x662509203233662eull,0x316625202c303831ull,0x35316625202c3837ull,
-0x0a202f2f09203b36ull,0x3233662e78616d09ull,0x2c31383166250920ull,0x202c393731662520ull,
-0x09203b3038316625ull,0x766f6d090a202f2full,0x662509203233662eull,0x306630202c393132ull,
-0x3b30303030303030ull,0x30202f2f09202020ull,0x652e70746573090aull,0x2509203233662e71ull,
-0x38316625202c3670ull,0x3931326625202c31ull,0x72090a202f2f093bull,0x6f727070612e7063ull,
-0x2509203233662e78ull,0x6625202c33383166ull,0x2f2f09203b313831ull,0x662e766f6d090a20ull,
-0x3232662509203233ull,0x3030306630202c30ull,0x20203b3030303030ull,0x090a30202f2f0920ull,
-0x3233662e706c6573ull,0x2c35383166250920ull,0x202c303232662520ull,0x25202c3338316625ull,
-0x0a202f2f093b3670ull,0x3233662e6c756d09ull,0x2c36383166250920ull,0x202c383731662520ull,
-0x09203b3538316625ull,0x6c756d090a202f2full,0x662509203233662eull,0x316625202c373831ull,
-0x38316625202c3937ull,0x0a202f2f09203b35ull,0x3233662e6c756d09ull,0x2c38383166250920ull,
-0x202c353831662520ull,0x09203b3635316625ull,0x6f6c2e090a202f2full,0x3135310935310963ull,
-0x2e6c756d090a3009ull,0x3166250920323366ull,0x38316625202c3938ull,0x3430316625202c36ull,
-0x090a202f2f09203bull,0x203233662e64616dull,0x202c303931662509ull,0x25202c3838316625ull,
-0x6625202c36303166ull,0x202f2f093b393831ull,0x33662e64616d090aull,0x3132326625092032ull,
-0x2c3738316625202cull,0x202c333031662520ull,0x2f093b3039316625ull,0x636f6c2e090a202full,
-0x0939343109353109ull,0x662e6c756d090a30ull,0x3931662509203233ull,0x3638316625202c32ull,
-0x3b3730316625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3339316625ull,
-0x6625202c36383166ull,0x2f2f09203b353031ull,0x662e64616d090a20ull,0x3931662509203233ull,
-0x3830316625202c34ull,0x2c3838316625202cull,0x093b323931662520ull,0x64616d090a202f2full,
-0x662509203233662eull,0x316625202c353931ull,0x30316625202c3838ull,0x3339316625202c37ull,
-0x6d090a202f2f093bull,0x09203233662e6461ull,0x25202c3639316625ull,0x6625202c36303166ull,
-0x316625202c373831ull,0x0a202f2f093b3439ull,0x3233662e64616d09ull,0x2c37393166250920ull,
-0x202c373831662520ull,0x25202c3430316625ull,0x2f2f093b35393166ull,0x662e78616d090a20ull,
-0x3931662509203233ull,0x3639316625202c38ull,0x3b3739316625202cull,0x6d090a202f2f0920ull,
-0x09203233662e7861ull,0x25202c3939316625ull,0x6625202c38393166ull,0x2f2f09203b313232ull,
-0x662e766f6d090a20ull,0x3232662509203233ull,0x3030306630202c32ull,0x20203b3030303030ull,
-0x090a30202f2f0920ull,0x2e71652e70746573ull,0x3770250920323366ull,0x2c3939316625202cull,
-0x093b323232662520ull,0x706372090a202f2full,0x2e786f727070612eull,0x3266250920323366ull,
-0x39316625202c3130ull,0x0a202f2f09203b39ull,0x3233662e766f6d09ull,0x2c33323266250920ull,
-0x3030303030663020ull,0x092020203b303030ull,0x6573090a30202f2full,0x09203233662e706cull,
-0x25202c3432326625ull,0x6625202c33323266ull,0x377025202c313032ull,0x2e090a202f2f093bull,
-0x3109353109636f6cull,0x756d090a30093735ull,0x2509203233662e6cull,0x6625202c34303266ull,
-0x326625202c363931ull,0x202f2f09203b3432ull,0x33662e6c756d090aull,0x3638316625092032ull,
-0x2c3739316625202cull,0x203b343232662520ull,0x6c2e090a202f2f09ull,0x363109363109636full,
-0x6c756d090a300933ull,0x203436752e6f6c2eull,0x202c323164722509ull,0x3231202c31647225ull,
-0x0a202f2f0920203bull,0x3436752e64646109ull,0x202c386472250920ull,0x7225202c32647225ull,
-0x092020203b323164ull,0x2e646c090a202f2full,0x662e646572616873ull,0x3232662509203233ull,
-0x386472255b202c35ull,0x202f2f093b5d342bull,0x20363331313a6469ull,0x635f616475635f5full,
-0x34383973726f6c6full,0x756d090a3078302bull,0x2509203233662e6cull,0x6625202c36323266ull,
-0x316625202c353232ull,0x202f2f09203b3638ull,0x6168732e646c090aull,0x203233662e646572ull,
-0x202c373232662509ull,0x5d302b386472255bull,0x3a6469202f2f093bull,0x635f5f2037333131ull,
-0x6f6c6f635f616475ull,0x78302b3438397372ull,0x662e64616d090a30ull,0x3232662509203233ull,
-0x3732326625202c38ull,0x2c3430326625202cull,0x093b363232662520ull,0x2e646c090a202f2full,
-0x662e646572616873ull,0x3232662509203233ull,0x386472255b202c39ull,0x202f2f093b5d382bull,
-0x20383331313a6469ull,0x635f616475635f5full,0x34383973726f6c6full,0x756d090a3078302bull,
-0x2509203233662e6cull,0x6625202c30333266ull,0x326625202c343232ull,0x202f2f09203b3132ull,
-0x33662e64616d090aull,0x3133326625092032ull,0x2c3932326625202cull,0x202c303332662520ull,
-0x2f093b3832326625ull,0x2e646461090a202full,0x6472250920343675ull,0x39647225202c3331ull,
-0x3b3131647225202cull,0x090a202f2f092020ull,0x65726168732e7473ull,0x5b09203233662e64ull,
-0x5d302b3331647225ull,0x3b3133326625202cull,0x313a6469202f2f09ull,0x5f73706420393331ull,
-0x240a3078302b325full,0x3639325f305f744cull,0x766f6d090a3a3839ull,0x722509203436752eull,
-0x737064202c313164ull,0x202020203b325f5full,0x0a202f2f09202020ull,0x363109636f6c2e09ull,
-0x090a300936363109ull,0x636e79732e726162ull,0x202020203b300920ull,0x2020202020202020ull,
-0x2f09202020202020ull,0x70252140090a202full,0x2409206172622031ull,0x3231335f305f744cull,
-0x20202020203b3433ull,0x090a202f2f092020ull,0x09363109636f6c2eull,0x6d090a3009393631ull,
-0x09203233752e766full,0x3b30202c34317225ull,0x2020202020202020ull,0x2f2f092020202020ull,
-0x2e70746573090a20ull,0x09203233752e656eull,0x317225202c387025ull,0x203b34317225202cull,
-0x40090a202f2f0920ull,0x2061726220387025ull,0x335f305f744c2409ull,0x2020203b36343731ull,
-0x2f2f092020202020ull,0x752e766f6d090a20ull,0x3164722509203436ull,0x6475635f5f202c34ull,
-0x3173666572785f61ull,0x202f2f093b383633ull,0x36732e766f6d090aull,0x3531647225092034ull,
-0x3b3131647225202cull,0x2020202020202020ull,0x6f6d090a202f2f09ull,0x2509203436732e76ull,
-0x7225202c36316472ull,0x202020203b343164ull,0x202f2f0920202020ull,0x6168732e646c090aull,
-0x203233662e646572ull,0x202c323332662509ull,0x2b325f5f7370645bull,0x69202f2f093b5d34ull,
-0x7064203839393a64ull,0x646c090a325f5f73ull,0x2e6465726168732eull,0x3266250920323366ull,
-0x7370645b202c3333ull,0x093b5d302b325f5full,0x39393a6469202f2full,0x325f5f7370642039ull,
-0x6168732e646c090aull,0x203233662e646572ull,0x202c343332662509ull,0x2b325f5f7370645bull,
-0x69202f2f093b5d38ull,0x6420303030313a64ull,0x6c090a325f5f7370ull,0x6465726168732e64ull,
-0x662509203233662eull,0x70645b202c353332ull,0x5d32312b325f5f73ull,0x3a6469202f2f093bull,
-0x7370642031303031ull,0x2e646c090a325f5full,0x662e646572616873ull,0x3332662509203233ull,
-0x5f7370645b202c36ull,0x093b5d36312b325full,0x30313a6469202f2full,0x5f5f737064203230ull,
-0x68732e646c090a32ull,0x3233662e64657261ull,0x2c37333266250920ull,0x325f5f7370645b20ull,
-0x2f2f093b5d30322bull,0x333030313a646920ull,0x0a325f5f73706420ull,0x726168732e646c09ull,
-0x09203233662e6465ull,0x5b202c3833326625ull,0x322b325f5f737064ull,0x69202f2f093b5d34ull,
-0x6420343030313a64ull,0x6c090a325f5f7370ull,0x6465726168732e64ull,0x662509203233662eull,
-0x70645b202c393332ull,0x5d38322b325f5f73ull,0x3a6469202f2f093bull,0x7370642035303031ull,
-0x2e646c090a325f5full,0x662e646572616873ull,0x3432662509203233ull,0x5f7370645b202c30ull,
-0x093b5d32332b325full,0x30313a6469202f2full,0x5f5f737064203630ull,0x68732e646c090a32ull,
-0x3233662e64657261ull,0x2c31343266250920ull,0x325f5f7370645b20ull,0x2f2f093b5d36332bull,
-0x373030313a646920ull,0x0a325f5f73706420ull,0x726168732e646c09ull,0x09203233662e6465ull,
-0x5b202c3234326625ull,0x342b325f5f737064ull,0x69202f2f093b5d30ull,0x6420383030313a64ull,
-0x6c090a325f5f7370ull,0x6465726168732e64ull,0x662509203233662eull,0x70645b202c333432ull,
-0x5d34342b325f5f73ull,0x3a6469202f2f093bull,0x7370642039303031ull,0x2e646c090a325f5full,
-0x662e646572616873ull,0x3432662509203233ull,0x5f7370645b202c34ull,0x093b5d38342b325full,
-0x30313a6469202f2full,0x5f5f737064203031ull,0x68732e646c090a32ull,0x3233662e64657261ull,
-0x2c35343266250920ull,0x325f5f7370645b20ull,0x2f2f093b5d32352bull,0x313130313a646920ull,
-0x0a325f5f73706420ull,0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3634326625ull,
-0x352b325f5f737064ull,0x69202f2f093b5d36ull,0x6420323130313a64ull,0x6c090a325f5f7370ull,
-0x6465726168732e64ull,0x662509203233662eull,0x70645b202c373432ull,0x5d30362b325f5f73ull,
-0x3a6469202f2f093bull,0x7370642033313031ull,0x766f6d090a325f5full,0x722509203233732eull,
-0x20203b30202c3531ull,0x2020202020202020ull,0x0a202f2f09202020ull,0x32335f305f744c24ull,
-0x2f2f200a3a303737ull,0x4c203e706f6f6c3cull,0x79646f6220706f6full,0x363120656e696c20ull,
-0x697473656e202c39ull,0x687470656420676eull,0x657469202c31203aull,0x3a736e6f69746172ull,
-0x6f6c2e090a363120ull,0x0938390936310963ull,0x68732e646c090a30ull,0x3233662e64657261ull,
-0x2c38343266250920ull,0x2b35316472255b20ull,0x69202f2f093b5d30ull,0x6420303431313a64ull,
-0x78302b325f5f7370ull,0x09636f6c2e090a30ull,0x3009393631093631ull,0x6168732e646c090aull,
-0x203233662e646572ull,0x202c363432662509ull,0x2b325f5f7370645bull,0x202f2f093b5d3635ull,
-0x3109636f6c2e090aull,0x090a300938390936ull,0x752e74672e746573ull,0x09203233662e3233ull,
-0x6625202c36317225ull,0x326625202c383432ull,0x0a202f2f093b3634ull,0x3233732e67656e09ull,
-0x202c373172250920ull,0x2020203b36317225ull,0x0920202020202020ull,0x6f6c2e090a202f2full,
-0x3936310936310963ull,0x732e646c090a3009ull,0x33662e6465726168ull,0x3734326625092032ull,
-0x5f5f7370645b202cull,0x2f093b5d30362b32ull,0x636f6c2e090a202full,0x3009383909363109ull,
-0x74672e746573090aull,0x3233662e3233752eull,0x202c383172250920ull,0x25202c3834326625ull,
-0x2f2f093b37343266ull,0x732e67656e090a20ull,0x3931722509203233ull,0x203b38317225202cull,
-0x2020202020202020ull,0x61090a202f2f0920ull,0x09203233732e6464ull,0x7225202c30327225ull,
-0x39317225202c3731ull,0x2f2f09202020203bull,0x09636f6c2e090a20ull,0x3009393631093631ull,
-0x6168732e646c090aull,0x203233662e646572ull,0x202c343432662509ull,0x2b325f5f7370645bull,
-0x202f2f093b5d3834ull,0x3109636f6c2e090aull,0x090a300938390936ull,0x752e74672e746573ull,
-0x09203233662e3233ull,0x6625202c31327225ull,0x326625202c383432ull,0x0a202f2f093b3434ull,
-0x3233732e67656e09ull,0x202c323272250920ull,0x2020203b31327225ull,0x0920202020202020ull,
-0x6f6c2e090a202f2full,0x3936310936310963ull,0x732e646c090a3009ull,0x33662e6465726168ull,
-0x3534326625092032ull,0x5f5f7370645b202cull,0x2f093b5d32352b32ull,0x636f6c2e090a202full,
-0x3009383909363109ull,0x74672e746573090aull,0x3233662e3233752eull,0x202c333272250920ull,
-0x25202c3834326625ull,0x2f2f093b35343266ull,0x732e67656e090a20ull,0x3432722509203233ull,
-0x203b33327225202cull,0x2020202020202020ull,0x61090a202f2f0920ull,0x09203233732e6464ull,
-0x7225202c35327225ull,0x34327225202c3232ull,0x2f2f09202020203bull,0x09636f6c2e090a20ull,
-0x3009393631093631ull,0x6168732e646c090aull,0x203233662e646572ull,0x202c323432662509ull,
-0x2b325f5f7370645bull,0x202f2f093b5d3034ull,0x3109636f6c2e090aull,0x090a300938390936ull,
-0x752e74672e746573ull,0x09203233662e3233ull,0x6625202c36327225ull,0x326625202c383432ull,
-0x0a202f2f093b3234ull,0x3233732e67656e09ull,0x202c373272250920ull,0x2020203b36327225ull,
-0x0920202020202020ull,0x6f6c2e090a202f2full,0x3936310936310963ull,0x732e646c090a3009ull,
-0x33662e6465726168ull,0x3334326625092032ull,0x5f5f7370645b202cull,0x2f093b5d34342b32ull,
-0x636f6c2e090a202full,0x3009383909363109ull,0x74672e746573090aull,0x3233662e3233752eull,
-0x202c383272250920ull,0x25202c3834326625ull,0x2f2f093b33343266ull,0x732e67656e090a20ull,
-0x3932722509203233ull,0x203b38327225202cull,0x2020202020202020ull,0x61090a202f2f0920ull,
-0x09203233732e6464ull,0x7225202c30337225ull,0x39327225202c3732ull,0x2f2f09202020203bull,
-0x09636f6c2e090a20ull,0x3009393631093631ull,0x6168732e646c090aull,0x203233662e646572ull,
-0x202c303432662509ull,0x2b325f5f7370645bull,0x202f2f093b5d3233ull,0x3109636f6c2e090aull,
-0x090a300938390936ull,0x752e74672e746573ull,0x09203233662e3233ull,0x6625202c31337225ull,
-0x326625202c383432ull,0x0a202f2f093b3034ull,0x3233732e67656e09ull,0x202c323372250920ull,
-0x2020203b31337225ull,0x0920202020202020ull,0x6f6c2e090a202f2full,0x3936310936310963ull,
-0x732e646c090a3009ull,0x33662e6465726168ull,0x3134326625092032ull,0x5f5f7370645b202cull,
-0x2f093b5d36332b32ull,0x636f6c2e090a202full,0x3009383909363109ull,0x74672e746573090aull,
-0x3233662e3233752eull,0x202c333372250920ull,0x25202c3834326625ull,0x2f2f093b31343266ull,
-0x732e67656e090a20ull,0x3433722509203233ull,0x203b33337225202cull,0x2020202020202020ull,
-0x61090a202f2f0920ull,0x09203233732e6464ull,0x7225202c35337225ull,0x34337225202c3233ull,
-0x2f2f09202020203bull,0x09636f6c2e090a20ull,0x3009393631093631ull,0x6168732e646c090aull,
-0x203233662e646572ull,0x202c383332662509ull,0x2b325f5f7370645bull,0x202f2f093b5d3432ull,
-0x3109636f6c2e090aull,0x090a300938390936ull,0x752e74672e746573ull,0x09203233662e3233ull,
-0x6625202c36337225ull,0x326625202c383432ull,0x0a202f2f093b3833ull,0x3233732e67656e09ull,
-0x202c373372250920ull,0x2020203b36337225ull,0x0920202020202020ull,0x6f6c2e090a202f2full,
-0x3936310936310963ull,0x732e646c090a3009ull,0x33662e6465726168ull,0x3933326625092032ull,
-0x5f5f7370645b202cull,0x2f093b5d38322b32ull,0x636f6c2e090a202full,0x3009383909363109ull,
-0x74672e746573090aull,0x3233662e3233752eull,0x202c383372250920ull,0x25202c3834326625ull,
-0x2f2f093b39333266ull,0x732e67656e090a20ull,0x3933722509203233ull,0x203b38337225202cull,
-0x2020202020202020ull,0x61090a202f2f0920ull,0x09203233732e6464ull,0x7225202c30347225ull,
-0x39337225202c3733ull,0x2f2f09202020203bull,0x09636f6c2e090a20ull,0x3009393631093631ull,
-0x6168732e646c090aull,0x203233662e646572ull,0x202c363332662509ull,0x2b325f5f7370645bull,
-0x202f2f093b5d3631ull,0x3109636f6c2e090aull,0x090a300938390936ull,0x752e74672e746573ull,
-0x09203233662e3233ull,0x6625202c31347225ull,0x326625202c383432ull,0x0a202f2f093b3633ull,
-0x3233732e67656e09ull,0x202c323472250920ull,0x2020203b31347225ull,0x0920202020202020ull,
-0x6f6c2e090a202f2full,0x3936310936310963ull,0x732e646c090a3009ull,0x33662e6465726168ull,
-0x3733326625092032ull,0x5f5f7370645b202cull,0x2f093b5d30322b32ull,0x636f6c2e090a202full,
-0x3009383909363109ull,0x74672e746573090aull,0x3233662e3233752eull,0x202c333472250920ull,
-0x25202c3834326625ull,0x2f2f093b37333266ull,0x732e67656e090a20ull,0x3434722509203233ull,
-0x203b33347225202cull,0x2020202020202020ull,0x61090a202f2f0920ull,0x09203233732e6464ull,
-0x7225202c35347225ull,0x34347225202c3234ull,0x2f2f09202020203bull,0x09636f6c2e090a20ull,
-0x3009393631093631ull,0x6168732e646c090aull,0x203233662e646572ull,0x202c323332662509ull,
-0x2b325f5f7370645bull,0x0a202f2f093b5d34ull,0x363109636f6c2e09ull,0x73090a3009383909ull,
-0x33752e74672e7465ull,0x2509203233662e32ull,0x326625202c363472ull,0x33326625202c3834ull,
-0x090a202f2f093b32ull,0x203233732e67656eull,0x25202c3734722509ull,0x202020203b363472ull,
-0x2f09202020202020ull,0x636f6c2e090a202full,0x0939363109363109ull,0x68732e646c090a30ull,
-0x3233662e64657261ull,0x2c33333266250920ull,0x325f5f7370645b20ull,0x202f2f093b5d302bull,
-0x3109636f6c2e090aull,0x090a300938390936ull,0x752e74672e746573ull,0x09203233662e3233ull,
-0x6625202c38347225ull,0x326625202c383432ull,0x0a202f2f093b3333ull,0x3233732e67656e09ull,
-0x202c393472250920ull,0x2020203b38347225ull,0x0920202020202020ull,0x646461090a202f2full,
-0x722509203233732eull,0x37347225202c3035ull,0x203b39347225202cull,0x0a202f2f09202020ull,
-0x363109636f6c2e09ull,0x090a300939363109ull,0x65726168732e646cull,0x2509203233662e64ull,
-0x645b202c34333266ull,0x5d382b325f5f7370ull,0x2e090a202f2f093bull,0x3909363109636f6cull,
-0x746573090a300938ull,0x2e3233752e74672eull,0x3572250920323366ull,0x3834326625202c31ull,
-0x3b3433326625202cull,0x656e090a202f2f09ull,0x2509203233732e67ull,0x357225202c323572ull,
-0x2020202020203b31ull,0x202f2f0920202020ull,0x3109636f6c2e090aull,0x0a30093936310936ull,
-0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3533326625ull,0x312b325f5f737064ull,
-0x0a202f2f093b5d32ull,0x363109636f6c2e09ull,0x73090a3009383909ull,0x33752e74672e7465ull,
-0x2509203233662e32ull,0x326625202c333572ull,0x33326625202c3834ull,0x090a202f2f093b35ull,
-0x203233732e67656eull,0x25202c3435722509ull,0x202020203b333572ull,0x2f09202020202020ull,
-0x2e646461090a202full,0x3572250920323373ull,0x2c32357225202c35ull,0x20203b3435722520ull,
-0x090a202f2f092020ull,0x203233732e646461ull,0x25202c3635722509ull,0x357225202c303572ull,
-0x2f09202020203b35ull,0x2e646461090a202full,0x3572250920323373ull,0x2c35347225202c37ull,
-0x20203b3635722520ull,0x090a202f2f092020ull,0x203233732e646461ull,0x25202c3835722509ull,
-0x357225202c303472ull,0x2f09202020203b37ull,0x2e646461090a202full,0x3572250920323373ull,
-0x2c35337225202c39ull,0x20203b3835722520ull,0x090a202f2f092020ull,0x203233732e646461ull,
-0x25202c3036722509ull,0x357225202c303372ull,0x2f09202020203b39ull,0x2e646461090a202full,
-0x3672250920323373ull,0x2c35327225202c31ull,0x20203b3036722520ull,0x090a202f2f092020ull,
-0x203233732e646461ull,0x25202c3236722509ull,0x367225202c303272ull,0x2f09202020203b31ull,
-0x732e7473090a202full,0x33732e6465726168ull,0x316472255b092032ull,0x7225202c5d302b36ull,
-0x69202f2f093b3236ull,0x5f20313431313a64ull,0x72785f616475635full,0x2b38363331736665ull,
-0x646461090a307830ull,0x722509203233732eull,0x35317225202c3531ull,0x202020203b31202cull,
-0x0a202f2f09202020ull,0x3436752e64646109ull,0x2c36316472250920ull,0x202c363164722520ull,
-0x0920202020203b34ull,0x646461090a202f2full,0x722509203436752eull,0x647225202c353164ull,
-0x20203b34202c3531ull,0x0a202f2f09202020ull,0x3233752e766f6d09ull,0x202c333672250920ull,
-0x20202020203b3631ull,0x0920202020202020ull,0x746573090a202f2full,0x3233732e656e2e70ull,
-0x25202c3970250920ull,0x367225202c353172ull,0x0a202f2f09203b33ull,0x7262203970254009ull,
-0x305f744c24092061ull,0x203b30373732335full,0x0920202020202020ull,0x766f6d090a202f2full,
-0x722509203233732eull,0x20203b30202c3436ull,0x2020202020202020ull,0x0a202f2f09202020ull,
-0x33335f305f744c24ull,0x2f2f200a3a343937ull,0x4c203e706f6f6c3cull,0x79646f6220706f6full,
-0x383920656e696c20ull,0x6e697473656e202cull,0x3a68747065642067ull,0x72657469202c3120ull,
-0x203a736e6f697461ull,0x2e766f6d090a3531ull,0x3672250920323373ull,0x2020203b30202c35ull,
-0x2020202020202020ull,0x240a202f2f092020ull,0x3534335f305f744cull,0x3c2f2f200a3a3236ull,
-0x6f4c203e706f6f6cull,0x2079646f6220706full,0x2c383920656e696cull,0x676e697473656e20ull,
-0x203a687470656420ull,0x6172657469202c32ull,0x31203a736e6f6974ull,0x09636f6c2e090a36ull,
-0x3009363031093631ull,0x6c2e70746573090aull,0x2509203233732e65ull,0x367225202c303170ull,
-0x3b34367225202c35ull,0x2540090a202f2f09ull,0x2061726220303170ull,0x345f305f744c2409ull,
-0x2020203b34313335ull,0x202f2f0920202020ull,0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,
-0x20706f6f6c20666full,0x6e696c2079646f62ull,0x6568202c38392065ull,0x6c6562616c206461ull,
-0x305f744c24206465ull,0x090a32363534335full,0x2e3436752e747663ull,0x6472250920323373ull,
-0x35367225202c3731ull,0x2f0920202020203bull,0x2e6c756d090a202full,0x09203436752e6f6cull,
-0x25202c3831647225ull,0x3b34202c37316472ull,0x090a202f2f092020ull,0x203436752e646461ull,
-0x202c393164722509ull,0x25202c3431647225ull,0x2f09203b38316472ull,0x732e646c090a202full,
-0x33732e6465726168ull,0x2c36367225092032ull,0x2b39316472255b20ull,0x69202f2f093b5d30ull,
-0x5f20323431313a64ull,0x72785f616475635full,0x2b38363331736665ull,0x747663090a307830ull,
-0x3233732e3436752eull,0x2c30326472250920ull,0x20203b3436722520ull,0x0a202f2f09202020ull,
-0x2e6f6c2e6c756d09ull,0x6472250920343675ull,0x32647225202c3132ull,0x0920203b34202c30ull,
-0x646461090a202f2full,0x722509203436752eull,0x647225202c323264ull,0x32647225202c3431ull,
-0x0a202f2f09203b31ull,0x726168732e646c09ull,0x09203233732e6465ull,0x255b202c37367225ull,
-0x3b5d302b32326472ull,0x313a6469202f2f09ull,0x75635f5f20333431ull,0x73666572785f6164ull,
-0x3078302b38363331ull,0x6e2e70746573090aull,0x2509203233732e65ull,0x367225202c313170ull,
-0x3b36367225202c37ull,0x2540090a202f2f09ull,0x2061726220313170ull,0x345f305f744c2409ull,
-0x2020203b34313335ull,0x202f2f0920202020ull,0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,
-0x20706f6f6c20666full,0x6e696c2079646f62ull,0x6568202c38392065ull,0x6c6562616c206461ull,
-0x305f744c24206465ull,0x090a32363534335full,0x65726168732e646cull,0x2509203233732e64ull,
-0x72255b202c363672ull,0x093b5d302b393164ull,0x646461090a202f2full,0x722509203233732eull,
-0x36367225202c3836ull,0x202020203b31202cull,0x0a202f2f09202020ull,0x726168732e747309ull,
-0x09203233732e6465ull,0x302b39316472255bull,0x3b38367225202c5dull,0x313a6469202f2f09ull,
-0x75635f5f20343431ull,0x73666572785f6164ull,0x3078302b38363331ull,0x345f305f744c240aull,
-0x4c240a3a34313335ull,0x34373638325f305full,0x6f6c3c2f2f200a3aull,0x74726150203e706full,
-0x706f6f6c20666f20ull,0x696c2079646f6220ull,0x68202c383920656eull,0x6562616c20646165ull,
-0x5f744c242064656cull,0x0a32363534335f30ull,0x3233732e64646109ull,0x202c353672250920ull,
-0x3b31202c35367225ull,0x0920202020202020ull,0x766f6d090a202f2full,0x722509203233752eull,
-0x203b3631202c3936ull,0x2020202020202020ull,0x0a202f2f09202020ull,0x656e2e7074657309ull,
-0x702509203233732eull,0x35367225202c3231ull,0x093b39367225202cull,0x702540090a202f2full,
-0x0920617262203231ull,0x34335f305f744c24ull,0x202020203b323635ull,0x0a202f2f09202020ull,
-0x706f6f6c3c2f2f20ull,0x6f2074726150203eull,0x6220706f6f6c2066ull,0x656e696c2079646full,
-0x616568202c383920ull,0x656c6562616c2064ull,0x5f305f744c242064ull,0x61090a3439373333ull,
-0x09203233732e6464ull,0x7225202c34367225ull,0x20203b31202c3436ull,0x2f2f092020202020ull,
-0x752e766f6d090a20ull,0x3037722509203233ull,0x2020203b3531202cull,0x2020202020202020ull,
-0x73090a202f2f0920ull,0x732e656e2e707465ull,0x3331702509203233ull,0x202c34367225202cull,
-0x2f2f093b30377225ull,0x3331702540090a20ull,0x4c24092061726220ull,0x393733335f305f74ull,
-0x2020202020203b34ull,0x4c240a202f2f0920ull,0x343731335f305f74ull,0x636f6c2e090a3a36ull,
-0x0939363109363109ull,0x752e766f6d090a30ull,0x3164722509203436ull,0x6475635f5f202c34ull,
-0x3173666572785f61ull,0x202f2f093b383633ull,0x3109636f6c2e090aull,0x0a30093137310936ull,
-0x2e6f6c2e6c756d09ull,0x6472250920343675ull,0x31647225202c3332ull,0x0920203b3231202cull,
-0x646461090a202f2full,0x722509203436752eull,0x32647225202c3864ull,0x3b3332647225202cull,
-0x0a202f2f09202020ull,0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3934326625ull,
-0x3b5d302b38647225ull,0x313a6469202f2f09ull,0x75635f5f20353431ull,0x726f6c6f635f6164ull,
-0x3078302b34383973ull,0x33662e766f6d090aull,0x3035326625092032ull,0x3b3934326625202cull,
-0x2020202020202020ull,0x646c090a202f2f09ull,0x2e6465726168732eull,0x3266250920323366ull,
-0x6472255b202c3135ull,0x2f2f093b5d342b38ull,0x373431313a646920ull,0x5f616475635f5f20ull,
-0x383973726f6c6f63ull,0x6d090a3078302b34ull,0x09203233662e766full,0x25202c3235326625ull,
-0x2020203b31353266ull,0x2f2f092020202020ull,0x68732e646c090a20ull,0x3233662e64657261ull,
-0x2c33353266250920ull,0x382b386472255b20ull,0x6469202f2f093b5dull,0x5f5f20393431313aull,
-0x6c6f635f61647563ull,0x302b34383973726full,0x2e766f6d090a3078ull,0x3266250920323366ull,
-0x35326625202c3435ull,0x2020202020203b33ull,0x240a202f2f092020ull,0x3231335f305f744cull,
-0x766f6d090a3a3433ull,0x722509203436752eull,0x635f5f202c343164ull,0x666572785f616475ull,
-0x2f093b3836333173ull,0x636f6c2e090a202full,0x0934373109363109ull,0x732e726162090a30ull,
-0x203b300920636e79ull,0x2020202020202020ull,0x2020202020202020ull,0x40090a202f2f0920ull,
-0x6172622031702521ull,0x5f305f744c240920ull,0x20203b3033333533ull,0x2f2f092020202020ull,
-0x09636f6c2e090a20ull,0x3009373731093631ull,0x36752e646461090aull,0x3432647225092034ull,
-0x202c39647225202cull,0x20203b3431647225ull,0x646c090a202f2f09ull,0x2e6465726168732eull,
-0x3772250920323373ull,0x326472255b202c31ull,0x2f2f093b5d302b34ull,0x313531313a646920ull,
-0x5f616475635f5f20ull,0x3633317366657278ull,0x63090a3078302b38ull,0x732e3436752e7476ull,
-0x3264722509203233ull,0x3b31377225202c35ull,0x2f2f092020202020ull,0x6c2e6c756d090a20ull,
-0x2509203436752e6full,0x7225202c36326472ull,0x3b3231202c353264ull,0x61090a202f2f0920ull,
-0x09203436752e6464ull,0x25202c3732647225ull,0x647225202c326472ull,0x2f2f0920203b3632ull,
-0x662e766f6d090a20ull,0x3532662509203233ull,0x3035326625202c35ull,0x202020202020203bull,
-0x73090a202f2f0920ull,0x6465726168732e74ull,0x255b09203233662eull,0x2c5d302b37326472ull,
-0x093b353532662520ull,0x31313a6469202f2full,0x6475635f5f203235ull,0x73726f6c6f635f61ull,
-0x0a3078302b343839ull,0x3233662e766f6d09ull,0x2c36353266250920ull,0x203b323532662520ull,
-0x0920202020202020ull,0x2e7473090a202f2full,0x662e646572616873ull,0x6472255b09203233ull,
-0x25202c5d342b3732ull,0x2f2f093b36353266ull,0x333531313a646920ull,0x5f616475635f5f20ull,
-0x383973726f6c6f63ull,0x6d090a3078302b34ull,0x09203233662e766full,0x25202c3735326625ull,
-0x2020203b34353266ull,0x2f2f092020202020ull,0x68732e7473090a20ull,0x3233662e64657261ull,
-0x37326472255b0920ull,0x326625202c5d382bull,0x69202f2f093b3735ull,0x5f20343531313a64ull,
-0x6f635f616475635full,0x2b34383973726f6cull,0x5f744c240a307830ull,0x3a30333335335f30ull,
-0x3109636f6c2e090aull,0x0a30093831350936ull,0x6e79732e72616209ull,0x2020203b30092063ull,
-0x2020202020202020ull,0x0920202020202020ull,0x6f6c2e090a202f2full,0x3532350936310963ull,
-0x2e766f6d090a3009ull,0x3772250920323373ull,0x2020203b30202c32ull,0x2020202020202020ull,
-0x090a202f2f092020ull,0x203233662e766f6dull,0x202c383532662509ull,0x6666663766376630ull,
-0x2f092020203b6666ull,0x383230342e33202full,0x6d090a38332b6532ull,0x09203436752e766full,
-0x73202c3832647225ull,0x6174756d7265705full,0x315f5f736e6f6974ull,0x6d090a202f2f093bull,
-0x09203436752e766full,0x70202c3932647225ull,0x20203b3473646f72ull,0x2f2f092020202020ull,
-0x752e766f6d090a20ull,0x3364722509203436ull,0x6168706c61202c30ull,0x203b34656c626154ull,
-0x4c240a202f2f0920ull,0x353336335f305f74ull,0x6c3c2f2f200a3a34ull,0x6f6f4c203e706f6full,
-0x6c2079646f622070ull,0x2c35323520656e69ull,0x676e697473656e20ull,0x203a687470656420ull,
-0x6d69747365202c31ull,0x6574692064657461ull,0x3a736e6f69746172ull,0x6f6c2e090a363120ull,
-0x3434330936310963ull,0x2e646461090a3009ull,0x3772250920323373ull,0x2c32377225202c33ull,
-0x2020203b31722520ull,0x090a202f2f092020ull,0x203233752e766f6dull,0x39202c3437722509ull,
-0x20202020203b3139ull,0x2f09202020202020ull,0x70746573090a202full,0x203233732e74672eull,
-0x25202c3431702509ull,0x377225202c333772ull,0x090a202f2f093b34ull,0x7262203431702540ull,
-0x305f744c24092061ull,0x2020203b3835325full,0x2f09202020202020ull,0x6c3c2f2f200a202full,
-0x726150203e706f6full,0x6f6f6c20666f2074ull,0x6c2079646f622070ull,0x2c35323520656e69ull,
-0x616c206461656820ull,0x4c242064656c6562ull,0x353336335f305f74ull,0x09636f6c2e090a34ull,
-0x3009373433093631ull,0x36752e747663090aull,0x2509203233732e34ull,0x7225202c31336472ull,
-0x20202020203b3337ull,0x756d090a202f2f09ull,0x3436752e6f6c2e6cull,0x2c32336472250920ull,
-0x202c313364722520ull,0x202f2f0920203b34ull,0x7261702e646c090aull,0x09203436752e6d61ull,
-0x5b202c3333647225ull,0x6170616475635f5full,0x6f63385a5f5f6d72ull,0x4b5073736572706dull,
-0x697535505f30536aull,0x6d7265705f32746eull,0x736e6f6974617475ull,0x6469202f2f093b5dull,
-0x5f5f20353531313aull,0x6d72617061647563ull,0x706d6f63385a5f5full,0x536a4b5073736572ull,
-0x746e697535505f30ull,0x74756d7265705f32ull,0x302b736e6f697461ull,0x2e646461090a3078ull,
-0x6472250920343675ull,0x33647225202c3433ull,0x3233647225202c33ull,0x090a202f2f09203bull,
-0x61626f6c672e646cull,0x2509203233752e6cull,0x72255b202c353772ull,0x093b5d302b343364ull,
-0x31313a6469202f2full,0x2e766f6d090a3635ull,0x3772250920323375ull,0x203b393531202c36ull,
-0x2020202020202020ull,0x090a202f2f092020ull,0x2e74672e70746573ull,0x3170250920323373ull,
-0x2c33377225202c35ull,0x2f093b3637722520ull,0x31702540090a202full,0x2409206172622035ull,
-0x3636335f305f744cull,0x20202020203b3031ull,0x200a202f2f092020ull,0x3e706f6f6c3c2f2full,
-0x666f207472615020ull,0x6f6220706f6f6c20ull,0x20656e696c207964ull,0x616568202c353235ull,
-0x656c6562616c2064ull,0x5f305f744c242064ull,0x2e090a3435333633ull,0x3309363109636f6cull,
-0x6461090a30093834ull,0x2509203436752e64ull,0x7225202c35336472ull,0x647225202c323364ull,
-0x202f2f09203b3832ull,0x6168732e7473090aull,0x203233752e646572ull,0x2b35336472255b09ull,
-0x35377225202c5d30ull,0x3a6469202f2f093bull,0x705f732037353131ull,0x69746174756d7265ull,
-0x302b315f5f736e6full,0x305f744c240a3078ull,0x0a3a30313636335full,0x706f6f6c3c2f2f20ull,
-0x6f2074726150203eull,0x6220706f6f6c2066ull,0x656e696c2079646full,0x6568202c35323520ull,
-0x6c6562616c206461ull,0x305f744c24206465ull,0x090a34353336335full,0x09363109636f6c2eull,
-0x6d090a3009303533ull,0x09203233732e766full,0x3b30202c37377225ull,0x2020202020202020ull,
-0x2f2f092020202020ull,0x732e766f6d090a20ull,0x3364722509203436ull,0x3b32647225202c36ull,
-0x2020202020202020ull,0x6d090a202f2f0920ull,0x09203233732e766full,0x3b30202c38377225ull,
-0x2020202020202020ull,0x2f2f092020202020ull,0x662e766f6d090a20ull,0x3532662509203233ull,
-0x3030306630202c39ull,0x20203b3030303030ull,0x090a30202f2f0920ull,0x203233662e766f6dull,
-0x202c303632662509ull,0x3030303030306630ull,0x2f092020203b3030ull,0x766f6d090a30202full,
-0x662509203233662eull,0x306630202c313632ull,0x3b30303030303030ull,0x30202f2f09202020ull,
-0x335f305f744c240aull,0x2f200a3a34333637ull,0x203e706f6f6c3c2full,0x646f6220706f6f4cull,
-0x3320656e696c2079ull,0x7473656e202c3035ull,0x7470656420676e69ull,0x7469202c31203a68ull,
-0x736e6f6974617265ull,0x6c2e090a3631203aull,0x323209363109636full,0x726873090a300933ull,
-0x722509203233752eull,0x35377225202c3937ull,0x203b37377225202cull,0x0a202f2f09202020ull,
-0x3233622e646e6109ull,0x202c303872250920ull,0x3b33202c39377225ull,0x0920202020202020ull,
-0x747663090a202f2full,0x3233752e3436752eull,0x2c37336472250920ull,0x20203b3038722520ull,
-0x0a202f2f09202020ull,0x2e6f6c2e6c756d09ull,0x6472250920343675ull,0x33647225202c3833ull,
-0x0920203b34202c37ull,0x646461090a202f2full,0x722509203436752eull,0x647225202c393364ull,
-0x33647225202c3833ull,0x0a202f2f09203b30ull,0x736e6f632e646c09ull,0x2509203233662e74ull,
-0x255b202c32363266ull,0x3b5d302b39336472ull,0x313a6469202f2f09ull,0x68706c6120383531ull,
-0x2b34656c62615461ull,0x2e646c090a307830ull,0x662e646572616873ull,0x3632662509203233ull,
-0x336472255b202c33ull,0x2f2f093b5d302b36ull,0x393531313a646920ull,0x5f616475635f5f20ull,
-0x383973726f6c6f63ull,0x6d090a3078302b34ull,0x09203233662e6461ull,0x25202c3136326625ull,
-0x6625202c32363266ull,0x326625202c333632ull,0x0a202f2f093b3136ull,0x726168732e646c09ull,
-0x09203233662e6465ull,0x5b202c3436326625ull,0x5d342b3633647225ull,0x3a6469202f2f093bull,
-0x635f5f2030363131ull,0x6f6c6f635f616475ull,0x78302b3438397372ull,0x662e64616d090a30ull,
-0x3632662509203233ull,0x3236326625202c30ull,0x2c3436326625202cull,0x093b303632662520ull,
-0x2e646c090a202f2full,0x662e646572616873ull,0x3632662509203233ull,0x336472255b202c35ull,
-0x2f2f093b5d382b36ull,0x313631313a646920ull,0x5f616475635f5f20ull,0x383973726f6c6f63ull,
-0x6d090a3078302b34ull,0x09203233662e6461ull,0x25202c3935326625ull,0x6625202c32363266ull,
-0x326625202c353632ull,0x0a202f2f093b3935ull,0x363109636f6c2e09ull,0x090a300934323209ull,
-0x203436752e646461ull,0x202c303464722509ull,0x25202c3833647225ull,0x2f09203b39326472ull,
-0x632e646c090a202full,0x3233732e74736e6full,0x202c313872250920ull,0x302b30346472255bull,
-0x6469202f2f093b5dull,0x727020323631313aull,0x3078302b3473646full,0x33732e646461090aull,
-0x2c38377225092032ull,0x25202c3138722520ull,0x202020203b383772ull,0x6461090a202f2f09ull,
-0x2509203436752e64ull,0x7225202c36336472ull,0x3b3231202c363364ull,0x202f2f0920202020ull,
-0x33732e646461090aull,0x2c37377225092032ull,0x32202c3737722520ull,0x202020202020203bull,
-0x6f6d090a202f2f09ull,0x2509203233752e76ull,0x3b3233202c323872ull,0x2020202020202020ull,
-0x202f2f0920202020ull,0x6e2e70746573090aull,0x2509203233732e65ull,0x377225202c363170ull,
-0x3b32387225202c37ull,0x2540090a202f2f09ull,0x2061726220363170ull,0x335f305f744c2409ull,
-0x2020203b34333637ull,0x202f2f0920202020ull,0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,
-0x20706f6f6c20666full,0x6e696c2079646f62ull,0x68202c3532352065ull,0x6562616c20646165ull,
-0x5f744c242064656cull,0x0a34353336335f30ull,0x363109636f6c2e09ull,0x090a300932363209ull,
-0x203233622e646e61ull,0x25202c3338722509ull,0x353532202c383772ull,0x2f0920202020203bull,
-0x2e726873090a202full,0x3872250920323373ull,0x2c38377225202c34ull,0x202020203b363120ull,
-0x090a202f2f092020ull,0x203233732e726873ull,0x25202c3538722509ull,0x203b38202c383772ull,
-0x2f09202020202020ull,0x732e646c090a202full,0x33662e6465726168ull,0x3636326625092032ull,
-0x2b736d75735b202cull,0x69202f2f093b5d30ull,0x7320353830313a64ull,0x0a3078302b736d75ull,
-0x3233662e766f6d09ull,0x2c37363266250920ull,0x3030313134663020ull,0x092020203b303030ull,
-0x756d090a39202f2full,0x2509203233662e6cull,0x6625202c38363266ull,0x326625202c363632ull,
-0x202f2f09203b3736ull,0x6168732e646c090aull,0x203233662e646572ull,0x202c393632662509ull,
-0x5d342b736d75735bull,0x3a6469202f2f093bull,0x6d75732036383031ull,0x6d090a3478302b73ull,
-0x09203233662e766full,0x30202c3037326625ull,0x3030303031313466ull,0x2f2f092020203b30ull,
-0x2e6c756d090a3920ull,0x3266250920323366ull,0x36326625202c3137ull,0x3037326625202c39ull,
-0x090a202f2f09203bull,0x65726168732e646cull,0x2509203233662e64ull,0x735b202c32373266ull,
-0x093b5d382b736d75ull,0x30313a6469202f2full,0x2b736d7573203738ull,0x766f6d090a387830ull,
-0x662509203233662eull,0x346630202c333732ull,0x3b30303030303131ull,0x39202f2f09202020ull,
-0x33662e6c756d090aull,0x3437326625092032ull,0x2c3237326625202cull,0x203b333732662520ull,
-0x7663090a202f2f09ull,0x3233662e6e722e74ull,0x662509203233732eull,0x387225202c353732ull,
-0x202f2f0920203b33ull,0x6e722e747663090aull,0x3233732e3233662eull,0x2c36373266250920ull,
-0x20203b3438722520ull,0x6e61090a202f2f09ull,0x2509203233622e64ull,0x387225202c363872ull,
-0x203b353532202c35ull,0x202f2f0920202020ull,0x33662e627573090aull,0x3737326625092032ull,
-0x2c3836326625202cull,0x203b313632662520ull,0x7573090a202f2f09ull,0x2509203233662e62ull,
-0x6625202c38373266ull,0x326625202c313732ull,0x202f2f09203b3036ull,0x33662e627573090aull,
-0x3937326625092032ull,0x2c3437326625202cull,0x203b393532662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c30383266ull,0x326625202c353732ull,0x202f2f09203b3537ull,
-0x6e722e747663090aull,0x3233732e3233662eull,0x2c31383266250920ull,0x20203b3638722520ull,
-0x756d090a202f2f09ull,0x2509203233662e6cull,0x6625202c32383266ull,0x326625202c353732ull,
-0x202f2f09203b3737ull,0x33662e6c756d090aull,0x3338326625092032ull,0x2c3537326625202cull,
-0x203b383732662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,0x6625202c34383266ull,
-0x326625202c353732ull,0x202f2f09203b3937ull,0x33662e6c756d090aull,0x3538326625092032ull,
-0x2c3637326625202cull,0x203b313832662520ull,0x7573090a202f2f09ull,0x2509203233662e62ull,
-0x6625202c36383266ull,0x326625202c353832ull,0x202f2f09203b3038ull,0x33662e6c756d090aull,
-0x3738326625092032ull,0x2c3138326625202cull,0x203b313632662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c38383266ull,0x326625202c313832ull,0x202f2f09203b3036ull,
-0x33662e6c756d090aull,0x3938326625092032ull,0x2c3138326625202cull,0x203b393532662520ull,
-0x6372090a202f2f09ull,0x786f727070612e70ull,0x662509203233662eull,0x326625202c303932ull,
-0x202f2f09203b3638ull,0x33662e627573090aull,0x3139326625092032ull,0x2c3738326625202cull,
-0x203b323832662520ull,0x7573090a202f2f09ull,0x2509203233662e62ull,0x6625202c32393266ull,
-0x326625202c383832ull,0x202f2f09203b3338ull,0x33662e627573090aull,0x3339326625092032ull,
-0x2c3938326625202cull,0x203b343832662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,
-0x6625202c34393266ull,0x326625202c303932ull,0x202f2f09203b3139ull,0x33662e6c756d090aull,
-0x3539326625092032ull,0x2c3039326625202cull,0x203b323932662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c36393266ull,0x326625202c303932ull,0x202f2f09203b3339ull,
-0x61732e747663090aull,0x33662e3233662e74ull,0x3739326625092032ull,0x3b3439326625202cull,
-0x7663090a202f2f09ull,0x33662e7461732e74ull,0x2509203233662e32ull,0x6625202c38393266ull,
-0x202f2f093b353932ull,0x61732e747663090aull,0x33662e3233662e74ull,0x3939326625092032ull,
-0x3b3639326625202cull,0x6f6d090a202f2f09ull,0x2509203233662e76ull,0x6630202c30303366ull,
-0x3030303038663134ull,0x202f2f092020203bull,0x2e6c756d090a3133ull,0x3366250920323366ull,
-0x39326625202c3130ull,0x3030336625202c37ull,0x090a202f2f09203bull,0x203233662e766f6dull,
-0x202c323033662509ull,0x3030633732346630ull,0x2f092020203b3030ull,0x756d090a3336202full,
-0x2509203233662e6cull,0x6625202c33303366ull,0x336625202c383932ull,0x202f2f09203b3230ull,
-0x33662e766f6d090aull,0x3430336625092032ull,0x386631346630202cull,0x2020203b30303030ull,
-0x090a3133202f2f09ull,0x203233662e6c756dull,0x202c353033662509ull,0x25202c3939326625ull,
-0x2f09203b34303366ull,0x2e747663090a202full,0x2e3233662e696e72ull,0x3366250920323366ull,
-0x30336625202c3630ull,0x090a202f2f093b31ull,0x2e696e722e747663ull,0x203233662e323366ull,
-0x202c373033662509ull,0x2f093b3330336625ull,0x2e747663090a202full,0x2e3233662e696e72ull,
-0x3366250920323366ull,0x30336625202c3830ull,0x090a202f2f093b35ull,0x2e697a722e747663ull,
-0x203233662e323375ull,0x25202c3738722509ull,0x2f09203b36303366ull,0x2e6c6873090a202full,
-0x3872250920323362ull,0x2c37387225202c38ull,0x202020203b313120ull,0x090a202f2f092020ull,
-0x2e697a722e747663ull,0x203233662e323375ull,0x25202c3938722509ull,0x2f09203b37303366ull,
-0x2e6c6873090a202full,0x3972250920323362ull,0x2c39387225202c30ull,0x20202020203b3520ull,
-0x090a202f2f092020ull,0x09203233622e726full,0x7225202c31397225ull,0x30397225202c3838ull,
-0x2f0920202020203bull,0x2e747663090a202full,0x2e3233752e697a72ull,0x3972250920323366ull,
-0x3830336625202c32ull,0x090a202f2f09203bull,0x09203233622e726full,0x7225202c33397225ull,
-0x32397225202c3139ull,0x2f0920202020203bull,0x636f6c2e090a202full,0x0933363209363109ull,
-0x662e6c756d090a30ull,0x3033662509203233ull,0x3537326625202c39ull,0x3b3136326625202cull,
-0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3031336625ull,0x6625202c35373266ull,
-0x2f2f09203b303632ull,0x662e6c756d090a20ull,0x3133662509203233ull,0x3537326625202c31ull,
-0x3b3935326625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3231336625ull,
-0x6625202c36373266ull,0x2f2f09203b373732ull,0x662e6c756d090a20ull,0x3133662509203233ull,
-0x3637326625202c33ull,0x3b3837326625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,
-0x25202c3431336625ull,0x6625202c36373266ull,0x2f2f09203b393732ull,0x662e627573090a20ull,
-0x3133662509203233ull,0x3231336625202c35ull,0x3b3930336625202cull,0x73090a202f2f0920ull,
-0x09203233662e6275ull,0x25202c3631336625ull,0x6625202c33313366ull,0x2f2f09203b303133ull,
-0x662e627573090a20ull,0x3133662509203233ull,0x3431336625202c37ull,0x3b3131336625202cull,
-0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3831336625ull,0x6625202c35313366ull,
-0x2f2f09203b303932ull,0x662e6c756d090a20ull,0x3133662509203233ull,0x3631336625202c39ull,
-0x3b3039326625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3032336625ull,
-0x6625202c37313366ull,0x2f2f09203b303932ull,0x732e747663090a20ull,0x662e3233662e7461ull,
-0x3233662509203233ull,0x3831336625202c31ull,0x63090a202f2f093bull,0x662e7461732e7476ull,
-0x09203233662e3233ull,0x25202c3232336625ull,0x2f2f093b39313366ull,0x732e747663090a20ull,
-0x662e3233662e7461ull,0x3233662509203233ull,0x3032336625202c33ull,0x6d090a202f2f093bull,
-0x09203233662e766full,0x30202c3432336625ull,0x3030303866313466ull,0x2f2f092020203b30ull,
-0x6c756d090a313320ull,0x662509203233662eull,0x336625202c353233ull,0x32336625202c3132ull,
-0x0a202f2f09203b34ull,0x3233662e766f6d09ull,0x2c36323366250920ull,0x3063373234663020ull,
-0x092020203b303030ull,0x6d090a3336202f2full,0x09203233662e6c75ull,0x25202c3732336625ull,
-0x6625202c32323366ull,0x2f2f09203b363233ull,0x662e766f6d090a20ull,0x3233662509203233ull,
-0x6631346630202c38ull,0x20203b3030303038ull,0x0a3133202f2f0920ull,0x3233662e6c756d09ull,
-0x2c39323366250920ull,0x202c333233662520ull,0x09203b3832336625ull,0x747663090a202f2full,
-0x3233662e696e722eull,0x662509203233662eull,0x336625202c303333ull,0x0a202f2f093b3532ull,
-0x696e722e74766309ull,0x3233662e3233662eull,0x2c31333366250920ull,0x093b373233662520ull,
-0x747663090a202f2full,0x3233662e696e722eull,0x662509203233662eull,0x336625202c323333ull,
-0x0a202f2f093b3932ull,0x697a722e74766309ull,0x3233662e3233752eull,0x202c343972250920ull,
-0x09203b3033336625ull,0x6c6873090a202f2full,0x722509203233622eull,0x34397225202c3539ull,
-0x2020203b3131202cull,0x0a202f2f09202020ull,0x697a722e74766309ull,0x3233662e3233752eull,
-0x202c363972250920ull,0x09203b3133336625ull,0x6c6873090a202f2full,0x722509203233622eull,
-0x36397225202c3739ull,0x202020203b35202cull,0x0a202f2f09202020ull,0x203233622e726f09ull,
-0x25202c3839722509ull,0x397225202c353972ull,0x0920202020203b37ull,0x747663090a202f2full,
-0x3233752e697a722eull,0x722509203233662eull,0x33336625202c3939ull,0x0a202f2f09203b32ull,
-0x203233622e726f09ull,0x202c303031722509ull,0x7225202c38397225ull,0x09202020203b3939ull,
-0x6f6c2e090a202f2full,0x3636320936310963ull,0x2e766f6d090a3009ull,0x3366250920323366ull,
-0x64336630202c3333ull,0x203b313735333430ull,0x2e30202f2f092020ull,0x0a35373732323330ull,
-0x3233662e6c756d09ull,0x2c34333366250920ull,0x202c363033662520ull,0x09203b3333336625ull,
-0x6c756d090a202f2full,0x662509203233662eull,0x336625202c353333ull,0x33336625202c3433ull,
-0x0a202f2f09203b34ull,0x3233662e766f6d09ull,0x2c36333366250920ull,0x6231386333663020ull,
-0x092020203b393131ull,0x3531302e30202f2full,0x756d090a35313338ull,0x2509203233662e6cull,
-0x6625202c37333366ull,0x336625202c373033ull,0x202f2f09203b3633ull,0x33662e6c756d090aull,
-0x3833336625092032ull,0x2c3733336625202cull,0x203b373333662520ull,0x6f6d090a202f2f09ull,
-0x2509203233662e76ull,0x6630202c39333366ull,0x3137353334306433ull,0x202f2f092020203bull,
-0x3737323233302e30ull,0x662e6c756d090a35ull,0x3433662509203233ull,0x3830336625202c30ull,
-0x3b3933336625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x25202c3134336625ull,
-0x6625202c30343366ull,0x2f2f09203b303433ull,0x662e766f6d090a20ull,0x3433662509203233ull,
-0x3064336630202c32ull,0x20203b3137353334ull,0x302e30202f2f0920ull,0x090a353737323233ull,
-0x203233662e6c756dull,0x202c333433662509ull,0x25202c3033336625ull,0x2f09203b32343366ull,
-0x2e6c756d090a202full,0x3366250920323366ull,0x34336625202c3434ull,0x3334336625202c33ull,
-0x090a202f2f09203bull,0x203233662e766f6dull,0x202c353433662509ull,0x3162313863336630ull,
-0x2f092020203b3931ull,0x383531302e30202full,0x6c756d090a353133ull,0x662509203233662eull,
-0x336625202c363433ull,0x34336625202c3133ull,0x0a202f2f09203b35ull,0x3233662e6c756d09ull,
-0x2c37343366250920ull,0x202c363433662520ull,0x09203b3634336625ull,0x766f6d090a202f2full,
-0x662509203233662eull,0x336630202c383433ull,0x3b31373533343064ull,0x30202f2f09202020ull,
-0x353737323233302eull,0x33662e6c756d090aull,0x3934336625092032ull,0x2c3233336625202cull,
-0x203b383433662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,0x6625202c30353366ull,
-0x336625202c393433ull,0x202f2f09203b3934ull,0x33662e6c756d090aull,0x3135336625092032ull,
-0x2c3334336625202cull,0x203b343333662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,
-0x6625202c32353366ull,0x336625202c363433ull,0x202f2f09203b3733ull,0x33662e6c756d090aull,
-0x3335336625092032ull,0x2c3934336625202cull,0x203b303433662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c34353366ull,0x326625202c343333ull,0x202f2f09203b3136ull,
-0x33662e6c756d090aull,0x3535336625092032ull,0x2c3733336625202cull,0x203b303632662520ull,
-0x756d090a202f2f09ull,0x2509203233662e6cull,0x6625202c36353366ull,0x326625202c303433ull,
-0x202f2f09203b3935ull,0x33662e6c756d090aull,0x3735336625092032ull,0x2c3737326625202cull,
-0x203b333433662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,0x6625202c38353366ull,
-0x336625202c383732ull,0x202f2f09203b3634ull,0x33662e6c756d090aull,0x3935336625092032ull,
-0x2c3937326625202cull,0x203b393433662520ull,0x6c2e090a202f2f09ull,0x353309363109636full,
-0x6c756d090a300930ull,0x662509203233662eull,0x326625202c303633ull,0x35336625202c3537ull,
-0x0a202f2f09203b32ull,0x3233662e6c756d09ull,0x2c31363366250920ull,0x202c353732662520ull,
-0x09203b3135336625ull,0x6c756d090a202f2full,0x662509203233662eull,0x326625202c323633ull,
-0x35336625202c3537ull,0x0a202f2f09203b33ull,0x3233662e6c756d09ull,0x2c33363366250920ull,
-0x202c363732662520ull,0x09203b3833336625ull,0x6c756d090a202f2full,0x662509203233662eull,
-0x326625202c343633ull,0x33336625202c3637ull,0x0a202f2f09203b35ull,0x3233662e6c756d09ull,
-0x2c35363366250920ull,0x202c363732662520ull,0x09203b3134336625ull,0x627573090a202f2full,
-0x662509203233662eull,0x336625202c363633ull,0x35336625202c3036ull,0x0a202f2f09203b35ull,
-0x3233662e62757309ull,0x2c37363366250920ull,0x202c313633662520ull,0x09203b3435336625ull,
-0x627573090a202f2full,0x662509203233662eull,0x336625202c383633ull,0x35336625202c3236ull,
-0x0a202f2f09203b36ull,0x3233662e6c756d09ull,0x2c39363366250920ull,0x202c313832662520ull,
-0x09203b3734336625ull,0x6c756d090a202f2full,0x662509203233662eull,0x326625202c303733ull,
-0x34336625202c3138ull,0x0a202f2f09203b34ull,0x3233662e6c756d09ull,0x2c31373366250920ull,
-0x202c313832662520ull,0x09203b3035336625ull,0x627573090a202f2full,0x662509203233662eull,
-0x336625202c323733ull,0x35336625202c3636ull,0x0a202f2f09203b38ull,0x3233662e62757309ull,
-0x2c33373366250920ull,0x202c373633662520ull,0x09203b3735336625ull,0x627573090a202f2full,
-0x662509203233662eull,0x336625202c343733ull,0x35336625202c3836ull,0x0a202f2f09203b39ull,
-0x3233662e64646109ull,0x2c35373366250920ull,0x202c333633662520ull,0x09203b3936336625ull,
-0x646461090a202f2full,0x662509203233662eull,0x336625202c363733ull,0x37336625202c3436ull,
-0x0a202f2f09203b30ull,0x3233662e64646109ull,0x2c37373366250920ull,0x202c353633662520ull,
-0x09203b3137336625ull,0x646461090a202f2full,0x662509203233662eull,0x336625202c383733ull,
-0x37336625202c3237ull,0x0a202f2f09203b32ull,0x3233662e64646109ull,0x2c39373366250920ull,
-0x202c333733662520ull,0x09203b3337336625ull,0x646461090a202f2full,0x662509203233662eull,
-0x336625202c303833ull,0x37336625202c3437ull,0x0a202f2f09203b34ull,0x3233662e64646109ull,
-0x2c31383366250920ull,0x202c353733662520ull,0x09203b3837336625ull,0x646461090a202f2full,
-0x662509203233662eull,0x336625202c323833ull,0x37336625202c3637ull,0x0a202f2f09203b39ull,
-0x3233662e64646109ull,0x2c33383366250920ull,0x202c373733662520ull,0x09203b3038336625ull,
-0x2e646c090a202f2full,0x33662e74736e6f63ull,0x3438336625092032ull,0x6f6c6f436b5b202cull,
-0x2b63697274654d72ull,0x69202f2f093b5d34ull,0x6b20333631313a64ull,0x74654d726f6c6f43ull,
-0x0a3478302b636972ull,0x3233662e6c756d09ull,0x2c35383366250920ull,0x202c343833662520ull,
-0x09203b3138336625ull,0x2e646c090a202f2full,0x33662e74736e6f63ull,0x3638336625092032ull,
-0x6f6c6f436b5b202cull,0x2b63697274654d72ull,0x69202f2f093b5d30ull,0x6b20343631313a64ull,
-0x74654d726f6c6f43ull,0x0a3078302b636972ull,0x3233662e64616d09ull,0x2c37383366250920ull,
-0x202c363833662520ull,0x25202c3238336625ull,0x2f2f093b35383366ull,0x6f632e646c090a20ull,
-0x203233662e74736eull,0x202c383833662509ull,0x4d726f6c6f436b5bull,0x5d382b6369727465ull,
-0x3a6469202f2f093bull,0x6f436b2035363131ull,0x697274654d726f6cull,0x6d090a3878302b63ull,
-0x09203233662e6461ull,0x25202c3938336625ull,0x6625202c33383366ull,0x336625202c383833ull,
-0x0a202f2f093b3738ull,0x3233662e766f6d09ull,0x2c30393366250920ull,0x3833656433663020ull,
-0x092020203b393365ull,0x3131312e30202f2full,0x6c756d090a313131ull,0x662509203233662eull,
-0x336625202c313933ull,0x39336625202c3938ull,0x0a202f2f09203b30ull,0x746c2e7074657309ull,
-0x702509203233662eull,0x39336625202c3731ull,0x3835326625202c31ull,0x40090a202f2f093bull,
-0x7262203731702521ull,0x305f744c24092061ull,0x203b36343138335full,0x2f2f092020202020ull,
-0x6f6c3c2f2f200a20ull,0x74726150203e706full,0x706f6f6c20666f20ull,0x696c2079646f6220ull,
-0x202c35323520656eull,0x62616c2064616568ull,0x744c242064656c65ull,0x34353336335f305full,
-0x3109636f6c2e090aull,0x0a30093435330936ull,0x3233662e766f6d09ull,0x2c38353266250920ull,
-0x203b313933662520ull,0x0920202020202020ull,0x6f6c2e090a202f2full,0x3535330936310963ull,
-0x2e766f6d090a3009ull,0x3172250920323373ull,0x35377225202c3130ull,0x202020202020203bull,
-0x090a202f2f092020ull,0x09363109636f6c2eull,0x63090a3009363533ull,0x752e3631752e7476ull,
-0x3268722509203233ull,0x203b33397225202cull,0x2f2f092020202020ull,0x09636f6c2e090a20ull,
-0x3009373533093631ull,0x31752e747663090aull,0x2509203233752e36ull,0x317225202c336872ull,
-0x20202020203b3030ull,0x744c240a202f2f09ull,0x36343138335f305full,0x6f6c3c2f2f200a3aull,
-0x74726150203e706full,0x706f6f6c20666f20ull,0x696c2079646f6220ull,0x202c35323520656eull,
-0x62616c2064616568ull,0x744c242064656c65ull,0x34353336335f305full,0x3109636f6c2e090aull,
-0x0a30093134330936ull,0x3233732e64646109ull,0x202c323772250920ull,0x3436202c32377225ull,
-0x092020202020203bull,0x766f6d090a202f2full,0x722509203233752eull,0x323031202c323031ull,
-0x2020202020203b34ull,0x0a202f2f09202020ull,0x656e2e7074657309ull,0x702509203233732eull,
-0x32377225202c3831ull,0x3b3230317225202cull,0x2540090a202f2f09ull,0x2061726220383170ull,
-0x335f305f744c2409ull,0x2020203b34353336ull,0x202f2f0920202020ull,0x325f305f744c240aull,
-0x6f6c2e090a3a3835ull,0x3935330936310963ull,0x2e747663090a3009ull,0x203631752e323375ull,
-0x202c333031722509ull,0x2020203b33687225ull,0x090a202f2f092020ull,0x2e3233752e747663ull,
-0x3172250920363175ull,0x32687225202c3430ull,0x2f0920202020203bull,0x70746573090a202full,
-0x203233752e656c2eull,0x25202c3931702509ull,0x7225202c33303172ull,0x202f2f093b343031ull,
-0x203931702540090aull,0x744c240920617262ull,0x34313938335f305full,0x202020202020203bull,
-0x6c2e090a202f2f09ull,0x323709363109636full,0x2e766f6d090a3009ull,0x3172250920323373ull,
-0x30317225202c3530ull,0x2020202020203b33ull,0x090a202f2f092020ull,0x09363109636f6c2eull,
-0x6f6d090a30093337ull,0x2509203233732e76ull,0x7225202c33303172ull,0x202020203b343031ull,
-0x202f2f0920202020ull,0x3109636f6c2e090aull,0x090a300934370936ull,0x203233732e766f6dull,
-0x202c343031722509ull,0x20203b3530317225ull,0x2f09202020202020ull,0x636f6c2e090a202full,
-0x0934363309363109ull,0x732e766f6d090a30ull,0x3031722509203233ull,0x3130317225202c36ull,
-0x202020202020203bull,0x78090a202f2f0920ull,0x09203233622e726full,0x25202c3730317225ull,
-0x3431202c36303172ull,0x3536373535363133ull,0x6d090a202f2f093bull,0x09203233732e766full,
-0x25202c3130317225ull,0x2020203b37303172ull,0x2f2f092020202020ull,0x5f305f744c240a20ull,
-0x090a3a3431393833ull,0x203233732e766f6dull,0x202c383031722509ull,0x2020202020203b30ull,
-0x2f09202020202020ull,0x2e766f6d090a202full,0x6472250920343675ull,0x646f7270202c3134ull,
-0x20202020203b3373ull,0x090a202f2f092020ull,0x203436752e766f6dull,0x202c323464722509ull,
-0x6261546168706c61ull,0x2f0920203b33656cull,0x305f744c240a202full,0x0a3a38333939335full,
-0x706f6f6c3c2f2f20ull,0x6220706f6f4c203eull,0x656e696c2079646full,0x656e202c34363320ull,
-0x656420676e697473ull,0x202c31203a687470ull,0x6574616d69747365ull,0x7461726574692064ull,
-0x0a33203a736e6f69ull,0x363109636f6c2e09ull,0x090a300930373309ull,0x732e6f6c2e6c756dull,
-0x3031722509203233ull,0x3830317225202c39ull,0x2f09203b3436202cull,0x2e646461090a202full,
-0x3172250920323373ull,0x30317225202c3031ull,0x203b317225202c39ull,0x090a202f2f092020ull,
-0x203233752e766f6dull,0x202c313131722509ull,0x202020203b393531ull,0x2f09202020202020ull,
-0x70746573090a202full,0x203233732e74672eull,0x25202c3032702509ull,0x7225202c30313172ull,
-0x202f2f093b313131ull,0x203032702540090aull,0x744c240920617262ull,0x203b3431355f305full,
-0x2020202020202020ull,0x2f2f200a202f2f09ull,0x50203e706f6f6c3cull,0x6c20666f20747261ull,
-0x79646f6220706f6full,0x363320656e696c20ull,0x2064616568202c34ull,0x2064656c6562616cull,
-0x39335f305f744c24ull,0x6f6c2e090a383339ull,0x3337330936310963ull,0x2e747663090a3009ull,
-0x203233732e343675ull,0x202c333464722509ull,0x20203b3031317225ull,0x090a202f2f092020ull,
-0x752e6f6c2e6c756dull,0x3464722509203436ull,0x3334647225202c34ull,0x2f0920203b34202cull,
-0x2e646461090a202full,0x6472250920343675ull,0x32647225202c3534ull,0x3434647225202c38ull,
-0x090a202f2f09203bull,0x65726168732e646cull,0x2509203233752e64ull,0x255b202c32313172ull,
-0x3b5d302b35346472ull,0x313a6469202f2f09ull,0x65705f7320363631ull,0x6f69746174756d72ull,
-0x78302b315f5f736eull,0x09636f6c2e090a30ull,0x3009343733093631ull,0x33732e766f6d090aull,
-0x3331317225092032ull,0x202020203b30202cull,0x2020202020202020ull,0x6f6d090a202f2f09ull,
-0x2509203436732e76ull,0x7225202c36346472ull,0x20202020203b3264ull,0x202f2f0920202020ull,
-0x33732e766f6d090aull,0x3431317225092032ull,0x202020203b30202cull,0x2020202020202020ull,
-0x6f6d090a202f2f09ull,0x2509203233662e76ull,0x6630202c32393366ull,0x3030303030303030ull,
-0x202f2f092020203bull,0x662e766f6d090a30ull,0x3933662509203233ull,0x3030306630202c33ull,
-0x20203b3030303030ull,0x090a30202f2f0920ull,0x203233662e766f6dull,0x202c343933662509ull,
-0x3030303030306630ull,0x2f092020203b3030ull,0x5f744c240a30202full,0x3a36303730345f30ull,
-0x6f6f6c3c2f2f200aull,0x20706f6f4c203e70ull,0x6e696c2079646f62ull,0x6e202c3437332065ull,
-0x6420676e69747365ull,0x2c31203a68747065ull,0x6974617265746920ull,0x0a3631203a736e6full,
-0x363109636f6c2e09ull,0x090a300933373309ull,0x65726168732e646cull,0x2509203233752e64ull,
-0x255b202c32313172ull,0x3b5d302b35346472ull,0x6c2e090a202f2f09ull,0x383209363109636full,
-0x726873090a300934ull,0x722509203233752eull,0x317225202c353131ull,0x31317225202c3231ull,
-0x0a202f2f09203b33ull,0x3233622e646e6109ull,0x2c36313172250920ull,0x202c353131722520ull,
-0x0920202020203b33ull,0x747663090a202f2full,0x3233752e3436752eull,0x2c37346472250920ull,
-0x203b363131722520ull,0x0a202f2f09202020ull,0x2e6f6c2e6c756d09ull,0x6472250920343675ull,
-0x34647225202c3834ull,0x0920203b34202c37ull,0x646461090a202f2full,0x722509203436752eull,
-0x647225202c393464ull,0x34647225202c3834ull,0x0a202f2f09203b32ull,0x736e6f632e646c09ull,
-0x2509203233662e74ull,0x255b202c35393366ull,0x3b5d302b39346472ull,0x313a6469202f2f09ull,
-0x68706c6120373631ull,0x2b33656c62615461ull,0x2e646c090a307830ull,0x662e646572616873ull,
-0x3933662509203233ull,0x346472255b202c36ull,0x2f2f093b5d302b36ull,0x383631313a646920ull,
-0x5f616475635f5f20ull,0x383973726f6c6f63ull,0x6d090a3078302b34ull,0x09203233662e6461ull,
-0x25202c3439336625ull,0x6625202c35393366ull,0x336625202c363933ull,0x0a202f2f093b3439ull,
-0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3739336625ull,0x5d342b3634647225ull,
-0x3a6469202f2f093bull,0x635f5f2039363131ull,0x6f6c6f635f616475ull,0x78302b3438397372ull,
-0x662e64616d090a30ull,0x3933662509203233ull,0x3539336625202c33ull,0x2c3739336625202cull,
-0x093b333933662520ull,0x2e646c090a202f2full,0x662e646572616873ull,0x3933662509203233ull,
-0x346472255b202c38ull,0x2f2f093b5d382b36ull,0x303731313a646920ull,0x5f616475635f5f20ull,
-0x383973726f6c6f63ull,0x6d090a3078302b34ull,0x09203233662e6461ull,0x25202c3239336625ull,
-0x6625202c35393366ull,0x336625202c383933ull,0x0a202f2f093b3239ull,0x363109636f6c2e09ull,
-0x090a300935383209ull,0x203436752e646461ull,0x202c303564722509ull,0x25202c3834647225ull,
-0x2f09203b31346472ull,0x632e646c090a202full,0x3233732e74736e6full,0x2c37313172250920ull,
-0x2b30356472255b20ull,0x69202f2f093b5d30ull,0x7020313731313a64ull,0x78302b3373646f72ull,
-0x732e646461090a30ull,0x3131722509203233ull,0x3731317225202c34ull,0x3b3431317225202cull,
-0x61090a202f2f0920ull,0x09203436752e6464ull,0x25202c3634647225ull,0x3231202c36346472ull,
-0x2f2f09202020203bull,0x732e646461090a20ull,0x3131722509203233ull,0x3331317225202c33ull,
-0x202020203b32202cull,0x6d090a202f2f0920ull,0x09203233752e766full,0x33202c3831317225ull,
-0x2020202020203b32ull,0x2f2f092020202020ull,0x2e70746573090a20ull,0x09203233732e656eull,
-0x7225202c31327025ull,0x317225202c333131ull,0x0a202f2f093b3831ull,0x6220313270254009ull,
-0x5f744c2409206172ull,0x3b36303730345f30ull,0x0920202020202020ull,0x3c2f2f200a202f2full,
-0x6150203e706f6f6cull,0x6f6c20666f207472ull,0x2079646f6220706full,0x34363320656e696cull,
-0x6c2064616568202cull,0x242064656c656261ull,0x3939335f305f744cull,0x636f6c2e090a3833ull,
-0x0932323309363109ull,0x622e646e61090a30ull,0x3131722509203233ull,0x3431317225202c39ull,
-0x20203b353532202cull,0x73090a202f2f0920ull,0x09203233732e7268ull,0x25202c3032317225ull,
-0x3631202c34313172ull,0x2f2f09202020203bull,0x732e726873090a20ull,0x3231722509203233ull,
-0x3431317225202c31ull,0x202020203b38202cull,0x6c090a202f2f0920ull,0x6465726168732e64ull,
-0x662509203233662eull,0x75735b202c393933ull,0x2f093b5d302b736dull,0x3830313a6469202full,
-0x302b736d75732035ull,0x2e766f6d090a3078ull,0x3466250920323366ull,0x30346630202c3030ull,
-0x203b303030303038ull,0x0a34202f2f092020ull,0x3233662e6c756d09ull,0x2c31303466250920ull,
-0x202c393933662520ull,0x09203b3030346625ull,0x2e646c090a202f2full,0x662e646572616873ull,
-0x3034662509203233ull,0x736d75735b202c32ull,0x202f2f093b5d342bull,0x20363830313a6469ull,
-0x3478302b736d7573ull,0x33662e766f6d090aull,0x3330346625092032ull,0x303830346630202cull,
-0x2020203b30303030ull,0x6d090a34202f2f09ull,0x09203233662e6c75ull,0x25202c3430346625ull,
-0x6625202c32303466ull,0x2f2f09203b333034ull,0x68732e646c090a20ull,0x3233662e64657261ull,
-0x2c35303466250920ull,0x382b736d75735b20ull,0x6469202f2f093b5dull,0x757320373830313aull,
-0x090a3878302b736dull,0x203233662e766f6dull,0x202c363034662509ull,0x3030303830346630ull,
-0x2f092020203b3030ull,0x6c756d090a34202full,0x662509203233662eull,0x346625202c373034ull,
-0x30346625202c3530ull,0x0a202f2f09203b36ull,0x2e6e722e74766309ull,0x203233732e323366ull,
-0x202c383034662509ull,0x09203b3931317225ull,0x747663090a202f2full,0x2e3233662e6e722eull,
-0x3466250920323373ull,0x32317225202c3930ull,0x0a202f2f09203b30ull,0x3233622e646e6109ull,
-0x2c32323172250920ull,0x202c313231722520ull,0x092020203b353532ull,0x627573090a202f2full,
-0x662509203233662eull,0x346625202c303134ull,0x39336625202c3130ull,0x0a202f2f09203b34ull,
-0x3233662e62757309ull,0x2c31313466250920ull,0x202c343034662520ull,0x09203b3339336625ull,
-0x627573090a202f2full,0x662509203233662eull,0x346625202c323134ull,0x39336625202c3730ull,
-0x0a202f2f09203b32ull,0x3233662e6c756d09ull,0x2c33313466250920ull,0x202c383034662520ull,
-0x09203b3830346625ull,0x747663090a202f2full,0x2e3233662e6e722eull,0x3466250920323373ull,
-0x32317225202c3431ull,0x0a202f2f09203b32ull,0x3233662e6c756d09ull,0x2c35313466250920ull,
-0x202c383034662520ull,0x09203b3031346625ull,0x6c756d090a202f2full,0x662509203233662eull,
-0x346625202c363134ull,0x31346625202c3830ull,0x0a202f2f09203b31ull,0x3233662e6c756d09ull,
-0x2c37313466250920ull,0x202c383034662520ull,0x09203b3231346625ull,0x6c756d090a202f2full,
-0x662509203233662eull,0x346625202c383134ull,0x31346625202c3930ull,0x0a202f2f09203b34ull,
-0x3233662e62757309ull,0x2c39313466250920ull,0x202c383134662520ull,0x09203b3331346625ull,
-0x6c756d090a202f2full,0x662509203233662eull,0x346625202c303234ull,0x39336625202c3431ull,
-0x0a202f2f09203b34ull,0x3233662e6c756d09ull,0x2c31323466250920ull,0x202c343134662520ull,
-0x09203b3339336625ull,0x6c756d090a202f2full,0x662509203233662eull,0x346625202c323234ull,
-0x39336625202c3431ull,0x0a202f2f09203b32ull,0x7070612e70637209ull,0x203233662e786f72ull,
-0x202c333234662509ull,0x09203b3931346625ull,0x627573090a202f2full,0x662509203233662eull,
-0x346625202c343234ull,0x31346625202c3032ull,0x0a202f2f09203b35ull,0x3233662e62757309ull,
-0x2c35323466250920ull,0x202c313234662520ull,0x09203b3631346625ull,0x627573090a202f2full,
-0x662509203233662eull,0x346625202c363234ull,0x31346625202c3232ull,0x0a202f2f09203b37ull,
-0x3233662e6c756d09ull,0x2c37323466250920ull,0x202c333234662520ull,0x09203b3432346625ull,
-0x6c756d090a202f2full,0x662509203233662eull,0x346625202c383234ull,0x32346625202c3332ull,
-0x0a202f2f09203b35ull,0x3233662e6c756d09ull,0x2c39323466250920ull,0x202c333234662520ull,
-0x09203b3632346625ull,0x747663090a202f2full,0x3233662e7461732eull,0x662509203233662eull,
-0x346625202c303334ull,0x0a202f2f093b3732ull,0x7461732e74766309ull,0x3233662e3233662eull,
-0x2c31333466250920ull,0x093b383234662520ull,0x747663090a202f2full,0x3233662e7461732eull,
-0x662509203233662eull,0x346625202c323334ull,0x0a202f2f093b3932ull,0x3233662e766f6d09ull,
-0x2c33333466250920ull,0x3038663134663020ull,0x092020203b303030ull,0x6d090a3133202f2full,
-0x09203233662e6c75ull,0x25202c3433346625ull,0x6625202c30333466ull,0x2f2f09203b333334ull,
-0x662e766f6d090a20ull,0x3334662509203233ull,0x3732346630202c35ull,0x20203b3030303063ull,
-0x0a3336202f2f0920ull,0x3233662e6c756d09ull,0x2c36333466250920ull,0x202c313334662520ull,
-0x09203b3533346625ull,0x766f6d090a202f2full,0x662509203233662eull,0x346630202c373334ull,
-0x3b30303030386631ull,0x33202f2f09202020ull,0x662e6c756d090a31ull,0x3334662509203233ull,
-0x3233346625202c38ull,0x3b3733346625202cull,0x63090a202f2f0920ull,0x662e696e722e7476ull,
-0x09203233662e3233ull,0x25202c3933346625ull,0x2f2f093b34333466ull,0x722e747663090a20ull,
-0x662e3233662e696eull,0x3434662509203233ull,0x3633346625202c30ull,0x63090a202f2f093bull,
-0x662e696e722e7476ull,0x09203233662e3233ull,0x25202c3134346625ull,0x2f2f093b38333466ull,
-0x722e747663090a20ull,0x662e3233752e697aull,0x3231722509203233ull,0x3933346625202c33ull,
-0x73090a202f2f093bull,0x09203233622e6c68ull,0x25202c3432317225ull,0x3131202c33323172ull,
-0x2f2f09202020203bull,0x722e747663090a20ull,0x662e3233752e697aull,0x3231722509203233ull,
-0x3034346625202c35ull,0x73090a202f2f093bull,0x09203233622e6c68ull,0x25202c3632317225ull,
-0x3b35202c35323172ull,0x2f2f092020202020ull,0x33622e726f090a20ull,0x3732317225092032ull,
-0x2c3432317225202cull,0x203b363231722520ull,0x63090a202f2f0920ull,0x752e697a722e7476ull,
-0x09203233662e3233ull,0x25202c3832317225ull,0x2f2f093b31343466ull,0x33622e726f090a20ull,
-0x3932317225092032ull,0x2c3732317225202cull,0x203b383231722520ull,0x63090a202f2f0920ull,
-0x752e3631752e7476ull,0x3331722509203233ull,0x3932317225202c30ull,0x2f2f09202020203bull,
-0x09636f6c2e090a20ull,0x3009333233093631ull,0x33662e6c756d090aull,0x3234346625092032ull,
-0x2c3830346625202cull,0x203b343933662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,
-0x6625202c33343466ull,0x336625202c383034ull,0x202f2f09203b3339ull,0x33662e6c756d090aull,
-0x3434346625092032ull,0x2c3830346625202cull,0x203b323933662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c35343466ull,0x346625202c393034ull,0x202f2f09203b3031ull,
-0x33662e6c756d090aull,0x3634346625092032ull,0x2c3930346625202cull,0x203b313134662520ull,
-0x756d090a202f2f09ull,0x2509203233662e6cull,0x6625202c37343466ull,0x346625202c393034ull,
-0x202f2f09203b3231ull,0x33662e627573090aull,0x3834346625092032ull,0x2c3534346625202cull,
-0x203b323434662520ull,0x7573090a202f2f09ull,0x2509203233662e62ull,0x6625202c39343466ull,
-0x346625202c363434ull,0x202f2f09203b3334ull,0x33662e627573090aull,0x3035346625092032ull,
-0x2c3734346625202cull,0x203b343434662520ull,0x756d090a202f2f09ull,0x2509203233662e6cull,
-0x6625202c31353466ull,0x346625202c383434ull,0x202f2f09203b3332ull,0x33662e6c756d090aull,
-0x3235346625092032ull,0x2c3934346625202cull,0x203b333234662520ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x6625202c33353466ull,0x346625202c303534ull,0x202f2f09203b3332ull,
-0x61732e747663090aull,0x33662e3233662e74ull,0x3435346625092032ull,0x3b3135346625202cull,
-0x7663090a202f2f09ull,0x33662e7461732e74ull,0x2509203233662e32ull,0x6625202c35353466ull,
-0x202f2f093b323534ull,0x61732e747663090aull,0x33662e3233662e74ull,0x3635346625092032ull,
-0x3b3335346625202cull,0x6f6d090a202f2f09ull,0x2509203233662e76ull,0x6630202c37353466ull,
-0x3030303038663134ull,0x202f2f092020203bull,0x2e6c756d090a3133ull,0x3466250920323366ull,
-0x35346625202c3835ull,0x3735346625202c34ull,0x090a202f2f09203bull,0x203233662e766f6dull,
-0x202c393534662509ull,0x3030633732346630ull,0x2f092020203b3030ull,0x756d090a3336202full,
-0x2509203233662e6cull,0x6625202c30363466ull,0x346625202c353534ull,0x202f2f09203b3935ull,
-0x33662e766f6d090aull,0x3136346625092032ull,0x386631346630202cull,0x2020203b30303030ull,
-0x090a3133202f2f09ull,0x203233662e6c756dull,0x202c323634662509ull,0x25202c3635346625ull,
-0x2f09203b31363466ull,0x2e747663090a202full,0x2e3233662e696e72ull,0x3466250920323366ull,
-0x35346625202c3336ull,0x090a202f2f093b38ull,0x2e696e722e747663ull,0x203233662e323366ull,
-0x202c343634662509ull,0x2f093b3036346625ull,0x2e747663090a202full,0x2e3233662e696e72ull,
-0x3466250920323366ull,0x36346625202c3536ull,0x090a202f2f093b32ull,0x2e697a722e747663ull,
-0x203233662e323375ull,0x202c313331722509ull,0x2f093b3336346625ull,0x2e6c6873090a202full,
-0x3172250920323362ull,0x33317225202c3233ull,0x20203b3131202c31ull,0x090a202f2f092020ull,
-0x2e697a722e747663ull,0x203233662e323375ull,0x202c333331722509ull,0x2f093b3436346625ull,
-0x2e6c6873090a202full,0x3172250920323362ull,0x33317225202c3433ull,0x2020203b35202c33ull,
-0x090a202f2f092020ull,0x09203233622e726full,0x25202c3533317225ull,0x7225202c32333172ull,
-0x2f0920203b343331ull,0x2e747663090a202full,0x2e3233752e697a72ull,0x3172250920323366ull,
-0x36346625202c3633ull,0x090a202f2f093b35ull,0x09203233622e726full,0x25202c3733317225ull,
-0x7225202c35333172ull,0x2f0920203b363331ull,0x2e747663090a202full,0x203233752e363175ull,
-0x202c383331722509ull,0x20203b3733317225ull,0x090a202f2f092020ull,0x09363109636f6c2eull,
-0x6d090a3009363233ull,0x09203233662e766full,0x30202c3636346625ull,0x3735333430643366ull,
-0x2f2f092020203b31ull,0x37323233302e3020ull,0x2e6c756d090a3537ull,0x3466250920323366ull,
-0x33346625202c3736ull,0x3636346625202c39ull,0x090a202f2f09203bull,0x203233662e6c756dull,
-0x202c383634662509ull,0x25202c3736346625ull,0x2f09203b37363466ull,0x2e766f6d090a202full,
-0x3466250920323366ull,0x63336630202c3936ull,0x203b393131623138ull,0x2e30202f2f092020ull,
-0x0a35313338353130ull,0x3233662e6c756d09ull,0x2c30373466250920ull,0x202c303434662520ull,
-0x09203b3936346625ull,0x6c756d090a202f2full,0x662509203233662eull,0x346625202c313734ull,
-0x37346625202c3037ull,0x0a202f2f09203b30ull,0x3233662e766f6d09ull,0x2c32373466250920ull,
-0x3334306433663020ull,0x092020203b313735ull,0x3233302e30202f2full,0x756d090a35373732ull,
-0x2509203233662e6cull,0x6625202c33373466ull,0x346625202c313434ull,0x202f2f09203b3237ull,
-0x33662e6c756d090aull,0x3437346625092032ull,0x2c3337346625202cull,0x203b333734662520ull,
-0x6f6d090a202f2f09ull,0x2509203233662e76ull,0x6630202c35373466ull,0x3137353334306433ull,
-0x202f2f092020203bull,0x3737323233302e30ull,0x662e6c756d090a35ull,0x3734662509203233ull,
-0x3336346625202c36ull,0x3b3537346625202cull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,
-0x25202c3737346625ull,0x6625202c36373466ull,0x2f2f09203b363734ull,0x662e766f6d090a20ull,
-0x3734662509203233ull,0x3863336630202c38ull,0x20203b3931316231ull,0x302e30202f2f0920ull,
-0x090a353133383531ull,0x203233662e6c756dull,0x202c393734662509ull,0x25202c3436346625ull,
-0x2f09203b38373466ull,0x2e6c756d090a202full,0x3466250920323366ull,0x37346625202c3038ull,
-0x3937346625202c39ull,0x090a202f2f09203bull,0x203233662e766f6dull,0x202c313834662509ull,
-0x3533343064336630ull,0x2f092020203b3137ull,0x323233302e30202full,0x6c756d090a353737ull,
-0x662509203233662eull,0x346625202c323834ull,0x38346625202c3536ull,0x0a202f2f09203b31ull,
-0x3233662e6c756d09ull,0x2c33383466250920ull,0x202c323834662520ull,0x09203b3238346625ull,
-0x6c756d090a202f2full,0x662509203233662eull,0x346625202c343834ull,0x36346625202c3637ull,
-0x0a202f2f09203b37ull,0x3233662e6c756d09ull,0x2c35383466250920ull,0x202c393734662520ull,
-0x09203b3037346625ull,0x6c756d090a202f2full,0x662509203233662eull,0x346625202c363834ull,
-0x37346625202c3238ull,0x0a202f2f09203b33ull,0x3233662e6c756d09ull,0x2c37383466250920ull,
-0x202c373634662520ull,0x09203b3439336625ull,0x6c756d090a202f2full,0x662509203233662eull,
-0x346625202c383834ull,0x39336625202c3037ull,0x0a202f2f09203b33ull,0x3233662e6c756d09ull,
-0x2c39383466250920ull,0x202c333734662520ull,0x09203b3239336625ull,0x6c756d090a202f2full,
-0x662509203233662eull,0x346625202c303934ull,0x37346625202c3031ull,0x0a202f2f09203b36ull,
-0x3233662e6c756d09ull,0x2c31393466250920ull,0x202c313134662520ull,0x09203b3937346625ull,
-0x6c756d090a202f2full,0x662509203233662eull,0x346625202c323934ull,0x38346625202c3231ull,
-0x0a202f2f09203b32ull,0x363109636f6c2e09ull,0x090a300934373309ull,0x203233662e6c756dull,
-0x202c333934662509ull,0x25202c3830346625ull,0x2f09203b35383466ull,0x2e6c756d090a202full,
-0x3466250920323366ull,0x30346625202c3439ull,0x3438346625202c38ull,0x090a202f2f09203bull,
-0x203233662e6c756dull,0x202c353934662509ull,0x25202c3830346625ull,0x2f09203b36383466ull,
-0x2e6c756d090a202full,0x3466250920323366ull,0x30346625202c3639ull,0x3137346625202c39ull,
-0x090a202f2f09203bull,0x203233662e6c756dull,0x202c373934662509ull,0x25202c3930346625ull,
-0x2f09203b38363466ull,0x2e6c756d090a202full,0x3466250920323366ull,0x30346625202c3839ull,
-0x3437346625202c39ull,0x090a202f2f09203bull,0x203233662e627573ull,0x202c393934662509ull,
-0x25202c3339346625ull,0x2f09203b38383466ull,0x2e627573090a202full,0x3566250920323366ull,
-0x39346625202c3030ull,0x3738346625202c34ull,0x090a202f2f09203bull,0x203233662e627573ull,
-0x202c313035662509ull,0x25202c3539346625ull,0x2f09203b39383466ull,0x2e6c756d090a202full,
-0x3566250920323366ull,0x31346625202c3230ull,0x3038346625202c34ull,0x090a202f2f09203bull,
-0x203233662e6c756dull,0x202c333035662509ull,0x25202c3431346625ull,0x2f09203b37373466ull,
-0x2e6c756d090a202full,0x3566250920323366ull,0x31346625202c3430ull,0x3338346625202c34ull,
-0x090a202f2f09203bull,0x203233662e627573ull,0x202c353035662509ull,0x25202c3939346625ull,
-0x2f09203b31393466ull,0x2e627573090a202full,0x3566250920323366ull,0x30356625202c3630ull,
-0x3039346625202c30ull,0x090a202f2f09203bull,0x203233662e627573ull,0x202c373035662509ull,
-0x25202c3130356625ull,0x2f09203b32393466ull,0x2e646461090a202full,0x3566250920323366ull,
-0x39346625202c3830ull,0x3230356625202c36ull,0x090a202f2f09203bull,0x203233662e646461ull,
-0x202c393035662509ull,0x25202c3739346625ull,0x2f09203b33303566ull,0x2e646461090a202full,
-0x3566250920323366ull,0x39346625202c3031ull,0x3430356625202c38ull,0x090a202f2f09203bull,
-0x203233662e646461ull,0x202c313135662509ull,0x25202c3530356625ull,0x2f09203b35303566ull,
-0x2e646461090a202full,0x3566250920323366ull,0x30356625202c3231ull,0x3630356625202c36ull,
-0x090a202f2f09203bull,0x203233662e646461ull,0x202c333135662509ull,0x25202c3730356625ull,
-0x2f09203b37303566ull,0x2e646461090a202full,0x3566250920323366ull,0x30356625202c3431ull,
-0x3131356625202c38ull,0x090a202f2f09203bull,0x203233662e646461ull,0x202c353135662509ull,
-0x25202c3930356625ull,0x2f09203b32313566ull,0x2e646461090a202full,0x3566250920323366ull,
-0x31356625202c3631ull,0x3331356625202c30ull,0x090a202f2f09203bull,0x74736e6f632e646cull,
-0x662509203233662eull,0x436b5b202c373135ull,0x7274654d726f6c6full,0x2f093b5d342b6369ull,
-0x3631313a6469202full,0x726f6c6f436b2033ull,0x302b63697274654dull,0x2e6c756d090a3478ull,
-0x3566250920323366ull,0x31356625202c3831ull,0x3431356625202c37ull,0x090a202f2f09203bull,
-0x74736e6f632e646cull,0x662509203233662eull,0x436b5b202c393135ull,0x7274654d726f6c6full,
-0x2f093b5d302b6369ull,0x3631313a6469202full,0x726f6c6f436b2034ull,0x302b63697274654dull,
-0x2e64616d090a3078ull,0x3566250920323366ull,0x31356625202c3032ull,0x3531356625202c39ull,
-0x3b3831356625202cull,0x646c090a202f2f09ull,0x662e74736e6f632eull,0x3235662509203233ull,
-0x6c6f436b5b202c31ull,0x63697274654d726full,0x202f2f093b5d382bull,0x20353631313a6469ull,
-0x654d726f6c6f436bull,0x3878302b63697274ull,0x33662e64616d090aull,0x3232356625092032ull,
-0x2c3631356625202cull,0x202c313235662520ull,0x2f093b3032356625ull,0x2e766f6d090a202full,
-0x3566250920323366ull,0x65336630202c3332ull,0x203b303030303038ull,0x2e30202f2f092020ull,
-0x2e6c756d090a3532ull,0x3566250920323366ull,0x32356625202c3432ull,0x3332356625202c32ull,
-0x090a202f2f09203bull,0x2e746c2e70746573ull,0x3270250920323366ull,0x3432356625202c32ull,
-0x3b3835326625202cull,0x2140090a202f2f09ull,0x6172622032327025ull,0x5f305f744c240920ull,
-0x20203b3033373134ull,0x202f2f0920202020ull,0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,
-0x20706f6f6c20666full,0x6e696c2079646f62ull,0x68202c3436332065ull,0x6562616c20646165ull,
-0x5f744c242064656cull,0x0a38333939335f30ull,0x363109636f6c2e09ull,0x090a300938373309ull,
-0x203233662e766f6dull,0x202c383532662509ull,0x20203b3432356625ull,0x2f09202020202020ull,
-0x636f6c2e090a202full,0x0933373309363109ull,0x68732e646c090a30ull,0x3233752e64657261ull,
-0x2c32313172250920ull,0x2b35346472255b20ull,0x0a202f2f093b5d30ull,0x363109636f6c2e09ull,
-0x090a300939373309ull,0x203233732e766f6dull,0x202c393331722509ull,0x20203b3231317225ull,
-0x2f09202020202020ull,0x636f6c2e090a202full,0x0930383309363109ull,0x732e766f6d090a30ull,
-0x3031722509203233ull,0x3033317225202c34ull,0x202020202020203bull,0x2e090a202f2f0920ull,
-0x3309363109636f6cull,0x6f6d090a30093138ull,0x2509203233732e76ull,0x7225202c33303172ull,
-0x202020203b383331ull,0x202f2f0920202020ull,0x6c2e70746573090aull,0x2509203233752e65ull,
-0x317225202c333270ull,0x33317225202c3033ull,0x090a202f2f093b38ull,0x7262203332702540ull,
-0x305f744c24092061ull,0x203b36383931345full,0x2f09202020202020ull,0x6c3c2f2f200a202full,
-0x726150203e706f6full,0x6f6f6c20666f2074ull,0x6c2079646f622070ull,0x2c34363320656e69ull,
-0x616c206461656820ull,0x4c242064656c6562ull,0x333939335f305f74ull,0x09636f6c2e090a38ull,
-0x0a30093237093631ull,0x3233732e766f6d09ull,0x2c30343172250920ull,0x203b333031722520ull,
-0x0920202020202020ull,0x6f6c2e090a202f2full,0x0933370936310963ull,0x732e766f6d090a30ull,
-0x3031722509203233ull,0x3430317225202c33ull,0x202020202020203bull,0x2e090a202f2f0920ull,
-0x3709363109636f6cull,0x766f6d090a300934ull,0x722509203233732eull,0x317225202c343031ull,
-0x20202020203b3034ull,0x0a202f2f09202020ull,0x363109636f6c2e09ull,0x090a300933373309ull,
-0x65726168732e646cull,0x2509203233752e64ull,0x255b202c32313172ull,0x3b5d302b35346472ull,
-0x6c2e090a202f2f09ull,0x383309363109636full,0x746f6e090a300936ull,0x722509203233622eull,
-0x317225202c313431ull,0x20202020203b3231ull,0x0a202f2f09202020ull,0x3233752e72687309ull,
-0x2c32343172250920ull,0x202c313431722520ull,0x0920202020203b31ull,0x646e61090a202f2full,
-0x722509203233622eull,0x317225202c333431ull,0x31333431202c3234ull,0x093b353637353536ull,
-0x726f78090a202f2full,0x722509203233622eull,0x317225202c343431ull,0x34317225202c3231ull,
-0x0a202f2f09203b33ull,0x3233732e766f6d09ull,0x2c31303172250920ull,0x203b343431722520ull,
-0x0920202020202020ull,0x617262090a202f2full,0x4c240920696e752eull,0x333731345f305f74ull,
-0x2020202020203b30ull,0x0a202f2f09202020ull,0x31345f305f744c24ull,0x2f2f200a3a363839ull,
-0x50203e706f6f6c3cull,0x6c20666f20747261ull,0x79646f6220706f6full,0x363320656e696c20ull,
-0x2064616568202c34ull,0x2064656c6562616cull,0x39335f305f744c24ull,0x766f6d090a383339ull,
-0x722509203233732eull,0x317225202c313031ull,0x20202020203b3933ull,0x0a202f2f09202020ull,
-0x31345f305f744c24ull,0x744c240a3a303337ull,0x38313231345f305full,0x6f6c3c2f2f200a3aull,
-0x74726150203e706full,0x706f6f6c20666f20ull,0x696c2079646f6220ull,0x202c34363320656eull,
-0x62616c2064616568ull,0x744c242064656c65ull,0x38333939335f305full,0x3109636f6c2e090aull,
-0x0a30093736330936ull,0x3233732e64646109ull,0x2c38303172250920ull,0x202c383031722520ull,
-0x0920202020203b31ull,0x766f6d090a202f2full,0x722509203233752eull,0x203b33202c353431ull,
-0x2020202020202020ull,0x0a202f2f09202020ull,0x656e2e7074657309ull,0x702509203233732eull,
-0x30317225202c3432ull,0x3534317225202c38ull,0x40090a202f2f093bull,0x6172622034327025ull,
-0x5f305f744c240920ull,0x20203b3833393933ull,0x2f2f092020202020ull,0x5f305f744c240a20ull,
-0x6c2e090a3a343135ull,0x383309363109636full,0x766f6d090a300939ull,0x722509203436752eull,
-0x635f5f202c313564ull,0x6f7272655f616475ull,0x093b323334317372ull,0x766f6d090a202f2full,
-0x722509203436752eull,0x646e69202c323564ull,0x3b305f5f73656369ull,0x0a202f2f09202020ull,
-0x363109636f6c2e09ull,0x090a300931393309ull,0x203436752e646461ull,0x202c333564722509ull,
-0x7225202c39647225ull,0x2f0920203b313564ull,0x732e7473090a202full,0x33662e6465726168ull,
-0x356472255b092032ull,0x6625202c5d302b33ull,0x202f2f093b383532ull,0x20323731313a6469ull,
-0x655f616475635f5full,0x33343173726f7272ull,0x2e090a3078302b32ull,0x3409363109636f6cull,
-0x6461090a30093330ull,0x2509203436752e64ull,0x7225202c34356472ull,0x35647225202c3964ull,
-0x202f2f0920203b32ull,0x6168732e7473090aull,0x203233732e646572ull,0x2b34356472255b09ull,
-0x3b317225202c5d30ull,0x313a6469202f2f09ull,0x69646e6920333731ull,0x302b305f5f736563ull,
-0x2e766f6d090a3078ull,0x3172250920323373ull,0x203b3233202c3634ull,0x2020202020202020ull,
-0x240a202f2f092020ull,0x3033345f305f744cull,0x3c2f2f200a3a3031ull,0x6f4c203e706f6f6cull,
-0x2079646f6220706full,0x33303420656e696cull,0x6e697473656e202cull,0x3a68747065642067ull,
-0x69747365202c3120ull,0x746920646574616dull,0x736e6f6974617265ull,0x776f6e6b6e75203aull,
-0x09636f6c2e090a6eull,0x3009383034093631ull,0x79732e726162090aull,0x20203b300920636eull,
-0x2020202020202020ull,0x2020202020202020ull,0x6573090a202f2f09ull,0x33732e656c2e7074ull,
-0x2c35327025092032ull,0x202c363431722520ull,0x202f2f093b317225ull,0x203532702540090aull,
-0x744c240920617262ull,0x38373733345f305full,0x202020202020203bull,0x2f2f200a202f2f09ull,
-0x50203e706f6f6c3cull,0x6c20666f20747261ull,0x79646f6220706f6full,0x303420656e696c20ull,
-0x2064616568202c33ull,0x2064656c6562616cull,0x33345f305f744c24ull,0x6f6c2e090a303130ull,
-0x3331340936310963ull,0x2e646461090a3009ull,0x3172250920323373ull,0x34317225202c3734ull,
-0x203b317225202c36ull,0x090a202f2f092020ull,0x2e3436732e747663ull,0x6472250920323373ull,
-0x34317225202c3535ull,0x2f09202020203b37ull,0x2e6c756d090a202full,0x09203436752e6f6cull,
-0x25202c3635647225ull,0x3b34202c35356472ull,0x090a202f2f092020ull,0x203436752e646461ull,
-0x202c373564722509ull,0x25202c3635647225ull,0x2f09203b31356472ull,0x732e646c090a202full,
-0x33662e6465726168ull,0x3532356625092032ull,0x37356472255b202cull,0x202f2f093b5d302bull,
-0x20343731313a6469ull,0x655f616475635f5full,0x33343173726f7272ull,0x6c090a3078302b32ull,
-0x6465726168732e64ull,0x662509203233662eull,0x72255b202c363235ull,0x093b5d302b333564ull,
-0x31313a6469202f2full,0x6475635f5f203537ull,0x73726f7272655f61ull,0x3078302b32333431ull,
-0x672e70746573090aull,0x2509203233662e74ull,0x356625202c363270ull,0x32356625202c3632ull,
-0x090a202f2f093b35ull,0x6220363270252140ull,0x5f744c2409206172ull,0x3b38373733345f30ull,
-0x2f09202020202020ull,0x6c3c2f2f200a202full,0x726150203e706f6full,0x6f6f6c20666f2074ull,
-0x6c2079646f622070ull,0x2c33303420656e69ull,0x616c206461656820ull,0x4c242064656c6562ull,
-0x313033345f305f74ull,0x09636f6c2e090a30ull,0x3009363134093631ull,0x6168732e7473090aull,
-0x203233662e646572ull,0x2b33356472255b09ull,0x32356625202c5d30ull,0x6469202f2f093b35ull,
-0x5f5f20363731313aull,0x7272655f61647563ull,0x2b3233343173726full,0x6f6c2e090a307830ull,
-0x3731340936310963ull,0x2e646461090a3009ull,0x6472250920343675ull,0x35647225202c3835ull,
-0x3235647225202c36ull,0x090a202f2f09203bull,0x65726168732e646cull,0x2509203233732e64ull,
-0x255b202c38343172ull,0x3b5d302b38356472ull,0x313a6469202f2f09ull,0x69646e6920373731ull,
-0x302b305f5f736563ull,0x732e7473090a3078ull,0x33732e6465726168ull,0x356472255b092032ull,
-0x7225202c5d302b34ull,0x202f2f093b383431ull,0x20383731313a6469ull,0x5f73656369646e69ull,
-0x240a3078302b305full,0x3733345f305f744cull,0x5f744c240a3a3837ull,0x3a36363233345f30ull,
-0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,0x20706f6f6c20666full,0x6e696c2079646f62ull,
-0x68202c3330342065ull,0x6562616c20646165ull,0x5f744c242064656cull,0x0a30313033345f30ull,
-0x363109636f6c2e09ull,0x090a300936303409ull,0x203233732e726873ull,0x202c363431722509ull,
-0x31202c3634317225ull,0x2f0920202020203bull,0x2e766f6d090a202full,0x3172250920323375ull,
-0x20203b30202c3934ull,0x2020202020202020ull,0x090a202f2f092020ull,0x2e74672e70746573ull,
-0x3270250920323373ull,0x3634317225202c37ull,0x3b3934317225202cull,0x2540090a202f2f09ull,
-0x2061726220373270ull,0x345f305f744c2409ull,0x2020203b30313033ull,0x202f2f0920202020ull,
-0x3109636f6c2e090aull,0x0a30093137340936ull,0x6e79732e72616209ull,0x2020203b30092063ull,
-0x2020202020202020ull,0x0920202020202020ull,0x6f6c2e090a202f2full,0x3832350936310963ull,
-0x732e646c090a3009ull,0x33732e6465726168ull,0x3035317225092032ull,0x6369646e695b202cull,
-0x5d302b305f5f7365ull,0x3a6469202f2f093bull,0x646e692039373131ull,0x2b305f5f73656369ull,
-0x6f6c2e090a307830ull,0x3033350936310963ull,0x2e726162090a3009ull,0x3b300920636e7973ull,
-0x2020202020202020ull,0x2020202020202020ull,0x090a202f2f092020ull,0x2e656e2e70746573ull,
-0x3270250920323373ull,0x3035317225202c38ull,0x2f093b317225202cull,0x32702540090a202full,
-0x2409206172622038ull,0x3534345f305f744cull,0x20202020203b3634ull,0x090a202f2f092020ull,
-0x09363109636f6c2eull,0x73090a3009343934ull,0x752e71652e707465ull,0x3932702509203233ull,
-0x2c3330317225202cull,0x093b343031722520ull,0x766f6d090a202f2full,0x722509203233752eull,
-0x203b30202c313531ull,0x2020202020202020ull,0x0a202f2f09202020ull,0x3233732e766f6d09ull,
-0x2c32353172250920ull,0x203b313031722520ull,0x0920202020202020ull,0x6c6573090a202f2full,
-0x2509203233752e70ull,0x7225202c33353172ull,0x317225202c313531ull,0x39327025202c3235ull,
-0x6c090a202f2f093bull,0x6465726168732e64ull,0x722509203233732eull,0x5f5f5b202c343531ull,
-0x6572785f61647563ull,0x302b383633317366ull,0x6469202f2f093b5dull,0x5f5f20303831313aull,
-0x6572785f61647563ull,0x090a383633317366ull,0x732e6f6c2e6c756dull,0x3531722509203233ull,
-0x3435317225202c35ull,0x2f0920203b32202cull,0x2e726873090a202full,0x3172250920323375ull,
-0x35317225202c3635ull,0x3535317225202c33ull,0x090a202f2f09203bull,0x203233622e646e61ull,
-0x202c373531722509ull,0x33202c3635317225ull,0x2f0920202020203bull,0x732e646c090a202full,
-0x33732e6465726168ull,0x3835317225092032ull,0x6475635f5f5b202cull,0x3173666572785f61ull,
-0x093b5d342b383633ull,0x31313a6469202f2full,0x6475635f5f203138ull,0x3173666572785f61ull,
-0x6c756d090a383633ull,0x203233732e6f6c2eull,0x202c393531722509ull,0x32202c3835317225ull,
-0x0a202f2f0920203bull,0x3233752e72687309ull,0x2c30363172250920ull,0x202c333531722520ull,
-0x09203b3935317225ull,0x646e61090a202f2full,0x722509203233622eull,0x317225202c313631ull,
-0x20203b33202c3036ull,0x0a202f2f09202020ull,0x3233622e6c687309ull,0x2c32363172250920ull,
-0x202c313631722520ull,0x0920202020203b32ull,0x2e726f090a202f2full,0x3172250920323362ull,
-0x35317225202c3336ull,0x3236317225202c37ull,0x0a202f2f0920203bull,0x726168732e646c09ull,
-0x09203233732e6465ull,0x5b202c3436317225ull,0x785f616475635f5full,0x3836333173666572ull,
-0x202f2f093b5d382bull,0x20323831313a6469ull,0x785f616475635f5full,0x3836333173666572ull,
-0x6f6c2e6c756d090aull,0x722509203233732eull,0x317225202c353631ull,0x20203b32202c3436ull,
-0x6873090a202f2f09ull,0x2509203233752e72ull,0x7225202c36363172ull,0x317225202c333531ull,
-0x202f2f09203b3536ull,0x33622e646e61090aull,0x3736317225092032ull,0x2c3636317225202cull,
-0x20202020203b3320ull,0x6873090a202f2f09ull,0x2509203233622e6cull,0x7225202c38363172ull,
-0x203b34202c373631ull,0x202f2f0920202020ull,0x6168732e646c090aull,0x203233732e646572ull,
-0x202c393631722509ull,0x5f616475635f5f5bull,0x3633317366657278ull,0x2f093b5d32312b38ull,
-0x3831313a6469202full,0x616475635f5f2033ull,0x333173666572785full,0x2e6c756d090a3836ull,
-0x09203233732e6f6cull,0x25202c3037317225ull,0x3b32202c39363172ull,0x090a202f2f092020ull,
-0x203233752e726873ull,0x202c313731722509ull,0x25202c3335317225ull,0x2f09203b30373172ull,
-0x2e646e61090a202full,0x3172250920323362ull,0x37317225202c3237ull,0x2020203b33202c31ull,
-0x090a202f2f092020ull,0x203233622e6c6873ull,0x202c333731722509ull,0x36202c3237317225ull,
-0x2f0920202020203bull,0x622e726f090a202full,0x3731722509203233ull,0x3836317225202c34ull,
-0x3b3337317225202cull,0x090a202f2f092020ull,0x09203233622e726full,0x25202c3537317225ull,
-0x7225202c33363172ull,0x2f0920203b343731ull,0x732e646c090a202full,0x33732e6465726168ull,
-0x3637317225092032ull,0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d36312b383633ull,
-0x313a6469202f2f09ull,0x75635f5f20343831ull,0x73666572785f6164ull,0x756d090a38363331ull,
-0x3233732e6f6c2e6cull,0x2c37373172250920ull,0x202c363731722520ull,0x202f2f0920203b32ull,
-0x33752e726873090aull,0x3837317225092032ull,0x2c3335317225202cull,0x203b373731722520ull,
-0x6e61090a202f2f09ull,0x2509203233622e64ull,0x7225202c39373172ull,0x203b33202c383731ull,
-0x202f2f0920202020ull,0x33622e6c6873090aull,0x3038317225092032ull,0x2c3937317225202cull,
-0x20202020203b3820ull,0x646c090a202f2f09ull,0x2e6465726168732eull,0x3172250920323373ull,
-0x635f5f5b202c3138ull,0x666572785f616475ull,0x30322b3836333173ull,0x6469202f2f093b5dull,
-0x5f5f20353831313aull,0x6572785f61647563ull,0x090a383633317366ull,0x732e6f6c2e6c756dull,
-0x3831722509203233ull,0x3138317225202c32ull,0x2f0920203b32202cull,0x2e726873090a202full,
-0x3172250920323375ull,0x35317225202c3338ull,0x3238317225202c33ull,0x090a202f2f09203bull,
-0x203233622e646e61ull,0x202c343831722509ull,0x33202c3338317225ull,0x2f0920202020203bull,
-0x2e6c6873090a202full,0x3172250920323362ull,0x38317225202c3538ull,0x20203b3031202c34ull,
-0x090a202f2f092020ull,0x09203233622e726full,0x25202c3638317225ull,0x7225202c30383172ull,
-0x2f0920203b353831ull,0x622e726f090a202full,0x3831722509203233ull,0x3537317225202c37ull,
-0x3b3638317225202cull,0x090a202f2f092020ull,0x65726168732e646cull,0x2509203233732e64ull,
-0x5f5b202c38383172ull,0x72785f616475635full,0x2b38363331736665ull,0x202f2f093b5d3432ull,
-0x20363831313a6469ull,0x785f616475635f5full,0x3836333173666572ull,0x6f6c2e6c756d090aull,
-0x722509203233732eull,0x317225202c393831ull,0x20203b32202c3838ull,0x6873090a202f2f09ull,
-0x2509203233752e72ull,0x7225202c30393172ull,0x317225202c333531ull,0x202f2f09203b3938ull,
-0x33622e646e61090aull,0x3139317225092032ull,0x2c3039317225202cull,0x20202020203b3320ull,
-0x6873090a202f2f09ull,0x2509203233622e6cull,0x7225202c32393172ull,0x3b3231202c313931ull,
-0x202f2f0920202020ull,0x6168732e646c090aull,0x203233732e646572ull,0x202c333931722509ull,
-0x5f616475635f5f5bull,0x3633317366657278ull,0x2f093b5d38322b38ull,0x3831313a6469202full,
-0x616475635f5f2037ull,0x333173666572785full,0x2e6c756d090a3836ull,0x09203233732e6f6cull,
-0x25202c3439317225ull,0x3b32202c33393172ull,0x090a202f2f092020ull,0x203233752e726873ull,
-0x202c353931722509ull,0x25202c3335317225ull,0x2f09203b34393172ull,0x2e646e61090a202full,
-0x3172250920323362ull,0x39317225202c3639ull,0x2020203b33202c35ull,0x090a202f2f092020ull,
-0x203233622e6c6873ull,0x202c373931722509ull,0x31202c3639317225ull,0x2f09202020203b34ull,
-0x622e726f090a202full,0x3931722509203233ull,0x3239317225202c38ull,0x3b3739317225202cull,
-0x090a202f2f092020ull,0x09203233622e726full,0x25202c3939317225ull,0x7225202c37383172ull,
-0x2f0920203b383931ull,0x732e646c090a202full,0x33732e6465726168ull,0x3030327225092032ull,
-0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d32332b383633ull,0x313a6469202f2f09ull,
-0x75635f5f20383831ull,0x73666572785f6164ull,0x756d090a38363331ull,0x3233732e6f6c2e6cull,
-0x2c31303272250920ull,0x202c303032722520ull,0x202f2f0920203b32ull,0x33752e726873090aull,
-0x3230327225092032ull,0x2c3335317225202cull,0x203b313032722520ull,0x6e61090a202f2f09ull,
-0x2509203233622e64ull,0x7225202c33303272ull,0x203b33202c323032ull,0x202f2f0920202020ull,
-0x33622e6c6873090aull,0x3430327225092032ull,0x2c3330327225202cull,0x202020203b363120ull,
-0x726f090a202f2f09ull,0x722509203233622eull,0x317225202c393931ull,0x30327225202c3939ull,
-0x202f2f0920203b34ull,0x6168732e646c090aull,0x203233732e646572ull,0x202c353032722509ull,
-0x5f616475635f5f5bull,0x3633317366657278ull,0x2f093b5d36332b38ull,0x3831313a6469202full,
-0x616475635f5f2039ull,0x333173666572785full,0x2e6c756d090a3836ull,0x09203233732e6f6cull,
-0x25202c3630327225ull,0x3b32202c35303272ull,0x090a202f2f092020ull,0x203233752e726873ull,
-0x202c373032722509ull,0x25202c3335317225ull,0x2f09203b36303272ull,0x2e646e61090a202full,
-0x3272250920323362ull,0x30327225202c3830ull,0x2020203b33202c37ull,0x090a202f2f092020ull,
-0x203233622e6c6873ull,0x202c393032722509ull,0x31202c3830327225ull,0x2f09202020203b38ull,
-0x622e726f090a202full,0x3931722509203233ull,0x3939317225202c39ull,0x3b3930327225202cull,
-0x090a202f2f092020ull,0x65726168732e646cull,0x2509203233732e64ull,0x5f5b202c30313272ull,
-0x72785f616475635full,0x2b38363331736665ull,0x202f2f093b5d3034ull,0x20303931313a6469ull,
-0x785f616475635f5full,0x3836333173666572ull,0x6f6c2e6c756d090aull,0x722509203233732eull,
-0x327225202c313132ull,0x20203b32202c3031ull,0x6873090a202f2f09ull,0x2509203233752e72ull,
-0x7225202c32313272ull,0x327225202c333531ull,0x202f2f09203b3131ull,0x33622e646e61090aull,
-0x3331327225092032ull,0x2c3231327225202cull,0x20202020203b3320ull,0x6873090a202f2f09ull,
-0x2509203233622e6cull,0x7225202c34313272ull,0x3b3032202c333132ull,0x202f2f0920202020ull,
-0x3233622e726f090aull,0x2c39393172250920ull,0x202c393931722520ull,0x20203b3431327225ull,
-0x646c090a202f2f09ull,0x2e6465726168732eull,0x3272250920323373ull,0x635f5f5b202c3531ull,
-0x666572785f616475ull,0x34342b3836333173ull,0x6469202f2f093b5dull,0x5f5f20313931313aull,
-0x6572785f61647563ull,0x090a383633317366ull,0x732e6f6c2e6c756dull,0x3132722509203233ull,
-0x3531327225202c36ull,0x2f0920203b32202cull,0x2e726873090a202full,0x3272250920323375ull,
-0x35317225202c3731ull,0x3631327225202c33ull,0x090a202f2f09203bull,0x203233622e646e61ull,
-0x202c383132722509ull,0x33202c3731327225ull,0x2f0920202020203bull,0x2e6c6873090a202full,
-0x3272250920323362ull,0x31327225202c3931ull,0x20203b3232202c38ull,0x090a202f2f092020ull,
-0x09203233622e726full,0x25202c3939317225ull,0x7225202c39393172ull,0x2f0920203b393132ull,
-0x732e646c090a202full,0x33732e6465726168ull,0x3032327225092032ull,0x6475635f5f5b202cull,
-0x3173666572785f61ull,0x3b5d38342b383633ull,0x313a6469202f2f09ull,0x75635f5f20323931ull,
-0x73666572785f6164ull,0x756d090a38363331ull,0x3233732e6f6c2e6cull,0x2c31323272250920ull,
-0x202c303232722520ull,0x202f2f0920203b32ull,0x33752e726873090aull,0x3232327225092032ull,
-0x2c3335317225202cull,0x203b313232722520ull,0x6e61090a202f2f09ull,0x2509203233622e64ull,
-0x7225202c33323272ull,0x203b33202c323232ull,0x202f2f0920202020ull,0x33622e6c6873090aull,
-0x3432327225092032ull,0x2c3332327225202cull,0x202020203b343220ull,0x726f090a202f2f09ull,
-0x722509203233622eull,0x317225202c393931ull,0x32327225202c3939ull,0x202f2f0920203b34ull,
-0x6168732e646c090aull,0x203233732e646572ull,0x202c353232722509ull,0x5f616475635f5f5bull,
-0x3633317366657278ull,0x2f093b5d32352b38ull,0x3931313a6469202full,0x616475635f5f2033ull,
-0x333173666572785full,0x2e6c756d090a3836ull,0x09203233732e6f6cull,0x25202c3632327225ull,
-0x3b32202c35323272ull,0x090a202f2f092020ull,0x203233752e726873ull,0x202c373232722509ull,
-0x25202c3335317225ull,0x2f09203b36323272ull,0x2e646e61090a202full,0x3272250920323362ull,
-0x32327225202c3832ull,0x2020203b33202c37ull,0x090a202f2f092020ull,0x203233622e6c6873ull,
-0x202c393232722509ull,0x32202c3832327225ull,0x2f09202020203b36ull,0x622e726f090a202full,
-0x3931722509203233ull,0x3939317225202c39ull,0x3b3932327225202cull,0x090a202f2f092020ull,
-0x65726168732e646cull,0x2509203233732e64ull,0x5f5b202c30333272ull,0x72785f616475635full,
-0x2b38363331736665ull,0x202f2f093b5d3635ull,0x20343931313a6469ull,0x785f616475635f5full,
-0x3836333173666572ull,0x6f6c2e6c756d090aull,0x722509203233732eull,0x327225202c313332ull,
-0x20203b32202c3033ull,0x6873090a202f2f09ull,0x2509203233752e72ull,0x7225202c32333272ull,
-0x327225202c333531ull,0x202f2f09203b3133ull,0x33622e646e61090aull,0x3333327225092032ull,
-0x2c3233327225202cull,0x20202020203b3320ull,0x6873090a202f2f09ull,0x2509203233622e6cull,
-0x7225202c34333272ull,0x3b3832202c333332ull,0x202f2f0920202020ull,0x3233622e726f090aull,
-0x2c39393172250920ull,0x202c393931722520ull,0x20203b3433327225ull,0x646c090a202f2f09ull,
-0x2e6465726168732eull,0x3272250920323373ull,0x635f5f5b202c3533ull,0x666572785f616475ull,
-0x30362b3836333173ull,0x6469202f2f093b5dull,0x5f5f20353931313aull,0x6572785f61647563ull,
-0x090a383633317366ull,0x732e6f6c2e6c756dull,0x3332722509203233ull,0x3533327225202c36ull,
-0x2f0920203b32202cull,0x2e726873090a202full,0x3272250920323375ull,0x35317225202c3733ull,
-0x3633327225202c33ull,0x090a202f2f09203bull,0x203233622e6c6873ull,0x202c383332722509ull,
-0x33202c3733327225ull,0x2f09202020203b30ull,0x622e726f090a202full,0x3931722509203233ull,
-0x3939317225202c39ull,0x3b3833327225202cull,0x090a202f2f092020ull,0x09363109636f6c2eull,
-0x6c090a3009383934ull,0x2e6d617261702e64ull,0x6472250920343675ull,0x635f5f5b202c3935ull,
-0x5f6d726170616475ull,0x72706d6f63385a5full,0x30536a4b50737365ull,0x32746e697535505full,
-0x5d746c757365725full,0x3a6469202f2f093bull,0x635f5f2036393131ull,0x5f6d726170616475ull,
-0x72706d6f63385a5full,0x30536a4b50737365ull,0x32746e697535505full,0x2b746c757365725full,
-0x747663090a307830ull,0x3631752e3233732eull,0x2c39333272250920ull,0x2e64696174632520ull,
-0x0a202f2f09203b78ull,0x3436752e74766309ull,0x722509203233732eull,0x327225202c303664ull,
-0x09202020203b3933ull,0x6c756d090a202f2full,0x203436752e6f6c2eull,0x202c313664722509ull,
-0x38202c3036647225ull,0x0a202f2f0920203bull,0x3436752e64646109ull,0x2c32366472250920ull,
-0x202c393564722520ull,0x09203b3136647225ull,0x6c6873090a202f2full,0x722509203233622eull,
-0x317225202c303432ull,0x203b3631202c3330ull,0x0a202f2f09202020ull,0x203233622e726f09ull,
-0x202c313432722509ull,0x25202c3430317225ull,0x0920203b30343272ull,0x2e7473090a202f2full,
-0x762e6c61626f6c67ull,0x5b09203233752e32ull,0x5d302b3236647225ull,0x31343272257b202cull,
-0x3b7d39393172252cull,0x744c240a202f2f09ull,0x36343534345f305full,0x09636f6c2e090a3aull,
-0x3009373335093631ull,0x203b74697865090aull,0x2020202020202020ull,0x2020202020202020ull,
-0x2020202020202020ull,0x444c240a202f2f09ull,0x385a5f5f646e6557ull,0x73736572706d6f63ull,
-0x35505f30536a4b50ull,0x090a3a32746e6975ull,0x385a5f202f2f207dull,0x73736572706d6f63ull,
-0x35505f30536a4b50ull,0x000a0a32746e6975ull
-};
-
-
-}
 
 
 
@@ -9702,576 +8218,1703 @@ static const unsigned long long __deviceText_$sm_13$[] = {
 0x3030303030783020ull,0x3034783020303030ull,0x3020303030303030ull,0x3030303030303478ull,
 0x0a7d0a7d090a2030ull,0x090a7b2065646f63ull,0x5f203d20656d616eull,0x6572706d6f63385aull,
 0x5f30536a4b507373ull,0x0a32746e69753550ull,0x203d206d656d6c09ull,0x206d656d73090a30ull,
-0x090a34303731203dull,0x32203d2020676572ull,0x2020726162090a38ull,0x6e6f63090a31203dull,
+0x090a38383032203dull,0x32203d2020676572ull,0x2020726162090a38ull,0x6e6f63090a31203dull,
 0x0909090a7b207473ull,0x20656d616e676573ull,0x0a74736e6f63203dull,0x756e676573090909ull,
 0x090a31203d20206dull,0x74657366666f0909ull,0x09090a30203d2020ull,0x2020736574796209ull,
-0x09090a3436203d20ull,0x09090a7b206d656dull,0x3030303030783009ull,0x3030783020663030ull,
-0x3020666630303030ull,0x3130303030303078ull,0x3038663378302030ull,0x09090a2030303030ull,
-0x3030303030783009ull,0x3030783020666433ull,0x3020663930303030ull,0x3030303030303078ull,
-0x3030303078302033ull,0x09090a2030323030ull,0x3030313134783009ull,0x3030783020303030ull,
-0x3020303034303030ull,0x3535353535353578ull,0x3038303478302035ull,0x09090a2030303030ull,
-0x3030303030783009ull,0x3030783020313030ull,0x3020633030303030ull,0x3030303030303078ull,
-0x3038643378302030ull,0x09090a2030303030ull,0x6962090a7d090a7dull,0x0a7b2065646f636eull,
-0x3030306178300909ull,0x3078302031303030ull,0x2030383730303034ull,0x3030303830337830ull,
-0x3463367830203931ull,0x090a203064376330ull,0x3030303061783009ull,0x6330783020646664ull,
-0x3020386337343130ull,0x3030613130306178ull,0x3030303078302033ull,0x09090a2030303030ull,
-0x3061313030317830ull,0x3030307830203330ull,0x7830203030313130ull,0x3931633230313134ull,
-0x3030303030783020ull,0x3009090a20333030ull,0x3130303030303278ull,0x3130343078302039ull,
-0x3378302030383738ull,0x2039316330323030ull,0x3730303134637830ull,0x783009090a203038ull,
-0x6431303063343034ull,0x3030303030783020ull,0x3032783020333030ull,0x3020393163633030ull,
-0x3837383132343078ull,0x64783009090a2030ull,0x2039316330653030ull,0x3730306330387830ull,
-0x3030307830203038ull,0x7830203530653030ull,0x3038373030303063ull,0x3064783009090a20ull,
-0x3020643163303138ull,0x3837303034343078ull,0x3031303378302030ull,0x6378302031326330ull,
-0x2030383730303134ull,0x303061783009090aull,0x7830206431653030ull,0x3038373430303434ull,
-0x3138313033783020ull,0x3465783020313230ull,0x0a20303837303031ull,0x3830303378300909ull,
-0x6378302035326330ull,0x2030383730303134ull,0x6530313030637830ull,0x6233307830203931ull,
-0x090a206230383038ull,0x3130303061783009ull,0x3434783020643130ull,0x3020303837343030ull,
-0x3232313831303378ull,0x3031346578302031ull,0x09090a2030383730ull,0x3431303034307830ull,
-0x3234657830203130ull,0x7830203038373831ull,0x3931653031303063ull,0x3038623330783020ull,
-0x3009090a20623038ull,0x3130313030306178ull,0x3030343478302064ull,0x3078302030383734ull,
-0x2031303631303034ull,0x3738313234657830ull,0x783009090a203038ull,0x3931653031303063ull,
-0x3038623330783020ull,0x3430783020623038ull,0x3020313038313030ull,0x3837383132346578ull,
-0x66783009090a2030ull,0x2031303030303030ull,0x3030303030657830ull,0x3136387830203230ull,
-0x7830203330656666ull,0x3030303030303030ull,0x3030783009090a20ull,0x3020353030303230ull,
-0x3837303030306378ull,0x3031306178302030ull,0x3078302033303030ull,0x2030303030303030ull,
-0x313031783009090aull,0x7830203330303030ull,0x3030313030303030ull,0x6630303131783020ull,
-0x3131783020383161ull,0x0a20633163663030ull,0x3030313178300909ull,0x6278302030326566ull,
-0x2038313437363031ull,0x3637373031627830ull,0x3031627830206331ull,0x090a203032383738ull,
-0x6530303062783009ull,0x3030783020393130ull,0x3020303837383132ull,0x3132653030306278ull,
-0x3132303078302064ull,0x09090a2030383763ull,0x3465303030627830ull,0x3230307830203132ull,
-0x7830203038373032ull,0x3931366530303062ull,0x3831323030783020ull,0x3009090a20303837ull,
-0x3138653030306278ull,0x3132303078302064ull,0x6278302030383763ull,0x2031326165303030ull,
-0x3730323230307830ull,0x783009090a203038ull,0x3931636530303062ull,0x3831323030783020ull,
-0x3062783020303837ull,0x3020643165653030ull,0x3837633132303078ull,0x62783009090a2030ull,
-0x2031323066303030ull,0x3730323230307830ull,0x3030627830203038ull,0x7830203931326630ull,
-0x3038373831323030ull,0x3062783009090a20ull,0x3020643134663030ull,0x3837633132303078ull,
-0x3030306278302030ull,0x3078302031323666ull,0x2030383730323230ull,0x303064783009090aull,
-0x7830206430303031ull,0x3038373030303032ull,0x6630303062783020ull,0x3030783020393138ull,
-0x0a20303837383132ull,0x3030306278300909ull,0x3078302064316166ull,0x2030383763313230ull,
-0x6366303030627830ull,0x3230307830203132ull,0x090a203038373032ull,0x6630303062783009ull,
-0x3030783020393165ull,0x3020303837383132ull,0x3130363730646278ull,0x3830646278302063ull,
-0x09090a2030323236ull,0x3436363064627830ull,0x3064627830203831ull,0x7830206331363637ull,
-0x3032383638306462ull,0x3636306462783020ull,0x3009090a20383161ull,0x3163363730646278ull,
-0x3830646278302063ull,0x6278302030326536ull,0x2038313037363064ull,0x3237373064627830ull,
-0x783009090a206331ull,0x3032343738306462ull,0x3736306462783020ull,0x6462783020383136ull,
-0x3020633138373730ull,0x3261373830646278ull,0x62783009090a2030ull,0x2038316337363064ull,
-0x6537373064627830ull,0x3063627830206331ull,0x7830203132306530ull,0x3038373032323030ull,
-0x6362783009090a20ull,0x3020393132653030ull,0x3837383132303078ull,0x3030636278302030ull,
-0x3078302064313465ull,0x2030383763313230ull,0x306362783009090aull,0x7830203132366530ull,
-0x3038373032323030ull,0x6530306362783020ull,0x3030783020393138ull,0x0a20303837383132ull,
-0x3030636278300909ull,0x3078302064316165ull,0x2030383763313230ull,0x6365303063627830ull,
-0x3230307830203132ull,0x090a203038373032ull,0x6530306362783009ull,0x3030783020393165ull,
-0x3020303837383132ull,0x3130663030636278ull,0x3132303078302064ull,0x09090a2030383763ull,
-0x3266303063627830ull,0x3230307830203132ull,0x7830203038373032ull,0x3130343730303030ull,
-0x3831323465783020ull,0x3009090a20303837ull,0x3036373030303078ull,0x3132346578302031ull,
-0x3078302030383763ull,0x2031303837303030ull,0x3730323234657830ull,0x783009090a203038ull,
-0x3130613730303030ull,0x3831323465783020ull,0x3030783020303837ull,0x3020313063373030ull,
-0x3837633132346578ull,0x30783009090a2030ull,0x2031306537303030ull,0x3730323234657830ull,
-0x3030307830203038ull,0x7830203130303830ull,0x3038373831323465ull,0x3030783009090a20ull,
-0x3020313032383030ull,0x3837633132346578ull,0x3030303078302030ull,0x6578302031303438ull,
-0x2030383730323234ull,0x303030783009090aull,0x7830203130363830ull,0x3038373831323465ull,
-0x3830303030783020ull,0x3465783020313038ull,0x0a20303837633132ull,0x3030303078300909ull,
-0x6578302031306138ull,0x2030383730323234ull,0x6338303030307830ull,0x3234657830203130ull,
-0x090a203038373831ull,0x3830303030783009ull,0x3465783020313065ull,0x3020303837633132ull,
-0x3030393030303078ull,0x3232346578302031ull,0x09090a2030383730ull,0x3239303030307830ull,
-0x3234657830203130ull,0x7830203038373831ull,0x3130343930303030ull,0x6331323465783020ull,
-0x3009090a20303837ull,0x3036393030303078ull,0x3232346578302031ull,0x3078302030383730ull,
-0x2031303839303030ull,0x3738313234657830ull,0x783009090a203038ull,0x3130613930303030ull,
-0x6331323465783020ull,0x3030783020303837ull,0x3020313063393030ull,0x3837303232346578ull,
-0x30783009090a2030ull,0x2031306539303030ull,0x3738313234657830ull,0x3030307830203038ull,
-0x7830203130306130ull,0x3038376331323465ull,0x3030783009090a20ull,0x3020313032613030ull,
-0x3837303232346578ull,0x3030303078302030ull,0x6578302031303461ull,0x2030383738313234ull,
-0x303030783009090aull,0x7830203130366130ull,0x3038376331323465ull,0x6130303030783020ull,
-0x3465783020313038ull,0x0a20303837303232ull,0x3030303078300909ull,0x6578302031306161ull,
-0x2030383738313234ull,0x6361303030307830ull,0x3234657830203130ull,0x090a203038376331ull,
-0x6130303030783009ull,0x3465783020313065ull,0x3020303837303232ull,0x3030623030303078ull,
-0x3132346578302031ull,0x09090a2030383738ull,0x3262303030307830ull,0x3234657830203130ull,
-0x7830203038376331ull,0x3130346230303030ull,0x3032323465783020ull,0x3009090a20303837ull,
-0x3036623030303078ull,0x3132346578302031ull,0x3078302030383738ull,0x2031303862303030ull,
-0x3763313234657830ull,0x783009090a203038ull,0x3130616230303030ull,0x3032323465783020ull,
-0x3030783020303837ull,0x3020313063623030ull,0x3837383132346578ull,0x30783009090a2030ull,
-0x2031306562303030ull,0x3763313234657830ull,0x3030307830203038ull,0x7830203130306330ull,
-0x3038373032323465ull,0x3030783009090a20ull,0x3020313032633030ull,0x3837383132346578ull,
-0x3030303078302030ull,0x6578302031303463ull,0x2030383763313234ull,0x303030783009090aull,
-0x7830203130366330ull,0x3038373032323465ull,0x6330303030783020ull,0x3465783020313038ull,
-0x0a20303837383132ull,0x3030303078300909ull,0x6578302031306163ull,0x2030383763313234ull,
-0x6363303030307830ull,0x3234657830203130ull,0x090a203038373032ull,0x6330303030783009ull,
-0x3465783020313065ull,0x3020303837383132ull,0x3130383832303178ull,0x3030303078302039ull,
-0x09090a2033303030ull,0x3064303030307830ull,0x3234657830203130ull,0x7830203038376331ull,
-0x3930633030303030ull,0x3030303063783020ull,0x3009090a20303837ull,0x3032643030303078ull,
-0x3232346578302031ull,0x3178302030383730ull,0x2064333866303030ull,0x3763333036307830ull,
-0x783009090a203038ull,0x3133386630303031ull,0x6333303430783020ull,0x3031783020303837ull,
-0x3020643138663030ull,0x3837633330363078ull,0x31783009090a2030ull,0x2039313866303030ull,
-0x3763333034307830ull,0x3030317830203038ull,0x7830203533386630ull,0x3038376333303630ull,
-0x3031783009090a20ull,0x3020313238663030ull,0x3837633330343078ull,0x3030303178302030ull,
-0x3078302039333866ull,0x2030383763333036ull,0x386363783009090aull,0x7830203532346666ull,
-0x3038373030363030ull,0x6666386363783020ull,0x3030783020393236ull,0x0a20303837303036ull,
-0x6638636378300909ull,0x3078302064323866ull,0x2030383730303630ull,0x3236393462627830ull,
-0x3462627830203034ull,0x090a203434323661ull,0x6330306162783009ull,0x3830783020393432ull,
-0x3020303837633232ull,0x3365393130303278ull,0x3030303078302064ull,0x09090a2033303030ull,
-0x3032303130657830ull,0x3030307830203933ull,0x7830203038373833ull,0x3132303231313065ull,
-0x3032303030783020ull,0x3009090a20303837ull,0x3330323231306578ull,0x3330303078302035ull,
-0x3378302030383734ull,0x2064666631323830ull,0x3734313463367830ull,0x783009090a203864ull,
-0x3931323231313065ull,0x3831303030783020ull,0x3065783020303837ull,0x3020643132323231ull,
-0x3837633130303078ull,0x65783009090a2030ull,0x2031333432323130ull,0x3730333030307830ull,
-0x3030317830203038ull,0x7830203330303138ull,0x3038323130303030ull,0x3065783009090a20ull,
-0x3020393230313338ull,0x3837383134303078ull,0x3338306578302030ull,0x3078302064326331ull,
-0x2030383730323430ull,0x383065783009090aull,0x7830203532613133ull,0x3038376331343030ull,
-0x3030303065783020ull,0x3330783020393265ull,0x0a20333030303866ull,0x3030306578300909ull,
-0x3078302064326131ull,0x2033303030386633ull,0x3831303030657830ull,0x6633307830203532ull,
-0x090a203330303038ull,0x3162303062783009ull,0x3038783020643334ull,0x3020303837303030ull,
-0x3332316630306278ull,0x3030303878302064ull,0x09090a2030383730ull,0x6631633730627830ull,
-0x3030367830206466ull,0x7830203864373830ull,0x6433653130303039ull,0x3030303030783020ull,
-0x3009090a20303837ull,0x3338663030303178ull,0x3330343078302064ull,0x6378302030383264ull,
-0x2030346531613030ull,0x6531623030637830ull,0x783009090a203832ull,0x3434303130313063ull,
-0x3030313063783020ull,0x3063783020383463ull,0x3020343232316630ull,0x3265303031306378ull,
-0x65783009090a2063ull,0x2064336331613030ull,0x3734343030307830ull,0x3030657830203038ull,
-0x7830203134303161ull,0x3038373834303030ull,0x3065783009090a20ull,0x3020393261316130ull,
-0x3837633230303078ull,0x3930306578302030ull,0x3078302064326131ull,0x2030383763333030ull,
-0x303065783009090aull,0x7830206433323137ull,0x3038373034303030ull,0x3163303065783020ull,
-0x3030783020393232ull,0x0a20303837383230ull,0x6630306278300909ull,0x3878302035323631ull,
-0x2030383730303030ull,0x3431393030627830ull,0x3030387830203532ull,0x090a203038373030ull,
-0x3163373062783009ull,0x3036783020646633ull,0x3020386437383030ull,0x3232313030303978ull,
-0x3030303078302035ull,0x09090a2030383730ull,0x3866303030317830ull,0x3034307830203532ull,
-0x7830203038326433ull,0x6333323166303063ull,0x3162303063783020ull,0x3009090a20633232ull,
-0x3430316630306378ull,0x6630306378302030ull,0x6378302034346330ull,0x2034323231613030ull,
-0x6530663030637830ull,0x783009090a203834ull,0x3932633162303065ull,0x3034303030783020ull,
-0x3065783020303837ull,0x3020643330316230ull,0x3837343430303078ull,0x65783009090a2030ull,
-0x2031346131623030ull,0x3738343030307830ull,0x3030657830203038ull,0x7830203932613139ull,
-0x3038373832303030ull,0x3065783009090a20ull,0x3020643232313730ull,0x3837633330303078ull,
-0x6330306578302030ull,0x3078302064333231ull,0x2030383730343030ull,0x303062783009090aull,
-0x7830203532343162ull,0x3038373030303038ull,0x3166303062783020ull,0x3038783020353232ull,
-0x0a20303837303030ull,0x6337306278300909ull,0x3678302064663331ull,0x2038643738303030ull,
-0x3231303030397830ull,0x3030307830203532ull,0x090a203038373030ull,0x6630303031783009ull,
-0x3430783020353238ull,0x3020303832643330ull,0x3232316230306378ull,0x6130306378302063ull,
-0x09090a2038323231ull,0x3031623030637830ull,0x3030637830203434ull,0x7830203034633062ull,
-0x3432323166303063ull,0x3062303063783020ull,0x3009090a20633265ull,0x3463316130306578ull,
-0x3430303078302035ull,0x6578302030383734ull,0x2064333031613030ull,0x3730343030307830ull,
-0x783009090a203038ull,0x3932613161303065ull,0x6332303030783020ull,0x3065783020303837ull,
-0x3020313461313930ull,0x3837343430303078ull,0x65783009090a2030ull,0x2064323231373030ull,
-0x3763333030307830ull,0x3030657830203038ull,0x7830203932323163ull,0x3038373832303030ull,
-0x3062783009090a20ull,0x3020353236313031ull,0x3837303030303878ull,0x3930306278302030ull,
-0x3878302035323431ull,0x2030383730303030ull,0x373062783009090aull,0x7830206466333163ull,
-0x3864373830303036ull,0x3130303039783020ull,0x3030783020353232ull,0x0a20303837303030ull,
-0x3030303178300909ull,0x3078302035323866ull,0x2030383264333034ull,0x3231623030637830ull,
-0x3130637830206333ull,0x090a206332323130ull,0x3166303063783009ull,0x3063783020303430ull,
-0x3020343463306630ull,0x3234313930306378ull,0x6630306378302034ull,0x09090a2038346530ull,
-0x6331623030657830ull,0x3030307830203932ull,0x7830203038373034ull,0x6433303162303065ull,
-0x3434303030783020ull,0x3009090a20303837ull,0x3461316230306578ull,0x3430303078302031ull,
-0x6578302030383738ull,0x2039326131393030ull,0x3738323030307830ull,0x783009090a203038ull,
-0x6432323137303065ull,0x6333303030783020ull,0x3065783020303837ull,0x3020643332316330ull,
-0x3837303430303078ull,0x62783009090a2030ull,0x2035323431623030ull,0x3730303030387830ull,
-0x3030627830203038ull,0x7830203532323166ull,0x3038373030303038ull,0x3062783009090a20ull,
-0x3020646633316337ull,0x6437383030303678ull,0x3030303978302038ull,0x3078302035323231ull,
-0x2030383730303030ull,0x303031783009090aull,0x7830203532386630ull,0x3038326433303430ull,
-0x3162303063783020ull,0x3063783020633232ull,0x0a20383232316130ull,0x6230306378300909ull,
-0x6378302030343031ull,0x2034346330623030ull,0x3231663030637830ull,0x3030637830203432ull,
-0x090a203834653062ull,0x3161303065783009ull,0x3030783020643263ull,0x3020303837303430ull,
-0x3330316130306578ull,0x3430303078302064ull,0x09090a2030383734ull,0x6131613030657830ull,
-0x3030307830203134ull,0x7830203038373834ull,0x3932613139303065ull,0x6332303030783020ull,
-0x3009090a20303837ull,0x3232313730306578ull,0x3330303078302064ull,0x6578302030383763ull,
-0x2064333231633030ull,0x3730343030307830ull,0x783009090a203038ull,0x3532343162303062ull,
-0x3030303038783020ull,0x3062783020303837ull,0x3020353232316630ull,0x3837303030303878ull,
-0x62783009090a2030ull,0x2064663331633730ull,0x3738303030367830ull,0x3030397830203864ull,
-0x7830203532323130ull,0x3038373030303030ull,0x3031783009090a20ull,0x3020353238663030ull,
-0x3832643330343078ull,0x6230306378302030ull,0x6378302063323231ull,0x2038323231613030ull,
-0x303063783009090aull,0x7830203434303162ull,0x3034633062303063ull,0x3166303063783020ull,
-0x3063783020343232ull,0x0a20633265306230ull,0x6130306578300909ull,0x3078302035346331ull,
-0x2030383734343030ull,0x3031613030657830ull,0x3030307830206433ull,0x090a203038373034ull,
-0x3161303065783009ull,0x3030783020393261ull,0x3020303837633230ull,0x3461313930306578ull,
-0x3430303078302031ull,0x09090a2030383734ull,0x3231373030657830ull,0x3030307830206432ull,
-0x7830203038376333ull,0x3932323163303065ull,0x3832303030783020ull,0x3009090a20303837ull,
-0x3236313031306278ull,0x3030303878302035ull,0x6278302030383730ull,0x2035323431393030ull,
-0x3730303030387830ull,0x783009090a203038ull,0x6466333163373062ull,0x3830303036783020ull,
-0x3039783020386437ull,0x3020353232313030ull,0x3837303030303078ull,0x31783009090a2030ull,
-0x2035323866303030ull,0x3264333034307830ull,0x3030637830203038ull,0x7830206333323162ull,
-0x6332323130313063ull,0x3063783009090a20ull,0x3020303430316630ull,0x3463306630306378ull,
-0x3930306378302034ull,0x6378302038313431ull,0x2063336530663030ull,0x303065783009090aull,
-0x7830203532633162ull,0x3038373034303030ull,0x3162303065783020ull,0x3030783020393230ull,
-0x0a20303837343430ull,0x6230306578300909ull,0x3078302064326131ull,0x2030383763333030ull,
-0x6131363030657830ull,0x3030307830203132ull,0x090a203038373432ull,0x3037303065783009ull,
-0x3030783020353263ull,0x3020303837383230ull,0x3263306330306578ull,0x3230303078302039ull,
-0x09090a2030383763ull,0x3031393030627830ull,0x3030387830203931ull,0x7830203038373030ull,
-0x3931633061303062ull,0x3030303038783020ull,0x3009090a20303837ull,0x6664306337306278ull,
-0x3030303678302064ull,0x3978302038643738ull,0x2039316330303030ull,0x3730303030307830ull,
-0x783009090a203038ull,0x6431303063343034ull,0x3030303030783020ull,0x3031783020333030ull,
-0x3020393138663030ull,0x3832643330343078ull,0x30783009090a2030ull,0x2039306530303030ull,
-0x3730303030637830ull,0x3030637830203038ull,0x7830203432633039ull,0x6331633038303063ull,
-0x3963783009090a20ull,0x3020303236373930ull,0x3163306130306378ull,0x3730386578302038ull,
-0x3078302064313464ull,0x2030383730323230ull,0x303865783009090aull,0x7830203931386436ull,
-0x3038376331323030ull,0x3333303430783020ull,0x3465783020313034ull,0x0a20303837383132ull,
-0x3030306678300909ull,0x6578302031303030ull,0x2032303030303030ull,0x6566663136387830ull,
-0x3030307830203330ull,0x090a203030303030ull,0x6335313061783009ull,0x3030783020333030ull,
-0x3020303030303030ull,0x3030633531303178ull,0x3030303078302033ull,0x09090a2030303130ull,
-0x3130633730337830ull,0x3034367830206466ull,0x7830203864373431ull,0x3330303735313061ull,
-0x3030303030783020ull,0x3009090a20303030ull,0x3030373531303178ull,0x3030303078302033ull,
-0x3178302030383231ull,0x2031313038383230ull,0x3030303030307830ull,0x783009090a206231ull,
-0x6430303838323031ull,0x3030303030783020ull,0x3030783020373630ull,0x3020393038303030ull,
-0x3837303030306378ull,0x30783009090a2030ull,0x2064303630303030ull,0x3730303030637830ull,
-0x3030317830203038ull,0x7830203532386630ull,0x3038376333303430ull,0x3064783009090a20ull,
-0x3020313130646330ull,0x3837303030303278ull,0x3030303178302030ull,0x3478302031313631ull,
-0x2034383763303034ull,0x303031783009090aull,0x7830206430343130ull,0x3438376330303434ull,
-0x6334306362783020ull,0x3036783020313130ull,0x0a20303837303132ull,0x3330636278300909ull,
-0x3678302064303063ull,0x2030383730313230ull,0x3830303030617830ull,0x3063327830203131ull,
-0x090a203038373431ull,0x3030303033783009ull,0x3430783020393236ull,0x3020303837303130ull,
-0x3038303030303178ull,0x3030343478302064ull,0x09090a2034383763ull,0x6130303030317830ull,
-0x3034347830203131ull,0x7830203438376330ull,0x3531323030303031ull,0x6330303434783020ull,
-0x3009090a20343837ull,0x3130303030303178ull,0x3030343478302039ull,0x3178302034383763ull,
-0x2064313430303030ull,0x3763303034347830ull,0x783009090a203438ull,0x3132363030303031ull,
-0x6330303434783020ull,0x6362783020343837ull,0x3020643030633330ull,0x3837303132303678ull,
-0x62783009090a2030ull,0x2031313063343063ull,0x3730313230367830ull,0x3063627830203038ull,
-0x7830203931306336ull,0x3038373031323036ull,0x6362783009090a20ull,0x3020353130633530ull,
-0x3837303132303678ull,0x3830636278302030ull,0x3678302031323063ull,0x2030383730313230ull,
-0x303061783009090aull,0x7830203131383030ull,0x3038373431306332ull,0x3030303061783020ull,
-0x6332783020393163ull,0x0a20303837343130ull,0x3730636278300909ull,0x3678302064313063ull,
-0x2030383730313230ull,0x3031303030617830ull,0x3063327830203133ull,0x090a203038373431ull,
-0x3834303033783009ull,0x3033783020633236ull,0x3020303261383630ull,0x3065303030303178ull,
-0x3030343478302064ull,0x09090a2034383763ull,0x6530303030337830ull,0x3034307830203133ull,
-0x7830203038373033ull,0x3131323130303031ull,0x6330303434783020ull,0x3009090a20343837ull,
-0x3163303030303178ull,0x3030343478302035ull,0x6278302034383763ull,0x2064313063333063ull,
-0x3730313230367830ull,0x783009090a203038ull,0x6430303130303031ull,0x6330303434783020ull,
-0x6362783020343837ull,0x3020313130633430ull,0x3837303132303678ull,0x62783009090a2030ull,
-0x2039313063353063ull,0x3730313230367830ull,0x3030617830203038ull,0x7830206431653030ull,
-0x3038373431306332ull,0x3032783009090a20ull,0x3020313330313030ull,0x3837303330343078ull,
-0x3330636278302030ull,0x3678302064303063ull,0x2030383730313230ull,0x303061783009090aull,
-0x7830203531383030ull,0x3038373431306332ull,0x3030303033783020ull,0x3430783020313263ull,
-0x0a20303837633130ull,0x3030303178300909ull,0x3478302031316131ull,0x2034383763303034ull,
-0x3639633030327830ull,0x3030337830206332ull,0x090a206331363835ull,0x3130303031783009ull,
-0x3434783020643038ull,0x3020343837633030ull,0x3130633430636278ull,0x3132303678302039ull,
-0x09090a2030383730ull,0x3031303030327830ull,0x3034307830203132ull,0x7830203038376332ull,
-0x3131653130303031ull,0x6330303434783020ull,0x3009090a20343837ull,0x3130633330636278ull,
-0x3132303678302035ull,0x6178302030383730ull,0x2039316330303030ull,0x3734313063327830ull,
-0x783009090a203038ull,0x6430633130303031ull,0x6330303434783020ull,0x6362783020343837ull,
-0x3020313130633430ull,0x3837303132303678ull,0x32783009090a2030ull,0x2063316538383030ull,
-0x6138363030337830ull,0x3065627830203431ull,0x7830206430326333ull,0x3038373031323036ull,
-0x3061783009090a20ull,0x3020313138303030ull,0x3837343130633278ull,0x3730303278302030ull,
-0x3378302038313439ull,0x2063303638343030ull,0x303032783009090aull,0x7830203031613836ull,
-0x6330363834303032ull,0x3931303032783020ull,0x3030783020353232ull,0x0a20333030303030ull,
-0x3030613078300909ull,0x6578302031303230ull,0x2030383763303234ull,0x3331323830337830ull,
-0x3463367830206466ull,0x090a203864373431ull,0x6330313031783009ull,0x3030783020333030ull,
-0x3020303832313030ull,0x3138663030303178ull,0x3330363078302031ull,0x09090a2030383763ull,
-0x3866303030317830ull,0x3034307830203531ull,0x7830203038376333ull,0x6466623034303033ull,
-0x6330306336783020ull,0x3009090a20386437ull,0x3030313531303178ull,0x3030303078302033ull,
-0x3078302030383231ull,0x2064306130323030ull,0x3730303030637830ull,0x783009090a203038ull,
-0x3930383032303030ull,0x3030303063783020ull,0x6364783020303837ull,0x3020643030353330ull,
-0x3837303030303278ull,0x64783009090a2030ull,0x2039303035333038ull,0x3730303030327830ull,
-0x3063317830203038ull,0x7830206430303030ull,0x3038376330303434ull,0x3032783009090a20ull,
-0x3020393161386132ull,0x3030303030303078ull,0x3330383378302037ull,0x3678302064663163ull,
-0x2038643734313263ull,0x303030783009090aull,0x7830203930633032ull,0x3038373030303063ull,
-0x6330303932783020ull,0x3430783020643030ull,0x0a20303035313336ull,0x3030383078300909ull,
-0x6578302031303030ull,0x2030303564303234ull,0x6138313030327830ull,0x3030307830203531ull,
-0x090a203330303030ull,0x3032383033783009ull,0x6336783020646662ull,0x3020386437343134ull,
-0x3030353431303178ull,0x3030303078302033ull,0x09090a2030383231ull,0x3838313030327830ull,
-0x3030307830203131ull,0x7830203330303030ull,0x6466393030383033ull,0x3431346336783020ull,
-0x3009090a20386437ull,0x3030343431303178ull,0x3030303078302033ull,0x6678302030383231ull,
-0x2031303030303030ull,0x3030303030657830ull,0x783009090a203230ull,0x6430303063343034ull,
-0x3030303030783020ull,0x3030783020333030ull,0x3020393036303030ull,0x3837303030306378ull,
-0x31783009090a2030ull,0x2063303466303039ull,0x3666303039317830ull,0x3038317830203031ull,
-0x7830203531383130ull,0x3038376330303434ull,0x3066783009090a20ull,0x3020313030303030ull,
-0x3030303030306578ull,0x6631363878302032ull,0x3078302033306566ull,0x2030303030303030ull,
-0x303464783009090aull,0x7830203930303533ull,0x3038363030303032ull,0x6364383834783020ull,
-0x3030783020393130ull,0x0a20303836303136ull,0x3030303078300909ull,0x6378302039306330ull,
-0x2030383630303030ull,0x3431303038307830ull,0x3234657830203130ull,0x090a203038366330ull,
-0x3130303830783009ull,0x3465783020313036ull,0x3020303836303132ull,0x3038313030383078ull,
-0x3132346578302031ull,0x09090a2030383634ull,0x6566663136387830ull,0x3030307830203330ull,
-0x7830203030303030ull,0x3330306665313034ull,0x3030303030783020ull,0x3009090a20303030ull,
-0x3238663030303178ull,0x3330363078302064ull,0x3178302030383763ull,0x2064303038663330ull,
-0x6666376637307830ull,0x783009090a206666ull,0x3531363130303032ull,0x3030303430783020ull,
-0x3033783020303837ull,0x3020646662303438ull,0x6337303134633678ull,0x35783009090a2038ull,
-0x2033303030303030ull,0x3230303030307830ull,0x3030337830203038ull,0x7830203131613032ull,
-0x3038373030313463ull,0x3032783009090a20ull,0x3020313138633030ull,0x3837303132343078ull,
-0x6530306478302030ull,0x3878302031313830ull,0x2030383730306330ull,0x303030783009090aull,
-0x7830203930613032ull,0x3038373030303063ull,0x3035383033783020ull,0x6336783020646662ull,
-0x0a20386337303134ull,0x3130383078300909ull,0x6578302031303466ull,0x2030303530313234ull,
-0x3866303030317830ull,0x3034307830206431ull,0x090a203038376333ull,0x3838323031783009ull,
-0x3030783020353130ull,0x3020333030303030ull,0x3061303030303078ull,0x3030306378302039ull,
-0x09090a2030383730ull,0x3866303030317830ull,0x3036307830203532ull,0x7830203038376333ull,
-0x3931386630303031ull,0x6333303430783020ull,0x3009090a20303837ull,0x3238663030303178ull,
-0x3330363078302031ull,0x3178302030383763ull,0x2035313866303030ull,0x3763333034307830ull,
-0x783009090a203038ull,0x3932383037303033ull,0x3030303465783020ull,0x3064783020303837ull,
-0x3020393234313638ull,0x3837303034343078ull,0x30783009090a2030ull,0x2064303431323030ull,
-0x3730303030637830ull,0x3063317830203038ull,0x7830203932363030ull,0x3038376330303432ull,
-0x3032783009090a20ull,0x3020643165383230ull,0x3030303030303078ull,0x6130616578302033ull,
-0x3078302035313263ull,0x2030383734313230ull,0x306165783009090aull,0x7830203132326361ull,
-0x3038373032323030ull,0x6361306165783020ull,0x3030783020393132ull,0x0a20303837383132ull,
-0x3738303378300909ull,0x3678302064666630ull,0x2038633734313463ull,0x3231303064327830ull,
-0x3034307830203532ull,0x090a203038376332ull,0x3837313031783009ull,0x3030783020333030ull,
-0x3020303832303030ull,0x3232313830303378ull,0x3031636578302039ull,0x09090a2030383730ull,
-0x3231313830647830ull,0x3434307830203133ull,0x7830203038373030ull,0x3930306431303064ull,
-0x3030303032783020ull,0x3009090a20303837ull,0x3132313031303378ull,0x3031636578302064ull,
-0x6478302030383730ull,0x2039323431313830ull,0x3730303434307830ull,0x783009090a203038ull,
-0x6433383130303061ull,0x3431303434783020ull,0x3865783020303837ull,0x3020353230633838ull,
-0x3837343136383078ull,0x61783009090a2030ull,0x2031346530303030ull,0x3734313034347830ull,
-0x3030617830203038ull,0x7830206435343130ull,0x3038373431303434ull,0x3063783009090a20ull,
-0x3020643165316630ull,0x3837303030303078ull,0x3838386578302030ull,0x3078302039323263ull,
-0x2030383730323638ull,0x303063783009090aull,0x7830203133653139ull,0x3038373030303030ull,
-0x3237313065783020ull,0x3830783020643130ull,0x0a20303837633130ull,0x6130306378300909ull,
-0x3078302039336531ull,0x2030383730303030ull,0x6532353030657830ull,0x3038307830203133ull,
-0x090a203038373033ull,0x3030303039783009ull,0x3030783020353365ull,0x3020303837303030ull,
-0x3365323830306578ull,0x3330383078302039ull,0x09090a2030383738ull,0x6131633030637830ull,
-0x3030637830206331ull,0x7830203033613165ull,0x6431653030303061ull,0x3438303463783020ull,
-0x3009090a20303837ull,0x3338313030306178ull,0x3830346378302031ull,0x6278302030383734ull,
-0x2064316530633730ull,0x3730303030387830ull,0x783009090a203038ull,0x3133383163373062ull,
-0x3030303038783020ull,0x3063783020303837ull,0x3020383365313530ull,0x3465313830306378ull,
-0x63783009090a2034ull,0x2064316530303030ull,0x3038663134307830ull,0x3030637830203330ull,
-0x7830203133383130ull,0x3330306337323430ull,0x3065783009090a20ull,0x3020393330323930ull,
-0x3837383330383078ull,0x6130306578302030ull,0x3078302039343032ull,0x2030383734343038ull,
-0x303061783009090aull,0x7830203534653030ull,0x3038373430306363ull,0x3130303061783020ull,
-0x6363783020313538ull,0x0a20303837343030ull,0x6530306378300909ull,0x6378302030336131ull,
-0x2063346131323130ull,0x3232303030617830ull,0x3034387830206431ull,0x090a203038373436ull,
-0x3230303061783009ull,0x3438783020393338ull,0x3020303837343630ull,0x3438313030306178ull,
-0x3830346378302039ull,0x09090a2030383734ull,0x3632303030617830ull,0x3034637830206434ull,
-0x7830203038373438ull,0x3133653062303033ull,0x3030313463783020ull,0x3009090a20303837ull,
-0x3363313530303378ull,0x3031346378302039ull,0x6578302030383730ull,0x2064313463383838ull,
-0x3738313638307830ull,0x783009090a203038ull,0x3934343263373062ull,0x3030303038783020ull,
-0x3062783020303837ull,0x3020643436326337ull,0x3837303030303878ull,0x64783009090a2030ull,
-0x2031333831653030ull,0x3734303034307830ull,0x3030637830203038ull,0x7830203933653137ull,
-0x3038373030303030ull,0x3063783009090a20ull,0x3020393434323030ull,0x3030386631343078ull,
-0x3030306378302033ull,0x3078302064343632ull,0x2033303063373234ull,0x303063783009090aull,
-0x7830203535653136ull,0x3038373030303030ull,0x3236303065783020ull,0x3830783020393365ull,
-0x0a20303837383330ull,0x3030306178300909ull,0x6378302039343432ull,0x2030383734303063ull,
-0x3632303030617830ull,0x3063637830206434ull,0x090a203038373430ull,0x3237303065783009ull,
-0x3830783020353630ull,0x3020303837343530ull,0x3661316530306378ull,0x3030303078302031ull,
-0x09090a2030383730ull,0x3432303030617830ull,0x3034387830203535ull,0x7830203038373436ull,
-0x3935363230303061ull,0x3436303438783020ull,0x3009090a20303837ull,0x3361313931306378ull,
-0x3030303078302039ull,0x6378302030383730ull,0x2039343432313330ull,0x3334306433307830ull,
-0x783009090a203735ull,0x3533613262303033ull,0x3030313463783020ull,0x3033783020303837ull,
-0x3020353563323530ull,0x3837303031346378ull,0x63783009090a2030ull,0x2035343232313330ull,
-0x3334306433307830ull,0x3130637830203735ull,0x7830203536343232ull,0x3038373030303030ull,
-0x3064783009090a20ull,0x3020353361313531ull,0x3837343030343078ull,0x3131306378302030ull,
-0x6378302038353232ull,0x2034366532393130ull,0x313063783009090aull,0x7830203535363239ull,
-0x3331623138633330ull,0x3236313065783020ull,0x3030783020643430ull,0x0a20303837343630ull,
-0x3931306378300909ull,0x3078302031353832ull,0x2033316231386333ull,0x6132353130637830ull,
-0x3130637830203436ull,0x090a203835383234ull,0x3239313063783009ull,0x3030783020353665ull,
-0x3020303837303030ull,0x3530323631306578ull,0x3630303078302039ull,0x09090a2030383734ull,
-0x6331303030617830ull,0x3034637830203933ull,0x7830203038373438ull,0x3933633163373062ull,
-0x3030303038783020ull,0x3009090a20303837ull,0x3363313030306378ull,0x6631343078302039ull,
-0x6178302033303038ull,0x2039336331303030ull,0x3734303063637830ull,0x783009090a203038ull,
-0x3536633131333063ull,0x3430643330783020ull,0x3063783020373533ull,0x3020383632333931ull,
-0x3665326131306378ull,0x61783009090a2038ull,0x2064353033303030ull,0x3734383034637830ull,
-0x3730627830203038ull,0x7830206435653263ull,0x3038373030303038ull,0x3063783009090a20ull,
-0x3020643565323030ull,0x3030386631343078ull,0x3030306178302033ull,0x6378302064356532ull,
-0x2030383734303063ull,0x333063783009090aull,0x7830203136653231ull,0x3735333430643330ull,
-0x3338313063783020ull,0x3030783020643630ull,0x0a20303837303030ull,0x6231306578300909ull,
-0x3078302031343032ull,0x2030383738363030ull,0x6130313130637830ull,0x3130637830203836ull,
-0x090a203431323232ull,0x3135303065783009ull,0x3830783020353165ull,0x3020303837383630ull,
-0x3430313431306378ull,0x3531306378302034ull,0x09090a2030323832ull,0x6531383030657830ull,
-0x3038307830203132ull,0x7830203038373434ull,0x3932343135313065ull,0x3032303430783020ull,
-0x3009090a20303837ull,0x3263303831306378ull,0x3931306378302030ull,0x6578302038313033ull,
-0x2035323231323130ull,0x3734313034307830ull,0x783009090a203038ull,0x3932343130303062ull,
-0x3832303030783020ull,0x3065783020303837ull,0x3020353165313630ull,0x3837303230383078ull,
-0x62783009090a2030ull,0x2038313231393030ull,0x6332613030627830ull,0x3130657830203032ull,
-0x7830203531653039ull,0x3038373431303430ull,0x3062783009090a20ull,0x3020383136323630ull,
-0x3130313138306378ull,0x3030306278302063ull,0x3078302035316130ull,0x2030383734313030ull,
-0x383065783009090aull,0x7830203931633030ull,0x3038376331303030ull,0x3230303062783020ull,
-0x3030783020353130ull,0x0a20303837343130ull,0x3238306578300909ull,0x3078302035316130ull,
-0x2030383738313030ull,0x6130393330637830ull,0x6433307830203531ull,0x090a203365383365ull,
-0x3130303061783009ull,0x3438783020643163ull,0x3020303837343630ull,0x3165323030306178ull,
-0x3630343878302039ull,0x09090a2030383734ull,0x6230333030627830ull,0x3030367830206466ull,
-0x7830203863373430ull,0x6431613137303064ull,0x3430303430783020ull,0x3009090a20303837ull,
-0x3138313630306478ull,0x3030343078302039ull,0x3178302030383734ull,0x2035316331303030ull,
-0x3663333032307830ull,0x783009090a203038ull,0x3131383130303031ull,0x6333303030783020ull,
-0x3031783020303836ull,0x3020353038303030ull,0x3836633330363078ull,0x31783009090a2030ull,
-0x2064306130303030ull,0x3663333034307830ull,0x3030327830203038ull,0x7830206432363930ull,
-0x3730303030303030ull,0x3033783009090a20ull,0x3020646637313938ull,0x6337343134633678ull,
-0x3631303178302038ull,0x3078302033303038ull,0x2030383230303030ull,0x303035783009090aull,
-0x7830203330303030ull,0x3038373030303030ull,0x3030303061783020ull,0x3430783020313161ull,
-0x0a20303837303030ull,0x3030306178300909ull,0x3078302039303830ull,0x2030383730303034ull,
-0x3930323030337830ull,0x3034367830206466ull,0x090a203863376330ull,0x3061383064783009ull,
-0x3430783020353032ull,0x3020303035383034ull,0x3134303030303178ull,0x3330363078302035ull,
-0x09090a2030303563ull,0x3830303030317830ull,0x3034307830203930ull,0x7830203030356333ull,
-0x3131613030303031ull,0x6333303630783020ull,0x3009090a20303035ull,0x3030383832303478ull,
-0x3030303078302033ull,0x3178302030303030ull,0x2064323866303030ull,0x3763333034307830ull,
-0x783009090a203038ull,0x3531363136303033ull,0x3030313463783020ull,0x3032783020303837ull,
-0x3020353161303030ull,0x3837303030343078ull,0x33783009090a2030ull,0x2064666230353830ull,
-0x3730313463367830ull,0x3030357830203863ull,0x7830203330303030ull,0x3038323030303030ull,
-0x3032783009090a20ull,0x3020393161386133ull,0x3030303030303078ull,0x3832303178302066ull,
-0x3078302035313038ull,0x2033303030303030ull,0x303030783009090aull,0x7830203930633032ull,
-0x3038373030303063ull,0x3030303030783020ull,0x3063783020643061ull,0x0a20303837303030ull,
-0x3030303178300909ull,0x3078302064313866ull,0x2030383763333036ull,0x3866303030317830ull,
-0x3034307830203532ull,0x090a203038376333ull,0x6630303031783009ull,0x3630783020393138ull,
-0x3020303837633330ull,0x3238663030303178ull,0x3330343078302031ull,0x09090a2030383763ull,
-0x3866303030317830ull,0x3036307830203531ull,0x7830203038376333ull,0x3932306337303833ull,
-0x3030323465783020ull,0x3009090a20303837ull,0x3234313638306478ull,0x3034343078302039ull,
-0x3078302030383730ull,0x2031313431323030ull,0x3730303030637830ull,0x783009090a203038ull,
-0x3932653030303031ull,0x6330303432783020ull,0x3032783020343837ull,0x3020643165383230ull,
-0x3030303030303078ull,0x65783009090a2033ull,0x2035313263613065ull,0x3734313230307830ull,
-0x3065657830203038ull,0x7830203132326361ull,0x3038373032323030ull,0x6565783009090a20ull,
-0x3020393132636130ull,0x3837383132303078ull,0x3738303378302030ull,0x3678302064666630ull,
-0x2038633734313463ull,0x303132783009090aull,0x7830203532323130ull,0x3438376333303430ull,
-0x3530323031783020ull,0x3030783020333030ull,0x0a20303832303030ull,0x3830303378300909ull,
-0x6578302039323231ull,0x2030383730303163ull,0x3231313830647830ull,0x3434307830203133ull,
-0x090a203038373030ull,0x6431303064783009ull,0x3032783020643030ull,0x3020303837303030ull,
-0x3132313031303378ull,0x3031636578302064ull,0x09090a2030383730ull,0x3431313830647830ull,
-0x3434307830203932ull,0x7830203038373030ull,0x3933383130303061ull,0x3431303434783020ull,
-0x3009090a20303837ull,0x3230636238636578ull,0x3136383078302035ull,0x6178302030383734ull,
-0x2064336530303030ull,0x3734313034347830ull,0x783009090a203038ull,0x3935343130303061ull,
-0x3431303434783020ull,0x3063783020303837ull,0x3020643163316530ull,0x3837303030303078ull,
-0x65783009090a2030ull,0x2039323263623863ull,0x3730323638307830ull,0x3030637830203038ull,
-0x7830203133633139ull,0x3038373030303030ull,0x3065783009090a20ull,0x3020643165313631ull,
-0x3837633130383078ull,0x6130306378302030ull,0x3078302031346331ull,0x2030383730303030ull,
-0x303065783009090aull,0x7830203133633235ull,0x3038373033303830ull,0x3030303039783020ull,
-0x3030783020353365ull,0x0a20303837303030ull,0x3830306578300909ull,0x3078302031346332ull,
-0x2030383730343038ull,0x6131633030637830ull,0x3130637830206331ull,0x090a203033613130ull,
-0x3030303061783009ull,0x3463783020643165ull,0x3020303837343830ull,0x3338313030306178ull,
-0x3830346378302031ull,0x09090a2030383734ull,0x6530633730627830ull,0x3030387830206431ull,
-0x7830203038373030ull,0x3133383163373062ull,0x3030303038783020ull,0x3009090a20303837ull,
-0x3463313530306378ull,0x3830306378302030ull,0x6378302038346331ull,0x2064316530303030ull,
-0x3038663134307830ull,0x783009090a203330ull,0x3133383130303063ull,0x6337323430783020ull,
-0x3065783020333030ull,0x3020353465313930ull,0x3837303430383078ull,0x65783009090a2030ull,
-0x2039346531613030ull,0x3738343038307830ull,0x3030617830203038ull,0x7830203134653030ull,
-0x3038373430306363ull,0x3061783009090a20ull,0x3020643438313030ull,0x3837343030636378ull,
-0x3131306378302030ull,0x6378302030336131ull,0x2030356131323130ull,0x303061783009090aull,
-0x7830206431303230ull,0x3038373436303438ull,0x3230303061783020ull,0x3438783020353436ull,
-0x0a20303837343630ull,0x3030306178300909ull,0x6378302039343831ull,0x2030383734383034ull,
-0x3832303030617830ull,0x3034637830203135ull,0x090a203038373438ull,0x3062303033783009ull,
-0x3463783020313365ull,0x3020303837303031ull,0x3432323530303378ull,0x3031346378302035ull,
-0x09090a2030383730ull,0x3463623863657830ull,0x3638307830206431ull,0x7830203038373831ull,
-0x3934343263373062ull,0x3030303038783020ull,0x3009090a20303837ull,0x3538326337306278ull,
-0x3030303878302031ull,0x6478302030383730ull,0x2031333831313130ull,0x3734303034307830ull,
-0x783009090a203038ull,0x3534633137303063ull,0x3030303030783020ull,0x3063783020303837ull,
-0x3020393434323030ull,0x3030386631343078ull,0x63783009090a2033ull,0x2035353832303030ull,
-0x3063373234307830ull,0x3030637830203330ull,0x7830206435633136ull,0x3038373030303030ull,
-0x3065783009090a20ull,0x3020313563323630ull,0x3837343430383078ull,0x3030306178302030ull,
-0x6378302035343432ull,0x2030383734303063ull,0x303061783009090aull,0x7830203934613230ull,
-0x3038373430306363ull,0x3137303065783020ull,0x3830783020313665ull,0x0a20303837633530ull,
-0x3431306378300909ull,0x3078302064356131ull,0x2030383730303030ull,0x3232303030617830ull,
-0x3034387830203135ull,0x090a203038373436ull,0x3230303061783009ull,0x3438783020353534ull,
-0x3020303837343630ull,0x3661313831306378ull,0x3030303078302031ull,0x09090a2030383730ull,
-0x3232313330637830ull,0x6433307830203534ull,0x7830203735333430ull,0x3533383262303033ull,
-0x3030313463783020ull,0x3009090a20303837ull,0x3561323530303378ull,0x3031346378302031ull,
-0x6378302030383730ull,0x2031343032313330ull,0x3334306433307830ull,0x783009090a203735ull,
-0x3536323231313063ull,0x3030303030783020ull,0x3064783020303837ull,0x3020353361313431ull,
-0x3837343030343078ull,0x63783009090a2030ull,0x2034353032303130ull,0x6332393130637830ull,
-0x3130637830203436ull,0x7830203135343239ull,0x3331623138633330ull,0x3065783009090a20ull,
-0x3020393465313531ull,0x3837343630303078ull,0x3931306378302030ull,0x3078302064343632ull,
-0x2033316231386333ull,0x313063783009090aull,0x7830203436383234ull,0x3435363233313063ull,
-0x3239313063783020ull,0x3030783020353663ull,0x0a20303837303030ull,0x3531306578300909ull,
-0x3078302035356531ull,0x2030383734363030ull,0x3033303030617830ull,0x3034637830203136ull,
-0x090a203038373438ull,0x3363373062783009ull,0x3038783020313630ull,0x3020303837303030ull,
-0x3630333030306378ull,0x6631343078302031ull,0x09090a2033303038ull,0x3033303030617830ull,
-0x3063637830203136ull,0x7830203038373430ull,0x3536303331333063ull,0x3430643330783020ull,
-0x3009090a20373533ull,0x3632333931306378ull,0x6131306378302038ull,0x6178302038366332ull,
-0x2039356532303030ull,0x3734383034637830ull,0x783009090a203038ull,0x3935633263373062ull,
-0x3030303038783020ull,0x3063783020303837ull,0x3020393563323030ull,0x3030386631343078ull,
-0x61783009090a2033ull,0x2039356332303030ull,0x3734303063637830ull,0x3330637830203038ull,
-0x7830206435633231ull,0x3735333430643330ull,0x3063783009090a20ull,0x3020643665323731ull,
-0x3837303030303078ull,0x6231306578302030ull,0x3078302064336531ull,0x2030383738363030ull,
-0x313063783009090aull,0x7830203836613030ull,0x3431303231313063ull,0x3135303065783020ull,
-0x3830783020353163ull,0x0a20303837383630ull,0x3331306378300909ull,0x6378302030343031ull,
-0x2030323632343130ull,0x6331383030657830ull,0x3038307830203132ull,0x090a203038373034ull,
-0x3134313065783009ull,0x3430783020393234ull,0x3020303837303230ull,0x3263303731306378ull,
-0x3931306378302030ull,0x09090a2038316532ull,0x3231313130657830ull,0x3034307830203532ull,
-0x7830203038373431ull,0x3932343130303062ull,0x3832303030783020ull,0x3009090a20303837ull,
-0x3163313630306578ull,0x3230383078302035ull,0x6278302030383730ull,0x2038313231393030ull,
-0x6132613030627830ull,0x783009090a203032ull,0x3531653039313065ull,0x3431303430783020ull,
-0x3062783020303837ull,0x3020383134323630ull,0x3130313138306378ull,0x62783009090a2063ull,
-0x2035316130303030ull,0x3734313030307830ull,0x3830657830203038ull,0x7830206431633030ull,
-0x3038376331303030ull,0x3062783009090a20ull,0x3020353165313030ull,0x3837343130303078ull,
-0x3030306178302030ull,0x3878302039313033ull,0x2030383734363034ull,0x383065783009090aull,
-0x7830206431613032ull,0x3038376331303030ull,0x3230303061783020ull,0x3438783020353163ull,
-0x0a20303837343630ull,0x3630306478300909ull,0x3078302039316131ull,0x2030383734303034ull,
-0x6530303030637830ull,0x6533307830206431ull,0x090a203330303038ull,0x3135303064783009ull,
-0x3430783020353138ull,0x3020303837343030ull,0x6666303330306278ull,0x3030303678302064ull,
-0x09090a2038633734ull,0x3033383230617830ull,0x3030307830203330ull,0x7830203030303030ull,
-0x3531343130303061ull,0x3030303430783020ull,0x3009090a20303837ull,0x3138313030306178ull,
-0x3030343078302039ull,0x3178302030383730ull,0x2033303033383230ull,0x3130303030307830ull,
-0x783009090a203030ull,0x6466623036303033ull,0x6330303436783020ull,0x3931783020386337ull,
-0x3020343030653030ull,0x3061383030303178ull,0x31783009090a2038ull,0x2030316338323030ull,
-0x6538303030317830ull,0x3230317830206330ull,0x7830203330303338ull,0x3038323030303030ull,
-0x3831783009090a20ull,0x3020353030303030ull,0x3837633030343478ull,0x3130306478302030ull,
-0x3078302035303030ull,0x2030383763323034ull,0x303033783009090aull,0x7830203530323031ull,
-0x3038373030313465ull,0x3061383064783020ull,0x3430783020353032ull,0x0a20303837303034ull,
-0x3130386478300909ull,0x3078302035303063ull,0x2030383738303234ull,0x3438323030317830ull,
-0x3030317830203431ull,0x090a203830383830ull,0x3030303031783009ull,0x3430783020313161ull,
-0x3020303837633330ull,0x3030303030306678ull,0x3030306578302031ull,0x09090a2032303030ull,
-0x3639313030327830ull,0x3030307830206432ull,0x7830203330303030ull,0x6466373136383033ull,
-0x3431346336783020ull,0x3009090a20386337ull,0x3030386631303178ull,0x3030303078302033ull,
-0x3578302030383230ull,0x2033303030303030ull,0x3730303030307830ull,0x783009090a203038ull,
-0x3130346630303430ull,0x6330323465783020ull,0x3464783020303837ull,0x3020393030643330ull,
-0x3837303030303278ull,0x31783009090a2030ull,0x2035313038303230ull,0x3030303030307830ull,
-0x3034307830203330ull,0x7830203130343731ull,0x3038373030323465ull,0x3638783009090a20ull,
-0x3020333065666631ull,0x3030303030303078ull,0x3030303378302030ull,0x3678302064666230ull,
-0x2038633763303063ull,0x323061783009090aull,0x7830203330306139ull,0x3030303030303030ull,
-0x6139323031783020ull,0x3030783020333030ull,0x0a20303832303030ull,0x3030303278300909ull,
-0x3078302064306130ull,0x2030383730303034ull,0x3630323030307830ull,0x3030637830206430ull,
-0x090a203038373030ull,0x6433306364783009ull,0x3032783020313130ull,0x3020303837303030ull,
-0x3030303030303178ull,0x3030343478302064ull,0x09090a2034383763ull,0x3163333038627830ull,
-0x3230367830206466ull,0x7830203863373031ull,0x6430303030303031ull,0x6330303434783020ull,
-0x3009090a20343837ull,0x3030303030383078ull,0x3032346578302031ull,0x6478302030383663ull,
-0x2064303064353063ull,0x3630303030327830ull,0x783009090a203038ull,0x6430303030306331ull,
-0x6330303434783020ull,0x3430783020303836ull,0x3020313034373130ull,0x3836633032346578ull,
-0x33783009090a2030ull,0x2035316130313030ull,0x3730303163657830ull,0x3730337830203238ull,
-0x7830206466623063ull,0x3863373031306336ull,0x3031783009090a20ull,0x3020333030633832ull,
-0x3832303030303078ull,0x6631363878302030ull,0x3078302033306566ull,0x2030303030303030ull,
-0x303064783009090aull,0x7830203530306435ull,0x3038373030303032ull,0x3030303431783020ull,
-0x3434783020643030ull,0x0a20303837633030ull,0x6631363878300909ull,0x3078302033306566ull,
-0x2030303030303030ull,0x3730303030337830ull,0x3063367830206466ull,0x090a203863373431ull,
-0x3030303033783009ull,0x3030783020333030ull,0x3020303832303030ull,0x3038303230303378ull,
-0x3030343678302031ull,0x09090a2030383738ull,0x3035333030647830ull,0x3030327830203530ull,
-0x7830203038373030ull,0x3130323030303064ull,0x3032303430783020ull,0x3009090a20303837ull,
-0x3032633130343378ull,0x3033346378302064ull,0x3378302030383730ull,0x2035313463313034ull,
-0x3730303334637830ull,0x783009090a203038ull,0x3931366331303433ull,0x3030333463783020ull,
-0x3433783020303837ull,0x3020353030633130ull,0x3837303033346378ull,0x33783009090a2030ull,
-0x2064303030333030ull,0x3730303034657830ull,0x3030337830203038ull,0x7830203531303035ull,
-0x3038373030303465ull,0x3033783009090a20ull,0x3020393130303630ull,0x3837303030346578ull,
-0x3130303378302030ull,0x6578302035303030ull,0x2030383730303034ull,0x383064783009090aull,
-0x7830206430363036ull,0x3038373030343430ull,0x3036383064783020ull,0x3430783020353161ull,
-0x0a20303837303034ull,0x3638306478300909ull,0x3078302039316330ull,0x2030383730303434ull,
-0x3230363830647830ull,0x3434307830203530ull,0x090a203038373030ull,0x3032303033783009ull,
-0x3463783020643036ull,0x3020303837303031ull,0x3161303430303378ull,0x3031346378302035ull,
-0x09090a2030383730ull,0x6330363030337830ull,0x3134637830203931ull,0x7830203038373030ull,
-0x3530323033303064ull,0x3430303430783020ull,0x3009090a20303837ull,0x3061303630306478ull,
-0x3030343078302064ull,0x3378302030383734ull,0x2035313863313034ull,0x3730303334637830ull,
-0x783009090a203038ull,0x3931616331303433ull,0x3030333463783020ull,0x3064783020303837ull,
-0x3020353032303330ull,0x3837343030343078ull,0x33783009090a2030ull,0x2064303030353030ull,
-0x3730303034657830ull,0x3030337830203038ull,0x7830203531303036ull,0x3038373030303465ull,
-0x3433783009090a20ull,0x3020393163633130ull,0x3837303033346378ull,0x3130343378302030ull,
-0x6378302064316563ull,0x2030383730303334ull,0x383064783009090aull,0x7830206430363036ull,
-0x3038373030343430ull,0x3036383064783020ull,0x3430783020353161ull,0x0a20303837303034ull,
-0x3630303378300909ull,0x6578302039313030ull,0x2030383730303034ull,0x3030373030337830ull,
-0x3034657830206431ull,0x090a203038373030ull,0x3038303033783009ull,0x3463783020643036ull,
-0x3020303837303031ull,0x3161306130303378ull,0x3031346378302035ull,0x09090a2030383730ull,
-0x6330363830647830ull,0x3434307830203931ull,0x7830203038373030ull,0x6431653036383064ull,
-0x3030343430783020ull,0x3009090a20303837ull,0x3230643130343378ull,0x3033346378302031ull,
-0x6478302030383730ull,0x2064303630353030ull,0x3734303034307830ull,0x783009090a203038ull,
-0x3531633063303033ull,0x3030313463783020ull,0x3033783020303837ull,0x3020393165306530ull,
-0x3837303031346378ull,0x33783009090a2030ull,0x2064313030383030ull,0x3730303034657830ull,
-0x3034337830203038ull,0x7830203132326431ull,0x3038373030333463ull,0x3064783009090a20ull,
-0x3020353032303330ull,0x3837343030343078ull,0x3630306478302030ull,0x3078302064306130ull,
-0x2030383734303034ull,0x383064783009090aull,0x7830203531653036ull,0x3038373030343430ull,
-0x3038303033783020ull,0x3465783020393130ull,0x0a20303837303030ull,0x3130343378300909ull,
-0x6378302064313464ull,0x2030383730303334ull,0x3230333030647830ull,0x3034307830203530ull,
-0x090a203038373430ull,0x3030313033783009ull,0x3463783020643061ull,0x3020303837303031ull,
-0x3163303638306478ull,0x3034343078302035ull,0x09090a2030383730ull,0x3030373030337830ull,
-0x3034657830203931ull,0x7830203038373030ull,0x6431366431303433ull,0x3030333463783020ull,
-0x3009090a20303837ull,0x3032303330306478ull,0x3030343078302035ull,0x3378302030383734ull,
-0x2064306130323130ull,0x3730303134637830ull,0x783009090a203038ull,0x3531633036383064ull,
-0x3030343430783020ull,0x3033783020303837ull,0x3020393130303730ull,0x3837303030346578ull,
-0x33783009090a2030ull,0x2064313864313034ull,0x3730303334637830ull,0x3030647830203038ull,
-0x7830203530323033ull,0x3038373430303430ull,0x3033783009090a20ull,0x3020643061303431ull,
-0x3837303031346378ull,0x3638306478302030ull,0x3078302035316330ull,0x2030383730303434ull,
-0x303033783009090aull,0x7830203931303037ull,0x3038373030303465ull,0x6431303433783020ull,
-0x3463783020643161ull,0x0a20303837303033ull,0x3330306478300909ull,0x3078302035303230ull,
-0x2030383734303034ull,0x6130363130337830ull,0x3134637830206430ull,0x090a203038373030ull,
-0x3036383064783009ull,0x3430783020353163ull,0x3020303837303034ull,0x3130303730303378ull,
-0x3030346578302039ull,0x09090a2030383730ull,0x6364313034337830ull,0x3334637830206431ull,
-0x7830203038373030ull,0x3530323033303064ull,0x3430303430783020ull,0x3009090a20303837ull,
-0x3061303831303378ull,0x3031346378302064ull,0x6478302030383730ull,0x2035316330363830ull,
-0x3730303434307830ull,0x783009090a203038ull,0x3931303037303033ull,0x3030303465783020ull,
-0x3064783020303837ull,0x3020353032303330ull,0x3837343030343078ull,0x33783009090a2030ull,
-0x2064306130613130ull,0x3730303134637830ull,0x3830647830203038ull,0x7830203531633036ull,
-0x3038373030343430ull,0x3433783009090a20ull,0x3020393165643130ull,0x3837303033346378ull,
-0x3330306478302030ull,0x3078302035303230ull,0x2030383734303034ull,0x313033783009090aull,
-0x7830206430613063ull,0x3038373030313463ull,0x3036303033783020ull,0x3465783020393130ull,
-0x0a20303837303030ull,0x3030306178300909ull,0x3078302031306334ull,0x2030383730303234ull,
-0x3230333030647830ull,0x3034307830203531ull,0x090a203038373430ull,0x3030313033783009ull,
-0x3463783020353038ull,0x3020303837303031ull,0x3163306531303378ull,0x3031346378302031ull,
-0x09090a2030383730ull,0x3030333030337830ull,0x3134637830206430ull,0x7830203038373030ull,
-0x3130343031303064ull,0x3430303430783020ull,0x3009090a20303837ull,0x3061303430306478ull,
-0x3030343078302035ull,0x3278302030383734ull,0x2039303064303030ull,0x3763303234307830ull,
-0x783009090a203038ull,0x3130343065303064ull,0x3030383061783020ull,0x0a7d090a20313837ull,
-0x0000000000000a7dull
+0x09090a3836203d20ull,0x09090a7b206d656dull,0x3030303030783009ull,0x3030783020663030ull,
+0x3020666630303030ull,0x3030303030303078ull,0x3030303078302038ull,0x09090a2034303030ull,
+0x3030303030783009ull,0x3030783020323030ull,0x3020313030303030ull,0x3030303038643378ull,
+0x3038663378302030ull,0x09090a2030303030ull,0x3030303030783009ull,0x3030783020666433ull,
+0x3020663930303030ull,0x3030303030303078ull,0x3030303078302033ull,0x09090a2030323030ull,
+0x3030313134783009ull,0x3030783020303030ull,0x3020303034303030ull,0x3535353535353578ull,
+0x3038303478302035ull,0x09090a2030303030ull,0x3030303030783009ull,0x7d09090a20663130ull,
+0x6e6962090a7d090aull,0x090a7b2065646f63ull,0x3030303061783009ull,0x3430783020313030ull,
+0x3020303837303030ull,0x6631303038303378ull,0x3134633678302064ull,0x09090a2038633730ull,
+0x3062303130617830ull,0x3030307830203330ull,0x7830203030303030ull,0x3530303032303030ull,
+0x3030303063783020ull,0x3009090a20303837ull,0x3030623031303178ull,0x3030303078302033ull,
+0x3478302030383230ull,0x2035316332303131ull,0x3030303030307830ull,0x783009090a203330ull,
+0x6430303032303033ull,0x3030313463783020ull,0x3033783020303837ull,0x3020313130303130ull,
+0x3837303031346378ull,0x32783009090a2030ull,0x2035313030303030ull,0x3734313034307830ull,
+0x3430347830203038ull,0x7830203931303063ull,0x3330303030303030ull,0x3032783009090a20ull,
+0x3020643136303030ull,0x3837303130343078ull,0x3238306478302030ull,0x3078302031323030ull,
+0x2030383738303434ull,0x303033783009090aull,0x7830206430613032ull,0x3038373030313463ull,
+0x3030303030783020ull,0x3063783020643063ull,0x0a20303837303030ull,0x6133303278300909ull,
+0x3078302031316538ull,0x2062303030303030ull,0x3031633430347830ull,0x3030307830203531ull,
+0x090a203330303030ull,0x6330303032783009ull,0x3430783020643063ull,0x3020303837633032ull,
+0x3036306530306478ull,0x3063303878302064ull,0x09090a2030383730ull,0x3830323030307830ull,
+0x3030637830203930ull,0x7830203038373030ull,0x3131613030303030ull,0x3030303063783020ull,
+0x3009090a20303837ull,0x3136303138306478ull,0x3034343078302031ull,0x3378302030383730ull,
+0x2035313630303130ull,0x3730303134637830ull,0x783009090a203038ull,0x3931363038303033ull,
+0x3030313463783020ull,0x3061783020303837ull,0x3020643038303030ull,0x3837343030343478ull,
+0x33783009090a2030ull,0x2031316130383130ull,0x3730303134657830ull,0x3130337830203038ull,
+0x7830203531633038ull,0x3038373030313465ull,0x3063783009090a20ull,0x3020643036303130ull,
+0x3038303862333078ull,0x3030306178302062ull,0x3478302031313830ull,0x2030383734303034ull,
+0x303061783009090aull,0x7830203531613030ull,0x3038373430303434ull,0x3130306330783020ull,
+0x3465783020313034ull,0x0a20303837633032ull,0x3130306378300909ull,0x3078302031313830ull,
+0x2062303830386233ull,0x6130313030637830ull,0x6233307830203531ull,0x090a206230383038ull,
+0x3130306330783009ull,0x3465783020313036ull,0x3020303837303132ull,0x3038313030633078ull,
+0x3132346578302031ull,0x09090a2030383734ull,0x3437303063307830ull,0x3234657830203130ull,
+0x7830203038376330ull,0x3130363730306330ull,0x3031323465783020ull,0x3009090a20303837ull,
+0x3130643130306478ull,0x3030303278302031ull,0x3078302034383730ull,0x2031303837303063ull,
+0x3734313234657830ull,0x783009090a203038ull,0x3931306330303062ull,0x6330323030783020ull,
+0x3062783020343837ull,0x3020313232633030ull,0x3837303132303078ull,0x62783009090a2034ull,
+0x2035323463303030ull,0x3734313230307830ull,0x3830647830203438ull,0x7830203932303033ull,
+0x3038373830343430ull,0x3034783009090a20ull,0x3020393234316334ull,0x3030303030303078ull,
+0x3030633078302033ull,0x6578302031303437ull,0x2030383738313234ull,0x303030783009090aull,
+0x7830203131343130ull,0x3038373030303063ull,0x3730306330783020ull,0x3465783020313036ull,
+0x0a20303837303232ull,0x3130306478300909ull,0x3278302031313064ull,0x2034383730303030ull,
+0x3837303063307830ull,0x3234657830203130ull,0x090a203038373432ull,0x6330303062783009ull,
+0x3030783020393130ull,0x3020343837383132ull,0x3232633030306278ull,0x3232303078302031ull,
+0x09090a2034383730ull,0x3463303030627830ull,0x3230307830203532ull,0x7830203438373432ull,
+0x3932303034383064ull,0x3830343430783020ull,0x3009090a20303837ull,0x3234316334303478ull,
+0x3030303078302039ull,0x3078302033303030ull,0x2031303437303063ull,0x3738313234657830ull,
+0x783009090a203038ull,0x3131343130303030ull,0x3030303063783020ull,0x6330783020303837ull,
+0x3020313036373030ull,0x3837303232346578ull,0x64783009090a2030ull,0x2031313064313030ull,
+0x3730303030327830ull,0x3063307830203438ull,0x7830203130383730ull,0x3038373432323465ull,
+0x3062783009090a20ull,0x3020393130633030ull,0x3837383132303078ull,0x3030306278302034ull,
+0x3078302031323263ull,0x2034383730323230ull,0x303062783009090aull,0x7830203532346330ull,
+0x3438373432323030ull,0x3035383064783020ull,0x3430783020393230ull,0x0a20303837383034ull,
+0x6334303478300909ull,0x3078302039323431ull,0x2033303030303030ull,0x3437303063307830ull,
+0x3234657830203130ull,0x090a203038373831ull,0x3130303030783009ull,0x3063783020313134ull,
+0x3020303837303030ull,0x3036373030633078ull,0x3232346578302031ull,0x09090a2030383730ull,
+0x3064313030647830ull,0x3030327830203131ull,0x7830203438373030ull,0x3130383730306330ull,
+0x3432323465783020ull,0x3009090a20303837ull,0x3130633030306278ull,0x3132303078302039ull,
+0x6278302034383738ull,0x2031323263303030ull,0x3730323230307830ull,0x783009090a203438ull,
+0x3532346330303062ull,0x3432323030783020ull,0x6330783020343837ull,0x3020313034373030ull,
+0x3837383132346578ull,0x30783009090a2030ull,0x2031303637303063ull,0x3730323234657830ull,
+0x3063307830203038ull,0x7830203130383730ull,0x3038373432323465ull,0x3064783009090a20ull,
+0x3020313130643130ull,0x3837303030303278ull,0x3638306578302030ull,0x3078302039313063ull,
+0x2034383763303634ull,0x303063783009090aull,0x7830203132633036ull,0x3038373030303030ull,
+0x3032303030783020ull,0x3063783020643065ull,0x0a20303837303030ull,0x3130633078300909ull,
+0x6578302031303437ull,0x2030383730323234ull,0x3263363830657830ull,0x3634307830206431ull,
+0x090a203438373031ull,0x3037303063783009ull,0x3030783020313263ull,0x3020303837303030ull,
+0x3036373130633078ull,0x3232346578302031ull,0x09090a2030383730ull,0x3463363830657830ull,
+0x3634307830203132ull,0x7830203438373431ull,0x3931633038303063ull,0x3030303030783020ull,
+0x3009090a20303837ull,0x3038373130633078ull,0x3132346578302031ull,0x6378302030383738ull,
+0x2039316530373030ull,0x3730303030307830ull,0x783009090a203038ull,0x3130613731306330ull,
+0x3831323465783020ull,0x3063783020303837ull,0x3020393165303830ull,0x3837303030303078ull,
+0x30783009090a2030ull,0x2031306337313063ull,0x3738313234657830ull,0x3030637830203038ull,
+0x7830206431303138ull,0x3038373030303030ull,0x3031783009090a20ull,0x3020313230383830ull,
+0x3030303030303078ull,0x3130633078302033ull,0x6578302031306537ull,0x2030383763313234ull,
+0x303033783009090aull,0x7830206466313130ull,0x3863376330306336ull,0x6636303061783020ull,
+0x3030783020333030ull,0x0a20303030303030ull,0x3630303178300909ull,0x3078302033303066ull,
+0x2030383230303030ull,0x3031303030327830ull,0x3034307830203931ull,0x090a203038373030ull,
+0x3836343034783009ull,0x3030783020393163ull,0x3020333030303030ull,0x3063303230303078ull,
+0x3030306378302064ull,0x09090a2030383730ull,0x3064353063647830ull,0x3030327830206430ull,
+0x7830203038373030ull,0x3831306530306431ull,0x3636303962783020ull,0x3009090a20383130ull,
+0x3030303030383078ull,0x3132346578302031ull,0x3178302030383738ull,0x2038313265303064ull,
+0x3236363039627830ull,0x783009090a203831ull,0x3130323030303830ull,0x3831323465783020ull,
+0x6431783020303837ull,0x3020383134653030ull,0x3134363630396278ull,0x30783009090a2038ull,
+0x2031303430303038ull,0x3738313234657830ull,0x3064317830203038ull,0x7830203831366530ull,
+0x3831363636303962ull,0x3830783009090a20ull,0x3020313036303030ull,0x3837383132346578ull,
+0x3030643178302030ull,0x6278302038313865ull,0x2038313836363039ull,0x303830783009090aull,
+0x7830203130383030ull,0x3038373831323465ull,0x6330306362783020ull,0x3030783020643161ull,
+0x0a20303837633132ull,0x3030383078300909ull,0x6578302031306130ull,0x2030383763313234ull,
+0x3031313030337830ull,0x3163657830203132ull,0x090a203238373030ull,0x3163373033783009ull,
+0x6336783020646631ull,0x3020386337303130ull,0x3030633530303178ull,0x3030303078302033ull,
+0x09090a2030383230ull,0x3064353030647830ull,0x3030327830203930ull,0x7830203038373030ull,
+0x6331366530303931ull,0x6530303931783020ull,0x3009090a20303232ull,0x3138303030383178ull,
+0x3030343478302039ull,0x6578302030383763ull,0x2064313236303039ull,0x3030386633307830ull,
+0x783009090a203330ull,0x3132303630303965ull,0x3038663330783020ull,0x3965783020333030ull,
+0x3020393134363030ull,0x3030303866333078ull,0x65783009090a2033ull,0x2064313836303039ull,
+0x3030386633307830ull,0x3039657830203330ull,0x7830203132343630ull,0x3330303038663330ull,
+0x3965783009090a20ull,0x3020393161363030ull,0x3030303866333078ull,0x3830306278302033ull,
+0x3878302035326530ull,0x2030383730303030ull,0x303062783009090aull,0x7830203532633039ull,
+0x3038373030303038ull,0x3130303039783020ull,0x3063783020343232ull,0x0a20383232313730ull,
+0x3830306378300909ull,0x6378302063313231ull,0x2063323236613039ull,0x3636613039637830ull,
+0x3030637830203033ull,0x090a203831633039ull,0x6361303863783009ull,0x3030783020313238ull,
+0x3020303837303032ull,0x3230633730386578ull,0x3232303078302035ull,0x09090a2030383763ull,
+0x3263373038657830ull,0x3230307830203932ull,0x7830203038373033ull,0x6431346337303865ull,
+0x3032323030783020ull,0x3009090a20303837ull,0x3234633630386578ull,0x3232303078302031ull,
+0x6578302030383734ull,0x2035323863363038ull,0x3738323230307830ull,0x783009090a203038ull,
+0x3931616336303865ull,0x6331323030783020ull,0x3062783020303837ull,0x3020643130313930ull,
+0x3837303030303878ull,0x62783009090a2030ull,0x2064316330373030ull,0x3730303030387830ull,
+0x3030397830203038ull,0x7830206331653030ull,0x3432653039303063ull,0x3063783009090a20ull,
+0x3020303265303830ull,0x3232363930396378ull,0x3930396378302038ull,0x6378302063323636ull,
+0x2038316330373030ull,0x303863783009090aull,0x7830203133386339ull,0x3038373030323030ull,
+0x6338303865783020ull,0x3030783020643130ull,0x0a20303837383232ull,0x3830386578300909ull,
+0x3078302035323263ull,0x2030383763323230ull,0x3463383038657830ull,0x3230307830203932ull,
+0x090a203038373033ull,0x6336303865783009ull,0x3030783020643134ull,0x3020303837633132ull,
+0x3238633630386578ull,0x3232303078302031ull,0x09090a2030383734ull,0x6163363038657830ull,
+0x3230307830203532ull,0x7830203038373832ull,0x3931653038303062ull,0x3030303038783020ull,
+0x3009090a20303837ull,0x3163303930306278ull,0x3030303878302039ull,0x3978302030383730ull,
+0x2038316330303030ull,0x6330383030637830ull,0x783009090a203032ull,0x6331633037303063ull,
+0x3638303963783020ull,0x3963783020633232ull,0x3020383236363830ull,0x3163303930306378ull,
+0x63783009090a2038ull,0x2031323863383038ull,0x3730303230307830ull,0x3038657830203038ull,
+0x7830206432306337ull,0x3038376332323030ull,0x3865783009090a20ull,0x3020353232633730ull,
+0x3837383232303078ull,0x3730386578302030ull,0x3078302064313463ull,0x2030383730323230ull,
+0x303865783009090aull,0x7830203932346336ull,0x3038376332323030ull,0x6336303865783020ull,
+0x3030783020313238ull,0x0a20303837343232ull,0x3630386578300909ull,0x3078302039316163ull,
+0x2030383763313230ull,0x3031613030627830ull,0x3030387830206431ull,0x090a203038373030ull,
+0x3037303062783009ull,0x3038783020643163ull,0x3020303837303030ull,0x3165303030303978ull,
+0x3830306378302063ull,0x09090a2034326530ull,0x6530613030637830ull,0x3039637830203032ull,
+0x7830203832323639ull,0x6332363639303963ull,0x3037303063783020ull,0x3009090a20383163ull,
+0x3338633930386378ull,0x3032303078302031ull,0x6578302030383730ull,0x2064313063383038ull,
+0x3738323230307830ull,0x783009090a203038ull,0x3532326338303865ull,0x6332323030783020ull,
+0x3865783020303837ull,0x3020393234633830ull,0x3837303332303078ull,0x65783009090a2030ull,
+0x2064313463363038ull,0x3763313230307830ull,0x3038657830203038ull,0x7830203132386336ull,
+0x3038373432323030ull,0x3865783009090a20ull,0x3020353261633630ull,0x3837383232303078ull,
+0x3830306278302030ull,0x3878302039316530ull,0x2030383730303030ull,0x303062783009090aull,
+0x7830203931633039ull,0x3038373030303038ull,0x3030303039783020ull,0x3063783020383163ull,
+0x0a20303263303830ull,0x3730306378300909ull,0x6378302063316330ull,0x2038323236383039ull,
+0x3636383039637830ull,0x3030637830206332ull,0x090a203831633039ull,0x6338303863783009ull,
+0x3030783020313338ull,0x3020303837303032ull,0x3230633730386578ull,0x3232303078302031ull,
+0x09090a2030383738ull,0x3263373038657830ull,0x3230307830203532ull,0x7830203038376332ull,
+0x3932346337303865ull,0x3033323030783020ull,0x3009090a20303837ull,0x3134633630386578ull,
+0x3232303078302064ull,0x6578302030383730ull,0x2031323863363038ull,0x3734323230307830ull,
+0x783009090a203038ull,0x3532616336303865ull,0x3832323030783020ull,0x3062783020303837ull,
+0x3020393165303830ull,0x3837303030303878ull,0x62783009090a2030ull,0x2039316330393030ull,
+0x3730303030387830ull,0x3030397830203038ull,0x7830203831633030ull,0x3032633038303063ull,
+0x3063783009090a20ull,0x3020633163303730ull,0x3232363830396378ull,0x3830396378302063ull,
+0x6378302038323636ull,0x2038316330393030ull,0x303863783009090aull,0x7830203132386338ull,
+0x3038373030323030ull,0x6337303865783020ull,0x3030783020643230ull,0x0a20303837633232ull,
+0x3730386578300909ull,0x3078302035323263ull,0x2030383738323230ull,0x3463373038657830ull,
+0x3230307830206431ull,0x090a203038373032ull,0x6336303865783009ull,0x3030783020393234ull,
+0x3020303837633232ull,0x3238633630386578ull,0x3232303078302031ull,0x09090a2030383734ull,
+0x6163363038657830ull,0x3230307830203931ull,0x7830203038376331ull,0x6431303161303062ull,
+0x3030303038783020ull,0x3009090a20303837ull,0x3163303730306278ull,0x3030303878302064ull,
+0x3978302030383730ull,0x2063316530303030ull,0x6530383030637830ull,0x783009090a203432ull,
+0x3032653061303063ull,0x3639303963783020ull,0x3963783020383232ull,0x3020633236363930ull,
+0x3163303730306378ull,0x63783009090a2038ull,0x2031333863393038ull,0x3730303230307830ull,
+0x3038657830203038ull,0x7830206431306338ull,0x3038373832323030ull,0x3865783009090a20ull,
+0x3020353232633830ull,0x3837633232303078ull,0x3830386578302030ull,0x3078302039323463ull,
+0x2030383730333230ull,0x303865783009090aull,0x7830206431346336ull,0x3038376331323030ull,
+0x6336303865783020ull,0x3030783020313238ull,0x0a20303837343232ull,0x3630386578300909ull,
+0x3078302035326163ull,0x2030383738323230ull,0x6530383030627830ull,0x3030387830203931ull,
+0x090a203038373030ull,0x3039303062783009ull,0x3038783020393163ull,0x3020303837303030ull,
+0x3163303030303978ull,0x3830306378302038ull,0x09090a2030326330ull,0x6330373030637830ull,
+0x3030637830206331ull,0x7830203032383038ull,0x3931633039303063ull,0x3030303030783020ull,
+0x3009090a20303837ull,0x3136303730306578ull,0x3230303078302064ull,0x6578302030383730ull,
+0x2039316130363030ull,0x3763313030307830ull,0x783009090a203038ull,0x3930306466303064ull,
+0x3030303032783020ull,0x3430783020303837ull,0x3020313034663330ull,0x3837383132346578ull,
+0x62783009090a2030ull,0x2031323263363038ull,0x3734303230367830ull,0x3038627830203038ull,
+0x7830206431306336ull,0x3038373430323036ull,0x3862783009090a20ull,0x3020643236633630ull,
+0x3837343032303678ull,0x3030306178302030ull,0x3278302035323031ull,0x2030383734313063ull,
+0x303862783009090aull,0x7830203132616336ull,0x3038373430323036ull,0x6336303862783020ull,
+0x3036783020393234ull,0x0a20303837343032ull,0x3030306178300909ull,0x3278302064323631ull,
+0x2030383734313063ull,0x6530303030337830ull,0x3034307830203532ull,0x090a203038373432ull,
+0x6336303862783009ull,0x3036783020643138ull,0x3020303837343032ull,0x3230313030306178ull,
+0x3130633278302031ull,0x09090a2030383734ull,0x3439623030337830ull,0x3030337830203832ull,
+0x7830206331653838ull,0x3032323961303032ull,0x3838303032783020ull,0x3009090a20633165ull,
+0x3263633630386278ull,0x3032303678302031ull,0x3278302030383734ull,0x2064316530303430ull,
+0x3730323034307830ull,0x783009090a203038ull,0x3132656336303862ull,0x3430323036783020ull,
+0x3032783020303837ull,0x3020643165303034ull,0x3837303230343078ull,0x62783009090a2030ull,
+0x2031323064363038ull,0x3734303230367830ull,0x3430327830203038ull,0x7830206431653030ull,
+0x3038373032303430ull,0x3862783009090a20ull,0x3020313232643630ull,0x3837343032303678ull,
+0x3034303278302030ull,0x3078302064316530ull,0x2030383730323034ull,0x303862783009090aull,
+0x7830203132346436ull,0x3038373430323036ull,0x3030343032783020ull,0x3430783020643165ull,
+0x0a20303837303230ull,0x3630386278300909ull,0x3678302031323664ull,0x2030383734303230ull,
+0x6530303430327830ull,0x3034307830206431ull,0x090a203038373032ull,0x6436303862783009ull,
+0x3036783020313238ull,0x3020303837343032ull,0x3165303034303278ull,0x3230343078302064ull,
+0x09090a2030383730ull,0x6164363038627830ull,0x3230367830203132ull,0x7830203038373430ull,
+0x6431653030343032ull,0x3032303430783020ull,0x3009090a20303837ull,0x3263643630386278ull,
+0x3032303678302031ull,0x3278302030383734ull,0x2064316530303430ull,0x3730323034307830ull,
+0x783009090a203038ull,0x3931656436303862ull,0x3430323036783020ull,0x3032783020303837ull,
+0x3020393165303034ull,0x3837383130343078ull,0x31783009090a2030ull,0x2064313866303030ull,
+0x3763333036307830ull,0x3034307830203038ull,0x7830203130346430ull,0x3038373831323465ull,
+0x3033783009090a20ull,0x3020646666303030ull,0x6337383130633678ull,0x3031306178302038ull,
+0x3078302033303032ull,0x2030303030303030ull,0x313031783009090aull,0x7830203330303230ull,
+0x3038323030303030ull,0x3032303030783020ull,0x3063783020393065ull,0x0a20303837303030ull,
+0x3330386478300909ull,0x3278302039303035ull,0x2030383730303030ull,0x3163363038337830ull,
+0x3263367830206466ull,0x090a203863373431ull,0x3030303132783009ull,0x3430783020393163ull,
+0x3020303035343134ull,0x3034643030343078ull,0x3132346578302031ull,0x09090a2030303538ull,
+0x3030303030667830ull,0x3030657830203130ull,0x7830203230303030ull,0x6431653831303032ull,
+0x3030303030783020ull,0x3009090a20333030ull,0x6666303038303378ull,0x3134633678302064ull,
+0x3178302038633734ull,0x2033303061663030ull,0x3230303030307830ull,0x783009090a203038ull,
+0x3931633063343034ull,0x3030303030783020ull,0x3030783020333030ull,0x3020393063303030ull,
+0x3837303030306378ull,0x30783009090a2030ull,0x2031303431303038ull,0x3763303234657830ull,
+0x3038307830203038ull,0x7830203130363130ull,0x3038373031323465ull,0x3830783009090a20ull,
+0x3020313038313030ull,0x3837343132346578ull,0x3030306678302030ull,0x6578302031303030ull,
+0x2032303030303030ull,0x313638783009090aull,0x7830203330656666ull,0x3030303030303030ull,
+0x3739313034783020ull,0x3030783020333030ull,0x0a20303030303030ull,0x3030303178300909ull,
+0x3078302064323866ull,0x2030383763333034ull,0x3038663330317830ull,0x6637307830203131ull,
+0x090a206666666637ull,0x3130303032783009ull,0x3430783020353136ull,0x3020303837303030ull,
+0x6662303838303378ull,0x3134633678302064ull,0x09090a2038633730ull,0x3030303030357830ull,
+0x3030307830203330ull,0x7830203038323030ull,0x6430613032303033ull,0x3030313463783020ull,
+0x3009090a20303837ull,0x3038633030303278ull,0x3032343078302064ull,0x6478302030383763ull,
+0x2064303630653030ull,0x3730306330387830ull,0x783009090a203038ull,0x3930613032303030ull,
+0x3030303063783020ull,0x3033783020303837ull,0x3020646662303938ull,0x6337303134633678ull,
+0x30783009090a2038ull,0x2031303462323038ull,0x3563303234657830ull,0x3030317830203030ull,
+0x7830206431386630ull,0x3038376333303630ull,0x3031783009090a20ull,0x3020353130383832ull,
+0x3030303030303078ull,0x3030303078302033ull,0x6378302039306130ull,0x2030383730303030ull,
+0x303031783009090aull,0x7830203532386630ull,0x3038376333303430ull,0x6630303031783020ull,
+0x3630783020393138ull,0x0a20303837633330ull,0x3030303178300909ull,0x3078302031323866ull,
+0x2030383763333034ull,0x3866303030317830ull,0x3036307830203531ull,0x090a203038376333ull,
+0x3037303033783009ull,0x3465783020393236ull,0x3020303837303030ull,0x3234316138306478ull,
+0x3034343078302039ull,0x09090a2030383730ull,0x3431323030307830ull,0x3030637830206430ull,
+0x7830203038373030ull,0x3932363030306331ull,0x6330303432783020ull,0x3009090a20303837ull,
+0x3165383230303278ull,0x3030303078302064ull,0x6578302033303030ull,0x2035313263613061ull,
+0x3734313230307830ull,0x783009090a203038ull,0x3132326361306165ull,0x3032323030783020ull,
+0x6165783020303837ull,0x3020393132636130ull,0x3837383132303078ull,0x33783009090a2030ull,
+0x2064666630623830ull,0x3734313463367830ull,0x3064327830203863ull,0x7830203532323130ull,
+0x3038376332303430ull,0x3031783009090a20ull,0x3020333030303231ull,0x3832303030303078ull,
+0x3830303378302030ull,0x6578302039323231ull,0x2030383730303163ull,0x383064783009090aull,
+0x7830203133323131ull,0x3038373030343430ull,0x6431303064783020ull,0x3032783020393030ull,
+0x0a20303837303030ull,0x3031303378300909ull,0x6578302064313231ull,0x2030383730303163ull,
+0x3431313830647830ull,0x3434307830203932ull,0x090a203038373030ull,0x3130303061783009ull,
+0x3434783020643338ull,0x3020303837343130ull,0x3230636338386578ull,0x3136383078302035ull,
+0x09090a2030383734ull,0x6530303030617830ull,0x3034347830203134ull,0x7830203038373431ull,
+0x6435343130303061ull,0x3431303434783020ull,0x3009090a20303837ull,0x3165316630306378ull,
+0x3030303078302064ull,0x6578302030383730ull,0x2039323263633838ull,0x3730323638307830ull,
+0x783009090a203038ull,0x3133653139303063ull,0x3030303030783020ull,0x3065783020303837ull,
+0x3020643130323731ull,0x3837633130383078ull,0x63783009090a2030ull,0x2039336531613030ull,
+0x3730303030307830ull,0x3030657830203038ull,0x7830203133653235ull,0x3038373033303830ull,
+0x3039783009090a20ull,0x3020353365303030ull,0x3837303030303078ull,0x3830306578302030ull,
+0x3078302039336532ull,0x2030383738333038ull,0x303063783009090aull,0x7830206331613163ull,
+0x3033613165303063ull,0x3030303061783020ull,0x3463783020643165ull,0x0a20303837343830ull,
+0x3030306178300909ull,0x6378302031333831ull,0x2030383734383034ull,0x6530633730627830ull,
+0x3030387830206431ull,0x090a203038373030ull,0x3163373062783009ull,0x3038783020313338ull,
+0x3020303837303030ull,0x3365313530306378ull,0x3830306378302038ull,0x09090a2034346531ull,
+0x6530303030637830ull,0x3134307830206431ull,0x7830203330303866ull,0x3133383130303063ull,
+0x6337323430783020ull,0x3009090a20333030ull,0x3330323930306578ull,0x3330383078302039ull,
+0x6578302030383738ull,0x2039343032613030ull,0x3734343038307830ull,0x783009090a203038ull,
+0x3534653030303061ull,0x3430306363783020ull,0x3061783020303837ull,0x3020313538313030ull,
+0x3837343030636378ull,0x63783009090a2030ull,0x2030336131653030ull,0x6131323130637830ull,
+0x3030617830206334ull,0x7830206431323230ull,0x3038373436303438ull,0x3061783009090a20ull,
+0x3020393338323030ull,0x3837343630343878ull,0x3030306178302030ull,0x6378302039343831ull,
+0x2030383734383034ull,0x303061783009090aull,0x7830206434363230ull,0x3038373438303463ull,
+0x3062303033783020ull,0x3463783020313365ull,0x0a20303837303031ull,0x3530303378300909ull,
+0x6378302039336331ull,0x2030383730303134ull,0x3463633838657830ull,0x3638307830206431ull,
+0x090a203038373831ull,0x3263373062783009ull,0x3038783020393434ull,0x3020303837303030ull,
+0x3436326337306278ull,0x3030303878302064ull,0x09090a2030383730ull,0x3831653030647830ull,
+0x3034307830203133ull,0x7830203038373430ull,0x3933653137303063ull,0x3030303030783020ull,
+0x3009090a20303837ull,0x3434323030306378ull,0x6631343078302039ull,0x6378302033303038ull,
+0x2064343632303030ull,0x3063373234307830ull,0x783009090a203330ull,0x3535653136303063ull,
+0x3030303030783020ull,0x3065783020303837ull,0x3020393365323630ull,0x3837383330383078ull,
+0x61783009090a2030ull,0x2039343432303030ull,0x3734303063637830ull,0x3030617830203038ull,
+0x7830206434363230ull,0x3038373430306363ull,0x3065783009090a20ull,0x3020353630323730ull,
+0x3837343530383078ull,0x6530306378302030ull,0x3078302031366131ull,0x2030383730303030ull,
+0x303061783009090aull,0x7830203535343230ull,0x3038373436303438ull,0x3230303061783020ull,
+0x3438783020393536ull,0x0a20303837343630ull,0x3931306378300909ull,0x3078302039336131ull,
+0x2030383730303030ull,0x3432313330637830ull,0x6433307830203934ull,0x090a203735333430ull,
+0x3262303033783009ull,0x3463783020353361ull,0x3020303837303031ull,0x3563323530303378ull,
+0x3031346378302035ull,0x09090a2030383730ull,0x3232313330637830ull,0x6433307830203534ull,
+0x7830203735333430ull,0x3536343232313063ull,0x3030303030783020ull,0x3009090a20303837ull,
+0x3361313531306478ull,0x3030343078302035ull,0x6378302030383734ull,0x2038353232313130ull,
+0x6532393130637830ull,0x783009090a203436ull,0x3535363239313063ull,0x3138633330783020ull,
+0x3065783020333162ull,0x3020643430323631ull,0x3837343630303078ull,0x63783009090a2030ull,
+0x2031353832393130ull,0x6231386333307830ull,0x3130637830203331ull,0x7830203436613235ull,
+0x3835383234313063ull,0x3063783009090a20ull,0x3020353665323931ull,0x3837303030303078ull,
+0x3631306578302030ull,0x3078302039353032ull,0x2030383734363030ull,0x303061783009090aull,
+0x7830203933633130ull,0x3038373438303463ull,0x3163373062783020ull,0x3038783020393363ull,
+0x0a20303837303030ull,0x3030306378300909ull,0x3078302039336331ull,0x2033303038663134ull,
+0x6331303030617830ull,0x3063637830203933ull,0x090a203038373430ull,0x3131333063783009ull,
+0x3330783020353663ull,0x3020373533343064ull,0x3632333931306378ull,0x6131306378302038ull,
+0x09090a2038366532ull,0x3033303030617830ull,0x3034637830206435ull,0x7830203038373438ull,
+0x6435653263373062ull,0x3030303038783020ull,0x3009090a20303837ull,0x3565323030306378ull,
+0x6631343078302064ull,0x6178302033303038ull,0x2064356532303030ull,0x3734303063637830ull,
+0x783009090a203038ull,0x3136653231333063ull,0x3430643330783020ull,0x3063783020373533ull,
+0x3020643630333831ull,0x3837303030303078ull,0x65783009090a2030ull,0x2031343032623130ull,
+0x3738363030307830ull,0x3130637830203038ull,0x7830203836613031ull,0x3431323232313063ull,
+0x3065783009090a20ull,0x3020353165313530ull,0x3837383630383078ull,0x3431306378302030ull,
+0x6378302034343031ull,0x2030323832353130ull,0x303065783009090aull,0x7830203132653138ull,
+0x3038373434303830ull,0x3135313065783020ull,0x3430783020393234ull,0x0a20303837303230ull,
+0x3831306378300909ull,0x6378302030326330ull,0x2038313033393130ull,0x3231323130657830ull,
+0x3034307830203532ull,0x090a203038373431ull,0x3130303062783009ull,0x3030783020393234ull,
+0x3020303837383230ull,0x3165313630306578ull,0x3230383078302035ull,0x09090a2030383730ull,
+0x3231393030627830ull,0x3030627830203831ull,0x7830203032633261ull,0x3531653039313065ull,
+0x3431303430783020ull,0x3009090a20303837ull,0x3136323630306278ull,0x3138306378302038ull,
+0x6278302063313031ull,0x2035316130303030ull,0x3734313030307830ull,0x783009090a203038ull,
+0x3931633030383065ull,0x6331303030783020ull,0x3062783020303837ull,0x3020353130323030ull,
+0x3837343130303078ull,0x65783009090a2030ull,0x2035316130323830ull,0x3738313030307830ull,
+0x3330637830203038ull,0x7830203531613039ull,0x3365383365643330ull,0x3061783009090a20ull,
+0x3020643163313030ull,0x3837343630343878ull,0x3030306178302030ull,0x3878302039316532ull,
+0x2030383734363034ull,0x303062783009090aull,0x7830206466623034ull,0x3863373430303036ull,
+0x3137303064783020ull,0x3430783020643161ull,0x0a20303837343030ull,0x3630306478300909ull,
+0x3078302039313831ull,0x2030383734303034ull,0x6331303030317830ull,0x3030307830203531ull,
+0x090a203038366333ull,0x3130303031783009ull,0x3230783020313138ull,0x3020303836633330ull,
+0x3036303030303178ull,0x3330343078302035ull,0x09090a2030383663ull,0x6130303030317830ull,
+0x3036307830203131ull,0x7830203038366333ull,0x6432363930303032ull,0x3030303030783020ull,
+0x3009090a20373030ull,0x6637316438303378ull,0x3134633678302064ull,0x3178302038633734ull,
+0x2033303030313130ull,0x3230303030307830ull,0x783009090a203038ull,0x3330303030303035ull,
+0x3030303030783020ull,0x3061783020303837ull,0x3020643061303030ull,0x3837303030343078ull,
+0x61783009090a2030ull,0x2039303830303030ull,0x3730303034307830ull,0x3030337830203038ull,
+0x7830206466373032ull,0x3863376330303436ull,0x3064783009090a20ull,0x3020353032306538ull,
+0x3035383034343078ull,0x3030303178302030ull,0x3078302035313430ull,0x2030303563333034ull,
+0x303031783009090aull,0x7830203930363030ull,0x3030356333303630ull,0x3030303031783020ull,
+0x3430783020643061ull,0x0a20303035633330ull,0x3332303478300909ull,0x3078302033303030ull,
+0x2030303030303030ull,0x3866303030317830ull,0x3036307830206432ull,0x090a203038376333ull,
+0x3136303033783009ull,0x3463783020353136ull,0x3020303837303031ull,0x3161303030303278ull,
+0x3030343078302035ull,0x09090a2030383730ull,0x6230393830337830ull,0x3463367830206466ull,
+0x7830203863373031ull,0x3330303030303035ull,0x3030303030783020ull,0x3009090a20303832ull,
+0x3161386131303278ull,0x3030303078302039ull,0x3178302037313030ull,0x2035313038383230ull,
+0x3030303030307830ull,0x783009090a203330ull,0x6430633032303030ull,0x3030303063783020ull,
+0x3030783020303837ull,0x3020393061303030ull,0x3837303030306378ull,0x31783009090a2030ull,
+0x2064313866303030ull,0x3763333034307830ull,0x3030317830203038ull,0x7830203532386630ull,
+0x3038376333303630ull,0x3031783009090a20ull,0x3020393138663030ull,0x3837633330343078ull,
+0x3030303178302030ull,0x3078302031323866ull,0x2030383763333036ull,0x303031783009090aull,
+0x7830203531386630ull,0x3038376333303430ull,0x6337306333783020ull,0x3465783020393230ull,
+0x0a20303837303032ull,0x6138306478300909ull,0x3078302039323431ull,0x2030383730303434ull,
+0x3431323030307830ull,0x3030637830203131ull,0x090a203038373030ull,0x3030303031783009ull,
+0x3432783020393265ull,0x3020343837633030ull,0x3165383230303278ull,0x3030303078302064ull,
+0x09090a2033303030ull,0x3263613061657830ull,0x3230307830203531ull,0x7830203038373431ull,
+0x3132326361306165ull,0x3032323030783020ull,0x3009090a20303837ull,0x3132636130616578ull,
+0x3132303078302039ull,0x3378302030383738ull,0x2064666630623830ull,0x3734313463367830ull,
+0x783009090a203863ull,0x3532323130303132ull,0x6333303430783020ull,0x3031783020343837ull,
+0x3020333030646131ull,0x3832303030303078ull,0x33783009090a2030ull,0x2039323231383030ull,
+0x3730303163657830ull,0x3830647830203038ull,0x7830203133323131ull,0x3038373030343430ull,
+0x3064783009090a20ull,0x3020393030643130ull,0x3837303030303278ull,0x3031303378302030ull,
+0x6578302064313231ull,0x2030383730303163ull,0x383064783009090aull,0x7830203932343131ull,
+0x3038373030343430ull,0x3130303061783020ull,0x3434783020393338ull,0x0a20303837343130ull,
+0x6638386578300909ull,0x3078302035323063ull,0x2030383734313638ull,0x6530303030617830ull,
+0x3034347830206433ull,0x090a203038373431ull,0x3130303061783009ull,0x3434783020393534ull,
+0x3020303837343130ull,0x3163316530306378ull,0x3030303078302064ull,0x09090a2030383730ull,
+0x3263663838657830ull,0x3638307830203932ull,0x7830203038373032ull,0x3133633139303063ull,
+0x3030303030783020ull,0x3009090a20303837ull,0x3165313631306578ull,0x3130383078302064ull,
+0x6378302030383763ull,0x2031346331613030ull,0x3730303030307830ull,0x783009090a203038ull,
+0x3133633235303065ull,0x3033303830783020ull,0x3039783020303837ull,0x3020353365303030ull,
+0x3837303030303078ull,0x65783009090a2030ull,0x2031346332383030ull,0x3730343038307830ull,
+0x3030637830203038ull,0x7830206331613163ull,0x3033613130313063ull,0x3061783009090a20ull,
+0x3020643165303030ull,0x3837343830346378ull,0x3030306178302030ull,0x6378302031333831ull,
+0x2030383734383034ull,0x373062783009090aull,0x7830206431653063ull,0x3038373030303038ull,
+0x3163373062783020ull,0x3038783020313338ull,0x0a20303837303030ull,0x3530306378300909ull,
+0x6378302030346331ull,0x2038346331383030ull,0x6530303030637830ull,0x3134307830206431ull,
+0x090a203330303866ull,0x3130303063783009ull,0x3430783020313338ull,0x3020333030633732ull,
+0x3465313930306578ull,0x3430383078302035ull,0x09090a2030383730ull,0x6531613030657830ull,
+0x3038307830203934ull,0x7830203038373834ull,0x3134653030303061ull,0x3430306363783020ull,
+0x3009090a20303837ull,0x3438313030306178ull,0x3030636378302064ull,0x6378302030383734ull,
+0x2030336131313130ull,0x6131323130637830ull,0x783009090a203035ull,0x6431303230303061ull,
+0x3436303438783020ull,0x3061783020303837ull,0x3020353436323030ull,0x3837343630343878ull,
+0x61783009090a2030ull,0x2039343831303030ull,0x3734383034637830ull,0x3030617830203038ull,
+0x7830203135383230ull,0x3038373438303463ull,0x3033783009090a20ull,0x3020313365306230ull,
+0x3837303031346378ull,0x3530303378302030ull,0x6378302035343232ull,0x2030383730303134ull,
+0x383865783009090aull,0x7830206431346366ull,0x3038373831363830ull,0x3263373062783020ull,
+0x3038783020393434ull,0x0a20303837303030ull,0x6337306278300909ull,0x3878302031353832ull,
+0x2030383730303030ull,0x3831313130647830ull,0x3034307830203133ull,0x090a203038373430ull,
+0x3137303063783009ull,0x3030783020353463ull,0x3020303837303030ull,0x3434323030306378ull,
+0x6631343078302039ull,0x09090a2033303038ull,0x3832303030637830ull,0x3234307830203535ull,
+0x7830203330306337ull,0x6435633136303063ull,0x3030303030783020ull,0x3009090a20303837ull,
+0x3563323630306578ull,0x3430383078302031ull,0x6178302030383734ull,0x2035343432303030ull,
+0x3734303063637830ull,0x783009090a203038ull,0x3934613230303061ull,0x3430306363783020ull,
+0x3065783020303837ull,0x3020313665313730ull,0x3837633530383078ull,0x63783009090a2030ull,
+0x2064356131343130ull,0x3730303030307830ull,0x3030617830203038ull,0x7830203135323230ull,
+0x3038373436303438ull,0x3061783009090a20ull,0x3020353534323030ull,0x3837343630343878ull,
+0x3831306378302030ull,0x3078302031366131ull,0x2030383730303030ull,0x333063783009090aull,
+0x7830203534323231ull,0x3735333430643330ull,0x3262303033783020ull,0x3463783020353338ull,
+0x0a20303837303031ull,0x3530303378300909ull,0x6378302031356132ull,0x2030383730303134ull,
+0x3032313330637830ull,0x6433307830203134ull,0x090a203735333430ull,0x3231313063783009ull,
+0x3030783020353632ull,0x3020303837303030ull,0x3361313431306478ull,0x3030343078302035ull,
+0x09090a2030383734ull,0x3032303130637830ull,0x3130637830203435ull,0x7830203436633239ull,
+0x3135343239313063ull,0x3138633330783020ull,0x3009090a20333162ull,0x3465313531306578ull,
+0x3630303078302039ull,0x6378302030383734ull,0x2064343632393130ull,0x6231386333307830ull,
+0x783009090a203331ull,0x3436383234313063ull,0x3233313063783020ull,0x3063783020343536ull,
+0x3020353663323931ull,0x3837303030303078ull,0x65783009090a2030ull,0x2035356531353130ull,
+0x3734363030307830ull,0x3030617830203038ull,0x7830203136303330ull,0x3038373438303463ull,
+0x3062783009090a20ull,0x3020313630336337ull,0x3837303030303878ull,0x3030306378302030ull,
+0x3078302031363033ull,0x2033303038663134ull,0x303061783009090aull,0x7830203136303330ull,
+0x3038373430306363ull,0x3331333063783020ull,0x3330783020353630ull,0x0a20373533343064ull,
+0x3931306378300909ull,0x6378302038363233ull,0x2038366332613130ull,0x6532303030617830ull,
+0x3034637830203935ull,0x090a203038373438ull,0x3263373062783009ull,0x3038783020393563ull,
+0x3020303837303030ull,0x3563323030306378ull,0x6631343078302039ull,0x09090a2033303038ull,
+0x6332303030617830ull,0x3063637830203935ull,0x7830203038373430ull,0x6435633231333063ull,
+0x3430643330783020ull,0x3009090a20373533ull,0x3665323731306378ull,0x3030303078302064ull,
+0x6578302030383730ull,0x2064336531623130ull,0x3738363030307830ull,0x783009090a203038ull,
+0x3836613030313063ull,0x3231313063783020ull,0x3065783020343130ull,0x3020353163313530ull,
+0x3837383630383078ull,0x63783009090a2030ull,0x2030343031333130ull,0x3632343130637830ull,
+0x3030657830203032ull,0x7830203132633138ull,0x3038373034303830ull,0x3065783009090a20ull,
+0x3020393234313431ull,0x3837303230343078ull,0x3731306378302030ull,0x6378302030326330ull,
+0x2038316532393130ull,0x313065783009090aull,0x7830203532323131ull,0x3038373431303430ull,
+0x3130303062783020ull,0x3030783020393234ull,0x0a20303837383230ull,0x3630306578300909ull,
+0x3078302035316331ull,0x2030383730323038ull,0x3231393030627830ull,0x3030627830203831ull,
+0x090a203032613261ull,0x3039313065783009ull,0x3430783020353165ull,0x3020303837343130ull,
+0x3134323630306278ull,0x3138306378302038ull,0x09090a2063313031ull,0x6130303030627830ull,
+0x3030307830203531ull,0x7830203038373431ull,0x6431633030383065ull,0x6331303030783020ull,
+0x3009090a20303837ull,0x3165313030306278ull,0x3130303078302035ull,0x6178302030383734ull,
+0x2039313033303030ull,0x3734363034387830ull,0x783009090a203038ull,0x6431613032383065ull,
+0x6331303030783020ull,0x3061783020303837ull,0x3020353163323030ull,0x3837343630343878ull,
+0x64783009090a2030ull,0x2039316131363030ull,0x3734303034307830ull,0x3030637830203038ull,
+0x7830206431653030ull,0x3330303038653330ull,0x3064783009090a20ull,0x3020353138313530ull,
+0x3837343030343078ull,0x3430306278302030ull,0x3678302064666630ull,0x2038633734303030ull,
+0x323061783009090aull,0x7830203330306232ull,0x3030303030303030ull,0x3130303061783020ull,
+0x3430783020353134ull,0x0a20303837303030ull,0x3030306178300909ull,0x3078302039313831ull,
+0x2030383730303034ull,0x3062323230317830ull,0x3030307830203330ull,0x090a203030313030ull,
+0x3036303033783009ull,0x3436783020646662ull,0x3020386337633030ull,0x3030653030643178ull,
+0x3230303178302034ull,0x09090a2038306138ull,0x6338303030317830ull,0x3030317830206330ull,
+0x7830203031653832ull,0x3330306232323031ull,0x3030303030783020ull,0x3009090a20303832ull,
+0x3030303030633178ull,0x3030343478302035ull,0x6478302030383763ull,0x2035303030313030ull,
+0x3763323034307830ull,0x783009090a203038ull,0x3530323031303033ull,0x3030313465783020ull,
+0x3064783020303837ull,0x3020353032306538ull,0x3837303034343078ull,0x64783009090a2030ull,
+0x2035303063313063ull,0x3738303234307830ull,0x3030317830203038ull,0x7830203431343830ull,
+0x3830363832303031ull,0x3031783009090a20ull,0x3020643061303030ull,0x3837633330343078ull,
+0x3030306678302030ull,0x6578302031303030ull,0x2032303030303030ull,0x303032783009090aull,
+0x7830206432363931ull,0x3330303030303030ull,0x3161383033783020ull,0x6336783020646637ull,
+0x0a20386337343134ull,0x6131303178300909ull,0x3078302033303030ull,0x2030383230303030ull,
+0x3030303030357830ull,0x3030307830203330ull,0x090a203038373030ull,0x6630303430783009ull,
+0x3465783020313034ull,0x3020303837303132ull,0x3030643830346478ull,0x3030303278302039ull,
+0x09090a2030383730ull,0x3064333034647830ull,0x3030327830206430ull,0x7830203038373030ull,
+0x3130343332303430ull,0x3030323465783020ull,0x3009090a20303837ull,0x3065666631363878ull,
+0x3030303078302033ull,0x3378302030303030ull,0x2064663130303930ull,0x3730313463367830ull,
+0x783009090a203863ull,0x3330303136323061ull,0x3030303030783020ull,0x3031783020303030ull,
+0x3020333030313632ull,0x3832303030303078ull,0x64783009090a2030ull,0x2035303030313063ull,
+0x3730303030327830ull,0x3034317830203038ull,0x7830203131303030ull,0x3038376330303434ull,
+0x6362783009090a20ull,0x3020646631633430ull,0x6337303132303678ull,0x3432306178302038ull,
+0x3078302033303034ull,0x2030303030303030ull,0x306331783009090aull,0x7830203131303030ull,
+0x3038376330303434ull,0x3434323031783020ull,0x3030783020333030ull,0x0a20303031303030ull,
+0x3130636478300909ull,0x3278302035303030ull,0x2030383730303030ull,0x3065303035317830ull,
+0x3035317830203031ull,0x090a203431306530ull,0x3030306330783009ull,0x3465783020313030ull,
+0x3020303837343132ull,0x3030303130386478ull,0x3030303278302035ull,0x09090a2030383730ull,
+0x3030303034317830ull,0x3034347830203531ull,0x7830203038376330ull,0x3130303030303830ull,
+0x3431323465783020ull,0x3009090a20303837ull,0x6631653430636278ull,0x3032303678302064ull,
+0x3178302061633734ull,0x2031313032303063ull,0x3663303034347830ull,0x783009090a203038ull,
+0x3531303230306331ull,0x6330303434783020ull,0x6330783020303836ull,0x3020313030303030ull,
+0x3836343132346578ull,0x31783009090a2030ull,0x2035313032303038ull,0x3663303034347830ull,
+0x3038307830203038ull,0x7830203130303030ull,0x3038363431323465ull,0x6362783009090a20ull,
+0x3020646631643430ull,0x6337343032303678ull,0x3030633178302038ull,0x3478302031313031ull,
+0x2030383663303034ull,0x306331783009090aull,0x7830203531303130ull,0x3038366330303434ull,
+0x3030306330783020ull,0x3465783020313030ull,0x0a20303836343132ull,0x3030383178300909ull,
+0x3478302035313031ull,0x2030383663303034ull,0x3030303038307830ull,0x3234657830203130ull,
+0x090a203038363431ull,0x6334306362783009ull,0x3036783020646639ull,0x3020386337343032ull,
+0x3138303030633178ull,0x3030343478302031ull,0x09090a2030383663ull,0x3830303063317830ull,
+0x3034347830203531ull,0x7830203038366330ull,0x3130303030306330ull,0x3431323465783020ull,
+0x3009090a20303836ull,0x3138303030383178ull,0x3030343478302035ull,0x3078302030383663ull,
+0x2031303030303038ull,0x3634313234657830ull,0x783009090a203038ull,0x6466356334306362ull,
+0x3430323036783020ull,0x6331783020386337ull,0x3020313134303030ull,0x3836633030343478ull,
+0x31783009090a2030ull,0x2035313430303063ull,0x3663303034347830ull,0x3063307830203038ull,
+0x7830203130303030ull,0x3038363431323465ull,0x3831783009090a20ull,0x3020353134303030ull,
+0x3836633030343478ull,0x3030383078302030ull,0x6578302031303030ull,0x2030383634313234ull,
+0x306362783009090aull,0x7830206466336334ull,0x3863373430323036ull,0x3030306331783020ull,
+0x3434783020313132ull,0x0a20303837633030ull,0x3030633078300909ull,0x6578302031303030ull,
+0x2030383630313234ull,0x3230303038317830ull,0x3034347830203131ull,0x090a203038366330ull,
+0x3030303830783009ull,0x3465783020313030ull,0x3020303836303132ull,0x3030303030306678ull,
+0x3030306578302031ull,0x09090a2032303030ull,0x6566663136387830ull,0x3030307830203330ull,
+0x7830203030303030ull,0x3530306438303064ull,0x3030303032783020ull,0x3009090a20303837ull,
+0x3130303030343178ull,0x3030343478302031ull,0x3878302030383763ull,0x2033306566663136ull,
+0x3030303030307830ull,0x783009090a203030ull,0x6466393030303033ull,0x3431306336783020ull,
+0x3033783020386337ull,0x3020333030303030ull,0x3832303030303078ull,0x33783009090a2030ull,
+0x2031303630323030ull,0x3738303034367830ull,0x3030647830203038ull,0x7830203530303533ull,
+0x3038373030303032ull,0x3064783009090a20ull,0x3020313032303030ull,0x3837303230343078ull,
+0x3130343378302030ull,0x6378302031313263ull,0x2030383730303334ull,0x303433783009090aull,
+0x7830203531346331ull,0x3038373030333463ull,0x6331303433783020ull,0x3463783020393136ull,
+0x0a20303837303033ull,0x3130343378300909ull,0x6378302035303063ull,0x2030383730303334ull,
+0x3030343030337830ull,0x3034657830203131ull,0x090a203038373030ull,0x3035303033783009ull,
+0x3465783020353130ull,0x3020303837303030ull,0x3130303630303378ull,0x3030346578302039ull,
+0x09090a2030383730ull,0x3030313030337830ull,0x3034657830203530ull,0x7830203038373030ull,
+0x3131383061383064ull,0x3030343430783020ull,0x3009090a20303837ull,0x3161306138306478ull,
+0x3034343078302035ull,0x6478302030383730ull,0x2039316330613830ull,0x3730303434307830ull,
+0x783009090a203038ull,0x3530323061383064ull,0x3030343430783020ull,0x3033783020303837ull,
+0x3020313138303230ull,0x3837303031346378ull,0x33783009090a2030ull,0x2035316130343030ull,
+0x3730303134637830ull,0x3030337830203038ull,0x7830203931633036ull,0x3038373030313463ull,
+0x3064783009090a20ull,0x3020353032303430ull,0x3837343030343078ull,0x3630306478302030ull,
+0x3078302031316130ull,0x2030383734303034ull,0x303433783009090aull,0x7830203531386331ull,
+0x3038373030333463ull,0x6331303433783020ull,0x3463783020393161ull,0x0a20303837303033ull,
+0x3430306478300909ull,0x3078302035303230ull,0x2030383734303034ull,0x3030353030337830ull,
+0x3034657830203131ull,0x090a203038373030ull,0x3036303033783009ull,0x3465783020353130ull,
+0x3020303837303030ull,0x3163633130343378ull,0x3033346378302039ull,0x09090a2030383730ull,
+0x6563313034337830ull,0x3334637830206431ull,0x7830203038373030ull,0x3131383061383064ull,
+0x3030343430783020ull,0x3009090a20303837ull,0x3161306138306478ull,0x3034343078302035ull,
+0x3378302030383730ull,0x2039313030363030ull,0x3730303034657830ull,0x783009090a203038ull,
+0x6431303037303033ull,0x3030303465783020ull,0x3033783020303837ull,0x3020313138303830ull,
+0x3837303031346378ull,0x33783009090a2030ull,0x2035316130613030ull,0x3730303134637830ull,
+0x3830647830203038ull,0x7830203931633061ull,0x3038373030343430ull,0x3064783009090a20ull,
+0x3020643165306138ull,0x3837303034343078ull,0x3130343378302030ull,0x6378302031323064ull,
+0x2030383730303334ull,0x303064783009090aull,0x7830203131383035ull,0x3038373430303430ull,
+0x3063303033783020ull,0x3463783020353163ull,0x0a20303837303031ull,0x6530303378300909ull,
+0x6378302039316530ull,0x2030383730303134ull,0x3030383030337830ull,0x3034657830206431ull,
+0x090a203038373030ull,0x6431303433783009ull,0x3463783020313232ull,0x3020303837303033ull,
+0x3032303430306478ull,0x3030343078302035ull,0x09090a2030383734ull,0x6130363030647830ull,
+0x3034307830203131ull,0x7830203038373430ull,0x3531653061383064ull,0x3030343430783020ull,
+0x3009090a20303837ull,0x3130303830303378ull,0x3030346578302039ull,0x3378302030383730ull,
+0x2064313464313034ull,0x3730303334637830ull,0x783009090a203038ull,0x3530323034303064ull,
+0x3430303430783020ull,0x3033783020303837ull,0x3020313161303031ull,0x3837303031346378ull,
+0x64783009090a2030ull,0x2035316330613830ull,0x3730303434307830ull,0x3030337830203038ull,
+0x7830203931303037ull,0x3038373030303465ull,0x3433783009090a20ull,0x3020643136643130ull,
+0x3837303033346378ull,0x3430306478302030ull,0x3078302035303230ull,0x2030383734303034ull,
+0x313033783009090aull,0x7830203131613032ull,0x3038373030313463ull,0x3061383064783020ull,
+0x3430783020353163ull,0x0a20303837303034ull,0x3730303378300909ull,0x6578302039313030ull,
+0x2030383730303034ull,0x3864313034337830ull,0x3334637830206431ull,0x090a203038373030ull,
+0x3034303064783009ull,0x3430783020353032ull,0x3020303837343030ull,0x3161303431303378ull,
+0x3031346378302031ull,0x09090a2030383730ull,0x6330613830647830ull,0x3434307830203531ull,
+0x7830203038373030ull,0x3931303037303033ull,0x3030303465783020ull,0x3009090a20303837ull,
+0x3161643130343378ull,0x3033346378302064ull,0x6478302030383730ull,0x2035303230343030ull,
+0x3734303034307830ull,0x783009090a203038ull,0x3131613036313033ull,0x3030313463783020ull,
+0x3064783020303837ull,0x3020353163306138ull,0x3837303034343078ull,0x33783009090a2030ull,
+0x2039313030373030ull,0x3730303034657830ull,0x3034337830203038ull,0x7830206431636431ull,
+0x3038373030333463ull,0x3064783009090a20ull,0x3020353032303430ull,0x3837343030343078ull,
+0x3831303378302030ull,0x6378302031316130ull,0x2030383730303134ull,0x383064783009090aull,
+0x7830203531633061ull,0x3038373030343430ull,0x3037303033783020ull,0x3465783020393130ull,
+0x0a20303837303030ull,0x3430306478300909ull,0x3078302035303230ull,0x2030383734303034ull,
+0x6130613130337830ull,0x3134637830203131ull,0x090a203038373030ull,0x3061383064783009ull,
+0x3430783020353163ull,0x3020303837303034ull,0x3165643130343378ull,0x3033346378302039ull,
+0x09090a2030383730ull,0x3230343030647830ull,0x3034307830203530ull,0x7830203038373430ull,
+0x3131613063313033ull,0x3030313463783020ull,0x3009090a20303837ull,0x3130303630303378ull,
+0x3030346578302035ull,0x6178302030383730ull,0x2031306334303030ull,0x3730303234307830ull,
+0x783009090a203038ull,0x3131323034303064ull,0x3430303430783020ull,0x3033783020303837ull,
+0x3020353036303031ull,0x3837303031346378ull,0x33783009090a2030ull,0x2035316130653130ull,
+0x3730303134637830ull,0x3030337830203038ull,0x7830206430303033ull,0x3038373030313463ull,
+0x3064783009090a20ull,0x3020313034303130ull,0x3837343030343078ull,0x3530306478302030ull,
+0x3078302035303830ull,0x2030383734303034ull,0x303032783009090aull,0x7830203930306430ull,
+0x3038376330323430ull,0x3065303064783020ull,0x3061783020313034ull,0x0a20313837303038ull,
+0x0000000a7d0a7d09ull
+};
+
+
+}
+
+
+
+extern "C" {
+
+
+static const unsigned long long __deviceText_$compute_13$[] = {
+0x6f69737265762e09ull,0x2e090a342e31206eull,0x7320746567726174ull,0x2f2f090a33315f6dull,
+0x656c69706d6f6320ull,0x2f20687469772064ull,0x61636f6c2f727375ull,0x6f2f616475632f6cull,
+0x696c2f34366e6570ull,0x2f090a65622f2f62ull,0x6e65706f766e202full,0x6220332e32206363ull,
+0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f6231343630ull,0x312d303030303030ull,
+0x632e637478645f30ull,0x2f2820692e337070ull,0x494263632f706d74ull,0x584e36526a792e23ull,
+0x2d2d2d2f2f090a29ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x74704f202f2f090aull,0x2f090a3a736e6f69ull,0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2f2f090a2d2d2d2dull,0x7465677261542020ull,0x5349202c7874703aull,
+0x2c33315f6d733a41ull,0x3a6e6169646e4520ull,0x202c656c7474696cull,0x207265746e696f50ull,
+0x0a34363a657a6953ull,0x334f2d20202f2f09ull,0x696d6974704f2809ull,0x6c206e6f6974617aull,
+0x2f090a296c657665ull,0x280930672d20202full,0x656c206775626544ull,0x2f2f090a296c6576ull,
+0x522809326d2d2020ull,0x64612074726f7065ull,0x736569726f736976ull,0x2d2d2d2f2f090a29ull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x656c69662e090a0aull,
+0x6d6f633c22093109ull,0x6e696c2d646e616dull,0x69662e090a223e65ull,0x742f22093209656cull,
+0x6678706d742f706dull,0x3436303030305f74ull,0x30303030305f6231ull,0x78645f392d303030ull,
+0x66616475632e6374ull,0x0a227570672e3265ull,0x3309656c69662e09ull,0x6c2f7273752f2209ull,
+0x782f6363672f6269ull,0x696c2d34365f3638ull,0x2f756e672d78756eull,0x6e692f312e342e34ull,
+0x74732f6564756c63ull,0x0a22682e66656464ull,0x3409656c69662e09ull,0x6c2f7273752f2209ull,
+0x6475632f6c61636full,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x7665642f7472632full,
+0x746e75725f656369ull,0x090a22682e656d69ull,0x093509656c69662eull,0x6f6c2f7273752f22ull,
+0x616475632f6c6163ull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x6665645f74736f68ull,
+0x0a22682e73656e69ull,0x3609656c69662e09ull,0x6c2f7273752f2209ull,0x6475632f6c61636full,
+0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x6e69746c6975622full,0x682e73657079745full,
+0x656c69662e090a22ull,0x7273752f22093709ull,0x632f6c61636f6c2full,0x2f6e69622f616475ull,
+0x756c636e692f2e2eull,0x63697665642f6564ull,0x2e73657079745f65ull,0x6c69662e090a2268ull,
+0x73752f2209380965ull,0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,0x6c636e692f2e2e2full,
+0x766972642f656475ull,0x73657079745f7265ull,0x69662e090a22682eull,0x752f22093909656cull,
+0x6c61636f6c2f7273ull,0x69622f616475632full,0x636e692f2e2e2f6eull,0x7865742f6564756cull,
+0x7079745f65727574ull,0x2e090a22682e7365ull,0x09303109656c6966ull,0x6f6c2f7273752f22ull,
+0x616475632f6c6163ull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x745f726f74636576ull,
+0x0a22682e73657079ull,0x3109656c69662e09ull,0x2f7273752f220931ull,0x75632f6c61636f6cull,
+0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x6563697665642f65ull,0x5f68636e75616c5full,
+0x6574656d61726170ull,0x2e090a22682e7372ull,0x09323109656c6966ull,0x6f6c2f7273752f22ull,
+0x616475632f6c6163ull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x726f74732f747263ull,
+0x73616c635f656761ull,0x662e090a22682e73ull,0x2209333109656c69ull,0x636e692f7273752full,
+0x7469622f6564756cull,0x2e73657079742f73ull,0x6c69662e090a2268ull,0x752f220934310965ull,
+0x756c636e692f7273ull,0x2e656d69742f6564ull,0x6c69662e090a2268ull,0x7543220935310965ull,
+0x682e6874614d6164ull,0x656c69662e090a22ull,0x7478642209363109ull,0x2e090a2275632e63ull,
+0x09373109656c6966ull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,0x2f2e2e2f6e69622full,
+0x2f6564756c636e69ull,0x665f6e6f6d6d6f63ull,0x736e6f6974636e75ull,0x69662e090a22682eull,
+0x2f2209383109656cull,0x61636f6c2f727375ull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,
+0x72632f6564756c63ull,0x6d5f636e75662f74ull,0x0a22682e6f726361ull,0x3109656c69662e09ull,
+0x2f7273752f220939ull,0x75632f6c61636f6cull,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,
+0x665f6874616d2f65ull,0x736e6f6974636e75ull,0x69662e090a22682eull,0x2f2209303209656cull,
+0x61636f6c2f727375ull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x65642f6564756c63ull,
+0x6e75665f65636976ull,0x682e736e6f697463ull,0x656c69662e090a22ull,0x73752f2209313209ull,
+0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x6874616d2f656475ull,
+0x6e6174736e6f635full,0x2e090a22682e7374ull,0x09323209656c6966ull,0x6f6c2f7273752f22ull,
+0x616475632f6c6163ull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,0x74615f31315f6d73ull,
+0x6e75665f63696d6full,0x682e736e6f697463ull,0x656c69662e090a22ull,0x73752f2209333209ull,
+0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x315f6d732f656475ull,
+0x63696d6f74615f32ull,0x6f6974636e75665full,0x2e090a22682e736eull,0x09343209656c6966ull,
+0x6f6c2f7273752f22ull,0x616475632f6c6163ull,0x2f2e2e2f6e69622full,0x2f6564756c636e69ull,
+0x6f645f33315f6d73ull,0x6e75665f656c6275ull,0x682e736e6f697463ull,0x656c69662e090a22ull,
+0x73752f2209353209ull,0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,0x6c636e692f2e2e2full,
+0x747865742f656475ull,0x637465665f657275ull,0x6974636e75665f68ull,0x090a22682e736e6full,
+0x363209656c69662eull,0x6c2f7273752f2209ull,0x6475632f6c61636full,0x2e2e2f6e69622f61ull,
+0x6564756c636e692full,0x75665f6874616d2full,0x5f736e6f6974636eull,0x337874705f6c6264ull,
+0x732e090a0a22682eull,0x612e206465726168ull,0x2e2034206e67696cull,0x7261766f63203862ull,
+0x305f5f65636e6169ull,0x090a3b5d3438335bull,0x206465726168732eull,0x34206e67696c612eull,
+0x646e692038622e20ull,0x5b315f5f73656369ull,0x2e090a3b5d363532ull,0x2e20646572616873ull,
+0x2034206e67696c61ull,0x65705f732038622eull,0x6f69746174756d72ull,0x34365b325f5f736eull,
+0x68732e090a3b5d30ull,0x6c612e2064657261ull,0x622e2034206e6769ull,0x335f5f7370642038ull,
+0x2e090a3b5d34365bull,0x612e2074736e6f63ull,0x2e2034206e67696cull,0x6f6c6f436b203862ull,
+0x5b63697274654d72ull,0x307b203d205d3231ull,0x362c3832312c302cull,0x32312c302c302c33ull,
+0x302c302c33362c38ull,0x7d33362c3832312cull,0x736e6f632e090a3bull,0x6e67696c612e2074ull,
+0x612038622e203420ull,0x6c6261546168706cull,0x3d205d36315b3465ull,0x36312c302c307b20ull,
+0x2c302c302c35362cull,0x2c302c302c302c30ull,0x302c34362c323931ull,0x34362c34362c302cull,
+0x6e6f632e090a3b7dull,0x67696c612e207473ull,0x2038622e2034206eull,0x6261546168706c61ull,
+0x205d36315b33656cull,0x312c302c307b203dull,0x2c302c34362c3832ull,0x2c302c302c302c30ull,
+0x302c34362c302c30ull,0x7d34362c302c302cull,0x736e6f632e090a3bull,0x6e67696c612e2074ull,
+0x702038622e203420ull,0x36315b3473646f72ull,0x302c307b203d205dull,0x392c302c302c392cull,
+0x312c322c302c302cull,0x342c322c302c342cull,0x090a3b7d302c312cull,0x2e2074736e6f632eull,
+0x2034206e67696c61ull,0x646f72702038622eull,0x3d205d36315b3373ull,0x2c342c302c307b20ull,
+0x2c302c342c302c30ull,0x2c342c312c312c30ull,0x2c312c342c312c30ull,0x652e090a0a3b7d30ull,
+0x385a5f207972746eull,0x73736572706d6f63ull,0x35505f30536a4b50ull,0x0a282032746e6975ull,
+0x6d617261702e0909ull,0x5f5f203436752e20ull,0x6d72617061647563ull,0x706d6f63385a5f5full,
+0x536a4b5073736572ull,0x746e697535505f30ull,0x74756d7265705f32ull,0x0a2c736e6f697461ull,
+0x6d617261702e0909ull,0x5f5f203436752e20ull,0x6d72617061647563ull,0x706d6f63385a5f5full,
+0x536a4b5073736572ull,0x746e697535505f30ull,0x2c6567616d695f32ull,0x617261702e09090aull,
+0x5f203436752e206dull,0x726170616475635full,0x6d6f63385a5f5f6dull,0x6a4b507373657270ull,
+0x6e697535505f3053ull,0x6c757365725f3274ull,0x2e090a7b090a2974ull,0x3631752e20676572ull,
+0x3b3e353c68722520ull,0x2e206765722e090aull,0x323c722520323375ull,0x722e090a3b3e3733ull,
+0x203436752e206765ull,0x3b3e33373c647225ull,0x2e206765722e090aull,0x343c662520323366ull,
+0x722e090a3b3e3735ull,0x646572702e206765ull,0x3b3e38323c702520ull,0x65726168732e090aull,
+0x6e67696c612e2064ull,0x5f2038622e203420ull,0x6f635f616475635full,0x3836333173726f6cull,
+0x090a3b5d3239315bull,0x206465726168732eull,0x34206e67696c612eull,0x635f5f2038622e20ull,
+0x736d75735f616475ull,0x3239315b30363531ull,0x6168732e090a3b5dull,0x696c612e20646572ull,
+0x38622e2034206e67ull,0x5f616475635f5f20ull,0x3537317366657278ull,0x090a3b5d34365b32ull,
+0x206465726168732eull,0x34206e67696c612eull,0x635f5f2038622e20ull,0x6f7272655f616475ull,
+0x325b363138317372ull,0x6c2e090a3b5d3635ull,0x303509363109636full,0x42424c240a300938ull,
+0x6d6f63385a5f5f31ull,0x6a4b507373657270ull,0x6e697535505f3053ull,0x6f6c2e090a3a3274ull,
+0x3631350936310963ull,0x2e747663090a3009ull,0x203631752e323373ull,0x7425202c31722509ull,
+0x63090a3b782e6469ull,0x732e3436752e7476ull,0x3164722509203233ull,0x090a3b317225202cull,
+0x752e6f6c2e6c756dull,0x3264722509203436ull,0x202c31647225202cull,0x2e766f6d090a3b34ull,
+0x3272250920323375ull,0x73090a3b3531202cull,0x732e74672e707465ull,0x2c31702509203233ull,
+0x7225202c31722520ull,0x31702540090a3b32ull,0x4c24092061726220ull,0x393337325f305f74ull,
+0x636f6c2e090a3b34ull,0x0938343109363109ull,0x752e766f6d090a30ull,0x3364722509203436ull,
+0x616475635f5f202cull,0x3173726f6c6f635full,0x6f6d090a3b383633ull,0x2509203436752e76ull,
+0x635f5f202c346472ull,0x736d75735f616475ull,0x6d090a3b30363531ull,0x09203436752e766full,
+0x6f63202c35647225ull,0x65636e6169726176ull,0x646c090a3b305f5full,0x752e6d617261702eull,
+0x3664722509203436ull,0x6475635f5f5b202cull,0x5a5f5f6d72617061ull,0x736572706d6f6338ull,
+0x505f30536a4b5073ull,0x695f32746e697535ull,0x090a3b5d6567616dull,0x2e3233732e747663ull,
+0x3372250920363175ull,0x646961746325202cull,0x747663090a3b782eull,0x3233752e3631752eull,
+0x202c316872250920ull,0x756d090a3b337225ull,0x752e656469772e6cull,0x2c34722509203631ull,
+0x31202c3168722520ull,0x2e646461090a3b36ull,0x3572250920323373ull,0x25202c317225202cull,
+0x747663090a3b3472ull,0x3233732e3436732eull,0x202c376472250920ull,0x756d090a3b357225ull,
+0x3436752e6f6c2e6cull,0x202c386472250920ull,0x3b34202c37647225ull,0x36752e646461090aull,
+0x2c39647225092034ull,0x25202c3664722520ull,0x646c090a3b386472ull,0x2e6c61626f6c672eull,
+0x3672250920323375ull,0x2b396472255b202cull,0x6f6c2e090a3b5d30ull,0x3035310936310963ull,
+0x2e646e61090a3009ull,0x3772250920323362ull,0x32202c367225202cull,0x6c756d090a3b3535ull,
+0x203436752e6f6c2eull,0x202c303164722509ull,0x3231202c31647225ull,0x722e747663090a3bull,
+0x33752e3233662e6eull,0x202c316625092032ull,0x6461090a3b377225ull,0x2509203436752e64ull,
+0x7225202c31316472ull,0x647225202c303164ull,0x2e766f6d090a3b33ull,0x3266250920323366ull,
+0x303862336630202cull,0x2020203b31383038ull,0x2e30202f2f092020ull,0x3735313239333030ull,
+0x33662e6c756d090aull,0x202c336625092032ull,0x326625202c316625ull,0x68732e7473090a3bull,
+0x3233662e64657261ull,0x31316472255b0920ull,0x336625202c5d302bull,0x09636f6c2e090a3bull,
+0x3009313531093631ull,0x33622e6c6873090aull,0x202c387225092032ull,0x3b3631202c367225ull,
+0x33752e726873090aull,0x202c397225092032ull,0x3b3432202c387225ull,0x6e722e747663090aull,
+0x3233752e3233662eull,0x25202c3466250920ull,0x766f6d090a3b3972ull,0x662509203233662eull,
+0x3862336630202c35ull,0x20203b3138303830ull,0x30202f2f09202020ull,0x353132393330302eull,
+0x662e6c756d090a37ull,0x2c36662509203233ull,0x6625202c34662520ull,0x732e7473090a3b35ull,
+0x33662e6465726168ull,0x316472255b092032ull,0x6625202c5d342b31ull,0x636f6c2e090a3b36ull,
+0x0932353109363109ull,0x622e6c6873090a30ull,0x3031722509203233ull,0x38202c367225202cull,
+0x752e726873090a3bull,0x3131722509203233ull,0x202c30317225202cull,0x747663090a3b3432ull,
+0x2e3233662e6e722eull,0x3766250920323375ull,0x0a3b31317225202cull,0x3233662e766f6d09ull,
+0x30202c3866250920ull,0x3830383038623366ull,0x0920202020203b31ull,0x3330302e30202f2full,
+0x6d090a3735313239ull,0x09203233662e6c75ull,0x376625202c396625ull,0x090a3b386625202cull,
+0x65726168732e7473ull,0x5b09203233662e64ull,0x5d382b3131647225ull,0x090a3b396625202cull,
+0x09363109636f6c2eull,0x61090a3009303631ull,0x09203436752e6464ull,0x25202c3231647225ull,
+0x7225202c30316472ull,0x2e7473090a3b3464ull,0x662e646572616873ull,0x6472255b09203233ull,
+0x25202c5d302b3231ull,0x2e7473090a3b3366ull,0x662e646572616873ull,0x6472255b09203233ull,
+0x25202c5d342b3231ull,0x2e7473090a3b3666ull,0x662e646572616873ull,0x6472255b09203233ull,
+0x25202c5d382b3231ull,0x726f78090a3b3966ull,0x722509203233622eull,0x2c317225202c3231ull,
+0x747663090a3b3820ull,0x3233732e3436732eull,0x2c33316472250920ull,0x090a3b3231722520ull,
+0x752e6f6c2e6c756dull,0x3164722509203436ull,0x3331647225202c34ull,0x61090a3b3231202cull,
+0x09203436752e6464ull,0x25202c3531647225ull,0x647225202c346472ull,0x2e646c090a3b3431ull,
+0x662e646572616873ull,0x3031662509203233ull,0x35316472255b202cull,0x646c090a3b5d302bull,
+0x2e6465726168732eull,0x3166250920323366ull,0x316472255b202c31ull,0x6c090a3b5d342b35ull,
+0x6465726168732e64ull,0x662509203233662eull,0x6472255b202c3231ull,0x090a3b5d382b3531ull,
+0x203233662e646461ull,0x25202c3331662509ull,0x30316625202c3366ull,0x68732e7473090a3bull,
+0x3233662e64657261ull,0x32316472255b0920ull,0x316625202c5d302bull,0x2e646461090a3b33ull,
+0x3166250920323366ull,0x202c366625202c34ull,0x73090a3b31316625ull,0x6465726168732e74ull,
+0x255b09203233662eull,0x2c5d342b32316472ull,0x090a3b3431662520ull,0x203233662e646461ull,
+0x25202c3531662509ull,0x32316625202c3966ull,0x68732e7473090a3bull,0x3233662e64657261ull,
+0x32316472255b0920ull,0x316625202c5d382bull,0x2e726f78090a3b35ull,0x3172250920323362ull,
+0x202c317225202c33ull,0x2e747663090a3b34ull,0x203233732e343673ull,0x202c363164722509ull,
+0x6d090a3b33317225ull,0x36752e6f6c2e6c75ull,0x3731647225092034ull,0x2c3631647225202cull,
+0x6461090a3b323120ull,0x2509203436752e64ull,0x7225202c38316472ull,0x31647225202c3464ull,
+0x732e646c090a3b37ull,0x33662e6465726168ull,0x2c36316625092032ull,0x2b38316472255b20ull,
+0x2e646c090a3b5d30ull,0x662e646572616873ull,0x3731662509203233ull,0x38316472255b202cull,
+0x646c090a3b5d342bull,0x2e6465726168732eull,0x3166250920323366ull,0x316472255b202c38ull,
+0x61090a3b5d382b38ull,0x09203233662e6464ull,0x6625202c39316625ull,0x36316625202c3331ull,
+0x68732e7473090a3bull,0x3233662e64657261ull,0x32316472255b0920ull,0x316625202c5d302bull,
+0x2e646461090a3b39ull,0x3266250920323366ull,0x2c34316625202c30ull,0x090a3b3731662520ull,
+0x65726168732e7473ull,0x5b09203233662e64ull,0x5d342b3231647225ull,0x0a3b30326625202cull,
+0x3233662e64646109ull,0x202c313266250920ull,0x6625202c35316625ull,0x2e7473090a3b3831ull,
+0x662e646572616873ull,0x6472255b09203233ull,0x25202c5d382b3231ull,0x6f78090a3b313266ull,
+0x2509203233622e72ull,0x317225202c343172ull,0x7663090a3b32202cull,0x33732e3436732e74ull,
+0x3931647225092032ull,0x0a3b34317225202cull,0x2e6f6c2e6c756d09ull,0x6472250920343675ull,
+0x31647225202c3032ull,0x090a3b3231202c39ull,0x203436752e646461ull,0x202c313264722509ull,
+0x7225202c34647225ull,0x646c090a3b303264ull,0x2e6465726168732eull,0x3266250920323366ull,
+0x326472255b202c32ull,0x6c090a3b5d302b31ull,0x6465726168732e64ull,0x662509203233662eull,
+0x6472255b202c3332ull,0x090a3b5d342b3132ull,0x65726168732e646cull,0x2509203233662e64ull,
+0x72255b202c343266ull,0x0a3b5d382b313264ull,0x3233662e64646109ull,0x202c353266250920ull,
+0x6625202c39316625ull,0x2e7473090a3b3232ull,0x662e646572616873ull,0x6472255b09203233ull,
+0x25202c5d302b3231ull,0x6461090a3b353266ull,0x2509203233662e64ull,0x326625202c363266ull,
+0x3b33326625202c30ull,0x6168732e7473090aull,0x203233662e646572ull,0x2b32316472255b09ull,
+0x36326625202c5d34ull,0x662e646461090a3bull,0x3732662509203233ull,0x202c31326625202cull,
+0x73090a3b34326625ull,0x6465726168732e74ull,0x255b09203233662eull,0x2c5d382b32316472ull,
+0x090a3b3732662520ull,0x203233622e726f78ull,0x25202c3531722509ull,0x090a3b31202c3172ull,
+0x2e3436732e747663ull,0x6472250920323373ull,0x35317225202c3232ull,0x6c2e6c756d090a3bull,
+0x2509203436752e6full,0x7225202c33326472ull,0x3b3231202c323264ull,0x36752e646461090aull,
+0x3432647225092034ull,0x202c34647225202cull,0x090a3b3332647225ull,0x65726168732e646cull,
+0x2509203233662e64ull,0x72255b202c383266ull,0x0a3b5d302b343264ull,0x726168732e646c09ull,
+0x09203233662e6465ull,0x255b202c39326625ull,0x3b5d342b34326472ull,0x6168732e646c090aull,
+0x203233662e646572ull,0x5b202c3033662509ull,0x5d382b3432647225ull,0x662e646461090a3bull,
+0x3133662509203233ull,0x202c35326625202cull,0x73090a3b38326625ull,0x6465726168732e74ull,
+0x255b09203233662eull,0x2c5d302b32316472ull,0x090a3b3133662520ull,0x203233662e646461ull,
+0x25202c3233662509ull,0x326625202c363266ull,0x732e7473090a3b39ull,0x33662e6465726168ull,
+0x316472255b092032ull,0x6625202c5d342b32ull,0x646461090a3b3233ull,0x662509203233662eull,
+0x37326625202c3333ull,0x0a3b30336625202cull,0x726168732e747309ull,0x09203233662e6465ull,
+0x382b32316472255bull,0x3b33336625202c5dull,0x3109636f6c2e090aull,0x0a30093531320935ull,
+0x726168732e646c09ull,0x09203233662e6465ull,0x5f5b202c34336625ull,0x75735f616475635full,
+0x302b30363531736dull,0x2e766f6d090a3b5dull,0x3366250920323366ull,0x3864336630202c35ull,
+0x20203b3030303030ull,0x2e30202f2f092020ull,0x756d090a35323630ull,0x2509203233662e6cull,
+0x336625202c363366ull,0x3b35336625202c34ull,0x33662e627573090aull,0x2c37336625092032ull,
+0x6625202c33662520ull,0x6c756d090a3b3633ull,0x203233732e6f6c2eull,0x25202c3631722509ull,
+0x090a3b36202c3172ull,0x2e3436732e747663ull,0x6472250920323373ull,0x36317225202c3532ull,
+0x6c2e6c756d090a3bull,0x2509203436752e6full,0x7225202c36326472ull,0x0a3b34202c353264ull,
+0x3436752e64646109ull,0x2c37326472250920ull,0x25202c3564722520ull,0x6d090a3b36326472ull,
+0x09203233662e6c75ull,0x6625202c38336625ull,0x37336625202c3733ull,0x68732e7473090a3bull,
+0x3233662e64657261ull,0x37326472255b0920ull,0x336625202c5d302bull,0x636f6c2e090a3b38ull,
+0x0936313209353109ull,0x68732e646c090a30ull,0x3233662e64657261ull,0x202c393366250920ull,
+0x5f616475635f5f5bull,0x30363531736d7573ull,0x6f6d090a3b5d342bull,0x2509203233662e76ull,
+0x336630202c303466ull,0x3b30303030303864ull,0x202f2f0920202020ull,0x090a353236302e30ull,
+0x203233662e6c756dull,0x25202c3134662509ull,0x346625202c393366ull,0x2e627573090a3b30ull,
+0x3466250920323366ull,0x202c366625202c32ull,0x6d090a3b31346625ull,0x09203233662e6c75ull,
+0x6625202c33346625ull,0x32346625202c3733ull,0x68732e7473090a3bull,0x3233662e64657261ull,
+0x37326472255b0920ull,0x346625202c5d342bull,0x636f6c2e090a3b33ull,0x0937313209353109ull,
+0x68732e646c090a30ull,0x3233662e64657261ull,0x202c343466250920ull,0x5f616475635f5f5bull,
+0x30363531736d7573ull,0x6f6d090a3b5d382bull,0x2509203233662e76ull,0x336630202c353466ull,
+0x3b30303030303864ull,0x202f2f0920202020ull,0x090a353236302e30ull,0x203233662e6c756dull,
+0x25202c3634662509ull,0x346625202c343466ull,0x2e627573090a3b35ull,0x3466250920323366ull,
+0x202c396625202c37ull,0x6d090a3b36346625ull,0x09203233662e6c75ull,0x6625202c38346625ull,
+0x37346625202c3733ull,0x68732e7473090a3bull,0x3233662e64657261ull,0x37326472255b0920ull,
+0x346625202c5d382bull,0x636f6c2e090a3b38ull,0x0938313209353109ull,0x662e6c756d090a30ull,
+0x3934662509203233ull,0x202c32346625202cull,0x73090a3b32346625ull,0x6465726168732e74ull,
+0x255b09203233662eull,0x5d32312b37326472ull,0x0a3b39346625202cull,0x353109636f6c2e09ull,
+0x090a300939313209ull,0x203233662e6c756dull,0x25202c3035662509ull,0x346625202c323466ull,
+0x732e7473090a3b37ull,0x33662e6465726168ull,0x326472255b092032ull,0x25202c5d36312b37ull,
+0x6c2e090a3b303566ull,0x323209353109636full,0x6c756d090a300930ull,0x662509203233662eull,
+0x37346625202c3135ull,0x0a3b37346625202cull,0x726168732e747309ull,0x09203233662e6465ull,
+0x322b37326472255bull,0x31356625202c5d30ull,0x732e766f6d090a3bull,0x3731722509203233ull,
+0x744c240a3b38202cull,0x38313438325f305full,0x6f6c3c2f2f200a3aull,0x706f6f4c203e706full,
+0x696c2079646f6220ull,0x202c30323220656eull,0x20676e697473656eull,0x31203a6874706564ull,
+0x616d69747365202cull,0x7265746920646574ull,0x203a736e6f697461ull,0x0a6e776f6e6b6e75ull,
+0x656c2e7074657309ull,0x702509203233732eull,0x2c37317225202c32ull,0x40090a3b31722520ull,
+0x2061726220327025ull,0x325f305f744c2409ull,0x2f200a3b34373638ull,0x203e706f6f6c3c2full,
+0x20666f2074726150ull,0x646f6220706f6f6cull,0x3220656e696c2079ull,0x64616568202c3032ull,
+0x64656c6562616c20ull,0x325f305f744c2420ull,0x6c2e090a38313438ull,0x323209353109636full,
+0x646461090a300936ull,0x722509203233732eull,0x37317225202c3831ull,0x090a3b317225202cull,
+0x732e6f6c2e6c756dull,0x3931722509203233ull,0x202c38317225202cull,0x2e747663090a3b36ull,
+0x203233732e343673ull,0x202c383264722509ull,0x6d090a3b39317225ull,0x36752e6f6c2e6c75ull,
+0x3932647225092034ull,0x2c3832647225202cull,0x646461090a3b3420ull,0x722509203436752eull,
+0x647225202c303364ull,0x3932647225202c35ull,0x68732e646c090a3bull,0x3233662e64657261ull,
+0x202c323566250920ull,0x302b37326472255bull,0x732e646c090a3b5dull,0x33662e6465726168ull,
+0x2c33356625092032ull,0x2b30336472255b20ull,0x646461090a3b5d30ull,0x662509203233662eull,
+0x32356625202c3435ull,0x0a3b33356625202cull,0x726168732e747309ull,0x09203233662e6465ull,
+0x302b37326472255bull,0x3b34356625202c5dull,0x3109636f6c2e090aull,0x0a30093732320935ull,
+0x726168732e646c09ull,0x09203233662e6465ull,0x255b202c35356625ull,0x3b5d342b37326472ull,
+0x6168732e646c090aull,0x203233662e646572ull,0x5b202c3635662509ull,0x5d342b3033647225ull,
+0x662e646461090a3bull,0x3735662509203233ull,0x202c35356625202cull,0x73090a3b36356625ull,
+0x6465726168732e74ull,0x255b09203233662eull,0x2c5d342b37326472ull,0x090a3b3735662520ull,
+0x09353109636f6c2eull,0x6c090a3009383232ull,0x6465726168732e64ull,0x662509203233662eull,
+0x6472255b202c3835ull,0x090a3b5d382b3732ull,0x65726168732e646cull,0x2509203233662e64ull,
+0x72255b202c393566ull,0x0a3b5d382b303364ull,0x3233662e64646109ull,0x202c303666250920ull,
+0x6625202c38356625ull,0x2e7473090a3b3935ull,0x662e646572616873ull,0x6472255b09203233ull,
+0x25202c5d382b3732ull,0x6c2e090a3b303666ull,0x323209353109636full,0x2e646c090a300939ull,
+0x662e646572616873ull,0x3136662509203233ull,0x37326472255b202cull,0x6c090a3b5d32312bull,
+0x6465726168732e64ull,0x662509203233662eull,0x6472255b202c3236ull,0x0a3b5d32312b3033ull,
+0x3233662e64646109ull,0x202c333666250920ull,0x6625202c31366625ull,0x2e7473090a3b3236ull,
+0x662e646572616873ull,0x6472255b09203233ull,0x202c5d32312b3732ull,0x2e090a3b33366625ull,
+0x3209353109636f6cull,0x646c090a30093033ull,0x2e6465726168732eull,0x3666250920323366ull,
+0x326472255b202c34ull,0x090a3b5d36312b37ull,0x65726168732e646cull,0x2509203233662e64ull,
+0x72255b202c353666ull,0x3b5d36312b303364ull,0x33662e646461090aull,0x2c36366625092032ull,
+0x25202c3436662520ull,0x7473090a3b353666ull,0x2e6465726168732eull,0x72255b0920323366ull,
+0x2c5d36312b373264ull,0x090a3b3636662520ull,0x09353109636f6c2eull,0x6c090a3009313332ull,
+0x6465726168732e64ull,0x662509203233662eull,0x6472255b202c3736ull,0x0a3b5d30322b3033ull,
+0x3233662e64646109ull,0x202c313566250920ull,0x6625202c37366625ull,0x2e7473090a3b3135ull,
+0x662e646572616873ull,0x6472255b09203233ull,0x202c5d30322b3732ull,0x4c240a3b31356625ull,
+0x373638325f305f74ull,0x6c3c2f2f200a3a34ull,0x726150203e706f6full,0x6f6f6c20666f2074ull,
+0x6c2079646f622070ull,0x2c30323220656e69ull,0x616c206461656820ull,0x4c242064656c6562ull,
+0x313438325f305f74ull,0x09636f6c2e090a38ull,0x3009323232093531ull,0x33732e726873090aull,
+0x2c37317225092032ull,0x31202c3731722520ull,0x752e766f6d090a3bull,0x3032722509203233ull,
+0x6573090a3b30202cull,0x33732e74672e7074ull,0x202c337025092032ull,0x7225202c37317225ull,
+0x702540090a3b3032ull,0x2409206172622033ull,0x3438325f305f744cull,0x6f6c2e090a3b3831ull,
+0x3833320935310963ull,0x2e766f6d090a3009ull,0x6472250920343675ull,0x75635f5f202c3133ull,
+0x73666572785f6164ull,0x2e090a3b32353731ull,0x3109353109636f6cull,0x646c090a30093335ull,
+0x2e6465726168732eull,0x3666250920323366ull,0x61766f635b202c38ull,0x5f5f65636e616972ull,
+0x6c090a3b5d342b30ull,0x6465726168732e64ull,0x662509203233662eull,0x766f635b202c3936ull,
+0x5f65636e61697261ull,0x0a3b5d32312b305full,0x3233662e766f6d09ull,0x202c303766250920ull,
+0x3030303866336630ull,0x09202020203b3030ull,0x616d090a31202f2full,0x2509203233662e64ull,
+0x376625202c313766ull,0x2c38366625202c30ull,0x090a3b3936662520ull,0x65726168732e646cull,
+0x2509203233662e64ull,0x6f635b202c323766ull,0x65636e6169726176ull,0x0a3b5d382b305f5full,
+0x726168732e646c09ull,0x09203233662e6465ull,0x635b202c33376625ull,0x636e61697261766full,
+0x5d36312b305f5f65ull,0x662e766f6d090a3bull,0x3437662509203233ull,0x303866336630202cull,
+0x2020203b30303030ull,0x090a31202f2f0920ull,0x203233662e64616dull,0x25202c3537662509ull,
+0x376625202c343766ull,0x3b33376625202c32ull,0x6168732e646c090aull,0x203233662e646572ull,
+0x5b202c3637662509ull,0x6e61697261766f63ull,0x5d302b305f5f6563ull,0x662e766f6d090a3bull,
+0x3737662509203233ull,0x303866336630202cull,0x2020203b30303030ull,0x090a31202f2f0920ull,
+0x203233662e64616dull,0x25202c3837662509ull,0x376625202c363766ull,0x3b38366625202c37ull,
+0x33662e766f6d090aull,0x2c39376625092032ull,0x3030386633663020ull,0x202020203b303030ull,
+0x6d090a31202f2f09ull,0x09203233662e6461ull,0x6625202c30386625ull,0x33376625202c3937ull,
+0x0a3b31376625202cull,0x726168732e646c09ull,0x09203233662e6465ull,0x635b202c31386625ull,
+0x636e61697261766full,0x5d30322b305f5f65ull,0x662e766f6d090a3bull,0x3238662509203233ull,
+0x303866336630202cull,0x2020203b30303030ull,0x090a31202f2f0920ull,0x203233662e64616dull,
+0x25202c3338662509ull,0x386625202c323866ull,0x3b35376625202c31ull,0x33662e766f6d090aull,
+0x2c34386625092032ull,0x3030386633663020ull,0x202020203b303030ull,0x6d090a31202f2f09ull,
+0x09203233662e6461ull,0x6625202c35386625ull,0x34386625202c3237ull,0x0a3b38376625202cull,
+0x3233662e78616d09ull,0x202c363866250920ull,0x6625202c30386625ull,0x78616d090a3b3538ull,
+0x662509203233662eull,0x33386625202c3738ull,0x0a3b36386625202cull,0x7070612e70637209ull,
+0x203233662e786f72ull,0x25202c3838662509ull,0x756d090a3b373866ull,0x2509203233662e6cull,
+0x386625202c393866ull,0x3b38386625202c30ull,0x33662e6c756d090aull,0x2c30396625092032ull,
+0x25202c3538662520ull,0x756d090a3b383866ull,0x2509203233662e6cull,0x386625202c313966ull,
+0x3b38386625202c33ull,0x33662e6c756d090aull,0x2c32396625092032ull,0x25202c3938662520ull,
+0x756d090a3b333766ull,0x2509203233662e6cull,0x386625202c333966ull,0x3b38366625202c39ull,
+0x33662e6c756d090aull,0x2c34396625092032ull,0x25202c3938662520ull,0x616d090a3b393666ull,
+0x2509203233662e64ull,0x396625202c353966ull,0x2c32376625202c30ull,0x090a3b3239662520ull,
+0x203233662e64616dull,0x25202c3639662509ull,0x396625202c363766ull,0x3b33396625202c30ull,
+0x33662e64616d090aull,0x2c37396625092032ull,0x25202c3039662520ull,0x396625202c383666ull,
+0x2e64616d090a3b34ull,0x3966250920323366ull,0x2c31396625202c38ull,0x25202c3138662520ull,
+0x616d090a3b353966ull,0x2509203233662e64ull,0x376625202c393966ull,0x2c31396625202c32ull,
+0x090a3b3639662520ull,0x203233662e64616dull,0x202c303031662509ull,0x6625202c31396625ull,
+0x37396625202c3337ull,0x662e78616d090a3bull,0x3031662509203233ull,0x2c39396625202c31ull,
+0x0a3b303031662520ull,0x3233662e78616d09ull,0x2c32303166250920ull,0x25202c3839662520ull,
+0x72090a3b31303166ull,0x6f727070612e7063ull,0x2509203233662e78ull,0x6625202c33303166ull,
+0x6c2e090a3b323031ull,0x343109353109636full,0x6c756d090a300939ull,0x662509203233662eull,
+0x396625202c343031ull,0x3330316625202c38ull,0x662e6c756d090a3bull,0x3031662509203233ull,
+0x2c39396625202c35ull,0x0a3b333031662520ull,0x3233662e6c756d09ull,0x2c36303166250920ull,
+0x202c303031662520ull,0x090a3b3330316625ull,0x203233662e6c756dull,0x202c373031662509ull,
+0x25202c3630316625ull,0x616d090a3b383666ull,0x2509203233662e64ull,0x6625202c38303166ull,
+0x30316625202c3637ull,0x3730316625202c35ull,0x662e64616d090a3bull,0x3031662509203233ull,
+0x2c32376625202c39ull,0x202c343031662520ull,0x090a3b3830316625ull,0x09353109636f6c2eull,
+0x6d090a3009303531ull,0x09203233662e6c75ull,0x25202c3031316625ull,0x6625202c36303166ull,
+0x64616d090a3b3936ull,0x662509203233662eull,0x316625202c313131ull,0x38366625202c3530ull,
+0x3b3031316625202cull,0x33662e64616d090aull,0x3231316625092032ull,0x2c3430316625202cull,
+0x25202c3337662520ull,0x2e090a3b31313166ull,0x3109353109636f6cull,0x756d090a30093135ull,
+0x2509203233662e6cull,0x6625202c33313166ull,0x376625202c363031ull,0x2e64616d090a3b33ull,
+0x3166250920323366ull,0x30316625202c3431ull,0x2c32376625202c35ull,0x0a3b333131662520ull,
+0x3233662e64616d09ull,0x2c35313166250920ull,0x202c343031662520ull,0x6625202c31386625ull,
+0x6c2e090a3b343131ull,0x353109353109636full,0x78616d090a300937ull,0x662509203233662eull,
+0x316625202c363131ull,0x31316625202c3930ull,0x2e78616d090a3b32ull,0x3166250920323366ull,
+0x31316625202c3731ull,0x3531316625202c36ull,0x612e706372090a3bull,0x33662e786f727070ull,
+0x3831316625092032ull,0x3b3731316625202cull,0x33662e6c756d090aull,0x3931316625092032ull,
+0x2c3831316625202cull,0x0a3b393031662520ull,0x3233662e6c756d09ull,0x2c30323166250920ull,
+0x202c383131662520ull,0x090a3b3231316625ull,0x203233662e6c756dull,0x202c313231662509ull,
+0x25202c3831316625ull,0x2e090a3b35313166ull,0x3109353109636f6cull,0x756d090a30093934ull,
+0x2509203233662e6cull,0x6625202c32323166ull,0x366625202c303231ull,0x2e64616d090a3b38ull,
+0x3166250920323366ull,0x36376625202c3332ull,0x2c3931316625202cull,0x0a3b323231662520ull,
+0x3233662e64616d09ull,0x2c39303166250920ull,0x25202c3237662520ull,0x6625202c31323166ull,
+0x6c2e090a3b333231ull,0x353109353109636full,0x6c756d090a300937ull,0x662509203233662eull,
+0x316625202c343231ull,0x39366625202c3032ull,0x662e6c756d090a3bull,0x3231662509203233ull,
+0x3032316625202c35ull,0x0a3b33376625202cull,0x3233662e64616d09ull,0x2c36323166250920ull,
+0x202c393131662520ull,0x6625202c38366625ull,0x616d090a3b343231ull,0x2509203233662e64ull,
+0x6625202c37323166ull,0x376625202c393131ull,0x3532316625202c32ull,0x662e64616d090a3bull,
+0x3231662509203233ull,0x3132316625202c38ull,0x202c33376625202cull,0x090a3b3632316625ull,
+0x203233662e64616dull,0x202c393231662509ull,0x25202c3132316625ull,0x316625202c313866ull,
+0x78616d090a3b3732ull,0x662509203233662eull,0x316625202c303331ull,0x30316625202c3832ull,
+0x2e78616d090a3b39ull,0x3166250920323366ull,0x32316625202c3133ull,0x3033316625202c39ull,
+0x612e706372090a3bull,0x33662e786f727070ull,0x3233316625092032ull,0x3b3133316625202cull,
+0x33662e6c756d090aull,0x3333316625092032ull,0x2c3832316625202cull,0x0a3b323331662520ull,
+0x3233662e6c756d09ull,0x2c34333166250920ull,0x202c393231662520ull,0x090a3b3233316625ull,
+0x203233662e6c756dull,0x202c353331662509ull,0x25202c3233316625ull,0x2e090a3b39303166ull,
+0x3109353109636f6cull,0x756d090a30093135ull,0x2509203233662e6cull,0x6625202c36333166ull,
+0x376625202c333331ull,0x2e64616d090a3b33ull,0x3166250920323366ull,0x33316625202c3733ull,
+0x2c32376625202c35ull,0x0a3b363331662520ull,0x3233662e64616d09ull,0x2c38333166250920ull,
+0x202c343331662520ull,0x6625202c31386625ull,0x6c2e090a3b373331ull,0x353109353109636full,
+0x6c756d090a300933ull,0x662509203233662eull,0x316625202c393331ull,0x38366625202c3333ull,
+0x662e6c756d090a3bull,0x3431662509203233ull,0x3333316625202c30ull,0x0a3b39366625202cull,
+0x3233662e64616d09ull,0x2c31343166250920ull,0x25202c3637662520ull,0x6625202c35333166ull,
+0x616d090a3b393331ull,0x2509203233662e64ull,0x6625202c32343166ull,0x366625202c353331ull,
+0x3034316625202c38ull,0x662e64616d090a3bull,0x3431662509203233ull,0x2c32376625202c33ull,
+0x202c343331662520ull,0x090a3b3134316625ull,0x203233662e64616dull,0x202c343431662509ull,
+0x25202c3433316625ull,0x316625202c333766ull,0x78616d090a3b3234ull,0x662509203233662eull,
+0x316625202c353431ull,0x34316625202c3334ull,0x2e78616d090a3b34ull,0x3166250920323366ull,
+0x34316625202c3634ull,0x3833316625202c35ull,0x612e706372090a3bull,0x33662e786f727070ull,
+0x3734316625092032ull,0x3b3634316625202cull,0x3109636f6c2e090aull,0x0a30093735310935ull,
+0x3233662e6c756d09ull,0x2c38343166250920ull,0x202c333431662520ull,0x090a3b3734316625ull,
+0x203233662e6c756dull,0x202c333331662509ull,0x25202c3434316625ull,0x2e090a3b37343166ull,
+0x3109353109636f6cull,0x756d090a30093934ull,0x2509203233662e6cull,0x6625202c39343166ull,
+0x316625202c373431ull,0x6c756d090a3b3833ull,0x662509203233662eull,0x316625202c303531ull,
+0x38366625202c3333ull,0x662e64616d090a3bull,0x3531662509203233ull,0x2c36376625202c31ull,
+0x202c383431662520ull,0x090a3b3035316625ull,0x203233662e64616dull,0x202c393031662509ull,
+0x6625202c32376625ull,0x316625202c393431ull,0x6f6c2e090a3b3135ull,0x3035310935310963ull,
+0x2e6c756d090a3009ull,0x3166250920323366ull,0x33316625202c3235ull,0x3b39366625202c33ull,
+0x33662e64616d090aull,0x3335316625092032ull,0x2c3834316625202cull,0x25202c3836662520ull,
+0x6d090a3b32353166ull,0x09203233662e6461ull,0x25202c3231316625ull,0x6625202c39343166ull,
+0x35316625202c3337ull,0x636f6c2e090a3b33ull,0x0931353109353109ull,0x662e6c756d090a30ull,
+0x3531662509203233ull,0x3333316625202c34ull,0x0a3b33376625202cull,0x3233662e64616d09ull,
+0x2c35353166250920ull,0x202c383431662520ull,0x6625202c32376625ull,0x616d090a3b343531ull,
+0x2509203233662e64ull,0x6625202c35313166ull,0x386625202c393431ull,0x3535316625202c31ull,
+0x09636f6c2e090a3bull,0x3009373531093531ull,0x33662e78616d090aull,0x3631316625092032ull,
+0x2c3930316625202cull,0x0a3b323131662520ull,0x3233662e78616d09ull,0x2c37313166250920ull,
+0x202c363131662520ull,0x090a3b3531316625ull,0x727070612e706372ull,0x09203233662e786full,
+0x25202c3831316625ull,0x6d090a3b37313166ull,0x09203233662e6c75ull,0x25202c3635316625ull,
+0x6625202c38313166ull,0x756d090a3b393031ull,0x2509203233662e6cull,0x6625202c37353166ull,
+0x316625202c383131ull,0x6c756d090a3b3231ull,0x662509203233662eull,0x316625202c383531ull,
+0x31316625202c3831ull,0x636f6c2e090a3b35ull,0x0939343109353109ull,0x662e6c756d090a30ull,
+0x3531662509203233ull,0x3735316625202c39ull,0x0a3b38366625202cull,0x3233662e64616d09ull,
+0x2c30363166250920ull,0x25202c3637662520ull,0x6625202c36353166ull,0x616d090a3b393531ull,
+0x2509203233662e64ull,0x6625202c39303166ull,0x35316625202c3237ull,0x3036316625202c38ull,
+0x09636f6c2e090a3bull,0x3009373531093531ull,0x33662e6c756d090aull,0x3432316625092032ull,
+0x2c3735316625202cull,0x090a3b3936662520ull,0x203233662e6c756dull,0x202c353231662509ull,
+0x25202c3735316625ull,0x616d090a3b333766ull,0x2509203233662e64ull,0x6625202c36323166ull,
+0x366625202c363531ull,0x3432316625202c38ull,0x662e64616d090a3bull,0x3231662509203233ull,
+0x3635316625202c37ull,0x202c32376625202cull,0x090a3b3532316625ull,0x203233662e64616dull,
+0x202c383231662509ull,0x25202c3835316625ull,0x316625202c333766ull,0x64616d090a3b3632ull,
+0x662509203233662eull,0x316625202c393231ull,0x31386625202c3835ull,0x3b3732316625202cull,
+0x33662e78616d090aull,0x3033316625092032ull,0x2c3832316625202cull,0x0a3b393031662520ull,
+0x3233662e78616d09ull,0x2c31333166250920ull,0x202c393231662520ull,0x090a3b3033316625ull,
+0x727070612e706372ull,0x09203233662e786full,0x25202c3233316625ull,0x6d090a3b31333166ull,
+0x09203233662e6c75ull,0x25202c3333316625ull,0x6625202c38323166ull,0x756d090a3b323331ull,
+0x2509203233662e6cull,0x6625202c34333166ull,0x316625202c393231ull,0x6c756d090a3b3233ull,
+0x662509203233662eull,0x316625202c353331ull,0x30316625202c3233ull,0x636f6c2e090a3b39ull,
+0x0931353109353109ull,0x662e6c756d090a30ull,0x3331662509203233ull,0x3333316625202c36ull,
+0x0a3b33376625202cull,0x3233662e64616d09ull,0x2c37333166250920ull,0x202c353331662520ull,
+0x6625202c32376625ull,0x616d090a3b363331ull,0x2509203233662e64ull,0x6625202c31363166ull,
+0x386625202c343331ull,0x3733316625202c31ull,0x09636f6c2e090a3bull,0x3009333531093531ull,
+0x33662e6c756d090aull,0x3933316625092032ull,0x2c3333316625202cull,0x090a3b3836662520ull,
+0x203233662e6c756dull,0x202c303431662509ull,0x25202c3333316625ull,0x616d090a3b393666ull,
+0x2509203233662e64ull,0x6625202c31343166ull,0x33316625202c3637ull,0x3933316625202c35ull,
+0x662e64616d090a3bull,0x3431662509203233ull,0x3533316625202c32ull,0x202c38366625202cull,
+0x090a3b3034316625ull,0x203233662e64616dull,0x202c333431662509ull,0x6625202c32376625ull,
+0x316625202c343331ull,0x64616d090a3b3134ull,0x662509203233662eull,0x316625202c343431ull,
+0x33376625202c3433ull,0x3b3234316625202cull,0x33662e78616d090aull,0x3534316625092032ull,
+0x2c3334316625202cull,0x0a3b343431662520ull,0x3233662e78616d09ull,0x2c36343166250920ull,
+0x202c353431662520ull,0x090a3b3136316625ull,0x727070612e706372ull,0x09203233662e786full,
+0x25202c3236316625ull,0x2e090a3b36343166ull,0x3109353109636f6cull,0x756d090a30093735ull,
+0x2509203233662e6cull,0x6625202c38343166ull,0x316625202c333431ull,0x6c756d090a3b3236ull,
+0x662509203233662eull,0x316625202c333331ull,0x36316625202c3434ull,0x636f6c2e090a3b32ull,
+0x0933363109363109ull,0x662e6c756d090a30ull,0x3431662509203233ull,0x3236316625202c39ull,
+0x3b3136316625202cull,0x33662e6c756d090aull,0x3336316625092032ull,0x25202c366625202cull,
+0x6d090a3b33333166ull,0x09203233662e6461ull,0x25202c3436316625ull,0x34316625202c3366ull,
+0x3336316625202c38ull,0x662e64616d090a3bull,0x3631662509203233ull,0x202c396625202c35ull,
+0x25202c3934316625ull,0x6d090a3b34363166ull,0x09203436752e766full,0x64202c3233647225ull,
+0x090a3b335f5f7370ull,0x203436752e646461ull,0x202c333364722509ull,0x7225202c32647225ull,
+0x7473090a3b323364ull,0x2e6465726168732eull,0x72255b0920323366ull,0x202c5d302b333364ull,
+0x090a3b3536316625ull,0x09363109636f6c2eull,0x6c090a3009383131ull,0x6465726168732e64ull,
+0x662509203233662eull,0x70645b202c363631ull,0x5d36312b335f5f73ull,0x6c2e746573090a3bull,
+0x33662e3233752e74ull,0x2c31327225092032ull,0x202c363631662520ull,0x090a3b3536316625ull,
+0x203233732e67656eull,0x25202c3232722509ull,0x646c090a3b313272ull,0x2e6465726168732eull,
+0x3166250920323366ull,0x7370645b202c3736ull,0x3b5d30322b335f5full,0x746c2e746573090aull,
+0x3233662e3233752eull,0x202c333272250920ull,0x25202c3736316625ull,0x6e090a3b35363166ull,
+0x09203233732e6765ull,0x7225202c34327225ull,0x646461090a3b3332ull,0x722509203233732eull,
+0x32327225202c3532ull,0x0a3b34327225202cull,0x726168732e646c09ull,0x09203233662e6465ull,
+0x5b202c3836316625ull,0x302b335f5f737064ull,0x2e746573090a3b5dull,0x662e3233752e746cull,
+0x3632722509203233ull,0x2c3836316625202cull,0x0a3b353631662520ull,0x3233732e67656e09ull,
+0x202c373272250920ull,0x6c090a3b36327225ull,0x6465726168732e64ull,0x662509203233662eull,
+0x70645b202c393631ull,0x3b5d342b335f5f73ull,0x746c2e746573090aull,0x3233662e3233752eull,
+0x202c383272250920ull,0x25202c3936316625ull,0x6e090a3b35363166ull,0x09203233732e6765ull,
+0x7225202c39327225ull,0x646461090a3b3832ull,0x722509203233732eull,0x37327225202c3033ull,
+0x0a3b39327225202cull,0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3037316625ull,
+0x382b335f5f737064ull,0x2e746573090a3b5dull,0x662e3233752e746cull,0x3133722509203233ull,
+0x2c3037316625202cull,0x0a3b353631662520ull,0x3233732e67656e09ull,0x202c323372250920ull,
+0x6c090a3b31337225ull,0x6465726168732e64ull,0x662509203233662eull,0x70645b202c313731ull,
+0x5d32312b335f5f73ull,0x6c2e746573090a3bull,0x33662e3233752e74ull,0x2c33337225092032ull,
+0x202c313731662520ull,0x090a3b3536316625ull,0x203233732e67656eull,0x25202c3433722509ull,
+0x6461090a3b333372ull,0x2509203233732e64ull,0x337225202c353372ull,0x3b34337225202c32ull,
+0x33732e646461090aull,0x2c36337225092032ull,0x25202c3033722520ull,0x6461090a3b353372ull,
+0x2509203233732e64ull,0x327225202c373372ull,0x3b36337225202c35ull,0x6168732e646c090aull,
+0x203233662e646572ull,0x202c323731662509ull,0x2b335f5f7370645bull,0x6573090a3b5d3432ull,
+0x3233752e746c2e74ull,0x722509203233662eull,0x37316625202c3833ull,0x3536316625202c32ull,
+0x732e67656e090a3bull,0x3933722509203233ull,0x0a3b38337225202cull,0x3233732e64646109ull,
+0x202c373372250920ull,0x7225202c37337225ull,0x2e646c090a3b3933ull,0x662e646572616873ull,
+0x3731662509203233ull,0x5f7370645b202c33ull,0x0a3b5d38322b335full,0x2e746c2e74657309ull,
+0x203233662e323375ull,0x25202c3034722509ull,0x6625202c33373166ull,0x656e090a3b353631ull,
+0x2509203233732e67ull,0x347225202c313472ull,0x2e646461090a3b30ull,0x3372250920323373ull,
+0x2c37337225202c37ull,0x090a3b3134722520ull,0x65726168732e646cull,0x2509203233662e64ull,
+0x645b202c34373166ull,0x32332b335f5f7370ull,0x2e746573090a3b5dull,0x662e3233752e746cull,
+0x3234722509203233ull,0x2c3437316625202cull,0x0a3b353631662520ull,0x3233732e67656e09ull,
+0x202c333472250920ull,0x61090a3b32347225ull,0x09203233732e6464ull,0x7225202c37337225ull,
+0x33347225202c3733ull,0x68732e646c090a3bull,0x3233662e64657261ull,0x2c35373166250920ull,
+0x335f5f7370645b20ull,0x73090a3b5d36332bull,0x33752e746c2e7465ull,0x2509203233662e32ull,
+0x316625202c343472ull,0x36316625202c3537ull,0x2e67656e090a3b35ull,0x3472250920323373ull,
+0x3b34347225202c35ull,0x33732e646461090aull,0x2c37337225092032ull,0x25202c3733722520ull,
+0x646c090a3b353472ull,0x2e6465726168732eull,0x3166250920323366ull,0x7370645b202c3637ull,
+0x3b5d30342b335f5full,0x746c2e746573090aull,0x3233662e3233752eull,0x202c363472250920ull,
+0x25202c3637316625ull,0x6e090a3b35363166ull,0x09203233732e6765ull,0x7225202c37347225ull,
+0x646461090a3b3634ull,0x722509203233732eull,0x37337225202c3733ull,0x0a3b37347225202cull,
+0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3737316625ull,0x342b335f5f737064ull,
+0x746573090a3b5d34ull,0x2e3233752e746c2eull,0x3472250920323366ull,0x3737316625202c38ull,
+0x3b3536316625202cull,0x33732e67656e090aull,0x2c39347225092032ull,0x090a3b3834722520ull,
+0x203233732e646461ull,0x25202c3733722509ull,0x347225202c373372ull,0x732e646c090a3b39ull,
+0x33662e6465726168ull,0x3837316625092032ull,0x5f5f7370645b202cull,0x090a3b5d38342b33ull,
+0x752e746c2e746573ull,0x09203233662e3233ull,0x6625202c30357225ull,0x316625202c383731ull,
+0x67656e090a3b3536ull,0x722509203233732eull,0x30357225202c3135ull,0x732e646461090a3bull,
+0x3733722509203233ull,0x202c37337225202cull,0x6c090a3b31357225ull,0x6465726168732e64ull,
+0x662509203233662eull,0x70645b202c393731ull,0x5d32352b335f5f73ull,0x6c2e746573090a3bull,
+0x33662e3233752e74ull,0x2c32357225092032ull,0x202c393731662520ull,0x090a3b3536316625ull,
+0x203233732e67656eull,0x25202c3335722509ull,0x6461090a3b323572ull,0x2509203233732e64ull,
+0x337225202c373372ull,0x3b33357225202c37ull,0x6168732e646c090aull,0x203233662e646572ull,
+0x202c303831662509ull,0x2b335f5f7370645bull,0x6573090a3b5d3635ull,0x3233752e746c2e74ull,
+0x722509203233662eull,0x38316625202c3435ull,0x3536316625202c30ull,0x732e67656e090a3bull,
+0x3535722509203233ull,0x0a3b34357225202cull,0x3233732e64646109ull,0x202c373372250920ull,
+0x7225202c37337225ull,0x2e646c090a3b3535ull,0x662e646572616873ull,0x3831662509203233ull,
+0x5f7370645b202c31ull,0x0a3b5d30362b335full,0x2e746c2e74657309ull,0x203233662e323375ull,
+0x25202c3635722509ull,0x6625202c31383166ull,0x656e090a3b353631ull,0x2509203233732e67ull,
+0x357225202c373572ull,0x2e646461090a3b36ull,0x3572250920323373ull,0x2c37337225202c38ull,
+0x090a3b3735722520ull,0x09363109636f6c2eull,0x61090a3009313231ull,0x09203436752e6464ull,
+0x25202c3433647225ull,0x647225202c326472ull,0x766f6d090a3b3133ull,0x722509203233732eull,
+0x38357225202c3935ull,0x68732e7473090a3bull,0x3233732e64657261ull,0x34336472255b0920ull,
+0x357225202c5d302bull,0x636f6c2e090a3b38ull,0x3009343209363109ull,0x33732e766f6d090aull,
+0x2c30367225092032ull,0x5f744c240a3b3020ull,0x3a34353939325f30ull,0x6f6f6c3c2f2f200aull,
+0x20706f6f4c203e70ull,0x6e696c2079646f62ull,0x656e202c34322065ull,0x656420676e697473ull,
+0x202c31203a687470ull,0x6f69746172657469ull,0x090a3531203a736eull,0x09363109636f6c2eull,
+0x73090a3009373231ull,0x732e65672e707465ull,0x2c34702509203233ull,0x25202c3036722520ull,
+0x702540090a3b3172ull,0x2409206172622034ull,0x3233345f305f744cull,0x3c2f2f200a3b3636ull,
+0x6150203e706f6f6cull,0x6f6c20666f207472ull,0x2079646f6220706full,0x2c343220656e696cull,
+0x616c206461656820ull,0x4c242064656c6562ull,0x353939325f305f74ull,0x752e747663090a34ull,
+0x09203233732e3436ull,0x25202c3533647225ull,0x756d090a3b303672ull,0x3436752e6f6c2e6cull,
+0x2c36336472250920ull,0x202c353364722520ull,0x2e646461090a3b34ull,0x6472250920343675ull,
+0x33647225202c3733ull,0x3633647225202c31ull,0x68732e646c090a3bull,0x3233732e64657261ull,
+0x202c313672250920ull,0x302b37336472255bull,0x70746573090a3b5dull,0x203233732e656e2eull,
+0x7225202c35702509ull,0x39357225202c3136ull,0x2035702540090a3bull,0x744c240920617262ull,
+0x36363233345f305full,0x6f6c3c2f2f200a3bull,0x74726150203e706full,0x706f6f6c20666f20ull,
+0x696c2079646f6220ull,0x68202c343220656eull,0x6562616c20646165ull,0x5f744c242064656cull,
+0x0a34353939325f30ull,0x3233732e64646109ull,0x202c393572250920ull,0x3b31202c39357225ull,
+0x6168732e7473090aull,0x203233732e646572ull,0x2b34336472255b09ull,0x39357225202c5d30ull,
+0x5f305f744c240a3bull,0x240a3a3636323334ull,0x383836325f305f4cull,0x6c3c2f2f200a3a32ull,
+0x726150203e706f6full,0x6f6f6c20666f2074ull,0x6c2079646f622070ull,0x202c343220656e69ull,
+0x62616c2064616568ull,0x744c242064656c65ull,0x34353939325f305full,0x33732e646461090aull,
+0x2c30367225092032ull,0x31202c3036722520ull,0x752e766f6d090a3bull,0x3236722509203233ull,
+0x73090a3b3531202cull,0x732e656e2e707465ull,0x2c36702509203233ull,0x25202c3036722520ull,
+0x2540090a3b323672ull,0x0920617262203670ull,0x39325f305f744c24ull,0x6c2e090a3b343539ull,
+0x373109363109636full,0x747663090a300937ull,0x3233732e3436752eull,0x2c38336472250920ull,
+0x090a3b3935722520ull,0x752e6f6c2e6c756dull,0x3364722509203436ull,0x3833647225202c39ull,
+0x61090a3b3231202cull,0x09203436752e6464ull,0x25202c3034647225ull,0x647225202c336472ull,
+0x2e7473090a3b3933ull,0x662e646572616873ull,0x6472255b09203233ull,0x25202c5d302b3034ull,
+0x2e7473090a3b3366ull,0x662e646572616873ull,0x6472255b09203233ull,0x25202c5d342b3034ull,
+0x2e7473090a3b3666ull,0x662e646572616873ull,0x6472255b09203233ull,0x25202c5d382b3034ull,
+0x5f744c240a3b3966ull,0x3a34393337325f30ull,0x3109636f6c2e090aull,0x0a30093631350936ull,
+0x3436752e766f6d09ull,0x202c336472250920ull,0x635f616475635f5full,0x36333173726f6c6full,
+0x636f6c2e090a3b38ull,0x0938313509363109ull,0x732e726162090a30ull,0x0a3b300920636e79ull,
+0x363109636f6c2e09ull,0x090a300935323509ull,0x203233732e766f6dull,0x30202c3336722509ull,
+0x662e766f6d090a3bull,0x3831662509203233ull,0x3766376630202c32ull,0x20203b6666666666ull,
+0x342e33202f2f0920ull,0x38332b6532383230ull,0x36752e766f6d090aull,0x3134647225092034ull,
+0x6d7265705f73202cull,0x736e6f6974617475ull,0x6f6d090a3b325f5full,0x2509203436752e76ull,
+0x7270202c32346472ull,0x6d090a3b3473646full,0x09203436752e766full,0x61202c3334647225ull,
+0x6c6261546168706cull,0x5f744c240a3b3465ull,0x3a38373930335f30ull,0x6f6f6c3c2f2f200aull,
+0x20706f6f4c203e70ull,0x6e696c2079646f62ull,0x6e202c3532352065ull,0x6420676e69747365ull,
+0x2c31203a68747065ull,0x74616d6974736520ull,0x6172657469206465ull,0x31203a736e6f6974ull,
+0x09636f6c2e090a36ull,0x3009343433093631ull,0x33732e646461090aull,0x2c34367225092032ull,
+0x25202c3336722520ull,0x766f6d090a3b3172ull,0x722509203233752eull,0x3b313939202c3536ull,
+0x672e70746573090aull,0x2509203233732e74ull,0x34367225202c3770ull,0x0a3b35367225202cull,
+0x7262203770254009ull,0x305f744c24092061ull,0x2f200a3b3835325full,0x203e706f6f6c3c2full,
+0x20666f2074726150ull,0x646f6220706f6f6cull,0x3520656e696c2079ull,0x64616568202c3532ull,
+0x64656c6562616c20ull,0x335f305f744c2420ull,0x6c2e090a38373930ull,0x343309363109636full,
+0x747663090a300937ull,0x3233732e3436752eull,0x2c34346472250920ull,0x090a3b3436722520ull,
+0x752e6f6c2e6c756dull,0x3464722509203436ull,0x3434647225202c35ull,0x646c090a3b34202cull,
+0x752e6d617261702eull,0x3464722509203436ull,0x75635f5f5b202c36ull,0x5f5f6d7261706164ull,
+0x6572706d6f63385aull,0x5f30536a4b507373ull,0x5f32746e69753550ull,0x746174756d726570ull,
+0x090a3b5d736e6f69ull,0x203436752e646461ull,0x202c373464722509ull,0x25202c3634647225ull,
+0x6c090a3b35346472ull,0x6c61626f6c672e64ull,0x722509203233752eull,0x6472255b202c3636ull,
+0x090a3b5d302b3734ull,0x203233752e766f6dull,0x31202c3736722509ull,0x746573090a3b3935ull,
+0x3233732e74672e70ull,0x25202c3870250920ull,0x367225202c343672ull,0x38702540090a3b37ull,
+0x4c24092061726220ull,0x333231335f305f74ull,0x6c3c2f2f200a3b34ull,0x726150203e706f6full,
+0x6f6f6c20666f2074ull,0x6c2079646f622070ull,0x2c35323520656e69ull,0x616c206461656820ull,
+0x4c242064656c6562ull,0x373930335f305f74ull,0x09636f6c2e090a38ull,0x3009383433093631ull,
+0x36752e646461090aull,0x3834647225092034ull,0x2c3534647225202cull,0x0a3b313464722520ull,
+0x726168732e747309ull,0x09203233752e6465ull,0x302b38346472255bull,0x3b36367225202c5dull,
+0x335f305f744c240aull,0x2f200a3a34333231ull,0x203e706f6f6c3c2full,0x20666f2074726150ull,
+0x646f6220706f6f6cull,0x3520656e696c2079ull,0x64616568202c3532ull,0x64656c6562616c20ull,
+0x335f305f744c2420ull,0x6c2e090a38373930ull,0x353309363109636full,0x766f6d090a300930ull,
+0x722509203233732eull,0x090a3b30202c3836ull,0x203436732e766f6dull,0x202c393464722509ull,
+0x6d090a3b33647225ull,0x09203233732e766full,0x3b30202c39367225ull,0x33662e766f6d090aull,
+0x3338316625092032ull,0x303030306630202cull,0x2020203b30303030ull,0x6d090a30202f2f09ull,
+0x09203233662e766full,0x30202c3438316625ull,0x3030303030303066ull,0x2f2f092020203b30ull,
+0x2e766f6d090a3020ull,0x3166250920323366ull,0x30306630202c3538ull,0x203b303030303030ull,
+0x0a30202f2f092020ull,0x32335f305f744c24ull,0x2f2f200a3a383532ull,0x4c203e706f6f6c3cull,
+0x79646f6220706f6full,0x353320656e696c20ull,0x697473656e202c30ull,0x687470656420676eull,
+0x657469202c31203aull,0x3a736e6f69746172ull,0x6f6c2e090a363120ull,0x3332320936310963ull,
+0x2e726873090a3009ull,0x3772250920323375ull,0x2c36367225202c30ull,0x090a3b3836722520ull,
+0x203233622e646e61ull,0x25202c3137722509ull,0x0a3b33202c303772ull,0x3436752e74766309ull,
+0x722509203233752eull,0x377225202c303564ull,0x2e6c756d090a3b31ull,0x09203436752e6f6cull,
+0x25202c3135647225ull,0x3b34202c30356472ull,0x36752e646461090aull,0x3235647225092034ull,
+0x2c3135647225202cull,0x0a3b333464722520ull,0x736e6f632e646c09ull,0x2509203233662e74ull,
+0x255b202c36383166ull,0x3b5d302b32356472ull,0x6168732e646c090aull,0x203233662e646572ull,
+0x202c373831662509ull,0x302b39346472255bull,0x732e646c090a3b5dull,0x33662e6465726168ull,
+0x3838316625092032ull,0x39346472255b202cull,0x646c090a3b5d342bull,0x2e6465726168732eull,
+0x3166250920323366ull,0x6472255b202c3938ull,0x090a3b5d382b3934ull,0x203233662e64616dull,
+0x202c353831662509ull,0x25202c3638316625ull,0x6625202c37383166ull,0x616d090a3b353831ull,
+0x2509203233662e64ull,0x6625202c34383166ull,0x316625202c363831ull,0x38316625202c3838ull,
+0x2e64616d090a3b34ull,0x3166250920323366ull,0x38316625202c3338ull,0x3938316625202c36ull,
+0x3b3338316625202cull,0x3109636f6c2e090aull,0x0a30093432320936ull,0x3436752e64646109ull,
+0x2c33356472250920ull,0x202c313564722520ull,0x090a3b3234647225ull,0x74736e6f632e646cull,
+0x722509203233732eull,0x6472255b202c3237ull,0x090a3b5d302b3335ull,0x203233732e646461ull,
+0x25202c3936722509ull,0x367225202c323772ull,0x2e646461090a3b39ull,0x6472250920343675ull,
+0x34647225202c3934ull,0x090a3b3231202c39ull,0x203233732e646461ull,0x25202c3836722509ull,
+0x0a3b32202c383672ull,0x3233752e766f6d09ull,0x202c333772250920ull,0x746573090a3b3233ull,
+0x3233732e656e2e70ull,0x25202c3970250920ull,0x377225202c383672ull,0x39702540090a3b33ull,
+0x4c24092061726220ull,0x353232335f305f74ull,0x6c3c2f2f200a3b38ull,0x726150203e706f6full,
+0x6f6f6c20666f2074ull,0x6c2079646f622070ull,0x2c35323520656e69ull,0x616c206461656820ull,
+0x4c242064656c6562ull,0x373930335f305f74ull,0x09636f6c2e090a38ull,0x3009323632093631ull,
+0x33622e646e61090aull,0x2c34377225092032ull,0x32202c3936722520ull,0x726873090a3b3535ull,
+0x722509203233732eull,0x39367225202c3537ull,0x73090a3b3631202cull,0x09203233732e7268ull,
+0x7225202c36377225ull,0x090a3b38202c3936ull,0x65726168732e646cull,0x2509203233662e64ull,
+0x5f5b202c30393166ull,0x75735f616475635full,0x302b30363531736dull,0x2e766f6d090a3b5dull,
+0x3166250920323366ull,0x31346630202c3139ull,0x203b303030303031ull,0x0a39202f2f092020ull,
+0x3233662e6c756d09ull,0x2c32393166250920ull,0x202c303931662520ull,0x090a3b3139316625ull,
+0x65726168732e646cull,0x2509203233662e64ull,0x5f5b202c33393166ull,0x75735f616475635full,
+0x342b30363531736dull,0x2e766f6d090a3b5dull,0x3166250920323366ull,0x31346630202c3439ull,
+0x203b303030303031ull,0x0a39202f2f092020ull,0x3233662e6c756d09ull,0x2c35393166250920ull,
+0x202c333931662520ull,0x090a3b3439316625ull,0x65726168732e646cull,0x2509203233662e64ull,
+0x5f5b202c36393166ull,0x75735f616475635full,0x382b30363531736dull,0x2e766f6d090a3b5dull,
+0x3166250920323366ull,0x31346630202c3739ull,0x203b303030303031ull,0x0a39202f2f092020ull,
+0x3233662e6c756d09ull,0x2c38393166250920ull,0x202c363931662520ull,0x090a3b3739316625ull,
+0x662e6e722e747663ull,0x09203233732e3233ull,0x25202c3939316625ull,0x7663090a3b343772ull,
+0x3233662e6e722e74ull,0x662509203233732eull,0x377225202c303032ull,0x2e646e61090a3b35ull,
+0x3772250920323362ull,0x2c36377225202c37ull,0x73090a3b35353220ull,0x09203233662e6275ull,
+0x25202c3130326625ull,0x6625202c32393166ull,0x7573090a3b353831ull,0x2509203233662e62ull,
+0x6625202c32303266ull,0x316625202c353931ull,0x627573090a3b3438ull,0x662509203233662eull,
+0x316625202c333032ull,0x38316625202c3839ull,0x2e6c756d090a3b33ull,0x3266250920323366ull,
+0x39316625202c3430ull,0x3939316625202c39ull,0x722e747663090a3bull,0x33732e3233662e6eull,
+0x3530326625092032ull,0x0a3b37377225202cull,0x3233662e6c756d09ull,0x2c36303266250920ull,
+0x202c393931662520ull,0x090a3b3130326625ull,0x203233662e6c756dull,0x202c373032662509ull,
+0x25202c3939316625ull,0x6d090a3b32303266ull,0x09203233662e6c75ull,0x25202c3830326625ull,
+0x6625202c39393166ull,0x756d090a3b333032ull,0x2509203233662e6cull,0x6625202c39303266ull,
+0x326625202c303032ull,0x627573090a3b3530ull,0x662509203233662eull,0x326625202c303132ull,
+0x30326625202c3930ull,0x2e6c756d090a3b34ull,0x3266250920323366ull,0x30326625202c3131ull,
+0x3538316625202c35ull,0x662e6c756d090a3bull,0x3132662509203233ull,0x3530326625202c32ull,
+0x3b3438316625202cull,0x33662e6c756d090aull,0x3331326625092032ull,0x2c3530326625202cull,
+0x0a3b333831662520ull,0x7070612e70637209ull,0x203233662e786f72ull,0x202c343132662509ull,
+0x090a3b3031326625ull,0x203233662e627573ull,0x202c353132662509ull,0x25202c3131326625ull,
+0x73090a3b36303266ull,0x09203233662e6275ull,0x25202c3631326625ull,0x6625202c32313266ull,
+0x7573090a3b373032ull,0x2509203233662e62ull,0x6625202c37313266ull,0x326625202c333132ull,
+0x6c756d090a3b3830ull,0x662509203233662eull,0x326625202c383132ull,0x31326625202c3431ull,
+0x2e6c756d090a3b35ull,0x3266250920323366ull,0x31326625202c3931ull,0x3631326625202c34ull,
+0x662e6c756d090a3bull,0x3232662509203233ull,0x3431326625202c30ull,0x3b3731326625202cull,
+0x61732e747663090aull,0x33662e3233662e74ull,0x3132326625092032ull,0x3b3831326625202cull,
+0x61732e747663090aull,0x33662e3233662e74ull,0x3232326625092032ull,0x3b3931326625202cull,
+0x61732e747663090aull,0x33662e3233662e74ull,0x3332326625092032ull,0x3b3032326625202cull,
+0x33662e766f6d090aull,0x3432326625092032ull,0x386631346630202cull,0x2020203b30303030ull,
+0x090a3133202f2f09ull,0x203233662e6c756dull,0x202c353232662509ull,0x25202c3132326625ull,
+0x6d090a3b34323266ull,0x09203233662e766full,0x30202c3632326625ull,0x3030306337323466ull,
+0x2f2f092020203b30ull,0x6c756d090a333620ull,0x662509203233662eull,0x326625202c373232ull,
+0x32326625202c3232ull,0x2e766f6d090a3b36ull,0x3266250920323366ull,0x31346630202c3832ull,
+0x203b303030303866ull,0x3133202f2f092020ull,0x33662e6c756d090aull,0x3932326625092032ull,
+0x2c3332326625202cull,0x0a3b383232662520ull,0x696e722e74766309ull,0x3233662e3233662eull,
+0x2c30333266250920ull,0x0a3b353232662520ull,0x696e722e74766309ull,0x3233662e3233662eull,
+0x2c31333266250920ull,0x0a3b373232662520ull,0x696e722e74766309ull,0x3233662e3233662eull,
+0x2c32333266250920ull,0x0a3b393232662520ull,0x697a722e74766309ull,0x3233662e3233752eull,
+0x202c383772250920ull,0x090a3b3033326625ull,0x203233622e6c6873ull,0x25202c3937722509ull,
+0x3b3131202c383772ull,0x7a722e747663090aull,0x33662e3233752e69ull,0x2c30387225092032ull,
+0x0a3b313332662520ull,0x3233622e6c687309ull,0x202c313872250920ull,0x3b35202c30387225ull,
+0x3233622e726f090aull,0x202c323872250920ull,0x7225202c39377225ull,0x747663090a3b3138ull,
+0x3233752e697a722eull,0x722509203233662eull,0x33326625202c3338ull,0x622e726f090a3b32ull,
+0x3438722509203233ull,0x202c32387225202cull,0x2e090a3b33387225ull,0x3209363109636f6cull,
+0x756d090a30093336ull,0x2509203233662e6cull,0x6625202c33333266ull,0x316625202c393931ull,
+0x6c756d090a3b3538ull,0x662509203233662eull,0x316625202c343332ull,0x38316625202c3939ull,
+0x2e6c756d090a3b34ull,0x3266250920323366ull,0x39316625202c3533ull,0x3338316625202c39ull,
+0x662e6c756d090a3bull,0x3332662509203233ull,0x3030326625202c36ull,0x3b3130326625202cull,
+0x33662e6c756d090aull,0x3733326625092032ull,0x2c3030326625202cull,0x0a3b323032662520ull,
+0x3233662e6c756d09ull,0x2c38333266250920ull,0x202c303032662520ull,0x090a3b3330326625ull,
+0x203233662e627573ull,0x202c393332662509ull,0x25202c3633326625ull,0x73090a3b33333266ull,
+0x09203233662e6275ull,0x25202c3034326625ull,0x6625202c37333266ull,0x7573090a3b343332ull,
+0x2509203233662e62ull,0x6625202c31343266ull,0x326625202c383332ull,0x6c756d090a3b3533ull,
+0x662509203233662eull,0x326625202c323432ull,0x31326625202c3933ull,0x2e6c756d090a3b34ull,
+0x3266250920323366ull,0x34326625202c3334ull,0x3431326625202c30ull,0x662e6c756d090a3bull,
+0x3432662509203233ull,0x3134326625202c34ull,0x3b3431326625202cull,0x61732e747663090aull,
+0x33662e3233662e74ull,0x3534326625092032ull,0x3b3234326625202cull,0x61732e747663090aull,
+0x33662e3233662e74ull,0x3634326625092032ull,0x3b3334326625202cull,0x61732e747663090aull,
+0x33662e3233662e74ull,0x3734326625092032ull,0x3b3434326625202cull,0x33662e766f6d090aull,
+0x3834326625092032ull,0x386631346630202cull,0x2020203b30303030ull,0x090a3133202f2f09ull,
+0x203233662e6c756dull,0x202c393432662509ull,0x25202c3534326625ull,0x6d090a3b38343266ull,
+0x09203233662e766full,0x30202c3035326625ull,0x3030306337323466ull,0x2f2f092020203b30ull,
+0x6c756d090a333620ull,0x662509203233662eull,0x326625202c313532ull,0x35326625202c3634ull,
+0x2e766f6d090a3b30ull,0x3266250920323366ull,0x31346630202c3235ull,0x203b303030303866ull,
+0x3133202f2f092020ull,0x33662e6c756d090aull,0x3335326625092032ull,0x2c3734326625202cull,
+0x0a3b323532662520ull,0x696e722e74766309ull,0x3233662e3233662eull,0x2c34353266250920ull,
+0x0a3b393432662520ull,0x696e722e74766309ull,0x3233662e3233662eull,0x2c35353266250920ull,
+0x0a3b313532662520ull,0x696e722e74766309ull,0x3233662e3233662eull,0x2c36353266250920ull,
+0x0a3b333532662520ull,0x697a722e74766309ull,0x3233662e3233752eull,0x202c353872250920ull,
+0x090a3b3435326625ull,0x203233622e6c6873ull,0x25202c3638722509ull,0x3b3131202c353872ull,
+0x7a722e747663090aull,0x33662e3233752e69ull,0x2c37387225092032ull,0x0a3b353532662520ull,
+0x3233622e6c687309ull,0x202c383872250920ull,0x3b35202c37387225ull,0x3233622e726f090aull,
+0x202c393872250920ull,0x7225202c36387225ull,0x747663090a3b3838ull,0x3233752e697a722eull,
+0x722509203233662eull,0x35326625202c3039ull,0x622e726f090a3b36ull,0x3139722509203233ull,
+0x202c39387225202cull,0x2e090a3b30397225ull,0x3209363109636f6cull,0x6f6d090a30093636ull,
+0x2509203233662e76ull,0x6630202c37353266ull,0x3137353334306433ull,0x202f2f092020203bull,
+0x3737323233302e30ull,0x662e6c756d090a35ull,0x3532662509203233ull,0x3033326625202c38ull,
+0x3b3735326625202cull,0x33662e6c756d090aull,0x3935326625092032ull,0x2c3835326625202cull,
+0x0a3b383532662520ull,0x3233662e766f6d09ull,0x2c30363266250920ull,0x6231386333663020ull,
+0x092020203b393131ull,0x3531302e30202f2full,0x756d090a35313338ull,0x2509203233662e6cull,
+0x6625202c31363266ull,0x326625202c313332ull,0x6c756d090a3b3036ull,0x662509203233662eull,
+0x326625202c323632ull,0x36326625202c3136ull,0x2e766f6d090a3b31ull,0x3266250920323366ull,
+0x64336630202c3336ull,0x203b313735333430ull,0x2e30202f2f092020ull,0x0a35373732323330ull,
+0x3233662e6c756d09ull,0x2c34363266250920ull,0x202c323332662520ull,0x090a3b3336326625ull,
+0x203233662e6c756dull,0x202c353632662509ull,0x25202c3436326625ull,0x6d090a3b34363266ull,
+0x09203233662e766full,0x30202c3636326625ull,0x3735333430643366ull,0x2f2f092020203b31ull,
+0x37323233302e3020ull,0x2e6c756d090a3537ull,0x3266250920323366ull,0x35326625202c3736ull,
+0x3636326625202c34ull,0x662e6c756d090a3bull,0x3632662509203233ull,0x3736326625202c38ull,
+0x3b3736326625202cull,0x33662e766f6d090aull,0x3936326625092032ull,0x313863336630202cull,
+0x2020203b39313162ull,0x31302e30202f2f09ull,0x6d090a3531333835ull,0x09203233662e6c75ull,
+0x25202c3037326625ull,0x6625202c35353266ull,0x756d090a3b393632ull,0x2509203233662e6cull,
+0x6625202c31373266ull,0x326625202c303732ull,0x766f6d090a3b3037ull,0x662509203233662eull,
+0x336630202c323732ull,0x3b31373533343064ull,0x30202f2f09202020ull,0x353737323233302eull,
+0x33662e6c756d090aull,0x3337326625092032ull,0x2c3635326625202cull,0x0a3b323732662520ull,
+0x3233662e6c756d09ull,0x2c34373266250920ull,0x202c333732662520ull,0x090a3b3337326625ull,
+0x203233662e6c756dull,0x202c353732662509ull,0x25202c3736326625ull,0x6d090a3b38353266ull,
+0x09203233662e6c75ull,0x25202c3637326625ull,0x6625202c30373266ull,0x756d090a3b313632ull,
+0x2509203233662e6cull,0x6625202c37373266ull,0x326625202c333732ull,0x6c756d090a3b3436ull,
+0x662509203233662eull,0x326625202c383732ull,0x38316625202c3835ull,0x2e6c756d090a3b35ull,
+0x3266250920323366ull,0x36326625202c3937ull,0x3438316625202c31ull,0x662e6c756d090a3bull,
+0x3832662509203233ull,0x3436326625202c30ull,0x3b3338316625202cull,0x33662e6c756d090aull,
+0x3138326625092032ull,0x2c3130326625202cull,0x0a3b373632662520ull,0x3233662e6c756d09ull,
+0x2c32383266250920ull,0x202c323032662520ull,0x090a3b3037326625ull,0x203233662e6c756dull,
+0x202c333832662509ull,0x25202c3330326625ull,0x2e090a3b33373266ull,0x3309363109636f6cull,
+0x756d090a30093035ull,0x2509203233662e6cull,0x6625202c34383266ull,0x326625202c393931ull,
+0x6c756d090a3b3637ull,0x662509203233662eull,0x316625202c353832ull,0x37326625202c3939ull,
+0x2e6c756d090a3b35ull,0x3266250920323366ull,0x39316625202c3638ull,0x3737326625202c39ull,
+0x662e6c756d090a3bull,0x3832662509203233ull,0x3030326625202c37ull,0x3b3236326625202cull,
+0x33662e6c756d090aull,0x3838326625092032ull,0x2c3030326625202cull,0x0a3b393532662520ull,
+0x3233662e6c756d09ull,0x2c39383266250920ull,0x202c303032662520ull,0x090a3b3536326625ull,
+0x203233662e627573ull,0x202c303932662509ull,0x25202c3438326625ull,0x73090a3b39373266ull,
+0x09203233662e6275ull,0x25202c3139326625ull,0x6625202c35383266ull,0x7573090a3b383732ull,
+0x2509203233662e62ull,0x6625202c32393266ull,0x326625202c363832ull,0x6c756d090a3b3038ull,
+0x662509203233662eull,0x326625202c333932ull,0x37326625202c3530ull,0x2e6c756d090a3b31ull,
+0x3266250920323366ull,0x30326625202c3439ull,0x3836326625202c35ull,0x662e6c756d090a3bull,
+0x3932662509203233ull,0x3530326625202c35ull,0x3b3437326625202cull,0x33662e627573090aull,
+0x3639326625092032ull,0x2c3039326625202cull,0x0a3b323832662520ull,0x3233662e62757309ull,
+0x2c37393266250920ull,0x202c313932662520ull,0x090a3b3138326625ull,0x203233662e627573ull,
+0x202c383932662509ull,0x25202c3239326625ull,0x61090a3b33383266ull,0x09203233662e6464ull,
+0x25202c3939326625ull,0x6625202c37383266ull,0x6461090a3b333932ull,0x2509203233662e64ull,
+0x6625202c30303366ull,0x326625202c383832ull,0x646461090a3b3439ull,0x662509203233662eull,
+0x326625202c313033ull,0x39326625202c3938ull,0x2e646461090a3b35ull,0x3366250920323366ull,
+0x39326625202c3230ull,0x3639326625202c36ull,0x662e646461090a3bull,0x3033662509203233ull,
+0x3739326625202c33ull,0x3b3739326625202cull,0x33662e646461090aull,0x3430336625092032ull,
+0x2c3839326625202cull,0x0a3b383932662520ull,0x3233662e64646109ull,0x2c35303366250920ull,
+0x202c393932662520ull,0x090a3b3230336625ull,0x203233662e646461ull,0x202c363033662509ull,
+0x25202c3030336625ull,0x61090a3b33303366ull,0x09203233662e6464ull,0x25202c3730336625ull,
+0x6625202c31303366ull,0x646c090a3b343033ull,0x662e74736e6f632eull,0x3033662509203233ull,
+0x6c6f436b5b202c38ull,0x63697274654d726full,0x756d090a3b5d342bull,0x2509203233662e6cull,
+0x6625202c39303366ull,0x336625202c383033ull,0x2e646c090a3b3530ull,0x33662e74736e6f63ull,
+0x3031336625092032ull,0x6f6c6f436b5b202cull,0x2b63697274654d72ull,0x64616d090a3b5d30ull,
+0x662509203233662eull,0x336625202c313133ull,0x31336625202c3630ull,0x3930336625202c30ull,
+0x6f632e646c090a3bull,0x203233662e74736eull,0x202c323133662509ull,0x4d726f6c6f436b5bull,
+0x5d382b6369727465ull,0x662e64616d090a3bull,0x3133662509203233ull,0x3730336625202c33ull,
+0x2c3231336625202cull,0x0a3b313133662520ull,0x3233662e766f6d09ull,0x2c34313366250920ull,
+0x3833656433663020ull,0x092020203b393365ull,0x3131312e30202f2full,0x6c756d090a313131ull,
+0x662509203233662eull,0x336625202c353133ull,0x31336625202c3331ull,0x70746573090a3b34ull,
+0x203233662e746c2eull,0x25202c3031702509ull,0x6625202c35313366ull,0x2140090a3b323831ull,
+0x6172622030317025ull,0x5f305f744c240920ull,0x200a3b3037373233ull,0x3e706f6f6c3c2f2full,
+0x666f207472615020ull,0x6f6220706f6f6c20ull,0x20656e696c207964ull,0x616568202c353235ull,
+0x656c6562616c2064ull,0x5f305f744c242064ull,0x2e090a3837393033ull,0x3309363109636f6cull,
+0x6f6d090a30093435ull,0x2509203233662e76ull,0x6625202c32383166ull,0x6c2e090a3b353133ull,
+0x353309363109636full,0x766f6d090a300935ull,0x722509203233732eull,0x36367225202c3239ull,
+0x09636f6c2e090a3bull,0x3009363533093631ull,0x31752e747663090aull,0x2509203233752e36ull,
+0x387225202c326872ull,0x636f6c2e090a3b34ull,0x0937353309363109ull,0x752e747663090a30ull,
+0x09203233752e3631ull,0x7225202c33687225ull,0x5f744c240a3b3139ull,0x3a30373732335f30ull,
+0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,0x20706f6f6c20666full,0x6e696c2079646f62ull,
+0x68202c3532352065ull,0x6562616c20646165ull,0x5f744c242064656cull,0x0a38373930335f30ull,
+0x363109636f6c2e09ull,0x090a300931343309ull,0x203233732e646461ull,0x25202c3336722509ull,
+0x3b3436202c333672ull,0x33752e766f6d090aull,0x2c33397225092032ull,0x090a3b3432303120ull,
+0x2e656e2e70746573ull,0x3170250920323373ull,0x2c33367225202c31ull,0x090a3b3339722520ull,
+0x7262203131702540ull,0x305f744c24092061ull,0x0a3b38373930335full,0x35325f305f744c24ull,
+0x636f6c2e090a3a38ull,0x0939353309363109ull,0x752e747663090a30ull,0x09203631752e3233ull,
+0x7225202c34397225ull,0x747663090a3b3368ull,0x3631752e3233752eull,0x202c353972250920ull,
+0x73090a3b32687225ull,0x752e656c2e707465ull,0x3231702509203233ull,0x202c34397225202cull,
+0x40090a3b35397225ull,0x6172622032317025ull,0x5f305f744c240920ull,0x090a3b3833353333ull,
+0x09363109636f6c2eull,0x6f6d090a30093237ull,0x2509203233732e76ull,0x397225202c363972ull,
+0x636f6c2e090a3b34ull,0x3009333709363109ull,0x33732e766f6d090aull,0x2c34397225092032ull,
+0x090a3b3539722520ull,0x09363109636f6c2eull,0x6f6d090a30093437ull,0x2509203233732e76ull,
+0x397225202c353972ull,0x636f6c2e090a3b36ull,0x0934363309363109ull,0x732e766f6d090a30ull,
+0x3739722509203233ull,0x0a3b32397225202cull,0x3233622e726f7809ull,0x202c383972250920ull,
+0x3431202c37397225ull,0x3536373535363133ull,0x732e766f6d090a3bull,0x3239722509203233ull,
+0x0a3b38397225202cull,0x33335f305f744c24ull,0x6f6d090a3a383335ull,0x2509203233732e76ull,
+0x0a3b30202c393972ull,0x3436752e766f6d09ull,0x2c34356472250920ull,0x3b3373646f727020ull,
+0x36752e766f6d090aull,0x3535647225092034ull,0x546168706c61202cull,0x240a3b33656c6261ull,
+0x3534335f305f744cull,0x3c2f2f200a3a3236ull,0x6f4c203e706f6f6cull,0x2079646f6220706full,
+0x34363320656e696cull,0x6e697473656e202cull,0x3a68747065642067ull,0x69747365202c3120ull,
+0x746920646574616dull,0x736e6f6974617265ull,0x6f6c2e090a33203aull,0x3037330936310963ull,
+0x2e6c756d090a3009ull,0x09203233732e6f6cull,0x25202c3030317225ull,0x3b3436202c393972ull,
+0x33732e646461090aull,0x3130317225092032ull,0x2c3030317225202cull,0x6d090a3b31722520ull,
+0x09203233752e766full,0x31202c3230317225ull,0x746573090a3b3935ull,0x3233732e74672e70ull,
+0x202c333170250920ull,0x25202c3130317225ull,0x40090a3b32303172ull,0x6172622033317025ull,
+0x5f305f744c240920ull,0x2f2f200a3b343135ull,0x50203e706f6f6c3cull,0x6c20666f20747261ull,
+0x79646f6220706f6full,0x363320656e696c20ull,0x2064616568202c34ull,0x2064656c6562616cull,
+0x34335f305f744c24ull,0x6f6c2e090a323635ull,0x3337330936310963ull,0x2e747663090a3009ull,
+0x203233732e343675ull,0x202c363564722509ull,0x090a3b3130317225ull,0x752e6f6c2e6c756dull,
+0x3564722509203436ull,0x3635647225202c37ull,0x6461090a3b34202cull,0x2509203436752e64ull,
+0x7225202c38356472ull,0x647225202c313464ull,0x2e646c090a3b3735ull,0x752e646572616873ull,
+0x3031722509203233ull,0x356472255b202c33ull,0x2e090a3b5d302b38ull,0x3309363109636f6cull,
+0x6f6d090a30093437ull,0x2509203233732e76ull,0x3b30202c34303172ull,0x36732e766f6d090aull,
+0x3935647225092034ull,0x0a3b33647225202cull,0x3233732e766f6d09ull,0x2c35303172250920ull,
+0x766f6d090a3b3020ull,0x662509203233662eull,0x306630202c363133ull,0x3b30303030303030ull,
+0x30202f2f09202020ull,0x33662e766f6d090aull,0x3731336625092032ull,0x303030306630202cull,
+0x2020203b30303030ull,0x6d090a30202f2f09ull,0x09203233662e766full,0x30202c3831336625ull,
+0x3030303030303066ull,0x2f2f092020203b30ull,0x305f744c240a3020ull,0x0a3a30333335335full,
+0x706f6f6c3c2f2f20ull,0x6220706f6f4c203eull,0x656e696c2079646full,0x656e202c34373320ull,
+0x656420676e697473ull,0x202c31203a687470ull,0x6f69746172657469ull,0x090a3631203a736eull,
+0x09363109636f6c2eull,0x6c090a3009333733ull,0x6465726168732e64ull,0x722509203233752eull,
+0x72255b202c333031ull,0x0a3b5d302b383564ull,0x363109636f6c2e09ull,0x090a300934383209ull,
+0x203233752e726873ull,0x202c363031722509ull,0x25202c3330317225ull,0x61090a3b34303172ull,
+0x09203233622e646eull,0x25202c3730317225ull,0x3b33202c36303172ull,0x36752e747663090aull,
+0x2509203233752e34ull,0x7225202c30366472ull,0x756d090a3b373031ull,0x3436752e6f6c2e6cull,
+0x2c31366472250920ull,0x202c303664722520ull,0x2e646461090a3b34ull,0x6472250920343675ull,
+0x36647225202c3236ull,0x3535647225202c31ull,0x6f632e646c090a3bull,0x203233662e74736eull,
+0x202c393133662509ull,0x302b32366472255bull,0x732e646c090a3b5dull,0x33662e6465726168ull,
+0x3032336625092032ull,0x39356472255b202cull,0x646c090a3b5d302bull,0x2e6465726168732eull,
+0x3366250920323366ull,0x6472255b202c3132ull,0x090a3b5d342b3935ull,0x65726168732e646cull,
+0x2509203233662e64ull,0x255b202c32323366ull,0x3b5d382b39356472ull,0x33662e64616d090aull,
+0x3831336625092032ull,0x2c3931336625202cull,0x202c303233662520ull,0x090a3b3831336625ull,
+0x203233662e64616dull,0x202c373133662509ull,0x25202c3931336625ull,0x6625202c31323366ull,
+0x616d090a3b373133ull,0x2509203233662e64ull,0x6625202c36313366ull,0x336625202c393133ull,
+0x31336625202c3232ull,0x636f6c2e090a3b36ull,0x0935383209363109ull,0x752e646461090a30ull,
+0x3664722509203436ull,0x3136647225202c33ull,0x3b3435647225202cull,0x6e6f632e646c090aull,
+0x09203233732e7473ull,0x5b202c3830317225ull,0x5d302b3336647225ull,0x732e646461090a3bull,
+0x3031722509203233ull,0x3830317225202c35ull,0x3b3530317225202cull,0x36752e646461090aull,
+0x3935647225092034ull,0x2c3935647225202cull,0x6461090a3b323120ull,0x2509203233732e64ull,
+0x7225202c34303172ull,0x0a3b32202c343031ull,0x3233752e766f6d09ull,0x2c39303172250920ull,
+0x6573090a3b323320ull,0x33732e656e2e7074ull,0x2c34317025092032ull,0x202c343031722520ull,
+0x090a3b3930317225ull,0x7262203431702540ull,0x305f744c24092061ull,0x0a3b30333335335full,
+0x706f6f6c3c2f2f20ull,0x6f2074726150203eull,0x6220706f6f6c2066ull,0x656e696c2079646full,
+0x6568202c34363320ull,0x6c6562616c206461ull,0x305f744c24206465ull,0x090a32363534335full,
+0x09363109636f6c2eull,0x61090a3009323233ull,0x09203233622e646eull,0x25202c3031317225ull,
+0x3532202c35303172ull,0x2e726873090a3b35ull,0x3172250920323373ull,0x30317225202c3131ull,
+0x090a3b3631202c35ull,0x203233732e726873ull,0x202c323131722509ull,0x38202c3530317225ull,
+0x68732e646c090a3bull,0x3233662e64657261ull,0x2c33323366250920ull,0x616475635f5f5b20ull,
+0x363531736d75735full,0x6d090a3b5d302b30ull,0x09203233662e766full,0x30202c3432336625ull,
+0x3030303038303466ull,0x2f2f092020203b30ull,0x2e6c756d090a3420ull,0x3366250920323366ull,
+0x32336625202c3532ull,0x3432336625202c33ull,0x68732e646c090a3bull,0x3233662e64657261ull,
+0x2c36323366250920ull,0x616475635f5f5b20ull,0x363531736d75735full,0x6d090a3b5d342b30ull,
+0x09203233662e766full,0x30202c3732336625ull,0x3030303038303466ull,0x2f2f092020203b30ull,
+0x2e6c756d090a3420ull,0x3366250920323366ull,0x32336625202c3832ull,0x3732336625202c36ull,
+0x68732e646c090a3bull,0x3233662e64657261ull,0x2c39323366250920ull,0x616475635f5f5b20ull,
+0x363531736d75735full,0x6d090a3b5d382b30ull,0x09203233662e766full,0x30202c3033336625ull,
+0x3030303038303466ull,0x2f2f092020203b30ull,0x2e6c756d090a3420ull,0x3366250920323366ull,
+0x32336625202c3133ull,0x3033336625202c39ull,0x722e747663090a3bull,0x33732e3233662e6eull,
+0x3233336625092032ull,0x3b3031317225202cull,0x6e722e747663090aull,0x3233732e3233662eull,
+0x2c33333366250920ull,0x0a3b313131722520ull,0x3233622e646e6109ull,0x2c33313172250920ull,
+0x202c323131722520ull,0x7573090a3b353532ull,0x2509203233662e62ull,0x6625202c34333366ull,
+0x336625202c353233ull,0x627573090a3b3831ull,0x662509203233662eull,0x336625202c353333ull,
+0x31336625202c3832ull,0x2e627573090a3b37ull,0x3366250920323366ull,0x33336625202c3633ull,
+0x3631336625202c31ull,0x662e6c756d090a3bull,0x3333662509203233ull,0x3233336625202c37ull,
+0x3b3233336625202cull,0x6e722e747663090aull,0x3233732e3233662eull,0x2c38333366250920ull,
+0x0a3b333131722520ull,0x3233662e6c756d09ull,0x2c39333366250920ull,0x202c323333662520ull,
+0x090a3b3433336625ull,0x203233662e6c756dull,0x202c303433662509ull,0x25202c3233336625ull,
+0x6d090a3b35333366ull,0x09203233662e6c75ull,0x25202c3134336625ull,0x6625202c32333366ull,
+0x756d090a3b363333ull,0x2509203233662e6cull,0x6625202c32343366ull,0x336625202c333333ull,
+0x627573090a3b3833ull,0x662509203233662eull,0x336625202c333433ull,0x33336625202c3234ull,
+0x2e6c756d090a3b37ull,0x3366250920323366ull,0x33336625202c3434ull,0x3831336625202c38ull,
+0x662e6c756d090a3bull,0x3433662509203233ull,0x3833336625202c35ull,0x3b3731336625202cull,
+0x33662e6c756d090aull,0x3634336625092032ull,0x2c3833336625202cull,0x0a3b363133662520ull,
+0x7070612e70637209ull,0x203233662e786f72ull,0x202c373433662509ull,0x090a3b3334336625ull,
+0x203233662e627573ull,0x202c383433662509ull,0x25202c3434336625ull,0x73090a3b39333366ull,
+0x09203233662e6275ull,0x25202c3934336625ull,0x6625202c35343366ull,0x7573090a3b303433ull,
+0x2509203233662e62ull,0x6625202c30353366ull,0x336625202c363433ull,0x6c756d090a3b3134ull,
+0x662509203233662eull,0x336625202c313533ull,0x34336625202c3734ull,0x2e6c756d090a3b38ull,
+0x3366250920323366ull,0x34336625202c3235ull,0x3934336625202c37ull,0x662e6c756d090a3bull,
+0x3533662509203233ull,0x3734336625202c33ull,0x3b3035336625202cull,0x61732e747663090aull,
+0x33662e3233662e74ull,0x3435336625092032ull,0x3b3135336625202cull,0x61732e747663090aull,
+0x33662e3233662e74ull,0x3535336625092032ull,0x3b3235336625202cull,0x61732e747663090aull,
+0x33662e3233662e74ull,0x3635336625092032ull,0x3b3335336625202cull,0x33662e766f6d090aull,
+0x3735336625092032ull,0x386631346630202cull,0x2020203b30303030ull,0x090a3133202f2f09ull,
+0x203233662e6c756dull,0x202c383533662509ull,0x25202c3435336625ull,0x6d090a3b37353366ull,
+0x09203233662e766full,0x30202c3935336625ull,0x3030306337323466ull,0x2f2f092020203b30ull,
+0x6c756d090a333620ull,0x662509203233662eull,0x336625202c303633ull,0x35336625202c3535ull,
+0x2e766f6d090a3b39ull,0x3366250920323366ull,0x31346630202c3136ull,0x203b303030303866ull,
+0x3133202f2f092020ull,0x33662e6c756d090aull,0x3236336625092032ull,0x2c3635336625202cull,
+0x0a3b313633662520ull,0x696e722e74766309ull,0x3233662e3233662eull,0x2c33363366250920ull,
+0x0a3b383533662520ull,0x696e722e74766309ull,0x3233662e3233662eull,0x2c34363366250920ull,
+0x0a3b303633662520ull,0x696e722e74766309ull,0x3233662e3233662eull,0x2c35363366250920ull,
+0x0a3b323633662520ull,0x697a722e74766309ull,0x3233662e3233752eull,0x2c34313172250920ull,
+0x0a3b333633662520ull,0x3233622e6c687309ull,0x2c35313172250920ull,0x202c343131722520ull,
+0x747663090a3b3131ull,0x3233752e697a722eull,0x722509203233662eull,0x336625202c363131ull,
+0x6c6873090a3b3436ull,0x722509203233622eull,0x317225202c373131ull,0x090a3b35202c3631ull,
+0x09203233622e726full,0x25202c3831317225ull,0x7225202c35313172ull,0x7663090a3b373131ull,
+0x33752e697a722e74ull,0x2509203233662e32ull,0x6625202c39313172ull,0x726f090a3b353633ull,
+0x722509203233622eull,0x317225202c303231ull,0x31317225202c3831ull,0x2e747663090a3b39ull,
+0x203233752e363175ull,0x202c313231722509ull,0x090a3b3032317225ull,0x09363109636f6c2eull,
+0x6d090a3009333233ull,0x09203233662e6c75ull,0x25202c3636336625ull,0x6625202c32333366ull,
+0x756d090a3b383133ull,0x2509203233662e6cull,0x6625202c37363366ull,0x336625202c323333ull,
+0x6c756d090a3b3731ull,0x662509203233662eull,0x336625202c383633ull,0x31336625202c3233ull,
+0x2e6c756d090a3b36ull,0x3366250920323366ull,0x33336625202c3936ull,0x3433336625202c33ull,
+0x662e6c756d090a3bull,0x3733662509203233ull,0x3333336625202c30ull,0x3b3533336625202cull,
+0x33662e6c756d090aull,0x3137336625092032ull,0x2c3333336625202cull,0x0a3b363333662520ull,
+0x3233662e62757309ull,0x2c32373366250920ull,0x202c393633662520ull,0x090a3b3636336625ull,
+0x203233662e627573ull,0x202c333733662509ull,0x25202c3037336625ull,0x73090a3b37363366ull,
+0x09203233662e6275ull,0x25202c3437336625ull,0x6625202c31373366ull,0x756d090a3b383633ull,
+0x2509203233662e6cull,0x6625202c35373366ull,0x336625202c323733ull,0x6c756d090a3b3734ull,
+0x662509203233662eull,0x336625202c363733ull,0x34336625202c3337ull,0x2e6c756d090a3b37ull,
+0x3366250920323366ull,0x37336625202c3737ull,0x3734336625202c34ull,0x732e747663090a3bull,
+0x662e3233662e7461ull,0x3733662509203233ull,0x3537336625202c38ull,0x732e747663090a3bull,
+0x662e3233662e7461ull,0x3733662509203233ull,0x3637336625202c39ull,0x732e747663090a3bull,
+0x662e3233662e7461ull,0x3833662509203233ull,0x3737336625202c30ull,0x662e766f6d090a3bull,
+0x3833662509203233ull,0x6631346630202c31ull,0x20203b3030303038ull,0x0a3133202f2f0920ull,
+0x3233662e6c756d09ull,0x2c32383366250920ull,0x202c383733662520ull,0x090a3b3138336625ull,
+0x203233662e766f6dull,0x202c333833662509ull,0x3030633732346630ull,0x2f092020203b3030ull,
+0x756d090a3336202full,0x2509203233662e6cull,0x6625202c34383366ull,0x336625202c393733ull,
+0x766f6d090a3b3338ull,0x662509203233662eull,0x346630202c353833ull,0x3b30303030386631ull,
+0x33202f2f09202020ull,0x662e6c756d090a31ull,0x3833662509203233ull,0x3038336625202c36ull,
+0x3b3538336625202cull,0x6e722e747663090aull,0x33662e3233662e69ull,0x3738336625092032ull,
+0x3b3238336625202cull,0x6e722e747663090aull,0x33662e3233662e69ull,0x3838336625092032ull,
+0x3b3438336625202cull,0x6e722e747663090aull,0x33662e3233662e69ull,0x3938336625092032ull,
+0x3b3638336625202cull,0x7a722e747663090aull,0x33662e3233752e69ull,0x3232317225092032ull,
+0x3b3738336625202cull,0x33622e6c6873090aull,0x3332317225092032ull,0x2c3232317225202cull,
+0x7663090a3b313120ull,0x33752e697a722e74ull,0x2509203233662e32ull,0x6625202c34323172ull,
+0x6873090a3b383833ull,0x2509203233622e6cull,0x7225202c35323172ull,0x0a3b35202c343231ull,
+0x203233622e726f09ull,0x202c363231722509ull,0x25202c3332317225ull,0x63090a3b35323172ull,
+0x752e697a722e7476ull,0x09203233662e3233ull,0x25202c3732317225ull,0x6f090a3b39383366ull,
+0x2509203233622e72ull,0x7225202c38323172ull,0x317225202c363231ull,0x747663090a3b3732ull,
+0x3233752e3631752eull,0x2c39323172250920ull,0x0a3b383231722520ull,0x363109636f6c2e09ull,
+0x090a300936323309ull,0x203233662e766f6dull,0x202c303933662509ull,0x3533343064336630ull,
+0x2f092020203b3137ull,0x323233302e30202full,0x6c756d090a353737ull,0x662509203233662eull,
+0x336625202c313933ull,0x39336625202c3336ull,0x2e6c756d090a3b30ull,0x3366250920323366ull,
+0x39336625202c3239ull,0x3139336625202c31ull,0x662e766f6d090a3bull,0x3933662509203233ull,
+0x3863336630202c33ull,0x20203b3931316231ull,0x302e30202f2f0920ull,0x090a353133383531ull,
+0x203233662e6c756dull,0x202c343933662509ull,0x25202c3436336625ull,0x6d090a3b33393366ull,
+0x09203233662e6c75ull,0x25202c3539336625ull,0x6625202c34393366ull,0x6f6d090a3b343933ull,
+0x2509203233662e76ull,0x6630202c36393366ull,0x3137353334306433ull,0x202f2f092020203bull,
+0x3737323233302e30ull,0x662e6c756d090a35ull,0x3933662509203233ull,0x3536336625202c37ull,
+0x3b3639336625202cull,0x33662e6c756d090aull,0x3839336625092032ull,0x2c3739336625202cull,
+0x0a3b373933662520ull,0x3233662e766f6d09ull,0x2c39393366250920ull,0x3334306433663020ull,
+0x092020203b313735ull,0x3233302e30202f2full,0x756d090a35373732ull,0x2509203233662e6cull,
+0x6625202c30303466ull,0x336625202c373833ull,0x6c756d090a3b3939ull,0x662509203233662eull,
+0x346625202c313034ull,0x30346625202c3030ull,0x2e766f6d090a3b30ull,0x3466250920323366ull,
+0x63336630202c3230ull,0x203b393131623138ull,0x2e30202f2f092020ull,0x0a35313338353130ull,
+0x3233662e6c756d09ull,0x2c33303466250920ull,0x202c383833662520ull,0x090a3b3230346625ull,
+0x203233662e6c756dull,0x202c343034662509ull,0x25202c3330346625ull,0x6d090a3b33303466ull,
+0x09203233662e766full,0x30202c3530346625ull,0x3735333430643366ull,0x2f2f092020203b31ull,
+0x37323233302e3020ull,0x2e6c756d090a3537ull,0x3466250920323366ull,0x38336625202c3630ull,
+0x3530346625202c39ull,0x662e6c756d090a3bull,0x3034662509203233ull,0x3630346625202c37ull,
+0x3b3630346625202cull,0x33662e6c756d090aull,0x3830346625092032ull,0x2c3030346625202cull,
+0x0a3b313933662520ull,0x3233662e6c756d09ull,0x2c39303466250920ull,0x202c333034662520ull,
+0x090a3b3439336625ull,0x203233662e6c756dull,0x202c303134662509ull,0x25202c3630346625ull,
+0x6d090a3b37393366ull,0x09203233662e6c75ull,0x25202c3131346625ull,0x6625202c31393366ull,
+0x756d090a3b383133ull,0x2509203233662e6cull,0x6625202c32313466ull,0x336625202c343933ull,
+0x6c756d090a3b3731ull,0x662509203233662eull,0x336625202c333134ull,0x31336625202c3739ull,
+0x2e6c756d090a3b36ull,0x3466250920323366ull,0x33336625202c3431ull,0x3030346625202c34ull,
+0x662e6c756d090a3bull,0x3134662509203233ull,0x3533336625202c35ull,0x3b3330346625202cull,
+0x33662e6c756d090aull,0x3631346625092032ull,0x2c3633336625202cull,0x0a3b363034662520ull,
+0x363109636f6c2e09ull,0x090a300934373309ull,0x203233662e6c756dull,0x202c373134662509ull,
+0x25202c3233336625ull,0x6d090a3b39303466ull,0x09203233662e6c75ull,0x25202c3831346625ull,
+0x6625202c32333366ull,0x756d090a3b383034ull,0x2509203233662e6cull,0x6625202c39313466ull,
+0x346625202c323333ull,0x6c756d090a3b3031ull,0x662509203233662eull,0x336625202c303234ull,
+0x39336625202c3333ull,0x2e6c756d090a3b35ull,0x3466250920323366ull,0x33336625202c3132ull,
+0x3239336625202c33ull,0x662e6c756d090a3bull,0x3234662509203233ull,0x3333336625202c32ull,
+0x3b3839336625202cull,0x33662e627573090aull,0x3332346625092032ull,0x2c3731346625202cull,
+0x0a3b323134662520ull,0x3233662e62757309ull,0x2c34323466250920ull,0x202c383134662520ull,
+0x090a3b3131346625ull,0x203233662e627573ull,0x202c353234662509ull,0x25202c3931346625ull,
+0x6d090a3b33313466ull,0x09203233662e6c75ull,0x25202c3632346625ull,0x6625202c38333366ull,
+0x756d090a3b343034ull,0x2509203233662e6cull,0x6625202c37323466ull,0x346625202c383333ull,
+0x6c756d090a3b3130ull,0x662509203233662eull,0x336625202c383234ull,0x30346625202c3833ull,
+0x2e627573090a3b37ull,0x3466250920323366ull,0x32346625202c3932ull,0x3531346625202c33ull,
+0x662e627573090a3bull,0x3334662509203233ull,0x3432346625202c30ull,0x3b3431346625202cull,
+0x33662e627573090aull,0x3133346625092032ull,0x2c3532346625202cull,0x0a3b363134662520ull,
+0x3233662e64646109ull,0x2c32333466250920ull,0x202c303234662520ull,0x090a3b3632346625ull,
+0x203233662e646461ull,0x202c333334662509ull,0x25202c3132346625ull,0x61090a3b37323466ull,
+0x09203233662e6464ull,0x25202c3433346625ull,0x6625202c32323466ull,0x6461090a3b383234ull,
+0x2509203233662e64ull,0x6625202c35333466ull,0x346625202c393234ull,0x646461090a3b3932ull,
+0x662509203233662eull,0x346625202c363334ull,0x33346625202c3033ull,0x2e646461090a3b30ull,
+0x3466250920323366ull,0x33346625202c3733ull,0x3133346625202c31ull,0x662e646461090a3bull,
+0x3334662509203233ull,0x3233346625202c38ull,0x3b3533346625202cull,0x33662e646461090aull,
+0x3933346625092032ull,0x2c3333346625202cull,0x0a3b363334662520ull,0x3233662e64646109ull,
+0x2c30343466250920ull,0x202c343334662520ull,0x090a3b3733346625ull,0x74736e6f632e646cull,
+0x662509203233662eull,0x436b5b202c313434ull,0x7274654d726f6c6full,0x090a3b5d342b6369ull,
+0x203233662e6c756dull,0x202c323434662509ull,0x25202c3134346625ull,0x6c090a3b38333466ull,
+0x2e74736e6f632e64ull,0x3466250920323366ull,0x6f436b5b202c3334ull,0x697274654d726f6cull,
+0x6d090a3b5d302b63ull,0x09203233662e6461ull,0x25202c3434346625ull,0x6625202c39333466ull,
+0x346625202c333434ull,0x2e646c090a3b3234ull,0x33662e74736e6f63ull,0x3534346625092032ull,
+0x6f6c6f436b5b202cull,0x2b63697274654d72ull,0x64616d090a3b5d38ull,0x662509203233662eull,
+0x346625202c363434ull,0x34346625202c3034ull,0x3434346625202c35ull,0x662e766f6d090a3bull,
+0x3434662509203233ull,0x3865336630202c37ull,0x20203b3030303030ull,0x322e30202f2f0920ull,
+0x662e6c756d090a35ull,0x3434662509203233ull,0x3634346625202c38ull,0x3b3734346625202cull,
+0x6c2e70746573090aull,0x2509203233662e74ull,0x346625202c353170ull,0x38316625202c3834ull,
+0x70252140090a3b32ull,0x0920617262203531ull,0x36335f305f744c24ull,0x2f2f200a3b343533ull,
+0x50203e706f6f6c3cull,0x6c20666f20747261ull,0x79646f6220706f6full,0x363320656e696c20ull,
+0x2064616568202c34ull,0x2064656c6562616cull,0x34335f305f744c24ull,0x6f6c2e090a323635ull,
+0x3837330936310963ull,0x2e766f6d090a3009ull,0x3166250920323366ull,0x34346625202c3238ull,
+0x636f6c2e090a3b38ull,0x0933373309363109ull,0x68732e646c090a30ull,0x3233752e64657261ull,
+0x2c33303172250920ull,0x2b38356472255b20ull,0x6f6c2e090a3b5d30ull,0x3937330936310963ull,
+0x2e766f6d090a3009ull,0x3172250920323373ull,0x30317225202c3033ull,0x636f6c2e090a3b33ull,
+0x0930383309363109ull,0x732e766f6d090a30ull,0x3539722509203233ull,0x3b3132317225202cull,
+0x3109636f6c2e090aull,0x0a30093138330936ull,0x3233732e766f6d09ull,0x202c343972250920ull,
+0x090a3b3932317225ull,0x2e656c2e70746573ull,0x3170250920323375ull,0x3132317225202c36ull,
+0x3b3932317225202cull,0x203631702540090aull,0x744c240920617262ull,0x30313636335f305full,
+0x6f6c3c2f2f200a3bull,0x74726150203e706full,0x706f6f6c20666f20ull,0x696c2079646f6220ull,
+0x202c34363320656eull,0x62616c2064616568ull,0x744c242064656c65ull,0x32363534335f305full,
+0x3109636f6c2e090aull,0x090a300932370936ull,0x203233732e766f6dull,0x202c313331722509ull,
+0x2e090a3b34397225ull,0x3709363109636f6cull,0x766f6d090a300933ull,0x722509203233732eull,
+0x35397225202c3439ull,0x09636f6c2e090a3bull,0x0a30093437093631ull,0x3233732e766f6d09ull,
+0x202c353972250920ull,0x090a3b3133317225ull,0x09363109636f6c2eull,0x6c090a3009333733ull,
+0x6465726168732e64ull,0x722509203233752eull,0x72255b202c333031ull,0x0a3b5d302b383564ull,
+0x363109636f6c2e09ull,0x090a300936383309ull,0x203233622e746f6eull,0x202c323331722509ull,
+0x090a3b3330317225ull,0x203233752e726873ull,0x202c333331722509ull,0x31202c3233317225ull,
+0x622e646e61090a3bull,0x3331722509203233ull,0x3333317225202c34ull,0x353631333431202cull,
+0x78090a3b35363735ull,0x09203233622e726full,0x25202c3533317225ull,0x7225202c33303172ull,
+0x6f6d090a3b343331ull,0x2509203233732e76ull,0x317225202c323972ull,0x617262090a3b3533ull,
+0x4c240920696e752eull,0x353336335f305f74ull,0x305f744c240a3b34ull,0x0a3a30313636335full,
+0x706f6f6c3c2f2f20ull,0x6f2074726150203eull,0x6220706f6f6c2066ull,0x656e696c2079646full,
+0x6568202c34363320ull,0x6c6562616c206461ull,0x305f744c24206465ull,0x090a32363534335full,
+0x203233732e766f6dull,0x25202c3239722509ull,0x4c240a3b30333172ull,0x353336335f305f74ull,
+0x305f744c240a3a34ull,0x0a3a32343835335full,0x706f6f6c3c2f2f20ull,0x6f2074726150203eull,
+0x6220706f6f6c2066ull,0x656e696c2079646full,0x6568202c34363320ull,0x6c6562616c206461ull,
+0x305f744c24206465ull,0x090a32363534335full,0x09363109636f6c2eull,0x61090a3009373633ull,
+0x09203233732e6464ull,0x7225202c39397225ull,0x090a3b31202c3939ull,0x203233752e766f6dull,
+0x202c363331722509ull,0x70746573090a3b33ull,0x203233732e656e2eull,0x25202c3731702509ull,
+0x317225202c393972ull,0x702540090a3b3633ull,0x0920617262203731ull,0x34335f305f744c24ull,
+0x744c240a3b323635ull,0x0a3a3431355f305full,0x363109636f6c2e09ull,0x090a300931393309ull,
+0x203436752e766f6dull,0x202c343664722509ull,0x655f616475635f5full,0x31383173726f7272ull,
+0x2e646461090a3b36ull,0x6472250920343675ull,0x32647225202c3536ull,0x3b3436647225202cull,
+0x6168732e7473090aull,0x203233662e646572ull,0x2b35366472255b09ull,0x38316625202c5d30ull,
+0x636f6c2e090a3b32ull,0x0933303409363109ull,0x752e766f6d090a30ull,0x3664722509203436ull,
+0x6369646e69202c36ull,0x090a3b315f5f7365ull,0x203436752e646461ull,0x202c373664722509ull,
+0x7225202c32647225ull,0x7473090a3b363664ull,0x2e6465726168732eull,0x72255b0920323373ull,
+0x202c5d302b373664ull,0x6c2e090a3b317225ull,0x333409363109636full,0x726162090a300939ull,
+0x300920636e79732eull,0x752e766f6d090a3bull,0x3331722509203233ull,0x090a3b3133202c37ull,
+0x2e74672e70746573ull,0x3170250920323373ull,0x202c317225202c38ull,0x090a3b3733317225ull,
+0x7262203831702540ull,0x305f744c24092061ull,0x0a3b32343232345full,0x726168732e646c09ull,
+0x09203233662e6465ull,0x5b202c3934346625ull,0x5d302b3536647225ull,0x68732e646c090a3bull,
+0x3233662e64657261ull,0x2c30353466250920ull,0x2b35366472255b20ull,0x73090a3b5d383231ull,
+0x662e74672e707465ull,0x3931702509203233ull,0x2c3934346625202cull,0x0a3b303534662520ull,
+0x2039317025214009ull,0x744c240920617262ull,0x32383639335f305full,0x68732e646c090a3bull,
+0x3233662e64657261ull,0x2c30353466250920ull,0x2b35366472255b20ull,0x2e090a3b5d383231ull,
+0x3409363109636f6cull,0x6f6d090a30093534ull,0x2509203233662e76ull,0x6625202c39343466ull,
+0x7473090a3b303534ull,0x2e6465726168732eull,0x72255b0920323366ull,0x202c5d302b353664ull,
+0x090a3b3035346625ull,0x09363109636f6c2eull,0x6c090a3009363434ull,0x6465726168732e64ull,
+0x722509203233732eull,0x72255b202c383331ull,0x5d3832312b373664ull,0x68732e7473090a3bull,
+0x3233732e64657261ull,0x37366472255b0920ull,0x317225202c5d302bull,0x5f744c240a3b3833ull,
+0x3a32383639335f30ull,0x6168732e646c090aull,0x203233662e646572ull,0x202c313534662509ull,
+0x362b35366472255bull,0x746573090a3b5d34ull,0x3233662e74672e70ull,0x202c303270250920ull,
+0x25202c3934346625ull,0x40090a3b31353466ull,0x7262203032702521ull,0x305f744c24092061ull,
+0x0a3b34393130345full,0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3135346625ull,
+0x34362b3536647225ull,0x636f6c2e090a3b5dull,0x0939343409363109ull,0x662e766f6d090a30ull,
+0x3434662509203233ull,0x3135346625202c39ull,0x68732e7473090a3bull,0x3233662e64657261ull,
+0x35366472255b0920ull,0x346625202c5d302bull,0x6f6c2e090a3b3135ull,0x3035340936310963ull,
+0x732e646c090a3009ull,0x33732e6465726168ull,0x3933317225092032ull,0x37366472255b202cull,
+0x73090a3b5d34362bull,0x6465726168732e74ull,0x255b09203233732eull,0x2c5d302b37366472ull,
+0x0a3b393331722520ull,0x30345f305f744c24ull,0x646c090a3a343931ull,0x2e6465726168732eull,
+0x3466250920323366ull,0x6472255b202c3235ull,0x0a3b5d32332b3536ull,0x74672e7074657309ull,
+0x702509203233662eull,0x34346625202c3132ull,0x3235346625202c39ull,0x3270252140090a3bull,
+0x2409206172622031ull,0x3730345f305f744cull,0x2e646c090a3b3630ull,0x662e646572616873ull,
+0x3534662509203233ull,0x366472255b202c32ull,0x090a3b5d32332b35ull,0x09363109636f6c2eull,
+0x6d090a3009333534ull,0x09203233662e766full,0x25202c3934346625ull,0x73090a3b32353466ull,
+0x6465726168732e74ull,0x255b09203233662eull,0x2c5d302b35366472ull,0x0a3b323534662520ull,
+0x363109636f6c2e09ull,0x090a300934353409ull,0x65726168732e646cull,0x2509203233732e64ull,
+0x255b202c30343172ull,0x5d32332b37366472ull,0x68732e7473090a3bull,0x3233732e64657261ull,
+0x37366472255b0920ull,0x317225202c5d302bull,0x5f744c240a3b3034ull,0x3a36303730345f30ull,
+0x6168732e646c090aull,0x203233662e646572ull,0x202c333534662509ull,0x312b35366472255bull,
+0x746573090a3b5d36ull,0x3233662e74672e70ull,0x202c323270250920ull,0x25202c3934346625ull,
+0x40090a3b33353466ull,0x7262203232702521ull,0x305f744c24092061ull,0x0a3b38313231345full,
+0x726168732e646c09ull,0x09203233662e6465ull,0x5b202c3335346625ull,0x36312b3536647225ull,
+0x636f6c2e090a3b5dull,0x0937353409363109ull,0x662e766f6d090a30ull,0x3434662509203233ull,
+0x3335346625202c39ull,0x68732e7473090a3bull,0x3233662e64657261ull,0x35366472255b0920ull,
+0x346625202c5d302bull,0x6f6c2e090a3b3335ull,0x3835340936310963ull,0x732e646c090a3009ull,
+0x33732e6465726168ull,0x3134317225092032ull,0x37366472255b202cull,0x73090a3b5d36312bull,
+0x6465726168732e74ull,0x255b09203233732eull,0x2c5d302b37366472ull,0x0a3b313431722520ull,
+0x31345f305f744c24ull,0x646c090a3a383132ull,0x2e6465726168732eull,0x3466250920323366ull,
+0x6472255b202c3435ull,0x090a3b5d382b3536ull,0x2e74672e70746573ull,0x3270250920323366ull,
+0x3934346625202c33ull,0x3b3435346625202cull,0x333270252140090aull,0x4c24092061726220ull,
+0x333731345f305f74ull,0x732e646c090a3b30ull,0x33662e6465726168ull,0x3435346625092032ull,
+0x35366472255b202cull,0x6c2e090a3b5d382bull,0x363409363109636full,0x766f6d090a300931ull,
+0x662509203233662eull,0x346625202c393434ull,0x2e7473090a3b3435ull,0x662e646572616873ull,
+0x6472255b09203233ull,0x25202c5d302b3536ull,0x2e090a3b34353466ull,0x3409363109636f6cull,
+0x646c090a30093236ull,0x2e6465726168732eull,0x3172250920323373ull,0x6472255b202c3234ull,
+0x090a3b5d382b3736ull,0x65726168732e7473ull,0x5b09203233732e64ull,0x5d302b3736647225ull,
+0x3b3234317225202cull,0x345f305f744c240aull,0x6c090a3a30333731ull,0x6465726168732e64ull,
+0x662509203233662eull,0x72255b202c353534ull,0x0a3b5d342b353664ull,0x74672e7074657309ull,
+0x702509203233662eull,0x34346625202c3432ull,0x3535346625202c39ull,0x3270252140090a3bull,
+0x2409206172622034ull,0x3232345f305f744cull,0x6f6c2e090a3b3234ull,0x3536340936310963ull,
+0x732e7473090a3009ull,0x33662e6465726168ull,0x366472255b092032ull,0x6625202c5d302b35ull,
+0x6c2e090a3b353534ull,0x363409363109636full,0x2e646c090a300936ull,0x732e646572616873ull,
+0x3431722509203233ull,0x366472255b202c33ull,0x73090a3b5d342b37ull,0x6465726168732e74ull,
+0x255b09203233732eull,0x2c5d302b37366472ull,0x0a3b333431722520ull,0x32345f305f744c24ull,
+0x744c240a3a323432ull,0x30373139335f305full,0x09636f6c2e090a3aull,0x3009313734093631ull,
+0x79732e726162090aull,0x090a3b300920636eull,0x65726168732e646cull,0x2509203233732e64ull,
+0x695b202c34343172ull,0x5f5f73656369646eull,0x2e090a3b5d302b31ull,0x3509363109636f6cull,
+0x6162090a30093033ull,0x0920636e79732e72ull,0x70746573090a3b30ull,0x203233732e656e2eull,
+0x25202c3532702509ull,0x7225202c34343172ull,0x32702540090a3b31ull,0x2409206172622035ull,
+0x3732345f305f744cull,0x6f6c2e090a3b3435ull,0x3439340936310963ull,0x70746573090a3009ull,
+0x203233752e71652eull,0x25202c3632702509ull,0x397225202c343972ull,0x2e766f6d090a3b35ull,
+0x3172250920323375ull,0x090a3b30202c3534ull,0x203233732e766f6dull,0x202c363431722509ull,
+0x73090a3b32397225ull,0x203233752e706c65ull,0x202c373431722509ull,0x25202c3534317225ull,
+0x7025202c36343172ull,0x2e646c090a3b3632ull,0x732e646572616873ull,0x3431722509203233ull,
+0x75635f5f5b202c38ull,0x73666572785f6164ull,0x3b5d302b32353731ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x317225202c393431ull,0x090a3b32202c3834ull,0x203233752e726873ull,
+0x202c303531722509ull,0x25202c3734317225ull,0x61090a3b39343172ull,0x09203233622e646eull,
+0x25202c3135317225ull,0x3b33202c30353172ull,0x6168732e646c090aull,0x203233732e646572ull,
+0x202c323531722509ull,0x5f616475635f5f5bull,0x3537317366657278ull,0x6d090a3b5d342b32ull,
+0x33732e6f6c2e6c75ull,0x3335317225092032ull,0x2c3235317225202cull,0x726873090a3b3220ull,
+0x722509203233752eull,0x317225202c343531ull,0x35317225202c3734ull,0x2e646e61090a3b33ull,
+0x3172250920323362ull,0x35317225202c3535ull,0x73090a3b33202c34ull,0x09203233622e6c68ull,
+0x25202c3635317225ull,0x3b32202c35353172ull,0x3233622e726f090aull,0x2c37353172250920ull,
+0x202c313531722520ull,0x090a3b3635317225ull,0x65726168732e646cull,0x2509203233732e64ull,
+0x5f5b202c38353172ull,0x72785f616475635full,0x2b32353731736665ull,0x6c756d090a3b5d38ull,
+0x203233732e6f6c2eull,0x202c393531722509ull,0x32202c3835317225ull,0x752e726873090a3bull,
+0x3631722509203233ull,0x3734317225202c30ull,0x3b3935317225202cull,0x33622e646e61090aull,
+0x3136317225092032ull,0x2c3036317225202cull,0x6c6873090a3b3320ull,0x722509203233622eull,
+0x317225202c323631ull,0x090a3b34202c3136ull,0x65726168732e646cull,0x2509203233732e64ull,
+0x5f5b202c33363172ull,0x72785f616475635full,0x2b32353731736665ull,0x756d090a3b5d3231ull,
+0x3233732e6f6c2e6cull,0x2c34363172250920ull,0x202c333631722520ull,0x2e726873090a3b32ull,
+0x3172250920323375ull,0x34317225202c3536ull,0x3436317225202c37ull,0x622e646e61090a3bull,
+0x3631722509203233ull,0x3536317225202c36ull,0x6873090a3b33202cull,0x2509203233622e6cull,
+0x7225202c37363172ull,0x0a3b36202c363631ull,0x203233622e726f09ull,0x202c383631722509ull,
+0x25202c3236317225ull,0x6f090a3b37363172ull,0x2509203233622e72ull,0x7225202c39363172ull,
+0x317225202c373531ull,0x2e646c090a3b3836ull,0x732e646572616873ull,0x3731722509203233ull,
+0x75635f5f5b202c30ull,0x73666572785f6164ull,0x5d36312b32353731ull,0x6c2e6c756d090a3bull,
+0x2509203233732e6full,0x7225202c31373172ull,0x0a3b32202c303731ull,0x3233752e72687309ull,
+0x2c32373172250920ull,0x202c373431722520ull,0x090a3b3137317225ull,0x203233622e646e61ull,
+0x202c333731722509ull,0x33202c3237317225ull,0x622e6c6873090a3bull,0x3731722509203233ull,
+0x3337317225202c34ull,0x646c090a3b38202cull,0x2e6465726168732eull,0x3172250920323373ull,
+0x635f5f5b202c3537ull,0x666572785f616475ull,0x30322b3235373173ull,0x2e6c756d090a3b5dull,
+0x09203233732e6f6cull,0x25202c3637317225ull,0x3b32202c35373172ull,0x33752e726873090aull,
+0x3737317225092032ull,0x2c3734317225202cull,0x0a3b363731722520ull,0x3233622e646e6109ull,
+0x2c38373172250920ull,0x202c373731722520ull,0x2e6c6873090a3b33ull,0x3172250920323362ull,
+0x37317225202c3937ull,0x090a3b3031202c38ull,0x09203233622e726full,0x25202c3038317225ull,
+0x7225202c34373172ull,0x726f090a3b393731ull,0x722509203233622eull,0x317225202c313831ull,
+0x38317225202c3936ull,0x732e646c090a3b30ull,0x33732e6465726168ull,0x3238317225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d34322b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x317225202c333831ull,0x090a3b32202c3238ull,0x203233752e726873ull,
+0x202c343831722509ull,0x25202c3734317225ull,0x61090a3b33383172ull,0x09203233622e646eull,
+0x25202c3538317225ull,0x3b33202c34383172ull,0x33622e6c6873090aull,0x3638317225092032ull,
+0x2c3538317225202cull,0x646c090a3b323120ull,0x2e6465726168732eull,0x3172250920323373ull,
+0x635f5f5b202c3738ull,0x666572785f616475ull,0x38322b3235373173ull,0x2e6c756d090a3b5dull,
+0x09203233732e6f6cull,0x25202c3838317225ull,0x3b32202c37383172ull,0x33752e726873090aull,
+0x3938317225092032ull,0x2c3734317225202cull,0x0a3b383831722520ull,0x3233622e646e6109ull,
+0x2c30393172250920ull,0x202c393831722520ull,0x2e6c6873090a3b33ull,0x3172250920323362ull,
+0x39317225202c3139ull,0x090a3b3431202c30ull,0x09203233622e726full,0x25202c3239317225ull,
+0x7225202c36383172ull,0x726f090a3b313931ull,0x722509203233622eull,0x317225202c333931ull,
+0x39317225202c3138ull,0x732e646c090a3b32ull,0x33732e6465726168ull,0x3439317225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d32332b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x317225202c353931ull,0x090a3b32202c3439ull,0x203233752e726873ull,
+0x202c363931722509ull,0x25202c3734317225ull,0x61090a3b35393172ull,0x09203233622e646eull,
+0x25202c3739317225ull,0x3b33202c36393172ull,0x33622e6c6873090aull,0x3839317225092032ull,
+0x2c3739317225202cull,0x726f090a3b363120ull,0x722509203233622eull,0x317225202c333931ull,
+0x39317225202c3339ull,0x732e646c090a3b38ull,0x33732e6465726168ull,0x3939317225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d36332b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x317225202c303032ull,0x090a3b32202c3939ull,0x203233752e726873ull,
+0x202c313032722509ull,0x25202c3734317225ull,0x61090a3b30303272ull,0x09203233622e646eull,
+0x25202c3230327225ull,0x3b33202c31303272ull,0x33622e6c6873090aull,0x3330327225092032ull,
+0x2c3230327225202cull,0x726f090a3b383120ull,0x722509203233622eull,0x317225202c333931ull,
+0x30327225202c3339ull,0x732e646c090a3b33ull,0x33732e6465726168ull,0x3430327225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d30342b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x327225202c353032ull,0x090a3b32202c3430ull,0x203233752e726873ull,
+0x202c363032722509ull,0x25202c3734317225ull,0x61090a3b35303272ull,0x09203233622e646eull,
+0x25202c3730327225ull,0x3b33202c36303272ull,0x33622e6c6873090aull,0x3830327225092032ull,
+0x2c3730327225202cull,0x726f090a3b303220ull,0x722509203233622eull,0x317225202c333931ull,
+0x30327225202c3339ull,0x732e646c090a3b38ull,0x33732e6465726168ull,0x3930327225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d34342b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x327225202c303132ull,0x090a3b32202c3930ull,0x203233752e726873ull,
+0x202c313132722509ull,0x25202c3734317225ull,0x61090a3b30313272ull,0x09203233622e646eull,
+0x25202c3231327225ull,0x3b33202c31313272ull,0x33622e6c6873090aull,0x3331327225092032ull,
+0x2c3231327225202cull,0x726f090a3b323220ull,0x722509203233622eull,0x317225202c333931ull,
+0x31327225202c3339ull,0x732e646c090a3b33ull,0x33732e6465726168ull,0x3431327225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d38342b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x327225202c353132ull,0x090a3b32202c3431ull,0x203233752e726873ull,
+0x202c363132722509ull,0x25202c3734317225ull,0x61090a3b35313272ull,0x09203233622e646eull,
+0x25202c3731327225ull,0x3b33202c36313272ull,0x33622e6c6873090aull,0x3831327225092032ull,
+0x2c3731327225202cull,0x726f090a3b343220ull,0x722509203233622eull,0x317225202c333931ull,
+0x31327225202c3339ull,0x732e646c090a3b38ull,0x33732e6465726168ull,0x3931327225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d32352b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x327225202c303232ull,0x090a3b32202c3931ull,0x203233752e726873ull,
+0x202c313232722509ull,0x25202c3734317225ull,0x61090a3b30323272ull,0x09203233622e646eull,
+0x25202c3232327225ull,0x3b33202c31323272ull,0x33622e6c6873090aull,0x3332327225092032ull,
+0x2c3232327225202cull,0x726f090a3b363220ull,0x722509203233622eull,0x317225202c333931ull,
+0x32327225202c3339ull,0x732e646c090a3b33ull,0x33732e6465726168ull,0x3432327225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d36352b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x327225202c353232ull,0x090a3b32202c3432ull,0x203233752e726873ull,
+0x202c363232722509ull,0x25202c3734317225ull,0x61090a3b35323272ull,0x09203233622e646eull,
+0x25202c3732327225ull,0x3b33202c36323272ull,0x33622e6c6873090aull,0x3832327225092032ull,
+0x2c3732327225202cull,0x726f090a3b383220ull,0x722509203233622eull,0x317225202c333931ull,
+0x32327225202c3339ull,0x732e646c090a3b38ull,0x33732e6465726168ull,0x3932327225092032ull,
+0x6475635f5f5b202cull,0x3173666572785f61ull,0x3b5d30362b323537ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x327225202c303332ull,0x090a3b32202c3932ull,0x203233752e726873ull,
+0x202c313332722509ull,0x25202c3734317225ull,0x73090a3b30333272ull,0x09203233622e6c68ull,
+0x25202c3233327225ull,0x3033202c31333272ull,0x33622e726f090a3bull,0x3339317225092032ull,
+0x2c3339317225202cull,0x0a3b323332722520ull,0x363109636f6c2e09ull,0x090a300938393409ull,
+0x6d617261702e646cull,0x722509203436752eull,0x5f5f5b202c383664ull,0x6d72617061647563ull,
+0x706d6f63385a5f5full,0x536a4b5073736572ull,0x746e697535505f30ull,0x746c757365725f32ull,
+0x2e747663090a3b5dull,0x203631752e323373ull,0x202c333332722509ull,0x782e646961746325ull,
+0x752e747663090a3bull,0x09203233732e3436ull,0x25202c3936647225ull,0x6d090a3b33333272ull,
+0x36752e6f6c2e6c75ull,0x3037647225092034ull,0x2c3936647225202cull,0x646461090a3b3820ull,
+0x722509203436752eull,0x647225202c313764ull,0x37647225202c3836ull,0x2e6c6873090a3b30ull,
+0x3272250920323362ull,0x34397225202c3433ull,0x6f090a3b3631202cull,0x2509203233622e72ull,
+0x7225202c35333272ull,0x33327225202c3539ull,0x672e7473090a3b34ull,0x32762e6c61626f6cull,
+0x255b09203233752eull,0x2c5d302b31376472ull,0x2c35333272257b20ull,0x0a3b7d3339317225ull,
+0x32345f305f744c24ull,0x6c2e090a3a343537ull,0x333509363109636full,0x697865090a300937ull,
+0x6557444c240a3b74ull,0x6f63385a5f5f646eull,0x4b5073736572706dull,0x697535505f30536aull,
+0x207d090a3a32746eull,0x6f63385a5f202f2full,0x4b5073736572706dull,0x697535505f30536aull,
+0x0000000a0a32746eull
 };
 
 
@@ -10280,17 +9923,17 @@ static const unsigned long long __deviceText_$sm_13$[] = {
 
 static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_13",(char*)__deviceText_$sm_13$},{0,0}};
-static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
+static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"c769e2338304135e",(char*)"dxtc.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0x4e87a7ae};
-# 5 "/tmp/tmpxft_00007716_00000000-1_dxtc.cudafe1.stub.c" 2
-# 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1
-# 85 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
-# 1 "/home/normal/cuda/bin/../include/host_defines.h" 1
-# 86 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
-# 111 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"603ac090b57baad6",(char*)"dxtc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xb0c12441};
+# 5 "/tmp/tmpxft_0000641b_00000000-1_dxtc.cudafe1.stub.c" 2
+# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
+# 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
+# 113 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
+# 139 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
 
 
@@ -10320,6 +9963,15 @@ extern void __cudaRegisterTexture(
   const char *deviceName,
         int dim,
         int norm,
+        int ext
+);
+
+extern void __cudaRegisterSurface(
+        void **fatCubinHandle,
+  const struct surfaceReference *hostVar,
+  const void **deviceAddress,
+  const char *deviceName,
+        int dim,
         int ext
 );
 
@@ -10369,42 +10021,42 @@ static void __cudaUnregisterBinaryUtil(void)
 {
   __cudaUnregisterFatBinary(__cudaFatCubinHandle);
 }
-# 226 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
-# 1 "/home/normal/cuda/bin/../include/common_functions.h" 1
-# 68 "/home/normal/cuda/bin/../include/common_functions.h"
-# 1 "/home/normal/cuda/bin/../include/crt/func_macro.h" 1 3
-# 69 "/home/normal/cuda/bin/../include/common_functions.h" 2
+# 274 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 1 "/usr/local/cuda/bin/../include/common_functions.h" 1
+# 68 "/usr/local/cuda/bin/../include/common_functions.h"
+# 1 "/usr/local/cuda/bin/../include/crt/func_macro.h" 1 3
+# 69 "/usr/local/cuda/bin/../include/common_functions.h" 2
 
-static clock_t __cuda_clock(void)
+static __attribute__((__unused__)) clock_t __cuda_clock(void)
 {
   return clock();
 }
 
-static void *__cuda_memset(void *s, int c, size_t n)
+static __attribute__((__unused__)) void *__cuda_memset(void *s, int c, size_t n)
 {
   return memset(s, c, n);
 }
 
-static void *__cuda_memcpy(void *d, const void *s, size_t n)
+static __attribute__((__unused__)) void *__cuda_memcpy(void *d, const void *s, size_t n)
 {
   return memcpy(d, s, n);
 }
-# 93 "/home/normal/cuda/bin/../include/common_functions.h"
-# 1 "/home/normal/cuda/bin/../include/math_functions.h" 1 3
-# 864 "/home/normal/cuda/bin/../include/math_functions.h" 3
-extern __attribute__((__weak__)) int __cuda_error_not_implememted(void); int __cuda_error_not_implememted(void);
-# 920 "/home/normal/cuda/bin/../include/math_functions.h" 3
-static int __cuda_abs(int a)
+# 93 "/usr/local/cuda/bin/../include/common_functions.h"
+# 1 "/usr/local/cuda/bin/../include/math_functions.h" 1 3
+# 912 "/usr/local/cuda/bin/../include/math_functions.h" 3
+int __cuda_error_not_implememted(void);
+# 972 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) int __cuda_abs(int a)
 {
   return abs(a);
 }
 
-static float __cuda_fabsf(float a)
+static __attribute__((__unused__)) float __cuda_fabsf(float a)
 {
   return fabsf(a);
 }
 
-static long long int __cuda_llabs(long long int a)
+static __attribute__((__unused__)) long long int __cuda_llabs(long long int a)
 {
 
   return ::llabs(a);
@@ -10413,18 +10065,18 @@ static long long int __cuda_llabs(long long int a)
 
 }
 
-static float __cuda_exp2f(float a)
+static __attribute__((__unused__)) float __cuda_exp2f(float a)
 {
   return exp2f(a);
 }
 
-# 1 "/home/normal/cuda/bin/../include/device_functions.h" 1 3
-# 426 "/home/normal/cuda/bin/../include/device_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/math_constants.h" 1 3
-# 427 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 2367 "/home/normal/cuda/bin/../include/device_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/common_types.h" 1 3
-# 37 "/home/normal/cuda/bin/../include/common_types.h" 3
+# 1 "/usr/local/cuda/bin/../include/device_functions.h" 1 3
+# 442 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_constants.h" 1 3
+# 443 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 2384 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/common_types.h" 1 3
+# 37 "/usr/local/cuda/bin/../include/common_types.h" 3
 union __cudart_FloatUintCvt {
     float f;
     unsigned int i;
@@ -10454,7 +10106,7 @@ struct __cudart_UintUint {
     unsigned int lo;
     unsigned int hi;
 };
-# 2368 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 2385 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
 
 static const unsigned char __internal_rcpTab[128] =
 {
@@ -10504,7 +10156,7 @@ static const unsigned int __internal_invSqrtCubeTab[96] =
   0x21860882, 0x20c18081, 0x20c18081, 0x20000080
 };
 
-static float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
 {
   unsigned long long prod;
   volatile union __cudart_FloatUintCvt arg;
@@ -10611,7 +10263,7 @@ static float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
   }
 }
 
-static float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
 
 {
   unsigned long long prod;
@@ -10693,7 +10345,7 @@ static float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
   }
 }
 
-static float __internal_fdiv_kernel (float dividend, float divisor, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fdiv_kernel (float dividend, float divisor, enum cudaRoundMode mode)
 
 {
   unsigned long long prod;
@@ -11008,12 +10660,11 @@ divide:
   }
 }
 
-static float __internal_fmul_kernel2 (float a, float b, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fmul_kernel (float a, float b, enum cudaRoundMode mode)
 
 {
   unsigned long long product;
   volatile union __cudart_FloatUintCvt xx, yy;
-
   unsigned expo_x, expo_y;
 
   xx.f = a;
@@ -11184,7 +10835,7 @@ multiply:
   }
 }
 
-static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMode mode)
 
 {
   unsigned long long product;
@@ -11224,7 +10875,7 @@ static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMo
     if ((xx << 1) > 0xff000000) {
       return a + a;
     }
-# 3148 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 3164 "/usr/local/cuda/bin/../include/device_functions.h" 3
     if ((((xx << 1) == 0) && ((yy << 1) == 0xff000000)) ||
         (((yy << 1) == 0) && ((xx << 1) == 0xff000000))) {
       cvt.i = 0xffc00000;
@@ -11495,8 +11146,7 @@ static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMo
   return cvt.f;
 }
 
-
-static float __internal_fadd_kernel2 (float a, float b, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fadd_kernel (float a, float b, enum cudaRoundMode mode)
 
 {
   volatile union __cudart_FloatUintCvt xx, yy;
@@ -11543,10 +11193,14 @@ add:
       if (xx.i & 0x00800000) {
         if (expo_x <= 0xFD) {
           xx.i = xx.i + (expo_x << 23);
-          if (mode == cudaRoundMinInf) {
-            xx.i += (temp && (xx.i & 0x80000000));
+          if (mode == cudaRoundNearest) {
+            if (temp < 0x80000000) return xx.f;
+            xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
+          } else if (mode == cudaRoundZero) {
           } else if (mode == cudaRoundPosInf) {
             xx.i += (temp && !(xx.i & 0x80000000));
+          } else if (mode == cudaRoundMinInf) {
+            xx.i += (temp && (xx.i & 0x80000000));
           }
           return xx.f;
         }
@@ -11555,7 +11209,7 @@ add:
 
           if (mode == cudaRoundMinInf) {
             xx.i = 0x80000000;
-          } else if (mode == cudaRoundPosInf) {
+          } else {
             xx.i = 0;
           }
           return xx.f;
@@ -11577,10 +11231,14 @@ add:
       if (!(xx.i & 0x01000000)) {
         if (expo_x <= 0xFD) {
           xx.i = xx.i + (expo_x << 23);
-          if (mode == cudaRoundMinInf) {
-            xx.i += (temp && (xx.i & 0x80000000));
+          if (mode == cudaRoundNearest) {
+            if (temp < 0x80000000) return xx.f;
+            xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
+          } else if (mode == cudaRoundZero) {
           } else if (mode == cudaRoundPosInf) {
             xx.i += (temp && !(xx.i & 0x80000000));
+          } else if (mode == cudaRoundMinInf) {
+            xx.i += (temp && (xx.i & 0x80000000));
           }
           return xx.f;
         }
@@ -11592,18 +11250,26 @@ add:
       }
     }
     if (expo_x <= 0xFD) {
-      if (mode == cudaRoundMinInf) {
-        xx.i += (temp && (xx.i & 0x80000000));
+      xx.i = xx.i + (expo_x << 23);
+      if (mode == cudaRoundNearest) {
+        if (temp < 0x80000000) return xx.f;
+        xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
+      } else if (mode == cudaRoundZero) {
       } else if (mode == cudaRoundPosInf) {
         xx.i += (temp && !(xx.i & 0x80000000));
+      } else if (mode == cudaRoundMinInf) {
+        xx.i += (temp && (xx.i & 0x80000000));
       }
-      xx.i = xx.i + (expo_x << 23);
       return xx.f;
     }
     if ((int)expo_x >= 254) {
 
       temp = xx.i & 0x80000000;
-      if (mode == cudaRoundMinInf) {
+      if (mode == cudaRoundNearest) {
+        xx.i = (temp) | 0x7f800000;
+      } else if (mode == cudaRoundZero) {
+        xx.i = (temp) | 0x7f7fffff;
+      } else if (mode == cudaRoundMinInf) {
         xx.i = (temp ? 0xFF800000 : 0x7f7fffff);
       } else if (mode == cudaRoundPosInf) {
         xx.i = (temp ? 0xff7fffff : 0x7F800000);
@@ -11617,10 +11283,13 @@ add:
     expo_x = (unsigned)(-((int)expo_x));
     temp = xx.i << expo_y | ((temp) ? 1 : 0);
     xx.i = yy.i | (xx.i >> expo_x);
-    if (mode == cudaRoundMinInf) {
-      xx.i += (temp && yy.i);
+    if (mode == cudaRoundNearest) {
+      xx.i += (temp == 0x80000000) ? (xx.i & 1) : (temp >> 31);
+    } else if (mode == cudaRoundZero) {
     } else if (mode == cudaRoundPosInf) {
       xx.i += (temp && !yy.i);
+    } else if (mode == cudaRoundMinInf) {
+      xx.i += (temp && yy.i);
     }
     return xx.f;
   } else {
@@ -11630,7 +11299,7 @@ add:
         if (!(xx.i << 1)) {
           xx.i = xx.i | yy.i;
         }
-      } else if (mode == cudaRoundPosInf) {
+      } else {
         if (xx.i == 0x80000000) {
           xx.i = yy.i;
         }
@@ -11695,128 +11364,128 @@ add:
   }
 }
 
-static float __frcp_rn (float a)
+static __attribute__((__unused__)) float __frcp_rn (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundNearest);
 }
 
-static float __frcp_rz (float a)
+static __attribute__((__unused__)) float __frcp_rz (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundZero);
 }
 
-static float __frcp_rd (float a)
+static __attribute__((__unused__)) float __frcp_rd (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundMinInf);
 }
 
-static float __frcp_ru (float a)
+static __attribute__((__unused__)) float __frcp_ru (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundPosInf);
 }
 
-static float __fsqrt_rn (float a)
+static __attribute__((__unused__)) float __fsqrt_rn (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundNearest);
 }
 
-static float __fsqrt_rz (float a)
+static __attribute__((__unused__)) float __fsqrt_rz (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundZero);
 }
 
-static float __fsqrt_rd (float a)
+static __attribute__((__unused__)) float __fsqrt_rd (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundMinInf);
 }
 
-static float __fsqrt_ru (float a)
+static __attribute__((__unused__)) float __fsqrt_ru (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundPosInf);
 }
 
-static float __fdiv_rn (float a, float b)
+static __attribute__((__unused__)) float __fdiv_rn (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundNearest);
 }
 
-static float __fdiv_rz (float a, float b)
+static __attribute__((__unused__)) float __fdiv_rz (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundZero);
 }
 
-static float __fdiv_rd (float a, float b)
+static __attribute__((__unused__)) float __fdiv_rd (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundMinInf);
 }
 
-static float __fdiv_ru (float a, float b)
+static __attribute__((__unused__)) float __fdiv_ru (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundPosInf);
 }
 
-static float __fadd_rd (float a, float b)
+static __attribute__((__unused__)) float __fadd_rd (float a, float b)
 {
-  return __internal_fadd_kernel2 (a, b, cudaRoundMinInf);
+  return __internal_fadd_kernel (a, b, cudaRoundMinInf);
 }
 
-static float __fadd_ru (float a, float b)
+static __attribute__((__unused__)) float __fadd_ru (float a, float b)
 {
-  return __internal_fadd_kernel2 (a, b, cudaRoundPosInf);
+  return __internal_fadd_kernel (a, b, cudaRoundPosInf);
 }
 
-static float __fmul_rd (float a, float b)
+static __attribute__((__unused__)) float __fmul_rd (float a, float b)
 {
-  return __internal_fmul_kernel2 (a, b, cudaRoundMinInf);
+  return __internal_fmul_kernel (a, b, cudaRoundMinInf);
 }
 
-static float __fmul_ru (float a, float b)
+static __attribute__((__unused__)) float __fmul_ru (float a, float b)
 {
-  return __internal_fmul_kernel2 (a, b, cudaRoundPosInf);
+  return __internal_fmul_kernel (a, b, cudaRoundPosInf);
 }
 
-static float __fmaf_rn (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_rn (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundNearest);
 }
 
-static float __fmaf_rz (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_rz (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundZero);
 }
 
-static float __fmaf_ru (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_ru (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundPosInf);
 }
 
-static float __fmaf_rd (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_rd (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundMinInf);
 }
 
-static int __cuda___isnan(double a);
-static int __cuda___isnanf(float a);
-static int __double2int_rz(double);
-static unsigned int __double2uint_rz(double);
-static long long int __double2ll_rz(double);
-static unsigned long long int __double2ull_rz(double);
-# 3737 "/home/normal/cuda/bin/../include/device_functions.h" 3
-static int __mulhi(int a, int b)
+static __attribute__((__unused__)) int __cuda___isnan(double a);
+static __attribute__((__unused__)) int __cuda___isnanf(float a);
+static __attribute__((__unused__)) int __double2int_rz(double);
+static __attribute__((__unused__)) unsigned int __double2uint_rz(double);
+static __attribute__((__unused__)) long long int __double2ll_rz(double);
+static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double);
+# 3771 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) int __mulhi(int a, int b)
 {
   long long int c = (long long int)a * (long long int)b;
 
   return (int)(c >> 32);
 }
 
-static unsigned int __umulhi(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __umulhi(unsigned int a, unsigned int b)
 {
   unsigned long long int c = (unsigned long long int)a * (unsigned long long int)b;
 
   return (unsigned int)(c >> 32);
 }
 
-static unsigned long long int __umul64hi(unsigned long long int a, unsigned long long int b)
+static __attribute__((__unused__)) unsigned long long int __umul64hi(unsigned long long int a, unsigned long long int b)
 {
   unsigned int a_lo = (unsigned int)a;
   unsigned long long int a_hi = a >> 32;
@@ -11831,7 +11500,7 @@ static unsigned long long int __umul64hi(unsigned long long int a, unsigned long
   return a_hi * b_hi + (m1 >> 32) + (m2 >> 32) + carry;
 }
 
-static long long int __mul64hi(long long int a, long long int b)
+static __attribute__((__unused__)) long long int __mul64hi(long long int a, long long int b)
 {
   long long int res;
   res = __umul64hi(a, b);
@@ -11840,27 +11509,27 @@ static long long int __mul64hi(long long int a, long long int b)
   return res;
 }
 
-static float __saturatef(float a)
+static __attribute__((__unused__)) float __saturatef(float a)
 {
   if (__cuda___isnanf(a)) return 0.0f;
   return a >= 1.0f ? 1.0f : a <= 0.0f ? 0.0f : a;
 }
 
-static unsigned int __sad(int a, int b, unsigned int c)
+static __attribute__((__unused__)) unsigned int __sad(int a, int b, unsigned int c)
 {
   long long int diff = (long long int)a - (long long int)b;
 
   return (unsigned int)(__cuda_llabs(diff) + (long long int)c);
 }
 
-static unsigned int __usad(unsigned int a, unsigned int b, unsigned int c)
+static __attribute__((__unused__)) unsigned int __usad(unsigned int a, unsigned int b, unsigned int c)
 {
   long long int diff = (long long int)a - (long long int)b;
 
   return (unsigned int)(__cuda_llabs(diff) + (long long int)c);
 }
 
-static int __mul24(int a, int b)
+static __attribute__((__unused__)) int __mul24(int a, int b)
 {
 
   a &= 0xffffff;
@@ -11872,7 +11541,7 @@ static int __mul24(int a, int b)
   return a * b;
 }
 
-static unsigned int __umul24(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __umul24(unsigned int a, unsigned int b)
 {
 
   a &= 0xffffff;
@@ -11882,7 +11551,7 @@ static unsigned int __umul24(unsigned int a, unsigned int b)
   return a * b;
 }
 
-static float __int_as_float(int a)
+static __attribute__((__unused__)) float __int_as_float(int a)
 {
   volatile union __cudart_FloatIntCvt u;
 
@@ -11890,7 +11559,7 @@ static float __int_as_float(int a)
   return u.f;
 }
 
-static int __float_as_int(float a)
+static __attribute__((__unused__)) int __float_as_int(float a)
 {
   volatile union __cudart_FloatIntCvt u;
 
@@ -11898,7 +11567,7 @@ static int __float_as_int(float a)
   return u.i;
 }
 
-static long long int __internal_float2ll_kernel(float a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_float2ll_kernel(float a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
 {
   unsigned long long int res, t = 0ULL;
   int shift;
@@ -11928,12 +11597,12 @@ static long long int __internal_float2ll_kernel(float a, long long int max, long
   return (long long int)res;
 }
 
-static int __internal_float2int(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) int __internal_float2int(float a, enum cudaRoundMode rndMode)
 {
   return (int)__internal_float2ll_kernel(a, 2147483647LL, -2147483648LL, 0LL, rndMode);
 }
 
-static int __float2int_rz(float a)
+static __attribute__((__unused__)) int __float2int_rz(float a)
 {
 
 
@@ -11942,27 +11611,27 @@ static int __float2int_rz(float a)
 
 }
 
-static int __float2int_ru(float a)
+static __attribute__((__unused__)) int __float2int_ru(float a)
 {
   return __internal_float2int(a, cudaRoundPosInf);
 }
 
-static int __float2int_rd(float a)
+static __attribute__((__unused__)) int __float2int_rd(float a)
 {
   return __internal_float2int(a, cudaRoundMinInf);
 }
 
-static int __float2int_rn(float a)
+static __attribute__((__unused__)) int __float2int_rn(float a)
 {
   return __internal_float2int(a, cudaRoundNearest);
 }
 
-static long long int __internal_float2ll(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_float2ll(float a, enum cudaRoundMode rndMode)
 {
   return __internal_float2ll_kernel(a, 9223372036854775807LL, -9223372036854775807LL -1LL, -9223372036854775807LL -1LL, rndMode);
 }
 
-static long long int __float2ll_rz(float a)
+static __attribute__((__unused__)) long long int __float2ll_rz(float a)
 {
 
 
@@ -11971,22 +11640,22 @@ static long long int __float2ll_rz(float a)
 
 }
 
-static long long int __float2ll_ru(float a)
+static __attribute__((__unused__)) long long int __float2ll_ru(float a)
 {
   return __internal_float2ll(a, cudaRoundPosInf);
 }
 
-static long long int __float2ll_rd(float a)
+static __attribute__((__unused__)) long long int __float2ll_rd(float a)
 {
   return __internal_float2ll(a, cudaRoundMinInf);
 }
 
-static long long int __float2ll_rn(float a)
+static __attribute__((__unused__)) long long int __float2ll_rn(float a)
 {
   return __internal_float2ll(a, cudaRoundNearest);
 }
 
-static unsigned long long int __internal_float2ull_kernel(float a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_float2ull_kernel(float a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
 {
   unsigned long long int res, t = 0ULL;
   int shift;
@@ -12012,12 +11681,12 @@ static unsigned long long int __internal_float2ull_kernel(float a, unsigned long
   return res;
 }
 
-static unsigned int __internal_float2uint(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned int __internal_float2uint(float a, enum cudaRoundMode rndMode)
 {
   return (unsigned int)__internal_float2ull_kernel(a, 4294967295U, 0U, rndMode);
 }
 
-static unsigned int __float2uint_rz(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_rz(float a)
 {
 
 
@@ -12026,27 +11695,27 @@ static unsigned int __float2uint_rz(float a)
 
 }
 
-static unsigned int __float2uint_ru(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_ru(float a)
 {
   return __internal_float2uint(a, cudaRoundPosInf);
 }
 
-static unsigned int __float2uint_rd(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_rd(float a)
 {
   return __internal_float2uint(a, cudaRoundMinInf);
 }
 
-static unsigned int __float2uint_rn(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_rn(float a)
 {
   return __internal_float2uint(a, cudaRoundNearest);
 }
 
-static unsigned long long int __internal_float2ull(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_float2ull(float a, enum cudaRoundMode rndMode)
 {
   return __internal_float2ull_kernel(a, 18446744073709551615ULL, 9223372036854775808ULL, rndMode);
 }
 
-static unsigned long long int __float2ull_rz(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_rz(float a)
 {
 
 
@@ -12055,22 +11724,22 @@ static unsigned long long int __float2ull_rz(float a)
 
 }
 
-static unsigned long long int __float2ull_ru(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_ru(float a)
 {
   return __internal_float2ull(a, cudaRoundPosInf);
 }
 
-static unsigned long long int __float2ull_rd(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_rd(float a)
 {
   return __internal_float2ull(a, cudaRoundMinInf);
 }
 
-static unsigned long long int __float2ull_rn(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_rn(float a)
 {
   return __internal_float2ull(a, cudaRoundNearest);
 }
 
-static int __internal_normalize64(unsigned long long int *a)
+static __attribute__((__unused__)) int __internal_normalize64(unsigned long long int *a)
 {
   int lz = 0;
 
@@ -12101,7 +11770,7 @@ static int __internal_normalize64(unsigned long long int *a)
   return lz;
 }
 
-static int __internal_normalize(unsigned int *a)
+static __attribute__((__unused__)) int __internal_normalize(unsigned int *a)
 {
   unsigned long long int t = (unsigned long long int)*a;
   int lz = __internal_normalize64(&t);
@@ -12111,7 +11780,7 @@ static int __internal_normalize(unsigned int *a)
   return lz - 32;
 }
 
-static float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_FloatUintCvt res;
   int shift;
@@ -12136,22 +11805,22 @@ static float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
   return res.f;
 }
 
-static float __int2float_rz(int a)
+static __attribute__((__unused__)) float __int2float_rz(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundZero);
 }
 
-static float __int2float_ru(int a)
+static __attribute__((__unused__)) float __int2float_ru(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundPosInf);
 }
 
-static float __int2float_rd(int a)
+static __attribute__((__unused__)) float __int2float_rd(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundMinInf);
 }
 
-static float __int2float_rn(int a)
+static __attribute__((__unused__)) float __int2float_rn(int a)
 {
 
 
@@ -12160,7 +11829,7 @@ static float __int2float_rn(int a)
 
 }
 
-static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_FloatUintCvt res;
   int shift;
@@ -12171,7 +11840,7 @@ static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rnd
   t = res.i << 24;
   res.i = (res.i >> 8);
   res.i += (127 + 30 - shift) << 23;
-  if ((rndMode == cudaRoundNearest) && (t >= 0x80000000)) {
+  if (rndMode == cudaRoundNearest) {
     res.i += (t == 0x80000000) ? (res.i & 1) : (t >> 31);
   }
   else if ((rndMode == cudaRoundPosInf) && t) {
@@ -12180,22 +11849,22 @@ static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rnd
   return res.f;
 }
 
-static float __uint2float_rz(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_rz(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundZero);
 }
 
-static float __uint2float_ru(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_ru(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundPosInf);
 }
 
-static float __uint2float_rd(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_rd(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundMinInf);
 }
 
-static float __uint2float_rn(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_rn(unsigned int a)
 {
 
 
@@ -12204,16 +11873,13 @@ static float __uint2float_rn(unsigned int a)
 
 }
 
-static float __ll2float_rn(long long int a)
+static __attribute__((__unused__)) float __ll2float_rn(long long int a)
 {
   return (float)a;
 }
 
-static float __ull2float_rn(unsigned long long int a)
+static __attribute__((__unused__)) float __internal_ull2float_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
 {
-
-
-
   unsigned long long int temp;
   unsigned int res, t;
   int shift;
@@ -12224,418 +11890,202 @@ static float __ull2float_rn(unsigned long long int a)
   res = (unsigned int)(temp >> 32);
   t = (unsigned int)temp;
   res += (127 + 62 - shift) << 23;
-  res += t == 0x80000000 ? res & 1 : t >> 31;
+  if (rndMode == cudaRoundNearest) {
+    res += (t == 0x80000000) ? (res & 1) : (t >> 31);
+  } else if (rndMode == cudaRoundPosInf) {
+    res += (t != 0);
+  }
   return __int_as_float(res);
+}
+
+static __attribute__((__unused__)) float __ull2float_rn(unsigned long long int a)
+{
+
+
+
+  return __internal_ull2float_kernel(a, cudaRoundNearest);
 
 }
 
-static float __internal_fmul_kernel(float a, float b, int rndNearest)
+static __attribute__((__unused__)) unsigned short __float2half_rn(float f)
 {
-  unsigned long long product;
-  volatile union __cudart_FloatUintCvt xx, yy;
-  unsigned expo_x, expo_y;
+  unsigned int x = __float_as_int (f);
+  unsigned int u = (x & 0x7fffffff), remainder, shift, lsb, lsb_s1, lsb_m1;
+  unsigned int sign, exponent, mantissa;
 
-  xx.f = a;
-  yy.f = b;
 
-  expo_y = 0xFF;
-  expo_x = expo_y & (xx.i >> 23);
-  expo_x = expo_x - 1;
-  expo_y = expo_y & (yy.i >> 23);
-  expo_y = expo_y - 1;
+  if (u > 0x7f800000) {
+    return 0x7fff;
+  }
 
-  if ((expo_x <= 0xFD) &&
-      (expo_y <= 0xFD)) {
-multiply:
-    expo_x = expo_x + expo_y;
-    expo_y = xx.i ^ yy.i;
-    xx.i = xx.i & 0x00ffffff;
-    yy.i = yy.i << 8;
-    xx.i = xx.i | 0x00800000;
-    yy.i = yy.i | 0x80000000;
+  sign = ((x >> 16) & 0x8000);
 
-    product = ((unsigned long long)xx.i) * yy.i;
-    expo_x = expo_x - 127 + 2;
-    expo_y = expo_y & 0x80000000;
-    xx.i = (unsigned int)(product >> 32);
-    yy.i = (unsigned int)(product & 0xffffffff);
 
-    if (xx.i < 0x00800000) {
-      xx.i = (xx.i << 1) | (yy.i >> 31);
-      yy.i = (yy.i << 1);
-      expo_x--;
+  if (u > 0x477fefff) {
+    return sign | 0x7c00;
+  }
+  if (u < 0x33000001) {
+    return sign | 0x0000;
+  }
+
+  exponent = ((u >> 23) & 0xff);
+  mantissa = (u & 0x7fffff);
+
+  if (exponent > 0x70) {
+    shift = 13;
+    exponent -= 0x70;
+  } else {
+    shift = 0x7e - exponent;
+    exponent = 0;
+    mantissa |= 0x800000;
+  }
+  lsb = (1 << shift);
+  lsb_s1 = (lsb >> 1);
+  lsb_m1 = (lsb - 1);
+
+
+  remainder = (mantissa & lsb_m1);
+  mantissa >>= shift;
+  if (remainder > lsb_s1 || (remainder == lsb_s1 && (mantissa & 0x1))) {
+    ++mantissa;
+    if (!(mantissa & 0x3ff)) {
+      ++exponent;
+      mantissa = 0;
     }
-    if (expo_x <= 0xFD) {
-      xx.i = xx.i | expo_y;
-      xx.i = xx.i + (expo_x << 23);
+  }
 
-      if (yy.i < 0x80000000) return xx.f;
-      xx.i += (((yy.i == 0x80000000) ? (xx.i & 1) : (yy.i >> 31))
-               && rndNearest);
-      return xx.f;
-    } else if ((int)expo_x >= 254) {
+  return sign | (exponent << 10) | mantissa;
+}
 
-      xx.i = (expo_y | 0x7F800000) - (!rndNearest);
-      return xx.f;
-    } else {
+static __attribute__((__unused__)) float __half2float(unsigned short h)
+{
+  unsigned int sign = ((h >> 15) & 1);
+  unsigned int exponent = ((h >> 10) & 0x1f);
+  unsigned int mantissa = ((h & 0x3ff) << 13);
 
-      expo_x = ((unsigned int)-((int)expo_x));
-      if (expo_x > 25) {
-
-        xx.i = expo_y;
-        return xx.f;
-      } else {
-        yy.i = (xx.i << (32 - expo_x)) | ((yy.i) ? 1 : 0);
-        xx.i = expo_y + (xx.i >> expo_x);
-        xx.i += (((yy.i == 0x80000000) ? (xx.i & 1) : (yy.i >> 31))
-                 && rndNearest);
-        return xx.f;
-      }
+  if (exponent == 0x1f) {
+    mantissa = (mantissa
+                ? (sign = 0, 0x7fffff)
+                : 0);
+    exponent = 0xff;
+  } else if (!exponent) {
+    if (mantissa) {
+      unsigned int msb;
+      exponent = 0x71;
+      do {
+        msb = (mantissa & 0x400000);
+        mantissa <<= 1;
+        --exponent;
+      } while (!msb);
+      mantissa &= 0x7fffff;
     }
   } else {
-    product = xx.i ^ yy.i;
-    product = product & 0x80000000;
-    if (!(xx.i & 0x7fffffff)) {
-      if (expo_y != 254) {
-        xx.i = (unsigned int)product;
-        return xx.f;
-      }
-      expo_y = yy.i << 1;
-      if (expo_y == 0xFF000000) {
-        xx.i = expo_y | 0x00C00000;
-      } else {
-        xx.i = yy.i | 0x00400000;
-      }
-      return xx.f;
-    }
-    if (!(yy.i & 0x7fffffff)) {
-      if (expo_x != 254) {
-        xx.i = (unsigned int)product;
-        return xx.f;
-      }
-      expo_x = xx.i << 1;
-      if (expo_x == 0xFF000000) {
-        xx.i = expo_x | 0x00C00000;
-      } else {
-        xx.i = xx.i | 0x00400000;
-      }
-      return xx.f;
-    }
-    if ((expo_y != 254) && (expo_x != 254)) {
-      expo_y++;
-      expo_x++;
-      if (expo_x == 0) {
-        expo_y |= xx.i & 0x80000000;
-
-
-
-
-        xx.i = xx.i << 8;
-        while (!(xx.i & 0x80000000)) {
-          xx.i <<= 1;
-          expo_x--;
-        }
-        xx.i = (xx.i >> 8) | (expo_y & 0x80000000);
-        expo_y &= ~0x80000000;
-        expo_y--;
-        goto multiply;
-      }
-      if (expo_y == 0) {
-        expo_x |= yy.i & 0x80000000;
-        yy.i = yy.i << 8;
-        while (!(yy.i & 0x80000000)) {
-          yy.i <<= 1;
-          expo_y--;
-        }
-        yy.i = (yy.i >> 8) | (expo_x & 0x80000000);
-        expo_x &= ~0x80000000;
-        expo_x--;
-        goto multiply;
-      }
-    }
-    expo_x = xx.i << 1;
-    expo_y = yy.i << 1;
-
-    if (expo_x > 0xFF000000) {
-
-      xx.i = xx.i | 0x00400000;
-      return xx.f;
-    }
-
-    if (expo_y > 0xFF000000) {
-
-      xx.i = yy.i | 0x00400000;
-      return xx.f;
-    }
-    xx.i = (unsigned int)product | 0x7f800000;
-    return xx.f;
-  }
-}
-
-static float __internal_fadd_kernel(float a, float b, int rndNearest)
-{
-  volatile union __cudart_FloatUintCvt xx, yy;
-  unsigned int expo_x;
-  unsigned int expo_y;
-  unsigned int temp;
-
-  xx.f = a;
-  yy.f = b;
-
-
-  expo_y = yy.i << 1;
-  if (expo_y > (xx.i << 1)) {
-    expo_y = xx.i;
-    xx.i = yy.i;
-    yy.i = expo_y;
+    exponent += 0x70;
   }
 
-  temp = 0xff;
-  expo_x = temp & (xx.i >> 23);
-  expo_x = expo_x - 1;
-  expo_y = temp & (yy.i >> 23);
-  expo_y = expo_y - 1;
-
-  if ((expo_x <= 0xFD) &&
-      (expo_y <= 0xFD)) {
-
-add:
-    expo_y = expo_x - expo_y;
-    if (expo_y > 25) {
-      expo_y = 31;
-    }
-    temp = xx.i ^ yy.i;
-    xx.i = xx.i & ~0x7f000000;
-    xx.i = xx.i | 0x00800000;
-    yy.i = yy.i & ~0xff000000;
-    yy.i = yy.i | 0x00800000;
-
-    if ((int)temp < 0) {
-
-      temp = 32 - expo_y;
-      temp = (expo_y) ? (yy.i << temp) : 0;
-      temp = (unsigned int)(-((int)temp));
-      xx.i = xx.i - (yy.i >> expo_y) - (temp ? 1 : 0);
-      if (xx.i & 0x00800000) {
-        if (expo_x <= 0xFD) {
-          xx.i = xx.i & ~0x00800000;
-          xx.i = (xx.i + (expo_x << 23)) + 0x00800000;
-          if (temp < 0x80000000) return xx.f;
-          xx.i += (((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31))
-                   && rndNearest);
-          return xx.f;
-        }
-      } else {
-        if ((temp | (xx.i << 1)) == 0) {
-
-          xx.i = 0;
-          return xx.f;
-        }
-
-        yy.i = xx.i & 0x80000000;
-        do {
-          xx.i = (xx.i << 1) | (temp >> 31);
-          temp <<= 1;
-          expo_x--;
-        } while (!(xx.i & 0x00800000));
-        xx.i = xx.i | yy.i;
-      }
-    } else {
-
-      temp = 32 - expo_y;
-      temp = (expo_y) ? (yy.i << temp) : 0;
-      xx.i = xx.i + (yy.i >> expo_y);
-      if (!(xx.i & 0x01000000)) {
-        if (expo_x <= 0xFD) {
-          expo_y = xx.i & 1;
-          xx.i = xx.i + (expo_x << 23);
-          if (temp < 0x80000000) return xx.f;
-          xx.i += (((temp == 0x80000000) ? expo_y : (temp >> 31))
-                   && rndNearest);
-          return xx.f;
-        }
-      } else {
-
-        temp = (xx.i << 31) | (temp >> 1);
-
-        xx.i = ((xx.i & 0x80000000) | (xx.i >> 1)) & ~0x40000000;
-        expo_x++;
-      }
-    }
-    if (expo_x <= 0xFD) {
-      expo_y = xx.i & 1;
-      xx.i += (((temp == 0x80000000) ? expo_y : (temp >> 31))
-               && rndNearest);
-      xx.i = xx.i + (expo_x << 23);
-      return xx.f;
-    }
-    if ((int)expo_x >= 254) {
-
-        xx.i = ((xx.i & 0x80000000) | 0x7f800000) - (!rndNearest);
-        return xx.f;
-    }
-
-    expo_y = expo_x + 32;
-    yy.i = xx.i & 0x80000000;
-    xx.i = xx.i & ~0xff000000;
-
-    expo_x = (unsigned int)(-((int)expo_x));
-    temp = xx.i << expo_y | ((temp) ? 1 : 0);
-    xx.i = yy.i | (xx.i >> expo_x);
-    xx.i += (((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31))
-             && rndNearest);
-    return xx.f;
-  } else {
-
-    if (!(yy.i << 1)) {
-      if (xx.i == 0x80000000) {
-        xx.i = yy.i;
-      }
-      if ((xx.i << 1) > 0xff000000) {
-        xx.i |= 0x00400000;
-      }
-      return xx.f;
-    }
-    if ((expo_y != 254) && (expo_x != 254)) {
-
-      if (expo_x == (unsigned int) -1) {
-        temp = xx.i & 0x80000000;
-        xx.i = xx.i << 8;
-        while (!(xx.i & 0x80000000)) {
-          xx.i <<= 1;
-          expo_x--;
-        }
-        expo_x++;
-        xx.i = (xx.i >> 8) | temp;
-      }
-      if (expo_y == (unsigned int) -1) {
-        temp = yy.i & 0x80000000;
-        yy.i = yy.i << 8;
-        while (!(yy.i & 0x80000000)) {
-          yy.i <<= 1;
-          expo_y--;
-        }
-        expo_y++;
-        yy.i = (yy.i >> 8) | temp;
-      }
-      goto add;
-    }
-    expo_x = xx.i << 1;
-    expo_y = yy.i << 1;
-
-    if (expo_x > 0xff000000) {
-
-      xx.i = xx.i | 0x00400000;
-      return xx.f;
-    }
-
-    if (expo_y > 0xff000000) {
-
-      xx.i = yy.i | 0x00400000;
-      return xx.f;
-    }
-    if ((expo_x == 0xff000000) && (expo_y == 0xff000000)) {
-
-
-
-
-      expo_x = xx.i ^ yy.i;
-      xx.i = xx.i | ((expo_x) ? 0xffc00000 : 0);
-      return xx.f;
-    }
-
-    if (expo_y == 0xff000000) {
-      xx.i = yy.i;
-    }
-    return xx.f;
-  }
+  return __int_as_float ((sign << 31) | (exponent << 23) | mantissa);
 }
 
-static float __fadd_rz(float a, float b)
+static __attribute__((__unused__)) float __fadd_rz(float a, float b)
 {
-  return __internal_fadd_kernel(a, b, 0);
+  return __internal_fadd_kernel(a, b, cudaRoundZero);
 }
 
-static float __fmul_rz(float a, float b)
+static __attribute__((__unused__)) float __fmul_rz(float a, float b)
 {
-  return __internal_fmul_kernel(a, b, 0);
+  return __internal_fmul_kernel(a, b, cudaRoundZero);
 }
 
-static float __fadd_rn(float a, float b)
+static __attribute__((__unused__)) float __fadd_rn(float a, float b)
 {
-  return __internal_fadd_kernel(a, b, 1);
+  return __internal_fadd_kernel(a, b, cudaRoundNearest);
 }
 
-static float __fmul_rn(float a, float b)
+static __attribute__((__unused__)) float __fmul_rn(float a, float b)
 {
-  return __internal_fmul_kernel(a, b, 1);
+  return __internal_fmul_kernel(a, b, cudaRoundNearest);
 }
 
-static void __brkpt(int c)
+static __attribute__((__unused__)) void __brkpt(int c)
 {
 
 }
-# 4518 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 4318 "/usr/local/cuda/bin/../include/device_functions.h" 3
 extern int __cudaSynchronizeThreads(void**, void*);
 
 
 
-static inline __attribute__((always_inline)) void __syncthreads(void)
+static __attribute__((__unused__)) inline __attribute__((always_inline)) void __syncthreads(void)
 {
   volatile int _ = 0;
   L: if (__cudaSynchronizeThreads((void**)&&L, (void*)&_)) goto L;
 }
-# 4537 "/home/normal/cuda/bin/../include/device_functions.h" 3
-static void __prof_trigger(int a)
+# 4337 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) void __prof_trigger(int a)
 {
 }
 
-static void __threadfence(void)
+static __attribute__((__unused__)) void __threadfence(void)
 {
+  __syncthreads();
 }
 
-static void __threadfence_block(void)
+static __attribute__((__unused__)) void __threadfence_block(void)
 {
+  __syncthreads();
 }
 
 
 
-static void __trap(void)
+static __attribute__((__unused__)) void __trap(void)
 {
   __builtin_trap();
 }
-# 4573 "/home/normal/cuda/bin/../include/device_functions.h" 3
-static float __fdividef(float a, float b)
+# 4375 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) float __fdividef(float a, float b)
 {
 
 
 
+  volatile float aa = a;
+  volatile float bb = b;
 
-
-
-  if (__cuda_fabsf(b) > 8.507059173e37f) {
-    if (__cuda_fabsf(a) <= 3.402823466e38f) {
-      return ((a / b) / 3.402823466e38f) / 3.402823466e38f;
+  if (__cuda_fabsf(bb) > 8.507059173e37f) {
+    if (__cuda_fabsf(aa) <= 3.402823466e38f) {
+      return ((aa / bb) / 3.402823466e38f) / 3.402823466e38f;
     } else {
-      return __int_as_float(0xffc00000);
+      bb = 1.0f / bb;
+      bb = bb / 3.402823466e38f;
+      return aa * bb;
     }
   } else {
-    return a / b;
+    return aa / bb;
   }
 
 }
 
-static float __sinf(float a)
+
+static __attribute__((__unused__)) float __sinf(float a)
 {
+
+  if ((__float_as_int(a) << 1) == 0xff000000) {
+    return __fadd_rn (a, -a);
+  }
+
   return sinf(a);
 }
 
-static float __cosf(float a)
+static __attribute__((__unused__)) float __cosf(float a)
 {
+
+  if ((__float_as_int(a) << 1) == 0xff000000) {
+    return __fadd_rn (a, -a);
+  }
+
   return cosf(a);
 }
 
-static float __log2f(float a)
+static __attribute__((__unused__)) float __log2f(float a)
 {
   return log2f(a);
 }
@@ -12646,16 +12096,12 @@ static float __log2f(float a)
 
 
 
-static float __internal_accurate_fdividef(float a, float b)
+static __attribute__((__unused__)) float __internal_accurate_fdividef(float a, float b)
 {
-  if (__cuda_fabsf(b) > 8.507059173e37f) {
-    a *= .25f;
-    b *= .25f;
-  }
-  return __fdividef(a, b);
+  return a / b;
 }
 
-static float __tanf(float a)
+static __attribute__((__unused__)) float __tanf(float a)
 {
 
 
@@ -12664,7 +12110,7 @@ static float __tanf(float a)
 
 }
 
-static void __sincosf(float a, float *sptr, float *cptr)
+static __attribute__((__unused__)) void __sincosf(float a, float *sptr, float *cptr)
 {
 
 
@@ -12674,7 +12120,7 @@ static void __sincosf(float a, float *sptr, float *cptr)
 
 }
 
-static float __expf(float a)
+static __attribute__((__unused__)) float __expf(float a)
 {
 
 
@@ -12683,7 +12129,7 @@ static float __expf(float a)
 
 }
 
-static float __exp10f(float a)
+static __attribute__((__unused__)) float __exp10f(float a)
 {
 
 
@@ -12692,7 +12138,7 @@ static float __exp10f(float a)
 
 }
 
-static float __log10f(float a)
+static __attribute__((__unused__)) float __log10f(float a)
 {
 
 
@@ -12701,7 +12147,7 @@ static float __log10f(float a)
 
 }
 
-static float __logf(float a)
+static __attribute__((__unused__)) float __logf(float a)
 {
 
 
@@ -12710,7 +12156,7 @@ static float __logf(float a)
 
 }
 
-static float __powf(float a, float b)
+static __attribute__((__unused__)) float __powf(float a, float b)
 {
 
 
@@ -12719,7 +12165,7 @@ static float __powf(float a, float b)
 
 }
 
-static float fdividef(float a, float b)
+static __attribute__((__unused__)) float fdividef(float a, float b)
 {
 
 
@@ -12730,12 +12176,12 @@ static float fdividef(float a, float b)
 
 }
 
-static int __clz(int a)
+static __attribute__((__unused__)) int __clz(int a)
 {
   return (a)?(158-(__float_as_int(__uint2float_rz((unsigned int)a))>>23)):32;
 }
 
-static int __clzll(long long int a)
+static __attribute__((__unused__)) int __clzll(long long int a)
 {
   int ahi = ((int)((unsigned long long)a >> 32));
   int alo = ((int)((unsigned long long)a & 0xffffffffULL));
@@ -12750,7 +12196,7 @@ static int __clzll(long long int a)
   return res;
 }
 
-static int __popc(unsigned int a)
+static __attribute__((__unused__)) int __popc(unsigned int a)
 {
   a = a - ((a >> 1) & 0x55555555);
   a = (a & 0x33333333) + ((a >> 2) & 0x33333333);
@@ -12759,7 +12205,7 @@ static int __popc(unsigned int a)
   return a;
 }
 
-static int __popcll(unsigned long long int a)
+static __attribute__((__unused__)) int __popcll(unsigned long long int a)
 {
   unsigned int ahi = ((unsigned int)(a >> 32));
   unsigned int alo = ((unsigned int)(a & 0xffffffffULL));
@@ -12773,7 +12219,7 @@ static int __popcll(unsigned long long int a)
   return alo;
 }
 
-static unsigned int __brev(unsigned int a)
+static __attribute__((__unused__)) unsigned int __brev(unsigned int a)
 {
   a = ((a >> 1) & 0x55555555) + ((a & 0x55555555) << 1);
   a = ((a >> 2) & 0x33333333) + ((a & 0x33333333) << 2);
@@ -12783,7 +12229,7 @@ static unsigned int __brev(unsigned int a)
   return a;
 }
 
-static unsigned long long int __brevll(unsigned long long int a)
+static __attribute__((__unused__)) unsigned long long int __brevll(unsigned long long int a)
 {
   unsigned int hi = (unsigned int)(a >> 32);
   unsigned int lo = (unsigned int)(a & 0xffffffffULL);
@@ -12793,50 +12239,50 @@ static unsigned long long int __brevll(unsigned long long int a)
   return ((unsigned long long int)t << 32) + (unsigned long long int)lo;
 }
 
-static int __ffs(int a)
+static __attribute__((__unused__)) int __ffs(int a)
 {
   return 32 - __clz (a & -a);
 }
 
-static int __ffsll(long long int a)
+static __attribute__((__unused__)) int __ffsll(long long int a)
 {
   return 64 - __clzll (a & -a);
 }
-# 4812 "/home/normal/cuda/bin/../include/device_functions.h" 3
-static double fdivide(double a, double b)
+# 4623 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) double fdivide(double a, double b)
 {
   return a / b;
 }
 
 
 
-static int __internal_double2int(double a, enum cudaRoundMode rndMode);
-static unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode);
-static long long int __internal_double2ll(double a, enum cudaRoundMode rndMode);
-static unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) int __internal_double2int(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) long long int __internal_double2ll(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode);
 
-static int __double2int_rz(double a)
+static __attribute__((__unused__)) int __double2int_rz(double a)
 {
   return __internal_double2int(a, cudaRoundZero);
 }
 
-static unsigned int __double2uint_rz(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_rz(double a)
 {
   return __internal_double2uint(a, cudaRoundZero);
 }
 
-static long long int __double2ll_rz(double a)
+static __attribute__((__unused__)) long long int __double2ll_rz(double a)
 {
   return __internal_double2ll(a, cudaRoundZero);
 }
 
-static unsigned long long int __double2ull_rz(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double a)
 {
   return __internal_double2ull(a, cudaRoundZero);
 }
-# 4856 "/home/normal/cuda/bin/../include/device_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
-# 257 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h" 3
+# 4667 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
+# 257 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 3
 extern void __cudaMutexOperation(int lock);
 
 
@@ -12844,7 +12290,7 @@ extern void __cudaMutexOperation(int lock);
 
 
 
-static int __iAtomicAdd(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicAdd(int *address, int val)
 {
   int old;
 
@@ -12855,7 +12301,7 @@ static int __iAtomicAdd(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12867,7 +12313,7 @@ static unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicExch(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicExch(int *address, int val)
 {
   int old;
 
@@ -12879,7 +12325,7 @@ static int __iAtomicExch(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12891,7 +12337,7 @@ static unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
   return old;
 }
 
-static float __fAtomicExch(float *address, float val)
+static __attribute__((__unused__)) float __fAtomicExch(float *address, float val)
 {
   float old;
 
@@ -12903,7 +12349,7 @@ static float __fAtomicExch(float *address, float val)
   return old;
 }
 
-static int __iAtomicMin(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicMin(int *address, int val)
 {
   int old;
 
@@ -12915,7 +12361,7 @@ static int __iAtomicMin(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12927,7 +12373,7 @@ static unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicMax(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicMax(int *address, int val)
 {
   int old;
 
@@ -12939,7 +12385,7 @@ static int __iAtomicMax(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12951,7 +12397,7 @@ static unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
   return old;
 }
 
-static unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12963,7 +12409,7 @@ static unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
   return old;
 }
 
-static unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12975,7 +12421,7 @@ static unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicAnd(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicAnd(int *address, int val)
 {
   int old;
 
@@ -12987,7 +12433,7 @@ static int __iAtomicAnd(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -12999,7 +12445,7 @@ static unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicOr(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicOr(int *address, int val)
 {
   int old;
 
@@ -13011,7 +12457,7 @@ static int __iAtomicOr(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -13023,7 +12469,7 @@ static unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicXor(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicXor(int *address, int val)
 {
   int old;
 
@@ -13035,7 +12481,7 @@ static int __iAtomicXor(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -13047,7 +12493,7 @@ static unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicCAS(int *address, int compare, int val)
+static __attribute__((__unused__)) int __iAtomicCAS(int *address, int compare, int val)
 {
   int old;
 
@@ -13059,7 +12505,7 @@ static int __iAtomicCAS(int *address, int compare, int val)
   return old;
 }
 
-static unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, unsigned int val)
 {
   unsigned int old;
 
@@ -13070,9 +12516,9 @@ static unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, un
 
   return old;
 }
-# 4857 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
-# 118 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h" 3
+# 4668 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
+# 118 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 3
 extern void __cudaMutexOperation(int lock);
 
 
@@ -13080,7 +12526,7 @@ extern void __cudaMutexOperation(int lock);
 
 
 
-static unsigned long long int __ullAtomicAdd(unsigned long long int *address, unsigned long long int val)
+static __attribute__((__unused__)) unsigned long long int __ullAtomicAdd(unsigned long long int *address, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -13091,7 +12537,7 @@ static unsigned long long int __ullAtomicAdd(unsigned long long int *address, un
   return old;
 }
 
-static unsigned long long int __ullAtomicExch(unsigned long long int *address, unsigned long long int val)
+static __attribute__((__unused__)) unsigned long long int __ullAtomicExch(unsigned long long int *address, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -13102,7 +12548,7 @@ static unsigned long long int __ullAtomicExch(unsigned long long int *address, u
   return old;
 }
 
-static unsigned long long int __ullAtomicCAS(unsigned long long int *address, unsigned long long int compare, unsigned long long int val)
+static __attribute__((__unused__)) unsigned long long int __ullAtomicCAS(unsigned long long int *address, unsigned long long int compare, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -13117,33 +12563,33 @@ static unsigned long long int __ullAtomicCAS(unsigned long long int *address, un
 
 
 
-static int __any(int cond)
+static __attribute__((__unused__)) int __any(int cond)
 {
   return cond;
 }
 
-static int __all(int cond)
+static __attribute__((__unused__)) int __all(int cond)
 {
   return cond;
 }
-# 4858 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 1 3
-# 267 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 3
-static double __longlong_as_double(long long int a)
+# 4669 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 1 3
+# 267 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
+static __attribute__((__unused__)) double __longlong_as_double(long long int a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
   u.i = a;
   return u.d;
 }
 
-static long long int __double_as_longlong(double a)
+static __attribute__((__unused__)) long long int __double_as_longlong(double a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
   u.d = a;
   return u.i;
 }
 
-static float __internal_double2float_kernel(double a)
+static __attribute__((__unused__)) float __internal_double2float_kernel(double a)
 {
   volatile union __cudart_DoubleUlonglongCvt xx;
   volatile union __cudart_FloatUintCvt res;
@@ -13155,7 +12601,9 @@ static float __internal_double2float_kernel(double a)
   if ((xx.i & 0x7ff0000000000000ULL) == 0x7ff0000000000000ULL) {
     if ((xx.i & 0x7fffffffffffffffULL) > 0x7ff0000000000000ULL) {
 
-      res.i = 0x7f8fffff;
+      res.i = ((unsigned int)((xx.i >> 32) & 0x80000000) |
+               (255U << 23) | 0x00400000 |
+               (unsigned int)((xx.i >> (53 - 24)) & 0x007fffff));
     } else {
 
       res.i |= 0x7f800000;
@@ -13175,7 +12623,7 @@ static float __internal_double2float_kernel(double a)
       xx.i = 0;
     } else {
       xx.i |= 0x0010000000000000ULL;
-      xx.i >>= 127 + shift;
+      xx.i >>= -126 - shift;
     }
   } else {
     res.i |= (unsigned int) (127 + shift) << 23;
@@ -13185,7 +12633,7 @@ static float __internal_double2float_kernel(double a)
   return res.f;
 }
 
-static double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt res;
   int shift;
@@ -13210,7 +12658,7 @@ static double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rn
   return res.d;
 }
 
-static double __internal_ull2double_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) double __internal_ull2double_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt res;
   int shift;
@@ -13230,7 +12678,7 @@ static double __internal_ull2double_kernel(unsigned long long int a, enum cudaRo
   return res.d;
 }
 
-static long long int __internal_double2ll_kernel(double a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_double2ll_kernel(double a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt xx, res;
   unsigned long long int t = 0;
@@ -13263,7 +12711,7 @@ static long long int __internal_double2ll_kernel(double a, long long int max, lo
   return res.i;
 }
 
-static unsigned long long int __internal_double2ull_kernel(double a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_double2ull_kernel(double a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt xx, res;
   unsigned long long int t = 0;
@@ -13291,7 +12739,7 @@ static unsigned long long int __internal_double2ull_kernel(double a, unsigned lo
   return res.i;
 }
 
-static int __double2hiint(double a)
+static __attribute__((__unused__)) int __double2hiint(double a)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -13299,7 +12747,7 @@ static int __double2hiint(double a)
   return cvt.i[1];
 }
 
-static int __double2loint(double a)
+static __attribute__((__unused__)) int __double2loint(double a)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -13307,7 +12755,7 @@ static int __double2loint(double a)
   return cvt.i[0];
 }
 
-static double __hiloint2double(int a, int b)
+static __attribute__((__unused__)) double __hiloint2double(int a, int b)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -13316,142 +12764,142 @@ static double __hiloint2double(int a, int b)
   return cvt.d;
 }
 
-static float __double2float_rn(double a)
+static __attribute__((__unused__)) float __double2float_rn(double a)
 {
   return (float)a;
 }
 
-static float __double2float_rz(double a)
+static __attribute__((__unused__)) float __double2float_rz(double a)
 {
   return __internal_double2float_kernel(a);
 }
 
-static int __internal_double2int(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) int __internal_double2int(double a, enum cudaRoundMode rndMode)
 {
   return (int)__internal_double2ll_kernel(a, 2147483647LL, -2147483648LL, -2147483648LL, rndMode);
 }
 
-static int __double2int_rn(double a)
+static __attribute__((__unused__)) int __double2int_rn(double a)
 {
   return __internal_double2int(a, cudaRoundNearest);
 }
 
-static int __double2int_ru(double a)
+static __attribute__((__unused__)) int __double2int_ru(double a)
 {
   return __internal_double2int(a, cudaRoundPosInf);
 }
 
-static int __double2int_rd(double a)
+static __attribute__((__unused__)) int __double2int_rd(double a)
 {
   return __internal_double2int(a, cudaRoundMinInf);
 }
 
-static unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode)
 {
   return (unsigned int)__internal_double2ull_kernel(a, 4294967295ULL, 2147483648ULL, rndMode);
 }
 
-static unsigned int __double2uint_rn(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_rn(double a)
 {
   return __internal_double2uint(a, cudaRoundNearest);
 }
 
-static unsigned int __double2uint_ru(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_ru(double a)
 {
   return __internal_double2uint(a, cudaRoundPosInf);
 }
 
-static unsigned int __double2uint_rd(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_rd(double a)
 {
   return __internal_double2uint(a, cudaRoundMinInf);
 }
 
-static long long int __internal_double2ll(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_double2ll(double a, enum cudaRoundMode rndMode)
 {
   return __internal_double2ll_kernel(a, 9223372036854775807LL, -9223372036854775807LL -1LL, -9223372036854775807LL -1LL, rndMode);
 }
 
-static long long int __double2ll_rn(double a)
+static __attribute__((__unused__)) long long int __double2ll_rn(double a)
 {
   return __internal_double2ll(a, cudaRoundNearest);
 }
 
-static long long int __double2ll_ru(double a)
+static __attribute__((__unused__)) long long int __double2ll_ru(double a)
 {
   return __internal_double2ll(a, cudaRoundPosInf);
 }
 
-static long long int __double2ll_rd(double a)
+static __attribute__((__unused__)) long long int __double2ll_rd(double a)
 {
   return __internal_double2ll(a, cudaRoundMinInf);
 }
 
-static unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode)
 {
   return __internal_double2ull_kernel(a, 18446744073709551615ULL, 9223372036854775808ULL, rndMode);
 }
 
-static unsigned long long int __double2ull_rn(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_rn(double a)
 {
   return __internal_double2ull(a, cudaRoundNearest);
 }
 
-static unsigned long long int __double2ull_ru(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_ru(double a)
 {
   return __internal_double2ull(a, cudaRoundPosInf);
 }
 
-static unsigned long long int __double2ull_rd(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_rd(double a)
 {
   return __internal_double2ull(a, cudaRoundMinInf);
 }
 
-static double __int2double_rn(int a)
+static __attribute__((__unused__)) double __int2double_rn(int a)
 {
   return (double)a;
 }
 
-static double __uint2double_rn(unsigned int a)
+static __attribute__((__unused__)) double __uint2double_rn(unsigned int a)
 {
   return (double)a;
 }
 
-static double __ll2double_rn(long long int a)
+static __attribute__((__unused__)) double __ll2double_rn(long long int a)
 {
   return (double)a;
 }
 
-static double __ll2double_rz(long long int a)
+static __attribute__((__unused__)) double __ll2double_rz(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundZero);
 }
 
-static double __ll2double_rd(long long int a)
+static __attribute__((__unused__)) double __ll2double_rd(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundMinInf);
 }
 
-static double __ll2double_ru(long long int a)
+static __attribute__((__unused__)) double __ll2double_ru(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundPosInf);
 }
 
-static double __ull2double_rn(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_rn(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundNearest);
 }
 
-static double __ull2double_rz(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_rz(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundZero);
 }
 
-static double __ull2double_rd(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_rd(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundMinInf);
 }
 
-static double __ull2double_ru(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_ru(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundPosInf);
 }
@@ -13460,7 +12908,9 @@ static double __ull2double_ru(unsigned long long int a)
 
 
 
-static double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
+
+
+static __attribute__((__unused__)) double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
 {
 
 
@@ -13506,7 +12956,7 @@ static double __internal_fma_kernel(double x, double y, double z, enum cudaRound
       xx.hi |= 0x00080000;
       return __hiloint2double(xx.hi, xx.lo);
     }
-# 656 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 3
+# 660 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
     if (((((xx.hi << 1) | xx.lo) == 0) &&
          (((yy.hi << 1) | (yy.lo != 0)) == 0xffe00000)) ||
         ((((yy.hi << 1) | yy.lo) == 0) &&
@@ -13904,71 +13354,71 @@ static double __internal_fma_kernel(double x, double y, double z, enum cudaRound
   return __hiloint2double(xx.hi, xx.lo);
 }
 
-static double __fma_rn(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_rn(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundNearest);
 }
 
-static double __fma_rd(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_rd(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundMinInf);
 }
 
-static double __fma_ru(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_ru(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundPosInf);
 }
 
-static double __fma_rz(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_rz(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundZero);
 }
 
-static double __dadd_rz(double a, double b)
+static __attribute__((__unused__)) double __dadd_rz(double a, double b)
 {
   return __fma_rz(a, 1.0, b);
 }
 
-static double __dadd_ru(double a, double b)
+static __attribute__((__unused__)) double __dadd_ru(double a, double b)
 {
   return __fma_ru(a, 1.0, b);
 }
 
-static double __dadd_rd(double a, double b)
+static __attribute__((__unused__)) double __dadd_rd(double a, double b)
 {
   return __fma_rd(a, 1.0, b);
 }
 
-static double __dmul_rz(double a, double b)
+static __attribute__((__unused__)) double __dmul_rz(double a, double b)
 {
   return __fma_rz(a, b, __longlong_as_double(0x8000000000000000ULL));
 }
 
-static double __dmul_ru(double a, double b)
+static __attribute__((__unused__)) double __dmul_ru(double a, double b)
 {
   return __fma_ru(a, b, __longlong_as_double(0x8000000000000000ULL));
 }
 
-static double __dmul_rd(double a, double b)
+static __attribute__((__unused__)) double __dmul_rd(double a, double b)
 {
   return __fma_rd(a, b, 0.0);
 }
 
-static double __dadd_rn(double a, double b)
+static __attribute__((__unused__)) double __dadd_rn(double a, double b)
 {
   return __fma_rn(a, 1.0, b);
 }
 
-static double __dmul_rn(double a, double b)
+static __attribute__((__unused__)) double __dmul_rn(double a, double b)
 {
   return __fma_rn(a, b, __longlong_as_double(0x8000000000000000ULL));
 }
-# 4859 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/texture_fetch_functions.h" 1 3
-# 1910 "/home/normal/cuda/bin/../include/texture_fetch_functions.h" 3
+# 4670 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 1 3
+# 1910 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 3
 extern void __cudaTextureFetch(const void *tex, void *index, int integer, void *val);
 
-static int4 __itexfetchi(const void *tex, int4 index)
+static __attribute__((__unused__)) int4 __itexfetchi(const void *tex, int4 index)
 {
   int4 val;
 
@@ -13977,7 +13427,7 @@ static int4 __itexfetchi(const void *tex, int4 index)
   return val;
 }
 
-static uint4 __utexfetchi(const void *tex, int4 index)
+static __attribute__((__unused__)) uint4 __utexfetchi(const void *tex, int4 index)
 {
   uint4 val;
 
@@ -13986,7 +13436,7 @@ static uint4 __utexfetchi(const void *tex, int4 index)
   return val;
 }
 
-static float4 __ftexfetchi(const void *tex, int4 index)
+static __attribute__((__unused__)) float4 __ftexfetchi(const void *tex, int4 index)
 {
   float4 val;
 
@@ -13995,7 +13445,7 @@ static float4 __ftexfetchi(const void *tex, int4 index)
   return val;
 }
 
-static int4 __itexfetch(const void *tex, float4 index, int dim)
+static __attribute__((__unused__)) int4 __itexfetch(const void *tex, float4 index, int dim)
 {
   int4 val;
 
@@ -14004,7 +13454,7 @@ static int4 __itexfetch(const void *tex, float4 index, int dim)
   return val;
 }
 
-static uint4 __utexfetch(const void *tex, float4 index, int dim)
+static __attribute__((__unused__)) uint4 __utexfetch(const void *tex, float4 index, int dim)
 {
   uint4 val;
 
@@ -14013,7 +13463,7 @@ static uint4 __utexfetch(const void *tex, float4 index, int dim)
   return val;
 }
 
-static float4 __ftexfetch(const void *tex, float4 index, int dim)
+static __attribute__((__unused__)) float4 __ftexfetch(const void *tex, float4 index, int dim)
 {
   float4 val;
 
@@ -14021,11 +13471,11 @@ static float4 __ftexfetch(const void *tex, float4 index, int dim)
 
   return val;
 }
-# 4860 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 945 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
+# 4671 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 997 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 
 
-static int __cuda___signbitf(float a)
+static __attribute__((__unused__)) int __cuda___signbitf(float a)
 {
   return (int)((unsigned int)__float_as_int(a) >> 31);
 }
@@ -14033,18 +13483,30 @@ static int __cuda___signbitf(float a)
 
 
 
-static float __cuda_copysignf(float a, float b)
+static __attribute__((__unused__)) float __cuda_copysignf(float a, float b)
 {
   return __int_as_float((__float_as_int(b) & 0x80000000) |
                         (__float_as_int(a) & ~0x80000000));
 }
-# 969 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1021 "/usr/local/cuda/bin/../include/math_functions.h" 3
+
+
 extern __attribute__((__weak__)) int min(int a, int b); int min(int a, int b)
 {
   return a < b ? a : b;
 }
 
 extern __attribute__((__weak__)) unsigned int umin(unsigned int a, unsigned int b); unsigned int umin(unsigned int a, unsigned int b)
+{
+  return a < b ? a : b;
+}
+
+extern __attribute__((__weak__)) long long int llmin(long long int a, long long int b); long long int llmin(long long int a, long long int b)
+{
+  return a < b ? a : b;
+}
+
+extern __attribute__((__weak__)) unsigned long long int ullmin(unsigned long long int a, unsigned long long int b); unsigned long long int ullmin(unsigned long long int a, unsigned long long int b)
 {
   return a < b ? a : b;
 }
@@ -14058,8 +13520,20 @@ extern __attribute__((__weak__)) unsigned int umax(unsigned int a, unsigned int 
 {
   return a > b ? a : b;
 }
-# 1055 "/home/normal/cuda/bin/../include/math_functions.h" 3
-static float __internal_nearbyintf(float a)
+
+extern __attribute__((__weak__)) long long int llmax(long long int a, long long int b); long long int llmax(long long int a, long long int b)
+{
+  return a > b ? a : b;
+}
+
+extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long long int a, unsigned long long int b); unsigned long long int ullmax(unsigned long long int a, unsigned long long int b)
+{
+  return a > b ? a : b;
+}
+
+
+# 1135 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) float __internal_nearbyintf(float a)
 {
   float fa = fabsf(a);
 
@@ -14073,7 +13547,7 @@ static float __internal_nearbyintf(float a)
   }
 }
 
-static float __internal_fminf(float a, float b)
+static __attribute__((__unused__)) float __internal_fminf(float a, float b)
 {
   volatile union {
     float f;
@@ -14094,7 +13568,7 @@ static float __internal_fminf(float a, float b)
   return a < b ? a : b;
 }
 
-static float __internal_fmaxf(float a, float b)
+static __attribute__((__unused__)) float __internal_fmaxf(float a, float b)
 {
   volatile union {
     float f;
@@ -14115,58 +13589,78 @@ static float __internal_fmaxf(float a, float b)
   }
   return a > b ? a : b;
 }
-# 1151 "/home/normal/cuda/bin/../include/math_functions.h" 3
-static long int __cuda_labs(long int a)
+# 1235 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) long int __cuda_labs(long int a)
 {
   return labs(a);
 }
 
-static float __cuda_ceilf(float a)
+static __attribute__((__unused__)) float __cuda_ceilf(float a)
 {
   return ceilf(a);
 }
 
-static float __cuda_floorf(float a)
+static __attribute__((__unused__)) float __cuda_floorf(float a)
 {
   return floorf(a);
 }
 
-static float __cuda_sqrtf(float a)
+static __attribute__((__unused__)) float __cuda_sqrtf(float a)
 {
   return sqrtf(a);
 }
 
-static float __cuda_rsqrtf(float a)
+static __attribute__((__unused__)) float __cuda_rsqrtf(float a)
 {
-  return 1.0f / sqrtf(a);
+  return rsqrtf(a);
 }
 
-static float __cuda_truncf(float a)
+static __attribute__((__unused__)) float __cuda_truncf(float a)
 {
   return truncf(a);
 }
 
-static int __cuda_max(int a, int b)
+static __attribute__((__unused__)) int __cuda_max(int a, int b)
 {
   return max(a, b);
 }
 
-static int __cuda_min(int a, int b)
+static __attribute__((__unused__)) int __cuda_min(int a, int b)
 {
   return min(a, b);
 }
 
-static unsigned int __cuda_umax(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __cuda_umax(unsigned int a, unsigned int b)
 {
   return umax(a, b);
 }
 
-static unsigned int __cuda_umin(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __cuda_umin(unsigned int a, unsigned int b)
 {
   return umin(a, b);
 }
 
-static long long int __cuda_llrintf(float a)
+static __attribute__((__unused__)) long long int __cuda_llmax(long long int a, long long int b)
+{
+  return llmax(a, b);
+}
+
+static __attribute__((__unused__)) long long int __cuda_llmin(long long int a, long long int b)
+{
+  return llmin(a, b);
+}
+
+static __attribute__((__unused__)) unsigned long long int __cuda_ullmax(unsigned long long int a, unsigned long long int b)
+{
+  return ullmax(a, b);
+}
+
+static __attribute__((__unused__)) unsigned long long int __cuda_ullmin(unsigned long long int a, unsigned long long int b)
+{
+  return ullmin(a, b);
+}
+
+static __attribute__((__unused__)) long long int __cuda_llrintf(float a)
 {
 
 
@@ -14175,7 +13669,7 @@ static long long int __cuda_llrintf(float a)
 
 }
 
-static long int __cuda_lrintf(float a)
+static __attribute__((__unused__)) long int __cuda_lrintf(float a)
 {
 
 
@@ -14188,7 +13682,7 @@ static long int __cuda_lrintf(float a)
 
 }
 
-static float __cuda_nearbyintf(float a)
+static __attribute__((__unused__)) float __cuda_nearbyintf(float a)
 {
 
 
@@ -14199,7 +13693,7 @@ static float __cuda_nearbyintf(float a)
 
 }
 
-static float __cuda_fmaxf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fmaxf(float a, float b)
 {
 
 
@@ -14210,7 +13704,7 @@ static float __cuda_fmaxf(float a, float b)
 
 }
 
-static float __cuda_fminf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fminf(float a, float b)
 {
 
 
@@ -14220,23 +13714,28 @@ static float __cuda_fminf(float a, float b)
   return __internal_fminf(a, b);
 
 }
-# 1272 "/home/normal/cuda/bin/../include/math_functions.h" 3
-static int __cuda___finitef(float a)
+
+
+
+
+
+
+static __attribute__((__unused__)) int __cuda___finitef(float a)
 {
   return __cuda_fabsf(a) < __int_as_float(0x7f800000);
 }
-# 1286 "/home/normal/cuda/bin/../include/math_functions.h" 3
-static int __cuda___isinff(float a)
+# 1379 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) int __cuda___isinff(float a)
 {
   return __cuda_fabsf(a) == __int_as_float(0x7f800000);
 }
 
-static int __cuda___isnanf(float a)
+static __attribute__((__unused__)) int __cuda___isnanf(float a)
 {
   return !(__cuda_fabsf(a) <= __int_as_float(0x7f800000));
 }
 
-static float __cuda_nextafterf(float a, float b)
+static __attribute__((__unused__)) float __cuda_nextafterf(float a, float b)
 {
   unsigned int ia;
   unsigned int ib;
@@ -14270,19 +13769,23 @@ static float __cuda_nextafterf(float a, float b)
   return a;
 }
 
-static float __cuda_nanf(const char *tagp)
+static __attribute__((__unused__)) float __cuda_nanf(const char *tagp)
 {
 
   return __int_as_float(0x7fffffff);
 }
 
-static float __internal_fmad(float a, float b, float c)
+static __attribute__((__unused__)) float __internal_fmad(float a, float b, float c)
 {
-  return a * b + c;
+
+  return __fmaf_rn (a, b, c);
+
+
+
 }
 
 
-static float __internal_atanhf_kernel(float a_1, float a_2)
+static __attribute__((__unused__)) float __internal_atanhf_kernel(float a_1, float a_2)
 {
   float a, a2, t;
 
@@ -14300,7 +13803,7 @@ static float __internal_atanhf_kernel(float a_1, float a_2)
 
 
 
-static float __internal_atanf_kernel(float a)
+static __attribute__((__unused__)) float __internal_atanf_kernel(float a)
 {
   float t4, t0, t1;
 
@@ -14319,7 +13822,7 @@ static float __internal_atanf_kernel(float a)
 }
 
 
-static float __internal_tan_kernel(float a)
+static __attribute__((__unused__)) float __internal_tan_kernel(float a)
 {
   float a2, s, t;
 
@@ -14333,34 +13836,45 @@ static float __internal_tan_kernel(float a)
   return t;
 }
 
-static float __internal_accurate_logf(float a)
+static __attribute__((__unused__)) float __internal_accurate_logf(float a)
 {
   float t;
   float z;
   float m;
-  int ia, e;
+  int ia;
   ia = __float_as_int(a);
 
-  if ((ia < 0x00800000) || (ia > 0x7f7fffff)) {
+  if ((a > 0.0f) && (a < __int_as_float(0x7f800000))) {
+    int e = -127;
+
+
+    if ((unsigned)ia < (unsigned)0x00800000) {
+      a = a * 16777216.0f;
+      e -= 24;
+      ia = __float_as_int(a);
+    }
+
+
+    m = __int_as_float((ia & 0x807fffff) | 0x3f800000);
+    e += ((unsigned)ia >> 23);
+    if (m > 1.414213562f) {
+      m = m * 0.5f;
+      e = e + 1;
+    }
+    t = m - 1.0f;
+    z = m + 1.0f;
+    z = __fdividef (t, z);
+    z = -t * z;
+    z = __internal_atanhf_kernel(t, z);
+    z = __internal_fmad ((float)e, 0.693147181f, z);
+    return z;
+  } else {
+
     return __logf(a);
   }
-
-  m = __int_as_float((ia & 0x807fffff) | 0x3f800000);
-  e = ((unsigned)ia >> 23) - 127;
-  if (m > 1.414213562f) {
-    m = m * 0.5f;
-    e = e + 1;
-  }
-  t = m - 1.0f;
-  z = m + 1.0f;
-  z = __fdividef (t, z);
-  z = -t * z;
-  z = __internal_atanhf_kernel(t, z);
-  z = __internal_fmad ((float)e, 0.693147181f, z);
-  return z;
 }
 
-static float2 __internal_log_ep(float a)
+static __attribute__((__unused__)) float2 __internal_log_ep(float a)
 {
   float2 res;
   int expo;
@@ -14436,7 +13950,7 @@ static float2 __internal_log_ep(float a)
   return res;
 }
 
-static float __internal_accurate_log2f(float a)
+static __attribute__((__unused__)) float __internal_accurate_log2f(float a)
 {
   return 1.442695041f * __internal_accurate_logf(a);
 }
@@ -14444,7 +13958,7 @@ static float __internal_accurate_log2f(float a)
 
 
 
-static float2 __internal_dsmul (float2 x, float2 y)
+static __attribute__((__unused__)) float2 __internal_dsmul (float2 x, float2 y)
 {
     float2 z;
 
@@ -14477,7 +13991,7 @@ static unsigned int __cudart_i2opi_f [] = {
 };
 
 
-static float __internal_trig_reduction_kernel(float a, int *quadrant)
+static __attribute__((__unused__)) float __internal_trig_reduction_kernel(float a, int *quadrant)
 {
   float j;
   int q;
@@ -14554,14 +14068,19 @@ static float __internal_trig_reduction_kernel(float a, int *quadrant)
   q = __float2int_rn (a * 0.636619772f);
   j = (float)q;
   a = __internal_fmad (-j, 1.5703125000000000e+000f, a);
-  a = __internal_fmad (-j, 4.8351287841796875e-004f, a);
-  a = __internal_fmad (-j, 3.1385570764541626e-007f, a);
+
+
+  a = __fmaf_rn (-j, 4.8382673412561417e-004f, a);
+
+
+
+
   a = __internal_fmad (-j, 6.0771005065061922e-011f, a);
   *quadrant = q;
   return a;
 }
-# 1630 "/home/normal/cuda/bin/../include/math_functions.h" 3
-static float __internal_expf_kernel(float a, float scale)
+# 1743 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) float __internal_expf_kernel(float a, float scale)
 {
   float j, z;
 
@@ -14573,7 +14092,7 @@ static float __internal_expf_kernel(float a, float scale)
   return z;
 }
 
-static float __internal_accurate_expf(float a)
+static __attribute__((__unused__)) float __internal_accurate_expf(float a)
 {
   float z;
 
@@ -14583,7 +14102,7 @@ static float __internal_accurate_expf(float a)
   return z;
 }
 
-static float __internal_accurate_exp10f(float a)
+static __attribute__((__unused__)) float __internal_accurate_exp10f(float a)
 {
   float j, z;
 
@@ -14597,7 +14116,7 @@ static float __internal_accurate_exp10f(float a)
   return z;
 }
 
-static float __internal_lgammaf_pos(float a)
+static __attribute__((__unused__)) float __internal_lgammaf_pos(float a)
 {
   float sum;
   float s, t;
@@ -14682,7 +14201,7 @@ static float __internal_lgammaf_pos(float a)
 }
 
 
-static float __internal_sin_kernel(float x)
+static __attribute__((__unused__)) float __internal_sin_kernel(float x)
 {
   float x2, z;
 
@@ -14696,7 +14215,7 @@ static float __internal_sin_kernel(float x)
 }
 
 
-static float __internal_cos_kernel(float x)
+static __attribute__((__unused__)) float __internal_cos_kernel(float x)
 {
   float x2, z;
 
@@ -14709,7 +14228,7 @@ static float __internal_cos_kernel(float x)
   return z;
 }
 
-static float __internal_accurate_sinf(float a)
+static __attribute__((__unused__)) float __internal_accurate_sinf(float a)
 {
   float z;
   int i;
@@ -14736,7 +14255,7 @@ static float __internal_accurate_sinf(float a)
 
 
 
-static float __cuda_rintf(float a)
+static __attribute__((__unused__)) float __cuda_rintf(float a)
 {
 
 
@@ -14745,7 +14264,7 @@ static float __cuda_rintf(float a)
 
 }
 
-static float __cuda_sinf(float a)
+static __attribute__((__unused__)) float __cuda_sinf(float a)
 {
 
 
@@ -14756,7 +14275,7 @@ static float __cuda_sinf(float a)
 
 }
 
-static float __cuda_cosf(float a)
+static __attribute__((__unused__)) float __cuda_cosf(float a)
 {
 
 
@@ -14784,7 +14303,7 @@ static float __cuda_cosf(float a)
 
 }
 
-static float __cuda_tanf(float a)
+static __attribute__((__unused__)) float __cuda_tanf(float a)
 {
 
 
@@ -14795,7 +14314,7 @@ static float __cuda_tanf(float a)
   int i;
 
   if (__cuda___isinff(a)) {
-    return __int_as_float(0x7fffffff);
+    return __fadd_rn (a, -a);
   }
   z = __internal_trig_reduction_kernel(a, &i);
 
@@ -14807,7 +14326,7 @@ static float __cuda_tanf(float a)
 
 }
 
-static float __cuda_log2f(float a)
+static __attribute__((__unused__)) float __cuda_log2f(float a)
 {
 
 
@@ -14818,7 +14337,7 @@ static float __cuda_log2f(float a)
 
 }
 
-static float __cuda_expf(float a)
+static __attribute__((__unused__)) float __cuda_expf(float a)
 {
 
 
@@ -14829,7 +14348,7 @@ static float __cuda_expf(float a)
 
 }
 
-static float __cuda_exp10f(float a)
+static __attribute__((__unused__)) float __cuda_exp10f(float a)
 {
 
 
@@ -14840,7 +14359,7 @@ static float __cuda_exp10f(float a)
 
 }
 
-static float __cuda_coshf(float a)
+static __attribute__((__unused__)) float __cuda_coshf(float a)
 {
   float z;
 
@@ -14853,7 +14372,7 @@ static float __cuda_coshf(float a)
   return z;
 }
 
-static float __cuda_sinhf(float a)
+static __attribute__((__unused__)) float __cuda_sinhf(float a)
 {
   float s, z;
 
@@ -14878,7 +14397,7 @@ static float __cuda_sinhf(float a)
   return __cuda_copysignf(z, s);
 }
 
-static float __cuda_tanhf(float a)
+static __attribute__((__unused__)) float __cuda_tanhf(float a)
 {
   float s, t;
 
@@ -14902,7 +14421,7 @@ static float __cuda_tanhf(float a)
   return __cuda_copysignf(s, a);
 }
 
-static float __cuda_atan2f(float a, float b)
+static __attribute__((__unused__)) float __cuda_atan2f(float a, float b)
 {
 
 
@@ -14939,7 +14458,7 @@ static float __cuda_atan2f(float a, float b)
 
 }
 
-static float __cuda_atanf(float a)
+static __attribute__((__unused__)) float __cuda_atanf(float a)
 {
   float t0, t1;
 
@@ -14959,7 +14478,7 @@ static float __cuda_atanf(float a)
 }
 
 
-static float __internal_asinf_kernel(float a)
+static __attribute__((__unused__)) float __internal_asinf_kernel(float a)
 {
   float t2, t3, t4;
 
@@ -14975,7 +14494,7 @@ static float __internal_asinf_kernel(float a)
   return a;
 }
 
-static float __cuda_asinf(float a)
+static __attribute__((__unused__)) float __cuda_asinf(float a)
 {
   float t0, t1, t2;
 
@@ -14992,7 +14511,7 @@ static float __cuda_asinf(float a)
   return __cuda_copysignf(t1, a);
 }
 
-static float __cuda_acosf(float a)
+static __attribute__((__unused__)) float __cuda_acosf(float a)
 {
   float t0, t1, t2;
 
@@ -15009,7 +14528,7 @@ static float __cuda_acosf(float a)
   return t1;
 }
 
-static float __cuda_logf(float a)
+static __attribute__((__unused__)) float __cuda_logf(float a)
 {
 
 
@@ -15020,7 +14539,7 @@ static float __cuda_logf(float a)
 
 }
 
-static float __cuda_log10f(float a)
+static __attribute__((__unused__)) float __cuda_log10f(float a)
 {
 
 
@@ -15031,7 +14550,7 @@ static float __cuda_log10f(float a)
 
 }
 
-static float __cuda_log1pf(float a)
+static __attribute__((__unused__)) float __cuda_log1pf(float a)
 {
 
 
@@ -15054,7 +14573,7 @@ static float __cuda_log1pf(float a)
 
 }
 
-static float __cuda_acoshf(float a)
+static __attribute__((__unused__)) float __cuda_acoshf(float a)
 {
 
 
@@ -15072,7 +14591,7 @@ static float __cuda_acoshf(float a)
 
 }
 
-static float __cuda_asinhf(float a)
+static __attribute__((__unused__)) float __cuda_asinhf(float a)
 {
 
 
@@ -15091,7 +14610,7 @@ static float __cuda_asinhf(float a)
 
 }
 
-static float __cuda_atanhf(float a)
+static __attribute__((__unused__)) float __cuda_atanhf(float a)
 {
 
 
@@ -15105,7 +14624,7 @@ static float __cuda_atanhf(float a)
 
 }
 
-static float __cuda_expm1f(float a)
+static __attribute__((__unused__)) float __cuda_expm1f(float a)
 {
   float t, z, j, u;
 
@@ -15140,7 +14659,7 @@ static float __cuda_expm1f(float a)
   return u;
 }
 
-static float __cuda_hypotf(float a, float b)
+static __attribute__((__unused__)) float __cuda_hypotf(float a, float b)
 {
 
 
@@ -15170,7 +14689,7 @@ static float __cuda_hypotf(float a, float b)
 
 }
 
-static float __cuda_cbrtf(float a)
+static __attribute__((__unused__)) float __cuda_cbrtf(float a)
 {
 
 
@@ -15179,18 +14698,22 @@ static float __cuda_cbrtf(float a)
 
   s = __cuda_fabsf(a);
   if ((a == 0.0f) || (s == __int_as_float(0x7f800000))) {
-    return a;
+    return a + a;
   }
   t = __cuda_exp2f(0.333333333f * __log2f(s));
   t = t-(t-(__fdividef(s,(t*t))))*0.333333333f;
-  if (__cuda___signbitf(a)) {
-    t = -t;
-  }
+
+
+
+
+
+  t = __cuda_copysignf(t, a);
+
   return t;
 
 }
 
-static float __cuda_erff(float a)
+static __attribute__((__unused__)) float __cuda_erff(float a)
 {
   float t, r, q;
 
@@ -15226,7 +14749,7 @@ static float __cuda_erff(float a)
   return a;
 }
 
-static float __cuda_erfinvf (float a)
+static __attribute__((__unused__)) float __cuda_erfinvf (float a)
 {
   float fa, t;
 
@@ -15292,11 +14815,14 @@ static float __cuda_erfinvf (float a)
   return t;
 }
 
-static float __cuda_erfcf(float a)
+static __attribute__((__unused__)) float __cuda_erfcf(float a)
 {
-  if (a <= 0.55f) {
+
+    if (__cuda___isnanf(a)) return a + a;
+
+  if (a <= 0.813f) {
     return 1.0f - __cuda_erff(a);
-  } else if (a > 10.0f) {
+  } else if (a > 10.055f) {
     return 0.0f;
   } else {
     float p;
@@ -15307,15 +14833,15 @@ static float __cuda_erfcf(float a)
 
 
 
-    p = 4.014893410762552E-006f;
-    p = __internal_fmad (p, a, 5.640401259462436E-001f);
-    p = __internal_fmad (p, a, 2.626649872281140E+000f);
-    p = __internal_fmad (p, a, 5.486372652389673E+000f);
-    p = __internal_fmad (p, a, 5.250714831459401E+000f);
-    q = a + 4.651376250488319E+000f;
-    q = __internal_fmad (q, a, 1.026302828878470E+001f);
-    q = __internal_fmad (q, a, 1.140762166021288E+001f);
-    q = __internal_fmad (q, a, 5.251211619089947E+000f);
+    p = 1.9997798317768276E-006f;
+    p = __internal_fmad (p, a, 5.6410849770777538E-001f);
+    p = __internal_fmad (p, a, 2.4579440583231387E+000f);
+    p = __internal_fmad (p, a, 4.9763988947448308E+000f);
+    p = __internal_fmad (p, a, 4.5767235962336885E+000f);
+    q = a + 4.3540863476555538E+000f;
+    q = __internal_fmad (q, a, 9.3453217404616584E+000f);
+    q = __internal_fmad (q, a, 1.0132282183545772E+001f);
+    q = __internal_fmad (q, a, 4.5781789912165518E+000f);
 
     h = 1.0f / q;
     q = __internal_fmad (-q * h, h, 2.0f * h);
@@ -15334,7 +14860,7 @@ static float __cuda_erfcf(float a)
   }
 }
 
-static float __cuda_erfcinvf (float a)
+static __attribute__((__unused__)) float __cuda_erfcinvf (float a)
 {
   float t;
   if (a <= 0.0f) {
@@ -15364,7 +14890,7 @@ static float __cuda_erfcinvf (float a)
   return t;
 }
 
-static float __cuda_lgammaf(float a)
+static __attribute__((__unused__)) float __cuda_lgammaf(float a)
 {
   float t;
   float i;
@@ -15389,7 +14915,7 @@ static float __cuda_lgammaf(float a)
   return t;
 }
 
-static float __cuda_ldexpf(float a, int b)
+static __attribute__((__unused__)) float __cuda_ldexpf(float a, int b)
 {
 
 
@@ -15412,7 +14938,7 @@ static float __cuda_ldexpf(float a, int b)
 
 }
 
-static float __cuda_scalbnf(float a, int b)
+static __attribute__((__unused__)) float __cuda_scalbnf(float a, int b)
 {
 
 
@@ -15422,7 +14948,7 @@ static float __cuda_scalbnf(float a, int b)
 
 }
 
-static float __cuda_scalblnf(float a, long int b)
+static __attribute__((__unused__)) float __cuda_scalblnf(float a, long int b)
 {
 
 
@@ -15439,7 +14965,7 @@ static float __cuda_scalblnf(float a, long int b)
 
 }
 
-static float __cuda_frexpf(float a, int *b)
+static __attribute__((__unused__)) float __cuda_frexpf(float a, int *b)
 {
   float fa = __cuda_fabsf(a);
   unsigned int expo;
@@ -15463,7 +14989,7 @@ static float __cuda_frexpf(float a, int *b)
   return a;
 }
 
-static float __cuda_modff(float a, float *b)
+static __attribute__((__unused__)) float __cuda_modff(float a, float *b)
 {
 
 
@@ -15485,7 +15011,7 @@ static float __cuda_modff(float a, float *b)
 
 }
 
-static float __cuda_fmodf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fmodf(float a, float b)
 {
 
 
@@ -15532,7 +15058,7 @@ static float __cuda_fmodf(float a, float b)
 
 }
 
-static float __cuda_remainderf(float a, float b)
+static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
 {
 
   float twoa = 0.0f;
@@ -15558,12 +15084,12 @@ static float __cuda_remainderf(float a, float b)
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2638 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2758 "/usr/local/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot0 = 0;
       if (a >= scaled_b) {
-        twoa = (2.0f * a - scaled_b) - scaled_b;
-        a -= scaled_b;
+        twoa = __internal_fmad (a, 2.0f, -scaled_b) - scaled_b;
+        a = a - scaled_b;
         quot0 = 1;
       }
       scaled_b *= 0.5f;
@@ -15574,15 +15100,15 @@ static float __cuda_remainderf(float a, float b)
   twoa = 2.0f * a;
   if ((twoa > b) || ((twoa == b) && quot0)) {
     a -= b;
-    a = __cuda_copysignf (a, -1.0f);
+    a = __int_as_float(__float_as_int(a) | 0x80000000);
   }
-# 2670 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2790 "/usr/local/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   return a;
 }
 
-static float __cuda_remquof(float a, float b, int* quo)
+static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* quo)
 {
   float twoa = 0.0f;
   unsigned int quot = 0;
@@ -15613,7 +15139,7 @@ static float __cuda_remquof(float a, float b, int* quo)
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2723 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2846 "/usr/local/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot <<= 1;
       if (a >= scaled_b) {
@@ -15632,7 +15158,7 @@ static float __cuda_remquof(float a, float b, int* quo)
     a -= b;
     a = __cuda_copysignf (a, -1.0f);
   }
-# 2758 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2881 "/usr/local/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   quot = quot & (~((~0)<<3));
@@ -15642,12 +15168,12 @@ static float __cuda_remquof(float a, float b, int* quo)
   return a;
 }
 
-static float __cuda_fmaf(float a, float b, float c)
+static __attribute__((__unused__)) float __cuda_fmaf(float a, float b, float c)
 {
   return __fmaf_rn(a, b, c);
 }
 
-static float __internal_accurate_powf(float a, float b)
+static __attribute__((__unused__)) float __internal_accurate_powf(float a, float b)
 {
   float2 loga, prod;
 
@@ -15683,7 +15209,7 @@ static float __internal_accurate_powf(float a, float b)
   return t;
 }
 
-static float __cuda_powif(float a, int b)
+static __attribute__((__unused__)) float __cuda_powif(float a, int b)
 {
   unsigned int e = __cuda_abs(b);
   float r = 1.0f;
@@ -15700,7 +15226,7 @@ static float __cuda_powif(float a, int b)
   }
 }
 
-static double __cuda_powi(double a, int b)
+static __attribute__((__unused__)) double __cuda_powi(double a, int b)
 {
   unsigned int e = __cuda_abs(b);
   double r = 1.0;
@@ -15717,7 +15243,7 @@ static double __cuda_powi(double a, int b)
   }
 }
 
-static float __cuda_powf(float a, float b)
+static __attribute__((__unused__)) float __cuda_powf(float a, float b)
 {
 
 
@@ -15773,7 +15299,7 @@ static float __cuda_powf(float a, float b)
 }
 
 
-static float __internal_tgammaf_kernel(float a)
+static __attribute__((__unused__)) float __internal_tgammaf_kernel(float a)
 {
   float t;
   t = -1.05767296987211380E-003f;
@@ -15792,7 +15318,7 @@ static float __internal_tgammaf_kernel(float a)
 
 
 
-static float __cuda_tgammaf(float a)
+static __attribute__((__unused__)) float __cuda_tgammaf(float a)
 {
   float s, xx, x=a;
   if (x >= 0.0f) {
@@ -15857,7 +15383,7 @@ static float __cuda_tgammaf(float a)
   }
 }
 
-static float __cuda_roundf(float a)
+static __attribute__((__unused__)) float __cuda_roundf(float a)
 {
 
 
@@ -15871,12 +15397,13 @@ static float __cuda_roundf(float a)
 
 }
 
-static long long int __internal_llroundf_kernel(float a)
+static __attribute__((__unused__)) long long int __internal_llroundf_kernel(float a)
 {
   unsigned long long int res, t = 0LL;
   int shift;
   unsigned int ia = __float_as_int(a);
-  if ((ia << 1) > 0xff000000) return 0LL;
+
+  if ((ia << 1) > 0xff000000) return 0x8000000000000000LL;
   if ((int)ia >= 0x5f000000) return 0x7fffffffffffffffLL;
   if (ia >= 0xdf000000) return 0x8000000000000000LL;
   shift = 189 - ((ia >> 23) & 0xff);
@@ -15895,7 +15422,7 @@ static long long int __internal_llroundf_kernel(float a)
   return (long long int)res;
 }
 
-static long long int __cuda_llroundf(float a)
+static __attribute__((__unused__)) long long int __cuda_llroundf(float a)
 {
 
 
@@ -15904,17 +15431,17 @@ static long long int __cuda_llroundf(float a)
 
 }
 
-static long int __cuda_lroundf(float a)
+static __attribute__((__unused__)) long int __cuda_lroundf(float a)
 {
 
 
 
 
   return (long int)__cuda_llroundf(a);
-# 3045 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 3169 "/usr/local/cuda/bin/../include/math_functions.h" 3
 }
 
-static float __cuda_fdimf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fdimf(float a, float b)
 {
   float t;
   t = a - b;
@@ -15924,7 +15451,7 @@ static float __cuda_fdimf(float a, float b)
   return t;
 }
 
-static int __cuda_ilogbf(float a)
+static __attribute__((__unused__)) int __cuda_ilogbf(float a)
 {
   unsigned int i;
   int expo;
@@ -15955,7 +15482,7 @@ static int __cuda_ilogbf(float a)
   return expo;
 }
 
-static float __cuda_logbf(float a)
+static __attribute__((__unused__)) float __cuda_logbf(float a)
 {
 
 
@@ -15994,7 +15521,7 @@ static float __cuda_logbf(float a)
 
 }
 
-static void __cuda_sincosf(float a, float *sptr, float *cptr)
+static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, float *cptr)
 {
 
 
@@ -16003,14 +15530,12 @@ static void __cuda_sincosf(float a, float *sptr, float *cptr)
 
   float t, u, s, c;
   int quadrant;
-  if (__cuda___isinff(a)) {
-    *sptr = __int_as_float(0x7fffffff);
-    *cptr = __int_as_float(0x7fffffff);
-    return;
-  }
-  if (a == 0.0f) {
-    *sptr = a;
-    *cptr = 1.0f;
+  t = __cuda_fabsf(a);
+  if ((t == __int_as_float(0x7f800000)) || (t == 0.0f)) {
+    s = __fmul_rn (a, 0.0f);
+    c = 1.0f + s;
+    *sptr = s;
+    *cptr = c;
     return;
   }
   t = __internal_trig_reduction_kernel(a, &quadrant);
@@ -16034,7 +15559,9 @@ static void __cuda_sincosf(float a, float *sptr, float *cptr)
   *cptr = c;
 
 }
-# 3176 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 3298 "/usr/local/cuda/bin/../include/math_functions.h" 3
+
+
 extern __attribute__((__weak__)) double rsqrt(double a); double rsqrt(double a)
 {
   return 1.0 / sqrt(a);
@@ -16044,15 +15571,17 @@ extern __attribute__((__weak__)) float rsqrtf(float a); float rsqrtf(float a)
 {
   return (float)rsqrt((double)a);
 }
-# 3734 "/home/normal/cuda/bin/../include/math_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
-# 61 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
-static double __cuda_fabs(double a)
+
+
+# 3869 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
+# 61 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
+static __attribute__((__unused__)) double __cuda_fabs(double a)
 {
   return fabs(a);
 }
 
-static double __cuda_fmax(double a, double b)
+static __attribute__((__unused__)) double __cuda_fmax(double a, double b)
 {
 
   volatile union __cudart_DoubleUlonglongCvt cvta, cvtb;
@@ -16075,7 +15604,7 @@ static double __cuda_fmax(double a, double b)
 
 }
 
-static double __cuda_fmin(double a, double b)
+static __attribute__((__unused__)) double __cuda_fmin(double a, double b)
 {
 
   volatile union __cudart_DoubleUlonglongCvt cvta, cvtb;
@@ -16097,22 +15626,22 @@ static double __cuda_fmin(double a, double b)
 
 }
 
-static double __cuda_ceil(double a)
+static __attribute__((__unused__)) double __cuda_ceil(double a)
 {
   return ceil(a);
 }
 
-static double __cuda_floor(double a)
+static __attribute__((__unused__)) double __cuda_floor(double a)
 {
   return floor(a);
 }
 
-static double __cuda_trunc(double a)
+static __attribute__((__unused__)) double __cuda_trunc(double a)
 {
   return trunc(a);
 }
 
-static double __cuda_nearbyint(double a)
+static __attribute__((__unused__)) double __cuda_nearbyint(double a)
 {
 
 
@@ -16133,12 +15662,12 @@ static double __cuda_nearbyint(double a)
 
 
 
-static double __cuda_rint(double a)
+static __attribute__((__unused__)) double __cuda_rint(double a)
 {
   return __cuda_nearbyint(a);
 }
 
-static long int __cuda_lrint(double a)
+static __attribute__((__unused__)) long int __cuda_lrint(double a)
 {
 
   return (long int)__double2ll_rn(a);
@@ -16147,32 +15676,32 @@ static long int __cuda_lrint(double a)
 
 }
 
-static long long int __cuda_llrint(double a)
+static __attribute__((__unused__)) long long int __cuda_llrint(double a)
 {
   return __double2ll_rn(a);
 }
 
-static int __cuda___signbit(double a)
+static __attribute__((__unused__)) int __cuda___signbit(double a)
 {
   return (int)((unsigned int)__double2hiint(a) >> 31);
 }
 
-static int __cuda___finite(double a)
+static __attribute__((__unused__)) int __cuda___finite(double a)
 {
   return __cuda_fabs(a) < __longlong_as_double(0x7ff0000000000000ULL);
 }
 
-static int __cuda___isinf(double a)
+static __attribute__((__unused__)) int __cuda___isinf(double a)
 {
   return __cuda_fabs(a) == __longlong_as_double(0x7ff0000000000000ULL);
 }
 
-static int __cuda___isnan(double a)
+static __attribute__((__unused__)) int __cuda___isnan(double a)
 {
   return !(__cuda_fabs(a) <= __longlong_as_double(0x7ff0000000000000ULL));
 }
 
-static double __cuda_copysign(double a, double b)
+static __attribute__((__unused__)) double __cuda_copysign(double a, double b)
 {
   int alo, ahi, bhi;
 
@@ -16205,7 +15734,7 @@ static unsigned long long int __cudart_i2opi_d [] = {
   0xa2f9836e4e441529ULL,
 };
 
-static double __internal_trig_reduction_kerneld(double a, int *quadrant)
+static __attribute__((__unused__)) double __internal_trig_reduction_kerneld(double a, int *quadrant)
 {
   double j;
   int q;
@@ -16298,7 +15827,7 @@ static double __internal_trig_reduction_kerneld(double a, int *quadrant)
 }
 
 
-static double __internal_sin_kerneld(double x)
+static __attribute__((__unused__)) double __internal_sin_kerneld(double x)
 {
   double x2, z;
   x2 = x * x;
@@ -16314,7 +15843,7 @@ static double __internal_sin_kerneld(double x)
 }
 
 
-static double __internal_cos_kerneld(double x)
+static __attribute__((__unused__)) double __internal_cos_kerneld(double x)
 {
   double x2, z;
   x2 = x * x;
@@ -16330,7 +15859,7 @@ static double __internal_cos_kerneld(double x)
 }
 
 
-static double __internal_tan_kerneld(double x, int i)
+static __attribute__((__unused__)) double __internal_tan_kerneld(double x, int i)
 {
   double x2, z, q;
   x2 = x * x;
@@ -16362,12 +15891,12 @@ static double __internal_tan_kerneld(double x, int i)
   return q;
 }
 
-static double __cuda_sqrt(double a)
+static __attribute__((__unused__)) double __cuda_sqrt(double a)
 {
   return sqrt(a);
 }
 
-static double __cuda_rsqrt(double a)
+static __attribute__((__unused__)) double __cuda_rsqrt(double a)
 {
 
     return 1.0 / sqrt(a);
@@ -16377,7 +15906,7 @@ static double __cuda_rsqrt(double a)
 }
 
 
-static double __internal_expm1_kernel (double a)
+static __attribute__((__unused__)) double __internal_expm1_kernel (double a)
 {
   double t;
   t = 2.08842685477913050E-009;
@@ -16397,7 +15926,7 @@ static double __internal_expm1_kernel (double a)
 }
 
 
-static double __internal_atanh_kernel (double a_1, double a_2)
+static __attribute__((__unused__)) double __internal_atanh_kernel (double a_1, double a_2)
 {
   double a, a2, t;
 
@@ -16417,12 +15946,12 @@ static double __internal_atanh_kernel (double a_1, double a_2)
   return t;
 }
 
-static double __internal_exp2i_kernel(int b)
+static __attribute__((__unused__)) double __internal_exp2i_kernel(int b)
 {
   return __hiloint2double((b + 1023) << 20, 0);
 }
 
-static double __internal_half(double a)
+static __attribute__((__unused__)) double __internal_half(double a)
 {
   unsigned int ihi, ilo;
   ilo = __double2loint(a);
@@ -16430,7 +15959,7 @@ static double __internal_half(double a)
   return __hiloint2double(ihi - 0x00100000, ilo);
 }
 
-static double __internal_twice(double a)
+static __attribute__((__unused__)) double __internal_twice(double a)
 {
   unsigned int ihi, ilo;
   ilo = __double2loint(a);
@@ -16438,7 +15967,7 @@ static double __internal_twice(double a)
   return __hiloint2double(ihi + 0x00100000, ilo);
 }
 
-static double __cuda_sin(double a)
+static __attribute__((__unused__)) double __cuda_sin(double a)
 {
   double z;
   int i;
@@ -16458,7 +15987,7 @@ static double __cuda_sin(double a)
   return z;
 }
 
-static double __cuda_cos(double a)
+static __attribute__((__unused__)) double __cuda_cos(double a)
 {
   double z;
   int i;
@@ -16479,18 +16008,16 @@ static double __cuda_cos(double a)
   return z;
 }
 
-static void __cuda_sincos(double a, double *sptr, double *cptr)
+static __attribute__((__unused__)) void __cuda_sincos(double a, double *sptr, double *cptr)
 {
   double t, u, s, c;
   int i;
-  if (__cuda___isinf(a)) {
-    *sptr = __longlong_as_double(0xfff8000000000000ULL);
-    *cptr = __longlong_as_double(0xfff8000000000000ULL);
-    return;
-  }
-  if (a == 0.0) {
-    *sptr = a;
-    *cptr = 1.0;
+  t = __cuda_fabs(a);
+  if ((t == __longlong_as_double(0x7ff0000000000000ULL)) || (t == 0.0)) {
+    s = __dmul_rn (a, 0.0);
+    c = 1.0 + s;
+    *sptr = s;
+    *cptr = c;
     return;
   }
   t = __internal_trig_reduction_kerneld(a, &i);
@@ -16514,7 +16041,7 @@ static void __cuda_sincos(double a, double *sptr, double *cptr)
   *cptr = c;
 }
 
-static double __cuda_tan(double a)
+static __attribute__((__unused__)) double __cuda_tan(double a)
 {
   double z;
   int i;
@@ -16527,7 +16054,7 @@ static double __cuda_tan(double a)
   return z;
 }
 
-static double __cuda_log(double a)
+static __attribute__((__unused__)) double __cuda_log(double a)
 {
   double m, f, g, u, v, tmp, q, ulo, log_lo, log_hi;
   int ihi, ilo;
@@ -16547,7 +16074,7 @@ static double __cuda_log(double a)
 
 
 
-    e += ((ihi >> 20) & 0x7ff);
+    e += (ihi >> 20);
     ihi = (ihi & 0x800fffff) | 0x3ff00000;
     m = __hiloint2double (ihi, ilo);
     if ((unsigned)ihi > (unsigned)0x3ff6a09e) {
@@ -16605,7 +16132,7 @@ static double __cuda_log(double a)
 }
 
 
-static double2 __internal_ddadd_xgty (double2 x, double2 y)
+static __attribute__((__unused__)) double2 __internal_ddadd_xgty (double2 x, double2 y)
 {
   double2 z;
 
@@ -16621,7 +16148,7 @@ static double2 __internal_ddadd_xgty (double2 x, double2 y)
 }
 
 
-static double2 __internal_ddmul (double2 x, double2 y)
+static __attribute__((__unused__)) double2 __internal_ddmul (double2 x, double2 y)
 {
 
   volatile
@@ -16638,7 +16165,7 @@ static double2 __internal_ddmul (double2 x, double2 y)
   return z;
 }
 
-static double2 __internal_log_ext_prec(double a)
+static __attribute__((__unused__)) double2 __internal_log_ext_prec(double a)
 {
   double2 res;
   double2 qq, cc, uu, tt;
@@ -16714,21 +16241,21 @@ static double2 __internal_log_ext_prec(double a)
   return res;
 }
 
-static double __cuda_log2(double a)
+static __attribute__((__unused__)) double __cuda_log2(double a)
 {
   double t;
   t = __cuda_log(a);
   return __fma_rn (t, 1.4426950408889634e+0, t * 2.0355273740931033e-17);
 }
 
-static double __cuda_log10(double a)
+static __attribute__((__unused__)) double __cuda_log10(double a)
 {
   double t;
   t = __cuda_log(a);
   return __fma_rn (t, 4.3429448190325182e-1, t * 1.09831965021676510e-17);
 }
 
-static double __cuda_log1p(double a)
+static __attribute__((__unused__)) double __cuda_log1p(double a)
 {
   double t;
   int i;
@@ -16745,7 +16272,7 @@ static double __cuda_log1p(double a)
   return __cuda_log (a + 1.0);
 }
 
-static double __internal_exp_kernel(double a, int scale)
+static __attribute__((__unused__)) double __internal_exp_kernel(double a, int scale)
 {
   double t, fac, z;
   int i;
@@ -16767,7 +16294,7 @@ static double __internal_exp_kernel(double a, int scale)
   return t;
 }
 
-static double __cuda_exp(double a)
+static __attribute__((__unused__)) double __cuda_exp(double a)
 {
   double t;
   int i;
@@ -16783,7 +16310,7 @@ static double __cuda_exp(double a)
   return t;
 }
 
-static double __cuda_exp2(double a)
+static __attribute__((__unused__)) double __cuda_exp2(double a)
 {
   double z;
   double t;
@@ -16815,7 +16342,7 @@ static double __cuda_exp2(double a)
   return t;
 }
 
-static double __cuda_exp10(double a)
+static __attribute__((__unused__)) double __cuda_exp10(double a)
 {
   double z;
   double t;
@@ -16848,7 +16375,7 @@ static double __cuda_exp10(double a)
   return t;
 }
 
-static double __cuda_expm1(double a)
+static __attribute__((__unused__)) double __cuda_expm1(double a)
 {
   double t, z, u;
   int i, j, k;
@@ -16881,7 +16408,7 @@ static double __cuda_expm1(double a)
   return t;
 }
 
-static double __cuda_cosh(double a)
+static __attribute__((__unused__)) double __cuda_cosh(double a)
 {
   double z;
   int i;
@@ -16898,7 +16425,7 @@ static double __cuda_cosh(double a)
   }
 }
 
-static double __cuda_sinh(double a)
+static __attribute__((__unused__)) double __cuda_sinh(double a)
 {
   double s, z;
   s = a;
@@ -16928,7 +16455,7 @@ static double __cuda_sinh(double a)
   return z;
 }
 
-static double __cuda_tanh(double a)
+static __attribute__((__unused__)) double __cuda_tanh(double a)
 {
   double t;
   t = __cuda_fabs(a);
@@ -16959,7 +16486,7 @@ static double __cuda_tanh(double a)
   return a;
 }
 
-static double __internal_atan_kernel(double a)
+static __attribute__((__unused__)) double __internal_atan_kernel(double a)
 {
   double t, a2;
   a2 = a * a;
@@ -16987,7 +16514,7 @@ static double __internal_atan_kernel(double a)
   return t;
 }
 
-static double __cuda_atan2(double a, double b)
+static __attribute__((__unused__)) double __cuda_atan2(double a, double b)
 {
   double t0, t1, t3;
   if (__cuda___isnan(a) || __cuda___isnan(b)) {
@@ -17014,7 +16541,7 @@ static double __cuda_atan2(double a, double b)
   return t3;
 }
 
-static double __cuda_atan(double a)
+static __attribute__((__unused__)) double __cuda_atan(double a)
 {
   double t0, t1;
 
@@ -17033,7 +16560,7 @@ static double __cuda_atan(double a)
 }
 
 
-static double __internal_asin_kernel(double a, double b)
+static __attribute__((__unused__)) double __internal_asin_kernel(double a, double b)
 {
   double r;
   r = 6.259798167646803E-002;
@@ -17053,7 +16580,7 @@ static double __internal_asin_kernel(double a, double b)
   return r;
 }
 
-static double __cuda_asin(double a)
+static __attribute__((__unused__)) double __cuda_asin(double a)
 {
   double fa, t0, t1;
   int ihi, ahi;
@@ -17081,7 +16608,7 @@ static double __cuda_asin(double a)
   return t1;
 }
 
-static double __cuda_acos(double a)
+static __attribute__((__unused__)) double __cuda_acos(double a)
 {
   double t0, t1;
   int ihi, ahi;
@@ -17119,7 +16646,7 @@ static double __cuda_acos(double a)
   return t0;
 }
 
-static double __cuda_acosh(double a)
+static __attribute__((__unused__)) double __cuda_acosh(double a)
 {
   double t;
 
@@ -17137,9 +16664,9 @@ static double __cuda_acosh(double a)
   }
 }
 
-static double __cuda_asinh(double a)
+static __attribute__((__unused__)) double __cuda_asinh(double a)
 {
-# 1164 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
+# 1162 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
   double fa, t;
   fa = __cuda_fabs(a);
   if (fa > 1.0e153) {
@@ -17152,7 +16679,7 @@ static double __cuda_asinh(double a)
   return __cuda_copysign(t, a);
 }
 
-static double __cuda_atanh(double a)
+static __attribute__((__unused__)) double __cuda_atanh(double a)
 {
   double fa, t;
 
@@ -17174,7 +16701,7 @@ static double __cuda_atanh(double a)
   return t;
 }
 
-static double __cuda_hypot(double a, double b)
+static __attribute__((__unused__)) double __cuda_hypot(double a, double b)
 {
   double v, w, t;
   if (__cuda___isinf(a) || __cuda___isinf(b)) {
@@ -17196,7 +16723,7 @@ static double __cuda_hypot(double a, double b)
   return t;
 }
 
-static double __cuda_cbrt(double a)
+static __attribute__((__unused__)) double __cuda_cbrt(double a)
 {
   float s;
   double t, r;
@@ -17238,7 +16765,7 @@ static double __cuda_cbrt(double a)
   return t;
 }
 
-static double __internal_accurate_pow(double a, double b)
+static __attribute__((__unused__)) double __internal_accurate_pow(double a, double b)
 {
   double2 loga;
   double2 prod;
@@ -17274,7 +16801,7 @@ static double __internal_accurate_pow(double a, double b)
   return tmp;
 }
 
-static double __cuda_pow(double a, double b)
+static __attribute__((__unused__)) double __cuda_pow(double a, double b)
 {
   int bIsOddInteger;
   double t;
@@ -17323,7 +16850,7 @@ static double __cuda_pow(double a, double b)
   return t;
 }
 
-static double __cuda_erf(double a)
+static __attribute__((__unused__)) double __cuda_erf(double a)
 {
   double t, r, q;
 
@@ -17386,7 +16913,7 @@ static double __cuda_erf(double a)
   return a;
 }
 
-static double __cuda_erfinv(double a)
+static __attribute__((__unused__)) double __cuda_erfinv(double a)
 {
   double fa, t;
 
@@ -17483,7 +17010,7 @@ static double __cuda_erfinv(double a)
   return t;
 }
 
-static double __cuda_erfcinv(double a)
+static __attribute__((__unused__)) double __cuda_erfcinv(double a)
 {
   double t;
 
@@ -17560,7 +17087,7 @@ static double __cuda_erfcinv(double a)
   return t;
 }
 
-static double __cuda_erfc(double a)
+static __attribute__((__unused__)) double __cuda_erfc(double a)
 {
   double p, q, h, l;
   int ahi;
@@ -17573,47 +17100,59 @@ static double __cuda_erfc(double a)
     return 0.0;
   }
   if (ahi < (int)0x40140000) {
-    p = 5.64189549785304440E-001;
-    p = __fma_rn (p, a, 8.17405083437083490E+000);
-    p = __fma_rn (p, a, 5.68958722557864720E+001);
-    p = __fma_rn (p, a, 2.42568747802647010E+002);
-    p = __fma_rn (p, a, 6.80381374390412930E+002);
-    p = __fma_rn (p, a, 1.25873132236024590E+003);
-    p = __fma_rn (p, a, 1.43925353963809330E+003);
-    p = __fma_rn (p, a, 8.15949420587659230E+002);
-    q = a+ 1.44881247113239940E+001;
-    q = __fma_rn (q, a, 1.01345387970210510E+002);
-    q = __fma_rn (q, a, 4.37184684964009650E+002);
-    q = __fma_rn (q, a, 1.25588209225251330E+003);
-    q = __fma_rn (q, a, 2.43864015012647630E+003);
-    q = __fma_rn (q, a, 3.10570469008816280E+003);
-    q = __fma_rn (q, a, 2.35995386578953550E+003);
-    q = __fma_rn (q, a, 8.15949420692539320E+002);
+
+    p = 5.6418956292134603E-001;
+    p = __fma_rn (p, a, 7.9573512229784757E+000);
+    p = __fma_rn (p, a, 5.4297984550299049E+001);
+    p = __fma_rn (p, a, 2.2775657465890461E+002);
+    p = __fma_rn (p, a, 6.2995529536738172E+002);
+    p = __fma_rn (p, a, 1.1508293767713837E+003);
+    p = __fma_rn (p, a, 1.3002167301542784E+003);
+    p = __fma_rn (p, a, 7.2716547570180592E+002);
+    q = a+ 1.4104035812651274E+001;
+    q = __fma_rn (q, a, 9.6740724349422138E+001);
+    q = __fma_rn (q, a, 4.1073916054746462E+002);
+    q = __fma_rn (q, a, 1.1641974580374074E+003);
+    q = __fma_rn (q, a, 2.2344896486798129E+003);
+    q = __fma_rn (q, a, 2.8166572432808462E+003);
+    q = __fma_rn (q, a, 2.1207350981593036E+003);
+    q = __fma_rn (q, a, 7.2716547619708967E+002);
+    p = p / q;
+    h = a * a;
+    l = __fma_rn (a, a, -h);
+    q = __internal_exp_kernel(-h, 0);
+    q = __fma_rn (l, -q, q);
+    p = p * q;
   } else {
-    p = 5.64189583545675280E-001;
-    p = __fma_rn (p, a, 2.04728556066513970E+000);
-    p = __fma_rn (p, a, 6.75128409662943610E+000);
-    p = __fma_rn (p, a, 1.10459345071747900E+001);
-    p = __fma_rn (p, a, 1.22570382896313600E+001);
-    p = __fma_rn (p, a, 6.01884641114116460E+000);
-    q = a+ 3.62871917534986780E+000;
-    q = __fma_rn (q, a, 1.24663395327043550E+001);
-    q = __fma_rn (q, a, 2.13927672803974790E+001);
-    q = __fma_rn (q, a, 2.72082423532866070E+001);
-    q = __fma_rn (q, a, 1.86422906830006700E+001);
-    q = __fma_rn (q, a, 6.13809834548870550E+000);
+
+    double ooa, ooasq;
+
+    ooa = 1.0 / a;
+    ooasq = ooa * ooa;
+    p = -4.0025406686930527E+005;
+    p = __fma_rn (p, ooasq, 1.4420582543942123E+005);
+    p = __fma_rn (p, ooasq, -2.7664185780951841E+004);
+    p = __fma_rn (p, ooasq, 4.1144611644767283E+003);
+    p = __fma_rn (p, ooasq, -5.8706000519209351E+002);
+    p = __fma_rn (p, ooasq, 9.1490086446323375E+001);
+    p = __fma_rn (p, ooasq, -1.6659491387740221E+001);
+    p = __fma_rn (p, ooasq, 3.7024804085481784E+000);
+    p = __fma_rn (p, ooasq, -1.0578553994424316E+000);
+    p = __fma_rn (p, ooasq, 4.2314218745087778E-001);
+    p = __fma_rn (p, ooasq, -2.8209479177354962E-001);
+    p = __fma_rn (p, ooasq, 5.6418958354775606E-001);
+    h = a * a;
+    l = __fma_rn (a, a, -h);
+    q = __internal_exp_kernel(-h, 0);
+    q = __fma_rn (l, -q, q);
+    p = p * ooa;
+    p = p * q;
   }
-  p = p / q;
-  h = a * a;
-  l = __fma_rn (a, a, -h);
-  q = __internal_exp_kernel(-h, 0);
-  q = __fma_rn (l, -q, q);
-  p = p * q;
   return p;
 }
 
 
-static double __internal_tgamma_kernel(double a)
+static __attribute__((__unused__)) double __internal_tgamma_kernel(double a)
 {
   double t;
   t = -4.42689340712524750E-010;
@@ -17636,7 +17175,7 @@ static double __internal_tgamma_kernel(double a)
 }
 
 
-static double __internal_stirling_poly(double a)
+static __attribute__((__unused__)) double __internal_stirling_poly(double a)
 {
   double x = 1.0 / a;
   double z = 0.0;
@@ -17653,7 +17192,7 @@ static double __internal_stirling_poly(double a)
   return z;
 }
 
-static double __internal_tgamma_stirling(double a)
+static __attribute__((__unused__)) double __internal_tgamma_stirling(double a)
 {
   if (a < 1.7162437695630274e+002) {
 
@@ -17696,7 +17235,7 @@ static double __internal_tgamma_stirling(double a)
   }
 }
 
-static double __cuda_tgamma(double a)
+static __attribute__((__unused__)) double __cuda_tgamma(double a)
 {
   double s, xx, x = a;
   if (__cuda___isnan(a)) {
@@ -17782,7 +17321,7 @@ static double __cuda_tgamma(double a)
   }
 }
 
-static double __internal_lgamma_pos(double a)
+static __attribute__((__unused__)) double __internal_lgamma_pos(double a)
 {
   double sum;
   double s, t;
@@ -17903,7 +17442,7 @@ static double __internal_lgamma_pos(double a)
   }
 }
 
-static double __cuda_lgamma(double a)
+static __attribute__((__unused__)) double __cuda_lgamma(double a)
 {
   double t;
   double i;
@@ -17931,7 +17470,7 @@ static double __cuda_lgamma(double a)
   return t;
 }
 
-static double __cuda_ldexp(double a, int b)
+static __attribute__((__unused__)) double __cuda_ldexp(double a, int b)
 {
   double fa = __cuda_fabs (a);
   if ((fa == 0.0) || (fa == __longlong_as_double(0x7ff0000000000000ULL)) || (!(fa <= __longlong_as_double(0x7ff0000000000000ULL)))) {
@@ -17956,13 +17495,13 @@ static double __cuda_ldexp(double a, int b)
   }
 }
 
-static double __cuda_scalbn(double a, int b)
+static __attribute__((__unused__)) double __cuda_scalbn(double a, int b)
 {
 
   return __cuda_ldexp(a, b);
 }
 
-static double __cuda_scalbln(double a, long int b)
+static __attribute__((__unused__)) double __cuda_scalbln(double a, long int b)
 {
 
 
@@ -17972,7 +17511,7 @@ static double __cuda_scalbln(double a, long int b)
   return __cuda_scalbn(a, (int)b);
 }
 
-static double __cuda_frexp(double a, int *b)
+static __attribute__((__unused__)) double __cuda_frexp(double a, int *b)
 {
   double fa = __cuda_fabs(a);
   unsigned int expo;
@@ -17997,7 +17536,7 @@ static double __cuda_frexp(double a, int *b)
   return a;
 }
 
-static double __cuda_modf(double a, double *b)
+static __attribute__((__unused__)) double __cuda_modf(double a, double *b)
 {
   double t;
   if (__cuda___finite(a)) {
@@ -18015,7 +17554,7 @@ static double __cuda_modf(double a, double *b)
   }
 }
 
-static double __cuda_fmod(double a, double b)
+static __attribute__((__unused__)) double __cuda_fmod(double a, double b)
 {
   double orig_a = a;
   double orig_b = b;
@@ -18058,7 +17597,7 @@ static double __cuda_fmod(double a, double b)
   }
 }
 
-static double __cuda_remainder(double a, double b)
+static __attribute__((__unused__)) double __cuda_remainder(double a, double b)
 {
   double orig_a;
   double twoa = 0.0;
@@ -18115,7 +17654,7 @@ static double __cuda_remainder(double a, double b)
   return a;
 }
 
-static double __cuda_remquo(double a, double b, int *c)
+static __attribute__((__unused__)) double __cuda_remquo(double a, double b, int *c)
 {
   double orig_a;
   double twoa = 0.0;
@@ -18181,7 +17720,7 @@ static double __cuda_remquo(double a, double b, int *c)
   return a;
 }
 
-static double __cuda_nextafter(double a, double b)
+static __attribute__((__unused__)) double __cuda_nextafter(double a, double b)
 {
   unsigned long long int ia;
   unsigned long long int ib;
@@ -18200,7 +17739,7 @@ static double __cuda_nextafter(double a, double b)
   return a;
 }
 
-static double __cuda_nan(const char *s)
+static __attribute__((__unused__)) double __cuda_nan(const char *s)
 {
   unsigned long long i = 0;
   int c;
@@ -18269,7 +17808,7 @@ static double __cuda_nan(const char *s)
   return __longlong_as_double(i);
 }
 
-static double __cuda_round(double a)
+static __attribute__((__unused__)) double __cuda_round(double a)
 {
   double fa = __cuda_fabs(a);
   if (fa > 4503599627370496.0) {
@@ -18281,7 +17820,7 @@ static double __cuda_round(double a)
   }
 }
 
-static long long int __cuda_llround(double a)
+static __attribute__((__unused__)) long long int __cuda_llround(double a)
 {
 
   if (a >= 9223372036854775807.0) return 0x7fffffffffffffffLL;
@@ -18290,14 +17829,14 @@ static long long int __cuda_llround(double a)
   return (long long int)(__cuda_round(a));
 }
 
-static long int __cuda_lround(double a)
+static __attribute__((__unused__)) long int __cuda_lround(double a)
 {
 
   return (long int)(__cuda_llround(a));
-# 2326 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
+# 2336 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
 }
 
-static double __cuda_fdim(double a, double b)
+static __attribute__((__unused__)) double __cuda_fdim(double a, double b)
 {
   double t;
   t = a - b;
@@ -18307,7 +17846,7 @@ static double __cuda_fdim(double a, double b)
   return t;
 }
 
-static int __cuda_ilogb(double a)
+static __attribute__((__unused__)) int __cuda_ilogb(double a)
 {
   unsigned long long int i;
   unsigned int ihi;
@@ -18331,7 +17870,7 @@ static int __cuda_ilogb(double a)
   }
 }
 
-static double __cuda_logb(double a)
+static __attribute__((__unused__)) double __cuda_logb(double a)
 {
   unsigned long long int i;
   unsigned int ihi;
@@ -18355,28 +17894,29 @@ static double __cuda_logb(double a)
   }
 }
 
-static double __cuda_fma(double a, double b, double c)
+static __attribute__((__unused__)) double __cuda_fma(double a, double b, double c)
 {
   return __fma_rn(a, b, c);
 }
-# 3735 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
-# 94 "/home/normal/cuda/bin/../include/common_functions.h" 2
-# 227 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00007716_00000000-1_dxtc.cudafe1.stub.c" 2
-struct __T20 {const uint *__par0;const uint *__par1;uint2 *__par2;int __dummy_field;volatile char __dummy[4];};
-static void __sti____cudaRegisterAll_39_tmpxft_00007716_00000000_7_dxtc_cpp1_ii_b480a5a9(void) __attribute__((__constructor__));
-void __device_stub__Z8compressPKjS0_P5uint2(const uint *__par0, const uint *__par1, uint2 *__par2){auto struct __T20 *__T2321;
-char __[256]; *(char**)&__T2321 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T2321->__par0 - (size_t)__T2321) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T2321->__par1 - (size_t)__T2321) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T2321->__par2 - (size_t)__T2321) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(const uint *, const uint *, uint2 *))compress__entry)); (void)cudaLaunch(((char *)((void ( *)(const uint *, const uint *, uint2 *))compress__entry))); };}
+# 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
+# 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
+# 6 "/tmp/tmpxft_0000641b_00000000-1_dxtc.cudafe1.stub.c" 2
+
+
+
+
+struct __T20 {const uint *__par0;const uint *__par1;uint2 *__par2;int __dummy_field;};
+static void __sti____cudaRegisterAll_39_tmpxft_0000641b_00000000_7_dxtc_cpp1_ii_b480a5a9(void) __attribute__((__constructor__));
+void __device_stub__Z8compressPKjS0_P5uint2(const uint *__par0, const uint *__par1, uint2 *__par2){auto struct __T20 *__T2328;
+*(void**)(void*)&__T2328 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T2328->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T2328->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T2328->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(const uint *, const uint *, uint2 *))compress__entry)); (void)cudaLaunch(((char *)((void ( *)(const uint *, const uint *, uint2 *))compress__entry))); };}
 
 }
-void compress__entry( const uint * __cuda_0,const uint * __cuda_1,uint2 * __cuda_2)
-{__device_stub__Z8compressPKjS0_P5uint2( __cuda_0, __cuda_1, __cuda_2);}
+void compress__entry( const uint *__cuda_0,const uint *__cuda_1,uint2 *__cuda_2)
+{__device_stub__Z8compressPKjS0_P5uint2( __cuda_0,__cuda_1,__cuda_2);}
 extern "C"{
-
-
-
-
-static void __sti____cudaRegisterAll_39_tmpxft_00007716_00000000_7_dxtc_cpp1_ii_b480a5a9(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const uint *, const uint *, uint2 *))compress__entry), (char*)"_Z8compressPKjS0_P5uint2", "_Z8compressPKjS0_P5uint2", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&__shadow_kColorMetric, (char*)"kColorMetric", "kColorMetric", 0, 12, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&__shadow_alphaTable4, (char*)"alphaTable4", "alphaTable4", 0, 16, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&__shadow_alphaTable3, (char*)"alphaTable3", "alphaTable3", 0, 16, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&__shadow_prods4, (char*)"prods4", "prods4", 0, 16, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&__shadow_prods3, (char*)"prods3", "prods3", 0, 16, 1, 0);}
+# 29 "/tmp/tmpxft_0000641b_00000000-1_dxtc.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_39_tmpxft_0000641b_00000000_7_dxtc_cpp1_ii_b480a5a9(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const uint *, const uint *, uint2 *))compress__entry), (char*)"_Z8compressPKjS0_P5uint2", "_Z8compressPKjS0_P5uint2", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&kColorMetric__cuda_shadow_variable__, (char*)"kColorMetric", "kColorMetric", 0, 12, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable4__cuda_shadow_variable__, (char*)"alphaTable4", "alphaTable4", 0, 16, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable3__cuda_shadow_variable__, (char*)"alphaTable3", "alphaTable3", 0, 16, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods4__cuda_shadow_variable__, (char*)"prods4", "prods4", 0, 16, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods3__cuda_shadow_variable__, (char*)"prods3", "prods3", 0, 16, 1, 0);}
 
 }
 # 854 "dxtc.cu" 2

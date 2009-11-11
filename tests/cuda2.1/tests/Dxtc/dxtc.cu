@@ -62,7 +62,7 @@
 #if __DEVICE_EMULATION__
 #define __debugsync() __syncthreads()
 #else
-#define __debugsync()
+#define __debugsync() __syncthreads()
 #endif
 
 
@@ -678,8 +678,8 @@ int main(int argc, char** argv)
     uint w, h;
 
     // Reduce the image size so that it doesn't take so long on emulation.
-    w = W;
-    h = H;
+    w = W >> 4;
+    h = H >> 4;
 
     // Allocate input image.
     const uint memSize = w * h * 4;

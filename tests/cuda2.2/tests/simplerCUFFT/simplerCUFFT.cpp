@@ -8,11 +8,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <cufft.h>
 #include <cuda_runtime.h>
-
-typedef struct {
-	float x, y;
-} cuComplex;
 
 
 /*!
@@ -49,12 +46,14 @@ bool cuda_dft(cuComplex *Y, cuComplex *X, float scale, int N) {
 	cudaMemcpy(Y_gpu, Y, bytes, cudaMemcpyHostToDevice);
 	cudaMemcpy(X_gpu, X, bytes, cudaMemcpyHostToDevice);
 
-	cufftPlan plan;
+	cufftHandle plan;
 	cufftPlan1d(&plan, N, CUFFT_C2C, 1);
 
 	cufftExecC2C(plan, X_gpu, Y_gpu, CUFFT_FORWARD);
 
 	cufftDestroy(plan);
+
+	cudaMemcpy(Y, Y_gpu, bytes, cudaMemcpyDeviceToHost);
 
 	cudaFree(Y_gpu);
 	cudaFree(X_gpu);

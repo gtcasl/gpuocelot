@@ -157,22 +157,12 @@ namespace executive {
 		void restoreFilteredDevices();
 		
 		/*!
-			Returns the index of the selected device or -1 if no device 
+			Returns the guid of the selected device or -1 if no device 
 				is selected
 	
-			\return index of selected device or -1 if no device is selected
+			\return guid of selected device or -1 if no device is selected
 		*/
 		int getSelected() const;
-		
-		/*!
-			Returns selected device
-		*/
-		Device getSelectedDevice() const {
-			if (selectedDevice >= 0) {
-				return devices[selectedDevice];
-			}
-			throw hydrazine::Exception("No device selected");
-		}
 		
 		/*!
 			Returns the ISA of the selected device or PTX if no 

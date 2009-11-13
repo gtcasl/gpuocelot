@@ -411,6 +411,11 @@ namespace cuda
 			*/
 			bool isGlobal( const void* pointer ) const;
 
+
+			bool memcpyToSymbol( const char* symbol, const void* src, size_t count, size_t offset);
+
+			bool memcpyFromSymbol( void* dst, const char* symbol, size_t count, size_t offset);
+
 			/*!
 				\brief Launch a cuda kernel			
 				\param Pointer to the equivalent host function

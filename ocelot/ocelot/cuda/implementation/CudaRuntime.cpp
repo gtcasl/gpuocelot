@@ -1821,11 +1821,69 @@ namespace cuda
 			{
 				if( (char*)pointer == global->second )
 				{
+					report(" global symbol: '" << global->first << "', pointer " << (void *)pointer << "");
 					return true;
 				}						
 			}			
 		}		
 		return false;			
+	}
+
+
+	bool CudaRuntime::memcpyToSymbol( const char* symbol, const void* src, size_t count, size_t offset) {
+		char *dest = 0;
+		report("memcpyToSymbol(offset " << offset << ", " << count << " bytes)");
+		bool is_global = false;
+		std::string symbolName;
+		for( FatBinaryMap::const_iterator binary = _binaries.begin();
+			binary != _binaries.end(); ++binary )
+		{			
+			for( GlobalMap::const_iterator 
+				global = binary->second.globals.begin(); 
+				global != binary->second.globals.end(); ++global )
+			{
+				if( (char*)symbol == global->second )
+				{
+					symbolName = global->first;
+					is_global = true;
+					break;
+				}						
+			}			
+		}		
+		if (is_global) {
+			for( FatBinaryMap::const_iterator binary = _binaries.begin();
+				binary != _binaries.end(); ++binary )
+			{			
+				for( GlobalMap::const_iterator 
+					global = binary->second.globals.begin(); 
+					global != binary->second.globals.end(); ++global )
+				{
+					if (symbolName == global->first) {
+						dest = (char *)global->second + offset;
+						context.memcpy(dest, src, count, executive::Executive::HostToHost);
+					}					
+				}			
+			}	
+		}
+		else {
+			report(" named symbol: '" << symbol << "'");
+			dest = (char *)getSymbol(symbol) + offset;
+			context.memcpy(dest, src, count, executive::Executive::HostToHost);
+		}
+		report(" dest ptr: " << (void *)dest);
+		return true;
+	}
+
+	bool CudaRuntime::memcpyFromSymbol( void* dst, const char* symbol, size_t count, size_t offset) {
+		char *src;
+		if (isGlobal(symbol)) {
+			src = (char *)symbol + offset;
+		}
+		else {
+			src = (char *)getSymbol(symbol) + offset;
+		}
+		context.memcpy(dst, src, count, executive::Executive::HostToHost);
+		return true;
 	}
 	
 	cudaStream_t CudaRuntime::createStream()

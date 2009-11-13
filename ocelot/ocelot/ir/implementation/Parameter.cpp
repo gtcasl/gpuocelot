@@ -130,7 +130,7 @@ std::string ir::Parameter::toString() const {
 		stream << "." << PTXInstruction::toString( vector );
 	}
 	stream << " ." << PTXOperand::toString( type ) << " " << name;
-	if (arrayValues.size() > 1) {
+	if (arrayValues.size() > 1 && vector == ir::PTXOperand::v1) {
 		stream << "[" << arrayValues.size() << "]";
 	}
 	return stream.str();

@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003864_00000000-4_main.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003864_00000000-4_main.cudafe1.cpp"
 # 1 "main.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 3
@@ -1684,37 +1684,23 @@ extern "C" tm *getdate(const char *);
 # 413 "/usr/include/time.h" 3
 extern "C" int getdate_r(const char *__restrict__, tm *__restrict__);
 # 43 "/usr/include/string.h" 3
-extern "C" { extern inline void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" __attribute__((__weak__)) void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
 
 
-extern "C" { extern inline void *memmove(void *, const void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" void *memmove(void *, const void *, size_t) throw();
 # 56 "/usr/include/string.h" 3
 extern "C" void *memccpy(void *__restrict__, const void *__restrict__, int, size_t) throw();
 # 64 "/usr/include/string.h" 3
-extern "C" { extern inline void *memset(void *, int, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
 
 
 extern "C" int memcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
 # 74 "/usr/include/string.h" 3
-extern inline void *memchr(void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern void *memchr(void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__));
 
-extern inline const void *memchr(const void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-
-
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memchr(void *__s, int __c, size_t __n) throw()
-{
-return __builtin_memchr(__s, __c, __n);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const void *memchr(const void *__s, int __c, size_t __n) throw()
-{
-return __builtin_memchr(__s, __c, __n);
-}
+extern const void *memchr(const void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__));
 # 103 "/usr/include/string.h" 3
 extern void *rawmemchr(void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
 
@@ -1724,18 +1710,18 @@ extern void *memrchr(void *, int, size_t) throw() __asm__("memrchr") __attribute
 
 extern const void *memrchr(const void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
 # 127 "/usr/include/string.h" 3
-extern "C" { extern inline char *strcpy(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *strcpy(char *__restrict__, const char *__restrict__) throw();
 
 
-extern "C" { extern inline char *strncpy(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *strncpy(char *__restrict__, const char *__restrict__, size_t) throw();
 
 
 
 
-extern "C" { extern inline char *strcat(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *strcat(char *__restrict__, const char *__restrict__) throw();
 
 
-extern "C" { extern inline char *strncat(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *strncat(char *__restrict__, const char *__restrict__, size_t) throw();
 
 
 
@@ -1760,41 +1746,13 @@ extern "C" char *strdup(const char *) throw() __attribute__((__malloc__));
 # 181 "/usr/include/string.h" 3
 extern "C" char *strndup(const char *, size_t) throw() __attribute__((__malloc__));
 # 213 "/usr/include/string.h" 3
-extern inline char *strchr(char *, int) throw() __asm__("strchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern char *strchr(char *, int) throw() __asm__("strchr") __attribute__((__pure__));
 
-extern inline const char *strchr(const char *, int) throw() __asm__("strchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-
-
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strchr(char *__s, int __c) throw()
-{
-return __builtin_strchr(__s, __c);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strchr(const char *__s, int __c) throw()
-{
-return __builtin_strchr(__s, __c);
-}
+extern const char *strchr(const char *, int) throw() __asm__("strchr") __attribute__((__pure__));
 # 240 "/usr/include/string.h" 3
-extern inline char *strrchr(char *, int) throw() __asm__("strrchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern char *strrchr(char *, int) throw() __asm__("strrchr") __attribute__((__pure__));
 
-extern inline const char *strrchr(const char *, int) throw() __asm__("strrchr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-
-
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strrchr(char *__s, int __c) throw()
-{
-return __builtin_strrchr(__s, __c);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strrchr(const char *__s, int __c) throw()
-{
-return __builtin_strrchr(__s, __c);
-}
+extern const char *strrchr(const char *, int) throw() __asm__("strrchr") __attribute__((__pure__));
 # 269 "/usr/include/string.h" 3
 extern char *strchrnul(char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
 
@@ -1806,38 +1764,13 @@ extern "C" size_t strcspn(const char *, const char *) throw() __attribute__((__p
 
 extern "C" size_t strspn(const char *, const char *) throw() __attribute__((__pure__));
 # 292 "/usr/include/string.h" 3
-extern inline char *strpbrk(char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern char *strpbrk(char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__));
 
-extern inline const char *strpbrk(const char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-
-
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strpbrk(char *__s, const char *__accept) throw()
-{
-return __builtin_strpbrk(__s, __accept);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strpbrk(const char *__s, const char *__accept) throw()
-{
-return __builtin_strpbrk(__s, __accept);
-}
+extern const char *strpbrk(const char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__));
 # 319 "/usr/include/string.h" 3
-extern inline char *strstr(char *, const char *) throw() __asm__("strstr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern char *strstr(char *, const char *) throw() __asm__("strstr") __attribute__((__pure__));
 
-extern inline const char *strstr(const char *, const char *) throw() __asm__("strstr") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-# 327 "/usr/include/string.h" 3
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strstr(char *__haystack, const char *__needle) throw()
-{
-return __builtin_strstr(__haystack, __needle);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *strstr(const char *__haystack, const char *__needle) throw()
-{
-return __builtin_strstr(__haystack, __needle);
-}
+extern const char *strstr(const char *, const char *) throw() __asm__("strstr") __attribute__((__pure__));
 # 346 "/usr/include/string.h" 3
 extern "C" char *strtok(char *__restrict__, const char *__restrict__) throw();
 # 352 "/usr/include/string.h" 3
@@ -1857,7 +1790,7 @@ extern "C" void *memmem(const void *, size_t, const void *, size_t) throw() __at
 extern "C" void *__mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
-extern "C" { extern inline void *mempcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" void *mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 # 397 "/usr/include/string.h" 3
 extern "C" size_t strlen(const char *) throw() __attribute__((__pure__));
 # 404 "/usr/include/string.h" 3
@@ -1873,50 +1806,22 @@ extern "C" void __bzero(void *, size_t) throw();
 
 
 
-extern "C" { extern inline void bcopy(const void *, void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" void bcopy(const void *, void *, size_t) throw();
 
 
 
-extern "C" { extern inline void bzero(void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" void bzero(void *, size_t) throw();
 
 
 extern "C" int bcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
 # 467 "/usr/include/string.h" 3
-extern inline char *index(char *, int) throw() __asm__("index") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern char *index(char *, int) throw() __asm__("index") __attribute__((__pure__));
 
-extern inline const char *index(const char *, int) throw() __asm__("index") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-
-
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *index(char *__s, int __c) throw()
-{
-return __builtin_index(__s, __c);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *index(const char *__s, int __c) throw()
-{
-return __builtin_index(__s, __c);
-}
+extern const char *index(const char *, int) throw() __asm__("index") __attribute__((__pure__));
 # 495 "/usr/include/string.h" 3
-extern inline char *rindex(char *, int) throw() __asm__("rindex") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
+extern char *rindex(char *, int) throw() __asm__("rindex") __attribute__((__pure__));
 
-extern inline const char *rindex(const char *, int) throw() __asm__("rindex") __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__));
-
-
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *rindex(char *__s, int __c) throw()
-{
-return __builtin_rindex(__s, __c);
-}
-
-
-inline __attribute__((__pure__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) const char *rindex(const char *__s, int __c) throw()
-{
-return __builtin_rindex(__s, __c);
-}
+extern const char *rindex(const char *, int) throw() __asm__("rindex") __attribute__((__pure__));
 # 521 "/usr/include/string.h" 3
 extern "C" int ffs(int) throw() __attribute__((__const__));
 
@@ -1946,7 +1851,7 @@ extern "C" char *strsignal(int) throw();
 
 extern "C" char *__stpcpy(char *__restrict__, const char *__restrict__) throw();
 
-extern "C" { extern inline char *stpcpy(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *stpcpy(char *__restrict__, const char *__restrict__) throw();
 
 
 
@@ -1954,7 +1859,7 @@ extern "C" { extern inline char *stpcpy(char *__restrict__, const char *__restri
 extern "C" char *__stpncpy(char *__restrict__, const char *__restrict__, size_t) throw();
 
 
-extern "C" { extern inline char *stpncpy(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *stpncpy(char *__restrict__, const char *__restrict__, size_t) throw();
 # 584 "/usr/include/string.h" 3
 extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
 
@@ -1968,109 +1873,14 @@ extern "C" void *memfrob(void *, size_t) throw();
 extern char *basename(char *) throw() __asm__("basename");
 
 extern const char *basename(const char *) throw() __asm__("basename");
-# 23 "/usr/include/bits/string3.h" 3
-extern "C" void __warn_memset_zero_len();
-# 49 "/usr/include/bits/string3.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memcpy(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___memcpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memmove(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___memmove_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *mempcpy(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___mempcpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-# 78 "/usr/include/bits/string3.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memset(void *__dest, int __ch, size_t __len) throw()
-{
-if ((__builtin_constant_p(__len)) && (__len == (0)))
-{
-__warn_memset_zero_len();
-return __dest;
-}
-return __builtin___memset_chk(__dest, __ch, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void bcopy(const void *__restrict__ __src, void *__restrict__ __dest, size_t __len) throw()
-
-{
-(void)__builtin___memmove_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void bzero(void *__dest, size_t __len) throw()
-{
-(void)__builtin___memset_chk(__dest, '\000', __len, __builtin_object_size(__dest, 0));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strcpy(char *__restrict__ __dest, const char *__restrict__ __src) throw()
-{
-return __builtin___strcpy_chk(__dest, __src, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *stpcpy(char *__restrict__ __dest, const char *__restrict__ __src) throw()
-{
-return __builtin___stpcpy_chk(__dest, __src, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strncpy(char *__restrict__ __dest, const char *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___strncpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-extern "C" char *__stpncpy_chk(char *, const char *, size_t, size_t) throw();
-
-extern "C" char *__stpncpy_alias(char *, const char *, size_t) throw() __asm__("stpncpy");
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *stpncpy(char *__dest, const char *__src, size_t __n) throw()
-{
-if ((__builtin_object_size(__dest, 2 > 1) != ((size_t)(-1))) && ((!(__builtin_constant_p(__n))) || (__n <= __builtin_object_size(__dest, 2 > 1)))) {
-
-return __stpncpy_chk(__dest, __src, __n, __builtin_object_size(__dest, 2 > 1)); }
-return __stpncpy_alias(__dest, __src, __n);
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strcat(char *__restrict__ __dest, const char *__restrict__ __src) throw()
-{
-return __builtin___strcat_chk(__dest, __src, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strncat(char *__restrict__ __dest, const char *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___strncat_chk(__dest, __src, __len, __builtin_object_size(__dest, 2 > 1));
-} }
 # 56 "/usr/local/cuda/bin/../include/common_functions.h"
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
+
+
+extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
+
+
+extern "C" __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw();
 # 65 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 
@@ -2406,7 +2216,15 @@ extern "C" __attribute__((__weak__)) int __isnanf(float) throw() __attribute__((
 extern "C" __attribute__((__weak__)) int __finite(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __finitef(float) throw() __attribute__((__const__));
-# 420 "/usr/local/cuda/bin/../include/math_functions.h"
+
+extern "C" __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__const__));
+
+
+
+
+extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__const__));
+
+
 extern "C" __attribute__((__weak__)) double fma(double, double, double) throw();
 
 extern "C" __attribute__((__weak__)) float fmaf(float, float, float) throw();
@@ -2619,7 +2437,7 @@ extern "C" int __fpclassify(double) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline int __signbit(double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__const__));
 
 
 
@@ -2833,7 +2651,7 @@ extern "C" int __fpclassifyf(float) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline int __signbitf(float) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__const__));
 
 
 
@@ -3047,7 +2865,7 @@ extern "C" int __fpclassifyl(long double) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline int __signbitl(long double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
 
 
 
@@ -3100,24 +2918,6 @@ double retval;
 
 
 extern "C" int matherr(__exception *) throw();
-# 36 "/usr/include/bits/mathinline.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitf(float __x) throw()
-{
-auto union { float __f; int __i; } __u = {__f: __x};
-return (__u.__i) < 0;
-} }
-
-extern "C" { inline __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbit(double __x) throw()
-{
-auto union { double __d; int __i[2]; } __u = {__d: __x};
-return ((__u.__i)[1]) < 0;
-} }
-
-extern "C" { inline __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitl(long double __x) throw()
-{
-auto union { long double __l; int __i[3]; } __u = {__l: __x};
-return (((__u.__i)[2]) & 32768) != 0;
-} }
 # 67 "/usr/include/bits/waitstatus.h" 3
 extern "C" { union wait {
 
@@ -3167,15 +2967,15 @@ extern "C" size_t __ctype_get_mb_cur_max() throw();
 
 
 
-extern "C" { extern inline double atof(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" double atof(const char *) throw() __attribute__((__pure__));
 
 
-extern "C" { extern inline int atoi(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" int atoi(const char *) throw() __attribute__((__pure__));
 
 
-extern "C" { extern inline long atol(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" long atol(const char *) throw() __attribute__((__pure__));
 # 158 "/usr/include/stdlib.h" 3
-extern "C" { extern inline long long atoll(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" long long atoll(const char *) throw() __attribute__((__pure__));
 # 165 "/usr/include/stdlib.h" 3
 extern "C" double strtod(const char *__restrict__, char **__restrict__) throw();
 # 173 "/usr/include/stdlib.h" 3
@@ -3226,26 +3026,6 @@ extern "C" float strtof_l(const char *__restrict__, char **__restrict__, __local
 
 
 extern "C" long double strtold_l(const char *__restrict__, char **__restrict__, __locale_t) throw();
-# 279 "/usr/include/stdlib.h" 3
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) double atof(const char *__nptr) throw()
-{
-return strtod(__nptr, (char **)__null);
-} }
-
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) int atoi(const char *__nptr) throw()
-{
-return (int)strtol(__nptr, (char **)__null, 10);
-} }
-
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) long atol(const char *__nptr) throw()
-{
-return strtol(__nptr, (char **)__null, 10);
-} }
-# 298 "/usr/include/stdlib.h" 3
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) long long atoll(const char *__nptr) throw()
-{
-return strtoll(__nptr, (char **)__null, 10);
-} }
 # 311 "/usr/include/stdlib.h" 3
 extern "C" char *l64a(long) throw();
 
@@ -3369,32 +3149,13 @@ extern "C" int select(int, fd_set *__restrict__, fd_set *__restrict__, fd_set *_
 # 121 "/usr/include/sys/select.h" 3
 extern "C" int pselect(int, fd_set *__restrict__, fd_set *__restrict__, fd_set *__restrict__, const timespec *__restrict__, const __sigset_t *__restrict__);
 # 31 "/usr/include/sys/sysmacros.h" 3
-extern "C" { extern inline unsigned gnu_dev_major(unsigned long long) throw() __attribute__((__gnu_inline__)); }
+extern "C" unsigned gnu_dev_major(unsigned long long) throw();
 
 
-extern "C" { extern inline unsigned gnu_dev_minor(unsigned long long) throw() __attribute__((__gnu_inline__)); }
+extern "C" unsigned gnu_dev_minor(unsigned long long) throw();
 
 
-extern "C" { extern inline unsigned long long gnu_dev_makedev(unsigned, unsigned) throw() __attribute__((__gnu_inline__)); }
-# 43 "/usr/include/sys/sysmacros.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) unsigned gnu_dev_major(unsigned long long __dev) throw()
-{
-return ((__dev >> 8) & (4095)) | (((unsigned)(__dev >> 32)) & (~4095));
-} }
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) unsigned gnu_dev_minor(unsigned long long __dev) throw()
-{
-return (__dev & (255)) | (((unsigned)(__dev >> 12)) & (~255));
-} }
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) unsigned long long gnu_dev_makedev(unsigned __major, unsigned __minor) throw()
-{
-return (((__minor & (255)) | ((__major & (4095)) << 8)) | (((unsigned long long)(__minor & (~255))) << 12)) | (((unsigned long long)(__major & (~4095))) << 32);
-
-
-} }
+extern "C" unsigned long long gnu_dev_makedev(unsigned, unsigned) throw();
 # 228 "/usr/include/sys/types.h" 3
 extern "C" { typedef __blksize_t blksize_t; }
 # 235 "/usr/include/sys/types.h" 3
@@ -3711,7 +3472,7 @@ extern "C" int system(const char *);
 # 673 "/usr/include/stdlib.h" 3
 extern "C" char *canonicalize_file_name(const char *) throw();
 # 683 "/usr/include/stdlib.h" 3
-extern "C" { extern inline char *realpath(const char *__restrict__, char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *realpath(const char *__restrict__, char *__restrict__) throw();
 # 691 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_fn_t)(const void *, const void *); }
 
@@ -3776,14 +3537,14 @@ extern "C" int mbtowc(wchar_t *__restrict__, const char *__restrict__, size_t) t
 
 
 
-extern "C" { extern inline int wctomb(char *, wchar_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int wctomb(char *, wchar_t) throw();
 
 
 
-extern "C" { extern inline size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
 
 
-extern "C" { extern inline size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
 # 833 "/usr/include/stdlib.h" 3
 extern "C" int rpmatch(const char *) throw();
 # 844 "/usr/include/stdlib.h" 3
@@ -3804,119 +3565,13 @@ extern "C" int unlockpt(int) throw();
 
 extern "C" char *ptsname(int) throw();
 # 885 "/usr/include/stdlib.h" 3
-extern "C" { extern inline int ptsname_r(int, char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int ptsname_r(int, char *, size_t) throw();
 
 
 
 extern "C" int getpt();
 # 896 "/usr/include/stdlib.h" 3
 extern "C" int getloadavg(double [], int) throw();
-# 24 "/usr/include/bits/stdlib.h" 3
-extern "C" char *__realpath_chk(const char *__restrict__, char *__restrict__, size_t) throw();
-
-
-extern "C" char *__realpath_alias(const char *__restrict__, char *__restrict__) throw() __asm__("realpath");
-
-
-extern "C" char *__realpath_chk_warn(const char *__restrict__, char *__restrict__, size_t) throw() __asm__("__realpath_chk");
-# 38 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *realpath(const char *__restrict__ __name, char *__restrict__ __resolved) throw()
-{
-if (__builtin_object_size(__resolved, 2 > 1) != ((size_t)(-1)))
-{
-
-if (__builtin_object_size(__resolved, 2 > 1) < (4096)) {
-return __realpath_chk_warn(__name, __resolved, __builtin_object_size(__resolved, 2 > 1)); }
-
-return __realpath_chk(__name, __resolved, __builtin_object_size(__resolved, 2 > 1));
-}
-
-return __realpath_alias(__name, __resolved);
-} }
-
-
-extern "C" int __ptsname_r_chk(int, char *, size_t, size_t) throw();
-
-extern "C" int __ptsname_r_alias(int, char *, size_t) throw() __asm__("ptsname_r");
-
-
-extern "C" int __ptsname_r_chk_warn(int, char *, size_t, size_t) throw() __asm__("__ptsname_r_chk");
-# 65 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int ptsname_r(int __fd, char *__buf, size_t __buflen) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__buflen))) {
-return __ptsname_r_chk(__fd, __buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-if (__buflen > __builtin_object_size(__buf, 2 > 1)) {
-return __ptsname_r_chk_warn(__fd, __buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __ptsname_r_alias(__fd, __buf, __buflen);
-} }
-
-
-extern "C" int __wctomb_chk(char *, wchar_t, size_t) throw();
-
-extern "C" int __wctomb_alias(char *, wchar_t) throw() __asm__("wctomb");
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int wctomb(char *__s, wchar_t __wchar) throw()
-{
-# 93 "/usr/include/bits/stdlib.h" 3
-if ((__builtin_object_size(__s, 2 > 1) != ((size_t)(-1))) && ((16) > __builtin_object_size(__s, 2 > 1))) {
-return __wctomb_chk(__s, __wchar, __builtin_object_size(__s, 2 > 1)); }
-return __wctomb_alias(__s, __wchar);
-} }
-
-
-extern "C" size_t __mbstowcs_chk(wchar_t *__restrict__, const char *__restrict__, size_t, size_t) throw();
-
-
-extern "C" size_t __mbstowcs_alias(wchar_t *__restrict__, const char *__restrict__, size_t) throw() __asm__("mbstowcs");
-
-
-
-extern "C" size_t __mbstowcs_chk_warn(wchar_t *__restrict__, const char *__restrict__, size_t, size_t) throw() __asm__("__mbstowcs_chk");
-# 114 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t mbstowcs(wchar_t *__restrict__ __dst, const char *__restrict__ __src, size_t __len) throw()
-
-{
-if (__builtin_object_size(__dst, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __mbstowcs_chk(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1) / sizeof(wchar_t)); }
-
-
-if (__len > (__builtin_object_size(__dst, 2 > 1) / sizeof(wchar_t))) {
-return __mbstowcs_chk_warn(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1) / sizeof(wchar_t)); }
-
-}
-return __mbstowcs_alias(__dst, __src, __len);
-} }
-
-
-extern "C" size_t __wcstombs_chk(char *__restrict__, const wchar_t *__restrict__, size_t, size_t) throw();
-
-
-extern "C" size_t __wcstombs_alias(char *__restrict__, const wchar_t *__restrict__, size_t) throw() __asm__("wcstombs");
-
-
-
-extern "C" size_t __wcstombs_chk_warn(char *__restrict__, const wchar_t *__restrict__, size_t, size_t) throw() __asm__("__wcstombs_chk");
-# 145 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t wcstombs(char *__restrict__ __dst, const wchar_t *__restrict__ __src, size_t __len) throw()
-
-{
-if (__builtin_object_size(__dst, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __wcstombs_chk(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1)); }
-if (__len > __builtin_object_size(__dst, 2 > 1)) {
-return __wcstombs_chk_warn(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1)); }
-}
-return __wcstombs_alias(__dst, __src, __len);
-} }
 # 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
@@ -5029,7 +4684,9 @@ using __gnu_cxx::strtoull;
 using __gnu_cxx::strtold;
 
 }
-# 444 "/usr/local/cuda/bin/../include/math_functions.h"
+# 442 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
+
 extern "C" __attribute__((__weak__)) int __isinfl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanl(long double) throw() __attribute__((__const__));
@@ -5981,36 +5638,36 @@ extern "C" void setbuffer(FILE *__restrict__, char *__restrict__, size_t) throw(
 
 extern "C" void setlinebuf(FILE *) throw();
 # 333 "/usr/include/stdio.h" 3
-extern "C" { extern inline int fprintf(FILE *__restrict__, const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int fprintf(FILE *__restrict__, const char *__restrict__, ...);
 # 339 "/usr/include/stdio.h" 3
-extern "C" { extern inline int printf(const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int printf(const char *__restrict__, ...);
 
-extern "C" { extern inline int sprintf(char *__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int sprintf(char *__restrict__, const char *__restrict__, ...) throw();
 # 348 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vfprintf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vfprintf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
 # 354 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vprintf(const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vprintf(const char *__restrict__, __gnuc_va_list);
 
-extern "C" { extern inline int vsprintf(char *__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vsprintf(char *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
 # 363 "/usr/include/stdio.h" 3
-extern "C" { extern inline int snprintf(char *__restrict__, size_t, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int snprintf(char *__restrict__, size_t, const char *__restrict__, ...) throw();
 
 
 
-extern "C" { extern inline int vsnprintf(char *__restrict__, size_t, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vsnprintf(char *__restrict__, size_t, const char *__restrict__, __gnuc_va_list) throw();
 # 376 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vasprintf(char **__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vasprintf(char **__restrict__, const char *__restrict__, __gnuc_va_list) throw();
 
 
-extern "C" { extern inline int __asprintf(char **__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int __asprintf(char **__restrict__, const char *__restrict__, ...) throw();
 
 
-extern "C" { extern inline int asprintf(char **__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int asprintf(char **__restrict__, const char *__restrict__, ...) throw();
 # 394 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vdprintf(int, const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vdprintf(int, const char *__restrict__, __gnuc_va_list);
 
 
-extern "C" { extern inline int dprintf(int, const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int dprintf(int, const char *__restrict__, ...);
 # 407 "/usr/include/stdio.h" 3
 extern "C" int fscanf(FILE *__restrict__, const char *__restrict__, ...);
 # 413 "/usr/include/stdio.h" 3
@@ -6029,40 +5686,40 @@ extern "C" int vsscanf(const char *__restrict__, const char *__restrict__, __gnu
 extern "C" int fgetc(FILE *);
 extern "C" int getc(FILE *);
 # 520 "/usr/include/stdio.h" 3
-extern "C" { extern inline int getchar() __attribute__((__gnu_inline__)); }
+extern "C" int getchar();
 # 532 "/usr/include/stdio.h" 3
-extern "C" { extern inline int getc_unlocked(FILE *) __attribute__((__gnu_inline__)); }
-extern "C" { extern inline int getchar_unlocked() __attribute__((__gnu_inline__)); }
+extern "C" int getc_unlocked(FILE *);
+extern "C" int getchar_unlocked();
 # 543 "/usr/include/stdio.h" 3
-extern "C" { extern inline int fgetc_unlocked(FILE *) __attribute__((__gnu_inline__)); }
+extern "C" int fgetc_unlocked(FILE *);
 # 555 "/usr/include/stdio.h" 3
 extern "C" int fputc(int, FILE *);
 extern "C" int putc(int, FILE *);
 # 562 "/usr/include/stdio.h" 3
-extern "C" { extern inline int putchar(int) __attribute__((__gnu_inline__)); }
+extern "C" int putchar(int);
 # 576 "/usr/include/stdio.h" 3
-extern "C" { extern inline int fputc_unlocked(int, FILE *) __attribute__((__gnu_inline__)); }
+extern "C" int fputc_unlocked(int, FILE *);
 # 584 "/usr/include/stdio.h" 3
-extern "C" { extern inline int putc_unlocked(int, FILE *) __attribute__((__gnu_inline__)); }
-extern "C" { extern inline int putchar_unlocked(int) __attribute__((__gnu_inline__)); }
+extern "C" int putc_unlocked(int, FILE *);
+extern "C" int putchar_unlocked(int);
 # 592 "/usr/include/stdio.h" 3
 extern "C" int getw(FILE *);
 
 
 extern "C" int putw(int, FILE *);
 # 604 "/usr/include/stdio.h" 3
-extern "C" { extern inline char *fgets(char *__restrict__, int, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *fgets(char *__restrict__, int, FILE *__restrict__);
 # 612 "/usr/include/stdio.h" 3
-extern "C" { extern inline char *gets(char *) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *gets(char *);
 # 622 "/usr/include/stdio.h" 3
-extern "C" { extern inline char *fgets_unlocked(char *__restrict__, int, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *fgets_unlocked(char *__restrict__, int, FILE *__restrict__);
 # 638 "/usr/include/stdio.h" 3
 extern "C" __ssize_t __getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
 
 
 extern "C" __ssize_t getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
 # 651 "/usr/include/stdio.h" 3
-extern "C" { extern inline __ssize_t getline(char **__restrict__, size_t *__restrict__, FILE *__restrict__) __attribute__((__gnu_inline__)); }
+extern "C" __ssize_t getline(char **__restrict__, size_t *__restrict__, FILE *__restrict__);
 # 662 "/usr/include/stdio.h" 3
 extern "C" int fputs(const char *__restrict__, FILE *__restrict__);
 # 668 "/usr/include/stdio.h" 3
@@ -6070,13 +5727,13 @@ extern "C" int puts(const char *);
 # 675 "/usr/include/stdio.h" 3
 extern "C" int ungetc(int, FILE *);
 # 682 "/usr/include/stdio.h" 3
-extern "C" { extern inline size_t fread(void *__restrict__, size_t, size_t, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" size_t fread(void *__restrict__, size_t, size_t, FILE *__restrict__);
 # 688 "/usr/include/stdio.h" 3
 extern "C" size_t fwrite(const void *__restrict__, size_t, size_t, FILE *__restrict__);
 # 699 "/usr/include/stdio.h" 3
 extern "C" int fputs_unlocked(const char *__restrict__, FILE *__restrict__);
 # 710 "/usr/include/stdio.h" 3
-extern "C" { extern inline size_t fread_unlocked(void *__restrict__, size_t, size_t, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" size_t fread_unlocked(void *__restrict__, size_t, size_t, FILE *__restrict__);
 
 extern "C" size_t fwrite_unlocked(const void *__restrict__, size_t, size_t, FILE *__restrict__);
 # 722 "/usr/include/stdio.h" 3
@@ -6124,8 +5781,8 @@ extern "C" int ferror(FILE *) throw();
 
 
 extern "C" void clearerr_unlocked(FILE *) throw();
-extern "C" { extern inline int feof_unlocked(FILE *) throw() __attribute__((__gnu_inline__)); }
-extern "C" { extern inline int ferror_unlocked(FILE *) throw() __attribute__((__gnu_inline__)); }
+extern "C" int feof_unlocked(FILE *) throw();
+extern "C" int ferror_unlocked(FILE *) throw();
 # 819 "/usr/include/stdio.h" 3
 extern "C" void perror(const char *);
 # 27 "/usr/include/bits/sys_errlist.h" 3
@@ -6157,10 +5814,10 @@ extern "C" char *cuserid(char *);
 struct obstack;
 
 
-extern "C" { extern inline int obstack_printf(obstack *__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int obstack_printf(obstack *__restrict__, const char *__restrict__, ...) throw();
 
 
-extern "C" { extern inline int obstack_vprintf(obstack *__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int obstack_vprintf(obstack *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
 # 886 "/usr/include/stdio.h" 3
 extern "C" void flockfile(FILE *) throw();
 
@@ -6170,342 +5827,6 @@ extern "C" int ftrylockfile(FILE *) throw();
 
 
 extern "C" void funlockfile(FILE *) throw();
-# 45 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int getchar()
-{
-return _IO_getc(stdin);
-} }
-# 54 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int fgetc_unlocked(FILE *__fp)
-{
-return (__builtin_expect((__fp->_IO_read_ptr) >= (__fp->_IO_read_end), 0)) ? __uflow(__fp) : (*((unsigned char *)((__fp->_IO_read_ptr)++)));
-} }
-# 64 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int getc_unlocked(FILE *__fp)
-{
-return (__builtin_expect((__fp->_IO_read_ptr) >= (__fp->_IO_read_end), 0)) ? __uflow(__fp) : (*((unsigned char *)((__fp->_IO_read_ptr)++)));
-} }
-
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) int getchar_unlocked()
-{
-return (__builtin_expect((stdin->_IO_read_ptr) >= (stdin->_IO_read_end), 0)) ? __uflow(stdin) : (*((unsigned char *)((stdin->_IO_read_ptr)++)));
-} }
-# 80 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int putchar(int __c)
-{
-return _IO_putc(__c, stdout);
-} }
-# 89 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int fputc_unlocked(int __c, FILE *__stream)
-{
-return (__builtin_expect((__stream->_IO_write_ptr) >= (__stream->_IO_write_end), 0)) ? __overflow(__stream, (unsigned char)__c) : ((unsigned char)((*((__stream->_IO_write_ptr)++)) = __c));
-} }
-# 99 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int putc_unlocked(int __c, FILE *__stream)
-{
-return (__builtin_expect((__stream->_IO_write_ptr) >= (__stream->_IO_write_end), 0)) ? __overflow(__stream, (unsigned char)__c) : ((unsigned char)((*((__stream->_IO_write_ptr)++)) = __c));
-} }
-
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) int putchar_unlocked(int __c)
-{
-return (__builtin_expect((stdout->_IO_write_ptr) >= (stdout->_IO_write_end), 0)) ? __overflow(stdout, (unsigned char)__c) : ((unsigned char)((*((stdout->_IO_write_ptr)++)) = __c));
-} }
-# 116 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) __ssize_t getline(char **__lineptr, size_t *__n, FILE *__stream)
-{
-return __getdelim(__lineptr, __n, '\n', __stream);
-} }
-# 126 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int feof_unlocked(FILE *__stream) throw()
-{
-return ((__stream->_flags) & 16) != 0;
-} }
-
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) int ferror_unlocked(FILE *__stream) throw()
-{
-return ((__stream->_flags) & 32) != 0;
-} }
-# 24 "/usr/include/bits/stdio2.h" 3
-extern "C" int __sprintf_chk(char *__restrict__, int, size_t, const char *__restrict__, ...) throw();
-
-extern "C" int __vsprintf_chk(char *__restrict__, int, size_t, const char *__restrict__, __gnuc_va_list) throw();
-# 32 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int sprintf(char *__restrict__ __s, const char *__restrict__ __fmt, ...) throw()
-{
-return __builtin___sprintf_chk(__s, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __builtin_va_arg_pack());
-
-} }
-# 44 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vsprintf(char *__restrict__ __s, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __builtin___vsprintf_chk(__s, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __ap);
-
-} }
-
-
-
-extern "C" int __snprintf_chk(char *__restrict__, size_t, int, size_t, const char *__restrict__, ...) throw();
-
-
-extern "C" int __vsnprintf_chk(char *__restrict__, size_t, int, size_t, const char *__restrict__, __gnuc_va_list) throw();
-# 62 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int snprintf(char *__restrict__ __s, size_t __n, const char *__restrict__ __fmt, ...) throw()
-
-{
-return __builtin___snprintf_chk(__s, __n, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __builtin_va_arg_pack());
-
-} }
-# 75 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vsnprintf(char *__restrict__ __s, size_t __n, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __builtin___vsnprintf_chk(__s, __n, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __ap);
-
-} }
-# 86 "/usr/include/bits/stdio2.h" 3
-extern "C" int __fprintf_chk(FILE *__restrict__, int, const char *__restrict__, ...);
-
-extern "C" int __printf_chk(int, const char *__restrict__, ...);
-extern "C" int __vfprintf_chk(FILE *__restrict__, int, const char *__restrict__, __gnuc_va_list);
-
-extern "C" int __vprintf_chk(int, const char *__restrict__, __gnuc_va_list);
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int fprintf(FILE *__restrict__ __stream, const char *__restrict__ __fmt, ...)
-{
-return __fprintf_chk(__stream, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int printf(const char *__restrict__ __fmt, ...)
-{
-return __printf_chk(2 - 1, __fmt, __builtin_va_arg_pack());
-} }
-# 115 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vprintf(const char *__restrict__ __fmt, __gnuc_va_list __ap)
-{
-
-return __vfprintf_chk(stdout, 2 - 1, __fmt, __ap);
-
-
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vfprintf(FILE *__restrict__ __stream, const char *__restrict__
-__fmt, __gnuc_va_list __ap)
-{
-return __vfprintf_chk(__stream, 2 - 1, __fmt, __ap);
-} }
-
-
-
-extern "C" int __asprintf_chk(char **__restrict__, int, const char *__restrict__, ...) throw();
-
-
-extern "C" int __vasprintf_chk(char **__restrict__, int, const char *__restrict__, __gnuc_va_list) throw();
-
-
-extern "C" int __dprintf_chk(int, int, const char *__restrict__, ...);
-
-extern "C" int __vdprintf_chk(int, int, const char *__restrict__, __gnuc_va_list);
-
-
-extern "C" int __obstack_printf_chk(obstack *__restrict__, int, const char *__restrict__, ...) throw();
-
-
-
-extern "C" int __obstack_vprintf_chk(obstack *__restrict__, int, const char *__restrict__, __gnuc_va_list) throw();
-# 156 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int asprintf(char **__restrict__ __ptr, const char *__restrict__ __fmt, ...) throw()
-{
-return __asprintf_chk(__ptr, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int __asprintf(char **__restrict__ __ptr, const char *__restrict__ __fmt, ...) throw()
-
-{
-return __asprintf_chk(__ptr, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int dprintf(int __fd, const char *__restrict__ __fmt, ...)
-{
-return __dprintf_chk(__fd, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int obstack_printf(obstack *__restrict__ __obstack, const char *__restrict__ __fmt, ...) throw()
-
-{
-return __obstack_printf_chk(__obstack, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-# 196 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vasprintf(char **__restrict__ __ptr, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __vasprintf_chk(__ptr, 2 - 1, __fmt, __ap);
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vdprintf(int __fd, const char *__restrict__ __fmt, __gnuc_va_list __ap)
-{
-return __vdprintf_chk(__fd, 2 - 1, __fmt, __ap);
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int obstack_vprintf(obstack *__restrict__ __obstack, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __obstack_vprintf_chk(__obstack, 2 - 1, __fmt, __ap);
-
-} }
-# 220 "/usr/include/bits/stdio2.h" 3
-extern "C" char *__gets_chk(char *, size_t);
-extern "C" char *__gets_warn(char *) __asm__("gets");
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *gets(char *__str)
-{
-if (__builtin_object_size(__str, 2 > 1) != ((size_t)(-1))) {
-return __gets_chk(__str, __builtin_object_size(__str, 2 > 1)); }
-return __gets_warn(__str);
-} }
-
-extern "C" char *__fgets_chk(char *__restrict__, size_t, int, FILE *__restrict__);
-
-extern "C" char *__fgets_alias(char *__restrict__, int, FILE *__restrict__) __asm__("fgets");
-
-
-extern "C" char *__fgets_chk_warn(char *__restrict__, size_t, int, FILE *__restrict__) __asm__("__fgets_chk");
-# 245 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *fgets(char *__restrict__ __s, int __n, FILE *__restrict__ __stream)
-{
-if (__builtin_object_size(__s, 2 > 1) != ((size_t)(-1)))
-{
-if ((!(__builtin_constant_p(__n))) || (__n <= 0)) {
-return __fgets_chk(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-
-if (((size_t)__n) > __builtin_object_size(__s, 2 > 1)) {
-return __fgets_chk_warn(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-}
-return __fgets_alias(__s, __n, __stream);
-} }
-
-extern "C" size_t __fread_chk(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__);
-
-
-extern "C" size_t __fread_alias(void *__restrict__, size_t, size_t, FILE *__restrict__) __asm__("fread");
-
-
-
-extern "C" size_t __fread_chk_warn(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__) __asm__("__fread_chk");
-# 274 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t fread(void *__restrict__ __ptr, size_t __size, size_t __n, FILE *__restrict__
-__stream)
-{
-if (__builtin_object_size(__ptr, 0) != ((size_t)(-1)))
-{
-if (((!(__builtin_constant_p(__size))) || (!(__builtin_constant_p(__n)))) || ((__size | __n) >= (((size_t)1) << (((8) * sizeof(size_t)) / (2))))) {
-
-
-return __fread_chk(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-
-if ((__size * __n) > __builtin_object_size(__ptr, 0)) {
-return __fread_chk_warn(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-}
-return __fread_alias(__ptr, __size, __n, __stream);
-} }
-
-
-extern "C" char *__fgets_unlocked_chk(char *__restrict__, size_t, int, FILE *__restrict__);
-
-extern "C" char *__fgets_unlocked_alias(char *__restrict__, int, FILE *__restrict__) __asm__("fgets_unlocked");
-
-
-extern "C" char *__fgets_unlocked_chk_warn(char *__restrict__, size_t, int, FILE *__restrict__) __asm__("__fgets_unlocked_chk");
-# 303 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *fgets_unlocked(char *__restrict__ __s, int __n, FILE *__restrict__ __stream)
-{
-if (__builtin_object_size(__s, 2 > 1) != ((size_t)(-1)))
-{
-if ((!(__builtin_constant_p(__n))) || (__n <= 0)) {
-return __fgets_unlocked_chk(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-
-if (((size_t)__n) > __builtin_object_size(__s, 2 > 1)) {
-return __fgets_unlocked_chk_warn(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-}
-return __fgets_unlocked_alias(__s, __n, __stream);
-} }
-
-
-
-
-extern "C" size_t __fread_unlocked_chk(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__);
-
-
-extern "C" size_t __fread_unlocked_alias(void *__restrict__, size_t, size_t, FILE *__restrict__) __asm__("fread_unlocked");
-
-
-
-extern "C" size_t __fread_unlocked_chk_warn(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__) __asm__("__fread_unlocked_chk");
-# 335 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t fread_unlocked(void *__restrict__ __ptr, size_t __size, size_t __n, FILE *__restrict__
-__stream)
-{
-if (__builtin_object_size(__ptr, 0) != ((size_t)(-1)))
-{
-if (((!(__builtin_constant_p(__size))) || (!(__builtin_constant_p(__n)))) || ((__size | __n) >= (((size_t)1) << (((8) * sizeof(size_t)) / (2))))) {
-
-
-return __fread_unlocked_chk(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-
-
-if ((__size * __n) > __builtin_object_size(__ptr, 0)) {
-return __fread_unlocked_chk_warn(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-
-}
-
-
-if ((((__builtin_constant_p(__size)) && (__builtin_constant_p(__n))) && ((__size | __n) < (((size_t)1) << (((8) * sizeof(size_t)) / (2))))) && ((__size * __n) <= (8)))
-
-
-
-{
-auto size_t __cnt = (__size * __n);
-auto char *__cptr = ((char *)__ptr);
-if (__cnt == (0)) {
-return 0; }
-
-for (; __cnt > (0); --__cnt)
-{
-auto int __c = ((__builtin_expect((__stream->_IO_read_ptr) >= (__stream->_IO_read_end), 0)) ? __uflow(__stream) : (*((unsigned char *)((__stream->_IO_read_ptr)++))));
-if (__c == (-1)) {
-break; }
-(*(__cptr++)) = __c;
-}
-return (__cptr - (char *)__ptr) / __size;
-}
-
-return __fread_unlocked_alias(__ptr, __size, __n, __stream);
-} }
 # 57 "/usr/include/sys/time.h" 3
 extern "C" { struct timezone {
 
@@ -6622,52 +5943,20 @@ extern "C" imaxdiv_t imaxdiv(intmax_t, intmax_t) throw() __attribute__((__const_
 
 
 
-extern "C" { extern inline intmax_t strtoimax(const char *__restrict__, char **__restrict__, int) throw() __attribute__((__gnu_inline__)); }
+extern "C" intmax_t strtoimax(const char *__restrict__, char **__restrict__, int) throw();
 
 
 
-extern "C" { extern inline uintmax_t strtoumax(const char *__restrict__, char **__restrict__, int) throw() __attribute__((__gnu_inline__)); }
+extern "C" uintmax_t strtoumax(const char *__restrict__, char **__restrict__, int) throw();
 
 
 
-extern "C" { extern inline intmax_t wcstoimax(const wchar_t *__restrict__, wchar_t **__restrict__, int) throw() __attribute__((__gnu_inline__)); }
+extern "C" intmax_t wcstoimax(const wchar_t *__restrict__, wchar_t **__restrict__, int) throw();
 
 
 
 
-extern "C" { extern inline uintmax_t wcstoumax(const wchar_t *__restrict__, wchar_t **__restrict__, int) throw() __attribute__((__gnu_inline__)); }
-# 326 "/usr/include/inttypes.h" 3
-extern "C" long __strtol_internal(const char *__restrict__, char **__restrict__, int, int) throw();
-# 332 "/usr/include/inttypes.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) intmax_t strtoimax(const char *__restrict__ nptr, char **__restrict__ endptr, int base) throw()
-
-{
-return __strtol_internal(nptr, endptr, base, 0);
-} }
-
-extern "C" unsigned long __strtoul_internal(const char *__restrict__, char **__restrict__, int, int) throw();
-# 345 "/usr/include/inttypes.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) uintmax_t strtoumax(const char *__restrict__ nptr, char **__restrict__ endptr, int base) throw()
-
-{
-return __strtoul_internal(nptr, endptr, base, 0);
-} }
-
-extern "C" long __wcstol_internal(const wchar_t *__restrict__, wchar_t **__restrict__, int, int) throw();
-# 357 "/usr/include/inttypes.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) intmax_t wcstoimax(const wchar_t *__restrict__ nptr, wchar_t **__restrict__ endptr, int base) throw()
-
-{
-return __wcstol_internal(nptr, endptr, base, 0);
-} }
-
-extern "C" unsigned long __wcstoul_internal(const wchar_t *__restrict__, wchar_t **__restrict__, int, int) throw();
-# 371 "/usr/include/inttypes.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) uintmax_t wcstoumax(const wchar_t *__restrict__ nptr, wchar_t **__restrict__ endptr, int base) throw()
-
-{
-return __wcstoul_internal(nptr, endptr, base, 0);
-} }
+extern "C" uintmax_t wcstoumax(const wchar_t *__restrict__, wchar_t **__restrict__, int) throw();
 # 247 "/usr/include/unistd.h" 3
 extern "C" { typedef __socklen_t socklen_t; }
 # 260 "/usr/include/unistd.h" 3
@@ -6690,15 +5979,15 @@ extern "C" __off64_t lseek64(int, __off64_t, int) throw();
 # 322 "/usr/include/unistd.h" 3
 extern "C" int close(int);
 # 329 "/usr/include/unistd.h" 3
-extern "C" { extern inline ssize_t read(int, void *, size_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" ssize_t read(int, void *, size_t);
 # 335 "/usr/include/unistd.h" 3
 extern "C" ssize_t write(int, const void *, size_t);
 # 345 "/usr/include/unistd.h" 3
-extern "C" { extern inline ssize_t pread(int, void *, size_t, __off_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" ssize_t pread(int, void *, size_t, __off_t);
 # 353 "/usr/include/unistd.h" 3
 extern "C" ssize_t pwrite(int, const void *, size_t, __off_t);
 # 373 "/usr/include/unistd.h" 3
-extern "C" { extern inline ssize_t pread64(int, void *, size_t, __off64_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" ssize_t pread64(int, void *, size_t, __off64_t);
 
 
 
@@ -6743,11 +6032,11 @@ extern "C" int chdir(const char *) throw();
 
 extern "C" int fchdir(int) throw();
 # 479 "/usr/include/unistd.h" 3
-extern "C" { extern inline char *getcwd(char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *getcwd(char *, size_t) throw();
 # 485 "/usr/include/unistd.h" 3
 extern "C" char *get_current_dir_name() throw();
 # 492 "/usr/include/unistd.h" 3
-extern "C" { extern inline char *getwd(char *) throw() __attribute__((__deprecated__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *getwd(char *) throw() __attribute__((__deprecated__));
 # 498 "/usr/include/unistd.h" 3
 extern "C" int dup(int) throw();
 
@@ -7453,7 +6742,7 @@ extern "C" long sysconf(int) throw();
 
 
 
-extern "C" { extern inline size_t confstr(int, char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" size_t confstr(int, char *, size_t) throw();
 
 
 
@@ -7498,7 +6787,7 @@ extern "C" __gid_t getegid() throw();
 
 
 
-extern "C" { extern inline int getgroups(int, __gid_t []) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int getgroups(int, __gid_t []) throw();
 
 
 
@@ -7553,7 +6842,7 @@ extern "C" char *ttyname(int) throw();
 
 
 
-extern "C" { extern inline int ttyname_r(int, char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int ttyname_r(int, char *, size_t) throw();
 
 
 
@@ -7571,13 +6860,13 @@ extern "C" int linkat(int, const char *, int, const char *, int) throw();
 # 783 "/usr/include/unistd.h" 3
 extern "C" int symlink(const char *, const char *) throw();
 # 789 "/usr/include/unistd.h" 3
-extern "C" { extern inline ssize_t readlink(const char *__restrict__, char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" ssize_t readlink(const char *__restrict__, char *__restrict__, size_t) throw();
 # 796 "/usr/include/unistd.h" 3
 extern "C" int symlinkat(const char *, int, const char *) throw();
 
 
 
-extern "C" { extern inline ssize_t readlinkat(int, const char *__restrict__, char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" ssize_t readlinkat(int, const char *__restrict__, char *__restrict__, size_t) throw();
 # 806 "/usr/include/unistd.h" 3
 extern "C" int unlink(const char *) throw();
 
@@ -7599,7 +6888,7 @@ extern "C" int tcsetpgrp(int, __pid_t) throw();
 # 829 "/usr/include/unistd.h" 3
 extern "C" char *getlogin();
 # 837 "/usr/include/unistd.h" 3
-extern "C" { extern inline int getlogin_r(char *, size_t) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int getlogin_r(char *, size_t);
 
 
 
@@ -7621,7 +6910,7 @@ extern "C" { extern int optopt; }
 # 152 "/usr/include/getopt.h" 3
 extern "C" int getopt(int, char *const *, const char *) throw();
 # 859 "/usr/include/unistd.h" 3
-extern "C" { extern inline int gethostname(char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int gethostname(char *, size_t) throw();
 # 866 "/usr/include/unistd.h" 3
 extern "C" int sethostname(const char *, size_t) throw();
 
@@ -7630,7 +6919,7 @@ extern "C" int sethostname(const char *, size_t) throw();
 
 extern "C" int sethostid(long) throw();
 # 877 "/usr/include/unistd.h" 3
-extern "C" { extern inline int getdomainname(char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int getdomainname(char *, size_t) throw();
 
 extern "C" int setdomainname(const char *, size_t) throw();
 # 886 "/usr/include/unistd.h" 3
@@ -7707,289 +6996,6 @@ extern "C" void encrypt(char *, int) throw();
 extern "C" void swab(const void *__restrict__, void *__restrict__, ssize_t) throw();
 # 1108 "/usr/include/unistd.h" 3
 extern "C" char *ctermid(char *) throw();
-# 24 "/usr/include/bits/unistd.h" 3
-extern "C" ssize_t __read_chk(int, void *, size_t, size_t);
-
-extern "C" ssize_t __read_alias(int, void *, size_t) __asm__("read");
-
-extern "C" ssize_t __read_chk_warn(int, void *, size_t, size_t) __asm__("__read_chk");
-# 35 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) ssize_t read(int __fd, void *__buf, size_t __nbytes)
-{
-if (__builtin_object_size(__buf, 0) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__nbytes))) {
-return __read_chk(__fd, __buf, __nbytes, __builtin_object_size(__buf, 0)); }
-
-if (__nbytes > __builtin_object_size(__buf, 0)) {
-return __read_chk_warn(__fd, __buf, __nbytes, __builtin_object_size(__buf, 0)); }
-}
-return __read_alias(__fd, __buf, __nbytes);
-} }
-
-
-extern "C" ssize_t __pread_chk(int, void *, size_t, __off_t, size_t);
-
-extern "C" ssize_t __pread64_chk(int, void *, size_t, __off64_t, size_t);
-
-extern "C" ssize_t __pread_alias(int, void *, size_t, __off_t) __asm__("pread");
-
-
-extern "C" ssize_t __pread64_alias(int, void *, size_t, __off64_t) __asm__("pread64");
-
-
-extern "C" ssize_t __pread_chk_warn(int, void *, size_t, __off_t, size_t) __asm__("__pread_chk");
-
-
-
-
-extern "C" ssize_t __pread64_chk_warn(int, void *, size_t, __off64_t, size_t) __asm__("__pread64_chk");
-# 73 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) ssize_t pread(int __fd, void *__buf, size_t __nbytes, __off_t __offset)
-{
-if (__builtin_object_size(__buf, 0) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__nbytes))) {
-return __pread_chk(__fd, __buf, __nbytes, __offset, __builtin_object_size(__buf, 0)); }
-
-if (__nbytes > __builtin_object_size(__buf, 0)) {
-return __pread_chk_warn(__fd, __buf, __nbytes, __offset, __builtin_object_size(__buf, 0)); }
-
-}
-return __pread_alias(__fd, __buf, __nbytes, __offset);
-} }
-# 106 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) ssize_t pread64(int __fd, void *__buf, size_t __nbytes, __off64_t __offset)
-{
-if (__builtin_object_size(__buf, 0) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__nbytes))) {
-return __pread64_chk(__fd, __buf, __nbytes, __offset, __builtin_object_size(__buf, 0)); }
-
-if (__nbytes > __builtin_object_size(__buf, 0)) {
-return __pread64_chk_warn(__fd, __buf, __nbytes, __offset, __builtin_object_size(__buf, 0)); }
-
-}
-
-return __pread64_alias(__fd, __buf, __nbytes, __offset);
-} }
-
-
-
-
-extern "C" ssize_t __readlink_chk(const char *__restrict__, char *__restrict__, size_t, size_t) throw();
-
-
-
-extern "C" ssize_t __readlink_alias(const char *__restrict__, char *__restrict__, size_t) throw() __asm__("readlink");
-
-
-
-extern "C" ssize_t __readlink_chk_warn(const char *__restrict__, char *__restrict__, size_t, size_t) throw() __asm__("__readlink_chk");
-# 140 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) ssize_t readlink(const char *__restrict__ __path, char *__restrict__ __buf, size_t __len) throw()
-
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __readlink_chk(__path, __buf, __len, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__len > __builtin_object_size(__buf, 2 > 1)) {
-return __readlink_chk_warn(__path, __buf, __len, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __readlink_alias(__path, __buf, __len);
-} }
-
-
-
-extern "C" ssize_t __readlinkat_chk(int, const char *__restrict__, char *__restrict__, size_t, size_t) throw();
-
-
-
-extern "C" ssize_t __readlinkat_alias(int, const char *__restrict__, char *__restrict__, size_t) throw() __asm__("readlinkat");
-
-
-
-
-extern "C" ssize_t __readlinkat_chk_warn(int, const char *__restrict__, char *__restrict__, size_t, size_t) throw() __asm__("__readlinkat_chk");
-# 174 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) ssize_t readlinkat(int __fd, const char *__restrict__ __path, char *__restrict__ __buf, size_t __len) throw()
-
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __readlinkat_chk(__fd, __path, __buf, __len, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__len > __builtin_object_size(__buf, 2 > 1)) {
-return __readlinkat_chk_warn(__fd, __path, __buf, __len, __builtin_object_size(__buf, 2 > 1)); }
-
-}
-return __readlinkat_alias(__fd, __path, __buf, __len);
-} }
-
-
-extern "C" char *__getcwd_chk(char *, size_t, size_t) throw();
-
-extern "C" char *__getcwd_alias(char *, size_t) throw() __asm__("getcwd");
-
-extern "C" char *__getcwd_chk_warn(char *, size_t, size_t) throw() __asm__("__getcwd_chk");
-# 201 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *getcwd(char *__buf, size_t __size) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__size))) {
-return __getcwd_chk(__buf, __size, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__size > __builtin_object_size(__buf, 2 > 1)) {
-return __getcwd_chk_warn(__buf, __size, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __getcwd_alias(__buf, __size);
-} }
-
-
-extern "C" char *__getwd_chk(char *, size_t) throw();
-
-extern "C" char *__getwd_warn(char *) throw() __asm__("getwd");
-
-
-
-
-extern "C" { inline __attribute__((__deprecated__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *getwd(char *__buf) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1))) {
-return __getwd_chk(__buf, __builtin_object_size(__buf, 2 > 1)); }
-return __getwd_warn(__buf);
-} }
-
-
-extern "C" size_t __confstr_chk(int, char *, size_t, size_t) throw();
-
-extern "C" size_t __confstr_alias(int, char *, size_t) throw() __asm__("confstr");
-
-extern "C" size_t __confstr_chk_warn(int, char *, size_t, size_t) throw() __asm__("__confstr_chk");
-# 241 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t confstr(int __name, char *__buf, size_t __len) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __confstr_chk(__name, __buf, __len, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__builtin_object_size(__buf, 2 > 1) < __len) {
-return __confstr_chk_warn(__name, __buf, __len, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __confstr_alias(__name, __buf, __len);
-} }
-
-
-extern "C" int __getgroups_chk(int, __gid_t [], size_t) throw();
-
-extern "C" int __getgroups_alias(int, __gid_t []) throw() __asm__("getgroups");
-
-extern "C" int __getgroups_chk_warn(int, __gid_t [], size_t) throw() __asm__("__getgroups_chk");
-# 266 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int getgroups(int __size, __gid_t __list[]) throw()
-{
-if (__builtin_object_size(__list, 2 > 1) != ((size_t)(-1)))
-{
-if ((!(__builtin_constant_p(__size))) || (__size < 0)) {
-return __getgroups_chk(__size, __list, __builtin_object_size(__list, 2 > 1)); }
-
-if ((__size * sizeof(__gid_t)) > __builtin_object_size(__list, 2 > 1)) {
-return __getgroups_chk_warn(__size, __list, __builtin_object_size(__list, 2 > 1)); }
-}
-return __getgroups_alias(__size, __list);
-} }
-
-
-extern "C" int __ttyname_r_chk(int, char *, size_t, size_t) throw();
-
-extern "C" int __ttyname_r_alias(int, char *, size_t) throw() __asm__("ttyname_r");
-
-
-extern "C" int __ttyname_r_chk_warn(int, char *, size_t, size_t) throw() __asm__("__ttyname_r_chk");
-# 292 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int ttyname_r(int __fd, char *__buf, size_t __buflen) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__buflen))) {
-return __ttyname_r_chk(__fd, __buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__buflen > __builtin_object_size(__buf, 2 > 1)) {
-return __ttyname_r_chk_warn(__fd, __buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __ttyname_r_alias(__fd, __buf, __buflen);
-} }
-
-
-
-extern "C" int __getlogin_r_chk(char *, size_t, size_t);
-
-extern "C" int __getlogin_r_alias(char *, size_t) __asm__("getlogin_r");
-
-extern "C" int __getlogin_r_chk_warn(char *, size_t, size_t) __asm__("__getlogin_r_chk");
-# 318 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int getlogin_r(char *__buf, size_t __buflen)
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__buflen))) {
-return __getlogin_r_chk(__buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__buflen > __builtin_object_size(__buf, 2 > 1)) {
-return __getlogin_r_chk_warn(__buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __getlogin_r_alias(__buf, __buflen);
-} }
-
-
-
-
-extern "C" int __gethostname_chk(char *, size_t, size_t) throw();
-
-extern "C" int __gethostname_alias(char *, size_t) throw() __asm__("gethostname");
-
-extern "C" int __gethostname_chk_warn(char *, size_t, size_t) throw() __asm__("__gethostname_chk");
-# 345 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int gethostname(char *__buf, size_t __buflen) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__buflen))) {
-return __gethostname_chk(__buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__buflen > __builtin_object_size(__buf, 2 > 1)) {
-return __gethostname_chk_warn(__buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __gethostname_alias(__buf, __buflen);
-} }
-
-
-
-
-extern "C" int __getdomainname_chk(char *, size_t, size_t) throw();
-
-extern "C" int __getdomainname_alias(char *, size_t) throw() __asm__("getdomainname");
-
-
-extern "C" int __getdomainname_chk_warn(char *, size_t, size_t) throw() __asm__("__getdomainname_chk");
-# 374 "/usr/include/bits/unistd.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int getdomainname(char *__buf, size_t __buflen) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__buflen))) {
-return __getdomainname_chk(__buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-
-if (__buflen > __builtin_object_size(__buf, 2 > 1)) {
-return __getdomainname_chk_warn(__buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __getdomainname_alias(__buf, __buflen);
-} }
 # 12 "../../parboil/parboil.h"
 extern "C" { struct pb_Parameters {
 char *outFile;
@@ -8935,11 +7941,11 @@ pb_FreeParameters(params);
 return 0;
 }
 
-# 1 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00003864_00000000-4_main.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_000039f7_00000000-6_main.fatbin.c" 1
+# 1 "/tmp/tmpxft_00003864_00000000-6_main.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -9001,7 +8007,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_000039f7_00000000-6_main.fatbin.c" 2
+# 2 "/tmp/tmpxft_00003864_00000000-6_main.fatbin.c" 2
 
 
 
@@ -9033,8 +8039,8 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3230ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
-0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3766393330ull,0x312d303030303030ull,
-0x632e6e69616d5f39ull,0x2f2820692e337070ull,0x494263632f706d74ull,0x4334566859762e23ull,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3436383330ull,0x312d303030303030ull,
+0x632e6e69616d5f39ull,0x2f2820692e337070ull,0x494263632f706d74ull,0x624a6d3834712e23ull,
 0x2d2d2d2f2f090a29ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -9049,7 +8055,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x656c69662e090a0aull,
 0x6d6f633c22093109ull,0x6e696c2d646e616dull,0x69662e090a223e65ull,0x742f22093209656cull,
-0x6678706d742f706dull,0x3933303030305f74ull,0x30303030305f3766ull,0x6d5f38312d303030ull,
+0x6678706d742f706dull,0x3833303030305f74ull,0x30303030305f3436ull,0x6d5f38312d303030ull,
 0x616475632e6e6961ull,0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,
 0x2f6363672f62696cull,0x6e696c2d36383469ull,0x342f756e672d7875ull,0x636e692f312e342eull,
 0x6474732f6564756cull,0x090a22682e666564ull,0x093409656c69662eull,0x6f6c2f7273752f22ull,
@@ -9104,8 +8110,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"69c60711429b088a",(char*)"main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x5e279dd6};
-# 5 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"99c18e2fed203578",(char*)"main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x2ecc25d7};
+# 5 "/tmp/tmpxft_00003864_00000000-4_main.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -17078,9 +16084,9 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_000039f7_00000000-4_main.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_40_tmpxft_000039f7_00000000_16_main_cpp1_ii_09de59f8(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_40_tmpxft_000039f7_00000000_16_main_cpp1_ii_09de59f8(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_00003864_00000000-4_main.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_40_tmpxft_00003864_00000000_16_main_cpp1_ii_09de59f8(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_40_tmpxft_00003864_00000000_16_main_cpp1_ii_09de59f8(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 392 "main.cu" 2

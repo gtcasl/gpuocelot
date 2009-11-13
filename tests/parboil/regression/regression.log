@@ -9,32 +9,26 @@ INFO       /home/normal/checkout/gpuocelot/tests/parboil/sad
 INFO       /home/normal/checkout/gpuocelot/tests/parboil/tpacf
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/cp -o cp.out 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-q -i data/mriQIn.bin -o mriFQOut.bin 
-INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/mri-q
-INFO     Test completed in 18.8847999573 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/pns 2000 2000 2000 -o pns.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/pns
+INFO     Test completed in 1291.758883 seconds
 INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_sinf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:505!
-32768 pixels in output; 3072 samples in trajectory; using 3072 samples
+petri N=2000 s=2000 t=2000
+mean_vars: 0.002177    var_vars: 0.000000
+mean_maxs: 2.071500    var_maxs: 0.066388
 TEST PASSED
-IO:      0.001468
-GPU:     18.743018
-Copy:    0.001170
-Compute: 0.000542
+IO:      0.080549
+GPU:     1290.554837
+Copy:    0.586358
+Compute: 0.000759
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/sad -i "data/frameSad.bin,data/referenceSad.bin" -o sad.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin 
 INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd
-INFO     Test completed in 20.4718410969 seconds
+INFO     Test completed in 60.9279751778 seconds
 INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_sinf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:505!
 32768 pixels in output; 3072 samples in trajectory; using 3072 samples
-First dR 0.000000, 28d1950, 2963be0
+First dR 0.000000, 9d955b0, 9f9e790
 Launch RhoPhi Kernel on GPU: Blocks (6, 1), Threads Per Block 512
 Launch GPU Kernel: Grids 6, Blocks Per Grid (128, 1), Threads Per Block (256, 1), K Elems Per Thread 512
 Copying 10240 bytes to constant memory
@@ -44,59 +38,50 @@ Copying 10240 bytes to constant memory
 Copying 10240 bytes to constant memory
 Copying 10240 bytes to constant memory
 TEST PASSED
-IO:      0.001361
-GPU:     20.325985
-Copy:    0.001184
-Compute: 0.000676
+IO:      0.091039
+GPU:     57.907199
+Copy:    0.002196
+Compute: 0.127550
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/pns 2000 2000 2000 -o pns.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/sad -i "data/frameSad.bin,data/referenceSad.bin" -o sad.out 
 INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/sad
-INFO     Test completed in 6.40320205688 seconds
+INFO     Test completed in 32.9994819164 seconds
 INFO      It produced the following output:
-While deleting: void (i32*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float, float)* %__ocelot_tex_2d_uf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:505!
-TEST PASSED
-IO:      0.792187
-GPU:     5.197694
-Copy:    0.021874
-Compute: 0.024416
+1: 1572
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out 
-INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/cp
-INFO     Test completed in 349.221204996 seconds
+2: 1047 525
+
+3: 895 677
+
+4: 686 361 209 316
+
+5: 575 182 111 179 94 266 115 50
+
+6: 606 80 88 273 97 112 178 138
+
+7: 514 61 43 139 92 19 45 134 26 68 153 113 71 44 25 25
+
+TEST PASSED
+IO:      1.945840
+GPU:     28.382198
+Copy:    0.169054
+Compute: 2.029064
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-q -i data/mriQIn.bin -o mriFQOut.bin 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/mri-q
+INFO     Test completed in 44.5760638714 seconds
 INFO      It produced the following output:
-While deleting: float (float)* %__ocelot_rsqrt
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:505!
-CUDA accelerated coulombic potential microbenchmark
-Original version by John E. Stone <johns@ks.uiuc.edu>
-This version maintained by Chris Rodrigues
+32768 pixels in output; 3072 samples in trajectory; using 3072 samples
 TEST PASSED
-IO:      0.019881
-GPU:     349.068634
-Copy:    0.004266
-Compute: 0.031204
+IO:      0.092231
+GPU:     42.031290
+Copy:    0.002479
+Compute: 0.079298
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/tpacf
-INFO     Test completed in 400.671128988 seconds
-INFO      It produced the following output:
-Min distance: 1.000000 arcmin
-Max distance: 10000.000000 arcmin
-Bins per dec: 5
-Total bins  : 20
-TEST PASSED
-IO:      1.887376
-GPU:     398.580175
-Copy:    0.047424
-Compute: 0.021234
-
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/cp -o cp.out 
 INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/rpes
-INFO     Test completed in 442.223637104 seconds
+INFO     Test completed in 2513.10614109 seconds
 INFO      It produced the following output:
-While deleting: void (float*, { { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, { i16, i16, i16 }, i8*, i8*, i8*, i8*, i64, i64, i64, i64, i8* }*, i32, float)* %__ocelot_tex_1d_ff
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:505!
 
 >>>>>>> STARTED BASIS SET OUTPUT <<<<<<<
 
@@ -152,32 +137,46 @@ done.
 17 reduction cycles will be performed...
 totReductionElements 1088430
 TEST PASSED
-IO:      0.154011
-GPU:     440.912187
-Copy:    0.353329
-Compute: 0.521350
+IO:      0.666220
+GPU:     2510.623336
+Copy:    0.509775
+Compute: 0.951856
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/pns
-INFO     Test completed in 508.407974005 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/cp
+INFO     Test completed in 2182.43590403 seconds
 INFO      It produced the following output:
-petri N=2000 s=2000 t=2000
-mean_vars: 0.002177    var_vars: 0.000000
-mean_maxs: 2.071500    var_maxs: 0.066388
+CUDA accelerated coulombic potential microbenchmark
+Original version by John E. Stone <johns@ks.uiuc.edu>
+This version maintained by Chris Rodrigues
 TEST PASSED
-IO:      0.035678
-GPU:     507.873457
-Copy:    0.100909
-Compute: 0.000029
+IO:      0.146271
+GPU:     2180.378739
+Copy:    0.007676
+Compute: 0.162008
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/tpacf
+INFO     Test completed in 1435.98355007 seconds
+INFO      It produced the following output:
+Min distance: 1.000000 arcmin
+Max distance: 10000.000000 arcmin
+Bins per dec: 5
+Total bins  : 20
+TEST PASSED
+IO:      5.824568
+GPU:     1429.790263
+Copy:    0.030885
+Compute: 0.058419
 
 INFO     
 Passing tests:
- (442.224s) : /home/normal/checkout/gpuocelot/tests/parboil/rpes : Passed
- (6.403s) : /home/normal/checkout/gpuocelot/tests/parboil/sad : Passed
- (18.885s) : /home/normal/checkout/gpuocelot/tests/parboil/mri-q : Passed
- (20.472s) : /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd : Passed
- (349.221s) : /home/normal/checkout/gpuocelot/tests/parboil/cp : Passed
- (400.671s) : /home/normal/checkout/gpuocelot/tests/parboil/tpacf : Passed
- (508.408s) : /home/normal/checkout/gpuocelot/tests/parboil/pns : Passed
+ (2513.106s) : /home/normal/checkout/gpuocelot/tests/parboil/rpes : Passed
+ (32.999s) : /home/normal/checkout/gpuocelot/tests/parboil/sad : Passed
+ (2182.436s) : /home/normal/checkout/gpuocelot/tests/parboil/cp : Passed
+ (60.928s) : /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd : Passed
+ (44.576s) : /home/normal/checkout/gpuocelot/tests/parboil/mri-q : Passed
+ (1435.984s) : /home/normal/checkout/gpuocelot/tests/parboil/tpacf : Passed
+ (1291.759s) : /home/normal/checkout/gpuocelot/tests/parboil/pns : Passed
 
 Failing tests:
 

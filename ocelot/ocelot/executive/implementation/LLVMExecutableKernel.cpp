@@ -1411,7 +1411,6 @@ namespace executive
 			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
 			manager.add(llvm::createScalarReplAggregatesPass());  // Break up aggregate allocas
 			manager.add(llvm::createInstructionCombiningPass());  // Combine silly seq's
-			manager.add(llvm::createCondPropagationPass());       // Propagate conditionals
 			manager.add(llvm::createTailCallEliminationPass());   // Eliminate tail calls
 			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
 			manager.add(llvm::createReassociatePass());           // Reassociate expressions
@@ -1433,7 +1432,6 @@ namespace executive
 			// Run instcombine after redundancy elimination to exploit opportunities
 			// opened up by them.
 			manager.add(llvm::createInstructionCombiningPass());
-			manager.add(llvm::createCondPropagationPass());       // Propagate conditionals
 			manager.add(llvm::createDeadStoreEliminationPass());  // Delete dead stores
 			manager.add(llvm::createAggressiveDCEPass());         // Delete dead instructions
 			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs

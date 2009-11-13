@@ -255,7 +255,6 @@ static CUarray_format textureDataFormat(const ir::Texture &texture) {
 */
 void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 #if HAVE_CUDA_DRIVER_API == 1
-		
 	if (getSelectedISA() == ir::Instruction::GPU) {
 		// get it from the PTX module
 		std::map<std::string, ir::PTXInstruction::AddressSpace > globalsSet;
@@ -288,8 +287,9 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
 					unsigned int bytes;
 					CUdeviceptr devicePtr;
-					if (cuModuleGetGlobal(&devicePtr, &bytes, mod_it->second->cuModule, 
-						name.c_str()) == CUDA_SUCCESS) {
+					cudaError_enum result;
+					if ((result = cuModuleGetGlobal(&devicePtr, &bytes, mod_it->second->cuModule, 
+						name.c_str())) == CUDA_SUCCESS) {
 						report("    obtained pointer to global variable '" << name << "' in GPU memory: 0x" 
 							<< std::hex << (unsigned int)devicePtr << ", \n\t\t\t\t\tcopying from host memory: 0x" 
 							<< glb_it->second.ptr << std::dec);
@@ -308,7 +308,9 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 						}
 					}
 					else {
-						throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuModuleGetGlobal() failed");
+						report("  Executive::fenceGlobalVariables() - cuModuleGetGlobal() failed for variable " << name << " with result " << result);
+						//throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuModuleGetGlobal() failed");
+						continue;
 					}
 				}
 			}
@@ -1614,6 +1616,7 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 #if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
+				CUresult result;
 				if (type == DeviceToDevice) {
 					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
 						std::stringstream stream;
@@ -1631,7 +1634,10 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 						stream << nearbyAllocationsToString(*this, src, bytes);
 						throw hydrazine::Exception(stream.str());
 					}
-					cuMemcpyDtoD(painful_cast(dest), painful_cast(src), bytes);
+					result = cuMemcpyDtoD(painful_cast(dest), painful_cast(src), bytes);
+					if (result != CUDA_SUCCESS) {
+						report("Executive::memcpy() - cuMemcpyDtoD() failed");
+					}
 				}
 				else if (type == HostToDevice) {
 					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
@@ -1642,7 +1648,10 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 						stream << nearbyAllocationsToString(*this, dest, bytes);
 						throw hydrazine::Exception(stream.str());
 					}
-					cuMemcpyHtoD(painful_cast(dest), (src), bytes);
+					result = cuMemcpyHtoD(painful_cast(dest), (src), bytes);
+					if (result != CUDA_SUCCESS) {
+						report("Executive::memcpy() - cuMemcpyHtoD() failed");
+					}
 				}
 				else if (type == DeviceToHost) {
 					if (!checkMemoryAccess(getSelected(), src, bytes)) {
@@ -1653,7 +1662,10 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 						stream << nearbyAllocationsToString(*this, src, bytes);
 						throw hydrazine::Exception(stream.str());
 					}
-					cuMemcpyDtoH((dest), painful_cast(src), bytes);
+					result = cuMemcpyDtoH((dest), painful_cast(src), bytes);
+					if (result != CUDA_SUCCESS) {
+						report("Executive;:memcpy() - cuMemcpyDtoH() failed with result " << result);
+					}
 				}
 				else if (type == HostToHost) {
 					if (!checkMemoryAccess(getSelected(), dest, bytes)) {

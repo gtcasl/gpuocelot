@@ -30,7 +30,16 @@ namespace ir {
 		virtual bool executable() {
 			return false;
 		}
-	
+
+		/*!
+			attribute accessors - things every executable kernel should know about itself
+		*/
+		int getConstMemorySize() const { return _constMemorySize; }
+		int getLocalMemorySize() const { return _localMemorySize; }
+		int getMaxThreadsPerBlock() const { return _maxThreadsPerBlock; }
+		int getRegisterCount() const { return _registerCount; }
+		int getSharedMemorySize() const { return _sharedMemorySize; }
+
 		/*!	\brief Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height)=0;
 	
@@ -40,6 +49,13 @@ namespace ir {
 		/*! \brief Describes the device used to execute the kernel */
 		virtual void setDevice(const executive::Device* device,
 			unsigned int limit)=0;
+
+	protected:
+		int _constMemorySize;
+		int _localMemorySize;
+		int _maxThreadsPerBlock;
+		int _registerCount;
+		int _sharedMemorySize;
 	};
 	
 }

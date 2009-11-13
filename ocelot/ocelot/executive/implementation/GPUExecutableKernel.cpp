@@ -45,6 +45,10 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	report("GPUExecutableKernel()");
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
+	_constMemorySize = 0;
+	_localMemorySize = 0;
+	_maxThreadsPerBlock = 0;
+	_registerCount = 100;
 
 	report("  constructed new GPUExecutableKernel");
 }
@@ -79,11 +83,9 @@ void executive::GPUExecutableKernel::setDevice(const Device* device,
 }
 
 void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
+	_sharedMemorySize = bytes;
 #if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
-	if (bytes == 0) {
-		bytes = 8192;
-	}
 	result = cuFuncSetSharedSize(cuFunction, bytes);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuFuncSetSharedSize(" << bytes << " bytes) FAILED: " << result);
@@ -115,6 +117,9 @@ void executive::GPUExecutableKernel::configureParameters() {
 	unsigned int paramSize = 0;
 	cudaError_enum result;
 	for (; it != parameters.end(); ++it) {
+		if (it->getElementSize() == 8 && (paramSize % 8)) {
+			paramSize += 8 - (paramSize % 8);
+		}
 		it->offset = paramSize;
 		paramSize += it->getSize();
 	}
@@ -179,11 +184,12 @@ void executive::GPUExecutableKernel::configureParameters() {
 			{
 				size_t offset = it->offset;
 				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); ++val_it, offset += 8) {
-					unsigned int value = (unsigned int)val_it->val_u64;
+					val_it != it->arrayValues.end(); ++val_it, offset += it->getElementSize()) {
+					size_t value = (size_t)val_it->val_u64;
 				
-					report("  - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: " << it->offset << ", value: 0x" << std::hex << value << std::dec << ")");
-					if (cuParamSeti(cuFunction, offset, value) != CUDA_SUCCESS) {
+					report("  - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: " << it->offset 
+						<< ", value: 0x" << std::hex << value << std::dec << ", size: " << it->getElementSize() << ")");
+					if (cuParamSetv(cuFunction, offset, &value, it->getElementSize()) != CUDA_SUCCESS) {
 						report("*** failed to set integer parameter");
 						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
 							" for kernel " + name);

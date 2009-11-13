@@ -1256,6 +1256,18 @@ namespace cuda
 				break;
 			}
 
+			case ir::Instruction::GPU:
+			{
+				// hard coded for now for some reason
+				attributes->constSizeBytes = 0;
+				attributes->localSizeBytes = 0;
+				attributes->maxThreadsPerBlock = 512;
+				attributes->numRegs = 103;
+				attributes->sharedSizeBytes = 0; 
+								
+				break;
+			}
+
 			default:
 			{
 				std::stringstream stream;

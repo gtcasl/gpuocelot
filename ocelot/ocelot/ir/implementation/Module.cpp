@@ -237,6 +237,26 @@ void ir::Module::extractPTXKernels() {
 	int instructionCount = 0;
 	int kernelInstance = 1;
 
+	/*
+	// KERRDEBUG
+	static int moduleIndex = 0;
+	std::stringstream ss;
+	ss << "raw_modules/module" << moduleIndex << ".ptx";
+	std::string str = ss.str();
+	std::ofstream moduleStream(str.c_str());
+	moduleIndex ++;
+
+	// temporary debugging
+	{
+		// get parameters/locals, extract kernel name
+		for( StatementVector::const_iterator it = statements.begin(); it != statements.end(); ++it ) 
+		{
+			moduleStream << (*it).toString() << "\n";
+		}					
+	}
+	// end KERRDEBUG
+	*/
+
 	for (StatementVector::const_iterator it = statements.begin(); 
 		it != statements.end(); ++it) {
 		const PTXStatement &statement = (*it);

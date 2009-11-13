@@ -449,9 +449,6 @@ namespace cuda
 	{
 		try
 		{
-			if (std::string(symbol) == "softeningSquared") {
-				report("CudaRuntimeBase::cudaMemcpyToSymbol('softeningSquared', value = " << *((float *)src));				
-			}
 			return cudaMemcpy( 
 				( char* ) _runtime.getSymbol( symbol ) + offset, 
 				src, count, cudaMemcpyHostToHost );	// changed from kind
@@ -1132,6 +1129,8 @@ namespace cuda
 		}
 		catch( const hydrazine::Exception& e )
 		{
+			report("CudaRuntimeBase::cudaFuncGetAttributes() - threw an exception that will be rethrown");
+			report("  sought attributes for function '" << func << "'");
 			if( e.code == cudaErrorInvalidDeviceFunction )
 			{
 				error = cudaErrorInvalidDeviceFunction;

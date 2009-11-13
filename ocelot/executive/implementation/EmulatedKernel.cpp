@@ -44,7 +44,7 @@ executive::EmulatedKernel::EmulatedKernel(ir::Kernel* kernel,
 	
 	ConstMemory = ParameterMemory = 0;
 	ConstMemorySize = ParameterMemorySize = SharedMemorySize = 0;
-	
+
 	initialize(ptxKernel.instructions);
 }
 
@@ -363,7 +363,8 @@ void executive::EmulatedKernel::registerAllocation() {
 	using namespace std;
 	report("Allocating registers");
 	registerMap = ir::PTXKernel::assignRegisters( KernelInstructions );
-	RegisterCount = (int)registerMap.size();
+	_registerCount = RegisterCount = (int)registerMap.size();
+	_maxThreadsPerBlock = 512;
 }
 
 void executive::EmulatedKernel::_computeOffset(
@@ -563,7 +564,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	}
 
 	// allocate shared memory object
-	SharedMemorySize = sharedOffset;
+	_sharedMemorySize = SharedMemorySize = sharedOffset;
 	
 	report("Total shared memory size is " << SharedMemorySize);
 }
@@ -651,7 +652,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	}
 
 	// allocate local memory object
-	LocalMemorySize = localOffset;
+	_localMemorySize = LocalMemorySize = localOffset;
 	
 }
 
@@ -735,7 +736,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		delete[] ConstMemory;
 	}
 	
-	ConstMemorySize = constantOffset;
+	_constMemorySize = ConstMemorySize = constantOffset;
 	if (ConstMemorySize > 0) {
 		ConstMemory = new char[ConstMemorySize];
 	}

@@ -447,6 +447,7 @@ namespace cuda
 	cudaError_t CudaRuntimeBase::cudaMemcpyToSymbol( const char* symbol, 
 		const void* src, size_t count, size_t offset, cudaMemcpyKind kind )
 	{
+/*
 		try
 		{
 			return cudaMemcpy( 
@@ -469,11 +470,14 @@ namespace cuda
 				throw;
 			}
 		}
+*/
+		return (_runtime.memcpyToSymbol(symbol, src, count, offset) ? cudaSuccess : cudaErrorInvalidSymbol);	
 	}
 
 	cudaError_t CudaRuntimeBase::cudaMemcpyFromSymbol( void* dst, 
 		const char* symbol, size_t count, size_t offset, cudaMemcpyKind kind )
 	{
+/*
 		try
 		{
 			return cudaMemcpy( dst, 
@@ -495,6 +499,8 @@ namespace cuda
 				throw;
 			}
 		}
+*/
+		return (_runtime.memcpyFromSymbol(dst, symbol, count, offset) ? cudaSuccess : cudaErrorInvalidSymbol);		
 	}
 
 

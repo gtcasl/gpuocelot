@@ -41,7 +41,7 @@ namespace trace
 			throw hydrazine::Exception("Could not read /proc/self/exe");
 		}
 		std::string result( buffer );
-		return hydrazine::stripReportPath( result );
+		return hydrazine::stripReportPath<'/'>( result );
 	}
 	
 	KernelEntry::KernelEntry() : format( TraceGenerator::InvalidTraceFormat ),

@@ -456,7 +456,12 @@ baseOperand : TOKEN_SPECIAL_REGISTER
 
 operand : baseOperand | nonLabelOperand;
 
-memoryOperand : operand;
+memoryOperand : baseOperand;
+
+memoryOperand : identifier
+{
+	state.memoryOperand( $<text>1, 0, @1, false );
+};
 
 memoryOperand : identifier '+' TOKEN_DECIMAL_CONSTANT
 {
@@ -734,7 +739,7 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1, 1 );
 };
 
-mov : OPCODE_MOV dataType arrayOperand ',' memoryArrayOperand ';'
+mov : OPCODE_MOV dataType arrayOperand ',' arrayOperand ';'
 {
 	state.instruction( $<text>1, $<value>2, 3 );
 };
@@ -868,12 +873,6 @@ slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ','
 
 arrayOperand : operand;
 arrayOperand : '{' identifierList '}'
-{
-	state.arrayOperand( @1 );
-};
-
-memoryArrayOperand : memoryOperand;
-memoryArrayOperand : '{' identifierList '}'
 {
 	state.arrayOperand( @1 );
 };

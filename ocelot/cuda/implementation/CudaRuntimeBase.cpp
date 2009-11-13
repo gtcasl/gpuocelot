@@ -1088,6 +1088,7 @@ namespace cuda
 	cudaError_t CudaRuntimeBase::cudaSetupArgument( const void* arg, 
 		size_t size, size_t offset )
 	{
+		report( "Setting up argument" );
 		_runtime.lock();
 
 		_runtime.setupArgument( arg, size, offset );

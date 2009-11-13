@@ -147,11 +147,10 @@ namespace cuda
 				memset( &vi->val_b8 + copySize, 0, remainder );
 				size += ki->getElementSize();
 			}
-			/*
+			
 			report( " Set up parameter " << ki->name << " size " 
 				<< ki->getSize() << " value " 
 				<< ir::Parameter::value( *ki ) );				
-				*/
 		}
 		
 		if( ki != k.parameters.end() )
@@ -715,14 +714,11 @@ namespace cuda
 		
 		_ocelotRuntime.initialize();
 		
-		if(context.getSelected() >= 0 && context.getSelectedDevice().guid != thread->second.guid) {
-			report("  CudaRuntime::setContext() - setting to device " << thread->second.guid);
-			if (!context.select( thread->second.guid ) )
-			{
-				throw hydrazine::Exception( 
-					formatError( "Failed to select ocelot device." ), 
-					thread->second.guid );
-			}
+		if( !context.select( thread->second.guid ) )
+		{
+			throw hydrazine::Exception( 
+				formatError( "Failed to select ocelot device." ), 
+				thread->second.guid );
 		}
 	}
 	
@@ -1153,6 +1149,9 @@ namespace cuda
 		
 		ThreadMap::iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
+		
+		report( "Adding argument of size " << size << " at offset " 
+			<< offset << " for next cuda launch." );
 
 		ThreadContext::ParameterMap::iterator parameter = 
 			thread->second.parameters.lower_bound(offset);
@@ -2140,7 +2139,7 @@ namespace cuda
 		bool noEmulator;
 		bool noLLVM;
 		
-		parse( "PreferredISA", isa, "GPU", c );
+		parse( "PreferredISA", isa, "Emulated", c );
 		parse( "DisableGPUDevices", noGPU, false, c );
 		parse( "DisableEmulatorDevices", noEmulator, false, c );
 		parse( "DisableLLVMDevices", noLLVM, false, c );

@@ -623,13 +623,14 @@ void executive::Executive::enumerateDevices() {
 	}
 	#endif
 	
-#if HAVE_CUDA_DRIVER_API == 1
+	#if HAVE_CUDA_DRIVER_API == 1
 	// enumerate actual CUDA-capable GPUs
 	int deviceCount = 0;
 
 	if (!cudaInitialized) {
 		cuInit(0);
 		// create a CUDA context as well
+		report("Created CUDA driver context.");
 		cudaInitialized = true;
 	}
 	
@@ -678,7 +679,6 @@ void executive::Executive::enumerateDevices() {
 
 		allDevices.push_back(device);
 	}
-	report("  Initialized PTX to GPU");
 	#endif
 	restoreFilteredDevices();
 }
@@ -748,7 +748,6 @@ bool executive::Executive::select(int device) {
 }
 
 bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture ISA) {
-	report("selectDeviceByISA( ISA = " << ISA << ")");
 	for (int i = 0; i < (int)devices.size(); i++) {
 		if (devices[i].ISA == ISA) {
 			return select(devices[i].guid);
@@ -800,7 +799,6 @@ int executive::Executive::getSelected() const {
 	Returns the ISA of the selected device or PTX if no device selected
 */
 ir::Instruction::Architecture executive::Executive::getSelectedISA() const {
-	report("getSelectedISA() - device " << selectedDevice);
 	if (selectedDevice >= 0) {
 		return devices[selectedDevice].ISA;
 	}
@@ -1133,13 +1131,12 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 	const std::string& name, const std::string& modulePath) {
 	using namespace std;
 
-	report( "Registering texture variable " << name 
-		<< " in module " << modulePath << " - selected ISA is " << getSelectedISA());
-					
 	switch (getSelectedISA()) {
 		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
 			{
+				report( "Registering texture variable " << name 
+					<< " in module " << modulePath );
 
 				ModuleMap::iterator module = modules.find(modulePath);
 				if (module == modules.end()) {

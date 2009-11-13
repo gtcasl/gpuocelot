@@ -15,6 +15,7 @@ namespace test
 	{
 		private:
 			bool testStridedAccess();
+			bool testLinearAccess();
 			bool doTest();
 		
 		public:

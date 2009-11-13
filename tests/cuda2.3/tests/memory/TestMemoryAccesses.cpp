@@ -110,6 +110,112 @@ namespace test
 				status << "At index " << i 
 					<< ", copied data " << host[ i ] 
 					<< " does not match reference.\n";
+				status << "Strided test failed.\n";
+				break;
+			}
+		}
+		
+		delete[] host;
+		cudaFree( device1 );
+		cudaFree( device2 );
+		
+		return pass;
+	}
+	
+	bool TestMemoryAccesses::testLinearAccess()
+	{
+		int* device1;
+		int* device2;
+		
+		cudaMalloc( (void**) &device1, bytes );
+		cudaMalloc( (void**) &device2, bytes );
+		
+		cudaMemset( device1, 1, bytes );
+		cudaMemset( device2, 0, bytes );
+		
+		cudaConfigureCall( dim3( ctas, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
+		cudaSetupArgument( &device2, sizeof( long long unsigned int ), 0 );
+		cudaSetupArgument( &device1, sizeof( long long unsigned int ), 
+			sizeof( long long unsigned int ) );
+		
+		unsigned int ints = bytes / sizeof(int);
+		unsigned int stride = ( ints % ctas == 0 ) ? ints / ctas 
+			: (ints / ctas) + 1;
+		
+		cudaSetupArgument( &ints, sizeof( unsigned int ), 
+			2 * sizeof( long long unsigned int ) );
+		cudaSetupArgument( &stride, sizeof( unsigned int ), 
+			2 * sizeof( long long unsigned int ) + sizeof( unsigned int ) );
+
+		std::string program = ".version 1.4\n";
+	
+		program += ".target sm_10, map_f64_to_f32\n\n";
+		program += ".entry linearAccess( .param .u64 out, ";
+		program += ".param .u64 in, .param .u32 size, .param .u32 stride )\n";
+		program += "{\n";
+		program += " .reg .u64 %r<18>;\n";
+		program += " .reg .pred %p0;\n";
+		program += " Entry:\n";
+		program += "  ld.param.u64 %r0, [in];\n";
+		program += "  ld.param.u64 %r1, [out];\n";
+		program += "  ld.param.u32 %r2, [size];\n";
+		program += "  ld.param.u32 %r3, [stride];\n";
+		program += "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		
+		program += "  mul.lo.u64 %r5, %r3, %r4;\n"; //begin
+		program += "  add.u64 %r6, %r5, %r3;\n";
+		program += "  min.u64 %r7, %r6, %r2;\n"; //end
+		
+		program += "  setp.ge.u64 %p0, %r5, %r7;\n";
+		program += "  @%p0 bra Exit;\n";
+		program += " Loop_Begin:\n";
+		program += "  mul.lo.u64 %r8, %r5, 4;\n";
+		program += "  add.u64 %r9, %r8, %r0;\n";
+		program += "  add.u64 %r10, %r8, %r1;\n";
+		program += "  ld.global.u32 %r11, [%r9];\n";
+		program += "  st.global.u32 [%r10], %r11;\n";
+		program += "  add.u64 %r5, %r5, 1;\n";
+		program += "  setp.lt.u64 %p0, %r5, %r7;\n";
+		program += "  @%p0 bra Loop_Begin;\n";
+		program += " Exit:\n";
+		program += "  exit;";
+		program += "}\n";
+	
+		std::stringstream stream( program );
+	
+		ocelot::registerPTXModule( stream, "memory2" );
+		const char* kernelPointer = ocelot::getKernelPointer( 
+			"linearAccess", "memory2" );
+
+		hydrazine::Timer timer;
+		
+		timer.start();
+		cudaLaunch( kernelPointer );
+		cudaThreadSynchronize();
+		timer.stop();
+		
+		double gb = bytes / 1073741824.0;
+		
+		status << "Linear copy test (" << gb << " GB):\n";
+		status << " time: " << timer.seconds() << "s\n";
+		status << " bandwidth: " 
+			<< ( gb / timer.seconds() ) << " GB/s\n";
+		
+		int* host = new int[ ints ];
+
+		cudaMemcpy( host, device2, bytes, cudaMemcpyDeviceToHost );
+		
+		bool pass = true;
+		
+		for( unsigned int i = 0; i < ints; ++i )
+		{
+			if( host[ i ] != 0x01010101 )
+			{
+				pass = false;
+				status << "At index " << i 
+					<< ", copied data " << host[ i ] 
+					<< " does not match reference.\n";
+				status << "Linear test failed.\n";
 				break;
 			}
 		}
@@ -123,7 +229,7 @@ namespace test
 
 	bool TestMemoryAccesses::doTest()
 	{
-		return testStridedAccess();
+		return testStridedAccess() && testLinearAccess();
 	}
 
 	TestMemoryAccesses::TestMemoryAccesses()

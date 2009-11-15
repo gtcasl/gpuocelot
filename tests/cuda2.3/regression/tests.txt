@@ -3,4 +3,5 @@
 ../worleyTestExternalSharedMemory CUDA_SDK_STYLE
 ../TestAtomics
 ../TestMemoryAccesses
+../TestInstructionThroughput
 

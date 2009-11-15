@@ -2042,6 +2042,12 @@ namespace cuda
 	{
 		return _runtime.getKernelPointer( name, module );
 	}
+
+	void** TraceGeneratingCudaRuntime::getFatBinaryHandle( 
+		const std::string& name )
+	{
+		return _runtime.getFatBinaryHandle( name );
+	}
 }
 
 #endif

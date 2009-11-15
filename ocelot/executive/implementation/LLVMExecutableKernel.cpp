@@ -63,10 +63,30 @@ extern "C"
 	{
 		assertM( mode == 0, "No support for setting exotic rounding modes." );
 	}
+
+	float __ocelot_ex2Ftz( float f )
+	{
+		float value = exp( f * 0.693147f );
+		if( std::isnan( value ) || std::isinf( value ) )
+		{
+			value = 0;
+		}
+		return value;
+	}
 	
 	float __ocelot_ex2( float value )
 	{
 		return exp( value * 0.693147f );
+	}
+
+	float __ocelot_rsqrtFtz( float f )
+	{
+		float value = 1.0 / sqrt( f );
+		if( std::isnan( value ) || std::isinf( value ) )
+		{
+			value = 0;
+		}
+		return value;
 	}
 
 	float __ocelot_rsqrt( float value )
@@ -79,19 +99,59 @@ extern "C"
 		return sqrt( f );
 	}
 	
+	float __ocelot_sqrtFtz( float f )
+	{
+		float value = sqrt( f );
+		if( std::isnan( value ) || std::isinf( value ) )
+		{
+			value = 0;
+		}
+		return value;
+	}
+	
 	float __ocelot_sqrtf( float f )
 	{
 		return sqrt( f );
 	}
 	
+	float __ocelot_log2Ftz( float f )
+	{
+		float value = log2( f );
+		if( std::isnan( value ) || std::isinf( value ) )
+		{
+			value = 0;
+		}
+		return value;
+	}
+
 	float __ocelot_log2f( float f )
 	{
 		return log2( f );
 	}
 
+	float __ocelot_sinFtz( float f )
+	{
+		float value = sin( f );
+		if( std::isnan( value ) || std::isinf( value ) )
+		{
+			value = 0;
+		}
+		return value;
+	}
+
 	float __ocelot_sinf( float f )
 	{
 		return sin( f );
+	}
+
+	float __ocelot_cosFtz( float f )
+	{
+		float value = cos( f );
+		if( std::isnan( value ) || std::isinf( value ) )
+		{
+			value = 0;
+		}
+		return value;
 	}
 
 	float __ocelot_cosf( float f )

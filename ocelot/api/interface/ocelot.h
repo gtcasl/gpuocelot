@@ -38,7 +38,7 @@ namespace ocelot
 		when executing a CUDA kernel on a Multi-Core CPU.
 		\param limit The max number of worker threads to launch per kernel.
 	*/
-	void limitWorkerThreads( unsigned int limit = -1 );
+	void limitWorkerThreads( unsigned int limit = 1024 );
 	
 	/*! \brief Register an istream containing a PTX module.
 		
@@ -61,6 +61,14 @@ namespace ocelot
 	*/
 	KernelPointer getKernelPointer(const std::string& name, 
 		const std::string& module);
+
+	/*! \brief Get a handle to a fat binary from its name
+		
+		\param name The fat binary's name
+		\return A handle to the named fat binary
+	*/
+	void** getFatBinaryHandle(const std::string& name);
+
 }
 
 #endif

@@ -1726,7 +1726,12 @@ namespace cuda
 		throw hydrazine::Exception( "Could not find kernel " + name 
 			+ " in module " + module );		
 	}
-
+	
+	void** CudaRuntimeBase::getFatBinaryHandle(const std::string& name)
+	{
+		unsigned int handle = _runtime.getFatBinaryHandle( name );
+		return (void**) handle;
+	}
 }
 
 #endif

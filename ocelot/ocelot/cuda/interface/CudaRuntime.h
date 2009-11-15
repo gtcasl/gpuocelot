@@ -33,9 +33,7 @@ namespace cuda
 	*/
 	class CudaRuntime : public hydrazine::Configurable
 	{
-
 		public:
-			
 			class Memory
 			{
 				public:
@@ -75,14 +73,18 @@ namespace cuda
 			typedef std::unordered_map< const textureReference*, 
 				Texture > TextureMap;
 			
+			/*! \brief A set of textures owned by a fat binary */
+			typedef std::vector< const textureReference* > TextureVector;
+			
 			/*!	\brief Class allowing sharing of a fat binary among threads	*/
 			class FatBinaryContext
 			{
 				public:
-					std::string name; //< The fat binary name
-					ThreadSet threads; //< Registered threads
-					KernelMap kernels; //< Translated kernels
-					GlobalMap globals; //< Global variables			
+					std::string name; //! The fat binary name
+					ThreadSet threads; //! Registered threads
+					KernelMap kernels; //! Translated kernels
+					GlobalMap globals; //! Global variables
+					TextureVector textures; //! Texture variables
 			};
 			
 			/*!	\brief Kernel name and handle pair */
@@ -91,7 +93,6 @@ namespace cuda
 				public:
 					std::string kernel;
 					unsigned int handle;
-			
 			};
 			
 			/*!	\brief Stream class	*/
@@ -333,8 +334,13 @@ namespace cuda
 			*/
 			unsigned int registerFatBinary( const FatBinary& binary );
 
-			/*!
-				\brief unRegister a FatBinary
+			/*! \brief Get a handle to a fat binary by name 
+				\param name The name of the fat binary being searched for
+				\return A handle to the specified binary
+			*/
+			unsigned int getFatBinaryHandle( const std::string& name );
+
+			/*! \brief unRegister a FatBinary
 			
 				\param handle The FatBinary being unregistered.
 			*/
@@ -391,8 +397,7 @@ namespace cuda
 				const std::string& name, ir::PTXInstruction::AddressSpace, 
 				unsigned int handle );
 
-			/*!
-				\brief Register texture variables			
+			/*! \brief Register texture variables			
 				\param pointer Pointer to texture
 				\param PTX Kernel name
 				\param handle Handle to the fat binary associated with this 
@@ -404,48 +409,44 @@ namespace cuda
 				unsigned int size, const std::string& name, 
 				unsigned int handle, bool normalize );
 				
-			/*!
-				\brief Determine if a pointer is to a global variable
+			/*! \brief Determine if a pointer is to a global variable
 				\param pointer Pointer being evaluated
 				\return True if pointer is to a gloabl
 			*/
 			bool isGlobal( const void* pointer ) const;
 
 
-			bool memcpyToSymbol( const char* symbol, const void* src, size_t count, size_t offset);
+			bool memcpyToSymbol( const char* symbol, const void* src, 
+				size_t count, size_t offset);
 
-			bool memcpyFromSymbol( void* dst, const char* symbol, size_t count, size_t offset);
+			bool memcpyFromSymbol( void* dst, const char* symbol, 
+				size_t count, size_t offset);
 
-			/*!
-				\brief Launch a cuda kernel			
+			/*! \brief Launch a cuda kernel			
 				\param Pointer to the equivalent host function
 			*/
 			void launch( const char* symbol );
 		
 		public:
-			/*!
-				\brief Allocate some host pinned memory
+			/*! \brief Allocate some host pinned memory
 				\param size The number of bytes to allocate
 				\return a pointer to newly allocated memory on the host
 			*/
 			void* allocate( unsigned int size, bool portable = false, 
 				bool mappable = false );
 
-			/*!
-				\brief Look up allocated and mapped memory on the cuda device
+			/*! \brief Look up allocated and mapped memory on the cuda device
 				\param pointer A pointer to mapped host memory
 				\return A pointer to the equiavlent device memory
 			*/
 			void* lookupMappedMemory( void* pointer );
 
-			/*!
-				\brief Free some host pinned memory			
+			/*! \brief Free some host pinned memory			
 				\param pointer The memory to free
 			*/
 			void free( void* pointer );
 
-			/*!
-				\brief Allocate a device array
+			/*! \brief Allocate a device array
 				\param desc The channel description of the array
 				\param width Number of elements wide
 				\param height Number of elements high
@@ -456,14 +457,12 @@ namespace cuda
 				unsigned int width, unsigned int height, 
 				unsigned int length = 1 );
 
-			/*!
-				\brief Free some host pinned memory			
+			/*! \brief Free some host pinned memory			
 				\param pointer The memory to free
 			*/
 			void freeArray( cudaArray * pointer );
 			
-			/*!
-				\brief Get a byte offset from an array given the width, 
+			/*! \brief Get a byte offset from an array given the width, 
 					height, and length indices
 				
 				\param array The array to get the offset from
@@ -475,40 +474,34 @@ namespace cuda
 			unsigned int offset( const cudaArray* array, unsigned int width, 
 				unsigned int height, unsigned int length = 0 ) const;
 				
-			/*!
-				\brief Get a reference to the channel description of an array
+			/*! \brief Get a reference to the channel description of an array
 				\param array The array for which to get the description
 				\return The description
 			*/
 			const cudaChannelFormatDesc& getChannel( 
 				const cudaArray* array ) const;
 				
-			/*!
-				\brief Get a reference to a global texture symbol
+			/*! \brief Get a reference to a global texture symbol
 				\return The refernce
 				\param name The name of the global texture variable
 			*/
 			const textureReference* getTexture( 
 				const std::string& name ) const;
 				
-			/*!
-				\brief Rebinds a texture to another allocated device memory
+			/*! \brief Rebinds a texture to another allocated device memory
 					region
 			*/
 			void rebind( const textureReference *texref, 
 				const void *devPtr, const cudaChannelFormatDesc *desc, 
 				size_t size );
 				
-			/*!
-				\brief Rebinds a texture to another allocated device memory
+			/*! \brief Rebinds a texture to another allocated device memory
 					region
 			*/
 			void rebind( const textureReference *texref, 
 				const cudaArray* array, const cudaChannelFormatDesc *desc );
 
-			/*!
-				\brief Unbinds a texture
-			*/
+			/*! \brief Unbinds a texture */
 			void unbind( const textureReference *texref );
 				
 			/*!
@@ -519,48 +512,41 @@ namespace cuda
 			void* getSymbol(const std::string& name);
 			
 		public:
-			/*!
-				\brief Create a new Stream in this context
+			/*!	\brief Create a new Stream in this context
 				\return A handle to the newly created Stream
 			*/
 			cudaStream_t createStream();
 
-			/*!
-				\brief Destroy a Stream in this context
+			/*! \brief Destroy a Stream in this context
 				\param stream A handle to the Stream being destroyed
 			*/
 			void destroyStream( cudaStream_t stream );
 
-			/*!
-				\brief Determine if a Stream handle is valid
+			/*! \brief Determine if a Stream handle is valid
 				
 				\param stream The Stream handle
 				\return True if valid in this context
 			*/
 			bool streamValid( cudaStream_t stream ) const;
 
-			/*!
-				\brief Create a new Event in this context
+			/*! \brief Create a new Event in this context
 				\return A handle to the newly created Event
 			*/
 			cudaEvent_t createEvent();
 
-			/*!
-				\brief Destroy an Event in this context
+			/*! \brief Destroy an Event in this context
 				\param stream A handle to the Event being destroyed
 			*/
 			void destroyEvent( cudaEvent_t event );
 		
-			/*!
-				\brief Determine if an Event handle is valid
+			/*! \brief Determine if an Event handle is valid
 				
 				\param event The Event handle
 				\return True if valid in this context
 			*/
 			bool eventValid( cudaEvent_t event ) const;
 
-			/*!
-				\brief Record that an event occured on a specific stream
+			/*! \brief Record that an event occured on a specific stream
 				
 				\param stream The stream handle
 				\param event The Event handle
@@ -568,8 +554,7 @@ namespace cuda
 			*/
 			void eventRecord( cudaEvent_t event, cudaStream_t stream );
 			
-			/*!
-				\brief Get the elapsed time in ms between two events
+			/*! \brief Get the elapsed time in ms between two events
 				
 				\param start Start event
 				\param end End event

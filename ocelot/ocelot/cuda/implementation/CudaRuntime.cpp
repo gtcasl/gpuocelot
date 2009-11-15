@@ -981,19 +981,32 @@ namespace cuda
 		return bi->first;
 	}
 
+	unsigned int CudaRuntime::getFatBinaryHandle( const std::string& name )
+	{
+		for( FatBinaryMap::const_iterator binary = _binaries.begin(); 
+			binary != _binaries.end(); ++binary )
+		{
+			if( binary->second.name == name )
+			{
+				return binary->first;
+			}
+		}
+		
+		throw hydrazine::Exception("Requested binary " + name 
+			+ " was not registered.");
+	}
+
 	void CudaRuntime::unregisterFatBinary( unsigned int handle )
 	{
 		FatBinaryMap::iterator binary = _binaries.find( handle );
 		
 		if( binary == _binaries.end() )
 		{
-		
 			std::stringstream stream;
 			stream << handle;
 			throw hydrazine::Exception(
 				formatError( "Invalid fat binary handle\"" + stream.str() 
 				+ "\""), 3 );
-		
 		}
 
 		ThreadSet::iterator thread = 
@@ -1001,19 +1014,26 @@ namespace cuda
 		
 		if( thread == binary->second.threads.end() )
 		{
-		
 			std::stringstream stream;
 			stream << "Thread " << pthread_self() 
 				<< " never registered fat binary \"" 
 				<< binary->second.name << "\"";
 			throw hydrazine::Exception( formatError( stream.str() ), 4 );
-		
 		}
 		
 		for( GlobalMap::iterator global = binary->second.globals.begin(); 
 			global != binary->second.globals.end(); ++global )
 		{
 			context.freeGlobal( global->first, binary->second.name );
+		}
+		
+		for( TextureVector::const_iterator 
+			texture = binary->second.textures.begin(); 
+			texture != binary->second.textures.end(); ++texture )
+		{
+			TextureMap::iterator tex = _textures.find( *texture );
+			assert( tex != _textures.end() );
+			_textures.erase( tex );
 		}
 		
 		binary->second.threads.erase( thread );
@@ -1035,7 +1055,6 @@ namespace cuda
 	void CudaRuntime::configureCall( dim3 kernel, dim3 cta, 
 		unsigned int memory )
 	{
-	
 		pthread_t id = pthread_self();
 		
 		ThreadMap::iterator thread = _threads.find( id );
@@ -1139,7 +1158,6 @@ namespace cuda
 		thread->second.kernelDimensions = kernel;
 		thread->second.ctaDimensions = cta;
 		thread->second.shared = memory;		
-	
 	}
 	
 	void CudaRuntime::setupArgument( const void *arg, unsigned int size, 
@@ -1767,7 +1785,6 @@ namespace cuda
 		unsigned int size, const std::string& name, unsigned int handle, 
 		bool normalize )
 	{
-
 		report( "Registering texture variable " << name << " to " 
 			<< hostVar << " with " << size << " dimensions," 
 			<< ((normalize) ? " normalized float" : " element") );
@@ -1807,7 +1824,8 @@ namespace cuda
 			context.registerTexture( texture, name, 
 				binary->second.name );
 		}
-	
+		
+		binary->second.textures.push_back( hostVar );
 	}
 	
 	bool CudaRuntime::isGlobal( const void* pointer ) const
@@ -1821,7 +1839,8 @@ namespace cuda
 			{
 				if( (char*)pointer == global->second )
 				{
-					report(" global symbol: '" << global->first << "', pointer " << (void *)pointer << "");
+					report(" global symbol: '" << global->first 
+						<< "', pointer " << (void *)pointer << "");
 					return true;
 				}						
 			}			
@@ -1830,9 +1849,12 @@ namespace cuda
 	}
 
 
-	bool CudaRuntime::memcpyToSymbol( const char* symbol, const void* src, size_t count, size_t offset) {
+	bool CudaRuntime::memcpyToSymbol( const char* symbol, const void* src, 
+		size_t count, size_t offset) 
+	{
 		char *dest = 0;
-		report("memcpyToSymbol(offset " << offset << ", " << count << " bytes)");
+		report("memcpyToSymbol(offset " << offset << ", " 
+			<< count << " bytes)");
 		bool is_global = false;
 		std::string symbolName;
 		for( FatBinaryMap::const_iterator binary = _binaries.begin();
@@ -1850,7 +1872,8 @@ namespace cuda
 				}						
 			}			
 		}		
-		if (is_global) {
+		if( is_global ) 
+		{
 			for( FatBinaryMap::const_iterator binary = _binaries.begin();
 				binary != _binaries.end(); ++binary )
 			{			
@@ -1858,14 +1881,17 @@ namespace cuda
 					global = binary->second.globals.begin(); 
 					global != binary->second.globals.end(); ++global )
 				{
-					if (symbolName == global->first) {
+					if (symbolName == global->first) 
+					{
 						dest = (char *)global->second + offset;
-						context.memcpy(dest, src, count, executive::Executive::HostToHost);
+						context.memcpy(dest, src, count, 
+							executive::Executive::HostToHost);
 					}					
 				}			
 			}	
 		}
-		else {
+		else 
+		{
 			report(" named symbol: '" << symbol << "'");
 			dest = (char *)getSymbol(symbol) + offset;
 			context.memcpy(dest, src, count, executive::Executive::HostToHost);
@@ -1874,15 +1900,19 @@ namespace cuda
 		return true;
 	}
 
-	bool CudaRuntime::memcpyFromSymbol( void* dst, const char* symbol, size_t count, size_t offset) {
+	bool CudaRuntime::memcpyFromSymbol( void* dst, const char* symbol, 
+		size_t count, size_t offset ) 
+	{
 		char *src;
-		if (isGlobal(symbol)) {
-			src = (char *)symbol + offset;
+		if( isGlobal( symbol ) ) 
+		{
+			src = (char*) symbol + offset;
 		}
-		else {
-			src = (char *)getSymbol(symbol) + offset;
+		else 
+		{
+			src = ( char* )getSymbol( symbol ) + offset;
 		}
-		context.memcpy(dst, src, count, executive::Executive::HostToHost);
+		context.memcpy( dst, src, count, executive::Executive::HostToHost );
 		return true;
 	}
 	

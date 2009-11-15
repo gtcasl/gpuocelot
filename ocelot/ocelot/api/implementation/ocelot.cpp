@@ -46,6 +46,12 @@ namespace ocelot
 			getKernelPointer( name, module );
 	}
 
+	void** getFatBinaryHandle(const std::string& name)
+	{
+		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
+			getFatBinaryHandle( name );
+	}
+
 }
 
 #endif

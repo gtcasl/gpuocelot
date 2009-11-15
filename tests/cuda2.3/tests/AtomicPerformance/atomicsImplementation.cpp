@@ -7,9 +7,8 @@
 #ifndef ATOMICS_CU_INCLUDED
 #define ATOMICS_CU_INCLUDED
 
-#undef _GLIBCXX_ATOMIC_BUILTINS_4
-
 #include <ocelot/api/interface/ocelot.h>
+#include <cuda_runtime_api.h>
 #include <sstream>
 
 long long unsigned int atomic_increment(long long unsigned int iterations, 

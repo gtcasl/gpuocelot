@@ -4,36 +4,62 @@ INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics
+INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses
+INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses
+INFO     Test completed in 0.390583992004 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestMemoryAccesses
+
+Description: A benchmark for PTX memory operations.
+
+
+Test Seed : 1258290521
+Test time : 0.319591
+
+Status : Strided copy test (0.000931323 GB):
+ time: 0.165604s
+ bandwidth: 0.00562378 GB/s
+Linear copy test (0.000931323 GB):
+ time: 0.124884s
+ bandwidth: 0.00745749 GB/s
+
+
+
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory
-INFO     Test completed in 0.0493710041046 seconds
+INFO     Test completed in 0.12327003479 seconds
 INFO      It produced the following output:
 TEST PASSED
 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD
-INFO     Test completed in 0.5705909729 seconds
+INFO     Test completed in 1.46905207634 seconds
 INFO      It produced the following output:
-3DFD running on: Ocelot PTX Emulator
-Total GPU Memory: 1.0692 GB
+3DFD running on: Ocelot LLVM JIT-Compiler
+Total GPU Memory: 475.4648 MB
 48x48x40
 allocated 0.7 MB on device
 (3,3)x(16,16) grid
 -------------------------------
-time:         522.95 ms
-throughput:     0.14 MPoints/s
+time:        1332.90 ms
+throughput:     0.06 MPoints/s
 CUDA: Success.
 -------------------------------
 comparing to CPU result...
   Result within epsilon
   TEST PASSED!
 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics
-INFO     Test completed in 7.46324896812 seconds
+INFO     Test completed in 0.48953294754 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -43,94 +69,95 @@ Name : TestAtomics
 Description: A performance test of the atomic implementation. 
 
 
-Test Seed : 1257965236
-Test time : 7.41863
+Test Seed : 1258290523
+Test time : 0.389019
 
-Status : Serial Time: 6.9943 seconds 
-Atomic Time: 0.424315 seconds 
-Serial Speedup: 0.0606658x
+Status : Serial Time: 0.109009 seconds 
+Atomic Time: 0.279903 seconds 
+Serial Speedup: 2.56771x
 
 
 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork
-INFO     Test completed in 66.00075984 seconds
+INFO     Test completed in 8.88256692886 seconds
 INFO      It produced the following output:
 Starting up CUDA context...
 Allocating and initializing host arrays...
 Allocating and initializing CUDA arrays...
 Running GPU bitonic sort (1 identical iterations)...
 Testing array length 64 (1024 arrays per batch)...
-	Average time: 2445.145996 ms
+	Average time: 973.557007 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 128 (512 arrays per batch)...
-	Average time: 3103.523926 ms
+	Average time: 163.328003 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 256 (256 arrays per batch)...
-	Average time: 3010.263916 ms
+	Average time: 202.244003 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 512 (128 arrays per batch)...
-	Average time: 3194.395020 ms
+	Average time: 284.132996 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 1024 (64 arrays per batch)...
-	Average time: 3849.773926 ms
+	Average time: 392.951996 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 2048 (32 arrays per batch)...
-	Average time: 4634.215820 ms
+	Average time: 1588.538940 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 4096 (16 arrays per batch)...
-	Average time: 5918.243164 ms
+	Average time: 463.381012 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 8192 (8 arrays per batch)...
-	Average time: 7185.265137 ms
+	Average time: 554.002014 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 16384 (4 arrays per batch)...
-	Average time: 8757.999023 ms
+	Average time: 733.895996 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 32768 (2 arrays per batch)...
-	Average time: 10557.489258 ms
+	Average time: 768.643005 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
 validateValues(): key and val arrays match
 TEST PASSED
 Testing array length 65536 (1 arrays per batch)...
-	Average time: 12474.927734 ms
+	Average time: 920.760010 ms
 	Reading back GPU results...
 	Inspecting sorted results...
 validateSortedKeys(): result key array is ordered correctly
@@ -140,12 +167,51 @@ Shutting down...
 
 Press ENTER to exit...
 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions
+INFO     Test completed in 17.9148759842 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestSpecialFunctions
+
+Description: Benchmark for special function and texture throughput.
+
+
+Test Seed : 1258290523
+Test time : 17.8098
+
+Status : Test RCP (640000 operations):
+ throughput: 3.06491e+06 ops/s
+Test SQRT (640000 operations):
+ throughput: 456096 ops/s
+Test RSQRT (640000 operations):
+ throughput: 431493 ops/s
+Test SIN (640000 operations):
+ throughput: 409194 ops/s
+Test COS (640000 operations):
+ throughput: 417528 ops/s
+Test LG2 (640000 operations):
+ throughput: 577927 ops/s
+Test EX2 (640000 operations):
+ throughput: 591100 ops/s
+Test TEX 1D (640000 operations):
+ throughput: 297392 ops/s
+Test TEX 2D (640000 operations):
+ throughput: 211763 ops/s
+Test TEX 3D (640000 operations):
+ throughput: 156427 ops/s
+
+
+
 INFO     
 Passing tests:
- (66.001s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork : Passed
- (7.463s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics : Passed
- (0.049s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory : Passed
- (0.571s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD : Passed
+ (8.883s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork : Passed
+ (17.915s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions : Passed
+ (0.490s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics : Passed
+ (1.469s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD : Passed
+ (0.391s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses : Passed
+ (0.123s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory : Passed
 
 Failing tests:
 

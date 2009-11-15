@@ -22,7 +22,7 @@ SDK_CFLAGS = -I $(srcdir)/sdk
 ## Programs and Libraries
 bin_PROGRAMS = 
 check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
-	TestAtomics TestMemoryAccesses TestBarriers TestInstructionThroughput
+	TestAtomics TestMemoryAccesses TestBarriers TestSpecialFunctions
 lib_LTLIBRARIES = libsdk.la
 ################################################################################
 
@@ -67,7 +67,7 @@ SortingNetwork_LDFLAGS = -static
 ################################################################################
 ## TestAtomics
 TestAtomics_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-TestAtomics_SOURCES = tests/AtomicPerformance/atomics.cu.cpp \
+TestAtomics_SOURCES = tests/AtomicPerformance/atomicsImplementation.cpp \
 	tests/AtomicPerformance/atomics.cpp
 TestAtomics_LDADD = $(OCELOT_LIBS)
 TestAtomics_LDFLAGS = -static
@@ -90,12 +90,12 @@ TestBarriers_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-## TestInstructionThroughput
-TestInstructionThroughput_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-TestInstructionThroughput_SOURCES = \
-	tests/TestInstructionThroughput/TestInstructionThroughput.cpp
-TestInstructionThroughput_LDADD = $(OCELOT_LIBS)
-TestInstructionThroughput_LDFLAGS = -static
+## TestSpecialFunctions
+TestSpecialFunctions_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+TestSpecialFunctions_SOURCES = \
+	tests/TestSpecialFunctions/TestSpecialFunctions.cpp
+TestSpecialFunctions_LDADD = $(OCELOT_LIBS)
+TestSpecialFunctions_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

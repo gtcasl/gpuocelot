@@ -2473,15 +2473,11 @@ namespace translator
 	void PTXToLLVMTranslator::_translateSetP( const ir::PTXInstruction& i )
 	{
 		ir::LLVMInstruction::Operand d = _destination( i );
-		ir::LLVMInstruction::Operand tempD;
+		ir::LLVMInstruction::Operand tempD = d;
 
 		if( i.c.addressMode == ir::PTXOperand::Register )
 		{
-			tempD = _destination( i, true );
-		}
-		else
-		{
-			tempD = d;
+			tempD.name = _tempRegister();
 		}
 
 		if( ir::PTXOperand::isFloat( i.a.type ) )
@@ -2706,7 +2702,7 @@ namespace translator
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@sqrtfFtz";
+			call.name = "@__ocelot_sqrtFtz";
 		}
 		else if( i.a.type == ir::PTXOperand::f64 )
 		{
@@ -5063,6 +5059,8 @@ namespace translator
 		cosf.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
 		_llvmKernel->_statements.push_front( cosf );		
+		cosf.label = "__ocelot_cosFtz";
+		_llvmKernel->_statements.push_front( cosf );
 
 		ir::LLVMStatement sinf( ir::LLVMStatement::FunctionDeclaration );
 
@@ -5078,6 +5076,8 @@ namespace translator
 		sinf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		sinf.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
+		_llvmKernel->_statements.push_front( sinf );		
+		sinf.label = "__ocelot_sinFtz";
 		_llvmKernel->_statements.push_front( sinf );		
 
 		ir::LLVMStatement ex2( ir::LLVMStatement::FunctionDeclaration );
@@ -5095,7 +5095,9 @@ namespace translator
 		ex2.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
 		_llvmKernel->_statements.push_front( ex2 );		
-
+		ex2.label = "__ocelot_ex2Ftz";
+		_llvmKernel->_statements.push_front( ex2 );
+		
 		ir::LLVMStatement log2f( ir::LLVMStatement::FunctionDeclaration );
 
 		log2f.label = "__ocelot_log2f";
@@ -5111,6 +5113,8 @@ namespace translator
 		log2f.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
 		_llvmKernel->_statements.push_front( log2f );		
+		log2f.label = "__ocelot_log2Ftz";
+		_llvmKernel->_statements.push_front( log2f );
 
 		ir::LLVMStatement sqrtf( ir::LLVMStatement::FunctionDeclaration );
 
@@ -5127,6 +5131,8 @@ namespace translator
 		sqrtf.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
 		_llvmKernel->_statements.push_front( sqrtf );		
+		sqrtf.label = "__ocelot_sqrtFtz";
+		_llvmKernel->_statements.push_front( sqrtf );
 
 		ir::LLVMStatement sqrt( ir::LLVMStatement::FunctionDeclaration );
 
@@ -5144,7 +5150,6 @@ namespace translator
 	
 		_llvmKernel->_statements.push_front( sqrt );		
 
-
 		ir::LLVMStatement rsqrt( ir::LLVMStatement::FunctionDeclaration );
 
 		rsqrt.label = "__ocelot_rsqrt";
@@ -5159,6 +5164,8 @@ namespace translator
 		rsqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		rsqrt.parameters[0].type.type = ir::LLVMInstruction::F32;
 	
+		_llvmKernel->_statements.push_front( rsqrt );		
+		rsqrt.label = "__ocelot_rsqrtFtz";
 		_llvmKernel->_statements.push_front( rsqrt );		
 
 		ir::LLVMStatement setRoundingMode( 

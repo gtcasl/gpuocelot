@@ -62,7 +62,7 @@
 #if __DEVICE_EMULATION__
 #define __debugsync() __syncthreads()
 #else
-#define __debugsync() __syncthreads()
+#define __debugsync()
 #endif
 
 

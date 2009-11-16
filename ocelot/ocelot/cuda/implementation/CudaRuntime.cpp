@@ -2260,7 +2260,7 @@ namespace cuda
 		}
 		else
 		{
-			context.setPreferredISA( ir::Instruction::GPU );		
+			context.setPreferredISA( ir::Instruction::GPU );
 		}
 		
 		std::string optimization;

@@ -4,3 +4,5 @@
 ../TestAtomics
 ../TestMemoryAccesses
 ../TestSpecialFunctions
+../TestInstructionThroughput
+

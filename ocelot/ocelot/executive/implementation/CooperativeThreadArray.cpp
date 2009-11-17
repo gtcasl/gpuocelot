@@ -1569,7 +1569,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					}
 					PTXB32 d = *((PTXB32*)source);
 					setRegAsB32(threadID, instr.d.reg, d);
-					PTXB32 b = getRegAsB32(threadID, instr.b.reg);
+					PTXB32 b = operandAsB32(threadID, instr.b);
 					*((PTXB32*)source) = d & b;
 					reportE(REPORT_ATOM, "Atomically updated " << d << " to " 
 						<< *((PTXB32*)source) );		
@@ -1585,7 +1585,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					}
 					PTXB32 d = *((PTXB32*)source);
 					setRegAsB32(threadID, instr.d.reg, d);
-					PTXB32 b = getRegAsB32(threadID, instr.b.reg);
+					PTXB32 b = operandAsB32(threadID, instr.b);
 					*((PTXB32*)source) = d | b;
 					reportE(REPORT_ATOM, "Atomically updated " << d << " to " 
 						<< *((PTXB32*)source) );		
@@ -1601,7 +1601,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					}
 					PTXB32 d = *((PTXB32*)source);
 					setRegAsB32(threadID, instr.d.reg, d);
-					PTXB32 b = getRegAsB32(threadID, instr.b.reg);
+					PTXB32 b = operandAsB32(threadID, instr.b);
 					*((PTXB32*)source) = d ^ b;				
 					reportE(REPORT_ATOM, "Atomically updated " << d << " to " 
 						<< *((PTXB32*)source) );		
@@ -1614,8 +1614,8 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 						|| instr.type == PTXOperand::u32) {
 						PTXB32 d = *((PTXB32*)source);
 						setRegAsB32(threadID, instr.d.reg, d);
-						PTXB32 b = getRegAsB32(threadID, instr.b.reg);
-						PTXB32 c = getRegAsB32(threadID, instr.c.reg);
+						PTXB32 b = operandAsB32(threadID, instr.b);
+						PTXB32 c = operandAsB32(threadID, instr.c);
 						*((PTXB32*)source) = (d==b) ? c : d;				
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXB32*)source) );		
@@ -1625,8 +1625,8 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 						|| instr.type == PTXOperand::u64) {
 						PTXB64 d = *((PTXB64*)source);
 						setRegAsB64(threadID, instr.d.reg, d);
-						PTXB64 b = getRegAsB64(threadID, instr.b.reg);
-						PTXB64 c = getRegAsB64(threadID, instr.c.reg);
+						PTXB64 b = operandAsB64(threadID, instr.b);
+						PTXB64 c = operandAsB64(threadID, instr.c);
 						*((PTXB64*)source) = (d==b) ? c : d;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXB64*)source) );		
@@ -1644,7 +1644,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 						|| instr.type == PTXOperand::u32) {
 						PTXB32 d = *((PTXB32*)source);
 						setRegAsB32(threadID, instr.d.reg, d);
-						PTXB32 b = getRegAsB32(threadID, instr.b.reg);
+						PTXB32 b = operandAsB32(threadID, instr.b);
 						*((PTXB32*)source) = b;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXB32*)source) );		
@@ -1654,7 +1654,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 						|| instr.type == PTXOperand::u64) {
 						PTXB64 d = *((PTXB64*)source);
 						setRegAsB64(threadID, instr.d.reg, d);
-						PTXB64 b = getRegAsB64(threadID, instr.b.reg);
+						PTXB64 b = operandAsB64(threadID, instr.b);
 						*((PTXB64*)source) = b;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXB64*)source) );		
@@ -1670,7 +1670,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					if (instr.type == PTXOperand::u32) {
 						PTXU32 d = *((PTXU32*)source);
 						setRegAsU32(threadID, instr.d.reg, d);
-						PTXU32 b = getRegAsU32(threadID, instr.b.reg);
+						PTXU32 b = operandAsU32(threadID, instr.b);
 						*((PTXU32*)source) = b + d;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXU32*)source) );		
@@ -1678,7 +1678,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::s32) {
 						PTXS32 d = *((PTXS32*)source);
 						setRegAsS32(threadID, instr.d.reg, d);
-						PTXS32 b = getRegAsS32(threadID, instr.b.reg);
+						PTXS32 b = operandAsS32(threadID, instr.b);
 						*((PTXS32*)source) = b + d;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXS32*)source) );		
@@ -1686,7 +1686,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::f32) {
 						PTXF32 d = *((PTXF32*)source);
 						setRegAsF32(threadID, instr.d.reg, d);
-						PTXF32 b = getRegAsF32(threadID, instr.b.reg);
+						PTXF32 b = operandAsF32(threadID, instr.b);
 						*((PTXF32*)source) = b + d;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXF32*)source) );		
@@ -1694,7 +1694,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::u64) {
 						PTXU64 d = *((PTXU64*)source);
 						setRegAsU64(threadID, instr.d.reg, d);
-						PTXU64 b = getRegAsU64(threadID, instr.b.reg);
+						PTXU64 b = operandAsU64(threadID, instr.b);
 						*((PTXU64*)source) = b + d;
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXU64*)source) );		
@@ -1713,7 +1713,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					}
 					PTXU32 d = *((PTXU32*)source);
 					setRegAsU32(threadID, instr.d.reg, d);
-					PTXU32 b = getRegAsU32(threadID, instr.b.reg);
+					PTXU32 b = operandAsU32(threadID, instr.b);
 					*((PTXU32*)source) = (d >= b) ? 0 : d + 1;
 					reportE(REPORT_ATOM, "Atomically updated " << d 
 						<< " to " << *((PTXU32*)source) );		
@@ -1727,7 +1727,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					}
 					PTXU32 d = *((PTXU32*)source);
 					setRegAsU32(threadID, instr.d.reg, d);
-					PTXU32 b = getRegAsU32(threadID, instr.b.reg);
+					PTXU32 b = operandAsU32(threadID, instr.b);
 					*((PTXU32*)source) = ((d == 0) || (d > b)) ? b : d - 1;				
 					reportE(REPORT_ATOM, "Atomically updated " << d 
 						<< " to " << *((PTXU32*)source) );		
@@ -1738,7 +1738,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					if (instr.type == PTXOperand::u32) {
 						PTXU32 d = *((PTXU32*)source);
 						setRegAsU32(threadID, instr.d.reg, d);
-						PTXU32 b = getRegAsU32(threadID, instr.b.reg);
+						PTXU32 b = operandAsU32(threadID, instr.b);
 						*((PTXU32*)source) = min(b, d);
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXU32*)source) );		
@@ -1746,7 +1746,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::s32) {
 						PTXS32 d = *((PTXS32*)source);
 						setRegAsS32(threadID, instr.d.reg, d);
-						PTXS32 b = getRegAsS32(threadID, instr.b.reg);
+						PTXS32 b = operandAsS32(threadID, instr.b);
 						*((PTXS32*)source) = min(b, d);
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXS32*)source) );		
@@ -1754,7 +1754,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::f32) {
 						PTXF32 d = *((PTXF32*)source);
 						setRegAsF32(threadID, instr.d.reg, d);
-						PTXF32 b = getRegAsF32(threadID, instr.b.reg);
+						PTXF32 b = operandAsF32(threadID, instr.b);
 						*((PTXF32*)source) = min(b, d);
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXF32*)source) );		
@@ -1770,7 +1770,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					if (instr.type == PTXOperand::u32) {
 						PTXU32 d = *((PTXU32*)source);
 						setRegAsU32(threadID, instr.d.reg, d);
-						PTXU32 b = getRegAsU32(threadID, instr.b.reg);
+						PTXU32 b = operandAsU32(threadID, instr.b);
 						*((PTXU32*)source) = max(b, d);
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXU32*)source) );		
@@ -1778,7 +1778,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::s32) {
 						PTXS32 d = *((PTXS32*)source);
 						setRegAsS32(threadID, instr.d.reg, d);
-						PTXS32 b = getRegAsS32(threadID, instr.b.reg);
+						PTXS32 b = operandAsS32(threadID, instr.b);
 						*((PTXS32*)source) = max(b, d);
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXS32*)source) );		
@@ -1786,7 +1786,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					else if (instr.type == PTXOperand::f32) {
 						PTXF32 d = *((PTXF32*)source);
 						setRegAsF32(threadID, instr.d.reg, d);
-						PTXF32 b = getRegAsF32(threadID, instr.b.reg);
+						PTXF32 b = operandAsF32(threadID, instr.b);
 						*((PTXF32*)source) = max(b, d);
 						reportE(REPORT_ATOM, "Atomically updated " << d 
 							<< " to " << *((PTXF32*)source) );		

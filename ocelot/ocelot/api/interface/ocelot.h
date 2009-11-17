@@ -44,7 +44,6 @@ namespace ocelot
 		
 		\param stream An input stream containing a PTX module
 		\param The name of the module being registered.  Must be Unique.
-		\return A function pointer that can be passed to cudaLaunch
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
 	
@@ -57,7 +56,8 @@ namespace ocelot
 		
 		\param name The name of the kernel to find. 
 		\param module The name of the module to find the kernel in.
-		\return A pointer to the named kernel.
+		
+		\return A function pointer that can be passed to cudaLaunch.
 	*/
 	KernelPointer getKernelPointer(const std::string& name, 
 		const std::string& module);

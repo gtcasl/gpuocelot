@@ -57,6 +57,17 @@
 
 #include <unordered_set>
 
+#ifdef isnan
+#define _isnan(x) isnan(x)
+#else
+#define _isnan(x) std::isnan(x)
+#endif
+#ifdef isinf
+#define _isinf(x) isinf(x)
+#else
+#define _isinf(x) std::isinf(x)
+#endif
+
 extern "C"
 {
 	void setRoundingMode( unsigned int mode )
@@ -67,7 +78,7 @@ extern "C"
 	float __ocelot_ex2Ftz( float f )
 	{
 		float value = exp( f * 0.693147f );
-		if( std::isnan( value ) || std::isinf( value ) )
+		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
 		}
@@ -82,7 +93,7 @@ extern "C"
 	float __ocelot_rsqrtFtz( float f )
 	{
 		float value = 1.0 / sqrt( f );
-		if( std::isnan( value ) || std::isinf( value ) )
+		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
 		}
@@ -102,7 +113,7 @@ extern "C"
 	float __ocelot_sqrtFtz( float f )
 	{
 		float value = sqrt( f );
-		if( std::isnan( value ) || std::isinf( value ) )
+		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
 		}
@@ -117,7 +128,7 @@ extern "C"
 	float __ocelot_log2Ftz( float f )
 	{
 		float value = log2( f );
-		if( std::isnan( value ) || std::isinf( value ) )
+		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
 		}
@@ -132,7 +143,7 @@ extern "C"
 	float __ocelot_sinFtz( float f )
 	{
 		float value = sin( f );
-		if( std::isnan( value ) || std::isinf( value ) )
+		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
 		}
@@ -147,7 +158,7 @@ extern "C"
 	float __ocelot_cosFtz( float f )
 	{
 		float value = cos( f );
-		if( std::isnan( value ) || std::isinf( value ) )
+		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
 		}

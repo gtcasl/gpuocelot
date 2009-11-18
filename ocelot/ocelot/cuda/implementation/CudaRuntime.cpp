@@ -1903,16 +1903,48 @@ namespace cuda
 	bool CudaRuntime::memcpyFromSymbol( void* dst, const char* symbol, 
 		size_t count, size_t offset ) 
 	{
-		char *src;
-		if( isGlobal( symbol ) ) 
-		{
-			src = (char*) symbol + offset;
+		char *symbol_ptr = 0;
+		report("memcopyFromSymbol(offset " << offset << ", " << count << " bytes)");
+		bool is_global = false;
+		std::string symbolName;
+		for( FatBinaryMap::const_iterator binary = _binaries.begin();
+			binary != _binaries.end(); ++binary )
+		{			
+			for( GlobalMap::const_iterator 
+				global = binary->second.globals.begin(); 
+				global != binary->second.globals.end(); ++global )
+			{
+				if( (char*)symbol == global->second )
+				{
+					symbolName = global->first;
+					is_global = true;
+					break;
+				}						
+			}			
+		}		
+		if (is_global) {
+			for( FatBinaryMap::const_iterator binary = _binaries.begin();
+				binary != _binaries.end(); ++binary )
+			{			
+				for( GlobalMap::const_iterator 
+					global = binary->second.globals.begin(); 
+					global != binary->second.globals.end(); ++global )
+				{
+					if (symbolName == global->first) {
+						symbol_ptr = (char *)global->second + offset;
+						context.memcpy(dst, symbol_ptr, count, executive::Executive::HostToHost);
+						report("  global: symbol_ptr = " << (void *)symbol_ptr);
+						return true;
+					}					
+				}			
+			}	
 		}
-		else 
-		{
-			src = ( char* )getSymbol( symbol ) + offset;
+		else {
+			report(" named symbol: '" << symbol << "'");
+			symbol_ptr = (char *)getSymbol(symbol) + offset;
+			context.memcpy(dst, symbol_ptr, count, executive::Executive::HostToHost);
+			report("  named: symbol_ptr = " << (void *)symbol_ptr);
 		}
-		context.memcpy( dst, src, count, executive::Executive::HostToHost );
 		return true;
 	}
 	

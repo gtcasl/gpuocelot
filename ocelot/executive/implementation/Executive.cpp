@@ -437,6 +437,17 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 
 	std::stringstream ss;	
 	m.write(ss);
+#if 0
+	// KERRDEBUG emit the ptx source file to a text file in the binary's directory
+	{
+		static int modules = 0;
+		++modules;
+		std::stringstream ssfn; ssfn << "module_" << modules << ".ptx";
+		std::string filename = ssfn.str();
+		std::ofstream file(filename.c_str());
+		file << ss.str();
+	}
+#endif
 
 	cudaError_enum result;
 	if ((result = cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str())) != CUDA_SUCCESS) {
@@ -1668,14 +1679,6 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 					}
 				}
 				else if (type == HostToHost) {
-					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid destination " << dest << " (" 
-							<< bytes << " bytes) in host to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, dest, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
 					std::memcpy(dest, src, bytes);
 				}
 			}

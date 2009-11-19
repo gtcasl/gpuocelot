@@ -81,7 +81,7 @@ namespace test
 		
 		bool pass = true;
 		
-		if( result != k * iterations * unroll )
+		if( result != k * iterations * unroll && threads == 1 && ctas == 1 )
 		{
 			status << "Program generated incorrect output " << result 
 				<< ", expecting " << (k * iterations * unroll ) << "\n";
@@ -162,7 +162,7 @@ namespace test
 		
 		bool pass = true;
 		
-		if( result != k * iterations * unroll )
+		if( result != k * iterations * unroll && threads == 1 && ctas == 1 )
 		{
 			status << "Program generated incorrect output " << result 
 				<< ", expecting " << (k * iterations * unroll ) << "\n";
@@ -244,7 +244,7 @@ namespace test
 		
 		bool pass = true;
 		
-		if( result != k * iterations * unroll )
+		if( result != k * iterations * unroll && threads == 1 && ctas == 1 )
 		{
 			status << "Program generated incorrect output " << result 
 				<< ", expecting " << (k * iterations * unroll ) << "\n";

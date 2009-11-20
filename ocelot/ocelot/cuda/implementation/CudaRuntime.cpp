@@ -424,7 +424,7 @@ namespace cuda
 		gpuKernel->updateGlobalMemory();
 		gpuKernel->updateConstantMemory();
 
-		context.fenceGlobalVariables();
+		context.fenceGlobalVariables(executive::Executive::HostToDevice);
 
 		try
 		{
@@ -448,6 +448,7 @@ namespace cuda
 			thread->second.lastError = cudaErrorLaunchFailure;
 		}
 		
+		context.fenceGlobalVariables(executive::Executive::DeviceToHost);
 		thread->second.parameters.clear();
 	}
 //
@@ -1849,19 +1850,17 @@ namespace cuda
 	}
 
 
-	bool CudaRuntime::memcpyToSymbol( const char* symbol, const void* src, 
+	bool CudaRuntime::memcpyToSymbol(const char* symbol, const void* src,
 		size_t count, size_t offset) 
 	{
 		char *dest = 0;
-		report("memcpyToSymbol(offset " << offset << ", " 
-			<< count << " bytes)");
+		report("memcpyToSymbol(offset " << offset << ", " << count << " bytes)");
 		bool is_global = false;
 		std::string symbolName;
 		for( FatBinaryMap::const_iterator binary = _binaries.begin();
 			binary != _binaries.end(); ++binary )
 		{			
-			for( GlobalMap::const_iterator 
-				global = binary->second.globals.begin(); 
+			for( GlobalMap::const_iterator global = binary->second.globals.begin(); 
 				global != binary->second.globals.end(); ++global )
 			{
 				if( (char*)symbol == global->second )
@@ -1877,8 +1876,7 @@ namespace cuda
 			for( FatBinaryMap::const_iterator binary = _binaries.begin();
 				binary != _binaries.end(); ++binary )
 			{			
-				for( GlobalMap::const_iterator 
-					global = binary->second.globals.begin(); 
+				for( GlobalMap::const_iterator global = binary->second.globals.begin(); 
 					global != binary->second.globals.end(); ++global )
 				{
 					if (symbolName == global->first) 

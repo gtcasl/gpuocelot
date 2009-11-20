@@ -271,7 +271,7 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 				continue;
 			}
 
-			report("  updating global variable '" << name << "' in address space " 
+			report("  updating global variable '" << name << "', " << glb_it->second.size << " bytes in address space " 
 				<< ir::PTXInstruction::toString(glb_it->second.space));
 
 			if (globalsSet.find(name) == globalsSet.end()) {
@@ -279,27 +279,39 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 			}
 			else {
 				report("  global variable allocation listed twice");
-				continue;
+//				continue; // this isn't a problem if the sizes are checked
 			}
 
-			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+			report("  " << modules.size() << " modules loaded");
 
+			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+				report(" searcing module " << mod_it->first);
 				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
 					unsigned int bytes;
 					CUdeviceptr devicePtr;
 					cudaError_enum result;
+
 					if ((result = cuModuleGetGlobal(&devicePtr, &bytes, mod_it->second->cuModule, 
 						name.c_str())) == CUDA_SUCCESS) {
-						report("    obtained pointer to global variable '" << name << "' in GPU memory: 0x" 
-							<< std::hex << (unsigned int)devicePtr << ", \n\t\t\t\t\tcopying from host memory: 0x" 
-							<< glb_it->second.ptr << std::dec);
+
+						if (bytes != glb_it->second.size) { continue; } // wrong module
+
+						report("    obtained pointer to global variable '" << name << "' in GPU memory: " 
+							<< (void *)(unsigned int)devicePtr << " of size " << bytes << " bytes,"
+							<< "\n\t\t\t\t\tcopying " << glb_it->second.size << " bytes " << (copyType == HostToDevice ? "from" : "to") << " host memory: " 
+							<< (void *)glb_it->second.ptr);
+
 						if (copyType == HostToDevice) {
-							if (cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size) != CUDA_SUCCESS) {
+							result = cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size);
+							if (result != CUDA_SUCCESS) {
+								report("Executive::fenceGlobalVariables() - cuMemcpyHtoD() failed with result " << result);
 								throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuMemcpyHtoD() failed");
 							}
 						}
 						else if (copyType == DeviceToHost) {
-							if (cuMemcpyDtoH(glb_it->second.ptr, devicePtr, glb_it->second.size) != CUDA_SUCCESS) {
+							result = cuMemcpyDtoH(glb_it->second.ptr, devicePtr, glb_it->second.size);
+							if (result != CUDA_SUCCESS) {
+								report("Executive::fenceGlobalVariables() - cuMemcpyDtoH() failed with result " << result);
 								throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuMemcpyDtoH() failed");
 							}
 						}

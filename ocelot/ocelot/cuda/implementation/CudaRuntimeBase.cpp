@@ -1244,7 +1244,7 @@ namespace cuda
 	{
 		_runtime.lock();
 
-		if( _runtime.eventValid( event ) )
+		if( _runtime.eventExists( event ) )
 		{
 			report( "Recorded event " << event << " on stream " << stream );
 			_runtime.eventRecord( event, stream );
@@ -1281,10 +1281,11 @@ namespace cuda
 	{
 		_runtime.lock();
 
-		if( _runtime.eventValid( event ) )
+		if( _runtime.eventExists( event ) )
 		{
 			report( "Event " << event << " synchronized" );
-			_runtime.unlock();	
+			_runtime.eventSynchronize(event);
+			_runtime.unlock();
 			return cudaSuccess;
 		}
 		else
@@ -1299,7 +1300,7 @@ namespace cuda
 	{
 		_runtime.lock();
 
-		if( _runtime.eventValid( event ) )
+		if( _runtime.eventExists( event ) )
 		{
 			report( "Event " << event << " destroyed" );
 			_runtime.destroyEvent( event );
@@ -1319,8 +1320,8 @@ namespace cuda
 	{
 		_runtime.lock();
 
-		if( _runtime.eventValid( start ) 
-			&& _runtime.eventValid( end ) )
+		if( _runtime.eventExists( start ) 
+			&& _runtime.eventExists( end ) )
 		{
 			*ms = _runtime.eventTime( start, end );
 			report( "Elapsed time between " << start << " and " << end 
@@ -1330,7 +1331,7 @@ namespace cuda
 		}
 		else
 		{
-			report( "Event " << start << " or " << end << " invalid" );
+			report( "Event " << start << " or " << end << " does not exist" );
 			_runtime.unlock();	
 			return cudaErrorInvalidResourceHandle;
 		}
@@ -1365,7 +1366,8 @@ namespace cuda
 
 	cudaError_t CudaRuntimeBase::cudaThreadSynchronize( void )
 	{
-		return cudaSuccess;	
+		bool result = _runtime.threadSynchronize();
+		return result ? cudaSuccess : cudaErrorUnknown;	
 	}
 
 

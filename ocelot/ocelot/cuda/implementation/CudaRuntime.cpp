@@ -1958,6 +1958,14 @@ namespace cuda
 
 		Stream stream;
 		stream.handle = thread->second.nextStream;
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			if (cuStreamCreate(&stream.cuStream, 0) != CUDA_SUCCESS) {
+				report("CudaRuntime::createStream() - failed to create stream on GPU");
+				return 0;
+			}
+		}
+#endif
 		
 		thread->second.streams.insert( 
 			std::make_pair( thread->second.nextStream++, stream ) );
@@ -1980,6 +1988,14 @@ namespace cuda
 			throw hydrazine::Exception( formatError( "Invalid stream handle." ), 
 			handle );
 		}
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			if (cuStreamDestroy(stream->second.cuStream) != CUDA_SUCCESS) {
+				report("CudaRuntime::destroyStream() - failed to destroy stream on GPU");
+				throw hydrazine::Exception("Failed to destroy stream on GPU");
+			}
+		}
+#endif		
 		
 		thread->second.streams.erase( stream );
 				
@@ -1997,6 +2013,16 @@ namespace cuda
 		ThreadMap::const_iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
 		
+		StreamMap::const_iterator stream = thread->second.streams.find( handle );
+
+#if HAVE_CUDA_DRIVER_API == 1
+		if (stream != thread->second.streams.end()) {
+			if (context.getSelectedISA() == ir::Instruction::GPU) {
+				return cuStreamQuery(stream->second.cuStream) == CUDA_SUCCESS;
+			}
+		}
+#endif		
+
 		return ( thread->second.streams.count( handle ) != 0 ); 
 	}
 
@@ -2012,6 +2038,16 @@ namespace cuda
 
 		Event event;
 		event.handle = thread->second.nextEvent;
+
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			if (cuEventCreate(&event.cuEvent, 0) != CUDA_SUCCESS) {
+				report("CudaRuntime::createEvent() - failed to create an event");
+				throw hydrazine::Exception("CudaRuntime::createEvent() - failed to create an event");
+			}
+			report("cuEventCreate() succeeded: " << (void *)event.cuEvent);
+		}
+#endif	
 		
 		thread->second.events.insert( 
 			std::make_pair( thread->second.nextEvent++, event ) );
@@ -2036,8 +2072,58 @@ namespace cuda
 			throw hydrazine::Exception( formatError( "Invalid event handle." ), 
 				handle );
 		}
+
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			if (cuEventDestroy(event->second.cuEvent) != CUDA_SUCCESS) {
+				report("CudaRuntime::createEvent() - failed to destroy an event");
+				throw hydrazine::Exception("CudaRuntime::createEvent() - failed to destroy an event");
+			}
+			report("cuEventDestroy() succeeded: " << (void *)event->second.cuEvent);
+		}
+#endif
 		
 		thread->second.events.erase( event );
+	}
+
+	bool CudaRuntime::eventExists( cudaEvent_t handle ) const
+	{
+		pthread_t id = pthread_self();
+		
+		ThreadMap::const_iterator thread = _threads.find( id );
+		assert( thread != _threads.end() );
+
+		return ( thread->second.events.count( handle ) != 0 ); 
+	}
+
+	bool CudaRuntime::threadSynchronize() {
+		report("CudaRuntime::threadSynchronize()");
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			return (cuCtxSynchronize() == CUDA_SUCCESS);
+		}
+#endif
+		return true;
+	}
+
+	bool CudaRuntime::eventSynchronize(cudaEvent_t handle) {
+		report("CudaRuntime::threadSynchronize()");
+
+		pthread_t id = pthread_self();
+		
+		ThreadMap::const_iterator thread = _threads.find( id );
+		assert( thread != _threads.end() );
+
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			EventMap::const_iterator event = thread->second.events.find( handle );
+			report("calling cuEventQuery() on event " << (void *)event->second.cuEvent);
+			bool result = cuEventSynchronize(event->second.cuEvent) == CUDA_SUCCESS;
+			report("  returned " << result);
+			return result;
+		}
+#endif
+		return true;
 	}
 
 	bool CudaRuntime::eventValid( cudaEvent_t handle ) const
@@ -2047,6 +2133,16 @@ namespace cuda
 		ThreadMap::const_iterator thread = _threads.find( id );
 		assert( thread != _threads.end() );
 		
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			EventMap::const_iterator event = thread->second.events.find( handle );
+			report("calling cuEventQuery() on event " << (void *)event->second.cuEvent);
+			bool result = cuEventQuery(event->second.cuEvent) == CUDA_SUCCESS;
+			report("  returned " << result);
+			return result;
+		}
+#endif
+
 		return ( thread->second.events.count( handle ) != 0 ); 
 	}
 
@@ -2064,7 +2160,22 @@ namespace cuda
 			throw hydrazine::Exception( formatError( "Invalid event handle." ),
 				handle );
 		}
-		
+#if HAVE_CUDA_DRIVER_API == 1
+		if (context.getSelectedISA() == ir::Instruction::GPU) {
+			report("CudaRuntime::eventRecord() - attempting to find event "
+				<< (void *)handle << ", stream " << (void *)stream);
+			StreamMap::iterator stream_it = thread->second.streams.find( stream );
+			if (event == thread->second.events.end() || stream_it == thread->second.streams.end()) {
+				report("CudaRuntime::eventRecord() - failed to find event or stream");
+				throw hydrazine::Exception("CudaRuntime::eventRecord() - failed to find event or stream");
+			}
+			if (cuEventRecord(event->second.cuEvent, stream_it->second.cuStream) != CUDA_SUCCESS) {
+				report("CudaRuntime::eventRecord() - failed to record event");
+				throw hydrazine::Exception("CudaRuntime::eventRecord() - failed to record event");
+			}
+			report("cuEventRecord() succeeded on event: " << (void *)event->second.cuEvent);
+		}
+#endif
 		event->second.timer.stop();
 	}
 	

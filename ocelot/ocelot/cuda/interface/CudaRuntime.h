@@ -21,6 +21,11 @@
 
 #define CUDA_VERBOSE 1
 
+
+#if HAVE_CUDA_DRIVER_API == 1
+typedef struct CUstream_st *CUstream;
+#endif
+
 namespace cuda
 {
 
@@ -100,6 +105,9 @@ namespace cuda
 			{
 				public:
 					cudaStream_t handle;
+#if HAVE_CUDA_DRIVER_API == 1
+					CUstream cuStream;
+#endif
 			};
 			
 			/*! \brief Event class */
@@ -108,7 +116,9 @@ namespace cuda
 				public:
 					cudaEvent_t handle;
 					hydrazine::Timer timer;
-			
+#if HAVE_CUDA_DRIVER_API == 1
+					CUevent cuEvent;
+#endif
 			};
 			
 			/*! \brief Stream map */
@@ -546,6 +556,15 @@ namespace cuda
 			*/
 			bool eventValid( cudaEvent_t event ) const;
 
+			/*! \brief Determine if an Event handle exists
+				
+				\param event The Event handle
+				\return True if valid in this context
+			*/
+			bool eventExists( cudaEvent_t handle ) const;
+
+			bool eventSynchronize(cudaEvent_t handle);
+
 			/*! \brief Record that an event occured on a specific stream
 				
 				\param stream The stream handle
@@ -561,6 +580,8 @@ namespace cuda
 				\return The elapsed time in ms
 			*/
 			double eventTime( cudaEvent_t start, cudaEvent_t end );
+
+			bool threadSynchronize();
 			
 		public:
 			/*!	\brief Registers an openGL buffer */

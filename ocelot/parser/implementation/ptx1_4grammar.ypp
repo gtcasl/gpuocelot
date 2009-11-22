@@ -303,6 +303,7 @@ parameterDeclaration : parameter addressableVariablePrefix identifier
 };
 
 parameterList : parameterDeclaration;
+parameterList : /* empty string */;
 parameterList : parameterList ',' parameterDeclaration;
 
 entryStart1 : TOKEN_ENTRY identifier

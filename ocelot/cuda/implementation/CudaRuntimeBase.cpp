@@ -1083,7 +1083,8 @@ namespace cuda
 	{
 		report( "Configuring call" );
 		_runtime.lock();
-
+		_runtime.setContext();
+	
 		_runtime.configureCall( gridDim, blockDim, sharedMem );
 	
 		_runtime.unlock();
@@ -1096,7 +1097,8 @@ namespace cuda
 	{
 		report( "Setting up argument" );
 		_runtime.lock();
-
+		_runtime.setContext();
+	
 		_runtime.setupArgument( arg, size, offset );
 	
 		_runtime.unlock();

@@ -1738,14 +1738,30 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 				std::memset( dest, value, bytes );
 			}
 			break;
-
-/*
+#if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
 			{
-				// copy on the GPU
+				if (!checkMemoryAccess(getSelected(), dest, bytes)) {
+					std::stringstream stream;
+					stream << "Invalid destination " << dest << " (" 
+						<< bytes << " bytes) in device to device memcpy." 
+						<< std::endl;
+					stream << nearbyAllocationsToString(*this, dest, bytes);
+					throw hydrazine::Exception(stream.str());
+				}
+				CUresult error = cuMemsetD8(painful_cast(dest), value, bytes);
+				if(error != CUDA_SUCCESS) {
+					std::stringstream stream;
+					stream << "Memset failed to " << dest << " (" 
+						<< bytes << " bytes) in device to device memcpy." 
+						<< std::endl;
+					stream << nearbyAllocationsToString(*this, dest, bytes);
+					throw hydrazine::Exception(stream.str());
+				}
 			}
 			break;
-		case ir::Instruction::x86:
+#endif
+/*		case ir::Instruction::x86:
 			{
 
 			}
@@ -1763,7 +1779,10 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 			}
 			break;
 */
-		default:	// PTX or invalid
+		default:
+			throw hydrazine::Exception( 
+				"No support for memset for device with ISA: " 
+				+ ir::Instruction::toString(getSelectedISA()) );
 			break;
 	}
 	

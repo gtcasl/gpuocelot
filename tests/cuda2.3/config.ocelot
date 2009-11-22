@@ -36,13 +36,13 @@
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			Emulated
+			GPU
 		</PreferredISA>
 		<OptimizationLevel>
-			basic
+			none
 		</OptimizationLevel>
 		<DisableGPUDevices>
-			1
+			0
 		</DisableGPUDevices>
 		<DisableLLVMDevices>
 			0

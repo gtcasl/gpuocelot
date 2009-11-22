@@ -22,6 +22,9 @@ namespace test
 			return false;
 		}
 		
+		_context.setOptimizationLevel( 
+			translator::Translator::BasicOptimization );
+		
 		if( !_context.loadModule( kernelFile ) )
 		{
 			status << "Failed to load module " << kernelFile << "\n";
@@ -349,8 +352,8 @@ namespace test
 	{
 		bool result = _loadKernels();
 		
-		return result //&& testDivergent() && testLooping()
-			//&& testBarrier() 
+		return result && testDivergent() && testLooping()
+			&& testBarrier() 
 			&& testMatrixMultiply();
 			
 	}

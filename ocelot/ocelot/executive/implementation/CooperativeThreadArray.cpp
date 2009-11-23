@@ -1815,7 +1815,8 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext &context, const PTXI
 		report(" Bar called - " << context.active.count() << " of " 
 			<< context.active.size() << " threads active");
 #endif
-		throw RuntimeException("barrier deadlock", context.PC, instr);
+		throw RuntimeException("barrier deadlock at: " 
+			+ kernel->location(context.PC), context.PC, instr);
 	}
 #else
 	CTAContext continuation(context);
@@ -2619,7 +2620,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 			
 			PTXS16 d, a = operandAsS16(threadID, instr.a), b = operandAsS16(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Divide by zero", context.PC, instr);
+				throw RuntimeException("Divide by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a / b;
 			setRegAsS16(threadID, instr.d.reg, d);
@@ -2631,7 +2633,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 			
 			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Divide by zero", context.PC, instr);
+				throw RuntimeException("Divide by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a / b;
 			setRegAsS32(threadID, instr.d.reg, d);
@@ -2643,7 +2646,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 			
 			PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Divide by zero", context.PC, instr);
+				throw RuntimeException("Divide by zeroa at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a / b;
 			setRegAsS64(threadID, instr.d.reg, d);
@@ -2655,7 +2659,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 			
 			PTXU16 d, a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Divide by zero", context.PC, instr);
+				throw RuntimeException("Divide by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a / b;
 			setRegAsU16(threadID, instr.d.reg, d);
@@ -2667,7 +2672,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 			
 			PTXU32 d, a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Divide by zero", context.PC, instr);
+				throw RuntimeException("Divide by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a / b;
 			setRegAsU32(threadID, instr.d.reg, d);
@@ -2679,7 +2685,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 			
 			PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Divide by zero", context.PC, instr);
+				throw RuntimeException("Divide by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a / b;
 			setRegAsU64(threadID, instr.d.reg, d);
@@ -4241,7 +4248,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 			
 			PTXS16 d, a = operandAsS16(threadID, instr.a), b = operandAsS16(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Modulus by zero", context.PC, instr);
+				throw RuntimeException("Modulus by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a % b;
 			setRegAsS16(threadID, instr.d.reg, d);
@@ -4253,7 +4261,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 			
 			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Modulus by zero", context.PC, instr);
+				throw RuntimeException("Modulus by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a % b;
 			setRegAsS32(threadID, instr.d.reg, d);
@@ -4265,7 +4274,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 			
 			PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Modulus by zero", context.PC, instr);
+				throw RuntimeException("Modulus by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a % b;
 			setRegAsS64(threadID, instr.d.reg, d);
@@ -4277,7 +4287,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 			
 			PTXU16 d, a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Modulus by zero", context.PC, instr);
+				throw RuntimeException("Modulus by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a % b;
 			setRegAsU16(threadID, instr.d.reg, d);
@@ -4289,7 +4300,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 			
 			PTXU32 d, a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Modulus by zero", context.PC, instr);
+				throw RuntimeException("Modulus by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a % b;
 			setRegAsU32(threadID, instr.d.reg, d);
@@ -4301,7 +4313,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 			
 			PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
 			if(b == 0) {
-				throw RuntimeException("Modulus by zero", context.PC, instr);
+				throw RuntimeException("Modulus by zero at: " 
+					+ kernel->location(context.PC), context.PC, instr);
 			}
 			d = a % b;
 			setRegAsU64(threadID, instr.d.reg, d);

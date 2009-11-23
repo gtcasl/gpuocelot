@@ -15,7 +15,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.936735868454 seconds
+INFO     Test completed in 1.09151697159 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -27,8 +27,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1258901394
-Test time : 0.820909
+Test Seed : 1258966843
+Test time : 0.7385
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -65,7 +65,7 @@ R = [
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestParser
-INFO     Test completed in 110.61680007 seconds
+INFO     Test completed in 104.864933968 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -78,8 +78,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1258901395
-Test time : 110.567
+Test Seed : 1258966843
+Test time : 104.808
 
 Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Parse): Passed
@@ -228,7 +228,7 @@ For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Parse): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLexer 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 25.8313119411 seconds
+INFO     Test completed in 25.9990060329 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -240,8 +240,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1258901505
-Test time : 25.8151
+Test Seed : 1258966948
+Test time : 25.9495
 
 Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
@@ -390,7 +390,7 @@ For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestTrace 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestTrace
-INFO     Test completed in 0.088613986969 seconds
+INFO     Test completed in 0.0532841682434 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -400,8 +400,8 @@ Name : TestTrace
 Description: 
 
 
-Test Seed : 1258901531
-Test time : 0.0316443
+Test Seed : 1258966974
+Test time : 0.000849962
 
 Status : Test output:
 
@@ -409,7 +409,7 @@ Status : Test output:
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0887560844421 seconds
+INFO     Test completed in 0.0421988964081 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -419,8 +419,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1258901531
-Test time : 0.00278306
+Test Seed : 1258966974
+Test time : 0.0033412
 
 Status : Test output:
 Accessors test passed.
@@ -438,9 +438,9 @@ pass: control flow instructions
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.0553250312805 seconds
+INFO     Test completed in 0.0541849136353 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.000150681s (150368 ticks)
+Kernel launch time was 0.000152111s (152184 ticks)
 Pass/Fail : Pass
 
 
@@ -449,8 +449,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1258901531
-Test time : 0.0288372
+Test Seed : 1258966974
+Test time : 0.0292702
 
 Status : Test output:
 divergent control flow succeeded
@@ -461,7 +461,7 @@ looping kernel succeeded
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator
-INFO     Test completed in 0.150636911392 seconds
+INFO     Test completed in 0.109581947327 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -471,8 +471,8 @@ Name : TestMemoryTraceGenerator
 Description: 
 
 
-Test Seed : 1258901532
-Test time : 0.024832
+Test Seed : 1258966975
+Test time : 0.0243423
 
 Status : Test output:
 
@@ -480,7 +480,7 @@ Status : Test output:
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 118.845489979 seconds
+INFO     Test completed in 124.362515926 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -495,8 +495,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1258901532
-Test time : 118.821
+Test Seed : 1258966975
+Test time : 124.331
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/main.ptx
@@ -5420,7 +5420,7 @@ Testing SSA then back Dataflow
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0192220211029 seconds
+INFO     Test completed in 0.0271019935608 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5434,8 +5434,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1258901651
-Test time : 0.00352859
+Test Seed : 1258967099
+Test time : 0.00753546
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -5568,7 +5568,7 @@ Zext Instruction Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 129.066898823 seconds
+INFO     Test completed in 134.959909201 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5581,8 +5581,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1258901651
-Test time : 129.029
+Test Seed : 1258967099
+Test time : 134.92
 
 Status : For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Translate): Passed
@@ -5731,7 +5731,7 @@ For file ../tests/ptx/sdk/reduction.ptx, Test Point 1 (Translate): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0733528137207 seconds
+INFO     Test completed in 0.0768239498138 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5741,8 +5741,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1258901780
-Test time : 0.0471501
+Test Seed : 1258967234
+Test time : 0.0484669
 
 Status : Test output:
 11 registers
@@ -5756,17 +5756,17 @@ Full kernel test passed
 
 INFO     
 Passing tests:
- (0.019s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (110.617s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
- (118.845s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Passed
- (0.937s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
- (129.067s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
- (0.089s) : /home/normal/checkout/gpuocelot/ocelot/TestTrace : Passed
- (0.151s) : /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
- (0.073s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
- (0.055s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
- (25.831s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
- (0.089s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
+ (0.027s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (104.865s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
+ (124.363s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (1.092s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (134.960s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
+ (0.053s) : /home/normal/checkout/gpuocelot/ocelot/TestTrace : Passed
+ (0.110s) : /home/normal/checkout/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
+ (0.077s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
+ (0.054s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
+ (25.999s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
+ (0.042s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
 
 Failing tests:
 

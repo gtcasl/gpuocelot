@@ -36,6 +36,28 @@
 
 #define REPORT_BASE 0
 
+
+#if HAVE_CUDA_DRIVER_API == 1
+typedef struct {
+	union {
+		void *void_ptr;
+		CUdeviceptr device_ptr;
+	};
+} Union_device_ptr;
+
+static CUdeviceptr painful_cast(void *ptr) {
+	Union_device_ptr u_ptr;
+	u_ptr.void_ptr = ptr;
+	return u_ptr.device_ptr;
+}
+
+static CUdeviceptr painful_cast(const void *ptr) {
+	Union_device_ptr u_ptr;
+	u_ptr.void_ptr = const_cast<void *>(ptr);
+	return u_ptr.device_ptr;
+}
+#endif
+
 std::string executive::Executive::nearbyGlobalsToString( 
 	const Executive& executive, const void* ptr, unsigned int above,
 	unsigned int below ) {
@@ -520,8 +542,13 @@ executive::Executive::~Executive() {
 		for (AllocationMap::iterator allocation = device->second.begin(); 
 			allocation != device->second.end(); ++allocation ) {
 			if (!allocation->second.external) {
-				delete [] ((char *)allocation->second.ptr 
-					- allocation->second.offset);
+				if (allocation->second.isa == ir::Instruction::GPU) {
+					cuMemFree(painful_cast(allocation->second.ptr));
+				}
+				else {
+					delete [] ((char *)allocation->second.ptr 
+						- allocation->second.offset);
+				}
 			}
 		}
 	}
@@ -1405,27 +1432,6 @@ void executive::Executive::rebind(const std::string& modulePath,
 			break;
 	}
 }
-
-#if HAVE_CUDA_DRIVER_API == 1
-typedef struct {
-	union {
-		void *void_ptr;
-		CUdeviceptr device_ptr;
-	};
-} Union_device_ptr;
-
-static CUdeviceptr painful_cast(void *ptr) {
-	Union_device_ptr u_ptr;
-	u_ptr.void_ptr = ptr;
-	return u_ptr.device_ptr;
-}
-
-static CUdeviceptr painful_cast(const void *ptr) {
-	Union_device_ptr u_ptr;
-	u_ptr.void_ptr = const_cast<void *>(ptr);
-	return u_ptr.device_ptr;
-}
-#endif
 
 /*!
 	Free a memory block allocated to this device.

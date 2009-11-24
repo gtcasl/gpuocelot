@@ -1751,7 +1751,11 @@ std::string ir::PTXInstruction::toString() const {
 			if( divideFull ) {
 				result += "full.";
 			}
-			result += modifierString( modifier, carry );
+			Modifier local_modifier = (Modifier)modifier;
+			if (type == ir::PTXOperand::f32 && version == ir::PTXInstruction::ptx1_4) {
+				local_modifier = approx;
+			}
+			result += modifierString( local_modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString();
 			return result;

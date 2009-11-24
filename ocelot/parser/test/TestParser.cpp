@@ -20,6 +20,7 @@
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -81,37 +82,51 @@ namespace test
 	{
 		report( " Parsing file " << ptxFile );
 		
+		int parse_attempt = 0;
 		std::stringstream stream, stream2;
 		std::ifstream file( ptxFile.c_str() );
-		
 		ir::Module base, first, second;
-		base.load(file);
 		
-		base.write( stream );
-		std::string outputFile = ptxFile + ".parsed";
+		try {
+			base.load(file);
 		
-		if( output )
-		{
-			std::ofstream outFile( outputFile.c_str() );
-			base.write( outFile );
-			outFile.close();
+			base.write( stream );
+			std::string outputFile = ptxFile + ".parsed";
+		
+			if( output )
+			{
+				std::ofstream outFile( outputFile.c_str() );
+				base.write( outFile );
+				outFile.close();
+			}
+		
+			report("  - parsing first");
+			parse_attempt = 1;
+			first.load(stream);
+			first.write(stream2);
+		
+			if( output )
+			{
+				std::string outputFile = ptxFile + ".parsed2";
+				std::ofstream outFile( outputFile.c_str() );
+				first.write( outFile );
+				outFile.close();
+			}
+		
+			report("  - parsing second");
+			parse_attempt = 2;
+			second.load(stream2);
 		}
-		
-		report("  - parsing first");
-		first.load(stream);
-		first.write(stream2);
-		
-		if( output )
-		{
-			std::string outputFile = ptxFile + ".parsed2";
-			std::ofstream outFile( outputFile.c_str() );
-			first.write( outFile );
-			outFile.close();
+		catch (hydrazine::Exception exp) {
+			status << "Parse " << parse_attempt << " failed with exception: " 
+				<< exp.what() << std::endl;
+			return false;
 		}
-		
-		report("  - parsing second");
-		second.load(stream2);
-	
+		catch (parser::PTXParser::Exception exp) {
+			status << "Parse " << parse_attempt << " failed with exception: " 
+				<< exp.what() << std::endl;
+			return false;
+		}
 	
 		if( first.statements.size() != second.statements.size() )
 		{

@@ -472,7 +472,7 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	std::stringstream ss;	
 	m.write(ss);
 #if 0
-	// KERRDEBUG emit the ptx source file to a text file in the binary's directory
+	// emit the ptx source file to a text file in the binary's directory
 	{
 		static int modules = 0;
 		++modules;
@@ -489,7 +489,7 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 
 		report("  cuModuleLoadData() returned " << result);
 
-		// KERRDEBUG emit the ptx source file to a text file in the binary's directory
+		// emit the ptx source file to a text file in the binary's directory
 		{
 			std::ofstream file("module.ptx");
 			file << ss.str();
@@ -543,7 +543,11 @@ executive::Executive::~Executive() {
 			allocation != device->second.end(); ++allocation ) {
 			if (!allocation->second.external) {
 				if (allocation->second.isa == ir::Instruction::GPU) {
+#if HAVE_CUDA_DRIVER_API == 1
 					cuMemFree(painful_cast(allocation->second.ptr));
+#else
+					throw hydrazine::Exception("CUDA Driver API not enabled");
+#endif
 				}
 				else {
 					delete [] ((char *)allocation->second.ptr 

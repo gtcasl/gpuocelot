@@ -31,7 +31,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define REPORT_ALL_PTX 0
 #define CATCH_RUNTIME_EXCEPTIONS 1
 
@@ -1931,7 +1931,7 @@ namespace cuda
 					if (symbolName == global->first) {
 						symbol_ptr = (char *)global->second + offset;
 						context.memcpy(dst, symbol_ptr, count, executive::Executive::HostToHost);
-						report("  global: symbol_ptr = " << (void *)symbol_ptr);
+						report("  copied from symbol - source symbol_ptr = " << (void *)symbol_ptr);
 						return true;
 					}					
 				}			

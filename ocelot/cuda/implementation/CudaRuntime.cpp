@@ -1964,6 +1964,8 @@ namespace cuda
 				report("CudaRuntime::createStream() - failed to create stream on GPU");
 				return 0;
 			}
+			report("CudaRuntime::createStream() - successfully created stream with handle " 
+				<< stream.handle);
 		}
 #endif
 		
@@ -2165,11 +2167,13 @@ namespace cuda
 			report("CudaRuntime::eventRecord() - attempting to find event "
 				<< (void *)handle << ", stream " << (void *)stream);
 			StreamMap::iterator stream_it = thread->second.streams.find( stream );
-			if (event == thread->second.events.end() || stream_it == thread->second.streams.end()) {
+			if (event == thread->second.events.end() || (stream != 0 && stream_it == thread->second.streams.end())) {
 				report("CudaRuntime::eventRecord() - failed to find event or stream");
 				throw hydrazine::Exception("CudaRuntime::eventRecord() - failed to find event or stream");
 			}
-			if (cuEventRecord(event->second.cuEvent, stream_it->second.cuStream) != CUDA_SUCCESS) {
+			
+			CUstream targetStream = (stream ? stream_it->second.cuStream : 0);
+			if (cuEventRecord(event->second.cuEvent, targetStream) != CUDA_SUCCESS) {
 				report("CudaRuntime::eventRecord() - failed to record event");
 				throw hydrazine::Exception("CudaRuntime::eventRecord() - failed to record event");
 			}

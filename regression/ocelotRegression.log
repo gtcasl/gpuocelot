@@ -16,7 +16,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.535519123077 seconds
+INFO     Test completed in 4.26559877396 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -28,8 +28,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1259030947
-Test time : 0.218695
+Test Seed : 1259033299
+Test time : 1.10023
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -69,44 +69,8 @@ UNREACHABLE executed at Value.cpp:505!
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator
-INFO     Test completed in 0.0735199451447 seconds
+INFO     Test completed in 0.164429187775 seconds
 INFO      It produced the following output:
-(0.021389) CudaRuntime.cpp:2378: Disabling GPU devices.
-(0.021446) CudaRuntime.cpp:2388: Disabling LLVM devices.
-(0.021457) CudaRuntime.cpp:2392: PreferredISA is Emulated
-(0.021483) CudaRuntime.cpp:638:  Ocelot Runtime Initialized.
-(0.021501) CudaRuntime.cpp:933:  Registering fat binary TestMemoryTraceGenerator_kernel.cu to handle 0
-(0.021517) CudaRuntime.cpp:955:  Loading PTX programs from "TestMemoryTraceGenerator_kernel.cu
-(0.035988) CudaRuntime.cpp:701:  Setting default device to 8803 Ocelot PTX Emulator
-(0.036736) CudaRuntime.cpp:1310: Registering symbol 0x8fbfc0 to function _Z12k_mv_productiiPKfS0_Pf in module 0
-(0.036837) CudaRuntime.cpp:1388:  Allocating 131072 bytes of host memory at 0x3615a00
-(0.036849) CudaRuntime.cpp:1388:  Allocating 512 bytes of host memory at 0x3571d40
-(0.036859) CudaRuntime.cpp:1388:  Allocating 1024 bytes of host memory at 0x3583870
-(0.037351) CudaRuntime.cpp:1064: Configuring next cuda launch.
-(0.037363) CudaRuntime.cpp:1065:  Kernel
-(0.037371) CudaRuntime.cpp:1066:   x 4
-(0.037379) CudaRuntime.cpp:1067:   y 1
-(0.037389) CudaRuntime.cpp:1068:   z 1
-(0.037397) CudaRuntime.cpp:1069:  CTA
-(0.037405) CudaRuntime.cpp:1070:   x 64
-(0.037414) CudaRuntime.cpp:1071:   y 1
-(0.037421) CudaRuntime.cpp:1072:   z 1
-(0.037429) CudaRuntime.cpp:1073:  Shared Memory 0
-(0.037439) CudaRuntime.cpp:1173: Adding argument of size 4 at offset 0 for next cuda launch.
-(0.037452) CudaRuntime.cpp:1173: Adding argument of size 4 at offset 4 for next cuda launch.
-(0.037464) CudaRuntime.cpp:1173: Adding argument of size 8 at offset 8 for next cuda launch.
-(0.037474) CudaRuntime.cpp:1173: Adding argument of size 8 at offset 16 for next cuda launch.
-(0.037483) CudaRuntime.cpp:1173: Adding argument of size 8 at offset 24 for next cuda launch.
-(0.037497) CudaRuntime.cpp:59:   Getting translated kernel with ISA: Emulated
-(0.038216) CudaRuntime.cpp:85:     got generated kernel with ISA PTX
-(0.038227) CudaRuntime.cpp:107:  Obtained translated kernel with ISA PTX
-(0.038240) CudaRuntime.cpp:192:  Setting up parameters for emulated kernel "_Z12k_mv_productiiPKfS0_Pf".
-(0.038257) CudaRuntime.cpp:153:   Set up parameter __cudaparm__Z12k_mv_productiiPKfS0_Pf_M size 4 value 256
-(0.038269) CudaRuntime.cpp:153:   Set up parameter __cudaparm__Z12k_mv_productiiPKfS0_Pf_N size 4 value 128
-(0.038291) CudaRuntime.cpp:153:   Set up parameter __cudaparm__Z12k_mv_productiiPKfS0_Pf___val_paramA_gpu size 8 value 0x00000000035f58f0
-(0.038303) CudaRuntime.cpp:153:   Set up parameter __cudaparm__Z12k_mv_productiiPKfS0_Pf___val_paramV_gpu size 8 value 0x00000000035b9c60
-(0.038314) CudaRuntime.cpp:153:   Set up parameter __cudaparm__Z12k_mv_productiiPKfS0_Pf___val_paramR_gpu size 8 value 0x00000000035f2a20
-(0.038347) CudaRuntime.cpp:267:  Launching emulated kernel "_Z12k_mv_productiiPKfS0_Pf".
 Pass/Fail : Pass
 
 
@@ -115,17 +79,16 @@ Name : TestMemoryTraceGenerator
 Description: 
 
 
-Test Seed : 1259030948
-Test time : 0.0070703
+Test Seed : 1259033301
+Test time : 0.00667286
 
 Status : Test output:
 
 
-(0.044816) CudaRuntime.cpp:677:  Ocelot Runtime Destroyed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 7.8672170639 seconds
+INFO     Test completed in 10.2350850105 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -137,8 +100,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1259030948
-Test time : 7.79084
+Test Seed : 1259033301
+Test time : 9.71559
 
 Status : For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Scan): Passed
@@ -287,7 +250,7 @@ For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0609579086304 seconds
+INFO     Test completed in 0.114562988281 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -301,8 +264,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1259030956
-Test time : 0.0138264
+Test Seed : 1259033311
+Test time : 0.00138402
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -433,34 +396,9 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0477049350739 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1259030956
-Test time : 0.0239093
-
-Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 42.737210989 seconds
+INFO     Test completed in 43.3354539871 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -475,8 +413,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1259030948
-Test time : 42.2992
+Test Seed : 1259033297
+Test time : 42.8123
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk/template.ptx
@@ -5398,28 +5336,38 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestTrace 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestTrace
-INFO     Test completed in 0.0472228527069 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
+INFO     Test completed in 0.0602920055389 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestTrace
+Name : TestInstructions
 
 Description: 
 
 
-Test Seed : 1259030990
-Test time : 0.000324488
+Test Seed : 1259033340
+Test time : 0.000457048
 
 Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO     Test completed in 35.9520821571 seconds
+INFO     Test completed in 32.6831150055 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5432,8 +5380,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1259030956
-Test time : 35.8394
+Test Seed : 1259033311
+Test time : 32.5044
 
 Status : For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Parse): Passed
@@ -5580,40 +5528,36 @@ For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Parse): Pas
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.693229198456 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
+INFO     Test completed in 0.0448160171509 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestInstructions
+Name : TestEmulator
 
 Description: 
 
 
-Test Seed : 1259030992
-Test time : 0.0239892
+Test Seed : 1259033344
+Test time : 0.0226583
 
 Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.066565990448 seconds
+INFO     Test completed in 0.0451200008392 seconds
 INFO      It produced the following output:
-Kernel launch time was 7.7486e-05s (77594 ticks)
+Kernel launch time was 7.77245e-05s (77663 ticks)
 Pass/Fail : Pass
 
 
@@ -5622,8 +5566,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1259030992
-Test time : 0.0100503
+Test Seed : 1259033344
+Test time : 0.00950432
 
 Status : Test output:
 divergent control flow succeeded
@@ -5632,8 +5576,27 @@ looping kernel succeeded
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestTrace 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestTrace
+INFO     Test completed in 0.0459308624268 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestTrace
+
+Description: 
+
+
+Test Seed : 1259033344
+Test time : 0.000333071
+
+Status : Test output:
+
+
+
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 35.8155441284 seconds
+INFO     Test completed in 33.9203419685 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5646,8 +5609,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1259030990
-Test time : 35.7138
+Test Seed : 1259033340
+Test time : 33.6559
 
 Status : For file ../tests/ptx/sdk/template.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk/deviceQuery.ptx, Test Point 1 (Translate): Passed
@@ -5796,17 +5759,17 @@ For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Translate):
 
 INFO     
 Passing tests:
- (35.952s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
- (42.737s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
- (35.816s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/ocelot/TestTrace : Passed
- (0.693s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
- (7.867s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
- (0.067s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
- (0.536s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
- (0.074s) : /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
+ (32.683s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
+ (0.045s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
+ (43.335s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (33.920s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
+ (0.115s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.046s) : /home/andrew/repositories/gpuocelot/ocelot/TestTrace : Passed
+ (0.060s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
+ (10.235s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
+ (0.045s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
+ (4.266s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (0.164s) : /home/andrew/repositories/gpuocelot/ocelot/TestMemoryTraceGenerator : Passed
 
 Failing tests:
 

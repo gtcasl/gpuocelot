@@ -1372,10 +1372,35 @@ namespace cuda
 	void* CudaRuntime::allocate( unsigned int size, bool portable, bool mapped )
 	{
 		Memory memory;
-		
+		memory.base = 0;
+		memory.device = 0;
 		if( mapped )
 		{
-			memory.base = ( char* ) context.malloc( size );
+#if HAVE_CUDA_DRIVER_API==1
+			if (context.getSelectedISA() == ir::Instruction::GPU) {
+				unsigned int flags = CU_MEMHOSTALLOC_DEVICEMAP | (portable ? CU_MEMHOSTALLOC_PORTABLE : 0);
+				CUresult result;
+				result = cuMemHostAlloc((void **)&memory.base, size, flags);
+				if (result != CUDA_SUCCESS) {
+					report("Failed to allocate host-mapped memory");
+					return 0;
+				}
+				result = cuMemHostGetDevicePointer((CUdeviceptr*)&memory.device, memory.base, 0);
+				if (result != CUDA_SUCCESS) {
+					report("Failed to retrieve device pointer to host-mapped memory: " << result);
+					return 0;
+				}
+				if (!memory.device) {
+					report("Device pointer retrieved is NULL");
+					return 0;
+				}
+				report("  allocated host-mapped memory - host: " << (void *)memory.base << ", device: " << (void *)memory.device);
+			}	
+#endif
+			if (!memory.base) {
+				memory.base = ( char* ) context.malloc( size );
+				memory.device = memory.base;
+			}
 			report( " Allocating " << size 
 				<< " bytes of device mapped host memory at " 
 				<< (void*) memory.base );
@@ -1420,7 +1445,7 @@ namespace cuda
 				cudaErrorInvalidValue );
 		}
 		
-		return block->second.base;	
+		return block->second.device;	
 	}
 
 	void CudaRuntime::free( void* pointer )
@@ -1452,6 +1477,48 @@ namespace cuda
 		}
 		else
 		{
+			delete[] block->second.base;
+		}
+		
+		_memory.erase( block );
+	
+	}
+
+	void CudaRuntime::freeHost( void* pointer )
+	{
+	
+		MemoryMap::iterator block = _memory.find( ( char* ) pointer );
+
+		if( block == _memory.end() )
+		{
+			std::stringstream stream;
+			stream << "Invalid free, address " << pointer 
+				<< " not allocated in host pinned memory.";
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
+		}
+		
+		if( block->second.owner != pthread_self() && !block->second.portable )
+		{
+			std::stringstream stream;
+			stream << "Invalid free, address " << pointer 
+				<< " allocated by another thread and not delcared portable.";
+			throw hydrazine::Exception( formatError( stream.str() ), 
+				cudaErrorInvalidValue );
+		}
+		
+		bool freed = false;
+		if( block->second.mapped )
+		{
+#if HAVE_CUDA_DRIVER_API==1
+			if (context.getSelectedISA() == ir::Instruction::GPU) {
+				cuMemFreeHost(block->second.base);
+				freed = true;
+			}
+#endif
+		}
+		
+		if (!freed) {
 			delete[] block->second.base;
 		}
 		
@@ -2099,10 +2166,18 @@ namespace cuda
 	}
 
 	bool CudaRuntime::threadSynchronize() {
-		report("CudaRuntime::threadSynchronize()");
+		report("CudaRuntime::threadSynchronize() - ISA: " << ir::Instruction::toString(context.getSelectedISA()));
 #if HAVE_CUDA_DRIVER_API == 1
 		if (context.getSelectedISA() == ir::Instruction::GPU) {
-			return (cuCtxSynchronize() == CUDA_SUCCESS);
+			cudaError_enum result = cuCtxSynchronize();
+			bool success = (result == CUDA_SUCCESS);
+			if (success) {
+				report("  cuCtxSynchronize() succeeded");
+			}
+			else {
+				report("  cuCtxSynchronize() FAILED - " << result);
+			}
+			return success;
 		}
 #endif
 		return true;

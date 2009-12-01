@@ -43,6 +43,7 @@ namespace cuda
 			{
 				public:
 					char* base;
+					char *device;
 					size_t size;
 					bool portable;
 					bool mapped;
@@ -455,6 +456,11 @@ namespace cuda
 				\param pointer The memory to free
 			*/
 			void free( void* pointer );
+
+			/*! \brief Free some host-mapped memory			
+				\param pointer The memory to free
+			*/
+			void freeHost( void* pointer );
 
 			/*! \brief Allocate a device array
 				\param desc The channel description of the array

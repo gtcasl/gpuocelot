@@ -201,7 +201,8 @@ namespace cuda
 
 		reportE( REPORT_MEMORY, "Freeing HOST pinned memory " << ptr << "." );
 	
-		_runtime.free( ptr );
+//		_runtime.free( ptr );
+		_runtime.freeHost( ptr );
 	
 		_runtime.unlock();
 	
@@ -999,6 +1000,9 @@ namespace cuda
 	{
 		_runtime.lock();
 		cudaError_t error = _runtime.lastError();
+		if (error != cudaSuccess) {
+			report("\nCUDA ERROR: cudaGetLastError() - " << error << "\n");
+		}
 		_runtime.unlock();
 	
 		return error;
@@ -1369,6 +1373,7 @@ namespace cuda
 	cudaError_t CudaRuntimeBase::cudaThreadSynchronize( void )
 	{
 		bool result = _runtime.threadSynchronize();
+		report("cudaThreadSynchronize() - returning " << (result ? "cudaSuccess" : "cudaErrorUnknown"));
 		return result ? cudaSuccess : cudaErrorUnknown;	
 	}
 

@@ -752,7 +752,7 @@ bool executive::Executive::useGLInteroperability() {
 			report("  cuDeviceGet() failed");
 			return false;
 		}
-		if (cuGLCtxCreate(&cudaContext, 0, cudaDevice) == CUDA_SUCCESS) {
+		if (cuGLCtxCreate(&cudaContext, CU_CTX_MAP_HOST, cudaDevice) == CUDA_SUCCESS) {
 			cudaGLInitialized = true;
 			report("  cuGLCtxCreate() - created a GL context");
 			return true;
@@ -788,7 +788,7 @@ bool executive::Executive::select(int device) {
 				selectedDevice = i;
 				cudaGLInitialized = false;
 
-				if (cuCtxCreate(&cudaContext, 0, devices[i].guid) == CUDA_SUCCESS) {
+				if (cuCtxCreate(&cudaContext, CU_CTX_MAP_HOST, devices[i].guid) == CUDA_SUCCESS) {
 					report("  cuCtxCreate() successful - creaetd CUDA device " << i);
 					return true;
 				}
@@ -1859,7 +1859,7 @@ executive::Executive::MemoryAllocation::MemoryAllocation( ):
 
 executive::Executive::MemoryAllocation::MemoryAllocation(
 	ir::Instruction::Architecture i, int d, ir::PTXU64 s, void *p):
-	isa(i), device(d), size(s), ptr(p), external(false) {
+	isa(i), device(d), size(s), ptr(p), external(false)  {
 	
 }
 

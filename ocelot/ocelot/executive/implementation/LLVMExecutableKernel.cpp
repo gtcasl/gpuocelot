@@ -56,6 +56,7 @@
 #endif
 
 #include <unordered_set>
+#include <cmath>
 
 #ifdef isnan
 #define _isnan(x) isnan(x)

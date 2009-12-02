@@ -26,14 +26,6 @@ namespace trace
 
 	CacheSimulator::CacheSimulator() 
 	{
-		_time=0;
-
-		_missCount=0;
-		_hitCount=0;
-		_missLatency=0;
-		_hitLatency=0;
-		
-		_memoryAccess=0;
 		
 		writebackTime=50;
 		addressWidth=64;
@@ -56,6 +48,15 @@ namespace trace
 	void CacheSimulator::initialize(	
 		const executive::EmulatedKernel *kernel) 
 	{
+		_time=0;
+
+		_missCount=0;
+		_hitCount=0;
+		_missLatency=0;
+		_hitLatency=0;
+	
+		_memoryAccess=0;
+
 		_cache.resize(cacheSize / (lineSize * ways) );
 		for(CacheContainer::iterator i = _cache.begin(); i!= _cache.end(); ++i)
 		{
@@ -128,11 +129,10 @@ namespace trace
 	
 	long long unsigned int CacheSimulator::getTag(ir::PTXU64 addressAccessed)
 	{
-		int tagBits;
-		tagBits = ( addressWidth - std::log2( cacheSize / lineSize ) 
-			- std::log2(lineSize) ); 
-		addressAccessed >>= tagBits;		
-		return addressAccessed;	 
+		int shiftAmount = std::log2( cacheSize / lineSize ) 
+			+ std::log2(lineSize); 
+		addressAccessed >>= shiftAmount;		
+		return addressAccessed;
 	}
 	
 	int CacheSimulator::findSet(ir::PTXU64 addressAccessed)
@@ -201,7 +201,7 @@ namespace trace
 	{
 		if(!event.memory_addresses.empty())
 		{
-			++_memoryAccess;
+			_memoryAccess+=event.memory_addresses.size();
 			
 			if(event.instruction->opcode == ir::PTXInstruction::St) //write
 			{

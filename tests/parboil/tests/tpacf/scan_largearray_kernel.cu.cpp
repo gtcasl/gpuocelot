@@ -6519,7 +6519,7 @@ extern "C" int pb_compareFiles(const char *, const char *, double);
 
 extern "C" int pb_compareFilesBin(const char *, const char *, double);
 # 23 "model.h"
-typedef unsigned long hist_t;
+typedef unsigned long long hist_t;
 
 struct spherical {
 

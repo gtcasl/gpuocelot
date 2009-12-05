@@ -18,6 +18,9 @@
 		<UseParallelismTraceGenerator>
 			0
 		</UseParallelismTraceGenerator>
+		<UseCacheSimulator>
+			1
+		</UseCacheSimulator>
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>
@@ -36,7 +39,7 @@
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			LLVM
+			Emulated
 		</PreferredISA>
 		<OptimizationLevel>
 			none
@@ -45,7 +48,7 @@
 			1
 		</DisableGPUDevices>
 		<DisableLLVMDevices>
-			0
+			1
 		</DisableLLVMDevices>
 		<DisableEmulatorDevices>
 			0

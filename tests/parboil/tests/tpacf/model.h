@@ -20,7 +20,7 @@
 
 #define NUM_BINS 20
 
-typedef unsigned long hist_t;
+typedef unsigned long long hist_t;
 
 struct spherical 
 {

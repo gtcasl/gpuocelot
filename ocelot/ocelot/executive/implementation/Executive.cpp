@@ -1799,19 +1799,21 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 }
 
 bool executive::Executive::checkMemoryAccess(int device, 
-	const void* _base, size_t size) const {
+	const void* _base, size_t size) const {	
 	const char* base = reinterpret_cast<const char*>(_base);
 	
-	GlobalAllocationMap::const_iterator global 
-		= globalAllocations.upper_bound(const_cast<char*>(base));
-	if (global != globalAllocations.begin()) --global;
-	if (base + size <= ((char*)global->second.ptr + global->second.size) 
-		&& (base >= (char*)global->second.ptr)) {
-		return true;
+	if (!globalAllocations.empty()) {
+		GlobalAllocationMap::const_iterator global 
+			= globalAllocations.upper_bound(const_cast<char*>(base));
+		if (global != globalAllocations.begin()) --global;
+		if (base + size <= ((char*)global->second.ptr + global->second.size) 
+			&& (base >= (char*)global->second.ptr)) {
+			return true;
+		}
 	}
 	
 	MemoryAllocation allocation = getMemoryAllocation(device, _base);
-	if( allocation.isa == ir::Instruction::Unknown ) {
+	if (allocation.isa == ir::Instruction::Unknown) {
 		return false;
 	}
 	assert(allocation.device == device || allocation.external);

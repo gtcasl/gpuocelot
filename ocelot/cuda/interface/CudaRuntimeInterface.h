@@ -278,6 +278,7 @@ namespace cuda
 			virtual const char* getKernelPointer(const std::string& name, 
 				const std::string& module) = 0;
 			virtual void** getFatBinaryHandle(const std::string& name) = 0;
+			virtual void clearErrors() = 0;
 	};
 
 }

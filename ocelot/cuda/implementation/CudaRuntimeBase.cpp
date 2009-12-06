@@ -1127,6 +1127,7 @@ namespace cuda
 			throw e;
 		}
 		
+		_runtime.unlock();	
 		return cudaGetLastError();
 	}
 
@@ -1747,6 +1748,14 @@ namespace cuda
 	{
 		unsigned int handle = _runtime.getFatBinaryHandle( name );
 		return (void**) handle;
+	}
+	
+	void CudaRuntimeBase::clearErrors()
+	{
+		_runtime.lock();
+		_runtime.setContext();
+		_runtime.clearErrors();
+		_runtime.unlock();
 	}
 }
 

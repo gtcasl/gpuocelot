@@ -51,6 +51,11 @@ namespace ocelot
 		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
 			getFatBinaryHandle( name );
 	}
+	
+	void clearErrors()
+	{
+		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearErrors();
+	}
 
 }
 

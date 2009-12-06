@@ -69,6 +69,9 @@ namespace ocelot
 	*/
 	void** getFatBinaryHandle(const std::string& name);
 
+	/*! \brief Clear all errors in the Cuda Runtime */
+	void clearErrors();
+
 }
 
 #endif

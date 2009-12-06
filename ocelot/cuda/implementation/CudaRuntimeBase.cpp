@@ -8,6 +8,7 @@
 #define CUDA_RUNTIME_BASE_CPP_INCLUDED
 
 #include <ocelot/cuda/interface/CudaRuntimeBase.h>
+#include <ocelot/executive/interface/RuntimeException.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -1116,10 +1117,16 @@ namespace cuda
 		_runtime.lock();
 		_runtime.setContext();
 	
-		_runtime.launch( entry );
-	
-		_runtime.unlock();	
-	
+		try
+		{
+			_runtime.launch( entry );
+		}
+		catch( executive::RuntimeException& e )
+		{
+			_runtime.unlock();	
+			throw e;
+		}
+		
 		return cudaGetLastError();
 	}
 

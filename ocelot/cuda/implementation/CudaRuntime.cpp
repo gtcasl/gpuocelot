@@ -33,7 +33,7 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX 0
-#define CATCH_RUNTIME_EXCEPTIONS 1
+#define CATCH_RUNTIME_EXCEPTIONS 0
 
 namespace cuda
 {
@@ -270,7 +270,6 @@ namespace cuda
 				thread->second.kernelDimensions.y );
 			thread->second.lastError = cudaSuccess;
 		}
-		#if CATCH_RUNTIME_EXCEPTIONS == 1
 		catch( const executive::RuntimeException& e )
 		{
 			#if CUDA_VERBOSE == 1
@@ -283,13 +282,10 @@ namespace cuda
 			thread->second.lastError = cudaErrorLaunchFailure;
 			emulated->SharedMemorySize = staticSharedSize;
 			thread->second.parameters.clear();
+			#if CATCH_RUNTIME_EXCEPTIONS != 1
+			throw e;
+			#endif
 		}
-		#else
-		catch( int nothing )
-		{
-		
-		}
-		#endif
 		
 		emulated->SharedMemorySize = staticSharedSize;
 		thread->second.parameters.clear();

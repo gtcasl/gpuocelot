@@ -242,6 +242,7 @@ namespace cuda
 			const char* getKernelPointer(const std::string& name, 
 				const std::string& module);
 			void** getFatBinaryHandle(const std::string& name);
+			void clearErrors();
 	};
 
 }

@@ -1328,7 +1328,7 @@ namespace cuda
 		
 		if(thread->second.lastError == cudaErrorPriorLaunchFailure)
 		{
-			return;		
+			return;
 		}
 
 		SymbolMap::iterator kernel = _symbols.find( symbol );
@@ -2141,10 +2141,13 @@ namespace cuda
 #if HAVE_CUDA_DRIVER_API == 1
 		if (context.getSelectedISA() == ir::Instruction::GPU) {
 			if (cuEventDestroy(event->second.cuEvent) != CUDA_SUCCESS) {
-				report("CudaRuntime::createEvent() - failed to destroy an event");
-				throw hydrazine::Exception("CudaRuntime::createEvent() - failed to destroy an event");
+				report("CudaRuntime::createEvent() -" 
+					<< " failed to destroy an event");
+				throw hydrazine::Exception(
+					"CudaRuntime::createEvent() - failed to destroy an event");
 			}
-			report("cuEventDestroy() succeeded: " << (void *)event->second.cuEvent);
+			report("cuEventDestroy() succeeded: " 
+				<< (void *)event->second.cuEvent);
 		}
 #endif
 		
@@ -2162,7 +2165,8 @@ namespace cuda
 	}
 
 	bool CudaRuntime::threadSynchronize() {
-		report("CudaRuntime::threadSynchronize() - ISA: " << ir::Instruction::toString(context.getSelectedISA()));
+		report("CudaRuntime::threadSynchronize() - ISA: " 
+			<< ir::Instruction::toString(context.getSelectedISA()));
 #if HAVE_CUDA_DRIVER_API == 1
 		if (context.getSelectedISA() == ir::Instruction::GPU) {
 			cudaError_enum result = cuCtxSynchronize();
@@ -2401,6 +2405,16 @@ namespace cuda
 		}
 
 		mapping->second = (void*)0;
+	}
+	
+	void CudaRuntime::clearErrors()
+	{
+		pthread_t id = pthread_self();
+		
+		ThreadMap::iterator thread = _threads.find( id );
+		assert( thread != _threads.end() );
+		
+		thread->second.lastError = cudaSuccess;
 	}
 	
 	void CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, 

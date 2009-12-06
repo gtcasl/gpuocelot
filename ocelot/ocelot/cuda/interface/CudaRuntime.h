@@ -589,6 +589,9 @@ namespace cuda
 
 			bool threadSynchronize();
 			
+			/*! \brief Clear all errors */
+			void clearErrors();
+			
 		public:
 			/*!	\brief Registers an openGL buffer */
 			void registerOpenGLBuffer( GLuint buffer );

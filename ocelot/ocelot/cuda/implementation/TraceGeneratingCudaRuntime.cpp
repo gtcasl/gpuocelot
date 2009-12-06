@@ -2048,6 +2048,11 @@ namespace cuda
 	{
 		return _runtime.getFatBinaryHandle( name );
 	}
+
+	void TraceGeneratingCudaRuntime::clearErrors( )
+	{
+		return _runtime.clearErrors( );
+	}
 }
 
 #endif

@@ -125,6 +125,24 @@ bool isF64NaN(PTXF64 f) {
 #define max(a, b) ((a) < (b) ? (b) : (a))
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+#if (CHECK_GLOBAL_ACCESSES==1)
+static void globalMemoryError(const void* pointer, size_t size, 
+	const executive::EmulatedKernel* kernel, executive::CTAContext &context, 
+	const PTXInstruction &instr, int thread, int cta ) {
+	std::stringstream stream;
+	stream << "Global memory address " 
+		<< (void*)((char*)pointer) << " of size " << size
+		<< " is out of any allocated or mapped range.\n";
+	stream << "Memory Map:\n";
+	stream << executive::Executive::nearbyAllocationsToString(
+		*kernel->context, pointer);
+	stream << "\n";
+	stream << " At: " << kernel->location(context.PC);
+	
+	throw executive::RuntimeException(stream.str(), context.PC, 
+		thread, cta, instr);	
+}
+#endif
 
 /*!
 	Constructs a cooperative thread array from an EmulatedKernel instance
@@ -1530,8 +1548,30 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 		}
 
 
+		#if (CHECK_MEMORY_ALIGNMENT==1)
+		if ((size_t)source % elementSize != 0) {
+			std::stringstream stream;
+			stream << "Memory access at " << (void*)source 
+				<< " is not aligned to the access size (" 
+					<< elementSize << " bytes)\n";
+			stream << " At: " << kernel->location(context.PC);
+			throw RuntimeException(stream.str(), context.PC, instr);
+		}
+		#endif
+
 		switch (instr.addressSpace) {
 			case PTXInstruction::Global:
+				{	
+					#if (CHECK_GLOBAL_ACCESSES==1)
+					if (!kernel->checkMemoryAccess(source,
+						elementSize)) {
+						globalMemoryError(source, 
+							elementSize , kernel, context, instr, 
+							threadID, blockId.x );
+					}
+					#endif
+				}
+
 				break;
 			case PTXInstruction::Shared:
 				{
@@ -2943,24 +2983,6 @@ void executive::CooperativeThreadArray::vectorLoad(int threadID,
 	}
 }
 
-#if (CHECK_GLOBAL_ACCESSES==1)
-static void globalMemoryError(const void* pointer, size_t size, 
-	const executive::EmulatedKernel* kernel, executive::CTAContext &context, 
-	const PTXInstruction &instr, int thread, int cta ) {
-	std::stringstream stream;
-	stream << "Global memory address " 
-		<< (void*)((char*)pointer) << " of size " << size
-		<< " is out of any allocated or mapped range.\n";
-	stream << "Memory Map:\n";
-	stream << executive::Executive::nearbyAllocationsToString(
-		*kernel->context, pointer);
-	stream << "\n";
-	stream << " At: " << kernel->location(context.PC);
-	
-	throw executive::RuntimeException(stream.str(), context.PC, 
-		thread, cta, instr);	
-}
-#endif
 
 /*!
 
@@ -3082,7 +3104,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 						elementSize * vectorSize)) {
 						globalMemoryError(source, 
 							elementSize * vectorSize, kernel, context, instr, 
-								threadID, blockId.x );
+							threadID, blockId.x );
 					}
 					#endif
 				}

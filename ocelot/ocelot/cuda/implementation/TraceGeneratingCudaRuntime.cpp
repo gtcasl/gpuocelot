@@ -45,6 +45,7 @@ namespace cuda
 		}
 	
 		configure( config );
+		_timer.start();
 	}
 	
 	TraceGeneratingCudaRuntime::~TraceGeneratingCudaRuntime()
@@ -54,22 +55,24 @@ namespace cuda
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaMalloc3D( 
 		cudaPitchedPtr* pitchedDevPtr, cudaExtent extent )
-	{		
+	{
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		hydrazine::Timer timer;
-		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMalloc3D( pitchedDevPtr, extent );
-		timer.stop();
+		_timer.stop();
 		
 		_trace << "cudaMalloc3D";
 		_trace << " pointer = " << pitchedDevPtr;
 		_trace << " width = " << extent.width;
 		_trace << " height = " << extent.height;
 		_trace << " depth = " << extent.depth;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 		
+		_timer.start();
+
 		return status;
 	}
 	
@@ -77,12 +80,13 @@ namespace cuda
 		cudaArray** arrayPtr, const cudaChannelFormatDesc* desc, 
 		cudaExtent extent )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMalloc3DArray( 
 			arrayPtr, desc, extent );
-		timer.stop();
+		_timer.stop();
 		
 		_trace << "cudaMalloc3DArray";
 		_trace << " pointer = " << arrayPtr;
@@ -93,21 +97,24 @@ namespace cuda
 		_trace << " width = " << extent.width;
 		_trace << " height = " << extent.height;
 		_trace << " depth = " << extent.depth;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 				
+		_timer.start();
+
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemset3D( 
 		cudaPitchedPtr pitchedDevPtr, int value, cudaExtent extent )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemset3D( pitchedDevPtr, 
 			value, extent );
-		timer.stop();
+		_timer.stop();
 		
 		_trace << "cudaMemset3D";
 		_trace << " pointer = " << pitchedDevPtr.ptr;
@@ -118,20 +125,23 @@ namespace cuda
 		_trace << " width = " << extent.width;
 		_trace << " height = " << extent.height;
 		_trace << " depth = " << extent.depth;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 				
+		_timer.start();
+
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemcpy3D( 
 		const cudaMemcpy3DParms* p )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy3D( p );
-		timer.stop();
+		_timer.stop();
 		
 		_trace << "cudaMemcpy3D";
 		_trace << " sourcePointer = " << p->srcArray;
@@ -156,20 +166,23 @@ namespace cuda
 		_trace << " height = " << p->extent.height;
 		_trace << " depth = " << p->extent.depth;
 		_trace << " kind = " << p->kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 		
+		_timer.start();
+
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemcpy3DAsync( 
 		const cudaMemcpy3DParms* p, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy3DAsync( p, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy3DAsync";
 		_trace << " sourcePointer = " << p->srcArray;
@@ -194,10 +207,12 @@ namespace cuda
 		_trace << " height = " << p->extent.height;
 		_trace << " depth = " << p->extent.depth;
 		_trace << " kind = " << p->kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << " stream = " << stream;
 		_trace << "\n";
 		
+		_timer.start();
+
 		return status;
 	}
 	
@@ -205,56 +220,65 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaMalloc( 
 		void** devPtr, size_t size )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMalloc( devPtr, size );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMalloc";
 		_trace << " pointer = " << *devPtr;
 		_trace << " size = " << size;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 		
+		_timer.start();
+
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaMallocHost( 
 		void** ptr, size_t size )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMallocHost( ptr, size );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMallocHost";
 		_trace << " pointer = " << *ptr;
 		_trace << " size = " << size;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 		
+		_timer.start();
+
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaMallocPitch( void** devPtr, 
 		size_t* pitch, size_t width, size_t height )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMallocPitch( devPtr, 
 			pitch, width, height );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMallocPitch";
 		_trace << " pointer = " << *devPtr;
 		_trace << " pitch = " << *pitch;
 		_trace << " width = " << width;
 		_trace << " height = " << height;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -262,12 +286,13 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaMallocArray( cudaArray** array, 
 		const cudaChannelFormatDesc* desc, size_t width, size_t height )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMallocArray( array, 
 			desc, width, height );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMallocArray";
 		_trace << " pointer = " << *array;
@@ -277,56 +302,67 @@ namespace cuda
 		_trace << " format = " << desc->f;
 		_trace << " width = " << width;
 		_trace << " height = " << height;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaFree( void* devPtr )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaFree( devPtr );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaFree";
 		_trace << " pointer = " << devPtr;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaFreeHost( void* ptr )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaFreeHost( ptr );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaFreeHost";
 		_trace << " pointer = " << ptr;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaFreeArray( cudaArray* array )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaFreeArray( array );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaFreeArray";
 		_trace << " pointer = " << array;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -335,18 +371,21 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaHostAlloc( 
 		void** pHost, size_t bytes, unsigned int flags )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaHostAlloc( pHost, bytes, flags );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaHostAlloc";
 		_trace << " pointer = " << *pHost;
 		_trace << " bytes = " << bytes;
 		_trace << " flags = " << flags;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -354,18 +393,21 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaHostGetDevicePointer( 
 		void** pDevice, void* pHost, unsigned int flags )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaHostGetDevicePointer( pDevice, pHost, flags );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaHostGetDevicePointer";
 		_trace << " pointer = " << *pDevice;
 		_trace << " hostPointer = " << pHost;
 		_trace << " flags = " << flags;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -374,19 +416,22 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemcpy( 
 		void* dst, const void* src, size_t count, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy( dst, src, count, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy";
 		_trace << " destination = " << dst;
 		_trace << " source = " << src;
 		_trace << " size = " << count;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -395,12 +440,13 @@ namespace cuda
 		size_t wOffset, size_t hOffset, const void* src, 
 		size_t count, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyToArray( dst, wOffset, hOffset, 
 			src, count, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyToArray";
 		_trace << " destination = " << dst;
@@ -409,8 +455,10 @@ namespace cuda
 		_trace << " source = " << src;
 		_trace << " size = " << count;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -419,12 +467,13 @@ namespace cuda
 		const cudaArray* src, size_t wOffset, size_t hOffset, 
 		size_t count, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyFromArray( dst, src, wOffset, 
 			hOffset, count, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyFromArray";
 		_trace << " destination = " << dst;
@@ -433,8 +482,10 @@ namespace cuda
 		_trace << " hOffset = " << hOffset;
 		_trace << " size = " << count;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -444,12 +495,13 @@ namespace cuda
 		const cudaArray* src, size_t wOffsetSrc, 
 		size_t hOffsetSrc, size_t count, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyArrayToArray( dst, wOffsetDst, 
 			hOffsetDst, src, wOffsetSrc, hOffsetSrc, count, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyArrayToArray";
 		_trace << " destination = " << dst;
@@ -460,8 +512,10 @@ namespace cuda
 		_trace << " hOffsetSrc = " << hOffsetSrc;
 		_trace << " size = " << count;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -470,12 +524,13 @@ namespace cuda
 		size_t dpitch, const void* src, size_t spitch, size_t width, 
 		size_t height, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2D( dst, dpitch, src, spitch, 
 			width, height, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2D";
 		_trace << " destination = " << dst;
@@ -485,8 +540,10 @@ namespace cuda
 		_trace << " width = " << width;
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -495,12 +552,13 @@ namespace cuda
 		size_t wOffset, size_t hOffset, const void* src, 
 		size_t spitch, size_t width, size_t height, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2DToArray( dst, wOffset, 
 			hOffset, src, spitch, width, height, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2DToArray";
 		_trace << " destination = " << dst;
@@ -511,8 +569,10 @@ namespace cuda
 		_trace << " width = " << width;
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -521,12 +581,13 @@ namespace cuda
 		size_t dpitch, const cudaArray* src, size_t wOffset, 
 		size_t hOffset, size_t width, size_t height, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2DFromArray( dst, dpitch, 
 			src, wOffset, hOffset, width, height, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2DFromArray";
 		_trace << " destination = " << dst;
@@ -537,8 +598,10 @@ namespace cuda
 		_trace << " width = " << width;
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -548,13 +611,14 @@ namespace cuda
 		const cudaArray* src, size_t wOffsetSrc, size_t hOffsetSrc, 
 		size_t width, size_t height, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2DArrayToArray( dst, 
 			wOffsetDst, hOffsetDst, src, wOffsetSrc, hOffsetSrc, width, 
 			height, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2DArrayToArray";
 		_trace << " destination = " << dst;
@@ -566,8 +630,10 @@ namespace cuda
 		_trace << " width = " << width;
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -576,12 +642,13 @@ namespace cuda
 		const char* symbol, const void* src, size_t count, size_t offset, 
 		cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyToSymbol( symbol, src, count, 
 			offset, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyToSymbol";
 		_trace << " symbol = " <<(void*) symbol;
@@ -589,8 +656,10 @@ namespace cuda
 		_trace << " bytes = " << count;
 		_trace << " offset = " << offset;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -598,12 +667,13 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemcpyFromSymbol( void* dst, 
 		const char* symbol, size_t count, size_t offset, cudaMemcpyKind kind )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyFromSymbol( dst, symbol, 
 			count, offset, kind );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyFromSymbol";
 		_trace << " destination = " << dst;
@@ -611,8 +681,10 @@ namespace cuda
 		_trace << " bytes = " << count;
 		_trace << " offset = " << offset;
 		_trace << " kind = " << kind;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -622,12 +694,13 @@ namespace cuda
 		const void* src, size_t count, cudaMemcpyKind kind, 
 		cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyAsync( dst, src, count, 
 			kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyAsync";
 		_trace << " destination = " << dst;
@@ -635,8 +708,10 @@ namespace cuda
 		_trace << " bytes = " << count;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -645,12 +720,13 @@ namespace cuda
 		cudaArray* dst, size_t wOffset, size_t hOffset, const void* src, 
 		size_t count, cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyToArrayAsync( dst, wOffset, 
 			hOffset, src, count, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyToArrayAsync";
 		_trace << " destination = " << dst;
@@ -660,8 +736,10 @@ namespace cuda
 		_trace << " bytes = " << count;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -670,12 +748,13 @@ namespace cuda
 		const cudaArray* src, size_t wOffset, size_t hOffset, 
 		size_t count, cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyFromArrayAsync( dst, src, 
 			wOffset, hOffset, count, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyFromArrayAsync";
 		_trace << " destination = " << dst;
@@ -685,8 +764,10 @@ namespace cuda
 		_trace << " bytes = " << count;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -695,12 +776,13 @@ namespace cuda
 		size_t dpitch, const void* src, size_t spitch, size_t width, 
 		size_t height, cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2DAsync( dst, dpitch, src, 
 			spitch, width, height, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2DAsync";
 		_trace << " destination = " << dst;
@@ -710,8 +792,10 @@ namespace cuda
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -721,12 +805,13 @@ namespace cuda
 		size_t spitch, size_t width, size_t height, 
 		cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2DToArrayAsync( dst, wOffset, hOffset, 
 			src, spitch, width, height, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2DToArrayAsync";
 		_trace << " destination = " << dst;
@@ -738,8 +823,10 @@ namespace cuda
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -749,12 +836,13 @@ namespace cuda
 		size_t hOffset, size_t width, size_t height, 
 		cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpy2DFromArrayAsync( dst, dpitch, 
 			src, wOffset, hOffset, width, height, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpy2DFromArrayAsync";
 		_trace << " destination = " << dst;
@@ -766,8 +854,10 @@ namespace cuda
 		_trace << " height = " << height;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -776,12 +866,13 @@ namespace cuda
 		const char* symbol, const void* src, size_t count, size_t offset, 
 		cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyToSymbolAsync( symbol, src, 
 			count, offset, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyToSymbolAsync";
 		_trace << " symbol = " <<(void*) symbol;
@@ -790,8 +881,10 @@ namespace cuda
 		_trace << " offset = " << offset;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -800,12 +893,13 @@ namespace cuda
 		void* dst, const char* symbol, size_t count, size_t offset, 
 		cudaMemcpyKind kind, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemcpyFromSymbolAsync( dst, symbol, 
 			count, offset, kind, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemcpyFromSymbolAsync";
 		_trace << " destination = " << dst;
@@ -814,8 +908,10 @@ namespace cuda
 		_trace << " offset = " << offset;
 		_trace << " kind = " << kind;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -824,18 +920,21 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemset( void* devPtr, int value, 
 		size_t count )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemset( devPtr, value, count );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemset";
 		_trace << " devPtr = " << devPtr;
 		_trace << " value = " << value;
 		_trace << " bytes = " << count;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -843,12 +942,13 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaMemset2D( 
 		void* devPtr, size_t pitch, int value, size_t width, size_t height )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaMemset2D( devPtr, pitch, value, 
 			width, height );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMemset2D";
 		_trace << " devPtr = " << devPtr;
@@ -856,8 +956,10 @@ namespace cuda
 		_trace << " value = " << value;
 		_trace << " width = " << width;
 		_trace << " height = " << height;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -866,17 +968,20 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetSymbolAddress( void** devPtr, 
 		const char* symbol )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetSymbolAddress( devPtr, symbol );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetSymbolAddress";
 		_trace << " pointer = " << *devPtr;
 		_trace << " symbol = " <<(void*) symbol;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -884,17 +989,20 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetSymbolSize( size_t* size, 
 		const char* symbol )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetSymbolSize( size, symbol );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetSymbolSize";
 		_trace << " size = " << *size;
 		_trace << " symbol = " <<(void*) symbol;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -902,16 +1010,19 @@ namespace cuda
 
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetDeviceCount( int* count )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetDeviceCount( count );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetDeviceCount";
 		_trace << " devices = " << *count;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -919,17 +1030,20 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetDeviceProperties( 
 		cudaDeviceProp* prop, int device )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetDeviceProperties( prop, device );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetDeviceProperties";
 		_trace << " pointer = " << prop;
 		_trace << " device = " << device;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -937,49 +1051,58 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaChooseDevice( int* device, 
 		const cudaDeviceProp* prop )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaChooseDevice( device, prop );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaChooseDevice";
 		_trace << " device = " << *device;
 		_trace << " pointer = " << prop;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaSetDevice( int device )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaSetDevice( device );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSetDevice";
 		_trace << " device = " << device;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetDevice( int* device )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetDevice( device );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetDevice";
 		_trace << " device = " << *device;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -987,11 +1110,12 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaSetValidDevices( 
 		int* device_arr, int len )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaSetValidDevices( device_arr, len );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSetValidDevices";
 		for( int i = 0; i < len; ++i )
@@ -999,24 +1123,29 @@ namespace cuda
 			_trace << " element" << i << " = " << device_arr[ i ];
 		}
 		_trace << " length = " << len;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaSetDeviceFlags( int flags )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaSetDeviceFlags( flags );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSetDeviceFlags";
 		_trace << " flags = " << flags;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1026,12 +1155,13 @@ namespace cuda
 		const textureReference* texref, const void* devPtr, 
 		const cudaChannelFormatDesc* desc, size_t size )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaBindTexture( offset, texref, 
 			devPtr, desc, size );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaBindTexture";
 		_trace << " offset = ";
@@ -1064,8 +1194,10 @@ namespace cuda
 
 		_trace << " size = " << size;
 		
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1075,12 +1207,13 @@ namespace cuda
 		const cudaChannelFormatDesc* desc, size_t width, 
 		size_t height, size_t pitch )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaBindTexture2D( offset, texref, devPtr, 
 			desc, width, height, pitch );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaBindTexture2D";
 		_trace << " offset = " << *offset;
@@ -1106,8 +1239,10 @@ namespace cuda
 		_trace << " height = " << height;
 		_trace << " pitch = " << pitch;
 
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1116,12 +1251,13 @@ namespace cuda
 		const textureReference* texref, const cudaArray* array, 
 		const cudaChannelFormatDesc* desc )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaBindTextureToArray( texref, 
 			array, desc );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaBindTextureToArray";
 
@@ -1142,8 +1278,10 @@ namespace cuda
 		_trace << " z = " << desc->z;
 		_trace << " format = " << desc->f;
 
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1151,11 +1289,12 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaUnbindTexture( 
 		const textureReference* texref )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaUnbindTexture( texref );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaUnbindTexture";
 		_trace << " normalized = " << texref->normalized;
@@ -1167,8 +1306,10 @@ namespace cuda
 		_trace << " texrefY = " << texref->channelDesc.y;
 		_trace << " texrefZ = " << texref->channelDesc.z;
 		_trace << " texrefFormat = " << texref->channelDesc.f;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1176,12 +1317,13 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetTextureAlignmentOffset( 
 		size_t* offset, const textureReference* texref )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetTextureAlignmentOffset( 
 			offset, texref );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetTextureAlignmentOffset";
 		_trace << " offset = " << *offset;
@@ -1194,8 +1336,10 @@ namespace cuda
 		_trace << " texrefY = " << texref->channelDesc.y;
 		_trace << " texrefZ = " << texref->channelDesc.z;
 		_trace << " texrefFormat = " << texref->channelDesc.f;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1203,11 +1347,12 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetTextureReference( 
 		const textureReference** texref, const char* symbol )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetTextureReference( texref, symbol );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetTextureReference";
 		_trace << " normalized = " << (*texref)->normalized;
@@ -1220,8 +1365,10 @@ namespace cuda
 		_trace << " texrefZ = " << (*texref)->channelDesc.z;
 		_trace << " texrefFormat = " << (*texref)->channelDesc.f;
 		_trace << " symbol = " <<(void*) symbol;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1230,11 +1377,12 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetChannelDesc( 
 		cudaChannelFormatDesc* desc, const cudaArray* array )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetChannelDesc( desc, array );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetChannelDesc";
 
@@ -1245,8 +1393,10 @@ namespace cuda
 
 		_trace << " pointer = " << array;
 
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1254,12 +1404,13 @@ namespace cuda
 	cudaChannelFormatDesc TraceGeneratingCudaRuntime::cudaCreateChannelDesc( 
 		int x, int y, int z, int w, cudaChannelFormatKind f )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaChannelFormatDesc desc = _runtime.cudaCreateChannelDesc( x, 
 			y, z, w, f );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaCreateChannelDesc";
 
@@ -1269,8 +1420,10 @@ namespace cuda
 		_trace << " w = " << w;
 		_trace << " format = " << f;
 
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return desc;
 	}
@@ -1278,16 +1431,19 @@ namespace cuda
 
 	cudaError_t TraceGeneratingCudaRuntime::cudaGetLastError( void )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGetLastError();
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetLastError";
 		_trace << " error = " << status;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1295,16 +1451,19 @@ namespace cuda
 	const char* TraceGeneratingCudaRuntime::cudaGetErrorString( 
 		cudaError_t error )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		const char* string = _runtime.cudaGetErrorString( error );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGetErrorString";
 		_trace << " string = \"" << string << "\"";
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return string;
 	}
@@ -1313,12 +1472,13 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaConfigureCall( dim3 gridDim, 
 		dim3 blockDim, size_t sharedMem, cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaConfigureCall( gridDim, 
 			blockDim, sharedMem, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaConfigureCall";
 		_trace << " gridX = " << gridDim.x;
@@ -1332,8 +1492,10 @@ namespace cuda
 		_trace << " sharedMem = " << sharedMem;
 		_trace << " stream = " << stream;
 
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1341,11 +1503,12 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaSetupArgument( const void* arg, 
 		size_t size, size_t offset )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaSetupArgument( arg, size, offset );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSetupArgument";
 		_trace << " size = " << size;
@@ -1354,24 +1517,29 @@ namespace cuda
 			_trace << " arg" << i << " = " << (int)((char*)arg)[i];
 		}
 		_trace << " offset = " << offset;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaLaunch( const char* entry )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaLaunch( entry );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaLaunch";
 		_trace << " entry = " << (void*) entry;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1379,11 +1547,12 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaFuncGetAttributes( 
 		cudaFuncAttributes* attr, const char* func )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaFuncGetAttributes( attr, func );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaFuncGetAttributes";
 		_trace << " sharedBytes = " << attr->sharedSizeBytes;
@@ -1392,8 +1561,10 @@ namespace cuda
 		_trace << " maxThreadsPerBlock = " << attr->maxThreadsPerBlock;
 		_trace << " numRegs = " << attr->numRegs;
 		_trace << " function = " << (void*)func;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1402,16 +1573,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaStreamCreate( 
 		cudaStream_t* pStream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaStreamCreate( pStream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaStreamCreate";
 		_trace << " stream = " << *pStream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1419,16 +1593,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaStreamDestroy( 
 		cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaStreamDestroy( stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaStreamDestroy";
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1436,16 +1613,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaStreamSynchronize( 
 		cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaStreamSynchronize( stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaStreamSynchronize";
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1453,16 +1633,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaStreamQuery( 
 		cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaStreamQuery( stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaStreamQuery";
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1471,16 +1654,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventCreate( 
 		cudaEvent_t* event )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventCreate( event );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventCreate";
 		_trace << " event = " << *event;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1488,17 +1674,20 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventCreateWithFlags( 
 		cudaEvent_t* event, int flags )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventCreateWithFlags( event, flags );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventCreateWithFlags";
 		_trace << " event = " << *event;
 		_trace << " flags = " << flags;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1506,33 +1695,39 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventRecord( cudaEvent_t event, 
 		cudaStream_t stream )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventRecord( event, stream );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventRecord";
 		_trace << " event = " << event;
 		_trace << " stream = " << stream;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventQuery( cudaEvent_t event )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventQuery( event );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventQuery";
 		_trace << " event = " << event;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1540,16 +1735,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventSynchronize( 
 		cudaEvent_t event )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventSynchronize( event );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventSynchronize";
 		_trace << " event = " << event;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1557,16 +1755,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventDestroy( 
 		cudaEvent_t event )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventDestroy( event );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventDestroy";
 		_trace << " event = " << event;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1574,18 +1775,21 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaEventElapsedTime( float* ms, 
 		cudaEvent_t start, cudaEvent_t end )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaEventElapsedTime( ms, start, end );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaEventElapsedTime";
 		_trace << " ms = " << *ms;
 		_trace << " start = " << start;
 		_trace << " end = " << end;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1593,32 +1797,38 @@ namespace cuda
 
 	cudaError_t TraceGeneratingCudaRuntime::cudaSetDoubleForDevice( double* d )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaSetDoubleForDevice( d );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSetDoubleForDevice";
 		_trace << " d = " << *d;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaSetDoubleForHost( double* d )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaSetDoubleForHost( d );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSetDoubleForHost";
 		_trace << " d = " << *d;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1626,30 +1836,36 @@ namespace cuda
 
 	cudaError_t TraceGeneratingCudaRuntime::cudaThreadExit( void )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaThreadExit();
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaThreadExit";
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaThreadSynchronize( void )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaThreadSynchronize();
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaThreadSynchronize";
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1658,16 +1874,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaDriverGetVersion( 
 		int* driverVersion )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaDriverGetVersion( driverVersion );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaDriverGetVersion";
 		_trace << " version = " << *driverVersion;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1675,16 +1894,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaRuntimeGetVersion( 
 		int* runtimeVersion )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaRuntimeGetVersion( runtimeVersion );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRuntimeGetVersion";
 		_trace << " runtimeVersion = " << *runtimeVersion;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1692,16 +1914,19 @@ namespace cuda
 	
 	cudaError_t TraceGeneratingCudaRuntime::cudaGLSetGLDevice( int device )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGLSetGLDevice( device );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGLSetGLDevice";
 		_trace << " device = " << device;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1709,16 +1934,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGLRegisterBufferObject( 
 		GLuint bufObj )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGLRegisterBufferObject( bufObj );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGLRegisterBufferObject";
 		_trace << " buffer = " << bufObj;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1726,17 +1954,20 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGLMapBufferObject( 
 		void** devPtr, GLuint bufObj )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGLMapBufferObject( devPtr, bufObj );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGLMapBufferObject";
 		_trace << " pointer = " << *devPtr;
 		_trace << " buffer = " << bufObj;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1744,16 +1975,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGLUnmapBufferObject( 
 		GLuint bufObj )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGLUnmapBufferObject( bufObj );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGLUnmapBufferObject";
 		_trace << " buffer = " << bufObj;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1761,16 +1995,19 @@ namespace cuda
 	cudaError_t TraceGeneratingCudaRuntime::cudaGLUnregisterBufferObject( 
 		GLuint bufObj )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		cudaError_t status = _runtime.cudaGLUnregisterBufferObject( bufObj );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaGLUnregisterBufferObject";
 		_trace << " buffer = " << bufObj;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}
@@ -1778,36 +2015,41 @@ namespace cuda
 	void TraceGeneratingCudaRuntime::cudaTextureFetch( const void* tex, 
 		void* index, int integer, void* val )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaTextureFetch( tex, index, integer, val );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaTextureFetch";
 		_trace << " tex = " << tex;
 		_trace << " indexPointer = " << index;
 		_trace << " integer = " << integer;
 		_trace << " valuePointer = " << val;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
 
+		_timer.start();
 	}
 	
 
 	void** TraceGeneratingCudaRuntime::cudaRegisterFatBinary( void* fatCubin )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		void** handle = _runtime.cudaRegisterFatBinary( fatCubin );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRegisterFatBinary";
 		_trace << " handle = " << handle;
 		_trace << " pointer = " << fatCubin;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return handle;
 	}
@@ -1815,28 +2057,32 @@ namespace cuda
 	void TraceGeneratingCudaRuntime::cudaUnregisterFatBinary( 
 		void** fatCubinHandle )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaUnregisterFatBinary( fatCubinHandle );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaUnregisterFatBinary";
 		_trace << " handle = " << fatCubinHandle;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+		_timer.start();
+
 	}
 	
 	void TraceGeneratingCudaRuntime::cudaRegisterVar( void** fatCubinHandle, 
 		char* hostVar, char* deviceAddress, const char* deviceName, int ext, 
 		int size, int constant, int global )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaRegisterVar( fatCubinHandle, hostVar, deviceAddress, 
 			deviceName, ext, size, constant, global );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRegisterVar";
 		_trace << " handle = " << fatCubinHandle;
@@ -1847,20 +2093,23 @@ namespace cuda
 		_trace << " size = " << size;
 		_trace << " constant = " << constant;
 		_trace << " global = " << global;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 	}
 	
 	void TraceGeneratingCudaRuntime::cudaRegisterTexture( void** fatCubinHandle, 
 		const struct textureReference* hostVar, const void** deviceAddress, 
 		const char* deviceName, int dim, int norm, int ext )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaRegisterTexture( fatCubinHandle, hostVar, 
 			deviceAddress, deviceName, dim, norm, ext );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRegisterTexture";
 		_trace << " handle = " << fatCubinHandle;
@@ -1878,36 +2127,42 @@ namespace cuda
 		_trace << " dim = " << dim;
 		_trace << " norm = " << norm;
 		_trace << " ext = " << ext;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 	}
 	
 	void TraceGeneratingCudaRuntime::cudaRegisterShared( 
 		void** fatCubinHandle, void** devicePtr )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaRegisterShared( fatCubinHandle, devicePtr );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRegisterShared";
 		_trace << " handle = " << fatCubinHandle;
 		_trace << " pointer = " << *devicePtr;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 	}
 	
 	void TraceGeneratingCudaRuntime::cudaRegisterSharedVar( 
 		void** fatCubinHandle, void** devicePtr, size_t size, size_t alignment, 
 		int storage )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaRegisterSharedVar( fatCubinHandle, devicePtr, 
 			size, alignment, storage );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRegisterSharedVar";
 		_trace << " handle = " << fatCubinHandle;
@@ -1915,8 +2170,10 @@ namespace cuda
 		_trace << " size = " << size;
 		_trace << " alignment = " << alignment;
 		_trace << " storage = " << storage;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 	}
 	
 	void TraceGeneratingCudaRuntime::cudaRegisterFunction( 
@@ -1924,13 +2181,14 @@ namespace cuda
 		const char* deviceName, int thread_limit, uint3* tid, uint3* bid, 
 		dim3* bDim, dim3* gDim, int* wSize )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaRegisterFunction( fatCubinHandle, 
 			hostFun, deviceFun, deviceName, thread_limit, tid, bid, bDim, 
 			gDim, wSize );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaRegisterFunction";
 		_trace << " handle = " << fatCubinHandle;
@@ -1971,38 +2229,46 @@ namespace cuda
 		{
 			_trace << " wSize = " << *wSize;
 		}
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 	}
 	
 	void TraceGeneratingCudaRuntime::cudaMutexOperation( int lock )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		_runtime.cudaMutexOperation( lock );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaMutexOperation";
 		_trace << " lock = " << lock;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 	}
 	
 	int TraceGeneratingCudaRuntime::cudaSynchronizeThreads( 
 		void** one, void* two )
 	{
-		hydrazine::Timer timer;
+		_timer.stop();
+		_trace << "slack time = " << _timer.seconds() << "\n";
 		
-		timer.start();
+		_timer.start();
 		int status = _runtime.cudaSynchronizeThreads( one, two );
-		timer.stop();
+		_timer.stop();
 
 		_trace << "cudaSynchronizeThreads";
 		_trace << " one = " << *one;
 		_trace << " two = " << two;
-		_trace << " time = " << timer.seconds();
+		_trace << " time = " << _timer.seconds();
 		_trace << "\n";
+
+		_timer.start();
 
 		return status;
 	}

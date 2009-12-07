@@ -9,7 +9,6 @@
 #ifndef TEST_PARSER_CPP_INCLUDED
 #define TEST_PARSER_CPP_INCLUDED
 
-
 #include "boost/filesystem.hpp"
 #include <queue>
 #include <fstream>

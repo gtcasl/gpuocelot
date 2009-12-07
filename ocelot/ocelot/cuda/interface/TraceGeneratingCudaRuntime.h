@@ -22,6 +22,9 @@ namespace cuda
 			
 			/*! \brief The file used to write the trace to */
 			std::ofstream _trace;
+			
+			/*! \brief The timer used to determine the call latency */
+			hydrazine::Timer _timer;
 	
 		public:
 			/*! \brief Create the trace file */

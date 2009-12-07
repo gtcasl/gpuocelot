@@ -2363,7 +2363,6 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 							}
 							if(instr.modifier & PTXInstruction::sat) {
 								d = min(ULLONG_MAX, d);
-								d = max(d, 0);
 							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}

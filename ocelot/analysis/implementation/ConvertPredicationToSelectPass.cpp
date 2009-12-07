@@ -56,7 +56,8 @@ namespace analysis
 			_kernel->instructions.size() - 1 ), id + 1 );
 	}
 	
-	void ConvertPredicationToSelectPass::_runOnBlock( DataflowGraph::iterator block )
+	void ConvertPredicationToSelectPass::_runOnBlock( 
+		DataflowGraph::iterator block )
 	{
 		for( DataflowGraph::InstructionVector::const_iterator 
 			instruction = block->instructions().begin(); 

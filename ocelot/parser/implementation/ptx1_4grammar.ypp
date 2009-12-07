@@ -1,12 +1,10 @@
-/*!
-	\file ptx1_4grammar.ypp
+/*! \file ptx1_4grammar.ypp
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Monday June 15, 2009
 	\brief The YACC grammar file for PTX
 */
 
 %{
-	
 	#include <iostream>
 	#include <ocelot/parser/interface/PTXParser.h>
 	#include <ocelot/parser/interface/PTXLexer.h>

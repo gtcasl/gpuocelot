@@ -894,7 +894,7 @@ ir::Kernel* executive::Executive::getKernel(ir::Instruction::Architecture isa,
 */
 void *executive::Executive::malloc(size_t bytes) {
 	using namespace std;
-
+	
 	switch (getSelectedISA()) {
 		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
@@ -930,7 +930,8 @@ void *executive::Executive::malloc(size_t bytes) {
 					memoryAllocations[getSelected()].insert(
 						std::make_pair((char *)record.ptr, record));
 					report("executive::Executive::malloc() - cuMemAlloc() allocated " 
-						<< bytes << " bytes on device " << record.device << " at 0x" << std::hex << record.ptr << std::dec);
+						<< bytes << " bytes on device " << record.device 
+						<< " at 0x" << std::hex << record.ptr << std::dec);
 					return record.ptr;
 				}
 			}
@@ -954,6 +955,9 @@ void *executive::Executive::malloc(size_t bytes) {
 			break;
 */
 		default:	// PTX or invalid
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 	return 0;
@@ -961,24 +965,15 @@ void *executive::Executive::malloc(size_t bytes) {
 
 void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 	using namespace std;
-
+	report( "Registering external ptr " << pointer << " to " 
+		<< bytes << " bytes." );
+	
 	switch (getSelectedISA()) {
 		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
-			{
-				MemoryAllocation record;
-				record.isa = getSelectedISA();
-				record.device = getSelected();
-				record.size = bytes;
-				record.external = true;
-				record.ptr = pointer;
-				record.offset = 0;
-				memoryAllocations[getSelected()].insert(
-					std::make_pair((char*)record.ptr,record));
-			}
-			break;
 #if HAVE_CUDA_DRIVER_API == 1
 		case ir::Instruction::GPU:
+#endif
 			{
 				MemoryAllocation record;
 				record.isa = getSelectedISA();
@@ -987,11 +982,18 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 				record.external = true;
 				record.ptr = pointer;
 				record.offset = 0;
-				memoryAllocations[getSelected()].insert(
-					std::make_pair((char*)record.ptr,record));
+				bool noDuplicate = memoryAllocations[getSelected()].insert(
+					std::make_pair((char*)record.ptr,record)).second;
+				if( !noDuplicate )
+				{
+					std::stringstream stream;
+					stream << "Register external variable " 
+						<< "failed, tried to register to previously " 
+						<< "allocated memory at " << pointer;
+					throw hydrazine::Exception(stream.str());
+				}
 			}
 			break;
-#endif
 /*
 
 		case ir::Instruction::x86:
@@ -1011,6 +1013,9 @@ void executive::Executive::registerExternal(void* pointer, size_t bytes) {
 			break;
 */
 		default:	// PTX or invalid
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 }
@@ -1176,7 +1181,9 @@ void executive::Executive::registerGlobal(void *ptr, size_t bytes,
 			break;
 */
 		default:	// PTX or invalid
-			assert("Invalid type" == 0);
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 }
@@ -1267,6 +1274,9 @@ void executive::Executive::registerTexture(const ir::Texture& t,
 			break;
 */
 		default:	// PTX or invalid
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			assert("Invalid type" == 0);
 			break;
 	}
@@ -1432,7 +1442,9 @@ void executive::Executive::rebind(const std::string& modulePath,
 			break;
 */
 		default:	// PTX or invalid
-			assert("Invalid type" == 0);
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 }
@@ -1444,7 +1456,7 @@ void executive::Executive::rebind(const std::string& modulePath,
 */
 void executive::Executive::free(void *ptr) {
 	using namespace std;
-
+	report( "Freeing " << ptr );
 	switch (getSelectedISA()) {
 		case ir::Instruction::LLVM:
 		case ir::Instruction::Emulated:
@@ -1475,7 +1487,8 @@ void executive::Executive::free(void *ptr) {
 				assert (l_it != memoryAllocations.end());
 				AllocationMap::iterator it = 
 					l_it->second.lower_bound((char*)ptr);
-				assert(it != l_it->second.end());
+				assertM(it != l_it->second.end(), "Cuda free error, address " 
+					<< (void*)ptr << " not in any allocated region.");
 
 				if (!it->second.external) {
 					cuMemFree(painful_cast(it->second.ptr));
@@ -1507,6 +1520,9 @@ void executive::Executive::free(void *ptr) {
 			break;
 */
 		default:	// PTX or invalid
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 }
@@ -1593,7 +1609,9 @@ void executive::Executive::freeGlobal(const std::string& name,
 			break;
 */
 		default:	// PTX or invalid
-			assert("Invalid type" == 0);
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 }
@@ -1727,6 +1745,9 @@ void executive::Executive::memcpy( void* dest, const void* src, size_t bytes,
 			break;
 */
 		default:	// PTX or invalid
+			throw hydrazine::Exception("ISA " 
+				+ ir::Instruction::toString(getSelectedISA()) 
+				+ " Not Supported.");
 			break;
 	}
 	

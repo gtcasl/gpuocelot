@@ -47,7 +47,7 @@ namespace analysis
 			_kernel->instructions.size() - 1 ),
 			block->instructions().size() - 1 );
 
-		report( "   Saving Registers" );
+		report( "   Saving " << alive.size() << " Registers" );
 		
 		for( DataflowGraph::Block::RegisterSet::const_iterator 
 			reg = alive.begin(); reg != alive.end(); ++reg )
@@ -300,6 +300,7 @@ namespace analysis
 	
 	void RemoveBarrierPass::runOnKernel( ir::Kernel& k )
 	{
+		report( "Removing barriers from kernel " << k.name );
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"This pass is valid for PTX kernels only." );
 		_reentryPoint = 1;

@@ -1,0 +1,11 @@
+../TestLexer
+../TestParser
+../TestEmulator
+../TestInstructions
+../TestKernels
+../TestTrace
+../TestMemoryTraceGenerator
+../TestDataflowGraph
+../TestLLVMInstructions
+../TestPTXToLLVMTranslator
+../TestLLVMKernels

@@ -121,6 +121,7 @@ libOcelotTrace_la_SOURCES = \
 libOcelotExecutive_la_CXXFLAGS = $(LLVM_CFLAGS) -Wall -ansi -pedantic \
 	-Werror -std=c++0x
 libOcelotExecutive_la_SOURCES = \
+	ocelot/executive/implementation/ApplicationState.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/Executive.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
@@ -148,11 +149,12 @@ libOcelotParser_la_SOURCES = \
 ## libcudart
 libcudart_la_CXXFLAGS = $(INCLUDE) -Wall -ansi -pedantic -Werror -std=c++0x
 libcudart_la_SOURCES = \
-	ocelot/cuda/implementation/CudaRuntimeApi.cpp \
+	ocelot/cuda/implementation/cuda_runtime.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
-	ocelot/cuda/implementation/CudaRuntimeBase.cpp \
-	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
-	ocelot/cuda/implementation/TraceGeneratingCudaRuntime.cpp
+	ocelot/cuda/implementation/CudaRuntimeInterface.cpp
+#	
+#	ocelot/cuda/implementation/TraceGeneratingCudaRuntime.cpp
+#
 libcudart_la_LDFLAGS = -version-info 2:3:0
 ################################################################################
 

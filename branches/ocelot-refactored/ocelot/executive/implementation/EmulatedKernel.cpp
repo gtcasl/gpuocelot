@@ -324,7 +324,7 @@ void executive::EmulatedKernel::initializeParameterMemory() {
 bool executive::EmulatedKernel::checkMemoryAccess(const void* base, 
 	size_t size) const {
 	if(context == 0) return false;
-	return context->checkMemoryAccess(context->getSelected(), base, size);
+	return context->checkMemoryAccess(context->getSelectedDevice(), base, size);
 }
 
 void executive::EmulatedKernel::updateParameterMemory() {

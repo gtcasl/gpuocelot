@@ -12,8 +12,12 @@
 #ifndef EXECUTIVE_DEVICE_H_INCLUDED
 #define EXECUTIVE_DEVICE_H_INCLUDED
 
-#include <iostream>
+// C++ standard library includes
+#include <fstream>
 #include <string>
+#include <vector>
+
+// Ocelot includes
 #include <ocelot/ir/interface/Instruction.h>
 
 namespace executive {
@@ -124,6 +128,7 @@ namespace executive {
 		int minor;
 	};
 	
+	typedef std::vector< Device > DeviceVector;
 }
 
 #endif

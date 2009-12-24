@@ -1,285 +1,173 @@
 /*!
 	\file Executive.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-	\date Jan 16, 2009
-	\brief class definition for loading modules, enumerating devices,
-		and executing kernels on the selected device
+	\brief implements Ocelot's executive manager
 */
 
-#ifndef EXECUTIVE_EXECUTIVE_H_INCLUDED
-#define EXECUTIVE_EXECUTIVE_H_INCLUDED
+#ifndef OCELOT_EXECUTIVE_H_INCLUDED
+#define OCELOT_EXECUTIVE_H_INCLUDED
 
-#include <string>
+// C++
 #include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/Texture.h>
-#include <ocelot/ir/interface/PTXOperand.h>
+#include <set>
+
+// Ocelot
+#include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/translator/interface/Translator.h>
-#include <ocelot/cuda/include/cuda.h>
 
-/*!
-	\brief A namespace for classes that help execute programs
-*/
+// forward declared classes
+namespace ir {
+	class Kernel;
+	class Module;
+}
+
+// Executive class
 namespace executive {
+
+	struct dim3 {
+		int x, y, z;
+	};
+
+	//! maps module name => ir::Modile
+	typedef std::map< std::string, ir::Module * > ModuleMap;
 	
+	//! maps device => address space - 0 is always host
+	typedef std::map< int, int > AddressSpaceMap;
+	
+	typedef std::map< void *, MemoryAllocation > MemoryAllocationMap;
+	
+	//! maps (address space, ptr) => allocation
+	typedef std::map< int, MemoryAllocationMap > DeviceMemoryAllocationMap;
+
+	typedef std::map< std::string, Texture > TextureMap;
+
 	/*!
-		Class wrapping the execution layer
+		Completely specifies the execution environment of an Ocelot application
 	*/
 	class Executive {
 	public:
-
-		/*! \brief basic type used for allocation */
-		class AllocationType{ char data[16]; };
-		
-		/*!	Vector of devices */
-		typedef std::vector<Device> DeviceVector;
-
-		/*! Memory copy types. Should be self explanatory */
-		enum MemoryCopy
-		{
-			HostToDevice,
-			DeviceToHost,
-			HostToHost,
-			DeviceToDevice
-		};
-
-		/*!
-			The executive keeps a list of allocations for each device. This 
-			record indicates which device the allocation belongs to, its ISA, 
-			its size, and a pointer to the first usable byte. 
-			
-			This assumes that the address space is global device memory.
-		*/
-		class MemoryAllocation {
-		public:
-			ir::Instruction::Architecture isa;
-			int device; /*! \brief The device associated with the allocation */
-			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
-			void *ptr; /*! \brief A pointer to the base of the allocation */
-			bool external; /*! \brief Is the memory owned by the exective? */
-			unsigned int offset; /*! \brief Offset from the allocated 
-				based for alignment */			
-						
-		public:
-			MemoryAllocation(ir::Instruction::Architecture, int, ir::PTXU64, 
-				void *);
-
-			MemoryAllocation();
-			~MemoryAllocation();
-		
-		};
-		
-		/*! \brief Set of strings */
-		typedef std::unordered_set< std::string > StringSet;
-		
-		/*! \brief A global allocation valid on all devices. */
-		class GlobalMemoryAllocation {
-		public:
-			ir::PTXU64 size; /*! \brief The size of the allocation in bytes */
-			void *ptr; /*! \brief A pointer to the base of the allocation */
-			std::string identifier;
-			StringSet modules;
-			ir::PTXInstruction::AddressSpace space;
-		};
-		
-		/*!	\brief Map from pointer to memory allocation
-			
-			Note that this is supposed to be ordered to ease memory protection 
-				violation detections
-		*/
-		typedef std::map< char*, MemoryAllocation > AllocationMap;
-		
-		/* \brief Map from device to allocation map */
-		typedef std::unordered_map< int, AllocationMap > DeviceAllocationMap;
-
-		/*!	\brief Map from module name to object */
-		typedef std::unordered_map<std::string, ir::Module *> ModuleMap;
-		
-		/*! \brief Map from pointer to global allocations */
-		typedef std::map< char*, GlobalMemoryAllocation > GlobalAllocationMap;
 	
 	public:
-		/*! \brief Return a string of the memory allocations around a pointer */
-		static std::string nearbyAllocationsToString( 
-			const Executive& executive, const void* pointer, 
-			unsigned int above = 5, unsigned int below = 5 );
-		
-		/*! \brief Return a string of the global variables around a pointer */
-		static std::string nearbyGlobalsToString( 
-			const Executive& executive, const void* pointer, 
-			unsigned int above = 5, unsigned int below = 5 );
 	
-	private:
-		/*! \brief Translate the kernels of a module to the selected ISA */
-		void _translateToSelected(ir::Module& m);
+		// textures
+		TextureMap textures;
 		
-		void _translateToGPUExecutable(ir::Module &m);
+		// global variables
+		GlobalMap globals;
+		
+		// memory allocations
+		DeviceMemoryAllocationMap memoryAllocations;
+
+		//! maps device => address space - 0 is always host address space
+		AddressSpaceMap addressSpaces;
+		
+		// modules + kernels
+		ModuleMap modules;
+		
+		//! vector of available Ocelot devices
+		DeviceVector devices;
 		
 	public:
+	
 		Executive();
 		~Executive();
-		
-		/*! set of available devices enumerated by the executive, 
-			these present a filtered view into the total set of devices 
-			in the system */
-		DeviceVector devices;
 	
-		/*!
-			Selects a device from the enumerated set.
+	public:
 	
-			\param select guid of device
-			\return true if successfully selected
-		*/
-		bool select(int select);
-
+		//
+		// registration functions
+		//
+		
 		/*!
-			Selects a device given an ISA.
-
-			\return true if selected
+			\brief loads a module with a given name and PTX representation
 		*/
-		bool selectDeviceByISA(ir::Instruction::Architecture ISA);
+		void loadModule(std::string name, bool, std::istream & ptx);
+		
+		/*!
+			\brief registers a global variable
+			\param module
+			\param name this must be unique - modules aren't quite namespaces
+			\param hostPtr pointer in host memory - identifies the global
+			\param devicePtr pointer in device memory
+			\param size size of global in bytes
+			\param addrSpace indicates which address space the global resides in on the device
+		*/
+		void registerGlobalVariable(const char *module, const char *name, void *hostPtr, 
+			void *devicePtr, size_t size, DeviceAddressSpace addrSpace);
+		
+		/*!
+			\brief registers a texture defined in a particular module
+			\param module name of module
+			\param name name of texture
+			\param number of dimensions (1, 2, or 3)
+			\param if 1, texture coordinates are normalized
+		*/
+		void registerTexture(const char *module, const char *name, int dimensions, int normalized);
+		
+	public:
 	
-		/*! \brief Reorders devices such that devices with this ISA appear first
-		*/
-		void setPreferredISA(ir::Instruction::Architecture ISA);
+		//
+		// memory allocation functions
+		//
 		
-		/*! \brief Removes devices of the specific ISA from the filtered 
-			device list
+		/*
+			Memory - linear
 		*/
-		void filterDevicesByISA(ir::Instruction::Architecture ISA);
-		
-		/*! \brief Restores the filtered list of devices 
-			to reflect all devices */
-		void restoreFilteredDevices();
-		
-		/*!
-			Returns the guid of the selected device or -1 if no device 
-				is selected
-	
-			\return guid of selected device or -1 if no device is selected
-		*/
-		int getSelected() const;
-		
-		/*!
-			Returns the ISA of the selected device or PTX if no 
-				device is selected
-		*/
-		ir::Instruction::Architecture getSelectedISA() const;
-	
-		/*!
-			Loads a module from a PTX source file. If the module is succesfully
-			loaded, it may be obtained by indexing the modules[] map with the
-			path name provided.
-			
-			\param path name of PTX source file
-			\param translateToSelected after successful load, indicates whether 
-				module should be translated to selected device's ISA
-			\param stream Stream to read from instead of trying to open the path
-			\return true if module loaded
-		*/
-		bool loadModule(const std::string& path, bool translateToSelected=true, 
-			std::istream* stream = 0);
-				
-		/*!	Unloads a module */
-		bool unloadModule(const std::string& path);
-		
-		/*! Blocks until all possibly executing kernels have completed. */
-		void synchronize();
-
-		/*!	Allocate <bytes> of memory on the device
-
-			\return pointer to allocated memory block or NULL on error
-		*/
-		void *malloc(size_t bytes);
 
 		/*!
-			\brief Registers a reference to a memory segment allocated 
-			externally from the Executive module.
-			
-			\param bytes Size of the external segment
-			\param pointer Pointer to the segment
-			
-			Note that this can be deallocated via free
+			\brief allocate memory on the selected device's address space
+			\param devPtr places resulting pointer
+			\param size number of bytes to allocate
+			\return true if successful
 		*/
-		void registerExternal(void* pointer, size_t bytes);
+		bool malloc(void **devPtr, size_t size);
 
 		/*!
-			Makes a static array visible to the Executive class
-
-			\param ptr Pointer to the start of the memory
-			\param bytes Size of memory in bytes
-			\param name Identifier of the variable
-			\param module Path to the module with the variable
-			\param space The address space it should exist in
-			\param normalize If the global is a texture, 
-				should it be normalized?
+			\brief allocates memory on the host that is well-suited for use with Ocelot
+			\param ptr places resulting pointer
+			\param size number of bytes to allocate
+			\return true if successful
 		*/
-		void registerGlobal(void *ptr, size_t bytes, const std::string& name, 
-			ir::PTXInstruction::AddressSpace space, const std::string& module);
-
-		/*!
-			Makes a texture array visible to the Executive class
-
-			\param t The texture being registered
-			\param name Identifier of the variable
-			\param module Path to the module with the variable
-		*/
-		void registerTexture(const ir::Texture& t, const std::string& name, 
-			const std::string& module);
-
-		/*!
-			\brief Bind a texture to another memory allocation
-			\param target Pointer to the variable to bind the texture to
-			\param texture Name of the texture variable
-			\param module The module containing the texture
-			\param width The width dimension in bytes
-			\param height The height dimension in bytes
-			\param length The length dimension in bytes
-		*/
-		void rebind(const std::string& module, const std::string& texture, 
-			void* target, unsigned int width, unsigned int height, 
-			unsigned int length, const ir::Texture& t);
-
-		/*!
-			Free a memory block allocated to this device.
-
-			\param ptr pointer to allocated memory block
-		*/
-		void free(void *ptr);
-
-		/*!
-			\brief Free a static array
-			
-			\param name The name of the variable being freed
-			\param module The path of the module to free from
-		*/
-		void freeGlobal(const std::string& name, const std::string& module);
+		bool mallocHost(void **ptr, size_t size);
 		
 		/*!
-			Copy a block of data 
-			
-			\param dest Pointer to start of destination block
-			\param src Pointer to start of source block
-			\param bytes Number of bytes to copy
-			\param type Type of memory operation
-		
+			\brief allocates memory on the selected device and returns pitch
+			\param devPtr places resulting pointer
+			\param pitch [out] pointer to variable containing pitch of resulting allocation
+			\param width width in bytes of allocation
+			\parma height height in bytes of allocation
+			\return true if successful
 		*/
-		void memcpy(void* dest, const void* src, size_t bytes, 
-			MemoryCopy type);
-
+		bool mallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height);
+		
 		/*!
-			Set a block of data 
-			
-			\param dest Pointer to start of destination block
-			\param bytes Number of bytes to set
-			\param value Value to set to
-		
+			\brief allocates an array of memory on the selected device
+			\param array places resulting pointer here
+			\param desc
+			\param desc
+			\param width
+			\param height
+			\return true if successful
 		*/
-		void memset(void* dest, int value, size_t bytes);
+		bool mallocArray(struct cudaArray **array, const ChannelFormatDesc & desc, 
+			size_t width, size_t height);
+		
+		/*!
+			\brief frees an allocation
+			\param devPtr device pointer
+		*/
+		bool free(void *devPtr);
+		
+		/*!
+			\brief frees host-allocated memory
+		*/
+		bool freeHost(void *ptr);
+		
+		/*!
+			\brief frees an array
+		*/
+		bool freeArray(struct cudaArray *array);
 
 		/*! 
 			\brief Determine if a memory access is valid 
@@ -303,7 +191,58 @@ namespace executive {
 				the record's ISA is Unknown
 		*/
 		MemoryAllocation getMemoryAllocation(int device, const void *ptr) const;
-
+		
+	public:
+	
+		//
+		// texture binding functions
+		//
+		
+		/*!
+			\brief binds a texture by name to a pointer to a device memory allocation
+			\param offset [out] offset that must be added to fetches to achieved desired pixel
+			\param texture name of texture
+			\param devPtr device memory allocation
+			\param format channel description
+			\param size bytes in texture
+		*/
+		bool bindTexture(size_t *offset, const std::string & texture, const void *devPtr, 
+			const ChannelFormatDesc &format, size_t size);
+		
+		/*!
+			\brief binds a 2D texture by name to a device pointer with a given width, height, and pitch
+			\param offset [out] offset that must be added to fetches to achieved desired pixel
+			\param texture name of texture
+			\param devPtr device memory allocation
+			\param format channel description
+			\param width width of texture in texels
+			\param height height of texture in texels
+			\param pitch number of bytes between texels of the same column in consecutive rows
+		*/
+		bool bindTexture2D(size_t *offset, const std::string & texture, const void *devPtr,
+			const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch);
+		
+		/*!
+			\brief binds a texture to an array
+		*/
+		bool bindTextureToArray(const std::string & texture, void *array, const ChannelFormatDesc &desc);
+		
+		/*!
+			\brief unbinds a previously bound texture
+		*/
+		void unbindTexture(const std::string & texture);
+		
+		/*!
+			gets alignment of a named texture
+		*/
+		size_t getTextureAlignmentOffset(const std::string & texture);
+		
+	public:
+	
+		//
+		// kernel launch and synchronization functions
+		//
+		
 		/*!
 			Gets a kernel by ISA, module, kernel name.
 
@@ -313,8 +252,72 @@ namespace executive {
 
 			\return instance of kernel with requested ISA or 0 on failure.
 		*/
-		ir::Kernel *getKernel(ir::Instruction::Architecture isa, 
-			const std::string& module, const std::string& kernelName);	
+		ir::Kernel *getKernel(ir::Instruction::Architecture isa, const std::string& module, 
+			const std::string& kernel);	
+		
+		/*!
+			\brief translates a kernel to the given ISA
+			\param isa ISA to translate to
+			\param module name of module to which kernel belongs
+			\param kernel name of kernel
+			\return translated kernel or NULL on translation failure
+		*/
+		ir::Kernel *translatedToISA(ir::Instruction::Architecture isa, const std::string &module,
+			const std::string &kernel);
+		
+		/*!
+			\brief helper function for launching a kernel
+			\param module module name
+			\param kernel kernel name
+			\param grid grid dimensions
+			\param block block dimensions
+			\param sharedMemory shared memory size
+			\param parameterBlock array of bytes for parameter memory
+			\param parameterBlockSize number of bytes in parameter memory
+		*/
+		void launch(const std::string & module, const std::string & kernel, dim3 grid, dim3 block,
+			size_t sharedMemory, unsigned char *parameterBlock, size_t parameterBlockSize);
+			
+		/*!
+			\brief block on kernel executing on selected device
+		*/
+		void threadSynchronize();
+		
+	public:
+		//
+		// device management functions
+		//
+
+		//! returns a constant vector of available devices
+		const DeviceVector & getDevices() const;
+
+		/*! 
+			selects a device [ this is intended to be a low-cost operation called at every CUDA runtime 
+			API call]
+		*/
+		bool selectDevice(int device);
+		
+		/*! 
+			gets selected device identifier
+		*/
+		int getSelectedDevice() const;
+		
+		//! indicates preferred ISA [device will be chosen if available]
+		void setPreferredISA(int isa);
+		
+		//! only listed devices may be selected
+		void filterDevices(std::vector<int> & devices);
+		
+		//! only devices with listed ISAs may be selected
+		void filterISAs(std::vector<int> & ISAs);
+		
+		//! returns the address space of the selected device
+		int getDeviceAddressSpace() const;
+		
+	public:
+		//
+		// translation settings
+		//
 
 		/*!
 			\brief This sets the optimization level 
@@ -322,59 +325,21 @@ namespace executive {
 			\param l The new optimization level.
 		*/
 		void setOptimizationLevel(translator::Translator::OptimizationLevel l);
-
-		/*!
-			called to update global variables across all address spaces
-
-			\param copyType specifies direction data should be copied to update globals
-		*/
-		void fenceGlobalVariables(MemoryCopy copyType = HostToDevice);
-
-		/*!
-			idempotent - called to init GL interoperability
-		*/
-		bool useGLInteroperability();
 		
-		/*! \brief Limit the number of threads launched per kernel */
-		void limitWorkerThreads(unsigned int limit);
+		/*!
+			\brief ensures that all kernels have an executable translation for the selected device
+		*/
+		void translateToISA();
 		
 	public:
-		/*! Set of loaded PTX modules indexed by the module's filename */
-		ModuleMap modules;
-
-		/*!
-			A map indexable by device GUID of memory allocations on that 
-			device. For a given device, these are assumed to be non-overlapping.
-		*/
-		DeviceAllocationMap memoryAllocations;
+		//
+		// Ocelot native interface functions
+		//
 		
-		/*! \brief A map of registered global memory allocations */
-		GlobalAllocationMap globalAllocations;
 		
-	protected:
-		/*! \brief This creates the set of devices available in the system */
-		void enumerateDevices();
-		
-		/*! \brief This is the selected device */
-		int selectedDevice;
-
-		/*! \brief Has the CUDA driver API been initialized? */
-		static bool cudaInitialized;
-
-		/*! \brief The optimization level to use when translating kernels */
-		translator::Translator::OptimizationLevel optimizationLevel;
-		
-		/*! \brief Cuda specific state */
-		CUdevice cudaDevice;
-		CUcontext cudaContext;
-		bool cudaGLInitialized;		
-		/*! \brief The actual set of devices */
-		DeviceVector allDevices;
-		
-		/*! \brief The limit on CPU threads launched per kernel */
-		unsigned int threadLimit;
 	};
-	
+
 }
 
 #endif
+

@@ -134,8 +134,11 @@ static void globalMemoryError(const void* pointer, size_t size,
 		<< (void*)((char*)pointer) << " of size " << size
 		<< " is out of any allocated or mapped range.\n";
 	stream << "Memory Map:\n";
+	/*
+	
 	stream << executive::Executive::nearbyAllocationsToString(
 		*kernel->context, pointer);
+		*/
 	stream << "\n";
 	stream << " At: " << kernel->location(context.PC);
 	

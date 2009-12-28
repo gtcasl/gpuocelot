@@ -165,7 +165,7 @@ bisectKernel( float* g_d, float* g_s, const unsigned int n,
                                             s_left, s_right,
                                             (left == right) );
 
-#if __DEVICE_EMULATION__
+#if 0
     if(    ((mid_count < left_count) || (mid_count > right_count)) 
         && (left != right) ) {
       printf( "%f / %f / %f :: %i / %i / %i\n",

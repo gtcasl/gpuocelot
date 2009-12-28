@@ -58,7 +58,7 @@
 #define BLOCK_ROWS 8
 
 // modified so it doesn't take forever to run on emulation mode
-#ifdef __DEVICE_EMULATION__
+#if 1
 int MATRIX_SIZE_X = 128;
 int MATRIX_SIZE_Y = 128;
 int MUL_FACTOR    = 4;

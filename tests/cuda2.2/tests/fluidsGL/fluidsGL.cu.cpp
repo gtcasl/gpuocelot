@@ -1,19 +1,15 @@
-# 1 "/tmp/tmpxft_00007e2f_00000000-1_fluidsGL.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003d03_00000000-1_fluidsGL.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00007e2f_00000000-1_fluidsGL.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003d03_00000000-1_fluidsGL.cudafe1.cpp"
 # 1 "fluidsGL.cu"
-# 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
-namespace std __attribute__((visibility("default"))) {
-# 245 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
-}
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
-# 152 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+# 149 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 3
 typedef long ptrdiff_t;
-# 214 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 3
+# 211 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 3
 typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
-# 80 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
+# 107 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
 # 1 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 1 3
 # 53 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1 3
@@ -31,7 +27,7 @@ enum cudaRoundMode
 };
 # 43 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/driver_types.h" 1 3
-# 90 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 91 "/usr/local/cuda/bin/../include/driver_types.h" 3
 enum cudaError
 {
   cudaSuccess = 0,
@@ -225,7 +221,7 @@ struct cudaDeviceProp
   int computeMode;
   int __cudaReserved[36];
 };
-# 318 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 319 "/usr/local/cuda/bin/../include/driver_types.h" 3
 typedef enum cudaError cudaError_t;
 
 
@@ -273,245 +269,250 @@ struct textureReference
 };
 # 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/vector_types.h" 1 3
-# 54 "/usr/local/cuda/bin/../include/vector_types.h" 3
+# 82 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct char1
 {
   signed char x;
+ 
 };
 
 
 struct uchar1
 {
   unsigned char x;
+ 
 };
 
 
-struct char2
+struct __attribute__((__aligned__(2))) char2
 {
   signed char x, y;
+ 
 };
 
 
-struct uchar2
+struct __attribute__((__aligned__(2))) uchar2
 {
   unsigned char x, y;
+ 
 };
 
 
 struct char3
 {
   signed char x, y, z;
+ 
 };
 
 
 struct uchar3
 {
   unsigned char x, y, z;
+ 
 };
 
 
-struct char4
+struct __attribute__((__aligned__(4))) char4
 {
   signed char x, y, z, w;
+ 
 };
 
 
-struct uchar4
+struct __attribute__((__aligned__(4))) uchar4
 {
   unsigned char x, y, z, w;
+ 
 };
 
 
 struct short1
 {
   short x;
+ 
 };
 
 
 struct ushort1
 {
   unsigned short x;
+ 
 };
 
 
-struct short2
+struct __attribute__((__aligned__(4))) short2
 {
   short x, y;
+ 
 };
 
 
-struct ushort2
+struct __attribute__((__aligned__(4))) ushort2
 {
   unsigned short x, y;
+ 
 };
 
 
 struct short3
 {
   short x, y, z;
+ 
 };
 
 
 struct ushort3
 {
   unsigned short x, y, z;
+ 
 };
 
 
-struct short4
-{
-  short x, y, z, w;
-};
+struct __attribute__((__aligned__(8))) short4 { short x, y, z, w; };
 
 
-struct ushort4
-{
-  unsigned short x, y, z, w;
-};
+struct __attribute__((__aligned__(8))) ushort4 { unsigned short x, y, z, w; };
 
 
 struct int1
 {
   int x;
+ 
 };
 
 
 struct uint1
 {
   unsigned int x;
+ 
 };
 
 
-struct int2
-{
-  int x, y;
-};
+struct __attribute__((__aligned__(8))) int2 { int x, y; };
 
 
-struct uint2
-{
-  unsigned int x, y;
-};
+struct __attribute__((__aligned__(8))) uint2 { unsigned int x, y; };
 
 
 struct int3
 {
   int x, y, z;
+ 
 };
 
 
 struct uint3
 {
   unsigned int x, y, z;
+ 
 };
 
 
-struct int4
+struct __attribute__((__aligned__(16))) int4
 {
   int x, y, z, w;
+ 
 };
 
 
-struct uint4
+struct __attribute__((__aligned__(16))) uint4
 {
   unsigned int x, y, z, w;
+ 
 };
 
 
 struct long1
 {
   long int x;
+ 
 };
 
 
 struct ulong1
 {
   unsigned long x;
+ 
 };
-
-
-struct
-
-
-
-      
-
-                                             long2
+# 258 "/usr/local/cuda/bin/../include/vector_types.h" 3
+struct __attribute__((__aligned__(2*sizeof(long int)))) long2
 {
   long int x, y;
+ 
 };
 
 
-struct
-
-
-
-      
-
-                                                      ulong2
+struct __attribute__((__aligned__(2*sizeof(unsigned long int)))) ulong2
 {
   unsigned long int x, y;
+ 
 };
-# 262 "/usr/local/cuda/bin/../include/vector_types.h" 3
+# 306 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct float1
 {
   float x;
+ 
 };
 
 
-struct float2
-{
-  float x, y;
-};
+struct __attribute__((__aligned__(8))) float2 { float x, y; };
 
 
 struct float3
 {
   float x, y, z;
+ 
 };
 
 
-struct float4
+struct __attribute__((__aligned__(16))) float4
 {
   float x, y, z, w;
+ 
 };
 
 
 struct longlong1
 {
   long long int x;
+ 
 };
 
 
 struct ulonglong1
 {
   unsigned long long int x;
+ 
 };
 
 
-struct longlong2
+struct __attribute__((__aligned__(16))) longlong2
 {
   long long int x, y;
+ 
 };
 
 
-struct ulonglong2
+struct __attribute__((__aligned__(16))) ulonglong2
 {
   unsigned long long int x, y;
+ 
 };
 
 
 struct double1
 {
   double x;
+ 
 };
 
 
-struct double2
+struct __attribute__((__aligned__(16))) double2
 {
   double x, y;
+ 
 };
-# 328 "/usr/local/cuda/bin/../include/vector_types.h" 3
+# 378 "/usr/local/cuda/bin/../include/vector_types.h" 3
 typedef struct char1 char1;
 
 typedef struct uchar1 uchar1;
@@ -595,10 +596,7 @@ typedef struct ulonglong2 ulonglong2;
 typedef struct double1 double1;
 
 typedef struct double2 double2;
-# 419 "/usr/local/cuda/bin/../include/vector_types.h" 3
-typedef struct dim3 dim3;
-
-
+# 469 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct dim3
 {
     unsigned int x, y, z;
@@ -608,6 +606,9 @@ struct dim3
     operator uint3(void) { uint3 t; t.x = x; t.y = y; t.z = z; return t; }
 
 };
+
+
+typedef struct dim3 dim3;
 # 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
 # 55 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
 # 80 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
@@ -629,7 +630,8 @@ extern cudaError_t cudaFreeArray(struct cudaArray *array);
 
 extern cudaError_t cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags);
 extern cudaError_t cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-# 120 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+extern cudaError_t cudaHostGetFlags(unsigned int *pFlags, void *pHost);
+# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
 extern cudaError_t cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind);
 extern cudaError_t cudaMemcpyFromArray(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind);
@@ -784,92 +786,67 @@ extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 
 
 }
-# 81 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 108 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
-# 82 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 216 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h" 2 3
-# 90 "/usr/local/cuda/bin/../include/driver_types.h"
-# 138 "/usr/local/cuda/bin/../include/driver_types.h"
-# 150 "/usr/local/cuda/bin/../include/driver_types.h"
-# 163 "/usr/local/cuda/bin/../include/driver_types.h"
-# 169 "/usr/local/cuda/bin/../include/driver_types.h"
-# 181 "/usr/local/cuda/bin/../include/driver_types.h"
-# 193 "/usr/local/cuda/bin/../include/driver_types.h"
-# 204 "/usr/local/cuda/bin/../include/driver_types.h"
-# 215 "/usr/local/cuda/bin/../include/driver_types.h"
-# 233 "/usr/local/cuda/bin/../include/driver_types.h"
-# 247 "/usr/local/cuda/bin/../include/driver_types.h"
-# 259 "/usr/local/cuda/bin/../include/driver_types.h"
-# 318 "/usr/local/cuda/bin/../include/driver_types.h"
-# 324 "/usr/local/cuda/bin/../include/driver_types.h"
-# 330 "/usr/local/cuda/bin/../include/driver_types.h"
+# 109 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 213 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 2 3
+# 91 "/usr/local/cuda/bin/../include/driver_types.h"
+# 139 "/usr/local/cuda/bin/../include/driver_types.h"
+# 151 "/usr/local/cuda/bin/../include/driver_types.h"
+# 164 "/usr/local/cuda/bin/../include/driver_types.h"
+# 170 "/usr/local/cuda/bin/../include/driver_types.h"
+# 182 "/usr/local/cuda/bin/../include/driver_types.h"
+# 194 "/usr/local/cuda/bin/../include/driver_types.h"
+# 205 "/usr/local/cuda/bin/../include/driver_types.h"
+# 216 "/usr/local/cuda/bin/../include/driver_types.h"
+# 234 "/usr/local/cuda/bin/../include/driver_types.h"
+# 248 "/usr/local/cuda/bin/../include/driver_types.h"
+# 260 "/usr/local/cuda/bin/../include/driver_types.h"
+# 319 "/usr/local/cuda/bin/../include/driver_types.h"
+# 325 "/usr/local/cuda/bin/../include/driver_types.h"
+# 331 "/usr/local/cuda/bin/../include/driver_types.h"
 # 54 "/usr/local/cuda/bin/../include/texture_types.h"
 # 61 "/usr/local/cuda/bin/../include/texture_types.h"
 # 68 "/usr/local/cuda/bin/../include/texture_types.h"
 # 75 "/usr/local/cuda/bin/../include/texture_types.h"
-# 54 "/usr/local/cuda/bin/../include/vector_types.h"
-# 60 "/usr/local/cuda/bin/../include/vector_types.h"
-# 66 "/usr/local/cuda/bin/../include/vector_types.h"
-# 72 "/usr/local/cuda/bin/../include/vector_types.h"
-# 78 "/usr/local/cuda/bin/../include/vector_types.h"
-# 84 "/usr/local/cuda/bin/../include/vector_types.h"
-# 90 "/usr/local/cuda/bin/../include/vector_types.h"
+# 82 "/usr/local/cuda/bin/../include/vector_types.h"
+# 89 "/usr/local/cuda/bin/../include/vector_types.h"
 # 96 "/usr/local/cuda/bin/../include/vector_types.h"
-# 102 "/usr/local/cuda/bin/../include/vector_types.h"
-# 108 "/usr/local/cuda/bin/../include/vector_types.h"
-# 114 "/usr/local/cuda/bin/../include/vector_types.h"
-# 120 "/usr/local/cuda/bin/../include/vector_types.h"
-# 126 "/usr/local/cuda/bin/../include/vector_types.h"
-# 132 "/usr/local/cuda/bin/../include/vector_types.h"
+# 103 "/usr/local/cuda/bin/../include/vector_types.h"
+# 110 "/usr/local/cuda/bin/../include/vector_types.h"
+# 117 "/usr/local/cuda/bin/../include/vector_types.h"
+# 124 "/usr/local/cuda/bin/../include/vector_types.h"
+# 131 "/usr/local/cuda/bin/../include/vector_types.h"
 # 138 "/usr/local/cuda/bin/../include/vector_types.h"
-# 144 "/usr/local/cuda/bin/../include/vector_types.h"
-# 150 "/usr/local/cuda/bin/../include/vector_types.h"
-# 156 "/usr/local/cuda/bin/../include/vector_types.h"
-# 162 "/usr/local/cuda/bin/../include/vector_types.h"
-# 168 "/usr/local/cuda/bin/../include/vector_types.h"
-# 174 "/usr/local/cuda/bin/../include/vector_types.h"
+# 145 "/usr/local/cuda/bin/../include/vector_types.h"
+# 152 "/usr/local/cuda/bin/../include/vector_types.h"
+# 159 "/usr/local/cuda/bin/../include/vector_types.h"
+# 166 "/usr/local/cuda/bin/../include/vector_types.h"
+# 173 "/usr/local/cuda/bin/../include/vector_types.h"
 # 180 "/usr/local/cuda/bin/../include/vector_types.h"
+# 183 "/usr/local/cuda/bin/../include/vector_types.h"
 # 186 "/usr/local/cuda/bin/../include/vector_types.h"
-# 192 "/usr/local/cuda/bin/../include/vector_types.h"
-# 198 "/usr/local/cuda/bin/../include/vector_types.h"
-# 204 "/usr/local/cuda/bin/../include/vector_types.h"
-# 216 "/usr/local/cuda/bin/../include/vector_types.h"
-# 228 "/usr/local/cuda/bin/../include/vector_types.h"
-# 262 "/usr/local/cuda/bin/../include/vector_types.h"
-# 268 "/usr/local/cuda/bin/../include/vector_types.h"
-# 274 "/usr/local/cuda/bin/../include/vector_types.h"
-# 280 "/usr/local/cuda/bin/../include/vector_types.h"
-# 286 "/usr/local/cuda/bin/../include/vector_types.h"
-# 292 "/usr/local/cuda/bin/../include/vector_types.h"
-# 298 "/usr/local/cuda/bin/../include/vector_types.h"
-# 304 "/usr/local/cuda/bin/../include/vector_types.h"
-# 310 "/usr/local/cuda/bin/../include/vector_types.h"
+# 193 "/usr/local/cuda/bin/../include/vector_types.h"
+# 200 "/usr/local/cuda/bin/../include/vector_types.h"
+# 203 "/usr/local/cuda/bin/../include/vector_types.h"
+# 206 "/usr/local/cuda/bin/../include/vector_types.h"
+# 213 "/usr/local/cuda/bin/../include/vector_types.h"
+# 220 "/usr/local/cuda/bin/../include/vector_types.h"
+# 227 "/usr/local/cuda/bin/../include/vector_types.h"
+# 234 "/usr/local/cuda/bin/../include/vector_types.h"
+# 241 "/usr/local/cuda/bin/../include/vector_types.h"
+# 258 "/usr/local/cuda/bin/../include/vector_types.h"
+# 265 "/usr/local/cuda/bin/../include/vector_types.h"
+# 306 "/usr/local/cuda/bin/../include/vector_types.h"
+# 313 "/usr/local/cuda/bin/../include/vector_types.h"
 # 316 "/usr/local/cuda/bin/../include/vector_types.h"
-# 328 "/usr/local/cuda/bin/../include/vector_types.h"
+# 323 "/usr/local/cuda/bin/../include/vector_types.h"
 # 330 "/usr/local/cuda/bin/../include/vector_types.h"
-# 332 "/usr/local/cuda/bin/../include/vector_types.h"
-# 334 "/usr/local/cuda/bin/../include/vector_types.h"
-# 336 "/usr/local/cuda/bin/../include/vector_types.h"
-# 338 "/usr/local/cuda/bin/../include/vector_types.h"
-# 340 "/usr/local/cuda/bin/../include/vector_types.h"
-# 342 "/usr/local/cuda/bin/../include/vector_types.h"
+# 337 "/usr/local/cuda/bin/../include/vector_types.h"
 # 344 "/usr/local/cuda/bin/../include/vector_types.h"
-# 346 "/usr/local/cuda/bin/../include/vector_types.h"
-# 348 "/usr/local/cuda/bin/../include/vector_types.h"
-# 350 "/usr/local/cuda/bin/../include/vector_types.h"
-# 352 "/usr/local/cuda/bin/../include/vector_types.h"
-# 354 "/usr/local/cuda/bin/../include/vector_types.h"
-# 356 "/usr/local/cuda/bin/../include/vector_types.h"
+# 351 "/usr/local/cuda/bin/../include/vector_types.h"
 # 358 "/usr/local/cuda/bin/../include/vector_types.h"
-# 360 "/usr/local/cuda/bin/../include/vector_types.h"
-# 362 "/usr/local/cuda/bin/../include/vector_types.h"
-# 364 "/usr/local/cuda/bin/../include/vector_types.h"
-# 366 "/usr/local/cuda/bin/../include/vector_types.h"
-# 368 "/usr/local/cuda/bin/../include/vector_types.h"
-# 370 "/usr/local/cuda/bin/../include/vector_types.h"
-# 372 "/usr/local/cuda/bin/../include/vector_types.h"
-# 374 "/usr/local/cuda/bin/../include/vector_types.h"
-# 376 "/usr/local/cuda/bin/../include/vector_types.h"
+# 365 "/usr/local/cuda/bin/../include/vector_types.h"
 # 378 "/usr/local/cuda/bin/../include/vector_types.h"
 # 380 "/usr/local/cuda/bin/../include/vector_types.h"
 # 382 "/usr/local/cuda/bin/../include/vector_types.h"
@@ -887,8 +864,33 @@ extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 # 406 "/usr/local/cuda/bin/../include/vector_types.h"
 # 408 "/usr/local/cuda/bin/../include/vector_types.h"
 # 410 "/usr/local/cuda/bin/../include/vector_types.h"
-# 419 "/usr/local/cuda/bin/../include/vector_types.h"
+# 412 "/usr/local/cuda/bin/../include/vector_types.h"
+# 414 "/usr/local/cuda/bin/../include/vector_types.h"
+# 416 "/usr/local/cuda/bin/../include/vector_types.h"
+# 418 "/usr/local/cuda/bin/../include/vector_types.h"
+# 420 "/usr/local/cuda/bin/../include/vector_types.h"
 # 422 "/usr/local/cuda/bin/../include/vector_types.h"
+# 424 "/usr/local/cuda/bin/../include/vector_types.h"
+# 426 "/usr/local/cuda/bin/../include/vector_types.h"
+# 428 "/usr/local/cuda/bin/../include/vector_types.h"
+# 430 "/usr/local/cuda/bin/../include/vector_types.h"
+# 432 "/usr/local/cuda/bin/../include/vector_types.h"
+# 434 "/usr/local/cuda/bin/../include/vector_types.h"
+# 436 "/usr/local/cuda/bin/../include/vector_types.h"
+# 438 "/usr/local/cuda/bin/../include/vector_types.h"
+# 440 "/usr/local/cuda/bin/../include/vector_types.h"
+# 442 "/usr/local/cuda/bin/../include/vector_types.h"
+# 444 "/usr/local/cuda/bin/../include/vector_types.h"
+# 446 "/usr/local/cuda/bin/../include/vector_types.h"
+# 448 "/usr/local/cuda/bin/../include/vector_types.h"
+# 450 "/usr/local/cuda/bin/../include/vector_types.h"
+# 452 "/usr/local/cuda/bin/../include/vector_types.h"
+# 454 "/usr/local/cuda/bin/../include/vector_types.h"
+# 456 "/usr/local/cuda/bin/../include/vector_types.h"
+# 458 "/usr/local/cuda/bin/../include/vector_types.h"
+# 460 "/usr/local/cuda/bin/../include/vector_types.h"
+# 469 "/usr/local/cuda/bin/../include/vector_types.h"
+# 480 "/usr/local/cuda/bin/../include/vector_types.h"
 # 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3D(cudaPitchedPtr *, cudaExtent);
 extern "C" cudaError_t cudaMalloc3DArray(cudaArray **, const cudaChannelFormatDesc *, cudaExtent);
@@ -906,7 +908,8 @@ extern "C" cudaError_t cudaFreeArray(cudaArray *);
 
 extern "C" cudaError_t cudaHostAlloc(void **, size_t, unsigned);
 extern "C" cudaError_t cudaHostGetDevicePointer(void **, void *, unsigned);
-# 120 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaHostGetFlags(unsigned *, void *);
+# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy(void *, const void *, size_t, cudaMemcpyKind);
 extern "C" cudaError_t cudaMemcpyToArray(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind);
 extern "C" cudaError_t cudaMemcpyFromArray(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind);
@@ -917,7 +920,7 @@ extern "C" cudaError_t cudaMemcpy2DFromArray(void *, size_t, const cudaArray *, 
 extern "C" cudaError_t cudaMemcpy2DArrayToArray(cudaArray *, size_t, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind = cudaMemcpyDeviceToDevice);
 extern "C" cudaError_t cudaMemcpyToSymbol(const char *, const void *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyHostToDevice);
 extern "C" cudaError_t cudaMemcpyFromSymbol(void *, const char *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyDeviceToHost);
-# 137 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 138 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyAsync(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyFromArrayAsync(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
@@ -926,13 +929,13 @@ extern "C" cudaError_t cudaMemcpy2DToArrayAsync(cudaArray *, size_t, size_t, con
 extern "C" cudaError_t cudaMemcpy2DFromArrayAsync(void *, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyToSymbolAsync(const char *, const void *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
 extern "C" cudaError_t cudaMemcpyFromSymbolAsync(void *, const char *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 152 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 153 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset(void *, int, size_t);
 extern "C" cudaError_t cudaMemset2D(void *, size_t, int, size_t, size_t);
-# 161 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 162 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolAddress(void **, const char *);
 extern "C" cudaError_t cudaGetSymbolSize(size_t *, const char *);
-# 170 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 171 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceCount(int *);
 extern "C" cudaError_t cudaGetDeviceProperties(cudaDeviceProp *, int);
 extern "C" cudaError_t cudaChooseDevice(int *, const cudaDeviceProp *);
@@ -940,30 +943,30 @@ extern "C" cudaError_t cudaSetDevice(int);
 extern "C" cudaError_t cudaGetDevice(int *);
 extern "C" cudaError_t cudaSetValidDevices(int *, int);
 extern "C" cudaError_t cudaSetDeviceFlags(int);
-# 184 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 185 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t = (((2147483647) * 2U) + 1U));
 extern "C" cudaError_t cudaBindTexture2D(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t, size_t, size_t);
 extern "C" cudaError_t cudaBindTextureToArray(const textureReference *, const cudaArray *, const cudaChannelFormatDesc *);
 extern "C" cudaError_t cudaUnbindTexture(const textureReference *);
 extern "C" cudaError_t cudaGetTextureAlignmentOffset(size_t *, const textureReference *);
 extern "C" cudaError_t cudaGetTextureReference(const textureReference **, const char *);
-# 197 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 198 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetChannelDesc(cudaChannelFormatDesc *, const cudaArray *);
 extern "C" cudaChannelFormatDesc cudaCreateChannelDesc(int, int, int, int, cudaChannelFormatKind);
-# 206 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 207 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetLastError();
 extern "C" const char *cudaGetErrorString(cudaError_t);
-# 215 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 216 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaConfigureCall(dim3, dim3, size_t = (0), cudaStream_t = (0));
 extern "C" cudaError_t cudaSetupArgument(const void *, size_t, size_t);
 extern "C" cudaError_t cudaLaunch(const char *);
 extern "C" cudaError_t cudaFuncGetAttributes(cudaFuncAttributes *, const char *);
-# 226 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 227 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamCreate(cudaStream_t *);
 extern "C" cudaError_t cudaStreamDestroy(cudaStream_t);
 extern "C" cudaError_t cudaStreamSynchronize(cudaStream_t);
 extern "C" cudaError_t cudaStreamQuery(cudaStream_t);
-# 237 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 238 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreate(cudaEvent_t *);
 extern "C" cudaError_t cudaEventCreateWithFlags(cudaEvent_t *, int);
 extern "C" cudaError_t cudaEventRecord(cudaEvent_t, cudaStream_t);
@@ -971,13 +974,13 @@ extern "C" cudaError_t cudaEventQuery(cudaEvent_t);
 extern "C" cudaError_t cudaEventSynchronize(cudaEvent_t);
 extern "C" cudaError_t cudaEventDestroy(cudaEvent_t);
 extern "C" cudaError_t cudaEventElapsedTime(float *, cudaEvent_t, cudaEvent_t);
-# 251 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 252 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForDevice(double *);
 extern "C" cudaError_t cudaSetDoubleForHost(double *);
-# 260 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 261 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaThreadExit();
 extern "C" cudaError_t cudaThreadSynchronize();
-# 269 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 270 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDriverGetVersion(int *);
 extern "C" cudaError_t cudaRuntimeGetVersion(int *);
 # 93 "/usr/local/cuda/bin/../include/channel_descriptor.h"
@@ -1495,21 +1498,21 @@ extern "C" { typedef long __intptr_t; }
 
 
 extern "C" { typedef unsigned __socklen_t; }
-# 61 "/usr/include/time.h" 3
+# 60 "/usr/include/time.h" 3
 extern "C" { typedef __clock_t clock_t; }
-# 77 "/usr/include/time.h" 3
+# 76 "/usr/include/time.h" 3
 extern "C" { typedef __time_t time_t; }
-# 93 "/usr/include/time.h" 3
+# 92 "/usr/include/time.h" 3
 extern "C" { typedef __clockid_t clockid_t; }
-# 105 "/usr/include/time.h" 3
+# 104 "/usr/include/time.h" 3
 extern "C" { typedef __timer_t timer_t; }
-# 121 "/usr/include/time.h" 3
+# 120 "/usr/include/time.h" 3
 extern "C" { struct timespec {
 
 __time_t tv_sec;
 long tv_nsec;
 }; }
-# 134 "/usr/include/time.h" 3
+# 133 "/usr/include/time.h" 3
 extern "C" { struct tm {
 
 int tm_sec;
@@ -1530,7 +1533,7 @@ const char *tm_zone;
 
 
 }; }
-# 162 "/usr/include/time.h" 3
+# 161 "/usr/include/time.h" 3
 extern "C" { struct itimerspec {
 
 timespec it_interval;
@@ -1539,9 +1542,9 @@ timespec it_value;
 
 
 struct sigevent;
-# 175 "/usr/include/time.h" 3
+# 174 "/usr/include/time.h" 3
 extern "C" { typedef __pid_t pid_t; }
-# 184 "/usr/include/time.h" 3
+# 183 "/usr/include/time.h" 3
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
 
 
@@ -1553,9 +1556,9 @@ extern "C" double difftime(time_t, time_t) throw() __attribute__((__const__));
 
 
 extern "C" time_t mktime(tm *) throw();
-# 200 "/usr/include/time.h" 3
+# 199 "/usr/include/time.h" 3
 extern "C" size_t strftime(char *__restrict__, size_t, const char *__restrict__, const tm *__restrict__) throw();
-# 208 "/usr/include/time.h" 3
+# 207 "/usr/include/time.h" 3
 extern "C" char *strptime(const char *__restrict__, const char *__restrict__, tm *) throw();
 # 40 "/usr/include/xlocale.h" 3
 extern "C" { typedef
@@ -1573,38 +1576,38 @@ const int *__ctype_toupper;
 
 const char *__names[13];
 } *__locale_t; }
-# 218 "/usr/include/time.h" 3
+
+
+extern "C" { typedef __locale_t locale_t; }
+# 217 "/usr/include/time.h" 3
 extern "C" size_t strftime_l(char *__restrict__, size_t, const char *__restrict__, const tm *__restrict__, __locale_t) throw();
-
-
-
-
+# 224 "/usr/include/time.h" 3
 extern "C" char *strptime_l(const char *__restrict__, const char *__restrict__, tm *, __locale_t) throw();
-# 232 "/usr/include/time.h" 3
+# 233 "/usr/include/time.h" 3
 extern "C" tm *gmtime(const time_t *) throw();
 
 
 
 extern "C" tm *localtime(const time_t *) throw();
-# 242 "/usr/include/time.h" 3
+# 243 "/usr/include/time.h" 3
 extern "C" tm *gmtime_r(const time_t *__restrict__, tm *__restrict__) throw();
 
 
 
 
 extern "C" tm *localtime_r(const time_t *__restrict__, tm *__restrict__) throw();
-# 254 "/usr/include/time.h" 3
+# 255 "/usr/include/time.h" 3
 extern "C" char *asctime(const tm *) throw();
 
 
 extern "C" char *ctime(const time_t *) throw();
-# 265 "/usr/include/time.h" 3
+# 266 "/usr/include/time.h" 3
 extern "C" char *asctime_r(const tm *__restrict__, char *__restrict__) throw();
 
 
 
 extern "C" char *ctime_r(const time_t *__restrict__, char *__restrict__) throw();
-# 275 "/usr/include/time.h" 3
+# 276 "/usr/include/time.h" 3
 extern "C" { extern char *__tzname[2]; }
 extern "C" { extern int __daylight; }
 extern "C" { extern long __timezone; }
@@ -1622,9 +1625,9 @@ extern "C" void tzset() throw();
 
 extern "C" { extern int daylight; }
 extern "C" { extern long timezone; }
-# 297 "/usr/include/time.h" 3
+# 298 "/usr/include/time.h" 3
 extern "C" int stime(const time_t *) throw();
-# 312 "/usr/include/time.h" 3
+# 313 "/usr/include/time.h" 3
 extern "C" time_t timegm(tm *) throw();
 
 
@@ -1632,7 +1635,7 @@ extern "C" time_t timelocal(tm *) throw();
 
 
 extern "C" int dysize(int) throw() __attribute__((__const__));
-# 327 "/usr/include/time.h" 3
+# 328 "/usr/include/time.h" 3
 extern "C" int nanosleep(const timespec *, timespec *);
 
 
@@ -1645,7 +1648,7 @@ extern "C" int clock_gettime(clockid_t, timespec *) throw();
 
 
 extern "C" int clock_settime(clockid_t, const timespec *) throw();
-# 346 "/usr/include/time.h" 3
+# 347 "/usr/include/time.h" 3
 extern "C" int clock_nanosleep(clockid_t, int, const timespec *, timespec *);
 
 
@@ -1674,49 +1677,51 @@ extern "C" int timer_gettime(timer_t, itimerspec *) throw();
 
 
 extern "C" int timer_getoverrun(timer_t) throw();
-# 389 "/usr/include/time.h" 3
+# 390 "/usr/include/time.h" 3
 extern "C" { extern int getdate_err; }
-# 398 "/usr/include/time.h" 3
+# 399 "/usr/include/time.h" 3
 extern "C" tm *getdate(const char *);
-# 412 "/usr/include/time.h" 3
+# 413 "/usr/include/time.h" 3
 extern "C" int getdate_r(const char *__restrict__, tm *__restrict__);
-# 38 "/usr/include/string.h" 3
-extern "C" { extern inline __attribute__((__weak__)) void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 43 "/usr/include/string.h" 3
+extern "C" __attribute__((__weak__)) void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
 
 
-extern "C" { extern inline void *memmove(void *, const void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 51 "/usr/include/string.h" 3
+extern "C" void *memmove(void *, const void *, size_t) throw();
+# 56 "/usr/include/string.h" 3
 extern "C" void *memccpy(void *__restrict__, const void *__restrict__, int, size_t) throw();
-# 59 "/usr/include/string.h" 3
-extern "C" { extern inline __attribute__((__weak__)) void *memset(void *, int, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 64 "/usr/include/string.h" 3
+extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
 
 
 extern "C" int memcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
+# 74 "/usr/include/string.h" 3
+extern void *memchr(void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__));
+
+extern const void *memchr(const void *, int, size_t) throw() __asm__("memchr") __attribute__((__pure__));
+# 103 "/usr/include/string.h" 3
+extern void *rawmemchr(void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
+
+extern const void *rawmemchr(const void *, int) throw() __asm__("rawmemchr") __attribute__((__pure__));
+# 114 "/usr/include/string.h" 3
+extern void *memrchr(void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
+
+extern const void *memrchr(const void *, int, size_t) throw() __asm__("memrchr") __attribute__((__pure__));
+# 127 "/usr/include/string.h" 3
+extern "C" char *strcpy(char *__restrict__, const char *__restrict__) throw();
+
+
+extern "C" char *strncpy(char *__restrict__, const char *__restrict__, size_t) throw();
 
 
 
-extern "C" void *memchr(const void *, int, size_t) throw() __attribute__((__pure__));
-# 73 "/usr/include/string.h" 3
-extern "C" void *rawmemchr(const void *, int) throw() __attribute__((__pure__));
+
+extern "C" char *strcat(char *__restrict__, const char *__restrict__) throw();
 
 
-
-extern "C" void *memrchr(const void *, int, size_t) throw() __attribute__((__pure__));
-# 84 "/usr/include/string.h" 3
-extern "C" { extern inline char *strcpy(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
-
-extern "C" { extern inline char *strncpy(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
-
-
-
-extern "C" { extern inline char *strcat(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
-
-extern "C" { extern inline char *strncat(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *strncat(char *__restrict__, const char *__restrict__, size_t) throw();
 
 
 
@@ -1731,90 +1736,93 @@ extern "C" int strcoll(const char *, const char *) throw() __attribute__((__pure
 
 
 extern "C" size_t strxfrm(char *__restrict__, const char *__restrict__, size_t) throw();
-# 121 "/usr/include/string.h" 3
+# 164 "/usr/include/string.h" 3
 extern "C" int strcoll_l(const char *, const char *, __locale_t) throw() __attribute__((__pure__));
 
 
 extern "C" size_t strxfrm_l(char *, const char *, size_t, __locale_t) throw();
-# 130 "/usr/include/string.h" 3
+# 173 "/usr/include/string.h" 3
 extern "C" char *strdup(const char *) throw() __attribute__((__malloc__));
-# 138 "/usr/include/string.h" 3
+# 181 "/usr/include/string.h" 3
 extern "C" char *strndup(const char *, size_t) throw() __attribute__((__malloc__));
-# 167 "/usr/include/string.h" 3
-extern "C" char *strchr(const char *, int) throw() __attribute__((__pure__));
+# 213 "/usr/include/string.h" 3
+extern char *strchr(char *, int) throw() __asm__("strchr") __attribute__((__pure__));
 
+extern const char *strchr(const char *, int) throw() __asm__("strchr") __attribute__((__pure__));
+# 240 "/usr/include/string.h" 3
+extern char *strrchr(char *, int) throw() __asm__("strrchr") __attribute__((__pure__));
 
-extern "C" char *strrchr(const char *, int) throw() __attribute__((__pure__));
-# 177 "/usr/include/string.h" 3
-extern "C" char *strchrnul(const char *, int) throw() __attribute__((__pure__));
-# 184 "/usr/include/string.h" 3
+extern const char *strrchr(const char *, int) throw() __asm__("strrchr") __attribute__((__pure__));
+# 269 "/usr/include/string.h" 3
+extern char *strchrnul(char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
+
+extern const char *strchrnul(const char *, int) throw() __asm__("strchrnul") __attribute__((__pure__));
+# 282 "/usr/include/string.h" 3
 extern "C" size_t strcspn(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
 extern "C" size_t strspn(const char *, const char *) throw() __attribute__((__pure__));
+# 292 "/usr/include/string.h" 3
+extern char *strpbrk(char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__));
 
+extern const char *strpbrk(const char *, const char *) throw() __asm__("strpbrk") __attribute__((__pure__));
+# 319 "/usr/include/string.h" 3
+extern char *strstr(char *, const char *) throw() __asm__("strstr") __attribute__((__pure__));
 
-extern "C" char *strpbrk(const char *, const char *) throw() __attribute__((__pure__));
-
-
-extern "C" char *strstr(const char *, const char *) throw() __attribute__((__pure__));
-
-
-
-
+extern const char *strstr(const char *, const char *) throw() __asm__("strstr") __attribute__((__pure__));
+# 346 "/usr/include/string.h" 3
 extern "C" char *strtok(char *__restrict__, const char *__restrict__) throw();
-# 205 "/usr/include/string.h" 3
+# 352 "/usr/include/string.h" 3
 extern "C" char *__strtok_r(char *__restrict__, const char *__restrict__, char **__restrict__) throw();
 
 
 
 
 extern "C" char *strtok_r(char *__restrict__, const char *__restrict__, char **__restrict__) throw();
-# 217 "/usr/include/string.h" 3
-extern "C" char *strcasestr(const char *, const char *) throw() __attribute__((__pure__));
-# 225 "/usr/include/string.h" 3
+# 365 "/usr/include/string.h" 3
+extern char *strcasestr(char *, const char *) throw() __asm__("strcasestr") __attribute__((__pure__));
+
+extern const char *strcasestr(const char *, const char *) throw() __asm__("strcasestr") __attribute__((__pure__));
+# 380 "/usr/include/string.h" 3
 extern "C" void *memmem(const void *, size_t, const void *, size_t) throw() __attribute__((__pure__));
-# 231 "/usr/include/string.h" 3
+# 386 "/usr/include/string.h" 3
 extern "C" void *__mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
 
 
-extern "C" { extern inline void *mempcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 242 "/usr/include/string.h" 3
+extern "C" void *mempcpy(void *__restrict__, const void *__restrict__, size_t) throw();
+# 397 "/usr/include/string.h" 3
 extern "C" size_t strlen(const char *) throw() __attribute__((__pure__));
-# 249 "/usr/include/string.h" 3
+# 404 "/usr/include/string.h" 3
 extern "C" size_t strnlen(const char *, size_t) throw() __attribute__((__pure__));
-# 256 "/usr/include/string.h" 3
+# 411 "/usr/include/string.h" 3
 extern "C" char *strerror(int) throw();
-# 281 "/usr/include/string.h" 3
+# 436 "/usr/include/string.h" 3
 extern "C" char *strerror_r(int, char *, size_t) throw();
-# 288 "/usr/include/string.h" 3
+# 443 "/usr/include/string.h" 3
 extern "C" char *strerror_l(int, __locale_t) throw();
-# 294 "/usr/include/string.h" 3
+# 449 "/usr/include/string.h" 3
 extern "C" void __bzero(void *, size_t) throw();
 
 
 
-extern "C" { extern inline void bcopy(const void *, void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" void bcopy(const void *, void *, size_t) throw();
 
 
 
-extern "C" { extern inline void bzero(void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" void bzero(void *, size_t) throw();
 
 
 extern "C" int bcmp(const void *, const void *, size_t) throw() __attribute__((__pure__));
+# 467 "/usr/include/string.h" 3
+extern char *index(char *, int) throw() __asm__("index") __attribute__((__pure__));
 
+extern const char *index(const char *, int) throw() __asm__("index") __attribute__((__pure__));
+# 495 "/usr/include/string.h" 3
+extern char *rindex(char *, int) throw() __asm__("rindex") __attribute__((__pure__));
 
-
-extern "C" char *index(const char *, int) throw() __attribute__((__pure__));
-
-
-
-extern "C" char *rindex(const char *, int) throw() __attribute__((__pure__));
-
-
-
-
+extern const char *rindex(const char *, int) throw() __asm__("rindex") __attribute__((__pure__));
+# 521 "/usr/include/string.h" 3
 extern "C" int ffs(int) throw() __attribute__((__const__));
 
 
@@ -1823,31 +1831,27 @@ extern "C" int ffs(int) throw() __attribute__((__const__));
 extern "C" int ffsl(long) throw() __attribute__((__const__));
 
 extern "C" int ffsll(long long) throw() __attribute__((__const__));
-# 331 "/usr/include/string.h" 3
+# 534 "/usr/include/string.h" 3
 extern "C" int strcasecmp(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
 extern "C" int strncasecmp(const char *, const char *, size_t) throw() __attribute__((__pure__));
-# 342 "/usr/include/string.h" 3
+# 545 "/usr/include/string.h" 3
 extern "C" int strcasecmp_l(const char *, const char *, __locale_t) throw() __attribute__((__pure__));
 
 
 
 extern "C" int strncasecmp_l(const char *, const char *, size_t, __locale_t) throw() __attribute__((__pure__));
-# 354 "/usr/include/string.h" 3
+# 557 "/usr/include/string.h" 3
 extern "C" char *strsep(char **__restrict__, const char *__restrict__) throw();
-# 361 "/usr/include/string.h" 3
-extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
-
-
-
+# 564 "/usr/include/string.h" 3
 extern "C" char *strsignal(int) throw();
 
 
 extern "C" char *__stpcpy(char *__restrict__, const char *__restrict__) throw();
 
-extern "C" { extern inline char *stpcpy(char *__restrict__, const char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" char *stpcpy(char *__restrict__, const char *__restrict__) throw();
 
 
 
@@ -1855,8 +1859,9 @@ extern "C" { extern inline char *stpcpy(char *__restrict__, const char *__restri
 extern "C" char *__stpncpy(char *__restrict__, const char *__restrict__, size_t) throw();
 
 
-extern "C" { extern inline char *stpncpy(char *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
+extern "C" char *stpncpy(char *__restrict__, const char *__restrict__, size_t) throw();
+# 584 "/usr/include/string.h" 3
+extern "C" int strverscmp(const char *, const char *) throw() __attribute__((__pure__));
 
 
 
@@ -1864,117 +1869,18 @@ extern "C" char *strfry(char *) throw();
 
 
 extern "C" void *memfrob(void *, size_t) throw();
-# 393 "/usr/include/string.h" 3
-extern "C" char *basename(const char *) throw();
-# 23 "/usr/include/bits/string3.h" 3
-extern "C" void __warn_memset_zero_len();
-# 49 "/usr/include/bits/string3.h" 3
-extern "C" { inline __attribute__((__weak__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memcpy(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
+# 599 "/usr/include/string.h" 3
+extern char *basename(char *) throw() __asm__("basename");
 
-{
-return __builtin___memcpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memmove(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___memmove_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *mempcpy(void *__restrict__ __dest, const void *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___mempcpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-# 78 "/usr/include/bits/string3.h" 3
-extern "C" { inline __attribute__((__weak__)) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void *memset(void *__dest, int __ch, size_t __len) throw()
-{
-if ((__builtin_constant_p(__len)) && (__len == (0)))
-{
-__warn_memset_zero_len();
-return __dest;
-}
-return __builtin___memset_chk(__dest, __ch, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void bcopy(const void *__restrict__ __src, void *__restrict__ __dest, size_t __len) throw()
-
-{
-(void)__builtin___memmove_chk(__dest, __src, __len, __builtin_object_size(__dest, 0));
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) void bzero(void *__dest, size_t __len) throw()
-{
-(void)__builtin___memset_chk(__dest, '\000', __len, __builtin_object_size(__dest, 0));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strcpy(char *__restrict__ __dest, const char *__restrict__ __src) throw()
-{
-return __builtin___strcpy_chk(__dest, __src, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *stpcpy(char *__restrict__ __dest, const char *__restrict__ __src) throw()
-{
-return __builtin___stpcpy_chk(__dest, __src, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strncpy(char *__restrict__ __dest, const char *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___strncpy_chk(__dest, __src, __len, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-extern "C" char *__stpncpy_chk(char *, const char *, size_t, size_t) throw();
-
-extern "C" char *__stpncpy_alias(char *, const char *, size_t) throw() __asm__("stpncpy");
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *stpncpy(char *__dest, const char *__src, size_t __n) throw()
-{
-if ((__builtin_object_size(__dest, 2 > 1) != ((size_t)(-1))) && ((!(__builtin_constant_p(__n))) || (__n <= __builtin_object_size(__dest, 2 > 1)))) {
-
-return __stpncpy_chk(__dest, __src, __n, __builtin_object_size(__dest, 2 > 1)); }
-return __stpncpy_alias(__dest, __src, __n);
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strcat(char *__restrict__ __dest, const char *__restrict__ __src) throw()
-{
-return __builtin___strcat_chk(__dest, __src, __builtin_object_size(__dest, 2 > 1));
-} }
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *strncat(char *__restrict__ __dest, const char *__restrict__ __src, size_t __len) throw()
-
-{
-return __builtin___strncat_chk(__dest, __src, __len, __builtin_object_size(__dest, 2 > 1));
-} }
+extern const char *basename(const char *) throw() __asm__("basename");
 # 56 "/usr/local/cuda/bin/../include/common_functions.h"
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
 
 
-extern "C" { extern inline __attribute__((__weak__)) void *memset(void *, int, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw();
 
 
-extern "C" { extern inline __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw();
 # 65 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 
@@ -1991,6 +1897,10 @@ extern "C" __attribute__((__weak__)) int min(int, int);
 
 extern "C" __attribute__((__weak__)) unsigned umin(unsigned, unsigned);
 
+extern "C" __attribute__((__weak__)) long long llmin(long long, long long);
+
+extern "C" __attribute__((__weak__)) unsigned long long ullmin(unsigned long long, unsigned long long);
+
 extern "C" __attribute__((__weak__)) float fminf(float, float) throw();
 
 extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
@@ -1999,6 +1909,10 @@ extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
 extern "C" __attribute__((__weak__)) int max(int, int);
 
 extern "C" __attribute__((__weak__)) unsigned umax(unsigned, unsigned);
+
+extern "C" __attribute__((__weak__)) long long llmax(long long, long long);
+
+extern "C" __attribute__((__weak__)) unsigned long long ullmax(unsigned long long, unsigned long long);
 
 extern "C" __attribute__((__weak__)) float fmaxf(float, float) throw();
 
@@ -2298,17 +2212,17 @@ extern "C" __attribute__((__weak__)) int __isinff(float) throw() __attribute__((
 extern "C" __attribute__((__weak__)) int __isnan(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanf(float) throw() __attribute__((__const__));
-# 400 "/usr/local/cuda/bin/../include/math_functions.h"
+# 408 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finite(double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __finitef(float) throw() __attribute__((__const__));
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__const__));
 
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__const__));
 
 
 extern "C" __attribute__((__weak__)) double fma(double, double, double) throw();
@@ -2523,7 +2437,7 @@ extern "C" int __fpclassify(double) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__const__));
 
 
 
@@ -2737,7 +2651,7 @@ extern "C" int __fpclassifyf(float) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__const__));
 
 
 
@@ -2951,7 +2865,7 @@ extern "C" int __fpclassifyl(long double) throw() __attribute__((__const__));
 
 
 
-extern "C" { extern inline __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
 
 
 
@@ -3004,24 +2918,6 @@ double retval;
 
 
 extern "C" int matherr(__exception *) throw();
-# 36 "/usr/include/bits/mathinline.h" 3
-extern "C" { inline __attribute__((__weak__)) __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitf(float __x) throw()
-{
-auto union { float __f; int __i; } __u = {__f: __x};
-return (__u.__i) < 0;
-} }
-
-extern "C" { inline __attribute__((__weak__)) __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbit(double __x) throw()
-{
-auto union { double __d; int __i[2]; } __u = {__d: __x};
-return ((__u.__i)[1]) < 0;
-} }
-
-extern "C" { inline __attribute__((__weak__)) __attribute__((__gnu_inline__)) __attribute__((__const__)) int __signbitl(long double __x) throw()
-{
-auto union { long double __l; int __i[3]; } __u = {__l: __x};
-return (((__u.__i)[2]) & 32768) != 0;
-} }
 # 67 "/usr/include/bits/waitstatus.h" 3
 extern "C" { union wait {
 
@@ -3071,15 +2967,15 @@ extern "C" size_t __ctype_get_mb_cur_max() throw();
 
 
 
-extern "C" { extern inline double atof(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" double atof(const char *) throw() __attribute__((__pure__));
 
 
-extern "C" { extern inline int atoi(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" int atoi(const char *) throw() __attribute__((__pure__));
 
 
-extern "C" { extern inline long atol(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" long atol(const char *) throw() __attribute__((__pure__));
 # 158 "/usr/include/stdlib.h" 3
-extern "C" { extern inline long long atoll(const char *) throw() __attribute__((__pure__)) __attribute__((__gnu_inline__)); }
+extern "C" long long atoll(const char *) throw() __attribute__((__pure__));
 # 165 "/usr/include/stdlib.h" 3
 extern "C" double strtod(const char *__restrict__, char **__restrict__) throw();
 # 173 "/usr/include/stdlib.h" 3
@@ -3130,26 +3026,6 @@ extern "C" float strtof_l(const char *__restrict__, char **__restrict__, __local
 
 
 extern "C" long double strtold_l(const char *__restrict__, char **__restrict__, __locale_t) throw();
-# 279 "/usr/include/stdlib.h" 3
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) double atof(const char *__nptr) throw()
-{
-return strtod(__nptr, (char **)__null);
-} }
-
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) int atoi(const char *__nptr) throw()
-{
-return (int)strtol(__nptr, (char **)__null, 10);
-} }
-
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) long atol(const char *__nptr) throw()
-{
-return strtol(__nptr, (char **)__null, 10);
-} }
-# 298 "/usr/include/stdlib.h" 3
-extern "C" { inline __attribute__((__pure__)) __attribute__((__gnu_inline__)) long long atoll(const char *__nptr) throw()
-{
-return strtoll(__nptr, (char **)__null, 10);
-} }
 # 311 "/usr/include/stdlib.h" 3
 extern "C" char *l64a(long) throw();
 
@@ -3273,32 +3149,13 @@ extern "C" int select(int, fd_set *__restrict__, fd_set *__restrict__, fd_set *_
 # 121 "/usr/include/sys/select.h" 3
 extern "C" int pselect(int, fd_set *__restrict__, fd_set *__restrict__, fd_set *__restrict__, const timespec *__restrict__, const __sigset_t *__restrict__);
 # 31 "/usr/include/sys/sysmacros.h" 3
-extern "C" { extern inline unsigned gnu_dev_major(unsigned long long) throw() __attribute__((__gnu_inline__)); }
+extern "C" unsigned gnu_dev_major(unsigned long long) throw();
 
 
-extern "C" { extern inline unsigned gnu_dev_minor(unsigned long long) throw() __attribute__((__gnu_inline__)); }
+extern "C" unsigned gnu_dev_minor(unsigned long long) throw();
 
 
-extern "C" { extern inline unsigned long long gnu_dev_makedev(unsigned, unsigned) throw() __attribute__((__gnu_inline__)); }
-# 43 "/usr/include/sys/sysmacros.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) unsigned gnu_dev_major(unsigned long long __dev) throw()
-{
-return ((__dev >> 8) & (4095)) | (((unsigned)(__dev >> 32)) & (~4095));
-} }
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) unsigned gnu_dev_minor(unsigned long long __dev) throw()
-{
-return (__dev & (255)) | (((unsigned)(__dev >> 12)) & (~255));
-} }
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) unsigned long long gnu_dev_makedev(unsigned __major, unsigned __minor) throw()
-{
-return (((__minor & (255)) | ((__major & (4095)) << 8)) | (((unsigned long long)(__minor & (~255))) << 12)) | (((unsigned long long)(__major & (~4095))) << 32);
-
-
-} }
+extern "C" unsigned long long gnu_dev_makedev(unsigned, unsigned) throw();
 # 228 "/usr/include/sys/types.h" 3
 extern "C" { typedef __blksize_t blksize_t; }
 # 235 "/usr/include/sys/types.h" 3
@@ -3571,48 +3428,52 @@ extern "C" void abort() throw() __attribute__((__noreturn__));
 
 
 extern "C" int atexit(void (*)(void)) throw();
-# 523 "/usr/include/stdlib.h" 3
+# 524 "/usr/include/stdlib.h" 3
+extern int at_quick_exit(void (*)(void)) throw() __asm__("at_quick_exit");
+# 535 "/usr/include/stdlib.h" 3
 extern "C" int on_exit(void (*)(int, void *), void *) throw();
-# 531 "/usr/include/stdlib.h" 3
+# 543 "/usr/include/stdlib.h" 3
 extern "C" void exit(int) throw() __attribute__((__noreturn__));
-# 538 "/usr/include/stdlib.h" 3
+# 551 "/usr/include/stdlib.h" 3
+extern "C" void quick_exit(int) throw() __attribute__((__noreturn__));
+# 559 "/usr/include/stdlib.h" 3
 extern "C" void _Exit(int) throw() __attribute__((__noreturn__));
-# 545 "/usr/include/stdlib.h" 3
+# 566 "/usr/include/stdlib.h" 3
 extern "C" char *getenv(const char *) throw();
 
 
 
 
 extern "C" char *__secure_getenv(const char *) throw();
-# 557 "/usr/include/stdlib.h" 3
+# 578 "/usr/include/stdlib.h" 3
 extern "C" int putenv(char *) throw();
-# 563 "/usr/include/stdlib.h" 3
+# 584 "/usr/include/stdlib.h" 3
 extern "C" int setenv(const char *, const char *, int) throw();
 
 
 
 extern "C" int unsetenv(const char *) throw();
-# 574 "/usr/include/stdlib.h" 3
+# 595 "/usr/include/stdlib.h" 3
 extern "C" int clearenv() throw();
-# 583 "/usr/include/stdlib.h" 3
-extern "C" char *mktemp(char *) throw();
-# 594 "/usr/include/stdlib.h" 3
-extern "C" int mkstemp(char *);
 # 604 "/usr/include/stdlib.h" 3
-extern "C" int mkstemp64(char *);
-# 614 "/usr/include/stdlib.h" 3
-extern "C" char *mkdtemp(char *) throw();
+extern "C" char *mktemp(char *) throw();
+# 615 "/usr/include/stdlib.h" 3
+extern "C" int mkstemp(char *);
 # 625 "/usr/include/stdlib.h" 3
-extern "C" int mkostemp(char *, int);
+extern "C" int mkstemp64(char *);
 # 635 "/usr/include/stdlib.h" 3
+extern "C" char *mkdtemp(char *) throw();
+# 646 "/usr/include/stdlib.h" 3
+extern "C" int mkostemp(char *, int);
+# 656 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp64(char *, int);
-# 645 "/usr/include/stdlib.h" 3
+# 666 "/usr/include/stdlib.h" 3
 extern "C" int system(const char *);
-# 652 "/usr/include/stdlib.h" 3
+# 673 "/usr/include/stdlib.h" 3
 extern "C" char *canonicalize_file_name(const char *) throw();
-# 662 "/usr/include/stdlib.h" 3
-extern "C" { extern inline char *realpath(const char *__restrict__, char *__restrict__) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 670 "/usr/include/stdlib.h" 3
+# 683 "/usr/include/stdlib.h" 3
+extern "C" char *realpath(const char *__restrict__, char *__restrict__) throw();
+# 691 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_fn_t)(const void *, const void *); }
 
 
@@ -3621,33 +3482,33 @@ extern "C" { typedef __compar_fn_t comparison_fn_t; }
 
 
 extern "C" { typedef int (*__compar_d_fn_t)(const void *, const void *, void *); }
-# 683 "/usr/include/stdlib.h" 3
+# 704 "/usr/include/stdlib.h" 3
 extern "C" void *bsearch(const void *, const void *, size_t, size_t, __compar_fn_t);
-# 689 "/usr/include/stdlib.h" 3
+# 710 "/usr/include/stdlib.h" 3
 extern "C" void qsort(void *, size_t, size_t, __compar_fn_t);
 
 
 extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *);
-# 699 "/usr/include/stdlib.h" 3
+# 720 "/usr/include/stdlib.h" 3
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
 extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
 
 
 
 extern "C" __attribute__((__weak__)) long long llabs(long long) throw() __attribute__((__const__));
-# 713 "/usr/include/stdlib.h" 3
+# 734 "/usr/include/stdlib.h" 3
 extern "C" div_t div(int, int) throw() __attribute__((__const__));
 
 extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
-# 721 "/usr/include/stdlib.h" 3
+# 742 "/usr/include/stdlib.h" 3
 extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
-# 735 "/usr/include/stdlib.h" 3
+# 756 "/usr/include/stdlib.h" 3
 extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw();
-# 741 "/usr/include/stdlib.h" 3
+# 762 "/usr/include/stdlib.h" 3
 extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw();
-# 747 "/usr/include/stdlib.h" 3
+# 768 "/usr/include/stdlib.h" 3
 extern "C" char *gcvt(double, int, char *) throw();
-# 753 "/usr/include/stdlib.h" 3
+# 774 "/usr/include/stdlib.h" 3
 extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw();
 
 
@@ -3655,7 +3516,7 @@ extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) t
 
 
 extern "C" char *qgcvt(long double, int, char *) throw();
-# 765 "/usr/include/stdlib.h" 3
+# 786 "/usr/include/stdlib.h" 3
 extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw();
 
 
@@ -3668,7 +3529,7 @@ extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, c
 
 
 extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw();
-# 787 "/usr/include/stdlib.h" 3
+# 808 "/usr/include/stdlib.h" 3
 extern "C" int mblen(const char *, size_t) throw();
 
 
@@ -3676,23 +3537,23 @@ extern "C" int mbtowc(wchar_t *__restrict__, const char *__restrict__, size_t) t
 
 
 
-extern "C" { extern inline int wctomb(char *, wchar_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int wctomb(char *, wchar_t) throw();
 
 
 
-extern "C" { extern inline size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
 
 
-extern "C" { extern inline size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 812 "/usr/include/stdlib.h" 3
+extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
+# 833 "/usr/include/stdlib.h" 3
 extern "C" int rpmatch(const char *) throw();
-# 823 "/usr/include/stdlib.h" 3
+# 844 "/usr/include/stdlib.h" 3
 extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw();
-# 832 "/usr/include/stdlib.h" 3
+# 853 "/usr/include/stdlib.h" 3
 extern "C" void setkey(const char *) throw();
-# 840 "/usr/include/stdlib.h" 3
+# 861 "/usr/include/stdlib.h" 3
 extern "C" int posix_openpt(int);
-# 848 "/usr/include/stdlib.h" 3
+# 869 "/usr/include/stdlib.h" 3
 extern "C" int grantpt(int) throw();
 
 
@@ -3703,121 +3564,15 @@ extern "C" int unlockpt(int) throw();
 
 
 extern "C" char *ptsname(int) throw();
-# 864 "/usr/include/stdlib.h" 3
-extern "C" { extern inline int ptsname_r(int, char *, size_t) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 885 "/usr/include/stdlib.h" 3
+extern "C" int ptsname_r(int, char *, size_t) throw();
 
 
 
 extern "C" int getpt();
-# 875 "/usr/include/stdlib.h" 3
+# 896 "/usr/include/stdlib.h" 3
 extern "C" int getloadavg(double [], int) throw();
-# 24 "/usr/include/bits/stdlib.h" 3
-extern "C" char *__realpath_chk(const char *__restrict__, char *__restrict__, size_t) throw();
-
-
-extern "C" char *__realpath_alias(const char *__restrict__, char *__restrict__) throw() __asm__("realpath");
-
-
-extern "C" char *__realpath_chk_warn(const char *__restrict__, char *__restrict__, size_t) throw() __asm__("__realpath_chk");
-# 38 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *realpath(const char *__restrict__ __name, char *__restrict__ __resolved) throw()
-{
-if (__builtin_object_size(__resolved, 2 > 1) != ((size_t)(-1)))
-{
-
-if (__builtin_object_size(__resolved, 2 > 1) < (4096)) {
-return __realpath_chk_warn(__name, __resolved, __builtin_object_size(__resolved, 2 > 1)); }
-
-return __realpath_chk(__name, __resolved, __builtin_object_size(__resolved, 2 > 1));
-}
-
-return __realpath_alias(__name, __resolved);
-} }
-
-
-extern "C" int __ptsname_r_chk(int, char *, size_t, size_t) throw();
-
-extern "C" int __ptsname_r_alias(int, char *, size_t) throw() __asm__("ptsname_r");
-
-
-extern "C" int __ptsname_r_chk_warn(int, char *, size_t, size_t) throw() __asm__("__ptsname_r_chk");
-# 65 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int ptsname_r(int __fd, char *__buf, size_t __buflen) throw()
-{
-if (__builtin_object_size(__buf, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__buflen))) {
-return __ptsname_r_chk(__fd, __buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-if (__buflen > __builtin_object_size(__buf, 2 > 1)) {
-return __ptsname_r_chk_warn(__fd, __buf, __buflen, __builtin_object_size(__buf, 2 > 1)); }
-}
-return __ptsname_r_alias(__fd, __buf, __buflen);
-} }
-
-
-extern "C" int __wctomb_chk(char *, wchar_t, size_t) throw();
-
-extern "C" int __wctomb_alias(char *, wchar_t) throw() __asm__("wctomb");
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int wctomb(char *__s, wchar_t __wchar) throw()
-{
-# 93 "/usr/include/bits/stdlib.h" 3
-if ((__builtin_object_size(__s, 2 > 1) != ((size_t)(-1))) && ((16) > __builtin_object_size(__s, 2 > 1))) {
-return __wctomb_chk(__s, __wchar, __builtin_object_size(__s, 2 > 1)); }
-return __wctomb_alias(__s, __wchar);
-} }
-
-
-extern "C" size_t __mbstowcs_chk(wchar_t *__restrict__, const char *__restrict__, size_t, size_t) throw();
-
-
-extern "C" size_t __mbstowcs_alias(wchar_t *__restrict__, const char *__restrict__, size_t) throw() __asm__("mbstowcs");
-
-
-
-extern "C" size_t __mbstowcs_chk_warn(wchar_t *__restrict__, const char *__restrict__, size_t, size_t) throw() __asm__("__mbstowcs_chk");
-# 114 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t mbstowcs(wchar_t *__restrict__ __dst, const char *__restrict__ __src, size_t __len) throw()
-
-{
-if (__builtin_object_size(__dst, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __mbstowcs_chk(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1) / sizeof(wchar_t)); }
-
-
-if (__len > (__builtin_object_size(__dst, 2 > 1) / sizeof(wchar_t))) {
-return __mbstowcs_chk_warn(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1) / sizeof(wchar_t)); }
-
-}
-return __mbstowcs_alias(__dst, __src, __len);
-} }
-
-
-extern "C" size_t __wcstombs_chk(char *__restrict__, const wchar_t *__restrict__, size_t, size_t) throw();
-
-
-extern "C" size_t __wcstombs_alias(char *__restrict__, const wchar_t *__restrict__, size_t) throw() __asm__("wcstombs");
-
-
-
-extern "C" size_t __wcstombs_chk_warn(char *__restrict__, const wchar_t *__restrict__, size_t, size_t) throw() __asm__("__wcstombs_chk");
-# 145 "/usr/include/bits/stdlib.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t wcstombs(char *__restrict__ __dst, const wchar_t *__restrict__ __src, size_t __len) throw()
-
-{
-if (__builtin_object_size(__dst, 2 > 1) != ((size_t)(-1)))
-{
-if (!(__builtin_constant_p(__len))) {
-return __wcstombs_chk(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1)); }
-if (__len > __builtin_object_size(__dst, 2 > 1)) {
-return __wcstombs_chk_warn(__dst, __src, __len, __builtin_object_size(__dst, 2 > 1)); }
-}
-return __wcstombs_alias(__dst, __src, __len);
-} }
-# 74 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 template<class _Iterator, class _Container> class __normal_iterator;
@@ -3845,15 +3600,6 @@ struct __traitor {
 
 enum __cuda___value { __value = (((bool)_Sp::__value) || ((bool)_Tp::__value))};
 typedef typename __truth_type< (((bool)_Sp::__value) || ((bool)_Tp::__value))> ::__type __type;
-};
-
-
-
-template<class _Sp, class _Tp>
-struct __traitand {
-
-enum __cuda___value { __value = (((bool)_Sp::__value) && ((bool)_Tp::__value))};
-typedef typename __truth_type< (((bool)_Sp::__value) && ((bool)_Tp::__value))> ::__type __type;
 };
 
 
@@ -3895,7 +3641,7 @@ struct __is_integer {
 enum __cuda___value { __value};
 typedef __false_type __type;
 };
-# 156 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 142 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< bool> {
 
 enum __cuda___value { __value = 1};
@@ -3930,9 +3676,7 @@ template<> struct __is_integer< wchar_t> {
 enum __cuda___value { __value = 1};
 typedef __true_type __type;
 };
-
-
-
+# 195 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< short> {
 
 enum __cuda___value { __value = 1};
@@ -4142,9 +3886,9 @@ struct __is_move_iterator {
 enum __cuda___value { __value};
 typedef __false_type __type;
 };
-# 415 "/usr/include/c++/4.3/bits/cpp_type_traits.h" 3
+# 417 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 }
-# 43 "/usr/include/c++/4.3/ext/type_traits.h" 3
+# 37 "/usr/include/c++/4.4/ext/type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 
@@ -4311,7 +4055,7 @@ public: typedef __typeof__((((__type1() + __type2()) + __type3()) + __type4())) 
 };
 
 }
-# 82 "/usr/include/c++/4.3/cmath" 3
+# 77 "/usr/include/c++/4.4/cmath" 3
 namespace std __attribute__((visibility("default"))) {
 
 
@@ -4401,8 +4145,8 @@ inline long double atan2(long double __y, long double __x)
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
-    typename __gnu_cxx :: __enable_if < __traitand < __is_arithmetic < _Tp >,
-            __is_arithmetic < _Up > > :: __value,
+    typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value
+        && __is_arithmetic < _Up > :: __value,
         _Tp > :: __type, _Up > :: __type
     atan2 ( _Tp __y, _Up __x )
     {
@@ -4599,9 +4343,7 @@ inline float pow(float __x, float __y)
 
 inline long double pow(long double __x, long double __y)
 { return __builtin_powl(__x, __y); }
-
-
-
+# 369 "/usr/include/c++/4.4/cmath" 3
 inline double pow(double __x, int __i)
 { return __builtin_powi(__x, __i); }
 
@@ -4613,11 +4355,12 @@ inline float pow(float __x, int __n)
 inline long double pow(long double __x, int __n)
 { return __builtin_powil(__x, __n); }
 
+
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
-    typename __gnu_cxx :: __enable_if < __traitand < __is_arithmetic < _Tp >,
-            __is_arithmetic < _Up > > :: __value,
+    typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value
+        && __is_arithmetic < _Up > :: __value,
         _Tp > :: __type, _Up > :: __type
     pow ( _Tp __x, _Up __y )
     {
@@ -4706,15 +4449,7 @@ template < typename _Tp >
     { return __builtin_tanh ( __x ); }
 
 }
-# 483 "/usr/include/c++/4.3/cmath" 3
-namespace __gnu_cxx __attribute__((visibility("default"))) {
-
-template < typename _Tp >
-    inline int
-    __capture_fpclassify ( _Tp __f ) { return ( sizeof ( __f ) == sizeof ( float ) ? __fpclassifyf ( __f ) : sizeof ( __f ) == sizeof ( double ) ? __fpclassify ( __f ) : __fpclassifyl ( __f ) ); }
-
-}
-# 505 "/usr/include/c++/4.3/cmath" 3
+# 492 "/usr/include/c++/4.4/cmath" 3
 namespace std __attribute__((visibility("default"))) {
 
 template < typename _Tp >
@@ -4723,7 +4458,8 @@ template < typename _Tp >
     fpclassify ( _Tp __f )
     {
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
-      return :: __gnu_cxx :: __capture_fpclassify ( __type ( __f ) );
+      return __builtin_fpclassify ( FP_NAN, FP_INFINITE, FP_NORMAL,
+      FP_SUBNORMAL, FP_ZERO, __type ( __f ) );
     }
 
 template < typename _Tp >
@@ -4826,7 +4562,7 @@ template < typename _Tp >
     }
 
 }
-# 40 "/usr/include/c++/4.3/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
 namespace std __attribute__((visibility("default"))) {
 
 template < typename _Tp >
@@ -4846,14 +4582,14 @@ template < typename _Tp >
     }
 
 }
-# 54 "/usr/include/c++/4.3/cstddef" 3
+# 49 "/usr/include/c++/4.4/cstddef" 3
 namespace std __attribute__((visibility("default"))) {
 
 using ::ptrdiff_t;
 using ::size_t;
 
 }
-# 105 "/usr/include/c++/4.3/cstdlib" 3
+# 100 "/usr/include/c++/4.4/cstdlib" 3
 namespace std __attribute__((visibility("default"))) {
 
 using ::div_t;
@@ -4899,12 +4635,12 @@ inline long abs(long __i) { return labs(__i); }
 inline ldiv_t div(long __i, long __j) { return ldiv(__i, __j); }
 
 }
-# 162 "/usr/include/c++/4.3/cstdlib" 3
+# 157 "/usr/include/c++/4.4/cstdlib" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
 
 
 using ::lldiv_t;
-# 171 "/usr/include/c++/4.3/cstdlib" 3
+# 166 "/usr/include/c++/4.4/cstdlib" 3
 using ::_Exit;
 
 
@@ -4919,7 +4655,7 @@ inline lldiv_t div(long long __n, long long __d)
 { auto lldiv_t __q; (__q.quot) = __n / __d; (__q.rem) = __n % __d; return __q; }
 
 using ::lldiv;
-# 195 "/usr/include/c++/4.3/cstdlib" 3
+# 190 "/usr/include/c++/4.4/cstdlib" 3
 using ::atoll;
 using ::strtoll;
 using ::strtoull;
@@ -4948,15 +4684,15 @@ using __gnu_cxx::strtoull;
 using __gnu_cxx::strtold;
 
 }
-# 434 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" { extern inline __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__gnu_inline__)) __attribute__((__const__)); }
+# 442 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isinfl(long double) throw() __attribute__((__const__));
 
 extern "C" __attribute__((__weak__)) int __isnanl(long double) throw() __attribute__((__const__));
-# 448 "/usr/local/cuda/bin/../include/math_functions.h"
+# 456 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finitel(long double) throw() __attribute__((__const__));
-# 473 "/usr/local/cuda/bin/../include/math_functions.h"
+# 481 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace __gnu_cxx {
 
 extern inline long long abs(long long) __attribute__((visibility("default")));
@@ -4991,7 +4727,7 @@ using std::atan;
 using std::atan2;
 using std::tan;
 using std::tanh;
-# 560 "/usr/local/cuda/bin/../include/math_functions.h"
+# 568 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace std {
 
 
@@ -5232,6 +4968,26 @@ static inline unsigned min(unsigned a, int b)
 return umin(a, (unsigned)b);
 }
 
+static inline long long min(long long a, long long b)
+{
+return llmin(a, b);
+}
+
+static inline unsigned long long min(unsigned long long a, unsigned long long b)
+{
+return ullmin(a, b);
+}
+
+static inline unsigned long long min(long long a, unsigned long long b)
+{
+return ullmin((unsigned long long)a, b);
+}
+
+static inline unsigned long long min(unsigned long long a, long long b)
+{
+return ullmin(a, (unsigned long long)b);
+}
+
 static inline float min(float a, float b)
 {
 return fminf(a, b);
@@ -5265,6 +5021,26 @@ return umax((unsigned)a, b);
 static inline unsigned max(unsigned a, int b)
 {
 return umax(a, (unsigned)b);
+}
+
+static inline long long max(long long a, long long b)
+{
+return llmax(a, b);
+}
+
+static inline unsigned long long max(unsigned long long a, unsigned long long b)
+{
+return ullmax(a, b);
+}
+
+static inline unsigned long long max(long long a, unsigned long long b)
+{
+return ullmax((unsigned long long)a, b);
+}
+
+static inline unsigned long long max(unsigned long long a, long long b)
+{
+return ullmax(a, (unsigned long long)b);
 }
 
 static inline float max(float a, float b)
@@ -5320,7 +5096,7 @@ desc)
 # 57 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
 # 59 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
 # 61 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-# 98 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 101 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaSetupArgument(T
 arg, size_t
@@ -5329,7 +5105,56 @@ offset)
 {
 return cudaSetupArgument((const void *)(&arg), sizeof(T), offset);
 }
-# 120 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+
+template<class T> inline cudaError_t
+cudaHostAlloc(T **
+ptr, size_t
+size, unsigned
+flags)
+
+{
+return cudaHostAlloc((void **)((void *)ptr), size, flags);
+}
+
+template<class T> inline cudaError_t
+cudaHostGetDevicePointer(T **
+pDevice, void *
+pHost, unsigned
+flags)
+
+{
+return cudaHostGetDevicePointer((void **)((void *)pDevice), pHost, flags);
+}
+
+template<class T> inline cudaError_t
+cudaMalloc(T **
+devPtr, size_t
+size)
+
+{
+return cudaMalloc((void **)((void *)devPtr), size);
+}
+
+template<class T> inline cudaError_t
+cudaMallocHost(T **
+ptr, size_t
+size)
+
+{
+return cudaMallocHost((void **)((void *)ptr), size);
+}
+
+template<class T> inline cudaError_t
+cudaMallocPitch(T **
+devPtr, size_t *
+pitch, size_t
+width, size_t
+height)
+
+{
+return cudaMallocPitch((void **)((void *)devPtr), pitch, width, height);
+}
+# 172 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyToSymbol(char *
 symbol, const void *
 src, size_t
@@ -5377,7 +5202,7 @@ stream)
 {
 return cudaMemcpyToSymbolAsync((const char *)(&symbol), src, count, offset, kind, stream);
 }
-# 174 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 226 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyFromSymbol(void *
 dst, char *
 symbol, size_t
@@ -5433,7 +5258,7 @@ symbol)
 {
 return cudaGetSymbolAddress(devPtr, (const char *)symbol);
 }
-# 252 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 304 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaGetSymbolAddress(void **
 devPtr, const T &
@@ -5442,7 +5267,7 @@ symbol)
 {
 return cudaGetSymbolAddress(devPtr, (const char *)(&symbol));
 }
-# 267 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 319 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaGetSymbolSize(size_t *
 size, char *
 symbol)
@@ -5450,7 +5275,7 @@ symbol)
 {
 return cudaGetSymbolSize(size, (const char *)symbol);
 }
-# 296 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 348 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaGetSymbolSize(size_t *
 size, const T &
@@ -5459,7 +5284,7 @@ symbol)
 {
 return cudaGetSymbolSize(size, (const char *)(&symbol));
 }
-# 352 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 404 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5471,7 +5296,7 @@ size = (((2147483647) * 2U) + 1U))
 {
 return cudaBindTexture(offset, &tex, devPtr, (&desc), size);
 }
-# 396 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 448 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5482,7 +5307,7 @@ size = (((2147483647) * 2U) + 1U))
 {
 return cudaBindTexture(offset, tex, devPtr, (tex.channelDesc), size);
 }
-# 451 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 503 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTexture2D(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5496,7 +5321,7 @@ pitch)
 {
 return cudaBindTexture2D(offset, &tex, devPtr, (&desc), width, height, pitch);
 }
-# 493 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 545 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTextureToArray(const texture< T, dim, readMode> &
 tex, const cudaArray *
@@ -5506,7 +5331,7 @@ desc)
 {
 return cudaBindTextureToArray(&tex, array, (&desc));
 }
-# 530 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 582 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaBindTextureToArray(const texture< T, dim, readMode> &
 tex, const cudaArray *
@@ -5518,7 +5343,7 @@ auto cudaError_t err = cudaGetChannelDesc(&desc, array);
 
 return (err == (cudaSuccess)) ? (cudaBindTextureToArray(tex, array, desc)) : err;
 }
-# 568 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 620 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaUnbindTexture(const texture< T, dim, readMode> &
 tex)
@@ -5526,7 +5351,7 @@ tex)
 {
 return cudaUnbindTexture(&tex);
 }
-# 607 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 659 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
 cudaGetTextureAlignmentOffset(size_t *
 offset, const texture< T, dim, readMode> &
@@ -5535,13 +5360,22 @@ tex)
 {
 return cudaGetTextureAlignmentOffset(offset, &tex);
 }
-# 649 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+# 708 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
 cudaLaunch(T *
 entry)
 
 {
 return cudaLaunch((const char *)entry);
+}
+# 744 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+template<class T> inline cudaError_t
+cudaFuncGetAttributes(cudaFuncAttributes *
+attr, T *
+entry)
+
+{
+return cudaFuncGetAttributes(attr, (const char *)entry);
 }
 # 45 "/usr/include/stdio.h" 3
 struct _IO_FILE;
@@ -5551,9 +5385,9 @@ struct _IO_FILE;
 extern "C" { typedef _IO_FILE FILE; }
 # 65 "/usr/include/stdio.h" 3
 extern "C" { typedef _IO_FILE __FILE; }
-# 90 "/usr/include/wchar.h" 3
+# 95 "/usr/include/wchar.h" 3
 extern "C" { typedef
-# 79 "/usr/include/wchar.h" 3
+# 84 "/usr/include/wchar.h" 3
 struct __mbstate_t {
 int __count;
 
@@ -5588,7 +5422,7 @@ extern "C" { typedef short _G_int16_t; }
 extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 extern "C" { typedef unsigned _G_uint32_t; }
-# 43 "/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stdarg.h" 3
+# 40 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -5787,125 +5621,122 @@ extern "C" FILE *freopen64(const char *__restrict__, const char *__restrict__, F
 extern "C" FILE *fdopen(int, const char *) throw();
 # 289 "/usr/include/stdio.h" 3
 extern "C" FILE *fopencookie(void *__restrict__, const char *__restrict__, _IO_cookie_io_functions_t) throw();
-
-
-
-
+# 296 "/usr/include/stdio.h" 3
 extern "C" FILE *fmemopen(void *, size_t, const char *) throw();
-# 300 "/usr/include/stdio.h" 3
+# 302 "/usr/include/stdio.h" 3
 extern "C" FILE *open_memstream(char **, size_t *) throw();
-# 307 "/usr/include/stdio.h" 3
+# 309 "/usr/include/stdio.h" 3
 extern "C" void setbuf(FILE *__restrict__, char *__restrict__) throw();
 
 
 
 extern "C" int setvbuf(FILE *__restrict__, char *__restrict__, int, size_t) throw();
-# 318 "/usr/include/stdio.h" 3
+# 320 "/usr/include/stdio.h" 3
 extern "C" void setbuffer(FILE *__restrict__, char *__restrict__, size_t) throw();
 
 
 
 extern "C" void setlinebuf(FILE *) throw();
-# 331 "/usr/include/stdio.h" 3
-extern "C" { extern inline int fprintf(FILE *__restrict__, const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 337 "/usr/include/stdio.h" 3
-extern "C" { extern inline int printf(const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 333 "/usr/include/stdio.h" 3
+extern "C" int fprintf(FILE *__restrict__, const char *__restrict__, ...);
+# 339 "/usr/include/stdio.h" 3
+extern "C" int printf(const char *__restrict__, ...);
 
-extern "C" { extern inline int sprintf(char *__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 346 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vfprintf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 352 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vprintf(const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int sprintf(char *__restrict__, const char *__restrict__, ...) throw();
+# 348 "/usr/include/stdio.h" 3
+extern "C" int vfprintf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
+# 354 "/usr/include/stdio.h" 3
+extern "C" int vprintf(const char *__restrict__, __gnuc_va_list);
 
-extern "C" { extern inline int vsprintf(char *__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 361 "/usr/include/stdio.h" 3
-extern "C" { extern inline int snprintf(char *__restrict__, size_t, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-
-
-
-extern "C" { extern inline int vsnprintf(char *__restrict__, size_t, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 374 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vasprintf(char **__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int vsprintf(char *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
+# 363 "/usr/include/stdio.h" 3
+extern "C" int snprintf(char *__restrict__, size_t, const char *__restrict__, ...) throw();
 
 
-extern "C" { extern inline int __asprintf(char **__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+
+extern "C" int vsnprintf(char *__restrict__, size_t, const char *__restrict__, __gnuc_va_list) throw();
+# 376 "/usr/include/stdio.h" 3
+extern "C" int vasprintf(char **__restrict__, const char *__restrict__, __gnuc_va_list) throw();
 
 
-extern "C" { extern inline int asprintf(char **__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 390 "/usr/include/stdio.h" 3
-extern "C" { extern inline int vdprintf(int, const char *__restrict__, __gnuc_va_list) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int __asprintf(char **__restrict__, const char *__restrict__, ...) throw();
 
 
-extern "C" { extern inline int dprintf(int, const char *__restrict__, ...) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 403 "/usr/include/stdio.h" 3
+extern "C" int asprintf(char **__restrict__, const char *__restrict__, ...) throw();
+# 394 "/usr/include/stdio.h" 3
+extern "C" int vdprintf(int, const char *__restrict__, __gnuc_va_list);
+
+
+extern "C" int dprintf(int, const char *__restrict__, ...);
+# 407 "/usr/include/stdio.h" 3
 extern "C" int fscanf(FILE *__restrict__, const char *__restrict__, ...);
-# 409 "/usr/include/stdio.h" 3
+# 413 "/usr/include/stdio.h" 3
 extern "C" int scanf(const char *__restrict__, ...);
 
 extern "C" int sscanf(const char *__restrict__, const char *__restrict__, ...) throw();
-# 449 "/usr/include/stdio.h" 3
+# 453 "/usr/include/stdio.h" 3
 extern "C" int vfscanf(FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
-# 457 "/usr/include/stdio.h" 3
+# 461 "/usr/include/stdio.h" 3
 extern "C" int vscanf(const char *__restrict__, __gnuc_va_list);
 
 
 
 extern "C" int vsscanf(const char *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
-# 509 "/usr/include/stdio.h" 3
+# 513 "/usr/include/stdio.h" 3
 extern "C" int fgetc(FILE *);
 extern "C" int getc(FILE *);
-# 516 "/usr/include/stdio.h" 3
-extern "C" { extern inline int getchar() __attribute__((__gnu_inline__)); }
-# 528 "/usr/include/stdio.h" 3
-extern "C" { extern inline int getc_unlocked(FILE *) __attribute__((__gnu_inline__)); }
-extern "C" { extern inline int getchar_unlocked() __attribute__((__gnu_inline__)); }
-# 539 "/usr/include/stdio.h" 3
-extern "C" { extern inline int fgetc_unlocked(FILE *) __attribute__((__gnu_inline__)); }
-# 551 "/usr/include/stdio.h" 3
+# 520 "/usr/include/stdio.h" 3
+extern "C" int getchar();
+# 532 "/usr/include/stdio.h" 3
+extern "C" int getc_unlocked(FILE *);
+extern "C" int getchar_unlocked();
+# 543 "/usr/include/stdio.h" 3
+extern "C" int fgetc_unlocked(FILE *);
+# 555 "/usr/include/stdio.h" 3
 extern "C" int fputc(int, FILE *);
 extern "C" int putc(int, FILE *);
-# 558 "/usr/include/stdio.h" 3
-extern "C" { extern inline int putchar(int) __attribute__((__gnu_inline__)); }
-# 572 "/usr/include/stdio.h" 3
-extern "C" { extern inline int fputc_unlocked(int, FILE *) __attribute__((__gnu_inline__)); }
-# 580 "/usr/include/stdio.h" 3
-extern "C" { extern inline int putc_unlocked(int, FILE *) __attribute__((__gnu_inline__)); }
-extern "C" { extern inline int putchar_unlocked(int) __attribute__((__gnu_inline__)); }
-# 588 "/usr/include/stdio.h" 3
+# 562 "/usr/include/stdio.h" 3
+extern "C" int putchar(int);
+# 576 "/usr/include/stdio.h" 3
+extern "C" int fputc_unlocked(int, FILE *);
+# 584 "/usr/include/stdio.h" 3
+extern "C" int putc_unlocked(int, FILE *);
+extern "C" int putchar_unlocked(int);
+# 592 "/usr/include/stdio.h" 3
 extern "C" int getw(FILE *);
 
 
 extern "C" int putw(int, FILE *);
-# 600 "/usr/include/stdio.h" 3
-extern "C" { extern inline char *fgets(char *__restrict__, int, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 608 "/usr/include/stdio.h" 3
-extern "C" { extern inline char *gets(char *) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 618 "/usr/include/stdio.h" 3
-extern "C" { extern inline char *fgets_unlocked(char *__restrict__, int, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 634 "/usr/include/stdio.h" 3
+# 604 "/usr/include/stdio.h" 3
+extern "C" char *fgets(char *__restrict__, int, FILE *__restrict__);
+# 612 "/usr/include/stdio.h" 3
+extern "C" char *gets(char *);
+# 622 "/usr/include/stdio.h" 3
+extern "C" char *fgets_unlocked(char *__restrict__, int, FILE *__restrict__);
+# 638 "/usr/include/stdio.h" 3
 extern "C" __ssize_t __getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
 
 
 extern "C" __ssize_t getdelim(char **__restrict__, size_t *__restrict__, int, FILE *__restrict__);
-# 647 "/usr/include/stdio.h" 3
-extern "C" { extern inline __ssize_t getline(char **__restrict__, size_t *__restrict__, FILE *__restrict__) __attribute__((__gnu_inline__)); }
-# 658 "/usr/include/stdio.h" 3
+# 651 "/usr/include/stdio.h" 3
+extern "C" __ssize_t getline(char **__restrict__, size_t *__restrict__, FILE *__restrict__);
+# 662 "/usr/include/stdio.h" 3
 extern "C" int fputs(const char *__restrict__, FILE *__restrict__);
-# 664 "/usr/include/stdio.h" 3
+# 668 "/usr/include/stdio.h" 3
 extern "C" int puts(const char *);
-# 671 "/usr/include/stdio.h" 3
+# 675 "/usr/include/stdio.h" 3
 extern "C" int ungetc(int, FILE *);
-# 678 "/usr/include/stdio.h" 3
-extern "C" { extern inline size_t fread(void *__restrict__, size_t, size_t, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 684 "/usr/include/stdio.h" 3
+# 682 "/usr/include/stdio.h" 3
+extern "C" size_t fread(void *__restrict__, size_t, size_t, FILE *__restrict__);
+# 688 "/usr/include/stdio.h" 3
 extern "C" size_t fwrite(const void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 695 "/usr/include/stdio.h" 3
+# 699 "/usr/include/stdio.h" 3
 extern "C" int fputs_unlocked(const char *__restrict__, FILE *__restrict__);
-# 706 "/usr/include/stdio.h" 3
-extern "C" { extern inline size_t fread_unlocked(void *__restrict__, size_t, size_t, FILE *__restrict__) __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+# 710 "/usr/include/stdio.h" 3
+extern "C" size_t fread_unlocked(void *__restrict__, size_t, size_t, FILE *__restrict__);
 
 extern "C" size_t fwrite_unlocked(const void *__restrict__, size_t, size_t, FILE *__restrict__);
-# 718 "/usr/include/stdio.h" 3
+# 722 "/usr/include/stdio.h" 3
 extern "C" int fseek(FILE *, long, int);
 
 
@@ -5917,21 +5748,21 @@ extern "C" long ftell(FILE *);
 
 
 extern "C" void rewind(FILE *);
-# 742 "/usr/include/stdio.h" 3
+# 746 "/usr/include/stdio.h" 3
 extern "C" int fseeko(FILE *, __off_t, int);
 
 
 
 
 extern "C" __off_t ftello(FILE *);
-# 767 "/usr/include/stdio.h" 3
+# 771 "/usr/include/stdio.h" 3
 extern "C" int fgetpos(FILE *__restrict__, fpos_t *__restrict__);
 
 
 
 
 extern "C" int fsetpos(FILE *, const fpos_t *);
-# 787 "/usr/include/stdio.h" 3
+# 791 "/usr/include/stdio.h" 3
 extern "C" int fseeko64(FILE *, __off64_t, int);
 extern "C" __off64_t ftello64(FILE *);
 extern "C" int fgetpos64(FILE *__restrict__, fpos64_t *__restrict__);
@@ -5950,9 +5781,9 @@ extern "C" int ferror(FILE *) throw();
 
 
 extern "C" void clearerr_unlocked(FILE *) throw();
-extern "C" { extern inline int feof_unlocked(FILE *) throw() __attribute__((__gnu_inline__)); }
-extern "C" { extern inline int ferror_unlocked(FILE *) throw() __attribute__((__gnu_inline__)); }
-# 815 "/usr/include/stdio.h" 3
+extern "C" int feof_unlocked(FILE *) throw();
+extern "C" int ferror_unlocked(FILE *) throw();
+# 819 "/usr/include/stdio.h" 3
 extern "C" void perror(const char *);
 # 27 "/usr/include/bits/sys_errlist.h" 3
 extern "C" { extern int sys_nerr; }
@@ -5961,20 +5792,20 @@ extern "C" { extern const char *const sys_errlist[]; }
 
 extern "C" { extern int _sys_nerr; }
 extern "C" { extern const char *const _sys_errlist[]; }
-# 827 "/usr/include/stdio.h" 3
+# 831 "/usr/include/stdio.h" 3
 extern "C" int fileno(FILE *) throw();
 
 
 
 
 extern "C" int fileno_unlocked(FILE *) throw();
-# 842 "/usr/include/stdio.h" 3
+# 846 "/usr/include/stdio.h" 3
 extern "C" FILE *popen(const char *, const char *);
-# 848 "/usr/include/stdio.h" 3
+# 852 "/usr/include/stdio.h" 3
 extern "C" int pclose(FILE *);
-# 854 "/usr/include/stdio.h" 3
+# 858 "/usr/include/stdio.h" 3
 extern "C" char *ctermid(char *) throw();
-# 860 "/usr/include/stdio.h" 3
+# 864 "/usr/include/stdio.h" 3
 extern "C" char *cuserid(char *);
 
 
@@ -5983,11 +5814,11 @@ extern "C" char *cuserid(char *);
 struct obstack;
 
 
-extern "C" { extern inline int obstack_printf(obstack *__restrict__, const char *__restrict__, ...) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
+extern "C" int obstack_printf(obstack *__restrict__, const char *__restrict__, ...) throw();
 
 
-extern "C" { extern inline int obstack_vprintf(obstack *__restrict__, const char *__restrict__, __gnuc_va_list) throw() __attribute__((__always_inline__)) __attribute__((__gnu_inline__)); }
-# 882 "/usr/include/stdio.h" 3
+extern "C" int obstack_vprintf(obstack *__restrict__, const char *__restrict__, __gnuc_va_list) throw();
+# 886 "/usr/include/stdio.h" 3
 extern "C" void flockfile(FILE *) throw();
 
 
@@ -5996,349 +5827,53 @@ extern "C" int ftrylockfile(FILE *) throw();
 
 
 extern "C" void funlockfile(FILE *) throw();
-# 45 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int getchar()
-{
-return _IO_getc(stdin);
-} }
-# 54 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int fgetc_unlocked(FILE *__fp)
-{
-return (__builtin_expect((__fp->_IO_read_ptr) >= (__fp->_IO_read_end), 0)) ? __uflow(__fp) : (*((unsigned char *)((__fp->_IO_read_ptr)++)));
-} }
-# 64 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int getc_unlocked(FILE *__fp)
-{
-return (__builtin_expect((__fp->_IO_read_ptr) >= (__fp->_IO_read_end), 0)) ? __uflow(__fp) : (*((unsigned char *)((__fp->_IO_read_ptr)++)));
-} }
-
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) int getchar_unlocked()
-{
-return (__builtin_expect((stdin->_IO_read_ptr) >= (stdin->_IO_read_end), 0)) ? __uflow(stdin) : (*((unsigned char *)((stdin->_IO_read_ptr)++)));
-} }
-# 80 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int putchar(int __c)
-{
-return _IO_putc(__c, stdout);
-} }
-# 89 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int fputc_unlocked(int __c, FILE *__stream)
-{
-return (__builtin_expect((__stream->_IO_write_ptr) >= (__stream->_IO_write_end), 0)) ? __overflow(__stream, (unsigned char)__c) : ((unsigned char)((*((__stream->_IO_write_ptr)++)) = __c));
-} }
-# 99 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int putc_unlocked(int __c, FILE *__stream)
-{
-return (__builtin_expect((__stream->_IO_write_ptr) >= (__stream->_IO_write_end), 0)) ? __overflow(__stream, (unsigned char)__c) : ((unsigned char)((*((__stream->_IO_write_ptr)++)) = __c));
-} }
-
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) int putchar_unlocked(int __c)
-{
-return (__builtin_expect((stdout->_IO_write_ptr) >= (stdout->_IO_write_end), 0)) ? __overflow(stdout, (unsigned char)__c) : ((unsigned char)((*((stdout->_IO_write_ptr)++)) = __c));
-} }
-# 116 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) __ssize_t getline(char **__lineptr, size_t *__n, FILE *__stream)
-{
-return __getdelim(__lineptr, __n, '\n', __stream);
-} }
-# 126 "/usr/include/bits/stdio.h" 3
-extern "C" { inline __attribute__((__gnu_inline__)) int feof_unlocked(FILE *__stream) throw()
-{
-return ((__stream->_flags) & 16) != 0;
-} }
-
-
-
-extern "C" { inline __attribute__((__gnu_inline__)) int ferror_unlocked(FILE *__stream) throw()
-{
-return ((__stream->_flags) & 32) != 0;
-} }
-# 24 "/usr/include/bits/stdio2.h" 3
-extern "C" int __sprintf_chk(char *__restrict__, int, size_t, const char *__restrict__, ...) throw();
-
-extern "C" int __vsprintf_chk(char *__restrict__, int, size_t, const char *__restrict__, __gnuc_va_list) throw();
-# 32 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int sprintf(char *__restrict__ __s, const char *__restrict__ __fmt, ...) throw()
-{
-return __builtin___sprintf_chk(__s, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __builtin_va_arg_pack());
-
-} }
-# 44 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vsprintf(char *__restrict__ __s, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __builtin___vsprintf_chk(__s, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __ap);
-
-} }
-
-
-
-extern "C" int __snprintf_chk(char *__restrict__, size_t, int, size_t, const char *__restrict__, ...) throw();
-
-
-extern "C" int __vsnprintf_chk(char *__restrict__, size_t, int, size_t, const char *__restrict__, __gnuc_va_list) throw();
-# 62 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int snprintf(char *__restrict__ __s, size_t __n, const char *__restrict__ __fmt, ...) throw()
-
-{
-return __builtin___snprintf_chk(__s, __n, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __builtin_va_arg_pack());
-
-} }
-# 75 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vsnprintf(char *__restrict__ __s, size_t __n, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __builtin___vsnprintf_chk(__s, __n, 2 - 1, __builtin_object_size(__s, 2 > 1), __fmt, __ap);
-
-} }
-# 86 "/usr/include/bits/stdio2.h" 3
-extern "C" int __fprintf_chk(FILE *__restrict__, int, const char *__restrict__, ...);
-
-extern "C" int __printf_chk(int, const char *__restrict__, ...);
-extern "C" int __vfprintf_chk(FILE *__restrict__, int, const char *__restrict__, __gnuc_va_list);
-
-extern "C" int __vprintf_chk(int, const char *__restrict__, __gnuc_va_list);
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int fprintf(FILE *__restrict__ __stream, const char *__restrict__ __fmt, ...)
-{
-return __fprintf_chk(__stream, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int printf(const char *__restrict__ __fmt, ...)
-{
-return __printf_chk(2 - 1, __fmt, __builtin_va_arg_pack());
-} }
-# 115 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vprintf(const char *__restrict__ __fmt, __gnuc_va_list __ap)
-{
-
-return __vfprintf_chk(stdout, 2 - 1, __fmt, __ap);
-
-
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vfprintf(FILE *__restrict__ __stream, const char *__restrict__
-__fmt, __gnuc_va_list __ap)
-{
-return __vfprintf_chk(__stream, 2 - 1, __fmt, __ap);
-} }
-
-
-
-extern "C" int __asprintf_chk(char **__restrict__, int, const char *__restrict__, ...) throw();
-
-
-extern "C" int __vasprintf_chk(char **__restrict__, int, const char *__restrict__, __gnuc_va_list) throw();
-
-
-extern "C" int __dprintf_chk(int, int, const char *__restrict__, ...);
-
-extern "C" int __vdprintf_chk(int, int, const char *__restrict__, __gnuc_va_list);
-
-
-extern "C" int __obstack_printf_chk(obstack *__restrict__, int, const char *__restrict__, ...) throw();
-
-
-
-extern "C" int __obstack_vprintf_chk(obstack *__restrict__, int, const char *__restrict__, __gnuc_va_list) throw();
-# 156 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int asprintf(char **__restrict__ __ptr, const char *__restrict__ __fmt, ...) throw()
-{
-return __asprintf_chk(__ptr, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int __asprintf(char **__restrict__ __ptr, const char *__restrict__ __fmt, ...) throw()
-
-{
-return __asprintf_chk(__ptr, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int dprintf(int __fd, const char *__restrict__ __fmt, ...)
-{
-return __dprintf_chk(__fd, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int obstack_printf(obstack *__restrict__ __obstack, const char *__restrict__ __fmt, ...) throw()
-
-{
-return __obstack_printf_chk(__obstack, 2 - 1, __fmt, __builtin_va_arg_pack());
-
-} }
-# 196 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vasprintf(char **__restrict__ __ptr, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __vasprintf_chk(__ptr, 2 - 1, __fmt, __ap);
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int vdprintf(int __fd, const char *__restrict__ __fmt, __gnuc_va_list __ap)
-{
-return __vdprintf_chk(__fd, 2 - 1, __fmt, __ap);
-} }
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) int obstack_vprintf(obstack *__restrict__ __obstack, const char *__restrict__ __fmt, __gnuc_va_list __ap) throw()
-
-{
-return __obstack_vprintf_chk(__obstack, 2 - 1, __fmt, __ap);
-
-} }
-# 220 "/usr/include/bits/stdio2.h" 3
-extern "C" char *__gets_chk(char *, size_t);
-extern "C" char *__gets_warn(char *) __asm__("gets");
-
-
-
-
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *gets(char *__str)
-{
-if (__builtin_object_size(__str, 2 > 1) != ((size_t)(-1))) {
-return __gets_chk(__str, __builtin_object_size(__str, 2 > 1)); }
-return __gets_warn(__str);
-} }
-
-extern "C" char *__fgets_chk(char *__restrict__, size_t, int, FILE *__restrict__);
-
-extern "C" char *__fgets_alias(char *__restrict__, int, FILE *__restrict__) __asm__("fgets");
-
-
-extern "C" char *__fgets_chk_warn(char *__restrict__, size_t, int, FILE *__restrict__) __asm__("__fgets_chk");
-# 245 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *fgets(char *__restrict__ __s, int __n, FILE *__restrict__ __stream)
-{
-if (__builtin_object_size(__s, 2 > 1) != ((size_t)(-1)))
-{
-if ((!(__builtin_constant_p(__n))) || (__n <= 0)) {
-return __fgets_chk(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-
-if (((unsigned long)__n) > __builtin_object_size(__s, 2 > 1)) {
-return __fgets_chk_warn(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-}
-return __fgets_alias(__s, __n, __stream);
-} }
-
-extern "C" size_t __fread_chk(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__);
-
-
-extern "C" size_t __fread_alias(void *__restrict__, size_t, size_t, FILE *__restrict__) __asm__("fread");
-
-
-
-extern "C" size_t __fread_chk_warn(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__) __asm__("__fread_chk");
-# 274 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t fread(void *__restrict__ __ptr, size_t __size, size_t __n, FILE *__restrict__
-__stream)
-{
-if (__builtin_object_size(__ptr, 0) != ((size_t)(-1)))
-{
-if (((!(__builtin_constant_p(__size))) || (!(__builtin_constant_p(__n)))) || ((__size | __n) >= (((size_t)1) << (((8) * sizeof(size_t)) / (2))))) {
-
-
-return __fread_chk(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-
-if ((__size * __n) > __builtin_object_size(__ptr, 0)) {
-return __fread_chk_warn(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-}
-return __fread_alias(__ptr, __size, __n, __stream);
-} }
-
-
-extern "C" char *__fgets_unlocked_chk(char *__restrict__, size_t, int, FILE *__restrict__);
-
-extern "C" char *__fgets_unlocked_alias(char *__restrict__, int, FILE *__restrict__) __asm__("fgets_unlocked");
-
-
-extern "C" char *__fgets_unlocked_chk_warn(char *__restrict__, size_t, int, FILE *__restrict__) __asm__("__fgets_unlocked_chk");
-# 303 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) char *fgets_unlocked(char *__restrict__ __s, int __n, FILE *__restrict__ __stream)
-{
-if (__builtin_object_size(__s, 2 > 1) != ((size_t)(-1)))
-{
-if ((!(__builtin_constant_p(__n))) || (__n <= 0)) {
-return __fgets_unlocked_chk(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-
-if (((unsigned long)__n) > __builtin_object_size(__s, 2 > 1)) {
-return __fgets_unlocked_chk_warn(__s, __builtin_object_size(__s, 2 > 1), __n, __stream); }
-}
-return __fgets_unlocked_alias(__s, __n, __stream);
-} }
-
-
-
-
-extern "C" size_t __fread_unlocked_chk(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__);
-
-
-extern "C" size_t __fread_unlocked_alias(void *__restrict__, size_t, size_t, FILE *__restrict__) __asm__("fread_unlocked");
-
-
-
-extern "C" size_t __fread_unlocked_chk_warn(void *__restrict__, size_t, size_t, size_t, FILE *__restrict__) __asm__("__fread_unlocked_chk");
-# 335 "/usr/include/bits/stdio2.h" 3
-extern "C" { inline __attribute__((__always_inline__)) __attribute__((__gnu_inline__)) size_t fread_unlocked(void *__restrict__ __ptr, size_t __size, size_t __n, FILE *__restrict__
-__stream)
-{
-if (__builtin_object_size(__ptr, 0) != ((size_t)(-1)))
-{
-if (((!(__builtin_constant_p(__size))) || (!(__builtin_constant_p(__n)))) || ((__size | __n) >= (((size_t)1) << (((8) * sizeof(size_t)) / (2))))) {
-
-
-return __fread_unlocked_chk(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-
-
-if ((__size * __n) > __builtin_object_size(__ptr, 0)) {
-return __fread_unlocked_chk_warn(__ptr, __builtin_object_size(__ptr, 0), __size, __n, __stream); }
-
-}
-
-
-if ((((__builtin_constant_p(__size)) && (__builtin_constant_p(__n))) && ((__size | __n) < (((size_t)1) << (((8) * sizeof(size_t)) / (2))))) && ((__size * __n) <= (8)))
-
-
-
-{
-auto size_t __cnt = (__size * __n);
-auto char *__cptr = ((char *)__ptr);
-if (__cnt == (0)) {
-return 0; }
-
-for (; __cnt > (0); --__cnt)
-{
-auto int __c = ((__builtin_expect((__stream->_IO_read_ptr) >= (__stream->_IO_read_end), 0)) ? __uflow(__stream) : (*((unsigned char *)((__stream->_IO_read_ptr)++))));
-if (__c == (-1)) {
-break; }
-(*(__cptr++)) = __c;
-}
-return (__cptr - (char *)__ptr) / __size;
-}
-
-return __fread_unlocked_alias(__ptr, __size, __n, __stream);
-} }
-# 230 "/usr/include/GL/glew.h" 3
+# 49 "/usr/include/stdint.h" 3
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+
+typedef unsigned uint32_t;
+
+
+
+typedef unsigned long uint64_t;
+# 66 "/usr/include/stdint.h" 3
+typedef signed char int_least8_t;
+typedef short int_least16_t;
+typedef int int_least32_t;
+
+typedef long int_least64_t;
+# 77 "/usr/include/stdint.h" 3
+typedef unsigned char uint_least8_t;
+typedef unsigned short uint_least16_t;
+typedef unsigned uint_least32_t;
+
+typedef unsigned long uint_least64_t;
+# 91 "/usr/include/stdint.h" 3
+typedef signed char int_fast8_t;
+
+typedef long int_fast16_t;
+typedef long int_fast32_t;
+typedef long int_fast64_t;
+# 104 "/usr/include/stdint.h" 3
+typedef unsigned char uint_fast8_t;
+
+typedef unsigned long uint_fast16_t;
+typedef unsigned long uint_fast32_t;
+typedef unsigned long uint_fast64_t;
+# 120 "/usr/include/stdint.h" 3
+typedef long intptr_t;
+
+
+typedef unsigned long uintptr_t;
+# 135 "/usr/include/stdint.h" 3
+typedef long intmax_t;
+typedef unsigned long uintmax_t;
+# 224 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned GLenum; }
 extern "C" { typedef unsigned GLbitfield; }
 extern "C" { typedef unsigned GLuint; }
 extern "C" { typedef int GLint; }
 extern "C" { typedef int GLsizei; }
-
 extern "C" { typedef unsigned char GLboolean; }
 extern "C" { typedef signed char GLbyte; }
 extern "C" { typedef short GLshort; }
@@ -6350,13 +5885,10 @@ extern "C" { typedef float GLclampf; }
 extern "C" { typedef double GLdouble; }
 extern "C" { typedef double GLclampd; }
 extern "C" { typedef void GLvoid; }
-
-
-
-
-extern "C" { typedef signed long long GLint64EXT; }
-extern "C" { typedef unsigned long long GLuint64EXT; }
-# 790 "/usr/include/GL/glew.h" 3
+# 252 "/usr/include/GL/glew.h" 3
+extern "C" { typedef int64_t GLint64EXT; }
+extern "C" { typedef uint64_t GLuint64EXT; }
+# 791 "/usr/include/GL/glew.h" 3
 extern "C" void glAccum(GLenum, GLfloat);
 extern "C" void glAlphaFunc(GLenum, GLclampf);
 extern "C" GLboolean glAreTexturesResident(GLsizei, const GLuint *, GLboolean *);
@@ -6767,12 +6299,12 @@ extern "C" void gluTessProperty(GLUtesselator *, GLenum, GLdouble);
 extern "C" void gluTessVertex(GLUtesselator *, GLdouble *, GLvoid *);
 extern "C" GLint gluUnProject(GLdouble, GLdouble, GLdouble, const GLdouble *, const GLdouble *, const GLint *, GLdouble *, GLdouble *, GLdouble *);
 extern "C" GLint gluUnProject4(GLdouble, GLdouble, GLdouble, GLdouble, const GLdouble *, const GLdouble *, const GLint *, GLdouble, GLdouble, GLdouble *, GLdouble *, GLdouble *, GLdouble *);
-# 1187 "/usr/include/GL/glew.h" 3
+# 1188 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE3DPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTSPROC)(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid *); }
 extern "C" { typedef void (*PFNGLTEXIMAGE3DPROC)(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *); }
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE3DPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *); }
-# 1303 "/usr/include/GL/glew.h" 3
+# 1304 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVETEXTUREPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLCLIENTACTIVETEXTUREPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE1DPROC)(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const GLvoid *); }
@@ -6819,7 +6351,7 @@ extern "C" { typedef void (*PFNGLMULTITEXCOORD4IVPROC)(GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SPROC)(GLenum, GLshort, GLshort, GLshort, GLshort); }
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SVPROC)(GLenum, const GLshort *); }
 extern "C" { typedef void (*PFNGLSAMPLECOVERAGEPROC)(GLclampf, GLboolean); }
-# 1446 "/usr/include/GL/glew.h" 3
+# 1447 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDCOLORPROC)(GLclampf, GLclampf, GLclampf, GLclampf); }
 extern "C" { typedef void (*PFNGLBLENDEQUATIONPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLBLENDFUNCSEPARATEPROC)(GLenum, GLenum, GLenum, GLenum); }
@@ -6867,7 +6399,7 @@ extern "C" { typedef void (*PFNGLWINDOWPOS3IPROC)(GLint, GLint, GLint); }
 extern "C" { typedef void (*PFNGLWINDOWPOS3IVPROC)(const GLint *); }
 extern "C" { typedef void (*PFNGLWINDOWPOS3SPROC)(GLshort, GLshort, GLshort); }
 extern "C" { typedef void (*PFNGLWINDOWPOS3SVPROC)(const GLshort *); }
-# 1602 "/usr/include/GL/glew.h" 3
+# 1603 "/usr/include/GL/glew.h" 3
 extern "C" { typedef ptrdiff_t GLsizeiptr; }
 extern "C" { typedef ptrdiff_t GLintptr; }
 
@@ -6890,7 +6422,7 @@ extern "C" { typedef GLboolean (*PFNGLISBUFFERPROC)(GLuint); }
 extern "C" { typedef GLboolean (*PFNGLISQUERYPROC)(GLuint); }
 extern "C" { typedef GLvoid *(*PFNGLMAPBUFFERPROC)(GLenum, GLenum); }
 extern "C" { typedef GLboolean (*PFNGLUNMAPBUFFERPROC)(GLenum); }
-# 1739 "/usr/include/GL/glew.h" 3
+# 1740 "/usr/include/GL/glew.h" 3
 extern "C" { typedef char GLchar; }
 
 extern "C" { typedef void (*PFNGLATTACHSHADERPROC)(GLuint, GLuint); }
@@ -6914,7 +6446,7 @@ extern "C" { typedef void (*PFNGLGETPROGRAMIVPROC)(GLuint, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETSHADERINFOLOGPROC)(GLuint, GLsizei, GLsizei *, GLchar *); }
 extern "C" { typedef void (*PFNGLGETSHADERSOURCEPROC)(GLint, GLsizei, GLsizei *, GLchar *); }
 extern "C" { typedef void (*PFNGLGETSHADERIVPROC)(GLuint, GLenum, GLint *); }
-extern "C" { typedef GLint (*PFNGLGETUNIFORMLOCATIONPROC)(GLint, const GLchar *); }
+extern "C" { typedef GLint (*PFNGLGETUNIFORMLOCATIONPROC)(GLuint, const GLchar *); }
 extern "C" { typedef void (*PFNGLGETUNIFORMFVPROC)(GLuint, GLint, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETUNIFORMIVPROC)(GLuint, GLint, GLint *); }
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBPOINTERVPROC)(GLuint, GLenum, GLvoid *); }
@@ -6986,22 +6518,81 @@ extern "C" { typedef void (*PFNGLVERTEXATTRIB4UBVPROC)(GLuint, const GLubyte *);
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UIVPROC)(GLuint, const GLuint *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4USVPROC)(GLuint, const GLushort *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBPOINTERPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid *); }
-# 1962 "/usr/include/GL/glew.h" 3
+# 1963 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX2X3FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX2X4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX3X2FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX3X4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4X2FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4X3FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
-# 1999 "/usr/include/GL/glew.h" 3
+# 2095 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBEGINCONDITIONALRENDERPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLBEGINTRANSFORMFEEDBACKPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLBINDBUFFERBASEPROC)(GLenum, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLBINDBUFFERRANGEPROC)(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr); }
+extern "C" { typedef void (*PFNGLBINDFRAGDATALOCATIONPROC)(GLuint, GLuint, const GLchar *); }
+extern "C" { typedef void (*PFNGLCLAMPCOLORPROC)(GLenum, GLenum); }
+extern "C" { typedef void (*PFNGLCLEARBUFFERFIPROC)(GLenum, GLint, GLfloat, GLint); }
+extern "C" { typedef void (*PFNGLCLEARBUFFERFVPROC)(GLenum, GLint, const GLfloat *); }
+extern "C" { typedef void (*PFNGLCLEARBUFFERIVPROC)(GLenum, GLint, const GLint *); }
+extern "C" { typedef void (*PFNGLCLEARBUFFERUIVPROC)(GLenum, GLint, const GLuint *); }
+extern "C" { typedef void (*PFNGLCOLORMASKIPROC)(GLuint, GLboolean, GLboolean, GLboolean, GLboolean); }
+extern "C" { typedef void (*PFNGLDISABLEIPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLENABLEIPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLENDCONDITIONALRENDERPROC)(void); }
+extern "C" { typedef void (*PFNGLENDTRANSFORMFEEDBACKPROC)(void); }
+extern "C" { typedef void (*PFNGLGETBOOLEANI_VPROC)(GLenum, GLuint, GLboolean *); }
+extern "C" { typedef GLint (*PFNGLGETFRAGDATALOCATIONPROC)(GLuint, const GLchar *); }
+extern "C" { typedef void (*PFNGLGETINTEGERI_VPROC)(GLenum, GLuint, GLint *); }
+extern "C" { typedef const GLubyte *(*PFNGLGETSTRINGIPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLGETTEXPARAMETERIIVPROC)(GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETTEXPARAMETERIUIVPROC)(GLenum, GLenum, GLuint *); }
+extern "C" { typedef void (*PFNGLGETTRANSFORMFEEDBACKVARYINGPROC)(GLuint, GLuint, GLint *); }
+extern "C" { typedef void (*PFNGLGETUNIFORMUIVPROC)(GLuint, GLint, GLuint *); }
+extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIIVPROC)(GLuint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETVERTEXATTRIBIUIVPROC)(GLuint, GLenum, GLuint *); }
+extern "C" { typedef GLboolean (*PFNGLISENABLEDIPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLTEXPARAMETERIIVPROC)(GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLTEXPARAMETERIUIVPROC)(GLenum, GLenum, const GLuint *); }
+extern "C" { typedef void (*PFNGLTRANSFORMFEEDBACKVARYINGSPROC)(GLuint, GLsizei, const GLint *, GLenum); }
+extern "C" { typedef void (*PFNGLUNIFORM1UIPROC)(GLint, GLuint); }
+extern "C" { typedef void (*PFNGLUNIFORM1UIVPROC)(GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLUNIFORM2UIPROC)(GLint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLUNIFORM2UIVPROC)(GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLUNIFORM3UIPROC)(GLint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLUNIFORM3UIVPROC)(GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLUNIFORM4UIPROC)(GLint, GLuint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLUNIFORM4UIVPROC)(GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI1IPROC)(GLuint, GLint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI1IVPROC)(GLuint, const GLint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI1UIPROC)(GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI1UIVPROC)(GLuint, const GLuint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI2IPROC)(GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI2IVPROC)(GLuint, const GLint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI2UIPROC)(GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI2UIVPROC)(GLuint, const GLuint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI3IPROC)(GLuint, GLint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI3IVPROC)(GLuint, const GLint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI3UIPROC)(GLuint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI3UIVPROC)(GLuint, const GLuint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4BVPROC)(GLuint, const GLbyte *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4IPROC)(GLuint, GLint, GLint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4IVPROC)(GLuint, const GLint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4SVPROC)(GLuint, const GLshort *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UBVPROC)(GLuint, const GLubyte *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UIPROC)(GLuint, GLuint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UIVPROC)(GLuint, const GLuint *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBI4USVPROC)(GLuint, const GLushort *); }
+extern "C" { typedef void (*PFNGLVERTEXATTRIBIPOINTERPROC)(GLuint, GLint, GLenum, GLsizei, const GLvoid *); }
+# 2236 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTBUFFERMASK3DFXPROC)(GLuint); }
-# 2039 "/usr/include/GL/glew.h" 3
+# 2276 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWELEMENTARRAYAPPLEPROC)(GLenum, GLint, GLsizei); }
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTARRAYAPPLEPROC)(GLenum, GLuint, GLuint, GLint, GLsizei); }
 extern "C" { typedef void (*PFNGLELEMENTPOINTERAPPLEPROC)(GLenum, const void *); }
 extern "C" { typedef void (*PFNGLMULTIDRAWELEMENTARRAYAPPLEPROC)(GLenum, const GLint *, const GLsizei *, GLsizei); }
 extern "C" { typedef void (*PFNGLMULTIDRAWRANGEELEMENTARRAYAPPLEPROC)(GLenum, GLuint, GLuint, const GLint *, const GLsizei *, GLsizei); }
-# 2063 "/usr/include/GL/glew.h" 3
+# 2300 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEFENCESAPPLEPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLFINISHFENCEAPPLEPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLFINISHOBJECTAPPLEPROC)(GLenum, GLint); }
@@ -7010,26 +6601,55 @@ extern "C" { typedef GLboolean (*PFNGLISFENCEAPPLEPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLSETFENCEAPPLEPROC)(GLuint); }
 extern "C" { typedef GLboolean (*PFNGLTESTFENCEAPPLEPROC)(GLuint); }
 extern "C" { typedef GLboolean (*PFNGLTESTOBJECTAPPLEPROC)(GLenum, GLuint); }
-# 2117 "/usr/include/GL/glew.h" 3
+# 2354 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBUFFERPARAMETERIAPPLEPROC)(GLenum, GLenum, GLint); }
 extern "C" { typedef void (*PFNGLFLUSHMAPPEDBUFFERRANGEAPPLEPROC)(GLenum, GLintptr, GLsizeiptr); }
-# 2161 "/usr/include/GL/glew.h" 3
+# 2398 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXPARAMETERPOINTERVAPPLEPROC)(GLenum, GLenum, GLvoid **); }
 extern "C" { typedef void (*PFNGLTEXTURERANGEAPPLEPROC)(GLenum, GLsizei, GLvoid *); }
-# 2189 "/usr/include/GL/glew.h" 3
+# 2426 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDVERTEXARRAYAPPLEPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLDELETEVERTEXARRAYSAPPLEPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLGENVERTEXARRAYSAPPLEPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef GLboolean (*PFNGLISVERTEXARRAYAPPLEPROC)(GLuint); }
-# 2216 "/usr/include/GL/glew.h" 3
+# 2453 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHVERTEXARRAYRANGEAPPLEPROC)(GLsizei, void *); }
 extern "C" { typedef void (*PFNGLVERTEXARRAYPARAMETERIAPPLEPROC)(GLenum, GLint); }
 extern "C" { typedef void (*PFNGLVERTEXARRAYRANGEAPPLEPROC)(GLsizei, void *); }
-# 2252 "/usr/include/GL/glew.h" 3
+# 2489 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLAMPCOLORARBPROC)(GLenum, GLenum); }
-# 2298 "/usr/include/GL/glew.h" 3
+# 2548 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWBUFFERSARBPROC)(GLsizei, const GLenum *); }
-# 2447 "/usr/include/GL/glew.h" 3
+# 2561 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLDRAWARRAYSINSTANCEDARBPROC)(GLenum, GLint, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLDRAWELEMENTSINSTANCEDARBPROC)(GLenum, GLsizei, GLenum, const void *, GLsizei); }
+# 2698 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBINDFRAMEBUFFERPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLBINDRENDERBUFFERPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLBLITFRAMEBUFFERPROC)(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum); }
+extern "C" { typedef GLenum (*PFNGLCHECKFRAMEBUFFERSTATUSPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLDELETEFRAMEBUFFERSPROC)(GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLDELETERENDERBUFFERSPROC)(GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERRENDERBUFFERPROC)(GLenum, GLenum, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURLAYERPROC)(GLenum, GLenum, GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURE1DPROC)(GLenum, GLenum, GLenum, GLuint, GLint); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURE2DPROC)(GLenum, GLenum, GLenum, GLuint, GLint); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURE3DPROC)(GLenum, GLenum, GLenum, GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLGENFRAMEBUFFERSPROC)(GLsizei, GLuint *); }
+extern "C" { typedef void (*PFNGLGENRENDERBUFFERSPROC)(GLsizei, GLuint *); }
+extern "C" { typedef void (*PFNGLGENERATEMIPMAPPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)(GLenum, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETRENDERBUFFERPARAMETERIVPROC)(GLenum, GLenum, GLint *); }
+extern "C" { typedef GLboolean (*PFNGLISFRAMEBUFFERPROC)(GLuint); }
+extern "C" { typedef GLboolean (*PFNGLISRENDERBUFFERPROC)(GLuint); }
+extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEPROC)(GLenum, GLenum, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei); }
+# 2780 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTUREARBPROC)(GLenum, GLenum, GLuint, GLint); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTUREFACEARBPROC)(GLenum, GLenum, GLuint, GLint, GLenum); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURELAYERARBPROC)(GLenum, GLenum, GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLPROGRAMPARAMETERIARBPROC)(GLuint, GLenum, GLint); }
+# 2899 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORSUBTABLEPROC)(GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *); }
 extern "C" { typedef void (*PFNGLCOLORTABLEPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *); }
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERFVPROC)(GLenum, GLenum, const GLfloat *); }
@@ -7062,15 +6682,20 @@ extern "C" { typedef void (*PFNGLMINMAXPROC)(GLenum, GLenum, GLboolean); }
 extern "C" { typedef void (*PFNGLRESETHISTOGRAMPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLRESETMINMAXPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLSEPARABLEFILTER2DPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *, const GLvoid *); }
-# 2533 "/usr/include/GL/glew.h" 3
+# 2976 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLVERTEXATTRIBDIVISORARBPROC)(GLuint, GLuint); }
+# 2996 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLFLUSHMAPPEDBUFFERRANGEPROC)(GLenum, GLintptr, GLsizeiptr); }
+extern "C" { typedef GLvoid *(*PFNGLMAPBUFFERRANGEPROC)(GLenum, GLintptr, GLsizeiptr, GLbitfield); }
+# 3022 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCURRENTPALETTEMATRIXARBPROC)(GLint); }
 extern "C" { typedef void (*PFNGLMATRIXINDEXPOINTERARBPROC)(GLint, GLenum, GLsizei, GLvoid *); }
 extern "C" { typedef void (*PFNGLMATRIXINDEXUBVARBPROC)(GLint, GLubyte *); }
 extern "C" { typedef void (*PFNGLMATRIXINDEXUIVARBPROC)(GLint, GLuint *); }
 extern "C" { typedef void (*PFNGLMATRIXINDEXUSVARBPROC)(GLint, GLushort *); }
-# 2564 "/usr/include/GL/glew.h" 3
+# 3053 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLECOVERAGEARBPROC)(GLclampf, GLboolean); }
-# 2613 "/usr/include/GL/glew.h" 3
+# 3102 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVETEXTUREARBPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLCLIENTACTIVETEXTUREARBPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLMULTITEXCOORD1DARBPROC)(GLenum, GLdouble); }
@@ -7105,7 +6730,7 @@ extern "C" { typedef void (*PFNGLMULTITEXCOORD4IARBPROC)(GLenum, GLint, GLint, G
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4IVARBPROC)(GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SARBPROC)(GLenum, GLshort, GLshort, GLshort, GLshort); }
 extern "C" { typedef void (*PFNGLMULTITEXCOORD4SVARBPROC)(GLenum, const GLshort *); }
-# 2698 "/usr/include/GL/glew.h" 3
+# 3187 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINQUERYARBPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLDELETEQUERIESARBPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLENDQUERYARBPROC)(GLenum); }
@@ -7114,10 +6739,10 @@ extern "C" { typedef void (*PFNGLGETQUERYOBJECTIVARBPROC)(GLuint, GLenum, GLint 
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTUIVARBPROC)(GLuint, GLenum, GLuint *); }
 extern "C" { typedef void (*PFNGLGETQUERYIVARBPROC)(GLenum, GLenum, GLint *); }
 extern "C" { typedef GLboolean (*PFNGLISQUERYARBPROC)(GLuint); }
-# 2744 "/usr/include/GL/glew.h" 3
+# 3233 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFARBPROC)(GLenum, GLfloat); }
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFVARBPROC)(GLenum, GLfloat *); }
-# 2806 "/usr/include/GL/glew.h" 3
+# 3295 "/usr/include/GL/glew.h" 3
 extern "C" { typedef char GLcharARB; }
 extern "C" { typedef unsigned GLhandleARB; }
 
@@ -7160,7 +6785,9 @@ extern "C" { typedef void (*PFNGLUNIFORMMATRIX3FVARBPROC)(GLint, GLsizei, GLbool
 extern "C" { typedef void (*PFNGLUNIFORMMATRIX4FVARBPROC)(GLint, GLsizei, GLboolean, const GLfloat *); }
 extern "C" { typedef void (*PFNGLUSEPROGRAMOBJECTARBPROC)(GLhandleARB); }
 extern "C" { typedef void (*PFNGLVALIDATEPROGRAMARBPROC)(GLhandleARB); }
-# 2956 "/usr/include/GL/glew.h" 3
+# 3439 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLTEXBUFFERARBPROC)(GLenum, GLenum, GLuint); }
+# 3464 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE1DARBPROC)(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXIMAGE3DARBPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const void *); }
@@ -7168,12 +6795,17 @@ extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC)(GLenum, GLint, 
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)(GLenum, GLint, void *); }
-# 3136 "/usr/include/GL/glew.h" 3
+# 3691 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOADTRANSPOSEMATRIXDARBPROC)(GLdouble [16]); }
 extern "C" { typedef void (*PFNGLLOADTRANSPOSEMATRIXFARBPROC)(GLfloat [16]); }
 extern "C" { typedef void (*PFNGLMULTTRANSPOSEMATRIXDARBPROC)(GLdouble [16]); }
 extern "C" { typedef void (*PFNGLMULTTRANSPOSEMATRIXFARBPROC)(GLfloat [16]); }
-# 3198 "/usr/include/GL/glew.h" 3
+# 3712 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBINDVERTEXARRAYPROC)(GLuint); }
+extern "C" { typedef void (*PFNGLDELETEVERTEXARRAYSPROC)(GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLGENVERTEXARRAYSPROC)(GLsizei, GLuint *); }
+extern "C" { typedef GLboolean (*PFNGLISVERTEXARRAYPROC)(GLuint); }
+# 3774 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXBLENDARBPROC)(GLint); }
 extern "C" { typedef void (*PFNGLWEIGHTPOINTERARBPROC)(GLint, GLenum, GLsizei, GLvoid *); }
 extern "C" { typedef void (*PFNGLWEIGHTBVARBPROC)(GLint, GLbyte *); }
@@ -7184,7 +6816,7 @@ extern "C" { typedef void (*PFNGLWEIGHTSVARBPROC)(GLint, GLshort *); }
 extern "C" { typedef void (*PFNGLWEIGHTUBVARBPROC)(GLint, GLubyte *); }
 extern "C" { typedef void (*PFNGLWEIGHTUIVARBPROC)(GLint, GLuint *); }
 extern "C" { typedef void (*PFNGLWEIGHTUSVARBPROC)(GLint, GLushort *); }
-# 3261 "/usr/include/GL/glew.h" 3
+# 3837 "/usr/include/GL/glew.h" 3
 extern "C" { typedef ptrdiff_t GLsizeiptrARB; }
 extern "C" { typedef ptrdiff_t GLintptrARB; }
 
@@ -7199,7 +6831,7 @@ extern "C" { typedef void (*PFNGLGETBUFFERSUBDATAARBPROC)(GLenum, GLintptrARB, G
 extern "C" { typedef GLboolean (*PFNGLISBUFFERARBPROC)(GLuint); }
 extern "C" { typedef GLvoid *(*PFNGLMAPBUFFERARBPROC)(GLenum, GLenum); }
 extern "C" { typedef GLboolean (*PFNGLUNMAPBUFFERARBPROC)(GLenum); }
-# 3377 "/usr/include/GL/glew.h" 3
+# 3953 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDPROGRAMARBPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLDELETEPROGRAMSARBPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLDISABLEVERTEXATTRIBARRAYARBPROC)(GLuint); }
@@ -7262,11 +6894,11 @@ extern "C" { typedef void (*PFNGLVERTEXATTRIB4UBVARBPROC)(GLuint, const GLubyte 
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4UIVARBPROC)(GLuint, const GLuint *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIB4USVARBPROC)(GLuint, const GLushort *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBPOINTERARBPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, const void *); }
-# 3520 "/usr/include/GL/glew.h" 3
+# 4096 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDATTRIBLOCATIONARBPROC)(GLhandleARB, GLuint, const GLcharARB *); }
 extern "C" { typedef void (*PFNGLGETACTIVEATTRIBARBPROC)(GLhandleARB, GLuint, GLsizei, GLsizei *, GLint *, GLenum *, GLcharARB *); }
 extern "C" { typedef GLint (*PFNGLGETATTRIBLOCATIONARBPROC)(GLhandleARB, const GLcharARB *); }
-# 3537 "/usr/include/GL/glew.h" 3
+# 4113 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DARBPROC)(GLdouble, GLdouble); }
 extern "C" { typedef void (*PFNGLWINDOWPOS2DVARBPROC)(const GLdouble *); }
 extern "C" { typedef void (*PFNGLWINDOWPOS2FARBPROC)(GLfloat, GLfloat); }
@@ -7283,18 +6915,18 @@ extern "C" { typedef void (*PFNGLWINDOWPOS3IARBPROC)(GLint, GLint, GLint); }
 extern "C" { typedef void (*PFNGLWINDOWPOS3IVARBPROC)(const GLint *); }
 extern "C" { typedef void (*PFNGLWINDOWPOS3SARBPROC)(GLshort, GLshort, GLshort); }
 extern "C" { typedef void (*PFNGLWINDOWPOS3SVARBPROC)(const GLshort *); }
-# 3651 "/usr/include/GL/glew.h" 3
+# 4227 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWBUFFERSATIPROC)(GLsizei, const GLenum *); }
-# 3668 "/usr/include/GL/glew.h" 3
+# 4244 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWELEMENTARRAYATIPROC)(GLenum, GLsizei); }
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTARRAYATIPROC)(GLenum, GLuint, GLuint, GLsizei); }
 extern "C" { typedef void (*PFNGLELEMENTPOINTERATIPROC)(GLenum, const void *); }
-# 3694 "/usr/include/GL/glew.h" 3
+# 4270 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXBUMPPARAMETERFVATIPROC)(GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETTEXBUMPPARAMETERIVATIPROC)(GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLTEXBUMPPARAMETERFVATIPROC)(GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLTEXBUMPPARAMETERIVATIPROC)(GLenum, GLint *); }
-# 3768 "/usr/include/GL/glew.h" 3
+# 4344 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLALPHAFRAGMENTOP1ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
 extern "C" { typedef void (*PFNGLALPHAFRAGMENTOP2ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
 extern "C" { typedef void (*PFNGLALPHAFRAGMENTOP3ATIPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint); }
@@ -7309,16 +6941,16 @@ extern "C" { typedef GLuint (*PFNGLGENFRAGMENTSHADERSATIPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLPASSTEXCOORDATIPROC)(GLuint, GLuint, GLenum); }
 extern "C" { typedef void (*PFNGLSAMPLEMAPATIPROC)(GLuint, GLuint, GLenum); }
 extern "C" { typedef void (*PFNGLSETFRAGMENTSHADERCONSTANTATIPROC)(GLuint, const GLfloat *); }
-# 3807 "/usr/include/GL/glew.h" 3
+# 4383 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void *(*PFNGLMAPOBJECTBUFFERATIPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLUNMAPOBJECTBUFFERATIPROC)(GLuint); }
-# 3832 "/usr/include/GL/glew.h" 3
+# 4408 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPNTRIANGLESFATIPROC)(GLenum, GLfloat); }
 extern "C" { typedef void (*PFNGLPNTRIANGLESIATIPROC)(GLenum, GLint); }
-# 3852 "/usr/include/GL/glew.h" 3
+# 4428 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTENCILFUNCSEPARATEATIPROC)(GLenum, GLenum, GLint, GLuint); }
 extern "C" { typedef void (*PFNGLSTENCILOPSEPARATEATIPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 3954 "/usr/include/GL/glew.h" 3
+# 4530 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLARRAYOBJECTATIPROC)(GLenum, GLint, GLenum, GLsizei, GLuint, GLuint); }
 extern "C" { typedef void (*PFNGLFREEOBJECTBUFFERATIPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLGETARRAYOBJECTFVATIPROC)(GLenum, GLenum, GLfloat *); }
@@ -7331,11 +6963,11 @@ extern "C" { typedef GLboolean (*PFNGLISOBJECTBUFFERATIPROC)(GLuint); }
 extern "C" { typedef GLuint (*PFNGLNEWOBJECTBUFFERATIPROC)(GLsizei, const void *, GLenum); }
 extern "C" { typedef void (*PFNGLUPDATEOBJECTBUFFERATIPROC)(GLuint, GLuint, GLsizei, const void *, GLenum); }
 extern "C" { typedef void (*PFNGLVARIANTARRAYOBJECTATIPROC)(GLuint, GLenum, GLsizei, GLuint, GLuint); }
-# 3989 "/usr/include/GL/glew.h" 3
+# 4565 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBARRAYOBJECTFVATIPROC)(GLuint, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETVERTEXATTRIBARRAYOBJECTIVATIPROC)(GLuint, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBARRAYOBJECTATIPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, GLuint, GLuint); }
-# 4017 "/usr/include/GL/glew.h" 3
+# 4593 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLNORMALSTREAM3BATIPROC)(GLenum, GLbyte, GLbyte, GLbyte); }
 extern "C" { typedef void (*PFNGLNORMALSTREAM3BVATIPROC)(GLenum, const GLbyte *); }
@@ -7373,25 +7005,25 @@ extern "C" { typedef void (*PFNGLVERTEXSTREAM4IATIPROC)(GLenum, GLint, GLint, GL
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4IVATIPROC)(GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4SATIPROC)(GLenum, GLshort, GLshort, GLshort, GLshort); }
 extern "C" { typedef void (*PFNGLVERTEXSTREAM4SVATIPROC)(GLenum, const GLshort *); }
-# 4158 "/usr/include/GL/glew.h" 3
+# 4734 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLint (*PFNGLGETUNIFORMBUFFERSIZEEXTPROC)(GLuint, GLint); }
 extern "C" { typedef GLintptr (*PFNGLGETUNIFORMOFFSETEXTPROC)(GLuint, GLint); }
 extern "C" { typedef void (*PFNGLUNIFORMBUFFEREXTPROC)(GLuint, GLint, GLuint); }
-# 4181 "/usr/include/GL/glew.h" 3
+# 4757 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDCOLOREXTPROC)(GLclampf, GLclampf, GLclampf, GLclampf); }
-# 4197 "/usr/include/GL/glew.h" 3
+# 4773 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDEQUATIONSEPARATEEXTPROC)(GLenum, GLenum); }
-# 4215 "/usr/include/GL/glew.h" 3
+# 4791 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDFUNCSEPARATEEXTPROC)(GLenum, GLenum, GLenum, GLenum); }
-# 4242 "/usr/include/GL/glew.h" 3
+# 4818 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLENDEQUATIONEXTPROC)(GLenum); }
-# 4292 "/usr/include/GL/glew.h" 3
+# 4868 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORSUBTABLEEXTPROC)(GLenum, GLsizei, GLsizei, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLCOPYCOLORSUBTABLEEXTPROC)(GLenum, GLsizei, GLint, GLint, GLsizei); }
-# 4307 "/usr/include/GL/glew.h" 3
+# 4886 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLLOCKARRAYSEXTPROC)(GLint, GLsizei); }
 extern "C" { typedef void (*PFNGLUNLOCKARRAYSEXTPROC)(void); }
-# 4343 "/usr/include/GL/glew.h" 3
+# 4922 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCONVOLUTIONFILTER1DEXTPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLCONVOLUTIONFILTER2DEXTPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLCONVOLUTIONPARAMETERFEXTPROC)(GLenum, GLenum, GLfloat); }
@@ -7405,39 +7037,226 @@ extern "C" { typedef void (*PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC)(GLenum, GLenu
 extern "C" { typedef void (*PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETSEPARABLEFILTEREXTPROC)(GLenum, GLenum, GLenum, void *, void *, void *); }
 extern "C" { typedef void (*PFNGLSEPARABLEFILTER2DEXTPROC)(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const void *, const void *); }
-# 4395 "/usr/include/GL/glew.h" 3
+# 4974 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINORMALPOINTEREXTPROC)(GLenum, GLsizei, void *); }
 extern "C" { typedef void (*PFNGLTANGENTPOINTEREXTPROC)(GLenum, GLsizei, void *); }
-# 4410 "/usr/include/GL/glew.h" 3
+# 4989 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOPYTEXIMAGE1DEXTPROC)(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint); }
 extern "C" { typedef void (*PFNGLCOPYTEXIMAGE2DEXTPROC)(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint); }
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE1DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei); }
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE2DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
 extern "C" { typedef void (*PFNGLCOPYTEXSUBIMAGE3DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
-# 4431 "/usr/include/GL/glew.h" 3
+# 5010 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCULLPARAMETERDVEXTPROC)(GLenum, GLdouble *); }
 extern "C" { typedef void (*PFNGLCULLPARAMETERFVEXTPROC)(GLenum, GLfloat *); }
-# 4449 "/usr/include/GL/glew.h" 3
+# 5028 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDEPTHBOUNDSEXTPROC)(GLclampd, GLclampd); }
-# 4462 "/usr/include/GL/glew.h" 3
+# 5045 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBINDMULTITEXTUREEXTPROC)(GLenum, GLenum, GLuint); }
+extern "C" { typedef GLenum (*PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLCLIENTATTRIBDEFAULTEXTPROC)(GLbitfield); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDMULTITEXIMAGE1DEXTPROC)(GLenum, GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDMULTITEXIMAGE2DEXTPROC)(GLenum, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDMULTITEXIMAGE3DEXTPROC)(GLenum, GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDMULTITEXSUBIMAGE1DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDMULTITEXSUBIMAGE2DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDMULTITEXSUBIMAGE3DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC)(GLuint, GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC)(GLuint, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC)(GLuint, GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC)(GLuint, GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLCOPYMULTITEXIMAGE1DEXTPROC)(GLenum, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint); }
+extern "C" { typedef void (*PFNGLCOPYMULTITEXIMAGE2DEXTPROC)(GLenum, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint); }
+extern "C" { typedef void (*PFNGLCOPYMULTITEXSUBIMAGE1DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLint, GLsizei); }
+extern "C" { typedef void (*PFNGLCOPYMULTITEXSUBIMAGE2DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLCOPYMULTITEXSUBIMAGE3DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLCOPYTEXTUREIMAGE1DEXTPROC)(GLuint, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint); }
+extern "C" { typedef void (*PFNGLCOPYTEXTUREIMAGE2DEXTPROC)(GLuint, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint); }
+extern "C" { typedef void (*PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei); }
+extern "C" { typedef void (*PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLDISABLECLIENTSTATEINDEXEDEXTPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLENABLECLIENTSTATEINDEXEDEXTPROC)(GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC)(GLuint, GLsizei, const GLenum *); }
+extern "C" { typedef void (*PFNGLFRAMEBUFFERREADBUFFEREXTPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLGENERATEMULTITEXMIPMAPEXTPROC)(GLenum, GLenum); }
+extern "C" { typedef void (*PFNGLGENERATETEXTUREMIPMAPEXTPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLGETCOMPRESSEDMULTITEXIMAGEEXTPROC)(GLenum, GLenum, GLint, void *); }
+extern "C" { typedef void (*PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC)(GLuint, GLenum, GLint, void *); }
+extern "C" { typedef void (*PFNGLGETDOUBLEINDEXEDVEXTPROC)(GLenum, GLuint, GLdouble *); }
+extern "C" { typedef void (*PFNGLGETFLOATINDEXEDVEXTPROC)(GLenum, GLuint, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC)(GLuint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXENVFVEXTPROC)(GLenum, GLenum, GLenum, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXENVIVEXTPROC)(GLenum, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXGENDVEXTPROC)(GLenum, GLenum, GLenum, GLdouble *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXGENFVEXTPROC)(GLenum, GLenum, GLenum, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXGENIVEXTPROC)(GLenum, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXIMAGEEXTPROC)(GLenum, GLenum, GLint, GLenum, GLenum, void *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXLEVELPARAMETERFVEXTPROC)(GLenum, GLenum, GLint, GLenum, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXLEVELPARAMETERIVEXTPROC)(GLenum, GLenum, GLint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXPARAMETERIIVEXTPROC)(GLenum, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXPARAMETERIUIVEXTPROC)(GLenum, GLenum, GLenum, GLuint *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXPARAMETERFVEXTPROC)(GLenum, GLenum, GLenum, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETMULTITEXPARAMETERIVEXTPROC)(GLenum, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC)(GLuint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETNAMEDBUFFERPOINTERVEXTPROC)(GLuint, GLenum, void **); }
+extern "C" { typedef void (*PFNGLGETNAMEDBUFFERSUBDATAEXTPROC)(GLuint, GLintptr, GLsizeiptr, void *); }
+extern "C" { typedef void (*PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC)(GLuint, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETNAMEDPROGRAMLOCALPARAMETERIIVEXTPROC)(GLuint, GLenum, GLuint, GLint *); }
+extern "C" { typedef void (*PFNGLGETNAMEDPROGRAMLOCALPARAMETERIUIVEXTPROC)(GLuint, GLenum, GLuint, GLuint *); }
+extern "C" { typedef void (*PFNGLGETNAMEDPROGRAMLOCALPARAMETERDVEXTPROC)(GLuint, GLenum, GLuint, GLdouble *); }
+extern "C" { typedef void (*PFNGLGETNAMEDPROGRAMLOCALPARAMETERFVEXTPROC)(GLuint, GLenum, GLuint, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETNAMEDPROGRAMSTRINGEXTPROC)(GLuint, GLenum, GLenum, void *); }
+extern "C" { typedef void (*PFNGLGETNAMEDPROGRAMIVEXTPROC)(GLuint, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC)(GLuint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETPOINTERINDEXEDVEXTPROC)(GLenum, GLuint, GLvoid **); }
+extern "C" { typedef void (*PFNGLGETTEXTUREIMAGEEXTPROC)(GLuint, GLenum, GLint, GLenum, GLenum, void *); }
+extern "C" { typedef void (*PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC)(GLuint, GLenum, GLint, GLenum, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC)(GLuint, GLenum, GLint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETTEXTUREPARAMETERIIVEXTPROC)(GLuint, GLenum, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETTEXTUREPARAMETERIUIVEXTPROC)(GLuint, GLenum, GLenum, GLuint *); }
+extern "C" { typedef void (*PFNGLGETTEXTUREPARAMETERFVEXTPROC)(GLuint, GLenum, GLenum, GLfloat *); }
+extern "C" { typedef void (*PFNGLGETTEXTUREPARAMETERIVEXTPROC)(GLuint, GLenum, GLenum, GLint *); }
+extern "C" { typedef GLvoid *(*PFNGLMAPNAMEDBUFFEREXTPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLMATRIXFRUSTUMEXTPROC)(GLenum, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble); }
+extern "C" { typedef void (*PFNGLMATRIXLOADIDENTITYEXTPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLMATRIXLOADTRANSPOSEDEXTPROC)(GLenum, const GLdouble *); }
+extern "C" { typedef void (*PFNGLMATRIXLOADTRANSPOSEFEXTPROC)(GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMATRIXLOADDEXTPROC)(GLenum, const GLdouble *); }
+extern "C" { typedef void (*PFNGLMATRIXLOADFEXTPROC)(GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMATRIXMULTTRANSPOSEDEXTPROC)(GLenum, const GLdouble *); }
+extern "C" { typedef void (*PFNGLMATRIXMULTTRANSPOSEFEXTPROC)(GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMATRIXMULTDEXTPROC)(GLenum, const GLdouble *); }
+extern "C" { typedef void (*PFNGLMATRIXMULTFEXTPROC)(GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMATRIXORTHOEXTPROC)(GLenum, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble); }
+extern "C" { typedef void (*PFNGLMATRIXPOPEXTPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLMATRIXPUSHEXTPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLMATRIXROTATEDEXTPROC)(GLenum, GLdouble, GLdouble, GLdouble, GLdouble); }
+extern "C" { typedef void (*PFNGLMATRIXROTATEFEXTPROC)(GLenum, GLfloat, GLfloat, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLMATRIXSCALEDEXTPROC)(GLenum, GLdouble, GLdouble, GLdouble); }
+extern "C" { typedef void (*PFNGLMATRIXSCALEFEXTPROC)(GLenum, GLfloat, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLMATRIXTRANSLATEDEXTPROC)(GLenum, GLdouble, GLdouble, GLdouble); }
+extern "C" { typedef void (*PFNGLMATRIXTRANSLATEFEXTPROC)(GLenum, GLfloat, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLMULTITEXBUFFEREXTPROC)(GLenum, GLenum, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLMULTITEXCOORDPOINTEREXTPROC)(GLenum, GLint, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLMULTITEXENVFEXTPROC)(GLenum, GLenum, GLenum, GLfloat); }
+extern "C" { typedef void (*PFNGLMULTITEXENVFVEXTPROC)(GLenum, GLenum, GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMULTITEXENVIEXTPROC)(GLenum, GLenum, GLenum, GLint); }
+extern "C" { typedef void (*PFNGLMULTITEXENVIVEXTPROC)(GLenum, GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLMULTITEXGENDEXTPROC)(GLenum, GLenum, GLenum, GLdouble); }
+extern "C" { typedef void (*PFNGLMULTITEXGENDVEXTPROC)(GLenum, GLenum, GLenum, const GLdouble *); }
+extern "C" { typedef void (*PFNGLMULTITEXGENFEXTPROC)(GLenum, GLenum, GLenum, GLfloat); }
+extern "C" { typedef void (*PFNGLMULTITEXGENFVEXTPROC)(GLenum, GLenum, GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMULTITEXGENIEXTPROC)(GLenum, GLenum, GLenum, GLint); }
+extern "C" { typedef void (*PFNGLMULTITEXGENIVEXTPROC)(GLenum, GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLMULTITEXIMAGE1DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLMULTITEXIMAGE2DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLMULTITEXIMAGE3DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLMULTITEXPARAMETERIIVEXTPROC)(GLenum, GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLMULTITEXPARAMETERIUIVEXTPROC)(GLenum, GLenum, GLenum, const GLuint *); }
+extern "C" { typedef void (*PFNGLMULTITEXPARAMETERFEXTPROC)(GLenum, GLenum, GLenum, GLfloat); }
+extern "C" { typedef void (*PFNGLMULTITEXPARAMETERFVEXTPROC)(GLenum, GLenum, GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLMULTITEXPARAMETERIEXTPROC)(GLenum, GLenum, GLenum, GLint); }
+extern "C" { typedef void (*PFNGLMULTITEXPARAMETERIVEXTPROC)(GLenum, GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLMULTITEXRENDERBUFFEREXTPROC)(GLenum, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLMULTITEXSUBIMAGE1DEXTPROC)(GLenum, GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLMULTITEXSUBIMAGE2DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLMULTITEXSUBIMAGE3DEXTPROC)(GLenum, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLNAMEDBUFFERDATAEXTPROC)(GLuint, GLsizeiptr, const void *, GLenum); }
+extern "C" { typedef void (*PFNGLNAMEDBUFFERSUBDATAEXTPROC)(GLuint, GLintptr, GLsizeiptr, const void *); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC)(GLuint, GLenum, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC)(GLuint, GLenum, GLenum, GLuint, GLint); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC)(GLuint, GLenum, GLenum, GLuint, GLint); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC)(GLuint, GLenum, GLenum, GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC)(GLuint, GLenum, GLuint, GLint); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC)(GLuint, GLenum, GLuint, GLint, GLenum); }
+extern "C" { typedef void (*PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC)(GLuint, GLenum, GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETER4DEXTPROC)(GLuint, GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETER4DVEXTPROC)(GLuint, GLenum, GLuint, const GLdouble *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETER4FEXTPROC)(GLuint, GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETER4FVEXTPROC)(GLuint, GLenum, GLuint, const GLfloat *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERI4IEXTPROC)(GLuint, GLenum, GLuint, GLint, GLint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERI4IVEXTPROC)(GLuint, GLenum, GLuint, const GLint *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIEXTPROC)(GLuint, GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIVEXTPROC)(GLuint, GLenum, GLuint, const GLuint *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERS4FVEXTPROC)(GLuint, GLenum, GLuint, GLsizei, const GLfloat *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERSI4IVEXTPROC)(GLuint, GLenum, GLuint, GLsizei, const GLint *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMLOCALPARAMETERSI4UIVEXTPROC)(GLuint, GLenum, GLuint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLNAMEDPROGRAMSTRINGEXTPROC)(GLuint, GLenum, GLenum, GLsizei, const void *); }
+extern "C" { typedef void (*PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC)(GLuint, GLenum, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC)(GLuint, GLsizei, GLsizei, GLenum, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC)(GLuint, GLsizei, GLenum, GLsizei, GLsizei); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM1FEXTPROC)(GLuint, GLint, GLfloat); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM1FVEXTPROC)(GLuint, GLint, GLsizei, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM1IEXTPROC)(GLuint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM1IVEXTPROC)(GLuint, GLint, GLsizei, const GLint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM1UIEXTPROC)(GLuint, GLint, GLuint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM1UIVEXTPROC)(GLuint, GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM2FEXTPROC)(GLuint, GLint, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM2FVEXTPROC)(GLuint, GLint, GLsizei, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM2IEXTPROC)(GLuint, GLint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM2IVEXTPROC)(GLuint, GLint, GLsizei, const GLint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM2UIEXTPROC)(GLuint, GLint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM2UIVEXTPROC)(GLuint, GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM3FEXTPROC)(GLuint, GLint, GLfloat, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM3FVEXTPROC)(GLuint, GLint, GLsizei, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM3IEXTPROC)(GLuint, GLint, GLint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM3IVEXTPROC)(GLuint, GLint, GLsizei, const GLint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM3UIEXTPROC)(GLuint, GLint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM3UIVEXTPROC)(GLuint, GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM4FEXTPROC)(GLuint, GLint, GLfloat, GLfloat, GLfloat, GLfloat); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM4FVEXTPROC)(GLuint, GLint, GLsizei, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM4IEXTPROC)(GLuint, GLint, GLint, GLint, GLint, GLint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM4IVEXTPROC)(GLuint, GLint, GLsizei, const GLint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM4UIEXTPROC)(GLuint, GLint, GLuint, GLuint, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORM4UIVEXTPROC)(GLuint, GLint, GLsizei, const GLuint *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *); }
+extern "C" { typedef void (*PFNGLPUSHCLIENTATTRIBDEFAULTEXTPROC)(GLbitfield); }
+extern "C" { typedef void (*PFNGLTEXTUREBUFFEREXTPROC)(GLuint, GLenum, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLTEXTUREIMAGE1DEXTPROC)(GLuint, GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLTEXTUREIMAGE2DEXTPROC)(GLuint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLTEXTUREIMAGE3DEXTPROC)(GLuint, GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLTEXTUREPARAMETERIIVEXTPROC)(GLuint, GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLTEXTUREPARAMETERIUIVEXTPROC)(GLuint, GLenum, GLenum, const GLuint *); }
+extern "C" { typedef void (*PFNGLTEXTUREPARAMETERFEXTPROC)(GLuint, GLenum, GLenum, GLfloat); }
+extern "C" { typedef void (*PFNGLTEXTUREPARAMETERFVEXTPROC)(GLuint, GLenum, GLenum, const GLfloat *); }
+extern "C" { typedef void (*PFNGLTEXTUREPARAMETERIEXTPROC)(GLuint, GLenum, GLenum, GLint); }
+extern "C" { typedef void (*PFNGLTEXTUREPARAMETERIVEXTPROC)(GLuint, GLenum, GLenum, const GLint *); }
+extern "C" { typedef void (*PFNGLTEXTURERENDERBUFFEREXTPROC)(GLuint, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLTEXTURESUBIMAGE1DEXTPROC)(GLuint, GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLTEXTURESUBIMAGE2DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *); }
+extern "C" { typedef void (*PFNGLTEXTURESUBIMAGE3DEXTPROC)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *); }
+extern "C" { typedef GLboolean (*PFNGLUNMAPNAMEDBUFFEREXTPROC)(GLuint); }
+# 5428 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORMASKINDEXEDEXTPROC)(GLuint, GLboolean, GLboolean, GLboolean, GLboolean); }
 extern "C" { typedef void (*PFNGLDISABLEINDEXEDEXTPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLENABLEINDEXEDEXTPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLGETBOOLEANINDEXEDVEXTPROC)(GLenum, GLuint, GLboolean *); }
 extern "C" { typedef void (*PFNGLGETINTEGERINDEXEDVEXTPROC)(GLenum, GLuint, GLint *); }
 extern "C" { typedef GLboolean (*PFNGLISENABLEDINDEXEDEXTPROC)(GLenum, GLuint); }
-# 4485 "/usr/include/GL/glew.h" 3
+# 5451 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWARRAYSINSTANCEDEXTPROC)(GLenum, GLint, GLsizei, GLsizei); }
 extern "C" { typedef void (*PFNGLDRAWELEMENTSINSTANCEDEXTPROC)(GLenum, GLsizei, GLenum, const GLvoid *, GLsizei); }
-# 4503 "/usr/include/GL/glew.h" 3
+# 5469 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDRAWRANGEELEMENTSEXTPROC)(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid *); }
-# 4525 "/usr/include/GL/glew.h" 3
+# 5491 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGCOORDPOINTEREXTPROC)(GLenum, GLsizei, const GLvoid *); }
 extern "C" { typedef void (*PFNGLFOGCOORDDEXTPROC)(GLdouble); }
 extern "C" { typedef void (*PFNGLFOGCOORDDVEXTPROC)(const GLdouble *); }
 extern "C" { typedef void (*PFNGLFOGCOORDFEXTPROC)(GLfloat); }
 extern "C" { typedef void (*PFNGLFOGCOORDFVEXTPROC)(const GLfloat *); }
-# 4561 "/usr/include/GL/glew.h" 3
+# 5527 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTCOLORMATERIALEXTPROC)(GLenum, GLenum); }
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFEXTPROC)(GLenum, GLfloat); }
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFVEXTPROC)(GLenum, GLfloat *); }
@@ -7456,11 +7275,11 @@ extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTIVEXTPROC)(GLenum, GLenum, GLin
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALIVEXTPROC)(GLenum, GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLLIGHTENVIEXTPROC)(GLenum, GLint); }
-# 4613 "/usr/include/GL/glew.h" 3
+# 5579 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBLITFRAMEBUFFEREXTPROC)(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum); }
-# 4630 "/usr/include/GL/glew.h" 3
+# 5596 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei); }
-# 4695 "/usr/include/GL/glew.h" 3
+# 5661 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDFRAMEBUFFEREXTPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLBINDRENDERBUFFEREXTPROC)(GLenum, GLuint); }
 extern "C" { typedef GLenum (*PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)(GLenum); }
@@ -7478,15 +7297,15 @@ extern "C" { typedef void (*PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC)(GLenum, GLen
 extern "C" { typedef GLboolean (*PFNGLISFRAMEBUFFEREXTPROC)(GLuint); }
 extern "C" { typedef GLboolean (*PFNGLISRENDERBUFFEREXTPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEEXTPROC)(GLenum, GLenum, GLsizei, GLsizei); }
-# 4773 "/usr/include/GL/glew.h" 3
+# 5739 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTUREEXTPROC)(GLenum, GLenum, GLuint, GLint); }
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTUREFACEEXTPROC)(GLenum, GLenum, GLuint, GLint, GLenum); }
 extern "C" { typedef void (*PFNGLFRAMEBUFFERTEXTURELAYEREXTPROC)(GLenum, GLenum, GLuint, GLint, GLint); }
 extern "C" { typedef void (*PFNGLPROGRAMPARAMETERIEXTPROC)(GLuint, GLenum, GLint); }
-# 4792 "/usr/include/GL/glew.h" 3
+# 5758 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERS4FVEXTPROC)(GLenum, GLuint, GLsizei, const GLfloat *); }
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERS4FVEXTPROC)(GLenum, GLuint, GLsizei, const GLfloat *); }
-# 4834 "/usr/include/GL/glew.h" 3
+# 5800 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBINDFRAGDATALOCATIONEXTPROC)(GLuint, GLuint, const GLchar *); }
 extern "C" { typedef GLint (*PFNGLGETFRAGDATALOCATIONEXTPROC)(GLuint, const GLchar *); }
 extern "C" { typedef void (*PFNGLGETUNIFORMUIVEXTPROC)(GLuint, GLint, GLuint *); }
@@ -7521,7 +7340,7 @@ extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UIEXTPROC)(GLuint, GLuint, GLuint
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4UIVEXTPROC)(GLuint, const GLuint *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBI4USVEXTPROC)(GLuint, const GLushort *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBIPOINTEREXTPROC)(GLuint, GLint, GLenum, GLsizei, const GLvoid *); }
-# 4927 "/usr/include/GL/glew.h" 3
+# 5893 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETHISTOGRAMEXTPROC)(GLenum, GLboolean, GLenum, GLenum, void *); }
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPARAMETERFVEXTPROC)(GLenum, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETHISTOGRAMPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
@@ -7532,41 +7351,41 @@ extern "C" { typedef void (*PFNGLHISTOGRAMEXTPROC)(GLenum, GLsizei, GLenum, GLbo
 extern "C" { typedef void (*PFNGLMINMAXEXTPROC)(GLenum, GLenum, GLboolean); }
 extern "C" { typedef void (*PFNGLRESETHISTOGRAMEXTPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLRESETMINMAXEXTPROC)(GLenum); }
-# 4967 "/usr/include/GL/glew.h" 3
+# 5933 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINDEXFUNCEXTPROC)(GLenum, GLfloat); }
-# 4980 "/usr/include/GL/glew.h" 3
+# 5946 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLINDEXMATERIALEXTPROC)(GLenum, GLenum); }
-# 5013 "/usr/include/GL/glew.h" 3
+# 5979 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLAPPLYTEXTUREEXTPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLTEXTURELIGHTEXTPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLTEXTUREMATERIALEXTPROC)(GLenum, GLenum); }
-# 5039 "/usr/include/GL/glew.h" 3
+# 6005 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIDRAWARRAYSEXTPROC)(GLenum, GLint *, GLsizei *, GLsizei); }
 extern "C" { typedef void (*PFNGLMULTIDRAWELEMENTSEXTPROC)(GLenum, GLsizei *, GLenum, const GLvoid **, GLsizei); }
-# 5072 "/usr/include/GL/glew.h" 3
+# 6038 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEMASKEXTPROC)(GLclampf, GLboolean); }
 extern "C" { typedef void (*PFNGLSAMPLEPATTERNEXTPROC)(GLenum); }
-# 5153 "/usr/include/GL/glew.h" 3
+# 6119 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEEXTPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLGETCOLORTABLEEXTPROC)(GLenum, GLenum, GLenum, void *); }
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERFVEXTPROC)(GLenum, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERIVEXTPROC)(GLenum, GLenum, GLint *); }
-# 5196 "/usr/include/GL/glew.h" 3
+# 6162 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPIXELTRANSFORMPARAMETERFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETPIXELTRANSFORMPARAMETERIVEXTPROC)(GLenum, GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERFEXTPROC)(GLenum, GLenum, const GLfloat); }
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERIEXTPROC)(GLenum, GLenum, const GLint); }
 extern "C" { typedef void (*PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC)(GLenum, GLenum, const GLint *); }
-# 5233 "/usr/include/GL/glew.h" 3
+# 6199 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFEXTPROC)(GLenum, GLfloat); }
 extern "C" { typedef void (*PFNGLPOINTPARAMETERFVEXTPROC)(GLenum, GLfloat *); }
-# 5252 "/usr/include/GL/glew.h" 3
+# 6218 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOLYGONOFFSETEXTPROC)(GLfloat, GLfloat); }
-# 5274 "/usr/include/GL/glew.h" 3
+# 6242 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINSCENEEXTPROC)(void); }
 extern "C" { typedef void (*PFNGLENDSCENEEXTPROC)(void); }
-# 5297 "/usr/include/GL/glew.h" 3
+# 6265 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3BEXTPROC)(GLbyte, GLbyte, GLbyte); }
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3BVEXTPROC)(const GLbyte *); }
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3DEXTPROC)(GLdouble, GLdouble, GLdouble); }
@@ -7584,36 +7403,44 @@ extern "C" { typedef void (*PFNGLSECONDARYCOLOR3UIVEXTPROC)(const GLuint *); }
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3USEXTPROC)(GLushort, GLushort, GLushort); }
 extern "C" { typedef void (*PFNGLSECONDARYCOLOR3USVEXTPROC)(const GLushort *); }
 extern "C" { typedef void (*PFNGLSECONDARYCOLORPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLvoid *); }
-# 5390 "/usr/include/GL/glew.h" 3
+# 6358 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVESTENCILFACEEXTPROC)(GLenum); }
-# 5415 "/usr/include/GL/glew.h" 3
+# 6383 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE1DEXTPROC)(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE2DEXTPROC)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE3DEXTPROC)(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 5494 "/usr/include/GL/glew.h" 3
+# 6462 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXIMAGE3DEXTPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
-# 5531 "/usr/include/GL/glew.h" 3
+# 6499 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXBUFFEREXTPROC)(GLenum, GLenum, GLuint); }
-# 5764 "/usr/include/GL/glew.h" 3
+# 6732 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARCOLORIIEXTPROC)(GLint, GLint, GLint, GLint); }
 extern "C" { typedef void (*PFNGLCLEARCOLORIUIEXTPROC)(GLuint, GLuint, GLuint, GLuint); }
 extern "C" { typedef void (*PFNGLGETTEXPARAMETERIIVEXTPROC)(GLenum, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETTEXPARAMETERIUIVEXTPROC)(GLenum, GLenum, GLuint *); }
 extern "C" { typedef void (*PFNGLTEXPARAMETERIIVEXTPROC)(GLenum, GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLTEXPARAMETERIUIVEXTPROC)(GLenum, GLenum, const GLuint *); }
-# 5819 "/usr/include/GL/glew.h" 3
+# 6787 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLARETEXTURESRESIDENTEXTPROC)(GLsizei, const GLuint *, GLboolean *); }
 extern "C" { typedef void (*PFNGLBINDTEXTUREEXTPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLDELETETEXTURESEXTPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLGENTEXTURESEXTPROC)(GLsizei, GLuint *); }
 extern "C" { typedef GLboolean (*PFNGLISTEXTUREEXTPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLPRIORITIZETEXTURESEXTPROC)(GLsizei, const GLuint *, const GLclampf *); }
-# 5845 "/usr/include/GL/glew.h" 3
+# 6813 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTURENORMALEXTPROC)(GLenum); }
-# 5913 "/usr/include/GL/glew.h" 3
+# 6896 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTI64VEXTPROC)(GLuint, GLenum, GLint64EXT *); }
 extern "C" { typedef void (*PFNGLGETQUERYOBJECTUI64VEXTPROC)(GLuint, GLenum, GLuint64EXT *); }
-# 5962 "/usr/include/GL/glew.h" 3
+# 6927 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBEGINTRANSFORMFEEDBACKEXTPROC)(GLenum); }
+extern "C" { typedef void (*PFNGLBINDBUFFERBASEEXTPROC)(GLenum, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLBINDBUFFEROFFSETEXTPROC)(GLenum, GLuint, GLuint, GLintptr); }
+extern "C" { typedef void (*PFNGLBINDBUFFERRANGEEXTPROC)(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr); }
+extern "C" { typedef void (*PFNGLENDTRANSFORMFEEDBACKEXTPROC)(void); }
+extern "C" { typedef void (*PFNGLGETTRANSFORMFEEDBACKVARYINGEXTPROC)(GLuint, GLuint, GLsizei, GLsizei *, GLsizei *, GLenum *, char *); }
+extern "C" { typedef void (*PFNGLTRANSFORMFEEDBACKVARYINGSEXTPROC)(GLuint, GLsizei, const char **, GLenum); }
+# 6986 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLARRAYELEMENTEXTPROC)(GLint); }
 extern "C" { typedef void (*PFNGLCOLORPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLDRAWARRAYSEXTPROC)(GLenum, GLint, GLsizei); }
@@ -7623,7 +7450,7 @@ extern "C" { typedef void (*PFNGLINDEXPOINTEREXTPROC)(GLenum, GLsizei, GLsizei, 
 extern "C" { typedef void (*PFNGLNORMALPOINTEREXTPROC)(GLenum, GLsizei, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLTEXCOORDPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLVERTEXPOINTEREXTPROC)(GLint, GLenum, GLsizei, GLsizei, const void *); }
-# 6102 "/usr/include/GL/glew.h" 3
+# 7137 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINVERTEXSHADEREXTPROC)(void); }
 extern "C" { typedef GLuint (*PFNGLBINDLIGHTPARAMETEREXTPROC)(GLenum, GLenum); }
 extern "C" { typedef GLuint (*PFNGLBINDMATERIALPARAMETEREXTPROC)(GLenum, GLenum); }
@@ -7666,25 +7493,25 @@ extern "C" { typedef void (*PFNGLVARIANTUBVEXTPROC)(GLuint, GLubyte *); }
 extern "C" { typedef void (*PFNGLVARIANTUIVEXTPROC)(GLuint, GLuint *); }
 extern "C" { typedef void (*PFNGLVARIANTUSVEXTPROC)(GLuint, GLushort *); }
 extern "C" { typedef void (*PFNGLWRITEMASKEXTPROC)(GLuint, GLuint, GLenum, GLenum, GLenum, GLenum); }
-# 6211 "/usr/include/GL/glew.h" 3
+# 7246 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTPOINTEREXTPROC)(GLint, GLenum, GLsizei, void *); }
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTFEXTPROC)(GLfloat); }
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTFVEXTPROC)(GLfloat *); }
-# 6228 "/usr/include/GL/glew.h" 3
+# 7263 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMETERMINATORGREMEDYPROC)(void); }
-# 6241 "/usr/include/GL/glew.h" 3
+# 7276 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSTRINGMARKERGREMEDYPROC)(GLsizei, const void *); }
-# 6263 "/usr/include/GL/glew.h" 3
+# 7298 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC)(GLenum, GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERFHPPROC)(GLenum, GLenum, const GLfloat); }
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERFVHPPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERIHPPROC)(GLenum, GLenum, const GLint); }
 extern "C" { typedef void (*PFNGLIMAGETRANSFORMPARAMETERIVHPPROC)(GLenum, GLenum, const GLint *); }
-# 6318 "/usr/include/GL/glew.h" 3
+# 7353 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLMULTIMODEDRAWARRAYSIBMPROC)(const GLenum *, const GLint *, const GLsizei *, GLsizei, GLint); }
 extern "C" { typedef void (*PFNGLMULTIMODEDRAWELEMENTSIBMPROC)(const GLenum *, const GLsizei *, GLenum, const GLvoid *const *, GLsizei, GLint); }
-# 6384 "/usr/include/GL/glew.h" 3
+# 7419 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
 extern "C" { typedef void (*PFNGLEDGEFLAGPOINTERLISTIBMPROC)(GLint, const GLboolean **, GLint); }
 extern "C" { typedef void (*PFNGLFOGCOORDPOINTERLISTIBMPROC)(GLenum, GLint, const GLvoid **, GLint); }
@@ -7693,23 +7520,23 @@ extern "C" { typedef void (*PFNGLNORMALPOINTERLISTIBMPROC)(GLenum, GLint, const 
 extern "C" { typedef void (*PFNGLSECONDARYCOLORPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
 extern "C" { typedef void (*PFNGLTEXCOORDPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
 extern "C" { typedef void (*PFNGLVERTEXPOINTERLISTIBMPROC)(GLint, GLenum, GLint, const GLvoid **, GLint); }
-# 6446 "/usr/include/GL/glew.h" 3
+# 7481 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORPOINTERVINTELPROC)(GLint, GLenum, const void **); }
 extern "C" { typedef void (*PFNGLNORMALPOINTERVINTELPROC)(GLenum, const void **); }
 extern "C" { typedef void (*PFNGLTEXCOORDPOINTERVINTELPROC)(GLint, GLenum, const void **); }
 extern "C" { typedef void (*PFNGLVERTEXPOINTERVINTELPROC)(GLint, GLenum, const void **); }
-# 6465 "/usr/include/GL/glew.h" 3
+# 7500 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXSCISSORFUNCINTELPROC)(GLenum, GLenum, GLenum); }
 extern "C" { typedef void (*PFNGLTEXSCISSORINTELPROC)(GLenum, GLclampf, GLclampf); }
-# 6485 "/usr/include/GL/glew.h" 3
+# 7520 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLuint (*PFNGLBUFFERREGIONENABLEDEXTPROC)(void); }
 extern "C" { typedef void (*PFNGLDELETEBUFFERREGIONEXTPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLDRAWBUFFERREGIONEXTPROC)(GLuint, GLint, GLint, GLsizei, GLsizei, GLint, GLint); }
 extern "C" { typedef GLuint (*PFNGLNEWBUFFERREGIONEXTPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLREADBUFFERREGIONEXTPROC)(GLuint, GLint, GLint, GLsizei, GLsizei); }
-# 6533 "/usr/include/GL/glew.h" 3
+# 7568 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRESIZEBUFFERSMESAPROC)(void); }
-# 6546 "/usr/include/GL/glew.h" 3
+# 7581 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLWINDOWPOS2DMESAPROC)(GLdouble, GLdouble); }
 extern "C" { typedef void (*PFNGLWINDOWPOS2DVMESAPROC)(const GLdouble *); }
 extern "C" { typedef void (*PFNGLWINDOWPOS2FMESAPROC)(GLfloat, GLfloat); }
@@ -7734,11 +7561,14 @@ extern "C" { typedef void (*PFNGLWINDOWPOS4IMESAPROC)(GLint, GLint, GLint, GLint
 extern "C" { typedef void (*PFNGLWINDOWPOS4IVMESAPROC)(const GLint *); }
 extern "C" { typedef void (*PFNGLWINDOWPOS4SMESAPROC)(GLshort, GLshort, GLshort, GLshort); }
 extern "C" { typedef void (*PFNGLWINDOWPOS4SVMESAPROC)(const GLshort *); }
-# 6644 "/usr/include/GL/glew.h" 3
+# 7667 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLBEGINCONDITIONALRENDERNVPROC)(GLuint, GLenum); }
+extern "C" { typedef void (*PFNGLENDCONDITIONALRENDERNVPROC)(void); }
+# 7699 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARDEPTHDNVPROC)(GLdouble); }
 extern "C" { typedef void (*PFNGLDEPTHBOUNDSDNVPROC)(GLdouble, GLdouble); }
 extern "C" { typedef void (*PFNGLDEPTHRANGEDNVPROC)(GLdouble, GLdouble); }
-# 6712 "/usr/include/GL/glew.h" 3
+# 7767 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLEVALMAPSNVPROC)(GLenum, GLenum); }
 extern "C" { typedef void (*PFNGLGETMAPATTRIBPARAMETERFVNVPROC)(GLenum, GLuint, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETMAPATTRIBPARAMETERIVNVPROC)(GLenum, GLuint, GLenum, GLint *); }
@@ -7748,7 +7578,11 @@ extern "C" { typedef void (*PFNGLGETMAPPARAMETERIVNVPROC)(GLenum, GLenum, GLint 
 extern "C" { typedef void (*PFNGLMAPCONTROLPOINTSNVPROC)(GLenum, GLuint, GLenum, GLsizei, GLsizei, GLint, GLint, GLboolean, const void *); }
 extern "C" { typedef void (*PFNGLMAPPARAMETERFVNVPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLMAPPARAMETERIVNVPROC)(GLenum, GLenum, const GLint *); }
-# 6745 "/usr/include/GL/glew.h" 3
+# 7807 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLGETMULTISAMPLEFVNVPROC)(GLenum, GLuint, GLfloat *); }
+extern "C" { typedef void (*PFNGLSAMPLEMASKINDEXEDNVPROC)(GLuint, GLbitfield); }
+extern "C" { typedef void (*PFNGLTEXRENDERBUFFERNVPROC)(GLenum, GLuint); }
+# 7828 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDELETEFENCESNVPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLFINISHFENCENVPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLGENFENCESNVPROC)(GLsizei, GLuint *); }
@@ -7756,18 +7590,18 @@ extern "C" { typedef void (*PFNGLGETFENCEIVNVPROC)(GLuint, GLenum, GLint *); }
 extern "C" { typedef GLboolean (*PFNGLISFENCENVPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLSETFENCENVPROC)(GLuint, GLenum); }
 extern "C" { typedef GLboolean (*PFNGLTESTFENCENVPROC)(GLuint); }
-# 6815 "/usr/include/GL/glew.h" 3
+# 7898 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC)(GLuint, GLsizei, const GLubyte *, GLdouble *); }
 extern "C" { typedef void (*PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC)(GLuint, GLsizei, const GLubyte *, GLfloat *); }
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4DNVPROC)(GLuint, GLsizei, const GLubyte *, GLdouble, GLdouble, GLdouble, GLdouble); }
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC)(GLuint, GLsizei, const GLubyte *, const GLdouble []); }
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4FNVPROC)(GLuint, GLsizei, const GLubyte *, GLfloat, GLfloat, GLfloat, GLfloat); }
 extern "C" { typedef void (*PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC)(GLuint, GLsizei, const GLubyte *, const GLfloat []); }
-# 6876 "/usr/include/GL/glew.h" 3
+# 7959 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC)(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei); }
-# 6893 "/usr/include/GL/glew.h" 3
+# 7976 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMVERTEXLIMITNVPROC)(GLenum, GLint); }
-# 6924 "/usr/include/GL/glew.h" 3
+# 8007 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4INVPROC)(GLenum, GLuint, GLint, GLint, GLint, GLint); }
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4IVNVPROC)(GLenum, GLuint, const GLint *); }
 extern "C" { typedef void (*PFNGLPROGRAMENVPARAMETERI4UINVPROC)(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint); }
@@ -7780,7 +7614,7 @@ extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4UINVPROC)(GLenum, GLuint
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC)(GLenum, GLuint, const GLuint *); }
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC)(GLenum, GLuint, GLsizei, const GLint *); }
 extern "C" { typedef void (*PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC)(GLenum, GLuint, GLsizei, const GLuint *); }
-# 6961 "/usr/include/GL/glew.h" 3
+# 8044 "/usr/include/GL/glew.h" 3
 extern "C" { typedef unsigned short GLhalf; }
 
 extern "C" { typedef void (*PFNGLCOLOR3HNVPROC)(GLhalf, GLhalf, GLhalf); }
@@ -7829,7 +7663,7 @@ extern "C" { typedef void (*PFNGLVERTEXATTRIBS3HVNVPROC)(GLuint, GLsizei, const 
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4HVNVPROC)(GLuint, GLsizei, const GLhalf *); }
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTHNVPROC)(GLhalf); }
 extern "C" { typedef void (*PFNGLVERTEXWEIGHTHVNVPROC)(const GLhalf *); }
-# 7094 "/usr/include/GL/glew.h" 3
+# 8177 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLBEGINOCCLUSIONQUERYNVPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLDELETEOCCLUSIONQUERIESNVPROC)(GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLENDOCCLUSIONQUERYNVPROC)(void); }
@@ -7837,20 +7671,28 @@ extern "C" { typedef void (*PFNGLGENOCCLUSIONQUERIESNVPROC)(GLsizei, GLuint *); 
 extern "C" { typedef void (*PFNGLGETOCCLUSIONQUERYIVNVPROC)(GLuint, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETOCCLUSIONQUERYUIVNVPROC)(GLuint, GLenum, GLuint *); }
 extern "C" { typedef GLboolean (*PFNGLISOCCLUSIONQUERYNVPROC)(GLuint); }
-# 7137 "/usr/include/GL/glew.h" 3
+# 8220 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPROGRAMBUFFERPARAMETERSIIVNVPROC)(GLenum, GLuint, GLuint, GLsizei, const GLint *); }
 extern "C" { typedef void (*PFNGLPROGRAMBUFFERPARAMETERSIUIVNVPROC)(GLenum, GLuint, GLuint, GLsizei, const GLuint *); }
 extern "C" { typedef void (*PFNGLPROGRAMBUFFERPARAMETERSFVNVPROC)(GLenum, GLuint, GLuint, GLsizei, const GLfloat *); }
-# 7161 "/usr/include/GL/glew.h" 3
+# 8244 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHPIXELDATARANGENVPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLPIXELDATARANGENVPROC)(GLenum, GLsizei, void *); }
-# 7180 "/usr/include/GL/glew.h" 3
+# 8263 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPOINTPARAMETERINVPROC)(GLenum, GLint); }
 extern "C" { typedef void (*PFNGLPOINTPARAMETERIVNVPROC)(GLenum, const GLint *); }
-# 7198 "/usr/include/GL/glew.h" 3
+# 8285 "/usr/include/GL/glew.h" 3
+extern "C" { typedef void (*PFNGLGETVIDEOI64VNVPROC)(GLuint, GLenum, GLint64EXT *); }
+extern "C" { typedef void (*PFNGLGETVIDEOIVNVPROC)(GLuint, GLenum, GLint *); }
+extern "C" { typedef void (*PFNGLGETVIDEOUI64VNVPROC)(GLuint, GLenum, GLuint64EXT *); }
+extern "C" { typedef void (*PFNGLGETVIDEOUIVNVPROC)(GLuint, GLenum, GLuint *); }
+extern "C" { typedef void (*PFNGLPRESENTFRAMEDUALFILLNVPROC)(GLuint, GLuint64EXT, GLuint, GLuint, GLenum, GLenum, GLuint, GLenum, GLuint, GLenum, GLuint, GLenum, GLuint); }
+extern "C" { typedef void (*PFNGLPRESENTFRAMEKEYEDNVPROC)(GLuint, GLuint64EXT, GLuint, GLuint, GLenum, GLenum, GLuint, GLuint, GLenum, GLuint, GLuint); }
+extern "C" { typedef void (*PFNGLVIDEOPARAMETERIVNVPROC)(GLuint, GLenum, const GLint *); }
+# 8313 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPRIMITIVERESTARTINDEXNVPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLPRIMITIVERESTARTNVPROC)(void); }
-# 7265 "/usr/include/GL/glew.h" 3
+# 8380 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERINPUTNVPROC)(GLenum, GLenum, GLenum, GLenum, GLenum, GLenum); }
 extern "C" { typedef void (*PFNGLCOMBINEROUTPUTNVPROC)(GLenum, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum, GLboolean, GLboolean, GLboolean); }
 extern "C" { typedef void (*PFNGLCOMBINERPARAMETERFNVPROC)(GLenum, GLfloat); }
@@ -7864,10 +7706,10 @@ extern "C" { typedef void (*PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC)(GLenum, GLe
 extern "C" { typedef void (*PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC)(GLenum, GLenum, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC)(GLenum, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC)(GLenum, GLenum, GLint *); }
-# 7304 "/usr/include/GL/glew.h" 3
+# 8419 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOMBINERSTAGEPARAMETERFVNVPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC)(GLenum, GLenum, GLfloat *); }
-# 7564 "/usr/include/GL/glew.h" 3
+# 8682 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLACTIVEVARYINGNVPROC)(GLuint, const GLchar *); }
 extern "C" { typedef void (*PFNGLBEGINTRANSFORMFEEDBACKNVPROC)(GLenum); }
 extern "C" { typedef void (*PFNGLBINDBUFFERBASENVPROC)(GLenum, GLuint, GLuint); }
@@ -7879,10 +7721,10 @@ extern "C" { typedef void (*PFNGLGETTRANSFORMFEEDBACKVARYINGNVPROC)(GLuint, GLui
 extern "C" { typedef GLint (*PFNGLGETVARYINGLOCATIONNVPROC)(GLuint, const GLchar *); }
 extern "C" { typedef void (*PFNGLTRANSFORMFEEDBACKATTRIBSNVPROC)(GLuint, const GLint *, GLenum); }
 extern "C" { typedef void (*PFNGLTRANSFORMFEEDBACKVARYINGSNVPROC)(GLuint, GLsizei, const GLint *, GLenum); }
-# 7603 "/usr/include/GL/glew.h" 3
+# 8721 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHVERTEXARRAYRANGENVPROC)(void); }
 extern "C" { typedef void (*PFNGLVERTEXARRAYRANGENVPROC)(GLsizei, void *); }
-# 7713 "/usr/include/GL/glew.h" 3
+# 8831 "/usr/include/GL/glew.h" 3
 extern "C" { typedef GLboolean (*PFNGLAREPROGRAMSRESIDENTNVPROC)(GLsizei, const GLuint *, GLboolean *); }
 extern "C" { typedef void (*PFNGLBINDPROGRAMNVPROC)(GLenum, GLuint); }
 extern "C" { typedef void (*PFNGLDELETEPROGRAMSNVPROC)(GLsizei, const GLuint *); }
@@ -7947,43 +7789,43 @@ extern "C" { typedef void (*PFNGLVERTEXATTRIBS4DVNVPROC)(GLuint, GLsizei, const 
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4FVNVPROC)(GLuint, GLsizei, const GLfloat *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4SVNVPROC)(GLuint, GLsizei, const GLshort *); }
 extern "C" { typedef void (*PFNGLVERTEXATTRIBS4UBVNVPROC)(GLuint, GLsizei, const GLubyte *); }
-# 7945 "/usr/include/GL/glew.h" 3
+# 9063 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCLEARDEPTHFOESPROC)(GLclampd); }
 extern "C" { typedef void (*PFNGLCLIPPLANEFOESPROC)(GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLDEPTHRANGEFOESPROC)(GLclampf, GLclampf); }
 extern "C" { typedef void (*PFNGLFRUSTUMFOESPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
 extern "C" { typedef void (*PFNGLGETCLIPPLANEFOESPROC)(GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLORTHOFOESPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
-# 8117 "/usr/include/GL/glew.h" 3
+# 9235 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLDETAILTEXFUNCSGISPROC)(GLenum, GLsizei, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETDETAILTEXFUNCSGISPROC)(GLenum, GLfloat *); }
-# 8132 "/usr/include/GL/glew.h" 3
+# 9250 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFOGFUNCSGISPROC)(GLsizei, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETFOGFUNCSGISPROC)(GLfloat *); }
-# 8177 "/usr/include/GL/glew.h" 3
+# 9295 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSAMPLEMASKSGISPROC)(GLclampf, GLboolean); }
 extern "C" { typedef void (*PFNGLSAMPLEPATTERNSGISPROC)(GLenum); }
-# 8201 "/usr/include/GL/glew.h" 3
+# 9337 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETSHARPENTEXFUNCSGISPROC)(GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLSHARPENTEXFUNCSGISPROC)(GLenum, GLsizei, const GLfloat *); }
-# 8216 "/usr/include/GL/glew.h" 3
+# 9352 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXIMAGE4DSGISPROC)(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *); }
 extern "C" { typedef void (*PFNGLTEXSUBIMAGE4DSGISPROC)(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *); }
-# 8253 "/usr/include/GL/glew.h" 3
+# 9389 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGETTEXFILTERFUNCSGISPROC)(GLenum, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLTEXFILTERFUNCSGISPROC)(GLenum, GLenum, GLsizei, const GLfloat *); }
-# 8293 "/usr/include/GL/glew.h" 3
+# 9429 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLASYNCMARKERSGIXPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLDELETEASYNCMARKERSSGIXPROC)(GLuint, GLsizei); }
 extern "C" { typedef GLint (*PFNGLFINISHASYNCSGIXPROC)(GLuint *); }
 extern "C" { typedef GLuint (*PFNGLGENASYNCMARKERSSGIXPROC)(GLsizei); }
 extern "C" { typedef GLboolean (*PFNGLISASYNCMARKERSGIXPROC)(GLuint); }
 extern "C" { typedef GLint (*PFNGLPOLLASYNCSGIXPROC)(GLuint *); }
-# 8378 "/usr/include/GL/glew.h" 3
+# 9525 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFLUSHRASTERSGIXPROC)(void); }
-# 8407 "/usr/include/GL/glew.h" 3
+# 9554 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTEXTUREFOGSGIXPROC)(GLenum); }
-# 8420 "/usr/include/GL/glew.h" 3
+# 9567 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAGMENTCOLORMATERIALSGIXPROC)(GLenum, GLenum); }
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFSGIXPROC)(GLenum, GLfloat); }
 extern "C" { typedef void (*PFNGLFRAGMENTLIGHTMODELFVSGIXPROC)(GLenum, GLfloat *); }
@@ -8001,20 +7843,20 @@ extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTFVSGIXPROC)(GLenum, GLenum, GLf
 extern "C" { typedef void (*PFNGLGETFRAGMENTLIGHTIVSGIXPROC)(GLenum, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALFVSGIXPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLGETFRAGMENTMATERIALIVSGIXPROC)(GLenum, GLenum, const GLint *); }
-# 8465 "/usr/include/GL/glew.h" 3
+# 9612 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFRAMEZOOMSGIXPROC)(GLint); }
-# 8507 "/usr/include/GL/glew.h" 3
+# 9654 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLPIXELTEXGENSGIXPROC)(GLenum); }
-# 8529 "/usr/include/GL/glew.h" 3
+# 9676 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREFERENCEPLANESGIXPROC)(const GLdouble *); }
-# 8582 "/usr/include/GL/glew.h" 3
+# 9729 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERFSGIXPROC)(GLenum, GLfloat); }
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERFVSGIXPROC)(GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERISGIXPROC)(GLenum, GLint); }
 extern "C" { typedef void (*PFNGLSPRITEPARAMETERIVSGIXPROC)(GLenum, GLint *); }
-# 8601 "/usr/include/GL/glew.h" 3
+# 9748 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLTAGSAMPLEBUFFERSGIXPROC)(void); }
-# 8779 "/usr/include/GL/glew.h" 3
+# 9926 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERFVSGIPROC)(GLenum, GLenum, const GLfloat *); }
 extern "C" { typedef void (*PFNGLCOLORTABLEPARAMETERIVSGIPROC)(GLenum, GLenum, const GLint *); }
 extern "C" { typedef void (*PFNGLCOLORTABLESGIPROC)(GLenum, GLenum, GLsizei, GLenum, GLenum, const void *); }
@@ -8022,9 +7864,9 @@ extern "C" { typedef void (*PFNGLCOPYCOLORTABLESGIPROC)(GLenum, GLenum, GLint, G
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERFVSGIPROC)(GLenum, GLenum, GLfloat *); }
 extern "C" { typedef void (*PFNGLGETCOLORTABLEPARAMETERIVSGIPROC)(GLenum, GLenum, GLint *); }
 extern "C" { typedef void (*PFNGLGETCOLORTABLESGIPROC)(GLenum, GLenum, GLenum, void *); }
-# 8819 "/usr/include/GL/glew.h" 3
+# 9966 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLFINISHTEXTURESUNXPROC)(void); }
-# 8846 "/usr/include/GL/glew.h" 3
+# 9993 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORBSUNPROC)(GLbyte); }
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORDSUNPROC)(GLdouble); }
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORFSUNPROC)(GLfloat); }
@@ -8033,9 +7875,9 @@ extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORSSUNPROC)(GLshort); }
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORUBSUNPROC)(GLubyte); }
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORUISUNPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLGLOBALALPHAFACTORUSSUNPROC)(GLushort); }
-# 8885 "/usr/include/GL/glew.h" 3
+# 10032 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREADVIDEOPIXELSSUNPROC)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid *); }
-# 8927 "/usr/include/GL/glew.h" 3
+# 10074 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEPOINTERSUNPROC)(GLenum, GLsizei, const void *); }
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUBSUNPROC)(GLubyte); }
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUBVSUNPROC)(const GLubyte *); }
@@ -8043,7 +7885,7 @@ extern "C" { typedef void (*PFNGLREPLACEMENTCODEUISUNPROC)(GLuint); }
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUIVSUNPROC)(const GLuint *); }
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUSSUNPROC)(GLushort); }
 extern "C" { typedef void (*PFNGLREPLACEMENTCODEUSVSUNPROC)(const GLushort *); }
-# 8952 "/usr/include/GL/glew.h" 3
+# 10099 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLCOLOR3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
 extern "C" { typedef void (*PFNGLCOLOR3FVERTEX3FVSUNPROC)(const GLfloat *, const GLfloat *); }
 extern "C" { typedef void (*PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
@@ -8084,9 +7926,9 @@ extern "C" { typedef void (*PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC)(GLflo
 extern "C" { typedef void (*PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC)(const GLfloat *, const GLfloat *, const GLfloat *, const GLfloat *); }
 extern "C" { typedef void (*PFNGLTEXCOORD4FVERTEX4FSUNPROC)(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); }
 extern "C" { typedef void (*PFNGLTEXCOORD4FVERTEX4FVSUNPROC)(const GLfloat *, const GLfloat *); }
-# 9066 "/usr/include/GL/glew.h" 3
+# 10213 "/usr/include/GL/glew.h" 3
 extern "C" { typedef void (*PFNGLADDSWAPHINTRECTWINPROC)(GLint, GLint, GLsizei, GLsizei); }
-# 9093 "/usr/include/GL/glew.h" 3
+# 10240 "/usr/include/GL/glew.h" 3
 extern "C" { extern PFNGLCOPYTEXSUBIMAGE3DPROC __glewCopyTexSubImage3D; }
 extern "C" { extern PFNGLDRAWRANGEELEMENTSPROC __glewDrawRangeElements; }
 extern "C" { extern PFNGLTEXIMAGE3DPROC __glewTexImage3D; }
@@ -8308,6 +8150,65 @@ extern "C" { extern PFNGLUNIFORMMATRIX3X4FVPROC __glewUniformMatrix3x4fv; }
 extern "C" { extern PFNGLUNIFORMMATRIX4X2FVPROC __glewUniformMatrix4x2fv; }
 extern "C" { extern PFNGLUNIFORMMATRIX4X3FVPROC __glewUniformMatrix4x3fv; }
 
+extern "C" { extern PFNGLBEGINCONDITIONALRENDERPROC __glewBeginConditionalRender; }
+extern "C" { extern PFNGLBEGINTRANSFORMFEEDBACKPROC __glewBeginTransformFeedback; }
+extern "C" { extern PFNGLBINDBUFFERBASEPROC __glewBindBufferBase; }
+extern "C" { extern PFNGLBINDBUFFERRANGEPROC __glewBindBufferRange; }
+extern "C" { extern PFNGLBINDFRAGDATALOCATIONPROC __glewBindFragDataLocation; }
+extern "C" { extern PFNGLCLAMPCOLORPROC __glewClampColor; }
+extern "C" { extern PFNGLCLEARBUFFERFIPROC __glewClearBufferfi; }
+extern "C" { extern PFNGLCLEARBUFFERFVPROC __glewClearBufferfv; }
+extern "C" { extern PFNGLCLEARBUFFERIVPROC __glewClearBufferiv; }
+extern "C" { extern PFNGLCLEARBUFFERUIVPROC __glewClearBufferuiv; }
+extern "C" { extern PFNGLCOLORMASKIPROC __glewColorMaski; }
+extern "C" { extern PFNGLDISABLEIPROC __glewDisablei; }
+extern "C" { extern PFNGLENABLEIPROC __glewEnablei; }
+extern "C" { extern PFNGLENDCONDITIONALRENDERPROC __glewEndConditionalRender; }
+extern "C" { extern PFNGLENDTRANSFORMFEEDBACKPROC __glewEndTransformFeedback; }
+extern "C" { extern PFNGLGETBOOLEANI_VPROC __glewGetBooleani_v; }
+extern "C" { extern PFNGLGETFRAGDATALOCATIONPROC __glewGetFragDataLocation; }
+extern "C" { extern PFNGLGETINTEGERI_VPROC __glewGetIntegeri_v; }
+extern "C" { extern PFNGLGETSTRINGIPROC __glewGetStringi; }
+extern "C" { extern PFNGLGETTEXPARAMETERIIVPROC __glewGetTexParameterIiv; }
+extern "C" { extern PFNGLGETTEXPARAMETERIUIVPROC __glewGetTexParameterIuiv; }
+extern "C" { extern PFNGLGETTRANSFORMFEEDBACKVARYINGPROC __glewGetTransformFeedbackVarying; }
+extern "C" { extern PFNGLGETUNIFORMUIVPROC __glewGetUniformuiv; }
+extern "C" { extern PFNGLGETVERTEXATTRIBIIVPROC __glewGetVertexAttribIiv; }
+extern "C" { extern PFNGLGETVERTEXATTRIBIUIVPROC __glewGetVertexAttribIuiv; }
+extern "C" { extern PFNGLISENABLEDIPROC __glewIsEnabledi; }
+extern "C" { extern PFNGLTEXPARAMETERIIVPROC __glewTexParameterIiv; }
+extern "C" { extern PFNGLTEXPARAMETERIUIVPROC __glewTexParameterIuiv; }
+extern "C" { extern PFNGLTRANSFORMFEEDBACKVARYINGSPROC __glewTransformFeedbackVaryings; }
+extern "C" { extern PFNGLUNIFORM1UIPROC __glewUniform1ui; }
+extern "C" { extern PFNGLUNIFORM1UIVPROC __glewUniform1uiv; }
+extern "C" { extern PFNGLUNIFORM2UIPROC __glewUniform2ui; }
+extern "C" { extern PFNGLUNIFORM2UIVPROC __glewUniform2uiv; }
+extern "C" { extern PFNGLUNIFORM3UIPROC __glewUniform3ui; }
+extern "C" { extern PFNGLUNIFORM3UIVPROC __glewUniform3uiv; }
+extern "C" { extern PFNGLUNIFORM4UIPROC __glewUniform4ui; }
+extern "C" { extern PFNGLUNIFORM4UIVPROC __glewUniform4uiv; }
+extern "C" { extern PFNGLVERTEXATTRIBI1IPROC __glewVertexAttribI1i; }
+extern "C" { extern PFNGLVERTEXATTRIBI1IVPROC __glewVertexAttribI1iv; }
+extern "C" { extern PFNGLVERTEXATTRIBI1UIPROC __glewVertexAttribI1ui; }
+extern "C" { extern PFNGLVERTEXATTRIBI1UIVPROC __glewVertexAttribI1uiv; }
+extern "C" { extern PFNGLVERTEXATTRIBI2IPROC __glewVertexAttribI2i; }
+extern "C" { extern PFNGLVERTEXATTRIBI2IVPROC __glewVertexAttribI2iv; }
+extern "C" { extern PFNGLVERTEXATTRIBI2UIPROC __glewVertexAttribI2ui; }
+extern "C" { extern PFNGLVERTEXATTRIBI2UIVPROC __glewVertexAttribI2uiv; }
+extern "C" { extern PFNGLVERTEXATTRIBI3IPROC __glewVertexAttribI3i; }
+extern "C" { extern PFNGLVERTEXATTRIBI3IVPROC __glewVertexAttribI3iv; }
+extern "C" { extern PFNGLVERTEXATTRIBI3UIPROC __glewVertexAttribI3ui; }
+extern "C" { extern PFNGLVERTEXATTRIBI3UIVPROC __glewVertexAttribI3uiv; }
+extern "C" { extern PFNGLVERTEXATTRIBI4BVPROC __glewVertexAttribI4bv; }
+extern "C" { extern PFNGLVERTEXATTRIBI4IPROC __glewVertexAttribI4i; }
+extern "C" { extern PFNGLVERTEXATTRIBI4IVPROC __glewVertexAttribI4iv; }
+extern "C" { extern PFNGLVERTEXATTRIBI4SVPROC __glewVertexAttribI4sv; }
+extern "C" { extern PFNGLVERTEXATTRIBI4UBVPROC __glewVertexAttribI4ubv; }
+extern "C" { extern PFNGLVERTEXATTRIBI4UIPROC __glewVertexAttribI4ui; }
+extern "C" { extern PFNGLVERTEXATTRIBI4UIVPROC __glewVertexAttribI4uiv; }
+extern "C" { extern PFNGLVERTEXATTRIBI4USVPROC __glewVertexAttribI4usv; }
+extern "C" { extern PFNGLVERTEXATTRIBIPOINTERPROC __glewVertexAttribIPointer; }
+
 extern "C" { extern PFNGLTBUFFERMASK3DFXPROC __glewTbufferMask3DFX; }
 
 extern "C" { extern PFNGLDRAWELEMENTARRAYAPPLEPROC __glewDrawElementArrayAPPLE; }
@@ -8344,6 +8245,35 @@ extern "C" { extern PFNGLCLAMPCOLORARBPROC __glewClampColorARB; }
 
 extern "C" { extern PFNGLDRAWBUFFERSARBPROC __glewDrawBuffersARB; }
 
+extern "C" { extern PFNGLDRAWARRAYSINSTANCEDARBPROC __glewDrawArraysInstancedARB; }
+extern "C" { extern PFNGLDRAWELEMENTSINSTANCEDARBPROC __glewDrawElementsInstancedARB; }
+
+extern "C" { extern PFNGLBINDFRAMEBUFFERPROC __glewBindFramebuffer; }
+extern "C" { extern PFNGLBINDRENDERBUFFERPROC __glewBindRenderbuffer; }
+extern "C" { extern PFNGLBLITFRAMEBUFFERPROC __glewBlitFramebuffer; }
+extern "C" { extern PFNGLCHECKFRAMEBUFFERSTATUSPROC __glewCheckFramebufferStatus; }
+extern "C" { extern PFNGLDELETEFRAMEBUFFERSPROC __glewDeleteFramebuffers; }
+extern "C" { extern PFNGLDELETERENDERBUFFERSPROC __glewDeleteRenderbuffers; }
+extern "C" { extern PFNGLFRAMEBUFFERRENDERBUFFERPROC __glewFramebufferRenderbuffer; }
+extern "C" { extern PFNGLFRAMEBUFFERTEXTURLAYERPROC __glewFramebufferTexturLayer; }
+extern "C" { extern PFNGLFRAMEBUFFERTEXTURE1DPROC __glewFramebufferTexture1D; }
+extern "C" { extern PFNGLFRAMEBUFFERTEXTURE2DPROC __glewFramebufferTexture2D; }
+extern "C" { extern PFNGLFRAMEBUFFERTEXTURE3DPROC __glewFramebufferTexture3D; }
+extern "C" { extern PFNGLGENFRAMEBUFFERSPROC __glewGenFramebuffers; }
+extern "C" { extern PFNGLGENRENDERBUFFERSPROC __glewGenRenderbuffers; }
+extern "C" { extern PFNGLGENERATEMIPMAPPROC __glewGenerateMipmap; }
+extern "C" { extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC __glewGetFramebufferAttachmentParameteriv; }
+extern "C" { extern PFNGLGETRENDERBUFFERPARAMETERIVPROC __glewGetRenderbufferParameteriv; }
+extern "C" { extern PFNGLISFRAMEBUFFERPROC __glewIsFramebuffer; }
+extern "C" { extern PFNGLISRENDERBUFFERPROC __glewIsRenderbuffer; }
+extern "C" { extern PFNGLRENDERBUFFERSTORAGEPROC __glewRenderbufferStorage; }
+extern "C" { extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC __glewRenderbufferStorageMultisample; }
+
+extern "C" { extern PFNGLFRAMEBUFFERTEXTUREARBPROC __glewFramebufferTextureARB; }
+extern "C" { extern PFNGLFRAMEBUFFERTEXTUREFACEARBPROC __glewFramebufferTextureFaceARB; }
+extern "C" { extern PFNGLFRAMEBUFFERTEXTURELAYERARBPROC __glewFramebufferTextureLayerARB; }
+extern "C" { extern PFNGLPROGRAMPARAMETERIARBPROC __glewProgramParameteriARB; }
+
 extern "C" { extern PFNGLCOLORSUBTABLEPROC __glewColorSubTable; }
 extern "C" { extern PFNGLCOLORTABLEPROC __glewColorTable; }
 extern "C" { extern PFNGLCOLORTABLEPARAMETERFVPROC __glewColorTableParameterfv; }
@@ -8376,6 +8306,11 @@ extern "C" { extern PFNGLMINMAXPROC __glewMinmax; }
 extern "C" { extern PFNGLRESETHISTOGRAMPROC __glewResetHistogram; }
 extern "C" { extern PFNGLRESETMINMAXPROC __glewResetMinmax; }
 extern "C" { extern PFNGLSEPARABLEFILTER2DPROC __glewSeparableFilter2D; }
+
+extern "C" { extern PFNGLVERTEXATTRIBDIVISORARBPROC __glewVertexAttribDivisorARB; }
+
+extern "C" { extern PFNGLFLUSHMAPPEDBUFFERRANGEPROC __glewFlushMappedBufferRange; }
+extern "C" { extern PFNGLMAPBUFFERRANGEPROC __glewMapBufferRange; }
 
 extern "C" { extern PFNGLCURRENTPALETTEMATRIXARBPROC __glewCurrentPaletteMatrixARB; }
 extern "C" { extern PFNGLMATRIXINDEXPOINTERARBPROC __glewMatrixIndexPointerARB; }
@@ -8472,6 +8407,8 @@ extern "C" { extern PFNGLUNIFORMMATRIX4FVARBPROC __glewUniformMatrix4fvARB; }
 extern "C" { extern PFNGLUSEPROGRAMOBJECTARBPROC __glewUseProgramObjectARB; }
 extern "C" { extern PFNGLVALIDATEPROGRAMARBPROC __glewValidateProgramARB; }
 
+extern "C" { extern PFNGLTEXBUFFERARBPROC __glewTexBufferARB; }
+
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE1DARBPROC __glewCompressedTexImage1DARB; }
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE2DARBPROC __glewCompressedTexImage2DARB; }
 extern "C" { extern PFNGLCOMPRESSEDTEXIMAGE3DARBPROC __glewCompressedTexImage3DARB; }
@@ -8484,6 +8421,11 @@ extern "C" { extern PFNGLLOADTRANSPOSEMATRIXDARBPROC __glewLoadTransposeMatrixdA
 extern "C" { extern PFNGLLOADTRANSPOSEMATRIXFARBPROC __glewLoadTransposeMatrixfARB; }
 extern "C" { extern PFNGLMULTTRANSPOSEMATRIXDARBPROC __glewMultTransposeMatrixdARB; }
 extern "C" { extern PFNGLMULTTRANSPOSEMATRIXFARBPROC __glewMultTransposeMatrixfARB; }
+
+extern "C" { extern PFNGLBINDVERTEXARRAYPROC __glewBindVertexArray; }
+extern "C" { extern PFNGLDELETEVERTEXARRAYSPROC __glewDeleteVertexArrays; }
+extern "C" { extern PFNGLGENVERTEXARRAYSPROC __glewGenVertexArrays; }
+extern "C" { extern PFNGLISVERTEXARRAYPROC __glewIsVertexArray; }
 
 extern "C" { extern PFNGLVERTEXBLENDARBPROC __glewVertexBlendARB; }
 extern "C" { extern PFNGLWEIGHTPOINTERARBPROC __glewWeightPointerARB; }
@@ -8728,6 +8670,193 @@ extern "C" { extern PFNGLCULLPARAMETERFVEXTPROC __glewCullParameterfvEXT; }
 
 extern "C" { extern PFNGLDEPTHBOUNDSEXTPROC __glewDepthBoundsEXT; }
 
+extern "C" { extern PFNGLBINDMULTITEXTUREEXTPROC __glewBindMultiTextureEXT; }
+extern "C" { extern PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC __glewCheckNamedFramebufferStatusEXT; }
+extern "C" { extern PFNGLCLIENTATTRIBDEFAULTEXTPROC __glewClientAttribDefaultEXT; }
+extern "C" { extern PFNGLCOMPRESSEDMULTITEXIMAGE1DEXTPROC __glewCompressedMultiTexImage1DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDMULTITEXIMAGE2DEXTPROC __glewCompressedMultiTexImage2DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDMULTITEXIMAGE3DEXTPROC __glewCompressedMultiTexImage3DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDMULTITEXSUBIMAGE1DEXTPROC __glewCompressedMultiTexSubImage1DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDMULTITEXSUBIMAGE2DEXTPROC __glewCompressedMultiTexSubImage2DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDMULTITEXSUBIMAGE3DEXTPROC __glewCompressedMultiTexSubImage3DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC __glewCompressedTextureImage1DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC __glewCompressedTextureImage2DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC __glewCompressedTextureImage3DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC __glewCompressedTextureSubImage1DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC __glewCompressedTextureSubImage2DEXT; }
+extern "C" { extern PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC __glewCompressedTextureSubImage3DEXT; }
+extern "C" { extern PFNGLCOPYMULTITEXIMAGE1DEXTPROC __glewCopyMultiTexImage1DEXT; }
+extern "C" { extern PFNGLCOPYMULTITEXIMAGE2DEXTPROC __glewCopyMultiTexImage2DEXT; }
+extern "C" { extern PFNGLCOPYMULTITEXSUBIMAGE1DEXTPROC __glewCopyMultiTexSubImage1DEXT; }
+extern "C" { extern PFNGLCOPYMULTITEXSUBIMAGE2DEXTPROC __glewCopyMultiTexSubImage2DEXT; }
+extern "C" { extern PFNGLCOPYMULTITEXSUBIMAGE3DEXTPROC __glewCopyMultiTexSubImage3DEXT; }
+extern "C" { extern PFNGLCOPYTEXTUREIMAGE1DEXTPROC __glewCopyTextureImage1DEXT; }
+extern "C" { extern PFNGLCOPYTEXTUREIMAGE2DEXTPROC __glewCopyTextureImage2DEXT; }
+extern "C" { extern PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC __glewCopyTextureSubImage1DEXT; }
+extern "C" { extern PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC __glewCopyTextureSubImage2DEXT; }
+extern "C" { extern PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC __glewCopyTextureSubImage3DEXT; }
+extern "C" { extern PFNGLDISABLECLIENTSTATEINDEXEDEXTPROC __glewDisableClientStateIndexedEXT; }
+extern "C" { extern PFNGLENABLECLIENTSTATEINDEXEDEXTPROC __glewEnableClientStateIndexedEXT; }
+extern "C" { extern PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC __glewFramebufferDrawBufferEXT; }
+extern "C" { extern PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC __glewFramebufferDrawBuffersEXT; }
+extern "C" { extern PFNGLFRAMEBUFFERREADBUFFEREXTPROC __glewFramebufferReadBufferEXT; }
+extern "C" { extern PFNGLGENERATEMULTITEXMIPMAPEXTPROC __glewGenerateMultiTexMipmapEXT; }
+extern "C" { extern PFNGLGENERATETEXTUREMIPMAPEXTPROC __glewGenerateTextureMipmapEXT; }
+extern "C" { extern PFNGLGETCOMPRESSEDMULTITEXIMAGEEXTPROC __glewGetCompressedMultiTexImageEXT; }
+extern "C" { extern PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC __glewGetCompressedTextureImageEXT; }
+extern "C" { extern PFNGLGETDOUBLEINDEXEDVEXTPROC __glewGetDoubleIndexedvEXT; }
+extern "C" { extern PFNGLGETFLOATINDEXEDVEXTPROC __glewGetFloatIndexedvEXT; }
+extern "C" { extern PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC __glewGetFramebufferParameterivEXT; }
+extern "C" { extern PFNGLGETMULTITEXENVFVEXTPROC __glewGetMultiTexEnvfvEXT; }
+extern "C" { extern PFNGLGETMULTITEXENVIVEXTPROC __glewGetMultiTexEnvivEXT; }
+extern "C" { extern PFNGLGETMULTITEXGENDVEXTPROC __glewGetMultiTexGendvEXT; }
+extern "C" { extern PFNGLGETMULTITEXGENFVEXTPROC __glewGetMultiTexGenfvEXT; }
+extern "C" { extern PFNGLGETMULTITEXGENIVEXTPROC __glewGetMultiTexGenivEXT; }
+extern "C" { extern PFNGLGETMULTITEXIMAGEEXTPROC __glewGetMultiTexImageEXT; }
+extern "C" { extern PFNGLGETMULTITEXLEVELPARAMETERFVEXTPROC __glewGetMultiTexLevelParameterfvEXT; }
+extern "C" { extern PFNGLGETMULTITEXLEVELPARAMETERIVEXTPROC __glewGetMultiTexLevelParameterivEXT; }
+extern "C" { extern PFNGLGETMULTITEXPARAMETERIIVEXTPROC __glewGetMultiTexParameterIivEXT; }
+extern "C" { extern PFNGLGETMULTITEXPARAMETERIUIVEXTPROC __glewGetMultiTexParameterIuivEXT; }
+extern "C" { extern PFNGLGETMULTITEXPARAMETERFVEXTPROC __glewGetMultiTexParameterfvEXT; }
+extern "C" { extern PFNGLGETMULTITEXPARAMETERIVEXTPROC __glewGetMultiTexParameterivEXT; }
+extern "C" { extern PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC __glewGetNamedBufferParameterivEXT; }
+extern "C" { extern PFNGLGETNAMEDBUFFERPOINTERVEXTPROC __glewGetNamedBufferPointervEXT; }
+extern "C" { extern PFNGLGETNAMEDBUFFERSUBDATAEXTPROC __glewGetNamedBufferSubDataEXT; }
+extern "C" { extern PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC __glewGetNamedFramebufferAttachmentParameterivEXT; }
+extern "C" { extern PFNGLGETNAMEDPROGRAMLOCALPARAMETERIIVEXTPROC __glewGetNamedProgramLocalParameterIivEXT; }
+extern "C" { extern PFNGLGETNAMEDPROGRAMLOCALPARAMETERIUIVEXTPROC __glewGetNamedProgramLocalParameterIuivEXT; }
+extern "C" { extern PFNGLGETNAMEDPROGRAMLOCALPARAMETERDVEXTPROC __glewGetNamedProgramLocalParameterdvEXT; }
+extern "C" { extern PFNGLGETNAMEDPROGRAMLOCALPARAMETERFVEXTPROC __glewGetNamedProgramLocalParameterfvEXT; }
+extern "C" { extern PFNGLGETNAMEDPROGRAMSTRINGEXTPROC __glewGetNamedProgramStringEXT; }
+extern "C" { extern PFNGLGETNAMEDPROGRAMIVEXTPROC __glewGetNamedProgramivEXT; }
+extern "C" { extern PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC __glewGetNamedRenderbufferParameterivEXT; }
+extern "C" { extern PFNGLGETPOINTERINDEXEDVEXTPROC __glewGetPointerIndexedvEXT; }
+extern "C" { extern PFNGLGETTEXTUREIMAGEEXTPROC __glewGetTextureImageEXT; }
+extern "C" { extern PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC __glewGetTextureLevelParameterfvEXT; }
+extern "C" { extern PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC __glewGetTextureLevelParameterivEXT; }
+extern "C" { extern PFNGLGETTEXTUREPARAMETERIIVEXTPROC __glewGetTextureParameterIivEXT; }
+extern "C" { extern PFNGLGETTEXTUREPARAMETERIUIVEXTPROC __glewGetTextureParameterIuivEXT; }
+extern "C" { extern PFNGLGETTEXTUREPARAMETERFVEXTPROC __glewGetTextureParameterfvEXT; }
+extern "C" { extern PFNGLGETTEXTUREPARAMETERIVEXTPROC __glewGetTextureParameterivEXT; }
+extern "C" { extern PFNGLMAPNAMEDBUFFEREXTPROC __glewMapNamedBufferEXT; }
+extern "C" { extern PFNGLMATRIXFRUSTUMEXTPROC __glewMatrixFrustumEXT; }
+extern "C" { extern PFNGLMATRIXLOADIDENTITYEXTPROC __glewMatrixLoadIdentityEXT; }
+extern "C" { extern PFNGLMATRIXLOADTRANSPOSEDEXTPROC __glewMatrixLoadTransposedEXT; }
+extern "C" { extern PFNGLMATRIXLOADTRANSPOSEFEXTPROC __glewMatrixLoadTransposefEXT; }
+extern "C" { extern PFNGLMATRIXLOADDEXTPROC __glewMatrixLoaddEXT; }
+extern "C" { extern PFNGLMATRIXLOADFEXTPROC __glewMatrixLoadfEXT; }
+extern "C" { extern PFNGLMATRIXMULTTRANSPOSEDEXTPROC __glewMatrixMultTransposedEXT; }
+extern "C" { extern PFNGLMATRIXMULTTRANSPOSEFEXTPROC __glewMatrixMultTransposefEXT; }
+extern "C" { extern PFNGLMATRIXMULTDEXTPROC __glewMatrixMultdEXT; }
+extern "C" { extern PFNGLMATRIXMULTFEXTPROC __glewMatrixMultfEXT; }
+extern "C" { extern PFNGLMATRIXORTHOEXTPROC __glewMatrixOrthoEXT; }
+extern "C" { extern PFNGLMATRIXPOPEXTPROC __glewMatrixPopEXT; }
+extern "C" { extern PFNGLMATRIXPUSHEXTPROC __glewMatrixPushEXT; }
+extern "C" { extern PFNGLMATRIXROTATEDEXTPROC __glewMatrixRotatedEXT; }
+extern "C" { extern PFNGLMATRIXROTATEFEXTPROC __glewMatrixRotatefEXT; }
+extern "C" { extern PFNGLMATRIXSCALEDEXTPROC __glewMatrixScaledEXT; }
+extern "C" { extern PFNGLMATRIXSCALEFEXTPROC __glewMatrixScalefEXT; }
+extern "C" { extern PFNGLMATRIXTRANSLATEDEXTPROC __glewMatrixTranslatedEXT; }
+extern "C" { extern PFNGLMATRIXTRANSLATEFEXTPROC __glewMatrixTranslatefEXT; }
+extern "C" { extern PFNGLMULTITEXBUFFEREXTPROC __glewMultiTexBufferEXT; }
+extern "C" { extern PFNGLMULTITEXCOORDPOINTEREXTPROC __glewMultiTexCoordPointerEXT; }
+extern "C" { extern PFNGLMULTITEXENVFEXTPROC __glewMultiTexEnvfEXT; }
+extern "C" { extern PFNGLMULTITEXENVFVEXTPROC __glewMultiTexEnvfvEXT; }
+extern "C" { extern PFNGLMULTITEXENVIEXTPROC __glewMultiTexEnviEXT; }
+extern "C" { extern PFNGLMULTITEXENVIVEXTPROC __glewMultiTexEnvivEXT; }
+extern "C" { extern PFNGLMULTITEXGENDEXTPROC __glewMultiTexGendEXT; }
+extern "C" { extern PFNGLMULTITEXGENDVEXTPROC __glewMultiTexGendvEXT; }
+extern "C" { extern PFNGLMULTITEXGENFEXTPROC __glewMultiTexGenfEXT; }
+extern "C" { extern PFNGLMULTITEXGENFVEXTPROC __glewMultiTexGenfvEXT; }
+extern "C" { extern PFNGLMULTITEXGENIEXTPROC __glewMultiTexGeniEXT; }
+extern "C" { extern PFNGLMULTITEXGENIVEXTPROC __glewMultiTexGenivEXT; }
+extern "C" { extern PFNGLMULTITEXIMAGE1DEXTPROC __glewMultiTexImage1DEXT; }
+extern "C" { extern PFNGLMULTITEXIMAGE2DEXTPROC __glewMultiTexImage2DEXT; }
+extern "C" { extern PFNGLMULTITEXIMAGE3DEXTPROC __glewMultiTexImage3DEXT; }
+extern "C" { extern PFNGLMULTITEXPARAMETERIIVEXTPROC __glewMultiTexParameterIivEXT; }
+extern "C" { extern PFNGLMULTITEXPARAMETERIUIVEXTPROC __glewMultiTexParameterIuivEXT; }
+extern "C" { extern PFNGLMULTITEXPARAMETERFEXTPROC __glewMultiTexParameterfEXT; }
+extern "C" { extern PFNGLMULTITEXPARAMETERFVEXTPROC __glewMultiTexParameterfvEXT; }
+extern "C" { extern PFNGLMULTITEXPARAMETERIEXTPROC __glewMultiTexParameteriEXT; }
+extern "C" { extern PFNGLMULTITEXPARAMETERIVEXTPROC __glewMultiTexParameterivEXT; }
+extern "C" { extern PFNGLMULTITEXRENDERBUFFEREXTPROC __glewMultiTexRenderbufferEXT; }
+extern "C" { extern PFNGLMULTITEXSUBIMAGE1DEXTPROC __glewMultiTexSubImage1DEXT; }
+extern "C" { extern PFNGLMULTITEXSUBIMAGE2DEXTPROC __glewMultiTexSubImage2DEXT; }
+extern "C" { extern PFNGLMULTITEXSUBIMAGE3DEXTPROC __glewMultiTexSubImage3DEXT; }
+extern "C" { extern PFNGLNAMEDBUFFERDATAEXTPROC __glewNamedBufferDataEXT; }
+extern "C" { extern PFNGLNAMEDBUFFERSUBDATAEXTPROC __glewNamedBufferSubDataEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC __glewNamedFramebufferRenderbufferEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC __glewNamedFramebufferTexture1DEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC __glewNamedFramebufferTexture2DEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC __glewNamedFramebufferTexture3DEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC __glewNamedFramebufferTextureEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC __glewNamedFramebufferTextureFaceEXT; }
+extern "C" { extern PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC __glewNamedFramebufferTextureLayerEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETER4DEXTPROC __glewNamedProgramLocalParameter4dEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETER4DVEXTPROC __glewNamedProgramLocalParameter4dvEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETER4FEXTPROC __glewNamedProgramLocalParameter4fEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETER4FVEXTPROC __glewNamedProgramLocalParameter4fvEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERI4IEXTPROC __glewNamedProgramLocalParameterI4iEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERI4IVEXTPROC __glewNamedProgramLocalParameterI4ivEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIEXTPROC __glewNamedProgramLocalParameterI4uiEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIVEXTPROC __glewNamedProgramLocalParameterI4uivEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERS4FVEXTPROC __glewNamedProgramLocalParameters4fvEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERSI4IVEXTPROC __glewNamedProgramLocalParametersI4ivEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMLOCALPARAMETERSI4UIVEXTPROC __glewNamedProgramLocalParametersI4uivEXT; }
+extern "C" { extern PFNGLNAMEDPROGRAMSTRINGEXTPROC __glewNamedProgramStringEXT; }
+extern "C" { extern PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC __glewNamedRenderbufferStorageEXT; }
+extern "C" { extern PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC __glewNamedRenderbufferStorageMultisampleCoverageEXT; }
+extern "C" { extern PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC __glewNamedRenderbufferStorageMultisampleEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM1FEXTPROC __glewProgramUniform1fEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM1FVEXTPROC __glewProgramUniform1fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM1IEXTPROC __glewProgramUniform1iEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM1IVEXTPROC __glewProgramUniform1ivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM1UIEXTPROC __glewProgramUniform1uiEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM1UIVEXTPROC __glewProgramUniform1uivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM2FEXTPROC __glewProgramUniform2fEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM2FVEXTPROC __glewProgramUniform2fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM2IEXTPROC __glewProgramUniform2iEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM2IVEXTPROC __glewProgramUniform2ivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM2UIEXTPROC __glewProgramUniform2uiEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM2UIVEXTPROC __glewProgramUniform2uivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM3FEXTPROC __glewProgramUniform3fEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM3FVEXTPROC __glewProgramUniform3fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM3IEXTPROC __glewProgramUniform3iEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM3IVEXTPROC __glewProgramUniform3ivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM3UIEXTPROC __glewProgramUniform3uiEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM3UIVEXTPROC __glewProgramUniform3uivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM4FEXTPROC __glewProgramUniform4fEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM4FVEXTPROC __glewProgramUniform4fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM4IEXTPROC __glewProgramUniform4iEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM4IVEXTPROC __glewProgramUniform4ivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM4UIEXTPROC __glewProgramUniform4uiEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORM4UIVEXTPROC __glewProgramUniform4uivEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC __glewProgramUniformMatrix2fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC __glewProgramUniformMatrix2x3fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC __glewProgramUniformMatrix2x4fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC __glewProgramUniformMatrix3fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC __glewProgramUniformMatrix3x2fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC __glewProgramUniformMatrix3x4fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC __glewProgramUniformMatrix4fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC __glewProgramUniformMatrix4x2fvEXT; }
+extern "C" { extern PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC __glewProgramUniformMatrix4x3fvEXT; }
+extern "C" { extern PFNGLPUSHCLIENTATTRIBDEFAULTEXTPROC __glewPushClientAttribDefaultEXT; }
+extern "C" { extern PFNGLTEXTUREBUFFEREXTPROC __glewTextureBufferEXT; }
+extern "C" { extern PFNGLTEXTUREIMAGE1DEXTPROC __glewTextureImage1DEXT; }
+extern "C" { extern PFNGLTEXTUREIMAGE2DEXTPROC __glewTextureImage2DEXT; }
+extern "C" { extern PFNGLTEXTUREIMAGE3DEXTPROC __glewTextureImage3DEXT; }
+extern "C" { extern PFNGLTEXTUREPARAMETERIIVEXTPROC __glewTextureParameterIivEXT; }
+extern "C" { extern PFNGLTEXTUREPARAMETERIUIVEXTPROC __glewTextureParameterIuivEXT; }
+extern "C" { extern PFNGLTEXTUREPARAMETERFEXTPROC __glewTextureParameterfEXT; }
+extern "C" { extern PFNGLTEXTUREPARAMETERFVEXTPROC __glewTextureParameterfvEXT; }
+extern "C" { extern PFNGLTEXTUREPARAMETERIEXTPROC __glewTextureParameteriEXT; }
+extern "C" { extern PFNGLTEXTUREPARAMETERIVEXTPROC __glewTextureParameterivEXT; }
+extern "C" { extern PFNGLTEXTURERENDERBUFFEREXTPROC __glewTextureRenderbufferEXT; }
+extern "C" { extern PFNGLTEXTURESUBIMAGE1DEXTPROC __glewTextureSubImage1DEXT; }
+extern "C" { extern PFNGLTEXTURESUBIMAGE2DEXTPROC __glewTextureSubImage2DEXT; }
+extern "C" { extern PFNGLTEXTURESUBIMAGE3DEXTPROC __glewTextureSubImage3DEXT; }
+extern "C" { extern PFNGLUNMAPNAMEDBUFFEREXTPROC __glewUnmapNamedBufferEXT; }
+
 extern "C" { extern PFNGLCOLORMASKINDEXEDEXTPROC __glewColorMaskIndexedEXT; }
 extern "C" { extern PFNGLDISABLEINDEXEDEXTPROC __glewDisableIndexedEXT; }
 extern "C" { extern PFNGLENABLEINDEXEDEXTPROC __glewEnableIndexedEXT; }
@@ -8922,6 +9051,14 @@ extern "C" { extern PFNGLTEXTURENORMALEXTPROC __glewTextureNormalEXT; }
 extern "C" { extern PFNGLGETQUERYOBJECTI64VEXTPROC __glewGetQueryObjecti64vEXT; }
 extern "C" { extern PFNGLGETQUERYOBJECTUI64VEXTPROC __glewGetQueryObjectui64vEXT; }
 
+extern "C" { extern PFNGLBEGINTRANSFORMFEEDBACKEXTPROC __glewBeginTransformFeedbackEXT; }
+extern "C" { extern PFNGLBINDBUFFERBASEEXTPROC __glewBindBufferBaseEXT; }
+extern "C" { extern PFNGLBINDBUFFEROFFSETEXTPROC __glewBindBufferOffsetEXT; }
+extern "C" { extern PFNGLBINDBUFFERRANGEEXTPROC __glewBindBufferRangeEXT; }
+extern "C" { extern PFNGLENDTRANSFORMFEEDBACKEXTPROC __glewEndTransformFeedbackEXT; }
+extern "C" { extern PFNGLGETTRANSFORMFEEDBACKVARYINGEXTPROC __glewGetTransformFeedbackVaryingEXT; }
+extern "C" { extern PFNGLTRANSFORMFEEDBACKVARYINGSEXTPROC __glewTransformFeedbackVaryingsEXT; }
+
 extern "C" { extern PFNGLARRAYELEMENTEXTPROC __glewArrayElementEXT; }
 extern "C" { extern PFNGLCOLORPOINTEREXTPROC __glewColorPointerEXT; }
 extern "C" { extern PFNGLDRAWARRAYSEXTPROC __glewDrawArraysEXT; }
@@ -9043,6 +9180,9 @@ extern "C" { extern PFNGLWINDOWPOS4IVMESAPROC __glewWindowPos4ivMESA; }
 extern "C" { extern PFNGLWINDOWPOS4SMESAPROC __glewWindowPos4sMESA; }
 extern "C" { extern PFNGLWINDOWPOS4SVMESAPROC __glewWindowPos4svMESA; }
 
+extern "C" { extern PFNGLBEGINCONDITIONALRENDERNVPROC __glewBeginConditionalRenderNV; }
+extern "C" { extern PFNGLENDCONDITIONALRENDERNVPROC __glewEndConditionalRenderNV; }
+
 extern "C" { extern PFNGLCLEARDEPTHDNVPROC __glewClearDepthdNV; }
 extern "C" { extern PFNGLDEPTHBOUNDSDNVPROC __glewDepthBoundsdNV; }
 extern "C" { extern PFNGLDEPTHRANGEDNVPROC __glewDepthRangedNV; }
@@ -9056,6 +9196,10 @@ extern "C" { extern PFNGLGETMAPPARAMETERIVNVPROC __glewGetMapParameterivNV; }
 extern "C" { extern PFNGLMAPCONTROLPOINTSNVPROC __glewMapControlPointsNV; }
 extern "C" { extern PFNGLMAPPARAMETERFVNVPROC __glewMapParameterfvNV; }
 extern "C" { extern PFNGLMAPPARAMETERIVNVPROC __glewMapParameterivNV; }
+
+extern "C" { extern PFNGLGETMULTISAMPLEFVNVPROC __glewGetMultisamplefvNV; }
+extern "C" { extern PFNGLSAMPLEMASKINDEXEDNVPROC __glewSampleMaskIndexedNV; }
+extern "C" { extern PFNGLTEXRENDERBUFFERNVPROC __glewTexRenderbufferNV; }
 
 extern "C" { extern PFNGLDELETEFENCESNVPROC __glewDeleteFencesNV; }
 extern "C" { extern PFNGLFINISHFENCENVPROC __glewFinishFenceNV; }
@@ -9153,6 +9297,14 @@ extern "C" { extern PFNGLPIXELDATARANGENVPROC __glewPixelDataRangeNV; }
 
 extern "C" { extern PFNGLPOINTPARAMETERINVPROC __glewPointParameteriNV; }
 extern "C" { extern PFNGLPOINTPARAMETERIVNVPROC __glewPointParameterivNV; }
+
+extern "C" { extern PFNGLGETVIDEOI64VNVPROC __glewGetVideoi64vNV; }
+extern "C" { extern PFNGLGETVIDEOIVNVPROC __glewGetVideoivNV; }
+extern "C" { extern PFNGLGETVIDEOUI64VNVPROC __glewGetVideoui64vNV; }
+extern "C" { extern PFNGLGETVIDEOUIVNVPROC __glewGetVideouivNV; }
+extern "C" { extern PFNGLPRESENTFRAMEDUALFILLNVPROC __glewPresentFrameDualFillNV; }
+extern "C" { extern PFNGLPRESENTFRAMEKEYEDNVPROC __glewPresentFrameKeyedNV; }
+extern "C" { extern PFNGLVIDEOPARAMETERIVNVPROC __glewVideoParameterivNV; }
 
 extern "C" { extern PFNGLPRIMITIVERESTARTINDEXNVPROC __glewPrimitiveRestartIndexNV; }
 extern "C" { extern PFNGLPRIMITIVERESTARTNVPROC __glewPrimitiveRestartNV; }
@@ -9392,7 +9544,7 @@ extern "C" { extern PFNGLTEXCOORD4FVERTEX4FSUNPROC __glewTexCoord4fVertex4fSUN; 
 extern "C" { extern PFNGLTEXCOORD4FVERTEX4FVSUNPROC __glewTexCoord4fVertex4fvSUN; }
 
 extern "C" { extern PFNGLADDSWAPHINTRECTWINPROC __glewAddSwapHintRectWIN; }
-# 10404 "/usr/include/GL/glew.h" 3
+# 11861 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean __GLEW_VERSION_1_1; }
 extern "C" { extern GLboolean __GLEW_VERSION_1_2; }
 extern "C" { extern GLboolean __GLEW_VERSION_1_3; }
@@ -9400,6 +9552,7 @@ extern "C" { extern GLboolean __GLEW_VERSION_1_4; }
 extern "C" { extern GLboolean __GLEW_VERSION_1_5; }
 extern "C" { extern GLboolean __GLEW_VERSION_2_0; }
 extern "C" { extern GLboolean __GLEW_VERSION_2_1; }
+extern "C" { extern GLboolean __GLEW_VERSION_3_0; }
 extern "C" { extern GLboolean __GLEW_3DFX_multisample; }
 extern "C" { extern GLboolean __GLEW_3DFX_tbuffer; }
 extern "C" { extern GLboolean __GLEW_3DFX_texture_compression_FXT1; }
@@ -9416,13 +9569,21 @@ extern "C" { extern GLboolean __GLEW_APPLE_vertex_array_object; }
 extern "C" { extern GLboolean __GLEW_APPLE_vertex_array_range; }
 extern "C" { extern GLboolean __GLEW_APPLE_ycbcr_422; }
 extern "C" { extern GLboolean __GLEW_ARB_color_buffer_float; }
+extern "C" { extern GLboolean __GLEW_ARB_depth_buffer_float; }
 extern "C" { extern GLboolean __GLEW_ARB_depth_texture; }
 extern "C" { extern GLboolean __GLEW_ARB_draw_buffers; }
+extern "C" { extern GLboolean __GLEW_ARB_draw_instanced; }
 extern "C" { extern GLboolean __GLEW_ARB_fragment_program; }
 extern "C" { extern GLboolean __GLEW_ARB_fragment_program_shadow; }
 extern "C" { extern GLboolean __GLEW_ARB_fragment_shader; }
+extern "C" { extern GLboolean __GLEW_ARB_framebuffer_object; }
+extern "C" { extern GLboolean __GLEW_ARB_framebuffer_sRGB; }
+extern "C" { extern GLboolean __GLEW_ARB_geometry_shader4; }
 extern "C" { extern GLboolean __GLEW_ARB_half_float_pixel; }
+extern "C" { extern GLboolean __GLEW_ARB_half_float_vertex; }
 extern "C" { extern GLboolean __GLEW_ARB_imaging; }
+extern "C" { extern GLboolean __GLEW_ARB_instanced_arrays; }
+extern "C" { extern GLboolean __GLEW_ARB_map_buffer_range; }
 extern "C" { extern GLboolean __GLEW_ARB_matrix_palette; }
 extern "C" { extern GLboolean __GLEW_ARB_multisample; }
 extern "C" { extern GLboolean __GLEW_ARB_multitexture; }
@@ -9435,7 +9596,9 @@ extern "C" { extern GLboolean __GLEW_ARB_shading_language_100; }
 extern "C" { extern GLboolean __GLEW_ARB_shadow; }
 extern "C" { extern GLboolean __GLEW_ARB_shadow_ambient; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_border_clamp; }
+extern "C" { extern GLboolean __GLEW_ARB_texture_buffer_object; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_compression; }
+extern "C" { extern GLboolean __GLEW_ARB_texture_compression_rgtc; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_cube_map; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_env_add; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_env_combine; }
@@ -9445,7 +9608,9 @@ extern "C" { extern GLboolean __GLEW_ARB_texture_float; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_mirrored_repeat; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_non_power_of_two; }
 extern "C" { extern GLboolean __GLEW_ARB_texture_rectangle; }
+extern "C" { extern GLboolean __GLEW_ARB_texture_rg; }
 extern "C" { extern GLboolean __GLEW_ARB_transpose_matrix; }
+extern "C" { extern GLboolean __GLEW_ARB_vertex_array_object; }
 extern "C" { extern GLboolean __GLEW_ARB_vertex_blend; }
 extern "C" { extern GLboolean __GLEW_ARB_vertex_buffer_object; }
 extern "C" { extern GLboolean __GLEW_ARB_vertex_program; }
@@ -9491,6 +9656,7 @@ extern "C" { extern GLboolean __GLEW_EXT_coordinate_frame; }
 extern "C" { extern GLboolean __GLEW_EXT_copy_texture; }
 extern "C" { extern GLboolean __GLEW_EXT_cull_vertex; }
 extern "C" { extern GLboolean __GLEW_EXT_depth_bounds_test; }
+extern "C" { extern GLboolean __GLEW_EXT_direct_state_access; }
 extern "C" { extern GLboolean __GLEW_EXT_draw_buffers2; }
 extern "C" { extern GLboolean __GLEW_EXT_draw_instanced; }
 extern "C" { extern GLboolean __GLEW_EXT_draw_range_elements; }
@@ -9554,8 +9720,11 @@ extern "C" { extern GLboolean __GLEW_EXT_texture_perturb_normal; }
 extern "C" { extern GLboolean __GLEW_EXT_texture_rectangle; }
 extern "C" { extern GLboolean __GLEW_EXT_texture_sRGB; }
 extern "C" { extern GLboolean __GLEW_EXT_texture_shared_exponent; }
+extern "C" { extern GLboolean __GLEW_EXT_texture_swizzle; }
 extern "C" { extern GLboolean __GLEW_EXT_timer_query; }
+extern "C" { extern GLboolean __GLEW_EXT_transform_feedback; }
 extern "C" { extern GLboolean __GLEW_EXT_vertex_array; }
+extern "C" { extern GLboolean __GLEW_EXT_vertex_array_bgra; }
 extern "C" { extern GLboolean __GLEW_EXT_vertex_shader; }
 extern "C" { extern GLboolean __GLEW_EXT_vertex_weighting; }
 extern "C" { extern GLboolean __GLEW_GREMEDY_frame_terminator; }
@@ -9581,11 +9750,13 @@ extern "C" { extern GLboolean __GLEW_MESA_resize_buffers; }
 extern "C" { extern GLboolean __GLEW_MESA_window_pos; }
 extern "C" { extern GLboolean __GLEW_MESA_ycbcr_texture; }
 extern "C" { extern GLboolean __GLEW_NV_blend_square; }
+extern "C" { extern GLboolean __GLEW_NV_conditional_render; }
 extern "C" { extern GLboolean __GLEW_NV_copy_depth_to_color; }
 extern "C" { extern GLboolean __GLEW_NV_depth_buffer_float; }
 extern "C" { extern GLboolean __GLEW_NV_depth_clamp; }
 extern "C" { extern GLboolean __GLEW_NV_depth_range_unclamped; }
 extern "C" { extern GLboolean __GLEW_NV_evaluators; }
+extern "C" { extern GLboolean __GLEW_NV_explicit_multisample; }
 extern "C" { extern GLboolean __GLEW_NV_fence; }
 extern "C" { extern GLboolean __GLEW_NV_float_buffer; }
 extern "C" { extern GLboolean __GLEW_NV_fog_distance; }
@@ -9605,6 +9776,7 @@ extern "C" { extern GLboolean __GLEW_NV_packed_depth_stencil; }
 extern "C" { extern GLboolean __GLEW_NV_parameter_buffer_object; }
 extern "C" { extern GLboolean __GLEW_NV_pixel_data_range; }
 extern "C" { extern GLboolean __GLEW_NV_point_sprite; }
+extern "C" { extern GLboolean __GLEW_NV_present_video; }
 extern "C" { extern GLboolean __GLEW_NV_primitive_restart; }
 extern "C" { extern GLboolean __GLEW_NV_register_combiners; }
 extern "C" { extern GLboolean __GLEW_NV_register_combiners2; }
@@ -9643,6 +9815,7 @@ extern "C" { extern GLboolean __GLEW_SGIS_fog_function; }
 extern "C" { extern GLboolean __GLEW_SGIS_generate_mipmap; }
 extern "C" { extern GLboolean __GLEW_SGIS_multisample; }
 extern "C" { extern GLboolean __GLEW_SGIS_pixel_texture; }
+extern "C" { extern GLboolean __GLEW_SGIS_point_line_texgen; }
 extern "C" { extern GLboolean __GLEW_SGIS_sharpen_texture; }
 extern "C" { extern GLboolean __GLEW_SGIS_texture4D; }
 extern "C" { extern GLboolean __GLEW_SGIS_texture_border_clamp; }
@@ -9655,6 +9828,7 @@ extern "C" { extern GLboolean __GLEW_SGIX_async_histogram; }
 extern "C" { extern GLboolean __GLEW_SGIX_async_pixel; }
 extern "C" { extern GLboolean __GLEW_SGIX_blend_alpha_minmax; }
 extern "C" { extern GLboolean __GLEW_SGIX_clipmap; }
+extern "C" { extern GLboolean __GLEW_SGIX_convolution_accuracy; }
 extern "C" { extern GLboolean __GLEW_SGIX_depth_texture; }
 extern "C" { extern GLboolean __GLEW_SGIX_flush_raster; }
 extern "C" { extern GLboolean __GLEW_SGIX_fog_offset; }
@@ -9695,10 +9869,10 @@ extern "C" { extern GLboolean __GLEW_SUN_vertex; }
 extern "C" { extern GLboolean __GLEW_WIN_phong_shading; }
 extern "C" { extern GLboolean __GLEW_WIN_specular_fog; }
 extern "C" { extern GLboolean __GLEW_WIN_swap_hint; }
-# 10746 "/usr/include/GL/glew.h" 3
+# 12225 "/usr/include/GL/glew.h" 3
 extern "C" GLenum glewInit();
 extern "C" GLboolean glewIsSupported(const char *);
-# 10755 "/usr/include/GL/glew.h" 3
+# 12234 "/usr/include/GL/glew.h" 3
 extern "C" { extern GLboolean glewExperimental; }
 extern "C" GLboolean glewGetExtension(const char *);
 extern "C" const GLubyte *glewGetErrorString(GLenum);
@@ -9907,9 +10081,9 @@ c)
 {
 return make_cuFloatComplex((float)cuCreal(c), (float)cuCimag(c));
 }
-# 69 "/usr/local/cuda/bin/../include/cufft.h"
+# 71 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" { typedef
-# 59 "/usr/local/cuda/bin/../include/cufft.h"
+# 61 "/usr/local/cuda/bin/../include/cufft.h"
 enum cufftResult_t {
 CUFFT_SUCCESS,
 CUFFT_INVALID_PLAN,
@@ -9928,19 +10102,25 @@ CUFFT_INVALID_SIZE
 extern "C" { typedef unsigned cufftHandle; }
 
 
+
 extern "C" { typedef float cufftReal; }
+extern "C" { typedef double cufftDoubleReal; }
 
 
 
 
 extern "C" { typedef cuComplex cufftComplex; }
-# 93 "/usr/local/cuda/bin/../include/cufft.h"
+extern "C" { typedef cuDoubleComplex cufftDoubleComplex; }
+# 101 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" { typedef
-# 89 "/usr/local/cuda/bin/../include/cufft.h"
+# 94 "/usr/local/cuda/bin/../include/cufft.h"
 enum cufftType_t {
 CUFFT_R2C = 42,
 CUFFT_C2R = 44,
-CUFFT_C2C = 41
+CUFFT_C2C = 41,
+CUFFT_D2Z = 106,
+CUFFT_Z2D = 108,
+CUFFT_Z2Z = 105
 } cufftType; }
 
 extern "C" cufftResult cufftPlan1d(cufftHandle *, int, cufftType, int);
@@ -9968,6 +10148,23 @@ extern "C" cufftResult cufftExecR2C(cufftHandle, cufftReal *, cufftComplex *);
 
 
 extern "C" cufftResult cufftExecC2R(cufftHandle, cufftComplex *, cufftReal *);
+
+
+
+extern "C" cufftResult cufftExecZ2Z(cufftHandle, cufftDoubleComplex *, cufftDoubleComplex *, int);
+
+
+
+
+extern "C" cufftResult cufftExecD2Z(cufftHandle, cufftDoubleReal *, cufftDoubleComplex *);
+
+
+
+extern "C" cufftResult cufftExecZ2D(cufftHandle, cufftDoubleComplex *, cufftDoubleReal *);
+
+
+
+extern "C" cufftResult cufftSetStream(cufftHandle, cudaStream_t);
 # 62 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef unsigned CUdeviceptr; }
 
@@ -10335,7 +10532,8 @@ extern "C" CUresult cuMemFreeHost(void *);
 extern "C" CUresult cuMemHostAlloc(void **, size_t, unsigned);
 
 extern "C" CUresult cuMemHostGetDevicePointer(CUdeviceptr *, void *, unsigned);
-# 618 "/usr/local/cuda/bin/../include/cuda.h"
+extern "C" CUresult cuMemHostGetFlags(unsigned *, void *);
+# 619 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemcpyHtoD(CUdeviceptr, const void *, unsigned);
 extern "C" CUresult cuMemcpyDtoH(void *, CUdeviceptr, unsigned);
 
@@ -10361,7 +10559,7 @@ extern "C" CUresult cuMemcpy2DUnaligned(const CUDA_MEMCPY2D *);
 
 
 extern "C" CUresult cuMemcpy3D(const CUDA_MEMCPY3D *);
-# 657 "/usr/local/cuda/bin/../include/cuda.h"
+# 658 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemcpyHtoDAsync(CUdeviceptr, const void *, unsigned, CUstream);
 
 extern "C" CUresult cuMemcpyDtoHAsync(void *, CUdeviceptr, unsigned, CUstream);
@@ -10378,7 +10576,7 @@ extern "C" CUresult cuMemcpy2DAsync(const CUDA_MEMCPY2D *, CUstream);
 
 
 extern "C" CUresult cuMemcpy3DAsync(const CUDA_MEMCPY3D *, CUstream);
-# 679 "/usr/local/cuda/bin/../include/cuda.h"
+# 680 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuMemsetD8(CUdeviceptr, unsigned char, unsigned);
 extern "C" CUresult cuMemsetD16(CUdeviceptr, unsigned short, unsigned);
 extern "C" CUresult cuMemsetD32(CUdeviceptr, unsigned, unsigned);
@@ -10386,18 +10584,18 @@ extern "C" CUresult cuMemsetD32(CUdeviceptr, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D8(CUdeviceptr, unsigned, unsigned char, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D16(CUdeviceptr, unsigned, unsigned short, unsigned, unsigned);
 extern "C" CUresult cuMemsetD2D32(CUdeviceptr, unsigned, unsigned, unsigned, unsigned);
-# 694 "/usr/local/cuda/bin/../include/cuda.h"
+# 695 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuFuncSetBlockShape(CUfunction, int, int, int);
 extern "C" CUresult cuFuncSetSharedSize(CUfunction, unsigned);
 extern "C" CUresult cuFuncGetAttribute(int *, CUfunction_attribute, CUfunction);
-# 704 "/usr/local/cuda/bin/../include/cuda.h"
+# 705 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuArrayCreate(CUarray *, const CUDA_ARRAY_DESCRIPTOR *);
 extern "C" CUresult cuArrayGetDescriptor(CUDA_ARRAY_DESCRIPTOR *, CUarray);
 extern "C" CUresult cuArrayDestroy(CUarray);
 
 extern "C" CUresult cuArray3DCreate(CUarray *, const CUDA_ARRAY3D_DESCRIPTOR *);
 extern "C" CUresult cuArray3DGetDescriptor(CUDA_ARRAY3D_DESCRIPTOR *, CUarray);
-# 717 "/usr/local/cuda/bin/../include/cuda.h"
+# 718 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuTexRefCreate(CUtexref *);
 extern "C" CUresult cuTexRefDestroy(CUtexref);
 
@@ -10415,24 +10613,24 @@ extern "C" CUresult cuTexRefGetAddressMode(CUaddress_mode *, CUtexref, int);
 extern "C" CUresult cuTexRefGetFilterMode(CUfilter_mode *, CUtexref);
 extern "C" CUresult cuTexRefGetFormat(CUarray_format *, int *, CUtexref);
 extern "C" CUresult cuTexRefGetFlags(unsigned *, CUtexref);
-# 741 "/usr/local/cuda/bin/../include/cuda.h"
+# 742 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuParamSetSize(CUfunction, unsigned);
 extern "C" CUresult cuParamSeti(CUfunction, int, unsigned);
 extern "C" CUresult cuParamSetf(CUfunction, int, float);
 extern "C" CUresult cuParamSetv(CUfunction, int, void *, unsigned);
 extern "C" CUresult cuParamSetTexRef(CUfunction, int, CUtexref);
-# 753 "/usr/local/cuda/bin/../include/cuda.h"
+# 754 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuLaunch(CUfunction);
 extern "C" CUresult cuLaunchGrid(CUfunction, int, int);
 extern "C" CUresult cuLaunchGridAsync(CUfunction, int, int, CUstream);
-# 762 "/usr/local/cuda/bin/../include/cuda.h"
+# 763 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuEventCreate(CUevent *, unsigned);
 extern "C" CUresult cuEventRecord(CUevent, CUstream);
 extern "C" CUresult cuEventQuery(CUevent);
 extern "C" CUresult cuEventSynchronize(CUevent);
 extern "C" CUresult cuEventDestroy(CUevent);
 extern "C" CUresult cuEventElapsedTime(float *, CUevent, CUevent);
-# 774 "/usr/local/cuda/bin/../include/cuda.h"
+# 775 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuStreamCreate(CUstream *, unsigned);
 extern "C" CUresult cuStreamQuery(CUstream);
 extern "C" CUresult cuStreamSynchronize(CUstream);
@@ -10665,8 +10863,34 @@ exit(-1);
 }
 
 
-inline void cutilDeviceInit(int ARGC, char **ARGV) { }
-# 171 "../../sdk/cutil_inline_runtime.h"
+
+
+inline void cutilDeviceInit(int ARGC, char **ARGV)
+{
+auto int deviceCount;
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_inline_runtime.h", 148);
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+
+auto cudaDeviceProp deviceProp;
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_inline_runtime.h", 158);
+if ((deviceProp.major) < 1) {
+fprintf(stderr, "cutil error: device does not support CUDA.\n");
+exit(-1); }
+
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
+__cudaSafeCall(cudaSetDevice(dev), "../../sdk/cutil_inline_runtime.h", 165);
+}
+
+
+
+
 inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
 {
 auto cudaError_t err = cudaGetLastError();
@@ -10716,11 +10940,31 @@ fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <
 exit(-1);
 }
 }
+# 54 "../../sdk/cutil_inline_drvapi.h"
+inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
+{
+cuDevice = 0;
+auto int deviceCount = 0;
+auto CUresult err = cuInit(0);
+if ((CUDA_SUCCESS) == err) {
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_inline_drvapi.h", 60); }
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; }
+if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_inline_drvapi.h", 69);
+auto char name[100];
+cuDeviceGetName(name, 100, cuDevice);
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, name); }
+}
 
 
 
-inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV) { }
-# 78 "../../sdk/cutil_inline_drvapi.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
 {
 auto CUresult err = cuCtxSynchronize();
@@ -10739,20 +10983,73 @@ exit(-1);
 # 12 "../../sdk/cutil_inline.h"
 inline void print_NVCC_min_spec(const char *sSDKsample, const char *sNVCCReq, const char *sDriverReq)
 {
-printf("CUDA %d.%02d Toolkit built this project.\n", 2020 / 1000, 2020 % 100);
+printf("CUDA %d.%02d Toolkit built this project.\n", 2030 / 1000, 2030 % 100);
 printf("  [ %s ] requirements:\n", sSDKsample);
 printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 }
-# 67 "/usr/local/cuda/bin/../include/cuda_gl_interop.h"
+# 70 "/usr/local/cuda/bin/../include/cuda_gl_interop.h"
+enum cudaGLMapFlags {
+
+cudaGLMapFlagsNone,
+cudaGLMapFlagsReadOnly,
+cudaGLMapFlagsWriteDiscard
+};
+
 extern "C" cudaError_t cudaGLSetGLDevice(int);
 extern "C" cudaError_t cudaGLRegisterBufferObject(GLuint);
 extern "C" cudaError_t cudaGLMapBufferObject(void **, GLuint);
 extern "C" cudaError_t cudaGLUnmapBufferObject(GLuint);
 extern "C" cudaError_t cudaGLUnregisterBufferObject(GLuint);
-# 16 "../../sdk/cutil_gl_inline.h"
-inline void cutilGLDeviceInit(int ARGC, char **ARGV) { }
-inline void cutilGLDeviceInitDrv(int cuDevice, int ARGC, char **ARGV) { }
+
+extern "C" cudaError_t cudaGLSetBufferObjectMapFlags(GLuint, unsigned);
+extern "C" cudaError_t cudaGLMapBufferObjectAsync(void **, GLuint, cudaStream_t);
+extern "C" cudaError_t cudaGLUnmapBufferObjectAsync(GLuint, cudaStream_t);
+# 19 "../../sdk/cutil_gl_inline.h"
+inline void cutilGLDeviceInit(int ARGC, char **ARGV)
+{
+auto int deviceCount;
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_gl_inline.h", 22);
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+
+auto cudaDeviceProp deviceProp;
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_gl_inline.h", 32);
+if ((deviceProp.major) < 1) {
+fprintf(stderr, "cutil error: device does not support CUDA.\n");
+exit(-1); }
+
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
+__cudaSafeCall(cudaGLSetGLDevice(dev), "../../sdk/cutil_gl_inline.h", 39);
+}
+
+inline void cutilGLDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
+{
+cuDevice = 0;
+auto int deviceCount = 0;
+auto CUresult err = cuInit(0);
+if ((CUDA_SUCCESS) == err) {
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_gl_inline.h", 48); }
+if (deviceCount == 0) {
+fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
+exit(-1);
+}
+auto int dev = 0;
+cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
+if (dev < 0) { dev = 0; }
+if (dev > (deviceCount - 1)) { dev = deviceCount - 1; }
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_gl_inline.h", 57);
+auto char name[100];
+cuDeviceGetName(name, 100, cuDevice);
+if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
+fprintf(stderr, "Using device %d: %s\n", dev, name); }
+}
 # 200 "/usr/include/GL/freeglut_std.h" 3
 extern "C" { extern void *glutStrokeRoman; }
 extern "C" { extern void *glutStrokeMonoRoman; }
@@ -11418,11 +11715,11 @@ cudaThreadExit();
 return 1;
 }
 
-# 1 "/tmp/tmpxft_00007e2f_00000000-1_fluidsGL.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00003d03_00000000-1_fluidsGL.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00007e2f_00000000-3_fluidsGL.fatbin.c" 1
+# 1 "/tmp/tmpxft_00003d03_00000000-3_fluidsGL.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -11437,9 +11734,11 @@ typedef struct {
     char* ptx;
 } __cudaFatPtxEntry;
 # 125 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
-typedef struct {
+typedef struct __cudaFatDebugEntryRec {
     char* gpuProfileName;
     char* debug;
+    struct __cudaFatDebugEntryRec *next;
+    unsigned int size;
 } __cudaFatDebugEntry;
 
 
@@ -11448,11 +11747,11 @@ typedef enum {
       __cudaFatDontCacheFlag = (1 << 1),
       __cudaFatSassDebugFlag = (1 << 2)
 } __cudaFatCudaBinaryFlag;
-# 144 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 146 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* name;
 } __cudaFatSymbol;
-# 158 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 160 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct __cudaFatCudaBinaryRec {
     unsigned long magic;
     unsigned long version;
@@ -11470,20 +11769,284 @@ typedef struct __cudaFatCudaBinaryRec {
     struct __cudaFatCudaBinaryRec *dependends;
     unsigned int characteristic;
 } __cudaFatCudaBinary;
-# 194 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 196 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
     typedef enum {
         __cudaFatAvoidPTX,
         __cudaFatPreferBestCode
     } __cudaFatCompilationPolicy;
-# 217 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 219 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 void fatGetCubinForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *cubin, char* *dbgInfoFile );
-# 228 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+# 230 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00007e2f_00000000-3_fluidsGL.fatbin.c" 2
+# 2 "/tmp/tmpxft_00003d03_00000000-3_fluidsGL.fatbin.c" 2
 
+
+
+
+extern "C" {
+
+
+static const unsigned long long __deviceText_$sm_13$[] = {
+0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d33315full,0x206e6f6973726576ull,
+0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x6c706d61730a7d6eull,
+0x616e090a7b207265ull,0x203d20202020656dull,0x090a666572786574ull,0x2074696e75786574ull,
+0x6f630a7d0a30203dull,0x616e090a7b206564ull,0x315a5f203d20656dull,0x63726f4664646131ull,
+0x6c6636506b5f7365ull,0x696969693274616full,0x6d6c090a6d696666ull,0x090a30203d206d65ull,
+0x35203d206d656d73ull,0x2020676572090a36ull,0x6162090a3031203dull,0x090a30203d202072ull,
+0x0a7b2074736e6f63ull,0x616e676573090909ull,0x6e6f63203d20656dull,0x65730909090a7473ull,
+0x203d20206d756e67ull,0x66666f0909090a31ull,0x30203d2020746573ull,0x657479620909090aull,
+0x0a34203d20202073ull,0x0a7b206d656d0909ull,0x3030307830090909ull,0x090a206666333030ull,
+0x62090a7d090a7d09ull,0x7b2065646f636e69ull,0x383064783009090aull,0x7830203530323030ull,
+0x3038373030343030ull,0x3030303061783020ull,0x3430783020393130ull,0x0a20303837303030ull,
+0x3030306178300909ull,0x3078302031313230ull,0x2030383730303034ull,0x3864303030337830ull,
+0x3234307830203930ull,0x090a203038373831ull,0x6430303033783009ull,0x3430783020353038ull,
+0x3020303837303132ull,0x3038303530303478ull,0x3330303478302063ull,0x09090a2030303430ull,
+0x6130343030367830ull,0x3030307830206430ull,0x7830203038376330ull,0x3130363032303036ull,
+0x3030303030783020ull,0x3009090a20303837ull,0x3036303031303378ull,0x3031346378302064ull,
+0x3378302030383730ull,0x2031303030303130ull,0x3730303134637830ull,0x783009090a203038ull,
+0x6430383034303036ull,0x6330303030783020ull,0x3036783020303837ull,0x3020313034303230ull,
+0x3837303030303078ull,0x34783009090a2030ull,0x2063316530343030ull,0x3230323030347830ull,
+0x3030367830203431ull,0x7830206431633035ull,0x3038376331303030ull,0x3036783009090a20ull,
+0x3020353130303330ull,0x3837343130303078ull,0x3031303378302030ull,0x6378302031326530ull,
+0x2030383730303134ull,0x313033783009090aull,0x7830206431613030ull,0x3038373030313463ull,
+0x3034303036783020ull,0x3030783020353163ull,0x0a20303837303230ull,0x3230303678300909ull,
+0x3078302064303030ull,0x2030383763313030ull,0x6131303030317830ull,0x3034347830203130ull,
+0x090a203038376330ull,0x3134303034783009ull,0x3030783020643136ull,0x3020303837303030ull,
+0x3132643030303278ull,0x3132343078302031ull,0x09090a2030383730ull,0x3431353030367830ull,
+0x3030307830203532ull,0x7830203038376331ull,0x3032653032303034ull,0x3131303034783020ull,
+0x3009090a20633130ull,0x3232313031303378ull,0x3031346378302035ull,0x3678302030383730ull,
+0x2031326330333030ull,0x3730323030307830ull,0x783009090a203038ull,0x6431323130303036ull,
+0x6331303030783020ull,0x3036783020303837ull,0x3020353234313430ull,0x3837343230303078ull,
+0x33783009090a2030ull,0x2031323031303130ull,0x3730303134637830ull,0x3030337830203038ull,
+0x7830203531306433ull,0x3038373030333463ull,0x3033783009090a20ull,0x3020643165303031ull,
+0x3837303031346378ull,0x3330303378302030ull,0x6378302039306330ull,0x2030383730303134ull,
+0x303036783009090aull,0x7830206430633032ull,0x3038373032303030ull,0x3130303061783020ull,
+0x3434783020393132ull,0x0a20303837343130ull,0x3030303678300909ull,0x3078302035303031ull,
+0x2030383763313030ull,0x3430303030327830ull,0x3034307830203130ull,0x090a203038373431ull,
+0x3030303061783009ull,0x3434783020393036ull,0x3020303837343130ull,0x3063303030306278ull,
+0x3866333078302064ull,0x09090a2033303030ull,0x3865313031327830ull,0x3030627830203430ull,
+0x7830206330343033ull,0x3830323830303032ull,0x3030303039783020ull,0x3009090a20633036ull,
+0x3034306530306478ull,0x3038303878302031ull,0x6578302030383730ull,0x2031303464333030ull,
+0x3730303230307830ull,0x783009090a203038ull,0x3530366433303065ull,0x3430323030783020ull,
+0x3064783020303837ull,0x3020313034306530ull,0x3837303038306178ull,0x0a7d0a7d090a2031ull,
+0x090a7b2065646f63ull,0x5f203d20656d616eull,0x636576646137315aull,0x6c63697472615074ull,
+0x6c6636506b5f7365ull,0x695f30533274616full,0x6d6c090a6d696669ull,0x090a38203d206d65ull,
+0x35203d206d656d73ull,0x2020676572090a32ull,0x6162090a3031203dull,0x090a30203d202072ull,
+0x0a7b2074736e6f63ull,0x616e676573090909ull,0x6e6f63203d20656dull,0x65730909090a7473ull,
+0x203d20206d756e67ull,0x66666f0909090a31ull,0x30203d2020746573ull,0x657479620909090aull,
+0x0a34203d20202073ull,0x0a7b206d656d0909ull,0x3030307830090909ull,0x090a206666333030ull,
+0x62090a7d090a7d09ull,0x7b2065646f636e69ull,0x303031783009090aull,0x7830203930323030ull,
+0x3038373430303034ull,0x3030303061783020ull,0x3430783020393030ull,0x0a20303837303030ull,
+0x3230303678300909ull,0x3078302039316334ull,0x2030383738303230ull,0x3164363030337830ull,
+0x3263367830206466ull,0x090a203863376330ull,0x3030303033783009ull,0x3030783020333030ull,
+0x3020303832303030ull,0x6637646337303378ull,0x3032633678302064ull,0x09090a2038633763ull,
+0x3030303030337830ull,0x3030307830203330ull,0x7830203038323030ull,0x3530363130303031ull,
+0x6330303434783020ull,0x3009090a20303837ull,0x3034343330303478ull,0x3032303078302039ull,
+0x3378302030383730ull,0x2039303430303130ull,0x3730303134637830ull,0x783009090a203038ull,
+0x3130323030383064ull,0x3030343030783020ull,0x3036783020303837ull,0x3020643034343230ull,
+0x3837383032303078ull,0x34783009090a2030ull,0x2038303630303030ull,0x6532373031347830ull,
+0x3130337830203031ull,0x7830203930343030ull,0x3038373030313463ull,0x3033783009090a20ull,
+0x3020313138303031ull,0x3837303031346378ull,0x3030303678302030ull,0x3078302031303430ull,
+0x2030383738303030ull,0x303036783009090aull,0x7830203530653436ull,0x3038373031323030ull,
+0x3030303032783020ull,0x3430783020643130ull,0x0a20303837343030ull,0x3030303178300909ull,
+0x3078302031323866ull,0x2030383763333034ull,0x6530303030327830ull,0x3034307830203530ull,
+0x090a203038373032ull,0x6431303033783009ull,0x6336783020646633ull,0x3020386337633032ull,
+0x3030303430306178ull,0x3030303078302033ull,0x09090a2030303030ull,0x3030343030317830ull,
+0x3030307830203330ull,0x7830203038323030ull,0x3130303130303031ull,0x6330303434783020ull,
+0x3009090a20303837ull,0x3034303130303478ull,0x3030303078302039ull,0x3678302030383730ull,
+0x2039303630303030ull,0x3738303030307830ull,0x783009090a203038ull,0x3930343030313033ull,
+0x3030313463783020ull,0x3036783020303837ull,0x3020313034303030ull,0x3837383030303078ull,
+0x32783009090a2030ull,0x2031303030303030ull,0x3738313034307830ull,0x3030337830203038ull,
+0x7830203130303033ull,0x3038373030313463ull,0x3032783009090a20ull,0x3020313138633030ull,
+0x3837303032343078ull,0x3030306178302030ull,0x3478302039303264ull,0x2030383734313234ull,
+0x303064783009090aull,0x7830203130383065ull,0x3038373030383038ull,0x3032303063783020ull,
+0x3131783020633032ull,0x0a20383038663030ull,0x3030306178300909ull,0x3878302064303630ull,
+0x2030383734363063ull,0x3830373030347830ull,0x3030307830203532ull,0x090a203038373030ull,
+0x6430303061783009ull,0x3434783020353130ull,0x3020303837343132ull,0x3261303630303678ull,
+0x3230303078302035ull,0x09090a2030383734ull,0x6130303030637830ull,0x3030307830203531ull,
+0x7830203038373030ull,0x3532323130313033ull,0x3030313463783020ull,0x3009090a20303837ull,
+0x3161303030306178ull,0x3630633878302035ull,0x3678302030383734ull,0x2064303830363030ull,
+0x3734323030307830ull,0x783009090a203038ull,0x3930613033303033ull,0x3030313463783020ull,
+0x3132783020303837ull,0x3020343163653330ull,0x3134383530303278ull,0x64783009090a2034ull,
+0x2039306130653030ull,0x3730303830387830ull,0x3030647830203038ull,0x7830203930303030ull,
+0x3038373030633036ull,0x3064783009090a20ull,0x3020643038303030ull,0x3837303063303678ull,
+0x3030306478302030ull,0x3478302064303030ull,0x2030383730306330ull,0x303064783009090aull,
+0x7830203930383030ull,0x3038373030633034ull,0x6433303065783020ull,0x3030783020313034ull,
+0x0a20303837303032ull,0x3230306578300909ull,0x3078302039303464ull,0x2030383734303230ull,
+0x3030303030617830ull,0x3063387830203530ull,0x090a203038373436ull,0x3030303061783009ull,
+0x6338783020643034ull,0x3020303837343630ull,0x3032303030306178ull,0x3130343478302035ull,
+0x09090a2030383734ull,0x3630303030617830ull,0x3034347830206430ull,0x7830203038373431ull,
+0x3030303031343062ull,0x3033343062783020ull,0x3009090a20343034ull,0x3030303030306278ull,
+0x3866333078302031ull,0x6278302033303030ull,0x2039303230303030ull,0x3030386633307830ull,
+0x783009090a203330ull,0x3530303030303061ull,0x3436306338783020ull,0x3061783020303837ull,
+0x3020643034303030ull,0x3837343630633878ull,0x61783009090a2030ull,0x2035303230303030ull,
+0x3734313034347830ull,0x3030617830203038ull,0x7830206430363030ull,0x3038373431303434ull,
+0x3062783009090a20ull,0x3020303030303134ull,0x3034303334306278ull,0x6530306478302034ull,
+0x6178302031303830ull,0x2030383730303830ull,0x303066783009090aull,0x7830203130303030ull,
+0x3230303030303065ull,0x3931303032783020ull,0x3030783020313230ull,0x0a20333030303030ull,
+0x3830303378300909ull,0x3678302064663764ull,0x2038633734313263ull,0x3033313030317830ull,
+0x3030307830203330ull,0x090a203038323030ull,0x3030303066783009ull,0x3065783020313030ull,
+0x0a20313030303030ull,0x646f630a7d0a7d09ull,0x6d616e090a7b2065ull,0x36315a5f203d2065ull,
+0x6556746365766461ull,0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,
+0x6d656d6c090a6966ull,0x6d73090a30203d20ull,0x0a3036203d206d65ull,0x203d202067657209ull,
+0x20726162090a3131ull,0x6f63090a30203d20ull,0x09090a7b2074736eull,0x656d616e67657309ull,
+0x74736e6f63203d20ull,0x6e6765730909090aull,0x0a31203d20206d75ull,0x657366666f090909ull,
+0x090a30203d202074ull,0x2073657479620909ull,0x09090a34203d2020ull,0x09090a7b206d656dull,
+0x3030303030783009ull,0x7d09090a20666633ull,0x6e6962090a7d090aull,0x090a7b2065646f63ull,
+0x3030303031783009ull,0x3034783020393032ull,0x3020303837343030ull,0x3030303030306178ull,
+0x3030343078302039ull,0x09090a2030383730ull,0x6334323030367830ull,0x3230307830206430ull,
+0x7830203038373830ull,0x6466356433303033ull,0x6330326336783020ull,0x3009090a20386337ull,
+0x3030303030303378ull,0x3030303078302033ull,0x3378302030383230ull,0x2064666464633730ull,
+0x3763303263367830ull,0x783009090a203863ull,0x3330303030303033ull,0x3030303030783020ull,
+0x3031783020303832ull,0x3020353063313030ull,0x3837633030343478ull,0x34783009090a2030ull,
+0x2039303434333030ull,0x3730303230307830ull,0x3130337830203038ull,0x7830203930343030ull,
+0x3038373030313463ull,0x3064783009090a20ull,0x3020313032303038ull,0x3837303034303078ull,
+0x3230303678302030ull,0x3078302031313434ull,0x2030383738303230ull,0x303034783009090aull,
+0x7830203830363030ull,0x3431653239303134ull,0x3030313033783020ull,0x3463783020393034ull,
+0x0a20303837303031ull,0x3031303378300909ull,0x6378302035316130ull,0x2030383730303134ull,
+0x3430303030367830ull,0x3030307830203130ull,0x090a203038373830ull,0x3438303036783009ull,
+0x3030783020353065ull,0x3020303837343132ull,0x3130303030303278ull,0x3030343078302031ull,
+0x09090a2030383734ull,0x3866303030317830ull,0x3036307830203531ull,0x7830203038376333ull,
+0x3530383030303032ull,0x3431303430783020ull,0x3009090a20303837ull,0x6639643130303378ull,
+0x3032633678302064ull,0x6178302038633763ull,0x2033303065323030ull,0x3030303030307830ull,
+0x783009090a203030ull,0x3330306532303031ull,0x3030303030783020ull,0x3031783020303832ull,
+0x3020313036313030ull,0x3837633030343478ull,0x34783009090a2030ull,0x2039303030333030ull,
+0x3730303030307830ull,0x3030367830203038ull,0x7830203930323032ull,0x3038373830303030ull,
+0x3033783009090a20ull,0x3020393134303031ull,0x3837303031346378ull,0x3030306178302030ull,
+0x3478302039303630ull,0x2030383734313034ull,0x303061783009090aull,0x7830203532323030ull,
+0x3038373431303434ull,0x3032303036783020ull,0x3030783020393130ull,0x0a20303837383130ull,
+0x3030306278300909ull,0x3078302064313430ull,0x2033303030306633ull,0x3239303030317830ull,
+0x3030317830203430ull,0x090a203030343830ull,0x3030343666783009ull,0x3030783020313030ull,
+0x3020303837303030ull,0x3234643030306178ull,0x3132343478302031ull,0x09090a2030383734ull,
+0x3864303030617830ull,0x3234347830203932ull,0x7830203038373431ull,0x3532323130303062ull,
+0x3030663330783020ull,0x3009090a20333030ull,0x3061373030316378ull,0x3330303278302030ull,
+0x6378302038306338ull,0x2035306164313030ull,0x3730303230307830ull,0x783009090a203038ull,
+0x3130303130303065ull,0x6331303430783020ull,0x3033783020303837ull,0x3020393034303230ull,
+0x3837303031346378ull,0x65783009090a2030ull,0x2035303431313030ull,0x3734323034307830ull,
+0x3030327830203038ull,0x7830203931636330ull,0x3038373830323430ull,0x3666783009090a20ull,
+0x3020313030303034ull,0x3837303030303078ull,0x6530306478302034ull,0x6178302031306330ull,
+0x2030383730306330ull,0x303032783009090aull,0x7830203130306430ull,0x3038373830323430ull,
+0x3065303064783020ull,0x3061783020353030ull,0x0a20303837303063ull,0x3030306678300909ull,
+0x6578302031303030ull,0x2032303030303030ull,0x6138313030327830ull,0x3030307830203531ull,
+0x090a203330303030ull,0x6435303033783009ull,0x6336783020646664ull,0x3020386337343132ull,
+0x3030333130303178ull,0x3030303078302033ull,0x09090a2030383230ull,0x3030303030667830ull,
+0x3030657830203130ull,0x090a203130303030ull,0x65646f630a7d0a7dull,0x656d616e090a7b20ull,
+0x6436315a5f203d20ull,0x7250657375666669ull,0x506b5f7463656a6full,0x533274616f6c6636ull,
+0x0a69666669695f30ull,0x203d206d656d6c09ull,0x206d656d73090a30ull,0x6572090a3235203dull,
+0x0a3531203d202067ull,0x203d202072616209ull,0x74736e6f63090a30ull,0x65730909090a7b20ull,
+0x203d20656d616e67ull,0x09090a74736e6f63ull,0x206d756e67657309ull,0x0909090a31203d20ull,
+0x202074657366666full,0x620909090a30203dull,0x3d20202073657479ull,0x656d09090a323120ull,
+0x300909090a7b206dull,0x6633303030303078ull,0x3030303078302066ull,0x3378302031303030ull,
+0x2030303030303866ull,0x0a7d090a7d09090aull,0x65646f636e696209ull,0x31783009090a7b20ull,
+0x2039303230303030ull,0x3734303030347830ull,0x3030617830203038ull,0x7830203930303030ull,
+0x3038373030303430ull,0x3036783009090a20ull,0x3020353163343230ull,0x3837383032303078ull,
+0x3530303378302030ull,0x3678302064663164ull,0x2038633763303263ull,0x303033783009090aull,
+0x7830203330303030ull,0x3038323030303030ull,0x6463373033783020ull,0x6336783020646639ull,
+0x0a20386337633032ull,0x3030303378300909ull,0x3078302033303030ull,0x2030383230303030ull,
+0x3831303030317830ull,0x3034347830203530ull,0x090a203038376330ull,0x3433303034783009ull,
+0x3030783020393034ull,0x3020303837303032ull,0x3034303031303378ull,0x3031346378302039ull,
+0x09090a2030383730ull,0x3230303830647830ull,0x3430307830203130ull,0x7830203038373030ull,
+0x6430343432303036ull,0x3830323030783020ull,0x3009090a20303837ull,0x3036303030303478ull,
+0x3730313478302038ull,0x3378302030316532ull,0x2039303430303130ull,0x3730303134637830ull,
+0x783009090a203038ull,0x3131383030313033ull,0x3030313463783020ull,0x3036783020303837ull,
+0x3020313034303030ull,0x3837383030303078ull,0x36783009090a2030ull,0x2035306534363030ull,
+0x3730313230307830ull,0x3030327830203038ull,0x7830203132303030ull,0x3038373430303430ull,
+0x3031783009090a20ull,0x3020353238663030ull,0x3837633330363078ull,0x3030303278302030ull,
+0x3078302031303031ull,0x2030383734323034ull,0x303033783009090aull,0x7830206466336430ull,
+0x3863376330326336ull,0x3834303061783020ull,0x3030783020333030ull,0x0a20303030303030ull,
+0x3430303178300909ull,0x3078302033303038ull,0x2030383230303030ull,0x3264663130337830ull,
+0x3363657830203530ull,0x090a203038373030ull,0x3031383064783009ull,0x3430783020353032ull,
+0x3020303837303034ull,0x3032643030303278ull,0x3032343078302035ull,0x09090a2030383734ull,
+0x3230313030337830ull,0x3163657830203530ull,0x7830203038373030ull,0x6466333030303033ull,
+0x3430306336783020ull,0x3009090a20386337ull,0x3130303030303178ull,0x3330343078302031ull,
+0x3178302030383763ull,0x2035303031303030ull,0x3763303034347830ull,0x783009090a203038ull,
+0x3131326430303033ull,0x3030323430783020ull,0x3034783020303832ull,0x3020633034316230ull,
+0x3130313930303478ull,0x34783009090a2038ull,0x2039303030333030ull,0x3730303030307830ull,
+0x3030367830203038ull,0x7830206430363161ull,0x3038376330303030ull,0x3036783009090a20ull,
+0x3020393132313830ull,0x3837383130303078ull,0x3230303678302030ull,0x3078302039303230ull,
+0x2030383738303030ull,0x313033783009090aull,0x7830206430363030ull,0x3038373030313463ull,
+0x3030313033783020ull,0x3463783020393163ull,0x0a20303837303031ull,0x3031303378300909ull,
+0x6378302039303430ull,0x2030383730303134ull,0x3431613030367830ull,0x3030307830206430ull,
+0x090a203038376330ull,0x3138303036783009ull,0x3030783020393130ull,0x3020303837383130ull,
+0x3030303230303678ull,0x3030303078302035ull,0x09090a2030383738ull,0x3666303031317830ull,
+0x3030327830203030ull,0x7830203830363836ull,0x3430323835303032ull,0x3730303163783020ull,
+0x3009090a20633034ull,0x3134303030306178ull,0x3130343478302064ull,0x3378302030383734ull,
+0x2031303230333030ull,0x3730303134637830ull,0x783009090a203038ull,0x3530653033303165ull,
+0x3830343030783020ull,0x3132783020303837ull,0x3020383238653030ull,0x3163653030313278ull,
+0x39783009090a2038ull,0x2064323230303030ull,0x3730303030307830ull,0x3030647830203038ull,
+0x7830203930343165ull,0x3038373030383038ull,0x3064783009090a20ull,0x3020313063306530ull,
+0x3837303038303878ull,0x6337306278302030ull,0x3678302064666630ull,0x2038633730313030ull,
+0x303063783009090aull,0x7830203830363132ull,0x3033363133303063ull,0x3130303063783020ull,
+0x3063783020633036ull,0x0a20633236313130ull,0x3430306178300909ull,0x3078302033303033ull,
+0x2030303030303030ull,0x3033343030317830ull,0x3030307830203330ull,0x090a203030313030ull,
+0x3030303061783009ull,0x3434783020313038ull,0x3020303837343130ull,0x3061303030306178ull,
+0x3130343478302035ull,0x09090a2030383734ull,0x3030333030637830ull,0x3030637830203433ull,
+0x7830203833303062ull,0x3131653030303039ull,0x3030303030783020ull,0x3009090a20303837ull,
+0x3132303230306578ull,0x3330303078302064ull,0x6578302030383734ull,0x2035333230633030ull,
+0x3738333030307830ull,0x783009090a203038ull,0x6331653034303063ull,0x3064303063783020ull,
+0x3065783020303138ull,0x3020393032303730ull,0x3837383030343078ull,0x65783009090a2030ull,
+0x2031333230343030ull,0x3730333034307830ull,0x3030657830203038ull,0x7830206430653030ull,
+0x3038376330303430ull,0x3065783009090a20ull,0x3020643230303430ull,0x3837633230343078ull,
+0x3030303178302030ull,0x3078302035303831ull,0x2032383763333036ull,0x303031783009090aull,
+0x7830203130343030ull,0x3038376333303430ull,0x3165303064783020ull,0x3061783020313034ull,
+0x0a20303837303038ull,0x3230303178300909ull,0x3178302034303639ull,0x2030303638303030ull,
+0x6330653030647830ull,0x3830617830203130ull,0x090a203038373030ull,0x3030303066783009ull,
+0x3065783020313030ull,0x3020323030303030ull,0x3232393130303278ull,0x3030303078302035ull,
+0x09090a2033303030ull,0x3964393030337830ull,0x3263367830206466ull,0x7830203863373431ull,
+0x3330303331303031ull,0x3030303030783020ull,0x3009090a20303832ull,0x3030303030306678ull,
+0x3030306578302031ull,0x7d090a2031303030ull,0x2065646f630a7d0aull,0x20656d616e090a7bull,
+0x707536315a5f203dull,0x6f6c655665746164ull,0x36506b5f79746963ull,0x66503274616f6c66ull,
+0x6d696969695f3153ull,0x3d206d656d6c090aull,0x6d656d73090a3020ull,0x72090a3036203d20ull,
+0x3131203d20206765ull,0x3d2020726162090aull,0x736e6f63090a3020ull,0x730909090a7b2074ull,
+0x3d20656d616e6765ull,0x090a74736e6f6320ull,0x6d756e6765730909ull,0x09090a31203d2020ull,
+0x2074657366666f09ull,0x0909090a30203d20ull,0x2020207365747962ull,0x656d09090a34203dull,
+0x300909090a7b206dull,0x6633303030303078ull,0x090a7d09090a2066ull,0x6f636e6962090a7dull,
+0x3009090a7b206564ull,0x3032303030303178ull,0x3030303478302039ull,0x6178302030383734ull,
+0x2039303030303030ull,0x3730303034307830ull,0x783009090a203038ull,0x3131633432303036ull,
+0x3830323030783020ull,0x3033783020303837ull,0x3020646635643430ull,0x6337633032633678ull,
+0x33783009090a2038ull,0x2033303030303030ull,0x3230303030307830ull,0x3730337830203038ull,
+0x7830206466626463ull,0x3863376330326336ull,0x3033783009090a20ull,0x3020333030303030ull,
+0x3832303030303078ull,0x3030303178302030ull,0x3478302035306131ull,0x2030383763303034ull,
+0x303034783009090aull,0x7830203930343433ull,0x3038373030323030ull,0x3030313033783020ull,
+0x3463783020393034ull,0x0a20303837303031ull,0x3038306478300909ull,0x3078302031303230ull,
+0x2030383730303430ull,0x3434323030367830ull,0x3230307830206430ull,0x090a203038373830ull,
+0x3030303034783009ull,0x3134783020383036ull,0x3020343165323730ull,0x3034303031303378ull,
+0x3031346378302039ull,0x09090a2030383730ull,0x6130303130337830ull,0x3134637830203531ull,
+0x7830203038373030ull,0x3130343030303036ull,0x3830303030783020ull,0x3009090a20303837ull,
+0x3065343630303678ull,0x3132303078302035ull,0x3278302030383734ull,0x2039313030303030ull,
+0x3734303034307830ull,0x783009090a203038ull,0x6431386630303031ull,0x6333303430783020ull,
+0x3032783020303837ull,0x3020353163303030ull,0x3837633130343078ull,0x33783009090a2030ull,
+0x2064663964353030ull,0x3763303263367830ull,0x3030617830203863ull,0x7830203330306632ull,
+0x3030303030303030ull,0x3031783009090a20ull,0x3020333030663230ull,0x3832303030303078ull,
+0x3030303178302030ull,0x3478302064303631ull,0x2030383763303034ull,0x303131783009090aull,
+0x7830203030386630ull,0x3430346630303131ull,0x6630303131783020ull,0x3034783020383063ull,
+0x0a20303263306230ull,0x6130303678300909ull,0x3078302039326530ull,0x2030383730323030ull,
+0x3431353030347830ull,0x3030347830203032ull,0x090a203432303033ull,0x3130313033783009ull,
+0x3463783020393234ull,0x3020303837303031ull,0x3236313430303678ull,0x3230303078302031ull,
+0x09090a2030383730ull,0x3230323030367830ull,0x3030307830203532ull,0x7830203038373432ull,
+0x3932633061303036ull,0x3832303030783020ull,0x3009090a20303837ull,0x3030313031303378ull,
+0x3031346378302064ull,0x3378302030383730ull,0x2031323231303130ull,0x3730303134637830ull,
+0x783009090a203038ull,0x3532383030303032ull,0x3832303430783020ull,0x3036783020303837ull,
+0x3020393034313430ull,0x3837633030303078ull,0x36783009090a2030ull,0x2064303030323030ull,
+0x3730323030307830ull,0x3030337830203038ull,0x7830203531323132ull,0x3038373030313463ull,
+0x3033783009090a20ull,0x3020313038303330ull,0x3837303031346378ull,0x3030303278302030ull,
+0x3078302035303863ull,0x2030383738303234ull,0x303061783009090aull,0x7830206430363030ull,
+0x3038373431303434ull,0x6535303132783020ull,0x3132783020303263ull,0x0a20343130663530ull,
+0x3130303278300909ull,0x3978302038303038ull,0x2063303630303030ull,0x3031653030647830ull,
+0x6330387830203130ull,0x090a203038373030ull,0x3065303064783009ull,0x3038783020353061ull,
+0x3020303837303063ull,0x3036303030306378ull,0x3130306378302030ull,0x09090a2034303630ull,
+0x3430653030647830ull,0x3830617830203130ull,0x7830203038373030ull,0x3130303030303066ull,
+0x3030303065783020ull,0x3009090a20323030ull,0x3165383130303278ull,0x3030303078302064ull,
+0x3378302033303030ull,0x2064666264373030ull,0x3734313263367830ull,0x783009090a203863ull,
+0x3330303331303031ull,0x3030303030783020ull,0x3066783020303832ull,0x3020313030303030ull,
+0x3030303030306578ull,0x0a7d0a7d090a2031ull,0x0000000000000000ull
+};
+
+
+}
 
 
 
@@ -11493,35 +12056,30 @@ extern "C" {
 static const unsigned long long __deviceText_$compute_13$[] = {
 0x6f69737265762e09ull,0x2e090a342e31206eull,0x7320746567726174ull,0x2f2f090a33315f6dull,
 0x656c69706d6f6320ull,0x2f20687469772064ull,0x61636f6c2f727375ull,0x6f2f616475632f6cull,
-0x696c2f34366e6570ull,0x2f090a65622f2f62ull,0x6e65706f766e202full,0x746c697562206363ull,
-0x39303032206e6f20ull,0x0a0a39302d34302dull,0x752e206765722e09ull,0x313c617225203233ull,
-0x65722e090a3b3e37ull,0x25203436752e2067ull,0x3b3e37313c616472ull,0x2e206765722e090aull,
-0x3c61662520323366ull,0x722e090a3b3e3731ull,0x203436662e206765ull,0x3e37313c61646625ull,
-0x206765722e090a3bull,0x767225203233752eull,0x722e090a3b3e353cull,0x203436752e206765ull,
-0x3b3e353c76647225ull,0x2e206765722e090aull,0x3c76662520323366ull,0x65722e090a3b3e35ull,
-0x25203436662e2067ull,0x0a3b3e353c766466ull,0x2d2d2d2f2f090a0aull,0x2d2d2d2d2d2d2d2dull,
+0x696c2f34366e6570ull,0x2f090a65622f2f62ull,0x6e65706f766e202full,0x6220332e32206363ull,
+0x206e6f20746c6975ull,0x2d37302d39303032ull,0x2d2f2f090a0a3230ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6d6f43202f2f090aull,0x2f20676e696c6970ull,
-0x78706d742f706d74ull,0x37303030305f7466ull,0x303030305f663265ull,0x665f372d30303030ull,
-0x2e4c47736469756cull,0x2820692e33707063ull,0x4263632f706d742full,0x4d646158472e2349ull,
-0x2d2d2f2f090a2933ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3330643330ull,0x372d303030303030ull,
+0x47736469756c665full,0x692e337070632e4cull,0x632f706d742f2820ull,0x41716d2e23494263ull,
+0x2f2f090a294d3678ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2f2f090a0a2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x2f2f090a0a2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x704f202f2f090a2dull,0x090a3a736e6f6974ull,0x2d2d2d2d2d2d2f2full,0x2d2d2d2d2d2d2d2dull,
+0x202f2f090a2d2d2dull,0x3a736e6f6974704full,0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2f090a2d2d2d2d2dull,0x656772615420202full,0x49202c7874703a74ull,
-0x33315f6d733a4153ull,0x6e6169646e45202cull,0x2c656c7474696c3aull,0x7265746e696f5020ull,
-0x34363a657a695320ull,0x4f2d20202f2f090aull,0x6d6974704f280933ull,0x206e6f6974617a69ull,
-0x090a296c6576656cull,0x0930672d20202f2full,0x6c20677562654428ull,0x2f090a296c657665ull,
-0x2809326d2d20202full,0x612074726f706552ull,0x6569726f73697664ull,0x2d2d2f2f090a2973ull,
+0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,0x72615420202f2f09ull,0x2c7874703a746567ull,
+0x5f6d733a41534920ull,0x69646e45202c3331ull,0x6c7474696c3a6e61ull,0x746e696f50202c65ull,
+0x3a657a6953207265ull,0x20202f2f090a3436ull,0x74704f2809334f2dull,0x6f6974617a696d69ull,
+0x296c6576656c206eull,0x672d20202f2f090aull,0x6775626544280930ull,0x0a296c6576656c20ull,
+0x326d2d20202f2f09ull,0x74726f7065522809ull,0x726f736976646120ull,0x2f2f090a29736569ull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
-0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6c69662e090a0a2dull,
-0x6f633c2209310965ull,0x696c2d646e616d6dull,0x662e090a223e656eull,0x2f22093209656c69ull,
-0x78706d742f706d74ull,0x37303030305f7466ull,0x303030305f663265ull,0x665f362d30303030ull,
-0x2e4c47736469756cull,0x2e32656661647563ull,0x662e090a22757067ull,0x2f22093309656c69ull,
-0x2f62696c2f727375ull,0x5f3638782f636367ull,0x78756e696c2d3436ull,0x332e342f756e672dull,
-0x756c636e692f332eull,0x65646474732f6564ull,0x662e090a22682e66ull,0x2f22093409656c69ull,
+0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x662e090a0a2d2d2dull,
+0x3c22093109656c69ull,0x2d646e616d6d6f63ull,0x090a223e656e696cull,0x093209656c69662eull,
+0x6d742f706d742f22ull,0x3030305f74667870ull,0x30305f3330643330ull,0x362d303030303030ull,
+0x47736469756c665full,0x6566616475632e4cull,0x090a227570672e32ull,0x093309656c69662eull,
+0x696c2f7273752f22ull,0x34692f6363672f62ull,0x78756e696c2d3638ull,0x342e342f756e672dull,
+0x756c636e692f312eull,0x65646474732f6564ull,0x662e090a22682e66ull,0x2f22093409656c69ull,
 0x61636f6c2f727375ull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x72632f6564756c63ull,
 0x6563697665642f74ull,0x656d69746e75725full,0x69662e090a22682eull,0x752f22093509656cull,
 0x6c61636f6c2f7273ull,0x69622f616475632full,0x636e692f2e2e2f6eull,0x736f682f6564756cull,
@@ -11580,928 +12138,508 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x31315a5f5f6d7261ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,0x6669696969327461ull,
 0x0a2c79665f6d6966ull,0x6d617261702e0909ull,0x5f5f203233732e20ull,0x6d72617061647563ull,
 0x64646131315a5f5full,0x6b5f736563726f46ull,0x3274616f6c663650ull,0x6d69666669696969ull,
-0x702e09090a2c725full,0x36752e206d617261ull,0x616475635f5f2034ull,0x315a5f5f6d726170ull,
+0x702e09090a2c725full,0x33752e206d617261ull,0x616475635f5f2032ull,0x315a5f5f6d726170ull,
 0x63726f4664646131ull,0x6c6636506b5f7365ull,0x696969693274616full,0x7469705f6d696666ull,
-0x090a7b090a296863ull,0x33752e206765722eull,0x3e36313c72252032ull,0x206765722e090a3bull,
-0x647225203436752eull,0x2e090a3b3e33313cull,0x3233662e20676572ull,0x3b3e34313c662520ull,
-0x3109636f6c2e090aull,0x240a300934380936ull,0x315a5f5f3142424cull,0x63726f4664646131ull,
-0x6c6636506b5f7365ull,0x696969693274616full,0x2e090a3a6d696666ull,0x3909363109636f6cull,
-0x747663090a300934ull,0x3631752e3233732eull,0x25202c3172250920ull,0x20203b792e646974ull,
-0x0a202f2f09202020ull,0x3233732e74766309ull,0x722509203631752eull,0x2e64697425202c32ull,
-0x0920202020203b78ull,0x2e646c090a202f2full,0x33732e6d61726170ull,0x202c337225092032ull,
-0x70616475635f5f5bull,0x31315a5f5f6d7261ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,
-0x6669696969327461ull,0x093b5d725f6d6966ull,0x35343a6469202f2full,0x70616475635f5f20ull,
-0x31315a5f5f6d7261ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,0x6669696969327461ull,
-0x78302b725f6d6966ull,0x732e627573090a30ull,0x2c34722509203233ull,0x7225202c31722520ull,
-0x2020202020203b33ull,0x73090a202f2f0920ull,0x09203233732e6275ull,0x327225202c357225ull,
-0x20203b337225202cull,0x2f2f092020202020ull,0x6c2e6c756d090a20ull,0x2509203233732e6full,
-0x2c347225202c3672ull,0x2020203b34722520ull,0x6d090a202f2f0920ull,0x33732e6f6c2e6c75ull,
-0x202c377225092032ull,0x357225202c357225ull,0x2f2f09202020203bull,0x6c2e6c756d090a20ull,
-0x2509203233732e6full,0x2c347225202c3872ull,0x2020203b36722520ull,0x6d090a202f2f0920ull,
-0x33732e6f6c2e6c75ull,0x202c397225092032ull,0x377225202c357225ull,0x2f2f09202020203bull,
-0x6c2e6c756d090a20ull,0x2509203233732e6full,0x347225202c303172ull,0x20203b387225202cull,
-0x6d090a202f2f0920ull,0x33732e6f6c2e6c75ull,0x2c31317225092032ull,0x7225202c35722520ull,
-0x2f2f092020203b39ull,0x722e747663090a20ull,0x33732e3233662e6eull,0x202c316625092032ull,
-0x2020203b30317225ull,0x63090a202f2f0920ull,0x33662e6e722e7476ull,0x2509203233732e32ull,
-0x31317225202c3266ull,0x2f2f09202020203bull,0x61702e646c090a20ull,0x203436752e6d6172ull,
-0x5b202c3164722509ull,0x6170616475635f5full,0x6131315a5f5f6d72ull,0x736563726f466464ull,
-0x616f6c6636506b5full,0x6666696969693274ull,0x2f093b5d765f6d69ull,0x2039343a6469202full,
+0x090a7b090a296863ull,0x33752e206765722eull,0x3e30323c72252032ull,0x206765722e090a3bull,
+0x647225203436752eull,0x722e090a3b3e393cull,0x203233662e206765ull,0x0a3b3e32313c6625ull,
+0x363109636f6c2e09ull,0x4c240a3009343809ull,0x31315a5f5f314242ull,0x6563726f46646461ull,
+0x6f6c6636506b5f73ull,0x6669696969327461ull,0x6c2e090a3a6d6966ull,0x303909363109636full,
+0x2e747663090a3009ull,0x203631752e323373ull,0x7425202c31722509ull,0x63090a3b782e6469ull,
+0x752e3233732e7476ull,0x2c32722509203631ull,0x3b792e6469742520ull,0x7261702e646c090aull,
+0x09203233732e6d61ull,0x5f5f5b202c337225ull,0x6d72617061647563ull,0x64646131315a5f5full,
+0x6b5f736563726f46ull,0x3274616f6c663650ull,0x6d69666669696969ull,0x090a3b5d7970735full,
+0x203233732e646461ull,0x7225202c34722509ull,0x0a3b327225202c33ull,0x617261702e646c09ull,
+0x2509203233752e6dull,0x635f5f5b202c3572ull,0x5f6d726170616475ull,0x4664646131315a5full,
+0x506b5f736563726full,0x693274616f6c6636ull,0x5f6d696666696969ull,0x0a3b5d6863746970ull,
+0x2e6f6c2e6c756d09ull,0x3672250920323375ull,0x25202c347225202cull,0x747663090a3b3572ull,
+0x3233752e3436752eull,0x202c316472250920ull,0x646c090a3b367225ull,0x752e6d617261702eull,
+0x3264722509203436ull,0x6475635f5f5b202cull,0x5a5f5f6d72617061ull,0x726f466464613131ull,
+0x6636506b5f736563ull,0x6969693274616f6cull,0x5d765f6d69666669ull,0x752e646461090a3bull,
+0x3364722509203436ull,0x202c31647225202cull,0x6d090a3b32647225ull,0x2e6f6c2e34326c75ull,
+0x3772250920323375ull,0x38202c317225202cull,0x752e747663090a3bull,0x09203233752e3436ull,
+0x7225202c34647225ull,0x702e646c090a3b37ull,0x3233752e6d617261ull,0x5b202c3872250920ull,
 0x6170616475635f5full,0x6131315a5f5f6d72ull,0x736563726f466464ull,0x616f6c6636506b5full,
-0x6666696969693274ull,0x3078302b765f6d69ull,0x7261702e646c090aull,0x09203233732e6d61ull,
-0x5f5b202c32317225ull,0x726170616475635full,0x646131315a5f5f6dull,0x5f736563726f4664ull,
-0x74616f6c6636506bull,0x6966666969696932ull,0x093b5d7870735f6dull,0x38343a6469202f2full,
-0x70616475635f5f20ull,0x31315a5f5f6d7261ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,
-0x6669696969327461ull,0x2b7870735f6d6966ull,0x747663090a307830ull,0x3233732e3436752eull,
-0x202c326472250920ull,0x2020203b32317225ull,0x0a202f2f09202020ull,0x2e6f6c2e6c756d09ull,
-0x6472250920343675ull,0x2c32647225202c33ull,0x09202020203b3820ull,0x646461090a202f2full,
-0x722509203436752eull,0x31647225202c3464ull,0x203b33647225202cull,0x0a202f2f09202020ull,
-0x617261702e646c09ull,0x2509203233732e6dull,0x5f5f5b202c333172ull,0x6d72617061647563ull,
-0x64646131315a5f5full,0x6b5f736563726f46ull,0x3274616f6c663650ull,0x6d69666669696969ull,
-0x2f093b5d7970735full,0x2031353a6469202full,0x6170616475635f5full,0x6131315a5f5f6d72ull,
-0x736563726f466464ull,0x616f6c6636506b5full,0x6666696969693274ull,0x302b7970735f6d69ull,
-0x2e646461090a3078ull,0x3172250920323373ull,0x2c33317225202c34ull,0x2020203b31722520ull,
-0x090a202f2f092020ull,0x2e3436732e747663ull,0x6472250920323373ull,0x3b34317225202c35ull,
-0x2f09202020202020ull,0x702e646c090a202full,0x3436752e6d617261ull,0x202c366472250920ull,
-0x70616475635f5f5bull,0x31315a5f5f6d7261ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,
-0x6669696969327461ull,0x637469705f6d6966ull,0x69202f2f093b5d68ull,0x635f5f2030353a64ull,
-0x5f6d726170616475ull,0x4664646131315a5full,0x506b5f736563726full,0x693274616f6c6636ull,
-0x5f6d696666696969ull,0x78302b6863746970ull,0x6c2e6c756d090a30ull,0x2509203436752e6full,
-0x647225202c376472ull,0x3b36647225202c35ull,0x63090a202f2f0920ull,0x732e3436752e7476ull,
-0x3864722509203233ull,0x20203b327225202cull,0x2f2f092020202020ull,0x6c2e6c756d090a20ull,
-0x2509203436752e6full,0x647225202c396472ull,0x2020203b38202c38ull,0x61090a202f2f0920ull,
-0x09203436752e6464ull,0x25202c3031647225ull,0x647225202c376472ull,0x2f2f092020203b39ull,
-0x752e646461090a20ull,0x3164722509203436ull,0x2c34647225202c31ull,0x203b303164722520ull,
-0x6d090a202f2f0920ull,0x09203233662e766full,0x336630202c336625ull,0x3b30303030303866ull,
-0x2f2f092020202020ull,0x2e646461090a3120ull,0x3466250920323366ull,0x25202c326625202cull,
-0x20202020203b3366ull,0x090a202f2f092020ull,0x203233662e646461ull,0x6625202c35662509ull,
-0x203b346625202c31ull,0x2f09202020202020ull,0x2e706372090a202full,0x662e786f72707061ull,
-0x2c36662509203233ull,0x2020203b35662520ull,0x090a202f2f092020ull,0x61626f6c672e646cull,
-0x3233662e32762e6cull,0x252c3766257b0920ull,0x72255b202c7d3866ull,0x093b5d302b313164ull,
-0x2e646c090a202f2full,0x33662e6d61726170ull,0x202c396625092032ull,0x70616475635f5f5bull,
-0x31315a5f5f6d7261ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,0x6669696969327461ull,
-0x3b5d79665f6d6966ull,0x353a6469202f2f09ull,0x616475635f5f2033ull,0x315a5f5f6d726170ull,
-0x63726f4664646131ull,0x6c6636506b5f7365ull,0x696969693274616full,0x2b79665f6d696666ull,
-0x64616d090a307830ull,0x662509203233662eull,0x2c396625202c3031ull,0x6625202c36662520ull,
-0x0a202f2f09203b38ull,0x363109636f6c2e09ull,0x6c090a3009353909ull,0x2e6d617261702e64ull,
-0x3166250920323366ull,0x75635f5f5b202c31ull,0x5f5f6d7261706164ull,0x6f4664646131315aull,
-0x36506b5f73656372ull,0x69693274616f6c66ull,0x665f6d6966666969ull,0x69202f2f093b5d78ull,
-0x635f5f2035353a64ull,0x5f6d726170616475ull,0x4664646131315a5full,0x506b5f736563726full,
-0x693274616f6c6636ull,0x5f6d696666696969ull,0x090a3078302b7866ull,0x203233662e64616dull,
-0x25202c3231662509ull,0x366625202c313166ull,0x2f093b376625202cull,0x672e7473090a202full,
-0x32762e6c61626f6cull,0x255b09203233662eull,0x2c5d302b31316472ull,0x252c323166257b20ull,
-0x2f2f093b7d303166ull,0x09636f6c2e090a20ull,0x0a30093639093631ull,0x20203b7469786509ull,
-0x2020202020202020ull,0x2020202020202020ull,0x0920202020202020ull,0x57444c240a202f2full,
-0x31315a5f5f646e65ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,0x6669696969327461ull,
-0x207d090a3a6d6966ull,0x6131315a5f202f2full,0x736563726f466464ull,0x616f6c6636506b5full,
-0x6666696969693274ull,0x6e652e090a0a6d69ull,0x36315a5f20797274ull,0x6556746365766461ull,
-0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,0x2e09090a28206966ull,
-0x752e206d61726170ull,0x6475635f5f203436ull,0x5a5f5f6d72617061ull,0x7463657664613631ull,
-0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x0a2c765f69666969ull,
-0x6d617261702e0909ull,0x5f5f203436752e20ull,0x6d72617061647563ull,0x76646136315a5f5full,
-0x636f6c6556746365ull,0x6636506b5f797469ull,0x5366503274616f6cull,0x5f69666969695f31ull,
-0x702e09090a2c7876ull,0x36752e206d617261ull,0x616475635f5f2034ull,0x315a5f5f6d726170ull,
-0x5674636576646136ull,0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,
-0x0a2c79765f696669ull,0x6d617261702e0909ull,0x5f5f203233732e20ull,0x6d72617061647563ull,
+0x6666696969693274ull,0x3b5d7870735f6d69ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
+0x202c387225202c39ull,0x2e747663090a3b38ull,0x203233752e343675ull,0x25202c3564722509ull,
+0x646461090a3b3972ull,0x722509203436752eull,0x34647225202c3664ull,0x0a3b35647225202cull,
+0x3436752e64646109ull,0x202c376472250920ull,0x7225202c33647225ull,0x2e646c090a3b3664ull,
+0x762e6c61626f6c67ull,0x7b09203233662e32ull,0x7d3266252c316625ull,0x2b376472255b202cull,
+0x6f6c2e090a3b5d30ull,0x0933390936310963ull,0x61702e646c090a30ull,0x203233732e6d6172ull,
+0x5b202c3031722509ull,0x6170616475635f5full,0x6131315a5f5f6d72ull,0x736563726f466464ull,
+0x616f6c6636506b5full,0x6666696969693274ull,0x090a3b5d725f6d69ull,0x203233732e627573ull,
+0x25202c3131722509ull,0x30317225202c3272ull,0x732e627573090a3bull,0x3231722509203233ull,
+0x25202c317225202cull,0x756d090a3b303172ull,0x3233732e6f6c2e6cull,0x202c333172250920ull,
+0x7225202c31317225ull,0x6c756d090a3b3131ull,0x203233732e6f6c2eull,0x25202c3431722509ull,
+0x317225202c323172ull,0x2e6c756d090a3b32ull,0x09203233732e6f6cull,0x7225202c35317225ull,
+0x33317225202c3131ull,0x6c2e6c756d090a3bull,0x2509203233732e6full,0x317225202c363172ull,
+0x3b34317225202c32ull,0x6f6c2e6c756d090aull,0x722509203233732eull,0x31317225202c3731ull,
+0x0a3b35317225202cull,0x2e6f6c2e6c756d09ull,0x3172250920323373ull,0x2c32317225202c38ull,
+0x090a3b3631722520ull,0x662e6e722e747663ull,0x09203233732e3233ull,0x317225202c336625ull,
+0x2e747663090a3b37ull,0x732e3233662e6e72ull,0x2c34662509203233ull,0x090a3b3831722520ull,
+0x203233662e766f6dull,0x6630202c35662509ull,0x3030303030386633ull,0x2f0920202020203bull,
+0x646461090a31202full,0x662509203233662eull,0x202c346625202c36ull,0x6461090a3b356625ull,
+0x2509203233662e64ull,0x2c336625202c3766ull,0x72090a3b36662520ull,0x6f727070612e7063ull,
+0x2509203233662e78ull,0x3b376625202c3866ull,0x7261702e646c090aull,0x09203233662e6d61ull,
+0x5f5f5b202c396625ull,0x6d72617061647563ull,0x64646131315a5f5full,0x6b5f736563726f46ull,
+0x3274616f6c663650ull,0x6d69666669696969ull,0x6d090a3b5d78665full,0x09203233662e6461ull,
+0x396625202c316625ull,0x25202c386625202cull,0x6f6c2e090a3b3166ull,0x0934390936310963ull,
+0x61702e646c090a30ull,0x203233662e6d6172ull,0x5b202c3031662509ull,0x6170616475635f5full,
+0x6131315a5f5f6d72ull,0x736563726f466464ull,0x616f6c6636506b5full,0x6666696969693274ull,
+0x0a3b5d79665f6d69ull,0x3233662e64616d09ull,0x25202c3266250920ull,0x386625202c303166ull,
+0x090a3b326625202cull,0x61626f6c672e7473ull,0x3233662e32762e6cull,0x2b376472255b0920ull,
+0x3166257b202c5d30ull,0x090a3b7d3266252cull,0x09363109636f6c2eull,0x7865090a30093639ull,
+0x57444c240a3b7469ull,0x31315a5f5f646e65ull,0x6563726f46646461ull,0x6f6c6636506b5f73ull,
+0x6669696969327461ull,0x207d090a3a6d6966ull,0x6131315a5f202f2full,0x736563726f466464ull,
+0x616f6c6636506b5full,0x6666696969693274ull,0x6e652e090a0a6d69ull,0x36315a5f20797274ull,
+0x6556746365766461ull,0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,
+0x2e09090a28206966ull,0x752e206d61726170ull,0x6475635f5f203436ull,0x5a5f5f6d72617061ull,
+0x7463657664613631ull,0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,
+0x0a2c765f69666969ull,0x6d617261702e0909ull,0x5f5f203436752e20ull,0x6d72617061647563ull,
 0x76646136315a5f5full,0x636f6c6556746365ull,0x6636506b5f797469ull,0x5366503274616f6cull,
-0x5f69666969695f31ull,0x702e09090a2c7864ull,0x33732e206d617261ull,0x616475635f5f2032ull,
+0x5f69666969695f31ull,0x702e09090a2c7876ull,0x36752e206d617261ull,0x616475635f5f2034ull,
 0x315a5f5f6d726170ull,0x5674636576646136ull,0x5f797469636f6c65ull,0x74616f6c6636506bull,
-0x69695f3153665032ull,0x2c7864705f696669ull,0x617261702e09090aull,0x5f203233732e206dull,
-0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,0x36506b5f79746963ull,
-0x66503274616f6c66ull,0x69666969695f3153ull,0x2e09090a2c79645full,0x662e206d61726170ull,
-0x6475635f5f203233ull,0x5a5f5f6d72617061ull,0x7463657664613631ull,0x797469636f6c6556ull,
-0x616f6c6636506b5full,0x695f315366503274ull,0x2c74645f69666969ull,0x617261702e09090aull,
-0x5f203233732e206dull,0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,
-0x36506b5f79746963ull,0x66503274616f6c66ull,0x69666969695f3153ull,0x0a7b090a29626c5full,
-0x752e206765722e09ull,0x343c687225203631ull,0x6765722e090a3b3eull,0x7225203233752e20ull,
-0x2e090a3b3e33323cull,0x3436752e20676572ull,0x3b3e383c64722520ull,0x2e206765722e090aull,
-0x333c662520323366ull,0x65722e090a3b3e35ull,0x20646572702e2067ull,0x090a3b3e363c7025ull,
-0x09363109636f6c2eull,0x4c240a3009343031ull,0x36315a5f5f314242ull,0x6556746365766461ull,
-0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,0x766f6d090a3a6966ull,
-0x722509203631752eull,0x61746325202c3168ull,0x2020203b782e6469ull,0x0a202f2f09202020ull,
-0x3631752e766f6d09ull,0x202c326872250920ull,0x3b782e6469746e25ull,0x0920202020202020ull,
-0x6c756d090a202f2full,0x31752e656469772eull,0x202c317225092036ull,0x7225202c31687225ull,
-0x0a202f2f093b3268ull,0x3233752e74766309ull,0x722509203631752eull,0x2e64697425202c32ull,
-0x0920202020203b78ull,0x646461090a202f2full,0x722509203233752eull,0x202c327225202c33ull,
-0x202020203b317225ull,0x0a202f2f09202020ull,0x617261702e646c09ull,0x2509203233732e6dull,
-0x635f5f5b202c3472ull,0x5f6d726170616475ull,0x6576646136315a5full,0x69636f6c65567463ull,
-0x6c6636506b5f7974ull,0x315366503274616full,0x645f69666969695full,0x69202f2f093b5d78ull,
-0x635f5f2036363a64ull,0x5f6d726170616475ull,0x6576646136315a5full,0x69636f6c65567463ull,
-0x6c6636506b5f7974ull,0x315366503274616full,0x645f69666969695full,0x73090a3078302b78ull,
-0x732e656c2e707465ull,0x2c31702509203233ull,0x7225202c34722520ull,0x2f2f092020203b33ull,
-0x2031702540090a20ull,0x744c240920617262ull,0x3b383138325f315full,0x2020202020202020ull,
-0x6c090a202f2f0920ull,0x2e6d617261702e64ull,0x3572250920323375ull,0x6475635f5f5b202cull,
-0x5a5f5f6d72617061ull,0x7463657664613631ull,0x797469636f6c6556ull,0x616f6c6636506b5full,
-0x695f315366503274ull,0x5d626c5f69666969ull,0x3a6469202f2f093bull,0x6475635f5f203436ull,
-0x5a5f5f6d72617061ull,0x7463657664613631ull,0x797469636f6c6556ull,0x616f6c6636506b5full,
-0x695f315366503274ull,0x2b626c5f69666969ull,0x766f6d090a307830ull,0x722509203233752eull,
-0x2020203b30202c36ull,0x2020202020202020ull,0x0a202f2f09202020ull,0x656c2e7074657309ull,
-0x702509203233732eull,0x202c357225202c32ull,0x092020203b367225ull,0x702540090a202f2full,
-0x2409206172622032ull,0x3333335f315f744cull,0x2020202020203b30ull,0x0a202f2f09202020ull,
-0x3233732e766f6d09ull,0x25202c3772250920ull,0x20202020203b3572ull,0x0920202020202020ull,
-0x747663090a202f2full,0x3631752e3233752eull,0x25202c3872250920ull,0x20203b792e646974ull,
-0x0a202f2f09202020ull,0x2e6f6c2e6c756d09ull,0x3972250920323375ull,0x25202c387225202cull,
-0x09202020203b3572ull,0x747663090a202f2full,0x3631752e3233752eull,0x202c303172250920ull,
-0x3b792e6469746e25ull,0x0a202f2f09202020ull,0x2e6f6c2e6c756d09ull,0x3172250920323375ull,
-0x2c30317225202c31ull,0x0920203b35722520ull,0x747663090a202f2full,0x3631752e3233752eull,
-0x202c323172250920ull,0x792e646961746325ull,0x0a202f2f0920203bull,0x2e6f6c2e6c756d09ull,
-0x3172250920323375ull,0x2c32317225202c33ull,0x09203b3131722520ull,0x646461090a202f2full,
-0x722509203233732eull,0x2c397225202c3431ull,0x20203b3331722520ull,0x0a202f2f09202020ull,
-0x617261702e646c09ull,0x2509203233732e6dull,0x5f5f5b202c353172ull,0x6d72617061647563ull,
-0x76646136315a5f5full,0x636f6c6556746365ull,0x6636506b5f797469ull,0x5366503274616f6cull,
-0x5f69666969695f31ull,0x202f2f093b5d7964ull,0x5f5f2033363a6469ull,0x6d72617061647563ull,
-0x76646136315a5f5full,0x636f6c6556746365ull,0x6636506b5f797469ull,0x5366503274616f6cull,
-0x5f69666969695f31ull,0x090a3078302b7964ull,0x203233732e766f6dull,0x30202c3631722509ull,
-0x202020202020203bull,0x2f09202020202020ull,0x2e766f6d090a202full,0x3172250920323373ull,
-0x203b377225202c37ull,0x2020202020202020ull,0x240a202f2f092020ull,0x3438335f315f744cull,
-0x6c3c2f2f200a3a32ull,0x6f6f4c203e706f6full,0x6c2079646f622070ull,0x2c34303120656e69ull,
-0x676e697473656e20ull,0x203a687470656420ull,0x6d69747365202c31ull,0x6574692064657461ull,
-0x3a736e6f69746172ull,0x6e776f6e6b6e7520ull,0x33732e646461090aull,0x2c38317225092032ull,
-0x25202c3431722520ull,0x202020203b363172ull,0x6573090a202f2f09ull,0x33732e65672e7074ull,
-0x202c337025092032ull,0x7225202c38317225ull,0x202f2f09203b3531ull,0x622033702540090aull,
-0x5f744c2409206172ull,0x203b383930345f31ull,0x2020202020202020ull,0x2f2f200a202f2f09ull,
-0x50203e706f6f6c3cull,0x6c20666f20747261ull,0x79646f6220706f6full,0x303120656e696c20ull,
-0x2064616568202c34ull,0x2064656c6562616cull,0x38335f315f744c24ull,0x2e747663090a3234ull,
-0x732e3233662e6e72ull,0x2c31662509203233ull,0x2020203b33722520ull,0x090a202f2f092020ull,
-0x662e6e722e747663ull,0x09203233732e3233ull,0x317225202c326625ull,0x2f09202020203b38ull,
-0x2e766f6d090a202full,0x3366250920323366ull,0x20203b316625202cull,0x2020202020202020ull,
-0x090a202f2f092020ull,0x203233662e766f6dull,0x6625202c34662509ull,0x2020202020203b32ull,
-0x2f09202020202020ull,0x2e766f6d090a202full,0x3566250920323366ull,0x303030306630202cull,
-0x2020203b30303030ull,0x0a30202f2f092020ull,0x3233662e766f6d09ull,0x30202c3666250920ull,
-0x3030303030303066ull,0x0920202020203b30ull,0x6574090a30202f2full,0x2e34762e64322e78ull,
-0x203233662e323366ull,0x3866252c3766257bull,0x3166252c3966252cull,0x727865745b2c7d30ull,
-0x2c3366257b2c6665ull,0x2c3566252c346625ull,0x200a3b5d7d366625ull,0x3e706f6f6c3c2f2full,
-0x666f207472615020ull,0x6f6220706f6f6c20ull,0x20656e696c207964ull,0x616568202c343031ull,
-0x656c6562616c2064ull,0x5f315f744c242064ull,0x6c2e090a32343833ull,0x313109363109636full,
-0x766f6d090a300939ull,0x662509203233662eull,0x3b376625202c3131ull,0x2020202020202020ull,
-0x0a202f2f09202020ull,0x3233662e766f6d09ull,0x202c323166250920ull,0x202020203b386625ull,
-0x0920202020202020ull,0x2e646c090a202f2full,0x33662e6d61726170ull,0x2c33316625092032ull,
-0x616475635f5f5b20ull,0x315a5f5f6d726170ull,0x5674636576646136ull,0x5f797469636f6c65ull,
-0x74616f6c6636506bull,0x69695f3153665032ull,0x3b5d74645f696669ull,0x363a6469202f2f09ull,
-0x616475635f5f2031ull,0x315a5f5f6d726170ull,0x5674636576646136ull,0x5f797469636f6c65ull,
-0x74616f6c6636506bull,0x69695f3153665032ull,0x302b74645f696669ull,0x2e766f6d090a3078ull,
-0x3166250920323366ull,0x3066336630202c34ull,0x20203b3030303030ull,0x2e30202f2f092020ull,
-0x662e646461090a35ull,0x3531662509203233ull,0x25202c316625202cull,0x202020203b343166ull,
-0x63090a202f2f0920ull,0x33662e6e722e7476ull,0x2509203233732e32ull,0x347225202c363166ull,
-0x2f2f09202020203bull,0x662e6c756d090a20ull,0x3731662509203233ull,0x202c31316625202cull,
-0x2020203b33316625ull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x6625202c38316625ull,
-0x37316625202c3631ull,0x2f2f09202020203bull,0x662e627573090a20ull,0x3931662509203233ull,
-0x202c35316625202cull,0x2020203b38316625ull,0x6d090a202f2f0920ull,0x09203233662e766full,
-0x6630202c30326625ull,0x3030303030306633ull,0x2f2f09202020203bull,0x6461090a352e3020ull,
-0x2509203233662e64ull,0x326625202c313266ull,0x203b30326625202cull,0x202f2f0920202020ull,
-0x6e722e747663090aull,0x3233732e3233662eull,0x202c323266250920ull,0x2020203b35317225ull,
-0x756d090a202f2f09ull,0x2509203233662e6cull,0x316625202c333266ull,0x3b33316625202c32ull,
-0x202f2f0920202020ull,0x33662e6c756d090aull,0x2c34326625092032ull,0x25202c3232662520ull,
-0x202020203b333266ull,0x7573090a202f2f09ull,0x2509203233662e62ull,0x326625202c353266ull,
-0x3b34326625202c31ull,0x202f2f0920202020ull,0x33662e766f6d090aull,0x2c36326625092032ull,
-0x3030303030663020ull,0x202020203b303030ull,0x6d090a30202f2f09ull,0x09203233662e766full,
-0x6630202c37326625ull,0x3030303030303030ull,0x2f2f09202020203bull,0x2e786574090a3020ull,
-0x33662e34762e6432ull,0x257b203233662e32ull,0x393266252c383266ull,0x66252c303366252cull,
-0x7865745b2c7d3133ull,0x3166257b2c666572ull,0x252c353266252c39ull,0x373266252c363266ull,
-0x3c2f2f200a3b5d7dull,0x6150203e706f6f6cull,0x6f6c20666f207472ull,0x2079646f6220706full,
-0x34303120656e696cull,0x6c2064616568202cull,0x242064656c656261ull,0x3438335f315f744cull,
-0x09636f6c2e090a32ull,0x3009323231093631ull,0x33662e766f6d090aull,0x2c32336625092032ull,
-0x20203b3832662520ull,0x2020202020202020ull,0x6f6d090a202f2f09ull,0x2509203233662e76ull,
-0x326625202c333366ull,0x2020202020203b39ull,0x202f2f0920202020ull,0x3109636f6c2e090aull,
-0x0a30093432310936ull,0x617261702e646c09ull,0x2509203233732e6dull,0x5f5f5b202c393172ull,
+0x69695f3153665032ull,0x0a2c79765f696669ull,0x6d617261702e0909ull,0x5f5f203233732e20ull,
 0x6d72617061647563ull,0x76646136315a5f5full,0x636f6c6556746365ull,0x6636506b5f797469ull,
-0x5366503274616f6cull,0x5f69666969695f31ull,0x2f2f093b5d786470ull,0x5f2033373a646920ull,
-0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,0x36506b5f79746963ull,
-0x66503274616f6c66ull,0x69666969695f3153ull,0x3078302b7864705full,0x6f6c2e6c756d090aull,
-0x722509203233732eull,0x39317225202c3032ull,0x203b38317225202cull,0x6461090a202f2f09ull,
-0x2509203233732e64ull,0x337225202c313272ull,0x203b30327225202cull,0x202f2f0920202020ull,
-0x36752e747663090aull,0x2509203233732e34ull,0x327225202c316472ull,0x2020202020203b31ull,
-0x756d090a202f2f09ull,0x3436752e6f6c2e6cull,0x202c326472250920ull,0x3b34202c31647225ull,
-0x202f2f0920202020ull,0x7261702e646c090aull,0x09203436752e6d61ull,0x5f5b202c33647225ull,
-0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,0x36506b5f79746963ull,
-0x66503274616f6c66ull,0x69666969695f3153ull,0x2f2f093b5d78765full,0x5f2034373a646920ull,
-0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,0x36506b5f79746963ull,
-0x66503274616f6c66ull,0x69666969695f3153ull,0x0a3078302b78765full,0x3436752e64646109ull,
-0x202c346472250920ull,0x7225202c33647225ull,0x09202020203b3264ull,0x2e7473090a202f2full,
-0x662e6c61626f6c67ull,0x6472255b09203233ull,0x6625202c5d302b34ull,0x69202f2f093b3233ull,
-0x6c2e090a35373a64ull,0x323109363109636full,0x2e646c090a300935ull,0x36752e6d61726170ull,
-0x2c35647225092034ull,0x616475635f5f5b20ull,0x315a5f5f6d726170ull,0x5674636576646136ull,
-0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,0x3b5d79765f696669ull,
-0x373a6469202f2f09ull,0x616475635f5f2036ull,0x315a5f5f6d726170ull,0x5674636576646136ull,
-0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,0x302b79765f696669ull,
-0x2e646461090a3078ull,0x6472250920343675ull,0x2c35647225202c36ull,0x20203b3264722520ull,
-0x090a202f2f092020ull,0x61626f6c672e7473ull,0x5b09203233662e6cull,0x2c5d302b36647225ull,
-0x2f093b3333662520ull,0x0a37373a6469202full,0x30345f315f744c24ull,0x3c2f2f200a3a3839ull,
+0x5366503274616f6cull,0x5f69666969695f31ull,0x702e09090a2c7864ull,0x33732e206d617261ull,
+0x616475635f5f2032ull,0x315a5f5f6d726170ull,0x5674636576646136ull,0x5f797469636f6c65ull,
+0x74616f6c6636506bull,0x69695f3153665032ull,0x2c7864705f696669ull,0x617261702e09090aull,
+0x5f203233732e206dull,0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,
+0x36506b5f79746963ull,0x66503274616f6c66ull,0x69666969695f3153ull,0x2e09090a2c79645full,
+0x662e206d61726170ull,0x6475635f5f203233ull,0x5a5f5f6d72617061ull,0x7463657664613631ull,
+0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x2c74645f69666969ull,
+0x617261702e09090aull,0x5f203233732e206dull,0x726170616475635full,0x646136315a5f5f6dull,
+0x6f6c655674636576ull,0x36506b5f79746963ull,0x66503274616f6c66ull,0x69666969695f3153ull,
+0x0a7b090a29626c5full,0x752e206765722e09ull,0x343c687225203631ull,0x6765722e090a3b3eull,
+0x7225203233752e20ull,0x2e090a3b3e34323cull,0x3436752e20676572ull,0x3b3e373c64722520ull,
+0x2e206765722e090aull,0x333c662520323366ull,0x65722e090a3b3e35ull,0x20646572702e2067ull,
+0x090a3b3e363c7025ull,0x09363109636f6c2eull,0x4c240a3009343031ull,0x36315a5f5f314242ull,
+0x6556746365766461ull,0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,
+0x766f6d090a3a6966ull,0x722509203631752eull,0x61746325202c3168ull,0x6d090a3b782e6469ull,
+0x09203631752e766full,0x6e25202c32687225ull,0x090a3b782e646974ull,0x656469772e6c756dull,
+0x722509203631752eull,0x2c31687225202c31ull,0x090a3b3268722520ull,0x2e3233752e747663ull,
+0x3272250920363175ull,0x782e64697425202cull,0x752e646461090a3bull,0x2c33722509203233ull,
+0x7225202c32722520ull,0x702e646c090a3b31ull,0x3233732e6d617261ull,0x5b202c3472250920ull,
+0x6170616475635f5full,0x6136315a5f5f6d72ull,0x6c65567463657664ull,0x506b5f797469636full,
+0x503274616f6c6636ull,0x666969695f315366ull,0x090a3b5d78645f69ull,0x2e656c2e70746573ull,
+0x3170250920323373ull,0x25202c347225202cull,0x702540090a3b3372ull,0x2409206172622031ull,
+0x3138325f315f744cull,0x702e646c090a3b38ull,0x3233752e6d617261ull,0x5b202c3572250920ull,
+0x6170616475635f5full,0x6136315a5f5f6d72ull,0x6c65567463657664ull,0x506b5f797469636full,
+0x503274616f6c6636ull,0x666969695f315366ull,0x090a3b5d626c5f69ull,0x203233752e766f6dull,
+0x3b30202c36722509ull,0x6c2e70746573090aull,0x2509203233732e65ull,0x2c357225202c3270ull,
+0x40090a3b36722520ull,0x2061726220327025ull,0x335f315f744c2409ull,0x6f6d090a3b303333ull,
+0x2509203233732e76ull,0x3b357225202c3772ull,0x33752e747663090aull,0x2509203631752e32ull,
+0x64697425202c3872ull,0x6c756d090a3b792eull,0x203233752e6f6c2eull,0x7225202c39722509ull,
+0x0a3b357225202c38ull,0x3233752e74766309ull,0x722509203631752eull,0x69746e25202c3031ull,
+0x756d090a3b792e64ull,0x3233752e6f6c2e6cull,0x202c313172250920ull,0x7225202c30317225ull,
+0x2e747663090a3b35ull,0x203631752e323375ull,0x25202c3231722509ull,0x3b792e6469617463ull,
+0x6f6c2e6c756d090aull,0x722509203233752eull,0x32317225202c3331ull,0x0a3b31317225202cull,
+0x3233732e64646109ull,0x202c343172250920ull,0x317225202c397225ull,0x702e646c090a3b33ull,
+0x3233732e6d617261ull,0x202c353172250920ull,0x70616475635f5f5bull,0x36315a5f5f6d7261ull,
+0x6556746365766461ull,0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,
+0x0a3b5d79645f6966ull,0x3233732e766f6d09ull,0x202c363172250920ull,0x2e766f6d090a3b30ull,
+0x3172250920323373ull,0x0a3b377225202c37ull,0x38335f315f744c24ull,0x3c2f2f200a3a3234ull,
+0x6f4c203e706f6f6cull,0x2079646f6220706full,0x34303120656e696cull,0x6e697473656e202cull,
+0x3a68747065642067ull,0x69747365202c3120ull,0x746920646574616dull,0x736e6f6974617265ull,
+0x776f6e6b6e75203aull,0x732e646461090a6eull,0x3831722509203233ull,0x202c34317225202cull,
+0x73090a3b36317225ull,0x732e65672e707465ull,0x2c33702509203233ull,0x25202c3831722520ull,
+0x2540090a3b353172ull,0x0920617262203370ull,0x30345f315f744c24ull,0x3c2f2f200a3b3839ull,
 0x6150203e706f6f6cull,0x6f6c20666f207472ull,0x2079646f6220706full,0x34303120656e696cull,
-0x6c2064616568202cull,0x242064656c656261ull,0x3438335f315f744cull,0x732e646461090a32ull,
-0x3631722509203233ull,0x202c36317225202cull,0x2020202020203b31ull,0x73090a202f2f0920ull,
-0x732e656e2e707465ull,0x2c34702509203233ull,0x25202c3631722520ull,0x2f2f0920203b3572ull,
-0x2034702540090a20ull,0x744c240920617262ull,0x3b323438335f315full,0x2020202020202020ull,
-0x4c240a202f2f0920ull,0x303333335f315f74ull,0x5f315f744c240a3aull,0x2e090a3a38313832ull,
-0x3109363109636f6cull,0x7865090a30093932ull,0x20202020203b7469ull,0x2020202020202020ull,
-0x2020202020202020ull,0x202f2f0920202020ull,0x646e6557444c240aull,0x76646136315a5f5full,
-0x636f6c6556746365ull,0x6636506b5f797469ull,0x5366503274616f6cull,0x3a69666969695f31ull,
-0x5f202f2f207d090aull,0x636576646136315aull,0x7469636f6c655674ull,0x6f6c6636506b5f79ull,
-0x5f31536650327461ull,0x090a0a6966696969ull,0x5f207972746e652eull,0x756666696436315aull,
-0x63656a6f72506573ull,0x6f6c6636506b5f74ull,0x69695f3053327461ull,0x09090a2820696666ull,
-0x2e206d617261702eull,0x75635f5f20343675ull,0x5f5f6d7261706164ull,0x756666696436315aull,
-0x63656a6f72506573ull,0x6f6c6636506b5f74ull,0x69695f3053327461ull,0x0a2c78765f696666ull,
-0x6d617261702e0909ull,0x5f5f203436752e20ull,0x6d72617061647563ull,0x66696436315a5f5full,
-0x6a6f725065737566ull,0x6636506b5f746365ull,0x5f30533274616f6cull,0x79765f6966666969ull,
-0x7261702e09090a2cull,0x203233732e206d61ull,0x6170616475635f5full,0x6436315a5f5f6d72ull,
-0x7250657375666669ull,0x506b5f7463656a6full,0x533274616f6c6636ull,0x5f69666669695f30ull,
-0x702e09090a2c7864ull,0x33732e206d617261ull,0x616475635f5f2032ull,0x315a5f5f6d726170ull,
-0x6573756666696436ull,0x5f7463656a6f7250ull,0x74616f6c6636506bull,0x666669695f305332ull,
-0x09090a2c79645f69ull,0x2e206d617261702eull,0x75635f5f20323366ull,0x5f5f6d7261706164ull,
-0x756666696436315aull,0x63656a6f72506573ull,0x6f6c6636506b5f74ull,0x69695f3053327461ull,
-0x0a2c74645f696666ull,0x6d617261702e0909ull,0x5f5f203233662e20ull,0x6d72617061647563ull,
-0x66696436315a5f5full,0x6a6f725065737566ull,0x6636506b5f746365ull,0x5f30533274616f6cull,
-0x69765f6966666969ull,0x702e09090a2c6373ull,0x33732e206d617261ull,0x616475635f5f2032ull,
-0x315a5f5f6d726170ull,0x6573756666696436ull,0x5f7463656a6f7250ull,0x74616f6c6636506bull,
-0x666669695f305332ull,0x7b090a29626c5f69ull,0x2e206765722e090aull,0x3c68722520363175ull,
-0x65722e090a3b3e34ull,0x25203233752e2067ull,0x090a3b3e32333c72ull,0x36752e206765722eull,
-0x3e383c6472252034ull,0x206765722e090a3bull,0x3c6625203233662eull,0x722e090a3b3e3133ull,
-0x646572702e206765ull,0x0a3b3e383c702520ull,0x363109636f6c2e09ull,0x240a300931343109ull,
-0x315a5f5f3142424cull,0x6573756666696436ull,0x5f7463656a6f7250ull,0x74616f6c6636506bull,
-0x666669695f305332ull,0x2e766f6d090a3a69ull,0x6872250920363175ull,0x6961746325202c31ull,
-0x202020203b782e64ull,0x090a202f2f092020ull,0x203631752e766f6dull,0x25202c3268722509ull,
-0x203b782e6469746eull,0x2f09202020202020ull,0x2e6c756d090a202full,0x3631752e65646977ull,
-0x25202c3172250920ull,0x687225202c316872ull,0x090a202f2f093b32ull,0x2e3233752e747663ull,
-0x3272250920363175ull,0x782e64697425202cull,0x2f0920202020203bull,0x2e646461090a202full,
-0x3372250920323375ull,0x25202c327225202cull,0x20202020203b3172ull,0x090a202f2f092020ull,
-0x6d617261702e646cull,0x722509203233732eull,0x75635f5f5b202c34ull,0x5f5f6d7261706164ull,
-0x756666696436315aull,0x63656a6f72506573ull,0x6f6c6636506b5f74ull,0x69695f3053327461ull,
-0x3b5d78645f696666ull,0x313a6469202f2f09ull,0x6475635f5f203731ull,0x5a5f5f6d72617061ull,
+0x6c2064616568202cull,0x242064656c656261ull,0x3438335f315f744cull,0x722e747663090a32ull,
+0x33732e3233662e6eull,0x202c316625092032ull,0x7663090a3b337225ull,0x3233662e6e722e74ull,
+0x662509203233732eull,0x3b38317225202c32ull,0x33662e766f6d090aull,0x202c336625092032ull,
+0x6f6d090a3b316625ull,0x2509203233662e76ull,0x3b326625202c3466ull,0x33662e766f6d090aull,
+0x202c356625092032ull,0x3030303030306630ull,0x20202020203b3030ull,0x6d090a30202f2f09ull,
+0x09203233662e766full,0x306630202c366625ull,0x3b30303030303030ull,0x2f2f092020202020ull,
+0x2e786574090a3020ull,0x33662e34762e6432ull,0x257b203233662e32ull,0x252c3866252c3766ull,
+0x7d303166252c3966ull,0x6665727865745b2cull,0x66252c3366257b2cull,0x66252c3566252c34ull,
+0x2f2f200a3b5d7d36ull,0x50203e706f6f6c3cull,0x6c20666f20747261ull,0x79646f6220706f6full,
+0x303120656e696c20ull,0x2064616568202c34ull,0x2064656c6562616cull,0x38335f315f744c24ull,
+0x636f6c2e090a3234ull,0x0939313109363109ull,0x662e766f6d090a30ull,0x3131662509203233ull,
+0x090a3b376625202cull,0x203233662e766f6dull,0x25202c3231662509ull,0x2e646c090a3b3866ull,
+0x33662e6d61726170ull,0x2c33316625092032ull,0x616475635f5f5b20ull,0x315a5f5f6d726170ull,
+0x5674636576646136ull,0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,
+0x3b5d74645f696669ull,0x33662e766f6d090aull,0x2c34316625092032ull,0x3030306633663020ull,
+0x202020203b303030ull,0x0a352e30202f2f09ull,0x3233662e64646109ull,0x202c353166250920ull,
+0x316625202c316625ull,0x2e747663090a3b34ull,0x732e3233662e6e72ull,0x3631662509203233ull,
+0x090a3b347225202cull,0x203233662e6c756dull,0x25202c3731662509ull,0x316625202c313166ull,
+0x2e6c756d090a3b33ull,0x3166250920323366ull,0x2c36316625202c38ull,0x090a3b3731662520ull,
+0x203233662e627573ull,0x25202c3931662509ull,0x316625202c353166ull,0x2e766f6d090a3b38ull,
+0x3266250920323366ull,0x3066336630202c30ull,0x20203b3030303030ull,0x2e30202f2f092020ull,
+0x662e646461090a35ull,0x3132662509203233ull,0x25202c326625202cull,0x7663090a3b303266ull,
+0x3233662e6e722e74ull,0x662509203233732eull,0x35317225202c3232ull,0x662e6c756d090a3bull,
+0x3332662509203233ull,0x202c32316625202cull,0x6d090a3b33316625ull,0x09203233662e6c75ull,
+0x6625202c34326625ull,0x33326625202c3232ull,0x662e627573090a3bull,0x3532662509203233ull,
+0x202c31326625202cull,0x6d090a3b34326625ull,0x09203233662e766full,0x6630202c36326625ull,
+0x3030303030303030ull,0x2f2f09202020203bull,0x2e766f6d090a3020ull,0x3266250920323366ull,
+0x3030306630202c37ull,0x20203b3030303030ull,0x0a30202f2f092020ull,0x2e64322e78657409ull,
+0x662e3233662e3476ull,0x383266257b203233ull,0x66252c393266252cull,0x7d313366252c3033ull,
+0x6665727865745b2cull,0x252c393166257b2cull,0x363266252c353266ull,0x3b5d7d373266252cull,
+0x6f6f6c3c2f2f200aull,0x2074726150203e70ull,0x20706f6f6c20666full,0x6e696c2079646f62ull,
+0x68202c3430312065ull,0x6562616c20646165ull,0x5f744c242064656cull,0x090a323438335f31ull,
+0x09363109636f6c2eull,0x6d090a3009323231ull,0x09203233662e766full,0x6625202c32336625ull,
+0x766f6d090a3b3832ull,0x662509203233662eull,0x39326625202c3333ull,0x09636f6c2e090a3bull,
+0x3009343231093631ull,0x7261702e646c090aull,0x09203233732e6d61ull,0x5f5b202c39317225ull,
+0x726170616475635full,0x646136315a5f5f6dull,0x6f6c655674636576ull,0x36506b5f79746963ull,
+0x66503274616f6c66ull,0x69666969695f3153ull,0x090a3b5d7864705full,0x732e6f6c2e6c756dull,
+0x3032722509203233ull,0x202c39317225202cull,0x61090a3b38317225ull,0x09203233732e6464ull,
+0x7225202c31327225ull,0x3b337225202c3032ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
+0x31327225202c3232ull,0x7663090a3b34202cull,0x33752e3436752e74ull,0x2c31647225092032ull,
+0x090a3b3232722520ull,0x6d617261702e646cull,0x722509203436752eull,0x635f5f5b202c3264ull,
+0x5f6d726170616475ull,0x6576646136315a5full,0x69636f6c65567463ull,0x6c6636506b5f7974ull,
+0x315366503274616full,0x765f69666969695full,0x646461090a3b5d78ull,0x722509203436752eull,
+0x32647225202c3364ull,0x0a3b31647225202cull,0x626f6c672e747309ull,0x09203233662e6c61ull,
+0x5d302b336472255bull,0x0a3b32336625202cull,0x363109636f6c2e09ull,0x090a300935323109ull,
+0x6d617261702e646cull,0x722509203436752eull,0x635f5f5b202c3464ull,0x5f6d726170616475ull,
+0x6576646136315a5full,0x69636f6c65567463ull,0x6c6636506b5f7974ull,0x315366503274616full,
+0x765f69666969695full,0x646461090a3b5d79ull,0x722509203436752eull,0x34647225202c3564ull,
+0x0a3b31647225202cull,0x626f6c672e747309ull,0x09203233662e6c61ull,0x5d302b356472255bull,
+0x0a3b33336625202cull,0x30345f315f744c24ull,0x3c2f2f200a3a3839ull,0x6150203e706f6f6cull,
+0x6f6c20666f207472ull,0x2079646f6220706full,0x34303120656e696cull,0x6c2064616568202cull,
+0x242064656c656261ull,0x3438335f315f744cull,0x732e646461090a32ull,0x3631722509203233ull,
+0x202c36317225202cull,0x70746573090a3b31ull,0x203233732e656e2eull,0x7225202c34702509ull,
+0x3b357225202c3631ull,0x622034702540090aull,0x5f744c2409206172ull,0x0a3b323438335f31ull,
+0x33335f315f744c24ull,0x5f744c240a3a3033ull,0x0a3a383138325f31ull,0x363109636f6c2e09ull,
+0x090a300939323109ull,0x4c240a3b74697865ull,0x5a5f5f646e655744ull,0x7463657664613631ull,
+0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x7d090a3a69666969ull,
+0x36315a5f202f2f20ull,0x6556746365766461ull,0x6b5f797469636f6cull,0x3274616f6c663650ull,
+0x6969695f31536650ull,0x6e652e090a0a6966ull,0x36315a5f20797274ull,0x5065737566666964ull,
+0x6b5f7463656a6f72ull,0x3274616f6c663650ull,0x69666669695f3053ull,0x61702e09090a2820ull,
+0x3436752e206d6172ull,0x70616475635f5f20ull,0x36315a5f5f6d7261ull,0x5065737566666964ull,
+0x6b5f7463656a6f72ull,0x3274616f6c663650ull,0x69666669695f3053ull,0x2e09090a2c78765full,
+0x752e206d61726170ull,0x6475635f5f203436ull,0x5a5f5f6d72617061ull,0x7375666669643631ull,
+0x7463656a6f725065ull,0x616f6c6636506b5full,0x6669695f30533274ull,0x090a2c79765f6966ull,
+0x206d617261702e09ull,0x635f5f203233732eull,0x5f6d726170616475ull,0x6666696436315a5full,
+0x656a6f7250657375ull,0x6c6636506b5f7463ull,0x695f30533274616full,0x2c78645f69666669ull,
+0x617261702e09090aull,0x5f203233732e206dull,0x726170616475635full,0x696436315a5f5f6dull,
+0x6f72506573756666ull,0x36506b5f7463656aull,0x30533274616f6c66ull,0x645f69666669695full,
+0x61702e09090a2c79ull,0x3233662e206d6172ull,0x70616475635f5f20ull,0x36315a5f5f6d7261ull,
+0x5065737566666964ull,0x6b5f7463656a6f72ull,0x3274616f6c663650ull,0x69666669695f3053ull,
+0x2e09090a2c74645full,0x662e206d61726170ull,0x6475635f5f203233ull,0x5a5f5f6d72617061ull,
 0x7375666669643631ull,0x7463656a6f725065ull,0x616f6c6636506b5full,0x6669695f30533274ull,
-0x78302b78645f6966ull,0x2e70746573090a30ull,0x09203233732e656cull,0x347225202c317025ull,
-0x20203b337225202cull,0x40090a202f2f0920ull,0x2061726220317025ull,0x345f325f744c2409ull,
-0x202020203b343533ull,0x2f2f092020202020ull,0x61702e646c090a20ull,0x203233752e6d6172ull,
-0x5f5b202c35722509ull,0x726170616475635full,0x696436315a5f5f6dull,0x6f72506573756666ull,
-0x36506b5f7463656aull,0x30533274616f6c66ull,0x6c5f69666669695full,0x69202f2f093b5d62ull,
-0x5f5f203531313a64ull,0x6d72617061647563ull,0x66696436315a5f5full,0x6a6f725065737566ull,
-0x6636506b5f746365ull,0x5f30533274616f6cull,0x626c5f6966666969ull,0x6f6d090a3078302bull,
-0x2509203233752e76ull,0x20203b30202c3672ull,0x2020202020202020ull,0x202f2f0920202020ull,
-0x6c2e70746573090aull,0x2509203233732e65ull,0x2c357225202c3270ull,0x2020203b36722520ull,
-0x2540090a202f2f09ull,0x0920617262203270ull,0x38345f325f744c24ull,0x20202020203b3636ull,
-0x202f2f0920202020ull,0x33732e766f6d090aull,0x202c377225092032ull,0x202020203b357225ull,
-0x2020202020202020ull,0x7663090a202f2f09ull,0x31752e3233752e74ull,0x202c387225092036ull,
-0x203b792e64697425ull,0x202f2f0920202020ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
-0x202c387225202c39ull,0x202020203b357225ull,0x7663090a202f2f09ull,0x31752e3233752e74ull,
-0x2c30317225092036ull,0x792e6469746e2520ull,0x202f2f092020203bull,0x6f6c2e6c756d090aull,
-0x722509203233752eull,0x30317225202c3131ull,0x20203b357225202cull,0x7663090a202f2f09ull,
-0x31752e3233752e74ull,0x2c32317225092036ull,0x2e64696174632520ull,0x202f2f0920203b79ull,
-0x6f6c2e6c756d090aull,0x722509203233752eull,0x32317225202c3331ull,0x203b31317225202cull,
-0x6461090a202f2f09ull,0x2509203233732e64ull,0x397225202c343172ull,0x203b33317225202cull,
-0x202f2f0920202020ull,0x7261702e646c090aull,0x09203233732e6d61ull,0x5f5b202c35317225ull,
-0x726170616475635full,0x696436315a5f5f6dull,0x6f72506573756666ull,0x36506b5f7463656aull,
-0x30533274616f6c66ull,0x645f69666669695full,0x69202f2f093b5d79ull,0x5f5f203431313a64ull,
-0x6d72617061647563ull,0x66696436315a5f5full,0x6a6f725065737566ull,0x6636506b5f746365ull,
-0x5f30533274616f6cull,0x79645f6966666969ull,0x6f6d090a3078302bull,0x2509203233732e76ull,
-0x203b30202c363172ull,0x2020202020202020ull,0x202f2f0920202020ull,0x33732e766f6d090aull,
-0x2c37317225092032ull,0x2020203b37722520ull,0x2020202020202020ull,0x744c240a202f2f09ull,
-0x3a383733355f325full,0x6f6f6c3c2f2f200aull,0x20706f6f4c203e70ull,0x6e696c2079646f62ull,
-0x6e202c3134312065ull,0x6420676e69747365ull,0x2c31203a68747065ull,0x74616d6974736520ull,
-0x6172657469206465ull,0x75203a736e6f6974ull,0x090a6e776f6e6b6eull,0x203233732e646461ull,
-0x25202c3831722509ull,0x317225202c343172ull,0x2f09202020203b36ull,0x70746573090a202full,
-0x203233732e65672eull,0x7225202c33702509ull,0x35317225202c3831ull,0x090a202f2f09203bull,
-0x6172622033702540ull,0x5f325f744c240920ull,0x2020203b34333635ull,0x2f09202020202020ull,
-0x6c3c2f2f200a202full,0x726150203e706f6full,0x6f6f6c20666f2074ull,0x6c2079646f622070ull,
-0x2c31343120656e69ull,0x616c206461656820ull,0x4c242064656c6562ull,0x383733355f325f74ull,
-0x3109636f6c2e090aull,0x0a30093636310936ull,0x3233732e72687309ull,0x202c393172250920ull,
-0x3133202c35317225ull,0x092020202020203bull,0x766f6d090a202f2full,0x722509203233732eull,
-0x20203b31202c3032ull,0x2020202020202020ull,0x0a202f2f09202020ull,0x3233622e646e6109ull,
-0x202c313272250920ull,0x7225202c39317225ull,0x09202020203b3032ull,0x646461090a202f2full,
-0x722509203233732eull,0x31327225202c3232ull,0x203b35317225202cull,0x0a202f2f09202020ull,
-0x3233732e72687309ull,0x202c333272250920ull,0x3b31202c32327225ull,0x0920202020202020ull,
-0x2e646c090a202f2full,0x33662e6d61726170ull,0x202c316625092032ull,0x70616475635f5f5bull,
-0x36315a5f5f6d7261ull,0x5065737566666964ull,0x6b5f7463656a6f72ull,0x3274616f6c663650ull,
-0x69666669695f3053ull,0x2f2f093b5d74645full,0x203432313a646920ull,0x6170616475635f5full,
-0x6436315a5f5f6d72ull,0x7250657375666669ull,0x506b5f7463656a6full,0x533274616f6c6636ull,
-0x5f69666669695f30ull,0x090a3078302b7464ull,0x6d617261702e646cull,0x662509203233662eull,
-0x75635f5f5b202c32ull,0x5f5f6d7261706164ull,0x756666696436315aull,0x63656a6f72506573ull,
-0x6f6c6636506b5f74ull,0x69695f3053327461ull,0x637369765f696666ull,0x6469202f2f093b5dull,
-0x635f5f203532313aull,0x5f6d726170616475ull,0x6666696436315a5full,0x656a6f7250657375ull,
-0x6c6636506b5f7463ull,0x695f30533274616full,0x7369765f69666669ull,0x6d090a3078302b63ull,
-0x09203233662e6c75ull,0x316625202c336625ull,0x20203b326625202cull,0x2f2f092020202020ull,
-0x6c2e6c756d090a20ull,0x2509203233732e6full,0x337225202c343272ull,0x20203b337225202cull,
-0x73090a202f2f0920ull,0x732e746c2e707465ull,0x2c34702509203233ull,0x25202c3332722520ull,
-0x2f2f09203b383172ull,0x732e627573090a20ull,0x3532722509203233ull,0x202c38317225202cull,
-0x2020203b35317225ull,0x73090a202f2f0920ull,0x203233732e706c65ull,0x25202c3632722509ull,
-0x317225202c353272ull,0x093b347025202c38ull,0x6c756d090a202f2full,0x203233732e6f6c2eull,
-0x25202c3732722509ull,0x327225202c363272ull,0x0a202f2f09203b36ull,0x2e6f6c2e6c756d09ull,
-0x3272250920323373ull,0x2c38317225202c38ull,0x0920203b34722520ull,0x646461090a202f2full,
-0x722509203233732eull,0x2c337225202c3932ull,0x20203b3832722520ull,0x0a202f2f09202020ull,
-0x3436752e74766309ull,0x722509203233732eull,0x39327225202c3164ull,0x092020202020203bull,
-0x6c756d090a202f2full,0x203436752e6f6c2eull,0x25202c3264722509ull,0x203b38202c316472ull,
-0x0a202f2f09202020ull,0x3233732e64646109ull,0x202c303372250920ull,0x7225202c34327225ull,
-0x09202020203b3732ull,0x2e646c090a202f2full,0x36752e6d61726170ull,0x2c33647225092034ull,
+0x2c637369765f6966ull,0x617261702e09090aull,0x5f203233732e206dull,0x726170616475635full,
+0x696436315a5f5f6dull,0x6f72506573756666ull,0x36506b5f7463656aull,0x30533274616f6c66ull,
+0x6c5f69666669695full,0x2e090a7b090a2962ull,0x3631752e20676572ull,0x3b3e343c68722520ull,
+0x2e206765722e090aull,0x333c722520323375ull,0x65722e090a3b3e33ull,0x25203436752e2067ull,
+0x090a3b3e373c6472ull,0x33662e206765722eull,0x3e37323c66252032ull,0x206765722e090a3bull,
+0x702520646572702eull,0x6c2e090a3b3e383cull,0x343109363109636full,0x42424c240a300931ull,
+0x696436315a5f5f31ull,0x6f72506573756666ull,0x36506b5f7463656aull,0x30533274616f6c66ull,
+0x0a3a69666669695full,0x3631752e766f6d09ull,0x202c316872250920ull,0x782e646961746325ull,
+0x752e766f6d090a3bull,0x3268722509203631ull,0x2e6469746e25202cull,0x2e6c756d090a3b78ull,
+0x3631752e65646977ull,0x25202c3172250920ull,0x687225202c316872ull,0x2e747663090a3b32ull,
+0x203631752e323375ull,0x7425202c32722509ull,0x61090a3b782e6469ull,0x09203233752e6464ull,
+0x327225202c337225ull,0x090a3b317225202cull,0x6d617261702e646cull,0x722509203233732eull,
+0x75635f5f5b202c34ull,0x5f5f6d7261706164ull,0x756666696436315aull,0x63656a6f72506573ull,
+0x6f6c6636506b5f74ull,0x69695f3053327461ull,0x3b5d78645f696666ull,0x6c2e70746573090aull,
+0x2509203233732e65ull,0x2c347225202c3170ull,0x40090a3b33722520ull,0x2061726220317025ull,
+0x345f325f744c2409ull,0x646c090a3b343533ull,0x752e6d617261702eull,0x2c35722509203233ull,
 0x616475635f5f5b20ull,0x315a5f5f6d726170ull,0x6573756666696436ull,0x5f7463656a6f7250ull,
-0x74616f6c6636506bull,0x666669695f305332ull,0x2f093b5d78765f69ull,0x3632313a6469202full,
-0x70616475635f5f20ull,0x36315a5f5f6d7261ull,0x5065737566666964ull,0x6b5f7463656a6f72ull,
-0x3274616f6c663650ull,0x69666669695f3053ull,0x0a3078302b78765full,0x3436752e64646109ull,
-0x202c346472250920ull,0x7225202c33647225ull,0x09202020203b3264ull,0x747663090a202f2full,
-0x2e3233662e6e722eull,0x3466250920323373ull,0x203b30337225202cull,0x0a202f2f09202020ull,
-0x3233662e766f6d09ull,0x30202c3566250920ull,0x3030303038663366ull,0x0920202020203b30ull,
-0x616d090a31202f2full,0x2509203233662e64ull,0x2c346625202c3666ull,0x6625202c33662520ull,
-0x202f2f0920203b35ull,0x70612e706372090aull,0x3233662e786f7270ull,0x25202c3766250920ull,
-0x20202020203b3666ull,0x646c090a202f2f09ull,0x2e6c61626f6c672eull,0x09203233662e3276ull,
-0x3966252c3866257bull,0x346472255b202c7dull,0x202f2f093b5d302bull,0x33662e6c756d090aull,
-0x2c30316625092032ull,0x6625202c38662520ull,0x2020202020203b37ull,0x756d090a202f2f09ull,
-0x2509203233662e6cull,0x396625202c313166ull,0x20203b376625202cull,0x202f2f0920202020ull,
-0x3109636f6c2e090aull,0x0a30093736310936ull,0x617261702e646c09ull,0x2509203436752e6dull,
-0x5f5f5b202c356472ull,0x6d72617061647563ull,0x66696436315a5f5full,0x6a6f725065737566ull,
-0x6636506b5f746365ull,0x5f30533274616f6cull,0x79765f6966666969ull,0x6469202f2f093b5dull,
-0x635f5f203932313aull,0x5f6d726170616475ull,0x6666696436315a5full,0x656a6f7250657375ull,
-0x6c6636506b5f7463ull,0x695f30533274616full,0x2b79765f69666669ull,0x646461090a307830ull,
-0x722509203436752eull,0x35647225202c3664ull,0x203b32647225202cull,0x0a202f2f09202020ull,
-0x626f6c672e646c09ull,0x33662e32762e6c61ull,0x323166257b092032ull,0x202c7d333166252cull,
-0x5d302b366472255bull,0x6d090a202f2f093bull,0x09203233662e6c75ull,0x6625202c34316625ull,
-0x3b376625202c3231ull,0x2f2f092020202020ull,0x662e6c756d090a20ull,0x3531662509203233ull,
-0x202c33316625202cull,0x202020203b376625ull,0x6d090a202f2f0920ull,0x09203233662e766full,
-0x6630202c36316625ull,0x3030303030303030ull,0x2f2f09202020203bull,0x70746573090a3020ull,
-0x203233662e74672eull,0x6625202c35702509ull,0x3b36316625202c34ull,0x090a202f2f092020ull,
-0x7262203570252140ull,0x325f744c24092061ull,0x20203b363431365full,0x2f09202020202020ull,
-0x6c3c2f2f200a202full,0x726150203e706f6full,0x6f6f6c20666f2074ull,0x6c2079646f622070ull,
+0x74616f6c6636506bull,0x666669695f305332ull,0x090a3b5d626c5f69ull,0x203233752e766f6dull,
+0x3b30202c36722509ull,0x6c2e70746573090aull,0x2509203233732e65ull,0x2c357225202c3270ull,
+0x40090a3b36722520ull,0x2061726220327025ull,0x345f325f744c2409ull,0x6f6d090a3b363638ull,
+0x2509203233732e76ull,0x3b357225202c3772ull,0x33752e747663090aull,0x2509203631752e32ull,
+0x64697425202c3872ull,0x6c756d090a3b792eull,0x203233752e6f6c2eull,0x7225202c39722509ull,
+0x0a3b357225202c38ull,0x3233752e74766309ull,0x722509203631752eull,0x69746e25202c3031ull,
+0x756d090a3b792e64ull,0x3233752e6f6c2e6cull,0x202c313172250920ull,0x7225202c30317225ull,
+0x2e747663090a3b35ull,0x203631752e323375ull,0x25202c3231722509ull,0x3b792e6469617463ull,
+0x6f6c2e6c756d090aull,0x722509203233752eull,0x32317225202c3331ull,0x0a3b31317225202cull,
+0x3233732e64646109ull,0x202c343172250920ull,0x317225202c397225ull,0x702e646c090a3b33ull,
+0x3233732e6d617261ull,0x202c353172250920ull,0x70616475635f5f5bull,0x36315a5f5f6d7261ull,
+0x5065737566666964ull,0x6b5f7463656a6f72ull,0x3274616f6c663650ull,0x69666669695f3053ull,
+0x6d090a3b5d79645full,0x09203233732e766full,0x3b30202c36317225ull,0x33732e766f6d090aull,
+0x2c37317225092032ull,0x4c240a3b37722520ull,0x383733355f325f74ull,0x6f6c3c2f2f200a3aull,
+0x706f6f4c203e706full,0x696c2079646f6220ull,0x202c31343120656eull,0x20676e697473656eull,
+0x31203a6874706564ull,0x616d69747365202cull,0x7265746920646574ull,0x203a736e6f697461ull,
+0x0a6e776f6e6b6e75ull,0x3233732e64646109ull,0x202c383172250920ull,0x7225202c34317225ull,
+0x746573090a3b3631ull,0x3233732e65672e70ull,0x25202c3370250920ull,0x317225202c383172ull,
+0x33702540090a3b35ull,0x4c24092061726220ull,0x343336355f325f74ull,0x6f6c3c2f2f200a3bull,
+0x74726150203e706full,0x706f6f6c20666f20ull,0x696c2079646f6220ull,0x202c31343120656eull,
+0x62616c2064616568ull,0x744c242064656c65ull,0x0a383733355f325full,0x363109636f6c2e09ull,
+0x090a300935353109ull,0x732e6f6c2e6c756dull,0x3931722509203233ull,0x202c38317225202cull,
+0x6461090a3b347225ull,0x2509203233732e64ull,0x317225202c303272ull,0x0a3b337225202c39ull,
+0x2e6f6c2e6c756d09ull,0x3272250920323375ull,0x2c30327225202c31ull,0x747663090a3b3820ull,
+0x3233752e3436752eull,0x202c316472250920ull,0x6c090a3b31327225ull,0x2e6d617261702e64ull,
+0x6472250920343675ull,0x75635f5f5b202c32ull,0x5f5f6d7261706164ull,0x756666696436315aull,
+0x63656a6f72506573ull,0x6f6c6636506b5f74ull,0x69695f3053327461ull,0x3b5d78765f696666ull,
+0x36752e646461090aull,0x2c33647225092034ull,0x25202c3264722520ull,0x646c090a3b316472ull,
+0x2e6c61626f6c672eull,0x09203233662e3276ull,0x3266252c3166257bull,0x336472255b202c7dull,
+0x6c2e090a3b5d302bull,0x353109363109636full,0x2e646c090a300936ull,0x36752e6d61726170ull,
+0x2c34647225092034ull,0x616475635f5f5b20ull,0x315a5f5f6d726170ull,0x6573756666696436ull,
+0x5f7463656a6f7250ull,0x74616f6c6636506bull,0x666669695f305332ull,0x090a3b5d79765f69ull,
+0x203436752e646461ull,0x25202c3564722509ull,0x647225202c346472ull,0x672e646c090a3b31ull,
+0x32762e6c61626f6cull,0x257b09203233662eull,0x2c7d3466252c3366ull,0x302b356472255b20ull,
+0x636f6c2e090a3b5dull,0x0936363109363109ull,0x732e726873090a30ull,0x3232722509203233ull,
+0x202c35317225202cull,0x766f6d090a3b3133ull,0x722509203233732eull,0x090a3b31202c3332ull,
+0x203233622e646e61ull,0x25202c3432722509ull,0x327225202c323272ull,0x2e646461090a3b33ull,
+0x3272250920323373ull,0x2c34327225202c35ull,0x090a3b3531722520ull,0x203233732e726873ull,
+0x25202c3632722509ull,0x0a3b31202c353272ull,0x617261702e646c09ull,0x2509203233662e6dull,
+0x635f5f5b202c3566ull,0x5f6d726170616475ull,0x6666696436315a5full,0x656a6f7250657375ull,
+0x6c6636506b5f7463ull,0x695f30533274616full,0x5d74645f69666669ull,0x61702e646c090a3bull,
+0x203233662e6d6172ull,0x5f5b202c36662509ull,0x726170616475635full,0x696436315a5f5f6dull,
+0x6f72506573756666ull,0x36506b5f7463656aull,0x30533274616f6c66ull,0x765f69666669695full,
+0x6d090a3b5d637369ull,0x09203233662e6c75ull,0x356625202c376625ull,0x090a3b366625202cull,
+0x732e6f6c2e6c756dull,0x3732722509203233ull,0x25202c337225202cull,0x746573090a3b3372ull,
+0x3233732e746c2e70ull,0x25202c3470250920ull,0x317225202c363272ull,0x2e627573090a3b38ull,
+0x3272250920323373ull,0x2c38317225202c38ull,0x090a3b3531722520ull,0x3233732e706c6573ull,
+0x202c393272250920ull,0x7225202c38327225ull,0x3b347025202c3831ull,0x6f6c2e6c756d090aull,
+0x722509203233732eull,0x39327225202c3033ull,0x0a3b39327225202cull,0x3233732e64646109ull,
+0x202c313372250920ull,0x7225202c37327225ull,0x747663090a3b3033ull,0x2e3233662e6e722eull,
+0x3866250920323373ull,0x0a3b31337225202cull,0x3233662e766f6d09ull,0x30202c3966250920ull,
+0x3030303038663366ull,0x0920202020203b30ull,0x616d090a31202f2full,0x2509203233662e64ull,
+0x386625202c303166ull,0x25202c376625202cull,0x706372090a3b3966ull,0x2e786f727070612eull,
+0x3166250920323366ull,0x3b30316625202c31ull,0x33662e6c756d090aull,0x202c316625092032ull,
+0x6625202c31316625ull,0x2e6c756d090a3b31ull,0x3266250920323366ull,0x202c31316625202cull,
+0x6c2e090a3b326625ull,0x363109363109636full,0x6c756d090a300937ull,0x662509203233662eull,
+0x2c31316625202c33ull,0x6d090a3b33662520ull,0x09203233662e6c75ull,0x316625202c346625ull,
+0x0a3b346625202c31ull,0x3233662e766f6d09ull,0x202c323166250920ull,0x3030303030306630ull,
+0x09202020203b3030ull,0x6573090a30202f2full,0x33662e74672e7074ull,0x202c357025092032ull,
+0x316625202c386625ull,0x70252140090a3b32ull,0x2409206172622035ull,0x3431365f325f744cull,
+0x6c3c2f2f200a3b36ull,0x726150203e706f6full,0x6f6f6c20666f2074ull,0x6c2079646f622070ull,
 0x2c31343120656e69ull,0x616c206461656820ull,0x4c242064656c6562ull,0x383733355f325f74ull,
 0x3109636f6c2e090aull,0x0a30093337310936ull,0x2e6e722e74766309ull,0x203233732e323366ull,
-0x25202c3731662509ull,0x09202020203b3372ull,0x747663090a202f2full,0x2e3233662e6e722eull,
-0x3166250920323373ull,0x3b36327225202c38ull,0x0a202f2f09202020ull,0x3233662e6c756d09ull,
-0x202c393166250920ull,0x6625202c38316625ull,0x09202020203b3431ull,0x64616d090a202f2full,
-0x662509203233662eull,0x37316625202c3032ull,0x202c30316625202cull,0x2f2f093b39316625ull,
-0x09636f6c2e090a20ull,0x3009353731093631ull,0x33662e6c756d090aull,0x2c31326625092032ull,
-0x25202c3831662520ull,0x202020203b353166ull,0x616d090a202f2f09ull,0x2509203233662e64ull,
-0x316625202c323266ull,0x2c31316625202c37ull,0x2f093b3132662520ull,0x636f6c2e090a202full,
-0x0936373109363109ull,0x612e706372090a30ull,0x33662e786f727070ull,0x2c33326625092032ull,
-0x2020203b34662520ull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x6625202c34326625ull,
-0x33326625202c3032ull,0x2f2f09202020203bull,0x662e6c756d090a20ull,0x3532662509203233ull,
-0x202c37316625202cull,0x2020203b34326625ull,0x73090a202f2f0920ull,0x09203233662e6275ull,
-0x6625202c30316625ull,0x35326625202c3031ull,0x2f2f09202020203bull,0x09636f6c2e090a20ull,
-0x3009373731093631ull,0x33662e6c756d090aull,0x2c36326625092032ull,0x25202c3232662520ull,
-0x202020203b333266ull,0x756d090a202f2f09ull,0x2509203233662e6cull,0x316625202c373266ull,
-0x3b36326625202c37ull,0x202f2f0920202020ull,0x33662e627573090aull,0x2c31316625092032ull,
-0x25202c3131662520ull,0x202020203b373266ull,0x6c2e090a202f2f09ull,0x373109363109636full,
-0x6c756d090a300938ull,0x662509203233662eull,0x38316625202c3832ull,0x203b34326625202cull,
-0x0a202f2f09202020ull,0x3233662e62757309ull,0x202c343166250920ull,0x6625202c34316625ull,
-0x09202020203b3832ull,0x6f6c2e090a202f2full,0x3937310936310963ull,0x2e6c756d090a3009ull,
-0x3266250920323366ull,0x2c38316625202c39ull,0x20203b3632662520ull,0x090a202f2f092020ull,
-0x203233662e627573ull,0x25202c3531662509ull,0x326625202c353166ull,0x2f09202020203b39ull,
-0x325f744c240a202full,0x200a3a363431365full,0x3e706f6f6c3c2f2full,0x666f207472615020ull,
-0x6f6220706f6f6c20ull,0x20656e696c207964ull,0x616568202c313431ull,0x656c6562616c2064ull,
-0x5f325f744c242064ull,0x7473090a38373335ull,0x2e6c61626f6c672eull,0x09203233662e3276ull,
-0x5d302b346472255bull,0x2c303166257b202cull,0x2f093b7d31316625ull,0x672e7473090a202full,
-0x32762e6c61626f6cull,0x255b09203233662eull,0x202c5d302b366472ull,0x66252c343166257bull,
-0x202f2f093b7d3531ull,0x355f325f744c240aull,0x2f2f200a3a343336ull,0x50203e706f6f6c3cull,
-0x6c20666f20747261ull,0x79646f6220706f6full,0x343120656e696c20ull,0x2064616568202c31ull,
-0x2064656c6562616cull,0x33355f325f744c24ull,0x636f6c2e090a3837ull,0x0933383109363109ull,
-0x732e646461090a30ull,0x3631722509203233ull,0x202c36317225202cull,0x2020202020203b31ull,
-0x73090a202f2f0920ull,0x732e656e2e707465ull,0x2c36702509203233ull,0x25202c3631722520ull,
-0x2f2f0920203b3572ull,0x2036702540090a20ull,0x744c240920617262ull,0x3b383733355f325full,
-0x2020202020202020ull,0x4c240a202f2f0920ull,0x363638345f325f74ull,0x5f325f744c240a3aull,
-0x2e090a3a34353334ull,0x3109363109636f6cull,0x7865090a30093738ull,0x20202020203b7469ull,
-0x2020202020202020ull,0x2020202020202020ull,0x202f2f0920202020ull,0x646e6557444c240aull,
-0x66696436315a5f5full,0x6a6f725065737566ull,0x6636506b5f746365ull,0x5f30533274616f6cull,
-0x090a3a6966666969ull,0x315a5f202f2f207dull,0x6573756666696436ull,0x5f7463656a6f7250ull,
-0x74616f6c6636506bull,0x666669695f305332ull,0x746e652e090a0a69ull,0x7536315a5f207972ull,
+0x25202c3331662509ull,0x747663090a3b3372ull,0x2e3233662e6e722eull,0x3166250920323373ull,
+0x3b39327225202c34ull,0x33662e6c756d090aull,0x2c35316625092032ull,0x25202c3431662520ull,
+0x64616d090a3b3366ull,0x662509203233662eull,0x33316625202c3631ull,0x25202c316625202cull,
+0x6c2e090a3b353166ull,0x373109363109636full,0x6c756d090a300935ull,0x662509203233662eull,
+0x34316625202c3731ull,0x090a3b346625202cull,0x203233662e64616dull,0x25202c3831662509ull,
+0x326625202c333166ull,0x0a3b37316625202cull,0x363109636f6c2e09ull,0x090a300936373109ull,
+0x727070612e706372ull,0x09203233662e786full,0x6625202c39316625ull,0x2e6c756d090a3b38ull,
+0x3266250920323366ull,0x2c36316625202c30ull,0x090a3b3931662520ull,0x203233662e6c756dull,
+0x25202c3132662509ull,0x326625202c333166ull,0x2e627573090a3b30ull,0x3166250920323366ull,
+0x25202c316625202cull,0x6c2e090a3b313266ull,0x373109363109636full,0x6c756d090a300937ull,
+0x662509203233662eull,0x38316625202c3232ull,0x0a3b39316625202cull,0x3233662e6c756d09ull,
+0x202c333266250920ull,0x6625202c33316625ull,0x627573090a3b3232ull,0x662509203233662eull,
+0x202c326625202c32ull,0x2e090a3b33326625ull,0x3109363109636f6cull,0x756d090a30093837ull,
+0x2509203233662e6cull,0x316625202c343266ull,0x3b30326625202c34ull,0x33662e627573090aull,
+0x202c336625092032ull,0x326625202c336625ull,0x636f6c2e090a3b34ull,0x0939373109363109ull,
+0x662e6c756d090a30ull,0x3532662509203233ull,0x202c34316625202cull,0x73090a3b32326625ull,
+0x09203233662e6275ull,0x346625202c346625ull,0x0a3b35326625202cull,0x31365f325f744c24ull,
+0x3c2f2f200a3a3634ull,0x6150203e706f6f6cull,0x6f6c20666f207472ull,0x2079646f6220706full,
+0x31343120656e696cull,0x6c2064616568202cull,0x242064656c656261ull,0x3733355f325f744cull,
+0x6c672e7473090a38ull,0x2e32762e6c61626full,0x72255b0920323366ull,0x7b202c5d302b3364ull,
+0x7d3266252c316625ull,0x6c672e7473090a3bull,0x2e32762e6c61626full,0x72255b0920323366ull,
+0x7b202c5d302b3564ull,0x7d3466252c336625ull,0x5f325f744c240a3bull,0x2f200a3a34333635ull,
+0x203e706f6f6c3c2full,0x20666f2074726150ull,0x646f6220706f6f6cull,0x3120656e696c2079ull,
+0x64616568202c3134ull,0x64656c6562616c20ull,0x355f325f744c2420ull,0x6f6c2e090a383733ull,
+0x3338310936310963ull,0x2e646461090a3009ull,0x3172250920323373ull,0x2c36317225202c36ull,
+0x746573090a3b3120ull,0x3233732e656e2e70ull,0x25202c3670250920ull,0x357225202c363172ull,
+0x2036702540090a3bull,0x744c240920617262ull,0x3b383733355f325full,0x345f325f744c240aull,
+0x744c240a3a363638ull,0x3a343533345f325full,0x3109636f6c2e090aull,0x0a30093738310936ull,
+0x240a3b7469786509ull,0x5f5f646e6557444cull,0x756666696436315aull,0x63656a6f72506573ull,
+0x6f6c6636506b5f74ull,0x69695f3053327461ull,0x207d090a3a696666ull,0x6436315a5f202f2full,
+0x7250657375666669ull,0x506b5f7463656a6full,0x533274616f6c6636ull,0x0a69666669695f30ull,
+0x7972746e652e090aull,0x64707536315a5f20ull,0x636f6c6556657461ull,0x6636506b5f797469ull,
+0x5366503274616f6cull,0x206d696969695f31ull,0x7261702e09090a28ull,0x203436752e206d61ull,
+0x6170616475635f5full,0x7536315a5f5f6d72ull,0x6c65566574616470ull,0x506b5f797469636full,
+0x503274616f6c6636ull,0x696969695f315366ull,0x2e09090a2c765f6dull,0x752e206d61726170ull,
+0x6475635f5f203436ull,0x5a5f5f6d72617061ull,0x6574616470753631ull,0x797469636f6c6556ull,
+0x616f6c6636506b5full,0x695f315366503274ull,0x2c78765f6d696969ull,0x617261702e09090aull,
+0x5f203436752e206dull,0x726170616475635full,0x707536315a5f5f6dull,0x6f6c655665746164ull,
+0x36506b5f79746963ull,0x66503274616f6c66ull,0x6d696969695f3153ull,0x2e09090a2c79765full,
+0x732e206d61726170ull,0x6475635f5f203233ull,0x5a5f5f6d72617061ull,0x6574616470753631ull,
+0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x2c78645f6d696969ull,
+0x617261702e09090aull,0x5f203233732e206dull,0x726170616475635full,0x707536315a5f5f6dull,
+0x6f6c655665746164ull,0x36506b5f79746963ull,0x66503274616f6c66ull,0x6d696969695f3153ull,
+0x09090a2c7864705full,0x2e206d617261702eull,0x75635f5f20323373ull,0x5f5f6d7261706164ull,
+0x746164707536315aull,0x7469636f6c655665ull,0x6f6c6636506b5f79ull,0x5f31536650327461ull,
+0x79645f6d69696969ull,0x7261702e09090a2cull,0x203233732e206d61ull,0x6170616475635f5full,
+0x7536315a5f5f6d72ull,0x6c65566574616470ull,0x506b5f797469636full,0x503274616f6c6636ull,
+0x696969695f315366ull,0x09090a2c626c5f6dull,0x2e206d617261702eull,0x75635f5f20323375ull,
+0x5f5f6d7261706164ull,0x746164707536315aull,0x7469636f6c655665ull,0x6f6c6636506b5f79ull,
+0x5f31536650327461ull,0x69705f6d69696969ull,0x0a7b090a29686374ull,0x752e206765722e09ull,
+0x343c687225203631ull,0x6765722e090a3b3eull,0x7225203233752e20ull,0x2e090a3b3e38323cull,
+0x3436752e20676572ull,0x3e32313c64722520ull,0x206765722e090a3bull,0x3c6625203233662eull,
+0x65722e090a3b3e38ull,0x20646572702e2067ull,0x090a3b3e363c7025ull,0x09363109636f6c2eull,
+0x4c240a3009343931ull,0x36315a5f5f314242ull,0x6556657461647075ull,0x6b5f797469636f6cull,
+0x3274616f6c663650ull,0x6969695f31536650ull,0x766f6d090a3a6d69ull,0x722509203631752eull,
+0x61746325202c3168ull,0x6d090a3b782e6469ull,0x09203631752e766full,0x6e25202c32687225ull,
+0x090a3b782e646974ull,0x656469772e6c756dull,0x722509203631752eull,0x2c31687225202c31ull,
+0x090a3b3268722520ull,0x2e3233752e747663ull,0x3272250920363175ull,0x782e64697425202cull,
+0x752e646461090a3bull,0x2c33722509203233ull,0x7225202c32722520ull,0x702e646c090a3b31ull,
+0x3233732e6d617261ull,0x5b202c3472250920ull,0x6170616475635f5full,0x7536315a5f5f6d72ull,
 0x6c65566574616470ull,0x506b5f797469636full,0x503274616f6c6636ull,0x696969695f315366ull,
-0x702e09090a28206dull,0x36752e206d617261ull,0x616475635f5f2034ull,0x315a5f5f6d726170ull,
-0x5665746164707536ull,0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,
-0x090a2c765f6d6969ull,0x206d617261702e09ull,0x635f5f203436752eull,0x5f6d726170616475ull,
-0x6164707536315a5full,0x69636f6c65566574ull,0x6c6636506b5f7974ull,0x315366503274616full,
-0x765f6d696969695full,0x61702e09090a2c78ull,0x3436752e206d6172ull,0x70616475635f5f20ull,
-0x36315a5f5f6d7261ull,0x6556657461647075ull,0x6b5f797469636f6cull,0x3274616f6c663650ull,
-0x6969695f31536650ull,0x090a2c79765f6d69ull,0x206d617261702e09ull,0x635f5f203233732eull,
-0x5f6d726170616475ull,0x6164707536315a5full,0x69636f6c65566574ull,0x6c6636506b5f7974ull,
-0x315366503274616full,0x645f6d696969695full,0x61702e09090a2c78ull,0x3233732e206d6172ull,
-0x70616475635f5f20ull,0x36315a5f5f6d7261ull,0x6556657461647075ull,0x6b5f797469636f6cull,
-0x3274616f6c663650ull,0x6969695f31536650ull,0x0a2c7864705f6d69ull,0x6d617261702e0909ull,
-0x5f5f203233732e20ull,0x6d72617061647563ull,0x64707536315a5f5full,0x636f6c6556657461ull,
-0x6636506b5f797469ull,0x5366503274616f6cull,0x5f6d696969695f31ull,0x702e09090a2c7964ull,
-0x33732e206d617261ull,0x616475635f5f2032ull,0x315a5f5f6d726170ull,0x5665746164707536ull,
-0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,0x0a2c626c5f6d6969ull,
-0x6d617261702e0909ull,0x5f5f203436752e20ull,0x6d72617061647563ull,0x64707536315a5f5full,
+0x090a3b5d78645f6dull,0x2e656c2e70746573ull,0x3170250920323373ull,0x25202c347225202cull,
+0x702540090a3b3372ull,0x2409206172622031ull,0x3138325f335f744cull,0x702e646c090a3b38ull,
+0x3233752e6d617261ull,0x5b202c3572250920ull,0x6170616475635f5full,0x7536315a5f5f6d72ull,
+0x6c65566574616470ull,0x506b5f797469636full,0x503274616f6c6636ull,0x696969695f315366ull,
+0x090a3b5d626c5f6dull,0x203233752e766f6dull,0x3b30202c36722509ull,0x6c2e70746573090aull,
+0x2509203233732e65ull,0x2c357225202c3270ull,0x40090a3b36722520ull,0x2061726220327025ull,
+0x335f335f744c2409ull,0x6f6d090a3b303333ull,0x2509203233732e76ull,0x3b357225202c3772ull,
+0x33752e747663090aull,0x2509203631752e32ull,0x64697425202c3872ull,0x6c756d090a3b792eull,
+0x203233752e6f6c2eull,0x7225202c39722509ull,0x0a3b357225202c38ull,0x3233752e74766309ull,
+0x722509203631752eull,0x69746e25202c3031ull,0x756d090a3b792e64ull,0x3233752e6f6c2e6cull,
+0x202c313172250920ull,0x7225202c30317225ull,0x2e747663090a3b35ull,0x203631752e323375ull,
+0x25202c3231722509ull,0x3b792e6469617463ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
+0x32317225202c3331ull,0x0a3b31317225202cull,0x3233732e64646109ull,0x202c343172250920ull,
+0x317225202c397225ull,0x702e646c090a3b33ull,0x3233732e6d617261ull,0x202c353172250920ull,
+0x70616475635f5f5bull,0x36315a5f5f6d7261ull,0x6556657461647075ull,0x6b5f797469636f6cull,
+0x3274616f6c663650ull,0x6969695f31536650ull,0x0a3b5d79645f6d69ull,0x3233732e766f6d09ull,
+0x202c363172250920ull,0x2e766f6d090a3b30ull,0x3172250920323373ull,0x0a3b377225202c37ull,
+0x38335f335f744c24ull,0x3c2f2f200a3a3234ull,0x6f4c203e706f6f6cull,0x2079646f6220706full,
+0x34393120656e696cull,0x6e697473656e202cull,0x3a68747065642067ull,0x69747365202c3120ull,
+0x746920646574616dull,0x736e6f6974617265ull,0x776f6e6b6e75203aull,0x732e646461090a6eull,
+0x3831722509203233ull,0x202c34317225202cull,0x73090a3b36317225ull,0x732e65672e707465ull,
+0x2c33702509203233ull,0x25202c3831722520ull,0x2540090a3b353172ull,0x0920617262203370ull,
+0x30345f335f744c24ull,0x3c2f2f200a3b3839ull,0x6150203e706f6f6cull,0x6f6c20666f207472ull,
+0x2079646f6220706full,0x34393120656e696cull,0x6c2064616568202cull,0x242064656c656261ull,
+0x3438335f335f744cull,0x09636f6c2e090a32ull,0x3009393032093631ull,0x7261702e646c090aull,
+0x09203233732e6d61ull,0x5f5b202c39317225ull,0x726170616475635full,0x707536315a5f5f6dull,
+0x6f6c655665746164ull,0x36506b5f79746963ull,0x66503274616f6c66ull,0x6d696969695f3153ull,
+0x090a3b5d7864705full,0x732e6f6c2e6c756dull,0x3032722509203233ull,0x202c39317225202cull,
+0x61090a3b38317225ull,0x09203233732e6464ull,0x7225202c31327225ull,0x3b337225202c3032ull,
+0x6f6c2e6c756d090aull,0x722509203233752eull,0x31327225202c3232ull,0x7663090a3b34202cull,
+0x33752e3436752e74ull,0x2c31647225092032ull,0x090a3b3232722520ull,0x6d617261702e646cull,
+0x722509203436752eull,0x635f5f5b202c3264ull,0x5f6d726170616475ull,0x6164707536315a5full,
+0x69636f6c65566574ull,0x6c6636506b5f7974ull,0x315366503274616full,0x765f6d696969695full,
+0x646461090a3b5d78ull,0x722509203436752eull,0x32647225202c3364ull,0x0a3b31647225202cull,
+0x626f6c672e646c09ull,0x09203233662e6c61ull,0x72255b202c316625ull,0x090a3b5d302b3364ull,
+0x09363109636f6c2eull,0x6c090a3009303132ull,0x2e6d617261702e64ull,0x6472250920343675ull,
+0x75635f5f5b202c34ull,0x5f5f6d7261706164ull,0x746164707536315aull,0x7469636f6c655665ull,
+0x6f6c6636506b5f79ull,0x5f31536650327461ull,0x79765f6d69696969ull,0x2e646461090a3b5dull,
+0x6472250920343675ull,0x2c34647225202c35ull,0x090a3b3164722520ull,0x61626f6c672e646cull,
+0x2509203233662e6cull,0x6472255b202c3266ull,0x2e090a3b5d302b35ull,0x3209363109636f6cull,
+0x756d090a30093831ull,0x3233732e6f6c2e6cull,0x202c333272250920ull,0x7225202c35317225ull,
+0x2e747663090a3b34ull,0x732e3233662e6e72ull,0x2c33662509203233ull,0x090a3b3332722520ull,
+0x727070612e706372ull,0x09203233662e786full,0x336625202c346625ull,0x6c2e6c756d090a3bull,
+0x2509203233752e6full,0x337225202c343272ull,0x7663090a3b38202cull,0x33752e3436752e74ull,
+0x2c36647225092032ull,0x090a3b3432722520ull,0x6d617261702e646cull,0x722509203233752eull,
+0x635f5f5b202c3532ull,0x5f6d726170616475ull,0x6164707536315a5full,0x69636f6c65566574ull,
+0x6c6636506b5f7974ull,0x315366503274616full,0x705f6d696969695full,0x090a3b5d68637469ull,
+0x752e6f6c2e6c756dull,0x3632722509203233ull,0x202c38317225202cull,0x63090a3b35327225ull,
+0x752e3436752e7476ull,0x3764722509203233ull,0x0a3b36327225202cull,0x617261702e646c09ull,
+0x2509203436752e6dull,0x5f5f5b202c386472ull,0x6d72617061647563ull,0x64707536315a5f5full,
 0x636f6c6556657461ull,0x6636506b5f797469ull,0x5366503274616f6cull,0x5f6d696969695f31ull,
-0x090a296863746970ull,0x206765722e090a7bull,0x687225203631752eull,0x722e090a3b3e343cull,
-0x203233752e206765ull,0x0a3b3e34323c7225ull,0x752e206765722e09ull,0x313c647225203436ull,
-0x65722e090a3b3e36ull,0x25203233662e2067ull,0x2e090a3b3e383c66ull,0x6572702e20676572ull,
-0x3b3e363c70252064ull,0x3109636f6c2e090aull,0x0a30093439310936ull,0x5a5f5f3142424c24ull,
-0x6574616470753631ull,0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,
-0x6d090a3a6d696969ull,0x09203631752e766full,0x6325202c31687225ull,0x203b782e64696174ull,
-0x2f2f092020202020ull,0x752e766f6d090a20ull,0x3268722509203631ull,0x2e6469746e25202cull,
-0x2020202020203b78ull,0x6d090a202f2f0920ull,0x2e656469772e6c75ull,0x3172250920363175ull,
-0x202c31687225202cull,0x2f2f093b32687225ull,0x752e747663090a20ull,0x09203631752e3233ull,
-0x697425202c327225ull,0x202020203b782e64ull,0x61090a202f2f0920ull,0x09203233752e6464ull,
-0x327225202c337225ull,0x20203b317225202cull,0x2f2f092020202020ull,0x61702e646c090a20ull,
-0x203233732e6d6172ull,0x5f5b202c34722509ull,0x726170616475635full,0x707536315a5f5f6dull,
-0x6f6c655665746164ull,0x36506b5f79746963ull,0x66503274616f6c66ull,0x6d696969695f3153ull,
-0x2f2f093b5d78645full,0x5f2030363a646920ull,0x726170616475635full,0x707536315a5f5f6dull,
-0x6f6c655665746164ull,0x36506b5f79746963ull,0x66503274616f6c66ull,0x6d696969695f3153ull,
-0x0a3078302b78645full,0x656c2e7074657309ull,0x702509203233732eull,0x202c347225202c31ull,
-0x092020203b337225ull,0x702540090a202f2full,0x2409206172622031ull,0x3138325f335f744cull,
-0x2020202020203b38ull,0x0a202f2f09202020ull,0x617261702e646c09ull,0x2509203233752e6dull,
-0x635f5f5b202c3572ull,0x5f6d726170616475ull,0x6164707536315a5full,0x69636f6c65566574ull,
-0x6c6636506b5f7974ull,0x315366503274616full,0x6c5f6d696969695full,0x69202f2f093b5d62ull,
-0x635f5f2038353a64ull,0x5f6d726170616475ull,0x6164707536315a5full,0x69636f6c65566574ull,
-0x6c6636506b5f7974ull,0x315366503274616full,0x6c5f6d696969695full,0x6d090a3078302b62ull,
-0x09203233752e766full,0x203b30202c367225ull,0x2020202020202020ull,0x2f2f092020202020ull,
-0x2e70746573090a20ull,0x09203233732e656cull,0x357225202c327025ull,0x20203b367225202cull,
-0x40090a202f2f0920ull,0x2061726220327025ull,0x335f335f744c2409ull,0x202020203b303333ull,
-0x2f2f092020202020ull,0x732e766f6d090a20ull,0x2c37722509203233ull,0x2020203b35722520ull,
-0x2020202020202020ull,0x63090a202f2f0920ull,0x752e3233752e7476ull,0x2c38722509203631ull,
-0x3b792e6469742520ull,0x2f2f092020202020ull,0x6c2e6c756d090a20ull,0x2509203233752e6full,
-0x2c387225202c3972ull,0x2020203b35722520ull,0x63090a202f2f0920ull,0x752e3233752e7476ull,
-0x3031722509203631ull,0x2e6469746e25202cull,0x2f2f092020203b79ull,0x6c2e6c756d090a20ull,
-0x2509203233752e6full,0x317225202c313172ull,0x203b357225202c30ull,0x63090a202f2f0920ull,
-0x752e3233752e7476ull,0x3231722509203631ull,0x646961746325202cull,0x2f2f0920203b792eull,
-0x6c2e6c756d090a20ull,0x2509203233752e6full,0x317225202c333172ull,0x3b31317225202c32ull,
-0x61090a202f2f0920ull,0x09203233732e6464ull,0x7225202c34317225ull,0x3b33317225202c39ull,
-0x2f2f092020202020ull,0x61702e646c090a20ull,0x203233732e6d6172ull,0x5b202c3531722509ull,
-0x6170616475635f5full,0x7536315a5f5f6d72ull,0x6c65566574616470ull,0x506b5f797469636full,
-0x503274616f6c6636ull,0x696969695f315366ull,0x2f093b5d79645f6dull,0x2037353a6469202full,
-0x6170616475635f5full,0x7536315a5f5f6d72ull,0x6c65566574616470ull,0x506b5f797469636full,
-0x503274616f6c6636ull,0x696969695f315366ull,0x3078302b79645f6dull,0x33732e766f6d090aull,
-0x2c36317225092032ull,0x20202020203b3020ull,0x2020202020202020ull,0x6f6d090a202f2f09ull,
-0x2509203233732e76ull,0x377225202c373172ull,0x202020202020203bull,0x202f2f0920202020ull,
-0x335f335f744c240aull,0x2f2f200a3a323438ull,0x4c203e706f6f6c3cull,0x79646f6220706f6full,
-0x393120656e696c20ull,0x697473656e202c34ull,0x687470656420676eull,0x747365202c31203aull,
-0x6920646574616d69ull,0x6e6f697461726574ull,0x6f6e6b6e75203a73ull,0x2e646461090a6e77ull,
-0x3172250920323373ull,0x2c34317225202c38ull,0x20203b3631722520ull,0x090a202f2f092020ull,
-0x2e65672e70746573ull,0x3370250920323373ull,0x202c38317225202cull,0x2f09203b35317225ull,
-0x33702540090a202full,0x4c24092061726220ull,0x383930345f335f74ull,0x202020202020203bull,
-0x200a202f2f092020ull,0x3e706f6f6c3c2f2full,0x666f207472615020ull,0x6f6220706f6f6c20ull,
-0x20656e696c207964ull,0x616568202c343931ull,0x656c6562616c2064ull,0x5f335f744c242064ull,
-0x6c2e090a32343833ull,0x313209363109636full,0x2e646c090a300930ull,0x33732e6d61726170ull,
-0x2c39317225092032ull,0x616475635f5f5b20ull,0x315a5f5f6d726170ull,0x5665746164707536ull,
-0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,0x5d7864705f6d6969ull,
-0x3a6469202f2f093bull,0x6475635f5f203736ull,0x5a5f5f6d72617061ull,0x6574616470753631ull,
-0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x7864705f6d696969ull,
-0x756d090a3078302bull,0x3233732e6f6c2e6cull,0x202c303272250920ull,0x7225202c39317225ull,
-0x202f2f09203b3831ull,0x33732e646461090aull,0x2c31327225092032ull,0x7225202c33722520ull,
-0x20202020203b3032ull,0x7663090a202f2f09ull,0x33732e3436752e74ull,0x2c31647225092032ull,
-0x20203b3132722520ull,0x202f2f0920202020ull,0x6f6c2e6c756d090aull,0x722509203436752eull,
-0x31647225202c3264ull,0x202020203b34202cull,0x646c090a202f2f09ull,0x752e6d617261702eull,
-0x3364722509203436ull,0x6475635f5f5b202cull,0x5a5f5f6d72617061ull,0x6574616470753631ull,
-0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x5d79765f6d696969ull,
-0x3a6469202f2f093bull,0x6475635f5f203836ull,0x5a5f5f6d72617061ull,0x6574616470753631ull,
-0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,0x2b79765f6d696969ull,
-0x646461090a307830ull,0x722509203436752eull,0x33647225202c3464ull,0x203b32647225202cull,
-0x0a202f2f09202020ull,0x626f6c672e646c09ull,0x09203233662e6c61ull,0x72255b202c316625ull,
-0x09203b5d302b3464ull,0x39363a6469202f2full,0x3109636f6c2e090aull,0x0a30093831320936ull,
-0x2e6f6c2e6c756d09ull,0x3272250920323373ull,0x2c35317225202c32ull,0x0920203b34722520ull,
-0x747663090a202f2full,0x2e3233662e6e722eull,0x3266250920323373ull,0x203b32327225202cull,
-0x0a202f2f09202020ull,0x7070612e70637209ull,0x203233662e786f72ull,0x6625202c33662509ull,
-0x0920202020203b32ull,0x2e646c090a202f2full,0x36752e6d61726170ull,0x2c35647225092034ull,
-0x616475635f5f5b20ull,0x315a5f5f6d726170ull,0x5665746164707536ull,0x5f797469636f6c65ull,
-0x74616f6c6636506bull,0x69695f3153665032ull,0x093b5d765f6d6969ull,0x30373a6469202f2full,
-0x70616475635f5f20ull,0x36315a5f5f6d7261ull,0x6556657461647075ull,0x6b5f797469636f6cull,
-0x3274616f6c663650ull,0x6969695f31536650ull,0x3078302b765f6d69ull,0x36752e747663090aull,
-0x2509203233732e34ull,0x317225202c366472ull,0x2020202020203b38ull,0x646c090a202f2f09ull,
-0x752e6d617261702eull,0x3764722509203436ull,0x6475635f5f5b202cull,0x5a5f5f6d72617061ull,
-0x6574616470753631ull,0x797469636f6c6556ull,0x616f6c6636506b5full,0x695f315366503274ull,
-0x7469705f6d696969ull,0x202f2f093b5d6863ull,0x5f5f2031373a6469ull,0x6d72617061647563ull,
-0x64707536315a5f5full,0x636f6c6556657461ull,0x6636506b5f797469ull,0x5366503274616f6cull,
-0x5f6d696969695f31ull,0x78302b6863746970ull,0x6c2e6c756d090a30ull,0x2509203436752e6full,
-0x647225202c386472ull,0x3b37647225202c36ull,0x63090a202f2f0920ull,0x732e3436752e7476ull,
-0x3964722509203233ull,0x20203b337225202cull,0x2f2f092020202020ull,0x6c2e6c756d090a20ull,
-0x2509203436752e6full,0x7225202c30316472ull,0x20203b38202c3964ull,0x61090a202f2f0920ull,
-0x09203436752e6464ull,0x25202c3131647225ull,0x647225202c386472ull,0x2f2f0920203b3031ull,
-0x752e646461090a20ull,0x3164722509203436ull,0x2c35647225202c32ull,0x203b313164722520ull,
-0x6c090a202f2f0920ull,0x2e6d617261702e64ull,0x6472250920343675ull,0x635f5f5b202c3331ull,
-0x5f6d726170616475ull,0x6164707536315a5full,0x69636f6c65566574ull,0x6c6636506b5f7974ull,
-0x315366503274616full,0x765f6d696969695full,0x69202f2f093b5d78ull,0x635f5f2032373a64ull,
-0x5f6d726170616475ull,0x6164707536315a5full,0x69636f6c65566574ull,0x6c6636506b5f7974ull,
-0x315366503274616full,0x765f6d696969695full,0x61090a3078302b78ull,0x09203436752e6464ull,
-0x25202c3431647225ull,0x7225202c33316472ull,0x2f2f0920203b3264ull,0x6c672e646c090a20ull,
-0x3233662e6c61626full,0x5b202c3466250920ull,0x5d302b3431647225ull,0x3a6469202f2f093bull,
-0x2e6c756d090a3337ull,0x3566250920323366ull,0x25202c346625202cull,0x20202020203b3366ull,
-0x090a202f2f092020ull,0x203233662e6c756dull,0x6625202c36662509ull,0x203b316625202c33ull,
-0x2f09202020202020ull,0x672e7473090a202full,0x32762e6c61626f6cull,0x255b09203233662eull,
-0x2c5d302b32316472ull,0x66252c3566257b20ull,0x0a202f2f093b7d36ull,0x30345f335f744c24ull,
+0x646461090a3b5d76ull,0x722509203436752eull,0x37647225202c3964ull,0x0a3b38647225202cull,
+0x3436752e64646109ull,0x2c30316472250920ull,0x25202c3664722520ull,0x756d090a3b396472ull,
+0x2509203233662e6cull,0x2c346625202c3566ull,0x6d090a3b31662520ull,0x09203233662e6c75ull,
+0x346625202c366625ull,0x090a3b326625202cull,0x61626f6c672e7473ull,0x3233662e32762e6cull,
+0x30316472255b0920ull,0x66257b202c5d302bull,0x0a3b7d3666252c35ull,0x30345f335f744c24ull,
 0x3c2f2f200a3a3839ull,0x6150203e706f6f6cull,0x6f6c20666f207472ull,0x2079646f6220706full,
 0x34393120656e696cull,0x6c2064616568202cull,0x242064656c656261ull,0x3438335f335f744cull,
-0x732e646461090a32ull,0x3631722509203233ull,0x202c36317225202cull,0x2020202020203b31ull,
-0x73090a202f2f0920ull,0x732e656e2e707465ull,0x2c34702509203233ull,0x25202c3631722520ull,
-0x2f2f0920203b3572ull,0x2034702540090a20ull,0x744c240920617262ull,0x3b323438335f335full,
-0x2020202020202020ull,0x4c240a202f2f0920ull,0x303333335f335f74ull,0x5f335f744c240a3aull,
-0x2e090a3a38313832ull,0x3209363109636f6cull,0x7865090a30093232ull,0x20202020203b7469ull,
-0x2020202020202020ull,0x2020202020202020ull,0x202f2f0920202020ull,0x646e6557444c240aull,
-0x64707536315a5f5full,0x636f6c6556657461ull,0x6636506b5f797469ull,0x5366503274616f6cull,
-0x3a6d696969695f31ull,0x5f202f2f207d090aull,0x746164707536315aull,0x7469636f6c655665ull,
-0x6f6c6636506b5f79ull,0x5f31536650327461ull,0x090a0a6d69696969ull,0x5f207972746e652eull,
-0x636576646137315aull,0x6c63697472615074ull,0x6c6636506b5f7365ull,0x695f30533274616full,
-0x090a28206d696669ull,0x206d617261702e09ull,0x635f5f203436752eull,0x5f6d726170616475ull,
-0x6576646137315a5full,0x6369747261507463ull,0x6636506b5f73656cull,0x5f30533274616f6cull,
-0x61705f6d69666969ull,0x702e09090a2c7472ull,0x36752e206d617261ull,0x616475635f5f2034ull,
+0x732e646461090a32ull,0x3631722509203233ull,0x202c36317225202cull,0x70746573090a3b31ull,
+0x203233732e656e2eull,0x7225202c34702509ull,0x3b357225202c3631ull,0x622034702540090aull,
+0x5f744c2409206172ull,0x0a3b323438335f33ull,0x33335f335f744c24ull,0x5f744c240a3a3033ull,
+0x0a3a383138325f33ull,0x363109636f6c2e09ull,0x090a300932323209ull,0x4c240a3b74697865ull,
+0x5a5f5f646e655744ull,0x6574616470753631ull,0x797469636f6c6556ull,0x616f6c6636506b5full,
+0x695f315366503274ull,0x7d090a3a6d696969ull,0x36315a5f202f2f20ull,0x6556657461647075ull,
+0x6b5f797469636f6cull,0x3274616f6c663650ull,0x6969695f31536650ull,0x6e652e090a0a6d69ull,
+0x37315a5f20797274ull,0x6150746365766461ull,0x5f73656c63697472ull,0x74616f6c6636506bull,
+0x696669695f305332ull,0x702e09090a28206dull,0x36752e206d617261ull,0x616475635f5f2034ull,
 0x315a5f5f6d726170ull,0x5074636576646137ull,0x73656c6369747261ull,0x616f6c6636506b5full,
-0x6669695f30533274ull,0x09090a2c765f6d69ull,0x2e206d617261702eull,0x75635f5f20323373ull,
-0x5f5f6d7261706164ull,0x636576646137315aull,0x6c63697472615074ull,0x6c6636506b5f7365ull,
-0x695f30533274616full,0x2c78645f6d696669ull,0x617261702e09090aull,0x5f203233732e206dull,
+0x6669695f30533274ull,0x2c747261705f6d69ull,0x617261702e09090aull,0x5f203436752e206dull,
 0x726170616475635full,0x646137315a5f5f6dull,0x7472615074636576ull,0x506b5f73656c6369ull,
-0x533274616f6c6636ull,0x5f6d696669695f30ull,0x702e09090a2c7964ull,0x33662e206d617261ull,
-0x616475635f5f2032ull,0x315a5f5f6d726170ull,0x5074636576646137ull,0x73656c6369747261ull,
-0x616f6c6636506b5full,0x6669695f30533274ull,0x090a2c74645f6d69ull,0x206d617261702e09ull,
-0x635f5f203233732eull,0x5f6d726170616475ull,0x6576646137315a5full,0x6369747261507463ull,
-0x6636506b5f73656cull,0x5f30533274616f6cull,0x626c5f6d69666969ull,0x7261702e09090a2cull,
-0x203436752e206d61ull,0x6170616475635f5full,0x6137315a5f5f6d72ull,0x7261507463657664ull,
-0x6b5f73656c636974ull,0x3274616f6c663650ull,0x6d696669695f3053ull,0x0a2968637469705full,
-0x6765722e090a7b09ull,0x7225203631752e20ull,0x2e090a3b3e343c68ull,0x3233752e20676572ull,
-0x3b3e30333c722520ull,0x2e206765722e090aull,0x3c64722520343675ull,0x722e090a3b3e3531ull,
-0x203233662e206765ull,0x0a3b3e39313c6625ull,0x702e206765722e09ull,0x363c702520646572ull,
-0x636f6c2e090a3b3eull,0x67696c612e206c61ull,0x2038622e2038206eull,0x5f5f616475635f5full,
-0x74765f616475635full,0x5b3836315f6d7265ull,0x6f6c2e090a3b5d38ull,0x3932320936310963ull,
-0x3142424c240a3009ull,0x76646137315a5f5full,0x6974726150746365ull,0x36506b5f73656c63ull,
-0x30533274616f6c66ull,0x0a3a6d696669695full,0x3631752e766f6d09ull,0x202c316872250920ull,
-0x782e646961746325ull,0x092020202020203bull,0x766f6d090a202f2full,0x722509203631752eull,
-0x69746e25202c3268ull,0x202020203b782e64ull,0x0a202f2f09202020ull,0x6469772e6c756d09ull,
-0x2509203631752e65ull,0x31687225202c3172ull,0x093b32687225202cull,0x747663090a202f2full,
-0x3631752e3233752eull,0x25202c3272250920ull,0x20203b782e646974ull,0x0a202f2f09202020ull,
-0x3233752e64646109ull,0x25202c3372250920ull,0x3b317225202c3272ull,0x0920202020202020ull,
-0x2e646c090a202f2full,0x33732e6d61726170ull,0x202c347225092032ull,0x70616475635f5f5bull,
-0x37315a5f5f6d7261ull,0x6150746365766461ull,0x5f73656c63697472ull,0x74616f6c6636506bull,
-0x696669695f305332ull,0x2f093b5d78645f6dull,0x2035383a6469202full,0x6170616475635f5full,
-0x6137315a5f5f6d72ull,0x7261507463657664ull,0x6b5f73656c636974ull,0x3274616f6c663650ull,
-0x6d696669695f3053ull,0x0a3078302b78645full,0x656c2e7074657309ull,0x702509203233732eull,
-0x202c347225202c31ull,0x092020203b337225ull,0x702540090a202f2full,0x2409206172622031ull,
-0x3138325f345f744cull,0x2020202020203b38ull,0x0a202f2f09202020ull,0x617261702e646c09ull,
-0x2509203233752e6dull,0x635f5f5b202c3572ull,0x5f6d726170616475ull,0x6576646137315a5full,
-0x6369747261507463ull,0x6636506b5f73656cull,0x5f30533274616f6cull,0x626c5f6d69666969ull,
-0x6469202f2f093b5dull,0x75635f5f2033383aull,0x5f5f6d7261706164ull,0x636576646137315aull,
-0x6c63697472615074ull,0x6c6636506b5f7365ull,0x695f30533274616full,0x2b626c5f6d696669ull,
-0x766f6d090a307830ull,0x722509203233752eull,0x2020203b30202c36ull,0x2020202020202020ull,
-0x0a202f2f09202020ull,0x656c2e7074657309ull,0x702509203233732eull,0x202c357225202c32ull,
-0x092020203b367225ull,0x702540090a202f2full,0x2409206172622032ull,0x3333335f345f744cull,
-0x2020202020203b30ull,0x0a202f2f09202020ull,0x3233732e766f6d09ull,0x25202c3772250920ull,
-0x20202020203b3572ull,0x0920202020202020ull,0x747663090a202f2full,0x3631752e3233752eull,
-0x25202c3872250920ull,0x20203b792e646974ull,0x0a202f2f09202020ull,0x2e6f6c2e6c756d09ull,
-0x3972250920323375ull,0x25202c387225202cull,0x09202020203b3572ull,0x747663090a202f2full,
-0x3631752e3233752eull,0x202c303172250920ull,0x3b792e6469746e25ull,0x0a202f2f09202020ull,
-0x2e6f6c2e6c756d09ull,0x3172250920323375ull,0x2c30317225202c31ull,0x0920203b35722520ull,
-0x747663090a202f2full,0x3631752e3233752eull,0x202c323172250920ull,0x792e646961746325ull,
-0x0a202f2f0920203bull,0x2e6f6c2e6c756d09ull,0x3172250920323375ull,0x2c32317225202c33ull,
-0x09203b3131722520ull,0x646461090a202f2full,0x722509203233732eull,0x2c397225202c3431ull,
-0x20203b3331722520ull,0x0a202f2f09202020ull,0x617261702e646c09ull,0x2509203233732e6dull,
-0x5f5f5b202c353172ull,0x6d72617061647563ull,0x76646137315a5f5full,0x6974726150746365ull,
-0x36506b5f73656c63ull,0x30533274616f6c66ull,0x645f6d696669695full,0x69202f2f093b5d79ull,
-0x635f5f2032383a64ull,0x5f6d726170616475ull,0x6576646137315a5full,0x6369747261507463ull,
-0x6636506b5f73656cull,0x5f30533274616f6cull,0x79645f6d69666969ull,0x6f6d090a3078302bull,
-0x2509203233732e76ull,0x203b30202c363172ull,0x2020202020202020ull,0x202f2f0920202020ull,
-0x33732e766f6d090aull,0x2c37317225092032ull,0x2020203b37722520ull,0x2020202020202020ull,
-0x744c240a202f2f09ull,0x3a323438335f345full,0x6f6f6c3c2f2f200aull,0x20706f6f4c203e70ull,
-0x6e696c2079646f62ull,0x6e202c3932322065ull,0x6420676e69747365ull,0x2c31203a68747065ull,
-0x74616d6974736520ull,0x6172657469206465ull,0x75203a736e6f6974ull,0x090a6e776f6e6b6eull,
-0x203233732e646461ull,0x25202c3831722509ull,0x317225202c343172ull,0x2f09202020203b36ull,
-0x70746573090a202full,0x203233732e65672eull,0x7225202c33702509ull,0x35317225202c3831ull,
-0x090a202f2f09203bull,0x6172622033702540ull,0x5f345f744c240920ull,0x2020203b38393034ull,
-0x2f09202020202020ull,0x6c3c2f2f200a202full,0x726150203e706f6full,0x6f6f6c20666f2074ull,
-0x6c2079646f622070ull,0x2c39323220656e69ull,0x616c206461656820ull,0x4c242064656c6562ull,
-0x323438335f345f74ull,0x3109636f6c2e090aull,0x0a30093334320936ull,0x617261702e646c09ull,
-0x2509203436752e6dull,0x5f5f5b202c316472ull,0x6d72617061647563ull,0x76646137315a5f5full,
-0x6974726150746365ull,0x36506b5f73656c63ull,0x30533274616f6c66ull,0x705f6d696669695full,
-0x2f2f093b5d747261ull,0x5f2032393a646920ull,0x726170616475635full,0x646137315a5f5f6dull,
-0x7472615074636576ull,0x506b5f73656c6369ull,0x533274616f6c6636ull,0x5f6d696669695f30ull,
-0x3078302b74726170ull,0x6f6c2e6c756d090aull,0x722509203233732eull,0x38317225202c3931ull,
-0x20203b347225202cull,0x6461090a202f2f09ull,0x2509203233732e64ull,0x337225202c303272ull,
-0x203b39317225202cull,0x202f2f0920202020ull,0x36752e747663090aull,0x2509203233732e34ull,
-0x327225202c326472ull,0x2020202020203b30ull,0x756d090a202f2f09ull,0x3436752e6f6c2e6cull,
-0x202c336472250920ull,0x3b38202c32647225ull,0x202f2f0920202020ull,0x36752e646461090aull,
-0x2c34647225092034ull,0x25202c3164722520ull,0x202020203b336472ull,0x646c090a202f2f09ull,
-0x2e6c61626f6c672eull,0x09203233662e3276ull,0x3266252c3166257bull,0x346472255b202c7dull,
-0x202f2f093b5d302bull,0x3109636f6c2e090aull,0x0a30093734320936ull,0x617261702e646c09ull,
-0x2509203436752e6dull,0x5f5f5b202c356472ull,0x6d72617061647563ull,0x76646137315a5f5full,
-0x6974726150746365ull,0x36506b5f73656c63ull,0x30533274616f6c66ull,0x765f6d696669695full,
-0x6469202f2f093b5dull,0x75635f5f2035393aull,0x5f5f6d7261706164ull,0x636576646137315aull,
-0x6c63697472615074ull,0x6c6636506b5f7365ull,0x695f30533274616full,0x302b765f6d696669ull,
-0x2e747663090a3078ull,0x732e3233662e6e72ull,0x2c33662509203233ull,0x20203b3531722520ull,
-0x090a202f2f092020ull,0x203233662e6c756dull,0x6625202c34662509ull,0x203b326625202c33ull,
-0x2f09202020202020ull,0x2e747663090a202full,0x2e3233732e697a72ull,0x3272250920323366ull,
-0x203b346625202c31ull,0x090a202f2f092020ull,0x2e3436752e747663ull,0x6472250920323373ull,
-0x3b31327225202c36ull,0x2f09202020202020ull,0x702e646c090a202full,0x3436752e6d617261ull,
-0x202c376472250920ull,0x70616475635f5f5bull,0x37315a5f5f6d7261ull,0x6150746365766461ull,
-0x5f73656c63697472ull,0x74616f6c6636506bull,0x696669695f305332ull,0x5d68637469705f6dull,
-0x3a6469202f2f093bull,0x6475635f5f203639ull,0x5a5f5f6d72617061ull,0x7463657664613731ull,
-0x656c636974726150ull,0x6f6c6636506b5f73ull,0x69695f3053327461ull,0x637469705f6d6966ull,
-0x6d090a3078302b68ull,0x36752e6f6c2e6c75ull,0x2c38647225092034ull,0x25202c3664722520ull,
-0x2f2f09203b376472ull,0x722e747663090a20ull,0x33732e3233662e6eull,0x202c356625092032ull,
-0x202020203b347225ull,0x6d090a202f2f0920ull,0x09203233662e6c75ull,0x356625202c366625ull,
-0x20203b316625202cull,0x2f2f092020202020ull,0x722e747663090a20ull,0x662e3233732e697aull,
-0x3232722509203233ull,0x20203b366625202cull,0x63090a202f2f0920ull,0x732e3436752e7476ull,
-0x3964722509203233ull,0x203b32327225202cull,0x2f2f092020202020ull,0x6c2e6c756d090a20ull,
-0x2509203436752e6full,0x7225202c30316472ull,0x20203b38202c3964ull,0x61090a202f2f0920ull,
-0x09203436752e6464ull,0x25202c3131647225ull,0x647225202c386472ull,0x2f2f0920203b3031ull,
-0x752e646461090a20ull,0x3164722509203436ull,0x2c35647225202c32ull,0x203b313164722520ull,
-0x6d090a202f2f0920ull,0x09203436752e766full,0x5f202c3331647225ull,0x5f5f5f616475635full,
-0x6574765f61647563ull,0x093b3836315f6d72ull,0x2e646c090a202f2full,0x762e6c61626f6c67ull,
-0x7b09203233752e32ull,0x3272252c33327225ull,0x6472255b202c7d34ull,0x2f093b5d302b3231ull,
-0x6c2e7473090a202full,0x3233752e6c61636full,0x33316472255b0920ull,0x327225202c5d302bull,
-0x6469202f2f093b33ull,0x635f5f203330313aull,0x75635f5f5f616475ull,0x6d726574765f6164ull,
-0x3078302b3836315full,0x636f6c2e7473090aull,0x09203233752e6c61ull,0x342b33316472255bull,
-0x3b34327225202c5dull,0x313a6469202f2f09ull,0x6475635f5f203330ull,0x616475635f5f5f61ull,
-0x315f6d726574765full,0x090a3078302b3836ull,0x09363109636f6c2eull,0x6c090a3009393432ull,
-0x2e6d617261702e64ull,0x3766250920323366ull,0x6475635f5f5b202cull,0x5a5f5f6d72617061ull,
-0x7463657664613731ull,0x656c636974726150ull,0x6f6c6636506b5f73ull,0x69695f3053327461ull,
-0x3b5d74645f6d6966ull,0x383a6469202f2f09ull,0x616475635f5f2031ull,0x315a5f5f6d726170ull,
-0x5074636576646137ull,0x73656c6369747261ull,0x616f6c6636506b5full,0x6669695f30533274ull,
-0x78302b74645f6d69ull,0x6f6c2e646c090a30ull,0x203233662e6c6163ull,0x5f5b202c38662509ull,
-0x5f5f5f616475635full,0x6574765f61647563ull,0x302b3836315f6d72ull,0x6469202f2f093b5dull,
-0x75635f5f2039393aull,0x6475635f5f5f6164ull,0x5f6d726574765f61ull,0x0a3078302b383631ull,
-0x3233662e64616d09ull,0x25202c3166250920ull,0x2c386625202c3766ull,0x0920203b31662520ull,
-0x6f6c2e090a202f2full,0x3035320936310963ull,0x2e747663090a3009ull,0x2e3233732e697a72ull,
-0x3272250920323366ull,0x203b316625202c35ull,0x090a202f2f092020ull,0x662e6e722e747663ull,
-0x09203233732e3233ull,0x327225202c396625ull,0x2f09202020203b35ull,0x2e627573090a202full,
-0x3166250920323366ull,0x25202c316625202cull,0x20202020203b3966ull,0x090a202f2f092020ull,
-0x09363109636f6c2eull,0x6d090a3009323532ull,0x09203233662e766full,0x6630202c30316625ull,
-0x3030303030386633ull,0x2f2f09202020203bull,0x2e646461090a3120ull,0x3166250920323366ull,
-0x202c316625202c31ull,0x2020203b30316625ull,0x090a202f2f092020ull,0x2e697a722e747663ull,
-0x203233662e323373ull,0x25202c3632722509ull,0x2f0920203b313166ull,0x2e747663090a202full,
-0x732e3233662e6e72ull,0x3231662509203233ull,0x203b36327225202cull,0x090a202f2f092020ull,
-0x203233662e627573ull,0x6625202c31662509ull,0x32316625202c3131ull,0x2f0920202020203bull,
-0x636f6c2e090a202full,0x0933353209363109ull,0x6f6c2e646c090a30ull,0x203233662e6c6163ull,
-0x5b202c3331662509ull,0x5f5f616475635f5full,0x74765f616475635full,0x2b3836315f6d7265ull,
-0x69202f2f093b5d34ull,0x5f5f203030313a64ull,0x635f5f5f61647563ull,0x726574765f616475ull,
-0x78302b3836315f6dull,0x662e64616d090a34ull,0x2c32662509203233ull,0x6625202c37662520ull,
-0x3b326625202c3331ull,0x2e090a202f2f0920ull,0x3209363109636f6cull,0x7663090a30093435ull,
-0x33732e697a722e74ull,0x2509203233662e32ull,0x326625202c373272ull,0x202f2f092020203bull,
-0x6e722e747663090aull,0x3233732e3233662eull,0x202c343166250920ull,0x2020203b37327225ull,
-0x7573090a202f2f09ull,0x2509203233662e62ull,0x2c326625202c3266ull,0x20203b3431662520ull,
-0x202f2f0920202020ull,0x3109636f6c2e090aull,0x0a30093635320936ull,0x3233662e766f6d09ull,
-0x202c353166250920ull,0x3030303866336630ull,0x09202020203b3030ull,0x6461090a31202f2full,
-0x2509203233662e64ull,0x326625202c363166ull,0x203b35316625202cull,0x202f2f0920202020ull,
-0x7a722e747663090aull,0x33662e3233732e69ull,0x2c38327225092032ull,0x20203b3631662520ull,
-0x7663090a202f2f09ull,0x3233662e6e722e74ull,0x662509203233732eull,0x38327225202c3731ull,
-0x202f2f092020203bull,0x33662e627573090aull,0x202c326625092032ull,0x6625202c36316625ull,
-0x20202020203b3731ull,0x7473090a202f2f09ull,0x2e6c61626f6c672eull,0x09203233662e3276ull,
-0x5d302b346472255bull,0x252c3166257b202cull,0x202f2f093b7d3266ull,0x345f345f744c240aull,
-0x2f2f200a3a383930ull,0x50203e706f6f6c3cull,0x6c20666f20747261ull,0x79646f6220706f6full,
-0x323220656e696c20ull,0x2064616568202c39ull,0x2064656c6562616cull,0x38335f345f744c24ull,
-0x636f6c2e090a3234ull,0x0938353209363109ull,0x732e646461090a30ull,0x3631722509203233ull,
-0x202c36317225202cull,0x2020202020203b31ull,0x73090a202f2f0920ull,0x732e656e2e707465ull,
-0x2c34702509203233ull,0x25202c3631722520ull,0x2f2f0920203b3572ull,0x2034702540090a20ull,
-0x744c240920617262ull,0x3b323438335f345full,0x2020202020202020ull,0x4c240a202f2f0920ull,
-0x303333335f345f74ull,0x5f345f744c240a3aull,0x2e090a3a38313832ull,0x3209363109636f6cull,
-0x7865090a30093236ull,0x20202020203b7469ull,0x2020202020202020ull,0x2020202020202020ull,
-0x202f2f0920202020ull,0x646e6557444c240aull,0x76646137315a5f5full,0x6974726150746365ull,
-0x36506b5f73656c63ull,0x30533274616f6c66ull,0x0a3a6d696669695full,0x5a5f202f2f207d09ull,
-0x7463657664613731ull,0x656c636974726150ull,0x6f6c6636506b5f73ull,0x69695f3053327461ull,
-0x0000000a0a6d6966ull
-};
-
-
-}
-
-
-
-extern "C" {
-
-
-static const unsigned long long __deviceText_$sm_13$[] = {
-0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d33315full,0x206e6f6973726576ull,
-0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x6c706d61730a7d6eull,
-0x616e090a7b207265ull,0x203d20202020656dull,0x090a666572786574ull,0x2074696e75786574ull,
-0x6f630a7d0a30203dull,0x616e090a7b206564ull,0x315a5f203d20656dull,0x63726f4664646131ull,
-0x6c6636506b5f7365ull,0x696969693274616full,0x6d6c090a6d696666ull,0x090a30203d206d65ull,
-0x36203d206d656d73ull,0x2020676572090a34ull,0x6162090a3031203dull,0x090a30203d202072ull,
-0x0a7b2074736e6f63ull,0x616e676573090909ull,0x6e6f63203d20656dull,0x65730909090a7473ull,
-0x203d20206d756e67ull,0x66666f0909090a31ull,0x30203d2020746573ull,0x657479620909090aull,
-0x0a34203d20202073ull,0x0a7b206d656d0909ull,0x3030307830090909ull,0x090a206666333030ull,
-0x62090a7d090a7d09ull,0x7b2065646f636e69ull,0x303061783009090aull,0x7830203931303030ull,
-0x3038373030303430ull,0x3030383064783020ull,0x3030783020313032ull,0x0a20303837303034ull,
-0x3030303378300909ull,0x3078302035303864ull,0x2030383738313234ull,0x3030303030617830ull,
-0x3034307830203131ull,0x090a203038373030ull,0x3033303034783009ull,0x3133783020303034ull,
-0x3020383038663430ull,0x3036303230303678ull,0x3030303078302064ull,0x09090a2030383730ull,
-0x3830353030347830ull,0x3030307830203130ull,0x7830203038373030ull,0x3531363030313033ull,
-0x3030313463783020ull,0x3009090a20303837ull,0x3061303430303678ull,0x3030303078302064ull,
-0x3678302030383730ull,0x2031303430323030ull,0x3734313030307830ull,0x783009090a203038ull,
-0x6430363030313033ull,0x3030313463783020ull,0x3034783020303837ull,0x3020643132303230ull,
-0x3837303030303078ull,0x36783009090a2030ull,0x2035313830343030ull,0x3763303030307830ull,
-0x3030367830203038ull,0x7830206431303033ull,0x3038376331303030ull,0x3034783009090a20ull,
-0x3020643036313430ull,0x3837303030303078ull,0x3031303378302030ull,0x6378302031326530ull,
-0x2030383730303134ull,0x303036783009090aull,0x7830206431343135ull,0x3038376330303030ull,
-0x3032303036783020ull,0x3030783020643030ull,0x0a20303837303230ull,0x3030303178300909ull,
-0x3478302031306331ull,0x2030383763303034ull,0x6530303130337830ull,0x3134637830206431ull,
-0x090a203038373030ull,0x6430303032783009ull,0x3430783020313132ull,0x3020303837303132ull,
-0x3134313430303678ull,0x3130303078302035ull,0x09090a2030383763ull,0x6530323030347830ull,
-0x3030347830203432ull,0x7830206331303131ull,0x3132363134303034ull,0x3030303030783020ull,
-0x3009090a20303837ull,0x3263303330303678ull,0x3230303078302035ull,0x3678302030383734ull,
-0x2064313231303030ull,0x3763313030307830ull,0x783009090a203038ull,0x3132343135303036ull,
-0x3032303030783020ull,0x3033783020303837ull,0x3020353232313031ull,0x3837303031346378ull,
-0x33783009090a2030ull,0x2064316530303130ull,0x3730303134637830ull,0x3130337830203038ull,
-0x7830203132303130ull,0x3038373030313463ull,0x3036783009090a20ull,0x3020353263303230ull,
-0x3837343230303078ull,0x3030303678302030ull,0x3078302064303031ull,0x2030383763313030ull,
-0x303033783009090aull,0x7830203530633033ull,0x3038373030313463ull,0x3134303036783020ull,
-0x3030783020393034ull,0x0a20303837303230ull,0x3030306178300909ull,0x3478302031313231ull,
-0x2030383734313034ull,0x3064333030337830ull,0x3334637830203130ull,0x090a203038373030ull,
-0x3030303032783009ull,0x3430783020353036ull,0x3020303837343030ull,0x3034303030306178ull,
-0x3130343478302039ull,0x09090a2030383734ull,0x3830303030627830ull,0x6633307830206430ull,
-0x7830203330303038ull,0x3030386530303132ull,0x3033303062783020ull,0x3009090a20633034ull,
-0x3030383130303278ull,0x3030303978302038ull,0x6478302063303630ull,0x2031303430653030ull,
-0x3730303830387830ull,0x783009090a203038ull,0x3530366433303065ull,0x3430323030783020ull,
-0x3065783020303837ull,0x3020313034643330ull,0x3837303032303078ull,0x64783009090a2030ull,
-0x2031303430653030ull,0x3730303830617830ull,0x7d0a7d090a203138ull,0x0a7b2065646f630aull,
-0x203d20656d616e09ull,0x6576646137315a5full,0x6369747261507463ull,0x6636506b5f73656cull,
-0x5f30533274616f6cull,0x6c090a6d69666969ull,0x0a38203d206d656dull,0x203d206d656d7309ull,
-0x20676572090a3635ull,0x62090a3031203d20ull,0x0a30203d20207261ull,0x7b2074736e6f6309ull,
-0x6e6765730909090aull,0x6f63203d20656d61ull,0x730909090a74736eull,0x3d20206d756e6765ull,
-0x666f0909090a3120ull,0x203d202074657366ull,0x7479620909090a30ull,0x34203d2020207365ull,
-0x7b206d656d09090aull,0x303078300909090aull,0x0a20666633303030ull,0x090a7d090a7d0909ull,
-0x2065646f636e6962ull,0x3031783009090a7bull,0x3020393032303030ull,0x3837343030303478ull,
-0x3030306178302030ull,0x3078302039303030ull,0x2030383730303034ull,0x303036783009090aull,
-0x7830203931633432ull,0x3038373830323030ull,0x6436303033783020ull,0x6336783020646631ull,
-0x0a20386337633032ull,0x3030303378300909ull,0x3078302033303030ull,0x2030383230303030ull,
-0x3764633730337830ull,0x3263367830206466ull,0x090a203863376330ull,0x3030303033783009ull,
-0x3030783020333030ull,0x3020303832303030ull,0x3036313030303178ull,0x3030343478302035ull,
-0x09090a2030383763ull,0x3434333030347830ull,0x3230307830203930ull,0x7830203038373030ull,
-0x3930343030313033ull,0x3030313463783020ull,0x3009090a20303837ull,0x3032303038306478ull,
-0x3034303078302031ull,0x3678302030383730ull,0x2064303434323030ull,0x3738303230307830ull,
-0x783009090a203038ull,0x3830363030303034ull,0x3237303134783020ull,0x3033783020303165ull,
-0x3020393034303031ull,0x3837303031346378ull,0x33783009090a2030ull,0x2031313830303130ull,
-0x3730303134637830ull,0x3030367830203038ull,0x7830203130343030ull,0x3038373830303030ull,
-0x3036783009090a20ull,0x3020353065343630ull,0x3837303132303078ull,0x3030303278302030ull,
-0x3078302064313030ull,0x2030383734303034ull,0x303031783009090aull,0x7830203132386630ull,
-0x3038376333303430ull,0x3030303032783020ull,0x3430783020353065ull,0x0a20303837303230ull,
-0x3130303378300909ull,0x3678302064663364ull,0x2038633763303263ull,0x3030343030617830ull,
-0x3030307830203330ull,0x090a203030303030ull,0x3034303031783009ull,0x3030783020333030ull,
-0x3020303832303030ull,0x3030313030303178ull,0x3030343478302031ull,0x09090a2030383763ull,
-0x3430313030347830ull,0x3030307830203930ull,0x7830203038373030ull,0x3930363030303036ull,
-0x3830303030783020ull,0x3009090a20303837ull,0x3034303031303378ull,0x3031346378302039ull,
-0x3678302030383730ull,0x2031303430303030ull,0x3738303030307830ull,0x783009090a203038ull,
-0x3130303030303032ull,0x3831303430783020ull,0x3033783020303837ull,0x3020313030303330ull,
-0x3837303031346378ull,0x32783009090a2030ull,0x2031313863303030ull,0x3730303234307830ull,
-0x3030617830203038ull,0x7830203930326430ull,0x3038373431323434ull,0x3064783009090a20ull,
-0x3020313038306530ull,0x3837303038303878ull,0x3130306378302030ull,0x3178302063303430ull,
-0x2038303866303031ull,0x303061783009090aull,0x7830206430363030ull,0x3038373436306338ull,
-0x3035303034783020ull,0x3030783020353263ull,0x0a20303837303030ull,0x3030306178300909ull,
-0x3478302035313064ull,0x2030383734313234ull,0x6530343030367830ull,0x3030307830203532ull,
-0x090a203038373432ull,0x3035303063783009ull,0x3030783020353130ull,0x3020303837303030ull,
-0x3232313031303378ull,0x3031346378302035ull,0x09090a2030383730ull,0x6130303030617830ull,
-0x3063387830203531ull,0x7830203038373436ull,0x6430633034303036ull,0x3432303030783020ull,
-0x3009090a20303837ull,0x3061303330303378ull,0x3031346378302039ull,0x3278302030383730ull,
-0x2034313638323030ull,0x6365353031327830ull,0x783009090a203431ull,0x3930613065303064ull,
-0x3030383038783020ull,0x3064783020303837ull,0x3020393030303030ull,0x3837303063303678ull,
-0x64783009090a2030ull,0x2064303830303030ull,0x3730306330367830ull,0x3030647830203038ull,
-0x7830206430303030ull,0x3038373030633034ull,0x3064783009090a20ull,0x3020393038303030ull,
-0x3837303063303478ull,0x3330306578302030ull,0x3078302031303464ull,0x2030383730303230ull,
-0x303065783009090aull,0x7830203930346432ull,0x3038373430323030ull,0x3030303061783020ull,
-0x6338783020353030ull,0x0a20303837343630ull,0x3030306178300909ull,0x3878302064303430ull,
-0x2030383734363063ull,0x3230303030617830ull,0x3034347830203530ull,0x090a203038373431ull,
-0x3030303061783009ull,0x3434783020643036ull,0x3020303837343130ull,0x3030303134306278ull,
-0x3334306278302030ull,0x09090a2034303430ull,0x3030303030627830ull,0x6633307830203130ull,
-0x7830203330303038ull,0x3930323030303062ull,0x3038663330783020ull,0x3009090a20333030ull,
-0x3030303030306178ull,0x3630633878302035ull,0x6178302030383734ull,0x2064303430303030ull,
-0x3734363063387830ull,0x783009090a203038ull,0x3530323030303061ull,0x3431303434783020ull,
-0x3061783020303837ull,0x3020643036303030ull,0x3837343130343478ull,0x62783009090a2030ull,
-0x2030303030313430ull,0x3430333430627830ull,0x3030647830203430ull,0x7830203130383065ull,
-0x3038373030383061ull,0x3066783009090a20ull,0x3020313030303030ull,0x3030303030306578ull,
-0x3130303278302032ull,0x3078302031323039ull,0x2033303030303030ull,0x303033783009090aull,
-0x7830206466376438ull,0x3863373431326336ull,0x3331303031783020ull,0x3030783020333030ull,
-0x0a20303832303030ull,0x3030306678300909ull,0x6578302031303030ull,0x2031303030303030ull,
-0x6f630a7d0a7d090aull,0x616e090a7b206564ull,0x315a5f203d20656dull,0x5674636576646136ull,
-0x5f797469636f6c65ull,0x74616f6c6636506bull,0x69695f3153665032ull,0x656d6c090a696669ull,
-0x73090a30203d206dull,0x3036203d206d656dull,0x3d2020676572090aull,0x726162090a313120ull,
-0x63090a30203d2020ull,0x090a7b2074736e6full,0x6d616e6765730909ull,0x736e6f63203d2065ull,
-0x6765730909090a74ull,0x31203d20206d756eull,0x7366666f0909090aull,0x0a30203d20207465ull,
-0x7365747962090909ull,0x090a34203d202020ull,0x090a7b206d656d09ull,0x3030303078300909ull,
-0x09090a2066663330ull,0x6962090a7d090a7dull,0x0a7b2065646f636eull,0x3030303178300909ull,
-0x3478302039303230ull,0x2030383734303030ull,0x3030303030617830ull,0x3034307830203930ull,
-0x090a203038373030ull,0x3432303036783009ull,0x3030783020643063ull,0x3020303837383032ull,
-0x6635643330303378ull,0x3032633678302064ull,0x09090a2038633763ull,0x3030303030337830ull,
-0x3030307830203330ull,0x7830203038323030ull,0x6466646463373033ull,0x6330326336783020ull,
-0x3009090a20386337ull,0x3030303030303378ull,0x3030303078302033ull,0x3178302030383230ull,
-0x2035306331303030ull,0x3763303034347830ull,0x783009090a203038ull,0x3930343433303034ull,
-0x3030323030783020ull,0x3033783020303837ull,0x3020393034303031ull,0x3837303031346378ull,
-0x64783009090a2030ull,0x2031303230303830ull,0x3730303430307830ull,0x3030367830203038ull,
-0x7830203131343432ull,0x3038373830323030ull,0x3034783009090a20ull,0x3020383036303030ull,
-0x3165323930313478ull,0x3031303378302034ull,0x6378302039303430ull,0x2030383730303134ull,
-0x313033783009090aull,0x7830203531613030ull,0x3038373030313463ull,0x3030303036783020ull,
-0x3030783020313034ull,0x0a20303837383030ull,0x3830303678300909ull,0x3078302035306534ull,
-0x2030383734313230ull,0x3030303030327830ull,0x3034307830203131ull,0x090a203038373430ull,
-0x6630303031783009ull,0x3630783020353138ull,0x3020303837633330ull,0x3038303030303278ull,
-0x3130343078302035ull,0x09090a2030383734ull,0x3964313030337830ull,0x3263367830206466ull,
-0x7830203863376330ull,0x3330306532303061ull,0x3030303030783020ull,0x3009090a20303030ull,
-0x3030653230303178ull,0x3030303078302033ull,0x3178302030383230ull,0x2031303631303030ull,
-0x3763303034347830ull,0x783009090a203038ull,0x3930303033303034ull,0x3030303030783020ull,
-0x3036783020303837ull,0x3020393032303230ull,0x3837383030303078ull,0x33783009090a2030ull,
-0x2039313430303130ull,0x3730303134637830ull,0x3030617830203038ull,0x7830203930363030ull,
-0x3038373431303434ull,0x3061783009090a20ull,0x3020353232303030ull,0x3837343130343478ull,
-0x3230303678302030ull,0x3078302039313030ull,0x2030383738313030ull,0x303062783009090aull,
-0x7830206431343030ull,0x3330303030663330ull,0x3930303031783020ull,0x3031783020343032ull,
-0x0a20303034383030ull,0x3034366678300909ull,0x3078302031303030ull,0x2030383730303030ull,
-0x3464303030617830ull,0x3234347830203132ull,0x090a203038373431ull,0x6430303061783009ull,
-0x3434783020393238ull,0x3020303837343132ull,0x3232313030306278ull,0x3066333078302035ull,
-0x09090a2033303030ull,0x6137303031637830ull,0x3030327830203030ull,0x7830203830633833ull,
-0x3530616431303063ull,0x3030323030783020ull,0x3009090a20303837ull,0x3030313030306578ull,
-0x3130343078302031ull,0x3378302030383763ull,0x2039303430323030ull,0x3730303134637830ull,
-0x783009090a203038ull,0x3530343131303065ull,0x3432303430783020ull,0x3032783020303837ull,
-0x3020393163633030ull,0x3837383032343078ull,0x66783009090a2030ull,0x2031303030303436ull,
-0x3730303030307830ull,0x3030647830203438ull,0x7830203130633065ull,0x3038373030633061ull,
-0x3032783009090a20ull,0x3020313030643030ull,0x3837383032343078ull,0x6530306478302030ull,
-0x6178302035303030ull,0x2030383730306330ull,0x303066783009090aull,0x7830203130303030ull,
-0x3230303030303065ull,0x3831303032783020ull,0x3030783020353161ull,0x0a20333030303030ull,
-0x3530303378300909ull,0x3678302064666464ull,0x2038633734313263ull,0x3033313030317830ull,
-0x3030307830203330ull,0x090a203038323030ull,0x3030303066783009ull,0x3065783020313030ull,
-0x0a20313030303030ull,0x646f630a7d0a7d09ull,0x6d616e090a7b2065ull,0x36315a5f203d2065ull,
-0x5065737566666964ull,0x6b5f7463656a6f72ull,0x3274616f6c663650ull,0x69666669695f3053ull,
-0x3d206d656d6c090aull,0x6d656d73090a3020ull,0x72090a3235203d20ull,0x3531203d20206765ull,
-0x3d2020726162090aull,0x736e6f63090a3020ull,0x730909090a7b2074ull,0x3d20656d616e6765ull,
-0x090a74736e6f6320ull,0x6d756e6765730909ull,0x09090a31203d2020ull,0x2074657366666f09ull,
-0x0909090a30203d20ull,0x2020207365747962ull,0x6d09090a3231203dull,0x0909090a7b206d65ull,
-0x3330303030307830ull,0x3030307830206666ull,0x7830203130303030ull,0x3030303030386633ull,
-0x7d090a7d09090a20ull,0x646f636e6962090aull,0x783009090a7b2065ull,0x3930323030303031ull,
-0x3430303034783020ull,0x3061783020303837ull,0x3020393030303030ull,0x3837303030343078ull,
-0x36783009090a2030ull,0x2035316334323030ull,0x3738303230307830ull,0x3030337830203038ull,
-0x7830206466316435ull,0x3863376330326336ull,0x3033783009090a20ull,0x3020333030303030ull,
-0x3832303030303078ull,0x6337303378302030ull,0x3678302064663964ull,0x2038633763303263ull,
-0x303033783009090aull,0x7830203330303030ull,0x3038323030303030ull,0x3130303031783020ull,
-0x3434783020353038ull,0x0a20303837633030ull,0x3330303478300909ull,0x3078302039303434ull,
-0x2030383730303230ull,0x3430303130337830ull,0x3134637830203930ull,0x090a203038373030ull,
-0x3030383064783009ull,0x3030783020313032ull,0x3020303837303034ull,0x3034343230303678ull,
-0x3032303078302064ull,0x09090a2030383738ull,0x3630303030347830ull,0x3031347830203830ull,
-0x7830203031653237ull,0x3930343030313033ull,0x3030313463783020ull,0x3009090a20303837ull,
-0x3138303031303378ull,0x3031346378302031ull,0x3678302030383730ull,0x2031303430303030ull,
-0x3738303030307830ull,0x783009090a203038ull,0x3530653436303036ull,0x3031323030783020ull,
-0x3032783020303837ull,0x3020313230303030ull,0x3837343030343078ull,0x31783009090a2030ull,
-0x2035323866303030ull,0x3763333036307830ull,0x3030327830203038ull,0x7830203130303130ull,
-0x3038373432303430ull,0x3033783009090a20ull,0x3020646633643030ull,0x6337633032633678ull,
-0x3430306178302038ull,0x3078302033303038ull,0x2030303030303030ull,0x303031783009090aull,
-0x7830203330303834ull,0x3038323030303030ull,0x6466313033783020ull,0x6365783020353032ull,
-0x0a20303837303033ull,0x3138306478300909ull,0x3078302035303230ull,0x2030383730303434ull,
-0x3264303030327830ull,0x3234307830203530ull,0x090a203038373430ull,0x3031303033783009ull,
-0x6365783020353032ull,0x3020303837303031ull,0x6633303030303378ull,0x3030633678302064ull,
-0x09090a2038633734ull,0x3030303030317830ull,0x3034307830203131ull,0x7830203038376333ull,
-0x3530303130303031ull,0x6330303434783020ull,0x3009090a20303837ull,0x3132643030303378ull,
-0x3032343078302031ull,0x3478302030383230ull,0x2063303431623030ull,0x3031393030347830ull,
-0x783009090a203831ull,0x3930303033303034ull,0x3030303030783020ull,0x3036783020303837ull,
-0x3020643036316130ull,0x3837633030303078ull,0x36783009090a2030ull,0x2039313231383030ull,
-0x3738313030307830ull,0x3030367830203038ull,0x7830203930323032ull,0x3038373830303030ull,
-0x3033783009090a20ull,0x3020643036303031ull,0x3837303031346378ull,0x3031303378302030ull,
-0x6378302039316330ull,0x2030383730303134ull,0x313033783009090aull,0x7830203930343030ull,
-0x3038373030313463ull,0x3161303036783020ull,0x3030783020643034ull,0x0a20303837633030ull,
-0x3830303678300909ull,0x3078302039313031ull,0x2030383738313030ull,0x3030323030367830ull,
-0x3030307830203530ull,0x090a203038373830ull,0x6630303131783009ull,0x3032783020303036ull,
-0x3020383036383630ull,0x3032383530303278ull,0x3030316378302034ull,0x09090a2063303437ull,
-0x3430303030617830ull,0x3034347830206431ull,0x7830203038373431ull,0x3130323033303033ull,
-0x3030313463783020ull,0x3009090a20303837ull,0x3065303330316578ull,0x3034303078302035ull,
-0x3278302030383738ull,0x2038323865303031ull,0x6365303031327830ull,0x783009090a203831ull,
-0x6432323030303039ull,0x3030303030783020ull,0x3064783020303837ull,0x3020393034316530ull,
-0x3837303038303878ull,0x64783009090a2030ull,0x2031306330653030ull,0x3730303830387830ull,
-0x3730627830203038ull,0x7830206466663063ull,0x3863373031303036ull,0x3063783009090a20ull,
-0x3020383034306230ull,0x3336306230306378ull,0x3030306378302030ull,0x6378302063303631ull,
-0x2063323631313030ull,0x303061783009090aull,0x7830203330303334ull,0x3030303030303030ull,
-0x3334303031783020ull,0x3030783020333030ull,0x0a20303031303030ull,0x3030306178300909ull,
-0x3478302031303830ull,0x2030383734313034ull,0x6130303030617830ull,0x3034347830203530ull,
-0x090a203038373431ull,0x3033303063783009ull,0x3063783020343330ull,0x3020383330306230ull,
-0x3165303030303978ull,0x3030303078302031ull,0x09090a2030383730ull,0x3230323030657830ull,
-0x3030307830206431ull,0x7830203038373433ull,0x3533323063303065ull,0x3833303030783020ull,
-0x3009090a20303837ull,0x3165303430306378ull,0x6430306378302063ull,0x6578302030313830ull,
-0x2039303230373030ull,0x3738303034307830ull,0x783009090a203038ull,0x3133323034303065ull,
-0x3033303430783020ull,0x3065783020303837ull,0x3020643065303030ull,0x3837633030343078ull,
-0x65783009090a2030ull,0x2064323030343030ull,0x3763323034307830ull,0x3030317830203038ull,
-0x7830203530383130ull,0x3238376333303630ull,0x3031783009090a20ull,0x3020313034303030ull,
-0x3837633330343078ull,0x6530306478302030ull,0x6178302031303431ull,0x2030383730303830ull,
-0x303031783009090aull,0x7830203430363932ull,0x3030363830303031ull,0x3065303064783020ull,
-0x3061783020313063ull,0x0a20303837303038ull,0x3030306678300909ull,0x6578302031303030ull,
-0x2032303030303030ull,0x3239313030327830ull,0x3030307830203532ull,0x090a203330303030ull,
-0x6439303033783009ull,0x6336783020646639ull,0x3020386337343132ull,0x3030333130303178ull,
-0x3030303078302033ull,0x09090a2030383230ull,0x3030303030667830ull,0x3030657830203130ull,
-0x090a203130303030ull,0x65646f630a7d0a7dull,0x656d616e090a7b20ull,0x7536315a5f203d20ull,
-0x6c65566574616470ull,0x506b5f797469636full,0x503274616f6c6636ull,0x696969695f315366ull,
-0x206d656d6c090a6dull,0x656d73090a30203dull,0x090a3436203d206dull,0x31203d2020676572ull,
-0x2020726162090a31ull,0x6e6f63090a30203dull,0x0909090a7b207473ull,0x20656d616e676573ull,
-0x0a74736e6f63203dull,0x756e676573090909ull,0x090a31203d20206dull,0x74657366666f0909ull,
-0x09090a30203d2020ull,0x2020736574796209ull,0x6d09090a34203d20ull,0x0909090a7b206d65ull,
-0x3330303030307830ull,0x0a7d09090a206666ull,0x636e6962090a7d09ull,0x09090a7b2065646full,
-0x3230303030317830ull,0x3030347830203930ull,0x7830203038373430ull,0x3930303030303061ull,
-0x3030303430783020ull,0x3009090a20303837ull,0x3163343230303678ull,0x3032303078302031ull,
-0x3378302030383738ull,0x2064663564343030ull,0x3763303263367830ull,0x783009090a203863ull,
-0x3330303030303033ull,0x3030303030783020ull,0x3033783020303832ull,0x3020646662646337ull,
-0x6337633032633678ull,0x33783009090a2038ull,0x2033303030303030ull,0x3230303030307830ull,
-0x3030317830203038ull,0x7830203530613130ull,0x3038376330303434ull,0x3034783009090a20ull,
-0x3020393034343330ull,0x3837303032303078ull,0x3031303378302030ull,0x6378302039303430ull,
-0x2030383730303134ull,0x383064783009090aull,0x7830203130323030ull,0x3038373030343030ull,
-0x3432303036783020ull,0x3030783020643034ull,0x0a20303837383032ull,0x3030303478300909ull,
-0x3478302038303630ull,0x2034316532373031ull,0x3430303130337830ull,0x3134637830203930ull,
-0x090a203038373030ull,0x3030313033783009ull,0x3463783020353161ull,0x3020303837303031ull,
-0x3034303030303678ull,0x3030303078302031ull,0x09090a2030383738ull,0x6534363030367830ull,
-0x3230307830203530ull,0x7830203038373431ull,0x3931303030303032ull,0x3430303430783020ull,
-0x3009090a20303837ull,0x3138663030303178ull,0x3330343078302064ull,0x3278302030383763ull,
-0x2035316330303030ull,0x3763313034307830ull,0x783009090a203038ull,0x6466396435303033ull,
-0x6330326336783020ull,0x3061783020386337ull,0x3020333030313330ull,0x3030303030303078ull,
-0x31783009090a2030ull,0x2033303031333030ull,0x3230303030307830ull,0x3030317830203038ull,
-0x7830206430363130ull,0x3038376330303434ull,0x3034783009090a20ull,0x3020313063306230ull,
-0x3837303030303078ull,0x6130303678302030ull,0x3078302031326530ull,0x2030383730303030ull,
-0x303131783009090aull,0x7830203030386630ull,0x3830346630303131ull,0x3130303031783020ull,
-0x3434783020353063ull,0x0a20303837633030ull,0x3530303478300909ull,0x3078302039323030ull,
-0x2030383730303030ull,0x3031303130337830ull,0x3134637830203532ull,0x090a203038373030ull,
-0x3133303034783009ull,0x3030783020313234ull,0x3020303837303030ull,0x3232303430303678ull,
-0x3230303078302039ull,0x09090a2030383738ull,0x6330613030367830ull,0x3030307830203532ull,
-0x7830203038373432ull,0x6430363132303036ull,0x3032303030783020ull,0x3009090a20303837ull,
-0x3234313031303378ull,0x3031346378302039ull,0x3278302030383730ull,0x2031323830303030ull,
-0x3734323034307830ull,0x783009090a203038ull,0x6430363030313033ull,0x3030313463783020ull,
-0x3036783020303837ull,0x3020353230303430ull,0x3837383230303078ull,0x33783009090a2030ull,
-0x2039303031323030ull,0x3730303134637830ull,0x3030367830203038ull,0x7830203530343132ull,
-0x3038376330303030ull,0x3033783009090a20ull,0x3020313038303330ull,0x3837303031346378ull,
-0x3030306178302030ull,0x3478302035313231ull,0x2030383734313034ull,0x303132783009090aull,
-0x7830206330636532ull,0x3032306632303132ull,0x3830303032783020ull,0x3039783020383032ull,
-0x0a20343161303030ull,0x6530306478300909ull,0x3878302031303630ull,0x2030383730306330ull,
-0x3031653030647830ull,0x6330387830203530ull,0x090a203038373030ull,0x3035303063783009ull,
-0x3063783020303030ull,0x3020343061303130ull,0x3038633030303278ull,0x3032343078302039ull,
-0x09090a2030383738ull,0x3430653030647830ull,0x3830617830203130ull,0x7830203038373030ull,
-0x3130303030303066ull,0x3030303065783020ull,0x3009090a20323030ull,0x3165383130303278ull,
-0x3030303078302064ull,0x3378302033303030ull,0x2064666264373030ull,0x3734313263367830ull,
-0x783009090a203863ull,0x3330303331303031ull,0x3030303030783020ull,0x3066783020303832ull,
-0x3020313030303030ull,0x3030303030306578ull,0x0a7d0a7d090a2031ull,0x0000000000000000ull
+0x533274616f6c6636ull,0x5f6d696669695f30ull,0x61702e09090a2c76ull,0x3233732e206d6172ull,
+0x70616475635f5f20ull,0x37315a5f5f6d7261ull,0x6150746365766461ull,0x5f73656c63697472ull,
+0x74616f6c6636506bull,0x696669695f305332ull,0x09090a2c78645f6dull,0x2e206d617261702eull,
+0x75635f5f20323373ull,0x5f5f6d7261706164ull,0x636576646137315aull,0x6c63697472615074ull,
+0x6c6636506b5f7365ull,0x695f30533274616full,0x2c79645f6d696669ull,0x617261702e09090aull,
+0x5f203233662e206dull,0x726170616475635full,0x646137315a5f5f6dull,0x7472615074636576ull,
+0x506b5f73656c6369ull,0x533274616f6c6636ull,0x5f6d696669695f30ull,0x702e09090a2c7464ull,
+0x33732e206d617261ull,0x616475635f5f2032ull,0x315a5f5f6d726170ull,0x5074636576646137ull,
+0x73656c6369747261ull,0x616f6c6636506b5full,0x6669695f30533274ull,0x090a2c626c5f6d69ull,
+0x206d617261702e09ull,0x635f5f203233752eull,0x5f6d726170616475ull,0x6576646137315a5full,
+0x6369747261507463ull,0x6636506b5f73656cull,0x5f30533274616f6cull,0x69705f6d69666969ull,
+0x0a7b090a29686374ull,0x752e206765722e09ull,0x343c687225203631ull,0x6765722e090a3b3eull,
+0x7225203233752e20ull,0x2e090a3b3e34333cull,0x3436752e20676572ull,0x3e31313c64722520ull,
+0x206765722e090a3bull,0x3c6625203233662eull,0x722e090a3b3e3931ull,0x646572702e206765ull,
+0x0a3b3e363c702520ull,0x206c61636f6c2e09ull,0x38206e67696c612eull,0x635f5f2038622e20ull,
+0x75635f5f5f616475ull,0x6d726574765f6164ull,0x3b5d385b3836315full,0x3109636f6c2e090aull,
+0x0a30093932320936ull,0x5a5f5f3142424c24ull,0x7463657664613731ull,0x656c636974726150ull,
+0x6f6c6636506b5f73ull,0x69695f3053327461ull,0x6f6d090a3a6d6966ull,0x2509203631752e76ull,
+0x746325202c316872ull,0x090a3b782e646961ull,0x203631752e766f6dull,0x25202c3268722509ull,
+0x0a3b782e6469746eull,0x6469772e6c756d09ull,0x2509203631752e65ull,0x31687225202c3172ull,
+0x0a3b32687225202cull,0x3233752e74766309ull,0x722509203631752eull,0x2e64697425202c32ull,
+0x2e646461090a3b78ull,0x3372250920323375ull,0x25202c327225202cull,0x2e646c090a3b3172ull,
+0x33732e6d61726170ull,0x202c347225092032ull,0x70616475635f5f5bull,0x37315a5f5f6d7261ull,
+0x6150746365766461ull,0x5f73656c63697472ull,0x74616f6c6636506bull,0x696669695f305332ull,
+0x090a3b5d78645f6dull,0x2e656c2e70746573ull,0x3170250920323373ull,0x25202c347225202cull,
+0x702540090a3b3372ull,0x2409206172622031ull,0x3138325f345f744cull,0x702e646c090a3b38ull,
+0x3233752e6d617261ull,0x5b202c3572250920ull,0x6170616475635f5full,0x6137315a5f5f6d72ull,
+0x7261507463657664ull,0x6b5f73656c636974ull,0x3274616f6c663650ull,0x6d696669695f3053ull,
+0x6d090a3b5d626c5full,0x09203233752e766full,0x0a3b30202c367225ull,0x656c2e7074657309ull,
+0x702509203233732eull,0x202c357225202c32ull,0x2540090a3b367225ull,0x0920617262203270ull,
+0x33335f345f744c24ull,0x766f6d090a3b3033ull,0x722509203233732eull,0x0a3b357225202c37ull,
+0x3233752e74766309ull,0x722509203631752eull,0x2e64697425202c38ull,0x2e6c756d090a3b79ull,
+0x09203233752e6f6cull,0x387225202c397225ull,0x090a3b357225202cull,0x2e3233752e747663ull,
+0x3172250920363175ull,0x6469746e25202c30ull,0x6c756d090a3b792eull,0x203233752e6f6c2eull,
+0x25202c3131722509ull,0x357225202c303172ull,0x752e747663090a3bull,0x09203631752e3233ull,
+0x6325202c32317225ull,0x0a3b792e64696174ull,0x2e6f6c2e6c756d09ull,0x3172250920323375ull,
+0x2c32317225202c33ull,0x090a3b3131722520ull,0x203233732e646461ull,0x25202c3431722509ull,
+0x33317225202c3972ull,0x61702e646c090a3bull,0x203233732e6d6172ull,0x5b202c3531722509ull,
+0x6170616475635f5full,0x6137315a5f5f6d72ull,0x7261507463657664ull,0x6b5f73656c636974ull,
+0x3274616f6c663650ull,0x6d696669695f3053ull,0x6d090a3b5d79645full,0x09203233732e766full,
+0x3b30202c36317225ull,0x33732e766f6d090aull,0x2c37317225092032ull,0x4c240a3b37722520ull,
+0x323438335f345f74ull,0x6f6c3c2f2f200a3aull,0x706f6f4c203e706full,0x696c2079646f6220ull,
+0x202c39323220656eull,0x20676e697473656eull,0x31203a6874706564ull,0x616d69747365202cull,
+0x7265746920646574ull,0x203a736e6f697461ull,0x0a6e776f6e6b6e75ull,0x3233732e64646109ull,
+0x202c383172250920ull,0x7225202c34317225ull,0x746573090a3b3631ull,0x3233732e65672e70ull,
+0x25202c3370250920ull,0x317225202c383172ull,0x33702540090a3b35ull,0x4c24092061726220ull,
+0x383930345f345f74ull,0x6f6c3c2f2f200a3bull,0x74726150203e706full,0x706f6f6c20666f20ull,
+0x696c2079646f6220ull,0x202c39323220656eull,0x62616c2064616568ull,0x744c242064656c65ull,
+0x0a323438335f345full,0x363109636f6c2e09ull,0x090a300933343209ull,0x732e6f6c2e6c756dull,
+0x3931722509203233ull,0x202c38317225202cull,0x6461090a3b347225ull,0x2509203233732e64ull,
+0x317225202c303272ull,0x0a3b337225202c39ull,0x2e6f6c2e6c756d09ull,0x3272250920323375ull,
+0x2c30327225202c31ull,0x747663090a3b3820ull,0x3233752e3436752eull,0x202c316472250920ull,
+0x6c090a3b31327225ull,0x2e6d617261702e64ull,0x6472250920343675ull,0x75635f5f5b202c32ull,
+0x5f5f6d7261706164ull,0x636576646137315aull,0x6c63697472615074ull,0x6c6636506b5f7365ull,
+0x695f30533274616full,0x7261705f6d696669ull,0x646461090a3b5d74ull,0x722509203436752eull,
+0x31647225202c3364ull,0x0a3b32647225202cull,0x626f6c672e646c09ull,0x33662e32762e6c61ull,
+0x2c3166257b092032ull,0x255b202c7d326625ull,0x0a3b5d302b336472ull,0x363109636f6c2e09ull,
+0x090a300937343209ull,0x662e6e722e747663ull,0x09203233732e3233ull,0x347225202c336625ull,
+0x662e6c756d090a3bull,0x2c34662509203233ull,0x6625202c33662520ull,0x2e747663090a3b31ull,
+0x2e3233732e697a72ull,0x3272250920323366ull,0x0a3b346625202c32ull,0x2e6f6c2e6c756d09ull,
+0x3272250920323375ull,0x2c32327225202c33ull,0x747663090a3b3820ull,0x3233752e3436752eull,
+0x202c346472250920ull,0x6c090a3b33327225ull,0x2e6d617261702e64ull,0x3272250920323375ull,
+0x75635f5f5b202c34ull,0x5f5f6d7261706164ull,0x636576646137315aull,0x6c63697472615074ull,
+0x6c6636506b5f7365ull,0x695f30533274616full,0x7469705f6d696669ull,0x7663090a3b5d6863ull,
+0x3233662e6e722e74ull,0x662509203233732eull,0x3b35317225202c35ull,0x33662e6c756d090aull,
+0x202c366625092032ull,0x326625202c356625ull,0x722e747663090a3bull,0x662e3233732e697aull,
+0x3532722509203233ull,0x090a3b366625202cull,0x752e6f6c2e6c756dull,0x3632722509203233ull,
+0x202c34327225202cull,0x63090a3b35327225ull,0x752e3436752e7476ull,0x3564722509203233ull,
+0x0a3b36327225202cull,0x617261702e646c09ull,0x2509203436752e6dull,0x5f5f5b202c366472ull,
+0x6d72617061647563ull,0x76646137315a5f5full,0x6974726150746365ull,0x36506b5f73656c63ull,
+0x30533274616f6c66ull,0x765f6d696669695full,0x2e646461090a3b5dull,0x6472250920343675ull,
+0x2c35647225202c37ull,0x090a3b3664722520ull,0x203436752e646461ull,0x25202c3864722509ull,
+0x647225202c346472ull,0x2e766f6d090a3b37ull,0x6472250920343675ull,0x6475635f5f202c39ull,
+0x616475635f5f5f61ull,0x315f6d726574765full,0x2e646c090a3b3836ull,0x762e6c61626f6c67ull,
+0x7b09203233752e32ull,0x3272252c37327225ull,0x6472255b202c7d38ull,0x73090a3b5d302b38ull,
+0x2e6c61636f6c2e74ull,0x72255b0920323375ull,0x25202c5d302b3964ull,0x7473090a3b373272ull,
+0x752e6c61636f6c2eull,0x6472255b09203233ull,0x7225202c5d342b39ull,0x6f6c2e090a3b3832ull,
+0x3934320936310963ull,0x702e646c090a3009ull,0x3233662e6d617261ull,0x5b202c3766250920ull,
+0x6170616475635f5full,0x6137315a5f5f6d72ull,0x7261507463657664ull,0x6b5f73656c636974ull,
+0x3274616f6c663650ull,0x6d696669695f3053ull,0x6c090a3b5d74645full,0x2e6c61636f6c2e64ull,
+0x3866250920323366ull,0x6475635f5f5b202cull,0x616475635f5f5f61ull,0x315f6d726574765full,
+0x090a3b5d302b3836ull,0x203233662e64616dull,0x6625202c31662509ull,0x202c386625202c37ull,
+0x6c2e090a3b316625ull,0x353209363109636full,0x747663090a300930ull,0x3233732e697a722eull,
+0x722509203233662eull,0x3b316625202c3932ull,0x6e722e747663090aull,0x3233732e3233662eull,
+0x25202c3966250920ull,0x7573090a3b393272ull,0x2509203233662e62ull,0x2c316625202c3166ull,
+0x2e090a3b39662520ull,0x3209363109636f6cull,0x6f6d090a30093235ull,0x2509203233662e76ull,
+0x336630202c303166ull,0x3b30303030303866ull,0x202f2f0920202020ull,0x662e646461090a31ull,
+0x3131662509203233ull,0x25202c316625202cull,0x7663090a3b303166ull,0x33732e697a722e74ull,
+0x2509203233662e32ull,0x316625202c303372ull,0x2e747663090a3b31ull,0x732e3233662e6e72ull,
+0x3231662509203233ull,0x0a3b30337225202cull,0x3233662e62757309ull,0x25202c3166250920ull,
+0x316625202c313166ull,0x636f6c2e090a3b32ull,0x0933353209363109ull,0x6f6c2e646c090a30ull,
+0x203233662e6c6163ull,0x5b202c3331662509ull,0x5f5f616475635f5full,0x74765f616475635full,
+0x2b3836315f6d7265ull,0x64616d090a3b5d34ull,0x662509203233662eull,0x202c376625202c32ull,
+0x6625202c33316625ull,0x636f6c2e090a3b32ull,0x0934353209363109ull,0x722e747663090a30ull,
+0x662e3233732e697aull,0x3133722509203233ull,0x090a3b326625202cull,0x662e6e722e747663ull,
+0x09203233732e3233ull,0x7225202c34316625ull,0x627573090a3b3133ull,0x662509203233662eull,
+0x202c326625202c32ull,0x2e090a3b34316625ull,0x3209363109636f6cull,0x6f6d090a30093635ull,
+0x2509203233662e76ull,0x336630202c353166ull,0x3b30303030303866ull,0x202f2f0920202020ull,
+0x662e646461090a31ull,0x3631662509203233ull,0x25202c326625202cull,0x7663090a3b353166ull,
+0x33732e697a722e74ull,0x2509203233662e32ull,0x316625202c323372ull,0x2e747663090a3b36ull,
+0x732e3233662e6e72ull,0x3731662509203233ull,0x0a3b32337225202cull,0x3233662e62757309ull,
+0x25202c3266250920ull,0x316625202c363166ull,0x672e7473090a3b37ull,0x32762e6c61626f6cull,
+0x255b09203233662eull,0x202c5d302b336472ull,0x3266252c3166257bull,0x345f744c240a3b7dull,
+0x200a3a383930345full,0x3e706f6f6c3c2f2full,0x666f207472615020ull,0x6f6220706f6f6c20ull,
+0x20656e696c207964ull,0x616568202c393232ull,0x656c6562616c2064ull,0x5f345f744c242064ull,
+0x6c2e090a32343833ull,0x353209363109636full,0x646461090a300938ull,0x722509203233732eull,
+0x36317225202c3631ull,0x6573090a3b31202cull,0x33732e656e2e7074ull,0x202c347025092032ull,
+0x7225202c36317225ull,0x34702540090a3b35ull,0x4c24092061726220ull,0x323438335f345f74ull,
+0x5f345f744c240a3bull,0x4c240a3a30333333ull,0x383138325f345f74ull,0x09636f6c2e090a3aull,
+0x3009323632093631ull,0x0a3b74697865090aull,0x5f646e6557444c24ull,0x6576646137315a5full,
+0x6369747261507463ull,0x6636506b5f73656cull,0x5f30533274616f6cull,0x090a3a6d69666969ull,
+0x315a5f202f2f207dull,0x5074636576646137ull,0x73656c6369747261ull,0x616f6c6636506b5full,
+0x6669695f30533274ull,0x000000000a0a6d69ull
 };
 
 
@@ -12510,17 +12648,17 @@ static const unsigned long long __deviceText_$sm_13$[] = {
 
 static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_13",(char*)__deviceText_$sm_13$},{0,0}};
-static __cudaFatDebugEntry __debugEntries[] = {{0,0}};
+static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"009dedb5709bd0ca",(char*)"fluidsGL.cu",(char*)" ",__ptxEntries,__cubinEntries,__debugEntries,0,0,0,0,0,0xcc43f56a};
-# 5 "/tmp/tmpxft_00007e2f_00000000-1_fluidsGL.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"17090cdfde4cf252",(char*)"fluidsGL.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x62f4cad3};
+# 5 "/tmp/tmpxft_00003d03_00000000-1_fluidsGL.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
-# 85 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
-# 86 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 111 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 113 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
+# 139 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
 
 
@@ -12550,6 +12688,15 @@ extern void __cudaRegisterTexture(
   const char *deviceName,
         int dim,
         int norm,
+        int ext
+);
+
+extern void __cudaRegisterSurface(
+        void **fatCubinHandle,
+  const struct surfaceReference *hostVar,
+  const void **deviceAddress,
+  const char *deviceName,
+        int dim,
         int ext
 );
 
@@ -12599,42 +12746,42 @@ static void __cudaUnregisterBinaryUtil(void)
 {
   __cudaUnregisterFatBinary(__cudaFatCubinHandle);
 }
-# 226 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 274 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/common_functions.h" 1
 # 68 "/usr/local/cuda/bin/../include/common_functions.h"
 # 1 "/usr/local/cuda/bin/../include/crt/func_macro.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/common_functions.h" 2
 
-static clock_t __cuda_clock(void)
+static __attribute__((__unused__)) clock_t __cuda_clock(void)
 {
   return clock();
 }
 
-static void *__cuda_memset(void *s, int c, size_t n)
+static __attribute__((__unused__)) void *__cuda_memset(void *s, int c, size_t n)
 {
   return memset(s, c, n);
 }
 
-static void *__cuda_memcpy(void *d, const void *s, size_t n)
+static __attribute__((__unused__)) void *__cuda_memcpy(void *d, const void *s, size_t n)
 {
   return memcpy(d, s, n);
 }
 # 93 "/usr/local/cuda/bin/../include/common_functions.h"
 # 1 "/usr/local/cuda/bin/../include/math_functions.h" 1 3
-# 864 "/usr/local/cuda/bin/../include/math_functions.h" 3
-extern __attribute__((__weak__)) int __cuda_error_not_implememted(void); int __cuda_error_not_implememted(void);
-# 920 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static int __cuda_abs(int a)
+# 912 "/usr/local/cuda/bin/../include/math_functions.h" 3
+int __cuda_error_not_implememted(void);
+# 972 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) int __cuda_abs(int a)
 {
   return abs(a);
 }
 
-static float __cuda_fabsf(float a)
+static __attribute__((__unused__)) float __cuda_fabsf(float a)
 {
   return fabsf(a);
 }
 
-static long long int __cuda_llabs(long long int a)
+static __attribute__((__unused__)) long long int __cuda_llabs(long long int a)
 {
 
   return ::llabs(a);
@@ -12643,16 +12790,16 @@ static long long int __cuda_llabs(long long int a)
 
 }
 
-static float __cuda_exp2f(float a)
+static __attribute__((__unused__)) float __cuda_exp2f(float a)
 {
   return exp2f(a);
 }
 
 # 1 "/usr/local/cuda/bin/../include/device_functions.h" 1 3
-# 426 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 442 "/usr/local/cuda/bin/../include/device_functions.h" 3
 # 1 "/usr/local/cuda/bin/../include/math_constants.h" 1 3
-# 427 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 2367 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 443 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 2384 "/usr/local/cuda/bin/../include/device_functions.h" 3
 # 1 "/usr/local/cuda/bin/../include/common_types.h" 1 3
 # 37 "/usr/local/cuda/bin/../include/common_types.h" 3
 union __cudart_FloatUintCvt {
@@ -12684,7 +12831,7 @@ struct __cudart_UintUint {
     unsigned int lo;
     unsigned int hi;
 };
-# 2368 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 2385 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
 
 static const unsigned char __internal_rcpTab[128] =
 {
@@ -12734,7 +12881,7 @@ static const unsigned int __internal_invSqrtCubeTab[96] =
   0x21860882, 0x20c18081, 0x20c18081, 0x20000080
 };
 
-static float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
 {
   unsigned long long prod;
   volatile union __cudart_FloatUintCvt arg;
@@ -12841,7 +12988,7 @@ static float __internal_frcp_kernel (float x,enum cudaRoundMode mode)
   }
 }
 
-static float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
 
 {
   unsigned long long prod;
@@ -12923,7 +13070,7 @@ static float __internal_fsqrt_kernel (float radicand, enum cudaRoundMode mode)
   }
 }
 
-static float __internal_fdiv_kernel (float dividend, float divisor, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fdiv_kernel (float dividend, float divisor, enum cudaRoundMode mode)
 
 {
   unsigned long long prod;
@@ -13238,12 +13385,11 @@ divide:
   }
 }
 
-static float __internal_fmul_kernel2 (float a, float b, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fmul_kernel (float a, float b, enum cudaRoundMode mode)
 
 {
   unsigned long long product;
   volatile union __cudart_FloatUintCvt xx, yy;
-
   unsigned expo_x, expo_y;
 
   xx.f = a;
@@ -13414,7 +13560,7 @@ multiply:
   }
 }
 
-static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMode mode)
 
 {
   unsigned long long product;
@@ -13454,7 +13600,7 @@ static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMo
     if ((xx << 1) > 0xff000000) {
       return a + a;
     }
-# 3148 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 3164 "/usr/local/cuda/bin/../include/device_functions.h" 3
     if ((((xx << 1) == 0) && ((yy << 1) == 0xff000000)) ||
         (((yy << 1) == 0) && ((xx << 1) == 0xff000000))) {
       cvt.i = 0xffc00000;
@@ -13725,8 +13871,7 @@ static float __internal_fmaf_kernel (float a, float b, float c, enum cudaRoundMo
   return cvt.f;
 }
 
-
-static float __internal_fadd_kernel2 (float a, float b, enum cudaRoundMode mode)
+static __attribute__((__unused__)) float __internal_fadd_kernel (float a, float b, enum cudaRoundMode mode)
 
 {
   volatile union __cudart_FloatUintCvt xx, yy;
@@ -13773,10 +13918,14 @@ add:
       if (xx.i & 0x00800000) {
         if (expo_x <= 0xFD) {
           xx.i = xx.i + (expo_x << 23);
-          if (mode == cudaRoundMinInf) {
-            xx.i += (temp && (xx.i & 0x80000000));
+          if (mode == cudaRoundNearest) {
+            if (temp < 0x80000000) return xx.f;
+            xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
+          } else if (mode == cudaRoundZero) {
           } else if (mode == cudaRoundPosInf) {
             xx.i += (temp && !(xx.i & 0x80000000));
+          } else if (mode == cudaRoundMinInf) {
+            xx.i += (temp && (xx.i & 0x80000000));
           }
           return xx.f;
         }
@@ -13785,7 +13934,7 @@ add:
 
           if (mode == cudaRoundMinInf) {
             xx.i = 0x80000000;
-          } else if (mode == cudaRoundPosInf) {
+          } else {
             xx.i = 0;
           }
           return xx.f;
@@ -13807,10 +13956,14 @@ add:
       if (!(xx.i & 0x01000000)) {
         if (expo_x <= 0xFD) {
           xx.i = xx.i + (expo_x << 23);
-          if (mode == cudaRoundMinInf) {
-            xx.i += (temp && (xx.i & 0x80000000));
+          if (mode == cudaRoundNearest) {
+            if (temp < 0x80000000) return xx.f;
+            xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
+          } else if (mode == cudaRoundZero) {
           } else if (mode == cudaRoundPosInf) {
             xx.i += (temp && !(xx.i & 0x80000000));
+          } else if (mode == cudaRoundMinInf) {
+            xx.i += (temp && (xx.i & 0x80000000));
           }
           return xx.f;
         }
@@ -13822,18 +13975,26 @@ add:
       }
     }
     if (expo_x <= 0xFD) {
-      if (mode == cudaRoundMinInf) {
-        xx.i += (temp && (xx.i & 0x80000000));
+      xx.i = xx.i + (expo_x << 23);
+      if (mode == cudaRoundNearest) {
+        if (temp < 0x80000000) return xx.f;
+        xx.i += ((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31));
+      } else if (mode == cudaRoundZero) {
       } else if (mode == cudaRoundPosInf) {
         xx.i += (temp && !(xx.i & 0x80000000));
+      } else if (mode == cudaRoundMinInf) {
+        xx.i += (temp && (xx.i & 0x80000000));
       }
-      xx.i = xx.i + (expo_x << 23);
       return xx.f;
     }
     if ((int)expo_x >= 254) {
 
       temp = xx.i & 0x80000000;
-      if (mode == cudaRoundMinInf) {
+      if (mode == cudaRoundNearest) {
+        xx.i = (temp) | 0x7f800000;
+      } else if (mode == cudaRoundZero) {
+        xx.i = (temp) | 0x7f7fffff;
+      } else if (mode == cudaRoundMinInf) {
         xx.i = (temp ? 0xFF800000 : 0x7f7fffff);
       } else if (mode == cudaRoundPosInf) {
         xx.i = (temp ? 0xff7fffff : 0x7F800000);
@@ -13847,10 +14008,13 @@ add:
     expo_x = (unsigned)(-((int)expo_x));
     temp = xx.i << expo_y | ((temp) ? 1 : 0);
     xx.i = yy.i | (xx.i >> expo_x);
-    if (mode == cudaRoundMinInf) {
-      xx.i += (temp && yy.i);
+    if (mode == cudaRoundNearest) {
+      xx.i += (temp == 0x80000000) ? (xx.i & 1) : (temp >> 31);
+    } else if (mode == cudaRoundZero) {
     } else if (mode == cudaRoundPosInf) {
       xx.i += (temp && !yy.i);
+    } else if (mode == cudaRoundMinInf) {
+      xx.i += (temp && yy.i);
     }
     return xx.f;
   } else {
@@ -13860,7 +14024,7 @@ add:
         if (!(xx.i << 1)) {
           xx.i = xx.i | yy.i;
         }
-      } else if (mode == cudaRoundPosInf) {
+      } else {
         if (xx.i == 0x80000000) {
           xx.i = yy.i;
         }
@@ -13925,128 +14089,128 @@ add:
   }
 }
 
-static float __frcp_rn (float a)
+static __attribute__((__unused__)) float __frcp_rn (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundNearest);
 }
 
-static float __frcp_rz (float a)
+static __attribute__((__unused__)) float __frcp_rz (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundZero);
 }
 
-static float __frcp_rd (float a)
+static __attribute__((__unused__)) float __frcp_rd (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundMinInf);
 }
 
-static float __frcp_ru (float a)
+static __attribute__((__unused__)) float __frcp_ru (float a)
 {
   return __internal_frcp_kernel (a, cudaRoundPosInf);
 }
 
-static float __fsqrt_rn (float a)
+static __attribute__((__unused__)) float __fsqrt_rn (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundNearest);
 }
 
-static float __fsqrt_rz (float a)
+static __attribute__((__unused__)) float __fsqrt_rz (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundZero);
 }
 
-static float __fsqrt_rd (float a)
+static __attribute__((__unused__)) float __fsqrt_rd (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundMinInf);
 }
 
-static float __fsqrt_ru (float a)
+static __attribute__((__unused__)) float __fsqrt_ru (float a)
 {
   return __internal_fsqrt_kernel (a, cudaRoundPosInf);
 }
 
-static float __fdiv_rn (float a, float b)
+static __attribute__((__unused__)) float __fdiv_rn (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundNearest);
 }
 
-static float __fdiv_rz (float a, float b)
+static __attribute__((__unused__)) float __fdiv_rz (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundZero);
 }
 
-static float __fdiv_rd (float a, float b)
+static __attribute__((__unused__)) float __fdiv_rd (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundMinInf);
 }
 
-static float __fdiv_ru (float a, float b)
+static __attribute__((__unused__)) float __fdiv_ru (float a, float b)
 {
   return __internal_fdiv_kernel (a, b, cudaRoundPosInf);
 }
 
-static float __fadd_rd (float a, float b)
+static __attribute__((__unused__)) float __fadd_rd (float a, float b)
 {
-  return __internal_fadd_kernel2 (a, b, cudaRoundMinInf);
+  return __internal_fadd_kernel (a, b, cudaRoundMinInf);
 }
 
-static float __fadd_ru (float a, float b)
+static __attribute__((__unused__)) float __fadd_ru (float a, float b)
 {
-  return __internal_fadd_kernel2 (a, b, cudaRoundPosInf);
+  return __internal_fadd_kernel (a, b, cudaRoundPosInf);
 }
 
-static float __fmul_rd (float a, float b)
+static __attribute__((__unused__)) float __fmul_rd (float a, float b)
 {
-  return __internal_fmul_kernel2 (a, b, cudaRoundMinInf);
+  return __internal_fmul_kernel (a, b, cudaRoundMinInf);
 }
 
-static float __fmul_ru (float a, float b)
+static __attribute__((__unused__)) float __fmul_ru (float a, float b)
 {
-  return __internal_fmul_kernel2 (a, b, cudaRoundPosInf);
+  return __internal_fmul_kernel (a, b, cudaRoundPosInf);
 }
 
-static float __fmaf_rn (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_rn (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundNearest);
 }
 
-static float __fmaf_rz (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_rz (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundZero);
 }
 
-static float __fmaf_ru (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_ru (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundPosInf);
 }
 
-static float __fmaf_rd (float a, float b, float c)
+static __attribute__((__unused__)) float __fmaf_rd (float a, float b, float c)
 {
   return __internal_fmaf_kernel (a, b, c, cudaRoundMinInf);
 }
 
-static int __cuda___isnan(double a);
-static int __cuda___isnanf(float a);
-static int __double2int_rz(double);
-static unsigned int __double2uint_rz(double);
-static long long int __double2ll_rz(double);
-static unsigned long long int __double2ull_rz(double);
-# 3737 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static int __mulhi(int a, int b)
+static __attribute__((__unused__)) int __cuda___isnan(double a);
+static __attribute__((__unused__)) int __cuda___isnanf(float a);
+static __attribute__((__unused__)) int __double2int_rz(double);
+static __attribute__((__unused__)) unsigned int __double2uint_rz(double);
+static __attribute__((__unused__)) long long int __double2ll_rz(double);
+static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double);
+# 3771 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) int __mulhi(int a, int b)
 {
   long long int c = (long long int)a * (long long int)b;
 
   return (int)(c >> 32);
 }
 
-static unsigned int __umulhi(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __umulhi(unsigned int a, unsigned int b)
 {
   unsigned long long int c = (unsigned long long int)a * (unsigned long long int)b;
 
   return (unsigned int)(c >> 32);
 }
 
-static unsigned long long int __umul64hi(unsigned long long int a, unsigned long long int b)
+static __attribute__((__unused__)) unsigned long long int __umul64hi(unsigned long long int a, unsigned long long int b)
 {
   unsigned int a_lo = (unsigned int)a;
   unsigned long long int a_hi = a >> 32;
@@ -14061,7 +14225,7 @@ static unsigned long long int __umul64hi(unsigned long long int a, unsigned long
   return a_hi * b_hi + (m1 >> 32) + (m2 >> 32) + carry;
 }
 
-static long long int __mul64hi(long long int a, long long int b)
+static __attribute__((__unused__)) long long int __mul64hi(long long int a, long long int b)
 {
   long long int res;
   res = __umul64hi(a, b);
@@ -14070,27 +14234,27 @@ static long long int __mul64hi(long long int a, long long int b)
   return res;
 }
 
-static float __saturatef(float a)
+static __attribute__((__unused__)) float __saturatef(float a)
 {
   if (__cuda___isnanf(a)) return 0.0f;
   return a >= 1.0f ? 1.0f : a <= 0.0f ? 0.0f : a;
 }
 
-static unsigned int __sad(int a, int b, unsigned int c)
+static __attribute__((__unused__)) unsigned int __sad(int a, int b, unsigned int c)
 {
   long long int diff = (long long int)a - (long long int)b;
 
   return (unsigned int)(__cuda_llabs(diff) + (long long int)c);
 }
 
-static unsigned int __usad(unsigned int a, unsigned int b, unsigned int c)
+static __attribute__((__unused__)) unsigned int __usad(unsigned int a, unsigned int b, unsigned int c)
 {
   long long int diff = (long long int)a - (long long int)b;
 
   return (unsigned int)(__cuda_llabs(diff) + (long long int)c);
 }
 
-static int __mul24(int a, int b)
+static __attribute__((__unused__)) int __mul24(int a, int b)
 {
 
   a &= 0xffffff;
@@ -14102,7 +14266,7 @@ static int __mul24(int a, int b)
   return a * b;
 }
 
-static unsigned int __umul24(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __umul24(unsigned int a, unsigned int b)
 {
 
   a &= 0xffffff;
@@ -14112,7 +14276,7 @@ static unsigned int __umul24(unsigned int a, unsigned int b)
   return a * b;
 }
 
-static float __int_as_float(int a)
+static __attribute__((__unused__)) float __int_as_float(int a)
 {
   volatile union __cudart_FloatIntCvt u;
 
@@ -14120,7 +14284,7 @@ static float __int_as_float(int a)
   return u.f;
 }
 
-static int __float_as_int(float a)
+static __attribute__((__unused__)) int __float_as_int(float a)
 {
   volatile union __cudart_FloatIntCvt u;
 
@@ -14128,7 +14292,7 @@ static int __float_as_int(float a)
   return u.i;
 }
 
-static long long int __internal_float2ll_kernel(float a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_float2ll_kernel(float a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
 {
   unsigned long long int res, t = 0ULL;
   int shift;
@@ -14158,12 +14322,12 @@ static long long int __internal_float2ll_kernel(float a, long long int max, long
   return (long long int)res;
 }
 
-static int __internal_float2int(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) int __internal_float2int(float a, enum cudaRoundMode rndMode)
 {
   return (int)__internal_float2ll_kernel(a, 2147483647LL, -2147483648LL, 0LL, rndMode);
 }
 
-static int __float2int_rz(float a)
+static __attribute__((__unused__)) int __float2int_rz(float a)
 {
 
 
@@ -14172,27 +14336,27 @@ static int __float2int_rz(float a)
 
 }
 
-static int __float2int_ru(float a)
+static __attribute__((__unused__)) int __float2int_ru(float a)
 {
   return __internal_float2int(a, cudaRoundPosInf);
 }
 
-static int __float2int_rd(float a)
+static __attribute__((__unused__)) int __float2int_rd(float a)
 {
   return __internal_float2int(a, cudaRoundMinInf);
 }
 
-static int __float2int_rn(float a)
+static __attribute__((__unused__)) int __float2int_rn(float a)
 {
   return __internal_float2int(a, cudaRoundNearest);
 }
 
-static long long int __internal_float2ll(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_float2ll(float a, enum cudaRoundMode rndMode)
 {
   return __internal_float2ll_kernel(a, 9223372036854775807LL, -9223372036854775807LL -1LL, -9223372036854775807LL -1LL, rndMode);
 }
 
-static long long int __float2ll_rz(float a)
+static __attribute__((__unused__)) long long int __float2ll_rz(float a)
 {
 
 
@@ -14201,22 +14365,22 @@ static long long int __float2ll_rz(float a)
 
 }
 
-static long long int __float2ll_ru(float a)
+static __attribute__((__unused__)) long long int __float2ll_ru(float a)
 {
   return __internal_float2ll(a, cudaRoundPosInf);
 }
 
-static long long int __float2ll_rd(float a)
+static __attribute__((__unused__)) long long int __float2ll_rd(float a)
 {
   return __internal_float2ll(a, cudaRoundMinInf);
 }
 
-static long long int __float2ll_rn(float a)
+static __attribute__((__unused__)) long long int __float2ll_rn(float a)
 {
   return __internal_float2ll(a, cudaRoundNearest);
 }
 
-static unsigned long long int __internal_float2ull_kernel(float a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_float2ull_kernel(float a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
 {
   unsigned long long int res, t = 0ULL;
   int shift;
@@ -14242,12 +14406,12 @@ static unsigned long long int __internal_float2ull_kernel(float a, unsigned long
   return res;
 }
 
-static unsigned int __internal_float2uint(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned int __internal_float2uint(float a, enum cudaRoundMode rndMode)
 {
   return (unsigned int)__internal_float2ull_kernel(a, 4294967295U, 0U, rndMode);
 }
 
-static unsigned int __float2uint_rz(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_rz(float a)
 {
 
 
@@ -14256,27 +14420,27 @@ static unsigned int __float2uint_rz(float a)
 
 }
 
-static unsigned int __float2uint_ru(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_ru(float a)
 {
   return __internal_float2uint(a, cudaRoundPosInf);
 }
 
-static unsigned int __float2uint_rd(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_rd(float a)
 {
   return __internal_float2uint(a, cudaRoundMinInf);
 }
 
-static unsigned int __float2uint_rn(float a)
+static __attribute__((__unused__)) unsigned int __float2uint_rn(float a)
 {
   return __internal_float2uint(a, cudaRoundNearest);
 }
 
-static unsigned long long int __internal_float2ull(float a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_float2ull(float a, enum cudaRoundMode rndMode)
 {
   return __internal_float2ull_kernel(a, 18446744073709551615ULL, 9223372036854775808ULL, rndMode);
 }
 
-static unsigned long long int __float2ull_rz(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_rz(float a)
 {
 
 
@@ -14285,22 +14449,22 @@ static unsigned long long int __float2ull_rz(float a)
 
 }
 
-static unsigned long long int __float2ull_ru(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_ru(float a)
 {
   return __internal_float2ull(a, cudaRoundPosInf);
 }
 
-static unsigned long long int __float2ull_rd(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_rd(float a)
 {
   return __internal_float2ull(a, cudaRoundMinInf);
 }
 
-static unsigned long long int __float2ull_rn(float a)
+static __attribute__((__unused__)) unsigned long long int __float2ull_rn(float a)
 {
   return __internal_float2ull(a, cudaRoundNearest);
 }
 
-static int __internal_normalize64(unsigned long long int *a)
+static __attribute__((__unused__)) int __internal_normalize64(unsigned long long int *a)
 {
   int lz = 0;
 
@@ -14331,7 +14495,7 @@ static int __internal_normalize64(unsigned long long int *a)
   return lz;
 }
 
-static int __internal_normalize(unsigned int *a)
+static __attribute__((__unused__)) int __internal_normalize(unsigned int *a)
 {
   unsigned long long int t = (unsigned long long int)*a;
   int lz = __internal_normalize64(&t);
@@ -14341,7 +14505,7 @@ static int __internal_normalize(unsigned int *a)
   return lz - 32;
 }
 
-static float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_FloatUintCvt res;
   int shift;
@@ -14366,22 +14530,22 @@ static float __internal_int2float_kernel(int a, enum cudaRoundMode rndMode)
   return res.f;
 }
 
-static float __int2float_rz(int a)
+static __attribute__((__unused__)) float __int2float_rz(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundZero);
 }
 
-static float __int2float_ru(int a)
+static __attribute__((__unused__)) float __int2float_ru(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundPosInf);
 }
 
-static float __int2float_rd(int a)
+static __attribute__((__unused__)) float __int2float_rd(int a)
 {
   return __internal_int2float_kernel(a, cudaRoundMinInf);
 }
 
-static float __int2float_rn(int a)
+static __attribute__((__unused__)) float __int2float_rn(int a)
 {
 
 
@@ -14390,7 +14554,7 @@ static float __int2float_rn(int a)
 
 }
 
-static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_FloatUintCvt res;
   int shift;
@@ -14401,7 +14565,7 @@ static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rnd
   t = res.i << 24;
   res.i = (res.i >> 8);
   res.i += (127 + 30 - shift) << 23;
-  if ((rndMode == cudaRoundNearest) && (t >= 0x80000000)) {
+  if (rndMode == cudaRoundNearest) {
     res.i += (t == 0x80000000) ? (res.i & 1) : (t >> 31);
   }
   else if ((rndMode == cudaRoundPosInf) && t) {
@@ -14410,22 +14574,22 @@ static float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rnd
   return res.f;
 }
 
-static float __uint2float_rz(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_rz(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundZero);
 }
 
-static float __uint2float_ru(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_ru(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundPosInf);
 }
 
-static float __uint2float_rd(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_rd(unsigned int a)
 {
   return __internal_uint2float_kernel(a, cudaRoundMinInf);
 }
 
-static float __uint2float_rn(unsigned int a)
+static __attribute__((__unused__)) float __uint2float_rn(unsigned int a)
 {
 
 
@@ -14434,16 +14598,13 @@ static float __uint2float_rn(unsigned int a)
 
 }
 
-static float __ll2float_rn(long long int a)
+static __attribute__((__unused__)) float __ll2float_rn(long long int a)
 {
   return (float)a;
 }
 
-static float __ull2float_rn(unsigned long long int a)
+static __attribute__((__unused__)) float __internal_ull2float_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
 {
-
-
-
   unsigned long long int temp;
   unsigned int res, t;
   int shift;
@@ -14454,418 +14615,202 @@ static float __ull2float_rn(unsigned long long int a)
   res = (unsigned int)(temp >> 32);
   t = (unsigned int)temp;
   res += (127 + 62 - shift) << 23;
-  res += t == 0x80000000 ? res & 1 : t >> 31;
+  if (rndMode == cudaRoundNearest) {
+    res += (t == 0x80000000) ? (res & 1) : (t >> 31);
+  } else if (rndMode == cudaRoundPosInf) {
+    res += (t != 0);
+  }
   return __int_as_float(res);
+}
+
+static __attribute__((__unused__)) float __ull2float_rn(unsigned long long int a)
+{
+
+
+
+  return __internal_ull2float_kernel(a, cudaRoundNearest);
 
 }
 
-static float __internal_fmul_kernel(float a, float b, int rndNearest)
+static __attribute__((__unused__)) unsigned short __float2half_rn(float f)
 {
-  unsigned long long product;
-  volatile union __cudart_FloatUintCvt xx, yy;
-  unsigned expo_x, expo_y;
+  unsigned int x = __float_as_int (f);
+  unsigned int u = (x & 0x7fffffff), remainder, shift, lsb, lsb_s1, lsb_m1;
+  unsigned int sign, exponent, mantissa;
 
-  xx.f = a;
-  yy.f = b;
 
-  expo_y = 0xFF;
-  expo_x = expo_y & (xx.i >> 23);
-  expo_x = expo_x - 1;
-  expo_y = expo_y & (yy.i >> 23);
-  expo_y = expo_y - 1;
+  if (u > 0x7f800000) {
+    return 0x7fff;
+  }
 
-  if ((expo_x <= 0xFD) &&
-      (expo_y <= 0xFD)) {
-multiply:
-    expo_x = expo_x + expo_y;
-    expo_y = xx.i ^ yy.i;
-    xx.i = xx.i & 0x00ffffff;
-    yy.i = yy.i << 8;
-    xx.i = xx.i | 0x00800000;
-    yy.i = yy.i | 0x80000000;
+  sign = ((x >> 16) & 0x8000);
 
-    product = ((unsigned long long)xx.i) * yy.i;
-    expo_x = expo_x - 127 + 2;
-    expo_y = expo_y & 0x80000000;
-    xx.i = (unsigned int)(product >> 32);
-    yy.i = (unsigned int)(product & 0xffffffff);
 
-    if (xx.i < 0x00800000) {
-      xx.i = (xx.i << 1) | (yy.i >> 31);
-      yy.i = (yy.i << 1);
-      expo_x--;
+  if (u > 0x477fefff) {
+    return sign | 0x7c00;
+  }
+  if (u < 0x33000001) {
+    return sign | 0x0000;
+  }
+
+  exponent = ((u >> 23) & 0xff);
+  mantissa = (u & 0x7fffff);
+
+  if (exponent > 0x70) {
+    shift = 13;
+    exponent -= 0x70;
+  } else {
+    shift = 0x7e - exponent;
+    exponent = 0;
+    mantissa |= 0x800000;
+  }
+  lsb = (1 << shift);
+  lsb_s1 = (lsb >> 1);
+  lsb_m1 = (lsb - 1);
+
+
+  remainder = (mantissa & lsb_m1);
+  mantissa >>= shift;
+  if (remainder > lsb_s1 || (remainder == lsb_s1 && (mantissa & 0x1))) {
+    ++mantissa;
+    if (!(mantissa & 0x3ff)) {
+      ++exponent;
+      mantissa = 0;
     }
-    if (expo_x <= 0xFD) {
-      xx.i = xx.i | expo_y;
-      xx.i = xx.i + (expo_x << 23);
+  }
 
-      if (yy.i < 0x80000000) return xx.f;
-      xx.i += (((yy.i == 0x80000000) ? (xx.i & 1) : (yy.i >> 31))
-               && rndNearest);
-      return xx.f;
-    } else if ((int)expo_x >= 254) {
+  return sign | (exponent << 10) | mantissa;
+}
 
-      xx.i = (expo_y | 0x7F800000) - (!rndNearest);
-      return xx.f;
-    } else {
+static __attribute__((__unused__)) float __half2float(unsigned short h)
+{
+  unsigned int sign = ((h >> 15) & 1);
+  unsigned int exponent = ((h >> 10) & 0x1f);
+  unsigned int mantissa = ((h & 0x3ff) << 13);
 
-      expo_x = ((unsigned int)-((int)expo_x));
-      if (expo_x > 25) {
-
-        xx.i = expo_y;
-        return xx.f;
-      } else {
-        yy.i = (xx.i << (32 - expo_x)) | ((yy.i) ? 1 : 0);
-        xx.i = expo_y + (xx.i >> expo_x);
-        xx.i += (((yy.i == 0x80000000) ? (xx.i & 1) : (yy.i >> 31))
-                 && rndNearest);
-        return xx.f;
-      }
+  if (exponent == 0x1f) {
+    mantissa = (mantissa
+                ? (sign = 0, 0x7fffff)
+                : 0);
+    exponent = 0xff;
+  } else if (!exponent) {
+    if (mantissa) {
+      unsigned int msb;
+      exponent = 0x71;
+      do {
+        msb = (mantissa & 0x400000);
+        mantissa <<= 1;
+        --exponent;
+      } while (!msb);
+      mantissa &= 0x7fffff;
     }
   } else {
-    product = xx.i ^ yy.i;
-    product = product & 0x80000000;
-    if (!(xx.i & 0x7fffffff)) {
-      if (expo_y != 254) {
-        xx.i = (unsigned int)product;
-        return xx.f;
-      }
-      expo_y = yy.i << 1;
-      if (expo_y == 0xFF000000) {
-        xx.i = expo_y | 0x00C00000;
-      } else {
-        xx.i = yy.i | 0x00400000;
-      }
-      return xx.f;
-    }
-    if (!(yy.i & 0x7fffffff)) {
-      if (expo_x != 254) {
-        xx.i = (unsigned int)product;
-        return xx.f;
-      }
-      expo_x = xx.i << 1;
-      if (expo_x == 0xFF000000) {
-        xx.i = expo_x | 0x00C00000;
-      } else {
-        xx.i = xx.i | 0x00400000;
-      }
-      return xx.f;
-    }
-    if ((expo_y != 254) && (expo_x != 254)) {
-      expo_y++;
-      expo_x++;
-      if (expo_x == 0) {
-        expo_y |= xx.i & 0x80000000;
-
-
-
-
-        xx.i = xx.i << 8;
-        while (!(xx.i & 0x80000000)) {
-          xx.i <<= 1;
-          expo_x--;
-        }
-        xx.i = (xx.i >> 8) | (expo_y & 0x80000000);
-        expo_y &= ~0x80000000;
-        expo_y--;
-        goto multiply;
-      }
-      if (expo_y == 0) {
-        expo_x |= yy.i & 0x80000000;
-        yy.i = yy.i << 8;
-        while (!(yy.i & 0x80000000)) {
-          yy.i <<= 1;
-          expo_y--;
-        }
-        yy.i = (yy.i >> 8) | (expo_x & 0x80000000);
-        expo_x &= ~0x80000000;
-        expo_x--;
-        goto multiply;
-      }
-    }
-    expo_x = xx.i << 1;
-    expo_y = yy.i << 1;
-
-    if (expo_x > 0xFF000000) {
-
-      xx.i = xx.i | 0x00400000;
-      return xx.f;
-    }
-
-    if (expo_y > 0xFF000000) {
-
-      xx.i = yy.i | 0x00400000;
-      return xx.f;
-    }
-    xx.i = (unsigned int)product | 0x7f800000;
-    return xx.f;
-  }
-}
-
-static float __internal_fadd_kernel(float a, float b, int rndNearest)
-{
-  volatile union __cudart_FloatUintCvt xx, yy;
-  unsigned int expo_x;
-  unsigned int expo_y;
-  unsigned int temp;
-
-  xx.f = a;
-  yy.f = b;
-
-
-  expo_y = yy.i << 1;
-  if (expo_y > (xx.i << 1)) {
-    expo_y = xx.i;
-    xx.i = yy.i;
-    yy.i = expo_y;
+    exponent += 0x70;
   }
 
-  temp = 0xff;
-  expo_x = temp & (xx.i >> 23);
-  expo_x = expo_x - 1;
-  expo_y = temp & (yy.i >> 23);
-  expo_y = expo_y - 1;
-
-  if ((expo_x <= 0xFD) &&
-      (expo_y <= 0xFD)) {
-
-add:
-    expo_y = expo_x - expo_y;
-    if (expo_y > 25) {
-      expo_y = 31;
-    }
-    temp = xx.i ^ yy.i;
-    xx.i = xx.i & ~0x7f000000;
-    xx.i = xx.i | 0x00800000;
-    yy.i = yy.i & ~0xff000000;
-    yy.i = yy.i | 0x00800000;
-
-    if ((int)temp < 0) {
-
-      temp = 32 - expo_y;
-      temp = (expo_y) ? (yy.i << temp) : 0;
-      temp = (unsigned int)(-((int)temp));
-      xx.i = xx.i - (yy.i >> expo_y) - (temp ? 1 : 0);
-      if (xx.i & 0x00800000) {
-        if (expo_x <= 0xFD) {
-          xx.i = xx.i & ~0x00800000;
-          xx.i = (xx.i + (expo_x << 23)) + 0x00800000;
-          if (temp < 0x80000000) return xx.f;
-          xx.i += (((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31))
-                   && rndNearest);
-          return xx.f;
-        }
-      } else {
-        if ((temp | (xx.i << 1)) == 0) {
-
-          xx.i = 0;
-          return xx.f;
-        }
-
-        yy.i = xx.i & 0x80000000;
-        do {
-          xx.i = (xx.i << 1) | (temp >> 31);
-          temp <<= 1;
-          expo_x--;
-        } while (!(xx.i & 0x00800000));
-        xx.i = xx.i | yy.i;
-      }
-    } else {
-
-      temp = 32 - expo_y;
-      temp = (expo_y) ? (yy.i << temp) : 0;
-      xx.i = xx.i + (yy.i >> expo_y);
-      if (!(xx.i & 0x01000000)) {
-        if (expo_x <= 0xFD) {
-          expo_y = xx.i & 1;
-          xx.i = xx.i + (expo_x << 23);
-          if (temp < 0x80000000) return xx.f;
-          xx.i += (((temp == 0x80000000) ? expo_y : (temp >> 31))
-                   && rndNearest);
-          return xx.f;
-        }
-      } else {
-
-        temp = (xx.i << 31) | (temp >> 1);
-
-        xx.i = ((xx.i & 0x80000000) | (xx.i >> 1)) & ~0x40000000;
-        expo_x++;
-      }
-    }
-    if (expo_x <= 0xFD) {
-      expo_y = xx.i & 1;
-      xx.i += (((temp == 0x80000000) ? expo_y : (temp >> 31))
-               && rndNearest);
-      xx.i = xx.i + (expo_x << 23);
-      return xx.f;
-    }
-    if ((int)expo_x >= 254) {
-
-        xx.i = ((xx.i & 0x80000000) | 0x7f800000) - (!rndNearest);
-        return xx.f;
-    }
-
-    expo_y = expo_x + 32;
-    yy.i = xx.i & 0x80000000;
-    xx.i = xx.i & ~0xff000000;
-
-    expo_x = (unsigned int)(-((int)expo_x));
-    temp = xx.i << expo_y | ((temp) ? 1 : 0);
-    xx.i = yy.i | (xx.i >> expo_x);
-    xx.i += (((temp == 0x80000000) ? (xx.i & 1) : (temp >> 31))
-             && rndNearest);
-    return xx.f;
-  } else {
-
-    if (!(yy.i << 1)) {
-      if (xx.i == 0x80000000) {
-        xx.i = yy.i;
-      }
-      if ((xx.i << 1) > 0xff000000) {
-        xx.i |= 0x00400000;
-      }
-      return xx.f;
-    }
-    if ((expo_y != 254) && (expo_x != 254)) {
-
-      if (expo_x == (unsigned int) -1) {
-        temp = xx.i & 0x80000000;
-        xx.i = xx.i << 8;
-        while (!(xx.i & 0x80000000)) {
-          xx.i <<= 1;
-          expo_x--;
-        }
-        expo_x++;
-        xx.i = (xx.i >> 8) | temp;
-      }
-      if (expo_y == (unsigned int) -1) {
-        temp = yy.i & 0x80000000;
-        yy.i = yy.i << 8;
-        while (!(yy.i & 0x80000000)) {
-          yy.i <<= 1;
-          expo_y--;
-        }
-        expo_y++;
-        yy.i = (yy.i >> 8) | temp;
-      }
-      goto add;
-    }
-    expo_x = xx.i << 1;
-    expo_y = yy.i << 1;
-
-    if (expo_x > 0xff000000) {
-
-      xx.i = xx.i | 0x00400000;
-      return xx.f;
-    }
-
-    if (expo_y > 0xff000000) {
-
-      xx.i = yy.i | 0x00400000;
-      return xx.f;
-    }
-    if ((expo_x == 0xff000000) && (expo_y == 0xff000000)) {
-
-
-
-
-      expo_x = xx.i ^ yy.i;
-      xx.i = xx.i | ((expo_x) ? 0xffc00000 : 0);
-      return xx.f;
-    }
-
-    if (expo_y == 0xff000000) {
-      xx.i = yy.i;
-    }
-    return xx.f;
-  }
+  return __int_as_float ((sign << 31) | (exponent << 23) | mantissa);
 }
 
-static float __fadd_rz(float a, float b)
+static __attribute__((__unused__)) float __fadd_rz(float a, float b)
 {
-  return __internal_fadd_kernel(a, b, 0);
+  return __internal_fadd_kernel(a, b, cudaRoundZero);
 }
 
-static float __fmul_rz(float a, float b)
+static __attribute__((__unused__)) float __fmul_rz(float a, float b)
 {
-  return __internal_fmul_kernel(a, b, 0);
+  return __internal_fmul_kernel(a, b, cudaRoundZero);
 }
 
-static float __fadd_rn(float a, float b)
+static __attribute__((__unused__)) float __fadd_rn(float a, float b)
 {
-  return __internal_fadd_kernel(a, b, 1);
+  return __internal_fadd_kernel(a, b, cudaRoundNearest);
 }
 
-static float __fmul_rn(float a, float b)
+static __attribute__((__unused__)) float __fmul_rn(float a, float b)
 {
-  return __internal_fmul_kernel(a, b, 1);
+  return __internal_fmul_kernel(a, b, cudaRoundNearest);
 }
 
-static void __brkpt(int c)
+static __attribute__((__unused__)) void __brkpt(int c)
 {
 
 }
-# 4518 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 4318 "/usr/local/cuda/bin/../include/device_functions.h" 3
 extern int __cudaSynchronizeThreads(void**, void*);
 
 
 
-static inline __attribute__((always_inline)) void __syncthreads(void)
+static __attribute__((__unused__)) inline __attribute__((always_inline)) void __syncthreads(void)
 {
   volatile int _ = 0;
   L: if (__cudaSynchronizeThreads((void**)&&L, (void*)&_)) goto L;
 }
-# 4537 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static void __prof_trigger(int a)
+# 4337 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) void __prof_trigger(int a)
 {
 }
 
-static void __threadfence(void)
+static __attribute__((__unused__)) void __threadfence(void)
 {
+  __syncthreads();
 }
 
-static void __threadfence_block(void)
+static __attribute__((__unused__)) void __threadfence_block(void)
 {
+  __syncthreads();
 }
 
 
 
-static void __trap(void)
+static __attribute__((__unused__)) void __trap(void)
 {
   __builtin_trap();
 }
-# 4573 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static float __fdividef(float a, float b)
+# 4375 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) float __fdividef(float a, float b)
 {
 
 
 
+  volatile float aa = a;
+  volatile float bb = b;
 
-
-
-  if (__cuda_fabsf(b) > 8.507059173e37f) {
-    if (__cuda_fabsf(a) <= 3.402823466e38f) {
-      return ((a / b) / 3.402823466e38f) / 3.402823466e38f;
+  if (__cuda_fabsf(bb) > 8.507059173e37f) {
+    if (__cuda_fabsf(aa) <= 3.402823466e38f) {
+      return ((aa / bb) / 3.402823466e38f) / 3.402823466e38f;
     } else {
-      return __int_as_float(0xffc00000);
+      bb = 1.0f / bb;
+      bb = bb / 3.402823466e38f;
+      return aa * bb;
     }
   } else {
-    return a / b;
+    return aa / bb;
   }
 
 }
 
-static float __sinf(float a)
+
+static __attribute__((__unused__)) float __sinf(float a)
 {
+
+  if ((__float_as_int(a) << 1) == 0xff000000) {
+    return __fadd_rn (a, -a);
+  }
+
   return sinf(a);
 }
 
-static float __cosf(float a)
+static __attribute__((__unused__)) float __cosf(float a)
 {
+
+  if ((__float_as_int(a) << 1) == 0xff000000) {
+    return __fadd_rn (a, -a);
+  }
+
   return cosf(a);
 }
 
-static float __log2f(float a)
+static __attribute__((__unused__)) float __log2f(float a)
 {
   return log2f(a);
 }
@@ -14876,16 +14821,12 @@ static float __log2f(float a)
 
 
 
-static float __internal_accurate_fdividef(float a, float b)
+static __attribute__((__unused__)) float __internal_accurate_fdividef(float a, float b)
 {
-  if (__cuda_fabsf(b) > 8.507059173e37f) {
-    a *= .25f;
-    b *= .25f;
-  }
-  return __fdividef(a, b);
+  return a / b;
 }
 
-static float __tanf(float a)
+static __attribute__((__unused__)) float __tanf(float a)
 {
 
 
@@ -14894,7 +14835,7 @@ static float __tanf(float a)
 
 }
 
-static void __sincosf(float a, float *sptr, float *cptr)
+static __attribute__((__unused__)) void __sincosf(float a, float *sptr, float *cptr)
 {
 
 
@@ -14904,7 +14845,7 @@ static void __sincosf(float a, float *sptr, float *cptr)
 
 }
 
-static float __expf(float a)
+static __attribute__((__unused__)) float __expf(float a)
 {
 
 
@@ -14913,7 +14854,7 @@ static float __expf(float a)
 
 }
 
-static float __exp10f(float a)
+static __attribute__((__unused__)) float __exp10f(float a)
 {
 
 
@@ -14922,7 +14863,7 @@ static float __exp10f(float a)
 
 }
 
-static float __log10f(float a)
+static __attribute__((__unused__)) float __log10f(float a)
 {
 
 
@@ -14931,7 +14872,7 @@ static float __log10f(float a)
 
 }
 
-static float __logf(float a)
+static __attribute__((__unused__)) float __logf(float a)
 {
 
 
@@ -14940,7 +14881,7 @@ static float __logf(float a)
 
 }
 
-static float __powf(float a, float b)
+static __attribute__((__unused__)) float __powf(float a, float b)
 {
 
 
@@ -14949,7 +14890,7 @@ static float __powf(float a, float b)
 
 }
 
-static float fdividef(float a, float b)
+static __attribute__((__unused__)) float fdividef(float a, float b)
 {
 
 
@@ -14960,12 +14901,12 @@ static float fdividef(float a, float b)
 
 }
 
-static int __clz(int a)
+static __attribute__((__unused__)) int __clz(int a)
 {
   return (a)?(158-(__float_as_int(__uint2float_rz((unsigned int)a))>>23)):32;
 }
 
-static int __clzll(long long int a)
+static __attribute__((__unused__)) int __clzll(long long int a)
 {
   int ahi = ((int)((unsigned long long)a >> 32));
   int alo = ((int)((unsigned long long)a & 0xffffffffULL));
@@ -14980,7 +14921,7 @@ static int __clzll(long long int a)
   return res;
 }
 
-static int __popc(unsigned int a)
+static __attribute__((__unused__)) int __popc(unsigned int a)
 {
   a = a - ((a >> 1) & 0x55555555);
   a = (a & 0x33333333) + ((a >> 2) & 0x33333333);
@@ -14989,7 +14930,7 @@ static int __popc(unsigned int a)
   return a;
 }
 
-static int __popcll(unsigned long long int a)
+static __attribute__((__unused__)) int __popcll(unsigned long long int a)
 {
   unsigned int ahi = ((unsigned int)(a >> 32));
   unsigned int alo = ((unsigned int)(a & 0xffffffffULL));
@@ -15003,7 +14944,7 @@ static int __popcll(unsigned long long int a)
   return alo;
 }
 
-static unsigned int __brev(unsigned int a)
+static __attribute__((__unused__)) unsigned int __brev(unsigned int a)
 {
   a = ((a >> 1) & 0x55555555) + ((a & 0x55555555) << 1);
   a = ((a >> 2) & 0x33333333) + ((a & 0x33333333) << 2);
@@ -15013,7 +14954,7 @@ static unsigned int __brev(unsigned int a)
   return a;
 }
 
-static unsigned long long int __brevll(unsigned long long int a)
+static __attribute__((__unused__)) unsigned long long int __brevll(unsigned long long int a)
 {
   unsigned int hi = (unsigned int)(a >> 32);
   unsigned int lo = (unsigned int)(a & 0xffffffffULL);
@@ -15023,48 +14964,48 @@ static unsigned long long int __brevll(unsigned long long int a)
   return ((unsigned long long int)t << 32) + (unsigned long long int)lo;
 }
 
-static int __ffs(int a)
+static __attribute__((__unused__)) int __ffs(int a)
 {
   return 32 - __clz (a & -a);
 }
 
-static int __ffsll(long long int a)
+static __attribute__((__unused__)) int __ffsll(long long int a)
 {
   return 64 - __clzll (a & -a);
 }
-# 4812 "/usr/local/cuda/bin/../include/device_functions.h" 3
-static double fdivide(double a, double b)
+# 4623 "/usr/local/cuda/bin/../include/device_functions.h" 3
+static __attribute__((__unused__)) double fdivide(double a, double b)
 {
   return a / b;
 }
 
 
 
-static int __internal_double2int(double a, enum cudaRoundMode rndMode);
-static unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode);
-static long long int __internal_double2ll(double a, enum cudaRoundMode rndMode);
-static unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) int __internal_double2int(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) long long int __internal_double2ll(double a, enum cudaRoundMode rndMode);
+static __attribute__((__unused__)) unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode);
 
-static int __double2int_rz(double a)
+static __attribute__((__unused__)) int __double2int_rz(double a)
 {
   return __internal_double2int(a, cudaRoundZero);
 }
 
-static unsigned int __double2uint_rz(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_rz(double a)
 {
   return __internal_double2uint(a, cudaRoundZero);
 }
 
-static long long int __double2ll_rz(double a)
+static __attribute__((__unused__)) long long int __double2ll_rz(double a)
 {
   return __internal_double2ll(a, cudaRoundZero);
 }
 
-static unsigned long long int __double2ull_rz(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double a)
 {
   return __internal_double2ull(a, cudaRoundZero);
 }
-# 4856 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 4667 "/usr/local/cuda/bin/../include/device_functions.h" 3
 # 1 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
 # 257 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 3
 extern void __cudaMutexOperation(int lock);
@@ -15074,7 +15015,7 @@ extern void __cudaMutexOperation(int lock);
 
 
 
-static int __iAtomicAdd(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicAdd(int *address, int val)
 {
   int old;
 
@@ -15085,7 +15026,7 @@ static int __iAtomicAdd(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15097,7 +15038,7 @@ static unsigned int __uAtomicAdd(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicExch(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicExch(int *address, int val)
 {
   int old;
 
@@ -15109,7 +15050,7 @@ static int __iAtomicExch(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15121,7 +15062,7 @@ static unsigned int __uAtomicExch(unsigned int *address, unsigned int val)
   return old;
 }
 
-static float __fAtomicExch(float *address, float val)
+static __attribute__((__unused__)) float __fAtomicExch(float *address, float val)
 {
   float old;
 
@@ -15133,7 +15074,7 @@ static float __fAtomicExch(float *address, float val)
   return old;
 }
 
-static int __iAtomicMin(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicMin(int *address, int val)
 {
   int old;
 
@@ -15145,7 +15086,7 @@ static int __iAtomicMin(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15157,7 +15098,7 @@ static unsigned int __uAtomicMin(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicMax(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicMax(int *address, int val)
 {
   int old;
 
@@ -15169,7 +15110,7 @@ static int __iAtomicMax(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15181,7 +15122,7 @@ static unsigned int __uAtomicMax(unsigned int *address, unsigned int val)
   return old;
 }
 
-static unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15193,7 +15134,7 @@ static unsigned int __uAtomicInc(unsigned int *address, unsigned int val)
   return old;
 }
 
-static unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15205,7 +15146,7 @@ static unsigned int __uAtomicDec(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicAnd(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicAnd(int *address, int val)
 {
   int old;
 
@@ -15217,7 +15158,7 @@ static int __iAtomicAnd(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15229,7 +15170,7 @@ static unsigned int __uAtomicAnd(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicOr(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicOr(int *address, int val)
 {
   int old;
 
@@ -15241,7 +15182,7 @@ static int __iAtomicOr(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15253,7 +15194,7 @@ static unsigned int __uAtomicOr(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicXor(int *address, int val)
+static __attribute__((__unused__)) int __iAtomicXor(int *address, int val)
 {
   int old;
 
@@ -15265,7 +15206,7 @@ static int __iAtomicXor(int *address, int val)
   return old;
 }
 
-static unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
 {
   unsigned int old;
 
@@ -15277,7 +15218,7 @@ static unsigned int __uAtomicXor(unsigned int *address, unsigned int val)
   return old;
 }
 
-static int __iAtomicCAS(int *address, int compare, int val)
+static __attribute__((__unused__)) int __iAtomicCAS(int *address, int compare, int val)
 {
   int old;
 
@@ -15289,7 +15230,7 @@ static int __iAtomicCAS(int *address, int compare, int val)
   return old;
 }
 
-static unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, unsigned int val)
+static __attribute__((__unused__)) unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, unsigned int val)
 {
   unsigned int old;
 
@@ -15300,7 +15241,7 @@ static unsigned int __uAtomicCAS(unsigned int *address, unsigned int compare, un
 
   return old;
 }
-# 4857 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 4668 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
 # 118 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 3
 extern void __cudaMutexOperation(int lock);
@@ -15310,7 +15251,7 @@ extern void __cudaMutexOperation(int lock);
 
 
 
-static unsigned long long int __ullAtomicAdd(unsigned long long int *address, unsigned long long int val)
+static __attribute__((__unused__)) unsigned long long int __ullAtomicAdd(unsigned long long int *address, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -15321,7 +15262,7 @@ static unsigned long long int __ullAtomicAdd(unsigned long long int *address, un
   return old;
 }
 
-static unsigned long long int __ullAtomicExch(unsigned long long int *address, unsigned long long int val)
+static __attribute__((__unused__)) unsigned long long int __ullAtomicExch(unsigned long long int *address, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -15332,7 +15273,7 @@ static unsigned long long int __ullAtomicExch(unsigned long long int *address, u
   return old;
 }
 
-static unsigned long long int __ullAtomicCAS(unsigned long long int *address, unsigned long long int compare, unsigned long long int val)
+static __attribute__((__unused__)) unsigned long long int __ullAtomicCAS(unsigned long long int *address, unsigned long long int compare, unsigned long long int val)
 {
   unsigned long long int old;
 
@@ -15347,33 +15288,33 @@ static unsigned long long int __ullAtomicCAS(unsigned long long int *address, un
 
 
 
-static int __any(int cond)
+static __attribute__((__unused__)) int __any(int cond)
 {
   return cond;
 }
 
-static int __all(int cond)
+static __attribute__((__unused__)) int __all(int cond)
 {
   return cond;
 }
-# 4858 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 4669 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 1 3
 # 267 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
-static double __longlong_as_double(long long int a)
+static __attribute__((__unused__)) double __longlong_as_double(long long int a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
   u.i = a;
   return u.d;
 }
 
-static long long int __double_as_longlong(double a)
+static __attribute__((__unused__)) long long int __double_as_longlong(double a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
   u.d = a;
   return u.i;
 }
 
-static float __internal_double2float_kernel(double a)
+static __attribute__((__unused__)) float __internal_double2float_kernel(double a)
 {
   volatile union __cudart_DoubleUlonglongCvt xx;
   volatile union __cudart_FloatUintCvt res;
@@ -15385,7 +15326,9 @@ static float __internal_double2float_kernel(double a)
   if ((xx.i & 0x7ff0000000000000ULL) == 0x7ff0000000000000ULL) {
     if ((xx.i & 0x7fffffffffffffffULL) > 0x7ff0000000000000ULL) {
 
-      res.i = 0x7f8fffff;
+      res.i = ((unsigned int)((xx.i >> 32) & 0x80000000) |
+               (255U << 23) | 0x00400000 |
+               (unsigned int)((xx.i >> (53 - 24)) & 0x007fffff));
     } else {
 
       res.i |= 0x7f800000;
@@ -15405,7 +15348,7 @@ static float __internal_double2float_kernel(double a)
       xx.i = 0;
     } else {
       xx.i |= 0x0010000000000000ULL;
-      xx.i >>= 127 + shift;
+      xx.i >>= -126 - shift;
     }
   } else {
     res.i |= (unsigned int) (127 + shift) << 23;
@@ -15415,7 +15358,7 @@ static float __internal_double2float_kernel(double a)
   return res.f;
 }
 
-static double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt res;
   int shift;
@@ -15440,7 +15383,7 @@ static double __internal_ll2double_kernel(long long int a, enum cudaRoundMode rn
   return res.d;
 }
 
-static double __internal_ull2double_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) double __internal_ull2double_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt res;
   int shift;
@@ -15460,7 +15403,7 @@ static double __internal_ull2double_kernel(unsigned long long int a, enum cudaRo
   return res.d;
 }
 
-static long long int __internal_double2ll_kernel(double a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_double2ll_kernel(double a, long long int max, long long int min, long long int nan, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt xx, res;
   unsigned long long int t = 0;
@@ -15493,7 +15436,7 @@ static long long int __internal_double2ll_kernel(double a, long long int max, lo
   return res.i;
 }
 
-static unsigned long long int __internal_double2ull_kernel(double a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_double2ull_kernel(double a, unsigned long long int max, unsigned long long int nan, enum cudaRoundMode rndMode)
 {
   volatile union __cudart_DoubleUlonglongCvt xx, res;
   unsigned long long int t = 0;
@@ -15521,7 +15464,7 @@ static unsigned long long int __internal_double2ull_kernel(double a, unsigned lo
   return res.i;
 }
 
-static int __double2hiint(double a)
+static __attribute__((__unused__)) int __double2hiint(double a)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -15529,7 +15472,7 @@ static int __double2hiint(double a)
   return cvt.i[1];
 }
 
-static int __double2loint(double a)
+static __attribute__((__unused__)) int __double2loint(double a)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -15537,7 +15480,7 @@ static int __double2loint(double a)
   return cvt.i[0];
 }
 
-static double __hiloint2double(int a, int b)
+static __attribute__((__unused__)) double __hiloint2double(int a, int b)
 {
   volatile union __cudart_DoubleInthiloCvt cvt;
 
@@ -15546,142 +15489,142 @@ static double __hiloint2double(int a, int b)
   return cvt.d;
 }
 
-static float __double2float_rn(double a)
+static __attribute__((__unused__)) float __double2float_rn(double a)
 {
   return (float)a;
 }
 
-static float __double2float_rz(double a)
+static __attribute__((__unused__)) float __double2float_rz(double a)
 {
   return __internal_double2float_kernel(a);
 }
 
-static int __internal_double2int(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) int __internal_double2int(double a, enum cudaRoundMode rndMode)
 {
   return (int)__internal_double2ll_kernel(a, 2147483647LL, -2147483648LL, -2147483648LL, rndMode);
 }
 
-static int __double2int_rn(double a)
+static __attribute__((__unused__)) int __double2int_rn(double a)
 {
   return __internal_double2int(a, cudaRoundNearest);
 }
 
-static int __double2int_ru(double a)
+static __attribute__((__unused__)) int __double2int_ru(double a)
 {
   return __internal_double2int(a, cudaRoundPosInf);
 }
 
-static int __double2int_rd(double a)
+static __attribute__((__unused__)) int __double2int_rd(double a)
 {
   return __internal_double2int(a, cudaRoundMinInf);
 }
 
-static unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned int __internal_double2uint(double a, enum cudaRoundMode rndMode)
 {
   return (unsigned int)__internal_double2ull_kernel(a, 4294967295ULL, 2147483648ULL, rndMode);
 }
 
-static unsigned int __double2uint_rn(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_rn(double a)
 {
   return __internal_double2uint(a, cudaRoundNearest);
 }
 
-static unsigned int __double2uint_ru(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_ru(double a)
 {
   return __internal_double2uint(a, cudaRoundPosInf);
 }
 
-static unsigned int __double2uint_rd(double a)
+static __attribute__((__unused__)) unsigned int __double2uint_rd(double a)
 {
   return __internal_double2uint(a, cudaRoundMinInf);
 }
 
-static long long int __internal_double2ll(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) long long int __internal_double2ll(double a, enum cudaRoundMode rndMode)
 {
   return __internal_double2ll_kernel(a, 9223372036854775807LL, -9223372036854775807LL -1LL, -9223372036854775807LL -1LL, rndMode);
 }
 
-static long long int __double2ll_rn(double a)
+static __attribute__((__unused__)) long long int __double2ll_rn(double a)
 {
   return __internal_double2ll(a, cudaRoundNearest);
 }
 
-static long long int __double2ll_ru(double a)
+static __attribute__((__unused__)) long long int __double2ll_ru(double a)
 {
   return __internal_double2ll(a, cudaRoundPosInf);
 }
 
-static long long int __double2ll_rd(double a)
+static __attribute__((__unused__)) long long int __double2ll_rd(double a)
 {
   return __internal_double2ll(a, cudaRoundMinInf);
 }
 
-static unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode)
+static __attribute__((__unused__)) unsigned long long int __internal_double2ull(double a, enum cudaRoundMode rndMode)
 {
   return __internal_double2ull_kernel(a, 18446744073709551615ULL, 9223372036854775808ULL, rndMode);
 }
 
-static unsigned long long int __double2ull_rn(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_rn(double a)
 {
   return __internal_double2ull(a, cudaRoundNearest);
 }
 
-static unsigned long long int __double2ull_ru(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_ru(double a)
 {
   return __internal_double2ull(a, cudaRoundPosInf);
 }
 
-static unsigned long long int __double2ull_rd(double a)
+static __attribute__((__unused__)) unsigned long long int __double2ull_rd(double a)
 {
   return __internal_double2ull(a, cudaRoundMinInf);
 }
 
-static double __int2double_rn(int a)
+static __attribute__((__unused__)) double __int2double_rn(int a)
 {
   return (double)a;
 }
 
-static double __uint2double_rn(unsigned int a)
+static __attribute__((__unused__)) double __uint2double_rn(unsigned int a)
 {
   return (double)a;
 }
 
-static double __ll2double_rn(long long int a)
+static __attribute__((__unused__)) double __ll2double_rn(long long int a)
 {
   return (double)a;
 }
 
-static double __ll2double_rz(long long int a)
+static __attribute__((__unused__)) double __ll2double_rz(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundZero);
 }
 
-static double __ll2double_rd(long long int a)
+static __attribute__((__unused__)) double __ll2double_rd(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundMinInf);
 }
 
-static double __ll2double_ru(long long int a)
+static __attribute__((__unused__)) double __ll2double_ru(long long int a)
 {
   return __internal_ll2double_kernel(a, cudaRoundPosInf);
 }
 
-static double __ull2double_rn(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_rn(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundNearest);
 }
 
-static double __ull2double_rz(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_rz(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundZero);
 }
 
-static double __ull2double_rd(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_rd(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundMinInf);
 }
 
-static double __ull2double_ru(unsigned long long int a)
+static __attribute__((__unused__)) double __ull2double_ru(unsigned long long int a)
 {
   return __internal_ull2double_kernel(a, cudaRoundPosInf);
 }
@@ -15690,7 +15633,9 @@ static double __ull2double_ru(unsigned long long int a)
 
 
 
-static double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
+
+
+static __attribute__((__unused__)) double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
 {
 
 
@@ -15736,7 +15681,7 @@ static double __internal_fma_kernel(double x, double y, double z, enum cudaRound
       xx.hi |= 0x00080000;
       return __hiloint2double(xx.hi, xx.lo);
     }
-# 656 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
+# 660 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
     if (((((xx.hi << 1) | xx.lo) == 0) &&
          (((yy.hi << 1) | (yy.lo != 0)) == 0xffe00000)) ||
         ((((yy.hi << 1) | yy.lo) == 0) &&
@@ -16134,71 +16079,71 @@ static double __internal_fma_kernel(double x, double y, double z, enum cudaRound
   return __hiloint2double(xx.hi, xx.lo);
 }
 
-static double __fma_rn(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_rn(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundNearest);
 }
 
-static double __fma_rd(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_rd(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundMinInf);
 }
 
-static double __fma_ru(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_ru(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundPosInf);
 }
 
-static double __fma_rz(double x, double y, double z)
+static __attribute__((__unused__)) double __fma_rz(double x, double y, double z)
 {
   return __internal_fma_kernel(x, y, z, cudaRoundZero);
 }
 
-static double __dadd_rz(double a, double b)
+static __attribute__((__unused__)) double __dadd_rz(double a, double b)
 {
   return __fma_rz(a, 1.0, b);
 }
 
-static double __dadd_ru(double a, double b)
+static __attribute__((__unused__)) double __dadd_ru(double a, double b)
 {
   return __fma_ru(a, 1.0, b);
 }
 
-static double __dadd_rd(double a, double b)
+static __attribute__((__unused__)) double __dadd_rd(double a, double b)
 {
   return __fma_rd(a, 1.0, b);
 }
 
-static double __dmul_rz(double a, double b)
+static __attribute__((__unused__)) double __dmul_rz(double a, double b)
 {
   return __fma_rz(a, b, __longlong_as_double(0x8000000000000000ULL));
 }
 
-static double __dmul_ru(double a, double b)
+static __attribute__((__unused__)) double __dmul_ru(double a, double b)
 {
   return __fma_ru(a, b, __longlong_as_double(0x8000000000000000ULL));
 }
 
-static double __dmul_rd(double a, double b)
+static __attribute__((__unused__)) double __dmul_rd(double a, double b)
 {
   return __fma_rd(a, b, 0.0);
 }
 
-static double __dadd_rn(double a, double b)
+static __attribute__((__unused__)) double __dadd_rn(double a, double b)
 {
   return __fma_rn(a, 1.0, b);
 }
 
-static double __dmul_rn(double a, double b)
+static __attribute__((__unused__)) double __dmul_rn(double a, double b)
 {
   return __fma_rn(a, b, __longlong_as_double(0x8000000000000000ULL));
 }
-# 4859 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 4670 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 1 3
 # 1910 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 3
 extern void __cudaTextureFetch(const void *tex, void *index, int integer, void *val);
 
-static int4 __itexfetchi(const void *tex, int4 index)
+static __attribute__((__unused__)) int4 __itexfetchi(const void *tex, int4 index)
 {
   int4 val;
 
@@ -16207,7 +16152,7 @@ static int4 __itexfetchi(const void *tex, int4 index)
   return val;
 }
 
-static uint4 __utexfetchi(const void *tex, int4 index)
+static __attribute__((__unused__)) uint4 __utexfetchi(const void *tex, int4 index)
 {
   uint4 val;
 
@@ -16216,7 +16161,7 @@ static uint4 __utexfetchi(const void *tex, int4 index)
   return val;
 }
 
-static float4 __ftexfetchi(const void *tex, int4 index)
+static __attribute__((__unused__)) float4 __ftexfetchi(const void *tex, int4 index)
 {
   float4 val;
 
@@ -16225,7 +16170,7 @@ static float4 __ftexfetchi(const void *tex, int4 index)
   return val;
 }
 
-static int4 __itexfetch(const void *tex, float4 index, int dim)
+static __attribute__((__unused__)) int4 __itexfetch(const void *tex, float4 index, int dim)
 {
   int4 val;
 
@@ -16234,7 +16179,7 @@ static int4 __itexfetch(const void *tex, float4 index, int dim)
   return val;
 }
 
-static uint4 __utexfetch(const void *tex, float4 index, int dim)
+static __attribute__((__unused__)) uint4 __utexfetch(const void *tex, float4 index, int dim)
 {
   uint4 val;
 
@@ -16243,7 +16188,7 @@ static uint4 __utexfetch(const void *tex, float4 index, int dim)
   return val;
 }
 
-static float4 __ftexfetch(const void *tex, float4 index, int dim)
+static __attribute__((__unused__)) float4 __ftexfetch(const void *tex, float4 index, int dim)
 {
   float4 val;
 
@@ -16251,11 +16196,11 @@ static float4 __ftexfetch(const void *tex, float4 index, int dim)
 
   return val;
 }
-# 4860 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
-# 945 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 4671 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 997 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 
 
-static int __cuda___signbitf(float a)
+static __attribute__((__unused__)) int __cuda___signbitf(float a)
 {
   return (int)((unsigned int)__float_as_int(a) >> 31);
 }
@@ -16263,18 +16208,30 @@ static int __cuda___signbitf(float a)
 
 
 
-static float __cuda_copysignf(float a, float b)
+static __attribute__((__unused__)) float __cuda_copysignf(float a, float b)
 {
   return __int_as_float((__float_as_int(b) & 0x80000000) |
                         (__float_as_int(a) & ~0x80000000));
 }
-# 969 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1021 "/usr/local/cuda/bin/../include/math_functions.h" 3
+
+
 extern __attribute__((__weak__)) int min(int a, int b); int min(int a, int b)
 {
   return a < b ? a : b;
 }
 
 extern __attribute__((__weak__)) unsigned int umin(unsigned int a, unsigned int b); unsigned int umin(unsigned int a, unsigned int b)
+{
+  return a < b ? a : b;
+}
+
+extern __attribute__((__weak__)) long long int llmin(long long int a, long long int b); long long int llmin(long long int a, long long int b)
+{
+  return a < b ? a : b;
+}
+
+extern __attribute__((__weak__)) unsigned long long int ullmin(unsigned long long int a, unsigned long long int b); unsigned long long int ullmin(unsigned long long int a, unsigned long long int b)
 {
   return a < b ? a : b;
 }
@@ -16288,8 +16245,20 @@ extern __attribute__((__weak__)) unsigned int umax(unsigned int a, unsigned int 
 {
   return a > b ? a : b;
 }
-# 1055 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static float __internal_nearbyintf(float a)
+
+extern __attribute__((__weak__)) long long int llmax(long long int a, long long int b); long long int llmax(long long int a, long long int b)
+{
+  return a > b ? a : b;
+}
+
+extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long long int a, unsigned long long int b); unsigned long long int ullmax(unsigned long long int a, unsigned long long int b)
+{
+  return a > b ? a : b;
+}
+
+
+# 1135 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) float __internal_nearbyintf(float a)
 {
   float fa = fabsf(a);
 
@@ -16303,7 +16272,7 @@ static float __internal_nearbyintf(float a)
   }
 }
 
-static float __internal_fminf(float a, float b)
+static __attribute__((__unused__)) float __internal_fminf(float a, float b)
 {
   volatile union {
     float f;
@@ -16324,7 +16293,7 @@ static float __internal_fminf(float a, float b)
   return a < b ? a : b;
 }
 
-static float __internal_fmaxf(float a, float b)
+static __attribute__((__unused__)) float __internal_fmaxf(float a, float b)
 {
   volatile union {
     float f;
@@ -16345,58 +16314,78 @@ static float __internal_fmaxf(float a, float b)
   }
   return a > b ? a : b;
 }
-# 1151 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static long int __cuda_labs(long int a)
+# 1235 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) long int __cuda_labs(long int a)
 {
   return labs(a);
 }
 
-static float __cuda_ceilf(float a)
+static __attribute__((__unused__)) float __cuda_ceilf(float a)
 {
   return ceilf(a);
 }
 
-static float __cuda_floorf(float a)
+static __attribute__((__unused__)) float __cuda_floorf(float a)
 {
   return floorf(a);
 }
 
-static float __cuda_sqrtf(float a)
+static __attribute__((__unused__)) float __cuda_sqrtf(float a)
 {
   return sqrtf(a);
 }
 
-static float __cuda_rsqrtf(float a)
+static __attribute__((__unused__)) float __cuda_rsqrtf(float a)
 {
-  return 1.0f / sqrtf(a);
+  return rsqrtf(a);
 }
 
-static float __cuda_truncf(float a)
+static __attribute__((__unused__)) float __cuda_truncf(float a)
 {
   return truncf(a);
 }
 
-static int __cuda_max(int a, int b)
+static __attribute__((__unused__)) int __cuda_max(int a, int b)
 {
   return max(a, b);
 }
 
-static int __cuda_min(int a, int b)
+static __attribute__((__unused__)) int __cuda_min(int a, int b)
 {
   return min(a, b);
 }
 
-static unsigned int __cuda_umax(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __cuda_umax(unsigned int a, unsigned int b)
 {
   return umax(a, b);
 }
 
-static unsigned int __cuda_umin(unsigned int a, unsigned int b)
+static __attribute__((__unused__)) unsigned int __cuda_umin(unsigned int a, unsigned int b)
 {
   return umin(a, b);
 }
 
-static long long int __cuda_llrintf(float a)
+static __attribute__((__unused__)) long long int __cuda_llmax(long long int a, long long int b)
+{
+  return llmax(a, b);
+}
+
+static __attribute__((__unused__)) long long int __cuda_llmin(long long int a, long long int b)
+{
+  return llmin(a, b);
+}
+
+static __attribute__((__unused__)) unsigned long long int __cuda_ullmax(unsigned long long int a, unsigned long long int b)
+{
+  return ullmax(a, b);
+}
+
+static __attribute__((__unused__)) unsigned long long int __cuda_ullmin(unsigned long long int a, unsigned long long int b)
+{
+  return ullmin(a, b);
+}
+
+static __attribute__((__unused__)) long long int __cuda_llrintf(float a)
 {
 
 
@@ -16405,7 +16394,7 @@ static long long int __cuda_llrintf(float a)
 
 }
 
-static long int __cuda_lrintf(float a)
+static __attribute__((__unused__)) long int __cuda_lrintf(float a)
 {
 
 
@@ -16418,7 +16407,7 @@ static long int __cuda_lrintf(float a)
 
 }
 
-static float __cuda_nearbyintf(float a)
+static __attribute__((__unused__)) float __cuda_nearbyintf(float a)
 {
 
 
@@ -16429,7 +16418,7 @@ static float __cuda_nearbyintf(float a)
 
 }
 
-static float __cuda_fmaxf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fmaxf(float a, float b)
 {
 
 
@@ -16440,7 +16429,7 @@ static float __cuda_fmaxf(float a, float b)
 
 }
 
-static float __cuda_fminf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fminf(float a, float b)
 {
 
 
@@ -16450,23 +16439,28 @@ static float __cuda_fminf(float a, float b)
   return __internal_fminf(a, b);
 
 }
-# 1272 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static int __cuda___finitef(float a)
+
+
+
+
+
+
+static __attribute__((__unused__)) int __cuda___finitef(float a)
 {
   return __cuda_fabsf(a) < __int_as_float(0x7f800000);
 }
-# 1286 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static int __cuda___isinff(float a)
+# 1379 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) int __cuda___isinff(float a)
 {
   return __cuda_fabsf(a) == __int_as_float(0x7f800000);
 }
 
-static int __cuda___isnanf(float a)
+static __attribute__((__unused__)) int __cuda___isnanf(float a)
 {
   return !(__cuda_fabsf(a) <= __int_as_float(0x7f800000));
 }
 
-static float __cuda_nextafterf(float a, float b)
+static __attribute__((__unused__)) float __cuda_nextafterf(float a, float b)
 {
   unsigned int ia;
   unsigned int ib;
@@ -16500,19 +16494,23 @@ static float __cuda_nextafterf(float a, float b)
   return a;
 }
 
-static float __cuda_nanf(const char *tagp)
+static __attribute__((__unused__)) float __cuda_nanf(const char *tagp)
 {
 
   return __int_as_float(0x7fffffff);
 }
 
-static float __internal_fmad(float a, float b, float c)
+static __attribute__((__unused__)) float __internal_fmad(float a, float b, float c)
 {
-  return a * b + c;
+
+  return __fmaf_rn (a, b, c);
+
+
+
 }
 
 
-static float __internal_atanhf_kernel(float a_1, float a_2)
+static __attribute__((__unused__)) float __internal_atanhf_kernel(float a_1, float a_2)
 {
   float a, a2, t;
 
@@ -16530,7 +16528,7 @@ static float __internal_atanhf_kernel(float a_1, float a_2)
 
 
 
-static float __internal_atanf_kernel(float a)
+static __attribute__((__unused__)) float __internal_atanf_kernel(float a)
 {
   float t4, t0, t1;
 
@@ -16549,7 +16547,7 @@ static float __internal_atanf_kernel(float a)
 }
 
 
-static float __internal_tan_kernel(float a)
+static __attribute__((__unused__)) float __internal_tan_kernel(float a)
 {
   float a2, s, t;
 
@@ -16563,34 +16561,45 @@ static float __internal_tan_kernel(float a)
   return t;
 }
 
-static float __internal_accurate_logf(float a)
+static __attribute__((__unused__)) float __internal_accurate_logf(float a)
 {
   float t;
   float z;
   float m;
-  int ia, e;
+  int ia;
   ia = __float_as_int(a);
 
-  if ((ia < 0x00800000) || (ia > 0x7f7fffff)) {
+  if ((a > 0.0f) && (a < __int_as_float(0x7f800000))) {
+    int e = -127;
+
+
+    if ((unsigned)ia < (unsigned)0x00800000) {
+      a = a * 16777216.0f;
+      e -= 24;
+      ia = __float_as_int(a);
+    }
+
+
+    m = __int_as_float((ia & 0x807fffff) | 0x3f800000);
+    e += ((unsigned)ia >> 23);
+    if (m > 1.414213562f) {
+      m = m * 0.5f;
+      e = e + 1;
+    }
+    t = m - 1.0f;
+    z = m + 1.0f;
+    z = __fdividef (t, z);
+    z = -t * z;
+    z = __internal_atanhf_kernel(t, z);
+    z = __internal_fmad ((float)e, 0.693147181f, z);
+    return z;
+  } else {
+
     return __logf(a);
   }
-
-  m = __int_as_float((ia & 0x807fffff) | 0x3f800000);
-  e = ((unsigned)ia >> 23) - 127;
-  if (m > 1.414213562f) {
-    m = m * 0.5f;
-    e = e + 1;
-  }
-  t = m - 1.0f;
-  z = m + 1.0f;
-  z = __fdividef (t, z);
-  z = -t * z;
-  z = __internal_atanhf_kernel(t, z);
-  z = __internal_fmad ((float)e, 0.693147181f, z);
-  return z;
 }
 
-static float2 __internal_log_ep(float a)
+static __attribute__((__unused__)) float2 __internal_log_ep(float a)
 {
   float2 res;
   int expo;
@@ -16666,7 +16675,7 @@ static float2 __internal_log_ep(float a)
   return res;
 }
 
-static float __internal_accurate_log2f(float a)
+static __attribute__((__unused__)) float __internal_accurate_log2f(float a)
 {
   return 1.442695041f * __internal_accurate_logf(a);
 }
@@ -16674,7 +16683,7 @@ static float __internal_accurate_log2f(float a)
 
 
 
-static float2 __internal_dsmul (float2 x, float2 y)
+static __attribute__((__unused__)) float2 __internal_dsmul (float2 x, float2 y)
 {
     float2 z;
 
@@ -16707,7 +16716,7 @@ static unsigned int __cudart_i2opi_f [] = {
 };
 
 
-static float __internal_trig_reduction_kernel(float a, int *quadrant)
+static __attribute__((__unused__)) float __internal_trig_reduction_kernel(float a, int *quadrant)
 {
   float j;
   int q;
@@ -16784,14 +16793,19 @@ static float __internal_trig_reduction_kernel(float a, int *quadrant)
   q = __float2int_rn (a * 0.636619772f);
   j = (float)q;
   a = __internal_fmad (-j, 1.5703125000000000e+000f, a);
-  a = __internal_fmad (-j, 4.8351287841796875e-004f, a);
-  a = __internal_fmad (-j, 3.1385570764541626e-007f, a);
+
+
+  a = __fmaf_rn (-j, 4.8382673412561417e-004f, a);
+
+
+
+
   a = __internal_fmad (-j, 6.0771005065061922e-011f, a);
   *quadrant = q;
   return a;
 }
-# 1630 "/usr/local/cuda/bin/../include/math_functions.h" 3
-static float __internal_expf_kernel(float a, float scale)
+# 1743 "/usr/local/cuda/bin/../include/math_functions.h" 3
+static __attribute__((__unused__)) float __internal_expf_kernel(float a, float scale)
 {
   float j, z;
 
@@ -16803,7 +16817,7 @@ static float __internal_expf_kernel(float a, float scale)
   return z;
 }
 
-static float __internal_accurate_expf(float a)
+static __attribute__((__unused__)) float __internal_accurate_expf(float a)
 {
   float z;
 
@@ -16813,7 +16827,7 @@ static float __internal_accurate_expf(float a)
   return z;
 }
 
-static float __internal_accurate_exp10f(float a)
+static __attribute__((__unused__)) float __internal_accurate_exp10f(float a)
 {
   float j, z;
 
@@ -16827,7 +16841,7 @@ static float __internal_accurate_exp10f(float a)
   return z;
 }
 
-static float __internal_lgammaf_pos(float a)
+static __attribute__((__unused__)) float __internal_lgammaf_pos(float a)
 {
   float sum;
   float s, t;
@@ -16912,7 +16926,7 @@ static float __internal_lgammaf_pos(float a)
 }
 
 
-static float __internal_sin_kernel(float x)
+static __attribute__((__unused__)) float __internal_sin_kernel(float x)
 {
   float x2, z;
 
@@ -16926,7 +16940,7 @@ static float __internal_sin_kernel(float x)
 }
 
 
-static float __internal_cos_kernel(float x)
+static __attribute__((__unused__)) float __internal_cos_kernel(float x)
 {
   float x2, z;
 
@@ -16939,7 +16953,7 @@ static float __internal_cos_kernel(float x)
   return z;
 }
 
-static float __internal_accurate_sinf(float a)
+static __attribute__((__unused__)) float __internal_accurate_sinf(float a)
 {
   float z;
   int i;
@@ -16966,7 +16980,7 @@ static float __internal_accurate_sinf(float a)
 
 
 
-static float __cuda_rintf(float a)
+static __attribute__((__unused__)) float __cuda_rintf(float a)
 {
 
 
@@ -16975,7 +16989,7 @@ static float __cuda_rintf(float a)
 
 }
 
-static float __cuda_sinf(float a)
+static __attribute__((__unused__)) float __cuda_sinf(float a)
 {
 
 
@@ -16986,7 +17000,7 @@ static float __cuda_sinf(float a)
 
 }
 
-static float __cuda_cosf(float a)
+static __attribute__((__unused__)) float __cuda_cosf(float a)
 {
 
 
@@ -17014,7 +17028,7 @@ static float __cuda_cosf(float a)
 
 }
 
-static float __cuda_tanf(float a)
+static __attribute__((__unused__)) float __cuda_tanf(float a)
 {
 
 
@@ -17025,7 +17039,7 @@ static float __cuda_tanf(float a)
   int i;
 
   if (__cuda___isinff(a)) {
-    return __int_as_float(0x7fffffff);
+    return __fadd_rn (a, -a);
   }
   z = __internal_trig_reduction_kernel(a, &i);
 
@@ -17037,7 +17051,7 @@ static float __cuda_tanf(float a)
 
 }
 
-static float __cuda_log2f(float a)
+static __attribute__((__unused__)) float __cuda_log2f(float a)
 {
 
 
@@ -17048,7 +17062,7 @@ static float __cuda_log2f(float a)
 
 }
 
-static float __cuda_expf(float a)
+static __attribute__((__unused__)) float __cuda_expf(float a)
 {
 
 
@@ -17059,7 +17073,7 @@ static float __cuda_expf(float a)
 
 }
 
-static float __cuda_exp10f(float a)
+static __attribute__((__unused__)) float __cuda_exp10f(float a)
 {
 
 
@@ -17070,7 +17084,7 @@ static float __cuda_exp10f(float a)
 
 }
 
-static float __cuda_coshf(float a)
+static __attribute__((__unused__)) float __cuda_coshf(float a)
 {
   float z;
 
@@ -17083,7 +17097,7 @@ static float __cuda_coshf(float a)
   return z;
 }
 
-static float __cuda_sinhf(float a)
+static __attribute__((__unused__)) float __cuda_sinhf(float a)
 {
   float s, z;
 
@@ -17108,7 +17122,7 @@ static float __cuda_sinhf(float a)
   return __cuda_copysignf(z, s);
 }
 
-static float __cuda_tanhf(float a)
+static __attribute__((__unused__)) float __cuda_tanhf(float a)
 {
   float s, t;
 
@@ -17132,7 +17146,7 @@ static float __cuda_tanhf(float a)
   return __cuda_copysignf(s, a);
 }
 
-static float __cuda_atan2f(float a, float b)
+static __attribute__((__unused__)) float __cuda_atan2f(float a, float b)
 {
 
 
@@ -17169,7 +17183,7 @@ static float __cuda_atan2f(float a, float b)
 
 }
 
-static float __cuda_atanf(float a)
+static __attribute__((__unused__)) float __cuda_atanf(float a)
 {
   float t0, t1;
 
@@ -17189,7 +17203,7 @@ static float __cuda_atanf(float a)
 }
 
 
-static float __internal_asinf_kernel(float a)
+static __attribute__((__unused__)) float __internal_asinf_kernel(float a)
 {
   float t2, t3, t4;
 
@@ -17205,7 +17219,7 @@ static float __internal_asinf_kernel(float a)
   return a;
 }
 
-static float __cuda_asinf(float a)
+static __attribute__((__unused__)) float __cuda_asinf(float a)
 {
   float t0, t1, t2;
 
@@ -17222,7 +17236,7 @@ static float __cuda_asinf(float a)
   return __cuda_copysignf(t1, a);
 }
 
-static float __cuda_acosf(float a)
+static __attribute__((__unused__)) float __cuda_acosf(float a)
 {
   float t0, t1, t2;
 
@@ -17239,7 +17253,7 @@ static float __cuda_acosf(float a)
   return t1;
 }
 
-static float __cuda_logf(float a)
+static __attribute__((__unused__)) float __cuda_logf(float a)
 {
 
 
@@ -17250,7 +17264,7 @@ static float __cuda_logf(float a)
 
 }
 
-static float __cuda_log10f(float a)
+static __attribute__((__unused__)) float __cuda_log10f(float a)
 {
 
 
@@ -17261,7 +17275,7 @@ static float __cuda_log10f(float a)
 
 }
 
-static float __cuda_log1pf(float a)
+static __attribute__((__unused__)) float __cuda_log1pf(float a)
 {
 
 
@@ -17284,7 +17298,7 @@ static float __cuda_log1pf(float a)
 
 }
 
-static float __cuda_acoshf(float a)
+static __attribute__((__unused__)) float __cuda_acoshf(float a)
 {
 
 
@@ -17302,7 +17316,7 @@ static float __cuda_acoshf(float a)
 
 }
 
-static float __cuda_asinhf(float a)
+static __attribute__((__unused__)) float __cuda_asinhf(float a)
 {
 
 
@@ -17321,7 +17335,7 @@ static float __cuda_asinhf(float a)
 
 }
 
-static float __cuda_atanhf(float a)
+static __attribute__((__unused__)) float __cuda_atanhf(float a)
 {
 
 
@@ -17335,7 +17349,7 @@ static float __cuda_atanhf(float a)
 
 }
 
-static float __cuda_expm1f(float a)
+static __attribute__((__unused__)) float __cuda_expm1f(float a)
 {
   float t, z, j, u;
 
@@ -17370,7 +17384,7 @@ static float __cuda_expm1f(float a)
   return u;
 }
 
-static float __cuda_hypotf(float a, float b)
+static __attribute__((__unused__)) float __cuda_hypotf(float a, float b)
 {
 
 
@@ -17400,7 +17414,7 @@ static float __cuda_hypotf(float a, float b)
 
 }
 
-static float __cuda_cbrtf(float a)
+static __attribute__((__unused__)) float __cuda_cbrtf(float a)
 {
 
 
@@ -17409,18 +17423,22 @@ static float __cuda_cbrtf(float a)
 
   s = __cuda_fabsf(a);
   if ((a == 0.0f) || (s == __int_as_float(0x7f800000))) {
-    return a;
+    return a + a;
   }
   t = __cuda_exp2f(0.333333333f * __log2f(s));
   t = t-(t-(__fdividef(s,(t*t))))*0.333333333f;
-  if (__cuda___signbitf(a)) {
-    t = -t;
-  }
+
+
+
+
+
+  t = __cuda_copysignf(t, a);
+
   return t;
 
 }
 
-static float __cuda_erff(float a)
+static __attribute__((__unused__)) float __cuda_erff(float a)
 {
   float t, r, q;
 
@@ -17456,7 +17474,7 @@ static float __cuda_erff(float a)
   return a;
 }
 
-static float __cuda_erfinvf (float a)
+static __attribute__((__unused__)) float __cuda_erfinvf (float a)
 {
   float fa, t;
 
@@ -17522,11 +17540,14 @@ static float __cuda_erfinvf (float a)
   return t;
 }
 
-static float __cuda_erfcf(float a)
+static __attribute__((__unused__)) float __cuda_erfcf(float a)
 {
-  if (a <= 0.55f) {
+
+    if (__cuda___isnanf(a)) return a + a;
+
+  if (a <= 0.813f) {
     return 1.0f - __cuda_erff(a);
-  } else if (a > 10.0f) {
+  } else if (a > 10.055f) {
     return 0.0f;
   } else {
     float p;
@@ -17537,15 +17558,15 @@ static float __cuda_erfcf(float a)
 
 
 
-    p = 4.014893410762552E-006f;
-    p = __internal_fmad (p, a, 5.640401259462436E-001f);
-    p = __internal_fmad (p, a, 2.626649872281140E+000f);
-    p = __internal_fmad (p, a, 5.486372652389673E+000f);
-    p = __internal_fmad (p, a, 5.250714831459401E+000f);
-    q = a + 4.651376250488319E+000f;
-    q = __internal_fmad (q, a, 1.026302828878470E+001f);
-    q = __internal_fmad (q, a, 1.140762166021288E+001f);
-    q = __internal_fmad (q, a, 5.251211619089947E+000f);
+    p = 1.9997798317768276E-006f;
+    p = __internal_fmad (p, a, 5.6410849770777538E-001f);
+    p = __internal_fmad (p, a, 2.4579440583231387E+000f);
+    p = __internal_fmad (p, a, 4.9763988947448308E+000f);
+    p = __internal_fmad (p, a, 4.5767235962336885E+000f);
+    q = a + 4.3540863476555538E+000f;
+    q = __internal_fmad (q, a, 9.3453217404616584E+000f);
+    q = __internal_fmad (q, a, 1.0132282183545772E+001f);
+    q = __internal_fmad (q, a, 4.5781789912165518E+000f);
 
     h = 1.0f / q;
     q = __internal_fmad (-q * h, h, 2.0f * h);
@@ -17564,7 +17585,7 @@ static float __cuda_erfcf(float a)
   }
 }
 
-static float __cuda_erfcinvf (float a)
+static __attribute__((__unused__)) float __cuda_erfcinvf (float a)
 {
   float t;
   if (a <= 0.0f) {
@@ -17594,7 +17615,7 @@ static float __cuda_erfcinvf (float a)
   return t;
 }
 
-static float __cuda_lgammaf(float a)
+static __attribute__((__unused__)) float __cuda_lgammaf(float a)
 {
   float t;
   float i;
@@ -17619,7 +17640,7 @@ static float __cuda_lgammaf(float a)
   return t;
 }
 
-static float __cuda_ldexpf(float a, int b)
+static __attribute__((__unused__)) float __cuda_ldexpf(float a, int b)
 {
 
 
@@ -17642,7 +17663,7 @@ static float __cuda_ldexpf(float a, int b)
 
 }
 
-static float __cuda_scalbnf(float a, int b)
+static __attribute__((__unused__)) float __cuda_scalbnf(float a, int b)
 {
 
 
@@ -17652,7 +17673,7 @@ static float __cuda_scalbnf(float a, int b)
 
 }
 
-static float __cuda_scalblnf(float a, long int b)
+static __attribute__((__unused__)) float __cuda_scalblnf(float a, long int b)
 {
 
 
@@ -17669,7 +17690,7 @@ static float __cuda_scalblnf(float a, long int b)
 
 }
 
-static float __cuda_frexpf(float a, int *b)
+static __attribute__((__unused__)) float __cuda_frexpf(float a, int *b)
 {
   float fa = __cuda_fabsf(a);
   unsigned int expo;
@@ -17693,7 +17714,7 @@ static float __cuda_frexpf(float a, int *b)
   return a;
 }
 
-static float __cuda_modff(float a, float *b)
+static __attribute__((__unused__)) float __cuda_modff(float a, float *b)
 {
 
 
@@ -17715,7 +17736,7 @@ static float __cuda_modff(float a, float *b)
 
 }
 
-static float __cuda_fmodf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fmodf(float a, float b)
 {
 
 
@@ -17762,7 +17783,7 @@ static float __cuda_fmodf(float a, float b)
 
 }
 
-static float __cuda_remainderf(float a, float b)
+static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
 {
 
   float twoa = 0.0f;
@@ -17788,12 +17809,12 @@ static float __cuda_remainderf(float a, float b)
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2638 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2758 "/usr/local/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot0 = 0;
       if (a >= scaled_b) {
-        twoa = (2.0f * a - scaled_b) - scaled_b;
-        a -= scaled_b;
+        twoa = __internal_fmad (a, 2.0f, -scaled_b) - scaled_b;
+        a = a - scaled_b;
         quot0 = 1;
       }
       scaled_b *= 0.5f;
@@ -17804,15 +17825,15 @@ static float __cuda_remainderf(float a, float b)
   twoa = 2.0f * a;
   if ((twoa > b) || ((twoa == b) && quot0)) {
     a -= b;
-    a = __cuda_copysignf (a, -1.0f);
+    a = __int_as_float(__float_as_int(a) | 0x80000000);
   }
-# 2670 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2790 "/usr/local/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   return a;
 }
 
-static float __cuda_remquof(float a, float b, int* quo)
+static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* quo)
 {
   float twoa = 0.0f;
   unsigned int quot = 0;
@@ -17843,7 +17864,7 @@ static float __cuda_remquof(float a, float b, int* quo)
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2723 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2846 "/usr/local/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot <<= 1;
       if (a >= scaled_b) {
@@ -17862,7 +17883,7 @@ static float __cuda_remquof(float a, float b, int* quo)
     a -= b;
     a = __cuda_copysignf (a, -1.0f);
   }
-# 2758 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 2881 "/usr/local/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   quot = quot & (~((~0)<<3));
@@ -17872,12 +17893,12 @@ static float __cuda_remquof(float a, float b, int* quo)
   return a;
 }
 
-static float __cuda_fmaf(float a, float b, float c)
+static __attribute__((__unused__)) float __cuda_fmaf(float a, float b, float c)
 {
   return __fmaf_rn(a, b, c);
 }
 
-static float __internal_accurate_powf(float a, float b)
+static __attribute__((__unused__)) float __internal_accurate_powf(float a, float b)
 {
   float2 loga, prod;
 
@@ -17913,7 +17934,7 @@ static float __internal_accurate_powf(float a, float b)
   return t;
 }
 
-static float __cuda_powif(float a, int b)
+static __attribute__((__unused__)) float __cuda_powif(float a, int b)
 {
   unsigned int e = __cuda_abs(b);
   float r = 1.0f;
@@ -17930,7 +17951,7 @@ static float __cuda_powif(float a, int b)
   }
 }
 
-static double __cuda_powi(double a, int b)
+static __attribute__((__unused__)) double __cuda_powi(double a, int b)
 {
   unsigned int e = __cuda_abs(b);
   double r = 1.0;
@@ -17947,7 +17968,7 @@ static double __cuda_powi(double a, int b)
   }
 }
 
-static float __cuda_powf(float a, float b)
+static __attribute__((__unused__)) float __cuda_powf(float a, float b)
 {
 
 
@@ -18003,7 +18024,7 @@ static float __cuda_powf(float a, float b)
 }
 
 
-static float __internal_tgammaf_kernel(float a)
+static __attribute__((__unused__)) float __internal_tgammaf_kernel(float a)
 {
   float t;
   t = -1.05767296987211380E-003f;
@@ -18022,7 +18043,7 @@ static float __internal_tgammaf_kernel(float a)
 
 
 
-static float __cuda_tgammaf(float a)
+static __attribute__((__unused__)) float __cuda_tgammaf(float a)
 {
   float s, xx, x=a;
   if (x >= 0.0f) {
@@ -18087,7 +18108,7 @@ static float __cuda_tgammaf(float a)
   }
 }
 
-static float __cuda_roundf(float a)
+static __attribute__((__unused__)) float __cuda_roundf(float a)
 {
 
 
@@ -18101,12 +18122,13 @@ static float __cuda_roundf(float a)
 
 }
 
-static long long int __internal_llroundf_kernel(float a)
+static __attribute__((__unused__)) long long int __internal_llroundf_kernel(float a)
 {
   unsigned long long int res, t = 0LL;
   int shift;
   unsigned int ia = __float_as_int(a);
-  if ((ia << 1) > 0xff000000) return 0LL;
+
+  if ((ia << 1) > 0xff000000) return 0x8000000000000000LL;
   if ((int)ia >= 0x5f000000) return 0x7fffffffffffffffLL;
   if (ia >= 0xdf000000) return 0x8000000000000000LL;
   shift = 189 - ((ia >> 23) & 0xff);
@@ -18125,7 +18147,7 @@ static long long int __internal_llroundf_kernel(float a)
   return (long long int)res;
 }
 
-static long long int __cuda_llroundf(float a)
+static __attribute__((__unused__)) long long int __cuda_llroundf(float a)
 {
 
 
@@ -18134,17 +18156,17 @@ static long long int __cuda_llroundf(float a)
 
 }
 
-static long int __cuda_lroundf(float a)
+static __attribute__((__unused__)) long int __cuda_lroundf(float a)
 {
 
 
 
 
   return (long int)__cuda_llroundf(a);
-# 3045 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 3169 "/usr/local/cuda/bin/../include/math_functions.h" 3
 }
 
-static float __cuda_fdimf(float a, float b)
+static __attribute__((__unused__)) float __cuda_fdimf(float a, float b)
 {
   float t;
   t = a - b;
@@ -18154,7 +18176,7 @@ static float __cuda_fdimf(float a, float b)
   return t;
 }
 
-static int __cuda_ilogbf(float a)
+static __attribute__((__unused__)) int __cuda_ilogbf(float a)
 {
   unsigned int i;
   int expo;
@@ -18185,7 +18207,7 @@ static int __cuda_ilogbf(float a)
   return expo;
 }
 
-static float __cuda_logbf(float a)
+static __attribute__((__unused__)) float __cuda_logbf(float a)
 {
 
 
@@ -18224,7 +18246,7 @@ static float __cuda_logbf(float a)
 
 }
 
-static void __cuda_sincosf(float a, float *sptr, float *cptr)
+static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, float *cptr)
 {
 
 
@@ -18233,14 +18255,12 @@ static void __cuda_sincosf(float a, float *sptr, float *cptr)
 
   float t, u, s, c;
   int quadrant;
-  if (__cuda___isinff(a)) {
-    *sptr = __int_as_float(0x7fffffff);
-    *cptr = __int_as_float(0x7fffffff);
-    return;
-  }
-  if (a == 0.0f) {
-    *sptr = a;
-    *cptr = 1.0f;
+  t = __cuda_fabsf(a);
+  if ((t == __int_as_float(0x7f800000)) || (t == 0.0f)) {
+    s = __fmul_rn (a, 0.0f);
+    c = 1.0f + s;
+    *sptr = s;
+    *cptr = c;
     return;
   }
   t = __internal_trig_reduction_kernel(a, &quadrant);
@@ -18264,7 +18284,9 @@ static void __cuda_sincosf(float a, float *sptr, float *cptr)
   *cptr = c;
 
 }
-# 3176 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 3298 "/usr/local/cuda/bin/../include/math_functions.h" 3
+
+
 extern __attribute__((__weak__)) double rsqrt(double a); double rsqrt(double a)
 {
   return 1.0 / sqrt(a);
@@ -18274,15 +18296,17 @@ extern __attribute__((__weak__)) float rsqrtf(float a); float rsqrtf(float a)
 {
   return (float)rsqrt((double)a);
 }
-# 3734 "/usr/local/cuda/bin/../include/math_functions.h" 3
+
+
+# 3869 "/usr/local/cuda/bin/../include/math_functions.h" 3
 # 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
 # 61 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
-static double __cuda_fabs(double a)
+static __attribute__((__unused__)) double __cuda_fabs(double a)
 {
   return fabs(a);
 }
 
-static double __cuda_fmax(double a, double b)
+static __attribute__((__unused__)) double __cuda_fmax(double a, double b)
 {
 
   volatile union __cudart_DoubleUlonglongCvt cvta, cvtb;
@@ -18305,7 +18329,7 @@ static double __cuda_fmax(double a, double b)
 
 }
 
-static double __cuda_fmin(double a, double b)
+static __attribute__((__unused__)) double __cuda_fmin(double a, double b)
 {
 
   volatile union __cudart_DoubleUlonglongCvt cvta, cvtb;
@@ -18327,22 +18351,22 @@ static double __cuda_fmin(double a, double b)
 
 }
 
-static double __cuda_ceil(double a)
+static __attribute__((__unused__)) double __cuda_ceil(double a)
 {
   return ceil(a);
 }
 
-static double __cuda_floor(double a)
+static __attribute__((__unused__)) double __cuda_floor(double a)
 {
   return floor(a);
 }
 
-static double __cuda_trunc(double a)
+static __attribute__((__unused__)) double __cuda_trunc(double a)
 {
   return trunc(a);
 }
 
-static double __cuda_nearbyint(double a)
+static __attribute__((__unused__)) double __cuda_nearbyint(double a)
 {
 
 
@@ -18363,12 +18387,12 @@ static double __cuda_nearbyint(double a)
 
 
 
-static double __cuda_rint(double a)
+static __attribute__((__unused__)) double __cuda_rint(double a)
 {
   return __cuda_nearbyint(a);
 }
 
-static long int __cuda_lrint(double a)
+static __attribute__((__unused__)) long int __cuda_lrint(double a)
 {
 
   return (long int)__double2ll_rn(a);
@@ -18377,32 +18401,32 @@ static long int __cuda_lrint(double a)
 
 }
 
-static long long int __cuda_llrint(double a)
+static __attribute__((__unused__)) long long int __cuda_llrint(double a)
 {
   return __double2ll_rn(a);
 }
 
-static int __cuda___signbit(double a)
+static __attribute__((__unused__)) int __cuda___signbit(double a)
 {
   return (int)((unsigned int)__double2hiint(a) >> 31);
 }
 
-static int __cuda___finite(double a)
+static __attribute__((__unused__)) int __cuda___finite(double a)
 {
   return __cuda_fabs(a) < __longlong_as_double(0x7ff0000000000000ULL);
 }
 
-static int __cuda___isinf(double a)
+static __attribute__((__unused__)) int __cuda___isinf(double a)
 {
   return __cuda_fabs(a) == __longlong_as_double(0x7ff0000000000000ULL);
 }
 
-static int __cuda___isnan(double a)
+static __attribute__((__unused__)) int __cuda___isnan(double a)
 {
   return !(__cuda_fabs(a) <= __longlong_as_double(0x7ff0000000000000ULL));
 }
 
-static double __cuda_copysign(double a, double b)
+static __attribute__((__unused__)) double __cuda_copysign(double a, double b)
 {
   int alo, ahi, bhi;
 
@@ -18435,7 +18459,7 @@ static unsigned long long int __cudart_i2opi_d [] = {
   0xa2f9836e4e441529ULL,
 };
 
-static double __internal_trig_reduction_kerneld(double a, int *quadrant)
+static __attribute__((__unused__)) double __internal_trig_reduction_kerneld(double a, int *quadrant)
 {
   double j;
   int q;
@@ -18528,7 +18552,7 @@ static double __internal_trig_reduction_kerneld(double a, int *quadrant)
 }
 
 
-static double __internal_sin_kerneld(double x)
+static __attribute__((__unused__)) double __internal_sin_kerneld(double x)
 {
   double x2, z;
   x2 = x * x;
@@ -18544,7 +18568,7 @@ static double __internal_sin_kerneld(double x)
 }
 
 
-static double __internal_cos_kerneld(double x)
+static __attribute__((__unused__)) double __internal_cos_kerneld(double x)
 {
   double x2, z;
   x2 = x * x;
@@ -18560,7 +18584,7 @@ static double __internal_cos_kerneld(double x)
 }
 
 
-static double __internal_tan_kerneld(double x, int i)
+static __attribute__((__unused__)) double __internal_tan_kerneld(double x, int i)
 {
   double x2, z, q;
   x2 = x * x;
@@ -18592,12 +18616,12 @@ static double __internal_tan_kerneld(double x, int i)
   return q;
 }
 
-static double __cuda_sqrt(double a)
+static __attribute__((__unused__)) double __cuda_sqrt(double a)
 {
   return sqrt(a);
 }
 
-static double __cuda_rsqrt(double a)
+static __attribute__((__unused__)) double __cuda_rsqrt(double a)
 {
 
     return 1.0 / sqrt(a);
@@ -18607,7 +18631,7 @@ static double __cuda_rsqrt(double a)
 }
 
 
-static double __internal_expm1_kernel (double a)
+static __attribute__((__unused__)) double __internal_expm1_kernel (double a)
 {
   double t;
   t = 2.08842685477913050E-009;
@@ -18627,7 +18651,7 @@ static double __internal_expm1_kernel (double a)
 }
 
 
-static double __internal_atanh_kernel (double a_1, double a_2)
+static __attribute__((__unused__)) double __internal_atanh_kernel (double a_1, double a_2)
 {
   double a, a2, t;
 
@@ -18647,12 +18671,12 @@ static double __internal_atanh_kernel (double a_1, double a_2)
   return t;
 }
 
-static double __internal_exp2i_kernel(int b)
+static __attribute__((__unused__)) double __internal_exp2i_kernel(int b)
 {
   return __hiloint2double((b + 1023) << 20, 0);
 }
 
-static double __internal_half(double a)
+static __attribute__((__unused__)) double __internal_half(double a)
 {
   unsigned int ihi, ilo;
   ilo = __double2loint(a);
@@ -18660,7 +18684,7 @@ static double __internal_half(double a)
   return __hiloint2double(ihi - 0x00100000, ilo);
 }
 
-static double __internal_twice(double a)
+static __attribute__((__unused__)) double __internal_twice(double a)
 {
   unsigned int ihi, ilo;
   ilo = __double2loint(a);
@@ -18668,7 +18692,7 @@ static double __internal_twice(double a)
   return __hiloint2double(ihi + 0x00100000, ilo);
 }
 
-static double __cuda_sin(double a)
+static __attribute__((__unused__)) double __cuda_sin(double a)
 {
   double z;
   int i;
@@ -18688,7 +18712,7 @@ static double __cuda_sin(double a)
   return z;
 }
 
-static double __cuda_cos(double a)
+static __attribute__((__unused__)) double __cuda_cos(double a)
 {
   double z;
   int i;
@@ -18709,18 +18733,16 @@ static double __cuda_cos(double a)
   return z;
 }
 
-static void __cuda_sincos(double a, double *sptr, double *cptr)
+static __attribute__((__unused__)) void __cuda_sincos(double a, double *sptr, double *cptr)
 {
   double t, u, s, c;
   int i;
-  if (__cuda___isinf(a)) {
-    *sptr = __longlong_as_double(0xfff8000000000000ULL);
-    *cptr = __longlong_as_double(0xfff8000000000000ULL);
-    return;
-  }
-  if (a == 0.0) {
-    *sptr = a;
-    *cptr = 1.0;
+  t = __cuda_fabs(a);
+  if ((t == __longlong_as_double(0x7ff0000000000000ULL)) || (t == 0.0)) {
+    s = __dmul_rn (a, 0.0);
+    c = 1.0 + s;
+    *sptr = s;
+    *cptr = c;
     return;
   }
   t = __internal_trig_reduction_kerneld(a, &i);
@@ -18744,7 +18766,7 @@ static void __cuda_sincos(double a, double *sptr, double *cptr)
   *cptr = c;
 }
 
-static double __cuda_tan(double a)
+static __attribute__((__unused__)) double __cuda_tan(double a)
 {
   double z;
   int i;
@@ -18757,7 +18779,7 @@ static double __cuda_tan(double a)
   return z;
 }
 
-static double __cuda_log(double a)
+static __attribute__((__unused__)) double __cuda_log(double a)
 {
   double m, f, g, u, v, tmp, q, ulo, log_lo, log_hi;
   int ihi, ilo;
@@ -18777,7 +18799,7 @@ static double __cuda_log(double a)
 
 
 
-    e += ((ihi >> 20) & 0x7ff);
+    e += (ihi >> 20);
     ihi = (ihi & 0x800fffff) | 0x3ff00000;
     m = __hiloint2double (ihi, ilo);
     if ((unsigned)ihi > (unsigned)0x3ff6a09e) {
@@ -18835,7 +18857,7 @@ static double __cuda_log(double a)
 }
 
 
-static double2 __internal_ddadd_xgty (double2 x, double2 y)
+static __attribute__((__unused__)) double2 __internal_ddadd_xgty (double2 x, double2 y)
 {
   double2 z;
 
@@ -18851,7 +18873,7 @@ static double2 __internal_ddadd_xgty (double2 x, double2 y)
 }
 
 
-static double2 __internal_ddmul (double2 x, double2 y)
+static __attribute__((__unused__)) double2 __internal_ddmul (double2 x, double2 y)
 {
 
   volatile
@@ -18868,7 +18890,7 @@ static double2 __internal_ddmul (double2 x, double2 y)
   return z;
 }
 
-static double2 __internal_log_ext_prec(double a)
+static __attribute__((__unused__)) double2 __internal_log_ext_prec(double a)
 {
   double2 res;
   double2 qq, cc, uu, tt;
@@ -18944,21 +18966,21 @@ static double2 __internal_log_ext_prec(double a)
   return res;
 }
 
-static double __cuda_log2(double a)
+static __attribute__((__unused__)) double __cuda_log2(double a)
 {
   double t;
   t = __cuda_log(a);
   return __fma_rn (t, 1.4426950408889634e+0, t * 2.0355273740931033e-17);
 }
 
-static double __cuda_log10(double a)
+static __attribute__((__unused__)) double __cuda_log10(double a)
 {
   double t;
   t = __cuda_log(a);
   return __fma_rn (t, 4.3429448190325182e-1, t * 1.09831965021676510e-17);
 }
 
-static double __cuda_log1p(double a)
+static __attribute__((__unused__)) double __cuda_log1p(double a)
 {
   double t;
   int i;
@@ -18975,7 +18997,7 @@ static double __cuda_log1p(double a)
   return __cuda_log (a + 1.0);
 }
 
-static double __internal_exp_kernel(double a, int scale)
+static __attribute__((__unused__)) double __internal_exp_kernel(double a, int scale)
 {
   double t, fac, z;
   int i;
@@ -18997,7 +19019,7 @@ static double __internal_exp_kernel(double a, int scale)
   return t;
 }
 
-static double __cuda_exp(double a)
+static __attribute__((__unused__)) double __cuda_exp(double a)
 {
   double t;
   int i;
@@ -19013,7 +19035,7 @@ static double __cuda_exp(double a)
   return t;
 }
 
-static double __cuda_exp2(double a)
+static __attribute__((__unused__)) double __cuda_exp2(double a)
 {
   double z;
   double t;
@@ -19045,7 +19067,7 @@ static double __cuda_exp2(double a)
   return t;
 }
 
-static double __cuda_exp10(double a)
+static __attribute__((__unused__)) double __cuda_exp10(double a)
 {
   double z;
   double t;
@@ -19078,7 +19100,7 @@ static double __cuda_exp10(double a)
   return t;
 }
 
-static double __cuda_expm1(double a)
+static __attribute__((__unused__)) double __cuda_expm1(double a)
 {
   double t, z, u;
   int i, j, k;
@@ -19111,7 +19133,7 @@ static double __cuda_expm1(double a)
   return t;
 }
 
-static double __cuda_cosh(double a)
+static __attribute__((__unused__)) double __cuda_cosh(double a)
 {
   double z;
   int i;
@@ -19128,7 +19150,7 @@ static double __cuda_cosh(double a)
   }
 }
 
-static double __cuda_sinh(double a)
+static __attribute__((__unused__)) double __cuda_sinh(double a)
 {
   double s, z;
   s = a;
@@ -19158,7 +19180,7 @@ static double __cuda_sinh(double a)
   return z;
 }
 
-static double __cuda_tanh(double a)
+static __attribute__((__unused__)) double __cuda_tanh(double a)
 {
   double t;
   t = __cuda_fabs(a);
@@ -19189,7 +19211,7 @@ static double __cuda_tanh(double a)
   return a;
 }
 
-static double __internal_atan_kernel(double a)
+static __attribute__((__unused__)) double __internal_atan_kernel(double a)
 {
   double t, a2;
   a2 = a * a;
@@ -19217,7 +19239,7 @@ static double __internal_atan_kernel(double a)
   return t;
 }
 
-static double __cuda_atan2(double a, double b)
+static __attribute__((__unused__)) double __cuda_atan2(double a, double b)
 {
   double t0, t1, t3;
   if (__cuda___isnan(a) || __cuda___isnan(b)) {
@@ -19244,7 +19266,7 @@ static double __cuda_atan2(double a, double b)
   return t3;
 }
 
-static double __cuda_atan(double a)
+static __attribute__((__unused__)) double __cuda_atan(double a)
 {
   double t0, t1;
 
@@ -19263,7 +19285,7 @@ static double __cuda_atan(double a)
 }
 
 
-static double __internal_asin_kernel(double a, double b)
+static __attribute__((__unused__)) double __internal_asin_kernel(double a, double b)
 {
   double r;
   r = 6.259798167646803E-002;
@@ -19283,7 +19305,7 @@ static double __internal_asin_kernel(double a, double b)
   return r;
 }
 
-static double __cuda_asin(double a)
+static __attribute__((__unused__)) double __cuda_asin(double a)
 {
   double fa, t0, t1;
   int ihi, ahi;
@@ -19311,7 +19333,7 @@ static double __cuda_asin(double a)
   return t1;
 }
 
-static double __cuda_acos(double a)
+static __attribute__((__unused__)) double __cuda_acos(double a)
 {
   double t0, t1;
   int ihi, ahi;
@@ -19349,7 +19371,7 @@ static double __cuda_acos(double a)
   return t0;
 }
 
-static double __cuda_acosh(double a)
+static __attribute__((__unused__)) double __cuda_acosh(double a)
 {
   double t;
 
@@ -19367,9 +19389,9 @@ static double __cuda_acosh(double a)
   }
 }
 
-static double __cuda_asinh(double a)
+static __attribute__((__unused__)) double __cuda_asinh(double a)
 {
-# 1164 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
+# 1162 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
   double fa, t;
   fa = __cuda_fabs(a);
   if (fa > 1.0e153) {
@@ -19382,7 +19404,7 @@ static double __cuda_asinh(double a)
   return __cuda_copysign(t, a);
 }
 
-static double __cuda_atanh(double a)
+static __attribute__((__unused__)) double __cuda_atanh(double a)
 {
   double fa, t;
 
@@ -19404,7 +19426,7 @@ static double __cuda_atanh(double a)
   return t;
 }
 
-static double __cuda_hypot(double a, double b)
+static __attribute__((__unused__)) double __cuda_hypot(double a, double b)
 {
   double v, w, t;
   if (__cuda___isinf(a) || __cuda___isinf(b)) {
@@ -19426,7 +19448,7 @@ static double __cuda_hypot(double a, double b)
   return t;
 }
 
-static double __cuda_cbrt(double a)
+static __attribute__((__unused__)) double __cuda_cbrt(double a)
 {
   float s;
   double t, r;
@@ -19468,7 +19490,7 @@ static double __cuda_cbrt(double a)
   return t;
 }
 
-static double __internal_accurate_pow(double a, double b)
+static __attribute__((__unused__)) double __internal_accurate_pow(double a, double b)
 {
   double2 loga;
   double2 prod;
@@ -19504,7 +19526,7 @@ static double __internal_accurate_pow(double a, double b)
   return tmp;
 }
 
-static double __cuda_pow(double a, double b)
+static __attribute__((__unused__)) double __cuda_pow(double a, double b)
 {
   int bIsOddInteger;
   double t;
@@ -19553,7 +19575,7 @@ static double __cuda_pow(double a, double b)
   return t;
 }
 
-static double __cuda_erf(double a)
+static __attribute__((__unused__)) double __cuda_erf(double a)
 {
   double t, r, q;
 
@@ -19616,7 +19638,7 @@ static double __cuda_erf(double a)
   return a;
 }
 
-static double __cuda_erfinv(double a)
+static __attribute__((__unused__)) double __cuda_erfinv(double a)
 {
   double fa, t;
 
@@ -19713,7 +19735,7 @@ static double __cuda_erfinv(double a)
   return t;
 }
 
-static double __cuda_erfcinv(double a)
+static __attribute__((__unused__)) double __cuda_erfcinv(double a)
 {
   double t;
 
@@ -19790,7 +19812,7 @@ static double __cuda_erfcinv(double a)
   return t;
 }
 
-static double __cuda_erfc(double a)
+static __attribute__((__unused__)) double __cuda_erfc(double a)
 {
   double p, q, h, l;
   int ahi;
@@ -19803,47 +19825,59 @@ static double __cuda_erfc(double a)
     return 0.0;
   }
   if (ahi < (int)0x40140000) {
-    p = 5.64189549785304440E-001;
-    p = __fma_rn (p, a, 8.17405083437083490E+000);
-    p = __fma_rn (p, a, 5.68958722557864720E+001);
-    p = __fma_rn (p, a, 2.42568747802647010E+002);
-    p = __fma_rn (p, a, 6.80381374390412930E+002);
-    p = __fma_rn (p, a, 1.25873132236024590E+003);
-    p = __fma_rn (p, a, 1.43925353963809330E+003);
-    p = __fma_rn (p, a, 8.15949420587659230E+002);
-    q = a+ 1.44881247113239940E+001;
-    q = __fma_rn (q, a, 1.01345387970210510E+002);
-    q = __fma_rn (q, a, 4.37184684964009650E+002);
-    q = __fma_rn (q, a, 1.25588209225251330E+003);
-    q = __fma_rn (q, a, 2.43864015012647630E+003);
-    q = __fma_rn (q, a, 3.10570469008816280E+003);
-    q = __fma_rn (q, a, 2.35995386578953550E+003);
-    q = __fma_rn (q, a, 8.15949420692539320E+002);
+
+    p = 5.6418956292134603E-001;
+    p = __fma_rn (p, a, 7.9573512229784757E+000);
+    p = __fma_rn (p, a, 5.4297984550299049E+001);
+    p = __fma_rn (p, a, 2.2775657465890461E+002);
+    p = __fma_rn (p, a, 6.2995529536738172E+002);
+    p = __fma_rn (p, a, 1.1508293767713837E+003);
+    p = __fma_rn (p, a, 1.3002167301542784E+003);
+    p = __fma_rn (p, a, 7.2716547570180592E+002);
+    q = a+ 1.4104035812651274E+001;
+    q = __fma_rn (q, a, 9.6740724349422138E+001);
+    q = __fma_rn (q, a, 4.1073916054746462E+002);
+    q = __fma_rn (q, a, 1.1641974580374074E+003);
+    q = __fma_rn (q, a, 2.2344896486798129E+003);
+    q = __fma_rn (q, a, 2.8166572432808462E+003);
+    q = __fma_rn (q, a, 2.1207350981593036E+003);
+    q = __fma_rn (q, a, 7.2716547619708967E+002);
+    p = p / q;
+    h = a * a;
+    l = __fma_rn (a, a, -h);
+    q = __internal_exp_kernel(-h, 0);
+    q = __fma_rn (l, -q, q);
+    p = p * q;
   } else {
-    p = 5.64189583545675280E-001;
-    p = __fma_rn (p, a, 2.04728556066513970E+000);
-    p = __fma_rn (p, a, 6.75128409662943610E+000);
-    p = __fma_rn (p, a, 1.10459345071747900E+001);
-    p = __fma_rn (p, a, 1.22570382896313600E+001);
-    p = __fma_rn (p, a, 6.01884641114116460E+000);
-    q = a+ 3.62871917534986780E+000;
-    q = __fma_rn (q, a, 1.24663395327043550E+001);
-    q = __fma_rn (q, a, 2.13927672803974790E+001);
-    q = __fma_rn (q, a, 2.72082423532866070E+001);
-    q = __fma_rn (q, a, 1.86422906830006700E+001);
-    q = __fma_rn (q, a, 6.13809834548870550E+000);
+
+    double ooa, ooasq;
+
+    ooa = 1.0 / a;
+    ooasq = ooa * ooa;
+    p = -4.0025406686930527E+005;
+    p = __fma_rn (p, ooasq, 1.4420582543942123E+005);
+    p = __fma_rn (p, ooasq, -2.7664185780951841E+004);
+    p = __fma_rn (p, ooasq, 4.1144611644767283E+003);
+    p = __fma_rn (p, ooasq, -5.8706000519209351E+002);
+    p = __fma_rn (p, ooasq, 9.1490086446323375E+001);
+    p = __fma_rn (p, ooasq, -1.6659491387740221E+001);
+    p = __fma_rn (p, ooasq, 3.7024804085481784E+000);
+    p = __fma_rn (p, ooasq, -1.0578553994424316E+000);
+    p = __fma_rn (p, ooasq, 4.2314218745087778E-001);
+    p = __fma_rn (p, ooasq, -2.8209479177354962E-001);
+    p = __fma_rn (p, ooasq, 5.6418958354775606E-001);
+    h = a * a;
+    l = __fma_rn (a, a, -h);
+    q = __internal_exp_kernel(-h, 0);
+    q = __fma_rn (l, -q, q);
+    p = p * ooa;
+    p = p * q;
   }
-  p = p / q;
-  h = a * a;
-  l = __fma_rn (a, a, -h);
-  q = __internal_exp_kernel(-h, 0);
-  q = __fma_rn (l, -q, q);
-  p = p * q;
   return p;
 }
 
 
-static double __internal_tgamma_kernel(double a)
+static __attribute__((__unused__)) double __internal_tgamma_kernel(double a)
 {
   double t;
   t = -4.42689340712524750E-010;
@@ -19866,7 +19900,7 @@ static double __internal_tgamma_kernel(double a)
 }
 
 
-static double __internal_stirling_poly(double a)
+static __attribute__((__unused__)) double __internal_stirling_poly(double a)
 {
   double x = 1.0 / a;
   double z = 0.0;
@@ -19883,7 +19917,7 @@ static double __internal_stirling_poly(double a)
   return z;
 }
 
-static double __internal_tgamma_stirling(double a)
+static __attribute__((__unused__)) double __internal_tgamma_stirling(double a)
 {
   if (a < 1.7162437695630274e+002) {
 
@@ -19926,7 +19960,7 @@ static double __internal_tgamma_stirling(double a)
   }
 }
 
-static double __cuda_tgamma(double a)
+static __attribute__((__unused__)) double __cuda_tgamma(double a)
 {
   double s, xx, x = a;
   if (__cuda___isnan(a)) {
@@ -20012,7 +20046,7 @@ static double __cuda_tgamma(double a)
   }
 }
 
-static double __internal_lgamma_pos(double a)
+static __attribute__((__unused__)) double __internal_lgamma_pos(double a)
 {
   double sum;
   double s, t;
@@ -20133,7 +20167,7 @@ static double __internal_lgamma_pos(double a)
   }
 }
 
-static double __cuda_lgamma(double a)
+static __attribute__((__unused__)) double __cuda_lgamma(double a)
 {
   double t;
   double i;
@@ -20161,7 +20195,7 @@ static double __cuda_lgamma(double a)
   return t;
 }
 
-static double __cuda_ldexp(double a, int b)
+static __attribute__((__unused__)) double __cuda_ldexp(double a, int b)
 {
   double fa = __cuda_fabs (a);
   if ((fa == 0.0) || (fa == __longlong_as_double(0x7ff0000000000000ULL)) || (!(fa <= __longlong_as_double(0x7ff0000000000000ULL)))) {
@@ -20186,13 +20220,13 @@ static double __cuda_ldexp(double a, int b)
   }
 }
 
-static double __cuda_scalbn(double a, int b)
+static __attribute__((__unused__)) double __cuda_scalbn(double a, int b)
 {
 
   return __cuda_ldexp(a, b);
 }
 
-static double __cuda_scalbln(double a, long int b)
+static __attribute__((__unused__)) double __cuda_scalbln(double a, long int b)
 {
 
 
@@ -20202,7 +20236,7 @@ static double __cuda_scalbln(double a, long int b)
   return __cuda_scalbn(a, (int)b);
 }
 
-static double __cuda_frexp(double a, int *b)
+static __attribute__((__unused__)) double __cuda_frexp(double a, int *b)
 {
   double fa = __cuda_fabs(a);
   unsigned int expo;
@@ -20227,7 +20261,7 @@ static double __cuda_frexp(double a, int *b)
   return a;
 }
 
-static double __cuda_modf(double a, double *b)
+static __attribute__((__unused__)) double __cuda_modf(double a, double *b)
 {
   double t;
   if (__cuda___finite(a)) {
@@ -20245,7 +20279,7 @@ static double __cuda_modf(double a, double *b)
   }
 }
 
-static double __cuda_fmod(double a, double b)
+static __attribute__((__unused__)) double __cuda_fmod(double a, double b)
 {
   double orig_a = a;
   double orig_b = b;
@@ -20288,7 +20322,7 @@ static double __cuda_fmod(double a, double b)
   }
 }
 
-static double __cuda_remainder(double a, double b)
+static __attribute__((__unused__)) double __cuda_remainder(double a, double b)
 {
   double orig_a;
   double twoa = 0.0;
@@ -20345,7 +20379,7 @@ static double __cuda_remainder(double a, double b)
   return a;
 }
 
-static double __cuda_remquo(double a, double b, int *c)
+static __attribute__((__unused__)) double __cuda_remquo(double a, double b, int *c)
 {
   double orig_a;
   double twoa = 0.0;
@@ -20411,7 +20445,7 @@ static double __cuda_remquo(double a, double b, int *c)
   return a;
 }
 
-static double __cuda_nextafter(double a, double b)
+static __attribute__((__unused__)) double __cuda_nextafter(double a, double b)
 {
   unsigned long long int ia;
   unsigned long long int ib;
@@ -20430,7 +20464,7 @@ static double __cuda_nextafter(double a, double b)
   return a;
 }
 
-static double __cuda_nan(const char *s)
+static __attribute__((__unused__)) double __cuda_nan(const char *s)
 {
   unsigned long long i = 0;
   int c;
@@ -20499,7 +20533,7 @@ static double __cuda_nan(const char *s)
   return __longlong_as_double(i);
 }
 
-static double __cuda_round(double a)
+static __attribute__((__unused__)) double __cuda_round(double a)
 {
   double fa = __cuda_fabs(a);
   if (fa > 4503599627370496.0) {
@@ -20511,7 +20545,7 @@ static double __cuda_round(double a)
   }
 }
 
-static long long int __cuda_llround(double a)
+static __attribute__((__unused__)) long long int __cuda_llround(double a)
 {
 
   if (a >= 9223372036854775807.0) return 0x7fffffffffffffffLL;
@@ -20520,14 +20554,14 @@ static long long int __cuda_llround(double a)
   return (long long int)(__cuda_round(a));
 }
 
-static long int __cuda_lround(double a)
+static __attribute__((__unused__)) long int __cuda_lround(double a)
 {
 
   return (long int)(__cuda_llround(a));
-# 2326 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
+# 2336 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 3
 }
 
-static double __cuda_fdim(double a, double b)
+static __attribute__((__unused__)) double __cuda_fdim(double a, double b)
 {
   double t;
   t = a - b;
@@ -20537,7 +20571,7 @@ static double __cuda_fdim(double a, double b)
   return t;
 }
 
-static int __cuda_ilogb(double a)
+static __attribute__((__unused__)) int __cuda_ilogb(double a)
 {
   unsigned long long int i;
   unsigned int ihi;
@@ -20561,7 +20595,7 @@ static int __cuda_ilogb(double a)
   }
 }
 
-static double __cuda_logb(double a)
+static __attribute__((__unused__)) double __cuda_logb(double a)
 {
   unsigned long long int i;
   unsigned int ihi;
@@ -20585,61 +20619,81 @@ static double __cuda_logb(double a)
   }
 }
 
-static double __cuda_fma(double a, double b, double c)
+static __attribute__((__unused__)) double __cuda_fma(double a, double b, double c)
 {
   return __fma_rn(a, b, c);
 }
-# 3735 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 3870 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
-# 227 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00007e2f_00000000-1_fluidsGL.cudafe1.stub.c" 2
-struct __T20 {cData *__par0;int __par1;int __par2;int __par3;int __par4;float __par5;float __par6;int __par7;size_t __par8;int __dummy_field;volatile char __dummy[4];};
+# 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
+# 6 "/tmp/tmpxft_00003d03_00000000-1_fluidsGL.cudafe1.stub.c" 2
+
+
+
+
+struct __T20 {cData *__par0;int __par1;int __par2;int __par3;int __par4;float __par5;float __par6;int __par7;size_t __par8;int __dummy_field;};
+
+
+
+
 struct __T21 {cData *__par0;float *__par1;float *__par2;int __par3;int __par4;int __par5;float __par6;int __par7;int __dummy_field;};
+
+
+
+
 struct __T22 {cData *__par0;cData *__par1;int __par2;int __par3;float __par4;float __par5;int __par6;int __dummy_field;};
-struct __T23 {cData *__par0;float *__par1;float *__par2;int __par3;int __par4;int __par5;int __par6;size_t __par7;int __dummy_field;volatile char __dummy[4];};
-struct __T24 {cData *__par0;cData *__par1;int __par2;int __par3;float __par4;int __par5;size_t __par6;int __dummy_field;volatile char __dummy[4];};
-static void __sti____cudaRegisterAll_43_tmpxft_00007e2f_00000000_4_fluidsGL_cpp1_ii_texref(void) __attribute__((__constructor__));
-void __device_stub__Z11addForces_kP6float2iiiiffim(cData *__par0, int __par1, int __par2, int __par3, int __par4, float __par5, float __par6, int __par7, size_t __par8){auto struct __T20 *__T228;
-char __[256]; *(char**)&__T228 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T228->__par0 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T228->__par1 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T228->__par2 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T228->__par3 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T228->__par4 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T228->__par5 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T228->__par6 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T228->__par7 - (size_t)__T228) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par8, sizeof(__par8), (size_t)&__T228->__par8 - (size_t)__T228) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k__entry))); };}
+
+
+
+
+struct __T23 {cData *__par0;float *__par1;float *__par2;int __par3;int __par4;int __par5;int __par6;size_t __par7;int __dummy_field;};
+
+
+
+
+struct __T24 {cData *__par0;cData *__par1;int __par2;int __par3;float __par4;int __par5;size_t __par6;int __dummy_field;};
+static void __sti____cudaRegisterAll_43_tmpxft_00003d03_00000000_4_fluidsGL_cpp1_ii_texref(void) __attribute__((__constructor__));
+void __device_stub__Z11addForces_kP6float2iiiiffim(cData *__par0, int __par1, int __par2, int __par3, int __par4, float __par5, float __par6, int __par7, size_t __par8){auto struct __T20 *__T221;
+*(void**)(void*)&__T221 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T221->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T221->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T221->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T221->__par3) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T221->__par4) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T221->__par5) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T221->__par6) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T221->__par7) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par8, sizeof(__par8), (size_t)&__T221->__par8) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k__entry))); };}
 
 }
-void addForces_k__entry( cData * __cuda_0,int __cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,float __cuda_5,float __cuda_6,int __cuda_7,size_t __cuda_8)
-{__device_stub__Z11addForces_kP6float2iiiiffim( __cuda_0, __cuda_1, __cuda_2, __cuda_3, __cuda_4, __cuda_5, __cuda_6, __cuda_7, __cuda_8);}
+void addForces_k__entry( cData *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,float __cuda_5,float __cuda_6,int __cuda_7,size_t __cuda_8)
+{__device_stub__Z11addForces_kP6float2iiiiffim( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8);}
 extern "C"{
 
-void __device_stub__Z16advectVelocity_kP6float2PfS1_iiifi(cData *__par0, float *__par1, float *__par2, int __par3, int __par4, int __par5, float __par6, int __par7){auto struct __T21 *__T229;
-char __[256]; *(char**)&__T229 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T229->__par0 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T229->__par1 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T229->__par2 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T229->__par3 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T229->__par4 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T229->__par5 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T229->__par6 - (size_t)__T229) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T229->__par7 - (size_t)__T229) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k__entry))); };}
+void __device_stub__Z16advectVelocity_kP6float2PfS1_iiifi(cData *__par0, float *__par1, float *__par2, int __par3, int __par4, int __par5, float __par6, int __par7){auto struct __T21 *__T222;
+*(void**)(void*)&__T222 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T222->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T222->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T222->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T222->__par3) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T222->__par4) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T222->__par5) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T222->__par6) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T222->__par7) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k__entry))); };}
 
 }
-void advectVelocity_k__entry( cData * __cuda_0,float * __cuda_1,float * __cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,float __cuda_6,int __cuda_7)
-{__device_stub__Z16advectVelocity_kP6float2PfS1_iiifi( __cuda_0, __cuda_1, __cuda_2, __cuda_3, __cuda_4, __cuda_5, __cuda_6, __cuda_7);}
+void advectVelocity_k__entry( cData *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,float __cuda_6,int __cuda_7)
+{__device_stub__Z16advectVelocity_kP6float2PfS1_iiifi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);}
 extern "C"{
 
-void __device_stub__Z16diffuseProject_kP6float2S0_iiffi(cData *__par0, cData *__par1, int __par2, int __par3, float __par4, float __par5, int __par6){auto struct __T22 *__T230;
-char __[256]; *(char**)&__T230 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T230->__par0 - (size_t)__T230) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T230->__par1 - (size_t)__T230) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T230->__par2 - (size_t)__T230) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T230->__par3 - (size_t)__T230) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T230->__par4 - (size_t)__T230) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T230->__par5 - (size_t)__T230) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T230->__par6 - (size_t)__T230) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k__entry))); };}
+void __device_stub__Z16diffuseProject_kP6float2S0_iiffi(cData *__par0, cData *__par1, int __par2, int __par3, float __par4, float __par5, int __par6){auto struct __T22 *__T223;
+*(void**)(void*)&__T223 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T223->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T223->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T223->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T223->__par3) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T223->__par4) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T223->__par5) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T223->__par6) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k__entry))); };}
 
 }
-void diffuseProject_k__entry( cData * __cuda_0,cData * __cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,float __cuda_5,int __cuda_6)
-{__device_stub__Z16diffuseProject_kP6float2S0_iiffi( __cuda_0, __cuda_1, __cuda_2, __cuda_3, __cuda_4, __cuda_5, __cuda_6);}
+void diffuseProject_k__entry( cData *__cuda_0,cData *__cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,float __cuda_5,int __cuda_6)
+{__device_stub__Z16diffuseProject_kP6float2S0_iiffi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);}
 extern "C"{
 
-void __device_stub__Z16updateVelocity_kP6float2PfS1_iiiim(cData *__par0, float *__par1, float *__par2, int __par3, int __par4, int __par5, int __par6, size_t __par7){auto struct __T23 *__T231;
-char __[256]; *(char**)&__T231 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T231->__par0 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T231->__par1 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T231->__par2 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T231->__par3 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T231->__par4 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T231->__par5 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T231->__par6 - (size_t)__T231) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T231->__par7 - (size_t)__T231) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k__entry))); };}
+void __device_stub__Z16updateVelocity_kP6float2PfS1_iiiim(cData *__par0, float *__par1, float *__par2, int __par3, int __par4, int __par5, int __par6, size_t __par7){auto struct __T23 *__T224;
+*(void**)(void*)&__T224 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T224->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T224->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T224->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T224->__par3) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T224->__par4) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T224->__par5) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T224->__par6) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par7, sizeof(__par7), (size_t)&__T224->__par7) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k__entry))); };}
 
 }
-void updateVelocity_k__entry( cData * __cuda_0,float * __cuda_1,float * __cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,int __cuda_6,size_t __cuda_7)
-{__device_stub__Z16updateVelocity_kP6float2PfS1_iiiim( __cuda_0, __cuda_1, __cuda_2, __cuda_3, __cuda_4, __cuda_5, __cuda_6, __cuda_7);}
+void updateVelocity_k__entry( cData *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,int __cuda_6,size_t __cuda_7)
+{__device_stub__Z16updateVelocity_kP6float2PfS1_iiiim( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);}
 extern "C"{
 
-void __device_stub__Z17advectParticles_kP6float2S0_iifim(cData *__par0, cData *__par1, int __par2, int __par3, float __par4, int __par5, size_t __par6){auto struct __T24 *__T232;
-char __[256]; *(char**)&__T232 = __;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T232->__par0 - (size_t)__T232) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T232->__par1 - (size_t)__T232) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T232->__par2 - (size_t)__T232) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T232->__par3 - (size_t)__T232) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T232->__par4 - (size_t)__T232) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T232->__par5 - (size_t)__T232) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T232->__par6 - (size_t)__T232) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k__entry))); };}
+void __device_stub__Z17advectParticles_kP6float2S0_iifim(cData *__par0, cData *__par1, int __par2, int __par3, float __par4, int __par5, size_t __par6){auto struct __T24 *__T225;
+*(void**)(void*)&__T225 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T225->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T225->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T225->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T225->__par3) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par4, sizeof(__par4), (size_t)&__T225->__par4) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par5, sizeof(__par5), (size_t)&__T225->__par5) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par6, sizeof(__par6), (size_t)&__T225->__par6) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k__entry)); (void)cudaLaunch(((char *)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k__entry))); };}
 
 }
-void advectParticles_k__entry( cData * __cuda_0,cData * __cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,int __cuda_5,size_t __cuda_6)
-{__device_stub__Z17advectParticles_kP6float2S0_iifim( __cuda_0, __cuda_1, __cuda_2, __cuda_3, __cuda_4, __cuda_5, __cuda_6);}
+void advectParticles_k__entry( cData *__cuda_0,cData *__cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,int __cuda_5,size_t __cuda_6)
+{__device_stub__Z17advectParticles_kP6float2S0_iifim( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);}
 extern "C"{
-# 67 "/tmp/tmpxft_00007e2f_00000000-1_fluidsGL.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_00007e2f_00000000_4_fluidsGL_cpp1_ii_texref(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k__entry), (char*)"_Z17advectParticles_kP6float2S0_iifim", "_Z17advectParticles_kP6float2S0_iifim", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k__entry), (char*)"_Z16updateVelocity_kP6float2PfS1_iiiim", "_Z16updateVelocity_kP6float2PfS1_iiiim", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k__entry), (char*)"_Z16diffuseProject_kP6float2S0_iiffi", "_Z16diffuseProject_kP6float2S0_iiffi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k__entry), (char*)"_Z16advectVelocity_kP6float2PfS1_iiifi", "_Z16advectVelocity_kP6float2PfS1_iiifi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k__entry), (char*)"_Z11addForces_kP6float2iiiiffim", "_Z11addForces_kP6float2iiiiffim", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texref, 0, "texref", 2, 0, 0);}
+# 117 "/tmp/tmpxft_00003d03_00000000-1_fluidsGL.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_00003d03_00000000_4_fluidsGL_cpp1_ii_texref(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k__entry), (char*)"_Z17advectParticles_kP6float2S0_iifim", "_Z17advectParticles_kP6float2S0_iifim", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k__entry), (char*)"_Z16updateVelocity_kP6float2PfS1_iiiim", "_Z16updateVelocity_kP6float2PfS1_iiiim", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k__entry), (char*)"_Z16diffuseProject_kP6float2S0_iiffi", "_Z16diffuseProject_kP6float2S0_iiffi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k__entry), (char*)"_Z16advectVelocity_kP6float2PfS1_iiifi", "_Z16advectVelocity_kP6float2PfS1_iiifi", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k__entry), (char*)"_Z11addForces_kP6float2iiiiffim", "_Z11addForces_kP6float2iiiiffim", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texref, 0, "texref", 2, 0, 0);}
 
 }
 # 529 "fluidsGL.cu" 2

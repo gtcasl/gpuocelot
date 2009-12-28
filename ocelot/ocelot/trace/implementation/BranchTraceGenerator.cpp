@@ -33,14 +33,14 @@ namespace trace
 		
 	}
 
-	void BranchTraceGenerator::initialize( 
-		const executive::EmulatedKernel* kernel )
+	void BranchTraceGenerator::initialize(const ir::ExecutableKernel& kernel)
+	
 	{
-		_entry.name = kernel->name;
-		_entry.module = kernel->module->modulePath;
+		_entry.name = kernel.name;
+		_entry.module = kernel.module->modulePath;
 		_entry.format = BranchTraceFormat;
 
-		std::string name = kernel->name;
+		std::string name = kernel.name;
 		
 		if( name.size() > 20 )
 		{
@@ -62,7 +62,7 @@ namespace trace
 		_header.instructions = 0;
 		_header.branches = 0;
 		_header.divergent = 0;
-		_header.threads = kernel->threadCount;
+		_header.threads = kernel.maxThreadsPerBlock();
 		_header.activeThreads = 0;
 		_header.maxContextStackSize = 0;
 	}

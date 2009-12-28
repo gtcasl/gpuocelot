@@ -21,11 +21,11 @@
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>
-			CudaRuntimeBase
+			TraceGeneratingCudaRuntime
 		</CudaRuntimeImplementation>
 		<TraceGeneratingCudaRuntime>
 			<CudaRuntimeApiTraceFile>
-				"traces/CudaApi.trace"
+				"traces/tpacf.trace"
 			</CudaRuntimeApiTraceFile>
 		</TraceGeneratingCudaRuntime>
 	</CudaRuntime>

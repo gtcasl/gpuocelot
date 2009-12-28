@@ -39,10 +39,10 @@
 			Emulated
 		</PreferredISA>
 		<OptimizationLevel>
-			none
+			basic
 		</OptimizationLevel>
 		<DisableGPUDevices>
-			0
+			1
 		</DisableGPUDevices>
 		<DisableLLVMDevices>
 			0

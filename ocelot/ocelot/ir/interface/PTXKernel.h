@@ -1,5 +1,4 @@
-/*!
-	\file PTXKernel.h
+/*! \file PTXKernel.h
 	\author Gregory Diamos <gregory.diamos@gatech>
 	\date Thursday September 17, 2009
 	\brief The header file for the PTXKernel class
@@ -18,10 +17,7 @@ namespace ir
 	{
 		public:
 			/*!	\brief Vector of statements */
-			typedef std::deque<PTXStatement> PTXStatementVector;
-
-			/*!	\brief Vector of instructions */
-			typedef std::deque<PTXInstruction> PTXInstructionVector;
+			typedef std::vector<PTXStatement> PTXStatementVector;
 
 			/*! \brief A map from strings to registers */
 			typedef std::unordered_map< std::string, 
@@ -29,14 +25,7 @@ namespace ir
 
 			/*! \brief A set of registers */
 			typedef analysis::DataflowGraph::RegisterVector RegisterVector;
-
-		private:
-			PTXInstruction::Version _version;
 			
-		public:
-			/*! the CFG references this vector of instructions */
-			PTXInstructionVector instructions;
-
 		public:
 			/*!	Constructs a control flow graph from iterators into the 
 				Module's PTXStatement vector
@@ -50,13 +39,11 @@ namespace ir
 			*/
 			static void constructCFG(
 				ControlFlowGraph &cfg,
-				PTXInstructionVector& instructions,
 				PTXStatementVector::const_iterator kernelStart,
 				PTXStatementVector::const_iterator kernelEnd );
 
 			/*! \brief Assigns register IDs to identifiers */
-			static RegisterMap assignRegisters( 
-				PTXInstructionVector& instructions );
+			static RegisterMap assignRegisters( ControlFlowGraph& cfg );
 
 		public:
 			/*! Constructs a kernel from an iterator into the PTXStatementVector
@@ -74,9 +61,6 @@ namespace ir
 			const PTXKernel& operator=( const PTXKernel& k );
 	
 		public:
-			/*! \brief Get the version of the PTX instruction set being used */
-			PTXInstruction::Version version() const;
-			
 			/*! \brief Get the set of all referenced 
 				registers in the instruction set */
 			RegisterVector getReferencedRegisters() const;

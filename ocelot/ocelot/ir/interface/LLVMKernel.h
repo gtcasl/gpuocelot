@@ -1,5 +1,4 @@
-/*!
-	\file LLVMKernel.h
+/*! \file LLVMKernel.h
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Saturday August 1, 2009
 	\brief The header file for the LLVMKernel class.

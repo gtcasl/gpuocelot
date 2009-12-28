@@ -41,6 +41,8 @@ namespace analysis
 			typedef unsigned int RegisterId;
 			/*! \brief A unique ID for a logical instruction */
 			typedef unsigned int InstructionId;
+			/*! \brief A list of instructions */
+			typedef ir::ControlFlowGraph::InstructionList InstructionList;
 
 			/*! \brief A register with type info */
 			class RegisterPointer
@@ -104,8 +106,8 @@ namespace analysis
 				public:
 					/*! \brief The instruction text */
 					std::string label;
-					/*! \brief The id of the instruction */
-					InstructionId id;
+					/*! \brief The pointer to the instruction */
+					ir::Instruction* i;
 					/*! \brief Destination registers */
 					RegisterPointerVector d;
 					/*! \brief Source registers */
@@ -132,8 +134,7 @@ namespace analysis
 			/*! \brief A vector of Block pointers */
 			typedef std::unordered_set< BlockVector::iterator > BlockPointerSet;
 			
-			/*!
-				\brief A class for referring to a generic basic block of 
+			/*! \brief A class for referring to a generic basic block of 
 					instructions.
 			*/
 			class Block
@@ -172,7 +173,7 @@ namespace analysis
 					InstructionVector _instructions;
 					/*! \brief A pointer to the underlying 
 						basic block in the cfg */
-					ir::BasicBlock* _block;
+					ir::ControlFlowGraph::iterator _block;
 
 				private:
 					/*! \brief Compare two register sets */
@@ -182,16 +183,13 @@ namespace analysis
 					bool compute( bool hasFallthrough );
 			
 				public:
-					/*! \brief Constructor from a sequence of instructions */
-					template< typename Inst >
-					Block( DataflowGraph& dfg, ir::BasicBlock& block, 
-						std::deque< Inst >& instructions  );
+					/*! \brief Constructor from a Control Flow Graph block */
+					Block( DataflowGraph& dfg, 
+						ir::ControlFlowGraph::iterator block );
 					/*! \brief Default constructor */
 					explicit Block( Type t = Invalid );
-					/*! \brief Constructor from a string */
-					explicit Block( const std::string& name ); 
 					/*! \brief Consutructor from a blank bb */
-					explicit Block( ir::BasicBlock& bb );
+					explicit Block( ir::ControlFlowGraph::iterator block );
 					
 				public:
 					/*! \brief Get registers that are alive entering the block*/
@@ -213,9 +211,9 @@ namespace analysis
 					/*! \brief Get the block label */
 					const std::string& label() const;
 					/*! \brief Get the id of the block */
-					ir::BasicBlock::Id id() const;
+					ir::ControlFlowGraph::BasicBlock::Id id() const;
 					/*! \brief Get a pointer to the underlying block */
-					ir::BasicBlock* block();
+					ir::ControlFlowGraph::iterator block();
 
 				public:
 					/*! \brief Determine the block that produced a register */
@@ -245,14 +243,11 @@ namespace analysis
 
 		public:
 			/*! \brief Convert from a PTXInstruction to an Instruction  */
-			Instruction convert( ir::PTXInstruction& i, 
-				InstructionId id );
+			Instruction convert( ir::PTXInstruction& i );
 
 		public:
 			/*! \brief Build from a CFG */
-			template< typename Inst >
-			DataflowGraph( ir::ControlFlowGraph& cfg, 
-				std::deque< Inst >& instructions );
+			DataflowGraph( ir::ControlFlowGraph& cfg );
 
 		public:
 			/*! \brief Return an iterator to the program entry point */
@@ -273,16 +268,16 @@ namespace analysis
 			size_type max_size() const;
 
 		public:
-			/*!
-				\brief Insert a Block between two existing blocks.
+			/*! \brief Insert a Block between two existing blocks.
 				\param predecessor An iterator to the previous block.
 				\return An iterator to the inserted block.
 				Note that this insert splits the fallthrough edge
 			*/
-			iterator insert( iterator predecessor, const Block& b );
+			iterator insert( iterator predecessor, const std::string& label );
 			/*! \brief Split a block into two starting at a given instruction,
 				the split instruction goes in the first block */
-			iterator split( iterator block, unsigned int instruction );
+			iterator split( iterator block, unsigned int instruction, 
+				bool isFallthrough );
 			/*! \brief Redirect an edge between two blocks to a third */
 			void redirect( iterator source, 
 				iterator destination, iterator newTarget );
@@ -296,8 +291,10 @@ namespace analysis
 		public:
 			/*! \brief Insert an instruction into a block 
 				immediately before the specified index */
-			void insert( iterator block, const Instruction& instruction, 
+			void insert( iterator block, const ir::Instruction& instruction, 
 				unsigned int index );
+			/*! \brief Insert an instruction at the end of a block */
+			void insert( iterator block, const ir::Instruction& instruction );
 			/*! \brief Erase an instruction from a block at the specified
 				index */
 			void erase( iterator block, unsigned int index );
@@ -319,105 +316,6 @@ namespace analysis
 			/*! \brief Is the graph in ssa form? */
 			bool ssa() const;
 	};
-
-	template< typename Inst >
-	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& cfg, 
-		std::deque< Inst >& instructions )  
-		: _cfg( &cfg ), _consistent( instructions.empty() ), 
-		_ssa( false ), _maxRegister( 0 )
-	{
-		typedef std::unordered_map< ir::BasicBlock*, iterator > BlockMap;
-		BlockMap map;
-		
-		ir::ControlFlowGraph::BlockPointerVector blocks 
-			= cfg.executable_sequence();
-		assert( blocks.size() >= 2 );
-				
-		report( "Importing " << blocks.size() << " blocks from CFG." );
-		
-		unsigned int count = 1;
-		map.insert( std::make_pair( cfg.get_entry_block(), 
-			_blocks.insert( _blocks.end(), Block( Block::Entry ) ) ) );	
-		for( ir::ControlFlowGraph::BlockPointerVector::iterator 
-			bbi = blocks.begin(); bbi != blocks.end(); ++bbi, ++count )
-		{
-			if( *bbi == cfg.get_exit_block() ) continue;
-			if( *bbi == cfg.get_entry_block() ) continue;
-			Block newB( *this, **bbi, instructions );
-			if( (*bbi)->label.empty() )
-			{
-				std::stringstream label;
-				label << "$__Block_" << count;
-				(*bbi)->label = label.str();
-			}
-			map.insert( std::make_pair( *bbi, 
-				_blocks.insert( _blocks.end(), newB ) ) );	
-		}
-		map.insert( std::make_pair( cfg.get_exit_block(), 
-			_blocks.insert( _blocks.end(), Block( Block::Exit ) ) ) );	
-		
-		_blocks.front()._block = cfg.get_entry_block();
-		_blocks.back()._block = cfg.get_exit_block();
-		_blocks.back()._fallthrough = _blocks.end();
-
-		report( "Adding edges from CFG" );
-		ir::ControlFlowGraph::BlockPointerVector::iterator bbi = blocks.begin();
-		for( ; bbi != blocks.end(); ++bbi )
-		{
-			BlockMap::iterator bi = map.find( *bbi );
-			assert( bi != map.end() );
-		
-			ir::BasicBlock::EdgeList inEdges = (*bbi)->get_in_edges();
-		
-			report( " Adding edges into " << (*bbi)->label );
-		
-			for( ir::BasicBlock::EdgeList::iterator ei = inEdges.begin(); 
-				ei != inEdges.end(); ++ei )
-			{
-				BlockMap::iterator begin = map.find( (*ei)->head );
-				assert( begin != map.end() );
-				
-				assert( (*ei)->head == begin->second->_block );
-				assert( (*ei)->tail == bi->second->_block );
-				
-				if( (*ei)->type == ir::Edge::FallThrough )
-				{
-					report( "  fallthrough " << begin->second->label() << " -> "
-						<< bi->second->label() );
-					begin->second->_fallthrough = bi->second;
-					bi->second->_predecessors.insert( begin->second );
-				}
-				else if( (*ei)->type == ir::Edge::Branch )
-				{
-					report( "  branch " << begin->second->label() << " -> "
-						<< bi->second->label() );
-					begin->second->_targets.insert( bi->second );
-					bi->second->_predecessors.insert( begin->second );	
-				}
-				else
-				{
-					assertM( false, "Got invalid edge type between " 
-						<< begin->second->label() << " and " 
-						<< bi->second->label() );
-				}
-			}
-		}
-	}
-
-	template< typename Inst >
-	DataflowGraph::Block::Block( DataflowGraph& dfg, ir::BasicBlock& block, 
-		std::deque< Inst >& instructions ) : _type( Body ), _block( &block )
-	{
-		_fallthrough = dfg.end();
-		for( ir::BasicBlock::InstructionList::const_iterator 
-			fi = block.instructions.begin(); 
-			fi != block.instructions.end(); ++fi )
-		{
-			assert( *fi < instructions.size() );
-			_instructions.push_back( dfg.convert( instructions[ *fi ], *fi ) );
-		}
-		
-	}
 
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
 }

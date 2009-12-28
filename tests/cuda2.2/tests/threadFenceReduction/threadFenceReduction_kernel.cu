@@ -34,7 +34,7 @@
 #ifndef _REDUCE_KERNEL_H_
 #define _REDUCE_KERNEL_H_
 
-#ifdef __DEVICE_EMULATION__
+#if 0
 #define EMUSYNC __syncthreads()
 #else
 #define EMUSYNC
@@ -64,7 +64,7 @@ reduceBlock(float *sdata, const unsigned int tid)
     if (blockSize >= 256) { if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads(); }
     if (blockSize >= 128) { if (tid <  64) { sdata[tid] += sdata[tid +  64]; } __syncthreads(); }
 
-#ifndef __DEVICE_EMULATION__
+#if 0
     if (tid < 32)
 #endif
     {

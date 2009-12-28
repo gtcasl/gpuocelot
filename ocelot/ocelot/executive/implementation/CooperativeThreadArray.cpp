@@ -154,26 +154,26 @@ executive::CooperativeThreadArray::CooperativeThreadArray(const EmulatedKernel *
 
 	traceEvents = true;
 
-	blockDim = k->getBlockDim();
+	blockDim = k->blockDim();
 	threadCount = blockDim.x*blockDim.y*blockDim.z;
 
 	RegisterFilePitch = threadCount;
-	RegisterFile = new PTXU64[RegisterFilePitch * (k->RegisterCount + 1)];
+	RegisterFile = new PTXU64[RegisterFilePitch * (k->registerCount() + 1)];
 
 	// initialize CC register
-	CC_register = k->RegisterCount;
+	CC_register = k->registerCount();
 	for (int n = 0; n < threadCount; n++) {
 		setRegAsU64(n, CC_register, 0);
 	}
 
-	if(k->SharedMemorySize > 0) {
-		SharedMemory = new char[k->SharedMemorySize];
+	if(k->totalSharedMemorySize() > 0) {
+		SharedMemory = new char[k->totalSharedMemorySize()];
 	} else {
 		SharedMemory = 0;
 	}
 	
-	if(k->LocalMemorySize > 0) {
-		LocalMemory = new char[k->LocalMemorySize * threadCount];
+	if(k->localMemorySize() > 0) {
+		LocalMemory = new char[k->localMemorySize() * threadCount];
 	} else {
 		LocalMemory = 0;
 	}
@@ -190,15 +190,9 @@ executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0),
 	Destroys state associated with CTA
 */
 executive::CooperativeThreadArray::~CooperativeThreadArray() {
-	if (RegisterFile) {
-		delete [] RegisterFile;
-	}
-	if (SharedMemory) {
-		delete [] SharedMemory;
-	}
-	if (LocalMemory) {
-		delete [] LocalMemory;
-	}
+	delete [] RegisterFile;
+	delete [] SharedMemory;
+	delete [] LocalMemory;
 }
 
 /*!
@@ -227,7 +221,7 @@ void executive::CooperativeThreadArray::initialize(ir::Dim3 grid, bool trace ) {
 */
 const ir::PTXInstruction& executive::CooperativeThreadArray::currentInstruction(
 	CTAContext & context) {
-	return kernel->KernelInstructions[context.PC];
+	return kernel->instructions[context.PC];
 }
 
 ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue( 
@@ -428,7 +422,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 			case PTXInstruction::Reconverge:
 				eval_Reconverge(context, instr); break;
 			default:
-				assert("Hit invalid instruction opcode" == 0);
+				assertM(false, "Hit invalid instruction opcode at pc " 
+					<< context.PC);
 				break;
 		}
 
@@ -1576,12 +1571,12 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 			case PTXInstruction::Shared:
 				{
 					if ((PTXU64) source + elementSize
-						> kernel->SharedMemorySize) {
+						> kernel->sharedMemorySize()) {
 						std::stringstream stream;
 						stream << "Shared memory address " 
 							<< (void*)(source + elementSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->SharedMemorySize;
+							<< kernel->sharedMemorySize();
 						throw RuntimeException(stream.str(), context.PC, instr);
 					}
 					source += (PTXU64) SharedMemory;
@@ -3065,12 +3060,12 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			case PTXInstruction::Param:
 				{
 					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->ParameterMemorySize) {
+						> kernel->parameterMemorySize()) {
 						std::stringstream stream;
 						stream << "Parameter memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->ParameterMemorySize;
+							<< kernel->parameterMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
@@ -3082,12 +3077,12 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			case PTXInstruction::Const:
 				{
 					if ((PTXU64) source + elementSize * vectorSize
-						> kernel->ConstMemorySize) {
+						> kernel->constMemorySize()) {
 						std::stringstream stream;
 						stream << "Constant memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->ConstMemorySize;
+							<< kernel->constMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
@@ -3112,12 +3107,12 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 				{
 					source = (char*)(0xffffffff & (PTXU64) source);
 					if ((PTXU64) source + elementSize * vectorSize
-						> kernel->SharedMemorySize) {
+						> kernel->totalSharedMemorySize()) {
 						std::stringstream stream;
 						stream << "Shared memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->SharedMemorySize;
+							<< kernel->totalSharedMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
@@ -3129,19 +3124,19 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			case PTXInstruction::Local:
 				{
 					if ((PTXU64) source + elementSize * vectorSize
-						> kernel->LocalMemorySize) {
+						> kernel->localMemorySize()) {
 						std::stringstream stream;
 						stream << "Local memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->LocalMemorySize;
+							<< kernel->localMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}
 					source += (PTXU64) LocalMemory 
-						+ threadID * kernel->LocalMemorySize;
+						+ threadID * kernel->localMemorySize();
 				}
 				break;
 			default:
@@ -6180,12 +6175,12 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 			case PTXInstruction::Param:
 				{
 					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->ParameterMemorySize) {
+						> kernel->parameterMemorySize()) {
 						std::stringstream stream;
 						stream << "Parameter memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->ParameterMemorySize;
+							<< kernel->parameterMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
@@ -6210,12 +6205,12 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 				{
 					source = (char*)(0xffffffff & (PTXU64)source);
 					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->SharedMemorySize) {
+						> kernel->totalSharedMemorySize()) {
 						std::stringstream stream;
 						stream << "Shared memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->SharedMemorySize;
+							<< kernel->totalSharedMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
@@ -6227,19 +6222,19 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 			case PTXInstruction::Local:
 				{
 					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->LocalMemorySize) {
+						> kernel->localMemorySize()) {
 						std::stringstream stream;
 						stream << "Local memory address " 
 							<< (void*)(source + elementSize * vectorSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->LocalMemorySize;
+							<< kernel->localMemorySize();
 						stream << "\n";
 						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}					
 					source += (PTXU64) LocalMemory 
-						+ kernel->LocalMemorySize * threadID;
+						+ kernel->localMemorySize() * threadID;
 				}
 				break;
 			default:

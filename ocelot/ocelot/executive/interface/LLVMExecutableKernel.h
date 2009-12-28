@@ -39,8 +39,6 @@ namespace executive
 			typedef unsigned int ThreadContext;
 			/*! \brief A function pointer to the translated kernel */
 			typedef unsigned int (*Function)( LLVMContext* );
-			/*! \brief Shorthand for a PTX instruction vector */
-			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
 			/*! \brief A vector of texture variables */
 			typedef std::vector< const ir::Texture* > TextureVector;
 			
@@ -211,8 +209,9 @@ namespace executive
 			{
 				public:
 					/*! \brief A map from a basic block id to the block */
-					typedef std::unordered_map< ir::BasicBlock::Id, 
-						const ir::BasicBlock* > BlockIdMap;
+					typedef std::unordered_map< 
+						ir::ControlFlowGraph::BasicBlock::Id, 
+						ir::ControlFlowGraph::const_iterator > BlockIdMap;
 			
 				public:
 					/*! \brief Texture variables */
@@ -221,8 +220,6 @@ namespace executive
 					hydrazine::Timer timer;
 					/*! \brief Debugging information for blocks */
 					BlockIdMap blocks;
-					/*! \brief Debugging information for instructions */
-					ir::PTXKernel::PTXInstructionVector* instructions;				
 					/*! \brief Atomic operation cache */
 					AtomicOperationCache* cache;
 					
@@ -256,8 +253,6 @@ namespace executive
 			std::string _resumePoint;
 			/*! \brief The resume point offset */
 			unsigned int _resumePointOffset;
-			/*! \brief External shared memory */
-			unsigned int _externalSharedSize;
 			/*! \brief Constant memory mapping */
 			AllocationMap _constants;
 			/*! \brief Opaque state */
@@ -311,6 +306,12 @@ namespace executive
 			/*! \brief Scan the kernel and determine memory requirements */
 			void _allocateMemory( );
 
+			/*! \brief Reload global memory */
+			void _updateGlobalMemory( );
+
+			/*! \brief Reload constant memory */
+			void _updateConstantMemory( );
+
 		private:
 			/*! \brief Build debugging information */
 			void _buildDebuggingInformation();
@@ -329,8 +330,20 @@ namespace executive
 			void launchGrid( int width, int height );
 			/*! \brief Sets the shape of a cta in the kernel */
 			void setKernelShape( int x, int y, int z );
+			/*! \brief Declare an amount of external shared memory */
+			void setExternSharedMemorySize( unsigned int bytes );
 			/*! \brief Describes the device used to execute the kernel */
 			void setDevice( const Device* device, unsigned int threadLimit );
+			/*! \brief Reload parameter memory */
+			void updateParameterMemory();
+			/*! \brief Indicate that other memory has been updated */
+			void updateMemory();
+
+		public:
+			/*!	adds a trace generator to the EmulatedKernel */
+			void addTraceGenerator(trace::TraceGenerator *generator);
+			/*!	removes a trace generator from an EmulatedKernel */
+			void removeTraceGenerator(trace::TraceGenerator *generator);
 			
 		public:
 			/*! \brief Get the number of threads per cta */
@@ -338,23 +351,6 @@ namespace executive
 			/*! \brief Get the local id of the current thread */
 			unsigned int threadId() const;
 
-		public:
-			/*! \brief Get the constant memory size */
-			unsigned int constantMemorySize() const;
-			/*! \brief Get the shared memory size */
-			unsigned int sharedMemorySize() const;
-			/*! \brief Get the local memory size */
-			unsigned int localMemorySize() const;
-			
-		public:
-			/*! \brief Declare an amount of external shared memory */
-			void externSharedMemory( unsigned int bytes );
-			/*! \brief Reload parameter memory */
-			void updateParameterMemory();
-			/*! \brief Reload global memory */
-			void updateGlobalMemory();
-			/*! \brief Reload constant memory */
-			void updateConstantMemory();
 	};
 }
 

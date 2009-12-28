@@ -88,7 +88,7 @@ float RandFloat(float low, float high){
 ////////////////////////////////////////////////////////////////////////////////
 const int OPT_N = 4000000;
 
-#ifdef __DEVICE_EMULATION__
+#if 1
 const int  NUM_ITERATIONS = 1;
 #else
 const int  NUM_ITERATIONS = 512;

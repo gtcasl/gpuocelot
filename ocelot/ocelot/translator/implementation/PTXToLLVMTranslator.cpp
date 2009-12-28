@@ -321,7 +321,7 @@ namespace translator
 		call.parameters[1].type.type = ir::LLVMInstruction::I32;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		call.parameters[1].constant = true;
-		call.parameters[1].i32 = i.id;
+		call.parameters[1].i64 = (long long unsigned int)i.i;
 
 		_add( call );
 	}
@@ -567,7 +567,6 @@ namespace translator
 				instruction = block->instructions().begin();
 				instruction != block->instructions().end(); ++instruction )
 			{
-				_instructionId = instruction->id;
 				_translate( *instruction, *block );
 			}
 			
@@ -598,9 +597,8 @@ namespace translator
 		const analysis::DataflowGraph::Instruction& i, 
 		const analysis::DataflowGraph::Block& block )
 	{
-		assert( i.id < _ptx->instructions.size() );
 		_debug( i );
-		_translate( _ptx->instructions[ i.id ], block );
+		_translate( static_cast<ir::PTXInstruction&>(*i.i), block );
 	}
 
 	void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i, 

@@ -52,7 +52,7 @@
 /**
 *  The number of DCT kernel calls
 */
-#ifdef __DEVICE_EMULATION__
+#if 1
 #define BENCHMARK_SIZE	1
 #else
 #define BENCHMARK_SIZE	10
@@ -601,7 +601,7 @@ int main(int argc, char** argv)
 	//print speed info
 	printf("Success\n");
 
-#ifdef __DEVICE_EMULATION__
+#if 0
 	printf("Processing time : not relevant in CUDA emulation mode\n");
 #else
 	printf("Processing time (CUDA 1)    : %f ms \n", TimeCUDA1);

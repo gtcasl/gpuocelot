@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     int nbytes = n * sizeof(int);
     int value = 26;
 
-#ifdef __DEVICE_EMULATION__
+#if 1
     n = 1024;   // reduce workload for emulation
 #endif
     

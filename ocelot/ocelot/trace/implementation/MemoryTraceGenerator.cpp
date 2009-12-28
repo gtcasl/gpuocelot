@@ -153,12 +153,13 @@ trace::MemoryTraceGenerator::MemoryTraceGenerator() {
 trace::MemoryTraceGenerator::~MemoryTraceGenerator() {
 }
 
-void trace::MemoryTraceGenerator::initialize(const executive::EmulatedKernel *kernel) {
-	_entry.name = kernel->name;
-	_entry.module = kernel->module->modulePath;
+void trace::MemoryTraceGenerator::initialize(
+	const ir::ExecutableKernel& kernel) {
+	_entry.name = kernel.name;
+	_entry.module = kernel.module->modulePath;
 	_entry.format = MemoryTraceFormat;
 
-	std::string name = kernel->name;
+	std::string name = kernel.name;
 		
 	if( name.size() > 20 )
 	{
@@ -201,10 +202,10 @@ void trace::MemoryTraceGenerator::initialize(const executive::EmulatedKernel *ke
 	_event = Event();
 	
 	_header = Header();	
-	_header.blockDimX = kernel->getBlockDim().x;
-	_header.blockDimY = kernel->getBlockDim().y;
-	_header.blockDimZ = kernel->getBlockDim().z;
-	_header.thread_count = kernel->threadCount;
+	_header.blockDimX = kernel.blockDim().x;
+	_header.blockDimY = kernel.blockDim().y;
+	_header.blockDimZ = kernel.blockDim().z;
+	_header.thread_count = kernel.maxThreadsPerBlock();
 	_header.headerOnly = headerOnly;
 }
 

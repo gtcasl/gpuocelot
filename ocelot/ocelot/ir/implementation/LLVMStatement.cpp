@@ -59,7 +59,7 @@ namespace ir
 	{
 		if( i != 0 )
 		{
-			instruction = i->clone();
+			instruction = static_cast< LLVMInstruction* >( i->clone() );
 			assertM( type == Instruction, "Statement given non-zero " 
 				<< "instruction pointer, but not specified as an " 
 				<< "instruction statement." );
@@ -79,10 +79,10 @@ namespace ir
 	{
 		if( s.instruction != 0 )
 		{
-			instruction = s.instruction->clone();
+			instruction = static_cast< LLVMInstruction* >( 
+				s.instruction->clone() );
 			assertM( type == Instruction, "Statement given non-zero " 
-				<< "instruction pointer, but not specified as an " 
-				<< "instruction statement." );
+				<< "instruction pointer, but not specified as an " );
 		}
 	}
 
@@ -93,7 +93,7 @@ namespace ir
 		returnAttribute( LLVMInstruction::InvalidParameterAttribute ), 
 		functionAttributes( 0 ), alignment( 1 ), space( 0 ), constant( false )
 	{
-		instruction = i.clone();
+		instruction = static_cast< LLVMInstruction* >( i.clone() );
 	}
 
 	LLVMStatement::LLVMStatement( const std::string& l ) 
@@ -127,7 +127,8 @@ namespace ir
 		
 		if( s.instruction != 0 )
 		{
-			instruction = s.instruction->clone();
+			instruction = static_cast< LLVMInstruction* >( 
+				s.instruction->clone() );
 			assertM( type == Instruction, "Statement given non-zero " 
 				<< "instruction pointer, but not specified as an " 
 				<< "instruction statement." );

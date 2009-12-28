@@ -4,7 +4,7 @@
 	// nvopencc 2.3 built on 2009-07-02
 
 	//-----------------------------------------------------------
-	// Compiling /tmp/tmpxft_000033e0_00000000-7_barrier.cpp3.i (/tmp/ccBI#.iimzd0)
+	// Compiling /tmp/tmpxft_00006794_00000000-7_barrier.cpp3.i (/tmp/ccBI#.sma4uu)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
@@ -17,8 +17,8 @@
 	//-----------------------------------------------------------
 
 	.file	1	"<command-line>"
-	.file	2	"/tmp/tmpxft_000033e0_00000000-6_barrier.cudafe2.gpu"
-	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.3.3/include/stddef.h"
+	.file	2	"/tmp/tmpxft_00006794_00000000-6_barrier.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h"
 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"

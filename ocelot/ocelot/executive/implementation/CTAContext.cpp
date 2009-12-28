@@ -1,8 +1,5 @@
-/*!
-	\file CTAContext.cpp
-
+/*! \file CTAContext.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief implements a CTAContext
 */
 
@@ -22,14 +19,15 @@ executive::CTAContext::CTAContext(const executive::EmulatedKernel *k, executive:
 	using namespace boost;
 	using namespace std;
 
-	ir::Dim3 blockDim = kernel->getBlockDim();
+	ir::Dim3 blockDim = kernel->blockDim();
 	active = dynamic_bitset<>(blockDim.x * blockDim.y * blockDim.z, 1);
 	PC = 0;
 	running = true;
 	for (int i = 0; i < blockDim.x*blockDim.y*blockDim.z; i++) {
 		active[i] = 1;
 	}
-	report("CTAContext(0x" << hex << (unsigned long)k << ", 0x" << (unsigned long)c << ")" << dec);
+	report("CTAContext(0x" << hex << (unsigned long)k << ", 0x" 
+		<< (unsigned long)c << ")" << dec);
 }
 
 executive::CTAContext::~CTAContext() {

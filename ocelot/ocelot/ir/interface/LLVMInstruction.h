@@ -324,7 +324,7 @@ namespace ir
 								
 		public:
 			/*! \brief Return a pointer to a new Instruction */
-			virtual LLVMInstruction* clone() const = 0;
+			virtual Instruction* clone(bool copy=true) const = 0;
 	
 		public:
 			virtual std::string toString() const = 0;
@@ -352,7 +352,7 @@ namespace ir
 			virtual std::string valid() const;
 
 		public:
-			virtual LLVMInstruction* clone() const = 0;
+			virtual Instruction* clone(bool copy = true) const = 0;
 	};
 	
 	/*! \brief A generic 2 operand instruction */
@@ -379,7 +379,7 @@ namespace ir
 			virtual std::string valid() const;
 
 		public:
-			virtual LLVMInstruction* clone() const = 0;
+			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 	
 	/*! \brief A generic conversion instruction */
@@ -396,7 +396,7 @@ namespace ir
 			virtual std::string valid() const;
 
 		public:
-			virtual LLVMInstruction* clone() const = 0;
+			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 	
 	/*! \brief A generic comparison instruction */
@@ -415,7 +415,7 @@ namespace ir
 			virtual std::string valid() const;
 
 		public:
-			virtual LLVMInstruction* clone() const = 0;
+			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 	
 	/*! \brief The LLVM add instruction */
@@ -439,7 +439,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM alloca instruction */
@@ -464,7 +464,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM And instruction */
@@ -475,7 +475,7 @@ namespace ir
 			LLVMAnd();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM ashr instruction */
@@ -489,7 +489,7 @@ namespace ir
 			std::string valid() const;
 		
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM bitcast instruction */
@@ -500,7 +500,7 @@ namespace ir
 			LLVMBitcast();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 		
 	/*! \brief The LLVM br instruction */
@@ -525,7 +525,7 @@ namespace ir
 			std::string valid() const;	
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM call instruction */
@@ -562,7 +562,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM extractelement instruction */
@@ -577,7 +577,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM extractvalue instruction */
@@ -606,7 +606,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fadd instruction */
@@ -617,7 +617,7 @@ namespace ir
 			LLVMFadd();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fcmp instruction */
@@ -628,7 +628,7 @@ namespace ir
 			LLVMFcmp();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fdiv instruction */
@@ -639,7 +639,7 @@ namespace ir
 			LLVMFdiv();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fmul instruction */
@@ -650,7 +650,7 @@ namespace ir
 			LLVMFmul();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fpext instruction */
@@ -661,7 +661,7 @@ namespace ir
 			LLVMFpext();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 		
 	/*! \brief The LLVM fptosi instruction */
@@ -672,7 +672,7 @@ namespace ir
 			LLVMFptosi();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 		
 	/*! \brief The LLVM fptoui instruction */
@@ -683,7 +683,7 @@ namespace ir
 			LLVMFptoui();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fptrunc instruction */
@@ -694,7 +694,7 @@ namespace ir
 			LLVMFptrunc();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 		
 	/*! \brief The LLVM free instruction */
@@ -713,7 +713,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM frem instruction */
@@ -724,7 +724,7 @@ namespace ir
 			LLVMFrem();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM fsub instruction */
@@ -735,7 +735,7 @@ namespace ir
 			LLVMFsub();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM getelementptr instruction */
@@ -764,7 +764,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM icmp instruction */
@@ -775,7 +775,7 @@ namespace ir
 			LLVMIcmp();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM insertelement instruction */
@@ -794,7 +794,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM insertvalue instruction */
@@ -826,7 +826,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM intotoptr instruction */
@@ -837,7 +837,7 @@ namespace ir
 			LLVMInttoptr();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM invoke instruction */
@@ -880,7 +880,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM load instruction */
@@ -902,7 +902,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM lshr instruction */
@@ -916,7 +916,7 @@ namespace ir
 			std::string valid() const;
 			
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM malloc instruction */
@@ -941,7 +941,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM mul instruction */
@@ -962,7 +962,7 @@ namespace ir
 			std::string toString() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM or instruction */
@@ -973,7 +973,7 @@ namespace ir
 			LLVMOr();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM phi instruction */
@@ -1010,7 +1010,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM ptrtoint instruction */
@@ -1021,7 +1021,7 @@ namespace ir
 			LLVMPtrtoint();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM Add instruction */
@@ -1040,7 +1040,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM sdiv instruction */
@@ -1058,7 +1058,7 @@ namespace ir
 			std::string toString() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM select instruction */
@@ -1077,7 +1077,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM sext instruction */
@@ -1088,7 +1088,7 @@ namespace ir
 			LLVMSext();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM shl instruction */
@@ -1102,7 +1102,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM shufflevector instruction */
@@ -1125,7 +1125,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM sitofp instruction */
@@ -1136,7 +1136,7 @@ namespace ir
 			LLVMSitofp();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM srem instruction */
@@ -1147,7 +1147,7 @@ namespace ir
 			LLVMSrem();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM store instruction */
@@ -1169,7 +1169,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM sub instruction */
@@ -1190,7 +1190,7 @@ namespace ir
 			std::string toString() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM switch instruction */
@@ -1229,7 +1229,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM trunc instruction */
@@ -1240,7 +1240,7 @@ namespace ir
 			LLVMTrunc();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM udiv instruction */
@@ -1251,7 +1251,7 @@ namespace ir
 			LLVMUdiv();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM uitofp instruction */
@@ -1262,7 +1262,7 @@ namespace ir
 			LLVMUitofp();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 		
 	/*! \brief The LLVM unreachable instruction */
@@ -1277,7 +1277,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM unwind instruction */
@@ -1292,7 +1292,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM urem instruction */
@@ -1303,7 +1303,7 @@ namespace ir
 			LLVMUrem();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM va_arg instruction */
@@ -1318,7 +1318,7 @@ namespace ir
 			std::string valid() const;
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM xor instruction */
@@ -1329,7 +1329,7 @@ namespace ir
 			LLVMXor();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 	/*! \brief The LLVM zext instruction */
@@ -1340,7 +1340,7 @@ namespace ir
 			LLVMZext();
 
 		public:
-			LLVMInstruction* clone() const;
+			Instruction* clone(bool copy=true) const;
 	};
 	
 }

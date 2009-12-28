@@ -38,7 +38,7 @@
 #include "sharedmem.cuh"
 
 
-#ifdef __DEVICE_EMULATION__
+#if 1
 #define EMUSYNC __syncthreads()
 #else
 #define EMUSYNC

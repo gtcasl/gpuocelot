@@ -63,9 +63,7 @@ namespace parser
 						InvalidArray,
 						NotPredicate,
 						NotSupported,
-						NotVersion1_3,
 						NotVersion1_4,
-						UnknownVersion,
 						Invalid
 					};
 			
@@ -73,7 +71,6 @@ namespace parser
 					ir::Module module;
 					StringMap labels;
 					std::string fileName;
-					ir::PTXInstruction::Version ptxVersion;
 				
 				public:
 					std::string sectionType;
@@ -107,8 +104,7 @@ namespace parser
 					void _setImmediateTypes();
 				
 				public:
-					void version( double version, YYLTYPE& location, 
-						ir::PTXInstruction::Version expected );
+					void version( double version, YYLTYPE& location );
 					void identifierList( const std::string& identifier );
 					void identifierList2( const std::string& identifier );
 					void decimalListSingle( long long int value );
@@ -199,7 +195,6 @@ namespace parser
 				public:
 					const char* what() const throw();
 					~Exception() throw();
-			
 			};
 		
 		private:
@@ -207,7 +202,7 @@ namespace parser
 		
 		private:
 			void checkLabels();
-			void reset( ir::PTXInstruction::Version version );
+			void reset();
 		
 		public:
 			static std::string toString( YYLTYPE&, State& );

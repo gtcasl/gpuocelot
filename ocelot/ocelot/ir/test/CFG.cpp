@@ -1,8 +1,5 @@
-/*!
-	\file CFG.cpp
-
+/*! \file CFG.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief tests CFG analysis by forming a CFG from a sequence of instructions known to produce
 		a certain CFG and then comparing output
 */
@@ -48,15 +45,15 @@ void analyze(const char *filename) {
 		
 		cfg_file << "// Kernel: " << kernel->name << "\n";
 		cfg_file << "// Control flow graph\n";
-		kernel->cfg()->write(cfg_file, kernel->instructions);
+		kernel->cfg()->write(cfg_file);
 
 		dom_file << "// Kernel: " << kernel->name << "\n";
 		dom_file << "// Dominator tree\n";
-		kernel->dom_tree()->write(dom_file, kernel->instructions);
+		kernel->dom_tree()->write(dom_file);
 
 		pdom_file << "// Kernel: " << kernel->name << "\n";
 		pdom_file << "// Post dominator tree\n";
-		kernel->pdom_tree()->write(pdom_file, kernel->instructions);
+		kernel->pdom_tree()->write(pdom_file);
 
 	}
 }

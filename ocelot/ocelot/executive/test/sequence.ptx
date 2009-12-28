@@ -1,4 +1,4 @@
-	.version 1.3
+	.version 1.4
 	.target sm_10, map_f64_to_f32
 	// compiled with /home/normal/cuda/open64/lib//be
 	// nvopencc built on 2008-12-03
@@ -53,14 +53,13 @@
 	.file	25	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
 
 
-	.entry _Z10k_sequencePii
+	.entry _Z10k_sequencePii( .param .u64 __cudaparm__Z10k_sequencePii_A,
+		.param .s32 __cudaparm__Z10k_sequencePii_N)
 	{
 	.reg .u16 %rh<4>;
 	.reg .u32 %r<8>;
 	.reg .u64 %rd<6>;
 	.reg .pred %p<3>;
-	.param .u64 __cudaparm__Z10k_sequencePii_A;
-	.param .s32 __cudaparm__Z10k_sequencePii_N;
 	.loc	15	5	0
 $LBB1__Z10k_sequencePii:
 	mov.u16 	%rh1, %ctaid.x;      	// 
@@ -85,12 +84,11 @@ $Lt_0_4:
 $LDWend__Z10k_sequencePii:
 	} // _Z10k_sequencePii
 
-	.entry _Z17k_simple_sequencePi
+	.entry _Z17k_simple_sequencePi( .param .u64 __cudaparm__Z17k_simple_sequencePi_A )
 	{
 	.reg .u16 %rh<4>;
 	.reg .u32 %r<7>;
 	.reg .u64 %rd<6>;
-	.param .u64 __cudaparm__Z17k_simple_sequencePi_A;
 	.loc	15	12	0
 $LBB1__Z17k_simple_sequencePi:
 	.loc	15	14	0

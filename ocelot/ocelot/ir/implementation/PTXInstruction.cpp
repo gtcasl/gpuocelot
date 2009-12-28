@@ -9,18 +9,6 @@
 #include <cassert>
 #include <sstream>
 
-std::string ir::PTXInstruction::toString( Version v ) {
-	switch( v ) {
-		case ptx1_0: return "1.0"; break;
-		case ptx1_1: return "1.1"; break;
-		case ptx1_2: return "1.2"; break;
-		case ptx1_3: return "1.3"; break;
-		case ptx1_4: return "1.4"; break;
-		default: break;
-	}
-	return "";
-}
-
 std::string ir::PTXInstruction::toString( Level l ) {
 	switch( l ) {
 		case CtaLevel: return "cta"; break;
@@ -260,8 +248,9 @@ bool ir::PTXInstruction::isPt( const PTXOperand& op )
 	return op.toString() == "%pt";
 }
 
-ir::PTXInstruction::PTXInstruction( Version v, Opcode op ) : version(v), 
-	opcode(op) {
+ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d, 
+	const PTXOperand& _a, const PTXOperand& _b, const PTXOperand& _c ) 
+	: opcode(op), d(_d), a(_a), b(_b), c(_c) {
 	ISA = Instruction::PTX;
 	type = PTXOperand::s32;
 	modifier = 0;
@@ -284,10 +273,6 @@ bool ir::PTXInstruction::operator==( const PTXInstruction& i ) const {
 }
 
 std::string ir::PTXInstruction::valid() const {
-	if( version < ptx1_3 ) {
-		return "no support for PTX version " + toString( version ) 
-			+ " less than " + toString( ptx1_3 );
-	}
 	switch (opcode) {
 		case Abs: {
 			if ( !( type == PTXOperand::s16 || type == PTXOperand::s32 || 
@@ -307,10 +292,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}		
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -350,10 +331,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -484,12 +461,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Cos: {
-			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
-			}
 			if( !( type == PTXOperand::f32 ) ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
@@ -505,10 +476,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -526,10 +493,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned from " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -539,40 +502,20 @@ std::string ir::PTXInstruction::valid() const {
 		}
 		case Div: {
 			if( ( modifier & sat ) ) {
-				if( version > ptx1_3 ) {
-					return "no support for saturating divide in version " + 
-						toString( version );
-				}
-				if( type != PTXOperand::f32 ) {
-					return "only f32 supported for saturate";
-				}
+				return "no support for saturating divide.";
 			}
 			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
 				if( type != PTXOperand::f32 ) {
 					return "only f32 supported for approximate";
 				}
 			}
-			if( divideFull ) {
-				if( version < ptx1_4 ) {
-					return "no support for full division in version " 
-						+ toString( version );
-				}
-			}			
 			if( type == PTXOperand::f64 ) {
-				if( version >= ptx1_4 ) {				
-					if( !( modifier & rn ) && !( modifier & rz ) 
-						&& !( modifier & rm ) && !( modifier & rp ) ) {
-						return "requires a rounding modifier in version " 
-							+ toString( version );
-					}
-					if( !( modifier & rn ) ) {
-						return "only nearest rounding supported in version " 
-							+ toString( version );
-					}
+				if( !( modifier & rn ) && !( modifier & rz ) 
+					&& !( modifier & rm ) && !( modifier & rp ) ) {
+					return "requires a rounding modifier";
+				}
+				if( !( modifier & rn ) ) {
+					return "only nearest rounding supported";
 				}
 			}
 			if( !( type == PTXOperand::u16 || type == PTXOperand::u32 
@@ -598,10 +541,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -610,12 +549,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Ex2: {
-			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
-			}
 			if( !( type == PTXOperand::f32 ) ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
@@ -631,10 +564,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -666,12 +595,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Lg2: {
-			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
-			}
 			if( !( type == PTXOperand::f32 ) ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
@@ -687,10 +610,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -733,12 +652,9 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( type );
 			}
 			if( type == PTXOperand::f64 ) {
-				if( version >= ptx1_4 ) {				
-					if( !( modifier & rn ) && !( modifier & rz ) 
-						&& !( modifier & rm ) && !( modifier & rp ) ) {
-						return "requires a rounding modifier in version " 
-							+ toString( version );
-					}
+				if( !( modifier & rn ) && !( modifier & rz ) 
+					&& !( modifier & rm ) && !( modifier & rp ) ) {
+					return "requires a rounding modifier";
 				}
 			}
 			if( a.type != b.type ) {
@@ -770,10 +686,6 @@ std::string ir::PTXInstruction::valid() const {
 				return "saturate only valid for s32";
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -804,10 +716,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -816,10 +724,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Membar: {
-			if( version < ptx1_4 ) {
-				return "not supported in versions less than " 
-					+ toString( version ); 
-			}
 			break;
 		}
 		case Min: {
@@ -845,10 +749,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -939,10 +839,6 @@ std::string ir::PTXInstruction::valid() const {
 				return stream.str();
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -968,10 +864,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -998,10 +890,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Pmevent: {
-			if( version < ptx1_4 ) {
-				return "not supported in versions less than " 
-					+ toString( version ); 
-			}
 			if( d.addressMode != PTXOperand::Immediate ) {
 				return "only support Immediate targets";
 			}
@@ -1032,10 +920,6 @@ std::string ir::PTXInstruction::valid() const {
 		}
 		case Rcp: {
 			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
 				if( type != PTXOperand::f32 ) {
 					return "only f32 supported for approximate";
 				}
@@ -1045,16 +929,12 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( type );
 			}
 			if( type == PTXOperand::f64 ) {
-				if( version >= ptx1_4 ) {				
-					if( !( modifier & rn ) && !( modifier & rz ) 
-						&& !( modifier & rm ) && !( modifier & rp ) ) {
-						return "requires a rounding modifier in version " 
-							+ toString( version );
-					}
-					if( !( modifier & rn ) ) {
-						return "only nearest rounding supported in version " 
-							+ toString( version );
-					}
+				if( !( modifier & rn ) && !( modifier & rz ) 
+					&& !( modifier & rm ) && !( modifier & rp ) ) {
+					return "requires a rounding modifier";
+				}
+				if( !( modifier & rn ) ) {
+					return "only nearest rounding supported";
 				}
 			}
 			if( !PTXOperand::valid( type, a.type ) 
@@ -1068,10 +948,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1149,12 +1025,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Rsqrt: {
-			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
-			}
 			if( type != PTXOperand::f32 && type != PTXOperand::f64 ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
@@ -1170,10 +1040,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1262,10 +1128,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " must be a predicate.";
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1306,10 +1168,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1362,12 +1220,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Sin: {
-			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
-			}
 			if( !( type == PTXOperand::f32 ) ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
@@ -1383,10 +1235,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1428,10 +1276,6 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand C must be either s32 or f32 assignable";
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1442,10 +1286,6 @@ std::string ir::PTXInstruction::valid() const {
 		}
 		case Sqrt: {
 			if( ( modifier & approx ) ) {
-				if( version < ptx1_4 ) {
-					return "no support for approximate modifier in version " 
-						+ toString( version );
-				}
 				if( type != PTXOperand::f32 ) {
 					return "only f32 supported for approximate";
 				}
@@ -1455,16 +1295,12 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( type );
 			}
 			if( type == PTXOperand::f64 ) {
-				if( version >= ptx1_4 ) {				
-					if( !( modifier & rn ) && !( modifier & rz ) 
-						&& !( modifier & rm ) && !( modifier & rp ) ) {
-						return "requires a rounding modifier in version " 
-							+ toString( version );
-					}
-					if( !( modifier & rn ) ) {
-						return "only nearest rounding supported in version " 
-							+ toString( version );
-					}
+				if( !( modifier & rn ) && !( modifier & rz ) 
+					&& !( modifier & rm ) && !( modifier & rp ) ) {
+					return "requires a rounding modifier";
+				}
+				if( !( modifier & rn ) ) {
+					return "only nearest rounding supported";
 				}
 			}
 			if( !PTXOperand::valid( type, a.type ) 
@@ -1478,10 +1314,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1540,10 +1372,6 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( version < ptx1_4 ) {
-					return "ftz not supported in version " 
-						+ toString( version );
-				}
 				if( PTXOperand::isInt( type ) ) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
@@ -1752,7 +1580,7 @@ std::string ir::PTXInstruction::toString() const {
 				result += "full.";
 			}
 			Modifier local_modifier = (Modifier)modifier;
-			if (type == ir::PTXOperand::f32 && version == ir::PTXInstruction::ptx1_4) {
+			if (type == ir::PTXOperand::f32) {
 				local_modifier = approx;
 			}
 			result += modifierString( local_modifier, carry );
@@ -2000,5 +1828,14 @@ std::string ir::PTXInstruction::toString() const {
 		default: break;
 	}
 	return "";
+}
+
+ir::Instruction* ir::PTXInstruction::clone(bool copy) const {
+	if (copy) {
+		return new PTXInstruction(*this);
+	}
+	else {
+		return new PTXInstruction;
+	}
 }
 

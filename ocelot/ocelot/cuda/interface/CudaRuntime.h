@@ -253,19 +253,7 @@ namespace cuda
 			/*! \brief Launch an emulated kernel
 				\param thread An iterator to the current thread
 				\param translatedKernel The kernel being launched */
-			void _launchEmulatedKernel( ThreadMap::iterator thread, 
-				ArchitectureMap::iterator translatedKernel );
-
-			/*! \brief Launch an llvm kernel
-				\param thread An iterator to the current thread
-				\param translatedKernel The kernel being launched */
-			void _launchLLVMKernel( ThreadMap::iterator thread, 
-				ArchitectureMap::iterator translatedKernel );
-
-			/*! \brief Launch a GPU kernel
-				\param thread An iterator to the current thread
-				\param translatedKernel The kernel being launched */
-			void _launchGPUKernel( ThreadMap::iterator thread, 
+			void _launchKernel( ThreadMap::iterator thread, 
 				ArchitectureMap::iterator translatedKernel );
 		
 		public:

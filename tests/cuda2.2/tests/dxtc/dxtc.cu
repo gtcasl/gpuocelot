@@ -51,7 +51,7 @@
 #define INPUT_IMAGE "lena_std.ppm"
 #define REFERENCE_IMAGE "lena_ref.dds"
 
-#if __DEVICE_EMULATION__
+#if 1
 #define ERROR_THRESHOLD 0.1f
 #else
 #define ERROR_THRESHOLD 0.02f
@@ -59,7 +59,7 @@
 
 #define NUM_THREADS 64        // Number of threads per block.
 
-#if __DEVICE_EMULATION__
+#if 1
 #define __debugsync() __syncthreads()
 #else
 #define __debugsync()
@@ -84,7 +84,7 @@ __constant__ float3 kColorMetric = { 1.0f, 1.0f, 1.0f };
 ////////////////////////////////////////////////////////////////////////////////
 __device__ void sortColors(const float * values, int * ranks)
 {
-#if __DEVICE_EMULATION__
+#if 1
     if (threadIdx.x == 0)
     {
         for (int tid = 0; tid < 16; tid++)
@@ -152,7 +152,7 @@ __device__ void loadColorBlock(const uint * image, float3 colors[16], float3 sum
         colors[idx].z = ((c >> 16) & 0xFF) * (1.0f / 255.0f);
         
         // No need to synchronize, 16 < warp size.
-#if __DEVICE_EMULATION__
+#if 1
         } __debugsync(); if (idx < 16) {
 #endif
 
@@ -162,7 +162,7 @@ __device__ void loadColorBlock(const uint * image, float3 colors[16], float3 sum
         
         dps[idx] = dot(colors[idx], axis);
         
-#if __DEVICE_EMULATION__
+#if 1
         } __debugsync(); if (idx < 16) {
 #endif
         
@@ -170,7 +170,7 @@ __device__ void loadColorBlock(const uint * image, float3 colors[16], float3 sum
         
         tmp = colors[idx];
 
-#if __DEVICE_EMULATION__
+#if 1
         } __debugsync(); if (idx < 16) {
 #endif
 
@@ -402,7 +402,7 @@ __device__ int findMinError(float * errors)
     __shared__ int indices[NUM_THREADS];
     indices[idx] = idx;
 
-#if __DEVICE_EMULATION__
+#if 1
     for(int d = NUM_THREADS/2; d > 0; d >>= 1)
     {
         __syncthreads();
@@ -676,7 +676,7 @@ int main(int argc, char** argv)
     }
 
     uint w, h;
-#if __DEVICE_EMULATION__
+#if 1
     // Reduce the image size so that it doesn't take so long on emulation.
     w = W;
     h = H;

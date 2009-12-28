@@ -127,7 +127,7 @@ runTest( int argc, char** argv)
     // Note that these scans only support a single thread-block worth of data,
     // but we invoke them here on many blocks so that we can accurately compare
     // performance
-#ifndef __DEVICE_EMULATION__
+#if 0
     dim3  grid(256, 1, 1);  
 #else
     dim3  grid(1, 1, 1); // only one run block in device emu mode or it will be too slow

@@ -69,9 +69,7 @@ namespace ir {
 			TypeSpecifier_invalid
 		};
 
-		/*!
-			Special register names		
-		*/
+		/*!	Special register names */
 		enum SpecialRegister {
 			tidX,
 			tidY,
@@ -128,6 +126,10 @@ namespace ir {
 		
 	public:
 		PTXOperand();
+		PTXOperand(SpecialRegister r);
+		PTXOperand(const std::string& label);
+		PTXOperand(AddressMode m, DataType t, RegisterType r = 0, 
+			int o = 0, Vec v = v1);
 		~PTXOperand();
 
 		std::string toString() const;

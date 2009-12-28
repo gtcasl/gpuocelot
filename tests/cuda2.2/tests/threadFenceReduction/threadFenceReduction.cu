@@ -343,7 +343,7 @@ void shmoo(int minN, int maxN, int maxThreads, int maxBlocks)
     cutilSafeCallNoSync( cudaMemcpy(d_odata, h_idata, maxNumBlocks*sizeof(float), cudaMemcpyHostToDevice) );
 
 
-#ifndef __DEVICE_EMULATION__
+#if 0
     // warm-up
     reduce(maxN, maxThreads, maxNumBlocks, d_idata, d_odata);
     int testIterations = 1;
@@ -451,7 +451,7 @@ runTest( int argc, char** argv)
         cutilSafeCallNoSync( cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice) );
         cutilSafeCallNoSync( cudaMemcpy(d_odata, h_idata, numBlocks*sizeof(float), cudaMemcpyHostToDevice) );
 
-    #ifndef __DEVICE_EMULATION__
+    #if 0
         // warm-up
         reduce(size, numThreads, numBlocks, d_idata, d_odata);
         int testIterations = 1;

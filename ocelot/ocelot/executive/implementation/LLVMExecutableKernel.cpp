@@ -569,7 +569,7 @@ extern "C"
 	}
 	
 	void __ocelot_debug_block( executive::LLVMContext* context, 
-		ir::BasicBlock::Id id )
+		ir::ControlFlowGraph::BasicBlock::Id id )
 	{
 		#if(DEBUG_PTX_BASIC_BLOCK_TRACE == 1)
 		executive::LLVMExecutableKernel::OpaqueState* state = 
@@ -595,11 +595,9 @@ extern "C"
 	}
 
 	void __ocelot_debug_instruction( executive::LLVMContext* context, 
-		unsigned int instruction )
+		void* instruction )
 	{
 		#if(DEBUG_PTX_INSTRUCTION_TRACE == 1)		
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
 
 		#if(DEBUG_FIRST_THREAD_ONLY == 1)
 		if( context->tid.x == 0 && context->tid.y == 0 && context->tid.z == 0 )
@@ -608,7 +606,8 @@ extern "C"
 		
 		std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
 			<< ", " << context->tid.z << ") :  " << std::flush;
-		std::cout << (*state->instructions)[instruction].toString() << "\n";
+		std::cout << static_cast<ir::Instruction*>(instruction)->toString() 
+			<< "\n";
 
 		#if(DEBUG_FIRST_THREAD_ONLY == 1)
 		}
@@ -1564,7 +1563,7 @@ namespace executive
 			Function two;
 		} cast;
 	
-		updateGlobalMemory();
+		_updateGlobalMemory();
 		cast.one = _state.jit->getPointerToFunction( function );
 		_function = cast.two;
 		
@@ -1602,35 +1601,43 @@ namespace executive
 	
 		report( "  Determining offsets of operands that use parameters" );
 	
-		for( PTXInstructionVector::iterator 
-			instruction = _ptx->instructions.begin(); 
-			instruction != _ptx->instructions.end(); ++instruction )
+		for( ir::ControlFlowGraph::iterator block = _ptx->cfg()->begin(); 
+			block != _ptx->cfg()->end(); ++block )
 		{
-			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
-				&instruction->b, &instruction->c };
-		
-			if( instruction->opcode == ir::PTXInstruction::Mov
-				|| instruction->opcode == ir::PTXInstruction::Ld
-				|| instruction->opcode == ir::PTXInstruction::St )
+			for( ir::ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction )
 			{
-				for( unsigned int i = 0; i != 4; ++i )
+				ir::PTXInstruction& ptx = static_cast<
+					ir::PTXInstruction&>(**instruction);
+			
+				ir::PTXOperand* operands[] = { &ptx.d, &ptx.a, &ptx.b, &ptx.c };
+		
+				if( ptx.opcode == ir::PTXInstruction::Mov
+					|| ptx.opcode == ir::PTXInstruction::Ld
+					|| ptx.opcode == ir::PTXInstruction::St )
 				{
-					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					for( unsigned int i = 0; i != 4; ++i )
 					{
-						AllocationMap::iterator 
-							parameter = map.find( operands[ i ]->identifier );
-						if( parameter != map.end() )
+						if( operands[ i ]->addressMode 
+							== ir::PTXOperand::Address )
 						{
-							report( "   For instruction \"" 
-								<< instruction->toString() << "\" mapping \"" 
-								<< parameter->first << "\" to " 
-								<< parameter->second );
-							operands[ i ]->offset += parameter->second;
+							AllocationMap::iterator 
+								parameter = map.find( 
+								operands[ i ]->identifier );
+							if( parameter != map.end() )
+							{
+								report( "   For instruction \"" 
+									<< ptx.toString() << "\" mapping \"" 
+									<< parameter->first << "\" to " 
+									<< parameter->second );
+								operands[ i ]->offset += parameter->second;
+							}
 						}
 					}
 				}
-			}
 			
+			}
 		}
 	}
 
@@ -1715,64 +1722,73 @@ namespace executive
 			}
 		}
 		
-		for( PTXInstructionVector::iterator 
-			instruction = _ptx->instructions.begin(); 
-			instruction != _ptx->instructions.end(); ++instruction )
+		for( ir::ControlFlowGraph::iterator block = _ptx->cfg()->begin(); 
+			block != _ptx->cfg()->end(); ++block )
 		{
-			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
-				&instruction->b, &instruction->c };
-		
-			if( instruction->opcode == ir::PTXInstruction::Mov
-				|| instruction->opcode == ir::PTXInstruction::Ld
-				|| instruction->opcode == ir::PTXInstruction::St )
+			for( ir::ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction )
 			{
-				for( unsigned int i = 0; i != 4; ++i )
+				ir::PTXInstruction& ptx = static_cast<
+					ir::PTXInstruction&>(**instruction);
+
+				ir::PTXOperand* operands[] = { &ptx.d, &ptx.a, 
+					&ptx.b, &ptx.c };
+		
+				if( ptx.opcode == ir::PTXInstruction::Mov
+					|| ptx.opcode == ir::PTXInstruction::Ld
+					|| ptx.opcode == ir::PTXInstruction::St )
 				{
-					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					for( unsigned int i = 0; i != 4; ++i )
 					{
-						StringSet::iterator si = external.find(
-							operands[ i ]->identifier );
-						if( si != external.end() ) 
+						if( operands[ i ]->addressMode 
+							== ir::PTXOperand::Address )
 						{
-							report("   For instruction \"" 
-								<< instruction->toString() 
-								<< "\", mapping shared label \"" << *si 
-								<< "\" to external shared memory." );
-							externalOperands.push_back( operands[ i ] );
-							continue;
-						}
+							StringSet::iterator si = external.find(
+								operands[ i ]->identifier );
+							if( si != external.end() ) 
+							{
+								report("   For instruction \"" 
+									<< ptx.toString() 
+									<< "\", mapping shared label \"" << *si 
+									<< "\" to external shared memory." );
+								externalOperands.push_back( operands[ i ] );
+								continue;
+							}
 						
-						GlobalMap::iterator gi = sharedGlobals.find(
-							operands[ i ]->identifier );
-						if( gi != sharedGlobals.end() )
-						{
-							ir::Module::GlobalMap::const_iterator 
-								it = gi->second;
-							sharedGlobals.erase( gi );
+							GlobalMap::iterator gi = sharedGlobals.find(
+								operands[ i ]->identifier );
+							if( gi != sharedGlobals.end() )
+							{
+								ir::Module::GlobalMap::const_iterator 
+									it = gi->second;
+								sharedGlobals.erase( gi );
 							
-							report( "   Found global shared variable " 
-								<< it->second.statement.name );
+								report( "   Found global shared variable " 
+									<< it->second.statement.name );
 							
-							_pad( _context.sharedSize, 
-								it->second.statement.alignment );
+								_pad( _context.sharedSize, 
+									it->second.statement.alignment );
 							
-							map.insert( std::make_pair( 
-								it->second.statement.name, 
-								_context.sharedSize ) );
-							_context.sharedSize += it->second.statement.bytes();
-						}				
+								map.insert( std::make_pair( 
+									it->second.statement.name, 
+									_context.sharedSize ) );
+								_context.sharedSize 
+									+= it->second.statement.bytes();
+							}				
 					
-						AllocationMap::iterator mapping = map.find( 
-							operands[ i ]->identifier );
-						if( map.end() != mapping ) 
-						{
-							instruction->addressSpace 
-								= ir::PTXInstruction::Shared;
-							operands[ i ]->offset += mapping->second;
-							report("   For instruction " 
-								<< instruction->toString() 
-								<< ", mapping shared label " << mapping->first 
-								<< " to " << mapping->second );
+							AllocationMap::iterator mapping = map.find( 
+								operands[ i ]->identifier );
+							if( map.end() != mapping ) 
+							{
+								ptx.addressSpace = ir::PTXInstruction::Shared;
+								operands[ i ]->offset += mapping->second;
+								report("   For instruction " 
+									<< ptx.toString() 
+									<< ", mapping shared label " 
+									<< mapping->first 
+									<< " to " << mapping->second );
+							}
 						}
 					}
 				}
@@ -1791,8 +1807,9 @@ namespace executive
 		}
 	
 		report( "   Total shared memory size is " << _context.sharedSize 
-			<< " declared plus " << _externalSharedSize << " external." );
-		_context.shared = new char[ _context.sharedSize + _externalSharedSize ];
+			<< " declared plus " << _externSharedMemorySize << " external." );
+		_context.shared = new char[ _context.sharedSize 
+			+ _externSharedMemorySize ];
 
 	}
 	
@@ -1823,37 +1840,45 @@ namespace executive
 			}
 		}
 		
-		for( PTXInstructionVector::iterator 
-			instruction = _ptx->instructions.begin(); 
-			instruction != _ptx->instructions.end(); ++instruction )
+		for( ir::ControlFlowGraph::iterator block = _ptx->cfg()->begin(); 
+			block != _ptx->cfg()->end(); ++block )
 		{
-			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
-				&instruction->b, &instruction->c };
-		
-			if( instruction->opcode == ir::PTXInstruction::Mov
-				|| instruction->opcode == ir::PTXInstruction::Ld
-				|| instruction->opcode == ir::PTXInstruction::St )
+			for( ir::ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction )
 			{
-				for( unsigned int i = 0; i != 4; ++i )
+				ir::PTXInstruction& ptx = static_cast<
+					ir::PTXInstruction&>(**instruction);
+				ir::PTXOperand* operands[] = { &ptx.d, &ptx.a, 
+					&ptx.b, &ptx.c };
+		
+				if( ptx.opcode == ir::PTXInstruction::Mov
+					|| ptx.opcode == ir::PTXInstruction::Ld
+					|| ptx.opcode == ir::PTXInstruction::St )
 				{
-					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					for( unsigned int i = 0; i != 4; ++i )
 					{
-						AllocationMap::iterator mapping = map.find( 
-							operands[ i ]->identifier );
-						if( map.end() != mapping ) 
+						if( operands[ i ]->addressMode 
+							== ir::PTXOperand::Address )
 						{
-							instruction->addressSpace 
-								= ir::PTXInstruction::Local;
-							operands[ i ]->offset += mapping->second;
-							report("   For instruction " 
-								<< instruction->toString() 
-								<< ", mapping local label " << mapping->first 
-								<< " to " << mapping->second );
+							AllocationMap::iterator mapping = map.find( 
+								operands[ i ]->identifier );
+							if( map.end() != mapping ) 
+							{
+								ptx.addressSpace 
+									= ir::PTXInstruction::Local;
+								operands[ i ]->offset += mapping->second;
+								report("   For instruction " 
+									<< ptx.toString() 
+									<< ", mapping local label " 
+										<< mapping->first 
+									<< " to " << mapping->second );
+							}
 						}
 					}
 				}
-			}
-		}	
+			}	
+		}
 
 		report( "   Total local memory size is " << _context.localSize 
 			<< " for " << threads() << " threads." );
@@ -1897,37 +1922,43 @@ namespace executive
 			}
 		}
 		
-		for( PTXInstructionVector::iterator 
-			instruction = _ptx->instructions.begin(); 
-			instruction != _ptx->instructions.end(); ++instruction )
+		for( ir::ControlFlowGraph::iterator block = _ptx->cfg()->begin(); 
+			block != _ptx->cfg()->end(); ++block )
 		{
-			ir::PTXOperand* operands[] = { &instruction->d, &instruction->a, 
-				&instruction->b, &instruction->c };
-		
-			if( instruction->opcode == ir::PTXInstruction::Mov
-				|| instruction->opcode == ir::PTXInstruction::Ld
-				|| instruction->opcode == ir::PTXInstruction::St )
+			for( ir::ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction )
 			{
-				for( unsigned int i = 0; i != 4; ++i )
+				ir::PTXInstruction& ptx = static_cast<
+					ir::PTXInstruction&>(**instruction);
+				ir::PTXOperand* operands[] = { &ptx.d, &ptx.a, 
+					&ptx.b, &ptx.c };
+		
+				if( ptx.opcode == ir::PTXInstruction::Mov
+					|| ptx.opcode == ir::PTXInstruction::Ld
+					|| ptx.opcode == ir::PTXInstruction::St )
 				{
-					if( operands[ i ]->addressMode == ir::PTXOperand::Address )
+					for( unsigned int i = 0; i != 4; ++i )
 					{
-						AllocationMap::iterator mapping = _constants.find( 
-							operands[ i ]->identifier );
-						if( _constants.end() != mapping ) 
+						if( operands[ i ]->addressMode == ir::PTXOperand::Address )
 						{
-							instruction->addressSpace 
-								= ir::PTXInstruction::Const;
-							operands[ i ]->offset += mapping->second;
-							report("   For instruction " 
-								<< instruction->toString() 
-								<< ", mapping constant label " << mapping->first 
-								<< " to " << mapping->second );
+							AllocationMap::iterator mapping = _constants.find( 
+								operands[ i ]->identifier );
+							if( _constants.end() != mapping ) 
+							{
+								ptx.addressSpace 
+									= ir::PTXInstruction::Const;
+								operands[ i ]->offset += mapping->second;
+								report("   For instruction " 
+									<< ptx.toString() 
+									<< ", mapping constant label " << mapping->first 
+									<< " to " << mapping->second );
+							}
 						}
 					}
 				}
-			}
-		}	
+			}	
+		}
 
 		report( "   Total constant memory size is " << _context.constantSize 
 			<< "." );
@@ -1943,29 +1974,35 @@ namespace executive
 		AllocationMap map;
 		unsigned int index = 0;
 		
-		for( PTXInstructionVector::iterator 
-			instruction = _ptx->instructions.begin(); 
-			instruction != _ptx->instructions.end(); ++instruction )
+		for( ir::ControlFlowGraph::iterator block = _ptx->cfg()->begin(); 
+			block != _ptx->cfg()->end(); ++block )
 		{
-			if( instruction->opcode == ir::PTXInstruction::Tex )
+			for( ir::ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction )
 			{
-				ir::Module::TextureMap::const_iterator 
-					texture = module->textures.find(
-					instruction->a.identifier );
-				assert( texture != module->textures.end() );
-		
-				AllocationMap::iterator 
-					allocation = map.find( texture->first );
-				if( allocation == map.end() )
+				ir::PTXInstruction& ptx = static_cast<
+					ir::PTXInstruction&>(**instruction);
+				if( ptx.opcode == ir::PTXInstruction::Tex )
 				{
-					report( "  Allocating texture " << texture->first 
-						<< " to index " << index << " with data " 
-						<< texture->second.data );
-					allocation = map.insert( 
-						std::make_pair( texture->first, index++ ) ).first;
-					_opaque.textures.push_back( &texture->second );
+					ir::Module::TextureMap::const_iterator 
+						texture = module->textures.find(
+						ptx.a.identifier );
+					assert( texture != module->textures.end() );
+		
+					AllocationMap::iterator 
+						allocation = map.find( texture->first );
+					if( allocation == map.end() )
+					{
+						report( "  Allocating texture " << texture->first 
+							<< " to index " << index << " with data " 
+							<< texture->second.data );
+						allocation = map.insert( 
+							std::make_pair( texture->first, index++ ) ).first;
+						_opaque.textures.push_back( &texture->second );
+					}
+					ptx.a.reg = allocation->second;
 				}
-				instruction->a.reg = allocation->second;
 			}
 		}
 	}
@@ -1981,177 +2018,8 @@ namespace executive
 		_allocateConstantMemory();
 		_allocateTextureMemory();
 	}
-	
-	void LLVMExecutableKernel::_buildDebuggingInformation()
-	{
-		if( _optimizationLevel 
-			!= translator::Translator::DebugOptimization ) return;
-		
-		report( "Building debug information." );
-		
-		ir::BasicBlock::Id id = 0;
-		
-		for( analysis::DataflowGraph::iterator block = _ptx->dfg()->begin(); 
-			block != _ptx->dfg()->end(); ++block )
-		{
-			block->block()->id = id++;
-			_opaque.blocks.insert( std::make_pair( block->id(), 
-				block->block() ) );
-		}
-	}
-	
-	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
-		const executive::Executive* c, 
-		translator::Translator::OptimizationLevel l ) : 
-		ExecutableKernel( k, c ), _module( 0 ), _moduleProvider( 0 ), 
-		_externalSharedSize( 0 ), _optimizationLevel( l )
-	{
-		assertM( k.ISA == ir::Instruction::PTX, 
-			"LLVMExecutable kernel must be constructed from a PTXKernel" );
-		ISA = ir::Instruction::LLVM;
-		
-		_ptx = new ir::PTXKernel( static_cast< ir::PTXKernel& >( k ) );
-		
-		_context.shared = 0;
-		_context.local = 0;
-		_context.parameter = 0;
-		_context.constant = 0;
-		_context.nctaid.z = 1;
-		
-		_context.ntid.x = 0;
-		_context.ntid.y = 0;
-		_context.ntid.z = 0;
-		
-		_context.other = (char*) &_opaque;
-		_opaque.instructions = &_ptx->instructions;
-		_opaque.cache = &_cache;
-		
-		_state.initialize();
-	}
-	
-	LLVMExecutableKernel::~LLVMExecutableKernel()
-	{	
-		#ifdef HAVE_LLVM
-		if( _moduleProvider != 0 )
-		{
-			_state.jit->deleteModuleProvider( _moduleProvider );
-		}
-		#endif
-		delete[] _context.local;
-		delete[] _context.constant;
-		delete[] _context.parameter;
-		delete[] _context.shared;
-		delete _ptx;
-	}
 
-	void LLVMExecutableKernel::launchGrid( int x, int y )
-	{	
-		_translateKernel();
-		report( "Launching kernel \"" << name << "\" on grid ( x = " 
-			<< x << ", y = " << y << " )"  );
-		
-		_context.nctaid.x = x;
-		_context.nctaid.y = y;
-		
-		_manager.launch( _function, &_context, 
-			_barrierSupport, _resumePointOffset, _externalSharedSize );
-	}
-	
-	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )
-	{
-		report( "Setting CTA shape to ( x = " << x << ", y = " 
-			<< y << ", z = " << z << " ) for kernel \"" << name << "\""  );
-		unsigned int previous = threads();
-	
-		_context.ntid.x = x;
-		_context.ntid.y = y;
-		_context.ntid.z = z;
-		
-		if( previous != threads() )
-		{
-			if( _context.local != 0 )
-			{
-				report( " Reallocating local memory of " << _context.localSize 
-					<< " bytes per thread ( " 
-					<< ( threads() * _context.localSize ) << " total )" );
-				delete[] _context.local;
-				_context.local = new char[ threads() * _context.localSize ];
-			}
-		}
-	}
-
-	void LLVMExecutableKernel::setDevice( const Device* device, 
-		unsigned int threadLimit )
-	{
-		_manager.setMaxThreadsPerCta( device->maxThreadsPerBlock );
-		_manager.setThreadCount( 
-			std::min( (unsigned int)device->multiprocessorCount, 
-			threadLimit ) );
-	}
-	
-	unsigned int LLVMExecutableKernel::threads() const
-	{
-		return _context.ntid.x * _context.ntid.y * _context.ntid.z;
-	}
-	
-	unsigned int LLVMExecutableKernel::threadId() const
-	{
-		return _context.ntid.x * _context.ntid.y * _context.tid.z 
-			+ _context.ntid.x * _context.tid.y + _context.tid.x;
-	}
-
-	unsigned int LLVMExecutableKernel::constantMemorySize() const
-	{
-		return _context.constantSize;
-	}
-
-	unsigned int LLVMExecutableKernel::sharedMemorySize() const
-	{
-		return _context.sharedSize;
-	}
-	
-	unsigned int LLVMExecutableKernel::localMemorySize() const
-	{
-		return _context.localSize;
-	}
-
-	void LLVMExecutableKernel::externSharedMemory( unsigned int bytes )
-	{
-		_translateKernel();
-		
-		if( bytes != _externalSharedSize )
-		{
-			report( "Setting external shared memory to " << bytes 
-				<< " total size is " << (bytes + _context.sharedSize) );
-			delete[] _context.shared;
-			_externalSharedSize = bytes;
-			_context.shared = new char[ _externalSharedSize
-				+ _context.sharedSize ];
-		}
-	}
-
-	void LLVMExecutableKernel::updateParameterMemory()
-	{
-		_translateKernel();
-	
-		size_t size = 0;
-		for( ParameterVector::iterator parameter = parameters.begin();
-			parameter != parameters.end(); ++parameter ) {
-			_pad( size, parameter->getAlignment() );
-			for( ir::Parameter::ValueVector::iterator 
-				value = parameter->arrayValues.begin(); 
-				value != parameter->arrayValues.end(); ++value ) {
-				assertM( size < _context.parameterSize, "Size " << size 
-					<< " not less than allocated parameter size " 
-					<< _context.parameterSize );
-				memcpy( _context.parameter + size, &value->val_b16, 
-					parameter->getElementSize() );
-				size += parameter->getElementSize();
-			}
-		}
-	}
-	
-	void LLVMExecutableKernel::updateGlobalMemory()
+	void LLVMExecutableKernel::_updateGlobalMemory()
 	{
 		#ifdef HAVE_LLVM
 		report( "Updating global memory." );
@@ -2183,7 +2051,7 @@ namespace executive
 		#endif
 	}
 	
-	void LLVMExecutableKernel::updateConstantMemory()
+	void LLVMExecutableKernel::_updateConstantMemory()
 	{
 		report( "Updating constant memory." );
 		
@@ -2202,6 +2070,184 @@ namespace executive
 				global->second.pointer, global->second.statement.bytes() );
 		}
 	}
+	
+	void LLVMExecutableKernel::_buildDebuggingInformation()
+	{
+		if( _optimizationLevel 
+			!= translator::Translator::DebugOptimization ) return;
+		
+		report( "Building debug information." );
+		
+		ir::ControlFlowGraph::BasicBlock::Id id = 0;
+		
+		for( analysis::DataflowGraph::iterator block = _ptx->dfg()->begin(); 
+			block != _ptx->dfg()->end(); ++block )
+		{
+			block->block()->id = id++;
+			_opaque.blocks.insert( std::make_pair( block->id(), 
+				block->block() ) );
+		}
+	}
+	
+	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
+		const executive::Executive* c, 
+		translator::Translator::OptimizationLevel l ) : 
+		ExecutableKernel( k, c ), _module( 0 ), _moduleProvider( 0 ), 
+		_optimizationLevel( l )
+	{
+		assertM( k.ISA == ir::Instruction::PTX, 
+			"LLVMExecutable kernel must be constructed from a PTXKernel" );
+		ISA = ir::Instruction::LLVM;
+		
+		_ptx = new ir::PTXKernel( static_cast< ir::PTXKernel& >( k ) );
+		
+		_context.shared = 0;
+		_context.local = 0;
+		_context.parameter = 0;
+		_context.constant = 0;
+		_context.nctaid.z = 1;
+		_gridDim.z = 1;
+		
+		_context.ntid.x = 0;
+		_context.ntid.y = 0;
+		_context.ntid.z = 0;
+		
+		_context.other = (char*) &_opaque;
+		_opaque.cache = &_cache;
+		
+		_state.initialize();
+	}
+	
+	LLVMExecutableKernel::~LLVMExecutableKernel()
+	{	
+		#ifdef HAVE_LLVM
+		if( _moduleProvider != 0 )
+		{
+			_state.jit->deleteModuleProvider( _moduleProvider );
+		}
+		#endif
+		delete[] _context.local;
+		delete[] _context.constant;
+		delete[] _context.parameter;
+		delete[] _context.shared;
+		delete _ptx;
+	}
+
+	void LLVMExecutableKernel::launchGrid( int x, int y )
+	{	
+		_translateKernel();
+		report( "Launching kernel \"" << name << "\" on grid ( x = " 
+			<< x << ", y = " << y << " )"  );
+		
+		_context.nctaid.x = x;
+		_context.nctaid.y = y;
+		_gridDim.x = x;
+		_gridDim.y = y;
+		
+		_manager.launch( _function, &_context, 
+			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
+	}
+	
+	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )
+	{
+		report( "Setting CTA shape to ( x = " << x << ", y = " 
+			<< y << ", z = " << z << " ) for kernel \"" << name << "\""  );
+		unsigned int previous = threads();
+	
+		_context.ntid.x = x;
+		_context.ntid.y = y;
+		_context.ntid.z = z;
+		_blockDim.x = x;
+		_blockDim.y = y;
+		_blockDim.z = z;
+		
+		if( previous != threads() )
+		{
+			if( _context.local != 0 )
+			{
+				report( " Reallocating local memory of " << _context.localSize 
+					<< " bytes per thread ( " 
+					<< ( threads() * _context.localSize ) << " total )" );
+				delete[] _context.local;
+				_context.local = new char[ threads() * _context.localSize ];
+			}
+		}
+	}
+
+	void LLVMExecutableKernel::setExternSharedMemorySize( unsigned int bytes )
+	{
+		_translateKernel();
+		
+		if( bytes != _externSharedMemorySize )
+		{
+			report( "Setting external shared memory to " << bytes 
+				<< " total size is " << (bytes + _context.sharedSize) );
+			delete[] _context.shared;
+			_externSharedMemorySize = bytes;
+			_context.shared = new char[ _externSharedMemorySize
+				+ _context.sharedSize ];
+		}
+	}
+
+	void LLVMExecutableKernel::setDevice( const Device* device, 
+		unsigned int threadLimit )
+	{
+		_manager.setMaxThreadsPerCta( device->maxThreadsPerBlock );
+		_manager.setThreadCount( 
+			std::min( (unsigned int)device->multiprocessorCount, 
+			threadLimit ) );
+	}
+	
+	void LLVMExecutableKernel::updateParameterMemory()
+	{
+		_translateKernel();
+	
+		size_t size = 0;
+		for( ParameterVector::iterator parameter = parameters.begin();
+			parameter != parameters.end(); ++parameter ) {
+			_pad( size, parameter->getAlignment() );
+			for( ir::Parameter::ValueVector::iterator 
+				value = parameter->arrayValues.begin(); 
+				value != parameter->arrayValues.end(); ++value ) {
+				assertM( size < _context.parameterSize, "Size " << size 
+					<< " not less than allocated parameter size " 
+					<< _context.parameterSize );
+				memcpy( _context.parameter + size, &value->val_b16, 
+					parameter->getElementSize() );
+				size += parameter->getElementSize();
+			}
+		}
+	}
+
+	void LLVMExecutableKernel::updateMemory()
+	{
+		_updateGlobalMemory();
+		_updateConstantMemory();
+	}
+	
+	void LLVMExecutableKernel::addTraceGenerator(
+		trace::TraceGenerator *generator)
+	{
+		assertM(false, "No trace generation support in LLVM kernel.");
+	}
+
+	void LLVMExecutableKernel::removeTraceGenerator(
+		trace::TraceGenerator *generator)
+	{
+		assertM(false, "No trace generation support in LLVM kernel.");	
+	}
+
+	unsigned int LLVMExecutableKernel::threads() const
+	{
+		return _context.ntid.x * _context.ntid.y * _context.ntid.z;
+	}
+	
+	unsigned int LLVMExecutableKernel::threadId() const
+	{
+		return _context.ntid.x * _context.ntid.y * _context.tid.z 
+			+ _context.ntid.x * _context.tid.y + _context.tid.x;
+	}
+	
 }
 
 #endif

@@ -117,17 +117,17 @@ public:
 		const int Threads = 8;
 
 		kernel->setKernelShape(Threads,1,1);
-		status << kernel->RegisterCount << " registers\n";
+		status << kernel->registerCount() << " registers\n";
 
 		CooperativeThreadArray cta(kernel);
 		cta.initialize();
 
-		for (int j = 0; j < kernel->RegisterCount; j++) {
+		for (int j = 0; j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; i < Threads; i++) {
 				cta.setRegAsU32(i, j, i*(j+1));
 			}
 		}
-		for (int j = 0; result && j < kernel->RegisterCount; j++) {
+		for (int j = 0; result && j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; result && i < Threads; i++) {
 				if (cta.getRegAsU32(i, j) != (ir::PTXU32)(i*(j+1))) {
 					result = false;
@@ -230,7 +230,7 @@ public:
 		PTXU32 block[64];
 		context.registerExternal(block, sizeof(PTXU32)*64);
 
-		PTXInstruction ld( PTXInstruction::ptx1_3 );
+		PTXInstruction ld;
 		ld.opcode = PTXInstruction::Ld;
 		ld.addressSpace = PTXInstruction::Global;
 		ld.d.reg = 0;
@@ -380,7 +380,7 @@ public:
 		context.registerExternal(u_block, 4*sizeof(PTXU32));
 		context.registerExternal(f_block, 2*sizeof(PTXF32));
 
-		PTXInstruction st( PTXInstruction::ptx1_3 );
+		PTXInstruction st;
 		st.opcode = PTXInstruction::St;
 		st.addressSpace = PTXInstruction::Global;
 		st.a.reg = 0;

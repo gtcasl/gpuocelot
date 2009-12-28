@@ -367,7 +367,7 @@ void shmoo(int minN, int maxN, int maxThreads, int maxBlocks, ReduceType datatyp
     cutilSafeCallNoSync( cudaMemcpy(d_odata, h_idata, maxNumBlocks*sizeof(T), cudaMemcpyHostToDevice) );
 
     // warm-up
-#ifndef __DEVICE_EMULATION__
+#if 0
     for (int kernel = 0; kernel < 7; kernel++)
     {
         if (useSM13)
@@ -491,7 +491,7 @@ runTest( int argc, char** argv, ReduceType datatype)
         cutilSafeCallNoSync( cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice) );
         cutilSafeCallNoSync( cudaMemcpy(d_odata, h_idata, numBlocks*sizeof(T), cudaMemcpyHostToDevice) );
 
-    #ifndef __DEVICE_EMULATION__
+    #if 0
         // warm-up
         if (datatype == REDUCE_DOUBLE)
             reduce_sm13<T>(size, numThreads, numBlocks, whichKernel, d_idata, d_odata);

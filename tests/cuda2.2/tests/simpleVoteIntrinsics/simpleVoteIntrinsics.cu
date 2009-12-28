@@ -122,7 +122,7 @@ int checkResultsVoteAllKernel2(unsigned int *h_result, int size, int warp_size)
 {
 	int error_count = 0;
 
-#ifdef __DEVICE_EMULATION__	// results behave differently because DEVICE_EMULATION has WARP size of 1
+#if 1	// results behave differently because DEVICE_EMULATION has WARP size of 1
 	error_count += checkErrors1(h_result,                             0,   VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
 	error_count += checkErrors2(h_result,   VOTE_DATA_GROUP*warp_size/4, 2*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
 	error_count += checkErrors2(h_result, 2*VOTE_DATA_GROUP*warp_size/4, 3*VOTE_DATA_GROUP*warp_size/4, warp_size, "Vote.All");
@@ -141,7 +141,7 @@ int checkResultsVoteAnyKernel3(bool *hinfo, int size)
 {
 	int i, error_count = 0;
 
-#ifdef __DEVICE_EMULATION__	// comparison is different due to DEVICE_EMULATION having a WARP size of 1
+#if 1	// comparison is different due to DEVICE_EMULATION having a WARP size of 1
 	for (i = 0; i < size * 3; i++)  {
       // All warps should be all zeros.
 	  if (i >= 0 && i < size) {
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
     cutilSafeCall(cudaChooseDevice(&dev, &deviceProp));
     cutilSafeCall(cudaGetDeviceProperties(&deviceProp, 0));
 
-#ifdef __DEVICE_EMULATION__
+#if 1
 	warp_size = 1;
 #else
 	if ((deviceProp.major > 1 || deviceProp.minor >= 2))

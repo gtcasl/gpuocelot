@@ -98,6 +98,11 @@ ir::ControlFlowGraph* ir::Kernel::cfg() {
 	return _cfg;
 }
 
+const ir::ControlFlowGraph* ir::Kernel::cfg() const {
+	assertM(_cfg != 0, "CFG not created.");
+	return _cfg;
+}
+
 ir::PostdominatorTree* ir::Kernel::pdom_tree() {
 	assertM(_cfg != 0, "Must create cfg before building postdominator tree.");
 	if (_pdom_tree) return _pdom_tree;

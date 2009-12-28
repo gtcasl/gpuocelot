@@ -188,7 +188,7 @@ template<class TData> int testCPU(
 // Data configuration
 ////////////////////////////////////////////////////////////////////////////////
 //Memory chunk size in bytes. Reused for test
-#ifdef __DEVICE_EMULATION__
+#if 1
     const int       MEM_SIZE = 4000000;
     const int NUM_ITERATIONS = 1;
 #else

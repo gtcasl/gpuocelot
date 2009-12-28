@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     if( argc > 1 )
         cuda_device = atoi( argv[1] );
 
-#ifdef __DEVICE_EMULATION__
+#if 1
     n = 4096;   // reduced workload for emulation (n should be divisible by 512*nstreams)
 #endif
 

@@ -115,8 +115,7 @@ namespace executive {
 	
 	private:
 		/*! \brief Translate the kernels of a module to the selected ISA */
-		void _translateToSelected(ir::Module& m);
-		
+		void _translateToSelected(ir::Module& m);		
 		void _translateToGPUExecutable(ir::Module &m);
 		
 	public:

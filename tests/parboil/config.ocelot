@@ -19,16 +19,16 @@
 			0
 		</UseParallelismTraceGenerator>
 		<UseCacheSimulator>
-			1
+			0
 		</UseCacheSimulator>
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>
-			CudaRuntimeBase
+			TraceGeneratingCudaRuntime
 		</CudaRuntimeImplementation>
 		<TraceGeneratingCudaRuntime>
 			<CudaRuntimeApiTraceFile>
-				"traces/CudaApi.trace"
+				"traces/tpacf.trace"
 			</CudaRuntimeApiTraceFile>
 		</TraceGeneratingCudaRuntime>
 	</CudaRuntime>
@@ -39,16 +39,16 @@
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			Emulated
+			LLVM
 		</PreferredISA>
 		<OptimizationLevel>
-			none
+			basic
 		</OptimizationLevel>
 		<DisableGPUDevices>
 			1
 		</DisableGPUDevices>
 		<DisableLLVMDevices>
-			1
+			0
 		</DisableLLVMDevices>
 		<DisableEmulatorDevices>
 			0

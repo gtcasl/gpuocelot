@@ -1,5 +1,4 @@
-/*!
-	\file PTXInstruction.h
+/*! \file PTXInstruction.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief base class for all instructions
@@ -14,16 +13,7 @@
 namespace ir {
 
 	class PTXInstruction: public Instruction {
-	public:
-		/*!	Version number of the instruction */
-		enum Version {
-			ptx1_0 = 0,
-			ptx1_1 = 1,
-			ptx1_2 = 2,
-			ptx1_3 = 3,
-			ptx1_4 = 4
-		};
-		
+	public:		
 		/*! Hierarchy Level */
 		enum Level {
 			CtaLevel,
@@ -209,7 +199,6 @@ namespace ir {
 
 	public:
 	
-		static std::string toString( Version );
 		static std::string toString( Level );
 		static std::string toString( Vec );
 		static std::string toString( AddressSpace );
@@ -226,21 +215,20 @@ namespace ir {
 		static bool isPt( const PTXOperand& );
 
 	public:
-		PTXInstruction( Version v = ptx1_0, Opcode op = Nop );
+		PTXInstruction( Opcode op = Nop, const PTXOperand& d = PTXOperand(), 
+			const PTXOperand& a = PTXOperand(), 
+			const PTXOperand& b = PTXOperand(), 
+			const PTXOperand& c = PTXOperand() );
 		~PTXInstruction();
 
 		bool operator==( const PTXInstruction& ) const;
 		
-		/*!
-			Is this a valid instruction?
+		/*! Is this a valid instruction?
 			
 			return null string if valid, otherwise a description of why 
 				not.
 		*/
 		std::string valid() const;
-
-		/*! Instruction version. */
-		Version version;
 
 		/*! Returns the guard predicate representation for the instruction */
 		std::string guard() const;
@@ -248,6 +236,10 @@ namespace ir {
 		/*! Returns a parsable string representation of the instruction */
 		std::string toString() const;
 
+		/*! \brief Clone the instruction */
+		Instruction* clone( bool copy = true ) const;
+
+	public:
 		/*! Opcode of PTX instruction */
 		Opcode opcode;
 
@@ -330,8 +322,7 @@ namespace ir {
 		/*! Source operand c */
 		PTXOperand c;
 
-		/* 
-			Runtime annotations 
+		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
 				at analysis time
@@ -353,6 +344,8 @@ namespace ir {
 		/*! \brief The index of the statement that this instruction was 
 			created from */
 		unsigned int statementIndex;
+		/*! \brief The program counter of the instruction */
+		unsigned int pc;
 	};
 
 }

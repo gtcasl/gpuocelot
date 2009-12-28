@@ -259,7 +259,7 @@ runTest( int argc, char** argv) {
     unsigned int user_defined = 0;
     // desired precision of eigenvalues
     float  precision = 0.00001f;
-#ifdef __DEVICE_EMULATION__
+#if 1
     unsigned int iters_timing = 1;
 #else
     unsigned int iters_timing = 1;

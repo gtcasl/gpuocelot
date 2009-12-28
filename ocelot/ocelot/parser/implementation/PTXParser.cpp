@@ -36,14 +36,6 @@ namespace ptx1_4
 	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );
 }
 
-/*!
-	\brief A namespace for parsing PTX 1.3
-*/
-namespace ptx1_3
-{ 
-	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );
-}
-
 namespace parser
 {
 	PTXParser::State::OperandWrapper::OperandWrapper( const ir::PTXOperand& o, 
@@ -96,8 +88,7 @@ namespace parser
 		}
 	}
 
-	void PTXParser::State::version( double version, YYLTYPE& location, 
-		ir::PTXInstruction::Version expected )
+	void PTXParser::State::version( double version, YYLTYPE& location )
 	{
 		report( "  Rule: VERSION DOUBLE_CONSTANT" );
 
@@ -142,29 +133,11 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-		if( expected == ir::PTXInstruction::ptx1_3 )
-		{	
-			if( statement.minor != 3 || statement.major != 1 )
-			{
-				throw_exception( "Cannot parse PTX version " << statement.major 
-					<< "." << statement.minor << " with version 1.3 parser.", 
-					NotVersion1_3 );
-			}
-		}
-		else if( expected == ir::PTXInstruction::ptx1_4 )
+		if( statement.minor != 4 || statement.major != 1 )
 		{
-			if( statement.minor != 4 || statement.major != 1 )
-			{
-				throw_exception( "Cannot parse PTX version " << statement.major 
-					<< "." << statement.minor << " with version 1.4 parser.", 
-					NotVersion1_4 );
-			}
-		}
-		else
-		{
-			throw_exception( "Unknown PTX version " 
-				<< ir::PTXInstruction::toString( expected ) 
-				<< ".", UnknownVersion );
+			throw_exception( "Cannot parse PTX version " << statement.major 
+				<< "." << statement.minor << " with version 1.4 parser.", 
+				NotVersion1_4 );
 		}
 	}
 	
@@ -1008,7 +981,7 @@ namespace parser
 
 	void PTXParser::State::instruction()
 	{
-		statement.instruction = ir::PTXInstruction( ptxVersion );
+		statement.instruction = ir::PTXInstruction( );
 		statement.instruction.statementIndex = module.statements.size();
 	}
 
@@ -1248,7 +1221,7 @@ namespace parser
 		}	
 	}
 	
-	void PTXParser::reset( ir::PTXInstruction::Version version )
+	void PTXParser::reset( )
 	{
 		state.inEntry = false;
 		state.identifiers.clear();
@@ -1259,10 +1232,6 @@ namespace parser
 		state.module.kernels.clear();
 		state.module.modulePath = fileName;
 		state.fileName = fileName;
-		
-		state.ptxVersion = version;
-		state.statement.instruction.version = version;
-		state.statement.version = version;
 		
 		ir::PTXOperand bucket;
 		bucket.identifier = "_";
@@ -1696,33 +1665,12 @@ namespace parser
 		std::stringstream temp;
 		
 		parser::PTXLexer lexer( &input, &temp );
-		reset( ir::PTXInstruction::ptx1_3 );
+		reset();
 		
 		report( "Parsing file " << fileName );
-		report( "Running 1.3 main parse pass." );
+		report( "Running 1.4 main parse pass." );
 		
-		try
-		{
-			ptx1_3::yyparse( lexer, state );
-		}
-		catch( const Exception& e )
-		{
-			if( e.error == State::NotVersion1_3 )
-			{
-				input.seekg( 0, std::ios::beg );
-				temp.seekg( 0, std::ios::beg );
-				parser::PTXLexer lexer( &input, &temp );
-				
-				reset( ir::PTXInstruction::ptx1_4 );
-								
-				report( "Running 1.4 parse pass." );
-				ptx1_4::yyparse( lexer, state );
-			}
-			else
-			{
-				throw;
-			}
-		}
+		ptx1_4::yyparse( lexer, state );
 		assert( temp.str().empty() );
 		
 		checkLabels();

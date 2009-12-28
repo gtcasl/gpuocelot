@@ -1,5 +1,4 @@
-/*!
-	\file Global.h
+/*! \file Global.h
 	
 	\date Tuesday March 31, 2009
 	\author Gregory Diamos

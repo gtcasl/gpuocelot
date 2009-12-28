@@ -115,7 +115,7 @@ namespace trace
 					about to be launched.
 				\param kernel The kernel used to initialize the generator
 			*/
-			void initialize( const executive::EmulatedKernel* kernel );
+			void initialize( const ir::ExecutableKernel& kernel );
 
 			/*!
 				\brief Called whenever an event takes place.

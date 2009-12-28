@@ -109,7 +109,7 @@ extern "C" void convolutionColumnCPU(
 ////////////////////////////////////////////////////////////////////////////////
 //Image width should be aligned to maximum coalesced read/write size
 //for best global memory performance in both row and column filter.
-#ifdef __DEVICE_EMULATION__
+#if 1
 //Reduce problem size to have reasonable emulation time
 const int      DATA_W = iAlignUp(256, 16);
 const int      DATA_H = 256;

@@ -1,5 +1,4 @@
-/*!
-	\file TraceGenerator.cpp
+/*! \file TraceGenerator.cpp
 
 	\author Andrew Kerr <arkerr@gatech.edu>
 
@@ -24,11 +23,7 @@ trace::TraceGenerator::~TraceGenerator() {
 
 }
 
-/*!
-	called when a traced kernel is launched to retrieve some parameters from the kernel
-*/
-void trace::TraceGenerator::initialize(
-	const executive::EmulatedKernel *kernel) {
+void trace::TraceGenerator::initialize(const ir::ExecutableKernel& kernel) {
 	// if we cared, we could get the kernel's launch configuration:
 	//
 	// kernel->gridDim
@@ -39,12 +34,9 @@ void trace::TraceGenerator::initialize(
 	// kernel->ConstMemorySize
 	// kernel->SharedMemorySize
 	// kernel->KernelInstructions
-	report( "Initializing trace generator for kernel " << kernel->name );
+	report( "Initializing trace generator for kernel " << kernel.name );
 }
 
-/*!
-	called whenever an event takes place
-*/
 void trace::TraceGenerator::event(const TraceEvent & event) {
 	// do something meaningful with the trace
 	report( "Default Trace: " << event.toString() );

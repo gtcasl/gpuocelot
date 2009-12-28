@@ -36,7 +36,7 @@ __global__ void Mandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH
             blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
             blockY = blockIndex / gridWidth;
         }
-#ifndef __DEVICE_EMULATION__        // device emu doesn't like syncthreads inside while()
+#if 1        // device emu doesn't like syncthreads inside while()
         __syncthreads();
 #endif
   
@@ -105,7 +105,7 @@ __global__ void MandelbrotDS0_sm13(uchar4 *dst, const int imageW, const int imag
             blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
             blockY = blockIndex / gridWidth;
         }
-#ifndef __DEVICE_EMULATION__        
+#if 1
         __syncthreads();
 #endif
         
@@ -175,7 +175,7 @@ __global__ void Mandelbrot1_sm13(uchar4 *dst, const int imageW, const int imageH
             blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
             blockY = blockIndex / gridWidth;
         }
-#ifndef __DEVICE_EMULATION__
+#if 1
         __syncthreads();
 #endif
         
@@ -251,7 +251,7 @@ __global__ void MandelbrotDS1_sm13(uchar4 *dst, const int imageW, const int imag
             blockX = blockIndex % gridWidth;            // note: this is slow, but only called once per block here
             blockY = blockIndex / gridWidth;
         }
-#ifndef __DEVICE_EMULATION__
+#if 1
         __syncthreads();
 #endif
         
@@ -389,7 +389,7 @@ void RunMandelbrot1_sm13(uchar4 *dst, const int imageW, const int imageH, const 
 // check if we're running in emulation mode
 int inEmulationMode()
 {
-#ifdef __DEVICE_EMULATION__
+#if 1
     return 1;
 #else
     return 0;

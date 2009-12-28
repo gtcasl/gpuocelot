@@ -47,7 +47,7 @@ extern "C" void binomialOptions_SM10(
 }
 
 extern "C" int deviceEmulation(void){
-    #ifdef __DEVICE_EMULATION__
+    #if 1
         return 1;
     #else
         return 0;

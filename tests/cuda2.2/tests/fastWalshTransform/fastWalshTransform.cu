@@ -81,7 +81,7 @@ extern "C" void dyadicConvolutionCPU(
 ////////////////////////////////////////////////////////////////////////////////
 const int log2Kernel = 7;
 
-#ifndef __DEVICE_EMULATION__
+#if 0
     const   int log2Data = 23;
 #else
     const   int log2Data = 15;

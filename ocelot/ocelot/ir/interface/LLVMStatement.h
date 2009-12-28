@@ -1,5 +1,4 @@
-/*!
-	\file LLVMStatement.h
+/*! \file LLVMStatement.h
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the LLVMStatement class.

@@ -140,7 +140,7 @@ const int PADDING_W = KERNEL_W - 1;
 const int PADDING_H = KERNEL_H - 1;
 
 //Input data dimension
-#ifdef __DEVICE_EMULATION__
+#if 1
 const int DATA_W = 200;
 const int DATA_H = 200;
 #else

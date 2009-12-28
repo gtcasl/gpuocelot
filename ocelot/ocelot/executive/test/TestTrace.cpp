@@ -89,8 +89,8 @@ public:
 	/*!
 		called when a traced kernel is launched to retrieve some parameters from the kernel
 	*/
-	void initialize(const executive::EmulatedKernel *kernel) {
-		threadCount = kernel->threadCount;
+	void initialize(const ir::ExecutableKernel& kernel) {
+		threadCount = kernel.maxThreadsPerBlock();
 	}
 
 	/*!

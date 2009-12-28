@@ -30,7 +30,6 @@ namespace translator
 		private:
 			typedef std::vector< analysis::DataflowGraph::Register > 
 				RegisterVector;
-			typedef ir::PTXKernel::PTXInstructionVector PTXInstructionVector;
 		
 		private:
 			ir::LLVMKernel* _llvmKernel;
@@ -38,7 +37,6 @@ namespace translator
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
 			bool _usesTextures;
-			analysis::DataflowGraph::InstructionId _instructionId;
 			RegisterVector _uninitialized;
 			ir::PTXKernel* _ptx;
 		

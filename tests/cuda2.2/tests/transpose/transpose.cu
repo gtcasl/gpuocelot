@@ -79,7 +79,7 @@ void
 runTest( int argc, char** argv) 
 {
     // size of the matrix
-#ifdef __DEVICE_EMULATION__
+#if 1
     const unsigned int size_x = 32;
     const unsigned int size_y = 128;
 #else

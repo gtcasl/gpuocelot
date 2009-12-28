@@ -74,7 +74,7 @@ const char *sReference[] =
 // instead of doing a copy to system memory before drawing. Texture is
 // used for automatic bilinear interpolation at the velocity advection step. 
 
-#ifdef __DEVICE_EMULATION__
+#if 1
 #define DIM    64        // Square size of solver domain
 #else
 #define DIM    512       // Square size of solver domani

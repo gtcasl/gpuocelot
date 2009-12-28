@@ -82,7 +82,7 @@ void executive::GPUExecutableKernel::setDevice(const Device* device,
 	unsigned int limit) {
 }
 
-void executive::GPUExecutableKernel::setSharedMemorySize(unsigned int bytes) {
+void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int bytes) {
 	_sharedMemorySize = bytes;
 #if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
@@ -101,6 +101,11 @@ void executive::GPUExecutableKernel::updateParameterMemory() {
 	configureParameters();
 }
 
+void executive::GPUExecutableKernel::updateMemory() {
+	updateGlobalMemory();
+	updateConstantMemory();
+}
+
 void executive::GPUExecutableKernel::updateGlobalMemory() {
 
 }
@@ -108,6 +113,19 @@ void executive::GPUExecutableKernel::updateGlobalMemory() {
 void executive::GPUExecutableKernel::updateConstantMemory() {
 
 }
+
+void executive::GPUExecutableKernel::addTraceGenerator(
+	trace::TraceGenerator *generator)
+{
+	assertM(false, "No trace generation support in GPU kernel.");
+}
+
+void executive::GPUExecutableKernel::removeTraceGenerator(
+	trace::TraceGenerator *generator)
+{
+	assertM(false, "No trace generation support in GPU kernel.");	
+}
+
 
 void executive::GPUExecutableKernel::configureParameters() {
 #if HAVE_CUDA_DRIVER_API == 1

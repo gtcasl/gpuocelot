@@ -21,33 +21,41 @@ namespace executive {
 	public:
 		GPUExecutableKernel( ir::Kernel& kernel, const executive::Executive* c = 0 );
 		GPUExecutableKernel();
-		virtual ~GPUExecutableKernel();
+		~GPUExecutableKernel();
 	
 		/*!
 			Launch a kernel on a 2D grid
 		*/
-		virtual void launchGrid(int width, int height);
+		void launchGrid(int width, int height);
 
 		/*!
 			Sets the shape of a kernel
 		*/
-		virtual void setKernelShape(int x, int y, int z);
+		void setKernelShape(int x, int y, int z);
 
 		/*!
 			Sets the device used to execute the kernel
 		*/
-		virtual void setDevice(const Device* device, unsigned int limit);
+		void setDevice(const Device* device, unsigned int limit);
 
 		/*!
 			sets the size of shared memory in bytes
 		*/
-		virtual void setSharedMemorySize(unsigned int bytes);
+		void setExternSharedMemorySize(unsigned int bytes);
 
-		virtual void updateParameterMemory();
+		void updateParameterMemory();
+		
+		/*! \brief Indicate that other memory has been updated */
+		void updateMemory();
 
-		virtual void updateGlobalMemory();
+		void updateGlobalMemory();
 
-		virtual void updateConstantMemory();
+		void updateConstantMemory();
+
+		/*!	adds a trace generator to the EmulatedKernel */
+		void addTraceGenerator(trace::TraceGenerator *generator);
+		/*!	removes a trace generator from an EmulatedKernel */
+		void removeTraceGenerator(trace::TraceGenerator *generator);
 		
 	protected:
 		/*!

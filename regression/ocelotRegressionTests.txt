@@ -9,3 +9,4 @@
 ../TestLLVMInstructions
 ../TestPTXToLLVMTranslator
 ../TestLLVMKernels
+../TestGPUKernel

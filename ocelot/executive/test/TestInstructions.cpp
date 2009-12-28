@@ -72,7 +72,7 @@ public:
 
 			kernel = static_cast<EmulatedKernel *>(rawKernel);
 			kernel->setKernelShape(threadCount, 1, 1);
-			kernel->SharedMemorySize = 64;
+			kernel->setExternSharedMemorySize(64);
 			CooperativeThreadArray l_cta(kernel);
 			cta = l_cta;
 			l_cta.clear();
@@ -83,7 +83,8 @@ public:
 	/*!
 		Constructs a register operand with a given name, type, and register index
 	*/
-	PTXOperand reg(std::string name, PTXOperand::DataType type, PTXOperand::RegisterType reg) {
+	PTXOperand reg(std::string name, PTXOperand::DataType type, 
+		PTXOperand::RegisterType reg) {
 		PTXOperand op;
 		op.addressMode = PTXOperand::Register;
 		op.identifier = name;
@@ -139,12 +140,12 @@ public:
 		bool result = true;
 		cta.initialize();
 
-		for (int j = 0; j < kernel->RegisterCount; j++) {
+		for (int j = 0; j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsU32(i, j, i*(j+1));
 			}
 		}
-		for (int j = 0; result && j < kernel->RegisterCount; j++) {
+		for (int j = 0; result && j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; result && i < threadCount; i++) {
 				if (cta.getRegAsU32(i, j) != (ir::PTXU32)(i*(j+1))) {
 					result = false;

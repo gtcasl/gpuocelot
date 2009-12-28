@@ -9,12 +9,10 @@
 #define CUDA_RUNTIME_CPP_INCLUDED
 
 #include <ocelot/cuda/interface/CudaRuntime.h>
+#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/XmlParser.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 
 #if HAVE_CUDA_DRIVER_API == 1
@@ -182,24 +180,24 @@ namespace cuda
 		}
 	}
 
-	void CudaRuntime::_launchEmulatedKernel( ThreadMap::iterator thread, 
+	void CudaRuntime::_launchKernel( ThreadMap::iterator thread, 
 		ArchitectureMap::iterator translatedKernel )
 	{			
-		executive::EmulatedKernel* emulated = static_cast< 
-			executive::EmulatedKernel* >( translatedKernel->second );
+		ir::ExecutableKernel* kernel = static_cast< 
+			ir::ExecutableKernel* >( translatedKernel->second );
 
 		report( "Setting up parameters for emulated kernel \"" 
-			<< emulated->name << "\"." );
+			<< kernel->name << "\"." );
 		
-		if( emulated->ConstMemorySize 
+		if( kernel->constMemorySize() 
 			> ( unsigned int ) context.devices[ 
 			context.getSelected() ].totalConstantMemory )
 		{
 			#if CUDA_VERBOSE == 1
 			std::cerr << "==Ocelot== Out of const memory for kernel \"" 
-				<< emulated->name 
+				<< kernel->name 
 				<< "\" : \n==Ocelot==\tpreallocated ";
-			std::cerr << emulated->ConstMemorySize 
+			std::cerr << kernel->constMemorySize() 
 				<< " is greater than available " 
 				<< context.devices[ 
 				context.getSelected() ].totalConstantMemory 
@@ -210,7 +208,7 @@ namespace cuda
 			return;
 		}
 		
-		unsigned int staticSharedSize = emulated->SharedMemorySize;
+		unsigned int staticSharedSize = kernel->sharedMemorySize();
 		unsigned int dynamicSharedSize = staticSharedSize +
 			thread->second.shared;
 		
@@ -219,9 +217,9 @@ namespace cuda
 		{
 			#if CUDA_VERBOSE == 1
 			std::cerr << "==Ocelot== Out of shared memory for kernel \""
-				<< emulated->name 
+				<< kernel->name 
 				<< "\" : \n==Ocelot==\tpreallocated ";
-			std::cerr << emulated->SharedMemorySize << " + requested " 
+			std::cerr << kernel->sharedMemorySize() << " + requested " 
 				<< thread->second.shared 
 				<< " is greater than available " 
 				<< context.devices[ 
@@ -233,16 +231,16 @@ namespace cuda
 			return;
 		}
 		
-		emulated->SharedMemorySize = dynamicSharedSize;
+		kernel->setExternSharedMemorySize(thread->second.shared);
 		
-		_setParameters( *emulated, thread );
+		_setParameters( *kernel, thread );
 		
 		for( TraceGeneratorVector::iterator 
 			generator = thread->second.nextTraceGenerators.begin(); 
 			generator != thread->second.nextTraceGenerators.end(); 
 			++generator )
 		{
-			emulated->addTraceGenerator( *generator );
+			kernel->addTraceGenerator( *generator );
 		}
 		
 		for( TraceGeneratorVector::iterator 
@@ -250,23 +248,25 @@ namespace cuda
 			gen != thread->second.persistentTraceGenerators.end(); 
 			++gen )
 		{
-			emulated->addTraceGenerator( *gen );
+			kernel->addTraceGenerator( *gen );
 		}
 		
-		emulated->updateParameterMemory();
-		emulated->updateGlobals();
+		kernel->updateParameterMemory();
+		kernel->updateMemory();
+
+		context.fenceGlobalVariables(executive::Executive::HostToDevice);
 		
 		try
 		{
-			emulated->setKernelShape( thread->second.ctaDimensions.x, 
+			kernel->setKernelShape( thread->second.ctaDimensions.x, 
 				thread->second.ctaDimensions.y, 
 				thread->second.ctaDimensions.z );
 			assert( thread->second.kernelDimensions.z == 1 );
 
 			report( "Launching emulated kernel \"" 
-				<< emulated->name << "\"." );
+				<< kernel->name << "\"." );
 
-			emulated->launchGrid( thread->second.kernelDimensions.x, 
+			kernel->launchGrid( thread->second.kernelDimensions.x, 
 				thread->second.kernelDimensions.y );
 			thread->second.lastError = cudaSuccess;
 		}
@@ -274,20 +274,20 @@ namespace cuda
 		{
 			#if CUDA_VERBOSE == 1
 			std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
-				<< emulated->name 
+				<< kernel->name 
 				<< "\" with exception: \n";
 			std::cerr << formatError( e.toString() ) 
 				<< "\n" << std::flush;
 			#endif
 			thread->second.lastError = cudaErrorLaunchFailure;
-			emulated->SharedMemorySize = staticSharedSize;
 			thread->second.parameters.clear();
 			#if CATCH_RUNTIME_EXCEPTIONS != 1
 			throw e;
 			#endif
 		}
+
+		context.fenceGlobalVariables(executive::Executive::DeviceToHost);
 		
-		emulated->SharedMemorySize = staticSharedSize;
 		thread->second.parameters.clear();
 		
 		for( TraceGeneratorVector::iterator 
@@ -295,7 +295,7 @@ namespace cuda
 			generator != thread->second.nextTraceGenerators.end(); 
 			++generator )
 		{
-			emulated->removeTraceGenerator( *generator );
+			kernel->removeTraceGenerator( *generator );
 		}
 		
 		thread->second.nextTraceGenerators.clear();
@@ -305,151 +305,9 @@ namespace cuda
 			gen != thread->second.persistentTraceGenerators.end(); 
 			++gen )
 		{
-			emulated->removeTraceGenerator( *gen );
+			kernel->removeTraceGenerator( *gen );
 		}
 	}
-
-	void CudaRuntime::_launchLLVMKernel( ThreadMap::iterator thread, 
-		ArchitectureMap::iterator translatedKernel )
-	{
-		executive::LLVMExecutableKernel* llvm = static_cast< 
-			executive::LLVMExecutableKernel* >( translatedKernel->second );
-
-		report( "Setting up parameters for llvm kernel \"" 
-			<< llvm->name << "\"." );
-		
-		llvm->externSharedMemory( thread->second.shared );
-		
-		if( llvm->constantMemorySize() 
-			> ( unsigned int ) context.devices[ 
-			context.getSelected() ].totalConstantMemory )
-		{
-			#if CUDA_VERBOSE == 1
-			std::cerr << "==Ocelot== Out of const memory for kernel \"" 
-				<< llvm->name 
-				<< "\" : \n==Ocelot==\tpreallocated ";
-			std::cerr << llvm->constantMemorySize() 
-				<< " is greater than available " 
-				<< context.devices[ 
-				context.getSelected() ].totalConstantMemory 
-				<< " for device " << context.devices[ 
-				context.getSelected() ].name << "\n" << std::flush;
-			#endif
-			thread->second.lastError = cudaErrorLaunchFailure;
-			return;
-		}
-		
-		unsigned int dynamicSharedSize = llvm->sharedMemorySize() +
-			thread->second.shared;
-		
-		if( dynamicSharedSize > ( unsigned int ) context.devices[ 
-			context.getSelected() ].sharedMemPerBlock )
-		{
-			#if CUDA_VERBOSE == 1
-			std::cerr << "==Ocelot== Out of shared memory for kernel \""
-				<< llvm->name 
-				<< "\" : \n==Ocelot==\tpreallocated ";
-			std::cerr << llvm->sharedMemorySize() << " + requested " 
-				<< thread->second.shared 
-				<< " is greater than available " 
-				<< context.devices[ 
-				context.getSelected() ].sharedMemPerBlock 
-				<< " for device " << context.devices[ 
-				context.getSelected() ].name << "\n" << std::flush;
-			#endif
-			thread->second.lastError = cudaErrorLaunchFailure;
-			return;
-		}
-				
-		_setParameters( *llvm, thread );
-
-		assertM( thread->second.nextTraceGenerators.empty(), 
-			"Trace generators not supported for LLVM kernels." );
-		assertM( thread->second.persistentTraceGenerators.empty(), 
-			"Trace generators not supported for LLVM kernels." );
-		
-		llvm->updateParameterMemory();
-		llvm->updateGlobalMemory();
-		llvm->updateConstantMemory();
-		
-		try
-		{
-			llvm->setKernelShape( thread->second.ctaDimensions.x, 
-				thread->second.ctaDimensions.y, 
-				thread->second.ctaDimensions.z );
-			assert( thread->second.kernelDimensions.z == 1 );
-
-			report( "Launching llvm kernel \"" 
-				<< llvm->name << "\"." );
-
-			llvm->launchGrid( thread->second.kernelDimensions.x, 
-				thread->second.kernelDimensions.y );
-			thread->second.lastError = cudaSuccess;
-		}
-		catch( ... )
-		{
-			thread->second.lastError = cudaErrorLaunchFailure;
-		}
-		
-		thread->second.parameters.clear();
-	}
-
-//
-//
-//
-	void CudaRuntime::_launchGPUKernel( ThreadMap::iterator thread, 
-		ArchitectureMap::iterator translatedKernel )
-	{
-
-		report("CudaRuntime::_launchGPUKernel called");
-		if (translatedKernel->second->ISA != ir::Instruction::GPU) {
-			throw hydrazine::Exception("_launchGPUKernel() required translated kernel to have ISA: GPU");
-		}
-
-		executive::GPUExecutableKernel* gpuKernel = static_cast< 
-			executive::GPUExecutableKernel* >( translatedKernel->second );
-
-		_setParameters( *gpuKernel, thread );
-
-		assertM( thread->second.nextTraceGenerators.empty(), 
-			"Trace generators not supported for GPU kernels." );
-		assertM( thread->second.persistentTraceGenerators.empty(), 
-			"Trace generators not supported for GPU kernels." );
-		
-		gpuKernel->updateParameterMemory();
-		gpuKernel->updateGlobalMemory();
-		gpuKernel->updateConstantMemory();
-
-		context.fenceGlobalVariables(executive::Executive::HostToDevice);
-
-		try
-		{
-			gpuKernel->setKernelShape( thread->second.ctaDimensions.x, 
-				thread->second.ctaDimensions.y, 
-				thread->second.ctaDimensions.z );
-			gpuKernel->setSharedMemorySize(thread->second.shared);
-
-			assert( thread->second.kernelDimensions.z == 1 );
-
-			report( "Launching GPU kernel \"" << gpuKernel->name << "\"." );
-
-
-			gpuKernel->launchGrid( thread->second.kernelDimensions.x, 
-				thread->second.kernelDimensions.y );
-			thread->second.lastError = cudaSuccess;
-		}
-		catch( hydrazine::Exception &exception )
-		{
-			report("  _launchGPUKernel() - failure " << exception.what());
-			thread->second.lastError = cudaErrorLaunchFailure;
-		}
-		
-		context.fenceGlobalVariables(executive::Executive::DeviceToHost);
-		thread->second.parameters.clear();
-	}
-//
-//
-//
 
 	cudaDeviceProp CudaRuntime::convert( const executive::Device& device )
 	{
@@ -1239,50 +1097,22 @@ namespace cuda
 		
 		// set up launch parameters and launch
 		switch( context.getSelectedISA() )
-		{
-		
+		{		
+			case ir::Instruction::GPU:
 			case ir::Instruction::Emulated:
-			{
-				executive::EmulatedKernel* emulated = static_cast< 
-					executive::EmulatedKernel* >( translatedKernel->second );
-				attributes->constSizeBytes = emulated->ConstMemorySize;
-				attributes->localSizeBytes = emulated->LocalMemorySize;
-				attributes->maxThreadsPerBlock = context.devices[ 
-					context.getSelected() ].maxThreadsPerBlock;
-				attributes->numRegs = emulated->RegisterCount;
-				attributes->sharedSizeBytes = emulated->SharedMemorySize;
-				
-				break;
-			}
-			
 			case ir::Instruction::LLVM:
 			{
-				executive::LLVMExecutableKernel* kernel = static_cast< 
-					executive::LLVMExecutableKernel* >( 
-					translatedKernel->second );
-				
-				attributes->constSizeBytes = kernel->constantMemorySize();
-				attributes->localSizeBytes = kernel->localMemorySize();
+				ir::ExecutableKernel* emulated = static_cast< 
+					ir::ExecutableKernel* >( translatedKernel->second );
+				attributes->constSizeBytes = emulated->constMemorySize();
+				attributes->localSizeBytes = emulated->localMemorySize();
 				attributes->maxThreadsPerBlock = context.devices[ 
 					context.getSelected() ].maxThreadsPerBlock;
-				attributes->numRegs = 1;
-				attributes->sharedSizeBytes = kernel->sharedMemorySize();
-								
+				attributes->numRegs = emulated->registerCount();
+				attributes->sharedSizeBytes = emulated->sharedMemorySize();
+				
 				break;
 			}
-
-			case ir::Instruction::GPU:
-			{
-				// hard coded for now for some reason
-				attributes->constSizeBytes = 0;
-				attributes->localSizeBytes = 0;
-				attributes->maxThreadsPerBlock = 512;
-				attributes->numRegs = 103;
-				attributes->sharedSizeBytes = 0; 
-								
-				break;
-			}
-
 			default:
 			{
 				std::stringstream stream;
@@ -1341,18 +1171,10 @@ namespace cuda
 		switch( context.getSelectedISA() )
 		{
 			case ir::Instruction::Emulated:
-			{
-				_launchEmulatedKernel( thread, translatedKernel );
-				break;
-			}
 			case ir::Instruction::LLVM:
-			{
-				_launchLLVMKernel( thread, translatedKernel );
-				break;
-			}
 			case ir::Instruction::GPU:
 			{
-				_launchGPUKernel( thread, translatedKernel );
+				_launchKernel( thread, translatedKernel );
 				break;
 			}
 			default:

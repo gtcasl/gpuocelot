@@ -1,14 +1,18 @@
-/*!
-	\file ControlFlowGraph.cpp
+/*! \file ControlFlowGraph.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief implementation for ControlFlowGraph
 	\date 28 September 2008; 21 Jan 2009
 */
 
-#include <map>
-
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/Instruction.h>
+
 #include <hydrazine/implementation/debug.h>
+
+#include <unordered_set>
+#include <stack>
+#include <queue>
+#include <algorithm>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -16,127 +20,200 @@
 
 #define REPORT_BASE 0
 
-using namespace ir;
+namespace ir {
+
+ControlFlowGraph::Edge::Edge(BlockList::iterator h, 
+	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
+
+}
+
+ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i, 
+	const InstructionList& is) : label(l), id(i) {
+	for (InstructionList::const_iterator instruction = is.begin();
+		instruction != is.end(); ++instruction ) {
+		instructions.push_back((*instruction)->clone(true));
+	}
+}
+
+ControlFlowGraph::BasicBlock::~BasicBlock() {
+
+}
+
+ControlFlowGraph::BasicBlock::EdgeList::iterator 
+	ControlFlowGraph::BasicBlock::get_fallthrough_edge() {
+	for (EdgePointerVector::iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->type == Edge::FallThrough) return *edge;
+	}
+	assertM(false, "No fallthrough edge in block " << label);
+}
+
+ControlFlowGraph::BasicBlock::EdgeList::const_iterator 
+	ControlFlowGraph::BasicBlock::get_fallthrough_edge() const {
+	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->type == Edge::FallThrough) return *edge;
+	}
+	assertM(false, "No fallthrough edge in block " << label);
+}
+
+ControlFlowGraph::BasicBlock::EdgeList::iterator 
+	ControlFlowGraph::BasicBlock::get_branch_edge() {
+	for (EdgePointerVector::iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->type == Edge::Branch) return *edge;
+	}
+	assertM(false, "No branch edge in block " << label);
+}
+
+ControlFlowGraph::BasicBlock::EdgeList::const_iterator 
+	ControlFlowGraph::BasicBlock::get_branch_edge() const {
+	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->type == Edge::Branch) return *edge;
+	}
+	assertM(false, "No branch edge in block " << label);
+}
+
+ControlFlowGraph::BasicBlock::EdgeList::iterator 
+	ControlFlowGraph::BasicBlock::get_edge(BlockList::iterator b) {
+	for (EdgePointerVector::iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->tail == b) return *edge;
+	}
+	assertM(false, "No edge from " << label << " to " << b->label);
+}
+
+ControlFlowGraph::BasicBlock::EdgeList::const_iterator 
+	ControlFlowGraph::BasicBlock::get_edge(BlockList::const_iterator b) const {
+	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->tail == b) return *edge;
+	}
+	assertM(false, "No edge from " << label << " to " << b->label);
+}
+
+ControlFlowGraph::EdgePointerVector::iterator 
+	ControlFlowGraph::BasicBlock::find_in_edge(
+	BlockList::const_iterator head) {
+	for (EdgePointerVector::iterator edge = in_edges.begin(); 
+		edge != in_edges.end(); ++edge) {
+		if ((*edge)->head == head) return edge;
+	}
+	return in_edges.end();
+}
+
+ControlFlowGraph::EdgePointerVector::iterator 
+	ControlFlowGraph::BasicBlock::find_out_edge(
+	BlockList::const_iterator tail) {
+	for (EdgePointerVector::iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->tail == tail) return edge;
+	}
+	return out_edges.end();
+}
 
 ControlFlowGraph::ControlFlowGraph(): 
-	_entry(new BasicBlock), _exit(new BasicBlock) {
-	_entry->label = "entry";
-	_exit->label = "exit";
-	blocks.push_back(_entry);
-	blocks.push_back(_exit);
+	_entry(_blocks.insert(end(), BasicBlock("entry"))),
+	_exit(_blocks.insert(end(), BasicBlock("exit"))) {
 }
 
 ControlFlowGraph::~ControlFlowGraph() {
-	BasicBlock::BlockList::iterator block_it = blocks.begin();
-	
-	for (; block_it != blocks.end(); ++ block_it) {
-		delete *block_it;
+}
+
+size_t ControlFlowGraph::size() const {
+	return _blocks.size();
+}
+
+bool ControlFlowGraph::empty() const {
+	return _blocks.empty();
+}
+
+ControlFlowGraph::iterator ControlFlowGraph::insert_block(
+	const BasicBlock& block) {
+	return _blocks.insert(end(), block);
+}
+
+void ControlFlowGraph::remove_block(iterator block) {
+	EdgePointerVector in_edges = block->in_edges;
+	for (edge_pointer_iterator eit = in_edges.begin(); 
+		eit != in_edges.end(); ++eit) {
+		remove_edge(*eit);
+	}
+
+	EdgePointerVector out_edges = block->out_edges;
+	for (edge_pointer_iterator eit = out_edges.begin();
+		eit != out_edges.end(); ++eit) {
+		remove_edge(*eit);
 	}
 	
-	BasicBlock::EdgeList::iterator edge_it = edges.begin();
-	for (; edge_it != edges.end(); ++ edge_it) {
-		delete *edge_it;
-	}
+	_blocks.erase(block);
 }
 
-size_t ControlFlowGraph::size() {
-	return blocks.size();
-}
-
-BasicBlock::ConstBlockList ControlFlowGraph::get_blocks() const {
-	BasicBlock::ConstBlockList c_blocks;
-	BasicBlock::BlockList::const_iterator it = blocks.begin();
-	for (; it != blocks.end(); ++it) {
-		c_blocks.push_back(*it);
-	}
-	return std::move( c_blocks );
-}
-
-BasicBlock::BlockList ControlFlowGraph::get_blocks() {
-	BasicBlock::BlockList c_blocks;
-	BasicBlock::BlockList::const_iterator it = blocks.begin();
-	for (; it != blocks.end(); ++it) {
-		c_blocks.push_back(*it);
-	}
-	return std::move( c_blocks );
-}
-BasicBlock::ConstEdgeList ControlFlowGraph::get_edges() const {
-	BasicBlock::ConstEdgeList c_edges;
-	for (BasicBlock::EdgeList::const_iterator it = edges.begin(); 
-		it != edges.end(); ++it) {
-		c_edges.push_back(*it);
-	}
-	return std::move( c_edges );
-}
-
-void ControlFlowGraph::insert_block(BasicBlock *block) {
-	blocks.push_back(block);
-}
-
-void ControlFlowGraph::remove_block(BasicBlock *block) {
-	BasicBlock::EdgeList::const_iterator eit 
-		= block->in_edges.begin();
-	for (; eit != block->in_edges.end(); ++eit) {
-		remove_edge( *eit );
-	}
-
-	eit = block->out_edges.begin();
-	for (; eit != block->out_edges.end(); ++eit) {
-		remove_edge( *eit );
-	}
-	
-	delete block;
-	blocks.remove(block);
-}
-
-void ControlFlowGraph::insert_edge(Edge *edge) {
+ControlFlowGraph::edge_iterator 
+	ControlFlowGraph::insert_edge(const Edge& edge) {
+	report( "Created " << toString(edge.type) << " edge from " 
+		<< edge.head->label << " -> " << edge.tail->label );
 	#ifndef NDEBUG
-	if (edge->type == Edge::FallThrough) {
+	if (edge.type == Edge::FallThrough) {
 		// verify that tail is the tail of NO OTHER FallThrough edges
-		BasicBlock::EdgeList::const_iterator eit 
-			= edge->tail->in_edges.begin();
-		for (; eit != edge->tail->in_edges.end(); ++eit) {
-			// TODO: this should throw an exception
-			assert((*eit)->type != Edge::FallThrough);
-		}	
+		edge_pointer_iterator eit = edge.tail->in_edges.begin();
+		for (; eit != edge.tail->in_edges.end(); ++eit) {
+			assertM((*eit)->type != Edge::FallThrough, 
+				"Duplicate fallthrough edge added for block " 
+				<< edge.tail->label );
+		}
 	}
 	#endif
-	report( "Created edge from " << edge->head->label 
-		<< " -> " << edge->tail->label );
-	edges.push_back(edge);
-	edge->head->out_edges.push_back(edge);
-	edge->tail->in_edges.push_back(edge);
-	edge->head->successors.push_back(edge->tail);
-	edge->tail->predecessors.push_back(edge->head);
+	edge_iterator e = _edges.insert(edges_end(), edge);
+	edge.head->out_edges.push_back(e);
+	edge.tail->in_edges.push_back(e);
+	edge.head->successors.push_back(edge.tail);
+	edge.tail->predecessors.push_back(edge.head);
+	
+	return e;
 }
 
-void ControlFlowGraph::remove_edge(Edge *edge) {
+void ControlFlowGraph::remove_edge(edge_iterator edge) {
 	report( "Removed edge from " << edge->head->label 
 		<< " -> " << edge->tail->label );
-	edges.remove(edge);
-	edge->head->out_edges.remove(edge);
-	edge->tail->in_edges.remove(edge);
-	edge->head->successors.remove(edge->tail);
-	edge->tail->predecessors.remove(edge->head);
-	delete edge;
+	edge_pointer_iterator out = std::find(edge->head->out_edges.begin(), 
+		edge->head->out_edges.end(), edge);
+	assert(out != edge->head->out_edges.end());
+	edge->head->out_edges.erase(out);
+
+	edge_pointer_iterator in = std::find(edge->tail->in_edges.begin(), 
+		edge->tail->in_edges.end(), edge);
+	assert(in != edge->tail->in_edges.end());
+	edge->tail->in_edges.erase(in);
+
+	pointer_iterator head = std::find(edge->head->successors.begin(), 
+		edge->head->successors.end(), edge->tail);
+	assert(head != edge->head->successors.end());
+	edge->head->successors.erase(head);
+
+	pointer_iterator tail = std::find(edge->tail->predecessors.begin(), 
+		edge->tail->predecessors.end(), edge->head);
+	assert(tail != edge->tail->predecessors.end());
+	edge->tail->predecessors.erase(tail);
+
+	_edges.erase(edge);
 }
 
-Edge* ControlFlowGraph::split_edge(Edge *edge, 
-	BasicBlock *newBlock) {
-	Edge *newEdge = new Edge;
-	newEdge->type = edge->type;
-	newEdge->tail = edge->tail;
-	newEdge->head = newBlock;
-	edge->tail = newBlock;
-	blocks.push_back(newBlock);
-	insert_edge(newEdge);
+ControlFlowGraph::edge_iterator ControlFlowGraph::split_edge(edge_iterator edge,
+	const BasicBlock& newBlock) {
+	iterator block = insert_block(newBlock);
+	edge_iterator newEdge = insert_edge(Edge(block, edge->tail, edge->type));
+	edge->tail = block;
 	return newEdge;
 }
 
-BasicBlock* ControlFlowGraph::split_block(BasicBlock* block, 
-	unsigned int instruction) {	assert( instruction <= block->instructions.size() );
-	
-	BasicBlock* newBlock = new BasicBlock;
+ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block, 
+	unsigned int instruction, Edge::Type type) {
+	assert( instruction <= block->instructions.size() );
+	report("Splitting block " << block->label 
+		<< " at instruction " << instruction);
+	iterator newBlock = insert_block(BasicBlock(block->label + "_split"));
 	BasicBlock::InstructionList::iterator 
 		begin = block->instructions.begin();
 	std::advance(begin, instruction);
@@ -145,46 +222,91 @@ BasicBlock* ControlFlowGraph::split_block(BasicBlock* block,
 	newBlock->instructions.insert(newBlock->instructions.begin(), begin, end);
 	block->instructions.erase(begin, end);
 
-	for (BasicBlock::EdgeList::iterator edge = block->out_edges.begin(); 
-		edge != block->out_edges.end(); ) {
-		Edge* e = new Edge;
-		e->type = (*edge)->type;
-		e->head = newBlock;
-		e->tail = (*edge)->tail;
-		Edge* erase = *edge;
-		++edge;
+	EdgePointerVector out_edges = block->out_edges;
+
+	for (EdgePointerVector::iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge ) {
+		Edge e(newBlock, (*edge)->tail, (*edge)->type);
+		edge_iterator erase = *edge;
 		remove_edge( erase );
 		insert_edge( e );
 	}
 
-	Edge* edge = new Edge;
-	
-	edge->type = Edge::FallThrough;
-	edge->head = block;
-	edge->tail = newBlock;
-
-	newBlock->label = block->label + "_split";
-
-	insert_edge(edge);
-	insert_block(newBlock);
+	insert_edge(Edge(block, newBlock, type));
 
 	return newBlock;
 }
 
-BasicBlock* ControlFlowGraph::get_entry_block() {
+ControlFlowGraph::iterator ControlFlowGraph::get_entry_block() {
 	return _entry;
 }
 
-BasicBlock* ControlFlowGraph::get_exit_block() {
+ControlFlowGraph::iterator ControlFlowGraph::get_exit_block() {
 	return _exit;
 }
 
-const BasicBlock* ControlFlowGraph::get_entry_block() const {
+ControlFlowGraph::const_iterator ControlFlowGraph::get_entry_block() const {
 	return _entry;
 }
 
-const BasicBlock* ControlFlowGraph::get_exit_block() const {
+ControlFlowGraph::const_iterator ControlFlowGraph::get_exit_block() const {
 	return _exit;
+}
+
+std::ostream& ControlFlowGraph::write(std::ostream &out) const {
+	using namespace std;
+
+	BlockMap blockIndices;
+
+	out << "digraph {\n";
+
+	// emit nodes
+
+	out << "  // basic blocks\n\n";
+
+	out << "  bb_0 [shape=Mdiamond,label=\"" << _entry->label << "\"];\n";
+	out << "  bb_1 [shape=Msquare,label=\"" << _exit->label << "\"];\n";
+
+	blockIndices[_entry] = 0;
+	blockIndices[_exit] = 1;
+
+	int n = 0;
+	for (const_iterator block = begin(); block != end(); ++block, ++n) {
+		if (block == _entry || block == _exit) continue;
+
+		blockIndices[block] = n;
+	
+		out << "  bb_" << n << " [shape=record,label=";
+		out << "\"{" << make_label_dot_friendly(block->label);
+
+		BasicBlock::InstructionList::const_iterator instrs 
+			= block->instructions.begin();	
+		for (; instrs != block->instructions.end(); ++instrs) {
+			out << " | " << make_label_dot_friendly((*instrs)->toString());
+		}
+		out << "}\"];\n";
+	}
+
+	out << "\n\n  // edges\n\n";
+
+	// emit edges
+	for (const_edge_iterator edge = edges_begin(); 
+		edge != edges_end(); ++edge) {
+		out << "  " << "bb_" << blockIndices[edge->head] << " -> "
+			<< "bb_" << blockIndices[edge->tail];
+		if (edge->type == Edge::Dummy) {
+			out << " [style=dotted]";
+		}
+		else if (edge->type == Edge::Branch) {
+			out << " [color=blue]";
+		}
+	
+		out << ";\n";
+	}
+
+	out << "}\n";
+
+	return out;
 }
 
 std::string ControlFlowGraph::make_label_dot_friendly( 
@@ -207,198 +329,206 @@ std::string ControlFlowGraph::make_label_dot_friendly(
 	return result;
 }
 
-bool ControlFlowGraph::is_reachable(BasicBlock *head, 
-	BasicBlock *tail) {
-	assertM( false, "is_reachable is not implemented." );
+std::string ControlFlowGraph::toString( Edge::Type t ) {
+	switch( t )
+	{
+		case Edge::FallThrough: return "fallthrough"; break;
+		case Edge::Branch: return "branch"; break;
+		default: break;
+	}
+	return "Invalid";
 }
+
 
 void ControlFlowGraph::clear() {
-	BasicBlock::BlockList::iterator block_it = blocks.begin();
-	for (; block_it != blocks.end(); ++ block_it) {
-		delete *block_it;
-	}
-	
-	BasicBlock::EdgeList::iterator edge_it = edges.begin();
-	for (; edge_it != edges.end(); ++ edge_it) {
-		delete *edge_it;
-	}
-	
-	_entry = new BasicBlock;
-	_exit = new BasicBlock;
-	_entry->label = "entry";
-	_exit->label = "exit";
-
-	blocks.clear();
-	blocks.push_back(_entry);
-	blocks.push_back(_exit);
-	edges.clear();
+	_blocks.clear();
+	_edges.clear();
+	_entry = insert_block(BasicBlock("entry"));
+	_exit = insert_block(BasicBlock("exit"));
 }
 
-void ControlFlowGraph::post_order_sequence_helper(
-	BlockPointerVector &sequence, 
-	BasicBlock *block, 
-	BlockMap &visited) {
-	
-	BasicBlock::BlockList succ = block->get_successors();
-	BasicBlock::BlockList::iterator succ_it = succ.begin();
-	visited[block] = 1;
-	for (; succ_it != succ.end(); ++succ_it) {
-		if (!visited[*succ_it]) {
-			post_order_sequence_helper(sequence, *succ_it, visited);
-		}
-	}
-	sequence.push_back(block);
-}
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
-	using namespace std;
-	BlockMap visited;
+	typedef std::unordered_set<iterator> BlockSet;
+	typedef std::stack<iterator> Stack;
+	
+	report("Creating post order traversal");
+	BlockSet visited;
 	BlockPointerVector sequence;
-	BasicBlock::BlockList::iterator it = blocks.begin();
-	for (; it != blocks.end(); ++it) {
-		visited[*it] = 0;
+	Stack stack;
+	
+	if (!empty()) {
+		report(" Adding block " << get_entry_block()->label);
+		visited.insert(get_entry_block());
+		for (pointer_iterator 
+			block = get_entry_block()->successors.begin(); 
+			block != get_entry_block()->successors.end(); ++block) {
+			if (visited.insert(*block).second) {
+				stack.push(*block);
+			}
+		}
+		sequence.push_back(get_entry_block());
 	}
-	post_order_sequence_helper(sequence, get_entry_block(), visited);
 	
-	return sequence;
-}
+	while (!stack.empty()) {
+		iterator current = stack.top();
 
-void ControlFlowGraph::pre_order_sequence_helper(
-	BlockPointerVector &sequence, 
-	BasicBlock *block, 
-	BlockMap &visited) {
-	
-	BasicBlock::BlockList succ = block->get_successors();
-	BasicBlock::BlockList::iterator succ_it = succ.begin();
-	
-	visited[block] = 1;
-	sequence.push_back(block);
-	
-	for (; succ_it != succ.end(); ++succ_it) {
-		if (!visited[*succ_it]) {
-			post_order_sequence_helper(sequence, *succ_it, visited);
+		bool one = false;
+		for (pointer_iterator block = current->successors.begin(); 
+			block != current->successors.end(); ++block) {
+			if (visited.insert(*block).second) {
+				stack.push(*block);
+				one = true;
+			}
+		}
+		
+		if(!one) {
+			stack.pop();
+			sequence.push_back(current);
+			report(" Adding block " << current->label);
 		}
 	}
+	
+	return std::move(sequence);
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
-	using namespace std;
-	BlockMap visited;
-	BlockPointerVector sequence;
-	BasicBlock::BlockList::iterator it = blocks.begin();
-	for (; it != blocks.end(); ++it) {
-		visited[*it] = 0;
-	}
-	pre_order_sequence_helper(sequence, get_entry_block(), visited);
+	typedef std::unordered_set<iterator> BlockSet;
+	typedef std::stack<iterator> Stack;
 	
-	return sequence;
-}
-
-
-BasicBlock::BlockList vector_to_list(
-	ControlFlowGraph::BlockPointerVector vec) {
-	BasicBlock::BlockList lst;
-	for ( ControlFlowGraph::BlockPointerVector::iterator it = vec.begin(); 
-		it != vec.end(); ++it) {
-		lst.push_back(*it);
+	BlockSet visited;
+	BlockPointerVector sequence;
+	Stack stack;
+	
+	if (!empty()) {
+		stack.push(get_entry_block());
+		visited.insert(get_entry_block());
 	}
-	return lst;
+	
+	while (!stack.empty()) {
+		iterator current = stack.top();
+		stack.pop();
+		
+		sequence.push_back(current);
+		for (pointer_iterator block = current->successors.begin(); 
+			block != current->successors.end(); ++block) {
+			if (visited.insert(*block).second) {
+				stack.push(*block);
+			}
+		}
+	}
+	
+	return std::move(sequence);
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
-	using namespace std;
+	typedef std::list<iterator> BlockPointerList;
+	BlockPointerVector _blocks = post_order_sequence();
+	BlockPointerList blocks(_blocks.begin(), _blocks.end());
+	BlockPointerVector kill;
+	BlockPointerVector sequence;
 
-	BasicBlock::BlockList blocks = vector_to_list(pre_order_sequence());
-	BasicBlock::BlockList kill;
-	BlockPointerVector seq;
+	report("Getting executable sequence.");
 
 	while (blocks.size()) {
-		BasicBlock *target = blocks.front();
+		iterator target = blocks.front();
 		kill.clear();
-
-		// trace sequences of fall through edges in pre-order sequence of 
-		// basic blocks
-		for (BasicBlock::BlockList::iterator it = blocks.begin(); 
-			target && it != blocks.end(); ++it) {
-			if ((*it) == target) {
-				kill.push_back(*it);
-				seq.push_back(*it);
-
-				target = 0;
-
-				BasicBlock::EdgeList out_edges = (*it)->get_out_edges();
-				for (BasicBlock::EdgeList::iterator e_it 
-					= out_edges.begin(); 
-					e_it != out_edges.end(); ++e_it) {
-					if ((*e_it)->type == Edge::FallThrough) {
-						target = (*e_it)->tail;
-						it = blocks.begin();		
-						/* 	reset iterator to beginning of sequence; the 
-							increment operator pushes it past the first element.
-							This is acceptable since the front element is 
-							guaranteed to have been visited once, and cycles 
-							consisting entirely of fall through edges do not 
-							exist.
-						*/
+		
+		for (BlockPointerList::iterator block = blocks.begin(); 
+			block != blocks.end() && target != end(); ++block) {
+			if ((*block)==target) {
+				kill.push_back(*block);
+				sequence.push_back(*block);
+				report(" " << (*block)->label);
+				target = end();
+			
+				for (edge_pointer_iterator edge = (*block)->out_edges.begin(); 
+					edge != (*block)->out_edges.end(); ++edge) {
+					if ((*edge)->type == Edge::FallThrough) {
+						target = (*edge)->tail;
+						block = blocks.begin();
 						break;
 					}
 				}
 			}
 		}
-
-		// remove selected blocks
-		for (BasicBlock::BlockList::iterator it = kill.begin(); 
-			it != kill.end(); ++it) {
-			blocks.remove(*it);
-		}	
+		
+		for (pointer_iterator killed = kill.begin(); 
+			killed != kill.end(); ++killed) {
+			blocks.remove(*killed);
+		}
 	}
 
-	return seq;
+	return std::move(sequence);
 }
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
 	report( "Copying cfg" );
-	// copy basic blocks
-	using namespace std;
-	map<BasicBlock *, BasicBlock *> block_map; // (old, new)
-
+	typedef std::unordered_map<const_iterator, iterator> BlockMap;
+	BlockMap block_map;
+	
 	clear();
 	
 	_entry->id = cfg._entry->id;
 	_exit->id = cfg._exit->id;
 	
-	for (BasicBlock::BlockList::const_iterator bl_it = cfg.blocks.begin(); 
-		bl_it != cfg.blocks.end(); ++bl_it) {
-		if (cfg._entry == (*bl_it) ) {
-			block_map[*bl_it] = _entry;
+	for (const_iterator bl_it = cfg.begin(); bl_it != cfg.end(); ++bl_it) {
+		if (cfg._entry == bl_it) {
+			block_map[bl_it] = _entry;
 		}
-		else if( cfg._exit == (*bl_it)) {
-			block_map[*bl_it] = _exit;
+		else if(cfg._exit == bl_it) {
+			block_map[bl_it] = _exit;
 		}
 		else {
-			BasicBlock *newBlock = new BasicBlock;
-			newBlock->label = (*bl_it)->label;
-			newBlock->instructions = (*bl_it)->instructions;
-			newBlock->id = (*bl_it)->id;
-			block_map[*bl_it] = newBlock;
-			blocks.push_back(newBlock);
+			iterator newBlock = insert_block(
+				BasicBlock(bl_it->label, bl_it->id, bl_it->instructions));
+			block_map[bl_it] = newBlock;
 		}
 	}
 
 	// duplicate edges using the block_map
-	for (BasicBlock::EdgeList::const_iterator e_it = cfg.edges.begin(); 
-		e_it != cfg.edges.end(); ++e_it) {
-		assert( block_map.count( (*e_it)->head ) );
-		assert( block_map.count( (*e_it)->tail ) );
-		Edge *edge = new Edge;
-		edge->type = (*e_it)->type;
-		edge->head = block_map[(*e_it)->head];
-		edge->tail = block_map[(*e_it)->tail];
-		insert_edge(edge);
+	for (const_edge_iterator e_it = cfg.edges_begin(); 
+		e_it != cfg.edges_end(); ++e_it) {
+		assert( block_map.count( e_it->head ) );
+		assert( block_map.count( e_it->tail ) );
+		insert_edge(Edge(block_map[e_it->head], 
+			block_map[e_it->tail], e_it->type));
 	}
 	
 	return *this;
 }
 
+ControlFlowGraph::iterator ControlFlowGraph::begin() {
+	return _blocks.begin();
+}
 
+ControlFlowGraph::iterator ControlFlowGraph::end() {
+	return _blocks.end();
+}
+
+ControlFlowGraph::const_iterator ControlFlowGraph::begin() const {
+	return _blocks.begin();
+}
+
+ControlFlowGraph::const_iterator ControlFlowGraph::end() const {
+	return _blocks.end();
+}
+
+ControlFlowGraph::edge_iterator ControlFlowGraph::edges_begin() {
+	return _edges.begin();
+}
+
+ControlFlowGraph::edge_iterator ControlFlowGraph::edges_end() {
+	return _edges.end();
+}
+
+ControlFlowGraph::const_edge_iterator ControlFlowGraph::edges_begin() const {
+	return _edges.begin();
+}
+
+ControlFlowGraph::const_edge_iterator ControlFlowGraph::edges_end() const {
+	return _edges.end();
+}
+
+}

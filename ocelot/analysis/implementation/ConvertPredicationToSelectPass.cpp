@@ -34,26 +34,23 @@ namespace analysis
 			instruction( block->instructions().begin() );
 		std::advance( instruction, id );
 
-		report( "  Converting instruction " 
-			<< _kernel->instructions[ instruction->id ].toString() );
+		report( "  Converting instruction " << instruction->i->toString() );
 		
-		ir::PTXInstruction select( _kernel->version(), 
-			ir::PTXInstruction::SelP );
+		ir::PTXInstruction select( ir::PTXInstruction::SelP );
 
-		select.d = _kernel->instructions[ instruction->id ].d;
+		ir::PTXInstruction& ptx = static_cast< ir::PTXInstruction& >( 
+			*instruction->i );
+
+		select.d = ptx.d;
 		select.b = select.d;
 		select.a = select.b;
 		select.a.reg = _tempRegister();
-		select.c = _kernel->instructions[ instruction->id ].pg;
+		select.c = ptx.pg;
 		
-		_kernel->instructions[ instruction->id ].pg.condition 
-			= ir::PTXOperand::PT;
-		_kernel->instructions[ instruction->id ].d.reg = select.a.reg;
+		ptx.pg.condition = ir::PTXOperand::PT;
+		ptx.d.reg = select.a.reg;
 			
-		_kernel->instructions.push_back( select );
-		_kernel->dfg()->insert( block, _kernel->dfg()->convert( 
-			_kernel->instructions.back(), 
-			_kernel->instructions.size() - 1 ), id + 1 );
+		_kernel->dfg()->insert( block, select, id + 1 );
 	}
 	
 	void ConvertPredicationToSelectPass::_runOnBlock( 
@@ -63,15 +60,14 @@ namespace analysis
 			instruction = block->instructions().begin(); 
 			instruction != block->instructions().end(); ++instruction )
 		{
-			if( _kernel->instructions[ instruction->id ].opcode 
-				!= ir::PTXInstruction::Bra 
-				&& _kernel->instructions[ instruction->id ].opcode 
-				!= ir::PTXInstruction::Call 
-				&& _kernel->instructions[ instruction->id ].opcode 
-				!= ir::PTXInstruction::Ret )
+			ir::PTXInstruction& ptx = static_cast< ir::PTXInstruction& >( 
+				*instruction->i );
+		
+			if( ptx.opcode != ir::PTXInstruction::Bra 
+				&& ptx.opcode != ir::PTXInstruction::Call 
+				&& ptx.opcode != ir::PTXInstruction::Ret )
 			{
-				if( _kernel->instructions[ instruction->id ].pg.condition 
-					!= ir::PTXOperand::PT )
+				if( ptx.pg.condition != ir::PTXOperand::PT )
 				{
 					_replacePredicate( block, std::distance( 
 						block->instructions().begin(), instruction ) );

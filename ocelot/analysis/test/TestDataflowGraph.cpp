@@ -284,7 +284,7 @@ namespace test
 			{
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
 				status << "  For Kernel: " << kernel.name << std::endl;
-				ir::PTXKernel::assignRegisters( kernel.instructions );
+				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
 				if( !_verify( *kernel.dfg() ) )
 				{
@@ -311,7 +311,7 @@ namespace test
 			{
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
 				status << "  For Kernel: " << kernel.name << std::endl;
-				ir::PTXKernel::assignRegisters( kernel.instructions );
+				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
 				kernel.dfg()->toSsa();
 				if( !_verifySsa( *kernel.dfg() ) )
@@ -339,7 +339,7 @@ namespace test
 			{
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
 				status << "  For Kernel: " << kernel.name << std::endl;
-				ir::PTXKernel::assignRegisters( kernel.instructions );
+				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
 				kernel.dfg()->toSsa();
 				kernel.dfg()->fromSsa();

@@ -1,5 +1,4 @@
-/*!
-	\file Module.cpp
+/*! \file Module.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief declares a Module loadable from a PTX source file and runable
@@ -136,93 +135,34 @@ void ir::Module::write( std::ostream& stream ) const {
 		
 	PTXStatement::Directive previous = PTXStatement::Directive_invalid;
 	
-	if(false && statements[0].version == PTXInstruction::ptx1_4 ) {
-		for( StatementVector::const_iterator statement = statements.begin(); 
-			statement != statements.end(); ++statement ) {
-			report( "Line " << ( statement - statements.begin() ) 
-				<< ": " << statement->toString() );
-			if( statement->directive == PTXStatement::Param )
+	for( StatementVector::const_iterator statement = statements.begin(); 
+		statement != statements.end(); ++statement ) {
+		report( "Line " << ( statement - statements.begin() ) 
+			<< ": " << statement->toString() );
+		if( statement->directive == PTXStatement::Param )
+		{
+			if( previous != PTXStatement::StartParam )
 			{
-				if( previous != PTXStatement::StartParam )
-				{
-					stream << ",\n\t" << statement->toString();
-				}
-				else
-				{
-					stream << "\n\t" << statement->toString();
-				}
+				stream << ",\n\t" << statement->toString();
 			}
 			else
 			{
-				stream << "\n";
-				if( statement->directive == PTXStatement::Instr 
-					|| statement->directive == PTXStatement::Loc ) {
-					stream << "\t";
-				}
-				stream << statement->toString();
-			}
-			previous = statement->directive;
-		}
-		stream << "\n";
-	}
-	else {
-		/*
-		for( StatementVector::const_iterator statement = statements.begin(); 
-			statement != statements.end(); ++statement ) {
-			report( "Line " << ( statement - statements.begin() ) 
-				<< ": " << statement->toString() );
-			stream << statement->toString() << "\n";
-		}
-		stream << "\n";
-		
-		*/
-		
-		// header
-		for (int i = 0; i < 2; i++) {
-			stream << statements[i].toString() << "\n";
-		}
-
-		stream << "\n\n/*\n* AUTO GENERATED OCELOT PTX FILE\n";
-		stream << "* Ocelot Version : " << hydrazine::Version().toString() << "\n";
-		stream << "* From file : " << modulePath << "\n";
-		stream << "*/\n";
-		
-		// textures
-		
-		/*
-		stream << "\n// Textures\n";
-		for (TextureMap::const_iterator tex_it = this->textures.begin(); tex_it != this->textures.end(); ++tex_it ) {
-			stream << ".tex " << Texture::toString(tex_it->second.type) << " " << tex_it->first << ";\n";
-		}
-		*/
-		
-		// globals
-		stream << "\n// Globals\n";
-		for (GlobalMap::const_iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
-		
-			const Global &global = glb_it->second;
-			stream << global.statement.toString() << "\n";
-		}
-		stream << "\n";
-		
-		// kernels
-		KernelMap::const_iterator ptxKernelsIt = kernels.find(ir::Instruction::PTX);
-		if (ptxKernelsIt != kernels.end()) {
-			const KernelVector &kernelVector = ptxKernelsIt->second;
-			KernelVector::const_iterator ptxKernels = kernelVector.begin();
-			for (; ptxKernels != kernelVector.end(); ++ptxKernels) {
-			
-				ir::Kernel *kernel = *ptxKernels;
-				
-				// cast away constness so we can perform data flow
-				PTXKernel *ptxKernel = static_cast<PTXKernel *>(kernel);
-				
-				ptxKernel->dfg();
-				ptxKernel->write(stream);
-				stream << "\n";	
+				stream << "\n\t" << statement->toString();
 			}
 		}
+		else
+		{
+			stream << "\n";
+			if( statement->directive == PTXStatement::Instr 
+				|| statement->directive == PTXStatement::Loc ) {
+				stream << "\t";
+			}
+			stream << statement->toString();
+		}
+		previous = statement->directive;
 	}
+	
+	stream << "\n";
 }
 
 /*!
@@ -272,9 +212,6 @@ void ir::Module::extractPTXKernels() {
 			endIterator = ++StatementVector::const_iterator(it);
 			if (instructionCount) {
 				PTXKernel *kernel = new PTXKernel(startIterator, endIterator);
-				
-				// you may not always want to perform data flow
-				//kernel->dfg();
 				
 				kernel->module = this;
 				kernels[PTXInstruction::PTX].push_back(kernel);

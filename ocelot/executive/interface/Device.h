@@ -29,7 +29,7 @@ namespace executive {
 		/*!
 			Write attributes of the device to an output stream
 		*/
-		std::ostream & write(std::ostream &out) const;
+		std::ostream& write(std::ostream &out) const;
 		
 		/*!
 			"native" ISA of the device

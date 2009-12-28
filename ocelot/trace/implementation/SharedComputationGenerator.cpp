@@ -55,17 +55,18 @@ trace::SharedComputationGenerator::~SharedComputationGenerator() {
 /*!
 	called when a traced kernel is launched to retrieve some parameters from the kernel
 */
-void trace::SharedComputationGenerator::initialize(const executive::EmulatedKernel *kernel) {
+void trace::SharedComputationGenerator::initialize(
+	const ir::ExecutableKernel& kernel) {
 	using namespace ir;
 
-	_entry.name = kernel->name;
-	_entry.module = kernel->module->modulePath;
+	_entry.name = kernel.name;
+	_entry.module = kernel.module->modulePath;
 	_entry.format = SharedComputationTraceFormat;
 
 	std::stringstream stream;
 	stream << _entry.format << "_" << _counter++;
 
-	std::string name = kernel->name;
+	std::string name = kernel.name;
 		
 	if( name.size() > 20 )
 	{
@@ -86,7 +87,7 @@ void trace::SharedComputationGenerator::initialize(const executive::EmulatedKern
 	_entry.header = path.string();
 
 	_header = Header();	
-	_header.threadCount = kernel->threadCount;
+	_header.threadCount = kernel.maxThreadsPerBlock();
 
 	if (sharedMemoryOwners) {
 		delete [] sharedMemoryOwners;
@@ -109,47 +110,47 @@ void trace::SharedComputationGenerator::initialize(const executive::EmulatedKern
 /*!
 
 */
-void trace::SharedComputationGenerator::selectMaskedStSet(const executive::EmulatedKernel *kernel) {
-	using namespace std;
-	using namespace ir;
-	
+void trace::SharedComputationGenerator::selectMaskedStSet(
+	const ir::ExecutableKernel& kernel) {
 	maskedStSet.clear();
 	
-	for (ir::PTXKernel::PTXInstructionVector::const_iterator 
-		instr_it = kernel->KernelInstructions.begin();
-		instr_it != kernel->KernelInstructions.end(); ++instr_it) {
+	for (ir::ControlFlowGraph::const_iterator 
+		block = kernel.cfg()->begin(); block != kernel.cfg()->end(); ++block) {
+
+		for (ir::ControlFlowGraph::InstructionList::const_iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction) {
+			const ir::PTXInstruction& ptx = static_cast<
+				const ir::PTXInstruction&>(**instruction);
 	
-		if (instr_it->opcode == PTXInstruction::Ld && instr_it->addressSpace == PTXInstruction::Global) {
-			// look for possible store instructions
-			ir::PTXKernel::PTXInstructionVector::const_iterator 
-				next_instr = instr_it; 
-			++next_instr;
+			if (ptx.opcode == ir::PTXInstruction::Ld 
+				&& ptx.addressSpace == ir::PTXInstruction::Global) {
+				// look for possible store instructions
+				ir::ControlFlowGraph::InstructionList::const_iterator 
+					next_instr = instruction; 
+				++next_instr;
 			
-			for (; next_instr != kernel->KernelInstructions.end(); ++next_instr) {
-			
-				// stop at control flow instructions
-				if (next_instr->opcode == PTXInstruction::Bra || 
-					next_instr->opcode == PTXInstruction::Reconverge ||
-					next_instr->opcode == PTXInstruction::Bar ||
-					next_instr->opcode == PTXInstruction::Exit) {
-					break;
-				}
+				for (; next_instr != block->instructions.end(); ++next_instr) {
+					const ir::PTXInstruction& next = static_cast<
+						const ir::PTXInstruction&>(**next_instr);
 				
-				//
-				// If data from a ld.global instruction is being stored to shared memory, mask this set
-				//
-				if (next_instr->opcode == PTXInstruction::St && 
-					next_instr->addressSpace == PTXInstruction::Shared &&
-					next_instr->a.identifier == instr_it->d.identifier ) {
+					//
+					// If data from a ld.global instruction is being stored 
+					// to shared memory, mask this set
+					//
+					if (next.opcode == ir::PTXInstruction::St && 
+						next.addressSpace == ir::PTXInstruction::Shared &&
+						next.a.identifier == ptx.d.identifier ) {
 				
-					maskedStSet.insert((PTXU32)(next_instr - kernel->KernelInstructions.begin()));
-					break;
-				}
+						maskedStSet.insert((ir::PTXU32)(next.pc));
+						break;
+					}
 				
-				// stop at first anti-dependency
-				if (next_instr->d.addressMode == PTXOperand::Register && 
-					next_instr->d.identifier == instr_it->d.identifier) {
-					break;
+					// stop at first anti-dependency
+					if (next.d.addressMode == ir::PTXOperand::Register && 
+						next.d.identifier == ptx.d.identifier) {
+						break;
+					}
 				}
 			}
 		}

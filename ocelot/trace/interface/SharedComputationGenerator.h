@@ -108,7 +108,7 @@ namespace trace {
 		/*!
 			called when a traced kernel is launched to retrieve some parameters from the kernel
 		*/
-		void initialize(const executive::EmulatedKernel *kernel);
+		void initialize(const ir::ExecutableKernel& kernel);
 
 		/*!
 			Called whenever an event takes place.
@@ -140,7 +140,7 @@ namespace trace {
 			std::set< ir::PTXU32 > maskedStSet;
 			
 	private:
-			void selectMaskedStSet(const executive::EmulatedKernel *kernel);
+			void selectMaskedStSet(const ir::ExecutableKernel& kernel);
 	};
 }
 

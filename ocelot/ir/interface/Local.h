@@ -1,5 +1,4 @@
-/*!
-	\file Local.h
+/*! \file Local.h
 	\author Gregory Diamos <gregory.diamos@gatech>
 	\date Thursday September 17, 2009
 	\brief The header file for the Local class

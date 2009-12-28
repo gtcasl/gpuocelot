@@ -1,5 +1,4 @@
-/*!
-	\file PTXStatement.h
+/*! \file PTXStatement.h
 	\date Monday January 19, 2009
 	\author Andrew Kerr
 	\brief The header file for the PTXStatement class
@@ -98,8 +97,6 @@ namespace ir {
 		Directive directive;
 
 		PTXInstruction instruction;
-		
-		PTXInstruction::Version version;
 	
 		PTXOperand::DataType type;
 	

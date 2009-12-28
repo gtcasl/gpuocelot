@@ -657,7 +657,7 @@ namespace ir
 		return LLVMBinaryInstruction::valid();
 	}
 
-	LLVMInstruction* LLVMAdd::clone() const
+	Instruction* LLVMAdd::clone(bool copy) const
 	{
 		return new LLVMAdd( *this );
 	}
@@ -692,7 +692,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMAlloca::clone() const
+	Instruction* LLVMAlloca::clone(bool copy) const
 	{
 		return new LLVMAlloca( *this );
 	}
@@ -702,7 +702,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMAnd::clone() const
+	Instruction* LLVMAnd::clone(bool copy) const
 	{
 		return new LLVMAnd( *this );
 	}
@@ -728,7 +728,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMAshr::clone() const
+	Instruction* LLVMAshr::clone(bool copy) const
 	{
 		return new LLVMAshr( *this );
 	}
@@ -738,7 +738,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMBitcast::clone() const
+	Instruction* LLVMBitcast::clone(bool copy) const
 	{
 		return new LLVMBitcast( *this );
 	}
@@ -779,7 +779,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMBr::clone() const
+	Instruction* LLVMBr::clone(bool copy) const
 	{
 		return new LLVMBr( *this );
 	}
@@ -897,7 +897,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMCall::clone() const
+	Instruction* LLVMCall::clone(bool copy) const
 	{
 		return new LLVMCall( *this );
 	}
@@ -935,7 +935,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMExtractelement::clone() const
+	Instruction* LLVMExtractelement::clone(bool copy) const
 	{
 		return new LLVMExtractelement( *this );
 	}
@@ -992,7 +992,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMExtractvalue::clone() const
+	Instruction* LLVMExtractvalue::clone(bool copy) const
 	{
 		return new LLVMExtractvalue( *this );
 	}
@@ -1002,7 +1002,7 @@ namespace ir
 		
 	}
 
-	LLVMInstruction* LLVMFadd::clone() const
+	Instruction* LLVMFadd::clone(bool copy) const
 	{
 		return new LLVMFadd( *this );
 	}
@@ -1012,7 +1012,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFcmp::clone() const
+	Instruction* LLVMFcmp::clone(bool copy) const
 	{
 		return new LLVMFcmp( *this );
 	}
@@ -1022,7 +1022,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFdiv::clone() const
+	Instruction* LLVMFdiv::clone(bool copy) const
 	{
 		return new LLVMFdiv( *this );
 	}
@@ -1032,7 +1032,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFmul::clone() const
+	Instruction* LLVMFmul::clone(bool copy) const
 	{
 		return new LLVMFmul( *this );
 	}
@@ -1042,7 +1042,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFpext::clone() const
+	Instruction* LLVMFpext::clone(bool copy) const
 	{
 		return new LLVMFpext( *this );
 	}
@@ -1052,7 +1052,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFptosi::clone() const
+	Instruction* LLVMFptosi::clone(bool copy) const
 	{
 		return new LLVMFptosi( *this );
 	}
@@ -1062,7 +1062,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFptoui::clone() const
+	Instruction* LLVMFptoui::clone(bool copy) const
 	{
 		return new LLVMFptoui( *this );
 	}
@@ -1072,7 +1072,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFptrunc::clone() const
+	Instruction* LLVMFptrunc::clone(bool copy) const
 	{
 		return new LLVMFptrunc( *this );
 	}
@@ -1097,7 +1097,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMFree::clone() const
+	Instruction* LLVMFree::clone(bool copy) const
 	{
 		return new LLVMFree( *this );
 	}
@@ -1107,7 +1107,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFrem::clone() const
+	Instruction* LLVMFrem::clone(bool copy) const
 	{
 		return new LLVMFrem( *this );
 	}
@@ -1117,7 +1117,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMFsub::clone() const
+	Instruction* LLVMFsub::clone(bool copy) const
 	{
 		return new LLVMFsub( *this );
 	}
@@ -1154,7 +1154,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMGetelementptr::clone() const
+	Instruction* LLVMGetelementptr::clone(bool copy) const
 	{
 		return new LLVMGetelementptr( *this );
 	}
@@ -1164,7 +1164,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMIcmp::clone() const
+	Instruction* LLVMIcmp::clone(bool copy) const
 	{
 		return new LLVMIcmp( *this );
 	}
@@ -1212,7 +1212,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMInsertelement::clone() const
+	Instruction* LLVMInsertelement::clone(bool copy) const
 	{
 		return new LLVMInsertelement( *this );
 	}
@@ -1257,7 +1257,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMInsertvalue::clone() const
+	Instruction* LLVMInsertvalue::clone(bool copy) const
 	{
 		return new LLVMInsertvalue( *this );
 	}
@@ -1267,7 +1267,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMInttoptr::clone() const
+	Instruction* LLVMInttoptr::clone(bool copy) const
 	{
 		return new LLVMInttoptr( *this );
 	}
@@ -1367,7 +1367,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMInvoke::clone() const
+	Instruction* LLVMInvoke::clone(bool copy) const
 	{
 		return new LLVMInvoke( *this );
 	}
@@ -1404,7 +1404,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMLoad::clone() const
+	Instruction* LLVMLoad::clone(bool copy) const
 	{
 		return new LLVMLoad( *this );
 	}
@@ -1430,7 +1430,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMLshr::clone() const
+	Instruction* LLVMLshr::clone(bool copy) const
 	{
 		return new LLVMLshr( *this );
 	}
@@ -1463,7 +1463,7 @@ namespace ir
 		return "";	
 	}
 
-	LLVMInstruction* LLVMMalloc::clone() const
+	Instruction* LLVMMalloc::clone(bool copy) const
 	{
 		return new LLVMMalloc( *this );
 	}
@@ -1484,7 +1484,7 @@ namespace ir
 		return result;	
 	}
 
-	LLVMInstruction* LLVMMul::clone() const
+	Instruction* LLVMMul::clone(bool copy) const
 	{
 		return new LLVMMul( *this );
 	}
@@ -1494,7 +1494,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMOr::clone() const
+	Instruction* LLVMOr::clone(bool copy) const
 	{
 		return new LLVMOr( *this );
 	}
@@ -1537,7 +1537,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMPhi::clone() const
+	Instruction* LLVMPhi::clone(bool copy) const
 	{
 		return new LLVMPhi( *this );
 	}
@@ -1547,7 +1547,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMPtrtoint::clone() const
+	Instruction* LLVMPtrtoint::clone(bool copy) const
 	{
 		return new LLVMPtrtoint( *this );
 	}
@@ -1575,7 +1575,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMRet::clone() const
+	Instruction* LLVMRet::clone(bool copy) const
 	{
 		return new LLVMRet( *this );
 	}
@@ -1594,7 +1594,7 @@ namespace ir
 		return result;
 	}
 
-	LLVMInstruction* LLVMSdiv::clone() const
+	Instruction* LLVMSdiv::clone(bool copy) const
 	{
 		return new LLVMSdiv( *this );
 	}
@@ -1620,7 +1620,7 @@ namespace ir
 		return LLVMBinaryInstruction::valid();
 	}
 
-	LLVMInstruction* LLVMSelect::clone() const
+	Instruction* LLVMSelect::clone(bool copy) const
 	{
 		return new LLVMSelect( *this );
 	}
@@ -1630,7 +1630,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMSext::clone() const
+	Instruction* LLVMSext::clone(bool copy) const
 	{
 		return new LLVMSext( *this );
 	}
@@ -1656,7 +1656,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMShl::clone() const
+	Instruction* LLVMShl::clone(bool copy) const
 	{
 		return new LLVMShl( *this );
 	}
@@ -1719,7 +1719,7 @@ namespace ir
 		return LLVMBinaryInstruction::valid();
 	}
 
-	LLVMInstruction* LLVMShufflevector::clone() const
+	Instruction* LLVMShufflevector::clone(bool copy) const
 	{
 		return new LLVMShufflevector( *this );
 	}
@@ -1729,7 +1729,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMSitofp::clone() const
+	Instruction* LLVMSitofp::clone(bool copy) const
 	{
 		return new LLVMSitofp( *this );
 	}
@@ -1739,7 +1739,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMSrem::clone() const
+	Instruction* LLVMSrem::clone(bool copy) const
 	{
 		return new LLVMSrem( *this );
 	}
@@ -1787,7 +1787,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMStore::clone() const
+	Instruction* LLVMStore::clone(bool copy) const
 	{
 		return new LLVMStore( *this );
 	}
@@ -1808,7 +1808,7 @@ namespace ir
 		return result;		
 	}
 
-	LLVMInstruction* LLVMSub::clone() const
+	Instruction* LLVMSub::clone(bool copy) const
 	{
 		return new LLVMSub( *this );
 	}
@@ -1872,7 +1872,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMSwitch::clone() const
+	Instruction* LLVMSwitch::clone(bool copy) const
 	{
 		return new LLVMSwitch( *this );
 	}
@@ -1882,7 +1882,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMTrunc::clone() const
+	Instruction* LLVMTrunc::clone(bool copy) const
 	{
 		return new LLVMTrunc( *this );
 	}
@@ -1892,7 +1892,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMUdiv::clone() const
+	Instruction* LLVMUdiv::clone(bool copy) const
 	{
 		return new LLVMUdiv( *this );
 	}
@@ -1902,7 +1902,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMUitofp::clone() const
+	Instruction* LLVMUitofp::clone(bool copy) const
 	{
 		return new LLVMUitofp( *this );
 	}
@@ -1922,7 +1922,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMUnreachable::clone() const
+	Instruction* LLVMUnreachable::clone(bool copy) const
 	{
 		return new LLVMUnreachable( *this );
 	}
@@ -1942,7 +1942,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMUnwind::clone() const
+	Instruction* LLVMUnwind::clone(bool copy) const
 	{
 		return new LLVMUnwind( *this );
 	}
@@ -1952,7 +1952,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMUrem::clone() const
+	Instruction* LLVMUrem::clone(bool copy) const
 	{
 		return new LLVMUrem( *this );
 	}
@@ -1976,7 +1976,7 @@ namespace ir
 		return "";
 	}
 
-	LLVMInstruction* LLVMVaArg::clone() const
+	Instruction* LLVMVaArg::clone(bool copy) const
 	{
 		return new LLVMVaArg( *this );
 	}
@@ -1986,7 +1986,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMXor::clone() const
+	Instruction* LLVMXor::clone(bool copy) const
 	{
 		return new LLVMXor( *this );
 	}
@@ -1996,7 +1996,7 @@ namespace ir
 	
 	}
 
-	LLVMInstruction* LLVMZext::clone() const
+	Instruction* LLVMZext::clone(bool copy) const
 	{
 		return new LLVMZext( *this );
 	}

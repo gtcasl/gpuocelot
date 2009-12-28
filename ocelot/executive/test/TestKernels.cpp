@@ -53,13 +53,14 @@ public:
 	}
 
 	std::ostream & print(std::ostream &out, EmulatedKernel *kernel) {
-		for (unsigned int i = 0; i < kernel->KernelInstructions.size(); i++) {
-			const PTXInstruction &instr = kernel->KernelInstructions[i];
+		for (unsigned int i = 0; i < kernel->instructions.size(); i++) {
+			const PTXInstruction &instr = kernel->instructions[i];
 			out << " [" << i << "] " << instr.toString();
 			switch (instr.opcode) {
 				case PTXInstruction::Bra:
 					out << " // [target: " << instr.branchTargetInstruction 
-						<< ", reconverge: " << instr.reconvergeInstruction << "]";
+						<< ", reconverge: " << instr.reconvergeInstruction 
+						<< "]";
 					break;
 				default:
 					break;

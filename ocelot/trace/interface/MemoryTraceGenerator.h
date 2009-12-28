@@ -99,7 +99,8 @@ namespace trace {
 		private:
 			friend class boost::serialization::access;
 
-			template< class Archive > void save( Archive& ar, const unsigned int version ) const {
+			template< class Archive > void save( Archive& ar, 
+				const unsigned int version ) const {
 				/*
 				std::string takenString;
 				std::string fallthroughString;
@@ -190,7 +191,7 @@ namespace trace {
 		/*!
 			called when a traced kernel is launched to retrieve some parameters from the kernel
 		*/
-		void initialize(const executive::EmulatedKernel *kernel);
+		void initialize(const ir::ExecutableKernel& kernel);
 
 		/*!
 			Called whenever an event takes place.

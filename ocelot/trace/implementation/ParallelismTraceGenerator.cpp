@@ -43,13 +43,13 @@ namespace trace
 	}
 
 	void ParallelismTraceGenerator::initialize( 
-		const executive::EmulatedKernel* kernel )
+		const ir::ExecutableKernel& kernel )
 	{
-		_entry.name = kernel->name;
-		_entry.module = kernel->module->modulePath;
+		_entry.name = kernel.name;
+		_entry.module = kernel.module->modulePath;
 		_entry.format = ParallelismTraceFormat;
 
-		std::string name = kernel->name;
+		std::string name = kernel.name;
 		
 		if( name.size() > 20 )
 		{
@@ -92,15 +92,14 @@ namespace trace
 		_archive = new boost::archive::text_oarchive( *_file );
 		
 		_header.format = ParallelismTraceFormat;
-		_header.dimensions = kernel->gridDim.x * kernel->gridDim.y 
-			* kernel->gridDim.z;
+		_header.dimensions = kernel.gridDim().x * kernel.gridDim().y 
+			* kernel.gridDim().z;
 		report("CTA Dimensions are " << _header.dimensions);
-		_header.threads = kernel->threadCount;
+		_header.threads = kernel.maxThreadsPerBlock();
 		
 		_event.ctaid = 0;
 		_event.instructions = 0;
 		_event.activity = 0;
-		
 	}
 
 	void ParallelismTraceGenerator::event( const TraceEvent& event )

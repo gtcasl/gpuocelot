@@ -1,5 +1,4 @@
-/*!
-	\file Module.h
+/*! \file Module.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief declares a Module loadable from a PTX source file
@@ -30,7 +29,7 @@ namespace ir {
 		typedef std::map< std::string, Texture > TextureMap;
 	
 		/*! \brief Typedef for a vector of PTXStatements */
-		typedef std::deque< PTXStatement > StatementVector;
+		typedef std::vector< PTXStatement > StatementVector;
 
 		/*!	\brief Typedef for a vector of Kernel pointers */
 		typedef std::vector< Kernel* > KernelVector;
@@ -50,15 +49,13 @@ namespace ir {
 		
 	public:
 
-		/*!
-			Given a path to a PTX source file, construct the Module, 
+		/*! Given a path to a PTX source file, construct the Module, 
 			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
 		Module(std::string path);
 
-		/*!
-			Given a stream constaining a PTX file, parse the PTX file,
+		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
 		Module(std::istream& source);
@@ -133,14 +130,12 @@ namespace ir {
 		std::string modulePath;
 	
 		/*!
-			CUDA Module owning this kernel, others, and globals - this value is shared among
-			other GPUExecutableKernels of this module
+			CUDA Module owning this kernel, others, and globals - 
+			this value is shared among other GPUExecutableKernels of this module
 		*/
 		CUmodule cuModule;
 
-		/*!
-			state of cuModule 
-		*/
+		/*! state of cuModule */
 		CUModuleState cuModuleState;
 		
 		friend class executive::Executive;

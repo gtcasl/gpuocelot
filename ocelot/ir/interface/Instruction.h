@@ -1,5 +1,4 @@
-/*!
-	\file Instruction.h
+/*! \file Instruction.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief base class for all instructions
@@ -10,14 +9,10 @@
 
 #include <string>
 
-/*!
-	\brief A namespace for the Ocelot internal program representation
-*/
+/*! \brief A namespace for the Ocelot internal program representation */
 namespace ir {
 
-	/*!
-		\brief Internal representation of an instruction.
-	*/
+	/*! \brief Internal representation of an instruction. */
 	class Instruction {
 	public:
 		enum Architecture {
@@ -50,6 +45,9 @@ namespace ir {
 				string if valid otherwise an error message.
 		*/
 		virtual std::string valid() const = 0;
+
+		/*! \brief Invoke the derived new operator from a base pointer */
+		virtual Instruction* clone(bool copy = true) const = 0;
 
 	public:
 		/*! \brief Label that may identify the instruction */

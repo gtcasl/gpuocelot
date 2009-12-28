@@ -1,5 +1,4 @@
-/*!
-	\file PTXOperand.cpp
+/*! \file PTXOperand.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief internal representation of a PTX operand
@@ -339,6 +338,18 @@ ir::PTXOperand::PTXOperand() {
 	vec = v1;
 }
 
+ir::PTXOperand::PTXOperand(SpecialRegister r) : addressMode(Special), 
+	special(r) {
+}
+
+ir::PTXOperand::PTXOperand(const std::string& l) : identifier(l), 
+	addressMode(Label) {
+}
+
+ir::PTXOperand::PTXOperand(AddressMode m, DataType t, RegisterType r, 
+	int o, Vec v) : addressMode(m), type(t), offset(o), reg(r), vec(v) {
+}
+
 ir::PTXOperand::~PTXOperand() {
 
 }
@@ -366,7 +377,8 @@ static std::ostream & write(std::ostream &stream, double value) {
 		double value;
 	} double_union;
 	double_union.value = value;
-	stream << "0d" << std::setw(16) << std::setfill('0') << std::hex << double_union.imm_uint;
+	stream << "0d" << std::setw(16) << std::setfill('0') << std::hex 
+		<< double_union.imm_uint;
 	return stream;
 }
 

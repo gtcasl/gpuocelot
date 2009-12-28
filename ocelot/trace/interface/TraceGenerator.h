@@ -18,8 +18,8 @@ namespace trace {
 }
 
 // forward declare EmulatedKernel
-namespace executive {
-	class EmulatedKernel;
+namespace ir {
+	class ExecutableKernel;
 }
 
 namespace trace {
@@ -55,7 +55,7 @@ namespace trace {
 			\brief called when a traced kernel is launched to retrieve some 
 				parameters from the kernel
 		*/
-		virtual void initialize(const executive::EmulatedKernel *kernel);
+		virtual void initialize(const ir::ExecutableKernel& kernel);
 
 		/*!
 			\brief Called whenever an event takes place.

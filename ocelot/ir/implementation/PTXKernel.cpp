@@ -1,5 +1,4 @@
-/*!
-	\file PTXKernel.cpp
+/*! \file PTXKernel.cpp
 	\author Gregory Diamos <gregory.diamos@gatech>
 	\date Thursday September 17, 2009
 	\brief The header file for the PTXKernel class
@@ -23,8 +22,7 @@
 namespace ir
 {
 	PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
-		PTXStatementVector::const_iterator end): Kernel( Instruction::PTX ), 
-		_version( start->version )
+		PTXStatementVector::const_iterator end): Kernel( Instruction::PTX )
 	{
 		// get parameters/locals, extract kernel name
 		for( PTXStatementVector::const_iterator it = start; it != end; ++it ) 
@@ -44,11 +42,10 @@ namespace ir
 			}
 		}
 		_cfg = new ControlFlowGraph;
-		constructCFG( *_cfg, instructions, start, end );
+		constructCFG( *_cfg, start, end );
 	}
 
-	PTXKernel::PTXKernel( const PTXKernel& kernel ) : Kernel( kernel ), 
-		_version( kernel._version ), instructions( kernel.instructions )
+	PTXKernel::PTXKernel( const PTXKernel& kernel ) : Kernel( kernel )
 	{
 		
 	}
@@ -59,15 +56,7 @@ namespace ir
 		
 		Kernel::operator=(kernel);
 		
-		_version = kernel._version;
-		instructions = kernel.instructions;
-		
 		return *this;	
-	}
-
-	PTXInstruction::Version PTXKernel::version() const 
-	{
-		return _version;
 	}
 
 	PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
@@ -76,7 +65,8 @@ namespace ir
 
 		typedef std::unordered_set< analysis::DataflowGraph::RegisterId > 
 			RegisterSet;
-		typedef std::unordered_set< analysis::DataflowGraph::Register > DeadRegisterSet;
+		typedef std::unordered_set< analysis::DataflowGraph::Register > 
+			DeadRegisterSet;
 
 		RegisterSet encountered;
 		DeadRegisterSet deadRegisters;
@@ -100,8 +90,7 @@ namespace ir
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
 			{
-				report( "  For instruction " 
-					<< instructions[ instruction->id ].toString() );
+				report( "  For instruction " << instruction->i->toString() );
 
 				typedef analysis::DataflowGraph::RegisterPointerVector
 					RegisterPointerVector;
@@ -111,7 +100,9 @@ namespace ir
 				{
 					if( encountered.insert( *d->pointer ).second )
 					{
-						analysis::DataflowGraph::Register live_reg(*d->pointer, instructions[instruction->id].d.type);
+						analysis::DataflowGraph::Register live_reg(*d->pointer, 
+							static_cast<PTXInstruction*>(
+							instruction->i)->d.type);
 						regs.push_back( live_reg );
 					}
 				}
@@ -128,8 +119,7 @@ namespace ir
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
 			{
-				report( "  For instruction " 
-					<< instructions[ instruction->id ].toString() );
+				report( "  For instruction " << instruction->i->toString() );
 
 				typedef analysis::DataflowGraph::RegisterPointerVector
 					RegisterPointerVector;
@@ -141,8 +131,8 @@ namespace ir
 					if(encountered.find(reg) == encountered.end())
 					{
 						// source operand was not produced by any instructions
-						analysis::DataflowGraph::Register dead_reg(reg, s->type);
-						deadRegisters.insert(dead_reg);
+						analysis::DataflowGraph::Register dead(reg, s->type);
+						deadRegisters.insert(dead);
 					}
 				}
 			}
@@ -164,8 +154,8 @@ namespace ir
 	{
 		assertM(_cfg != 0, "Must create cfg before building dfg.");
 		if(_dfg) return _dfg;
-		assignRegisters( instructions );
-		_dfg = new analysis::DataflowGraph( *_cfg, instructions );
+		assignRegisters( *_cfg );
+		_dfg = new analysis::DataflowGraph( *_cfg );
 		return _dfg;
 	}
 
@@ -174,24 +164,20 @@ namespace ir
 	}
 
 	void PTXKernel::constructCFG( ControlFlowGraph &cfg,
-		PTXInstructionVector &instructions,
 		PTXStatementVector::const_iterator kernelStart,
-		PTXStatementVector::const_iterator kernelEnd) 
-	{
-		
+		PTXStatementVector::const_iterator kernelEnd) {
 		typedef std::unordered_map< std::string, 
-			BasicBlock* > BlockToLabelMap;
-		typedef std::vector< BasicBlock* > BlockPointerVector;
+			ControlFlowGraph::iterator > BlockToLabelMap;
+		typedef std::vector< ControlFlowGraph::iterator > BlockPointerVector;
 	
 		BlockToLabelMap blocksByLabel;
 		BlockPointerVector branchBlocks;
 
-		BasicBlock* last_inserted_block = 0;
-		BasicBlock* block = new BasicBlock;
-		Edge* edge = new Edge;
-		edge->head = cfg.get_entry_block();
-		edge->tail = block;
-		edge->type = Edge::FallThrough;
+		ControlFlowGraph::iterator last_inserted_block = cfg.end();
+		ControlFlowGraph::iterator block = cfg.insert_block(
+			ControlFlowGraph::BasicBlock());
+		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
+			ControlFlowGraph::Edge::FallThrough);
 	
 		for( ; kernelStart != kernelEnd; ++kernelStart ) 
 		{
@@ -201,22 +187,20 @@ namespace ir
 			{
 				// a label indicates the termination of a previous block
 				//
-				// This implementation of CFG does not store any empty basic blocks.
+				// This implementation does not store any empty basic blocks.
 				if( block->instructions.size() ) {
 					//
 					// insert old block
 					//
-					cfg.insert_block( last_inserted_block = block );
-					if( edge ) 
-					{
+					if (edge.type != ControlFlowGraph::Edge::Invalid) {
 						cfg.insert_edge(edge);
 					}
 				
-					edge = new Edge;
-					edge->head = block;
-					block = new BasicBlock;
-					edge->tail = block;
-					edge->type = Edge::FallThrough;
+					edge.head = block;
+					last_inserted_block = block;
+					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					edge.tail = block;
+					edge.type = ControlFlowGraph::Edge::FallThrough;
 				}
 				else 
 				{
@@ -229,35 +213,33 @@ namespace ir
 			}
 			else if( statement.directive == PTXStatement::Instr ) 
 			{
-				block->instructions.push_back( ( int ) instructions.size() );
-				instructions.push_back( statement.instruction );
+				block->instructions.push_back( statement.instruction.clone() );
 
 				if (statement.instruction.opcode == PTXInstruction::Bra) 
 				{
-					cfg.insert_block(last_inserted_block = block);
-					if (edge) {
+					last_inserted_block = block;
+					if (edge.type != ControlFlowGraph::Edge::Invalid) {
 						cfg.insert_edge(edge);
 					}
-					edge = new Edge;
-					edge->head = block;
+					edge.head = block;
 					branchBlocks.push_back(block);
-
-					block = new BasicBlock;
-					edge->tail = block;
-					edge->type = Edge::FallThrough;
+					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					edge.tail = block;
+					edge.type = ControlFlowGraph::Edge::FallThrough;
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Exit )
 				{
-					cfg.insert_block( last_inserted_block = block );
-					cfg.insert_edge( edge );
-					edge = new Edge;
-					edge->head = block;
-					edge->tail = cfg.get_exit_block();
-					edge->type = Edge::FallThrough;
+					last_inserted_block = block;
+					if (edge.type != ControlFlowGraph::Edge::Invalid) {
+						cfg.insert_edge(edge);
+					}
+					edge.head = block;
+					edge.tail = cfg.get_exit_block();
+					edge.type = ControlFlowGraph::Edge::FallThrough;
 					cfg.insert_edge( edge );
 
-					block = new BasicBlock;
-					edge = 0;
+					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Call )
 				{
@@ -276,68 +258,55 @@ namespace ir
 
 		if (block->instructions.size()) 
 		{
-			cfg.insert_block(block);
-			if (edge) 
-			{
+			if (edge.type != ControlFlowGraph::Edge::Invalid) {
 				cfg.insert_edge(edge);
 			}
-			edge = new Edge;
-			edge->head = block;
-			edge->tail = cfg.get_exit_block();
-			edge->type = Edge::FallThrough;
+			edge.head = block;
+			edge.tail = cfg.get_exit_block();
+			edge.type = ControlFlowGraph::Edge::FallThrough;
 			cfg.insert_edge(edge);
 		}
 		else 
 		{
-			if( last_inserted_block ) 
+			if(last_inserted_block!=cfg.end()) 
 			{
 				// make sure there is a fall through edge from the last 
 				// inserted block to the exit node
-				BasicBlock::EdgeList out_edges 
-					= last_inserted_block->get_out_edges();
-				Edge *ft_e = 0;
-				for( BasicBlock::EdgeList::iterator it = out_edges.begin(); 
-					it != out_edges.end(); ++it )
+				ControlFlowGraph::edge_iterator ft_e = cfg.edges_end();
+				for( ControlFlowGraph::edge_pointer_iterator 
+					it = last_inserted_block->out_edges.begin(); 
+					it != last_inserted_block->out_edges.end(); ++it )
 				{
-					if( (*it)->type == Edge::FallThrough 
+					if( (*it)->type == ControlFlowGraph::Edge::FallThrough 
 						&& (*it)->tail == cfg.get_exit_block() )
 					{
 						ft_e = (*it);
 						break;
 					}
 				}
-				if( !ft_e )
+				if( ft_e == cfg.edges_end() )
 				{
-					Edge *edge = new Edge;
-					edge->type = Edge::FallThrough;
-					edge->head = last_inserted_block;
-					edge->tail = cfg.get_exit_block();
-					cfg.insert_edge(edge);
+					cfg.insert_edge(ControlFlowGraph::Edge(last_inserted_block, 
+						cfg.get_exit_block()));
 				}
 			}
-			delete block;
-			if( edge )
-			{
-				delete edge;
-			}
+			cfg.remove_block(block);
 		}
 
 		// go back and add edges for basic blocks terminating in branches
 		for( BlockPointerVector::iterator it = branchBlocks.begin();
 			it != branchBlocks.end(); ++it ) 
 		{
-			PTXInstruction & bra = instructions[ (*it)->instructions.back() ];
+			PTXInstruction& bra = *static_cast<PTXInstruction*>(
+				(*it)->instructions.back());
 			BlockToLabelMap::iterator labeledBlockIt = 
 				blocksByLabel.find( bra.d.identifier );
 		
 			if( labeledBlockIt != blocksByLabel.end() ) 
 			{
-				Edge *edge = new Edge;
-				edge->head = *it;
-				edge->tail = labeledBlockIt->second;
-				edge->type = Edge::Branch;
-				bra.d.identifier = edge->tail->label;
-				cfg.insert_edge(edge);
+				bra.d.identifier = labeledBlockIt->second->label;
+				cfg.insert_edge(ControlFlowGraph::Edge(*it, 
+					labeledBlockIt->second, ControlFlowGraph::Edge::Branch));
 			}
 			else 
 			{
@@ -346,88 +315,83 @@ namespace ir
 		}
 	}
 
-	PTXKernel::RegisterMap PTXKernel::assignRegisters( 
-		PTXInstructionVector& instructions ) 
+	PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg ) 
 	{
 		RegisterMap map;
 	
 		report( "Allocating registers " );
 	
-		for( PTXInstructionVector::iterator i_it = instructions.begin();
-			i_it != instructions.end(); ++i_it ) 
-		{
-			PTXInstruction & instr = *i_it;
-			PTXOperand PTXInstruction:: * operands[] = 
-			{ &PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c, 
-				&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq };
+		for (ControlFlowGraph::iterator block = cfg.begin(); 
+			block != cfg.end(); ++block) {
+			for (ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction) {
+				PTXInstruction& instr = *static_cast<PTXInstruction*>(
+					*instruction);
+				PTXOperand PTXInstruction:: * operands[] = 
+				{ &PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c, 
+					&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq };
 		
-			report( " For instruction '" << instr.toString() << "'" );
+				report( " For instruction '" << instr.toString() << "'" );
 		
-			for(int i = 0; i < 6; i++) 
-			{
-				if( (instr.*operands[ i ]).addressMode == PTXOperand::Invalid ) 
-				{
-					continue;
-				}
-				if( ( instr.*operands[ i ] ).type == PTXOperand::pred
-					&& ( instr.*operands[ i ]).condition == PTXOperand::PT ) 
-				{
-					continue;
-				}
-				if( ( instr.*operands[ i ] ).addressMode == PTXOperand::Register
-					|| ( instr.*operands[ i ] ).addressMode 
-					== PTXOperand::Indirect )  
-				{
-					if( ( instr.*operands[ i ] ).vec != PTXOperand::v1 ) 
-					{
-						for( PTXOperand::Array::iterator 
-							a_it = ( instr.*operands[ i ] ).array.begin(); 
-							a_it != ( instr.*operands[ i ] ).array.end(); 
-							++a_it ) 
-						{
-							RegisterMap::iterator it 
-								= map.find( a_it->registerName() );
+				for (int i = 0; i < 6; i++) {
+					if ((instr.*operands[i]).addressMode 
+						== PTXOperand::Invalid) {
+						continue;
+					}
+					if ((instr.*operands[i]).type == PTXOperand::pred
+						&& (instr.*operands[i]).condition == PTXOperand::PT) {
+						continue;
+					}
+					if ((instr.*operands[i]).addressMode == PTXOperand::Register
+						|| (instr.*operands[i]).addressMode 
+						== PTXOperand::Indirect) {
+						if ((instr.*operands[i]).vec != PTXOperand::v1) {
+							for (PTXOperand::Array::iterator 
+								a_it = (instr.*operands[i]).array.begin(); 
+								a_it != (instr.*operands[i]).array.end(); 
+								++a_it) {
+								RegisterMap::iterator it 
+									= map.find(a_it->registerName());
 
-							PTXOperand::RegisterType reg = 0;
-							if( it == map.end() ) 
-							{
-								reg = ( PTXOperand::RegisterType ) map.size();
-								map.insert( std::make_pair( 
-									a_it->registerName(), reg ) );
+								PTXOperand::RegisterType reg = 0;
+								if (it == map.end()) {
+									reg = (PTXOperand::RegisterType) map.size();
+									map.insert(std::make_pair( 
+										a_it->registerName(), reg));
+								}
+								else {
+									reg = it->second;
+								}
+								a_it->reg = reg;
+								report( "  Assigning register " 
+									<< a_it->registerName() 
+									<< " to " << a_it->reg );
+								a_it->identifier.clear();
 							}
-							else 
-							{
-								reg = it->second;
-							}
-							a_it->reg = reg;
-							report( "  Assigning register " 
-								<< a_it->registerName() 
-								<< " to " << a_it->reg );
-							a_it->identifier.clear();
 						}
-					}
-					RegisterMap::iterator it 
-						= map.find( ( instr.*operands[ i ] ).registerName());
+						RegisterMap::iterator it 
+							= map.find((instr.*operands[i]).registerName());
 
-					PTXOperand::RegisterType reg = 0;
-					if( it == map.end() ) 
-					{
-						reg = ( PTXOperand::RegisterType ) map.size();
-						map.insert( std::make_pair( 
-							( instr.*operands[i] ).registerName(), reg ) );
+						PTXOperand::RegisterType reg = 0;
+						if (it == map.end()) {
+							reg = (PTXOperand::RegisterType) map.size();
+							map.insert(std::make_pair( 
+								(instr.*operands[i]).registerName(), reg));
+						}
+						else {
+							reg = it->second;
+						}
+						(instr.*operands[i]).reg = reg;
+						report("  Assigning register " 
+							<< (instr.*operands[i]).registerName() 
+							<< " to " << reg);
+						(instr.*operands[i]).identifier.clear();
 					}
-					else 
-					{
-						reg = it->second;
-					}
-					( instr.*operands[ i ] ).reg = reg;
-					report( "  Assigning register " 
-						<< ( instr.*operands[ i ] ).registerName() 
-						<< " to " << reg );
-					( instr.*operands[i] ).identifier.clear();
 				}
 			}
 		}
+
 		return std::move( map );
 	}
 
@@ -437,38 +401,21 @@ namespace ir
 			<< hydrazine::Version().toString() << "\n";
 		stream << "*/\n";
 	
-		if( version() == ir::PTXInstruction::ptx1_3 )
-		{
-			stream << ".entry " << name << "\n";		
-			stream << "{\n";
+		stream << ".entry " << name;
+		if (parameters.size()) {
+			stream << "(";
 			for( ParameterVector::const_iterator parameter = parameters.begin();
 				parameter != parameters.end(); ++parameter )
 			{
-				stream << "\t" << parameter->toString() << ";\n";
-			}
-		}
-		else if( version() == ir::PTXInstruction::ptx1_4 )
-		{
-			stream << ".entry " << name;
-			if (parameters.size()) {
-				stream << "(";
-				for( ParameterVector::const_iterator parameter = parameters.begin();
-					parameter != parameters.end(); ++parameter )
+				if( parameter != parameters.begin() )
 				{
-					if( parameter != parameters.begin() )
-					{
-						stream << ",\n";
-					}
-					stream << "\t\t" << parameter->toString();
+					stream << ",\n";
 				}
-				stream << ")\n";		
+				stream << "\t\t" << parameter->toString();
 			}
-			stream << "{\n";
+			stream << ")\n";		
 		}
-		else
-		{
-			assertM( false, "Version not supported." );
-		}
+		stream << "{\n";
 		
 		for( LocalMap::const_iterator local = locals.begin(); 
 			local != locals.end(); ++local )
@@ -496,36 +443,42 @@ namespace ir
 		
 		if( _cfg != 0 )
 		{
-			ControlFlowGraph::BlockPointerVector blocks = _cfg->executable_sequence();
+			ControlFlowGraph::BlockPointerVector 
+				blocks = _cfg->executable_sequence();
 		
 			int blockIndex = 1;
 			for( ControlFlowGraph::BlockPointerVector::iterator 
-				block = blocks.begin(); block != blocks.end(); ++block, ++blockIndex )
+				block = blocks.begin(); block != blocks.end(); 
+				++block, ++blockIndex )
 			{
 				std::string label = (*block)->label;
 				std::string comment = (*block)->comment;
-				if ((*block)->instructions.size() || (label != "entry" && label != "exit" && label != "")) {
-					if (label == "") {
+				if ((*block)->instructions.size() 
+					|| (label != "entry" && label != "exit" && label != "")) 
+				{
+					if (label == "") 
+					{
 						std::stringstream ss;
 						ss << "$__Block_" << blockIndex;
 						label = ss.str();
 					}
-					else if (label[0] != '$') {
+					else if (label[0] != '$') 
+					{
 						label = "$" + label;
 					}
 					stream << "\t" << label << ":";
-					if (comment != "") {
+					if (comment != "") 
+					{
 						stream << "\t\t\t\t/* " << comment << " */ ";
 					}
 					stream << "\n";
 				}
 				
-				for( BasicBlock::InstructionList::iterator 
+				for( ControlFlowGraph::InstructionList::iterator 
 					instruction = (*block)->instructions.begin(); 
 					instruction != (*block)->instructions.end(); ++instruction )
 				{
-					stream << "\t\t" << instructions[ *instruction ].toString() 
-						<< ";\n";
+					stream << "\t\t" << (*instruction)->toString() << ";\n";
 				}
 			}
 		}		
@@ -538,14 +491,15 @@ namespace ir
 		// visit every block and map the old label to the new label
 		std::map< std::string, std::string > labelMap;
 		
-
-		ControlFlowGraph::BlockPointerVector blocks = _cfg->executable_sequence();
+		ControlFlowGraph::BlockPointerVector 
+			blocks = _cfg->executable_sequence();
 		int n = 1;
 
-		for (ControlFlowGraph::BlockPointerVector::iterator bb_it = blocks.begin(); 
+		for (ControlFlowGraph::BlockPointerVector::iterator 
+			bb_it = blocks.begin(); 
 			bb_it != blocks.end(); ++bb_it) { 
 
-			BasicBlock *block = *bb_it;
+			ControlFlowGraph::iterator block = *bb_it;
 			if (block->label != "entry" && block->label != "exit") {
 				std::stringstream ss;
 				ss << "BB_" << kernelID << "_" << n;
@@ -557,12 +511,17 @@ namespace ir
 		}
 		
 		// visit every branch and rewrite the branch target according to the label map
-		for (PTXInstructionVector::iterator inst_it = instructions.begin(); 
-			inst_it != instructions.end();
-			++inst_it) {
-			PTXInstruction &instr = *inst_it;
-			if (instr.opcode == ir::PTXInstruction::Bra) {
-				instr.d.identifier = "$" + labelMap[instr.d.identifier];
+
+		for (ControlFlowGraph::iterator block = _cfg->begin(); 
+			block != _cfg->end(); ++block) {
+			for (ControlFlowGraph::InstructionList::iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction) {
+				PTXInstruction &instr = *static_cast<PTXInstruction*>(
+					*instruction);
+				if (instr.opcode == ir::PTXInstruction::Bra) {
+					instr.d.identifier = "$" + labelMap[instr.d.identifier];
+				}
 			}
 		}
 	}

@@ -21,7 +21,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 ################################################################################
 ## Programs and Libraries
-BUILT_SOURCES=ptx1_4grammar.h
+BUILT_SOURCES=ptxgrammar.h
 bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator
 check_PROGRAMS = TestLexer TestParser \
@@ -54,9 +54,7 @@ libOcelot_la_SOURCES = ocelot/api/implementation/ocelot.cpp \
 ################################################################################
 ## libOcelotIr
 libOcelotIr_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-libOcelotIr_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
-	ocelot/ir/implementation/ControlFlowGraph.cpp \
-	ocelot/ir/implementation/Edge.cpp \
+libOcelotIr_la_SOURCES = ocelot/ir/implementation/ControlFlowGraph.cpp \
 	ocelot/ir/implementation/Instruction.cpp \
 	ocelot/ir/implementation/Parameter.cpp \
 	ocelot/ir/implementation/Global.cpp \
@@ -66,6 +64,7 @@ libOcelotIr_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 	ocelot/ir/implementation/Module.cpp \
 	ocelot/ir/implementation/Kernel.cpp \
 	ocelot/ir/implementation/PTXKernel.cpp \
+	ocelot/ir/implementation/ExecutableKernel.cpp \
 	ocelot/ir/implementation/Texture.cpp \
 	ocelot/ir/implementation/DominatorTree.cpp \
 	ocelot/ir/implementation/PostdominatorTree.cpp \
@@ -122,12 +121,12 @@ libOcelotExecutive_la_CXXFLAGS = $(LLVM_CFLAGS) -Wall -ansi -pedantic \
 	-Werror -std=c++0x
 libOcelotExecutive_la_SOURCES = \
 	ocelot/executive/implementation/Device.cpp \
-	ocelot/executive/implementation/Executive.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
 	ocelot/executive/implementation/GPUExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
+	ocelot/executive/implementation/Executive.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp
@@ -139,7 +138,6 @@ libOcelotParser_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
 libOcelotParser_la_SOURCES = \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
-	ocelot/parser/implementation/ptx1_4grammar.ypp \
 	ocelot/parser/implementation/PTXParser.cpp \
 	ocelot/parser/implementation/PTXLexer.cpp
 ################################################################################
@@ -419,9 +417,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/Instruction.h \
 	ocelot/ir/interface/DominatorTree.h \
 	ocelot/ir/interface/Documentation.h \
-	ocelot/ir/interface/Edge.h \
 	ocelot/ir/interface/PTXOperand.h \
-	ocelot/ir/interface/BasicBlock.h \
 	ocelot/ir/interface/Global.h \
 	ocelot/ir/interface/Texture.h \
 	ocelot/ir/test/TestLLVMInstructions.h \

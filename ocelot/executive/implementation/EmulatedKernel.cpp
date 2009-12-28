@@ -1,5 +1,4 @@
-/*!
-	\file EmulatedKernel.cpp
+/*! \file EmulatedKernel.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 19, 2009
 	\brief implements the Kernel base class
@@ -33,19 +32,14 @@
 
 #define REPORT_BASE 0
 
-using namespace ir;
-
 executive::EmulatedKernel::EmulatedKernel(ir::Kernel* kernel, 
 	const Executive* c) : ExecutableKernel(*kernel, c) {
+	report("Created emulated kernel " << name);
 	assertM( kernel->ISA == ir::Instruction::PTX, 
 		"Can only build an emulated kernel from a PTXKernel." );
 	
-	ir::PTXKernel& ptxKernel = static_cast< ir::PTXKernel& >(*kernel);
-	
 	ConstMemory = ParameterMemory = 0;
-	ConstMemorySize = ParameterMemorySize = SharedMemorySize = 0;
-
-	initialize(ptxKernel.instructions);
+	initialize();
 }
 
 executive::EmulatedKernel::EmulatedKernel() {
@@ -56,217 +50,173 @@ executive::EmulatedKernel::~EmulatedKernel() {
 	freeAll();
 }
 
-/*!
-	Launch a kernel on a 2D grid
-*/
-void executive::EmulatedKernel::launchGrid(int width, int height) {
-	report("EmulatedKernel::launchGrid called");
-	report("  " << RegisterCount << " registers");
+bool executive::EmulatedKernel::executable() {
+	return true;
+}
 
-	gridDim = Dim3(width, height, 1);	
+void executive::EmulatedKernel::launchGrid(int width, int height) {
+	report("EmulatedKernel::launchGrid called for " << name);
+	report("  " << _registerCount << " registers");
+
+	_gridDim = ir::Dim3(width, height, 1);	
 	
 	// notify trace generator(s)
-	for (std::list<trace::TraceGenerator*>::iterator it = Traces.begin(); 
-		it != Traces.end(); ++it) {
-		(*it)->initialize(this);
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->initialize(*this);
 	}
 
 	for (int x = 0; x < width; ++x) {
 		for (int y = 0; y < height; ++y) {
-	
-			Dim3 block(x,y,0);
+			ir::Dim3 block(x,y,0);
 			CooperativeThreadArray cta(this);
 
-			cta.initialize( gridDim, !Traces.empty() );
-
+			cta.initialize( _gridDim, !_generators.empty() );
 			cta.execute(block);
 		}
 	}
 	
 	// notify trace generator(s)
-	for (std::list<trace::TraceGenerator*>::iterator it = Traces.begin(); 
-		it != Traces.end(); ++it) {
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
 		(*it)->finish();
 	}
-
 }
 
-/*!
-	Sets the shape of a kernel
-*/
 void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
-	blockDim.x = x;
-	blockDim.y = y;
-	blockDim.z = z;
+	_blockDim.x = x;
+	_blockDim.y = y;
+	_blockDim.z = z;
 
-	threadCount = x*y*z;
+	_maxThreadsPerBlock = x*y*z;
+}
+
+void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
+	_externSharedMemorySize = bytes;
 }
 
 void executive::EmulatedKernel::setDevice(const Device* device,
 	unsigned int limit) {
 }
 
-/*!
-	adds a trace generator to the EmulatedKernel
-*/
-void executive::EmulatedKernel::addTraceGenerator(trace::TraceGenerator *generator) {
-	Traces.push_back(generator);
+void executive::EmulatedKernel::addTraceGenerator(
+	trace::TraceGenerator *generator) {
+	_generators.push_back(generator);
 }
 
-/*!
-	removes a trace generator from an EmulatedKernel
-*/
-void executive::EmulatedKernel::removeTraceGenerator(trace::TraceGenerator *generator) {
-	Traces.remove(generator);
-}
-
-void executive::EmulatedKernel::traceEvent( const trace::TraceEvent & event ) const {
-	// notify trace generator(s)
-	if (Traces.size()) {
-		for (std::list<trace::TraceGenerator*>::const_iterator 
-			it = Traces.begin(); it != Traces.end(); ++it) {
-			(*it)->event(event);
+void executive::EmulatedKernel::removeTraceGenerator(
+	trace::TraceGenerator *generator) {
+	TraceGeneratorVector temp = std::move(_generators);
+	for (TraceGeneratorVector::iterator gi = temp.begin(); 
+		gi != temp.end(); ++gi) {
+		if (*gi != generator) {
+			_generators.push_back(*gi);
 		}
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*!
-	Cleans up the EmulatedKernel instance
-*/
 void executive::EmulatedKernel::freeAll() {
-	if (ConstMemory) {
-		delete [] ConstMemory;
-	}
-	if (ParameterMemory) {
-		delete [] ParameterMemory;
-	}
+	delete [] ConstMemory;
+	delete [] ParameterMemory;
 	ParameterMemory = ConstMemory = 0;
 }
 
-/*!
-	From Kernel, analyze application and construct data structures necessary 
-	for emulation
-*/
-void executive::EmulatedKernel::initialize(
-	PTXKernel::PTXInstructionVector& instructions) {
-	constructInstructionSequence(instructions);
+void executive::EmulatedKernel::initialize() {
 	registerAllocation();
+	constructInstructionSequence();
+	initializeTextureMemory();
 	initializeSharedMemory();
 	initializeParameterMemory();
 	updateParamReferences();
 	initializeLocalMemory();
 }
 
-void executive::EmulatedKernel::configureParameters() {
-
-}
-
-/*!
-	Produces a packed vector of instructions, updates each operand, and changes labels
-	to indices.
-*/
-void executive::EmulatedKernel::constructInstructionSequence(
-	PTXKernel::PTXInstructionVector& instructions) {
-	using namespace std;
-	report("Constructing instruction sequence.");
+void executive::EmulatedKernel::constructInstructionSequence() {
+	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
+		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
+	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
+		unsigned int> InstructionIdMap;
+	report("Constructing emulated instruction sequence.");
 
 	// visit basic blocks and add reconverge instructions
 	ir::ControlFlowGraph::BlockPointerVector 
 		bb_sequence = cfg()->executable_sequence();
-	ir::ControlFlowGraph::BlockPointerVector::iterator 
-		bb_it = bb_sequence.begin();
-
-	for (; bb_it != bb_sequence.end(); ++bb_it) {
-		ir::BasicBlock::InstructionList::iterator 
+	
+	InstructionMap reconvergeTargets;
+	
+	report(" Adding reconverge instructions");
+	// Create reconverge instructions
+	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
+		bb_it != bb_sequence.end(); ++bb_it) {
+		ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin();
 		for (; i_it != (*bb_it)->instructions.end(); ++i_it) {
-			PTXInstruction &ptx_instr = instructions[*i_it];
-			if (ptx_instr.opcode == PTXInstruction::Bra && !ptx_instr.uni) {
-				// find post-dominator and insert reconverge instruction into head if one does not
-				// already exist
+			ir::PTXInstruction &ptx_instr = static_cast<
+				ir::PTXInstruction&>(**i_it);
+			if (ptx_instr.opcode == ir::PTXInstruction::Bra && !ptx_instr.uni) {
+				ir::ControlFlowGraph::iterator 
+					pdom = pdom_tree()->getPostDominator(*bb_it);
 
-				BasicBlock *pdom = pdom_tree()->getPostDominator(*bb_it);
-
-				PTXInstruction reconverge;
-				int n = (int)instructions.size();
-
-				reconverge.opcode = PTXInstruction::Reconverge;
-				instructions.push_back(reconverge);
-
-				pdom->instructions.push_front(n);
-				instructions[*i_it].reconvergeInstruction = n;
-
+				pdom->instructions.push_front(ir::PTXInstruction(
+					ir::PTXInstruction::Reconverge).clone());
+				report( "  Getting post dominator block " << pdom->label 
+					<< " of instruction " << ptx_instr.toString() << ", " 
+					<< pdom->instructions.front()->toString() );
+				reconvergeTargets.insert(std::make_pair(i_it, 
+					pdom->instructions.begin()));
 			}
 		}
 	}
 
-	// form the output instruction sequence then update the branch target instructions
-	map<int,int> reconverge_map;
-	map<string, int> label_to_instruction;
-	vector<int> branch_instructions;
-	map< BasicBlock *, int > basicBlockMap; // map between pointers to basic blocks and their
-																					// first instruction
-	map< int, const Edge * > branchEdgeMap;
+	InstructionIdMap ids;
 
-	// visit instructions and pack into KernelInstructions vector
-	bb_it = bb_sequence.begin();
-
-	for (; bb_it != bb_sequence.end(); ++bb_it) {
-		if (!(*bb_it)->instructions.size()) continue;
-
-		ir::BasicBlock::InstructionList::iterator i_it = (*bb_it)->instructions.begin();
-
-		basicBlockMap[*bb_it] = (int)KernelInstructions.size();
-
-		if ((*bb_it)->label != "") {
-			label_to_instruction[(*bb_it)->label] 
-				= (int)KernelInstructions.size();
+	report(" Packing instructions into a vector");
+	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
+		bb_it != bb_sequence.end(); ++bb_it) {
+		for (ir::ControlFlowGraph::InstructionList::iterator 
+			i_it = (*bb_it)->instructions.begin(); 
+			i_it != (*bb_it)->instructions.end(); ++i_it) {
+			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
+			if (ptx.opcode == ir::PTXInstruction::Reconverge 
+				|| i_it == (*bb_it)->instructions.begin()) {
+				ids.insert(std::make_pair(i_it, instructions.size()));
+			}
+			ptx.pc = instructions.size();
+			report("  pc " << ptx.pc << ": " << ptx.toString() );
+			instructions.push_back(ptx);
 		}
+	}
 
-		for (; i_it != (*bb_it)->instructions.end(); ++i_it) {
-			const PTXInstruction &ptx_instr = instructions[*i_it];
-			if (ptx_instr.opcode == PTXInstruction::Bra) {
-				branch_instructions.push_back((int)KernelInstructions.size());
-
-				// find the branch edge and push it to a map
-				list< ir::Edge *> out_edges = (*bb_it)->get_out_edges();
-
-				for (list< ir::Edge *>::iterator oe_it = out_edges.begin();
-					oe_it != out_edges.end(); ++oe_it ) {
-					const ir::Edge *edge = (*oe_it);
-					if (edge->type == ir::Edge::Branch) {
-						branchEdgeMap[(int)KernelInstructions.size()] = edge;
-					}
+	report( " Updating branch targets and reconverge points" );
+	unsigned int id = 0;
+	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin();
+		bb_it != bb_sequence.end(); ++bb_it) {
+		for (ir::ControlFlowGraph::InstructionList::iterator 
+			i_it = (*bb_it)->instructions.begin(); 
+			i_it != (*bb_it)->instructions.end(); ++i_it, ++id) {
+			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
+			if (ptx.opcode == ir::PTXInstruction::Bra) {
+				report( "  Instruction " << ptx.toString() );
+				if (!ptx.uni) {
+					InstructionMap::iterator 
+						reconverge = reconvergeTargets.find(i_it);
+					assert(reconverge != reconvergeTargets.end());
+					InstructionIdMap::iterator 
+						target = ids.find(reconverge->second);
+					assert(target != ids.end());
+					instructions[id].reconvergeInstruction = target->second;
+					report("   reconverge at " << target->second);
 				}
+				
+				InstructionIdMap::iterator branch = ids.find(
+					(*bb_it)->get_branch_edge()->tail->instructions.begin());
+				assert(branch != ids.end());
+				instructions[id].branchTargetInstruction = branch->second;
+				report("   target at " << branch->second);
 			}
-			else if (ptx_instr.opcode == PTXInstruction::Reconverge) {
-				reconverge_map[*i_it] = (int)KernelInstructions.size();
-			}
-			KernelInstructions.push_back(ptx_instr);
 		}
-	}
-
-	// replace branch targets with indices and assign reconvergeInstruction indices
-	for (vector<int>::iterator br_it = branch_instructions.begin(); 
-		br_it != branch_instructions.end(); ++br_it) {
-
-		PTXInstruction &bra = KernelInstructions[*br_it];
-
-		if (branchEdgeMap.find(*br_it) != branchEdgeMap.end()) {
-			bra.branchTargetInstruction = basicBlockMap[branchEdgeMap[*br_it]->tail];
-		}
-		else {
-			// this really shouldn't ever get called
-			//bra.branchTargetInstruction = label_to_instruction[bra.d.identifier];
-		}
-		bra.reconvergeInstruction = reconverge_map[bra.reconvergeInstruction];
-		
 	}
 	
-	initializeTextureMemory();
-
 }
 
 /*!
@@ -277,18 +227,18 @@ void executive::EmulatedKernel::constructInstructionSequence(
 */
 void executive::EmulatedKernel::updateParamReferences() {
 	using namespace std;
-	for (ir::PTXKernel::PTXInstructionVector::iterator 
-		i_it = KernelInstructions.begin();
-		i_it != KernelInstructions.end(); ++i_it) {
-		PTXInstruction & instr = *i_it;
-		if (instr.addressSpace == PTXInstruction::Param) {
-			if (instr.opcode == PTXInstruction::Ld) {
-				Parameter &param = getParameter(instr.a.identifier);
+	for (PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+		i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction & instr = *i_it;
+		if (instr.addressSpace == ir::PTXInstruction::Param) {
+			if (instr.opcode == ir::PTXInstruction::Ld) {
+				ir::Parameter &param = getParameter(instr.a.identifier);
 				instr.a.offset += param.offset;
 				instr.a.imm_uint = 0;
 			}
-			else if (instr.opcode == PTXInstruction::St) {
-				Parameter &param = getParameter(instr.d.identifier);
+			else if (instr.opcode == ir::PTXInstruction::St) {
+				ir::Parameter &param = getParameter(instr.d.identifier);
 				instr.d.offset += param.offset;
 				instr.d.imm_uint = 0;
 			}
@@ -296,28 +246,22 @@ void executive::EmulatedKernel::updateParamReferences() {
 	}
 }
 
-/*!
-	Allocate parameter memory by determining the sizes used by each parameter
-*/
 void executive::EmulatedKernel::initializeParameterMemory() {
-	using namespace std;
 	report( "Initializing parameter memory for kernel " << name );
-	if( ParameterMemory ) {
-		delete[] ParameterMemory;
-		ParameterMemory = 0;
-	}
-	ParameterMemorySize = 0;
-	for(std::vector<ir::Parameter>::iterator i_it = parameters.begin();
+	delete[] ParameterMemory;
+	ParameterMemory = 0;
+	_parameterMemorySize = 0;
+	for(ParameterVector::iterator i_it = parameters.begin();
 		i_it != parameters.end(); ++i_it ) {
 		report( " Initializing memory for paramter " << i_it->name 
 			<< " of size " << i_it->getSize() );
 		//align parameter memory
 		unsigned int padding = i_it->getAlignment() 
-			- ( ParameterMemorySize % i_it->getAlignment() );
+			- ( _parameterMemorySize % i_it->getAlignment() );
 		padding = (i_it->getAlignment() == padding) ? 0 : padding;
-		ParameterMemorySize += padding;
-		i_it->offset = ParameterMemorySize;
-		ParameterMemorySize += i_it->getSize();
+		_parameterMemorySize += padding;
+		i_it->offset = _parameterMemorySize;
+		_parameterMemorySize += i_it->getSize();
 	}	
 }
 
@@ -330,14 +274,11 @@ bool executive::EmulatedKernel::checkMemoryAccess(const void* base,
 void executive::EmulatedKernel::updateParameterMemory() {
 	using namespace std;
 
-	if(ParameterMemory != 0) {
-		delete[] ParameterMemory;
-	}
-	
-	ParameterMemory = new char[ParameterMemorySize];
+	delete[] ParameterMemory;	
+	ParameterMemory = new char[_parameterMemorySize];
 	
 	unsigned int size = 0;
-	for(std::vector<ir::Parameter>::iterator i_it = parameters.begin();
+	for(ParameterVector::iterator i_it = parameters.begin();
 		i_it != parameters.end(); ++i_it ) {
 		unsigned int padding = i_it->getAlignment()
 			- ( size % i_it->getAlignment() );
@@ -346,7 +287,7 @@ void executive::EmulatedKernel::updateParameterMemory() {
 		for(ir::Parameter::ValueVector::iterator 
 			v_it = i_it->arrayValues.begin(); 
 			v_it != i_it->arrayValues.end(); ++v_it) {
-			assert( size < ParameterMemorySize );
+			assert( size < _parameterMemorySize );
 			memcpy( ParameterMemory + size, &v_it->val_b16, 
 				i_it->getElementSize() );
 			size += i_it->getElementSize();
@@ -355,20 +296,21 @@ void executive::EmulatedKernel::updateParameterMemory() {
 
 }
 
-/*!
-	On construction, allocates registers by computing live ranges
-	This assumes that the PTX compiler did a good job at register allocation
-*/
+void executive::EmulatedKernel::updateMemory() {
+	updateGlobals();
+}
+
 void executive::EmulatedKernel::registerAllocation() {
 	using namespace std;
 	report("Allocating registers");
-	registerMap = ir::PTXKernel::assignRegisters( KernelInstructions );
-	_registerCount = RegisterCount = (int)registerMap.size();
+	registerMap = ir::PTXKernel::assignRegisters( *cfg() );
+	_registerCount = registerMap.size();
+	report(" Allocated " << _registerCount << " registers");
 	_maxThreadsPerBlock = 512;
 }
 
 void executive::EmulatedKernel::_computeOffset(
-	const PTXStatement& statement, unsigned int& offset, 
+	const ir::PTXStatement& statement, unsigned int& offset, 
 	unsigned int& totalOffset) {
 	
 	unsigned int padding = statement.accessAlignment() - 
@@ -395,11 +337,12 @@ void executive::EmulatedKernel::_computeOffset(
 */
 void executive::EmulatedKernel::initializeSharedMemory() {
 	using namespace std;
-	typedef unordered_map<string, unsigned int> Map;
-	typedef unordered_map<std::string, 
+	typedef std::unordered_map<string, unsigned int> Map;
+	typedef std::unordered_map<std::string, 
 		ir::Module::GlobalMap::const_iterator> GlobalMap;
-	typedef unordered_set<std::string> StringSet;
-	typedef std::deque<PTXOperand*> OperandVector;
+	typedef std::
+	unordered_set<std::string> StringSet;
+	typedef std::deque<ir::PTXOperand*> OperandVector;
 	unsigned int sharedOffset = 0;
 	unsigned int externalAlignment = 1;
 
@@ -412,8 +355,8 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	if(module != 0) {
 		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
 			it != module->globals.end(); ++it) {
-			if (it->second.statement.directive == PTXStatement::Shared) {
-				if(it->second.statement.attribute == PTXStatement::Extern) {
+			if (it->second.statement.directive == ir::PTXStatement::Shared) {
+				if(it->second.statement.attribute == ir::PTXStatement::Extern) {
 					report("Found global external shared variable " 
 						<< it->second.statement.name);
 					assert(external.count(it->second.statement.name) == 0);
@@ -435,8 +378,8 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	
 	LocalMap::const_iterator it = locals.begin();
 	for (; it != locals.end(); ++it) {
-		if (it->second.space == PTXInstruction::Shared) {
-			if(it->second.attribute == PTXStatement::Extern) {
+		if (it->second.space == ir::PTXInstruction::Shared) {
+			if(it->second.attribute == ir::PTXStatement::Extern) {
 				report("Found local external shared variable " 
 					<< it->second.name);
 				assert(external.count(it->second.name) == 0);
@@ -461,18 +404,19 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 
 	// now visit every instruction and change the address mode from 
 	// label to immediate, and assign the offset as an immediate value 
-	PTXOperand PTXInstruction:: *operands[] = { &PTXInstruction::d,
-		&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c
+	ir::PTXOperand ir::PTXInstruction:: *operands[] = { &ir::PTXInstruction::d,
+		&ir::PTXInstruction::a, &ir::PTXInstruction::b, &ir::PTXInstruction::c
 	};
-	ir::PTXKernel::PTXInstructionVector::iterator 
-		i_it = KernelInstructions.begin();
-	for (; i_it != KernelInstructions.end(); ++i_it) {
-		PTXInstruction &instr = *i_it;
+	PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+	for (; i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov and ld/st instructions
-		if (instr.opcode == PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					StringSet::iterator si = external.find(
 						(instr.*operands[n]).identifier);
 					if (si != external.end()) {
@@ -498,7 +442,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 					Map::iterator l_it 
 						= label_map.find((instr.*operands[n]).identifier);
 					if (label_map.end() != l_it) {
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 						report("For instruction " << instr.toString() 
 							<< ", mapping shared label " << l_it->first 
@@ -507,10 +451,11 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 				}
 			}
 		}
-		else if (instr.opcode == PTXInstruction::Ld 
-			|| instr.opcode == PTXInstruction::St) {
+		else if (instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					StringSet::iterator si = external.find(
 						(instr.*operands[n]).identifier);
 					if (si != external.end()) {
@@ -538,7 +483,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 						report("For instruction " << instr.toString() 
 							<< ", mapping shared label " << l_it->first 
 							<< " to " << l_it->second );
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 					}
 				}
@@ -559,14 +504,14 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 		operand != externalOperands.end(); ++operand) {
 		report( "Mapping external shared label " << (*operand)->identifier 
 			<< " to " << sharedOffset );
-		(*operand)->type = PTXOperand::u64;
+		(*operand)->type = ir::PTXOperand::u64;
 		(*operand)->imm_uint = sharedOffset;
 	}
 
 	// allocate shared memory object
-	_sharedMemorySize = SharedMemorySize = sharedOffset;
+	_sharedMemorySize = sharedOffset;
 	
-	report("Total shared memory size is " << SharedMemorySize);
+	report("Total shared memory size is " << _sharedMemorySize);
 }
 
 /*!
@@ -582,7 +527,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	if(module != 0) {
 		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
 			it != module->globals.end(); ++it) {
-			if (it->second.statement.directive == PTXStatement::Local) {
+			if (it->second.statement.directive == ir::PTXStatement::Local) {
 				unsigned int offset;
 
 				report("Found global local variable " 
@@ -607,24 +552,23 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		}
 	}
 
-	// now visit every instruction and change the address mode from label to immediate, and assign
-	// the offset as an immediate value 
-	PTXOperand PTXInstruction:: *operands[] = { &PTXInstruction::d,
-		&PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c
+	ir::PTXOperand ir::PTXInstruction:: *operands[] = { &ir::PTXInstruction::d,
+		&ir::PTXInstruction::a, &ir::PTXInstruction::b, &ir::PTXInstruction::c
 	};
-	ir::PTXKernel::PTXInstructionVector::iterator 
-		i_it = KernelInstructions.begin();
-	for (; i_it != KernelInstructions.end(); ++i_it) {
-		PTXInstruction &instr = *i_it;
+	PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+	for (; i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov and ld/st instructions
-		if (instr.opcode == PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					map<string, unsigned int>::iterator 
 						l_it = label_map.find((instr.*operands[n]).identifier);
 					if (label_map.end() != l_it) {
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 						report("For instruction " << instr.toString() 
 							<< ", mapping local label " << l_it->first 
@@ -633,17 +577,18 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 				}
 			}
 		}
-		else if (instr.opcode == PTXInstruction::Ld 
-			|| instr.opcode == PTXInstruction::St) {
+		else if (instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					map<string, unsigned int>::iterator 
 						l_it = label_map.find((instr.*operands[n]).identifier);
 					if (label_map.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping local label " << l_it->first 
 							<< " to " << l_it->second );
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 					}
 				}
@@ -652,8 +597,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	}
 
 	// allocate local memory object
-	_localMemorySize = LocalMemorySize = localOffset;
-	
+	_localMemorySize = localOffset;
 }
 
 /*!
@@ -686,44 +630,44 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	
 	report( "Total constant memory size is " << constantOffset );
 
-	// now visit every instruction and change the address mode from label to immediate, and assign
-	// the offset as an immediate value 
-	PTXOperand PTXInstruction:: *operands[] = {
-		&PTXInstruction::d, &PTXInstruction::a, &PTXInstruction::b, 
-		&PTXInstruction::c
+	ir::PTXOperand ir::PTXInstruction:: *operands[] = {
+		&ir::PTXInstruction::d, &ir::PTXInstruction::a, &ir::PTXInstruction::b, 
+		&ir::PTXInstruction::c
 	};
-	ir::PTXKernel::PTXInstructionVector::iterator 
-		i_it = KernelInstructions.begin();
-	for (; i_it != KernelInstructions.end(); ++i_it) {
-		PTXInstruction &instr = *i_it;
+	PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+	for (; i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st instruction
-		if (instr.opcode == PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					map<string, unsigned int>::iterator 
 						l_it = constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
 							<< " to " << l_it->second );
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 					}
 				}
 			}
 		}
-		else if ( instr.opcode == PTXInstruction::Ld 
-			|| instr.opcode == PTXInstruction::St ) {
+		else if ( instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St ) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					map<string, unsigned int>::iterator 
 						l_it = constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
 							<< " to " << l_it->second );
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 					}
 				}
@@ -732,13 +676,11 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	}
 
 	// allocate constant memory object
-	if (ConstMemory) {
-		delete[] ConstMemory;
-	}
+	delete[] ConstMemory;
 	
-	_constMemorySize = ConstMemorySize = constantOffset;
-	if (ConstMemorySize > 0) {
-		ConstMemory = new char[ConstMemorySize];
+	_constMemorySize = constantOffset;
+	if (_constMemorySize > 0) {
+		ConstMemory = new char[_constMemorySize];
 	}
 	else {
 		ConstMemory = 0;
@@ -752,7 +694,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		assert(g_it != module->globals.end());
 		assert(g_it->second.statement.directive == ir::PTXStatement::Const);
 		assert(g_it->second.statement.bytes() 
-			+ l_it->second <= ConstMemorySize);
+			+ l_it->second <= _constMemorySize);
 		memcpy( ConstMemory + l_it->second, g_it->second.pointer, 
 			g_it->second.statement.bytes() );
 	}
@@ -783,27 +725,28 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 
 	// now visit every instruction and change the address mode from label 
 	// to immediate, and assign the offset as an immediate value 
-	PTXOperand PTXInstruction:: *operands[] = {
-		&PTXInstruction::d, &PTXInstruction::a, &PTXInstruction::b, 
-		&PTXInstruction::c };
-	ir::PTXKernel::PTXInstructionVector::iterator 
-		i_it = KernelInstructions.begin();
-	for (; i_it != KernelInstructions.end(); ++i_it) {
-		PTXInstruction &instr = *i_it;
+	ir::PTXOperand ir::PTXInstruction:: *operands[] = {
+		&ir::PTXInstruction::d, &ir::PTXInstruction::a, &ir::PTXInstruction::b, 
+		&ir::PTXInstruction::c };
+	PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+	for (; i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st instruction
-		if (instr.opcode == PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					unordered_set<string>::iterator 
 						l_it = global.find((instr.*operands[n]).identifier);
 					if (global.end() != l_it) {
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						ir::Module::GlobalMap::const_iterator 
 							g_it = module->globals.find(*l_it);
 						assert(g_it != module->globals.end());
 						(instr.*operands[n]).imm_uint = 
-							(PTXU64)g_it->second.pointer;
+							(ir::PTXU64)g_it->second.pointer;
 						report("Mapping global label " 
 							<< (instr.*operands[n]).identifier << " to " 
 							<< (instr.*operands[n]).imm_uint 
@@ -812,19 +755,20 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 				}
 			}
 		}
-		else if ( instr.opcode == PTXInstruction::Ld 
-			|| instr.opcode == PTXInstruction::St ) {
+		else if ( instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St ) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					unordered_set<string>::iterator 
 						l_it = global.find((instr.*operands[n]).identifier);
 					if (global.end() != l_it) {
-						(instr.*operands[n]).type = PTXOperand::u64;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						ir::Module::GlobalMap::const_iterator 
 							g_it = module->globals.find(*l_it);
 						assert(g_it != module->globals.end());
 						(instr.*operands[n]).imm_uint = 
-							(PTXU64)g_it->second.pointer;
+							(ir::PTXU64)g_it->second.pointer;
 						report("Mapping ld/st global label " 
 							<< (instr.*operands[n]).identifier << " to " 
 							<< (instr.*operands[n]).imm_uint
@@ -845,9 +789,9 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 	textures.clear();
 	IndexMap indicies;
 	unsigned int next = 0;
-	for (ir::PTXKernel::PTXInstructionVector::iterator 
-		fi = KernelInstructions.begin(); 
-		fi != KernelInstructions.end(); ++fi) {
+	for (PTXInstructionVector::iterator 
+		fi = instructions.begin(); 
+		fi != instructions.end(); ++fi) {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
 			ir::Module::TextureMap::const_iterator 
 				texture = module->textures.find(fi->a.identifier);
@@ -871,13 +815,13 @@ void executive::EmulatedKernel::updateGlobals() {
 std::string executive::EmulatedKernel::toString() const {
 	std::stringstream stream;
 	stream << "Kernel " << name << "\n";
-	for( ir::PTXKernel::PTXInstructionVector::const_iterator 
-		fi = KernelInstructions.begin(); 
-		fi != KernelInstructions.end(); ++fi ) {
-		const PTXInstruction &instr = *fi;
-		stream << "[PC " << fi - KernelInstructions.begin() << "] " << 
+	for( PTXInstructionVector::const_iterator 
+		fi = instructions.begin(); 
+		fi != instructions.end(); ++fi ) {
+		const ir::PTXInstruction &instr = *fi;
+		stream << "[PC " << fi - instructions.begin() << "] " << 
 			fi->toString();
-		if (instr.opcode == PTXInstruction::Bra) {
+		if (instr.opcode == ir::PTXInstruction::Bra) {
 			stream << " [target: " << instr.branchTargetInstruction 
 				<< ", reconverge: " << instr.reconvergeInstruction << "]";
 		}
@@ -893,8 +837,8 @@ std::string executive::EmulatedKernel::fileName() const {
 
 std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	assert(module != 0 );
-	assert(PC < KernelInstructions.size());
-	unsigned int statement = KernelInstructions[PC].statementIndex;
+	assert(PC < instructions.size());
+	unsigned int statement = instructions[PC].statementIndex;
 	ir::Module::StatementVector::const_iterator s_it 
 		= module->statements.begin();
 	std::advance(s_it, statement);
@@ -927,6 +871,4 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	stream << fileName << ":" << line << ":" << col;
 	return stream.str();
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
 

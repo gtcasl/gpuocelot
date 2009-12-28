@@ -305,10 +305,6 @@ namespace ir {
 				}
 				stream << " ." << PTXOperand::toString( type ) << " " << name;
 				stream << array.dimensions();
-				if( version < PTXInstruction::ptx1_4 )
-				{
-					stream << ";";
-				}
 				return stream.str();
 				break;
 			}
@@ -341,10 +337,7 @@ namespace ir {
 				}
 				stream << ".shared";
 				assert( alignment != 0);
-//				if( alignment != 1 ) 
-				{
-					stream << " .align " << alignment;
-				}
+				stream << " .align " << alignment;
 				if( array.vec != PTXOperand::v1 ) {
 					stream << " ." << PTXInstruction::toString( array.vec );
 				}
@@ -395,9 +388,7 @@ namespace ir {
 				assert( " The current version of PTX does not implement structures or unions." == 0 );
 				break;
 			case Version: {
-				std::stringstream stream;
-				stream << ".version " << major << "." << minor;
-				return stream.str();
+				return ".version 1.4";
 				break;
 			}
 			case StartEntry:
@@ -411,10 +402,10 @@ namespace ir {
 				break;		
 			case EndParam:
 				return ")";
-				break;				case Directive_invalid:
+				break;				
+			case Directive_invalid:
 				return "";
-				break;
-		
+				break;		
 		}
 		return "";
 	

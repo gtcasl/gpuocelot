@@ -1,5 +1,4 @@
-/*!
-	\file PostdominatorTree.h
+/*! \file PostdominatorTree.h
 	
 	\author Andrew Kerr <arkerr@gatech.edu>
 	
@@ -29,65 +28,26 @@ namespace ir {
 		PostdominatorTree(ControlFlowGraph *cfg);
 		~PostdominatorTree();
 
-		/*!
-			Writes a representation of the DominatorTree to an output stream
-		*/
-		template <typename IType>
-		std::ostream & write(std::ostream &out, const std::deque<IType> &instructions) {
-			using namespace std;
+		/*! Writes a representation of the DominatorTree to an output stream */
+		std::ostream& write(std::ostream& out);
 
-			out << "digraph {\n";
-			out << "  // basic blocks in post-order\n";
+		/*! Parent control flow graph */
+		ControlFlowGraph* cfg;
 	
-			for (int n = 0; n < (int)blocks.size(); n++) {
-				out << "  bb_" << n << " [shape=record,label=\"{" << blocks[n]->label << " | ";
-				BasicBlock::InstructionList::iterator instr_it = blocks[n]->instructions.begin();
-				for (int j = 0; instr_it != blocks[n]->instructions.end(); ++instr_it, ++j) {
-					out << (j > 0 ? " | " : "") << ControlFlowGraph::make_label_dot_friendly(
-						instructions[*instr_it].toString());
-				}
-				out << "}\"];\n";
-			}
-
-			out << "\n  // tree structure\n";
-			for (int n = 0; n < (int)blocks.size(); n++) {
-				if (p_dom[n] >= 0 && n != p_dom[n]) {
-					out << "  bb_" << n << " -> bb_" << p_dom[n] << ";\n";
-				}
-			}
-
-			out << "}\n";
-
-			return out;
-		}
-
-		/*!
-			Parent control flow graph
-		*/
-		ControlFlowGraph *cfg;
-	
-		/*!
-			store of the basic blocks in the CFG and dominator tree in post-order
-		*/
+		/*! store of the basic blocks in the dominator tree in post-order */
 		ControlFlowGraph::BlockPointerVector blocks;
 	
-		/*!
-			nth element stores the immediate post-dominator of node n or -1 if undefined
-		*/
+		/*! nth element stores the immediate post-dominator 
+			of node n or -1 if undefined */
 		std::vector< int > p_dom;
 	
-		/*!
-			Mapping from a BasicBlock pointer to an index into the blocks vector
-		*/
+		/*! Map from a BasicBlock pointer to an index into the blocks vector */
 		ControlFlowGraph::BlockMap blocksToIndex;
 
-		/*!
-			Given a block known to be in the control flow graph, return the post dominator
-		*/
-		BasicBlock * getPostDominator(BasicBlock *block) {
-			int n = blocksToIndex[block];
-			return blocks[p_dom[n]];
-		}
+		/*! Given a block known to be in the control flow graph, 
+			return the post dominator */
+		ControlFlowGraph::iterator getPostDominator(
+			ControlFlowGraph::iterator block);
 	
 	private:
 		void computeDT();

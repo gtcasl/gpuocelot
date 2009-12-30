@@ -14,7 +14,8 @@ executive::MemoryAllocation::MemoryAllocation():
 	affinity(Affinity_host),
 	addressSpace(0),
 	allocationSize(0),
-	flags(0) {
+	flags(0),
+	internal(true) {
 
 	pointer.ptr = 0;
 	pointer.xsize = pointer.ysize = pointer.pitch = 0;

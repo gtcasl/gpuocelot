@@ -67,6 +67,7 @@ void ir::Module::unload() {
 		vec.clear();
 	}
 	kernels.clear();
+	kernelDirectory.clear();
 	modulePath = "::unloaded::";
 }
 
@@ -278,6 +279,7 @@ void ir::Module::extractPTXKernels() {
 				
 				kernel->module = this;
 				kernels[PTXInstruction::PTX].push_back(kernel);
+				kernelDirectory[PTXInstruction::PTX][kernel->name] = kernel;
 				kernel->canonicalBlockLabels(kernelInstance++);
 			}
 		}
@@ -310,14 +312,35 @@ void ir::Module::extractPTXKernels() {
 */
 ir::Kernel * ir::Module::getKernel(ir::Instruction::Architecture isa, std::string kernelName) {
 	using namespace std;
-	if (kernels.find(isa) != kernels.end()) {
-		for (KernelVector::const_iterator it = kernels[isa].begin(); 
-			it != kernels[isa].end(); ++it) {
-			if ((*it)->name == kernelName) {
-				return (*it);
-			}
+	KernelDirectoryMap::iterator kdm_it = kernelDirectory.find(isa);
+	if (kdm_it != kernelDirectory.end()) {
+		KernelDirectory::iterator kd_it = kdm_it->second.find(kernelName);
+		if (kd_it != kdm_it->second.end()) {
+			return kd_it->second;
 		}
 	}
 	return 0;
 }
+
+/*!
+	inserts a translated kernel into the module - on name collision, overwrites with new kernel
+	and deletes old one
+*/
+void ir::Module::insertKernel(ir::Instruction::Architecture isa, ir::Kernel *kernel) {
+	kernelDirectory[isa].insert(make_pair(kernel->name, kernel));
+	KernelVector::iterator k_it = kernels[isa].begin();
+	bool must_insert = true;
+	for (; k_it != kernels[isa].end(); ++k_it) {
+		if ((*k_it)->name == kernel->name) {
+			delete *k_it;
+			*k_it = kernel;
+			must_insert = false;
+			break;
+		}
+	}
+	if (must_insert) {
+		kernels[isa].push_back(kernel);
+	}
+}
+
 

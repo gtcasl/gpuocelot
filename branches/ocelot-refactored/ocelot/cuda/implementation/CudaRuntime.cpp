@@ -6,12 +6,23 @@
 
 // C standard library includes
 #include <assert.h>
+
+// C++ standard library includes
 #include <sstream>
 #include <algorithm>
 
 // Ocelot includes
 #include <ocelot/cuda/include/__cudaFatFormat.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
+
+// Hydrazine includes
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +34,16 @@ const char *cuda::FatBinaryContext::name() const {
 const char *cuda::FatBinaryContext::ptx() const {
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
 	return binary->ptx->ptx;
+}
+
+executive::ChannelFormatDesc convert(const cudaChannelFormatDesc &cudaDesc) {
+	executive::ChannelFormatDesc desc;
+	desc.w = cudaDesc.w;
+	desc.x = cudaDesc.x;
+	desc.y = cudaDesc.y;
+	desc.z = cudaDesc.z;
+	desc.kind = (executive::ChannelFormatDesc::Kind)(int)cudaDesc.f;
+	return desc;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,7 +324,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
 	getThreadContext();
-	if (context.mallocArray(array, desc, width, height)) {
+	if (context.mallocArray(array, convert(*desc), width, height)) {
 		result = cudaSuccess;
 	}
 	unlock();
@@ -625,7 +646,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	//
 	// block on executing threads
 	//
-	context.threadSynchronize();
+	context.synchronize();
 	
 	return setLastError(result);
 }

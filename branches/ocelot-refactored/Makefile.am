@@ -66,6 +66,7 @@ libOcelotIr_la_SOURCES = ocelot/ir/implementation/BasicBlock.cpp \
 	ocelot/ir/implementation/Module.cpp \
 	ocelot/ir/implementation/Kernel.cpp \
 	ocelot/ir/implementation/PTXKernel.cpp \
+	ocelot/ir/implementation/ExecutableKernel.cpp \
 	ocelot/ir/implementation/Texture.cpp \
 	ocelot/ir/implementation/DominatorTree.cpp \
 	ocelot/ir/implementation/PostdominatorTree.cpp \

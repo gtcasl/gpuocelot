@@ -15,6 +15,7 @@
 #include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/translator/interface/Translator.h>
+#include <ocelot/ir/interface/Instruction.h>
 
 // forward declared classes
 namespace ir {
@@ -25,6 +26,7 @@ namespace ir {
 // Executive class
 namespace executive {
 
+	//! identical to cuda_runtime.h's dim3 structure
 	struct dim3 {
 		int x, y, z;
 	};
@@ -43,12 +45,14 @@ namespace executive {
 	typedef std::map< std::string, Texture > TextureMap;
 
 	/*!
-		Completely specifies the execution environment of an Ocelot application
+		\brief specifies the Ocelot execution model
 	*/
 	class Executive {
 	public:
 	
 	public:
+	
+		int selectedDevice;
 	
 		// textures
 		TextureMap textures;
@@ -67,6 +71,9 @@ namespace executive {
 		
 		//! vector of available Ocelot devices
 		DeviceVector devices;
+	
+		//! optimization level used by translator
+		translator::Translator::OptimizationLevel optimizationLevel;
 		
 	public:
 	
@@ -82,7 +89,12 @@ namespace executive {
 		/*!
 			\brief loads a module with a given name and PTX representation
 		*/
-		void loadModule(std::string name, bool, std::istream & ptx);
+		bool loadModule(std::string name, bool translateOnLoad, std::istream & ptx);
+
+		/*!
+			\brief loads a module with a given name from a file
+		*/
+		bool loadModule(std::string filename, bool translateOnLoad=true);
 		
 		/*!
 			\brief registers a global variable
@@ -104,6 +116,14 @@ namespace executive {
 			\param if 1, texture coordinates are normalized
 		*/
 		void registerTexture(const char *module, const char *name, int dimensions, int normalized);
+		
+		/*!
+			Registers an external memory allocation
+			\param ptr pointer to allocation
+			\param bytes size of the allocation in bytes
+			\param addressSpace address space of the allocation
+		*/
+		void registerExternal(void *ptr, size_t bytes, int addressSpace=0);
 		
 	public:
 	
@@ -190,7 +210,7 @@ namespace executive {
 			\return record of memory allocation; if nothing could be found, 
 				the record's ISA is Unknown
 		*/
-		MemoryAllocation getMemoryAllocation(int device, const void *ptr) const;
+		MemoryAllocation getMemoryAllocation(const void *ptr) const;
 		
 	public:
 	
@@ -256,13 +276,13 @@ namespace executive {
 			const std::string& kernel);	
 		
 		/*!
-			\brief translates a kernel to the given ISA
+			\brief translates a kernel to the given ISA overwriting potentially existing translations
 			\param isa ISA to translate to
 			\param module name of module to which kernel belongs
 			\param kernel name of kernel
 			\return translated kernel or NULL on translation failure
 		*/
-		ir::Kernel *translatedToISA(ir::Instruction::Architecture isa, const std::string &module,
+		ir::Kernel *translateToISA(ir::Instruction::Architecture isa, const std::string &module,
 			const std::string &kernel);
 		
 		/*!
@@ -281,14 +301,22 @@ namespace executive {
 		/*!
 			\brief block on kernel executing on selected device
 		*/
-		void threadSynchronize();
+		void synchronize();
 		
 	public:
 		//
 		// device management functions
 		//
+		
+		/*!
+			inserts devices into device vector
+			\return number of devices in vector
+		*/
+		size_t enumerateDevices();
 
-		//! returns a constant vector of available devices
+		/*!
+			\return constant vector of available devices
+		*/
 		const DeviceVector & getDevices() const;
 
 		/*! 
@@ -302,16 +330,34 @@ namespace executive {
 		*/
 		int getSelectedDevice() const;
 		
-		//! indicates preferred ISA [device will be chosen if available]
-		void setPreferredISA(int isa);
+		/*!
+			gets the ISA of the selected device
+		*/
+		ir::Instruction::Architecture getSelectedISA() const;
 		
-		//! only listed devices may be selected
+		/*!
+			indicates preferred ISA [device will be chosen if available]
+		*/
+		void setPreferredISA(ir::Instruction::Architecture isa);
+		
+		/*!
+			\brief selects the first device with the given ISA
+		*/
+		bool selectDeviceByISA(ir::Instruction::Architecture isa);
+		
+		/*! 
+			\brief only listed devices may be selected
+		*/
 		void filterDevices(std::vector<int> & devices);
 		
-		//! only devices with listed ISAs may be selected
+		/*!
+			\brief only devices with listed ISAs may be selected
+		*/
 		void filterISAs(std::vector<int> & ISAs);
 		
-		//! returns the address space of the selected device
+		/*!
+			\brief returns the address space of the selected device
+		*/
 		int getDeviceAddressSpace() const;
 		
 	public:
@@ -327,9 +373,13 @@ namespace executive {
 		void setOptimizationLevel(translator::Translator::OptimizationLevel l);
 		
 		/*!
-			\brief ensures that all kernels have an executable translation for the selected device
+			\brief ensures that all kernels have an executable translation for the indicated ISA
+			\param isa target ISA to translate to
+			\param retranslate if true, all kernels are translated even those for which a translation exists
 		*/
-		void translateToISA();
+		void translateAllToISA(ir::Instruction::Architecture isa, bool retranslate=true);
+		
+		void translateModuleToISA(std::string moduleName, ir::Instruction::Architecture isa, bool retranslate=true);
 		
 	public:
 		//

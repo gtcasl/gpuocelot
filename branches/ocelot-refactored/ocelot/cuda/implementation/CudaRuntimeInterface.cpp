@@ -5,10 +5,23 @@
 	\date 11 Dec 2009
 */
 
+// C std lib includes
 #include <assert.h>
 
+// C++ std lib includes
+
+// Ocelot includes
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
+
+// Hydrazine includes
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

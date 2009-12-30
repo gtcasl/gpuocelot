@@ -118,6 +118,9 @@ namespace executive {
 		
 		//! allocation flags
 		unsigned int flags;
+		
+		//! indicates Ocelot manages allocation
+		bool internal;
 	
 	public:
 	

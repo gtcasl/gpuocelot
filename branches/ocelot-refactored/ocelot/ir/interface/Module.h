@@ -37,6 +37,12 @@ namespace ir {
 
 		/*! \brief Typedef for a map from an architecture to a KernelVector */
 		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;
+		
+		/*! \brief typedef for a map of kernels by name */
+		typedef std::map< std::string, Kernel * > KernelDirectory;
+		
+		/*! \brief maps an architecture to a kernel directory */
+		typedef std::map< Instruction::Architecture, KernelDirectory > KernelDirectoryMap;
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::map< std::string, Global > GlobalMap;
@@ -96,6 +102,11 @@ namespace ir {
 		*/
 		Kernel *getKernel(Instruction::Architecture isa, 
 			std::string kernelName);
+			
+		/*!
+			inserts a translated kernel into the module
+		*/
+		void insertKernel(Instruction::Architecture isa, Kernel *kernel);
 
 		Module::KernelVector::iterator begin(Instruction::Architecture isa) {
 			return kernels[isa].begin();
@@ -122,6 +133,9 @@ namespace ir {
 
 		/*! Set of kernels belonging to Module */
 		KernelMap kernels;	
+		
+		/*! better organization of this->kernel */
+		KernelDirectoryMap kernelDirectory;
 		
 		/*! Set of textures in the module */
 		TextureMap textures;

@@ -28,6 +28,13 @@
 
 #include <iostream>
 
+// Debugging messages
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 using namespace ir;
 using namespace executive;
 
@@ -84,10 +91,16 @@ public:
 		
 		string module = "ocelot/executive/test/kernels.ptx";
 		
+		report("I. loading kernels from module '" << module << "'");
+		
+		report("  selecting emulated device..");
+		
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";
 			return (result = false);
 		}
+		
+		report("  loading module ..");
 
 		try {
 			if (!context.loadModule(module)) {
@@ -99,6 +112,9 @@ public:
 			cout << "context.loadModule() threw an exception\n  " << status.str() << "\n" << flush;
 			throw;
 		}
+		
+		report("  getting kernel '_Z19k_sequenceDivergentPf'..");
+		
 		rawKernel = context.getKernel(Instruction::Emulated, module, 
 			"_Z19k_sequenceDivergentPf");
 		if (!rawKernel) {
@@ -109,6 +125,8 @@ public:
 		kernelDivergence = static_cast<EmulatedKernel *>(rawKernel);
 		kernelDivergence->setKernelShape(ThreadCount, 1, 1);
 
+		report("  getting kernel '_Z17k_sequenceLoopingPfi'..");
+		
 		rawKernel = context.getKernel(Instruction::Emulated, module, 
 			"_Z17k_sequenceLoopingPfi");
 		if (!rawKernel) {
@@ -118,6 +136,8 @@ public:
 
 		kernelLooping = static_cast<EmulatedKernel *>(rawKernel);
 		kernelLooping->setKernelShape(ThreadCount, 1, 1);
+
+		report("  getting kernel '_Z21k_matrixVectorProductPKfS0_Pfii'..");
 
 		rawKernel = context.getKernel(Instruction::Emulated, module,
 			"_Z21k_matrixVectorProductPKfS0_Pfii");
@@ -138,6 +158,8 @@ public:
 		EmulatedKernel *kernel = kernelDivergence;
 
 		stringstream out;
+		
+		report("II. Test divergent control flow");
 		
 		out << "divergent control flow kernel\n";
 		print(out, kernel);
@@ -166,6 +188,9 @@ public:
 
 			// launch the kernel
 			try {
+			
+				report("  preparing to launch kernel");
+				
 				kernel->setKernelShape(N,1,1);
 				kernel->launchGrid(1,1);
 				// context.synchronize();
@@ -180,6 +205,8 @@ public:
 			timer.stop();
 			
 			cout << "Kernel launch time was " << timer.toString() << "\n";
+
+			report("  checking results");
 
 			if (result) {
 				for (int i = 0; i < N; i++) {
@@ -200,6 +227,10 @@ public:
 					}
 				}
 			}
+			
+			report("  kernel results were " << (result ? "CORRECT" : "incorrect"));
+			
+			report("  freeing allocations");
 			context.free(sequence);
 			free(sequence);
 		}
@@ -210,6 +241,8 @@ public:
 		else {
 			status << "divergent control flow succeeded\n";
 		}
+		
+		report("  end of test");
 		return result;
 	}
 	
@@ -223,6 +256,8 @@ public:
 		
 		EmulatedKernel *kernel = kernelLooping;
 		stringstream out;
+
+		report("III. Test looping divergent control flow");
 
 		out << "looping kernel with divergent control flow\n";
 		print(out, kernel);
@@ -303,6 +338,8 @@ public:
 		EmulatedKernel *kernel = kernelMVProduct;
 
 		stringstream out;
+
+		report("IV. Test matrix vector product kernel");
 
 		out << "matrix-vector product kernel\n";
 		print(out, kernel);

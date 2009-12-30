@@ -39,6 +39,11 @@ namespace executive {
 			"native" ISA of the device
 		*/
 		ir::Instruction::Architecture ISA;
+		
+		/*!
+			identifies the device's address space
+		*/
+		int addressSpace;
 	
 		/*!
 			human-readable device name

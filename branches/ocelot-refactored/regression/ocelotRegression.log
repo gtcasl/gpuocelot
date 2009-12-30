@@ -15,9 +15,9 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
-INFO     Test completed in 1.30060696602 seconds
+INFO     Test completed in 0.0225470066071 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+Pass/Fail : Fail
 
 
 Name : TestLLVMKernels
@@ -27,48 +27,15 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1261682491
-Test time : 0.770184
+Test Seed : 1262194865
+Test time : 4.05312e-06
 
-Status : A = [
- 1 0 0 0 0 0 0 0 ;
- 0.5 1 0 0 0 0 0 0 ;
- 0.333333 0.5 1 0 0 0 0 0 ;
- 0.25 0.333333 0.5 1 0 0 0 0 ;
- 0.2 0.25 0.333333 0.5 1 0 0 0 ;
- 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
- 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
- 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
-];
-V = [
- 1 ;
- 2 ;
- 3 ;
- 4 ;
- 5 ;
- 6 ;
- 7 ;
- 8 ;
-];
-R = [
- 1 ;
- 2.5 ;
- 4.33333 ;
- 6.41667 ;
- 8.7 ;
- 11.15 ;
- 13.7429 ;
- 16.4607 ;
-];
+Status : Failed to select llvm device.
 
-
-While deleting: float (float)* %__ocelot_sinf
-An asserting value handle still pointed to this value!
-UNREACHABLE executed at Value.cpp:505!
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
-INFO     Test completed in 0.0452189445496 seconds
+INFO     Test completed in 0.0191919803619 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -83,8 +50,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1261682492
-Test time : 6.29425e-05
+Test Seed : 1262194865
+Test time : 2.12193e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -97,26 +64,13 @@ Testing SSA then back Dataflow
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
-INFO     Test completed in 0.301097154617 seconds
+INFO     Test completed in 0.0365858078003 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestMemoryTraceGenerator
-
-Description: 
-
-
-Test Seed : 1261682493
-Test time : 0.0163713
-
-Status : Test output:
-
-
+TestMemoryTraceGenerator: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:233: virtual cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy(void*, const void*, size_t, cudaMemcpyKind): Assertion `0 && "unimplemented"' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer
-INFO     Test completed in 0.256692171097 seconds
+INFO     Test completed in 0.0187299251556 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -128,15 +82,15 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1261682493
-Test time : 4.02927e-05
+Test Seed : 1262194865
+Test time : 1.78814e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
-INFO     Test completed in 0.0460629463196 seconds
+INFO     Test completed in 0.0250990390778 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -150,8 +104,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1261682493
-Test time : 0.00239372
+Test Seed : 1262194865
+Test time : 0.000987768
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -284,7 +238,7 @@ Zext Instruction Passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser
-INFO     Test completed in 0.458500146866 seconds
+INFO     Test completed in 0.0184018611908 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -297,51 +251,7 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1261682493
-Test time : 4.24385e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels
-INFO     Test completed in 0.0723261833191 seconds
-INFO      It produced the following output:
-Kernel launch time was 7.51019e-05s (75079 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1261682494
-Test time : 0.0150471
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0183439254761 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1261682494
+Test Seed : 1262194865
 Test time : 1.45435e-05
 
 Status : 
@@ -349,7 +259,7 @@ Status :
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions
-INFO     Test completed in 2.66348385811 seconds
+INFO     Test completed in 0.028284072876 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -359,8 +269,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1261682495
-Test time : 0.825752
+Test Seed : 1262194865
+Test time : 0.000464201
 
 Status : Test output:
 Accessors test passed.
@@ -376,34 +286,59 @@ pass: control flow instructions
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator
-INFO     Test completed in 1.15228486061 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
+INFO     Test completed in 0.019170999527 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestEmulator
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1262194865
+Test time : 1.71661e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator
+INFO     Test completed in 0.0473039150238 seconds
+INFO      It produced the following output:
+TestEmulator: ocelot/executive/implementation/Executive.cpp:224: bool executive::Executive::free(void*): Assertion `0 && "unimplemented"' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels
+INFO     Test completed in 0.0452039241791 seconds
+INFO      It produced the following output:
+Kernel launch time was 7.67708e-05s (76896 ticks)
+Pass/Fail : Pass
+
+
+Name : TestKernels
 
 Description: 
 
 
-Test Seed : 1261682497
-Test time : 0.110947
+Test Seed : 1262194865
+Test time : 0.0189335
 
 Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace
-INFO     Test completed in 0.0863161087036 seconds
+INFO     Test completed in 0.0414750576019 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -413,8 +348,8 @@ Name : TestTrace
 Description: 
 
 
-Test Seed : 1261682497
-Test time : 0.000621557
+Test Seed : 1262194865
+Test time : 0.000281572
 
 Status : Test output:
 
@@ -422,19 +357,19 @@ Status : Test output:
 
 INFO     
 Passing tests:
- (2.663s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions : Passed
- (0.045s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
- (0.301s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
- (0.257s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
- (0.046s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
- (1.152s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator : Passed
- (1.301s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels : Passed
- (0.018s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
- (0.072s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels : Passed
- (0.086s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace : Passed
- (0.459s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser : Passed
+ (0.019s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
+ (0.019s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
+ (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions : Passed
+ (0.025s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
+ (0.045s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels : Passed
+ (0.019s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
+ (0.041s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace : Passed
+ (0.018s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser : Passed
 
 Failing tests:
+ (0.023s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels : Failed
+ (0.047s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator : Did not complete.
+ (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Did not complete.
 
 Non-Existent tests:
 

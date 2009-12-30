@@ -27,6 +27,9 @@ namespace ir {
 
 namespace executive {
 
+	/*!
+		\brief enumerated type describing device address space
+	*/
 	enum DeviceAddressSpace {
 		Device_global,
 		Device_constant,
@@ -34,6 +37,17 @@ namespace executive {
 		Device_local,
 		Device_texture,
 		Device_address_space_invalid
+	};
+	
+	/*!
+		\brief type of mempcy
+	*/
+	enum MemcpyKind {
+		HostToHost,
+		HostToDevice,
+		DeviceToHost,
+		DeviceToDevice,
+		MemcpyKind_invalid
 	};
 
 	class ChannelFormatDesc {

@@ -230,7 +230,7 @@ bool executive::Executive::free(void *devPtr) {
 		}
 		else {
 			if (it->second.internal) {
-				free(it->second.pointer.ptr);
+				::free(it->second.pointer.ptr);
 			}
 		}
 		memoryAllocations[getDeviceAddressSpace()].erase(it);
@@ -252,7 +252,9 @@ bool executive::Executive::freeHost(void *ptr) {
 			assert(0 && "unimplemented");
 		}
 		else {
-			free(it->second.pointer.ptr);
+			if (it->second.internal) {
+				free(it->second.pointer.ptr);
+			}
 		}
 		memoryAllocations[getDeviceAddressSpace()].erase(it);
 	}
@@ -273,7 +275,9 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 			assert(0 && "unimplemented");
 		}
 		else {
-			free(it->second.pointer.ptr);
+			if (it->second.internal) {
+				free(it->second.pointer.ptr);
+			}
 		}
 		memoryAllocations[getDeviceAddressSpace()].erase(it);
 	}
@@ -281,9 +285,33 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 }
 
 bool executive::Executive::checkMemoryAccess(int device, const void* base, size_t size) const {
-	bool result = true;
+	bool found = true;
 	
-	return result;
+	/*
+	int devAddrSpace = devices[device].addressSpace;
+	MemoryAllocation allocation;
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(devAddrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)ptr);
+	if (alloc_it == memoryMap.end()) {
+		// find nearest
+		bool found = false;
+		MemoryAllocationMap::const_iterator bound = memoryMap.upper_bound((void *)ptr);
+		if (bound != memoryMap.end()) {
+			char *base_ptr = (char *)bound->first;
+			char *end_ptr = base_ptr + bound->second.size();
+			if ((const char *)ptr >= base_ptr && ptr < end_ptr) {
+				allocation = bound->second;
+				found = true;
+			}
+		}
+	}
+	else {
+		found = true;
+	}
+	*/
+	
+	return found;
 }
 
 /*!
@@ -338,6 +366,112 @@ executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// Memcpy functions
+
+/*!
+	\brief copies to or from the selected device - will check whether device pointers are allocated
+	
+	\param dest pointer to destination
+	\param src pointer to source
+	\param size number of bytes to transfer
+	\param indicates the kind of transfer
+	\return true on success
+*/
+bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size, 
+	executive::MemcpyKind kind) {
+
+	int selectedDevice = getSelectedDevice();
+	int deviceAddrSpace = getDeviceAddressSpace();
+	
+	report("deviceMemcpy(" << std::hex << dest << ", " << src << std::dec << ", " << size << " bytes)");
+	
+	switch (kind) {
+	case HostToHost:
+	{
+		::memcpy(dest, src, size);
+		return true;
+	}
+	break;
+	
+	case HostToDevice:
+	{
+		if (checkMemoryAccess(selectedDevice, dest, size)) {
+		
+			switch (deviceAddrSpace) {
+			case 0:
+				{
+					::memcpy(dest, src, size);
+					return true;
+				}
+			break;
+			default:
+				{
+					assert(0 && "address space not supported");
+				}
+			}
+		}
+		else {
+			throw hydrazine::Exception("device memory fault");
+		}
+	}
+	break;
+	
+	case DeviceToHost:
+	{
+		if (checkMemoryAccess(selectedDevice, src, size)) {
+		
+			switch (deviceAddrSpace) {
+			case 0:
+				{
+					::memcpy(dest, src, size);
+					return true;
+				}
+			break;
+			default:
+				{
+					assert(0 && "address space not supported");
+				}
+			}
+		}
+		else {
+			throw hydrazine::Exception("device memory fault");
+		}
+	}
+	break;
+	
+	case DeviceToDevice:
+	{
+		if (checkMemoryAccess(selectedDevice, src, size) && 
+			checkMemoryAccess(selectedDevice, dest, size)) {
+			
+			switch (deviceAddrSpace) {
+			case 0:
+				{
+					::memcpy(dest, src, size);
+					return true;
+				}
+			break;
+			default:
+				{
+					assert(0 && "address space not supported");
+				}
+			}
+		}
+		else {
+			throw hydrazine::Exception("device memory fault");
+		}
+	}
+	break;
+	
+	default:
+		throw hydrazine::Exception("device memory fault - kind invalid");
+	}
+	
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // register functions
 
 /*!
@@ -351,10 +485,11 @@ bool executive::Executive::loadModule(std::string path, bool translateOnLoad, st
 	// parse PTX into a module with PTX kernels then translate to available devices
 	//
 
-	report("Loading module " << path);
+	report("Loading module " << path << (translateOnLoad ? " translate on load" : ""));
 	
 	ir::Module *module = new ir::Module(path);
 	module->load(ptx);
+	module->modulePath = path;
 	
 	ModuleMap::iterator mod_it = modules.find(path);
 	if (mod_it != modules.end()) {
@@ -374,7 +509,6 @@ bool executive::Executive::loadModule(std::string path, bool translateOnLoad, st
 	\brief loads a module with a given name from a file
 */
 bool executive::Executive::loadModule(std::string filename, bool translateOnLoad) {
-	report("Loading module " << filename);
 	std::ifstream file(filename.c_str());
 	return loadModule(filename, translateOnLoad, file);
 }
@@ -600,6 +734,9 @@ void executive::Executive::translateModuleToISA(std::string moduleName,
 ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture isa, 
 	const std::string &moduleName, const std::string &kernelName) {
 	
+	report("Executive::translateToISA(" << isa << ", module: " << moduleName 
+		<< ", kernel: " << kernelName);
+	
 	ModuleMap::iterator mod_it = modules.find(moduleName);
 	if (mod_it == modules.end()) {
 		report("failed to find named module");
@@ -663,8 +800,17 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
 	size_t parameterBlockSize) {
 	
+	report("launch('" << moduleName << "', '" << kernelName << "')");
+	report("   grid: " << grid.x << ", " << grid.y << ", " << grid.z);
+	report("  block: " << block.x << ", " << block.y << ", " << block.z);
+	report("  shmem: " << sharedMemory);
+	report("  param block size: " << parameterBlockSize << " bytes");
+	
 	ir::Instruction::Architecture isa = getSelectedISA();
 	ir::Kernel *kernel = getKernel(isa, moduleName, kernelName);
+	if (!kernel) {
+		kernel = translateToISA(isa, moduleName, kernelName);
+	}
 	
 	switch (isa) {
 	case ir::Instruction::Emulated:

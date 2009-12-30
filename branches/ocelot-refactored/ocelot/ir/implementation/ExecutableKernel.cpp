@@ -47,6 +47,8 @@ size_t ir::ExecutableKernel::mapParameters() {
 	sets parameter values from a block of parameter data
 */
 void ir::ExecutableKernel::setParameterBlock(const void *param, size_t size) {
+	mapParameters();
+	
 	ParameterVector::iterator it = parameters.begin();
 	for (; it != parameters.end(); ++it) {
 		report("Configuring parameter " << it->name 
@@ -80,8 +82,8 @@ void ir::ExecutableKernel::setParameterBlock(const void *param, size_t size) {
 						}
 					}
 				}
-				break;
 			}
+			break;
 
 			case ir::PTXOperand::s32:	// fall through
 			case ir::PTXOperand::u32:	// fall through
@@ -94,6 +96,7 @@ void ir::ExecutableKernel::setParameterBlock(const void *param, size_t size) {
 					uint_ptr ++;
 				}
 			}
+			break;
 
 			case ir::PTXOperand::s64:	// fall through
 			case ir::PTXOperand::u64:	// fall through
@@ -106,9 +109,11 @@ void ir::ExecutableKernel::setParameterBlock(const void *param, size_t size) {
 					uint_ptr ++;
 				}			
 			}
+			break;
 
 			default:
 			{
+				report("parameter type " << ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
 				throw hydrazine::Exception(std::string("Parameter type ") + 
 					ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
 			}
@@ -118,6 +123,7 @@ void ir::ExecutableKernel::setParameterBlock(const void *param, size_t size) {
 
 //! gets a dense representation of parameter memory given current values of parameters
 void ir::ExecutableKernel::getParameterBlock(void *param, size_t size) const {
+	
 	ParameterVector::const_iterator it = parameters.begin();
 	for (; it != parameters.end(); ++it) {
 		report("Configuring parameter " << it->name 

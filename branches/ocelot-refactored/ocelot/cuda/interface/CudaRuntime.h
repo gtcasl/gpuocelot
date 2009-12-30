@@ -314,6 +314,11 @@ namespace cuda {
 		virtual cudaError_t  cudaFreeArray(struct cudaArray *array);
 	
 	public:
+	
+		virtual cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, 
+			enum cudaMemcpyKind kind);
+	
+	public:
 		//
 		// global variable accessors
 		//

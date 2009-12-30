@@ -44,6 +44,47 @@ cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+void cuda::CudaRuntimeInterface::addTraceGenerator( trace::TraceGenerator& gen, 
+	bool persistent, bool safe )
+{
+	assert(0 && "unimplemented");
+}
+			
+void cuda::CudaRuntimeInterface::clearTraceGenerators( bool safe )
+{
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::limitWorkerThreads( unsigned int limit )
+{
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, const std::string& name)
+{
+	assert(0 && "unimplemented");
+}
+
+cuda::CudaRuntimeInterface::KernelPointer cuda::CudaRuntimeInterface::getKernelPointer(
+	const std::string& name, const std::string& module)
+{
+	assert(0 && "unimplemented");
+	return 0;
+}
+
+void** cuda::CudaRuntimeInterface::getFatBinaryHandle(const std::string& name)
+{
+	//return get()->getFatBinaryHandle( name );
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::clearErrors()
+{
+	assert(0 && "unimplemented");
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 void** cuda::CudaRuntimeInterface::cudaRegisterFatBinary(void *fatCubin) {
 	assert(0 && "unimplemented");
 }

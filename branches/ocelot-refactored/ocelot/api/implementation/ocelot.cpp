@@ -14,47 +14,45 @@
 namespace ocelot
 {
 
+	cuda::CudaRuntimeInterface * get() {
+		return cuda::CudaRuntimeInterface::get();
+	}
+
 	void addTraceGenerator( trace::TraceGenerator& gen, 
 		bool persistent, bool safe )
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->addTraceGenerator( 
-			gen, persistent, safe );
+		get()->addTraceGenerator(gen, persistent, safe );
 	}
 				
 	void clearTraceGenerators( bool safe )
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearTraceGenerators( 
-			safe );
+		get()->clearTraceGenerators( safe );
 	}
 	
 	void limitWorkerThreads( unsigned int limit )
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			limitWorkerThreads( limit );
+		get()->limitWorkerThreads( limit );
 	}
 
 	void registerPTXModule(std::istream& stream, const std::string& name)
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			registerPTXModule( stream, name );
+		get()->registerPTXModule( stream, name );
 	}
 	
 	KernelPointer getKernelPointer(const std::string& name,
 		const std::string& module)
 	{
-		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			getKernelPointer( name, module );
+		return get()->getKernelPointer( name, module );
 	}
 
 	void** getFatBinaryHandle(const std::string& name)
 	{
-		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			getFatBinaryHandle( name );
+		return get()->getFatBinaryHandle( name );
 	}
 	
 	void clearErrors()
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearErrors();
+		get()->clearErrors();
 	}
 
 }

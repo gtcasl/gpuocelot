@@ -45,6 +45,7 @@ executive::EmulatedKernel::EmulatedKernel(ir::Kernel* kernel,
 	ConstMemory = ParameterMemory = 0;
 	ConstMemorySize = ParameterMemorySize = SharedMemorySize = 0;
 
+	ISA = ir::Instruction::Emulated;
 	initialize(ptxKernel.instructions);
 }
 
@@ -64,6 +65,9 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  " << RegisterCount << " registers");
 
 	gridDim = Dim3(width, height, 1);	
+	
+	updateParameterMemory();
+	updateGlobals();
 	
 	// notify trace generator(s)
 	for (std::list<trace::TraceGenerator*>::iterator it = Traces.begin(); 
@@ -336,6 +340,8 @@ void executive::EmulatedKernel::updateParameterMemory() {
 	
 	ParameterMemory = new char[ParameterMemorySize];
 	
+	report("EmulatedKernel::updateParameterMemory()");
+	
 	unsigned int size = 0;
 	for(std::vector<ir::Parameter>::iterator i_it = parameters.begin();
 		i_it != parameters.end(); ++i_it ) {
@@ -350,6 +356,8 @@ void executive::EmulatedKernel::updateParameterMemory() {
 			memcpy( ParameterMemory + size, &v_it->val_b16, 
 				i_it->getElementSize() );
 			size += i_it->getElementSize();
+			
+			report("  " << ir::Parameter::value(*i_it));
 		}
 	}	
 

@@ -36,7 +36,7 @@ const char *cuda::FatBinaryContext::ptx() const {
 	return binary->ptx->ptx;
 }
 
-executive::ChannelFormatDesc convert(const cudaChannelFormatDesc &cudaDesc) {
+static executive::ChannelFormatDesc convert(const cudaChannelFormatDesc &cudaDesc) {
 	executive::ChannelFormatDesc desc;
 	desc.w = cudaDesc.w;
 	desc.x = cudaDesc.x;
@@ -44,6 +44,25 @@ executive::ChannelFormatDesc convert(const cudaChannelFormatDesc &cudaDesc) {
 	desc.z = cudaDesc.z;
 	desc.kind = (executive::ChannelFormatDesc::Kind)(int)cudaDesc.f;
 	return desc;
+}
+
+static executive::MemcpyKind convert(const cudaMemcpyKind kind) {
+	switch (kind) {
+		case cudaMemcpyHostToHost:
+			return executive::HostToHost;
+		case cudaMemcpyDeviceToHost:
+			return executive::DeviceToHost;
+		case cudaMemcpyHostToDevice:
+			return executive::HostToDevice;
+		case cudaMemcpyDeviceToDevice:
+			return executive::DeviceToDevice;
+	}
+	return executive::MemcpyKind_invalid;
+}
+
+static executive::dim3 convert(dim3 dim) {
+	executive::dim3 ed3 = {dim.x, dim.y, dim.z};
+	return ed3;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,6 +353,8 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
+	report("cudaFree()");
+	
 	getThreadContext();
 	if (context.free(devPtr)) {
 		result = cudaSuccess;
@@ -364,6 +385,28 @@ cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	return setLastError(result);
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// memory copying
+
+cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t count, 
+	enum cudaMemcpyKind kind) {
+	cudaError_t result = cudaSuccess;
+	if (kind >= 0 && kind <= 3) {
+		lock();
+		getThreadContext();
+		bool success = context.deviceMemcpy(dst, src, count, convert(kind));
+		if (!success) {
+			result = cudaErrorInvalidDevicePointer;
+		}
+		unlock();
+	}
+	else {
+		result = cudaErrorInvalidMemcpyDirection;
+	}
+	return setLastError(result);	
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -556,6 +599,7 @@ cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, si
 	cudaStream_t stream) {
 
 	lock();
+	report("cudaConfigureCall()");
 	
 	cudaError_t result = cudaErrorInvalidConfiguration;
 	ThreadContext &thread = getThreadContext();
@@ -573,7 +617,7 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, s
 	cudaError_t result = cudaSuccess;
 	
 	lock();
-	
+		
 	ThreadContext &thread = getThreadContext();
 	
 	memcpy(thread.parameterBlock + offset, arg, size);
@@ -599,6 +643,16 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	//
 	// executive needs: kernel grid and block dimensions, shared memory size, parameter data
 	//
+	
+	// void Executive::launch(const std::string & module, const std::string & kernel, dim3 grid, dim3 block,
+	// 	size_t sharedMemory, unsigned char *parameterBlock, size_t parameterBlockSize);
+
+	const RegisteredKernel & kernel = kernels[(void *)entry];
+	std::string moduleName = kernel.module;
+	std::string kernelName = kernel.kernel;
+	
+	context.launch(moduleName, kernelName, convert(launch.gridDim), convert(launch.blockDim), 
+		launch.sharedMemory, thread.parameterBlock, thread.parameterBlockSize);
 	
 	unlock();
 	
@@ -633,7 +687,6 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(struct cudaFuncAttributes *
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
 	
-	assert(0 && "unimplemented");
 	return setLastError(result);
 }
 

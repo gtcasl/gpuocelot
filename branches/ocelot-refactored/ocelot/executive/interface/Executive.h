@@ -17,6 +17,8 @@
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/Instruction.h>
 
+struct cudaArray;
+
 // forward declared classes
 namespace ir {
 	class Kernel;
@@ -172,7 +174,7 @@ namespace executive {
 		*/
 		bool mallocArray(struct cudaArray **array, const ChannelFormatDesc & desc, 
 			size_t width, size_t height);
-		
+
 		/*!
 			\brief frees an allocation
 			\param devPtr device pointer
@@ -211,6 +213,20 @@ namespace executive {
 				the record's ISA is Unknown
 		*/
 		MemoryAllocation getMemoryAllocation(const void *ptr) const;
+		
+	public:
+	
+		/*!
+			\brief copies to or from the selected device - will check whether device pointers are valid
+	
+			\param dest pointer to destination
+			\param src pointer to source
+			\param size number of bytes to transfer
+			\param indicates the kind of transfer
+			\return true on success
+		*/
+		bool deviceMemcpy(void *dest, const void *src, size_t size, MemcpyKind kind);
+		
 		
 	public:
 	
@@ -317,7 +333,9 @@ namespace executive {
 		/*!
 			\return constant vector of available devices
 		*/
-		const DeviceVector & getDevices() const;
+		const DeviceVector & getDevices() const {
+			return devices;
+		}
 
 		/*! 
 			selects a device [ this is intended to be a low-cost operation called at every CUDA runtime 

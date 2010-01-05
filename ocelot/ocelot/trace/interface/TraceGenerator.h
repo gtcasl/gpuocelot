@@ -37,6 +37,7 @@ namespace trace {
 			BranchTraceFormat,
 			MemoryTraceFormat,
 			SharedComputationTraceFormat,
+			InstructionTraceFormat,
 			InvalidTraceFormat
 		};
 		

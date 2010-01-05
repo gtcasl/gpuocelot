@@ -20,8 +20,10 @@
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/executive/interface/ApplicationState.h>
-
 #include <ocelot/executive/interface/Executive.h>
+
+// Hydrazine includes
+#include <hydrazine/implementation/Timer.h>
 
 struct CUcontext;
 
@@ -33,8 +35,13 @@ namespace cuda {
 	class Event {
 	public:
 	
+		//! timer 
+		hydrazine::Timer timer;
+	
+		//! CUDA reference to event
 		cudaEvent_t handle;
 		
+		//! event creation flags
 		unsigned int flags;	
 	};
 
@@ -46,7 +53,7 @@ namespace cuda {
 	
 		cudaStream_t handle;
 	
-		std::list< Event > events;
+		std::list< cudaEvent_t > events;
 		
 	};
 	
@@ -89,6 +96,11 @@ namespace cuda {
 	
 		//! pointer to CUDA driver API context
 		struct CUcontext * context;		
+		
+	public:
+	
+		CudaContext();
+		
 	};
 	
 	typedef std::map< int, CudaContext > CudaContextMap;
@@ -106,7 +118,7 @@ namespace cuda {
 	/*! 
 		Host thread CUDA context consists of these
 	*/
-	class ThreadContext {	
+	class HostThreadContext {	
 	public:
 	
 		//! index of selected device
@@ -140,9 +152,14 @@ namespace cuda {
 		size_t parameterBlockSize;
 		
 		//! cuda context
+	
+	public:
+	
+		HostThreadContext();
+		
 	};
 	
-	typedef std::map< pthread_t, ThreadContext > ThreadContextMap;
+	typedef std::map< pthread_t, HostThreadContext > HostThreadContextMap;
 	
 	//! references a texture registered to CUDA runtime
 	class RegisteredTexture {
@@ -215,7 +232,7 @@ namespace cuda {
 		CudaContextMap cudaContexts;
 		
 		//! map of pthreads to thread contexts
-		ThreadContextMap threads;
+		HostThreadContextMap threads;
 		
 		//! execution context
 		executive::Executive context;
@@ -247,7 +264,7 @@ namespace cuda {
 		cudaError_t setLastError(cudaError_t result);
 		
 		//! gets current thread context
-		ThreadContext & getThreadContext();
+		HostThreadContext & getHostThreadContext();
 
 	public:
 		//
@@ -317,7 +334,18 @@ namespace cuda {
 	
 		virtual cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, 
 			enum cudaMemcpyKind kind);
+		virtual cudaError_t cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
+			size_t offset, enum cudaMemcpyKind kind = cudaMemcpyHostToDevice);
+		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
 	
+	public:
+		//
+		// Memset
+		//
+		
+		virtual cudaError_t  cudaMemset(void *devPtr, int value, size_t count);
+		virtual cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height);
+		
 	public:
 		//
 		// global variable accessors
@@ -372,6 +400,29 @@ namespace cuda {
 		virtual cudaError_t cudaSetupArgument(const void *arg, size_t size, size_t offset);
 		virtual cudaError_t cudaLaunch(const char *entry);
 		virtual cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *func);	
+	
+	public:
+		//
+		// event creation
+		//
+		
+		virtual cudaError_t  cudaEventCreate(cudaEvent_t *event);
+		virtual cudaError_t  cudaEventCreateWithFlags(cudaEvent_t *event, int flags);
+		virtual cudaError_t  cudaEventRecord(cudaEvent_t event, cudaStream_t stream);
+		virtual cudaError_t  cudaEventQuery(cudaEvent_t event);
+		virtual cudaError_t  cudaEventSynchronize(cudaEvent_t event);
+		virtual cudaError_t  cudaEventDestroy(cudaEvent_t event);
+		virtual cudaError_t  cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end);
+	
+	public:
+		//
+		// stream creation
+		//
+	
+		virtual cudaError_t  cudaStreamCreate(cudaStream_t *pStream);
+		virtual cudaError_t  cudaStreamDestroy(cudaStream_t stream);
+		virtual cudaError_t  cudaStreamSynchronize(cudaStream_t stream);
+		virtual cudaError_t  cudaStreamQuery(cudaStream_t stream);
 	
 	public:
 		//

@@ -25,7 +25,7 @@ executive::MemoryAllocation::MemoryAllocation():
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::GlobalVariable::GlobalVariable():
-	name(""), module(""), size(0), device_pointer(0), host_pointer(0) {
+	name("untitled"), size(0), host_pointer(0) {
 
 }
 

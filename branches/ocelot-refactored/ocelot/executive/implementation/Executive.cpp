@@ -19,6 +19,7 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/RuntimeException.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -32,6 +33,8 @@
 #endif
 
 #define REPORT_BASE 0
+
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -136,7 +139,9 @@ bool executive::Executive::mallocHost(void **ptr, size_t size) {
 	}
 	
 	*ptr = memory.pointer.ptr;
-	memoryAllocations[memory.addressSpace][ptr] = memory;
+	memoryAllocations[memory.addressSpace][*ptr] = memory;
+	
+	report("Executive::mallocHost(" << *ptr << ")");
 	
 	return result;
 }
@@ -244,7 +249,10 @@ bool executive::Executive::freeHost(void *ptr) {
 	MemoryAllocationMap::iterator it = memoryAllocations[getDeviceAddressSpace()].find(ptr);
 	if (it == memoryAllocations[getDeviceAddressSpace()].end()) {
 		// not found
-		assert(0 && "unimplemented");		
+		report("Executive::freeHost(" << ptr << ")");
+		
+		assert(0 && "unimplemented");
+		
 	}
 	else {
 		if (it->second.addressSpace) {
@@ -253,7 +261,7 @@ bool executive::Executive::freeHost(void *ptr) {
 		}
 		else {
 			if (it->second.internal) {
-				free(it->second.pointer.ptr);
+				::free(it->second.pointer.ptr);
 			}
 		}
 		memoryAllocations[getDeviceAddressSpace()].erase(it);
@@ -470,6 +478,28 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	return false;
 }
 
+/*!
+	\brief copies to a symbol on the device
+	\param symbol name of symbol
+	\param src pointer to source data
+	\param count number of bytes to copy
+	\param offset offset to add to destination
+	\param kind indicates direction to copy - src must be Device
+*/
+bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
+	size_t offset, MemcpyKind kind) {
+	
+	GlobalVariable &globalVar = globals[std::string(symbol)];
+	if (count + offset <= globalVar.size) {
+		::memcpy((char *)globalVar.host_pointer + offset, src, count);
+	}
+	else {
+		Ocelot_Exception("memcpyToSymbol attempting to copy more data to global variable than available");
+	}
+	
+	return true;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // register functions
@@ -513,14 +543,44 @@ bool executive::Executive::loadModule(std::string filename, bool translateOnLoad
 	return loadModule(filename, translateOnLoad, file);
 }
 
-void executive::Executive::registerGlobalVariable(const char *module, const char *name, 
-	void *hostPtr, void *devicePtr, size_t size, DeviceAddressSpace addrSpace) {
+void executive::Executive::registerGlobalVariable(const std::string & module, 
+	const  std::string varName, void *hostPtr, void *devicePtr, size_t size, 
+	DeviceAddressSpace addrSpace) {
 	
 	//
 	// register global variables and allocate [if necessary] on available address spaces
 	//
 	
-	assert(0 && "unimplemented");
+	GlobalMap::iterator g_it = globals.find(varName);
+	if (g_it == globals.end()) {
+		GlobalVariable globalVar;
+		
+		globalVar.name = varName;
+		globalVar.host_pointer = hostPtr;
+		globalVar.size = size;
+		globalVar.modules[module] = devicePtr;
+		globalVar.deviceAddressSpace = addrSpace;
+		globals[varName] = globalVar;
+	}
+	else {
+		globals[varName].modules[module] = devicePtr;
+		const GlobalVariable &globalVar = globals[varName];
+		if (globalVar.host_pointer != hostPtr) {
+			Ocelot_Exception("previously registered global variable '" << varName 
+				<< "' - has host pointer " << std::hex << globalVar.host_pointer 
+				<< " - attempting to register with host ptr " << hostPtr << std::dec);
+		}
+		if (globalVar.size != size) {
+			Ocelot_Exception("previously registered global variable '" << varName 
+				<< "' - has size " << globalVar.size << " bytes"
+				<< " - attempting to register with size " << size << " bytes");
+		}
+		if (globalVar.deviceAddressSpace != addrSpace) {
+			Ocelot_Exception("previously registered global variable '" << varName 
+				<< "' - in device address space " << globalVar.deviceAddressSpace
+				<< " - attempting to register with addr space " << addrSpace);
+		}
+	}
 }
 
 void executive::Executive::registerTexture(const char *module, const char *name, int dimensions,
@@ -595,6 +655,8 @@ size_t executive::Executive::enumerateDevices() {
 		device.major = 1;
 		device.minor = 3;
 		devices.push_back(device);
+		
+		selectDevice(0);
 	}
 	{
 		// multicore
@@ -812,13 +874,25 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 		kernel = translateToISA(isa, moduleName, kernelName);
 	}
 	
+	fenceGlobalVariables();
+	
 	switch (isa) {
 	case ir::Instruction::Emulated:
 		{
 			EmulatedKernel *emuKernel = static_cast<EmulatedKernel *>(kernel);
 			emuKernel->setParameterBlock(parameterBlock, parameterBlockSize);
 			emuKernel->setKernelShape(block.x, block.y, block.z);
-			emuKernel->launchGrid(grid.x, grid.y);
+			emuKernel->setSharedMemorySize(sharedMemory);
+			
+			// dynamic shared memory
+			
+			try {
+				emuKernel->launchGrid(grid.x, grid.y);
+			}
+			catch (executive::RuntimeException &exp) {
+				report("Runtime exception: " << exp.toString());
+				throw;
+			}
 		}
 		break;
 	
@@ -854,6 +928,35 @@ void executive::Executive::synchronize() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// 
+// Global variable synchronization
+
+void executive::Executive::fenceGlobalVariables() {
+	if (getDeviceAddressSpace()) {
+		assert(0 && "devices with non-system address spaces not yet supported");
+		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
+			// do something
+		}
+	}
+	else {
+		//
+		// do something else entirely
+		//
+		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
+			// do something about each module
+			if (glb_it->second.deviceAddressSpace != Device_shared) {
+				std::map< std::string, void *>::iterator mod_it = glb_it->second.modules.begin();
+				for (; mod_it != glb_it->second.modules.end(); ++mod_it) {
+					ir::Global & global = modules[mod_it->first]->globals[glb_it->first];
+					global.pointer = (char *)glb_it->second.host_pointer;
+					global.registered = true;
+					global.local = true;
+				}
+			}
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// end
 

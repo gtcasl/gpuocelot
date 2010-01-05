@@ -577,6 +577,10 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	report("Total shared memory size is " << SharedMemorySize);
 }
 
+void executive::EmulatedKernel::setSharedMemorySize(size_t bytes) {
+	_sharedMemorySize = SharedMemorySize = bytes;
+}
+
 /*!
 	Allocates arrays in local memory and maps identifiers to allocations.
 */

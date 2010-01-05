@@ -194,4 +194,8 @@ void ir::ExecutableKernel::getParameterBlock(void *param, size_t size) const {
 	}
 }
 
+//! sets the size of shared memory
+void ir::ExecutableKernel::setSharedMemorySize(size_t bytes) {
+	assert(0 && "unimplemented");
+}
 

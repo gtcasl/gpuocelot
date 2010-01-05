@@ -46,6 +46,11 @@ namespace executive {
 
 		/*!	Sets device used to execute the kernel */
 		void setDevice(const Device* device, unsigned int limit);
+		
+		/*!
+			Sets shared memory size used by the emulated kernel
+		*/
+		void setSharedMemorySize(size_t bytes);
 
 	public:
 		/*!	Notifies all attached TraceGenerators of an event */

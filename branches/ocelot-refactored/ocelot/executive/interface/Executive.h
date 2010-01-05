@@ -7,11 +7,11 @@
 #ifndef OCELOT_EXECUTIVE_H_INCLUDED
 #define OCELOT_EXECUTIVE_H_INCLUDED
 
-// C++
+// C++ includes
 #include <map>
 #include <set>
 
-// Ocelot
+// Ocelot includes
 #include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/translator/interface/Translator.h>
@@ -100,15 +100,15 @@ namespace executive {
 		
 		/*!
 			\brief registers a global variable
-			\param module
-			\param name this must be unique - modules aren't quite namespaces
+			\param module module name
+			\param name string naming global variable
 			\param hostPtr pointer in host memory - identifies the global
 			\param devicePtr pointer in device memory
 			\param size size of global in bytes
 			\param addrSpace indicates which address space the global resides in on the device
 		*/
-		void registerGlobalVariable(const char *module, const char *name, void *hostPtr, 
-			void *devicePtr, size_t size, DeviceAddressSpace addrSpace);
+		void registerGlobalVariable(const std::string & module, const  std::string varName, 
+			void *hostPtr, void *devicePtr, size_t size, DeviceAddressSpace addrSpace);
 		
 		/*!
 			\brief registers a texture defined in a particular module
@@ -227,6 +227,16 @@ namespace executive {
 		*/
 		bool deviceMemcpy(void *dest, const void *src, size_t size, MemcpyKind kind);
 		
+		/*!
+			\brief copies to a symbol on the device
+			\param symbol name of symbol
+			\param src pointer to source data
+			\param count number of bytes to copy
+			\param offset offset to add to destination
+			\param kind indicates direction to copy - src must be Device
+		*/
+		bool deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, size_t offset, 
+			MemcpyKind kind);
 		
 	public:
 	
@@ -404,6 +414,12 @@ namespace executive {
 		// Ocelot native interface functions
 		//
 		
+	protected:
+	
+		/*!
+			\brief global variable values are buffered and then initialized prior to kernel launch
+		*/
+		void fenceGlobalVariables();
 		
 	};
 

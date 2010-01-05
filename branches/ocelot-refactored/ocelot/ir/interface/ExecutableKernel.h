@@ -51,6 +51,9 @@ namespace ir {
 		
 		//! gets a dense representation of parameter memory given current values of parameters
 		virtual void getParameterBlock(void *param, size_t size) const;
+		
+		//! sets the size of shared memory for the kernel
+		virtual void setSharedMemorySize(size_t bytes);
 
 		/*!	\brief Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height)=0;

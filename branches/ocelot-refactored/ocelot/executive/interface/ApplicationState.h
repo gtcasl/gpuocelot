@@ -174,17 +174,17 @@ namespace executive {
 		//! name of global variable
 		std::string name;
 		
-		//! name of module in which global is declared
-		std::string module;
+		//! maps name of module(s) in which global is declared and pointer to variable in device memory
+		std::map< std::string, void *> modules;
 		
 		//! size (in bytes) of global variable
 		size_t size;
 		
-		//! pointer in device memory
-		void *device_pointer;
-		
 		//! backing in host memory
 		void *host_pointer;
+		
+		//! indicates state space of device in which global exists
+		DeviceAddressSpace deviceAddressSpace;
 	};
 
 	/*!

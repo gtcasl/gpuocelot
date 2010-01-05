@@ -14,6 +14,7 @@
 // Ocelot includes
 #include <ocelot/cuda/include/__cudaFatFormat.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -67,6 +68,15 @@ static executive::dim3 convert(dim3 dim) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), nextStream(0), nextEvent(0), 
+	parameterBlock(0), parameterBlockSize(0) {
+
+}
+
+cuda::CudaContext::CudaContext(): thread(0), context(0) { }
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 cuda::CudaRuntime::CudaRuntime() {
 
 }
@@ -77,7 +87,7 @@ cuda::CudaRuntime::~CudaRuntime() {
 	//
 	
 	// thread contexts
-	for (ThreadContextMap::iterator it = threads.begin(); it != threads.end(); ++it) {
+	for (HostThreadContextMap::iterator it = threads.begin(); it != threads.end(); ++it) {
 		free(it->second.parameterBlock);
 	}
 	threads.clear();
@@ -104,20 +114,21 @@ void cuda::CudaRuntime::unlock() {
 
 //! sets the last error state for the CudaRuntime object
 cudaError_t cuda::CudaRuntime::setLastError(cudaError_t result) {
-	ThreadContext &thread = getThreadContext();
+	HostThreadContext &thread = getHostThreadContext();
 	thread.lastError = result;
 	return result;
 }
 
 //! gets the context of a thread
-cuda::ThreadContext & cuda::CudaRuntime::getThreadContext() {
+cuda::HostThreadContext & cuda::CudaRuntime::getHostThreadContext() {
 	pthread_t self = pthread_self();
 	
-	ThreadContextMap::iterator it = threads.find(self);
+	HostThreadContextMap::iterator it = threads.find(self);
 	if (it == threads.end()) {
-		ThreadContext thread;
+		HostThreadContext thread;
 		thread.parameterBlockSize = (1<<13);
 		thread.parameterBlock = (unsigned char *)malloc(thread.parameterBlockSize);
+		thread.selectedDevice = 0;
 		threads[self] = thread;
 		it = threads.find(self);
 	}
@@ -139,7 +150,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	lock();
 	
 	//! inserts thread context if not already exists
-	getThreadContext();
+	getHostThreadContext();
 	
 	for (FatBinaryVector::const_iterator it = fatBinaries.begin();
 		it != fatBinaries.end(); ++it) {
@@ -228,7 +239,7 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	
 	lock();
 	
-	getThreadContext();
+	getHostThreadContext();
 	
 	// register the texture object to the runtime and declare it to the executive
 	
@@ -251,7 +262,19 @@ void cuda::CudaRuntime::cudaRegisterShared(
 	void **fatCubinHandle,
 	void **devicePtr) {
 	
-	assert(0 && "unimplemented");
+	size_t handle = (size_t)fatCubinHandle - 1;
+	lock();
+	
+	const char *moduleName = fatBinaries[handle].name();
+	const char *variableName = (const char *)devicePtr;
+	
+	report("cudaRegisterShared() - module " << moduleName << ", devicePtr: " << std::hex 
+		<< devicePtr << std::dec << " named " << variableName);
+	
+	context.registerGlobalVariable(moduleName, variableName, 0, 0, sizeof(void*), 
+		executive::Device_shared);
+	
+	unlock();
 }
 
 void cuda::CudaRuntime::cudaRegisterSharedVar(
@@ -280,7 +303,7 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	
 	lock();
 
-	getThreadContext();
+	getHostThreadContext();
 		
 	void *funcPtr = (void *)hostFun;
 	const char *funcName = deviceFun;
@@ -305,7 +328,7 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 		
 	if (context.malloc(devPtr, size)) {
 		result = cudaSuccess;
@@ -317,7 +340,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 	
 	if (context.mallocHost(ptr, size)) {
 		result = cudaSuccess;
@@ -330,7 +353,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch, siz
 	size_t height) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 	if (context.mallocPitch(devPtr, pitch, width, height)) {
 		result = cudaSuccess;
 	}
@@ -342,7 +365,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	const struct cudaChannelFormatDesc *desc, size_t width, size_t height) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 	if (context.mallocArray(array, convert(*desc), width, height)) {
 		result = cudaSuccess;
 	}
@@ -355,7 +378,7 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	lock();
 	report("cudaFree()");
 	
-	getThreadContext();
+	getHostThreadContext();
 	if (context.free(devPtr)) {
 		result = cudaSuccess;
 	}
@@ -366,7 +389,7 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 	if (context.freeHost(ptr)) {
 		result = cudaSuccess;
 	}
@@ -377,7 +400,7 @@ cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 	if (context.freeArray(array)) {
 		result = cudaSuccess;
 	}
@@ -395,7 +418,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 	cudaError_t result = cudaSuccess;
 	if (kind >= 0 && kind <= 3) {
 		lock();
-		getThreadContext();
+		getHostThreadContext();
 		bool success = context.deviceMemcpy(dst, src, count, convert(kind));
 		if (!success) {
 			result = cudaErrorInvalidDevicePointer;
@@ -408,9 +431,85 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 	return setLastError(result);	
 }
 
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void *src,
+	size_t count, size_t offset, enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaSuccess;
+	lock();
+	getHostThreadContext();
+	bool success = context.deviceMemcpyToSymbol(symbol, src, count, offset, convert(kind));	
+	if (!success) {
+		result = cudaErrorInvalidDevicePointer;
+	}
+	unlock();
+	return setLastError(result);	
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_t count, 
+	enum cudaMemcpyKind kind, cudaStream_t streamHandle) {
+	
+	cudaError_t result = cudaErrorNotYetImplemented;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	
+	StreamMap::iterator s_it = thread.streams.find(streamHandle);
+	if (s_it != thread.streams.end()) {
+		if (!context.getDeviceAddressSpace()) {
+			//
+			// host address space transfers aren't asynchronous
+			//
+			
+			CudaRuntime::cudaMemcpy(dst, src, count, kind);
+		}
+		else {
+			assert(0 && "unimplemented");
+		}
+	}
+	else {
+		result = cudaErrorInvalidValue;
+	}
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// memset
+//
+
+cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	getHostThreadContext();
+	if (!context.getDeviceAddressSpace()) {
+		::memset((void *)devPtr, value, count);
+	}
+	else {
+		assert(0 && "unimplemented");
+	}
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, 
+	size_t height) {
+
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	assert(0 && "unimplemented");
+	
+	return setLastError(result);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation
+//
 
 cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *symbol) {
 	cudaError_t result = cudaSuccess;
@@ -494,7 +593,7 @@ cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
 		result = cudaErrorInvalidDevice;
 	}
 	else {
-		ThreadContext &thread = getThreadContext();
+		HostThreadContext &thread = getHostThreadContext();
 		thread.selectedDevice = device;
 		context.selectDevice(device);
 		result = cudaSuccess;
@@ -507,7 +606,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDevice(int *device) {
 	cudaError_t result = cudaSuccess;
 	
 	lock();
-	ThreadContext &thread = getThreadContext();
+	HostThreadContext &thread = getHostThreadContext();
 	*device = thread.selectedDevice;
 	unlock();
 	
@@ -517,7 +616,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDevice(int *device) {
 cudaError_t cuda::CudaRuntime::cudaSetValidDevices(int *device_arr, int len) {
 	cudaError_t result = cudaSuccess;
 	lock();
-	ThreadContext & thread = getThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	thread.validDevices.resize(len);
 	for (int i = 0 ; i < len; i++) {
 		thread.validDevices[i] = device_arr[i];
@@ -589,7 +688,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(const struct textureRefer
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
-	ThreadContext &thread = getThreadContext();
+	HostThreadContext &thread = getHostThreadContext();
 	return thread.lastError;
 }
 
@@ -602,7 +701,7 @@ cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, si
 	report("cudaConfigureCall()");
 	
 	cudaError_t result = cudaErrorInvalidConfiguration;
-	ThreadContext &thread = getThreadContext();
+	HostThreadContext &thread = getHostThreadContext();
 	
 	KernelLaunchConfiguration launch(gridDim, blockDim, sharedMem, stream);
 	thread.launchConfigurations.push_back(launch);
@@ -618,7 +717,7 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, s
 	
 	lock();
 		
-	ThreadContext &thread = getThreadContext();
+	HostThreadContext &thread = getHostThreadContext();
 	
 	memcpy(thread.parameterBlock + offset, arg, size);
 	
@@ -632,7 +731,7 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	lock();
 	
 	cudaError_t result = cudaSuccess;
-	ThreadContext &thread = getThreadContext();
+	HostThreadContext &thread = getHostThreadContext();
 	
 	assert(thread.launchConfigurations.size());
 		
@@ -683,9 +782,286 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(struct cudaFuncAttributes *
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// CUDA event creation
+
+cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+	
+	//
+	// create an event
+	//
+	Event createdEvent;
+	createdEvent.flags = 0;
+	createdEvent.handle = thread.events.size();
+	*event = createdEvent.handle;
+	thread.events[*event] = createdEvent;
+	result = cudaSuccess;
+	
+	// special behavior for CUDA devices
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}
+	
+	unlock();
+
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, int flags) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+	
+	//
+	// create an event
+	//
+	Event createdEvent;
+	createdEvent.flags = flags;
+	createdEvent.handle = thread.events.size();
+	*event = createdEvent.handle;
+	thread.events[*event] = createdEvent;
+	result = cudaSuccess;
+
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}
+		
+	unlock();
+
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t stream) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	
+	HostThreadContext &thread = getHostThreadContext();
+	
+	StreamMap::iterator s_it = thread.streams.find(stream);
+	EventMap::iterator e_it = thread.events.find(event);
+	if (e_it != thread.events.end() && s_it != thread.streams.end()) {
+		e_it->second.timer.start();
+		s_it->second.events.push_back(event);
+		
+		result = cudaSuccess;
+	}
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}
+		
+	unlock();	
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
+	cudaError_t result = cudaErrorInvalidValue;
+
+	lock();
+	
+	HostThreadContext &thread = getHostThreadContext();
+	
+	EventMap::iterator e_it = thread.events.find(event);
+	if (e_it != thread.events.end()) {
+		result = cudaSuccess;
+	}
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}	
+	unlock();
+
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	
+	HostThreadContext &thread = getHostThreadContext();
+	
+	EventMap::iterator e_it = thread.events.find(event);
+	if (e_it != thread.events.end()) {
+		result = cudaSuccess;
+	}
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}	
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
+	cudaError_t result = cudaErrorInvalidValue;
+	
+	lock();
+	
+	HostThreadContext &thread = getHostThreadContext();
+	
+	EventMap::iterator e_it = thread.events.find(event);
+	if (e_it != thread.events.end()) {
+		thread.events.erase(e_it);
+		result = cudaSuccess;
+	}
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}	
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	
+	HostThreadContext &thread = getHostThreadContext();
+	
+	EventMap::iterator e_start_it = thread.events.find(start);
+	EventMap::iterator e_end_it = thread.events.find(end);
+	
+	if (e_start_it != thread.events.end() && e_end_it != thread.events.end()) {
+		e_end_it->second.timer.stop();
+		e_start_it->second.timer.stop();
+		
+		long long end_cycles = (long long)e_end_it->second.timer.cycles();
+		long long start_cycles = (long long)e_start_it->second.timer.cycles();
+		long long total_cycles = start_cycles - end_cycles;
+
+		e_end_it->second.timer.start();
+		e_start_it->second.timer.start();
+		
+		*ms = (float)((total_cycles + 0.0 ) * 1.0e-9);
+		result = cudaSuccess;
+	}
+	else {
+		result = cudaErrorInvalidResourceHandle;
+	}
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}
+	unlock();
+	
+	return setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// CUDA streams
+//
+
+cudaError_t cuda::CudaRuntime::cudaStreamCreate(cudaStream_t *pStream) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	
+	HostThreadContext &thread = getHostThreadContext();
+	
+	Stream stream;
+	stream.handle = (cudaStream_t)thread.streams.size();
+	thread.streams[stream.handle] = stream;
+	*pStream = stream.handle;
+	result = cudaSuccess;
+	
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}
+		
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaStreamDestroy(cudaStream_t stream) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+	
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+	StreamMap::iterator s_it = thread.streams.find(stream);
+
+	if (s_it != thread.streams.end()) {
+		thread.streams.erase(s_it);
+		result = cudaSuccess;
+	}
+	else {
+		result = cudaErrorInvalidResourceHandle;
+	}	
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}	
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaStreamSynchronize(cudaStream_t stream) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+	StreamMap::iterator s_it = thread.streams.find(stream);
+
+	if (s_it != thread.streams.end()) {
+		result = cudaSuccess;
+	}
+	else {
+		result = cudaErrorInvalidResourceHandle;
+	}	
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}	
+	
+	unlock();
+
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
+	cudaError_t result = cudaErrorNotYetImplemented;
+
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+	StreamMap::iterator s_it = thread.streams.find(stream);
+
+	if (s_it != thread.streams.end()) {
+		result = cudaSuccess;
+	}
+	else {
+		result = cudaErrorInvalidResourceHandle;
+	}	
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}	
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
+	
+	lock();
+	getHostThreadContext();
+	
+	//
+	// kill potentially running kernels
+	//
+	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+		assert(0 && "unimplemented");
+	}
+	unlock();
 	
 	return setLastError(result);
 }
@@ -693,7 +1069,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	cudaError_t result = cudaSuccess;
 	lock();
-	getThreadContext();
+	getHostThreadContext();
 	unlock();
 	
 	//

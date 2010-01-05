@@ -1,5 +1,4 @@
-/*!
-	\file DataflowGraph.h
+/*! \file DataflowGraph.h
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Tuesday June 23, 2009
 	\file The header file for the DataflowGraph class.
@@ -27,8 +26,7 @@ namespace analysis
 
 	class SSAGraph;
 
-	/*!
-		\brief A class representing a graph of block of instructions, showing
+	/*! \brief A class representing a graph of block of instructions, showing
 			which registers are alive in each basic block.
 	*/
 	class DataflowGraph
@@ -39,8 +37,6 @@ namespace analysis
 			typedef ir::PTXOperand::DataType Type;
 			/*! \brief A unique ID for a logical register */
 			typedef unsigned int RegisterId;
-			/*! \brief A unique ID for a logical instruction */
-			typedef unsigned int InstructionId;
 			/*! \brief A list of instructions */
 			typedef ir::ControlFlowGraph::InstructionList InstructionList;
 
@@ -102,7 +98,7 @@ namespace analysis
 			
 			/*! \brief A class for referring to a generic instruction. */
 			class Instruction
-			{					
+			{
 				public:
 					/*! \brief The instruction text */
 					std::string label;
@@ -116,7 +112,7 @@ namespace analysis
 			
 			/*! \brief A class for referring to a phi instruction. */
 			class PhiInstruction
-			{					
+			{
 				public:
 					/*! \brief Destination register */
 					Register d;
@@ -126,9 +122,9 @@ namespace analysis
 			
 			class Block;
 			/*! \brief A vector of Instructions */
-			typedef std::deque< Instruction > InstructionVector;
+			typedef std::list< Instruction > InstructionVector;
 			/*! \brief A vector of PhiInstructions */
-			typedef std::deque< PhiInstruction > PhiInstructionVector;
+			typedef std::list< PhiInstruction > PhiInstructionVector;
 			/*! \brief A vector of blocks */
 			typedef std::list< Block > BlockVector;
 			/*! \brief A vector of Block pointers */
@@ -234,6 +230,14 @@ namespace analysis
 			/*! \brief Size type */
 			typedef BlockVector::size_type size_type;
 
+			/*! \brief A vector of iterators */
+			typedef std::vector< iterator >	BlockPointerVector;
+			/*! \brief A pointer to an iterator */
+			typedef BlockPointerVector::iterator pointer_iterator;		
+			/*! \brief A reverse pointer to an iterator */
+			typedef BlockPointerVector::reverse_iterator 
+				reverse_pointer_iterator;		
+
 		private:
 			BlockVector _blocks;
 			ir::ControlFlowGraph* _cfg;
@@ -315,6 +319,11 @@ namespace analysis
 			void fromSsa();
 			/*! \brief Is the graph in ssa form? */
 			bool ssa() const;
+			
+		public:
+			/*! \brief Get an executable sequence of blocks */
+			BlockPointerVector executableSequence();
+
 	};
 
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );

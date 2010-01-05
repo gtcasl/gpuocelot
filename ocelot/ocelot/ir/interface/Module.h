@@ -69,8 +69,11 @@ namespace ir {
 		/*!	Deconstruct a module */
 		~Module();
 		
-		/*! Write the module to an assembly file */
+		/*! Write the module to an assembly file using statements */
 		void write( std::ostream& stream ) const;
+
+		/*! \brief Write the module to an assembly file from the IR */
+		void writeIR( std::ostream& stream ) const;
 
 		/*!	Deletes everything associated with this particular module */
 		void unload();
@@ -103,10 +106,7 @@ namespace ir {
 		}
 		
 	protected:
-
-		/*!
-			Called after a successful parse; constructs all kernels for PTX isa.
-		*/
+		/*! After a successful parse; constructs all kernels for PTX isa. */
 		void extractPTXKernels();
 
 	public:
@@ -129,8 +129,7 @@ namespace ir {
 		/*! Path from which Module was loaded */
 		std::string modulePath;
 	
-		/*!
-			CUDA Module owning this kernel, others, and globals - 
+		/*! CUDA Module owning this kernel, others, and globals - 
 			this value is shared among other GPUExecutableKernels of this module
 		*/
 		CUmodule cuModule;

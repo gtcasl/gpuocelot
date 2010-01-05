@@ -1,5 +1,4 @@
-/*!
-	\file DataflowGraph.cpp
+/*! \file DataflowGraph.cpp
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Tuesday June 23, 2009
 	\file The source file for the DataflowGraph class.
@@ -148,7 +147,6 @@ namespace analysis
 			if( ( i.*destinations[ j ] ).addressMode 
 				== ir::PTXOperand::Register )
 			{
-			
 				if( ( i.*destinations[ j ] ).type == ir::PTXOperand::pred )
 				{
 					if( ( i.*destinations[ j ] ).condition == ir::PTXOperand::PT
@@ -887,6 +885,35 @@ namespace analysis
 		return _ssa;
 	}
 
+	DataflowGraph::BlockPointerVector DataflowGraph::executableSequence()
+	{
+		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
+			iterator > IteratorMap;
+		
+		ir::ControlFlowGraph::BlockPointerVector 
+			sequence = _cfg->executable_sequence();
+		
+		IteratorMap map;
+		
+		for( iterator block = begin(); block != end(); ++block )
+		{
+			map.insert( std::make_pair( block->block(), block ) );
+		}
+		
+		BlockPointerVector result;
+		
+		for( ir::ControlFlowGraph::pointer_iterator block = sequence.begin(); 
+			block != sequence.end(); ++block )
+		{
+			IteratorMap::iterator mapping = map.find( *block );
+			assert( mapping != map.end() );
+			
+			result.push_back( mapping->second );
+		}
+		
+		return std::move( result );
+	}
+
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
 	{
 		DataflowGraph& nonConstGraph = const_cast< DataflowGraph& >( graph );
@@ -936,13 +963,14 @@ namespace analysis
 			}
 			out << " }\"];\n";
 			
+			unsigned int count = 0;
 			for( DataflowGraph::PhiInstructionVector::const_iterator 
 				ii = block->phis().begin(); 
-				ii != block->phis().end(); ++ii )
+				ii != block->phis().end(); ++ii, ++count )
 			{
 				std::stringstream instructionPrefix;
 				instructionPrefix << "b_" << blockCount << "_instruction" 
-					<< ( ii - block->phis().begin() );
+					<< count;
 
 				for( DataflowGraph::RegisterVector::const_iterator 
 					si = ii->s.begin(); si != ii->s.end(); ++si )
@@ -977,14 +1005,14 @@ namespace analysis
 				out << " } }\"];\n";
 			}
 			
+			count = 0;
 			for( DataflowGraph::InstructionVector::const_iterator 
 				ii = block->instructions().begin(); 
-				ii != block->instructions().end(); ++ii )
+				ii != block->instructions().end(); ++ii, ++count )
 			{
 				std::stringstream instructionPrefix;
 				instructionPrefix << "b_" << blockCount << "_instruction" 
-					<< ( ii - block->instructions().begin() 
-					+ block->phis().size() );
+					<< ( count + block->phis().size() );
 
 				for( DataflowGraph::RegisterPointerVector::const_iterator 
 					si = ii->s.begin(); si != ii->s.end(); ++si )

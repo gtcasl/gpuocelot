@@ -23,7 +23,8 @@ ACLOCAL_AMFLAGS = -I m4
 ## Programs and Libraries
 BUILT_SOURCES=ptxgrammar.h
 bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
-	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator
+	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator \
+	PTXOptimizer
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
@@ -41,7 +42,8 @@ libOcelotAnalysis_la_SOURCES = \
 	ocelot/analysis/implementation/SSAGraph.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
-	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp
+	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
+	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp
 ################################################################################
 
 ################################################################################
@@ -160,6 +162,15 @@ libOcelotTranslator_la_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 libOcelotTranslator_la_SOURCES = \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
+################################################################################
+
+################################################################################
+## PTXOptimizer
+PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
+PTXOptimizer_LDADD = libOcelotAnalysis.la libOcelotIr.la libOcelotParser.la \
+	libhydrazine.la
+PTXOptimizer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

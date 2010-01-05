@@ -1,5 +1,4 @@
-/*!
-	\file SSAGraph.cpp
+/*! \file SSAGraph.cpp
 	\date Saturday June 27, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the SSAGraph class.	

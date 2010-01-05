@@ -398,8 +398,7 @@ namespace ir
 	void PTXKernel::write(std::ostream& stream) const 
 	{
 		stream << "/*\n* Ocelot Version : " 
-			<< hydrazine::Version().toString() << "\n";
-		stream << "*/\n";
+			<< hydrazine::Version().toString() << "\n*/\n";
 	
 		stream << ".entry " << name;
 		if (parameters.size()) {
@@ -409,15 +408,18 @@ namespace ir
 			{
 				if( parameter != parameters.begin() )
 				{
-					stream << ",\n";
+					stream << ",\n\t\t" << parameter->toString();
 				}
-				stream << "\t\t" << parameter->toString();
+				else
+				{
+					stream << parameter->toString();
+				}
 			}
-			stream << ")\n";		
+			stream << ")\n";
 		}
 		stream << "{\n";
 		
-		for( LocalMap::const_iterator local = locals.begin(); 
+		for( LocalMap::const_iterator local = locals.begin();
 			local != locals.end(); ++local )
 		{
 			stream << "\t" << local->second.toString() << "\n";
@@ -427,7 +429,7 @@ namespace ir
 		{
 			RegisterVector regs = getReferencedRegisters();
 		
-			for( RegisterVector::const_iterator reg = regs.begin(); 
+			for( RegisterVector::const_iterator reg = regs.begin();
 				reg != regs.end(); ++reg )
 			{
 				if (reg->type == PTXOperand::pred) {
@@ -481,7 +483,7 @@ namespace ir
 					stream << "\t\t" << (*instruction)->toString() << ";\n";
 				}
 			}
-		}		
+		}
 		stream << "}\n";
 	}
 

@@ -1,5 +1,4 @@
-/*!
-	\file Texture.h 
+/*! \file Texture.h 
 	
 	\author Gregory DIamos <gregory.diamos@gatech.edu>
 	\date Sunday April 5, 2009
@@ -15,9 +14,7 @@
 
 namespace ir
 {
-	/*!
-		\brief A class to represent the access format of a texture
-	*/
+	/*! \brief A class to represent the access format of a texture */
 	class Texture
 	{		
 

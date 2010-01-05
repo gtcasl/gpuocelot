@@ -34,21 +34,18 @@ namespace ir {
 
 	class PTXOperand {
 	public:
-
 		//! addressing mode of operand
 		enum AddressMode {
 			Register,			//< use as register variable
 			Indirect,			//< indirect access
-			Immediate,		//< treat as immediate value
-			Address,		//< treat as addressable variable
+			Immediate,			//< treat as immediate value
+			Address,			//< treat as addressable variable
 			Label,				//< operand is a label
 			Special,			//< special register
 			Invalid
 		};
 
-		/*!
-			Type specifiers for instructions
-		*/
+		/*! Type specifiers for instructions */
 		enum DataType {
 			s8 = 0,
 			s16,

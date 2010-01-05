@@ -124,9 +124,6 @@ bool ir::Module::load(std::istream& stream, std::string path) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*!
-
-*/
 void ir::Module::write( std::ostream& stream ) const {
 
 	if( statements.empty() ) {
@@ -163,6 +160,25 @@ void ir::Module::write( std::ostream& stream ) const {
 	}
 	
 	stream << "\n";
+}
+
+void ir::Module::writeIR( std::ostream& stream ) const {
+	stream << "/* Module " << modulePath << " */\n\n";
+	
+	for (GlobalMap::const_iterator global = globals.begin(); 
+		global != globals.end(); ++global) {
+		stream << global->second.statement.toString() << "\n";
+	}
+	stream << "\n";
+	
+	KernelMap::const_iterator architecture = kernels.find(Instruction::PTX);
+	assert(architecture != kernels.end());
+	
+	for (KernelVector::const_iterator kernel = architecture->second.begin(); 
+		kernel != architecture->second.end(); ++kernel)
+	{
+		(*kernel)->write(stream);
+	}
 }
 
 /*!

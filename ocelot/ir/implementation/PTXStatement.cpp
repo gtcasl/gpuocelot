@@ -1,5 +1,4 @@
-/*!
-	\file PTXStatement.cpp
+/*! \file PTXStatement.cpp
 	\date Monday January 19, 2009
 	\author Andrew Kerr
 	\brief The header file for the PTXStatement class

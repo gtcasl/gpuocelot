@@ -154,7 +154,7 @@ namespace test
 					{
 						status << "  Register " << reg->id
 							<< " in phi instruction " 
-							<< ( phi - block->phis().begin() )
+							<< std::distance( block->phis().begin(), phi )
 							<< " in " << block->label() 
 							<< " used uninitialized." << std::endl;
 						return false;
@@ -165,7 +165,7 @@ namespace test
 				{
 					status << "  In " << block->label() 
 						<< ", instruction phi " 
-						<< ( phi - block->phis().begin() ) 
+						<< std::distance( block->phis().begin(), phi )
 						<< ", reg " << phi->d.id
 						<< " already defined globally." << std::endl;
 					return false;

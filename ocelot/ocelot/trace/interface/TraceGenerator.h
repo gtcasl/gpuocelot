@@ -38,6 +38,7 @@ namespace trace {
 			MemoryTraceFormat,
 			SharedComputationTraceFormat,
 			InstructionTraceFormat,
+			KernelDimensionsFormat,
 			InvalidTraceFormat
 		};
 		

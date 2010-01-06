@@ -8,8 +8,12 @@
 #ifndef OCELOT_INSTRUCTION_TRACE_GENERATOR_H_INCLUDED
 #define OCELOT_INSTRUCTION_TRACE_GENERATOR_H_INCLUDED
 
+// Ocelot includes
 #include <ocelit/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/trace/interface/KernelEntry.h>
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace trace {
 
@@ -49,17 +53,15 @@ namespace trace {
 		public:
 			InstructionCounter();
 
-			void count(const ir::PTXInstruction &instr);
+			void count(const ir::PTXInstruction &instr, size_t active);
 
 		public:
-
-			size_t bytes_loaded;
-
-			size_t bytes_stored;
 
 			size_t dynamic_count;
 
 			size_t static_count;
+			
+			size_t active_threads;
 		};
 
 		/*!
@@ -67,9 +69,15 @@ namespace trace {
 		*/
 		class Header {
 		public:
+			Header();
+			
+		public:
+		
 			TraceFormat format;
 
+			size_t total_dynamic;
 			
+			size_t total_static;
 		};
 
 		/*!
@@ -113,9 +121,58 @@ namespace trace {
 				events for this kernel.
 		*/
 		virtual void finish();
+	
+	public:
+	
+		Header _header;
+		
+		KernelEntry _entry;
+	
+		FunctionalUnitCountMap instructionCounter;
+		
+	private:
+	
+		static unsigned int counter;
+		
 	};
+}
 
 
+namespace boost
+{
+	namespace serialization
+	{		
+	
+		template< class Archive > void serialize(Archive & ar, 
+			trace::InstructionTraceGenerator::Header & header, const unsigned int version) {
+			
+			ar & header.format;
+			ar & header.total_dynamic;
+			ar & header.total_static;
+		}
+		
+		template< class Archive > void serialize(Archive & ar,
+			trace::InstructionTraceGenerator::InstructionCount & count, const unsigned int version) {
+			
+			ar & count.dynamic_count;
+			ar & count.static_count;
+			ar & count.active_threads;
+		}
+		
+		template< class Archive > void serialize(Archive & ar, 
+			trace::InstructionTraceGenerator::FunctionalUnitCountMap &map, const unsigned int version) {
+		
+			for (trace::InstructionTraceGenerator::FunctionalUnitCountMap::const_iterator fu_it = map.begin();
+				fu_it != map.end(); ++fu_it) {
+				
+				for (trace::InstructionTraceGenerator::OpcodeCountMap::const_iterator op_it = fu_it->second.begin();
+					op_it != fu_it->second.end(); ++op_it) {
+					
+					ar & fu_it->first & op_it->first & op_it->second;
+				}
+			}
+		}
+	}
 }
 
 #endif

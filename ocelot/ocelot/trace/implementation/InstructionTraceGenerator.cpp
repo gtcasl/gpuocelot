@@ -5,21 +5,31 @@
 	\brief captures static and dynamic instruction counts
 */
 
+// C++ stdlib includes
+#include <fstream>
+
 // Ocelot includes
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
 
+// Boost includes
+#include <boost/filesystem.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 trace::InstructionTraceGenerator::InstructionCounter::InstructionCounter():
-	bytes_loaded(0), bytes_stored(0), dynamic_count(0), static_count(0) {
+	dynamic_count(0), static_count(0), active_threads(0) {
 }
 
 void trace::InstructionTraceGenerator::InstructionCounter::count(
-	const ir::PTXInstruction &instr) {
+	const ir::PTXInstruction &instr, size_t active) {
 
+	++dynamic_count;
+	active_threads += active;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,6 +195,15 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+trace::InstructionTraceGenerator::Header::Header():
+	format(trace::TraceGenerator::InstructionTraceFormat), dynamic_count(0), static_count(0) {
+	
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+int trace::InstructionTraceGenerator::counter = 0;
+
 /*!
 	default constructor
 */
@@ -205,6 +224,50 @@ trace::InstructionTraceGenerator::~InstructionTraceGenerator() {
 */
 void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& kernel) {
 
+	// initialize kernel entry
+	
+	_entry.name = kernel.name;
+	_entry.module = kernel.module->modulePath;
+	_entry.format = BranchTraceFormat;
+
+	std::string name = kernel.name;
+
+	if( name.size() > 20 )
+	{
+		name.resize( 20 );
+	}
+
+	std::stringstream stream;
+	stream << _entry.format << "_" << _counter++;
+
+	boost::filesystem::path path( database );
+	path = path.parent_path();
+	path /= _entry.program + "_" + name + "_" + stream.str() + ".header";
+	path = boost::filesystem::system_complete( path );
+	
+	_entry.header = path.string();
+	
+	_header.format = InstructionTraceFormat;
+		
+
+	// static counts
+	for (ir::PTXKernel::InstructionVector::const_iterator instr_it = kernel.instructions.begin();
+		instr_it != kernel.instructions.end(); ++instr_it ) {
+	
+		const ir::PTXInstruction & instr = *instr_it;
+		
+		FunctionalUnit fu = getFunctionalUnit(instr);
+		if (instructionCounter.find(fu) == instructionCounter.end()) {
+			OpcodeCountMap opMap;
+			instructionCounter[fu] = opMap;
+		}
+		if (instructionCounter[fu].find(instr.opcode) == instructionCounter[fu].end()) {
+			InstructionCounter counter;
+			instructionCounter[fu][instr.opcode] = counter;
+		}
+		
+		++instructionCounter[fu][instr.opcode].static_count;
+	}
 }
 
 /*!
@@ -214,7 +277,10 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 	returns
 */
 void trace::InstructionTraceGenerator::event(const TraceEvent & event) {
-
+	// every instruction we encounter is guaranteed to be mapped to in the instructionCounter
+	// data structure
+	FunctionalUnit fu = getFunctionalUnit(* event->instruction);
+	instructionCounter[fu][event.instruction->opcode].count(* event.instruction, active.count());
 }
 
 /*! 
@@ -222,6 +288,26 @@ void trace::InstructionTraceGenerator::event(const TraceEvent & event) {
 		events for this kernel.
 */
 void trace::InstructionTraceGenerator::finish() {
+	//
+	// stream to file
+	//
+	_entry.updateDatabase( database );
 
+	std::ofstream hfile( _entry.header.c_str() );
+	boost::archive::text_oarchive harchive( hfile );
+
+	if( !hfile.is_open() )
+	{
+		throw hydrazine::Exception(
+			"Failed to open InstructionTraceGenerator header file " 
+			+ _entry.header );
+	}
+	
+	harchive << _header;
+	harchive << instructionCounter;
+	
+	hfile.close();
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 

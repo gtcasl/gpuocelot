@@ -113,10 +113,11 @@ libOcelotTrace_la_SOURCES = \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
 	ocelot/trace/implementation/KernelEntry.cpp \
-	ocelot/trace/implementation/CacheSimulator.cpp \
-	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
-	ocelot/trace/implementation/KernelDimensionsGenerator.cpp \
-	ocelot/trace/implementation/MachineAttributesGenerator.cpp
+	ocelot/trace/implementation/CacheSimulator.cpp 
+
+#	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
+#	ocelot/trace/implementation/KernelDimensionsGenerator.cpp \
+#	ocelot/trace/implementation/MachineAttributesGenerator.cpp
 	
 ################################################################################
 

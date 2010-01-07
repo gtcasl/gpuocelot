@@ -31,7 +31,8 @@ executive::Device::Device() {
 
 executive::Device::~Device() {
 	
-}/*
+}
+/*
 		enum Architecture {
 			PTX,
 			GPU,

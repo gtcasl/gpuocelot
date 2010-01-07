@@ -49,7 +49,7 @@ namespace executive {
 		
 		/*! \brief Changes the amount of external shared memory */
 		void setExternSharedMemorySize(unsigned int bytes);
-		
+	
 		/*!	Sets device used to execute the kernel */
 		void setDevice(const Device* device, unsigned int limit);
 

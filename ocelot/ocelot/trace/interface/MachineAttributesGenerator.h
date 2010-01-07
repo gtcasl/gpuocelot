@@ -5,13 +5,14 @@
 	\brief captures static and dynamic instruction counts
 */
 
-#ifndef OCELOT_KERNELDIM_TRACE_GENERATOR_H_INCLUDED
-#define OCELOT_KERNELDIM_TRACE_GENERATOR_H_INCLUDED
+#ifndef OCELOT_MACHINEATTRIBUTES_TRACE_GENERATOR_H_INCLUDED
+#define OCELOT_MACHINEATTRIBUTES_TRACE_GENERATOR_H_INCLUDED
 
 // Ocelot includes
-#include <ocelit/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/trace/interface/KernelEntry.h>
+#include <ocelot/executive/interface/Device.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,7 +25,7 @@ namespace trace {
 	public:
 	
 		/*!
-			header for InstructionTraceGenerator
+			header for MachineAttributesGenerator
 		*/
 		class Header {
 		public:
@@ -33,24 +34,20 @@ namespace trace {
 		public:
 		
 			TraceFormat format;
-
-			ir::dim3 block;
-			
-			ir::dim3 grid;
-			
-		};	
+			executive::Device device;
+		};
 	
 	public:
 
 		/*!
 			default constructor
 		*/
-		InstructionTraceGenerator();
+		MachineAttributesGenerator();
 
 		/*!
 			\brief destructs instruction trace generator
 		*/
-		virtual ~InstructionTraceGenerator();
+		virtual ~MachineAttributesGenerator();
 
 		/*!
 			\brief called when a traced kernel is launched to retrieve some 
@@ -78,28 +75,50 @@ namespace trace {
 		
 		KernelEntry _entry;
 	
+		static unsigned int _counter;
 	};
 }
-
 
 namespace boost
 {
 	namespace serialization
 	{		
 		template< class Archive >
-		void serialize( Archive& ar, 
-			trace::BranchTraceGenerator::Header& header, 
-			const unsigned int version )
-		{
+		void serialize( Archive& ar, executive::Device & device, const unsigned int version ) {
+			
+			ar & device.ISA;
+			ar & device.name;
+			ar & device.guid;
+			ar & device.totalMemory;
+			ar & device.multiprocessorCount;
+			ar & device.memcpyOverlap;
+			ar & device.maxThreadsPerBlock;
+		
+			ar & device.maxThreadsDim[0];
+			ar & device.maxThreadsDim[1];
+			ar & device.maxThreadsDim[2];
+		
+			ar & device.maxGridSize[0];
+			ar & device.maxGridSize[1];
+			ar & device.maxGridSize[2];
+		
+			ar & device.sharedMemPerBlock;
+			ar & device.totalConstantMemory;
+			ar & device.SIMDWidth;
+			ar & device.memPitch;
+			ar & device.regsPerBlock;
+			ar & device.clockRate;
+			ar & device.textureAlign;
+			ar & device.major;
+			ar & device.minor;
+		}
+			
+		template< class Archive >
+		void serialize( Archive& ar, trace::MachineAttributesGenerator::Header& header, 
+			const unsigned int version ) {
+			
 			ar & header.format;
-			
-			ar & header.block.x;
-			ar & header.block.y;
-			ar & header.block.z;
-			
-			ar & header.grid.x;
-			ar & header.grid.y;
-			ar & header.grid.z;
+			ar & header.device;
 		}
 	}
 }

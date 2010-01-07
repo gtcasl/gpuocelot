@@ -1,15 +1,17 @@
 /*!
 	\file KernelDimensionsGenerator.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-	\date date Jan 5, 2010
-	\brief captures static and dynamic instruction counts
+	\date Jan 6, 2010
+	\brief records dimensions of launched kernels - note: this assumes trace generators are only
+		applied to EmulatedKernel instances
 */
 
 #ifndef OCELOT_KERNELDIM_TRACE_GENERATOR_H_INCLUDED
 #define OCELOT_KERNELDIM_TRACE_GENERATOR_H_INCLUDED
 
 // Ocelot includes
-#include <ocelit/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/trace/interface/KernelEntry.h>
 
@@ -34,9 +36,9 @@ namespace trace {
 		
 			TraceFormat format;
 
-			ir::dim3 block;
+			ir::Dim3 block;
 			
-			ir::dim3 grid;
+			ir::Dim3 grid;
 			
 		};	
 	
@@ -45,12 +47,12 @@ namespace trace {
 		/*!
 			default constructor
 		*/
-		InstructionTraceGenerator();
+		KernelDimensionsGenerator();
 
 		/*!
 			\brief destructs instruction trace generator
 		*/
-		virtual ~InstructionTraceGenerator();
+		virtual ~KernelDimensionsGenerator();
 
 		/*!
 			\brief called when a traced kernel is launched to retrieve some 
@@ -77,10 +79,10 @@ namespace trace {
 		Header _header;
 		
 		KernelEntry _entry;
-	
+
+		static unsigned int _counter;	
 	};
 }
-
 
 namespace boost
 {
@@ -88,7 +90,7 @@ namespace boost
 	{		
 		template< class Archive >
 		void serialize( Archive& ar, 
-			trace::BranchTraceGenerator::Header& header, 
+			trace::KernelDimensionsGenerator::Header& header, 
 			const unsigned int version )
 		{
 			ar & header.format;

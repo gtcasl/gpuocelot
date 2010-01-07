@@ -11,6 +11,7 @@
 #include <ocelot/ir/interface/Module.h>
 
 #include <stack>
+#include <algorithm>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -74,8 +75,8 @@ namespace analysis
 					report( "  " << *d->pointer << " <- " << *d->pointer );
 					types[ *d->pointer ] = d->type;
 				}
-				_reserved = std::max( _reserved, i->d.size() );
-				_reserved = std::max( _reserved, i->s.size() );
+				_reserved = std::max((size_t) _reserved, i->d.size() );
+				_reserved = std::max((size_t) _reserved, i->s.size() );
 			}
 		}
 		

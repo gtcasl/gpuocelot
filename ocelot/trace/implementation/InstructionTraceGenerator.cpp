@@ -9,6 +9,10 @@
 #include <fstream>
 
 // Ocelot includes
+#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/ir/interface/Module.h>
+#include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
@@ -196,13 +200,13 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 trace::InstructionTraceGenerator::Header::Header():
-	format(trace::TraceGenerator::InstructionTraceFormat), dynamic_count(0), static_count(0) {
+	format(trace::TraceGenerator::InstructionTraceFormat), total_dynamic(0), total_static(0) {
 	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-int trace::InstructionTraceGenerator::counter = 0;
+unsigned int trace::InstructionTraceGenerator::_counter = 0;
 
 /*!
 	default constructor
@@ -251,8 +255,12 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 		
 
 	// static counts
-	for (ir::PTXKernel::InstructionVector::const_iterator instr_it = kernel.instructions.begin();
-		instr_it != kernel.instructions.end(); ++instr_it ) {
+	const executive::EmulatedKernel &emuKernel = 
+		static_cast<const executive::EmulatedKernel &>(kernel);
+	
+	for (executive::EmulatedKernel::PTXInstructionVector::const_iterator instr_it = 
+		emuKernel.instructions.begin();
+		instr_it != emuKernel.instructions.end(); ++instr_it ) {
 	
 		const ir::PTXInstruction & instr = *instr_it;
 		
@@ -279,8 +287,9 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 void trace::InstructionTraceGenerator::event(const TraceEvent & event) {
 	// every instruction we encounter is guaranteed to be mapped to in the instructionCounter
 	// data structure
-	FunctionalUnit fu = getFunctionalUnit(* event->instruction);
-	instructionCounter[fu][event.instruction->opcode].count(* event.instruction, active.count());
+	FunctionalUnit fu = getFunctionalUnit(*event.instruction);
+	instructionCounter[fu][event.instruction->opcode].count(*event.instruction, 
+		event.active.count());
 }
 
 /*! 

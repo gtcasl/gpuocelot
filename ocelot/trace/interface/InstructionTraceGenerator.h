@@ -8,8 +8,11 @@
 #ifndef OCELOT_INSTRUCTION_TRACE_GENERATOR_H_INCLUDED
 #define OCELOT_INSTRUCTION_TRACE_GENERATOR_H_INCLUDED
 
+// C++ stdlib includes
+#include <unordered_map>
+
 // Ocelot includes
-#include <ocelit/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/trace/interface/KernelEntry.h>
 
@@ -88,7 +91,7 @@ namespace trace {
 		/*!
 			\brief maps a functional unit onto an OpcodeCountMap
 		*/
-		typdef std::unordered_map<FunctionalUnit, OpcodeCountMap > FunctionalUnitCountMap;
+		typedef std::unordered_map<FunctionalUnit, OpcodeCountMap > FunctionalUnitCountMap;
 
 	public:
 
@@ -132,7 +135,7 @@ namespace trace {
 		
 	private:
 	
-		static unsigned int counter;
+		static unsigned int _counter;
 		
 	};
 }
@@ -152,7 +155,7 @@ namespace boost
 		}
 		
 		template< class Archive > void serialize(Archive & ar,
-			trace::InstructionTraceGenerator::InstructionCount & count, const unsigned int version) {
+			trace::InstructionTraceGenerator::InstructionCounter & count, const unsigned int version) {
 			
 			ar & count.dynamic_count;
 			ar & count.static_count;

@@ -39,6 +39,7 @@ namespace trace {
 			SharedComputationTraceFormat,
 			InstructionTraceFormat,
 			KernelDimensionsFormat,
+			MachineAttributesFormat,
 			InvalidTraceFormat
 		};
 		

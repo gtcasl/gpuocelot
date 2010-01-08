@@ -4,10 +4,10 @@
 			"traces/database.trace"
 		</TraceDatabase>
 		<UseInPlaceTraces>
-			0
+			1
 		</UseInPlaceTraces>
 		<UseMemoryTraceGenerator>
-			0
+			1
 		</UseMemoryTraceGenerator>
 		<UseBranchTraceGenerator>
 			0
@@ -39,7 +39,7 @@
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			LLVM
+			Emulated
 		</PreferredISA>
 		<OptimizationLevel>
 			basic

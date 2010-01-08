@@ -7,9 +7,17 @@
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Executive.h>
-
 #include <ocelot/ir/interface/Module.h>
+
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <cfloat>
@@ -146,6 +154,7 @@ trace::MemoryTraceGenerator::Event::~Event() {
 
 static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 	typedef std::unordered_set<ir::PTXU64> AddressSet;
+	report("Computing extent for kernel " << kernel.name);
 	AddressSet encountered;
 	ir::PTXU64 extent = 0;
 	
@@ -192,11 +201,15 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 				default: break;
 			}
 			
+			report(" Checking address " << std::hex << address << std::dec);
+			
 			executive::Executive::GlobalMemoryAllocation 
 				global = kernel.context->getGlobalMemoryAllocation(
 				(void*)address);
 			
 			if (global.space != ir::PTXInstruction::AddressSpace_Invalid) {
+				report("  Hit global allocation " << global.ptr << " size " 
+					<< global.size);
 				if (encountered.insert((ir::PTXU64)global.ptr).second) {
 					extent += global.size;
 				}
@@ -208,6 +221,8 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 				kernel.context->getSelected(), (void*)address);
 			
 			if (allocation.isa != ir::Instruction::Unknown) {
+				report("  Hit allocation " << allocation.ptr << " size " 
+					<< allocation.size);
 				if (encountered.insert((ir::PTXU64)allocation.ptr).second) {
 					extent += allocation.size;
 				}

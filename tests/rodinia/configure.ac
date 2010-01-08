@@ -38,7 +38,7 @@ then
 		AC_DEFINE(HAVE_LLVM, [], ["Define to 1 if llvm is installed"])
 		AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))
 		AC_SUBST(LLVM_LDFLAGS, "$(llvm-config --ldflags --libs core jit native \
-			asmparser | tr '\n' ' ') -rdynamic")
+			asmparser instcombine | tr '\n' ' ') -rdynamic")
 	else
 		AC_WARN(LLVM Support Not Enabled: version $LLVM_VERSION found but \
 			requires 2.7svn )
@@ -91,12 +91,6 @@ fi
 
 AC_CHECK_LIB([ocelot], [main],[AC_DEFINE(HAVE_OCELOT, [], [""])], \
 	AC_MSG_ERROR("libocelot required"), [$LLVM_LDFLAGS])
-AC_CHECK_LIB([cufft], [main], [AC_DEFINE(HAVE_CUFFT, [], [""])], \
-	AC_MSG_ERROR("libcufft required"), [-locelot \
-	$LLVM_LDFLAGS $CUDA_DRIVER_API_LIBARY])
-AC_CHECK_LIB([cublas], [main], [AC_DEFINE(HAVE_CUBLAS, [], [""])], \
-	AC_MSG_ERROR("libcublas required"), [-locelot $LLVM_LDFLAGS \
-	$CUDA_DRIVER_API_LIBARY])
 ################################################################################
 
 ################################################################################

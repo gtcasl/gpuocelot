@@ -29,8 +29,10 @@ namespace trace {
 		enum FunctionalUnit {
 			Integer_arithmetic,	//! integer arithmetic
 			Integer_logical,		//! itneger logical
+			Integer_comparison,	//! comparison
 			Float_single,				//! floating-point single-precision
 			Float_double,				//! floating-point, double-precision
+			Float_comparison,		//! floating-point comparison
 			Memory_offchip,			//! off-chip: {global, local}
 			Memory_onchip,			//! cached or scratchpad: {texture, shared, constant}
 			Control,						//! control-flow instructions
@@ -58,13 +60,13 @@ namespace trace {
 
 			void count(const ir::PTXInstruction &instr, size_t active);
 
+			InstructionCounter & operator+=( const InstructionCounter &counter);
+
 		public:
 
 			size_t dynamic_count;
 
 			size_t static_count;
-			
-			size_t active_threads;
 		};
 
 		/*!
@@ -86,12 +88,12 @@ namespace trace {
 		/*!
 			\brief maps a PTXInstruction::Opcode onto an instruction counter
 		*/
-		typedef std::unordered_map<ir::PTXInstruction::Opcode, InstructionCounter > OpcodeCountMap;
+		typedef std::unordered_map<int, InstructionCounter > OpcodeCountMap;
 
 		/*!
 			\brief maps a functional unit onto an OpcodeCountMap
 		*/
-		typedef std::unordered_map<FunctionalUnit, OpcodeCountMap > FunctionalUnitCountMap;
+		typedef std::unordered_map<int, OpcodeCountMap > FunctionalUnitCountMap;
 
 	public:
 
@@ -159,7 +161,6 @@ namespace boost
 			
 			ar & count.dynamic_count;
 			ar & count.static_count;
-			ar & count.active_threads;
 		}
 		
 		template< class Archive > void serialize(Archive & ar, 

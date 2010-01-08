@@ -26,14 +26,22 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 trace::InstructionTraceGenerator::InstructionCounter::InstructionCounter():
-	dynamic_count(0), static_count(0), active_threads(0) {
+	dynamic_count(0), static_count(0) {
 }
 
 void trace::InstructionTraceGenerator::InstructionCounter::count(
 	const ir::PTXInstruction &instr, size_t active) {
 
 	++dynamic_count;
-	active_threads += active;
+}
+
+trace::InstructionTraceGenerator::InstructionCounter & 
+	trace::InstructionTraceGenerator::InstructionCounter::operator+=( const InstructionCounter &counter) {
+
+	dynamic_count += counter.dynamic_count;
+	static_count += counter.static_count;
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +61,7 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 	case ir::PTXInstruction::Abs:
 	case ir::PTXInstruction::Add:
 	case ir::PTXInstruction::AddC:
+	case ir::PTXInstruction::Cvt:
 	case ir::PTXInstruction::Div:
 	case ir::PTXInstruction::Mad24:
 	case ir::PTXInstruction::Mad:
@@ -128,6 +137,40 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 		}
 		break;
 
+	// Comparison
+	case ir::PTXInstruction::SetP:
+	case ir::PTXInstruction::Set:
+	case ir::PTXInstruction::SlCt:
+	case ir::PTXInstruction::SelP:
+		{
+			switch (instr.type) {
+				case ir::PTXOperand::f32:
+				case ir::PTXOperand::f64:
+					{
+						return Float_comparison;
+					}
+
+				case ir::PTXOperand::b8:
+				case ir::PTXOperand::b16:
+				case ir::PTXOperand::b32:
+				case ir::PTXOperand::b64:
+				case ir::PTXOperand::s8:
+				case ir::PTXOperand::s16:
+				case ir::PTXOperand::s32:
+				case ir::PTXOperand::s64:
+				case ir::PTXOperand::u8:
+				case ir::PTXOperand::u16:
+				case ir::PTXOperand::u32:
+				case ir::PTXOperand::u64:
+					{
+						return Integer_comparison;
+					}
+				default:
+					break;
+			}
+		}
+		break;
+
 	// Transcendental and other special
 	case ir::PTXInstruction::Cos:
 	case ir::PTXInstruction::Ex2:
@@ -192,9 +235,13 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 
 	// this should be an exhaustive list!
 	default:
-		throw hydrazine::Exception("InstructionTraceGenerator - PTX instruction not supported");
 		break;
 	}
+
+	std::stringstream ss;
+	ss << "InstructionTraceGenerator - PTX instruction not supported: " 
+		<< ir::PTXInstruction::toString(instr.opcode);
+	throw hydrazine::Exception(ss.str());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,4 @@
-/*!
-	\file Executive.h
+/*! \file Executive.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 16, 2009
 	\brief class definition for loading modules, enumerating devices,
@@ -21,14 +20,10 @@
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/cuda/include/cuda.h>
 
-/*!
-	\brief A namespace for classes that help execute programs
-*/
+/*! \brief A namespace for classes that help execute programs */
 namespace executive {
 	
-	/*!
-		Class wrapping the execution layer
-	*/
+	/*! Class wrapping the execution layer */
 	class Executive {
 	public:
 
@@ -302,6 +297,16 @@ namespace executive {
 				the record's ISA is Unknown
 		*/
 		MemoryAllocation getMemoryAllocation(int device, const void *ptr) const;
+
+		/*!
+			Given a pointer, determine the allocated block and 
+			corresponding GlobalMemoryAllocation record to which it belongs.
+
+			\param ptr pointer to some byte
+			\return record of memory allocation; if nothing could be found, 
+				the record's address space is invalid
+		*/
+		GlobalMemoryAllocation getGlobalMemoryAllocation(const void *ptr) const;
 
 		/*!
 			Gets a kernel by ISA, module, kernel name.

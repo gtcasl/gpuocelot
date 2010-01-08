@@ -258,6 +258,7 @@ namespace trace
 		PTXU64 agg_globalMemWords = 0;
 		PTXU64 agg_Instructions = 0;
 		PTXU64 agg_Operations = 0;
+		PTXU64 agg_Extent = 0;
 		
 		int kernelIndex = 0;
 
@@ -274,6 +275,7 @@ namespace trace
 			PTXU64 app_globalMemWords = 0;
 			PTXU64 app_Instructions = 0;
 			PTXU64 app_Operations = 0;
+			PTXU64 app_Extent = 0;
 			
 			// iterates over kernels in archive
 			for( KernelDataVector::const_iterator 
@@ -294,11 +296,13 @@ namespace trace
 				agg_Instructions += header.dynamic_instructions;
 				agg_Operations += header.dynamic_operations;
 				agg_globalMemWords += kernel_globalMemWords;
+				agg_Extent += header.global_extent;
 
 				app_globalMemInstructions += kernel_globalMemInstructions;
 				app_Instructions += header.dynamic_instructions;
 				app_Operations += header.dynamic_operations;
-				app_globalMemWords += kernel_globalMemWords;					
+				app_globalMemWords += kernel_globalMemWords;	
+				app_Extent += header.global_extent;				
 
 				if (machine) {
 					// kernel->name , kernel index , mem instructions , instructions , mem words , operations
@@ -316,6 +320,7 @@ namespace trace
 						<< "\n";
 					cout << "  instructions " << header.dynamic_instructions 
 						<< "\n";
+					cout << "  extent " << header.global_extent << "\n";
 					cout << "  memory instruction fraction " 
 						<< (double)kernel_globalMemInstructions 
 						/ (double)header.dynamic_instructions << "\n";
@@ -335,6 +340,7 @@ namespace trace
 			else {		
 				cout << "\nAggregate for '" << application->first << "'\n";
 				cout << "    mem instructions: " << app_globalMemInstructions << "\n";
+				cout << "  extent: " << app_Extent << "\n";
 				cout << "  dynamic instructions: " << app_Instructions << "\n";
 				cout << "    mem instr fraction: " << (double)app_globalMemInstructions / (double)agg_Instructions << "\n";
 				cout << " glob mem words: " << app_globalMemWords << "\n";
@@ -355,6 +361,7 @@ namespace trace
 			cout << "\nAggregate\n";
 			cout << "    mem instructions: " << agg_globalMemInstructions << "\n";
 			cout << "  dynamic instructions: " << agg_Instructions << "\n";
+			cout << "  extent: " << agg_Extent << "\n";
 			cout << "    mem instr fraction: " << (double)agg_globalMemInstructions / (double)agg_Instructions << "\n";
 			cout << " glob mem words: " << agg_globalMemWords << "\n";
 			cout << "   operations: " << agg_Operations << "\n";

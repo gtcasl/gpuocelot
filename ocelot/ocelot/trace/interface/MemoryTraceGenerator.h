@@ -1,10 +1,7 @@
-/*!
-	\file MemoryTraceGenerator.h
-
+/*! \file MemoryTraceGenerator.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-
-	\brief declares a MemoryTraceGenerator class used in tracing memory operations in the
-		emulator
+	\brief declares a MemoryTraceGenerator class used in tracing memory 
+		operations in the emulator
 		
 		Reimplemented MemoryTraceGenerator class to be consistent with 
 		ParallelismTraceGenerator and BranchTraceGenerator approaches 
@@ -37,7 +34,6 @@ namespace trace {
 
 	class MemoryTraceGenerator: public TraceGenerator {
 	public:
-	
 		class Header {
 		public:
 			Header();
@@ -82,6 +78,8 @@ namespace trace {
 			
 			ir::PTXU64 global_segments;
 			ir::PTXU64 halfwarps;
+			
+			ir::PTXU64 global_extent;
 			
 			bool headerOnly;
 		};

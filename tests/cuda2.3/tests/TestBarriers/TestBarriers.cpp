@@ -84,8 +84,13 @@ namespace test
 		cudaThreadSynchronize();
 		timer.stop();
 		
+		unsigned int ops = barriers * iterations;
+		status << "Barrier test:\n";
+		status << " throughput: " << (ops/timer.seconds()) << " barriers/s\n";
+		status << " time: " << timer.seconds() << "\n";
+
 		unsigned int result;
-		
+	
 		cudaMemcpy( &result, input, sizeof( unsigned int ), 
 			cudaMemcpyDeviceToHost );
 		

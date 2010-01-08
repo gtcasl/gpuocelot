@@ -9,8 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -lcudart -lOcelot -lOcelotExecutive -lOcelotTranslator \
-	-lOcelotTrace -lOcelotIr -lOcelotAnalysis -lOcelotParser -lhydrazine \
+OCELOT_LIBS = -locelot -lhydrazine \
 	$(LLVM_LDFLAGS) $(CUDA_DRIVER_API_LIBARY)
 CUDA_CFLAGS = 
 ################################################################################

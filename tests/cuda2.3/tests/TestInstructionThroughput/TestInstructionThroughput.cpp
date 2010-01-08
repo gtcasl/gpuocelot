@@ -71,7 +71,7 @@ namespace test
 		cudaThreadSynchronize();
 		timer.stop();
 		
-		status << "Operations/sec " 
+		status << "u64 Operations/sec " 
 			<< ( (threads * ctas * iterations * unroll) / timer.seconds() ) 
 			<< " seconds. \n"; 
 		unsigned int result;
@@ -152,7 +152,7 @@ namespace test
 		cudaThreadSynchronize();
 		timer.stop();
 		
-		status << "Operations/sec " 
+		status << "u32 Operations/sec " 
 			<< ( (threads * ctas * iterations * unroll) / timer.seconds() ) 
 			<< " seconds. \n"; 
 		unsigned int result;
@@ -234,7 +234,7 @@ namespace test
 		cudaThreadSynchronize();
 		timer.stop();
 		
-		status << "Operations/sec " 
+		status << "f32 Operations/sec " 
 			<< ( (threads * ctas * iterations * unroll * 2) / timer.seconds() ) 
 			<< " seconds. \n"; 
 		float result;

@@ -24,7 +24,7 @@ namespace test
 {
 	bool TestSpecialFunctions::testRcp()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -62,14 +62,6 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
-		
-		program << "  setp.eq.u64 %p0, %r3, 0;\n";
-		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";
-		
-		program << "  @!%p0 bra Exit;\n";
-
 		program << " Writeback:\n";
 		program << "  st.global.f32 [%r0], %rf1;\n";
 		
@@ -91,7 +83,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test RCP (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " RPC throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -104,7 +96,7 @@ namespace test
 	
 	bool TestSpecialFunctions::testSqrt()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -171,7 +163,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test SQRT (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " SQRT throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -184,7 +176,7 @@ namespace test
 	
 	bool TestSpecialFunctions::testRsqrt()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -251,7 +243,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test RSQRT (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " RSQRT throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -264,7 +256,7 @@ namespace test
 	
 	bool TestSpecialFunctions::testSin()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -331,7 +323,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test SIN (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " SIN throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -344,7 +336,7 @@ namespace test
 	
 	bool TestSpecialFunctions::testCos()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -411,7 +403,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test COS (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " COS throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -424,7 +416,7 @@ namespace test
 	
 	bool TestSpecialFunctions::testLg2()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -491,7 +483,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test LG2 (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " LG2 throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -504,7 +496,7 @@ namespace test
 	
 	bool TestSpecialFunctions::testEx2()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -571,7 +563,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test EX2 (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " EX2 throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 
 		float result;
 
@@ -584,7 +576,7 @@ namespace test
 	
 	bool TestSpecialFunctions::test1DTex()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -643,8 +635,8 @@ namespace test
 		tex.filterMode = cudaFilterModeLinear;
 		tex.normalized = true;
 		
-	    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
-	    	cudaChannelFormatKindFloat);
+	 	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
+			cudaChannelFormatKindFloat);
 
 		float* textureMemory;
 		cudaMalloc( (void**) &textureMemory, sizeof( float ) );
@@ -663,7 +655,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test TEX 1D (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " TEX 1D throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 		
 		cudaFree( inout );
 		cudaFree( textureMemory );
@@ -675,7 +667,7 @@ namespace test
 	
 	bool TestSpecialFunctions::test2DTex()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -735,8 +727,8 @@ namespace test
 		tex.filterMode = cudaFilterModeLinear;
 		tex.normalized = true;
 		
-	    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
-	    	cudaChannelFormatKindFloat);
+		cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
+			cudaChannelFormatKindFloat);
 
 		float* textureMemory;
 		cudaMalloc( (void**) &textureMemory, sizeof( float ) );
@@ -755,7 +747,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test TEX 2D (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " TEX 2D throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 		
 		cudaFree( inout );
 		cudaFree( textureMemory );
@@ -767,7 +759,7 @@ namespace test
 	
 	bool TestSpecialFunctions::test3DTex()
 	{
-		float value = random() / ( random.max() + 0.0 );
+		float value = random() / (random.max() + 0.0);
 		
 		float* inout;
 		
@@ -828,8 +820,8 @@ namespace test
 		tex.filterMode = cudaFilterModeLinear;
 		tex.normalized = true;
 		
-	    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
-	    	cudaChannelFormatKindFloat);
+		cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
+			cudaChannelFormatKindFloat);
 
 		float* textureMemory;
 		cudaMalloc( (void**) &textureMemory, sizeof( float ) );
@@ -848,7 +840,7 @@ namespace test
 		long long unsigned int ops = threads * ctas * iterations * unroll;
 
 		status << "Test TEX 3D (" << ops << " operations):\n";
-		status << " throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
+		status << " TEX 3D throughput: " << ( ops / timer.seconds() ) << " ops/s\n";
 		
 		cudaFree( inout );
 		cudaFree( textureMemory );

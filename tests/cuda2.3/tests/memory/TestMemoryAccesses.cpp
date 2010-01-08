@@ -93,7 +93,7 @@ namespace test
 		
 		status << "Strided copy test (" << gb << " GB):\n";
 		status << " time: " << timer.seconds() << "s\n";
-		status << " bandwidth: " 
+		status << " strided bandwidth: " 
 			<< ( gb / timer.seconds() ) << " GB/s\n";
 		
 		int* host = new int[ ints ];
@@ -198,7 +198,7 @@ namespace test
 		
 		status << "Linear copy test (" << gb << " GB):\n";
 		status << " time: " << timer.seconds() << "s\n";
-		status << " bandwidth: " 
+		status << " linear bandwidth: " 
 			<< ( gb / timer.seconds() ) << " GB/s\n";
 		
 		int* host = new int[ ints ];
@@ -245,8 +245,6 @@ int main(int argc, char** argv)
 	test::TestMemoryAccesses test;
 	parser.description( test.testDescription() );
 	
-	parser.parse( "-r", "--stride", test.stride, 128,
-		"The stride for memory copies." );
 	parser.parse( "-b", "--bytes", test.bytes, 1000000,
 		"The number of bytes to copy." );
 	parser.parse( "-t", "--threads", test.threads, 128,
@@ -259,6 +257,8 @@ int main(int argc, char** argv)
 		"Print out info after the test." );
 	parser.parse();
 	
+	test.stride = test.threads;
+
 	test.test();
 
 	return test.passed();	

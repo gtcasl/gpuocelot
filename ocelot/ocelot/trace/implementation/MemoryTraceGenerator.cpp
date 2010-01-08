@@ -1,14 +1,12 @@
-/*!
-	\file MemoryTraceGenerator.cpp
-
+/*! \file MemoryTraceGenerator.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief declares a MemoryTraceGenerator class used in tracing memory operations in the
 		emulator
 */
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/Executive.h>
 
 #include <ocelot/ir/interface/Module.h>
 #include <hydrazine/implementation/Exception.h>
@@ -57,6 +55,7 @@ trace::MemoryTraceGenerator::Header::Header() {
 	
 	global_words = 0;
 	texture_words = 0;
+	global_extent = 0;
 	
 	global_segments = 0;
 	halfwarps = 0;
@@ -145,6 +144,81 @@ trace::MemoryTraceGenerator::Event::~Event() {
 
 /////////////////////////////////////////////////////////////////////////////
 
+static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
+	typedef std::unordered_set<ir::PTXU64> AddressSet;
+	AddressSet encountered;
+	ir::PTXU64 extent = 0;
+	
+	for (ir::Kernel::ParameterVector::const_iterator 
+		parameter = kernel.parameters.begin();
+		parameter != kernel.parameters.end(); ++parameter) {
+		ir::PTXU64 address = 0;
+		
+		for (ir::Parameter::ValueVector::const_iterator 
+			element = parameter->arrayValues.begin();
+			element != parameter->arrayValues.end(); ++element) {
+			switch (parameter->type) {
+				case ir::PTXOperand::b8:
+				case ir::PTXOperand::s8:
+				case ir::PTXOperand::u8:
+				{
+					address <<= 8;
+					address |= element->val_u8;
+					break;
+				}
+				case ir::PTXOperand::b16:
+				case ir::PTXOperand::s16:
+				case ir::PTXOperand::u16:
+				{
+					address <<= 16;
+					address |= element->val_u16;
+					break;
+				}
+				case ir::PTXOperand::b32:
+				case ir::PTXOperand::s32:
+				case ir::PTXOperand::u32:
+				{
+					address <<= 32;
+					address |= element->val_u32;
+					break;
+				}
+				case ir::PTXOperand::b64:
+				case ir::PTXOperand::s64:
+				case ir::PTXOperand::u64:
+				{
+					address = element->val_u64;
+					break;
+				}
+				default: break;
+			}
+			
+			executive::Executive::GlobalMemoryAllocation 
+				global = kernel.context->getGlobalMemoryAllocation(
+				(void*)address);
+			
+			if (global.space != ir::PTXInstruction::AddressSpace_Invalid) {
+				if (encountered.insert((ir::PTXU64)global.ptr).second) {
+					extent += global.size;
+				}
+				continue;
+			}
+			
+			executive::Executive::MemoryAllocation 
+				allocation = kernel.context->getMemoryAllocation(
+				kernel.context->getSelected(), (void*)address);
+			
+			if (allocation.isa != ir::Instruction::Unknown) {
+				if (encountered.insert((ir::PTXU64)allocation.ptr).second) {
+					extent += allocation.size;
+				}
+			}
+		}
+	}
+	
+	return extent;
+	
+}
+
 trace::MemoryTraceGenerator::MemoryTraceGenerator() {
 	_file = 0;
 	headerOnly = false;
@@ -207,6 +281,7 @@ void trace::MemoryTraceGenerator::initialize(
 	_header.blockDimZ = kernel.blockDim().z;
 	_header.thread_count = kernel.maxThreadsPerBlock();
 	_header.headerOnly = headerOnly;
+	_header.global_extent = extent(kernel);
 }
 
 /*!
@@ -363,3 +438,4 @@ void trace::MemoryTraceGenerator::finish() {
 		hfile.close();
 	}
 }
+

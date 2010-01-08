@@ -18,6 +18,9 @@
 		<UseParallelismTraceGenerator>
 			0
 		</UseParallelismTraceGenerator>
+		<LimitWorkerThreads>
+			8
+		</LimitWorkerThreads>
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>

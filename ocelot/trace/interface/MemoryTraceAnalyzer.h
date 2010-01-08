@@ -1,8 +1,5 @@
-/*!
-	\file MemoryTraceAnalayzer.h
-	
+/*! \file MemoryTraceAnalayzer.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-	
 	\brief Implements an analysis tool for analyzing memory traces
 */
 

@@ -1822,13 +1822,12 @@ void executive::Executive::memset( void* dest, int value, size_t bytes ) {
 bool executive::Executive::checkMemoryAccess(int device, 
 	const void* _base, size_t size) const {	
 	const char* base = reinterpret_cast<const char*>(_base);
+
+	GlobalMemoryAllocation global = getGlobalMemoryAllocation(base);
+	const char* globalBase = reinterpret_cast<const char*>(global.ptr);
 	
-	if (!globalAllocations.empty()) {
-		GlobalAllocationMap::const_iterator global 
-			= globalAllocations.upper_bound(const_cast<char*>(base));
-		if (global != globalAllocations.begin()) --global;
-		if (base + size <= ((char*)global->second.ptr + global->second.size) 
-			&& (base >= (char*)global->second.ptr)) {
+	if (global.space != ir::PTXInstruction::AddressSpace_Invalid) {
+		if (base + size <= globalBase + global.size) {
 			return true;
 		}
 	}
@@ -1839,8 +1838,7 @@ bool executive::Executive::checkMemoryAccess(int device,
 	}
 	assert(allocation.device == device || allocation.external);
 	const char* allocationBase = reinterpret_cast<const char*>(allocation.ptr);
-	return (base >= allocationBase) 
-		&& ((base + size) <= (allocationBase + allocation.size));
+	return (base + size) <= (allocationBase + allocation.size);
 }
 
 executive::Executive::MemoryAllocation 
@@ -1856,9 +1854,27 @@ executive::Executive::MemoryAllocation
 		AllocationMap::const_iterator it = l_it->second.upper_bound((char*)ptr);
 		if (it != l_it->second.begin()) --it;
 		if (it != l_it->second.end()) {
-			if ((char*)ptr < ((char*)it->second.ptr + it->second.size)) {
+			if ((char*)ptr >= (char*)it->second.ptr) {
 				return it->second;
 			}
+		}
+	}
+	return record;
+}
+
+executive::Executive::GlobalMemoryAllocation 
+	executive::Executive::getGlobalMemoryAllocation(const void *_base) const {
+	using namespace std;
+	GlobalMemoryAllocation record;
+
+	const char* base = reinterpret_cast<const char*>(_base);
+	
+	if (!globalAllocations.empty()) {
+		GlobalAllocationMap::const_iterator global 
+			= globalAllocations.upper_bound(const_cast<char*>(base));
+		if (global != globalAllocations.begin()) --global;
+		if (base >= (char*)global->second.ptr) {
+			return global->second;
 		}
 	}
 	return record;

@@ -1,5 +1,4 @@
-/*!
-	\file Executive.cpp
+/*! \file Executive.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 16, 2009
 	\brief class definition for loading modules, enumerating devices,
@@ -1866,6 +1865,7 @@ executive::Executive::GlobalMemoryAllocation
 	executive::Executive::getGlobalMemoryAllocation(const void *_base) const {
 	using namespace std;
 	GlobalMemoryAllocation record;
+	record.space = ir::PTXInstruction::AddressSpace_Invalid;
 
 	const char* base = reinterpret_cast<const char*>(_base);
 	

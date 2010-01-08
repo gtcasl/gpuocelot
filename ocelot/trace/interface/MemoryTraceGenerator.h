@@ -256,6 +256,7 @@ namespace boost
 			
 			ar & header.global_words;
 			ar & header.texture_words;
+			ar & header.global_extent;
 			
 			ar & header.headerOnly;
 		}

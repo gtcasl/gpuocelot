@@ -72,6 +72,8 @@ namespace trace {
 			size_t dynamic_count;
 
 			size_t static_count;
+			
+			double activity;
 		};
 
 		/*!
@@ -140,6 +142,8 @@ namespace trace {
 	
 		FunctionalUnitCountMap instructionCounter;
 		
+		size_t threadCount;
+		
 	private:
 	
 		static unsigned int _counter;
@@ -166,6 +170,7 @@ namespace boost
 			
 			ar & count.dynamic_count;
 			ar & count.static_count;
+			ar & count.activity;
 		}
 		
 		template<class Archive> void save(Archive & ar, 

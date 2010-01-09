@@ -34,13 +34,14 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 trace::InstructionTraceGenerator::InstructionCounter::InstructionCounter():
-	dynamic_count(0), static_count(0) {
+	dynamic_count(0), static_count(0), activity(0) {
 }
 
 void trace::InstructionTraceGenerator::InstructionCounter::count(
 	const ir::PTXInstruction &instr, size_t active) {
 
 	++dynamic_count;
+	activity += (double)active;
 }
 
 trace::InstructionTraceGenerator::InstructionCounter & 
@@ -48,6 +49,7 @@ trace::InstructionTraceGenerator::InstructionCounter &
 
 	dynamic_count += counter.dynamic_count;
 	static_count += counter.static_count;
+	activity += counter.activity;
 
 	return *this;
 }
@@ -343,6 +345,9 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 	// static counts
 	const executive::EmulatedKernel &emuKernel = 
 		static_cast<const executive::EmulatedKernel &>(kernel);
+		
+	ir::Dim3 blockDim = emuKernel.blockDim();
+	threadCount = blockDim.x * blockDim.y * blockDim.z;
 	
 	for (executive::EmulatedKernel::PTXInstructionVector::const_iterator instr_it = 
 		emuKernel.instructions.begin();
@@ -396,6 +401,19 @@ void trace::InstructionTraceGenerator::finish() {
 		throw hydrazine::Exception(
 			"Failed to open InstructionTraceGenerator header file " 
 			+ _entry.header );
+	}
+	
+	// visit every instruction counter and divide activity by thread count
+	if (threadCount) {
+		for (FunctionalUnitCountMap::iterator fu_it = instructionCounter.begin(); 
+			fu_it != instructionCounter.end(); ++fu_it) {
+	
+			for (OpcodeCountMap::iterator oc_it = fu_it->second.begin(); oc_it != fu_it->second.end();
+				++oc_it) {
+			
+				oc_it->second.activity /= (double)threadCount * (double)oc_it->second.dynamic_count;
+			}
+		}
 	}
 	
 	harchive << _header;

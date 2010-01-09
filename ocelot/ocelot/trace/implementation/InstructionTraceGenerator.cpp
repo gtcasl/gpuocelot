@@ -346,8 +346,10 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 	const executive::EmulatedKernel &emuKernel = 
 		static_cast<const executive::EmulatedKernel &>(kernel);
 		
-	ir::Dim3 blockDim = emuKernel.blockDim();
-	threadCount = blockDim.x * blockDim.y * blockDim.z;
+	_header.blockDim = emuKernel.blockDim();
+	_header.gridDim = emuKernel.gridDim();
+	
+	threadCount = _header.blockDim.x * _header.blockDim.y * _header.blockDim.z;
 	
 	for (executive::EmulatedKernel::PTXInstructionVector::const_iterator instr_it = 
 		emuKernel.instructions.begin();

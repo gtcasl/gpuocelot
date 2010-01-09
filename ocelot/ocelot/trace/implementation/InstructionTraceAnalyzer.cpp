@@ -283,6 +283,9 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
 
 			// print the program name
 			std::cout << "  '" << program << ":" << k_it->name << "': {" << std::endl;
+			
+			std::cout << "    'blockDim': [" << header.blockDim.x << ", " << header.blockDim.y << ", " << header.blockDim.z << "],\n";
+			std::cout << "    'gridDim': [" << header.gridDim.x << ", " << header.gridDim.y << ", " << header.gridDim.z << "],\n";
 		
 			// print out one bar per functional unit
 			for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		

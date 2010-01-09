@@ -363,7 +363,7 @@ namespace trace
 			cout << "\nAggregate\n";
 			cout << "    mem instructions: " << agg_globalMemInstructions << "\n";
 			cout << "  dynamic instructions: " << agg_Instructions << "\n";
-			cout << "  extent: " << ( agg_Extent / applications.size() ) << "\n";
+			cout << "  extent: " << ( agg_Extent / kernelIndex ) << "\n";
 			cout << "    mem instr fraction: " << (double)agg_globalMemInstructions / (double)agg_Instructions << "\n";
 			cout << " glob mem words: " << agg_globalMemWords << "\n";
 			cout << "   operations: " << agg_Operations << "\n";

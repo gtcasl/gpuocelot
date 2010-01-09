@@ -92,9 +92,12 @@ static void append(trace::InstructionTraceGenerator::FunctionalUnitCountMap & ap
 				
 				if (appCounter[count_it->first].find(oc_it->first) == appCounter[count_it->first].end()) {
 					appCounter[count_it->first][oc_it->first] = oc_it->second;
+					appCounter[count_it->first][oc_it->first].activity *= appCounter[count_it->first][oc_it->first].dynamic_count;
 				}
 				else {
-					appCounter[count_it->first][oc_it->first] += oc_it->second;
+					appCounter[count_it->first][oc_it->first].dynamic_count += oc_it->second.dynamic_count;
+					appCounter[count_it->first][oc_it->first].static_count += oc_it->second.static_count;
+					appCounter[count_it->first][oc_it->first].activity += oc_it->second.activity * oc_it->second.dynamic_count;
 				}
 			}
 		}	
@@ -131,7 +134,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 	std::cout << "# Python object notation:\n";
 	std::cout << "#  \n";
 	std::cout << "#  map<program name, \n";
-	std::cout << "#    map<functional unit, pair<dynamic count, static count> > >\n\n";
+	std::cout << "#    map<functional unit, tuple<dynamic count, static count, activity> > >\n\n";
 	
 	std::cout << "applications = [\n";
 	for( KernelMap::const_iterator vector = _kernels.begin(); 
@@ -180,6 +183,8 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 
 			size_t dynamicCount = 0;
 			size_t staticCount = 0;
+			double activity = 0;
+			int activeFU = 0;
 			
 			typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
 			for (OC::iterator op_it = appCounter[funcUnits[n]].begin(); op_it != appCounter[funcUnits[n]].end();
@@ -187,11 +192,19 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 				
 				dynamicCount += op_it->second.dynamic_count;
 				staticCount += op_it->second.static_count;
+				if (op_it->second.dynamic_count) {
+					activity += op_it->second.activity;
+					activeFU ++;
+				}
+			}
+			
+			if (activeFU) {
+				activity /= (double)activeFU * (double)dynamicCount;
 			}
 			
 			// write to stdout
 			std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
-				<< dynamicCount << ", " << staticCount << " )," << std::endl;
+				<< dynamicCount << ", " << staticCount << ", " << 0 << " )," << std::endl;
 		}
 		
 		std::cout << "  },\n";
@@ -225,7 +238,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
 	std::cout << "# Python object notation:\n";
 	std::cout << "#  \n";
 	std::cout << "#  map<program name.kernel name, \n";
-	std::cout << "#    map<functional unit, pair<dynamic count, static count> > >\n\n";
+	std::cout << "#    map<functional unit, pair<dynamic count, static count, activity> > >\n\n";
 	
 	std::cout << "kernels = [\n";
 	for( KernelMap::const_iterator vector = _kernels.begin(); 
@@ -276,6 +289,8 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
 
 				size_t dynamicCount = 0;
 				size_t staticCount = 0;
+				double activity = 0;
+				int activeFU = 0;
 			
 				typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
 				for (OC::iterator op_it = counter[funcUnits[n]].begin(); op_it != counter[funcUnits[n]].end();
@@ -283,11 +298,20 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
 				
 					dynamicCount += op_it->second.dynamic_count;
 					staticCount += op_it->second.static_count;
+					
+					if (op_it->second.dynamic_count) {
+						activity += op_it->second.activity;
+						activeFU++;
+					}
+				}
+			
+				if (activeFU) {
+					activity /= (double)activeFU;
 				}
 			
 				// write to stdout
 				std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
-					<< dynamicCount << ", " << staticCount << " )," << std::endl;
+					<< dynamicCount << ", " << staticCount << ", " << activity << " )," << std::endl;
 			}
 		
 			std::cout << "  },\n";

@@ -63,6 +63,7 @@ namespace ocelot
 		bool sharedTrace;
 		bool branchTrace;
 		bool parallelismTrace;
+		bool instructionTrace;
 		bool cacheSimulator;
 		bool inPlaceTraces;
 		std::string database;
@@ -75,6 +76,7 @@ namespace ocelot
 		parse( "UseBranchTraceGenerator", branchTrace, false, c );
 		parse( "UseSharedComputationGenerator", sharedTrace, false, c );
 		parse( "UseParallelismTraceGenerator", parallelismTrace, false, c );
+		parse( "UseInstructionTraceGenerator", instructionTrace, false, c);
 		parse( "UseCacheSimulator", cacheSimulator, false, c );
 		parse( "UseInPlaceTraces", inPlaceTraces, false, c );
 		parse( "LimitWorkerThreads", threadLimit, -1, c );
@@ -107,6 +109,12 @@ namespace ocelot
 			_parallelismTraceGenerator.database = database;
 			ocelot::addTraceGenerator( _parallelismTraceGenerator, 
 				true, false );
+		}
+		if (instructionTrace)
+		{
+			report("Creating instruction trace generator");
+			_instructionTraceGenerator.database = database;
+			ocelot::addTraceGenerator(_instructionTraceGenerator, true, false);
 		}
 		if( cacheSimulator )
 		{

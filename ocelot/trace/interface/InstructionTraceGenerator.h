@@ -12,6 +12,7 @@
 #include <unordered_map>
 
 // Ocelot includes
+#include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/trace/interface/KernelEntry.h>
@@ -90,6 +91,10 @@ namespace trace {
 			size_t total_dynamic;
 			
 			size_t total_static;
+			
+			ir::Dim3 blockDim;
+			
+			ir::Dim3 gridDim;
 		};
 
 		/*!
@@ -156,6 +161,14 @@ namespace boost
 {
 	namespace serialization
 	{		
+
+		template< class Archive > void serialize(Archive & ar, 
+			ir::Dim3 &dim, const unsigned int version) {
+			
+			ar & dim.x;
+			ar & dim.y;
+			ar & dim.z;
+		}
 	
 		template< class Archive > void serialize(Archive & ar, 
 			trace::InstructionTraceGenerator::Header & header, const unsigned int version) {
@@ -163,6 +176,9 @@ namespace boost
 			ar & header.format;
 			ar & header.total_dynamic;
 			ar & header.total_static;
+			
+			ar & header.gridDim;
+			ar & header.blockDim;
 		}
 		
 		template< class Archive > void serialize(Archive & ar,

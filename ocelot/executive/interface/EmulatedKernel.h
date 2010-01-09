@@ -26,7 +26,6 @@ namespace executive {
 		
 	class EmulatedKernel: public ir::ExecutableKernel {
 	public:
-		typedef std::vector< const ir::Texture* > TextureVector;
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
 
 	private:
@@ -49,7 +48,7 @@ namespace executive {
 		
 		/*! \brief Changes the amount of external shared memory */
 		void setExternSharedMemorySize(unsigned int bytes);
-	
+		
 		/*!	Sets device used to execute the kernel */
 		void setDevice(const Device* device, unsigned int limit);
 
@@ -58,6 +57,9 @@ namespace executive {
 		
 		/*! \brief Indicate that other memory has been updated */
 		void updateMemory();
+
+		/*! \brief Get a vector of all textures references by the kernel */
+		TextureVector textureReferences() const;
 
 	public:
 		/*!	adds a trace generator to the EmulatedKernel */

@@ -39,8 +39,6 @@ namespace executive
 			typedef unsigned int ThreadContext;
 			/*! \brief A function pointer to the translated kernel */
 			typedef unsigned int (*Function)( LLVMContext* );
-			/*! \brief A vector of texture variables */
-			typedef std::vector< const ir::Texture* > TextureVector;
 			
 			/*! \brief A class for managing global llvm state */
 			class LLVMState
@@ -338,6 +336,8 @@ namespace executive
 			void updateParameterMemory();
 			/*! \brief Indicate that other memory has been updated */
 			void updateMemory();
+			/*! \brief Get a vector of all textures references by the kernel */
+			TextureVector textureReferences() const;
 
 		public:
 			/*!	adds a trace generator to the EmulatedKernel */

@@ -300,6 +300,12 @@ void executive::EmulatedKernel::updateMemory() {
 	updateGlobals();
 }
 
+ir::ExecutableKernel::TextureVector 
+	executive::EmulatedKernel::textureReferences() const {
+	return textures;
+}
+
+
 void executive::EmulatedKernel::registerAllocation() {
 	using namespace std;
 	report("Allocating registers");

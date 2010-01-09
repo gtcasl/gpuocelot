@@ -1,5 +1,4 @@
-/*!
-	\file LLVMExecutableKernel.cpp
+/*! \file LLVMExecutableKernel.cpp
 	\date Friday September 4, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the LLVMExecutableKernel class
@@ -2223,6 +2222,12 @@ namespace executive
 	{
 		_updateGlobalMemory();
 		_updateConstantMemory();
+	}
+
+	ir::ExecutableKernel::TextureVector 
+		LLVMExecutableKernel::textureReferences() const
+	{
+		return _opaque.textures;
 	}
 	
 	void LLVMExecutableKernel::addTraceGenerator(

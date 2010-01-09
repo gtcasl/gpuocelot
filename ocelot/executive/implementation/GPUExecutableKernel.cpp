@@ -106,6 +106,11 @@ void executive::GPUExecutableKernel::updateMemory() {
 	updateConstantMemory();
 }
 
+ir::ExecutableKernel::TextureVector 
+	executive::GPUExecutableKernel::textureReferences() const {
+	assertM(false, "No support for getting textures references of GPU kernels");
+}
+
 void executive::GPUExecutableKernel::updateGlobalMemory() {
 
 }

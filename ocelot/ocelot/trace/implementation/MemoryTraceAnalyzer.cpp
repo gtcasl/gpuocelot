@@ -340,7 +340,9 @@ namespace trace
 			else {		
 				cout << "\nAggregate for '" << application->first << "'\n";
 				cout << "    mem instructions: " << app_globalMemInstructions << "\n";
-				cout << "  extent: " << app_Extent << "\n";
+				cout << "  extent: " 
+					<< ( app_Extent / application->second.kernels.size() ) 
+					<< "\n";
 				cout << "  dynamic instructions: " << app_Instructions << "\n";
 				cout << "    mem instr fraction: " << (double)app_globalMemInstructions / (double)agg_Instructions << "\n";
 				cout << " glob mem words: " << app_globalMemWords << "\n";
@@ -361,7 +363,7 @@ namespace trace
 			cout << "\nAggregate\n";
 			cout << "    mem instructions: " << agg_globalMemInstructions << "\n";
 			cout << "  dynamic instructions: " << agg_Instructions << "\n";
-			cout << "  extent: " << agg_Extent << "\n";
+			cout << "  extent: " << ( agg_Extent / applications.size() ) << "\n";
 			cout << "    mem instr fraction: " << (double)agg_globalMemInstructions / (double)agg_Instructions << "\n";
 			cout << " glob mem words: " << agg_globalMemWords << "\n";
 			cout << "   operations: " << agg_Operations << "\n";

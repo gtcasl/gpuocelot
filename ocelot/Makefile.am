@@ -90,6 +90,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
 	ocelot/trace/implementation/KernelEntry.cpp \
 	ocelot/trace/implementation/CacheSimulator.cpp \
+	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
@@ -252,7 +253,8 @@ TestTrace_LDFLAGS = -static
 TestMemoryTraceGenerator_CXXFLAGS = -Wall -std=c++0x
 TestMemoryTraceGenerator_SOURCES = \
 	ocelot/trace/test/TestMemoryTraceGenerator.cpp
-TestMemoryTraceGenerator_LDADD = libocelot.la $(LLVM_LDFLAGS) TestMemoryTraceGenerator_kernel.cu.o
+TestMemoryTraceGenerator_LDADD = libocelot.la \
+	TestMemoryTraceGenerator_kernel.cu.o  $(LLVM_LDFLAGS)
 TestMemoryTraceGenerator_LDFLAGS = -static
 
 TestMemoryTraceGenerator_kernel.cu.o: \

@@ -8,6 +8,7 @@
 #define IR_EXECUTABLE_KERNEL_H_INCLUDED
 
 #include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Dim3.h>
 
 namespace executive {
@@ -24,6 +25,7 @@ namespace ir {
 	class ExecutableKernel : public Kernel {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
+		typedef std::vector< const Texture* > TextureVector;
 
 	public:
 		const executive::Executive* const context;
@@ -54,6 +56,9 @@ namespace ir {
 		
 		/*! \brief Indicate that other memory has been updated */
 		virtual void updateMemory()=0;
+		
+		/*! \brief Get a vector of all textures references by the kernel */
+		virtual TextureVector textureReferences() const=0;
 
 		/*!	Notifies all attached TraceGenerators of an event */
 		void traceEvent(const trace::TraceEvent & event) const;

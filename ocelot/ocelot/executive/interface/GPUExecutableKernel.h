@@ -47,6 +47,9 @@ namespace executive {
 		
 		/*! \brief Indicate that other memory has been updated */
 		void updateMemory();
+		
+		/*! \brief Get a vector of all textures references by the kernel */
+		TextureVector textureReferences() const;
 
 		void updateGlobalMemory();
 

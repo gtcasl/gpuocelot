@@ -13,6 +13,7 @@
 #include <cfloat>
 
 // Ocelot includes
+#include <ocelot/trace/interface/InstructionTraceAnalyzer.h>
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
@@ -24,7 +25,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-trace::InstructionTraceAnalyzer::InstructionTraceAnalyzer() {
+trace::InstructionTraceAnalyzer::InstructionTraceAnalyzer(const std::string & database) {
 
 	std::ifstream stream(database.c_str());
 	
@@ -41,7 +42,7 @@ trace::InstructionTraceAnalyzer::InstructionTraceAnalyzer() {
 	for( unsigned int i = 0; i < count; ++i ) {
 		KernelEntry entry;
 		archive >> entry;
-		if( entry.format == TraceGenerator::BranchTraceFormat ) {
+		if( entry.format == TraceGenerator::InstructionTraceFormat ) {
 
 			KernelMap::iterator kernel = _kernels.find( entry.program );
 
@@ -74,6 +75,32 @@ void trace::InstructionTraceAnalyzer::list() const {
 	std::cout << "\n";
 }
 
+static void append(trace::InstructionTraceGenerator::FunctionalUnitCountMap & appCounter,
+	const trace::InstructionTraceGenerator::FunctionalUnitCountMap &count) {
+	
+	typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
+	typedef trace::InstructionTraceGenerator::FunctionalUnitCountMap IC;
+
+	for (IC::const_iterator count_it = count.begin(); count_it != count.end(); ++count_it) {
+		IC::iterator app_it = appCounter.find(count_it->first);
+		if (app_it == appCounter.end()) {
+			appCounter[count_it->first] = count_it->second;
+		}
+		else {
+			for (OC::const_iterator oc_it = count_it->second.begin(); oc_it != count_it->second.end();
+				++oc_it) {
+				
+				if (appCounter[count_it->first].find(oc_it->first) == appCounter[count_it->first].end()) {
+					appCounter[count_it->first][oc_it->first] = oc_it->second;
+				}
+				else {
+					appCounter[count_it->first][oc_it->first] += oc_it->second;
+				}
+			}
+		}	
+	}
+}
+
 /*!
 	Produces: histogram of dynamic instruction counts for each application
 		x-axis: functional units
@@ -98,17 +125,177 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 		InstructionTraceGenerator::FunctionalUnit_invalid
 	};
 
+	std::cout << "# InstructionTraceAnalyzer - by application\n#" << std::endl;
+
+	std::cout << "\n";
+	std::cout << "# Python object notation:\n";
+	std::cout << "#  \n";
+	std::cout << "#  map<program name, \n";
+	std::cout << "#    map<functional unit, pair<dynamic count, static count> > >\n\n";
+	
+	std::cout << "applications = [\n";
 	for( KernelMap::const_iterator vector = _kernels.begin(); 
-		vector != _kernels.end(); ++vector ) 
-	{
+		vector != _kernels.end(); ++vector ) {
+		std::string program = vector->first;
+		std::cout << "  '" << program << "',\n";
+	}
+	std::cout << "]\n\n";
+	
+	std::cout << "functional_units = [\n";
+	for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {
+		std::cout << "  '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "',\n";
+	}
+	std::cout << "]\n\n";
+	
+	std::cout << "results = {\n";
+
+	for( KernelMap::const_iterator vector = _kernels.begin(); 
+		vector != _kernels.end(); ++vector ) {
+		
 		std::string program = vector->first;
 		const KernelVector & kernels = vector->second;
+		InstructionTraceGenerator::FunctionalUnitCountMap appCounter;
 
+		// loop over the kernels
+		for (KernelVector::const_iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
+			InstructionTraceGenerator::Header header;
+			std::ifstream hstream( k_it->header.c_str() );
+			boost::archive::text_iarchive harchive( hstream );
+	
+			harchive >> header;
+			assert(header.format == TraceGenerator::InstructionTraceFormat);
+			
+			InstructionTraceGenerator::FunctionalUnitCountMap counter;
+			harchive >> counter;
+
+			// aggregate counts
+			append(appCounter, counter);
+		}
 		
+		// print the program name
+		std::cout << "  '" << program << "': {" << std::endl;
+		
+		// print out one bar per functional unit
+		for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		
+
+			size_t dynamicCount = 0;
+			size_t staticCount = 0;
+			
+			typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
+			for (OC::iterator op_it = appCounter[funcUnits[n]].begin(); op_it != appCounter[funcUnits[n]].end();
+				++op_it) {
+				
+				dynamicCount += op_it->second.dynamic_count;
+				staticCount += op_it->second.static_count;
+			}
+			
+			// write to stdout
+			std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
+				<< dynamicCount << ", " << staticCount << " )," << std::endl;
+		}
+		
+		std::cout << "  },\n";
 	}
+	std::cout << "}\n";
 }
 
 void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
+
+
+	// sequence of functional units
+	trace::InstructionTraceGenerator::FunctionalUnit funcUnits[] = {
+		InstructionTraceGenerator::Integer_arithmetic,	//! integer arithmetic
+		InstructionTraceGenerator::Integer_logical,		//! itneger logical
+		InstructionTraceGenerator::Integer_comparison,	//! comparison
+		InstructionTraceGenerator::Float_single,				//! floating-point single-precision
+		InstructionTraceGenerator::Float_double,				//! floating-point, double-precision
+		InstructionTraceGenerator::Float_comparison,		//! floating-point comparison
+		InstructionTraceGenerator::Memory_offchip,			//! off-chip: {global, local}
+		InstructionTraceGenerator::Memory_onchip,			//! cached or scratchpad: {texture, shared, constant}
+		InstructionTraceGenerator::Control,						//! control-flow instructions
+		InstructionTraceGenerator::Parallelism,				//! parallelism: sync, reduction, vote
+		InstructionTraceGenerator::Special,						//! transcendental and special functions
+		InstructionTraceGenerator::Other,							//! not categorized
+		InstructionTraceGenerator::FunctionalUnit_invalid
+	};
+
+	std::cout << "# InstructionTraceAnalyzer - by kernel\n#" << std::endl;
+
+	std::cout << "\n";
+	std::cout << "# Python object notation:\n";
+	std::cout << "#  \n";
+	std::cout << "#  map<program name.kernel name, \n";
+	std::cout << "#    map<functional unit, pair<dynamic count, static count> > >\n\n";
+	
+	std::cout << "kernels = [\n";
+	for( KernelMap::const_iterator vector = _kernels.begin(); 
+		vector != _kernels.end(); ++vector ) {
+		
+		std::string program = vector->first;
+		const KernelVector & kernels = vector->second;
+		
+		for (KernelVector::const_iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
+			std::cout << "  '" << program << ":" << k_it->name << "',\n";
+		}
+	}
+	std::cout << "]\n\n";
+	
+	std::cout << "functional_units = [\n";
+	for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {
+	
+		std::cout << "  '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "',\n";
+	}
+	std::cout << "]\n\n";
+	
+	std::cout << "results = {\n";
+
+	for( KernelMap::const_iterator vector = _kernels.begin(); 
+		vector != _kernels.end(); ++vector ) {
+		
+		std::string program = vector->first;
+		const KernelVector & kernels = vector->second;
+		InstructionTraceGenerator::FunctionalUnitCountMap appCounter;
+
+		// loop over the kernels
+		for (KernelVector::const_iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
+			InstructionTraceGenerator::Header header;
+			std::ifstream hstream( k_it->header.c_str() );
+			boost::archive::text_iarchive harchive( hstream );
+	
+			harchive >> header;
+			assert(header.format == TraceGenerator::InstructionTraceFormat);
+			
+			InstructionTraceGenerator::FunctionalUnitCountMap counter;
+			harchive >> counter;
+
+			// print the program name
+			std::cout << "  '" << program << ":" << k_it->name << "': {" << std::endl;
+		
+			// print out one bar per functional unit
+			for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		
+
+				size_t dynamicCount = 0;
+				size_t staticCount = 0;
+			
+				typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
+				for (OC::iterator op_it = counter[funcUnits[n]].begin(); op_it != counter[funcUnits[n]].end();
+					++op_it) {
+				
+					dynamicCount += op_it->second.dynamic_count;
+					staticCount += op_it->second.static_count;
+				}
+			
+				// write to stdout
+				std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
+					<< dynamicCount << ", " << staticCount << " )," << std::endl;
+			}
+		
+			std::cout << "  },\n";
+		}
+		
+
+	}
+	std::cout << "}\n";
 
 }
 
@@ -119,7 +306,7 @@ int main( int argc, char** argv ) {
 	hydrazine::ArgumentParser parser( argc, argv );
 	
 	parser.description("Provides the ability to inspect a database created by" 
-		+ std::string( "a InstructionTraceGenerator" ) );
+		+ std::string( "a InstructionTraceGenerator - output is in Python object notation on stdout" ) );
 	
 	bool help;
 	bool list;
@@ -128,7 +315,7 @@ int main( int argc, char** argv ) {
 	std::string database;
 
 	parser.parse( "-h", help, false, "Print this help message." );
-	parser.parse( "-i", database, "traces/database.db", "Path to database file." );
+	parser.parse( "-i", database, "traces/database.trace", "Path to database file." );
 	parser.parse( "-a", instructions_by_app, false,
 		"Compute instruction histogram for each application over all its kernels");
 	parser.parse( "-k", instructions_by_kernel, false,

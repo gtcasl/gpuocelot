@@ -16,6 +16,9 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/trace/interface/KernelEntry.h>
 
+// Boost headers
+#include <boost/serialization/split_free.hpp>
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace trace {
@@ -41,6 +44,8 @@ namespace trace {
 			Other,							//! not categorized
 			FunctionalUnit_invalid		//! invalid
 		};
+		
+		static const char * toString(FunctionalUnit fu);
 
 		/*!
 			\brief gets the functional unit associated with a particular PTXInstruction
@@ -88,12 +93,12 @@ namespace trace {
 		/*!
 			\brief maps a PTXInstruction::Opcode onto an instruction counter
 		*/
-		typedef std::unordered_map<int, InstructionCounter > OpcodeCountMap;
+		typedef std::map<int, InstructionCounter > OpcodeCountMap;
 
 		/*!
 			\brief maps a functional unit onto an OpcodeCountMap
 		*/
-		typedef std::unordered_map<int, OpcodeCountMap > FunctionalUnitCountMap;
+		typedef std::map<int, OpcodeCountMap > FunctionalUnitCountMap;
 
 	public:
 
@@ -163,19 +168,79 @@ namespace boost
 			ar & count.static_count;
 		}
 		
-		template< class Archive > void serialize(Archive & ar, 
-			trace::InstructionTraceGenerator::FunctionalUnitCountMap &map, const unsigned int version) {
-		
-			for (trace::InstructionTraceGenerator::FunctionalUnitCountMap::const_iterator fu_it = map.begin();
-				fu_it != map.end(); ++fu_it) {
+		template<class Archive> void save(Archive & ar, 
+			const trace::InstructionTraceGenerator::FunctionalUnitCountMap &map, 
+			const unsigned int version) {
+
+			typedef trace::InstructionTraceGenerator::OpcodeCountMap OCMap;
+			typedef trace::InstructionTraceGenerator::FunctionalUnitCountMap FUMap;
+			
+			size_t mapSize =  map.size();;
+			ar << mapSize;
+			
+			for (FUMap::const_iterator fu_it = map.begin(); fu_it != map.end(); ++fu_it) {
+				ar << fu_it->first;
 				
-				for (trace::InstructionTraceGenerator::OpcodeCountMap::const_iterator op_it = fu_it->second.begin();
-					op_it != fu_it->second.end(); ++op_it) {
+				size_t opSize = fu_it->second.size();
+				ar << opSize;
+				
+				for (OCMap::const_iterator oc_it = fu_it->second.begin(); oc_it != fu_it->second.end();
+					++oc_it) {
 					
-					ar & fu_it->first & op_it->first & op_it->second;
+					ar << oc_it->first;
+					ar << oc_it->second;
 				}
 			}
 		}
+		
+		template<class Archive> void load(Archive & ar, 
+			trace::InstructionTraceGenerator::FunctionalUnitCountMap &map,
+			const unsigned int version) {
+			
+			typedef trace::InstructionTraceGenerator::InstructionCounter IC;
+			typedef trace::InstructionTraceGenerator::OpcodeCountMap OCMap;
+			typedef trace::InstructionTraceGenerator::FunctionalUnitCountMap FUMap;
+			
+			
+			size_t mapSize;
+			ar >> mapSize;
+			
+			for (size_t n = 0; n < mapSize; n++) {
+				FUMap::key_type fuKey;
+				ar >> fuKey;
+				
+				size_t ocSize;
+				ar >> ocSize;
+				
+				OCMap opcodeMap;
+				
+				for (size_t m = 0; m < ocSize; m++) {
+					OCMap::key_type key;
+					IC value;
+					
+					ar >> key;
+					ar >> value;
+					
+					opcodeMap[key] = value;
+				}
+				map[fuKey] = opcodeMap;
+			}
+		}
+		
+		template<class Archive> inline void serialize(
+		  Archive & ar,
+		  trace::InstructionTraceGenerator::FunctionalUnitCountMap & t,
+		  const unsigned int file_version){
+		  
+			split_free(ar, t, file_version); 
+		}
+
+		/*
+		template< class Archive > void serialize(Archive & ar, 
+			trace::InstructionTraceGenerator::FunctionalUnitCountMap &map, const unsigned int version) {
+		
+		}
+		*/
 	}
 }
 

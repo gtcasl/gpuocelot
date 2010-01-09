@@ -17,11 +17,19 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/macros.h>
 
 // Boost includes
 #include <boost/filesystem.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,6 +53,37 @@ trace::InstructionTraceGenerator::InstructionCounter &
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+const char * trace::InstructionTraceGenerator::toString(FunctionalUnit fu) {
+	switch (fu) {
+		case Integer_arithmetic:	//! integer arithmetic
+			return "Integer_arithmetic";
+		case Integer_logical:		//! itneger logical
+			return "Integer_logical";
+		case Integer_comparison:	//! comparison
+			return "Integer_comparison";
+		case Float_single:				//! floating-point single-precision
+			return "Float_single";
+		case Float_double:				//! floating-point, double-precision
+			return "Float_double";
+		case Float_comparison:		//! floating-point comparison
+			return "Float_comparison";
+		case Memory_offchip:			//! off-chip: {global, local}
+			return "Memory_offchip";
+		case Memory_onchip:			//! cached or scratchpad: {texture, shared, constant}
+			return "Memory_onchip";
+		case Control:						//! control-flow instructions
+			return "Control";
+		case Parallelism:				//! parallelism: sync, reduction, vote
+			return "Parallelism";
+		case Special:						//! transcendental and special functions
+			return "Special";
+		case Other:							//! not categorized
+			return "Other";
+		default:
+			return "FunctionalUnit_invalid";
+	}
+}
 
 /*!
 	\brief gets the functional unit associated with a particular PTXInstruction
@@ -274,12 +313,12 @@ trace::InstructionTraceGenerator::~InstructionTraceGenerator() {
 		parameters from the kernel
 */
 void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& kernel) {
-
+	//
 	// initialize kernel entry
-	
+	//
 	_entry.name = kernel.name;
 	_entry.module = kernel.module->modulePath;
-	_entry.format = BranchTraceFormat;
+	_entry.format = InstructionTraceFormat;
 
 	std::string name = kernel.name;
 
@@ -292,6 +331,7 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 	stream << _entry.format << "_" << _counter++;
 
 	boost::filesystem::path path( database );
+	
 	path = path.parent_path();
 	path /= _entry.program + "_" + name + "_" + stream.str() + ".header";
 	path = boost::filesystem::system_complete( path );
@@ -300,7 +340,6 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 	
 	_header.format = InstructionTraceFormat;
 		
-
 	// static counts
 	const executive::EmulatedKernel &emuKernel = 
 		static_cast<const executive::EmulatedKernel &>(kernel);
@@ -352,8 +391,8 @@ void trace::InstructionTraceGenerator::finish() {
 	std::ofstream hfile( _entry.header.c_str() );
 	boost::archive::text_oarchive harchive( hfile );
 
-	if( !hfile.is_open() )
-	{
+	if(!hfile.is_open()) {
+	
 		throw hydrazine::Exception(
 			"Failed to open InstructionTraceGenerator header file " 
 			+ _entry.header );

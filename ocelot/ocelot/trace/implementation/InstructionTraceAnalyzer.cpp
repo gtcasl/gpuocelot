@@ -25,6 +25,34 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+static const char * toString(boost::archive::archive_exception::exception_code code) {
+	switch (code) {
+    case boost::archive::archive_exception::unregistered_class:
+			return "unregistered_class";
+    case boost::archive::archive_exception::invalid_signature:
+			return "invalid_signature";
+    case boost::archive::archive_exception::unsupported_version:
+			return "unsupported_version";
+    case boost::archive::archive_exception::pointer_conflict:
+			return "pointer_conflict";
+    case boost::archive::archive_exception::incompatible_native_format:
+			return "incompatible_native_format";
+    case boost::archive::archive_exception::array_size_too_short:
+			return "array_size_too_short";
+    case boost::archive::archive_exception::stream_error:
+			return "stream_error";
+    case boost::archive::archive_exception::invalid_class_name:
+			return "invalid_class_name";
+    case boost::archive::archive_exception::unregistered_cast:
+			return "unregistered_cast";
+		default:
+			break;
+	}
+	return "boost::archive::archive_exception::exception_code_invalid";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 trace::InstructionTraceAnalyzer::InstructionTraceAnalyzer(const std::string & database) {
 
 	std::ifstream stream(database.c_str());
@@ -164,12 +192,18 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 			InstructionTraceGenerator::Header header;
 			std::ifstream hstream( k_it->header.c_str() );
 			boost::archive::text_iarchive harchive( hstream );
-	
-			harchive >> header;
-			assert(header.format == TraceGenerator::InstructionTraceFormat);
-			
 			InstructionTraceGenerator::FunctionalUnitCountMap counter;
-			harchive >> counter;
+
+			try {
+				harchive >> header;
+				assert(header.format == TraceGenerator::InstructionTraceFormat);
+				harchive >> counter;
+			}
+			catch (boost::archive::archive_exception &exp) {
+				std::cout << "### Exception: application '" << program << "' kernel '" << k_it->name << "' ";
+				std::cout << " (exception code: " << toString(exp.code) << ") - stream: '" << k_it->header.c_str() << "'\n";
+				continue;
+			}
 
 			// aggregate counts
 			append(appCounter, counter);
@@ -246,9 +280,15 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
 		
 		std::string program = vector->first;
 		const KernelVector & kernels = vector->second;
+
+		std::map< std::string, int > kernelCount;
 		
 		for (KernelVector::const_iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
-			std::cout << "  '" << program << ":" << k_it->name << "',\n";
+			if (kernelCount.find(k_it->name) == kernelCount.end()) {
+				kernelCount[k_it->name] = 0;
+				std::cout << "  '" << program << ":" << k_it->name << "',\n";
+			}
+			kernelCount[k_it->name] ++;
 		}
 	}
 	std::cout << "]\n\n";
@@ -268,25 +308,40 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
 		std::string program = vector->first;
 		const KernelVector & kernels = vector->second;
 		InstructionTraceGenerator::FunctionalUnitCountMap appCounter;
+		std::map< std::string, int > kernelCount;
 
 		// loop over the kernels
 		for (KernelVector::const_iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
 			InstructionTraceGenerator::Header header;
 			std::ifstream hstream( k_it->header.c_str() );
 			boost::archive::text_iarchive harchive( hstream );
-	
-			harchive >> header;
-			assert(header.format == TraceGenerator::InstructionTraceFormat);
-			
+
+			if (kernelCount.find(k_it->name) == kernelCount.end()) {
+				kernelCount[k_it->name] = 0;
+			}
+
 			InstructionTraceGenerator::FunctionalUnitCountMap counter;
-			harchive >> counter;
+	
+			try {
+				harchive >> header;
+				assert(header.format == TraceGenerator::InstructionTraceFormat);
+			
+				harchive >> counter;
+			}
+			catch (boost::archive::archive_exception &exp) {
+				std::cout << "### boost::archive::archive_exception: application '" << program << "' kernel '" << k_it->name << "' ";
+				std::cout << " (exception code: " << toString(exp.code) << ") - stream: '" << k_it->header.c_str() << "'\n";
+				continue;
+			}
 
 			// print the program name
-			std::cout << "  '" << program << ":" << k_it->name << "': {" << std::endl;
+			std::cout << "  '" << program << ":" << k_it->name << ":" << kernelCount[k_it->name] << "': {" << std::endl;
 			
 			std::cout << "    'blockDim': [" << header.blockDim.x << ", " << header.blockDim.y << ", " << header.blockDim.z << "],\n";
 			std::cout << "    'gridDim': [" << header.gridDim.x << ", " << header.gridDim.y << ", " << header.gridDim.z << "],\n";
 		
+			kernelCount[k_it->name] ++;
+
 			// print out one bar per functional unit
 			for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		
 

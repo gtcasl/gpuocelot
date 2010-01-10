@@ -9,15 +9,14 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -locelot -lhydrazine \
-	$(LLVM_LDFLAGS) $(CUDA_DRIVER_API_LIBARY)
+OCELOT_LIBS = -locelot $(LLVM_LDFLAGS) $(CUDA_DRIVER_API_LIBARY)
 CUDA_CFLAGS = 
 ################################################################################
 
 ################################################################################
 ## Programs and Libraries
 bin_PROGRAMS =
-check_PROGRAMS = leukocyte
+check_PROGRAMS = leukocyte hwt mummergpu
 lib_LTLIBRARIES =
 ################################################################################
 
@@ -93,6 +92,31 @@ leukocyte_SOURCES = tests/leukocyte/detect_main.c \
 
 leukocyte_LDADD = $(OCELOT_LIBS)
 leukocyte_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# heart wall tracking
+hwt_CXXFLAGS =
+hwt_CFLAGS =
+hwt_SOURCES = tests/hwt/avilib.c \
+	tests/hwt/avimod.c \
+	tests/hwt/main.cu.cpp
+hwt_LDADD = $(OCELOT_LIBS)
+hwt_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# mummergpu
+mummergpu_CXXFLAGS = -fopenmp
+mummergpu_CFLAGS = 
+mummergpu_SOURCES = tests/mummergpu/PoolMalloc.cpp \
+	tests/mummergpu/mummergpu.cu.cpp \
+	tests/mummergpu/mummergpu_gold.cpp \
+	tests/mummergpu/mummergpu_main.cpp \
+	tests/mummergpu/smith-waterman.cpp \
+	tests/mummergpu/suffix-tree.cpp
+mummergpu_LDADD = $(OCELOT_LIBS)
+mummergpu_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

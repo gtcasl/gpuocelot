@@ -1,0 +1,3 @@
+../hwt 20 CUDA_SDK_STYLE
+../leukocyte 20 CUDA_SDK_STYLE
+../mummergpu data/shortref.fa data/shortqry.fa CUDA_SDK_STYLE

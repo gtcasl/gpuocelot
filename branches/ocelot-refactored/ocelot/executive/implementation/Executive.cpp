@@ -882,7 +882,9 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 			EmulatedKernel *emuKernel = static_cast<EmulatedKernel *>(kernel);
 			emuKernel->setParameterBlock(parameterBlock, parameterBlockSize);
 			emuKernel->setKernelShape(block.x, block.y, block.z);
-			emuKernel->setSharedMemorySize(sharedMemory);
+			if (sharedMemory) {
+				emuKernel->setSharedMemorySize(sharedMemory);
+			}
 			
 			// dynamic shared memory
 			
@@ -929,6 +931,7 @@ void executive::Executive::synchronize() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Global variable synchronization
+//
 
 void executive::Executive::fenceGlobalVariables() {
 	if (getDeviceAddressSpace()) {

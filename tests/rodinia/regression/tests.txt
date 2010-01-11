@@ -1,0 +1,2 @@
+../srad 128 128 0 31 0 31 0.5 2 CUDA_SDK_STYLE
+../hotspot 50 6 60 CUDA_SDK_STYLE

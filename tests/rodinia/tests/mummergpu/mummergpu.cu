@@ -461,7 +461,7 @@ void boardMemory(unsigned int * free_mem, unsigned int * total_mem)
 {
   // The emulator doesn't allow calls to cuMemGetInfo
 
-#ifdef __DEVICE_EMULATION__
+#if 1
   *free_mem =  512*1024*1024;
   *total_mem = 768*1024*1024;
 #else

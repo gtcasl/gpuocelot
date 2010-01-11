@@ -1,0 +1,29 @@
+INFO     Reading in test file /home/normal/checkout/gpuocelot/tests/rodinia/regression/tests.txt
+INFO      Found the following tests:
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/srad
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/hotspot
+INFO     ==== INDIVIDUAL TEST RESULTS ====
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/srad 128 128 0 31 0 31 0.5 2 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/hotspot 50 6 60 
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/hotspot
+INFO     Test completed in 0.0656430721283 seconds
+INFO      It produced the following output:
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  hotspot.cu (328, 5): Type of %rh1 u16 not convertable to type s8 .
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/srad
+INFO     Test completed in 0.593898057938 seconds
+INFO      It produced the following output:
+
+TEST PASSED
+
+INFO     
+Passing tests:
+ (0.594s) : /home/normal/checkout/gpuocelot/tests/rodinia/srad : Passed
+
+Failing tests:
+ (0.066s) : /home/normal/checkout/gpuocelot/tests/rodinia/hotspot : Did not complete.
+
+Non-Existent tests:
+

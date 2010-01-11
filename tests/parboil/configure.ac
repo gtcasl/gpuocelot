@@ -90,7 +90,7 @@ else
 fi
 
 AC_CHECK_LIB([ocelot], [main],[AC_DEFINE(HAVE_OCELOT, [], [""])], \
-	AC_MSG_ERROR("libocelot required"), [$LLVM_LDFLAGS])
+	AC_MSG_ERROR("libocelot required"), [$LLVM_LDFLAGS $CUDA_DRIVER_API_LIBARY])
 ################################################################################
 
 ################################################################################

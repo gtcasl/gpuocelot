@@ -16,7 +16,7 @@ CUDA_CFLAGS =
 ################################################################################
 ## Programs and Libraries
 bin_PROGRAMS =
-check_PROGRAMS = leukocyte hwt mummergpu
+check_PROGRAMS = leukocyte hwt mummergpu lu srad hotspot backprop needle
 lib_LTLIBRARIES =
 ################################################################################
 
@@ -117,6 +117,56 @@ mummergpu_SOURCES = tests/mummergpu/PoolMalloc.cpp \
 	tests/mummergpu/suffix-tree.cpp
 mummergpu_LDADD = $(OCELOT_LIBS)
 mummergpu_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# lu
+lu_CXXFLAGS = 
+lu_CFLAGS = 
+lu_SOURCES = tests/luDecomposition/common.c \
+	tests/luDecomposition/lud.cu.cpp \
+	tests/luDecomposition/lud_kernel.cu.cpp
+lu_LDADD = $(OCELOT_LIBS)
+lu_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# srad
+srad_CXXFLAGS = 
+srad_CFLAGS = 
+srad_SOURCES = tests/srad/srad.cu.cpp
+srad_LDADD = $(OCELOT_LIBS)
+srad_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# hotspot 
+hotspot_CXXFLAGS = 
+hotspot_CFLAGS = 
+hotspot_SOURCES = tests/hotspot/hotspot.cu.cpp
+hotspot_LDADD = $(OCELOT_LIBS)
+hotspot_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# backprop
+backprop_CXXFLAGS = -fopenmp
+backprop_CFLAGS = 
+backprop_SOURCES = tests/backPropagation/backprop.c \
+	tests/backPropagation/facetrain.c \
+	tests/backPropagation/imagenet.c \
+	tests/backPropagation/backprop_cuda.cu.cpp
+backprop_LDADD = $(OCELOT_LIBS)
+backprop_LDFLAGS = -static
+################################################################################
+
+################################################################################
+# needle
+needle_CXXFLAGS = 
+needle_CFLAGS = 
+needle_SOURCES = tests/needlemanWunsch/needle.cu.cpp
+needle_LDADD = $(OCELOT_LIBS)
+needle_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

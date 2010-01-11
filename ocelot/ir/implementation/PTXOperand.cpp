@@ -213,6 +213,9 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case u32: {
 			switch( source ) {
+				case s8: /* fall through */
+				case s16: /* fall through */
+				case s32: /* fall through */
 				case u8: /* fall through */
 				case u16: /* fall through */
 				case u32: /* fall through */
@@ -288,6 +291,9 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case s8: {
 			switch( source ) {
+				case u16: /* fall through */
+				case s16: /* fall through */
+				case b16: /* fall through */
 				case s8: /* fall through */
 				case u8: /* fall through */
 				case b8: return true; break;

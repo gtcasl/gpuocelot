@@ -24,7 +24,7 @@ ACLOCAL_AMFLAGS = -I m4
 BUILT_SOURCES=ptxgrammar.h
 bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator \
-	PTXOptimizer
+	PTXOptimizer InstructionTraceAnalyzer
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
@@ -148,6 +148,16 @@ MemoryTraceAnalyzer_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
 MemoryTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
 MemoryTraceAnalyzer_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## InstructionTraceAnalyzer
+#
+InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+InstructionTraceAnalyzer_SOURCES = \
+	ocelot/trace/implementation/InstructionTraceAnalyzer.cpp
+InstructionTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+InstructionTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

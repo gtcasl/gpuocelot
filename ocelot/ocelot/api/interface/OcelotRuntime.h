@@ -16,6 +16,8 @@
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
 #include <ocelot/trace/interface/CacheSimulator.h>
 
+#include <ocelot/trace/interface/InstructionTraceGenerator.h>
+
 namespace ocelot
 {
 	/*! \brief This is an interface for managing state associated with Ocelot */
@@ -29,7 +31,7 @@ namespace ocelot
 			trace::ParallelismTraceGenerator _parallelismTraceGenerator;
 			trace::InstructionTraceGenerator _instructionTraceGenerator;
 			trace::CacheSimulator _cacheSimulator;
-		
+
 			bool _initialized;
 			
 		public:

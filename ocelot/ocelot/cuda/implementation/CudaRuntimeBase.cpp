@@ -17,7 +17,7 @@
 #endif
 
 #define REPORT_BASE 0
-#define REPORT_MEMORY 1
+#define REPORT_MEMORY 0
 
 namespace cuda
 {

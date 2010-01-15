@@ -122,6 +122,11 @@ namespace ocelot
 			_cacheSimulator.database = database;
 			ocelot::addTraceGenerator( _cacheSimulator, true, false );	
 		}
+		if (instructionTrace) {
+			report("Creating instruction trace generator");
+			_instructionTraceGenerator.database = database;
+			ocelot::addTraceGenerator( _instructionTraceGenerator, true, false);
+		}
 	}
 
 }

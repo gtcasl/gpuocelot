@@ -58,13 +58,22 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 */
 void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 	#if HAVE_CUDA_DRIVER_API == 1
-	report("executive::GPUExecutableKernel::launchGrid()");
+	report("executive::GPUExecutableKernel::launchGrid(" << width << ", " << height << ")");
 	CUresult result;
 
 	result = cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
+	}
+	// KERRDEBUG remove this before check in
+	{
+		result = cuCtxSynchronize();
+		if (result != CUDA_SUCCESS) {
+			report ("  -cuLaunchGrid() failed on ctx synchronize(): " << result);
+			throw hydrazine::Exception("cuCtxSynchronize() failed after launchGrid() was called");
+		}
+		report("  -cuLaunchGrid() succeeded");
 	}
 	#endif
 }
@@ -74,7 +83,11 @@ void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 */
 void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
 	#if HAVE_CUDA_DRIVER_API == 1
-	cuFuncSetBlockShape(cuFunction, x, y, z);
+	CUresult result = cuFuncSetBlockShape(cuFunction, x, y, z);
+	if (result != CUDA_SUCCESS) {
+		report("failed to set kernel shape with result " << result);
+		throw hydrazine::Exception("GPUExecutableKernel::setKernelShape() failed");
+	}
 	#endif
 }
 
@@ -86,6 +99,7 @@ void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int byte
 	_sharedMemorySize = bytes;
 #if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
+//	bytes = 2496;// KERRDEBUG remove this before check in
 	result = cuFuncSetSharedSize(cuFunction, bytes);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuFuncSetSharedSize(" << bytes << " bytes) FAILED: " << result);
@@ -134,11 +148,12 @@ void executive::GPUExecutableKernel::removeTraceGenerator(
 
 void executive::GPUExecutableKernel::configureParameters() {
 #if HAVE_CUDA_DRIVER_API == 1
-	report("executive::GPUExecutableKernel::configuraParameters()");
+	report("executive::GPUExecutableKernel::configureParameters()");
 
 	std::vector< ir::Parameter >::iterator it = parameters.begin();
 	unsigned int paramSize = 0;
 	cudaError_enum result;
+
 	for (; it != parameters.end(); ++it) {
 		if (it->getElementSize() == 8 && (paramSize % 8)) {
 			paramSize += 8 - (paramSize % 8);
@@ -149,8 +164,11 @@ void executive::GPUExecutableKernel::configureParameters() {
 	if (!paramSize) {
 		return;
 	}
-	if ((result = cuParamSetSize(cuFunction, paramSize)) != CUDA_SUCCESS) {
-		report("** failed to set parameter size (" << paramSize << " bytes) for kernel " << name << "\n - cuParamSetSize returned " << result);
+
+	result = cuParamSetSize(cuFunction, paramSize);
+	if (result != CUDA_SUCCESS) {
+		report("** failed to set parameter size (" << paramSize << " bytes) for kernel " 
+			<< name << "\n - cuParamSetSize returned " << result);
 		throw hydrazine::Exception(std::string("Failed to set parameter size for kernel ") + name);
 	}
 	else {
@@ -190,7 +208,8 @@ void executive::GPUExecutableKernel::configureParameters() {
 					}
 				}
 
-				report("  - GPUExecutableKernel::configureParameters() - cuParamSetv(offset: " << it->offset << ", size: " << bytes << " bytes)");
+				report("  - GPUExecutableKernel::configureParameters() - cuParamSetv(offset: " 
+					<< it->offset << ", size: " << bytes << " bytes)");
 				if (cuParamSetv(cuFunction, it->offset, (void *)ptr, bytes) != CUDA_SUCCESS) {
 					report("*** failed to set binary parameter - offset: " << it->offset << ", size: " << bytes);
 					throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 

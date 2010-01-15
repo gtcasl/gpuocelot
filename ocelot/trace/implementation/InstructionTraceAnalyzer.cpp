@@ -7,6 +7,7 @@
 
 // C++ stdlib includes
 #include <map>
+#include <set>
 #include <deque>
 #include <iostream>
 #include <fstream>
@@ -104,7 +105,7 @@ void trace::InstructionTraceAnalyzer::list() const {
 }
 
 static void append(trace::InstructionTraceGenerator::FunctionalUnitCountMap & appCounter,
-	const trace::InstructionTraceGenerator::FunctionalUnitCountMap &count) {
+	const trace::InstructionTraceGenerator::FunctionalUnitCountMap &count, bool appendStatic) {
 	
 	typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
 	typedef trace::InstructionTraceGenerator::FunctionalUnitCountMap IC;
@@ -124,7 +125,9 @@ static void append(trace::InstructionTraceGenerator::FunctionalUnitCountMap & ap
 				}
 				else {
 					appCounter[count_it->first][oc_it->first].dynamic_count += oc_it->second.dynamic_count;
-					appCounter[count_it->first][oc_it->first].static_count += oc_it->second.static_count;
+					if (appendStatic) {
+						appCounter[count_it->first][oc_it->first].static_count += oc_it->second.static_count;
+					}
 					appCounter[count_it->first][oc_it->first].activity += oc_it->second.activity * oc_it->second.dynamic_count;
 				}
 			}
@@ -182,6 +185,8 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 
 	for( KernelMap::const_iterator vector = _kernels.begin(); 
 		vector != _kernels.end(); ++vector ) {
+
+		std::set< std::string > visitedKernels;
 		
 		std::string program = vector->first;
 		const KernelVector & kernels = vector->second;
@@ -206,7 +211,8 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 			}
 
 			// aggregate counts
-			append(appCounter, counter);
+			append(appCounter, counter, visitedKernels.find(k_it->name) == visitedKernels.end());
+			visitedKernels.insert(k_it->name);
 		}
 		
 		// print the program name

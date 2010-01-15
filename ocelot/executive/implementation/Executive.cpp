@@ -35,6 +35,8 @@
 
 #define REPORT_BASE 0
 
+// if 1, saves ptx representation of each module of an app to file 'module_<n>.ptx'
+#define GPU_EMIT_PTX_REPRESENTATION 0
 
 #if HAVE_CUDA_DRIVER_API == 1
 typedef struct {
@@ -470,7 +472,7 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 
 	std::stringstream ss;	
 	m.write(ss);
-#if 0
+#if GPU_EMIT_PTX_REPRESENTATION
 	// emit the ptx source file to a text file in the binary's directory
 	{
 		static int modules = 0;
@@ -611,7 +613,13 @@ bool executive::Executive::unloadModule(const std::string& path) {
 	Blocks until all possibly executing kernels have completed.
 */
 void executive::Executive::synchronize() {
-	
+#if HAVE_CUDA_DRIVER_API == 1
+	if (getSelectedISA() == ir::Instruction::GPU) {
+		if (cuCtxSynchronize() != CUDA_SUCCESS) {
+			report("executive::Executive::synchronize()");
+		}
+	}
+#endif
 }
 
 /*! Enumerate available devices */
@@ -730,7 +738,11 @@ void executive::Executive::enumerateDevices() {
 
 		cuDeviceComputeCapability(&device.major, &device.minor, i);
 
-		allDevices.push_back(device);
+//		if (device.totalMemory < (1<<30)) 	// filter out Tesla cards
+		{
+			report("added GPU: " << device.name);
+			allDevices.push_back(device);
+		}
 	}
 	#endif
 	restoreFilteredDevices();
@@ -788,7 +800,7 @@ bool executive::Executive::select(int device) {
 				cudaGLInitialized = false;
 
 				if (cuCtxCreate(&cudaContext, CU_CTX_MAP_HOST, devices[i].guid) == CUDA_SUCCESS) {
-					report("  cuCtxCreate() successful - creaetd CUDA device " << i);
+					report("  cuCtxCreate() successful - created CUDA device " << devices[i].guid);
 					return true;
 				}
 				report("cuGLCtxCreate(&context,0, " << devices[i].guid << ") failed");
@@ -924,7 +936,8 @@ void *executive::Executive::malloc(size_t bytes) {
 				record.external = false;
 				record.size = bytes;
 				record.ptr = 0;
-				if (cuMemAlloc((CUdeviceptr *)&record.ptr, bytes) == CUDA_SUCCESS) {
+				CUresult result = cuMemAlloc((CUdeviceptr *)&record.ptr, bytes);
+				if (result == CUDA_SUCCESS) {
 					record.offset = 0;
 					memoryAllocations[getSelected()].insert(
 						std::make_pair((char *)record.ptr, record));
@@ -932,6 +945,11 @@ void *executive::Executive::malloc(size_t bytes) {
 						<< bytes << " bytes on device " << record.device 
 						<< " at 0x" << std::hex << record.ptr << std::dec);
 					return record.ptr;
+				}
+				else {
+					report("executive::Executive::malloc() - cuMemAlloc() failed when attempting to allocate " 
+						<< bytes << " bytes with result " << result);
+					throw hydrazine::Exception("Executive::malloc() failed to allocate memory on GPU");
 				}
 			}
 			break;

@@ -45,6 +45,8 @@ namespace executive {
 	
 		/*!	Sets the shape of a kernel */
 		void setKernelShape(int x, int y, int z);
+
+		ir::Dim3 getKernelShape() const;
 		
 		/*! \brief Changes the amount of external shared memory */
 		void setExternSharedMemorySize(unsigned int bytes);

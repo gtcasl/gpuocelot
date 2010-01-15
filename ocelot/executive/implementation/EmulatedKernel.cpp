@@ -91,6 +91,10 @@ void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
 	_maxThreadsPerBlock = x*y*z;
 }
 
+ir::Dim3 executive::EmulatedKernel::getKernelShape() const {
+	return _blockDim;
+}
+
 void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
 	_externSharedMemorySize = bytes;
 }

@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 2
+#define REPORT_BASE 0
 
 /*!
 	Tests initialization of executive, load of kernel, and translation to 
@@ -112,7 +112,8 @@ bool test::TestGPUKernel::doTest() {
 test::TestGPUKernel::TestGPUKernel() {
 
 	name = "TestGPUKernel";
-
+	ThreadCount = 8;
+	
 	description = "A test for the Executive and GPUKernel classes:\n";
 	description += " Load a PTX module. Translate to GPUExecutableKernel using the Executive and the GPU device.\n";
 	description += " Configure and launch kernel grid. Compare results to expectations.";

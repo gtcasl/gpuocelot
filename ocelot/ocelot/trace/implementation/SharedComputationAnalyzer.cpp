@@ -194,7 +194,7 @@ int main( int argc, char** argv) {
 
 	parser.parse( "-l", list, false, "List all traces in the database." );
 	parser.parse( "-i", database, 
-		"traces/database.db", "Path to database file." );
+		"traces/database.trace", "Path to database file." );
 	parser.parse( "-v", verbose, false, 
 		"Prints an unmanagable amount of information.");
 

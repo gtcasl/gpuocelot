@@ -186,7 +186,6 @@ namespace boost
 			
 			ar & count.dynamic_count;
 			ar & count.static_count;
-			ar & count.activity;
 		}
 		
 		template<class Archive> void save(Archive & ar, 

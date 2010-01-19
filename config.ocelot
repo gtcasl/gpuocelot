@@ -15,6 +15,9 @@
 		<UseParallelismTraceGenerator>
 			0
 		</UseParallelismTraceGenerator>
+		<UseInstructionTraceGenerator>
+			0
+		</UseInstructionTraceGenerator>
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>

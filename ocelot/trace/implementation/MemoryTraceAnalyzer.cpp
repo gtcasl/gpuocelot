@@ -887,9 +887,9 @@ int main( int argc, char** argv) {
 	parser.parse( "-l", "--list", list, false, 
 		"List all traces in the database." );
 	
-	parser.parse( "-m", "--machine", machine_readable, false, 
+	parser.parse( "-z", "--machine", machine_readable, false, 
 		"Indicates output is intended to be machine-readable");
-	parser.parse( "-i", "--input", database, "traces/database.db", 
+	parser.parse( "-i", "--input", database, "traces/database.trace", 
 		"Path to database file." );	
 	parser.parse( "-v", "--verbose", verbose, false, 
 		"Prints an unmanagable amount of information.");
@@ -903,7 +903,7 @@ int main( int argc, char** argv) {
 	parser.parse( "", "--binsize", binsize, 6, 
 		"Exponent to which 2 must be raised to specify bin size in bytes for histogram.");
 
-	parser.parse( "", "--Global", global, false, 
+	parser.parse( "-g", "--Global", global, false, 
 		"Print global load/store statistics to stdout");
 	parser.parse( "", "--warpsize", warpsize, 32, 
 		"Number of threads per warp");
@@ -921,7 +921,7 @@ int main( int argc, char** argv) {
 	parser.parse( "", "--segsize", segment_size_pow2, 7, 
 		"Exponent to which 2 must be raised to specify segment size in Koverlapped and Aoverlapped metrics");
 		
-	parser.parse( "", "--MemIntensity", mem_intensity, false, 
+	parser.parse( "-m", "--MemIntensity", mem_intensity, false, 
 		"Computes [ld+st]/dynamic instructions for each kernel and aggregates, weighting by dynamic instructions");
 	parser.parse();
 	

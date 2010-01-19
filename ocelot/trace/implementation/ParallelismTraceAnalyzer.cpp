@@ -223,7 +223,7 @@ int main( int argc, char** argv )
 	parser.parse( "-p", parallelism, false, 
 		"Compute parallelism for each trace." );
 
-	parser.parse( "-i", database, "traces/database.db", 
+	parser.parse( "-i", database, "traces/database.trace", 
 		"Path to database file." );
 		
 	if( help )

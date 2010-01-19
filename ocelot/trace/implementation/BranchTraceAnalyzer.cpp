@@ -191,7 +191,7 @@ int main( int argc, char** argv )
 	parser.parse( "-d", divergence, false,
 		"Compute branch divergence for each trace." );
 
-	parser.parse( "-i", database, "traces/database.db", 
+	parser.parse( "-i", database, "traces/database.trace", 
 		"Path to database file." );
 		
 	if( help )

@@ -324,10 +324,7 @@ void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& ke
 
 	std::string name = kernel.name;
 
-	if( name.size() > 20 )
-	{
-		name.resize( 20 );
-	}
+	if( name.size() > 20 ) name.resize( 20 );
 
 	std::stringstream stream;
 	stream << _entry.format << "_" << _counter++;

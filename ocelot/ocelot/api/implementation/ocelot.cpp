@@ -57,6 +57,18 @@ namespace ocelot
 		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearErrors();
 	}
 
+	void reset()
+	{
+		assertM( false, "Ocelot API function reset is not implemented." );
+	}
+	
+	void contextSwitch(unsigned int destinationDevice, 
+		unsigned int sourceDevice)
+	{
+		assertM( false, "Ocelot API contextSwitch is not implemented." );
+	}
+
+
 }
 
 #endif

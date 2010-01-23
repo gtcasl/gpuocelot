@@ -1,5 +1,4 @@
-/*!
-	\file InstructionTraceAnalyzer.h
+/*! \file InstructionTraceAnalyzer.h
 	\author Andrew Kerr
 	\date Jan 2010
 	\brief The header file for the InstructionTraceAnalyzer class
@@ -14,9 +13,7 @@
 
 namespace trace
 {
-
-	/*!
-		\brief Provides the ability to inspect a database created by a 
+	/*! \brief Provides the ability to inspect a database created by a 
 		BranchTraceGenerator
 	*/
 	class InstructionTraceAnalyzer {
@@ -30,9 +27,7 @@ namespace trace
 		
 		public:
 		
-			/*!
-				\brief The constructor loads a database
-			*/
+			/*! \brief The constructor loads a database */
 			InstructionTraceAnalyzer(const std::string& database);
 			
 			/*!

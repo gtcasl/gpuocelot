@@ -3,9 +3,6 @@
 /* "" */
 #undef HAVE_CUBLAS
 
-/* "" */
-#undef HAVE_CUDART
-
 /* "Define to 1 if the cuda driver api is found" */
 #undef HAVE_CUDA_DRIVER_API
 
@@ -14,9 +11,6 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
-
-/* "" */
-#undef HAVE_HYDRAZINE
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -47,24 +41,6 @@
 
 /* "" */
 #undef HAVE_OCELOT
-
-/* "" */
-#undef HAVE_OCELOT_ANALYSIS
-
-/* "" */
-#undef HAVE_OCELOT_EXECUTIVE
-
-/* "" */
-#undef HAVE_OCELOT_IR
-
-/* "" */
-#undef HAVE_OCELOT_PARSER
-
-/* "" */
-#undef HAVE_OCELOT_TRACE
-
-/* "" */
-#undef HAVE_OCELOT_TRANSLATOR
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H

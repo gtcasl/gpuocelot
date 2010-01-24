@@ -150,7 +150,7 @@ namespace parser
 					void baseOperand( double value );
 					void clockOperand( const std::string& value );
 					void specialOperand( const std::string& value );
-					void memoryOperand( const std::string& name, 
+					void addressableOperand( const std::string& name, 
 						long long int value, YYLTYPE& location, 
 						bool invert );
 					void arrayOperand( YYLTYPE& location );

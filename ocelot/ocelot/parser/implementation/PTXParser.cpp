@@ -745,7 +745,7 @@ namespace parser
 		operandVector.push_back( operand );	
 	}
 	
-	void PTXParser::State::memoryOperand( const std::string& name, 
+	void PTXParser::State::addressableOperand( const std::string& name, 
 		long long int value, YYLTYPE& location, bool invert )
 	{
 		OperandMap::iterator mode = operands.find( name );

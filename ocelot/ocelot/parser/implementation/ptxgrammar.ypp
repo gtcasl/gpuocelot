@@ -453,23 +453,31 @@ baseOperand : TOKEN_SPECIAL_REGISTER
 	state.specialOperand( $<text>1 );
 };
 
+addressableOperand : identifier
+{
+	state.addressableOperand( $<text>1, 0, @1, false );
+};
+
+offsetAddressableOperand : identifier '+' TOKEN_DECIMAL_CONSTANT
+{
+	state.addressableOperand( $<text>1, $<value>3, @1, false );
+};
+
+offsetAddressableOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
+{
+	state.addressableOperand( $<text>1, $<value>3, @1, true );
+};
+
 operand : baseOperand | nonLabelOperand;
 
-memoryOperand : baseOperand;
+memoryOperand : baseOperand | addressableOperand | offsetAddressableOperand;
 
-memoryOperand : identifier
-{
-	state.memoryOperand( $<text>1, 0, @1, false );
-};
+branchOperand : baseOperand | labelOperand;
 
-memoryOperand : identifier '+' TOKEN_DECIMAL_CONSTANT
+arrayOperand : operand;
+arrayOperand : '{' identifierList '}'
 {
-	state.memoryOperand( $<text>1, $<value>3, @1, false );
-};
-
-memoryOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
-{
-	state.memoryOperand( $<text>1, $<value>3, @1, true );
+	state.arrayOperand( @1 );
 };
 
 guard : TOKEN_PREDICATE_IDENTIFIER
@@ -549,8 +557,6 @@ ftzInstruction3 : ftzInstruction3Opcode optionalFtz dataType operand ','
 {
 	state.instruction( $<text>1, $<value>3, 4 );
 };
-
-branchOperand : baseOperand | labelOperand;
 
 optionalUni : /* empty string */
 {
@@ -738,7 +744,9 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1, 1 );
 };
 
-mov : OPCODE_MOV dataType arrayOperand ',' arrayOperand ';'
+movSourceOperand : arrayOperand | offsetAddressableOperand;
+
+mov : OPCODE_MOV dataType arrayOperand ',' movSourceOperand ';'
 {
 	state.instruction( $<text>1, $<value>2, 3 );
 };
@@ -868,12 +876,6 @@ slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ','
 {
 	state.instruction( $<text>1, $<value>3, 5 );
 	state.convertC( $<value>4, @1 );
-};
-
-arrayOperand : operand;
-arrayOperand : '{' identifierList '}'
-{
-	state.arrayOperand( @1 );
 };
 
 st : OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' arrayOperand ';'

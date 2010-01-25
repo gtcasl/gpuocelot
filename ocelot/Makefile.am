@@ -24,7 +24,7 @@ ACLOCAL_AMFLAGS = -I m4
 BUILT_SOURCES=ptxgrammar.h
 bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator \
-	PTXOptimizer InstructionTraceAnalyzer
+	PTXOptimizer InstructionTraceAnalyzer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
@@ -112,6 +112,18 @@ libocelot_la_SOURCES = \
 	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
+################################################################################
+
+################################################################################
+## OcelotConfig
+OcelotConfig_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x \
+	-DOCELOT_ABS_PATH="\"${abs_builddir}\"" \
+	-DOCELOT_BIN_PATH="\"${bindir}\"" \
+	-DOCELOT_LIB_PATH="\"${libdir}\"" -DOCELOT_PREFIX_PATH="\"${prefix}\"" \
+	-DOCELOT_INCLUDE_PATH="\"${includedir}\""
+OcelotConfig_SOURCES = ocelot/util/implementation/OcelotConfig.cpp
+OcelotConfig_LDADD = libocelot.la
+OcelotConfig_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

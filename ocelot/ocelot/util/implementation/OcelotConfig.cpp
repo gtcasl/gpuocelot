@@ -52,36 +52,41 @@ namespace util
 
 	std::string OcelotConfig::string() const
 	{
+		std::string result;
 		if( version )
 		{
-			return _version();
+			result = _version();
 		}
 		else if( flags )
 		{
-			return _flags();
+			result = _flags();
 		}
 		else if( prefix )
 		{
-			return _prefix();
+			result = _prefix();
 		}
 		else if( libs )
 		{
-			return _libs();
+			result = _libs();
 		}
 		else if( includedir )
 		{
-			return _includedir();
+			result = _includedir();
 		}
 		else if( libdir )
 		{
-			return _libdir();
+			result = _libdir();
 		}
 		else if( bindir )
 		{
-			return _bindir();
+			result = _bindir();
+		}
+		else
+		{
+			return "";
 		}
 		
-		return "";
+		return result + "\n";
 	}
 
 	OcelotConfig::OcelotConfig()
@@ -112,7 +117,7 @@ int main(int argc, char** argv)
 		"Print the install prefix." );
 	parser.parse();
 
-	std::cout << config.string() << "\n";
+	std::cout << config.string();
 	
 	return 0;
 }

@@ -2063,6 +2063,114 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 		switch (instr.a.type) {
+			case PTXOperand::b8: // fall through
+			case PTXOperand::u8:
+			{
+				// u16 to one of the following
+				switch (instr.type) {
+					case PTXOperand::s16:
+					case PTXOperand::u16:
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+									operandAsB8(threadID, instr.a));
+						}
+						break;
+					// to larger integers
+					case PTXOperand::s32: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+									operandAsB8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::b64: // fall through
+					case PTXOperand::s64: // fall through
+					case PTXOperand::u64: // fall through
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+								operandAsB8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::f32:
+						{
+							setRegAsF32(threadID, instr.d.reg, 
+								operandAsB8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::f64:
+						{
+							setRegAsF64(threadID, instr.d.reg, 
+								operandAsB8(threadID, instr.a));
+						}
+						break;
+					default:
+						throw RuntimeException("conversion not implemented", 
+							context.PC, instr);
+						break;
+				}
+			}
+			break;
+			case PTXOperand::s8:
+			{
+				// u16 to one of the following
+				switch (instr.type) {
+					case PTXOperand::s16:
+							setRegAsS64(threadID, instr.d.reg, 
+									operandAsS8(threadID, instr.a));
+						break;
+					case PTXOperand::u16:
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+									operandAsS8(threadID, instr.a));
+						}
+						break;
+						// to larger integers
+					case PTXOperand::s32:
+						{
+							setRegAsS64(threadID, instr.d.reg, 
+									operandAsS8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+									operandAsS8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::s64:
+						{
+							setRegAsS64(threadID, instr.d.reg, 
+								operandAsS8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::b64: // fall through
+					case PTXOperand::u64: // fall through
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+								operandAsS8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::f32:
+						{
+							setRegAsF32(threadID, instr.d.reg, 
+								operandAsS8(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::f64:
+						{
+							setRegAsF64(threadID, instr.d.reg, 
+								operandAsS8(threadID, instr.a));
+						}
+						break;
+					default:
+						throw RuntimeException("conversion not implemented", 
+							context.PC, instr);
+						break;
+				}
+			}
+			break;
 			case PTXOperand::b16: // fall through
 			case PTXOperand::u16:
 			{
@@ -2116,6 +2224,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 				// u16 to one of the following
 				switch (instr.type) {
 					case PTXOperand::s16:
+							setRegAsS64(threadID, instr.d.reg, 
+									operandAsS16(threadID, instr.a));
 						break;
 					case PTXOperand::u16:
 						{

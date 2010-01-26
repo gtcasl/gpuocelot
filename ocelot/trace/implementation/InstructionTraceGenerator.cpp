@@ -410,7 +410,12 @@ void trace::InstructionTraceGenerator::finish() {
 			for (OpcodeCountMap::iterator oc_it = fu_it->second.begin(); oc_it != fu_it->second.end();
 				++oc_it) {
 			
-				oc_it->second.activity /= (double)threadCount * (double)oc_it->second.dynamic_count;
+				if (threadCount != 0 && oc_it->second.dynamic_count != 0) {
+					oc_it->second.activity /= (double)threadCount * (double)oc_it->second.dynamic_count;
+				}
+				else {
+					oc_it->second.activity = 0;
+				}
 			}
 		}
 	}

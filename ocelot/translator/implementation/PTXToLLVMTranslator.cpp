@@ -275,6 +275,20 @@ namespace translator
 		return context;
 	}
 
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_context()
+	{
+		ir::LLVMInstruction::Operand context;
+		
+		context.type.category = ir::LLVMInstruction::Type::Pointer;
+		context.type.members.resize(1);
+		context.type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		context.type.members[0].label = "%LLVMContext";
+		context.name = "%__ctaContext";
+		
+		return context;
+	}
+
 	void PTXToLLVMTranslator::_debug( const analysis::DataflowGraph::Block& b )
 	{
 		if( optimizationLevel != DebugOptimization ) return;
@@ -285,12 +299,7 @@ namespace translator
 		
 		call.parameters.resize( 2 );
 
-		call.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-		call.parameters[0].type.members.resize(1);
-		call.parameters[0].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		call.parameters[0].type.members[0].label = "%LLVMContext";
-		call.parameters[0].name = "%__ctaContext";
+		call.parameters[0] = _context();
 
 		call.parameters[1].type.type = ir::LLVMInstruction::I32;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
@@ -311,19 +320,127 @@ namespace translator
 		
 		call.parameters.resize( 2 );
 
-		call.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-		call.parameters[0].type.members.resize(1);
-		call.parameters[0].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		call.parameters[0].type.members[0].label = "%LLVMContext";
-		call.parameters[0].name = "%__ctaContext";
+		call.parameters[0] = _context();
 
-		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.type = ir::LLVMInstruction::I64;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		call.parameters[1].constant = true;
 		call.parameters[1].i64 = (long long unsigned int)i.i;
 
 		_add( call );
+	}
+
+	void PTXToLLVMTranslator::_check( ir::PTXInstruction::AddressSpace space,
+		const ir::LLVMInstruction::Operand& address, unsigned int bytes,
+		unsigned int statement )
+	{
+		if( optimizationLevel != MemoryCheckOptimization ) return;
+
+		ir::LLVMCall call;
+
+		switch( space )
+		{
+			case ir::PTXInstruction::Shared:
+			{
+				call.name = "@__ocelot_check_shared_memory_access";
+				break;
+			}
+			case ir::PTXInstruction::Global:
+			{
+				call.name = "@__ocelot_check_global_memory_access";
+				break;
+			}
+			case ir::PTXInstruction::Local:
+			{
+				call.name = "@__ocelot_check_local_memory_access";
+				break;
+			}
+			case ir::PTXInstruction::Const:
+			{
+				call.name = "@__ocelot_check_constant_memory_access";
+				break;
+			}
+			case ir::PTXInstruction::Param:
+			{
+				call.name = "@__ocelot_check_param_memory_access";
+				break;
+			}
+			default: assertM(false, "Invalid space " 
+				<< ir::PTXInstruction::toString( space ) 
+				<< " for memory checking.");
+		}
+		
+		call.parameters.resize( 4 );
+
+		call.parameters[0] = _context();
+
+		call.parameters[1].name = _tempRegister();
+		call.parameters[1].type.type = ir::LLVMInstruction::I64;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		
+		call.parameters[2].type.type = ir::LLVMInstruction::I32;
+		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[2].constant = true;
+		call.parameters[2].i32 = bytes;
+		
+		call.parameters[3].type.type = ir::LLVMInstruction::I32;
+		call.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[3].constant = true;
+		call.parameters[3].i32 = statement;
+		
+		ir::LLVMPtrtoint convert;
+		
+		convert.a = address;
+		convert.d = call.parameters[1];
+		
+		_add( convert );
+		_add( call );
+	}
+
+	void PTXToLLVMTranslator::_addMemoryCheckingDeclarations()
+	{
+		if( optimizationLevel != MemoryCheckOptimization ) return;		
+		
+		ir::LLVMStatement check( ir::LLVMStatement::FunctionDeclaration );
+
+		check.label = "__ocelot_check_global_memory_access";
+		check.linkage = ir::LLVMStatement::InvalidLinkage;
+		check.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		check.visibility = ir::LLVMStatement::Default;
+		
+		check.parameters.resize( 4 );
+
+		check.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		check.parameters[0].type.members.resize(1);
+		check.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		check.parameters[0].type.members[0].label = "%LLVMContext";
+
+		check.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		check.parameters[1].type.type = ir::LLVMInstruction::I64;
+	
+		check.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		check.parameters[2].type.type = ir::LLVMInstruction::I32;
+	
+		check.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
+		check.parameters[3].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( check );		
+
+		check.label = "__ocelot_check_global_memory_access";
+		_llvmKernel->_statements.push_front( check );		
+
+		check.label = "__ocelot_check_shared_memory_access";
+		_llvmKernel->_statements.push_front( check );		
+
+		check.label = "__ocelot_check_constant_memory_access";
+		_llvmKernel->_statements.push_front( check );		
+
+		check.label = "__ocelot_check_local_memory_access";
+		_llvmKernel->_statements.push_front( check );
+		
+		check.label = "__ocelot_check_param_memory_access";
+		_llvmKernel->_statements.push_front( check );
 	}
 
 	void PTXToLLVMTranslator::_insertDebugSymbols()
@@ -988,12 +1105,7 @@ namespace translator
 			call.parameters.resize( 5 );
 		}
 		
-		call.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-		call.parameters[0].type.members.resize(1);
-		call.parameters[0].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		call.parameters[0].type.members[0].label = "%LLVMContext";
-		call.parameters[0].name = "%__ctaContext";
+		call.parameters[0] = _context();
 
 		call.parameters[1].type.type = ir::LLVMInstruction::I32;
 		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
@@ -1239,16 +1351,22 @@ namespace translator
 				ir::LLVMInstruction::Operand temp = load.d;
 				temp.type.type = _translate( i.d.type );
 				load.d.name = _tempRegister();
+				_check( i.addressSpace, load.a, load.alignment,
+					i.statementIndex );
 				_add( load );
 				_convert( temp, i.d.type, load.d, i.type );				
 			}
 			else
 			{
+				_check( i.addressSpace, load.a, load.alignment,
+					i.statementIndex );
 				_add( load );
 			}
 		}
 		else
 		{
+			_check( i.addressSpace, load.a, load.alignment,
+					i.statementIndex );
 			_add( load );
 		}
 		
@@ -2835,6 +2953,7 @@ namespace translator
 			}
 		}
 		
+		_check( i.addressSpace, store.d, store.alignment, i.statementIndex );
 		_add( store );
 	}
 
@@ -3056,12 +3175,7 @@ namespace translator
 			default: assertM( false, "Invalid texture geometry" );
 		}
 		
-		call.parameters[1].type.category = ir::LLVMInstruction::Type::Pointer;
-		call.parameters[1].type.members.resize(1);
-		call.parameters[1].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		call.parameters[1].type.members[0].label = "%LLVMContext";
-		call.parameters[1].name = "%__ctaContext";
+		call.parameters[1] = _context();
 		
 		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
 		call.parameters[2].type.type = ir::LLVMInstruction::I32;
@@ -4126,9 +4240,7 @@ namespace translator
 			
 		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
 		get.d.type.type = ir::LLVMInstruction::I16;
-		get.a.type.category = ir::LLVMInstruction::Type::Pointer;
-		get.a.type.label = "%LLVMContext";
-		get.a.name = "%__ctaContext";
+		get.a = _context();
 		get.indices.push_back( 0 );
 		
 		switch( s )
@@ -4251,13 +4363,7 @@ namespace translator
 				call.d.name = _tempRegister();
 				
 				call.parameters.resize( 1 );
-				call.parameters[0].type.category 
-					= ir::LLVMInstruction::Type::Pointer;
-				call.parameters[0].type.members.resize(1);
-				call.parameters[0].type.members[0].category 
-					= ir::LLVMInstruction::Type::Structure;
-				call.parameters[0].type.members[0].label = "%LLVMContext";
-				call.parameters[0].name = "%__ctaContext";
+				call.parameters[0] = _context();
 				
 				_add( call );
 				
@@ -4318,9 +4424,7 @@ namespace translator
 		get.d.type.members[0].category = ir::LLVMInstruction::Type::Pointer;
 		get.d.type.members[0].type = ir::LLVMInstruction::I8;
 		
-		get.a.type.label = "%LLVMContext";
-		get.a.type.category = ir::LLVMInstruction::Type::Pointer;
-		get.a.name = "%__ctaContext";
+		get.a = _context();
 		get.indices.push_back( 0 );
 		
 		switch( space )
@@ -5000,7 +5104,7 @@ namespace translator
 			
 		_llvmKernel->_statements.push_front( atom );	
 	}
-
+	
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
 		_llvmKernel->_statements.push_front( 
@@ -5221,6 +5325,7 @@ namespace translator
 	
 		_llvmKernel->_statements.push_front( vote );		
 
+		_addMemoryCheckingDeclarations();
 		_insertDebugSymbols();
 		_addTextureCalls();
 		_addAtomicCalls();

@@ -48,10 +48,15 @@ namespace translator
 				ir::PTXInstruction::CmpOp, bool isInt, bool isSigned );
 			
 			static ir::LLVMInstruction::Type _getCtaContextType();
+			static ir::LLVMInstruction::Operand _context();
 
 		private:
 			void _debug( const analysis::DataflowGraph::Block& b );
 			void _debug( const analysis::DataflowGraph::Instruction& i );
+			void _check( ir::PTXInstruction::AddressSpace space,
+				const ir::LLVMInstruction::Operand& address, 
+				unsigned int bytes, unsigned int statement );
+			void _addMemoryCheckingDeclarations();
 			void _insertDebugSymbols();
 			
 		private:

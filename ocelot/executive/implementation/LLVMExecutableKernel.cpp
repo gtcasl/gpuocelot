@@ -9,7 +9,7 @@
 
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/Executive.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/Exception.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
@@ -613,6 +613,176 @@ extern "C"
 		#endif
 
 		#endif
+	}
+	
+	void __ocelot_check_global_memory_access( executive::LLVMContext* context,
+		void* address, unsigned int bytes, unsigned int statement )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		if( !state->kernel->context->checkMemoryAccess( 
+			state->kernel->context->getSelected(), address, bytes ) )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+			
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< state->kernel->instruction( statement ) << "'\n";
+			std::cerr << "Global memory address " 
+				<< address << " of size " << bytes
+				<< " is out of any allocated or mapped range.\n";
+			std::cerr << "Memory Map:\n";
+			std::cerr << executive::Executive::nearbyAllocationsToString(
+				*state->kernel->context, address);
+			std::cerr << "\n";
+			std::cout << "\tNear: " << state->kernel->location( statement )
+				<< "\n\n";
+			assertM(false, "Aborting execution.");
+		}
+	}
+	
+	void __ocelot_check_shared_memory_access( executive::LLVMContext* context,
+		void* _address, unsigned int bytes, unsigned int statement )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		char* address = (char*) _address;
+		char* end = address + bytes;
+		char* allocationEnd = context->shared + context->sharedSize;
+		
+		if( end > allocationEnd )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+			
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< state->kernel->instruction( statement ) << "'\n";
+			std::cerr << "Shared memory address " 
+				<< _address << " is " << (end - allocationEnd)
+				<< " bytes beyond the shared memory block of " 
+				<< context->sharedSize << " bytes.\n";
+			std::cout << "\tNear: " << state->kernel->location( statement )
+				<< "\n\n";
+			assertM(false, "Aborting execution.");
+		}
+	}
+
+	void __ocelot_check_constant_memory_access( executive::LLVMContext* context,
+		void* _address, unsigned int bytes, unsigned int statement )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		char* address = (char*) _address;
+		char* end = address + bytes;
+		char* allocationEnd = context->constant + context->constantSize;
+		
+		if( end > allocationEnd )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+			
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< state->kernel->instruction( statement ) << "'\n";
+			std::cerr << "Constant memory address " 
+				<< _address << " is " << (end - allocationEnd)
+				<< " bytes beyond the constant memory block of " 
+				<< context->constantSize << " bytes.\n";
+			std::cout << "\tNear: " << state->kernel->location( statement )
+				<< "\n\n";
+			assertM(false, "Aborting execution.");
+		}	
+	}
+
+	void __ocelot_check_local_memory_access( executive::LLVMContext* context,
+		void* _address, unsigned int bytes, unsigned int statement )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		char* address = (char*) _address;
+		char* end = address + bytes;
+		char* allocationEnd = context->local + context->localSize;
+		
+		if( end > allocationEnd )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+			
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< state->kernel->instruction( statement ) << "'\n";
+			std::cerr << "Local memory address " 
+				<< _address << " is " << (end - allocationEnd)
+				<< " bytes beyond the local memory block of " 
+				<< context->localSize << " bytes.\n";
+			std::cout << "\tNear: " << state->kernel->location( statement )
+				<< "\n\n";
+			assertM(false, "Aborting execution.");
+		}	
+	}
+
+	void __ocelot_check_param_memory_access( executive::LLVMContext* context,
+		void* _address, unsigned int bytes, unsigned int statement )
+	{
+		executive::LLVMExecutableKernel::OpaqueState* state = 
+			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		
+		char* address = (char*) _address;
+		char* end = address + bytes;
+		char* allocationEnd = context->parameter + context->parameterSize;
+				
+		if( end > allocationEnd )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+			
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< state->kernel->instruction( statement ) << "'\n";
+			std::cerr << "Parameter memory address " 
+				<< address << " is  " << (end - allocationEnd)
+				<< " bytes beyond the parameter memory block of " 
+				<< context->parameterSize << " bytes.\n";
+			std::cout << "\tNear: " << state->kernel->location( statement )
+				<< "\n\n";
+			assertM(false, "Aborting execution.");
+		}	
 	}
 		
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
@@ -2113,6 +2283,7 @@ namespace executive
 		
 		_context.other = (char*) &_opaque;
 		_opaque.cache = &_cache;
+		_opaque.kernel = this;
 		
 		_state.initialize();
 	}
@@ -2253,6 +2424,49 @@ namespace executive
 			+ _context.ntid.x * _context.tid.y + _context.tid.x;
 	}
 	
+	std::string LLVMExecutableKernel::location( unsigned int statement ) const
+	{
+		ir::Module::StatementVector::const_iterator s_it 
+			= module->statements.begin();
+		std::advance(s_it, statement);
+		ir::Module::StatementVector::const_reverse_iterator s_rit 
+			= ir::Module::StatementVector::const_reverse_iterator(s_it);
+		unsigned int program = 0;
+		unsigned int line = 0;
+		unsigned int col = 0;
+		for ( ; s_rit != module->statements.rend(); ++s_rit) {
+			if (s_rit->directive == ir::PTXStatement::Loc) {
+				line = s_rit->sourceLine;
+				col = s_rit->sourceColumn;
+				program = s_rit->sourceFile;
+				break;
+			}
+		}
+	
+		std::string fileName;
+		for ( s_it = module->statements.begin(); 
+			s_it != module->statements.end(); ++s_it ) {
+			if (s_it->directive == ir::PTXStatement::File) {
+				if (s_it->sourceFile == program) {
+					fileName = s_it->name;
+					break;
+				}
+			}
+		}
+	
+		std::stringstream stream;
+		stream << fileName << ":" << line << ":" << col;
+		return stream.str();
+	}
+	
+	std::string LLVMExecutableKernel::instruction( 
+		unsigned int statement ) const
+	{
+		ir::Module::StatementVector::const_iterator s_it 
+			= module->statements.begin();
+		std::advance(s_it, statement);
+		return s_it->instruction.toString();
+	}
 }
 
 #endif

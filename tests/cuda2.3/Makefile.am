@@ -9,10 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -locelot \
-	libsdk.la $(LLVM_LDFLAGS) $(CUDA_DRIVER_API_LIBARY)
-CUFFT_LIBS = -lcufft
-CUBLAS_LIBS = -lcublas
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la 
 CUDA_CFLAGS = -I $(srcdir)/sdk
 SDK_CFLAGS = -I $(srcdir)/sdk
 ################################################################################
@@ -22,7 +19,14 @@ SDK_CFLAGS = -I $(srcdir)/sdk
 bin_PROGRAMS = 
 check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
 	TestAtomics TestMemoryAccesses TestBarriers TestSpecialFunctions \
-	TestInstructionThroughput TestCallLatency TestDeviceSwitching
+	TestInstructionThroughput TestCallLatency TestDeviceSwitching \
+	TestThrustArbitraryTransform TestThrustBasicVector TestThrustBoundingBox \
+	TestThrustBucketSort2D TestThrustConstantIterator \
+	TestThrustCountingIterator TestThrustZipDot TestThrustFillCopy \
+	TestThrustHistogram TestThrustMaxAbsDiff TestThrustMinMax TestThrustMode \
+	TestThrustMonteCarlo TestThrustNorm TestThrustPaddedGridReduction \
+	TestThrustRunLengthEncoding TestThrustSaxpy TestThrustSegmentedScan \
+	TestThrustSort
 lib_LTLIBRARIES = libsdk.la
 ################################################################################
 
@@ -121,6 +125,177 @@ TestDeviceSwitching_CXXFLAGS = $(CUDA_CFLAGS) -std=c++0x
 TestDeviceSwitching_SOURCES = tests/TestDeviceSwitching/TestDeviceSwitching.cpp
 TestDeviceSwitching_LDADD = $(OCELOT_LIBS)
 TestDeviceSwitching_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustArbitraryTransform
+TestThrustArbitraryTransform_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustArbitraryTransform_SOURCES = \
+	tests/thrust_arbitrary_transformation/arbitrary_transformation.cu.cpp
+TestThrustArbitraryTransform_LDADD = $(OCELOT_LIBS)
+TestThrustArbitraryTransform_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustBasicVector
+TestThrustBasicVector_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustBasicVector_SOURCES = \
+	tests/thrust_basic_vector/basic_vector.cu.cpp
+TestThrustBasicVector_LDADD = $(OCELOT_LIBS)
+TestThrustBasicVector_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustBoundingBox
+TestThrustBoundingBox_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustBoundingBox_SOURCES = \
+	tests/thrust_bounding_box/bounding_box.cu.cpp
+TestThrustBoundingBox_LDADD = $(OCELOT_LIBS)
+TestThrustBoundingBox_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustBucketSort2D
+TestThrustBucketSort2D_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustBucketSort2D_SOURCES = \
+	tests/thrust_bucket_sort2d/bucket_sort2d.cu.cpp
+TestThrustBucketSort2D_LDADD = $(OCELOT_LIBS)
+TestThrustBucketSort2D_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustConstantIterator
+TestThrustConstantIterator_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustConstantIterator_SOURCES = \
+	tests/thrust_constant_iterator/constant_iterator.cu.cpp
+TestThrustConstantIterator_LDADD = $(OCELOT_LIBS)
+TestThrustConstantIterator_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustCountingIterator
+TestThrustCountingIterator_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustCountingIterator_SOURCES = \
+	tests/thrust_counting_iterator/counting_iterator.cu.cpp
+TestThrustCountingIterator_LDADD = $(OCELOT_LIBS)
+TestThrustCountingIterator_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustZipDot
+TestThrustZipDot_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustZipDot_SOURCES = \
+	tests/thrust_dot_products_with_zip/dot_products_with_zip.cu.cpp
+TestThrustZipDot_LDADD = $(OCELOT_LIBS)
+TestThrustZipDot_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustFillCopy
+TestThrustFillCopy_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustFillCopy_SOURCES = \
+	tests/thrust_fill_copy_sequence/fill_copy_sequence.cu.cpp
+TestThrustFillCopy_LDADD = $(OCELOT_LIBS)
+TestThrustFillCopy_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustHistogram
+TestThrustHistogram_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustHistogram_SOURCES = \
+	tests/thrust_histogram/histogram.cu.cpp
+TestThrustHistogram_LDADD = $(OCELOT_LIBS)
+TestThrustHistogram_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustMaxAbsDiff
+TestThrustMaxAbsDiff_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustMaxAbsDiff_SOURCES = \
+	tests/thrust_max_abs_diff/max_abs_diff.cu.cpp
+TestThrustMaxAbsDiff_LDADD = $(OCELOT_LIBS)
+TestThrustMaxAbsDiff_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustMinMax
+TestThrustMinMax_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustMinMax_SOURCES = \
+	tests/thrust_minmax/minmax.cu.cpp
+TestThrustMinMax_LDADD = $(OCELOT_LIBS)
+TestThrustMinMax_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustMode
+TestThrustMode_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustMode_SOURCES = \
+	tests/thrust_mode/mode.cu.cpp
+TestThrustMode_LDADD = $(OCELOT_LIBS)
+TestThrustMode_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustMonteCarlo
+TestThrustMonteCarlo_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustMonteCarlo_SOURCES = \
+	tests/thrust_monte_carlo/monte_carlo.cu.cpp
+TestThrustMonteCarlo_LDADD = $(OCELOT_LIBS)
+TestThrustMonteCarlo_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustNorm
+TestThrustNorm_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustNorm_SOURCES = \
+	tests/thrust_norm/norm.cu.cpp
+TestThrustNorm_LDADD = $(OCELOT_LIBS)
+TestThrustNorm_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustPaddedGridReduction
+TestThrustPaddedGridReduction_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustPaddedGridReduction_SOURCES = \
+	tests/thrust_padded_grid_reduction/padded_grid_reduction.cu.cpp
+TestThrustPaddedGridReduction_LDADD = $(OCELOT_LIBS)
+TestThrustPaddedGridReduction_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustRunLengthEncoding
+TestThrustRunLengthEncoding_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustRunLengthEncoding_SOURCES = \
+	tests/thrust_run_length_encoding/run_length_encoding.cu.cpp
+TestThrustRunLengthEncoding_LDADD = $(OCELOT_LIBS)
+TestThrustRunLengthEncoding_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustSaxpy
+TestThrustSaxpy_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustSaxpy_SOURCES = \
+	tests/thrust_saxpy/saxpy.cu.cpp
+TestThrustSaxpy_LDADD = $(OCELOT_LIBS)
+TestThrustSaxpy_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustSegmentedScan
+TestThrustSegmentedScan_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustSegmentedScan_SOURCES = \
+	tests/thrust_segmented_scan/segmented_scan.cu.cpp
+TestThrustSegmentedScan_LDADD = $(OCELOT_LIBS)
+TestThrustSegmentedScan_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustSort
+TestThrustSort_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustSort_SOURCES = \
+	tests/thrust_sort/sort.cu.cpp
+TestThrustSort_LDADD = $(OCELOT_LIBS)
+TestThrustSort_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

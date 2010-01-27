@@ -261,6 +261,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	pg.type = PTXOperand::pred;
 	booleanOperator = BoolNop;
 	carry = None;
+	statementIndex = 0;
 	divideFull = false;
 }
 

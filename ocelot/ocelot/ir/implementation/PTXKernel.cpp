@@ -179,7 +179,8 @@ namespace ir
 		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
 			ControlFlowGraph::Edge::FallThrough);
 	
-		for( ; kernelStart != kernelEnd; ++kernelStart ) 
+		unsigned int statementIndex = 0;
+		for( ; kernelStart != kernelEnd; ++kernelStart, ++statementIndex ) 
 		{
 			const PTXStatement &statement = *kernelStart;
 		
@@ -214,7 +215,7 @@ namespace ir
 			else if( statement.directive == PTXStatement::Instr ) 
 			{
 				block->instructions.push_back( statement.instruction.clone() );
-
+				
 				if (statement.instruction.opcode == PTXInstruction::Bra) 
 				{
 					last_inserted_block = block;

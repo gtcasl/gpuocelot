@@ -220,6 +220,8 @@ namespace executive
 					BlockIdMap blocks;
 					/*! \brief Atomic operation cache */
 					AtomicOperationCache* cache;
+					/*! \brief A reference to the kernel */
+					const LLVMExecutableKernel* kernel;
 					
 				public:
 					/*! \brief Starts the timer on creation */
@@ -350,6 +352,11 @@ namespace executive
 			unsigned int threads() const;
 			/*! \brief Get the local id of the current thread */
 			unsigned int threadId() const;
+			/*! \brief Determine the location of a given PTX statement 
+				in the original source file */
+			std::string location( unsigned int statement ) const;
+			/*! \brieg Get the instruction contained in a given statement */
+			std::string instruction( unsigned int statement ) const;
 
 	};
 }

@@ -2344,6 +2344,16 @@ namespace cuda
 			context.setOptimizationLevel( 
 				translator::Translator::FullOptimization );
 		}
+		else if( optimization == "instrument" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::InstrumentOptimization );
+		}
+		else if( optimization == "memcheck" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::MemoryCheckOptimization );
+		}
 		else
 		{
 			context.setOptimizationLevel( 

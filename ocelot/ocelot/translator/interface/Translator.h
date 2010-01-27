@@ -41,6 +41,8 @@ namespace translator
 			{
 				NoOptimization,
 				DebugOptimization,
+				InstrumentOptimization,
+				MemoryCheckOptimization,
 				BasicOptimization,
 				AggressiveOptimization,
 				SpaceOptimization,

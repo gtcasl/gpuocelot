@@ -29,6 +29,8 @@ namespace executive {
 	class CooperativeThreadArray {
 	public:
 		typedef std::deque <CTAContext> Stack;
+		typedef std::vector <int> ThreadIdVector;
+		
 	public:
 		/*!
 			Constructs a cooperative thread array from an EmulatedKernel instance
@@ -111,6 +113,9 @@ namespace executive {
 			Pointer to byte-addressable shared memory
 		*/
 		char *SharedMemory;
+		
+		/*! \brief The last writer for each byte in shared memory */
+		ThreadIdVector sharedMemoryWriters;
 
 		/*!
 			Pointer to byte-addressable local memory
@@ -449,6 +454,12 @@ namespace executive {
 		void normalLoad(int, const ir::PTXInstruction &, const char*);
 		void vectorLoad(int, const ir::PTXInstruction &, const char*, 
 			unsigned int);
+
+	private:
+		void writeSharedMemory(ir::PTXU64 address, unsigned int bytes, 
+			int threadID, int pc, const ir::PTXInstruction& instr);
+		void readSharedMemory(ir::PTXU64 address, unsigned int bytes,
+			int threadID, int pc, const ir::PTXInstruction& instr);
 
 	public:
 		/*Handlers for each instruction */

@@ -166,6 +166,8 @@ executive::CooperativeThreadArray::CooperativeThreadArray(const EmulatedKernel *
 	for (int n = 0; n < threadCount; n++) {
 		setRegAsU64(n, CC_register, 0);
 	}
+	
+	sharedMemoryWriters.assign(k->totalSharedMemorySize(), -1);
 
 	if(k->totalSharedMemorySize() > 0) {
 		SharedMemory = new char[k->totalSharedMemorySize()];
@@ -1283,6 +1285,46 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 	return 0;
 }
 
+void executive::CooperativeThreadArray::writeSharedMemory(ir::PTXU64 address, 
+	unsigned int bytes, int threadID, int pc, const ir::PTXInstruction& instr) {
+	for (unsigned int byte = address; byte < address + bytes; ++byte) {
+		if (sharedMemoryWriters[byte] != -1 
+			&& sharedMemoryWriters[byte] != threadID) {
+			std::stringstream stream;
+			stream << "Shared memory race condition, " 
+				<< (void*)byte << " was previously written by thread " 
+				<< sharedMemoryWriters[byte] 
+				<< " without a memory barrier in between.";
+			stream << "\n";
+			stream << "In " << kernel->location(pc) << "\n";
+			throw RuntimeException(stream.str(), pc, 
+				threadID, blockId.x, instr);
+		}
+		else {
+			sharedMemoryWriters[byte] = threadID;
+		}
+	}
+}
+
+void executive::CooperativeThreadArray::readSharedMemory(ir::PTXU64 address, 
+	unsigned int bytes, int threadID, int pc, const ir::PTXInstruction& instr) {
+	for (unsigned int byte = address; byte < address + bytes; ++byte) {
+		if (sharedMemoryWriters[byte] != -1 
+			&& sharedMemoryWriters[byte] != threadID) {
+			std::stringstream stream;
+			stream << "Shared memory race condition, " 
+				<< (void*)byte << " was previously written by thread " 
+				<< sharedMemoryWriters[byte] 
+				<< " without a memory barrier in between.";
+			stream << "\n";
+			stream << "In " << kernel->location(pc) << "\n";
+			throw RuntimeException(stream.str(), pc, 
+				threadID, blockId.x, instr);
+		}
+	}
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -1863,6 +1905,7 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext &context, const PTXI
 		runtimeStack.push_back(continuation);
 	}
 #endif
+	sharedMemoryWriters.assign(sharedMemoryWriters.size(), -1);
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXInstruction &instr) {
@@ -3229,6 +3272,8 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}
+					readSharedMemory((ir::PTXU64)source, 
+						elementSize * vectorSize, threadID, context.PC, instr);
 					source += (PTXU64) SharedMemory;
 				}
 				break;
@@ -6327,6 +6372,8 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 						throw RuntimeException(stream.str(), context.PC, 
 							threadID, blockId.x, instr);
 					}					
+					writeSharedMemory((ir::PTXU64)source, 
+						elementSize * vectorSize, threadID, context.PC, instr);
 					source += (PTXU64) SharedMemory;
 				}
 				break;

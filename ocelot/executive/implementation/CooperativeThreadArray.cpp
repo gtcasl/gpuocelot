@@ -1,5 +1,4 @@
-/*!
-	\file CooperativeThreadArray.cpp
+/*! \file CooperativeThreadArray.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date 5 February 2009
 	\brief defines the state of each cooperative thread array 
@@ -36,7 +35,11 @@
 					
 // turn on checking of memory accesses to make sure they are aligned
 #define CHECK_MEMORY_ALIGNMENT 1
-					
+
+// SHared memory race detecion
+#define CHECK_MEMORY_WRITE_READ_RACES 1
+#define CHECK_MEMORY_WRITE_WRITE_RACES 1
+
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
 
@@ -48,8 +51,8 @@
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
-#define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 8
+#define REPORT_NTH_THREAD_ONLY 0
+#define NTH_THREAD 1
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 
@@ -1287,18 +1290,37 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 
 void executive::CooperativeThreadArray::writeSharedMemory(ir::PTXU64 address, 
 	unsigned int bytes, int threadID, int pc, const ir::PTXInstruction& instr) {
-	for (unsigned int byte = address; byte < address + bytes; ++byte) {
+	typedef std::vector<char> DataVector;
+
+	for (ir::PTXU64 byte = address; byte < address + bytes; ++byte) {
 		if (sharedMemoryWriters[byte] != -1 
 			&& sharedMemoryWriters[byte] != threadID) {
-			std::stringstream stream;
-			stream << "Shared memory race condition, " 
-				<< (void*)byte << " was previously written by thread " 
-				<< sharedMemoryWriters[byte] 
-				<< " without a memory barrier in between.";
-			stream << "\n";
-			stream << "In " << kernel->location(pc) << "\n";
-			throw RuntimeException(stream.str(), pc, 
-				threadID, blockId.x, instr);
+			DataVector tempValues(bytes);
+			#if CHECK_MEMORY_WRITE_WRITE_RACES == 1
+			if (instr.a.vec == PTXOperand::v1) {
+				normalStore(threadID, instr, &tempValues[0]);
+			}
+			else {
+				vectorStore(threadID, instr, &tempValues[0], bytes / instr.vec);
+			}
+
+			for (ir::PTXU64 byte = address, count = 0; byte < address + bytes;
+				++byte, ++count) {
+				if (tempValues[count] != SharedMemory[byte]) {
+					std::stringstream stream;
+					stream << "Shared memory race condition, value "
+						<< ((unsigned int) SharedMemory[byte]) << " (address "
+						<< (void*)byte << ") was previously written by thread " 
+						<< sharedMemoryWriters[byte] << " (value " 
+						<< ((unsigned int) tempValues[count]) << ")"
+						<< " without a memory barrier in between.";
+					stream << "\n";
+					stream << "In " << kernel->location(pc) << "\n";
+					throw RuntimeException(stream.str(), pc, 
+						threadID, blockId.x, instr);
+				}
+			}
+			#endif
 		}
 		else {
 			sharedMemoryWriters[byte] = threadID;
@@ -1308,6 +1330,7 @@ void executive::CooperativeThreadArray::writeSharedMemory(ir::PTXU64 address,
 
 void executive::CooperativeThreadArray::readSharedMemory(ir::PTXU64 address, 
 	unsigned int bytes, int threadID, int pc, const ir::PTXInstruction& instr) {
+	#if CHECK_MEMORY_WRITE_READ_RACES == 1
 	for (unsigned int byte = address; byte < address + bytes; ++byte) {
 		if (sharedMemoryWriters[byte] != -1 
 			&& sharedMemoryWriters[byte] != threadID) {
@@ -1322,6 +1345,7 @@ void executive::CooperativeThreadArray::readSharedMemory(ir::PTXU64 address,
 				threadID, blockId.x, instr);
 		}
 	}
+	#endif
 }
 
 
@@ -6411,7 +6435,7 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 		}
 		else {
 			vectorStore(threadID, instr, source, elementSize);
-		}		
+		}
 	}
 
 }

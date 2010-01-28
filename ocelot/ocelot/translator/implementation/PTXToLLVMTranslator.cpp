@@ -484,7 +484,7 @@ namespace translator
 
 		instruction.parameters[1].type.category 
 			= ir::LLVMInstruction::Type::Element;
-		instruction.parameters[1].type.type = ir::LLVMInstruction::I32;
+		instruction.parameters[1].type.type = ir::LLVMInstruction::I64;
 	
 		_llvmKernel->_statements.push_front( instruction );
 	}

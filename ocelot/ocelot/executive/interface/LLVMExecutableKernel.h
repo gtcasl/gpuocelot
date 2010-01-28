@@ -1,5 +1,4 @@
-/*!
-	\file LLVMExecutableKernel.h
+/*! \file LLVMExecutableKernel.h
 	\date Friday September 4, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the LLVMRuntime class
@@ -20,10 +19,8 @@
 
 namespace llvm
 {
-	class ExistingModuleProvider;
 	class ExecutionEngine;
 	class Module;
-	class ModuleProvider;
 	class Context;
 }
 
@@ -46,8 +43,6 @@ namespace executive
 				public:
 					/*! \brief LLVM module */
 					llvm::Module* module;
-					/*! \brief Module provider */
-					llvm::ExistingModuleProvider* moduleProvider;
 					/*! \brief LLVM JIT Engine */
 					llvm::ExecutionEngine* jit;
 
@@ -241,8 +236,6 @@ namespace executive
 		private:
 			/*! \brief LLVM module */
 			llvm::Module* _module;
-			/*! \brief Module provider */
-			llvm::ExistingModuleProvider* _moduleProvider;
 			/*! \brief The translated function */
 			Function _function;
 			/*! \brief The stored ptx kernel used for translation */
@@ -272,7 +265,7 @@ namespace executive
 			/*! \brief Get a string representation of a thread id */
 			static unsigned int threadId( const LLVMContext& c );
 			/*! \brief Optimize an llvm module using standard passes */
-			static void _optimizeLLVMFunction( llvm::ModuleProvider* provider, 
+			static void _optimizeLLVMFunction( llvm::Module* module, 
 				unsigned int level, bool space );
 			
 		private:

@@ -45,7 +45,6 @@
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/Module.h>
-#include <llvm/ModuleProvider.h>
 #include <llvm/PassManager.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
@@ -657,7 +656,8 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->shared + context->sharedSize;
+		char* allocationEnd = context->shared 
+			+ state->kernel->totalSharedMemorySize();
 		
 		if( end > allocationEnd )
 		{
@@ -676,7 +676,7 @@ extern "C"
 			std::cerr << "Shared memory address " 
 				<< _address << " is " << (end - allocationEnd)
 				<< " bytes beyond the shared memory block of " 
-				<< context->sharedSize << " bytes.\n";
+				<< state->kernel->totalSharedMemorySize() << " bytes.\n";
 			std::cout << "\tNear: " << state->kernel->location( statement )
 				<< "\n\n";
 			assertM(false, "Aborting execution.");
@@ -1145,13 +1145,9 @@ namespace executive
 				llvm::getGlobalContext() );
 			assertM( module != 0, "Creating global module failed." );
 		
-			moduleProvider = new llvm::ExistingModuleProvider( module );
-			assertM( moduleProvider != 0, 
-				"Creating the global module provider failed.");
-		
 			llvm::InitializeNativeTarget();
 		
-			jit = llvm::EngineBuilder( moduleProvider ).create();
+			jit = llvm::EngineBuilder( module ).create();
 			jit->DisableLazyCompilation( true );
 		
 			assertM( jit != 0, "Creating the JIT failed.");
@@ -1629,7 +1625,7 @@ namespace executive
 	}
 
 	void LLVMExecutableKernel::_optimizeLLVMFunction( 
-		llvm::ModuleProvider* provider, unsigned int level, bool space )
+		llvm::Module* module, unsigned int level, bool space )
 	{
 		#ifdef HAVE_LLVM
 		llvm::PassManager manager;
@@ -1677,7 +1673,7 @@ namespace executive
 			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
 
 		}
-		manager.run( *provider->getModule() );
+		manager.run( *module );
 		#endif
 	}
 	
@@ -1686,31 +1682,28 @@ namespace executive
 		#ifdef HAVE_LLVM
 		report( "Optimizing LLVM Code" );
 	
-		_moduleProvider = new llvm::ExistingModuleProvider( _module );
-		assertM( _moduleProvider != 0, "Creating the module provider failed.");
-		
 		if( _optimizationLevel 
 			== translator::Translator::BasicOptimization )
 		{
-			_optimizeLLVMFunction( _moduleProvider, 1, false );
+			_optimizeLLVMFunction( _module, 1, false );
 		}
 		else if( _optimizationLevel 
 			== translator::Translator::AggressiveOptimization )
 		{
-			_optimizeLLVMFunction( _moduleProvider, 2, false );
+			_optimizeLLVMFunction( _module, 2, false );
 		}
 		else if( _optimizationLevel 
 			== translator::Translator::SpaceOptimization )
 		{
-			_optimizeLLVMFunction( _moduleProvider, 2, true );
+			_optimizeLLVMFunction( _module, 2, true );
 		}
 		else if( _optimizationLevel 
 			== translator::Translator::FullOptimization )
 		{
-			_optimizeLLVMFunction( _moduleProvider, 3, false );
+			_optimizeLLVMFunction( _module, 3, false );
 		}
 
-		_state.jit->addModuleProvider( _moduleProvider );
+		_state.jit->addModule( _module );
 		
 		llvm::Function* function = 
 			_module->getFunction( "_Z_ocelotTranslated_" + name );
@@ -1979,7 +1972,7 @@ namespace executive
 			<< " declared plus " << _externSharedMemorySize << " external." );
 		_context.shared = new char[ _context.sharedSize 
 			+ _externSharedMemorySize ];
-
+		_sharedMemorySize = _context.sharedSize;
 	}
 	
 	void LLVMExecutableKernel::_allocateGlobalMemory( )
@@ -2065,6 +2058,8 @@ namespace executive
 			_resumePointOffset = mapping->second;
 			
 		}
+
+		_localMemorySize = _context.localSize;
 	}
 	
 	void LLVMExecutableKernel::_allocateConstantMemory( )
@@ -2133,6 +2128,7 @@ namespace executive
 			<< "." );
 
 		_context.constant = new char[ _context.constantSize ];
+		_constMemorySize = _context.constantSize;
 	}
 	
 	void LLVMExecutableKernel::_allocateTextureMemory( )
@@ -2261,8 +2257,7 @@ namespace executive
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
 		const executive::Executive* c, 
 		translator::Translator::OptimizationLevel l ) : 
-		ExecutableKernel( k, c ), _module( 0 ), _moduleProvider( 0 ), 
-		_optimizationLevel( l )
+		ExecutableKernel( k, c ), _module( 0 ), _optimizationLevel( l )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
@@ -2291,9 +2286,9 @@ namespace executive
 	LLVMExecutableKernel::~LLVMExecutableKernel()
 	{	
 		#ifdef HAVE_LLVM
-		if( _moduleProvider != 0 )
+		if( _module != 0 )
 		{
-			_state.jit->deleteModuleProvider( _moduleProvider );
+			_state.jit->removeModule( _module );
 		}
 		#endif
 		delete[] _context.local;

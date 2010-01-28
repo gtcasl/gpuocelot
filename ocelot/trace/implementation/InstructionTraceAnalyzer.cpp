@@ -140,7 +140,7 @@ static void append(trace::InstructionTraceGenerator::FunctionalUnitCountMap & ap
 		x-axis: functional units
 		y-axis: number of dynamic instructions
 */
-void trace::InstructionTraceAnalyzer::instructions_by_application() const {
+void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) const {
 
 	// sequence of functional units
 	trace::InstructionTraceGenerator::FunctionalUnit funcUnits[] = {
@@ -214,10 +214,18 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 			append(appCounter, counter, visitedKernels.find(k_it->name) == visitedKernels.end());
 			visitedKernels.insert(k_it->name);
 		}
+
+		std::stringstream ssDynamic, ssStatic, ssDynamicComments, ssStaticComments;
 		
-		// print the program name
-		std::cout << "  '" << program << "': {" << std::endl;
-		
+		if (pyList) {
+			ssDynamic << " '" << program << "': [";
+			ssStatic <<  " '" << program << "': [";
+		}
+		else {
+			// print the program name
+			std::cout << "  '" << program << "': {" << std::endl;
+		}
+
 		// print out one bar per functional unit
 		for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		
 
@@ -238,13 +246,23 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 				}
 			}
 			
-			if (activeFU) {
-				activity /= (double)activeFU * (double)dynamicCount;
+			if (pyList) {
+				ssDynamic << (n ? ", " : " ") << dynamicCount;
+				ssStatic << (n ? ", " : " ") << staticCount;
+				ssDynamicComments << " " << trace::InstructionTraceGenerator::toString(funcUnits[n]);
+				ssStaticComments << " " << trace::InstructionTraceGenerator::toString(funcUnits[n]);
 			}
-			
-			// write to stdout
-			std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
-				<< dynamicCount << ", " << staticCount << ", " << 0 << " )," << std::endl;
+			else {
+				// write to stdout
+				std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
+					<< dynamicCount << ", " << staticCount << ", " << 0 << " )," << std::endl;
+			}
+		}
+
+		if (pyList) {
+			std::cout << "# " << program << " sequence: " << ssDynamicComments.str() << "\n";
+			std::cout << ssDynamic.str() << " ]  # dynamic\n";
+			std::cout << ssStatic.str() << " ]  # static\n";
 		}
 		
 		std::cout << "  },\n";
@@ -252,7 +270,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_application() const {
 	std::cout << "}\n";
 }
 
-void trace::InstructionTraceAnalyzer::instructions_by_kernel() const {
+void trace::InstructionTraceAnalyzer::instructions_by_kernel(bool pyList) const {
 
 
 	// sequence of functional units
@@ -400,6 +418,7 @@ int main( int argc, char** argv ) {
 	bool list;
 	bool instructions_by_kernel = false;
 	bool instructions_by_app = false;
+	bool pyList = false;
 	std::string database;
 
 	parser.parse( "-h", help, false, "Print this help message." );
@@ -409,6 +428,7 @@ int main( int argc, char** argv ) {
 	parser.parse( "-k", instructions_by_kernel, false,
 		"Compute instruction histogram for each kernel" );
 	parser.parse( "-l", list, false, "List all traces in the database." );
+	parser.parse( "-r", pyList, false, "Print results as a Python list rather than Pyson");
 		
 	if( help ) {
 		std::cout << parser.help();
@@ -422,11 +442,11 @@ int main( int argc, char** argv ) {
 	}
 	
 	if( instructions_by_kernel ) {
-		analyzer.instructions_by_kernel();
+		analyzer.instructions_by_kernel(pyList);
 	}
 
 	if( instructions_by_app ) {
-		analyzer.instructions_by_application();
+		analyzer.instructions_by_application(pyList);
 	}
 	
 	return 0;

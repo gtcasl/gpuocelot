@@ -39,13 +39,13 @@ namespace trace
 				\brief compute the histogram of instructions by (functional unit, opcode) for each
 					kernel
 			*/
-			void instructions_by_kernel() const;
+			void instructions_by_kernel(bool pyList = false) const;
 
 			/*!
 				\brief compute the histogram of instructions by (functional unit, opcode) for each
 					application over all its kernels
 			*/
-			void instructions_by_application() const;
+			void instructions_by_application(bool pyList = false) const;
 	
 	};
 }

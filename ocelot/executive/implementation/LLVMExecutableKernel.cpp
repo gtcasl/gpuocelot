@@ -2308,6 +2308,11 @@ namespace executive
 		_context.nctaid.y = y;
 		_gridDim.x = x;
 		_gridDim.y = y;
+
+		{
+			// dump the function to stdout
+			
+		}
 		
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );

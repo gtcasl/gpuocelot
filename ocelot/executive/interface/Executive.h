@@ -22,7 +22,9 @@
 
 /*! \brief A namespace for classes that help execute programs */
 namespace executive {
-	
+
+	class ExternalKernel;
+
 	/*! Class wrapping the execution layer */
 	class Executive {
 	public:
@@ -96,7 +98,26 @@ namespace executive {
 		
 		/*! \brief Map from pointer to global allocations */
 		typedef std::map< char*, GlobalMemoryAllocation > GlobalAllocationMap;
+
+		/*!
+			\brief maps a named kernel to override application kernels
+		*/
+		class ExternalKernelEntry {
+		public:
 	
+			//! \brief source file for kernel
+			std::string sourcePath;
+
+			//! \brief indicates the type of external kernel to load
+			int loadingType;
+
+			//! \brief ptr to external kernel
+			executive::ExternalKernel *kernel;
+		};	
+
+		//! \brief maps a kernel name onto an ExternalKernelEntry object
+		typedef std::map< std::string, ExternalKernelEntry > ExternalKernelMap;	
+
 	public:
 		/*! \brief Return a string of the memory allocations around a pointer */
 		static std::string nearbyAllocationsToString( 
@@ -337,12 +358,20 @@ namespace executive {
 		/*!
 			idempotent - called to init GL interoperability
 		*/
+
 		bool useGLInteroperability();
 		
 		/*! \brief Limit the number of threads launched per kernel */
 		void limitWorkerThreads(unsigned int limit);
+
+		/*! \brief This creates the set of devices available in the system */
+		void enumerateDevices();
+
+		/*! */
+		void initializeExternalKernelMap(std::string directoryPath, int type);
 		
 	public:
+
 		/*! Set of loaded PTX modules indexed by the module's filename */
 		ModuleMap modules;
 
@@ -354,10 +383,21 @@ namespace executive {
 		
 		/*! \brief A map of registered global memory allocations */
 		GlobalAllocationMap globalAllocations;
-		
+
+	public:
+
+		/*!
+			\brief map of kernel names and external kernel entries - overrides kernels in application
+				fat binaries
+		*/
+		ExternalKernelMap externalKernels;
+
+		/*!
+			\brief specifies the preferred type of external kernel to load - or invalid to avoid overriding
+		*/
+		int externalKernelLoadingType;
+
 	protected:
-		/*! \brief This creates the set of devices available in the system */
-		void enumerateDevices();
 		
 		/*! \brief This is the selected device */
 		int selectedDevice;

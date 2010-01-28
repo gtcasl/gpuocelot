@@ -32,6 +32,8 @@ namespace ocelot
 			trace::InstructionTraceGenerator _instructionTraceGenerator;
 			trace::CacheSimulator _cacheSimulator;
 
+		private:
+
 			bool _initialized;
 			
 		public:

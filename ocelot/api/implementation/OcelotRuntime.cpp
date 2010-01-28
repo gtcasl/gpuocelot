@@ -8,6 +8,9 @@
 #ifndef OCELOT_RUNTIME_CPP_INCLUDED
 #define OCELOT_RUNTIME_CPP_INCLUDED
 
+#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/cuda/interface/CudaRuntimeInterface.h>
+
 #include <ocelot/api/interface/OcelotRuntime.h>
 #include <ocelot/api/interface/ocelot.h>
 
@@ -80,7 +83,7 @@ namespace ocelot
 		parse( "UseCacheSimulator", cacheSimulator, false, c );
 		parse( "UseInPlaceTraces", inPlaceTraces, false, c );
 		parse( "LimitWorkerThreads", threadLimit, -1, c );
-		
+
 		ocelot::limitWorkerThreads( threadLimit );
 		
 		if( memoryTrace )

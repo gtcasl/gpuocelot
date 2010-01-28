@@ -101,6 +101,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp \
+	ocelot/executive/implementation/ExternalKernel.cpp \
 	ocelot/cuda/implementation/CudaRuntimeApi.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
 	ocelot/cuda/implementation/CudaRuntimeBase.cpp \
@@ -336,6 +337,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/GPUKernel.h \
 	ocelot/executive/interface/Device.h \
 	ocelot/executive/interface/CTAContext.h \
+	ocelot/executive/interface/ExternalKernel.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/TestGPUKernel.h \
 	ocelot/executive/test/sequence.ptx \

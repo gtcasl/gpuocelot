@@ -13,6 +13,7 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/ExternalKernel.h>
 
 #if HAVE_CUDA_DRIVER_API == 1
 #include <ocelot/cuda/include/cudaGL.h>
@@ -593,6 +594,26 @@ bool executive::Executive::loadModule(const std::string& path,
 	if (translateToSelected) {
 		_translateToSelected( *m_it->second );
 	}
+
+	// visit each kernel and potentially override them
+	if (externalKernelLoadingType != ExternalKernel::LoadingType_invalid) {
+		for (Module::KernelVector::iterator k_it = m_it->second->kernels[ir::Instruction::PTX].begin();
+			k_it != m_it->second->kernels[ir::Instruction::PTX].end(); ++k_it) {
+
+			ir::Kernel *kernel = *k_it;
+			ExternalKernelMap::iterator ext_it = externalKernels.find(kernel->name);
+			if (ext_it != externalKernels.end()) {
+				if (!ext_it->second.kernel) {
+					ext_it->second.kernel = new ExternalKernel(
+						(ExternalKernel::LoadingType)externalKernelLoadingType, ext_it->second.sourcePath, this);
+				}
+				ext_it->second.kernel->module = m_it->second;
+				m_it->second->kernels[ir::Instruction::External].push_back(ext_it->second.kernel);
+				break;
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -1924,5 +1945,33 @@ executive::Executive::MemoryAllocation::~MemoryAllocation( ) {
 	
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void executive::Executive::initializeExternalKernelMap(std::string directoryPath, int type) {
+	ExternalKernelMap::iterator it = externalKernels.begin();
+	for (; it != externalKernels.end(); ++it ) {
+		if (it->second.kernel) {
+			delete it->second.kernel;
+		}
+	}
+	externalKernels.clear();
+
+	std::ifstream directory(directoryPath.c_str());
+	while (!directory.eof()) {
+
+		ExternalKernelEntry entry;
+		std::string kernelName, loadingType;
+
+		directory >> kernelName;
+		directory >> entry.sourcePath;
+		directory >> loadingType;
+
+		entry.kernel = 0;
+		entry.loadingType = (int)ExternalKernel::fromString(loadingType);
+		externalKernels[kernelName] = entry;
+	}
+
+	externalKernelLoadingType = (ExternalKernel::LoadingType) type;
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

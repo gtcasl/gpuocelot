@@ -70,9 +70,13 @@ namespace executive {
 		/*!	removes a trace generator from an EmulatedKernel */
 		void removeTraceGenerator(trace::TraceGenerator *generator);
 
-	protected:
 		/*! \brief Initialize the kernel */
 		void initialize();
+
+		/*!	Maps identifiers to global memory allocations. */
+		void initializeGlobalMemory();		
+
+	protected:
 	
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();
@@ -104,9 +108,6 @@ namespace executive {
 
 		/*!	Maps identifiers to const memory allocations. */
 		void initializeConstMemory();
-
-		/*!	Maps identifiers to global memory allocations. */
-		void initializeGlobalMemory();		
 
 		/*!	Maps identifiers to global shared memory allocations. */
 		void initializeGlobalSharedMemory();

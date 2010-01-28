@@ -2278,11 +2278,17 @@ namespace cuda
 		bool noGPU;
 		bool noEmulator;
 		bool noLLVM;
-		
+
+		bool externalKernelOverride;		
+		std::string externalKernelDirectory;
+
 		parse( "PreferredISA", isa, "Emulated", c );
 		parse( "DisableGPUDevices", noGPU, false, c );
 		parse( "DisableEmulatorDevices", noEmulator, false, c );
 		parse( "DisableLLVMDevices", noLLVM, false, c );
+
+		parse( "UseExternalKernels", externalKernelOverride, false, c);
+		parse( "ExternalKernelDirectory", externalKernelDirectory, "externalKernels.xml", c);
 		
 		if( noGPU )
 		{
@@ -2358,6 +2364,11 @@ namespace cuda
 		{
 			context.setOptimizationLevel( 
 				translator::Translator::NoOptimization );
+		}
+
+		if (externalKernelOverride) {
+			int loadingType = 0;
+			context.initializeExternalKernelMap(externalKernelDirectory, loadingType);
 		}
 	}
 

@@ -19,6 +19,7 @@ std::string ir::Instruction::toString( Architecture a ) {
 		case x86: return "x86"; break;
 		case x86_64: return "x86_64"; break;
 		case SPU: return "SPU"; break;
+		case External: return "External"; break;
 		case Unknown: return "Unknown"; break;
 	}
 	return "Unknown";

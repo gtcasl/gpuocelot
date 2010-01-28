@@ -23,6 +23,7 @@ namespace ir {
 			x86,
 			x86_64,
 			SPU,
+			External,
 			Unknown
 		};
 

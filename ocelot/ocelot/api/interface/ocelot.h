@@ -78,7 +78,6 @@ namespace ocelot
 	/*! \brief Perform a device context switch */
 	void contextSwitch(unsigned int destinationDevice, 
 		unsigned int sourceDevice);
-
 }
 
 #endif

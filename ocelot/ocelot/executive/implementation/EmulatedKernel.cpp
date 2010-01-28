@@ -746,10 +746,8 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					unordered_set<string>::iterator 
-						l_it = global.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
+					unordered_set<string>::iterator l_it = global.find((instr.*operands[n]).identifier);
 					if (global.end() != l_it) {
 						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						ir::Module::GlobalMap::const_iterator 

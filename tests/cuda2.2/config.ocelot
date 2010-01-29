@@ -7,7 +7,7 @@
 			0
 		</UseInPlaceTraces>
 		<UseMemoryTraceGenerator>
-			1
+			0
 		</UseMemoryTraceGenerator>
 		<UseBranchTraceGenerator>
 			0

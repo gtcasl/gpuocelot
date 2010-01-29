@@ -41,17 +41,6 @@ fi
 
 ################################################################################
 ## Checks for libraries.
-AC_CHECK_LIB([rt], [clock_gettime], [], \
-	AC_MSG_ERROR("librt required"))
-AC_CHECK_LIB([GL], [glIsTexture], [], \
-	AC_MSG_ERROR("libGL required"))
-AC_CHECK_LIB([GLEW], [glewInit], [], \
-	AC_MSG_ERROR("libGLEW required"))
-AC_CHECK_LIB([GLU], [gluGetString], [], \
-	AC_MSG_ERROR("libGLU required"))
-AC_CHECK_LIB([glut], [glutMainLoop], [], \
-	AC_MSG_ERROR("libglut required"))
-
 ################################################################################
 
 ################################################################################

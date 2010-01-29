@@ -9,7 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = -locelot libsdk.la $(LLVM_LDFLAGS) $(CUDA_DRIVER_API_LIBARY)
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I $(srcdir)/sdk

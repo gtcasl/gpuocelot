@@ -1196,23 +1196,28 @@ namespace cuda
 		{
 #if HAVE_CUDA_DRIVER_API==1
 			if (context.getSelectedISA() == ir::Instruction::GPU) {
-				unsigned int flags = CU_MEMHOSTALLOC_DEVICEMAP | (portable ? CU_MEMHOSTALLOC_PORTABLE : 0);
+				unsigned int flags = CU_MEMHOSTALLOC_DEVICEMAP 
+					| (portable ? CU_MEMHOSTALLOC_PORTABLE : 0);
 				CUresult result;
 				result = cuMemHostAlloc((void **)&memory.base, size, flags);
 				if (result != CUDA_SUCCESS) {
 					report("Failed to allocate host-mapped memory");
 					return 0;
 				}
-				result = cuMemHostGetDevicePointer((CUdeviceptr*)&memory.device, memory.base, 0);
+				result = cuMemHostGetDevicePointer(
+					(CUdeviceptr*)&memory.device, memory.base, 0);
 				if (result != CUDA_SUCCESS) {
-					report("Failed to retrieve device pointer to host-mapped memory: " << result);
+					report("Failed to retrieve device pointer to " 
+						<< "host-mapped memory: " << result);
 					return 0;
 				}
 				if (!memory.device) {
 					report("Device pointer retrieved is NULL");
 					return 0;
 				}
-				report("  allocated host-mapped memory - host: " << (void *)memory.base << ", device: " << (void *)memory.device);
+				report("  allocated host-mapped memory - host: " 
+					<< (void *)memory.base << ", device: " 
+					<< (void *)memory.device);
 			}	
 #endif
 			if (!memory.base) {
@@ -1245,6 +1250,8 @@ namespace cuda
 	{
 		MemoryMap::iterator block = _memory.find( ( char* ) pointer );
 
+		report( "Getting device pointer mapped to " << pointer );
+
 		if( block == _memory.end() )
 		{
 			std::stringstream stream;
@@ -1263,12 +1270,14 @@ namespace cuda
 				cudaErrorInvalidValue );
 		}
 		
+		report( " " << (void*) block->second.device );
+		
 		return block->second.device;	
 	}
 
 	void CudaRuntime::free( void* pointer )
 	{
-	
+		report( "Freeing device pointer " << pointer );
 		MemoryMap::iterator block = _memory.find( ( char* ) pointer );
 
 		if( block == _memory.end() )
@@ -1299,12 +1308,11 @@ namespace cuda
 		}
 		
 		_memory.erase( block );
-	
 	}
 
 	void CudaRuntime::freeHost( void* pointer )
 	{
-	
+		report( "Freeing host pointer " << pointer );
 		MemoryMap::iterator block = _memory.find( ( char* ) pointer );
 
 		if( block == _memory.end() )
@@ -1325,42 +1333,44 @@ namespace cuda
 				cudaErrorInvalidValue );
 		}
 		
-		bool freed = false;
 		if( block->second.mapped )
 		{
-#if HAVE_CUDA_DRIVER_API==1
 			if (context.getSelectedISA() == ir::Instruction::GPU) {
-				cuMemFreeHost(block->second.base);
-				freed = true;
-			}
+				report(" Freeing memory using CUDA driver.");
+#if HAVE_CUDA_DRIVER_API==1
+				cuMemFreeHost( block->second.base );
 #endif
+			}
+			else
+			{
+				report(" Freeing memory using Executive context.");
+				context.free( block->second.base );
+			}
 		}
 		
-		if (!freed) {
+		else 
+		{
+			report(" Freeing memory using delete[].");
 			delete[] block->second.base;
 		}
 		
 		_memory.erase( block );
-	
 	}
 	
 	cudaArray* CudaRuntime::allocateArray( const cudaChannelFormatDesc& desc,
 		unsigned int width, unsigned int height, unsigned int length )
 	{
-	
 		Array array = { (cudaArray*) context.malloc( length * width * height * 
 			bytes( desc ) ), width, height, length, desc };
 	
 		_arrays.insert( std::make_pair( array.array, array ) );
 	
 		return array.array;
-	
 	}
 
 	unsigned int CudaRuntime::offset( const cudaArray* pointer, 
 		unsigned int width, unsigned int height, unsigned int length ) const
 	{
-	
 		ArrayMap::const_iterator array = _arrays.find( 
 			const_cast< cudaArray* >( pointer ) );
 
@@ -1410,13 +1420,11 @@ namespace cuda
 			+ lFactor * length;
 		
 		return bytes( array->second.channel ) * index;
-		
 	}
 
 	const cudaChannelFormatDesc& CudaRuntime::getChannel( 
 		const cudaArray* pointer ) const
 	{
-		
 		ArrayMap::const_iterator array = _arrays.find( 
 			const_cast< cudaArray* >( pointer ) );
 		
@@ -1430,13 +1438,11 @@ namespace cuda
 		}
 		
 		return array->second.channel;
-	
 	}
 	
 	const textureReference* CudaRuntime::getTexture( 
 		const std::string& name ) const
 	{
-	
 		for( FatBinaryMap::const_iterator binary = _binaries.begin();
 			binary != _binaries.end(); ++binary )
 		{
@@ -1457,7 +1463,6 @@ namespace cuda
 		const void *devPtr, const cudaChannelFormatDesc *desc, 
 		size_t size )
 	{
-	
 		TextureMap::iterator texture = _textures.find( texref );
 		
 		if( texture == _textures.end() )
@@ -1500,13 +1505,11 @@ namespace cuda
 		
 			throw e;
 		}
-		
 	}
 	
 	void CudaRuntime::rebind( const textureReference *texref, 
 		const cudaArray* pointer, const cudaChannelFormatDesc *desc )
 	{
-	
 		ArrayMap::iterator array = _arrays.find( 
 			const_cast< cudaArray* >( pointer ) );
 
@@ -1563,12 +1566,10 @@ namespace cuda
 		
 			throw e;
 		}
-	
 	}
 	
 	void CudaRuntime::unbind( const textureReference *texref )
 	{
-	
 		TextureMap::iterator texture = _textures.find( texref );
 		
 		if( texture == _textures.end() )
@@ -1581,12 +1582,10 @@ namespace cuda
 		}
 		
 		texture->second.bound = false;
-				
 	}
 	
 	void* CudaRuntime::getSymbol(const std::string& name)
 	{
-
 		for( FatBinaryMap::const_iterator binary = _binaries.begin();
 			binary != _binaries.end(); ++binary )
 		{
@@ -1609,7 +1608,6 @@ namespace cuda
 
 	void CudaRuntime::freeArray( cudaArray * pointer )
 	{
-
 		if(pointer == 0)
 		{
 			return;
@@ -1631,14 +1629,12 @@ namespace cuda
 		context.free( array->second.array );
 		
 		_arrays.erase( array );	
-	
 	}
 	
 	void CudaRuntime::registerGlobal( void* pointer, unsigned int size, 
 		const std::string& name, ir::PTXInstruction::AddressSpace space, 
 		unsigned int handle )
 	{
-	
 		report( "Registering " << ir::PTXInstruction::toString(space) 
 			<< " variable " << name << " to " << pointer << " with " << size 
 			<< " bytes" );

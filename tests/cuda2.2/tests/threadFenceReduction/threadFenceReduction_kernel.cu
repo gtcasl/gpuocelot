@@ -34,7 +34,7 @@
 #ifndef _REDUCE_KERNEL_H_
 #define _REDUCE_KERNEL_H_
 
-#if 0
+#if 1
 #define EMUSYNC __syncthreads()
 #else
 #define EMUSYNC
@@ -64,17 +64,12 @@ reduceBlock(float *sdata, const unsigned int tid)
     if (blockSize >= 256) { if (tid < 128) { sdata[tid] += sdata[tid + 128]; } __syncthreads(); }
     if (blockSize >= 128) { if (tid <  64) { sdata[tid] += sdata[tid +  64]; } __syncthreads(); }
 
-#if 0
-    if (tid < 32)
-#endif
-    {
-        if (blockSize >=  64) { sdata[tid] += sdata[tid + 32]; EMUSYNC; }
-        if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; EMUSYNC; }
-        if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; EMUSYNC; }
-        if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; EMUSYNC; }
-        if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; EMUSYNC; }
-        if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; EMUSYNC; }
-    }
+    if (tid < 32 && blockSize >=  64) { sdata[tid] += sdata[tid + 32]; } EMUSYNC;
+    if (tid < 32 && blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
+    if (tid < 32 && blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
+    if (tid < 32 && blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
+    if (tid < 32 && blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
+    if (tid < 32 && blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
 }
 
 template <unsigned int blockSize, bool nIsPow2>

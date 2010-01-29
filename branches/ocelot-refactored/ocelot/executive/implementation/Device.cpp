@@ -27,6 +27,7 @@ executive::Device::Device() {
 	regsPerBlock = 8192;
 	clockRate = 2400000;
 	textureAlign = 16;
+	addressSpace = 0;
 }
 
 executive::Device::~Device() {

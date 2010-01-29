@@ -15,6 +15,7 @@
 // Ocelot includes
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
@@ -90,8 +91,7 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 	memory.pointer.pitch = size;
 	memory.pointer.ysize = 1;
 	memory.dimension = MemoryAllocation::Dim_1D;
-		
-		
+	
 	switch (memory.addressSpace) {
 	case 0:
 		{
@@ -743,7 +743,7 @@ void executive::Executive::setOptimizationLevel(translator::Translator::Optimiza
 }
 
 /*!
-	\brief ensures that all kernels have an executable translation for the indicated ISA
+	\brief ensures that all kernels have an executable translation for the indicated ISA	
 */
 void executive::Executive::translateAllToISA(ir::Instruction::Architecture isa, bool retranslate) {
 	ModuleMap::iterator mod_it = modules.begin();
@@ -876,20 +876,20 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	
 	fenceGlobalVariables();
 	
+	// this switch statement should be unnecessary
 	switch (isa) {
 	case ir::Instruction::Emulated:
 		{
-			EmulatedKernel *emuKernel = static_cast<EmulatedKernel *>(kernel);
-			emuKernel->setParameterBlock(parameterBlock, parameterBlockSize);
-			emuKernel->setKernelShape(block.x, block.y, block.z);
+			ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);			
+			exeKernel->setKernelShape(block.x, block.y, block.z);
+			exeKernel->setParameterBlock(parameterBlock, parameterBlockSize);
+			exeKernel->updateMemory();
 			if (sharedMemory) {
-				emuKernel->setSharedMemorySize(sharedMemory);
+				exeKernel->setExternSharedMemorySize(sharedMemory);
 			}
 			
-			// dynamic shared memory
-			
 			try {
-				emuKernel->launchGrid(grid.x, grid.y);
+				exeKernel->launchGrid(grid.x, grid.y);
 			}
 			catch (executive::RuntimeException &exp) {
 				report("Runtime exception: " << exp.toString());
@@ -899,23 +899,7 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 		break;
 	
 	case ir::Instruction::LLVM:
-		{
-			LLVMExecutableKernel *llvmKernel = static_cast<LLVMExecutableKernel*>(kernel);
-			llvmKernel->setParameterBlock(parameterBlock, parameterBlockSize);
-			llvmKernel->setKernelShape(block.x, block.y, block.z);
-			llvmKernel->launchGrid(grid.x, grid.y);
-		}
-		break;
-		
 	case ir::Instruction::GPU:
-		{
-			GPUExecutableKernel *gpuKernel = static_cast<GPUExecutableKernel *>(kernel);
-			gpuKernel->setParameterBlock(parameterBlock, parameterBlockSize);
-			gpuKernel->setKernelShape(block.x, block.y, block.z);
-			gpuKernel->launchGrid(grid.x, grid.y);
-		}
-		break;
-		
 	default:
 		throw hydrazine::Exception("unsupported ISA selected for kernel launch");
 	}
@@ -925,7 +909,17 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	\brief block on kernel executing on selected device
 */
 void executive::Executive::synchronize() {
-
+	ir::Instruction::Architecture isa = getSelectedISA();
+	switch (isa) {
+		case ir::Instruction::Emulated:
+			break;
+		case ir::Instruction::GPU:
+			break;
+		case ir::Instruction::LLVM:
+			break;
+		default:
+			break;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -946,6 +940,7 @@ void executive::Executive::fenceGlobalVariables() {
 		//
 		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
 			// do something about each module
+			
 			if (glb_it->second.deviceAddressSpace != Device_shared) {
 				std::map< std::string, void *>::iterator mod_it = glb_it->second.modules.begin();
 				for (; mod_it != glb_it->second.modules.end(); ++mod_it) {

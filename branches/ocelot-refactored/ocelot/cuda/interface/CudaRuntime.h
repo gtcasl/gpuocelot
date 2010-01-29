@@ -115,6 +115,29 @@ namespace cuda {
 	/*! \brief A set of textures owned by a fat binary */
 	typedef std::vector< const textureReference* > TextureVector;
 	
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/*! \brief Registered OpenGL buffer */
+	class RegisteredGLBuffer {
+	public:
+	
+		//! constructor
+		RegisteredGLBuffer();
+		
+	public:
+	
+		//! \brief flags set when the buffer is mapped
+		int flags;
+		
+		//! \brief pointer to mapped buffer
+		void *ptr;
+		
+		//! \brief true if buffer is mapped
+		bool mapped;
+	};
+	
+	typedef std::map< int, RegisteredGLBuffer > RegisteredGLBufferMap;
+	
 	/*! 
 		Host thread CUDA context consists of these
 	*/
@@ -152,6 +175,9 @@ namespace cuda {
 		size_t parameterBlockSize;
 		
 		//! cuda context
+		
+		//! mapped GL buffers
+		RegisteredGLBufferMap registeredGLbuffers;
 	
 	public:
 	
@@ -216,6 +242,8 @@ namespace cuda {
 	};
 	
 	typedef std::vector< FatBinaryContext > FatBinaryVector;
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/*!
 		Cuda runtime context
@@ -431,6 +459,21 @@ namespace cuda {
 		
 		virtual cudaError_t cudaThreadExit(void);
 		virtual cudaError_t cudaThreadSynchronize(void);
+		
+	public:
+		//
+		// OpenGL interoperability
+		//
+		
+		virtual cudaError_t cudaGLMapBufferObject(void **devPtr, GLuint bufObj);
+		virtual cudaError_t cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, cudaStream_t stream);
+		virtual cudaError_t cudaGLRegisterBufferObject(GLuint bufObj);
+		virtual cudaError_t cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags);
+		virtual cudaError_t cudaGLSetGLDevice(int device);
+		virtual cudaError_t cudaGLUnmapBufferObject(GLuint bufObj);
+		virtual cudaError_t cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream);
+		virtual cudaError_t cudaGLUnregisterBufferObject(GLuint bufObj);
+		
 	};
 
 }

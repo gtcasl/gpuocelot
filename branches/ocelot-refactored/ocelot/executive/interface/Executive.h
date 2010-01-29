@@ -214,6 +214,15 @@ namespace executive {
 		*/
 		MemoryAllocation getMemoryAllocation(const void *ptr) const;
 		
+		/*!
+			Gets a string representation of memory allocations
+		*/
+		static std::string nearbyAllocationsToString( 
+			const Executive& executive, const void* pointer, 
+			unsigned int above = 5, unsigned int below = 5 ) {
+			assert(0 && "unimplemented");
+		}
+		
 	public:
 	
 		/*!
@@ -357,6 +366,13 @@ namespace executive {
 			gets selected device identifier
 		*/
 		int getSelectedDevice() const;
+		
+		/*!
+			gets selected device identifier
+		*/
+		int getSelected() const {
+			return getSelectedDevice();
+		}
 		
 		/*!
 			gets the ISA of the selected device

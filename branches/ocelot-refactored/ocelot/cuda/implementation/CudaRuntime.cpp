@@ -19,6 +19,9 @@
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
+// GL includes
+#include <GL/glew.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -75,6 +78,12 @@ cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), nextStream(0), 
 
 cuda::CudaContext::CudaContext(): thread(0), context(0) { }
 	
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+cuda::RegisteredGLBuffer::RegisteredGLBuffer(): flags(0), ptr(0), mapped(false) { 
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntime::CudaRuntime() {
@@ -840,16 +849,26 @@ cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t s
 	cudaError_t result = cudaErrorNotYetImplemented;
 	
 	lock();
-	
 	HostThreadContext &thread = getHostThreadContext();
 	
 	StreamMap::iterator s_it = thread.streams.find(stream);
 	EventMap::iterator e_it = thread.events.find(event);
-	if (e_it != thread.events.end() && s_it != thread.streams.end()) {
+	if (e_it != thread.events.end() && (!stream || s_it != thread.streams.end())) {
 		e_it->second.timer.start();
-		s_it->second.events.push_back(event);
+		if (stream) {
+			s_it->second.events.push_back(event);
+		}
 		
 		result = cudaSuccess;
+	}
+	else {
+		if (e_it == thread.events.end()) {
+			report("event not found");
+		}
+		if (s_it == thread.streams.end()) {
+			report("stream not found");
+		}
+		result = cudaErrorInvalidResourceHandle;
 	}
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
 		assert(0 && "unimplemented");
@@ -1081,3 +1100,159 @@ cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, GLuint bufObj) {
+	cudaError_t result = cudaSuccess;
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	report("cudaGLMapBufferObject()");
+	
+	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
+	if (buf_it == thread.registeredGLbuffers.end()) {
+		result = cudaErrorMapBufferObjectFailed;
+	}
+	else {
+		if (context.getDeviceAddressSpace()) {
+			assert(0 && "unimplemented");
+		}
+		else {
+			glBindBuffer(GL_ARRAY_BUFFER, bufObj);
+			buf_it->second.ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+			*devPtr = buf_it->second.ptr;
+			buf_it->second.mapped = true;
+			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
+	}
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, 
+	cudaStream_t stream) {
+	assert(0 && "unimplemented");
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLRegisterBufferObject(GLuint bufObj) {
+	cudaError_t result = cudaSuccess;
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	report("cudaGLRegisterBufferObject(" << bufObj << ")");	
+	
+	if (context.getDeviceAddressSpace()) {
+		report("context.deviceAddrSpace = " << context.getDeviceAddressSpace());
+		assert(0 && "unimplemented");
+	}
+	else {
+		glBindBuffer(GL_ARRAY_BUFFER, bufObj);
+		RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
+		if (buf_it != thread.registeredGLbuffers.end()) {
+			glUnmapBuffer(GL_ARRAY_BUFFER);
+		}
+		RegisteredGLBuffer buffer;
+		thread.registeredGLbuffers[bufObj] = buffer;
+	}
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags) {
+	cudaError_t result = cudaSuccess;
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+	
+	report("cudaGLSetBufferObjectMapFlags()");
+	
+	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
+	if (buf_it == thread.registeredGLbuffers.end()) {
+		result = cudaErrorMapBufferObjectFailed;
+	}
+	else {
+		if (context.getDeviceAddressSpace()) {
+			assert(0 && "unimplemented");
+		}
+		else {
+			buf_it->second.flags = flags;
+		}
+	}
+	
+	unlock();
+	
+	return setLastError(result);
+
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLSetGLDevice(int device) {
+	report("cudaGLSetGLDevice(" << device << ")");
+	return cudaSuccess;
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
+	cudaError_t result = cudaSuccess;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	
+	report("cudaGLUnmapBufferObject(" << bufObj << ")");
+	
+	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
+	if (buf_it != thread.registeredGLbuffers.end()) {
+		if (buf_it->second.mapped) {
+			if (context.getDeviceAddressSpace()) {
+				assert(0 && "unimplemented");
+			}
+			else {
+				glBindBuffer(GL_ARRAY_BUFFER, bufObj);
+				glUnmapBuffer(GL_ARRAY_BUFFER);
+				buf_it->second.mapped = false;
+				buf_it->second.ptr = 0;
+			}
+		}
+	}
+	else {
+		result = cudaErrorMapBufferObjectFailed;
+	}
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream) {
+	assert(0 && "unimplemented");
+}
+
+cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
+	cudaError_t result = cudaSuccess;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	
+	report("cudaGLUnregisterBufferObject");
+	
+	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
+	if (buf_it != thread.registeredGLbuffers.end()) {
+		if (buf_it->second.mapped) {
+			if (context.getDeviceAddressSpace()) {
+				assert(0 && "unimplemented");
+			}
+			else {
+			}
+			thread.registeredGLbuffers.erase(buf_it);
+		}
+	}
+	else {
+		result = cudaErrorMapBufferObjectFailed;
+	}
+	
+	unlock();
+	
+	return setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+

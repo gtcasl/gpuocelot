@@ -1117,7 +1117,19 @@ namespace translator
 		call.parameters[2].i32 = i.atomicOperation;
 		call.parameters[2].constant = true;
 
-		call.parameters[3] = _translate( i.a );
+		if( ir::PTXOperand::bytes(i.a.type) == 8 )
+		{
+			call.parameters[3] = _translate( i.a );
+		}
+		else
+		{
+			call.parameters[3].type.type = ir::LLVMInstruction::I64;
+			call.parameters[3].type.category 
+				= ir::LLVMInstruction::Type::Element;
+			call.parameters[3].name = _tempRegister();
+			_bitcast( call.parameters[3], _translate( i.a ), false );
+		}
+		
 		call.parameters[4] = _translate( i.b );
 		
 		if( i.atomicOperation == ir::PTXInstruction::AtomicCas )
@@ -1627,18 +1639,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateMembar( const ir::PTXInstruction& i )
 	{
-		ir::LLVMCall call;
-		
-		if( i.level == ir::PTXInstruction::CtaLevel )
-		{
-			call.name = "@membarCta";
-		}
-		else
-		{
-			call.name = "@membarGlobal";
-		}
-		
-		_add( call );
+		// This is a nop right now
 	}
 
 	void PTXToLLVMTranslator::_translateMin( const ir::PTXInstruction& i )

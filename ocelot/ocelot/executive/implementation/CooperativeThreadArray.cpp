@@ -1108,6 +1108,7 @@ ir::PTXU32 executive::CooperativeThreadArray::operandAsU32(int threadID, const P
 		case PTXOperand::Register:
 			return getRegAsU32(threadID, op.reg);
 		case PTXOperand::Address:
+			return (PTXU32)(op.imm_uint) + op.offset;
 		case PTXOperand::Immediate:
 			return (PTXU32)(op.imm_uint);
 		case PTXOperand::Special:

@@ -235,7 +235,8 @@ void executive::EmulatedKernel::updateParamReferences() {
 		i_it = instructions.begin();
 		i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction & instr = *i_it;
-		if (instr.addressSpace == ir::PTXInstruction::Param) {
+		if (instr.addressSpace == ir::PTXInstruction::Param 
+			&& instr.a.addressMode == ir::PTXOperand::Address) {
 			if (instr.opcode == ir::PTXInstruction::Ld) {
 				ir::Parameter &param = getParameter(instr.a.identifier);
 				instr.a.offset += param.offset;

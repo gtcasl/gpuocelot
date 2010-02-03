@@ -67,7 +67,7 @@ int main(void)
     std::cout << result.min_val << std::endl;
     std::cout << result.max_val << std::endl;
 
-	std::cout << "TEST_PASSED\n";
+	std::cout << "TEST PASSED\n";
 
     return 0;
 }

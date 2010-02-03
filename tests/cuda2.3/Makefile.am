@@ -26,7 +26,10 @@ check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
 	TestThrustHistogram TestThrustMaxAbsDiff TestThrustMinMax TestThrustMode \
 	TestThrustMonteCarlo TestThrustNorm TestThrustPaddedGridReduction \
 	TestThrustRunLengthEncoding TestThrustSaxpy TestThrustSegmentedScan \
-	TestThrustSort
+	TestThrustSort TestThrustAOSSorting TestThrustStreamCompact \
+	TestThrustSum TestThrustSummedArea TestThrustSumRows \
+	TestThrustTransformIterator TestThrustWrapPointer TestThrustUnwrapPointer
+	
 lib_LTLIBRARIES = libsdk.la
 ################################################################################
 
@@ -296,6 +299,78 @@ TestThrustSort_SOURCES = \
 	tests/thrust_sort/sort.cu.cpp
 TestThrustSort_LDADD = $(OCELOT_LIBS)
 TestThrustSort_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustAOSSorting
+TestThrustAOSSorting_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustAOSSorting_SOURCES = \
+	tests/thrust_sorting_aos_vs_soa/sorting_aos_vs_soa.cu.cpp
+TestThrustAOSSorting_LDADD = $(OCELOT_LIBS)
+TestThrustAOSSorting_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustStreamCompact
+TestThrustStreamCompact_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustStreamCompact_SOURCES = \
+	tests/thrust_stream_compaction/stream_compaction.cu.cpp
+TestThrustStreamCompact_LDADD = $(OCELOT_LIBS)
+TestThrustStreamCompact_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustSum
+TestThrustSum_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustSum_SOURCES = \
+	tests/thrust_sum/sum.cu.cpp
+TestThrustSum_LDADD = $(OCELOT_LIBS)
+TestThrustSum_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustSummedArea
+TestThrustSummedArea_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustSummedArea_SOURCES = \
+	tests/thrust_summed_area_table/summed_area_table.cu.cpp
+TestThrustSummedArea_LDADD = $(OCELOT_LIBS)
+TestThrustSummedArea_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustSumRows
+TestThrustSumRows_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustSumRows_SOURCES = \
+	tests/thrust_sum_rows/sum_rows.cu.cpp
+TestThrustSumRows_LDADD = $(OCELOT_LIBS)
+TestThrustSumRows_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustTransformIterator
+TestThrustTransformIterator_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustTransformIterator_SOURCES = \
+	tests/thrust_transform_iterator/transform_iterator.cu.cpp
+TestThrustTransformIterator_LDADD = $(OCELOT_LIBS)
+TestThrustTransformIterator_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustWrapPointer
+TestThrustWrapPointer_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustWrapPointer_SOURCES = \
+	tests/thrust_wrap_pointer/wrap_pointer.cu.cpp
+TestThrustWrapPointer_LDADD = $(OCELOT_LIBS)
+TestThrustWrapPointer_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestThrustUnwrapPointer
+TestThrustUnwrapPointer_CXXFLAGS = $(CUDA_CFLAGS)
+TestThrustUnwrapPointer_SOURCES = \
+	tests/thrust_unwrap_pointer/unwrap_pointer.cu.cpp
+TestThrustUnwrapPointer_LDADD = $(OCELOT_LIBS)
+TestThrustUnwrapPointer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

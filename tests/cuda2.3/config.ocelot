@@ -39,7 +39,7 @@
 			LLVM
 		</PreferredISA>
 		<OptimizationLevel>
-			memcheck
+			basic
 		</OptimizationLevel>
 		<DisableGPUDevices>
 			0

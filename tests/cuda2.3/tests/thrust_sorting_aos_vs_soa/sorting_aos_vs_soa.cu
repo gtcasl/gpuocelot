@@ -47,7 +47,7 @@ void initialize_keys(thrust::device_vector<MyStruct>& structures)
 
 int main(void)
 {
-    size_t N = 1000000;
+    size_t N = 10000;
     cudaEvent_t start;
     cudaEvent_t end;
     float elapsed_time;

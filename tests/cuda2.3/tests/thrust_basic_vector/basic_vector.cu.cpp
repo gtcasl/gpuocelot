@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005fac_00000000-1_basic_vector.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004407_00000000-1_basic_vector.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005fac_00000000-1_basic_vector.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004407_00000000-1_basic_vector.cudafe1.cpp"
 # 1 "basic_vector.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
@@ -43195,11 +43195,11 @@ for (int i = 0; i < D.size(); i++) {
 return 0;
 }
 
-# 1 "/tmp/tmpxft_00005fac_00000000-1_basic_vector.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00004407_00000000-1_basic_vector.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00005fac_00000000-3_basic_vector.fatbin.c" 1
+# 1 "/tmp/tmpxft_00004407_00000000-3_basic_vector.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -43261,25 +43261,8 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00005fac_00000000-3_basic_vector.fatbin.c" 2
+# 2 "/tmp/tmpxft_00004407_00000000-3_basic_vector.fatbin.c" 2
 
-
-
-
-extern "C" {
-
-
-static const unsigned long long __deviceText_$sm_10$[] = {
-0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d30315full,0x206e6f6973726576ull,
-0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
-0x20656d616e090a7bull,0x616475635f5f203dull,0x655f796d6d75645full,0x090a5f5f7972746eull,
-0x30203d206d656d6cull,0x3d206d656d73090aull,0x20676572090a3020ull,0x6162090a30203d20ull,
-0x090a30203d202072ull,0x2065646f636e6962ull,0x3066783009090a7bull,0x3020313030303030ull,
-0x3030303030306578ull,0x0a7d0a7d090a2031ull,0x0000000000000000ull
-};
-
-
-}
 
 
 
@@ -43294,8 +43277,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f6361663530ull,0x372d303030303030ull,0x765f63697361625full,0x70632e726f746365ull,
-0x742f2820692e3370ull,0x23494263632f706dull,0x2964486c5635572eull,0x2d2d2d2d2f2f090aull,
+0x30305f3730343430ull,0x372d303030303030ull,0x765f63697361625full,0x70632e726f746365ull,
+0x742f2820692e3370ull,0x23494263632f706dull,0x2977416f5864542eull,0x2d2d2d2d2f2f090aull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,0x2d2d2d2d2f2f090aull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -43310,7 +43293,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,0x09656c69662e090aull,0x6d6d6f633c220931ull,
 0x656e696c2d646e61ull,0x6c69662e090a223eull,0x6d742f2209320965ull,0x746678706d742f70ull,
-0x616635303030305full,0x3030303030305f63ull,0x7361625f362d3030ull,0x6f746365765f6369ull,
+0x303434303030305full,0x3030303030305f37ull,0x7361625f362d3030ull,0x6f746365765f6369ull,
 0x6566616475632e72ull,0x090a227570672e32ull,0x093309656c69662eull,0x6e2f656d6f682f22ull,
 0x68632f6c616d726full,0x742f74756f6b6365ull,0x68742f7473757268ull,0x7665642f74737572ull,
 0x2e7274705f656369ull,0x6c69662e090a2268ull,0x73752f2209340965ull,0x64756c636e692f72ull,
@@ -43390,14 +43373,31 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 }
 
 
+
+extern "C" {
+
+
+static const unsigned long long __deviceText_$sm_10$[] = {
+0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d30315full,0x206e6f6973726576ull,
+0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
+0x20656d616e090a7bull,0x616475635f5f203dull,0x655f796d6d75645full,0x090a5f5f7972746eull,
+0x30203d206d656d6cull,0x3d206d656d73090aull,0x20676572090a3020ull,0x6162090a30203d20ull,
+0x090a30203d202072ull,0x2065646f636e6962ull,0x3066783009090a7bull,0x3020313030303030ull,
+0x3030303030306578ull,0x0a7d0a7d090a2031ull,0x0000000000000000ull
+};
+
+
+}
+
+
 static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{(char*)"sm_10",(char*)__deviceText_$sm_10$},{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"c2706070b692a09f",(char*)"basic_vector.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xc4021a9b};
-# 5 "/tmp/tmpxft_00005fac_00000000-1_basic_vector.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"3bd76284ed385c1f",(char*)"basic_vector.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xfc093072};
+# 5 "/tmp/tmpxft_00004407_00000000-1_basic_vector.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -49377,9 +49377,9 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3864 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00005fac_00000000-1_basic_vector.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_47_tmpxft_00005fac_00000000_4_basic_vector_cpp1_ii_66e8d9ac(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_47_tmpxft_00005fac_00000000_4_basic_vector_cpp1_ii_66e8d9ac(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_00004407_00000000-1_basic_vector.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_47_tmpxft_00004407_00000000_4_basic_vector_cpp1_ii_66e8d9ac(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_47_tmpxft_00004407_00000000_4_basic_vector_cpp1_ii_66e8d9ac(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
 # 46 "basic_vector.cu" 2

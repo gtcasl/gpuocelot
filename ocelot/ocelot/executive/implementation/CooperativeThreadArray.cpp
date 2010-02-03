@@ -36,7 +36,7 @@
 // turn on checking of memory accesses to make sure they are aligned
 #define CHECK_MEMORY_ALIGNMENT 1
 
-// SHared memory race detecion
+// Shared memory race detecion
 #define CHECK_MEMORY_WRITE_READ_RACES 1
 #define CHECK_MEMORY_WRITE_WRITE_RACES 1
 
@@ -52,7 +52,7 @@
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 74
+#define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 
@@ -1127,7 +1127,7 @@ ir::PTXU64 executive::CooperativeThreadArray::operandAsU64(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXU64)(op.imm_uint);
 		case PTXOperand::Address:
-			return (PTXU64)(op.imm_uint);
+			return (PTXU64)(op.imm_uint) + op.offset;
 		default:
 			assert(0 == "invalid address mode of operand");
 	}

@@ -55,7 +55,7 @@
 //Machine warp size
 //G80's warp size is 32 threads
 //Emulation effectively executes threads in warps of 1 thread
-#ifndef __DEVICE_EMULATION__
+#if 0
     #define WARP_LOG2SIZE 5
 #else
     #define WARP_LOG2SIZE 0
@@ -111,7 +111,7 @@ static __global__ void histogram256Kernel(unsigned int *d_Result, unsigned int *
     //Thread tag for addData256()
     //WARP_LOG2SIZE higher bits of counter values are tagged
     //by lower WARP_LOG2SIZE threadID bits
-    #ifndef __DEVICE_EMULATION__
+    #if 0
         const unsigned int threadTag = threadIdx.x << (32 - WARP_LOG2SIZE);
     #else
         const unsigned int threadTag = 0;
@@ -133,13 +133,18 @@ static __global__ void histogram256Kernel(unsigned int *d_Result, unsigned int *
 
     //Cycle through the entire data set, update subhistograms for each warp
     __syncthreads();
-    for(int pos = globalTid; pos < dataN; pos += numThreads){
-        unsigned int data4 = d_Data[pos];
+    int iterations = dataN % numThreads == 0 ? dataN / numThreads : (dataN / numThreads) + 1;
+    for(int index = 0, pos = globalTid; index < iterations; ++index ) {
+		if(pos < dataN){
+		    unsigned int data4 = d_Data[pos];
 
-        addData256(s_Hist + warpBase, (data4 >>  0) & 0xFFU, threadTag);
-        addData256(s_Hist + warpBase, (data4 >>  8) & 0xFFU, threadTag);
-        addData256(s_Hist + warpBase, (data4 >> 16) & 0xFFU, threadTag);
-        addData256(s_Hist + warpBase, (data4 >> 24) & 0xFFU, threadTag);
+		    addData256(s_Hist + warpBase, (data4 >>  0) & 0xFFU, threadTag);
+		    addData256(s_Hist + warpBase, (data4 >>  8) & 0xFFU, threadTag);
+		    addData256(s_Hist + warpBase, (data4 >> 16) & 0xFFU, threadTag);
+		    addData256(s_Hist + warpBase, (data4 >> 24) & 0xFFU, threadTag);
+		    pos += numThreads;
+        }
+        __syncthreads();
     }
 
     __syncthreads();

@@ -23,13 +23,15 @@ lud_diagonal(float *m, int matrix_dim, int offset)
         shadow[threadIdx.x][i] -= shadow[threadIdx.x][j]*shadow[j][i];
       shadow[threadIdx.x][i] /= shadow[i][i];
 
-      __syncthreads();
+    }  
+    __syncthreads();
 
-      for(j=0; j < i+1; j++)
+    if (threadIdx.x>i) {
+     for(j=0; j < i+1; j++)
         shadow[i+1][threadIdx.x] -= shadow[i+1][j]*shadow[j][threadIdx.x];
-
-      __syncthreads();
     }
+      __syncthreads();
+    
   }
 
   /* 
@@ -107,9 +109,9 @@ lud_perimeter(float *m, int matrix_dim, int offset)
         peri_col[idx][i]-=peri_col[idx][j]*dia[j][i];
       peri_col[idx][i] /= dia[i][i];
     }
-
+  }
     __syncthreads();
-    
+  if (threadIdx.x >= BLOCK_SIZE) {  
     array_offset = (offset+(blockIdx.x+1)*BLOCK_SIZE)*matrix_dim+offset;
     for(i=0; i < BLOCK_SIZE; i++){
       m[array_offset+idx] =  peri_col[i][idx];

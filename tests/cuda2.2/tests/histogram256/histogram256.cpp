@@ -65,7 +65,7 @@ extern "C" void histogram256CPU(unsigned int *h_Result, unsigned int *h_Data, in
 // Data configuration
 ////////////////////////////////////////////////////////////////////////////////
 //Input data size
-const int DATA_N = 10000000;
+const int DATA_N = 100000;
 const int DATA_SIZE = DATA_N * sizeof(unsigned char);
 
 const int repetitions = 1;

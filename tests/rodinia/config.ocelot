@@ -4,7 +4,7 @@
 			"traces/database.trace"
 		</TraceDatabase>
 		<UseInPlaceTraces>
-			0
+			1
 		</UseInPlaceTraces>
 		<UseMemoryTraceGenerator>
 			0
@@ -18,13 +18,16 @@
 		<UseParallelismTraceGenerator>
 			0
 		</UseParallelismTraceGenerator>
+		<UseInstructionTraceGenerator>
+			0
+		</UseInstructionTraceGenerator>
 		<LimitWorkerThreads>
 			8
 		</LimitWorkerThreads>
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>
-			TraceGeneratingCudaRuntime
+			CudaRuntimeBase
 		</CudaRuntimeImplementation>
 		<TraceGeneratingCudaRuntime>
 			<CudaRuntimeApiTraceFile>
@@ -45,7 +48,7 @@
 			basic
 		</OptimizationLevel>
 		<DisableGPUDevices>
-			0
+			1
 		</DisableGPUDevices>
 		<DisableLLVMDevices>
 			0

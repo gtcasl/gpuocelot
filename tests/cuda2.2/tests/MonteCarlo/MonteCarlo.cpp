@@ -121,7 +121,7 @@ int main(int argc, char **argv){
     }
 
     const int         OPT_N = 256;
-    const int        PATH_N = 1 << 18;
+    const int        PATH_N = 1 << 16;
     const unsigned int SEED = 0;
 
     //Input data array

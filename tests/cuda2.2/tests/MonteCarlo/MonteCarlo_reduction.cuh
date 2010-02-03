@@ -41,7 +41,7 @@
 
 
 // Needed by the optimized sum reduction for correct execution in device emulation
-#ifdef __DEVICE_EMULATION__
+#if 1
     #define EMUSYNC __syncthreads()
 #else
     #define EMUSYNC
@@ -55,17 +55,12 @@ __device__ void sumReduceSharedMem(T *sum, T *sum2, int tid)
     if (blockSize >= 256) { if (tid < 128) { sum[tid] += sum[tid + 128]; sum2[tid] += sum2[tid + 128]; } __syncthreads(); }
     if (blockSize >= 128) { if (tid <  64) { sum[tid] += sum[tid +  64]; sum2[tid] += sum2[tid +  64]; } __syncthreads(); }
     
-#ifndef __DEVICE_EMULATION__
-    if (tid < 32)
-#endif
-    {
-        if (blockSize >=  64) { sum[tid] += sum[tid + 32]; sum2[tid] += sum2[tid + 32]; EMUSYNC; }
-        if (blockSize >=  32) { sum[tid] += sum[tid + 16]; sum2[tid] += sum2[tid + 16]; EMUSYNC; }
-        if (blockSize >=  16) { sum[tid] += sum[tid +  8]; sum2[tid] += sum2[tid +  8]; EMUSYNC; }
-        if (blockSize >=   8) { sum[tid] += sum[tid +  4]; sum2[tid] += sum2[tid +  4]; EMUSYNC; }
-        if (blockSize >=   4) { sum[tid] += sum[tid +  2]; sum2[tid] += sum2[tid +  2]; EMUSYNC; }
-        if (blockSize >=   2) { sum[tid] += sum[tid +  1]; sum2[tid] += sum2[tid +  1]; EMUSYNC; }
-    }
+    if (tid < 32) if (blockSize >=  64) { sum[tid] += sum[tid + 32]; sum2[tid] += sum2[tid + 32]; } EMUSYNC;
+    if (tid < 32) if (blockSize >=  32) { sum[tid] += sum[tid + 16]; sum2[tid] += sum2[tid + 16]; } EMUSYNC;
+    if (tid < 32) if (blockSize >=  16) { sum[tid] += sum[tid +  8]; sum2[tid] += sum2[tid +  8]; } EMUSYNC;
+    if (tid < 32) if (blockSize >=   8) { sum[tid] += sum[tid +  4]; sum2[tid] += sum2[tid +  4]; } EMUSYNC;
+    if (tid < 32) if (blockSize >=   4) { sum[tid] += sum[tid +  2]; sum2[tid] += sum2[tid +  2]; } EMUSYNC;
+    if (tid < 32) if (blockSize >=   2) { sum[tid] += sum[tid +  1]; sum2[tid] += sum2[tid +  1]; } EMUSYNC;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

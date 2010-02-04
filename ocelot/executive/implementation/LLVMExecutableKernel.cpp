@@ -1576,10 +1576,16 @@ namespace executive
 
 			report( " Parsing llvm assembly." );
 			llvm::SMDiagnostic error;
-			_module = new llvm::Module( name, llvm::getGlobalContext() );
-			_module = llvm::ParseAssemblyString( llvmKernel->code().c_str(), 
-				_module, error, llvm::getGlobalContext() );
-			
+
+			if (overrideLLVMKernel) {
+				_module = llvm::ParseAssemblyFile(overrideLLVMKernelPath, error,llvm::getGlobalContext());
+			}
+			else {
+				_module = new llvm::Module( name, llvm::getGlobalContext() );
+				_module = llvm::ParseAssemblyString( llvmKernel->code().c_str(), 
+					_module, error, llvm::getGlobalContext() );
+			}
+
 			if( _module == 0 )
 			{
 				report( "  Parsing kernel failed, dumping code:\n" 
@@ -2256,12 +2262,18 @@ namespace executive
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
 		const executive::Executive* c, 
-		translator::Translator::OptimizationLevel l ) : 
+		translator::Translator::OptimizationLevel l,
+		const char *_overridePath ) : 
 		ExecutableKernel( k, c ), _module( 0 ), _optimizationLevel( l )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
 		ISA = ir::Instruction::LLVM;
+		overrideLLVMKernel = false;
+		if (_overridePath) {
+			overrideLLVMKernel = true;
+			overrideLLVMKernelPath = _overridePath;
+		}
 		
 		_ptx = new ir::PTXKernel( static_cast< ir::PTXKernel& >( k ) );
 		

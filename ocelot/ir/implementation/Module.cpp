@@ -56,14 +56,13 @@ ir::Module::Module(std::string name, const StatementVector & statements): cuModu
 */
 void ir::Module::unload() {
 	// delete all available kernels
-	for (KernelMap::iterator it = kernels.begin(); it != kernels.end(); ++it) {
-		KernelVector& vec = it->second;
+	for (KernelArchitectureMap::iterator it = kernels.begin(); it != kernels.end(); ++it) {
+		KernelMap& map = it->second;
 		
-		for (KernelVector::iterator kern_it = vec.begin(); 
-			kern_it != vec.end(); ++kern_it) {
-			delete *kern_it;
+		for (KernelMap::iterator kern_it = map.begin(); kern_it != map.end(); ++kern_it) {
+			delete kern_it->second;
 		}
-		vec.clear();
+		map.clear();
 	}
 	kernels.clear();
 	modulePath = "::unloaded::";
@@ -171,13 +170,13 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	}
 	stream << "\n";
 	
-	KernelMap::const_iterator architecture = kernels.find(Instruction::PTX);
+	KernelArchitectureMap::const_iterator architecture = kernels.find(Instruction::PTX);
 	assert(architecture != kernels.end());
 	
-	for (KernelVector::const_iterator kernel = architecture->second.begin(); 
+	for (KernelMap::const_iterator kernel = architecture->second.begin(); 
 		kernel != architecture->second.end(); ++kernel)
 	{
-		(*kernel)->write(stream);
+		(kernel->second)->write(stream);
 	}
 }
 
@@ -230,7 +229,7 @@ void ir::Module::extractPTXKernels() {
 				PTXKernel *kernel = new PTXKernel(startIterator, endIterator);
 				
 				kernel->module = this;
-				kernels[PTXInstruction::PTX].push_back(kernel);
+				kernels[PTXInstruction::PTX][kernel->name] = (kernel);
 				kernel->canonicalBlockLabels(kernelInstance++);
 			}
 		}
@@ -264,11 +263,8 @@ void ir::Module::extractPTXKernels() {
 ir::Kernel * ir::Module::getKernel(ir::Instruction::Architecture isa, std::string kernelName) {
 	using namespace std;
 	if (kernels.find(isa) != kernels.end()) {
-		for (KernelVector::const_iterator it = kernels[isa].begin(); 
-			it != kernels[isa].end(); ++it) {
-			if ((*it)->name == kernelName) {
-				return (*it);
-			}
+		if (kernels[isa].find(kernelName) != kernels[isa].end()) {
+			return kernels[isa][kernelName];
 		}
 	}
 	return 0;

@@ -180,24 +180,23 @@ namespace cuda
 		}
 	}
 
-	void CudaRuntime::_launchKernel( ThreadMap::iterator thread, 
-		ArchitectureMap::iterator translatedKernel )
+	void CudaRuntime::_launchKernel( ThreadMap::iterator thread, int arch, ir::Kernel *kernel)
 	{			
-		ir::ExecutableKernel* kernel = static_cast< 
-			ir::ExecutableKernel* >( translatedKernel->second );
+		ir::ExecutableKernel* exeKernel = static_cast< 
+			ir::ExecutableKernel* >( kernel );
 
 		report( "Setting up parameters for emulated kernel \"" 
-			<< kernel->name << "\"." );
+			<< exeKernel->name << "\"." );
 		
-		if( kernel->constMemorySize() 
+		if( exeKernel->constMemorySize() 
 			> ( unsigned int ) context.devices[ 
 			context.getSelected() ].totalConstantMemory )
 		{
 			#if CUDA_VERBOSE == 1
 			std::cerr << "==Ocelot== Out of const memory for kernel \"" 
-				<< kernel->name 
+				<< exeKernel->name 
 				<< "\" : \n==Ocelot==\tpreallocated ";
-			std::cerr << kernel->constMemorySize() 
+			std::cerr << exeKernel->constMemorySize() 
 				<< " is greater than available " 
 				<< context.devices[ 
 				context.getSelected() ].totalConstantMemory 
@@ -208,7 +207,7 @@ namespace cuda
 			return;
 		}
 		
-		unsigned int staticSharedSize = kernel->sharedMemorySize();
+		unsigned int staticSharedSize = exeKernel->sharedMemorySize();
 		unsigned int dynamicSharedSize = staticSharedSize +
 			thread->second.shared;
 		
@@ -219,7 +218,7 @@ namespace cuda
 			std::cerr << "==Ocelot== Out of shared memory for kernel \""
 				<< kernel->name 
 				<< "\" : \n==Ocelot==\tpreallocated ";
-			std::cerr << kernel->sharedMemorySize() << " + requested " 
+			std::cerr << exeKernel->sharedMemorySize() << " + requested " 
 				<< thread->second.shared 
 				<< " is greater than available " 
 				<< context.devices[ 
@@ -231,16 +230,16 @@ namespace cuda
 			return;
 		}
 		
-		kernel->setExternSharedMemorySize(thread->second.shared);
+		exeKernel->setExternSharedMemorySize(thread->second.shared);
 		
-		_setParameters( *kernel, thread );
+		_setParameters( *exeKernel, thread );
 		
 		for( TraceGeneratorVector::iterator 
 			generator = thread->second.nextTraceGenerators.begin(); 
 			generator != thread->second.nextTraceGenerators.end(); 
 			++generator )
 		{
-			kernel->addTraceGenerator( *generator );
+			exeKernel->addTraceGenerator( *generator );
 		}
 		
 		for( TraceGeneratorVector::iterator 
@@ -248,25 +247,25 @@ namespace cuda
 			gen != thread->second.persistentTraceGenerators.end(); 
 			++gen )
 		{
-			kernel->addTraceGenerator( *gen );
+			exeKernel->addTraceGenerator( *gen );
 		}
 		
-		kernel->updateParameterMemory();
-		kernel->updateMemory();
+		exeKernel->updateParameterMemory();
+		exeKernel->updateMemory();
 
 		context.fenceGlobalVariables(executive::Executive::HostToDevice);
 		
 		try
 		{
-			kernel->setKernelShape( thread->second.ctaDimensions.x, 
+			exeKernel->setKernelShape( thread->second.ctaDimensions.x, 
 				thread->second.ctaDimensions.y, 
 				thread->second.ctaDimensions.z );
 			assert( thread->second.kernelDimensions.z == 1 );
 
 			report( "Launching emulated kernel \"" 
-				<< kernel->name << "\"." );
+				<< exeKernel->name << "\"." );
 
-			kernel->launchGrid( thread->second.kernelDimensions.x, 
+			exeKernel->launchGrid( thread->second.kernelDimensions.x, 
 				thread->second.kernelDimensions.y );
 			thread->second.lastError = cudaSuccess;
 		}
@@ -274,7 +273,7 @@ namespace cuda
 		{
 			#if CUDA_VERBOSE == 1
 			std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
-				<< kernel->name 
+				<< exeKernel->name 
 				<< "\" with exception: \n";
 			std::cerr << formatError( e.toString() ) 
 				<< "\n" << std::flush;
@@ -295,7 +294,7 @@ namespace cuda
 			generator != thread->second.nextTraceGenerators.end(); 
 			++generator )
 		{
-			kernel->removeTraceGenerator( *generator );
+			exeKernel->removeTraceGenerator( *generator );
 		}
 		
 		thread->second.nextTraceGenerators.clear();
@@ -305,7 +304,7 @@ namespace cuda
 			gen != thread->second.persistentTraceGenerators.end(); 
 			++gen )
 		{
-			kernel->removeTraceGenerator( *gen );
+			exeKernel->removeTraceGenerator( *gen );
 		}
 	}
 
@@ -1166,6 +1165,10 @@ namespace cuda
 	
 		ArchitectureMap::iterator translatedKernel 
 			= _getTranslatedKernel( kernel );
+
+		// optionally select overriding kernel
+		ir::ExecutableKernel *exeKernel = context.getExternalOverride(
+			static_cast<ir::ExecutableKernel *>(translatedKernel->second));
 		
 		// set up launch parameters and launch
 		switch( context.getSelectedISA() )
@@ -1174,7 +1177,7 @@ namespace cuda
 			case ir::Instruction::LLVM:
 			case ir::Instruction::GPU:
 			{
-				_launchKernel( thread, translatedKernel );
+				_launchKernel( thread, translatedKernel->first, exeKernel );
 				break;
 			}
 			default:
@@ -2284,7 +2287,7 @@ namespace cuda
 		parse( "DisableLLVMDevices", noLLVM, false, c );
 
 		parse( "UseExternalKernels", externalKernelOverride, false, c);
-		parse( "ExternalKernelDirectory", externalKernelDirectory, "externalKernels.xml", c);
+		parse( "ExternalKernelDirectory", externalKernelDirectory, "externalkernels.ocelot", c);
 		
 		if( noGPU )
 		{

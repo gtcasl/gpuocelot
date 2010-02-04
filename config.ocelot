@@ -32,11 +32,17 @@
 </ocelot>
 <cuda>
 	<CudaRuntime>
+		<UseExternalKernels>
+			0
+		</UseExternalKernels>
+		<ExternalKernelDirectory>
+			"externalkernels.ocelot"
+		</ExternalKernelDirectory>
 		<DefaultDeviceId>
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			Emulated
+			LLVM
 		</PreferredISA>
 		<OptimizationLevel>
 			none

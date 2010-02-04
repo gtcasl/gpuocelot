@@ -32,14 +32,25 @@
 
 #define REPORT_BASE 0
 
-executive::EmulatedKernel::EmulatedKernel(ir::Kernel* kernel, 
-	const Executive* c) : ExecutableKernel(*kernel, c) {
+executive::EmulatedKernel::EmulatedKernel(
+	ir::Kernel* kernel, 
+	const Executive* c, 
+	bool _initialize) 
+: 
+	ExecutableKernel(*kernel, c) 
+{
 	report("Created emulated kernel " << name);
 	assertM( kernel->ISA == ir::Instruction::PTX, 
 		"Can only build an emulated kernel from a PTXKernel." );
 	
 	ConstMemory = ParameterMemory = 0;
-	initialize();
+	if (_initialize) {
+		initialize();
+	}
+}
+
+executive::EmulatedKernel::EmulatedKernel(const Executive *c): ExecutableKernel(c) {
+
 }
 
 executive::EmulatedKernel::EmulatedKernel() {

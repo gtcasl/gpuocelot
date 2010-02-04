@@ -28,34 +28,34 @@ namespace analysis
 	{
 		ir::Module module( input );
 
-		for( ir::Module::KernelVector::iterator 
+		for( ir::Module::KernelMap::iterator 
 			kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
 			kernel != module.kernels[ ir::Instruction::PTX ].end(); 
 			++kernel )
 		{
-			(*kernel)->dfg()->toSsa();
+			(kernel->second)->dfg()->toSsa();
 		}
 	
 		if( registerAllocationType == LinearScan )
 		{
 			analysis::LinearScanRegisterAllocationPass pass( registerCount );
 			pass.initialize( module );
-			for( ir::Module::KernelVector::iterator 
+			for( ir::Module::KernelMap::iterator 
 				kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
 				kernel != module.kernels[ ir::Instruction::PTX ].end(); 
 				++kernel )
 			{
-				pass.runOnKernel( **kernel );
+				pass.runOnKernel( *(kernel->second) );
 			}
 			pass.finalize();
 		}
 
-		for( ir::Module::KernelVector::iterator 
+		for( ir::Module::KernelMap::iterator 
 			kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
 			kernel != module.kernels[ ir::Instruction::PTX ].end(); 
 			++kernel )
 		{
-			(*kernel)->dfg()->fromSsa();
+			(kernel->second)->dfg()->fromSsa();
 		}
 		
 		std::ofstream out( output.c_str() );

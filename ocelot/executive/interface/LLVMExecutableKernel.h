@@ -254,6 +254,9 @@ namespace executive
 			translator::Translator::OptimizationLevel _optimizationLevel;
 			/*! \brief Cache atomics from different threads */
 			AtomicOperationCache _cache;
+
+			bool overrideLLVMKernel;
+			std::string overrideLLVMKernelPath;
 		
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
@@ -314,7 +317,8 @@ namespace executive
 			LLVMExecutableKernel( ir::Kernel& kernel, 
 				const executive::Executive* c = 0,
 				translator::Translator::OptimizationLevel 
-				l = translator::Translator::NoOptimization );
+				l = translator::Translator::NoOptimization,
+				const char *overridePath = 0);
 			/*! \brief Clean up the runtime */
 			~LLVMExecutableKernel();
 

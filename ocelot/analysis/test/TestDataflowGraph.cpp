@@ -278,11 +278,11 @@ namespace test
 			status << " For File: " << *file << std::endl;
 			ir::Module module( *file );
 			
-			for( ir::Module::KernelVector::iterator 
+			for( ir::Module::KernelMap::iterator 
 				ki = module.begin( ir::Instruction::PTX ); 
 				ki != module.end( ir::Instruction::PTX ); ++ki )
 			{
-				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
 				status << "  For Kernel: " << kernel.name << std::endl;
 				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
@@ -305,11 +305,11 @@ namespace test
 			status << " For File: " << *file << std::endl;
 			ir::Module module( *file );
 			
-			for( ir::Module::KernelVector::iterator 
+			for( ir::Module::KernelMap::iterator 
 				ki = module.begin( ir::Instruction::PTX ); 
 				ki != module.end( ir::Instruction::PTX ); ++ki )
 			{
-				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
 				status << "  For Kernel: " << kernel.name << std::endl;
 				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
@@ -333,11 +333,11 @@ namespace test
 			status << " For File: " << *file << std::endl;
 			ir::Module module( *file );
 			
-			for( ir::Module::KernelVector::iterator 
+			for( ir::Module::KernelMap::iterator 
 				ki = module.begin( ir::Instruction::PTX ); 
 				ki != module.end( ir::Instruction::PTX ); ++ki )
 			{
-				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( **ki );
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
 				status << "  For Kernel: " << kernel.name << std::endl;
 				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();

@@ -21,8 +21,10 @@ namespace ir
 	
 	}
 	
-	ExecutableKernel::ExecutableKernel( const executive::Executive* c ) 
-		: context(c) 
+	ExecutableKernel::ExecutableKernel( const executive::Executive* c ) :
+		context( c ), _constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 0 ), 
+		_registerCount( 0 ), _sharedMemorySize( 0 ), 	_externSharedMemorySize( 0 ), 
+		_parameterMemorySize( 0 )
 	{
 	
 	}

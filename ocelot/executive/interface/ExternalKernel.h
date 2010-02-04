@@ -42,7 +42,8 @@ namespace executive {
 
 	public:
 
-		ExternalKernel(LoadingType type, const std::string &path,  const executive::Executive* c = 0);
+		ExternalKernel(const std::string &name, LoadingType type, const std::string &path, 
+			ir::Module *module, const executive::Executive* c = 0);
 
 		~ExternalKernel();
 
@@ -83,9 +84,11 @@ namespace executive {
 
 	protected:
 
-		//! update global symbols to refer to global variables in the module this has been added to
-		//! at call time
-		void mergeIntoModule();
+		//! loads a PTX kernel and merges into module
+		bool loadAsPTXSource(const std::string & path);
+
+		//! loads an LLVm module and merges into module
+		bool loadAsLLVMSource(const std::string & path);
 
 	public:
 

@@ -1704,17 +1704,17 @@ namespace cuda
 			mi = _runtime.context.modules.find(name);
 		assert( mi != _runtime.context.modules.end() );
 			
-		ir::Module::KernelMap::iterator kernels = mi->second->kernels.find( 
+		ir::Module::KernelArchitectureMap::iterator kernels = mi->second->kernels.find( 
 			ir::Instruction::PTX );
 		assert( kernels != mi->second->kernels.end() );
 		
-		for( ir::Module::KernelVector::iterator 
+		for( ir::Module::KernelMap::iterator 
 			kernel = kernels->second.begin(); 
 			kernel != kernels->second.end(); ++kernel )
 		{
 			std::hash<std::string> hash;
 			_runtime.registerFunction( reinterpret_cast<const char*>( 
-				hash( (*kernel)->name ) ), (*kernel)->name, handle );
+				hash( (kernel->second)->name ) ), (kernel->second)->name, handle );
 		}		
 	}
 		
@@ -1725,18 +1725,18 @@ namespace cuda
 			mi = _runtime.context.modules.find(module);
 		assert( mi != _runtime.context.modules.end() );
 			
-		ir::Module::KernelMap::iterator kernels = mi->second->kernels.find( 
+		ir::Module::KernelArchitectureMap::iterator kernels = mi->second->kernels.find( 
 			ir::Instruction::PTX );
 		assert( kernels != mi->second->kernels.end() );
 		
-		for( ir::Module::KernelVector::iterator 
+		for( ir::Module::KernelMap::iterator 
 			kernel = kernels->second.begin(); 
 			kernel != kernels->second.end(); ++kernel )
 		{
-			if( (*kernel)->name == name )
+			if( (kernel->second)->name == name )
 			{
 				std::hash<std::string> hash;
-				return reinterpret_cast<const char*>( hash( (*kernel)->name ) );
+				return reinterpret_cast<const char*>( hash( (kernel->second)->name ) );
 			}
 		}
 		

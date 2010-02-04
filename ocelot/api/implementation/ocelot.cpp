@@ -39,6 +39,11 @@ namespace ocelot
 			registerPTXModule( stream, name );
 	}
 	
+	void registerExternalKernel(ExternalKernel kernel, const std::string &name)
+	{
+
+	}
+
 	KernelPointer getKernelPointer(const std::string& name,
 		const std::string& module)
 	{
@@ -68,6 +73,14 @@ namespace ocelot
 		assertM( false, "Ocelot API contextSwitch is not implemented." );
 	}
 
+	void callKernel(KernelPointer kernel, ...)
+	{
+		KernelPointer *parameters = &kernel;
+		while (*(++parameters) != kernel) { }
+		size_t paramSize = (size_t)(parameters - &kernel - sizeof(kernel));
+
+		report("Paramter block size: " << paramSize);
+	}
 
 }
 

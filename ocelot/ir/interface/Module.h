@@ -32,10 +32,14 @@ namespace ir {
 		typedef std::vector< PTXStatement > StatementVector;
 
 		/*!	\brief Typedef for a vector of Kernel pointers */
-		typedef std::vector< Kernel* > KernelVector;
+//		typedef std::vector< Kernel* > KernelVector;
+
+		typedef std::map< std::string, Kernel * > KernelMap;
+
+		typedef std::map< Instruction::Architecture, KernelMap > KernelArchitectureMap;
 
 		/*! \brief Typedef for a map from an architecture to a KernelVector */
-		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;
+//		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::map< std::string, Global > GlobalMap;
@@ -97,11 +101,11 @@ namespace ir {
 		Kernel *getKernel(Instruction::Architecture isa, 
 			std::string kernelName);
 
-		Module::KernelVector::iterator begin(Instruction::Architecture isa) {
+		Module::KernelMap::iterator begin(Instruction::Architecture isa) {
 			return kernels[isa].begin();
 		}
 
-		Module::KernelVector::iterator end(Instruction::Architecture isa) {
+		Module::KernelMap::iterator end(Instruction::Architecture isa) {
 			return kernels[isa].end();
 		}
 		
@@ -118,7 +122,7 @@ namespace ir {
 		StatementVector statements;
 
 		/*! Set of kernels belonging to Module */
-		KernelMap kernels;	
+		KernelArchitectureMap kernels;	
 		
 		/*! Set of textures in the module */
 		TextureMap textures;

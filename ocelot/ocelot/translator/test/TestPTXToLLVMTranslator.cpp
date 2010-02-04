@@ -89,12 +89,12 @@ namespace test
 		ir::Module module( ptxFile );
 
 		report( " Translating file " << ptxFile );
-		ir::Module::KernelVector::iterator 
+		ir::Module::KernelMap::iterator 
 			k_it = module.begin( ir::Instruction::PTX );
 
 		for (; k_it != module.end( ir::Instruction::PTX ); ++k_it) {
 
-			ir::Kernel* kernel = *k_it;
+			ir::Kernel* kernel = (k_it->second);
 
 			kernel->dfg();
 

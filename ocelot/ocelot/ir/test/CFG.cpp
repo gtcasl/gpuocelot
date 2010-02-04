@@ -28,11 +28,11 @@ void analyze(const char *filename) {
 
 	ir::Module module(filename);
 
-	Module::KernelVector::iterator k_it = module.begin(Instruction::PTX);
+	Module::KernelMap::iterator k_it = module.begin(Instruction::PTX);
 
 	for (; k_it != module.end(Instruction::PTX); ++k_it) {
 
-		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(*k_it);
+		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(k_it->second);
 
 		string filename = kernel->name;
 		string cfg_fname = filename + "_cfg.dot";

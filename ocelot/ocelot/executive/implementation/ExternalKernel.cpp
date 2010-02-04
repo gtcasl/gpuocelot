@@ -4,6 +4,7 @@
 	\brief interface for a kernel defined externally to Ocelot that is to be loaded at runtime
 */
 
+#include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/ExternalKernel.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
@@ -30,34 +31,43 @@ executive::ExternalKernel::LoadingType executive::ExternalKernel::fromString(
 }
 
 executive::ExternalKernel::ExternalKernel(
-	LoadingType _type, const std::string & path, const executive::Executive* c):
+	const std::string &_name,
+	LoadingType _type, 
+	const std::string & path, 
+	ir::Module *_module, 
+	const executive::Executive* c)
+:
+	ir::ExecutableKernel(c),	loadingType(_type), sourcePath(path), emulatedKernel(0), 
+		llvmKernel(0), objectHandle(0), managedFunction(0), unmanagedFunction(0) 
+{
 
-		ir::ExecutableKernel(c),	loadingType(_type), sourcePath(path), emulatedKernel(0), llvmKernel(0), 
-		objectHandle(0), managedFunction(0), unmanagedFunction(0) {
+	name = _name;
+	module = _module;
 
 	switch (loadingType) {
 	case PTX_Source:
 	{
 		// load a PTX module 
-		
+		loadAsPTXSource(sourcePath);
 	}
 		break;
 
 	case LLVM_Source:
 	{
 		// load an LLVM module
+		loadAsLLVMSource(sourcePath);
 	}
 		break;
 
 	case Managed_Object:
 	{
-		
+		assert(0 && "unimplemented");
 	}
 		break;
 
 	case Unmanaged_Object:
 	{
-		
+		assert(0 && "unimplemented");
 	}
 		break;
 
@@ -104,6 +114,53 @@ executive::ExternalKernel::~ExternalKernel() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// Loading functions
+//
+
+/*!
+	Load PTX kernel from source file
+*/
+bool executive::ExternalKernel::loadAsPTXSource(const std::string & path) {
+
+	ir::Module loadedModule(path);
+	ir::Kernel *loadedKernel = loadedModule.getKernel(ir::Instruction::PTX, name);
+	if (loadedKernel) {
+		emulatedKernel = new EmulatedKernel(loadedKernel, context, false);
+
+		emulatedKernel->module = module;
+		parameters = emulatedKernel->parameters;
+
+		// add parameters
+
+		emulatedKernel->initialize();
+		emulatedKernel->initializeGlobalMemory();
+	}
+	else {
+		report("external kernel " << name << " could not be loaded from PTX source on path " <<
+			path);
+	}
+	return false;
+}
+
+/*!
+	Load LLM kernel from source
+*/
+bool executive::ExternalKernel::loadAsLLVMSource(const std::string & path) {
+
+/*
+			LLVMExecutableKernel( ir::Kernel& kernel, 
+				const executive::Executive* c = 0,
+				translator::Translator::OptimizationLevel 
+				l = translator::Translator::NoOptimization,
+				bool initialize=true,
+				const char *overridePath = 0);
+*/
+
+	return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // ExecutableKernel interface
 //
 
@@ -124,13 +181,13 @@ bool executive::ExternalKernel::executable() {
 
 		case Managed_Object:
 		{
-		
+			assert(0 && "unimplemented");
 		}
 			break;
 
 		case Unmanaged_Object:
 		{
-		
+			assert(0 && "unimplemented");
 		}
 			break;
 
@@ -145,6 +202,7 @@ void executive::ExternalKernel::launchGrid(int width, int height) {
 	switch (loadingType) {
 		case PTX_Source:
 		{
+			emulatedKernel->parameters = parameters;
 			emulatedKernel->launchGrid(width, height);
 		}
 			break;
@@ -156,6 +214,7 @@ void executive::ExternalKernel::launchGrid(int width, int height) {
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -176,6 +235,7 @@ void executive::ExternalKernel::setKernelShape(int x, int y, int z) {
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -196,6 +256,7 @@ void executive::ExternalKernel::setExternSharedMemorySize(unsigned int bytes) {
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -216,6 +277,7 @@ void executive::ExternalKernel::setDevice(const executive::Device* device, unsig
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -225,6 +287,7 @@ void executive::ExternalKernel::updateParameterMemory() {
 	switch (loadingType) {
 		case PTX_Source:
 		{
+			emulatedKernel->parameters = this->parameters;
 			emulatedKernel->updateParameterMemory();
 		}
 			break;
@@ -236,6 +299,7 @@ void executive::ExternalKernel::updateParameterMemory() {
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -256,6 +320,7 @@ void executive::ExternalKernel::updateMemory() {
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -276,6 +341,7 @@ void executive::ExternalKernel::traceEvent(const trace::TraceEvent & event) cons
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -290,6 +356,7 @@ void executive::ExternalKernel::addTraceGenerator(trace::TraceGenerator* generat
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -304,6 +371,7 @@ void executive::ExternalKernel::removeTraceGenerator(trace::TraceGenerator* gene
 			break;
 
 		default:
+			assert(0 && "unimplemented");
 			break;
 	}
 }
@@ -312,30 +380,6 @@ void executive::ExternalKernel::removeTraceGenerator(trace::TraceGenerator* gene
 //
 // protected methods
 
-/*! 
-	\brief update global symbols to refer to global variables in the module this has been added to
-		at call time
-*/
-void executive::ExternalKernel::mergeIntoModule() {
-	switch (loadingType) {
-		case PTX_Source:
-		{
-			emulatedKernel->module = module;
-			emulatedKernel->initialize();
-			emulatedKernel->initializeGlobalMemory();
-		}
-			break;
-
-		case LLVM_Source:
-		{
-
-		}
-			break;
-
-		default:
-			break;
-	}
-}
 
 //
 //

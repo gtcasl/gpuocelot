@@ -28,7 +28,7 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker
+	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker TestExternalKernel
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -325,6 +325,14 @@ TestLLVMKernels_SOURCES = \
 	ocelot/executive/test/TestLLVMKernels.cpp
 TestLLVMKernels_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestLLVMKernels_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestExternalKernel
+TestExternalKernel_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
+TestExternalKernel_SOURCES = ocelot/executive/test/TestExternalKernel.cu.cpp
+TestExternalKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestExternalKernel_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

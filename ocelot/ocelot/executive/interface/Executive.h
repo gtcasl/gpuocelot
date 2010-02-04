@@ -14,6 +14,7 @@
 #include <unordered_set>
 #include <vector>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/executive/interface/Device.h>
@@ -349,6 +350,13 @@ namespace executive {
 		void setOptimizationLevel(translator::Translator::OptimizationLevel l);
 
 		/*!
+			\brief get the optimization level of the translator
+		*/
+		translator::Translator::OptimizationLevel getOptimizationLevel() const {
+			return optimizationLevel;
+		}
+
+		/*!
 			called to update global variables across all address spaces
 
 			\param copyType specifies direction data should be copied to update globals
@@ -369,7 +377,12 @@ namespace executive {
 
 		/*! */
 		void initializeExternalKernelMap(std::string directoryPath, int type);
-		
+
+		/*! 
+			\brief override an executable kernel if configured, otherwise return source kernel
+		*/
+		ir::ExecutableKernel *getExternalOverride(ir::ExecutableKernel *kernel);
+
 	public:
 
 		/*! Set of loaded PTX modules indexed by the module's filename */

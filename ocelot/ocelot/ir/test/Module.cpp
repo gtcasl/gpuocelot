@@ -33,11 +33,11 @@ void analyze(const char *filename) {
 
 	cout << "Module: " << module.modulePath << ":\n";	
 
-	Module::KernelVector::iterator k_it = module.begin(Instruction::PTX);
+	Module::KernelMap::iterator k_it = module.begin(Instruction::PTX);
 
 	for (; k_it != module.end(Instruction::PTX); ++k_it) {
 
-		Kernel *kernel = (*k_it);
+		Kernel *kernel = k_it->second;
 		cout << "  kernel " << kernel->name << "(\n";
 
 		for (vector<Parameter>::iterator it = kernel->parameters.begin();

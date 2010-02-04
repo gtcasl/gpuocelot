@@ -24,12 +24,12 @@ void PtxToLlvmTranslator::translate()
 	translator::PTXToLLVMTranslator translator;
 	ir::Module module( input );
 
-	ir::Module::KernelVector::iterator 
+	ir::Module::KernelMap::iterator 
 		k_it = module.begin( ir::Instruction::PTX );
 
 	for (; k_it != module.end( ir::Instruction::PTX ); ++k_it) {
 
-		ir::Kernel* kernel = *k_it;
+		ir::Kernel* kernel = k_it->second;
 
 		std::string llvm = kernel->name + ".ll";
 

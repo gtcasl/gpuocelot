@@ -20,12 +20,11 @@ static void analyze( const std::string& ptx, const std::string& dot, bool ssa )
 {
 	ir::Module module( ptx );
 
-	ir::Module::KernelVector::iterator 
-		k_it = module.begin( ir::Instruction::PTX );
+	ir::Module::KernelMap::iterator k_it = module.begin( ir::Instruction::PTX );
 
 	for (; k_it != module.end( ir::Instruction::PTX ); ++k_it) {
 
-		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(*k_it);
+		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(k_it->second);
 
 		std::string dfg = dot + kernel->name + "_dfg.dot";
 

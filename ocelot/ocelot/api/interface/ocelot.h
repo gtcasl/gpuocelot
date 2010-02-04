@@ -18,6 +18,16 @@ namespace trace
 namespace ocelot
 {
 
+	/*!
+		\brief pointer to externally callable kernel
+	*/
+	typedef void (*ExternalKernel)(const char *, size_t);	
+
+	/*!
+		\brief opqaue pointer to kernel
+	*/
+	typedef const char* KernelPointer;
+
 	/*! \brief Adds a trace generator for the next kernel invocation 
 	
 		\param gen A reference to the generator being added, it must not
@@ -46,8 +56,11 @@ namespace ocelot
 		\param The name of the module being registered.  Must be Unique.
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
-	
-	typedef const char* KernelPointer;
+
+	/*!
+		\brief Registers a callable function pointer as a kernel invocable by Ocelot
+	*/
+	void registerExternalKernel(ExternalKernel kernel, const std::string &name);
 
 	/*! \brief Get a function pointer to a kernel in a registered module 
 		that can be passed directly to cudaLaunch
@@ -61,6 +74,11 @@ namespace ocelot
 	*/
 	KernelPointer getKernelPointer(const std::string& name, 
 		const std::string& module);
+
+	/*!
+		\brief Call a kernel on the selected device with given parameters
+	*/
+	void callKernel(KernelPointer kernel, ...);
 
 	/*! \brief Get a handle to a fat binary from its name
 		

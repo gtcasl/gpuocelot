@@ -253,8 +253,7 @@ namespace cuda
 			/*! \brief Launch an emulated kernel
 				\param thread An iterator to the current thread
 				\param translatedKernel The kernel being launched */
-			void _launchKernel( ThreadMap::iterator thread, 
-				ArchitectureMap::iterator translatedKernel );
+			void _launchKernel( ThreadMap::iterator thread, int architecture, ir::Kernel *kernel);
 		
 		public:
 			/*!	\brief Ocelot state for all contexts.*/

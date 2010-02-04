@@ -425,8 +425,7 @@ void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
 void executive::Executive::_translateToSelected(ir::Module& m) {
 	using namespace ir;
 	report("Translating all kernels in module " << m.modulePath << " to ISA " << ir::Instruction::toString(getSelectedISA()));
-	Module::KernelMap::iterator 
-		it = m.kernels.find(Instruction::PTX);
+	Module::KernelArchitectureMap::iterator it = m.kernels.find(Instruction::PTX);
 	if (it == m.kernels.end()) {
 		return;
 	}
@@ -434,11 +433,11 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 	if (getSelectedISA() == Instruction::Emulated) {
 		report(" Translating to EmulatedKernel.");
 		// translate each PTX kernel to Emulated
-		for (Module::KernelVector::iterator k_it = it->second.begin();
+		for (Module::KernelMap::iterator k_it = it->second.begin();
 			k_it != it->second.end(); ++k_it) {
-			report("  Creating emulated kernel for : " << (*k_it)->name);
-			EmulatedKernel *emKern = new EmulatedKernel(*k_it, this);
-			m.kernels[Instruction::Emulated].push_back(emKern);
+			report("  Creating emulated kernel for : " << (k_it->second)->name);
+			EmulatedKernel *emKern = new EmulatedKernel(k_it->second, this);
+			m.kernels[Instruction::Emulated][emKern->name] = emKern;
 		}
 	}
 	else if (getSelectedISA() == Instruction::GPU) {
@@ -447,14 +446,14 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 	}
 	else if (getSelectedISA() == Instruction::LLVM) {
 		report(" Translating all modules to LLVMKernel.");
-		for (Module::KernelVector::iterator k_it = it->second.begin();
+		for (Module::KernelMap::iterator k_it = it->second.begin();
 			k_it != it->second.end(); ++k_it) {
-			report("  Creating LLVM kernel for : " << (*k_it)->name);
+			report("  Creating LLVM kernel for : " << k_it->second->name);
 			LLVMExecutableKernel* 
-				kernel = new LLVMExecutableKernel(**k_it, this, 
+				kernel = new LLVMExecutableKernel(*k_it->second, this, 
 				optimizationLevel);
 				kernel->setDevice(&devices[getSelected()], threadLimit);
-			m.kernels[Instruction::LLVM].push_back(kernel);
+			m.kernels[Instruction::LLVM][kernel->name] = kernel;
 		}
 	}
 }
@@ -462,8 +461,7 @@ void executive::Executive::_translateToSelected(ir::Module& m) {
 void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	using namespace ir;
 #if HAVE_CUDA_DRIVER_API == 1
-	Module::KernelMap::iterator 
-		it = m.kernels.find(Instruction::PTX);
+	Module::KernelArchitectureMap::iterator it = m.kernels.find(Instruction::PTX);
 	if (it == m.kernels.end()) {
 		return;
 	}
@@ -502,11 +500,11 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	}
 	m.cuModuleState = Module::Dirty;
 	
-	for (Module::KernelVector::iterator k_it = it->second.begin();
+	for (Module::KernelMap::iterator k_it = it->second.begin();
 		k_it != it->second.end(); ++k_it) {
-		report("  Creating GPUExecutableKernel for : " << (*k_it)->name);
-		executive::GPUExecutableKernel *gpuKern = 
-			new executive::GPUExecutableKernel(**k_it, this);
+		report("  Creating GPUExecutableKernel for : " << k_it->second->name);
+		executive::GPUExecutableKernel *gpuKern = new executive::GPUExecutableKernel(
+			*k_it->second, this);
 		
 		report("    constructed GPUExecutableKernel");
 
@@ -519,7 +517,7 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 		}
 		report("    added kernel '" << gpuKern->name << "' to module");
 
-		m.kernels[Instruction::GPU].push_back(gpuKern);
+		m.kernels[Instruction::GPU][gpuKern->name] = gpuKern;
 	}		
 
 	m.cuModuleState = Module::Loaded;
@@ -595,25 +593,36 @@ bool executive::Executive::loadModule(const std::string& path,
 		_translateToSelected( *m_it->second );
 	}
 
+/*
 	// visit each kernel and potentially override them
 	if (externalKernelLoadingType != ExternalKernel::LoadingType_invalid) {
+		report("overriding with external kernels");
+
 		for (Module::KernelVector::iterator k_it = m_it->second->kernels[ir::Instruction::PTX].begin();
 			k_it != m_it->second->kernels[ir::Instruction::PTX].end(); ++k_it) {
 
 			ir::Kernel *kernel = *k_it;
+
+			report("  does kernel exist for " << kernel->name << " ?");
+
 			ExternalKernelMap::iterator ext_it = externalKernels.find(kernel->name);
 			if (ext_it != externalKernels.end()) {
 				if (!ext_it->second.kernel) {
 					ext_it->second.kernel = new ExternalKernel(
-						(ExternalKernel::LoadingType)externalKernelLoadingType, ext_it->second.sourcePath, this);
+						kernel->name,
+						(ExternalKernel::LoadingType)externalKernelLoadingType, 
+						ext_it->second.sourcePath, 
+						m_it->second,
+						this);
+
+					report("  constructed external kernel: " << ext_it->second.kernel->name);
 				}
-				ext_it->second.kernel->module = m_it->second;
 				m_it->second->kernels[ir::Instruction::External].push_back(ext_it->second.kernel);
 				break;
 			}
 		}
 	}
-
+*/
 	return true;
 }
 
@@ -1963,15 +1972,34 @@ void executive::Executive::initializeExternalKernelMap(std::string directoryPath
 		std::string kernelName, loadingType;
 
 		directory >> kernelName;
-		directory >> entry.sourcePath;
 		directory >> loadingType;
+		directory >> entry.sourcePath;
 
-		entry.kernel = 0;
-		entry.loadingType = (int)ExternalKernel::fromString(loadingType);
-		externalKernels[kernelName] = entry;
+		if (kernelName != "") {
+			entry.kernel = 0;
+			entry.loadingType = (int)ExternalKernel::fromString(loadingType);
+			externalKernels[kernelName] = entry;
+
+			report("  override: " << kernelName << " (" << loadingType << ") - '" << entry.sourcePath << "'");
+		}
 	}
 
-	externalKernelLoadingType = (ExternalKernel::LoadingType) type;
+	externalKernelLoadingType = (ExternalKernel::LoadingType) ExternalKernel::PTX_Source;
 }
+
+ir::ExecutableKernel * executive::Executive::getExternalOverride(ir::ExecutableKernel *kernel) {
+
+	switch (externalKernelLoadingType) {
+		case 0: 
+			return kernel;
+		default:
+			if (externalKernels.find(kernel->name) != externalKernels.end()) {
+				return externalKernels[kernel->name].kernel;
+			}
+			break;
+	}
+	return kernel;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

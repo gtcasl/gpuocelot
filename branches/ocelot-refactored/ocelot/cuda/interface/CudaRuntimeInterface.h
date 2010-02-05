@@ -8,8 +8,10 @@
 #ifndef OCELOT_CUDA_RUNTIME_INTERFACE_H_INCLUDED
 #define OCELOT_CUDA_RUNTIME_INTERFACE_H_INCLUDED
 
-#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/interface/OcelotRuntime.h>
 
+#include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 #define __dv(x) =x
@@ -26,12 +28,28 @@ namespace cuda {
 			singleton accessors
 		*/
 		static CudaRuntimeInterface *instance;
+
+		//! \brief configuration for entire Ocelot framework
+		static api::OcelotConfiguration ocelotConfiguration;
 		
 		static CudaRuntimeInterface *get();
 		
 		CudaRuntimeInterface();
 		
 		virtual ~CudaRuntimeInterface();
+
+	public:
+		
+		//! \brief gets the Ocelot configuration object
+		const api::OcelotConfiguration & configuration() const;
+
+		//! \brief gets the Ocelot runtime object
+		const ocelot::OcelotRuntime & ocelot() const;
+
+	protected:
+
+		//! \brief Ocelot runtime object containing state related to Ocelot
+		ocelot::OcelotRuntime ocelotRuntime;
 		
 	public:
 		/*

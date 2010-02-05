@@ -21,25 +21,40 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::instance = 0;
 
+api::OcelotConfiguration cuda::CudaRuntimeInterface::ocelotConfiguration("configure.ocelot");
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 	if (!cuda::CudaRuntimeInterface::instance) {
-		cuda::CudaRuntimeInterface::instance = new CudaRuntime;
+		if (ocelotConfiguration.cuda.implementation == "CudaRuntime") {
+			cuda::CudaRuntimeInterface::instance = new CudaRuntime;
+		}
+		else {
+			assert(0 && "no CUDA runtime implementation matches what is requested");
+		}
 	}
 	return cuda::CudaRuntimeInterface::instance;
 }
 
 cuda::CudaRuntimeInterface::CudaRuntimeInterface() {
+	ocelotRuntime.configure(configuration());
 
+	// TODO: limitWorkerThreads()
 }
 
 cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 
+}
+
+const api::OcelotConfiguration & cuda::CudaRuntimeInterface::configuration() const {
+	return ocelotConfiguration;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

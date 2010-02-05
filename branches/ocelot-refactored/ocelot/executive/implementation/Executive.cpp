@@ -43,6 +43,7 @@
 //
 
 executive::Executive::Executive() {
+	optimizationLevel = translator::Translator::FullOptimization;
 	enumerateDevices();
 }
 
@@ -749,12 +750,12 @@ void executive::Executive::translateAllToISA(ir::Instruction::Architecture isa, 
 	ModuleMap::iterator mod_it = modules.begin();
 	for (; mod_it != modules.end(); ++mod_it) {
 		if (mod_it->second->kernels.find(ir::Instruction::PTX) != mod_it->second->kernels.end()) {
-			ir::Module::KernelDirectory & target = mod_it->second->kernelDirectory[ir::Instruction::PTX];
-			for (ir::Module::KernelDirectory::iterator k_it = target.begin(); k_it != target.end(); 
+			ir::Module::KernelMap & target = mod_it->second->kernels[ir::Instruction::PTX];
+			for (ir::Module::KernelMap::iterator k_it = target.begin(); k_it != target.end(); 
 				++k_it) {
 				
-				if (retranslate || mod_it->second->kernelDirectory[isa].find(k_it->second->name) ==
-					mod_it->second->kernelDirectory[isa].end()) {
+				if (retranslate || mod_it->second->kernels[isa].find(k_it->second->name) ==
+					mod_it->second->kernels[isa].end()) {
 					translateToISA(isa, mod_it->first, k_it->second->name);
 				}
 			}
@@ -768,12 +769,12 @@ void executive::Executive::translateModuleToISA(std::string moduleName,
 	ModuleMap::iterator mod_it = modules.find(moduleName);
 	if (mod_it != modules.end()) {
 		if (mod_it->second->kernels.find(ir::Instruction::PTX) != mod_it->second->kernels.end()) {
-			ir::Module::KernelDirectory & target = mod_it->second->kernelDirectory[ir::Instruction::PTX];
-			for (ir::Module::KernelDirectory::iterator k_it = target.begin(); k_it != target.end(); 
+			ir::Module::KernelMap & target = mod_it->second->kernels[ir::Instruction::PTX];
+			for (ir::Module::KernelMap::iterator k_it = target.begin(); k_it != target.end(); 
 				++k_it) {
 				
-				if (retranslate || mod_it->second->kernelDirectory[isa].find(k_it->second->name) ==
-					mod_it->second->kernelDirectory[isa].end()) {
+				if (retranslate || mod_it->second->kernels[isa].find(k_it->second->name) ==
+					mod_it->second->kernels[isa].end()) {
 					translateToISA(isa, mod_it->first, k_it->second->name);
 				}
 			}
@@ -819,7 +820,7 @@ ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture i
 	
 		case ir::Instruction::LLVM:
 		{
-			translator::Translator::OptimizationLevel level = translator::Translator::FullOptimization;
+			translator::Translator::OptimizationLevel level = optimizationLevel;
 			LLVMExecutableKernel* llvmKernel = new LLVMExecutableKernel(*kernel, this, level);
 			//
 			// ...
@@ -842,7 +843,7 @@ ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture i
 	
 	// insert kernel
 	if (translated) {
-		mod_it->second->insertKernel(isa, translated);
+		mod_it->second->kernels[isa][translated->name] = translated;
 	}
 	
 	return translated;
@@ -899,6 +900,25 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 		break;
 	
 	case ir::Instruction::LLVM:
+		{
+			ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);			
+			exeKernel->setKernelShape(block.x, block.y, block.z);
+			exeKernel->setParameterBlock(parameterBlock, parameterBlockSize);
+			exeKernel->updateMemory();
+			if (sharedMemory) {
+				exeKernel->setExternSharedMemorySize(sharedMemory);
+			}
+			
+			try {
+				exeKernel->launchGrid(grid.x, grid.y);
+			}
+			catch (executive::RuntimeException &exp) {
+				report("Runtime exception: " << exp.toString());
+				throw;
+			}
+		}
+		break;
+
 	case ir::Instruction::GPU:
 	default:
 		throw hydrazine::Exception("unsupported ISA selected for kernel launch");
@@ -911,11 +931,10 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 void executive::Executive::synchronize() {
 	ir::Instruction::Architecture isa = getSelectedISA();
 	switch (isa) {
-		case ir::Instruction::Emulated:
+		case ir::Instruction::Emulated:	// fall through
+		case ir::Instruction::LLVM:
 			break;
 		case ir::Instruction::GPU:
-			break;
-		case ir::Instruction::LLVM:
 			break;
 		default:
 			break;

@@ -8,7 +8,8 @@
 #ifndef OCELOT_RUNTIME_H_INCLUDED
 #define OCELOT_RUNTIME_H_INCLUDED
 
-#include <hydrazine/interface/Configurable.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/trace/interface/ParallelismTraceGenerator.h>
 #include <ocelot/trace/interface/SharedComputationGenerator.h>
@@ -18,26 +19,22 @@
 namespace ocelot
 {
 	/*! \brief This is an interface for managing state associated with Ocelot */
-	class OcelotRuntime : private hydrazine::Configurable
-	{
-		private:
-			trace::MemoryTraceGenerator _memoryTraceGenerator;
-			trace::SharedComputationGenerator 
-				_sharedComputationGenerator;
-			trace::BranchTraceGenerator _branchTraceGenerator;
-			trace::ParallelismTraceGenerator _parallelismTraceGenerator;
-			trace::CacheSimulator _cacheSimulator;
+	class OcelotRuntime	{
+	private:
+//		trace::MemoryTraceGenerator _memoryTraceGenerator;
+		trace::SharedComputationGenerator _sharedComputationGenerator;
+		trace::BranchTraceGenerator _branchTraceGenerator;
+		trace::ParallelismTraceGenerator _parallelismTraceGenerator;
+		trace::CacheSimulator _cacheSimulator;
+	
+		bool _initialized;
 		
-			bool _initialized;
-			
-		public:
-			/*! \brief The constructor loads config data */
-			OcelotRuntime();
-			/*! \brief Initialize the state */
-			void initialize();
-		
-		private:
-			void configure( const Configuration& c );
+	public:
+		//! \brief initializes Ocelot runtime state
+		OcelotRuntime();
+	
+		//! \brief initializes the Ocelot runtime object with the Ocelot configuration object
+		void configure( const api::OcelotConfiguration &c );
 						
 	};
 }

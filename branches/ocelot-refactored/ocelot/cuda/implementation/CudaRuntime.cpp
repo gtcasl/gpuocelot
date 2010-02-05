@@ -1119,9 +1119,16 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, GLuint bufOb
 		else {
 			glBindBuffer(GL_ARRAY_BUFFER, bufObj);
 			buf_it->second.ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+			int bytes = 0;
+			glGetBufferParameteriv( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes );
+
 			*devPtr = buf_it->second.ptr;
 			buf_it->second.mapped = true;
 			
+			if( glGetError() != GL_NO_ERROR ) {
+				//report("  error - mapped " << bytes << " bytes");
+			}
+
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 	}
@@ -1209,6 +1216,11 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 			else {
 				glBindBuffer(GL_ARRAY_BUFFER, bufObj);
 				glUnmapBuffer(GL_ARRAY_BUFFER);
+
+				if( glGetError() != GL_NO_ERROR ) {
+					report("  error");
+				}
+
 				buf_it->second.mapped = false;
 				buf_it->second.ptr = 0;
 			}

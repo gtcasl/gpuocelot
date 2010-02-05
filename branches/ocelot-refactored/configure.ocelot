@@ -1,0 +1,25 @@
+{
+	ocelot: "ocelot-refactored",
+	version: "1.0.65",
+	trace: { 
+		enabled: false,
+		database: "trace/database.trace",
+		memory: false,
+		branch: false,
+		sharedComputation: false,
+		instruction: false
+	},
+	cuda: {
+		implementation: "CudaRuntime",
+		runtimeApiTrace: "trace/CudaAPI.trace"
+	},
+	executive: {
+		defaultDeviceID: 0,
+		preferredISA: emulated,
+		required: false,
+		enableLLVM: true,
+		enableEmulated: true,
+		enableGPU: true
+	}
+}
+

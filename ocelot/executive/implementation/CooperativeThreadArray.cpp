@@ -31,14 +31,14 @@
 #define REPORT_BASE 0
 
 // turn on checking of all global accesses... be prepared to take a perf hit
-#define CHECK_GLOBAL_ACCESSES 0
+#define CHECK_GLOBAL_ACCESSES 1
 					
 // turn on checking of memory accesses to make sure they are aligned
-#define CHECK_MEMORY_ALIGNMENT 0
+#define CHECK_MEMORY_ALIGNMENT 1
 
 // Shared memory race detecion
-#define CHECK_MEMORY_WRITE_READ_RACES 0
-#define CHECK_MEMORY_WRITE_WRITE_RACES 0
+#define CHECK_MEMORY_WRITE_READ_RACES 1
+#define CHECK_MEMORY_WRITE_WRITE_RACES 1
 
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
@@ -52,7 +52,7 @@
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 0
+#define NTH_THREAD 320
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 

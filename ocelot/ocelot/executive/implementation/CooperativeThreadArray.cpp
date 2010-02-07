@@ -1534,10 +1534,21 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTX
 
 */
 void executive::CooperativeThreadArray::eval_And(CTAContext &context, const PTXInstruction &instr) {
-	if (instr.type == PTXOperand::b16) {
+	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXB16 d, a = operandAsB16(threadID, instr.a), b = operandAsB16(threadID, instr.b);
+			
+			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
+				b = getRegAsPredicate(threadID, instr.b.reg);
+			d = b && a;
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}
+	}
+	else if (instr.type == PTXOperand::b16) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB16 d, a = operandAsB16(threadID, instr.a), 
+				b = operandAsB16(threadID, instr.b);
 			d = a & b;
 			setRegAsB16(threadID, instr.d.reg, d);
 		}
@@ -1545,7 +1556,8 @@ void executive::CooperativeThreadArray::eval_And(CTAContext &context, const PTXI
 	else if (instr.type == PTXOperand::b32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXB32 d, a = operandAsB32(threadID, instr.a), b = operandAsB32(threadID, instr.b);
+			PTXB32 d, a = operandAsB32(threadID, instr.a), 
+				b = operandAsB32(threadID, instr.b);
 			d = a & b;
 			setRegAsB32(threadID, instr.d.reg, d);
 		}
@@ -1553,7 +1565,8 @@ void executive::CooperativeThreadArray::eval_And(CTAContext &context, const PTXI
 	else if (instr.type == PTXOperand::b64) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXB64 d, a = operandAsB64(threadID, instr.a), b = operandAsB64(threadID, instr.b);
+			PTXB64 d, a = operandAsB64(threadID, instr.a), 
+				b = operandAsB64(threadID, instr.b);
 			d = a & b;
 			setRegAsB64(threadID, instr.d.reg, d);
 		}
@@ -4318,7 +4331,16 @@ void executive::CooperativeThreadArray::eval_Neg(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Not(CTAContext &context, const PTXInstruction &instr) {
-	if (instr.type == PTXOperand::b16) {
+	if (instr.type == PTXOperand::pred) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			bool d, a = getRegAsPredicate(threadID, instr.a.reg);
+			d = !a;
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}
+	}
+	else if (instr.type == PTXOperand::b16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
@@ -4354,11 +4376,22 @@ void executive::CooperativeThreadArray::eval_Not(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXInstruction &instr) {
-	if (instr.type == PTXOperand::b16) {
+	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXB16 d, a = operandAsB16(threadID, instr.a), b = operandAsB16(threadID, instr.b);
+			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
+				b = getRegAsPredicate(threadID, instr.b.reg);
+			d = b || a;
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}
+	}
+	else if (instr.type == PTXOperand::b16) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXB16 d, a = operandAsB16(threadID, instr.a), 
+				b = operandAsB16(threadID, instr.b);
 			d = a | b;
 			setRegAsB16(threadID, instr.d.reg, d);
 		}
@@ -4367,7 +4400,8 @@ void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXIn
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXB32 d, a = operandAsB32(threadID, instr.a), b = operandAsB32(threadID, instr.b);
+			PTXB32 d, a = operandAsB32(threadID, instr.a), 
+				b = operandAsB32(threadID, instr.b);
 			d = a | b;
 			setRegAsB32(threadID, instr.d.reg, d);
 		}
@@ -4376,7 +4410,8 @@ void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXIn
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXB64 d, a = operandAsB64(threadID, instr.a), b = operandAsB64(threadID, instr.b);
+			PTXB64 d, a = operandAsB64(threadID, instr.a), 
+				b = operandAsB64(threadID, instr.b);
 			d = a | b;
 			setRegAsB64(threadID, instr.d.reg, d);
 		}
@@ -7151,12 +7186,24 @@ void executive::CooperativeThreadArray::eval_Vote(CTAContext &context, const PTX
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Xor(CTAContext &context, const PTXInstruction &instr) {
-	if (instr.type == PTXOperand::b16) {
+void executive::CooperativeThreadArray::eval_Xor(CTAContext &context, 
+	const PTXInstruction &instr) {
+	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXB16 d, a = operandAsB16(threadID, instr.a), b = operandAsB16(threadID, instr.b);
+			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
+				b = getRegAsPredicate(threadID, instr.b.reg);
+			d = b ^ a;
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}
+	}
+	else if (instr.type == PTXOperand::b16) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXB16 d, a = operandAsB16(threadID, instr.a),
+				b = operandAsB16(threadID, instr.b);
 			d = a ^ b;
 			setRegAsB16(threadID, instr.d.reg, d);
 		}
@@ -7165,7 +7212,8 @@ void executive::CooperativeThreadArray::eval_Xor(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXB32 d, a = operandAsB32(threadID, instr.a), b = operandAsB32(threadID, instr.b);
+			PTXB32 d, a = operandAsB32(threadID, instr.a),
+				b = operandAsB32(threadID, instr.b);
 			d = a ^ b;
 			setRegAsB32(threadID, instr.d.reg, d);
 		}
@@ -7174,7 +7222,8 @@ void executive::CooperativeThreadArray::eval_Xor(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXB64 d, a = operandAsB64(threadID, instr.a), b = operandAsB64(threadID, instr.b);
+			PTXB64 d, a = operandAsB64(threadID, instr.a),
+				b = operandAsB64(threadID, instr.b);
 			d = a ^ b;
 			setRegAsB64(threadID, instr.d.reg, d);
 		}

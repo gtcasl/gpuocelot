@@ -1657,7 +1657,8 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 						stream << "Shared memory address " 
 							<< (void*)(source + elementSize) 
 							<< " is beyond allocated block size " 
-							<< kernel->sharedMemorySize();
+							<< kernel->totalSharedMemorySize() << "\n";
+						stream << "In " << kernel->location(context.PC) << "\n";
 						throw RuntimeException(stream.str(), context.PC, instr);
 					}
 					source += (PTXU64) SharedMemory;

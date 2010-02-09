@@ -597,7 +597,9 @@ void executive::Executive::registerTexture(const char *module, const char *name,
 	// register global variables and allocate [if necessary] on available address spaces
 	//
 	
-	assert(0 && "unimplemented");
+	Texture texture;
+	texture.normalize = normalized;
+	textures[name] = texture;
 }
 
 

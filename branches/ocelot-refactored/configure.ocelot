@@ -15,10 +15,10 @@
 	},
 	executive: {
 		defaultDeviceID: 0,
-		preferredISA: llvm,
+		preferredISA: emulated,
 		required: false,
-		enableLLVM: true,
-		enableEmulated: false,
+		enableLLVM: false,
+		enableEmulated: true,
 		enableGPU: false,
 		optimizationLevel: debug,
 		workerThreadLimit: 1

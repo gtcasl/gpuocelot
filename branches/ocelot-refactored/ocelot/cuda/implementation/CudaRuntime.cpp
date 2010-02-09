@@ -34,7 +34,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,6 +70,27 @@ static executive::MemcpyKind convert(const cudaMemcpyKind kind) {
 			return executive::DeviceToDevice;
 	}
 	return executive::MemcpyKind_invalid;
+}
+
+static void convert(executive::ChannelFormatDesc &format, 
+	const struct cudaChannelFormatDesc *desc) {
+	switch (desc->f) {
+		case cudaChannelFormatKindSigned: 
+			format.kind = executive::ChannelFormatDesc::Kind_signed; break;
+		case cudaChannelFormatKindUnsigned: 
+			format.kind = executive::ChannelFormatDesc::Kind_unsigned; break;
+		case cudaChannelFormatKindFloat: 
+			format.kind = executive::ChannelFormatDesc::Kind_float; break;
+		case cudaChannelFormatKindNone: // fall through
+		default:
+			format.kind = executive::ChannelFormatDesc::Kind_none;
+			break;
+	}
+
+	format.x = desc->x;
+	format.y = desc->y;
+	format.z = desc->z;
+	format.w = desc->w;
 }
 
 static executive::dim3 convert(dim3 dim) {
@@ -148,7 +169,8 @@ cudaError_t cuda::CudaRuntime::setLastError(cudaError_t result) {
 }
 
 //! sets the last error state for the CudaRuntime object
-cudaError_t cuda::CudaRuntime::setLastErrorAndUnlock(HostThreadContext &thread, cudaError_t result) {
+cudaError_t cuda::CudaRuntime::setLastErrorAndUnlock(HostThreadContext &thread, 
+	cudaError_t result) {
 	thread.lastError = result;
 	unlock();
 	return result;
@@ -275,6 +297,7 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	lock();
 	
 	getHostThreadContext();
+
 	
 	// register the texture object to the runtime and declare it to the executive
 	
@@ -285,10 +308,14 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	texture.module = fatBinaries[handle].name();
 	texture.texture = deviceName;
 	
+	report("cudaRegisterTexture('" << texture.texture << ", dim: " << dim 
+		<< ", norm: " << norm << ", ext: " << ext);
+
 	// now tell the executive about it
 	context.registerTexture(texture.module, texture.texture, dim, norm);
 	
 	textures[std::string(texture.texture)] = texture;
+	textureReferences[(const void *)hostVar] = texture.texture;
 	
 	unlock();
 }
@@ -667,27 +694,44 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 	const struct cudaChannelFormatDesc *desc, size_t size) {
 	cudaError_t result = cudaSuccess;
 	
+	assert(0 && "unimplemented yet");
+
 	return setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
-	const struct textureReference *texref,const void *devPtr, 
-	const struct cudaChannelFormatDesc *desc,size_t width, size_t height, size_t pitch) {
-	cudaError_t result = cudaSuccess;
-	
-	return setLastError(result);
+	const struct textureReference *texref, const void *devPtr, 
+	const struct cudaChannelFormatDesc *desc, size_t width, size_t height, size_t pitch) {
+	cudaError_t result = cudaErrorInvalidValue;
+
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	executive::ChannelFormatDesc format;
+	convert(format, desc);
+
+	if (context.bindTexture2D(offset, textureReferences[texref], devPtr, format, width, height, 
+		pitch)) {
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureReference *texref, 
 	const struct cudaArray *array, const struct cudaChannelFormatDesc *desc) {
 	cudaError_t result = cudaSuccess;
 	
+	assert(0 && "unimplemented yet");
+
 	return setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaUnbindTexture(const struct textureReference *texref) {
 	cudaError_t result = cudaSuccess;
 	
+	assert(0 && "unimplemented yet");
+
 	return setLastError(result);
 }
 
@@ -695,6 +739,8 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureAlignmentOffset(size_t *offset,
 	const struct textureReference *texref) {
 	cudaError_t result = cudaSuccess;
 	
+	assert(0 && "unimplemented yet");
+
 	return setLastError(result);
 }
 
@@ -766,14 +812,6 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
-	// launch via the executive
-	//
-	// executive needs: kernel grid and block dimensions, shared memory size, parameter data
-	//
-	
-	// void Executive::launch(const std::string & module, const std::string & kernel, dim3 grid, dim3 block,
-	// 	size_t sharedMemory, unsigned char *parameterBlock, size_t parameterBlockSize);
-
 	const RegisteredKernel & kernel = kernels[(void *)entry];
 	std::string moduleName = kernel.module;
 	std::string kernelName = kernel.kernel;

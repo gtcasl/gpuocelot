@@ -110,7 +110,7 @@ namespace cuda {
 	typedef std::set< pthread_t > ThreadSet;
 			
 	/*!	\brief Map from pointer to texture name and module */
-	typedef std::map< const textureReference*, executive::Texture > TextureMap;
+	typedef std::map< const textureReference*, ir::Texture > TextureMap;
 			
 	/*! \brief A set of textures owned by a fat binary */
 	typedef std::vector< const textureReference* > TextureVector;
@@ -212,6 +212,8 @@ namespace cuda {
 	//! maps name onto textures
 	typedef std::map< std::string , RegisteredTexture > RegisteredTextureMap;
 
+	typedef std::map< const void *, std::string> TextureReferenceMap;
+
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
 	public:
@@ -275,6 +277,9 @@ namespace cuda {
 		
 		//! maps texture symbols to module-textures
 		RegisteredTextureMap textures;
+
+		//! maps textureReference* onto texture names
+		TextureReferenceMap textureReferences;
 		
 		// fatbinaries
 		FatBinaryVector fatBinaries;

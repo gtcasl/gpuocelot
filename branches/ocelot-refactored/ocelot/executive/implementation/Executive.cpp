@@ -597,8 +597,9 @@ void executive::Executive::registerTexture(const char *module, const char *name,
 	// register global variables and allocate [if necessary] on available address spaces
 	//
 	
-	Texture texture;
-	texture.normalize = normalized;
+	ir::Texture texture;
+	texture.normalize = (bool)normalized;
+
 	textures[name] = texture;
 }
 
@@ -1096,6 +1097,121 @@ void executive::Executive::fenceGlobalVariables() {
 			}
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Texture binding and unbinding functions
+
+/*!
+	\brief binds a texture by name to a pointer to a device memory allocation
+	\param offset [out] offset that must be added to fetches to achieved desired pixel
+	\param texture name of texture
+	\param devPtr device memory allocation
+	\param format channel description
+	\param size bytes in texture
+	\return true on success
+*/
+bool executive::Executive::bindTexture(size_t *offset, const std::string & texture, 
+	const void *devPtr, const ChannelFormatDesc &format, size_t size) {
+
+	assert(0 && "unimplemented");
+
+	return true;
+}
+
+/*!
+	\brief binds a 2D texture by name to a device pointer with a given width, height, and pitch
+	\param offset [out] offset that must be added to fetches to achieved desired pixel
+	\param textureName name of texture
+	\param devPtr device memory allocation
+	\param format channel description
+	\param width width of texture in texels
+	\param height height of texture in texels
+	\param pitch number of bytes between texels of the same column in consecutive rows
+	\return true on success
+*/
+bool executive::Executive::bindTexture2D(size_t *offset, const std::string & textureName, 
+	const void *devPtr, const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch) {
+
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
+
+		switch (format.kind) {
+			case ChannelFormatDesc::Kind_signed:
+				texture.type = ir::Texture::Signed;
+				break;
+			case ChannelFormatDesc::Kind_unsigned:
+				texture.type = ir::Texture::Unsigned;
+				break;
+			case ChannelFormatDesc::Kind_float:
+				texture.type = ir::Texture::Float;
+				break;
+			default:
+				texture.type = ir::Texture::Invalid;
+				break;
+		}
+
+		texture.size.x = width;
+		texture.size.y = height;
+		texture.data = (void *)devPtr;
+
+		if (offset) {
+			*offset = (size_t)devPtr % 16;
+		}
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+		return false;
+	}
+
+	return true;
+}
+
+/*!
+	\brief binds a texture to an array
+*/
+bool executive::Executive::bindTextureToArray(const std::string & textureName, void *array, 
+	const ChannelFormatDesc &desc) {
+
+	assert(0 && "unimplemented");
+
+	return false;
+}
+
+/*!
+	\brief unbinds a previously bound texture
+*/
+void executive::Executive::unbindTexture(const std::string & textureName) {
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+		texture.data = 0;
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+	}
+}
+
+/*!
+	gets alignment of a named texture
+*/
+size_t executive::Executive::getTextureAlignmentOffset(const std::string & textureName) {
+	size_t offset = 0;
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+	}
+	return offset;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

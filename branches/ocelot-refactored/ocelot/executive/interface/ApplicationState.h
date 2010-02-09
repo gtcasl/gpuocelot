@@ -18,6 +18,7 @@
 #include <pthread.h>
 
 // Ocelot includes
+#include <ocelot/ir/interface/Texture.h>
 
 // forward declarations
 
@@ -61,6 +62,10 @@ namespace executive {
 	public:
 		Kind kind;
 		int w, x, y, z;
+	public:
+		size_t size() const {
+			return (w + x + y + z) / 8;
+		}
 	};
 	
 	class Extent {
@@ -189,7 +194,7 @@ namespace executive {
 
 	/*!
 		Registered texture	
-	*/
+
 	class Texture {
 	public:
 		Texture();
@@ -201,6 +206,9 @@ namespace executive {
 	
 		//! name of module in which texture exists
 		std::string module;
+
+		//! \brief indicates texture uses normalized coordinates
+		bool normalized;
 	
 		//! indicates texture is bound and remaining data members are valid
 		bool bound;
@@ -219,7 +227,9 @@ namespace executive {
 		
 		//! size (in bytes) of memory region pointed to by device_pointer
 		size_t size;
+
 	};
+*/
 			
 	/*!	\brief Allocated memory	*/
 	typedef std::map< void*, MemoryAllocation > MemoryAllocationMap;

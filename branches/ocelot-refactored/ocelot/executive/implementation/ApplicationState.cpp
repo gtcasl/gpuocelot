@@ -30,10 +30,11 @@ executive::GlobalVariable::GlobalVariable():
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 executive::Texture::Texture():
 	name(""),
 	module(""),
+	normalized(false),
 	bound(false),
 	offset(0),
 	texRef(0),
@@ -44,7 +45,7 @@ executive::Texture::Texture():
 	
 	desc.x = desc.y = desc.z = desc.w = 0;	
 }
-
+*/
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 

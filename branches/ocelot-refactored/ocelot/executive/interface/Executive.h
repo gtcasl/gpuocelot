@@ -14,9 +14,10 @@
 // Ocelot includes
 #include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/interface/Texture.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/translator/interface/Translator.h>
 
 struct cudaArray;
 
@@ -45,7 +46,7 @@ namespace executive {
 	//! maps (address space, ptr) => allocation
 	typedef std::map< int, MemoryAllocationMap > DeviceMemoryAllocationMap;
 
-	typedef std::map< std::string, Texture > TextureMap;
+	typedef std::map< std::string, ir::Texture > TextureMap;
 
 	/*!
 		\brief specifies the Ocelot execution model
@@ -264,6 +265,7 @@ namespace executive {
 			\param devPtr device memory allocation
 			\param format channel description
 			\param size bytes in texture
+			\return true on success
 		*/
 		bool bindTexture(size_t *offset, const std::string & texture, const void *devPtr, 
 			const ChannelFormatDesc &format, size_t size);
@@ -277,6 +279,7 @@ namespace executive {
 			\param width width of texture in texels
 			\param height height of texture in texels
 			\param pitch number of bytes between texels of the same column in consecutive rows
+			\return true on success
 		*/
 		bool bindTexture2D(size_t *offset, const std::string & texture, const void *devPtr,
 			const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch);

@@ -178,11 +178,16 @@ namespace cuda {
 		
 		//! mapped GL buffers
 		RegisteredGLBufferMap registeredGLbuffers;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector persistentTraceGenerators;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector nextTraceGenerators;
 	
 	public:
 	
-		HostThreadContext();
-		
+		HostThreadContext();	
 	};
 	
 	typedef std::map< pthread_t, HostThreadContext > HostThreadContextMap;
@@ -282,17 +287,23 @@ namespace cuda {
 	
 	public:
 	
-		//! acquires mutex and locks the runtime
+		//! \brief acquires mutex and locks the runtime
 		void lock();
 		
-		//! releases mutex
+		//! \brief releases mutex
 		void unlock();
 		
-		//! sets the last error state for the CudaRuntime object
+		//! \brief sets the last error state for the CudaRuntime object
 		cudaError_t setLastError(cudaError_t result);
+
+		//! \brief sets the last error state for the CudaRuntime object
+		cudaError_t setLastErrorAndUnlock(HostThreadContext &thread, cudaError_t result);
 		
-		//! gets current thread context
+		//! \brief gets current thread context
 		HostThreadContext & getHostThreadContext();
+
+		//! \brief returns an Ocelot-formatted error message
+		std::string formatError(const std::string & message);
 
 	public:
 		//
@@ -474,6 +485,13 @@ namespace cuda {
 		virtual cudaError_t cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream);
 		virtual cudaError_t cudaGLUnregisterBufferObject(GLuint bufObj);
 		
+	public:
+
+		virtual void addTraceGenerator( trace::TraceGenerator& gen, bool persistent = false, 
+			bool safe = true );
+		virtual void clearTraceGenerators( bool safe = true );
+		virtual void limitWorkerThreads( unsigned int limit = 1024 );
+
 	};
 
 }

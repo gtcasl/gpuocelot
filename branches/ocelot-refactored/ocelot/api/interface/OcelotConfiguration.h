@@ -77,8 +77,15 @@ namespace api {
 			//! \brief ID of device to select by default
 			int defaultDeviceID;
 
-			//! \brief names preferred ISA [if multiple are available]
-			std::string preferredISA;
+			/*! \brief selects preferred ISA [if multiple are available] - cast to 
+				ir::Instruction::Architecture
+			*/
+			int preferredISA;
+
+			/*! 
+				\brief selects optimization level - cast to translator::Translator::OptimizationLevel
+			*/
+			int optimizationLevel;
 
 			//! \brief if true, Ocelot will either choose only the preferred ISA or die
 			bool required;
@@ -104,11 +111,34 @@ namespace api {
 		//! \brief load configuration from stream as JSON
 		OcelotConfiguration(std::istream &stream);
 
+		//! \brief loads the configuration object from a path
 		OcelotConfiguration(const std::string &path);
 
+		//! \brief initializes configuration object from a stream as JSON
 		void initialize(std::istream &stream);
 
+		//! \brief gets singleton configuration object or constructs from 'configure.ocelot'
+		static const OcelotConfiguration & get();
+
+		//! \brief gets singleton config object's .executive member
+		static const Executive & getExecutive();
+
+		//! \brief gets singleton config object's .cuda member
+		static const CudaRuntimeImplementation & getCuda();
+
+		//! \brief gets singleton config object's .trace member
+		static const TraceGeneration & getTrace();
+
 	public:
+
+		//! \brief path to configuration file for reparsing 
+		std::string path;
+
+		//! \brief name of Ocelot implementation
+		std::string ocelot;
+
+		//! \brief version of current Ocelot configuration
+		std::string version;
 
 		//! \brief configuration for trace generator
 		TraceGeneration trace;

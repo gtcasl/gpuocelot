@@ -28,9 +28,6 @@ namespace cuda {
 			singleton accessors
 		*/
 		static CudaRuntimeInterface *instance;
-
-		//! \brief configuration for entire Ocelot framework
-		static api::OcelotConfiguration ocelotConfiguration;
 		
 		static CudaRuntimeInterface *get();
 		
@@ -39,9 +36,6 @@ namespace cuda {
 		virtual ~CudaRuntimeInterface();
 
 	public:
-		
-		//! \brief gets the Ocelot configuration object
-		const api::OcelotConfiguration & configuration() const;
 
 		//! \brief gets the Ocelot runtime object
 		const ocelot::OcelotRuntime & ocelot() const;

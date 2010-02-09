@@ -16,6 +16,7 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/trace/interface/TraceGenerator.h>
 
 struct cudaArray;
 
@@ -76,6 +77,9 @@ namespace executive {
 	
 		//! optimization level used by translator
 		translator::Translator::OptimizationLevel optimizationLevel;
+
+		//! \brief number of threads used for host processing
+		int hostWorkerThreads;
 		
 	public:
 	
@@ -332,7 +336,32 @@ namespace executive {
 		*/
 		void launch(const std::string & module, const std::string & kernel, dim3 grid, dim3 block,
 			size_t sharedMemory, unsigned char *parameterBlock, size_t parameterBlockSize);
+
+		/*!
+			\brief helper function for launching a kernel
+			\param module module name
+			\param kernel kernel name
+			\param grid grid dimensions
+			\param block block dimensions
+			\param sharedMemory shared memory size
+			\param parameterBlock array of bytes for parameter memory
+			\param parameterBlockSize number of bytes in parameter memory
+			\param traceGenerators vector of trace generators to add and remove from kernel
+		*/
+		void launch(const std::string & module, const std::string & kernel, dim3 grid, dim3 block,
+			size_t sharedMemory, unsigned char *parameterBlock, size_t parameterBlockSize,
+			const trace::TraceGeneratorVector & traceGenerators);
 			
+		/*!
+			\brief determines whether kernel exceeds memory bounds through static analysis
+			\param exeKernel executable kernel under test
+			\param sharedMemory size of dynamic shared memory
+			\param paramSize size of parameter memory
+			\return true if kernel meets memory capacity
+		*/
+		bool verifyKernelMemoryBounds(ir::ExecutableKernel *exeKernel, size_t sharedMemory, 
+			size_t paramSize);
+
 		/*!
 			\brief block on kernel executing on selected device
 		*/
@@ -415,6 +444,11 @@ namespace executive {
 			\param l The new optimization level.
 		*/
 		void setOptimizationLevel(translator::Translator::OptimizationLevel l);
+
+		/*!
+			\brief limits the number of working threads available
+		*/
+		void setWorkerThreadLimit(int limit);
 		
 		/*!
 			\brief ensures that all kernels have an executable translation for the indicated ISA

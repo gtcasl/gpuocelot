@@ -7,7 +7,7 @@
 		memory: false,
 		branch: false,
 		sharedComputation: false,
-		instruction: false
+		instruction: false,
 	},
 	cuda: {
 		implementation: "CudaRuntime",
@@ -15,11 +15,13 @@
 	},
 	executive: {
 		defaultDeviceID: 0,
-		preferredISA: emulated,
+		preferredISA: llvm,
 		required: false,
 		enableLLVM: true,
-		enableEmulated: true,
-		enableGPU: true
+		enableEmulated: false,
+		enableGPU: false,
+		optimizationLevel: debug,
+		workerThreadLimit: 1
 	}
 }
 

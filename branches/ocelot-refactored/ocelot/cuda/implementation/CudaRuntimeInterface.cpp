@@ -27,13 +27,11 @@
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::instance = 0;
 
-api::OcelotConfiguration cuda::CudaRuntimeInterface::ocelotConfiguration("configure.ocelot");
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 	if (!cuda::CudaRuntimeInterface::instance) {
-		if (ocelotConfiguration.cuda.implementation == "CudaRuntime") {
+		if (api::OcelotConfiguration::get().cuda.implementation == "CudaRuntime") {
 			cuda::CudaRuntimeInterface::instance = new CudaRuntime;
 		}
 		else {
@@ -44,17 +42,12 @@ cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 }
 
 cuda::CudaRuntimeInterface::CudaRuntimeInterface() {
-	ocelotRuntime.configure(configuration());
+	ocelotRuntime.configure(api::OcelotConfiguration::get());
 
-	// TODO: limitWorkerThreads()
 }
 
 cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 
-}
-
-const api::OcelotConfiguration & cuda::CudaRuntimeInterface::configuration() const {
-	return ocelotConfiguration;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

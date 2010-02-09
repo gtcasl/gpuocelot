@@ -15,6 +15,7 @@
 #include <ocelot/cuda/include/__cudaFatFormat.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/executive/interface/RuntimeException.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -26,6 +27,13 @@
 #undef REPORT_BASE
 #endif
 
+// whether CUDA runtime catches exceptions thrown by Ocelot
+#define CATCH_RUNTIME_EXCEPTIONS 0
+
+// whether verbose error messages are printed
+#define CUDA_VERBOSE 1
+
+// whether debugging messages are printed
 #define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,6 +77,17 @@ static executive::dim3 convert(dim3 dim) {
 	return ed3;
 }
 
+std::string cuda::CudaRuntime::formatError( const std::string& message ) {
+	std::string result = "==Ocelot== ";
+	for(std::string::const_iterator mi = message.begin(); mi != message.end(); ++mi) {
+		result.push_back(*mi);
+		if(*mi == '\n') {
+			result.append("==Ocelot== ");
+		}
+	}
+	return result;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), nextStream(0), nextEvent(0), 
@@ -77,7 +96,7 @@ cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), nextStream(0), 
 }
 
 cuda::CudaContext::CudaContext(): thread(0), context(0) { }
-	
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::RegisteredGLBuffer::RegisteredGLBuffer(): flags(0), ptr(0), mapped(false) { 
@@ -125,6 +144,13 @@ void cuda::CudaRuntime::unlock() {
 cudaError_t cuda::CudaRuntime::setLastError(cudaError_t result) {
 	HostThreadContext &thread = getHostThreadContext();
 	thread.lastError = result;
+	return result;
+}
+
+//! sets the last error state for the CudaRuntime object
+cudaError_t cuda::CudaRuntime::setLastErrorAndUnlock(HostThreadContext &thread, cudaError_t result) {
+	thread.lastError = result;
+	unlock();
 	return result;
 }
 
@@ -337,49 +363,45 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 		
 	if (context.malloc(devPtr, size)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	
 	if (context.mallocHost(ptr, size)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, 
 	size_t height) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	if (context.mallocPitch(devPtr, pitch, width, height)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array, 
 	const struct cudaChannelFormatDesc *desc, size_t width, size_t height) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	if (context.mallocArray(array, convert(*desc), width, height)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
@@ -387,34 +409,31 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	lock();
 	report("cudaFree()");
 	
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	if (context.free(devPtr)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	if (context.freeHost(ptr)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	if (context.freeArray(array)) {
 		result = cudaSuccess;
 	}
-	unlock();
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 
@@ -759,9 +778,32 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	std::string moduleName = kernel.module;
 	std::string kernelName = kernel.kernel;
 	
-	context.launch(moduleName, kernelName, convert(launch.gridDim), convert(launch.blockDim), 
-		launch.sharedMemory, thread.parameterBlock, thread.parameterBlockSize);
-	
+	try {
+
+		trace::TraceGeneratorVector traceGens;
+
+		if (api::OcelotConfiguration::getTrace().enabled) {
+			traceGens = thread.persistentTraceGenerators;
+			traceGens.insert(traceGens.end(), thread.nextTraceGenerators.begin(), 
+				thread.nextTraceGenerators.end());
+		}
+
+		context.launch(moduleName, kernelName, convert(launch.gridDim), convert(launch.blockDim), 
+			launch.sharedMemory, thread.parameterBlock, thread.parameterBlockSize, traceGens);
+	}
+	catch( const executive::RuntimeException& e ) {
+#if CUDA_VERBOSE == 1
+		std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
+			<< kernelName 
+			<< "\" with exception: \n";
+		std::cerr << formatError( e.toString() ) 
+			<< "\n" << std::flush;
+#endif
+		thread.lastError = cudaErrorLaunchFailure;
+#if CATCH_RUNTIME_EXCEPTIONS != 1
+		throw e;
+#endif
+	}
 	unlock();
 	
 	return setLastError(result);
@@ -1264,6 +1306,37 @@ cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
 	unlock();
 	
 	return setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, bool persistent, 
+	bool safe ) {
+
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	if (persistent) {
+		thread.persistentTraceGenerators.push_back(&gen);
+	}
+	else {
+		thread.nextTraceGenerators.push_back(&gen);
+	}
+	unlock();
+}
+
+void cuda::CudaRuntime::clearTraceGenerators(bool safe) {
+
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	thread.persistentTraceGenerators.clear();
+	thread.nextTraceGenerators.clear();
+	unlock();
+}
+
+void cuda::CudaRuntime::limitWorkerThreads(unsigned int limit) {
+	lock();
+	context.setWorkerThreadLimit((int)limit);
+	unlock();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@
 #include <fstream>
 
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
@@ -43,7 +44,12 @@
 //
 
 executive::Executive::Executive() {
-	optimizationLevel = translator::Translator::FullOptimization;
+
+	// translator initialization
+	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
+	optimizationLevel = 
+		(translator::Translator::OptimizationLevel)api::OcelotConfiguration::getExecutive().optimizationLevel;
+	optimizationLevel = translator::Translator::MemoryCheckOptimization;
 	enumerateDevices();
 }
 
@@ -630,7 +636,7 @@ ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa,
 	inserts devices into device vector
 */
 size_t executive::Executive::enumerateDevices() {
-	{
+	if (api::OcelotConfiguration::getExecutive().enableEmulated) {
 		// emulator
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
@@ -655,14 +661,52 @@ size_t executive::Executive::enumerateDevices() {
 		device.textureAlign = 1;
 		device.major = 1;
 		device.minor = 3;
+
 		devices.push_back(device);
 		
-		selectDevice(0);
+		if (devices.size() == 1 || 
+			api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
+
+			selectDevice((int)devices.size() - 1);
+		}
 	}
-	{
+
+#ifdef HAVE_LLVM
+	if (api::OcelotConfiguration::getExecutive().enableLLVM) {
 		// multicore
-	}
-	{
+		Device device;
+		device.ISA = ir::Instruction::LLVM;
+		device.name = "Ocelot LLVM JIT-Compiler";
+		device.guid = 8833;
+		device.totalMemory = get_avphys_pages() * getpagesize();
+		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
+		device.memcpyOverlap = 0;
+		device.maxThreadsPerBlock = 512;
+		device.maxThreadsDim[0] = 512;
+		device.maxThreadsDim[1] = 512;
+		device.maxThreadsDim[2] = 64;
+		device.maxGridSize[0] = 65535;
+		device.maxGridSize[1] = 65535;
+		device.maxGridSize[2] = 1;
+		device.sharedMemPerBlock = 16384;
+		device.totalConstantMemory = 65536;
+		device.SIMDWidth = 1;
+		device.memPitch = device.totalMemory;
+		device.regsPerBlock = MIN( INT_MAX, device.totalMemory );
+		device.clockRate = 2000000;
+		device.textureAlign = 1;
+		device.major = 1;
+		device.minor = 3;
+		report( " Initialized PTX-To-LLVM JIT." );
+
+		devices.push_back(device);
+
+		if (api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
+			selectDevice((int)devices.size() - 1);
+		}
+	}#endif
+
+	if (api::OcelotConfiguration::getExecutive().enableGPU) {
 		// GPU
 	}
 	return devices.size();
@@ -673,7 +717,9 @@ size_t executive::Executive::enumerateDevices() {
 	API call]
 */
 bool executive::Executive::selectDevice(int device) {
-	selectedDevice = device;
+	if (device >= 0 && device < (int)devices.size()) {
+		selectedDevice = device;
+	}
 	return true;
 }
 
@@ -763,6 +809,9 @@ void executive::Executive::translateAllToISA(ir::Instruction::Architecture isa, 
 	}
 }
 
+/*!
+
+*/
 void executive::Executive::translateModuleToISA(std::string moduleName, 
 	ir::Instruction::Architecture isa, bool retranslate) {
 	
@@ -820,8 +869,10 @@ ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture i
 	
 		case ir::Instruction::LLVM:
 		{
-			translator::Translator::OptimizationLevel level = optimizationLevel;
-			LLVMExecutableKernel* llvmKernel = new LLVMExecutableKernel(*kernel, this, level);
+			LLVMExecutableKernel* llvmKernel = new LLVMExecutableKernel(*kernel, this, 
+				optimizationLevel);
+
+			llvmKernel->setDevice(&devices[getSelected()], hostWorkerThreads);
 			//
 			// ...
 			//
@@ -849,6 +900,61 @@ ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture i
 	return translated;
 }
 
+
+/*!
+	\brief limits the number of working threads available
+*/
+void executive::Executive::setWorkerThreadLimit(int limit) {
+	hostWorkerThreads = limit;
+}
+
+/*!
+	\brief determines whether kernel exceeds memory bounds through static analysis
+	\param exeKernel executable kernel under test
+	\param sharedMemory size of dynamic shared memory
+	\param paramSize size of parameter memory
+	\return true if kernel meets memory capacity
+*/
+bool executive::Executive::verifyKernelMemoryBounds(ir::ExecutableKernel *exeKernel, 
+	size_t sharedMemory, size_t paramSize) {
+
+	const executive::Device & device = devices[getSelected()];
+
+	//
+	// Ensure enough shared memory is available
+	//
+	size_t dynamicSharedSize = exeKernel->sharedMemorySize() + sharedMemory;
+	if(dynamicSharedSize > (size_t)device.sharedMemPerBlock) {
+#if CUDA_VERBOSE == 1
+		std::cerr << "==Ocelot== Out of shared memory for kernel \""
+			<< kernel->name 
+			<< "\" : \n==Ocelot==\tpreallocated ";
+		std::cerr << exeKernel->sharedMemorySize() << " + requested " 
+			<< sharedMemory
+			<< " is greater than available " 
+			<< device.sharedMemPerBlock 
+			<< " for device " << device.name 
+			<< "\n" << std::flush;
+#endif
+		return false;
+	}
+
+	if((size_t)exeKernel->constMemorySize() > (size_t)device.totalConstantMemory) {
+#if CUDA_VERBOSE == 1
+		std::cerr << "==Ocelot== Out of const memory for kernel \"" 
+			<< exeKernel->name 
+			<< "\" : \n==Ocelot==\tpreallocated ";
+		std::cerr << exeKernel->constMemorySize() 
+			<< " is greater than available " 
+			<< device.totalConstantMemory 
+			<< " for device " << device.name << "\n" << std::flush;
+#endif
+		return false;
+	}
+
+	return true;
+}
+
 /*!
 	\brief helper function for launching a kernel
 	\param module module name
@@ -862,6 +968,28 @@ ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture i
 void executive::Executive::launch(const std::string & moduleName, const std::string & kernelName,
 	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
 	size_t parameterBlockSize) {
+
+	trace::TraceGeneratorVector none;
+
+	// launch with no trace generators
+	this->launch(moduleName, kernelName, grid, block, sharedMemory, parameterBlock, 
+		parameterBlockSize, none);
+}
+
+/*!
+	\brief helper function for launching a kernel
+	\param module module name
+	\param kernel kernel name
+	\param grid grid dimensions
+	\param block block dimensions
+	\param sharedMemory shared memory size
+	\param parameterBlock array of bytes for parameter memory
+	\param parameterBlockSize number of bytes in parameter memory
+	\param traceGenerators vector of trace generators to run on kernel
+*/
+void executive::Executive::launch(const std::string & moduleName, const std::string & kernelName,
+	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
+	size_t parameterBlockSize, const trace::TraceGeneratorVector & traceGenerators) {
 	
 	report("launch('" << moduleName << "', '" << kernelName << "')");
 	report("   grid: " << grid.x << ", " << grid.y << ", " << grid.z);
@@ -874,54 +1002,49 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	if (!kernel) {
 		kernel = translateToISA(isa, moduleName, kernelName);
 	}
+	ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);	
 	
 	fenceGlobalVariables();
-	
-	// this switch statement should be unnecessary
-	switch (isa) {
-	case ir::Instruction::Emulated:
-		{
-			ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);			
-			exeKernel->setKernelShape(block.x, block.y, block.z);
-			exeKernel->setParameterBlock(parameterBlock, parameterBlockSize);
-			exeKernel->updateMemory();
-			if (sharedMemory) {
-				exeKernel->setExternSharedMemorySize(sharedMemory);
-			}
-			
-			try {
-				exeKernel->launchGrid(grid.x, grid.y);
-			}
-			catch (executive::RuntimeException &exp) {
-				report("Runtime exception: " << exp.toString());
-				throw;
-			}
-		}
-		break;
-	
-	case ir::Instruction::LLVM:
-		{
-			ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);			
-			exeKernel->setKernelShape(block.x, block.y, block.z);
-			exeKernel->setParameterBlock(parameterBlock, parameterBlockSize);
-			exeKernel->updateMemory();
-			if (sharedMemory) {
-				exeKernel->setExternSharedMemorySize(sharedMemory);
-			}
-			
-			try {
-				exeKernel->launchGrid(grid.x, grid.y);
-			}
-			catch (executive::RuntimeException &exp) {
-				report("Runtime exception: " << exp.toString());
-				throw;
-			}
-		}
-		break;
 
-	case ir::Instruction::GPU:
-	default:
-		throw hydrazine::Exception("unsupported ISA selected for kernel launch");
+	if (!verifyKernelMemoryBounds(exeKernel, sharedMemory, parameterBlockSize)) {
+		return;
+	}
+
+	if (isa == ir::Instruction::Emulated && api::OcelotConfiguration::getTrace().enabled) {
+		for( trace::TraceGeneratorVector::const_iterator gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) {
+			exeKernel->addTraceGenerator( *gen );
+		}
+	}
+
+	exeKernel->setKernelShape(block.x, block.y, block.z);
+
+	if (parameterBlockSize) {
+		exeKernel->setParameterBlock(parameterBlock, parameterBlockSize);
+	}
+
+	exeKernel->updateParameterMemory();
+	exeKernel->updateMemory();
+	if (sharedMemory) {
+		exeKernel->setExternSharedMemorySize(sharedMemory);
+	}
+	
+	try {
+		exeKernel->launchGrid(grid.x, grid.y);
+	}
+	catch (executive::RuntimeException &exp) {
+		report("Runtime exception: " << exp.toString());
+		throw;
+	}
+
+	if (isa == ir::Instruction::Emulated && api::OcelotConfiguration::getTrace().enabled) {
+		// remove trace generators
+		if (api::OcelotConfiguration::get().trace.enabled) {
+			for( trace::TraceGeneratorVector::const_iterator gen = traceGenerators.begin(); 
+				gen != traceGenerators.end(); ++gen) {
+				exeKernel->removeTraceGenerator( *gen );
+			}
+		}
 	}
 }
 	

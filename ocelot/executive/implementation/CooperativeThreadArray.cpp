@@ -1652,7 +1652,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 			case PTXInstruction::Shared:
 				{
 					if ((PTXU64) source + elementSize
-						> kernel->sharedMemorySize()) {
+						> kernel->totalSharedMemorySize()) {
 						std::stringstream stream;
 						stream << "Shared memory address " 
 							<< (void*)(source + elementSize) 

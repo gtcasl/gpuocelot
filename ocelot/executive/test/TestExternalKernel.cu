@@ -14,7 +14,7 @@ extern "C" __global__ void testExternalKernel(int *A, int N) {
 }
 
 int main(int argc, char *arg[]) {
-	const int N = 64;
+	int N = 64;
 	size_t bytes = sizeof(int)*N;
 
 	int *A_host, *A_device;	

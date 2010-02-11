@@ -28,7 +28,7 @@ bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker TestExternalKernel
+	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -88,9 +88,10 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
+	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 	ocelot/trace/implementation/KernelEntry.cpp \
 	ocelot/trace/implementation/CacheSimulator.cpp \
-	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
+	ocelot/trace/implementation/WatchTraceGenerator.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
@@ -133,6 +134,15 @@ PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
 PTXOptimizer_LDADD = libocelot.la
 PTXOptimizer_LDFLAGS = -static
+################################################################################
+
+################################################################################
+#
+InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+InstructionTraceAnalyzer_SOURCES = \
+	ocelot/trace/implementation/InstructionTraceAnalyzer.cpp
+InstructionTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+InstructionTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -329,10 +339,10 @@ TestLLVMKernels_LDFLAGS = -static
 
 ################################################################################
 ## TestExternalKernel
-TestExternalKernel_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
-TestExternalKernel_SOURCES = ocelot/executive/test/TestExternalKernel.cu.cpp
-TestExternalKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestExternalKernel_LDFLAGS = -static
+# TestExternalKernel_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
+# TestExternalKernel_SOURCES = ocelot/executive/test/TestExternalKernel.cu.cpp
+# TestExternalKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
+# TestExternalKernel_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

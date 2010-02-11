@@ -282,7 +282,8 @@ namespace executive {
 			\return true on success
 		*/
 		bool bindTexture2D(size_t *offset, const std::string & texture, const void *devPtr,
-			const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch);
+			const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch,
+			ir::Texture::AddressMode *addrMode, ir::Texture::Interpolation filter, bool normalized);
 		
 		/*!
 			\brief binds a texture to an array

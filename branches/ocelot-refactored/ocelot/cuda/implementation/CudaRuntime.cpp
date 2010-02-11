@@ -34,7 +34,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -711,7 +711,8 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	convert(format, desc);
 
 	if (context.bindTexture2D(offset, textureReferences[texref], devPtr, format, width, height, 
-		pitch)) {
+		pitch, (ir::Texture::AddressMode *)texref->addressMode, 
+		(ir::Texture::Interpolation)texref->filterMode, texref->normalized)) {
 		result = cudaSuccess;
 	}
 

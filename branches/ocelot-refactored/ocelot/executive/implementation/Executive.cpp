@@ -34,7 +34,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -1132,16 +1132,20 @@ bool executive::Executive::bindTexture(size_t *offset, const std::string & textu
 	\return true on success
 */
 bool executive::Executive::bindTexture2D(size_t *offset, const std::string & textureName, 
-	const void *devPtr, const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch) {
+	const void *devPtr, const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch,
+	ir::Texture::AddressMode *addrMode, ir::Texture::Interpolation filter, bool normalized) {
 
 	TextureMap::iterator tex_it = textures.find(textureName);
 	if (tex_it != textures.end()) {
 		ir::Texture &texture = tex_it->second;
 
-		texture.x = format.x;
-		texture.y = format.y;
-		texture.z = format.z;
-		texture.w = format.w;
+		texture.x = format.w;
+		texture.y = format.x;
+		texture.z = format.y;
+		texture.w = format.z;
+
+		report("Executive::bindTexture2D() - texture.xyzq = " << texture.x << ", " << texture.y 
+			<< ", " << texture.z << ", " << texture.w);
 
 		switch (format.kind) {
 			case ChannelFormatDesc::Kind_signed:
@@ -1166,11 +1170,19 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 		texture.size.y = height;
 		texture.data = (void *)devPtr;
 
+		texture.interpolation = filter;
+		texture.normalize = normalized;
+		texture.normalizedFloat = false;
+
+		for (unsigned int i = 0; i < 3; i++) {
+			texture.addressMode[i] = addrMode[i];
+		}
+
 		if (offset) {
 			*offset = (size_t)devPtr % 16;
 		}
 
-		// visit all modules 
+		report("Executive::bindTexture2D() '" << textureName << "'.data = " << texture.data << " - filter: " << filter);
 	}
 	else {
 		Ocelot_Exception("Texture '" << textureName << "' was not registered");

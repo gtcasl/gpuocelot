@@ -171,6 +171,14 @@ struct cudaMemcpy3DParms {
 	struct cudaPitchedPtr srcPtr;
 };
 
+struct textureReference {
+  int normalized;
+  int filterMode;
+  int addressMode[3];
+  cudaChannelFormatDesc channelDesc;
+  int __cudaReserved[16];
+};
+
 /*******************************************************************************
 *                                                                              *
 *                                                                              *

@@ -1,1 +1,0 @@
-/home/andrew/repositories/gpuocelot/ocelot/ocelot/executive/interface/EmulatedKernel.h

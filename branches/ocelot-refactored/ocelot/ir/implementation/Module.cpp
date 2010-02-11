@@ -243,11 +243,16 @@ void ir::Module::extractPTXKernels() {
 			|| statement.directive == PTXStatement::Shared) {
 			assert(globals.count(statement.name) == 0);
 			globals.insert(std::make_pair(statement.name, Global(statement)));
+
+			globalNames.insert(statement.name);
 		}
 		else if (statement.directive == PTXStatement::Tex) {
 			assert(globals.count(statement.name) == 0);
 			globals.insert(std::make_pair(statement.name, Global(statement)));
 			textures.insert(std::make_pair(statement.name, Texture()));
+
+			globalNames.insert(statement.name);
+			textureNames.insert(statement.name);
 		}
 	}
 }

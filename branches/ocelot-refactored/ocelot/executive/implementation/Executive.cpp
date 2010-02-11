@@ -34,7 +34,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -1145,15 +1145,19 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 
 		switch (format.kind) {
 			case ChannelFormatDesc::Kind_signed:
+				report("Executive::bindTexture2D() - format.type signed");
 				texture.type = ir::Texture::Signed;
 				break;
 			case ChannelFormatDesc::Kind_unsigned:
+				report("Executive::bindTexture2D() - format.type unsigned");
 				texture.type = ir::Texture::Unsigned;
 				break;
 			case ChannelFormatDesc::Kind_float:
+				report("Executive::bindTexture2D() - format.type float");
 				texture.type = ir::Texture::Float;
 				break;
 			default:
+				report("Executive::bindTexture2D() - format.type == Kind_invalid");
 				texture.type = ir::Texture::Invalid;
 				break;
 		}
@@ -1165,6 +1169,8 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 		if (offset) {
 			*offset = (size_t)devPtr % 16;
 		}
+
+		// visit all modules 
 	}
 	else {
 		Ocelot_Exception("Texture '" << textureName << "' was not registered");

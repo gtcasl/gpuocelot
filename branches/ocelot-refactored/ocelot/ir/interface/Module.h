@@ -125,8 +125,14 @@ namespace ir {
 		/*! Set of textures in the module */
 		TextureMap textures;
 
+		/*! Set of all texture names in the module */
+		NameSet textureNames;
+
 		/*! Set of global variables in the modules */
 		GlobalMap globals;
+
+		/*! Set of all global names in the module */
+		NameSet globalNames;
 		
 		/*! Path from which Module was loaded */
 		std::string modulePath;

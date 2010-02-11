@@ -78,9 +78,17 @@ namespace executive {
 	class PitchedPointer {
 	public:
 		size_t pitch;
+
 		void *ptr;
-		size_t xsize;
-		size_t ysize;
+
+		union {
+			size_t xsize;
+			size_t width;		// I prefer 'width' to 'xsize' as a member name
+		};
+		union {
+			size_t ysize;
+			size_t height;	// I prefer 'height' to 'ysize' as a member name
+		};
 	};
 
 	/*!
@@ -193,41 +201,47 @@ namespace executive {
 	};
 
 	/*!
-		Registered texture	
-
+		\brief texture representing the configuration and state of a bound texture
+	*/
+/*
 	class Texture {
 	public:
-		Texture();
 		
+		enum Interpolation {
+			Nearest,
+			Linear
+		};
+		
+		enum AddressMode {
+			Wrap,
+			Clamp
+		};
+
 	public:
-	
-		//! name of texture reference symbol
-		std::string name;
-	
-		//! name of module in which texture exists
-		std::string module;
 
-		//! \brief indicates texture uses normalized coordinates
-		bool normalized;
-	
-		//! indicates texture is bound and remaining data members are valid
-		bool bound;
-	
-		//! offset that must be added to texture addresses for sampling to succeed
-		size_t offset;
-	
-		//! opaque pointer to texture reference
-		struct textureReference *texRef;
-	
-		//! pointer to allocated memory on the device
-		PitchedPointer device_pointer;
-		
-		//! channel format description
-		ChannelFormatDesc desc;
-		
-		//! size (in bytes) of memory region pointed to by device_pointer
-		size_t size;
+		//! \brief channel format of texture
+		ChannelFormatDesc format;
 
+		//! \bref true if texture coordinates are normalized floats
+		bool normalizedCoordinates;
+
+		//! \brief true if texture sample should be normalized
+		bool normalizedFloat;
+
+		//! \brief data type of texture
+		Type type;
+
+		//! \brief pitched pointer includes dimensions and pointer to data
+		PitchedPointer pointer;
+
+		//! \brief interpolation mode
+		Interpolation interpolation;
+
+		//! \brief addressing mode for each dimension
+		AddressMode addressMode[3];
+
+	public:
+		Texture();
 	};
 */
 			

@@ -10,7 +10,12 @@
 #ifndef TRACE_TRACEGENERATOR_H_INCLUDED
 #define TRACE_TRACEGENERATOR_H_INCLUDED
 
+// C++ includes
 #include <string>
+
+// Ocelot includes
+#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/trace/interface/TraceEvent.h>
 
 // forward declare TraceEvent
 namespace trace {
@@ -40,6 +45,7 @@ namespace trace {
 			InstructionTraceFormat,
 			KernelDimensionsFormat,
 			MachineAttributesFormat,
+			WatchTraceFormat,
 			InvalidTraceFormat
 		};
 		

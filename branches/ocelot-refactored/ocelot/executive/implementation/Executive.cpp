@@ -598,7 +598,7 @@ void executive::Executive::registerTexture(const char *module, const char *name,
 	//
 	
 	ir::Texture texture;
-	texture.normalize = (bool)normalized;
+	texture.normalizeFloat = (bool)normalized;
 
 	textures[name] = texture;
 }

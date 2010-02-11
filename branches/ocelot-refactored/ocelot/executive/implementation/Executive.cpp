@@ -598,7 +598,7 @@ void executive::Executive::registerTexture(const char *module, const char *name,
 	//
 	
 	ir::Texture texture;
-	texture.normalizeFloat = (bool)normalized;
+	texture.normalizedFloat = (bool)normalized;
 
 	textures[name] = texture;
 }
@@ -1172,7 +1172,7 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 
 		texture.interpolation = filter;
 		texture.normalize = normalized;
-		texture.normalizedFloat = false;
+//		texture.normalizedFloat = false;
 
 		for (unsigned int i = 0; i < 3; i++) {
 			texture.addressMode[i] = addrMode[i];

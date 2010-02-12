@@ -256,6 +256,7 @@ namespace cuda
 				const std::string& module);
 			void** getFatBinaryHandle(const std::string& name);
 			void clearErrors();
+			executive::Executive& executive();
 			
 		public:
 			void configure( const Configuration& c );

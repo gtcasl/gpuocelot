@@ -366,9 +366,8 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 		PTXU64 starting_address = -1;
 		PTXU32 halfwarpSize = _header.thread_count / 2;
 		
-		TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
 		for (TraceEvent::U64Vector::const_iterator it = event.memory_addresses.begin();
-			it != event.memory_addresses.end(); ++it, ++size_it, ++threadID) {
+			it != event.memory_addresses.end(); ++it, ++threadID) {
 		
 			if( !headerOnly )
 			{
@@ -378,24 +377,24 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 				Access access;
 				access.address = *it;
 				access.threadID = threadID;
-				access.size = *size_it;
+				access.size = event.memory_size;
 
 				_event.accesses.push_back(access);
 			}
 			
 			_header.address(event.instruction->addressSpace, *it);
-			bytes += *size_it;
+			bytes += event.memory_size;
 			
 			if( threadID > halfwarpSize )
 			{
 				++_header.global_segments;
 				++_header.halfwarps;
-				starting_address = *it + *size_it;
+				starting_address = *it + event.memory_size;
 			}
 			else if( starting_address != *it )
 			{
 				++_header.global_segments;
-				starting_address = *it + *size_it;
+				starting_address = *it + event.memory_size;
 			}
 		}
 		
@@ -423,10 +422,8 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 		PTXU32 threadID = 0;
 		PTXU64 starting_address = -1;
 		PTXU32 halfwarpSize = _header.thread_count / 2;
-		TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
 		TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin();
-		for (; addr_it != event.memory_addresses.end(); ++threadID, ++addr_it,
-			++size_it) {
+		for (; addr_it != event.memory_addresses.end(); ++threadID, ++addr_it) {
 			if( !headerOnly )
 			{
 				for (; threadID < _header.thread_count 
@@ -435,25 +432,25 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 				for (int j = 0; j < 4; j++) {
 					Access access;
 					access.address = *addr_it;
-					access.size = *size_it;
+					access.size = event.memory_size;
 					access.threadID = threadID;
 				
 					_event.accesses.push_back(access);
 				}
 			}
-			bytes += *size_it;
+			bytes += event.memory_size;
 			_header.address(PTXInstruction::Texture, *addr_it);
 			
 			if( threadID > halfwarpSize )
 			{
 				++_header.global_segments;
 				++_header.halfwarps;
-				starting_address = *addr_it + *size_it;
+				starting_address = *addr_it + event.memory_size;
 			}
 			else if( starting_address != *addr_it )
 			{
 				++_header.global_segments;
-				starting_address = *addr_it + *size_it;
+				starting_address = *addr_it + event.memory_size;
 			}
 			
 		}

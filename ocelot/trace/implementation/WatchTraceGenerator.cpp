@@ -67,9 +67,9 @@ ir::Dim3 trace::WatchTraceGenerator::threadIdxFromThreadID(int tid) {
 void trace::WatchTraceGenerator::event(const trace::TraceEvent & event) {
 
 	int threadID = 0;
-	TraceEvent::U32Vector::const_iterator size_it = event.memory_sizes.begin();
-	for (TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin(); 
-		addr_it != event.memory_addresses.end(); ++addr_it, ++size_it) {
+	for (TraceEvent::U64Vector::const_iterator 
+		addr_it = event.memory_addresses.begin(); 
+		addr_it != event.memory_addresses.end(); ++addr_it) {
 		
 		for (; !event.active[threadID]; ++threadID) {}
 		
@@ -79,12 +79,14 @@ void trace::WatchTraceGenerator::event(const trace::TraceEvent & event) {
 			switch (event.instruction->opcode) {
 			case ir::PTXInstruction::Ld:
 			case ir::PTXInstruction::Tex:
-				loadAccess(event.PC, *event.instruction, (const void *)*addr_it, *size_it, event.blockId,
+				loadAccess(event.PC, *event.instruction, (const void *)*addr_it, 
+					event.memory_size, event.blockId,
 					threadIdxFromThreadID(threadID), threadID, location);
 				break;
 	
 			case ir::PTXInstruction::St:
-				storeAccess(event.PC, *event.instruction, (const void *)*addr_it, *size_it, event.blockId,
+				storeAccess(event.PC, *event.instruction, 
+					(const void *)*addr_it, event.memory_size, event.blockId,
 					threadIdxFromThreadID(threadID), threadID, location);
 				break;
 	

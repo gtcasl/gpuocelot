@@ -82,6 +82,17 @@ namespace ocelot
 		report("Paramter block size: " << paramSize);
 	}
 
+	executive::Executive& executive()
+	{
+		return cuda::CudaRuntimeInterface::entryPoint.runtime()->executive();
+	}
+	
+	void unregisterModule( const std::string& name )
+	{
+		assertM( false, "Ocelot API unregisterModule is not implemented." );
+	}
+
+
 }
 
 #endif

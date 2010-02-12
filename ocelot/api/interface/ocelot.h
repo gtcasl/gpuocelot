@@ -14,18 +14,18 @@ namespace trace
 	class TraceGenerator;
 }
 
+namespace executive
+{
+	class Executive;
+}
+
 /*! \brief A namespace for ocelot API functions */
 namespace ocelot
 {
+	/*! \brief pointer to externally callable kernel */
+	typedef void ( *ExternalKernel )( const void*, size_t );
 
-	/*!
-		\brief pointer to externally callable kernel
-	*/
-	typedef void (*ExternalKernel)(const char *, size_t);	
-
-	/*!
-		\brief opqaue pointer to kernel
-	*/
+	/*! \brief opqaue pointer to kernel */
 	typedef const char* KernelPointer;
 
 	/*! \brief Adds a trace generator for the next kernel invocation 
@@ -45,7 +45,7 @@ namespace ocelot
 	void clearTraceGenerators( bool safe = true );
 	
 	/*! \brief Sets a limit on the number of host worker threads to launch
-		when executing a CUDA kernel on a Multi-Core CPU.
+			when executing a CUDA kernel on a Multi-Core CPU.
 		\param limit The max number of worker threads to launch per kernel.
 	*/
 	void limitWorkerThreads( unsigned int limit = 1024 );
@@ -53,14 +53,19 @@ namespace ocelot
 	/*! \brief Register an istream containing a PTX module.
 		
 		\param stream An input stream containing a PTX module
-		\param The name of the module being registered.  Must be Unique.
+		\param name The name of the module being registered.  Must be Unique.
 	*/
-	void registerPTXModule(std::istream& stream, const std::string& name);
+	void registerPTXModule( std::istream& stream, const std::string& name );
 
-	/*!
-		\brief Registers a callable function pointer as a kernel invocable by Ocelot
+	/*! \brief Register an istream containing an LLVM module.
+		\param stream An input stream containing an LLVM module.
+		\param name The name of the module being registered.  Must be Unique.
 	*/
-	void registerExternalKernel(ExternalKernel kernel, const std::string &name);
+	void registerLLVMModule( std::istream& stream, const std::string& name );
+
+	/*! \brief Registers a callable function pointer as an Ocelot kernel */
+	void registerExternalKernel( ExternalKernel kernel, 
+		const std::string &name );
 
 	/*! \brief Get a function pointer to a kernel in a registered module 
 		that can be passed directly to cudaLaunch
@@ -72,20 +77,18 @@ namespace ocelot
 		
 		\return A function pointer that can be passed to cudaLaunch.
 	*/
-	KernelPointer getKernelPointer(const std::string& name, 
-		const std::string& module);
+	KernelPointer getKernelPointer( const std::string& name, 
+		const std::string& module );
 
-	/*!
-		\brief Call a kernel on the selected device with given parameters
-	*/
-	void callKernel(KernelPointer kernel, ...);
+	/*! \brief Call a kernel on the selected device with given parameters */
+	void callKernel( KernelPointer kernel, ... );
 
 	/*! \brief Get a handle to a fat binary from its name
 		
 		\param name The fat binary's name
 		\return A handle to the named fat binary
 	*/
-	void** getFatBinaryHandle(const std::string& name);
+	void** getFatBinaryHandle( const std::string& name );
 
 	/*! \brief Clear all errors in the Cuda Runtime */
 	void clearErrors();
@@ -94,8 +97,14 @@ namespace ocelot
 	void reset();
 	
 	/*! \brief Perform a device context switch */
-	void contextSwitch(unsigned int destinationDevice, 
-		unsigned int sourceDevice);
+	void contextSwitch( unsigned int destinationDevice, 
+		unsigned int sourceDevice );
+
+	/*! \brief Get a reference directly to the Executive object */
+	executive::Executive& executive();
+	
+	/*! \brief Unregister a module, either PTX or LLVM */
+	void unregisterModule( const std::string& name );
 }
 
 #endif

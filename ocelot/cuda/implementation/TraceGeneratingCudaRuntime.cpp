@@ -2319,6 +2319,11 @@ namespace cuda
 	{
 		return _runtime.clearErrors( );
 	}
+
+	executive::Executive& TraceGeneratingCudaRuntime::executive()
+	{
+		return _runtime.executive();
+	}
 }
 
 #endif

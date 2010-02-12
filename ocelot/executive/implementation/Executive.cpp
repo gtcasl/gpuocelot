@@ -1933,6 +1933,12 @@ void executive::Executive::setOptimizationLevel(
 	optimizationLevel = l;
 }
 
+translator::Translator::OptimizationLevel 
+	executive::Executive::getOptimizationLevel() const {
+	return optimizationLevel;
+}
+		
+
 void executive::Executive::limitWorkerThreads(unsigned int limit) {
 	threadLimit = limit;
 }
@@ -1956,7 +1962,8 @@ executive::Executive::MemoryAllocation::~MemoryAllocation( ) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void executive::Executive::initializeExternalKernelMap(std::string directoryPath, int type) {
+void executive::Executive::initializeExternalKernelMap(
+	std::string directoryPath, int type) {
 	ExternalKernelMap::iterator it = externalKernels.begin();
 	for (; it != externalKernels.end(); ++it ) {
 		if (it->second.kernel) {
@@ -1980,7 +1987,8 @@ void executive::Executive::initializeExternalKernelMap(std::string directoryPath
 			entry.loadingType = (int)ExternalKernel::fromString(loadingType);
 			externalKernels[kernelName] = entry;
 
-			report("  override: " << kernelName << " (" << loadingType << ") - '" << entry.sourcePath << "'");
+			report("  override: " << kernelName << " (" 
+				<< loadingType << ") - '" << entry.sourcePath << "'");
 		}
 	}
 

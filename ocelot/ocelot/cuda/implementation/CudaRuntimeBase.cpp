@@ -673,8 +673,17 @@ namespace cuda
 	cudaError_t CudaRuntimeBase::cudaMemset2D( void* devPtr, size_t pitch, 
 		int value, size_t width, size_t height )
 	{
-		throw hydrazine::Exception( 
-			"CudaRuntimeBase::cudaMemset2D not implemented." );
+		_runtime.lock();
+		_runtime.setContext();
+	
+		size_t count = width * height;
+		reportE( REPORT_MEMORY, "Memsetting " << count 
+			<< " bytes on CUDA device to " << value << " at " << devPtr );
+		_runtime.context.memset( devPtr, value, count );
+	
+		_runtime.unlock();
+	
+		return cudaSuccess;	
 	}
 
 
@@ -1756,6 +1765,11 @@ namespace cuda
 		_runtime.setContext();
 		_runtime.clearErrors();
 		_runtime.unlock();
+	}
+	
+	executive::Executive& CudaRuntimeBase::executive()
+	{
+		return _runtime.context;
 	}
 }
 

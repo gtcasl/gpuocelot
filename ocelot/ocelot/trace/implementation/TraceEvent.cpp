@@ -25,15 +25,15 @@ trace::TraceEvent::TraceEvent(
 			const ir::PTXInstruction * t_instruction, 
 			const boost::dynamic_bitset<> & t_active,
 			const U64Vector & t_memory_addresses,
-			const U32Vector & t_memory_sizes,
-			const ir::PTXU32 ctxStackSize) :
+			ir::PTXU32 t_memory_size,
+			ir::PTXU32 ctxStackSize) :
 	blockId(t_blockId),
 	PC(t_PC),
 	contextStackSize(ctxStackSize),
 	instruction(t_instruction),
 	active(t_active),
 	memory_addresses(t_memory_addresses),
-	memory_sizes(t_memory_sizes)
+	memory_size(t_memory_size)
 {
 
 }
@@ -45,27 +45,21 @@ std::string trace::TraceEvent::toString() const
 	stream << "(" << PC << ") : \"" << instruction->toString() << "\" [" 
 		<< active << "]";
 
-	assert( memory_addresses.size() == memory_sizes.size() );
-	
 	U64Vector::const_iterator address = memory_addresses.begin();
-	U32Vector::const_iterator size = memory_sizes.begin();
 	
 	if( !memory_addresses.empty() )
 	{
-	
 		stream << " : <" << (void*)*address << std::dec 
-			<< ", " << *size << ">";
+			<< ", " << memory_size << ">";
 	
 		++address;
-		++size;
-	
 	}
 	
-	for( ; address != memory_addresses.end(); ++address, ++size )
+	for( ; address != memory_addresses.end(); ++address )
 	{
 	
 		stream << " <" << (void*)*address << std::dec 
-			<< ", " << *size << ">";
+			<< ", " << memory_size << ">";
 	
 	}
 	

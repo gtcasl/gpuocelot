@@ -317,7 +317,7 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 			<< context.active.count() << "]" );
 
 		if (traceEvents) {
-			currentEvent.memory_sizes.clear();
+			currentEvent.memory_size = 0;
 			currentEvent.memory_addresses.clear();
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
@@ -1601,6 +1601,10 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 			throw RuntimeException("unsupported data type", context.PC, instr);
 	}
 
+	if (traceEvents) {
+		currentEvent.memory_size = elementSize;
+	}
+
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 
@@ -1672,7 +1676,6 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 		if (traceEvents) {
 			currentEvent.memory_addresses.push_back(
 				(long long unsigned int)source);
-			currentEvent.memory_sizes.push_back(elementSize);
 		}
 		
 		switch (instr.atomicOperation) {
@@ -3207,6 +3210,10 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			throw RuntimeException("unsupported data type", context.PC, instr);
 	}
 
+	if (traceEvents) {
+		currentEvent.memory_size = elementSize;
+	}
+
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) {
 			continue;
@@ -3331,10 +3338,9 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 					context.PC, instr);
 		}
 		
-		if( traceEvents ) {
+		if (traceEvents) {
 			currentEvent.memory_addresses.push_back(
 				(long long unsigned int)source);
-			currentEvent.memory_sizes.push_back(elementSize);
 		}
 
 		if(instr.d.vec == PTXOperand::v1) {
@@ -6312,6 +6318,10 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 			throw RuntimeException("unsupported data type", context.PC, instr);
 	}
 
+	if (traceEvents) {
+		currentEvent.memory_size = elementSize;
+	}
+
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) {
 			continue;
@@ -6453,10 +6463,9 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 					context.PC, instr);
 		}
 
-		if ( traceEvents ) {
+		if (traceEvents) {
 			currentEvent.memory_addresses.push_back(
 				(long long unsigned int)source);
-			currentEvent.memory_sizes.push_back(elementSize);
 		}
 		
 		if (instr.a.vec == PTXOperand::v1) {
@@ -6611,6 +6620,9 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTX
 void executive::CooperativeThreadArray::eval_Tex(CTAContext &context, 
 	const PTXInstruction &instr) {
 	const ir::Texture& texture = *context.kernel->textures[instr.a.reg];
+	if (traceEvents) {
+		currentEvent.memory_size = 4;
+	}
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 		PTXB8 *address = 0;
@@ -6628,22 +6640,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
@@ -6658,22 +6666,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
@@ -6697,22 +6701,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
@@ -6727,22 +6727,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
@@ -6780,22 +6776,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c, address);
 							if (traceEvents) {
 								currentEvent.memory_addresses.push_back((PTXU64)address);
-								currentEvent.memory_sizes.push_back(4);
 							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);

@@ -204,26 +204,20 @@ namespace trace
 			
 			if(event.instruction->opcode == ir::PTXInstruction::St) //write
 			{
-				TraceEvent::U32Vector::const_iterator 
-					size = event.memory_sizes.begin();
 				for(TraceEvent::U64Vector::const_iterator 
 					i = event.memory_addresses.begin(); 
-					i != event.memory_addresses.end() 
-					&& size != event.memory_sizes.end(); ++i, ++size)
+					i != event.memory_addresses.end(); ++i)
 				{
-					write(*i, *size);
+					write(*i, event.memory_size);
 				}	
 			}
 			else
 			{
-				TraceEvent::U32Vector::const_iterator 
-					size = event.memory_sizes.begin();
 				for(TraceEvent::U64Vector::const_iterator 
 					i = event.memory_addresses.begin(); 
-					i != event.memory_addresses.end() 
-					&& size != event.memory_sizes.end(); ++i, ++size)
+					i != event.memory_addresses.end(); ++i)
 				{
-					read(*i, *size);
+					read(*i, event.memory_size);
 				}	
 			}
 		}

@@ -45,8 +45,7 @@ namespace executive {
 			DeviceToDevice
 		};
 
-		/*!
-			The executive keeps a list of allocations for each device. This 
+		/*! The executive keeps a list of allocations for each device. This 
 			record indicates which device the allocation belongs to, its ISA, 
 			its size, and a pointer to the first usable byte. 
 			
@@ -100,9 +99,7 @@ namespace executive {
 		/*! \brief Map from pointer to global allocations */
 		typedef std::map< char*, GlobalMemoryAllocation > GlobalAllocationMap;
 
-		/*!
-			\brief maps a named kernel to override application kernels
-		*/
+		/*! \brief maps a named kernel to override application kernels */
 		class ExternalKernelEntry {
 		public:
 	
@@ -132,8 +129,8 @@ namespace executive {
 	
 	private:
 		/*! \brief Translate the kernels of a module to the selected ISA */
-		void _translateToSelected(ir::Module& m);		
-		void _translateToGPUExecutable(ir::Module &m);
+		void _translateToSelected( ir::Module& m );		
+		void _translateToGPUExecutable( ir::Module &m );
 		
 	public:
 		Executive();
@@ -144,16 +141,14 @@ namespace executive {
 			in the system */
 		DeviceVector devices;
 	
-		/*!
-			Selects a device from the enumerated set.
+		/*! Selects a device from the enumerated set.
 	
 			\param select guid of device
 			\return true if successfully selected
 		*/
 		bool select(int select);
 
-		/*!
-			Selects a device given an ISA.
+		/*!	Selects a device given an ISA.
 
 			\return true if selected
 		*/
@@ -172,8 +167,7 @@ namespace executive {
 			to reflect all devices */
 		void restoreFilteredDevices();
 		
-		/*!
-			Returns the guid of the selected device or -1 if no device 
+		/*! Returns the guid of the selected device or -1 if no device 
 				is selected
 	
 			\return guid of selected device or -1 if no device is selected
@@ -210,7 +204,7 @@ namespace executive {
 
 			\return pointer to allocated memory block or NULL on error
 		*/
-		void *malloc(size_t bytes);
+		void* malloc(size_t bytes);
 
 		/*!
 			\brief Registers a reference to a memory segment allocated 
@@ -260,45 +254,38 @@ namespace executive {
 			void* target, unsigned int width, unsigned int height, 
 			unsigned int length, const ir::Texture& t);
 
-		/*!
-			Free a memory block allocated to this device.
+		/*! Free a memory block allocated to this device.
 
 			\param ptr pointer to allocated memory block
 		*/
 		void free(void *ptr);
 
-		/*!
-			\brief Free a static array
+		/*! \brief Free a static array
 			
 			\param name The name of the variable being freed
 			\param module The path of the module to free from
 		*/
 		void freeGlobal(const std::string& name, const std::string& module);
 		
-		/*!
-			Copy a block of data 
+		/*! Copy a block of data 
 			
 			\param dest Pointer to start of destination block
 			\param src Pointer to start of source block
 			\param bytes Number of bytes to copy
 			\param type Type of memory operation
-		
 		*/
 		void memcpy(void* dest, const void* src, size_t bytes, 
 			MemoryCopy type);
 
-		/*!
-			Set a block of data 
+		/*! Set a block of data 
 			
 			\param dest Pointer to start of destination block
 			\param bytes Number of bytes to set
 			\param value Value to set to
-		
 		*/
 		void memset(void* dest, int value, size_t bytes);
 
-		/*! 
-			\brief Determine if a memory access is valid 
+		/*! \brief Determine if a memory access is valid 
 		
 			This should search device specific allocations as well as 
 			global allocations.
@@ -309,8 +296,7 @@ namespace executive {
 		*/
 		bool checkMemoryAccess(int device, const void* base, size_t size) const;
 
-		/*!
-			Given a pointer, determine the allocated block and 
+		/*! Given a pointer, determine the allocated block and 
 			corresponding MemoryAllocation record to which it belongs.
 
 			\param device GUID of device
@@ -320,8 +306,7 @@ namespace executive {
 		*/
 		MemoryAllocation getMemoryAllocation(int device, const void *ptr) const;
 
-		/*!
-			Given a pointer, determine the allocated block and 
+		/*! Given a pointer, determine the allocated block and 
 			corresponding GlobalMemoryAllocation record to which it belongs.
 
 			\param ptr pointer to some byte
@@ -339,34 +324,26 @@ namespace executive {
 
 			\return instance of kernel with requested ISA or 0 on failure.
 		*/
-		ir::Kernel *getKernel(ir::Instruction::Architecture isa, 
+		ir::Kernel* getKernel(ir::Instruction::Architecture isa, 
 			const std::string& module, const std::string& kernelName);	
 
-		/*!
-			\brief This sets the optimization level 
+		/*!	\brief This sets the optimization level 
 		
 			\param l The new optimization level.
 		*/
 		void setOptimizationLevel(translator::Translator::OptimizationLevel l);
 
-		/*!
-			\brief get the optimization level of the translator
-		*/
-		translator::Translator::OptimizationLevel getOptimizationLevel() const {
-			return optimizationLevel;
-		}
+		/*!	\brief get the optimization level of the translator */
+		translator::Translator::OptimizationLevel getOptimizationLevel() const;
+		
+		/*!	called to update global variables across all address spaces
 
-		/*!
-			called to update global variables across all address spaces
-
-			\param copyType specifies direction data should be copied to update globals
+			\param copyType specifies direction data should be copied 
+				to update globals
 		*/
 		void fenceGlobalVariables(MemoryCopy copyType = HostToDevice);
 
-		/*!
-			idempotent - called to init GL interoperability
-		*/
-
+		/*!	\brief idempotent - called to init GL interoperability*/
 		bool useGLInteroperability();
 		
 		/*! \brief Limit the number of threads launched per kernel */
@@ -375,21 +352,18 @@ namespace executive {
 		/*! \brief This creates the set of devices available in the system */
 		void enumerateDevices();
 
-		/*! */
+		/*! \brief Load databse of kernels to give preference to */
 		void initializeExternalKernelMap(std::string directoryPath, int type);
 
-		/*! 
-			\brief override an executable kernel if configured, otherwise return source kernel
-		*/
-		ir::ExecutableKernel *getExternalOverride(ir::ExecutableKernel *kernel);
+		/*! \brief override an executable kernel if configured, 
+			otherwise return source kernel */
+		ir::ExecutableKernel* getExternalOverride(ir::ExecutableKernel *kernel);
 
 	public:
-
 		/*! Set of loaded PTX modules indexed by the module's filename */
 		ModuleMap modules;
 
-		/*!
-			A map indexable by device GUID of memory allocations on that 
+		/*! A map indexable by device GUID of memory allocations on that 
 			device. For a given device, these are assumed to be non-overlapping.
 		*/
 		DeviceAllocationMap memoryAllocations;
@@ -398,20 +372,17 @@ namespace executive {
 		GlobalAllocationMap globalAllocations;
 
 	public:
-
-		/*!
-			\brief map of kernel names and external kernel entries - overrides kernels in application
-				fat binaries
+		/*!	\brief map of kernel names and external kernel entries 
+				- overrides kernels in application fat binaries
 		*/
 		ExternalKernelMap externalKernels;
 
-		/*!
-			\brief specifies the preferred type of external kernel to load - or invalid to avoid overriding
+		/*! \brief specifies the preferred type of external kernel to load 
+				- or invalid to avoid overriding
 		*/
 		int externalKernelLoadingType;
 
 	protected:
-		
 		/*! \brief This is the selected device */
 		int selectedDevice;
 

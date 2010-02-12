@@ -137,15 +137,6 @@ PTXOptimizer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-#
-InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-InstructionTraceAnalyzer_SOURCES = \
-	ocelot/trace/implementation/InstructionTraceAnalyzer.cpp
-InstructionTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-InstructionTraceAnalyzer_LDFLAGS = -static
-################################################################################
-
-################################################################################
 ## ParallelismTraceAnalyzer
 ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 ParallelismTraceAnalyzer_SOURCES = \

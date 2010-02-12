@@ -21,8 +21,7 @@ namespace trace {
 	class TraceEvent : hydrazine::Stringable {
 	public:
 
-		typedef std::deque< ir::PTXU64 > U64Vector;
-		typedef std::deque< ir::PTXU32 > U32Vector;
+		typedef std::vector< ir::PTXU64 > U64Vector;
 		typedef boost::dynamic_bitset<> BitMask;
 		
 	public:
@@ -51,7 +50,7 @@ namespace trace {
 			const ir::PTXInstruction* instruction, 
 			const boost::dynamic_bitset<> & active,
 			const U64Vector & memory_addresses,
-			const U32Vector & memory_sizes,
+			ir::PTXU32 memory_size,
 			ir::PTXU32 ctxStackSize = 1);
 
 		/*!
@@ -100,8 +99,8 @@ namespace trace {
 			vector of sizes of memory operations possibly issued by this 
 				instruction
 		*/
-		U32Vector memory_sizes;
-	
+		ir::PTXU32 memory_size;
+		
 	public:
 	
 		/*!

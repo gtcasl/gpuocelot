@@ -11,6 +11,11 @@
 #include <cuda_runtime_api.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 
+namespace executive
+{
+	class Executive;
+}
+
 /*! \brief A namespace for the ocelot implementation of the CUDA API */
 namespace cuda
 {
@@ -279,6 +284,7 @@ namespace cuda
 				const std::string& module) = 0;
 			virtual void** getFatBinaryHandle(const std::string& name) = 0;
 			virtual void clearErrors() = 0;
+			virtual executive::Executive& executive() = 0;
 	};
 
 }

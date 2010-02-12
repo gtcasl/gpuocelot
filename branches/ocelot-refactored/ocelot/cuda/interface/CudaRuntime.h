@@ -381,6 +381,11 @@ namespace cuda {
 		virtual cudaError_t cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
 			size_t offset, enum cudaMemcpyKind kind = cudaMemcpyHostToDevice);
 		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
+
+		virtual cudaError_t  cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, 
+			const void *src, size_t count, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpyFromArray(void *dst, const struct cudaArray *src, 
+			size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind);
 	
 	public:
 		//

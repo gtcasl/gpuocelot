@@ -252,6 +252,30 @@ namespace executive {
 		bool deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, size_t offset, 
 			MemcpyKind kind);
 		
+		/*!
+			\brief copies a dense host buffer to a device array
+			\param host
+			\param array
+			\param wOffset
+			\param hOffset
+			\param bytes
+			\param kind
+		*/
+		bool deviceMemcpyToArray(struct cudaArray *array, void *host, size_t wOffset, 
+			size_t hOffset, size_t bytes, MemcpyKind kind);
+
+		/*!
+			\brief copies a dense host buffer from a device array
+			\param host
+			\param array
+			\param wOffset
+			\param hOffset
+			\param bytes
+			\param kind
+		*/
+		bool deviceMemcpyFromArray(struct cudaArray *array, void *host, size_t wOffset, 
+			size_t hOffset, size_t bytes, MemcpyKind kind);
+
 	public:
 	
 		//

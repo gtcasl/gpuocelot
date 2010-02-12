@@ -211,9 +211,9 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 	case 0:
 		{
 			// device is in host memory
-			memory.allocationSize = width * height;
+			memory.pointer.pitch = width * desc.size();
+			memory.allocationSize = height * memory.pointer.pitch;
 			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
-			memory.pointer.pitch = width;
 		}
 		break;
 	default:
@@ -505,6 +505,72 @@ bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *
 	}
 	
 	return true;
+}
+
+/*!
+	\brief copies a dense host buffer to a device array
+*/
+bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *host, 
+	size_t wOffset, size_t hOffset, size_t bytes, MemcpyKind kind) {
+
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
+	if (alloc_it != memoryMap.end()) {
+		const MemoryAllocation & memory = alloc_it->second;
+
+		switch (addrSpace) {
+		case 0:
+			{
+				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + 
+					memory.desc.size() * wOffset;
+				::memcpy(ptr, host, bytes);
+			}
+			break;
+
+		default:
+			assert(0 && "address space not supported");
+			break;
+		}
+		
+		return true;
+	}
+
+	return false;
+}
+
+/*!
+	\brief copies a dense host buffer to a device array
+*/
+bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *host, 
+	size_t wOffset, size_t hOffset, size_t bytes, MemcpyKind kind) {
+
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
+	if (alloc_it != memoryMap.end()) {
+		const MemoryAllocation & memory = alloc_it->second;
+
+		switch (addrSpace) {
+		case 0:
+			{
+				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + 
+					memory.desc.size() * wOffset;
+				::memcpy(host, ptr, bytes);
+			}
+			break;
+
+		default:
+			assert(0 && "address space not supported");
+			break;
+		}
+		
+		return true;
+	}
+
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

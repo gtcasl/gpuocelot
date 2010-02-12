@@ -530,6 +530,34 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_
 	return setLastError(result);
 }
 
+cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, 
+	size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	if (context.deviceMemcpyToArray(dst, (void *)src, wOffset, hOffset, count, convert(kind))) {
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst, const struct cudaArray *src, 
+	size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorNotYetImplemented;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	if (context.deviceMemcpyToArray((struct cudaArray *)src, dst, wOffset, hOffset, count, convert(kind))) {
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // memset

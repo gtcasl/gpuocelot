@@ -1196,7 +1196,8 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 	\brief binds a texture to an array
 */
 bool executive::Executive::bindTextureToArray(const std::string & textureName, void *array, 
-	const ChannelFormatDesc &desc) {
+	const ChannelFormatDesc &desc, ir::Texture::AddressMode *addrMode, 
+	ir::Texture::Interpolation filter, bool normalized) {
 
 	assert(0 && "unimplemented");
 

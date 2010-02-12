@@ -288,7 +288,9 @@ namespace executive {
 		/*!
 			\brief binds a texture to an array
 		*/
-		bool bindTextureToArray(const std::string & texture, void *array, const ChannelFormatDesc &desc);
+		bool bindTextureToArray(const std::string & texture, void *array, 
+			const ChannelFormatDesc &desc,  ir::Texture::AddressMode *addrMode, 
+			ir::Texture::Interpolation filter, bool normalized);
 		
 		/*!
 			\brief unbinds a previously bound texture

@@ -721,11 +721,24 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 
 cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureReference *texref, 
 	const struct cudaArray *array, const struct cudaChannelFormatDesc *desc) {
-	cudaError_t result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidValue;
 	
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	executive::ChannelFormatDesc format;
+	convert(format, desc);
+
+	if (context.bindTextureToArray(textureReferences[texref], (void *)array, format, 
+		(ir::Texture::AddressMode *)texref->addressMode, 
+		(ir::Texture::Interpolation)texref->filterMode, texref->normalized)) {
+
+		result = cudaSuccess;
+	}
+
 	assert(0 && "unimplemented yet");
 
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaUnbindTexture(const struct textureReference *texref) {

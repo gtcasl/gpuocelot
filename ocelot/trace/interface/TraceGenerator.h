@@ -81,6 +81,7 @@ namespace trace {
 		virtual void finish();
 	};
 
+	typedef std::vector< TraceGenerator *> TraceGeneratorVector;
 }
 
 #endif

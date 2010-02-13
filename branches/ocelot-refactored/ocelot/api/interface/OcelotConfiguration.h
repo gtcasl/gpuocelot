@@ -121,13 +121,13 @@ namespace api {
 		static const OcelotConfiguration & get();
 
 		//! \brief gets singleton config object's .executive member
-		static const Executive & getExecutive();
+		static const OcelotConfiguration::Executive & getExecutive();
 
 		//! \brief gets singleton config object's .cuda member
-		static const CudaRuntimeImplementation & getCuda();
+		static const OcelotConfiguration::CudaRuntimeImplementation & getCuda();
 
 		//! \brief gets singleton config object's .trace member
-		static const TraceGeneration & getTrace();
+		static const OcelotConfiguration::TraceGeneration & getTrace();
 
 	public:
 

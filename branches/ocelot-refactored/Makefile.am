@@ -12,6 +12,7 @@ AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
 INCLUDE = -I $(srcdir)/ocelot/cuda/include
 AM_LDFLAGS = $(CUDA_DRIVER_API_LIBARY)
+SDK_CFLAGS = -I ../../tests/cuda2.2/sdk/sdk
 ################################################################################
 
 ################################################################################
@@ -26,9 +27,14 @@ bin_PROGRAMS = DFG CFG Module PtxToLlvmTranslator PTXOptimizer
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker
+	TestPTXToLLVMTranslator  TestGPUKernel PTXChecker \
+	TestCudaGlobals TestCudaMalloc TestCudaTexture2D
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
+
+# Removed:
+# TestLLVMKernels
+#
 
 ################################################################################
 ## libocelot
@@ -264,11 +270,40 @@ TestPTXToLLVMTranslator_LDFLAGS = -static
 
 ################################################################################
 ## TestLLVMKernels
-TestLLVMKernels_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-TestLLVMKernels_SOURCES = \
-	ocelot/executive/test/TestLLVMKernels.cpp
-TestLLVMKernels_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestLLVMKernels_LDFLAGS = -static
+#TestLLVMKernels_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+#TestLLVMKernels_SOURCES = \
+#	ocelot/executive/test/TestLLVMKernels.cpp
+#TestLLVMKernels_LDADD = libocelot.la $(LLVM_LDFLAGS)
+#TestLLVMKernels_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaGlobals_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaGlobals_SOURCES = \
+	ocelot/cuda/test/globals/global.cu.cpp
+TestCudaGlobals_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaGlobals_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaMalloc_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaMalloc_SOURCES = \
+	ocelot/cuda/test/memory/malloc.cu.cpp
+TestCudaMalloc_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaMalloc_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaTexture2D_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaTexture2D_SOURCES = ocelot/cuda/test/textures/texture2D.cu.cpp
+TestCudaTexture2D_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaTexture2D_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

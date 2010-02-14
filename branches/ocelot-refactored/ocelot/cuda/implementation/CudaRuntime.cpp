@@ -533,7 +533,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_
 cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, 
 	size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind) {
 
-	cudaError_t result = cudaErrorInvalidValue;
+	cudaError_t result = cudaErrorInvalidValue ;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
 
@@ -547,15 +547,81 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t w
 cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst, const struct cudaArray *src, 
 	size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind) {
 
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue ;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
 
-	if (context.deviceMemcpyToArray((struct cudaArray *)src, dst, wOffset, hOffset, count, convert(kind))) {
+	if (context.deviceMemcpyFromArray((struct cudaArray *)src, dst, wOffset, hOffset, count, 
+		convert(kind))) {
 		result = cudaSuccess;
 	}
 
 	return setLastErrorAndUnlock(thread, result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst, size_t wOffsetDst, 
+	size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, 
+	size_t count, enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	if (context.deviceMemcpyArrayToArray((struct cudaArray *)dst, wOffsetDst, hOffsetDst,
+		(struct cudaArray *)src, wOffsetSrc, hOffsetSrc, count, convert(kind))) {
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);	
+}
+
+/*!
+	\brief perform a 2D memcpy from a dense buffer
+*/
+cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch, const void *src, 
+	size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	
+	if (context.deviceMemcpy2D(dst, dpitch, src, spitch, width, height, convert(kind))) {
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);	
+}
+
+/*!
+	\brief perform a 2D memcpy to an array
+*/
+cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst, size_t wOffset, 
+	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, 
+	enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	
+	assert(0 && "unimplemented");
+
+	return setLastErrorAndUnlock(thread, result);		
+}
+
+/*!
+	\brief perform a 2D memcpy from an array
+*/
+cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch, 
+	const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, 
+	enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	assert(0 && "unimplemented");
+	
+	return setLastErrorAndUnlock(thread, result);		
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

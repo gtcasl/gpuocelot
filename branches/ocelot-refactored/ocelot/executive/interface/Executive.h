@@ -275,6 +275,16 @@ namespace executive {
 		*/
 		bool deviceMemcpyFromArray(struct cudaArray *array, void *host, size_t wOffset, 
 			size_t hOffset, size_t bytes, MemcpyKind kind);
+		
+		/*!
+			\brief copies a dense buffer from a device array to a device array
+		*/	
+		bool deviceMemcpyArrayToArray(struct cudaArray *dst, size_t dstWOffset, size_t dstHOffset,
+			const struct cudaArray *src, size_t srcWOffset, size_t srcHOFfset, size_t count,
+			MemcpyKind kind);
+			
+		bool deviceMemcpy2D(void *dst, size_t dstPitch, const void *src, size_t srcPitch, 
+			size_t width, size_t height, MemcpyKind kind);
 
 	public:
 	

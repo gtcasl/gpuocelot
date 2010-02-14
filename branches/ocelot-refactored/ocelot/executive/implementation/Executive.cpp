@@ -230,8 +230,9 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 bool executive::Executive::free(void *devPtr) {
 	bool result = true;
 	
-	MemoryAllocationMap::iterator it = memoryAllocations[getDeviceAddressSpace()].find(devPtr);
-	if (it == memoryAllocations[getDeviceAddressSpace()].end()) {
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find(devPtr);
+	if (it == allocations.end()) {
 		// not found
 		assert(0 && "unimplemented");		
 	}
@@ -245,7 +246,7 @@ bool executive::Executive::free(void *devPtr) {
 				::free(it->second.pointer.ptr);
 			}
 		}
-		memoryAllocations[getDeviceAddressSpace()].erase(it);
+		allocations.erase(it);
 	}
 	return result;
 }
@@ -253,8 +254,9 @@ bool executive::Executive::free(void *devPtr) {
 bool executive::Executive::freeHost(void *ptr) {
 	bool result = true;
 
-	MemoryAllocationMap::iterator it = memoryAllocations[getDeviceAddressSpace()].find(ptr);
-	if (it == memoryAllocations[getDeviceAddressSpace()].end()) {
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find(ptr);
+	if (it == allocations.end()) {
 		// not found
 		report("Executive::freeHost(" << ptr << ")");
 		
@@ -271,7 +273,7 @@ bool executive::Executive::freeHost(void *ptr) {
 				::free(it->second.pointer.ptr);
 			}
 		}
-		memoryAllocations[getDeviceAddressSpace()].erase(it);
+		allocations.erase(it);
 	}
 	
 	return result;
@@ -279,8 +281,9 @@ bool executive::Executive::freeHost(void *ptr) {
 
 bool executive::Executive::freeArray(struct cudaArray *array) {
 	bool result = true;
-	MemoryAllocationMap::iterator it = memoryAllocations[getDeviceAddressSpace()].find((void *)array);
-	if (it == memoryAllocations[getDeviceAddressSpace()].end()) {
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find((void *)array);
+	if (it == allocations.end()) {
 		// not found
 		assert(0 && "unimplemented");		
 	}
@@ -291,10 +294,13 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 		}
 		else {
 			if (it->second.internal) {
-				free(it->second.pointer.ptr);
+				if (it->second.pointer.ptr) {
+					::free(it->second.pointer.ptr);
+				}
+				it->second.pointer.ptr = 0;
 			}
 		}
-		memoryAllocations[getDeviceAddressSpace()].erase(it);
+		allocations.erase(it);
 	}
 	return result;
 }
@@ -523,8 +529,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 		switch (addrSpace) {
 		case 0:
 			{
-				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + 
-					memory.desc.size() * wOffset;
+				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(ptr, host, bytes);
 			}
 			break;
@@ -556,8 +561,7 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 		switch (addrSpace) {
 		case 0:
 			{
-				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + 
-					memory.desc.size() * wOffset;
+				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(host, ptr, bytes);
 			}
 			break;
@@ -568,6 +572,134 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 		}
 		
 		return true;
+	}
+
+	return false;
+}
+
+/*!
+	\brief copies a dense buffer from a device array to a device array
+*/	
+bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_t dstWOffset, 
+	size_t dstHOffset, const struct cudaArray *src, size_t srcWOffset, size_t srcHOffset, 
+	size_t count, MemcpyKind kind) {
+	
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator dstAlloc_it = memoryMap.find((void *)dst);
+	MemoryAllocationMap::const_iterator srcAlloc_it = memoryMap.find((void *)src);
+	if (dstAlloc_it != memoryMap.end() && srcAlloc_it != memoryMap.end()) {
+		const MemoryAllocation & dstMemory = dstAlloc_it->second;
+		const MemoryAllocation & srcMemory = srcAlloc_it->second;
+
+		switch (addrSpace) {
+		case 0:
+			{
+				char *srcPtr = (char *)srcMemory.pointer.ptr + srcMemory.pointer.pitch * srcHOffset + 
+					srcWOffset;
+				char *dstPtr = (char *)dstMemory.pointer.ptr + dstMemory.pointer.pitch * dstHOffset + 
+					dstWOffset;
+				::memcpy(dstPtr, srcPtr, count);			
+			}
+			break;
+
+		default:
+			assert(0 && "address space not supported");
+			break;
+		}
+		
+		return true;
+	}
+
+	return false;
+}
+
+/*!
+	\brief copies from a dense buffer to a 2D buffer
+*/
+bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void *src, 
+	size_t srcPitch, size_t width, size_t height, MemcpyKind kind) {
+	
+	int addrSpace = getDeviceAddressSpace();
+	
+	switch (kind) {
+		case HostToHost:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char *dstPtr = (char *)dst + dstPitch * row;
+				char *srcPtr = (char *)src + srcPitch * row;
+				::memcpy(dstPtr, srcPtr, width);
+			}
+		}
+			break;
+		case DeviceToHost:
+		{
+			MemoryAllocation srcAlloc = getMemoryAllocation(src);
+			
+			switch (addrSpace) {
+				case 0:
+				{
+					for (size_t row = 0; row < height; row++) {
+						char *dstPtr = (char *)dst + dstPitch * row;
+						char *srcPtr = (char *)src + srcPitch * row;
+						::memcpy(dstPtr, srcPtr, width);
+					}
+					return true;
+				}
+					break;
+				default:
+					assert(0 && "unimplemented");
+					break;
+			}
+		}
+			break;
+		
+		case HostToDevice:
+		{
+			MemoryAllocation dstAlloc = getMemoryAllocation(dst);
+			switch (addrSpace) {
+				case 0:
+				{
+					for (size_t row = 0; row < height; row++) {
+						char *dstPtr = (char *)dst + dstPitch * row;
+						char *srcPtr = (char *)src + srcPitch * row;
+						::memcpy(dstPtr, srcPtr, width);
+					}
+					return true;
+				}
+					break;
+				default:
+					assert(0 && "unimplemented");
+					break;
+			}
+		}
+			break;
+		case DeviceToDevice:
+		{
+			MemoryAllocation srcAlloc = getMemoryAllocation(src);
+			MemoryAllocation dstAlloc = getMemoryAllocation(dst);
+			switch (addrSpace) {
+				case 0:
+				{
+					for (size_t row = 0; row < height; row++) {
+						char *dstPtr = (char *)dst + dstPitch * row;
+						char *srcPtr = (char *)src + srcPitch * row;
+						::memcpy(dstPtr, srcPtr, width);
+					}
+					return true;
+				}
+					break;
+				default:
+					assert(0 && "unimplemented");
+					break;
+			}
+	
+		}
+			break;
+		
+		default:
+			return false;
 	}
 
 	return false;

@@ -132,9 +132,16 @@ static int test_mallocArray(bool verbose) {
 			}
 		}
 	}	
-
+	
+	if (verbose) {
+		printf("Array Test %s\n", (errors ? "FAILED" : "PASSED"));
+		fflush(stdout);
+	}
+	
 	cudaFreeArray(array);
 	free(host);
+	
+	printf("  array test exiting\n"); fflush(stdout);
 			
 	return errors;
 }
@@ -145,6 +152,8 @@ static int test_mallocPitch(bool verbose) {
 	const int width = 125;
 	const int height = 128;
 	size_t pitch;
+	
+	if (verbose) { printf("[1] mallocing pitch\n"); fflush(stdout); }
 	
 	float *gpu0 = 0;
 	if (cudaMallocPitch((void **)&gpu0, &pitch, sizeof(float)*width, height) != cudaSuccess) {
@@ -161,6 +170,8 @@ static int test_mallocPitch(bool verbose) {
 		}
 	}
 	
+	if (verbose) { printf("[2] memcpying2d\n"); fflush(stdout); }
+	
 	if (cudaMemcpy2D(gpu0, pitch, host, width * sizeof(float), sizeof(float)*width, height, 
 		cudaMemcpyHostToDevice) != cudaSuccess) {
 		
@@ -173,6 +184,8 @@ static int test_mallocPitch(bool verbose) {
 	for (int i = 0; i < width * height; i++) {
 		host[i] = -1;
 	}
+	
+	if (verbose) { printf("[3] memcpying\n"); fflush(stdout); }
 	
 	if (cudaMemcpy2D(host, sizeof(float) * width, gpu0, pitch, sizeof(float)*width, height,
 		cudaMemcpyDeviceToHost) != cudaSuccess) {
@@ -195,11 +208,15 @@ static int test_mallocPitch(bool verbose) {
 		}
 	}
 	
+	if (verbose) { printf("[4] checking for errors\n"); fflush(stdout); }
+	
 	if (errors) {
 		cudaFree(gpu0);
 		free(host);
 		return ++errors;
 	}
+	
+	printf("[5] mallocing\n"); fflush(stdout);
 	
 	// now copy from device to device with potentially different pitch
 	float *gpu1 = 0;
@@ -210,6 +227,8 @@ static int test_mallocPitch(bool verbose) {
 		printf("cudaMallocPitch() 1 - failed to allocate on device\n");
 		return ++errors;
 	}
+	
+	if (verbose) { printf("[6] memcpying\n"); fflush(stdout); }
 	
 	if (cudaMemcpy2D(gpu1, pitch1, gpu0, pitch, sizeof(float)*width, height, 
 		cudaMemcpyDeviceToDevice) != cudaSuccess) {
@@ -224,6 +243,8 @@ static int test_mallocPitch(bool verbose) {
 	for (int i = 0; i < width * height; i++) {
 		host[i] = -1;
 	}
+	
+	if (verbose) { printf("[7] memcpying\n"); fflush(stdout); }
 	
 	if (cudaMemcpy2D(host, sizeof(float)*width, gpu1, pitch1, sizeof(float)*width, height, 
 		cudaMemcpyDeviceToHost) != cudaSuccess) {
@@ -247,6 +268,9 @@ static int test_mallocPitch(bool verbose) {
 			}
 		}
 	}
+	
+	if (verbose) { printf("[8] final free\n"); fflush(stdout); }
+	
 	cudaFree(gpu0);
 	cudaFree(gpu1);
 	free(host);

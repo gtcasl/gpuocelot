@@ -380,13 +380,27 @@ namespace cuda {
 			enum cudaMemcpyKind kind);
 		virtual cudaError_t cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
 			size_t offset, enum cudaMemcpyKind kind = cudaMemcpyHostToDevice);
-		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, size_t count, 
+			enum cudaMemcpyKind kind, cudaStream_t stream);
 
 		virtual cudaError_t  cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, 
 			const void *src, size_t count, enum cudaMemcpyKind kind);
 		virtual cudaError_t  cudaMemcpyFromArray(void *dst, const struct cudaArray *src, 
 			size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind);
-	
+		virtual cudaError_t  cudaMemcpyArrayToArray(struct cudaArray *dst, size_t wOffsetDst, 
+			size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, 
+			size_t count, enum cudaMemcpyKind kind);
+
+		virtual cudaError_t  cudaMemcpy2D(void *dst, size_t dpitch, const void *src, size_t spitch, 
+			size_t width, size_t height, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpy2DToArray(struct cudaArray *dst, size_t wOffset, 
+			size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, 
+			enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpy2DFromArray(void *dst, size_t dpitch, 
+			const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, 
+			enum cudaMemcpyKind kind);
+		
+
 	public:
 		//
 		// Memset

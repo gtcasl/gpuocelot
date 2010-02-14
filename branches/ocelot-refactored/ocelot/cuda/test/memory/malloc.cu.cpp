@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00003e22_00000000-1_malloc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000617c_00000000-1_malloc.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00003e22_00000000-1_malloc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000617c_00000000-1_malloc.cudafe1.cpp"
 # 1 "malloc.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
@@ -5935,8 +5935,15 @@ printf("ERROR 2: (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
 }
 }
 
+if (verbose) {
+printf("Array Test %s\n", (errors) ? ((const char *)"FAILED") : ((const char *)"PASSED"));
+fflush(stdout);
+}
+
 cudaFreeArray(array);
 free(host);
+
+printf("  array test exiting\n"); fflush(stdout);
 
 return errors;
 }
@@ -5947,6 +5954,8 @@ auto int errors = 0;
 auto const int width = 125;
 auto const int height = 128;
 auto size_t pitch;
+
+if (verbose) { printf("[1] mallocing pitch\n"); fflush(stdout); }
 
 auto float *gpu0 = (0);
 if ((cudaMallocPitch((void **)(&gpu0), &pitch, sizeof(float) * (width), height)) != (cudaSuccess)) {
@@ -5963,6 +5972,8 @@ for (int i = 0; i < width; i++) {
 }
 }
 
+if (verbose) { printf("[2] memcpying2d\n"); fflush(stdout); }
+
 if ((cudaMemcpy2D(gpu0, pitch, host, (width) * sizeof(float), sizeof(float) * (width), height, cudaMemcpyHostToDevice)) != (cudaSuccess))
 {
 
@@ -5975,6 +5986,8 @@ return ++errors;
 for (int i = 0; i < (width * height); i++) {
 (host[i]) = (-1);
 }
+
+if (verbose) { printf("[3] memcpying\n"); fflush(stdout); }
 
 if ((cudaMemcpy2D(host, sizeof(float) * (width), gpu0, pitch, sizeof(float) * (width), height, cudaMemcpyDeviceToHost)) != (cudaSuccess))
 {
@@ -5997,11 +6010,15 @@ printf("ERROR 0 (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
 }
 }
 
+if (verbose) { printf("[4] checking for errors\n"); fflush(stdout); }
+
 if (errors) {
 cudaFree(gpu0);
 free(host);
 return ++errors;
 }
+
+printf("[5] mallocing\n"); fflush(stdout);
 
 
 auto float *gpu1 = (0);
@@ -6012,6 +6029,8 @@ free(host);
 printf("cudaMallocPitch() 1 - failed to allocate on device\n");
 return ++errors;
 }
+
+if (verbose) { printf("[6] memcpying\n"); fflush(stdout); }
 
 if ((cudaMemcpy2D(gpu1, pitch1, gpu0, pitch, sizeof(float) * (width), height, cudaMemcpyDeviceToDevice)) != (cudaSuccess))
 {
@@ -6026,6 +6045,8 @@ return ++errors;
 for (int i = 0; i < (width * height); i++) {
 (host[i]) = (-1);
 }
+
+if (verbose) { printf("[7] memcpying\n"); fflush(stdout); }
 
 if ((cudaMemcpy2D(host, sizeof(float) * (width), gpu1, pitch1, sizeof(float) * (width), height, cudaMemcpyDeviceToHost)) != (cudaSuccess))
 {
@@ -6049,6 +6070,9 @@ printf("ERROR 0 (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
 }
 }
 }
+
+if (verbose) { printf("[8] final free\n"); fflush(stdout); }
+
 cudaFree(gpu0);
 cudaFree(gpu1);
 free(host);
@@ -6094,11 +6118,11 @@ printf("Test %s\n", (errors) ? ((const char *)"FAILED") : ((const char *)"PASSED
 return -errors;
 }
 
-# 1 "/tmp/tmpxft_00003e22_00000000-1_malloc.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000617c_00000000-1_malloc.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00003e22_00000000-3_malloc.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000617c_00000000-3_malloc.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -6160,7 +6184,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00003e22_00000000-3_malloc.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000617c_00000000-3_malloc.fatbin.c" 2
 
 
 
@@ -6176,8 +6200,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f3232653330ull,0x372d303030303030ull,0x2e636f6c6c616d5full,0x2820692e33707063ull,
-0x4263632f706d742full,0x59383278752e2349ull,0x2d2d2f2f090a2936ull,0x2d2d2d2d2d2d2d2dull,
+0x30305f6337313630ull,0x372d303030303030ull,0x2e636f6c6c616d5full,0x2820692e33707063ull,
+0x4263632f706d742full,0x7a705749772e2349ull,0x2d2d2f2f090a2968ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2f2f090a0a2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -6191,8 +6215,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6569726f73697664ull,0x2d2d2f2f090a2973ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x6c69662e090a0a2dull,0x6f633c2209310965ull,0x696c2d646e616d6dull,
-0x662e090a223e656eull,0x2f22093209656c69ull,0x78706d742f706d74ull,0x33303030305f7466ull,
-0x303030305f323265ull,0x6d5f362d30303030ull,0x75632e636f6c6c61ull,0x70672e3265666164ull,
+0x662e090a223e656eull,0x2f22093209656c69ull,0x78706d742f706d74ull,0x36303030305f7466ull,
+0x303030305f633731ull,0x6d5f362d30303030ull,0x75632e636f6c6c61ull,0x70672e3265666164ull,
 0x6c69662e090a2275ull,0x73752f2209330965ull,0x63672f62696c2f72ull,0x34365f3638782f63ull,
 0x672d78756e696c2dull,0x312e342e342f756eull,0x6564756c636e692full,0x2e6665646474732full,
 0x6c69662e090a2268ull,0x73752f2209340965ull,0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,
@@ -6266,8 +6290,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"b031dbcdbbc5b1f9",(char*)"malloc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xc8018475};
-# 5 "/tmp/tmpxft_00003e22_00000000-1_malloc.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"f1aaeef525fbf359",(char*)"malloc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xe5bb8e61};
+# 5 "/tmp/tmpxft_0000617c_00000000-1_malloc.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -12247,9 +12271,9 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3865 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00003e22_00000000-1_malloc.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_41_tmpxft_00003e22_00000000_4_malloc_cpp1_ii_main(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_41_tmpxft_00003e22_00000000_4_malloc_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
+# 6 "/tmp/tmpxft_0000617c_00000000-1_malloc.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_41_tmpxft_0000617c_00000000_4_malloc_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_41_tmpxft_0000617c_00000000_4_malloc_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);}
 
 }
-# 295 "malloc.cu" 2
+# 319 "malloc.cu" 2

@@ -338,29 +338,51 @@ TestLLVMKernels_LDFLAGS = -static
 
 ################################################################################
 ## Headers
-nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
-	ocelot/executive/interface/Executive.h \
+nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
+	ocelot/executive/interface/GPUExecutableKernel.h \
 	ocelot/executive/interface/CooperativeThreadArray.h \
 	ocelot/executive/interface/EmulatedKernel.h \
+	ocelot/executive/interface/TextureOperations.h \
 	ocelot/executive/interface/RuntimeException.h \
+	ocelot/executive/interface/LLVMExecutableKernel.h \
+	ocelot/executive/interface/LLVMContext.h \
+	ocelot/executive/interface/ExternalKernel.h \
 	ocelot/executive/interface/GPUKernel.h \
 	ocelot/executive/interface/Device.h \
 	ocelot/executive/interface/CTAContext.h \
-	ocelot/executive/interface/ExternalKernel.h \
+	ocelot/executive/test/TestLLVMKernels.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/TestGPUKernel.h \
-	ocelot/executive/test/sequence.ptx \
-	ocelot/executive/test/kernels.ptx \
+	ocelot/cuda/interface/CudaRuntimeInterface.h \
 	ocelot/cuda/interface/CudaRuntime.h \
+	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
+	ocelot/cuda/interface/CudaRuntimeBase.h \
+	ocelot/cuda/include/device_types.h \
+	ocelot/cuda/include/texture_types.h \
+	ocelot/cuda/include/cudaGL.h \
+	ocelot/cuda/include/cuda_runtime_api.h \
+	ocelot/cuda/include/builtin_types.h \
+	ocelot/cuda/include/driver_types.h \
+	ocelot/cuda/include/__cudaFatFormat.h \
+	ocelot/cuda/include/cuda.h \
+	ocelot/cuda/include/vector_types.h \
+	ocelot/cuda/include/host_defines.h \
+	ocelot/util/interface/OcelotConfig.h \
+	ocelot/trace/interface/CacheSimulator.h \
 	ocelot/trace/interface/MemoryTraceGenerator.h \
 	ocelot/trace/interface/TraceEvent.h \
+	ocelot/trace/interface/MachineAttributesGenerator.h \
 	ocelot/trace/interface/BranchTraceAnalyzer.h \
 	ocelot/trace/interface/TraceGenerator.h \
 	ocelot/trace/interface/SharedComputationGenerator.h \
 	ocelot/trace/interface/ParallelismTraceGenerator.h \
+	ocelot/trace/interface/InstructionTraceGenerator.h \
 	ocelot/trace/interface/MemoryTraceAnalyzer.h \
+	ocelot/trace/interface/WatchTraceGenerator.h \
+	ocelot/trace/interface/InstructionTraceAnalyzer.h \
 	ocelot/trace/interface/SharedComputationAnalyzer.h \
 	ocelot/trace/interface/BranchTraceGenerator.h \
+	ocelot/trace/interface/KernelDimensionsGenerator.h \
 	ocelot/trace/interface/ParallelismTraceAnalyzer.h \
 	ocelot/trace/interface/KernelEntry.h \
 	ocelot/parser/interface/PTXLexer.h \
@@ -368,25 +390,42 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/parser/interface/PTXParser.h \
 	ocelot/parser/test/TestLexer.h \
 	ocelot/parser/test/TestParser.h \
+	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
+	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/DataflowGraph.h \
+	ocelot/analysis/interface/Pass.h \
+	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/SSAGraph.h \
+	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
+	ocelot/api/interface/OcelotRuntime.h \
+	ocelot/api/interface/ocelot.h \
+	ocelot/ir/interface/LLVMInstruction.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \
 	ocelot/ir/interface/ControlFlowGraph.h \
+	ocelot/ir/interface/LLVMStatement.h \
+	ocelot/ir/interface/Local.h \
 	ocelot/ir/interface/PostdominatorTree.h \
 	ocelot/ir/interface/Parameter.h \
+	ocelot/ir/interface/Dim3.h \
 	ocelot/ir/interface/PTXKernel.h \
 	ocelot/ir/interface/ExecutableKernel.h \
 	ocelot/ir/interface/PTXStatement.h \
 	ocelot/ir/interface/PTXInstruction.h \
 	ocelot/ir/interface/Instruction.h \
 	ocelot/ir/interface/DominatorTree.h \
+	ocelot/ir/interface/LLVMKernel.h \
 	ocelot/ir/interface/Documentation.h \
 	ocelot/ir/interface/PTXOperand.h \
 	ocelot/ir/interface/Global.h \
 	ocelot/ir/interface/Texture.h \
+	ocelot/ir/test/SamplePTX.h \
 	ocelot/ir/test/TestLLVMInstructions.h \
+	ocelot/translator/interface/Translator.h \
+	ocelot/translator/interface/PTXToLLVMTranslator.h \
+	ocelot/translator/test/PtxToLlvmTranslator.h \
+	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/XmlLexer.h \
 	hydrazine/implementation/Timer.h \
@@ -409,14 +448,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
-	ocelot/cuda/include/builtin_types.h \
-	ocelot/cuda/include/__cudaFatFormat.h \
-	ocelot/cuda/include/cuda_runtime_api.h \
-	ocelot/cuda/include/device_types.h \
-	ocelot/cuda/include/driver_types.h \
-	ocelot/cuda/include/host_defines.h \
-	ocelot/cuda/include/texture_types.h \
-	ocelot/cuda/include/vector_types.h \
 	regression/ocelotRegressionTests.txt	
 
 ################################################################################

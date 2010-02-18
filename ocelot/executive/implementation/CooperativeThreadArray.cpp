@@ -52,7 +52,7 @@
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 320
+#define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 
@@ -2531,6 +2531,9 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 							}
 							else if( fd < 0 ) {
 								d = 0;
+							}
+							else {
+								d = fd;
 							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}

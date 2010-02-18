@@ -2160,7 +2160,6 @@ namespace translator
 					shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
 					
 					_add( shift );
-				
 				}
 				else
 				{

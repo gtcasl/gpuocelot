@@ -1,10 +1,6 @@
-/*!
-	\file GPUExecutableKernel.h
-
+/*! \file GPUExecutableKernel.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date Jan 19, 2009
-
 	\brief implements the GPU kernel callable by the executive
 */
 
@@ -19,7 +15,8 @@ namespace executive {
 
 	class GPUExecutableKernel: public ir::ExecutableKernel {
 	public:
-		GPUExecutableKernel( ir::Kernel& kernel, const executive::Executive* c = 0 );
+		GPUExecutableKernel( ir::Kernel& kernel, const CUfunction& function, 
+			const executive::Executive* c = 0 );
 		GPUExecutableKernel();
 		~GPUExecutableKernel();
 	

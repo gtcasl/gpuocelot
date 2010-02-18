@@ -503,18 +503,23 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 	for (Module::KernelMap::iterator k_it = it->second.begin();
 		k_it != it->second.end(); ++k_it) {
 		report("  Creating GPUExecutableKernel for : " << k_it->second->name);
-		executive::GPUExecutableKernel *gpuKern = new executive::GPUExecutableKernel(
-			*k_it->second, this);
+		CUfunction function;
+
+		if (cuModuleGetFunction(&function, m.cuModule, 
+			k_it->second->name.c_str()) != CUDA_SUCCESS) {
+			std::string exception = "cuModuleGetFunction() failed for module " 
+				+ m.modulePath + ", kernel " + k_it->second->name;
+			throw hydrazine::Exception(exception);
+		}		
+
+		report("    getting kernel from cuda driver.");
+		
+		executive::GPUExecutableKernel* 
+			gpuKern = new executive::GPUExecutableKernel(*k_it->second, 
+			function, this);
 		
 		report("    constructed GPUExecutableKernel");
 
-		if (cuModuleGetFunction(&gpuKern->cuFunction, m.cuModule, gpuKern->name.c_str()) != CUDA_SUCCESS) {
-			std::string exception = "cuModuleGetFunction() failed for module " + m.modulePath 
-				+ ", kernel " + gpuKern->name;
-			delete gpuKern;
-			throw hydrazine::Exception(exception);
-
-		}
 		report("    added kernel '" << gpuKern->name << "' to module");
 
 		m.kernels[Instruction::GPU][gpuKern->name] = gpuKern;

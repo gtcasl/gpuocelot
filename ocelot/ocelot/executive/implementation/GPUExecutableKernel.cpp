@@ -34,8 +34,8 @@ executive::GPUExecutableKernel::~GPUExecutableKernel() {
 	Construct a GPUExecutableKernel from an existing kernel
 */
 executive::GPUExecutableKernel::GPUExecutableKernel(
-	ir::Kernel& kernel, const executive::Executive* c ): 
-		ExecutableKernel(kernel, c), ptxKernel(0) {
+	ir::Kernel& kernel, const CUfunction& function, const executive::Executive* c ): 
+		ExecutableKernel(kernel, c), ptxKernel(0), cuFunction(function) {
 	
 	this->ISA = ir::Instruction::GPU;
 	report("GPUExecutableKernel()");
@@ -45,12 +45,16 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	#if HAVE_CUDA_DRIVER_API == 1
 	cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
+	report(" Registers - " << _registerCount);
 	cuFuncGetAttribute((int*)&_constMemorySize, 
 		CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, cuFunction);
+	report(" Constant Memory - " << _constMemorySize);
 	cuFuncGetAttribute((int*)&_localMemorySize, 
 		CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, cuFunction);
+	report(" Local Memory - " << _localMemorySize);
 	cuFuncGetAttribute((int*)&_sharedMemorySize, 
 		CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, cuFunction);
+	report(" Shared Memory - " << _sharedMemorySize);
 	#endif
 
 	report("  constructed new GPUExecutableKernel");
@@ -61,7 +65,8 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 */
 void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 	#if HAVE_CUDA_DRIVER_API == 1
-	report("executive::GPUExecutableKernel::launchGrid(" << width << ", " << height << ")");
+	report("executive::GPUExecutableKernel::launchGrid(" << width 
+		<< ", " << height << ")");
 	CUresult result;
 
 	result = cuLaunchGrid(cuFunction, width, height);

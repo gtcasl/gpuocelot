@@ -24,7 +24,7 @@ int main(int argc, char *arg[]) {
 		printf("cudaMalloc() failed to allocate %d bytes on device\n", (int)bytes);
 		return -1;
 	}
-	
+
 	for (int i = 0; i < N; i++) {
 		results_cpu[i] = -1;
 	}
@@ -73,7 +73,7 @@ int main(int argc, char *arg[]) {
 		float expected = 3.14159f * (float)(i % 128);
 		float got = results_cpu[i];
 		if (fabs(expected - got) > 0.001f) {
-			printf("ERROR [%d] - got: %f, expected: %f\n", i, got, expected);
+			printf("ERROR 0 - [%d] - got: %f, expected: %f\n", i, got, expected);
 			if (++errors > 5) { break; }
 		}
 	}
@@ -104,7 +104,7 @@ int main(int argc, char *arg[]) {
 		float expected = 2.0f * 3.14159f * (float)(i % 128);
 		float got = results_cpu[i];
 		if (fabs(expected - got) > 0.001f) {
-			printf("ERROR [%d] - got: %f, expected: %f\n", i, got, expected);
+			printf("ERROR 1 - [%d] - got: %f, expected: %f\n", i, got, expected);
 			if (++errors > 5) { break; }
 		}
 	}

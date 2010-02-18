@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_0000289e_00000000-1_texture2D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000032e5_00000000-1_texture2D.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000289e_00000000-1_texture2D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000032e5_00000000-1_texture2D.cudafe1.cpp"
 # 1 "texture2D.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5913,7 +5913,7 @@ if (errors) {
 printf("FAILED\n");
 } else
 {
-printf("Success\n");
+printf("PASSED\n");
 }
 
 free(in_data_host);
@@ -5922,11 +5922,11 @@ free(out_data_host);
 return (errors) ? (-1) : 0;
 }
 
-# 1 "/tmp/tmpxft_0000289e_00000000-1_texture2D.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000032e5_00000000-1_texture2D.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_0000289e_00000000-3_texture2D.fatbin.c" 1
+# 1 "/tmp/tmpxft_000032e5_00000000-3_texture2D.fatbin.c" 1
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5988,7 +5988,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_0000289e_00000000-3_texture2D.fatbin.c" 2
+# 2 "/tmp/tmpxft_000032e5_00000000-3_texture2D.fatbin.c" 2
 
 
 
@@ -6004,8 +6004,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d37302d39303032ull,0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,
-0x3030305f74667870ull,0x30305f6539383230ull,0x372d303030303030ull,0x657275747865745full,
-0x2e337070632e4432ull,0x2f706d742f282069ull,0x70782e2349426363ull,0x2f090a29754e3144ull,
+0x3030305f74667870ull,0x30305f3565323330ull,0x372d303030303030ull,0x657275747865745full,
+0x2e337070632e4432ull,0x2f706d742f282069ull,0x41372e2349426363ull,0x2f090a2939436375ull,
 0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f090a0a2d2d2d2dull,
 0x2d2d2d2d2d2d2d2full,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -6020,7 +6020,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2e090a0a2d2d2d2dull,0x22093109656c6966ull,
 0x646e616d6d6f633cull,0x0a223e656e696c2dull,0x3209656c69662e09ull,0x742f706d742f2209ull,
-0x30305f746678706dull,0x305f653938323030ull,0x2d30303030303030ull,0x7275747865745f36ull,
+0x30305f746678706dull,0x305f356532333030ull,0x2d30303030303030ull,0x7275747865745f36ull,
 0x616475632e443265ull,0x227570672e326566ull,0x09656c69662e090aull,0x2f7273752f220933ull,
 0x2f6363672f62696cull,0x6c2d34365f363878ull,0x756e672d78756e69ull,0x692f332e332e342full,
 0x732f6564756c636eull,0x22682e6665646474ull,0x09656c69662e090aull,0x2f7273752f220934ull,
@@ -6154,8 +6154,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"d00bb8658ad822d0",(char*)"texture2D.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x34df24b8};
-# 5 "/tmp/tmpxft_0000289e_00000000-1_texture2D.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"56707b7226fda38a",(char*)"texture2D.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xdb48218d};
+# 5 "/tmp/tmpxft_000032e5_00000000-1_texture2D.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/host_defines.h" 1
@@ -12135,13 +12135,13 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3864 "/usr/local/cuda2.3/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda2.3/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_0000289e_00000000-1_texture2D.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_000032e5_00000000-1_texture2D.cudafe1.stub.c" 2
 
 
 
 
 struct __T20 {float *__par0;int __par1;int __par2;int __dummy_field;};
-static void __sti____cudaRegisterAll_44_tmpxft_0000289e_00000000_4_texture2D_cpp1_ii_surface(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_000032e5_00000000_4_texture2D_cpp1_ii_surface(void) __attribute__((__constructor__));
 void __device_stub__Z6kernelPfii(float *__par0, int __par1, int __par2){auto struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernel__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel__entry))); };}
 
@@ -12149,8 +12149,8 @@ void __device_stub__Z6kernelPfii(float *__par0, int __par1, int __par2){auto str
 void kernel__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
 {__device_stub__Z6kernelPfii( __cuda_0,__cuda_1,__cuda_2);}
 extern "C"{
-# 29 "/tmp/tmpxft_0000289e_00000000-1_texture2D.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_44_tmpxft_0000289e_00000000_4_texture2D_cpp1_ii_surface(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernel__entry), (char*)"_Z6kernelPfii", "_Z6kernelPfii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surface, 0, "surface", 2, 0, 0);}
+# 29 "/tmp/tmpxft_000032e5_00000000-1_texture2D.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_44_tmpxft_000032e5_00000000_4_texture2D_cpp1_ii_surface(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernel__entry), (char*)"_Z6kernelPfii", "_Z6kernelPfii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surface, 0, "surface", 2, 0, 0);}
 
 }
 # 109 "texture2D.cu" 2

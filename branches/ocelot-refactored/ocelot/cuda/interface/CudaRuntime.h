@@ -380,6 +380,8 @@ namespace cuda {
 			enum cudaMemcpyKind kind);
 		virtual cudaError_t cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
 			size_t offset, enum cudaMemcpyKind kind = cudaMemcpyHostToDevice);
+		virtual cudaError_t  cudaMemcpyFromSymbol(void *dst, const char *symbol, size_t count, 
+			size_t offset = 0, enum cudaMemcpyKind kind = cudaMemcpyDeviceToHost);
 		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, size_t count, 
 			enum cudaMemcpyKind kind, cudaStream_t stream);
 
@@ -408,6 +410,7 @@ namespace cuda {
 		
 		virtual cudaError_t  cudaMemset(void *devPtr, int value, size_t count);
 		virtual cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height);
+		virtual cudaError_t  cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent);
 		
 	public:
 		//

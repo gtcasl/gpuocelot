@@ -421,6 +421,7 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 			switch (deviceAddrSpace) {
 			case 0:
 				{
+					report("deviceMemcpy() - host to device");
 					::memcpy(dest, src, size);
 					return true;
 				}
@@ -432,6 +433,7 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 			}
 		}
 		else {
+			report("failed to check memory access");
 			throw hydrazine::Exception("device memory fault");
 		}
 	}
@@ -492,6 +494,13 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 }
 
 /*!
+	\brief returns a symbol as a global variable
+*/
+executive::GlobalVariable & executive::Executive::getGlobalVariable(const char *symbol) {
+	return globals[std::string(symbol)];
+}
+
+/*!
 	\brief copies to a symbol on the device
 	\param symbol name of symbol
 	\param src pointer to source data
@@ -504,10 +513,34 @@ bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *
 	
 	GlobalVariable &globalVar = globals[std::string(symbol)];
 	if (count + offset <= globalVar.size) {
-		::memcpy((char *)globalVar.host_pointer + offset, src, count);
+		char *dstPtr = (char *)globalVar.host_pointer + offset;
+		report("deviceMemcpyToSymbol('" << symbol << "') - dstPtr: " << (void *)dstPtr);
+		::memcpy(dstPtr, src, count);
 	}
 	else {
 		Ocelot_Exception("memcpyToSymbol attempting to copy more data to global variable than available");
+	}
+	
+	return true;
+}
+
+/*!
+	\brief copies to a symbol on the device
+	\param symbol name of symbol
+	\param src pointer to source data
+	\param count number of bytes to copy
+	\param offset offset to add to destination
+	\param kind indicates direction to copy - src must be Device
+*/
+bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst, 
+	size_t count, size_t offset, 	MemcpyKind kind) {
+	
+	GlobalVariable &globalVar = globals[std::string(symbol)];
+	if (count + offset <= globalVar.size) {
+		::memcpy(dst, (char *)globalVar.host_pointer + offset, count);
+	}
+	else {
+		Ocelot_Exception("memcpyFromSymbol attempting to copy more data to global variable than available");
 	}
 	
 	return true;

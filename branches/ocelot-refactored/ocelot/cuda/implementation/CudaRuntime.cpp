@@ -486,7 +486,6 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 	return setLastError(result);	
 }
 
-
 cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void *src,
 	size_t count, size_t offset, enum cudaMemcpyKind kind) {
 
@@ -494,6 +493,20 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void
 	lock();
 	getHostThreadContext();
 	bool success = context.deviceMemcpyToSymbol(symbol, src, count, offset, convert(kind));	
+	if (!success) {
+		result = cudaErrorInvalidDevicePointer;
+	}
+	unlock();
+	return setLastError(result);	
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbol,
+	size_t count, size_t offset, enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaSuccess;
+	lock();
+	getHostThreadContext();
+	bool success = context.deviceMemcpyFromSymbol(symbol, dst, count, offset, convert(kind));	
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
 	}
@@ -636,9 +649,11 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 	getHostThreadContext();
 	if (!context.getDeviceAddressSpace()) {
 		::memset((void *)devPtr, value, count);
+		result = cudaSuccess;
 	}
 	else {
 		assert(0 && "unimplemented");
+		result = cudaErrorNotYetImplemented;
 	}
 	unlock();
 	
@@ -648,11 +663,41 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, 
 	size_t height) {
 
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	if (context.getDeviceAddressSpace()) {
+		assert(0 && "unimplemented");
+		result = cudaErrorNotYetImplemented;
+	}
+	else {
+		if (pitch == width) {
+			::memset((void *)devPtr, value, pitch * height);
+		}
+		else {
+			for (size_t i = 0; i < height; i++) {
+				char *ptr = (char *)devPtr + pitch * i;
+				::memset((void *)ptr, value, width);
+			}
+		}
+		result = cudaSuccess;
+	}
 	
+	return setLastErrorAndUnlock(thread, result);	
+}
+
+
+cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, 
+	struct cudaExtent extent) {
+
+	cudaError_t result = cudaErrorNotYetImplemented;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
 	assert(0 && "unimplemented");
 	
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,15 +706,26 @@ cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, int valu
 //
 
 cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *symbol) {
+
 	cudaError_t result = cudaSuccess;
-	
-	return setLastError(result);
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
+	*devPtr = global.host_pointer;
+
+	report("devPtr: " << *devPtr);	
+
+	return setLastErrorAndUnlock(thread, result);	
 }
 
 cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbol) {
 	cudaError_t result = cudaSuccess;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
+	*size = global.size;
 	
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -97,7 +97,7 @@ int main(int argc, char **arg) {
 		printf("FAILED\n");
 	}
 	else {
-		printf("Success\n");
+		printf("PASSED\n");
 	}
 
 	free(in_data_host);

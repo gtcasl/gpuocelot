@@ -251,6 +251,22 @@ namespace executive {
 		*/
 		bool deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, size_t offset, 
 			MemcpyKind kind);
+
+		/*!
+			\brief copies to a symbol on the device
+			\param symbol name of symbol
+			\param src pointer to source data
+			\param count number of bytes to copy
+			\param offset offset to add to destination
+			\param kind indicates direction to copy - src must be Device
+		*/
+		bool deviceMemcpyFromSymbol(const char *symbol, void *dst, size_t count, size_t offset, 
+			MemcpyKind kind);
+
+		/*!
+			\brief returns a symbol as a global variable
+		*/
+		GlobalVariable & getGlobalVariable(const char *symbol);
 		
 		/*!
 			\brief copies a dense host buffer to a device array

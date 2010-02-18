@@ -1,10 +1,6 @@
-/*!
-	\file GPUExecutableKernel.cpp
-
+/*! \file GPUExecutableKernel.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\date October 6, 2009
-
 	\brief implements the GPU kernel callable by the executive
 */
 
@@ -45,10 +41,17 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	report("GPUExecutableKernel()");
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
-	_constMemorySize = 0;
-	_localMemorySize = 0;
-	_maxThreadsPerBlock = 0;
-	_registerCount = 100;
+
+	#if HAVE_CUDA_DRIVER_API == 1
+	cuFuncGetAttribute((int*)&_registerCount, 
+		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
+	cuFuncGetAttribute((int*)&_constMemorySize, 
+		CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, cuFunction);
+	cuFuncGetAttribute((int*)&_localMemorySize, 
+		CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, cuFunction);
+	cuFuncGetAttribute((int*)&_sharedMemorySize, 
+		CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, cuFunction);
+	#endif
 
 	report("  constructed new GPUExecutableKernel");
 }

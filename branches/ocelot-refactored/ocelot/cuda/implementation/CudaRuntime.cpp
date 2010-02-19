@@ -886,8 +886,6 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureRefere
 		result = cudaSuccess;
 	}
 
-	assert(0 && "unimplemented yet");
-
 	return setLastErrorAndUnlock(thread, result);
 }
 

@@ -1,74 +1,139 @@
 /*!
 	\file textureArray.cu
-	\author Andrew Kerr <arkerr@gatech.edu>
-	\brief tests implementation of cudaMallocArray() and cudaBindTextureToArray()
-	\date February 12, 2010
 
-	This was taken directly from the NVIDIA CUDA Programming Guide
+	\author Andrew Kerr <arkerr@gatech.edu>
+
+	\brief tests implementation of cudaBindTextureArray
+
+	\date 27 Oct 2009
 */
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 
-#include <iostream>
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+// declare texture reference for 2D float texture
+texture<float, 2, cudaReadModeElementType> surface;
 
-// 2D float texture
-texture<float, 2, cudaReadModeElementType> texRef;
+/*!
+	kernel in which each thread samples the texture and writes it to out, a row-major dense 
+	block of samples
+*/
+__global__ void kernel(float *out, int width, int height) {
 
-// Simple transformation kernel
-__global__ void transformKernel(float* output, int width, int height, float theta) {
-  // Calculate normalized texture coordinates
-  unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
-  unsigned int y = blockIdx.y * blockDim.y + threadIdx.y;
-  float u = x / (float)width;
-  float v = y / (float)height;
-  // Transform coordinates
-  u -= 0.5f;
-  v -= 0.5f;
-  float tu = u * cosf(theta) – v * sinf(theta) + 0.5f;
-  float tv = v * cosf(theta) + u * sinf(theta) + 0.5f;
-  // Read from texture and write to global memory
-  output[y * width + x] = tex2D(tex, tu, tv);
+	unsigned int x = blockIdx.x*blockDim.x + threadIdx.x;
+	unsigned int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+	float sample = tex2D(surface, x, y);
+
+	out[x + y * width] = sample;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Host code
-int main(int argc, char *arg[]) {
+int main(int argc, char **arg) {
+	int width = 64, height = 64;
 
-	// Allocate CUDA array in device memory
-	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32,0,0,0, cudaChannelFormatKindFloat);
-	cudaArray* cuArray;
-	cudaMallocArray(&cuArray, &channelDesc, width, height);
+	float *in_data_host, *out_data_host;
+	float *out_data_gpu;
+	cudaArray *in_data_gpu = 0;
 
-	// Copy to device memory some data located at address h_data
-	// in host memory
-	cudaMemcpyToArray(cuArray, 0, 0, h_data, size, cudaMemcpyHostToDevice);
+	size_t bytes = width * height * sizeof(float);
+	in_data_host = (float *)malloc(bytes);
+	out_data_host = (float *)malloc(bytes);
 
-	// Set texture parameters
-	texRef.addressMode[0] = cudaAddressModeWrap;
-	texRef.addressMode[1] = cudaAddressModeWrap;
-	texRef.filterMode     = cudaFilterModeLinear;
-	texRef.normalized     = true;
+	// procedural texture generation
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			in_data_host[i * width + j] = (float)((122 + i*3 + j*2) % 128) / 128.0f;
+			out_data_host[i*width+j] = 0;
+		}
+	}
 
-	// Bind the array to the texture
-	cudaBindTextureToArray(texRef, cuArray, channelDesc);
+	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+	if (cudaMallocArray(&in_data_gpu, &channelDesc, width, height) != cudaSuccess) {
+		printf("failed to malloc array: %s\n", cudaGetErrorString(cudaGetLastError()));
+		free(in_data_host);
+		free(out_data_host);
+		return -2;
+	}
+	
+	if (cudaMemcpyToArray(in_data_gpu, 0, 0, in_data_host, bytes, cudaMemcpyHostToDevice)
+		!= cudaSuccess) {
+		
+		printf("cudaMemcpyToArray() - failed to bind texture: %s\n", 
+			cudaGetErrorString(cudaGetLastError()));
+		
+		free(in_data_host);
+		free(out_data_host);
+		cudaFreeArray(in_data_gpu);
+		return -2;		
+	}
 
-	// Allocate result of transformation in device memory
-	float* output;
-	cudaMalloc((void**)&output, width * height * sizeof(float));
+	surface.addressMode[0] = cudaAddressModeWrap;
+	surface.addressMode[1] = cudaAddressModeWrap;
+	surface.filterMode = cudaFilterModePoint;
+	surface.normalized = false;
+	
+	if (cudaBindTextureToArray(surface, in_data_gpu, channelDesc) != cudaSuccess) {
+		
+		printf("cudaBindTextureToArray() - failed to bind texture: %s\n", 
+			cudaGetErrorString(cudaGetLastError()));
+		
+		free(in_data_host);
+		free(out_data_host);
+		cudaFreeArray(in_data_gpu);
+		return -2;
+	}
 
-	// Invoke kernel
-	dim3 dimBlock(16, 16);
-	dim3 dimGrid((width + dimBlock.x – 1) / dimBlock.x,
-		           (height + dimBlock.y – 1) / dimBlock.y);
-	transformKernel<<<dimGrid, dimBlock>>>(output, width, height,  angle);
+	if (cudaMalloc((void **)&out_data_gpu, bytes) != cudaSuccess) {
+		
+		printf("cudaMalloc(out_data_gpu) - failed to allocate %d bytes: %s\n", (int)bytes,
+			cudaGetErrorString(cudaGetLastError()));
+		
+		free(in_data_host);
+		free(out_data_host);
+		cudaFreeArray(in_data_gpu);
+		return -2;
+	}
 
-	// Free device memory
-	cudaFreeArray(cuArray);
-	cudaFree(output);
+	dim3 grid(width / 16, height / 16), block(16, 16);
+	
+	kernel<<< grid, block >>>(out_data_gpu, width, height);
 
-	return 0;
+	cudaThreadSynchronize();
+
+	cudaMemcpy(out_data_host, out_data_gpu, bytes, cudaMemcpyDeviceToHost);
+	cudaFreeArray(in_data_gpu);
+	cudaFree(out_data_gpu);
+
+	int errors = 0;
+	for (int i = 0; i < height && errors < 5; i++) {
+		for (int j = 0; j < width && errors < 5; j++) {
+			float in = in_data_host[i * width + j];
+			float out = out_data_host[i * width + j];
+			if (fabs(in - out) > 0.001f) {
+				++errors;
+				printf("(%d, %d) - in = %f, out = %f %s\n", i, j, in, out, (errors ? "***":""));
+			}
+		}
+	}
+
+	if (errors) {
+		printf("FAILED\n");
+	}
+	else {
+		printf("PASSED\n");
+	}
+
+	free(in_data_host);
+	free(out_data_host);
+
+	return (errors ? -1 : 0);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 

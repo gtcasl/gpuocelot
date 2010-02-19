@@ -1427,12 +1427,67 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 	\brief binds a texture to an array
 */
 bool executive::Executive::bindTextureToArray(const std::string & textureName, void *array, 
-	const ChannelFormatDesc &desc, ir::Texture::AddressMode *addrMode, 
+	const ChannelFormatDesc &format, ir::Texture::AddressMode *addrMode, 
 	ir::Texture::Interpolation filter, bool normalized) {
+	
+	// lookup the array
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
+	
+	const MemoryAllocation & memory = alloc_it->second;
 
-	assert(0 && "unimplemented");
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
 
-	return false;
+		texture.x = format.w;
+		texture.y = format.x;
+		texture.z = format.y;
+		texture.w = format.z;
+
+		report("Executive::bindTextureToArray() - texture.xyzq = " << texture.x << ", " << texture.y 
+			<< ", " << texture.z << ", " << texture.w);
+
+		switch (format.kind) {
+			case ChannelFormatDesc::Kind_signed:
+				report(" - format.type signed");
+				texture.type = ir::Texture::Signed;
+				break;
+			case ChannelFormatDesc::Kind_unsigned:
+				report(" - format.type unsigned");
+				texture.type = ir::Texture::Unsigned;
+				break;
+			case ChannelFormatDesc::Kind_float:
+				report(" - format.type float");
+				texture.type = ir::Texture::Float;
+				break;
+			default:
+				report(" - format.type == Kind_invalid");
+				texture.type = ir::Texture::Invalid;
+				break;
+		}
+
+		texture.size.x = memory.pointer.xsize;
+		texture.size.y = memory.pointer.ysize;
+		texture.data = (void *)memory.pointer.ptr;
+
+		texture.interpolation = filter;
+		texture.normalize = normalized;
+
+		for (unsigned int i = 0; i < 3; i++) {
+			texture.addressMode[i] = addrMode[i];
+		}
+
+		report(" - '" << textureName << "'.data = " << texture.data << " - filter: " << filter);
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+		return false;
+	}
+
+	return true;
 }
 
 /*!

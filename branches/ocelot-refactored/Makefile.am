@@ -28,7 +28,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
 	TestPTXToLLVMTranslator  TestGPUKernel PTXChecker \
-	TestCudaGlobals TestCudaMalloc TestCudaTexture2D
+	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -304,6 +304,15 @@ TestCudaTexture2D_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaTexture2D_SOURCES = ocelot/cuda/test/textures/texture2D.cu.cpp
 TestCudaTexture2D_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCudaTexture2D_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaTextureArray_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaTextureArray_SOURCES = ocelot/cuda/test/textures/textureArray.cu.cpp
+TestCudaTextureArray_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaTextureArray_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

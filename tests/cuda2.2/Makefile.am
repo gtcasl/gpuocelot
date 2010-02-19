@@ -24,7 +24,8 @@ check_PROGRAMS = AlignedTypes AsyncAPI BandwidthTest BicubicTexture \
 	ConvolutionSeparable ConvolutionTexture CppIntegration Dct8x8 DeviceQuery \
 	DwtHaar1D Dxtc Eigenvalues FluidsGL FastWalshTransform Histogram256 \
 	Histogram64 ImageDenoising Mandelbrot MatrixMul MersenneTwister MonteCarlo \
-	MonteCarloMultiGPU Nbody OceanFFT PostProcessGL QuasirandomGenerator \
+	MonteCarloMultiGPU Nbody OceanFFT Particles PostProcessGL \
+	QuasirandomGenerator \
 	RecursiveGaussian Reduction ScalarProd Scan ScanLargeArray \
 	SimpleAtomicIntrinsics SimpleCUBLAS SimpleCUFFT SimpleGL SimpleMultiGPU \
 	SimpleStreams SimpleTemplates SimpleTexture SimpleTexture3D \
@@ -330,6 +331,18 @@ OceanFFT_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 OceanFFT_SOURCES = tests/oceanFFT/oceanFFT_kernel.cu.cpp \
 	tests/oceanFFT/oceanFFT.cpp
 OceanFFT_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
+################################################################################
+
+################################################################################
+## Particles
+Particles_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+Particles_SOURCES = tests/particles/particleSystem.cu.cpp \
+	tests/particles/particles.cpp \
+	tests/particles/particleSystem.cpp \
+	tests/particles/render_particles.cpp \
+	tests/particles/shaders.cpp
+Particles_LDADD = $(OCELOT_LIBS)
+Particles_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

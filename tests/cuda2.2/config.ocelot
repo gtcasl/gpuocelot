@@ -39,7 +39,7 @@
 			0
 		</DefaultDeviceId>
 		<PreferredISA>
-			Emulated
+			LLVM
 		</PreferredISA>
 		<OptimizationLevel>
 			basic

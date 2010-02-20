@@ -1,5 +1,4 @@
-/*!
-	\file LLVMInstruction.h
+/*! \file LLVMInstruction.h
 	\date Wednesday July 15, 2009
 	\author Gregroy Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the LLVMInstruction class.

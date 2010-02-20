@@ -1,5 +1,4 @@
-/*!
-	\file PTXToLLVMTranslator.h
+/*! \file PTXToLLVMTranslator.h
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the PTXToLLVMTranslator class
@@ -23,7 +22,6 @@ namespace ir
 
 namespace translator
 {
-
 	/*! \brief A translator from PTX to LLVM */
 	class PTXToLLVMTranslator : public Translator
 	{
@@ -53,6 +51,8 @@ namespace translator
 		private:
 			void _debug( const analysis::DataflowGraph::Block& b );
 			void _debug( const analysis::DataflowGraph::Instruction& i );
+			void _reportReads( const analysis::DataflowGraph::Instruction& i );
+			void _reportWrites( const analysis::DataflowGraph::Instruction& i );
 			void _check( ir::PTXInstruction::AddressSpace space,
 				const ir::LLVMInstruction::Operand& address, 
 				unsigned int bytes, unsigned int statement );

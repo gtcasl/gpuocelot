@@ -2359,6 +2359,11 @@ namespace cuda
 			context.setOptimizationLevel( 
 				translator::Translator::MemoryCheckOptimization );
 		}
+		else if( optimization == "report" )
+		{
+			context.setOptimizationLevel( 
+				translator::Translator::ReportOptimization );
+		}
 		else
 		{
 			context.setOptimizationLevel( 

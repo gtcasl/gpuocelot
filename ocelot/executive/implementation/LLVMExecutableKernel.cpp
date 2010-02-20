@@ -12,6 +12,7 @@
 #include <ocelot/executive/interface/Executive.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/Casts.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
@@ -32,9 +33,11 @@
 #define REPORT_CTA_INSIDE_TRANSLATED_CODE 0
 #define REPORT_ATOMIC_OPERATIONS 0
 #define PRINT_OPTIMIZED_CFG 0
-#define DEBUG_FIRST_THREAD_ONLY 0
+#define DEBUG_NTH_THREAD_ONLY 1
+#define NTH_THREAD 1
 #define DEBUG_PTX_INSTRUCTION_TRACE 1
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
+#define DEBUG_LLVM 0
 
 #include <configure.h>
 
@@ -44,8 +47,12 @@
 #include <llvm/Assembly/Parser.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
+#include <llvm/ExecutionEngine/GenericValue.h> 
 #include <llvm/Module.h>
 #include <llvm/PassManager.h>
+#if( DEBUG_LLVM == 1 )
+#include <llvm/Support/Debug.h>
+#endif
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Target/TargetData.h>
@@ -66,6 +73,30 @@
 #else
 #define _isinf(x) std::isinf(x)
 #endif
+
+template < typename T >
+static void __report( executive::LLVMContext* context, 
+	T value, const bool read )
+{
+	#if(DEBUG_NTH_THREAD_ONLY == 1)
+	if( context->tid.x == NTH_THREAD )
+	{
+	#endif		
+		std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
+			<< ", " << context->tid.z << ") :   ";
+		if( read )
+		{
+			std::cout << "read ";
+		}
+		else
+		{
+			std::cout << "write ";
+		}
+		std::cout << value << std::endl;
+	#if(DEBUG_NTH_THREAD_ONLY == 1)
+	}
+	#endif
+}
 
 extern "C"
 {
@@ -577,8 +608,8 @@ extern "C"
 			block = state->blocks.find( id );
 		assert( block != state->blocks.end() );
 		
-		#if(DEBUG_FIRST_THREAD_ONLY == 1)
-		if( context->tid.x == 0 && context->tid.y == 0 && context->tid.z == 0 )
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
+		if( context->tid.x == NTH_THREAD )
 		{
 		#endif
 		
@@ -586,19 +617,20 @@ extern "C"
 			<< ", " << context->tid.z << ") : Basic Block \"" << std::flush;
 		std::cout << block->second->label << "\"\n";
 
-		#if(DEBUG_FIRST_THREAD_ONLY == 1)
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
 		}
 		#endif
 		#endif
 	}
 
 	void __ocelot_debug_instruction( executive::LLVMContext* context, 
-		void* instruction )
+		ir::PTXU64 _instruction )
 	{
+		void* instruction = (void*) _instruction;
 		#if(DEBUG_PTX_INSTRUCTION_TRACE == 1)		
 
-		#if(DEBUG_FIRST_THREAD_ONLY == 1)
-		if( context->tid.x == 0 && context->tid.y == 0 && context->tid.z == 0 )
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
+		if( context->tid.x == NTH_THREAD )
 		{
 		#endif
 		
@@ -607,16 +639,157 @@ extern "C"
 		std::cout << static_cast<ir::Instruction*>(instruction)->toString() 
 			<< "\n";
 
-		#if(DEBUG_FIRST_THREAD_ONLY == 1)
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
 		}
 		#endif
 
 		#endif
 	}
+
+	void __ocelot_register_write_s8( executive::LLVMContext* context, 
+		ir::PTXS8 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_s16( executive::LLVMContext* context, 
+		ir::PTXS16 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_s32( executive::LLVMContext* context, 
+		ir::PTXS32 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_s64( executive::LLVMContext* context, 
+		ir::PTXS64 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_u8( executive::LLVMContext* context, 
+		ir::PTXU8 value )
+	{
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
+		if( context->tid.x == NTH_THREAD )
+		{
+		#endif		
+			std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
+				<< ", " << context->tid.z << ") :  ";
+			std::cout << " write ";
+			std::cout << (unsigned int)value << std::endl;
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
+		}
+		#endif
+	}
+
+	void __ocelot_register_write_u16( executive::LLVMContext* context, 
+		ir::PTXU16 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_u32( executive::LLVMContext* context, 
+		ir::PTXU32 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_u64( executive::LLVMContext* context, 
+		ir::PTXU64 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_f32( executive::LLVMContext* context, 
+		ir::PTXF32 value )
+	{
+		__report( context, value, false );
+	}
+
+	void __ocelot_register_write_f64( executive::LLVMContext* context, 
+		ir::PTXF64 value )
+	{
+		__report( context, value, false );
+	}
+	
+	void __ocelot_register_read_s8( executive::LLVMContext* context, 
+		ir::PTXS8 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_s16( executive::LLVMContext* context, 
+		ir::PTXS16 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_s32( executive::LLVMContext* context, 
+		ir::PTXS32 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_s64( executive::LLVMContext* context, 
+		ir::PTXS64 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_u8( executive::LLVMContext* context, 
+		ir::PTXU8 value )
+	{
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
+		if( context->tid.x == NTH_THREAD )
+		{
+		#endif		
+			std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
+				<< ", " << context->tid.z << ") :  ";
+			std::cout << " read ";
+			std::cout << (unsigned int)value << std::endl;
+		#if(DEBUG_NTH_THREAD_ONLY == 1)
+		}
+		#endif
+	}
+
+	void __ocelot_register_read_u16( executive::LLVMContext* context, 
+		ir::PTXU16 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_u32( executive::LLVMContext* context, 
+		ir::PTXU32 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_u64( executive::LLVMContext* context, 
+		ir::PTXU64 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_f32( executive::LLVMContext* context, 
+		ir::PTXF32 value )
+	{
+		__report( context, value, true );
+	}
+
+	void __ocelot_register_read_f64( executive::LLVMContext* context, 
+		ir::PTXF64 value )
+	{
+		__report( context, value, true );
+	}
 	
 	void __ocelot_check_global_memory_access( executive::LLVMContext* context,
-		void* address, unsigned int bytes, unsigned int statement )
+		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
+		void* address = (void*)_address;
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
 		
@@ -646,10 +819,36 @@ extern "C"
 				<< "\n\n";
 			assertM(false, "Aborting execution.");
 		}
+		
+		bool error = bytes == 0;
+		if( !error ) error = (long long unsigned int)address % bytes != 0;
+		
+		if( error )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< state->kernel->instruction( statement ) << "'\n";
+			std::cerr << "Global memory address " 
+				<< address << " of size " << bytes
+				<< " is not aligned to the access size.\n";
+			std::cerr << "\n";
+			std::cout << "\tNear: " << state->kernel->location( statement )
+				<< "\n\n";
+			assertM(false, "Aborting execution.");
+		}
 	}
 	
 	void __ocelot_check_shared_memory_access( executive::LLVMContext* context,
-		void* _address, unsigned int bytes, unsigned int statement )
+		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
@@ -684,7 +883,7 @@ extern "C"
 	}
 
 	void __ocelot_check_constant_memory_access( executive::LLVMContext* context,
-		void* _address, unsigned int bytes, unsigned int statement )
+		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
@@ -718,7 +917,7 @@ extern "C"
 	}
 
 	void __ocelot_check_local_memory_access( executive::LLVMContext* context,
-		void* _address, unsigned int bytes, unsigned int statement )
+		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
@@ -752,7 +951,7 @@ extern "C"
 	}
 
 	void __ocelot_check_param_memory_access( executive::LLVMContext* context,
-		void* _address, unsigned int bytes, unsigned int statement )
+		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
@@ -1146,7 +1345,11 @@ namespace executive
 			assertM( module != 0, "Creating global module failed." );
 		
 			llvm::InitializeNativeTarget();
-		
+
+			#if( DEBUG_LLVM == 1 )
+			llvm::DebugFlag = true;
+			#endif
+			
 			jit = llvm::EngineBuilder( module ).create();
 			jit->DisableLazyCompilation( true );
 		
@@ -1255,13 +1458,16 @@ namespace executive
 	void LLVMExecutableKernel::Worker::launchCtaWithBarriers( 
 		Function function, LLVMContext* c, unsigned int resumePointOffset )
 	{
+		typedef std::vector< llvm::GenericValue > ArgumentVector;
+		ArgumentVector arguments( 1, llvm::GenericValue( c ) );
+
 		char* localBase = c->local;
 		bool done = false;
 		unsigned int threads = c->ntid.z * c->ntid.y * c->ntid.x;
 		
 		for( unsigned int i = 0; i < threads; ++i )
 		{
-			(*(unsigned int*)(localBase 
+			(*(unsigned int*)(localBase
 				+ i * c->localSize + resumePointOffset)) = 0;
 		}
 		
@@ -1578,7 +1784,8 @@ namespace executive
 			llvm::SMDiagnostic error;
 
 			if (overrideLLVMKernel) {
-				_module = llvm::ParseAssemblyFile(overrideLLVMKernelPath, error,llvm::getGlobalContext());
+				_module = llvm::ParseAssemblyFile(overrideLLVMKernelPath, error,
+					llvm::getGlobalContext());
 			}
 			else {
 				_module = new llvm::Module( name, llvm::getGlobalContext() );
@@ -1711,11 +1918,14 @@ namespace executive
 
 		_state.jit->addModule( _module );
 		
-		llvm::Function* function = 
-			_module->getFunction( "_Z_ocelotTranslated_" + name );
+		llvm::Function* function = _module->getFunction( 
+			"_Z_ocelotTranslated_" + name );
 
 		assertM( function != 0, 
 			"Could not find function _Z_ocelotTranslated_" + name );
+		_function = hydrazine::bit_cast< Function >( 
+			_state.jit->getPointerToFunction( function ) );
+
 
 		#if ( REPORT_OPTIMIZED_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
 		std::string m;
@@ -1724,16 +1934,7 @@ namespace executive
 		report( " The optimized code is:\n" << m );
 		#endif
 	
-		// This insanity is needed to avoid a warning on g++
-		union
-		{
-			void* one;
-			Function two;
-		} cast;
-	
 		_updateGlobalMemory();
-		cast.one = _state.jit->getPointerToFunction( function );
-		_function = cast.two;
 		
 		report( " Successfully jit compiled the kernel." );
 		#endif
@@ -1798,7 +1999,8 @@ namespace executive
 								report( "   For instruction \"" 
 									<< ptx.toString() << "\" mapping \"" 
 									<< parameter->first << "\" to " 
-									<< parameter->second );
+									<< (parameter->second 
+									+ operands[ i ]->offset) );
 								operands[ i ]->offset += parameter->second;
 							}
 						}
@@ -2244,8 +2446,9 @@ namespace executive
 	
 	void LLVMExecutableKernel::_buildDebuggingInformation()
 	{
-		if( _optimizationLevel 
-			!= translator::Translator::DebugOptimization ) return;
+		if( _optimizationLevel != translator::Translator::DebugOptimization
+			&& _optimizationLevel 
+			!= translator::Translator::ReportOptimization ) return;
 		
 		report( "Building debug information." );
 		
@@ -2386,11 +2589,13 @@ namespace executive
 	
 		size_t size = 0;
 		for( ParameterVector::iterator parameter = parameters.begin();
-			parameter != parameters.end(); ++parameter ) {
+			parameter != parameters.end(); ++parameter ) 
+		{
 			_pad( size, parameter->getAlignment() );
 			for( ir::Parameter::ValueVector::iterator 
 				value = parameter->arrayValues.begin(); 
-				value != parameter->arrayValues.end(); ++value ) {
+				value != parameter->arrayValues.end(); ++value ) 
+			{
 				assertM( size < _context.parameterSize, "Size " << size 
 					<< " not less than allocated parameter size " 
 					<< _context.parameterSize );

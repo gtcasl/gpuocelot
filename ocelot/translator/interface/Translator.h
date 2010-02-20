@@ -1,5 +1,4 @@
-/*!
-	\file Translator.h
+/*! \file Translator.h
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the Translator class
@@ -23,9 +22,7 @@ namespace translator
 	/*! \brief Forward declaration of profiling data used for optimization */
 	class ProfilingData;
 
-	/*!
-		\brief An interface for a translator from one ISA to another
-	*/
+	/*! \brief An interface for a translator from one ISA to another */
 	class Translator
 	{
 		public:
@@ -40,6 +37,7 @@ namespace translator
 			enum OptimizationLevel
 			{
 				NoOptimization,
+				ReportOptimization,
 				DebugOptimization,
 				InstrumentOptimization,
 				MemoryCheckOptimization,

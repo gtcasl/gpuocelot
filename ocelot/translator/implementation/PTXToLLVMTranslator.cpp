@@ -1,5 +1,4 @@
-/*!
-	\file PTXToLLVMTranslator.cpp
+/*! \file PTXToLLVMTranslator.cpp
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the PTXToLLVMTranslator class
@@ -17,6 +16,8 @@
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/debug.h>
+
+#define USE_VECTOR_LOADS 1
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -291,7 +292,8 @@ namespace translator
 
 	void PTXToLLVMTranslator::_debug( const analysis::DataflowGraph::Block& b )
 	{
-		if( optimizationLevel != DebugOptimization ) return;
+		if( optimizationLevel != DebugOptimization
+			&& optimizationLevel != ReportOptimization ) return;
 				
 		ir::LLVMCall call;
 		
@@ -306,13 +308,14 @@ namespace translator
 		call.parameters[1].constant = true;
 		call.parameters[1].i32 = b.id();
 		
-		_add( call );		
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_debug( 
 		const analysis::DataflowGraph::Instruction& i )
 	{
-		if( optimizationLevel != DebugOptimization ) return;
+		if( optimizationLevel != DebugOptimization
+			&& optimizationLevel != ReportOptimization ) return;
 
 		ir::LLVMCall call;
 
@@ -328,6 +331,202 @@ namespace translator
 		call.parameters[1].i64 = (long long unsigned int)i.i;
 
 		_add( call );
+	}
+
+	void PTXToLLVMTranslator::_reportReads( 
+		const analysis::DataflowGraph::Instruction& i )
+	{
+		if( optimizationLevel != ReportOptimization ) return;
+
+		ir::LLVMCall call;
+		
+		call.parameters.resize( 2 );
+
+		call.parameters[0] = _context();
+		
+		for( analysis::DataflowGraph::RegisterPointerVector::const_iterator 
+			r = i.s.begin(); r != i.s.end(); ++r )
+		{
+			call.parameters[1].type.type = _translate( r->type );
+			call.parameters[1].type.category 
+				= ir::LLVMInstruction::Type::Element;
+
+			std::stringstream stream;
+			stream << "%r" << *r->pointer;
+
+			call.parameters[1].name = stream.str();
+
+			switch( r->type )
+			{
+				case ir::PTXOperand::s8:
+				{
+					call.name = "@__ocelot_register_read_s8";
+					break;
+				}
+				case ir::PTXOperand::s16:
+				{
+					call.name = "@__ocelot_register_read_s16";
+					break;
+				}
+				case ir::PTXOperand::s32:
+				{
+					call.name = "@__ocelot_register_read_s32";
+					break;
+				}
+				case ir::PTXOperand::s64:
+				{
+					call.name = "@__ocelot_register_read_s64";
+					break;
+				}
+				case ir::PTXOperand::pred: /* fall through */
+				{
+					ir::LLVMZext extend;
+					
+					extend.a = call.parameters[1];
+					call.parameters[1].name = _tempRegister();
+					call.parameters[1].type.type = ir::LLVMInstruction::I8;
+					extend.d = call.parameters[1];
+					
+					_add( extend );
+				}
+				case ir::PTXOperand::u8: /* fall through */
+				case ir::PTXOperand::b8:
+				{
+					call.name = "@__ocelot_register_read_u8";
+					break;
+				}
+				case ir::PTXOperand::u16: /* fall through */
+				case ir::PTXOperand::b16:
+				{
+					call.name = "@__ocelot_register_read_u16";
+					break;
+				}
+				case ir::PTXOperand::u32: /* fall through */
+				case ir::PTXOperand::b32:
+				{
+					call.name = "@__ocelot_register_read_u32";
+					break;
+				}
+				case ir::PTXOperand::u64: /* fall through */
+				case ir::PTXOperand::b64:
+				{
+					call.name = "@__ocelot_register_read_u64";
+					break;
+				}
+				case ir::PTXOperand::f32:
+				{
+					call.name = "@__ocelot_register_read_f32";
+					break;
+				}
+				case ir::PTXOperand::f64:
+				{
+					call.name = "@__ocelot_register_read_f64";
+					break;
+				}
+				default: assertM(false, "Invalid data type " 
+					<< ir::PTXOperand::toString( r->type ) << ".");
+			}
+
+			_add( call );
+		}
+	}
+
+	void PTXToLLVMTranslator::_reportWrites( 
+		const analysis::DataflowGraph::Instruction& i )
+	{
+		if( optimizationLevel != ReportOptimization ) return;
+
+		ir::LLVMCall call;
+		
+		call.parameters.resize( 2 );
+
+		call.parameters[0] = _context();
+		
+		for( analysis::DataflowGraph::RegisterPointerVector::const_iterator 
+			r = i.d.begin(); r != i.d.end(); ++r )
+		{
+			call.parameters[1].type.type = _translate( r->type );
+			call.parameters[1].type.category 
+				= ir::LLVMInstruction::Type::Element;
+
+			std::stringstream stream;
+			stream << "%r" << *r->pointer;
+
+			call.parameters[1].name = stream.str();
+
+			switch( r->type )
+			{
+				case ir::PTXOperand::s8:
+				{
+					call.name = "@__ocelot_register_write_s8";
+					break;
+				}
+				case ir::PTXOperand::s16:
+				{
+					call.name = "@__ocelot_register_write_s16";
+					break;
+				}
+				case ir::PTXOperand::s32:
+				{
+					call.name = "@__ocelot_register_write_s32";
+					break;
+				}
+				case ir::PTXOperand::s64:
+				{
+					call.name = "@__ocelot_register_write_s64";
+					break;
+				}
+				case ir::PTXOperand::pred: /* fall through */
+				{
+					ir::LLVMZext extend;
+					
+					extend.a = call.parameters[1];
+					call.parameters[1].name = _tempRegister();
+					call.parameters[1].type.type = ir::LLVMInstruction::I8;
+					extend.d = call.parameters[1];
+					
+					_add( extend );
+				}
+				case ir::PTXOperand::u8: /* fall through */
+				case ir::PTXOperand::b8:
+				{
+					call.name = "@__ocelot_register_write_u8";
+					break;
+				}
+				case ir::PTXOperand::u16: /* fall through */
+				case ir::PTXOperand::b16:
+				{
+					call.name = "@__ocelot_register_write_u16";
+					break;
+				}
+				case ir::PTXOperand::u32: /* fall through */
+				case ir::PTXOperand::b32:
+				{
+					call.name = "@__ocelot_register_write_u32";
+					break;
+				}
+				case ir::PTXOperand::u64: /* fall through */
+				case ir::PTXOperand::b64:
+				{
+					call.name = "@__ocelot_register_write_u64";
+					break;
+				}
+				case ir::PTXOperand::f32:
+				{
+					call.name = "@__ocelot_register_write_f32";
+					break;
+				}
+				case ir::PTXOperand::f64:
+				{
+					call.name = "@__ocelot_register_write_f64";
+					break;
+				}
+				default: assertM(false, "Invalid data type " 
+					<< ir::PTXOperand::toString( r->type ) << ".");
+			}
+
+			_add( call );
+		}
 	}
 
 	void PTXToLLVMTranslator::_check( ir::PTXInstruction::AddressSpace space,
@@ -445,7 +644,8 @@ namespace translator
 
 	void PTXToLLVMTranslator::_insertDebugSymbols()
 	{
-		if( optimizationLevel != DebugOptimization ) return;		
+		if( optimizationLevel != DebugOptimization
+			&& optimizationLevel != ReportOptimization ) return;		
 
 		ir::LLVMStatement block( ir::LLVMStatement::FunctionDeclaration );
 
@@ -454,7 +654,7 @@ namespace translator
 		block.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		block.visibility = ir::LLVMStatement::Default;
 		
-		block.parameters.resize(2 );
+		block.parameters.resize(2);
 
 		block.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
 		block.parameters[0].type.members.resize(1);
@@ -486,6 +686,67 @@ namespace translator
 			= ir::LLVMInstruction::Type::Element;
 		instruction.parameters[1].type.type = ir::LLVMInstruction::I64;
 	
+		_llvmKernel->_statements.push_front( instruction );
+
+		if( optimizationLevel != ReportOptimization ) return;		
+
+		instruction.parameters.resize( 2 );
+		instruction.parameters[0].type.category 
+			= ir::LLVMInstruction::Type::Pointer;
+		instruction.parameters[0].type.members.resize(1);
+		instruction.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		instruction.parameters[0].type.members[0].label = "%LLVMContext";
+
+		instruction.parameters[1].type.type = ir::LLVMInstruction::I8;
+		instruction.label = "__ocelot_register_write_u8";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_write_s8";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_u8";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_s8";
+		_llvmKernel->_statements.push_front( instruction );
+
+		instruction.parameters[1].type.type = ir::LLVMInstruction::I16;
+		instruction.label = "__ocelot_register_write_u16";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_write_s16";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_u16";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_s16";
+		_llvmKernel->_statements.push_front( instruction );
+
+		instruction.parameters[1].type.type = ir::LLVMInstruction::I32;
+		instruction.label = "__ocelot_register_write_u32";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_write_s32";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_u32";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_s32";
+		_llvmKernel->_statements.push_front( instruction );
+
+		instruction.parameters[1].type.type = ir::LLVMInstruction::I64;
+		instruction.label = "__ocelot_register_write_u64";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_write_s64";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_u64";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_s64";
+		_llvmKernel->_statements.push_front( instruction );
+
+		instruction.parameters[1].type.type = ir::LLVMInstruction::F32;
+		instruction.label = "__ocelot_register_write_f32";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_f32";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.parameters[1].type.type = ir::LLVMInstruction::F64;
+		instruction.label = "__ocelot_register_write_f64";
+		_llvmKernel->_statements.push_front( instruction );
+		instruction.label = "__ocelot_register_read_f64";
 		_llvmKernel->_statements.push_front( instruction );
 	}
 			
@@ -715,7 +976,9 @@ namespace translator
 		const analysis::DataflowGraph::Block& block )
 	{
 		_debug( i );
+		_reportReads( i );
 		_translate( static_cast<ir::PTXInstruction&>(*i.i), block );
+		_reportWrites( i );
 	}
 
 	void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i, 
@@ -1329,7 +1592,8 @@ namespace translator
 	}
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
-	{		
+	{
+		#if(USE_VECTOR_LOADS == 1)
 		ir::LLVMLoad load;
 		
 		if( i.d.vec != ir::PTXOperand::v1 )
@@ -1410,6 +1674,79 @@ namespace translator
 				_add( extract );
 			}
 		}
+		#else
+		ir::LLVMLoad load;
+		
+		if( i.volatility == ir::PTXInstruction::Volatile )
+		{
+			load.isVolatile = true;
+		}
+
+		ir::LLVMInstruction::Operand address = _getLoadOrStorePointer( i.a, 
+			i.addressSpace, _translate( i.type ), ir::PTXOperand::v1 );		
+				
+		if( i.d.array.empty() )
+		{
+			load.d = _destination( i );
+			load.d.type.type = _translate( i.type );
+			load.a = address;
+			load.alignment = ir::PTXOperand::bytes( i.d.type );
+
+			if( _translate( i.d.type ) != _translate( i.type ) )
+			{
+				ir::LLVMInstruction::Operand temp = load.d;
+				temp.type.type = _translate( i.d.type );
+				load.d.name = _tempRegister();
+				_check( i.addressSpace, load.a, load.alignment,
+					i.statementIndex );
+				_add( load );
+				_convert( temp, i.d.type, load.d, i.type );				
+			}
+			else
+			{
+				_check( i.addressSpace, load.a, load.alignment,
+					i.statementIndex );
+				_add( load );
+			}
+		}
+		else
+		{
+			unsigned int index = 0;
+			for( ir::PTXOperand::Array::const_iterator 
+				destination = i.d.array.begin(); 
+				destination != i.d.array.end(); ++destination, ++index )
+			{
+				ir::LLVMGetelementptr get;
+			
+				get.a = address;
+				get.d = get.a;
+				get.d.name = _tempRegister();
+				get.indices.push_back( index );
+			
+				_add( get );
+			
+				load.d = _translate( *destination );
+				load.d.type.type = _translate( i.type );
+				load.alignment = ir::PTXOperand::bytes( destination->type );
+				load.a = get.d;
+				_check( i.addressSpace, load.a, load.alignment,
+						i.statementIndex );
+
+				if( _translate( i.d.type ) != _translate( i.type ) )
+				{
+					ir::LLVMInstruction::Operand temp = load.d;
+					temp.type.type = _translate( i.d.type );
+					load.d.name = _tempRegister();
+					_add( load );
+					_convert( temp, i.d.type, load.d, i.type );				
+				}
+				else
+				{
+					_add( load );
+				}
+			}
+		}
+		#endif
 	}
 
 	void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )

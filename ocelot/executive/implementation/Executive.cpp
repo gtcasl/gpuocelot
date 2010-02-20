@@ -533,7 +533,8 @@ void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
 
 bool executive::Executive::cudaInitialized = false;
 
-executive::Executive::Executive() : selectedDevice(-1), 
+executive::Executive::Executive() : externalKernelLoadingType(0), 
+	selectedDevice(-1), 
 	optimizationLevel( translator::Translator::NoOptimization ),
 	threadLimit(-1) {
 	cudaGLInitialized = true;

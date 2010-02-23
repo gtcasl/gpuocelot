@@ -905,7 +905,7 @@ size_t executive::Executive::enumerateDevices() {
 		}
 	}
 
-#ifdef HAVE_LLVM
+#ifdef HAVE_LLVM 
 	if (api::OcelotConfiguration::getExecutive().enableLLVM) {
 		// multicore
 		Device device;
@@ -1230,7 +1230,7 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	report("  block: " << block.x << ", " << block.y << ", " << block.z);
 	report("  shmem: " << sharedMemory);
 	report("  param block size: " << parameterBlockSize << " bytes");
-	
+
 	ir::Instruction::Architecture isa = getSelectedISA();
 	ir::Kernel *kernel = getKernel(isa, moduleName, kernelName);
 	if (!kernel) {

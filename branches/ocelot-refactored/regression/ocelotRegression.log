@@ -23,7 +23,7 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelo
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
-INFO     Test completed in 0.0296151638031 seconds
+INFO     Test completed in 0.0301020145416 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -38,8 +38,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1266869194
-Test time : 1.38283e-05
+Test Seed : 1266957832
+Test time : 1.45435e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -50,27 +50,27 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
-INFO     Test completed in 0.0368990898132 seconds
+INFO     Test completed in 0.0314528942108 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
-INFO     Test completed in 0.0390260219574 seconds
+INFO     Test completed in 0.0367109775543 seconds
 INFO      It produced the following output:
-TestCudaTexture2D: ./ocelot/executive/interface/TextureOperations.h:253: D executive::tex::sample(const ir::Texture&, B, B) [with unsigned int dim = 0u, D = float, B = float]: Assertion `"Invalid texture data type" == 0' failed.
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
-INFO     Test completed in 0.0357668399811 seconds
+INFO     Test completed in 0.0471069812775 seconds
 INFO      It produced the following output:
-TestCudaTextureArray: ./ocelot/executive/interface/TextureOperations.h:253: D executive::tex::sample(const ir::Texture&, B, B) [with unsigned int dim = 0u, D = float, B = float]: Assertion `"Invalid texture data type" == 0' failed.
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer
-INFO     Test completed in 0.0235071182251 seconds
+INFO     Test completed in 0.0290269851685 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -82,36 +82,15 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1266869194
-Test time : 2.00272e-05
+Test Seed : 1266957832
+Test time : 1.23978e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace
-INFO     Test completed in 0.0374400615692 seconds
-INFO      It produced the following output:
-Pass/Fail : Fail
-
-
-Name : TestTrace
-
-Description: 
-
-
-Test Seed : 1266869194
-Test time : 4.79221e-05
-
-Status : Test output:
-Failed to select Emulated device
-failed to get kernel
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser
-INFO     Test completed in 0.029767036438 seconds
+INFO     Test completed in 0.0196220874786 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -124,15 +103,42 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1266869194
-Test time : 1.3113e-05
+Test Seed : 1266957832
+Test time : 9.77516e-06
 
 Status : 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace
+INFO     Test completed in 0.0503158569336 seconds
+INFO      It produced the following output:
+Pass/Fail : Fail
+
+
+Name : TestTrace
+
+Description: 
+
+
+Test Seed : 1266957832
+Test time : 0.000100374
+
+Status : Test output:
+Failed to select Emulated device
+failed to get kernel
+
+
+
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
+INFO     Test completed in 0.0359289646149 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator
-INFO     Test completed in 0.0283370018005 seconds
+INFO     Test completed in 0.0225558280945 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -142,17 +148,37 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1266869194
-Test time : 0.000685692
+Test Seed : 1266957832
+Test time : 0.000677824
 
 Status : Test output:
 Failed to select Emulated device
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0266499519348 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1266957832
+Test time : 1.3113e-05
+
+Status : 
+
+
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
-INFO     Test completed in 0.0227971076965 seconds
+INFO     Test completed in 0.0297811031342 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -166,8 +192,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1266869194
-Test time : 0.000714064
+Test Seed : 1266957832
+Test time : 0.000720978
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -298,35 +324,9 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
-INFO     Test completed in 0.0543692111969 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0221338272095 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1266869194
-Test time : 1.35899e-05
-
-Status : 
-
-
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels
-INFO     Test completed in 0.039204120636 seconds
+INFO     Test completed in 0.0345749855042 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -336,8 +336,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1266869194
-Test time : 3.09944e-06
+Test Seed : 1266957832
+Test time : 2.86102e-06
 
 Status : Test output:
 Failed to select Emulated device
@@ -345,7 +345,7 @@ Failed to select Emulated device
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions
-INFO     Test completed in 0.0291039943695 seconds
+INFO     Test completed in 0.0223670005798 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -355,7 +355,7 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1266869194
+Test Seed : 1266957832
 Test time : 2.38419e-07
 
 Status : Test output:
@@ -365,7 +365,7 @@ failed to get kernel
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
-INFO     Test completed in 0.12723493576 seconds
+INFO     Test completed in 0.139158010483 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -375,8 +375,8 @@ Name : TestMemoryTraceGenerator
 Description: 
 
 
-Test Seed : 1266869194
-Test time : 0.0881836
+Test Seed : 1266957832
+Test time : 0.0930502
 
 Status : Test output:
 
@@ -384,22 +384,22 @@ Status : Test output:
 
 INFO     
 Passing tests:
- (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc : Passed
+ (0.031s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc : Passed
  (0.030s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
- (0.127s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
- (0.024s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
- (0.023s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
- (0.054s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals : Passed
- (0.022s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
- (0.030s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser : Passed
+ (0.139s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
+ (0.029s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
+ (0.030s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
+ (0.047s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray : Passed
+ (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D : Passed
+ (0.036s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals : Passed
+ (0.027s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
+ (0.020s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser : Passed
 
 Failing tests:
- (0.029s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions : Failed
- (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator : Failed
- (0.039s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D : Did not complete.
- (0.036s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray : Did not complete.
- (0.039s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels : Failed
- (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace : Failed
+ (0.035s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels : Failed
+ (0.050s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace : Failed
+ (0.022s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions : Failed
+ (0.023s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator : Failed
 
 Non-Existent tests:
  /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels

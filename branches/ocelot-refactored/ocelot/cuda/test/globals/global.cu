@@ -112,12 +112,7 @@ int main(int argc, char *arg[]) {
 	cudaFree(results_gpu);
 	free(results_cpu);
 	
-	if (errors) {
-		printf("FAILED\n");
-	}
-	else {
-		printf("PASSED\n");
-	}
+	printf("Pass/Fail : %s\n", (errors ? "Fail" : "Pass"));
 
 	return 0;
 }

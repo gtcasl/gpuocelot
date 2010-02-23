@@ -93,12 +93,7 @@ int main(int argc, char **arg) {
 		}
 	}
 
-	if (errors) {
-		printf("FAILED\n");
-	}
-	else {
-		printf("PASSED\n");
-	}
+	printf("Pass/Fail : %s\n", (errors ? "Fail" : "Pass"));
 
 	free(in_data_host);
 	free(out_data_host);

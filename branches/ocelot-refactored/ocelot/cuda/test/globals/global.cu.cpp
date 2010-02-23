@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00002bd6_00000000-1_global.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007b62_00000000-1_global.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00002bd6_00000000-1_global.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007b62_00000000-1_global.cudafe1.cpp"
 # 1 "global.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5922,8 +5922,6 @@ free(results_cpu);
 return -1;
 }
 
-printf("got symbol pi_gpu = 0x%p\n", pi_gpu);
-
 copy_pi = ((2.0F) * (3.141590118F));
 if ((cudaMemcpy(pi_gpu, &copy_pi, sizeof(float), cudaMemcpyHostToDevice)) != (cudaSuccess))
 {
@@ -5950,21 +5948,16 @@ if ((++errors) > 5) { break; }
 cudaFree(results_gpu);
 free(results_cpu);
 
-if (errors) {
-printf("FAILED\n");
-} else
-{
-printf("PASSED\n");
-}
+printf("Pass/Fail : %s\n", (errors) ? ((const char *)"Fail") : ((const char *)"Pass"));
 
 return 0;
 }
 
-# 1 "/tmp/tmpxft_00002bd6_00000000-1_global.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00007b62_00000000-1_global.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00002bd6_00000000-3_global.fatbin.c" 1
+# 1 "/tmp/tmpxft_00007b62_00000000-3_global.fatbin.c" 1
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -6026,7 +6019,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00002bd6_00000000-3_global.fatbin.c" 2
+# 2 "/tmp/tmpxft_00007b62_00000000-3_global.fatbin.c" 2
 
 
 
@@ -6042,8 +6035,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d37302d39303032ull,0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,
-0x3030305f74667870ull,0x30305f3664623230ull,0x372d303030303030ull,0x2e6c61626f6c675full,
-0x2820692e33707063ull,0x4263632f706d742full,0x36794557482e2349ull,0x2d2d2f2f090a2951ull,
+0x3030305f74667870ull,0x30305f3236623730ull,0x372d303030303030ull,0x2e6c61626f6c675full,
+0x2820692e33707063ull,0x4263632f706d742full,0x79354f4c572e2349ull,0x2d2d2f2f090a2977ull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2f2f090a0a2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -6058,7 +6051,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6c69662e090a0a2dull,0x6f633c2209310965ull,
 0x696c2d646e616d6dull,0x662e090a223e656eull,0x2f22093209656c69ull,0x78706d742f706d74ull,
-0x32303030305f7466ull,0x303030305f366462ull,0x675f362d30303030ull,0x75632e6c61626f6cull,
+0x37303030305f7466ull,0x303030305f323662ull,0x675f362d30303030ull,0x75632e6c61626f6cull,
 0x70672e3265666164ull,0x6c69662e090a2275ull,0x73752f2209330965ull,0x63672f62696c2f72ull,
 0x34365f3638782f63ull,0x672d78756e696c2dull,0x332e332e342f756eull,0x6564756c636e692full,
 0x2e6665646474732full,0x6c69662e090a2268ull,0x73752f2209340965ull,0x2f6c61636f6c2f72ull,
@@ -6180,8 +6173,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"4d831bc3a794abe5",(char*)"global.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x0773eeab};
-# 5 "/tmp/tmpxft_00002bd6_00000000-1_global.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"e5a08e45f4675b45",(char*)"global.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x5e279dd6};
+# 5 "/tmp/tmpxft_00007b62_00000000-1_global.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/host_defines.h" 1
@@ -12161,13 +12154,13 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3864 "/usr/local/cuda2.3/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda2.3/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00002bd6_00000000-1_global.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_00007b62_00000000-1_global.cudafe1.stub.c" 2
 
 
 
 
 struct __T20 {float *__par0;int __dummy_field;};
-static void __sti____cudaRegisterAll_41_tmpxft_00002bd6_00000000_4_global_cpp1_ii_59911d4c(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_41_tmpxft_00007b62_00000000_4_global_cpp1_ii_59911d4c(void) __attribute__((__constructor__));
 void __device_stub__Z14copyFromGlobalPf(float *__par0){auto struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *))copyFromGlobal__entry)); (void)cudaLaunch(((char *)((void ( *)(float *))copyFromGlobal__entry))); };}
 
@@ -12175,8 +12168,8 @@ void __device_stub__Z14copyFromGlobalPf(float *__par0){auto struct __T20 *__T21;
 void copyFromGlobal__entry( float *__cuda_0)
 {__device_stub__Z14copyFromGlobalPf( __cuda_0);}
 extern "C"{
-# 29 "/tmp/tmpxft_00002bd6_00000000-1_global.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_41_tmpxft_00002bd6_00000000_4_global_cpp1_ii_59911d4c(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *))copyFromGlobal__entry), (char*)"copyFromGlobal", "copyFromGlobal", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&Pi__cuda_shadow_variable__, (char*)"Pi", "Pi", 0, 4, 0, 0);}
+# 29 "/tmp/tmpxft_00007b62_00000000-1_global.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_41_tmpxft_00007b62_00000000_4_global_cpp1_ii_59911d4c(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *))copyFromGlobal__entry), (char*)"copyFromGlobal", "copyFromGlobal", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&Pi__cuda_shadow_variable__, (char*)"Pi", "Pi", 0, 4, 0, 0);}
 
 }
-# 127 "global.cu" 2
+# 120 "global.cu" 2

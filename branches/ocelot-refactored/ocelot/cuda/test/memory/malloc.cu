@@ -134,14 +134,12 @@ static int test_mallocArray(bool verbose) {
 	}	
 	
 	if (verbose) {
-		printf("Array Test %s\n", (errors ? "FAILED" : "PASSED"));
+		printf("%s\n", (errors ? "FAILED" : "PASSED"));
 		fflush(stdout);
 	}
 	
 	cudaFreeArray(array);
 	free(host);
-	
-	printf("  array test exiting\n"); fflush(stdout);
 			
 	return errors;
 }
@@ -216,7 +214,7 @@ static int test_mallocPitch(bool verbose) {
 		return ++errors;
 	}
 	
-	printf("[5] mallocing\n"); fflush(stdout);
+	if (verbose) { printf("[5] mallocing\n"); fflush(stdout); }
 	
 	// now copy from device to device with potentially different pitch
 	float *gpu1 = 0;
@@ -294,7 +292,7 @@ static int test_malloc3d(bool verbose) {
 
 int main(int argc, char *arg[]) {
 	int errors = 0;
-	bool verbose = true;
+	bool verbose = false;
 	
 	if (!errors) {
 		errors += test_mallocArray(verbose);
@@ -309,8 +307,8 @@ int main(int argc, char *arg[]) {
 		errors += test_malloc3d(verbose);
 	}
 	
-	if (verbose) {
-		printf("Test %s\n", (errors ? "FAILED" : "PASSED"));
+	{
+		printf("Pass/Fail : %s\n", (errors ? "Fail" : "Pass"));
 	}
 	
 	return -errors;

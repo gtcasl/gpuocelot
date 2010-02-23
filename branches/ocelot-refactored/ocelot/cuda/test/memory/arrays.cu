@@ -75,10 +75,10 @@ int main(int argc, char *arg[]) {
 	bool result = testMemcpy(true);
 
 	if (result) {
-		printf("PASSED\n");
+		printf("Test PASSED\n");
 	}
 	else {
-		printf("FAILED\n");
+		printf("Test FAILED\n");
 	}
 
 	return 0;

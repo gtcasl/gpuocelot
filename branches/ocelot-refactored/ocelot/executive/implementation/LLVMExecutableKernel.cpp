@@ -25,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
 #define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
@@ -2359,8 +2359,7 @@ namespace executive
 				{
 					report("  found texture instruction: " << ptx.toString());
 
-					ir::Module::TextureMap::const_iterator 
-						texture = module->textures.find(ptx.a.identifier);
+					TextureMap::const_iterator texture = context->textures.find(ptx.a.identifier);
 
 					assert( texture != module->textures.end() );
 		

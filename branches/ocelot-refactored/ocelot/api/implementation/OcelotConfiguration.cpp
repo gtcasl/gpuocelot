@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,6 +156,32 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableEmulated = config.parse<bool>("enableEmulated", true);
 	executive.enableGPU = config.parse<bool>("enableGPU", true);
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", 4);
+	
+	if (config.find("devices")) {
+		hydrazine::json::Visitor devices = config["devices"];
+		hydrazine::json::Array *array = static_cast<hydrazine::json::Array *>(devices.value);
+		
+		executive.enableLLVM = executive.enableEmulated = executive.enableGPU = false;
+		
+		for (hydrazine::json::Array::ValueVector::iterator it = array->begin(); it != array->end(); 
+			++it) {
+			hydrazine::json::Visitor dev(*it);
+			if ((std::string)dev == "llvm") {
+				executive.enableLLVM = true;
+			}
+			else if ((std::string)dev == "gpu") {
+				executive.enableGPU = true;
+			}
+			else if ((std::string)dev == "emulated") {
+				executive.enableEmulated = true;
+			}
+		}
+	}
+	
+	report(" Ocelot configuration: devices: ");
+	report("  emulated: " << executive.enableEmulated);
+	report("  llvm: " << executive.enableLLVM);
+	report("  gpu: " << executive.enableGPU);
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

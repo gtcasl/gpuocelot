@@ -14,12 +14,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		defaultDeviceID: 0,
-		preferredISA: llvm,
-		required: false,
-		enableLLVM: true,
-		enableEmulated: false,
-		enableGPU: false,
+		devices: [ emulated ],
 		optimizationLevel: debug,
 		workerThreadLimit: 1
 	}

@@ -890,20 +890,27 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureRefere
 }
 
 cudaError_t cuda::CudaRuntime::cudaUnbindTexture(const struct textureReference *texref) {
-	cudaError_t result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	assert(0 && "unimplemented yet");
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
 
-	return setLastError(result);
+	context.unbindTexture(textureReferences[(void *)texref]);
+	result = cudaSuccess;
+
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGetTextureAlignmentOffset(size_t *offset, 
 	const struct textureReference *texref) {
-	cudaError_t result = cudaSuccess;
-	
-	assert(0 && "unimplemented yet");
+	cudaError_t result = cudaErrorInvalidValue;
 
-	return setLastError(result);
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	*offset = context.getTextureAlignmentOffset(textureReferences[texref]);
+
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGetTextureReference(const struct textureReference **texref, 

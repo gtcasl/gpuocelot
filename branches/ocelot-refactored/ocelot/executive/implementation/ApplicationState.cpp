@@ -25,7 +25,7 @@ executive::MemoryAllocation::MemoryAllocation():
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::GlobalVariable::GlobalVariable():
-	name("untitled"), size(0), host_pointer(0) {
+	name("untitled") {
 
 }
 

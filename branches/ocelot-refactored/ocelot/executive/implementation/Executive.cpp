@@ -228,26 +228,24 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 }
 
 bool executive::Executive::free(void *devPtr) {
-	bool result = true;
-	
-	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
-	MemoryAllocationMap::iterator it = allocations.find(devPtr);
-	if (it == allocations.end()) {
-		// not found
-		assert(0 && "unimplemented");		
+	bool result = false;
+	if (!devPtr) {
+		return false;
 	}
-	else {
-		if (it->second.addressSpace) {
-			// delete on CUDA device
+
+	MemoryAllocation memory = getMemoryAllocation(devPtr);
+	if (memory.pointer.ptr) {
+		if (memory.addressSpace) {
 			assert(0 && "unimplemented");
 		}
 		else {
-			if (it->second.internal) {
-				::free(it->second.pointer.ptr);
+			if (memory.internal) {
+				::free(memory.pointer.ptr);
+				result = true;
 			}
 		}
-		allocations.erase(it);
 	}
+
 	return result;
 }
 
@@ -510,15 +508,18 @@ executive::GlobalVariable & executive::Executive::getGlobalVariable(const char *
 */
 bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
 	size_t offset, MemcpyKind kind) {
-	
-	GlobalVariable &globalVar = globals[std::string(symbol)];
-	if (count + offset <= globalVar.size) {
-		char *dstPtr = (char *)globalVar.host_pointer + offset;
-		report("deviceMemcpyToSymbol('" << symbol << "') - dstPtr: " << (void *)dstPtr);
-		::memcpy(dstPtr, src, count);
+
+	GlobalMap::iterator glb_it = globals.find(std::string(symbol));
+	if (glb_it != globals.end()) {
+		GlobalVariable & globalVar = glb_it->second;
+		if (count + offset <= globalVar.size) {
+			char *dstPtr = (char *)globalVar.host_pointer + offset;
+			report("deviceMemcpyToSymbol('" << symbol << "') - dstPtr: " << (void *)dstPtr);
+			::memcpy(dstPtr, src, count);\
+		}
 	}
 	else {
-		Ocelot_Exception("memcpyToSymbol attempting to copy more data to global variable than available");
+		Ocelot_Exception("Attempted memcpy to unregistered global variable '" << symbol << "'");
 	}
 	
 	return true;
@@ -535,12 +536,18 @@ bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *
 bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst, 
 	size_t count, size_t offset, 	MemcpyKind kind) {
 	
-	GlobalVariable &globalVar = globals[std::string(symbol)];
-	if (count + offset <= globalVar.size) {
-		::memcpy(dst, (char *)globalVar.host_pointer + offset, count);
+	GlobalMap::iterator glb_it = globals.find(std::string(symbol));
+	if (glb_it != globals.end()) {
+		GlobalVariable & globalVar = glb_it->second;
+
+		if (count + offset <= globalVar.size) {
+			char *srcPtr = (char *)globalVar.host_pointer + offset;
+			report("deviceMemcpyFromSymbol('" << symbol << "') - srcPtr: " << (void *)srcPtr);
+			::memcpy(dst, srcPtr, count);
+		}
 	}
 	else {
-		Ocelot_Exception("memcpyFromSymbol attempting to copy more data to global variable than available");
+		Ocelot_Exception("Attempted memcpy from unregistered global variable '" << symbol << "'");
 	}
 	
 	return true;
@@ -792,32 +799,28 @@ void executive::Executive::registerGlobalVariable(const std::string & module,
 	GlobalMap::iterator g_it = globals.find(varName);
 	if (g_it == globals.end()) {
 		GlobalVariable globalVar;
-		
-		globalVar.name = varName;
 		globalVar.host_pointer = hostPtr;
 		globalVar.size = size;
-		globalVar.modules[module] = devicePtr;
-		globalVar.deviceAddressSpace = addrSpace;
+		globalVar.name = varName;
 		globals[varName] = globalVar;
 	}
 	else {
-		globals[varName].modules[module] = devicePtr;
-		const GlobalVariable &globalVar = globals[varName];
-		if (globalVar.host_pointer != hostPtr) {
+		if (g_it->second.deviceAddressSpace != addrSpace) {
 			Ocelot_Exception("previously registered global variable '" << varName 
-				<< "' - has host pointer " << std::hex << globalVar.host_pointer 
-				<< " - attempting to register with host ptr " << hostPtr << std::dec);
-		}
-		if (globalVar.size != size) {
-			Ocelot_Exception("previously registered global variable '" << varName 
-				<< "' - has size " << globalVar.size << " bytes"
-				<< " - attempting to register with size " << size << " bytes");
-		}
-		if (globalVar.deviceAddressSpace != addrSpace) {
-			Ocelot_Exception("previously registered global variable '" << varName 
-				<< "' - in device address space " << globalVar.deviceAddressSpace
+				<< "' - in device address space " << g_it->second.deviceAddressSpace
 				<< " - attempting to register with addr space " << addrSpace);
 		}
+	}
+
+	GlobalVariable &globalVar = globals[varName];
+	globalVar.modules[module].host = hostPtr;
+	globalVar.modules[module].device = devicePtr;
+	globalVar.modules[module].size = size;
+	globalVar.deviceAddressSpace = addrSpace;
+
+	if (size > globalVar.size) {
+		globalVar.size = size;
+		globalVar.host_pointer = hostPtr;
 	}
 }
 
@@ -874,7 +877,7 @@ size_t executive::Executive::enumerateDevices() {
 		// emulator
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
-		device.name = "Ocelot PTX Emulator";
+		device.name = "Ocelot PTX Emulator\0\0\0";
 		device.guid = 8803;
 		device.totalMemory = get_avphys_pages() * getpagesize();
 		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
@@ -910,7 +913,7 @@ size_t executive::Executive::enumerateDevices() {
 		// multicore
 		Device device;
 		device.ISA = ir::Instruction::LLVM;
-		device.name = "Ocelot LLVM JIT-Compiler";
+		device.name = "Ocelot LLVM JIT-Compiler\0\0\0";
 		device.guid = 8833;
 		device.totalMemory = get_avphys_pages() * getpagesize();
 		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
@@ -1318,9 +1321,11 @@ void executive::Executive::fenceGlobalVariables() {
 			// do something about each module
 			
 			if (glb_it->second.deviceAddressSpace != Device_shared) {
-				std::map< std::string, void *>::iterator mod_it = glb_it->second.modules.begin();
+				GlobalVariable::ModulePointerMap::iterator mod_it = glb_it->second.modules.begin();
 				for (; mod_it != glb_it->second.modules.end(); ++mod_it) {
+
 					ir::Global & global = modules[mod_it->first]->globals[glb_it->first];
+
 					global.pointer = (char *)glb_it->second.host_pointer;
 					global.registered = true;
 					global.local = true;

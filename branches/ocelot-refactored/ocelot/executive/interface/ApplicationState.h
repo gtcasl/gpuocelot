@@ -180,21 +180,42 @@ namespace executive {
 	*/
 	class GlobalVariable {
 	public:
+
+		/*!
+			\brief each module may register its own pointers to global variables on both host and
+				device
+		*/
+		class ModulePointer {
+		public:
+			
+			//! \brief host pointer
+			void *host;
+
+			//! \brief device pointer
+			void *device;
+
+			//! \brief size of global in bytes
+			size_t size;
+		};
+
+		typedef std::map< std::string, ModulePointer > ModulePointerMap;
+
+	public:
 		GlobalVariable();
 		
 	public:
 	
 		//! name of global variable
 		std::string name;
-		
-		//! maps name of module(s) in which global is declared and pointer to variable in device memory
-		std::map< std::string, void *> modules;
-		
-		//! size (in bytes) of global variable
+
+		//! pointer to host variable
+		void *host_pointer;
+
+		//! maximum size of global
 		size_t size;
 		
-		//! backing in host memory
-		void *host_pointer;
+		//! maps name of module(s) in which global is declared and pointer to variable in host and device memory
+		ModulePointerMap modules;
 		
 		//! indicates state space of device in which global exists
 		DeviceAddressSpace deviceAddressSpace;

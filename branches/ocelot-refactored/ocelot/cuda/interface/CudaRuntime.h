@@ -280,6 +280,9 @@ namespace cuda {
 
 		//! maps textureReference* onto texture names
 		TextureReferenceMap textureReferences;
+
+		//! maps symbol pointers onto their device names
+		std::map< void *, std::string > globalSymbolMap;
 		
 		// fatbinaries
 		FatBinaryVector fatBinaries;
@@ -450,7 +453,14 @@ namespace cuda {
 			const struct textureReference *texref);
 		virtual cudaError_t cudaGetTextureReference(const struct textureReference **texref, 
 			const char *symbol);
-		
+	
+	public:
+		//
+		// channel creation
+		//
+
+		virtual cudaError_t  cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, const struct cudaArray *array);
+		virtual struct cudaChannelFormatDesc cudaCreateChannelDesc(int x, int y, int z, int w, enum cudaChannelFormatKind f);
 
 	public:
 	

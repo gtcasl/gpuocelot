@@ -109,27 +109,30 @@ struct cudaExtent {
 };
 
 struct cudaDeviceProp {
-	int canMapHostMemory;
-	int clockRate;
-	int computeMode;
-	int deviceOverlap;
-	int integrated;
-	int kernelExecTimeoutEnabled;
-	int major;
-	int maxGridSize[3];
-	int maxThreadsDim[3];
-	int maxThreadsPerBlock;
-	size_t memPitch;
-	int minor;
-	int multiProcessorCount;
-	char name[256];
-	int regsPerBlock;
-	size_t sharedMemPerBlock;
-	size_t textureAlignment;
-	size_t totalConstMem;
-	size_t totalGlobalMem;
-	int warpSize;
+  char   name[256];                 ///< ASCII string identifying device
+  size_t totalGlobalMem;            ///< Global memory available on device in bytes
+  size_t sharedMemPerBlock;         ///< Shared memory available per block in bytes
+  int    regsPerBlock;              ///< 32-bit registers available per block
+  int    warpSize;                  ///< Warp size in threads
+  size_t memPitch;                  ///< Maximum pitch in bytes allowed by memory copies
+  int    maxThreadsPerBlock;        ///< Maximum number of threads per block
+  int    maxThreadsDim[3];          ///< Maximum size of each dimension of a block
+  int    maxGridSize[3];            ///< Maximum size of each dimension of a grid
+  int    clockRate;                 ///< Clock frequency in kilohertz
+  size_t totalConstMem;             ///< Constant memory available on device in bytes
+  int    major;                     ///< Major compute capability
+  int    minor;                     ///< Minor compute capability
+  size_t textureAlignment;          ///< Alignment requirement for textures
+  int    deviceOverlap;             ///< Device can concurrently copy memory and execute a kernel
+  int    multiProcessorCount;       ///< Number of multiprocessors on device
+  int    kernelExecTimeoutEnabled;  ///< Specified whether there is a run time limit on kernels
+  int    integrated;                ///< Device is integrated as opposed to discrete
+  int    canMapHostMemory;          ///< Device can map host memory with cudaHostAlloc/cudaHostGetDevicePointer
+  int    computeMode;               ///< Compute mode (See ::cudaComputeMode)
+  int    __cudaReserved[36];
 };
+
+
 
 struct cudaChannelFormatDesc {
 	enum cudaChannelFormatKind f;

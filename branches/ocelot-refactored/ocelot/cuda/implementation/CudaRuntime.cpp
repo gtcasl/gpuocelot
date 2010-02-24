@@ -93,6 +93,22 @@ static void convert(executive::ChannelFormatDesc &format,
 	format.w = desc->w;
 }
 
+static void convert(struct cudaChannelFormatDesc *desc, 
+	const executive::ChannelFormatDesc &format) {
+	switch (format.kind) {
+		case executive::ChannelFormatDesc::Kind_signed: desc->f = cudaChannelFormatKindSigned; break;
+		case executive::ChannelFormatDesc::Kind_unsigned: desc->f = cudaChannelFormatKindUnsigned; break;
+		case executive::ChannelFormatDesc::Kind_float: desc->f = cudaChannelFormatKindFloat; break;
+		default:
+			desc->f = cudaChannelFormatKindNone;
+			break;
+	}
+	desc->x = format.x;
+	desc->y = format.y;
+	desc->z = format.z;
+	desc->w = format.w;
+}
+
 static executive::dim3 convert(dim3 dim) {
 	executive::dim3 ed3 = {dim.x, dim.y, dim.z};
 	return ed3;
@@ -259,8 +275,12 @@ void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar, 
 	char *deviceAddress, const char *deviceName, int ext, int size, int constant, int global) {
 
+	report("cuda::CudaRuntime::cudaRegisterVar() - host var: " << (void *)hostVar << ", deviceName: " << deviceName);
+
 	size_t handle = (size_t)fatCubinHandle - 1;
 	lock();
+
+	globalSymbolMap[(void *)hostVar] = deviceName;
 	
 	const char *moduleName = fatBinaries[handle].name();
 	void *hostVariable = (void *)hostVar;
@@ -489,9 +509,14 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void *src,
 	size_t count, size_t offset, enum cudaMemcpyKind kind) {
 
+	report("cuda::CudaRuntime::cudaMemcpyToSymbol('" << symbol << "' - " << (void *)symbol);
+
 	cudaError_t result = cudaSuccess;
 	lock();
 	getHostThreadContext();
+	if (!*symbol) {
+		symbol = globalSymbolMap[(void *)symbol].c_str();
+	}
 	bool success = context.deviceMemcpyToSymbol(symbol, src, count, offset, convert(kind));	
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
@@ -506,6 +531,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbo
 	cudaError_t result = cudaSuccess;
 	lock();
 	getHostThreadContext();
+	if (!*symbol) {
+		symbol = globalSymbolMap[(void *)symbol].c_str();
+	}
 	bool success = context.deviceMemcpyFromSymbol(symbol, dst, count, offset, convert(kind));	
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
@@ -710,6 +738,9 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *s
 	cudaError_t result = cudaSuccess;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
+	if (!*symbol) {
+		symbol = globalSymbolMap[(void *)symbol].c_str();
+	}
 	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
 	*devPtr = global.host_pointer;
 
@@ -722,6 +753,9 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	cudaError_t result = cudaSuccess;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
+	if (!*symbol) {
+		symbol = globalSymbolMap[(void *)symbol].c_str();
+	}
 	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
 	*size = global.size;
 	
@@ -740,6 +774,8 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	return setLastError(result);
 }
 
+#define minimum(x, y) ((x) > (y) ? (y) : (x))
+
 cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *prop, int dev) {
 	cudaError_t result = cudaSuccess;
 	
@@ -747,6 +783,10 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 	if (dev < (int)context.getDevices().size()) {
 		const executive::Device & device = context.getDevices().at(dev);
 	
+		report("cuda::CudaRuntime::cudaGetDeviceProperties(dev = " << dev 
+			<< ") - major: " << device.major << ", minor: " << device.minor);
+
+		memcpy(prop->name, device.name.c_str(), minimum(255, device.name.size()));
 		prop->canMapHostMemory = 1;
 		prop->clockRate = device.clockRate;
 		prop->computeMode = cudaComputeModeDefault;
@@ -771,7 +811,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 		prop->totalGlobalMem = device.totalMemory;
 		prop->warpSize = device.SIMDWidth;
 		
-		memcpy(prop->name, device.name.c_str(), device.name.size());
+		report("  returning: prop->major = " << prop->major << ", prop->minor = " << prop->minor);
 		
 		result = cudaSuccess;
 	}
@@ -786,7 +826,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 
 cudaError_t cuda::CudaRuntime::cudaChooseDevice(int *device, const struct cudaDeviceProp *prop) {
 	cudaError_t result = cudaSuccess;
-	
+	*device = context.getSelectedDevice();
 	return setLastError(result);
 }
 
@@ -926,6 +966,32 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(const struct textureRefer
 	
 	unlock();
 	return setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, 
+	const struct cudaArray *array) {
+	cudaError_t result = cudaErrorInvalidValue;
+
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	executive::MemoryAllocation memory = context.getMemoryAllocation((const void *)array);
+	if (memory.pointer.ptr) {
+		convert(desc, memory.desc);
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);
+}
+
+struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x, int y, int z, int w, 
+	enum cudaChannelFormatKind f) {
+
+	struct cudaChannelFormatDesc desc;
+	desc.w = w; desc.x = x; desc.y = y; desc.z = z; desc.f = f;
+	return desc;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

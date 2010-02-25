@@ -48,7 +48,8 @@ executive::Executive::Executive() {
 	// translator initialization
 	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
 	optimizationLevel = 
-		(translator::Translator::OptimizationLevel)api::OcelotConfiguration::getExecutive().optimizationLevel;
+		(translator::Translator::OptimizationLevel)
+			api::OcelotConfiguration::getExecutive().optimizationLevel;
 	optimizationLevel = translator::Translator::MemoryCheckOptimization;
 	enumerateDevices();
 }
@@ -334,6 +335,26 @@ bool executive::Executive::checkMemoryAccess(int device, const void* base, size_
 }
 
 /*!
+	\brief prints all memory allocations to an output stream
+*/
+std::ostream & executive::Executive::printMemoryAllocations(std::ostream &out) const {
+
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap_it->second.begin();
+
+	out << "===== Ocelot global memory allocations =====\n";
+	for (; alloc_it != memoryMap_it->second.end(); ++alloc_it) {
+		const MemoryAllocation & memory = alloc_it->second;
+
+		out << "=== allocation ===\n";
+		out << memory.toString() << "\n";
+	}
+	out << "============================================\n";
+	return out;
+}
+
+/*!
 	Given a pointer, determine the allocated block and 
 	corresponding MemoryAllocation record to which it belongs.
 
@@ -373,6 +394,8 @@ executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void
 				ss << "nearest allocation is " << std::dec << bound->second.pointer.ptr 
 					<< std::dec << "\n";
 			}
+			ss << "\nAll allocations:\n";
+			printMemoryAllocations(ss);
 			throw hydrazine::Exception(ss.str());
 		}
 	}
@@ -740,6 +763,106 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 		
 		default:
 			return false;
+	}
+
+	return false;
+}
+
+/*!
+	\brief memcpy from 2D block to array
+	\param dst destinatino array
+	\param wOffset destination x offset (bytes)
+	\param hOffset destination y offset (rows)
+	\param src source buffer
+	\param spitch source block pitch (bytes)
+	\param width source block width (bytes)
+	\param height source block height (rows)
+	\param kind kind of memcpy
+	\return true if memcpy was sucessful
+*/
+bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, size_t wOffset, 
+	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, MemcpyKind kind) {
+
+	int addrSpace = getDeviceAddressSpace();
+
+	MemoryAllocation dstMemory = getMemoryAllocation((void *)dstArray);
+	
+	char *srcMemory_ptr = 0;
+	switch (kind) {
+		case HostToDevice:
+		case HostToHost:
+			srcMemory_ptr = (char *)src;
+			break;
+		case DeviceToDevice:
+		{
+			MemoryAllocation srcMemory = getMemoryAllocation(src);
+			srcMemory_ptr = (char *)srcMemory.pointer.ptr;
+		}
+			break;
+		default:
+			assert(0 && "unimplemented");
+			break;
+	}
+
+	switch (addrSpace) {
+		case 0:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char *dstPtr = (char *)dstMemory.pointer.ptr + dstMemory.pointer.pitch * row;
+				char *srcPtr = (char *)srcMemory_ptr + spitch * row;
+				::memcpy(dstPtr, srcPtr, width);
+			}
+			return true;
+		}
+			break;
+
+	default:
+		assert(0 && "unimplemented");
+		return false;
+	}
+
+	return false;
+}
+
+bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch, 
+	const struct cudaArray *srcArray, size_t wOffset, size_t hOffset, size_t width, size_t height, 
+	MemcpyKind kind) {
+
+	int addrSpace = getDeviceAddressSpace();
+
+	MemoryAllocation srcMemory = getMemoryAllocation((void *)srcArray);
+	char *dstMemory_ptr = 0;
+	switch (kind) {
+		case DeviceToHost:
+		case HostToHost:
+			dstMemory_ptr = (char *)dst;
+			break;
+		case DeviceToDevice:
+		{
+			MemoryAllocation dstMemory = getMemoryAllocation(dst);
+			dstMemory_ptr = (char *)dstMemory.pointer.ptr;
+		}
+			break;
+		default:
+			assert(0 && "unimplemented");
+			break;
+	}
+	
+	switch (addrSpace) {
+		case 0:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char *dstPtr = (char *)dstMemory_ptr + dpitch * row;
+				char *srcPtr = (char *)srcMemory.pointer.ptr + srcMemory.pointer.pitch * row;
+				::memcpy(dstPtr, srcPtr, width);
+			}
+			return true;
+		}
+			break;
+
+	default:
+		assert(0 && "unimplemented");
+		return false;
 	}
 
 	return false;
@@ -1418,7 +1541,8 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 			*offset = (size_t)devPtr % 16;
 		}
 
-		report("Executive::bindTexture2D() '" << textureName << "'.data = " << texture.data << " - filter: " << filter);
+		report("Executive::bindTexture2D() '" << textureName << "'.data = " << texture.data 
+			<< " - filter: " << filter);
 	}
 	else {
 		Ocelot_Exception("Texture '" << textureName << "' was not registered");

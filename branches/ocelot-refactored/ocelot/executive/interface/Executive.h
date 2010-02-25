@@ -209,6 +209,11 @@ namespace executive {
 		bool checkMemoryAccess(int device, const void* base, size_t size) const;
 
 		/*!
+			\brief prints all memory allocations to an output stream
+		*/
+		std::ostream & printMemoryAllocations(std::ostream &out) const;
+
+		/*!
 			Given a pointer, determine the allocated block and 
 			corresponding MemoryAllocation record to which it belongs.
 
@@ -298,9 +303,30 @@ namespace executive {
 		bool deviceMemcpyArrayToArray(struct cudaArray *dst, size_t dstWOffset, size_t dstHOffset,
 			const struct cudaArray *src, size_t srcWOffset, size_t srcHOFfset, size_t count,
 			MemcpyKind kind);
-			
+
+		/*!
+			\brief performs memcpy 
+		*/
 		bool deviceMemcpy2D(void *dst, size_t dstPitch, const void *src, size_t srcPitch, 
 			size_t width, size_t height, MemcpyKind kind);
+
+		/*!
+			\brief memcpy from 2D block to array
+			\param dst destinatino array
+			\param wOffset destination x offset (bytes)
+			\param hOffset destination y offset (rows)
+			\param src source buffer
+			\param spitch source block pitch (bytes)
+			\param width source block width (bytes)
+			\param height source block height (rows)
+			\param kind kind of memcpy
+			\return true if memcpy was sucessful
+		*/
+		bool deviceMemcpy2DtoArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, 
+			const void *src, size_t spitch, size_t width, size_t height, MemcpyKind kind);
+
+		bool deviceMemcpy2DfromArray(void *dst, size_t dpitch, const struct cudaArray *srcArray,
+			size_t wOffset, size_t hOffset, size_t width, size_t height, MemcpyKind kind);
 
 	public:
 	

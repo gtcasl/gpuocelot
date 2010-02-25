@@ -173,6 +173,8 @@ namespace executive {
 		size_t size() const {
 			return 0;
 		}
+
+		std::string toString() const;
 	};
 
 	/*!

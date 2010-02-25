@@ -4,6 +4,10 @@
 	\brief defines constructors and accessors for Ocelot application state objects
 */
 
+// C++ includes
+#include <sstream>
+
+// Ocelot includes
 #include <ocelot/executive/interface/ApplicationState.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,6 +24,37 @@ executive::MemoryAllocation::MemoryAllocation():
 	pointer.ptr = 0;
 	pointer.xsize = pointer.ysize = pointer.pitch = 0;
 	extent.width = extent.height = extent.depth = 0;
+}
+
+std::string executive::MemoryAllocation::toString() const {
+	std::stringstream ss;
+
+	ss << "= " << (void *)pointer.ptr << " - " 
+		<< (void *)((char*)pointer.ptr + allocationSize - 1) << "\n";
+
+	ss << "= pointer: " << (void*)pointer.ptr << "\n";
+	ss << "= " << allocationSize << " bytes\n";
+	ss << "= device address space: " << addressSpace << "\n";
+	switch (structure) {
+		case Struct_linear:
+			ss << "= linear structure, " << (int)dimension + 1 << "D\n";
+			break;
+		case Struct_array:
+			ss << "= array structure, " << (int)dimension + 1 << "D\n";
+			break;
+		case Struct_pitch:
+			ss << "= pitched structure, " << (int)dimension + 1 << "D\n";
+			break;
+		case Struct_invalid:
+		default:
+			ss << "= unknown structure\n";
+	}
+
+	ss << "= pitch: " << pointer.pitch << "\n";
+	ss << "= width: " << pointer.width << "\n";
+	ss << "= height: " << pointer.height << "\n";
+
+	return ss.str();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

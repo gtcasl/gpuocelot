@@ -366,7 +366,22 @@ void cuda::CudaRuntime::cudaRegisterSharedVar(
 	size_t alignment,
 	int storage) {
 
-	assert(0 && "unimplemented");
+	size_t handle = (size_t)fatCubinHandle - 1;
+	lock();
+	
+	const char *moduleName = fatBinaries[handle].name();
+	const char *variableName = (const char *)devicePtr;
+	
+	report("cudaRegisterSharedVar() - module " << moduleName << ", devicePtr: " << std::hex 
+		<< devicePtr << std::dec << " named " << variableName << ", size: " << size 
+		<< ", alignment: " << alignment << ", storage: " << storage);
+	
+	/*
+	context.registerGlobalVariable(moduleName, variableName, 0, 0, sizeof(void*), 
+		executive::Device_shared);
+	*/
+	
+	unlock();
 }
 
 void cuda::CudaRuntime::cudaRegisterFunction(
@@ -414,6 +429,8 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 		
 	if (context.malloc(devPtr, size)) {
 		result = cudaSuccess;
+
+		report("CudaRuntime::cudaMalloc( *devPtr = " << (void *)*devPtr << ", size = " << size << ")");
 	}
 	return setLastErrorAndUnlock(thread, result);
 }
@@ -425,6 +442,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	
 	if (context.mallocHost(ptr, size)) {
 		result = cudaSuccess;
+		report("CudaRuntime::cudaMallocHost( *pPtr = " << (void *)*ptr << ", size = " << size << ")");
 	}
 	return setLastErrorAndUnlock(thread, result);
 }
@@ -436,6 +454,8 @@ cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch, siz
 	HostThreadContext & thread = getHostThreadContext();
 	if (context.mallocPitch(devPtr, pitch, width, height)) {
 		result = cudaSuccess;
+		report("CudaRuntime::cudaMallocPitch( *devPtr = " << (void *)*devPtr << ", pitch = " 
+			<< *pitch << ")");
 	}
 	return setLastErrorAndUnlock(thread, result);
 }
@@ -447,6 +467,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	HostThreadContext & thread = getHostThreadContext();
 	if (context.mallocArray(array, convert(*desc), width, height)) {
 		result = cudaSuccess;
+		report("CudaRuntime::cudaMallocArray( *array = " << (void *)*array << ")");
 	}
 	return setLastErrorAndUnlock(thread, result);
 }
@@ -643,8 +664,14 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst, size_t
 	cudaError_t result = cudaErrorInvalidValue;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
+
+	report("cudaMemcpy2DtoArray(dst = " << (void *)dst << ", src = " << (void *)src);
 	
-	assert(0 && "unimplemented");
+	if (context.deviceMemcpy2DtoArray(dst, wOffset, hOffset, src, spitch, 
+		width, height, convert(kind))) {
+
+		result = cudaSuccess;
+	}
 
 	return setLastErrorAndUnlock(thread, result);		
 }
@@ -659,9 +686,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 	cudaError_t result = cudaErrorInvalidValue;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
-
-	assert(0 && "unimplemented");
 	
+	if (context.deviceMemcpy2DfromArray(dst,dpitch, src, wOffset, hOffset, width, height, 
+		convert(kind))) {
+
+		result = cudaSuccess;
+	}
+
 	return setLastErrorAndUnlock(thread, result);		
 }
 
@@ -786,6 +817,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 		report("cuda::CudaRuntime::cudaGetDeviceProperties(dev = " << dev 
 			<< ") - major: " << device.major << ", minor: " << device.minor);
 
+		memset(prop, 0, sizeof(prop));
 		memcpy(prop->name, device.name.c_str(), minimum(255, device.name.size()));
 		prop->canMapHostMemory = 1;
 		prop->clockRate = device.clockRate;

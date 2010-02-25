@@ -1449,9 +1449,14 @@ void executive::Executive::fenceGlobalVariables() {
 
 					ir::Global & global = modules[mod_it->first]->globals[glb_it->first];
 
-					global.pointer = (char *)glb_it->second.host_pointer;
-					global.registered = true;
-					global.local = true;
+					if (global.pointer && !global.local) {
+						::memcpy(global.pointer, glb_it->second.host_pointer, glb_it->second.size);
+					}
+					else if (!global.pointer) {
+						global.pointer = (char *)glb_it->second.host_pointer;
+						global.registered = true;
+						global.local = true;
+					}
 				}
 			}
 		}

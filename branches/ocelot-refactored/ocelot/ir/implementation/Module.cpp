@@ -4,11 +4,13 @@
 	\brief declares a Module loadable from a PTX source file and runable
 */
 
+
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/parser/interface/PTXParser.h>
+
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Version.h>
-#include <ocelot/parser/interface/PTXParser.h>
 #include <hydrazine/implementation/Exception.h>
 
 #include <fstream>
@@ -242,8 +244,8 @@ void ir::Module::extractPTXKernels() {
 			|| statement.directive == PTXStatement::Global
 			|| statement.directive == PTXStatement::Shared) {
 			assert(globals.count(statement.name) == 0);
-			globals.insert(std::make_pair(statement.name, Global(statement)));
 
+			globals.insert(std::make_pair(statement.name, Global(statement)));
 			globalNames.insert(statement.name);
 		}
 		else if (statement.directive == PTXStatement::Tex) {

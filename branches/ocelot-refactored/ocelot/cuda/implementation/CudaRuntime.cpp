@@ -275,7 +275,9 @@ void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar, 
 	char *deviceAddress, const char *deviceName, int ext, int size, int constant, int global) {
 
-	report("cuda::CudaRuntime::cudaRegisterVar() - host var: " << (void *)hostVar << ", deviceName: " << deviceName);
+	report("cuda::CudaRuntime::cudaRegisterVar() - host var: " << (void *)hostVar 
+		<< ", deviceName: " << deviceName << ", size: " << size << " bytes,"
+		<< (constant ? " constant" : " ") << (global ? " global" : " "));
 
 	size_t handle = (size_t)fatCubinHandle - 1;
 	lock();

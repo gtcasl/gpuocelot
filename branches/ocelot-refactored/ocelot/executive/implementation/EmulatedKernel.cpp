@@ -32,6 +32,8 @@
 
 #define REPORT_BASE 0
 
+#define REPORT_KERNEL_INSTRUCTIONS 0
+
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
 	const Executive* c, 
@@ -197,7 +199,9 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				ids.insert(std::make_pair(i_it, instructions.size()));
 			}
 			ptx.pc = instructions.size();
+#if REPORT_KERNEL_INSTRUCTIONS
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
+#endif
 			instructions.push_back(ptx);
 		}
 	}
@@ -635,14 +639,16 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 	unsigned int constantOffset = 0;
 
-	map<string, unsigned int> constant;
+	typedef map<string, unsigned int> ConstantOffsetMap;
+
+	ConstantOffsetMap constant;
 	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
 	for (; it != module->globals.end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Const) {
 			assert(it->second.registered || it->second.local);
 			unsigned int offset;
 
-			report("Found global const variable " 
+			report("  Found global const variable " 
 				<< it->second.statement.name);
 			_computeOffset(it->second.statement, 
 				offset, constantOffset);						
@@ -664,10 +670,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = constant.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
+					ConstantOffsetMap::iterator	l_it = constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -681,10 +685,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		else if ( instr.opcode == ir::PTXInstruction::Ld 
 			|| instr.opcode == ir::PTXInstruction::St ) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = constant.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
+					ConstantOffsetMap::iterator l_it = constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -709,16 +711,20 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	}
 	
 	// copy globals into constant memory
-	for (map<string, unsigned int>::iterator l_it = constant.begin(); 
-		l_it != constant.end(); ++l_it) {
-		ir::Module::GlobalMap::const_iterator 
-			g_it = module->globals.find(l_it->first);
+	for (ConstantOffsetMap::iterator l_it = constant.begin(); l_it != constant.end(); ++l_it) {
+
+		ir::Module::GlobalMap::const_iterator g_it = module->globals.find(l_it->first);
+
 		assert(g_it != module->globals.end());
 		assert(g_it->second.statement.directive == ir::PTXStatement::Const);
-		assert(g_it->second.statement.bytes() 
-			+ l_it->second <= _constMemorySize);
-		memcpy( ConstMemory + l_it->second, g_it->second.pointer, 
-			g_it->second.statement.bytes() );
+		assert(g_it->second.statement.bytes() + l_it->second <= _constMemorySize);
+
+		report("  mapping constant: " << l_it->first << "(" << (void *)g_it->second.pointer 
+			<< ") of size " << g_it->second.statement.bytes() 
+			<< " bytes to constant memory with offset " << l_it->second);
+		report("  byte representation (pointer = " << (void *)g_it->second.pointer << ":");
+
+		memcpy( ConstMemory + l_it->second, g_it->second.pointer, g_it->second.statement.bytes() );
 	}
 
 }

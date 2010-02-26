@@ -167,6 +167,22 @@ namespace executive {
 			\return true if successful
 		*/
 		bool mallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height);
+
+		/*!
+			\brief allocates memory on the selected device given an extent - output in pitched pointer
+			\param pitchedPtr pointer to pitched memory allocation
+			\param extent extent of region - at least extent.width*height*depth bytes are allocated
+		*/
+		bool mallocPitch(PitchedPointer * pitchedPtr, Extent extent);
+
+		/*!
+			\brief allocates a pitched memory allocation as an array
+			\param arrayPtr pointer to allocation
+			\param desc channel format
+			\param extent region - at least extent.width*height*depth*desc.size() bytes are allocated
+		*/
+		bool mallocPitchArray(PitchedPointer * pitchedPtr, const ChannelFormatDesc &desc, 
+			Extent extent);
 		
 		/*!
 			\brief allocates an array of memory on the selected device
@@ -327,6 +343,18 @@ namespace executive {
 
 		bool deviceMemcpy2DfromArray(void *dst, size_t dpitch, const struct cudaArray *srcArray,
 			size_t wOffset, size_t hOffset, size_t width, size_t height, MemcpyKind kind);
+
+		/*!
+			\brief performs a 3D memcpy to a destination 
+			\param dst - pointer to either a CUDA array or a pitched allocation (.ptr field specifies a memory allocation which informs Executive)
+			\param dstPos - offset into destination block
+			\param extent - width, height, and depth to copy
+			\param kind - indicates whether source and destination are device or host
+			\param src - pointer to either CUDA array or pitched allocation  (.ptr field specifies a memory allocation which informs Executive)
+			\param srcPos - offset into source block
+		*/
+		bool deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Extent extent, MemcpyKind kind, 
+			PitchedPointer src,	dim3 srcPos);
 
 	public:
 	

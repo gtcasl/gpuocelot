@@ -99,6 +99,9 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 	memory.pointer.pitch = size;
 	memory.pointer.ysize = 1;
 	memory.dimension = MemoryAllocation::Dim_1D;
+	memory.extent.width = size;
+	memory.extent.height = 1;
+	memory.extent.depth = 1;
 	
 	switch (memory.addressSpace) {
 	case 0:
@@ -138,6 +141,9 @@ bool executive::Executive::mallocHost(void **ptr, size_t size) {
 		{
 			memory.allocationSize = size;
 			memory.pointer.ptr = (void *)::malloc(size);
+			memory.extent.width = size;
+			memory.extent.height = 1;
+			memory.extent.depth = 1;
 		}
 		break;
 	default:
@@ -176,6 +182,9 @@ bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t widt
 			memory.allocationSize = width * height;
 			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
 			memory.pointer.pitch = width;
+			memory.extent.width = width;
+			memory.extent.height = height;
+			memory.extent.depth = 1;
 		}
 		break;
 	default:
@@ -188,6 +197,60 @@ bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t widt
 	*pitch = memory.pointer.pitch;
 	
 	memoryAllocations[memory.addressSpace][*devPtr] = memory;
+	
+	return result;
+}
+
+/*!
+	\brief allocates memory on the selected device given an extent - output in pitched pointer
+	\param pitchedPtr pointer to pitched memory allocation
+	\param extent extent of region - at least extent.width*height*depth bytes are allocated
+*/
+bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent extent) {
+
+	bool result = true;
+	
+	MemoryAllocation memory;
+	
+	memory.addressSpace = getDeviceAddressSpace();
+	
+	memory.structure = MemoryAllocation::Struct_pitch;
+	memory.affinity = MemoryAllocation::Affinity_device;
+	memory.extent = extent;
+
+	if (extent.depth > 1) {
+		memory.dimension = MemoryAllocation::Dim_3D;
+	}
+	else if (extent.height > 1) {
+		memory.dimension = MemoryAllocation::Dim_2D;
+	}
+	else if (extent.width >= 1) {
+		memory.dimension = MemoryAllocation::Dim_1D;
+	}
+	else {
+		Ocelot_Exception("Executive::mallocPitch() - invalid extent");
+	}
+		
+	switch (memory.addressSpace) {
+	case 0:
+		{
+			// device is in host memory
+			memory.allocationSize = extent.width * extent.height * extent.depth;
+			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
+			memory.pointer.pitch = extent.width;
+			memory.pointer.width = extent.width;
+			memory.pointer.height = extent.height;
+		}
+		break;
+	default:
+		// device is in GPU memory somewhere
+		assert(0 && "unimplemented");		
+		break;
+	}
+
+	*pitchedPointer = memory.pointer;
+	
+	memoryAllocations[memory.addressSpace][memory.pointer.ptr] = memory;
 	
 	return result;
 }
@@ -228,6 +291,64 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 	return result;
 }
 
+/*!
+	\brief allocates a pitched memory allocation as an array
+	\param arrayPtr pointer to allocation
+	\param desc channel format
+	\param extent region - at least extent.width*height*depth*desc.size() bytes are allocated
+*/
+bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr, 
+	const ChannelFormatDesc &desc, Extent extent) {
+
+	MemoryAllocation memory;
+
+	memory.addressSpace = getDeviceAddressSpace();
+	
+	memory.structure = MemoryAllocation::Struct_array;
+	memory.affinity = MemoryAllocation::Affinity_device;
+	memory.desc = desc;
+	memory.extent = extent;
+
+	if (extent.depth > 1) {
+		memory.dimension = MemoryAllocation::Dim_3D;
+	}
+	else if (extent.height > 1) {
+		memory.dimension = MemoryAllocation::Dim_2D;
+	}
+	else if (extent.width >= 1) {
+		memory.dimension = MemoryAllocation::Dim_1D;
+	}
+	else {
+		Ocelot_Exception("Executive::mallocPitch() - invalid extent");
+	}
+	
+	switch (memory.addressSpace) {
+	case 0:
+		{
+			// device is in host memory
+			memory.pointer.pitch = extent.width * desc.size();
+			memory.allocationSize = extent.height * memory.pointer.pitch * extent.depth;
+			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
+			memory.pointer.width = extent.width;
+			memory.pointer.height = extent.height;
+		}
+		break;
+	default:
+		assert(0 && "unimplemented");
+		break;
+	}
+	
+	if (memory.pointer.ptr) {
+		*pitchedPtr = memory.pointer;
+		memoryAllocations[memory.addressSpace][memory.pointer.ptr] = memory;
+	}
+
+	return (memory.pointer.ptr ? true : false);
+}
+
+/*!
+	\brief frees an allocation - make sure you weren't calling ::free()
+*/
 bool executive::Executive::free(void *devPtr) {
 	bool result = false;
 	if (!devPtr) {
@@ -863,6 +984,80 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 	default:
 		assert(0 && "unimplemented");
 		return false;
+	}
+
+	return false;
+}
+
+
+/*!
+	\brief performs a 3D memcpy to a destination 
+	\param dst - pointer to either a CUDA array or a pitched allocation (.ptr field specifies a memory allocation which informs Executive)
+	\param dstPos - offset into destination block
+	\param extent - width, height, and depth to copy
+	\param kind - indicates whether source and destination are device or host
+	\param src - pointer to either CUDA array or pitched allocation  (.ptr field specifies a memory allocation which informs Executive)
+	\param srcPos - offset into source block
+*/
+bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Extent extent, 
+	MemcpyKind kind, PitchedPointer src,	dim3 srcPos) {
+
+	int addrSpace = getDeviceAddressSpace();
+
+	switch (kind) {
+	case HostToHost:
+	{
+	}
+		break;
+
+	case HostToDevice:
+	{
+		MemoryAllocation memory = getMemoryAllocation(dst.ptr);
+		dst = memory.pointer;
+	}
+		break;
+
+	case DeviceToHost:
+	{
+		MemoryAllocation memory = getMemoryAllocation(src.ptr);
+		src = memory.pointer;
+	}
+		break;
+
+	case DeviceToDevice:
+	{
+		MemoryAllocation srcMemory = getMemoryAllocation(src.ptr);
+		MemoryAllocation dstMemory = getMemoryAllocation(dst.ptr);
+		dst = dstMemory.pointer;
+		src = srcMemory.pointer;
+	}
+		break;
+	
+	default:
+		return false;
+	}
+
+	char *dstPtr = (char *)dst.ptr;
+	char *srcPtr = (char *)src.ptr;
+	switch (addrSpace) {
+	case 0:
+	{
+		// not arrays
+		for (size_t z = 0; z < extent.depth; z++) {
+			for (size_t y = 0; y < extent.height; y++) {
+				dstPtr += dstPos.x + dst.pitch * ((dstPos.y+y) + (z+dstPos.z) * dstPos.y);
+				srcPtr += srcPos.x + src.pitch * ((srcPos.y+y) + (z+srcPos.z) * srcPos.y);
+				::memcpy(dstPtr, srcPtr, extent.width);
+			}
+		}
+		return true;
+	}
+		break;
+	default:
+	{
+	assert(0 && "unimplemented");
+	}
+		break;
 	}
 
 	return false;

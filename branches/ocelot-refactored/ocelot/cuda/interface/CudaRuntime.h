@@ -364,7 +364,7 @@ namespace cuda {
 	public:
 		
 		//
-		// Memory - linear
+		// Memory - malloc and free
 		//
 
 		virtual cudaError_t  cudaMalloc(void **devPtr, size_t size);
@@ -377,7 +377,14 @@ namespace cuda {
 		virtual cudaError_t  cudaFreeHost(void *ptr);
 		virtual cudaError_t  cudaFreeArray(struct cudaArray *array);
 	
+		virtual cudaError_t  cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, struct cudaExtent extent);
+		virtual cudaError_t  cudaMalloc3DArray(struct cudaArray** arrayPtr, const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
+
 	public:
+
+		//
+		// Memcpy
+		//
 	
 		virtual cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, 
 			enum cudaMemcpyKind kind);
@@ -405,6 +412,8 @@ namespace cuda {
 			const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, 
 			enum cudaMemcpyKind kind);
 		
+		virtual cudaError_t  cudaMemcpy3D(const struct cudaMemcpy3DParms *p);
+		virtual cudaError_t  cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream);
 
 	public:
 		//

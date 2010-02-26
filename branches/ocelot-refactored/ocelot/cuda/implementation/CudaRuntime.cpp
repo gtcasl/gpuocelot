@@ -13,6 +13,7 @@
 
 // Ocelot includes
 #include <ocelot/cuda/include/__cudaFatFormat.h>
+#include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
@@ -109,8 +110,28 @@ static void convert(struct cudaChannelFormatDesc *desc,
 	desc->w = format.w;
 }
 
+static executive::Extent convert(struct cudaExtent cudaExtent) {
+	executive::Extent extent;
+	extent.depth = cudaExtent.depth;
+	extent.height = cudaExtent.height;
+	extent.width = cudaExtent.width;
+	return extent;
+}
+
+static void convert(struct cudaPitchedPtr *cuda, const executive::PitchedPointer & pitched) {
+	cuda->pitch = pitched.pitch;
+	cuda->ptr = pitched.ptr;
+	cuda->xsize = pitched.width;
+	cuda->ysize = pitched.height;
+}
+
 static executive::dim3 convert(dim3 dim) {
 	executive::dim3 ed3 = {dim.x, dim.y, dim.z};
+	return ed3;
+}
+
+static executive::dim3 convert(cudaPos pos) {
+	executive::dim3 ed3 = {pos.x, pos.y, pos.z};
 	return ed3;
 }
 
@@ -506,6 +527,37 @@ cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	return setLastErrorAndUnlock(thread, result);
 }
 
+cudaError_t cuda::CudaRuntime::cudaMalloc3D(struct cudaPitchedPtr* devPtr, 
+	struct cudaExtent extent) {
+
+	cudaError_t result = cudaErrorMemoryAllocation;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	executive::PitchedPointer pitchedPointer;
+	if (context.mallocPitch(&pitchedPointer, convert(extent))) {
+		convert(devPtr, pitchedPointer);
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr, 
+	const struct cudaChannelFormatDesc* desc, struct cudaExtent extent) {
+
+	cudaError_t result = cudaErrorMemoryAllocation;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	executive::PitchedPointer pitchedPointer;
+	if (context.mallocPitch(&pitchedPointer, convert(extent))) {
+		result = cudaSuccess;
+		*arrayPtr = (struct cudaArray *)pitchedPointer.ptr;
+	}
+
+	return setLastErrorAndUnlock(thread, result);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -696,6 +748,69 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 	}
 
 	return setLastErrorAndUnlock(thread, result);		
+}
+
+/*
+struct cudaMemcpy3DParms {
+	struct cudaArray *dstArray;
+	struct cudaPos dstPos;
+	struct cudaPitchedPtr dstPtr;
+	struct cudaExtent extent;
+	enum cudaMemcpyKind kind;
+	struct cudaArray *srcArray;
+	struct cudaPos srcPos;
+	struct cudaPitchedPtr srcPtr;
+};
+*/
+
+cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	executive::PitchedPointer dstPtr;
+	executive::PitchedPointer srcPtr;
+
+	if (p->dstArray) {
+		dstPtr.ptr = (void *)p->dstArray;
+		dstPtr.xsize = 0;
+		dstPtr.ysize = 0;
+	}
+	else {
+		dstPtr.ptr = p->dstPtr.ptr;
+		dstPtr.xsize = p->dstPtr.xsize;
+		dstPtr.ysize = p->dstPtr.ysize;
+	}
+	if (p->srcArray) {
+		srcPtr.ptr = (void *)p->srcArray;
+		srcPtr.xsize = 0;
+		srcPtr.ysize = 0;
+	}
+	else {
+		srcPtr.ptr = p->srcPtr.ptr;
+		srcPtr.xsize = p->srcPtr.xsize;
+		srcPtr.ysize = p->srcPtr.ysize;
+	}
+
+	if (context.deviceMemcpy3D(dstPtr, convert(p->dstPos), convert(p->extent), convert(p->kind),
+		srcPtr, convert(p->srcPos))) {
+		result = cudaSuccess;
+	}
+
+	return setLastErrorAndUnlock(thread, result);	
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, 
+	cudaStream_t stream) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	assert(0 && "unimplemented");
+
+	return setLastErrorAndUnlock(thread, result);	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

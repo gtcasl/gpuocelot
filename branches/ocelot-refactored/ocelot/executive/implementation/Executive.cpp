@@ -405,7 +405,8 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 	MemoryAllocationMap::iterator it = allocations.find((void *)array);
 	if (it == allocations.end()) {
 		// not found
-		assert(0 && "unimplemented");		
+		Ocelot_Exception("Executive::freeArray() - array = " << (void *)array 
+			<< " was not found in the allocation table.");
 	}
 	else {
 		if (it->second.addressSpace) {

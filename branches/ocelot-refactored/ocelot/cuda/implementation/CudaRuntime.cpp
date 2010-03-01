@@ -501,7 +501,7 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	report("cudaFree()");
 	
 	HostThreadContext & thread = getHostThreadContext();
-	if (context.free(devPtr)) {
+	if (!devPtr || context.free(devPtr)) {
 		result = cudaSuccess;
 	}
 	return setLastErrorAndUnlock(thread, result);
@@ -511,7 +511,7 @@ cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
-	if (context.freeHost(ptr)) {
+	if (!ptr || context.freeHost(ptr)) {
 		result = cudaSuccess;
 	}
 	return setLastErrorAndUnlock(thread, result);
@@ -521,7 +521,8 @@ cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
-	if (context.freeArray(array)) {
+	report("CudaRuntime::cudaFreeArray() array = " << (void *)array);
+	if (!array || context.freeArray(array)) {
 		result = cudaSuccess;
 	}
 	return setLastErrorAndUnlock(thread, result);

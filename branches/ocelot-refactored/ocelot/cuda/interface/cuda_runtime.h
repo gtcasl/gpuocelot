@@ -32,17 +32,17 @@ typedef int cudaStream_t;
 typedef unsigned int GLuint;
 
 enum cudaMemcpyKind {
-	cudaMemcpyHostToHost,
-	cudaMemcpyHostToDevice,
-	cudaMemcpyDeviceToHost,
-	cudaMemcpyDeviceToDevice
+	cudaMemcpyHostToHost = 0,
+	cudaMemcpyHostToDevice = 1,
+	cudaMemcpyDeviceToHost = 2,
+	cudaMemcpyDeviceToDevice = 3
 };
 
 enum cudaChannelFormatKind {
-	cudaChannelFormatKindSigned,
-	cudaChannelFormatKindUnsigned,
-	cudaChannelFormatKindFloat,
-	cudaChannelFormatKindNone
+	cudaChannelFormatKindSigned = 0,
+	cudaChannelFormatKindUnsigned = 1,
+	cudaChannelFormatKindFloat = 2,
+	cudaChannelFormatKindNone = 3
 };
 
 enum cudaComputeMode {
@@ -103,9 +103,9 @@ struct uint3 {
 };
 
 struct cudaExtent {
-	size_t depth;
-	size_t height;
 	size_t width;
+	size_t height;
+	size_t depth;
 };
 
 struct cudaDeviceProp {
@@ -132,14 +132,12 @@ struct cudaDeviceProp {
   int    __cudaReserved[36];
 };
 
-
-
 struct cudaChannelFormatDesc {
-	enum cudaChannelFormatKind f;
-	int w;
 	int x;
 	int y;
 	int z;
+	int w;
+	enum cudaChannelFormatKind f;
 };
 
 struct cudaFuncAttributes {
@@ -151,8 +149,8 @@ struct cudaFuncAttributes {
 };
 
 struct cudaPitchedPtr {
-	size_t pitch;
 	void *ptr;
+	size_t pitch;
 	size_t xsize;
 	size_t ysize;
 };
@@ -164,14 +162,14 @@ struct cudaPos {
 };
 
 struct cudaMemcpy3DParms {
+	struct cudaArray *srcArray;
+	struct cudaPos srcPos;
+	struct cudaPitchedPtr srcPtr;
 	struct cudaArray *dstArray;
 	struct cudaPos dstPos;
 	struct cudaPitchedPtr dstPtr;
 	struct cudaExtent extent;
 	enum cudaMemcpyKind kind;
-	struct cudaArray *srcArray;
-	struct cudaPos srcPos;
-	struct cudaPitchedPtr srcPtr;
 };
 
 struct textureReference {
@@ -181,6 +179,25 @@ struct textureReference {
   cudaChannelFormatDesc channelDesc;
   int __cudaReserved[16];
 };
+
+enum cudaTextureAddressMode
+{
+  cudaAddressModeWrap,
+  cudaAddressModeClamp
+};
+
+enum cudaTextureFilterMode
+{
+  cudaFilterModePoint,
+  cudaFilterModeLinear
+};
+
+enum cudaTextureReadMode
+{
+  cudaReadModeElementType,
+  cudaReadModeNormalizedFloat
+};
+
 
 /*******************************************************************************
 *                                                                              *

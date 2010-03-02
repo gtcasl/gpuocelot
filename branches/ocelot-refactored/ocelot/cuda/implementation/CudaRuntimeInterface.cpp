@@ -462,7 +462,7 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGetChannelDesc(struct cudaChannelFor
 
 struct cudaChannelFormatDesc cuda::CudaRuntimeInterface::cudaCreateChannelDesc(int x, int y, int z, int w, 
 	enum cudaChannelFormatKind f) {
-	struct cudaChannelFormatDesc desc = {f, x, y, z, w};
+	struct cudaChannelFormatDesc desc = {x, y, z, w, f};
 	return desc;
 }
 

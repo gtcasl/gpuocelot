@@ -555,6 +555,8 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr,
 	if (context.mallocPitch(&pitchedPointer, convert(extent))) {
 		result = cudaSuccess;
 		*arrayPtr = (struct cudaArray *)pitchedPointer.ptr;
+
+		report("cudaMalloc3DArray() - *arrayPtr = " << (void *)(*arrayPtr));
 	}
 
 	return setLastErrorAndUnlock(thread, result);
@@ -570,6 +572,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 	if (kind >= 0 && kind <= 3) {
 		lock();
 		getHostThreadContext();
+
+		report("cudaMemcpy()");
 		bool success = context.deviceMemcpy(dst, src, count, convert(kind));
 		if (!success) {
 			result = cudaErrorInvalidDevicePointer;
@@ -590,9 +594,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void
 	cudaError_t result = cudaSuccess;
 	lock();
 	getHostThreadContext();
-	if (!*symbol) {
-		symbol = globalSymbolMap[(void *)symbol].c_str();
+
+	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
+	if (sym_it != globalSymbolMap.end()) {
+		symbol = sym_it->second.c_str();
 	}
+
+	report("cudaMemcpyToSymbol() '" << symbol << "'");
 	bool success = context.deviceMemcpyToSymbol(symbol, src, count, offset, convert(kind));	
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
@@ -607,9 +615,14 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbo
 	cudaError_t result = cudaSuccess;
 	lock();
 	getHostThreadContext();
-	if (!*symbol) {
-		symbol = globalSymbolMap[(void *)symbol].c_str();
+
+	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
+	if (sym_it != globalSymbolMap.end()) {
+		symbol = sym_it->second.c_str();
 	}
+
+	report("cudaMemcpyFromSymbol() '" << symbol << "'");
+
 	bool success = context.deviceMemcpyFromSymbol(symbol, dst, count, offset, convert(kind));	
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
@@ -654,6 +667,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t w
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
 
+	report("cudaMemcpyToArray()");
+
 	if (context.deviceMemcpyToArray(dst, (void *)src, wOffset, hOffset, count, convert(kind))) {
 		result = cudaSuccess;
 	}
@@ -667,6 +682,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst, const struct cudaA
 	cudaError_t result = cudaErrorInvalidValue ;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
+
+	report("cudaMemcpyFromArray()");
 
 	if (context.deviceMemcpyFromArray((struct cudaArray *)src, dst, wOffset, hOffset, count, 
 		convert(kind))) {
@@ -683,6 +700,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst, siz
 	cudaError_t result = cudaErrorInvalidValue;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
+
+	report("cudaMemcpyArrayToArray()");
 
 	if (context.deviceMemcpyArrayToArray((struct cudaArray *)dst, wOffsetDst, hOffsetDst,
 		(struct cudaArray *)src, wOffsetSrc, hOffsetSrc, count, convert(kind))) {
@@ -701,7 +720,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch, const void
 	cudaError_t result = cudaErrorInvalidValue;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
-	
+
+	report("cudaMemcpy2D()");	
+
 	if (context.deviceMemcpy2D(dst, dpitch, src, spitch, width, height, convert(kind))) {
 		result = cudaSuccess;
 	}
@@ -751,19 +772,6 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 	return setLastErrorAndUnlock(thread, result);		
 }
 
-/*
-struct cudaMemcpy3DParms {
-	struct cudaArray *dstArray;
-	struct cudaPos dstPos;
-	struct cudaPitchedPtr dstPtr;
-	struct cudaExtent extent;
-	enum cudaMemcpyKind kind;
-	struct cudaArray *srcArray;
-	struct cudaPos srcPos;
-	struct cudaPitchedPtr srcPtr;
-};
-*/
-
 cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 
 	cudaError_t result = cudaErrorInvalidValue;
@@ -782,6 +790,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 		dstPtr.ptr = p->dstPtr.ptr;
 		dstPtr.xsize = p->dstPtr.xsize;
 		dstPtr.ysize = p->dstPtr.ysize;
+		dstPtr.pitch = p->dstPtr.pitch;
 	}
 	if (p->srcArray) {
 		srcPtr.ptr = (void *)p->srcArray;
@@ -792,7 +801,12 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 		srcPtr.ptr = p->srcPtr.ptr;
 		srcPtr.xsize = p->srcPtr.xsize;
 		srcPtr.ysize = p->srcPtr.ysize;
+		srcPtr.pitch = p->srcPtr.pitch;
 	}
+
+	report("cudaMemcpy3D() - dstPtr = (" << (void *)dstPtr.ptr << ", " << dstPtr.xsize << ", " 
+		<< dstPtr.ysize << ") - srcPtr = (" << (void *)p->srcPtr.ptr << ", " 
+		<< p->srcPtr.xsize << ", " << p->srcPtr.ysize << ")");
 
 	if (context.deviceMemcpy3D(dstPtr, convert(p->dstPos), convert(p->extent), convert(p->kind),
 		srcPtr, convert(p->srcPos))) {
@@ -1068,6 +1082,10 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureRefere
 
 	executive::ChannelFormatDesc format;
 	convert(format, desc);
+
+	report("cudaBindTextureToArray() - texref = '" << textureReferences[texref] << "', array = " 
+		<< (void *)array << " - format: " << format.kind << " (" << format.x << ", " << format.y 
+		<< ", " << format.z << ")");
 
 	if (context.bindTextureToArray(textureReferences[texref], (void *)array, format, 
 		(ir::Texture::AddressMode *)texref->addressMode, 

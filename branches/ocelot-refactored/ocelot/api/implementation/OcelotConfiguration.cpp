@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -195,11 +195,6 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			}
 		}
 	}
-	
-	report(" Ocelot configuration: devices: ");
-	report("  emulated: " << executive.enableEmulated);
-	report("  llvm: " << executive.enableLLVM);
-	report("  gpu: " << executive.enableGPU);
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {
@@ -244,6 +239,12 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 	if (config) {
 		delete config;
 	}
+
+	std::string device;
+	if (executive.enableEmulated) device = "emulated";
+	if (executive.enableLLVM) device = "llvm";
+	if (executive.enableGPU) device = "gpu";
+	report("Ocelot Configuration: " << ocelot << " " << version << " " << device);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

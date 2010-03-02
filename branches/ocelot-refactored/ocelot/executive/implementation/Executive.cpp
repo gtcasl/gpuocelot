@@ -240,6 +240,10 @@ bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent e
 			memory.pointer.pitch = extent.width;
 			memory.pointer.width = extent.width;
 			memory.pointer.height = extent.height;
+
+			report("mallocPitch() - allocated " << memory.allocationSize << " bytes - dimensions: "
+				<< memory.extent.width << " x " << memory.extent.height << " x " << memory.extent.depth 
+				<< " - ptr = " << (void *)memory.pointer.ptr);
 		}
 		break;
 	default:
@@ -1005,6 +1009,8 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 
 	int addrSpace = getDeviceAddressSpace();
 
+	report("deviceMemcpy3D() - extent: " << extent.width << ", " << extent.height << ", " << extent.depth << " - kind: " << kind);
+
 	switch (kind) {
 	case HostToHost:
 	{
@@ -1038,16 +1044,23 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 		return false;
 	}
 
-	char *dstPtr = (char *)dst.ptr;
-	char *srcPtr = (char *)src.ptr;
+	report("  dst = (ptr: " << dst.ptr << ", pitch: " << dst.pitch << ", xsize: " 
+		<< dst.xsize << ", ysize: " << dst.ysize << ")");
+
+	report("  src = (ptr: " << src.ptr << ", pitch: " << src.pitch << ", xsize: " 
+		<< src.xsize << ", ysize: " << src.ysize << ")");
+	
 	switch (addrSpace) {
 	case 0:
 	{
 		// not arrays
 		for (size_t z = 0; z < extent.depth; z++) {
 			for (size_t y = 0; y < extent.height; y++) {
-				dstPtr += dstPos.x + dst.pitch * ((dstPos.y+y) + (z+dstPos.z) * dstPos.y);
-				srcPtr += srcPos.x + src.pitch * ((srcPos.y+y) + (z+srcPos.z) * srcPos.y);
+				char *dstPtr = (char *)dst.ptr + dstPos.x + dst.pitch * (
+					(dstPos.y+y) + (z+dstPos.z) * dst.height);
+				char *srcPtr = (char *)src.ptr + srcPos.x + src.pitch * (
+					(srcPos.y+y) + (z+srcPos.z) * src.height);
+
 				::memcpy(dstPtr, srcPtr, extent.width);
 			}
 		}
@@ -1114,6 +1127,8 @@ void executive::Executive::registerGlobalVariable(const std::string & module,
 	//
 	// register global variables and allocate [if necessary] on available address spaces
 	//
+
+	report("Executive::registerGlobalVariable() - mod: '" << module << "', varName: '" << varName << "'");
 	
 	GlobalMap::iterator g_it = globals.find(varName);
 	if (g_it == globals.end()) {
@@ -1149,6 +1164,9 @@ void executive::Executive::registerTexture(const char *module, const char *name,
 	//
 	// register global variables and allocate [if necessary] on available address spaces
 	//
+
+	report("registerTexture() '" << module << "' - '" << name << "' - dimensions: " << dimensions 
+		<< ", normalize: " << (bool)normalized);
 	
 	ir::Texture texture;
 	texture.normalizedFloat = (bool)normalized;
@@ -1699,10 +1717,10 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 	if (tex_it != textures.end()) {
 		ir::Texture &texture = tex_it->second;
 
-		texture.x = format.w;
-		texture.y = format.x;
-		texture.z = format.y;
-		texture.w = format.z;
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
 
 		report("Executive::bindTexture2D() - texture.xyzq = " << texture.x << ", " << texture.y 
 			<< ", " << texture.z << ", " << texture.w);
@@ -1772,12 +1790,12 @@ bool executive::Executive::bindTextureToArray(const std::string & textureName, v
 	if (tex_it != textures.end()) {
 		ir::Texture &texture = tex_it->second;
 
-		texture.x = format.w;
-		texture.y = format.x;
-		texture.z = format.y;
-		texture.w = format.z;
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
 
-		report("Executive::bindTextureToArray() - texture.xyzq = " << texture.x << ", " << texture.y 
+		report("Executive::bindTextureToArray() - texture.xyzw = " << texture.x << ", " << texture.y 
 			<< ", " << texture.z << ", " << texture.w);
 
 		switch (format.kind) {
@@ -1801,6 +1819,7 @@ bool executive::Executive::bindTextureToArray(const std::string & textureName, v
 
 		texture.size.x = memory.pointer.xsize;
 		texture.size.y = memory.pointer.ysize;
+		texture.size.z = memory.extent.depth;
 		texture.data = (void *)memory.pointer.ptr;
 
 		texture.interpolation = filter;

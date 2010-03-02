@@ -19,6 +19,29 @@ namespace api {
 	//! \brief configuration object structure for GPU Ocelot
 	class OcelotConfiguration {
 	public:
+	
+		class Checkpoint {
+		public:
+			
+		public:
+			Checkpoint();
+			
+		public:
+			//! \brief indicates checkpointing is enabled
+			bool enabled;
+			
+			//! \brief path in which checkpoint files are stored
+			std::string path;
+			
+			//! \brief prefix for all checkpoint files
+			std::string prefix;
+			
+			//! \brief suffix for all checkpoint files
+			std::string suffix;
+			
+			//! \brief if existing checkpoints exist, verify allocations match them
+			bool verify;
+		};
 
 		//! Configuration for trace generation facilities
 		class TraceGeneration {
@@ -148,6 +171,9 @@ namespace api {
 
 		//! \brief configuration for Ocelot Executive
 		Executive executive;
+		
+		//! \brief configuration for Ocelot checkpoint
+		Checkpoint checkpoint;
 	};
 
 }

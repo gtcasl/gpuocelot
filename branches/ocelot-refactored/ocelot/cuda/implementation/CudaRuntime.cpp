@@ -131,7 +131,7 @@ static executive::dim3 convert(dim3 dim) {
 }
 
 static executive::dim3 convert(cudaPos pos) {
-	executive::dim3 ed3 = {pos.x, pos.y, pos.z};
+	executive::dim3 ed3 = {(int)pos.x, (int)pos.y, (int)pos.z};
 	return ed3;
 }
 

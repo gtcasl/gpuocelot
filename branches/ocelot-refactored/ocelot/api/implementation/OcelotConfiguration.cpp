@@ -49,6 +49,24 @@ const api::OcelotConfiguration::TraceGeneration & api::OcelotConfiguration::getT
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+api::OcelotConfiguration::Checkpoint::Checkpoint():
+	enabled(false), path("."), prefix("check"), suffix(".binary"), verify(false)
+{
+	
+}
+
+static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
+	hydrazine::json::Visitor config) {
+
+	check.enabled = config.parse<bool>("enabled", false);
+	check.path = config.parse<std::string>("path", "trace/");
+	check.prefix = config.parse<std::string>("prefix", "check");
+	check.suffix = config.parse<std::string>("suffix", ".binary");
+	check.verify = config.parse<bool>("verify", false);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	enabled(false),
 	database("trace/database.trace"),
@@ -212,6 +230,9 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		}
 		if (main.find("executive")) {
 			initializeExecutive(executive, main["executive"]);
+		}
+		if (main.find("checkpoint")) {
+			initializeCheckpoint(checkpoint, main["checkpoint"]);
 		}
 
 		version = main.parse<std::string>("version", "1.0.65");

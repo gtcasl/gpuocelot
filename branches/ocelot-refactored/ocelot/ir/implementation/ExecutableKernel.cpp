@@ -126,6 +126,9 @@ size_t ExecutableKernel::mapParameterOffsets() {
 		if (it->getElementSize() == 8 && (paramSize % 8)) {
 			paramSize += 8 - (paramSize % 8);
 		}
+		else if (it->getElementSize() == 4 && (paramSize % 4)) {
+			paramSize += 4 - (paramSize % 4);
+		}
 		it->offset = paramSize;
 		paramSize += it->getSize();
 	}
@@ -141,13 +144,10 @@ size_t ExecutableKernel::mapParameterOffsets() {
 void ExecutableKernel::setParameterBlock(const unsigned char *parameter, size_t paramSize) {
 	mapParameterOffsets();
 
+	report("ExecutableKernel::setParameterBlock() - paramSize = " << paramSize);
+
 	std::vector< ir::Parameter >::iterator it = parameters.begin();
 	for (it = parameters.begin(); it != parameters.end(); ++it) {
-		report("Configuring parameter " << it->name 
-			<< " " 
-			<< " - type: " << it->arrayValues.size() << " x " 
-			<< ir::PTXOperand::toString(it->type)
-			<< " - value: " << ir::Parameter::value(*it));
 
 		switch (it->type) {
 			case ir::PTXOperand::b8:	// fall through
@@ -176,6 +176,12 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter, size_t 
 					ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
 			}
 		}
+
+		report("Configuring parameter " << it->name 
+			<< " - offset: "  << it->offset
+			<< " - type: " << it->arrayValues.size() << " x " 
+			<< ir::PTXOperand::toString(it->type)
+			<< " - value: " << ir::Parameter::value(*it));
 	}
 }
 

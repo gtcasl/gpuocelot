@@ -38,7 +38,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1306,8 +1306,10 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, s
 	cudaError_t result = cudaSuccess;
 	
 	lock();
-		
+	
 	HostThreadContext &thread = getHostThreadContext();
+
+	report("cudaSetupArgument() - offset " << offset << ", size " << size);
 	
 	memcpy(thread.parameterBlock + offset, arg, size);
 	
@@ -1322,7 +1324,7 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	lock();
 	
 	cudaError_t result = cudaSuccess;
-	HostThreadContext &thread = getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 	
 	assert(thread.launchConfigurations.size());
 		
@@ -1332,6 +1334,8 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	const RegisteredKernel & kernel = kernels[(void *)entry];
 	std::string moduleName = kernel.module;
 	std::string kernelName = kernel.kernel;
+
+	report("CudaRuntime::cudaLaunch(" << kernelName << ")");
 	
 	try {
 
@@ -1359,10 +1363,9 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 		throw e;
 #endif
 	}
-	unlock();
 	
 	TestError(result);
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 

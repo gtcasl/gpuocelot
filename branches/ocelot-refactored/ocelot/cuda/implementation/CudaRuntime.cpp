@@ -37,6 +37,14 @@
 // whether debugging messages are printed
 #define REPORT_BASE 0
 
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
+
+#if REPORT_BASE > 0
+#define TestError(x) { if (x != cudaSuccess) { report("CUDA Error: " << __func__); } }
+#else
+#define TestError(x) {}
+#endif
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 const char *cuda::FatBinaryContext::name() const {
@@ -428,6 +436,8 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	void *funcPtr = (void *)hostFun;
 	const char *funcName = deviceFun;
 	const char *moduleName = fatBinaries[handle].name();
+
+	globalSymbolMap[funcPtr] = std::string(funcName);
 	
 	// associate the function pointer with the kernel name and maybe ir::Kernel
 	RegisteredKernel kernel;
@@ -455,6 +465,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 
 		report("CudaRuntime::cudaMalloc( *devPtr = " << (void *)*devPtr << ", size = " << size << ")");
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -467,6 +478,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 		result = cudaSuccess;
 		report("CudaRuntime::cudaMallocHost( *pPtr = " << (void *)*ptr << ", size = " << size << ")");
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -480,6 +492,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch, siz
 		report("CudaRuntime::cudaMallocPitch( *devPtr = " << (void *)*devPtr << ", pitch = " 
 			<< *pitch << ")");
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -492,6 +505,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 		result = cudaSuccess;
 		report("CudaRuntime::cudaMallocArray( *array = " << (void *)*array << ")");
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -504,6 +518,7 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	if (!devPtr || context.free(devPtr)) {
 		result = cudaSuccess;
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -514,6 +529,7 @@ cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 	if (!ptr || context.freeHost(ptr)) {
 		result = cudaSuccess;
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -525,6 +541,7 @@ cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	if (!array || context.freeArray(array)) {
 		result = cudaSuccess;
 	}
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -541,6 +558,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3D(struct cudaPitchedPtr* devPtr,
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -559,6 +577,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr,
 		report("cudaMalloc3DArray() - *arrayPtr = " << (void *)(*arrayPtr));
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -583,6 +602,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 	else {
 		result = cudaErrorInvalidMemcpyDirection;
 	}
+	TestError(result);
 	return setLastError(result);	
 }
 
@@ -606,6 +626,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void
 		result = cudaErrorInvalidDevicePointer;
 	}
 	unlock();
+	TestError(result);
 	return setLastError(result);	
 }
 
@@ -628,6 +649,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbo
 		result = cudaErrorInvalidDevicePointer;
 	}
 	unlock();
+	TestError(result);
 	return setLastError(result);	
 }
 
@@ -657,6 +679,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -673,6 +696,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t w
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -690,6 +714,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst, const struct cudaA
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -708,6 +733,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst, siz
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -727,6 +753,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch, const void
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -749,6 +776,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst, size_t
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);		
 }
 
@@ -769,6 +797,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);		
 }
 
@@ -813,6 +842,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -825,6 +855,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms 
 
 	assert(0 && "unimplemented");
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -848,6 +879,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 	}
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -875,6 +907,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, int valu
 		result = cudaSuccess;
 	}
 	
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -888,6 +921,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 
 	assert(0 && "unimplemented");
 	
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -909,6 +943,7 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *s
 
 	report("devPtr: " << *devPtr);	
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -922,6 +957,7 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
 	*size = global.size;
 	
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);	
 }
 
@@ -934,6 +970,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	*count = context.getDevices().size();
 	
 	unlock();
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -985,12 +1022,14 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaChooseDevice(int *device, const struct cudaDeviceProp *prop) {
 	cudaError_t result = cudaSuccess;
 	*device = context.getSelectedDevice();
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1008,6 +1047,7 @@ cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
 		result = cudaSuccess;
 	}
 	unlock();
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1019,6 +1059,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDevice(int *device) {
 	*device = thread.selectedDevice;
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1031,12 +1072,14 @@ cudaError_t cuda::CudaRuntime::cudaSetValidDevices(int *device_arr, int len) {
 		thread.validDevices[i] = device_arr[i];
 	}
 	unlock();
+	TestError(result);
 	return setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags( int flags ) {
 	cudaError_t result = cudaSuccess;
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1050,6 +1093,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 	
 	assert(0 && "unimplemented yet");
 
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1070,6 +1114,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -1094,6 +1139,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureRefere
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -1106,6 +1152,7 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(const struct textureReference *
 	context.unbindTexture(textureReferences[(void *)texref]);
 	result = cudaSuccess;
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -1118,6 +1165,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureAlignmentOffset(size_t *offset,
 
 	*offset = context.getTextureAlignmentOffset(textureReferences[texref]);
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -1133,6 +1181,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(const struct textureRefer
 	}
 	
 	unlock();
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1151,6 +1200,7 @@ cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(struct cudaChannelFormatDesc *
 		result = cudaSuccess;
 	}
 
+	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
 
@@ -1186,6 +1236,7 @@ cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, si
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1200,6 +1251,7 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, s
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1247,29 +1299,55 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	}
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 
 	const char *func) {
-	cudaError_t result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidDeviceFunction;
 		
 	lock();
 	
 	//
 	// go find the kernel and fill out its attributes
 	//
-	
-	attr->constSizeBytes = 0;
-	attr->localSizeBytes = 0;
-	attr->maxThreadsPerBlock = 0;
-	attr->numRegs = 0;
-	attr->sharedSizeBytes = 0;
+	const char *symbol = func;
+	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
+	if (sym_it != globalSymbolMap.end()) {
+		ir::Kernel *kernel = 0;
+		RegisteredKernelMap::const_iterator kernel_it = kernels.begin(); 
+
+		symbol = sym_it->second.c_str();
+
+		for (; kernel_it != kernels.end(); ++kernel_it) {
+			if (std::string(kernel_it->second.kernel) == symbol) {
+				kernel = context.getKernel(context.getSelectedISA(), kernel_it->second.module, 
+					kernel_it->second.kernel);
+				break;
+			}
+		}
+
+		if (kernel && kernel->ISA != ir::Instruction::PTX) {
+			const ir::ExecutableKernel *exeKernel = static_cast<const ir::ExecutableKernel *>(kernel);
+
+			attr->constSizeBytes = exeKernel->constMemorySize();
+			attr->localSizeBytes = exeKernel->localMemorySize();
+			attr->maxThreadsPerBlock = exeKernel->maxThreadsPerBlock();
+			attr->numRegs = exeKernel->registerCount();
+			attr->sharedSizeBytes = exeKernel->sharedMemorySize();
+
+			result = cudaSuccess;
+		}
+		else if (kernel) {
+			report("cudaFuncGetAttributes() - got kernel '" << kernel->name << "' but ISA was " 
+				<< kernel->ISA << ", selected ISA is " << context.getSelectedISA());
+		}
+	}
 	
 	unlock();
 	
-	assert(0 && "unimplemented");
-	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1300,6 +1378,7 @@ cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
 	
 	unlock();
 
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1325,6 +1404,7 @@ cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, int 
 		
 	unlock();
 
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1359,6 +1439,7 @@ cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t s
 		
 	unlock();	
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1378,6 +1459,7 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	}	
 	unlock();
 
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1397,6 +1479,7 @@ cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
 	}	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1417,6 +1500,7 @@ cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 	}	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1452,6 +1536,7 @@ cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, cudaEvent_t start
 	}
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1479,6 +1564,7 @@ cudaError_t cuda::CudaRuntime::cudaStreamCreate(cudaStream_t *pStream) {
 		
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1502,6 +1588,7 @@ cudaError_t cuda::CudaRuntime::cudaStreamDestroy(cudaStream_t stream) {
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1524,6 +1611,7 @@ cudaError_t cuda::CudaRuntime::cudaStreamSynchronize(cudaStream_t stream) {
 	
 	unlock();
 
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1546,6 +1634,7 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1565,6 +1654,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	}
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1579,6 +1669,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	//
 	context.synchronize();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1618,6 +1709,7 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, GLuint bufOb
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1649,6 +1741,7 @@ cudaError_t cuda::CudaRuntime::cudaGLRegisterBufferObject(GLuint bufObj) {
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1674,6 +1767,7 @@ cudaError_t cuda::CudaRuntime::cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsi
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 
 }
@@ -1715,6 +1809,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 
@@ -1746,6 +1841,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
 	
 	unlock();
 	
+	TestError(result);
 	return setLastError(result);
 }
 

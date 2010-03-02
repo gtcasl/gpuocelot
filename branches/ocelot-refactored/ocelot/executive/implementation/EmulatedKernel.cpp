@@ -45,6 +45,7 @@ executive::EmulatedKernel::EmulatedKernel(
 	assertM( kernel->ISA == ir::Instruction::PTX, 
 		"Can only build an emulated kernel from a PTXKernel." );
 	
+	ISA = ir::Instruction::Emulated;
 	ConstMemory = ParameterMemory = 0;
 	if (_initialize) {
 		initialize();
@@ -52,6 +53,7 @@ executive::EmulatedKernel::EmulatedKernel(
 }
 
 executive::EmulatedKernel::EmulatedKernel(const Executive *c): ExecutableKernel(c) {
+	ISA = ir::Instruction::Emulated;
 
 }
 
@@ -64,6 +66,7 @@ executive::EmulatedKernel::~EmulatedKernel() {
 }
 
 bool executive::EmulatedKernel::executable() {
+	report("EmulatedKernel::executable() returns true");
 	return true;
 }
 

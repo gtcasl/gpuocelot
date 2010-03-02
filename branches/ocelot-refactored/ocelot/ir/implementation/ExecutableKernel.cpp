@@ -52,7 +52,7 @@ ExecutableKernel::~ExecutableKernel()
 
 bool ExecutableKernel::executable() 
 {
-	return false;
+	return true;
 }
 
 void ExecutableKernel::traceEvent( const trace::TraceEvent & event) const

@@ -1197,6 +1197,13 @@ ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa,
 	ModuleMap::iterator mod_it = modules.find(moduleName);
 	if (mod_it != modules.end()) {
 		kernel = mod_it->second->getKernel(isa, kernelName);
+		if (!kernel) {
+			translateModuleToISA(moduleName, isa, false);
+			mod_it = modules.find(moduleName);
+			if (mod_it != modules.end()) {
+				kernel = mod_it->second->getKernel(isa, kernelName);
+			}
+		}
 	}
 	
 	return kernel;

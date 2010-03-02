@@ -129,6 +129,10 @@ size_t ExecutableKernel::mapParameterOffsets() {
 		else if (it->getElementSize() == 4 && (paramSize % 4)) {
 			paramSize += 4 - (paramSize % 4);
 		}
+		else if (it->getElementSize() == 2 && (paramSize % 2)) {
+			paramSize += 2 - (paramSize % 2);
+		}
+
 		it->offset = paramSize;
 		paramSize += it->getSize();
 	}

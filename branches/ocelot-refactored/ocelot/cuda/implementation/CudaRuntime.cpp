@@ -28,6 +28,9 @@
 #undef REPORT_BASE
 #endif
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // whether CUDA runtime catches exceptions thrown by Ocelot
 #define CATCH_RUNTIME_EXCEPTIONS 0
 
@@ -36,6 +39,11 @@
 
 // whether debugging messages are printed
 #define REPORT_BASE 0
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Error handling macros
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -647,8 +655,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 	else {
 		result = cudaErrorInvalidMemcpyDirection;
 	}
+
 	TestError(result);
-	return setLastError(result);	
+	return setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void *src,
@@ -658,7 +667,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void
 
 	cudaError_t result = cudaSuccess;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 
 	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
 	if (sym_it != globalSymbolMap.end()) {
@@ -670,9 +679,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
 	}
-	unlock();
+
 	TestError(result);
-	return setLastError(result);	
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbol,
@@ -680,7 +689,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbo
 
 	cudaError_t result = cudaSuccess;
 	lock();
-	getHostThreadContext();
+	HostThreadContext & thread = getHostThreadContext();
 
 	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
 	if (sym_it != globalSymbolMap.end()) {
@@ -693,9 +702,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbo
 	if (!success) {
 		result = cudaErrorInvalidDevicePointer;
 	}
-	unlock();
 	TestError(result);
-	return setLastError(result);	
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_t count, 
@@ -706,13 +714,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_
 	HostThreadContext & thread = getHostThreadContext();
 	
 	StreamMap::iterator s_it = thread.streams.find(streamHandle);
-	if (s_it != thread.streams.end()) {
+	if (!streamHandle || s_it != thread.streams.end()) {
 		if (!context.getDeviceAddressSpace()) {
 			//
 			// host address space transfers aren't asynchronous
 			//
 			
-			CudaRuntime::cudaMemcpy(dst, src, count, kind);
+			result = CudaRuntime::cudaMemcpy(dst, src, count, kind);
 		}
 		else {
 			assert(0 && "unimplemented");
@@ -722,10 +730,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_
 		result = cudaErrorInvalidValue;
 	}
 	
-	unlock();
-	
 	TestError(result);
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, 

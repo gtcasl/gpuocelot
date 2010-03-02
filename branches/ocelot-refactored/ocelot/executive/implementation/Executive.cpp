@@ -1707,10 +1707,63 @@ void executive::Executive::fenceGlobalVariables() {
 	\param size bytes in texture
 	\return true on success
 */
-bool executive::Executive::bindTexture(size_t *offset, const std::string & texture, 
-	const void *devPtr, const ChannelFormatDesc &format, size_t size) {
+bool  executive::Executive::bindTexture(size_t *offset, const std::string & textureName, 
+	const void *devPtr, const ChannelFormatDesc &format, size_t size, 
+	ir::Texture::AddressMode *addrMode, ir::Texture::Interpolation filter, bool normalized) {
 
-	assert(0 && "unimplemented");
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
+
+		report("Executive::bindTexture() - texture.xyzq = " << texture.x << ", " << texture.y 
+			<< ", " << texture.z << ", " << texture.w);
+
+		switch (format.kind) {
+			case ChannelFormatDesc::Kind_signed:
+				report("Executive::bindTexture() - format.type signed");
+				texture.type = ir::Texture::Signed;
+				break;
+			case ChannelFormatDesc::Kind_unsigned:
+				report("Executive::bindTexture() - format.type unsigned");
+				texture.type = ir::Texture::Unsigned;
+				break;
+			case ChannelFormatDesc::Kind_float:
+				report("Executive::bindTexture() - format.type float");
+				texture.type = ir::Texture::Float;
+				break;
+			default:
+				report("Executive::bindTexture() - format.type == Kind_invalid");
+				texture.type = ir::Texture::Invalid;
+				break;
+		}
+
+		texture.size.x = size;
+		texture.size.y = 0;
+		texture.data = (void *)devPtr;
+
+		texture.interpolation = filter;
+		texture.normalize = normalized;
+
+		for (unsigned int i = 0; i < 3; i++) {
+			texture.addressMode[i] = addrMode[i];
+		}
+
+		if (offset) {
+			*offset = (size_t)devPtr % 16;
+		}
+
+		report("Executive::bindTexture() '" << textureName << "'.data = " << texture.data 
+			<< " - filter: " << filter);
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+		return false;
+	}
 
 	return true;
 }
@@ -1767,7 +1820,6 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 
 		texture.interpolation = filter;
 		texture.normalize = normalized;
-//		texture.normalizedFloat = false;
 
 		for (unsigned int i = 0; i < 3; i++) {
 			texture.addressMode[i] = addrMode[i];

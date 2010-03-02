@@ -1134,12 +1134,23 @@ cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags( int flags ) {
 cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset, 
 	const struct textureReference *texref, const void *devPtr, 
 	const struct cudaChannelFormatDesc *desc, size_t size) {
-	cudaError_t result = cudaSuccess;
+
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	assert(0 && "unimplemented yet");
+	lock();
+	HostThreadContext &thread = getHostThreadContext();
+
+	executive::ChannelFormatDesc format;
+	convert(format, desc);
+	if (context.bindTexture(offset, textureReferences[texref], devPtr, format, size, 
+		(ir::Texture::AddressMode *)texref->addressMode, 
+		(ir::Texture::Interpolation)texref->filterMode, texref->normalized)) {
+
+		result = cudaSuccess;
+	}
 
 	TestError(result);
-	return setLastError(result);
+	return setLastErrorAndUnlock(thread, result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,

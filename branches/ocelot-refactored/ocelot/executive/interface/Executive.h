@@ -375,7 +375,8 @@ namespace executive {
 			\return true on success
 		*/
 		bool bindTexture(size_t *offset, const std::string & texture, const void *devPtr, 
-			const ChannelFormatDesc &format, size_t size);
+			const ChannelFormatDesc &format, size_t size, ir::Texture::AddressMode *addrMode, 
+			ir::Texture::Interpolation filter, bool normalized);
 		
 		/*!
 			\brief binds a 2D texture by name to a device pointer with a given width, height, and pitch

@@ -380,6 +380,10 @@ namespace cuda {
 		virtual cudaError_t  cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, struct cudaExtent extent);
 		virtual cudaError_t  cudaMalloc3DArray(struct cudaArray** arrayPtr, const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 
+		virtual cudaError_t  cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags);
+		virtual cudaError_t  cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+		virtual cudaError_t  cudaHostGetFlags(unsigned int *pFlags, void *pHost);
+
 	public:
 
 		//

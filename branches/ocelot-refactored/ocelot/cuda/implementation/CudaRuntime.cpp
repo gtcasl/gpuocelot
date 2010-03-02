@@ -581,6 +581,51 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr,
 	return setLastErrorAndUnlock(thread, result);
 }
 
+cudaError_t cuda::CudaRuntime::cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags) {
+
+	cudaError_t result = cudaErrorMemoryAllocation;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	bool portable = (flags & cudaHostAllocPortable);
+	bool mapped = (flags & cudaHostAllocMapped);
+	bool writeCombined = (flags & cudaHostAllocWriteCombine);
+	if (context.mallocHost(pHost, bytes, portable, mapped, writeCombined)) {
+		result = cudaSuccess;
+	}
+
+	TestError(result);
+	return setLastErrorAndUnlock(thread, result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags) {
+
+	cudaError_t result = cudaErrorMemoryAllocation;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	executive::MemoryAllocation memory = context.getMemoryAllocation(pHost);
+	if (memory.pointer.ptr) {
+		result = cudaSuccess;
+		*pDevice = memory.pointer.ptr;
+	}
+
+	TestError(result);
+	return setLastErrorAndUnlock(thread, result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags, void *pHost) {
+
+	cudaError_t result = cudaErrorInvalidValue;
+	lock();
+	HostThreadContext & thread = getHostThreadContext();
+
+	assert(0 && "unimplemented");
+
+	TestError(result);
+	return setLastErrorAndUnlock(thread, result);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // memory copying

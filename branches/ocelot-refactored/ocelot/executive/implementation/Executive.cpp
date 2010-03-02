@@ -124,7 +124,17 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 	return result;
 }
 
-bool executive::Executive::mallocHost(void **ptr, size_t size) {
+/*!
+	\brief performs host allocation of page-locked memory
+	\param ptr places resulting pointer
+	\param size number of bytes
+	\param portable allocation will be considered pinned memory shared for all CUDA contexts
+	\param mapped	maps allocation to device context
+	\param writeCombined optimize for writes by CPU, reads from device
+*/
+bool executive::Executive::mallocHost(void **ptr, size_t size, bool portable, bool mapped, 
+	bool writeCombined) {
+
 	bool result = true;
 	MemoryAllocation memory;
 	

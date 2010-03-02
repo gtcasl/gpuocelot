@@ -151,12 +151,15 @@ namespace executive {
 		bool malloc(void **devPtr, size_t size);
 
 		/*!
-			\brief allocates memory on the host that is well-suited for use with Ocelot
+			\brief performs host allocation of page-locked memory
 			\param ptr places resulting pointer
-			\param size number of bytes to allocate
-			\return true if successful
+			\param size number of bytes
+			\param portable allocation will be considered pinned memory shared for all CUDA contexts
+			\param mapped	maps allocation to device context
+			\param writeCombined optimize for writes by CPU, reads from device
 		*/
-		bool mallocHost(void **ptr, size_t size);
+		bool mallocHost(void **ptr, size_t size, bool portable = false, bool mapped = false, 
+			bool writeCombined = false);
 		
 		/*!
 			\brief allocates memory on the selected device and returns pitch

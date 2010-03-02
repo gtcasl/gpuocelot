@@ -31,6 +31,11 @@ typedef int cudaEvent_t;
 typedef int cudaStream_t;
 typedef unsigned int GLuint;
 
+#define cudaHostAllocDefault      0 
+#define cudaHostAllocPortable     1
+#define cudaHostAllocMapped       2 
+#define cudaHostAllocWriteCombine 4
+
 enum cudaMemcpyKind {
 	cudaMemcpyHostToHost = 0,
 	cudaMemcpyHostToDevice = 1,

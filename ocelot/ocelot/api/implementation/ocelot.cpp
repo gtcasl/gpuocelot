@@ -80,6 +80,7 @@ namespace ocelot
 		size_t paramSize = (size_t)(parameters - &kernel - sizeof(kernel));
 
 		report("Paramter block size: " << paramSize);
+		assertM( false, "Ocelot API callKernel not implemented.");
 	}
 
 	executive::Executive& executive()

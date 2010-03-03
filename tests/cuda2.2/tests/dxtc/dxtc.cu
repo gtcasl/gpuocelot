@@ -153,13 +153,14 @@ __device__ void loadColorBlock(const uint * image, float3 colors[16], float3 sum
         
         // No need to synchronize, 16 < warp size.
 #if 1
-        } __debugsync(); if (idx < 16) {
+        } __debugsync();
 #endif
 
         // Sort colors along the best fit line.
         colorSums(colors, sums);
         float3 axis = bestFitLine(colors, sums[0]);
         
+        if (idx < 16) {
         dps[idx] = dot(colors[idx], axis);
         
 #if 1

@@ -625,4 +625,12 @@ cudaError_t cuda::CudaRuntimeInterface::cudaRuntimeGetVersion(int *runtimeVersio
 	return cudaErrorNotYetImplemented;
 }
 
+void cuda::CudaRuntimeInterface::cudaMutexOperation( int lock ) {
+	assert(0 && "unimplemented");
+}
+
+int cuda::CudaRuntimeInterface::cudaSynchronizeThreads( void** one, void* two ) {
+	assert(0 && "unimplemented");
+	return 0;
+}
 

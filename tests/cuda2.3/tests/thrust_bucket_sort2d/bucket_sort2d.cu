@@ -42,6 +42,7 @@ int main(void)
 {
   const size_t N = 100000;
 
+  srand(0);
   // allocate some random points in the unit square on the host
   thrust::host_vector<float2> h_points(N);
   thrust::generate(h_points.begin(), h_points.end(), make_random_float2);
@@ -87,10 +88,13 @@ int main(void)
                       search_begin,
                       search_begin + w*h,
                       bucket_end.begin());
-
   // write out bucket (150, 50)'s list of points
   unsigned int bucket_idx = 50 * w + 150;
   std::cout << "bucket (150, 50)'s list of points:" << std::endl;
+  std::cout << " bucket_begin[" << bucket_idx << "] = " <<
+bucket_begin[bucket_idx] << std::endl;
+  std::cout << " bucket_end[" << bucket_idx << "] = " <<
+bucket_end[bucket_idx] << std::endl;
   for(unsigned int point_idx = bucket_begin[bucket_idx];
       point_idx != bucket_end[bucket_idx];
       ++point_idx)
@@ -98,6 +102,7 @@ int main(void)
     float2 p = points[point_idx];
     std::cout << "(" << p.x << "," << p.y << ")" << std::endl;
   }
+  std::cout << "Done!\n";
 
   std::cout << "TEST PASSED\n";
 

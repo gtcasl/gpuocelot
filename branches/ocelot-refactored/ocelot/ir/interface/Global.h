@@ -1,1 +1,1 @@
-../../../../../ocelot/ocelot/ir/interface/Global.h
+../../../../../ocelot/ocelot/ir/interface/./Global.h

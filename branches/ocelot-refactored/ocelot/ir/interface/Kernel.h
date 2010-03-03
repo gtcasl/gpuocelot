@@ -1,1 +1,1 @@
-../../../../../ocelot/ocelot/ir/interface/Kernel.h
+../../../../../ocelot/ocelot/ir/interface/./Kernel.h

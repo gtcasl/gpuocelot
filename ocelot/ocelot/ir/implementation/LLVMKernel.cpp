@@ -1,5 +1,4 @@
-/*!
-	\file LLVMKernel.cpp
+/*! \file LLVMKernel.cpp
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Saturday August 1, 2009
 	\brief The source file for the LLVMKernel class.
@@ -9,8 +8,9 @@
 #define LLVM_KERNEL_CPP_INCLUDED
 
 #include <ocelot/ir/interface/LLVMKernel.h>
-#include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Version.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 #include <configure.h>
 
@@ -56,24 +56,7 @@ namespace ir
 	
 	std::string LLVMKernel::numberedCode() const
 	{
-		unsigned int line = 1;
-		std::stringstream result;
-		
-		result << line++ << " ";
-		
-		for( std::string::const_iterator c = _code.begin(); 
-			c != _code.end(); ++c )
-		{
-			if( *c == '\n' )
-			{
-				result << "\n" << line++ << " ";
-			}
-			else
-			{
-				result << *c;
-			}
-		}
-		return std::move( result.str() );
+		return std::move( hydrazine::addLineNumbers( _code ) );
 	}
 	
 	const LLVMKernel::LLVMStatementVector& LLVMKernel::llvmStatements() const

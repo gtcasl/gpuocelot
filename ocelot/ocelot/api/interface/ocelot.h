@@ -80,6 +80,8 @@ namespace ocelot
 	KernelPointer getKernelPointer( const std::string& name, 
 		const std::string& module );
 
+	/*! \brief  */
+
 	/*! \brief Call a kernel on the selected device with given parameters */
 	void callKernel( KernelPointer kernel, ... );
 

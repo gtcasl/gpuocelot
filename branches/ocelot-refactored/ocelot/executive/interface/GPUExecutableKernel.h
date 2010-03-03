@@ -1,1 +1,1 @@
-/home/andrew/repositories/gpuocelot/ocelot/ocelot/executive/interface/GPUExecutableKernel.h
+../../../../../ocelot/ocelot/executive/interface/GPUExecutableKernel.h

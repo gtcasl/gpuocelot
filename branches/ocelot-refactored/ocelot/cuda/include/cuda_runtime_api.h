@@ -269,6 +269,9 @@ extern __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
 extern __host__ cudaError_t CUDARTAPI cudaDriverGetVersion(int *driverVersion);
 extern __host__ cudaError_t CUDARTAPI cudaRuntimeGetVersion(int *runtimeVersion);
 
+extern __host__ void __cudaMutexOperation(int lock);
+extern __host__ int __cudaSynchronizeThreads(void** one, void* two);
+
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */

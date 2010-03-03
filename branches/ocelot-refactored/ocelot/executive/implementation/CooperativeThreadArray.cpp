@@ -1,1 +1,1 @@
-/home/andrew/repositories/gpuocelot/ocelot/ocelot/executive/implementation/CooperativeThreadArray.cpp
+../../../../../ocelot/ocelot/executive/implementation/CooperativeThreadArray.cpp

@@ -260,6 +260,12 @@ namespace cuda {
 
 		virtual cudaError_t  cudaDriverGetVersion(int *driverVersion);
 		virtual cudaError_t  cudaRuntimeGetVersion(int *runtimeVersion);
+
+		/*
+			Runtime Synchronization
+		*/
+		virtual void cudaMutexOperation( int lock );
+		virtual int cudaSynchronizeThreads( void** one, void* two );
 		
 	public:
 	

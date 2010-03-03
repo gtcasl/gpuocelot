@@ -1,1 +1,1 @@
-/home/andrew/repositories/gpuocelot/ocelot/ocelot/executive/interface/TextureOperations.h
+../../../../../ocelot/ocelot/executive/interface/TextureOperations.h

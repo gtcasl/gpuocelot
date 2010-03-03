@@ -576,5 +576,18 @@ cudaError_t  cudaRuntimeGetVersion(int *runtimeVersion) {
 	return cuda::CudaRuntimeInterface::get()->cudaRuntimeGetVersion(runtimeVersion);
 }
 
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
+void __cudaMutexOperation(int lock) {
+	return cuda::CudaRuntimeInterface::get()->cudaMutexOperation( lock );
+}
+
+int __cudaSynchronizeThreads(void** one, void* two) {
+	return cuda::CudaRuntimeInterface::get()->cudaSynchronizeThreads( one, two );
+}
 
 

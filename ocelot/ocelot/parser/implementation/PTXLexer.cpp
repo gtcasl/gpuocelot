@@ -36,10 +36,8 @@ namespace parser
 	
 	std::string PTXLexer::toString( int token )
 	{
-	
 		switch( token )
 		{			
-			
 			case TOKEN_SPECIAL_REGISTER:
 			{
 				return "SPECIAL_REGISTER";
@@ -118,6 +116,46 @@ namespace parser
 			case TOKEN_VISIBLE:
 			{
 				return "VISIBLE";
+				break;
+			}
+			case TOKEN_MAXNREG:
+			{
+				return "MAXNREG";
+				break;
+			}
+			case TOKEN_MAXNTID:
+			{
+				return "MAXNTID";
+				break;
+			}
+			case TOKEN_MAXNCTAPERSM:
+			{
+				return "MAXNCTAPERSM";
+				break;
+			}
+			case TOKEN_SM10:
+			{
+				return "SM10";
+				break;
+			}
+			case TOKEN_SM11:
+			{
+				return "SM11";
+				break;
+			}
+			case TOKEN_SM12:
+			{
+				return "SM12";
+				break;
+			}
+			case TOKEN_SM13:
+			{
+				return "SM13";
+				break;
+			}
+			case TOKEN_MAP_F64_TO_F32:
+			{
+				return "TOKEN_MAP_F64_TO_F32";
 				break;
 			}
 			case TOKEN_AND:

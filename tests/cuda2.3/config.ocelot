@@ -18,6 +18,9 @@
 		<UseParallelismTraceGenerator>
 			0
 		</UseParallelismTraceGenerator>
+		<LimitWorkerThreads>
+			-1
+		</LimitWorkerThreads>
 	</OcelotRuntime>
 	<CudaRuntime>
 		<CudaRuntimeImplementation>
@@ -39,7 +42,7 @@
 			LLVM
 		</PreferredISA>
 		<OptimizationLevel>
-			basic
+			none
 		</OptimizationLevel>
 		<DisableGPUDevices>
 			0

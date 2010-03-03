@@ -1,1 +1,1 @@
-../../../../../ocelot/ocelot/ir/interface/PTXInstruction.h
+../../../../../ocelot/ocelot/ir/interface/./PTXInstruction.h

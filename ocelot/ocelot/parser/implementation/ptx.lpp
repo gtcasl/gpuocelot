@@ -1,5 +1,4 @@
-/*!
-	\file ptx.lpp
+/*! \file ptx.lpp
 	\date Wednesday January 14, 2009
 	\author Gregory Diamos
 	\brief The flex lexical description of the PTX language
@@ -247,6 +246,24 @@ WHITESPACE [ \t]*
                                     return TOKEN_CTA; }
 ".gl"                           { yylval->value = TOKEN_GL; 
                                     return TOKEN_GL; }
+
+".maxnreg"                      { yylval->value = TOKEN_MAXNREG; 
+                                    return TOKEN_MAXNREG; }
+".maxntid"                      { yylval->value = TOKEN_MAXNTID; 
+                                    return TOKEN_MAXNTID; }
+".maxnctapersm"                 { yylval->value = TOKEN_MAXNCTAPERSM; 
+                                    return TOKEN_MAXNCTAPERSM; }
+
+"sm_10"                         { yylval->value = TOKEN_SM10; 
+                                    return TOKEN_SM10; }
+"sm_11"                         { yylval->value = TOKEN_SM11; 
+                                    return TOKEN_SM11; }
+"sm_12"                         { yylval->value = TOKEN_SM12; 
+                                    return TOKEN_SM12; }
+"sm_13"                         { yylval->value = TOKEN_SM13; 
+                                    return TOKEN_SM13; }
+"map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
+                                    return TOKEN_MAP_F64_TO_F32; }
 
 ".u32"				            { yylval->value = TOKEN_U32; return TOKEN_U32; }
 ".s32"				            { yylval->value = TOKEN_S32; return TOKEN_S32; }

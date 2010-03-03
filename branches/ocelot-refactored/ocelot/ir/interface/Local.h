@@ -1,1 +1,1 @@
-../../../../../ocelot/ocelot/ir/interface/Local.h
+../../../../../ocelot/ocelot/ir/interface/./Local.h

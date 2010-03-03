@@ -1,1 +1,1 @@
-../../../../../ocelot/ocelot/ir/interface/PTXKernel.h
+../../../../../ocelot/ocelot/ir/interface/./PTXKernel.h

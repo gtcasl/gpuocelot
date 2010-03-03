@@ -1,5 +1,4 @@
-/*!
-	\file PTXParser.cpp
+/*! \file PTXParser.cpp
 	\date Monday January 19, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the PTXParser class.
@@ -11,6 +10,7 @@
 #include <ocelot/parser/interface/PTXParser.h>
 #include <cassert>
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 #define throw_exception( messageData, type ) \
 	{\
@@ -28,9 +28,7 @@
 
 #define REPORT_BASE 0
 
-/*!
-	\brief A namespace for parsing PTX 1.4
-*/
+/*! \brief A namespace for parsing PTX 1.4 */
 namespace ptx1_4
 { 
 	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );
@@ -86,6 +84,32 @@ namespace parser
 				operand->type = type;
 			}
 		}
+	}
+
+	void PTXParser::State::maxnreg( unsigned int regs )
+	{
+		report( "  Rule: TOKEN_MAXNREG TOKEN_DECIMAL_CONSTANT" );
+	}
+	
+	void PTXParser::State::maxntid( unsigned int tidx, unsigned int tidy, 
+		unsigned int tidz )
+	{
+		report( "  Rule: TOKEN_MAXNTID TOKEN_DECIMAL_CONSTANT" );
+	}
+	
+	void PTXParser::State::ctapersm( int target, unsigned int ctas )
+	{
+		report( "  Rule: shareModel ':' TOKEN_DECIMAL_CONSTANT" );
+	}
+	
+	void PTXParser::State::maxnctapersm( unsigned int ctas )
+	{
+		report( "  Rule: TOKEN_MAXNCTAPERSM TOKEN_DECIMAL_CONSTANT" );
+	}
+	
+	void PTXParser::State::maxnctapersm()
+	{
+		report( "  Rule: TOKEN_MAXNCTAPERSM ctapersmList" );
 	}
 
 	void PTXParser::State::version( double version, YYLTYPE& location )
@@ -231,9 +255,14 @@ namespace parser
 		statement.array.values.push_back( data );	
 	}
 	
+	void PTXParser::State::targetElement( int token )
+	{
+		report( "  Rule: targetOption" );
+	}
+	
 	void PTXParser::State::target()
 	{
-		report( "  Rule: TARGET identifierList" );
+		report( "  Rule: TARGET targetElementList" );
 		statement.directive = ir::PTXStatement::Target;
 		statement.targets.assign ( identifiers.begin(), 
 			identifiers.end() );
@@ -1670,11 +1699,29 @@ namespace parser
 		report( "Parsing file " << fileName );
 		report( "Running 1.4 main parse pass." );
 		
-		ptx1_4::yyparse( lexer, state );
-		assert( temp.str().empty() );
+		try 
+		{
+			ptx1_4::yyparse( lexer, state );
+			assert( temp.str().empty() );
 		
-		checkLabels();
-
+			checkLabels();
+		}
+		catch( Exception& e )
+		{
+			input.seekg( 0, std::ios::end );
+			unsigned int length = input.tellg();
+			input.seekg( 0, std::ios::beg );
+			
+			char* temp = new char[ length + 1 ];
+			temp[ length ] = '\0';
+			input.read( temp, length );
+			std::cerr << "Failed to parse file '" << fileName << "':\n";
+			std::cerr << hydrazine::addLineNumbers(temp) << "\n" << std::flush;
+			delete[] temp;
+			
+			throw;
+		}
+		
 		return state.module;
 	}
 		

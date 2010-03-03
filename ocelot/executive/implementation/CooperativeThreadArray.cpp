@@ -2262,7 +2262,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::s32: // fall through
 					case PTXOperand::s64:
 						{
-							PTXS8 a = operandAsS16(threadID, instr.a);
+							PTXS8 a = operandAsS8(threadID, instr.a);
 							setRegAsS64(threadID, instr.d.reg, a);
 						}
 						break;
@@ -2310,8 +2310,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 				switch (instr.type) {
 					case PTXOperand::pred: // fall through
 					case PTXOperand::b8: // fall through
-					case PTXOperand::u8: // fall through
+					case PTXOperand::u8:
+						{
+							PTXU16 a = operandAsU16(threadID, instr.a);
+							PTXU8 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::u16: // fall through
+					case PTXOperand::b16: // fall through
 					case PTXOperand::s32: // fall through
 					case PTXOperand::b32: // fall through
 					case PTXOperand::u32: // fall through
@@ -2385,7 +2392,16 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						break;
 					case PTXOperand::pred: // fall through
 					case PTXOperand::u8: // fall through
-					case PTXOperand::b8: // fall through
+					case PTXOperand::b8:
+						{
+							PTXS16 a = operandAsS16(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							PTXU8 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b16: // fall through
 					case PTXOperand::u16: // fall through
 					case PTXOperand::b32: // fall through
@@ -2427,8 +2443,21 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 				switch (instr.type) {
 					case PTXOperand::pred: // fall through
 					case PTXOperand::b8: // fall through
-					case PTXOperand::u8: // fall through
+					case PTXOperand::u8:
+						{
+							PTXU32 a = operandAsU32(threadID, instr.a);
+							PTXU8 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::u16: // fall through
+					case PTXOperand::b16:
+						{
+							PTXU32 a = operandAsU32(threadID, instr.a);
+							PTXU16 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b32: // fall through
 					case PTXOperand::u32: // fall through
 					case PTXOperand::s64: // fall through
@@ -2495,8 +2524,27 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 				switch (instr.type) {
 					case PTXOperand::pred: // fall through
 					case PTXOperand::b8: // fall through
-					case PTXOperand::u8: // fall through
+					case PTXOperand::u8:
+						{
+							PTXS32 a = operandAsS32(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							PTXU8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::u16: // fall through
+					case PTXOperand::b16:
+						{
+							PTXS32 a = operandAsS32(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							PTXU16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b32: // fall through
 					case PTXOperand::u32: // fall through
 					case PTXOperand::b64: // fall through
@@ -2557,9 +2605,37 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::pred: // fall through
 					case PTXOperand::b8: // fall through
 					case PTXOperand::u8: // fall through
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							PTXU8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::u16: // fall through
+					case PTXOperand::b16: // fall through
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							PTXU16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b32: // fall through
-					case PTXOperand::u32: // fall through
+					case PTXOperand::u32:
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							PTXU32 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b64: // fall through
 					case PTXOperand::u64: 
 						{
@@ -2624,10 +2700,29 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 				switch (instr.type) {
 					case PTXOperand::pred: // fall through
 					case PTXOperand::b8: // fall through
-					case PTXOperand::u8: // fall through
-					case PTXOperand::u16: // fall through
+					case PTXOperand::u8:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							PTXU8 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::b16: // fall through
+					case PTXOperand::u16:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							PTXU16 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b32: // fall through
-					case PTXOperand::u32: // fall through
+					case PTXOperand::u32:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							PTXU32 d = a;
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::b64: // fall through
 					case PTXOperand::u64:
 						{

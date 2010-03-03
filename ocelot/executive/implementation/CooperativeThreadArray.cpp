@@ -127,6 +127,7 @@ bool isF64NaN(PTXF64 f) {
 }
 
 #define max(a, b) ((a) < (b) ? (b) : (a))
+#define min(a, b) ((a) > (b) ? (b) : (a))
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 #if (CHECK_GLOBAL_ACCESSES==1)
@@ -2142,34 +2143,78 @@ void executive::CooperativeThreadArray::eval_Cos(CTAContext &context, const PTXI
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}
 }
+
+template< typename Int >
+static ir::PTXF32 toF32(Int value, int modifier) {
+	int mode = fegetround();
+	if (modifier & PTXInstruction::rn) {
+		fesetround(FE_TONEAREST);
+	} else if (modifier & PTXInstruction::rz) {
+		fesetround(FE_TOWARDZERO);
+	} else if (modifier & PTXInstruction::rm) {
+		fesetround(FE_DOWNWARD);
+	} else if (modifier & PTXInstruction::rp) {
+		fesetround(FE_UPWARD);
+	}
+	ir::PTXF32 d = value;
+	fesetround(mode);
+	return d;
+}
+
+template< typename Int >
+static ir::PTXF64 toF64(Int value, int modifier) {
+	int mode = fegetround();
+	if (modifier & PTXInstruction::rn) {
+		fesetround(FE_TONEAREST);
+	} else if (modifier & PTXInstruction::rz) {
+		fesetround(FE_TOWARDZERO);
+	} else if (modifier & PTXInstruction::rm) {
+		fesetround(FE_DOWNWARD);
+	} else if (modifier & PTXInstruction::rp) {
+		fesetround(FE_UPWARD);
+	}
+	ir::PTXF64 d = value;
+	fesetround(mode);
+	return d;
+}
+
+template< typename Float >
+static Float round(Float a, int modifier) {
+	Float fd = 0;
+	if (modifier & PTXInstruction::rn) {
+		fd = nearbyintf(a);
+	} else if (modifier & PTXInstruction::rz) {
+		fd = trunc(a);
+	} else if (modifier & PTXInstruction::rm) {
+		fd = floor(a);
+	} else if (modifier & PTXInstruction::rp) {
+		fd = ceil(a);
+	} else {
+		fd = a;
+	}
+	return fd;
+}
+
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, 
+	const PTXInstruction &instr) {
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 		switch (instr.a.type) {
 			case PTXOperand::b8: // fall through
 			case PTXOperand::u8:
 			{
-				// u16 to one of the following
 				switch (instr.type) {
-					case PTXOperand::s16:
-					case PTXOperand::u16:
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsB8(threadID, instr.a));
-						}
-						break;
-					// to larger integers
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::s16: // fall through
+					case PTXOperand::u16: // fall through
 					case PTXOperand::s32: // fall through
 					case PTXOperand::b32: // fall through
 					case PTXOperand::u32: // fall through
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsB8(threadID, instr.a));
-						}
-						break;
 					case PTXOperand::b64: // fall through
 					case PTXOperand::s64: // fall through
 					case PTXOperand::u64: // fall through
@@ -2178,16 +2223,28 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 								operandAsB8(threadID, instr.a));
 						}
 						break;
+					case PTXOperand::s8:
+						{
+							PTXU8 a = operandAsU8(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, CHAR_MAX);
+							}
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
 					case PTXOperand::f32:
 						{
 							setRegAsF32(threadID, instr.d.reg, 
-								operandAsB8(threadID, instr.a));
+								toF32(operandAsB8(threadID, instr.a), 
+								instr.modifier));
 						}
 						break;
 					case PTXOperand::f64:
 						{
 							setRegAsF64(threadID, instr.d.reg, 
-								operandAsB8(threadID, instr.a));
+								toF64(operandAsB8(threadID, instr.a), 
+								instr.modifier));
 						}
 						break;
 					default:
@@ -2199,55 +2256,45 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::s8:
 			{
-				// u16 to one of the following
 				switch (instr.type) {
-					case PTXOperand::s16:
-							setRegAsS64(threadID, instr.d.reg, 
-									operandAsS8(threadID, instr.a));
-						break;
-					case PTXOperand::u16:
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsS8(threadID, instr.a));
-						}
-						break;
-						// to larger integers
-					case PTXOperand::s32:
-						{
-							setRegAsS64(threadID, instr.d.reg, 
-									operandAsS8(threadID, instr.a));
-						}
-						break;
-					case PTXOperand::b32: // fall through
-					case PTXOperand::u32: // fall through
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsS8(threadID, instr.a));
-						}
-						break;
+					case PTXOperand::s8: // fall through
+					case PTXOperand::s16: // fall through
+					case PTXOperand::s32: // fall through
 					case PTXOperand::s64:
 						{
-							setRegAsS64(threadID, instr.d.reg, 
-								operandAsS8(threadID, instr.a));
+							PTXS8 a = operandAsS16(threadID, instr.a);
+							setRegAsS64(threadID, instr.d.reg, a);
 						}
 						break;
+					case PTXOperand::pred: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::b16: // fall through
+					case PTXOperand::u16: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
 					case PTXOperand::b64: // fall through
-					case PTXOperand::u64: // fall through
+					case PTXOperand::u64:
 						{
-							setRegAsU64(threadID, instr.d.reg, 
-								operandAsS8(threadID, instr.a));
+							PTXS8 a = operandAsS8(threadID, instr.a);
+							if (instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							setRegAsU64(threadID, instr.d.reg, a);
 						}
 						break;
 					case PTXOperand::f32:
 						{
 							setRegAsF32(threadID, instr.d.reg, 
-								operandAsS8(threadID, instr.a));
+								toF32(operandAsS8(threadID, instr.a), 
+								instr.modifier));
 						}
 						break;
 					case PTXOperand::f64:
 						{
 							setRegAsF64(threadID, instr.d.reg, 
-								operandAsS8(threadID, instr.a));
+								toF64(operandAsS8(threadID, instr.a), 
+								instr.modifier));
 						}
 						break;
 					default:
@@ -2260,42 +2307,54 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::b16: // fall through
 			case PTXOperand::u16:
 			{
-				// u16 to one of the following
 				switch (instr.type) {
-					case PTXOperand::s16:
-					case PTXOperand::u16:
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsB16(threadID, instr.a));
-						}
-						break;
-					// to larger integers
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::u16: // fall through
 					case PTXOperand::s32: // fall through
 					case PTXOperand::b32: // fall through
 					case PTXOperand::u32: // fall through
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsB16(threadID, instr.a));
-						}
-						break;
 					case PTXOperand::b64: // fall through
 					case PTXOperand::s64: // fall through
-					case PTXOperand::u64: // fall through
+					case PTXOperand::u64:
 						{
 							setRegAsU64(threadID, instr.d.reg, 
 								operandAsB16(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::s8:
+						{
+							PTXU16 a = operandAsU16(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, CHAR_MAX);
+							}
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16:
+						{
+							PTXU16 a = operandAsU16(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, SHRT_MAX);
+							}
+							PTXS16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
 					case PTXOperand::f32:
 						{
 							setRegAsF32(threadID, instr.d.reg, 
-								operandAsB16(threadID, instr.a));
+								toF32(operandAsB16(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					case PTXOperand::f64:
 						{
 							setRegAsF64(threadID, instr.d.reg, 
-								operandAsB16(threadID, instr.a));
+								toF64(operandAsB16(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					default:
@@ -2307,55 +2366,52 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			break;
 			case PTXOperand::s16:
 			{
-				// u16 to one of the following
+				// s16 to one of the following
 				switch (instr.type) {
-					case PTXOperand::s16:
-							setRegAsS64(threadID, instr.d.reg, 
-									operandAsS16(threadID, instr.a));
-						break;
-					case PTXOperand::u16:
+					case PTXOperand::s8:
 						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsS16(threadID, instr.a));
+							PTXS16 a = operandAsS16(threadID, instr.a);
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
-						// to larger integers
-					case PTXOperand::s32:
-						{
-							setRegAsS64(threadID, instr.d.reg, 
-									operandAsS16(threadID, instr.a));
-						}
-						break;
-					case PTXOperand::b32: // fall through
-					case PTXOperand::u32: // fall through
-						{
-							setRegAsU64(threadID, instr.d.reg, 
-									operandAsS16(threadID, instr.a));
-						}
-						break;
+					case PTXOperand::s16: // fall through
+					case PTXOperand::s32: // fall through
 					case PTXOperand::s64:
 						{
-							setRegAsS64(threadID, instr.d.reg, 
-								operandAsS16(threadID, instr.a));
+							PTXS16 a = operandAsS16(threadID, instr.a);
+							setRegAsS64(threadID, instr.d.reg, a);
 						}
 						break;
+					case PTXOperand::pred: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::b16: // fall through
+					case PTXOperand::u16: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
 					case PTXOperand::b64: // fall through
-					case PTXOperand::u64: // fall through
+					case PTXOperand::u64:
 						{
-							setRegAsU64(threadID, instr.d.reg, 
-								operandAsS16(threadID, instr.a));
+							PTXS16 a = operandAsS16(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
+							}
+							setRegAsU64(threadID, instr.d.reg, a);
 						}
 						break;
 					case PTXOperand::f32:
 						{
 							setRegAsF32(threadID, instr.d.reg, 
-								operandAsS16(threadID, instr.a));
+								toF32(operandAsS16(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					case PTXOperand::f64:
 						{
 							setRegAsF64(threadID, instr.d.reg, 
-								operandAsS16(threadID, instr.a));
+								toF64(operandAsS16(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					default:
@@ -2365,67 +2421,66 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 				}
 			}
 			break;
+			case PTXOperand::b32: // fall through
 			case PTXOperand::u32:
 			{
 				switch (instr.type) {
-					case PTXOperand::u8: 
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::u16: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
+					case PTXOperand::s64: // fall through
+					case PTXOperand::b64: // fall through
+					case PTXOperand::u64:
 						{
-							setRegAsU64(threadID, instr.d.reg,  
+							setRegAsU64(threadID, instr.d.reg, 
 								operandAsU32(threadID, instr.a));
 						}
 						break;
-					case PTXOperand::u16: 
+					case PTXOperand::s8:
 						{
-							setRegAsU64(threadID, instr.d.reg,  
-								operandAsU32(threadID, instr.a));
+							PTXU32 a = operandAsU32(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, CHAR_MAX);
+							}
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16:
+						{
+							PTXU32 a = operandAsU32(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, SHRT_MAX);
+							}
+							PTXS16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s32:
+						{
+							PTXU32 a = operandAsU32(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, INT_MAX);
+							}
+							PTXS32 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
 					case PTXOperand::f32: 
 						{
-							PTXU32 a = operandAsU32(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
-							}
-							PTXF32 d = a;
-							fesetround(mode);
-							setRegAsF32(threadID, instr.d.reg, d);
-						}
-						break;
-					case PTXOperand::u64: 
-						{
-							setRegAsU64(threadID, instr.d.reg,  
-								operandAsU32(threadID, instr.a));
-						}
-						break;
-					case PTXOperand::s64: 
-						{
-							setRegAsS64(threadID, instr.d.reg,  
-								operandAsU32(threadID, instr.a));
+							setRegAsF32(threadID, instr.d.reg, 
+								toF32(operandAsU32(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					case PTXOperand::f64: 
 						{
-							PTXU32 a = operandAsU32(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
-							}
-							PTXF64 d = a;
-							fesetround(mode);
-							setRegAsF64(threadID, instr.d.reg, d);
+							setRegAsF64(threadID, instr.d.reg, 
+								toF64(operandAsU32(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					default:
@@ -2438,67 +2493,200 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::s32:
 			{
 				switch (instr.type) {
-					case PTXOperand::s8: 
-						{
-							PTXS8 a = operandAsS8(threadID, instr.a);
-							setRegAsS64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::s16: 
-						{
-							PTXS16 a = operandAsS16(threadID, instr.a);
-							setRegAsS64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::f32: 
-						{
-							PTXS32 a = operandAsS32(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
-							}
-							PTXF32 d = a;
-							fesetround(mode);
-							setRegAsF32(threadID, instr.d.reg, d);
-						}
-						break;
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::u16: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
+					case PTXOperand::b64: // fall through
 					case PTXOperand::u64: 
 						{
 							PTXS32 a = operandAsS32(threadID, instr.a);
 							if(instr.modifier & PTXInstruction::sat) {
 								a = max(a, 0);
 							}
-							setRegAsU64(threadID, instr.d.reg, a);
+							setRegAsS64(threadID, instr.d.reg, a);
 						}
 						break;
+					case PTXOperand::s8:
+						{
+							PTXS32 a = operandAsS32(threadID, instr.a);
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16:
+						{
+							PTXS32 a = operandAsS32(threadID, instr.a);
+							PTXS16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s32: // fall through
 					case PTXOperand::s64: 
 						{
 							PTXS32 a = operandAsS32(threadID, instr.a);
 							setRegAsS64(threadID, instr.d.reg, a);
 						}
 						break;
+					case PTXOperand::f32: 
+						{
+							setRegAsF32(threadID, instr.d.reg, 
+								toF32(operandAsS32(threadID, instr.a),
+								instr.modifier));
+						}
+						break;
 					case PTXOperand::f64: 
 						{
-							PTXS32 a = operandAsS32(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
+							setRegAsF64(threadID, instr.d.reg, 
+								toF64(operandAsS32(threadID, instr.a),
+								instr.modifier));
+						}
+						break;
+					default:
+						throw RuntimeException("conversion not implemented", 
+							context.PC, instr);
+						break;
+				}
+			}
+			break;
+			case PTXOperand::s64:
+			{
+				switch (instr.type) {
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::u16: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
+					case PTXOperand::b64: // fall through
+					case PTXOperand::u64: 
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = max(a, 0);
 							}
-							PTXF64 d = a;
-							fesetround(mode);
-							setRegAsF64(threadID, instr.d.reg, d);
+							setRegAsS64(threadID, instr.d.reg, a);
+						}
+						break;
+					case PTXOperand::s8:
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16:
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							PTXS16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s32:
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							PTXS32 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s64: 
+						{
+							PTXS64 a = operandAsS64(threadID, instr.a);
+							setRegAsS64(threadID, instr.d.reg, a);
+						}
+						break;
+					case PTXOperand::f32: 
+						{
+							setRegAsF32(threadID, instr.d.reg, 
+								toF32(operandAsS64(threadID, instr.a),
+								instr.modifier));
+						}
+						break;
+					case PTXOperand::f64: 
+						{
+							setRegAsF64(threadID, instr.d.reg, 
+								toF64(operandAsS64(threadID, instr.a),
+								instr.modifier));
+						}
+						break;
+					default:
+						throw RuntimeException("conversion not implemented", 
+							context.PC, instr);
+						break;
+				}
+			}
+			break;
+			case PTXOperand::b64:
+			case PTXOperand::u64:
+			{
+				switch (instr.type) {
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: // fall through
+					case PTXOperand::u16: // fall through
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: // fall through
+					case PTXOperand::b64: // fall through
+					case PTXOperand::u64:
+						{
+							setRegAsU64(threadID, instr.d.reg, 
+								operandAsU64(threadID, instr.a));
+						}
+						break;
+					case PTXOperand::s8:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, CHAR_MAX);
+							}
+							PTXS8 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, SHRT_MAX);
+							}
+							PTXS16 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s32:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, INT_MAX);
+							}
+							PTXS32 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s64:
+						{
+							PTXU64 a = operandAsU64(threadID, instr.a);
+							if(instr.modifier & PTXInstruction::sat) {
+								a = min(a, LONG_LONG_MAX);
+							}
+							PTXS64 d = a;
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::f32: 
+						{
+							setRegAsF32(threadID, instr.d.reg, 
+								toF32(operandAsU64(threadID, instr.a),
+								instr.modifier));
+						}
+						break;
+					case PTXOperand::f64: 
+						{
+							setRegAsF64(threadID, instr.d.reg, 
+								toF64(operandAsU64(threadID, instr.a),
+								instr.modifier));
 						}
 						break;
 					default:
@@ -2511,21 +2699,52 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 			case PTXOperand::f32:
 			{
 				switch (instr.type) {
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: 
+						{
+							PTXF32 a = operandAsF32(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXF32 fd = round(a, instr.modifier);
+							PTXU8 d = 0;
+							if( fd > UCHAR_MAX ) {
+								d = UCHAR_MAX;
+							}
+							else if( fd < 0 ) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::b16: // fall through
+					case PTXOperand::u16: 
+						{
+							PTXF32 a = operandAsF32(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXF32 fd = round(a, instr.modifier);
+							PTXU16 d = 0;
+							if( fd > USHRT_MAX ) {
+								d = USHRT_MAX;
+							}
+							else if( fd < 0 ) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::b32: // fall through
 					case PTXOperand::u32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = 0;
+							PTXF32 fd = round(a, instr.modifier);
 							PTXU32 d = 0;
-							if (instr.modifier & PTXInstruction::rn) {
-								fd = nearbyintf(a);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fd = trunc(a);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fd = floor(a);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fd = ceil(a);
-							}
 							if( fd > UINT_MAX ) {
 								d = UINT_MAX;
 							}
@@ -2538,55 +2757,61 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 							setRegAsU64(threadID, instr.d.reg, d);
 						}
 						break;
+					case PTXOperand::b64: // fall through 
 					case PTXOperand::u64: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXU64 d = 0;
-							if (instr.modifier & PTXInstruction::rn) {
-								d = nearbyintf(a);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								d = trunc(a);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								d = floor(a);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								d = ceil(a);
-							}
+							PTXU64 d = round(a, instr.modifier);
 							d = min(ULLONG_MAX, d);
 							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s8: 
+						{
+							PTXF32 a = operandAsF32(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXS64 dd = round(a, instr.modifier);
+							PTXS8 d = 0;
+							dd = min(CHAR_MAX, dd);
+							d = max(dd, CHAR_MIN);
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16: 
+						{
+							PTXF32 a = operandAsF32(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXS64 dd = round(a, instr.modifier);
+							PTXS16 d = 0;
+							dd = min(SHRT_MAX, dd);
+							d = max(dd, SHRT_MIN);
+							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
 					case PTXOperand::s32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
+							PTXS64 dd = round(a, instr.modifier);
 							PTXS32 d = 0;
-							if (instr.modifier & PTXInstruction::rn) {
-								d = nearbyintf(a);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								d = trunc(a);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								d = floor(a);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								d = ceil(a);
-							}
-							d = min(INT_MAX, d);
-							d = max(d, INT_MIN);
+							dd = min(INT_MAX, dd);
+							d = max(dd, INT_MIN);
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s64: 
+						{
+							PTXF32 a = operandAsF32(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXS64 d = round(a, instr.modifier);
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
 					case PTXOperand::f32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							if (instr.modifier & PTXInstruction::rn) {
-								a = nearbyintf(a);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								a = trunc(a);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								a = floor(a);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								a = ceil(a);
-							}
+							a = round(a, instr.modifier);
 							setRegAsF32(threadID, instr.d.reg, 
 								sat(instr.modifier, a));
 						}
@@ -2594,18 +2819,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 					case PTXOperand::f64: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
-							}
-							PTXF64 d = a;
-							fesetround(mode);							
+							PTXF64 d = round(a, instr.modifier);
 							setRegAsF64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2616,186 +2830,139 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, const PTXI
 				}					
 			}
 			break;
-			case PTXOperand::s64:
-			{
-				switch (instr.type) {
-					case PTXOperand::u32: 
-						{
-							PTXS64 a = operandAsS64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								a = max(a, 0);
-								a = min(a, (PTXS64)UINT_MAX);
-							}
-							setRegAsU64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::s32: 
-						{
-							PTXS64 a = operandAsS64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								a = max(a, (PTXS64)INT_MIN);
-								a = min(a, (PTXS64)INT_MAX);
-							}
-							setRegAsS64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::f32: 
-						{
-							PTXS64 a = operandAsS64(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
-							}
-							PTXF32 d = a;
-							fesetround(mode);
-							setRegAsF32(threadID, instr.d.reg, d);
-						}
-						break;
-
-					case PTXOperand::u64: 
-						{
-							PTXS64 a = operandAsS64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								a = max(a, 0);
-							}
-							setRegAsU64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::s64: 
-						{
-							PTXS64 a = operandAsS64(threadID, instr.a);
-							setRegAsS64(threadID, instr.d.reg, a);
-						}
-						break;
-					default:
-						throw RuntimeException("conversion not implemented", 
-							context.PC, instr);
-						break;
-				}
-			}
-			break;
-			case PTXOperand::u64:
-			{
-				switch (instr.type) {
-					case PTXOperand::s32: 
-						{
-							PTXU64 a = operandAsU64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								a = max(a, UINT_MAX);
-							}
-							setRegAsS32(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::u32: 
-						{
-							PTXU64 a = operandAsU64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								a = max(a, UINT_MAX);
-							}
-							setRegAsU64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::f32: 
-						{
-							PTXU64 a = operandAsU64(threadID, instr.a);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
-							}
-							PTXF32 d = a;
-							fesetround(mode);
-							setRegAsF32(threadID, instr.d.reg, d);
-						}
-						break;
-					case PTXOperand::u64: 
-						{
-							PTXU64 a = operandAsU64(threadID, instr.a);
-							setRegAsU64(threadID, instr.d.reg, a);
-						}
-						break;
-					case PTXOperand::s64: 
-						{
-							PTXU64 a = operandAsU64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								a = max(a, LLONG_MAX);
-							}
-							setRegAsS64(threadID, instr.d.reg, a);
-						}
-						break;
-					default:
-						throw RuntimeException("conversion not implemented", 
-							context.PC, instr);
-						break;
-				}
-			}
-			break;			
 			case PTXOperand::f64:
 			{
 				switch (instr.type) {
-					case PTXOperand::s32: 
+					case PTXOperand::pred: // fall through
+					case PTXOperand::b8: // fall through
+					case PTXOperand::u8: 
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXF64 fd = round(a, instr.modifier);
+							PTXU16 d = 0;
+							if( fd > UCHAR_MAX ) {
+								d = UCHAR_MAX;
+							}
+							else if( fd < 0 ) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::b16: // fall through
+					case PTXOperand::u16: 
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXF64 fd = round(a, instr.modifier);
+							PTXU16 d = 0;
+							if( fd > USHRT_MAX ) {
+								d = USHRT_MAX;
+							}
+							else if( fd < 0 ) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::b32: // fall through
+					case PTXOperand::u32: 
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXF64 fd = round(a, instr.modifier);
+							PTXU32 d = 0;
+							if( fd > UINT_MAX ) {
+								d = UINT_MAX;
+							}
+							else if( fd < 0 ) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::b64: // fall through 
+					case PTXOperand::u64: 
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0f;
+							PTXU64 d = round(a, instr.modifier);
+							d = min(ULLONG_MAX, d);
+							setRegAsU64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s8:
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
+							a = round(a, instr.modifier);
+							PTXS8 d = 0;
+							a = min(CHAR_MAX, a);
+							d = max(a, CHAR_MIN);
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s16:
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0;
+							a = round(a, instr.modifier);
+							PTXS16 d = 0;
+							a = min(SHRT_MAX, a);
+							d = max(a, SHRT_MIN);
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s32:
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0;
+							a = round(a, instr.modifier);
 							PTXS32 d = 0;
-							if (instr.modifier & PTXInstruction::rn) {
-								d = nearbyintf(a);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								d = trunc(a);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								d = floor(a);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								d = ceil(a);
-							}
-							d = min(INT_MAX, d);
-							d = max(d, INT_MIN);
+							a = min(INT_MAX, a);
+							d = max(a, INT_MIN);
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::s64:
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0;
+							PTXS64 d = round(a, instr.modifier);
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
 					case PTXOperand::f32: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							if (a != a) a = 0.0;
-							a = min(1.0, a);
-							a = max(a, 0.0);
-							int mode = fegetround();
-							if (instr.modifier & PTXInstruction::rn) {
-								fesetround(FE_TONEAREST);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								fesetround(FE_TOWARDZERO);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								fesetround(FE_DOWNWARD);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								fesetround(FE_UPWARD);
+							a = round(a, instr.modifier);
+							if(instr.modifier & PTXInstruction::sat) {
+								if (a != a) a = 0.0;
+								a = min(1.0, a);
+								a = max(a, 0.0);
 							}
-							PTXF32 d = a;
-							fesetround(mode);
 							setRegAsF32(threadID, instr.d.reg, 
-								sat(instr.modifier, d));							
+								sat(instr.modifier, a));							
 						}
 						break;
 					case PTXOperand::f64: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							if (instr.modifier & PTXInstruction::rn) {
-								a = nearbyintf(a);
-							} else if (instr.modifier & PTXInstruction::rz) {
-								a = trunc(a);
-							} else if (instr.modifier & PTXInstruction::rm) {
-								a = floor(a);
-							} else if (instr.modifier & PTXInstruction::rp) {
-								a = ceil(a);
+							a = round(a, instr.modifier);
+							if(instr.modifier & PTXInstruction::sat) {
+								if (a != a) a = 0.0;
+								a = min(1.0, a);
+								a = max(a, 0.0);
 							}
 							setRegAsF64(threadID, instr.d.reg, 
 								sat(instr.modifier, a));

@@ -70,6 +70,9 @@
 %token<value> TOKEN_FUNCTION TOKEN_STRUCT TOKEN_UNION TOKEN_TARGET TOKEN_VERSION
 %token<value> TOKEN_SECTION
 
+%token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_SM10
+%token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_MAP_F64_TO_F32
+
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_REG
 %token<value> TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA TOKEN_GL
 
@@ -185,7 +188,19 @@ singleList : '{' singleListSingle '}' ',' '{' singleListSingle '}';
 singleInitializer : singleList |  '{' singleList '}' | '{' singleListSingle '}' 
 	| singleListSingle;
 
-target : TOKEN_TARGET identifierList
+shaderModel : TOKEN_SM10 | TOKEN_SM11 | TOKEN_SM12 | TOKEN_SM13;
+floatingPointOption : TOKEN_MAP_F64_TO_F32;
+
+targetOption : shaderModel | floatingPointOption;
+targetElement : targetOption
+{
+	state.targetElement( $<value>1 );
+};
+
+targetElementList : /* empty string */ | targetElement 
+	| targetElementList ',' targetElement;
+
+target : TOKEN_TARGET targetElementList
 {
 	state.target();
 };
@@ -314,12 +329,12 @@ entryStart2 : TOKEN_ENTRY identifier
 	state.entry( $<text>2, @1, false );
 };
 
-entryMid1 : '(' parameterList ')' '{'
+entryMid1 : '(' parameterList ')' performanceDirectives '{'
 {
 	state.entryMid( @4, true );
 };
 
-entryMid2 : '{'
+entryMid2 : performanceDirectives '{'
 {
 	state.entryMid( @1, false );
 };
@@ -351,6 +366,49 @@ entryDeclaration : guard instruction
 entryDeclarations : entryDeclaration;
 
 entryDeclarations : entryDeclarations entryDeclaration;
+
+maxnreg : TOKEN_MAXNREG TOKEN_DECIMAL_CONSTANT
+{
+	state.maxnreg( $<value>2 );
+};
+
+maxntid : TOKEN_MAXNTID TOKEN_DECIMAL_CONSTANT
+{
+	state.maxntid( $<value>2 );
+};
+
+maxntid : TOKEN_MAXNTID TOKEN_DECIMAL_CONSTANT ',' TOKEN_DECIMAL_CONSTANT
+{
+	state.maxntid( $<value>2, $<value>4 );
+};
+
+maxntid : TOKEN_MAXNTID TOKEN_DECIMAL_CONSTANT ',' TOKEN_DECIMAL_CONSTANT ',' 
+	TOKEN_DECIMAL_CONSTANT
+{
+	state.maxntid( $<value>2, $<value>4, $<value>6 );
+};
+
+ctapersm : shaderModel ':' TOKEN_DECIMAL_CONSTANT
+{
+	state.ctapersm( $<value>1, $<value>3 );
+};
+
+ctapersmList : ctapersm | ctapersmList ',' ctapersm;
+
+maxnctapersm : TOKEN_MAXNCTAPERSM TOKEN_DECIMAL_CONSTANT
+{
+	state.maxnctapersm( $<value>2 );
+};
+
+maxnctapersm : TOKEN_MAXNCTAPERSM ctapersmList
+{
+	state.maxnctapersm();
+};
+
+performanceDirective : maxnreg | maxntid | maxnctapersm;
+performanceDirectiveList : performanceDirective
+	| performanceDirectiveList performanceDirective;
+performanceDirectives : /* empty string */ | performanceDirectiveList;
 
 externOrVisible : TOKEN_EXTERN
 {
@@ -949,7 +1007,6 @@ int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer )
 void yyerror( YYLTYPE* location, parser::PTXLexer& lexer, 
 	parser::PTXParser::State& state, char const* message )
 {
-
 	parser::PTXParser::Exception exception;
 	std::stringstream stream;
 	stream << parser::PTXParser::toString( *location, state ) 
@@ -957,7 +1014,6 @@ void yyerror( YYLTYPE* location, parser::PTXLexer& lexer,
 	exception.message = stream.str();
 	exception.error = parser::PTXParser::State::SyntaxError;
 	throw exception;
-
 }
 
 }

@@ -1,5 +1,4 @@
-/*!
-	\file PTXParser.h
+/*! \file PTXParser.h
 	\date Monday January 19, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the PTXParser class.
@@ -90,8 +89,7 @@ namespace parser
 					ir::PTXStatement::Directive directive;
 									
 				public:
-					/*!
-						\brief Warn if part of the input file is ignored by 
+					/*! \brief Warn if part of the input file is ignored by 
 							the lexer
 					*/
 					bool warnLexer;
@@ -104,6 +102,14 @@ namespace parser
 					void _setImmediateTypes();
 				
 				public:
+					void maxnreg( unsigned int regs );
+					void maxntid( unsigned int tidx, unsigned int tidy = 1024, 
+						unsigned int tidz = 1024 );
+					void ctapersm( int target, unsigned int ctas );
+					void maxnctapersm( unsigned int ctas );
+					void maxnctapersm();
+				
+				public:
 					void version( double version, YYLTYPE& location );
 					void identifierList( const std::string& identifier );
 					void identifierList2( const std::string& identifier );
@@ -113,6 +119,7 @@ namespace parser
 					void floatList1( double value );
 					void singleList( float value );
 					void singleList1( float value );
+					void targetElement( int token );
 					void target();
 					void addressSpace( int token );
 					void dataType( int token );
@@ -229,7 +236,6 @@ namespace parser
 				
 		public:
 			PTXParser();
-			
 			ir::Module parse( std::istream& input, 
 				ir::Instruction::Architecture language = ir::Instruction::PTX );
 				

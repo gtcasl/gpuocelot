@@ -2473,7 +2473,8 @@ namespace executive
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
 		ISA = ir::Instruction::LLVM;
 		overrideLLVMKernel = false;
-		if (_overridePath) {
+		if( _overridePath ) 
+		{
 			overrideLLVMKernel = true;
 			overrideLLVMKernelPath = _overridePath;
 		}
@@ -2524,11 +2525,6 @@ namespace executive
 		_gridDim.x = x;
 		_gridDim.y = y;
 
-		{
-			// dump the function to stdout
-			
-		}
-		
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
 	}
@@ -2651,8 +2647,10 @@ namespace executive
 		unsigned int program = 0;
 		unsigned int line = 0;
 		unsigned int col = 0;
-		for ( ; s_rit != module->statements.rend(); ++s_rit) {
-			if (s_rit->directive == ir::PTXStatement::Loc) {
+		for( ; s_rit != module->statements.rend(); ++s_rit ) 
+		{
+			if (s_rit->directive == ir::PTXStatement::Loc) 
+			{
 				line = s_rit->sourceLine;
 				col = s_rit->sourceColumn;
 				program = s_rit->sourceFile;
@@ -2661,10 +2659,13 @@ namespace executive
 		}
 	
 		std::string fileName;
-		for ( s_it = module->statements.begin(); 
-			s_it != module->statements.end(); ++s_it ) {
-			if (s_it->directive == ir::PTXStatement::File) {
-				if (s_it->sourceFile == program) {
+		for( s_it = module->statements.begin(); 
+			s_it != module->statements.end(); ++s_it ) 
+		{
+			if( s_it->directive == ir::PTXStatement::File )
+			{
+				if( s_it->sourceFile == program ) 
+				{
 					fileName = s_it->name;
 					break;
 				}

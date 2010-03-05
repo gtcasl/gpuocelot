@@ -39,6 +39,11 @@ namespace ocelot
 			registerPTXModule( stream, name );
 	}
 	
+	void registerLLVMModule( std::istream& stream, const std::string& name )
+	{
+		assertM( false, "registerLLVMModule not implemented." );
+	}
+	
 	void registerExternalKernel(ExternalKernel kernel, const std::string &name)
 	{
 

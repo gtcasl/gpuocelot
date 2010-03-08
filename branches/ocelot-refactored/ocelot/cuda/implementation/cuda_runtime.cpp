@@ -412,6 +412,7 @@ const char*  cudaGetErrorString(cudaError_t error) {
 	return "unimplemented";
 }
 
+#undef _CASE
 
 /*******************************************************************************
 *                                                                              *
@@ -581,13 +582,20 @@ cudaError_t  cudaRuntimeGetVersion(int *runtimeVersion) {
 *                                                                              *
 *                                                                              *
 *******************************************************************************/
+extern "C" {
 
 void __cudaMutexOperation(int lock) {
-	return cuda::CudaRuntimeInterface::get()->cudaMutexOperation( lock );
+	return cuda::CudaRuntimeInterface::get()->cudaMutexOperation(lock);
 }
 
 int __cudaSynchronizeThreads(void** one, void* two) {
-	return cuda::CudaRuntimeInterface::get()->cudaSynchronizeThreads( one, two );
+	return cuda::CudaRuntimeInterface::get()->cudaSynchronizeThreads(one, two);
 }
 
+void __cudaTextureFetch(const void* tex, void* index, int integer, void* val) {
+	return cuda::CudaRuntimeInterface::get()->cudaTextureFetch(tex, 
+		index, integer, val);
+}
+
+}
 

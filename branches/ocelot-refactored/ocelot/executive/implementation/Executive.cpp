@@ -40,6 +40,18 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// Helper functions
+//
+static size_t getOffset(void* pointer) {
+	size_t address = (size_t)pointer;
+	size_t remainder = address % 16;
+	size_t offset = remainder == 0 ? 0 : 16 - remainder;
+	return offset;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // Ocelot executive construction/destruction
 //
 
@@ -79,12 +91,13 @@ void executive::Executive::registerExternal(void *ptr, size_t bytes, int address
 	memory.dimension = MemoryAllocation::Dim_1D;
 	memory.addressSpace = addressSpace;
 	memory.pointer.ptr = ptr;
+	memory.pointer.offset = 0;
 	memory.pointer.xsize = bytes;
 	memory.pointer.pitch = bytes;
 	memory.pointer.ysize = 1;
 	memory.internal = false;
 	
-	memoryAllocations[memory.addressSpace][memory.pointer.ptr] = memory;
+	memoryAllocations[memory.addressSpace][memory.get()] = memory;
 }
 
 bool executive::Executive::malloc(void **devPtr, size_t size) {
@@ -108,7 +121,8 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 		{
 			// device is in host memory
 			memory.allocationSize = size;
-			memory.pointer.ptr = (void *)::malloc(size);
+			memory.pointer.ptr = (void *)::malloc(size + 16);
+			memory.pointer.offset = getOffset(memory.pointer.ptr);
 		}
 		break;
 		
@@ -118,7 +132,7 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 		break;
 	}
 	
-	*devPtr = memory.pointer.ptr;
+	*devPtr = memory.get();
 	memoryAllocations[memory.addressSpace][*devPtr] = memory;
 	
 	return result;
@@ -150,7 +164,8 @@ bool executive::Executive::mallocHost(void **ptr, size_t size, bool portable, bo
 	case 0:
 		{
 			memory.allocationSize = size;
-			memory.pointer.ptr = (void *)::malloc(size);
+			memory.pointer.ptr = (void *)::malloc(size + 16);
+			memory.pointer.offset = getOffset(memory.pointer.ptr);
 			memory.extent.width = size;
 			memory.extent.height = 1;
 			memory.extent.depth = 1;
@@ -162,7 +177,7 @@ bool executive::Executive::mallocHost(void **ptr, size_t size, bool portable, bo
 	break;
 	}
 	
-	*ptr = memory.pointer.ptr;
+	*ptr = memory.get();
 	memoryAllocations[memory.addressSpace][*ptr] = memory;
 	
 	report("Executive::mallocHost(" << *ptr << ")");
@@ -190,7 +205,8 @@ bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t widt
 		{
 			// device is in host memory
 			memory.allocationSize = width * height;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
+			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
+			memory.pointer.offset = getOffset(memory.pointer.ptr);
 			memory.pointer.pitch = width;
 			memory.extent.width = width;
 			memory.extent.height = height;
@@ -203,7 +219,7 @@ bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t widt
 		break;
 	}
 	
-	*devPtr = memory.pointer.ptr;
+	*devPtr = memory.get();
 	*pitch = memory.pointer.pitch;
 	
 	memoryAllocations[memory.addressSpace][*devPtr] = memory;
@@ -246,7 +262,8 @@ bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent e
 		{
 			// device is in host memory
 			memory.allocationSize = extent.width * extent.height * extent.depth;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
+			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
+			memory.pointer.offset = getOffset(memory.pointer.ptr);
 			memory.pointer.pitch = extent.width;
 			memory.pointer.width = extent.width;
 			memory.pointer.height = extent.height;
@@ -264,7 +281,7 @@ bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent e
 
 	*pitchedPointer = memory.pointer;
 	
-	memoryAllocations[memory.addressSpace][memory.pointer.ptr] = memory;
+	memoryAllocations[memory.addressSpace][memory.get()] = memory;
 	
 	return result;
 }
@@ -291,7 +308,8 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 			// device is in host memory
 			memory.pointer.pitch = width * desc.size();
 			memory.allocationSize = height * memory.pointer.pitch;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
+			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
+			memory.pointer.offset = getOffset(memory.pointer.ptr);
 		}
 		break;
 	default:
@@ -299,8 +317,8 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 		break;
 	}
 	
-	*array = (struct cudaArray *)memory.pointer.ptr;
-	memoryAllocations[memory.addressSpace][memory.pointer.ptr] = memory;
+	*array = (struct cudaArray *)memory.get();
+	memoryAllocations[memory.addressSpace][memory.get()] = memory;
 	
 	return result;
 }
@@ -342,7 +360,8 @@ bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr,
 			// device is in host memory
 			memory.pointer.pitch = extent.width * desc.size();
 			memory.allocationSize = extent.height * memory.pointer.pitch * extent.depth;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize);
+			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
+			memory.pointer.offset = getOffset(memory.pointer.ptr);
 			memory.pointer.width = extent.width;
 			memory.pointer.height = extent.height;
 		}
@@ -352,12 +371,12 @@ bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr,
 		break;
 	}
 	
-	if (memory.pointer.ptr) {
+	if (memory.get()) {
 		*pitchedPtr = memory.pointer;
-		memoryAllocations[memory.addressSpace][memory.pointer.ptr] = memory;
+		memoryAllocations[memory.addressSpace][memory.get()] = memory;
 	}
 
-	return (memory.pointer.ptr ? true : false);
+	return (memory.get() ? true : false);
 }
 
 /*!
@@ -429,7 +448,7 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 		}
 		else {
 			if (it->second.internal) {
-				if (it->second.pointer.ptr) {
+				if (it->second.get()) {
 					::free(it->second.pointer.ptr);
 				}
 				it->second.pointer.ptr = 0;
@@ -728,7 +747,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 		switch (addrSpace) {
 		case 0:
 			{
-				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + wOffset;
+				char *ptr = (char *)memory.get() + memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(ptr, host, bytes);
 			}
 			break;
@@ -760,7 +779,7 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 		switch (addrSpace) {
 		case 0:
 			{
-				char *ptr = (char *)memory.pointer.ptr + memory.pointer.pitch * hOffset + wOffset;
+				char *ptr = (char *)memory.get() + memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(host, ptr, bytes);
 			}
 			break;
@@ -795,9 +814,9 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 		switch (addrSpace) {
 		case 0:
 			{
-				char *srcPtr = (char *)srcMemory.pointer.ptr + srcMemory.pointer.pitch * srcHOffset + 
+				char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * srcHOffset + 
 					srcWOffset;
-				char *dstPtr = (char *)dstMemory.pointer.ptr + dstMemory.pointer.pitch * dstHOffset + 
+				char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * dstHOffset + 
 					dstWOffset;
 				::memcpy(dstPtr, srcPtr, count);			
 			}
@@ -932,7 +951,7 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 		case DeviceToDevice:
 		{
 			MemoryAllocation srcMemory = getMemoryAllocation(src);
-			srcMemory_ptr = (char *)srcMemory.pointer.ptr;
+			srcMemory_ptr = (char *)srcMemory.get();
 		}
 			break;
 		default:
@@ -944,7 +963,7 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 		case 0:
 		{
 			for (size_t row = 0; row < height; row++) {
-				char *dstPtr = (char *)dstMemory.pointer.ptr + dstMemory.pointer.pitch * row;
+				char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * row;
 				char *srcPtr = (char *)srcMemory_ptr + spitch * row;
 				::memcpy(dstPtr, srcPtr, width);
 			}
@@ -976,7 +995,7 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 		case DeviceToDevice:
 		{
 			MemoryAllocation dstMemory = getMemoryAllocation(dst);
-			dstMemory_ptr = (char *)dstMemory.pointer.ptr;
+			dstMemory_ptr = (char *)dstMemory.get();
 		}
 			break;
 		default:
@@ -989,7 +1008,7 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 		{
 			for (size_t row = 0; row < height; row++) {
 				char *dstPtr = (char *)dstMemory_ptr + dpitch * row;
-				char *srcPtr = (char *)srcMemory.pointer.ptr + srcMemory.pointer.pitch * row;
+				char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * row;
 				::memcpy(dstPtr, srcPtr, width);
 			}
 			return true;
@@ -1231,7 +1250,7 @@ size_t executive::Executive::enumerateDevices() {
 		// emulator
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
-		device.name = "Ocelot PTX Emulator\0\0\0";
+		device.name = "Ocelot PTX Emulator";
 		device.guid = 8803;
 		device.totalMemory = get_avphys_pages() * getpagesize();
 		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
@@ -1267,7 +1286,7 @@ size_t executive::Executive::enumerateDevices() {
 		// multicore
 		Device device;
 		device.ISA = ir::Instruction::LLVM;
-		device.name = "Ocelot LLVM JIT-Compiler\0\0\0";
+		device.name = "Ocelot LLVM JIT-Compiler";
 		device.guid = 8833;
 		device.totalMemory = get_avphys_pages() * getpagesize();
 		device.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
@@ -1559,12 +1578,9 @@ bool executive::Executive::verifyKernelMemoryBounds(ir::ExecutableKernel *exeKer
 void executive::Executive::launch(const std::string & moduleName, const std::string & kernelName,
 	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
 	size_t parameterBlockSize) {
-
-	trace::TraceGeneratorVector none;
-
 	// launch with no trace generators
 	this->launch(moduleName, kernelName, grid, block, sharedMemory, parameterBlock, 
-		parameterBlockSize, none);
+		parameterBlockSize, trace::TraceGeneratorVector());
 }
 
 /*!
@@ -1889,7 +1905,7 @@ bool executive::Executive::bindTextureToArray(const std::string & textureName, v
 		texture.size.x = memory.pointer.xsize;
 		texture.size.y = memory.pointer.ysize;
 		texture.size.z = memory.extent.depth;
-		texture.data = (void *)memory.pointer.ptr;
+		texture.data = (void *)memory.get();
 
 		texture.interpolation = filter;
 		texture.normalize = normalized;

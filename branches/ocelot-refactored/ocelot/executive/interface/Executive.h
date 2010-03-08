@@ -1,5 +1,4 @@
-/*!
-	\file Executive.h
+/*! \file Executive.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief implements Ocelot's executive manager
 */

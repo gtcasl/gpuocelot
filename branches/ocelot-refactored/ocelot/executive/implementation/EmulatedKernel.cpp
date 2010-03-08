@@ -112,6 +112,7 @@ ir::Dim3 executive::EmulatedKernel::getKernelShape() const {
 }
 
 void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
+	report("Setting external shared memory size to " << bytes);
 	_externSharedMemorySize = bytes;
 }
 

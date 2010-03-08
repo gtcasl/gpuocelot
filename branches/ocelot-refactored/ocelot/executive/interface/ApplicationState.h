@@ -77,6 +77,7 @@ namespace executive {
 	
 	class PitchedPointer {
 	public:
+		size_t offset; // Offset from the base of the pointer for alignment
 		size_t pitch;
 
 		void *ptr;
@@ -156,7 +157,7 @@ namespace executive {
 	
 		//! gets void* to memory allocation
 		void *get() const {
-			return pointer.ptr;		
+			return (char*)pointer.ptr + pointer.offset;
 		}
 		
 		//! true if memory is portable and affinity = host
@@ -171,7 +172,7 @@ namespace executive {
 		
 		//! total size of allocation in bytes
 		size_t size() const {
-			return 0;
+			return allocationSize;
 		}
 
 		std::string toString() const;

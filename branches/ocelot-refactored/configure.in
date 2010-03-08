@@ -107,6 +107,15 @@ fi
 ################################################################################
 
 ################################################################################
+# Set variables in the configure.h file
+AC_DEFINE_UNQUOTED(OCELOT_LDFLAGS, \
+	["-locelot $LLVM_LDFLAGS $CUDA_DRIVER_API_LIBARY"], \
+	["Define the ocelot linker flags"])
+AC_DEFINE_UNQUOTED(OCELOT_CXXFLAGS, ["$LLVM_CFLAGS"], \
+	["Define the ocelot compile flags"])
+################################################################################
+
+################################################################################
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_INLINE

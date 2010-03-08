@@ -138,6 +138,9 @@ namespace cuda {
 	
 	typedef std::map< int, RegisteredGLBuffer > RegisteredGLBufferMap;
 	
+	typedef std::vector< unsigned int > IndexVector;
+	typedef std::vector< unsigned int > SizeVector;
+	
 	/*! 
 		Host thread CUDA context consists of these
 	*/
@@ -156,7 +159,7 @@ namespace cuda {
 		//! existing streams
 		StreamMap streams;
 		
-		//! existing maps
+		//! existing events
 		EventMap events;
 		
 		//! next stream
@@ -173,6 +176,12 @@ namespace cuda {
 		
 		//! size of parameter memory
 		size_t parameterBlockSize;
+
+		//! Offsets for individual parameters
+		IndexVector parameterIndices;
+		
+		//! Sizes for individual parameters
+		SizeVector parameterSizes;
 		
 		//! cuda context
 		
@@ -188,6 +197,10 @@ namespace cuda {
 	public:
 	
 		HostThreadContext();	
+		void clear();
+		void mapParameters(executive::Executive& context, 
+			const std::string& moduleName, 
+			const std::string& kernelName);
 	};
 	
 	typedef std::map< pthread_t, HostThreadContext > HostThreadContextMap;

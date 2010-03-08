@@ -634,3 +634,8 @@ int cuda::CudaRuntimeInterface::cudaSynchronizeThreads( void** one, void* two ) 
 	return 0;
 }
 
+void cuda::CudaRuntimeInterface::cudaTextureFetch(const void* tex, 
+	void* index, int integer, void* val) {
+	assert(0 && "unimplemented");
+}
+

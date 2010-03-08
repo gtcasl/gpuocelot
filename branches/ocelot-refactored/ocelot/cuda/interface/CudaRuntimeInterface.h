@@ -267,6 +267,11 @@ namespace cuda {
 		virtual void cudaMutexOperation( int lock );
 		virtual int cudaSynchronizeThreads( void** one, void* two );
 		
+		/*
+			Texture emulation
+		*/
+		virtual void cudaTextureFetch(const void* tex, void* index, 
+			int integer, void* val);
 	public:
 	
 		/*! \brief Adds a trace generator for the next kernel invocation 

@@ -19,6 +19,7 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 
 // Hydrazine includes
+#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 // GL includes
@@ -136,7 +137,7 @@ static executive::Extent convert(struct cudaExtent cudaExtent) {
 
 static void convert(struct cudaPitchedPtr *cuda, const executive::PitchedPointer & pitched) {
 	cuda->pitch = pitched.pitch;
-	cuda->ptr = pitched.ptr;
+	cuda->ptr = (char*)pitched.ptr + pitched.offset;
 	cuda->xsize = pitched.width;
 	cuda->ysize = pitched.height;
 }
@@ -149,6 +150,16 @@ static executive::dim3 convert(dim3 dim) {
 static executive::dim3 convert(cudaPos pos) {
 	executive::dim3 ed3 = {(int)pos.x, (int)pos.y, (int)pos.z};
 	return ed3;
+}
+
+static std::string dataToString(void* data, unsigned int size) {
+	std::stringstream stream;
+	stream << "0x";
+	if(size == 1) stream << std::hex << (int)*((unsigned char*) data);
+	if(size == 2) stream << std::hex << *((unsigned short*) data);
+	if(size == 4) stream << std::hex << *((unsigned int*) data);
+	if(size == 8) stream << std::hex << *((long long unsigned int*) data);
+	return stream.str();
 }
 
 std::string cuda::CudaRuntime::formatError( const std::string& message ) {
@@ -167,6 +178,38 @@ std::string cuda::CudaRuntime::formatError( const std::string& message ) {
 cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), nextStream(0), nextEvent(0), 
 	parameterBlock(0), parameterBlockSize(0) {
 
+}
+
+void cuda::HostThreadContext::clear() {
+	parameterIndices.clear();
+	parameterSizes.clear();
+}
+
+void cuda::HostThreadContext::mapParameters(executive::Executive& context, 
+	const std::string& moduleName, const std::string& kernelName) {
+	ir::Instruction::Architecture isa = context.getSelectedISA();
+	ir::Kernel *kernel = context.getKernel(isa, moduleName, kernelName);
+	if (!kernel) {
+		kernel = context.translateToISA(isa, moduleName, kernelName);
+	}
+	assert(kernel->parameters.size() == parameterIndices.size());
+	IndexVector::iterator offset = parameterIndices.begin();
+	SizeVector::iterator size = parameterSizes.begin();
+	unsigned int dst = 0;
+	unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
+	for (ir::Kernel::ParameterVector::iterator parameter = kernel->parameters.begin(); 
+		parameter != kernel->parameters.end(); ++parameter, ++offset, ++size) {
+		memset(temp + dst, 0, parameter->getSize());
+		memcpy(temp + dst, parameterBlock + *offset, *size);
+		report( "Mapping parameter at offset " << *offset << " of size " 
+			<< *size << " to offset " << dst << " of size " 
+			<< parameter->getSize() << " data = " 
+			<< dataToString(temp + dst, parameter->getSize()));
+		dst += parameter->getSize();
+	}
+	free(parameterBlock);
+	parameterBlock = temp;
+	clear();
 }
 
 cuda::CudaContext::CudaContext(): thread(0), context(0) { }
@@ -580,7 +623,8 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr,
 	executive::PitchedPointer pitchedPointer;
 	if (context.mallocPitch(&pitchedPointer, convert(extent))) {
 		result = cudaSuccess;
-		*arrayPtr = (struct cudaArray *)pitchedPointer.ptr;
+		*arrayPtr = (struct cudaArray *)((char*)pitchedPointer.ptr 
+			+ pitchedPointer.offset);
 
 		report("cudaMalloc3DArray() - *arrayPtr = " << (void *)(*arrayPtr));
 	}
@@ -613,9 +657,9 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, void *pH
 	HostThreadContext & thread = getHostThreadContext();
 
 	executive::MemoryAllocation memory = context.getMemoryAllocation(pHost);
-	if (memory.pointer.ptr) {
+	if (memory.get()) {
 		result = cudaSuccess;
-		*pDevice = memory.pointer.ptr;
+		*pDevice = memory.get();
 	}
 
 	TestError(result);
@@ -863,22 +907,26 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 
 	if (p->dstArray) {
 		dstPtr.ptr = (void *)p->dstArray;
+		dstPtr.offset = 0;
 		dstPtr.xsize = 0;
 		dstPtr.ysize = 0;
 	}
 	else {
 		dstPtr.ptr = p->dstPtr.ptr;
+		dstPtr.offset = 0;
 		dstPtr.xsize = p->dstPtr.xsize;
 		dstPtr.ysize = p->dstPtr.ysize;
 		dstPtr.pitch = p->dstPtr.pitch;
 	}
 	if (p->srcArray) {
 		srcPtr.ptr = (void *)p->srcArray;
+		srcPtr.offset = 0;
 		srcPtr.xsize = 0;
 		srcPtr.ysize = 0;
 	}
 	else {
 		srcPtr.ptr = p->srcPtr.ptr;
+		srcPtr.offset = 0;
 		srcPtr.xsize = p->srcPtr.xsize;
 		srcPtr.ysize = p->srcPtr.ysize;
 		srcPtr.pitch = p->srcPtr.pitch;
@@ -1038,7 +1086,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 			<< ") - major: " << device.major << ", minor: " << device.minor);
 
 		memset(prop, 0, sizeof(prop));
-		memcpy(prop->name, device.name.c_str(), minimum(255, device.name.size()));
+		hydrazine::strlcpy( prop->name, device.name.c_str(), 256 );
 		prop->canMapHostMemory = 1;
 		prop->clockRate = device.clockRate;
 		prop->computeMode = cudaComputeModeDefault;
@@ -1257,7 +1305,7 @@ cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(struct cudaChannelFormatDesc *
 	HostThreadContext &thread = getHostThreadContext();
 
 	executive::MemoryAllocation memory = context.getMemoryAllocation((const void *)array);
-	if (memory.pointer.ptr) {
+	if (memory.get()) {
 		convert(desc, memory.desc);
 		result = cudaSuccess;
 	}
@@ -1313,6 +1361,9 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, s
 	
 	memcpy(thread.parameterBlock + offset, arg, size);
 	
+	thread.parameterIndices.push_back(offset);
+	thread.parameterSizes.push_back(size);
+	
 	unlock();
 	
 	TestError(result);
@@ -1327,7 +1378,7 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	HostThreadContext & thread = getHostThreadContext();
 	
 	assert(thread.launchConfigurations.size());
-		
+	
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
@@ -1335,6 +1386,8 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	std::string moduleName = kernel.module;
 	std::string kernelName = kernel.kernel;
 
+	thread.mapParameters(context, moduleName, kernelName);
+	
 	report("CudaRuntime::cudaLaunch(" << kernelName << ")");
 	
 	try {
@@ -1347,8 +1400,9 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 				thread.nextTraceGenerators.end());
 		}
 
-		context.launch(moduleName, kernelName, convert(launch.gridDim), convert(launch.blockDim), 
-			launch.sharedMemory, thread.parameterBlock, thread.parameterBlockSize, traceGens);
+		context.launch(moduleName, kernelName, convert(launch.gridDim), 
+			convert(launch.blockDim), launch.sharedMemory, 
+			thread.parameterBlock, thread.parameterBlockSize, traceGens);
 	}
 	catch( const executive::RuntimeException& e ) {
 #if CUDA_VERBOSE == 1

@@ -161,6 +161,12 @@
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 #undef NO_MINUS_C_MINUS_O
 
+/* "Define the ocelot compile flags" */
+#undef OCELOT_CXXFLAGS
+
+/* "Define the ocelot linker flags" */
+#undef OCELOT_LDFLAGS
+
 /* Name of package */
 #undef PACKAGE
 

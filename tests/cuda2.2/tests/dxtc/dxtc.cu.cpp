@@ -1,8 +1,7 @@
-
-# 1 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.cpp"
 # 1 "dxtc.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h" 3
@@ -12858,9 +12857,9 @@ exit(1);
 # 679 "dxtc.cu"
 uint w, h;
 # 682 "dxtc.cu"
-w = W;
+w = (W >> 4);
 # 683 "dxtc.cu"
-h = H;
+h = (H >> 4);
 # 690 "dxtc.cu"
 const uint memSize = ((w * h) * (4));
 # 691 "dxtc.cu"
@@ -13105,9 +13104,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 857 "dxtc.cu"
 }
-# 1 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_00003cde_00000000-3_dxtc.fatbin.c" 1
+# 1 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00003b14_00000000-3_dxtc.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -13176,7 +13175,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00003cde_00000000-3_dxtc.fatbin.c" 2
+# 2 "/tmp/tmpxft_00003b14_00000000-3_dxtc.fatbin.c" 2
 
 
 
@@ -13191,8 +13190,8 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x206e6f20746c6975ull,0x2d30312d39303032ull,0x2d2f2f090a0a3632ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,
-0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f6564633330ull,0x372d303030303030ull,
-0x70632e637478645full,0x742f2820692e3370ull,0x23494263632f706dull,0x296a41327369542eull,
+0x6d742f706d742f20ull,0x3030305f74667870ull,0x30305f3431623330ull,0x372d303030303030ull,
+0x70632e637478645full,0x742f2820692e3370ull,0x23494263632f706dull,0x29646b36436d732eull,
 0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,
 0x2d2d2d2d2f2f090aull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -13207,7 +13206,7 @@ static const unsigned long long __deviceText_$compute_13$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a2d2d2d2d2d2d2dull,0x09656c69662e090aull,
 0x6d6d6f633c220931ull,0x656e696c2d646e61ull,0x6c69662e090a223eull,0x6d742f2209320965ull,
-0x746678706d742f70ull,0x646333303030305full,0x3030303030305f65ull,0x7478645f362d3030ull,
+0x746678706d742f70ull,0x316233303030305full,0x3030303030305f34ull,0x7478645f362d3030ull,
 0x6566616475632e63ull,0x090a227570672e32ull,0x093309656c69662eull,0x696c2f7273752f22ull,
 0x34692f6363672f62ull,0x78756e696c2d3638ull,0x342e342f756e672dull,0x756c636e692f312eull,
 0x65646474732f6564ull,0x662e090a22682e66ull,0x2f22093409656c69ull,0x61636f6c2f727375ull,
@@ -14773,8 +14772,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"e5c57bcb19e4ea78",(char*)"dxtc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x7cbb8f52,&__elfEntries1};
-# 2 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"1fee59cedca0a6d8",(char*)"dxtc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xc8018475,&__elfEntries1};
+# 2 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 113 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -23764,13 +23763,13 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 5330 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 89 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 280 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.stub.c" 2
 
 
 
 
 struct __T20 {const uint *__par0;const uint *__par1;uint2 *__par2;int __dummy_field;};
-static void __sti____cudaRegisterAll_39_tmpxft_00003cde_00000000_4_dxtc_cpp1_ii_b480a5a9(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_39_tmpxft_00003b14_00000000_4_dxtc_cpp1_ii_b480a5a9(void) __attribute__((__constructor__));
 void __device_stub__Z8compressPKjS0_P5uint2(const uint *__par0, const uint *__par1, uint2 *__par2){auto struct __T20 *__T2324;
 *(void**)(void*)&__T2324 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T2324->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T2324->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T2324->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(const uint *, const uint *, uint2 *))compress__entry)); (void)cudaLaunch(((char *)((void ( *)(const uint *, const uint *, uint2 *))compress__entry))); };}
 void compress__entry( const uint *__cuda_0,const uint *__cuda_1,uint2 *__cuda_2)
@@ -23778,9 +23777,9 @@ void compress__entry( const uint *__cuda_0,const uint *__cuda_1,uint2 *__cuda_2)
 {__device_stub__Z8compressPKjS0_P5uint2( __cuda_0,__cuda_1,__cuda_2);
 # 538 "dxtc.cu"
 }
-# 1 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.stub.c"
 
 
 
-static void __sti____cudaRegisterAll_39_tmpxft_00003cde_00000000_4_dxtc_cpp1_ii_b480a5a9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const uint *, const uint *, uint2 *))compress__entry), (char*)"_Z8compressPKjS0_P5uint2", "_Z8compressPKjS0_P5uint2", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&kColorMetric__cuda_shadow_variable__, (char*)"kColorMetric", "kColorMetric", 0, 12, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable4__cuda_shadow_variable__, (char*)"alphaTable4", "alphaTable4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable3__cuda_shadow_variable__, (char*)"alphaTable3", "alphaTable3", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods4__cuda_shadow_variable__, (char*)"prods4", "prods4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods3__cuda_shadow_variable__, (char*)"prods3", "prods3", 0, 16, 1, 0); }
-# 1 "/tmp/tmpxft_00003cde_00000000-1_dxtc.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_39_tmpxft_00003b14_00000000_4_dxtc_cpp1_ii_b480a5a9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const uint *, const uint *, uint2 *))compress__entry), (char*)"_Z8compressPKjS0_P5uint2", "_Z8compressPKjS0_P5uint2", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&kColorMetric__cuda_shadow_variable__, (char*)"kColorMetric", "kColorMetric", 0, 12, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable4__cuda_shadow_variable__, (char*)"alphaTable4", "alphaTable4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable3__cuda_shadow_variable__, (char*)"alphaTable3", "alphaTable3", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods4__cuda_shadow_variable__, (char*)"prods4", "prods4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods3__cuda_shadow_variable__, (char*)"prods3", "prods3", 0, 16, 1, 0); }
+# 1 "/tmp/tmpxft_00003b14_00000000-1_dxtc.cudafe1.stub.c" 2

@@ -679,8 +679,8 @@ int main(int argc, char** argv)
     uint w, h;
 #if 1
     // Reduce the image size so that it doesn't take so long on emulation.
-    w = W;
-    h = H;
+    w = W >> 4;
+    h = H >> 4;
 #else
     w = W >> 4;
     h = H >> 4;

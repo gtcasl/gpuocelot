@@ -189,9 +189,9 @@ void cuda::HostThreadContext::mapParameters(executive::Executive& context,
 	unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
 	for (ir::Kernel::ParameterVector::iterator parameter = kernel->parameters.begin(); 
 		parameter != kernel->parameters.end(); ++parameter, ++offset, ++size) {
-		unsigned int misalignment = dst % parameter->getSize();
+		unsigned int misalignment = dst % parameter->getAlignment();
 		unsigned int alignmentOffset = misalignment == 0 
-			? 0 : parameter->getSize() - misalignment;
+			? 0 : parameter->getAlignment() - misalignment;
 		dst += alignmentOffset;
 		
 		memset(temp + dst, 0, parameter->getSize());

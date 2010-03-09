@@ -100,7 +100,7 @@ namespace executive {
 		/*!
 			\brief loads a module with a given name from a file
 		*/
-		bool loadModule(std::string filename, bool translateOnLoad=true);
+		bool loadModule(std::string filename, bool translateOnLoad=false);
 		
 		/*!
 			\brief registers a global variable

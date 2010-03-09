@@ -129,7 +129,9 @@ namespace executive {
 			\param bytes size of the allocation in bytes
 			\param addressSpace address space of the allocation
 		*/
-		void registerExternal(void *ptr, size_t bytes, int addressSpace=0);
+		void registerExternal(void *ptr, size_t bytes, int addressSpace=-1);
+
+		void unregisterExternal(void *ptr, int addressSpace=-1);
 		
 	public:
 	
@@ -247,9 +249,7 @@ namespace executive {
 		*/
 		static std::string nearbyAllocationsToString( 
 			const Executive& executive, const void* pointer, 
-			unsigned int above = 5, unsigned int below = 5 ) {
-			assert(0 && "unimplemented");
-		}
+			unsigned int above = 5, unsigned int below = 5 );
 		
 	public:
 	

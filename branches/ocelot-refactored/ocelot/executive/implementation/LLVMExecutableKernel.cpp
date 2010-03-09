@@ -25,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define REPORT_ALL_PTX_SOURCE 0
 #define REPORT_ORIGINAL_LLVM_SOURCE 0
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
@@ -33,10 +33,10 @@
 #define REPORT_CTA_INSIDE_TRANSLATED_CODE 0
 #define REPORT_ATOMIC_OPERATIONS 0
 #define PRINT_OPTIMIZED_CFG 0
-#define DEBUG_NTH_THREAD_ONLY 1
-#define NTH_THREAD 1
-#define DEBUG_PTX_INSTRUCTION_TRACE 1
-#define DEBUG_PTX_BASIC_BLOCK_TRACE 1
+#define DEBUG_NTH_THREAD_ONLY 0
+#define NTH_THREAD 0
+#define DEBUG_PTX_INSTRUCTION_TRACE 0
+#define DEBUG_PTX_BASIC_BLOCK_TRACE 0
 #define DEBUG_LLVM 0
 
 #include <configure.h>
@@ -626,8 +626,8 @@ extern "C"
 	void __ocelot_debug_instruction( executive::LLVMContext* context, 
 		ir::PTXU64 _instruction )
 	{
-		void* instruction = (void*) _instruction;
 		#if(DEBUG_PTX_INSTRUCTION_TRACE == 1)		
+		void* instruction = (void*) _instruction;
 
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
 		if( context->tid.x == NTH_THREAD )

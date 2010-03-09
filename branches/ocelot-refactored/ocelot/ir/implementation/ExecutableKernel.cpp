@@ -137,6 +137,8 @@ size_t ExecutableKernel::mapParameterOffsets() {
 		paramSize += it->getSize();
 	}
 
+	report("ExecutableKernels::mapParameterOffsets() - '" << name << "' - size: " << paramSize << " bytes");
+
 	return paramSize;
 }
 

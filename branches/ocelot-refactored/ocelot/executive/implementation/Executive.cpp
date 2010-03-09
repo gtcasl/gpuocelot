@@ -34,7 +34,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -85,19 +85,46 @@ executive::Executive::~Executive() {
 */
 void executive::Executive::registerExternal(void *ptr, size_t bytes, int addressSpace) {
 	MemoryAllocation memory;
+
+	if (addressSpace < 0) {
+		addressSpace = getDeviceAddressSpace();
+	}
 	
 	memory.structure = MemoryAllocation::Struct_linear;
 	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.dimension = MemoryAllocation::Dim_1D;
 	memory.addressSpace = addressSpace;
+	memory.dimension = MemoryAllocation::Dim_1D;
+
 	memory.pointer.ptr = ptr;
 	memory.pointer.offset = 0;
 	memory.pointer.xsize = bytes;
 	memory.pointer.pitch = bytes;
 	memory.pointer.ysize = 1;
+
+	memory.extent.width = bytes;
+	memory.extent.height = 1;
+	memory.extent.depth = 1;
+
+	memory.allocationSize = bytes;
+	memory.flags = 0;
+
 	memory.internal = false;
 	
 	memoryAllocations[memory.addressSpace][memory.get()] = memory;
+
+	report("  Executive::registerExternal(addrspace: " << memory.addressSpace << ") - ptr: " 
+		<< (void *)memory.get() << ", " << memory.allocationSize << " bytes");
+}
+
+void executive::Executive::unregisterExternal(void *ptr, int addressSpace) {
+	if (addressSpace < 0) {
+		addressSpace = getDeviceAddressSpace();
+	}
+
+	MemoryAllocationMap::iterator alloc_it = memoryAllocations[addressSpace].find(ptr);
+	if (alloc_it != memoryAllocations[addressSpace].end()) {
+		memoryAllocations[addressSpace].erase(alloc_it);
+	}
 }
 
 bool executive::Executive::malloc(void **devPtr, size_t size) {
@@ -388,6 +415,8 @@ bool executive::Executive::free(void *devPtr) {
 		return false;
 	}
 
+	report("Executive::free(" << devPtr << ")");
+
 	MemoryAllocation memory = getMemoryAllocation(devPtr);
 	if (memory.pointer.ptr) {
 		if (memory.addressSpace) {
@@ -406,6 +435,8 @@ bool executive::Executive::free(void *devPtr) {
 
 bool executive::Executive::freeHost(void *ptr) {
 	bool result = true;
+
+	report("Executive::freeHost(" << ptr << ")");
 
 	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
 	MemoryAllocationMap::iterator it = allocations.find(ptr);
@@ -434,6 +465,10 @@ bool executive::Executive::freeHost(void *ptr) {
 
 bool executive::Executive::freeArray(struct cudaArray *array) {
 	bool result = true;
+
+
+	report("Executive::freeArray(" << (void *)array << ")");
+
 	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
 	MemoryAllocationMap::iterator it = allocations.find((void *)array);
 	if (it == allocations.end()) {
@@ -460,33 +495,16 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 }
 
 bool executive::Executive::checkMemoryAccess(int device, const void* base, size_t size) const {
-	bool found = true;
-	
-	/*
-	int devAddrSpace = devices[device].addressSpace;
-	MemoryAllocation allocation;
-	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(devAddrSpace);
-	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
-	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)ptr);
-	if (alloc_it == memoryMap.end()) {
-		// find nearest
-		bool found = false;
-		MemoryAllocationMap::const_iterator bound = memoryMap.upper_bound((void *)ptr);
-		if (bound != memoryMap.end()) {
-			char *base_ptr = (char *)bound->first;
-			char *end_ptr = base_ptr + bound->second.size();
-			if ((const char *)ptr >= base_ptr && ptr < end_ptr) {
-				allocation = bound->second;
-				found = true;
-			}
-		}
-	}
-	else {
-		found = true;
-	}
-	*/
-	
-	return found;
+
+	MemoryAllocation allocation = getMemoryAllocation(base);
+
+	// least address in region must be greater than or equal to this
+	const char *region_base_ptr = (const char *)allocation.get();	
+
+	// greatest address in region must be less than this
+	const char *region_end_ptr = region_base_ptr + allocation.size();
+
+	return (region_base_ptr && region_end_ptr >= (const char *)base + size);
 }
 
 /*!
@@ -527,14 +545,18 @@ executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void
 		// find nearest
 		bool found = false;
 		MemoryAllocationMap::const_iterator bound = memoryMap.upper_bound((void *)ptr);
-		if (bound != memoryMap.end()) {
-			char *base_ptr = (char *)bound->first;
-			char *end_ptr = base_ptr + bound->second.size();
-			if ((const char *)ptr >= base_ptr && ptr < end_ptr) {
+		if (bound != memoryMap.begin()) {
+			--bound;
+
+			const char *base_ptr = (const char *)bound->second.get();
+			const char *end_ptr = base_ptr + bound->second.size();
+
+			if ((const char *)ptr >= base_ptr && ptr <= end_ptr) {
 				allocation = bound->second;
 				found = true;
 			}
 		}
+/*
 		if (!found) {
 			// throw an exception
 			std::stringstream ss;
@@ -553,12 +575,31 @@ executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void
 			printMemoryAllocations(ss);
 			throw hydrazine::Exception(ss.str());
 		}
+*/
 	}
 	else {
 		allocation = alloc_it->second;
 	}
 	
 	return allocation;
+}
+
+std::string executive::Executive::nearbyAllocationsToString( 
+	const Executive& executive, const void* pointer, 
+	unsigned int above, unsigned int below) {
+
+		// throw an exception
+
+	std::stringstream ss;
+	ss << "device memory fault - device pointer " << std::hex << pointer 
+		<< " does not point to an allocation on device " << std::dec 
+		<< executive.devices[executive.getSelectedDevice()].name 
+		<< "\n";
+
+	ss << "\nAll allocations:\n";
+	executive.printMemoryAllocations(ss);
+	
+	return ss.str();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1026,11 +1067,13 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 
 /*!
 	\brief performs a 3D memcpy to a destination 
-	\param dst - pointer to either a CUDA array or a pitched allocation (.ptr field specifies a memory allocation which informs Executive)
+	\param dst - pointer to either a CUDA array or a pitched allocation (.ptr field specifies a 
+		memory allocation which informs Executive)
 	\param dstPos - offset into destination block
 	\param extent - width, height, and depth to copy
 	\param kind - indicates whether source and destination are device or host
-	\param src - pointer to either CUDA array or pitched allocation  (.ptr field specifies a memory allocation which informs Executive)
+	\param src - pointer to either CUDA array or pitched allocation  (.ptr field specifies a memory 
+		allocation which informs Executive)
 	\param srcPos - offset into source block
 */
 bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Extent extent, 
@@ -1038,7 +1081,8 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 
 	int addrSpace = getDeviceAddressSpace();
 
-	report("deviceMemcpy3D() - extent: " << extent.width << ", " << extent.height << ", " << extent.depth << " - kind: " << kind);
+	report("deviceMemcpy3D() - extent: " << extent.width << ", " << extent.height << ", " 
+		<< extent.depth << " - kind: " << kind);
 
 	switch (kind) {
 	case HostToHost:
@@ -1157,7 +1201,8 @@ void executive::Executive::registerGlobalVariable(const std::string & module,
 	// register global variables and allocate [if necessary] on available address spaces
 	//
 
-	report("Executive::registerGlobalVariable() - mod: '" << module << "', varName: '" << varName << "'");
+	report("Executive::registerGlobalVariable() - mod: '" << module 
+		<< "', varName: '" << varName << "'");
 	
 	GlobalMap::iterator g_it = globals.find(varName);
 	if (g_it == globals.end()) {
@@ -1185,6 +1230,8 @@ void executive::Executive::registerGlobalVariable(const std::string & module,
 		globalVar.size = size;
 		globalVar.host_pointer = hostPtr;
 	}
+
+	registerExternal(hostPtr, size, addrSpace);
 }
 
 void executive::Executive::registerTexture(const char *module, const char *name, int dimensions,

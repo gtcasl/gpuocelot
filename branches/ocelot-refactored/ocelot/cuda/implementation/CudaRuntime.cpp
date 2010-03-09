@@ -39,7 +39,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -645,7 +645,8 @@ cudaError_t cuda::CudaRuntime::cudaHostAlloc(void **pHost, size_t bytes, unsigne
 	return setLastErrorAndUnlock(thread, result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags) {
+cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, void *pHost, 
+	unsigned int flags) {
 
 	cudaError_t result = cudaErrorMemoryAllocation;
 	lock();
@@ -1813,6 +1814,8 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, GLuint bufOb
 
 			*devPtr = buf_it->second.ptr;
 			buf_it->second.mapped = true;
+
+			context.registerExternal(*devPtr, bytes);
 			
 			if( glGetError() != GL_NO_ERROR ) {
 				//report("  error - mapped " << bytes << " bytes");
@@ -1906,6 +1909,8 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 				assert(0 && "unimplemented");
 			}
 			else {
+				context.unregisterExternal(buf_it->second.ptr);
+
 				glBindBuffer(GL_ARRAY_BUFFER, bufObj);
 				glUnmapBuffer(GL_ARRAY_BUFFER);
 

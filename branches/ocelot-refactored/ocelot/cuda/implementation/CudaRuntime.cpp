@@ -39,7 +39,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,16 +152,6 @@ static executive::dim3 convert(cudaPos pos) {
 	return ed3;
 }
 
-static std::string dataToString(void* data, unsigned int size) {
-	std::stringstream stream;
-	stream << "0x";
-	if(size == 1) stream << std::hex << (int)*((unsigned char*) data);
-	if(size == 2) stream << std::hex << *((unsigned short*) data);
-	if(size == 4) stream << std::hex << *((unsigned int*) data);
-	if(size == 8) stream << std::hex << *((long long unsigned int*) data);
-	return stream.str();
-}
-
 std::string cuda::CudaRuntime::formatError( const std::string& message ) {
 	std::string result = "==Ocelot== ";
 	for(std::string::const_iterator mi = message.begin(); mi != message.end(); ++mi) {
@@ -199,12 +189,17 @@ void cuda::HostThreadContext::mapParameters(executive::Executive& context,
 	unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
 	for (ir::Kernel::ParameterVector::iterator parameter = kernel->parameters.begin(); 
 		parameter != kernel->parameters.end(); ++parameter, ++offset, ++size) {
+		unsigned int misalignment = dst % parameter->getSize();
+		unsigned int alignmentOffset = misalignment == 0 
+			? 0 : parameter->getSize() - misalignment;
+		dst += alignmentOffset;
+		
 		memset(temp + dst, 0, parameter->getSize());
 		memcpy(temp + dst, parameterBlock + *offset, *size);
 		report( "Mapping parameter at offset " << *offset << " of size " 
 			<< *size << " to offset " << dst << " of size " 
 			<< parameter->getSize() << " data = " 
-			<< dataToString(temp + dst, parameter->getSize()));
+			<< hydrazine::dataToString(temp + dst, parameter->getSize()));
 		dst += parameter->getSize();
 	}
 	free(parameterBlock);
@@ -707,7 +702,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t cou
 cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void *src,
 	size_t count, size_t offset, enum cudaMemcpyKind kind) {
 
-	report("cuda::CudaRuntime::cudaMemcpyToSymbol('" << symbol << "' - " << (void *)symbol);
+	report("cuda::CudaRuntime::cudaMemcpyToSymbol('" << symbol << "' - " 
+		<< (void *)symbol << " - value " << hydrazine::dataToString(src, count));
 
 	cudaError_t result = cudaSuccess;
 	lock();

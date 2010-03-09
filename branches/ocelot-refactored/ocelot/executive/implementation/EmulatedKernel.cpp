@@ -32,7 +32,7 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 0
+#define REPORT_KERNEL_INSTRUCTIONS 1
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
@@ -779,7 +779,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 							(ir::PTXU64)g_it->second.pointer;
 						report("Mapping global label " 
 							<< (instr.*operands[n]).identifier << " to " 
-							<< (instr.*operands[n]).imm_uint 
+							<< (void *)(instr.*operands[n]).imm_uint 
 							<< " for instruction " << instr.toString() );
 					}
 				}
@@ -801,7 +801,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 							(ir::PTXU64)g_it->second.pointer;
 						report("Mapping ld/st global label " 
 							<< (instr.*operands[n]).identifier << " to " 
-							<< (instr.*operands[n]).imm_uint
+							<< (void *)(instr.*operands[n]).imm_uint
 							<< " for instruction " << instr.toString() );
 					}
 				}

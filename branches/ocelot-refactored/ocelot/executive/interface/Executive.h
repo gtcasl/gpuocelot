@@ -247,8 +247,7 @@ namespace executive {
 		/*!
 			Gets a string representation of memory allocations
 		*/
-		static std::string nearbyAllocationsToString( 
-			const Executive& executive, const void* pointer, 
+		static std::string nearbyAllocationsToString( const Executive& executive, const void* pointer, 
 			unsigned int above = 5, unsigned int below = 5 );
 		
 	public:

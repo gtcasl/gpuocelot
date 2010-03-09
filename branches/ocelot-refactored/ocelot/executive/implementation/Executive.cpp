@@ -1182,6 +1182,7 @@ bool executive::Executive::loadModule(std::string path, bool translateOnLoad, st
 	if (translateOnLoad) {
 		translateModuleToISA(path, getSelectedISA(), true);
 	}
+
 	return true;
 }
 
@@ -1734,9 +1735,15 @@ void executive::Executive::fenceGlobalVariables() {
 		//
 		// do something else entirely
 		//
+		MemoryAllocationMap &memoryMap = memoryAllocations[getDeviceAddressSpace()];
+
+		report("Executive::fenceGlobalVariables()");
+
 		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
 			// do something about each module
-			
+
+			report("  global: " << glb_it->first);			
+
 			if (glb_it->second.deviceAddressSpace != Device_shared) {
 				GlobalVariable::ModulePointerMap::iterator mod_it = glb_it->second.modules.begin();
 				for (; mod_it != glb_it->second.modules.end(); ++mod_it) {
@@ -1750,6 +1757,10 @@ void executive::Executive::fenceGlobalVariables() {
 						global.pointer = (char *)glb_it->second.host_pointer;
 						global.registered = true;
 						global.local = true;
+					}
+
+					if (memoryMap.find(global.pointer) == memoryMap.end()) {
+						registerExternal(global.pointer, glb_it->second.size);
 					}
 				}
 			}

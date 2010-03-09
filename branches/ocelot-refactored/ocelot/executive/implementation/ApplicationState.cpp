@@ -21,6 +21,7 @@ executive::MemoryAllocation::MemoryAllocation():
 	flags(0),
 	internal(true) {
 
+	pointer.offset = 0;
 	pointer.ptr = 0;
 	pointer.xsize = pointer.ysize = pointer.pitch = 0;
 	extent.width = extent.height = extent.depth = 0;

@@ -42,7 +42,7 @@
 			Emulated
 		</PreferredISA>
 		<OptimizationLevel>
-			basic
+			none
 		</OptimizationLevel>
 		<DisableGPUDevices>
 			1

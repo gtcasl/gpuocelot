@@ -35,8 +35,8 @@
 #define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_NTH_THREAD_ONLY 0
 #define NTH_THREAD 0
-#define DEBUG_PTX_INSTRUCTION_TRACE 0
-#define DEBUG_PTX_BASIC_BLOCK_TRACE 0
+#define DEBUG_PTX_INSTRUCTION_TRACE 1
+#define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 #define DEBUG_LLVM 0
 
 #include <configure.h>
@@ -1765,6 +1765,8 @@ namespace executive
 			_buildDebuggingInformation();
 			_allocateMemory();
 
+			report( " Optimization level " << translator::Translator::toString( 
+				_optimizationLevel ) );
 			translator::PTXToLLVMTranslator translator( _optimizationLevel );
 
 			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
@@ -2461,6 +2463,7 @@ namespace executive
 			_opaque.blocks.insert( std::make_pair( block->id(), 
 				block->block() ) );
 		}
+		report( " Allocating " << _opaque.blocks.size() << " blocks." );
 	}
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
@@ -2679,9 +2682,12 @@ namespace executive
 	std::string LLVMExecutableKernel::instruction( 
 		unsigned int statement ) const
 	{
+		report("For module " << module->modulePath);
+		assert(statement < module->statements.size());
 		ir::Module::StatementVector::const_iterator s_it 
 			= module->statements.begin();
 		std::advance(s_it, statement);
+		assertM(s_it->instruction.valid() == "", s_it->instruction.valid());
 		return s_it->instruction.toString();
 	}
 }

@@ -142,12 +142,15 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		report("Unknown preferredISA - using Emulated");
 	}
 
-	executive.optimizationLevel = (int)translator::Translator::FullOptimization;
+	executive.optimizationLevel = (int)translator::Translator::NoOptimization;
 	if (strOptLevel == "full") {
 		executive.optimizationLevel = (int)translator::Translator::FullOptimization;
 	}
 	else if (strOptLevel == "debug") {
 		executive.optimizationLevel = (int)translator::Translator::DebugOptimization;
+	}
+	else if (strOptLevel == "report") {
+		executive.optimizationLevel = (int)translator::Translator::ReportOptimization;
 	}
 	else if (strOptLevel == "basic") {
 		executive.optimizationLevel = (int)translator::Translator::BasicOptimization;
@@ -164,8 +167,11 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	else if (strOptLevel == "memcheck") {
 		executive.optimizationLevel = (int)translator::Translator::MemoryCheckOptimization;
 	}
+	else if (strOptLevel == "none") {
+		executive.optimizationLevel = (int)translator::Translator::NoOptimization;
+	}
 	else {
-		report("Unknown optimization level - using full");
+		report("Unknown optimization level - using none");
 	}
 
 	executive.defaultDeviceID = config.parse<int>("defaultDeviceID", 0);

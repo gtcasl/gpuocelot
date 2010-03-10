@@ -45,9 +45,9 @@ ir::Module::~Module() {
 }
 
 
-ir::Module::Module(std::string name, const StatementVector & statements): cuModuleState(Invalid) {
+ir::Module::Module(std::string name, const StatementVector & _statements): cuModuleState(Invalid) {
 	modulePath = name;
-	this->statements = statements;
+	statements = _statements;
 	extractPTXKernels();
 }
 
@@ -268,7 +268,6 @@ void ir::Module::extractPTXKernels() {
 	\return pointer to kernel instance with (isa, name) or 0 if kernel does not exist
 */
 ir::Kernel * ir::Module::getKernel(ir::Instruction::Architecture isa, std::string kernelName) {
-	using namespace std;
 	if (kernels.find(isa) != kernels.end()) {
 		if (kernels[isa].find(kernelName) != kernels[isa].end()) {
 			return kernels[isa][kernelName];

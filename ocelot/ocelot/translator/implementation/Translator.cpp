@@ -1,5 +1,4 @@
-/*!
-	\file Translator.cpp
+/*! \file Translator.cpp
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the Translator class
@@ -29,6 +28,23 @@ namespace translator
 	Translator::~Translator()
 	{
 	
+	}
+	
+	std::string Translator::toString(OptimizationLevel level)
+	{
+		switch(level)
+		{
+			case ReportOptimization: return "ReportOptimization";
+			case DebugOptimization: return "DebugOptimization";
+			case InstrumentOptimization: return "InstrumentOptimization";
+			case MemoryCheckOptimization: return "MemoryCheckOptimization";
+			case BasicOptimization: return "BasicOptimization";
+			case AggressiveOptimization: return "AggressiveOptimization";
+			case SpaceOptimization: return "SpaceOptimization";
+			case FullOptimization: return "FullOptimization";
+			default: break;
+		}
+		return "NoOptimization";
 	}
 }
 

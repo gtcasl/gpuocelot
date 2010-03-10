@@ -353,6 +353,7 @@ namespace parser
 		statement.array.values.clear();
 		alignment = 1;
 		statement.array.vec = ir::PTXOperand::v1;
+		statement.instruction.statementIndex = module.statements.size();
 	}
 	
 	void PTXParser::State::assignment()
@@ -1011,7 +1012,6 @@ namespace parser
 	void PTXParser::State::instruction()
 	{
 		statement.instruction = ir::PTXInstruction( );
-		statement.instruction.statementIndex = module.statements.size();
 	}
 
 	void PTXParser::State::instruction( const std::string& opcode, int dataType, 

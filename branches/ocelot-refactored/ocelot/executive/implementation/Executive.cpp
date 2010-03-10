@@ -1,5 +1,4 @@
-/*!
-	\file Executive.h
+/*! \file Executive.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief implements Ocelot's executive manager
 */
@@ -62,7 +61,6 @@ executive::Executive::Executive() {
 	optimizationLevel = 
 		(translator::Translator::OptimizationLevel)
 			api::OcelotConfiguration::getExecutive().optimizationLevel;
-	optimizationLevel = translator::Translator::MemoryCheckOptimization;
 	enumerateDevices();
 }
 
@@ -1627,7 +1625,7 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
 	size_t parameterBlockSize) {
 	// launch with no trace generators
-	this->launch(moduleName, kernelName, grid, block, sharedMemory, parameterBlock, 
+	launch(moduleName, kernelName, grid, block, sharedMemory, parameterBlock, 
 		parameterBlockSize, trace::TraceGeneratorVector());
 }
 

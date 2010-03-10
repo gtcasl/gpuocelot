@@ -22,6 +22,11 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 
+#if HAVE_CUDA_DRIVER_API == 1
+#include <ocelot/cuda/include/cuda.h>
+#include <ocelot/cuda/include/cudaGL.h>
+#endif
+
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
@@ -1293,6 +1298,160 @@ ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa,
 	inserts devices into device vector
 */
 size_t executive::Executive::enumerateDevices() {
+#if HAVE_CUDA_DRIVER_API == 1
+	if (api::OcelotConfiguration::getExecutive().enableGPU) {
+
+		if (cuInit(0) != CUDA_SUCCESS) {
+			Ocelot_Exception("Executive::enumerateDevices() - failed to initialize CUDA driver ");
+		}
+
+		int gpus = 0;
+		if (cuDeviceGetCount(&gpus) == CUDA_SUCCESS) {
+			report("There are " << gpus << " gpus in system");
+			for (int gpu = 0; gpu < gpus; gpu++) {
+				CUdevprop_st devProp = {0};
+				Device device;
+
+				device.guid = gpu;
+				device.ISA = ir::Instruction::GPU;
+				device.addressSpace = 1 + gpu;
+
+				if (cuDeviceGetProperties(&devProp, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::enumerateDevices() - failed to get properties for GPU "
+						<< gpu);
+				}
+
+				char deviceName[256] = {0};
+				if (cuDeviceGetName(deviceName, 255, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::enumerateDevices() - failed to get name for GPU " << gpu);
+				}
+				device.name = std::string(deviceName);
+				unsigned int totalMemory = 0;
+				if (cuDeviceTotalMem(&totalMemory, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::enumerateDevices() - failed to get totalMemory for GPU " 
+						<< gpu);
+				}
+				device.totalMemory = (size_t)totalMemory;
+
+				if (cuDeviceGetAttribute(&device.multiprocessorCount,
+					CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get multiprocessorCount for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.memcpyOverlap,
+					CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get memcpyOverlap for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.maxThreadsPerBlock,
+					CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsPerBlock for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.maxThreadsDim[0],
+					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsDim.x for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxThreadsDim[1],
+					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsDim.y for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxThreadsDim[2],
+					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsDim.z for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.maxGridSize[0],
+					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxGridSize.x for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxGridSize[1],
+					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxGridSize.y for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxGridSize[2],
+					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxGridSize.z for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.sharedMemPerBlock,
+					CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get sharedMemPerBlock for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.totalConstantMemory,
+					CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get totalConstantMemory for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.SIMDWidth,
+					CU_DEVICE_ATTRIBUTE_WARP_SIZE, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get SIMDWidth for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.memPitch,
+					CU_DEVICE_ATTRIBUTE_MAX_PITCH, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get memPitch for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.regsPerBlock,
+					CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get regsPerBlock for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.clockRate,
+					CU_DEVICE_ATTRIBUTE_CLOCK_RATE, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get clockRate for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.textureAlign,
+					CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get textureAlign for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceComputeCapability(&device.major, &device.minor, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get compute capability for GPU " 
+						<< gpu);
+				}
+
+				devices.push_back(device);
+			}
+		}
+	}
+#endif
+
 	if (api::OcelotConfiguration::getExecutive().enableEmulated) {
 		// emulator
 		Device device;
@@ -1363,9 +1522,6 @@ size_t executive::Executive::enumerateDevices() {
 		}
 	}#endif
 
-	if (api::OcelotConfiguration::getExecutive().enableGPU) {
-		// GPU
-	}
 	return devices.size();
 }
 

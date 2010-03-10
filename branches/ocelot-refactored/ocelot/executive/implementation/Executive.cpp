@@ -502,7 +502,8 @@ bool executive::Executive::checkMemoryAccess(int device, const void* base, size_
 	// greatest address in region must be less than this
 	const char *region_end_ptr = region_base_ptr + allocation.size();
 
-	return (region_base_ptr && region_end_ptr >= (const char *)base + size);
+	bool valid = (region_base_ptr && region_end_ptr >= (const char *)base + size);
+	return valid;
 }
 
 /*!

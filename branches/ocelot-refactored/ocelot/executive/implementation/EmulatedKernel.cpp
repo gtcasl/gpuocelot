@@ -32,7 +32,8 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 1
+#define REPORT_KERNEL_INSTRUCTIONS 0
+#define REPORT_LAUNCH_CONFIGURATION 1
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
@@ -81,6 +82,21 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 		it != _generators.end(); ++it) {
 		(*it)->initialize(*this);
 	}
+
+#if REPORT_LAUNCH_CONFIGURATION == 1
+	report("EmulatedKernel::launchGrid(" << width << ", " << height << ")");
+	report("  kernel: " << name);
+	report("  const:  " << constMemorySize() << " bytes");
+	report("  local:  " << localMemorySize() << " bytes");
+	report("  static shared: " << sharedMemorySize() << " bytes");
+	report("  extern shared: " << externSharedMemorySize() << " bytes");
+	report("  total shared:  " << totalSharedMemorySize() << " bytes");
+	report("  param: " << parameterMemorySize() << " bytes");
+	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
+	report("  registers: " << registerCount() << " registers");
+	report("  grid: " << gridDim().x << ", " << gridDim().y << ", " << gridDim().z);
+	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
+#endif
 
 	for (int x = 0; x < width; ++x) {
 		for (int y = 0; y < height; ++y) {
@@ -723,10 +739,12 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		assert(g_it->second.statement.directive == ir::PTXStatement::Const);
 		assert(g_it->second.statement.bytes() + l_it->second <= _constMemorySize);
 
+		/*
 		report("  mapping constant: " << l_it->first << "(" << (void *)g_it->second.pointer 
 			<< ") of size " << g_it->second.statement.bytes() 
 			<< " bytes to constant memory with offset " << l_it->second);
 		report("  byte representation (pointer = " << (void *)g_it->second.pointer << ":");
+		*/
 
 		memcpy( ConstMemory + l_it->second, g_it->second.pointer, g_it->second.statement.bytes() );
 	}

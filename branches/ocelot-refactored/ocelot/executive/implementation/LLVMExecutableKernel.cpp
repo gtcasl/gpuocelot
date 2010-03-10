@@ -907,9 +907,10 @@ extern "C"
 				<< "): instruction '" 
 				<< state->kernel->instruction( statement ) << "'\n";
 			std::cerr << "Constant memory address " 
-				<< _address << " is " << (end - allocationEnd)
+				<< _address << " = " << (void *)_address << " of size " << bytes << " bytes is " << (end - allocationEnd)
 				<< " bytes beyond the constant memory block of " 
-				<< context->constantSize << " bytes.\n";
+				<< context->constantSize << " bytes\n  on interval: " << (void *)context->constant 
+					<< " - " << (void *)allocationEnd << "\n";
 			std::cout << "\tNear: " << state->kernel->location( statement )
 				<< "\n\n";
 			assertM(false, "Aborting execution.");

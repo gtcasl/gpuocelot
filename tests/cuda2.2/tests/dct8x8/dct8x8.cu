@@ -62,7 +62,7 @@
 /**
 *  The PSNR values over this threshold indicate images equality
 */
-#define PSNR_THRESHOLD_EQUAL	40
+#define PSNR_THRESHOLD_EQUAL	30
 
 
 /**

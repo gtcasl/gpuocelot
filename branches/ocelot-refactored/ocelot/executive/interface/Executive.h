@@ -18,6 +18,10 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/translator/interface/Translator.h>
 
+#if HAVE_CUDA_DRIVER_API == 1
+#include <ocelot/cuda/include/cuda.h>
+#endif
+
 struct cudaArray;
 
 // forward declared classes

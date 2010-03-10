@@ -24,6 +24,9 @@
 
 #if HAVE_CUDA_DRIVER_API == 1
 #include <ocelot/cuda/include/cuda.h>
+
+#define CUDA_OPENGL_INTEROPERABILITY 0
+
 #include <ocelot/cuda/include/cudaGL.h>
 #endif
 
@@ -38,7 +41,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -1530,8 +1533,35 @@ size_t executive::Executive::enumerateDevices() {
 	API call]
 */
 bool executive::Executive::selectDevice(int device) {
-	if (device >= 0 && device < (int)devices.size()) {
+	if (device != selectedDevice && device >= 0 && device < (int)devices.size()) {
 		selectedDevice = device;
+		report("Executive::selectDevice(" << device << ") - " << devices[selectedDevice].name);
+
+		if (devices[selectedDevice].ISA == ir::Instruction::GPU) {
+			Device & device = devices[selectedDevice];
+#if HAVE_CUDA_DRIVER_API == 1
+#if CUDA_OPENGL_INTEROPERABILITY == 1
+			if (cuGLCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to create GL context on device " 
+					<< device.name);
+			}
+			if (cuGLInit() != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to initialize GL interoperability on device "
+					<< device.name);
+			}
+			report(" created CUDA GL context");
+#else
+			if (cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to crete context on device " 
+					<< device.name);
+			}
+			report(" created CUDA context without OpenGL support");
+#endif
+
+#else
+			return false;
+#endif			
+		}
 	}
 	return true;
 }

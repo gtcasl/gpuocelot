@@ -56,6 +56,9 @@ namespace translator
 			
 			/*! \brief The target architecture to translate to */
 			ir::Instruction::Architecture targetArchitecture;
+
+		public:
+			static std::string toString( OptimizationLevel level );
 		
 		public:
 			/*! \brief The constructor */

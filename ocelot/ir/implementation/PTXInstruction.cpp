@@ -872,6 +872,10 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Nop: {
+			return "NOP is not a valid instruction.";
+			break;
+		}
 		case Not: {
 			if( !( type == PTXOperand::b16 || type == PTXOperand::b32 || 
 				type == PTXOperand::b64 || type == PTXOperand::pred ) ) {

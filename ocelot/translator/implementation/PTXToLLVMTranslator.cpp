@@ -17,7 +17,7 @@
 
 #include <hydrazine/implementation/debug.h>
 
-#define USE_VECTOR_LOADS 1
+#define USE_VECTOR_INSTRUCTIONS 1
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -533,7 +533,9 @@ namespace translator
 		const ir::LLVMInstruction::Operand& address, unsigned int bytes,
 		unsigned int statement )
 	{
-		if( optimizationLevel != MemoryCheckOptimization ) return;
+		if( optimizationLevel != MemoryCheckOptimization 
+			&& optimizationLevel != ReportOptimization
+			&& optimizationLevel != DebugOptimization) return;
 
 		ir::LLVMCall call;
 
@@ -598,7 +600,9 @@ namespace translator
 
 	void PTXToLLVMTranslator::_addMemoryCheckingDeclarations()
 	{
-		if( optimizationLevel != MemoryCheckOptimization ) return;		
+		if( optimizationLevel != MemoryCheckOptimization
+			&& optimizationLevel != ReportOptimization
+			&& optimizationLevel != DebugOptimization ) return;		
 		
 		ir::LLVMStatement check( ir::LLVMStatement::FunctionDeclaration );
 
@@ -1593,7 +1597,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 	{
-		#if(USE_VECTOR_LOADS == 1)
+		#if(USE_VECTOR_INSTRUCTIONS == 1)
 		ir::LLVMLoad load;
 		
 		if( i.d.vec != ir::PTXOperand::v1 )
@@ -1618,7 +1622,7 @@ namespace translator
 			load.isVolatile = true;
 		}
 		
-		load.alignment = i.vec * ir::PTXOperand::bytes( i.d.type );
+		load.alignment = i.vec * ir::PTXOperand::bytes( i.type );
 		
 		if( i.d.array.empty() )
 		{
@@ -1690,7 +1694,7 @@ namespace translator
 			load.d = _destination( i );
 			load.d.type.type = _translate( i.type );
 			load.a = address;
-			load.alignment = ir::PTXOperand::bytes( i.d.type );
+			load.alignment = ir::PTXOperand::bytes( i.type );
 
 			if( _translate( i.d.type ) != _translate( i.type ) )
 			{
@@ -1727,7 +1731,7 @@ namespace translator
 			
 				load.d = _translate( *destination );
 				load.d.type.type = _translate( i.type );
-				load.alignment = ir::PTXOperand::bytes( destination->type );
+				load.alignment = ir::PTXOperand::bytes( i.type );
 				load.a = get.d;
 				_check( i.addressSpace, load.a, load.alignment,
 						i.statementIndex );
@@ -3175,6 +3179,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
 	{
+		#if(USE_VECTOR_INSTRUCTIONS == 1)
 		ir::LLVMStore store;
 
 		if( i.vec == ir::PTXOperand::v1 )
@@ -3292,6 +3297,76 @@ namespace translator
 		
 		_check( i.addressSpace, store.d, store.alignment, i.statementIndex );
 		_add( store );
+		#else
+		ir::LLVMStore store;
+
+		if( i.volatility == ir::PTXInstruction::Volatile )
+		{
+			store.isVolatile = true;
+		}
+	
+		store.alignment = ir::PTXOperand::bytes( i.type );
+		ir::LLVMInstruction::Operand address = _getLoadOrStorePointer( 
+			i.d, i.addressSpace, _translate( i.type ), ir::PTXOperand::v1 );
+
+		if( i.vec == ir::PTXOperand::v1 )
+		{
+			store.d = address;
+
+			if( _translate( i.type ) != _translate( i.a.type ) )
+			{
+				ir::LLVMInstruction::Operand temp = _translate( i.a );
+				temp.name = _tempRegister();
+				temp.type.type = _translate( i.type );
+				_convert( temp, i.type, _translate( i.a ), i.a.type );
+				store.a = temp;
+			}
+			else
+			{
+				store.a = _translate( i.a );
+			}
+
+			_check( i.addressSpace, store.d, 
+				store.alignment, i.statementIndex );
+			_add( store );
+		}
+		else
+		{
+			unsigned int index = 0;
+			for( ir::PTXOperand::Array::const_iterator 
+				source = i.a.array.begin(); 
+				source != i.a.array.end(); ++source)
+			{
+				ir::LLVMGetelementptr get;
+			
+				get.a = address;
+				get.d = get.a;
+				get.d.name = _tempRegister();
+				get.indices.push_back( index );
+			
+				_add( get );
+
+				store.d = get.d;
+
+				if( _translate( i.type ) != _translate( source->type ) )
+				{
+					ir::LLVMInstruction::Operand temp = _translate( *source );
+					temp.name = _tempRegister();
+					temp.type.type = _translate( i.type );
+					_convert( temp, i.type, _translate( *source ), source->type );
+					store.a = temp;
+				}
+				else
+				{
+					store.a = _translate( *source );
+				}
+
+				_check( i.addressSpace, store.d, 
+					store.alignment, i.statementIndex );
+				_add( store );
+			}
+		}
+		#endif
 	}
 
 	void PTXToLLVMTranslator::_translateSub( const ir::PTXInstruction& i )

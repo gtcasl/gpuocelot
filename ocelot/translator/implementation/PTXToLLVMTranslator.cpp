@@ -17,7 +17,11 @@
 
 #include <hydrazine/implementation/debug.h>
 
+#ifdef __i386__
+#define USE_VECTOR_INSTRUCTIONS 0
+#else
 #define USE_VECTOR_INSTRUCTIONS 1
+#endif
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -3335,7 +3339,7 @@ namespace translator
 			unsigned int index = 0;
 			for( ir::PTXOperand::Array::const_iterator 
 				source = i.a.array.begin(); 
-				source != i.a.array.end(); ++source)
+				source != i.a.array.end(); ++source, ++index)
 			{
 				ir::LLVMGetelementptr get;
 			

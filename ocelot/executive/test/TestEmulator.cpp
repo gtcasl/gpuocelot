@@ -21,11 +21,7 @@
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
 #include <ocelot/trace/interface/TraceGenerator.h>
-
-static float fabs(float a) {
-	if (a < 0) return -a;
-	return a;
-}
+#include <cmath>
 
 namespace test {
 

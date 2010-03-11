@@ -387,6 +387,7 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 		}
 		break;
 	default:
+#if HAVE_CUDA_DRIVER_API == 1
 		if (getSelectedISA() == ir::Instruction::GPU) {
 			CUDA_ARRAY_DESCRIPTOR descriptor = {0};
 			convert(descriptor, desc);
@@ -407,6 +408,7 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 			}
 			break;
 		}
+#endif
 		assert(0 && "unimplemented");
 	}
 	
@@ -881,6 +883,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 			break;
 
 		default:
+#if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
 			
 				CUDA_MEMCPY2D copy = {0};
@@ -915,6 +918,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 				}
 				break;
 			}
+#endif
 			assert(0 && "address space not supported");
 		}
 		
@@ -948,8 +952,8 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 			}
 			break;
 
-		default:
-		
+		default:		
+#if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
 			
 				CUDA_MEMCPY2D copy = {0};
@@ -984,6 +988,7 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 				}
 				break;
 			}
+#endif
 			assert(0 && "address space not supported");
 			break;
 		}
@@ -1024,6 +1029,7 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 			break;
 
 		default:
+#if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
 				
 				report("Executive::deviceMemcpyArrayToArray()");
@@ -1056,7 +1062,7 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 				}
 				break;
 			}
-
+#endif
 			assert(0 && "address space not supported");
 			break;
 		}
@@ -1743,8 +1749,8 @@ bool executive::Executive::selectDevice(int device) {
 		report("Executive::selectDevice(" << device << ") - " << devices[selectedDevice].name);
 
 		if (devices[selectedDevice].ISA == ir::Instruction::GPU) {
-			Device & device = devices[selectedDevice];
 #if HAVE_CUDA_DRIVER_API == 1
+			Device & device = devices[selectedDevice];
 #if CUDA_OPENGL_INTEROPERABILITY == 1
 			if (cuGLCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
 				Ocelot_Exception("Executive::selectDevice() - failed to create GL context on device " 

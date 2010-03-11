@@ -36,97 +36,368 @@ INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum
-INFO     Test completed in 2.99471998215 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator
+INFO     Test completed in 0.184230089188 seconds
 INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001586) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+13
+17
+12
+15
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax
-INFO     Test completed in 3.03196310997 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory
+INFO     Test completed in 0.248934984207 seconds
 INFO      It produced the following output:
--4
+pure virtual method called
+terminate called without an active exception
+(0.001700) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy
+INFO     Test completed in 0.294621944427 seconds
+INFO      It produced the following output:
+(0.001548) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+D[0] = 0
+D[1] = 1
+D[2] = 2
+D[3] = 3
+D[4] = 4
+D[5] = 9
+D[6] = 9
+D[7] = 1
+D[8] = 1
+D[9] = 1
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff
+INFO     Test completed in 0.783844947815 seconds
+INFO      It produced the following output:
+(0.001530) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+maximum absolute difference: 4
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo
+INFO     Test completed in 0.889756917953 seconds
+INFO      It produced the following output:
+(0.001543) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+pi is around 3.14133
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator
+INFO     Test completed in 6.08896398544 seconds
+INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.002381) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+found 4 nonzero values at indices:
+1
+2
+5
 7
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses
+INFO     Test completed in 0.145248174667 seconds
+INFO      It produced the following output:
+(0.001829) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestMemoryAccesses
+
+Description: A benchmark for PTX memory operations.
+
+
+Test Seed : 1268283801
+Test time : 0.0787973
+
+Status : Strided copy test (0.000931323 GB):
+ time: 0.0427837s
+ strided bandwidth: 0.0217681 GB/s
+Linear copy test (0.000931323 GB):
+ time: 0.0201526s
+ linear bandwidth: 0.0462136 GB/s
+
+
+pure virtual method called
+terminate called without an active exception
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum
+INFO     Test completed in 0.582298994064 seconds
+INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001546) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer
-INFO     Test completed in 0.0524220466614 seconds
+INFO     Test completed in 0.12792301178 seconds
 INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001532) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff
-INFO     Test completed in 3.0486779213 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork
+INFO     Test completed in 2.73017597198 seconds
 INFO      It produced the following output:
-maximum absolute difference: 4
+(0.001544) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Starting up CUDA context...
+Allocating and initializing host arrays...
+Allocating and initializing CUDA arrays...
+Running GPU bitonic sort (1 identical iterations)...
+Testing array length 64 (1024 arrays per batch)...
+	Average time: 375.679993 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 128 (512 arrays per batch)...
+	Average time: 64.834000 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 256 (256 arrays per batch)...
+	Average time: 82.569000 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 512 (128 arrays per batch)...
+	Average time: 100.222000 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 1024 (64 arrays per batch)...
+	Average time: 121.906998 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 2048 (32 arrays per batch)...
+	Average time: 377.093994 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 4096 (16 arrays per batch)...
+	Average time: 176.389999 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 8192 (8 arrays per batch)...
+	Average time: 199.953003 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 16384 (4 arrays per batch)...
+	Average time: 228.744995 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 32768 (2 arrays per batch)...
+	Average time: 260.010986 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 65536 (1 arrays per batch)...
+	Average time: 292.093994 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+pure virtual method called
+terminate called without an active exception
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector
+INFO     Test completed in 0.0583291053772 seconds
+INFO      It produced the following output:
+(0.001520) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+H has size 4
+H[0] = 14
+H[1] = 20
+H[2] = 38
+H[3] = 46
+H now has size 2
+D[0] = 99
+D[1] = 88
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows
+INFO     Test completed in 11.1536438465 seconds
+INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001628) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+[       1        1        0        1        2        1        1        0 ] =        7
+[       0        1        2        1        2        1        2        1 ] =       10
+[       0        0        1        1        2        2        0        0 ] =        6
+[       2        2        2        1        1        1        2        0 ] =       11
+[       0        0        2        0        1        1        1        1 ] =        6
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram
+INFO     Test completed in 9.7968108654 seconds
+INFO      It produced the following output:
+(0.001574) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+initial data
+3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
+sorted data
+0 0 0 1 1 2 2 2 2 2 3 3 3 3 5 5 5 6 6 6 6 6 7 7 7 7 8 9 9 9 
+cumulative histogram
+3 5 10 14 14 17 22 26 27 30 
+histogram
+3 2 5 4 0 3 5 4 1 3 
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions
+INFO     Test completed in 5.46379303932 seconds
+INFO      It produced the following output:
+(0.001849) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestSpecialFunctions
+
+Description: Benchmark for special function and texture throughput.
+
+
+Test Seed : 1268283805
+Test time : 5.43033
+
+Status : Test RCP (640000 operations):
+ RPC throughput: 1.22643e+07 ops/s
+Test SQRT (640000 operations):
+ SQRT throughput: 3.90162e+06 ops/s
+Test RSQRT (640000 operations):
+ RSQRT throughput: 3.80865e+06 ops/s
+Test SIN (640000 operations):
+ SIN throughput: 3.76391e+06 ops/s
+Test COS (640000 operations):
+ COS throughput: 3.68359e+06 ops/s
+Test LG2 (640000 operations):
+ LG2 throughput: 3.77185e+06 ops/s
+Test EX2 (640000 operations):
+ EX2 throughput: 3.46778e+06 ops/s
+Test TEX 1D (640000 operations):
+ TEX 1D throughput: 735510 ops/s
+Test TEX 2D (640000 operations):
+ TEX 2D throughput: 435293 ops/s
+Test TEX 3D (640000 operations):
+ TEX 3D throughput: 331126 ops/s
+
+
+pure virtual method called
+terminate called without an active exception
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox
+INFO     Test completed in 0.873593091965 seconds
+INFO      It produced the following output:
+(0.001532) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+bounding box (0.020023,0.0163006) (0.972775,0.998924)
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding
-INFO     Test completed in 3.28214001656 seconds
+INFO     Test completed in 12.2391519547 seconds
 INFO      It produced the following output:
+(0.002725) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 input data
 aaabbbbbcddeeeeeeeeeff
 run-length encoded output
 (a,3)(b,5)(c,1)(d,2)(e,9)(f,2)
+pure virtual method called
+terminate called without an active exception
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator
-INFO     Test completed in 0.779256105423 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform
+INFO     Test completed in 0.384048938751 seconds
 INFO      It produced the following output:
-values         : 2 5 7 1 6 0 3 8 
-clamped values : 2 5 5 1 5 1 3 5 
-sum of clamped values : 27
-sequence         : 0 1 2 3 4 5 6 7 8 9 
-clamped sequence : 1 1 2 3 4 5 5 5 5 5 
-negated sequence : -1 -1 -2 -3 -4 -5 -5 -5 -5 -5 
-negated values : -2 -5 -7 -1 -6 0 -3 -8 
+(0.001534) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+3 + 6 * 2 = 15
+4 + 7 * 5 = 39
+0 + 2 * 7 = 14
+8 + 1 * 4 = 12
+2 + 8 * 3 = 26
+pure virtual method called
+terminate called without an active exception
 TEST PASSED
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact
-INFO     Test completed in 3.81999588013 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort
+INFO     Test completed in 22.7641019821 seconds
 INFO      It produced the following output:
-values: 0 1 2 3 4 5 6 7 8 9 
-output: 1 3 5 7 9 
-small_output: 1 3 5 7 9 
-values: 0 2 4 6 8 
+pure virtual method called
+terminate called without an active exception
+(0.001539) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction
-INFO     Test completed in 0.190071105957 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy
+INFO     Test completed in 0.316851854324 seconds
 INFO      It produced the following output:
-padded grid
-  9383    886   2777   6915   7793   8335   5386    492   6649   1421   2362   9999   9999   9999   9999   9999 
-    27   8690     59   7763   3926    540   3426   9172   5736   5211   5368   9999   9999   9999   9999   9999 
-  2567   6429   5782   1530   2862   5123   4067   3135   3929   9802   4022   9999   9999   9999   9999   9999 
-  3058   3069   8167   1393   8456   5011   8042   6229   7373   4421   4919   9999   9999   9999   9999   9999 
-  3784   8537   5198   4324   8315   4370   6413   3526   6091   8980   9956   9999   9999   9999   9999   9999 
-  1873   6862   9170   6996   7281   2305    925   7084   6327    336   6505   9999   9999   9999   9999   9999 
-   846   1729   1313   5857   6124   3895   9582    545   8814   3367   5434   9999   9999   9999   9999   9999 
-   364   4043   3750   1087   6808   7276   7178   5788   3584   5403   2651   9999   9999   9999   9999   9999 
-  2754   2399   9932   5060   9676   3368   7739     12   6226   8586   8094   9999   9999   9999   9999   9999 
-  7539    795    570   1434    378   7467   6601     97   2902   3317    492   9999   9999   9999   9999   9999 
-
-minimum value: 12
-maximum value: 9999
+pure virtual method called
+terminate called without an active exception
+(0.001535) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea
-INFO     Test completed in 0.27729511261 seconds
+INFO     Test completed in 5.4132039547 seconds
 INFO      It produced the following output:
+(0.001564) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 [step 0] initial array
        1        1        1        1 
        1        1        1        1 
@@ -146,219 +417,18 @@ INFO      It produced the following output:
        3        6        9 
        4        8       12 
 [step 4] transpose the transpose
+pure virtual method called
+terminate called without an active exception
        1        2        3        4 
        2        4        6        8 
        3        6        9       12 
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode
-INFO     Test completed in 1.63956093788 seconds
-INFO      It produced the following output:
-initial data
-3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
-sorted data
-0 0 0 1 1 2 2 2 2 2 3 3 3 3 5 5 5 6 6 6 6 6 7 7 7 7 8 9 9 9 
-counts
-1 2 3 1 2 1 2 3 4 5 1 2 3 4 1 2 3 1 2 3 4 5 1 2 3 4 1 1 2 3 
-Modal value 2 occurs 5 times 
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows
-INFO     Test completed in 0.433703899384 seconds
-INFO      It produced the following output:
-[       1        1        0        1        2        1        1        0 ] =        7
-[       0        1        2        1        2        1        2        1 ] =       10
-[       0        0        1        1        2        2        0        0 ] =        6
-[       2        2        2        1        1        1        2        0 ] =       11
-[       0        0        2        0        1        1        1        1 ] =        6
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator
-INFO     Test completed in 0.0945389270782 seconds
-INFO      It produced the following output:
-13
-17
-12
-15
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort
-INFO     Test completed in 1.55402779579 seconds
-INFO      It produced the following output:
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm
-INFO     Test completed in 0.0713000297546 seconds
-INFO      It produced the following output:
-norm is 5.47723
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator
-INFO     Test completed in 0.247344017029 seconds
-INFO      It produced the following output:
-found 4 nonzero values at indices:
-1
-2
-5
-7
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot
-INFO     Test completed in 0.125434875488 seconds
-INFO      It produced the following output:
-(0.840188,0.45724,0.0860517) * (0.0587587,0.456151,0.322409) = 0.285683
-(0.394383,0.640368,0.180886) * (0.0138811,0.24875,0.0221609) = 0.168775
-(0.783099,0.717092,0.426423) * (0.622212,0.0699601,0.234811) = 0.63755
-(0.79844,0.460067,0.0470658) * (0.0391351,0.742097,0.354747) = 0.389358
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform
-INFO     Test completed in 9.8459072113 seconds
-INFO      It produced the following output:
-3 + 6 * 2 = 15
-4 + 7 * 5 = 39
-0 + 2 * 7 = 14
-8 + 1 * 4 = 12
-2 + 8 * 3 = 26
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer
-INFO     Test completed in 0.0605039596558 seconds
-INFO      It produced the following output:
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector
-INFO     Test completed in 12.7123501301 seconds
-INFO      It produced the following output:
-H has size 4
-H[0] = 14
-H[1] = 20
-H[2] = 38
-H[3] = 46
-H now has size 2
-D[0] = 99
-D[1] = 88
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan
-INFO     Test completed in 0.239716053009 seconds
-INFO      It produced the following output:
-keys:       0 0 0 1 1 2 2 2 2 3 4 4 5 5 5 
-head flags: 1 0 0 1 0 1 0 0 0 1 1 0 1 0 0 
-output:     2 4 6 2 4 2 4 6 8 2 2 4 2 4 6 
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy
-INFO     Test completed in 0.0630750656128 seconds
-INFO      It produced the following output:
-D[0] = 0
-D[1] = 1
-D[2] = 2
-D[3] = 3
-D[4] = 4
-D[5] = 9
-D[6] = 9
-D[7] = 1
-D[8] = 1
-D[9] = 1
-TEST PASSED
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions
-INFO     Test completed in 15.3152940273 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestSpecialFunctions
-
-Description: Benchmark for special function and texture throughput.
-
-
-Test Seed : 1265176412
-Test time : 4.8261
-
-Status : Test RCP (640000 operations):
- RPC throughput: 9.69081e+06 ops/s
-Test SQRT (640000 operations):
- SQRT throughput: 9.5759e+06 ops/s
-Test RSQRT (640000 operations):
- RSQRT throughput: 1.01236e+07 ops/s
-Test SIN (640000 operations):
- SIN throughput: 9.72814e+06 ops/s
-Test COS (640000 operations):
- COS throughput: 9.60482e+06 ops/s
-Test LG2 (640000 operations):
- LG2 throughput: 885180 ops/s
-Test EX2 (640000 operations):
- EX2 throughput: 1.09922e+07 ops/s
-Test TEX 1D (640000 operations):
- TEX 1D throughput: 1.59223e+06 ops/s
-Test TEX 2D (640000 operations):
- TEX 2D throughput: 427045 ops/s
-Test TEX 3D (640000 operations):
- TEX 3D throughput: 376207 ops/s
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD
-INFO     Test completed in 12.4022550583 seconds
-INFO      It produced the following output:
-3DFD running on: Ocelot PTX Emulator
-Total GPU Memory: 430.4453 MB
-48x48x40
-allocated 0.7 MB on device
-(3,3)x(16,16) grid
--------------------------------
-time:        1873.82 ms
-throughput:     0.04 MPoints/s
-CUDA: Success.
--------------------------------
-comparing to CPU result...
-  Result within epsilon
-  TEST PASSED!
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses
-INFO     Test completed in 13.5956778526 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestMemoryAccesses
-
-Description: A benchmark for PTX memory operations.
-
-
-Test Seed : 1265176416
-Test time : 3.46878
-
-Status : Strided copy test (0.000931323 GB):
- time: 0.888778s
- strided bandwidth: 0.00104787 GB/s
-Linear copy test (0.000931323 GB):
- time: 2.56241s
- linear bandwidth: 0.000363455 GB/s
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput
-INFO     Test completed in 15.1517260075 seconds
+INFO     Test completed in 0.259274959564 seconds
 INFO      It produced the following output:
+(0.001847) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Pass/Fail : Pass
 
 
@@ -367,61 +437,31 @@ Name : TestInstructionThroughput
 Description: A benchmark for PTX Instruction Throughput.
 
 
-Test Seed : 1265176420
-Test time : 0.684012
+Test Seed : 1268283817
+Test time : 0.226735
 
-Status : u64 Operations/sec 3.70701e+06 seconds. 
-u32 Operations/sec 3.74778e+06 seconds. 
-f32 Operations/sec 7.09517e+06 seconds. 
+Status : u64 Operations/sec 6.6272e+06 seconds. 
+u32 Operations/sec 1.38136e+07 seconds. 
+f32 Operations/sec 4.06784e+07 seconds. 
 
 
+pure virtual method called
+terminate called without an active exception
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy
-INFO     Test completed in 0.323932886124 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer
+INFO     Test completed in 0.292960882187 seconds
 INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001542) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory
-INFO     Test completed in 8.62322092056 seconds
-INFO      It produced the following output:
-TEST PASSED
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram
-INFO     Test completed in 2.57748603821 seconds
-INFO      It produced the following output:
-initial data
-3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
-sorted data
-0 0 0 1 1 2 2 2 2 2 3 3 3 3 5 5 5 6 6 6 6 6 7 7 7 7 8 9 9 9 
-cumulative histogram
-3 5 10 14 14 17 22 26 27 30 
-histogram
-3 2 5 4 0 3 5 4 1 3 
-TEST PASSED
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo
-INFO     Test completed in 9.36187195778 seconds
-INFO      It produced the following output:
-pi is around 3.14133
-TEST PASSED
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D
-INFO     Test completed in 7.1780230999 seconds
-INFO      It produced the following output:
-bucket (150, 50)'s list of points:
-TEST PASSED
-
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox
-INFO     Test completed in 4.5655579567 seconds
-INFO      It produced the following output:
-bounding box (0.020023,0.0163006) (0.972775,0.998924)
-TEST PASSED
-
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics
-INFO     Test completed in 21.5486960411 seconds
+INFO     Test completed in 0.130420923233 seconds
 INFO      It produced the following output:
+(0.001822) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Pass/Fail : Pass
 
 
@@ -430,64 +470,218 @@ Name : TestAtomics
 Description: A performance test of the atomic implementation. 
 
 
-Test Seed : 1265176416
-Test time : 12.4994
+Test Seed : 1268283818
+Test time : 0.0953317
 
-Status : Serial Time: 9.16148 seconds 
-Atomic Time: 3.33786 seconds 
-Serial Speedup: 0.364337x
+Status : Serial Time: 0.0180564 seconds 
+Atomic Time: 0.0772321 seconds 
+Serial Speedup: 4.27727x
 
 
+pure virtual method called
+terminate called without an active exception
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting
-INFO     Test completed in 9.78086709976 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax
+INFO     Test completed in 0.843914985657 seconds
 INFO      It produced the following output:
-AoS sort took 4959.13 milliseconds
-SoA sort took 2930.12 milliseconds
+(0.001577) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+-4
+7
+pure virtual method called
+terminate called without an active exception
 TEST PASSED
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork
-INFO     Test completed in 544.02747798 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot
+INFO     Test completed in 0.26896905899 seconds
 INFO      It produced the following output:
+(0.001597) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+(0.840188,0.45724,0.0860517) * (0.0587587,0.456151,0.322409) = 0.285683
+(0.394383,0.640368,0.180886) * (0.0138811,0.24875,0.0221609) = 0.168775
+(0.783099,0.717092,0.426423) * (0.622212,0.0699601,0.234811) = 0.63755
+(0.79844,0.460067,0.0470658) * (0.0391351,0.742097,0.354747) = 0.389358
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact
+INFO     Test completed in 13.4908850193 seconds
+INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001560) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+values: 0 1 2 3 4 5 6 7 8 9 
+output: 1 3 5 7 9 
+small_output: 1 3 5 7 9 
+values: 0 2 4 6 8 
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm
+INFO     Test completed in 1.22745609283 seconds
+INFO      It produced the following output:
+(0.001657) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+norm is 5.47723
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D
+INFO     Test completed in 15.2489600182 seconds
+INFO      It produced the following output:
+(0.001536) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+bucket (150, 50)'s list of points:
+ bucket_begin[10150] = 50631
+ bucket_end[10150] = 50638
+(0.752784,0.502192)
+(0.75383,0.501019)
+(0.753117,0.502096)
+(0.75194,0.502707)
+(0.750026,0.505462)
+(0.75426,0.502098)
+(0.751639,0.509133)
+pure virtual method called
+terminate called without an active exception
+Done!
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator
+INFO     Test completed in 0.928781032562 seconds
+INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001552) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+values         : 2 5 7 1 6 0 3 8 
+clamped values : 2 5 5 1 5 1 3 5 
+sum of clamped values : 27
+sequence         : 0 1 2 3 4 5 6 7 8 9 
+clamped sequence : 1 1 2 3 4 5 5 5 5 5 
+negated sequence : -1 -1 -2 -3 -4 -5 -5 -5 -5 -5 
+negated values : -2 -5 -7 -1 -6 0 -3 -8 
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD
+INFO     Test completed in 0.558906078339 seconds
+INFO      It produced the following output:
+pure virtual method called
+terminate called without an active exception
+(0.001532) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+3DFD running on: Ocelot LLVM JIT-Compiler
+Total GPU Memory: 357.7539 MB
+48x48x40
+allocated 0.7 MB on device
+(3,3)x(16,16) grid
+-------------------------------
+time:           0.45 ms
+throughput:   162.85 MPoints/s
+CUDA: cudaSuccess
+-------------------------------
+comparing to CPU result...
+  Result within epsilon
+  TEST PASSED!
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode
+INFO     Test completed in 18.0899829865 seconds
+INFO      It produced the following output:
+(0.001691) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+initial data
+3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
+sorted data
+0 0 0 1 1 2 2 2 2 2 3 3 3 3 5 5 5 6 6 6 6 6 7 7 7 7 8 9 9 9 
+counts
+1 2 3 1 2 1 2 3 4 5 1 2 3 4 1 2 3 1 2 3 4 5 1 2 3 4 1 1 2 3 
+Modal value 2 occurs 5 times 
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction
+INFO     Test completed in 1.91900110245 seconds
+INFO      It produced the following output:
+(0.001540) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+padded grid
+  9383    886   2777   6915   7793   8335   5386    492   6649   1421   2362   9999   9999   9999   9999   9999 
+    27   8690     59   7763   3926    540   3426   9172   5736   5211   5368   9999   9999   9999   9999   9999 
+  2567   6429   5782   1530   2862   5123   4067   3135   3929   9802   4022   9999   9999   9999   9999   9999 
+  3058   3069   8167   1393   8456   5011   8042   6229   7373   4421   4919   9999   9999   9999   9999   9999 
+  3784   8537   5198   4324   8315   4370   6413   3526   6091   8980   9956   9999   9999   9999   9999   9999 
+  1873   6862   9170   6996   7281   2305    925   7084   6327    336   6505   9999   9999   9999   9999   9999 
+   846   1729   1313   5857   6124   3895   9582    545   8814   3367   5434   9999   9999   9999   9999   9999 
+   364   4043   3750   1087   6808   7276   7178   5788   3584   5403   2651   9999   9999   9999   9999   9999 
+  2754   2399   9932   5060   9676   3368   7739     12   6226   8586   8094   9999   9999   9999   9999   9999 
+  7539    795    570   1434    378   7467   6601     97   2902   3317    492   9999   9999   9999   9999   9999 
+
+minimum value: 12
+maximum value: 9999
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting
+INFO     Test completed in 31.5965909958 seconds
+INFO      It produced the following output:
+(0.001595) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+AoS sort took 2.85396 milliseconds
+SoA sort took 25.9423 milliseconds
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan
+INFO     Test completed in 5.55113506317 seconds
+INFO      It produced the following output:
+(0.001576) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+keys:       0 0 0 1 1 2 2 2 2 3 4 4 5 5 5 
+head flags: 1 0 0 1 0 1 0 0 0 1 1 0 1 0 0 
+output:     2 4 6 2 4 2 4 6 8 2 2 4 2 4 6 
+pure virtual method called
+terminate called without an active exception
+TEST PASSED
 
 INFO     
 Passing tests:
- (1.554s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort : Passed
- (0.190s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction : Passed
- (3.049s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff : Passed
- (13.596s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses : Passed
- (0.277s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea : Passed
- (0.324s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy : Passed
- (0.095s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator : Passed
- (7.178s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D : Passed
- (21.549s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics : Passed
- (0.247s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator : Passed
- (8.623s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory : Passed
- (0.052s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer : Passed
- (3.820s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact : Passed
- (12.712s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector : Passed
- (15.315s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions : Passed
- (3.282s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding : Passed
- (2.995s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum : Passed
- (4.566s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox : Passed
- (12.402s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD : Passed
- (2.577s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram : Passed
- (0.061s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer : Passed
- (0.240s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan : Passed
- (15.152s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput : Passed
- (0.063s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy : Passed
- (9.846s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform : Passed
- (0.434s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows : Passed
- (3.032s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax : Passed
- (9.362s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo : Passed
- (1.640s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode : Passed
- (0.071s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm : Passed
- (0.779s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator : Passed
- (9.781s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting : Passed
- (0.125s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot : Passed
+ (0.058s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector : Passed
+ (0.844s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax : Passed
+ (1.919s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction : Passed
+ (0.784s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff : Passed
+ (0.145s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses : Passed
+ (5.413s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea : Passed
+ (0.317s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy : Passed
+ (0.184s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator : Passed
+ (18.090s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode : Passed
+ (15.249s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D : Passed
+ (0.130s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics : Passed
+ (6.089s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator : Passed
+ (0.249s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory : Passed
+ (13.491s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact : Passed
+ (2.730s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork : Passed
+ (5.464s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions : Passed
+ (12.239s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding : Passed
+ (0.582s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum : Passed
+ (0.874s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox : Passed
+ (0.559s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD : Passed
+ (9.797s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram : Passed
+ (0.293s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer : Passed
+ (5.551s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan : Passed
+ (0.259s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput : Passed
+ (0.295s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy : Passed
+ (0.128s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer : Passed
+ (11.154s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows : Passed
+ (22.764s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort : Passed
+ (0.890s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo : Passed
+ (0.384s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform : Passed
+ (1.227s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm : Passed
+ (0.929s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator : Passed
+ (31.597s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting : Passed
+ (0.269s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot : Passed
 
 Failing tests:
- (544.027s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork : Did not complete.
 
 Non-Existent tests:
 

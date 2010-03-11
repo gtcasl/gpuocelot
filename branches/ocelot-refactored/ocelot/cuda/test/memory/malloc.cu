@@ -10,6 +10,103 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+static int test_malloc(bool verbose) {
+	int errors = 0;
+	const int width = 256;
+	const int height = 128;
+	
+	float *block = 0;
+	
+	size_t bytes = width * height * sizeof(float);
+	
+	float *host = (float *)malloc(bytes);
+	if (cudaMalloc((void **)&block, bytes) != cudaSuccess) {
+		printf("cudaMalloc() 0 - failed to allocate %d bytes\n", (int)bytes);
+		return ++errors;
+	}
+	
+	for (int j = 0; j < height; j++) {
+		float *ptr = &host[j * width];
+		for (int i = 0; i < width; i++) {
+			ptr[i] = (float)( (i + j * width) % 128 ) / 128.0f;
+		}
+	}
+	
+	if (cudaMemcpy(block, host, bytes, cudaMemcpyHostToDevice) != cudaSuccess) {
+		printf("cudaMemcpy() - failed to copy %d bytes to block\n", (int)bytes);
+		cudaFree(block);
+		free(host);
+		return ++errors;
+	}
+	
+	for (int i = 0; i < width * height; i++) {
+		host[i] = -1;
+	}
+	
+	if (cudaMemcpy(host, block, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
+		printf("cudaMemcpy() - failed to copy %d bytes from block\n", (int)bytes);
+		cudaFree(block);
+		free(host);
+		return ++errors;
+	}
+	
+	for (int j = 0; j < height && errors < 10; j++) {
+		float *ptr = &host[j * width];
+		for (int i = 0; i < width && errors < 10; i++) {
+			float expected =(float)( (i + j * width) % 128 ) / 128.0f;
+			float got = ptr[i];
+			if (fabs(expected - got) > 0.001f) {
+				printf("ERROR 1: (%d, %d) - expected: %f, got: %f\n",
+					i, j, expected, got);
+				++errors;
+			}
+		}
+	}
+	
+	if (errors) {
+		cudaFree(block);
+		free(host);
+		return errors;	
+	}
+	
+	// now use cudaMemcpy() to select individual elements by offsets and reverify
+	for (int j = 0; j < height && errors < 5; j++) {
+		for (int i = 0; i < width && errors < 5; i++) {
+			float x = -1;
+			float expected = (float)( (i + j * width) % 128 ) / 128.0f;
+			if (cudaMemcpy(&x, block + i + j * width, sizeof(float),
+				cudaMemcpyDeviceToHost) != cudaSuccess) {
+
+				printf("FAILED to cudaMemcpy() on element (%d, %d)\n", i, j);
+				cudaFree(block);
+				free(host);
+				printf("FAILED\n");
+				return errors;
+			}
+			if (fabs(x - expected) > 0.0001f) {
+				++errors;
+				printf("ERROR 2: (%d, %d) - expected: %f, got: %f\n", i, j, expected, x);
+				if (errors > 10) {
+					cudaFree(block);
+					free(host);
+					printf("FAILED\n");
+					return errors;
+				}
+			}
+		}
+	}
+	
+	if (verbose) {
+		printf("%s\n", (errors ? "FAILED" : "PASSED"));
+		fflush(stdout);
+	}
+	
+	cudaFree(block);
+	free(host);
+	
+	return errors;
+}
+
 static int test_mallocArray(bool verbose) {
 	int errors = 0;
 	struct cudaArray *array = 0;
@@ -48,7 +145,7 @@ static int test_mallocArray(bool verbose) {
 	
 	if (cudaMemcpyFromArray(host, array, 0, 0, bytes, cudaMemcpyDeviceToHost) !=
 		cudaSuccess) {
-		printf("cudaMemcpyToArray() - failed to copy %d bytes to array\n", (int)bytes);
+		printf("cudaMemcpyToArray() - failed to copy %d bytes from array\n", (int)bytes);
 		cudaFreeArray(array);
 		free(host);
 		return ++errors;
@@ -293,6 +390,10 @@ static int test_malloc3d(bool verbose) {
 int main(int argc, char *arg[]) {
 	int errors = 0;
 	bool verbose = false;
+	
+	if (!errors) {
+		errors += test_malloc(verbose);
+	}
 	
 	if (!errors) {
 		errors += test_mallocArray(verbose);

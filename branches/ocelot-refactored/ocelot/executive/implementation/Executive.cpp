@@ -161,6 +161,10 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 		
 	default:
 		// device is in GPU memory somewhere
+		if (getSelectedISA() == ir::Instruction::GPU) {
+			assert(0 && "unimplemented");
+			break;
+		}
 		assert(0 && "unimplemented");
 		break;
 	}
@@ -461,27 +465,38 @@ bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr,
 /*!
 	\brief frees an allocation - make sure you weren't calling ::free()
 */
-bool executive::Executive::free(void *devPtr) {
-	bool result = false;
-	if (!devPtr) {
-		return false;
+bool executive::Executive::free(void *ptr) {
+	bool result = true;
+
+	report("Executive::free(" << ptr << ")");
+
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find(ptr);
+	if (it == allocations.end()) {
+		// not found
+		report("Executive::free(" << ptr << ")");
+		
+		assert(0 && "unimplemented");
+		
 	}
-
-	report("Executive::free(" << devPtr << ")");
-
-	MemoryAllocation memory = getMemoryAllocation(devPtr);
-	if (memory.pointer.ptr) {
-		if (memory.addressSpace) {
-			assert(0 && "unimplemented");
-		}
-		else {
-			if (memory.internal) {
-				::free(memory.pointer.ptr);
-				result = true;
+	else {
+		if (it->second.addressSpace) {
+			// delete on CUDA device
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				assert(0 && "unimplemented");
+			}
+			else {
+				assert(0 && "unimplemented");
 			}
 		}
+		else {
+			if (it->second.internal) {
+				::free(it->second.pointer.ptr);
+			}
+		}
+		allocations.erase(it);
 	}
-
+	
 	return result;
 }
 

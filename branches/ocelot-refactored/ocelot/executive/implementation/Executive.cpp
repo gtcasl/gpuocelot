@@ -62,7 +62,7 @@ static size_t getOffset(void* pointer) {
 // Ocelot executive construction/destruction
 //
 
-executive::Executive::Executive() : selectedDevice(0) {
+executive::Executive::Executive() : selectedDevice(-1) {
 
 	// translator initialization
 	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
@@ -134,7 +134,7 @@ void executive::Executive::unregisterExternal(void *ptr, int addressSpace) {
 }
 
 bool executive::Executive::malloc(void **devPtr, size_t size) {
-	bool result = true;
+	bool result = false;
 	MemoryAllocation memory;
 	
 	memory.addressSpace = getDeviceAddressSpace();
@@ -148,29 +148,41 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 	memory.extent.width = size;
 	memory.extent.height = 1;
 	memory.extent.depth = 1;
+	memory.allocationSize = size;
 	
 	switch (memory.addressSpace) {
 	case 0:
 		{
 			// device is in host memory
-			memory.allocationSize = size;
 			memory.pointer.ptr = (void *)::malloc(size + 16);
 			memory.pointer.offset = getOffset(memory.pointer.ptr);
+			result = true;
 		}
 		break;
 		
 	default:
 		// device is in GPU memory somewhere
 		if (getSelectedISA() == ir::Instruction::GPU) {
-			assert(0 && "unimplemented");
+			CUdeviceptr ptr = 0;
+			CUresult cuda  = cuMemAlloc(&ptr, size);
+			if (cuda == CUDA_SUCCESS) {
+				memory.pointer.ptr = reinterpret_cast<void *>(ptr);
+				memory.pointer.offset = 0;
+				result = true;
+			}
+			else {
+				report("Executive::malloc() - failed to allocate " << size << " bytes on GPU - error: " << cuda);
+			}
 			break;
 		}
 		assert(0 && "unimplemented");
 		break;
 	}
 	
-	*devPtr = memory.get();
-	memoryAllocations[memory.addressSpace][*devPtr] = memory;
+	if (memory.pointer.ptr) {
+		*devPtr = memory.get();
+		memoryAllocations[memory.addressSpace][*devPtr] = memory;
+	}
 	
 	return result;
 }
@@ -466,7 +478,7 @@ bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr,
 	\brief frees an allocation - make sure you weren't calling ::free()
 */
 bool executive::Executive::free(void *ptr) {
-	bool result = true;
+	bool result = false;
 
 	report("Executive::free(" << ptr << ")");
 
@@ -483,7 +495,12 @@ bool executive::Executive::free(void *ptr) {
 		if (it->second.addressSpace) {
 			// delete on CUDA device
 			if (getSelectedISA() == ir::Instruction::GPU) {
-				assert(0 && "unimplemented");
+				if (cuMemFree(hydrazine::bit_cast<CUdeviceptr, void *>(it->second.pointer.ptr)) == CUDA_SUCCESS) {
+					result = true;
+				}
+				else {
+					result = false;
+				}
 			}
 			else {
 				assert(0 && "unimplemented");
@@ -493,6 +510,7 @@ bool executive::Executive::free(void *ptr) {
 			if (it->second.internal) {
 				::free(it->second.pointer.ptr);
 			}
+			result = true;
 		}
 		allocations.erase(it);
 	}
@@ -604,7 +622,6 @@ std::ostream & executive::Executive::printMemoryAllocations(std::ostream &out) c
 		the record's ISA is Unknown
 */
 executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void *ptr) const {
-	
 	MemoryAllocation allocation;
 	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(getDeviceAddressSpace());
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
@@ -692,7 +709,13 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 				}
 			break;
 			default:
-				{
+				if (getSelectedISA() == ir::Instruction::GPU) {
+					if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(dest), src, size) ==
+						CUDA_SUCCESS) {
+						return true;
+					}
+				}
+				else {
 					assert(0 && "address space not supported");
 				}
 			}
@@ -715,8 +738,15 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 					return true;
 				}
 			break;
+			
 			default:
-				{
+				if (getSelectedISA() == ir::Instruction::GPU) {
+					if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) ==
+						CUDA_SUCCESS) {
+						return true;
+					}
+				}
+				else {
 					assert(0 && "address space not supported");
 				}
 			}
@@ -740,7 +770,14 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 				}
 			break;
 			default:
-				{
+				if (getSelectedISA() == ir::Instruction::GPU) {
+					if (cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, const void*>(dest), 
+						hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) ==
+						CUDA_SUCCESS) {
+						return true;
+					}
+				}
+				else {
 					assert(0 && "address space not supported");
 				}
 			}
@@ -1611,6 +1648,12 @@ size_t executive::Executive::enumerateDevices() {
 				}
 
 				devices.push_back(device);
+
+				if (devices.size() == 1 || 
+					api::OcelotConfiguration::getExecutive().preferredISA == ir::Instruction::GPU) {
+
+					selectDevice((int)devices.size() - 1);
+				}
 			}
 		}
 	}
@@ -1686,6 +1729,7 @@ size_t executive::Executive::enumerateDevices() {
 		}
 	}#endif
 
+	assert(selectedDevice >= 0);
 	return devices.size();
 }
 

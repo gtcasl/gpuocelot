@@ -1458,9 +1458,6 @@ namespace executive
 	void LLVMExecutableKernel::Worker::launchCtaWithBarriers( 
 		Function function, LLVMContext* c, unsigned int resumePointOffset )
 	{
-		typedef std::vector< llvm::GenericValue > ArgumentVector;
-		ArgumentVector arguments( 1, llvm::GenericValue( c ) );
-
 		char* localBase = c->local;
 		bool done = false;
 		unsigned int threads = c->ntid.z * c->ntid.y * c->ntid.x;

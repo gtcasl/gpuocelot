@@ -119,8 +119,6 @@ void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
 	_blockDim.x = x;
 	_blockDim.y = y;
 	_blockDim.z = z;
-
-	_maxThreadsPerBlock = x*y*z;
 }
 
 ir::Dim3 executive::EmulatedKernel::getKernelShape() const {
@@ -352,7 +350,6 @@ void executive::EmulatedKernel::registerAllocation() {
 	registerMap = ir::PTXKernel::assignRegisters( *cfg() );
 	_registerCount = registerMap.size();
 	report(" Allocated " << _registerCount << " registers");
-	_maxThreadsPerBlock = 512;
 }
 
 void executive::EmulatedKernel::_computeOffset(

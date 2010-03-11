@@ -41,7 +41,6 @@
 // whether debugging messages are printed
 #define REPORT_BASE 0
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Error handling macros
@@ -57,11 +56,13 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 const char *cuda::FatBinaryContext::name() const {
+	if (!cubin_ptr) return "";
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
 	return binary->ident;
 }	
 
 const char *cuda::FatBinaryContext::ptx() const {
+	if (!cubin_ptr) return "";
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
 	return binary->ptx->ptx;
 }
@@ -217,7 +218,7 @@ cuda::RegisteredGLBuffer::RegisteredGLBuffer(): flags(0), ptr(0), mapped(false) 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-cuda::CudaRuntime::CudaRuntime() {
+cuda::CudaRuntime::CudaRuntime() : nextSymbol(1) {
 
 }
 
@@ -334,6 +335,9 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 */
 void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 	// do we really care?
+	// Greg: For most cuda applications, probably not.  The only use would be 
+	// to remove and reinsert a fat binary.  Let's use a different interface
+	//  for that
 }
 
 /*!
@@ -1028,6 +1032,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 
 cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *symbol) {
 
+	report("cuda::CudaRuntime::cudaGetSymbolAddress(" << devPtr << ", " << (void*) symbol << ")");
 	cudaError_t result = cudaSuccess;
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
@@ -1045,6 +1050,7 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *s
 
 cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbol) {
 	cudaError_t result = cudaSuccess;
+	report("cuda::CudaRuntime::cudaGetSymbolSize(" << size << ", " << (void*) symbol << ")");
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
 	if (!*symbol) {
@@ -1992,8 +1998,76 @@ void cuda::CudaRuntime::clearTraceGenerators(bool safe) {
 
 void cuda::CudaRuntime::limitWorkerThreads(unsigned int limit) {
 	lock();
+	getHostThreadContext();
 	context.setWorkerThreadLimit((int)limit);
 	unlock();
+}
+
+void cuda::CudaRuntime::registerPTXModule(std::istream& ptx, const std::string& name) {
+	lock();
+	getHostThreadContext();
+	context.loadModule(name, false, ptx);
+	executive::StringVector kernelNames = context.enumerateKernels(name);
+	
+	FatBinaryContext cubinContext;
+	cubinContext.cubin_ptr = 0;
+	fatBinaries.push_back(cubinContext);
+	size_t handle = fatBinaries.size();
+
+	for (executive::StringVector::iterator kernel = kernelNames.begin(); 
+		kernel != kernelNames.end(); ++kernel) {
+		void* symbol = (void*)nextSymbol++;
+		assert(kernels.count(symbol) == 0);
+		
+		globalSymbolMap[symbol] = *kernel;
+	
+		RegisteredKernel registeredKernel;
+		registeredKernel.handle = handle;
+		registeredKernel.module = name;
+		registeredKernel.kernel = *kernel;
+		registeredKernel.pointer = symbol;
+	
+		kernels[symbol] = registeredKernel;
+	}
+	
+	unlock();
+}
+
+void** cuda::CudaRuntime::getFatBinaryHandle(const std::string& name) {
+	for (RegisteredKernelMap::iterator kernel = kernels.begin(); 
+		kernel != kernels.end(); ++kernel) {
+		if (kernel->second.module == name) {
+			return (void**)kernel->second.handle;
+		}
+	}
+	
+	for (FatBinaryVector::iterator bin = fatBinaries.begin(); bin != fatBinaries.end(); ++bin) {
+		if (bin->name() == name) {
+			return (void**) std::distance(fatBinaries.begin(), bin);
+		}
+	}
+	Ocelot_Exception("FatBinary " << name << " not registered.");
+}
+
+cuda::CudaRuntimeInterface::KernelPointer 
+	cuda::CudaRuntime::getKernelPointer(const std::string& name, 
+	const std::string& module) {
+	cuda::CudaRuntimeInterface::KernelPointer symbol = 0;
+	lock();
+	for (RegisteredKernelMap::iterator kernel = kernels.begin(); 
+		kernel != kernels.end(); ++kernel) {
+		if (kernel->second.kernel == name && kernel->second.module == module) {
+			symbol = (const char*)kernel->second.pointer;
+			break;
+		}	
+	}
+	if (symbol == 0) {
+		unlock();
+		Ocelot_Exception("Kernel " << name 
+			<< " not registered in module " << module);
+	}
+	unlock();
+	return symbol;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

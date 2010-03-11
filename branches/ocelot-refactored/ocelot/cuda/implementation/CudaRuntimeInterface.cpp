@@ -53,41 +53,46 @@ cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntimeInterface::addTraceGenerator( trace::TraceGenerator& gen, 
-	bool persistent, bool safe )
-{
+	bool persistent, bool safe ) {
 	assert(0 && "unimplemented");
 }
 			
-void cuda::CudaRuntimeInterface::clearTraceGenerators( bool safe )
-{
+void cuda::CudaRuntimeInterface::clearTraceGenerators( bool safe ) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::limitWorkerThreads( unsigned int limit )
-{
+void cuda::CudaRuntimeInterface::limitWorkerThreads( unsigned int limit ) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, const std::string& name)
-{
+void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, const std::string& name) {
 	assert(0 && "unimplemented");
 }
 
 cuda::CudaRuntimeInterface::KernelPointer cuda::CudaRuntimeInterface::getKernelPointer(
-	const std::string& name, const std::string& module)
-{
+	const std::string& name, const std::string& module) {
 	assert(0 && "unimplemented");
 	return 0;
 }
 
-void** cuda::CudaRuntimeInterface::getFatBinaryHandle(const std::string& name)
-{
-	//return get()->getFatBinaryHandle( name );
+void** cuda::CudaRuntimeInterface::getFatBinaryHandle(const std::string& name) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::clearErrors()
-{
+void cuda::CudaRuntimeInterface::clearErrors() {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::reset() {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::contextSwitch( unsigned int destinationDevice, 
+	unsigned int sourceDevice ) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::unregisterModule( const std::string& name ) {
 	assert(0 && "unimplemented");
 }
 
@@ -637,5 +642,7 @@ int cuda::CudaRuntimeInterface::cudaSynchronizeThreads( void** one, void* two ) 
 void cuda::CudaRuntimeInterface::cudaTextureFetch(const void* tex, 
 	void* index, int integer, void* val) {
 	assert(0 && "unimplemented");
+
 }
+
 

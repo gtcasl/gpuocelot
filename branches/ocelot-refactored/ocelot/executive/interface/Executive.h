@@ -50,6 +50,8 @@ namespace executive {
 	typedef std::map< int, MemoryAllocationMap > DeviceMemoryAllocationMap;
 
 	typedef std::map< std::string, ir::Texture > TextureMap;
+	
+	typedef std::vector< std::string > StringVector;
 
 	/*!
 		\brief specifies the Ocelot execution model
@@ -136,6 +138,13 @@ namespace executive {
 		void registerExternal(void *ptr, size_t bytes, int addressSpace=-1);
 
 		void unregisterExternal(void *ptr, int addressSpace=-1);
+		
+		/*!
+			Returns a vector with the names of all kernels in a module
+			\param module The name of the loaded module to enumerate
+			\return A vector of strings each corresponding to a kernel in the module
+		*/
+		StringVector enumerateKernels(const std::string& module) const;
 		
 	public:
 	
@@ -579,6 +588,7 @@ namespace executive {
 		//
 		// Ocelot native interface functions
 		//
+		
 		
 	protected:
 	

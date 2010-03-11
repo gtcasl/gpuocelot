@@ -30,7 +30,7 @@ namespace ir
 {
 ExecutableKernel::ExecutableKernel( const Kernel& k, 
 	const executive::Executive* c ) : Kernel( k ), context( c ), 
-	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 0 ), 
+	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
 	_registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _parameterMemorySize( 0 )
 {
@@ -38,7 +38,7 @@ ExecutableKernel::ExecutableKernel( const Kernel& k,
 }
 
 ExecutableKernel::ExecutableKernel( const executive::Executive* c ) :
-	context( c ), _constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 0 ), 
+	context( c ), _constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
 	_registerCount( 0 ), _sharedMemorySize( 0 ), 	_externSharedMemorySize( 0 ), 
 	_parameterMemorySize( 0 )
 {
@@ -123,15 +123,8 @@ size_t ExecutableKernel::mapParameterOffsets() {
 	unsigned int paramSize = 0;
 
 	for (; it != parameters.end(); ++it) {
-		if (it->getElementSize() == 8 && (paramSize % 8)) {
-			paramSize += 8 - (paramSize % 8);
-		}
-		else if (it->getElementSize() == 4 && (paramSize % 4)) {
-			paramSize += 4 - (paramSize % 4);
-		}
-		else if (it->getElementSize() == 2 && (paramSize % 2)) {
-			paramSize += 2 - (paramSize % 2);
-		}
+		unsigned int misAlignment = paramSize % it->getAlignment();
+		paramSize += misAlignment == 0 ? 0 : it->getAlignment() - misAlignment;
 
 		it->offset = paramSize;
 		paramSize += it->getSize();

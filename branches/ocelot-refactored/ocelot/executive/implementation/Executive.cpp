@@ -62,7 +62,7 @@ static size_t getOffset(void* pointer) {
 // Ocelot executive construction/destruction
 //
 
-executive::Executive::Executive() {
+executive::Executive::Executive() : selectedDevice(0) {
 
 	// translator initialization
 	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
@@ -1407,6 +1407,18 @@ void executive::Executive::registerTexture(const char *module, const char *name,
 	textures[name] = texture;
 }
 
+executive::StringVector executive::Executive::enumerateKernels(const std::string& moduleName) const {
+	report("Enumerating kernels in module - " << moduleName);
+	ModuleMap::const_iterator module = modules.find(moduleName);
+	assertM(module != modules.end(), "Module " << moduleName << " is not registered.");
+	StringVector names;
+	for (ir::Module::KernelMap::const_iterator kernel = module->second->kernels[ir::Instruction::PTX].begin(); 
+		kernel != module->second->kernels[ir::Instruction::PTX].end(); ++kernel) {
+		names.push_back(kernel->first);
+		report(" - " << kernel->first);
+	}
+	return std::move(names);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //

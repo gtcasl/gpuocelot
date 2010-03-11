@@ -146,11 +146,12 @@ struct cudaChannelFormatDesc {
 };
 
 struct cudaFuncAttributes {
-	size_t constSizeBytes;
-	size_t localSizeBytes;
-	int maxThreadsPerBlock;
-	int numRegs;
-	size_t sharedSizeBytes;
+   size_t sharedSizeBytes;  ///< Size of shared memory in bytes
+   size_t constSizeBytes;   ///< Size of constant memory in bytes
+   size_t localSizeBytes;   ///< Size of local memory in bytes
+   int maxThreadsPerBlock;  ///< Maximum number of threads per block
+   int numRegs;             ///< Number of registers used
+   int __cudaReserved[8];
 };
 
 struct cudaPitchedPtr {

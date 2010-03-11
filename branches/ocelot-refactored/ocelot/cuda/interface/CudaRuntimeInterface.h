@@ -327,6 +327,17 @@ namespace cuda {
 
 		/*! \brief Clear all errors in the Cuda Runtime */
 		virtual void clearErrors();
+		
+		/*! \brief Reset all CUDA runtime state */
+		virtual void reset();
+	
+		/*! \brief Perform a device context switch */
+		virtual void contextSwitch( unsigned int destinationDevice, 
+			unsigned int sourceDevice );
+	
+		/*! \brief Unregister a module, either PTX or LLVM */
+		virtual void unregisterModule( const std::string& name );
+
 	};
 
 }

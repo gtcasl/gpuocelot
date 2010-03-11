@@ -238,10 +238,10 @@ namespace cuda {
 		void *pointer;
 		
 		//! name of module
-		const char *module;
+		std::string module;
 		
 		//! name of kernel
-		const char *kernel;
+		std::string kernel;
 	};
 	
 	typedef std::map< void *, RegisteredKernel > RegisteredKernelMap;
@@ -296,6 +296,9 @@ namespace cuda {
 
 		//! maps symbol pointers onto their device names
 		std::map< void *, std::string > globalSymbolMap;
+		
+		//! the next symbol for dynamically registered kernels
+		int nextSymbol;
 		
 		// fatbinaries
 		FatBinaryVector fatBinaries;
@@ -554,6 +557,14 @@ namespace cuda {
 			bool safe = true );
 		virtual void clearTraceGenerators( bool safe = true );
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
+		virtual void registerPTXModule(std::istream& stream, const std::string& name);
+		virtual void** getFatBinaryHandle(const std::string& name);
+		virtual KernelPointer getKernelPointer(const std::string& name, 
+			const std::string& module);
+//		virtual void reset();
+//		virtual void contextSwitch( unsigned int destinationDevice, 
+//			unsigned int sourceDevice );
+//		virtual void unregisterModule( const std::string& name );
 
 	};
 

@@ -55,6 +55,22 @@ namespace ocelot
 		get()->clearErrors();
 	}
 
+	void reset()
+	{
+		get()->reset();
+	}
+	
+	void contextSwitch( unsigned int destinationDevice, 
+		unsigned int sourceDevice )
+	{
+		get()->contextSwitch( destinationDevice, sourceDevice );
+	}
+	
+	void unregisterModule( const std::string& name )
+	{
+		get()->unregisterModule( name );
+	}
+
 }
 
 #endif

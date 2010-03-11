@@ -71,6 +71,16 @@ namespace ocelot
 
 	/*! \brief Clear all errors in the Cuda Runtime */
 	void clearErrors();
+	
+	/*! \brief Reset all CUDA runtime state */
+	void reset();
+	
+	/*! \brief Perform a device context switch */
+	void contextSwitch( unsigned int destinationDevice, 
+		unsigned int sourceDevice );
+	
+	/*! \brief Unregister a module, either PTX or LLVM */
+	void unregisterModule( const std::string& name );
 
 }
 

@@ -20,6 +20,10 @@
 // Ocelot includes
 #include <ocelot/ir/interface/Texture.h>
 
+#if HAVE_CUDA_DRIVER_API == 1
+#include <ocelot/cuda/include/cuda.h>
+#endif
+
 // forward declarations
 
 namespace ir {
@@ -65,6 +69,14 @@ namespace executive {
 	public:
 		size_t size() const {
 			return (w + x + y + z) / 8;
+		}
+		size_t channels() const {
+			size_t c = 0;
+			if (w) ++c;
+			if (x) ++c;
+			if (y) ++c;
+			if (z) ++c;
+			return c;
 		}
 	};
 	
@@ -149,6 +161,11 @@ namespace executive {
 		
 		//! indicates Ocelot manages allocation
 		bool internal;
+	
+#if HAVE_CUDA_DRIVER_API == 1
+		//! array handle [if array allocated on GPU device]
+		CUarray cudaArray;
+#endif
 	
 	public:
 	

@@ -41,7 +41,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -319,9 +319,29 @@ bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent e
 	return result;
 }
 
+void convert(CUDA_ARRAY_DESCRIPTOR &descriptor, const executive::ChannelFormatDesc &desc) {
+	descriptor.NumChannels = desc.channels();
+	unsigned int bits = (desc.size() / desc.channels());
+	if (bits > 2) bits = 3;
+	
+	switch (desc.kind) {
+	case executive::ChannelFormatDesc::Kind_unsigned:
+		descriptor.Format = (CUarray_format)bits;
+		break;
+	case executive::ChannelFormatDesc::Kind_signed:
+		descriptor.Format = (CUarray_format)(7 + bits);
+		break;
+	case executive::ChannelFormatDesc::Kind_float:
+		descriptor.Format = (CUarray_format)(bits == 2 ? 0x10 : 0x20);
+		break;
+	default:
+		report("unknown ChannelFormatDesc::Kind");
+	}
+}
+
 bool executive::Executive::mallocArray(struct cudaArray **array, 
 	const ChannelFormatDesc & desc, size_t width, size_t height) {
-	bool result = true;
+	bool result = false;
 
 	MemoryAllocation memory;
 	
@@ -331,27 +351,53 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 	memory.affinity = MemoryAllocation::Affinity_device;
 	memory.pointer.xsize = width;
 	memory.pointer.ysize = height;
+	memory.extent.width = width;
+	memory.extent.height = height;
 	memory.desc = desc;
 
 	memory.dimension = MemoryAllocation::Dim_2D;
+	memory.pointer.pitch = width * desc.size();
+	memory.allocationSize = height * memory.pointer.pitch;
 	
 	switch (memory.addressSpace) {
 	case 0:
 		{
 			// device is in host memory
-			memory.pointer.pitch = width * desc.size();
-			memory.allocationSize = height * memory.pointer.pitch;
 			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
 			memory.pointer.offset = getOffset(memory.pointer.ptr);
+			if (memory.pointer.ptr) {
+				result = true;
+			}
 		}
 		break;
 	default:
+		if (getSelectedISA() == ir::Instruction::GPU) {
+			CUDA_ARRAY_DESCRIPTOR descriptor = {0};
+			convert(descriptor, desc);
+			descriptor.Width = width;
+			descriptor.Height = height;
+			if (cuArrayCreate(&memory.cudaArray, &descriptor) != CUDA_SUCCESS) {
+				report("Executive::mallocArray() - failed to allocate CUDA array on GPU");
+				result = false;
+			}
+			else {
+				result = true;
+				memory.pointer.ptr = (void *)memory.cudaArray;
+				memory.pointer.offset = 0;
+				
+				report("Executive::mallocArray() - successfully allocated array of size " <<
+					memory.allocationSize << " to address " << memory.pointer.ptr 
+					<< " - (w: " << width << ", h: " << height << ")");
+			}
+			break;
+		}
 		assert(0 && "unimplemented");
-		break;
 	}
 	
-	*array = (struct cudaArray *)memory.get();
-	memoryAllocations[memory.addressSpace][memory.get()] = memory;
+	if (result) {
+		*array = (struct cudaArray *)memory.get();
+		memoryAllocations[memory.addressSpace][memory.get()] = memory;
+	}
 	
 	return result;
 }
@@ -563,26 +609,6 @@ executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void
 				found = true;
 			}
 		}
-/*
-		if (!found) {
-			// throw an exception
-			std::stringstream ss;
-			ss << "device memory fault - device pointer " << std::hex << ptr 
-				<< " does not point to an allocation on device " << std::dec 
-				<< devices[getSelectedDevice()].name 
-				<< "\n";
-			if (bound != memoryMap.end()) {
-				bound = memoryMap.lower_bound((void *)ptr);
-			}
-			if (bound != memoryMap.end()) {
-				ss << "nearest allocation is " << std::dec << bound->second.pointer.ptr 
-					<< std::dec << "\n";
-			}
-			ss << "\nAll allocations:\n";
-			printMemoryAllocations(ss);
-			throw hydrazine::Exception(ss.str());
-		}
-*/
 	}
 	else {
 		allocation = alloc_it->second;
@@ -791,21 +817,56 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
 	if (alloc_it != memoryMap.end()) {
 		const MemoryAllocation & memory = alloc_it->second;
-
+		bool result = false;
+		
 		switch (addrSpace) {
 		case 0:
 			{
 				char *ptr = (char *)memory.get() + memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(ptr, host, bytes);
+				result = true;
 			}
 			break;
 
 		default:
+			if (getSelectedISA() == ir::Instruction::GPU) {
+			
+				CUDA_MEMCPY2D copy = {0};
+				copy.srcXInBytes = 0;
+				copy.srcMemoryType = CU_MEMORYTYPE_HOST;
+				copy.srcY = 0;
+				copy.srcHost = host;
+				copy.srcPitch = memory.pointer.pitch;
+				
+				copy.dstArray = memory.cudaArray;
+				copy.dstXInBytes = wOffset;
+				copy.dstY = hOffset;
+				copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+
+				size_t widthInBytes = memory.desc.size() * memory.extent.width - wOffset;
+				if (widthInBytes > bytes) {
+					copy.WidthInBytes = bytes;
+					copy.Height = 1;
+				}
+				else {
+					copy.WidthInBytes = widthInBytes;
+					copy.Height = bytes / copy.WidthInBytes;
+				}
+				
+				CUresult cuda = cuMemcpy2D(&copy);
+				if (cuda == CUDA_SUCCESS) {
+					result = true;
+				}
+				else {
+					result = false;
+					report("cuMemcpy2D() failed");
+				}
+				break;
+			}
 			assert(0 && "address space not supported");
-			break;
 		}
 		
-		return true;
+		return result;
 	}
 
 	return false;
@@ -817,27 +878,65 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *host, 
 	size_t wOffset, size_t hOffset, size_t bytes, MemcpyKind kind) {
 
+//	report("deviceMemcpyFromArray(w: " << wOffset << ", h: " << hOffset << ", " << bytes << " bytes");
+
 	int addrSpace = getDeviceAddressSpace();
 	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
 	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
 	if (alloc_it != memoryMap.end()) {
 		const MemoryAllocation & memory = alloc_it->second;
-
+		bool result = false;
 		switch (addrSpace) {
 		case 0:
 			{
 				char *ptr = (char *)memory.get() + memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(host, ptr, bytes);
+				result = true;
 			}
 			break;
 
 		default:
+		
+			if (getSelectedISA() == ir::Instruction::GPU) {
+			
+				CUDA_MEMCPY2D copy = {0};
+				copy.dstXInBytes = 0;
+				copy.dstMemoryType = CU_MEMORYTYPE_HOST;
+				copy.dstY = 0;
+				copy.dstHost = host;
+				copy.dstPitch = memory.pointer.pitch;
+				
+				copy.srcArray = memory.cudaArray;
+				copy.srcXInBytes = wOffset;
+				copy.srcY = hOffset;
+				copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+
+				size_t widthInBytes = memory.desc.size() * memory.extent.width - wOffset;
+				if (widthInBytes > bytes) {
+					copy.WidthInBytes = bytes;
+					copy.Height = 1;
+				}
+				else {
+					copy.WidthInBytes = widthInBytes;
+					copy.Height = bytes / copy.WidthInBytes;
+				}
+				
+				CUresult cuda = cuMemcpy2D(&copy);
+				if (cuda == CUDA_SUCCESS) {
+					result = true;
+				}
+				else {
+					result = false;
+					report("cuMemcpy2D() failed");
+				}
+				break;
+			}
 			assert(0 && "address space not supported");
 			break;
 		}
 		
-		return true;
+		return result;
 	}
 
 	return false;
@@ -858,7 +957,8 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 	if (dstAlloc_it != memoryMap.end() && srcAlloc_it != memoryMap.end()) {
 		const MemoryAllocation & dstMemory = dstAlloc_it->second;
 		const MemoryAllocation & srcMemory = srcAlloc_it->second;
-
+		bool result = false;
+					
 		switch (addrSpace) {
 		case 0:
 			{
@@ -866,16 +966,50 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 					srcWOffset;
 				char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * dstHOffset + 
 					dstWOffset;
-				::memcpy(dstPtr, srcPtr, count);			
+				::memcpy(dstPtr, srcPtr, count);
+				result = true;	
 			}
 			break;
 
 		default:
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				
+				report("Executive::deviceMemcpyArrayToArray()");
+				report("  count: " << count << " bytes\n  dstWOff: " << dstWOffset 
+					<< "\n  dstHOff: " << dstHOffset << "\n  srcWOff: " << srcWOffset
+					<< "\n  srcHOff: " << srcHOffset);
+				
+				CUDA_MEMCPY2D copy = {0};
+				copy.dstXInBytes = dstWOffset;
+				copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+				copy.dstY = dstHOffset;
+				copy.dstArray = dstMemory.cudaArray;
+				
+				copy.srcArray = srcMemory.cudaArray;
+				copy.srcXInBytes = srcWOffset;
+				copy.srcY = srcHOffset;
+				copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+
+				copy.WidthInBytes = srcMemory.desc.size() * srcMemory.extent.width - srcWOffset;
+				copy.Height = 1 + (count - 1) / copy.WidthInBytes;
+				
+				report("copy: " << copy.WidthInBytes << ", " << copy.Height);
+				
+				CUresult cuda = cuMemcpy2D(&copy);
+				if (cuda == CUDA_SUCCESS) {
+					result = true;
+				}
+				else {
+					report("cuMemcpy2D() failed");
+				}
+				break;
+			}
+
 			assert(0 && "address space not supported");
 			break;
 		}
 		
-		return true;
+		return result;
 	}
 
 	return false;

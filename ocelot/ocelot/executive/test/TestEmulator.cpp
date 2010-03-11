@@ -136,7 +136,7 @@ public:
 			// set as float, get as float
 			if (result) {
 				cta.setRegAsF32(i, 1, 12.5f);
-				if (fabs(cta.getRegAsF32(i, 1) - 12.5f) > 0.01f) {
+				if (std::fabs(cta.getRegAsF32(i, 1) - 12.5f) > 0.01f) {
 					result = false;
 					status << "set/getRegAsF32 failed\n";
 				}
@@ -269,7 +269,7 @@ public:
 
 		try {
 			cta.eval_Ld(cta.runtimeStack.back(), ld);
-			if (fabs(cta.getRegAsF32(0, 0) - 1.0f) > 0.1f) {
+			if (std::fabs(cta.getRegAsF32(0, 0) - 1.0f) > 0.1f) {
 				// load failed
 				result = false;
 				status << "ld.global failed. Got: " << cta.getRegAsF32(0,0) 
@@ -304,7 +304,7 @@ public:
 
 		try {
 			cta.eval_Ld(cta.runtimeStack.back(), ld);
-			if (fabs(cta.getRegAsF32(0, 0) + 3.14159f) > 0.1f) {
+			if (std::fabs(cta.getRegAsF32(0, 0) + 3.14159f) > 0.1f) {
 				result = false;
 				status << "ld.global failed: got " 
 					<< cta.getRegAsF32(0,0) << "\n";
@@ -422,7 +422,7 @@ public:
 
 		try {
 			cta.eval_St(cta.runtimeStack.back(), st);
-			if (fabs(f_block[0] - 24.3f) > 0.1f) {
+			if (std::fabs(f_block[0] - 24.3f) > 0.1f) {
 				result = false;
 				status << "st.global failed - got " << f_block[0] 
 					<< ", expected: " << cta.getRegAsF32(0, 0) << "\n";

@@ -18,10 +18,6 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/translator/interface/Translator.h>
 
-#if HAVE_CUDA_DRIVER_API == 1
-#include <ocelot/cuda/include/cuda.h>
-#endif
-
 struct cudaArray;
 
 // forward declared classes
@@ -253,15 +249,15 @@ namespace executive {
 			\param device GUID of device
 			\param ptr pointer to some byte
 			\return record of memory allocation; if nothing could be found, 
-				the record's ISA is Unknown
+				the record pointer is zero
 		*/
-		MemoryAllocation getMemoryAllocation(const void *ptr) const;
+		const MemoryAllocation* getMemoryAllocation(const void *ptr) const;
 		
 		/*!
 			Gets a string representation of memory allocations
 		*/
-		static std::string nearbyAllocationsToString( const Executive& executive, const void* pointer, 
-			unsigned int above = 5, unsigned int below = 5 );
+		static std::string nearbyAllocationsToString( const Executive& executive, 
+			const void* pointer, unsigned int above = 5, unsigned int below = 5 );
 		
 	public:
 	
@@ -477,8 +473,7 @@ namespace executive {
 			size_t sharedMemory, unsigned char *parameterBlock, size_t parameterBlockSize,
 			const trace::TraceGeneratorVector & traceGenerators);
 			
-		/*!
-			\brief determines whether kernel exceeds memory bounds through static analysis
+		/*!	\brief determines whether kernel exceeds memory bounds through static analysis
 			\param exeKernel executable kernel under test
 			\param sharedMemory size of dynamic shared memory
 			\param paramSize size of parameter memory
@@ -589,6 +584,8 @@ namespace executive {
 		// Ocelot native interface functions
 		//
 		
+		/*! \brief Clear all state associated with the executive class */
+		void clear();
 		
 	protected:
 	

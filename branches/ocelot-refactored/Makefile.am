@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
 	TestPTXToLLVMTranslator  TestGPUKernel PTXChecker \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
-	TestLLVMKernels
+	TestLLVMKernels TestDeviceSwitching
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -326,6 +326,15 @@ TestCudaTextureArray_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaTextureArray_SOURCES = ocelot/cuda/test/textures/textureArray.cu.cpp
 TestCudaTextureArray_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCudaTextureArray_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestDeviceSwitching
+TestDeviceSwitching_CXXFLAGS = $(INCLUDE) -Wall -ansi \
+	-pedantic -Werror -std=c++0x
+TestDeviceSwitching_SOURCES = ocelot/api/test/TestDeviceSwitching.cpp
+TestDeviceSwitching_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestDeviceSwitching_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

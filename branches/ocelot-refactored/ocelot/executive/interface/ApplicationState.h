@@ -150,11 +150,11 @@ namespace executive {
 		//! dimensions of allocation
 		Extent extent;
 		
-		//! number of bytes allocate
-		size_t allocationSize;
-		
 		//! channel format description
 		ChannelFormatDesc desc;
+		
+		//! number of bytes allocate
+		size_t allocationSize;
 		
 		//! allocation flags
 		unsigned int flags;
@@ -168,10 +168,48 @@ namespace executive {
 #endif
 	
 	public:
+		//! constructor for external allocation
+		MemoryAllocation(int space, void *ptr, size_t bytes);
 	
+		//! constructor for linear allocation
+		MemoryAllocation(int space, size_t size);
+	
+		//! constructor for host allocation
+		MemoryAllocation(size_t size, bool portable, bool mapped, 
+			bool writeCombined);
+	
+		//! constructor for pitched allocation
+		MemoryAllocation(int space, size_t width, size_t height);
+		
+		//! constructor for extent based pitched allocation
+		MemoryAllocation(int space, const Extent& e);
+		
+		//! constructor for array allocation
+		MemoryAllocation(int space, const ChannelFormatDesc& desc,
+			size_t width, size_t height);
+		
+		//! constructor for pitched array allocation
+		MemoryAllocation(int space, const ChannelFormatDesc &desc, 
+			const Extent& extent);
+		
 		//! default allocation constructor
 		MemoryAllocation();	
-	
+		
+		//! default destructor
+		~MemoryAllocation();
+		
+		// copy constructor
+		MemoryAllocation(const MemoryAllocation& m);
+		
+		// move constructor
+		MemoryAllocation(MemoryAllocation&& m);
+
+		// copy operator
+		MemoryAllocation& operator=(const MemoryAllocation& m);
+
+		// move operator
+		MemoryAllocation& operator=(MemoryAllocation&& m);
+
 		//! gets void* to memory allocation
 		void *get() const {
 			return (char*)pointer.ptr + pointer.offset;
@@ -193,6 +231,7 @@ namespace executive {
 		}
 
 		std::string toString() const;
+				
 	};
 
 	/*!

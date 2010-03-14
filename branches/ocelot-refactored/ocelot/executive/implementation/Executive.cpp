@@ -23,8 +23,6 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 
 #if HAVE_CUDA_DRIVER_API == 1
-#include <ocelot/cuda/include/cuda.h>
-
 #define CUDA_OPENGL_INTEROPERABILITY 0
 
 #include <ocelot/cuda/include/cudaGL.h>
@@ -44,18 +42,6 @@
 #define REPORT_BASE 0
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Helper functions
-//
-static size_t getOffset(void* pointer) {
-	size_t address = (size_t)pointer;
-	size_t remainder = address % 16;
-	size_t offset = remainder == 0 ? 0 : 16 - remainder;
-	return offset;
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -90,36 +76,16 @@ executive::Executive::~Executive() {
 	\param addressSpace address space of the allocation
 */
 void executive::Executive::registerExternal(void *ptr, size_t bytes, int addressSpace) {
-	MemoryAllocation memory;
-
 	if (addressSpace < 0) {
 		addressSpace = getDeviceAddressSpace();
 	}
 	
-	memory.structure = MemoryAllocation::Struct_linear;
-	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.addressSpace = addressSpace;
-	memory.dimension = MemoryAllocation::Dim_1D;
-
-	memory.pointer.ptr = ptr;
-	memory.pointer.offset = 0;
-	memory.pointer.xsize = bytes;
-	memory.pointer.pitch = bytes;
-	memory.pointer.ysize = 1;
-
-	memory.extent.width = bytes;
-	memory.extent.height = 1;
-	memory.extent.depth = 1;
-
-	memory.allocationSize = bytes;
-	memory.flags = 0;
-
-	memory.internal = false;
+	MemoryAllocation memory(addressSpace, ptr, bytes);
 	
-	memoryAllocations[memory.addressSpace][memory.get()] = memory;
-
 	report("  Executive::registerExternal(addrspace: " << memory.addressSpace << ") - ptr: " 
 		<< (void *)memory.get() << ", " << memory.allocationSize << " bytes");
+
+	memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
 }
 
 void executive::Executive::unregisterExternal(void *ptr, int addressSpace) {
@@ -135,54 +101,15 @@ void executive::Executive::unregisterExternal(void *ptr, int addressSpace) {
 
 bool executive::Executive::malloc(void **devPtr, size_t size) {
 	bool result = false;
-	MemoryAllocation memory;
-	
-	memory.addressSpace = getDeviceAddressSpace();
-	
-	memory.structure = MemoryAllocation::Struct_linear;
-	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.pointer.xsize = size;
-	memory.pointer.pitch = size;
-	memory.pointer.ysize = 1;
-	memory.dimension = MemoryAllocation::Dim_1D;
-	memory.extent.width = size;
-	memory.extent.height = 1;
-	memory.extent.depth = 1;
-	memory.allocationSize = size;
-	
-	switch (memory.addressSpace) {
-	case 0:
-		{
-			// device is in host memory
-			memory.pointer.ptr = (void *)::malloc(size + 16);
-			memory.pointer.offset = getOffset(memory.pointer.ptr);
-			result = true;
-		}
-		break;
-		
-	default:
-		// device is in GPU memory somewhere
-		if (getSelectedISA() == ir::Instruction::GPU) {
-			CUdeviceptr ptr = 0;
-			CUresult cuda  = cuMemAlloc(&ptr, size);
-			if (cuda == CUDA_SUCCESS) {
-				memory.pointer.ptr = reinterpret_cast<void *>(ptr);
-				memory.pointer.offset = 0;
-				result = true;
-			}
-			else {
-				report("Executive::malloc() - failed to allocate " << size << " bytes on GPU - error: " << cuda);
-			}
-			break;
-		}
-		assert(0 && "unimplemented");
-		break;
-	}
+	MemoryAllocation memory(getDeviceAddressSpace(), size);
 	
 	if (memory.pointer.ptr) {
+		result = true;
 		*devPtr = memory.get();
-		memoryAllocations[memory.addressSpace][*devPtr] = memory;
+		memoryAllocations[memory.addressSpace][*devPtr] = std::move(memory);
 	}
+	
+	report(" Executive::malloc(" << *devPtr << ", " << size << ")");
 	
 	return result;
 }
@@ -198,82 +125,27 @@ bool executive::Executive::malloc(void **devPtr, size_t size) {
 bool executive::Executive::mallocHost(void **ptr, size_t size, bool portable, bool mapped, 
 	bool writeCombined) {
 
-	bool result = true;
-	MemoryAllocation memory;
-	
-	memory.addressSpace = 0;
-	memory.structure = MemoryAllocation::Struct_linear;
-	memory.affinity = MemoryAllocation::Affinity_host;
-	memory.pointer.xsize = size;
-	memory.pointer.pitch = size;
-	memory.pointer.ysize = 1;
-	memory.dimension = MemoryAllocation::Dim_1D;
-	
-	switch (getDeviceAddressSpace()) {
-	case 0:
-		{
-			memory.allocationSize = size;
-			memory.pointer.ptr = (void *)::malloc(size + 16);
-			memory.pointer.offset = getOffset(memory.pointer.ptr);
-			memory.extent.width = size;
-			memory.extent.height = 1;
-			memory.extent.depth = 1;
-		}
-		break;
-	default:
-		// maybe use cuHostMalloc() instead
-		assert(0 && "unimplemented");
-	break;
-	}
-	
+	MemoryAllocation memory(size, portable, mapped, writeCombined);
+
 	*ptr = memory.get();
-	memoryAllocations[memory.addressSpace][*ptr] = memory;
+	memoryAllocations[memory.addressSpace][*ptr] = std::move(memory);
 	
 	report("Executive::mallocHost(" << *ptr << ")");
 	
-	return result;
+	return *ptr != 0;
 }
 
 bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t width, 
 	size_t height) {
-	bool result = true;
-	
-	MemoryAllocation memory;
-	
-	memory.addressSpace = getDeviceAddressSpace();
-	
-	memory.structure = MemoryAllocation::Struct_pitch;
-	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.pointer.xsize = width;
-	memory.pointer.ysize = height;
-
-	memory.dimension = MemoryAllocation::Dim_2D;
-		
-	switch (memory.addressSpace) {
-	case 0:
-		{
-			// device is in host memory
-			memory.allocationSize = width * height;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
-			memory.pointer.offset = getOffset(memory.pointer.ptr);
-			memory.pointer.pitch = width;
-			memory.extent.width = width;
-			memory.extent.height = height;
-			memory.extent.depth = 1;
-		}
-		break;
-	default:
-		// device is in GPU memory somewhere
-		assert(0 && "unimplemented");		
-		break;
-	}
-	
+	MemoryAllocation memory(getDeviceAddressSpace(), width, height);
 	*devPtr = memory.get();
 	*pitch = memory.pointer.pitch;
 	
-	memoryAllocations[memory.addressSpace][*devPtr] = memory;
+	memoryAllocations[memory.addressSpace][*devPtr] = std::move(memory);
 	
-	return result;
+	report("Executive::mallocPitch(" << *devPtr << ")");
+
+	return *devPtr != 0;
 }
 
 /*!
@@ -283,138 +155,26 @@ bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t widt
 */
 bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent extent) {
 
-	bool result = true;
-	
-	MemoryAllocation memory;
-	
-	memory.addressSpace = getDeviceAddressSpace();
-	
-	memory.structure = MemoryAllocation::Struct_pitch;
-	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.extent = extent;
-
-	if (extent.depth > 1) {
-		memory.dimension = MemoryAllocation::Dim_3D;
-	}
-	else if (extent.height > 1) {
-		memory.dimension = MemoryAllocation::Dim_2D;
-	}
-	else if (extent.width >= 1) {
-		memory.dimension = MemoryAllocation::Dim_1D;
-	}
-	else {
-		Ocelot_Exception("Executive::mallocPitch() - invalid extent");
-	}
-		
-	switch (memory.addressSpace) {
-	case 0:
-		{
-			// device is in host memory
-			memory.allocationSize = extent.width * extent.height * extent.depth;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
-			memory.pointer.offset = getOffset(memory.pointer.ptr);
-			memory.pointer.pitch = extent.width;
-			memory.pointer.width = extent.width;
-			memory.pointer.height = extent.height;
-
-			report("mallocPitch() - allocated " << memory.allocationSize << " bytes - dimensions: "
-				<< memory.extent.width << " x " << memory.extent.height << " x " << memory.extent.depth 
-				<< " - ptr = " << (void *)memory.pointer.ptr);
-		}
-		break;
-	default:
-		// device is in GPU memory somewhere
-		assert(0 && "unimplemented");		
-		break;
-	}
-
+	MemoryAllocation memory(getDeviceAddressSpace(), extent);
 	*pitchedPointer = memory.pointer;
 	
-	memoryAllocations[memory.addressSpace][memory.get()] = memory;
-	
-	return result;
-}
+	memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
 
-void convert(CUDA_ARRAY_DESCRIPTOR &descriptor, const executive::ChannelFormatDesc &desc) {
-	descriptor.NumChannels = desc.channels();
-	unsigned int bits = (desc.size() / desc.channels());
-	if (bits > 2) bits = 3;
+	report("Executive::mallocPitch(" << pitchedPointer->ptr << ")");
 	
-	switch (desc.kind) {
-	case executive::ChannelFormatDesc::Kind_unsigned:
-		descriptor.Format = (CUarray_format)bits;
-		break;
-	case executive::ChannelFormatDesc::Kind_signed:
-		descriptor.Format = (CUarray_format)(7 + bits);
-		break;
-	case executive::ChannelFormatDesc::Kind_float:
-		descriptor.Format = (CUarray_format)(bits == 2 ? 0x10 : 0x20);
-		break;
-	default:
-		report("unknown ChannelFormatDesc::Kind");
-	}
+	return pitchedPointer->ptr != 0;
 }
 
 bool executive::Executive::mallocArray(struct cudaArray **array, 
 	const ChannelFormatDesc & desc, size_t width, size_t height) {
-	bool result = false;
-
-	MemoryAllocation memory;
+	MemoryAllocation memory(getDeviceAddressSpace(), desc, width, height);
 	
-	memory.addressSpace = getDeviceAddressSpace();
-	
-	memory.structure = MemoryAllocation::Struct_array;
-	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.pointer.xsize = width;
-	memory.pointer.ysize = height;
-	memory.extent.width = width;
-	memory.extent.height = height;
-	memory.desc = desc;
-
-	memory.dimension = MemoryAllocation::Dim_2D;
-	memory.pointer.pitch = width * desc.size();
-	memory.allocationSize = height * memory.pointer.pitch;
-	
-	switch (memory.addressSpace) {
-	case 0:
-		{
-			// device is in host memory
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
-			memory.pointer.offset = getOffset(memory.pointer.ptr);
-			if (memory.pointer.ptr) {
-				result = true;
-			}
-		}
-		break;
-	default:
-#if HAVE_CUDA_DRIVER_API == 1
-		if (getSelectedISA() == ir::Instruction::GPU) {
-			CUDA_ARRAY_DESCRIPTOR descriptor = {0};
-			convert(descriptor, desc);
-			descriptor.Width = width;
-			descriptor.Height = height;
-			if (cuArrayCreate(&memory.cudaArray, &descriptor) != CUDA_SUCCESS) {
-				report("Executive::mallocArray() - failed to allocate CUDA array on GPU");
-				result = false;
-			}
-			else {
-				result = true;
-				memory.pointer.ptr = (void *)memory.cudaArray;
-				memory.pointer.offset = 0;
-				
-				report("Executive::mallocArray() - successfully allocated array of size " <<
-					memory.allocationSize << " to address " << memory.pointer.ptr 
-					<< " - (w: " << width << ", h: " << height << ")");
-			}
-			break;
-		}
-#endif
-		assert(0 && "unimplemented");
-	}
+	bool result = memory.get() != 0;
+	report("Executive::mallocArray(" << memory.get() << ")");
 	
 	if (result) {
 		*array = (struct cudaArray *)memory.get();
-		memoryAllocations[memory.addressSpace][memory.get()] = memory;
+		memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
 	}
 	
 	return result;
@@ -429,51 +189,17 @@ bool executive::Executive::mallocArray(struct cudaArray **array,
 bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr, 
 	const ChannelFormatDesc &desc, Extent extent) {
 
-	MemoryAllocation memory;
+	MemoryAllocation memory(getDeviceAddressSpace(), desc, extent);
+	bool result = memory.get() != 0;
 
-	memory.addressSpace = getDeviceAddressSpace();
-	
-	memory.structure = MemoryAllocation::Struct_array;
-	memory.affinity = MemoryAllocation::Affinity_device;
-	memory.desc = desc;
-	memory.extent = extent;
+	report("Executive::mallocPitchArray(" << memory.get() << ")");
 
-	if (extent.depth > 1) {
-		memory.dimension = MemoryAllocation::Dim_3D;
-	}
-	else if (extent.height > 1) {
-		memory.dimension = MemoryAllocation::Dim_2D;
-	}
-	else if (extent.width >= 1) {
-		memory.dimension = MemoryAllocation::Dim_1D;
-	}
-	else {
-		Ocelot_Exception("Executive::mallocPitch() - invalid extent");
-	}
-	
-	switch (memory.addressSpace) {
-	case 0:
-		{
-			// device is in host memory
-			memory.pointer.pitch = extent.width * desc.size();
-			memory.allocationSize = extent.height * memory.pointer.pitch * extent.depth;
-			memory.pointer.ptr = (void *)::malloc(memory.allocationSize + 16);
-			memory.pointer.offset = getOffset(memory.pointer.ptr);
-			memory.pointer.width = extent.width;
-			memory.pointer.height = extent.height;
-		}
-		break;
-	default:
-		assert(0 && "unimplemented");
-		break;
-	}
-	
-	if (memory.get()) {
+	if (result) {
 		*pitchedPtr = memory.pointer;
-		memoryAllocations[memory.addressSpace][memory.get()] = memory;
+		memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
 	}
 
-	return (memory.get() ? true : false);
+	return result;
 }
 
 /*!
@@ -494,27 +220,8 @@ bool executive::Executive::free(void *ptr) {
 		
 	}
 	else {
-		if (it->second.addressSpace) {
-			// delete on CUDA device
-			if (getSelectedISA() == ir::Instruction::GPU) {
-				if (cuMemFree(hydrazine::bit_cast<CUdeviceptr, void *>(it->second.pointer.ptr)) == CUDA_SUCCESS) {
-					result = true;
-				}
-				else {
-					result = false;
-				}
-			}
-			else {
-				assert(0 && "unimplemented");
-			}
-		}
-		else {
-			if (it->second.internal) {
-				::free(it->second.pointer.ptr);
-			}
-			result = true;
-		}
 		allocations.erase(it);
+		result = true;
 	}
 	
 	return result;
@@ -530,20 +237,9 @@ bool executive::Executive::freeHost(void *ptr) {
 	if (it == allocations.end()) {
 		// not found
 		report("Executive::freeHost(" << ptr << ")");
-		
-		assert(0 && "unimplemented");
-		
+		result = false;
 	}
 	else {
-		if (it->second.addressSpace) {
-			// delete on CUDA device
-			assert(0 && "unimplemented");
-		}
-		else {
-			if (it->second.internal) {
-				::free(it->second.pointer.ptr);
-			}
-		}
 		allocations.erase(it);
 	}
 	
@@ -553,7 +249,6 @@ bool executive::Executive::freeHost(void *ptr) {
 bool executive::Executive::freeArray(struct cudaArray *array) {
 	bool result = true;
 
-
 	report("Executive::freeArray(" << (void *)array << ")");
 
 	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
@@ -562,20 +257,9 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 		// not found
 		Ocelot_Exception("Executive::freeArray() - array = " << (void *)array 
 			<< " was not found in the allocation table.");
+		result = false;
 	}
 	else {
-		if (it->second.addressSpace) {
-			// delete on CUDA device
-			assert(0 && "unimplemented");
-		}
-		else {
-			if (it->second.internal) {
-				if (it->second.get()) {
-					::free(it->second.pointer.ptr);
-				}
-				it->second.pointer.ptr = 0;
-			}
-		}
 		allocations.erase(it);
 	}
 	return result;
@@ -583,13 +267,13 @@ bool executive::Executive::freeArray(struct cudaArray *array) {
 
 bool executive::Executive::checkMemoryAccess(int device, const void* base, size_t size) const {
 
-	MemoryAllocation allocation = getMemoryAllocation(base);
+	const MemoryAllocation* allocation = getMemoryAllocation(base);
 
 	// least address in region must be greater than or equal to this
-	const char *region_base_ptr = (const char *)allocation.get();	
+	const char *region_base_ptr = (const char *)allocation->get();	
 
 	// greatest address in region must be less than this
-	const char *region_end_ptr = region_base_ptr + allocation.size();
+	const char *region_end_ptr = region_base_ptr + allocation->size();
 
 	bool valid = (region_base_ptr && region_end_ptr >= (const char *)base + size);
 	return valid;
@@ -623,29 +307,21 @@ std::ostream & executive::Executive::printMemoryAllocations(std::ostream &out) c
 	\return record of memory allocation; if nothing could be found, 
 		the record's ISA is Unknown
 */
-executive::MemoryAllocation executive::Executive::getMemoryAllocation(const void *ptr) const {
-	MemoryAllocation allocation;
-	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(getDeviceAddressSpace());
+const executive::MemoryAllocation* executive::Executive::getMemoryAllocation(const void *ptr) const {
+	const MemoryAllocation* allocation = 0;
+	DeviceMemoryAllocationMap::const_iterator 
+		memoryMap_it = memoryAllocations.find(getDeviceAddressSpace());
+	assert(memoryMap_it != memoryAllocations.end());
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
-	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)ptr);
-	if (alloc_it == memoryMap.end()) {
-		// find nearest
-		bool found = false;
-		MemoryAllocationMap::const_iterator bound = memoryMap.upper_bound((void *)ptr);
-		if (bound != memoryMap.begin()) {
-			--bound;
-
-			const char *base_ptr = (const char *)bound->second.get();
-			const char *end_ptr = base_ptr + bound->second.size();
-
-			if ((const char *)ptr >= base_ptr && ptr <= end_ptr) {
-				allocation = bound->second;
-				found = true;
+	if (!memoryMap.empty()) {
+		MemoryAllocationMap::const_iterator 
+			alloc_it = memoryMap.upper_bound((void *)ptr);
+		if (alloc_it != memoryMap.begin()) --alloc_it;
+		if (alloc_it != memoryMap.end()) {
+			if ((const char*) ptr >= alloc_it->second.get()) {
+				allocation = &alloc_it->second;
 			}
 		}
-	}
-	else {
-		allocation = alloc_it->second;
 	}
 	
 	return allocation;
@@ -711,15 +387,19 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 				}
 			break;
 			default:
+#if HAVE_CUDA_DRIVER_API == 1
 				if (getSelectedISA() == ir::Instruction::GPU) {
-					if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(dest), src, size) ==
-						CUDA_SUCCESS) {
+					if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(
+						dest), src, size) == CUDA_SUCCESS) {
 						return true;
 					}
 				}
 				else {
 					assert(0 && "address space not supported");
 				}
+#else
+				assert(0 && "address space not supported");
+#endif
 			}
 		}
 		else {
@@ -742,15 +422,18 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 			break;
 			
 			default:
+#if HAVE_CUDA_DRIVER_API == 1
 				if (getSelectedISA() == ir::Instruction::GPU) {
-					if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) ==
-						CUDA_SUCCESS) {
+					if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == CUDA_SUCCESS) {
 						return true;
 					}
 				}
 				else {
 					assert(0 && "address space not supported");
 				}
+#else
+				assert(0 && "address space not supported");
+#endif
 			}
 		}
 		else {
@@ -772,9 +455,10 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 				}
 			break;
 			default:
+#if HAVE_CUDA_DRIVER_API == 1
 				if (getSelectedISA() == ir::Instruction::GPU) {
 					if (cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, const void*>(dest), 
-						hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) ==
+						hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == 
 						CUDA_SUCCESS) {
 						return true;
 					}
@@ -782,6 +466,9 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 				else {
 					assert(0 && "address space not supported");
 				}
+#else
+			assert(0 && "address space not supported");
+#endif
 			}
 		}
 		else {
@@ -820,12 +507,14 @@ bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *
 		GlobalVariable & globalVar = glb_it->second;
 		if (count + offset <= globalVar.size) {
 			char *dstPtr = (char *)globalVar.host_pointer + offset;
-			report("deviceMemcpyToSymbol('" << symbol << "') - dstPtr: " << (void *)dstPtr);
+			report("deviceMemcpyToSymbol('" << symbol 
+				<< "') - dstPtr: " << (void *)dstPtr);
 			::memcpy(dstPtr, src, count);\
 		}
 	}
 	else {
-		Ocelot_Exception("Attempted memcpy to unregistered global variable '" << symbol << "'");
+		Ocelot_Exception("Attempted memcpy to unregistered global variable '" 
+			<< symbol << "'");
 	}
 	
 	return true;
@@ -848,12 +537,14 @@ bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst,
 
 		if (count + offset <= globalVar.size) {
 			char *srcPtr = (char *)globalVar.host_pointer + offset;
-			report("deviceMemcpyFromSymbol('" << symbol << "') - srcPtr: " << (void *)srcPtr);
+			report("deviceMemcpyFromSymbol('" << symbol 
+				<< "') - srcPtr: " << (void *)srcPtr);
 			::memcpy(dst, srcPtr, count);
 		}
 	}
 	else {
-		Ocelot_Exception("Attempted memcpy from unregistered global variable '" << symbol << "'");
+		Ocelot_Exception("Attempted memcpy from unregistered global variable '"
+			<< symbol << "'");
 	}
 	
 	return true;
@@ -866,7 +557,8 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 	size_t wOffset, size_t hOffset, size_t bytes, MemcpyKind kind) {
 
 	int addrSpace = getDeviceAddressSpace();
-	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	DeviceMemoryAllocationMap::const_iterator 
+		memoryMap_it = memoryAllocations.find(addrSpace);
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
 	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
 	if (alloc_it != memoryMap.end()) {
@@ -876,7 +568,8 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 		switch (addrSpace) {
 		case 0:
 			{
-				char *ptr = (char *)memory.get() + memory.pointer.pitch * hOffset + wOffset;
+				char *ptr = (char *)memory.get() + memory.pointer.pitch
+					* hOffset + wOffset;
 				::memcpy(ptr, host, bytes);
 				result = true;
 			}
@@ -898,7 +591,8 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 				copy.dstY = hOffset;
 				copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
 
-				size_t widthInBytes = memory.desc.size() * memory.extent.width - wOffset;
+				size_t widthInBytes = memory.desc.size()
+					* memory.extent.width - wOffset;
 				if (widthInBytes > bytes) {
 					copy.WidthInBytes = bytes;
 					copy.Height = 1;
@@ -946,7 +640,8 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 		switch (addrSpace) {
 		case 0:
 			{
-				char *ptr = (char *)memory.get() + memory.pointer.pitch * hOffset + wOffset;
+				char *ptr = (char *)memory.get()
+					+ memory.pointer.pitch * hOffset + wOffset;
 				::memcpy(host, ptr, bytes);
 				result = true;
 			}
@@ -968,7 +663,8 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 				copy.srcY = hOffset;
 				copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
 
-				size_t widthInBytes = memory.desc.size() * memory.extent.width - wOffset;
+				size_t widthInBytes = memory.desc.size()
+					* memory.extent.width - wOffset;
 				if (widthInBytes > bytes) {
 					copy.WidthInBytes = bytes;
 					copy.Height = 1;
@@ -1093,7 +789,9 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 			break;
 		case DeviceToHost:
 		{
-			MemoryAllocation srcAlloc = getMemoryAllocation(src);
+			if(!checkMemoryAccess(getSelectedDevice(), src, height * width)) {
+				return false;
+			}
 			
 			switch (addrSpace) {
 				case 0:
@@ -1115,7 +813,10 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 		
 		case HostToDevice:
 		{
-			MemoryAllocation dstAlloc = getMemoryAllocation(dst);
+			if(!checkMemoryAccess(getSelectedDevice(), dst, height * width)) {
+				return false;
+			}
+
 			switch (addrSpace) {
 				case 0:
 				{
@@ -1135,8 +836,13 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 			break;
 		case DeviceToDevice:
 		{
-			MemoryAllocation srcAlloc = getMemoryAllocation(src);
-			MemoryAllocation dstAlloc = getMemoryAllocation(dst);
+			if(!checkMemoryAccess(getSelectedDevice(), dst, height * width)) {
+				return false;
+			}
+			if(!checkMemoryAccess(getSelectedDevice(), src, height * width)) {
+				return false;
+			}
+
 			switch (addrSpace) {
 				case 0:
 				{
@@ -1178,9 +884,13 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, size_t wOffset, 
 	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, MemcpyKind kind) {
 
+	if(!checkMemoryAccess(getSelectedDevice(), dstArray, height * width)) {
+		return false;
+	}
+
 	int addrSpace = getDeviceAddressSpace();
 
-	MemoryAllocation dstMemory = getMemoryAllocation((void *)dstArray);
+	const MemoryAllocation* dstMemory = getMemoryAllocation((void *)dstArray);
 	
 	char *srcMemory_ptr = 0;
 	switch (kind) {
@@ -1190,8 +900,8 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 			break;
 		case DeviceToDevice:
 		{
-			MemoryAllocation srcMemory = getMemoryAllocation(src);
-			srcMemory_ptr = (char *)srcMemory.get();
+			const MemoryAllocation* srcMemory = getMemoryAllocation(src);
+			srcMemory_ptr = (char *)srcMemory->get();
 		}
 			break;
 		default:
@@ -1203,7 +913,7 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 		case 0:
 		{
 			for (size_t row = 0; row < height; row++) {
-				char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * row;
+				char *dstPtr = (char *)dstMemory->get() + dstMemory->pointer.pitch * row;
 				char *srcPtr = (char *)srcMemory_ptr + spitch * row;
 				::memcpy(dstPtr, srcPtr, width);
 			}
@@ -1225,7 +935,14 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 
 	int addrSpace = getDeviceAddressSpace();
 
-	MemoryAllocation srcMemory = getMemoryAllocation((void *)srcArray);
+	if(!checkMemoryAccess(getSelectedDevice(), dst, height * width)) {
+		return false;
+	}
+	if(!checkMemoryAccess(getSelectedDevice(), srcArray, height * width)) {
+		return false;
+	}
+
+	const MemoryAllocation* srcMemory = getMemoryAllocation((void *)srcArray);
 	char *dstMemory_ptr = 0;
 	switch (kind) {
 		case DeviceToHost:
@@ -1234,8 +951,8 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 			break;
 		case DeviceToDevice:
 		{
-			MemoryAllocation dstMemory = getMemoryAllocation(dst);
-			dstMemory_ptr = (char *)dstMemory.get();
+			const MemoryAllocation* dstMemory = getMemoryAllocation(dst);
+			dstMemory_ptr = (char *)dstMemory->get();
 		}
 			break;
 		default:
@@ -1248,7 +965,7 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 		{
 			for (size_t row = 0; row < height; row++) {
 				char *dstPtr = (char *)dstMemory_ptr + dpitch * row;
-				char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * row;
+				char *srcPtr = (char *)srcMemory->get() + srcMemory->pointer.pitch * row;
 				::memcpy(dstPtr, srcPtr, width);
 			}
 			return true;
@@ -1291,24 +1008,40 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 
 	case HostToDevice:
 	{
-		MemoryAllocation memory = getMemoryAllocation(dst.ptr);
-		dst = memory.pointer;
+		if(!checkMemoryAccess(getSelectedDevice(), dst.ptr, 
+			extent.height * extent.width)) {
+			return false;
+		}
+		const MemoryAllocation* memory = getMemoryAllocation(dst.ptr);
+		dst = memory->pointer;
 	}
 		break;
 
 	case DeviceToHost:
 	{
-		MemoryAllocation memory = getMemoryAllocation(src.ptr);
-		src = memory.pointer;
+		if(!checkMemoryAccess(getSelectedDevice(), src.ptr, 
+			extent.height * extent.width)) {
+			return false;
+		}
+		const MemoryAllocation* memory = getMemoryAllocation(src.ptr);
+			src = memory->pointer;
 	}
 		break;
 
 	case DeviceToDevice:
 	{
-		MemoryAllocation srcMemory = getMemoryAllocation(src.ptr);
-		MemoryAllocation dstMemory = getMemoryAllocation(dst.ptr);
-		dst = dstMemory.pointer;
-		src = srcMemory.pointer;
+		if(!checkMemoryAccess(getSelectedDevice(), dst.ptr, 
+			extent.height * extent.width)) {
+			return false;
+		}
+		if(!checkMemoryAccess(getSelectedDevice(), src.ptr, 
+			extent.height * extent.width)) {
+			return false;
+		}
+		const MemoryAllocation* srcMemory = getMemoryAllocation(src.ptr);
+		const MemoryAllocation* dstMemory = getMemoryAllocation(dst.ptr);
+		dst = dstMemory->pointer;
+		src = srcMemory->pointer;
 	}
 		break;
 	
@@ -1730,7 +1463,8 @@ size_t executive::Executive::enumerateDevices() {
 
 		devices.push_back(device);
 
-		if (api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
+		if (devices.size() == 1 || 
+			api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
 			selectDevice((int)devices.size() - 1);
 		}
 	}#endif
@@ -1883,6 +1617,26 @@ void executive::Executive::translateModuleToISA(std::string moduleName,
 			}
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot interface functions
+//
+
+void executive::Executive::clear() {
+	selectedDevice = -1;
+	textures.clear();
+	globals.clear();
+	memoryAllocations.clear();
+	addressSpaces.clear();
+	modules.clear();
+	devices.clear();
+	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
+	optimizationLevel = 
+		(translator::Translator::OptimizationLevel)
+			api::OcelotConfiguration::getExecutive().optimizationLevel;
+	enumerateDevices();	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,4 @@
-/*!
-	\file CudaRuntime.cpp
+/*! \file CudaRuntime.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief implements the CUDA Runtime API for Ocelot
 */
@@ -656,10 +655,10 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, void *pH
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
 
-	executive::MemoryAllocation memory = context.getMemoryAllocation(pHost);
-	if (memory.get()) {
+	const executive::MemoryAllocation* memory = context.getMemoryAllocation(pHost);
+	if (memory->get()) {
 		result = cudaSuccess;
-		*pDevice = memory.get();
+		*pDevice = memory->get();
 	}
 
 	TestError(result);
@@ -1307,9 +1306,10 @@ cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(struct cudaChannelFormatDesc *
 	lock();
 	HostThreadContext &thread = getHostThreadContext();
 
-	executive::MemoryAllocation memory = context.getMemoryAllocation((const void *)array);
-	if (memory.get()) {
-		convert(desc, memory.desc);
+	const executive::MemoryAllocation* memory = context.getMemoryAllocation(
+		(const void *)array);
+	if (memory->get()) {
+		convert(desc, memory->desc);
 		result = cudaSuccess;
 	}
 

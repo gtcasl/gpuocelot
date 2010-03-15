@@ -42,6 +42,7 @@
 #define REPORT_BASE 0
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
+#define Ocelot_Report(x) { std::cerr << "==OCELOT== " << x << std::endl; }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -376,103 +377,101 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	
 	case HostToDevice:
 	{
-		if (checkMemoryAccess(selectedDevice, dest, size)) {
+		if (!checkMemoryAccess(selectedDevice, dest, size)) {
+			Ocelot_Exception("Invalid destination " << dest << " of size " << size 
+				<< " in host to device memcpy.");
+		}
 		
-			switch (deviceAddrSpace) {
-			case 0:
-				{
-					report("deviceMemcpy() - host to device");
-					::memcpy(dest, src, size);
+		switch (deviceAddrSpace) {
+		case 0:
+			{
+				report("deviceMemcpy() - host to device");
+				::memcpy(dest, src, size);
+				return true;
+			}
+		break;
+		default:
+#if HAVE_CUDA_DRIVER_API == 1
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(
+					dest), src, size) == CUDA_SUCCESS) {
 					return true;
 				}
-			break;
-			default:
-#if HAVE_CUDA_DRIVER_API == 1
-				if (getSelectedISA() == ir::Instruction::GPU) {
-					if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(
-						dest), src, size) == CUDA_SUCCESS) {
-						return true;
-					}
-				}
-				else {
-					assert(0 && "address space not supported");
-				}
-#else
-				assert(0 && "address space not supported");
-#endif
 			}
+			else {
+				assert(0 && "address space not supported");
+			}
+#else
+			assert(0 && "address space not supported");
+#endif
 		}
-		else {
-			report("failed to check memory access");
-			throw hydrazine::Exception("device memory fault");
-		}
+	
 	}
 	break;
 	
 	case DeviceToHost:
 	{
-		if (checkMemoryAccess(selectedDevice, src, size)) {
+		if (!checkMemoryAccess(selectedDevice, src, size)) {
+			Ocelot_Exception("Invalid source " << src << " of size " << size 
+				<< " in device to host memcpy.");
+		}
+		switch (deviceAddrSpace) {
+		case 0:
+			{
+				::memcpy(dest, src, size);
+				return true;
+			}
+		break;
 		
-			switch (deviceAddrSpace) {
-			case 0:
-				{
-					::memcpy(dest, src, size);
+		default:
+#if HAVE_CUDA_DRIVER_API == 1
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == CUDA_SUCCESS) {
 					return true;
 				}
-			break;
-			
-			default:
-#if HAVE_CUDA_DRIVER_API == 1
-				if (getSelectedISA() == ir::Instruction::GPU) {
-					if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == CUDA_SUCCESS) {
-						return true;
-					}
-				}
-				else {
-					assert(0 && "address space not supported");
-				}
-#else
-				assert(0 && "address space not supported");
-#endif
 			}
-		}
-		else {
-			throw hydrazine::Exception("device memory fault");
+			else {
+				assert(0 && "address space not supported");
+			}
+#else
+			assert(0 && "address space not supported");
+#endif
 		}
 	}
 	break;
 	
 	case DeviceToDevice:
 	{
-		if (checkMemoryAccess(selectedDevice, src, size) && 
-			checkMemoryAccess(selectedDevice, dest, size)) {
-			
-			switch (deviceAddrSpace) {
-			case 0:
-				{
-					::memcpy(dest, src, size);
+		if (!checkMemoryAccess(selectedDevice, dest, size)) {
+			Ocelot_Exception("Invalid destination " << dest << " of size " << size 
+				<< " in device to device memcpy.");
+		}
+		if (!checkMemoryAccess(selectedDevice, src, size)) {
+			Ocelot_Exception("Invalid source " << src << " of size " << size 
+				<< " in device to device memcpy.");
+		}
+		switch (deviceAddrSpace) {
+		case 0:
+			{
+				::memcpy(dest, src, size);
+				return true;
+			}
+		break;
+		default:
+#if HAVE_CUDA_DRIVER_API == 1
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				if (cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, const void*>(dest), 
+					hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == 
+					CUDA_SUCCESS) {
 					return true;
 				}
-			break;
-			default:
-#if HAVE_CUDA_DRIVER_API == 1
-				if (getSelectedISA() == ir::Instruction::GPU) {
-					if (cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, const void*>(dest), 
-						hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == 
-						CUDA_SUCCESS) {
-						return true;
-					}
-				}
-				else {
-					assert(0 && "address space not supported");
-				}
-#else
-			assert(0 && "address space not supported");
-#endif
 			}
-		}
-		else {
-			throw hydrazine::Exception("device memory fault");
+			else {
+				assert(0 && "address space not supported");
+			}
+#else
+		assert(0 && "address space not supported");
+#endif
 		}
 	}
 	break;
@@ -488,6 +487,7 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	\brief returns a symbol as a global variable
 */
 executive::GlobalVariable & executive::Executive::getGlobalVariable(const char *symbol) {
+	assert(globals.count(symbol) != 0);
 	return globals[std::string(symbol)];
 }
 
@@ -501,7 +501,6 @@ executive::GlobalVariable & executive::Executive::getGlobalVariable(const char *
 */
 bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
 	size_t offset, MemcpyKind kind) {
-
 	GlobalMap::iterator glb_it = globals.find(std::string(symbol));
 	if (glb_it != globals.end()) {
 		GlobalVariable & globalVar = glb_it->second;
@@ -530,7 +529,6 @@ bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *
 */
 bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst, 
 	size_t count, size_t offset, 	MemcpyKind kind) {
-	
 	GlobalMap::iterator glb_it = globals.find(std::string(symbol));
 	if (glb_it != globals.end()) {
 		GlobalVariable & globalVar = glb_it->second;
@@ -555,14 +553,18 @@ bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst,
 */
 bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *host, 
 	size_t wOffset, size_t hOffset, size_t bytes, MemcpyKind kind) {
+	if (!checkMemoryAccess(selectedDevice, array, bytes)) {
+		Ocelot_Exception("Invalid destination " << array << " of size " << bytes 
+			<< " in host to device array memcpy.");
+	}
 
 	int addrSpace = getDeviceAddressSpace();
 	DeviceMemoryAllocationMap::const_iterator 
 		memoryMap_it = memoryAllocations.find(addrSpace);
-	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	const MemoryAllocationMap& memoryMap = memoryMap_it->second;
 	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
 	if (alloc_it != memoryMap.end()) {
-		const MemoryAllocation & memory = alloc_it->second;
+		const MemoryAllocation& memory = alloc_it->second;
 		bool result = false;
 		
 		switch (addrSpace) {
@@ -623,12 +625,16 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 }
 
 /*!
-	\brief copies a dense host buffer to a device array
+	\brief copies from a device array to a host buffer
 */
 bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *host, 
 	size_t wOffset, size_t hOffset, size_t bytes, MemcpyKind kind) {
+	if (!checkMemoryAccess(selectedDevice, array, bytes)) {
+		Ocelot_Exception("Invalid source " << array << " of size " << bytes 
+			<< " in host to device array memcpy.");
+	}
 
-//	report("deviceMemcpyFromArray(w: " << wOffset << ", h: " << hOffset << ", " << bytes << " bytes");
+	report("deviceMemcpyFromArray(w: " << wOffset << ", h: " << hOffset << ", " << bytes << " bytes");
 
 	int addrSpace = getDeviceAddressSpace();
 	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
@@ -707,66 +713,80 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
 	MemoryAllocationMap::const_iterator dstAlloc_it = memoryMap.find((void *)dst);
 	MemoryAllocationMap::const_iterator srcAlloc_it = memoryMap.find((void *)src);
-	if (dstAlloc_it != memoryMap.end() && srcAlloc_it != memoryMap.end()) {
-		const MemoryAllocation & dstMemory = dstAlloc_it->second;
-		const MemoryAllocation & srcMemory = srcAlloc_it->second;
-		bool result = false;
-					
-		switch (addrSpace) {
-		case 0:
-			{
-				char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * srcHOffset + 
-					srcWOffset;
-				char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * dstHOffset + 
-					dstWOffset;
-				::memcpy(dstPtr, srcPtr, count);
-				result = true;	
-			}
-			break;
-
-		default:
-#if HAVE_CUDA_DRIVER_API == 1
-			if (getSelectedISA() == ir::Instruction::GPU) {
-				
-				report("Executive::deviceMemcpyArrayToArray()");
-				report("  count: " << count << " bytes\n  dstWOff: " << dstWOffset 
-					<< "\n  dstHOff: " << dstHOffset << "\n  srcWOff: " << srcWOffset
-					<< "\n  srcHOff: " << srcHOffset);
-				
-				CUDA_MEMCPY2D copy = {0};
-				copy.dstXInBytes = dstWOffset;
-				copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
-				copy.dstY = dstHOffset;
-				copy.dstArray = dstMemory.cudaArray;
-				
-				copy.srcArray = srcMemory.cudaArray;
-				copy.srcXInBytes = srcWOffset;
-				copy.srcY = srcHOffset;
-				copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
-
-				copy.WidthInBytes = srcMemory.desc.size() * srcMemory.extent.width - srcWOffset;
-				copy.Height = 1 + (count - 1) / copy.WidthInBytes;
-				
-				report("copy: " << copy.WidthInBytes << ", " << copy.Height);
-				
-				CUresult cuda = cuMemcpy2D(&copy);
-				if (cuda == CUDA_SUCCESS) {
-					result = true;
-				}
-				else {
-					report("cuMemcpy2D() failed");
-				}
-				break;
-			}
-#endif
-			assert(0 && "address space not supported");
-			break;
-		}
-		
-		return result;
+	if (dstAlloc_it == memoryMap.end()) {
+		Ocelot_Exception("Invalid destination array " << dst 
+			<< " in array to array memcpy.");
+	}
+	if (srcAlloc_it == memoryMap.end()) {
+		Ocelot_Exception("Invalid source array " << src 
+			<< " in array to array memcpy.");
 	}
 
-	return false;
+	const MemoryAllocation & dstMemory = dstAlloc_it->second;
+	const MemoryAllocation & srcMemory = srcAlloc_it->second;
+
+	char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * srcHOffset + srcWOffset;
+	char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * dstHOffset + dstWOffset;
+
+	if (!checkMemoryAccess(selectedDevice, srcPtr, count)) {
+		Ocelot_Exception("Invalid source address " << (void*)srcPtr << " of size " << count 
+			<< " in array to array memcpy.");
+	}
+	if (!checkMemoryAccess(selectedDevice, dstPtr, count)) {
+		Ocelot_Exception("Invalid destination address " << (void*)dstPtr << " of size " << count 
+			<< " in array to array memcpy.");
+	}
+
+	bool result = false;
+				
+	switch (addrSpace) {
+	case 0:
+		{
+			::memcpy(dstPtr, srcPtr, count);
+			result = true;	
+		}
+		break;
+
+	default:
+#if HAVE_CUDA_DRIVER_API == 1
+		if (getSelectedISA() == ir::Instruction::GPU) {
+			
+			report("Executive::deviceMemcpyArrayToArray()");
+			report("  count: " << count << " bytes\n  dstWOff: " << dstWOffset 
+				<< "\n  dstHOff: " << dstHOffset << "\n  srcWOff: " << srcWOffset
+				<< "\n  srcHOff: " << srcHOffset);
+			
+			CUDA_MEMCPY2D copy = {0};
+			copy.dstXInBytes = dstWOffset;
+			copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+			copy.dstY = dstHOffset;
+			copy.dstArray = dstMemory.cudaArray;
+			
+			copy.srcArray = srcMemory.cudaArray;
+			copy.srcXInBytes = srcWOffset;
+			copy.srcY = srcHOffset;
+			copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+
+			copy.WidthInBytes = srcMemory.desc.size() * srcMemory.extent.width - srcWOffset;
+			copy.Height = 1 + (count - 1) / copy.WidthInBytes;
+			
+			report("copy: " << copy.WidthInBytes << ", " << copy.Height);
+			
+			CUresult cuda = cuMemcpy2D(&copy);
+			if (cuda == CUDA_SUCCESS) {
+				result = true;
+			}
+			else {
+				report("cuMemcpy2D() failed");
+			}
+			break;
+		}
+#endif
+		assert(0 && "address space not supported");
+		break;
+	}
+	
+	return result;
 }
 
 /*!
@@ -789,16 +809,16 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 			break;
 		case DeviceToHost:
 		{
-			if(!checkMemoryAccess(getSelectedDevice(), src, height * width)) {
-				return false;
-			}
-			
 			switch (addrSpace) {
 				case 0:
 				{
 					for (size_t row = 0; row < height; row++) {
 						char *dstPtr = (char *)dst + dstPitch * row;
 						char *srcPtr = (char *)src + srcPitch * row;
+						if(!checkMemoryAccess(selectedDevice, srcPtr, width)) {
+							Ocelot_Exception("Invalid source address " << (void*)srcPtr 
+								<< " of " << width << " bytes in 2D device to host memcpy.");
+						}
 						::memcpy(dstPtr, srcPtr, width);
 					}
 					return true;
@@ -813,16 +833,16 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 		
 		case HostToDevice:
 		{
-			if(!checkMemoryAccess(getSelectedDevice(), dst, height * width)) {
-				return false;
-			}
-
 			switch (addrSpace) {
 				case 0:
 				{
 					for (size_t row = 0; row < height; row++) {
 						char *dstPtr = (char *)dst + dstPitch * row;
 						char *srcPtr = (char *)src + srcPitch * row;
+						if(!checkMemoryAccess(selectedDevice, dstPtr, width)) {
+							Ocelot_Exception("Invalid destination address " << (void*)dstPtr 
+								<< " of " << width << " bytes in 2D host to device memcpy.");
+						}
 						::memcpy(dstPtr, srcPtr, width);
 					}
 					return true;
@@ -836,19 +856,20 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 			break;
 		case DeviceToDevice:
 		{
-			if(!checkMemoryAccess(getSelectedDevice(), dst, height * width)) {
-				return false;
-			}
-			if(!checkMemoryAccess(getSelectedDevice(), src, height * width)) {
-				return false;
-			}
-
 			switch (addrSpace) {
 				case 0:
 				{
 					for (size_t row = 0; row < height; row++) {
 						char *dstPtr = (char *)dst + dstPitch * row;
 						char *srcPtr = (char *)src + srcPitch * row;
+						if(!checkMemoryAccess(selectedDevice, srcPtr, width)) {
+							Ocelot_Exception("Invalid source address " << (void*)srcPtr 
+								<< " of " << width << " bytes in 2D device to host memcpy.");
+						}
+						if(!checkMemoryAccess(selectedDevice, dstPtr, width)) {
+							Ocelot_Exception("Invalid destination address " << (void*)dstPtr 
+								<< " of " << width << " bytes in 2D device to device memcpy.");
+						}
 						::memcpy(dstPtr, srcPtr, width);
 					}
 					return true;
@@ -884,14 +905,15 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, size_t wOffset, 
 	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, MemcpyKind kind) {
 
-	if(!checkMemoryAccess(getSelectedDevice(), dstArray, height * width)) {
-		return false;
-	}
-
 	int addrSpace = getDeviceAddressSpace();
 
+	if(!checkMemoryAccess(selectedDevice, dstArray, 1)) {
+		Ocelot_Exception("Invalid destination array " << dstArray 
+			<< " in 2D array memcpy.");
+	}
+
 	const MemoryAllocation* dstMemory = getMemoryAllocation((void *)dstArray);
-	
+		
 	char *srcMemory_ptr = 0;
 	switch (kind) {
 		case HostToDevice:
@@ -900,6 +922,10 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 			break;
 		case DeviceToDevice:
 		{
+			if(!checkMemoryAccess(selectedDevice, src, width * height)) {
+				Ocelot_Exception("Invalid source " << src << " of " 
+					<< width * height << " bytes in 2D array memcpy.");
+			}
 			const MemoryAllocation* srcMemory = getMemoryAllocation(src);
 			srcMemory_ptr = (char *)srcMemory->get();
 		}
@@ -915,6 +941,10 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 			for (size_t row = 0; row < height; row++) {
 				char *dstPtr = (char *)dstMemory->get() + dstMemory->pointer.pitch * row;
 				char *srcPtr = (char *)srcMemory_ptr + spitch * row;
+				if(!checkMemoryAccess(selectedDevice, dstPtr, width)) {
+					Ocelot_Exception("Invalid destination " << dstPtr << " of " 
+						<< width << " bytes in 2D memcpy to array.");
+				}
 				::memcpy(dstPtr, srcPtr, width);
 			}
 			return true;
@@ -935,11 +965,9 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 
 	int addrSpace = getDeviceAddressSpace();
 
-	if(!checkMemoryAccess(getSelectedDevice(), dst, height * width)) {
-		return false;
-	}
-	if(!checkMemoryAccess(getSelectedDevice(), srcArray, height * width)) {
-		return false;
+	if(!checkMemoryAccess(selectedDevice, srcArray, width * height)) {
+		Ocelot_Exception("Invalid source array " << srcArray 
+			<< " in 2D memcpy from array.");
 	}
 
 	const MemoryAllocation* srcMemory = getMemoryAllocation((void *)srcArray);
@@ -951,6 +979,10 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 			break;
 		case DeviceToDevice:
 		{
+			if(!checkMemoryAccess(selectedDevice, dst, width * height)) {
+				Ocelot_Exception("Invalid destination " << dst << " of " 
+					<< width * height << " bytes in 2D memcpy from array.");
+			}
 			const MemoryAllocation* dstMemory = getMemoryAllocation(dst);
 			dstMemory_ptr = (char *)dstMemory->get();
 		}
@@ -966,6 +998,10 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 			for (size_t row = 0; row < height; row++) {
 				char *dstPtr = (char *)dstMemory_ptr + dpitch * row;
 				char *srcPtr = (char *)srcMemory->get() + srcMemory->pointer.pitch * row;
+				if(!checkMemoryAccess(selectedDevice, srcPtr, width)) {
+					Ocelot_Exception("Invalid source " << srcPtr << " of " 
+						<< width << " bytes in 2D memcpy from array.");
+				}
 				::memcpy(dstPtr, srcPtr, width);
 			}
 			return true;
@@ -1000,6 +1036,8 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 	report("deviceMemcpy3D() - extent: " << extent.width << ", " << extent.height << ", " 
 		<< extent.depth << " - kind: " << kind);
 
+	size_t bytes = extent.height * extent.width * extent.depth;
+
 	switch (kind) {
 	case HostToHost:
 	{
@@ -1008,9 +1046,9 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 
 	case HostToDevice:
 	{
-		if(!checkMemoryAccess(getSelectedDevice(), dst.ptr, 
-			extent.height * extent.width)) {
-			return false;
+		if(!checkMemoryAccess(selectedDevice, dst.ptr, bytes)) {
+			Ocelot_Exception("Invalid destination " << dst.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy host to device.");
 		}
 		const MemoryAllocation* memory = getMemoryAllocation(dst.ptr);
 		dst = memory->pointer;
@@ -1019,9 +1057,9 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 
 	case DeviceToHost:
 	{
-		if(!checkMemoryAccess(getSelectedDevice(), src.ptr, 
-			extent.height * extent.width)) {
-			return false;
+		if(!checkMemoryAccess(selectedDevice, src.ptr, bytes)) {
+			Ocelot_Exception("Invalid source " << src.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy device to host.");
 		}
 		const MemoryAllocation* memory = getMemoryAllocation(src.ptr);
 			src = memory->pointer;
@@ -1030,13 +1068,13 @@ bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Exten
 
 	case DeviceToDevice:
 	{
-		if(!checkMemoryAccess(getSelectedDevice(), dst.ptr, 
-			extent.height * extent.width)) {
-			return false;
+		if(!checkMemoryAccess(selectedDevice, dst.ptr, bytes)) {
+			Ocelot_Exception("Invalid destination " << dst.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy device to device.");
 		}
-		if(!checkMemoryAccess(getSelectedDevice(), src.ptr, 
-			extent.height * extent.width)) {
-			return false;
+		if(!checkMemoryAccess(selectedDevice, src.ptr, bytes)) {
+			Ocelot_Exception("Invalid source " << src.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy device to device.");
 		}
 		const MemoryAllocation* srcMemory = getMemoryAllocation(src.ptr);
 		const MemoryAllocation* dstMemory = getMemoryAllocation(dst.ptr);

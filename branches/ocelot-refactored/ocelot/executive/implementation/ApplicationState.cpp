@@ -4,22 +4,24 @@
 	\brief defines constructors and accessors for Ocelot application state objects
 */
 
+
 // C++ includes
 #include <sstream>
 #include <cstring>
-
-// Ocelot includes
-#include <ocelot/executive/interface/ApplicationState.h>
-
-#if HAVE_CUDA_DRIVER_API == 1
-#include <ocelot/cuda/include/cuda.h>
-#endif
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/interface/Casts.h>
+
+// CUDA driver API includes
+#if (HAVE_CUDA_DRIVER_API == 1)
+#include <ocelot/cuda/include/cuda.h>
+#endif
+
+// Ocelot includes
+#include <ocelot/executive/interface/ApplicationState.h>
 
 // Debugging messages
 #ifdef REPORT_BASE
@@ -34,6 +36,31 @@
 //
 // Helper functions
 //
+
+#if (HAVE_CUDA_DRIVER_API == 1)
+
+static void convert(CUDA_ARRAY_DESCRIPTOR *descriptor, const executive::ChannelFormatDesc &desc) {
+
+	descriptor->NumChannels = desc.channels();
+	unsigned int bits = (desc.size() / desc.channels());
+	if (bits > 2) bits = 3;
+	
+	switch (desc.kind) {
+	case executive::ChannelFormatDesc::Kind_unsigned:
+		descriptor->Format = (CUarray_format)bits;
+		break;
+	case executive::ChannelFormatDesc::Kind_signed:
+		descriptor->Format = (CUarray_format)(7 + bits);
+		break;
+	case executive::ChannelFormatDesc::Kind_float:
+		descriptor->Format = (CUarray_format)(bits == 2 ? 0x10 : 0x20);
+		break;
+	default:
+		report("unknown ChannelFormatDesc::Kind");
+	}
+}
+#endif
+
 static size_t getOffset(void* pointer) {
 	size_t address = (size_t)pointer;
 	size_t remainder = address % 16;
@@ -41,28 +68,6 @@ static size_t getOffset(void* pointer) {
 	return offset;
 }
 
-#if HAVE_CUDA_DRIVER_API == 1
-static void convert(CUDA_ARRAY_DESCRIPTOR &descriptor, 
-	const executive::ChannelFormatDesc &desc) {
-	descriptor.NumChannels = desc.channels();
-	unsigned int bits = (desc.size() / desc.channels());
-	if (bits > 2) bits = 3;
-	
-	switch (desc.kind) {
-	case executive::ChannelFormatDesc::Kind_unsigned:
-		descriptor.Format = (CUarray_format)bits;
-		break;
-	case executive::ChannelFormatDesc::Kind_signed:
-		descriptor.Format = (CUarray_format)(7 + bits);
-		break;
-	case executive::ChannelFormatDesc::Kind_float:
-		descriptor.Format = (CUarray_format)(bits == 2 ? 0x10 : 0x20);
-		break;
-	default:
-		report("unknown ChannelFormatDesc::Kind");
-	}
-}
-#endif
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +233,8 @@ executive::MemoryAllocation::MemoryAllocation(int space,
 	desc(d),
 	allocationSize(width * desc.size() * height),
 	flags(0),
-	internal(true) {
+	internal(true) 
+{
 
 	pointer.xsize = width;
 	pointer.ysize = height;
@@ -247,12 +253,13 @@ executive::MemoryAllocation::MemoryAllocation(int space,
 	default:
 #if HAVE_CUDA_DRIVER_API == 1
 		CUDA_ARRAY_DESCRIPTOR descriptor = {0};
-		convert(descriptor, desc);
+		convert(&descriptor, desc);
 		descriptor.Width = width;
 		descriptor.Height = height;
 		pointer.offset = 0;
-		if (cuArrayCreate(&cudaArray, &descriptor) != CUDA_SUCCESS) {
-			report("failed to allocate CUDA array on GPU");
+		CUresult result = cuArrayCreate(&cudaArray, &descriptor);
+		if (result != CUDA_SUCCESS) {
+			report("failed to allocate CUDA array on GPU with error " << result);
 			pointer.ptr = 0;
 		}
 		else {

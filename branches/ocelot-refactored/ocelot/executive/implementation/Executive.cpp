@@ -563,6 +563,10 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 		Ocelot_Exception("Invalid destination " << array << " of size " << count 
 			<< " in host to device array memcpy.");
 	}
+	
+	if (kind != HostToDevice && kind != DeviceToDevice) {
+		return false;
+	}
 
 	bool result = false;
 	int addrSpace = getDeviceAddressSpace();
@@ -596,7 +600,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 				CUDA_MEMCPY2D copy;
 
 				copy.srcXInBytes = 0;
-				copy.srcMemoryType = CU_MEMORYTYPE_HOST;
+				copy.srcMemoryType = (kind == HostToDevice ? CU_MEMORYTYPE_HOST : CU_MEMORYTYPE_DEVICE);
 				copy.srcY = 0;
 				copy.srcHost = host;
 				copy.srcPitch = dstMemory.pointer.pitch;
@@ -674,6 +678,10 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 			<< " in host to device array memcpy.");
 	}
 
+	if (kind != DeviceToHost && kind != DeviceToDevice) {
+		return false;
+	}
+
 //	report("deviceMemcpyFromArray(w: " << wOffset << ", h: " << hOffset << ", " << bytes << " bytes");
 
 	int addrSpace = getDeviceAddressSpace();
@@ -705,7 +713,8 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 				CUDA_MEMCPY2D copy;
 
 				copy.dstXInBytes = 0;
-				copy.dstMemoryType = CU_MEMORYTYPE_HOST;
+				copy.dstMemoryType = 
+				copy.srcMemoryType = (kind == DeviceToHost ? CU_MEMORYTYPE_HOST : CU_MEMORYTYPE_DEVICE);
 				copy.dstY = 0;
 				copy.dstHost = host;
 				copy.dstPitch = srcMemory.pointer.pitch;
@@ -794,6 +803,9 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 	if (srcAlloc_it == memoryMap.end()) {
 		Ocelot_Exception("Invalid source array " << src 
 			<< " in array to array memcpy.");
+	}
+	if (kind != DeviceToDevice) {
+		return false;
 	}
 
 	const MemoryAllocation & dstMemory = dstAlloc_it->second;
@@ -961,6 +973,33 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 				}
 					break;
 				default:
+#if HAVE_CUDA_DRIVER_API == 1
+					if (getSelectedISA() == ir::Instruction::GPU) {
+						CUDA_MEMCPY2D copy;
+						copy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.srcPitch = srcPitch;
+						copy.srcXInBytes = 0;
+						copy.srcY = 0;
+						copy.srcDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(src);
+						
+						copy.dstMemoryType = CU_MEMORYTYPE_HOST;
+						copy.dstPitch = dstPitch;
+						copy.dstXInBytes = 0;
+						copy.dstY = 0;
+						copy.dstHost = dst;
+						
+						copy.WidthInBytes = width;
+						copy.Height = height;
+						
+						CUresult cudaResult = cuMemcpy2D(&copy);
+						if (cudaResult == CUDA_SUCCESS) {
+							return true;
+						}
+						else {
+							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
+						}
+					}
+#endif
 					assert(0 && "unimplemented");
 					break;
 			}
@@ -985,6 +1024,33 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 				}
 					break;
 				default:
+#if HAVE_CUDA_DRIVER_API == 1
+					if (getSelectedISA() == ir::Instruction::GPU) {
+						CUDA_MEMCPY2D copy;
+						copy.srcHost = src;
+						copy.srcMemoryType = CU_MEMORYTYPE_HOST;
+						copy.srcPitch = srcPitch;
+						copy.srcXInBytes = 0;
+						copy.srcY = 0;
+						
+						copy.dstDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(dst);
+						copy.dstMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.dstPitch = dstPitch;
+						copy.dstXInBytes = 0;
+						copy.dstY = 0;
+						
+						copy.WidthInBytes = width;
+						copy.Height = height;
+						
+						CUresult cudaResult = cuMemcpy2D(&copy);
+						if (cudaResult == CUDA_SUCCESS) {
+							return true;
+						}
+						else {
+							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
+						}
+					}
+#endif
 					assert(0 && "unimplemented");
 					break;
 			}
@@ -1012,6 +1078,33 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 				}
 					break;
 				default:
+#if HAVE_CUDA_DRIVER_API == 1
+					if (getSelectedISA() == ir::Instruction::GPU) {
+						CUDA_MEMCPY2D copy;
+						copy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.srcPitch = srcPitch;
+						copy.srcXInBytes = 0;
+						copy.srcY = 0;
+						copy.srcDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(src);
+						
+						copy.dstMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.dstPitch = dstPitch;
+						copy.dstXInBytes = 0;
+						copy.dstY = 0;
+						copy.dstDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(dst);
+						
+						copy.WidthInBytes = width;
+						copy.Height = height;
+						
+						CUresult cudaResult = cuMemcpy2D(&copy);
+						if (cudaResult == CUDA_SUCCESS) {
+							return true;
+						}
+						else {
+							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
+						}
+					}
+#endif
 					assert(0 && "unimplemented");
 					break;
 			}

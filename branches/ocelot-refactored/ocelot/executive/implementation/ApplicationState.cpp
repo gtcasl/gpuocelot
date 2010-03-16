@@ -177,11 +177,31 @@ executive::MemoryAllocation::MemoryAllocation(int space, size_t width, size_t he
 		}
 		break;
 	default:
+		{
 		// device is in GPU memory somewhere
-		assert(0 && "unimplemented");		
+#if HAVE_CUDA_DRIVER_API == 1
+			CUdeviceptr devPtr = 0;
+			unsigned int devPitch = 0;
+			CUresult result = cuMemAllocPitch(&devPtr, &devPitch, width, height, 16);
+			if (result == CUDA_SUCCESS){
+				pointer.ptr = (void *)devPtr;
+				pointer.offset = 0;
+				pointer.pitch = (size_t)devPitch;
+				extent.width = width;
+				extent.height = height;
+				extent.depth = 1;
+			}
+			else {
+				report("MemoryAllocation(width, height) - cuMemAllocPitch() failed with error "
+					<< result);
+				pointer.ptr = 0;
+			}
+#else
+			assert(0 && "unimplemented");
+#endif
+		}
 		break;
 	}
-	
 }
 
 executive::MemoryAllocation::MemoryAllocation(int space, const Extent& e):

@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace test
 {
@@ -152,31 +152,43 @@ namespace test
 	
 	bool TestDeviceSwitching::testContextSwitching()
 	{
+		report("Running device context switching test.");
+		report(" Resetting runtime state.");
 		ocelot::reset();
+		report(" Registering kernel.");
 		ocelot::KernelPointer kernel = registerKernel();
 		
 		int devices;
 		cudaGetDeviceCount( &devices );
-
+		report(" Detected " << devices << " devices.");
+		
 		unsigned int* pointer = 0;
 		
+		report(" Launching kernels.");
 		for( int device = 0; device != devices; ++device )
 		{
+			report("  Selecting device " << device << "." );
 			cudaSetDevice( device );
 			if( device == 0 )
 			{
+				report("  Allocating and initializing memory.");
 				cudaMalloc( (void**) &pointer, sizeof( unsigned int ) );
+				report("   Allocated pointer " << pointer);
 				cudaMemset( pointer, 0, sizeof( unsigned int ) );
 			} 
 			else
 			{
+				report("  Performing context switch.");
 				ocelot::PointerMap map = ocelot::contextSwitch( 
 					device, device - 1 );
 				ocelot::PointerMap::iterator mapping = map.find(pointer);
 				assert(mapping != map.end());
+				report("   Mapping pointer from " << pointer 
+					<< " to " << mapping->second);
 				pointer = (unsigned int*)mapping->second;
 			}
 			
+			report("  Launching kernel.");
 			cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
 			cudaSetupArgument( &pointer, sizeof( long long unsigned int ), 0 );
 			cudaLaunch( kernel );
@@ -188,7 +200,6 @@ namespace test
 			unsigned int result = 0;
 			cudaMemcpy( &result, pointer, 
 				sizeof( unsigned int ), cudaMemcpyDeviceToHost );
-			++result;
 			if( result != (unsigned int) devices )
 			{
 				status << "Test Point 2 FAILED:\n";
@@ -243,7 +254,7 @@ namespace test
 	
 	bool TestDeviceSwitching::doTest()
 	{
-		return testSwitching() && testContextSwitching() && testThreads();
+		return  testThreads();
 	}
 
 	TestDeviceSwitching::TestDeviceSwitching()

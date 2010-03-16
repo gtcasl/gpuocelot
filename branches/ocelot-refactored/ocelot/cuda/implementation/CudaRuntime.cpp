@@ -299,13 +299,16 @@ cuda::RegisteredGLBuffer::RegisteredGLBuffer(): flags(0), ptr(0), mapped(false) 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntime::CudaRuntime() : nextSymbol(1) {
-
+	pthread_mutex_init(&mutex, 0);
 }
 
 cuda::CudaRuntime::~CudaRuntime() {
 	//
 	// free things that need freeing
 	//
+	
+	// mutex
+	pthread_mutex_destroy(&mutex);
 	
 	// thread contexts
 	
@@ -320,12 +323,12 @@ cuda::CudaRuntime::~CudaRuntime() {
 
 //! acquires mutex and locks the runtime
 void cuda::CudaRuntime::lock() {
-	
+	pthread_mutex_lock(&mutex);
 }
 
 //! releases mutex
 void cuda::CudaRuntime::unlock() {
-
+	pthread_mutex_unlock(&mutex);
 }
 
 
@@ -1463,7 +1466,8 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 
 	thread.mapParameters(context, moduleName, kernelName);
 	
-	report("CudaRuntime::cudaLaunch(" << kernelName << ")");
+	report("CudaRuntime::cudaLaunch(" << kernelName 
+		<< ") on thread " << pthread_self());
 	
 	try {
 
@@ -1478,6 +1482,7 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 		context.launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, thread.parameterBlockSize, traceGens);
+		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
 #if CUDA_VERBOSE == 1
@@ -1492,7 +1497,7 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 		throw e;
 #endif
 	}
-	
+
 	TestError(result);
 	return setLastErrorAndUnlock(thread, result);
 }
@@ -2060,7 +2065,6 @@ void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, bool pers
 }
 
 void cuda::CudaRuntime::clearTraceGenerators(bool safe) {
-
 	lock();
 	HostThreadContext & thread = getHostThreadContext();
 	thread.persistentTraceGenerators.clear();
@@ -2157,6 +2161,21 @@ void cuda::CudaRuntime::reset() {
 	fatBinaries.clear();
 		
 	unlock();
+}
+
+ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destination, 
+	unsigned int source) {
+	lock();
+	ocelot::PointerMap map;
+	try {
+		map = std::move(context.contextSwitch(destination, source));
+	}
+	catch(...) {
+		unlock();
+		throw;
+	}
+	unlock();
+	return std::move(map);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

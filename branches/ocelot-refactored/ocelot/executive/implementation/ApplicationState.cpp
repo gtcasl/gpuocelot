@@ -543,6 +543,65 @@ std::string executive::MemoryAllocation::toString() const {
 	return ss.str();
 }
 
+executive::MemoryAllocation executive::MemoryAllocation::blankCopy() const {
+	MemoryAllocation m;
+	m.structure = structure;
+	m.dimension = dimension;
+	m.affinity = affinity;
+	m.addressSpace = addressSpace;
+	m.pointer.ptr = 0;
+	m.pointer.offset = pointer.offset;
+	m.pointer.xsize = pointer.xsize;
+	m.pointer.ysize = pointer.ysize;
+	m.pointer.pitch = pointer.pitch;
+	m.extent = extent;
+	m.desc = desc;
+	m.allocationSize = 0;
+	m.flags = flags;
+	m.internal = internal;
+	return std::move(m);
+}
+
+executive::MemoryAllocation executive::MemoryAllocation::copy(int newSpace) const {
+	if (addressSpace == 0) {
+		if (newSpace == 0 || !internal) {
+			return *this;
+		}
+		else {
+			#if HAVE_CUDA_DRIVER_API == 1
+			MemoryAllocation m = blankCopy();
+			m.allocationSize = allocationSize;
+			m.addressSpace = newSpace;
+			if (structure == Struct_linear) {
+				CUdeviceptr ptr = 0;
+				CUresult cuda  = cuMemAlloc(&ptr, size());
+				if (cuda == CUDA_SUCCESS) {
+					m.pointer.ptr = reinterpret_cast<void *>(ptr);
+				}
+				else {
+					assert( 0 && "cuMemAlloc failed!");
+				}
+				cuda = cuMemcpyHtoD(ptr, 
+					hydrazine::bit_cast<CUdeviceptr, void*>(get()), size());
+				if (cuda != CUDA_SUCCESS) {
+					assert( 0 && "cuMemcpyHtoD failed!");
+				}
+			}
+			else {
+				assertM(false, "Not implemented.");
+			}
+			
+			return std::move(m);
+			#else
+			Ocelot_Exception("No support for GPU address spaces.");
+			#endif
+		}
+	}
+	else {
+		assertM(false, "Not implemented.");
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::GlobalVariable::GlobalVariable():

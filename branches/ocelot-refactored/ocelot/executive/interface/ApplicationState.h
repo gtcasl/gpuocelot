@@ -230,6 +230,12 @@ namespace executive {
 			return allocationSize;
 		}
 
+		//! Get a copy with no actual memory allocated, (null pointer)
+		MemoryAllocation blankCopy() const;
+
+		//! Copy the allocation into a different address space
+		MemoryAllocation copy(int space) const;
+
 		std::string toString() const;
 				
 	};

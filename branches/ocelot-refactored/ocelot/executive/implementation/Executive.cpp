@@ -834,8 +834,8 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 		break;
 
 	default:
-		{
 #if HAVE_CUDA_DRIVER_API == 1
+		{
 			if (getSelectedISA() == ir::Instruction::GPU) {
 
 				report("Executive::deviceMemcpyArrayToArray()");
@@ -1963,6 +1963,51 @@ void executive::Executive::clear() {
 		(translator::Translator::OptimizationLevel)
 			api::OcelotConfiguration::getExecutive().optimizationLevel;
 	enumerateDevices();	
+}
+
+ocelot::PointerMap executive::Executive::contextSwitch(int destination, int source) {
+	if (destination >= (int)devices.size()) {
+		Ocelot_Exception("Invalid destination device " << destination 
+			<< " in device to device context switch.");
+	}
+	if (source >= (int)devices.size()) {
+		Ocelot_Exception("Invalid source device " << destination 
+			<< " in device to device context switch.");
+	}
+	
+	ocelot::PointerMap map;
+
+	int sourceSpace = devices[source].addressSpace;
+	int destinationSpace = devices[destination].addressSpace;
+	
+	if(sourceSpace == destinationSpace) {
+		const MemoryAllocationMap& allocations = memoryAllocations[sourceSpace];
+		for (MemoryAllocationMap::const_iterator allocation = allocations.begin(); 
+			allocation != allocations.end(); ++allocation) {
+			map.insert(std::make_pair(allocation->second.get(), 
+				allocation->second.get()));
+		}
+	}
+	else {
+		MemoryAllocationMap& sourceAllocations = memoryAllocations[sourceSpace];
+		MemoryAllocationMap& destinationAllocations = memoryAllocations[destinationSpace];
+	
+		for (MemoryAllocationMap::iterator sourceAllocation = sourceAllocations.begin();
+			sourceAllocation != sourceAllocations.end(); ) {
+			if (sourceAllocation->second.affinity == MemoryAllocation::Affinity_host) {
+				++sourceAllocation;
+				continue;
+			}
+			MemoryAllocation allocation = sourceAllocation->second.copy(destinationSpace);
+			map.insert(std::make_pair(sourceAllocation->second.get(), allocation.get()));
+			destinationAllocations[allocation.get()] = std::move(allocation);
+			MemoryAllocationMap::iterator next = sourceAllocation; ++next;
+			sourceAllocations.erase(sourceAllocation);
+			sourceAllocation = next;
+		}
+	}
+	
+	return std::move(map);	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

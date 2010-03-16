@@ -571,8 +571,8 @@ namespace cuda {
 		virtual ocelot::KernelPointer getKernelPointer(const std::string& name, 
 			const std::string& module);
 		virtual void reset();
-//		virtual ocelot::PointerMap contextSwitch( unsigned int destinationDevice, 
-//			unsigned int sourceDevice );
+		virtual ocelot::PointerMap contextSwitch( unsigned int destinationDevice, 
+			unsigned int sourceDevice );
 //		virtual void unregisterModule( const std::string& name );
 
 	};

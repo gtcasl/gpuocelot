@@ -11,6 +11,7 @@
 #include <set>
 
 // Ocelot includes
+#include <ocelot/api/interface/ocelot.h>
 #include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/ir/interface/Instruction.h>
@@ -587,6 +588,13 @@ namespace executive {
 		
 		/*! \brief Clear all state associated with the executive class */
 		void clear();
+		
+		/*! \brief Perform a context switch from source to destination.
+			\param destination The id of the new device
+			\param source The id of the original device
+			\return A map of pointers for the new memory allocations
+		*/
+		ocelot::PointerMap contextSwitch(int destination, int source);
 		
 	protected:
 	

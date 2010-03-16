@@ -196,7 +196,16 @@ namespace cuda {
 	
 	public:
 	
-		HostThreadContext();	
+		HostThreadContext();
+		~HostThreadContext();
+
+		HostThreadContext(const HostThreadContext& c);	
+		HostThreadContext& operator=(const HostThreadContext& c);
+
+		HostThreadContext(HostThreadContext&& c);	
+		HostThreadContext& operator=(HostThreadContext&& c);
+
+		void clearParameters();
 		void clear();
 		void mapParameters(executive::Executive& context, 
 			const std::string& moduleName, 
@@ -559,10 +568,10 @@ namespace cuda {
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, const std::string& name);
 		virtual void** getFatBinaryHandle(const std::string& name);
-		virtual KernelPointer getKernelPointer(const std::string& name, 
+		virtual ocelot::KernelPointer getKernelPointer(const std::string& name, 
 			const std::string& module);
-//		virtual void reset();
-//		virtual void contextSwitch( unsigned int destinationDevice, 
+		virtual void reset();
+//		virtual ocelot::PointerMap contextSwitch( unsigned int destinationDevice, 
 //			unsigned int sourceDevice );
 //		virtual void unregisterModule( const std::string& name );
 

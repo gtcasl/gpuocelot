@@ -577,7 +577,8 @@ namespace executive {
 		*/
 		void translateAllToISA(ir::Instruction::Architecture isa, bool retranslate=true);
 		
-		void translateModuleToISA(std::string moduleName, ir::Instruction::Architecture isa, bool retranslate=true);
+		void translateModuleToISA(std::string moduleName, 
+			ir::Instruction::Architecture isa, bool retranslate=true);
 		
 	public:
 		//

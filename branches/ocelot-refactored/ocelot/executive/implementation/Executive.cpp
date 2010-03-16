@@ -581,7 +581,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 #if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
 			
-				CUDA_MEMCPY2D copy = {0};
+				CUDA_MEMCPY2D copy;
 				copy.srcXInBytes = 0;
 				copy.srcMemoryType = CU_MEMORYTYPE_HOST;
 				copy.srcY = 0;
@@ -657,7 +657,7 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 #if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
 			
-				CUDA_MEMCPY2D copy = {0};
+				CUDA_MEMCPY2D copy;
 				copy.dstXInBytes = 0;
 				copy.dstMemoryType = CU_MEMORYTYPE_HOST;
 				copy.dstY = 0;
@@ -756,7 +756,7 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 				<< "\n  dstHOff: " << dstHOffset << "\n  srcWOff: " << srcWOffset
 				<< "\n  srcHOff: " << srcHOffset);
 			
-			CUDA_MEMCPY2D copy = {0};
+			CUDA_MEMCPY2D copy;
 			copy.dstXInBytes = dstWOffset;
 			copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
 			copy.dstY = dstHOffset;
@@ -1287,7 +1287,7 @@ size_t executive::Executive::enumerateDevices() {
 		if (cuDeviceGetCount(&gpus) == CUDA_SUCCESS) {
 			report("There are " << gpus << " gpus in system");
 			for (int gpu = 0; gpu < gpus; gpu++) {
-				CUdevprop_st devProp = {0};
+				CUdevprop_st devProp;
 				Device device;
 
 				device.guid = gpu;
@@ -1299,7 +1299,7 @@ size_t executive::Executive::enumerateDevices() {
 						<< gpu);
 				}
 
-				char deviceName[256] = {0};
+				char deviceName[256];
 				if (cuDeviceGetName(deviceName, 255, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::enumerateDevices() - failed to get name for GPU " << gpu);
 				}

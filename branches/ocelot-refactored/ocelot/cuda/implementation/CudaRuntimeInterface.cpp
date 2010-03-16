@@ -69,7 +69,7 @@ void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, const s
 	assert(0 && "unimplemented");
 }
 
-cuda::CudaRuntimeInterface::KernelPointer cuda::CudaRuntimeInterface::getKernelPointer(
+ocelot::KernelPointer cuda::CudaRuntimeInterface::getKernelPointer(
 	const std::string& name, const std::string& module) {
 	assert(0 && "unimplemented");
 	return 0;
@@ -87,8 +87,8 @@ void cuda::CudaRuntimeInterface::reset() {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::contextSwitch( unsigned int destinationDevice, 
-	unsigned int sourceDevice ) {
+ocelot::PointerMap cuda::CudaRuntimeInterface::contextSwitch( 
+	unsigned int destinationDevice, unsigned int sourceDevice ) {
 	assert(0 && "unimplemented");
 }
 

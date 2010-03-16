@@ -1,5 +1,4 @@
-/*!
-	\file CudaRuntime.h
+/*! \file CudaRuntime.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief defines the CudaRuntime interface
 	\date 11 Dec 2009
@@ -7,6 +6,8 @@
 
 #ifndef OCELOT_CUDA_RUNTIME_INTERFACE_H_INCLUDED
 #define OCELOT_CUDA_RUNTIME_INTERFACE_H_INCLUDED
+
+#include <ocelot/api/interface/ocelot.h>
 
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/api/interface/OcelotRuntime.h>
@@ -19,14 +20,13 @@
 namespace cuda {
 
 	/*!
-		Singleton object called directly by CUDA Runtime API wrapper - on instantiation, selects
-			appropriate CUDA Runtime implementation and dispatches calls
+		Singleton object called directly by CUDA Runtime API wrapper 
+			- on instantiation, selects appropriate CUDA Runtime 
+			implementation and dispatches calls
 	*/
 	class CudaRuntimeInterface {
 	public:
-		/*
-			singleton accessors
-		*/
+		/* singleton accessors */
 		static CudaRuntimeInterface *instance;
 		
 		static CudaRuntimeInterface *get();
@@ -54,7 +54,9 @@ namespace cuda {
 
 		virtual void cudaUnregisterFatBinary(void **fatCubinHandle);
 
-		virtual void cudaRegisterVar(void **fatCubinHandle, char *hostVar, char *deviceAddress, const char *deviceName, int ext, int size, int constant, int global);
+		virtual void cudaRegisterVar(void **fatCubinHandle, char *hostVar, 
+			char *deviceAddress, const char *deviceName, int ext, int size, 
+			int constant, int global);
 
 		virtual void cudaRegisterTexture(
 			void **fatCubinHandle,
@@ -95,11 +97,15 @@ namespace cuda {
 		/*
 			Memory - 3D
 		*/
-		virtual cudaError_t  cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, struct cudaExtent extent);
-		virtual cudaError_t  cudaMalloc3DArray(struct cudaArray** arrayPtr, const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
-		virtual cudaError_t  cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent);
+		virtual cudaError_t  cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, 
+			struct cudaExtent extent);
+		virtual cudaError_t  cudaMalloc3DArray(struct cudaArray** arrayPtr, 
+			const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
+		virtual cudaError_t  cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, 
+			int value, struct cudaExtent extent);
 		virtual cudaError_t  cudaMemcpy3D(const struct cudaMemcpy3DParms *p);
-		virtual cudaError_t  cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, 
+			cudaStream_t stream);
 
 		/*
 			Memory - linear
@@ -107,8 +113,11 @@ namespace cuda {
 
 		virtual cudaError_t  cudaMalloc(void **devPtr, size_t size);
 		virtual cudaError_t  cudaMallocHost(void **ptr, size_t size);
-		virtual cudaError_t  cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height);
-		virtual cudaError_t  cudaMallocArray(struct cudaArray **array, const struct cudaChannelFormatDesc *desc, size_t width, size_t height __dv(1));
+		virtual cudaError_t  cudaMallocPitch(void **devPtr, size_t *pitch, 
+			size_t width, size_t height);
+		virtual cudaError_t  cudaMallocArray(struct cudaArray **array, 
+			const struct cudaChannelFormatDesc *desc, size_t width, 
+			size_t height __dv(1));
 		virtual cudaError_t  cudaFree(void *devPtr);
 		virtual cudaError_t  cudaFreeHost(void *ptr);
 		virtual cudaError_t  cudaFreeArray(struct cudaArray *array);
@@ -117,45 +126,87 @@ namespace cuda {
 			Memory - host allocations
 		*/
 
-		virtual cudaError_t  cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags);
-		virtual cudaError_t  cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
-		virtual cudaError_t  cudaHostGetFlags(unsigned int *pFlags, void *pHost);
+		virtual cudaError_t  cudaHostAlloc(void **pHost, size_t bytes, 
+			unsigned int flags);
+		virtual cudaError_t  cudaHostGetDevicePointer(void **pDevice, 
+			void *pHost, unsigned int flags);
+		virtual cudaError_t  cudaHostGetFlags(unsigned int *pFlags, 
+			void *pHost);
 
 
 		/*
 			Memcpy
 		*/
 
-		virtual cudaError_t  cudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
-		virtual cudaError_t  cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind);
-		virtual cudaError_t  cudaMemcpyFromArray(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind);
-		virtual cudaError_t  cudaMemcpyArrayToArray(struct cudaArray *dst, size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, size_t count, enum cudaMemcpyKind kind __dv(cudaMemcpyDeviceToDevice));
-		virtual cudaError_t  cudaMemcpy2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind);
-		virtual cudaError_t  cudaMemcpy2DToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind);
-		virtual cudaError_t  cudaMemcpy2DFromArray(void *dst, size_t dpitch, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, enum cudaMemcpyKind kind);
-		virtual cudaError_t  cudaMemcpy2DArrayToArray(struct cudaArray *dst, size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, size_t width, size_t height, enum cudaMemcpyKind kind __dv(cudaMemcpyDeviceToDevice));
-		virtual cudaError_t  cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, size_t offset __dv(0), enum cudaMemcpyKind kind __dv(cudaMemcpyHostToDevice));
-		virtual cudaError_t  cudaMemcpyFromSymbol(void *dst, const char *symbol, size_t count, size_t offset __dv(0), enum cudaMemcpyKind kind __dv(cudaMemcpyDeviceToHost));
+		virtual cudaError_t  cudaMemcpy(void *dst, const void *src, 
+			size_t count, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpyToArray(struct cudaArray *dst, 
+			size_t wOffset, size_t hOffset, const void *src, 
+			size_t count, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpyFromArray(void *dst, 
+			const struct cudaArray *src, size_t wOffset, size_t hOffset, 
+			size_t count, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpyArrayToArray(struct cudaArray *dst, 
+			size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, 
+			size_t wOffsetSrc, size_t hOffsetSrc, size_t count, 
+			enum cudaMemcpyKind kind __dv(cudaMemcpyDeviceToDevice));
+		virtual cudaError_t  cudaMemcpy2D(void *dst, size_t dpitch, 
+			const void *src, size_t spitch, size_t width, size_t height, 
+			enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpy2DToArray(struct cudaArray *dst, 
+			size_t wOffset, size_t hOffset, const void *src, size_t spitch, 
+			size_t width, size_t height, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpy2DFromArray(void *dst, size_t dpitch, 
+			const struct cudaArray *src, size_t wOffset, size_t hOffset, 
+			size_t width, size_t height, enum cudaMemcpyKind kind);
+		virtual cudaError_t  cudaMemcpy2DArrayToArray(struct cudaArray *dst, 
+			size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, 
+			size_t wOffsetSrc, size_t hOffsetSrc, size_t width, size_t height, 
+			enum cudaMemcpyKind kind __dv(cudaMemcpyDeviceToDevice));
+		virtual cudaError_t  cudaMemcpyToSymbol(const char *symbol, 
+			const void *src, size_t count, size_t offset __dv(0), 
+			enum cudaMemcpyKind kind __dv(cudaMemcpyHostToDevice));
+		virtual cudaError_t  cudaMemcpyFromSymbol(void *dst, 
+			const char *symbol, size_t count, size_t offset __dv(0), 
+			enum cudaMemcpyKind kind __dv(cudaMemcpyDeviceToHost));
 
 		/*
 			Memcpy - async
 		*/
 
-		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpyToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpyFromArrayAsync(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpy2DAsync(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpy2DToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpy2DFromArrayAsync(void *dst, size_t dpitch, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpyToSymbolAsync(const char *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream);
-		virtual cudaError_t  cudaMemcpyFromSymbolAsync(void *dst, const char *symbol, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpyAsync(void *dst, const void *src, 
+			size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpyToArrayAsync(struct cudaArray *dst, 
+			size_t wOffset, size_t hOffset, const void *src, size_t count, 
+			enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpyFromArrayAsync(void *dst, 
+			const struct cudaArray *src, size_t wOffset, size_t hOffset, 
+			size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpy2DAsync(void *dst, size_t dpitch, 
+			const void *src, size_t spitch, size_t width, size_t height, 
+			enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpy2DToArrayAsync(struct cudaArray *dst, 
+			size_t wOffset, size_t hOffset, const void *src, size_t spitch, 
+			size_t width, size_t height, enum cudaMemcpyKind kind, 
+			cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpy2DFromArrayAsync(void *dst, 
+			size_t dpitch, const struct cudaArray *src, size_t wOffset, 
+				size_t hOffset, size_t width, size_t height, 
+				enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpyToSymbolAsync(const char *symbol, 
+			const void *src, size_t count, size_t offset, 
+			enum cudaMemcpyKind kind, cudaStream_t stream);
+		virtual cudaError_t  cudaMemcpyFromSymbolAsync(void *dst, 
+			const char *symbol, size_t count, size_t offset, 
+			enum cudaMemcpyKind kind, cudaStream_t stream);
 
 		/*
 			Memset
 		*/
 
 		virtual cudaError_t  cudaMemset(void *devPtr, int value, size_t count);
-		virtual cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height);
+		virtual cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, 
+			int value, size_t width, size_t height);
 
 		/*
 			Symbols
@@ -180,19 +231,30 @@ namespace cuda {
 			Texture binding
 		*/
 
-		virtual cudaError_t  cudaBindTexture(size_t *offset, const struct textureReference *texref, const void *devPtr, const struct cudaChannelFormatDesc *desc, size_t size __dv(UINT_MAX));
-		virtual cudaError_t  cudaBindTexture2D(size_t *offset,const struct textureReference *texref,const void *devPtr, const struct cudaChannelFormatDesc *desc,size_t width, size_t height, size_t pitch);
-		virtual cudaError_t  cudaBindTextureToArray(const struct textureReference *texref, const struct cudaArray *array, const struct cudaChannelFormatDesc *desc);
+		virtual cudaError_t  cudaBindTexture(size_t *offset, 
+			const struct textureReference *texref, const void *devPtr, 
+			const struct cudaChannelFormatDesc *desc, size_t size __dv(UINT_MAX));
+		virtual cudaError_t  cudaBindTexture2D(size_t *offset,
+			const struct textureReference *texref,const void *devPtr, 
+			const struct cudaChannelFormatDesc *desc,size_t width, 
+			size_t height, size_t pitch);
+		virtual cudaError_t  cudaBindTextureToArray(
+			const struct textureReference *texref, const struct cudaArray *array, 
+			const struct cudaChannelFormatDesc *desc);
 		virtual cudaError_t  cudaUnbindTexture(const struct textureReference *texref);
-		virtual cudaError_t  cudaGetTextureAlignmentOffset(size_t *offset, const struct textureReference *texref);
-		virtual cudaError_t  cudaGetTextureReference(const struct textureReference **texref, const char *symbol);
+		virtual cudaError_t  cudaGetTextureAlignmentOffset(size_t *offset, 
+			const struct textureReference *texref);
+		virtual cudaError_t  cudaGetTextureReference(const struct textureReference **texref, 
+			const char *symbol);
 
 		/*
 			Channel creation
 		*/
 
-		virtual cudaError_t  cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, const struct cudaArray *array);
-		virtual struct cudaChannelFormatDesc  cudaCreateChannelDesc(int x, int y, int z, int w, enum cudaChannelFormatKind f);
+		virtual cudaError_t  cudaGetChannelDesc(
+			struct cudaChannelFormatDesc *desc, const struct cudaArray *array);
+		virtual struct cudaChannelFormatDesc  cudaCreateChannelDesc(int x, 
+			int y, int z, int w, enum cudaChannelFormatKind f);
 
 		/*
 			Error enumeration
@@ -204,10 +266,13 @@ namespace cuda {
 			Kernel launch
 		*/
 
-		virtual cudaError_t  cudaConfigureCall(dim3 gridDim, dim3 blockDim, size_t sharedMem __dv(0), cudaStream_t stream __dv(0));
-		virtual cudaError_t  cudaSetupArgument(const void *arg, size_t size, size_t offset);
+		virtual cudaError_t  cudaConfigureCall(dim3 gridDim, dim3 blockDim, 
+			size_t sharedMem __dv(0), cudaStream_t stream __dv(0));
+		virtual cudaError_t  cudaSetupArgument(const void *arg, size_t size, 
+			size_t offset);
 		virtual cudaError_t  cudaLaunch(const char *entry);
-		virtual cudaError_t  cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *func);
+		virtual cudaError_t  cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 
+			const char *func);
 
 		/*
 			Stream creation
@@ -228,11 +293,13 @@ namespace cuda {
 		virtual cudaError_t  cudaEventQuery(cudaEvent_t event);
 		virtual cudaError_t  cudaEventSynchronize(cudaEvent_t event);
 		virtual cudaError_t  cudaEventDestroy(cudaEvent_t event);
-		virtual cudaError_t  cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end);
+		virtual cudaError_t  cudaEventElapsedTime(float *ms, cudaEvent_t start, 
+			cudaEvent_t end);
 
 
 		virtual cudaError_t cudaGLMapBufferObject(void **devPtr, GLuint bufObj);
-		virtual cudaError_t cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, cudaStream_t stream);
+		virtual cudaError_t cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, 
+			cudaStream_t stream);
 		virtual cudaError_t cudaGLRegisterBufferObject(GLuint bufObj);
 		virtual cudaError_t cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags);
 		virtual cudaError_t cudaGLSetGLDevice(int device);
@@ -302,8 +369,6 @@ namespace cuda {
 			\param The name of the module being registered.  Must be Unique.
 		*/
 		virtual void registerPTXModule(std::istream& stream, const std::string& name);
-	
-		typedef const char* KernelPointer;
 
 		/*! \brief Get a function pointer to a kernel in a registered module 
 			that can be passed directly to cudaLaunch
@@ -315,7 +380,7 @@ namespace cuda {
 		
 			\return A function pointer that can be passed to cudaLaunch.
 		*/
-		virtual KernelPointer getKernelPointer(const std::string& name, 
+		virtual ocelot::KernelPointer getKernelPointer(const std::string& name, 
 			const std::string& module);
 
 		/*! \brief Get a handle to a fat binary from its name
@@ -332,7 +397,7 @@ namespace cuda {
 		virtual void reset();
 	
 		/*! \brief Perform a device context switch */
-		virtual void contextSwitch( unsigned int destinationDevice, 
+		virtual ocelot::PointerMap contextSwitch( unsigned int destinationDevice, 
 			unsigned int sourceDevice );
 	
 		/*! \brief Unregister a module, either PTX or LLVM */

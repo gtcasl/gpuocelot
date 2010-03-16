@@ -8,6 +8,7 @@
 #define OCELOT_H_INCLUDED
 
 #include <istream>
+#include <unordered_map>
 
 namespace trace
 {
@@ -17,6 +18,9 @@ namespace trace
 /*! \brief A namespace for ocelot API functions */
 namespace ocelot
 {
+
+	/*! \brief A map between pointer types */
+	typedef std::unordered_map< void*, void* > PointerMap;
 
 	/*! \brief Adds a trace generator for the next kernel invocation 
 	
@@ -76,7 +80,7 @@ namespace ocelot
 	void reset();
 	
 	/*! \brief Perform a device context switch */
-	void contextSwitch( unsigned int destinationDevice, 
+	PointerMap contextSwitch( unsigned int destinationDevice, 
 		unsigned int sourceDevice );
 	
 	/*! \brief Unregister a module, either PTX or LLVM */

@@ -1,5 +1,4 @@
-/*!
-	\file OcelotRuntime.h
+/*! \file OcelotRuntime.h
 	\author Gregory Diamos
 	\date Tuesday August 11, 2009
 	\brief The header file for the OcelotRuntime class.
@@ -35,7 +34,7 @@ namespace ocelot
 	
 		//! \brief initializes the Ocelot runtime object with the Ocelot configuration object
 		void configure( const api::OcelotConfiguration &c );
-						
+					
 	};
 }
 

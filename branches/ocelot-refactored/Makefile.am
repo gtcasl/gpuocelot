@@ -118,7 +118,6 @@ libocelot_la_SOURCES = \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
 
-##
 ##	ocelot/trace/implementation/BranchTraceGenerator.cpp \
 ##	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 ##	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \

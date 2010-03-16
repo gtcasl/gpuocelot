@@ -18,31 +18,38 @@ INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGl
 INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
-INFO     Test completed in 0.103455066681 seconds
-INFO      It produced the following output:
-(0.003412) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Pass/Fail : Pass
-
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
-INFO     Test completed in 0.0346360206604 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
+INFO     Test completed in 0.167557001114 seconds
 INFO      It produced the following output:
-TestDeviceSwitching: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:87: virtual void cuda::CudaRuntimeInterface::reset(): Assertion `0 && "unimplemented"' failed.
-(0.002834) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
-INFO     Test completed in 0.166007041931 seconds
-INFO      It produced the following output:
-(0.002485) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
+(0.002052) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
+INFO     Test completed in 0.199916124344 seconds
+INFO      It produced the following output:
+(0.003931) TestDeviceSwitching.cpp:106:  Running device switching test.
+(0.004344) TestDeviceSwitching.cpp:107:   Resetting runtime state.
+(0.005957) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+(0.008889) TestDeviceSwitching.cpp:109:   Registering kernel.
+(0.011602) TestDeviceSwitching.cpp:114:   Found 2 devices.
+(0.011662) TestDeviceSwitching.cpp:118:   Launching kernels...
+(0.011702) TestDeviceSwitching.cpp:121:    for device 0
+(0.012244) TestDeviceSwitching.cpp:121:    for device 1
+Thread (0, 0, 0) : Basic Block "BB_1_1"
+Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
+Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
+Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
+Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
+Thread (0, 0, 0) : Basic Block "BB_1_2"
+Thread (0, 0, 0) :  TestDeviceSwitching: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:92: virtual ocelot::PointerMap cuda::CudaRuntimeInterface::contextSwitch(unsigned int, unsigned int): Assertion `0 && "unimplemented"' failed.
+exit
+(0.124578) TestDeviceSwitching.cpp:132:   Loading results.
+
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer
-INFO     Test completed in 0.0572600364685 seconds
+INFO     Test completed in 0.0272259712219 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -54,14 +61,16 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1268663802
-Test time : 6.46114e-05
+Test Seed : 1268707171
+Test time : 0.000436783
 
 Status : 
 
 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser
-INFO     Test completed in 0.0791320800781 seconds
+INFO     Test completed in 0.0438380241394 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -74,18 +83,17 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1268663802
-Test time : 0.000432968
+Test Seed : 1268707171
+Test time : 0.000107765
 
 Status : 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions
-INFO     Test completed in 0.37119102478 seconds
+INFO     Test completed in 0.316125869751 seconds
 INFO      It produced the following output:
-(0.004641) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
+(0.004051) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Pass/Fail : Pass
 
 
@@ -94,8 +102,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1268663802
-Test time : 0.00558257
+Test Seed : 1268707172
+Test time : 0.00574398
 
 Status : Test output:
 Accessors test passed.
@@ -111,29 +119,108 @@ pass: control flow instructions
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace
-INFO     Test completed in 0.455893993378 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels
+INFO     Test completed in 0.446616172791 seconds
 INFO      It produced the following output:
-(0.004340) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
+(0.003249) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Kernel launch time was 0.00162721s (1627091 ticks)
 Pass/Fail : Pass
 
 
-Name : TestTrace
+Name : TestKernels
 
 Description: 
 
 
-Test Seed : 1268663802
-Test time : 0.00405836
+Test Seed : 1268707172
+Test time : 0.156611
+
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator
+INFO     Test completed in 0.365515947342 seconds
+INFO      It produced the following output:
+(0.002479) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1268707172
+Test time : 0.256967
+
+Status : Test output:
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
+INFO     Test completed in 0.297009944916 seconds
+INFO      It produced the following output:
+(0.001277) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestMemoryTraceGenerator
+
+Description: 
+
+
+Test Seed : 1268707172
+Test time : 0.138196
 
 Status : Test output:
 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
+INFO     Test completed in 0.0269491672516 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDataflowGraph
+
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
+
+
+Test Seed : 1268707172
+Test time : 0.00010252
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
-INFO     Test completed in 0.0274119377136 seconds
+INFO     Test completed in 0.0250961780548 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -147,8 +234,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1268663802
-Test time : 0.00479817
+Test Seed : 1268707172
+Test time : 0.00418568
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -279,82 +366,9 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels
-INFO     Test completed in 0.418735980988 seconds
-INFO      It produced the following output:
-(0.001549) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Kernel launch time was 0.000890255s (890057 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1268663802
-Test time : 0.155533
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
-INFO     Test completed in 0.0520968437195 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDataflowGraph
-
-Description: A test for the DataflowGraph class. Test Points: 1) 
-             Generic: load PTX files, convert them into dataflow graphs, verify that 
-             all live ranges spanning blocks are consistent. 2) SSA: convert to 
-             ssa form, verify that no register is declared more than once. 3) 
-             reverse SSA: convert to ssa then out of ssa, verify that all live 
-             ranges spanning blocks are consistent.
-
-
-Test Seed : 1268663803
-Test time : 0.000253677
-
-Status : Testing Generic Dataflow
- Test Passed
-Testing SSA Dataflow
- Test Passed
-Testing SSA then back Dataflow
- Test Passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
-INFO     Test completed in 0.373205900192 seconds
-INFO      It produced the following output:
-(0.001813) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Pass/Fail : Pass
-
-
-Name : TestMemoryTraceGenerator
-
-Description: 
-
-
-Test Seed : 1268663802
-Test time : 0.129866
-
-Status : Test output:
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0231411457062 seconds
+INFO     Test completed in 0.0333080291748 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -367,18 +381,2994 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1268663803
-Test time : 0.000146866
+Test Seed : 1268707172
+Test time : 9.63211e-05
 
 Status : 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
-INFO     Test completed in 0.0313951969147 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
+INFO     Test completed in 0.322422027588 seconds
 INFO      It produced the following output:
-(0.001352) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Pass/Fail : Fail
+(0.001261) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace
+INFO     Test completed in 0.324048995972 seconds
+INFO      It produced the following output:
+(0.002267) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestTrace
+
+Description: 
+
+
+Test Seed : 1268707173
+Test time : 0.00505209
+
+Status : Test output:
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
+INFO     Test completed in 0.137364864349 seconds
+INFO      It produced the following output:
+(0.001407) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
+INFO     Test completed in 0.060408115387 seconds
+INFO      It produced the following output:
+(0.001453) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
+INFO     Test completed in 2.50197982788 seconds
+INFO      It produced the following output:
+(0.001571) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Thread (0, 0, 0) : Basic Block "BB_3_1"
+Thread (0, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (0, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (0, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (0, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (0, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (0, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (0, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (0, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (0, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (0, 0, 0) :  mov.u32 %r9, 0
+Thread (0, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (0, 0, 0) :  @%p10 bra $BB_3_3
+Thread (0, 0, 0) : Basic Block "BB_3_3"
+Thread (0, 0, 0) :  sin.approx.f32 %r16, %r14
+Thread (0, 0, 0) :  st.global.f32 [%r15 + 0], %r16
+Thread (0, 0, 0) : Basic Block "BB_3_4"
+Thread (0, 0, 0) :  exit
+Thread (1, 0, 0) : Basic Block "BB_3_1"
+Thread (1, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (1, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (1, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (1, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (1, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (1, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (1, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (1, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (1, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (1, 0, 0) :  mov.u32 %r9, 0
+Thread (1, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (1, 0, 0) :  @%p10 bra $BB_3_3
+Thread (1, 0, 0) : Basic Block "BB_3_2"
+Thread (1, 0, 0) :  cos.approx.f32 %r13, %r11
+Thread (1, 0, 0) :  st.global.f32 [%r12 + 0], %r13
+Thread (1, 0, 0) :  bra.uni $BB_3_4
+Thread (1, 0, 0) : Basic Block "BB_3_4"
+Thread (1, 0, 0) :  exit
+Thread (2, 0, 0) : Basic Block "BB_3_1"
+Thread (2, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (2, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (2, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (2, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (2, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (2, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (2, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (2, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (2, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (2, 0, 0) :  mov.u32 %r9, 0
+Thread (2, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (2, 0, 0) :  @%p10 bra $BB_3_3
+Thread (2, 0, 0) : Basic Block "BB_3_3"
+Thread (2, 0, 0) :  sin.approx.f32 %r16, %r14
+Thread (2, 0, 0) :  st.global.f32 [%r15 + 0], %r16
+Thread (2, 0, 0) : Basic Block "BB_3_4"
+Thread (2, 0, 0) :  exit
+Thread (3, 0, 0) : Basic Block "BB_3_1"
+Thread (3, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (3, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (3, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (3, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (3, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (3, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (3, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (3, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (3, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (3, 0, 0) :  mov.u32 %r9, 0
+Thread (3, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (3, 0, 0) :  @%p10 bra $BB_3_3
+Thread (3, 0, 0) : Basic Block "BB_3_2"
+Thread (3, 0, 0) :  cos.approx.f32 %r13, %r11
+Thread (3, 0, 0) :  st.global.f32 [%r12 + 0], %r13
+Thread (3, 0, 0) :  bra.uni $BB_3_4
+Thread (3, 0, 0) : Basic Block "BB_3_4"
+Thread (3, 0, 0) :  exit
+Thread (4, 0, 0) : Basic Block "BB_3_1"
+Thread (4, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (4, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (4, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (4, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (4, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (4, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (4, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (4, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (4, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (4, 0, 0) :  mov.u32 %r9, 0
+Thread (4, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (4, 0, 0) :  @%p10 bra $BB_3_3
+Thread (4, 0, 0) : Basic Block "BB_3_3"
+Thread (4, 0, 0) :  sin.approx.f32 %r16, %r14
+Thread (4, 0, 0) :  st.global.f32 [%r15 + 0], %r16
+Thread (4, 0, 0) : Basic Block "BB_3_4"
+Thread (4, 0, 0) :  exit
+Thread (5, 0, 0) : Basic Block "BB_3_1"
+Thread (5, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (5, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (5, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (5, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (5, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (5, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (5, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (5, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (5, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (5, 0, 0) :  mov.u32 %r9, 0
+Thread (5, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (5, 0, 0) :  @%p10 bra $BB_3_3
+Thread (5, 0, 0) : Basic Block "BB_3_2"
+Thread (5, 0, 0) :  cos.approx.f32 %r13, %r11
+Thread (5, 0, 0) :  st.global.f32 [%r12 + 0], %r13
+Thread (5, 0, 0) :  bra.uni $BB_3_4
+Thread (5, 0, 0) : Basic Block "BB_3_4"
+Thread (5, 0, 0) :  exit
+Thread (6, 0, 0) : Basic Block "BB_3_1"
+Thread (6, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (6, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (6, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (6, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (6, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (6, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (6, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (6, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (6, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (6, 0, 0) :  mov.u32 %r9, 0
+Thread (6, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (6, 0, 0) :  @%p10 bra $BB_3_3
+Thread (6, 0, 0) : Basic Block "BB_3_3"
+Thread (6, 0, 0) :  sin.approx.f32 %r16, %r14
+Thread (6, 0, 0) :  st.global.f32 [%r15 + 0], %r16
+Thread (6, 0, 0) : Basic Block "BB_3_4"
+Thread (6, 0, 0) :  exit
+Thread (7, 0, 0) : Basic Block "BB_3_1"
+Thread (7, 0, 0) :  cvt.u32.u16 %r0, %tid.x
+Thread (7, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
+Thread (7, 0, 0) :  mov.f32 %r2, 0f3d800000
+Thread (7, 0, 0) :  mul.f32 %r3, %r1, %r2
+Thread (7, 0, 0) :  ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
+Thread (7, 0, 0) :  cvt.u64.u32 %r5, %r0
+Thread (7, 0, 0) :  mul.lo.u64 %r6, %r5, 4
+Thread (7, 0, 0) :  add.u64 %r7, %r4, %r6
+Thread (7, 0, 0) :  and.b32 %r8, %r0, 1
+Thread (7, 0, 0) :  mov.u32 %r9, 0
+Thread (7, 0, 0) :  setp.eq.u32 %p10, %r8, %r9
+Thread (7, 0, 0) :  @%p10 bra $BB_3_3
+Thread (7, 0, 0) : Basic Block "BB_3_2"
+Thread (7, 0, 0) :  cos.approx.f32 %r13, %r11
+Thread (7, 0, 0) :  st.global.f32 [%r12 + 0], %r13
+Thread (7, 0, 0) :  bra.uni $BB_3_4
+Thread (7, 0, 0) : Basic Block "BB_3_4"
+Thread (7, 0, 0) :  exit
+Thread (0, 0, 0) : Basic Block "BB_4_1"
+Thread (0, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (0, 0, 0) :  mov.s32 %r1, %r0
+Thread (0, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (0, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (0, 0, 0) :  @%p3 bra $BB_4_7
+Thread (0, 0, 0) : Basic Block "BB_4_2"
+Thread (0, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (0, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (0, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (0, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (0, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (0, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (0, 0, 0) : Basic Block "BB_4_3"
+Thread (0, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (0, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (0, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (0, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (0, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (0, 0, 0) :  mov.u32 %r24, 0
+Thread (0, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (0, 0, 0) :  @%p25 bra $BB_4_5
+Thread (0, 0, 0) : Basic Block "BB_4_5"
+Thread (0, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (0, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (0, 0, 0) : Basic Block "BB_4_6"
+Thread (0, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (0, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (0, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (0, 0, 0) :  @%p52 bra $BB_4_3
+Thread (0, 0, 0) : Basic Block "BB_4_3"
+Thread (0, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (0, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (0, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (0, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (0, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (0, 0, 0) :  mov.u32 %r24, 0
+Thread (0, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (0, 0, 0) :  @%p25 bra $BB_4_5
+Thread (0, 0, 0) : Basic Block "BB_4_5"
+Thread (0, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (0, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (0, 0, 0) : Basic Block "BB_4_6"
+Thread (0, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (0, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (0, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (0, 0, 0) :  @%p52 bra $BB_4_3
+Thread (0, 0, 0) : Basic Block "BB_4_3"
+Thread (0, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (0, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (0, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (0, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (0, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (0, 0, 0) :  mov.u32 %r24, 0
+Thread (0, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (0, 0, 0) :  @%p25 bra $BB_4_5
+Thread (0, 0, 0) : Basic Block "BB_4_5"
+Thread (0, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (0, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (0, 0, 0) : Basic Block "BB_4_6"
+Thread (0, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (0, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (0, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (0, 0, 0) :  @%p52 bra $BB_4_3
+Thread (0, 0, 0) : Basic Block "BB_4_3"
+Thread (0, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (0, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (0, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (0, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (0, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (0, 0, 0) :  mov.u32 %r24, 0
+Thread (0, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (0, 0, 0) :  @%p25 bra $BB_4_5
+Thread (0, 0, 0) : Basic Block "BB_4_5"
+Thread (0, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (0, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (0, 0, 0) : Basic Block "BB_4_6"
+Thread (0, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (0, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (0, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (0, 0, 0) :  @%p52 bra $BB_4_3
+Thread (0, 0, 0) : Basic Block "BB_4_3"
+Thread (0, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (0, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (0, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (0, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (0, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (0, 0, 0) :  mov.u32 %r24, 0
+Thread (0, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (0, 0, 0) :  @%p25 bra $BB_4_5
+Thread (0, 0, 0) : Basic Block "BB_4_5"
+Thread (0, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (0, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (0, 0, 0) : Basic Block "BB_4_6"
+Thread (0, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (0, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (0, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (0, 0, 0) :  @%p52 bra $BB_4_3
+Thread (0, 0, 0) : Basic Block "BB_4_7"
+Thread (0, 0, 0) :  exit
+Thread (1, 0, 0) : Basic Block "BB_4_1"
+Thread (1, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (1, 0, 0) :  mov.s32 %r1, %r0
+Thread (1, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (1, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (1, 0, 0) :  @%p3 bra $BB_4_7
+Thread (1, 0, 0) : Basic Block "BB_4_2"
+Thread (1, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (1, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (1, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (1, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (1, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (1, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (1, 0, 0) : Basic Block "BB_4_3"
+Thread (1, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (1, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (1, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (1, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (1, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (1, 0, 0) :  mov.u32 %r24, 0
+Thread (1, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (1, 0, 0) :  @%p25 bra $BB_4_5
+Thread (1, 0, 0) : Basic Block "BB_4_4"
+Thread (1, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (1, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (1, 0, 0) :  bra.uni $BB_4_6
+Thread (1, 0, 0) : Basic Block "BB_4_6"
+Thread (1, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (1, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (1, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (1, 0, 0) :  @%p52 bra $BB_4_3
+Thread (1, 0, 0) : Basic Block "BB_4_3"
+Thread (1, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (1, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (1, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (1, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (1, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (1, 0, 0) :  mov.u32 %r24, 0
+Thread (1, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (1, 0, 0) :  @%p25 bra $BB_4_5
+Thread (1, 0, 0) : Basic Block "BB_4_4"
+Thread (1, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (1, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (1, 0, 0) :  bra.uni $BB_4_6
+Thread (1, 0, 0) : Basic Block "BB_4_6"
+Thread (1, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (1, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (1, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (1, 0, 0) :  @%p52 bra $BB_4_3
+Thread (1, 0, 0) : Basic Block "BB_4_3"
+Thread (1, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (1, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (1, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (1, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (1, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (1, 0, 0) :  mov.u32 %r24, 0
+Thread (1, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (1, 0, 0) :  @%p25 bra $BB_4_5
+Thread (1, 0, 0) : Basic Block "BB_4_4"
+Thread (1, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (1, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (1, 0, 0) :  bra.uni $BB_4_6
+Thread (1, 0, 0) : Basic Block "BB_4_6"
+Thread (1, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (1, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (1, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (1, 0, 0) :  @%p52 bra $BB_4_3
+Thread (1, 0, 0) : Basic Block "BB_4_3"
+Thread (1, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (1, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (1, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (1, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (1, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (1, 0, 0) :  mov.u32 %r24, 0
+Thread (1, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (1, 0, 0) :  @%p25 bra $BB_4_5
+Thread (1, 0, 0) : Basic Block "BB_4_4"
+Thread (1, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (1, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (1, 0, 0) :  bra.uni $BB_4_6
+Thread (1, 0, 0) : Basic Block "BB_4_6"
+Thread (1, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (1, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (1, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (1, 0, 0) :  @%p52 bra $BB_4_3
+Thread (1, 0, 0) : Basic Block "BB_4_3"
+Thread (1, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (1, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (1, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (1, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (1, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (1, 0, 0) :  mov.u32 %r24, 0
+Thread (1, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (1, 0, 0) :  @%p25 bra $BB_4_5
+Thread (1, 0, 0) : Basic Block "BB_4_4"
+Thread (1, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (1, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (1, 0, 0) :  bra.uni $BB_4_6
+Thread (1, 0, 0) : Basic Block "BB_4_6"
+Thread (1, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (1, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (1, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (1, 0, 0) :  @%p52 bra $BB_4_3
+Thread (1, 0, 0) : Basic Block "BB_4_7"
+Thread (1, 0, 0) :  exit
+Thread (2, 0, 0) : Basic Block "BB_4_1"
+Thread (2, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (2, 0, 0) :  mov.s32 %r1, %r0
+Thread (2, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (2, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (2, 0, 0) :  @%p3 bra $BB_4_7
+Thread (2, 0, 0) : Basic Block "BB_4_2"
+Thread (2, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (2, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (2, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (2, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (2, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (2, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (2, 0, 0) : Basic Block "BB_4_3"
+Thread (2, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (2, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (2, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (2, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (2, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (2, 0, 0) :  mov.u32 %r24, 0
+Thread (2, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (2, 0, 0) :  @%p25 bra $BB_4_5
+Thread (2, 0, 0) : Basic Block "BB_4_5"
+Thread (2, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (2, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (2, 0, 0) : Basic Block "BB_4_6"
+Thread (2, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (2, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (2, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (2, 0, 0) :  @%p52 bra $BB_4_3
+Thread (2, 0, 0) : Basic Block "BB_4_3"
+Thread (2, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (2, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (2, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (2, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (2, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (2, 0, 0) :  mov.u32 %r24, 0
+Thread (2, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (2, 0, 0) :  @%p25 bra $BB_4_5
+Thread (2, 0, 0) : Basic Block "BB_4_5"
+Thread (2, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (2, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (2, 0, 0) : Basic Block "BB_4_6"
+Thread (2, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (2, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (2, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (2, 0, 0) :  @%p52 bra $BB_4_3
+Thread (2, 0, 0) : Basic Block "BB_4_3"
+Thread (2, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (2, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (2, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (2, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (2, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (2, 0, 0) :  mov.u32 %r24, 0
+Thread (2, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (2, 0, 0) :  @%p25 bra $BB_4_5
+Thread (2, 0, 0) : Basic Block "BB_4_5"
+Thread (2, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (2, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (2, 0, 0) : Basic Block "BB_4_6"
+Thread (2, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (2, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (2, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (2, 0, 0) :  @%p52 bra $BB_4_3
+Thread (2, 0, 0) : Basic Block "BB_4_3"
+Thread (2, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (2, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (2, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (2, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (2, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (2, 0, 0) :  mov.u32 %r24, 0
+Thread (2, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (2, 0, 0) :  @%p25 bra $BB_4_5
+Thread (2, 0, 0) : Basic Block "BB_4_5"
+Thread (2, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (2, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (2, 0, 0) : Basic Block "BB_4_6"
+Thread (2, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (2, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (2, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (2, 0, 0) :  @%p52 bra $BB_4_3
+Thread (2, 0, 0) : Basic Block "BB_4_3"
+Thread (2, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (2, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (2, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (2, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (2, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (2, 0, 0) :  mov.u32 %r24, 0
+Thread (2, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (2, 0, 0) :  @%p25 bra $BB_4_5
+Thread (2, 0, 0) : Basic Block "BB_4_5"
+Thread (2, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (2, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (2, 0, 0) : Basic Block "BB_4_6"
+Thread (2, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (2, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (2, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (2, 0, 0) :  @%p52 bra $BB_4_3
+Thread (2, 0, 0) : Basic Block "BB_4_7"
+Thread (2, 0, 0) :  exit
+Thread (3, 0, 0) : Basic Block "BB_4_1"
+Thread (3, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (3, 0, 0) :  mov.s32 %r1, %r0
+Thread (3, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (3, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (3, 0, 0) :  @%p3 bra $BB_4_7
+Thread (3, 0, 0) : Basic Block "BB_4_2"
+Thread (3, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (3, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (3, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (3, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (3, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (3, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (3, 0, 0) : Basic Block "BB_4_3"
+Thread (3, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (3, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (3, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (3, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (3, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (3, 0, 0) :  mov.u32 %r24, 0
+Thread (3, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (3, 0, 0) :  @%p25 bra $BB_4_5
+Thread (3, 0, 0) : Basic Block "BB_4_4"
+Thread (3, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (3, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (3, 0, 0) :  bra.uni $BB_4_6
+Thread (3, 0, 0) : Basic Block "BB_4_6"
+Thread (3, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (3, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (3, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (3, 0, 0) :  @%p52 bra $BB_4_3
+Thread (3, 0, 0) : Basic Block "BB_4_3"
+Thread (3, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (3, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (3, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (3, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (3, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (3, 0, 0) :  mov.u32 %r24, 0
+Thread (3, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (3, 0, 0) :  @%p25 bra $BB_4_5
+Thread (3, 0, 0) : Basic Block "BB_4_4"
+Thread (3, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (3, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (3, 0, 0) :  bra.uni $BB_4_6
+Thread (3, 0, 0) : Basic Block "BB_4_6"
+Thread (3, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (3, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (3, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (3, 0, 0) :  @%p52 bra $BB_4_3
+Thread (3, 0, 0) : Basic Block "BB_4_3"
+Thread (3, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (3, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (3, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (3, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (3, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (3, 0, 0) :  mov.u32 %r24, 0
+Thread (3, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (3, 0, 0) :  @%p25 bra $BB_4_5
+Thread (3, 0, 0) : Basic Block "BB_4_4"
+Thread (3, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (3, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (3, 0, 0) :  bra.uni $BB_4_6
+Thread (3, 0, 0) : Basic Block "BB_4_6"
+Thread (3, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (3, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (3, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (3, 0, 0) :  @%p52 bra $BB_4_3
+Thread (3, 0, 0) : Basic Block "BB_4_3"
+Thread (3, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (3, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (3, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (3, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (3, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (3, 0, 0) :  mov.u32 %r24, 0
+Thread (3, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (3, 0, 0) :  @%p25 bra $BB_4_5
+Thread (3, 0, 0) : Basic Block "BB_4_4"
+Thread (3, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (3, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (3, 0, 0) :  bra.uni $BB_4_6
+Thread (3, 0, 0) : Basic Block "BB_4_6"
+Thread (3, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (3, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (3, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (3, 0, 0) :  @%p52 bra $BB_4_3
+Thread (3, 0, 0) : Basic Block "BB_4_3"
+Thread (3, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (3, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (3, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (3, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (3, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (3, 0, 0) :  mov.u32 %r24, 0
+Thread (3, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (3, 0, 0) :  @%p25 bra $BB_4_5
+Thread (3, 0, 0) : Basic Block "BB_4_4"
+Thread (3, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (3, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (3, 0, 0) :  bra.uni $BB_4_6
+Thread (3, 0, 0) : Basic Block "BB_4_6"
+Thread (3, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (3, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (3, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (3, 0, 0) :  @%p52 bra $BB_4_3
+Thread (3, 0, 0) : Basic Block "BB_4_7"
+Thread (3, 0, 0) :  exit
+Thread (4, 0, 0) : Basic Block "BB_4_1"
+Thread (4, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (4, 0, 0) :  mov.s32 %r1, %r0
+Thread (4, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (4, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (4, 0, 0) :  @%p3 bra $BB_4_7
+Thread (4, 0, 0) : Basic Block "BB_4_2"
+Thread (4, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (4, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (4, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (4, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (4, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (4, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (4, 0, 0) : Basic Block "BB_4_3"
+Thread (4, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (4, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (4, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (4, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (4, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (4, 0, 0) :  mov.u32 %r24, 0
+Thread (4, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (4, 0, 0) :  @%p25 bra $BB_4_5
+Thread (4, 0, 0) : Basic Block "BB_4_5"
+Thread (4, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (4, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (4, 0, 0) : Basic Block "BB_4_6"
+Thread (4, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (4, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (4, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (4, 0, 0) :  @%p52 bra $BB_4_3
+Thread (4, 0, 0) : Basic Block "BB_4_3"
+Thread (4, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (4, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (4, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (4, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (4, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (4, 0, 0) :  mov.u32 %r24, 0
+Thread (4, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (4, 0, 0) :  @%p25 bra $BB_4_5
+Thread (4, 0, 0) : Basic Block "BB_4_5"
+Thread (4, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (4, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (4, 0, 0) : Basic Block "BB_4_6"
+Thread (4, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (4, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (4, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (4, 0, 0) :  @%p52 bra $BB_4_3
+Thread (4, 0, 0) : Basic Block "BB_4_3"
+Thread (4, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (4, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (4, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (4, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (4, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (4, 0, 0) :  mov.u32 %r24, 0
+Thread (4, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (4, 0, 0) :  @%p25 bra $BB_4_5
+Thread (4, 0, 0) : Basic Block "BB_4_5"
+Thread (4, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (4, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (4, 0, 0) : Basic Block "BB_4_6"
+Thread (4, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (4, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (4, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (4, 0, 0) :  @%p52 bra $BB_4_3
+Thread (4, 0, 0) : Basic Block "BB_4_3"
+Thread (4, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (4, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (4, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (4, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (4, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (4, 0, 0) :  mov.u32 %r24, 0
+Thread (4, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (4, 0, 0) :  @%p25 bra $BB_4_5
+Thread (4, 0, 0) : Basic Block "BB_4_5"
+Thread (4, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (4, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (4, 0, 0) : Basic Block "BB_4_6"
+Thread (4, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (4, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (4, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (4, 0, 0) :  @%p52 bra $BB_4_3
+Thread (4, 0, 0) : Basic Block "BB_4_3"
+Thread (4, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (4, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (4, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (4, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (4, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (4, 0, 0) :  mov.u32 %r24, 0
+Thread (4, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (4, 0, 0) :  @%p25 bra $BB_4_5
+Thread (4, 0, 0) : Basic Block "BB_4_5"
+Thread (4, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (4, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (4, 0, 0) : Basic Block "BB_4_6"
+Thread (4, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (4, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (4, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (4, 0, 0) :  @%p52 bra $BB_4_3
+Thread (4, 0, 0) : Basic Block "BB_4_7"
+Thread (4, 0, 0) :  exit
+Thread (5, 0, 0) : Basic Block "BB_4_1"
+Thread (5, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (5, 0, 0) :  mov.s32 %r1, %r0
+Thread (5, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (5, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (5, 0, 0) :  @%p3 bra $BB_4_7
+Thread (5, 0, 0) : Basic Block "BB_4_2"
+Thread (5, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (5, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (5, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (5, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (5, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (5, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (5, 0, 0) : Basic Block "BB_4_3"
+Thread (5, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (5, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (5, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (5, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (5, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (5, 0, 0) :  mov.u32 %r24, 0
+Thread (5, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (5, 0, 0) :  @%p25 bra $BB_4_5
+Thread (5, 0, 0) : Basic Block "BB_4_4"
+Thread (5, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (5, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (5, 0, 0) :  bra.uni $BB_4_6
+Thread (5, 0, 0) : Basic Block "BB_4_6"
+Thread (5, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (5, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (5, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (5, 0, 0) :  @%p52 bra $BB_4_3
+Thread (5, 0, 0) : Basic Block "BB_4_3"
+Thread (5, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (5, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (5, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (5, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (5, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (5, 0, 0) :  mov.u32 %r24, 0
+Thread (5, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (5, 0, 0) :  @%p25 bra $BB_4_5
+Thread (5, 0, 0) : Basic Block "BB_4_4"
+Thread (5, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (5, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (5, 0, 0) :  bra.uni $BB_4_6
+Thread (5, 0, 0) : Basic Block "BB_4_6"
+Thread (5, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (5, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (5, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (5, 0, 0) :  @%p52 bra $BB_4_3
+Thread (5, 0, 0) : Basic Block "BB_4_3"
+Thread (5, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (5, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (5, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (5, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (5, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (5, 0, 0) :  mov.u32 %r24, 0
+Thread (5, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (5, 0, 0) :  @%p25 bra $BB_4_5
+Thread (5, 0, 0) : Basic Block "BB_4_4"
+Thread (5, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (5, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (5, 0, 0) :  bra.uni $BB_4_6
+Thread (5, 0, 0) : Basic Block "BB_4_6"
+Thread (5, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (5, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (5, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (5, 0, 0) :  @%p52 bra $BB_4_3
+Thread (5, 0, 0) : Basic Block "BB_4_3"
+Thread (5, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (5, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (5, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (5, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (5, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (5, 0, 0) :  mov.u32 %r24, 0
+Thread (5, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (5, 0, 0) :  @%p25 bra $BB_4_5
+Thread (5, 0, 0) : Basic Block "BB_4_4"
+Thread (5, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (5, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (5, 0, 0) :  bra.uni $BB_4_6
+Thread (5, 0, 0) : Basic Block "BB_4_6"
+Thread (5, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (5, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (5, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (5, 0, 0) :  @%p52 bra $BB_4_3
+Thread (5, 0, 0) : Basic Block "BB_4_3"
+Thread (5, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (5, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (5, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (5, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (5, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (5, 0, 0) :  mov.u32 %r24, 0
+Thread (5, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (5, 0, 0) :  @%p25 bra $BB_4_5
+Thread (5, 0, 0) : Basic Block "BB_4_4"
+Thread (5, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (5, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (5, 0, 0) :  bra.uni $BB_4_6
+Thread (5, 0, 0) : Basic Block "BB_4_6"
+Thread (5, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (5, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (5, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (5, 0, 0) :  @%p52 bra $BB_4_3
+Thread (5, 0, 0) : Basic Block "BB_4_7"
+Thread (5, 0, 0) :  exit
+Thread (6, 0, 0) : Basic Block "BB_4_1"
+Thread (6, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (6, 0, 0) :  mov.s32 %r1, %r0
+Thread (6, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (6, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (6, 0, 0) :  @%p3 bra $BB_4_7
+Thread (6, 0, 0) : Basic Block "BB_4_2"
+Thread (6, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (6, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (6, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (6, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (6, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (6, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (6, 0, 0) : Basic Block "BB_4_3"
+Thread (6, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (6, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (6, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (6, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (6, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (6, 0, 0) :  mov.u32 %r24, 0
+Thread (6, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (6, 0, 0) :  @%p25 bra $BB_4_5
+Thread (6, 0, 0) : Basic Block "BB_4_5"
+Thread (6, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (6, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (6, 0, 0) : Basic Block "BB_4_6"
+Thread (6, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (6, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (6, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (6, 0, 0) :  @%p52 bra $BB_4_3
+Thread (6, 0, 0) : Basic Block "BB_4_3"
+Thread (6, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (6, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (6, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (6, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (6, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (6, 0, 0) :  mov.u32 %r24, 0
+Thread (6, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (6, 0, 0) :  @%p25 bra $BB_4_5
+Thread (6, 0, 0) : Basic Block "BB_4_5"
+Thread (6, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (6, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (6, 0, 0) : Basic Block "BB_4_6"
+Thread (6, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (6, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (6, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (6, 0, 0) :  @%p52 bra $BB_4_3
+Thread (6, 0, 0) : Basic Block "BB_4_3"
+Thread (6, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (6, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (6, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (6, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (6, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (6, 0, 0) :  mov.u32 %r24, 0
+Thread (6, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (6, 0, 0) :  @%p25 bra $BB_4_5
+Thread (6, 0, 0) : Basic Block "BB_4_5"
+Thread (6, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (6, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (6, 0, 0) : Basic Block "BB_4_6"
+Thread (6, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (6, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (6, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (6, 0, 0) :  @%p52 bra $BB_4_3
+Thread (6, 0, 0) : Basic Block "BB_4_3"
+Thread (6, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (6, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (6, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (6, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (6, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (6, 0, 0) :  mov.u32 %r24, 0
+Thread (6, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (6, 0, 0) :  @%p25 bra $BB_4_5
+Thread (6, 0, 0) : Basic Block "BB_4_5"
+Thread (6, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (6, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (6, 0, 0) : Basic Block "BB_4_6"
+Thread (6, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (6, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (6, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (6, 0, 0) :  @%p52 bra $BB_4_3
+Thread (6, 0, 0) : Basic Block "BB_4_3"
+Thread (6, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (6, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (6, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (6, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (6, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (6, 0, 0) :  mov.u32 %r24, 0
+Thread (6, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (6, 0, 0) :  @%p25 bra $BB_4_5
+Thread (6, 0, 0) : Basic Block "BB_4_5"
+Thread (6, 0, 0) :  sin.approx.f32 %r43, %r35
+Thread (6, 0, 0) :  st.global.f32 [%r37 + 0], %r43
+Thread (6, 0, 0) : Basic Block "BB_4_6"
+Thread (6, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (6, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (6, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (6, 0, 0) :  @%p52 bra $BB_4_3
+Thread (6, 0, 0) : Basic Block "BB_4_7"
+Thread (6, 0, 0) :  exit
+Thread (7, 0, 0) : Basic Block "BB_4_1"
+Thread (7, 0, 0) :  cvt.s32.u16 %r0, %tid.x
+Thread (7, 0, 0) :  mov.s32 %r1, %r0
+Thread (7, 0, 0) :  ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8]
+Thread (7, 0, 0) :  setp.le.s32 %p3, %r2, %r0
+Thread (7, 0, 0) :  @%p3 bra $BB_4_7
+Thread (7, 0, 0) : Basic Block "BB_4_2"
+Thread (7, 0, 0) :  cvt.u32.u16 %r7, %ntid.x
+Thread (7, 0, 0) :  cvt.u64.s32 %r8, %r4
+Thread (7, 0, 0) :  mul.lo.u64 %r9, %r8, 4
+Thread (7, 0, 0) :  cvt.s64.u32 %r10, %r7
+Thread (7, 0, 0) :  mul.lo.u64 %r11, %r10, 4
+Thread (7, 0, 0) :  ld.param.u64 %r12, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
+Thread (7, 0, 0) : Basic Block "BB_4_3"
+Thread (7, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (7, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (7, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (7, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (7, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (7, 0, 0) :  mov.u32 %r24, 0
+Thread (7, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (7, 0, 0) :  @%p25 bra $BB_4_5
+Thread (7, 0, 0) : Basic Block "BB_4_4"
+Thread (7, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (7, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (7, 0, 0) :  bra.uni $BB_4_6
+Thread (7, 0, 0) : Basic Block "BB_4_6"
+Thread (7, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (7, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (7, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (7, 0, 0) :  @%p52 bra $BB_4_3
+Thread (7, 0, 0) : Basic Block "BB_4_3"
+Thread (7, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (7, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (7, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (7, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (7, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (7, 0, 0) :  mov.u32 %r24, 0
+Thread (7, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (7, 0, 0) :  @%p25 bra $BB_4_5
+Thread (7, 0, 0) : Basic Block "BB_4_4"
+Thread (7, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (7, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (7, 0, 0) :  bra.uni $BB_4_6
+Thread (7, 0, 0) : Basic Block "BB_4_6"
+Thread (7, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (7, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (7, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (7, 0, 0) :  @%p52 bra $BB_4_3
+Thread (7, 0, 0) : Basic Block "BB_4_3"
+Thread (7, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (7, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (7, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (7, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (7, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (7, 0, 0) :  mov.u32 %r24, 0
+Thread (7, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (7, 0, 0) :  @%p25 bra $BB_4_5
+Thread (7, 0, 0) : Basic Block "BB_4_4"
+Thread (7, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (7, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (7, 0, 0) :  bra.uni $BB_4_6
+Thread (7, 0, 0) : Basic Block "BB_4_6"
+Thread (7, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (7, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (7, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (7, 0, 0) :  @%p52 bra $BB_4_3
+Thread (7, 0, 0) : Basic Block "BB_4_3"
+Thread (7, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (7, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (7, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (7, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (7, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (7, 0, 0) :  mov.u32 %r24, 0
+Thread (7, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (7, 0, 0) :  @%p25 bra $BB_4_5
+Thread (7, 0, 0) : Basic Block "BB_4_4"
+Thread (7, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (7, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (7, 0, 0) :  bra.uni $BB_4_6
+Thread (7, 0, 0) : Basic Block "BB_4_6"
+Thread (7, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (7, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (7, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (7, 0, 0) :  @%p52 bra $BB_4_3
+Thread (7, 0, 0) : Basic Block "BB_4_3"
+Thread (7, 0, 0) :  cvt.rn.f32.s32 %r19, %r13
+Thread (7, 0, 0) :  mov.f32 %r20, 0f3d800000
+Thread (7, 0, 0) :  mul.f32 %r21, %r19, %r20
+Thread (7, 0, 0) :  add.u64 %r22, %r16, %r18
+Thread (7, 0, 0) :  and.b32 %r23, %r13, 1
+Thread (7, 0, 0) :  mov.u32 %r24, 0
+Thread (7, 0, 0) :  setp.eq.u32 %p25, %r23, %r24
+Thread (7, 0, 0) :  @%p25 bra $BB_4_5
+Thread (7, 0, 0) : Basic Block "BB_4_4"
+Thread (7, 0, 0) :  cos.approx.f32 %r34, %r26
+Thread (7, 0, 0) :  st.global.f32 [%r28 + 0], %r34
+Thread (7, 0, 0) :  bra.uni $BB_4_6
+Thread (7, 0, 0) : Basic Block "BB_4_6"
+Thread (7, 0, 0) :  add.u32 %r50, %r44, %r46
+Thread (7, 0, 0) :  add.u64 %r51, %r47, %r48
+Thread (7, 0, 0) :  setp.lt.s32 %p52, %r50, %r45
+Thread (7, 0, 0) :  @%p52 bra $BB_4_3
+Thread (7, 0, 0) : Basic Block "BB_4_7"
+Thread (7, 0, 0) :  exit
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (0, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (0, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (0, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (0, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (0, 0, 0) : Basic Block "BB_5_1"
+Thread (0, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (0, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (0, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (0, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (0, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (0, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (0, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (0, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (0, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (0, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (0, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (0, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (0, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (0, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (0, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (0, 0, 0) :  ret 0
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (1, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (1, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (1, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (1, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (1, 0, 0) : Basic Block "BB_5_1"
+Thread (1, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (1, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (1, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (1, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (1, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (1, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (1, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (1, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (1, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (1, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (1, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (1, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (1, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (1, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (1, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (1, 0, 0) :  ret 0
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (2, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (2, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (2, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (2, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (2, 0, 0) : Basic Block "BB_5_1"
+Thread (2, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (2, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (2, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (2, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (2, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (2, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (2, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (2, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (2, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (2, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (2, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (2, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (2, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (2, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (2, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (2, 0, 0) :  ret 0
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (3, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (3, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (3, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (3, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (3, 0, 0) : Basic Block "BB_5_1"
+Thread (3, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (3, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (3, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (3, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (3, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (3, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (3, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (3, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (3, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (3, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (3, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (3, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (3, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (3, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (3, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (3, 0, 0) :  ret 0
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (4, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (4, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (4, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (4, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (4, 0, 0) : Basic Block "BB_5_1"
+Thread (4, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (4, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (4, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (4, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (4, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (4, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (4, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (4, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (4, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (4, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (4, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (4, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (4, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (4, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (4, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (4, 0, 0) :  ret 0
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (5, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (5, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (5, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (5, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (5, 0, 0) : Basic Block "BB_5_1"
+Thread (5, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (5, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (5, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (5, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (5, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (5, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (5, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (5, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (5, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (5, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (5, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (5, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (5, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (5, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (5, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (5, 0, 0) :  ret 0
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (6, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (6, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (6, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (6, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (6, 0, 0) : Basic Block "BB_5_1"
+Thread (6, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (6, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (6, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (6, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (6, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (6, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (6, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (6, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (6, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (6, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (6, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (6, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (6, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (6, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (6, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (6, 0, 0) :  ret 0
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (7, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (7, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (7, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (7, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (7, 0, 0) : Basic Block "BB_5_1"
+Thread (7, 0, 0) :  mov.u32 %r3, __cuda_shared8
+Thread (7, 0, 0) :  cvt.u32.u16 %r4, %tid.x
+Thread (7, 0, 0) :  mul24.lo.u32 %r5, %r4, 4
+Thread (7, 0, 0) :  ld.param.u32 %r6, [__cudaparm__Z7barrierPiS__in]
+Thread (7, 0, 0) :  add.u32 %r7, %r6, %r5
+Thread (7, 0, 0) :  ld.global.s32 %r8, [%r7 + 0]
+Thread (7, 0, 0) :  add.u32 %r9, %r4, 1
+Thread (7, 0, 0) :  cvt.u32.u16 %r10, %ntid.x
+Thread (7, 0, 0) :  rem.u32 %r11, %r9, %r10
+Thread (7, 0, 0) :  mul.lo.u32 %r12, %r11, 4
+Thread (7, 0, 0) :  add.u32 %r13, %r3, %r12
+Thread (7, 0, 0) :  st.shared.s32 [%r13 + 0], %r8
+Thread (7, 0, 0) :  mov.u64 %r14, __ocelot_remove_barrier_pass_stack
+Thread (7, 0, 0) :  st.local.u32 [%r14 + 0], %r3
+Thread (7, 0, 0) :  st.local.u32 [%r14 + 4], %r5
+Thread (7, 0, 0) :  ret 0
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (0, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (0, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (0, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (0, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (0, 0, 0) : Basic Block "BB_5_1_split"
+Thread (0, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (0, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (0, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (0, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (0, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (0, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (0, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (0, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (0, 0, 0) :  exit
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (1, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (1, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (1, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (1, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (1, 0, 0) : Basic Block "BB_5_1_split"
+Thread (1, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (1, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (1, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (1, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (1, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (1, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (1, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (1, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (1, 0, 0) :  exit
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (2, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (2, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (2, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (2, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (2, 0, 0) : Basic Block "BB_5_1_split"
+Thread (2, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (2, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (2, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (2, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (2, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (2, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (2, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (2, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (2, 0, 0) :  exit
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (3, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (3, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (3, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (3, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (3, 0, 0) : Basic Block "BB_5_1_split"
+Thread (3, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (3, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (3, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (3, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (3, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (3, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (3, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (3, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (3, 0, 0) :  exit
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (4, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (4, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (4, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (4, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (4, 0, 0) : Basic Block "BB_5_1_split"
+Thread (4, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (4, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (4, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (4, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (4, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (4, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (4, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (4, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (4, 0, 0) :  exit
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (5, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (5, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (5, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (5, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (5, 0, 0) : Basic Block "BB_5_1_split"
+Thread (5, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (5, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (5, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (5, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (5, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (5, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (5, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (5, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (5, 0, 0) :  exit
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (6, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (6, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (6, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (6, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (6, 0, 0) : Basic Block "BB_5_1_split"
+Thread (6, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (6, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (6, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (6, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (6, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (6, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (6, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (6, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (6, 0, 0) :  exit
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (7, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 8
+Thread (7, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (7, 0, 0) :  setp.eq.u32 %p2, %r1, 1
+Thread (7, 0, 0) :  @%p2 bra BB_5_1_split
+Thread (7, 0, 0) : Basic Block "BB_5_1_split"
+Thread (7, 0, 0) :  mov.u64 %r15, __ocelot_remove_barrier_pass_stack
+Thread (7, 0, 0) :  ld.local.u32 %r16, [%r15 + 4]
+Thread (7, 0, 0) :  ld.local.u32 %r17, [%r15 + 0]
+Thread (7, 0, 0) :  add.u32 %r18, %r16, %r17
+Thread (7, 0, 0) :  ld.shared.s32 %r19, [%r18 + 0]
+Thread (7, 0, 0) :  ld.param.u32 %r20, [__cudaparm__Z7barrierPiS__out + 4]
+Thread (7, 0, 0) :  add.u32 %r21, %r20, %r16
+Thread (7, 0, 0) :  st.global.s32 [%r21 + 0], %r19
+Thread (7, 0, 0) :  exit
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (0, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (0, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (0, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (0, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (0, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (0, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (0, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (0, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (0, 0, 0) : Basic Block "BB_6_1"
+Thread (0, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (0, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (0, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (0, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (0, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (0, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (0, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (0, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (0, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (0, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (0, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (0, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (0, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (0, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (0, 0, 0) :  mov.u32 %r20, 0
+Thread (0, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (0, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (0, 0, 0) :  @%p21 bra $BB_6_9
+Thread (0, 0, 0) : Basic Block "BB_6_2"
+Thread (0, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (0, 0, 0) :  mov.u32 %r31, 0
+Thread (0, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (0, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (0, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (0, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (0, 0, 0) :  mov.s32 %r36, 0
+Thread (0, 0, 0) : Basic Block "BB_6_3"
+Thread (0, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (0, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (0, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (0, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (0, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (0, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (0, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (0, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (0, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (0, 0, 0) :  ret 0
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (1, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (1, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (1, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (1, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (1, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (1, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (1, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (1, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (1, 0, 0) : Basic Block "BB_6_1"
+Thread (1, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (1, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (1, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (1, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (1, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (1, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (1, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (1, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (1, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (1, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (1, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (1, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (1, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (1, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (1, 0, 0) :  mov.u32 %r20, 0
+Thread (1, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (1, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (1, 0, 0) :  @%p21 bra $BB_6_9
+Thread (1, 0, 0) : Basic Block "BB_6_2"
+Thread (1, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (1, 0, 0) :  mov.u32 %r31, 0
+Thread (1, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (1, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (1, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (1, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (1, 0, 0) :  mov.s32 %r36, 0
+Thread (1, 0, 0) : Basic Block "BB_6_3"
+Thread (1, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (1, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (1, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (1, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (1, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (1, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (1, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (1, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (1, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (1, 0, 0) :  ret 0
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (2, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (2, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (2, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (2, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (2, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (2, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (2, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (2, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (2, 0, 0) : Basic Block "BB_6_1"
+Thread (2, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (2, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (2, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (2, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (2, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (2, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (2, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (2, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (2, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (2, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (2, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (2, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (2, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (2, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (2, 0, 0) :  mov.u32 %r20, 0
+Thread (2, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (2, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (2, 0, 0) :  @%p21 bra $BB_6_9
+Thread (2, 0, 0) : Basic Block "BB_6_2"
+Thread (2, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (2, 0, 0) :  mov.u32 %r31, 0
+Thread (2, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (2, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (2, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (2, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (2, 0, 0) :  mov.s32 %r36, 0
+Thread (2, 0, 0) : Basic Block "BB_6_3"
+Thread (2, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (2, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (2, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (2, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (2, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (2, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (2, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (2, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (2, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (2, 0, 0) :  ret 0
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (3, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (3, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (3, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (3, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (3, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (3, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (3, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (3, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (3, 0, 0) : Basic Block "BB_6_1"
+Thread (3, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (3, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (3, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (3, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (3, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (3, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (3, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (3, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (3, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (3, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (3, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (3, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (3, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (3, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (3, 0, 0) :  mov.u32 %r20, 0
+Thread (3, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (3, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (3, 0, 0) :  @%p21 bra $BB_6_9
+Thread (3, 0, 0) : Basic Block "BB_6_2"
+Thread (3, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (3, 0, 0) :  mov.u32 %r31, 0
+Thread (3, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (3, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (3, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (3, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (3, 0, 0) :  mov.s32 %r36, 0
+Thread (3, 0, 0) : Basic Block "BB_6_3"
+Thread (3, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (3, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (3, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (3, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (3, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (3, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (3, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (3, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (3, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (3, 0, 0) :  ret 0
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (4, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (4, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (4, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (4, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (4, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (4, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (4, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (4, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (4, 0, 0) : Basic Block "BB_6_1"
+Thread (4, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (4, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (4, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (4, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (4, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (4, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (4, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (4, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (4, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (4, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (4, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (4, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (4, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (4, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (4, 0, 0) :  mov.u32 %r20, 0
+Thread (4, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (4, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (4, 0, 0) :  @%p21 bra $BB_6_9
+Thread (4, 0, 0) : Basic Block "BB_6_2"
+Thread (4, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (4, 0, 0) :  mov.u32 %r31, 0
+Thread (4, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (4, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (4, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (4, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (4, 0, 0) :  mov.s32 %r36, 0
+Thread (4, 0, 0) : Basic Block "BB_6_3"
+Thread (4, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (4, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (4, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (4, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (4, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (4, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (4, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (4, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (4, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (4, 0, 0) :  ret 0
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (5, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (5, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (5, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (5, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (5, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (5, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (5, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (5, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (5, 0, 0) : Basic Block "BB_6_1"
+Thread (5, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (5, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (5, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (5, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (5, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (5, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (5, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (5, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (5, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (5, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (5, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (5, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (5, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (5, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (5, 0, 0) :  mov.u32 %r20, 0
+Thread (5, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (5, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (5, 0, 0) :  @%p21 bra $BB_6_9
+Thread (5, 0, 0) : Basic Block "BB_6_2"
+Thread (5, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (5, 0, 0) :  mov.u32 %r31, 0
+Thread (5, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (5, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (5, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (5, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (5, 0, 0) :  mov.s32 %r36, 0
+Thread (5, 0, 0) : Basic Block "BB_6_3"
+Thread (5, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (5, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (5, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (5, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (5, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (5, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (5, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (5, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (5, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (5, 0, 0) :  ret 0
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (6, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (6, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (6, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (6, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (6, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (6, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (6, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (6, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (6, 0, 0) : Basic Block "BB_6_1"
+Thread (6, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (6, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (6, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (6, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (6, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (6, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (6, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (6, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (6, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (6, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (6, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (6, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (6, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (6, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (6, 0, 0) :  mov.u32 %r20, 0
+Thread (6, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (6, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (6, 0, 0) :  @%p21 bra $BB_6_9
+Thread (6, 0, 0) : Basic Block "BB_6_2"
+Thread (6, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (6, 0, 0) :  mov.u32 %r31, 0
+Thread (6, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (6, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (6, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (6, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (6, 0, 0) :  mov.s32 %r36, 0
+Thread (6, 0, 0) : Basic Block "BB_6_3"
+Thread (6, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (6, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (6, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (6, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (6, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (6, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (6, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (6, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (6, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (6, 0, 0) :  ret 0
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (7, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (7, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (7, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (7, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (7, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (7, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (7, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (7, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (7, 0, 0) : Basic Block "BB_6_1"
+Thread (7, 0, 0) :  cvt.u32.u16 %r6, %ntid.x
+Thread (7, 0, 0) :  cvt.u32.u16 %r7, %ctaid.x
+Thread (7, 0, 0) :  mul.lo.u32 %r8, %r7, %r6
+Thread (7, 0, 0) :  cvt.u32.u16 %r9, %tid.x
+Thread (7, 0, 0) :  add.u32 %r10, %r8, %r9
+Thread (7, 0, 0) :  cvt.u64.u32 %r11, %r10
+Thread (7, 0, 0) :  mul.lo.u64 %r12, %r11, 4
+Thread (7, 0, 0) :  ld.param.u64 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
+Thread (7, 0, 0) :  add.u64 %r14, %r13, %r12
+Thread (7, 0, 0) :  cvt.u64.u32 %r15, %r9
+Thread (7, 0, 0) :  mul.lo.u64 %r16, %r15, 4
+Thread (7, 0, 0) :  ld.param.u64 %r17, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8]
+Thread (7, 0, 0) :  add.u64 %r18, %r17, %r16
+Thread (7, 0, 0) :  ld.param.s32 %r19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28]
+Thread (7, 0, 0) :  mov.u32 %r20, 0
+Thread (7, 0, 0) :  setp.le.s32 %p21, %r19, %r20
+Thread (7, 0, 0) :  mov.f32 %r22, 0f00000000
+Thread (7, 0, 0) :  @%p21 bra $BB_6_9
+Thread (7, 0, 0) : Basic Block "BB_6_2"
+Thread (7, 0, 0) :  mov.u64 %r30, __cuda_V_buffer80
+Thread (7, 0, 0) :  mov.u32 %r31, 0
+Thread (7, 0, 0) :  setp.gt.u32 %p32, %r23, %r31
+Thread (7, 0, 0) :  cvt.u64.u32 %r33, %r23
+Thread (7, 0, 0) :  mul.lo.u64 %r34, %r33, 4
+Thread (7, 0, 0) :  add.u64 %r35, %r26, %r30
+Thread (7, 0, 0) :  mov.s32 %r36, 0
+Thread (7, 0, 0) : Basic Block "BB_6_3"
+Thread (7, 0, 0) :  ld.global.f32 %r49, [%r41 + 0]
+Thread (7, 0, 0) :  st.shared.f32 [%r48 + 0], %r49
+Thread (7, 0, 0) :  mov.u64 %r50, __ocelot_remove_barrier_pass_stack
+Thread (7, 0, 0) :  st.local.u32 [%r50 + 0], %r37
+Thread (7, 0, 0) :  st.local.u32 [%r50 + 4], %r38
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 8], %r39
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 16], %r40
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 24], %r41
+Thread (7, 0, 0) :  st.local.u32 [%r50 + 32], %r42
+Thread (7, 0, 0) :  st.local.f32 [%r50 + 36], %r43
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 40], %r44
+Thread (7, 0, 0) :  st.local.pred [%r50 + 48], %p45
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 49], %r46
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 57], %r47
+Thread (7, 0, 0) :  st.local.u64 [%r50 + 65], %r48
+Thread (7, 0, 0) :  ret 0
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (0, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (0, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (0, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (0, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (0, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (0, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (0, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (0, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (0, 0, 0) : Basic Block "BB_6_3_split"
+Thread (0, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (0, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (0, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (0, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (0, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (0, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (0, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (0, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (0, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (0, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (0, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (0, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (0, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (0, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (0, 0, 0) : Basic Block "BB_6_4"
+Thread (0, 0, 0) :  mov.s32 %r138, %r127
+Thread (0, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (0, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (0, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (0, 0, 0) :  mov.s64 %r142, %r133
+Thread (0, 0, 0) :  mov.s64 %r143, %r129
+Thread (0, 0, 0) :  mov.s32 %r144, 0
+Thread (0, 0, 0) :  mov.s32 %r145, %r138
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_5"
+Thread (0, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (0, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (0, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (0, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (0, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (0, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (0, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (0, 0, 0) :  @%p125 bra $BB_6_5
+Thread (0, 0, 0) : Basic Block "BB_6_6"
+Thread (0, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (0, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (0, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (0, 0, 0) : Basic Block "BB_6_7"
+Thread (0, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (0, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (0, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (0, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (0, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (0, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (0, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (0, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (0, 0, 0) :  ret 0
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (1, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (1, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (1, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (1, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (1, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (1, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (1, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (1, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (1, 0, 0) : Basic Block "BB_6_3_split"
+Thread (1, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (1, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (1, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (1, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (1, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (1, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (1, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (1, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (1, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (1, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (1, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (1, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (1, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (1, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (1, 0, 0) : Basic Block "BB_6_4"
+Thread (1, 0, 0) :  mov.s32 %r138, %r127
+Thread (1, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (1, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (1, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (1, 0, 0) :  mov.s64 %r142, %r133
+Thread (1, 0, 0) :  mov.s64 %r143, %r129
+Thread (1, 0, 0) :  mov.s32 %r144, 0
+Thread (1, 0, 0) :  mov.s32 %r145, %r138
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_5"
+Thread (1, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (1, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (1, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (1, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (1, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (1, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (1, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (1, 0, 0) :  @%p125 bra $BB_6_5
+Thread (1, 0, 0) : Basic Block "BB_6_6"
+Thread (1, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (1, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (1, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (1, 0, 0) : Basic Block "BB_6_7"
+Thread (1, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (1, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (1, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (1, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (1, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (1, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (1, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (1, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (1, 0, 0) :  ret 0
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (2, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (2, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (2, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (2, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (2, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (2, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (2, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (2, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (2, 0, 0) : Basic Block "BB_6_3_split"
+Thread (2, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (2, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (2, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (2, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (2, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (2, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (2, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (2, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (2, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (2, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (2, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (2, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (2, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (2, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (2, 0, 0) : Basic Block "BB_6_4"
+Thread (2, 0, 0) :  mov.s32 %r138, %r127
+Thread (2, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (2, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (2, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (2, 0, 0) :  mov.s64 %r142, %r133
+Thread (2, 0, 0) :  mov.s64 %r143, %r129
+Thread (2, 0, 0) :  mov.s32 %r144, 0
+Thread (2, 0, 0) :  mov.s32 %r145, %r138
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_5"
+Thread (2, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (2, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (2, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (2, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (2, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (2, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (2, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (2, 0, 0) :  @%p125 bra $BB_6_5
+Thread (2, 0, 0) : Basic Block "BB_6_6"
+Thread (2, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (2, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (2, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (2, 0, 0) : Basic Block "BB_6_7"
+Thread (2, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (2, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (2, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (2, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (2, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (2, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (2, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (2, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (2, 0, 0) :  ret 0
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (3, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (3, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (3, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (3, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (3, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (3, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (3, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (3, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (3, 0, 0) : Basic Block "BB_6_3_split"
+Thread (3, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (3, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (3, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (3, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (3, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (3, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (3, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (3, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (3, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (3, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (3, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (3, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (3, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (3, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (3, 0, 0) : Basic Block "BB_6_4"
+Thread (3, 0, 0) :  mov.s32 %r138, %r127
+Thread (3, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (3, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (3, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (3, 0, 0) :  mov.s64 %r142, %r133
+Thread (3, 0, 0) :  mov.s64 %r143, %r129
+Thread (3, 0, 0) :  mov.s32 %r144, 0
+Thread (3, 0, 0) :  mov.s32 %r145, %r138
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_5"
+Thread (3, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (3, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (3, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (3, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (3, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (3, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (3, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (3, 0, 0) :  @%p125 bra $BB_6_5
+Thread (3, 0, 0) : Basic Block "BB_6_6"
+Thread (3, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (3, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (3, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (3, 0, 0) : Basic Block "BB_6_7"
+Thread (3, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (3, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (3, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (3, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (3, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (3, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (3, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (3, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (3, 0, 0) :  ret 0
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (4, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (4, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (4, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (4, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (4, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (4, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (4, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (4, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (4, 0, 0) : Basic Block "BB_6_3_split"
+Thread (4, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (4, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (4, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (4, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (4, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (4, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (4, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (4, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (4, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (4, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (4, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (4, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (4, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (4, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (4, 0, 0) : Basic Block "BB_6_4"
+Thread (4, 0, 0) :  mov.s32 %r138, %r127
+Thread (4, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (4, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (4, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (4, 0, 0) :  mov.s64 %r142, %r133
+Thread (4, 0, 0) :  mov.s64 %r143, %r129
+Thread (4, 0, 0) :  mov.s32 %r144, 0
+Thread (4, 0, 0) :  mov.s32 %r145, %r138
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_5"
+Thread (4, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (4, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (4, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (4, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (4, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (4, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (4, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (4, 0, 0) :  @%p125 bra $BB_6_5
+Thread (4, 0, 0) : Basic Block "BB_6_6"
+Thread (4, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (4, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (4, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (4, 0, 0) : Basic Block "BB_6_7"
+Thread (4, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (4, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (4, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (4, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (4, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (4, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (4, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (4, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (4, 0, 0) :  ret 0
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (5, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (5, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (5, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (5, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (5, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (5, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (5, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (5, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (5, 0, 0) : Basic Block "BB_6_3_split"
+Thread (5, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (5, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (5, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (5, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (5, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (5, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (5, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (5, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (5, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (5, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (5, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (5, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (5, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (5, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (5, 0, 0) : Basic Block "BB_6_4"
+Thread (5, 0, 0) :  mov.s32 %r138, %r127
+Thread (5, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (5, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (5, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (5, 0, 0) :  mov.s64 %r142, %r133
+Thread (5, 0, 0) :  mov.s64 %r143, %r129
+Thread (5, 0, 0) :  mov.s32 %r144, 0
+Thread (5, 0, 0) :  mov.s32 %r145, %r138
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_5"
+Thread (5, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (5, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (5, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (5, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (5, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (5, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (5, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (5, 0, 0) :  @%p125 bra $BB_6_5
+Thread (5, 0, 0) : Basic Block "BB_6_6"
+Thread (5, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (5, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (5, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (5, 0, 0) : Basic Block "BB_6_7"
+Thread (5, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (5, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (5, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (5, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (5, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (5, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (5, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (5, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (5, 0, 0) :  ret 0
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (6, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (6, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (6, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (6, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (6, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (6, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (6, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (6, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (6, 0, 0) : Basic Block "BB_6_3_split"
+Thread (6, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (6, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (6, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (6, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (6, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (6, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (6, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (6, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (6, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (6, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (6, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (6, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (6, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (6, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (6, 0, 0) : Basic Block "BB_6_4"
+Thread (6, 0, 0) :  mov.s32 %r138, %r127
+Thread (6, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (6, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (6, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (6, 0, 0) :  mov.s64 %r142, %r133
+Thread (6, 0, 0) :  mov.s64 %r143, %r129
+Thread (6, 0, 0) :  mov.s32 %r144, 0
+Thread (6, 0, 0) :  mov.s32 %r145, %r138
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_5"
+Thread (6, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (6, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (6, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (6, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (6, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (6, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (6, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (6, 0, 0) :  @%p125 bra $BB_6_5
+Thread (6, 0, 0) : Basic Block "BB_6_6"
+Thread (6, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (6, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (6, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (6, 0, 0) : Basic Block "BB_6_7"
+Thread (6, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (6, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (6, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (6, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (6, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (6, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (6, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (6, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (6, 0, 0) :  ret 0
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (7, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (7, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (7, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (7, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_1"
+Thread (7, 0, 0) :  mov.u64 %r3, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (7, 0, 0) :  ld.local.u32 %r4, [%r3]
+Thread (7, 0, 0) :  setp.eq.u32 %p5, %r4, 1
+Thread (7, 0, 0) :  @%p5 bra BB_6_3_split
+Thread (7, 0, 0) : Basic Block "BB_6_3_split"
+Thread (7, 0, 0) :  mov.u64 %r146, __ocelot_remove_barrier_pass_stack
+Thread (7, 0, 0) :  ld.local.u64 %r147, [%r146 + 65]
+Thread (7, 0, 0) :  ld.local.u64 %r148, [%r146 + 57]
+Thread (7, 0, 0) :  ld.local.u64 %r149, [%r146 + 49]
+Thread (7, 0, 0) :  ld.local.pred %p150, [%r146 + 48]
+Thread (7, 0, 0) :  ld.local.u64 %r151, [%r146 + 40]
+Thread (7, 0, 0) :  ld.local.f32 %r152, [%r146 + 36]
+Thread (7, 0, 0) :  ld.local.u32 %r153, [%r146 + 32]
+Thread (7, 0, 0) :  ld.local.u64 %r154, [%r146 + 24]
+Thread (7, 0, 0) :  ld.local.u64 %r155, [%r146 + 16]
+Thread (7, 0, 0) :  ld.local.u64 %r156, [%r146 + 8]
+Thread (7, 0, 0) :  ld.local.u32 %r157, [%r146 + 4]
+Thread (7, 0, 0) :  ld.local.u32 %r158, [%r146 + 0]
+Thread (7, 0, 0) :  @!%p150 bra $BB_6_7
+Thread (7, 0, 0) : Basic Block "BB_6_4"
+Thread (7, 0, 0) :  mov.s32 %r138, %r127
+Thread (7, 0, 0) :  ld.param.s32 %r139, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24]
+Thread (7, 0, 0) :  cvt.u64.s32 %r140, %r139
+Thread (7, 0, 0) :  mul.lo.u64 %r141, %r140, 4
+Thread (7, 0, 0) :  mov.s64 %r142, %r133
+Thread (7, 0, 0) :  mov.s64 %r143, %r129
+Thread (7, 0, 0) :  mov.s32 %r144, 0
+Thread (7, 0, 0) :  mov.s32 %r145, %r138
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_5"
+Thread (7, 0, 0) :  ld.global.f32 %r119, [%r108 + 0]
+Thread (7, 0, 0) :  ld.shared.f32 %r120, [%r107 + 0]
+Thread (7, 0, 0) :  mad.f32 %r121, %r119, %r120, %r113
+Thread (7, 0, 0) :  add.s32 %r122, %r110, 1
+Thread (7, 0, 0) :  add.u64 %r123, %r107, 4
+Thread (7, 0, 0) :  add.u64 %r124, %r105, %r108
+Thread (7, 0, 0) :  setp.ne.u32 %p125, %r122, %r103
+Thread (7, 0, 0) :  @%p125 bra $BB_6_5
+Thread (7, 0, 0) : Basic Block "BB_6_6"
+Thread (7, 0, 0) :  mul.lo.u64 %r99, %r96, %r88
+Thread (7, 0, 0) :  mul.lo.u64 %r100, %r99, 4
+Thread (7, 0, 0) :  add.u64 %r101, %r90, %r100
+Thread (7, 0, 0) : Basic Block "BB_6_7"
+Thread (7, 0, 0) :  add.u64 %r84, %r82, %r76
+Thread (7, 0, 0) :  mov.u64 %r85, __ocelot_remove_barrier_pass_stack
+Thread (7, 0, 0) :  st.local.u32 [%r85 + 0], %r72
+Thread (7, 0, 0) :  st.local.u32 [%r85 + 4], %r73
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 8], %r74
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 16], %r75
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 24], %r84
+Thread (7, 0, 0) :  st.local.u32 [%r85 + 32], %r77
+Thread (7, 0, 0) :  st.local.f32 [%r85 + 36], %r78
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 40], %r79
+Thread (7, 0, 0) :  st.local.pred [%r85 + 48], %p80
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 49], %r81
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 57], %r82
+Thread (7, 0, 0) :  st.local.u64 [%r85 + 65], %r83
+Thread (7, 0, 0) :  ret 0
+Thread (0, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (0, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (0, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (0, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (0, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (0, 0, 0) : Basic Block "BB_6_7_split"
+Thread (0, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (0, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (0, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (0, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (0, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (0, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (0, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (0, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (0, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (0, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (0, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (0, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (0, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (0, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (0, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (0, 0, 0) :  @%p71 bra $BB_6_3
+Thread (0, 0, 0) : Basic Block "BB_6_8"
+Thread (0, 0, 0) :  bra.uni $BB_6_9
+Thread (0, 0, 0) : Basic Block "BB_6_9"
+Thread (0, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (0, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (0, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (0, 0, 0) :  exit
+Thread (1, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (1, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (1, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (1, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (1, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (1, 0, 0) : Basic Block "BB_6_7_split"
+Thread (1, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (1, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (1, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (1, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (1, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (1, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (1, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (1, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (1, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (1, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (1, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (1, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (1, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (1, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (1, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (1, 0, 0) :  @%p71 bra $BB_6_3
+Thread (1, 0, 0) : Basic Block "BB_6_8"
+Thread (1, 0, 0) :  bra.uni $BB_6_9
+Thread (1, 0, 0) : Basic Block "BB_6_9"
+Thread (1, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (1, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (1, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (1, 0, 0) :  exit
+Thread (2, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (2, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (2, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (2, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (2, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (2, 0, 0) : Basic Block "BB_6_7_split"
+Thread (2, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (2, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (2, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (2, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (2, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (2, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (2, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (2, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (2, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (2, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (2, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (2, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (2, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (2, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (2, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (2, 0, 0) :  @%p71 bra $BB_6_3
+Thread (2, 0, 0) : Basic Block "BB_6_8"
+Thread (2, 0, 0) :  bra.uni $BB_6_9
+Thread (2, 0, 0) : Basic Block "BB_6_9"
+Thread (2, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (2, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (2, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (2, 0, 0) :  exit
+Thread (3, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (3, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (3, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (3, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (3, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (3, 0, 0) : Basic Block "BB_6_7_split"
+Thread (3, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (3, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (3, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (3, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (3, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (3, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (3, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (3, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (3, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (3, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (3, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (3, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (3, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (3, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (3, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (3, 0, 0) :  @%p71 bra $BB_6_3
+Thread (3, 0, 0) : Basic Block "BB_6_8"
+Thread (3, 0, 0) :  bra.uni $BB_6_9
+Thread (3, 0, 0) : Basic Block "BB_6_9"
+Thread (3, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (3, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (3, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (3, 0, 0) :  exit
+Thread (4, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (4, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (4, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (4, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (4, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (4, 0, 0) : Basic Block "BB_6_7_split"
+Thread (4, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (4, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (4, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (4, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (4, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (4, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (4, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (4, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (4, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (4, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (4, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (4, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (4, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (4, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (4, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (4, 0, 0) :  @%p71 bra $BB_6_3
+Thread (4, 0, 0) : Basic Block "BB_6_8"
+Thread (4, 0, 0) :  bra.uni $BB_6_9
+Thread (4, 0, 0) : Basic Block "BB_6_9"
+Thread (4, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (4, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (4, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (4, 0, 0) :  exit
+Thread (5, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (5, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (5, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (5, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (5, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (5, 0, 0) : Basic Block "BB_6_7_split"
+Thread (5, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (5, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (5, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (5, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (5, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (5, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (5, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (5, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (5, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (5, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (5, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (5, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (5, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (5, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (5, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (5, 0, 0) :  @%p71 bra $BB_6_3
+Thread (5, 0, 0) : Basic Block "BB_6_8"
+Thread (5, 0, 0) :  bra.uni $BB_6_9
+Thread (5, 0, 0) : Basic Block "BB_6_9"
+Thread (5, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (5, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (5, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (5, 0, 0) :  exit
+Thread (6, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (6, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (6, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (6, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (6, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (6, 0, 0) : Basic Block "BB_6_7_split"
+Thread (6, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (6, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (6, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (6, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (6, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (6, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (6, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (6, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (6, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (6, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (6, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (6, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (6, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (6, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (6, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (6, 0, 0) :  @%p71 bra $BB_6_3
+Thread (6, 0, 0) : Basic Block "BB_6_8"
+Thread (6, 0, 0) :  bra.uni $BB_6_9
+Thread (6, 0, 0) : Basic Block "BB_6_9"
+Thread (6, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (6, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (6, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (6, 0, 0) :  exit
+Thread (7, 0, 0) : Basic Block "$__ocelot_remove_barrier_entry_2"
+Thread (7, 0, 0) :  mov.u64 %r0, __ocelot_remove_barrier_pass_syncpoint + 73
+Thread (7, 0, 0) :  ld.local.u32 %r1, [%r0]
+Thread (7, 0, 0) :  setp.eq.u32 %p2, %r1, 2
+Thread (7, 0, 0) :  @%p2 bra BB_6_7_split
+Thread (7, 0, 0) : Basic Block "BB_6_7_split"
+Thread (7, 0, 0) :  mov.u64 %r57, __ocelot_remove_barrier_pass_stack
+Thread (7, 0, 0) :  ld.local.u64 %r58, [%r57 + 65]
+Thread (7, 0, 0) :  ld.local.u64 %r59, [%r57 + 57]
+Thread (7, 0, 0) :  ld.local.u64 %r60, [%r57 + 49]
+Thread (7, 0, 0) :  ld.local.pred %p61, [%r57 + 48]
+Thread (7, 0, 0) :  ld.local.u64 %r62, [%r57 + 40]
+Thread (7, 0, 0) :  ld.local.f32 %r63, [%r57 + 36]
+Thread (7, 0, 0) :  ld.local.u32 %r64, [%r57 + 32]
+Thread (7, 0, 0) :  ld.local.u64 %r65, [%r57 + 24]
+Thread (7, 0, 0) :  ld.local.u64 %r66, [%r57 + 16]
+Thread (7, 0, 0) :  ld.local.u64 %r67, [%r57 + 8]
+Thread (7, 0, 0) :  ld.local.u32 %r68, [%r57 + 4]
+Thread (7, 0, 0) :  ld.local.u32 %r69, [%r57 + 0]
+Thread (7, 0, 0) :  add.u32 %r70, %r69, %r68
+Thread (7, 0, 0) :  setp.gt.s32 %p71, %r64, %r70
+Thread (7, 0, 0) :  @%p71 bra $BB_6_3
+Thread (7, 0, 0) : Basic Block "BB_6_8"
+Thread (7, 0, 0) :  bra.uni $BB_6_9
+Thread (7, 0, 0) : Basic Block "BB_6_9"
+Thread (7, 0, 0) :  ld.param.u64 %r53, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16]
+Thread (7, 0, 0) :  add.u64 %r54, %r53, %r52
+Thread (7, 0, 0) :  st.global.f32 [%r54 + 0], %r51
+Thread (7, 0, 0) :  exit
+Pass/Fail : Pass
 
 
 Name : TestLLVMKernels
@@ -388,71 +3378,62 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1268663803
-Test time : 5.72205e-06
+Test Seed : 1268707172
+Test time : 2.45212
 
-Status : Failed to select llvm device.
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
-INFO     Test completed in 0.243623018265 seconds
-INFO      It produced the following output:
-(0.001043) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
-INFO     Test completed in 0.115303993225 seconds
-INFO      It produced the following output:
-(0.001294) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Pass/Fail : Pass
-
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator
-INFO     Test completed in 0.449391841888 seconds
-INFO      It produced the following output:
-(0.003973) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 emulated
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1268663803
-Test time : 0.247316
-
-Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
 
 
 
 INFO     
 Passing tests:
- (0.057s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
- (0.115s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D : Passed
- (0.373s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
- (0.166s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray : Passed
- (0.419s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels : Passed
- (0.449s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator : Passed
- (0.052s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
- (0.456s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace : Passed
- (0.103s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals : Passed
- (0.371s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions : Passed
- (0.079s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser : Passed
- (0.023s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
- (0.027s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
- (0.244s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc : Passed
+ (0.027s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
+ (0.297s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
+ (0.447s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels : Passed
+ (0.137s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray : Passed
+ (0.168s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D : Passed
+ (2.502s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels : Passed
+ (0.366s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator : Passed
+ (0.027s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
+ (0.324s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace : Passed
+ (0.060s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals : Passed
+ (0.044s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser : Passed
+ (0.316s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions : Passed
+ (0.033s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
+ (0.025s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
+ (0.322s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc : Passed
 
 Failing tests:
- (0.031s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels : Failed
- (0.035s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching : Did not complete.
+ (0.200s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching : Did not complete.
 
 Non-Existent tests:
 

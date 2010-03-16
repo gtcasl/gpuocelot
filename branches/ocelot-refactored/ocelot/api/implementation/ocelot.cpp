@@ -13,7 +13,6 @@
 
 namespace ocelot
 {
-
 	cuda::CudaRuntimeInterface * get() {
 		return cuda::CudaRuntimeInterface::get();
 	}
@@ -60,17 +59,17 @@ namespace ocelot
 		get()->reset();
 	}
 	
-	void contextSwitch( unsigned int destinationDevice, 
+	PointerMap contextSwitch( unsigned int destinationDevice, 
 		unsigned int sourceDevice )
 	{
-		get()->contextSwitch( destinationDevice, sourceDevice );
+		return std::move(get()->contextSwitch( 
+			destinationDevice, sourceDevice ));
 	}
 	
 	void unregisterModule( const std::string& name )
 	{
 		get()->unregisterModule( name );
 	}
-
 }
 
 #endif

@@ -165,14 +165,95 @@ std::string cuda::CudaRuntime::formatError( const std::string& message ) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), nextStream(0), nextEvent(0), 
-	parameterBlock(0), parameterBlockSize(0) {
+cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
+	nextStream(0), nextEvent(0), parameterBlock(0), parameterBlockSize(1<<13) {
+	parameterBlock = (unsigned char *)malloc(parameterBlockSize);
+}
 
+cuda::HostThreadContext::~HostThreadContext() {
+	::free(parameterBlock);
+}
+
+cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c): 
+	selectedDevice(c.selectedDevice),
+	validDevices(c.validDevices),
+	launchConfigurations(c.launchConfigurations),
+	nextStream(c.nextStream),
+	nextEvent(c.nextEvent),
+	lastError(c.lastError),
+	parameterBlock((unsigned char *)malloc(c.parameterBlockSize)),
+	parameterBlockSize(c.parameterBlockSize),
+	parameterIndices(c.parameterIndices),
+	parameterSizes(c.parameterSizes),
+	registeredGLbuffers(c.registeredGLbuffers),
+	persistentTraceGenerators(c.persistentTraceGenerators),
+	nextTraceGenerators(c.nextTraceGenerators)
+{
+	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
+}
+
+cuda::HostThreadContext& cuda::HostThreadContext::operator=(const HostThreadContext& c) {
+	if(&c == this) return *this;
+	selectedDevice = c.selectedDevice;
+	validDevices = c.validDevices;
+	nextStream = c.nextStream;
+	nextEvent = c.nextEvent;
+	lastError = c.lastError;
+	launchConfigurations = c.launchConfigurations;
+	parameterIndices = c.parameterIndices;
+	parameterSizes = c.parameterSizes;
+	registeredGLbuffers = c.registeredGLbuffers;
+	persistentTraceGenerators = c.persistentTraceGenerators;
+	nextTraceGenerators = c.nextTraceGenerators;
+	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
+	return *this;
+}
+
+cuda::HostThreadContext::HostThreadContext(HostThreadContext&& c): 
+	selectedDevice(0), nextStream(0), nextEvent(0), parameterBlock(0), 
+	parameterBlockSize(1<<13) {
+	*this = std::move(c);
+}
+
+cuda::HostThreadContext& cuda::HostThreadContext::operator=(HostThreadContext&& c) {
+	if (this == &c) return *this;
+	std::swap(selectedDevice, c.selectedDevice);
+	std::swap(validDevices, c.validDevices);
+	std::swap(nextStream, c.nextStream);
+	std::swap(nextEvent, c.nextEvent);
+	std::swap(lastError, c.lastError);
+	std::swap(parameterBlock, c.parameterBlock);
+	std::swap(launchConfigurations, c.launchConfigurations);
+	std::swap(parameterIndices, c.parameterIndices);
+	std::swap(parameterSizes, c.parameterSizes);
+	std::swap(registeredGLbuffers, c.registeredGLbuffers);
+	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
+	std::swap(nextTraceGenerators, c.nextTraceGenerators);
+	return *this;
+}
+
+void cuda::HostThreadContext::clearParameters() {
+	parameterIndices.clear();
+	parameterSizes.clear();
 }
 
 void cuda::HostThreadContext::clear() {
-	parameterIndices.clear();
-	parameterSizes.clear();
+	validDevices.clear();
+	launchConfigurations.clear();
+	streams.clear();
+	events.clear();
+	clearParameters();
+	for (RegisteredGLBufferMap::iterator buffer = registeredGLbuffers.begin(); 
+		buffer != registeredGLbuffers.end(); ++buffer) {
+		if (buffer->second.mapped) {
+			glBindBuffer(GL_ARRAY_BUFFER, buffer->first);
+			glUnmapBuffer(GL_ARRAY_BUFFER);
+			assert( glGetError() != GL_NO_ERROR );
+		}
+	}
+	registeredGLbuffers.clear();
+	persistentTraceGenerators.clear();
+	nextTraceGenerators.clear();
 }
 
 void cuda::HostThreadContext::mapParameters(executive::Executive& context, 
@@ -204,7 +285,7 @@ void cuda::HostThreadContext::mapParameters(executive::Executive& context,
 	}
 	free(parameterBlock);
 	parameterBlock = temp;
-	clear();
+	clearParameters();
 }
 
 cuda::CudaContext::CudaContext(): thread(0), context(0) { }
@@ -227,10 +308,6 @@ cuda::CudaRuntime::~CudaRuntime() {
 	//
 	
 	// thread contexts
-	for (HostThreadContextMap::iterator it = threads.begin(); it != threads.end(); ++it) {
-		free(it->second.parameterBlock);
-	}
-	threads.clear();
 	
 	// textures
 	
@@ -273,12 +350,7 @@ cuda::HostThreadContext & cuda::CudaRuntime::getHostThreadContext() {
 	
 	HostThreadContextMap::iterator it = threads.find(self);
 	if (it == threads.end()) {
-		HostThreadContext thread;
-		thread.parameterBlockSize = (1<<13);
-		thread.parameterBlock = (unsigned char *)malloc(thread.parameterBlockSize);
-		thread.selectedDevice = 0;
-		threads[self] = thread;
-		it = threads.find(self);
+		it = threads.insert(std::make_pair(self, HostThreadContext())).first;
 	}
 	
 	context.selectDevice(it->second.selectedDevice);
@@ -2049,10 +2121,10 @@ void** cuda::CudaRuntime::getFatBinaryHandle(const std::string& name) {
 	Ocelot_Exception("FatBinary " << name << " not registered.");
 }
 
-cuda::CudaRuntimeInterface::KernelPointer 
+ocelot::KernelPointer 
 	cuda::CudaRuntime::getKernelPointer(const std::string& name, 
 	const std::string& module) {
-	cuda::CudaRuntimeInterface::KernelPointer symbol = 0;
+	ocelot::KernelPointer symbol = 0;
 	lock();
 	for (RegisteredKernelMap::iterator kernel = kernels.begin(); 
 		kernel != kernels.end(); ++kernel) {
@@ -2068,6 +2140,23 @@ cuda::CudaRuntimeInterface::KernelPointer
 	}
 	unlock();
 	return symbol;
+}
+
+void cuda::CudaRuntime::reset() {
+	lock();
+	
+	for (HostThreadContextMap::iterator thread = threads.begin(); 
+		thread != threads.end(); ++thread) {
+		thread->second.clear();
+	}
+	context.clear();
+	kernels.clear();
+	textures.clear();
+	textureReferences.clear();
+	globalSymbolMap.clear();
+	fatBinaries.clear();
+		
+	unlock();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

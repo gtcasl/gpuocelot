@@ -34,7 +34,7 @@ namespace test
 		ptx += ".target sm_13, map_f64_to_f32\n\n";
 		ptx += ".entry increment( .param .u64 memory )\n";
 		ptx += "{\n";
-		ptx += "	.reg .u64 %lr;\n";
+		ptx += "	.reg .u64 %lr<1>;\n";
 		ptx += "	.reg .u32 %r<2>;\n";
 		ptx += "	Entry:\n";
 		ptx += "		ld.param.u64 %lr0, [memory];\n";
@@ -103,16 +103,22 @@ namespace test
 
 	bool TestDeviceSwitching::testSwitching()
 	{
+		report("Running device switching test.");
+		report(" Resetting runtime state.");
 		ocelot::reset();
+		report(" Registering kernel.");
 		ocelot::KernelPointer kernel = registerKernel();
 		
 		int devices;
 		cudaGetDeviceCount( &devices );
+		report(" Found " << devices << " devices.");
 		
 		PointerVector pointers( devices );
 		
+		report(" Launching kernels...");
 		for( int device = 0; device != devices; ++device )
 		{
+			report("  for device " << device);
 			cudaSetDevice( device );
 			cudaMalloc( (void**) &pointers[ device ], sizeof( unsigned int ) );
 			cudaMemset( pointers[ device ], 0, sizeof( unsigned int ) );
@@ -123,6 +129,7 @@ namespace test
 			cudaLaunch( kernel );
 		}
 		
+		report(" Loading results.");
 		for( int device = 0; device != devices; ++device )
 		{
 			cudaSetDevice( device );
@@ -163,7 +170,11 @@ namespace test
 			} 
 			else
 			{
-				ocelot::contextSwitch( device, device - 1 );
+				ocelot::PointerMap map = ocelot::contextSwitch( 
+					device, device - 1 );
+				ocelot::PointerMap::iterator mapping = map.find(pointer);
+				assert(mapping != map.end());
+				pointer = (unsigned int*)mapping->second;
 			}
 			
 			cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );

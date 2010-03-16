@@ -389,7 +389,7 @@ static int test_malloc3d(bool verbose) {
 
 int main(int argc, char *arg[]) {
 	int errors = 0;
-	bool verbose = true;
+	bool verbose = false;
 	
 	if (!errors) {
 		errors += test_malloc(verbose);

@@ -254,7 +254,7 @@ namespace test
 	
 	bool TestDeviceSwitching::doTest()
 	{
-		return  testThreads();
+		return testSwitching() && testContextSwitching() && testThreads();
 	}
 
 	TestDeviceSwitching::TestDeviceSwitching()

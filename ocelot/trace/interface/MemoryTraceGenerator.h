@@ -182,11 +182,6 @@ namespace trace {
 		MemoryTraceGenerator();
 
 		/*!
-			Destructs the trace generator
-		*/
-		~MemoryTraceGenerator();
-
-		/*!
 			called when a traced kernel is launched to retrieve some parameters from the kernel
 		*/
 		void initialize(const ir::ExecutableKernel& kernel);

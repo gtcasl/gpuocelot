@@ -19,7 +19,7 @@ SDK_CFLAGS = -I $(srcdir)/sdk
 bin_PROGRAMS = 
 check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
 	TestAtomics TestMemoryAccesses TestBarriers TestSpecialFunctions \
-	TestInstructionThroughput TestCallLatency TestDeviceSwitching \
+	TestInstructionThroughput TestCallLatency \
 	TestThrustArbitraryTransform TestThrustBasicVector TestThrustBoundingBox \
 	TestThrustBucketSort2D TestThrustConstantIterator \
 	TestThrustCountingIterator TestThrustZipDot TestThrustFillCopy \
@@ -120,14 +120,6 @@ TestInstructionThroughput_SOURCES = \
 	tests/TestInstructionThroughput/TestInstructionThroughput.cpp
 TestInstructionThroughput_LDADD = $(OCELOT_LIBS)
 TestInstructionThroughput_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## TestDeviceSwitching
-TestDeviceSwitching_CXXFLAGS = $(CUDA_CFLAGS) -std=c++0x
-TestDeviceSwitching_SOURCES = tests/TestDeviceSwitching/TestDeviceSwitching.cpp
-TestDeviceSwitching_LDADD = $(OCELOT_LIBS)
-TestDeviceSwitching_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

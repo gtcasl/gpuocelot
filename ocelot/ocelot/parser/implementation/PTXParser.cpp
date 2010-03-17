@@ -258,14 +258,20 @@ namespace parser
 	void PTXParser::State::targetElement( int token )
 	{
 		report( "  Rule: targetOption" );
+		if( token == TOKEN_SM10 ) statement.targets.push_back( "sm_10" );
+		if( token == TOKEN_SM11 ) statement.targets.push_back( "sm_11" );
+		if( token == TOKEN_SM12 ) statement.targets.push_back( "sm_12" );
+		if( token == TOKEN_SM13 ) statement.targets.push_back( "sm_13" );
+		if( token == TOKEN_MAP_F64_TO_F32 )
+		{
+			statement.targets.push_back( "map_f64_to_f32" );
+		}
 	}
 	
 	void PTXParser::State::target()
 	{
 		report( "  Rule: TARGET targetElementList" );
 		statement.directive = ir::PTXStatement::Target;
-		statement.targets.assign ( identifiers.begin(), 
-			identifiers.end() );
 	}
 	
 	void PTXParser::State::addressSpace( int value )
@@ -1012,6 +1018,7 @@ namespace parser
 	void PTXParser::State::instruction()
 	{
 		statement.instruction = ir::PTXInstruction( );
+		statement.instruction.statementIndex = module.statements.size();
 	}
 
 	void PTXParser::State::instruction( const std::string& opcode, int dataType, 

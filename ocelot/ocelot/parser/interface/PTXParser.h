@@ -233,7 +233,7 @@ namespace parser
 			static ir::PTXOperand::DataType smallestType( long long int );
 			static ir::PTXOperand::DataType 
 				smallestType( long long unsigned int );
-				
+			
 		public:
 			PTXParser();
 			ir::Module parse( std::istream& input, 

@@ -272,7 +272,7 @@ executive::MemoryAllocation::MemoryAllocation(int space,
 		break;
 	default:
 #if HAVE_CUDA_DRIVER_API == 1
-		CUDA_ARRAY_DESCRIPTOR descriptor = {0};
+		CUDA_ARRAY_DESCRIPTOR descriptor;
 		convert(&descriptor, desc);
 		descriptor.Width = width;
 		descriptor.Height = height;
@@ -581,8 +581,7 @@ executive::MemoryAllocation executive::MemoryAllocation::copy(int newSpace) cons
 				else {
 					assert( 0 && "cuMemAlloc failed!");
 				}
-				cuda = cuMemcpyHtoD(ptr, 
-					hydrazine::bit_cast<CUdeviceptr, void*>(get()), size());
+				cuda = cuMemcpyHtoD(ptr, get(), size());
 				if (cuda != CUDA_SUCCESS) {
 					assert( 0 && "cuMemcpyHtoD failed!");
 				}

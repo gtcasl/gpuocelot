@@ -25,8 +25,6 @@
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
 
-struct CUcontext;
-
 namespace cuda {
 
 	/*!
@@ -95,7 +93,7 @@ namespace cuda {
 		pthread_t thread;
 	
 		//! pointer to CUDA driver API context
-		struct CUcontext * context;		
+		CUcontext * context;		
 		
 	public:
 	

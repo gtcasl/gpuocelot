@@ -20,6 +20,8 @@
 // Ocelot includes
 #include <ocelot/ir/interface/Instruction.h>
 
+#include <configure.h>
+
 #if HAVE_CUDA_DRIVER_API == 1
 #include <ocelot/cuda/include/cuda.h>
 #include <ocelot/cuda/include/cudaGL.h>

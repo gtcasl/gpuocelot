@@ -371,7 +371,7 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	int selectedDevice = getSelectedDevice();
 	int deviceAddrSpace = getDeviceAddressSpace();
 	
-//	report("deviceMemcpy(" << std::hex << dest << ", " << src << std::dec << ", " << size << " bytes)");
+	report("deviceMemcpy(" << std::hex << dest << ", " << src << std::dec << ", " << size << " bytes)");
 	
 	switch (kind) {
 	case HostToHost:
@@ -1425,8 +1425,7 @@ bool executive::Executive::loadModule(std::string path, bool translateOnLoad, st
 
 	report("Loading module " << path << (translateOnLoad ? " translate on load" : ""));
 	
-	ir::Module *module = new ir::Module(path);
-	module->load(ptx);
+	ir::Module *module = new ir::Module(ptx);
 	module->modulePath = path;
 	
 	ModuleMap::iterator mod_it = modules.find(path);
@@ -1789,7 +1788,7 @@ size_t executive::Executive::enumerateDevices() {
 
 		devices.push_back(device);
 
-		if (devices.size() == 1 || 
+		if (devices.size() == 1 ||
 			api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
 			selectDevice((int)devices.size() - 1);
 		}

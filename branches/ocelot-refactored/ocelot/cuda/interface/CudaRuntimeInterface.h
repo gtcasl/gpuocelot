@@ -44,6 +44,8 @@ namespace cuda {
 
 		//! \brief Ocelot runtime object containing state related to Ocelot
 		ocelot::OcelotRuntime ocelotRuntime;
+
+		friend class CudaRuntimeInterfacePtr;
 		
 	public:
 		/*

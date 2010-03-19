@@ -279,10 +279,22 @@ bool executive::Executive::checkMemoryAccess(int device, const void* base, size_
 	// least address in region must be greater than or equal to this
 	const char *region_base_ptr = (const char *)allocation->get();	
 
+	if (!region_base_ptr) {
+		report("Executive::checkMemoryAccess(device: " << device << ", base: " << (void *)base
+			<< ", size: " << size << ") did not find allocation containing " << base << ")");
+	}
+
 	// greatest address in region must be less than this
 	const char *region_end_ptr = region_base_ptr + allocation->size();
 
-	bool valid = (region_base_ptr && region_end_ptr >= (const char *)base + size);
+	if (size > 8) {
+		report("Executive::checkMemoryAccess(device: " << device << ", base: " << (void *)base
+			<< ", size: " << size << ")");
+		report("  got allocation: " << (const void *)region_base_ptr << " to " 
+			<< (const void *)region_end_ptr);
+	}
+
+	bool valid = (region_base_ptr && region_end_ptr >= ((const char *)base + size));
 	return valid;
 }
 
@@ -321,8 +333,7 @@ const executive::MemoryAllocation* executive::Executive::getMemoryAllocation(con
 	assert(memoryMap_it != memoryAllocations.end());
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
 	if (!memoryMap.empty()) {
-		MemoryAllocationMap::const_iterator 
-			alloc_it = memoryMap.upper_bound((void *)ptr);
+		MemoryAllocationMap::const_iterator alloc_it = memoryMap.upper_bound((void *)ptr);
 		if (alloc_it != memoryMap.begin()) --alloc_it;
 		if (alloc_it != memoryMap.end()) {
 			if ((const char*) ptr >= alloc_it->second.get()) {
@@ -371,7 +382,7 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	int selectedDevice = getSelectedDevice();
 	int deviceAddrSpace = getDeviceAddressSpace();
 	
-	report("deviceMemcpy(" << std::hex << dest << ", " << src << std::dec << ", " << size << " bytes)");
+//	report("deviceMemcpy(" << std::hex << dest << ", " << src << std::dec << ", " << size << " bytes)");
 	
 	switch (kind) {
 	case HostToHost:
@@ -796,13 +807,12 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
 	MemoryAllocationMap::const_iterator dstAlloc_it = memoryMap.find((void *)dst);
 	MemoryAllocationMap::const_iterator srcAlloc_it = memoryMap.find((void *)src);
+
 	if (dstAlloc_it == memoryMap.end()) {
-		Ocelot_Exception("Invalid destination array " << dst 
-			<< " in array to array memcpy.");
+		Ocelot_Exception("Invalid destination array " << dst << " in array to array memcpy.");
 	}
 	if (srcAlloc_it == memoryMap.end()) {
-		Ocelot_Exception("Invalid source array " << src 
-			<< " in array to array memcpy.");
+		Ocelot_Exception("Invalid source array " << src << " in array to array memcpy.");
 	}
 	if (kind != DeviceToDevice) {
 		return false;
@@ -814,16 +824,20 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 	char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * srcHOffset + srcWOffset;
 	char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * dstHOffset + dstWOffset;
 
-	if (!checkMemoryAccess(selectedDevice, srcPtr, count)) {
+	bool result = false;
+
+	//
+	// we don't need to use checkMemoryAccess(), as addresses are computed from valid base pointers
+	// as well as offsets.
+	//
+	if (srcMemory.pointer.pitch * srcHOffset + srcWOffset + count > srcMemory.size()) {
 		Ocelot_Exception("Invalid source address " << (void*)srcPtr << " of size " << count 
 			<< " in array to array memcpy.");
 	}
-	if (!checkMemoryAccess(selectedDevice, dstPtr, count)) {
-		Ocelot_Exception("Invalid destination address " << (void*)dstPtr << " of size " << count 
+	if (dstMemory.pointer.pitch * dstHOffset + dstWOffset + count > dstMemory.size()) {
+		Ocelot_Exception("Invalid dest address " << (void*)dstPtr << " of size " << count 
 			<< " in array to array memcpy.");
 	}
-
-	bool result = false;
 
 	switch (addrSpace) {
 	case 0:
@@ -904,10 +918,12 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 						copy.Height = (count / copy.WidthInBytes);
 						remaining = count;
 					}
-					
+
+/*					
 					report("  copy: [dst (" << copy.dstXInBytes << ", " << copy.dstY << ")], [src (" <<
 						copy.srcXInBytes << ", " << copy.srcY << ")], w: " << copy.WidthInBytes 
 						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
+*/
 					
 					CUresult cuResult = cuMemcpy2D(&copy);
 					if (cuResult == CUDA_SUCCESS) {

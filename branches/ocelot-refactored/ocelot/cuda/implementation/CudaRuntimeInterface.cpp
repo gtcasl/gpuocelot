@@ -27,6 +27,22 @@
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::instance = 0;
 
+class CudaRuntimeInterfacePtr {
+public:
+	CudaRuntimeInterfacePtr() {
+
+	}
+
+	~CudaRuntimeInterfacePtr() {
+		if (cuda::CudaRuntimeInterface::instance) {
+			delete cuda::CudaRuntimeInterface::instance;
+			cuda::CudaRuntimeInterface::instance = 0;
+		}
+	}
+};
+
+static CudaRuntimeInterfacePtr cudaRuntimeInterfacePtrInstance;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {

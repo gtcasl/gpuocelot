@@ -1,29 +1,199 @@
-INFO     Reading in test file /home/normal/checkout/gpuocelot/branches/ocelot-refactored/regression/ocelotRegressionTests.txt
+INFO     Reading in test file /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/regression/ocelotRegressionTests.txt
 INFO      Found the following tests:
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
+INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
-INFO     Test completed in 0.0552639961243 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
+INFO     Test completed in 0.0236299037933 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDataflowGraph
+
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
+
+
+Test Seed : 1269011164
+Test time : 2.16961e-05
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
+INFO     Test completed in 0.0321688652039 seconds
+INFO      It produced the following output:
+(0.000190) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
+INFO     Test completed in 0.0479388237 seconds
+INFO      It produced the following output:
+(0.000283) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace
+INFO     Test completed in 0.0264539718628 seconds
+INFO      It produced the following output:
+(0.000211) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestTrace
+
+Description: 
+
+
+Test Seed : 1269011164
+Test time : 0.000274658
+
+Status : Test output:
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer
+INFO     Test completed in 0.0281200408936 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1269011164
+Test time : 1.3113e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
+INFO     Test completed in 0.0294301509857 seconds
+INFO      It produced the following output:
+(0.000184) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
+INFO     Test completed in 0.0417850017548 seconds
+INFO      It produced the following output:
+(0.000339) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Thread (0, 0, 0) : Basic Block "BB_1_1"
+Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
+Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
+Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
+Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
+Thread (0, 0, 0) : Basic Block "BB_1_2"
+Thread (0, 0, 0) :  exit
+Thread (0, 0, 0) : Basic Block "BB_1_1"
+Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
+Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
+Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
+Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
+Thread (0, 0, 0) : Basic Block "BB_1_2"
+Thread (0, 0, 0) :  exit
+Thread (0, 0, 0) : Basic Block "BB_1_1"
+Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
+Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
+Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
+Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
+Thread (0, 0, 0) : Basic Block "BB_1_2"
+Thread (0, 0, 0) :  exit
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+parallel.
+
+
+Test Seed : 1269011164
+Test time : 0.0202644
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
+INFO     Test completed in 0.0300328731537 seconds
+INFO      It produced the following output:
+(0.000201) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser
+INFO     Test completed in 0.0165209770203 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1269011164
+Test time : 1.35899e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions
+INFO     Test completed in 0.0237929821014 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -37,8 +207,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1268982748
-Test time : 0.00135493
+Test Seed : 1269011164
+Test time : 0.000681639
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -169,67 +339,78 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D
-INFO     Test completed in 0.0780758857727 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator
+INFO     Test completed in 0.0412311553955 seconds
 INFO      It produced the following output:
-(0.000398) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions
-INFO     Test completed in 0.0805859565735 seconds
-INFO      It produced the following output:
-(0.000421) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+(0.000280) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Pass/Fail : Pass
 
 
-Name : TestInstructions
+Name : TestEmulator
 
 Description: 
 
 
-Test Seed : 1268982748
-Test time : 0.00112724
+Test Seed : 1269011164
+Test time : 0.0153911
 
 Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser
-INFO     Test completed in 0.0376138687134 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
+INFO     Test completed in 0.0492980480194 seconds
 INFO      It produced the following output:
+(0.000190) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Pass/Fail : Pass
 
 
-Name : TestParser
+Name : TestMemoryTraceGenerator
 
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
+Description: 
 
 
-Test Seed : 1268982748
-Test time : 2.98023e-05
+Test Seed : 1269011164
+Test time : 0.00709581
 
-Status : 
+Status : Test output:
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0404109954834 seconds
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels
+INFO     Test completed in 0.0282530784607 seconds
+INFO      It produced the following output:
+(0.000219) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Kernel launch time was 8.91685e-05s (89151 ticks)
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1269011164
+Test time : 0.00790811
+
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
+
+
+
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0180280208588 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -242,226 +423,16 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1268982748
-Test time : 3.05176e-05
+Test Seed : 1269011164
+Test time : 9.05991e-06
 
 Status : 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph
-INFO     Test completed in 0.0342519283295 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
+INFO     Test completed in 0.167285919189 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDataflowGraph
-
-Description: A test for the DataflowGraph class. Test Points: 1) 
-             Generic: load PTX files, convert them into dataflow graphs, verify that 
-             all live ranges spanning blocks are consistent. 2) SSA: convert to 
-             ssa form, verify that no register is declared more than once. 3) 
-             reverse SSA: convert to ssa then out of ssa, verify that all live 
-             ranges spanning blocks are consistent.
-
-
-Test Seed : 1268982748
-Test time : 3.00407e-05
-
-Status : Testing Generic Dataflow
- Test Passed
-Testing SSA Dataflow
- Test Passed
-Testing SSA then back Dataflow
- Test Passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc
-INFO     Test completed in 0.107715129852 seconds
-INFO      It produced the following output:
-(0.000413) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels
-INFO     Test completed in 0.0590419769287 seconds
-INFO      It produced the following output:
-(0.000438) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Kernel launch time was 0.000148773s (148899 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1268982748
-Test time : 0.0203388
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator
-INFO     Test completed in 0.0621600151062 seconds
-INFO      It produced the following output:
-(0.000528) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1268982748
-Test time : 0.0303183
-
-Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer
-INFO     Test completed in 0.0269348621368 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1268982748
-Test time : 2.64645e-05
-
-Status : 
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray
-INFO     Test completed in 0.122847795486 seconds
-INFO      It produced the following output:
-(0.000353) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals
-INFO     Test completed in 0.0740151405334 seconds
-INFO      It produced the following output:
-(0.000401) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching
-INFO     Test completed in 0.163441896439 seconds
-INFO      It produced the following output:
-(0.000662) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Thread (0, 0, 0) : Basic Block "BB_1_1"
-Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
-Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
-Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
-Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
-Thread (0, 0, 0) : Basic Block "BB_1_2"
-Thread (0, 0, 0) :  exit
-Thread (0, 0, 0) : Basic Block "BB_1_1"
-Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
-Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
-Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
-Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
-Thread (0, 0, 0) : Basic Block "BB_1_2"
-Thread (0, 0, 0) :  exit
-Thread (0, 0, 0) : Basic Block "BB_1_1"
-Thread (0, 0, 0) :  ld.param.u64 %r0, [memory]
-Thread (0, 0, 0) :  ld.global.u32 %r1, [%r0 + 0]
-Thread (0, 0, 0) :  add.u32 %r2, %r1, 1
-Thread (0, 0, 0) :  st.global.u32 [%r0 + 0], %r2
-Thread (0, 0, 0) : Basic Block "BB_1_2"
-Thread (0, 0, 0) :  exit
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-parallel.
-
-
-Test Seed : 1268982748
-Test time : 0.112638
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace
-INFO     Test completed in 0.0764319896698 seconds
-INFO      It produced the following output:
-(0.000823) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-
-Name : TestTrace
-
-Description: 
-
-
-Test Seed : 1268982748
-Test time : 0.00134826
-
-Status : Test output:
-
-
-
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator
-INFO     Test completed in 0.113896131516 seconds
-INFO      It produced the following output:
-(0.000351) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
-Pass/Fail : Pass
-
-
-Name : TestMemoryTraceGenerator
-
-Description: 
-
-
-Test Seed : 1268982748
-Test time : 0.0370624
-
-Status : Test output:
-
-
-
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels
-INFO     Test completed in 1.08220982552 seconds
-INFO      It produced the following output:
-(0.000480) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+(0.000260) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
 Thread (0, 0, 0) : Basic Block "BB_3_1"
 Thread (0, 0, 0) :  cvt.u32.u16 %r0, %tid.x
 Thread (0, 0, 0) :  cvt.rn.f32.u32 %r1, %r0
@@ -3408,8 +3379,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1268982748
-Test time : 1.00358
+Test Seed : 1269011164
+Test time : 0.140342
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -3444,24 +3415,53 @@ R = [
 
 
 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions
+INFO     Test completed in 0.0308961868286 seconds
+INFO      It produced the following output:
+(0.000219) OcelotConfiguration.cpp:253:  Ocelot Configuration: ocelot-refactored 1.0.65 llvm
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1269011164
+Test time : 0.000339746
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
 INFO     
 Passing tests:
- (0.027s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
- (0.076s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestTrace : Passed
- (0.108s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaMalloc : Passed
- (0.059s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestKernels : Passed
- (0.078s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D : Passed
- (1.082s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMKernels : Passed
- (0.062s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestEmulator : Passed
- (0.034s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
- (0.123s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray : Passed
- (0.074s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestCudaGlobals : Passed
- (0.038s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestParser : Passed
- (0.163s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching : Passed
- (0.081s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestInstructions : Passed
- (0.040s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
- (0.055s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
- (0.114s) : /home/normal/checkout/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
+ (0.048s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaMalloc : Passed
+ (0.024s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDataflowGraph : Passed
+ (0.049s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestMemoryTraceGenerator : Passed
+ (0.031s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestInstructions : Passed
+ (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLexer : Passed
+ (0.024s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMInstructions : Passed
+ (0.032s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTexture2D : Passed
+ (0.029s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaTextureArray : Passed
+ (0.041s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestEmulator : Passed
+ (0.167s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestLLVMKernels : Passed
+ (0.018s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestPTXToLLVMTranslator : Passed
+ (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestKernels : Passed
+ (0.030s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestCudaGlobals : Passed
+ (0.026s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestTrace : Passed
+ (0.042s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestDeviceSwitching : Passed
+ (0.017s) : /home/andrew/repositories/gpuocelot/branches/ocelot-refactored/TestParser : Passed
 
 Failing tests:
 

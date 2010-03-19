@@ -115,6 +115,8 @@ static int test_mallocArray(bool verbose) {
 	const int width = 256;
 	const int height = 128;
 	size_t bytes = width * height * sizeof(float);
+
+	printf("test_mallocArray(%d, %d)\n", width, height);
 	
 	float *host = (float *)malloc(bytes);
 	struct cudaChannelFormatDesc desc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
@@ -217,6 +219,8 @@ static int test_mallocArray(bool verbose) {
 		free(host);		
 	}
 	
+	printf("checking results from last cudaMemcpyFromArray\n"); fflush(stdout);
+
 	for (int j = 0; j < height && errors < 10; j++) {
 		float *ptr = &host[j * width];
 		for (int i = 0; i < width && errors < 10; i++) {
@@ -389,7 +393,7 @@ static int test_malloc3d(bool verbose) {
 
 int main(int argc, char *arg[]) {
 	int errors = 0;
-	bool verbose = false;
+	bool verbose = true;
 	
 	if (!errors) {
 		errors += test_malloc(verbose);

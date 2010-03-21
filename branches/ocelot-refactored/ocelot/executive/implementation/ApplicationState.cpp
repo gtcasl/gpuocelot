@@ -1,5 +1,4 @@
-/*!
-	\file ApplicationState.cpp
+/*! \file ApplicationState.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief defines constructors and accessors for Ocelot application state objects
 */

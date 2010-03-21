@@ -24,7 +24,6 @@
 
 #if HAVE_CUDA_DRIVER_API == 1
 #define CUDA_OPENGL_INTEROPERABILITY 0
-
 #include <ocelot/cuda/include/cudaGL.h>
 #endif
 

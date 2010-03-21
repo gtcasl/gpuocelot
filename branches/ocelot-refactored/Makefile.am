@@ -97,6 +97,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/KernelEntry.cpp \
 	ocelot/trace/implementation/CacheSimulator.cpp \
 	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
+	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
@@ -117,7 +118,7 @@ libocelot_la_SOURCES = \
 	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
-
+	
 ##	ocelot/trace/implementation/BranchTraceGenerator.cpp \
 ##	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 ##	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \

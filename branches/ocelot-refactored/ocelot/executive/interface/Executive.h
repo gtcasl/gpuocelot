@@ -57,7 +57,6 @@ namespace executive {
 	public:
 	
 	public:
-	
 		int selectedDevice;
 	
 		// textures
@@ -182,15 +181,13 @@ namespace executive {
 		*/
 		bool mallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height);
 
-		/*!
-			\brief allocates memory on the selected device given an extent - output in pitched pointer
+		/*! \brief allocates memory on the selected device given an extent - output in pitched pointer
 			\param pitchedPtr pointer to pitched memory allocation
 			\param extent extent of region - at least extent.width*height*depth bytes are allocated
 		*/
 		bool mallocPitch(PitchedPointer * pitchedPtr, Extent extent);
 
-		/*!
-			\brief allocates a pitched memory allocation as an array
+		/*! \brief allocates a pitched memory allocation as an array
 			\param arrayPtr pointer to allocation
 			\param desc channel format
 			\param extent region - at least extent.width*height*depth*desc.size() bytes are allocated
@@ -198,8 +195,7 @@ namespace executive {
 		bool mallocPitchArray(PitchedPointer * pitchedPtr, const ChannelFormatDesc &desc, 
 			Extent extent);
 		
-		/*!
-			\brief allocates an array of memory on the selected device
+		/*! \brief allocates an array of memory on the selected device
 			\param array places resulting pointer here
 			\param desc
 			\param desc
@@ -210,24 +206,18 @@ namespace executive {
 		bool mallocArray(struct cudaArray **array, const ChannelFormatDesc & desc, 
 			size_t width, size_t height);
 
-		/*!
-			\brief frees an allocation
+		/*! \brief frees an allocation
 			\param devPtr device pointer
 		*/
 		bool free(void *devPtr);
 		
-		/*!
-			\brief frees host-allocated memory
-		*/
+		/*! \brief frees host-allocated memory */
 		bool freeHost(void *ptr);
 		
-		/*!
-			\brief frees an array
-		*/
+		/*! \brief frees an array */
 		bool freeArray(struct cudaArray *array);
 
-		/*! 
-			\brief Determine if a memory access is valid 
+		/*! \brief Determine if a memory access is valid 
 		
 			This should search device specific allocations as well as 
 			global allocations.
@@ -238,25 +228,19 @@ namespace executive {
 		*/
 		bool checkMemoryAccess(int device, const void* base, size_t size) const;
 
-		/*!
-			\brief prints all memory allocations to an output stream
-		*/
-		std::ostream & printMemoryAllocations(std::ostream &out) const;
+		/*! \brief prints all memory allocations to an output stream */
+		std::ostream& printMemoryAllocations(std::ostream &out) const;
 
-		/*!
-			Given a pointer, determine the allocated block and 
+		/*! Given a pointer, determine the allocated block and 
 			corresponding MemoryAllocation record to which it belongs.
 
-			\param device GUID of device
 			\param ptr pointer to some byte
 			\return record of memory allocation; if nothing could be found, 
 				the record pointer is zero
 		*/
 		const MemoryAllocation* getMemoryAllocation(const void *ptr) const;
 		
-		/*!
-			Gets a string representation of memory allocations
-		*/
+		/*! Gets a string representation of memory allocations */
 		static std::string nearbyAllocationsToString( const Executive& executive, 
 			const void* pointer, unsigned int above = 5, unsigned int below = 5 );
 		

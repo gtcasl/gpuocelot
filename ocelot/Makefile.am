@@ -12,6 +12,7 @@ AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
 INCLUDE = -I $(srcdir)/ocelot/cuda/include
 AM_LDFLAGS = $(CUDA_DRIVER_API_LIBARY)
+SDK_CFLAGS = -I ../../tests/cuda2.2/sdk/sdk
 ################################################################################
 
 ################################################################################
@@ -22,15 +23,19 @@ ACLOCAL_AMFLAGS = -I m4
 ################################################################################
 ## Programs and Libraries
 BUILT_SOURCES=ptxgrammar.h
-bin_PROGRAMS = DFG CFG Module BranchTraceAnalyzer MemoryTraceAnalyzer \
-	ParallelismTraceAnalyzer SharedComputationAnalyzer PtxToLlvmTranslator \
-	PTXOptimizer InstructionTraceAnalyzer OcelotConfig
+bin_PROGRAMS = DFG CFG Module PtxToLlvmTranslator PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator TestLLVMKernels TestGPUKernel PTXChecker
+	TestPTXToLLVMTranslator  TestGPUKernel PTXChecker \
+	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
+	TestLLVMKernels TestDeviceSwitching
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
+
+# Removed:
+# TestLLVMKernels
+#
 
 ################################################################################
 ## libocelot
@@ -44,6 +49,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
+	ocelot/api/implementation/OcelotConfiguration.cpp \
 	ocelot/ir/implementation/ControlFlowGraph.cpp \
 	ocelot/ir/implementation/Instruction.cpp \
 	ocelot/ir/implementation/Parameter.cpp \
@@ -74,6 +80,7 @@ libocelot_la_SOURCES = \
 	hydrazine/implementation/XmlArgumentParser.cpp \
 	hydrazine/implementation/XmlTree.cpp \
 	hydrazine/implementation/string.cpp \
+	hydrazine/implementation/json.cpp \
 	hydrazine/cuda/Cuda.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
@@ -85,13 +92,12 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/TraceEvent.cpp \
 	ocelot/trace/implementation/TraceGenerator.cpp \
 	ocelot/trace/implementation/BranchTraceGenerator.cpp \
-	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
-	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 	ocelot/trace/implementation/KernelEntry.cpp \
 	ocelot/trace/implementation/CacheSimulator.cpp \
-	ocelot/trace/implementation/WatchTraceGenerator.cpp \
+	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
+	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
@@ -102,18 +108,22 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp \
-	ocelot/executive/implementation/ExternalKernel.cpp \
-	ocelot/cuda/implementation/CudaRuntimeApi.cpp \
+	ocelot/executive/implementation/ApplicationState.cpp \
+	ocelot/cuda/implementation/cuda_runtime.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
-	ocelot/cuda/implementation/CudaRuntimeBase.cpp \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
-	ocelot/cuda/implementation/TraceGeneratingCudaRuntime.cpp \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
 	ocelot/parser/implementation/PTXParser.cpp \
 	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
+	
+##	ocelot/trace/implementation/BranchTraceGenerator.cpp \
+##	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
+##	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
+##	ocelot/trace/implementation/SharedComputationGenerator.cpp \
+##	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 ################################################################################
 
 ################################################################################
@@ -134,54 +144,6 @@ PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
 PTXOptimizer_LDADD = libocelot.la
 PTXOptimizer_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## ParallelismTraceAnalyzer
-ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-ParallelismTraceAnalyzer_SOURCES = \
-	ocelot/trace/implementation/ParallelismTraceAnalyzer.cpp
-ParallelismTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-ParallelismTraceAnalyzer_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## BranchTraceAnalyzer
-BranchTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
-	-std=c++0x
-BranchTraceAnalyzer_SOURCES = \
-	ocelot/trace/implementation/BranchTraceAnalyzer.cpp
-BranchTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-BranchTraceAnalyzer_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## MemoryTraceAnalyzer
-MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-MemoryTraceAnalyzer_SOURCES = \
-	ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
-MemoryTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-MemoryTraceAnalyzer_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## InstructionTraceAnalyzer
-#
-InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-InstructionTraceAnalyzer_SOURCES = \
-	ocelot/trace/implementation/InstructionTraceAnalyzer.cpp
-InstructionTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-InstructionTraceAnalyzer_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## SharedComputationAnalyzer
-SharedComputationAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror \
-	-std=c++0x
-SharedComputationAnalyzer_SOURCES = \
-	ocelot/trace/implementation/SharedComputationAnalyzer.cpp
-SharedComputationAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-SharedComputationAnalyzer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -329,60 +291,75 @@ TestLLVMKernels_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-## TestExternalKernel
-# TestExternalKernel_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
-# TestExternalKernel_SOURCES = ocelot/executive/test/TestExternalKernel.cu.cpp
-# TestExternalKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
-# TestExternalKernel_LDFLAGS = -static
+##
+##
+TestCudaGlobals_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaGlobals_SOURCES = \
+	ocelot/cuda/test/globals/global.cu.cpp
+TestCudaGlobals_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaGlobals_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaMalloc_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaMalloc_SOURCES = \
+	ocelot/cuda/test/memory/malloc.cu.cpp
+TestCudaMalloc_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaMalloc_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaTexture2D_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaTexture2D_SOURCES = ocelot/cuda/test/textures/texture2D.cu.cpp
+TestCudaTexture2D_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaTexture2D_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCudaTextureArray_CXXFLAGS = $(SDK_CFLAGS)
+TestCudaTextureArray_SOURCES = ocelot/cuda/test/textures/textureArray.cu.cpp
+TestCudaTextureArray_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaTextureArray_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestDeviceSwitching
+TestDeviceSwitching_CXXFLAGS = $(INCLUDE) -Wall -ansi \
+	-pedantic -Werror -std=c++0x
+TestDeviceSwitching_SOURCES = ocelot/api/test/TestDeviceSwitching.cpp
+TestDeviceSwitching_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestDeviceSwitching_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
 ## Headers
-nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
-	ocelot/executive/interface/GPUExecutableKernel.h \
+nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
+	ocelot/api/interface/OcelotConfiguration.h \
+	ocelot/executive/interface/Executive.h \
 	ocelot/executive/interface/CooperativeThreadArray.h \
 	ocelot/executive/interface/EmulatedKernel.h \
-	ocelot/executive/interface/TextureOperations.h \
 	ocelot/executive/interface/RuntimeException.h \
-	ocelot/executive/interface/LLVMExecutableKernel.h \
-	ocelot/executive/interface/LLVMContext.h \
-	ocelot/executive/interface/ExternalKernel.h \
-	ocelot/executive/interface/GPUKernel.h \
 	ocelot/executive/interface/Device.h \
 	ocelot/executive/interface/CTAContext.h \
-	ocelot/executive/test/TestLLVMKernels.h \
 	ocelot/executive/test/TestEmulator.h \
-	ocelot/executive/test/TestGPUKernel.h \
-	ocelot/cuda/interface/CudaRuntimeInterface.h \
+	ocelot/executive/test/sequence.ptx \
+	ocelot/executive/test/kernels.ptx \
 	ocelot/cuda/interface/CudaRuntime.h \
-	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
-	ocelot/cuda/interface/CudaRuntimeBase.h \
-	ocelot/cuda/include/device_types.h \
-	ocelot/cuda/include/texture_types.h \
-	ocelot/cuda/include/cudaGL.h \
-	ocelot/cuda/include/cuda_runtime_api.h \
-	ocelot/cuda/include/builtin_types.h \
-	ocelot/cuda/include/driver_types.h \
-	ocelot/cuda/include/__cudaFatFormat.h \
-	ocelot/cuda/include/cuda.h \
-	ocelot/cuda/include/vector_types.h \
-	ocelot/cuda/include/host_defines.h \
-	ocelot/util/interface/OcelotConfig.h \
-	ocelot/trace/interface/CacheSimulator.h \
 	ocelot/trace/interface/MemoryTraceGenerator.h \
 	ocelot/trace/interface/TraceEvent.h \
-	ocelot/trace/interface/MachineAttributesGenerator.h \
 	ocelot/trace/interface/BranchTraceAnalyzer.h \
 	ocelot/trace/interface/TraceGenerator.h \
 	ocelot/trace/interface/SharedComputationGenerator.h \
 	ocelot/trace/interface/ParallelismTraceGenerator.h \
-	ocelot/trace/interface/InstructionTraceGenerator.h \
 	ocelot/trace/interface/MemoryTraceAnalyzer.h \
-	ocelot/trace/interface/WatchTraceGenerator.h \
-	ocelot/trace/interface/InstructionTraceAnalyzer.h \
 	ocelot/trace/interface/SharedComputationAnalyzer.h \
 	ocelot/trace/interface/BranchTraceGenerator.h \
-	ocelot/trace/interface/KernelDimensionsGenerator.h \
 	ocelot/trace/interface/ParallelismTraceAnalyzer.h \
 	ocelot/trace/interface/KernelEntry.h \
 	ocelot/parser/interface/PTXLexer.h \
@@ -390,42 +367,25 @@ nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
 	ocelot/parser/interface/PTXParser.h \
 	ocelot/parser/test/TestLexer.h \
 	ocelot/parser/test/TestParser.h \
-	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
-	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/DataflowGraph.h \
-	ocelot/analysis/interface/Pass.h \
-	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/SSAGraph.h \
-	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
-	ocelot/api/interface/OcelotRuntime.h \
-	ocelot/api/interface/ocelot.h \
-	ocelot/ir/interface/LLVMInstruction.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \
 	ocelot/ir/interface/ControlFlowGraph.h \
-	ocelot/ir/interface/LLVMStatement.h \
-	ocelot/ir/interface/Local.h \
 	ocelot/ir/interface/PostdominatorTree.h \
 	ocelot/ir/interface/Parameter.h \
-	ocelot/ir/interface/Dim3.h \
 	ocelot/ir/interface/PTXKernel.h \
 	ocelot/ir/interface/ExecutableKernel.h \
 	ocelot/ir/interface/PTXStatement.h \
 	ocelot/ir/interface/PTXInstruction.h \
 	ocelot/ir/interface/Instruction.h \
 	ocelot/ir/interface/DominatorTree.h \
-	ocelot/ir/interface/LLVMKernel.h \
 	ocelot/ir/interface/Documentation.h \
 	ocelot/ir/interface/PTXOperand.h \
 	ocelot/ir/interface/Global.h \
 	ocelot/ir/interface/Texture.h \
-	ocelot/ir/test/SamplePTX.h \
 	ocelot/ir/test/TestLLVMInstructions.h \
-	ocelot/translator/interface/Translator.h \
-	ocelot/translator/interface/PTXToLLVMTranslator.h \
-	ocelot/translator/test/PtxToLlvmTranslator.h \
-	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/XmlLexer.h \
 	hydrazine/implementation/Timer.h \
@@ -448,6 +408,14 @@ nobase_include_HEADERS = ocelot/executive/interface/Executive.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
+	ocelot/cuda/include/builtin_types.h \
+	ocelot/cuda/include/__cudaFatFormat.h \
+	ocelot/cuda/include/cuda_runtime_api.h \
+	ocelot/cuda/include/device_types.h \
+	ocelot/cuda/include/driver_types.h \
+	ocelot/cuda/include/host_defines.h \
+	ocelot/cuda/include/texture_types.h \
+	ocelot/cuda/include/vector_types.h \
 	regression/ocelotRegressionTests.txt	
 
 ################################################################################

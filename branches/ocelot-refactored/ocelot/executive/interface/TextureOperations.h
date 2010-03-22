@@ -1,1 +1,0 @@
-../../../../../ocelot/ocelot/executive/interface/TextureOperations.h

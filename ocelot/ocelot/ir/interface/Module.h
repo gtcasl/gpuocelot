@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <unordered_map>
 
 #include <ocelot/ir/interface/Texture.h>
@@ -27,19 +28,16 @@ namespace ir {
 	public:
 		/*!	\brief Map from texture variable names to objects */
 		typedef std::map< std::string, Texture > TextureMap;
+
+		/*! \brief set of names */
+		typedef std::set< std::string > NameSet;
 	
 		/*! \brief Typedef for a vector of PTXStatements */
 		typedef std::vector< PTXStatement > StatementVector;
 
-		/*!	\brief Typedef for a vector of Kernel pointers */
-//		typedef std::vector< Kernel* > KernelVector;
-
 		typedef std::map< std::string, Kernel * > KernelMap;
 
 		typedef std::map< Instruction::Architecture, KernelMap > KernelArchitectureMap;
-
-		/*! \brief Typedef for a map from an architecture to a KernelVector */
-//		typedef std::map< Instruction::Architecture, KernelVector > KernelMap;
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::map< std::string, Global > GlobalMap;
@@ -127,8 +125,14 @@ namespace ir {
 		/*! Set of textures in the module */
 		TextureMap textures;
 
+		/*! Set of all texture names in the module */
+		NameSet textureNames;
+
 		/*! Set of global variables in the modules */
 		GlobalMap globals;
+
+		/*! Set of all global names in the module */
+		NameSet globalNames;
 		
 		/*! Path from which Module was loaded */
 		std::string modulePath;

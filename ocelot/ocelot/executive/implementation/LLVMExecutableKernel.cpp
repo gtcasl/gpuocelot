@@ -33,8 +33,8 @@
 #define REPORT_CTA_INSIDE_TRANSLATED_CODE 0
 #define REPORT_ATOMIC_OPERATIONS 0
 #define PRINT_OPTIMIZED_CFG 0
-#define DEBUG_NTH_THREAD_ONLY 1
-#define NTH_THREAD 1
+#define DEBUG_NTH_THREAD_ONLY 0
+#define NTH_THREAD 0
 #define DEBUG_PTX_INSTRUCTION_TRACE 1
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 #define DEBUG_LLVM 0
@@ -626,8 +626,8 @@ extern "C"
 	void __ocelot_debug_instruction( executive::LLVMContext* context, 
 		ir::PTXU64 _instruction )
 	{
-		void* instruction = (void*) _instruction;
 		#if(DEBUG_PTX_INSTRUCTION_TRACE == 1)		
+		void* instruction = (void*) _instruction;
 
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
 		if( context->tid.x == NTH_THREAD )
@@ -907,9 +907,10 @@ extern "C"
 				<< "): instruction '" 
 				<< state->kernel->instruction( statement ) << "'\n";
 			std::cerr << "Constant memory address " 
-				<< _address << " is " << (end - allocationEnd)
+				<< _address << " = " << (void *)_address << " of size " << bytes << " bytes is " << (end - allocationEnd)
 				<< " bytes beyond the constant memory block of " 
-				<< context->constantSize << " bytes.\n";
+				<< context->constantSize << " bytes\n  on interval: " << (void *)context->constant 
+					<< " - " << (void *)allocationEnd << "\n";
 			std::cout << "\tNear: " << state->kernel->location( statement )
 				<< "\n\n";
 			assertM(false, "Aborting execution.");
@@ -1762,6 +1763,8 @@ namespace executive
 			_buildDebuggingInformation();
 			_allocateMemory();
 
+			report( " Optimization level " << translator::Translator::toString( 
+				_optimizationLevel ) );
 			translator::PTXToLLVMTranslator translator( _optimizationLevel );
 
 			#if (PRINT_OPTIMIZED_CFG > 0) && (REPORT_BASE > 0)
@@ -1918,11 +1921,12 @@ namespace executive
 		llvm::Function* function = _module->getFunction( 
 			"_Z_ocelotTranslated_" + name );
 
+		_updateGlobalMemory();
+
 		assertM( function != 0, 
 			"Could not find function _Z_ocelotTranslated_" + name );
 		_function = hydrazine::bit_cast< Function >( 
 			_state.jit->getPointerToFunction( function ) );
-
 
 		#if ( REPORT_OPTIMIZED_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
 		std::string m;
@@ -1930,8 +1934,6 @@ namespace executive
 		code << *_module;
 		report( " The optimized code is:\n" << m );
 		#endif
-	
-		_updateGlobalMemory();
 		
 		report( " Successfully jit compiled the kernel." );
 		#endif
@@ -2355,9 +2357,10 @@ namespace executive
 					ir::PTXInstruction&>(**instruction);
 				if( ptx.opcode == ir::PTXInstruction::Tex )
 				{
-					ir::Module::TextureMap::const_iterator 
-						texture = module->textures.find(
-						ptx.a.identifier );
+					report("  found texture instruction: " << ptx.toString());
+
+					TextureMap::const_iterator texture = context->textures.find(ptx.a.identifier);
+
 					assert( texture != module->textures.end() );
 		
 					AllocationMap::iterator 
@@ -2366,7 +2369,7 @@ namespace executive
 					{
 						report( "  Allocating texture " << texture->first 
 							<< " to index " << index << " with data " 
-							<< texture->second.data );
+							<< texture->second.data << " and type " << texture->second.type);
 						allocation = map.insert( 
 							std::make_pair( texture->first, index++ ) ).first;
 						_opaque.textures.push_back( &texture->second );
@@ -2458,6 +2461,7 @@ namespace executive
 			_opaque.blocks.insert( std::make_pair( block->id(), 
 				block->block() ) );
 		}
+		report( " Allocating " << _opaque.blocks.size() << " blocks." );
 	}
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
@@ -2470,8 +2474,7 @@ namespace executive
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
 		ISA = ir::Instruction::LLVM;
 		overrideLLVMKernel = false;
-		if( _overridePath ) 
-		{
+		if (_overridePath) {
 			overrideLLVMKernel = true;
 			overrideLLVMKernelPath = _overridePath;
 		}
@@ -2522,6 +2525,11 @@ namespace executive
 		_gridDim.x = x;
 		_gridDim.y = y;
 
+		{
+			// dump the function to stdout
+			
+		}
+		
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
 	}
@@ -2644,10 +2652,8 @@ namespace executive
 		unsigned int program = 0;
 		unsigned int line = 0;
 		unsigned int col = 0;
-		for( ; s_rit != module->statements.rend(); ++s_rit ) 
-		{
-			if (s_rit->directive == ir::PTXStatement::Loc) 
-			{
+		for ( ; s_rit != module->statements.rend(); ++s_rit) {
+			if (s_rit->directive == ir::PTXStatement::Loc) {
 				line = s_rit->sourceLine;
 				col = s_rit->sourceColumn;
 				program = s_rit->sourceFile;
@@ -2656,13 +2662,10 @@ namespace executive
 		}
 	
 		std::string fileName;
-		for( s_it = module->statements.begin(); 
-			s_it != module->statements.end(); ++s_it ) 
-		{
-			if( s_it->directive == ir::PTXStatement::File )
-			{
-				if( s_it->sourceFile == program ) 
-				{
+		for ( s_it = module->statements.begin(); 
+			s_it != module->statements.end(); ++s_it ) {
+			if (s_it->directive == ir::PTXStatement::File) {
+				if (s_it->sourceFile == program) {
 					fileName = s_it->name;
 					break;
 				}
@@ -2677,9 +2680,12 @@ namespace executive
 	std::string LLVMExecutableKernel::instruction( 
 		unsigned int statement ) const
 	{
+		report("For module " << module->modulePath);
+		assert(statement < module->statements.size());
 		ir::Module::StatementVector::const_iterator s_it 
 			= module->statements.begin();
 		std::advance(s_it, statement);
+		assertM(s_it->instruction.valid() == "", s_it->instruction.valid());
 		return s_it->instruction.toString();
 	}
 }

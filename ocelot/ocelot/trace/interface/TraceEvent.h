@@ -1,5 +1,4 @@
-/*!
-	\file TraceEvent.h
+/*! \file TraceEvent.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief declares TraceEvent class for recording runtime information
 */
@@ -13,22 +12,16 @@
 #include <hydrazine/interface/Stringable.h>
 #include <deque>
 
-/*!
-	\brief A namespace for trace generation related classes
-*/
+/*! \brief A namespace for trace generation related classes */
 namespace trace {
 
 	class TraceEvent : hydrazine::Stringable {
 	public:
-
 		typedef std::vector< ir::PTXU64 > U64Vector;
 		typedef boost::dynamic_bitset<> BitMask;
 		
 	public:
-
-		/*!
-			Default constructor
-		*/
+		/*! Default constructor */
 		TraceEvent();
 
 		/*!

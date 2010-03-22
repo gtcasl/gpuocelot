@@ -32,6 +32,9 @@
 
 #define REPORT_BASE 0
 
+#define REPORT_KERNEL_INSTRUCTIONS 0
+#define REPORT_LAUNCH_CONFIGURATION 1
+
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
 	const Executive* c, 
@@ -43,6 +46,7 @@ executive::EmulatedKernel::EmulatedKernel(
 	assertM( kernel->ISA == ir::Instruction::PTX, 
 		"Can only build an emulated kernel from a PTXKernel." );
 	
+	ISA = ir::Instruction::Emulated;
 	ConstMemory = ParameterMemory = 0;
 	if (_initialize) {
 		initialize();
@@ -50,6 +54,7 @@ executive::EmulatedKernel::EmulatedKernel(
 }
 
 executive::EmulatedKernel::EmulatedKernel(const Executive *c): ExecutableKernel(c) {
+	ISA = ir::Instruction::Emulated;
 
 }
 
@@ -62,6 +67,7 @@ executive::EmulatedKernel::~EmulatedKernel() {
 }
 
 bool executive::EmulatedKernel::executable() {
+	report("EmulatedKernel::executable() returns true");
 	return true;
 }
 
@@ -76,6 +82,21 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 		it != _generators.end(); ++it) {
 		(*it)->initialize(*this);
 	}
+
+#if REPORT_LAUNCH_CONFIGURATION == 1
+	report("EmulatedKernel::launchGrid(" << width << ", " << height << ")");
+	report("  kernel: " << name);
+	report("  const:  " << constMemorySize() << " bytes");
+	report("  local:  " << localMemorySize() << " bytes");
+	report("  static shared: " << sharedMemorySize() << " bytes");
+	report("  extern shared: " << externSharedMemorySize() << " bytes");
+	report("  total shared:  " << totalSharedMemorySize() << " bytes");
+	report("  param: " << parameterMemorySize() << " bytes");
+	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
+	report("  registers: " << registerCount() << " registers");
+	report("  grid: " << gridDim().x << ", " << gridDim().y << ", " << gridDim().z);
+	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
+#endif
 
 	for (int x = 0; x < width; ++x) {
 		for (int y = 0; y < height; ++y) {
@@ -98,8 +119,6 @@ void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
 	_blockDim.x = x;
 	_blockDim.y = y;
 	_blockDim.z = z;
-
-	_maxThreadsPerBlock = x*y*z;
 }
 
 ir::Dim3 executive::EmulatedKernel::getKernelShape() const {
@@ -107,6 +126,7 @@ ir::Dim3 executive::EmulatedKernel::getKernelShape() const {
 }
 
 void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
+	report("Setting external shared memory size to " << bytes);
 	_externSharedMemorySize = bytes;
 }
 
@@ -197,7 +217,9 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				ids.insert(std::make_pair(i_it, instructions.size()));
 			}
 			ptx.pc = instructions.size();
+#if REPORT_KERNEL_INSTRUCTIONS
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
+#endif
 			instructions.push_back(ptx);
 		}
 	}
@@ -328,7 +350,6 @@ void executive::EmulatedKernel::registerAllocation() {
 	registerMap = ir::PTXKernel::assignRegisters( *cfg() );
 	_registerCount = registerMap.size();
 	report(" Allocated " << _registerCount << " registers");
-	_maxThreadsPerBlock = 512;
 }
 
 void executive::EmulatedKernel::_computeOffset(
@@ -635,14 +656,16 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 	unsigned int constantOffset = 0;
 
-	map<string, unsigned int> constant;
+	typedef map<string, unsigned int> ConstantOffsetMap;
+
+	ConstantOffsetMap constant;
 	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
 	for (; it != module->globals.end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Const) {
 			assert(it->second.registered || it->second.local);
 			unsigned int offset;
 
-			report("Found global const variable " 
+			report("  Found global const variable " 
 				<< it->second.statement.name);
 			_computeOffset(it->second.statement, 
 				offset, constantOffset);						
@@ -664,10 +687,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = constant.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
+					ConstantOffsetMap::iterator	l_it = constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -681,10 +702,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		else if ( instr.opcode == ir::PTXInstruction::Ld 
 			|| instr.opcode == ir::PTXInstruction::St ) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = constant.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
+					ConstantOffsetMap::iterator l_it = constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -709,16 +728,22 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	}
 	
 	// copy globals into constant memory
-	for (map<string, unsigned int>::iterator l_it = constant.begin(); 
-		l_it != constant.end(); ++l_it) {
-		ir::Module::GlobalMap::const_iterator 
-			g_it = module->globals.find(l_it->first);
+	for (ConstantOffsetMap::iterator l_it = constant.begin(); l_it != constant.end(); ++l_it) {
+
+		ir::Module::GlobalMap::const_iterator g_it = module->globals.find(l_it->first);
+
 		assert(g_it != module->globals.end());
 		assert(g_it->second.statement.directive == ir::PTXStatement::Const);
-		assert(g_it->second.statement.bytes() 
-			+ l_it->second <= _constMemorySize);
-		memcpy( ConstMemory + l_it->second, g_it->second.pointer, 
-			g_it->second.statement.bytes() );
+		assert(g_it->second.statement.bytes() + l_it->second <= _constMemorySize);
+
+		/*
+		report("  mapping constant: " << l_it->first << "(" << (void *)g_it->second.pointer 
+			<< ") of size " << g_it->second.statement.bytes() 
+			<< " bytes to constant memory with offset " << l_it->second);
+		report("  byte representation (pointer = " << (void *)g_it->second.pointer << ":");
+		*/
+
+		memcpy( ConstMemory + l_it->second, g_it->second.pointer, g_it->second.statement.bytes() );
 	}
 
 }
@@ -769,7 +794,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 							(ir::PTXU64)g_it->second.pointer;
 						report("Mapping global label " 
 							<< (instr.*operands[n]).identifier << " to " 
-							<< (instr.*operands[n]).imm_uint 
+							<< (void *)(instr.*operands[n]).imm_uint 
 							<< " for instruction " << instr.toString() );
 					}
 				}
@@ -791,7 +816,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 							(ir::PTXU64)g_it->second.pointer;
 						report("Mapping ld/st global label " 
 							<< (instr.*operands[n]).identifier << " to " 
-							<< (instr.*operands[n]).imm_uint
+							<< (void *)(instr.*operands[n]).imm_uint
 							<< " for instruction " << instr.toString() );
 					}
 				}
@@ -805,25 +830,35 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 	if (module == 0) {
 		return;
 	}
-	report("Initializing texture variables for kernel " << name);
+	report("\n\nInitializing texture variables for kernel " << name);
+
 	textures.clear();
-	IndexMap indicies;
+	IndexMap indices;
+
 	unsigned int next = 0;
-	for (PTXInstructionVector::iterator 
-		fi = instructions.begin(); 
-		fi != instructions.end(); ++fi) {
+
+	for (PTXInstructionVector::iterator fi = instructions.begin(); fi != instructions.end(); ++fi) {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
-			ir::Module::TextureMap::const_iterator 
-				texture = module->textures.find(fi->a.identifier);
-			assert(texture != module->textures.end());
-			IndexMap::iterator index = indicies.find(fi->a.identifier);
-			if (index == indicies.end()) {
-				index = indicies.insert(
-					std::make_pair(fi->a.identifier,next++)).first;
-				textures.push_back(&texture->second);
+			TextureMap::const_iterator texture_it = context->textures.find(fi->a.identifier);
+
+			assert(texture_it != context->textures.end());
+
+			IndexMap::iterator index = indices.find(fi->a.identifier);
+
+			if (index == indices.end()) {
+				index = indices.insert(std::make_pair(fi->a.identifier,next++)).first;
+				textures.push_back(&texture_it->second);
 			}
+
 			fi->a.reg = index->second;
+			report("updated fi->a.reg = " << fi->a.reg);
 		}
+	}
+
+	report("Registered indices:");
+	for (IndexMap::const_iterator ind_it = indices.begin(); ind_it != indices.end(); ++ind_it) {
+		report("  " << ind_it->first << ": " << ind_it->second 
+			<< " - type: " << textures[ind_it->second]->type << " - data: " << textures[ind_it->second]->data);
 	}
 }
 

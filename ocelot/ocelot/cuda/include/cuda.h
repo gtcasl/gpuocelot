@@ -36,7 +36,7 @@
 #ifndef __cuda_cuda_h__
 #define __cuda_cuda_h__
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 /**
  * \file
@@ -601,7 +601,7 @@ typedef struct
     CUresult CUDAAPI cuMemAllocHost(void **pp, unsigned int bytesize);
     CUresult CUDAAPI cuMemFreeHost(void *p);
 
-    CUresult CUDAAPI cuMemHostAlloc(void **pp, size_t bytesize, unsigned int Flags );
+    CUresult CUDAAPI cuMemHostAlloc(void **pp, unsigned long long bytesize, unsigned int Flags );
  
     CUresult CUDAAPI cuMemHostGetDevicePointer( CUdeviceptr *pdptr, void *p, unsigned int Flags );
     CUresult CUDAAPI cuMemHostGetFlags( unsigned int *pFlags, void *p );

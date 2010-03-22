@@ -13,92 +13,63 @@
 
 namespace ocelot
 {
+	cuda::CudaRuntimeInterface * get() {
+		return cuda::CudaRuntimeInterface::get();
+	}
 
 	void addTraceGenerator( trace::TraceGenerator& gen, 
 		bool persistent, bool safe )
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->addTraceGenerator( 
-			gen, persistent, safe );
+		get()->addTraceGenerator(gen, persistent, safe );
 	}
 				
 	void clearTraceGenerators( bool safe )
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearTraceGenerators( 
-			safe );
+		get()->clearTraceGenerators( safe );
 	}
 	
 	void limitWorkerThreads( unsigned int limit )
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			limitWorkerThreads( limit );
+		get()->limitWorkerThreads( limit );
 	}
 
 	void registerPTXModule(std::istream& stream, const std::string& name)
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			registerPTXModule( stream, name );
+		get()->registerPTXModule( stream, name );
 	}
 	
-	void registerLLVMModule( std::istream& stream, const std::string& name )
-	{
-		assertM( false, "registerLLVMModule not implemented." );
-	}
-	
-	void registerExternalKernel(ExternalKernel kernel, const std::string &name)
-	{
-
-	}
-
 	KernelPointer getKernelPointer(const std::string& name,
 		const std::string& module)
 	{
-		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			getKernelPointer( name, module );
+		return get()->getKernelPointer( name, module );
 	}
 
 	void** getFatBinaryHandle(const std::string& name)
 	{
-		return cuda::CudaRuntimeInterface::entryPoint.runtime()->
-			getFatBinaryHandle( name );
+		return get()->getFatBinaryHandle( name );
 	}
 	
 	void clearErrors()
 	{
-		cuda::CudaRuntimeInterface::entryPoint.runtime()->clearErrors();
+		get()->clearErrors();
 	}
 
 	void reset()
 	{
-		assertM( false, "Ocelot API function reset is not implemented." );
+		get()->reset();
 	}
 	
-	void contextSwitch(unsigned int destinationDevice, 
-		unsigned int sourceDevice)
+	PointerMap contextSwitch( unsigned int destinationDevice, 
+		unsigned int sourceDevice )
 	{
-		assertM( false, "Ocelot API contextSwitch is not implemented." );
-	}
-
-	void callKernel(KernelPointer kernel, ...)
-	{
-		KernelPointer *parameters = &kernel;
-		while (*(++parameters) != kernel) { }
-		size_t paramSize = (size_t)(parameters - &kernel - sizeof(kernel));
-
-		report("Paramter block size: " << paramSize);
-		assertM( false, "Ocelot API callKernel not implemented.");
-	}
-
-	executive::Executive& executive()
-	{
-		return cuda::CudaRuntimeInterface::entryPoint.runtime()->executive();
+		return std::move(get()->contextSwitch( 
+			destinationDevice, sourceDevice ));
 	}
 	
 	void unregisterModule( const std::string& name )
 	{
-		assertM( false, "Ocelot API unregisterModule is not implemented." );
+		get()->unregisterModule( name );
 	}
-
-
 }
 
 #endif

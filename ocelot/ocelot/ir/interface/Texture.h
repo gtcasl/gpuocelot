@@ -15,12 +15,9 @@
 namespace ir
 {
 	/*! \brief A class to represent the access format of a texture */
-	class Texture
-	{		
-
+	class Texture {		
 		public:
-			enum Type
-			{
+			enum Type {
 				Unsigned,
 				Signed,
 				Float,
@@ -39,6 +36,7 @@ namespace ir
 				Clamp
 			};
 
+		public:
 			unsigned int pitch() {
 				return ((x + y + z + w) / 8) * size.x;
 			}
@@ -59,14 +57,17 @@ namespace ir
 			unsigned int y; //! Bits in y dim
 			unsigned int z; //! Bits in z dim
 			unsigned int w; //! Bits in w dim
+
 			bool normalize; //! Normalize accesses
 			bool normalizedFloat; //! Return a normalized float
+
 			Type type; //! Data type
 			Dim3 size; //! Texture dimensions
-			void* data; //! Pointer to mapped variable
 			
 			Interpolation interpolation; //! Interpolation mode
 			AddressMode addressMode[3]; //! Wrap around or clamp to boundary
+
+			void * data; //! Pointer to mapped variable
 			
 		public:
 			Texture();
@@ -75,6 +76,7 @@ namespace ir
 		
 			static std::string toString(Type type);			
 	};
+
 }
 
 #endif

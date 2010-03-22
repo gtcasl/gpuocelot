@@ -18,6 +18,9 @@
 
 #define REPORT_BASE 0
 
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; report(ss.str()); \
+	throw hydrazine::Exception(ss.str()); }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::GPUExecutableKernel::GPUExecutableKernel(): ptxKernel(0) {
@@ -37,12 +40,12 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	ir::Kernel& kernel, const CUfunction& function, const executive::Executive* c ): 
 		ExecutableKernel(kernel, c), ptxKernel(0), cuFunction(function) {
 	
-	this->ISA = ir::Instruction::GPU;
 	report("GPUExecutableKernel()");
+	this->ISA = ir::Instruction::GPU;
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
 
-	#if HAVE_CUDA_DRIVER_API == 1
+#if HAVE_CUDA_DRIVER_API == 1
 	cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
 	report(" Registers - " << _registerCount);
@@ -55,7 +58,7 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	cuFuncGetAttribute((int*)&_sharedMemorySize, 
 		CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, cuFunction);
 	report(" Shared Memory - " << _sharedMemorySize);
-	#endif
+#endif
 
 	report("  constructed new GPUExecutableKernel");
 }
@@ -107,7 +110,6 @@ void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int byte
 	_sharedMemorySize = bytes;
 #if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
-//	bytes = 2496;// KERRDEBUG remove this before check in
 	result = cuFuncSetSharedSize(cuFunction, bytes);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuFuncSetSharedSize(" << bytes << " bytes) FAILED: " << result);
@@ -158,120 +160,20 @@ void executive::GPUExecutableKernel::configureParameters() {
 #if HAVE_CUDA_DRIVER_API == 1
 	report("executive::GPUExecutableKernel::configureParameters()");
 
-	std::vector< ir::Parameter >::iterator it = parameters.begin();
-	unsigned int paramSize = 0;
-	cudaError_enum result;
+	char *paramBuffer = new char[_parameterMemorySize];
+	getParameterBlock((unsigned char*)paramBuffer, _parameterMemorySize);
 
-	for (; it != parameters.end(); ++it) {
-		if (it->getElementSize() == 8 && (paramSize % 8)) {
-			paramSize += 8 - (paramSize % 8);
-		}
-		it->offset = paramSize;
-		paramSize += it->getSize();
+	if (cuParamSetSize(cuFunction, _parameterMemorySize) != CUDA_SUCCESS) {
+		delete [] paramBuffer;
+		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter size to " 
+			<< _parameterMemorySize);
 	}
-	if (!paramSize) {
-		return;
+	if (cuParamSetv(cuFunction, 0, paramBuffer, _parameterMemorySize) != CUDA_SUCCESS) {
+		delete [] paramBuffer;
+		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter data");
 	}
-
-	result = cuParamSetSize(cuFunction, paramSize);
-	if (result != CUDA_SUCCESS) {
-		report("** failed to set parameter size (" << paramSize << " bytes) for kernel " 
-			<< name << "\n - cuParamSetSize returned " << result);
-		throw hydrazine::Exception(std::string("Failed to set parameter size for kernel ") + name);
-	}
-	else {
-		report("  set parameter size: " << paramSize);
-	}
-	for (it = parameters.begin(); it != parameters.end(); ++it) {
-		report("Configuring parameter " << it->name 
-			<< " " 
-			<< " - type: " << it->arrayValues.size() << " x " 
-			<< ir::PTXOperand::toString(it->type)
-			<< " - value: " << ir::Parameter::value(*it));
-
-		switch (it->type) {
-			case ir::PTXOperand::b8:	// fall through
-			case ir::PTXOperand::s8:	// fall through
-			case ir::PTXOperand::s16:	// fall through
-			case ir::PTXOperand::u8:	// fall through
-			case ir::PTXOperand::u16:
-			{
-				// use setv to copy a blob
-				unsigned int bytes = it->arrayValues.size() * it->getElementSize();
-				char *ptr = new char[bytes];
-				
-				for (size_t i = 0; i < it->arrayValues.size(); i++) {
-					switch (it->getElementSize()) {
-						case 2:
-							ptr[i*it->getElementSize()+1] = (it->arrayValues[i].val_u16 >> 8);
-						case 1:
-							ptr[i*it->getElementSize()] = it->arrayValues[i].val_u8;
-							break;
-						default:
-						{
-							delete [] ptr;
-							report("*** Unsupported parameter size");
-							throw hydrazine::Exception("unsupported parameter size");
-						}
-					}
-				}
-
-				report("  - GPUExecutableKernel::configureParameters() - cuParamSetv(offset: " 
-					<< it->offset << ", size: " << bytes << " bytes)");
-				if (cuParamSetv(cuFunction, it->offset, (void *)ptr, bytes) != CUDA_SUCCESS) {
-					report("*** failed to set binary parameter - offset: " << it->offset << ", size: " << bytes);
-					throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
-						" for kernel " + name);
-				}
-				delete [] ptr;
-				break;
-			}
-
-			case ir::PTXOperand::s32:	// fall through
-			case ir::PTXOperand::u32:	// fall through
-			case ir::PTXOperand::s64:	// fall through
-			case ir::PTXOperand::u64:
-			{
-				size_t offset = it->offset;
-				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); ++val_it, offset += it->getElementSize()) {
-					size_t value = (size_t)val_it->val_u64;
-				
-					report("  - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: " << it->offset 
-						<< ", value: 0x" << std::hex << value << std::dec << ", size: " << it->getElementSize() << ")");
-					if (cuParamSetv(cuFunction, offset, &value, it->getElementSize()) != CUDA_SUCCESS) {
-						report("*** failed to set integer parameter");
-						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
-							" for kernel " + name);
-					}
-				}
-				break;
-			}
-
-			case ir::PTXOperand::f32:
-			{
-				size_t offset = it->offset;
-				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); ++val_it, offset += 4) {
-					float value = val_it->val_f32;
-					report("  - GPUExecutableKernel::configureParameters() - cuParamSetf(offset: " << it->offset << ", value: " << value << ")");
-					if (cuParamSetf(cuFunction, offset, value) != CUDA_SUCCESS) {
-						report("*** failed to set floating point parameter" << std::flush);
-						throw hydrazine::Exception(std::string("Failed to set parameter ") + it->name + 
-							" for kernel " + name);
-					}
-				}
-				break;
-			}
-
-			default:
-			{
-				throw hydrazine::Exception(std::string("Parameter type ") + 
-					ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
-			}
-		}
-	}
-	#endif
+	
+#endif
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

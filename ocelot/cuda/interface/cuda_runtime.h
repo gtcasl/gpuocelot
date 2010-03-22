@@ -1,84 +1,257 @@
-/*
- * Copyright 1993-2009 NVIDIA Corporation.  All rights reserved.
- *
- * NOTICE TO USER:   
- *
- * This source code is subject to NVIDIA ownership rights under U.S. and 
- * international Copyright laws.  Users and possessors of this source code 
- * are hereby granted a nonexclusive, royalty-free license to use this code 
- * in individual and commercial software.
- *
- * NVIDIA MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS SOURCE 
- * CODE FOR ANY PURPOSE.  IT IS PROVIDED "AS IS" WITHOUT EXPRESS OR 
- * IMPLIED WARRANTY OF ANY KIND.  NVIDIA DISCLAIMS ALL WARRANTIES WITH 
- * REGARD TO THIS SOURCE CODE, INCLUDING ALL IMPLIED WARRANTIES OF 
- * MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE.
- * IN NO EVENT SHALL NVIDIA BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL, 
- * OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS 
- * OF USE, DATA OR PROFITS,  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE 
- * OR OTHER TORTIOUS ACTION,  ARISING OUT OF OR IN CONNECTION WITH THE USE 
- * OR PERFORMANCE OF THIS SOURCE CODE.  
- *
- * U.S. Government End Users.   This source code is a "commercial item" as 
- * that term is defined at  48 C.F.R. 2.101 (OCT 1995), consisting  of 
- * "commercial computer  software"  and "commercial computer software 
- * documentation" as such terms are  used in 48 C.F.R. 12.212 (SEPT 1995) 
- * and is provided to the U.S. Government only as a commercial end item.  
- * Consistent with 48 C.F.R.12.212 and 48 C.F.R. 227.7202-1 through 
- * 227.7202-4 (JUNE 1995), all U.S. Government End Users acquire the 
- * source code with only those rights set forth herein. 
- *
- * Any use of this source code in individual and commercial software must 
- * include, in the user documentation and internal comments to the code,
- * the above Disclaimer and U.S. Government End Users Notice.
- */
+/*!
+	\file cuda_runtime.h
+	\author Andrew Kerr <arkerr@gatech.edu>
+	\brief implements an up-to-date CUDA Runtime API
+	\date 11 Dec 2009
+*/
 
-#if !defined(__CUDA_RUNTIME_API_H__)
-#define __CUDA_RUNTIME_API_H__
+#ifndef CUDA_RUNTIME_H_INCLUDED
+#define CUDA_RUNTIME_H_INCLUDED
 
-/*******************************************************************************
-*                                                                              *
-* CUDA Runtime API Version 2.2                                                 *
-*                                                                              *
-*******************************************************************************/
+#include <cstring>
 
-#define CUDART_VERSION  2020
+#include <limits.h>
+#include <stdint.h>
 
-/*******************************************************************************
-*                                                                              *
-*                                                                              *
-*                                                                              *
-*******************************************************************************/
-
-#include "host_defines.h"
-#include "builtin_types.h"
-
-/** \cond impl_private */
-#if !defined(__dv)
-
-#if defined(__cplusplus)
-
-#define __dv(v) \
-        = v
-
-#else /* __cplusplus */
-
-#define __dv(v)
-
-#endif /* __cplusplus */
-
-#endif /* !__dv */
-/** \endcond impl_private */
-
-/*******************************************************************************
-*                                                                              *
-*                                                                              *
-*                                                                              *
-*******************************************************************************/
-
-#if defined(__cplusplus)
+#ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#define __dv(x) =x
+#else
+#define __dv(x)
+#endif
+
+#define __host__
+#define CUDARTAPI
+
+struct cudaArray;
+struct cudaMemcpy3DParms;
+struct textureReference;
+
+typedef int cudaEvent_t;
+typedef int cudaStream_t;
+typedef unsigned int GLuint;
+
+#define cudaHostAllocDefault      0 
+#define cudaHostAllocPortable     1
+#define cudaHostAllocMapped       2 
+#define cudaHostAllocWriteCombine 4
+
+enum cudaMemcpyKind {
+	cudaMemcpyHostToHost = 0,
+	cudaMemcpyHostToDevice = 1,
+	cudaMemcpyDeviceToHost = 2,
+	cudaMemcpyDeviceToDevice = 3
+};
+
+enum cudaChannelFormatKind {
+	cudaChannelFormatKindSigned = 0,
+	cudaChannelFormatKindUnsigned = 1,
+	cudaChannelFormatKindFloat = 2,
+	cudaChannelFormatKindNone = 3
+};
+
+enum cudaComputeMode {
+	cudaComputeModeDefault,
+	cudaComputeModeExclusive,
+	cudaComputeModeProhibited
+};
+
+enum cudaError_t {
+	cudaSuccess,
+	cudaErrorMissingConfiguration,
+	cudaErrorMemoryAllocation,
+	cudaErrorInitializationError,
+	cudaErrorLaunchFailure,
+	cudaErrorPriorLaunchFailure,
+	cudaErrorLaunchTimeout,
+	cudaErrorLaunchOutOfResources,
+	cudaErrorInvalidDeviceFunction,
+	cudaErrorInvalidConfiguration,
+	cudaErrorInvalidDevice,
+	cudaErrorInvalidValue,
+	cudaErrorInvalidPitchValue,
+	cudaErrorInvalidSymbol,
+	cudaErrorMapBufferObjectFailed,
+	cudaErrorUnmapBufferObjectFailed,
+	cudaErrorInvalidHostPointer,
+	cudaErrorInvalidDevicePointer,
+	cudaErrorInvalidTexture,
+	cudaErrorInvalidTextureBinding,
+	cudaErrorInvalidChannelDescriptor,
+	cudaErrorInvalidMemcpyDirection,
+	cudaErrorAddressOfConstant,
+	cudaErrorTextureFetchFailed,
+	cudaErrorTextureNotBound,
+	cudaErrorSynchronizationError,
+	cudaErrorInvalidFilterSetting,
+	cudaErrorInvalidNormSetting,
+	cudaErrorMixedDeviceExecution,
+	cudaErrorCudartUnloading,
+	cudaErrorUnknown,
+	cudaErrorNotYetImplemented,
+	cudaErrorMemoryValueTooLarge,
+	cudaErrorInvalidResourceHandle,
+	cudaErrorNotReady,
+	cudaErrorInsufficientDriver,
+	cudaErrorSetOnActiveProcess,
+	cudaErrorNoDevice,
+	cudaErrorStartupFailure,
+	cudaErrorApiFailureBase
+};
+
+struct dim3 {
+	int x, y, z;
+};
+
+struct uint3 {
+	unsigned int x, y, z;
+};
+
+struct cudaExtent {
+	size_t width;
+	size_t height;
+	size_t depth;
+};
+
+struct cudaDeviceProp {
+  char   name[256];                 ///< ASCII string identifying device
+  size_t totalGlobalMem;            ///< Global memory available on device in bytes
+  size_t sharedMemPerBlock;         ///< Shared memory available per block in bytes
+  int    regsPerBlock;              ///< 32-bit registers available per block
+  int    warpSize;                  ///< Warp size in threads
+  size_t memPitch;                  ///< Maximum pitch in bytes allowed by memory copies
+  int    maxThreadsPerBlock;        ///< Maximum number of threads per block
+  int    maxThreadsDim[3];          ///< Maximum size of each dimension of a block
+  int    maxGridSize[3];            ///< Maximum size of each dimension of a grid
+  int    clockRate;                 ///< Clock frequency in kilohertz
+  size_t totalConstMem;             ///< Constant memory available on device in bytes
+  int    major;                     ///< Major compute capability
+  int    minor;                     ///< Minor compute capability
+  size_t textureAlignment;          ///< Alignment requirement for textures
+  int    deviceOverlap;             ///< Device can concurrently copy memory and execute a kernel
+  int    multiProcessorCount;       ///< Number of multiprocessors on device
+  int    kernelExecTimeoutEnabled;  ///< Specified whether there is a run time limit on kernels
+  int    integrated;                ///< Device is integrated as opposed to discrete
+  int    canMapHostMemory;          ///< Device can map host memory with cudaHostAlloc/cudaHostGetDevicePointer
+  int    computeMode;               ///< Compute mode (See ::cudaComputeMode)
+  int    __cudaReserved[36];
+};
+
+struct cudaChannelFormatDesc {
+	int x;
+	int y;
+	int z;
+	int w;
+	enum cudaChannelFormatKind f;
+};
+
+struct cudaFuncAttributes {
+   size_t sharedSizeBytes;  ///< Size of shared memory in bytes
+   size_t constSizeBytes;   ///< Size of constant memory in bytes
+   size_t localSizeBytes;   ///< Size of local memory in bytes
+   int maxThreadsPerBlock;  ///< Maximum number of threads per block
+   int numRegs;             ///< Number of registers used
+   int __cudaReserved[8];
+};
+
+struct cudaPitchedPtr {
+	void *ptr;
+	size_t pitch;
+	size_t xsize;
+	size_t ysize;
+};
+
+struct cudaPos {
+	size_t x;
+	size_t y;
+	size_t z;
+};
+
+struct cudaMemcpy3DParms {
+	struct cudaArray *srcArray;
+	struct cudaPos srcPos;
+	struct cudaPitchedPtr srcPtr;
+	struct cudaArray *dstArray;
+	struct cudaPos dstPos;
+	struct cudaPitchedPtr dstPtr;
+	struct cudaExtent extent;
+	enum cudaMemcpyKind kind;
+};
+
+struct textureReference {
+  int normalized;
+  int filterMode;
+  int addressMode[3];
+  cudaChannelFormatDesc channelDesc;
+  int __cudaReserved[16];
+};
+
+enum cudaTextureAddressMode
+{
+  cudaAddressModeWrap,
+  cudaAddressModeClamp
+};
+
+enum cudaTextureFilterMode
+{
+  cudaFilterModePoint,
+  cudaFilterModeLinear
+};
+
+enum cudaTextureReadMode
+{
+  cudaReadModeElementType,
+  cudaReadModeNormalizedFloat
+};
+
+
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
+extern void** __cudaRegisterFatBinary(void *fatCubin);
+
+extern void __cudaUnregisterFatBinary(void **fatCubinHandle);
+
+extern void __cudaRegisterVar(void **fatCubinHandle, char *hostVar, char *deviceAddress, const char *deviceName, int ext, int size, int constant, int global);
+
+extern void __cudaRegisterTexture(
+        void **fatCubinHandle,
+  const struct textureReference *hostVar,
+  const void **deviceAddress,
+  const char *deviceName,
+        int dim,
+        int norm,
+        int ext
+);
+
+extern void __cudaRegisterShared(
+  void **fatCubinHandle,
+  void **devicePtr
+);
+
+extern void __cudaRegisterSharedVar(
+  void **fatCubinHandle,
+  void **devicePtr,
+  size_t size,
+  size_t alignment,
+  int storage
+);
+
+extern void __cudaRegisterFunction(
+        void **fatCubinHandle,
+  const char *hostFun,
+        char *deviceFun,
+  const char *deviceName,
+        int thread_limit,
+        uint3 *tid,
+        uint3 *bid,
+        dim3 *bDim,
+        dim3 *gDim,
+        int *wSize
+);
 
 /*******************************************************************************
 *                                                                              *
@@ -109,6 +282,7 @@ extern __host__ cudaError_t CUDARTAPI cudaFreeArray(struct cudaArray *array);
 
 extern __host__ cudaError_t CUDARTAPI cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags);
 extern __host__ cudaError_t CUDARTAPI cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
+extern __host__ cudaError_t CUDARTAPI cudaHostGetFlags(unsigned int *pFlags, void *pHost);
 
 
 /*******************************************************************************
@@ -242,6 +416,22 @@ extern __host__ cudaError_t CUDARTAPI cudaEventSynchronize(cudaEvent_t event);
 extern __host__ cudaError_t CUDARTAPI cudaEventDestroy(cudaEvent_t event);
 extern __host__ cudaError_t CUDARTAPI cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end);
 
+
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
+extern __host__ cudaError_t cudaGLMapBufferObject(void **devPtr, GLuint bufObj);
+extern __host__ cudaError_t cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, cudaStream_t stream);
+extern __host__ cudaError_t cudaGLRegisterBufferObject(GLuint bufObj);
+extern __host__ cudaError_t cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags);
+extern __host__ cudaError_t cudaGLSetGLDevice(int device);
+extern __host__ cudaError_t cudaGLUnmapBufferObject(GLuint bufObj);
+extern __host__ cudaError_t cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream);
+extern __host__ cudaError_t cudaGLUnregisterBufferObject(GLuint bufObj);
+
 /*******************************************************************************
 *                                                                              *
 *                                                                              *
@@ -269,13 +459,9 @@ extern __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
 extern __host__ cudaError_t CUDARTAPI cudaDriverGetVersion(int *driverVersion);
 extern __host__ cudaError_t CUDARTAPI cudaRuntimeGetVersion(int *runtimeVersion);
 
-extern __host__ void __cudaMutexOperation(int lock);
-extern __host__ int __cudaSynchronizeThreads(void** one, void* two);
-
-#if defined(__cplusplus)
+#ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 
-#undef __dv
+#endif
 
-#endif /* !__CUDA_RUNTIME_API_H__ */

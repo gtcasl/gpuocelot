@@ -1,668 +1,1745 @@
-/*! \file Executive.cpp
+/*! \file Executive.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-	\date Jan 16, 2009
-	\brief class definition for loading modules, enumerating devices,
-		and executing kernels on the selected device
+	\brief implements Ocelot's executive manager
 */
-
+
+// C stdlib includes
 #include <assert.h>
+#include <stdlib.h>
 #include <sys/sysinfo.h>
 
+// C++ stdlib includes
+#include <fstream>
+
+// Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/executive/interface/ExternalKernel.h>
+#include <ocelot/executive/interface/RuntimeException.h>
 
 #if HAVE_CUDA_DRIVER_API == 1
+#define CUDA_OPENGL_INTEROPERABILITY 0
 #include <ocelot/cuda/include/cudaGL.h>
 #endif
 
-#include <cstring>
-
+// Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/interface/Casts.h>
 
-#include <fstream>
-
-#include <configure.h>
-
+// Debugging messages
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 0
 
-// if 1, saves ptx representation of each module of an app to file 'module_<n>.ptx'
-#define GPU_EMIT_PTX_REPRESENTATION 0
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
-#if HAVE_CUDA_DRIVER_API == 1
-typedef struct {
-	union {
-		void *void_ptr;
-		CUdeviceptr device_ptr;
-	};
-} Union_device_ptr;
+#define min(a, b) ( (b) < (a) ? (b) : (a))
+#define max(a, b) ( (a) < (b) ? (b) : (a))
 
-static CUdeviceptr painful_cast(void *ptr) {
-	Union_device_ptr u_ptr;
-	u_ptr.void_ptr = ptr;
-	return u_ptr.device_ptr;
-}
+#define Ocelot_Report(x) { std::cerr << "==OCELOT== " << x << std::endl; }
 
-static CUdeviceptr painful_cast(const void *ptr) {
-	Union_device_ptr u_ptr;
-	u_ptr.void_ptr = const_cast<void *>(ptr);
-	return u_ptr.device_ptr;
-}
-#endif
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot executive construction/destruction
+//
 
-std::string executive::Executive::nearbyGlobalsToString( 
-	const Executive& executive, const void* ptr, unsigned int above,
-	unsigned int below ) {
-	std::stringstream stream;
-	stream << " Nearby Global Variable Allocations" << std::endl;
-	if (executive.globalAllocations.empty()) {
-		stream << "  No Allocations." << std::endl;
-		return stream.str();
-	}
-	
-	GlobalAllocationMap::const_iterator closest 
-		= executive.globalAllocations.upper_bound((char*)ptr);
-	if (closest != executive.globalAllocations.begin()) --closest;
-	
-	GlobalAllocationMap::const_iterator bi = closest;
-	for (unsigned int b = 0; b < below; ++b, --bi) {
-		if (bi == executive.globalAllocations.begin()) break;
-	}
+executive::Executive::Executive() : selectedDevice(-1) {
 
-	for ( ; bi != closest; ++bi ) {
-		stream << "  [" << bi->second.ptr << "] - [" 
-			<< ((void*)((char*)bi->second.ptr + bi->second.size)) << "]" 
-			<< " (" << bi->second.size << " bytes) (" 
-			<< ir::PTXInstruction::toString(bi->second.space) << ")"
-			<< std::endl;
-	}
-
-	stream << "  [" << closest->second.ptr << "] - ";
-	
-	bool inRange = (char*)ptr < ((char*)closest->second.ptr 
-		+ closest->second.size) && ((char*)ptr >= (char*)closest->second.ptr);
-
-	if (inRange) {
-		stream << "   ****" << ptr << "**** -";
-	}
-	
-	stream << " [" << ((void*)((char*)closest->second.ptr 
-		+ closest->second.size)) << "]" 
-		<< " (" << closest->second.size << " bytes) (" 
-		<< ir::PTXInstruction::toString(closest->second.space) << ")"
-		<< std::endl;
-	
-	if (!inRange) {
-		stream << "   ****" << ptr << "****" << std::endl;
-	}
-	
-	GlobalAllocationMap::const_iterator ai = closest;
-	if( ai != executive.globalAllocations.end() ) ++ai;
-
-	for ( unsigned int a = 0; a < above 
-		&& ai != executive.globalAllocations.end(); ++ai, ++a) {
-		stream << "  [" << ai->second.ptr << "] - [" 
-			<< ((void*)((char*)ai->second.ptr + ai->second.size)) << "]" 
-			<< " (" << ai->second.size << " bytes) (" 
-			<< ir::PTXInstruction::toString(ai->second.space) << ")"
-			<< std::endl;		
-	}
-	
-	return stream.str();
-}
-
-std::string executive::Executive::nearbyAllocationsToString( 
-	const Executive& executive, const void* ptr, unsigned int above,
-	unsigned int below ) {
-	std::stringstream stream;
-	stream << "Device " << executive.getSelected() << " : " 
-		<< executive.devices[executive.getSelected()].name << std::endl;
-	stream << nearbyGlobalsToString(executive, ptr, above, below) << std::endl;
-	
-	DeviceAllocationMap::const_iterator allocations 
-		= executive.memoryAllocations.find(executive.getSelected());
-	stream << " Nearby Device Memory Allocations" << std::endl;
-	if (allocations == executive.memoryAllocations.end()) {
-		stream << "  No Allocations" << std::endl;
-		return stream.str();
-	}
-	if (allocations->second.empty()) {
-		stream << "  No Allocations" << std::endl;
-		return stream.str();
-	}
-	
-	AllocationMap::const_iterator closest 
-		= allocations->second.upper_bound((char*)ptr);
-	if (closest != allocations->second.begin()) --closest;
-	
-	AllocationMap::const_iterator bi = closest;
-	for (unsigned int b = 0; b < below; ++b, --bi) {
-		if (bi == allocations->second.begin()) break;
-	}
-
-	for ( ; bi != closest; ++bi ) {
-		stream << "  [" << bi->second.ptr << "] - [" 
-			<< ((void*)((char*)bi->second.ptr + bi->second.size)) 
-			<< "] (" << bi->second.size 
-			<< " bytes) (global)" << std::endl;
-	}
-
-	stream << "  [" << closest->second.ptr << "] - ";
-	
-	bool inRange = (char*)ptr < ((char*)closest->second.ptr 
-		+ closest->second.size) && ((char*)ptr >= (char*)closest->second.ptr);
-
-	if (inRange) {
-		stream << "   ****" << ptr << "**** -";
-	}
-	
-	stream << " [" << ((void*)((char*)closest->second.ptr 
-		+ closest->second.size)) << "] (" << closest->second.size 
-		<< " bytes) (global)" << std::endl;
-	
-	if (!inRange) {
-		stream << "   ****" << ptr << "****" << std::endl;
-	}
-	
-	AllocationMap::const_iterator ai = closest;
-	if( ai != allocations->second.end() ) ++ai;
-	
-	for ( unsigned int a = 0; a < above 
-		&& ai != allocations->second.end(); ++ai, ++a) {
-		stream << "  [" << ai->second.ptr << "] - [" 
-			<< ((void*)((char*)ai->second.ptr + ai->second.size)) 
-			<< "] (" << ai->second.size 
-			<< " bytes) (global)" << std::endl;		
-	}
-	
-	return stream.str();
-}
-
-#if HAVE_CUDA_DRIVER_API == 1
-static CUfilter_mode_enum textureFilterMode(ir::Texture::Interpolation interpolation) {
-	switch (interpolation) {
-		case ir::Texture::Linear:
-			return CU_TR_FILTER_MODE_LINEAR;
-		case ir::Texture::Nearest:
-			return CU_TR_FILTER_MODE_POINT;
-		default: break;
-	}
-	return CU_TR_FILTER_MODE_POINT;
-}
-
-static  CUaddress_mode textureAddressMode(ir::Texture::AddressMode addr) {
-	switch (addr) {
-		case ir::Texture::Wrap:
-			return CU_TR_ADDRESS_MODE_WRAP;
-		case ir::Texture::Clamp:
-			return CU_TR_ADDRESS_MODE_CLAMP;
-		default: break;
-	}
-	return CU_TR_ADDRESS_MODE_WRAP;
-}
-
-/*
-static CUarray_format textureDataFormat(ir::Texture::Type type) {
-	switch (type) {
-		case ir::Texture::Unsigned:
-			report("  tex format: unsigned");
-			return CU_AD_FORMAT_UNSIGNED_INT32;
-		case ir::Texture::Signed:
-			report("  tex format: signed");
-			return CU_AD_FORMAT_SIGNED_INT32;
-		case ir::Texture::Float:
-			report("  tex format: float");
-			return CU_AD_FORMAT_FLOAT;
-		default: break;
-	}
-	return CU_AD_FORMAT_FLOAT;
-}
-*/
-
-static CUarray_format textureDataFormat(const ir::Texture &texture) {
-	switch (texture.type) {
-		case ir::Texture::Unsigned:
-			report("  tex format: unsigned - " << texture.x << " bits");
-			switch (texture.x) {
-				case 8:
-					return CU_AD_FORMAT_UNSIGNED_INT8;
-				case 16:
-					return CU_AD_FORMAT_UNSIGNED_INT16;
-				case 32:
-				default:
-					return CU_AD_FORMAT_UNSIGNED_INT32;
-			}
-			return CU_AD_FORMAT_UNSIGNED_INT32;
-		case ir::Texture::Signed:
-			report("  tex format: signed - " << texture.x << " bits");
-			switch (texture.x) {
-				case 8:
-					return CU_AD_FORMAT_SIGNED_INT8;
-				case 16:
-					return CU_AD_FORMAT_SIGNED_INT16;
-				case 32:
-				default:
-					return CU_AD_FORMAT_SIGNED_INT32;
-			}
-			return CU_AD_FORMAT_SIGNED_INT32;
-		case ir::Texture::Float:
-			report("  tex format: float - " << texture.x << " bits");
-			switch (texture.x) {
-				case 16:
-					return CU_AD_FORMAT_HALF;
-				case 32:
-				default:
-					return CU_AD_FORMAT_FLOAT;
-			}
-			return CU_AD_FORMAT_FLOAT;
-		default: break;
-	}
-	return CU_AD_FORMAT_FLOAT;
-}
-
-#endif
-
-/*!
-	called to update global variables across all address spaces
-
-	\param copyType specifies direction data should be copied to update globals
-*/
-void executive::Executive::fenceGlobalVariables(MemoryCopy copyType) {
-#if HAVE_CUDA_DRIVER_API == 1
-	if (getSelectedISA() == ir::Instruction::GPU) {
-		// get it from the PTX module
-		std::map<std::string, ir::PTXInstruction::AddressSpace > globalsSet;
-
-		// globals
-		for (GlobalAllocationMap::iterator glb_it = globalAllocations.begin();
-			glb_it != globalAllocations.end(); ++glb_it) {
-			std::string name(glb_it->second.identifier);
-			
-			// filter variables according to name and state space
-			if (!(name.size() && 
-				(glb_it->second.space == ir::PTXInstruction::Const || 
-				 glb_it->second.space == ir::PTXInstruction::Global) )) {
-				continue;
-			}
-
-			report("  updating global variable '" << name << "', " << glb_it->second.size << " bytes in address space " 
-				<< ir::PTXInstruction::toString(glb_it->second.space));
-
-			if (globalsSet.find(name) == globalsSet.end()) {
-				globalsSet[name] = glb_it->second.space;
-			}
-			else {
-				report("  global variable allocation listed twice");
-//				continue; // this isn't a problem if the sizes are checked
-			}
-
-			report("  " << modules.size() << " modules loaded");
-
-			for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
-				report(" searcing module " << mod_it->first);
-				if (mod_it->second->cuModuleState == ir::Module::Loaded) {
-					unsigned int bytes;
-					CUdeviceptr devicePtr;
-					cudaError_enum result;
-
-					if ((result = cuModuleGetGlobal(&devicePtr, &bytes, mod_it->second->cuModule, 
-						name.c_str())) == CUDA_SUCCESS) {
-
-						if (bytes != glb_it->second.size) { continue; } // wrong module
-
-						report("    obtained pointer to global variable '" << name << "' in GPU memory: " 
-							<< (void *)(unsigned int)devicePtr << " of size " << bytes << " bytes,"
-							<< "\n\t\t\t\t\tcopying " << glb_it->second.size << " bytes " << (copyType == HostToDevice ? "from" : "to") << " host memory: " 
-							<< (void *)glb_it->second.ptr);
-
-						if (copyType == HostToDevice) {
-							result = cuMemcpyHtoD(devicePtr, glb_it->second.ptr, glb_it->second.size);
-							if (result != CUDA_SUCCESS) {
-								report("Executive::fenceGlobalVariables() - cuMemcpyHtoD() failed with result " << result);
-								throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuMemcpyHtoD() failed");
-							}
-						}
-						else if (copyType == DeviceToHost) {
-							result = cuMemcpyDtoH(glb_it->second.ptr, devicePtr, glb_it->second.size);
-							if (result != CUDA_SUCCESS) {
-								report("Executive::fenceGlobalVariables() - cuMemcpyDtoH() failed with result " << result);
-								throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuMemcpyDtoH() failed");
-							}
-						}
-						else { 
-							throw hydrazine::Exception("ambiguous copyType for fence");
-						}
-					}
-					else {
-						report("  Executive::fenceGlobalVariables() - cuModuleGetGlobal() failed for variable " << name << " with result " << result);
-						//throw hydrazine::Exception("Executive::fenceGlobalVariables() - cuModuleGetGlobal() failed");
-						continue;
-					}
-				}
-			}
-		}
-
-		for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
-			if (mod_it->second->cuModuleState == ir::Module::Loaded) {
-				for (ir::Module::TextureMap::iterator t_it = mod_it->second->textures.begin();
-					t_it != mod_it->second->textures.end(); ++t_it) {
-
-					CUtexref texRef;
-					int textureFlags = (t_it->second.normalize ? CU_TRSF_NORMALIZED_COORDINATES:0)
-						 | (!t_it->second.normalizedFloat ? CU_TRSF_READ_AS_INTEGER : 0);
-					if (cuModuleGetTexRef(&texRef, mod_it->second->cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
-						report("failed to get texture reference '"<< t_it->first 
-							<< "'from module '" << mod_it->first << "'\n");
-						throw hydrazine::Exception("FAILED to get texture reference");
-					}
-					for (int i = 0; i < 3; i++) {
-						cuTexRefSetAddressMode(texRef, i, textureAddressMode(t_it->second.addressMode[i]));
-					}
-					cuTexRefSetFilterMode(texRef, textureFilterMode(t_it->second.interpolation));
-					cuTexRefSetFormat(texRef, textureDataFormat(t_it->second), t_it->second.components());
-					cuTexRefSetFlags(texRef, textureFlags);
-
-					report("  texture flags: " << textureFlags << " - " 
-						<< (textureFlags & CU_TRSF_READ_AS_INTEGER ? "read as integer " : "")
-						<< (textureFlags & CU_TRSF_NORMALIZED_COORDINATES ? "normalized coordinates" : ""));
-
-					switch (t_it->second.dimensions()) {
-						case 1:
-							if (cuTexRefSetAddress(0, texRef, 
-								hydrazine::bit_cast<CUdeviceptr , void*>(t_it->second.data), 
-								t_it->second.bytes()) != CUDA_SUCCESS) {
-
-								report("failed to set texture '" << t_it->first << "' to array");
-								throw hydrazine::Exception("FAILED to bind texture");
-							}
-
-							report("  successfully bound texture '" << t_it->first << "' to pointer " 
-								<< std::hex << t_it->second.data << std::dec);
-							break;
-						case 2: 
-							{
-								CUDA_ARRAY_DESCRIPTOR desc;
-								desc.Width = t_it->second.size.x;
-								desc.Height = t_it->second.size.y;
-								desc.NumChannels = t_it->second.components();
-								desc.Format = textureDataFormat(t_it->second);
-
-								if (cuTexRefSetAddress2D(texRef, &desc,
-									hydrazine::bit_cast<CUdeviceptr , void*>(t_it->second.data), 
-									t_it->second.pitch()) != CUDA_SUCCESS) {
-
-									report("failed to set 2D texture '" << t_it->first << "' to array");
-									throw hydrazine::Exception("FAILED to bind texture");
-								}
-
-								report("  successfully bound 2D texture '" << t_it->first << "' to pointer " 
-									<< std::hex << t_it->second.data << std::dec << " with dimensions (" 
-									<< desc.Width << ", " << desc.Height << ") and " << t_it->second.components() << " components");
-							}
-							break;
-						default:
-							break;
-					}
-
-					// add the texture reference somewhere where it can be destroyed or reused
-				}
-			}
-		}
-	}
-#endif
-}
-
-void executive::Executive::_translateToSelected(ir::Module& m) {
-	using namespace ir;
-	report("Translating all kernels in module " << m.modulePath << " to ISA " << ir::Instruction::toString(getSelectedISA()));
-	Module::KernelArchitectureMap::iterator it = m.kernels.find(Instruction::PTX);
-	if (it == m.kernels.end()) {
-		return;
-	}
-	// translate the kernels of a module to the selected ISA
-	if (getSelectedISA() == Instruction::Emulated) {
-		report(" Translating to EmulatedKernel.");
-		// translate each PTX kernel to Emulated
-		for (Module::KernelMap::iterator k_it = it->second.begin();
-			k_it != it->second.end(); ++k_it) {
-			report("  Creating emulated kernel for : " << (k_it->second)->name);
-			EmulatedKernel *emKern = new EmulatedKernel(k_it->second, this);
-			m.kernels[Instruction::Emulated][emKern->name] = emKern;
-		}
-	}
-	else if (getSelectedISA() == Instruction::GPU) {
-		report(" Translating to GPUExecutableKernel.");
-		_translateToGPUExecutable(m);
-	}
-	else if (getSelectedISA() == Instruction::LLVM) {
-		report(" Translating all modules to LLVMKernel.");
-		for (Module::KernelMap::iterator k_it = it->second.begin();
-			k_it != it->second.end(); ++k_it) {
-			report("  Creating LLVM kernel for : " << k_it->second->name);
-			LLVMExecutableKernel* 
-				kernel = new LLVMExecutableKernel(*k_it->second, this, 
-				optimizationLevel);
-				kernel->setDevice(&devices[getSelected()], threadLimit);
-			m.kernels[Instruction::LLVM][kernel->name] = kernel;
-		}
-	}
-}
-
-void executive::Executive::_translateToGPUExecutable(ir::Module &m) {
-	using namespace ir;
-#if HAVE_CUDA_DRIVER_API == 1
-	Module::KernelArchitectureMap::iterator it = m.kernels.find(Instruction::PTX);
-	if (it == m.kernels.end()) {
-		return;
-	}
-	if (m.cuModuleState != Module::Invalid) {
-		cuModuleUnload(m.cuModule);
-	}
-
-	std::stringstream ss;	
-	m.write(ss);
-#if GPU_EMIT_PTX_REPRESENTATION
-	// emit the ptx source file to a text file in the binary's directory
-	{
-		static int modules = 0;
-		++modules;
-		std::stringstream ssfn; ssfn << "module_" << modules << ".ptx";
-		std::string filename = ssfn.str();
-		std::ofstream file(filename.c_str());
-		file << ss.str();
-	}
-#endif
-
-	cudaError_enum result;
-	if ((result = cuModuleLoadData(&m.cuModule, (const void *)ss.str().c_str())) != CUDA_SUCCESS) {
-		report("PTX kernel representation:\n" << ss.str());
-
-		report("  cuModuleLoadData() returned " << result);
-
-		// emit the ptx source file to a text file in the binary's directory
-		{
-			std::ofstream file("module.ptx");
-			file << ss.str();
-		}
-
-		throw hydrazine::Exception("cuModuleLoadData() failed for module " + m.modulePath);
-
-	}
-	m.cuModuleState = Module::Dirty;
-	
-	for (Module::KernelMap::iterator k_it = it->second.begin();
-		k_it != it->second.end(); ++k_it) {
-		report("  Creating GPUExecutableKernel for : " << k_it->second->name);
-		CUfunction function;
-
-		if (cuModuleGetFunction(&function, m.cuModule, 
-			k_it->second->name.c_str()) != CUDA_SUCCESS) {
-			std::string exception = "cuModuleGetFunction() failed for module " 
-				+ m.modulePath + ", kernel " + k_it->second->name;
-			throw hydrazine::Exception(exception);
-		}		
-
-		report("    getting kernel from cuda driver.");
-		
-		executive::GPUExecutableKernel* 
-			gpuKern = new executive::GPUExecutableKernel(*k_it->second, 
-			function, this);
-		
-		report("    constructed GPUExecutableKernel");
-
-		report("    added kernel '" << gpuKern->name << "' to module");
-
-		m.kernels[Instruction::GPU][gpuKern->name] = gpuKern;
-	}		
-
-	m.cuModuleState = Module::Loaded;
-#else
-	throw hydrazine::Exception("CUDA Driver API Not Enabled");
-#endif
-}
-
-bool executive::Executive::cudaInitialized = false;
-
-executive::Executive::Executive() : externalKernelLoadingType(0), 
-	selectedDevice(-1), 
-	optimizationLevel( translator::Translator::NoOptimization ),
-	threadLimit(-1) {
-	cudaGLInitialized = true;
+	// translator initialization
+	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
+	optimizationLevel = 
+		(translator::Translator::OptimizationLevel)
+			api::OcelotConfiguration::getExecutive().optimizationLevel;
 	enumerateDevices();
 }
 
 executive::Executive::~Executive() {
-	//free memory
-	for (DeviceAllocationMap::iterator device = memoryAllocations.begin(); 
-		device != memoryAllocations.end(); ++device) {
-		for (AllocationMap::iterator allocation = device->second.begin(); 
-			allocation != device->second.end(); ++allocation ) {
-			if (!allocation->second.external) {
-				if (allocation->second.isa == ir::Instruction::GPU) {
-#if HAVE_CUDA_DRIVER_API == 1
-					cuMemFree(painful_cast(allocation->second.ptr));
-#else
-					throw hydrazine::Exception("CUDA Driver API not enabled");
-#endif
-				}
-				else {
-					delete [] ((char *)allocation->second.ptr 
-						- allocation->second.offset);
-				}
-			}
-		}
-	}
-	// free modules
-	for(ModuleMap::iterator module = modules.begin(); 
-		module != modules.end(); ++module) {
-		delete module->second;
-	}
+
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Linear memory allocation functions
+//
+// note: each address space may require special handling
+//
+
 /*!
-	Loads a module from a PTX source file. If the module is succesfully
-	loaded, it may be obtained by indexing the modules[] map with the
-	path name provided.
+	Registers an external memory allocation
+	\param ptr pointer to allocation
+	\param bytes size of the allocation in bytes
+	\param addressSpace address space of the allocation
+*/
+void executive::Executive::registerExternal(void *ptr, size_t bytes, int addressSpace) {
+	if (addressSpace < 0) {
+		addressSpace = getDeviceAddressSpace();
+	}
 	
-	\param path name of PTX source file
-	\param translateToSelected after successful load, indicates whether module
-		should be translated to selected device's ISA
-	\return true if module loaded
-*/
-bool executive::Executive::loadModule(const std::string& path, 
-	bool translateToSelected, std::istream* stream) {
-	using namespace ir;
-	report("Loading module " << path);
-	ModuleMap::iterator m_it = modules.find(path);
-	if (m_it != modules.end()) {
-		delete m_it->second;
-		modules.erase(m_it);
-	}
-	if ( stream == 0 ) {
-		m_it = modules.insert(std::make_pair(path,new Module(path))).first;
-	}
-	else {	
-		m_it = modules.insert(std::make_pair(path,new Module)).first;
-		m_it->second->load(*stream, path);
-	}
-	if (translateToSelected) {
-		_translateToSelected( *m_it->second );
+	MemoryAllocation memory(addressSpace, ptr, bytes);
+	
+	report("  Executive::registerExternal(addrspace: " << memory.addressSpace << ") - ptr: " 
+		<< (void *)memory.get() << ", " << memory.allocationSize << " bytes");
+
+	memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
+}
+
+void executive::Executive::unregisterExternal(void *ptr, int addressSpace) {
+	if (addressSpace < 0) {
+		addressSpace = getDeviceAddressSpace();
 	}
 
-/*
-	// visit each kernel and potentially override them
-	if (externalKernelLoadingType != ExternalKernel::LoadingType_invalid) {
-		report("overriding with external kernels");
-
-		for (Module::KernelVector::iterator k_it = m_it->second->kernels[ir::Instruction::PTX].begin();
-			k_it != m_it->second->kernels[ir::Instruction::PTX].end(); ++k_it) {
-
-			ir::Kernel *kernel = *k_it;
-
-			report("  does kernel exist for " << kernel->name << " ?");
-
-			ExternalKernelMap::iterator ext_it = externalKernels.find(kernel->name);
-			if (ext_it != externalKernels.end()) {
-				if (!ext_it->second.kernel) {
-					ext_it->second.kernel = new ExternalKernel(
-						kernel->name,
-						(ExternalKernel::LoadingType)externalKernelLoadingType, 
-						ext_it->second.sourcePath, 
-						m_it->second,
-						this);
-
-					report("  constructed external kernel: " << ext_it->second.kernel->name);
-				}
-				m_it->second->kernels[ir::Instruction::External].push_back(ext_it->second.kernel);
-				break;
-			}
-		}
+	MemoryAllocationMap::iterator alloc_it = memoryAllocations[addressSpace].find(ptr);
+	if (alloc_it != memoryAllocations[addressSpace].end()) {
+		memoryAllocations[addressSpace].erase(alloc_it);
 	}
-*/
-	return true;
+}
+
+bool executive::Executive::malloc(void **devPtr, size_t size) {
+	bool result = false;
+	MemoryAllocation memory(getDeviceAddressSpace(), size);
+	
+	if (memory.pointer.ptr) {
+		result = true;
+		*devPtr = memory.get();
+		memoryAllocations[memory.addressSpace][*devPtr] = std::move(memory);
+	}
+	
+	report(" Executive::malloc(" << *devPtr << ", " << size << ")");
+	
+	return result;
 }
 
 /*!
-	Unloads a module
+	\brief performs host allocation of page-locked memory
+	\param ptr places resulting pointer
+	\param size number of bytes
+	\param portable allocation will be considered pinned memory shared for all CUDA contexts
+	\param mapped	maps allocation to device context
+	\param writeCombined optimize for writes by CPU, reads from device
 */
-bool executive::Executive::unloadModule(const std::string& path) {
-	ModuleMap::iterator m_it = modules.find(path);
-	if (m_it != modules.end()) {
-		delete m_it->second;
-		modules.erase(m_it);
+bool executive::Executive::mallocHost(void **ptr, size_t size, bool portable, bool mapped, 
+	bool writeCombined) {
+
+	MemoryAllocation memory(size, portable, mapped, writeCombined);
+
+	*ptr = memory.get();
+	memoryAllocations[memory.addressSpace][*ptr] = std::move(memory);
+	
+	report("Executive::mallocHost(" << *ptr << ")");
+	
+	return *ptr != 0;
+}
+
+bool executive::Executive::mallocPitch(void **devPtr, size_t *pitch, size_t width, 
+	size_t height) {
+	MemoryAllocation memory(getDeviceAddressSpace(), width, height);
+	*devPtr = memory.get();
+	*pitch = memory.pointer.pitch;
+	
+	memoryAllocations[memory.addressSpace][*devPtr] = std::move(memory);
+	
+	report("Executive::mallocPitch(" << *devPtr << ")");
+
+	return *devPtr != 0;
+}
+
+/*!
+	\brief allocates memory on the selected device given an extent - output in pitched pointer
+	\param pitchedPtr pointer to pitched memory allocation
+	\param extent extent of region - at least extent.width*height*depth bytes are allocated
+*/
+bool executive::Executive::mallocPitch(PitchedPointer * pitchedPointer, Extent extent) {
+
+	MemoryAllocation memory(getDeviceAddressSpace(), extent);
+	*pitchedPointer = memory.pointer;
+	
+	memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
+
+	report("Executive::mallocPitch(" << pitchedPointer->ptr << ")");
+	
+	return pitchedPointer->ptr != 0;
+}
+
+bool executive::Executive::mallocArray(struct cudaArray **array, 
+	const ChannelFormatDesc & desc, size_t width, size_t height) {
+	MemoryAllocation memory(getDeviceAddressSpace(), desc, width, height);
+	
+	bool result = memory.get() != 0;
+	report("Executive::mallocArray(" << memory.get() << ")");
+	
+	if (result) {
+		*array = (struct cudaArray *)memory.get();
+		memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
+	}
+	
+	return result;
+}
+
+/*!
+	\brief allocates a pitched memory allocation as an array
+	\param arrayPtr pointer to allocation
+	\param desc channel format
+	\param extent region - at least extent.width*height*depth*desc.size() bytes are allocated
+*/
+bool executive::Executive::mallocPitchArray(PitchedPointer * pitchedPtr, 
+	const ChannelFormatDesc &desc, Extent extent) {
+
+	MemoryAllocation memory(getDeviceAddressSpace(), desc, extent);
+	bool result = memory.get() != 0;
+
+	report("Executive::mallocPitchArray(" << memory.get() << ")");
+
+	if (result) {
+		*pitchedPtr = memory.pointer;
+		memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
+	}
+
+	return result;
+}
+
+/*!
+	\brief frees an allocation - make sure you weren't calling ::free()
+*/
+bool executive::Executive::free(void *ptr) {
+	bool result = false;
+
+	report("Executive::free(" << ptr << ")");
+
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find(ptr);
+	if (it == allocations.end()) {
+		// not found
+		report("Executive::free(" << ptr << ")");
+		
+		assert(0 && "unimplemented");
+		
+	}
+	else {
+		allocations.erase(it);
+		result = true;
+	}
+	
+	return result;
+}
+
+bool executive::Executive::freeHost(void *ptr) {
+	bool result = true;
+
+	report("Executive::freeHost(" << ptr << ")");
+
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find(ptr);
+	if (it == allocations.end()) {
+		// not found
+		report("Executive::freeHost(" << ptr << ")");
+		result = false;
+	}
+	else {
+		allocations.erase(it);
+	}
+	
+	return result;
+}
+
+bool executive::Executive::freeArray(struct cudaArray *array) {
+	bool result = true;
+
+	report("Executive::freeArray(" << (void *)array << ")");
+
+	MemoryAllocationMap & allocations = memoryAllocations[getDeviceAddressSpace()];
+	MemoryAllocationMap::iterator it = allocations.find((void *)array);
+	if (it == allocations.end()) {
+		// not found
+		Ocelot_Exception("Executive::freeArray() - array = " << (void *)array 
+			<< " was not found in the allocation table.");
+		result = false;
+	}
+	else {
+		report("  found array, erasing..");
+		allocations.erase(it);
+		report("  erased");
+	}
+	return result;
+}
+
+bool executive::Executive::checkMemoryAccess(int device, const void* base, size_t size) const {
+
+	const MemoryAllocation* allocation = getMemoryAllocation(base);
+
+	// least address in region must be greater than or equal to this
+	const char *region_base_ptr = (const char *)allocation->get();	
+
+	if (!region_base_ptr) {
+		report("Executive::checkMemoryAccess(device: " << device << ", base: " << (void *)base
+			<< ", size: " << size << ") did not find allocation containing " << base << ")");
+	}
+
+	// greatest address in region must be less than this
+	const char *region_end_ptr = region_base_ptr + allocation->size();
+
+	if (size > 8) {
+		report("Executive::checkMemoryAccess(device: " << device << ", base: " << (void *)base
+			<< ", size: " << size << ")");
+		report("  got allocation: " << (const void *)region_base_ptr << " to " 
+			<< (const void *)region_end_ptr);
+	}
+
+	bool valid = (region_base_ptr && region_end_ptr >= ((const char *)base + size));
+	return valid;
+}
+
+/*!
+	\brief prints all memory allocations to an output stream
+*/
+std::ostream & executive::Executive::printMemoryAllocations(std::ostream &out) const {
+
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap_it->second.begin();
+
+	out << "===== Ocelot global memory allocations =====\n";
+	for (; alloc_it != memoryMap_it->second.end(); ++alloc_it) {
+		const MemoryAllocation & memory = alloc_it->second;
+
+		out << "=== allocation ===\n";
+		out << memory.toString() << "\n";
+	}
+	out << "============================================\n";
+	return out;
+}
+
+/*!
+	Given a pointer, determine the allocated block and 
+	corresponding MemoryAllocation record to which it belongs.
+
+	\param ptr pointer to some byte
+	\return record of memory allocation; if nothing could be found, 
+		the record's ISA is Unknown
+*/
+const executive::MemoryAllocation* executive::Executive::getMemoryAllocation(const void *ptr) const {
+	const MemoryAllocation* allocation = 0;
+	DeviceMemoryAllocationMap::const_iterator 
+		memoryMap_it = memoryAllocations.find(getDeviceAddressSpace());
+	assert(memoryMap_it != memoryAllocations.end());
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	if (!memoryMap.empty()) {
+		MemoryAllocationMap::const_iterator alloc_it = memoryMap.upper_bound((void *)ptr);
+		if (alloc_it != memoryMap.begin()) --alloc_it;
+		if (alloc_it != memoryMap.end()) {
+			if ((const char*) ptr >= alloc_it->second.get()) {
+				allocation = &alloc_it->second;
+			}
+		}
+	}
+	
+	return allocation;
+}
+
+std::string executive::Executive::nearbyAllocationsToString( 
+	const Executive& executive, const void* pointer, 
+	unsigned int above, unsigned int below) {
+
+		// throw an exception
+
+	std::stringstream ss;
+	ss << "device memory fault - device pointer " << std::hex << pointer 
+		<< " does not point to an allocation on device " << std::dec 
+		<< executive.devices[executive.getSelectedDevice()].name 
+		<< "\n";
+
+	ss << "\nAll allocations:\n";
+	executive.printMemoryAllocations(ss);
+	
+	return ss.str();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Memcpy functions
+
+/*!
+	\brief copies to or from the selected device - will check whether device pointers are allocated
+	
+	\param dest pointer to destination
+	\param src pointer to source
+	\param size number of bytes to transfer
+	\param indicates the kind of transfer
+	\return true on success
+*/
+bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size, 
+	executive::MemcpyKind kind) {
+
+	int selectedDevice = getSelectedDevice();
+	int deviceAddrSpace = getDeviceAddressSpace();
+	
+//	report("deviceMemcpy(" << std::hex << dest << ", " << src << std::dec << ", " << size << " bytes)");
+	
+	switch (kind) {
+	case HostToHost:
+	{
+		::memcpy(dest, src, size);
 		return true;
 	}
+	break;
+	
+	case HostToDevice:
+	{
+		if (!checkMemoryAccess(selectedDevice, dest, size)) {
+			Ocelot_Exception("Invalid destination " << dest << " of size " << size 
+				<< " in host to device memcpy.");
+		}
+		
+		switch (deviceAddrSpace) {
+		case 0:
+			{
+				report("deviceMemcpy() - host to device");
+				::memcpy(dest, src, size);
+				return true;
+			}
+		break;
+		default:
+#if HAVE_CUDA_DRIVER_API == 1
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(
+					dest), src, size) == CUDA_SUCCESS) {
+					return true;
+				}
+			}
+			else {
+				assert(0 && "address space not supported");
+			}
+#else
+			assert(0 && "address space not supported");
+#endif
+		}
+	
+	}
+	break;
+	
+	case DeviceToHost:
+	{
+		if (!checkMemoryAccess(selectedDevice, src, size)) {
+			Ocelot_Exception("Invalid source " << src << " of size " << size 
+				<< " in device to host memcpy.");
+		}
+		switch (deviceAddrSpace) {
+		case 0:
+			{
+				::memcpy(dest, src, size);
+				return true;
+			}
+		break;
+		
+		default:
+#if HAVE_CUDA_DRIVER_API == 1
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == CUDA_SUCCESS) {
+					return true;
+				}
+			}
+			else {
+				assert(0 && "address space not supported");
+			}
+#else
+			assert(0 && "address space not supported");
+#endif
+		}
+	}
+	break;
+	
+	case DeviceToDevice:
+	{
+		if (!checkMemoryAccess(selectedDevice, dest, size)) {
+			Ocelot_Exception("Invalid destination " << dest << " of size " << size 
+				<< " in device to device memcpy.");
+		}
+		if (!checkMemoryAccess(selectedDevice, src, size)) {
+			Ocelot_Exception("Invalid source " << src << " of size " << size 
+				<< " in device to device memcpy.");
+		}
+		switch (deviceAddrSpace) {
+		case 0:
+			{
+				::memcpy(dest, src, size);
+				return true;
+			}
+		break;
+		default:
+#if HAVE_CUDA_DRIVER_API == 1
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				if (cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, const void*>(dest), 
+					hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == 
+					CUDA_SUCCESS) {
+					return true;
+				}
+			}
+			else {
+				assert(0 && "address space not supported");
+			}
+#else
+		assert(0 && "address space not supported");
+#endif
+		}
+	}
+	break;
+	
+	default:
+		throw hydrazine::Exception("device memory fault - kind invalid");
+	}
+	
 	return false;
 }
 
 /*!
-	Blocks until all possibly executing kernels have completed.
+	\brief returns a symbol as a global variable
 */
-void executive::Executive::synchronize() {
+executive::GlobalVariable & executive::Executive::getGlobalVariable(const char *symbol) {
+	assert(globals.count(symbol) != 0);
+	return globals[std::string(symbol)];
+}
+
+/*!
+	\brief copies to a symbol on the device
+	\param symbol name of symbol
+	\param src pointer to source data
+	\param count number of bytes to copy
+	\param offset offset to add to destination
+	\param kind indicates direction to copy - src must be Device
+*/
+bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
+	size_t offset, MemcpyKind kind) {
+	GlobalMap::iterator glb_it = globals.find(std::string(symbol));
+	if (glb_it != globals.end()) {
+		GlobalVariable & globalVar = glb_it->second;
+		if (count + offset <= globalVar.size) {
+			char *dstPtr = (char *)globalVar.host_pointer + offset;
+			report("deviceMemcpyToSymbol('" << symbol 
+				<< "') - dstPtr: " << (void *)dstPtr);
+			::memcpy(dstPtr, src, count);\
+		}
+	}
+	else {
+		Ocelot_Exception("Attempted memcpy to unregistered global variable '" 
+			<< symbol << "'");
+	}
+	
+	return true;
+}
+
+/*!
+	\brief copies to a symbol on the device
+	\param symbol name of symbol
+	\param src pointer to source data
+	\param count number of bytes to copy
+	\param offset offset to add to destination
+	\param kind indicates direction to copy - src must be Device
+*/
+bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst, 
+	size_t count, size_t offset, 	MemcpyKind kind) {
+	GlobalMap::iterator glb_it = globals.find(std::string(symbol));
+	if (glb_it != globals.end()) {
+		GlobalVariable & globalVar = glb_it->second;
+
+		if (count + offset <= globalVar.size) {
+			char *srcPtr = (char *)globalVar.host_pointer + offset;
+			report("deviceMemcpyFromSymbol('" << symbol 
+				<< "') - srcPtr: " << (void *)srcPtr);
+			::memcpy(dst, srcPtr, count);
+		}
+	}
+	else {
+		Ocelot_Exception("Attempted memcpy from unregistered global variable '"
+			<< symbol << "'");
+	}
+	
+	return true;
+}
+
+/*!
+	\brief copies a dense host buffer to a device array
+*/
+bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *host, 
+	size_t wOffset, size_t hOffset, size_t count, MemcpyKind kind) {
+	if (!checkMemoryAccess(selectedDevice, array, count)) {
+		Ocelot_Exception("Invalid destination " << array << " of size " << count 
+			<< " in host to device array memcpy.");
+	}
+	
+	if (kind != HostToDevice && kind != DeviceToDevice) {
+		return false;
+	}
+
+	bool result = false;
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator 
+		memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap& memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
+	if (alloc_it != memoryMap.end()) {
+		const MemoryAllocation& dstMemory = alloc_it->second;
+		
+		switch (addrSpace) {
+		case 0:
+			{
+				char *ptr = (char *)dstMemory.get() + dstMemory.pointer.pitch
+					* hOffset + wOffset;
+				::memcpy(ptr, host, count);
+				result = true;
+			}
+			break;
+
+		default:
 #if HAVE_CUDA_DRIVER_API == 1
-	if (getSelectedISA() == ir::Instruction::GPU) {
-		if (cuCtxSynchronize() != CUDA_SUCCESS) {
-			report("executive::Executive::synchronize()");
+			
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				/*
+				report("Executive::deviceMemcpyToArray()");
+				report("  count: " << count << " bytes\n  dstWOff: " << wOffset 
+					<< "\n  dstHOff: " << hOffset);
+				*/
+				
+				CUDA_MEMCPY2D copy;
+
+				copy.srcXInBytes = 0;
+				copy.srcMemoryType = (kind == HostToDevice ? CU_MEMORYTYPE_HOST : CU_MEMORYTYPE_DEVICE);
+				copy.srcY = 0;
+				copy.srcHost = host;
+				copy.srcPitch = dstMemory.pointer.pitch;
+				
+				copy.dstArray = dstMemory.cudaArray;
+				copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+				copy.dstY = hOffset;
+				copy.dstXInBytes = wOffset;
+
+				copy.Height = 1;
+				
+				size_t dstWidthInBytes = dstMemory.desc.size() * dstMemory.extent.width;
+				while (count) {
+					size_t dstRemaining = 0;
+					bool dstNewRow = false;
+					if (copy.dstXInBytes < dstWidthInBytes) {
+						dstRemaining = dstWidthInBytes - copy.dstXInBytes;
+					}
+					else {
+						copy.dstXInBytes = 0;
+						copy.dstY ++;
+						dstRemaining = dstWidthInBytes;
+						dstNewRow = true;
+					}
+					dstRemaining = min( dstRemaining, count );
+
+					copy.WidthInBytes = dstRemaining;
+					copy.Height = 1;
+					
+					if (copy.dstXInBytes == 0 && copy.WidthInBytes == dstWidthInBytes && 
+						(count % dstWidthInBytes) == 0) {
+						
+						copy.WidthInBytes = dstWidthInBytes;
+						copy.Height = (count / copy.WidthInBytes);
+						dstRemaining = count;
+					}
+					/*
+					report("  copy: [dst (" << copy.dstXInBytes << ", " << copy.dstY << ")], [src (" <<
+						copy.srcXInBytes << ", " << copy.srcY << ")], w: " << copy.WidthInBytes 
+						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
+					*/
+					CUresult cuResult = cuMemcpy2D(&copy);
+					if (cuResult == CUDA_SUCCESS) {
+						result = true;
+						count -= dstRemaining;
+					}
+					else {
+						report("deviceMemcpyArrayToArray() - cuMemcpy2D () failed with error " << cuResult);
+						result = false;
+						break;
+					}
+					
+					copy.dstXInBytes += dstRemaining;
+					copy.srcXInBytes += dstRemaining;
+				}
+				break;
+			}
+#endif
+				assert(0 && "address space not supported");
+			break;
+		}
+	}
+
+	return result;
+}
+
+/*!
+	\brief copies from a device array to a host buffer
+*/
+bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *host, 
+	size_t wOffset, size_t hOffset, size_t count, MemcpyKind kind) {
+	
+	if (!checkMemoryAccess(selectedDevice, array, count)) {
+		Ocelot_Exception("Invalid source " << array << " of size " << count 
+			<< " in host to device array memcpy.");
+	}
+
+	if (kind != DeviceToHost && kind != DeviceToDevice) {
+		return false;
+	}
+
+//	report("deviceMemcpyFromArray(w: " << wOffset << ", h: " << hOffset << ", " << bytes << " bytes");
+
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
+	
+	if (alloc_it != memoryMap.end()) {
+		const MemoryAllocation & srcMemory = alloc_it->second;
+		bool result = false;
+		switch (addrSpace) {
+		case 0:
+			{
+				char *ptr = (char *)srcMemory.get() + srcMemory.pointer.pitch * hOffset + wOffset;
+				::memcpy(host, ptr, count);
+				result = true;
+			}
+			break;
+
+		default:		
+#if HAVE_CUDA_DRIVER_API == 1
+			
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				/*
+				report("Executive::deviceMemcpyFromArray()");
+				report("  count: " << count << " bytes\n  wOff: " << wOffset 
+					<< "\n  hHOff: " << hOffset);
+				*/
+				CUDA_MEMCPY2D copy;
+
+				copy.dstXInBytes = 0;
+				copy.dstMemoryType = 
+				copy.srcMemoryType = (kind == DeviceToHost ? CU_MEMORYTYPE_HOST : CU_MEMORYTYPE_DEVICE);
+				copy.dstY = 0;
+				copy.dstHost = host;
+				copy.dstPitch = srcMemory.pointer.pitch;
+				
+				copy.srcArray = srcMemory.cudaArray;
+				copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+				copy.srcY = hOffset;
+				copy.srcXInBytes = wOffset;
+
+				copy.Height = 1;
+				
+				size_t srcWidthInBytes = srcMemory.desc.size() * srcMemory.extent.width;
+				while (count) {
+					size_t srcRemaining = 0;
+					bool srcNewRow = false;
+					if (copy.srcXInBytes < srcWidthInBytes) {
+						srcRemaining = srcWidthInBytes - copy.srcXInBytes;
+					}
+					else {
+						copy.srcXInBytes = 0;
+						copy.srcY ++;
+						srcRemaining = srcWidthInBytes;
+						srcNewRow = true;
+					}
+					srcRemaining = min( srcRemaining, count );
+
+					copy.WidthInBytes = srcRemaining;
+					copy.Height = 1;
+					
+					if (copy.srcXInBytes == 0 && copy.WidthInBytes == srcWidthInBytes && 
+						(count % srcWidthInBytes) == 0) {
+						
+						copy.WidthInBytes = srcWidthInBytes;
+						copy.Height = (count / copy.WidthInBytes);
+						srcRemaining = count;
+					}
+					/*
+					report("  copy: [dst (" << copy.dstXInBytes << ", " << copy.dstY << ")], [src (" <<
+						copy.srcXInBytes << ", " << copy.srcY << ")], w: " << copy.WidthInBytes 
+						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
+					*/
+					CUresult cuResult = cuMemcpy2D(&copy);
+					if (cuResult == CUDA_SUCCESS) {
+						result = true;
+						count -= srcRemaining;
+					}
+					else {
+						report("deviceMemcpyArrayFromArray() - cuMemcpy2D () failed with error " << cuResult);
+						result = false;
+						break;
+					}
+					
+					copy.dstXInBytes += srcRemaining;
+					copy.srcXInBytes += srcRemaining;
+				}
+				break;
+			}
+#endif
+
+			assert(0 && "address space not supported");
+			break;
+		}
+		
+		return result;
+	}
+
+	return false;
+}
+
+/*!
+	\brief copies a dense buffer from a device array to a device array
+*/	
+bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_t dstWOffset, 
+	size_t dstHOffset, const struct cudaArray *src, size_t srcWOffset, size_t srcHOffset, 
+	size_t count, MemcpyKind kind) {
+	
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator dstAlloc_it = memoryMap.find((void *)dst);
+	MemoryAllocationMap::const_iterator srcAlloc_it = memoryMap.find((void *)src);
+
+	if (dstAlloc_it == memoryMap.end()) {
+		Ocelot_Exception("Invalid destination array " << dst << " in array to array memcpy.");
+	}
+	if (srcAlloc_it == memoryMap.end()) {
+		Ocelot_Exception("Invalid source array " << src << " in array to array memcpy.");
+	}
+	if (kind != DeviceToDevice) {
+		return false;
+	}
+
+	const MemoryAllocation & dstMemory = dstAlloc_it->second;
+	const MemoryAllocation & srcMemory = srcAlloc_it->second;
+
+	char *srcPtr = (char *)srcMemory.get() + srcMemory.pointer.pitch * srcHOffset + srcWOffset;
+	char *dstPtr = (char *)dstMemory.get() + dstMemory.pointer.pitch * dstHOffset + dstWOffset;
+
+	bool result = false;
+
+	//
+	// we don't need to use checkMemoryAccess(), as addresses are computed from valid base pointers
+	// as well as offsets.
+	//
+	if (srcMemory.pointer.pitch * srcHOffset + srcWOffset + count > srcMemory.size()) {
+		Ocelot_Exception("Invalid source address " << (void*)srcPtr << " of size " << count 
+			<< " in array to array memcpy.");
+	}
+	if (dstMemory.pointer.pitch * dstHOffset + dstWOffset + count > dstMemory.size()) {
+		Ocelot_Exception("Invalid dest address " << (void*)dstPtr << " of size " << count 
+			<< " in array to array memcpy.");
+	}
+
+	switch (addrSpace) {
+	case 0:
+		{
+			::memcpy(dstPtr, srcPtr, count);
+			result = true;
+		}
+		break;
+
+	default:
+#if HAVE_CUDA_DRIVER_API == 1
+		{
+			if (getSelectedISA() == ir::Instruction::GPU) {
+
+				report("Executive::deviceMemcpyArrayToArray()");
+				report("  count: " << count << " bytes\n  dstWOff: " << dstWOffset 
+					<< "\n  dstHOff: " << dstHOffset << "\n  srcWOff: " << srcWOffset
+					<< "\n  srcHOff: " << srcHOffset);
+				
+				CUDA_MEMCPY2D copy;
+				copy.dstArray = dstMemory.cudaArray;
+				copy.srcArray = srcMemory.cudaArray;
+				copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+				copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+								
+				copy.dstY = dstHOffset;
+				copy.dstXInBytes = dstWOffset;
+				copy.Height = 1;
+				copy.srcY = srcHOffset;
+				copy.srcXInBytes = srcWOffset;
+				
+				size_t srcWidthInBytes = srcMemory.desc.size() * srcMemory.extent.width;
+				size_t dstWidthInBytes = dstMemory.desc.size() * dstMemory.extent.width;
+				while (count) {
+					size_t srcRemaining = 0;
+					size_t dstRemaining = 0;
+					bool srcNewRow = false, dstNewRow = false;
+					if (copy.srcXInBytes < srcWidthInBytes) {
+						srcRemaining = srcWidthInBytes - copy.srcXInBytes;
+					}
+					else {
+						copy.srcXInBytes = 0;
+						copy.srcY ++;
+						srcRemaining = srcWidthInBytes;
+						srcNewRow = true;
+					}
+					srcRemaining = min( srcRemaining, count );
+					if (copy.dstXInBytes < dstWidthInBytes) {
+						dstRemaining = dstWidthInBytes - copy.dstXInBytes;
+					}
+					else {
+						copy.dstXInBytes = 0;
+						copy.dstY ++;
+						dstRemaining = dstWidthInBytes;
+						dstNewRow = true;
+					}
+					dstRemaining = min( dstRemaining, count );
+
+					size_t remaining = 0;
+					if (srcRemaining < dstRemaining) {
+						remaining = srcRemaining;
+					}
+					else {
+						remaining = dstRemaining;
+					}
+					if (!remaining) { 
+						result = (count ? false : true);
+						break;
+					}
+					copy.WidthInBytes = remaining;
+					copy.Height = 1;
+					
+					if (copy.srcXInBytes == 0 && copy.dstXInBytes == 0 && 
+						copy.WidthInBytes == dstWidthInBytes && copy.WidthInBytes == srcWidthInBytes
+						&& (count % dstWidthInBytes) == 0) {
+						
+						copy.WidthInBytes = dstWidthInBytes;
+						copy.Height = (count / copy.WidthInBytes);
+						remaining = count;
+					}
+
+/*					
+					report("  copy: [dst (" << copy.dstXInBytes << ", " << copy.dstY << ")], [src (" <<
+						copy.srcXInBytes << ", " << copy.srcY << ")], w: " << copy.WidthInBytes 
+						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
+*/
+					
+					CUresult cuResult = cuMemcpy2D(&copy);
+					if (cuResult == CUDA_SUCCESS) {
+						result = true;
+						count -= remaining;
+					}
+					else {
+						report("deviceMemcpyArrayToArray() - cuMemcpy2D () failed with error " << cuResult);
+						result = false;
+						break;
+					}
+					
+					copy.dstXInBytes += remaining;
+					copy.srcXInBytes += remaining;
+				}
+			}
+			else {
+				report("cuMemcpy2D() failed");
+			}
+			break;
+		}
+#endif
+		assert(0 && "address space not supported");
+		break;
+	}
+	
+	return result;
+}
+
+/*!
+	\brief copies from a dense buffer to a 2D buffer
+*/
+bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void *src, 
+	size_t srcPitch, size_t width, size_t height, MemcpyKind kind) {
+	
+	int addrSpace = getDeviceAddressSpace();
+	
+	switch (kind) {
+		case HostToHost:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char *dstPtr = (char *)dst + dstPitch * row;
+				char *srcPtr = (char *)src + srcPitch * row;
+				::memcpy(dstPtr, srcPtr, width);
+			}
+		}
+			break;
+		case DeviceToHost:
+		{
+			switch (addrSpace) {
+				case 0:
+				{
+					for (size_t row = 0; row < height; row++) {
+						char *dstPtr = (char *)dst + dstPitch * row;
+						char *srcPtr = (char *)src + srcPitch * row;
+						if(!checkMemoryAccess(selectedDevice, srcPtr, width)) {
+							Ocelot_Exception("Invalid source address " << (void*)srcPtr 
+								<< " of " << width << " bytes in 2D device to host memcpy.");
+						}
+						::memcpy(dstPtr, srcPtr, width);
+					}
+					return true;
+				}
+					break;
+				default:
+#if HAVE_CUDA_DRIVER_API == 1
+					if (getSelectedISA() == ir::Instruction::GPU) {
+						CUDA_MEMCPY2D copy;
+						copy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.srcPitch = srcPitch;
+						copy.srcXInBytes = 0;
+						copy.srcY = 0;
+						copy.srcDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(src);
+						
+						copy.dstMemoryType = CU_MEMORYTYPE_HOST;
+						copy.dstPitch = dstPitch;
+						copy.dstXInBytes = 0;
+						copy.dstY = 0;
+						copy.dstHost = dst;
+						
+						copy.WidthInBytes = width;
+						copy.Height = height;
+						
+						CUresult cudaResult = cuMemcpy2D(&copy);
+						if (cudaResult == CUDA_SUCCESS) {
+							return true;
+						}
+						else {
+							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
+						}
+					}
+#endif
+					assert(0 && "unimplemented");
+					break;
+			}
+		}
+			break;
+		
+		case HostToDevice:
+		{
+			switch (addrSpace) {
+				case 0:
+				{
+					for (size_t row = 0; row < height; row++) {
+						char *dstPtr = (char *)dst + dstPitch * row;
+						char *srcPtr = (char *)src + srcPitch * row;
+						if(!checkMemoryAccess(selectedDevice, dstPtr, width)) {
+							Ocelot_Exception("Invalid destination address " << (void*)dstPtr 
+								<< " of " << width << " bytes in 2D host to device memcpy.");
+						}
+						::memcpy(dstPtr, srcPtr, width);
+					}
+					return true;
+				}
+					break;
+				default:
+#if HAVE_CUDA_DRIVER_API == 1
+					if (getSelectedISA() == ir::Instruction::GPU) {
+						CUDA_MEMCPY2D copy;
+						copy.srcHost = src;
+						copy.srcMemoryType = CU_MEMORYTYPE_HOST;
+						copy.srcPitch = srcPitch;
+						copy.srcXInBytes = 0;
+						copy.srcY = 0;
+						
+						copy.dstDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(dst);
+						copy.dstMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.dstPitch = dstPitch;
+						copy.dstXInBytes = 0;
+						copy.dstY = 0;
+						
+						copy.WidthInBytes = width;
+						copy.Height = height;
+						
+						CUresult cudaResult = cuMemcpy2D(&copy);
+						if (cudaResult == CUDA_SUCCESS) {
+							return true;
+						}
+						else {
+							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
+						}
+					}
+#endif
+					assert(0 && "unimplemented");
+					break;
+			}
+		}
+			break;
+		case DeviceToDevice:
+		{
+			switch (addrSpace) {
+				case 0:
+				{
+					for (size_t row = 0; row < height; row++) {
+						char *dstPtr = (char *)dst + dstPitch * row;
+						char *srcPtr = (char *)src + srcPitch * row;
+						if(!checkMemoryAccess(selectedDevice, srcPtr, width)) {
+							Ocelot_Exception("Invalid source address " << (void*)srcPtr 
+								<< " of " << width << " bytes in 2D device to host memcpy.");
+						}
+						if(!checkMemoryAccess(selectedDevice, dstPtr, width)) {
+							Ocelot_Exception("Invalid destination address " << (void*)dstPtr 
+								<< " of " << width << " bytes in 2D device to device memcpy.");
+						}
+						::memcpy(dstPtr, srcPtr, width);
+					}
+					return true;
+				}
+					break;
+				default:
+#if HAVE_CUDA_DRIVER_API == 1
+					if (getSelectedISA() == ir::Instruction::GPU) {
+						CUDA_MEMCPY2D copy;
+						copy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.srcPitch = srcPitch;
+						copy.srcXInBytes = 0;
+						copy.srcY = 0;
+						copy.srcDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(src);
+						
+						copy.dstMemoryType = CU_MEMORYTYPE_DEVICE;
+						copy.dstPitch = dstPitch;
+						copy.dstXInBytes = 0;
+						copy.dstY = 0;
+						copy.dstDevice =  hydrazine::bit_cast<CUdeviceptr, const void*>(dst);
+						
+						copy.WidthInBytes = width;
+						copy.Height = height;
+						
+						CUresult cudaResult = cuMemcpy2D(&copy);
+						if (cudaResult == CUDA_SUCCESS) {
+							return true;
+						}
+						else {
+							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
+						}
+					}
+#endif
+					assert(0 && "unimplemented");
+					break;
+			}
+	
+		}
+			break;
+		
+		default:
+			return false;
+	}
+
+	return false;
+}
+
+/*!
+	\brief memcpy from 2D block to array
+	\param dst destinatino array
+	\param wOffset destination x offset (bytes)
+	\param hOffset destination y offset (rows)
+	\param src source buffer
+	\param spitch source block pitch (bytes)
+	\param width source block width (bytes)
+	\param height source block height (rows)
+	\param kind kind of memcpy
+	\return true if memcpy was sucessful
+*/
+bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, size_t wOffset, 
+	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, MemcpyKind kind) {
+
+	int addrSpace = getDeviceAddressSpace();
+
+	if(!checkMemoryAccess(selectedDevice, dstArray, 1)) {
+		Ocelot_Exception("Invalid destination array " << dstArray 
+			<< " in 2D array memcpy.");
+	}
+
+	const MemoryAllocation* dstMemory = getMemoryAllocation((void *)dstArray);
+		
+	char *srcMemory_ptr = 0;
+	switch (kind) {
+		case HostToDevice:
+		case HostToHost:
+			srcMemory_ptr = (char *)src;
+			break;
+		case DeviceToDevice:
+		{
+			if(!checkMemoryAccess(selectedDevice, src, width * height)) {
+				Ocelot_Exception("Invalid source " << src << " of " 
+					<< width * height << " bytes in 2D array memcpy.");
+			}
+			const MemoryAllocation* srcMemory = getMemoryAllocation(src);
+			srcMemory_ptr = (char *)srcMemory->get();
+		}
+			break;
+		default:
+			assert(0 && "unimplemented");
+			break;
+	}
+
+	switch (addrSpace) {
+		case 0:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char *dstPtr = (char *)dstMemory->get() + dstMemory->pointer.pitch * row;
+				char *srcPtr = (char *)srcMemory_ptr + spitch * row;
+				if(!checkMemoryAccess(selectedDevice, dstPtr, width)) {
+					Ocelot_Exception("Invalid destination " << dstPtr << " of " 
+						<< width << " bytes in 2D memcpy to array.");
+				}
+				::memcpy(dstPtr, srcPtr, width);
+			}
+			return true;
+		}
+			break;
+
+	default:
+#if HAVE_CUDA_DRIVER_API == 1
+		if (getSelectedISA() == ir::Instruction::GPU) {
+			CUDA_MEMCPY2D copy;
+			
+			copy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+			copy.dstArray = dstMemory->cudaArray;
+			copy.dstXInBytes = wOffset;
+			copy.dstY = hOffset;
+			
+			copy.srcMemoryType = (kind == HostToDevice ? CU_MEMORYTYPE_HOST : CU_MEMORYTYPE_DEVICE);
+			copy.srcHost = src;
+			copy.srcDevice = hydrazine::bit_cast<CUdeviceptr, const void*>(src);
+			copy.srcXInBytes = width;
+			copy.srcY = 0;
+			copy.srcPitch = spitch;
+			
+			copy.WidthInBytes = width;
+			copy.Height = height;
+			
+			CUresult result = cuMemcpy2D(&copy);
+			if (result == CUDA_SUCCESS) {
+				return true;
+			}
+			else {
+				report("deviceMemcpy2DtoArray() - cuMemcpy2D() failed with error " << result);
+			}
+			return false;
+		}
+#endif
+	
+		assert(0 && "unimplemented");
+		return false;
+	}
+
+	return false;
+}
+
+bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch, 
+	const struct cudaArray *srcArray, size_t wOffset, size_t hOffset, size_t width, size_t height, 
+	MemcpyKind kind) {
+
+	int addrSpace = getDeviceAddressSpace();
+
+	if(!checkMemoryAccess(selectedDevice, srcArray, width * height)) {
+		Ocelot_Exception("Invalid source array " << srcArray 
+			<< " in 2D memcpy from array.");
+	}
+
+	const MemoryAllocation* srcMemory = getMemoryAllocation((void *)srcArray);
+	char *dstMemory_ptr = 0;
+	switch (kind) {
+		case DeviceToHost:
+		case HostToHost:
+			dstMemory_ptr = (char *)dst;
+			break;
+		case DeviceToDevice:
+		{
+			if(!checkMemoryAccess(selectedDevice, dst, width * height)) {
+				Ocelot_Exception("Invalid destination " << dst << " of " 
+					<< width * height << " bytes in 2D memcpy from array.");
+			}
+			const MemoryAllocation* dstMemory = getMemoryAllocation(dst);
+			dstMemory_ptr = (char *)dstMemory->get();
+		}
+			break;
+		default:
+			assert(0 && "unimplemented");
+			break;
+	}
+	
+	switch (addrSpace) {
+		case 0:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char *dstPtr = (char *)dstMemory_ptr + dpitch * row;
+				char *srcPtr = (char *)srcMemory->get() + srcMemory->pointer.pitch * row;
+				if(!checkMemoryAccess(selectedDevice, srcPtr, width)) {
+					Ocelot_Exception("Invalid source " << srcPtr << " of " 
+						<< width << " bytes in 2D memcpy from array.");
+				}
+				::memcpy(dstPtr, srcPtr, width);
+			}
+			return true;
+		}
+			break;
+
+	default:
+#if HAVE_CUDA_DRIVER_API == 1
+		if (getSelectedISA() == ir::Instruction::GPU) {
+			CUDA_MEMCPY2D copy;
+			
+			copy.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+			copy.srcArray = srcMemory->cudaArray;
+			copy.srcXInBytes = wOffset;
+			copy.srcY = hOffset;
+			
+			copy.dstMemoryType = (kind == DeviceToHost ? CU_MEMORYTYPE_HOST : CU_MEMORYTYPE_DEVICE);
+			copy.dstHost = dst;
+			copy.dstDevice = hydrazine::bit_cast<CUdeviceptr, const void*>(dst);
+			copy.dstXInBytes = width;
+			copy.dstY = 0;
+			copy.dstPitch = dpitch;
+			
+			copy.WidthInBytes = width;
+			copy.Height = height;
+			
+			CUresult result = cuMemcpy2D(&copy);
+			if (result == CUDA_SUCCESS) {
+				return true;
+			}
+			else {
+				report("deviceMemcpy2DfromArray() - cuMemcpy2D() failed with error " << result);
+			}
+			return false;
+		}
+#endif
+		assert(0 && "unimplemented");
+		return false;
+	}
+
+	return false;
+}
+
+
+/*!
+	\brief performs a 3D memcpy to a destination 
+	\param dst - pointer to either a CUDA array or a pitched allocation (.ptr field specifies a 
+		memory allocation which informs Executive)
+	\param dstPos - offset into destination block
+	\param extent - width, height, and depth to copy
+	\param kind - indicates whether source and destination are device or host
+	\param src - pointer to either CUDA array or pitched allocation  (.ptr field specifies a memory 
+		allocation which informs Executive)
+	\param srcPos - offset into source block
+*/
+bool executive::Executive::deviceMemcpy3D(PitchedPointer dst, dim3 dstPos, Extent extent, 
+	MemcpyKind kind, PitchedPointer src,	dim3 srcPos) {
+
+	int addrSpace = getDeviceAddressSpace();
+
+	report("deviceMemcpy3D() - extent: " << extent.width << ", " << extent.height << ", " 
+		<< extent.depth << " - kind: " << kind);
+
+	size_t bytes = extent.height * extent.width * extent.depth;
+
+	switch (kind) {
+	case HostToHost:
+	{
+	}
+		break;
+
+	case HostToDevice:
+	{
+		if(!checkMemoryAccess(selectedDevice, dst.ptr, bytes)) {
+			Ocelot_Exception("Invalid destination " << dst.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy host to device.");
+		}
+		const MemoryAllocation* memory = getMemoryAllocation(dst.ptr);
+		dst = memory->pointer;
+	}
+		break;
+
+	case DeviceToHost:
+	{
+		if(!checkMemoryAccess(selectedDevice, src.ptr, bytes)) {
+			Ocelot_Exception("Invalid source " << src.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy device to host.");
+		}
+		const MemoryAllocation* memory = getMemoryAllocation(src.ptr);
+			src = memory->pointer;
+	}
+		break;
+
+	case DeviceToDevice:
+	{
+		if(!checkMemoryAccess(selectedDevice, dst.ptr, bytes)) {
+			Ocelot_Exception("Invalid destination " << dst.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy device to device.");
+		}
+		if(!checkMemoryAccess(selectedDevice, src.ptr, bytes)) {
+			Ocelot_Exception("Invalid source " << src.ptr << " of " 
+				<< bytes << " bytes in 3D memcpy device to device.");
+		}
+		const MemoryAllocation* srcMemory = getMemoryAllocation(src.ptr);
+		const MemoryAllocation* dstMemory = getMemoryAllocation(dst.ptr);
+		dst = dstMemory->pointer;
+		src = srcMemory->pointer;
+	}
+		break;
+	
+	default:
+		return false;
+	}
+
+	report("  dst = (ptr: " << dst.ptr << ", pitch: " << dst.pitch << ", xsize: " 
+		<< dst.xsize << ", ysize: " << dst.ysize << ")");
+
+	report("  src = (ptr: " << src.ptr << ", pitch: " << src.pitch << ", xsize: " 
+		<< src.xsize << ", ysize: " << src.ysize << ")");
+	
+	switch (addrSpace) {
+	case 0:
+	{
+		// not arrays
+		for (size_t z = 0; z < extent.depth; z++) {
+			for (size_t y = 0; y < extent.height; y++) {
+				char *dstPtr = (char *)dst.ptr + dstPos.x + dst.pitch * (
+					(dstPos.y+y) + (z+dstPos.z) * dst.height);
+				char *srcPtr = (char *)src.ptr + srcPos.x + src.pitch * (
+					(srcPos.y+y) + (z+srcPos.z) * src.height);
+
+				::memcpy(dstPtr, srcPtr, extent.width);
+			}
+		}
+		return true;
+	}
+		break;
+	default:
+	{
+	assert(0 && "unimplemented");
+	}
+		break;
+	}
+
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// register functions
+
+/*!
+	\brief loads a PTX module
+	\param path name of module
+	\param ptx std::istream defining PTX module
+*/
+bool executive::Executive::loadModule(std::string path, bool translateOnLoad, std::istream & ptx) {
+
+	//
+	// parse PTX into a module with PTX kernels then translate to available devices
+	//
+
+	report("Loading module " << path << (translateOnLoad ? " translate on load" : ""));
+	
+	ir::Module *module = new ir::Module(ptx);
+	module->modulePath = path;
+	
+	ModuleMap::iterator mod_it = modules.find(path);
+	if (mod_it != modules.end()) {
+		delete mod_it->second;
+		modules.erase(mod_it);
+	}
+	
+	modules.insert(std::make_pair(path, module));
+
+	if (translateOnLoad) {
+		translateModuleToISA(path, getSelectedISA(), true);
+	}
+
+	return true;
+}
+
+/*!
+	\brief loads a module with a given name from a file
+*/
+bool executive::Executive::loadModule(std::string filename, bool translateOnLoad) {
+	std::ifstream file(filename.c_str());
+	return loadModule(filename, translateOnLoad, file);
+}
+
+void executive::Executive::registerGlobalVariable(const std::string & module, 
+	const  std::string varName, void *hostPtr, void *devicePtr, size_t size, 
+	DeviceAddressSpace addrSpace) {
+	
+	//
+	// register global variables and allocate [if necessary] on available address spaces
+	//
+
+	report("Executive::registerGlobalVariable() - mod: '" << module 
+		<< "', varName: '" << varName << "'");
+	
+	GlobalMap::iterator g_it = globals.find(varName);
+	if (g_it == globals.end()) {
+		GlobalVariable globalVar;
+		globalVar.host_pointer = hostPtr;
+		globalVar.size = size;
+		globalVar.name = varName;
+		globals[varName] = globalVar;
+	}
+	else {
+		if (g_it->second.deviceAddressSpace != addrSpace) {
+			Ocelot_Exception("previously registered global variable '" << varName 
+				<< "' - in device address space " << g_it->second.deviceAddressSpace
+				<< " - attempting to register with addr space " << addrSpace);
+		}
+	}
+
+	GlobalVariable &globalVar = globals[varName];
+	globalVar.modules[module].host = hostPtr;
+	globalVar.modules[module].device = devicePtr;
+	globalVar.modules[module].size = size;
+	globalVar.deviceAddressSpace = addrSpace;
+
+	if (size > globalVar.size) {
+		globalVar.size = size;
+		globalVar.host_pointer = hostPtr;
+	}
+
+	registerExternal(hostPtr, size, addrSpace);
+}
+
+void executive::Executive::registerTexture(const char *module, const char *name, int dimensions,
+	int normalized) {
+
+	//
+	// register global variables and allocate [if necessary] on available address spaces
+	//
+
+	report("registerTexture() '" << module << "' - '" << name << "' - dimensions: " << dimensions 
+		<< ", normalize: " << (bool)normalized);
+	
+	ir::Texture texture;
+	texture.normalizedFloat = (bool)normalized;
+
+	textures[name] = texture;
+}
+
+executive::StringVector executive::Executive::enumerateKernels(const std::string& moduleName) const {
+	report("Enumerating kernels in module - " << moduleName);
+	ModuleMap::const_iterator module = modules.find(moduleName);
+	assertM(module != modules.end(), "Module " << moduleName << " is not registered.");
+	StringVector names;
+	for (ir::Module::KernelMap::const_iterator kernel = module->second->kernels[ir::Instruction::PTX].begin(); 
+		kernel != module->second->kernels[ir::Instruction::PTX].end(); ++kernel) {
+		names.push_back(kernel->first);
+		report(" - " << kernel->first);
+	}
+	return std::move(names);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot kernel execution
+//
+
+/*!
+	Gets a kernel by ISA, module, kernel name.
+
+	\param isa instruction set of desired kernel
+	\param moduleName name of module from which kernel is to be selected
+	\param kernelName name of kernel
+
+	\return instance of kernel with requested ISA or 0 on failure.
+*/
+ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa, 
+	const std::string& moduleName, const std::string& kernelName) {
+	
+	ir::Kernel * kernel	= 0;
+	
+	ModuleMap::iterator mod_it = modules.find(moduleName);
+	if (mod_it != modules.end()) {
+		kernel = mod_it->second->getKernel(isa, kernelName);
+		if (!kernel) {
+			translateModuleToISA(moduleName, isa, false);
+			mod_it = modules.find(moduleName);
+			if (mod_it != modules.end()) {
+				kernel = mod_it->second->getKernel(isa, kernelName);
+			}
+		}
+	}
+	
+	return kernel;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot device management
+
+/*!
+	inserts devices into device vector
+*/
+size_t executive::Executive::enumerateDevices() {
+#if HAVE_CUDA_DRIVER_API == 1
+	if (api::OcelotConfiguration::getExecutive().enableGPU) {
+
+		if (cuInit(0) != CUDA_SUCCESS) {
+			Ocelot_Exception("Executive::enumerateDevices() - failed to initialize CUDA driver ");
+		}
+
+		int gpus = 0;
+		if (cuDeviceGetCount(&gpus) == CUDA_SUCCESS) {
+			report("There are " << gpus << " gpus in system");
+			for (int gpu = 0; gpu < gpus; gpu++) {
+				CUdevprop_st devProp;
+				Device device;
+
+				device.guid = gpu;
+				device.ISA = ir::Instruction::GPU;
+				device.addressSpace = 1 + gpu;
+
+				if (cuDeviceGetProperties(&devProp, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::enumerateDevices() - failed to get properties for GPU "
+						<< gpu);
+				}
+
+				char deviceName[256];
+				if (cuDeviceGetName(deviceName, 255, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::enumerateDevices() - failed to get name for GPU " << gpu);
+				}
+				device.name = std::string(deviceName);
+				unsigned int totalMemory = 0;
+				if (cuDeviceTotalMem(&totalMemory, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::enumerateDevices() - failed to get totalMemory for GPU " 
+						<< gpu);
+				}
+				device.totalMemory = (size_t)totalMemory;
+
+				if (cuDeviceGetAttribute(&device.multiprocessorCount,
+					CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get multiprocessorCount for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.memcpyOverlap,
+					CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get memcpyOverlap for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.maxThreadsPerBlock,
+					CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsPerBlock for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.maxThreadsDim[0],
+					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsDim.x for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxThreadsDim[1],
+					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsDim.y for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxThreadsDim[2],
+					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxThreadsDim.z for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.maxGridSize[0],
+					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxGridSize.x for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxGridSize[1],
+					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxGridSize.y for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.maxGridSize[2],
+					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get maxGridSize.z for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.sharedMemPerBlock,
+					CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get sharedMemPerBlock for GPU " 
+						<< gpu);
+				}
+				if (cuDeviceGetAttribute(&device.totalConstantMemory,
+					CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get totalConstantMemory for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.SIMDWidth,
+					CU_DEVICE_ATTRIBUTE_WARP_SIZE, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get SIMDWidth for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.memPitch,
+					CU_DEVICE_ATTRIBUTE_MAX_PITCH, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get memPitch for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.regsPerBlock,
+					CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get regsPerBlock for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.clockRate,
+					CU_DEVICE_ATTRIBUTE_CLOCK_RATE, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get clockRate for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceGetAttribute(&device.textureAlign,
+					CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get textureAlign for GPU " 
+						<< gpu);
+				}
+
+				if (cuDeviceComputeCapability(&device.major, &device.minor, gpu) != CUDA_SUCCESS) {
+					Ocelot_Exception(
+						"Executive::enumerateDevices() - failed to get compute capability for GPU " 
+						<< gpu);
+				}
+
+				devices.push_back(device);
+
+				if (devices.size() == 1 || 
+					api::OcelotConfiguration::getExecutive().preferredISA == ir::Instruction::GPU) {
+
+					selectDevice((int)devices.size() - 1);
+				}
+			}
 		}
 	}
 #endif
-}
 
-/*! Enumerate available devices */
-void executive::Executive::enumerateDevices() {
-	report( "Initializing devices:" );
-
-	{
+	if (api::OcelotConfiguration::getExecutive().enableEmulated) {
+		// emulator
 		Device device;
 		device.ISA = ir::Instruction::Emulated;
 		device.name = "Ocelot PTX Emulator";
@@ -686,12 +1763,19 @@ void executive::Executive::enumerateDevices() {
 		device.textureAlign = 1;
 		device.major = 1;
 		device.minor = 3;
-		report( " Initialized PTX emulated." );
-		allDevices.push_back(device);
+
+		devices.push_back(device);
+		
+		if (devices.size() == 1 || 
+			api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
+
+			selectDevice((int)devices.size() - 1);
+		}
 	}
 
-	#ifdef HAVE_LLVM
-	{
+#ifdef HAVE_LLVM 
+	if (api::OcelotConfiguration::getExecutive().enableLLVM) {
+		// multicore
 		Device device;
 		device.ISA = ir::Instruction::LLVM;
 		device.name = "Ocelot LLVM JIT-Compiler";
@@ -716,1304 +1800,753 @@ void executive::Executive::enumerateDevices() {
 		device.major = 1;
 		device.minor = 3;
 		report( " Initialized PTX-To-LLVM JIT." );
-		allDevices.push_back(device);
-	}
-	#endif
-	
-	#if HAVE_CUDA_DRIVER_API == 1
-	// enumerate actual CUDA-capable GPUs
-	int deviceCount = 0;
 
-	if (!cudaInitialized) {
-		cuInit(0);
-		// create a CUDA context as well
-		report("Created CUDA driver context.");
-		cudaInitialized = true;
-	}
-	
-	if (cuDeviceGetCount(&deviceCount) != CUDA_SUCCESS) {
-		report("cuDeviceGetCount() - failed");
-		return;
-	}
-	for (int i = 0; i < deviceCount; i++) {
-		CUdevprop devProperties = {0};
-		char cudaDeviceName[128] = {0};
-		unsigned int totalMemoryBytes = 0;
+		devices.push_back(device);
 
-		Device device;
-		device.ISA = ir::Instruction::GPU;
-
-		cuDeviceGetName(cudaDeviceName, 127, i);
-		device.name = std::string(cudaDeviceName);
-
-		device.guid = i;
-
-		cuDeviceTotalMem(&totalMemoryBytes, i);
-		device.totalMemory = (size_t)totalMemoryBytes;
-
-		cuDeviceGetAttribute(&device.multiprocessorCount, 
-			CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, i);
-
-		cuDeviceGetProperties(&devProperties, i);
-
-		device.memcpyOverlap = 0;
-		device.maxThreadsPerBlock = devProperties.maxThreadsPerBlock;
-		device.maxThreadsDim[0] = devProperties.maxThreadsDim[0];
-		device.maxThreadsDim[1] = devProperties.maxThreadsDim[1];
-		device.maxThreadsDim[2] = devProperties.maxThreadsDim[2];
-		device.maxGridSize[0] = devProperties.maxGridSize[0];
-		device.maxGridSize[1] = devProperties.maxGridSize[1];
-		device.maxGridSize[2] = devProperties.maxGridSize[2];
-		device.sharedMemPerBlock = devProperties.sharedMemPerBlock;
-		device.totalConstantMemory = devProperties.totalConstantMemory;
-		device.SIMDWidth = devProperties.SIMDWidth;
-		device.memPitch = devProperties.memPitch;
-		device.regsPerBlock = devProperties.regsPerBlock;
-		device.clockRate = devProperties.clockRate;
-		device.textureAlign = devProperties.textureAlign;
-
-		cuDeviceComputeCapability(&device.major, &device.minor, i);
-
-//		if (device.totalMemory < (1<<30)) 	// filter out Tesla cards
-		{
-			report("added GPU: " << device.name);
-			allDevices.push_back(device);
+		if (devices.size() == 1 ||
+			api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
+			selectDevice((int)devices.size() - 1);
 		}
-	}
-	#endif
-	restoreFilteredDevices();
+	}#endif
+
+	assert(selectedDevice >= 0);
+	return devices.size();
 }
 
-/*!
-	idempotent - called to init GL interoperability
+/*! 
+	selects a device [ this is intended to be a low-cost operation called at every CUDA runtime 
+	API call]
 */
-bool executive::Executive::useGLInteroperability() {
-	#if HAVE_CUDA_DRIVER_API == 1
-	if (!cudaGLInitialized) {
-		cudaGLInitialized = false;
-		if (cuGLInit() != CUDA_SUCCESS) {
-			report("  failed to initialize GL interoperability");
+bool executive::Executive::selectDevice(int device) {
+	if (device != selectedDevice && device >= 0 && device < (int)devices.size()) {
+		selectedDevice = device;
+		report("Executive::selectDevice(" << device << ") - " << devices[selectedDevice].name);
+
+		if (devices[selectedDevice].ISA == ir::Instruction::GPU) {
+#if HAVE_CUDA_DRIVER_API == 1
+			Device & device = devices[selectedDevice];
+#if CUDA_OPENGL_INTEROPERABILITY == 1
+			if (cuGLCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to create GL context on device " 
+					<< device.name);
+			}
+			if (cuGLInit() != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to initialize GL interoperability on device "
+					<< device.name);
+			}
+			report(" created CUDA GL context");
+#else
+			if (cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to crete context on device " 
+					<< device.name);
+			}
+			report(" created CUDA context without OpenGL support");
+#endif
+
+#else
 			return false;
-		}
-		if (cuDeviceGet(&cudaDevice, devices[selectedDevice].guid) != CUDA_SUCCESS) {
-			report("  cuDeviceGet() failed");
-			return false;
-		}
-		if (cuGLCtxCreate(&cudaContext, CU_CTX_MAP_HOST, cudaDevice) == CUDA_SUCCESS) {
-			cudaGLInitialized = true;
-			report("  cuGLCtxCreate() - created a GL context");
-			return true;
-		}
-		else {
-			report("  CANNOT create select GL-capable CUDA context");
-			return false;
+#endif			
 		}
 	}
 	return true;
-	#else
-	return false;
-	#endif
 }
 
-/*!
-	Select a device by GUID
+/*! 
+	gets selected device identifier
 */
-bool executive::Executive::select(int device) {
-	if (selectedDevice >= 0 && devices[selectedDevice].guid == device) {
-		return true;	
-	}
-	report("selecting device " << device);
-	for (int i = 0; i < (int)devices.size(); i++) {
-		if (devices[i].guid == device) {
-			if (devices[i].ISA == ir::Instruction::Emulated
-				|| devices[i].ISA == ir::Instruction::LLVM) {
-				selectedDevice = i;
-				return true;
-			}
-#if HAVE_CUDA_DRIVER_API == 1
-			else if (devices[i].ISA == ir::Instruction::GPU) {
-				selectedDevice = i;
-				cudaGLInitialized = false;
-
-				if (cuCtxCreate(&cudaContext, CU_CTX_MAP_HOST, devices[i].guid) == CUDA_SUCCESS) {
-					report("  cuCtxCreate() successful - created CUDA device " << devices[i].guid);
-					return true;
-				}
-				report("cuGLCtxCreate(&context,0, " << devices[i].guid << ") failed");
-				return false;
-			}
-#endif
-		}
-	}
-	return false;
-}
-
-bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture ISA) {
-	for (int i = 0; i < (int)devices.size(); i++) {
-		if (devices[i].ISA == ISA) {
-			return select(devices[i].guid);
-		}
-	}
-	return false;
-}
-
-void executive::Executive::setPreferredISA(ir::Instruction::Architecture ISA) {
-	DeviceVector newDevices;
-	
-	for (DeviceVector::const_iterator device = devices.begin(); 
-		device != devices.end(); ++device) {
-		if (device->ISA == ISA) {
-			newDevices.push_back(*device);
-		}
-	}
-	for (DeviceVector::const_iterator device = devices.begin(); 
-		device != devices.end(); ++device) {
-		if (device->ISA != ISA) {
-			newDevices.push_back(*device);
-		}
-	}
-	
-	devices = std::move(newDevices);
-}
-
-void executive::Executive::filterDevicesByISA(
-	ir::Instruction::Architecture ISA) {
-	DeviceVector newDevices;
-	for (DeviceVector::const_iterator device = devices.begin(); 
-		device != devices.end(); ++device) {
-		if (device->ISA != ISA) {
-			newDevices.push_back(*device);
-		}
-	}
-	devices = newDevices;
-}
-
-void executive::Executive::restoreFilteredDevices() {
-	devices = allDevices;
-}
-
-int executive::Executive::getSelected() const {
+int executive::Executive::getSelectedDevice() const {
 	return selectedDevice;
 }
 
 /*!
-	Returns the ISA of the selected device or PTX if no device selected
+	gets the ISA of the selected device
 */
 ir::Instruction::Architecture executive::Executive::getSelectedISA() const {
-	if (selectedDevice >= 0) {
-		return devices[selectedDevice].ISA;
-	}
-	return ir::Instruction::PTX;
+	return devices[selectedDevice].ISA;
 }
 
 /*!
-	Gets a kernel by ISA, module, kernel name.
-
-	\param isa instruction set of desired kernel
-	\param module name of module from which kernel is to be selected
-	\param kernelName name of kernel
-
-	\return instance of kernel with requested ISA or 0 on failure.
+	indicates preferred ISA [device will be chosen if available]
 */
-ir::Kernel* executive::Executive::getKernel(ir::Instruction::Architecture isa, 
-	const std::string& module, 
-	const std::string& kernelName) {
-	ModuleMap::iterator m_it = modules.find(module);
-	report( "From module " << module << " getting kernel " << kernelName 
-		<< " for architecture " << ir::Instruction::toString( isa ) );
-	if (m_it != modules.end()) {
-		ir::Kernel* kernel = m_it->second->getKernel(isa, kernelName);
-		if (kernel == 0) {
-			_translateToSelected( *m_it->second );
-			kernel = m_it->second->getKernel(isa, kernelName);
+void executive::Executive::setPreferredISA(ir::Instruction::Architecture isa) {
+	assert(0 && "unimplemented");
+}
+
+bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture isa) {
+	size_t n = 0;
+	for (; n < devices.size(); n++) {
+		if (devices[n].ISA == isa) {
+			return selectDevice((int)n);
 		}
-		return kernel;
 	}
-	return 0;
+	return false;
+}
+
+/*! 
+	\brief only listed devices may be selected
+*/
+void executive::Executive::filterDevices(std::vector<int> & devices) {
+	assert(0 && "unimplemented");
+}
+
+/*!
+	\brief only devices with listed ISAs may be selected
+*/
+void executive::Executive::filterISAs(std::vector<int> & ISAs) {
+	assert(0 && "unimplemented");
+}
+
+/*!
+	\brief returns the address space of the selected device
+*/
+int executive::Executive::getDeviceAddressSpace() const {
+	return devices[selectedDevice].addressSpace;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot translation settings
+//
 
 /*!
-	Allocate <bytes> of memory on the device
+	\brief This sets the optimization level 
 
-	\return pointer to allocated memory block or NULL on error
+	\param l The new optimization level.
 */
-void *executive::Executive::malloc(size_t bytes) {
-	using namespace std;
-	
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				MemoryAllocation record;
-				record.isa = ir::Instruction::Emulated;
-				record.device = getSelected();
-				record.external = false;
-				record.size = bytes;
-				record.ptr = (void *)(new AllocationType[CEIL_DIV(bytes, 
-					sizeof(AllocationType)) + sizeof(AllocationType)]);
-				record.offset = (size_t)record.ptr 
-					% sizeof(AllocationType);
-				record.offset = (record.offset == 0) 
-					? 0 : sizeof(AllocationType) - record.offset;
-				record.ptr = (void*)((size_t)record.ptr + record.offset);
-				memoryAllocations[getSelected()].insert(
-					std::make_pair((char*)record.ptr,record));
-				return record.ptr;
-			}
-			break;
-#if HAVE_CUDA_DRIVER_API == 1
-		case ir::Instruction::GPU:
-			{
-				MemoryAllocation record;
-				record.isa = ir::Instruction::GPU;
-				record.device = getSelected();
-				record.external = false;
-				record.size = bytes;
-				record.ptr = 0;
-				CUresult result = cuMemAlloc((CUdeviceptr *)&record.ptr, bytes);
-				if (result == CUDA_SUCCESS) {
-					record.offset = 0;
-					memoryAllocations[getSelected()].insert(
-						std::make_pair((char *)record.ptr, record));
-					report("executive::Executive::malloc() - cuMemAlloc() allocated " 
-						<< bytes << " bytes on device " << record.device 
-						<< " at 0x" << std::hex << record.ptr << std::dec);
-					return record.ptr;
-				}
-				else {
-					report("executive::Executive::malloc() - cuMemAlloc() failed when attempting to allocate " 
-						<< bytes << " bytes with result " << result);
-					throw hydrazine::Exception("Executive::malloc() failed to allocate memory on GPU");
-				}
-			}
-			break;
-#endif
-/*
-		case ir::Instruction::x86:
-			{
+void executive::Executive::setOptimizationLevel(translator::Translator::OptimizationLevel l) {
 
-			}
-			break;
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
-	}
-	return 0;
 }
 
-void executive::Executive::registerExternal(void* pointer, size_t bytes) {
-	using namespace std;
-	report( "Registering external ptr " << pointer << " to " 
-		<< bytes << " bytes." );
-	
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-#if HAVE_CUDA_DRIVER_API == 1
-		case ir::Instruction::GPU:
-#endif
-			{
-				MemoryAllocation record;
-				record.isa = getSelectedISA();
-				record.device = getSelected();
-				record.size = bytes;
-				record.external = true;
-				record.ptr = pointer;
-				record.offset = 0;
-				bool noDuplicate = memoryAllocations[getSelected()].insert(
-					std::make_pair((char*)record.ptr,record)).second;
-				if( !noDuplicate )
-				{
-					std::stringstream stream;
-					stream << "Register external variable " 
-						<< "failed, tried to register to previously " 
-						<< "allocated memory at " << pointer;
-					throw hydrazine::Exception(stream.str());
+/*!
+	\brief ensures that all kernels have an executable translation for the indicated ISA	
+*/
+void executive::Executive::translateAllToISA(ir::Instruction::Architecture isa, bool retranslate) {
+	ModuleMap::iterator mod_it = modules.begin();
+	for (; mod_it != modules.end(); ++mod_it) {
+		if (mod_it->second->kernels.find(ir::Instruction::PTX) != mod_it->second->kernels.end()) {
+			ir::Module::KernelMap & target = mod_it->second->kernels[ir::Instruction::PTX];
+			for (ir::Module::KernelMap::iterator k_it = target.begin(); k_it != target.end(); 
+				++k_it) {
+				
+				if (retranslate || mod_it->second->kernels[isa].find(k_it->second->name) ==
+					mod_it->second->kernels[isa].end()) {
+					translateToISA(isa, mod_it->first, k_it->second->name);
 				}
 			}
-			break;
-/*
-
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
+		}
 	}
 }
 
 /*!
-	Makes a static array visible to the Executive class
 
-	\param ptr Pointer to the start of the memory
-	\param bytes Size of memory in bytes
-	\param name Identifier of the variable
-	\param module Path to the module with the variable
-	\param space The address space it should exist in
-	\param normalize If the global is a texture, 
-		should it be normalized?
 */
-void executive::Executive::registerGlobal(void *ptr, size_t bytes, 
-	const std::string& name, ir::PTXInstruction::AddressSpace space, 
-	const std::string& modulePath) {
-	using namespace std;
-
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				report( "Registering global variable (LLVM,emulated) '" << name 
-					<< "' in module " << modulePath );
-
-				ModuleMap::iterator module = modules.find(modulePath);
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " does not exist." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					global = module->second->globals.find(name);
-				if (global == module->second->globals.end()) {
-					throw hydrazine::Exception("Global variable " 
-						+ name + " not declared in module " + modulePath);
-				}
-
-				if (global->second.registered) {
-					throw hydrazine::Exception("Duplicate global variable " 
-						+ name + " registered in module " + modulePath);
-				}
-
-				if (global->second.local) {
-					global->second.local = false;
-					std::memcpy(ptr, global->second.pointer, bytes);
-					delete[] global->second.pointer;
-				}
-
-				global->second.pointer = (char*) ptr;
-
-				if (global->second.statement.bytes() > bytes) {
-					std::stringstream stream;
-					stream << "Insufficient storage " << bytes 
-						<< " at " << ptr << " for global " << name 
-						<< " in module " << modulePath << " (needs " 
-						<< global->second.statement.bytes() << ")";
-					throw hydrazine::Exception(stream.str());	
-				}
+void executive::Executive::translateModuleToISA(std::string moduleName, 
+	ir::Instruction::Architecture isa, bool retranslate) {
+	
+	ModuleMap::iterator mod_it = modules.find(moduleName);
+	if (mod_it != modules.end()) {
+		if (mod_it->second->kernels.find(ir::Instruction::PTX) != mod_it->second->kernels.end()) {
+			ir::Module::KernelMap & target = mod_it->second->kernels[ir::Instruction::PTX];
+			for (ir::Module::KernelMap::iterator k_it = target.begin(); k_it != target.end(); 
+				++k_it) {
 				
-				global->second.registered = true;
-				
-				if (global->second.statement.directive 
-					!= ir::PTXStatement::Tex) {
-					GlobalAllocationMap::iterator ai 
-						= globalAllocations.find((char*)ptr);
-					if (ai != globalAllocations.end()) {
-						assert(ai->second.modules.count(modulePath) == 0);
-						ai->second.modules.insert(modulePath);
-					}
-					else {
-						GlobalMemoryAllocation allocation;
-						allocation.ptr = ptr;
-						allocation.size = bytes;
-						allocation.space = space;
-						allocation.identifier = name;
-						allocation.modules.insert(modulePath);				
-					
-						globalAllocations.insert(std::make_pair((char*)ptr, 
-							allocation));
-					}
+				if (retranslate || mod_it->second->kernels[isa].find(k_it->second->name) ==
+					mod_it->second->kernels[isa].end()) {
+					translateToISA(isa, mod_it->first, k_it->second->name);
 				}
 			}
-			break;
-
-#if HAVE_CUDA_DRIVER_API == 1
-		/*!
-			Register the GPU
-		*/
-		case ir::Instruction::GPU:
-			{
-
-				report( "Registering global variable (GPU) '" << name 
-					<< "' in module " << modulePath );
-
-				ModuleMap::iterator module = modules.find(modulePath);
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " does not exist." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					global = module->second->globals.find(name);
-				if (global == module->second->globals.end()) {
-					throw hydrazine::Exception("Global variable " 
-						+ name + " not declared in module " + modulePath);
-				}
-
-				if (global->second.registered) {
-					throw hydrazine::Exception("Duplicate global variable " 
-						+ name + " registered in module " + modulePath);
-				}
-				
-				if (global->second.local) {
-					global->second.local = false;
-					std::memcpy(ptr, global->second.pointer, bytes);
-					delete[] global->second.pointer;
-				}
-
-				global->second.pointer = (char*) ptr;
-				global->second.registered = true;
-
-				if (global->second.statement.directive != ir::PTXStatement::Tex) {
-					GlobalAllocationMap::iterator ai = globalAllocations.find((char*)ptr);
-					if (ai != globalAllocations.end()) {
-						assert(ai->second.modules.count(modulePath) == 0);
-						ai->second.modules.insert(modulePath);
-					}
-					else {
-						GlobalMemoryAllocation allocation;
-						allocation.ptr = ptr;
-						allocation.size = bytes;
-						allocation.space = space;
-						allocation.identifier = name;
-						allocation.modules.insert(modulePath);				
-					
-						globalAllocations.insert(std::make_pair((char*)ptr, allocation));
-					}
-				}
-
-				//throw hydrazine::Exception("Executive::registerGlobal() - not implemented for GPU device");
-			}
-			break;
-#endif
-
-/*
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
+		}
 	}
 }
 
-void executive::Executive::registerTexture(const ir::Texture& t, 
-	const std::string& name, const std::string& modulePath) {
-	using namespace std;
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot interface functions
+//
 
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				report( "Registering texture variable " << name 
-					<< " in module " << modulePath );
-
-				ModuleMap::iterator module = modules.find(modulePath);
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " does not exist." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					global = module->second->globals.find(name);
-				if (global == module->second->globals.end()) {
-					throw hydrazine::Exception("Global variable " 
-						+ name + " not declared in module " + modulePath);
-				}
-
-				if (global->second.registered) {
-					throw hydrazine::Exception("Duplicate texture variable " 
-						+ name + " registered in module " + modulePath);
-				}
-
-				ir::Module::TextureMap::iterator 
-					texture = module->second->textures.find(name);
-				assert(texture != module->second->textures.end());
-				texture->second = t;
-
-				global->second.registered = true;
-			}
-			break;
-		case ir::Instruction::GPU:
-			{
-				report( "Registering texture variable " << name 
-					<< " in module " << modulePath );
-
-				ModuleMap::iterator module = modules.find(modulePath);
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " does not exist." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					global = module->second->globals.find(name);
-				if (global == module->second->globals.end()) {
-					throw hydrazine::Exception("Global variable " 
-						+ name + " not declared in module " + modulePath);
-				}
-
-				if (global->second.registered) {
-					throw hydrazine::Exception("Duplicate texture variable " 
-						+ name + " registered in module " + modulePath);
-				}
-
-				ir::Module::TextureMap::iterator 
-					texture = module->second->textures.find(name);
-				assert(texture != module->second->textures.end());
-				texture->second = t;
-
-				global->second.registered = true;
-			}
-			break;
-/*
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			assert("Invalid type" == 0);
-			break;
-	}
+void executive::Executive::clear() {
+	selectedDevice = -1;
+	textures.clear();
+	globals.clear();
+	memoryAllocations.clear();
+	addressSpaces.clear();
+	modules.clear();
+	devices.clear();
+	hostWorkerThreads = api::OcelotConfiguration::getExecutive().workerThreadLimit;
+	optimizationLevel = 
+		(translator::Translator::OptimizationLevel)
+			api::OcelotConfiguration::getExecutive().optimizationLevel;
+	enumerateDevices();	
 }
 
-
-/*!
-	\brief Bind a texture to another memory allocation
-	\param target Pointer to the variable to bind the texture to
-	\param texture Pointer to the texture variable
-*/
-void executive::Executive::rebind(const std::string& modulePath, 
-	const std::string& texture, void* target, unsigned int width, 
-	unsigned int height, unsigned int length, const ir::Texture& t) {
-
-	report("Executive::rebind() - module: " << modulePath << ", texture: " << texture 
-		<< ", target: 0x" << std::hex << target << std::dec << ", width: " << width 
-		<< ", height: " << height << ", length: " << length);
-
-		switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				report( "Rebinding texture " << texture
-					<< " to variable " << target );
-				ModuleMap::iterator module = modules.find(modulePath);
-
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " does not exist." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					texture_it = module->second->globals.find(texture);
-				if (texture_it == module->second->globals.end()) {
-					throw hydrazine::Exception("Texture variable " 
-						+ texture + " not declared in module " + modulePath, 1);
-				}
-				else if( texture_it->second.statement.directive 
-					!= ir::PTXStatement::Tex ) {
-					throw hydrazine::Exception("Invalid texture reference", 1);
-				}
-				
-				if (!texture_it->second.registered) {
-					throw hydrazine::Exception("Texture variable " 
-						+ texture + " not registered in module " + modulePath);
-				}
-
-				if( target != 0 ) {
-					if( memoryAllocations[getSelected()].count( 
-						(char*) target ) == 0 ){
-						throw hydrazine::Exception(
-							"Invalid texture binding", 2);
-					}
-				}
-
-				ir::Module::TextureMap::iterator 
-					m_it = module->second->textures.find(texture);
-				assert(m_it != module->second->textures.end());
-				
-				report( " Texture was previously bound to " 
-					<< m_it->second.data );
-									
-				m_it->second.data = target;
-				m_it->second.x = t.x;
-				m_it->second.y = t.y;
-				m_it->second.z = t.z;
-				m_it->second.w = t.w;
-				m_it->second.type = t.type;
-				m_it->second.size.x = width;
-				m_it->second.size.y = height;
-				m_it->second.size.z = length;
-								
-				m_it->second.normalize = t.normalize;
-				m_it->second.interpolation = t.interpolation;
-				m_it->second.addressMode[0] = t.addressMode[0];
-				m_it->second.addressMode[1] = t.addressMode[1];
-				m_it->second.addressMode[2] = t.addressMode[2];
-				
-				if( target == 0 ) {
-					m_it->second.type = ir::Texture::Invalid;
-				}								
-			}
-			break;
-		case ir::Instruction::GPU:
-			{
-				report( "Rebinding texture " << texture
-					<< " to variable " << target );
-				ModuleMap::iterator module = modules.find(modulePath);
-
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " does not exist." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					texture_it = module->second->globals.find(texture);
-				if (texture_it == module->second->globals.end()) {
-					throw hydrazine::Exception("Texture variable " 
-						+ texture + " not declared in module " + modulePath, 1);
-				}
-				else if( texture_it->second.statement.directive 
-					!= ir::PTXStatement::Tex ) {
-					throw hydrazine::Exception("Invalid texture reference", 1);
-				}
-				
-				if (!texture_it->second.registered) {
-					throw hydrazine::Exception("Texture variable " 
-						+ texture + " not registered in module " + modulePath);
-				}
-
-				if( target != 0 ) {
-					if( memoryAllocations[getSelected()].count( 
-						(char*) target ) == 0 ){
-						throw hydrazine::Exception(
-							"Invalid texture binding", 2);
-					}
-				}
-
-				ir::Module::TextureMap::iterator 
-					t_it = module->second->textures.find(texture);
-				assert(t_it != module->second->textures.end());
-				
-				report( " Texture was previously bound to " 
-					<< t_it->second.data );
-									
-				t_it->second.data = target;
-				t_it->second.x = t.x;
-				t_it->second.y = t.y;
-				t_it->second.z = t.z;
-				t_it->second.w = t.w;
-				t_it->second.type = t.type;
-				t_it->second.size.x = width;
-				t_it->second.size.y = height;
-				t_it->second.size.z = length;
-								
-				t_it->second.normalize = t.normalize;
-				t_it->second.interpolation = t.interpolation;
-				t_it->second.addressMode[0] = t.addressMode[0];
-				t_it->second.addressMode[1] = t.addressMode[1];
-				t_it->second.addressMode[2] = t.addressMode[2];
-				
-				if( target == 0 ) {
-					t_it->second.type = ir::Texture::Invalid;
-				}		
-			}
-			break;
-/*
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
+ocelot::PointerMap executive::Executive::contextSwitch(int destination, int source) {
+	if (destination >= (int)devices.size()) {
+		Ocelot_Exception("Invalid destination device " << destination 
+			<< " in device to device context switch.");
 	}
-}
-
-/*!
-	Free a memory block allocated to this device.
-
-	\param ptr pointer to allocated memory block
-*/
-void executive::Executive::free(void *ptr) {
-	using namespace std;
-	report( "Freeing " << ptr );
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				DeviceAllocationMap::iterator l_it = 
-					memoryAllocations.find(getSelected());
-				assert (l_it != memoryAllocations.end());
-				AllocationMap::iterator it = 
-					l_it->second.lower_bound((char*)ptr);
-				assert(it != l_it->second.end());
-				assert((char*)ptr <= ((char*)it->second.ptr + it->second.size));
-
-				if (!it->second.external) {
-					delete [] ((char *)it->second.ptr - it->second.offset);
-				}
-				
-				l_it->second.erase(it);
-				return;
-				
-			}
-			break;
-
-#if HAVE_CUDA_DRIVER_API == 1
-		case ir::Instruction::GPU:
-			{
-				DeviceAllocationMap::iterator l_it = 
-					memoryAllocations.find(getSelected());
-				assert (l_it != memoryAllocations.end());
-				AllocationMap::iterator it = 
-					l_it->second.lower_bound((char*)ptr);
-				assertM(it != l_it->second.end(), "Cuda free error, address " 
-					<< (void*)ptr << " not in any allocated region.");
-
-				if (!it->second.external) {
-					cuMemFree(painful_cast(it->second.ptr));
-				}
-				
-				l_it->second.erase(it);
-				return;
-			}
-			break;
-#endif
-
-/*
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
-	}
-}
-
-void executive::Executive::freeGlobal(const std::string& name, 
-	const std::string& modulePath) {
-	using namespace std;
-
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				report( "Freeing global variable " << name 
-					<< " from emulated kernels in module " << modulePath );
-
-				ModuleMap::iterator module = modules.find(modulePath);
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " is unknown." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					global = module->second->globals.find(name);
-				if (global == module->second->globals.end()) {
-					throw hydrazine::Exception("Global variable " 
-						+ name + " not declared in module " + modulePath);
-				}
-				
-				if (global->second.local) {
-					throw hydrazine::Exception(
-						"Cannot free preinitialized global " 
-						+ name + " in module " + modulePath);
-				}
-				
-				global->second.registered = false;
-			}
-			break;
-
-#if HAVE_CUDA_DRIVER_API == 1
-		case ir::Instruction::GPU:
-			{
-				report( "Freeing global variable " << name 
-					<< " from GPU kernels in module " << modulePath );
-
-				ModuleMap::iterator module = modules.find(modulePath);
-				if (module == modules.end()) {
-					throw hydrazine::Exception( "Module " + modulePath 
-						+ " is unknown." );
-				}
-
-				ir::Module::GlobalMap::iterator 
-					global = module->second->globals.find(name);
-				if (global == module->second->globals.end()) {
-					throw hydrazine::Exception("Global variable " 
-						+ name + " not declared in module " + modulePath);
-				}
-				
-				if (global->second.local) {
-					throw hydrazine::Exception(
-						"Cannot free preinitialized global " 
-						+ name + " in module " + modulePath);
-				}
-				
-				global->second.registered = false;
-			}
-			break;
-#endif
-
-/*
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
-	}
-}
-		
-void executive::Executive::memcpy( void* dest, const void* src, size_t bytes, 
-	MemoryCopy type ) {
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				if (type == DeviceToDevice) {
-					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid destination " << dest << " (" 
-							<< bytes << " bytes) in device to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, dest, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-					if (!checkMemoryAccess(getSelected(), src, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid source " << src << " (" 
-							<< bytes << " bytes) in device to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, src, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-				}
-				else if (type == HostToDevice) {
-					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid destination " << dest << " (" 
-							<< bytes << " bytes) in host to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, dest, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-				}
-				else if (type == DeviceToHost) {
-					if (!checkMemoryAccess(getSelected(), src, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid source " << src << " ( " 
-							<< bytes << "bytes) in device to host memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, src, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-				}
-				std::memcpy( dest, src, bytes );
-			}
-			break;
-
-#if HAVE_CUDA_DRIVER_API == 1
-		case ir::Instruction::GPU:
-			{
-				CUresult result;
-				if (type == DeviceToDevice) {
-					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid destination " << dest << " (" 
-							<< bytes << " bytes) in device to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, dest, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-					if (!checkMemoryAccess(getSelected(), src, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid source " << src << " (" 
-							<< bytes << " bytes) in device to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, src, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-					result = cuMemcpyDtoD(painful_cast(dest), painful_cast(src), bytes);
-					if (result != CUDA_SUCCESS) {
-						report("Executive::memcpy() - cuMemcpyDtoD() failed");
-					}
-				}
-				else if (type == HostToDevice) {
-					if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid destination " << dest << " (" 
-							<< bytes << " bytes) in host to device memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, dest, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-					result = cuMemcpyHtoD(painful_cast(dest), (src), bytes);
-					if (result != CUDA_SUCCESS) {
-						report("Executive::memcpy() - cuMemcpyHtoD() failed");
-					}
-				}
-				else if (type == DeviceToHost) {
-					if (!checkMemoryAccess(getSelected(), src, bytes)) {
-						std::stringstream stream;
-						stream << "Invalid source " << src << " ( " 
-							<< bytes << "bytes) in device to host memcpy." 
-							<< std::endl;
-						stream << nearbyAllocationsToString(*this, src, bytes);
-						throw hydrazine::Exception(stream.str());
-					}
-					result = cuMemcpyDtoH((dest), painful_cast(src), bytes);
-					if (result != CUDA_SUCCESS) {
-						report("Executive;:memcpy() - cuMemcpyDtoH() failed with result " << result);
-					}
-				}
-				else if (type == HostToHost) {
-					std::memcpy(dest, src, bytes);
-				}
-			}
-			break;
-#endif
-			
-			/*
-		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:	// PTX or invalid
-			throw hydrazine::Exception("ISA " 
-				+ ir::Instruction::toString(getSelectedISA()) 
-				+ " Not Supported.");
-			break;
+	if (source >= (int)devices.size()) {
+		Ocelot_Exception("Invalid source device " << destination 
+			<< " in device to device context switch.");
 	}
 	
-}
+	ocelot::PointerMap map;
 
-void executive::Executive::memset( void* dest, int value, size_t bytes ) {
-	switch (getSelectedISA()) {
-		case ir::Instruction::LLVM:
-		case ir::Instruction::Emulated:
-			{
-				if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-					std::stringstream stream;
-					stream << "Invalid destination " << dest << " (" 
-						<< bytes << " bytes) in device to device memcpy." 
-						<< std::endl;
-					stream << nearbyAllocationsToString(*this, dest, bytes);
-					throw hydrazine::Exception(stream.str());
-				}
-				std::memset( dest, value, bytes );
-			}
-			break;
-#if HAVE_CUDA_DRIVER_API == 1
-		case ir::Instruction::GPU:
-			{
-				if (!checkMemoryAccess(getSelected(), dest, bytes)) {
-					std::stringstream stream;
-					stream << "Invalid destination " << dest << " (" 
-						<< bytes << " bytes) in device to device memcpy." 
-						<< std::endl;
-					stream << nearbyAllocationsToString(*this, dest, bytes);
-					throw hydrazine::Exception(stream.str());
-				}
-				CUresult error = cuMemsetD8(painful_cast(dest), value, bytes);
-				if(error != CUDA_SUCCESS) {
-					std::stringstream stream;
-					stream << "Memset failed to " << dest << " (" 
-						<< bytes << " bytes) in device to device memcpy." 
-						<< std::endl;
-					stream << nearbyAllocationsToString(*this, dest, bytes);
-					throw hydrazine::Exception(stream.str());
-				}
-			}
-			break;
-#endif
-/*		case ir::Instruction::x86:
-			{
-
-			}
-			break;
-
-		case ir::Instruction::x86_64:
-			{
-
-			}
-			break;
-
-		case ir::Instruction::SPU:
-			{
-
-			}
-			break;
-*/
-		default:
-			throw hydrazine::Exception( 
-				"No support for memset for device with ISA: " 
-				+ ir::Instruction::toString(getSelectedISA()) );
-			break;
+	int sourceSpace = devices[source].addressSpace;
+	int destinationSpace = devices[destination].addressSpace;
+	
+	if(sourceSpace == destinationSpace) {
+		const MemoryAllocationMap& allocations = memoryAllocations[sourceSpace];
+		for (MemoryAllocationMap::const_iterator allocation = allocations.begin(); 
+			allocation != allocations.end(); ++allocation) {
+			map.insert(std::make_pair(allocation->second.get(), 
+				allocation->second.get()));
+		}
 	}
+	else {
+		MemoryAllocationMap& sourceAllocations = memoryAllocations[sourceSpace];
+		MemoryAllocationMap& destinationAllocations = memoryAllocations[destinationSpace];
 	
-}
-
-bool executive::Executive::checkMemoryAccess(int device, 
-	const void* _base, size_t size) const {	
-	const char* base = reinterpret_cast<const char*>(_base);
-
-	GlobalMemoryAllocation global = getGlobalMemoryAllocation(base);
-	const char* globalBase = reinterpret_cast<const char*>(global.ptr);
-	
-	if (global.space != ir::PTXInstruction::AddressSpace_Invalid) {
-		if (base + size <= globalBase + global.size) {
-			return true;
+		for (MemoryAllocationMap::iterator sourceAllocation = sourceAllocations.begin();
+			sourceAllocation != sourceAllocations.end(); ) {
+			if (sourceAllocation->second.affinity == MemoryAllocation::Affinity_host) {
+				++sourceAllocation;
+				continue;
+			}
+			MemoryAllocation allocation = sourceAllocation->second.copy(destinationSpace);
+			map.insert(std::make_pair(sourceAllocation->second.get(), allocation.get()));
+			destinationAllocations[allocation.get()] = std::move(allocation);
+			MemoryAllocationMap::iterator next = sourceAllocation; ++next;
+			sourceAllocations.erase(sourceAllocation);
+			sourceAllocation = next;
 		}
 	}
 	
-	MemoryAllocation allocation = getMemoryAllocation(device, _base);
-	if (allocation.isa == ir::Instruction::Unknown) {
+	return std::move(map);	
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ocelot kernel launch and synchronization functions
+//
+
+/*!
+	\brief translates a kernel to the given ISA and inserts it into the module map
+	\param isa ISA to translate to
+	\param module name of module to which kernel belongs
+	\param kernel name of kernel
+	\return translated kernel or NULL on translation failure
+*/
+ir::Kernel *executive::Executive::translateToISA(ir::Instruction::Architecture isa, 
+	const std::string &moduleName, const std::string &kernelName) {
+	
+	report("Executive::translateToISA(" << isa << ", module: " << moduleName 
+		<< ", kernel: " << kernelName);
+	
+	ModuleMap::iterator mod_it = modules.find(moduleName);
+	if (mod_it == modules.end()) {
+		report("failed to find named module");
+		throw hydrazine::Exception("failed to find module registerd with Ocelot");
+	}
+	
+	ir::Kernel *translated = 0;
+	ir::Kernel *kernel = mod_it->second->getKernel(ir::Instruction::PTX, kernelName);
+
+	// translate
+	switch (isa) {
+		case ir::Instruction::Emulated:
+		{
+			EmulatedKernel *emuKernel = new EmulatedKernel(kernel, this);
+			translated = emuKernel;
+		}
+		break;
+	
+		case ir::Instruction::LLVM:
+		{
+			LLVMExecutableKernel* llvmKernel = new LLVMExecutableKernel(*kernel, this, 
+				optimizationLevel);
+
+			llvmKernel->setDevice(&devices[getSelected()], hostWorkerThreads);
+			//
+			// ...
+			//
+			translated = llvmKernel;
+		}
+		break;
+	
+		case ir::Instruction::GPU:
+		{
+			//
+			//
+			assert(0 && "unimplemented");
+		}
+		break;
+	
+		default:
+			break;
+	}
+	
+	// insert kernel
+	if (translated) {
+		mod_it->second->kernels[isa][translated->name] = translated;
+	}
+	
+	return translated;
+}
+
+
+/*!
+	\brief limits the number of working threads available
+*/
+void executive::Executive::setWorkerThreadLimit(int limit) {
+	hostWorkerThreads = limit;
+}
+
+/*!
+	\brief determines whether kernel exceeds memory bounds through static analysis
+	\param exeKernel executable kernel under test
+	\param sharedMemory size of dynamic shared memory
+	\param paramSize size of parameter memory
+	\return true if kernel meets memory capacity
+*/
+bool executive::Executive::verifyKernelMemoryBounds(ir::ExecutableKernel *exeKernel, 
+	size_t sharedMemory, size_t paramSize) {
+
+	const executive::Device & device = devices[getSelected()];
+
+	//
+	// Ensure enough shared memory is available
+	//
+	size_t dynamicSharedSize = exeKernel->sharedMemorySize() + sharedMemory;
+	if(dynamicSharedSize > (size_t)device.sharedMemPerBlock) {
+#if CUDA_VERBOSE == 1
+		std::cerr << "==Ocelot== Out of shared memory for kernel \""
+			<< kernel->name 
+			<< "\" : \n==Ocelot==\tpreallocated ";
+		std::cerr << exeKernel->sharedMemorySize() << " + requested " 
+			<< sharedMemory
+			<< " is greater than available " 
+			<< device.sharedMemPerBlock 
+			<< " for device " << device.name 
+			<< "\n" << std::flush;
+#endif
 		return false;
 	}
-	assert(allocation.device == device || allocation.external);
-	const char* allocationBase = reinterpret_cast<const char*>(allocation.ptr);
-	return (base + size) <= (allocationBase + allocation.size);
+
+	if((size_t)exeKernel->constMemorySize() > (size_t)device.totalConstantMemory) {
+#if CUDA_VERBOSE == 1
+		std::cerr << "==Ocelot== Out of const memory for kernel \"" 
+			<< exeKernel->name 
+			<< "\" : \n==Ocelot==\tpreallocated ";
+		std::cerr << exeKernel->constMemorySize() 
+			<< " is greater than available " 
+			<< device.totalConstantMemory 
+			<< " for device " << device.name << "\n" << std::flush;
+#endif
+		return false;
+	}
+
+	return true;
 }
 
-executive::Executive::MemoryAllocation 
-	executive::Executive::getMemoryAllocation(int device, 
-	const void *ptr) const {
-	using namespace std;
+/*!
+	\brief helper function for launching a kernel
+	\param module module name
+	\param kernel kernel name
+	\param grid grid dimensions
+	\param block block dimensions
+	\param sharedMemory shared memory size
+	\param parameterBlock array of bytes for parameter memory
+	\param parameterBlockSize number of bytes in parameter memory
+*/
+void executive::Executive::launch(const std::string & moduleName, const std::string & kernelName,
+	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
+	size_t parameterBlockSize) {
+	// launch with no trace generators
+	launch(moduleName, kernelName, grid, block, sharedMemory, parameterBlock, 
+		parameterBlockSize, trace::TraceGeneratorVector());
+}
 
-	MemoryAllocation record;
+/*!
+	\brief helper function for launching a kernel
+	\param module module name
+	\param kernel kernel name
+	\param grid grid dimensions
+	\param block block dimensions
+	\param sharedMemory shared memory size
+	\param parameterBlock array of bytes for parameter memory
+	\param parameterBlockSize number of bytes in parameter memory
+	\param traceGenerators vector of trace generators to run on kernel
+*/
+void executive::Executive::launch(const std::string & moduleName, const std::string & kernelName,
+	dim3 grid, dim3 block, size_t sharedMemory, unsigned char *parameterBlock,
+	size_t parameterBlockSize, const trace::TraceGeneratorVector & traceGenerators) {
+	
+	report("launch('" << moduleName << "', '" << kernelName << "')");
+	report("   grid: " << grid.x << ", " << grid.y << ", " << grid.z);
+	report("  block: " << block.x << ", " << block.y << ", " << block.z);
+	report("  shmem: " << sharedMemory);
+	report("  param block size: " << parameterBlockSize << " bytes");
 
-	DeviceAllocationMap::const_iterator l_it = 
-		memoryAllocations.find(device);
-	if (l_it != memoryAllocations.end()) {
-		AllocationMap::const_iterator it = l_it->second.upper_bound((char*)ptr);
-		if (it != l_it->second.begin()) --it;
-		if (it != l_it->second.end()) {
-			if ((char*)ptr >= (char*)it->second.ptr) {
-				return it->second;
+	ir::Instruction::Architecture isa = getSelectedISA();
+	ir::Kernel *kernel = getKernel(isa, moduleName, kernelName);
+	if (!kernel) {
+		kernel = translateToISA(isa, moduleName, kernelName);
+	}
+	ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);	
+	
+	fenceGlobalVariables();
+
+	if (!verifyKernelMemoryBounds(exeKernel, sharedMemory, parameterBlockSize)) {
+		return;
+	}
+
+	if (isa == ir::Instruction::Emulated && api::OcelotConfiguration::getTrace().enabled) {
+		for( trace::TraceGeneratorVector::const_iterator gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) {
+			exeKernel->addTraceGenerator( *gen );
+		}
+	}
+
+	exeKernel->setKernelShape(block.x, block.y, block.z);
+
+	if (parameterBlockSize) {
+		exeKernel->setParameterBlock(parameterBlock, parameterBlockSize);
+	}
+
+	exeKernel->updateParameterMemory();
+	exeKernel->updateMemory();
+	if (sharedMemory) {
+		exeKernel->setExternSharedMemorySize(sharedMemory);
+	}
+	
+	try {
+		exeKernel->launchGrid(grid.x, grid.y);
+	}
+	catch (executive::RuntimeException &exp) {
+		report("Runtime exception: " << exp.toString());
+		throw;
+	}
+
+	if (isa == ir::Instruction::Emulated && api::OcelotConfiguration::getTrace().enabled) {
+		// remove trace generators
+		if (api::OcelotConfiguration::get().trace.enabled) {
+			for( trace::TraceGeneratorVector::const_iterator gen = traceGenerators.begin(); 
+				gen != traceGenerators.end(); ++gen) {
+				exeKernel->removeTraceGenerator( *gen );
 			}
 		}
 	}
-	return record;
 }
-
-executive::Executive::GlobalMemoryAllocation 
-	executive::Executive::getGlobalMemoryAllocation(const void *_base) const {
-	using namespace std;
-	GlobalMemoryAllocation record;
-	record.space = ir::PTXInstruction::AddressSpace_Invalid;
-
-	const char* base = reinterpret_cast<const char*>(_base);
 	
-	if (!globalAllocations.empty()) {
-		GlobalAllocationMap::const_iterator global 
-			= globalAllocations.upper_bound(const_cast<char*>(base));
-		if (global != globalAllocations.begin()) --global;
-		if (base >= (char*)global->second.ptr) {
-			return global->second;
-		}
-	}
-	return record;
-}
-
-void executive::Executive::setOptimizationLevel( 
-	translator::Translator::OptimizationLevel l) {
-	optimizationLevel = l;
-}
-
-translator::Translator::OptimizationLevel 
-	executive::Executive::getOptimizationLevel() const {
-	return optimizationLevel;
-}
-		
-
-void executive::Executive::limitWorkerThreads(unsigned int limit) {
-	threadLimit = limit;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-executive::Executive::MemoryAllocation::MemoryAllocation( ): 
-	isa(ir::Instruction::Unknown), device(-1), size(0), ptr(0), 
-	external(false), offset(0) {
-}
-
-executive::Executive::MemoryAllocation::MemoryAllocation(
-	ir::Instruction::Architecture i, int d, ir::PTXU64 s, void *p):
-	isa(i), device(d), size(s), ptr(p), external(false)  {
-	
-}
-
-executive::Executive::MemoryAllocation::~MemoryAllocation( ) {
-	
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-void executive::Executive::initializeExternalKernelMap(
-	std::string directoryPath, int type) {
-	ExternalKernelMap::iterator it = externalKernels.begin();
-	for (; it != externalKernels.end(); ++it ) {
-		if (it->second.kernel) {
-			delete it->second.kernel;
-		}
-	}
-	externalKernels.clear();
-
-	std::ifstream directory(directoryPath.c_str());
-	while (!directory.eof()) {
-
-		ExternalKernelEntry entry;
-		std::string kernelName, loadingType;
-
-		directory >> kernelName;
-		directory >> loadingType;
-		directory >> entry.sourcePath;
-
-		if (kernelName != "") {
-			entry.kernel = 0;
-			entry.loadingType = (int)ExternalKernel::fromString(loadingType);
-			externalKernels[kernelName] = entry;
-
-			report("  override: " << kernelName << " (" 
-				<< loadingType << ") - '" << entry.sourcePath << "'");
-		}
-	}
-
-	externalKernelLoadingType = (ExternalKernel::LoadingType) ExternalKernel::PTX_Source;
-}
-
-ir::ExecutableKernel * executive::Executive::getExternalOverride(ir::ExecutableKernel *kernel) {
-
-	switch (externalKernelLoadingType) {
-		case 0: 
-			return kernel;
+/*!
+	\brief block on kernel executing on selected device
+*/
+void executive::Executive::synchronize() {
+	ir::Instruction::Architecture isa = getSelectedISA();
+	switch (isa) {
+		case ir::Instruction::Emulated:	// fall through
+		case ir::Instruction::LLVM:
+			break;
+		case ir::Instruction::GPU:
+			break;
 		default:
-			if (externalKernels.find(kernel->name) != externalKernels.end()) {
-				return externalKernels[kernel->name].kernel;
-			}
 			break;
 	}
-	return kernel;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Global variable synchronization
+//
+
+void executive::Executive::fenceGlobalVariables() {
+	if (getDeviceAddressSpace()) {
+		assert(0 && "devices with non-system address spaces not yet supported");
+		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
+			// do something
+		}
+	}
+	else {
+		//
+		// do something else entirely
+		//
+		MemoryAllocationMap &memoryMap = memoryAllocations[getDeviceAddressSpace()];
+
+		report("Executive::fenceGlobalVariables()");
+
+		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
+			// do something about each module
+
+			report("  global: " << glb_it->first);			
+
+			if (glb_it->second.deviceAddressSpace != Device_shared) {
+				GlobalVariable::ModulePointerMap::iterator mod_it = glb_it->second.modules.begin();
+				for (; mod_it != glb_it->second.modules.end(); ++mod_it) {
+
+					ir::Global & global = modules[mod_it->first]->globals[glb_it->first];
+
+					if (global.pointer && !global.local) {
+						::memcpy(global.pointer, glb_it->second.host_pointer, glb_it->second.size);
+					}
+					else if (!global.pointer) {
+						global.pointer = (char *)glb_it->second.host_pointer;
+						global.registered = true;
+						global.local = true;
+					}
+
+					if (memoryMap.find(global.pointer) == memoryMap.end()) {
+						registerExternal(global.pointer, glb_it->second.size);
+					}
+				}
+			}
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Texture binding and unbinding functions
+
+/*!
+	\brief binds a texture by name to a pointer to a device memory allocation
+	\param offset [out] offset that must be added to fetches to achieved desired pixel
+	\param texture name of texture
+	\param devPtr device memory allocation
+	\param format channel description
+	\param size bytes in texture
+	\return true on success
+*/
+bool  executive::Executive::bindTexture(size_t *offset, const std::string & textureName, 
+	const void *devPtr, const ChannelFormatDesc &format, size_t size, 
+	ir::Texture::AddressMode *addrMode, ir::Texture::Interpolation filter, bool normalized) {
+
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
+
+		report("Executive::bindTexture() - texture.xyzq = " << texture.x << ", " << texture.y 
+			<< ", " << texture.z << ", " << texture.w);
+
+		switch (format.kind) {
+			case ChannelFormatDesc::Kind_signed:
+				report("Executive::bindTexture() - format.type signed");
+				texture.type = ir::Texture::Signed;
+				break;
+			case ChannelFormatDesc::Kind_unsigned:
+				report("Executive::bindTexture() - format.type unsigned");
+				texture.type = ir::Texture::Unsigned;
+				break;
+			case ChannelFormatDesc::Kind_float:
+				report("Executive::bindTexture() - format.type float");
+				texture.type = ir::Texture::Float;
+				break;
+			default:
+				report("Executive::bindTexture() - format.type == Kind_invalid");
+				texture.type = ir::Texture::Invalid;
+				break;
+		}
+
+		texture.size.x = size;
+		texture.size.y = 0;
+		texture.data = (void *)devPtr;
+
+		texture.interpolation = filter;
+		texture.normalize = normalized;
+
+		for (unsigned int i = 0; i < 3; i++) {
+			texture.addressMode[i] = addrMode[i];
+		}
+
+		if (offset) {
+			*offset = (size_t)devPtr % 16;
+		}
+
+		report("Executive::bindTexture() '" << textureName << "'.data = " << texture.data 
+			<< " - filter: " << filter);
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+		return false;
+	}
+
+	return true;
+}
+
+/*!
+	\brief binds a 2D texture by name to a device pointer with a given width, height, and pitch
+	\param offset [out] offset that must be added to fetches to achieved desired pixel
+	\param textureName name of texture
+	\param devPtr device memory allocation
+	\param format channel description
+	\param width width of texture in texels
+	\param height height of texture in texels
+	\param pitch number of bytes between texels of the same column in consecutive rows
+	\return true on success
+*/
+bool executive::Executive::bindTexture2D(size_t *offset, const std::string & textureName, 
+	const void *devPtr, const ChannelFormatDesc &format, size_t width, size_t height, size_t pitch,
+	ir::Texture::AddressMode *addrMode, ir::Texture::Interpolation filter, bool normalized) {
+
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
+
+		report("Executive::bindTexture2D() - texture.xyzq = " << texture.x << ", " << texture.y 
+			<< ", " << texture.z << ", " << texture.w);
+
+		switch (format.kind) {
+			case ChannelFormatDesc::Kind_signed:
+				report("Executive::bindTexture2D() - format.type signed");
+				texture.type = ir::Texture::Signed;
+				break;
+			case ChannelFormatDesc::Kind_unsigned:
+				report("Executive::bindTexture2D() - format.type unsigned");
+				texture.type = ir::Texture::Unsigned;
+				break;
+			case ChannelFormatDesc::Kind_float:
+				report("Executive::bindTexture2D() - format.type float");
+				texture.type = ir::Texture::Float;
+				break;
+			default:
+				report("Executive::bindTexture2D() - format.type == Kind_invalid");
+				texture.type = ir::Texture::Invalid;
+				break;
+		}
+
+		texture.size.x = width;
+		texture.size.y = height;
+		texture.data = (void *)devPtr;
+
+		texture.interpolation = filter;
+		texture.normalize = normalized;
+
+		for (unsigned int i = 0; i < 3; i++) {
+			texture.addressMode[i] = addrMode[i];
+		}
+
+		if (offset) {
+			*offset = (size_t)devPtr % 16;
+		}
+
+		report("Executive::bindTexture2D() '" << textureName << "'.data = " << texture.data 
+			<< " - filter: " << filter);
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+		return false;
+	}
+
+	return true;
+}
+
+/*!
+	\brief binds a texture to an array
+*/
+bool executive::Executive::bindTextureToArray(const std::string & textureName, void *array, 
+	const ChannelFormatDesc &format, ir::Texture::AddressMode *addrMode, 
+	ir::Texture::Interpolation filter, bool normalized) {
+	
+	// lookup the array
+	int addrSpace = getDeviceAddressSpace();
+	DeviceMemoryAllocationMap::const_iterator memoryMap_it = memoryAllocations.find(addrSpace);
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)array);
+	
+	const MemoryAllocation & memory = alloc_it->second;
+
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+
+		texture.x = format.x;
+		texture.y = format.y;
+		texture.z = format.z;
+		texture.w = format.w;
+
+		report("Executive::bindTextureToArray() - texture.xyzw = " << texture.x << ", " << texture.y 
+			<< ", " << texture.z << ", " << texture.w);
+
+		switch (format.kind) {
+			case ChannelFormatDesc::Kind_signed:
+				report(" - format.type signed");
+				texture.type = ir::Texture::Signed;
+				break;
+			case ChannelFormatDesc::Kind_unsigned:
+				report(" - format.type unsigned");
+				texture.type = ir::Texture::Unsigned;
+				break;
+			case ChannelFormatDesc::Kind_float:
+				report(" - format.type float");
+				texture.type = ir::Texture::Float;
+				break;
+			default:
+				report(" - format.type == Kind_invalid");
+				texture.type = ir::Texture::Invalid;
+				break;
+		}
+
+		texture.size.x = memory.pointer.xsize;
+		texture.size.y = memory.pointer.ysize;
+		texture.size.z = memory.extent.depth;
+		texture.data = (void *)memory.get();
+
+		texture.interpolation = filter;
+		texture.normalize = normalized;
+
+		for (unsigned int i = 0; i < 3; i++) {
+			texture.addressMode[i] = addrMode[i];
+		}
+
+		report(" - '" << textureName << "'.data = " << texture.data << " - filter: " << filter);
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+		return false;
+	}
+
+	return true;
+}
+
+/*!
+	\brief unbinds a previously bound texture
+*/
+void executive::Executive::unbindTexture(const std::string & textureName) {
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+		ir::Texture &texture = tex_it->second;
+		texture.data = 0;
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+	}
+}
+
+/*!
+	gets alignment of a named texture
+*/
+size_t executive::Executive::getTextureAlignmentOffset(const std::string & textureName) {
+	size_t offset = 0;
+	TextureMap::iterator tex_it = textures.find(textureName);
+	if (tex_it != textures.end()) {
+
+	}
+	else {
+		Ocelot_Exception("Texture '" << textureName << "' was not registered");
+	}
+	return offset;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// end
 

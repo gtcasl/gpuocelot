@@ -40,6 +40,27 @@ namespace ir {
 		
 		/*!	\brief Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height)=0;
+
+		/*!
+			\brief compute parameter offsets for parameter data
+			\return number of bytes required for parameter memory
+		*/
+		virtual size_t mapParameterOffsets();
+
+		/*!
+			\brief given a block of parameter memory, sets the values of each parameter
+			\param parameter pointer to parameter memory
+			\param paramSize number of bytes to write to parameter memory
+		*/
+		virtual void setParameterBlock(const unsigned char *parameter, size_t paramSize);
+
+		/*!
+			\brief gets the values of each parameter as a block of binary data
+			\param parameter pointer to parameter memory
+			\param maxSize maximum number of bytes to write to parameter memory
+			\return actual number of bytes required by parameter memory
+		*/
+		virtual size_t getParameterBlock(unsigned char *parameter, size_t maxSize) const;
 	
 		/*!	\brief Sets the shape of a kernel */
 		virtual void setKernelShape(int x, int y, int z)=0;

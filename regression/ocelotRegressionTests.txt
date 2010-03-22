@@ -9,4 +9,9 @@
 ../TestLLVMInstructions
 ../TestPTXToLLVMTranslator
 ../TestLLVMKernels
-../TestGPUKernel
+../TestCudaMalloc 
+../TestCudaTexture2D
+../TestCudaTextureArray
+../TestCudaGlobals
+../TestDeviceSwitching
+

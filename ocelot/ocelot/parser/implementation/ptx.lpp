@@ -211,7 +211,7 @@ WHITESPACE [ \t]*
                                     return TOKEN_VISIBLE; }
 ".loc"                          { yylval->value = TOKEN_LOC; \
                                     return TOKEN_LOC; }
-".function"                     { yylval->value = TOKEN_FUNCTION; \
+".func"                         { yylval->value = TOKEN_FUNCTION; \
                                     return TOKEN_FUNCTION; }
 ".struct"                       { yylval->value = TOKEN_STRUCT; \
                                     return TOKEN_STRUCT; }
@@ -262,6 +262,8 @@ WHITESPACE [ \t]*
                                     return TOKEN_SM12; }
 "sm_13"                         { yylval->value = TOKEN_SM13; 
                                     return TOKEN_SM13; }
+"sm_20"                         { yylval->value = TOKEN_SM20; 
+                                    return TOKEN_SM20; }
 "map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
                                     return TOKEN_MAP_F64_TO_F32; }
 

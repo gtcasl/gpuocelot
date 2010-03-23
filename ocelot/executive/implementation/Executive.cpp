@@ -275,6 +275,8 @@ bool executive::Executive::checkMemoryAccess(int device, const void* base, size_
 
 	const MemoryAllocation* allocation = getMemoryAllocation(base);
 
+	if( allocation == 0 ) return false;
+
 	// least address in region must be greater than or equal to this
 	const char *region_base_ptr = (const char *)allocation->get();	
 
@@ -348,13 +350,7 @@ std::string executive::Executive::nearbyAllocationsToString(
 	const Executive& executive, const void* pointer, 
 	unsigned int above, unsigned int below) {
 
-		// throw an exception
-
 	std::stringstream ss;
-	ss << "device memory fault - device pointer " << std::hex << pointer 
-		<< " does not point to an allocation on device " << std::dec 
-		<< executive.devices[executive.getSelectedDevice()].name 
-		<< "\n";
 
 	ss << "\nAll allocations:\n";
 	executive.printMemoryAllocations(ss);

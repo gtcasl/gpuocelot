@@ -153,6 +153,11 @@ namespace parser
 				return "SM13";
 				break;
 			}
+			case TOKEN_SM20:
+			{
+				return "SM20";
+				break;
+			}
 			case TOKEN_MAP_F64_TO_F32:
 			{
 				return "TOKEN_MAP_F64_TO_F32";

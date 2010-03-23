@@ -234,7 +234,7 @@ namespace ir {
 				break;
 			}
 			case Func:
-				return ".func" + name;
+				return ".func " + name;
 				break;
 			case Global: {
 				std::stringstream stream;

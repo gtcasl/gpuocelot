@@ -117,6 +117,8 @@ namespace parser
 		report( "  Rule: VERSION DOUBLE_CONSTANT" );
 
 		std::stringstream stream1;
+		stream1.setf( std::ios::fixed, std::ios::floatfield );
+		stream1.precision( 1 );
 		stream1 << version;
 		std::string value( stream1.str() );
 	
@@ -157,9 +159,17 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-		if( statement.minor != 4 || statement.major != 1 )
+		if( statement.minor == 0 && statement.major == 2 )
 		{
-			throw_exception( "Cannot parse PTX version " << statement.major 
+			std::cerr << "==Ocelot== Warning: Support for PTX 2.0" 
+				<< " is currently experimental. " << std::endl 
+				<< "==Ocelot== Please report all errors to " 
+				<< "'http://groups.google.com/group/gpuocelot'" << std::endl;
+		}
+		else if( statement.minor != 4 || statement.major != 1 )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Cannot parse PTX version " << statement.major 
 				<< "." << statement.minor << " with version 1.4 parser.", 
 				NotVersion1_4 );
 		}
@@ -259,12 +269,17 @@ namespace parser
 	{
 		report( "  Rule: targetOption" );
 		if( token == TOKEN_SM10 ) statement.targets.push_back( "sm_10" );
-		if( token == TOKEN_SM11 ) statement.targets.push_back( "sm_11" );
-		if( token == TOKEN_SM12 ) statement.targets.push_back( "sm_12" );
-		if( token == TOKEN_SM13 ) statement.targets.push_back( "sm_13" );
-		if( token == TOKEN_MAP_F64_TO_F32 )
+		else if( token == TOKEN_SM11 ) statement.targets.push_back( "sm_11" );
+		else if( token == TOKEN_SM12 ) statement.targets.push_back( "sm_12" );
+		else if( token == TOKEN_SM13 ) statement.targets.push_back( "sm_13" );
+		else if( token == TOKEN_SM20 ) statement.targets.push_back( "sm_20" );
+		else if( token == TOKEN_MAP_F64_TO_F32 )
 		{
 			statement.targets.push_back( "map_f64_to_f32" );
+		}
+		else
+		{
+			assertM(false, "Ocelot internal error - invalid token.");
 		}
 	}
 	

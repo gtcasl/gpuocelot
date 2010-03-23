@@ -17,7 +17,7 @@
 		
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ emulated, llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

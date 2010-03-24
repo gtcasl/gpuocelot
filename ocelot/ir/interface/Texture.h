@@ -11,12 +11,21 @@
 
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/cuda/include/cuda.h>
 
 namespace ir
 {
 	/*! \brief A class to represent the access format of a texture */
 	class Texture {		
 		public:
+			enum Binding {
+				Bind_array,
+				Bind_1D,
+				Bind_2D,
+				Bind_3D,
+				Bind_invalid
+			};
+		
 			enum Type {
 				Unsigned,
 				Signed,
@@ -68,6 +77,12 @@ namespace ir
 			AddressMode addressMode[3]; //! Wrap around or clamp to boundary
 
 			void * data; //! Pointer to mapped variable
+			
+			//! \brief indicates type of data structure texture is bound to
+			Binding binding;
+			
+			//! \brief pointer to CUDA module's texture reference
+			CUtexref cuTexture;
 			
 		public:
 			Texture();

@@ -85,10 +85,10 @@ void executive::Executive::registerExternal(void *ptr, size_t bytes, int address
 	}
 	
 	MemoryAllocation memory(addressSpace, ptr, bytes);
-	
+
 	report("  Executive::registerExternal(addrspace: " << memory.addressSpace << ") - ptr: " 
 		<< (void *)memory.get() << ", " << memory.allocationSize << " bytes");
-
+	
 	memoryAllocations[memory.addressSpace][memory.get()] = std::move(memory);
 }
 
@@ -275,8 +275,6 @@ bool executive::Executive::checkMemoryAccess(int device, const void* base, size_
 
 	const MemoryAllocation* allocation = getMemoryAllocation(base);
 
-	if( allocation == 0 ) return false;
-
 	// least address in region must be greater than or equal to this
 	const char *region_base_ptr = (const char *)allocation->get();	
 
@@ -320,6 +318,35 @@ std::ostream & executive::Executive::printMemoryAllocations(std::ostream &out) c
 }
 
 /*!
+	\brief Determine if an address region accessed corresponds exactly to a global variable
+		registered to host memory
+	
+	\param base pointer to base of region
+	\param size size of region
+*/
+bool executive::Executive::checkGlobalAccess(const void *base, size_t size) const {
+
+	bool result = false;
+	DeviceMemoryAllocationMap::const_iterator 
+	memoryMap_it = memoryAllocations.find(0);
+	if (memoryMap_it == memoryAllocations.end()) {
+		return false;
+	}
+	const MemoryAllocationMap & memoryMap = memoryMap_it->second;
+	
+	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)base);
+	if (alloc_it != memoryMap.end()) {
+		if ((const char *)base >= alloc_it->second.get() && (const char *)((const char *)base + size) 
+			<= (const char *)alloc_it->second.get() + alloc_it->second.size()) {
+			result = true;
+		}
+	}
+
+	report("checkGlobalAccess(" << base << ", " << size << " bytes) returning " << result);
+	return result;
+}
+
+/*!
 	Given a pointer, determine the allocated block and 
 	corresponding MemoryAllocation record to which it belongs.
 
@@ -350,7 +377,13 @@ std::string executive::Executive::nearbyAllocationsToString(
 	const Executive& executive, const void* pointer, 
 	unsigned int above, unsigned int below) {
 
+		// throw an exception
+
 	std::stringstream ss;
+	ss << "device memory fault - device pointer " << std::hex << pointer 
+		<< " does not point to an allocation on device " << std::dec 
+		<< executive.devices[executive.getSelectedDevice()].name 
+		<< "\n";
 
 	ss << "\nAll allocations:\n";
 	executive.printMemoryAllocations(ss);
@@ -389,6 +422,13 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	
 	case HostToDevice:
 	{
+		// this could potentially break things
+		report("deviceMemcpy(" << (void *)dest << ", " << src << ", " << size << " bytes) - host to device");
+		if (checkGlobalAccess(dest, size)) {
+			::memcpy(dest, src, size);
+			return true;
+		}
+	
 		if (!checkMemoryAccess(selectedDevice, dest, size)) {
 			Ocelot_Exception("Invalid destination " << dest << " of size " << size 
 				<< " in host to device memcpy.");
@@ -423,6 +463,12 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	
 	case DeviceToHost:
 	{
+		// this could potentially break things
+		if (checkGlobalAccess(src, size)) {
+			::memcpy(dest, src, size);
+			return true;
+		}
+	
 		if (!checkMemoryAccess(selectedDevice, src, size)) {
 			Ocelot_Exception("Invalid source " << src << " of size " << size 
 				<< " in device to host memcpy.");
@@ -454,6 +500,12 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 	
 	case DeviceToDevice:
 	{
+		// this could potentially break things
+		if (checkGlobalAccess(dest, size) && checkGlobalAccess(src, size)) {
+			::memcpy(dest, src, size);
+			return true;
+		}
+	
 		if (!checkMemoryAccess(selectedDevice, dest, size)) {
 			Ocelot_Exception("Invalid destination " << dest << " of size " << size 
 				<< " in device to device memcpy.");
@@ -1501,6 +1553,9 @@ void executive::Executive::registerGlobalVariable(const std::string & module,
 	}
 
 	registerExternal(hostPtr, size, addrSpace);
+	if (addrSpace) {
+
+	}
 }
 
 void executive::Executive::registerTexture(const char *module, const char *name, int dimensions,
@@ -1938,21 +1993,87 @@ void executive::Executive::translateAllToISA(ir::Instruction::Architecture isa, 
 */
 void executive::Executive::translateModuleToISA(std::string moduleName, 
 	ir::Instruction::Architecture isa, bool retranslate) {
+	report("Executive::translateModuleToISA()");
 	
 	ModuleMap::iterator mod_it = modules.find(moduleName);
 	if (mod_it != modules.end()) {
 		if (mod_it->second->kernels.find(ir::Instruction::PTX) != mod_it->second->kernels.end()) {
 			ir::Module::KernelMap & target = mod_it->second->kernels[ir::Instruction::PTX];
-			for (ir::Module::KernelMap::iterator k_it = target.begin(); k_it != target.end(); 
-				++k_it) {
+			
+			if (getSelectedISA() == ir::Instruction::GPU) {
+				translateModuleToGPU(* mod_it->second);
+			}
+			else {
+				for (ir::Module::KernelMap::iterator k_it = target.begin(); k_it != target.end(); 
+					++k_it) {
 				
-				if (retranslate || mod_it->second->kernels[isa].find(k_it->second->name) ==
-					mod_it->second->kernels[isa].end()) {
-					translateToISA(isa, mod_it->first, k_it->second->name);
+					if (retranslate || mod_it->second->kernels[isa].find(k_it->second->name) ==
+						mod_it->second->kernels[isa].end()) {
+						translateToISA(isa, mod_it->first, k_it->second->name);
+					}
 				}
 			}
 		}
 	}
+}
+
+/*!
+	\brief translates a module to GPU
+	\param module loaded module to translate
+*/
+bool executive::Executive::translateModuleToGPU(ir::Module &module) {
+	bool result = false;
+#if HAVE_CUDA_DRIVER_API == 1
+	std::stringstream ss;
+	module.write(ss);
+	std::string str = ss.str();
+	
+	report(str);
+	
+	CUresult cuResult = cuModuleLoadData(&module.cuModule, str.c_str());
+	if (cuResult != CUDA_SUCCESS) {
+		report("Executive::translateModuleToGPU() - cuModuleLoadData() returned error " << cuResult);
+		return false;
+	}
+	
+	// kernels
+	ir::Module::KernelMap &ptxKernels = module.kernels[ir::Instruction::PTX];
+	ir::Module::KernelMap &gpuKernels = module.kernels[ir::Instruction::GPU];
+	for (ir::Module::KernelMap::iterator k_it = ptxKernels.begin(); k_it != ptxKernels.end(); ++k_it) {
+		CUfunction cuFunction;
+		if (cuModuleGetFunction(&cuFunction, module.cuModule, k_it->second->name.c_str()) != CUDA_SUCCESS) {
+			report("failed to get kernel '" << k_it->second->name << "' from loaded GPU module");
+			return false;
+		}
+		GPUExecutableKernel *gpuKernel = new GPUExecutableKernel(*k_it->second, cuFunction, this);
+		gpuKernels[gpuKernel->name] = gpuKernel;
+	}
+	
+	// globals
+	for (ir::Module::GlobalMap::iterator g_it = module.globals.begin(); g_it != module.globals.end();
+		++g_it) {
+		CUdeviceptr ptr;
+		unsigned int bytes = 0;
+		if (cuModuleGetGlobal(&ptr, &bytes, module.cuModule, g_it->first.c_str()) != CUDA_SUCCESS) {
+			report("failed to get global '" << g_it->first << "' from loaded GPU module ");
+			return false;
+		}
+		g_it->second.pointer = (char *)ptr;
+	}
+	
+	// textures
+	for (ir::Module::TextureMap::iterator t_it = module.textures.begin(); t_it != module.textures.end();
+		++t_it) {
+		if (cuModuleGetTexRef(&t_it->second.cuTexture, module.cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
+			report("failed to get texture from loaded GPU module");
+			return false;
+		}
+	}
+
+	result = true;
+		
+#endif
+	return result;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2256,16 +2377,50 @@ void executive::Executive::synchronize() {
 //
 
 void executive::Executive::fenceGlobalVariables() {
-	if (getDeviceAddressSpace()) {
-		assert(0 && "devices with non-system address spaces not yet supported");
+	int addrSpace = getDeviceAddressSpace();
+	if (addrSpace) {
+
+		MemoryAllocationMap &memoryMap = memoryAllocations[addrSpace];
+
+		report("Executive::fenceGlobalVariables()");
+
 		for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
-			// do something
+			// do something about each module
+
+			report("  global: " << glb_it->first);			
+
+			if (glb_it->second.deviceAddressSpace != Device_shared) {
+				GlobalVariable::ModulePointerMap::iterator mod_it = glb_it->second.modules.begin();
+				for (; mod_it != glb_it->second.modules.end(); ++mod_it) {
+
+					ir::Global & global = modules[mod_it->first]->globals[glb_it->first];
+
+					if (global.pointer && !global.local) {
+						report("copying to global variable '" << glb_it->first << "'");
+						if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
+							glb_it->second.host_pointer, glb_it->second.size) != CUDA_SUCCESS) {
+							Ocelot_Exception("Executive::fenceGlobalVariables() - failed to synchronize global variable with device");
+						}
+					}
+					else {
+						assert(0 && "local pointer to GPU module");
+						global.pointer = (char *)glb_it->second.host_pointer;
+						global.registered = true;
+						global.local = true;
+					}
+					report("  looking for GPU global '" << glb_it->first << "' at address " << (void *)global.pointer);
+					if (memoryMap.find(global.pointer) == memoryMap.end()) {
+						report("  registered global '" << glb_it->first << "'");
+						registerExternal(global.pointer, glb_it->second.size);
+					}
+				}
+			}
 		}
+
+		report("  synchronized globals with GPU");
 	}
 	else {
-		//
-		// do something else entirely
-		//
+
 		MemoryAllocationMap &memoryMap = memoryAllocations[getDeviceAddressSpace()];
 
 		report("Executive::fenceGlobalVariables()");
@@ -2298,6 +2453,199 @@ void executive::Executive::fenceGlobalVariables() {
 		}
 	}
 }
+
+void executive::Executive::updateMemory(ir::Module &module, ir::ExecutableKernel &kernel) {
+	updateGlobalVariables(module, kernel);
+	updateTextures(module, kernel);
+}
+
+void executive::Executive::updateGlobalVariables(ir::Module &module, ir::ExecutableKernel &kernel) {
+
+	MemoryAllocationMap &memoryMap = memoryAllocations[getDeviceAddressSpace()];
+
+	for (GlobalMap::iterator glb_it = globals.begin(); glb_it != globals.end(); ++glb_it) {
+		// do something about each module
+
+		report("  global: " << glb_it->first);			
+
+		if (glb_it->second.deviceAddressSpace != Device_shared && 
+			module.globals.find(glb_it->first) != module.globals.end()) {
+
+			ir::Global & global = module.globals[glb_it->first];
+
+			switch (getSelectedISA()) {
+			
+			case ir::Instruction::Emulated: // fall through
+			case ir::Instruction::LLVM:
+			{
+				if (global.pointer && !global.local) {
+					::memcpy(global.pointer, glb_it->second.host_pointer, glb_it->second.size);
+				}
+				else if (!global.pointer) {
+					global.pointer = (char *)glb_it->second.host_pointer;
+					global.registered = true;
+					global.local = true;
+				}
+			}
+			break;
+			
+			case ir::Instruction::GPU:
+			{
+
+				if (global.pointer && !global.local) {
+					report("copying to global variable '" << glb_it->first << "'");
+					if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
+						glb_it->second.host_pointer, glb_it->second.size) != CUDA_SUCCESS) {
+						Ocelot_Exception("Executive::fenceGlobalVariables() - failed to synchronize global variable with device");
+					}
+				}
+				else {
+					assert(0 && "local pointer to GPU module");
+					global.pointer = (char *)glb_it->second.host_pointer;
+					global.registered = true;
+					global.local = true;
+				}
+				report("  looking for GPU global '" << glb_it->first << "' at address " << (void *)global.pointer);
+				if (memoryMap.find(global.pointer) == memoryMap.end()) {
+					report("  registered global '" << glb_it->first << "'");
+					registerExternal(global.pointer, glb_it->second.size);
+				}
+			}
+			break;
+			
+			default:
+				assert(0 && "unimplemented");
+			}
+
+			if (memoryMap.find(global.pointer) == memoryMap.end()) {
+				registerExternal(global.pointer, glb_it->second.size);
+			}
+		}
+	}
+}
+
+static int max4(int a, int b, int c, int d) {
+	int u, v;
+	if (b > a) u = b; else u = a;
+	if (c > d) v = c; else v = d;
+	if (v > u) u = v;
+	return u;
+}
+
+static unsigned int convertFormatType(const ir::Texture &texture) {
+	unsigned int fmt = 0;
+	
+	int bits = max4(texture.x, texture.y, texture.z, texture.w);
+	
+	switch (texture.type) {
+		case ir::Texture::Signed:
+			fmt = CU_AD_FORMAT_SIGNED_INT8;
+			if (bits == 16) {
+				fmt = CU_AD_FORMAT_SIGNED_INT16;
+			}
+			else if (bits == 32) {
+				fmt = CU_AD_FORMAT_SIGNED_INT32;
+			}
+			else {
+				assert(0 && "unimplemented");
+			}
+			break;
+		case ir::Texture::Unsigned:
+			fmt = CU_AD_FORMAT_UNSIGNED_INT8;
+			if (bits == 16) {
+				fmt = CU_AD_FORMAT_UNSIGNED_INT16;
+			}
+			else if (bits == 32) {
+				fmt = CU_AD_FORMAT_UNSIGNED_INT32;
+			}
+			else {
+				assert(0 && "unimplemented");
+			}
+			break;
+		case ir::Texture::Float:
+			fmt = CU_AD_FORMAT_FLOAT;
+			break;
+		default:
+			break;
+	}
+	return fmt;
+}
+
+void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKernel &kernel) {
+
+	switch (getSelectedISA()) {
+	case ir::Instruction::Emulated: // fall through
+	case ir::Instruction::LLVM:
+		break;
+		
+	case ir::Instruction::GPU:
+	{
+		ir::ExecutableKernel::TextureVector kernelTextures = kernel.textureReferences();
+		for (ir::ExecutableKernel::TextureVector::iterator t_it = kernelTextures.begin(); 
+			t_it != kernelTextures.end(); ++t_it) {
+			assert(0 && "unimplemented");
+			std::string texName = "texture";
+			ir::Texture & texture = textures[texName];
+			CUtexref cuTexRef = module.textures[texName].cuTexture;
+			
+			switch (texture.binding) {
+				case ir::Texture::Bind_1D:
+				{
+					unsigned int offset = 0;
+					CUresult result = cuTexRefSetAddress(&offset, cuTexRef,
+						hydrazine::bit_cast<CUdeviceptr, void *>(texture.data), texture.bytes());
+					if (result != CUDA_SUCCESS) {
+						Ocelot_Exception("Executive::updateTexture() - failed to bind 1D texture with result " << result);
+					}
+				}
+				break;
+				
+				case ir::Texture::Bind_2D:
+				{
+					CUDA_ARRAY_DESCRIPTOR desc;
+					desc.Width = texture.size.x;
+					desc.Height = texture.size.y;
+					desc.NumChannels = texture.components();
+					desc.Format = (CUarray_format)convertFormatType(texture);
+					
+					CUresult result = cuTexRefSetAddress2D(cuTexRef, &desc, 
+						hydrazine::bit_cast<CUdeviceptr, void *>(texture.data), texture.pitch());
+					if (result != CUDA_SUCCESS) {
+						Ocelot_Exception("Executive::updateTexture() - failed to bind 2D texture with result " << result);
+					}
+				}
+				break;
+				
+				case ir::Texture::Bind_array:
+				{
+					const MemoryAllocation *memory = getMemoryAllocation(texture.data);
+					if (memory) {
+						CUresult result = cuTexRefSetArray(cuTexRef, memory->cudaArray, CU_TRSA_OVERRIDE_FORMAT);
+						if (result != CUDA_SUCCESS) {
+							Ocelot_Exception("Executive::updateTexture() - failed to bind 2D texture with result " << result);
+						}
+					}
+					else {
+						Ocelot_Exception("Executive::updateTexture() - failed to obtain array to bind with texture");
+					}
+				}
+				break;
+				
+				case ir::Texture::Bind_3D:
+					assert(0 && "unimplemented 3D");
+					break;
+				default:
+					assert(0 && "unimplemented invalid texture binding");
+			}
+		}
+		
+	}
+	break;
+	default:
+		assert(0 && "unimplemented");
+	}
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -2353,6 +2701,7 @@ bool  executive::Executive::bindTexture(size_t *offset, const std::string & text
 
 		texture.interpolation = filter;
 		texture.normalize = normalized;
+		texture.binding = ir::Texture::Bind_1D;
 
 		for (unsigned int i = 0; i < 3; i++) {
 			texture.addressMode[i] = addrMode[i];
@@ -2425,6 +2774,7 @@ bool executive::Executive::bindTexture2D(size_t *offset, const std::string & tex
 
 		texture.interpolation = filter;
 		texture.normalize = normalized;
+		texture.binding = ir::Texture::Bind_2D;
 
 		for (unsigned int i = 0; i < 3; i++) {
 			texture.addressMode[i] = addrMode[i];
@@ -2498,6 +2848,7 @@ bool executive::Executive::bindTextureToArray(const std::string & textureName, v
 
 		texture.interpolation = filter;
 		texture.normalize = normalized;
+		texture.binding = ir::Texture::Bind_array;
 
 		for (unsigned int i = 0; i < 3; i++) {
 			texture.addressMode[i] = addrMode[i];

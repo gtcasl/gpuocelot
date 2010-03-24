@@ -843,10 +843,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_
 			//
 			// host address space transfers aren't asynchronous
 			//
-			bool success = context.deviceMemcpy(dst, src, count, convert(kind));
-			if (!success) {
-				result = cudaErrorInvalidDevicePointer;
-			}
+			
+			result = CudaRuntime::cudaMemcpy(dst, src, count, kind);
 		}
 		else {
 			assert(0 && "unimplemented");

@@ -44,7 +44,8 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	this->ISA = ir::Instruction::GPU;
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
-
+	_parameterMemorySize = mapParameterOffsets();
+		
 #if HAVE_CUDA_DRIVER_API == 1
 	cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
@@ -132,7 +133,7 @@ void executive::GPUExecutableKernel::updateMemory() {
 
 ir::ExecutableKernel::TextureVector 
 	executive::GPUExecutableKernel::textureReferences() const {
-	assertM(false, "No support for getting textures references of GPU kernels");
+	assertM(false, "no support for getting texture references");
 }
 
 void executive::GPUExecutableKernel::updateGlobalMemory() {
@@ -158,7 +159,7 @@ void executive::GPUExecutableKernel::removeTraceGenerator(
 
 void executive::GPUExecutableKernel::configureParameters() {
 #if HAVE_CUDA_DRIVER_API == 1
-	report("executive::GPUExecutableKernel::configureParameters()");
+	report("executive::GPUExecutableKernel::configureParameters() - size: " << _parameterMemorySize);
 
 	char *paramBuffer = new char[_parameterMemorySize];
 	getParameterBlock((unsigned char*)paramBuffer, _parameterMemorySize);

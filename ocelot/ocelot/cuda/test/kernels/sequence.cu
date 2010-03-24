@@ -3,7 +3,8 @@
 	\author Andrew Kerr
 
 	\brief simple test of a CUDA implementation's ability to allocate memory on the device, launch
-		a kernel, and fetch its results
+		a kernel, and fetch its results. One kernel requires no syncthreads, another kernel requires
+		one synchronization
 */
 
 #include <stdio.h>
@@ -15,7 +16,7 @@ extern "C" __global__ void sequence(int *A, int N) {
 	}
 }
 
-extern "C" __global__ void test_shr(int *A, const int *B) {
+extern "C" __global__ void testShr(int *A, const int *B) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	int b;
 	__shared__ int storage[256];
@@ -34,13 +35,13 @@ extern "C" __global__ void test_shr(int *A, const int *B) {
 int main(int argc, char *arg[]) {
 
 	const int N = 1024;
-	int *A_host, *A_gpu;
+	int *A_host, *A_gpu =0;
 	int errors = 0;
 
 	size_t bytes = sizeof(int)*N;
 
-	if (cudaMalloc((void **)A_gpu, bytes) != cudaSuccess) {
-		printf("cudaMalloc() - failed to allocate %d bytes on device\n", bytes);
+	if (cudaMalloc((void **)&A_gpu, bytes) != cudaSuccess) {
+		printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
 		return -1;
 	}
 
@@ -48,21 +49,22 @@ int main(int argc, char *arg[]) {
 	for (int i = 0; i < N; i++) {
 		A_host[i] = -1;
 	}
+	
 	cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
 
+	dim3 grid((N+31)/32,1);
+	dim3 block(32, 1);
 	sequence<<< grid, block >>>(A_gpu, N);
-
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
-
 	for (int i = 0; i < N; i++) {
 		if (A_host[i] != 2*i) {
 			++errors;
 		}
 	}
-	
+
 	int *B_gpu = 0;
 	if (cudaMalloc((void **)&B_gpu, bytes) != cudaSuccess) {
-		printf("cudaMalloc() - failed to allocate %d bytes on device\n", bytes);
+		printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
 		cudaFree(A_gpu);
 		free(A_host);
 		return -1;
@@ -72,14 +74,13 @@ int main(int argc, char *arg[]) {
 	testShr<<< grid, block >>>(B_gpu, A_gpu);
 	
 	if (cudaMemcpy(A_host, B_gpu, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
-		printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n",	
-			bytes);
+		printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
 		cudaFree(A_gpu);
 		cudaFree(B_gpu);
 		free(A_host);
 	}
 	
-	for (int i = 0; (errors < 5) && i < N; ++) {
+	for (int i = 0; (errors < 5) && i < N; ++i) {
 		int b;
 		if (i & 1) {
 			b = (i ^ 1) * 2 * 2;

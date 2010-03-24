@@ -227,6 +227,15 @@ namespace executive {
 			\param size The size of the access
 		*/
 		bool checkMemoryAccess(int device, const void* base, size_t size) const;
+		
+		/*!
+			\brief Determine if an address region accessed corresponds to the host pointer of a
+			global variable
+			
+			\param base pointer to base of region
+			\param size size of region
+		*/
+		bool checkGlobalAccess(const void *base, size_t size) const;
 
 		/*! \brief prints all memory allocations to an output stream */
 		std::ostream& printMemoryAllocations(std::ostream &out) const;
@@ -564,6 +573,8 @@ namespace executive {
 		
 		void translateModuleToISA(std::string moduleName, 
 			ir::Instruction::Architecture isa, bool retranslate=true);
+			
+		bool translateModuleToGPU(ir::Module &module);
 		
 	public:
 		//
@@ -586,6 +597,12 @@ namespace executive {
 			\brief global variable values are buffered and then initialized prior to kernel launch
 		*/
 		void fenceGlobalVariables();
+		
+		void updateMemory(ir::Module &module, ir::ExecutableKernel &kernel);
+		
+		void updateGlobalVariables(ir::Module &module, ir::ExecutableKernel &kernel);
+		
+		void updateTextures(ir::Module &module, ir::ExecutableKernel &kernel);
 		
 	};
 

@@ -165,6 +165,8 @@ namespace executive {
 		// execution helper functions
 
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
+		
+		void trace();
 
 	public:
 		// Register accessors

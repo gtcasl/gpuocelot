@@ -10,7 +10,7 @@
 // Ocelot includes
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/TraceEvent.h>
-#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Executive.h>
 
 // hydrazine includes
@@ -39,19 +39,22 @@ namespace trace
 		return stream.str();
 	}
 	
-	static void alignmentError( const ir::Dim3& dim, 
-		const TraceEvent& e, unsigned int thread, ir::PTXU64 address, 
-		unsigned int size )
+	static void alignmentError( const executive::EmulatedKernel* kernel, 
+		const ir::Dim3& dim, const TraceEvent& e, unsigned int thread, 
+		ir::PTXU64 address, unsigned int size )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, e );
 		stream << "Memory access " << (void*)address 
 			<< " is not aligned to the access size ( " << size << " bytes )";
+		stream << "\n";
+		stream << "Near " << kernel->location( e.PC ) << "\n";
 		throw hydrazine::Exception( stream.str() );
 	}
 	
 	template< unsigned int size >
-	static void checkAlignment( const ir::Dim3& dim, const TraceEvent& e )
+	static void checkAlignment( const executive::EmulatedKernel* kernel, 
+		const ir::Dim3& dim, const TraceEvent& e )
 	{
 		TraceEvent::U64Vector::const_iterator 
 			address = e.memory_addresses.begin();
@@ -61,7 +64,7 @@ namespace trace
 			if( !e.active[ thread ] ) continue;
 			if( *address & ( size - 1 ) )
 			{
-				alignmentError( dim, e, thread, *address, size );
+				alignmentError( kernel, dim, e, thread, *address, size );
 			}
 			++address;
 		}
@@ -72,42 +75,49 @@ namespace trace
 		switch(e.memory_size)
 		{
 			case 1: return;
-			case 2: checkAlignment< 2 >( _dim, e ); break;
-			case 4: checkAlignment< 4 >( _dim, e ); break;
-			case 8: checkAlignment< 8 >( _dim, e ); break;
-			case 16: checkAlignment< 16 >( _dim, e ); break;
-			case 32: checkAlignment< 32 >( _dim, e ); break;
+			case 2: checkAlignment< 2 >( _kernel, _dim, e ); break;
+			case 4: checkAlignment< 4 >( _kernel, _dim, e ); break;
+			case 8: checkAlignment< 8 >( _kernel, _dim, e ); break;
+			case 16: checkAlignment< 16 >( _kernel, _dim, e ); break;
+			case 32: checkAlignment< 32 >( _kernel, _dim, e ); break;
 			default: break;
 		}
 	}
 
 	static void memoryError( const std::string& space, const ir::Dim3& dim, 
 		unsigned int thread, ir::PTXU64 address, unsigned int size, 
-		const TraceEvent& e, const MemoryChecker::Allocation& allocation )
+		const TraceEvent& e, const executive::EmulatedKernel* kernel, 
+		const MemoryChecker::Allocation& allocation )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, e );
 		stream << space << " memory access " << (void*) address 
 			<< " (" << size << " bytes) is beyond allocated block size " 
 			<< allocation.extent;
+		stream << "\n";
+		stream << "Near " << kernel->location( e.PC ) << "\n";
 		throw hydrazine::Exception( stream.str() );
 	}
 
 	static void globalMemoryError( const executive::Executive* executive, 
 		const ir::Dim3& dim, unsigned int thread, ir::PTXU64 address, 
-		unsigned int size, const TraceEvent& event )
+		unsigned int size, const TraceEvent& event, 
+		const executive::EmulatedKernel* kernel )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, event );
-		stream << "Global memory access " << address 
+		stream << "Global memory access " << (void*)address 
 			<< " is not within any allocated or mapped range.";
 		stream << executive::Executive::nearbyAllocationsToString( *executive, 
 			(void*)address );
+		stream << "\n";
+		stream << "Near " << kernel->location( event.PC ) << "\n";
 		throw hydrazine::Exception( stream.str() );
 	}
 
 	static void checkLocalAccess( const std::string& space, const ir::Dim3& dim,
-		const MemoryChecker::Allocation& allocation, const TraceEvent& event )
+		const MemoryChecker::Allocation& allocation, const TraceEvent& event, 
+		const executive::EmulatedKernel* kernel )
 	{
 		TraceEvent::U64Vector::const_iterator 
 			address = event.memory_addresses.begin();
@@ -120,7 +130,7 @@ namespace trace
 				|| *address >= allocation.base + allocation.extent )
 			{
 				memoryError( space, dim, thread, 
-					*address, event.memory_size, event, allocation );
+					*address, event.memory_size, event, kernel, allocation );
 			}
 			++address;
 		}
@@ -135,34 +145,27 @@ namespace trace
 				TraceEvent::U64Vector::const_iterator 
 					address = e.memory_addresses.begin();
 
-				if( !_cache.valid )
-				{
-					unsigned int thread = 0;
-					while( !e.active[ thread ] ) ++thread;
-					globalMemoryError( _context, _dim, thread, 
-						*address, e.memory_size, e );
-				}
-
 				unsigned int threads = e.active.size();
 				for( unsigned int thread = 0; thread < threads; ++thread )
 				{
 					if( !e.active[ thread ] ) continue;
 					if( _cache.base > *address 
-						|| *address >= _cache.base + _cache.extent )
+						|| *address >= _cache.base + _cache.extent
+						|| !_cache.valid )
 					{
 						const executive::MemoryAllocation* allocation = 
 							_context->getMemoryAllocation( (void*)*address );
 						if( allocation == 0 )
 						{
 							globalMemoryError( _context, _dim,
-								thread, *address, e.memory_size, e );
+								thread, *address, e.memory_size, e, _kernel );
 						}
 						_cache.base = ( ir::PTXU64 ) allocation->get();
 						_cache.extent = allocation->size();
 						if( *address >= _cache.base + _cache.extent )
 						{
 							globalMemoryError( _context, _dim,
-								thread, *address, e.memory_size, e );
+								thread, *address, e.memory_size, e, _kernel );
 						}
 					}
 					++address;
@@ -170,13 +173,13 @@ namespace trace
 				break;
 			}
 			case ir::PTXInstruction::Local: checkLocalAccess( "Local", _dim,
-				_local, e ); break;
+				_local, e, _kernel ); break;
 			case ir::PTXInstruction::Param: checkLocalAccess( "Parameter", _dim, 
-				_parameter, e ); break;
+				_parameter, e, _kernel ); break;
 			case ir::PTXInstruction::Shared: checkLocalAccess( "Shared", _dim, 	
-				_shared, e ); break;
+				_shared, e, _kernel ); break;
 			case ir::PTXInstruction::Const: checkLocalAccess( "Constant", _dim, 
-				_constant, e ); break;
+				_constant, e, _kernel ); break;
 			default: break;
 		}
 	}
@@ -194,19 +197,12 @@ namespace trace
 	
 	void MemoryChecker::initialize( const ir::ExecutableKernel& kernel )
 	{
+		_dim = kernel.blockDim();
+	
 		_device = kernel.context->getSelectedDevice();
 		
-		const executive::MemoryAllocation* 
-			allocation = kernel.context->getMemoryAllocation( 0 );
-		
-		_cache.valid = allocation != 0;
+		_cache.valid = false;
 
-		if( _cache.valid )
-		{
-			_cache.base = ( ir::PTXU64 ) allocation->get();
-			_cache.extent = allocation->size();
-		}
-		
 		_parameter.base = 0;
 		_parameter.extent = kernel.parameterMemorySize();
 		
@@ -217,6 +213,7 @@ namespace trace
 		_local.extent = kernel.localMemorySize();
 		
 		_context = kernel.context;
+		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 	}
 
 	void MemoryChecker::event(const TraceEvent& event)

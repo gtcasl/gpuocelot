@@ -1,10 +1,9 @@
-/*!
-	\file OcelotConfiguration.h
+/*! \file OcelotConfiguration.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief defines a configuration class for GPU Ocelot
 
-	By centralizing the configuration object, it should be fairly clear what the structure of an
-	Ocelot configuration is and how to extend it.
+	By centralizing the configuration object, it should be fairly clear what the structure 
+	of an Ocelot configuration is and how to extend it.
 */
 
 #ifndef GPUOCELOT_API_OCELOTCONFIGURATION_H_INCLUDED
@@ -76,6 +75,12 @@ namespace api {
 
 			//! \brief trace::CacheSimulator
 			bool cacheSimulator;
+
+			//! \brief Check memory errors
+			bool memoryChecker;
+			
+			//! \brief Race detection
+			bool raceDetector;
 		};
 
 		class CudaRuntimeImplementation {
@@ -153,7 +158,6 @@ namespace api {
 		static const OcelotConfiguration::TraceGeneration & getTrace();
 
 	public:
-
 		//! \brief path to configuration file for reparsing 
 		std::string path;
 
@@ -174,6 +178,7 @@ namespace api {
 		
 		//! \brief configuration for Ocelot checkpoint
 		Checkpoint checkpoint;
+		
 	};
 
 }

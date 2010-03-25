@@ -30,16 +30,6 @@
 // global control for enabling reporting within the emulator
 #define REPORT_BASE 0
 
-// turn on checking of all global accesses... be prepared to take a perf hit
-#define CHECK_GLOBAL_ACCESSES 1
-					
-// turn on checking of memory accesses to make sure they are aligned
-#define CHECK_MEMORY_ALIGNMENT 1
-
-// Shared memory race detecion
-#define CHECK_MEMORY_WRITE_READ_RACES 1
-#define CHECK_MEMORY_WRITE_WRITE_RACES 1
-
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
 
@@ -130,25 +120,6 @@ bool isF64NaN(PTXF64 f) {
 #define min(a, b) ((a) > (b) ? (b) : (a))
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-#if (CHECK_GLOBAL_ACCESSES==1)
-static void globalMemoryError(const void* pointer, size_t size, 
-	const executive::EmulatedKernel* kernel, executive::CTAContext &context, 
-	const PTXInstruction &instr, int thread, int cta ) {
-	std::stringstream stream;
-	stream << "Global memory address " 
-		<< (void*)((char*)pointer) << " of size " << size
-		<< " is out of any allocated or mapped range.\n";
-	stream << "Memory Map:\n";
-	stream << executive::Executive::nearbyAllocationsToString(
-		*kernel->context, pointer);
-	stream << "\n";
-	stream << " At: " << kernel->location(context.PC);
-	
-	throw executive::RuntimeException(stream.str(), context.PC, 
-		thread, cta, instr);	
-}
-#endif
-
 /*!
 	Constructs a cooperative thread array from an EmulatedKernel instance
 
@@ -274,6 +245,13 @@ ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 		return (f <= 0 ? 0 : (f >= 1.0f ? 1.0f : f));
 	}
 	return f;
+}
+
+void executive::CooperativeThreadArray::trace() {
+	if (traceEvents) {
+		currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
+		kernel->traceEvent(currentEvent);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -432,12 +410,6 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				assertM(false, "Hit invalid instruction opcode at pc " 
 					<< context.PC);
 				break;
-		}
-
-		// configure trace object
-		if (traceEvents) {
-			currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
-			kernel->traceEvent(currentEvent);
 		}
 	
 		// advance to next instruction if the current instruction wasn't a branch
@@ -1290,73 +1262,13 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 	return 0;
 }
 
-void executive::CooperativeThreadArray::writeSharedMemory(ir::PTXU64 address, 
-	unsigned int bytes, int threadID, int pc, const ir::PTXInstruction& instr) {
-	typedef std::vector<char> DataVector;
-
-	for (ir::PTXU64 byte = address; byte < address + bytes; ++byte) {
-		if (sharedMemoryWriters[byte] != -1 
-			&& sharedMemoryWriters[byte] != threadID) {
-			DataVector tempValues(bytes);
-			#if CHECK_MEMORY_WRITE_WRITE_RACES == 1
-			if (instr.a.vec == PTXOperand::v1) {
-				normalStore(threadID, instr, &tempValues[0]);
-			}
-			else {
-				vectorStore(threadID, instr, &tempValues[0], bytes / instr.vec);
-			}
-
-			for (ir::PTXU64 byte = address, count = 0; byte < address + bytes;
-				++byte, ++count) {
-				if (tempValues[count] != SharedMemory[byte]) {
-					std::stringstream stream;
-					stream << "Shared memory race condition, value "
-						<< ((unsigned int) SharedMemory[byte]) << " (address "
-						<< (void*)byte << ") was previously written by thread " 
-						<< sharedMemoryWriters[byte] << " (value " 
-						<< ((unsigned int) tempValues[count]) << ")"
-						<< " without a memory barrier in between.";
-					stream << "\n";
-					stream << "In " << kernel->location(pc) << "\n";
-					throw RuntimeException(stream.str(), pc, 
-						threadID, blockId.x, instr);
-				}
-			}
-			#endif
-		}
-		else {
-			sharedMemoryWriters[byte] = threadID;
-		}
-	}
-}
-
-void executive::CooperativeThreadArray::readSharedMemory(ir::PTXU64 address, 
-	unsigned int bytes, int threadID, int pc, const ir::PTXInstruction& instr) {
-	#if CHECK_MEMORY_WRITE_READ_RACES == 1
-	for (unsigned int byte = address; byte < address + bytes; ++byte) {
-		if (sharedMemoryWriters[byte] != -1 
-			&& sharedMemoryWriters[byte] != threadID) {
-			std::stringstream stream;
-			stream << "Shared memory race condition, " 
-				<< (void*)byte << " was previously written by thread " 
-				<< sharedMemoryWriters[byte] 
-				<< " without a memory barrier in between.";
-			stream << "\n";
-			stream << "In " << kernel->location(pc) << "\n";
-			throw RuntimeException(stream.str(), pc, 
-				threadID, blockId.x, instr);
-		}
-	}
-	#endif
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 
 */void executive::CooperativeThreadArray::eval_Abs(CTAContext &context, 
 	const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 
@@ -1415,7 +1327,7 @@ void executive::CooperativeThreadArray::readSharedMemory(ir::PTXU64 address,
 
 */
 void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXInstruction &instr) {
-
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -1490,6 +1402,7 @@ void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	switch (instr.type) {
 
 	case PTXOperand::u32:
@@ -1535,6 +1448,7 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTX
 
 */
 void executive::CooperativeThreadArray::eval_And(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -1604,7 +1518,33 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 
 	if (traceEvents) {
 		currentEvent.memory_size = elementSize;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+
+			const char *source = 0;
+
+			switch (instr.a.addressMode) {
+				case PTXOperand::Indirect:
+					source += instr.a.offset;
+				case PTXOperand::Register:
+					source += getRegAsU64(threadID, instr.a.reg);				
+					break;
+				case PTXOperand::Address:
+				case PTXOperand::Immediate:
+					source += instr.a.imm_uint;
+					source += instr.a.offset;
+					break;
+				default:
+					throw RuntimeException(
+						"unsupported address mode for source operand", 
+						context.PC, instr);
+			}
+
+			currentEvent.memory_addresses.push_back((ir::PTXU64)source);
+		}
 	}
+
+	trace();
 
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
@@ -1628,55 +1568,20 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 					context.PC, instr);
 		}
 
-
-		#if (CHECK_MEMORY_ALIGNMENT==1)
-		if ((size_t)source % elementSize != 0) {
-			std::stringstream stream;
-			stream << "Memory access at " << (void*)source 
-				<< " is not aligned to the access size (" 
-					<< elementSize << " bytes)\n";
-			stream << " At: " << kernel->location(context.PC);
-			throw RuntimeException(stream.str(), context.PC, instr);
-		}
-		#endif
-
 		switch (instr.addressSpace) {
 			case PTXInstruction::Global:
 				{	
-					#if (CHECK_GLOBAL_ACCESSES==1)
-					if (!kernel->checkMemoryAccess(source,
-						elementSize)) {
-						globalMemoryError(source, 
-							elementSize , kernel, context, instr, 
-							threadID, blockId.x );
-					}
-					#endif
-				}
 
+				}
 				break;
 			case PTXInstruction::Shared:
 				{
-					if ((PTXU64) source + elementSize
-						> kernel->totalSharedMemorySize()) {
-						std::stringstream stream;
-						stream << "Shared memory address " 
-							<< (void*)(source + elementSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->totalSharedMemorySize() << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, instr);
-					}
 					source += (PTXU64) SharedMemory;
 				}
 				break;
 			default:
 				throw RuntimeException("unsupported address space", 
 					context.PC, instr);
-		}
-
-		if (traceEvents) {
-			currentEvent.memory_addresses.push_back(
-				(long long unsigned int)source);
 		}
 		
 		switch (instr.atomicOperation) {
@@ -1929,6 +1834,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 
 */
 void executive::CooperativeThreadArray::eval_Bar(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 #if IDEAL_RECONVERGENCE
 	if (context.active.count() < context.active.size()) {
 		// deadlock - not all threads reach synchronization barrier
@@ -1952,6 +1858,7 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext &context, const PTXI
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	// if threads diverge
 	//		pop the activation stack, push an activation context for the reconverge instruction,
 	//			push the activation context for the branch target and for the fall-through target
@@ -2052,6 +1959,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 */
 void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, const PTXInstruction &instr) {
 	using namespace std;
+	trace();
 #if REPORT_RECONVERGE
 	report("   stack before reconverge:");
 	{
@@ -2072,6 +1980,7 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 
 */
 void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	context.running = false;
 }
 
@@ -2079,6 +1988,7 @@ void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PT
 
 */
 void executive::CooperativeThreadArray::eval_Call(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	throw RuntimeException("instruction not implemented", context.PC, instr);
 }
 
@@ -2086,6 +1996,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context, const PTX
 
 */
 void executive::CooperativeThreadArray::eval_CNot(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::b16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -2121,6 +2032,7 @@ void executive::CooperativeThreadArray::eval_CNot(CTAContext &context, const PTX
 
 */
 void executive::CooperativeThreadArray::eval_Cos(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -2200,6 +2112,7 @@ static Float round(Float a, int modifier) {
 */
 void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context, 
 	const PTXInstruction &instr) {
+	trace();
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 		switch (instr.a.type) {
@@ -3083,6 +2996,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 
 */
 void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -3188,6 +3102,7 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -3211,6 +3126,7 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 	context.running = false;
 #else
 	if (context.active.count() == context.active.size() || runtimeStack.size() == 1) {
+		trace();
 		context.running = false;
 	}
 	else {
@@ -3438,7 +3354,6 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 	const PTXInstruction &instr) {
 
 	size_t elementSize = 0;
-	size_t vectorSize = instr.d.vec;
 
 	switch (instr.type) {
 		case PTXOperand::b8:		// fall through
@@ -3477,7 +3392,33 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 
 	if (traceEvents) {
 		currentEvent.memory_size = elementSize;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) {
+				continue;
+			}
+
+			const char *source = 0;
+
+			switch (instr.a.addressMode) {
+				case PTXOperand::Indirect:
+					source += getRegAsU64(threadID, instr.a.reg);
+					break;
+				case PTXOperand::Address:
+				case PTXOperand::Immediate:
+					source += instr.a.imm_uint;
+					break;
+				default:
+					throw RuntimeException(
+						"unsupported address mode for source operand", 
+						context.PC, instr);
+			}
+
+			source += instr.a.offset;
+			currentEvent.memory_addresses.push_back((ir::PTXU64)source);
+		}
 	}
+
+	trace();
 
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) {
@@ -3501,99 +3442,30 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 		}
 
 		source += instr.a.offset;
-
-		#if (CHECK_MEMORY_ALIGNMENT==1)
-		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
-			std::stringstream stream;
-			stream << "Memory access at " << (void*)source 
-				<< " is not aligned to the access size (" 
-					<< ( elementSize * vectorSize ) << " bytes)\n";
-			stream << " At: " << kernel->location(context.PC);
-			throw RuntimeException(stream.str(), context.PC, instr);
-		}
-		#endif
 			
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
 				{
-					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->parameterMemorySize()) {
-						std::stringstream stream;
-						stream << "Parameter memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->parameterMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-							threadID, blockId.x, instr);
-					}
 					source += (PTXU64) kernel->ParameterMemory;
 				}
 				break;
 			case PTXInstruction::Const:
 				{
-					if ((PTXU64) source + elementSize * vectorSize
-						> kernel->constMemorySize()) {
-						std::stringstream stream;
-						stream << "Constant memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->constMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-							threadID, blockId.x, instr);
-					}
 					source += (PTXU64) kernel->ConstMemory;				
 				}
 				break;
 			case PTXInstruction::Global:
 				{	
-					#if (CHECK_GLOBAL_ACCESSES==1)
-					if (!kernel->checkMemoryAccess(source,
-						elementSize * vectorSize)) {
-						globalMemoryError(source, 
-							elementSize * vectorSize, kernel, context, instr, 
-							threadID, blockId.x );
-					}
-					#endif
 				}
 				break;
 			case PTXInstruction::Shared:
 				{
 					source = (char*)(0xffffffff & (PTXU64) source);
-					if ((PTXU64) source + elementSize * vectorSize
-						> kernel->totalSharedMemorySize()) {
-						std::stringstream stream;
-						stream << "Shared memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->totalSharedMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-							threadID, blockId.x, instr);
-					}
-					readSharedMemory((ir::PTXU64)source, 
-						elementSize * vectorSize, threadID, context.PC, instr);
 					source += (PTXU64) SharedMemory;
 				}
 				break;
 			case PTXInstruction::Local:
 				{
-					if ((PTXU64) source + elementSize * vectorSize
-						> kernel->localMemorySize()) {
-						std::stringstream stream;
-						stream << "Local memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->localMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-							threadID, blockId.x, instr);
-					}
 					source += (PTXU64) LocalMemory 
 						+ threadID * kernel->localMemorySize();
 				}
@@ -3601,11 +3473,6 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			default:
 				throw RuntimeException("unsupported address space", 
 					context.PC, instr);
-		}
-		
-		if (traceEvents) {
-			currentEvent.memory_addresses.push_back(
-				(long long unsigned int)source);
 		}
 
 		if(instr.d.vec == PTXOperand::v1) {
@@ -3621,6 +3488,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 
 */
 void executive::CooperativeThreadArray::eval_Lg2(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -3638,6 +3506,7 @@ void executive::CooperativeThreadArray::eval_Lg2(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Mad24(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	throw RuntimeException("instruction not implemented", context.PC, instr);
 }
 
@@ -3655,6 +3524,7 @@ void executive::CooperativeThreadArray::eval_Mad24(CTAContext &context, const PT
 
 */
 void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	PTXOperand::DataType type = instr.type;
 
 	if (instr.modifier & PTXInstruction::wide) {
@@ -3828,6 +3698,7 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -3909,6 +3780,7 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Min(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -3990,6 +3862,7 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Membar(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	/*! No need to do anything here. */
 }
 
@@ -3999,6 +3872,7 @@ void executive::CooperativeThreadArray::eval_Membar(CTAContext &context, const P
 
 */
 void executive::CooperativeThreadArray::eval_Mov(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 
 	if (instr.a.addressMode == PTXOperand::Register) {
 		eval_Mov_reg(context, instr);		
@@ -4340,6 +4214,7 @@ void executive::CooperativeThreadArray::eval_Mov_addr(CTAContext &context, const
 
 */
 void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 
 	if (instr.type == PTXOperand::u32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -4401,6 +4276,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 
 */
 void executive::CooperativeThreadArray::eval_Mul(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4549,6 +4425,7 @@ void executive::CooperativeThreadArray::eval_Mul(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Neg(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4603,6 +4480,7 @@ void executive::CooperativeThreadArray::eval_Neg(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Not(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4648,6 +4526,7 @@ void executive::CooperativeThreadArray::eval_Not(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4697,6 +4576,7 @@ void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXIn
 
 */
 void executive::CooperativeThreadArray::eval_Pmevent(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	/*! No need to do anything here. */
 }
 
@@ -4704,6 +4584,7 @@ void executive::CooperativeThreadArray::eval_Pmevent(CTAContext &context, const 
 
 */
 void executive::CooperativeThreadArray::eval_Rcp(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4731,6 +4612,7 @@ void executive::CooperativeThreadArray::eval_Rcp(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Red(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	throw RuntimeException("instruction not implemented", context.PC, instr);
 }
 
@@ -4738,6 +4620,7 @@ void executive::CooperativeThreadArray::eval_Red(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::s16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4825,6 +4708,7 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 
 */		
 void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	throw RuntimeException("instruction not implemented", context.PC, instr);
 }
 
@@ -4832,6 +4716,7 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, const PTXI
 
 */		
 void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4865,6 +4750,7 @@ void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context, const PT
 
 */		
 void executive::CooperativeThreadArray::eval_Sad(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	switch (instr.type) {
 	case PTXOperand::u16:
 	{
@@ -4960,6 +4846,7 @@ selp.type d, a, b, c;
 
 */
 void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 
 	switch (instr.type) {
 		case PTXOperand::b16:	// fall through
@@ -5034,6 +4921,7 @@ setp.CmpOp.BoolOp.type p[|q], a, b, [!]c;
 */
 void executive::CooperativeThreadArray::eval_SetP(CTAContext &context, 
 	const PTXInstruction &instr) {
+	trace();
 	
 	switch (instr.type) {
 		
@@ -5451,6 +5339,7 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 
 */
 void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	
 	switch (instr.a.type) {
 		
@@ -5868,6 +5757,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 
 */		
 void executive::CooperativeThreadArray::eval_Shl(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	unsigned int b = 0;
 	if (instr.type == PTXOperand::b16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -5978,6 +5868,7 @@ void executive::CooperativeThreadArray::eval_Shl(CTAContext &context, const PTXI
 
 */		
 void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	unsigned int b = 0;
 	if (instr.type == PTXOperand::b16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -6286,6 +6177,7 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 
 */		
 void executive::CooperativeThreadArray::eval_Sin(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -6322,6 +6214,7 @@ void executive::CooperativeThreadArray::eval_Sin(CTAContext &context, const PTXI
 	d = (c >= 0) ? a : b;
 */
 void executive::CooperativeThreadArray::eval_SlCt(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 
 	assert(instr.opcode == PTXInstruction::SlCt);
 
@@ -6375,6 +6268,7 @@ void executive::CooperativeThreadArray::eval_SlCt(CTAContext &context, const PTX
 
 */		
 void executive::CooperativeThreadArray::eval_Sqrt(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 
 	assert(instr.opcode == PTXInstruction::Sqrt);
 
@@ -6546,7 +6440,6 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 */		
 void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXInstruction &instr) {
 	size_t elementSize = 0;
-	size_t vectorSize = instr.a.vec;
 
 	switch (instr.type) {
 		case PTXOperand::b8:		// fall through
@@ -6585,7 +6478,68 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 
 	if (traceEvents) {
 		currentEvent.memory_size = elementSize;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) {
+				continue;
+			}
+
+			char *source = 0;
+
+			switch (instr.d.addressMode) {
+			case PTXOperand::Register:
+			case PTXOperand::Indirect:
+				switch (instr.d.type) {
+					case PTXOperand::b8:		// fall through
+					case PTXOperand::s8:		// fall through
+					case PTXOperand::u8:
+						{
+							source += getRegAsU8(threadID, instr.d.reg );
+						}
+						break;
+					case PTXOperand::b16:		// fall through
+					case PTXOperand::s16:		// fall through
+					case PTXOperand::u16:
+						{
+							source += getRegAsU16(threadID, instr.d.reg );
+						}
+						break;
+					case PTXOperand::f32:		// fall through
+					case PTXOperand::b32:		// fall through
+					case PTXOperand::s32:		// fall through
+					case PTXOperand::u32:
+						{
+							source += getRegAsU32(threadID, instr.d.reg );
+						}
+						break;
+					case PTXOperand::f64:		// fall through
+					case PTXOperand::b64:		// fall through
+					case PTXOperand::s64:		// fall through
+					case PTXOperand::u64:
+						{
+							source += getRegAsU64(threadID, instr.d.reg );
+						}
+						break;
+					default:
+						break;
+				}
+				break;
+			case PTXOperand::Address:
+			case PTXOperand::Immediate:
+				source += instr.d.imm_uint;
+				break;
+			default:
+				throw RuntimeException(
+					"unsupported address mode for source operand", 
+						context.PC, instr);
+			}
+
+			source += instr.d.offset;		
+
+			currentEvent.memory_addresses.push_back((ir::PTXU64)source);
+		}
 	}
+
+	trace();
 
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) {
@@ -6643,82 +6597,25 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 		}
 
 		source += instr.d.offset;		
-
-		#if (CHECK_MEMORY_ALIGNMENT==1)
-		if ((size_t)source % ( elementSize * vectorSize ) != 0) {
-			std::stringstream stream;
-			stream << "Memory access at " << (void*)source 
-				<< " is not aligned to the access size (" 
-					<< ( elementSize * vectorSize ) << " bytes)\n";
-			stream << " At: " << kernel->location(context.PC);
-			throw RuntimeException(stream.str(), context.PC, instr);
-		}
-		#endif
-
+		
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
 				{
-					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->parameterMemorySize()) {
-						std::stringstream stream;
-						stream << "Parameter memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->parameterMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-								threadID, blockId.x, instr);
-					}					
 					source += (PTXU64) kernel->ParameterMemory;
 				}
 				break;
 			case PTXInstruction::Global:			
 				{	
-					#if (CHECK_GLOBAL_ACCESSES==1)
-					if (!kernel->checkMemoryAccess(source,
-						elementSize * vectorSize)) {
-						globalMemoryError(source, 
-							elementSize * vectorSize, kernel, context, instr, 
-							threadID, blockId.x);
-					}
-					#endif
 				}
 				break;
 			case PTXInstruction::Shared:
 				{
 					source = (char*)(0xffffffff & (PTXU64)source);
-					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->totalSharedMemorySize()) {
-						std::stringstream stream;
-						stream << "Shared memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->totalSharedMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-							threadID, blockId.x, instr);
-					}					
-					writeSharedMemory((ir::PTXU64)source, 
-						elementSize * vectorSize, threadID, context.PC, instr);
 					source += (PTXU64) SharedMemory;
 				}
 				break;
 			case PTXInstruction::Local:
 				{
-					if ((PTXU64) source + elementSize * vectorSize 
-						> kernel->localMemorySize()) {
-						std::stringstream stream;
-						stream << "Local memory address " 
-							<< (void*)(source + elementSize * vectorSize) 
-							<< " is beyond allocated block size " 
-							<< kernel->localMemorySize();
-						stream << "\n";
-						stream << "In " << kernel->location(context.PC) << "\n";
-						throw RuntimeException(stream.str(), context.PC, 
-							threadID, blockId.x, instr);
-					}					
 					source += (PTXU64) LocalMemory 
 						+ kernel->localMemorySize() * threadID;
 				}
@@ -6728,11 +6625,6 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 					context.PC, instr);
 		}
 
-		if (traceEvents) {
-			currentEvent.memory_addresses.push_back(
-				(long long unsigned int)source);
-		}
-		
 		if (instr.a.vec == PTXOperand::v1) {
 			normalStore(threadID, instr, source);
 		}
@@ -6749,6 +6641,7 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 
 */		
 void executive::CooperativeThreadArray::eval_Sub(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -6838,6 +6731,7 @@ void executive::CooperativeThreadArray::eval_Sub(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	switch (instr.type) {
 
 	case PTXOperand::u32:
@@ -7355,12 +7249,14 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 				break;
 		}
 	}	
+	trace();
 }
 
 /*!
 
 */		
 void executive::CooperativeThreadArray::eval_Trap(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	context.running = false;
 }
 
@@ -7368,6 +7264,7 @@ void executive::CooperativeThreadArray::eval_Trap(CTAContext &context, const PTX
 
 */		
 void executive::CooperativeThreadArray::eval_Vote(CTAContext &context, const PTXInstruction &instr) {
+	trace();
 	if (instr.type != PTXOperand::pred || instr.d.type != PTXOperand::pred 
 		|| instr.a.type != PTXOperand::pred ) {
 		throw RuntimeException("Vote only supports predicates", 
@@ -7446,6 +7343,7 @@ void executive::CooperativeThreadArray::eval_Vote(CTAContext &context, const PTX
 */		
 void executive::CooperativeThreadArray::eval_Xor(CTAContext &context, 
 	const PTXInstruction &instr) {
+	trace();
 	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;

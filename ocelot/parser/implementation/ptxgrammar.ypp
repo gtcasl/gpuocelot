@@ -876,6 +876,11 @@ ret : OPCODE_RET optionalUni ';'
 	state.instruction( $<text>1, 1 );
 };
 
+ret : OPCODE_RET optionalUni operand ';'
+{
+	state.instruction( $<text>1, 2 );
+};
+
 comparisonId : TOKEN_EQ | TOKEN_NE | TOKEN_LT | TOKEN_LE | TOKEN_GT | TOKEN_GE
 	| TOKEN_LS | TOKEN_HS | TOKEN_EQU | TOKEN_NEU | TOKEN_LTU | TOKEN_LEU
 	| TOKEN_GTU | TOKEN_GEU | TOKEN_NUM | TOKEN_NAN;

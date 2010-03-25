@@ -407,7 +407,8 @@ namespace analysis
 	LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass( 
 		unsigned int regs ) : registers( regs )
 	{
-	
+		ssa = true;
+		name = "LinearScanRegisterAllocation";
 	}
 
 	void LinearScanRegisterAllocationPass::initialize( const ir::Module& m )

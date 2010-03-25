@@ -36,16 +36,12 @@ namespace cuda {
 		virtual ~CudaRuntimeInterface();
 
 	public:
-
 		//! \brief gets the Ocelot runtime object
 		const ocelot::OcelotRuntime & ocelot() const;
 
 	protected:
-
 		//! \brief Ocelot runtime object containing state related to Ocelot
 		ocelot::OcelotRuntime ocelotRuntime;
-
-		friend class CudaRuntimeInterfacePtr;
 		
 	public:
 		/*

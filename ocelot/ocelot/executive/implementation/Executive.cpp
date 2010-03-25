@@ -380,8 +380,7 @@ std::string executive::Executive::nearbyAllocationsToString(
 		// throw an exception
 
 	std::stringstream ss;
-	ss << "device memory fault - device pointer " << std::hex << pointer 
-		<< " does not point to an allocation on device " << std::dec 
+	ss << "\nOn device " << std::dec 
 		<< executive.devices[executive.getSelectedDevice()].name 
 		<< "\n";
 
@@ -2524,6 +2523,7 @@ void executive::Executive::updateGlobalVariables(ir::Module &module, ir::Executa
 	}
 }
 
+#if HAVE_CUDA_DRIVER_API == 1
 static int max4(int a, int b, int c, int d) {
 	int u, v;
 	if (b > a) u = b; else u = a;
@@ -2570,6 +2570,7 @@ static unsigned int convertFormatType(const ir::Texture &texture) {
 	}
 	return fmt;
 }
+#endif
 
 void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKernel &kernel) {
 
@@ -2577,7 +2578,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 	case ir::Instruction::Emulated: // fall through
 	case ir::Instruction::LLVM:
 		break;
-		
+#if HAVE_CUDA_DRIVER_API == 1
 	case ir::Instruction::GPU:
 	{
 		ir::ExecutableKernel::TextureVector kernelTextures = kernel.textureReferences();
@@ -2641,6 +2642,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 		
 	}
 	break;
+#endif
 	default:
 		assert(0 && "unimplemented");
 	}

@@ -14,6 +14,9 @@
 #include <ocelot/trace/interface/SharedComputationGenerator.h>
 #include <ocelot/trace/interface/BranchTraceGenerator.h>
 #include <ocelot/trace/interface/CacheSimulator.h>
+#include <ocelot/trace/interface/MemoryChecker.h>
+#include <ocelot/trace/interface/MemoryRaceDetector.h>
+
 
 namespace ocelot
 {
@@ -25,6 +28,8 @@ namespace ocelot
 		trace::BranchTraceGenerator _branchTraceGenerator;
 		trace::ParallelismTraceGenerator _parallelismTraceGenerator;
 		trace::CacheSimulator _cacheSimulator;
+		trace::MemoryChecker _memoryChecker;
+		trace::MemoryRaceDetector _raceDetector;
 	
 		bool _initialized;
 		

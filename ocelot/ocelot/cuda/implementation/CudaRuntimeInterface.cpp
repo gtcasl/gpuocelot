@@ -21,7 +21,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,6 +49,8 @@ cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 	if (!cuda::CudaRuntimeInterface::instance) {
 		if (api::OcelotConfiguration::get().cuda.implementation == "CudaRuntime") {
 			cuda::CudaRuntimeInterface::instance = new CudaRuntime;
+			cuda::CudaRuntimeInterface::instance->ocelotRuntime.configure(
+				api::OcelotConfiguration::get());
 		}
 		else {
 			assert(0 && "no CUDA runtime implementation matches what is requested");
@@ -58,7 +60,6 @@ cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 }
 
 cuda::CudaRuntimeInterface::CudaRuntimeInterface() {
-	ocelotRuntime.configure(api::OcelotConfiguration::get());
 
 }
 

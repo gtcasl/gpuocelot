@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,7 +76,9 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	sharedComputation(false),
 	parallelism(false),
 	instruction(false),
-	cacheSimulator(false)
+	cacheSimulator(false),
+	memoryChecker(false),
+	raceDetector(false)
 {
 
 }
@@ -84,7 +86,7 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
 
-	trace.enabled = config.parse<bool>("enabled", false);
+	trace.enabled = config.parse<bool>("enabled", true);
 	trace.database = config.parse<std::string>("database", "trace/database.trace");
 	trace.inPlaceTraces = config.parse<bool>("inPlaceTraces", false);
 	trace.memory = config.parse<bool>("memory", false);
@@ -92,6 +94,8 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	trace.sharedComputation = config.parse<bool>("sharedComputation", false);
 	trace.instruction = config.parse<bool>("instruction", false);
 	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
+	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
+	trace.raceDetector = config.parse<bool>("raceDetector", true);
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():
@@ -235,7 +239,6 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		if (main.find("checkpoint")) {
 			initializeCheckpoint(checkpoint, main["checkpoint"]);
 		}
-
 		version = main.parse<std::string>("version", "1.0.65");
 		ocelot = main.parse<std::string>("ocelot", "ocelot-refactored");
 	}

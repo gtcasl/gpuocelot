@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace ocelot
 {
@@ -63,11 +63,21 @@ namespace ocelot
 		{
 
 		}
-		if( c.trace.cacheSimulator )
+		if (c.trace.cacheSimulator)
 		{
 			report( "Creating cache simulator" );
 			_cacheSimulator.database = c.trace.database;
 			ocelot::addTraceGenerator( _cacheSimulator, true, false );	
+		}
+		if (c.trace.memoryChecker)
+		{
+			report( "Creating memory checker" );
+			ocelot::addTraceGenerator( _memoryChecker, true, false );
+		}
+		if (c.trace.raceDetector)
+		{
+			report( "Creating memory race detector" );
+			ocelot::addTraceGenerator( _raceDetector, true, false );
 		}
 	}
 

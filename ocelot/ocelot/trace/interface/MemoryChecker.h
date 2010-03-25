@@ -15,6 +15,7 @@
 namespace executive
 {
 	class Executive;
+	class EmulatedKernel;
 }
 
 namespace trace
@@ -61,6 +62,9 @@ namespace trace
 			/*! \brief A pointer to the executive class */
 			const executive::Executive* _context;
 		
+			/*! \brief A pointer to the executable kernel */
+			const executive::EmulatedKernel* _kernel;
+			
 		private:
 			/*! \brief Check the alignment of a memory access */
 			void _checkAlignment(const TraceEvent& e);

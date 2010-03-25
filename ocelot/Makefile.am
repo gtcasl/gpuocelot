@@ -99,6 +99,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/CacheSimulator.cpp \
 	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
+	ocelot/trace/implementation/MemoryRaceDetector.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \

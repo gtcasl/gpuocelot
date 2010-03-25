@@ -15,7 +15,7 @@
 namespace analysis
 {
 	/*! \brief Implements the linear scan register allocation algorithm */
-	class LinearScanRegisterAllocationPass : public Pass
+	class LinearScanRegisterAllocationPass : public KernelPass
 	{
 		private:
 			/*! \brief A unique ID for a register */

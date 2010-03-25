@@ -259,7 +259,8 @@ namespace analysis
 	
 	RemoveBarrierPass::RemoveBarrierPass()
 	{
-	
+		ssa = false;
+		name = "RemoveBarriers";
 	}
 
 	void RemoveBarrierPass::initialize( const ir::Module& m )

@@ -7,6 +7,8 @@
 #ifndef PASS_H_INCLUDED
 #define PASS_H_INCLUDED
 
+#include <string>
+
 namespace ir
 {
 	class Kernel;
@@ -30,10 +32,16 @@ namespace analysis
 				BasicBlockPass,
 				InvalidPass
 			};
-		
+					
 		public:
 			/*! \brief The type of this pass */
 			Type type;
+
+			/*! \brief Should the pass be run before or after ssa conversion */
+			bool ssa;
+			
+			/*! \brief The name of the pass */
+			std::string name;
 		
 		public:
 			/*! \brief The default constructor sets the type */
@@ -44,7 +52,8 @@ namespace analysis
 			Pass( const Pass& p );
 			/*! \brief The type requires a new assignment operator */
 			Pass& operator=( const Pass& p );
-
+			/*! \brief Report the name of the pass */
+			std::string toString() const;
 	};
 	
 	

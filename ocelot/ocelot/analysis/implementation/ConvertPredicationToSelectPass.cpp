@@ -79,7 +79,8 @@ namespace analysis
 	
 	ConvertPredicationToSelectPass::ConvertPredicationToSelectPass()
 	{
-	
+		ssa = false;
+		name = "ConvertPredicationToSelect";
 	}
 
 	void ConvertPredicationToSelectPass::initialize( const ir::Module& m )

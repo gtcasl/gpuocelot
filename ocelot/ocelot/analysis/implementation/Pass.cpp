@@ -33,6 +33,11 @@ namespace analysis
 		return *this;
 	}
 	
+	std::string Pass::toString() const
+	{
+		return name;
+	}
+	
 	ImmutablePass::ImmutablePass() : Pass( Pass::ImmutablePass )
 	{
 	

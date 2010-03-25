@@ -248,7 +248,17 @@ namespace ir
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Ret )
 				{
-					assertM(false, "Unhandled control flow instruction ret");
+					last_inserted_block = block;
+					if (edge.type != ControlFlowGraph::Edge::Invalid) {
+						cfg.insert_edge(edge);
+					}
+					edge.head = block;
+					edge.tail = cfg.get_exit_block();
+					edge.type = ControlFlowGraph::Edge::Branch;
+					cfg.insert_edge( edge );
+
+					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 				else 
 				{
@@ -465,10 +475,6 @@ namespace ir
 						ss << "$__Block_" << blockIndex;
 						label = ss.str();
 					}
-					else if (label[0] != '$') 
-					{
-						label = "$" + label;
-					}
 					stream << "\t" << label << ":";
 					if (comment != "") 
 					{
@@ -505,7 +511,7 @@ namespace ir
 			ControlFlowGraph::iterator block = *bb_it;
 			if (block->label != "entry" && block->label != "exit") {
 				std::stringstream ss;
-				ss << "BB_" << kernelID << "_" << n;
+				ss << "$BB_" << kernelID << "_" << n;
 				labelMap[block->label] = ss.str();
 				block->comment = block->label;
 				block->label = ss.str();
@@ -523,7 +529,7 @@ namespace ir
 				PTXInstruction &instr = *static_cast<PTXInstruction*>(
 					*instruction);
 				if (instr.opcode == ir::PTXInstruction::Bra) {
-					instr.d.identifier = "$" + labelMap[instr.d.identifier];
+					instr.d.identifier = labelMap[instr.d.identifier];
 				}
 			}
 		}

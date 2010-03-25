@@ -21,6 +21,14 @@ namespace analysis
 				LinearScan,
 				InvalidRegisterAllocationType
 			};
+			
+			/*! \brief The possible PTX to PXT passes */
+			enum PassType
+			{
+				InvalidPassType = 0x0,
+				RemoveBarriers = 0x1,
+				ReverseIfConversion = 0x2
+			};
 	
 		public:
 			/*! \brief The input file being optimized */
@@ -31,6 +39,9 @@ namespace analysis
 			
 			/*! \brief The type of register allocation to perform */
 			RegisterAllocationType registerAllocationType;
+			
+			/*! \brief The set of passes to run */
+			int passes;
 			
 			/*! \brief The number of registers to allocate */
 			unsigned int registerCount;

@@ -14,6 +14,7 @@
 #include <ocelot/cuda/include/__cudaFatFormat.h>
 #include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
+#include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
@@ -289,10 +290,7 @@ void cuda::HostThreadContext::mapParameters(executive::Executive& context,
 	clearParameters();
 }
 
-cuda::CudaContext::CudaContext(): thread(0)
-#if HAVE_CUDA_DRIVER_API == 1
-, context(0) 
-#endif
+cuda::CudaContext::CudaContext(): thread(0), context(0) 
 { }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace ocelot
 {
@@ -30,8 +30,6 @@ namespace ocelot
 	
 	void OcelotRuntime::configure( const api::OcelotConfiguration & c )
 	{
-	
-/*	
 		if( c.trace.memory )
 		{
 			report( "Creating memory trace generator" );
@@ -39,7 +37,6 @@ namespace ocelot
 			_memoryTraceGenerator.headerOnly = c.trace.inPlaceTraces;
 			ocelot::addTraceGenerator( _memoryTraceGenerator, true, false );
 		}
-*/
 		if( c.trace.sharedComputation )
 		{
 			report( "Creating shared computation trace generator" );
@@ -61,7 +58,9 @@ namespace ocelot
 		}
 		if (c.trace.instruction)
 		{
-
+			report( "Creating instruction trace generator" );
+			_instructionTraceGenerator.database = c.trace.database;
+			ocelot::addTraceGenerator( _instructionTraceGenerator, true, false );
 		}
 		if (c.trace.cacheSimulator)
 		{

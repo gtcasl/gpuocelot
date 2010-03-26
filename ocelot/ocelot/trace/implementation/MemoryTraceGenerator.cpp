@@ -156,6 +156,8 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 	typedef std::unordered_set<ir::PTXU64> AddressSet;
 	report("Computing extent for kernel " << kernel.name);
 	AddressSet encountered;
+	AddressSet pointers;
+
 	ir::PTXU64 extent = kernel.constMemorySize() + kernel.parameterMemorySize() 
 		+ kernel.totalSharedMemorySize() + kernel.localMemorySize();
 	
@@ -164,34 +166,7 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 	for (ir::ExecutableKernel::TextureVector::iterator 
 		texture = textures.begin(); texture != textures.end(); ++texture) {
 		report(" Checking texture mapped address " << (*texture)->data);
-		
-		executive::Executive::GlobalMemoryAllocation 
-			global = kernel.context->getGlobalMemoryAllocation(
-			(*texture)->data);
-		
-		if (global.space != ir::PTXInstruction::AddressSpace_Invalid 
-			&& (char*)(*texture)->data < (char*)global.ptr + global.size) {
-			report("  Hit global allocation " << global.ptr << " size " 
-				<< global.size);
-			if (encountered.insert((ir::PTXU64)global.ptr).second) {
-				extent += global.size;
-			}
-			continue;
-		}
-		
-		executive::Executive::MemoryAllocation 
-			allocation = kernel.context->getMemoryAllocation(
-			kernel.context->getSelected(), (*texture)->data);
-		
-		if (allocation.isa != ir::Instruction::Unknown
-			&& (char*)(*texture)->data 
-			< (char*)allocation.ptr + allocation.size) {
-			report("  Hit allocation " << allocation.ptr << " size " 
-				<< allocation.size);
-			if (encountered.insert((ir::PTXU64)allocation.ptr).second) {
-				extent += allocation.size;
-			}
-		}
+		pointers.insert((ir::PTXU64)(*texture)->data);
 	}
 	
 	for (ir::Kernel::ParameterVector::const_iterator 
@@ -237,32 +212,21 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 				default: break;
 			}
 			
-			report(" Checking address " << std::hex << address << std::dec);
-			
-			executive::Executive::GlobalMemoryAllocation 
-				global = kernel.context->getGlobalMemoryAllocation(
-				(void*)address);
-			
-			if (global.space != ir::PTXInstruction::AddressSpace_Invalid
-				&& (char*)address < (char*)global.ptr + global.size) {
-				report("  Hit global allocation " << global.ptr << " size " 
-					<< global.size);
-				if (encountered.insert((ir::PTXU64)global.ptr).second) {
-					extent += global.size;
-				}
-				continue;
-			}
-			
-			executive::Executive::MemoryAllocation 
-				allocation = kernel.context->getMemoryAllocation(
-				kernel.context->getSelected(), (void*)address);
-			
-			if (allocation.isa != ir::Instruction::Unknown
-				&& (char*)address < (char*)allocation.ptr + allocation.size) {
-				report("  Hit allocation " << allocation.ptr << " size " 
-					<< allocation.size);
-				if (encountered.insert((ir::PTXU64)allocation.ptr).second) {
-					extent += allocation.size;
+			report(" Checking address " << (void*)address);
+			pointers.insert(address);
+		}
+	}
+	
+	for (AddressSet::const_iterator pointer = pointers.begin(); 
+		pointer != pointers.end(); ++pointer) {
+		const executive::MemoryAllocation* 
+			allocation = kernel.context->getMemoryAllocation((const void*)*pointer);
+		if (allocation != 0) {
+			if (*pointer < (ir::PTXU64)allocation->get() + allocation->size()) {
+				if(encountered.insert((ir::PTXU64)allocation->get()).second) {
+					report(" Adding allocation at " << (void*)*pointer 
+						<< " of size " << allocation->size());
+					extent += allocation->size();
 				}
 			}
 		}

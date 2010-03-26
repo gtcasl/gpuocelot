@@ -205,6 +205,9 @@ namespace trace
 
 		_parameter.base = 0;
 		_parameter.extent = kernel.parameterMemorySize();
+
+		_constant.base = 0;
+		_constant.extent = kernel.constMemorySize();
 		
 		_shared.base = 0;
 		_shared.extent = kernel.totalSharedMemorySize();

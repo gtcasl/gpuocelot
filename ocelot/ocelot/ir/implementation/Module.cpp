@@ -26,8 +26,8 @@ ir::Module::Module(std::string path): cuModuleState(Invalid) {
 	load(path);
 }
 
-ir::Module::Module(std::istream& stream): cuModuleState(Invalid) {
-	load(stream);
+ir::Module::Module(std::istream& stream, const std::string& path): cuModuleState(Invalid) {
+	load(stream, path);
 }
 
 ir::Module::Module(): cuModuleState(Invalid) {
@@ -105,7 +105,7 @@ bool ir::Module::load(std::string path) {
 /*!
 	Unloads module and loads everything in path
 */
-bool ir::Module::load(std::istream& stream, std::string path) {
+bool ir::Module::load(std::istream& stream, const std::string& path) {
 	using namespace std;
 
 	unload();

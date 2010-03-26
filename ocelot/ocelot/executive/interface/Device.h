@@ -22,10 +22,7 @@
 
 #include <configure.h>
 
-#if HAVE_CUDA_DRIVER_API == 1
 #include <ocelot/cuda/include/cuda.h>
-#include <ocelot/cuda/include/cudaGL.h>
-#endif
 
 namespace executive {
 	
@@ -139,12 +136,10 @@ namespace executive {
 		*/
 		int minor;
 
-#if HAVE_CUDA_DRIVER_API == 1
 		/*!
 			\brief CUDA device context
 		*/
 		CUcontext cudaContext;
-#endif
 	};
 	
 	typedef std::vector< Device > DeviceVector;

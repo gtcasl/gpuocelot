@@ -13,6 +13,7 @@
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ExecutableKernel.h>
@@ -21,11 +22,6 @@
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
-
-#if HAVE_CUDA_DRIVER_API == 1
-#define CUDA_OPENGL_INTEROPERABILITY 0
-#include <ocelot/cuda/include/cudaGL.h>
-#endif
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -442,9 +438,8 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 			}
 		break;
 		default:
-#if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
-				if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(
+				if (cuda::CudaDriver::cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, void*>(
 					dest), src, size) == CUDA_SUCCESS) {
 					return true;
 				}
@@ -452,9 +447,6 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 			else {
 				assert(0 && "address space not supported");
 			}
-#else
-			assert(0 && "address space not supported");
-#endif
 		}
 	
 	}
@@ -481,18 +473,14 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 		break;
 		
 		default:
-#if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
-				if (cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == CUDA_SUCCESS) {
+				if (cuda::CudaDriver::cuMemcpyDtoH(dest, hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == CUDA_SUCCESS) {
 					return true;
 				}
 			}
 			else {
 				assert(0 && "address space not supported");
 			}
-#else
-			assert(0 && "address space not supported");
-#endif
 		}
 	}
 	break;
@@ -521,20 +509,16 @@ bool executive::Executive::deviceMemcpy(void *dest, const void *src, size_t size
 			}
 		break;
 		default:
-#if HAVE_CUDA_DRIVER_API == 1
 			if (getSelectedISA() == ir::Instruction::GPU) {
-				if (cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, const void*>(dest), 
-					hydrazine::bit_cast<CUdeviceptr, const void*>(src), size) == 
-					CUDA_SUCCESS) {
+				if (cuda::CudaDriver::cuMemcpyDtoD(hydrazine::bit_cast<CUdeviceptr, 
+					const void*>(dest), hydrazine::bit_cast<CUdeviceptr, const void*>(src), 
+					size) == CUDA_SUCCESS) {
 					return true;
 				}
 			}
 			else {
 				assert(0 && "address space not supported");
 			}
-#else
-		assert(0 && "address space not supported");
-#endif
 		}
 	}
 	break;
@@ -645,8 +629,6 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 			break;
 
 		default:
-#if HAVE_CUDA_DRIVER_API == 1
-			
 			if (getSelectedISA() == ir::Instruction::GPU) {
 				/*
 				report("Executive::deviceMemcpyToArray()");
@@ -699,7 +681,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 						copy.srcXInBytes << ", " << copy.srcY << ")], w: " << copy.WidthInBytes 
 						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
 					*/
-					CUresult cuResult = cuMemcpy2D(&copy);
+					CUresult cuResult = cuda::CudaDriver::cuMemcpy2D(&copy);
 					if (cuResult == CUDA_SUCCESS) {
 						result = true;
 						count -= dstRemaining;
@@ -713,10 +695,7 @@ bool executive::Executive::deviceMemcpyToArray(struct cudaArray *array, void *ho
 					copy.dstXInBytes += dstRemaining;
 					copy.srcXInBytes += dstRemaining;
 				}
-				break;
 			}
-#endif
-				assert(0 && "address space not supported");
 			break;
 		}
 	}
@@ -759,8 +738,6 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 			break;
 
 		default:		
-#if HAVE_CUDA_DRIVER_API == 1
-			
 			if (getSelectedISA() == ir::Instruction::GPU) {
 				/*
 				report("Executive::deviceMemcpyFromArray()");
@@ -813,7 +790,7 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 						copy.srcXInBytes << ", " << copy.srcY << ")], w: " << copy.WidthInBytes 
 						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
 					*/
-					CUresult cuResult = cuMemcpy2D(&copy);
+					CUresult cuResult = cuda::CudaDriver::cuMemcpy2D(&copy);
 					if (cuResult == CUDA_SUCCESS) {
 						result = true;
 						count -= srcRemaining;
@@ -827,11 +804,7 @@ bool executive::Executive::deviceMemcpyFromArray(struct cudaArray *array, void *
 					copy.dstXInBytes += srcRemaining;
 					copy.srcXInBytes += srcRemaining;
 				}
-				break;
 			}
-#endif
-
-			assert(0 && "address space not supported");
 			break;
 		}
 		
@@ -894,7 +867,6 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 		break;
 
 	default:
-#if HAVE_CUDA_DRIVER_API == 1
 		{
 			if (getSelectedISA() == ir::Instruction::GPU) {
 
@@ -971,7 +943,7 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 						<< ", h: " << copy.Height << ", bytes remaining: " << count ); 
 */
 					
-					CUresult cuResult = cuMemcpy2D(&copy);
+					CUresult cuResult = cuda::CudaDriver::cuMemcpy2D(&copy);
 					if (cuResult == CUDA_SUCCESS) {
 						result = true;
 						count -= remaining;
@@ -989,10 +961,7 @@ bool executive::Executive::deviceMemcpyArrayToArray(struct cudaArray *dst, size_
 			else {
 				report("cuMemcpy2D() failed");
 			}
-			break;
 		}
-#endif
-		assert(0 && "address space not supported");
 		break;
 	}
 	
@@ -1035,7 +1004,6 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 				}
 					break;
 				default:
-#if HAVE_CUDA_DRIVER_API == 1
 					if (getSelectedISA() == ir::Instruction::GPU) {
 						CUDA_MEMCPY2D copy;
 						copy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
@@ -1053,7 +1021,7 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 						copy.WidthInBytes = width;
 						copy.Height = height;
 						
-						CUresult cudaResult = cuMemcpy2D(&copy);
+						CUresult cudaResult = cuda::CudaDriver::cuMemcpy2D(&copy);
 						if (cudaResult == CUDA_SUCCESS) {
 							return true;
 						}
@@ -1061,12 +1029,10 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
 						}
 					}
-#endif
-					assert(0 && "unimplemented");
 					break;
 			}
 		}
-			break;
+		break;
 		
 		case HostToDevice:
 		{
@@ -1086,7 +1052,6 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 				}
 					break;
 				default:
-#if HAVE_CUDA_DRIVER_API == 1
 					if (getSelectedISA() == ir::Instruction::GPU) {
 						CUDA_MEMCPY2D copy;
 						copy.srcHost = src;
@@ -1104,7 +1069,7 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 						copy.WidthInBytes = width;
 						copy.Height = height;
 						
-						CUresult cudaResult = cuMemcpy2D(&copy);
+						CUresult cudaResult = cuda::CudaDriver::cuMemcpy2D(&copy);
 						if (cudaResult == CUDA_SUCCESS) {
 							return true;
 						}
@@ -1112,12 +1077,10 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
 						}
 					}
-#endif
-					assert(0 && "unimplemented");
 					break;
 			}
 		}
-			break;
+		break;
 		case DeviceToDevice:
 		{
 			switch (addrSpace) {
@@ -1140,7 +1103,6 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 				}
 					break;
 				default:
-#if HAVE_CUDA_DRIVER_API == 1
 					if (getSelectedISA() == ir::Instruction::GPU) {
 						CUDA_MEMCPY2D copy;
 						copy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
@@ -1158,7 +1120,7 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 						copy.WidthInBytes = width;
 						copy.Height = height;
 						
-						CUresult cudaResult = cuMemcpy2D(&copy);
+						CUresult cudaResult = cuda::CudaDriver::cuMemcpy2D(&copy);
 						if (cudaResult == CUDA_SUCCESS) {
 							return true;
 						}
@@ -1166,13 +1128,11 @@ bool executive::Executive::deviceMemcpy2D(void *dst, size_t dstPitch, const void
 							report("deviceMemcpy2D() - cuMemcpy2D() failed with error " << cudaResult);
 						}
 					}
-#endif
-					assert(0 && "unimplemented");
 					break;
 			}
 	
 		}
-			break;
+		break;
 		
 		default:
 			return false;
@@ -1243,7 +1203,6 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 			break;
 
 	default:
-#if HAVE_CUDA_DRIVER_API == 1
 		if (getSelectedISA() == ir::Instruction::GPU) {
 			CUDA_MEMCPY2D copy;
 			
@@ -1262,7 +1221,7 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 			copy.WidthInBytes = width;
 			copy.Height = height;
 			
-			CUresult result = cuMemcpy2D(&copy);
+			CUresult result = cuda::CudaDriver::cuMemcpy2D(&copy);
 			if (result == CUDA_SUCCESS) {
 				return true;
 			}
@@ -1271,9 +1230,6 @@ bool executive::Executive::deviceMemcpy2DtoArray(struct cudaArray *dstArray, siz
 			}
 			return false;
 		}
-#endif
-	
-		assert(0 && "unimplemented");
 		return false;
 	}
 
@@ -1330,7 +1286,6 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 			break;
 
 	default:
-#if HAVE_CUDA_DRIVER_API == 1
 		if (getSelectedISA() == ir::Instruction::GPU) {
 			CUDA_MEMCPY2D copy;
 			
@@ -1349,7 +1304,7 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 			copy.WidthInBytes = width;
 			copy.Height = height;
 			
-			CUresult result = cuMemcpy2D(&copy);
+			CUresult result = cuda::CudaDriver::cuMemcpy2D(&copy);
 			if (result == CUDA_SUCCESS) {
 				return true;
 			}
@@ -1358,8 +1313,6 @@ bool executive::Executive::deviceMemcpy2DfromArray(void *dst, size_t dpitch,
 			}
 			return false;
 		}
-#endif
-		assert(0 && "unimplemented");
 		return false;
 	}
 
@@ -1487,8 +1440,7 @@ bool executive::Executive::loadModule(std::string path, bool translateOnLoad, st
 
 	report("Loading module " << path << (translateOnLoad ? " translate on load" : ""));
 	
-	ir::Module *module = new ir::Module(ptx);
-	module->modulePath = path;
+	ir::Module *module = new ir::Module(ptx, path);
 	
 	ModuleMap::iterator mod_it = modules.find(path);
 	if (mod_it != modules.end()) {
@@ -1628,15 +1580,15 @@ ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa,
 	inserts devices into device vector
 */
 size_t executive::Executive::enumerateDevices() {
-#if HAVE_CUDA_DRIVER_API == 1
 	if (api::OcelotConfiguration::getExecutive().enableGPU) {
 
-		if (cuInit(0) != CUDA_SUCCESS) {
+		CUresult status = cuda::CudaDriver::cuInit(0);
+		if ( status != CUDA_SUCCESS && status != CUDA_ERROR_NO_DEVICE) {
 			Ocelot_Exception("Executive::enumerateDevices() - failed to initialize CUDA driver ");
 		}
 
 		int gpus = 0;
-		if (cuDeviceGetCount(&gpus) == CUDA_SUCCESS) {
+		if (cuda::CudaDriver::cuDeviceGetCount(&gpus) == CUDA_SUCCESS) {
 			report("There are " << gpus << " gpus in system");
 			for (int gpu = 0; gpu < gpus; gpu++) {
 				CUdevprop_st devProp;
@@ -1646,131 +1598,131 @@ size_t executive::Executive::enumerateDevices() {
 				device.ISA = ir::Instruction::GPU;
 				device.addressSpace = 1 + gpu;
 
-				if (cuDeviceGetProperties(&devProp, gpu) != CUDA_SUCCESS) {
+				if (cuda::CudaDriver::cuDeviceGetProperties(&devProp, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::enumerateDevices() - failed to get properties for GPU "
 						<< gpu);
 				}
 
 				char deviceName[256];
-				if (cuDeviceGetName(deviceName, 255, gpu) != CUDA_SUCCESS) {
+				if (cuda::CudaDriver::cuDeviceGetName(deviceName, 255, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::enumerateDevices() - failed to get name for GPU " << gpu);
 				}
 				device.name = std::string(deviceName);
 				unsigned int totalMemory = 0;
-				if (cuDeviceTotalMem(&totalMemory, gpu) != CUDA_SUCCESS) {
+				if (cuda::CudaDriver::cuDeviceTotalMem(&totalMemory, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::enumerateDevices() - failed to get totalMemory for GPU " 
 						<< gpu);
 				}
 				device.totalMemory = (size_t)totalMemory;
 
-				if (cuDeviceGetAttribute(&device.multiprocessorCount,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.multiprocessorCount,
 					CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get multiprocessorCount for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.memcpyOverlap,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.memcpyOverlap,
 					CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get memcpyOverlap for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.maxThreadsPerBlock,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxThreadsPerBlock,
 					CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxThreadsPerBlock for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.maxThreadsDim[0],
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxThreadsDim[0],
 					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxThreadsDim.x for GPU " 
 						<< gpu);
 				}
-				if (cuDeviceGetAttribute(&device.maxThreadsDim[1],
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxThreadsDim[1],
 					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxThreadsDim.y for GPU " 
 						<< gpu);
 				}
-				if (cuDeviceGetAttribute(&device.maxThreadsDim[2],
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxThreadsDim[2],
 					CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxThreadsDim.z for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.maxGridSize[0],
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxGridSize[0],
 					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxGridSize.x for GPU " 
 						<< gpu);
 				}
-				if (cuDeviceGetAttribute(&device.maxGridSize[1],
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxGridSize[1],
 					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxGridSize.y for GPU " 
 						<< gpu);
 				}
-				if (cuDeviceGetAttribute(&device.maxGridSize[2],
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.maxGridSize[2],
 					CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get maxGridSize.z for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.sharedMemPerBlock,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.sharedMemPerBlock,
 					CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get sharedMemPerBlock for GPU " 
 						<< gpu);
 				}
-				if (cuDeviceGetAttribute(&device.totalConstantMemory,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.totalConstantMemory,
 					CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get totalConstantMemory for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.SIMDWidth,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.SIMDWidth,
 					CU_DEVICE_ATTRIBUTE_WARP_SIZE, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get SIMDWidth for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.memPitch,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.memPitch,
 					CU_DEVICE_ATTRIBUTE_MAX_PITCH, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get memPitch for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.regsPerBlock,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.regsPerBlock,
 					CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get regsPerBlock for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.clockRate,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.clockRate,
 					CU_DEVICE_ATTRIBUTE_CLOCK_RATE, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get clockRate for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceGetAttribute(&device.textureAlign,
+				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.textureAlign,
 					CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get textureAlign for GPU " 
 						<< gpu);
 				}
 
-				if (cuDeviceComputeCapability(&device.major, &device.minor, gpu) != CUDA_SUCCESS) {
+				if (cuda::CudaDriver::cuDeviceComputeCapability(&device.major, &device.minor, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(
 						"Executive::enumerateDevices() - failed to get compute capability for GPU " 
 						<< gpu);
@@ -1786,7 +1738,6 @@ size_t executive::Executive::enumerateDevices() {
 			}
 		}
 	}
-#endif
 
 	if (api::OcelotConfiguration::getExecutive().enableEmulated) {
 		// emulator
@@ -1859,7 +1810,6 @@ size_t executive::Executive::enumerateDevices() {
 		}
 	}#endif
 
-	assert(selectedDevice >= 0);
 	return devices.size();
 }
 
@@ -1873,29 +1823,16 @@ bool executive::Executive::selectDevice(int device) {
 		report("Executive::selectDevice(" << device << ") - " << devices[selectedDevice].name);
 
 		if (devices[selectedDevice].ISA == ir::Instruction::GPU) {
-#if HAVE_CUDA_DRIVER_API == 1
 			Device & device = devices[selectedDevice];
-#if CUDA_OPENGL_INTEROPERABILITY == 1
-			if (cuGLCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
+			if (cuda::CudaDriver::cuGLCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
 				Ocelot_Exception("Executive::selectDevice() - failed to create GL context on device " 
 					<< device.name);
 			}
-			if (cuGLInit() != CUDA_SUCCESS) {
+			if (cuda::CudaDriver::cuGLInit() != CUDA_SUCCESS) {
 				Ocelot_Exception("Executive::selectDevice() - failed to initialize GL interoperability on device "
 					<< device.name);
 			}
 			report(" created CUDA GL context");
-#else
-			if (cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
-				Ocelot_Exception("Executive::selectDevice() - failed to crete context on device " 
-					<< device.name);
-			}
-			report(" created CUDA context without OpenGL support");
-#endif
-
-#else
-			return false;
-#endif			
 		}
 	}
 	return true;
@@ -2021,15 +1958,13 @@ void executive::Executive::translateModuleToISA(std::string moduleName,
 	\param module loaded module to translate
 */
 bool executive::Executive::translateModuleToGPU(ir::Module &module) {
-	bool result = false;
-#if HAVE_CUDA_DRIVER_API == 1
 	std::stringstream ss;
 	module.write(ss);
 	std::string str = ss.str();
 	
 	report(str);
 	
-	CUresult cuResult = cuModuleLoadData(&module.cuModule, str.c_str());
+	CUresult cuResult = cuda::CudaDriver::cuModuleLoadData(&module.cuModule, str.c_str());
 	if (cuResult != CUDA_SUCCESS) {
 		report("Executive::translateModuleToGPU() - cuModuleLoadData() returned error " << cuResult);
 		return false;
@@ -2040,7 +1975,7 @@ bool executive::Executive::translateModuleToGPU(ir::Module &module) {
 	ir::Module::KernelMap &gpuKernels = module.kernels[ir::Instruction::GPU];
 	for (ir::Module::KernelMap::iterator k_it = ptxKernels.begin(); k_it != ptxKernels.end(); ++k_it) {
 		CUfunction cuFunction;
-		if (cuModuleGetFunction(&cuFunction, module.cuModule, k_it->second->name.c_str()) != CUDA_SUCCESS) {
+		if (cuda::CudaDriver::cuModuleGetFunction(&cuFunction, module.cuModule, k_it->second->name.c_str()) != CUDA_SUCCESS) {
 			report("failed to get kernel '" << k_it->second->name << "' from loaded GPU module");
 			return false;
 		}
@@ -2053,7 +1988,7 @@ bool executive::Executive::translateModuleToGPU(ir::Module &module) {
 		++g_it) {
 		CUdeviceptr ptr;
 		unsigned int bytes = 0;
-		if (cuModuleGetGlobal(&ptr, &bytes, module.cuModule, g_it->first.c_str()) != CUDA_SUCCESS) {
+		if (cuda::CudaDriver::cuModuleGetGlobal(&ptr, &bytes, module.cuModule, g_it->first.c_str()) != CUDA_SUCCESS) {
 			report("failed to get global '" << g_it->first << "' from loaded GPU module ");
 			return false;
 		}
@@ -2063,16 +1998,13 @@ bool executive::Executive::translateModuleToGPU(ir::Module &module) {
 	// textures
 	for (ir::Module::TextureMap::iterator t_it = module.textures.begin(); t_it != module.textures.end();
 		++t_it) {
-		if (cuModuleGetTexRef(&t_it->second.cuTexture, module.cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
+		if (cuda::CudaDriver::cuModuleGetTexRef(&t_it->second.cuTexture, module.cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
 			report("failed to get texture from loaded GPU module");
 			return false;
 		}
 	}
 
-	result = true;
-		
-#endif
-	return result;
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2396,7 +2328,7 @@ void executive::Executive::fenceGlobalVariables() {
 
 					if (global.pointer && !global.local) {
 						report("copying to global variable '" << glb_it->first << "'");
-						if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
+						if (cuda::CudaDriver::cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
 							glb_it->second.host_pointer, glb_it->second.size) != CUDA_SUCCESS) {
 							Ocelot_Exception("Executive::fenceGlobalVariables() - failed to synchronize global variable with device");
 						}
@@ -2490,10 +2422,9 @@ void executive::Executive::updateGlobalVariables(ir::Module &module, ir::Executa
 			
 			case ir::Instruction::GPU:
 			{
-
 				if (global.pointer && !global.local) {
 					report("copying to global variable '" << glb_it->first << "'");
-					if (cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
+					if (cuda::CudaDriver::cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
 						glb_it->second.host_pointer, glb_it->second.size) != CUDA_SUCCESS) {
 						Ocelot_Exception("Executive::fenceGlobalVariables() - failed to synchronize global variable with device");
 					}
@@ -2511,7 +2442,6 @@ void executive::Executive::updateGlobalVariables(ir::Module &module, ir::Executa
 				}
 			}
 			break;
-			
 			default:
 				assert(0 && "unimplemented");
 			}
@@ -2523,7 +2453,6 @@ void executive::Executive::updateGlobalVariables(ir::Module &module, ir::Executa
 	}
 }
 
-#if HAVE_CUDA_DRIVER_API == 1
 static int max4(int a, int b, int c, int d) {
 	int u, v;
 	if (b > a) u = b; else u = a;
@@ -2570,7 +2499,6 @@ static unsigned int convertFormatType(const ir::Texture &texture) {
 	}
 	return fmt;
 }
-#endif
 
 void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKernel &kernel) {
 
@@ -2578,7 +2506,6 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 	case ir::Instruction::Emulated: // fall through
 	case ir::Instruction::LLVM:
 		break;
-#if HAVE_CUDA_DRIVER_API == 1
 	case ir::Instruction::GPU:
 	{
 		ir::ExecutableKernel::TextureVector kernelTextures = kernel.textureReferences();
@@ -2593,7 +2520,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 				case ir::Texture::Bind_1D:
 				{
 					unsigned int offset = 0;
-					CUresult result = cuTexRefSetAddress(&offset, cuTexRef,
+					CUresult result = cuda::CudaDriver::cuTexRefSetAddress(&offset, cuTexRef,
 						hydrazine::bit_cast<CUdeviceptr, void *>(texture.data), texture.bytes());
 					if (result != CUDA_SUCCESS) {
 						Ocelot_Exception("Executive::updateTexture() - failed to bind 1D texture with result " << result);
@@ -2609,7 +2536,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 					desc.NumChannels = texture.components();
 					desc.Format = (CUarray_format)convertFormatType(texture);
 					
-					CUresult result = cuTexRefSetAddress2D(cuTexRef, &desc, 
+					CUresult result = cuda::CudaDriver::cuTexRefSetAddress2D(cuTexRef, &desc, 
 						hydrazine::bit_cast<CUdeviceptr, void *>(texture.data), texture.pitch());
 					if (result != CUDA_SUCCESS) {
 						Ocelot_Exception("Executive::updateTexture() - failed to bind 2D texture with result " << result);
@@ -2621,7 +2548,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 				{
 					const MemoryAllocation *memory = getMemoryAllocation(texture.data);
 					if (memory) {
-						CUresult result = cuTexRefSetArray(cuTexRef, memory->cudaArray, CU_TRSA_OVERRIDE_FORMAT);
+						CUresult result = cuda::CudaDriver::cuTexRefSetArray(cuTexRef, memory->cudaArray, CU_TRSA_OVERRIDE_FORMAT);
 						if (result != CUDA_SUCCESS) {
 							Ocelot_Exception("Executive::updateTexture() - failed to bind 2D texture with result " << result);
 						}
@@ -2642,7 +2569,6 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 		
 	}
 	break;
-#endif
 	default:
 		assert(0 && "unimplemented");
 	}

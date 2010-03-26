@@ -20,9 +20,7 @@
 // Ocelot includes
 #include <ocelot/ir/interface/Texture.h>
 
-#if HAVE_CUDA_DRIVER_API == 1
 #include <ocelot/cuda/include/cuda.h>
-#endif
 
 // forward declarations
 
@@ -162,10 +160,8 @@ namespace executive {
 		//! indicates Ocelot manages allocation
 		bool internal;
 	
-#if HAVE_CUDA_DRIVER_API == 1
 		//! array handle [if array allocated on GPU device]
 		CUarray cudaArray;
-#endif
 	
 	public:
 		//! constructor for external allocation

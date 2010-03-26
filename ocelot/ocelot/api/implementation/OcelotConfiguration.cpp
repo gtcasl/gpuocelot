@@ -93,6 +93,7 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	trace.branch = config.parse<bool>("branch", false);
 	trace.sharedComputation = config.parse<bool>("sharedComputation", false);
 	trace.instruction = config.parse<bool>("instruction", false);
+	trace.parallelism = config.parse<bool>("parallelism", false);
 	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
 	trace.raceDetector = config.parse<bool>("raceDetector", true);

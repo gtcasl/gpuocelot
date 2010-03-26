@@ -163,6 +163,7 @@ namespace parser
 		{
 			std::cerr << "==Ocelot== Warning: Support for PTX 2.0" 
 				<< " is currently experimental. " << std::endl 
+				<< "==Ocelot==  for PTX module - " << fileName << std::endl
 				<< "==Ocelot== Please report all errors to " 
 				<< "'http://groups.google.com/group/gpuocelot'" << std::endl;
 		}

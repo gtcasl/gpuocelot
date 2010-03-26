@@ -11,7 +11,7 @@
 AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
 INCLUDE = -I $(srcdir)/ocelot/cuda/include
-AM_LDFLAGS = $(CUDA_DRIVER_API_LIBARY)
+AM_LDFLAGS = 
 SDK_CFLAGS = -I ../../tests/cuda2.2/sdk/sdk
 ################################################################################
 
@@ -29,14 +29,11 @@ check_PROGRAMS = TestLexer TestParser \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
 	TestPTXToLLVMTranslator  TestGPUKernel PTXChecker \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
-	TestCudaSequence \
-	TestLLVMKernels TestDeviceSwitching
+	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
+	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
+	ParallelismTraceAnalyzer SharedComputationAnalyzer
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
-
-# Removed:
-# TestLLVMKernels
-#
 
 ################################################################################
 ## libocelot
@@ -95,6 +92,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/BranchTraceGenerator.cpp \
 	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
 	ocelot/trace/implementation/SharedComputationGenerator.cpp \
+	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
 	ocelot/trace/implementation/KernelEntry.cpp \
 	ocelot/trace/implementation/CacheSimulator.cpp \
 	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
@@ -113,6 +111,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/ApplicationState.cpp \
 	ocelot/cuda/implementation/cuda_runtime.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
+	ocelot/cuda/implementation/CudaDriver.cpp \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
@@ -178,6 +177,46 @@ PtxToLlvmTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PtxToLlvmTranslator_SOURCES = ocelot/translator/test/PtxToLlvmTranslator.cpp
 PtxToLlvmTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
 PtxToLlvmTranslator_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## ParallelismTraceAnalyzer
+ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+ParallelismTraceAnalyzer_SOURCES = ocelot/trace/implementation/ParallelismTraceAnalyzer.cpp
+ParallelismTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+ParallelismTraceAnalyzer_LDFLAGS = -static
+################################################################################
+	
+################################################################################
+## InstructionTraceAnalyzer
+InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+InstructionTraceAnalyzer_SOURCES = ocelot/trace/implementation/InstructionTraceAnalyzer.cpp
+InstructionTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+InstructionTraceAnalyzer_LDFLAGS = -static
+################################################################################
+	
+################################################################################
+## BranchTraceAnalyzer
+BranchTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+BranchTraceAnalyzer_SOURCES = ocelot/trace/implementation/BranchTraceAnalyzer.cpp
+BranchTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+BranchTraceAnalyzer_LDFLAGS = -static
+################################################################################
+	
+################################################################################
+## SharedComputationAnalyzer
+SharedComputationAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+SharedComputationAnalyzer_SOURCES = ocelot/trace/implementation/SharedComputationAnalyzer.cpp
+SharedComputationAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+SharedComputationAnalyzer_LDFLAGS = -static
+################################################################################
+	
+################################################################################
+## MemoryTraceAnalyzer
+MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+MemoryTraceAnalyzer_SOURCES = ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
+MemoryTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+MemoryTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

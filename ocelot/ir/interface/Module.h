@@ -60,7 +60,7 @@ namespace ir {
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(std::istream& source);
+		Module(std::istream& source, const std::string& path = "::unknown path::");
 
 		/*! Construct a Module from a name and a vector of PTXStatements */
 		Module(std::string, const StatementVector &);
@@ -84,7 +84,7 @@ namespace ir {
 		bool load(std::string path);
 
 		/*!	Unloads module and loads PTX source file in given stream */
-		bool load(std::istream& source, std::string path = "::unknown path::");
+		bool load(std::istream& source, const std::string& path = "::unknown path::");
 
 		/*!
 			Gets a kernel instance by ISA and name. Returned kernel 

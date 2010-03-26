@@ -122,7 +122,7 @@ namespace ir {
 		ir::Dim3 _blockDim;
 		/*!	\brief Dimension of grid in blocks */
 		ir::Dim3 _gridDim;
-		/*! \brief Attched trace generators */
+		/*! \brief Attached trace generators */
 		TraceGeneratorVector _generators;
 
 	};

@@ -17,7 +17,7 @@
 		
 	},
 	executive: {
-		devices: [ emulated, llvm ],
+		devices: [ gpu ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

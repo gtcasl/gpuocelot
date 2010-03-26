@@ -10,6 +10,7 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
+#include <ocelot/trace/interface/InstructionTraceGenerator.h>
 #include <ocelot/trace/interface/ParallelismTraceGenerator.h>
 #include <ocelot/trace/interface/SharedComputationGenerator.h>
 #include <ocelot/trace/interface/BranchTraceGenerator.h>
@@ -23,7 +24,8 @@ namespace ocelot
 	/*! \brief This is an interface for managing state associated with Ocelot */
 	class OcelotRuntime	{
 	private:
-//		trace::MemoryTraceGenerator _memoryTraceGenerator;
+		trace::MemoryTraceGenerator _memoryTraceGenerator;
+		trace::InstructionTraceGenerator _instructionTraceGenerator;
 		trace::SharedComputationGenerator _sharedComputationGenerator;
 		trace::BranchTraceGenerator _branchTraceGenerator;
 		trace::ParallelismTraceGenerator _parallelismTraceGenerator;

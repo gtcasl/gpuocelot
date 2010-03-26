@@ -1,5 +1,4 @@
-/*!
-	\file CudaRuntime.cpp
+/*! \file CudaRuntime.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief implements the CUDA Runtime API for Ocelot
 */
@@ -92,10 +91,8 @@ namespace cuda {
 		//! mapped host thread to context
 		pthread_t thread;
 	
-		#if HAVE_CUDA_DRIVER_API == 1
 		//! pointer to CUDA driver API context
 		CUcontext* context;		
-		#endif
 		
 	public:
 	

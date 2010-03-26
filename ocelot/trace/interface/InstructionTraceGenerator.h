@@ -100,12 +100,12 @@ namespace trace {
 		/*!
 			\brief maps a PTXInstruction::Opcode onto an instruction counter
 		*/
-		typedef std::map<int, InstructionCounter > OpcodeCountMap;
+		typedef std::unordered_map<int, InstructionCounter > OpcodeCountMap;
 
 		/*!
 			\brief maps a functional unit onto an OpcodeCountMap
 		*/
-		typedef std::map<int, OpcodeCountMap > FunctionalUnitCountMap;
+		typedef std::unordered_map<int, OpcodeCountMap > FunctionalUnitCountMap;
 
 	public:
 

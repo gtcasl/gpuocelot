@@ -2,12 +2,16 @@
 	ocelot: "ocelot-refactored",
 	version: "1.0.65",
 	trace: { 
-		enabled: false,
-		database: "trace/database.trace",
+		enabled: true,
+		database: "traces/database.trace",
 		memory: false,
 		branch: false,
 		sharedComputation: false,
 		instruction: false,
+		parallelism: false,
+		cacheSimulator: false,
+		memoryChecker: true,
+		raceDetector: true
 	},
 	cuda: {
 		implementation: "CudaRuntime",

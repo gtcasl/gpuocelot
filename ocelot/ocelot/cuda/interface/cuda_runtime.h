@@ -36,6 +36,9 @@ typedef unsigned int GLuint;
 #define cudaHostAllocMapped       2 
 #define cudaHostAllocWriteCombine 4
 
+#define cudaEventDefault            0   ///< Default event flag
+#define cudaEventBlockingSync       1   ///< Event uses blocking synchronization
+
 enum cudaMemcpyKind {
 	cudaMemcpyHostToHost = 0,
 	cudaMemcpyHostToDevice = 1,

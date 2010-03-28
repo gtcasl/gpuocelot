@@ -17,9 +17,6 @@
 		implementation: "CudaRuntime",
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
-	checker: {
-		
-	},
 	executive: {
 		devices: [ gpu ],
 		optimizationLevel: basic,

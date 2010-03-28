@@ -34,7 +34,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
+#define REPORT_KERNEL_INSTRUCTIONS 1
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
@@ -1462,6 +1463,7 @@ bool executive::Executive::loadModule(std::string path, bool translateOnLoad, st
 */
 bool executive::Executive::loadModule(std::string filename, bool translateOnLoad) {
 	std::ifstream file(filename.c_str());
+	if (!file.is_open()) return false;
 	return loadModule(filename, translateOnLoad, file);
 }
 
@@ -1582,8 +1584,9 @@ ir::Kernel * executive::Executive::getKernel(ir::Instruction::Architecture isa,
 size_t executive::Executive::enumerateDevices() {
 	if (api::OcelotConfiguration::getExecutive().enableGPU) {
 
+		report("Initializing cuda driver.");
 		CUresult status = cuda::CudaDriver::cuInit(0);
-		if ( status != CUDA_SUCCESS && status != CUDA_ERROR_NO_DEVICE) {
+		if (status != CUDA_SUCCESS && status != CUDA_ERROR_NO_DEVICE) {
 			Ocelot_Exception("Executive::enumerateDevices() - failed to initialize CUDA driver ");
 		}
 
@@ -1824,15 +1827,13 @@ bool executive::Executive::selectDevice(int device) {
 
 		if (devices[selectedDevice].ISA == ir::Instruction::GPU) {
 			Device & device = devices[selectedDevice];
-			if (cuda::CudaDriver::cuGLCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid) != CUDA_SUCCESS) {
-				Ocelot_Exception("Executive::selectDevice() - failed to create GL context on device " 
+
+			report(" Creating CUDA driver context.");
+			CUresult result = cuda::CudaDriver::cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid);
+			if (result != CUDA_SUCCESS) {
+				Ocelot_Exception("Executive::selectDevice() - failed to create context for GPU "
 					<< device.name);
 			}
-			if (cuda::CudaDriver::cuGLInit() != CUDA_SUCCESS) {
-				Ocelot_Exception("Executive::selectDevice() - failed to initialize GL interoperability on device "
-					<< device.name);
-			}
-			report(" created CUDA GL context");
 		}
 	}
 	return true;
@@ -1849,6 +1850,7 @@ int executive::Executive::getSelectedDevice() const {
 	gets the ISA of the selected device
 */
 ir::Instruction::Architecture executive::Executive::getSelectedISA() const {
+	if (selectedDevice < 0) return ir::Instruction::Unknown;
 	return devices[selectedDevice].ISA;
 }
 
@@ -1869,24 +1871,11 @@ bool executive::Executive::selectDeviceByISA(ir::Instruction::Architecture isa) 
 	return false;
 }
 
-/*! 
-	\brief only listed devices may be selected
-*/
-void executive::Executive::filterDevices(std::vector<int> & devices) {
-	assert(0 && "unimplemented");
-}
-
-/*!
-	\brief only devices with listed ISAs may be selected
-*/
-void executive::Executive::filterISAs(std::vector<int> & ISAs) {
-	assert(0 && "unimplemented");
-}
-
 /*!
 	\brief returns the address space of the selected device
 */
 int executive::Executive::getDeviceAddressSpace() const {
+	if (selectedDevice < 0) return ir::PTXInstruction::AddressSpace_Invalid;
 	return devices[selectedDevice].addressSpace;
 }
 
@@ -1962,7 +1951,7 @@ bool executive::Executive::translateModuleToGPU(ir::Module &module) {
 	module.write(ss);
 	std::string str = ss.str();
 	
-	report(str);
+	reportE(REPORT_KERNEL_INSTRUCTIONS, str);
 	
 	CUresult cuResult = cuda::CudaDriver::cuModuleLoadData(&module.cuModule, str.c_str());
 	if (cuResult != CUDA_SUCCESS) {

@@ -23,7 +23,7 @@ ACLOCAL_AMFLAGS = -I m4
 ################################################################################
 ## Programs and Libraries
 BUILT_SOURCES=ptxgrammar.h
-bin_PROGRAMS = DFG CFG Module PtxToLlvmTranslator PTXOptimizer OcelotConfig
+bin_PROGRAMS = PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
 	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
@@ -31,7 +31,8 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
-	ParallelismTraceAnalyzer SharedComputationAnalyzer
+	ParallelismTraceAnalyzer SharedComputationAnalyzer \
+	Module PtxToLlvmTranslator DFG CFG
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -120,11 +121,6 @@ libocelot_la_SOURCES = \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
 	
-##	ocelot/trace/implementation/BranchTraceGenerator.cpp \
-##	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
-##	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
-##	ocelot/trace/implementation/SharedComputationGenerator.cpp \
-##	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 ################################################################################
 
 ################################################################################

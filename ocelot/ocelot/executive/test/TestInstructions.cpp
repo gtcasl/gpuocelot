@@ -44,6 +44,7 @@ public:
 	std::string module;
 
 	TestInstructions() {
+		valid = true;
 		name = "TestInstructions";
 
 		status << "Test output:\n";
@@ -55,11 +56,13 @@ public:
 		if (!context.selectDeviceByISA(Instruction::Emulated)) {
 			status << "Failed to select Emulated device\n";
 			valid = false;
+			return;
 		}
 
 		if (!context.loadModule(module)) {
 			status << "failed to load module '" << module << "'\n";
 			valid = false;
+			return;
 		}
 
 		Kernel *rawKernel = context.getKernel(Instruction::Emulated, module, 
@@ -67,6 +70,7 @@ public:
 		if (rawKernel == 0) {
 			status << "failed to get kernel\n";
 			valid = false;
+			return;
 		}
 		else {
 
@@ -76,7 +80,6 @@ public:
 			CooperativeThreadArray l_cta(kernel);
 			cta = l_cta;
 			l_cta.clear();
-			valid = true;
 		}
 	}
 

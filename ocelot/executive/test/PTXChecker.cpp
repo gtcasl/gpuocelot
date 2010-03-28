@@ -15,7 +15,7 @@
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
 
-#include <ocelot/cuda/include/cuda.h>
+#include <ocelot/cuda/interface/CudaDriver.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -40,16 +40,15 @@ public:
 	*/
 	bool doTest() {
 		std::ostream &out = std::cout;
-		#if HAVE_CUDA_DRIVER_API == 1
 		bool result = true;
 		if (ptxSourceFile != "") {
-			CUresult result = cuInit(0);
+			CUresult result = cuda::CudaDriver::cuInit(0);
 			if (result != CUDA_SUCCESS) {
 				out << "cuInit(0) failed with result " << result << std::endl;
 				return false;
 			}
 			CUcontext context;
-			result = cuCtxCreate(&context, 0, 0);
+			result = cuda::CudaDriver::cuCtxCreate(&context, 0, 0);
 			if (result != CUDA_SUCCESS) {
 				out << "cuCtxCreate() failed with result " << result << std::endl;
 				return false;
@@ -81,20 +80,16 @@ public:
 			char errorLogBuffer[errorLogSize] = {0};
 
 			void *optionValues[2] = { (void *)errorLogBuffer, (void *)errorLogActualSize };
-			result = cuModuleLoadDataEx(&module, src, 2, options, optionValues);
+			result = cuda::CudaDriver::cuModuleLoadDataEx(&module, src, 2, options, optionValues);
 			if (result == CUDA_SUCCESS) {
 				out << "Success" << std::endl;
 			}
 			else {
-				out << "cuModuleLoad() failed with result " << result << std::endl;
+				out << "cuModuleLoadDataEx() failed with result " << result << std::endl;
 				out << errorLogBuffer << "\n";
 			}
 		}
 		return result;
-		#else
-			out << "No CUDA Driver API support\n";
-			return false;
-		#endif
 	}
 
 public:

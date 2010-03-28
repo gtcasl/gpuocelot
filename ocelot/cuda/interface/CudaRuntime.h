@@ -33,10 +33,15 @@ namespace cuda {
 	public:
 	
 		//! timer 
-		hydrazine::Timer timer;
+		hydrazine::Timer::Second time;
 	
 		//! CUDA reference to event
 		cudaEvent_t handle;
+		
+		//! CUDA driver handle
+		#if HAVE_CUDA_DRIVER_API == 1
+		CUevent driverHandle;
+		#endif
 		
 		//! event creation flags
 		unsigned int flags;	
@@ -49,7 +54,12 @@ namespace cuda {
 	public:
 	
 		cudaStream_t handle;
-	
+
+		//! CUDA driver handle
+		#if HAVE_CUDA_DRIVER_API == 1
+		CUstream driverHandle;
+		#endif
+			
 		std::list< cudaEvent_t > events;
 		
 	};
@@ -308,6 +318,9 @@ namespace cuda {
 		
 		// fatbinaries
 		FatBinaryVector fatBinaries;
+		
+		// Timer
+		hydrazine::Timer timer;
 		
 	public:
 	

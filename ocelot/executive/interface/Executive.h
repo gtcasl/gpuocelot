@@ -532,16 +532,6 @@ namespace executive {
 		*/
 		bool selectDeviceByISA(ir::Instruction::Architecture isa);
 		
-		/*! 
-			\brief only listed devices may be selected
-		*/
-		void filterDevices(std::vector<int> & devices);
-		
-		/*!
-			\brief only devices with listed ISAs may be selected
-		*/
-		void filterISAs(std::vector<int> & ISAs);
-		
 		/*!
 			\brief returns the address space of the selected device
 		*/

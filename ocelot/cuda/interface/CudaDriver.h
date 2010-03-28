@@ -21,6 +21,8 @@ namespace cuda
 				private:
 					/*! \brief The handle to the driver dll */
 					void* _driver;
+					/*! \brief The driver version */
+					int _version;
 			
 				public:
 					CUresult (*cuInit)(unsigned int Flags);
@@ -157,11 +159,7 @@ namespace cuda
 		private:
 			/*! \brief Interface to the CUDA driver */
 			static Interface _interface;
-		
-		private:
-			/*! \brief Get a pointer to the interface, or allocate it */
-			static Interface& get();
-		
+			
 		public:
 			/*********************************
 			** Initialization

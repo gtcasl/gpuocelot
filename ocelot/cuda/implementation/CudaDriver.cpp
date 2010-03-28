@@ -42,8 +42,8 @@ namespace cuda
 	{
 		if( _driver != 0 ) return;
 		
-		report( "Loading cuda.so" );
-		_driver = dlopen( "cuda.so", RTLD_LAZY );
+		report( "Loading libcuda.so" );
+		_driver = dlopen( "libcuda.so", RTLD_LAZY );
 		if( _driver == 0 )
 		{
 			report( "Failed to load cuda driver." );
@@ -161,6 +161,10 @@ namespace cuda
 		hydrazine::bit_cast( cuGLMapBufferObjectAsync, dlsym( _driver, "cuGLMapBufferObjectAsync" ) );
 		hydrazine::bit_cast( cuGLUnmapBufferObjectAsync, dlsym( _driver, "cuGLUnmapBufferObjectAsync" ) );
 
+		(*cuDriverGetVersion)(&_version);
+
+		report(" Driver version is: " << _version);
+
 	}
 
 	bool CudaDriver::Interface::loaded() const
@@ -169,27 +173,22 @@ namespace cuda
 	}
 
 	CudaDriver::Interface CudaDriver::_interface;
-	
-	CudaDriver::Interface& CudaDriver::get()
-	{
-		_interface.load();
-		return _interface;
-	}
 
 	CUresult CudaDriver::cuInit(unsigned int Flags)
 	{
+		_interface.load();
 		if( !_interface.loaded() ) return CUDA_ERROR_NO_DEVICE;
-		return (*get().cuInit)(Flags);
+		return (*_interface.cuInit)(Flags);
 	}
 
 	CUresult CudaDriver::cuDriverGetVersion(int *driverVersion)
 	{
-		return (*get().cuDriverGetVersion)(driverVersion);
+		return (*_interface.cuDriverGetVersion)(driverVersion);
 	}
 
 	CUresult CudaDriver::cuDeviceGet(CUdevice *device, int ordinal)
 	{
-		return (*get().cuDeviceGet)(device, ordinal);
+		return (*_interface.cuDeviceGet)(device, ordinal);
 	}
 
 	CUresult CudaDriver::cuDeviceGetCount(int *count)
@@ -199,126 +198,126 @@ namespace cuda
 			*count = 0;
 			return CUDA_SUCCESS;
 		}
-		return (*get().cuDeviceGetCount)(count);
+		return (*_interface.cuDeviceGetCount)(count);
 	}
 
 	CUresult CudaDriver::cuDeviceGetName(char *name, int len, CUdevice dev)
 	{
-		return (*get().cuDeviceGetName)(name, len, dev);
+		return (*_interface.cuDeviceGetName)(name, len, dev);
 	}
 
 	CUresult CudaDriver::cuDeviceComputeCapability(int *major, int *minor, CUdevice dev)
 	{
-		return (*get().cuDeviceComputeCapability)(major, minor, dev);
+		return (*_interface.cuDeviceComputeCapability)(major, minor, dev);
 	}
 
 	CUresult CudaDriver::cuDeviceTotalMem(unsigned int *bytes, CUdevice dev)
 	{
-		return (*get().cuDeviceTotalMem)(bytes, dev);
+		return (*_interface.cuDeviceTotalMem)(bytes, dev);
 	}
 
 	CUresult CudaDriver::cuDeviceGetProperties(CUdevprop *prop, CUdevice dev)
 	{
-		return (*get().cuDeviceGetProperties)(prop, dev);
+		return (*_interface.cuDeviceGetProperties)(prop, dev);
 	}
 
 	CUresult CudaDriver::cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev)
 	{
-		return (*get().cuDeviceGetAttribute)(pi, attrib, dev);
+		return (*_interface.cuDeviceGetAttribute)(pi, attrib, dev);
 	}
 
 
 	CUresult CudaDriver::cuCtxCreate(CUcontext *pctx, unsigned int flags, CUdevice dev )
 	{
-		return (*get().cuCtxCreate)(pctx, flags, dev);
+		return (*_interface.cuCtxCreate)(pctx, flags, dev);
 	}
 
 	CUresult CudaDriver::cuCtxDestroy( CUcontext ctx )
 	{
-		return (*get().cuCtxDestroy)(ctx);
+		return (*_interface.cuCtxDestroy)(ctx);
 	}
 
 	CUresult CudaDriver::cuCtxAttach(CUcontext *pctx, unsigned int flags)
 	{
-		return (*get().cuCtxAttach)(pctx, flags);
+		return (*_interface.cuCtxAttach)(pctx, flags);
 	}
 
 	CUresult CudaDriver::cuCtxDetach(CUcontext ctx)
 	{
-		return (*get().cuCtxDetach)(ctx);
+		return (*_interface.cuCtxDetach)(ctx);
 	}
 
 	CUresult CudaDriver::cuCtxPushCurrent( CUcontext ctx )
 	{
-		return (*get().cuCtxPushCurrent)(ctx);
+		return (*_interface.cuCtxPushCurrent)(ctx);
 	}
 
 	CUresult CudaDriver::cuCtxPopCurrent( CUcontext *pctx )
 	{
-		return (*get().cuCtxPopCurrent)(pctx);
+		return (*_interface.cuCtxPopCurrent)(pctx);
 	}
 
 	CUresult CudaDriver::cuCtxGetDevice(CUdevice *device)
 	{
-		return (*get().cuCtxGetDevice)(device);
+		return (*_interface.cuCtxGetDevice)(device);
 	}
 
 	CUresult CudaDriver::cuCtxSynchronize(void)
 	{
-		return (*get().cuCtxSynchronize)();
+		return (*_interface.cuCtxSynchronize)();
 	}
 
 
 	CUresult CudaDriver::cuModuleLoad(CUmodule *module, const char *fname)
 	{
-		return (*get().cuModuleLoad)(module, fname);
+		return (*_interface.cuModuleLoad)(module, fname);
 	}
 
 	CUresult CudaDriver::cuModuleLoadData(CUmodule *module, const void *image)
 	{
-		return (*get().cuModuleLoadData)(module, image);
+		return (*_interface.cuModuleLoadData)(module, image);
 	}
 
 	CUresult CudaDriver::cuModuleLoadDataEx(CUmodule *module, const void *image, unsigned int numOptions, CUjit_option *options, void **optionValues)
 	{
-		return (*get().cuModuleLoadDataEx)(module, image, numOptions, options, optionValues);
+		return (*_interface.cuModuleLoadDataEx)(module, image, numOptions, options, optionValues);
 	}
 
 	CUresult CudaDriver::cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin)
 	{
-		return (*get().cuModuleLoadFatBinary)(module, fatCubin);
+		return (*_interface.cuModuleLoadFatBinary)(module, fatCubin);
 	}
 
 	CUresult CudaDriver::cuModuleUnload(CUmodule hmod)
 	{
-		return (*get().cuModuleUnload)(hmod);
+		return (*_interface.cuModuleUnload)(hmod);
 	}
 
 	CUresult CudaDriver::cuModuleGetFunction(CUfunction *hfunc, CUmodule hmod, const char *name)
 	{
-		return (*get().cuModuleGetFunction)(hfunc, hmod, name);
+		return (*_interface.cuModuleGetFunction)(hfunc, hmod, name);
 	}
 
 	CUresult CudaDriver::cuModuleGetGlobal(CUdeviceptr *dptr, unsigned int *bytes, CUmodule hmod, const char *name)
 	{
-		return (*get().cuModuleGetGlobal)(dptr, bytes, hmod, name);
+		return (*_interface.cuModuleGetGlobal)(dptr, bytes, hmod, name);
 	}
 
 	CUresult CudaDriver::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, const char *name)
 	{
-		return (*get().cuModuleGetTexRef)(pTexRef, hmod, name);
+		return (*_interface.cuModuleGetTexRef)(pTexRef, hmod, name);
 	}
 
 
 	CUresult CudaDriver::cuMemGetInfo(unsigned int *free, unsigned int *total)
 	{
-		return (*get().cuMemGetInfo)(free, total);
+		return (*_interface.cuMemGetInfo)(free, total);
 	}
 
 
 	CUresult CudaDriver::cuMemAlloc( CUdeviceptr *dptr, unsigned int bytesize)
 	{
-		return (*get().cuMemAlloc)(dptr, bytesize);
+		return (*_interface.cuMemAlloc)(dptr, bytesize);
 	}
 
 	CUresult CudaDriver::cuMemAllocPitch( CUdeviceptr *dptr, 
@@ -330,435 +329,435 @@ namespace cuda
 				          unsigned int ElementSizeBytes
 				         )
 	{
-		return (*get().cuMemAllocPitch)(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
+		return (*_interface.cuMemAllocPitch)(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
 	}
 
 	CUresult CudaDriver::cuMemFree(CUdeviceptr dptr)
 	{
-		return (*get().cuMemFree)(dptr);
+		return (*_interface.cuMemFree)(dptr);
 	}
 
 	CUresult CudaDriver::cuMemGetAddressRange( CUdeviceptr *pbase, unsigned int *psize, CUdeviceptr dptr )
 	{
-		return (*get().cuMemGetAddressRange)(pbase, psize, dptr);
+		return (*_interface.cuMemGetAddressRange)(pbase, psize, dptr);
 	}
 
 
 	CUresult CudaDriver::cuMemAllocHost(void **pp, unsigned int bytesize)
 	{
-		return (*get().cuMemAllocHost)(pp, bytesize);
+		return (*_interface.cuMemAllocHost)(pp, bytesize);
 	}
 
 	CUresult CudaDriver::cuMemFreeHost(void *p)
 	{
-		return (*get().cuMemFreeHost)(p);
+		return (*_interface.cuMemFreeHost)(p);
 	}
 
 
 	CUresult CudaDriver::cuMemHostAlloc(void **pp, unsigned long long bytesize, unsigned int Flags )
 	{
-		return (*get().cuMemHostAlloc)(pp, bytesize, Flags);
+		return (*_interface.cuMemHostAlloc)(pp, bytesize, Flags);
 	}
 
 
 	CUresult CudaDriver::cuMemHostGetDevicePointer( CUdeviceptr *pdptr, void *p, unsigned int Flags )
 	{
-		return (*get().cuMemHostGetDevicePointer)(pdptr, p, Flags);
+		return (*_interface.cuMemHostGetDevicePointer)(pdptr, p, Flags);
 	}
 
 	CUresult CudaDriver::cuMemHostGetFlags( unsigned int *pFlags, void *p )
 	{
-		return (*get().cuMemHostGetFlags)(pFlags, p);
+		return (*_interface.cuMemHostGetFlags)(pFlags, p);
 	}
 
 
 	CUresult CudaDriver::cuMemcpyHtoD(CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyHtoD)(dstDevice, srcHost, ByteCount);
+		return (*_interface.cuMemcpyHtoD)(dstDevice, srcHost, ByteCount);
 	}
 
 	CUresult CudaDriver::cuMemcpyDtoH(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyDtoH)(dstHost, srcDevice, ByteCount);
+		return (*_interface.cuMemcpyDtoH)(dstHost, srcDevice, ByteCount);
 	}
 
 
 	CUresult CudaDriver::cuMemcpyDtoD(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyDtoD)(dstDevice, srcDevice, ByteCount);
+		return (*_interface.cuMemcpyDtoD)(dstDevice, srcDevice, ByteCount);
 	}
 
 
 	CUresult CudaDriver::cuMemcpyDtoA( CUarray dstArray, unsigned int dstIndex, CUdeviceptr srcDevice, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyDtoA)(dstArray, dstIndex, srcDevice, ByteCount);
+		return (*_interface.cuMemcpyDtoA)(dstArray, dstIndex, srcDevice, ByteCount);
 	}
 
 	CUresult CudaDriver::cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyAtoD)(dstDevice, hSrc, SrcIndex, ByteCount);
+		return (*_interface.cuMemcpyAtoD)(dstDevice, hSrc, SrcIndex, ByteCount);
 	}
 
 
 	CUresult CudaDriver::cuMemcpyHtoA( CUarray dstArray, unsigned int dstIndex, const void *pSrc, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyHtoA)(dstArray, dstIndex, pSrc, ByteCount);
+		return (*_interface.cuMemcpyHtoA)(dstArray, dstIndex, pSrc, ByteCount);
 	}
 
 	CUresult CudaDriver::cuMemcpyAtoH( void *dstHost, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyAtoH)(dstHost, srcArray, srcIndex, ByteCount);
+		return (*_interface.cuMemcpyAtoH)(dstHost, srcArray, srcIndex, ByteCount);
 	}
 
 	CUresult CudaDriver::cuMemcpyAtoA( CUarray dstArray, unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount )
 	{
-		return (*get().cuMemcpyAtoA)(dstArray, dstIndex, srcArray, srcIndex, ByteCount);
+		return (*_interface.cuMemcpyAtoA)(dstArray, dstIndex, srcArray, srcIndex, ByteCount);
 	}
 
 
 	CUresult CudaDriver::cuMemcpy2D( const CUDA_MEMCPY2D *pCopy )
 	{
-		return (*get().cuMemcpy2D)(pCopy);
+		return (*_interface.cuMemcpy2D)(pCopy);
 	}
 
 	CUresult CudaDriver::cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy )
 	{
-		return (*get().cuMemcpy2DUnaligned)(pCopy);
+		return (*_interface.cuMemcpy2DUnaligned)(pCopy);
 	}
 
 
 	CUresult CudaDriver::cuMemcpy3D( const CUDA_MEMCPY3D *pCopy )
 	{
-		return (*get().cuMemcpy3D)(pCopy);
+		return (*_interface.cuMemcpy3D)(pCopy);
 	}
 
 
 	CUresult CudaDriver::cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
 		const void *srcHost, unsigned int ByteCount, CUstream hStream )
 	{
-		return (*get().cuMemcpyHtoDAsync)(dstDevice, srcHost, ByteCount, hStream);
+		return (*_interface.cuMemcpyHtoDAsync)(dstDevice, srcHost, ByteCount, hStream);
 	}
 
 	CUresult CudaDriver::cuMemcpyDtoHAsync (void *dstHost, 
 	CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream )
 	{
-		return (*get().cuMemcpyDtoHAsync)(dstHost, srcDevice, ByteCount, hStream);
+		return (*_interface.cuMemcpyDtoHAsync)(dstHost, srcDevice, ByteCount, hStream);
 	}
 
 	CUresult CudaDriver::cuMemcpyHtoAAsync( CUarray dstArray, unsigned int dstIndex, 
 		const void *pSrc, unsigned int ByteCount, CUstream hStream )
 	{
-		return (*get().cuMemcpyHtoAAsync)(dstArray, dstIndex, pSrc, ByteCount, hStream);
+		return (*_interface.cuMemcpyHtoAAsync)(dstArray, dstIndex, pSrc, ByteCount, hStream);
 	}
 
 	CUresult CudaDriver::cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, unsigned int srcIndex, 
 		unsigned int ByteCount, CUstream hStream )
 	{
-		return (*get().cuMemcpyAtoHAsync)(dstHost, srcArray, srcIndex, ByteCount, hStream);
+		return (*_interface.cuMemcpyAtoHAsync)(dstHost, srcArray, srcIndex, ByteCount, hStream);
 	}
 
 
 	CUresult CudaDriver::cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, CUstream hStream )
 	{
-		return (*get().cuMemcpy2DAsync)(pCopy, hStream);
+		return (*_interface.cuMemcpy2DAsync)(pCopy, hStream);
 	}
 
 
 	CUresult CudaDriver::cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, CUstream hStream )
 	{
-		return (*get().cuMemcpy3DAsync)(pCopy, hStream);
+		return (*_interface.cuMemcpy3DAsync)(pCopy, hStream);
 	}
 
 
 	CUresult CudaDriver::cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, unsigned int N )
 	{
-		return (*get().cuMemsetD8)(dstDevice, uc, N);
+		return (*_interface.cuMemsetD8)(dstDevice, uc, N);
 	}
 
 	CUresult CudaDriver::cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, unsigned int N )
 	{
-		return (*get().cuMemsetD16)(dstDevice, us, N);
+		return (*_interface.cuMemsetD16)(dstDevice, us, N);
 	}
 
 	CUresult CudaDriver::cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, unsigned int N )
 	{
-		return (*get().cuMemsetD32)(dstDevice, ui, N);
+		return (*_interface.cuMemsetD32)(dstDevice, ui, N);
 	}
 
 
 	CUresult CudaDriver::cuMemsetD2D8( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height )
 	{
-		return (*get().cuMemsetD2D8)(dstDevice, dstPitch, uc, Width, Height);
+		return (*_interface.cuMemsetD2D8)(dstDevice, dstPitch, uc, Width, Height);
 	}
 
 	CUresult CudaDriver::cuMemsetD2D16( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned short us, unsigned int Width, unsigned int Height )
 	{
-		return (*get().cuMemsetD2D16)(dstDevice, dstPitch, us, Width, Height);
+		return (*_interface.cuMemsetD2D16)(dstDevice, dstPitch, us, Width, Height);
 	}
 
 	CUresult CudaDriver::cuMemsetD2D32( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned int ui, unsigned int Width, unsigned int Height )
 	{
-		return (*get().cuMemsetD2D32)(dstDevice, dstPitch, ui, Width, Height);
+		return (*_interface.cuMemsetD2D32)(dstDevice, dstPitch, ui, Width, Height);
 	}
 
 
 	CUresult CudaDriver::cuFuncSetBlockShape(CUfunction hfunc, int x, int y, int z)
 	{
-		return (*get().cuFuncSetBlockShape)(hfunc, x, y, z);
+		return (*_interface.cuFuncSetBlockShape)(hfunc, x, y, z);
 	}
 
 	CUresult CudaDriver::cuFuncSetSharedSize(CUfunction hfunc, unsigned int bytes)
 	{
-		return (*get().cuFuncSetSharedSize)(hfunc, bytes);
+		return (*_interface.cuFuncSetSharedSize)(hfunc, bytes);
 	}
 
 	CUresult CudaDriver::cuFuncGetAttribute(int *pi, CUfunction_attribute attrib, CUfunction hfunc)
 	{
-		return (*get().cuFuncGetAttribute)(pi, attrib, hfunc);
+		return (*_interface.cuFuncGetAttribute)(pi, attrib, hfunc);
 	}
 
 
 	CUresult CudaDriver::cuArrayCreate( CUarray *pHandle, const CUDA_ARRAY_DESCRIPTOR *pAllocateArray )
 	{
-		return (*get().cuArrayCreate)(pHandle, pAllocateArray);
+		return (*_interface.cuArrayCreate)(pHandle, pAllocateArray);
 	}
 
 	CUresult CudaDriver::cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray )
 	{
-		return (*get().cuArrayGetDescriptor)(pArrayDescriptor, hArray);
+		return (*_interface.cuArrayGetDescriptor)(pArrayDescriptor, hArray);
 	}
 
 	CUresult CudaDriver::cuArrayDestroy( CUarray hArray )
 	{
-		return (*get().cuArrayDestroy)(hArray);
+		return (*_interface.cuArrayDestroy)(hArray);
 	}
 
 
 	CUresult CudaDriver::cuArray3DCreate( CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray )
 	{
-		return (*get().cuArray3DCreate)(pHandle, pAllocateArray);
+		return (*_interface.cuArray3DCreate)(pHandle, pAllocateArray);
 	}
 
 	CUresult CudaDriver::cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray )
 	{
-		return (*get().cuArray3DGetDescriptor)(pArrayDescriptor, hArray);
+		return (*_interface.cuArray3DGetDescriptor)(pArrayDescriptor, hArray);
 	}
 
 
 	CUresult CudaDriver::cuTexRefCreate( CUtexref *pTexRef )
 	{
-		return (*get().cuTexRefCreate)(pTexRef);
+		return (*_interface.cuTexRefCreate)(pTexRef);
 	}
 
 	CUresult CudaDriver::cuTexRefDestroy( CUtexref hTexRef )
 	{
-		return (*get().cuTexRefDestroy)(hTexRef);
+		return (*_interface.cuTexRefDestroy)(hTexRef);
 	}
 
 
 	CUresult CudaDriver::cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags )
 	{
-		return (*get().cuTexRefSetArray)(hTexRef, hArray, Flags);
+		return (*_interface.cuTexRefSetArray)(hTexRef, hArray, Flags);
 	}
 
 	CUresult CudaDriver::cuTexRefSetAddress( unsigned int *ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes )
 	{
-		return (*get().cuTexRefSetAddress)(ByteOffset, hTexRef, dptr, bytes);
+		return (*_interface.cuTexRefSetAddress)(ByteOffset, hTexRef, dptr, bytes);
 	}
 
 	CUresult CudaDriver::cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch)
 	{
-		return (*get().cuTexRefSetAddress2D)(hTexRef, desc, dptr, Pitch);
+		return (*_interface.cuTexRefSetAddress2D)(hTexRef, desc, dptr, Pitch);
 	}
 
 	CUresult CudaDriver::cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents )
 	{
-		return (*get().cuTexRefSetFormat)(hTexRef, fmt, NumPackedComponents);
+		return (*_interface.cuTexRefSetFormat)(hTexRef, fmt, NumPackedComponents);
 	}
 
 	CUresult CudaDriver::cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am )
 	{
-		return (*get().cuTexRefSetAddressMode)(hTexRef, dim, am);
+		return (*_interface.cuTexRefSetAddressMode)(hTexRef, dim, am);
 	}
 
 	CUresult CudaDriver::cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm )
 	{
-		return (*get().cuTexRefSetFilterMode)(hTexRef, fm);
+		return (*_interface.cuTexRefSetFilterMode)(hTexRef, fm);
 	}
 
 	CUresult CudaDriver::cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags )
 	{
-		return (*get().cuTexRefSetFlags)(hTexRef, Flags);
+		return (*_interface.cuTexRefSetFlags)(hTexRef, Flags);
 	}
 
 
 	CUresult CudaDriver::cuTexRefGetAddress( CUdeviceptr *pdptr, CUtexref hTexRef )
 	{
-		return (*get().cuTexRefGetAddress)(pdptr, hTexRef);
+		return (*_interface.cuTexRefGetAddress)(pdptr, hTexRef);
 	}
 
 	CUresult CudaDriver::cuTexRefGetArray( CUarray *phArray, CUtexref hTexRef )
 	{
-		return (*get().cuTexRefGetArray)(phArray, hTexRef);
+		return (*_interface.cuTexRefGetArray)(phArray, hTexRef);
 	}
 
 	CUresult CudaDriver::cuTexRefGetAddressMode( CUaddress_mode *pam, CUtexref hTexRef, int dim )
 	{
-		return (*get().cuTexRefGetAddressMode)(pam, hTexRef, dim);
+		return (*_interface.cuTexRefGetAddressMode)(pam, hTexRef, dim);
 	}
 
 	CUresult CudaDriver::cuTexRefGetFilterMode( CUfilter_mode *pfm, CUtexref hTexRef )
 	{
-		return (*get().cuTexRefGetFilterMode)(pfm, hTexRef);
+		return (*_interface.cuTexRefGetFilterMode)(pfm, hTexRef);
 	}
 
 	CUresult CudaDriver::cuTexRefGetFormat( CUarray_format *pFormat, int *pNumChannels, CUtexref hTexRef )
 	{
-		return (*get().cuTexRefGetFormat)(pFormat, pNumChannels, hTexRef);
+		return (*_interface.cuTexRefGetFormat)(pFormat, pNumChannels, hTexRef);
 	}
 
 	CUresult CudaDriver::cuTexRefGetFlags( unsigned int *pFlags, CUtexref hTexRef )
 	{
-		return (*get().cuTexRefGetFlags)(pFlags, hTexRef);
+		return (*_interface.cuTexRefGetFlags)(pFlags, hTexRef);
 	}
 
 
 	CUresult CudaDriver::cuParamSetSize(CUfunction hfunc, unsigned int numbytes)
 	{
-		return (*get().cuParamSetSize)(hfunc, numbytes);
+		return (*_interface.cuParamSetSize)(hfunc, numbytes);
 	}
 
 	CUresult CudaDriver::cuParamSeti(CUfunction hfunc, int offset, unsigned int value)
 	{
-		return (*get().cuParamSeti)(hfunc, offset, value);
+		return (*_interface.cuParamSeti)(hfunc, offset, value);
 	}
 
 	CUresult CudaDriver::cuParamSetf(CUfunction hfunc, int offset, float value)
 	{
-		return (*get().cuParamSetf)(hfunc, offset, value);
+		return (*_interface.cuParamSetf)(hfunc, offset, value);
 	}
 
 	CUresult CudaDriver::cuParamSetv(CUfunction hfunc, int offset, void * ptr, unsigned int numbytes)
 	{
-		return (*get().cuParamSetv)(hfunc, offset, ptr, numbytes);
+		return (*_interface.cuParamSetv)(hfunc, offset, ptr, numbytes);
 	}
 
 	CUresult CudaDriver::cuParamSetTexRef(CUfunction hfunc, int texunit, CUtexref hTexRef)
 	{
-		return (*get().cuParamSetTexRef)(hfunc, texunit, hTexRef);
+		return (*_interface.cuParamSetTexRef)(hfunc, texunit, hTexRef);
 	}
 
 
 	CUresult CudaDriver::cuLaunch ( CUfunction f )
 	{
-		return (*get().cuLaunch)(f);
+		return (*_interface.cuLaunch)(f);
 	}
 
 	CUresult CudaDriver::cuLaunchGrid (CUfunction f, int grid_width, int grid_height)
 	{
-		return (*get().cuLaunchGrid)(f, grid_width, grid_height);
+		return (*_interface.cuLaunchGrid)(f, grid_width, grid_height);
 	}
 
 	CUresult CudaDriver::cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream )
 	{
-		return (*get().cuLaunchGridAsync)(f, grid_width, grid_height, hStream);
+		return (*_interface.cuLaunchGridAsync)(f, grid_width, grid_height, hStream);
 	}
 
 
 	CUresult CudaDriver::cuEventCreate( CUevent *phEvent, unsigned int Flags )
 	{
-		return (*get().cuEventCreate)(phEvent, Flags);
+		return (*_interface.cuEventCreate)(phEvent, Flags);
 	}
 
 	CUresult CudaDriver::cuEventRecord( CUevent hEvent, CUstream hStream )
 	{
-		return (*get().cuEventRecord)(hEvent, hStream);
+		return (*_interface.cuEventRecord)(hEvent, hStream);
 	}
 
 	CUresult CudaDriver::cuEventQuery( CUevent hEvent )
 	{
-		return (*get().cuEventQuery)(hEvent);
+		return (*_interface.cuEventQuery)(hEvent);
 	}
 
 	CUresult CudaDriver::cuEventSynchronize( CUevent hEvent )
 	{
-		return (*get().cuEventSynchronize)(hEvent);
+		return (*_interface.cuEventSynchronize)(hEvent);
 	}
 
 	CUresult CudaDriver::cuEventDestroy( CUevent hEvent )
 	{
-		return (*get().cuEventDestroy)(hEvent);
+		return (*_interface.cuEventDestroy)(hEvent);
 	}
 
 	CUresult CudaDriver::cuEventElapsedTime( float *pMilliseconds, CUevent hStart, CUevent hEnd )
 	{
-		return (*get().cuEventElapsedTime)(pMilliseconds, hStart, hEnd);
+		return (*_interface.cuEventElapsedTime)(pMilliseconds, hStart, hEnd);
 	}
 
 
 	CUresult CudaDriver::cuStreamCreate( CUstream *phStream, unsigned int Flags )
 	{
-		return (*get().cuStreamCreate)(phStream, Flags);
+		return (*_interface.cuStreamCreate)(phStream, Flags);
 	}
 
 	CUresult CudaDriver::cuStreamQuery( CUstream hStream )
 	{
-		return (*get().cuStreamQuery)(hStream);
+		return (*_interface.cuStreamQuery)(hStream);
 	}
 
 	CUresult CudaDriver::cuStreamSynchronize( CUstream hStream )
 	{
-		return (*get().cuStreamSynchronize)(hStream);
+		return (*_interface.cuStreamSynchronize)(hStream);
 	}
 
 	CUresult CudaDriver::cuStreamDestroy( CUstream hStream )
 	{
-		return (*get().cuStreamDestroy)(hStream);
+		return (*_interface.cuStreamDestroy)(hStream);
 	}
 	
 	CUresult CudaDriver::cuGLInit(void)
 	{
-		return (*get().cuGLInit)();
+		return (*_interface.cuGLInit)();
 	}
 	
 	CUresult CudaDriver::cuGLCtxCreate( CUcontext *pCtx, unsigned int Flags, CUdevice device )
 	{
-		return (*get().cuGLCtxCreate)(pCtx, Flags, device);
+		return (*_interface.cuGLCtxCreate)(pCtx, Flags, device);
 	}
 
 	CUresult CudaDriver::cuGLRegisterBufferObject( GLuint bufferobj )
 	{
-		return (*get().cuGLRegisterBufferObject)(bufferobj);
+		return (*_interface.cuGLRegisterBufferObject)(bufferobj);
 	}
 
 	CUresult CudaDriver::cuGLMapBufferObject( CUdeviceptr *dptr, unsigned int *size,  GLuint bufferobj )
 	{
-		return (*get().cuGLMapBufferObject)(dptr, size, bufferobj);
+		return (*_interface.cuGLMapBufferObject)(dptr, size, bufferobj);
 	}
 
 	CUresult CudaDriver::cuGLUnmapBufferObject( GLuint bufferobj )
 	{
-		return (*get().cuGLUnmapBufferObject)(bufferobj);
+		return (*_interface.cuGLUnmapBufferObject)(bufferobj);
 	}
 
 	CUresult CudaDriver::cuGLUnregisterBufferObject( GLuint bufferobj )
 	{
-		return (*get().cuGLUnregisterBufferObject)(bufferobj);
+		return (*_interface.cuGLUnregisterBufferObject)(bufferobj);
 	}
 
 	CUresult CudaDriver::cuGLSetBufferObjectMapFlags( GLuint bufferobj, unsigned int Flags )
 	{
-		return (*get().cuGLSetBufferObjectMapFlags)(bufferobj, Flags);
+		return (*_interface.cuGLSetBufferObjectMapFlags)(bufferobj, Flags);
 	}
 
 	CUresult CudaDriver::cuGLMapBufferObjectAsync( CUdeviceptr *dptr, unsigned int *size,  GLuint bufferobj, CUstream hStream )
 	{
-		return (*get().cuGLMapBufferObjectAsync)(dptr, size, bufferobj, hStream);
+		return (*_interface.cuGLMapBufferObjectAsync)(dptr, size, bufferobj, hStream);
 	}
 	
 	CUresult CudaDriver::cuGLUnmapBufferObjectAsync( GLuint bufferobj, CUstream hStream )
 	{
-		return (*get().cuGLUnmapBufferObjectAsync)(bufferobj, hStream);
+		return (*_interface.cuGLUnmapBufferObjectAsync)(bufferobj, hStream);
 	}
 
 }

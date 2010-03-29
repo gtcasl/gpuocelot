@@ -1574,19 +1574,16 @@ cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
 	Event createdEvent;
 	createdEvent.flags = 0;
 	createdEvent.handle = thread.events.size();
+	createdEvent.time = 0;
 	*event = createdEvent.handle;
 	thread.events[*event] = createdEvent;
 	result = cudaSuccess;
 	
 	// special behavior for CUDA devices
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		#if HAVE_CUDA_DRIVER_API == 1
-		if (CUDA_SUCCESS != cuEventCreate(&createdEvent.driverHandle, CU_EVENT_DEFAULT)) {
+		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventCreate(&createdEvent.driverHandle, CU_EVENT_DEFAULT)) {
 			result = cudaErrorInitializationError;
 		}
-		#else
-		assert(0 && "unimplemented");
-		#endif
 	}
 	
 	unlock();
@@ -1607,24 +1604,21 @@ cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, int 
 	Event createdEvent;
 	createdEvent.flags = flags;
 	createdEvent.handle = thread.events.size();
+	createdEvent.time = 0;
 	*event = createdEvent.handle;
 	thread.events[*event] = createdEvent;
 	result = cudaSuccess;
 
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		#if HAVE_CUDA_DRIVER_API == 1
 		if (flags == cudaEventBlockingSync) {
 			flags = CU_EVENT_BLOCKING_SYNC;
 		}
 		else {
 			flags = CU_EVENT_DEFAULT;
 		}
-		if (CUDA_SUCCESS != cuEventCreate(&createdEvent.driverHandle, flags)) {
+		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventCreate(&createdEvent.driverHandle, flags)) {
 			result = cudaErrorInitializationError;
 		}
-		#else
-		assert(0 && "unimplemented");
-		#endif
 	}
 		
 	unlock();
@@ -1659,17 +1653,13 @@ cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t s
 		result = cudaErrorInvalidResourceHandle;
 	}
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		#if HAVE_CUDA_DRIVER_API == 1
 		CUstream driverStream = 0;
 		if (stream) {
 			driverStream = s_it->second.driverHandle;
 		}
-		if (CUDA_SUCCESS != cuEventRecord(e_it->second.driverHandle, driverStream)) {
+		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventRecord(e_it->second.driverHandle, driverStream)) {
 			result = cudaErrorInvalidValue;
 		}
-		#else
-		assert(0 && "unimplemented");
-		#endif
 	}
 		
 	unlock();	
@@ -1690,13 +1680,9 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 		result = cudaSuccess;
 	}
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		#if HAVE_CUDA_DRIVER_API == 1
-		if (CUDA_SUCCESS != cuEventQuery(e_it->second.driverHandle)) {
+		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventQuery(e_it->second.driverHandle)) {
 			result = cudaErrorInvalidValue;
 		}
-		#else
-		assert(0 && "unimplemented");
-		#endif
 	}	
 	unlock();
 
@@ -1716,13 +1702,9 @@ cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
 		result = cudaSuccess;
 	}
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		#if HAVE_CUDA_DRIVER_API == 1
-		if (CUDA_SUCCESS != cuEventSynchronize(e_it->second.driverHandle)) {
+		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventSynchronize(e_it->second.driverHandle)) {
 			result = cudaErrorInvalidValue;
 		}
-		#else
-		assert(0 && "unimplemented");
-		#endif
 	}	
 	unlock();
 	
@@ -1743,13 +1725,9 @@ cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 		result = cudaSuccess;
 	}
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		#if HAVE_CUDA_DRIVER_API == 1
-		if (CUDA_SUCCESS != cuEventDestroy(e_it->second.driverHandle)) {
+		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventDestroy(e_it->second.driverHandle)) {
 			result = cudaErrorInvalidValue;
 		}
-		#else
-		assert(0 && "unimplemented");
-		#endif
 	}	
 	unlock();
 	

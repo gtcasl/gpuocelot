@@ -26,7 +26,7 @@ BUILT_SOURCES=ptxgrammar.h
 bin_PROGRAMS = PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels TestTrace \
-	TestMemoryTraceGenerator TestDataflowGraph TestLLVMInstructions \
+	TestDataflowGraph TestLLVMInstructions \
 	TestPTXToLLVMTranslator  TestGPUKernel PTXChecker \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
@@ -269,20 +269,6 @@ TestTrace_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestTrace_SOURCES = ocelot/executive/test/TestTrace.cpp
 TestTrace_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestTrace_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## TestMemoryTraceGenerator
-TestMemoryTraceGenerator_CXXFLAGS = -Wall -std=c++0x
-TestMemoryTraceGenerator_SOURCES = \
-	ocelot/trace/test/TestMemoryTraceGenerator.cpp
-TestMemoryTraceGenerator_LDADD = libocelot.la \
-	TestMemoryTraceGenerator_kernel.cu.o  $(LLVM_LDFLAGS)
-TestMemoryTraceGenerator_LDFLAGS = -static
-
-TestMemoryTraceGenerator_kernel.cu.o: \
-	ocelot/trace/test/TestMemoryTraceGenerator_kernel.cu.cpp
-	$(CC) $(CXXFLAGS) -c -Wall $< -o $@
 ################################################################################
 
 ################################################################################

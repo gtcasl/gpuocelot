@@ -10,7 +10,6 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 
-#include <configure.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -46,20 +45,18 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
 	_parameterMemorySize = mapParameterOffsets();
 		
-#if HAVE_CUDA_DRIVER_API == 1
-	cuFuncGetAttribute((int*)&_registerCount, 
+	cuda::CudaDriver::cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
 	report(" Registers - " << _registerCount);
-	cuFuncGetAttribute((int*)&_constMemorySize, 
+	cuda::CudaDriver::cuFuncGetAttribute((int*)&_constMemorySize, 
 		CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, cuFunction);
 	report(" Constant Memory - " << _constMemorySize);
-	cuFuncGetAttribute((int*)&_localMemorySize, 
+	cuda::CudaDriver::cuFuncGetAttribute((int*)&_localMemorySize, 
 		CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, cuFunction);
 	report(" Local Memory - " << _localMemorySize);
-	cuFuncGetAttribute((int*)&_sharedMemorySize, 
+	cuda::CudaDriver::cuFuncGetAttribute((int*)&_sharedMemorySize, 
 		CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, cuFunction);
 	report(" Shared Memory - " << _sharedMemorySize);
-#endif
 
 	report("  constructed new GPUExecutableKernel");
 }
@@ -68,39 +65,35 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 	Launch a kernel on a 2D grid
 */
 void executive::GPUExecutableKernel::launchGrid(int width, int height) {
-	#if HAVE_CUDA_DRIVER_API == 1
 	report("executive::GPUExecutableKernel::launchGrid(" << width 
 		<< ", " << height << ")");
 	CUresult result;
 
-	result = cuLaunchGrid(cuFunction, width, height);
+	result = cuda::CudaDriver::cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
 	}
 	// KERRDEBUG remove this before check in
 	{
-		result = cuCtxSynchronize();
+		result = cuda::CudaDriver::cuCtxSynchronize();
 		if (result != CUDA_SUCCESS) {
 			report ("  -cuLaunchGrid() failed on ctx synchronize(): " << result);
 			throw hydrazine::Exception("cuCtxSynchronize() failed after launchGrid() was called");
 		}
 		report("  -cuLaunchGrid() succeeded");
 	}
-	#endif
 }
 
 /*!
 	Sets the shape of a kernel
 */
 void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
-	#if HAVE_CUDA_DRIVER_API == 1
-	CUresult result = cuFuncSetBlockShape(cuFunction, x, y, z);
+	CUresult result = cuda::CudaDriver::cuFuncSetBlockShape(cuFunction, x, y, z);
 	if (result != CUDA_SUCCESS) {
 		report("failed to set kernel shape with result " << result);
 		throw hydrazine::Exception("GPUExecutableKernel::setKernelShape() failed");
 	}
-	#endif
 }
 
 void executive::GPUExecutableKernel::setDevice(const Device* device,
@@ -109,9 +102,8 @@ void executive::GPUExecutableKernel::setDevice(const Device* device,
 
 void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int bytes) {
 	_sharedMemorySize = bytes;
-#if HAVE_CUDA_DRIVER_API == 1
 	CUresult result;
-	result = cuFuncSetSharedSize(cuFunction, bytes);
+	result = cuda::CudaDriver::cuFuncSetSharedSize(cuFunction, bytes);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuFuncSetSharedSize(" << bytes << " bytes) FAILED: " << result);
 		throw hydrazine::Exception("cuFuncSetSharedSize() failed");
@@ -119,7 +111,6 @@ void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int byte
 	else {
 		report("  - cuFuncSetSharedSize(" << bytes << " bytes) succeeded");
 	}
-#endif
 }
 
 void executive::GPUExecutableKernel::updateParameterMemory() {
@@ -158,23 +149,20 @@ void executive::GPUExecutableKernel::removeTraceGenerator(
 
 
 void executive::GPUExecutableKernel::configureParameters() {
-#if HAVE_CUDA_DRIVER_API == 1
 	report("executive::GPUExecutableKernel::configureParameters() - size: " << _parameterMemorySize);
 
 	char *paramBuffer = new char[_parameterMemorySize];
 	getParameterBlock((unsigned char*)paramBuffer, _parameterMemorySize);
 
-	if (cuParamSetSize(cuFunction, _parameterMemorySize) != CUDA_SUCCESS) {
+	if (cuda::CudaDriver::cuParamSetSize(cuFunction, _parameterMemorySize) != CUDA_SUCCESS) {
 		delete [] paramBuffer;
 		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter size to " 
 			<< _parameterMemorySize);
 	}
-	if (cuParamSetv(cuFunction, 0, paramBuffer, _parameterMemorySize) != CUDA_SUCCESS) {
+	if (cuda::CudaDriver::cuParamSetv(cuFunction, 0, paramBuffer, _parameterMemorySize) != CUDA_SUCCESS) {
 		delete [] paramBuffer;
 		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter data");
 	}
-	
-#endif
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

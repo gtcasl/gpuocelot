@@ -1600,6 +1600,7 @@ size_t executive::Executive::enumerateDevices() {
 				device.guid = gpu;
 				device.ISA = ir::Instruction::GPU;
 				device.addressSpace = 1 + gpu;
+				device.cudaContext = 0;
 
 				if (cuda::CudaDriver::cuDeviceGetProperties(&devProp, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::enumerateDevices() - failed to get properties for GPU "
@@ -1820,14 +1821,14 @@ size_t executive::Executive::enumerateDevices() {
 	selects a device [ this is intended to be a low-cost operation called at every CUDA runtime 
 	API call]
 */
-bool executive::Executive::selectDevice(int device) {
-	if (device != selectedDevice && device >= 0 && device < (int)devices.size()) {
-		selectedDevice = device;
-		report("Executive::selectDevice(" << device << ") - " << devices[selectedDevice].name);
-
-		if (devices[selectedDevice].ISA == ir::Instruction::GPU) {
-			Device & device = devices[selectedDevice];
-
+bool executive::Executive::selectDevice(int d) {
+	if (d != selectedDevice && d >= 0 && d < (int)devices.size()) {
+		selectedDevice = d;
+		
+		Device & device = devices[selectedDevice];
+		report("Executive::selectDevice(" << d << ") - " << device.name);
+		
+		if (device.ISA == ir::Instruction::GPU && device.cudaContext == 0) {
 			report(" Creating CUDA driver context.");
 			CUresult result = cuda::CudaDriver::cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid);
 			if (result != CUDA_SUCCESS) {
@@ -2357,6 +2358,7 @@ void executive::Executive::fenceGlobalVariables() {
 					ir::Global & global = modules[mod_it->first]->globals[glb_it->first];
 
 					if (global.pointer && !global.local) {
+						report("   copying to global variable '" << glb_it->first << "'");
 						::memcpy(global.pointer, glb_it->second.host_pointer, glb_it->second.size);
 					}
 					else if (!global.pointer) {
@@ -2365,6 +2367,7 @@ void executive::Executive::fenceGlobalVariables() {
 						global.local = true;
 					}
 
+					report("  looking for CPU global '" << glb_it->first << "' at address " << (void *)global.pointer);
 					if (memoryMap.find(global.pointer) == memoryMap.end()) {
 						registerExternal(global.pointer, glb_it->second.size);
 					}

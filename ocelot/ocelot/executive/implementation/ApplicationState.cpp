@@ -15,9 +15,7 @@
 #include <hydrazine/interface/Casts.h>
 
 // CUDA driver API includes
-#if (HAVE_CUDA_DRIVER_API == 1)
-#include <ocelot/cuda/include/cuda.h>
-#endif
+#include <ocelot/cuda/interface/CudaDriver.h>
 
 // Ocelot includes
 #include <ocelot/executive/interface/ApplicationState.h>
@@ -35,9 +33,6 @@
 //
 // Helper functions
 //
-
-#if (HAVE_CUDA_DRIVER_API == 1)
-
 static void convert(CUDA_ARRAY_DESCRIPTOR *descriptor, const executive::ChannelFormatDesc &desc) {
 
 	descriptor->NumChannels = desc.channels();
@@ -58,7 +53,6 @@ static void convert(CUDA_ARRAY_DESCRIPTOR *descriptor, const executive::ChannelF
 		report("unknown ChannelFormatDesc::Kind");
 	}
 }
-#endif
 
 static size_t getOffset(void* pointer) {
 	size_t address = (size_t)pointer;
@@ -116,9 +110,8 @@ executive::MemoryAllocation::MemoryAllocation(int space, size_t size):
 		break;
 		
 	default:
-#if HAVE_CUDA_DRIVER_API == 1
 		CUdeviceptr ptr = 0;
-		CUresult cuda  = cuMemAlloc(&ptr, size);
+		CUresult cuda  = cuda::CudaDriver::cuMemAlloc(&ptr, size);
 		if (cuda == CUDA_SUCCESS) {
 			pointer.ptr = reinterpret_cast<void *>(ptr);
 		}
@@ -126,9 +119,6 @@ executive::MemoryAllocation::MemoryAllocation(int space, size_t size):
 			pointer.ptr = 0;
 		}
 		pointer.offset = 0;
-#else		
-		assert(0 && "no support for gpu devices");
-#endif
 		break;
 	}
 }
@@ -178,10 +168,9 @@ executive::MemoryAllocation::MemoryAllocation(int space, size_t width, size_t he
 	default:
 		{
 		// device is in GPU memory somewhere
-#if HAVE_CUDA_DRIVER_API == 1
 			CUdeviceptr devPtr = 0;
 			unsigned int devPitch = 0;
-			CUresult result = cuMemAllocPitch(&devPtr, &devPitch, width, height, 16);
+			CUresult result = cuda::CudaDriver::cuMemAllocPitch(&devPtr, &devPitch, width, height, 16);
 			if (result == CUDA_SUCCESS){
 				pointer.ptr = (void *)devPtr;
 				pointer.offset = 0;
@@ -195,9 +184,6 @@ executive::MemoryAllocation::MemoryAllocation(int space, size_t width, size_t he
 					<< result);
 				pointer.ptr = 0;
 			}
-#else
-			assert(0 && "unimplemented");
-#endif
 		}
 		break;
 	}
@@ -270,13 +256,12 @@ executive::MemoryAllocation::MemoryAllocation(int space,
 		}
 		break;
 	default:
-#if HAVE_CUDA_DRIVER_API == 1
 		CUDA_ARRAY_DESCRIPTOR descriptor;
 		convert(&descriptor, desc);
 		descriptor.Width = width;
 		descriptor.Height = height;
 		pointer.offset = 0;
-		CUresult result = cuArrayCreate(&cudaArray, &descriptor);
+		CUresult result = cuda::CudaDriver::cuArrayCreate(&cudaArray, &descriptor);
 		if (result != CUDA_SUCCESS) {
 			report("failed to allocate CUDA array on GPU with error " << result);
 			pointer.ptr = 0;
@@ -287,9 +272,6 @@ executive::MemoryAllocation::MemoryAllocation(int space,
 				allocationSize << " to address " << pointer.ptr 
 				<< " - (w: " << width << ", h: " << height << ")");
 		}
-#else
-		assert(0 && "unimplemented");
-#endif
 	}
 }
 
@@ -363,23 +345,19 @@ executive::MemoryAllocation::MemoryAllocation(const MemoryAllocation& m):
 	if (m.size() == 0) return;
 	if (internal) {
 		if (addressSpace) {
-#if HAVE_CUDA_DRIVER_API == 1
 			CUdeviceptr ptr = 0;
-			CUresult cuda  = cuMemAlloc(&ptr, size());
+			CUresult cuda  = cuda::CudaDriver::cuMemAlloc(&ptr, size());
 			if (cuda == CUDA_SUCCESS) {
 				pointer.ptr = reinterpret_cast<void *>(ptr);
 			}
 			else {
 				assert( 0 && "cuMemAlloc failed!");
 			}
-			cuda = cuMemcpyDtoD(ptr, hydrazine::bit_cast<CUdeviceptr, void*>(
+			cuda = cuda::CudaDriver::cuMemcpyDtoD(ptr, hydrazine::bit_cast<CUdeviceptr, void*>(
 				m.get()), size());
 			if (cuda != CUDA_SUCCESS) {
 				assert( 0 && "cuMemcpyDtoD failed!");
 			}
-#else
-			assert( 0 && "No GPU support." );
-#endif
 		}
 		else {
 			pointer.ptr = (void*)::malloc(allocationSize + 16);
@@ -421,12 +399,8 @@ executive::MemoryAllocation& executive::MemoryAllocation::operator=(
 	
 	if (internal) {
 		if (addressSpace) {
-#if HAVE_CUDA_DRIVER_API == 1
-			cuMemFree(hydrazine::bit_cast<CUdeviceptr, void *>(
+			cuda::CudaDriver::cuMemFree(hydrazine::bit_cast<CUdeviceptr, void *>(
 				pointer.ptr));
-#else
-			assert( 0 && "No GPU support." );
-#endif
 		}
 		else {
 			::free(pointer.ptr);
@@ -448,23 +422,19 @@ executive::MemoryAllocation& executive::MemoryAllocation::operator=(
 
 	if (internal) {
 		if (addressSpace) {
-#if HAVE_CUDA_DRIVER_API == 1
 			CUdeviceptr ptr = 0;
-			CUresult cuda  = cuMemAlloc(&ptr, size());
+			CUresult cuda  = cuda::CudaDriver::cuMemAlloc(&ptr, size());
 			if (cuda == CUDA_SUCCESS) {
 				pointer.ptr = reinterpret_cast<void *>(ptr);
 			}
 			else {
 				assert( 0 && "cuMemAlloc failed!");
 			}
-			cuda = cuMemcpyDtoD(ptr, hydrazine::bit_cast<CUdeviceptr, void*>(
+			cuda = cuda::CudaDriver::cuMemcpyDtoD(ptr, hydrazine::bit_cast<CUdeviceptr, void*>(
 				m.get()), size());
 			if (cuda != CUDA_SUCCESS) {
 				assert( 0 && "cuMemcpyDtoD failed!");
 			}
-#else
-			assert( 0 && "No GPU support." );
-#endif
 		}
 		else {
 			pointer.ptr = (void*)::malloc(allocationSize + 16);
@@ -488,9 +458,7 @@ executive::MemoryAllocation& executive::MemoryAllocation::operator=(MemoryAlloca
 	std::swap(allocationSize, m.allocationSize);
 	std::swap(flags, m.flags);
 	std::swap(internal, m.internal);
-#if HAVE_CUDA_DRIVER_API == 1
 	std::swap(cudaArray, m.cudaArray);
-#endif
 	return *this;
 }
 
@@ -498,12 +466,8 @@ executive::MemoryAllocation& executive::MemoryAllocation::operator=(MemoryAlloca
 executive::MemoryAllocation::~MemoryAllocation() {
 	if (internal) {
 		if (addressSpace) {
-#if HAVE_CUDA_DRIVER_API == 1
-			cuMemFree(hydrazine::bit_cast<CUdeviceptr, void *>(
+			cuda::CudaDriver::cuMemFree(hydrazine::bit_cast<CUdeviceptr, void *>(
 				pointer.ptr));
-#else
-			assert( 0 && "No GPU support." );
-#endif
 		}
 		else {
 			::free(pointer.ptr);
@@ -567,20 +531,19 @@ executive::MemoryAllocation executive::MemoryAllocation::copy(int newSpace) cons
 			return *this;
 		}
 		else {
-			#if HAVE_CUDA_DRIVER_API == 1
 			MemoryAllocation m = blankCopy();
 			m.allocationSize = allocationSize;
 			m.addressSpace = newSpace;
 			if (structure == Struct_linear) {
 				CUdeviceptr ptr = 0;
-				CUresult cuda  = cuMemAlloc(&ptr, size());
+				CUresult cuda  = cuda::CudaDriver::cuMemAlloc(&ptr, size());
 				if (cuda == CUDA_SUCCESS) {
 					m.pointer.ptr = reinterpret_cast<void *>(ptr);
 				}
 				else {
 					assert( 0 && "cuMemAlloc failed!");
 				}
-				cuda = cuMemcpyHtoD(ptr, get(), size());
+				cuda = cuda::CudaDriver::cuMemcpyHtoD(ptr, get(), size());
 				if (cuda != CUDA_SUCCESS) {
 					assert( 0 && "cuMemcpyHtoD failed!");
 				}
@@ -590,9 +553,6 @@ executive::MemoryAllocation executive::MemoryAllocation::copy(int newSpace) cons
 			}
 			
 			return std::move(m);
-			#else
-			Ocelot_Exception("No support for GPU address spaces.");
-			#endif
 		}
 	}
 	else {

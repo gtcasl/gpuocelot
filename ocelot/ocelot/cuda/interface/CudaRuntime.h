@@ -39,9 +39,7 @@ namespace cuda {
 		cudaEvent_t handle;
 		
 		//! CUDA driver handle
-		#if HAVE_CUDA_DRIVER_API == 1
 		CUevent driverHandle;
-		#endif
 		
 		//! event creation flags
 		unsigned int flags;	
@@ -56,9 +54,7 @@ namespace cuda {
 		cudaStream_t handle;
 
 		//! CUDA driver handle
-		#if HAVE_CUDA_DRIVER_API == 1
 		CUstream driverHandle;
-		#endif
 			
 		std::list< cudaEvent_t > events;
 		

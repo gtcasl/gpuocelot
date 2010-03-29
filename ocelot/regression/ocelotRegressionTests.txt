@@ -4,7 +4,6 @@
 ../TestInstructions
 ../TestKernels
 ../TestTrace
-../TestMemoryTraceGenerator
 ../TestDataflowGraph
 ../TestLLVMInstructions
 ../TestPTXToLLVMTranslator

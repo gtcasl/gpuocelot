@@ -334,7 +334,8 @@ bool executive::Executive::checkGlobalAccess(const void *base, size_t size) cons
 	MemoryAllocationMap::const_iterator alloc_it = memoryMap.find((void *)base);
 	if (alloc_it != memoryMap.end()) {
 		if ((const char *)base >= alloc_it->second.get() && (const char *)((const char *)base + size) 
-			<= (const char *)alloc_it->second.get() + alloc_it->second.size()) {
+			<= (const char *)alloc_it->second.get() + alloc_it->second.size() 
+			&& !alloc_it->second.internal) {
 			result = true;
 		}
 	}
@@ -555,8 +556,16 @@ bool executive::Executive::deviceMemcpyToSymbol(const char *symbol, const void *
 		if (count + offset <= globalVar.size) {
 			char *dstPtr = (char *)globalVar.host_pointer + offset;
 			report("deviceMemcpyToSymbol('" << symbol 
-				<< "') - dstPtr: " << (void *)dstPtr);
-			::memcpy(dstPtr, src, count);\
+				<< "') - dstPtr: " << (void *)dstPtr 
+				<< " (" << count << " bytes)");
+			::memcpy(dstPtr, src, count);
+		}
+		else
+		{
+			Ocelot_Exception("Attempted to memcpy " << count 
+				<< " bytes to offset " << offset 
+				<< ", which is beyond the end of global variable '" << symbol 
+				<< "' (" << globalVar.size << " bytes)" );
 		}
 	}
 	else {
@@ -584,8 +593,16 @@ bool executive::Executive::deviceMemcpyFromSymbol(const char *symbol, void *dst,
 		if (count + offset <= globalVar.size) {
 			char *srcPtr = (char *)globalVar.host_pointer + offset;
 			report("deviceMemcpyFromSymbol('" << symbol 
-				<< "') - srcPtr: " << (void *)srcPtr);
+				<< "') - srcPtr: " << (void *)srcPtr 
+				<< " (" << count << " bytes)");
 			::memcpy(dst, srcPtr, count);
+		}
+		else
+		{
+			Ocelot_Exception("Attempted to memcpy " << count 
+				<< " bytes from offset " << offset 
+				<< ", which is beyond the end of global variable '" << symbol 
+				<< "' (" << globalVar.size << " bytes)" );
 		}
 	}
 	else {
@@ -2006,6 +2023,7 @@ bool executive::Executive::translateModuleToGPU(ir::Module &module) {
 			report("failed to get global '" << g_it->first << "' from loaded GPU module ");
 			return false;
 		}
+		report("For global '" << g_it->first << "', got GPU pointer " << (void*)ptr << " (" << bytes << " bytes)" );
 		g_it->second.pointer = (char *)ptr;
 	}
 	

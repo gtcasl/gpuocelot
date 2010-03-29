@@ -1823,17 +1823,41 @@ size_t executive::Executive::enumerateDevices() {
 */
 bool executive::Executive::selectDevice(int d) {
 	if (d != selectedDevice && d >= 0 && d < (int)devices.size()) {
-		selectedDevice = d;
-		
-		Device & device = devices[selectedDevice];
+		Device & device = devices[d];
 		report("Executive::selectDevice(" << d << ") - " << device.name);
 		
-		if (device.ISA == ir::Instruction::GPU && device.cudaContext == 0) {
-			report(" Creating CUDA driver context.");
-			CUresult result = cuda::CudaDriver::cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid);
-			if (result != CUDA_SUCCESS) {
-				Ocelot_Exception("Executive::selectDevice() - failed to create context for GPU "
-					<< device.name);
+		if (selectedDevice >= 0) {
+			Device& currentDevice = devices[selectedDevice];
+			if (currentDevice.ISA == ir::Instruction::GPU) {
+				report(" Popping previous CUDA driver context.");
+				if (currentDevice.cudaContext != 0) {
+					CUresult result = cuda::CudaDriver::cuCtxPopCurrent(&currentDevice.cudaContext);
+					if (result != CUDA_SUCCESS) {
+						Ocelot_Exception("Executive::selectDevice() - failed to pop context from GPU "
+							<< currentDevice.name);
+					}
+				}
+			}
+		}
+				
+		selectedDevice = d;		
+		
+		if (device.ISA == ir::Instruction::GPU) {
+			if (device.cudaContext == 0) {
+				report(" Creating CUDA driver context.");
+				CUresult result = cuda::CudaDriver::cuCtxCreate(&device.cudaContext, CU_CTX_MAP_HOST, device.guid);
+				if (result != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::selectDevice() - failed to create context for GPU "
+						<< device.name);
+				}
+			}
+			else {
+				report(" Pushing CUDA driver context.");
+				CUresult result = cuda::CudaDriver::cuCtxPushCurrent(device.cudaContext);
+				if (result != CUDA_SUCCESS) {
+					Ocelot_Exception("Executive::selectDevice() - failed to push context for GPU "
+						<< device.name);
+				}
 			}
 		}
 	}

@@ -10,6 +10,8 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
+#include <set>
+
 namespace ir 
 {
 	/*!	A specialization of the kernel class for PTX */
@@ -64,6 +66,12 @@ namespace ir
 			/*! \brief Get the set of all referenced 
 				registers in the instruction set */
 			RegisterVector getReferencedRegisters() const;
+
+			/*! \brief gets the set of all labels referenced by kernel */
+			StringSet getReferencedAddressLabels() const;
+
+			/*! \brief gets the set of all texture names referenced by kernel */
+			StringSet getReferencedTextures() const;
 
 		public:
 			/*! \brief Builds the data flow graph within the kernel */

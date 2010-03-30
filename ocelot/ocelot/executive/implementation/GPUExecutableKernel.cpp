@@ -4,8 +4,11 @@
 	\brief implements the GPU kernel callable by the executive
 */
 
+// Ocelot includes
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
+#include <ocelot/executive/interface/Executive.h>
 
+// Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
@@ -121,10 +124,15 @@ void executive::GPUExecutableKernel::updateMemory() {
 	updateGlobalMemory();
 	updateConstantMemory();
 }
+		
+/*! \brief Get a vector of all textures references by the kernel */
+ir::StringSet executive::GPUExecutableKernel::textureReferences() const {
+	return ptxKernel->getReferencedTextures();
+}
 
-ir::ExecutableKernel::TextureVector 
-	executive::GPUExecutableKernel::textureReferences() const {
-	assertM(false, "no support for getting texture references");
+/*!  \brief get a set of all identifiers used as addresses by the kernel */
+ir::StringSet executive::GPUExecutableKernel::addressReferences() const {
+	return ptxKernel->getReferencedAddressLabels();
 }
 
 void executive::GPUExecutableKernel::updateGlobalMemory() {
@@ -163,6 +171,8 @@ void executive::GPUExecutableKernel::configureParameters() {
 		delete [] paramBuffer;
 		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter data");
 	}
+
+	delete [] paramBuffer;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

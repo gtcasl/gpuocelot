@@ -10,9 +10,25 @@
 #ifndef GLOBAL_CPP_INCLUDED
 #define GLOBAL_CPP_INCLUDED
 
-#include <ocelot/ir/interface/Global.h>
+// C++ stdlib includes
 #include <cassert>
 #include <cstring>
+
+// Ocelot includes
+#include <ocelot/ir/interface/Global.h>
+
+// Hydrazine includes
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/interface/Casts.h>
+
+// Debugging messages
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 namespace ir
 {
@@ -30,6 +46,7 @@ namespace ir
 	Global::Global( const ir::PTXStatement& s ) : 
 		local(!s.array.values.empty()), statement(s)
 	{
+		report("Global::Global(statement '" << statement.name << "')");
 		if(local) 
 		{
 			assert(statement.bytes() == statement.initializedBytes());
@@ -41,10 +58,14 @@ namespace ir
 			char* end = pointer + size;
 			PTXStatement::ArrayVector::iterator 
 				ai = statement.array.values.begin();
+
+			report("  pointer: " << (void *)pointer);
 			for(char* fi = pointer; fi < end; fi += step, ++ai )
 			{
 				assert(ai != statement.array.values.end());
 				memcpy(fi, &ai->b8, elementsize);
+
+				report("  " << std::hex << ((unsigned int)*fi & 0x0ff) << std::dec);
 			}
 		}
 		else
@@ -63,6 +84,8 @@ namespace ir
 			unsigned int size = statement.initializedBytes();
 			pointer = new char[size];
 			memcpy(pointer, g.pointer, size);
+			report("Global::Global(copy '" << statement.name << "') - g.pointer = " << (void *)g.pointer 
+				<< ", new pointer = " << (void *)pointer);
 		}
 		else
 		{
@@ -74,6 +97,7 @@ namespace ir
 	{
 		if( local )
 		{
+			report("Global::~Global('" << statement.name << "') - deleting " << (void *)pointer);
 			delete[] pointer;
 		}
 	}
@@ -95,6 +119,7 @@ namespace ir
 				unsigned int size = statement.initializedBytes();
 				pointer = new char[size];
 				memcpy(pointer, g.pointer, size);
+				report("Global::operator=('" << statement.name << "') - pointer = " << (void *)pointer);
 			}
 			else
 			{

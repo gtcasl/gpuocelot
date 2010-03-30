@@ -208,7 +208,7 @@ namespace executive
 			
 				public:
 					/*! \brief Texture variables */
-					TextureVector textures;
+					ir::ExecutableKernel::TextureVector textures;
 					/*! \brief Clock timer */
 					hydrazine::Timer timer;
 					/*! \brief Debugging information for blocks */
@@ -335,8 +335,12 @@ namespace executive
 			void updateParameterMemory();
 			/*! \brief Indicate that other memory has been updated */
 			void updateMemory();
-			/*! \brief Get a vector of all textures references by the kernel */
-			TextureVector textureReferences() const;
+
+		/*! \brief Get a vector of all textures references by the kernel */
+		ir::StringSet textureReferences() const;
+
+		/*!  \brief get a set of all identifiers used as addresses by the kernel */
+		ir::StringSet addressReferences() const;
 
 		public:
 			/*!	adds a trace generator to the EmulatedKernel */

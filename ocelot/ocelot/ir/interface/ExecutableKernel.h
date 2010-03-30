@@ -22,10 +22,11 @@ namespace trace {
 }
 
 namespace ir {
+
 	class ExecutableKernel : public Kernel {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
-		typedef std::vector< const Texture* > TextureVector;
+		typedef std::vector< const ir::Texture * > TextureVector;
 
 	public:
 		const executive::Executive* const context;
@@ -79,7 +80,10 @@ namespace ir {
 		virtual void updateMemory()=0;
 		
 		/*! \brief Get a vector of all textures references by the kernel */
-		virtual TextureVector textureReferences() const=0;
+		virtual StringSet textureReferences() const=0;
+
+		/*!  \brief get a set of all identifiers used as addresses by the kernel */
+		virtual StringSet addressReferences() const=0;
 
 		/*!	Notifies all attached TraceGenerators of an event */
 		void traceEvent(const trace::TraceEvent & event) const;

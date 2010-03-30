@@ -2007,34 +2007,38 @@ bool executive::Executive::translateModuleToGPU(ir::Module &module) {
 	for (ir::Module::KernelMap::iterator k_it = ptxKernels.begin(); k_it != ptxKernels.end(); ++k_it) {
 		CUfunction cuFunction;
 		if (cuda::CudaDriver::cuModuleGetFunction(&cuFunction, module.cuModule, k_it->second->name.c_str()) != CUDA_SUCCESS) {
-			report("failed to get kernel '" << k_it->second->name << "' from loaded GPU module");
+			Ocelot_Exception("failed to get kernel '" << k_it->second->name << "' from loaded GPU module");
 			return false;
 		}
 		GPUExecutableKernel *gpuKernel = new GPUExecutableKernel(*k_it->second, cuFunction, this);
 		gpuKernels[gpuKernel->name] = gpuKernel;
 	}
 	
-	// globals
-	for (ir::Module::GlobalMap::iterator g_it = module.globals.begin(); g_it != module.globals.end();
-		++g_it) {
-		CUdeviceptr ptr;
-		unsigned int bytes = 0;
-		if (cuda::CudaDriver::cuModuleGetGlobal(&ptr, &bytes, module.cuModule, g_it->first.c_str()) != CUDA_SUCCESS) {
-			report("failed to get global '" << g_it->first << "' from loaded GPU module ");
-			return false;
-		}
-		report("For global '" << g_it->first << "', got GPU pointer " << (void*)ptr << " (" << bytes << " bytes)" );
-		g_it->second.pointer = (char *)ptr;
-	}
-	
 	// textures
 	for (ir::Module::TextureMap::iterator t_it = module.textures.begin(); t_it != module.textures.end();
 		++t_it) {
 		if (cuda::CudaDriver::cuModuleGetTexRef(&t_it->second.cuTexture, module.cuModule, t_it->first.c_str()) != CUDA_SUCCESS) {
-			report("failed to get texture from loaded GPU module");
+			Ocelot_Exception("failed to get texture from loaded GPU module");
 			return false;
 		}
+		report("  obtained reference to texture " << t_it->first << " in module " << module.modulePath);
 	}
+
+	// globals
+	for (ir::Module::GlobalMap::iterator g_it = module.globals.begin(); g_it != module.globals.end();
+		++g_it) {
+		if (g_it->second.statement.directive == ir::PTXStatement::Global) {
+			CUdeviceptr ptr;
+			unsigned int bytes = 0;
+			if (cuda::CudaDriver::cuModuleGetGlobal(&ptr, &bytes, module.cuModule, g_it->first.c_str()) != CUDA_SUCCESS) {
+				Ocelot_Exception("failed to get global '" << g_it->first << "' from loaded GPU module ");
+				return false;
+			}
+			report("For global '" << g_it->first << "', got GPU pointer " << (void*)ptr << " (" << bytes << " bytes)" );
+			g_it->second.pointer = (char *)ptr;
+		}
+	}
+	
 
 	return true;
 }
@@ -2274,7 +2278,7 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 	}
 	ir::ExecutableKernel *exeKernel = static_cast<ir::ExecutableKernel *>(kernel);	
 	
-	fenceGlobalVariables();
+	//fenceGlobalVariables();
 
 	if (!verifyKernelMemoryBounds(exeKernel, sharedMemory, parameterBlockSize)) {
 		return;
@@ -2286,6 +2290,8 @@ void executive::Executive::launch(const std::string & moduleName, const std::str
 			exeKernel->addTraceGenerator( *gen );
 		}
 	}
+
+	updateMemory(*modules[moduleName], *exeKernel);
 
 	exeKernel->setKernelShape(block.x, block.y, block.z);
 
@@ -2419,11 +2425,17 @@ void executive::Executive::fenceGlobalVariables() {
 	}
 }
 
+/*!
+	\brief updates all device memory spaces before a given kernel is launched
+*/
 void executive::Executive::updateMemory(ir::Module &module, ir::ExecutableKernel &kernel) {
 	updateGlobalVariables(module, kernel);
 	updateTextures(module, kernel);
 }
 
+/*!
+	\brief updates global variables in the selected device used by a kernel
+*/
 void executive::Executive::updateGlobalVariables(ir::Module &module, ir::ExecutableKernel &kernel) {
 
 	MemoryAllocationMap &memoryMap = memoryAllocations[getDeviceAddressSpace()];
@@ -2460,14 +2472,23 @@ void executive::Executive::updateGlobalVariables(ir::Module &module, ir::Executa
 					report("copying to global variable '" << glb_it->first << "'");
 					if (cuda::CudaDriver::cuMemcpyHtoD(hydrazine::bit_cast<CUdeviceptr, char *>(global.pointer), 
 						glb_it->second.host_pointer, glb_it->second.size) != CUDA_SUCCESS) {
-						Ocelot_Exception("Executive::fenceGlobalVariables() - failed to synchronize global variable with device");
+						Ocelot_Exception("Executive::updateGlobalVariables() - failed to synchronize global variable with device");
 					}
 				}
 				else {
-					assert(0 && "local pointer to GPU module");
 					global.pointer = (char *)glb_it->second.host_pointer;
 					global.registered = true;
 					global.local = true;
+
+					CUdeviceptr devPtr;
+					unsigned int size = 0;
+					if (cuda::CudaDriver::cuModuleGetGlobal(&devPtr, &size, module.cuModule, 
+						glb_it->first.c_str()) != CUDA_SUCCESS) {
+						Ocelot_Exception("local pointer to GPU module for global '" << glb_it->first << "'");
+					}
+					if (cuda::CudaDriver::cuMemcpyHtoD(devPtr, global.pointer, glb_it->second.size) != CUDA_SUCCESS) {
+						Ocelot_Exception("Executive::updateGlobalVariables() - failed to synchronize global variable with device");
+					}
 				}
 				report("  looking for GPU global '" << glb_it->first << "' at address " << (void *)global.pointer);
 				if (memoryMap.find(global.pointer) == memoryMap.end()) {
@@ -2534,6 +2555,9 @@ static unsigned int convertFormatType(const ir::Texture &texture) {
 	return fmt;
 }
 
+/*!
+	\brief updates textures in the selected device used by a kernel
+*/
 void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKernel &kernel) {
 
 	switch (getSelectedISA()) {
@@ -2542,11 +2566,11 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 		break;
 	case ir::Instruction::GPU:
 	{
-		ir::ExecutableKernel::TextureVector kernelTextures = kernel.textureReferences();
-		for (ir::ExecutableKernel::TextureVector::iterator t_it = kernelTextures.begin(); 
-			t_it != kernelTextures.end(); ++t_it) {
-			assert(0 && "unimplemented");
-			std::string texName = "texture";
+		ir::StringSet textureUses = kernel.textureReferences();
+		for (ir::StringSet::const_iterator t_it = textureUses.begin(); t_it != textureUses.end(); 
+			++t_it) {
+
+			const std::string & texName = *t_it;
 			ir::Texture & texture = textures[texName];
 			CUtexref cuTexRef = module.textures[texName].cuTexture;
 			
@@ -2584,7 +2608,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 					if (memory) {
 						CUresult result = cuda::CudaDriver::cuTexRefSetArray(cuTexRef, memory->cudaArray, CU_TRSA_OVERRIDE_FORMAT);
 						if (result != CUDA_SUCCESS) {
-							Ocelot_Exception("Executive::updateTexture() - failed to bind 2D texture with result " << result);
+							Ocelot_Exception("Executive::updateTexture() - failed to bind array texture with result " << result);
 						}
 					}
 					else {

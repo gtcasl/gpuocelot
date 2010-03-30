@@ -338,11 +338,17 @@ void executive::EmulatedKernel::updateMemory() {
 	updateGlobals();
 }
 
-ir::ExecutableKernel::TextureVector 
-	executive::EmulatedKernel::textureReferences() const {
-	return textures;
+/*! \brief Get a vector of all textures references by the kernel */
+ir::StringSet executive::EmulatedKernel::textureReferences() const {
+	ir::StringSet set;
+	return set;
 }
 
+/*!  \brief get a set of all identifiers used as addresses by the kernel */
+ir::StringSet executive::EmulatedKernel::addressReferences() const {
+	ir::StringSet set;
+	return set;
+}
 
 void executive::EmulatedKernel::registerAllocation() {
 	using namespace std;

@@ -2613,10 +2613,16 @@ namespace executive
 		_updateConstantMemory();
 	}
 
-	ir::ExecutableKernel::TextureVector 
-		LLVMExecutableKernel::textureReferences() const
-	{
-		return _opaque.textures;
+	/*! \brief Get a vector of all textures references by the kernel */
+	ir::StringSet LLVMExecutableKernel::textureReferences() const {
+		ir::StringSet set;
+		return set;
+	}
+
+	/*!  \brief get a set of all identifiers used as addresses by the kernel */
+	ir::StringSet LLVMExecutableKernel::addressReferences() const {
+		ir::StringSet set;
+		return set;
 	}
 	
 	void LLVMExecutableKernel::addTraceGenerator(

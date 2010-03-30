@@ -46,7 +46,10 @@ namespace executive {
 		void updateMemory();
 		
 		/*! \brief Get a vector of all textures references by the kernel */
-		TextureVector textureReferences() const;
+		ir::StringSet textureReferences() const;
+
+		/*!  \brief get a set of all identifiers used as addresses by the kernel */
+		ir::StringSet addressReferences() const;
 
 		void updateGlobalMemory();
 

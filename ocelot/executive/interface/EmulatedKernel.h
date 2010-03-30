@@ -27,6 +27,7 @@ namespace executive {
 	class EmulatedKernel: public ir::ExecutableKernel {
 	public:
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
+		typedef std::vector< const ir::Texture * > TextureVector;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -62,7 +63,10 @@ namespace executive {
 		void updateMemory();
 
 		/*! \brief Get a vector of all textures references by the kernel */
-		TextureVector textureReferences() const;
+		ir::StringSet textureReferences() const;
+
+		/*!  \brief get a set of all identifiers used as addresses by the kernel */
+		ir::StringSet addressReferences() const;
 
 	public:
 		/*!	adds a trace generator to the EmulatedKernel */

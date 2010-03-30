@@ -161,12 +161,27 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 	ir::PTXU64 extent = kernel.constMemorySize() + kernel.parameterMemorySize() 
 		+ kernel.totalSharedMemorySize() + kernel.localMemorySize();
 	
+/*
 	ir::ExecutableKernel::TextureVector textures = kernel.textureReferences();
 	
 	for (ir::ExecutableKernel::TextureVector::iterator 
 		texture = textures.begin(); texture != textures.end(); ++texture) {
 		report(" Checking texture mapped address " << (*texture)->data);
 		pointers.insert((ir::PTXU64)(*texture)->data);
+	}
+*/
+
+	const executive::TextureMap & textureMap = kernel.context->textures;
+	ir::StringSet texturesUsed = kernel.textureReferences();
+	for (ir::StringSet::iterator t_it = texturesUsed.begin(); t_it != texturesUsed.end();
+		++t_it) {
+		const std::string name = *t_it;
+		executive::TextureMap::const_iterator tm_it = textureMap.find(name);
+		if (tm_it != textureMap.end()) {
+			const ir::Texture &texture = tm_it->second;
+			report(" Checking texture mapped address " << texture.data);
+			pointers.insert((ir::PTXU64)(texture.data));
+		}
 	}
 	
 	for (ir::Kernel::ParameterVector::const_iterator 

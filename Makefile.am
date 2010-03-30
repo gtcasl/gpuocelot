@@ -79,7 +79,6 @@ libocelot_la_SOURCES = \
 	hydrazine/implementation/XmlArgumentParser.cpp \
 	hydrazine/implementation/XmlTree.cpp \
 	hydrazine/implementation/string.cpp \
-	hydrazine/implementation/json.cpp \
 	hydrazine/cuda/Cuda.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
@@ -88,6 +87,7 @@ libocelot_la_SOURCES = \
 	hydrazine/interface/Clonable.cpp \
 	hydrazine/interface/Thread.cpp \
 	hydrazine/interface/Version.cpp \
+	hydrazine/implementation/json.cpp \
 	ocelot/trace/implementation/TraceEvent.cpp \
 	ocelot/trace/implementation/TraceGenerator.cpp \
 	ocelot/trace/implementation/BranchTraceGenerator.cpp \

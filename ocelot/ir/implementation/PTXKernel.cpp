@@ -19,6 +19,8 @@
 
 #define REPORT_BASE 0
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace ir
 {
 	PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
@@ -534,6 +536,52 @@ namespace ir
 			}
 		}
 	}
+
+	/*! \brief gets the set of all address labels referenced by kernel */
+	StringSet PTXKernel::getReferencedAddressLabels() const
+	{
+		StringSet globalUses;
+		for (ControlFlowGraph::iterator block = _cfg->begin(); block != _cfg->end(); ++block) {
+			for (ControlFlowGraph::InstructionList::iterator instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction) {
+
+				PTXInstruction &instr = *static_cast<PTXInstruction*>(*instruction);
+
+				PTXOperand PTXInstruction::* operand[] = { & PTXInstruction::d, & PTXInstruction::a };
+				for (int i = 0; i < 2; i++) {
+					if ((instr.*operand[i]).addressMode == PTXOperand::Address) {
+						globalUses.insert((instr.*operand[i]).identifier);
+					}
+				}
+			}
+		}
+		return globalUses;
+	}
+
+	/*! \brief gets the set of all texture names referenced by kernel */
+	StringSet PTXKernel::getReferencedTextures() const
+	{
+		StringSet textureUses;
+		for (ControlFlowGraph::iterator block = _cfg->begin(); block != _cfg->end(); ++block) {
+			for (ControlFlowGraph::InstructionList::iterator instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction) {
+
+				PTXInstruction &instr = *static_cast<PTXInstruction*>(*instruction);
+				
+				if (instr.opcode == ir::PTXInstruction::Tex) {
+					report("PTXKernel::getReferencedTextures() - " << instr.toString() << " - instr.a.addressMode = " << instr.a.addressMode);
+					if (instr.a.addressMode == ir::PTXOperand::Address) {
+						textureUses.insert(instr.a.identifier);
+					}
+					else {
+						assert(0 && "PTXKernel::getReferencedTextures() - unexpected address mode for operand 'a'");
+					}
+				}
+			}
+		}
+		return textureUses;
+	}
+
 }
 
 #endif

@@ -1,0 +1,312 @@
+/*!
+	\file ApplicationState.h
+	\author Andrew Kerr <arkerr@gatech.edu>
+	\brief structures for application state
+*/
+
+#ifndef OCELOT_CUDA_APPLICATION_STATE_H_INCLUDED
+#define OCELOT_CUDA_APPLICATION_STATE_H_INCLUDED
+
+// C++ libs
+#include <string>
+#include <list>
+#include <vector>
+#include <map>
+#include <set>
+
+// UNIX libs
+#include <pthread.h>
+
+// Ocelot includes
+#include <ocelot/ir/interface/Texture.h>
+
+#include <ocelot/cuda/include/cuda.h>
+
+// forward declarations
+
+namespace ir {
+	class Kernel;
+}
+
+namespace executive {
+
+	/*!
+		\brief enumerated type describing device address space
+	*/
+	enum DeviceAddressSpace {
+		Device_global,
+		Device_constant,
+		Device_shared,
+		Device_local,
+		Device_texture,
+		Device_address_space_invalid
+	};
+	
+	/*!
+		\brief type of mempcy
+	*/
+	enum MemcpyKind {
+		HostToHost,
+		HostToDevice,
+		DeviceToHost,
+		DeviceToDevice,
+		MemcpyKind_invalid
+	};
+
+	class ChannelFormatDesc {
+	public:
+		enum Kind {
+			Kind_signed,
+			Kind_unsigned,
+			Kind_float,
+			Kind_none
+		};
+	public:
+		Kind kind;
+		int w, x, y, z;
+	public:
+		size_t size() const {
+			return (w + x + y + z) / 8;
+		}
+		size_t channels() const {
+			size_t c = 0;
+			if (w) ++c;
+			if (x) ++c;
+			if (y) ++c;
+			if (z) ++c;
+			return c;
+		}
+	};
+	
+	class Extent {
+	public:
+		size_t depth;
+		size_t height;
+		size_t width;
+	};
+	
+	class PitchedPointer {
+	public:
+		size_t offset; // Offset from the base of the pointer for alignment
+		size_t pitch;
+
+		void *ptr;
+
+		union {
+			size_t xsize;
+			size_t width;		// I prefer 'width' to 'xsize' as a member name
+		};
+		union {
+			size_t ysize;
+			size_t height;	// I prefer 'height' to 'ysize' as a member name
+		};
+	};
+
+	/*!
+		describes memory allocations
+	*/
+	class MemoryAllocation {
+	public:
+	
+		enum Dimension {
+			Dim_1D,
+			Dim_2D,
+			Dim_3D,
+			Dim_invalid
+		};
+		
+		enum Structure {
+			Struct_linear,
+			Struct_array,
+			Struct_pitch,
+			Struct_invalid
+		};
+		
+		enum Affinity {
+			Affinity_host,
+			Affinity_device,
+			Affinity_invalid
+		};
+		
+	public:
+	
+		//! indicates structure of memory allocation
+		Structure structure;
+		
+		//! indicates number of used dimensions of allocation
+		Dimension dimension;
+		
+		//! indicates whether allocation references a device or host memory
+		Affinity affinity;
+		
+		//! index of address space - 0 is always host
+		int addressSpace;
+		
+		//! pointer to allocation with pitch information
+		PitchedPointer pointer;
+		
+		//! dimensions of allocation
+		Extent extent;
+		
+		//! channel format description
+		ChannelFormatDesc desc;
+		
+		//! number of bytes allocate
+		size_t allocationSize;
+		
+		//! allocation flags
+		unsigned int flags;
+		
+		//! indicates Ocelot manages allocation
+		bool internal;
+		
+		//! indicates that this corresponds to a global variable declared in PTX
+		bool global;
+	
+		//! array handle [if array allocated on GPU device]
+		CUarray cudaArray;
+	
+	public:
+		//! constructor for external allocation
+		MemoryAllocation(int space, void *ptr, size_t bytes);
+	
+		//! constructor for linear allocation
+		MemoryAllocation(int space, size_t size);
+	
+		//! constructor for host allocation
+		MemoryAllocation(size_t size, bool portable, bool mapped, 
+			bool writeCombined);
+	
+		//! constructor for pitched allocation
+		MemoryAllocation(int space, size_t width, size_t height);
+		
+		//! constructor for extent based pitched allocation
+		MemoryAllocation(int space, const Extent& e);
+		
+		//! constructor for array allocation
+		MemoryAllocation(int space, const ChannelFormatDesc& desc,
+			size_t width, size_t height);
+		
+		//! constructor for pitched array allocation
+		MemoryAllocation(int space, const ChannelFormatDesc &desc, 
+			const Extent& extent);
+		
+		//! default allocation constructor
+		MemoryAllocation();	
+		
+		//! default destructor
+		~MemoryAllocation();
+		
+		// copy constructor
+		MemoryAllocation(const MemoryAllocation& m);
+		
+		// move constructor
+		MemoryAllocation(MemoryAllocation&& m);
+
+		// copy operator
+		MemoryAllocation& operator=(const MemoryAllocation& m);
+
+		// move operator
+		MemoryAllocation& operator=(MemoryAllocation&& m);
+
+		//! gets void* to memory allocation
+		void *get() const {
+			return (char*)pointer.ptr + pointer.offset;
+		}
+		
+		//! true if memory is portable and affinity = host
+		bool portable() const {
+			return flags & 1;
+		}
+		
+		//! true if memory is mapped and affinity = host
+		bool mapped() const {
+			return flags & 2;
+		}
+		
+		//! total size of allocation in bytes
+		size_t size() const {
+			return allocationSize;
+		}
+
+		//! Get a copy with no actual memory allocated, (null pointer)
+		MemoryAllocation blankCopy() const;
+
+		//! Copy the allocation into a different address space
+		MemoryAllocation copy(int space) const;
+
+		std::string toString() const;
+				
+	};
+
+	/*!
+		Registered global variable	
+	*/
+	class GlobalVariable {
+	public:
+		GlobalVariable();
+		
+	public:
+		//! pointer to actual variable
+		void *pointer;
+
+		//! maximum size of global
+		size_t size;
+		
+	};
+
+	/*!
+		\brief texture representing the configuration and state of a bound texture
+	*/
+/*
+	class Texture {
+	public:
+		
+		enum Interpolation {
+			Nearest,
+			Linear
+		};
+		
+		enum AddressMode {
+			Wrap,
+			Clamp
+		};
+
+	public:
+
+		//! \brief channel format of texture
+		ChannelFormatDesc format;
+
+		//! \bref true if texture coordinates are normalized floats
+		bool normalizedCoordinates;
+
+		//! \brief true if texture sample should be normalized
+		bool normalizedFloat;
+
+		//! \brief data type of texture
+		Type type;
+
+		//! \brief pitched pointer includes dimensions and pointer to data
+		PitchedPointer pointer;
+
+		//! \brief interpolation mode
+		Interpolation interpolation;
+
+		//! \brief addressing mode for each dimension
+		AddressMode addressMode[3];
+
+	public:
+		Texture();
+	};
+*/
+			
+	/*!	\brief Allocated memory	*/
+	typedef std::map< void*, MemoryAllocation > MemoryAllocationMap;
+			
+	/*!	\brief GLobal variables	*/
+	typedef std::map< std::string, GlobalVariable > GlobalMap;
+
+}
+
+#endif
+

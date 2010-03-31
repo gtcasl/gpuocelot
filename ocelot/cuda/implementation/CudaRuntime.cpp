@@ -1573,10 +1573,9 @@ cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
 	//
 	Event createdEvent;
 	createdEvent.flags = 0;
-	createdEvent.handle = thread.events.size();
+	createdEvent.handle = thread.events.size() + 1;
 	createdEvent.time = 0;
 	*event = createdEvent.handle;
-	thread.events[*event] = createdEvent;
 	result = cudaSuccess;
 	
 	// special behavior for CUDA devices
@@ -1585,7 +1584,10 @@ cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
 			result = cudaErrorInitializationError;
 		}
 	}
+
+	report(" created event " << createdEvent.handle << " with driver handle " << createdEvent.driverHandle);
 	
+	thread.events[*event] = createdEvent;
 	unlock();
 
 	TestError(result);
@@ -1603,10 +1605,9 @@ cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, int 
 	//
 	Event createdEvent;
 	createdEvent.flags = flags;
-	createdEvent.handle = thread.events.size();
+	createdEvent.handle = thread.events.size() + 1;
 	createdEvent.time = 0;
 	*event = createdEvent.handle;
-	thread.events[*event] = createdEvent;
 	result = cudaSuccess;
 
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
@@ -1621,6 +1622,7 @@ cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, int 
 		}
 	}
 		
+	thread.events[*event] = createdEvent;
 	unlock();
 
 	TestError(result);
@@ -1642,6 +1644,23 @@ cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t s
 		}
 		
 		result = cudaSuccess;
+
+		if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+			CUevent eventHandle = e_it->second.driverHandle;
+			CUstream driverStream = 0;
+			if (stream) {
+				driverStream = s_it->second.driverHandle;
+			}
+			CUresult cuResult = cuda::CudaDriver::cuEventRecord(eventHandle, driverStream);
+			if (CUDA_SUCCESS != cuResult) {
+				result = cudaErrorInvalidValue;
+				report("cuEventRecord() - failed with error " << cuResult);
+			}
+			else {
+				report("cudaEventRecord() - eventHandle = " << eventHandle << ", driverStream = " << driverStream);
+				result = cudaSuccess;
+			}
+		}
 	}
 	else {
 		if (e_it == thread.events.end()) {
@@ -1651,15 +1670,6 @@ cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t s
 			report("stream not found");
 		}
 		result = cudaErrorInvalidResourceHandle;
-	}
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		CUstream driverStream = 0;
-		if (stream) {
-			driverStream = s_it->second.driverHandle;
-		}
-		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventRecord(e_it->second.driverHandle, driverStream)) {
-			result = cudaErrorInvalidValue;
-		}
 	}
 		
 	unlock();	
@@ -1683,6 +1693,9 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventQuery(e_it->second.driverHandle)) {
 			result = cudaErrorInvalidValue;
 		}
+		else {
+			result = cudaSuccess;
+		}
 	}	
 	unlock();
 
@@ -1704,6 +1717,9 @@ cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
 		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventSynchronize(e_it->second.driverHandle)) {
 			result = cudaErrorInvalidValue;
+		}
+		else {
+			result = cudaSuccess;
 		}
 	}	
 	unlock();
@@ -1728,6 +1744,9 @@ cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventDestroy(e_it->second.driverHandle)) {
 			result = cudaErrorInvalidValue;
 		}
+		else {
+			result = cudaSuccess;
+		}
 	}	
 	unlock();
 	
@@ -1746,18 +1765,36 @@ cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, cudaEvent_t start
 	EventMap::iterator e_end_it = thread.events.find(end);
 	
 	if (e_start_it != thread.events.end() && e_end_it != thread.events.end()) {
-		hydrazine::Timer::Second end_time = e_end_it->second.time;
-		hydrazine::Timer::Second start_time = e_start_it->second.time;
-		hydrazine::Timer::Second total_time = end_time - start_time;
+		if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
+			CUevent hStart = e_start_it->second.driverHandle;
+			CUevent hEnd = e_end_it->second.driverHandle;
+			CUresult cuResult = cuda::CudaDriver::cuEventElapsedTime(ms, hStart, hEnd);
+			if (CUDA_ERROR_NOT_READY == cuResult) {
+				result = cudaErrorInvalidValue;
+				report("cudaEventElapsedTime() - hStart: " << hStart << ", hEnd: " << hEnd 
+					<< " returned with error 'CUDA_ERROR_NOT_READY'");
 
-		*ms = total_time / 1000.0;
-		result = cudaSuccess;
+			}
+			else if (CUDA_SUCCESS != cuResult) {
+				result = cudaErrorInvalidValue;
+				report("cudaEventElapsedTime() - hStart: " << hStart << ", hEnd: " << hEnd 
+					<< " returned with error " << cuResult);
+			}
+			else {
+				result = cudaSuccess;
+			}
+		}	
+		else {
+			hydrazine::Timer::Second end_time = e_end_it->second.time;
+			hydrazine::Timer::Second start_time = e_start_it->second.time;
+			hydrazine::Timer::Second total_time = end_time - start_time;
+
+			*ms = total_time / 1000.0;
+			result = cudaSuccess;
+		}
 	}
 	else {
 		result = cudaErrorInvalidResourceHandle;
-	}
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		assert(0 && "unimplemented");
 	}
 	unlock();
 	
@@ -1778,13 +1815,15 @@ cudaError_t cuda::CudaRuntime::cudaStreamCreate(cudaStream_t *pStream) {
 	HostThreadContext &thread = getHostThreadContext();
 	
 	Stream stream;
-	stream.handle = (cudaStream_t)thread.streams.size();
+	stream.handle = (cudaStream_t)(thread.streams.size() + 1);
 	thread.streams[stream.handle] = stream;
 	*pStream = stream.handle;
 	result = cudaSuccess;
 	
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		assert(0 && "unimplemented");
+		if (cuda::CudaDriver::cuStreamCreate(&stream.driverHandle, 0) != CUDA_SUCCESS) {
+			result = cudaErrorInvalidValue;
+		}
 	}
 		
 	unlock();
@@ -1808,8 +1847,13 @@ cudaError_t cuda::CudaRuntime::cudaStreamDestroy(cudaStream_t stream) {
 		result = cudaErrorInvalidResourceHandle;
 	}	
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		assert(0 && "unimplemented");
-	}	
+		if (cuda::CudaDriver::cuStreamDestroy(s_it->second.driverHandle) != CUDA_SUCCESS) {
+			result = cudaErrorInvalidValue;
+		}
+		else {		
+			result = cudaSuccess;
+		}
+	}
 	
 	unlock();
 	
@@ -1831,8 +1875,13 @@ cudaError_t cuda::CudaRuntime::cudaStreamSynchronize(cudaStream_t stream) {
 		result = cudaErrorInvalidResourceHandle;
 	}	
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		assert(0 && "unimplemented");
-	}	
+		if (cuda::CudaDriver::cuStreamSynchronize(s_it->second.driverHandle) != CUDA_SUCCESS) {
+			result = cudaErrorInvalidValue;
+		}
+		else {
+			result = cudaSuccess;
+		}
+	}
 	
 	unlock();
 
@@ -1854,7 +1903,12 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 		result = cudaErrorInvalidResourceHandle;
 	}	
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		assert(0 && "unimplemented");
+		if (cuda::CudaDriver::cuStreamQuery(s_it->second.driverHandle) != CUDA_SUCCESS) {
+			result = cudaErrorInvalidValue;
+		}
+		else {
+			result = cudaSuccess;
+		}
 	}	
 	
 	unlock();
@@ -1875,7 +1929,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	// kill potentially running kernels
 	//
 	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		assert(0 && "unimplemented");
+		cuda::CudaDriver::cuCtxSynchronize();
 	}
 	unlock();
 	

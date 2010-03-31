@@ -67,7 +67,7 @@ namespace ir
 			unsigned int z; //! Bits in z dim
 			unsigned int w; //! Bits in w dim
 
-			bool normalize; //! Normalize accesses
+			bool normalize; //! Normalize coordinates accesses
 			bool normalizedFloat; //! Return a normalized float
 
 			Type type; //! Data type

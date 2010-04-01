@@ -15,6 +15,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define VERBOSE 1
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 // declare texture reference for 2D float texture
 texture<float, 2, cudaReadModeElementType> surface;
 
@@ -94,6 +98,11 @@ static int testNormalizedCoordinates() {
 	if (errors) {
 		printf("FAILED\n\n testNormalizedCoordinates() - failed\n");
 	}
+#if VERBOSE==1
+	else {
+		printf("testNormalizedCoordinates() succeeded\n");
+	}
+#endif
 
 	free(in_data_host);
 	free(out_data_host);
@@ -195,6 +204,11 @@ static int testNormalizedUshort() {
 	if (errors) {
 		printf("FAILED\n\n testNormalizedUshort() - failed\n");
 	}
+#if VERBOSE==1
+	else {
+		printf("testNormalizedUshort() succeeded\n");
+	}
+#endif
 
 	free(in_data_host);
 	free(out_data_host);
@@ -227,7 +241,7 @@ extern "C" __global__ void kernelUpsample(float *out, int width, int height) {
 */
 static int testUpsample() {
 	const int inWidth = 32, inHeight = 32;
-	const int outWidth = 128, outHeight = 128;
+	const int outWidth = 64, outHeight = 64;
 
 	float *in_data_host, *in_data_gpu;
 	float *out_data_host, *out_data_gpu;
@@ -256,14 +270,15 @@ static int testUpsample() {
 
 	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, 
 		cudaChannelFormatKindFloat);
+
 	if (cudaMallocPitch((void **)&in_data_gpu, &pitch, inWidth * sizeof(float), inHeight) 
 		!= cudaSuccess) {
 		printf("cudaMallocPitch() failed\n");
 		return 1;
 	}
-	if (cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(float)*inWidth, 
-		inWidth*sizeof(float), inHeight, cudaMemcpyHostToDevice) != cudaSuccess) {
-		printf("cudaMemcpy2D() failed\n");
+
+	if (cudaMemcpy(in_data_gpu, in_data_host, bytesIn, cudaMemcpyHostToDevice) != cudaSuccess) {
+		printf("cudaMemcpy() failed\n");
 	}
 
 	surfaceUpsample.addressMode[0] = cudaAddressModeWrap;
@@ -273,6 +288,7 @@ static int testUpsample() {
 
 	if (cudaBindTexture2D(0, &surfaceUpsample, in_data_gpu, &channelDesc, inWidth, inHeight, 
 		pitch) != cudaSuccess) {
+
 		printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
 		free(in_data_host);
 		free(out_data_host);
@@ -281,6 +297,7 @@ static int testUpsample() {
 	}
 
 	cudaMalloc((void **)&out_data_gpu, bytesOut);
+	cudaMemcpy(out_data_gpu, out_data_host, bytesOut, cudaMemcpyHostToDevice);
 
 	dim3 grid(outWidth / 16, outHeight / 16), block(16, 16);
 	
@@ -311,7 +328,12 @@ static int testUpsample() {
 			float out = out_data_host[i * outWidth + j];
 			if (fabs(w - out) > 0.001f) {
 				++errors;
-				printf("(%d, %d) - w = %f, out = %f %s\n", i, j, w, out, (errors ? "***":""));
+				printf("(row %d, col %d) - w = %f, out = %f %s\n", i, j, w, out, (1 ? " * * * * * * *":""));
+				printf("    w = 0x%x\n", *(unsigned int*)&w);
+				printf("  out = 0x%x\n", *(unsigned int*)&out);
+				printf("    ^ = 0x%x\n", *(unsigned int*)&w ^ *(unsigned int*)&out);
+				printf("  (u: %f,  v: %f)\n", u, v);
+				printf("  (tx: %d, ty: %d )\n", tx, ty);
 			}
 		}
 	}
@@ -319,6 +341,11 @@ static int testUpsample() {
 	if (errors) {
 		printf("FAILED\n\n testUpsample() - failed\n");
 	}
+#if VERBOSE==1
+	else {
+		printf("testUpsample() succeeded\n");
+	}
+#endif
 
 	free(in_data_host);
 	free(out_data_host);
@@ -350,8 +377,8 @@ extern "C" __global__ void kernelUpsampleLinear(float *out, int width, int heigh
 	\brief constructs a texture and samples
 */
 static int testUpsampleLinear() {
-	const int inWidth = 32, inHeight = 32;
-	const int outWidth = 128, outHeight = 128;
+	const int inWidth = 8, inHeight = 8;
+	const int outWidth = 16, outHeight = 16;
 
 	float *in_data_host, *in_data_gpu;
 	float *out_data_host, *out_data_gpu;
@@ -365,10 +392,29 @@ static int testUpsampleLinear() {
 	in_data_host = (float *)malloc(bytesIn);
 	out_data_host = (float *)malloc(bytesOut);
 
+	float data[] = {
+		0, 0, 0, 0,  0, 0.71f, 0, 0,
+		0, 1, 0.5f, 0,  0, 0, 0.531f, 0,
+		0, 0.2f, 0, 0,  .934f, 0, .1008, 0,
+		0, .11f, .911f, 0,  3.14159, 0, 0, 0,
+
+		0, 0, 0.615f, 0,  0, 0, 0, 0,
+		0, 0, 0, 0,  .1205f, 0, 0.23f, 0,
+		0, 0.9125f, 0, 0,  0, 0, 0, 0,
+		0, 0, 0, 0,  0, 0, 0, 0,
+	};
+
 	// procedural texture generation
+	int z = 0;
 	for (int i = 0; i < inHeight; i++) {
 		for (int j = 0; j < inWidth; j++) {
-			float x = ((123 + 7 * i + 11 * j) % 1024) / (1024.0f);
+			float x;
+			if (z < 64) {
+				x = data[z++];
+			}
+			else {
+				x = ((192 + 11 * i + 23 * j) % 1024) / 1024.0f;
+			}
 			in_data_host[i * inWidth + j] = x;
 		}
 	}
@@ -385,9 +431,9 @@ static int testUpsampleLinear() {
 		printf("cudaMallocPitch() failed\n");
 		return 1;
 	}
-	if (cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(float)*inWidth, 
-		inWidth*sizeof(float), inHeight, cudaMemcpyHostToDevice) != cudaSuccess) {
-		printf("cudaMemcpy2D() failed\n");
+
+	if (cudaMemcpy(in_data_gpu, in_data_host, bytesIn, cudaMemcpyHostToDevice) != cudaSuccess) {
+		printf("cudaMemcpy() failed\n");
 	}
 
 	surfaceUpsampleLinear.addressMode[0] = cudaAddressModeWrap;
@@ -406,7 +452,7 @@ static int testUpsampleLinear() {
 
 	cudaMalloc((void **)&out_data_gpu, bytesOut);
 
-	dim3 grid(outWidth / 16, outHeight / 16), block(16, 16);
+	dim3 grid(outWidth / 8, outHeight / 8), block(8, 8);
 	
 	kernelUpsampleLinear<<< grid, block >>>(out_data_gpu, outWidth, outHeight);
 
@@ -422,15 +468,17 @@ static int testUpsampleLinear() {
 	cudaFree(in_data_gpu);
 	cudaFree(out_data_gpu);
 
-	printf("\n\nChecking bilinear interpolation\n");
-
-	for (int i = 4; i < outHeight - 4 && errors < 5; i++) {
-		for (int j = 4; j < outWidth - 4 && errors < 5; j++) {
+	int fringeV = outHeight / inHeight - 1;
+	int fringeH = outWidth / inWidth - 1;
+	for (int i = fringeV; i < outHeight - fringeV && errors < 5; i++) {
+		for (int j = fringeH; j < outWidth - fringeH && errors < 5; j++) {
 			//
 			// simulate bilinear sampling
 			//
 			float u = (float)j / (float)outWidth, v = (float)i / (float)outHeight;
-			int tx = (int)(u * (float)inWidth), ty = (int)(v * (float)inHeight);
+			float ftx = u * (float)inWidth - 0.5f;
+			float fty = v * (float)inHeight - 0.5f;
+			int tx = (int)ftx, ty = (int)fty;
 
 			float s0 = 0, s1 = 0, s2 = 0, s3 = 0;
 
@@ -441,12 +489,12 @@ static int testUpsampleLinear() {
 			s3 = in_data_host[tx + 1 + (ty + 1) * inWidth];			
 
 			// bilinear interpolate
-			float itu = (u * (float)inWidth) - (float)tx;
-			float itv = (v * (float)inHeight) - (float)ty;
+			float itu = ftx - (float)tx;
+			float itv = fty - (float)ty;
 
 			float w = (s0 * (1.0f - itu) + s1 * itu) * (1.0f - itv) +
 				(s2 * (1.0f - itu) + s3 * itu) * itv;
-			
+
 			// correctness test
 			float out = out_data_host[i * outWidth + j];
 			if (fabs(w - out) > 0.001f) {
@@ -458,6 +506,7 @@ static int testUpsampleLinear() {
 				printf("  s1 = %f\n", s1);
 				printf("  s2 = %f\n", s2);
 				printf("  s3 = %f\n", s3);
+
 			}
 		}
 	}
@@ -465,6 +514,12 @@ static int testUpsampleLinear() {
 	if (errors) {
 		printf("FAILED\n\n testUpsampleLinear() - failed\n");
 	}
+#if VERBOSE==1
+	else {
+		printf("testUpsampleLinear() succeeded\n");
+	}
+#endif
+
 
 	free(in_data_host);
 	free(out_data_host);
@@ -474,8 +529,9 @@ static int testUpsampleLinear() {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char **arg) {
+
 	int errors = testNormalizedCoordinates() + testNormalizedUshort() 
-		+ testUpsample();
+		+ testUpsample() + testUpsampleLinear();
 
 	printf("Pass/Fail : %s\n", (errors ? "Fail" : "Pass"));
 	return (errors ? -1 : 0);

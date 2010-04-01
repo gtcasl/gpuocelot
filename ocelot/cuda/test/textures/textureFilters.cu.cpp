@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000757e_00000000-1_textureFilters.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000757e_00000000-1_textureFilters.cudafe1.cpp"
 # 1 "textureFilters.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5845,11 +5845,11 @@ extern "C" int ftrylockfile(FILE *) throw();
 
 
 extern "C" void funlockfile(FILE *) throw();
-# 19 "textureFilters.cu"
+# 23 "textureFilters.cu"
 static texture< float, 2, cudaReadModeElementType> surface;
-# 25 "textureFilters.cu"
+# 29 "textureFilters.cu"
 extern "C" void kernelNormCoords__entry(float *out, int width, int height);
-# 34 "textureFilters.cu"
+# 38 "textureFilters.cu"
 static int testNormalizedCoordinates() {
 auto int width = 64; auto int height = 64;
 
@@ -5912,7 +5912,12 @@ printf("(%d, %d) - in = %f, out = %f %s\n", i, j, in, out, (errors) ? ("***") : 
 
 if (errors) {
 printf("FAILED\n\n testNormalizedCoordinates() - failed\n");
+} else
+
+{
+printf("testNormalizedCoordinates() succeeded\n");
 }
+
 
 free(in_data_host);
 free(out_data_host);
@@ -5922,9 +5927,9 @@ return errors;
 
 
 static texture< unsigned short, 2, cudaReadModeNormalizedFloat> surfaceNormUshort;
-# 112 "textureFilters.cu"
+# 121 "textureFilters.cu"
 extern "C" void kernelNormUshort__entry(float *out, int width, int height);
-# 124 "textureFilters.cu"
+# 133 "textureFilters.cu"
 static int testNormalizedUshort() {
 auto int width = 128; auto int height = 128;
 
@@ -5998,7 +6003,12 @@ printf("(%d, %d) - w = %f, out = %f %s\n", i, j, w, out, (errors) ? ("***") : ("
 
 if (errors) {
 printf("FAILED\n\n testNormalizedUshort() - failed\n");
+} else
+
+{
+printf("testNormalizedUshort() succeeded\n");
 }
+
 
 free(in_data_host);
 free(out_data_host);
@@ -6009,12 +6019,12 @@ return errors;
 
 
 static texture< float, 2, cudaReadModeElementType> surfaceUpsample;
-# 213 "textureFilters.cu"
+# 227 "textureFilters.cu"
 extern "C" void kernelUpsample__entry(float *out, int width, int height);
-# 228 "textureFilters.cu"
+# 242 "textureFilters.cu"
 static int testUpsample() {
 auto const int inWidth = 32; auto const int inHeight = 32;
-auto const int outWidth = 128; auto const int outHeight = 128;
+auto const int outWidth = 64; auto const int outHeight = 64;
 
 auto float *in_data_host; auto float *in_data_gpu;
 auto float *out_data_host; auto float *out_data_gpu;
@@ -6043,14 +6053,15 @@ for (int j = 0; j < outWidth; j++) {
 
 auto cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
 
+
 if ((cudaMallocPitch((void **)(&in_data_gpu), &pitch, (inWidth) * sizeof(float), inHeight)) != (cudaSuccess))
 {
 printf("cudaMallocPitch() failed\n");
 return 1;
 }
-if ((cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(float) * (inWidth), (inWidth) * sizeof(float), inHeight, cudaMemcpyHostToDevice)) != (cudaSuccess))
-{
-printf("cudaMemcpy2D() failed\n");
+
+if ((cudaMemcpy(in_data_gpu, in_data_host, bytesIn, cudaMemcpyHostToDevice)) != (cudaSuccess)) {
+printf("cudaMemcpy() failed\n");
 }
 
 ((surfaceUpsample.addressMode)[0]) = cudaAddressModeWrap;
@@ -6060,6 +6071,7 @@ printf("cudaMemcpy2D() failed\n");
 
 if ((cudaBindTexture2D(0, &surfaceUpsample, in_data_gpu, &channelDesc, inWidth, inHeight, pitch)) != (cudaSuccess))
 {
+
 printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
 free(in_data_host);
 free(out_data_host);
@@ -6068,6 +6080,7 @@ return -2;
 }
 
 cudaMalloc((void **)(&out_data_gpu), bytesOut);
+cudaMemcpy(out_data_gpu, out_data_host, bytesOut, cudaMemcpyHostToDevice);
 
 auto dim3 grid(outWidth / 16, outHeight / 16); auto dim3 block(16, 16);
 
@@ -6098,14 +6111,24 @@ auto float w = (in_data_host[tx + inWidth * ty]);
 auto float out = (out_data_host[i * outWidth + j]);
 if (fabs(w - out) > (0.001000000047F)) {
 ++errors;
-printf("(%d, %d) - w = %f, out = %f %s\n", i, j, w, out, (errors) ? ("***") : (""));
+printf("(row %d, col %d) - w = %f, out = %f %s\n", i, j, w, out, (1) ? (" * * * * * * *") : (""));
+printf("    w = 0x%x\n", *((unsigned *)(&w)));
+printf("  out = 0x%x\n", *((unsigned *)(&out)));
+printf("    ^ = 0x%x\n", (*((unsigned *)(&w))) ^ (*((unsigned *)(&out))));
+printf("  (u: %f,  v: %f)\n", u, v);
+printf("  (tx: %d, ty: %d )\n", tx, ty);
 }
 }
 }
 
 if (errors) {
 printf("FAILED\n\n testUpsample() - failed\n");
+} else
+
+{
+printf("testUpsample() succeeded\n");
 }
+
 
 free(in_data_host);
 free(out_data_host);
@@ -6116,12 +6139,12 @@ return errors;
 
 
 static texture< float, 2, cudaReadModeElementType> surfaceUpsampleLinear;
-# 337 "textureFilters.cu"
+# 364 "textureFilters.cu"
 extern "C" void kernelUpsampleLinear__entry(float *out, int width, int height);
-# 352 "textureFilters.cu"
+# 379 "textureFilters.cu"
 static int testUpsampleLinear() {
-auto const int inWidth = 32; auto const int inHeight = 32;
-auto const int outWidth = 128; auto const int outHeight = 128;
+auto const int inWidth = 8; auto const int inHeight = 8;
+auto const int outWidth = 16; auto const int outHeight = 16;
 
 auto float *in_data_host; auto float *in_data_gpu;
 auto float *out_data_host; auto float *out_data_gpu;
@@ -6135,10 +6158,18 @@ auto int errors = 0;
 in_data_host = (float *)malloc(bytesIn);
 out_data_host = (float *)malloc(bytesOut);
 
-
+auto float data[] = {(0), (0), (0), (0), (0), (0.7099999785F), (0), (0), (0), (1), (0.5F), (0), (0), (0), (0.5310000181F), (0), (0), (0.200000003F), (0), (0), (0.9340000153F), (0), ((0.1008000000000000007)), (0), (0), (0.1099999994F), (0.9110000134F), (0), ((3.141589999999999883)), (0), (0), (0), (0), (0), (0.6150000095F), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0.1204999983F), (0), (0.2300000042F), (0), (0), (0.9125000238F), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0), (0)};
+# 408 "textureFilters.cu"
+auto int z = 0;
 for (int i = 0; i < inHeight; i++) {
 for (int j = 0; j < inWidth; j++) {
-auto float x = ((((123 + 7 * i) + 11 * j) % 1024) / (1024.0F));
+auto float x;
+if (z < 64) {
+x = (data)[z++];
+} else
+{
+x = (((192 + 11 * i) + 23 * j) % 1024) / (1024.0F);
+}
 (in_data_host[i * inWidth + j]) = x;
 }
 }
@@ -6155,9 +6186,9 @@ if ((cudaMallocPitch((void **)(&in_data_gpu), &pitch, (inWidth) * sizeof(float),
 printf("cudaMallocPitch() failed\n");
 return 1;
 }
-if ((cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(float) * (inWidth), (inWidth) * sizeof(float), inHeight, cudaMemcpyHostToDevice)) != (cudaSuccess))
-{
-printf("cudaMemcpy2D() failed\n");
+
+if ((cudaMemcpy(in_data_gpu, in_data_host, bytesIn, cudaMemcpyHostToDevice)) != (cudaSuccess)) {
+printf("cudaMemcpy() failed\n");
 }
 
 ((surfaceUpsampleLinear.addressMode)[0]) = cudaAddressModeWrap;
@@ -6176,7 +6207,7 @@ return -2;
 
 cudaMalloc((void **)(&out_data_gpu), bytesOut);
 
-auto dim3 grid(outWidth / 16, outHeight / 16); auto dim3 block(16, 16);
+auto dim3 grid(outWidth / 8, outHeight / 8); auto dim3 block(8, 8);
 
 cudaConfigureCall(grid, block) ? ((void)0) : kernelUpsampleLinear__entry(out_data_gpu, outWidth, outHeight);
 
@@ -6192,15 +6223,17 @@ cudaMemcpy(out_data_host, out_data_gpu, bytesOut, cudaMemcpyDeviceToHost);
 cudaFree(in_data_gpu);
 cudaFree(out_data_gpu);
 
-printf("\n\nChecking bilinear interpolation\n");
-
-for (int i = 4; (i < (outHeight - 4)) && (errors < 5); i++) {
-for (int j = 4; (j < (outWidth - 4)) && (errors < 5); j++) {
+auto int fringeV = ((outHeight / inHeight) - 1);
+auto int fringeH = ((outWidth / inWidth) - 1);
+for (int i = fringeV; (i < (outHeight - fringeV)) && (errors < 5); i++) {
+for (int j = fringeH; (j < (outWidth - fringeH)) && (errors < 5); j++) {
 
 
 
 auto float u = ((float)j / ((float)outWidth)); auto float v = ((float)i / ((float)outHeight));
-auto int tx = ((int)(u * ((float)inWidth))); auto int ty = ((int)(v * ((float)inHeight)));
+auto float ftx = (u * ((float)inWidth) - (0.5F));
+auto float fty = (v * ((float)inHeight) - (0.5F));
+auto int tx = ((int)ftx); auto int ty = ((int)fty);
 
 auto float s0 = (0); auto float s1 = (0); auto float s2 = (0); auto float s3 = (0);
 
@@ -6211,8 +6244,8 @@ s2 = in_data_host[tx + (ty + 1) * inWidth];
 s3 = in_data_host[(tx + 1) + (ty + 1) * inWidth];
 
 
-auto float itu = (u * ((float)inWidth) - (float)tx);
-auto float itv = (v * ((float)inHeight) - (float)ty);
+auto float itu = (ftx - (float)tx);
+auto float itv = (fty - (float)ty);
 
 auto float w = ((s0 * ((1.0F) - itu) + s1 * itu) * ((1.0F) - itv) + (s2 * ((1.0F) - itu) + s3 * itu) * itv);
 
@@ -6228,13 +6261,20 @@ printf("  s0 = %f\n", s0);
 printf("  s1 = %f\n", s1);
 printf("  s2 = %f\n", s2);
 printf("  s3 = %f\n", s3);
+
 }
 }
 }
 
 if (errors) {
 printf("FAILED\n\n testUpsampleLinear() - failed\n");
+} else
+
+{
+printf("testUpsampleLinear() succeeded\n");
 }
+
+
 
 free(in_data_host);
 free(out_data_host);
@@ -6244,18 +6284,19 @@ return errors;
 
 
 int main(int argc, char **arg) {
-auto int errors = ((testNormalizedCoordinates() + testNormalizedUshort()) + testUpsample());
+
+auto int errors = (((testNormalizedCoordinates() + testNormalizedUshort()) + testUpsample()) + testUpsampleLinear());
 
 
 printf("Pass/Fail : %s\n", (errors) ? ((const char *)"Fail") : ((const char *)"Pass"));
 return (errors) ? (-1) : 0;
 }
 
-# 1 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000757e_00000000-1_textureFilters.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00003470_00000000-3_textureFilters.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000757e_00000000-3_textureFilters.fatbin.c" 1
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -6317,7 +6358,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00003470_00000000-3_textureFilters.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000757e_00000000-3_textureFilters.fatbin.c" 2
 
 
 
@@ -6333,9 +6374,9 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d37302d39303032ull,0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,
-0x3030305f74667870ull,0x30305f3037343330ull,0x372d303030303030ull,0x657275747865745full,
-0x2e737265746c6946ull,0x2820692e33707063ull,0x4263632f706d742full,0x5a554e46772e2349ull,
-0x2d2d2f2f090a2951ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x3030305f74667870ull,0x30305f6537353730ull,0x372d303030303030ull,0x657275747865745full,
+0x2e737265746c6946ull,0x2820692e33707063ull,0x4263632f706d742full,0x56725778482e2349ull,
+0x2d2d2f2f090a2969ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2f2f090a0a2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -6349,7 +6390,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6c69662e090a0a2dull,
 0x6f633c2209310965ull,0x696c2d646e616d6dull,0x662e090a223e656eull,0x2f22093209656c69ull,
-0x78706d742f706d74ull,0x33303030305f7466ull,0x303030305f303734ull,0x745f362d30303030ull,
+0x78706d742f706d74ull,0x37303030305f7466ull,0x303030305f653735ull,0x745f362d30303030ull,
 0x6946657275747865ull,0x75632e737265746cull,0x70672e3265666164ull,0x6c69662e090a2275ull,
 0x73752f2209330965ull,0x63672f62696c2f72ull,0x34365f3638782f63ull,0x672d78756e696c2dull,
 0x332e332e342f756eull,0x6564756c636e692full,0x2e6665646474732full,0x6c69662e090a2268ull,
@@ -6411,8 +6452,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6c656e72656b5f6dull,0x726f6f436d726f4eull,0x68676965685f7364ull,0x2e090a7b090a2974ull,
 0x3631752e20676572ull,0x3b3e363c68722520ull,0x2e206765722e090aull,0x313c722520323375ull,
 0x65722e090a3b3e32ull,0x25203436752e2067ull,0x090a3b3e363c6472ull,0x33662e206765722eull,
-0x3e35313c66252032ull,0x09636f6c2e090a3bull,0x0a30093532093531ull,0x656b5f3142424c24ull,
-0x6d726f4e6c656e72ull,0x0a3a7364726f6f43ull,0x353109636f6c2e09ull,0x6d090a3009393209ull,
+0x3e35313c66252032ull,0x09636f6c2e090a3bull,0x0a30093932093531ull,0x656b5f3142424c24ull,
+0x6d726f4e6c656e72ull,0x0a3a7364726f6f43ull,0x353109636f6c2e09ull,0x6d090a3009333309ull,
 0x09203631752e766full,0x6325202c31687225ull,0x0a3b782e64696174ull,0x3631752e766f6d09ull,
 0x202c326872250920ull,0x3b782e6469746e25ull,0x69772e6c756d090aull,0x09203631752e6564ull,
 0x687225202c317225ull,0x3b32687225202c31ull,0x31752e766f6d090aull,0x2c33687225092036ull,
@@ -6435,7 +6476,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x20203b3030303030ull,0x30202f2f09202020ull,0x64322e786574090aull,0x2e3233662e34762eull,
 0x3966257b20323366ull,0x66252c303166252cull,0x7d323166252c3131ull,0x6361667275735b2cull,
 0x252c3366257b2c65ull,0x252c3766252c3666ull,0x6d090a3b5d7d3866ull,0x09203233662e766full,
-0x6625202c33316625ull,0x636f6c2e090a3b39ull,0x3009313309353109ull,0x7261702e646c090aull,
+0x6625202c33316625ull,0x636f6c2e090a3b39ull,0x3009353309353109ull,0x7261702e646c090aull,
 0x09203436752e6d61ull,0x5f5b202c31647225ull,0x726170616475635full,0x6c656e72656b5f6dull,
 0x726f6f436d726f4eull,0x3b5d74756f5f7364ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
 0x202c377225202c39ull,0x6461090a3b367225ull,0x2509203233752e64ull,0x347225202c303172ull,
@@ -6443,7 +6484,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6f6c2e6c756d090aull,0x722509203436752eull,0x32647225202c3364ull,0x6461090a3b34202cull,
 0x2509203436752e64ull,0x647225202c346472ull,0x3b33647225202c31ull,0x6f6c672e7473090aull,
 0x203233662e6c6162ull,0x302b346472255b09ull,0x3b33316625202c5dull,0x3109636f6c2e090aull,
-0x090a300932330935ull,0x4c240a3b74697865ull,0x656b5f646e655744ull,0x6d726f4e6c656e72ull,
+0x090a300936330935ull,0x4c240a3b74697865ull,0x656b5f646e655744ull,0x6d726f4e6c656e72ull,
 0x0a3a7364726f6f43ull,0x656b202f2f207d09ull,0x6d726f4e6c656e72ull,0x0a0a7364726f6f43ull,
 0x207972746e652e09ull,0x6f4e6c656e72656bull,0x74726f6873556d72ull,0x61702e09090a2820ull,
 0x3436752e206d6172ull,0x70616475635f5f20ull,0x6e72656b5f6d7261ull,0x73556d726f4e6c65ull,
@@ -6453,7 +6494,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6965685f74726f68ull,0x0a7b090a29746867ull,0x752e206765722e09ull,0x363c687225203631ull,
 0x6765722e090a3b3eull,0x7225203233752e20ull,0x2e090a3b3e36313cull,0x3436752e20676572ull,
 0x3b3e363c64722520ull,0x2e206765722e090aull,0x363c662520323366ull,0x636f6c2e090a3b3eull,
-0x0932313109353109ull,0x5f3142424c240a30ull,0x6f4e6c656e72656bull,0x74726f6873556d72ull,
+0x0931323109353109ull,0x5f3142424c240a30ull,0x6f4e6c656e72656bull,0x74726f6873556d72ull,
 0x752e766f6d090a3aull,0x3168722509203631ull,0x646961746325202cull,0x766f6d090a3b782eull,
 0x722509203631752eull,0x69746e25202c3268ull,0x756d090a3b782e64ull,0x752e656469772e6cull,
 0x2c31722509203631ull,0x25202c3168722520ull,0x6f6d090a3b326872ull,0x2509203631752e76ull,
@@ -6469,8 +6510,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2020203b30303030ull,0x0a30202f2f092020ull,0x2e64322e78657409ull,0x662e3233752e3476ull,
 0x2c3772257b203233ull,0x2c3972252c387225ull,0x735b2c7d30317225ull,0x6f4e656361667275ull,
 0x74726f6873556d72ull,0x66252c3166257b2cull,0x66252c3366252c32ull,0x6c2e090a3b5d7d34ull,
-0x313109353109636full,0x766f6d090a300936ull,0x722509203233732eull,0x3b377225202c3131ull,
-0x3109636f6c2e090aull,0x0a30093831310935ull,0x617261702e646c09ull,0x2509203436752e6dull,
+0x323109353109636full,0x766f6d090a300935ull,0x722509203233732eull,0x3b377225202c3131ull,
+0x3109636f6c2e090aull,0x0a30093732310935ull,0x617261702e646c09ull,0x2509203436752e6dull,
 0x5f5f5b202c316472ull,0x6d72617061647563ull,0x4e6c656e72656b5full,0x726f6873556d726full,
 0x0a3b5d74756f5f74ull,0x617261702e646c09ull,0x2509203233752e6dull,0x5f5f5b202c323172ull,
 0x6d72617061647563ull,0x4e6c656e72656b5full,0x726f6873556d726full,0x5d68746469775f74ull,
@@ -6479,7 +6520,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x203233752e343675ull,0x25202c3264722509ull,0x756d090a3b343172ull,0x3436752e6f6c2e6cull,
 0x202c336472250920ull,0x3b34202c32647225ull,0x36752e646461090aull,0x2c34647225092034ull,
 0x25202c3164722520ull,0x7473090a3b336472ull,0x2e6c61626f6c672eull,0x72255b0920323375ull,
-0x25202c5d302b3464ull,0x6c2e090a3b313172ull,0x313109353109636full,0x697865090a300939ull,
+0x25202c5d302b3464ull,0x6c2e090a3b313172ull,0x323109353109636full,0x697865090a300938ull,
 0x6557444c240a3b74ull,0x656e72656b5f646eull,0x6873556d726f4e6cull,0x207d090a3a74726full,
 0x656e72656b202f2full,0x6873556d726f4e6cull,0x652e090a0a74726full,0x72656b207972746eull,
 0x6d617370556c656eull,0x09090a2820656c70ull,0x2e206d617261702eull,0x75635f5f20343675ull,
@@ -6489,8 +6530,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x656e72656b5f6d72ull,0x6c706d617370556cull,0x7468676965685f65ull,0x722e090a7b090a29ull,
 0x203631752e206765ull,0x0a3b3e363c687225ull,0x752e206765722e09ull,0x32313c7225203233ull,
 0x6765722e090a3b3eull,0x7225203436752e20ull,0x2e090a3b3e363c64ull,0x3233662e20676572ull,
-0x3b3e35313c662520ull,0x3109636f6c2e090aull,0x0a30093331320935ull,0x656b5f3142424c24ull,
-0x617370556c656e72ull,0x2e090a3a656c706dull,0x3209353109636f6cull,0x6f6d090a30093831ull,
+0x3b3e35313c662520ull,0x3109636f6c2e090aull,0x0a30093732320935ull,0x656b5f3142424c24ull,
+0x617370556c656e72ull,0x2e090a3a656c706dull,0x3209353109636f6cull,0x6f6d090a30093233ull,
 0x2509203631752e76ull,0x746325202c316872ull,0x090a3b782e646961ull,0x203631752e766f6dull,
 0x25202c3268722509ull,0x0a3b782e6469746eull,0x6469772e6c756d09ull,0x2509203631752e65ull,
 0x31687225202c3172ull,0x0a3b32687225202cull,0x3631752e766f6d09ull,0x202c336872250920ull,
@@ -6513,15 +6554,15 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2f0920202020203bull,0x786574090a30202full,0x662e34762e64322eull,0x7b203233662e3233ull,
 0x303166252c396625ull,0x66252c313166252cull,0x7275735b2c7d3231ull,0x6173705565636166ull,
 0x66257b2c656c706dull,0x66252c3666252c33ull,0x3b5d7d3866252c37ull,0x3109636f6c2e090aull,
-0x0a30093032320935ull,0x3233662e766f6d09ull,0x202c333166250920ull,0x6c2e090a3b396625ull,
-0x323209353109636full,0x2e646c090a300932ull,0x36752e6d61726170ull,0x2c31647225092034ull,
+0x0a30093433320935ull,0x3233662e766f6d09ull,0x202c333166250920ull,0x6c2e090a3b396625ull,
+0x333209353109636full,0x2e646c090a300936ull,0x36752e6d61726170ull,0x2c31647225092034ull,
 0x616475635f5f5b20ull,0x72656b5f6d726170ull,0x6d617370556c656eull,0x5d74756f5f656c70ull,
 0x6c2e6c756d090a3bull,0x2509203233752e6full,0x2c377225202c3972ull,0x61090a3b36722520ull,
 0x09203233752e6464ull,0x7225202c30317225ull,0x0a3b397225202c34ull,0x3436752e74766309ull,
 0x722509203233752eull,0x30317225202c3264ull,0x6c2e6c756d090a3bull,0x2509203436752e6full,
 0x647225202c336472ull,0x61090a3b34202c32ull,0x09203436752e6464ull,0x7225202c34647225ull,
 0x33647225202c3164ull,0x6c672e7473090a3bull,0x3233662e6c61626full,0x2b346472255b0920ull,
-0x33316625202c5d30ull,0x09636f6c2e090a3bull,0x3009333232093531ull,0x0a3b74697865090aull,
+0x33316625202c5d30ull,0x09636f6c2e090a3bull,0x3009373332093531ull,0x0a3b74697865090aull,
 0x5f646e6557444c24ull,0x70556c656e72656bull,0x0a3a656c706d6173ull,0x656b202f2f207d09ull,
 0x617370556c656e72ull,0x2e090a0a656c706dull,0x656b207972746e65ull,0x617370556c656e72ull,
 0x656e694c656c706dull,0x2e09090a28207261ull,0x752e206d61726170ull,0x6475635f5f203436ull,
@@ -6532,8 +6573,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x68676965685f7261ull,0x2e090a7b090a2974ull,0x3631752e20676572ull,0x3b3e363c68722520ull,
 0x2e206765722e090aull,0x313c722520323375ull,0x65722e090a3b3e32ull,0x25203436752e2067ull,
 0x090a3b3e363c6472ull,0x33662e206765722eull,0x3e35313c66252032ull,0x09636f6c2e090a3bull,
-0x3009373333093531ull,0x6b5f3142424c240aull,0x7370556c656e7265ull,0x6e694c656c706d61ull,
-0x6c2e090a3a726165ull,0x343309353109636full,0x766f6d090a300932ull,0x722509203631752eull,
+0x3009343633093531ull,0x6b5f3142424c240aull,0x7370556c656e7265ull,0x6e694c656c706d61ull,
+0x6c2e090a3a726165ull,0x363309353109636full,0x766f6d090a300939ull,0x722509203631752eull,
 0x61746325202c3168ull,0x6d090a3b782e6469ull,0x09203631752e766full,0x6e25202c32687225ull,
 0x090a3b782e646974ull,0x656469772e6c756dull,0x722509203631752eull,0x2c31687225202c31ull,
 0x090a3b3268722520ull,0x203631752e766f6dull,0x25202c3368722509ull,0x3b792e6469617463ull,
@@ -6556,8 +6597,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x202020203b303030ull,0x090a30202f2f0920ull,0x762e64322e786574ull,0x33662e3233662e34ull,
 0x252c3966257b2032ull,0x313166252c303166ull,0x5b2c7d323166252cull,0x5565636166727573ull,
 0x4c656c706d617370ull,0x257b2c7261656e69ull,0x252c3666252c3366ull,0x5d7d3866252c3766ull,
-0x09636f6c2e090a3bull,0x3009343433093531ull,0x33662e766f6d090aull,0x2c33316625092032ull,
-0x2e090a3b39662520ull,0x3309353109636f6cull,0x646c090a30093634ull,0x752e6d617261702eull,
+0x09636f6c2e090a3bull,0x3009313733093531ull,0x33662e766f6d090aull,0x2c33316625092032ull,
+0x2e090a3b39662520ull,0x3309353109636f6cull,0x646c090a30093337ull,0x752e6d617261702eull,
 0x3164722509203436ull,0x6475635f5f5b202cull,0x656b5f6d72617061ull,0x617370556c656e72ull,
 0x656e694c656c706dull,0x3b5d74756f5f7261ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
 0x202c377225202c39ull,0x6461090a3b367225ull,0x2509203233752e64ull,0x347225202c303172ull,
@@ -6565,7 +6606,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6f6c2e6c756d090aull,0x722509203436752eull,0x32647225202c3364ull,0x6461090a3b34202cull,
 0x2509203436752e64ull,0x647225202c346472ull,0x3b33647225202c31ull,0x6f6c672e7473090aull,
 0x203233662e6c6162ull,0x302b346472255b09ull,0x3b33316625202c5dull,0x3109636f6c2e090aull,
-0x0a30093734330935ull,0x240a3b7469786509ull,0x6b5f646e6557444cull,0x7370556c656e7265ull,
+0x0a30093437330935ull,0x240a3b7469786509ull,0x6b5f646e6557444cull,0x7370556c656e7265ull,
 0x6e694c656c706d61ull,0x207d090a3a726165ull,0x656e72656b202f2full,0x6c706d617370556cull,
 0x0a7261656e694c65ull,0x000000000000000aull
 };
@@ -6709,8 +6750,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"b252d1e91885c156",(char*)"textureFilters.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xaec04df3};
-# 5 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"883f3ecdf893b216",(char*)"textureFilters.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x64f98d6d};
+# 5 "/tmp/tmpxft_0000757e_00000000-1_textureFilters.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/host_defines.h" 1
@@ -12690,7 +12731,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3864 "/usr/local/cuda2.3/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda2.3/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_0000757e_00000000-1_textureFilters.cudafe1.stub.c" 2
 
 
 
@@ -12711,7 +12752,7 @@ struct __T22 {float *__par0;int __par1;int __par2;int __dummy_field;};
 
 
 struct __T23 {float *__par0;int __par1;int __par2;int __dummy_field;};
-static void __sti____cudaRegisterAll_49_tmpxft_00003470_00000000_4_textureFilters_cpp1_ii_surface(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_0000757e_00000000_4_textureFilters_cpp1_ii_surface(void) __attribute__((__constructor__));
 void __device_stub__Z16kernelNormCoordsPfii(float *__par0, int __par1, int __par2){auto struct __T20 *__T24;
 *(void**)(void*)&__T24 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernelNormCoords__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernelNormCoords__entry))); };}
 
@@ -12743,8 +12784,8 @@ void __device_stub__Z20kernelUpsampleLinearPfii(float *__par0, int __par1, int _
 void kernelUpsampleLinear__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
 {__device_stub__Z20kernelUpsampleLinearPfii( __cuda_0,__cuda_1,__cuda_2);}
 extern "C"{
-# 95 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00003470_00000000_4_textureFilters_cpp1_ii_surface(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelUpsampleLinear__entry), (char*)"kernelUpsampleLinear", "kernelUpsampleLinear", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelUpsample__entry), (char*)"kernelUpsample", "kernelUpsample", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelNormUshort__entry), (char*)"kernelNormUshort", "kernelNormUshort", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelNormCoords__entry), (char*)"kernelNormCoords", "kernelNormCoords", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surface, 0, "surface", 2, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceNormUshort, 0, "surfaceNormUshort", 2, 1, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceUpsample, 0, "surfaceUpsample", 2, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceUpsampleLinear, 0, "surfaceUpsampleLinear", 2, 0, 0);}
+# 95 "/tmp/tmpxft_0000757e_00000000-1_textureFilters.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_0000757e_00000000_4_textureFilters_cpp1_ii_surface(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelUpsampleLinear__entry), (char*)"kernelUpsampleLinear", "kernelUpsampleLinear", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelUpsample__entry), (char*)"kernelUpsample", "kernelUpsample", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelNormUshort__entry), (char*)"kernelNormUshort", "kernelNormUshort", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelNormCoords__entry), (char*)"kernelNormCoords", "kernelNormCoords", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surface, 0, "surface", 2, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceNormUshort, 0, "surfaceNormUshort", 2, 1, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceUpsample, 0, "surfaceUpsample", 2, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceUpsampleLinear, 0, "surfaceUpsampleLinear", 2, 0, 0);}
 
 }
-# 484 "textureFilters.cu" 2
+# 540 "textureFilters.cu" 2

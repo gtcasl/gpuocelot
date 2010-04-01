@@ -16,6 +16,8 @@
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/debug.h>
 
+#include <iostream>
+
 namespace executive
 {
 	/*! \brief A namespace for texture sampling instructions */
@@ -58,6 +60,9 @@ namespace executive
 			unsigned int shift, unsigned int mask, unsigned int index, 
 			ir::PTXB8*& address );
 
+		/*!
+			\brief sample in one dimension
+		*/
 		template<unsigned int dim, typename D, typename B>
 		D sample( const ir::Texture& texture,
 			B b0, ir::PTXB8* &address ) 
@@ -96,7 +101,7 @@ namespace executive
 	
 			if (texture.interpolation == ir::Texture::Nearest) 
 			{
-				ir::PTXF64 index = b;
+				ir::PTXF64 index = (ir::PTXF64)b;
 				unsigned int windex = wrap(index, texture.size.x, 
 					texture.addressMode[0]);
 				switch (texture.type) {
@@ -126,6 +131,7 @@ namespace executive
 				}
 			} 
 			else {
+
 				ir::PTXF64 low = floor(b);
 				ir::PTXF64 high = floor(b + 1);
 				unsigned int wlow = wrap(low, texture.size.x, 
@@ -182,6 +188,9 @@ namespace executive
 			return sample<dim, D>( texture, b0, dummy );
 		}
 
+		/*!
+			\brief sample in 2 dimensions
+		*/
 		template<unsigned int dim, typename D, typename B>
 		D sample(const ir::Texture& texture, 
 			B b0, B b1) {
@@ -217,13 +226,10 @@ namespace executive
 			}
 	
 			if (texture.interpolation == ir::Texture::Nearest) {
-				ir::PTXF64 index[2] = { ( ir::PTXF64 ) b[0], 
-					( ir::PTXF64 ) b[1] };
+				ir::PTXF64 index[2] = { ( ir::PTXF64 )(ir::PTXS64)b[0], ( ir::PTXF64 )(ir::PTXS64)b[1] };
 				unsigned int windex[2];
-				windex[0] = wrap(index[0], texture.size.x, 
-					texture.addressMode[0]);
-				windex[1] = wrap(index[1], texture.size.y, 
-					texture.addressMode[1]);
+				windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
+				windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
 				switch (texture.type) {
 					case ir::Texture::Unsigned:
 					{
@@ -252,18 +258,21 @@ namespace executive
 					default:
 						assert("Invalid texture data type" == 0);
 				}
+
 			} 
 			else {
+				if (texture.normalize) {
+					b[0] -= 0.5f;
+					b[1] -= 0.5f;
+				}
 				ir::PTXF64 low[2] = {floor(b[0]), floor(b[1])};
 				ir::PTXF64 high[2] = {floor(b[0] + 1), floor(b[1] + 1)};
 				unsigned int wlow[2];
 				unsigned int whigh[2];
 				wlow[0] = wrap(low[0], texture.size.x, texture.addressMode[0]);
 				wlow[1] = wrap(low[1], texture.size.y, texture.addressMode[1]);
-				whigh[0] = wrap(high[0], texture.size.x, 
-					texture.addressMode[0]);
-				whigh[1] = wrap(high[1], texture.size.y, 
-					texture.addressMode[1]);
+				whigh[0] = wrap(high[0], texture.size.x, texture.addressMode[0]);
+				whigh[1] = wrap(high[1], texture.size.y, texture.addressMode[1]);
 				switch (texture.type) {
 					case ir::Texture::Unsigned:
 					{
@@ -377,7 +386,8 @@ namespace executive
 			}
 
 			if (texture.interpolation == ir::Texture::Nearest) {
-				ir::PTXF64 index[3] = {b[0], b[1], b[2]};
+				ir::PTXF64 index[3] = { (ir::PTXF64)b[0], (ir::PTXF64)b[1], 
+					(ir::PTXF64)b[2]};
 				unsigned int windex[3];
 				windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
 				windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
@@ -416,6 +426,13 @@ namespace executive
 				}
 			} 
 			else {
+/*
+				if (texture.normalize) {
+					b[0] -= 0.5f;
+					b[1] -= 0.5f;
+					b[2] -= 0.5f;
+				}
+*/
 				ir::PTXF64 low[3] = {floor(b[0]), floor(b[1]), floor(b[2])};
 				ir::PTXF64 high[3] = {floor(b[0] + 1), floor(b[1] + 1), 
 					floor(b[2] + 1)};

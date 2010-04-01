@@ -2566,6 +2566,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 		break;
 	case ir::Instruction::GPU:
 	{
+		report("Executive::updateTextures()");
 		ir::StringSet textureUses = kernel.textureReferences();
 		for (ir::StringSet::const_iterator t_it = textureUses.begin(); t_it != textureUses.end(); 
 			++t_it) {
@@ -2574,6 +2575,8 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 			ir::Texture & texture = textures[texName];
 			CUtexref cuTexRef = module.textures[texName].cuTexture;
 			CUresult cuResult;
+
+			report("  texture '" << texName << "'");
 
 			// texture address binding			
 			switch (texture.binding) {
@@ -2601,6 +2604,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 					if (result != CUDA_SUCCESS) {
 						Ocelot_Exception("Executive::updateTexture() - failed to bind 2D texture with result " << result);
 					}
+					report("  cuTexRefSetAddress2D() succeeded");
 				}
 				break;
 				
@@ -2626,8 +2630,6 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 					assert(0 && "unimplemented invalid texture binding");
 			}
 
-			report("Executive::updateTextures()");
-
 			// filter mode
 			CUfilter_mode fm = (texture.interpolation == ir::Texture::Nearest ? 
 				CU_TR_FILTER_MODE_POINT : CU_TR_FILTER_MODE_LINEAR);
@@ -2643,6 +2645,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 			for (unsigned int i = 0; i < texture.dimensions(); i++) {
 				CUaddress_mode am = (texture.addressMode[i] == ir::Texture::Wrap ? 
 					CU_TR_ADDRESS_MODE_WRAP: CU_TR_ADDRESS_MODE_CLAMP);
+				report("  setting texture address mode to " << am << " for dimension " << i);
 				cuResult = cuda::CudaDriver::cuTexRefSetAddressMode(cuTexRef, i, am);
 				if (cuResult != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::updateTexture() - failed to set texture address mode for dimension " 
@@ -2652,15 +2655,17 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 
 			// texture coordinate normalization
 			int flags = 0;
-			flags |= (texture.normalizedFloat ? 0 : CU_TRSF_READ_AS_INTEGER);
+			if (texture.type != ir::Texture::Float) {
+				flags |= (texture.normalizedFloat ? 0 : CU_TRSF_READ_AS_INTEGER);
+			}
 			flags |= (texture.normalize ? CU_TRSF_NORMALIZED_COORDINATES: 0);
+			report("  setting texture flags to " << flags);
 			cuResult = cuda::CudaDriver::cuTexRefSetFlags(cuTexRef, flags);
 			if (cuResult != CUDA_SUCCESS) {
 				Ocelot_Exception("Executive::updateTexture() - failed to set texture flags to " 
 					<< flags << " with error " << cuResult);
 			}
 		}
-		
 	}
 	break;
 	default:

@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00003da9_00000000-1_textureFilters.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00003da9_00000000-1_textureFilters.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.cpp"
 # 1 "textureFilters.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5846,11 +5846,11 @@ extern "C" int ftrylockfile(FILE *) throw();
 
 extern "C" void funlockfile(FILE *) throw();
 # 19 "textureFilters.cu"
-static texture< float, 2, cudaReadModeElementType> surfaceNormalized;
+static texture< float, 2, cudaReadModeElementType> surface;
 # 25 "textureFilters.cu"
-void kernel__entry(float *out, int width, int height);
-# 37 "textureFilters.cu"
-int main(int argc, char **arg) {
+extern "C" void kernelNormCoords__entry(float *out, int width, int height);
+# 34 "textureFilters.cu"
+static int testNormalizedCoordinates() {
 auto int width = 64; auto int height = 64;
 
 auto float *in_data_host; auto float *out_data_host;
@@ -5872,12 +5872,12 @@ auto cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cuda
 cudaMalloc((void **)(&in_data_gpu), bytes);
 cudaMemcpy(in_data_gpu, in_data_host, bytes, cudaMemcpyHostToDevice);
 
-((surfaceNormalized.addressMode)[0]) = cudaAddressModeWrap;
-((surfaceNormalized.addressMode)[1]) = cudaAddressModeWrap;
-(surfaceNormalized.filterMode) = cudaFilterModePoint;
-(surfaceNormalized.normalized) = (true);
+((surface.addressMode)[0]) = cudaAddressModeWrap;
+((surface.addressMode)[1]) = cudaAddressModeWrap;
+(surface.filterMode) = cudaFilterModePoint;
+(surface.normalized) = (true);
 
-if ((cudaBindTexture2D(0, &surfaceNormalized, in_data_gpu, &channelDesc, width, height, width * sizeof(float))) != (cudaSuccess))
+if ((cudaBindTexture2D(0, &surface, in_data_gpu, &channelDesc, width, height, width * sizeof(float))) != (cudaSuccess))
 {
 printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
 free(in_data_host);
@@ -5890,7 +5890,7 @@ cudaMalloc((void **)(&out_data_gpu), bytes);
 
 auto dim3 grid(width / 16, height / 16); auto dim3 block(16, 16);
 
-cudaConfigureCall(grid, block) ? ((void)0) : kernel__entry(out_data_gpu, width, height);
+cudaConfigureCall(grid, block) ? ((void)0) : kernelNormCoords__entry(out_data_gpu, width, height);
 
 cudaThreadSynchronize();
 
@@ -5910,19 +5910,352 @@ printf("(%d, %d) - in = %f, out = %f %s\n", i, j, in, out, (errors) ? ("***") : 
 }
 }
 
-printf("Pass/Fail : %s\n", (errors) ? ((const char *)"Fail") : ((const char *)"Pass"));
+if (errors) {
+printf("FAILED\n\n testNormalizedCoordinates() - failed\n");
+}
 
 free(in_data_host);
 free(out_data_host);
+return errors;
+}
 
+
+
+static texture< unsigned short, 2, cudaReadModeNormalizedFloat> surfaceNormUshort;
+# 112 "textureFilters.cu"
+extern "C" void kernelNormUshort__entry(float *out, int width, int height);
+# 124 "textureFilters.cu"
+static int testNormalizedUshort() {
+auto int width = 128; auto int height = 128;
+
+auto ushort *in_data_host; auto ushort *in_data_gpu;
+auto float *out_data_host; auto float *out_data_gpu;
+
+auto size_t bytesIn = ((width * height) * sizeof(ushort));
+auto size_t bytesOut = ((width * height) * sizeof(float));
+in_data_host = (ushort *)malloc(bytesIn);
+out_data_host = (float *)malloc(bytesOut);
+
+
+for (int i = 0; i < height; i++) {
+for (int j = 0; j < width; j++) {
+(in_data_host[i * width + j]) = ((1000 + i * 3) + j * 2) % (1 << 14);
+(out_data_host[i * width + j]) = (0);
+}
+}
+
+auto cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(16, 0, 0, 0, cudaChannelFormatKindUnsigned);
+
+auto size_t pitch = (sizeof(ushort) * width);
+if ((cudaMallocPitch((void **)(&in_data_gpu), &pitch, width * sizeof(ushort), height)) != (cudaSuccess))
+{
+printf("cudaMallocPitch() failed\n");
+return 1;
+}
+if ((cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(ushort) * width, width * sizeof(ushort), height, cudaMemcpyHostToDevice)) != (cudaSuccess))
+{
+printf("cudaMemcpy2D() failed\n");
+}
+
+((surfaceNormUshort.addressMode)[0]) = cudaAddressModeWrap;
+((surfaceNormUshort.addressMode)[1]) = cudaAddressModeWrap;
+(surfaceNormUshort.filterMode) = cudaFilterModePoint;
+(surfaceNormUshort.normalized) = (false);
+
+if ((cudaBindTexture2D(0, &surfaceNormUshort, in_data_gpu, &channelDesc, width, height, pitch)) != (cudaSuccess))
+{
+printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
+free(in_data_host);
+free(out_data_host);
+cudaFree(in_data_gpu);
+return -2;
+}
+
+cudaMalloc((void **)(&out_data_gpu), bytesOut);
+
+auto dim3 grid(width / 16, height / 16); auto dim3 block(16, 16);
+
+cudaConfigureCall(grid, block) ? ((void)0) : kernelNormUshort__entry(out_data_gpu, width, height);
+
+cudaThreadSynchronize();
+
+cudaMemcpy(out_data_host, out_data_gpu, bytesOut, cudaMemcpyDeviceToHost);
+cudaFree(in_data_gpu);
+cudaFree(out_data_gpu);
+
+auto int errors = 0;
+for (int i = 0; (i < height) && (errors < 5); i++) {
+for (int j = 0; (j < width) && (errors < 5); j++) {
+auto ushort in = (in_data_host[i * width + j]);
+auto float out = (out_data_host[i * width + j]);
+auto float w = ((float)in / ((float)65535));
+if (fabs(w - out) > (0.001000000047F)) {
+++errors;
+printf("(%d, %d) - w = %f, out = %f %s\n", i, j, w, out, (errors) ? ("***") : (""));
+}
+}
+}
+
+if (errors) {
+printf("FAILED\n\n testNormalizedUshort() - failed\n");
+}
+
+free(in_data_host);
+free(out_data_host);
+return errors;
+}
+
+
+
+
+static texture< float, 2, cudaReadModeElementType> surfaceUpsample;
+# 213 "textureFilters.cu"
+extern "C" void kernelUpsample__entry(float *out, int width, int height);
+# 228 "textureFilters.cu"
+static int testUpsample() {
+auto const int inWidth = 32; auto const int inHeight = 32;
+auto const int outWidth = 128; auto const int outHeight = 128;
+
+auto float *in_data_host; auto float *in_data_gpu;
+auto float *out_data_host; auto float *out_data_gpu;
+
+auto size_t bytesIn = ((inWidth * inHeight) * sizeof(float));
+auto size_t bytesOut = ((outWidth * outHeight) * sizeof(float));
+
+auto size_t pitch = (sizeof(float) * (inWidth));
+auto int errors = 0;
+
+in_data_host = (float *)malloc(bytesIn);
+out_data_host = (float *)malloc(bytesOut);
+
+
+for (int i = 0; i < inHeight; i++) {
+for (int j = 0; j < inWidth; j++) {
+auto float x = ((((123 + 7 * i) + 11 * j) % 1024) / (1024.0F));
+(in_data_host[i * inWidth + j]) = x;
+}
+}
+for (int i = 0; i < outHeight; i++) {
+for (int j = 0; j < outWidth; j++) {
+(out_data_host[i * outWidth + j]) = (0);
+}
+}
+
+auto cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+
+if ((cudaMallocPitch((void **)(&in_data_gpu), &pitch, (inWidth) * sizeof(float), inHeight)) != (cudaSuccess))
+{
+printf("cudaMallocPitch() failed\n");
+return 1;
+}
+if ((cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(float) * (inWidth), (inWidth) * sizeof(float), inHeight, cudaMemcpyHostToDevice)) != (cudaSuccess))
+{
+printf("cudaMemcpy2D() failed\n");
+}
+
+((surfaceUpsample.addressMode)[0]) = cudaAddressModeWrap;
+((surfaceUpsample.addressMode)[1]) = cudaAddressModeWrap;
+(surfaceUpsample.filterMode) = cudaFilterModePoint;
+(surfaceUpsample.normalized) = (true);
+
+if ((cudaBindTexture2D(0, &surfaceUpsample, in_data_gpu, &channelDesc, inWidth, inHeight, pitch)) != (cudaSuccess))
+{
+printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
+free(in_data_host);
+free(out_data_host);
+cudaFree(in_data_gpu);
+return -2;
+}
+
+cudaMalloc((void **)(&out_data_gpu), bytesOut);
+
+auto dim3 grid(outWidth / 16, outHeight / 16); auto dim3 block(16, 16);
+
+cudaConfigureCall(grid, block) ? ((void)0) : kernelUpsample__entry(out_data_gpu, outWidth, outHeight);
+
+cudaThreadSynchronize();
+
+auto cudaError_t cudaError = cudaGetLastError();
+if (cudaError != (cudaSuccess)) {
+printf("kernelNormLinear() returned with error %s\n", cudaGetErrorString(cudaError));
+++errors;
+}
+
+cudaMemcpy(out_data_host, out_data_gpu, bytesOut, cudaMemcpyDeviceToHost);
+cudaFree(in_data_gpu);
+cudaFree(out_data_gpu);
+
+for (int i = 0; (i < outHeight) && (errors < 5); i++) {
+for (int j = 0; (j < outWidth) && (errors < 5); j++) {
+
+
+
+auto float u = ((float)j / ((float)outWidth)); auto float v = ((float)i / ((float)outHeight));
+
+auto int tx = ((int)(u * ((float)inWidth))); auto int ty = ((int)(v * ((float)inHeight)));
+auto float w = (in_data_host[tx + inWidth * ty]);
+
+auto float out = (out_data_host[i * outWidth + j]);
+if (fabs(w - out) > (0.001000000047F)) {
+++errors;
+printf("(%d, %d) - w = %f, out = %f %s\n", i, j, w, out, (errors) ? ("***") : (""));
+}
+}
+}
+
+if (errors) {
+printf("FAILED\n\n testUpsample() - failed\n");
+}
+
+free(in_data_host);
+free(out_data_host);
+return errors;
+}
+
+
+
+
+static texture< float, 2, cudaReadModeElementType> surfaceUpsampleLinear;
+# 337 "textureFilters.cu"
+extern "C" void kernelUpsampleLinear__entry(float *out, int width, int height);
+# 352 "textureFilters.cu"
+static int testUpsampleLinear() {
+auto const int inWidth = 32; auto const int inHeight = 32;
+auto const int outWidth = 128; auto const int outHeight = 128;
+
+auto float *in_data_host; auto float *in_data_gpu;
+auto float *out_data_host; auto float *out_data_gpu;
+
+auto size_t bytesIn = ((inWidth * inHeight) * sizeof(float));
+auto size_t bytesOut = ((outWidth * outHeight) * sizeof(float));
+
+auto size_t pitch = (sizeof(float) * (inWidth));
+auto int errors = 0;
+
+in_data_host = (float *)malloc(bytesIn);
+out_data_host = (float *)malloc(bytesOut);
+
+
+for (int i = 0; i < inHeight; i++) {
+for (int j = 0; j < inWidth; j++) {
+auto float x = ((((123 + 7 * i) + 11 * j) % 1024) / (1024.0F));
+(in_data_host[i * inWidth + j]) = x;
+}
+}
+for (int i = 0; i < outHeight; i++) {
+for (int j = 0; j < outWidth; j++) {
+(out_data_host[i * outWidth + j]) = (0);
+}
+}
+
+auto cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+
+if ((cudaMallocPitch((void **)(&in_data_gpu), &pitch, (inWidth) * sizeof(float), inHeight)) != (cudaSuccess))
+{
+printf("cudaMallocPitch() failed\n");
+return 1;
+}
+if ((cudaMemcpy2D(in_data_gpu, pitch, in_data_host, sizeof(float) * (inWidth), (inWidth) * sizeof(float), inHeight, cudaMemcpyHostToDevice)) != (cudaSuccess))
+{
+printf("cudaMemcpy2D() failed\n");
+}
+
+((surfaceUpsampleLinear.addressMode)[0]) = cudaAddressModeWrap;
+((surfaceUpsampleLinear.addressMode)[1]) = cudaAddressModeWrap;
+(surfaceUpsampleLinear.filterMode) = cudaFilterModeLinear;
+(surfaceUpsampleLinear.normalized) = (true);
+
+if ((cudaBindTexture2D(0, &surfaceUpsampleLinear, in_data_gpu, &channelDesc, inWidth, inHeight, pitch)) != (cudaSuccess))
+{
+printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
+free(in_data_host);
+free(out_data_host);
+cudaFree(in_data_gpu);
+return -2;
+}
+
+cudaMalloc((void **)(&out_data_gpu), bytesOut);
+
+auto dim3 grid(outWidth / 16, outHeight / 16); auto dim3 block(16, 16);
+
+cudaConfigureCall(grid, block) ? ((void)0) : kernelUpsampleLinear__entry(out_data_gpu, outWidth, outHeight);
+
+cudaThreadSynchronize();
+
+auto cudaError_t cudaError = cudaGetLastError();
+if (cudaError != (cudaSuccess)) {
+printf("kernelNormLinear() returned with error %s\n", cudaGetErrorString(cudaError));
+++errors;
+}
+
+cudaMemcpy(out_data_host, out_data_gpu, bytesOut, cudaMemcpyDeviceToHost);
+cudaFree(in_data_gpu);
+cudaFree(out_data_gpu);
+
+printf("\n\nChecking bilinear interpolation\n");
+
+for (int i = 4; (i < (outHeight - 4)) && (errors < 5); i++) {
+for (int j = 4; (j < (outWidth - 4)) && (errors < 5); j++) {
+
+
+
+auto float u = ((float)j / ((float)outWidth)); auto float v = ((float)i / ((float)outHeight));
+auto int tx = ((int)(u * ((float)inWidth))); auto int ty = ((int)(v * ((float)inHeight)));
+
+auto float s0 = (0); auto float s1 = (0); auto float s2 = (0); auto float s3 = (0);
+
+
+s0 = in_data_host[tx + ty * inWidth];
+s1 = in_data_host[(tx + 1) + ty * inWidth];
+s2 = in_data_host[tx + (ty + 1) * inWidth];
+s3 = in_data_host[(tx + 1) + (ty + 1) * inWidth];
+
+
+auto float itu = (u * ((float)inWidth) - (float)tx);
+auto float itv = (v * ((float)inHeight) - (float)ty);
+
+auto float w = ((s0 * ((1.0F) - itu) + s1 * itu) * ((1.0F) - itv) + (s2 * ((1.0F) - itu) + s3 * itu) * itv);
+
+
+
+auto float out = (out_data_host[i * outWidth + j]);
+if (fabs(w - out) > (0.001000000047F)) {
+++errors;
+printf("(%d, %d) - w = %f, out = %f %s\n", j, i, w, out, (errors) ? ("***") : (""));
+printf("      (u, v) = %f, %f\n", u, v);
+printf("  (itu, itv) = %f, %f\n", itu, itv);
+printf("  s0 = %f\n", s0);
+printf("  s1 = %f\n", s1);
+printf("  s2 = %f\n", s2);
+printf("  s3 = %f\n", s3);
+}
+}
+}
+
+if (errors) {
+printf("FAILED\n\n testUpsampleLinear() - failed\n");
+}
+
+free(in_data_host);
+free(out_data_host);
+return errors;
+}
+
+
+
+int main(int argc, char **arg) {
+auto int errors = ((testNormalizedCoordinates() + testNormalizedUshort()) + testUpsample());
+
+
+printf("Pass/Fail : %s\n", (errors) ? ((const char *)"Fail") : ((const char *)"Pass"));
 return (errors) ? (-1) : 0;
 }
 
-# 1 "/tmp/tmpxft_00003da9_00000000-1_textureFilters.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00003da9_00000000-3_textureFilters.fatbin.c" 1
+# 1 "/tmp/tmpxft_00003470_00000000-3_textureFilters.fatbin.c" 1
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda2.3/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5984,7 +6317,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00003da9_00000000-3_textureFilters.fatbin.c" 2
+# 2 "/tmp/tmpxft_00003470_00000000-3_textureFilters.fatbin.c" 2
 
 
 
@@ -6000,9 +6333,9 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d37302d39303032ull,0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,
-0x3030305f74667870ull,0x30305f3961643330ull,0x372d303030303030ull,0x657275747865745full,
-0x2e737265746c6946ull,0x2820692e33707063ull,0x4263632f706d742full,0x556d4837362e2349ull,
-0x2d2d2f2f090a2949ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x3030305f74667870ull,0x30305f3037343330ull,0x372d303030303030ull,0x657275747865745full,
+0x2e737265746c6946ull,0x2820692e33707063ull,0x4263632f706d742full,0x5a554e46772e2349ull,
+0x2d2d2f2f090a2951ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2f2f090a0a2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -6016,7 +6349,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x6c69662e090a0a2dull,
 0x6f633c2209310965ull,0x696c2d646e616d6dull,0x662e090a223e656eull,0x2f22093209656c69ull,
-0x78706d742f706d74ull,0x33303030305f7466ull,0x303030305f396164ull,0x745f362d30303030ull,
+0x78706d742f706d74ull,0x33303030305f7466ull,0x303030305f303734ull,0x745f362d30303030ull,
 0x6946657275747865ull,0x75632e737265746cull,0x70672e3265666164ull,0x6c69662e090a2275ull,
 0x73752f2209330965ull,0x63672f62696c2f72ull,0x34365f3638782f63ull,0x672d78756e696c2dull,
 0x332e332e342f756eull,0x6564756c636e692full,0x2e6665646474732full,0x6c69662e090a2268ull,
@@ -6067,16 +6400,97 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6974636e75665f68ull,0x090a22682e736e6full,0x363209656c69662eull,0x6c2f7273752f2209ull,
 0x6475632f6c61636full,0x6475632f332e3261ull,0x2e2e2f6e69622f61ull,0x6564756c636e692full,
 0x75665f6874616d2full,0x5f736e6f6974636eull,0x317874705f6c6264ull,0x742e090a0a22682eull,
-0x203436752e207865ull,0x4e65636166727573ull,0x657a696c616d726full,0x6e652e090a0a3b64ull,
-0x6b365a5f20797274ull,0x6966506c656e7265ull,0x702e09090a282069ull,0x36752e206d617261ull,
-0x616475635f5f2034ull,0x365a5f5f6d726170ull,0x66506c656e72656bull,0x0a2c74756f5f6969ull,
-0x6d617261702e0909ull,0x5f5f203233732e20ull,0x6d72617061647563ull,0x6e72656b365a5f5full,
-0x775f696966506c65ull,0x09090a2c68746469ull,0x2e206d617261702eull,0x75635f5f20323373ull,
-0x5f5f6d7261706164ull,0x6c656e72656b365aull,0x6965685f69696650ull,0x0a7b090a29746867ull,
-0x752e206765722e09ull,0x363c687225203631ull,0x6765722e090a3b3eull,0x7225203233752e20ull,
-0x2e090a3b3e32313cull,0x3436752e20676572ull,0x3b3e363c64722520ull,0x2e206765722e090aull,
-0x313c662520323366ull,0x6f6c2e090a3b3e35ull,0x0935320935310963ull,0x5f3142424c240a30ull,
-0x656e72656b365a5full,0x090a3a696966506cull,0x09353109636f6c2eull,0x6f6d090a30093033ull,
+0x203436752e207865ull,0x3b65636166727573ull,0x2e207865742e090aull,0x6672757320343675ull,
+0x556d726f4e656361ull,0x090a3b74726f6873ull,0x36752e207865742eull,0x6361667275732034ull,
+0x6c706d6173705565ull,0x7865742e090a3b65ull,0x7573203436752e20ull,0x7370556563616672ull,
+0x6e694c656c706d61ull,0x2e090a0a3b726165ull,0x656b207972746e65ull,0x6d726f4e6c656e72ull,
+0x28207364726f6f43ull,0x617261702e09090aull,0x5f203436752e206dull,0x726170616475635full,
+0x6c656e72656b5f6dull,0x726f6f436d726f4eull,0x0a2c74756f5f7364ull,0x6d617261702e0909ull,
+0x5f5f203233732e20ull,0x6d72617061647563ull,0x4e6c656e72656b5full,0x64726f6f436d726full,
+0x2c68746469775f73ull,0x617261702e09090aull,0x5f203233732e206dull,0x726170616475635full,
+0x6c656e72656b5f6dull,0x726f6f436d726f4eull,0x68676965685f7364ull,0x2e090a7b090a2974ull,
+0x3631752e20676572ull,0x3b3e363c68722520ull,0x2e206765722e090aull,0x313c722520323375ull,
+0x65722e090a3b3e32ull,0x25203436752e2067ull,0x090a3b3e363c6472ull,0x33662e206765722eull,
+0x3e35313c66252032ull,0x09636f6c2e090a3bull,0x0a30093532093531ull,0x656b5f3142424c24ull,
+0x6d726f4e6c656e72ull,0x0a3a7364726f6f43ull,0x353109636f6c2e09ull,0x6d090a3009393209ull,
+0x09203631752e766full,0x6325202c31687225ull,0x0a3b782e64696174ull,0x3631752e766f6d09ull,
+0x202c326872250920ull,0x3b782e6469746e25ull,0x69772e6c756d090aull,0x09203631752e6564ull,
+0x687225202c317225ull,0x3b32687225202c31ull,0x31752e766f6d090aull,0x2c33687225092036ull,
+0x2e64696174632520ull,0x2e766f6d090a3b79ull,0x6872250920363175ull,0x6469746e25202c34ull,
+0x6c756d090a3b792eull,0x31752e656469772eull,0x202c327225092036ull,0x7225202c33687225ull,
+0x747663090a3b3468ull,0x3631752e3233752eull,0x25202c3372250920ull,0x090a3b782e646974ull,
+0x203233752e646461ull,0x7225202c34722509ull,0x0a3b317225202c33ull,0x3233752e74766309ull,
+0x722509203631752eull,0x2e64697425202c35ull,0x2e646461090a3b79ull,0x3672250920323375ull,
+0x25202c357225202cull,0x2e646c090a3b3272ull,0x33732e6d61726170ull,0x202c377225092032ull,
+0x70616475635f5f5bull,0x6e72656b5f6d7261ull,0x6f436d726f4e6c65ull,0x6469775f7364726full,
+0x7663090a3b5d6874ull,0x3233662e6e722e74ull,0x662509203233752eull,0x0a3b347225202c31ull,
+0x2e6e722e74766309ull,0x203233732e323366ull,0x7225202c32662509ull,0x2e766964090a3b37ull,
+0x3233662e6c6c7566ull,0x25202c3366250920ull,0x3b326625202c3166ull,0x6e722e747663090aull,
+0x3233752e3233662eull,0x25202c3466250920ull,0x2e646c090a3b3672ull,0x33732e6d61726170ull,
+0x202c387225092032ull,0x70616475635f5f5bull,0x6e72656b5f6d7261ull,0x6f436d726f4e6c65ull,
+0x6965685f7364726full,0x63090a3b5d746867ull,0x33662e6e722e7476ull,0x2509203233732e32ull,
+0x3b387225202c3566ull,0x75662e766964090aull,0x09203233662e6c6cull,0x346625202c366625ull,
+0x090a3b356625202cull,0x203233662e766f6dull,0x6630202c37662509ull,0x3030303030303030ull,
+0x2f0920202020203bull,0x766f6d090a30202full,0x662509203233662eull,0x3030306630202c38ull,
+0x20203b3030303030ull,0x30202f2f09202020ull,0x64322e786574090aull,0x2e3233662e34762eull,
+0x3966257b20323366ull,0x66252c303166252cull,0x7d323166252c3131ull,0x6361667275735b2cull,
+0x252c3366257b2c65ull,0x252c3766252c3666ull,0x6d090a3b5d7d3866ull,0x09203233662e766full,
+0x6625202c33316625ull,0x636f6c2e090a3b39ull,0x3009313309353109ull,0x7261702e646c090aull,
+0x09203436752e6d61ull,0x5f5b202c31647225ull,0x726170616475635full,0x6c656e72656b5f6dull,
+0x726f6f436d726f4eull,0x3b5d74756f5f7364ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
+0x202c377225202c39ull,0x6461090a3b367225ull,0x2509203233752e64ull,0x347225202c303172ull,
+0x090a3b397225202cull,0x2e3436752e747663ull,0x6472250920323375ull,0x3b30317225202c32ull,
+0x6f6c2e6c756d090aull,0x722509203436752eull,0x32647225202c3364ull,0x6461090a3b34202cull,
+0x2509203436752e64ull,0x647225202c346472ull,0x3b33647225202c31ull,0x6f6c672e7473090aull,
+0x203233662e6c6162ull,0x302b346472255b09ull,0x3b33316625202c5dull,0x3109636f6c2e090aull,
+0x090a300932330935ull,0x4c240a3b74697865ull,0x656b5f646e655744ull,0x6d726f4e6c656e72ull,
+0x0a3a7364726f6f43ull,0x656b202f2f207d09ull,0x6d726f4e6c656e72ull,0x0a0a7364726f6f43ull,
+0x207972746e652e09ull,0x6f4e6c656e72656bull,0x74726f6873556d72ull,0x61702e09090a2820ull,
+0x3436752e206d6172ull,0x70616475635f5f20ull,0x6e72656b5f6d7261ull,0x73556d726f4e6c65ull,
+0x74756f5f74726f68ull,0x7261702e09090a2cull,0x203233732e206d61ull,0x6170616475635f5full,
+0x656e72656b5f6d72ull,0x6873556d726f4e6cull,0x746469775f74726full,0x61702e09090a2c68ull,
+0x3233732e206d6172ull,0x70616475635f5f20ull,0x6e72656b5f6d7261ull,0x73556d726f4e6c65ull,
+0x6965685f74726f68ull,0x0a7b090a29746867ull,0x752e206765722e09ull,0x363c687225203631ull,
+0x6765722e090a3b3eull,0x7225203233752e20ull,0x2e090a3b3e36313cull,0x3436752e20676572ull,
+0x3b3e363c64722520ull,0x2e206765722e090aull,0x363c662520323366ull,0x636f6c2e090a3b3eull,
+0x0932313109353109ull,0x5f3142424c240a30ull,0x6f4e6c656e72656bull,0x74726f6873556d72ull,
+0x752e766f6d090a3aull,0x3168722509203631ull,0x646961746325202cull,0x766f6d090a3b782eull,
+0x722509203631752eull,0x69746e25202c3268ull,0x756d090a3b782e64ull,0x752e656469772e6cull,
+0x2c31722509203631ull,0x25202c3168722520ull,0x6f6d090a3b326872ull,0x2509203631752e76ull,
+0x746325202c336872ull,0x090a3b792e646961ull,0x203631752e766f6dull,0x25202c3468722509ull,
+0x0a3b792e6469746eull,0x6469772e6c756d09ull,0x2509203631752e65ull,0x33687225202c3272ull,
+0x0a3b34687225202cull,0x3233752e74766309ull,0x722509203631752eull,0x2e64697425202c33ull,
+0x2e646461090a3b78ull,0x3472250920323375ull,0x25202c337225202cull,0x747663090a3b3172ull,
+0x3631752e3233752eull,0x25202c3572250920ull,0x090a3b792e646974ull,0x203233752e646461ull,
+0x7225202c36722509ull,0x0a3b327225202c35ull,0x2e6e722e74766309ull,0x203233752e323366ull,
+0x7225202c31662509ull,0x2e747663090a3b34ull,0x752e3233662e6e72ull,0x2c32662509203233ull,
+0x6d090a3b36722520ull,0x09203233662e766full,0x306630202c336625ull,0x3b30303030303030ull,
+0x2f2f092020202020ull,0x2e766f6d090a3020ull,0x3466250920323366ull,0x303030306630202cull,
+0x2020203b30303030ull,0x0a30202f2f092020ull,0x2e64322e78657409ull,0x662e3233752e3476ull,
+0x2c3772257b203233ull,0x2c3972252c387225ull,0x735b2c7d30317225ull,0x6f4e656361667275ull,
+0x74726f6873556d72ull,0x66252c3166257b2cull,0x66252c3366252c32ull,0x6c2e090a3b5d7d34ull,
+0x313109353109636full,0x766f6d090a300936ull,0x722509203233732eull,0x3b377225202c3131ull,
+0x3109636f6c2e090aull,0x0a30093831310935ull,0x617261702e646c09ull,0x2509203436752e6dull,
+0x5f5f5b202c316472ull,0x6d72617061647563ull,0x4e6c656e72656b5full,0x726f6873556d726full,
+0x0a3b5d74756f5f74ull,0x617261702e646c09ull,0x2509203233752e6dull,0x5f5f5b202c323172ull,
+0x6d72617061647563ull,0x4e6c656e72656b5full,0x726f6873556d726full,0x5d68746469775f74ull,
+0x6c2e6c756d090a3bull,0x2509203233752e6full,0x317225202c333172ull,0x0a3b367225202c32ull,
+0x3233752e64646109ull,0x202c343172250920ull,0x317225202c347225ull,0x2e747663090a3b33ull,
+0x203233752e343675ull,0x25202c3264722509ull,0x756d090a3b343172ull,0x3436752e6f6c2e6cull,
+0x202c336472250920ull,0x3b34202c32647225ull,0x36752e646461090aull,0x2c34647225092034ull,
+0x25202c3164722520ull,0x7473090a3b336472ull,0x2e6c61626f6c672eull,0x72255b0920323375ull,
+0x25202c5d302b3464ull,0x6c2e090a3b313172ull,0x313109353109636full,0x697865090a300939ull,
+0x6557444c240a3b74ull,0x656e72656b5f646eull,0x6873556d726f4e6cull,0x207d090a3a74726full,
+0x656e72656b202f2full,0x6873556d726f4e6cull,0x652e090a0a74726full,0x72656b207972746eull,
+0x6d617370556c656eull,0x09090a2820656c70ull,0x2e206d617261702eull,0x75635f5f20343675ull,
+0x6b5f6d7261706164ull,0x7370556c656e7265ull,0x756f5f656c706d61ull,0x61702e09090a2c74ull,
+0x3233732e206d6172ull,0x70616475635f5f20ull,0x6e72656b5f6d7261ull,0x706d617370556c65ull,
+0x68746469775f656cull,0x7261702e09090a2cull,0x203233732e206d61ull,0x6170616475635f5full,
+0x656e72656b5f6d72ull,0x6c706d617370556cull,0x7468676965685f65ull,0x722e090a7b090a29ull,
+0x203631752e206765ull,0x0a3b3e363c687225ull,0x752e206765722e09ull,0x32313c7225203233ull,
+0x6765722e090a3b3eull,0x7225203436752e20ull,0x2e090a3b3e363c64ull,0x3233662e20676572ull,
+0x3b3e35313c662520ull,0x3109636f6c2e090aull,0x0a30093331320935ull,0x656b5f3142424c24ull,
+0x617370556c656e72ull,0x2e090a3a656c706dull,0x3209353109636f6cull,0x6f6d090a30093831ull,
 0x2509203631752e76ull,0x746325202c316872ull,0x090a3b782e646961ull,0x203631752e766f6dull,
 0x25202c3268722509ull,0x0a3b782e6469746eull,0x6469772e6c756d09ull,0x2509203631752e65ull,
 0x31687225202c3172ull,0x0a3b32687225202cull,0x3631752e766f6d09ull,0x202c336872250920ull,
@@ -6086,29 +6500,74 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x09203233752e6464ull,0x337225202c347225ull,0x090a3b317225202cull,0x2e3233752e747663ull,
 0x3572250920363175ull,0x792e64697425202cull,0x752e646461090a3bull,0x2c36722509203233ull,
 0x7225202c35722520ull,0x702e646c090a3b32ull,0x3233732e6d617261ull,0x5b202c3772250920ull,
-0x6170616475635f5full,0x656b365a5f5f6d72ull,0x696966506c656e72ull,0x3b5d68746469775full,
-0x6e722e747663090aull,0x3233752e3233662eull,0x25202c3166250920ull,0x747663090a3b3472ull,
-0x2e3233662e6e722eull,0x3266250920323373ull,0x090a3b377225202cull,0x6c6c75662e766964ull,
-0x662509203233662eull,0x202c316625202c33ull,0x7663090a3b326625ull,0x3233662e6e722e74ull,
-0x662509203233752eull,0x0a3b367225202c34ull,0x617261702e646c09ull,0x2509203233732e6dull,
-0x635f5f5b202c3872ull,0x5f6d726170616475ull,0x656e72656b365a5full,0x65685f696966506cull,
-0x090a3b5d74686769ull,0x662e6e722e747663ull,0x09203233732e3233ull,0x387225202c356625ull,
-0x662e766964090a3bull,0x203233662e6c6c75ull,0x6625202c36662509ull,0x0a3b356625202c34ull,
-0x3233662e766f6d09ull,0x30202c3766250920ull,0x3030303030303066ull,0x0920202020203b30ull,
-0x6f6d090a30202f2full,0x2509203233662e76ull,0x30306630202c3866ull,0x203b303030303030ull,
-0x202f2f0920202020ull,0x322e786574090a30ull,0x3233662e34762e64ull,0x66257b203233662eull,
-0x252c303166252c39ull,0x323166252c313166ull,0x61667275735b2c7dull,0x6c616d726f4e6563ull,
-0x66257b2c64657a69ull,0x66252c3666252c33ull,0x3b5d7d3866252c37ull,0x33662e766f6d090aull,
-0x2c33316625092032ull,0x2e090a3b39662520ull,0x3309353109636f6cull,0x2e646c090a300932ull,
-0x36752e6d61726170ull,0x2c31647225092034ull,0x616475635f5f5b20ull,0x365a5f5f6d726170ull,
-0x66506c656e72656bull,0x3b5d74756f5f6969ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
+0x6170616475635f5full,0x656e72656b5f6d72ull,0x6c706d617370556cull,0x5d68746469775f65ull,
+0x722e747663090a3bull,0x33752e3233662e6eull,0x202c316625092032ull,0x7663090a3b347225ull,
+0x3233662e6e722e74ull,0x662509203233732eull,0x0a3b377225202c32ull,0x6c75662e76696409ull,
+0x2509203233662e6cull,0x2c316625202c3366ull,0x63090a3b32662520ull,0x33662e6e722e7476ull,
+0x2509203233752e32ull,0x3b367225202c3466ull,0x7261702e646c090aull,0x09203233732e6d61ull,
+0x5f5f5b202c387225ull,0x6d72617061647563ull,0x556c656e72656b5full,0x5f656c706d617370ull,
+0x3b5d746867696568ull,0x6e722e747663090aull,0x3233732e3233662eull,0x25202c3566250920ull,
+0x766964090a3b3872ull,0x33662e6c6c75662eull,0x202c366625092032ull,0x356625202c346625ull,
+0x662e766f6d090a3bull,0x2c37662509203233ull,0x3030303030663020ull,0x202020203b303030ull,
+0x090a30202f2f0920ull,0x203233662e766f6dull,0x6630202c38662509ull,0x3030303030303030ull,
+0x2f0920202020203bull,0x786574090a30202full,0x662e34762e64322eull,0x7b203233662e3233ull,
+0x303166252c396625ull,0x66252c313166252cull,0x7275735b2c7d3231ull,0x6173705565636166ull,
+0x66257b2c656c706dull,0x66252c3666252c33ull,0x3b5d7d3866252c37ull,0x3109636f6c2e090aull,
+0x0a30093032320935ull,0x3233662e766f6d09ull,0x202c333166250920ull,0x6c2e090a3b396625ull,
+0x323209353109636full,0x2e646c090a300932ull,0x36752e6d61726170ull,0x2c31647225092034ull,
+0x616475635f5f5b20ull,0x72656b5f6d726170ull,0x6d617370556c656eull,0x5d74756f5f656c70ull,
+0x6c2e6c756d090a3bull,0x2509203233752e6full,0x2c377225202c3972ull,0x61090a3b36722520ull,
+0x09203233752e6464ull,0x7225202c30317225ull,0x0a3b397225202c34ull,0x3436752e74766309ull,
+0x722509203233752eull,0x30317225202c3264ull,0x6c2e6c756d090a3bull,0x2509203436752e6full,
+0x647225202c336472ull,0x61090a3b34202c32ull,0x09203436752e6464ull,0x7225202c34647225ull,
+0x33647225202c3164ull,0x6c672e7473090a3bull,0x3233662e6c61626full,0x2b346472255b0920ull,
+0x33316625202c5d30ull,0x09636f6c2e090a3bull,0x3009333232093531ull,0x0a3b74697865090aull,
+0x5f646e6557444c24ull,0x70556c656e72656bull,0x0a3a656c706d6173ull,0x656b202f2f207d09ull,
+0x617370556c656e72ull,0x2e090a0a656c706dull,0x656b207972746e65ull,0x617370556c656e72ull,
+0x656e694c656c706dull,0x2e09090a28207261ull,0x752e206d61726170ull,0x6475635f5f203436ull,
+0x656b5f6d72617061ull,0x617370556c656e72ull,0x656e694c656c706dull,0x0a2c74756f5f7261ull,
+0x6d617261702e0909ull,0x5f5f203233732e20ull,0x6d72617061647563ull,0x556c656e72656b5full,
+0x4c656c706d617370ull,0x69775f7261656e69ull,0x2e09090a2c687464ull,0x732e206d61726170ull,
+0x6475635f5f203233ull,0x656b5f6d72617061ull,0x617370556c656e72ull,0x656e694c656c706dull,
+0x68676965685f7261ull,0x2e090a7b090a2974ull,0x3631752e20676572ull,0x3b3e363c68722520ull,
+0x2e206765722e090aull,0x313c722520323375ull,0x65722e090a3b3e32ull,0x25203436752e2067ull,
+0x090a3b3e363c6472ull,0x33662e206765722eull,0x3e35313c66252032ull,0x09636f6c2e090a3bull,
+0x3009373333093531ull,0x6b5f3142424c240aull,0x7370556c656e7265ull,0x6e694c656c706d61ull,
+0x6c2e090a3a726165ull,0x343309353109636full,0x766f6d090a300932ull,0x722509203631752eull,
+0x61746325202c3168ull,0x6d090a3b782e6469ull,0x09203631752e766full,0x6e25202c32687225ull,
+0x090a3b782e646974ull,0x656469772e6c756dull,0x722509203631752eull,0x2c31687225202c31ull,
+0x090a3b3268722520ull,0x203631752e766f6dull,0x25202c3368722509ull,0x3b792e6469617463ull,
+0x31752e766f6d090aull,0x2c34687225092036ull,0x792e6469746e2520ull,0x772e6c756d090a3bull,
+0x203631752e656469ull,0x7225202c32722509ull,0x34687225202c3368ull,0x752e747663090a3bull,
+0x09203631752e3233ull,0x697425202c337225ull,0x6461090a3b782e64ull,0x2509203233752e64ull,
+0x2c337225202c3472ull,0x63090a3b31722520ull,0x752e3233752e7476ull,0x2c35722509203631ull,
+0x3b792e6469742520ull,0x33752e646461090aull,0x202c367225092032ull,0x327225202c357225ull,
+0x61702e646c090a3bull,0x203233732e6d6172ull,0x5f5b202c37722509ull,0x726170616475635full,
+0x6c656e72656b5f6dull,0x656c706d61737055ull,0x775f7261656e694cull,0x090a3b5d68746469ull,
+0x662e6e722e747663ull,0x09203233752e3233ull,0x347225202c316625ull,0x722e747663090a3bull,
+0x33732e3233662e6eull,0x202c326625092032ull,0x6964090a3b377225ull,0x662e6c6c75662e76ull,
+0x2c33662509203233ull,0x6625202c31662520ull,0x2e747663090a3b32ull,0x752e3233662e6e72ull,
+0x2c34662509203233ull,0x6c090a3b36722520ull,0x2e6d617261702e64ull,0x3872250920323373ull,
+0x6475635f5f5b202cull,0x656b5f6d72617061ull,0x617370556c656e72ull,0x656e694c656c706dull,
+0x68676965685f7261ull,0x747663090a3b5d74ull,0x2e3233662e6e722eull,0x3566250920323373ull,
+0x090a3b387225202cull,0x6c6c75662e766964ull,0x662509203233662eull,0x202c346625202c36ull,
+0x6f6d090a3b356625ull,0x2509203233662e76ull,0x30306630202c3766ull,0x203b303030303030ull,
+0x202f2f0920202020ull,0x662e766f6d090a30ull,0x2c38662509203233ull,0x3030303030663020ull,
+0x202020203b303030ull,0x090a30202f2f0920ull,0x762e64322e786574ull,0x33662e3233662e34ull,
+0x252c3966257b2032ull,0x313166252c303166ull,0x5b2c7d323166252cull,0x5565636166727573ull,
+0x4c656c706d617370ull,0x257b2c7261656e69ull,0x252c3666252c3366ull,0x5d7d3866252c3766ull,
+0x09636f6c2e090a3bull,0x3009343433093531ull,0x33662e766f6d090aull,0x2c33316625092032ull,
+0x2e090a3b39662520ull,0x3309353109636f6cull,0x646c090a30093634ull,0x752e6d617261702eull,
+0x3164722509203436ull,0x6475635f5f5b202cull,0x656b5f6d72617061ull,0x617370556c656e72ull,
+0x656e694c656c706dull,0x3b5d74756f5f7261ull,0x6f6c2e6c756d090aull,0x722509203233752eull,
 0x202c377225202c39ull,0x6461090a3b367225ull,0x2509203233752e64ull,0x347225202c303172ull,
 0x090a3b397225202cull,0x2e3436752e747663ull,0x6472250920323375ull,0x3b30317225202c32ull,
 0x6f6c2e6c756d090aull,0x722509203436752eull,0x32647225202c3364ull,0x6461090a3b34202cull,
 0x2509203436752e64ull,0x647225202c346472ull,0x3b33647225202c31ull,0x6f6c672e7473090aull,
 0x203233662e6c6162ull,0x302b346472255b09ull,0x3b33316625202c5dull,0x3109636f6c2e090aull,
-0x090a300933330935ull,0x4c240a3b74697865ull,0x5a5f5f646e655744ull,0x506c656e72656b36ull,
-0x207d090a3a696966ull,0x656b365a5f202f2full,0x696966506c656e72ull,0x0000000000000a0aull
+0x0a30093734330935ull,0x240a3b7469786509ull,0x6b5f646e6557444cull,0x7370556c656e7265ull,
+0x6e694c656c706d61ull,0x207d090a3a726165ull,0x656e72656b202f2full,0x6c706d617370556cull,
+0x0a7261656e694c65ull,0x000000000000000aull
 };
 
 
@@ -6122,37 +6581,122 @@ extern "C" {
 static const unsigned long long __deviceText_$sm_10$[] = {
 0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d30315full,0x206e6f6973726576ull,
 0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x6c706d61730a7d6eull,
-0x616e090a7b207265ull,0x203d20202020656dull,0x4e65636166727573ull,0x657a696c616d726full,
-0x6e75786574090a64ull,0x7d0a30203d207469ull,0x0a7b2065646f630aull,0x203d20656d616e09ull,
-0x656e72656b365a5full,0x6c090a696966506cull,0x0a30203d206d656dull,0x203d206d656d7309ull,
-0x20676572090a3233ull,0x6162090a37203d20ull,0x090a30203d202072ull,0x0a7b2074736e6f63ull,
-0x616e676573090909ull,0x6e6f63203d20656dull,0x65730909090a7473ull,0x203d20206d756e67ull,
-0x66666f0909090a31ull,0x30203d2020746573ull,0x657479620909090aull,0x3231203d20202073ull,
-0x7b206d656d09090aull,0x303078300909090aull,0x3020666633303030ull,0x3030303038653778ull,
-0x3038653378302030ull,0x09090a2030303030ull,0x6962090a7d090a7dull,0x0a7b2065646f636eull,
-0x3030303178300909ull,0x3078302039303234ull,0x2030383763333230ull,0x3230303830647830ull,
-0x3430307830203530ull,0x090a203038373030ull,0x3030303061783009ull,0x3430783020643030ull,
-0x3020303837303030ull,0x3063633030306178ull,0x3132343478302039ull,0x09090a2030383734ull,
-0x3434303030317830ull,0x3230307830203130ull,0x7830203038376333ull,0x3131323030303061ull,
-0x3030303430783020ull,0x3009090a20303837ull,0x3063343230303678ull,0x3032303078302064ull,
-0x6278302030383763ull,0x2064663530313830ull,0x3730313530367830ull,0x783009090a203863ull,
-0x3530653430303036ull,0x3031323030783020ull,0x3061783020303837ull,0x3020313036303030ull,
-0x3837343030343478ull,0x63783009090a2030ull,0x2031303030323830ull,0x3630303430307830ull,
-0x3830637830203038ull,0x7830203930343032ull,0x3038363030343030ull,0x3061783009090a20ull,
-0x3020313165633030ull,0x3837343132343478ull,0x3030303978302030ull,0x3078302039303430ull,
-0x2030383730303030ull,0x383062783009090aull,0x7830206466393031ull,0x3863373031353036ull,
-0x3032303063783020ull,0x3030783020393030ull,0x0a20303837303030ull,0x3030306178300909ull,
-0x3478302035313230ull,0x2030383734303034ull,0x6130323830637830ull,0x3430307830203531ull,
-0x090a203038363030ull,0x3032383063783009ull,0x3030783020313138ull,0x3020303836303034ull,
-0x3063633030303178ull,0x3332343078302031ull,0x09090a2030383763ull,0x3030333030347830ull,
-0x3030307830203931ull,0x7830203038373030ull,0x3931323032303036ull,0x3831303030783020ull,
-0x3009090a20303837ull,0x3163303031303378ull,0x3031346378302039ull,0x3978302030383730ull,
-0x2031313830303030ull,0x3730303030307830ull,0x783009090a203038ull,0x3130303032303036ull,
-0x3831303030783020ull,0x3063783020303837ull,0x3020343061303430ull,0x3030383330303278ull,
-0x31783009090a2063ull,0x2031303430303030ull,0x3763333034307830ull,0x3432667830203038ull,
-0x7830203130303030ull,0x3438373030303030ull,0x3033783009090a20ull,0x3020393036303230ull,
-0x3837303031346378ull,0x3030303278302030ull,0x3078302039303863ull,0x2030383738303234ull,
-0x303064783009090aull,0x7830203130343065ull,0x3138373030633061ull,0x000a7d0a7d090a20ull
+0x616e090a7b207265ull,0x203d20202020656dull,0x5565636166727573ull,0x4c656c706d617370ull,
+0x74090a7261656e69ull,0x3d2074696e757865ull,0x6d61730a7d0a3320ull,0x090a7b2072656c70ull,
+0x20202020656d616eull,0x636166727573203dull,0x6c706d6173705565ull,0x6e75786574090a65ull,
+0x7d0a32203d207469ull,0x72656c706d61730aull,0x656d616e090a7b20ull,0x7573203d20202020ull,
+0x726f4e6563616672ull,0x0a74726f6873556dull,0x74696e7578657409ull,0x730a7d0a31203d20ull,
+0x7b2072656c706d61ull,0x2020656d616e090aull,0x66727573203d2020ull,0x786574090a656361ull,
+0x30203d2074696e75ull,0x2065646f630a7d0aull,0x20656d616e090a7bull,0x6c656e72656b203dull,
+0x656c706d61737055ull,0x090a7261656e694cull,0x30203d206d656d6cull,0x3d206d656d73090aull,
+0x676572090a323320ull,0x62090a37203d2020ull,0x0a30203d20207261ull,0x7b2074736e6f6309ull,
+0x6e6765730909090aull,0x6f63203d20656d61ull,0x730909090a74736eull,0x3d20206d756e6765ull,
+0x666f0909090a3120ull,0x203d202074657366ull,0x7479620909090a30ull,0x31203d2020207365ull,
+0x206d656d09090a32ull,0x3078300909090a7bull,0x2066663330303030ull,0x3030303865377830ull,
+0x3865337830203030ull,0x090a203030303030ull,0x62090a7d090a7d09ull,0x7b2065646f636e69ull,
+0x303031783009090aull,0x7830203930323430ull,0x3038376333323030ull,0x3030383064783020ull,
+0x3030783020353032ull,0x0a20303837303034ull,0x3030306178300909ull,0x3078302064303030ull,
+0x2030383730303034ull,0x6363303030617830ull,0x3234347830203930ull,0x090a203038373431ull,
+0x3430303031783009ull,0x3030783020313034ull,0x3020303837633332ull,0x3132303030306178ull,
+0x3030343078302031ull,0x09090a2030383730ull,0x6334323030367830ull,0x3230307830206430ull,
+0x7830203038376330ull,0x6466353031383062ull,0x3031353036783020ull,0x3009090a20386337ull,
+0x3065343030303678ull,0x3132303078302035ull,0x6178302030383730ull,0x2031303630303030ull,
+0x3734303034347830ull,0x783009090a203038ull,0x3130303032383063ull,0x3030343030783020ull,
+0x3063783020303836ull,0x3020393034303238ull,0x3836303034303078ull,0x61783009090a2030ull,
+0x2031316563303030ull,0x3734313234347830ull,0x3030397830203038ull,0x7830203930343030ull,
+0x3038373030303030ull,0x3062783009090a20ull,0x3020646639303138ull,0x6337303135303678ull,
+0x3230306378302038ull,0x3078302039303030ull,0x2030383730303030ull,0x303061783009090aull,
+0x7830203531323030ull,0x3038373430303434ull,0x3032383063783020ull,0x3030783020353161ull,
+0x0a20303836303034ull,0x3238306378300909ull,0x3078302031313830ull,0x2030383630303430ull,
+0x6363303030317830ull,0x3234307830203130ull,0x090a203038376333ull,0x3033303034783009ull,
+0x3030783020393130ull,0x3020303837303030ull,0x3132303230303678ull,0x3130303078302039ull,
+0x09090a2030383738ull,0x6330303130337830ull,0x3134637830203931ull,0x7830203038373030ull,
+0x3131383030303039ull,0x3030303030783020ull,0x3009090a20303837ull,0x3030303230303678ull,
+0x3130303078302031ull,0x6378302030383738ull,0x2034306130343030ull,0x3038333030327830ull,
+0x783009090a206330ull,0x3130343030303031ull,0x6333303430783020ull,0x3266783020303837ull,
+0x3020313036303634ull,0x3837303030303078ull,0x33783009090a2034ull,0x2039303630323030ull,
+0x3730303134637830ull,0x3030327830203038ull,0x7830203930386330ull,0x3038373830323430ull,
+0x3064783009090a20ull,0x3020313034306530ull,0x3837303063306178ull,0x0a7d0a7d090a2031ull,
+0x090a7b2065646f63ull,0x6b203d20656d616eull,0x726f4e6c656e7265ull,0x0a7364726f6f436dull,
+0x203d206d656d6c09ull,0x206d656d73090a30ull,0x6572090a3233203dull,0x090a37203d202067ull,
+0x30203d2020726162ull,0x2074736e6f63090aull,0x6765730909090a7bull,0x63203d20656d616eull,
+0x0909090a74736e6full,0x20206d756e676573ull,0x6f0909090a31203dull,0x3d20207465736666ull,
+0x79620909090a3020ull,0x203d202020736574ull,0x6d656d09090a3231ull,0x78300909090a7b20ull,
+0x6666333030303030ull,0x3030386537783020ull,0x6533783020303030ull,0x0a20303030303038ull,
+0x090a7d090a7d0909ull,0x2065646f636e6962ull,0x3031783009090a7bull,0x3020393032343030ull,
+0x3837633332303078ull,0x3038306478302030ull,0x3078302035303230ull,0x2030383730303430ull,
+0x303061783009090aull,0x7830206430303030ull,0x3038373030303430ull,0x6330303061783020ull,
+0x3434783020393063ull,0x0a20303837343132ull,0x3030303178300909ull,0x3078302031303434ull,
+0x2030383763333230ull,0x3230303030617830ull,0x3034307830203131ull,0x090a203038373030ull,
+0x3432303036783009ull,0x3030783020643063ull,0x3020303837633032ull,0x6635303138306278ull,
+0x3135303678302064ull,0x09090a2038633730ull,0x6534303030367830ull,0x3230307830203530ull,
+0x7830203038373031ull,0x3130363030303061ull,0x3430303434783020ull,0x3009090a20303837ull,
+0x3030303238306378ull,0x3034303078302031ull,0x6378302030383630ull,0x2039303430323830ull,
+0x3630303430307830ull,0x783009090a203038ull,0x3131656330303061ull,0x3431323434783020ull,
+0x3039783020303837ull,0x3020393034303030ull,0x3837303030303078ull,0x62783009090a2030ull,
+0x2064663930313830ull,0x3730313530367830ull,0x3030637830203863ull,0x7830203930303032ull,
+0x3038373030303030ull,0x3061783009090a20ull,0x3020353132303030ull,0x3837343030343478ull,
+0x3238306378302030ull,0x3078302035316130ull,0x2030383630303430ull,0x383063783009090aull,
+0x7830203131383032ull,0x3038363030343030ull,0x6330303031783020ull,0x3430783020313063ull,
+0x0a20303837633332ull,0x3330303478300909ull,0x3078302039313030ull,0x2030383730303030ull,
+0x3230323030367830ull,0x3030307830203931ull,0x090a203038373831ull,0x3030313033783009ull,
+0x3463783020393163ull,0x3020303837303031ull,0x3138303030303978ull,0x3030303078302031ull,
+0x09090a2030383730ull,0x3030323030367830ull,0x3030307830203130ull,0x7830203038373831ull,
+0x3430613034303063ull,0x3833303032783020ull,0x3009090a20633030ull,0x3034303030303178ull,
+0x3330343078302031ull,0x6678302030383763ull,0x2031303030303432ull,0x3730303030307830ull,
+0x783009090a203438ull,0x3930363032303033ull,0x3030313463783020ull,0x3032783020303837ull,
+0x3020393038633030ull,0x3837383032343078ull,0x64783009090a2030ull,0x2031303430653030ull,
+0x3730306330617830ull,0x7d0a7d090a203138ull,0x0a7b2065646f630aull,0x203d20656d616e09ull,
+0x70556c656e72656bull,0x090a656c706d6173ull,0x30203d206d656d6cull,0x3d206d656d73090aull,
+0x676572090a323320ull,0x62090a37203d2020ull,0x0a30203d20207261ull,0x7b2074736e6f6309ull,
+0x6e6765730909090aull,0x6f63203d20656d61ull,0x730909090a74736eull,0x3d20206d756e6765ull,
+0x666f0909090a3120ull,0x203d202074657366ull,0x7479620909090a30ull,0x31203d2020207365ull,
+0x206d656d09090a32ull,0x3078300909090a7bull,0x2066663330303030ull,0x3030303865377830ull,
+0x3865337830203030ull,0x090a203030303030ull,0x62090a7d090a7d09ull,0x7b2065646f636e69ull,
+0x303031783009090aull,0x7830203930323430ull,0x3038376333323030ull,0x3030383064783020ull,
+0x3030783020353032ull,0x0a20303837303034ull,0x3030306178300909ull,0x3078302064303030ull,
+0x2030383730303034ull,0x6363303030617830ull,0x3234347830203930ull,0x090a203038373431ull,
+0x3430303031783009ull,0x3030783020313034ull,0x3020303837633332ull,0x3132303030306178ull,
+0x3030343078302031ull,0x09090a2030383730ull,0x6334323030367830ull,0x3230307830206430ull,
+0x7830203038376330ull,0x6466353031383062ull,0x3031353036783020ull,0x3009090a20386337ull,
+0x3065343030303678ull,0x3132303078302035ull,0x6178302030383730ull,0x2031303630303030ull,
+0x3734303034347830ull,0x783009090a203038ull,0x3130303032383063ull,0x3030343030783020ull,
+0x3063783020303836ull,0x3020393034303238ull,0x3836303034303078ull,0x61783009090a2030ull,
+0x2031316563303030ull,0x3734313234347830ull,0x3030397830203038ull,0x7830203930343030ull,
+0x3038373030303030ull,0x3062783009090a20ull,0x3020646639303138ull,0x6337303135303678ull,
+0x3230306378302038ull,0x3078302039303030ull,0x2030383730303030ull,0x303061783009090aull,
+0x7830203531323030ull,0x3038373430303434ull,0x3032383063783020ull,0x3030783020353161ull,
+0x0a20303836303034ull,0x3238306378300909ull,0x3078302031313830ull,0x2030383630303430ull,
+0x6363303030317830ull,0x3234307830203130ull,0x090a203038376333ull,0x3033303034783009ull,
+0x3030783020393130ull,0x3020303837303030ull,0x3132303230303678ull,0x3130303078302039ull,
+0x09090a2030383738ull,0x6330303130337830ull,0x3134637830203931ull,0x7830203038373030ull,
+0x3131383030303039ull,0x3030303030783020ull,0x3009090a20303837ull,0x3030303230303678ull,
+0x3130303078302031ull,0x6378302030383738ull,0x2034306130343030ull,0x3038333030327830ull,
+0x783009090a206330ull,0x3130343030303031ull,0x6333303430783020ull,0x3266783020303837ull,
+0x3020313034303434ull,0x3837303030303078ull,0x33783009090a2034ull,0x2039303630323030ull,
+0x3730303134637830ull,0x3030327830203038ull,0x7830203930386330ull,0x3038373830323430ull,
+0x3064783009090a20ull,0x3020313034306530ull,0x3837303063306178ull,0x0a7d0a7d090a2031ull,
+0x090a7b2065646f63ull,0x6b203d20656d616eull,0x726f4e6c656e7265ull,0x0a74726f6873556dull,
+0x203d206d656d6c09ull,0x206d656d73090a30ull,0x6572090a3233203dull,0x090a35203d202067ull,
+0x30203d2020726162ull,0x2074736e6f63090aull,0x6765730909090a7bull,0x63203d20656d616eull,
+0x0909090a74736e6full,0x20206d756e676573ull,0x6f0909090a31203dull,0x3d20207465736666ull,
+0x79620909090a3020ull,0x203d202020736574ull,0x206d656d09090a34ull,0x3078300909090a7bull,
+0x2066663330303030ull,0x0a7d090a7d09090aull,0x65646f636e696209ull,0x64783009090a7b20ull,
+0x2039303230303830ull,0x3730303430307830ull,0x3030317830203038ull,0x7830203530343430ull,
+0x3038376333323030ull,0x3061783009090a20ull,0x3020353034303030ull,0x3837303030343078ull,
+0x3130303678302030ull,0x3078302039306534ull,0x2030383734303230ull,0x303031783009090aull,
+0x7830203530636330ull,0x3038376333323430ull,0x3035303034783020ull,0x3030783020643034ull,
+0x0a20303837303030ull,0x3430303678300909ull,0x3078302031313630ull,0x2030383763303030ull,
+0x3234303030317830ull,0x3230307830203530ull,0x090a203038376333ull,0x3030303061783009ull,
+0x3430783020643030ull,0x3020303837303030ull,0x3138303031303378ull,0x3031346378302031ull,
+0x09090a2030383730ull,0x6334313030367830ull,0x3230307830206430ull,0x7830203038376330ull,
+0x3131343034303036ull,0x3031303030783020ull,0x3009090a20303837ull,0x3036303030306178ull,
+0x3030343478302031ull,0x6178302030383734ull,0x2035303430303030ull,0x3734303034347830ull,
+0x783009090a203038ull,0x3930383030303032ull,0x6330303430783020ull,0x3266783020303837ull,
+0x3020313032303234ull,0x3837303030303078ull,0x33783009090a2034ull,0x2039303430323030ull,
+0x3730303134637830ull,0x3030327830203038ull,0x7830203930386330ull,0x3038373830323430ull,
+0x3064783009090a20ull,0x3020313034306530ull,0x3837303063306178ull,0x0a7d0a7d090a2031ull,
+0x0000000000000000ull
 };
 
 
@@ -6165,8 +6709,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"1e09bd7a0d80c828",(char*)"textureFilters.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x314f04be};
-# 5 "/tmp/tmpxft_00003da9_00000000-1_textureFilters.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"b252d1e91885c156",(char*)"textureFilters.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xaec04df3};
+# 5 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda2.3/cuda/bin/../include/host_defines.h" 1
@@ -12146,22 +12690,61 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3864 "/usr/local/cuda2.3/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda2.3/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda2.3/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00003da9_00000000-1_textureFilters.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c" 2
 
 
 
 
 struct __T20 {float *__par0;int __par1;int __par2;int __dummy_field;};
-static void __sti____cudaRegisterAll_49_tmpxft_00003da9_00000000_4_textureFilters_cpp1_ii_f9dbc90f(void) __attribute__((__constructor__));
-void __device_stub__Z6kernelPfii(float *__par0, int __par1, int __par2){auto struct __T20 *__T21;
-*(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernel__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel__entry))); };}
+
+
+
+
+struct __T21 {float *__par0;int __par1;int __par2;int __dummy_field;};
+
+
+
+
+struct __T22 {float *__par0;int __par1;int __par2;int __dummy_field;};
+
+
+
+
+struct __T23 {float *__par0;int __par1;int __par2;int __dummy_field;};
+static void __sti____cudaRegisterAll_49_tmpxft_00003470_00000000_4_textureFilters_cpp1_ii_surface(void) __attribute__((__constructor__));
+void __device_stub__Z16kernelNormCoordsPfii(float *__par0, int __par1, int __par2){auto struct __T20 *__T24;
+*(void**)(void*)&__T24 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernelNormCoords__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernelNormCoords__entry))); };}
 
 }
-void kernel__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
-{__device_stub__Z6kernelPfii( __cuda_0,__cuda_1,__cuda_2);}
+void kernelNormCoords__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
+{__device_stub__Z16kernelNormCoordsPfii( __cuda_0,__cuda_1,__cuda_2);}
 extern "C"{
-# 29 "/tmp/tmpxft_00003da9_00000000-1_textureFilters.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00003da9_00000000_4_textureFilters_cpp1_ii_f9dbc90f(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernel__entry), (char*)"_Z6kernelPfii", "_Z6kernelPfii", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceNormalized, 0, "surfaceNormalized", 2, 0, 0);}
+
+void __device_stub__Z16kernelNormUshortPfii(float *__par0, int __par1, int __par2){auto struct __T21 *__T28;
+*(void**)(void*)&__T28 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T28->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T28->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T28->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernelNormUshort__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernelNormUshort__entry))); };}
 
 }
-# 105 "textureFilters.cu" 2
+void kernelNormUshort__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
+{__device_stub__Z16kernelNormUshortPfii( __cuda_0,__cuda_1,__cuda_2);}
+extern "C"{
+
+void __device_stub__Z14kernelUpsamplePfii(float *__par0, int __par1, int __par2){auto struct __T22 *__T212;
+*(void**)(void*)&__T212 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T212->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T212->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T212->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernelUpsample__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernelUpsample__entry))); };}
+
+}
+void kernelUpsample__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
+{__device_stub__Z14kernelUpsamplePfii( __cuda_0,__cuda_1,__cuda_2);}
+extern "C"{
+
+void __device_stub__Z20kernelUpsampleLinearPfii(float *__par0, int __par1, int __par2){auto struct __T23 *__T214;
+*(void**)(void*)&__T214 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T214->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T214->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T214->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernelUpsampleLinear__entry)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernelUpsampleLinear__entry))); };}
+
+}
+void kernelUpsampleLinear__entry( float *__cuda_0,int __cuda_1,int __cuda_2)
+{__device_stub__Z20kernelUpsampleLinearPfii( __cuda_0,__cuda_1,__cuda_2);}
+extern "C"{
+# 95 "/tmp/tmpxft_00003470_00000000-1_textureFilters.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00003470_00000000_4_textureFilters_cpp1_ii_surface(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelUpsampleLinear__entry), (char*)"kernelUpsampleLinear", "kernelUpsampleLinear", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelUpsample__entry), (char*)"kernelUpsample", "kernelUpsample", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelNormUshort__entry), (char*)"kernelNormUshort", "kernelNormUshort", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernelNormCoords__entry), (char*)"kernelNormCoords", "kernelNormCoords", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surface, 0, "surface", 2, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceNormUshort, 0, "surfaceNormUshort", 2, 1, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceUpsample, 0, "surfaceUpsample", 2, 0, 0);__cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&surfaceUpsampleLinear, 0, "surfaceUpsampleLinear", 2, 0, 0);}
+
+}
+# 484 "textureFilters.cu" 2

@@ -10,6 +10,7 @@
 
 // C++ stdlib includes
 #include <fstream>
+//#include <iostream>
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
@@ -43,6 +44,9 @@
 #define max(a, b) ( (a) < (b) ? (b) : (a))
 
 #define Ocelot_Report(x) { std::cerr << "==OCELOT== " << x << std::endl; }
+
+//#define reportC(x) { std::cout << x << std::endl; }
+#define reportC(x) { report(x) }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -2566,8 +2570,12 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 		break;
 	case ir::Instruction::GPU:
 	{
-		report("Executive::updateTextures()");
 		ir::StringSet textureUses = kernel.textureReferences();
+
+		if (textureUses.size()) {
+			reportC("Executive::updateTextures(module: '" << module.modulePath << "')");
+		}
+
 		for (ir::StringSet::const_iterator t_it = textureUses.begin(); t_it != textureUses.end(); 
 			++t_it) {
 
@@ -2576,13 +2584,14 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 			CUtexref cuTexRef = module.textures[texName].cuTexture;
 			CUresult cuResult;
 
-			report("  texture '" << texName << "'");
+			reportC("  texture '" << texName << "'");
 
 			// texture address binding			
 			switch (texture.binding) {
 				case ir::Texture::Bind_1D:
 				{
 					unsigned int offset = 0;
+					reportC("  texture 1D ");
 					CUresult result = cuda::CudaDriver::cuTexRefSetAddress(&offset, cuTexRef,
 						hydrazine::bit_cast<CUdeviceptr, void *>(texture.data), texture.bytes());
 					if (result != CUDA_SUCCESS) {
@@ -2599,6 +2608,9 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 					desc.NumChannels = texture.components();
 					desc.Format = (CUarray_format)convertFormatType(texture);
 					
+					reportC("  texture2D - width: " << desc.Width << ", height: " << desc.Height 
+						<< ", channels: " << desc.NumChannels << ", format: " << desc.Format);
+
 					CUresult result = cuda::CudaDriver::cuTexRefSetAddress2D(cuTexRef, &desc, 
 						hydrazine::bit_cast<CUdeviceptr, void *>(texture.data), texture.pitch());
 					if (result != CUDA_SUCCESS) {
@@ -2612,6 +2624,9 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 				{
 					const MemoryAllocation *memory = getMemoryAllocation(texture.data);
 					if (memory) {
+
+						reportC("  texture array - x: " << memory->desc.x << ", y: " << memory->desc.y
+							<< ", z: " << memory->desc.z << ", w: " << memory->desc.w);
 						CUresult result = cuda::CudaDriver::cuTexRefSetArray(cuTexRef, memory->cudaArray, CU_TRSA_OVERRIDE_FORMAT);
 						if (result != CUDA_SUCCESS) {
 							Ocelot_Exception("Executive::updateTexture() - failed to bind array texture with result " << result);
@@ -2624,7 +2639,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 				break;
 				
 				case ir::Texture::Bind_3D:
-					assert(0 && "unimplemented 3D");
+						Ocelot_Exception("Executive::updateTexture() - no support for 3D texture bindings");
 					break;
 				default:
 					assert(0 && "unimplemented invalid texture binding");
@@ -2634,7 +2649,7 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 			CUfilter_mode fm = (texture.interpolation == ir::Texture::Nearest ? 
 				CU_TR_FILTER_MODE_POINT : CU_TR_FILTER_MODE_LINEAR);
 
-			report("  setting texture filter mode: " << fm);
+			reportC("  setting texture filter mode: " << (fm == CU_TR_FILTER_MODE_POINT ? "point" : "linear"));
 			cuResult = cuda::CudaDriver::cuTexRefSetFilterMode(cuTexRef, fm);
 			if (cuResult != CUDA_SUCCESS) {
 				Ocelot_Exception("Executive::updateTexture() - failed to set filter mode to " 
@@ -2645,7 +2660,9 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 			for (unsigned int i = 0; i < texture.dimensions(); i++) {
 				CUaddress_mode am = (texture.addressMode[i] == ir::Texture::Wrap ? 
 					CU_TR_ADDRESS_MODE_WRAP: CU_TR_ADDRESS_MODE_CLAMP);
-				report("  setting texture address mode to " << am << " for dimension " << i);
+				reportC("  setting texture address mode to " 
+					<< (texture.addressMode[i] == ir::Texture::Wrap ? "wrap" : "clamp") 
+					<< " for dimension " << i);
 				cuResult = cuda::CudaDriver::cuTexRefSetAddressMode(cuTexRef, i, am);
 				if (cuResult != CUDA_SUCCESS) {
 					Ocelot_Exception("Executive::updateTexture() - failed to set texture address mode for dimension " 
@@ -2659,7 +2676,8 @@ void executive::Executive::updateTextures(ir::Module &module, ir::ExecutableKern
 				flags |= (texture.normalizedFloat ? 0 : CU_TRSF_READ_AS_INTEGER);
 			}
 			flags |= (texture.normalize ? CU_TRSF_NORMALIZED_COORDINATES: 0);
-			report("  setting texture flags to " << flags);
+			reportC("  setting texture flags to {" << (texture.normalize ? " normalized coordinates, " : "") 
+				<< (flags & 0x01 ? "read as integer,":"") << "}");
 			cuResult = cuda::CudaDriver::cuTexRefSetFlags(cuTexRef, flags);
 			if (cuResult != CUDA_SUCCESS) {
 				Ocelot_Exception("Executive::updateTexture() - failed to set texture flags to " 

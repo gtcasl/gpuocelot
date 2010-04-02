@@ -78,7 +78,8 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	instruction(false),
 	cacheSimulator(false),
 	memoryChecker(false),
-	raceDetector(false)
+	raceDetector(false),
+	warpSynchronous(false)
 {
 
 }
@@ -97,6 +98,7 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
 	trace.raceDetector = config.parse<bool>("raceDetector", true);
+	trace.warpSynchronous = config.parse<bool>("warpSynchronous", false);
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

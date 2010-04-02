@@ -81,6 +81,9 @@ namespace api {
 			
 			//! \brief Race detection
 			bool raceDetector;
+
+			//! \brief warp synchronous control flow
+			bool warpSynchronous;
 		};
 
 		class CudaRuntimeImplementation {

@@ -99,6 +99,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
+	ocelot/trace/implementation/WarpSynchronousGenerator.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
@@ -392,6 +393,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \
 	ocelot/cuda/interface/CudaRuntime.h \
+	ocelot/trace/interface/WarpSynchronousGenerator.h \
 	ocelot/trace/interface/MemoryTraceGenerator.h \
 	ocelot/trace/interface/TraceEvent.h \
 	ocelot/trace/interface/BranchTraceAnalyzer.h \

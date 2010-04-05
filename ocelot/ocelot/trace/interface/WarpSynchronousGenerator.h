@@ -44,16 +44,6 @@ namespace trace
 		public:
 			
 			/*!
-				\brief Header for a kernel trace
-			*/
-			class Header
-			{
-				public:
-					TraceFormat format; //! The trace format stored
-
-			};
-
-			/*!
 				\brief base class for counting warp-synchronous events
 			*/
 			class WarpCounter {
@@ -154,9 +144,6 @@ namespace trace
 			/*!	\brief Entry for the current kernel	*/
 			KernelEntry _entry;
 			
-			/*!	\brief Header for the current kernel */
-			Header _header;
-			
 		private:
 		
 			/*!
@@ -168,10 +155,6 @@ namespace trace
 				\brief collection of counters mapped to by warp sizes
 			*/
 			std::map< int, SynchronousInstructionCounter > warpCounters;
-
-			std::string kernelName;
-
-			ir::Dim3 kernelBlockDim;
 			
 		public:
 		
@@ -202,19 +185,6 @@ namespace trace
 			void finish();
 	};
 	
-}
-
-namespace boost
-{
-	namespace serialization
-	{		
-		template< class Archive >
-		void serialize( Archive& ar, 
-			trace::WarpSynchronousGenerator::Header& header, 
-			const unsigned int version ) {
-			ar & header.format;
-		}
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

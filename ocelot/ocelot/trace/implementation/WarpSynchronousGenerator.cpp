@@ -7,11 +7,16 @@
 
 // C++ includes
 #include <iostream>
+#include <fstream>
+
+// Boost includes
+#include <boost/filesystem.hpp>
 
 // Ocelot includes
 #include <ocelot/trace/interface/WarpSynchronousGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/ir/interface/Module.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -179,41 +184,49 @@ void trace::WarpSynchronousGenerator::SynchronousInstructionCounter::event(
 static void write(std::ostream &out, 
 	const trace::WarpSynchronousGenerator::SynchronousInstructionCounter &counter) {
 
-	out << " loadStore: { events: " << counter.counterLoadStore.events 
-		<< ", synchronous: " << counter.counterLoadStore.synchronous
-		<< ", accessed: " << (counter.counterLoadStore.wordsLoaded + counter.counterLoadStore.wordsStored)
+	out << "\t\t\"loadStore\": { \"events\": " << counter.counterLoadStore.events 
+		<< ", \"synchronous\": " << counter.counterLoadStore.synchronous
+		<< ", \"accessed\": " << (counter.counterLoadStore.wordsLoaded + counter.counterLoadStore.wordsStored)
 		<< " },\n";
 
-	out << " arithmetic: [\n";
+	out << "\t\t\"arithmetic\": {\n";
 
+	int someEvents = 0;
 	trace::WarpSynchronousGenerator::WarpInstructionCounter::const_iterator warp_it = counter.counterVectorizable.begin();
 	for (; warp_it != counter.counterVectorizable.end(); ++warp_it) {
-
 		trace::WarpSynchronousGenerator::DataInstructionCounter::const_iterator inst_it = warp_it->second.begin();
 		for (; inst_it != warp_it->second.end(); ++inst_it) {
 			if (inst_it->second.events) {
-				out << "   \"" << ir::PTXInstruction::toString(warp_it->first) << "." << 
-					ir::PTXOperand::toString(inst_it->first) << "\": {\n";
-				out << "     events: " << inst_it->second.events << ", synchronous: " << inst_it->second.synchronous;
-				out << " },\n";
+				if (someEvents++) {
+					out << ",\n";
+				}
+				out << "\t\t\t\"" << ir::PTXInstruction::toString(warp_it->first) << "." << 
+					ir::PTXOperand::toString(inst_it->first) << "\": { ";
+				out << " \"events\": " << inst_it->second.events << ", \"synchronous\": " << inst_it->second.synchronous;
+				out << " }";
 			}
 		}
 	}
+	out << "\n";
 
-	out << " ],\n";
-	out << " branches: [";
+	out << "\t\t},\n";
+	out << "\t\t\"branches\": [\n";
 
 	std::map< int, trace::WarpSynchronousGenerator::BranchCounter >::const_iterator bra_it;
 	bra_it = counter.counterBranches.begin();
-	for (; bra_it != counter.counterBranches.end(); ++bra_it) {
-		out << "  { pc: " << bra_it->first << ", events: " << bra_it->second.events 
-			<< ", synchronous: " << bra_it->second.synchronous << " },\n";
+	for (; bra_it != counter.counterBranches.end();) {
+		out << "\t\t\t{ \"pc\": " << bra_it->first << ", \"events\": " << bra_it->second.events 
+			<< ", \"synchronous\": " << bra_it->second.synchronous;
+		++bra_it;
+		out << " }" << (bra_it != counter.counterBranches.end() ? "," :"") << "\n";
 	}
-	out << "]\n";
+	out << "\t\t]\n";
 	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+unsigned int trace::WarpSynchronousGenerator::_counter = 0;
 
 trace::WarpSynchronousGenerator::WarpSynchronousGenerator() {
 
@@ -235,14 +248,41 @@ trace::WarpSynchronousGenerator::~WarpSynchronousGenerator() {
 */
 void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& kernel) {
 
-	kernelName = kernel.name;
+	//
+	// initialize kernel header
+	//
+	_entry.name = kernel.name;
+	_entry.module = kernel.module->modulePath;
+	_entry.format = TraceGenerator::WarpSynchronousTraceFormat;
+	_entry.path = "";
+	_entry.header = "";
+	_entry.program = "";
+	_entry.gridDim = kernel.gridDim();
+	_entry.blockDim = kernel.blockDim();
+		std::string name = kernel.name;
+		
+	if( name.size() > 20 ) {
+		name.resize( 20 );
+	}
 
+	std::stringstream stream;
+	stream << _entry.format << "_" << trace::WarpSynchronousGenerator::_counter++;
+
+	boost::filesystem::path path( database );
+	path = path.parent_path();
+	path /= _entry.program + "_" + name + "_" + stream.str() + ".json";
+	path = boost::filesystem::system_complete( path );
+	
+	_entry.header = path.string();
+
+	//
 	// identify all branches and create counters for them
+	//
 	std::vector< int > branchPCs;
 	if (kernel.ISA == ir::Instruction::Emulated) {
 		const executive::EmulatedKernel & emuKernel = 
 			static_cast<const executive::EmulatedKernel &>(kernel);
-		kernelBlockDim = emuKernel.getKernelShape();
+
 
 		executive::EmulatedKernel::PTXInstructionVector::const_iterator inst_it;
 
@@ -297,18 +337,30 @@ void trace::WarpSynchronousGenerator::event( const trace::TraceEvent& event ) {
 	Add a databse entry for the trace as well.
 */
 void trace::WarpSynchronousGenerator::finish() {
-	// serialize results
-	std::cout << kernelName << ": {";
 
-	std::cout << " threads: " << kernelBlockDim.x * kernelBlockDim.y * kernelBlockDim.z << ",\n";
-	std::cout << " counters: [\n";
+	// update database
+	_entry.updateDatabase(database);
+
+	std::ofstream traceLog(_entry.header.c_str());
+
+	//
+	// serialize results
+	//
+	traceLog << "{\n";
+	traceLog << "\t\"kernel\": \"" << _entry.name << "\",\n";
+	traceLog << "\t\"module\": \"" << _entry.module << "\",\n";
+	traceLog << "\t\"threads\": " << _entry.blockDim.x * _entry.blockDim.y * _entry.blockDim.z << ",\n";
+	traceLog << "\t\"gridDim\": [" << _entry.gridDim.x << ", " << _entry.gridDim.y << ", " << _entry.gridDim.z << "],\n";
+	traceLog << "\t\"blockDim\": [" << _entry.blockDim.x << ", " << _entry.blockDim.y << ", " << _entry.blockDim.z << "],\n";
+	traceLog << "\t\"counters\":\n[\n";
 	for (std::map< int, SynchronousInstructionCounter >::iterator counter_it = warpCounters.begin();
-		counter_it != warpCounters.end(); ++counter_it) {
-		std::cout << "{ warpSize: " << counter_it->first << ",\n";
-		write(std::cout, counter_it->second);
-		std::cout << "},\n";
+		counter_it != warpCounters.end(); ) {
+		traceLog << "\t{\n\t\"warpSize\": " << counter_it->first << ",\n";
+		write(traceLog, counter_it->second);
+		++counter_it;
+		traceLog << "\t}" << (counter_it != warpCounters.end() ? "," : "") << "\n";
 	}
-	std::cout << "]\n}\n\n";
+	traceLog << "]\n}\n\n";
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

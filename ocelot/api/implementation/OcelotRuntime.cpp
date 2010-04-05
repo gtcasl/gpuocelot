@@ -80,6 +80,7 @@ namespace ocelot
 		}
 		if (c.trace.warpSynchronous) {
 			report( "Creating warp synchronous detector" );
+			_warpSynchronous.database = c.trace.database;
 			ocelot::addTraceGenerator(_warpSynchronous, true, false);
 		}
 	}

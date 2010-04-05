@@ -31,6 +31,9 @@ namespace cuda {
 	*/
 	class Event {
 	public:
+		Event(): time(0) {
+		
+		}
 	
 		//! timer 
 		hydrazine::Timer::Second time;

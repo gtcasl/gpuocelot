@@ -10,6 +10,8 @@
 #include <ocelot/trace/interface/TraceEvent.h>
 
 trace::TraceEvent::TraceEvent():
+	gridDim(0, 0, 0),
+	blockDim(0, 0, 0),
 	blockId(0, 0, 0),
 	PC(0) 
 {
@@ -27,6 +29,8 @@ trace::TraceEvent::TraceEvent(
 			const U64Vector & t_memory_addresses,
 			ir::PTXU32 t_memory_size,
 			ir::PTXU32 ctxStackSize) :
+	gridDim(0, 0, 0),
+	blockDim(0, 0, 0),
 	blockId(t_blockId),
 	PC(t_PC),
 	contextStackSize(ctxStackSize),

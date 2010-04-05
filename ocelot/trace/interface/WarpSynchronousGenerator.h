@@ -104,6 +104,11 @@ namespace trace
 
 			public:
 				
+				//! \brief number of words loaded by a kernel
+				size_t wordsLoaded;
+				
+				//! \brief number of words stored by a kernel
+				size_t wordsStored;
 			};
 
 			/*!

@@ -12,14 +12,14 @@
 		cacheSimulator: false,
 		memoryChecker: false,
 		raceDetector: false,
-		warpSynchronous: false
+		warpSynchronous: true
 	},
 	cuda: {
 		implementation: "CudaRuntime",
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

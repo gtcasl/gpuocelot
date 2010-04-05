@@ -1799,7 +1799,6 @@ size_t executive::Executive::enumerateDevices() {
 		}
 	}
 
-#ifdef HAVE_LLVM 
 	if (api::OcelotConfiguration::getExecutive().enableLLVM) {
 		// multicore
 		Device device;
@@ -1833,8 +1832,9 @@ size_t executive::Executive::enumerateDevices() {
 			api::OcelotConfiguration::getExecutive().preferredISA == device.ISA) {
 			selectDevice((int)devices.size() - 1);
 		}
-	}#endif
+	}
 
+	assert(devices.size());
 	return devices.size();
 }
 

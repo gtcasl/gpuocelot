@@ -46,7 +46,7 @@ void trace::WarpSynchronousGenerator::WarpCounter::event(int warpSize,
 
 		if (active) {
 			++events;
-			synchronous += 1; //= (size_t)active;
+			synchronous += (active == warpSize ? 1 : 0); //= (size_t)active;
 		}
 	}
 }
@@ -60,7 +60,8 @@ trace::WarpSynchronousGenerator::InstructionCounter::InstructionCounter()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-trace::WarpSynchronousGenerator::LSInstructionCounter::LSInstructionCounter()
+trace::WarpSynchronousGenerator::LSInstructionCounter::LSInstructionCounter():
+	wordsLoaded(0), wordsStored(0)
 {
 
 }
@@ -68,7 +69,15 @@ trace::WarpSynchronousGenerator::LSInstructionCounter::LSInstructionCounter()
 void trace::WarpSynchronousGenerator::LSInstructionCounter::event(int warpSize, 
 	const trace::TraceEvent &event) {
 
-	ir::PTXU64 mask = (4 * warpSize - 1);
+	if (event.instruction->addressSpace != ir::PTXInstruction::Global) {
+		return;
+	}
+
+	ir::PTXU64 mask = (~(4 * warpSize - 1));
+	size_t *wordsAccessed = (event.instruction->opcode == ir::PTXInstruction::St ?
+		&wordsStored : &wordsLoaded);
+	
+	std::map< ir::PTXU64, int > addresses;
 	int warps = (event.active.size() + warpSize - 1) / warpSize;
 	for (int warp = 0; warp < warps; warp++) {
 		int tid = warp * warpSize;
@@ -76,28 +85,24 @@ void trace::WarpSynchronousGenerator::LSInstructionCounter::event(int warpSize,
 		for (int i = 0; i < warpSize; i++) {
 			if (event.active[tid + i]) {
 				++active;
+				++*wordsAccessed;
 			}
 		}
 
 		if (active) {
-
+			addresses.clear();
 			bool aligned = false;
-			if (event.memory_size == 4 && !(event.memory_addresses[tid] & mask)) {
-				// 32-bit access, potentially aligned
+			if (event.memory_size == 4) {
 				aligned = true;
-				for (int i = 1; i < warpSize; i++) {
-					if (event.active[tid+i] && 
-						event.memory_addresses[tid + i] != 4 + event.memory_addresses[tid + i - 1]) {
-						aligned = false;
-						break;
+				for (int i = 0; i < warpSize; i++) {
+					if (event.active[tid+i]) {
+						addresses[event.memory_addresses[tid + i] & mask] = (tid + i);
 					}
 				}
+				if (addresses.size() == 1) {
+					++synchronous;
+				}
 			}
-			if (aligned) {
-				// w00t
-				++synchronous;
-			}
-
 			++events;
 		}
 	}
@@ -175,12 +180,9 @@ static void write(std::ostream &out,
 	const trace::WarpSynchronousGenerator::SynchronousInstructionCounter &counter) {
 
 	out << " loadStore: { events: " << counter.counterLoadStore.events 
-		<< ", synchronous: " << counter.counterLoadStore.synchronous << " },\n";
-
-/*
-	out << " arithmetic: { events: " << counter.counterVectorizable.events
-		<< ", synchronous: " << counter.counterVectorizable.synchronous << " },\n";
-*/
+		<< ", synchronous: " << counter.counterLoadStore.synchronous
+		<< ", accessed: " << (counter.counterLoadStore.wordsLoaded + counter.counterLoadStore.wordsStored)
+		<< " },\n";
 
 	out << " arithmetic: [\n";
 

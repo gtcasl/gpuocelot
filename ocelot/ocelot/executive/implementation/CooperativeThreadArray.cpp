@@ -266,6 +266,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 
 	counter = 0;
 
+	currentEvent.gridDim = gridDim;
+	currentEvent.blockDim = blockDim;
 	blockId = block;
 
 	currentEvent.blockId = blockId;

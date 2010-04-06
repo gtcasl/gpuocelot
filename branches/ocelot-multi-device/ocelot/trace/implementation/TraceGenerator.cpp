@@ -23,7 +23,8 @@ trace::TraceGenerator::~TraceGenerator() {
 
 }
 
-void trace::TraceGenerator::initialize(const ir::ExecutableKernel& kernel) {
+void trace::TraceGenerator::initialize(
+	const executive::ExecutableKernel& kernel) {
 	// if we cared, we could get the kernel's launch configuration:
 	//
 	// kernel->gridDim

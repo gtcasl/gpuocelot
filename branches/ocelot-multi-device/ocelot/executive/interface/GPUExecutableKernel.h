@@ -9,14 +9,14 @@
 #include <ocelot/cuda/interface/CudaDriver.h>
 
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 
 namespace executive {
 
-	class GPUExecutableKernel: public ir::ExecutableKernel {
+	class GPUExecutableKernel: public executive::ExecutableKernel {
 	public:
 		GPUExecutableKernel( ir::Kernel& kernel, const CUfunction& function, 
-			const executive::Executive* c = 0 );
+			const executive::Device* d = 0 );
 		GPUExecutableKernel();
 		~GPUExecutableKernel();
 	
@@ -79,8 +79,6 @@ namespace executive {
 			CUDA function refering to this kernel
 		*/
 		CUfunction cuFunction;
-		
-		friend class executive::Executive;
 
 	};
 	

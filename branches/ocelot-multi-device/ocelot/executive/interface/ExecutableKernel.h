@@ -4,15 +4,14 @@
 	\brief implements a kernel that is executable on some device
 */
 
-#ifndef IR_EXECUTABLE_KERNEL_H_INCLUDED
-#define IR_EXECUTABLE_KERNEL_H_INCLUDED
+#ifndef EXECUTABLE_KERNEL_H_INCLUDED
+#define EXECUTABLE_KERNEL_H_INCLUDED
 
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Dim3.h>
 
 namespace executive {
-	class Executive;
 	class Device;
 }
 
@@ -21,18 +20,19 @@ namespace trace {
 	class TraceGenerator;
 }
 
-namespace ir {
-	class ExecutableKernel : public Kernel {
+namespace executive {
+	class ExecutableKernel : public ir::Kernel {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
-		typedef std::vector< const Texture* > TextureVector;
+		typedef std::vector< const ir::Texture* > TextureVector;
 
 	public:
-		const executive::Executive* const context;
+		const executive::Device* const device;
 
 	public:
-		ExecutableKernel(const Kernel& k, const executive::Executive* c = 0);
-		ExecutableKernel(const executive::Executive* c = 0);
+		ExecutableKernel(const ir::Kernel& k, 
+			const executive::Device* d = 0);
+		ExecutableKernel(const executive::Device* c = 0);
 		virtual ~ExecutableKernel();
 	
 		/*!	\brief Determines whether kernel is executable */
@@ -48,11 +48,13 @@ namespace ir {
 		virtual size_t mapParameterOffsets();
 
 		/*!
-			\brief given a block of parameter memory, sets the values of each parameter
+			\brief given a block of parameter memory, sets the values of 
+				each parameter
 			\param parameter pointer to parameter memory
 			\param paramSize number of bytes to write to parameter memory
 		*/
-		virtual void setParameterBlock(const unsigned char *parameter, size_t paramSize);
+		virtual void setParameterBlock(const unsigned char *parameter, 
+			size_t paramSize);
 
 		/*!
 			\brief gets the values of each parameter as a block of binary data
@@ -60,7 +62,8 @@ namespace ir {
 			\param maxSize maximum number of bytes to write to parameter memory
 			\return actual number of bytes required by parameter memory
 		*/
-		virtual size_t getParameterBlock(unsigned char *parameter, size_t maxSize) const;
+		virtual size_t getParameterBlock(unsigned char *parameter, 
+			size_t maxSize) const;
 	
 		/*!	\brief Sets the shape of a kernel */
 		virtual void setKernelShape(int x, int y, int z)=0;
@@ -68,9 +71,8 @@ namespace ir {
 		/*! \brief Changes the amount of external shared memory */
 		virtual void setExternSharedMemorySize(unsigned int)=0;
 		
-		/*! \brief Describes the device used to execute the kernel */
-		virtual void setDevice(const executive::Device* device,
-			unsigned int limit)=0;
+		/*! \brief Sets the max number of pthreads this kernel can use */
+		virtual void setWorkerThreads(unsigned int workerThreadLimit)=0;
 			
 		/*! \brief Indicate that the kernels parameters have been updated */
 		virtual void updateParameterMemory()=0;

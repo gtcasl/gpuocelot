@@ -45,7 +45,7 @@ namespace trace
 		called when a traced kernel is launched to retrieve some parameters 
 		from the kernel
 	*/
-	void CacheSimulator::initialize(const ir::ExecutableKernel& kernel) 
+	void CacheSimulator::initialize(const executive::ExecutableKernel& kernel) 
 	{
 		_time=0;
 

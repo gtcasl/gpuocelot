@@ -11,7 +11,7 @@
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/Device.h>
 
 // hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -99,17 +99,16 @@ namespace trace
 		throw hydrazine::Exception( stream.str() );
 	}
 
-	static void globalMemoryError( const executive::Executive* executive, 
+	static void globalMemoryError(const executive::Device* device, 
 		const ir::Dim3& dim, unsigned int thread, ir::PTXU64 address, 
 		unsigned int size, const TraceEvent& event, 
-		const executive::EmulatedKernel* kernel )
+		const executive::EmulatedKernel* kernel)
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, event );
 		stream << "Global memory access " << (void*)address 
 			<< " is not within any allocated or mapped range.";
-		stream << executive::Executive::nearbyAllocationsToString( *executive, 
-			(void*)address );
+		stream << device->nearbyAllocationsToString( (void*)address );
 		stream << "\n";
 		stream << "Near " << kernel->location( event.PC ) << "\n";
 		throw hydrazine::Exception( stream.str() );
@@ -153,18 +152,19 @@ namespace trace
 						|| *address >= _cache.base + _cache.extent
 						|| !_cache.valid )
 					{
-						const executive::MemoryAllocation* allocation = 
-							_context->getMemoryAllocation( (void*)*address );
+						assertM(false, "TODO: Reimplement this.");
+						const executive::Device::MemoryAllocation* allocation = 
+							_device->getMemoryAllocation( (void*)*address );
 						if( allocation == 0 )
 						{
-							globalMemoryError( _context, _dim,
+							globalMemoryError( _device, _dim,
 								thread, *address, e.memory_size, e, _kernel );
 						}
-						_cache.base = ( ir::PTXU64 ) allocation->get();
+						_cache.base = ( ir::PTXU64 ) allocation->pointer();
 						_cache.extent = allocation->size();
 						if( *address >= _cache.base + _cache.extent )
 						{
-							globalMemoryError( _context, _dim,
+							globalMemoryError( _device, _dim,
 								thread, *address, e.memory_size, e, _kernel );
 						}
 					}
@@ -195,11 +195,11 @@ namespace trace
 	
 	}	
 	
-	void MemoryChecker::initialize( const ir::ExecutableKernel& kernel )
+	void MemoryChecker::initialize( const executive::ExecutableKernel& kernel )
 	{
 		_dim = kernel.blockDim();
 	
-		_device = kernel.context->getSelectedDevice();
+		_device = kernel.device;
 		
 		_cache.valid = false;
 
@@ -215,7 +215,6 @@ namespace trace
 		_local.base = 0;
 		_local.extent = kernel.localMemorySize();
 		
-		_context = kernel.context;
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 	}
 

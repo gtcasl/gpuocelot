@@ -6,7 +6,6 @@
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Executive.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/Exception.h>
@@ -152,7 +151,7 @@ trace::MemoryTraceGenerator::Event::~Event() {
 
 /////////////////////////////////////////////////////////////////////////////
 
-static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
+static ir::PTXU64 extent(const executive::ExecutableKernel& kernel) {
 	typedef std::unordered_set<ir::PTXU64> AddressSet;
 	report("Computing extent for kernel " << kernel.name);
 	AddressSet encountered;
@@ -161,9 +160,9 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 	ir::PTXU64 extent = kernel.constMemorySize() + kernel.parameterMemorySize() 
 		+ kernel.totalSharedMemorySize() + kernel.localMemorySize();
 	
-	ir::ExecutableKernel::TextureVector textures = kernel.textureReferences();
+	executive::ExecutableKernel::TextureVector textures = kernel.textureReferences();
 	
-	for (ir::ExecutableKernel::TextureVector::iterator 
+	for (executive::ExecutableKernel::TextureVector::iterator 
 		texture = textures.begin(); texture != textures.end(); ++texture) {
 		report(" Checking texture mapped address " << (*texture)->data);
 		pointers.insert((ir::PTXU64)(*texture)->data);
@@ -217,20 +216,7 @@ static ir::PTXU64 extent(const ir::ExecutableKernel& kernel) {
 		}
 	}
 	
-	for (AddressSet::const_iterator pointer = pointers.begin(); 
-		pointer != pointers.end(); ++pointer) {
-		const executive::MemoryAllocation* 
-			allocation = kernel.context->getMemoryAllocation((const void*)*pointer);
-		if (allocation != 0) {
-			if (*pointer < (ir::PTXU64)allocation->get() + allocation->size()) {
-				if(encountered.insert((ir::PTXU64)allocation->get()).second) {
-					report(" Adding allocation at " << (void*)*pointer 
-						<< " of size " << allocation->size());
-					extent += allocation->size();
-				}
-			}
-		}
-	}
+	assertM(false, "This function needs porting to the new Device interface.");
 	
 	return extent;
 	
@@ -245,7 +231,7 @@ trace::MemoryTraceGenerator::~MemoryTraceGenerator() {
 }
 
 void trace::MemoryTraceGenerator::initialize(
-	const ir::ExecutableKernel& kernel) {
+	const executive::ExecutableKernel& kernel) {
 	_entry.name = kernel.name;
 	_entry.module = kernel.module->modulePath;
 	_entry.format = MemoryTraceFormat;

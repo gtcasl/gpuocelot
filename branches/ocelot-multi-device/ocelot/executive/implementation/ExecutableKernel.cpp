@@ -4,14 +4,14 @@
 	\brief implements a kernel that is executable on some device
 */
 
-#ifndef IR_EXECUTABLE_KERNEL_CPP_INCLUDED
-#define IR_EXECUTABLE_KERNEL_CPP_INCLUDED
+#ifndef EXECUTABLE_KERNEL_CPP_INCLUDED
+#define EXECUTABLE_KERNEL_CPP_INCLUDED
 
 // C includes
 #include <memory.h>
 
 // Ocelot includes
-#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
@@ -26,10 +26,10 @@
 
 #define REPORT_BASE 0
 
-namespace ir 
+namespace executive 
 {
-ExecutableKernel::ExecutableKernel( const Kernel& k, 
-	const executive::Executive* c ) : Kernel( k ), context( c ), 
+ExecutableKernel::ExecutableKernel( const ir::Kernel& k, 
+	const executive::Device* d ) : ir::Kernel( k ), device( d ), 
 	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
 	_registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _parameterMemorySize( 0 )
@@ -37,9 +37,10 @@ ExecutableKernel::ExecutableKernel( const Kernel& k,
 	mapParameterOffsets();
 }
 
-ExecutableKernel::ExecutableKernel( const executive::Executive* c ) :
-	context( c ), _constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
-	_registerCount( 0 ), _sharedMemorySize( 0 ), 	_externSharedMemorySize( 0 ), 
+ExecutableKernel::ExecutableKernel( const executive::Device* d ) :
+	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
+	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 
+	_sharedMemorySize( 0 ), 	_externSharedMemorySize( 0 ), 
 	_parameterMemorySize( 0 )
 {
 	mapParameterOffsets();
@@ -130,7 +131,8 @@ size_t ExecutableKernel::mapParameterOffsets() {
 		paramSize += it->getSize();
 	}
 
-	report("ExecutableKernels::mapParameterOffsets() - '" << name << "' - size: " << paramSize << " bytes");
+	report("ExecutableKernels::mapParameterOffsets() - '" << name 
+		<< "' - size: " << paramSize << " bytes");
 
 	return paramSize;
 }
@@ -140,7 +142,8 @@ size_t ExecutableKernel::mapParameterOffsets() {
 	\param parameter pointer to parameter memory
 	\param paramSize number of bytes to write to parameter memory
 */
-void ExecutableKernel::setParameterBlock(const unsigned char *parameter, size_t paramSize) {
+void ExecutableKernel::setParameterBlock(const unsigned char *parameter, 
+	size_t paramSize) {
 	mapParameterOffsets();
 
 	report("ExecutableKernel::setParameterBlock() - paramSize = " << paramSize);
@@ -161,8 +164,10 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter, size_t 
 			case ir::PTXOperand::u64:
 			{
 				const unsigned char *ptr = parameter + it->offset;
-				for (ir::Parameter::ValueVector::iterator val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); ++val_it, ptr += it->getElementSize()) {
+				for (ir::Parameter::ValueVector::iterator 
+					val_it = it->arrayValues.begin();
+					val_it != it->arrayValues.end(); 
+					++val_it, ptr += it->getElementSize()) {
 
 					memcpy(&val_it->val_u64, ptr, it->getElementSize());
 				}
@@ -172,7 +177,8 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter, size_t 
 			default:
 			{
 				throw hydrazine::Exception(std::string("Parameter type ") + 
-					ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
+					ir::PTXOperand::toString(it->type) 
+					+ " not supported for kernel " + name);
 			}
 		}
 
@@ -190,7 +196,8 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter, size_t 
 	\param maxSize maximum number of bytes to write to parameter memory
 	\return actual number of bytes required by parameter memory
 */
-size_t ExecutableKernel::getParameterBlock(unsigned char *parameter, size_t maxSize) const {
+size_t ExecutableKernel::getParameterBlock(unsigned char *parameter, 
+	size_t maxSize) const {
 	size_t offset = 0;
 	std::vector< ir::Parameter >::const_iterator it = parameters.begin();
 	for (it = parameters.begin(); it != parameters.end(); ++it) {
@@ -213,8 +220,10 @@ size_t ExecutableKernel::getParameterBlock(unsigned char *parameter, size_t maxS
 			case ir::PTXOperand::u64:
 			{
 				unsigned char *ptr = parameter + it->offset;
-				for (ir::Parameter::ValueVector::const_iterator val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); ++val_it, ptr += it->getElementSize()) {
+				for (ir::Parameter::ValueVector::const_iterator 
+					val_it = it->arrayValues.begin();
+					val_it != it->arrayValues.end(); 
+					++val_it, ptr += it->getElementSize()) {
 					
 					memcpy(ptr, &val_it->val_u64, it->getElementSize());
 				}
@@ -224,7 +233,8 @@ size_t ExecutableKernel::getParameterBlock(unsigned char *parameter, size_t maxS
 			default:
 			{
 				throw hydrazine::Exception(std::string("Parameter type ") + 
-					ir::PTXOperand::toString(it->type) + " not supported for kernel " + name);
+					ir::PTXOperand::toString(it->type) 
+					+ " not supported for kernel " + name);
 			}
 		}
 		offset = it->offset + it->getElementSize();

@@ -17,7 +17,6 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 

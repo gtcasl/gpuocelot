@@ -1,23 +1,15 @@
-/*!
-	\file Device.cpp
-	
-	\author Andrew Kerr
-	
+/*! \file Device.cpp
+	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Jan 16, 2009
-	
-	\brief class for identifying and reporting properties of devices targeted
-		by the executive
+	\brief The source file for the Device class
 */
 
 #include <ocelot/executive/interface/Device.h>
-#include <hydrazine/implementation/Exception.h>
 
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
-
-executive::Device::Device() {
+executive::Device::Properties::Properties(int id) {
 	ISA = ir::Instruction::Emulated;
 	name = "PTX Emulator";
-	guid = 0;
+	guid = id;
 	totalMemory = (1 << 22);
 	multiprocessorCount = 4;
 	maxThreadsPerBlock = 768;
@@ -31,30 +23,9 @@ executive::Device::Device() {
 	clockRate = 2400000;
 	textureAlign = 16;
 	addressSpace = 0;
-	cudaContext = 0;
 }
 
-executive::Device::~Device() {
-	for (DriverTextureMap::iterator texture = textures.begin(); texture != textures.end(); ++texture) {
-		cuda::CudaDriver::cuTexRefDestroy(texture->second);
-	}
-
-	for (DriverModuleMap::iterator module = modules.begin(); module != modules.end(); ++module) {
-		cuda::CudaDriver::cuModuleUnload(module->second);
-	}
-	
-	for (KernelMap::iterator kernel = kernels.begin(); kernel != kernels.end(); ++kernel) {
-		delete kernel->second;
-	}
-	
-	if (cudaContext != 0) {
-		if( cuda::CudaDriver::cuCtxDestroy(cudaContext) != CUDA_SUCCESS ) {
-			Ocelot_Exception("cuCtxDestroy(" << cudaContext << ") failed.");
-		}
-	}
-}
-
-std::ostream & executive::Device::write(std::ostream &out) const {
+std::ostream& executive::Device::Properties::write(std::ostream &out) const {
 	out << name << "( " << guid << " ):\n";
 	out << "  " << "total memory: " << (totalMemory >> 10) << " kB\n";
 	out << "  " << "ISA: " << ir::Instruction::toString(ISA) << "\n";
@@ -68,4 +39,37 @@ std::ostream & executive::Device::write(std::ostream &out) const {
 	return out;
 }
 
+executive::Device::Device(int guid) : _properties(guid), 
+	_driverVersion(0), _runtimeVersion(0) {
+}
+
+executive::Device::~Device() {
+}
+
+std::string executive::Device::nearbyAllocationsToString(void* pointer) const {
+	std::stringstream result;
+	MemoryAllocationVector allocations = getNearbyAllocations(pointer);
+	
+	for(MemoryAllocationVector::iterator allocation = allocations.begin(); 
+		allocation != allocations.end(); ++allocation)
+	{
+		result << "[" << (*allocation)->pointer() << "] - [" 
+			<< ((char*)(*allocation)->pointer() + (*allocation)->size()) 
+			<< "]\n";
+	}
+	
+	return result.str();
+}
+
+const executive::Device::Properties& executive::Device::properties() const {
+	return _properties;
+}
+
+int executive::Device::driverVersion() const {
+	return _driverVersion;
+}
+
+int executive::Device::runtimeVersion() const {
+	return _runtimeVersion;
+}
 

@@ -606,16 +606,54 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGLUnmapBufferObject(GLuint bufObj) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLUnmapBufferObjectAsync(
+	GLuint bufObj, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLUnregisterBufferObject(GLuint bufObj) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLUnregisterBufferObject(
+	GLuint bufObj) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsUnregisterResource(
+	struct cudaGraphicsResource* resource) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsResourceSetMapFlags(
+	struct cudaGraphicsResource *resource, unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsMapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsUnmapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsResourceGetMappedPointer(
+	void **devPtr, size_t *size, struct cudaGraphicsResource *resource) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsSubResourceGetMappedArray(
+	struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
+	unsigned int arrayIndex, unsigned int mipLevel) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 cudaError_t cuda::CudaRuntimeInterface::cudaSetDoubleForDevice(double *d) {
 	assert(0 && "unimplemented");

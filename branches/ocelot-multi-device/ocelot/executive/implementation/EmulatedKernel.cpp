@@ -13,7 +13,7 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
@@ -37,10 +37,10 @@
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
-	const Executive* c, 
+	const Device* d, 
 	bool _initialize) 
 : 
-	ExecutableKernel(*kernel, c) 
+	ExecutableKernel(*kernel, d) 
 {
 	report("Created emulated kernel " << name);
 	assertM( kernel->ISA == ir::Instruction::PTX, 
@@ -53,9 +53,9 @@ executive::EmulatedKernel::EmulatedKernel(
 	}
 }
 
-executive::EmulatedKernel::EmulatedKernel(const Executive *c): ExecutableKernel(c) {
+executive::EmulatedKernel::EmulatedKernel(
+	const Device* d): ExecutableKernel(d) {
 	ISA = ir::Instruction::Emulated;
-
 }
 
 executive::EmulatedKernel::EmulatedKernel() {
@@ -130,8 +130,7 @@ void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
 	_externSharedMemorySize = bytes;
 }
 
-void executive::EmulatedKernel::setDevice(const Device* device,
-	unsigned int limit) {
+void executive::EmulatedKernel::setWorkerThreads(unsigned int limit) {
 }
 
 void executive::EmulatedKernel::addTraceGenerator(
@@ -305,8 +304,8 @@ void executive::EmulatedKernel::initializeParameterMemory() {
 
 bool executive::EmulatedKernel::checkMemoryAccess(const void* base, 
 	size_t size) const {
-	if(context == 0) return false;
-	return context->checkMemoryAccess(context->getSelected(), base, size);
+	if(device == 0) return false;
+	return device->checkMemoryAccess(base, size);
 }
 
 void executive::EmulatedKernel::updateParameterMemory() {
@@ -338,7 +337,7 @@ void executive::EmulatedKernel::updateMemory() {
 	updateGlobals();
 }
 
-ir::ExecutableKernel::TextureVector 
+executive::ExecutableKernel::TextureVector 
 	executive::EmulatedKernel::textureReferences() const {
 	return textures;
 }

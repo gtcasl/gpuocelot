@@ -99,9 +99,8 @@ namespace analysis
 			report("  Running pass '" << (*pass)->toString() << "'" );
 			(*pass)->initialize( module );
 			for( ir::Module::KernelMap::iterator 
-				kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-				kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-				++kernel )
+				kernel = module.kernels.begin(); 
+				kernel != module.kernels.end(); ++kernel )
 			{
 				(*pass)->runOnKernel( *(kernel->second) );
 			}
@@ -111,9 +110,8 @@ namespace analysis
 		
 		report(" Converting to SSA form.");
 		for( ir::Module::KernelMap::iterator 
-			kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-			kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-			++kernel )
+			kernel = module.kernels.begin(); 
+			kernel != module.kernels.end(); ++kernel )
 		{
 			(kernel->second)->dfg()->toSsa();
 		}
@@ -125,9 +123,8 @@ namespace analysis
 			report("  Running pass '" << (*pass)->toString() << "'" );
 			(*pass)->initialize( module );
 			for( ir::Module::KernelMap::iterator 
-				kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-				kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-				++kernel )
+				kernel = module.kernels.begin(); 
+				kernel != module.kernels.end(); ++kernel )
 			{
 				(*pass)->runOnKernel( *(kernel->second) );
 			}
@@ -135,10 +132,8 @@ namespace analysis
 			delete *pass;
 		}
 
-		for( ir::Module::KernelMap::iterator 
-			kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-			kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-			++kernel )
+		for( ir::Module::KernelMap::iterator kernel = module.kernels.begin(); 
+			kernel != module.kernels.end(); ++kernel )
 		{
 			(kernel->second)->dfg()->fromSsa();
 		}

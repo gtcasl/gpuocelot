@@ -59,7 +59,6 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/Module.cpp \
 	ocelot/ir/implementation/Kernel.cpp \
 	ocelot/ir/implementation/PTXKernel.cpp \
-	ocelot/ir/implementation/ExecutableKernel.cpp \
 	ocelot/ir/implementation/Texture.cpp \
 	ocelot/ir/implementation/DominatorTree.cpp \
 	ocelot/ir/implementation/PostdominatorTree.cpp \
@@ -99,17 +98,16 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
+	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
 	ocelot/executive/implementation/GPUExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
-	ocelot/executive/implementation/Executive.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp \
-	ocelot/executive/implementation/ApplicationState.cpp \
 	ocelot/cuda/implementation/cuda_runtime.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
 	ocelot/cuda/implementation/CudaDriver.cpp \
@@ -373,7 +371,6 @@ TestDeviceSwitching_LDFLAGS = -static
 ## Headers
 nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/api/interface/OcelotConfiguration.h \
-	ocelot/executive/interface/Executive.h \
 	ocelot/executive/interface/CooperativeThreadArray.h \
 	ocelot/executive/interface/EmulatedKernel.h \
 	ocelot/executive/interface/RuntimeException.h \
@@ -408,7 +405,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/PostdominatorTree.h \
 	ocelot/ir/interface/Parameter.h \
 	ocelot/ir/interface/PTXKernel.h \
-	ocelot/ir/interface/ExecutableKernel.h \
+	ocelot/executive/interface/ExecutableKernel.h \
 	ocelot/ir/interface/PTXStatement.h \
 	ocelot/ir/interface/PTXInstruction.h \
 	ocelot/ir/interface/Instruction.h \

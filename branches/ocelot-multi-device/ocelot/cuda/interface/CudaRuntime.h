@@ -17,64 +17,25 @@
 #include <pthread.h>
 
 // Ocelot libs
+#include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
-#include <ocelot/executive/interface/ApplicationState.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/Device.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
 
+
 namespace cuda {
 
-	/*!
-		CUDA event
-	*/
-	class Event {
-	public:
-	
-		//! timer 
-		hydrazine::Timer::Second time;
-	
-		//! CUDA reference to event
-		cudaEvent_t handle;
-		
-		//! CUDA driver handle
-		CUevent driverHandle;
-		
-		//! event creation flags
-		unsigned int flags;	
-	};
-
-	/*! 
-		CUDA stream
-	*/
-	class Stream {
-	public:
-	
-		cudaStream_t handle;
-
-		//! CUDA driver handle
-		CUstream driverHandle;
-			
-		std::list< cudaEvent_t > events;
-		
-	};
-	
-	typedef std::map< cudaStream_t, Stream > StreamMap;
-	typedef std::map< cudaEvent_t, Event > EventMap;
-		
 	/***************************************************************/
-
-	/*!
-		configuration of kernel launch
-	*/
+	/*!	configuration of kernel launch */
 	class KernelLaunchConfiguration {
 	public:
-		KernelLaunchConfiguration(dim3 grid, dim3 block, size_t shared, cudaStream_t s): 
-			gridDim(grid), blockDim(block), sharedMemory(shared), stream(s) { }
+		KernelLaunchConfiguration(dim3 grid, dim3 block, size_t shared, 
+			cudaStream_t s): gridDim(grid), blockDim(block), 
+			sharedMemory(shared), stream(s) { }
 			
 	public:
-		
 		//! dimensions of grid
 		dim3 gridDim;
 		
@@ -90,66 +51,15 @@ namespace cuda {
 
 	typedef std::list< KernelLaunchConfiguration > KernelLaunchStack;
 	
-	//! maps selected device to CUDA contexts
-	class CudaContext {
-	public:
-	
-		//! mapped host thread to context
-		pthread_t thread;
-	
-		//! pointer to CUDA driver API context
-		CUcontext* context;		
-		
-	public:
-	
-		CudaContext();
-		
-	};
-	
-	typedef std::map< int, CudaContext > CudaContextMap;
-	
-	
 	/*!	\brief Set of thread ids */
-	typedef std::set< pthread_t > ThreadSet;
-			
-	/*!	\brief Map from pointer to texture name and module */
-	typedef std::map< const textureReference*, ir::Texture > TextureMap;
-			
-	/*! \brief A set of textures owned by a fat binary */
-	typedef std::vector< const textureReference* > TextureVector;
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/*! \brief Registered OpenGL buffer */
-	class RegisteredGLBuffer {
-	public:
-	
-		//! constructor
-		RegisteredGLBuffer();
-		
-	public:
-	
-		//! \brief flags set when the buffer is mapped
-		int flags;
-		
-		//! \brief pointer to mapped buffer
-		void *ptr;
-		
-		//! \brief true if buffer is mapped
-		bool mapped;
-	};
-	
-	typedef std::map< int, RegisteredGLBuffer > RegisteredGLBufferMap;
+	typedef std::set< pthread_t > ThreadSet;	
 	
 	typedef std::vector< unsigned int > IndexVector;
 	typedef std::vector< unsigned int > SizeVector;
 	
-	/*! 
-		Host thread CUDA context consists of these
-	*/
+	/*! Host thread CUDA context consists of these */
 	class HostThreadContext {	
 	public:
-	
 		//! index of selected device
 		int selectedDevice;
 		
@@ -158,18 +68,6 @@ namespace cuda {
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
-	
-		//! existing streams
-		StreamMap streams;
-		
-		//! existing events
-		EventMap events;
-		
-		//! next stream
-		cudaStream_t nextStream;
-		
-		//! next event
-		cudaEvent_t nextEvent;
 	
 		//! last result returned by a CUDA call
 		cudaError_t lastError;
@@ -186,11 +84,6 @@ namespace cuda {
 		//! Sizes for individual parameters
 		SizeVector parameterSizes;
 		
-		//! cuda context
-		
-		//! mapped GL buffers
-		RegisteredGLBufferMap registeredGLbuffers;
-
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector persistentTraceGenerators;
 
@@ -198,7 +91,6 @@ namespace cuda {
 		trace::TraceGeneratorVector nextTraceGenerators;
 	
 	public:
-	
 		HostThreadContext();
 		~HostThreadContext();
 
@@ -210,44 +102,20 @@ namespace cuda {
 
 		void clearParameters();
 		void clear();
-		void mapParameters(executive::Executive& context, 
-			const std::string& moduleName, 
-			const std::string& kernelName);
+		void mapParameters(const ir::Kernel* kernel);
 	};
 	
 	typedef std::map< pthread_t, HostThreadContext > HostThreadContextMap;
 	
-	//! references a texture registered to CUDA runtime
-	class RegisteredTexture {
-	public:
-	
-		//! fat binary cubin handle
-		size_t handle;
-		
-		//! host-side data structure pointer
-		void *pointer;
-		
-		//! name of module
-		const char *module;
-		
-		//! name of texture
-		const char *texture;
-	};
-	
-	//! maps name onto textures
-	typedef std::map< std::string , RegisteredTexture > RegisteredTextureMap;
-
-	typedef std::map< const void *, std::string> TextureReferenceMap;
-
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
 	public:
-	
+		RegisteredKernel(size_t handle = 0, const std::string& module = "", 
+			const std::string& kernel = "");
+
+	public:
 		//! cubin handle
 		size_t handle;
-		
-		//! host-side function pointer
-		void *pointer;
 		
 		//! name of module
 		std::string module;
@@ -256,46 +124,93 @@ namespace cuda {
 		std::string kernel;
 	};
 	
-	typedef std::map< void *, RegisteredKernel > RegisteredKernelMap;
+	typedef std::map< void*, RegisteredKernel > RegisteredKernelMap;
 
-		
 	/*!	\brief Class allowing sharing of a fat binary among threads	*/
 	class FatBinaryContext {
 	public:
-		
 		//! pointer to CUBIN structure
 		void *cubin_ptr;
 		
 	public:
-	
 		const char *name() const;
-		
 		const char *ptx() const;
+	};
+
+	class RegisteredTexture
+	{
+		public:
+			RegisteredTexture(const std::string& module = "", 
+				const std::string& texture = "");
+	
+		public:
+			/*! \brief The module that the texture is declared in */
+			std::string module;
+			/*! \brief The name of the texture */
+			std::string texture;
+	};
+	
+	class RegisteredGlobal
+	{
+		public:
+			RegisteredGlobal(const std::string& module = "", 
+				const std::string& global = "");
+	
+		public:
+			/*! \brief The module that the global is declared in */
+			std::string module;
+			/*! \brief The name of the global */
+			std::string global;
+	};
+	
+	class Dimension
+	{
+		public:
+			/*! \brief Initializing constructor */
+			Dimension(int x = 0, int y = 0, int z = 0, 
+				const cudaChannelFormatDesc& f = 
+				cudaCreateChannelDesc(0,0,0,0,cudaChannelFormatKindNone));
+	
+		public:
+			/*! \brief X dimension */
+			int x;
+			/*! \brief Y dimension */
+			int y;
+			/*! \brief Z dimension */
+			int z;
+			/*! \brief Format */
+			cudaChannelFormatDesc format;
 	};
 	
 	typedef std::vector< FatBinaryContext > FatBinaryVector;
+	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
+	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
+	typedef std::map< void*, Dimension > DimensionMap;
+	typedef std::map< std::string, ir::Module > ModuleMap;
+	typedef executive::DeviceVector DeviceVector;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*!
-		Cuda runtime context
-	*/
+	/*! Cuda runtime context */
 	class CudaRuntime: public CudaRuntimeInterface {
+	private:
+		/*! \brief Memory copy */
+		void _memcpy(void* dst, const void* src, size_t count, 
+			enum cudaMemcpyKind kind);
+		/*! \brief Report a memory error and throw an exception */
+		void _memoryError(const void* address, size_t count, 
+			const std::string& function = "");		
+		/*! \brief Create devices */
+		void _enumerateDevices();
+
 	public:
-	
-	public:
-	
 		//! locking object for cuda runtime
 		pthread_mutex_t mutex;
 		
-		//! maps selected devices onto pthreads and attached CUDA contexts
-		CudaContextMap cudaContexts;
+		//! Registered modules
+		ModuleMap modules;
 		
 		//! map of pthreads to thread contexts
 		HostThreadContextMap threads;
-		
-		//! execution context
-		executive::Executive context;
 		
 		//! maps kernel symbols to module-kernels
 		RegisteredKernelMap kernels;
@@ -303,29 +218,29 @@ namespace cuda {
 		//! maps texture symbols to module-textures
 		RegisteredTextureMap textures;
 
-		//! maps textureReference* onto texture names
-		TextureReferenceMap textureReferences;
-
 		//! maps symbol pointers onto their device names
-		std::map< void *, std::string > globalSymbolMap;
+		RegisteredGlobalMap globals;
+		
+		//! The dimensions for multi-dimensional allocations
+		DimensionMap dimensions;
+		
+		//! Device vector
+		DeviceVector devices;
+		
+		//! Currently selected device
+		int selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
 		int nextSymbol;
 		
-		// fatbinaries
+		//! fatbinaries
 		FatBinaryVector fatBinaries;
 		
-		// Timer
-		hydrazine::Timer timer;
-		
 	public:
-	
 		CudaRuntime();
-		
 		~CudaRuntime();
 	
 	public:
-	
 		//! \brief acquires mutex and locks the runtime
 		void lock();
 		
@@ -335,12 +250,12 @@ namespace cuda {
 		//! \brief sets the last error state for the CudaRuntime object
 		cudaError_t setLastError(cudaError_t result);
 
-		//! \brief sets the last error state for the CudaRuntime object
-		cudaError_t setLastErrorAndUnlock(HostThreadContext &thread, cudaError_t result);
-		
 		//! \brief gets current thread context
-		HostThreadContext & getHostThreadContext();
+		HostThreadContext& getHostThreadContext();
 
+		//! \brief gets the current device for the current thread
+		executive::Device& getDevice();
+		
 		//! \brief returns an Ocelot-formatted error message
 		std::string formatError(const std::string & message);
 
@@ -348,13 +263,13 @@ namespace cuda {
 		//
 		// FatBinary, function, variable, and texture register functions
 		//
-
 		virtual void** cudaRegisterFatBinary(void *fatCubin);
 
 		virtual void cudaUnregisterFatBinary(void **fatCubinHandle);
 
-		virtual void cudaRegisterVar(void **fatCubinHandle, char *hostVar, char *deviceAddress, 
-			const char *deviceName, int ext, int size, int constant, int global);
+		virtual void cudaRegisterVar(void **fatCubinHandle, char *hostVar, 
+			char *deviceAddress, const char *deviceName, int ext, int size, 
+			int constant, int global);
 
 		virtual void cudaRegisterTexture(
 			void **fatCubinHandle,
@@ -393,17 +308,15 @@ namespace cuda {
 		);
 
 	public:
-		
 		//
 		// Memory - malloc and free
 		//
-
 		virtual cudaError_t  cudaMalloc(void **devPtr, size_t size);
 		virtual cudaError_t  cudaMallocHost(void **ptr, size_t size);
 		virtual cudaError_t  cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, 
 			size_t height);
 		virtual cudaError_t  cudaMallocArray(struct cudaArray **array, 
-			const struct cudaChannelFormatDesc *desc, size_t width, size_t height __dv(1));
+			const struct cudaChannelFormatDesc *desc, size_t width, size_t height = 1);
 		virtual cudaError_t  cudaFree(void *devPtr);
 		virtual cudaError_t  cudaFreeHost(void *ptr);
 		virtual cudaError_t  cudaFreeArray(struct cudaArray *array);
@@ -416,11 +329,9 @@ namespace cuda {
 		virtual cudaError_t  cudaHostGetFlags(unsigned int *pFlags, void *pHost);
 
 	public:
-
 		//
 		// Memcpy
 		//
-	
 		virtual cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, 
 			enum cudaMemcpyKind kind);
 		virtual cudaError_t cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, 
@@ -454,7 +365,6 @@ namespace cuda {
 		//
 		// Memset
 		//
-		
 		virtual cudaError_t  cudaMemset(void *devPtr, int value, size_t count);
 		virtual cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height);
 		virtual cudaError_t  cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent);
@@ -463,7 +373,6 @@ namespace cuda {
 		//
 		// global variable accessors
 		//
-		
 		virtual cudaError_t cudaGetSymbolAddress(void **devPtr, const char *symbol);
 		virtual cudaError_t cudaGetSymbolSize(size_t *size, const char *symbol);
 	
@@ -471,7 +380,6 @@ namespace cuda {
 		//
 		// CUDA device management
 		//
-		
 		virtual cudaError_t cudaGetDeviceCount(int *count);
 		virtual cudaError_t cudaGetDeviceProperties(struct cudaDeviceProp *prop, int device);
 		virtual cudaError_t cudaChooseDevice(int *device, const struct cudaDeviceProp *prop);
@@ -485,11 +393,14 @@ namespace cuda {
 		// texture binding
 		//
 		
-		virtual cudaError_t cudaBindTexture(size_t *offset, const struct textureReference *texref, 
-			const void *devPtr, const struct cudaChannelFormatDesc *desc, size_t size = UINT_MAX);
-		virtual cudaError_t cudaBindTexture2D(size_t *offset,const struct textureReference *texref,
-			const void *devPtr, const struct cudaChannelFormatDesc *desc,size_t width, size_t height, 
-			size_t pitch);
+		virtual cudaError_t cudaBindTexture(size_t *offset, 
+			const struct textureReference *texref, 
+			const void *devPtr, const struct cudaChannelFormatDesc *desc, 
+			size_t size = UINT_MAX);
+		virtual cudaError_t cudaBindTexture2D(size_t *offset,
+			const struct textureReference *texref,
+			const void *devPtr, const struct cudaChannelFormatDesc *desc,
+			size_t width, size_t height, size_t pitch);
 		virtual cudaError_t cudaBindTextureToArray(const struct textureReference *texref, 
 			const struct cudaArray *array, const struct cudaChannelFormatDesc *desc);
 		virtual cudaError_t cudaUnbindTexture(const struct textureReference *texref);
@@ -502,43 +413,42 @@ namespace cuda {
 		//
 		// channel creation
 		//
-
-		virtual cudaError_t  cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, const struct cudaArray *array);
-		virtual struct cudaChannelFormatDesc cudaCreateChannelDesc(int x, int y, int z, int w, enum cudaChannelFormatKind f);
+		virtual cudaError_t  cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, 
+			const struct cudaArray *array);
+		virtual struct cudaChannelFormatDesc cudaCreateChannelDesc(int x, int y, 
+			int z, int w, enum cudaChannelFormatKind f);
 
 	public:
-	
 		virtual cudaError_t cudaGetLastError(void);
 
 	public:
 		//
 		// kernel configuration and launch procedures
 		//
-		
-		virtual cudaError_t cudaConfigureCall(dim3 gridDim, dim3 blockDim, size_t sharedMem = 0, 
-			cudaStream_t stream = 0);
+		virtual cudaError_t cudaConfigureCall(dim3 gridDim, dim3 blockDim, 
+			size_t sharedMem = 0, cudaStream_t stream = 0);
 		virtual cudaError_t cudaSetupArgument(const void *arg, size_t size, size_t offset);
 		virtual cudaError_t cudaLaunch(const char *entry);
-		virtual cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *func);	
+		virtual cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 
+			const char *func);	
 	
 	public:
 		//
 		// event creation
 		//
-		
 		virtual cudaError_t  cudaEventCreate(cudaEvent_t *event);
 		virtual cudaError_t  cudaEventCreateWithFlags(cudaEvent_t *event, int flags);
 		virtual cudaError_t  cudaEventRecord(cudaEvent_t event, cudaStream_t stream);
 		virtual cudaError_t  cudaEventQuery(cudaEvent_t event);
 		virtual cudaError_t  cudaEventSynchronize(cudaEvent_t event);
 		virtual cudaError_t  cudaEventDestroy(cudaEvent_t event);
-		virtual cudaError_t  cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end);
+		virtual cudaError_t  cudaEventElapsedTime(float *ms, cudaEvent_t start, 
+			cudaEvent_t end);
 	
 	public:
 		//
 		// stream creation
 		//
-	
 		virtual cudaError_t  cudaStreamCreate(cudaStream_t *pStream);
 		virtual cudaError_t  cudaStreamDestroy(cudaStream_t stream);
 		virtual cudaError_t  cudaStreamSynchronize(cudaStream_t stream);
@@ -548,37 +458,57 @@ namespace cuda {
 		//
 		// kernel thread synchronization
 		//
-		
 		virtual cudaError_t cudaThreadExit(void);
 		virtual cudaError_t cudaThreadSynchronize(void);
 		
 	public:
 		//
-		// OpenGL interoperability
+		// OpenGL interoperability - deprecated
 		//
-		
 		virtual cudaError_t cudaGLMapBufferObject(void **devPtr, GLuint bufObj);
-		virtual cudaError_t cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, cudaStream_t stream);
+		virtual cudaError_t cudaGLMapBufferObjectAsync(void **devPtr, 
+			GLuint bufObj, cudaStream_t stream);
 		virtual cudaError_t cudaGLRegisterBufferObject(GLuint bufObj);
-		virtual cudaError_t cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags);
+		virtual cudaError_t cudaGLSetBufferObjectMapFlags(GLuint bufObj, 
+			unsigned int flags);
 		virtual cudaError_t cudaGLSetGLDevice(int device);
 		virtual cudaError_t cudaGLUnmapBufferObject(GLuint bufObj);
-		virtual cudaError_t cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream);
+		virtual cudaError_t cudaGLUnmapBufferObjectAsync(GLuint bufObj, 
+			cudaStream_t stream);
 		virtual cudaError_t cudaGLUnregisterBufferObject(GLuint bufObj);
+
+	public:
+		//
+		// Graphics interoperability
+		//
+		virtual cudaError_t cudaGraphicsUnregisterResource(
+			struct cudaGraphicsResource *resource);
+		virtual cudaError_t cudaGraphicsResourceSetMapFlags(
+			struct cudaGraphicsResource *resource, unsigned int flags); 
+		virtual cudaError_t cudaGraphicsMapResources(int count, 
+			struct cudaGraphicsResource **resources, cudaStream_t stream = 0);
+		virtual cudaError_t cudaGraphicsUnmapResources(int count, 
+			struct cudaGraphicsResource **resources, cudaStream_t stream = 0);
+		virtual cudaError_t cudaGraphicsResourceGetMappedPointer(void **devPtr, 
+			size_t *size, struct cudaGraphicsResource *resource);
+		virtual cudaError_t cudaGraphicsSubResourceGetMappedArray(
+			struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
+			unsigned int arrayIndex, unsigned int mipLevel);
 		
 	public:
 
-		virtual void addTraceGenerator( trace::TraceGenerator& gen, bool persistent = false, 
-			bool safe = true );
-		virtual void clearTraceGenerators( bool safe = true );
+		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
+			bool persistent = false );
+		virtual void clearTraceGenerators();
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
-		virtual void registerPTXModule(std::istream& stream, const std::string& name);
+		virtual void registerPTXModule(std::istream& stream, 
+			const std::string& name);
 		virtual void** getFatBinaryHandle(const std::string& name);
 		virtual ocelot::KernelPointer getKernelPointer(const std::string& name, 
 			const std::string& module);
 		virtual void reset();
-		virtual ocelot::PointerMap contextSwitch( unsigned int destinationDevice, 
-			unsigned int sourceDevice );
+		virtual ocelot::PointerMap contextSwitch( 
+			unsigned int destinationDevice, unsigned int sourceDevice );
 //		virtual void unregisterModule( const std::string& name );
 
 	};

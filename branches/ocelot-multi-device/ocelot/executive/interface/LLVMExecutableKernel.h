@@ -9,9 +9,9 @@
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/executive/interface/LLVMContext.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/translator/interface/Translator.h>
 #include <hydrazine/interface/Thread.h>
 
@@ -27,7 +27,7 @@ namespace llvm
 namespace executive
 {
 	/*! \brief Executes an LLVMKernel using the LLVM JIT */
-	class LLVMExecutableKernel : public ir::ExecutableKernel
+	class LLVMExecutableKernel : public executive::ExecutableKernel
 	{
 		private:
 			/*! \brief A map from a variable identifier to its allocation */
@@ -315,7 +315,7 @@ namespace executive
 		public:
 			/*! \brief Creates a new instance of the runtime bound to a kernel*/
 			LLVMExecutableKernel( ir::Kernel& kernel, 
-				const executive::Executive* c = 0,
+				const executive::Device* d = 0,
 				translator::Translator::OptimizationLevel 
 				l = translator::Translator::NoOptimization,
 				const char *overridePath = 0);
@@ -330,7 +330,7 @@ namespace executive
 			/*! \brief Declare an amount of external shared memory */
 			void setExternSharedMemorySize( unsigned int bytes );
 			/*! \brief Describes the device used to execute the kernel */
-			void setDevice( const Device* device, unsigned int threadLimit );
+			void setWorkerThreads( unsigned int threadLimit );
 			/*! \brief Reload parameter memory */
 			void updateParameterMemory();
 			/*! \brief Indicate that other memory has been updated */

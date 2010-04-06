@@ -9,7 +9,7 @@
 
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/Device.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
@@ -793,8 +793,7 @@ extern "C"
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
 		
-		if( !state->kernel->context->checkMemoryAccess( 
-			state->kernel->context->getSelected(), address, bytes ) )
+		if( !state->kernel->device->checkMemoryAccess( address, bytes ) )
 		{
 			unsigned int thread = context->tid.x 
 				+ context->ntid.x * context->tid.y 
@@ -812,8 +811,8 @@ extern "C"
 				<< address << " of size " << bytes
 				<< " is out of any allocated or mapped range.\n";
 			std::cerr << "Memory Map:\n";
-			std::cerr << executive::Executive::nearbyAllocationsToString(
-				*state->kernel->context, address);
+			std::cerr << 
+				state->kernel->device->nearbyAllocationsToString( address );
 			std::cerr << "\n";
 			std::cout << "\tNear: " << state->kernel->location( statement )
 				<< "\n\n";
@@ -2359,7 +2358,8 @@ namespace executive
 				{
 					report("  found texture instruction: " << ptx.toString());
 
-					TextureMap::const_iterator texture = context->textures.find(ptx.a.identifier);
+					ir::Module::TextureMap::const_iterator 
+						texture = module->textures.find(ptx.a.identifier);
 
 					assert( texture != module->textures.end() );
 		
@@ -2465,10 +2465,10 @@ namespace executive
 	}
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
-		const executive::Executive* c, 
+		const executive::Device* d, 
 		translator::Translator::OptimizationLevel l,
 		const char *_overridePath ) : 
-		ExecutableKernel( k, c ), _module( 0 ), _optimizationLevel( l )
+		ExecutableKernel( k, d ), _module( 0 ), _optimizationLevel( l )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
@@ -2575,12 +2575,11 @@ namespace executive
 		}
 	}
 
-	void LLVMExecutableKernel::setDevice( const Device* device, 
-		unsigned int threadLimit )
+	void LLVMExecutableKernel::setWorkerThreads(unsigned int threadLimit )
 	{
-		_manager.setMaxThreadsPerCta( device->maxThreadsPerBlock );
+		_manager.setMaxThreadsPerCta( device->properties().maxThreadsPerBlock );
 		_manager.setThreadCount( 
-			std::min( (unsigned int)device->multiprocessorCount, 
+			std::min( (unsigned int)device->properties().multiprocessorCount, 
 			threadLimit ) );
 	}
 	
@@ -2613,7 +2612,7 @@ namespace executive
 		_updateConstantMemory();
 	}
 
-	ir::ExecutableKernel::TextureVector 
+	executive::ExecutableKernel::TextureVector 
 		LLVMExecutableKernel::textureReferences() const
 	{
 		return _opaque.textures;

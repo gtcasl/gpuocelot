@@ -36,8 +36,8 @@ executive::GPUExecutableKernel::~GPUExecutableKernel() {
 	Construct a GPUExecutableKernel from an existing kernel
 */
 executive::GPUExecutableKernel::GPUExecutableKernel(
-	ir::Kernel& kernel, const CUfunction& function, const executive::Executive* c ): 
-		ExecutableKernel(kernel, c), ptxKernel(0), cuFunction(function) {
+	ir::Kernel& kernel, const CUfunction& function, const executive::Device* d ): 
+		ExecutableKernel(kernel, d), ptxKernel(0), cuFunction(function) {
 	
 	report("GPUExecutableKernel()");
 	this->ISA = ir::Instruction::GPU;
@@ -122,7 +122,7 @@ void executive::GPUExecutableKernel::updateMemory() {
 	updateConstantMemory();
 }
 
-ir::ExecutableKernel::TextureVector 
+executive::ExecutableKernel::TextureVector 
 	executive::GPUExecutableKernel::textureReferences() const {
 	assertM(false, "no support for getting texture references");
 }

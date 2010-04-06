@@ -48,7 +48,8 @@ namespace trace
 			MemoryRaceDetector();
 			
 			/*! \brief Set the cache and get a pointer to the memory mappings */
-			virtual void initialize( const ir::ExecutableKernel& kernel );
+			virtual void initialize( 
+				const executive::ExecutableKernel& kernel );
 
 			/*! \brief Called whenever an event takes place.
 

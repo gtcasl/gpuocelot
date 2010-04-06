@@ -1,11 +1,11 @@
 /*! \file Device.h
-	\author Andrew Kerr
-	\date Jan 16, 2009
+	\author Gregory Diamos
+	\date April 1, 2010
 	\brief The header file for the Device class.
 */
 
-#ifndef EXECUTIVE_DEVICE_H_INCLUDED
-#define EXECUTIVE_DEVICE_H_INCLUDED
+#ifndef DEVICE_H_INCLUDED
+#define DEVICE_H_INCLUDED
 
 // C++ standard library includes
 #include <fstream>
@@ -13,16 +13,26 @@
 #include <vector>
 
 // Ocelot includes
+#include <ocelot/ir/interface/Module.h>
+#include <ocelot/trace/interface/TraceGenerator.h>
+
+// forward declarations
+struct cudaChannelFormatDesc;
+struct cudaFuncAttributes;
 
 namespace executive 
 {
-	/*! Class for controlling an Ocelot device */
+	/*! Interface for controlling an Ocelot device */
 	class Device 
 	{
 		public:
 			/*! \brief properties of a specific device */
 			class Properties
 			{
+				public:
+					/*! \brief constructor sets the default values */
+					Properties(int guid = 0);
+			
 				public:
 					/*! "native" ISA of the device */
 					ir::Instruction::Architecture ISA;
@@ -75,9 +85,9 @@ namespace executive
 			{
 				protected:
 					/*! \brief Is this memory allocation a global variable? */
-					bool global;
+					bool _global;
 					/*! \brief Is this memory allocation a host allocation? */
-					bool host;
+					bool _host;
 
 				public:
 					/*! \brief Generic constructor */
@@ -90,29 +100,34 @@ namespace executive
 					virtual bool host() const;
 					/*! \brief Is this a mapping for a global variable? */
 					virtual bool global() const;
+					/*! \brief Get the flags if this is a host pointer */
+					virtual unsigned int flags() const = 0;
 					/*! \brief Get a mapped pointer if this is a host allocation */
-					virtual void* mappedPointer() = 0;
+					virtual void* mappedPointer() const = 0;
 					/*! \brief Get a pointer to the base of the allocation */
-					virtual void* pointer() = 0;
+					virtual void* pointer() const = 0;
 					/*! \brief The size of the allocation */
 					virtual size_t size() const = 0;
 					/*! \brief Copy from an external host pointer */
 					virtual void copy(size_t offset, const void* host, 
 						size_t size ) = 0;
 					/*! \brief Copy to an external host pointer */
-					virtual void copy(void* host, size_t size, 
-						size_t offset) const = 0;
+					virtual void copy(void* host, size_t offset, 
+						size_t size) const = 0;
 					/*! \brief Memset the allocation */
 					virtual void memset(size_t offset, int value, size_t size);
 					/*! \brief Copy to another allocation */
 					virtual void copy(MemoryAllocation* allocation, 
-						size_t size, size_t toOffset, 
-						size_t fromOffset) const = 0;
+						size_t toOffset, size_t fromOffset, 
+						size_t size) const = 0;
 			};
+
+			/*! \brief Vector of memory allocations */
+			typedef std::vector< MemoryAllocation* > MemoryAllocationVector;
 
 		protected:
 			/*! \brief The properties of this device */
-			Propertes _properties;
+			Properties _properties;
 			/*! \brief The driver version */
 			int _driverVersion;
 			/*! \brief The runtime version */
@@ -120,17 +135,26 @@ namespace executive
 
 		public:
 			/*! \brief Check a memory access against all allocations */
-			virtual bool checkMemoryAccess(void* pointer, 
+			virtual bool checkMemoryAccess(const void* pointer, 
 				size_t size) const = 0;
 			/*! \brief Get the allocation containing a pointer or 0 */
-			virtual MemoryAllocation* getMemoryAllocation(void* address, 
-				bool hostAllocation = false) = 0;
+			virtual MemoryAllocation* getMemoryAllocation(const void* address, 
+				bool hostAllocation = false) const = 0;
+			/*! \brief Get the address of a global by stream */
+			virtual MemoryAllocation* getGlobalAllocation(
+				const std::string& module, const std::string& name) const = 0;
 			/*! \brief Allocate some new dynamic memory on this device */
 			virtual MemoryAllocation* allocate(size_t size) = 0;
 			/*! \brief Make this a host memory allocation */
-			virtual MemoryAllocation* allocateHost(size_t size) = 0;
+			virtual MemoryAllocation* allocateHost(size_t size, 
+				unsigned int flags = 0) = 0;
 			/*! \brief Free an existing non-global allocation */
 			virtual void free(void* pointer) = 0;
+			/*! \brief Get nearby allocations to a pointer */
+			virtual MemoryAllocationVector getNearbyAllocations(
+				void* pointer) const = 0;
+			/*! \brief Get a string representation of nearby allocations */
+			virtual std::string nearbyAllocationsToString(void* pointer) const;
 		
 		public:
 			/*! \brief Registers an opengl buffer with a resource */
@@ -143,7 +167,7 @@ namespace executive
 			virtual void unRegisterGraphicsResource(void* resource) = 0;
 			/*! \brief Map a graphics resource for use with this device */
 			virtual void mapGraphicsResource(void* resource, int count, 
-				cudaStream_t stream) = 0;
+				unsigned int stream) = 0;
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			virtual void* getPointerToMappedGraphicsResource(size_t& size, 
 				void* resource) const = 0;
@@ -154,10 +178,9 @@ namespace executive
 			virtual void unmapGraphicsResource(void* resource) = 0;
 
 		public:
-			/*! \brief Load a module */
-			virtual void load(const std::string& name, 
-				std::istream& stream) = 0;
-			/*! \brief Unload a module */
+			/*! \brief Load a module, must have a unique name */
+			virtual void load(const ir::Module* module) = 0;
+			/*! \brief Unload a module by name */
 			virtual void unload(const std::string& name) = 0;
 
 		public:
@@ -166,31 +189,31 @@ namespace executive
 
 		public:
 			/*! \brief Create a new event */
-			virtual cudaEvent_t createEvent(int flags) = 0;
+			virtual unsigned int createEvent(int flags) = 0;
 			/*! \brief Destroy an existing event */
-			virtual void destroyEvent(cudaEvent_t event) = 0;
+			virtual void destroyEvent(unsigned int event) = 0;
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			virtual bool queryEvent(cudaEvent_t event) const = 0;
+			virtual bool queryEvent(unsigned int event) const = 0;
 			/*! \brief Record something happening on an event */
-			virtual void recordEvent(cudaEvent_t event, 
-				cudaStream_t stream) = 0;
+			virtual void recordEvent(unsigned int event, 
+				unsigned int stream) = 0;
 			/*! \brief Synchronize on an event */
-			virtual void synchronizeEvent(cudaEvent_t event) = 0;
+			virtual void synchronizeEvent(unsigned int event) = 0;
 			/*! \brief Get the elapsed time in ms between two recorded events */
-			virtual float getEventTime(cudaEvent_t start, 
-				cudaEvent_t end) const = 0;
+			virtual float getEventTime(unsigned int start, 
+				unsigned int end) const = 0;
 		
 		public:
 			/*! \brief Create a new stream */
-			virtual cudaStream_t createStream();
+			virtual unsigned int createStream() = 0;
 			/*! \brief Destroy an existing stream */
-			virtual void destroyStream(cudaStream_t stream);
+			virtual void destroyStream(unsigned int stream) = 0;
 			/*! \brief Query the status of an existing stream (ready/not) */
-			virtual bool queryStream(cudaStream_t stream) const;
+			virtual bool queryStream(unsigned int stream) const = 0;
 			/*! \brief Synchronize a particular stream */
-			virtual void synchronizeStream(cudaStream_t stream);
+			virtual void synchronizeStream(unsigned int stream) = 0;
 			/*! \brief Sets the current stream */
-			virtual void setStream(cudaStream_t stream) = 0;
+			virtual void setStream(unsigned int stream) = 0;
 			
 		public:
 			/*! \brief Select this device as the current device. 
@@ -210,7 +233,8 @@ namespace executive
 			/*! \brief unbinds anything bound to a particular texture */
 			virtual void unbindTexture(void* texture) = 0;
 			/*! \brief Get a texture reference for a given symbol name */
-			virtual void* getTextureReference(const std::string& name) = 0;
+			virtual void* getTextureReference(const std::string& module, 
+				const std::string& name) = 0;
 		
 		public:
 			/*! \brief Get the driver version */
@@ -232,20 +256,26 @@ namespace executive
 				\param stream The stream to launch the kernel in
 			*/
 			virtual void launch(const std::string& module, 
-				const std::string& kernel, dim3 grid, dim3 block, 
-				size_t sharedMemory, void* parameterBlock, 
-				size_t parameterBlockSize, 
+				const std::string& kernel, const ir::Dim3& grid, 
+				const ir::Dim3& block, size_t sharedMemory, 
+				void* parameterBlock, size_t parameterBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector()) = 0;
 			/*! \brief Get the function attributes of a specific kernel */
-			virtual FunctionAttributes getAttributes(const std::string& module, 
+			virtual cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel) const = 0;
 			/*! \brief Get the last error from this device */
-			virtual cudaError_t getLastError() const = 0;
+			virtual unsigned int getLastError() const = 0;
+			/*! \brief Wait until all asynchronous operations have completed */
+			virtual void synchronize() = 0;
+			
+		public:
+			/*! \brief Limit the worker threads used by this device */
+			virtual void limitWorkerThreads(unsigned int threads) = 0;
 			
 		public:
 			/*! \brief Sets the device properties */
-			Device();
+			Device(int guid = 0);
 			/*! \brief Virtual destructor is required */
 			virtual ~Device();
 

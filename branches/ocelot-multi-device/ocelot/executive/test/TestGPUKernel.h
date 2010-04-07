@@ -25,7 +25,6 @@
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
 
-#include <ocelot/executive/interface/Executive.h>
 #include <ocelot/executive/interface/GPUExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
@@ -56,7 +55,7 @@ namespace test
 			executive::GPUExecutableKernel *kernelLooping;
 			executive::GPUExecutableKernel *kernelMVProduct;
 
-			executive::Executive context;
+			ir::Module module;
 
 			int ThreadCount;
 		
@@ -67,6 +66,7 @@ namespace test
 		public:
 		
 			TestGPUKernel();
+			~TestGPUKernel();
 	};
 }
 

@@ -33,8 +33,8 @@ namespace executive {
 			unsigned int& offset, unsigned int& totalOffset);
 
 	public:
-		EmulatedKernel(ir::Kernel* kernel, const Device* d, 
-			bool initialize=true);
+		EmulatedKernel(ir::Kernel* kernel, const Device* d = 0, 
+			bool initialize = true);
 		EmulatedKernel(const Device *c);
 		EmulatedKernel();
 		virtual ~EmulatedKernel();

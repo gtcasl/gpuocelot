@@ -25,7 +25,7 @@ ACLOCAL_AMFLAGS = -I m4
 BUILT_SOURCES=ptxgrammar.h
 bin_PROGRAMS = PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
-	TestEmulator TestInstructions TestKernels TestTrace \
+	TestEmulator TestInstructions TestKernels \
 	TestDataflowGraph TestLLVMInstructions \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
@@ -259,14 +259,6 @@ PTXChecker_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXChecker_SOURCES = ocelot/executive/test/PTXChecker.cpp
 PTXChecker_LDADD = libocelot.la $(LLVM_LDFLAGS) $(CUDA_LDFLAGS)
 PTXChecker_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## TestTrace
-TestTrace_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-TestTrace_SOURCES = ocelot/executive/test/TestTrace.cpp
-TestTrace_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestTrace_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

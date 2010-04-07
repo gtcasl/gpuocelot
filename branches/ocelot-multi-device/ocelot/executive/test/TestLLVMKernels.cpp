@@ -16,58 +16,56 @@ namespace test
 {
 	bool TestLLVMKernels::_loadKernels()
 	{
-		if( !_context.selectDeviceByISA( ir::Instruction::LLVM ) )
+		bool loaded = false;
+		try 
 		{
-			status << "Failed to select llvm device.";
+			loaded = _module.load(kernelFile);
+		}
+		catch( const hydrazine::Exception& e )
+		{
+			status << " error - " << e.what() << "\n";
+		}
+
+		if( !loaded ) 
+		{
+			status << "Failed to load module '" << kernelFile << "'\n";
 			return false;
 		}
 		
-		_context.setOptimizationLevel( 
-			translator::Translator::BasicOptimization );
-		
-		if( !_context.loadModule( kernelFile ) )
-		{
-			status << "Failed to load module " << kernelFile << "\n";
-		}
-		
-		ir::Kernel* kernel = _context.getKernel( ir::Instruction::LLVM, 
-			kernelFile, "_Z19k_sequenceDivergentPf" );
+		ir::Kernel* kernel = _module.getKernel( "_Z19k_sequenceDivergentPf" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel _Z19k_sequenceDivergentPf\n";
 			return false;
 		}
 		
-		_divergentKernel = static_cast< 
-			executive::LLVMExecutableKernel* >( kernel );
+		_divergentKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
+			translator::Translator::BasicOptimization );
 		_divergentKernel->setKernelShape( 8, 1, 1 );
 
-		kernel = _context.getKernel( ir::Instruction::LLVM, 
-			kernelFile, "_Z17k_sequenceLoopingPfi" );
+		kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel _Z17k_sequenceLoopingPfi\n";
 			return false;
 		}
 		
-		_loopingKernel = static_cast< 
-			executive::LLVMExecutableKernel* >( kernel );
+		_loopingKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
+			translator::Translator::BasicOptimization );
 		_loopingKernel->setKernelShape( 8, 1, 1 );
 
-		kernel = _context.getKernel( ir::Instruction::LLVM, 
-			kernelFile, "_Z7barrierPiS_" );
+		kernel = _module.getKernel( "_Z7barrierPiS_" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel _Z7barrierPiS_\n";
 			return false;
 		}
 		
-		_barrierKernel = static_cast< 
-			executive::LLVMExecutableKernel* >( kernel );
+		_barrierKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
+			translator::Translator::BasicOptimization );
 		_barrierKernel->setKernelShape( 8, 1, 1 );
 		
-		kernel = _context.getKernel( ir::Instruction::LLVM, 
-			kernelFile, "_Z21k_matrixVectorProductPKfS0_Pfii" );
+		kernel = _module.getKernel( "_Z21k_matrixVectorProductPKfS0_Pfii" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel " 
@@ -75,8 +73,8 @@ namespace test
 			return false;
 		}
 		
-		_matrixMultiplyKernel = static_cast< 
-			executive::LLVMExecutableKernel* >( kernel );
+		_matrixMultiplyKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
+			translator::Translator::BasicOptimization );
 		_matrixMultiplyKernel->setKernelShape( 8, 1, 1 );
 		
 		return true;
@@ -89,7 +87,6 @@ namespace test
 		unsigned int N = 8;
 		
 		float* sequence = new float[ N ];
-		_context.registerExternal( sequence, sizeof( float ) * N );
 
 		for( unsigned int i = 0; i < N; ++i ) 
 		{
@@ -134,7 +131,6 @@ namespace test
 			}
 		}
 
-		_context.free( sequence );
 		delete[] sequence;
 	
 		return true;
@@ -146,7 +142,6 @@ namespace test
 		
 		unsigned int N = 8 * 5;
 		float* sequence = new float[ N ];
-		_context.registerExternal( sequence, sizeof( float ) * N );
 
 		for( unsigned int i = 0; i < N; ++i ) 
 		{
@@ -192,7 +187,6 @@ namespace test
 			}
 		}
 		
-		_context.free( sequence );
 		delete[] sequence;
 		
 		return true;
@@ -205,8 +199,6 @@ namespace test
 		unsigned int N = 8;
 		int* in = new int[ N ];
 		int* out = new int[ N ];
-		_context.registerExternal( in, sizeof( int ) * N );
-		_context.registerExternal( out, sizeof( int ) * N );
 
 		for( unsigned int i = 0; i < N; ++i ) 
 		{
@@ -240,8 +232,6 @@ namespace test
 			}
 		}
 		
-		_context.free( out );
-		_context.free( in );
 		delete[] in;
 		delete[] out;
 		
@@ -257,10 +247,6 @@ namespace test
 		float* A = new float[ M * N ];
 		float* V = new float[ N ];
 		float* R = new float[ M ];
-
-		_context.registerExternal( A, sizeof( float ) * N * M );
-		_context.registerExternal( V, sizeof( float ) * N );
-		_context.registerExternal( R, sizeof( float ) * M );
 
 		status << "A = [\n";
 		for( unsigned int i = 0; i < M; i++ ) 
@@ -338,9 +324,6 @@ namespace test
 			return false;		
 		}
 
-		_context.free( R );
-		_context.free( V );
-		_context.free( A );
 		delete[] R;
 		delete[] V;
 		delete[] A;
@@ -355,17 +338,29 @@ namespace test
 		return result && testDivergent() && testLooping()
 			&& testBarrier() 
 			&& testMatrixMultiply();
-			
 	}
 	
 	TestLLVMKernels::TestLLVMKernels()
 	{
 		name = "TestLLVMKernels";
-		
+
 		description = "A unit test for the LLVM executive runtime.";
 		description += " Test Points: 1) Execute a kernel with divergent ";
 		description += "control flow. 2) Execute a kernel with a loop. ";
 		description += "3) Execute a matrix multiply kernel.";
+
+		_divergentKernel = 0;
+		_loopingKernel = 0;
+		_barrierKernel = 0;
+		_matrixMultiplyKernel = 0;
+	}
+	
+	TestLLVMKernels::~TestLLVMKernels()
+	{
+		delete _divergentKernel;
+		delete _loopingKernel;
+		delete _barrierKernel;
+		delete _matrixMultiplyKernel;
 	}
 }
 

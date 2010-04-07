@@ -181,6 +181,10 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+cuda::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
+	const std::string& k) : handle(h), module(m), kernel(k) {
+}
+
 cuda::RegisteredTexture::RegisteredTexture(const std::string& m, 
 	const std::string& t) : module(m), texture(t) {
 	
@@ -191,6 +195,10 @@ cuda::RegisteredGlobal::RegisteredGlobal(const std::string& m,
 
 }
 
+cuda::Dimension::Dimension(int _x, int _y, int _z, 
+	const cudaChannelFormatDesc& _f) : x(_x), y(_y), z(_z), format(_f) {
+
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -321,6 +329,12 @@ cuda::HostThreadContext & cuda::CudaRuntime::getHostThreadContext() {
 	}
 	
 	return it->second;
+}
+
+executive::Device& cuda::CudaRuntime::getDevice() {
+	assert(selectedDevice > 0);
+	assert(selectedDevice < (int)devices.size());
+	return *devices[selectedDevice];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -916,6 +930,11 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 		
 	unlock();
 	return setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, 
+	size_t count, enum cudaMemcpyKind kind, cudaStream_t stream) {
+	return cudaMemcpy(dst, src, count, kind);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, 

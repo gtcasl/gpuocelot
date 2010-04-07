@@ -18,7 +18,7 @@
 #include <ocelot/parser/interface/PTXParser.h>
 #include <ocelot/parser/test/TestParser.h>
 
-#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -42,59 +42,41 @@ bool test::TestGPUKernel::loadKernels() {
 	Kernel *rawKernel = 0;
 	
 	bool result = true;
+	bool loaded = false;
 	
-	string module = "ocelot/executive/test/kernels.ptx";
-	
-	report("selecting GPU device");
-	
-	if (!context.selectDeviceByISA(Instruction::GPU)) {
-		status << "Failed to select GPU device\n";
-		return (result = false);
-	}
-
-	report("selected GPU device");
+	string path = "ocelot/executive/test/kernels.ptx";
 	
 	try {
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			return (result = false);
-		}
+		loaded = module.load(path);
 	}
-	catch (...) {
-		cout << "context.loadModule() threw an exception\n  " << status.str() << "\n" << flush;
-		throw;
+	catch(const hydrazine::Exception& e) {
+		status << " error - " << e.what() << "\n";
+	}
+
+	if(!loaded) {
+		status << "failed to load module '" << path << "'\n";
+		return (result = false);
 	}
 	
 	report("loaded module");
 	
-	rawKernel = context.getKernel(Instruction::GPU, module, 
-		"_Z19k_sequenceDivergentPf");
+	rawKernel = module.getKernel("_Z19k_sequenceDivergentPf");
 	if (!rawKernel) {
 		status << "failed to get kernel\n";
 		return (result = false);
 	}
 
-	kernelDivergence = static_cast<GPUExecutableKernel *>(rawKernel);
-	kernelDivergence->setKernelShape(ThreadCount, 1, 1);
-
-	rawKernel = context.getKernel(Instruction::GPU, module, 
-		"_Z17k_sequenceLoopingPfi");
+	rawKernel = module.getKernel("_Z17k_sequenceLoopingPfi");
 	if (!rawKernel) {
 		status << "failed to get kernel\n";
 		return (result = false);
 	}
 
-	kernelLooping = static_cast<GPUExecutableKernel *>(rawKernel);
-	kernelLooping->setKernelShape(ThreadCount, 1, 1);
-
-	rawKernel = context.getKernel(Instruction::GPU, module,
-		"_Z21k_matrixVectorProductPKfS0_Pfii");
+	rawKernel = module.getKernel("_Z21k_matrixVectorProductPKfS0_Pfii");
 	if (!rawKernel) {
 		status << "failed to get kernel \n";
 		return (result = false);
 	}
-	kernelMVProduct = static_cast<GPUExecutableKernel *>(rawKernel);
-	kernelMVProduct->setKernelShape(ThreadCount, 1, 1);
 
 	return true;
 }
@@ -114,28 +96,24 @@ test::TestGPUKernel::TestGPUKernel() {
 	name = "TestGPUKernel";
 	ThreadCount = 8;
 	
+	kernelDivergence = 0;
+	kernelLooping = 0;
+	kernelMVProduct = 0;
+	
 	description = "A test for the Executive and GPUKernel classes:\n";
 	description += " Load a PTX module. Translate to GPUExecutableKernel using the Executive and the GPU device.\n";
 	description += " Configure and launch kernel grid. Compare results to expectations.";
 }
 
+test::TestGPUKernel::~TestGPUKernel() {
+	delete kernelDivergence;
+	delete kernelLooping;
+	delete kernelMVProduct;
+}
+
 int main( int argc, char** argv ) {
 	test::TestGPUKernel testApp;
 	bool verbose = true;
-	/*
-	hydrazine::ArgumentParser parser( argc, argv );
-	parser.description( testApp.testDescription() );
-
-	bool help = false;
-
-	parser.parse( "-h", help, "Display this help message.", false );
-	parser.parse( "-v", verbose, "Verbose output", false );
-
-	if( help ) {
-		std::cout << parser.help();
-		return 2;
-	}
-	*/
 	
 	testApp.test();
 

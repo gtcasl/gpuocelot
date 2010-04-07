@@ -15,10 +15,11 @@
 #include <hydrazine/interface/Test.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
 
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
@@ -40,7 +41,7 @@ public:
 	EmulatedKernel *kernelLooping;
 	EmulatedKernel *kernelMVProduct;
 
-	Executive context;
+	Module module;
 
 	int ThreadCount;
 
@@ -50,6 +51,16 @@ public:
 		status << "Test output:\n";
 
 		ThreadCount = 8;
+
+		kernelDivergence = 0;
+		kernelLooping = 0;
+		kernelMVProduct = 0;
+	}
+	
+	~TestKernels() {
+		delete kernelDivergence;
+		delete kernelLooping;
+		delete kernelMVProduct;
 	}
 
 	std::ostream & print(std::ostream &out, EmulatedKernel *kernel) {
@@ -83,50 +94,46 @@ public:
 		
 		bool result = true;
 		
-		string module = "ocelot/executive/test/kernels.ptx";
+		bool loaded = false;
+
+		string path = "ocelot/executive/test/kernels.ptx";
 		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
-			return (result = false);
+		try {
+			loaded = module.load(path);
+		}
+		catch(const hydrazine::Exception& e) {
+			status << " error - " << e.what() << "\n";
 		}
 
-		try {
-			if (!context.loadModule(module)) {
-				status << "failed to load module '" << module << "'\n";
-				return (result = false);
-			}
+		if(!loaded) {
+			status << "failed to load module '" << path << "'\n";
+			return (result = false);
 		}
-		catch (...) {
-			cout << "context.loadModule() threw an exception\n  " << status.str() << "\n" << flush;
-			throw;
-		}
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z19k_sequenceDivergentPf");
+		
+		rawKernel = module.getKernel("_Z19k_sequenceDivergentPf");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
 		}
 
-		kernelDivergence = static_cast<EmulatedKernel *>(rawKernel);
+		kernelDivergence = new EmulatedKernel(rawKernel);
 		kernelDivergence->setKernelShape(ThreadCount, 1, 1);
 
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_sequenceLoopingPfi");
+		rawKernel = module.getKernel("_Z17k_sequenceLoopingPfi");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
 		}
 
-		kernelLooping = static_cast<EmulatedKernel *>(rawKernel);
+		kernelLooping = new EmulatedKernel(rawKernel);
 		kernelLooping->setKernelShape(ThreadCount, 1, 1);
 
-		rawKernel = context.getKernel(Instruction::Emulated, module,
-			"_Z21k_matrixVectorProductPKfS0_Pfii");
+		rawKernel = module.getKernel("_Z21k_matrixVectorProductPKfS0_Pfii");
 		if (!rawKernel) {
 			status << "failed to get kernel \n";
 			return (result = false);
 		}
-		kernelMVProduct = static_cast<EmulatedKernel *>(rawKernel);
+		kernelMVProduct = new EmulatedKernel(rawKernel);
 		kernelMVProduct->setKernelShape(ThreadCount, 1, 1);
 
 		return true;
@@ -147,7 +154,6 @@ public:
 			// allocate some data
 			int N = ThreadCount;
 			float *sequence = (float *)malloc(sizeof(float)*N);
-			context.registerExternal(sequence, sizeof(float)*N);
 
 			for (int i = 0; i < N; i++) {
 				sequence[i] = -2;	
@@ -169,7 +175,6 @@ public:
 			try {
 				kernel->setKernelShape(N,1,1);
 				kernel->launchGrid(1,1);
-				// context.synchronize();
 			}
 			catch (RuntimeException &exp) {
 				out << "[divergent test] Runtime exception on instruction [ " 
@@ -201,7 +206,6 @@ public:
 					}
 				}
 			}
-			context.free(sequence);
 			free(sequence);
 		}
 
@@ -232,7 +236,6 @@ public:
 			// allocate some data
 			int N = ThreadCount * 5;
 			float *sequence = (float *)malloc(sizeof(float)*N);
-			context.registerExternal(sequence, sizeof(float)*N);
 
 			for (int i = 0; i < N; i++) {
 				sequence[i] = -2;	
@@ -255,7 +258,6 @@ public:
 			try {
 				kernel->setKernelShape(ThreadCount,1,1);
 				kernel->launchGrid(1,1);
-				context.synchronize();
 			}
 			catch (RuntimeException &exp) {
 				out << "[looping test] Runtime exception on instruction [ " 
@@ -282,7 +284,6 @@ public:
 				}
 			}
 			
-			context.free(sequence);
 			free(sequence);
 		}
 		if (result) {
@@ -314,10 +315,6 @@ public:
 			float *A = new float[M * N];
 			float *V = new float[N];
 			float *R = new float[M];
-
-			context.registerExternal(A, sizeof(float)*N*M);
-			context.registerExternal(V, sizeof(float)*N);
-			context.registerExternal(R, sizeof(float)*M);
 
 			// initialize A and V
 			out << "A = [\n";
@@ -372,7 +369,6 @@ public:
 			try {
 				kernel->setKernelShape(ThreadCount,1,1);
 				kernel->launchGrid(1,1);
-				context.synchronize();
 			}
 			catch (RuntimeException &exp) {
 				out << "[m-v test] Runtime exception on instruction [ " 
@@ -400,9 +396,6 @@ public:
 				out << "FAIL: R is incorrect\n";
 			}
 
-			context.free(R);
-			context.free(V);
-			context.free(A);
 			delete [] R;
 			delete [] V;
 			delete [] A;

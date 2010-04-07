@@ -111,6 +111,12 @@ namespace trace
 
 			public:
 
+				int target;
+			};
+
+			class TargetCounter: public WarpCounter {
+			public:
+				TargetCounter();
 			};
 			
 			/*!
@@ -129,6 +135,9 @@ namespace trace
 
 				//! \brief maps a particular branch's PC to a branch counter
 				std::map< int, BranchCounter > counterBranches;
+
+				//! \brief maps a particular branch target's PC to its counter
+				std::map< int, TargetCounter > counterTargets;
 			};
 			
 			/*! 

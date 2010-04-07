@@ -1640,6 +1640,8 @@ size_t executive::Executive::enumerateDevices() {
 				}
 				device.totalMemory = (size_t)totalMemory;
 
+				report(" GPU '" << deviceName << "' with " << device.totalMemory << " bytes of memory");
+
 				if (cuda::CudaDriver::cuDeviceGetAttribute(&device.multiprocessorCount,
 					CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, gpu) != CUDA_SUCCESS) {
 					Ocelot_Exception(

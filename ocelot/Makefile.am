@@ -46,6 +46,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
+	ocelot/analysis/implementation/LLVMUniformVectorization.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
 	ocelot/api/implementation/OcelotConfiguration.cpp \
@@ -413,6 +414,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/DataflowGraph.h \
 	ocelot/analysis/interface/SSAGraph.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
+	ocelot/analysis/interface/LLVMUniformVectorization.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \
 	ocelot/ir/interface/ControlFlowGraph.h \

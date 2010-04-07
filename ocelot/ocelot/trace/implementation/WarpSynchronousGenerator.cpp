@@ -122,6 +122,13 @@ trace::WarpSynchronousGenerator::BranchCounter::BranchCounter()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+trace::WarpSynchronousGenerator::TargetCounter::TargetCounter()
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 trace::WarpSynchronousGenerator::SynchronousInstructionCounter::SynchronousInstructionCounter() {
 	// initialize the warp instruction counters
 
@@ -154,6 +161,13 @@ trace::WarpSynchronousGenerator::SynchronousInstructionCounter::SynchronousInstr
 void trace::WarpSynchronousGenerator::SynchronousInstructionCounter::event(
 	int warpSize, const trace::TraceEvent &event) {
 
+	// count specific control flow targets
+	std::map< int, TargetCounter >::iterator target_it = counterTargets.find(event.PC);
+	if (target_it != counterTargets.end()) {
+		target_it->second.event(warpSize, event);
+	}
+
+	// handle each specific opcode its own way
 	switch (event.instruction->opcode) {
 	case ir::PTXInstruction::Bra:
 		// handle branches specially
@@ -216,9 +230,21 @@ static void write(std::ostream &out,
 	bra_it = counter.counterBranches.begin();
 	for (; bra_it != counter.counterBranches.end();) {
 		out << "\t\t\t{ \"pc\": " << bra_it->first << ", \"events\": " << bra_it->second.events 
-			<< ", \"synchronous\": " << bra_it->second.synchronous;
+			<< ", \"synchronous\": " << bra_it->second.synchronous
+			<< ", \"target\": " << bra_it->second.target;
 		++bra_it;
 		out << " }" << (bra_it != counter.counterBranches.end() ? "," :"") << "\n";
+	}
+	out << "\t\t],\n";
+
+	out << "\t\t\"targets\": [\n";
+	std::map< int, trace::WarpSynchronousGenerator::TargetCounter >::const_iterator targ_it;
+	targ_it = counter.counterTargets.begin();
+	for (; targ_it != counter.counterTargets.end();) {
+		out << "\t\t\t{ \"pc\": " << targ_it->first << ", \"events\": " << targ_it->second.events 
+			<< ", \"synchronous\": " << targ_it->second.synchronous;
+		++targ_it;
+		out << " }" << (targ_it != counter.counterTargets.end() ? "," :"") << "\n";
 	}
 	out << "\t\t]\n";
 	
@@ -278,11 +304,13 @@ void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& ker
 	//
 	// identify all branches and create counters for them
 	//
-	std::vector< int > branchPCs;
+	std::map< int, int > branchPCs;
+	std::map< int, std::vector<int> > targetPCs; // map's a target PC to list of branches jumping to it
 	if (kernel.ISA == ir::Instruction::Emulated) {
 		const executive::EmulatedKernel & emuKernel = 
 			static_cast<const executive::EmulatedKernel &>(kernel);
 
+		targetPCs[0].push_back(-1);	// first instruction gets a push
 
 		executive::EmulatedKernel::PTXInstructionVector::const_iterator inst_it;
 
@@ -294,7 +322,9 @@ void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& ker
 			// complete per-instruction analysis 
 			switch (inst.opcode) {
 				case ir::PTXInstruction::Bra:
-					branchPCs.push_back(pc);
+					branchPCs[pc] = inst.branchTargetInstruction;
+					targetPCs[inst.branchTargetInstruction].push_back(pc);
+					targetPCs[pc+1].push_back(pc);
 					break;
 
 				default:
@@ -308,11 +338,18 @@ void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& ker
 	for (std::vector<int>::const_iterator ws_it = warpSizes.begin(); ws_it != warpSizes.end();
 		++ws_it) {
 		SynchronousInstructionCounter syncCounter;
-		for (std::vector<int>::const_iterator bra_it = branchPCs.begin(); 
+		for (std::map<int,int>::const_iterator bra_it = branchPCs.begin(); 
 			bra_it != branchPCs.end(); ++bra_it) {
 
 			BranchCounter braCounter;
-			syncCounter.counterBranches[*bra_it] = braCounter;
+			braCounter.target = bra_it->second;
+			syncCounter.counterBranches[bra_it->first] = braCounter;
+		}
+		for (std::map<int, std::vector<int> >::const_iterator targ_it = targetPCs.begin();
+			targ_it != targetPCs.end(); ++targ_it) {
+			TargetCounter targCounter;
+
+			syncCounter.counterTargets[targ_it->first] = targCounter;
 		}
 		warpCounters[*ws_it] = syncCounter;
 	}

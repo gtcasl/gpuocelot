@@ -100,6 +100,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
+	ocelot/executive/implementation/ATIGPUDevice.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
 	ocelot/executive/implementation/GPUExecutableKernel.cpp \
@@ -367,6 +368,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/EmulatedKernel.h \
 	ocelot/executive/interface/RuntimeException.h \
 	ocelot/executive/interface/Device.h \
+	ocelot/executive/interface/ATIGPUDevice.h \
 	ocelot/executive/interface/CTAContext.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/sequence.ptx \

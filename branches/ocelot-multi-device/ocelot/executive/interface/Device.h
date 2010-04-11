@@ -102,9 +102,9 @@ namespace executive
 					virtual bool global() const;
 					/*! \brief Get the flags if this is a host pointer */
 					virtual unsigned int flags() const = 0;
-					/*! \brief Get a mapped pointer if this is a host allocation */
+					/*! \brief Get a host pointer if for a host allocation */
 					virtual void* mappedPointer() const = 0;
-					/*! \brief Get a pointer to the base of the allocation */
+					/*! \brief Get a device pointer to the base */
 					virtual void* pointer() const = 0;
 					/*! \brief The size of the allocation */
 					virtual size_t size() const = 0;

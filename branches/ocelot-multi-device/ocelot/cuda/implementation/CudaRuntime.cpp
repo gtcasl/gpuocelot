@@ -277,6 +277,11 @@ cuda::CudaRuntime::~CudaRuntime() {
 	//
 	// free things that need freeing
 	//
+	// devices
+	for (DeviceVector::iterator device = devices.begin(); 
+		device != devices.end(); ++device) {
+		delete *device;
+	}
 	
 	// mutex
 	pthread_mutex_destroy(&mutex);

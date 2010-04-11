@@ -661,7 +661,6 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
 	for (; it != module->globals.end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Const) {
-			assert(it->second.registered || it->second.local);
 			unsigned int offset;
 
 			report("  Found global const variable " 
@@ -763,7 +762,6 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
 	for (; it != module->globals.end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Global) {
-			assert(it->second.registered || it->second.local);
 			report(" Found global variable " << it->second.statement.name);
 			global.insert(it->second.statement.name);
 		}

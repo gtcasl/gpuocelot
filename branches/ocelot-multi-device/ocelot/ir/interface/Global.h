@@ -21,8 +21,7 @@ namespace ir
 			bool local; //! Is variable set via an initializer
 			void* pointer; //! Pointer to memory base
 			void* reference; //! dummy pointer used for lookups
-			bool registered; //! Has this global variable had its value set
-			ir::PTXStatement statement; //! Statement that the variable was declared in
+			ir::PTXStatement statement; //! Statement declaring the variable
 	
 		public:
 			/*! \brief Constructor */

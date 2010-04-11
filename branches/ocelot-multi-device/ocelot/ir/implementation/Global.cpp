@@ -17,12 +17,12 @@
 namespace ir
 {
 
-	Global::Global() : local(false), pointer(0), registered(false)
+	Global::Global() : local(false), pointer(0)
 	{
 		
 	}
 	
-	Global::Global( char* p ) : local(false), pointer(p), registered(false)
+	Global::Global( char* p ) : local(false), pointer(p)
 	{
 	
 	}
@@ -51,13 +51,11 @@ namespace ir
 		{
 			pointer = 0;
 		}
-		registered = false;
 	}
 
 	Global::Global( const Global& g ) : local(g.local)
 	{
 		statement = g.statement;
-		registered = g.registered;
 		if(local)
 		{
 			unsigned int size = statement.initializedBytes();
@@ -89,7 +87,6 @@ namespace ir
 
 			local = g.local;
 			statement = g.statement;
-			registered = g.registered;
 			if(local)
 			{
 				unsigned int size = statement.initializedBytes();
@@ -104,9 +101,6 @@ namespace ir
 		}
 		return *this;
 	}
-
-	
-	
 }
 
 #endif

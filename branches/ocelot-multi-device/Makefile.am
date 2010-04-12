@@ -113,6 +113,7 @@ libocelot_la_SOURCES = \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
 	ocelot/cuda/implementation/CudaDriver.cpp \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
+	ocelot/cal/implementation/CalDriver.cpp \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
 	ocelot/parser/implementation/PTXParser.cpp \

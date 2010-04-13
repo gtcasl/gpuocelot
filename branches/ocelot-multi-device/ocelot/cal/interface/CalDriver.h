@@ -13,24 +13,40 @@
 
 namespace cal
 {
-    /*! \brief Provides access to the CAL runtime/driver
-     *
-     * Implemented as a Singleton. It is non-thread-safe for now (is CAL
-     * thread-safe?)
-     */
+	/*! \breif CAL Char type */
+	typedef CALchar Char;
+
+	/*! \brief CAL Device type */
+	typedef CALdevice Device;
+	/*! \brief CAL Device Info type */
+	typedef CALdeviceinfo DeviceInfo;
+	/*! \brief CAL Context type */
+	typedef CALcontext Context;
+	/*! \brief CAL Object type */
+	typedef CALobject Object;
+	/*! \brief CAL Image type */
+	typedef CALimage Image;
+	/*! \brief CAL Module type */
+	typedef CALmodule Module;
+
+	/*! \brief Provides access to the CAL runtime/driver
+	 *
+	 * Implemented as a Singleton. It is non-thread-safe for now (is CAL
+	 * thread-safe?)
+	 */
 	class CalDriver
 	{
 		public:
-            /*! \brief Singleton instance getter */
+			/*! \brief Singleton instance getter */
 			static CalDriver *Instance();
 
 			/*****************************//**
 			 * \name Initialization
 			 ********************************/
-            //@{
+			//@{
 			CALresult calInit();
 			CALresult calShutdown();
-            //@}
+			//@}
 
 			/*****************************//**
 			 * \name Device Management
@@ -102,11 +118,11 @@ namespace cal
 			 * \name CAL function pointers
 			 ********************************/
 			//@{
-            CALresult (*_calInit)();
-            CALresult (*_calShutdown)();
-            CALresult (*_calDeviceOpen)(CALdevice *dev, CALuint ordinal);
-            CALresult (*_calDeviceClose)(CALdevice dev);
-            CALresult (*_calDeviceGetInfo)(CALdeviceinfo *info, CALuint ordinal);
+			CALresult (*_calInit)();
+			CALresult (*_calShutdown)();
+			CALresult (*_calDeviceOpen)(CALdevice *dev, CALuint ordinal);
+			CALresult (*_calDeviceClose)(CALdevice dev);
+			CALresult (*_calDeviceGetInfo)(CALdeviceinfo *info, CALuint ordinal);
 			CALresult (*_calCtxCreate)(CALcontext *ctx, CALdevice dev);
 			CALresult (*_calCtxDestroy)(CALcontext ctx);
 			CALresult (*_calCtxGetMem)(CALmem *mem, CALcontext ctx, CALresource res);

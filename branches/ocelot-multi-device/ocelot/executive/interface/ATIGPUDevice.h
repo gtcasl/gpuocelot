@@ -22,11 +22,32 @@ namespace executive
 			/*! \brief Destructor */
 			~ATIGPUDevice();
 
+			/*! \brief Load a module, must have a unique name */
+			void load(const ir::Module* irModule);
+			/*! \brief Unload a module by name */
+			void unload(const std::string& name);
+
+			/*! \brief Select this device as the current device.
+			 *  Only one device is allowed to be selected at any time. */
+			void select();
+			/*! \brief Is this device selected? */
+			bool selected() const;
+			/*! \brief Deselect this device */
+			void unselect();
+
 		private:
 			/*! \brief CAL Device */
-			CALdevice device;
+			cal::Device device;
 			/*! \brief CAL Device Info */
-			CALdeviceinfo info;
+			cal::DeviceInfo info;
+            /*! \brief CAL Context. Multiple contexts per device is not supported yet */
+			cal::Context context;
+			/*! \brief CAL Object */
+			cal::Object object;
+			/*! \brief CAL Image */
+			cal::Image image;
+			/*! \brief CAL Module */
+			cal::Module module;
 	};
 }
 

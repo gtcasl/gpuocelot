@@ -31,12 +31,12 @@ namespace ocelot
 			only be associated with the next kernel.
 		\param safe Make this a thread safe call
 	*/
-	void addTraceGenerator( trace::TraceGenerator& gen, 
-		bool persistent = false, bool safe = true );
+	void addTraceGenerator(trace::TraceGenerator& gen, 
+		bool persistent = false);
 				
 	/*! \brief Clear all trace generators 
 		\param safe Make this a thread safe call*/
-	void clearTraceGenerators( bool safe = true );
+	void clearTraceGenerators();
 	
 	/*! \brief Sets a limit on the number of host worker threads to launch
 		when executing a CUDA kernel on a Multi-Core CPU.

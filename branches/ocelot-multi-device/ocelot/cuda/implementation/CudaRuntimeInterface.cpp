@@ -70,11 +70,11 @@ cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntimeInterface::addTraceGenerator( trace::TraceGenerator& gen, 
-	bool persistent, bool safe ) {
+	bool persistent ) {
 	assert(0 && "unimplemented");
 }
 			
-void cuda::CudaRuntimeInterface::clearTraceGenerators( bool safe ) {
+void cuda::CudaRuntimeInterface::clearTraceGenerators() {
 	assert(0 && "unimplemented");
 }
 
@@ -82,7 +82,8 @@ void cuda::CudaRuntimeInterface::limitWorkerThreads( unsigned int limit ) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, const std::string& name) {
+void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, 
+	const std::string& name) {
 	assert(0 && "unimplemented");
 }
 

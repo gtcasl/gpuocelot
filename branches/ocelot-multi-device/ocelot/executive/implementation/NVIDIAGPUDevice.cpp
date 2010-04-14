@@ -185,7 +185,7 @@ namespace executive
 
 	void* NVIDIAGPUDevice::MemoryAllocation::pointer() const
 	{
-		return hydrazine::bit_cast<void*>(_devicePointer);
+		return (void*)_devicePointer;
 	}
 
 	size_t NVIDIAGPUDevice::MemoryAllocation::size() const
@@ -196,15 +196,14 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(size_t offset, 
 		const void* src, size_t s)
 	{
-		assert(offset + s < size());
+		assert(offset + s <= size());
 		if(host())
 		{
 			memcpy((char*)_hostPointer + offset, src, s);
 		}
 		else
 		{
-			CUdeviceptr dst = hydrazine::bit_cast<CUdeviceptr>(
-				(char*)_devicePointer + offset);
+			CUdeviceptr dst = _devicePointer + offset;
 			checkError(driver::cuMemcpyHtoD(dst, src, s));
 		}
 	}
@@ -212,15 +211,14 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(void* dst, 
 		size_t offset, size_t s) const
 	{
-		assert(offset + s < size());
+		assert(offset + s <= size());
 		if(host())
 		{
 			std::memcpy(dst, (char*)_hostPointer + offset, s);
 		}
 		else
 		{
-			CUdeviceptr src = hydrazine::bit_cast<CUdeviceptr>(
-				(char*)_devicePointer + offset);
+			CUdeviceptr src = _devicePointer + offset;
 			checkError(driver::cuMemcpyDtoH(dst, src, s));
 		}
 	}
@@ -228,15 +226,14 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::memset(size_t offset, 
 		int value, size_t s)
 	{
-		assert(s + offset < size());
+		assert(s + offset <= size());
 		if(host())
 		{
 			std::memset((char*)_hostPointer + offset, value, s);
 		}
 		else
 		{
-			CUdeviceptr dst = hydrazine::bit_cast<CUdeviceptr>(
-				(char*)_devicePointer + offset);
+			CUdeviceptr dst = _devicePointer + offset;
 			checkError(driver::cuMemsetD8(dst, value, s));
 		}
 	}
@@ -245,8 +242,8 @@ namespace executive
 		size_t toOffset, size_t fromOffset, size_t s) const
 	{
 		MemoryAllocation* allocation = static_cast<MemoryAllocation*>(a);
-		assert(fromOffset + s < size());
-		assert(toOffset + s < allocation->size());
+		assert(fromOffset + s <= size());
+		assert(toOffset + s <= allocation->size());
 		
 		if(host())
 		{
@@ -260,8 +257,7 @@ namespace executive
 			else
 			{
 				void* src = (char*)_hostPointer + fromOffset;
-				CUdeviceptr dst = hydrazine::bit_cast<CUdeviceptr>(
-					(char*)allocation->_devicePointer + toOffset);
+				CUdeviceptr dst = allocation->_devicePointer + toOffset;
 
 				checkError(driver::cuMemcpyHtoD(dst, src, s));
 			}
@@ -270,18 +266,15 @@ namespace executive
 		{
 			if(allocation->host())
 			{
-				CUdeviceptr src = hydrazine::bit_cast<CUdeviceptr>(
-					(char*)_devicePointer + fromOffset);
+				CUdeviceptr src = _devicePointer + fromOffset;
 				void* dst = (char*)allocation->_hostPointer + toOffset;
 
 				checkError(driver::cuMemcpyDtoH(dst, src, s));
 			}
 			else
 			{
-				CUdeviceptr src = hydrazine::bit_cast<CUdeviceptr>(
-					(char*)_devicePointer + fromOffset);
-				CUdeviceptr dst = hydrazine::bit_cast<CUdeviceptr>(
-					(char*)allocation->_devicePointer + toOffset);
+				CUdeviceptr src = _devicePointer + fromOffset;
+				CUdeviceptr dst = allocation->_devicePointer + toOffset;
 
 				checkError(driver::cuMemcpyDtoD(dst, src, s));
 			}
@@ -860,7 +853,7 @@ namespace executive
 
 	void NVIDIAGPUDevice::unselect()
 	{
-		assert(!selected());
+		assert(selected());
 		_selected = false;
 		checkError(driver::cuCtxPopCurrent(&_context));
 	}

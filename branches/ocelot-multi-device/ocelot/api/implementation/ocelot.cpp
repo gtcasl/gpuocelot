@@ -18,14 +18,14 @@ namespace ocelot
 	}
 
 	void addTraceGenerator( trace::TraceGenerator& gen, 
-		bool persistent, bool safe )
+		bool persistent )
 	{
-		get()->addTraceGenerator(gen, persistent, safe );
+		get()->addTraceGenerator(gen, persistent );
 	}
 				
-	void clearTraceGenerators( bool safe )
+	void clearTraceGenerators( )
 	{
-		get()->clearTraceGenerators( safe );
+		get()->clearTraceGenerators( );
 	}
 	
 	void limitWorkerThreads( unsigned int limit )

@@ -199,71 +199,70 @@ namespace cuda {
 		/*! \brief Report a memory error and throw an exception */
 		void _memoryError(const void* address, size_t count, 
 			const std::string& function = "");		
-		/*! \brief Create devices */
+		/*! \brief Create devices if they do not already exist */
 		void _enumerateDevices();
+		//! \brief acquires mutex and locks the runtime
+		void _lock();
+		//! \brief releases mutex
+		void _unlock();
+		//! \brief sets the last error state for the CudaRuntime object
+		cudaError_t _setLastError(cudaError_t result);
+		//! \brief Bind the current thread to a device context
+		HostThreadContext& _bind();
+		//! \brief Unbind the current thread
+		void _unbind();
+		//! \brief Lock the mutex and bind the the thread
+		void _acquire();
+		/*! \brief Unbind the thread and unlock the mutex */
+		void _release();
+		//! \brief gets the current device for the current thread
+		executive::Device& _getDevice();
+		//! \brief returns an Ocelot-formatted error message
+		std::string _formatError(const std::string & message);
 
-	public:
+	private:
 		//! locking object for cuda runtime
-		pthread_mutex_t mutex;
+		pthread_mutex_t _mutex;
 		
 		//! Registered modules
-		ModuleMap modules;
+		ModuleMap _modules;
 		
 		//! map of pthreads to thread contexts
-		HostThreadContextMap threads;
+		HostThreadContextMap _threads;
 		
 		//! maps kernel symbols to module-kernels
-		RegisteredKernelMap kernels;
+		RegisteredKernelMap _kernels;
 		
 		//! maps texture symbols to module-textures
-		RegisteredTextureMap textures;
+		RegisteredTextureMap _textures;
 
 		//! maps symbol pointers onto their device names
-		RegisteredGlobalMap globals;
+		RegisteredGlobalMap _globals;
 		
 		//! The dimensions for multi-dimensional allocations
-		DimensionMap dimensions;
+		DimensionMap _dimensions;
 		
 		//! Device vector
-		DeviceVector devices;
+		DeviceVector _devices;
 		
 		//! Have the devices been loaded?
-		bool devicesLoaded;
+		bool _devicesLoaded;
 		
 		//! Currently selected device
-		int selectedDevice;
+		int _selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
-		int nextSymbol;
+		int _nextSymbol;
 		
 		//! The device flags
-		unsigned int flags;
+		unsigned int _flags;
 		
 		//! fatbinaries
-		FatBinaryVector fatBinaries;
+		FatBinaryVector _fatBinaries;
 		
 	public:
 		CudaRuntime();
 		~CudaRuntime();
-	
-	public:
-		//! \brief acquires mutex and locks the runtime
-		void lock();
-		
-		//! \brief releases mutex
-		void unlock();
-		
-		//! \brief sets the last error state for the CudaRuntime object
-		cudaError_t setLastError(cudaError_t result);
-
-		//! \brief gets current thread context
-		HostThreadContext& getHostThreadContext();
-
-		//! \brief gets the current device for the current thread
-		executive::Device& getDevice();
-		
-		//! \brief returns an Ocelot-formatted error message
-		std::string formatError(const std::string & message);
 
 	public:
 		//

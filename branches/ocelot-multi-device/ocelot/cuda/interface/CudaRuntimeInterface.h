@@ -365,14 +365,12 @@ namespace cuda {
 			\param persistent The trace generator will be associated with all
 				subsequent kernels until clear is called, otherwise it will
 				only be associated with the next kernel.
-			\param safe Make this a thread safe call
 		*/
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
-			bool persistent = false, bool safe = true );
+			bool persistent = false );
 				
-		/*! \brief Clear all trace generators 
-			\param safe Make this a thread safe call*/
-		virtual void clearTraceGenerators( bool safe = true );
+		/*! \brief Clear all trace generators */
+		virtual void clearTraceGenerators();
 	
 		/*! \brief Sets a limit on the number of host worker threads to launch
 			when executing a CUDA kernel on a Multi-Core CPU.
@@ -385,7 +383,8 @@ namespace cuda {
 			\param stream An input stream containing a PTX module
 			\param The name of the module being registered. Must be Unique.
 		*/
-		virtual void registerPTXModule(std::istream& stream, const std::string& name);
+		virtual void registerPTXModule(std::istream& stream, 
+			const std::string& name);
 
 		/*! \brief Get a function pointer to a kernel in a registered module 
 			that can be passed directly to cudaLaunch
@@ -414,8 +413,8 @@ namespace cuda {
 		virtual void reset();
 	
 		/*! \brief Perform a device context switch */
-		virtual ocelot::PointerMap contextSwitch( unsigned int destinationDevice, 
-			unsigned int sourceDevice );
+		virtual ocelot::PointerMap contextSwitch(unsigned int destinationDevice, 
+			unsigned int sourceDevice);
 	
 		/*! \brief Unregister a module, either PTX or LLVM */
 		virtual void unregisterModule( const std::string& name );

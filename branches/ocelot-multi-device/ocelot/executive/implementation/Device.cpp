@@ -9,6 +9,12 @@
 
 #include <hydrazine/implementation/debug.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 executive::Device::MemoryAllocation::MemoryAllocation(bool g, 
 	bool h) : _global(g), _host(h) {
 
@@ -87,8 +93,11 @@ bool executive::Device::checkMemoryAccess(const void* pointer,
 	MemoryAllocation* allocation = getMemoryAllocation(pointer, false);
 	if(allocation == 0) return false;
 	
+	report(" Checking access " << pointer << " (" << size 
+		<< " against allocation at " << allocation->pointer() 
+		<< " of size " << allocation->size());
 	if((char*)pointer + size 
-		< (char*)allocation->pointer() + allocation->size())
+		<= (char*)allocation->pointer() + allocation->size())
 	{
 		return true;
 	}

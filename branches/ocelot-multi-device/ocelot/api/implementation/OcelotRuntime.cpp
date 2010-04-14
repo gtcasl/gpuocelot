@@ -35,48 +35,47 @@ namespace ocelot
 			report( "Creating memory trace generator" );
 			_memoryTraceGenerator.database = c.trace.database;
 			_memoryTraceGenerator.headerOnly = c.trace.inPlaceTraces;
-			ocelot::addTraceGenerator( _memoryTraceGenerator, true, false );
+			ocelot::addTraceGenerator( _memoryTraceGenerator, true );
 		}
 		if( c.trace.sharedComputation )
 		{
 			report( "Creating shared computation trace generator" );
 			_sharedComputationGenerator.database = c.trace.database;
-			ocelot::addTraceGenerator( _sharedComputationGenerator, 
-				true, false );
+			ocelot::addTraceGenerator( _sharedComputationGenerator, true );
 		}
 		if( c.trace.branch )
 		{
 			report( "Creating branch trace generator" );
 			_branchTraceGenerator.database = c.trace.database;
-			ocelot::addTraceGenerator( _branchTraceGenerator, true, false );
+			ocelot::addTraceGenerator( _branchTraceGenerator, true );
 		}
 		if( c.trace.parallelism )
 		{
 			report( "Creating parallelism trace generator" );
 			_parallelismTraceGenerator.database = c.trace.database;
-			ocelot::addTraceGenerator( _parallelismTraceGenerator, true, false );
+			ocelot::addTraceGenerator( _parallelismTraceGenerator, true );
 		}
 		if (c.trace.instruction)
 		{
 			report( "Creating instruction trace generator" );
 			_instructionTraceGenerator.database = c.trace.database;
-			ocelot::addTraceGenerator( _instructionTraceGenerator, true, false );
+			ocelot::addTraceGenerator( _instructionTraceGenerator, true );
 		}
 		if (c.trace.cacheSimulator)
 		{
 			report( "Creating cache simulator" );
 			_cacheSimulator.database = c.trace.database;
-			ocelot::addTraceGenerator( _cacheSimulator, true, false );	
+			ocelot::addTraceGenerator( _cacheSimulator, true );	
 		}
 		if (c.trace.memoryChecker)
 		{
 			report( "Creating memory checker" );
-			ocelot::addTraceGenerator( _memoryChecker, true, false );
+			ocelot::addTraceGenerator( _memoryChecker, true );
 		}
 		if (c.trace.raceDetector)
 		{
 			report( "Creating memory race detector" );
-			ocelot::addTraceGenerator( _raceDetector, true, false );
+			ocelot::addTraceGenerator( _raceDetector, true );
 		}
 	}
 

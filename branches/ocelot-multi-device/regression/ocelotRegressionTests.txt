@@ -3,7 +3,6 @@
 ../TestEmulator
 ../TestInstructions
 ../TestKernels
-../TestTrace
 ../TestDataflowGraph
 ../TestLLVMInstructions
 ../TestPTXToLLVMTranslator

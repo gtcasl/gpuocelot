@@ -619,7 +619,7 @@ namespace executive
 		CUgraphicsResource resource;
 		checkError(driver::cuGraphicsGLRegisterBuffer(&resource, 
 			buffer, flags));
-		return resource;
+		return hydrazine::bit_cast<void*>(resource);
 	}
 	
 	void* NVIDIAGPUDevice::glRegisterImage(unsigned int image, 
@@ -634,7 +634,7 @@ namespace executive
 	void NVIDIAGPUDevice::unRegisterGraphicsResource(void* resource)
 	{
 		checkError(driver::cuGraphicsUnregisterResource(
-			(CUgraphicsResource)resource));
+			hydrazine::bit_cast<CUgraphicsResource>(resource)));
 	}
 
 	void NVIDIAGPUDevice::mapGraphicsResource(void* resource, int count, 
@@ -655,8 +655,10 @@ namespace executive
 		void* resource) const
 	{
 		CUdeviceptr pointer;
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &size, 
+		unsigned int bytes = 0;
+		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
 			(CUgraphicsResource)resource));
+		size = bytes;
 		return hydrazine::bit_cast<void*>(pointer);
 	}
 
@@ -866,8 +868,8 @@ namespace executive
 	void NVIDIAGPUDevice::bindTexture(void* pointer, void* texture, 
 		const cudaChannelFormatDesc& desc, size_t size)
 	{
-		CUtexref ref = (CUtexref) texture;
-		CUdeviceptr ptr = (CUdeviceptr)pointer;
+		CUtexref ref = hydrazine::bit_cast<CUtexref>(texture);
+		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
 		unsigned int offset = 0;
 		checkError(driver::cuTexRefSetAddress(&offset, ref, ptr, 0));
 		// TODO do the texture mapping

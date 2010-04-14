@@ -216,23 +216,25 @@ namespace cuda
 		hydrazine::bit_cast( cuStreamDestroy, dlsym( _driver, 
 			"cuStreamDestroy" ) );
 
-		hydrazine::bit_cast( cuGLInit, dlsym( _driver, "cuGLInit" ) );
-		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver, 
+		hydrazine::bit_cast( cuGraphicsUnregisterResource, dlsym( _driver,
+			"cuGraphicsUnregisterResource" ) ); 
+		hydrazine::bit_cast( cuGraphicsSubResourceGetMappedArray, 
+			dlsym( _driver, "cuGraphicsSubResourceGetMappedArray" ) );
+		hydrazine::bit_cast( cuGraphicsResourceGetMappedPointer, dlsym( _driver,
+			"cuGraphicsResourceGetMappedPointer" ) );
+		hydrazine::bit_cast( cuGraphicsResourceSetMapFlags, dlsym( _driver,
+			"cuGraphicsResourceSetMapFlags" ) );
+		hydrazine::bit_cast( cuGraphicsMapResources, dlsym( _driver,
+			"cuGraphicsMapResources" ) );
+		hydrazine::bit_cast( cuGraphicsUnmapResources, dlsym( _driver,
+			"cuGraphicsUnmapResources" ) );
+
+		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver,
 			"cuGLCtxCreate" ) );
-		hydrazine::bit_cast( cuGLRegisterBufferObject, dlsym( _driver, 
-			"cuGLRegisterBufferObject" ) );
-		hydrazine::bit_cast( cuGLMapBufferObject, dlsym( _driver, 
-			"cuGLMapBufferObject" ) );
-		hydrazine::bit_cast( cuGLUnmapBufferObject, dlsym( _driver, 
-			"cuGLUnmapBufferObject" ) );
-		hydrazine::bit_cast( cuGLUnregisterBufferObject, dlsym( _driver, 
-			"cuGLUnregisterBufferObject" ) );
-		hydrazine::bit_cast( cuGLSetBufferObjectMapFlags, dlsym( _driver, 
-			"cuGLSetBufferObjectMapFlags" ) );
-		hydrazine::bit_cast( cuGLMapBufferObjectAsync, dlsym( _driver, 
-			"cuGLMapBufferObjectAsync" ) );
-		hydrazine::bit_cast( cuGLUnmapBufferObjectAsync, dlsym( _driver, 
-			"cuGLUnmapBufferObjectAsync" ) );
+		hydrazine::bit_cast( cuGraphicsGLRegisterBuffer, dlsym( _driver,
+			"cuGraphicsGLRegisterBuffer" ) );
+		hydrazine::bit_cast( cuGraphicsGLRegisterImage, dlsym( _driver,
+			"cuGraphicsGLRegisterImage" ) );
 
 		(*cuDriverGetVersion)(&_version);
 
@@ -1038,73 +1040,88 @@ namespace cuda
 		return (*_interface.cuStreamDestroy)(hStream);
 	}
 	
-	CUresult CudaDriver::cuGLInit(void)
+	CUresult CudaDriver::cuGraphicsUnregisterResource(
+		CUgraphicsResource resource)
 	{
 		assertM( _interface.loaded(), 
-			"cuGLInit called without loading CUDA driver.");
-		return (*_interface.cuGLInit)();
+			"cuGraphicsUnregisterResource called without loading CUDA driver.");
+		return (*_interface.cuGraphicsUnregisterResource)(resource);
 	}
 	
-	CUresult CudaDriver::cuGLCtxCreate( CUcontext *pCtx, unsigned int Flags, 
-		CUdevice device )
+	CUresult CudaDriver::cuGraphicsSubResourceGetMappedArray(
+		CUarray *pArray, CUgraphicsResource resource, 
+		unsigned int arrayIndex, unsigned int mipLevel )
+	{
+		assertM( _interface.loaded(), 
+			"cuGraphicsSubResourceGetMappedArray called " 
+			<< "without loading CUDA driver.");
+		return (*_interface.cuGraphicsSubResourceGetMappedArray)(pArray, 
+			resource, arrayIndex, mipLevel);
+	}
+
+	CUresult CudaDriver::cuGraphicsResourceGetMappedPointer(
+		CUdeviceptr *pDevPtr, unsigned int *pSize, 
+		CUgraphicsResource resource)
+	{
+		assertM( _interface.loaded(), 
+			"cuGraphicsResourceGetMappedPointer called " 
+			<< "without loading CUDA driver.");
+		return (*_interface.cuGraphicsResourceGetMappedPointer)(pDevPtr, 
+			pSize, resource);
+	}
+		
+	CUresult CudaDriver::cuGraphicsResourceSetMapFlags(
+		CUgraphicsResource resource, unsigned int flags ) 
+	{
+		assertM( _interface.loaded(), 
+			"cuGraphicsResourceSetMapFlags called " 
+				<< "without loading CUDA driver.");
+		return (*_interface.cuGraphicsResourceSetMapFlags)(resource, flags);
+	}
+
+	CUresult CudaDriver::cuGraphicsMapResources(unsigned int count, 
+		CUgraphicsResource *resources, CUstream hStream)
+	{
+		assertM( _interface.loaded(), 
+			"cuGraphicsMapResources called without loading CUDA driver.");
+		return (*_interface.cuGraphicsMapResources)(count, resources, hStream);
+	}
+
+	CUresult CudaDriver::cuGraphicsUnmapResources(unsigned int count, 
+		CUgraphicsResource *resources, CUstream hStream)
+	{
+		assertM( _interface.loaded(), 
+			"cuGraphicsUnmapResources called without loading CUDA driver.");
+		return (*_interface.cuGraphicsUnmapResources)(count, 
+			resources, hStream);
+	}
+
+	CUresult CudaDriver::cuGLCtxCreate(CUcontext *pCtx, 
+		unsigned int Flags, CUdevice device)
 	{
 		assertM( _interface.loaded(), 
 			"cuGLCtxCreate called without loading CUDA driver.");
 		return (*_interface.cuGLCtxCreate)(pCtx, Flags, device);
 	}
 
-	CUresult CudaDriver::cuGLRegisterBufferObject( GLuint bufferobj )
-	{
-		assertM( _interface.loaded(), 
-			"cuGLRegisterBufferObject called without loading CUDA driver.");
-		return (*_interface.cuGLRegisterBufferObject)(bufferobj);
-	}
-
-	CUresult CudaDriver::cuGLMapBufferObject( CUdeviceptr *dptr, 
-		unsigned int *size,  GLuint bufferobj )
-	{
-		assertM( _interface.loaded(), 
-			"cuGLMapBufferObject called without loading CUDA driver.");
-		return (*_interface.cuGLMapBufferObject)(dptr, size, bufferobj);
-	}
-
-	CUresult CudaDriver::cuGLUnmapBufferObject( GLuint bufferobj )
-	{
-		assertM( _interface.loaded(), 
-			"cuGLUnmapBufferObject called without loading CUDA driver.");
-		return (*_interface.cuGLUnmapBufferObject)(bufferobj);
-	}
-
-	CUresult CudaDriver::cuGLUnregisterBufferObject( GLuint bufferobj )
-	{
-		assertM( _interface.loaded(), 
-			"cuGLUnregisterBufferObject called without loading CUDA driver.");
-		return (*_interface.cuGLUnregisterBufferObject)(bufferobj);
-	}
-
-	CUresult CudaDriver::cuGLSetBufferObjectMapFlags( GLuint bufferobj, 
+	CUresult CudaDriver::cuGraphicsGLRegisterBuffer( 
+		CUgraphicsResource *pCudaResource, unsigned int buffer, 
 		unsigned int Flags )
 	{
 		assertM( _interface.loaded(), 
-			"cuGLSetBufferObjectMapFlags called without loading CUDA driver.");
-		return (*_interface.cuGLSetBufferObjectMapFlags)(bufferobj, Flags);
+			"cuGraphicsGLRegisterBuffer called without loading CUDA driver.");
+		return (*_interface.cuGraphicsGLRegisterBuffer)(pCudaResource, 
+			buffer, Flags);
 	}
 
-	CUresult CudaDriver::cuGLMapBufferObjectAsync( CUdeviceptr *dptr, 
-		unsigned int *size,  GLuint bufferobj, CUstream hStream )
+	CUresult CudaDriver::cuGraphicsGLRegisterImage( 
+		CUgraphicsResource *pCudaResource, unsigned int image, 
+		int target, unsigned int Flags)
 	{
 		assertM( _interface.loaded(), 
-			"cuGLMapBufferObjectAsync called without loading CUDA driver.");
-		return (*_interface.cuGLMapBufferObjectAsync)(dptr, size, 
-			bufferobj, hStream);
-	}
-	
-	CUresult CudaDriver::cuGLUnmapBufferObjectAsync( GLuint bufferobj, 
-		CUstream hStream )
-	{
-		assertM( _interface.loaded(), 
-			"cuGLUnmapBufferObjectAsync called without loading CUDA driver.");
-		return (*_interface.cuGLUnmapBufferObjectAsync)(bufferobj, hStream);
+			"cuGraphicsGLRegisterImage called without loading CUDA driver.");
+		return (*_interface.cuGraphicsGLRegisterImage)(pCudaResource, image, 
+			target, Flags);
 	}
 
 	std::string CudaDriver::toString(CUresult r)

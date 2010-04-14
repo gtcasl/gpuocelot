@@ -115,7 +115,8 @@ namespace executive
 					virtual void copy(void* host, size_t offset, 
 						size_t size) const = 0;
 					/*! \brief Memset the allocation */
-					virtual void memset(size_t offset, int value, size_t size);
+					virtual void memset(size_t offset, int value, 
+						size_t size) = 0;
 					/*! \brief Copy to another allocation */
 					virtual void copy(MemoryAllocation* allocation, 
 						size_t toOffset, size_t fromOffset, 
@@ -124,6 +125,9 @@ namespace executive
 
 			/*! \brief Vector of memory allocations */
 			typedef std::vector< MemoryAllocation* > MemoryAllocationVector;
+			
+			/*! \brief Vector of devices */
+			typedef std::vector< Device* > DeviceVector;
 
 		protected:
 			/*! \brief The properties of this device */
@@ -132,17 +136,24 @@ namespace executive
 			int _driverVersion;
 			/*! \brief The runtime version */
 			int _runtimeVersion;
+			/*! \brief Device flags */
+			unsigned int _flags;
+
+		public:
+			/*! \brief Create devices with the selected isa */
+			static DeviceVector createDevices(ir::Instruction::Architecture isa,
+				unsigned int flags);
 
 		public:
 			/*! \brief Check a memory access against all allocations */
 			virtual bool checkMemoryAccess(const void* pointer, 
-				size_t size) const = 0;
+				size_t size) const;
 			/*! \brief Get the allocation containing a pointer or 0 */
 			virtual MemoryAllocation* getMemoryAllocation(const void* address, 
 				bool hostAllocation = false) const = 0;
-			/*! \brief Get the address of a global by stream */
+			/*! \brief Get the address of a global by name */
 			virtual MemoryAllocation* getGlobalAllocation(
-				const std::string& module, const std::string& name) const = 0;
+				const std::string& module, const std::string& name) = 0;
 			/*! \brief Allocate some new dynamic memory on this device */
 			virtual MemoryAllocation* allocate(size_t size) = 0;
 			/*! \brief Make this a host memory allocation */
@@ -223,8 +234,6 @@ namespace executive
 			virtual bool selected() const = 0;
 			/*! \brief Deselect this device. */
 			virtual void unselect() = 0;
-			/*! \brief Set flags for this device */
-			virtual void setDeviceFlags(unsigned int flags) = 0;
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
@@ -258,12 +267,12 @@ namespace executive
 			virtual void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
-				void* parameterBlock, size_t parameterBlockSize, 
+				const void* parameterBlock, size_t parameterBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector()) = 0;
 			/*! \brief Get the function attributes of a specific kernel */
 			virtual cudaFuncAttributes getAttributes(const std::string& module, 
-				const std::string& kernel) const = 0;
+				const std::string& kernel) = 0;
 			/*! \brief Get the last error from this device */
 			virtual unsigned int getLastError() const = 0;
 			/*! \brief Wait until all asynchronous operations have completed */
@@ -275,13 +284,13 @@ namespace executive
 			
 		public:
 			/*! \brief Sets the device properties */
-			Device(int guid = 0);
+			Device(int guid = 0, unsigned int flags = 0);
 			/*! \brief Virtual destructor is required */
 			virtual ~Device();
-
+			
 	};
 	
-	typedef std::vector< Device* > DeviceVector;
+	typedef Device::DeviceVector DeviceVector;
 }
 
 #endif

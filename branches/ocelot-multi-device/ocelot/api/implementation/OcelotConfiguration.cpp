@@ -121,8 +121,9 @@ api::OcelotConfiguration::Executive::Executive():
 	required(false),
 	enableLLVM(true),
 	enableEmulated(true),
-	enableGPU(true),
-	workerThreadLimit(4)
+	enableNVIDIA(true),
+	enableAMD(true),
+	workerThreadLimit(-1)
 {
 
 }
@@ -140,8 +141,11 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	else if (strPrefISA == "llvm" || strPrefISA == "LLVM") {
 		executive.preferredISA = (int)ir::Instruction::LLVM;
 	}
-	else if (strPrefISA == "gpu" || strPrefISA == "GPU") {
-		executive.preferredISA = (int)ir::Instruction::GPU;
+	else if (strPrefISA == "nvidia" || strPrefISA == "NVIDIA") {
+		executive.preferredISA = (int)ir::Instruction::SASS;
+	}
+	else if (strPrefISA == "amd" || strPrefISA == "AMD") {
+		executive.preferredISA = (int)ir::Instruction::CAL;
 	}
 	else {
 		report("Unknown preferredISA - using Emulated");
@@ -183,14 +187,15 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.required = config.parse<bool>("required", false);
 	executive.enableLLVM = config.parse<bool>("enableLLVM", true);
 	executive.enableEmulated = config.parse<bool>("enableEmulated", true);
-	executive.enableGPU = config.parse<bool>("enableGPU", true);
-	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", 4);
+	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
+	executive.enableAMD = config.parse<bool>("enableAMD", true);
+	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];
 		hydrazine::json::Array *array = static_cast<hydrazine::json::Array *>(devices.value);
 		
-		executive.enableLLVM = executive.enableEmulated = executive.enableGPU = false;
+		executive.enableLLVM = executive.enableEmulated = executive.enableNVIDIA = executive.enableAMD = false;
 		
 		for (hydrazine::json::Array::ValueVector::iterator it = array->begin(); it != array->end(); 
 			++it) {
@@ -198,8 +203,11 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			if ((std::string)dev == "llvm") {
 				executive.enableLLVM = true;
 			}
-			else if ((std::string)dev == "gpu") {
-				executive.enableGPU = true;
+			else if ((std::string)dev == "nvidia") {
+				executive.enableNVIDIA = true;
+			}
+			else if ((std::string)dev == "amd") {
+				executive.enableAMD = true;
 			}
 			else if ((std::string)dev == "emulated") {
 				executive.enableEmulated = true;
@@ -253,7 +261,8 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 	std::string device;
 	if (executive.enableEmulated) device = "emulated";
 	if (executive.enableLLVM) device = "llvm";
-	if (executive.enableGPU) device = "gpu";
+	if (executive.enableNVIDIA) device = "nvidia";
+	if (executive.enableAMD) device = "amd";
 	report("Ocelot Configuration: " << ocelot << " " << version << " " << device);
 }
 

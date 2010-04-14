@@ -11,11 +11,9 @@
 #include <algorithm>
 
 // Ocelot includes
-#include <ocelot/cuda/include/__cudaFatFormat.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 
 // Hydrazine includes
@@ -265,12 +263,19 @@ void cuda::CudaRuntime::_memoryError(const void* address, size_t count,
 }
 
 void cuda::CudaRuntime::_enumerateDevices() {
-
+	if(devicesLoaded) return;
+	if(api::OcelotConfiguration::get().executive.enableNVIDIA)
+	{
+		executive::DeviceVector d = 
+			executive::Device::createDevices(ir::Instruction::SASS, flags);
+		devices.insert(devices.end(), d.begin(), d.end());
+	}
+	devicesLoaded = true;
 }
 
-cuda::CudaRuntime::CudaRuntime() : selectedDevice(-1), nextSymbol(1) {
+cuda::CudaRuntime::CudaRuntime() : devicesLoaded(false), 
+	selectedDevice(-1), nextSymbol(1) {
 	pthread_mutex_init(&mutex, 0);
-	_enumerateDevices();
 }
 
 cuda::CudaRuntime::~CudaRuntime() {
@@ -317,6 +322,7 @@ cudaError_t cuda::CudaRuntime::setLastError(cudaError_t result) {
 
 //! gets the context of a thread
 cuda::HostThreadContext & cuda::CudaRuntime::getHostThreadContext() {
+	_enumerateDevices();
 	pthread_t self = pthread_self();
 	
 	HostThreadContextMap::iterator it = threads.find(self);
@@ -1837,10 +1843,17 @@ cudaError_t cuda::CudaRuntime::cudaSetValidDevices(int *device_arr, int len) {
 	return setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags(int flags) {
+cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags(int f) {
 	cudaError_t result = cudaSuccess;
 	lock();
-	getDevice().setDeviceFlags(flags);
+	if(!devicesLoaded)
+	{
+		flags = f;
+	}
+	else
+	{
+		result = cudaErrorSetOnActiveProcess;
+	}
 	unlock();
 	return setLastError(result);
 }

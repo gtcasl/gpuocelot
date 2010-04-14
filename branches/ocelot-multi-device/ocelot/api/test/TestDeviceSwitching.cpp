@@ -10,7 +10,7 @@
 #include <ocelot/api/test/TestDeviceSwitching.h>
 #include <ocelot/api/interface/ocelot.h>
 
-#include <cuda_runtime_api.h>
+#include <ocelot/cuda/interface/cuda_runtime.h>
 
 #include <hydrazine/interface/Thread.h>
 #include <hydrazine/implementation/ArgumentParser.h>

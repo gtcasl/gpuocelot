@@ -1,5 +1,5 @@
 /*
- * Copyright 1993-2009 NVIDIA Corporation.  All rights reserved.
+ * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
  *
  * NOTICE TO USER:   
  *
@@ -36,7 +36,7 @@
 #ifndef __cuda_cuda_h__
 #define __cuda_cuda_h__
 
-//#include <stdlib.h>
+#include <stdlib.h>
 
 /**
  * \file
@@ -54,7 +54,7 @@
 /**
  * CUDA API version number
  */
-#define CUDA_VERSION 2030 /* 2.3 */
+#define CUDA_VERSION 3000 /* 3.0 */
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,6 +69,11 @@ extern "C" {
     typedef struct CUtexref_st *CUtexref;   ///< CUDA texture reference
     typedef struct CUevent_st *CUevent;     ///< CUDA event
     typedef struct CUstream_st *CUstream;   ///< CUDA stream
+    typedef struct CUgraphicsResource_st *CUgraphicsResource; ///< CUDA graphics interop resource
+
+    typedef struct CUuuid_st {              ///< CUDA definition of UUID
+        char bytes[16];
+    } CUuuid;
 
 /************************************
  **
@@ -95,7 +100,7 @@ typedef enum CUctx_flags_enum {
  */
 typedef enum CUevent_flags_enum {
     CU_EVENT_DEFAULT       = 0, ///< Default event flag
-    CU_EVENT_BLOCKING_SYNC = 1 ///< Event uses blocking synchronization
+    CU_EVENT_BLOCKING_SYNC = 1  ///< Event uses blocking synchronization
 } CUevent_flags;
 
 /**
@@ -118,7 +123,7 @@ typedef enum CUarray_format_enum {
 typedef enum CUaddress_mode_enum {
     CU_TR_ADDRESS_MODE_WRAP = 0,    ///< Wrapping address mode
     CU_TR_ADDRESS_MODE_CLAMP = 1,   ///< Clamp to edge address mode
-    CU_TR_ADDRESS_MODE_MIRROR = 2  ///< Mirror address mode
+    CU_TR_ADDRESS_MODE_MIRROR = 2   ///< Mirror address mode
 } CUaddress_mode;
 
 /**
@@ -155,7 +160,19 @@ typedef enum CUdevice_attribute_enum {
     CU_DEVICE_ATTRIBUTE_KERNEL_EXEC_TIMEOUT = 17,   ///< Specifies whether there is a run time limit on kernels
     CU_DEVICE_ATTRIBUTE_INTEGRATED = 18,            ///< Device is integrated with host memory
     CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY = 19,   ///< Device can map host memory into CUDA address space
-    CU_DEVICE_ATTRIBUTE_COMPUTE_MODE = 20           ///< Compute mode (See ::CUcomputemode for details)
+    CU_DEVICE_ATTRIBUTE_COMPUTE_MODE = 20,          ///< Compute mode (See ::CUcomputemode for details)
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_WIDTH = 21, ///< Maximum 1D texture width
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_WIDTH = 22, ///< Maximum 2D texture width
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_HEIGHT = 23,///< Maximum 2D texture height
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_WIDTH = 24, ///< Maximum 3D texture width
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_HEIGHT = 25,///< Maximum 3D texture height
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_DEPTH = 26, ///< Maximum 3D texture depth
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_WIDTH = 27, ///< Maximum texture array width
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_HEIGHT = 28,///< Maximum texture array height
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_NUMSLICES = 29, ///< Maximum slices in a texture array
+    CU_DEVICE_ATTRIBUTE_SURFACE_ALIGNMENT = 30, ///< Alignment requirement for surfaces
+    CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS = 31, ///< Device can possibly execute multiple kernels concurrently
+    CU_DEVICE_ATTRIBUTE_ECC_ENABLED = 32 ///< Device has ECC support enabled
 } CUdevice_attribute;
 
 /**
@@ -208,8 +225,27 @@ typedef enum CUfunction_attribute_enum {
      */
     CU_FUNC_ATTRIBUTE_NUM_REGS = 4,
 
+    /**
+     * The PTX virtual architecture version for which the function was compiled.
+     */
+    CU_FUNC_ATTRIBUTE_PTX_VERSION = 5,
+
+    /**
+     * The binary version for which the function was compiled.
+     */
+    CU_FUNC_ATTRIBUTE_BINARY_VERSION = 6,
+
     CU_FUNC_ATTRIBUTE_MAX
 } CUfunction_attribute;
+
+/**
+ * Function cache configurations
+ */
+typedef enum CUfunc_cache_enum {
+    CU_FUNC_CACHE_PREFER_NONE   = 0x00,
+    CU_FUNC_CACHE_PREFER_SHARED = 0x01,
+    CU_FUNC_CACHE_PREFER_L1     = 0x02
+} CUfunc_cache;  
 
 /**
  * Memory types
@@ -235,7 +271,8 @@ typedef enum CUcomputemode_enum {
 typedef enum CUjit_option_enum
 {
     /**
-     * Max number of registers that a thread may use.
+     * Max number of registers that a thread may use.\n
+     * Option type: unsigned int
      */
     CU_JIT_MAX_REGISTERS            = 0,
 
@@ -247,62 +284,74 @@ typedef enum CUjit_option_enum
      * registers) such that a block with the given number of threads should be
      * able to launch based on register limitations. Note, this option does not
      * currently take into account any other resource limitations, such as
-     * shared memory utilization.
+     * shared memory utilization.\n
+     * Option type: unsigned int
      */
     CU_JIT_THREADS_PER_BLOCK,
 
     /**
      * Returns a float value in the option of the wall clock time, in
-     * milliseconds, spent creating the cubin
+     * milliseconds, spent creating the cubin\n
+     * Option type: float
      */
     CU_JIT_WALL_TIME,
 
     /**
      * Pointer to a buffer in which to print any log messsages from PTXAS
-     * that are informational in nature
+     * that are informational in nature (the buffer size is specified via
+     * option ::CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES) \n
+     * Option type: char*
      */
     CU_JIT_INFO_LOG_BUFFER,
 
     /**
      * IN: Log buffer size in bytes.  Log messages will be capped at this size
      * (including null terminator)\n
-     * OUT: Amount of log buffer filled with messages
+     * OUT: Amount of log buffer filled with messages\n
+     * Option type: unsigned int
      */
     CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES,
 
     /**
      * Pointer to a buffer in which to print any log messages from PTXAS that
-     * reflect errors
+     * reflect errors (the buffer size is specified via option
+     * ::CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES)\n
+     * Option type: char*
      */
     CU_JIT_ERROR_LOG_BUFFER,
 
     /**
      * IN: Log buffer size in bytes.  Log messages will be capped at this size
      * (including null terminator)\n
-     * OUT: Amount of log buffer filled with messages
+     * OUT: Amount of log buffer filled with messages\n
+     * Option type: unsigned int
      */
     CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES,
 
     /**
      * Level of optimizations to apply to generated code (0 - 4), with 4
-     * being the default and highest level of optimizations.
+     * being the default and highest level of optimizations.\n
+     * Option type: unsigned int
      */
     CU_JIT_OPTIMIZATION_LEVEL,
 
     /**
      * No option value required. Determines the target based on the current
-     * attached context (default)
+     * attached context (default)\n
+     * Option type: No option value needed
      */
     CU_JIT_TARGET_FROM_CUCONTEXT,
 
     /**
-     * Target is chosen based on supplied CUjit_target_enum.
+     * Target is chosen based on supplied ::CUjit_target_enum.\n
+     * Option type: unsigned int for enumerated type ::CUjit_target_enum
      */
     CU_JIT_TARGET,
 
     /**
      * Specifies choice of fallback strategy if matching cubin is not found.
-     * Choice is based on supplied CUjit_fallback_enum.
+     * Choice is based on supplied ::CUjit_fallback_enum.\n
+     * Option type: unsigned int for enumerated type ::CUjit_fallback_enum
      */
     CU_JIT_FALLBACK_STRATEGY
     
@@ -316,7 +365,8 @@ typedef enum CUjit_target_enum
     CU_TARGET_COMPUTE_10            = 0,    ///< Compute device class 1.0
     CU_TARGET_COMPUTE_11,                   ///< Compute device class 1.1
     CU_TARGET_COMPUTE_12,                   ///< Compute device class 1.2
-    CU_TARGET_COMPUTE_13                    ///< Compute device class 1.3
+    CU_TARGET_COMPUTE_13,                   ///< Compute device class 1.3
+    CU_TARGET_COMPUTE_20                    ///< Compute device class 2.0
 } CUjit_target;
 
 /**
@@ -331,6 +381,34 @@ typedef enum CUjit_fallback_enum
     CU_PREFER_BINARY
 
 } CUjit_fallback;
+
+/**
+ * Flags to register a graphics resource
+ */
+typedef enum CUgraphicsRegisterFlags_enum {
+    CU_GRAPHICS_REGISTER_FLAGS_NONE  = 0x00
+} CUgraphicsRegisterFlags;
+
+/**
+ * Flags for mapping and unmapping interop resources
+ */
+typedef enum CUgraphicsMapResourceFlags_enum {
+    CU_GRAPHICS_MAP_RESOURCE_FLAGS_NONE          = 0x00,
+    CU_GRAPHICS_MAP_RESOURCE_FLAGS_READ_ONLY     = 0x01,
+    CU_GRAPHICS_MAP_RESOURCE_FLAGS_WRITE_DISCARD = 0x02
+} CUgraphicsMapResourceFlags;
+
+/**
+ * Array indices for cube faces
+ */
+typedef enum CUarray_cubemap_face_enum {
+    CU_CUBEMAP_FACE_POSITIVE_X  = 0x00, ///< Positive X face of cubemap
+    CU_CUBEMAP_FACE_NEGATIVE_X  = 0x01, ///< Negative X face of cubemap
+    CU_CUBEMAP_FACE_POSITIVE_Y  = 0x02, ///< Positive Y face of cubemap
+    CU_CUBEMAP_FACE_NEGATIVE_Y  = 0x03, ///< Negative Y face of cubemap
+    CU_CUBEMAP_FACE_POSITIVE_Z  = 0x04, ///< Positive Z face of cubemap
+    CU_CUBEMAP_FACE_NEGATIVE_Z  = 0x05  ///< Negative Z face of cubemap
+} CUarray_cubemap_face;
 
 /************************************
  **
@@ -362,6 +440,9 @@ typedef enum cudaError_enum {
     CUDA_ERROR_NO_BINARY_FOR_GPU    = 209,      ///< No binary for GPU
     CUDA_ERROR_ALREADY_ACQUIRED     = 210,      ///< Already acquired
     CUDA_ERROR_NOT_MAPPED           = 211,      ///< Not mapped
+    CUDA_ERROR_NOT_MAPPED_AS_ARRAY   = 212,      ///< Mapped resource not available for access as an array
+    CUDA_ERROR_NOT_MAPPED_AS_POINTER = 213,      ///< Mapped resource not available for access as a pointer
+    CUDA_ERROR_ECC_UNCORRECTABLE    = 214,      ///< Uncorrectable ECC error detected
 
     CUDA_ERROR_INVALID_SOURCE       = 300,      ///< Invalid source
     CUDA_ERROR_FILE_NOT_FOUND       = 301,      ///< File not found
@@ -376,6 +457,9 @@ typedef enum cudaError_enum {
     CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES = 701,   ///< Launch exceeded resources
     CUDA_ERROR_LAUNCH_TIMEOUT       = 702,      ///< Launch exceeded timeout
     CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING = 703, ///< Launch with incompatible texturing
+
+    CUDA_ERROR_POINTER_IS_64BIT     = 800,      ///< Attempted to retrieve 64-bit pointer via 32-bit API function
+    CUDA_ERROR_SIZE_IS_64BIT        = 801,      ///< Attempted to retrieve 64-bit size via 32-bit API function
 
     CUDA_ERROR_UNKNOWN              = 999       ///< Unknown error
 } CUresult;
@@ -489,6 +573,11 @@ typedef struct
     unsigned int Flags;         ///< Flags
 } CUDA_ARRAY3D_DESCRIPTOR;
 
+// if set, the CUDA array contains an array of 2D slices
+// and the Depth member of CUDA_ARRAY3D_DESCRIPTOR specifies
+// the number of slices, not the depth of a 3D array.
+#define CUDA_ARRAY3D_2DARRAY    0x01
+
 /**
  * Override the texref format with a format inferred from the array.
  * Flag for ::cuTexRefSetArray()
@@ -517,21 +606,16 @@ typedef struct
 /** @} */
 /** @} */ /* END CUDA_TYPES */
 
-#ifdef _WIN32
-#define CUDAAPI __stdcall
-#else
-#define CUDAAPI 
-#endif
 
     /*********************************
      ** Initialization
      *********************************/
-    CUresult  CUDAAPI cuInit(unsigned int Flags);
+    CUresult  cuInit(unsigned int Flags);
 
     /*********************************
      ** Driver Version Query
      *********************************/
-    CUresult  CUDAAPI cuDriverGetVersion(int *driverVersion);
+    CUresult  cuDriverGetVersion(int *driverVersion);
 
     /************************************
      **
@@ -539,13 +623,13 @@ typedef struct
      **
      ***********************************/
    
-    CUresult  CUDAAPI cuDeviceGet(CUdevice *device, int ordinal);
-    CUresult  CUDAAPI cuDeviceGetCount(int *count);
-    CUresult  CUDAAPI cuDeviceGetName(char *name, int len, CUdevice dev);
-    CUresult  CUDAAPI cuDeviceComputeCapability(int *major, int *minor, CUdevice dev);
-    CUresult  CUDAAPI cuDeviceTotalMem(unsigned int *bytes, CUdevice dev);
-    CUresult  CUDAAPI cuDeviceGetProperties(CUdevprop *prop, CUdevice dev);
-    CUresult  CUDAAPI cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev);
+    CUresult  cuDeviceGet(CUdevice *device, int ordinal);
+    CUresult  cuDeviceGetCount(int *count);
+    CUresult  cuDeviceGetName(char *name, int len, CUdevice dev);
+    CUresult  cuDeviceComputeCapability(int *major, int *minor, CUdevice dev);
+    CUresult  cuDeviceTotalMem(unsigned int *bytes, CUdevice dev);
+    CUresult  cuDeviceGetProperties(CUdevprop *prop, CUdevice dev);
+    CUresult  cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev);
         
     /************************************
      **
@@ -553,14 +637,14 @@ typedef struct
      **
      ***********************************/
 
-    CUresult  CUDAAPI cuCtxCreate(CUcontext *pctx, unsigned int flags, CUdevice dev );
-    CUresult  CUDAAPI cuCtxDestroy( CUcontext ctx );
-    CUresult  CUDAAPI cuCtxAttach(CUcontext *pctx, unsigned int flags);
-    CUresult  CUDAAPI cuCtxDetach(CUcontext ctx);
-    CUresult  CUDAAPI cuCtxPushCurrent( CUcontext ctx );
-    CUresult  CUDAAPI cuCtxPopCurrent( CUcontext *pctx );
-    CUresult  CUDAAPI cuCtxGetDevice(CUdevice *device);
-    CUresult  CUDAAPI cuCtxSynchronize(void);
+    CUresult  cuCtxCreate(CUcontext *pctx, unsigned int flags, CUdevice dev );
+    CUresult  cuCtxDestroy( CUcontext ctx );
+    CUresult  cuCtxAttach(CUcontext *pctx, unsigned int flags);
+    CUresult  cuCtxDetach(CUcontext ctx);
+    CUresult  cuCtxPushCurrent( CUcontext ctx );
+    CUresult  cuCtxPopCurrent( CUcontext *pctx );
+    CUresult  cuCtxGetDevice(CUdevice *device);
+    CUresult  cuCtxSynchronize(void);
 
 
     /************************************
@@ -569,14 +653,14 @@ typedef struct
      **
      ***********************************/
     
-    CUresult  CUDAAPI cuModuleLoad(CUmodule *module, const char *fname);
-    CUresult  CUDAAPI cuModuleLoadData(CUmodule *module, const void *image);
-    CUresult  CUDAAPI cuModuleLoadDataEx(CUmodule *module, const void *image, unsigned int numOptions, CUjit_option *options, void **optionValues);
-    CUresult  CUDAAPI cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin);
-    CUresult  CUDAAPI cuModuleUnload(CUmodule hmod);
-    CUresult  CUDAAPI cuModuleGetFunction(CUfunction *hfunc, CUmodule hmod, const char *name);
-    CUresult  CUDAAPI cuModuleGetGlobal(CUdeviceptr *dptr, unsigned int *bytes, CUmodule hmod, const char *name);
-    CUresult  CUDAAPI cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, const char *name);
+    CUresult  cuModuleLoad(CUmodule *module, const char *fname);
+    CUresult  cuModuleLoadData(CUmodule *module, const void *image);
+    CUresult  cuModuleLoadDataEx(CUmodule *module, const void *image, unsigned int numOptions, CUjit_option *options, void **optionValues);
+    CUresult  cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin);
+    CUresult  cuModuleUnload(CUmodule hmod);
+    CUresult  cuModuleGetFunction(CUfunction *hfunc, CUmodule hmod, const char *name);
+    CUresult  cuModuleGetGlobal(CUdeviceptr *dptr, unsigned int *bytes, CUmodule hmod, const char *name);
+    CUresult  cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, const char *name);
     
     /************************************
      **
@@ -584,10 +668,10 @@ typedef struct
      **
      ***********************************/
     
-    CUresult CUDAAPI cuMemGetInfo(unsigned int *free, unsigned int *total);
+    CUresult cuMemGetInfo(unsigned int *free, unsigned int *total);
 
-    CUresult CUDAAPI cuMemAlloc( CUdeviceptr *dptr, unsigned int bytesize);
-    CUresult CUDAAPI cuMemAllocPitch( CUdeviceptr *dptr, 
+    CUresult cuMemAlloc( CUdeviceptr *dptr, unsigned int bytesize);
+    CUresult cuMemAllocPitch( CUdeviceptr *dptr, 
                                       unsigned int *pPitch,
                                       unsigned int WidthInBytes, 
                                       unsigned int Height, 
@@ -595,16 +679,16 @@ typedef struct
                                       // 4, 8 or 16 bytes
                                       unsigned int ElementSizeBytes
                                      );
-    CUresult CUDAAPI cuMemFree(CUdeviceptr dptr);
-    CUresult CUDAAPI cuMemGetAddressRange( CUdeviceptr *pbase, unsigned int *psize, CUdeviceptr dptr );
+    CUresult cuMemFree(CUdeviceptr dptr);
+    CUresult cuMemGetAddressRange( CUdeviceptr *pbase, unsigned int *psize, CUdeviceptr dptr );
 
-    CUresult CUDAAPI cuMemAllocHost(void **pp, unsigned int bytesize);
-    CUresult CUDAAPI cuMemFreeHost(void *p);
+    CUresult cuMemAllocHost(void **pp, unsigned int bytesize);
+    CUresult cuMemFreeHost(void *p);
 
-    CUresult CUDAAPI cuMemHostAlloc(void **pp, unsigned long long bytesize, unsigned int Flags );
+    CUresult cuMemHostAlloc(void **pp, size_t bytesize, unsigned int Flags );
  
-    CUresult CUDAAPI cuMemHostGetDevicePointer( CUdeviceptr *pdptr, void *p, unsigned int Flags );
-    CUresult CUDAAPI cuMemHostGetFlags( unsigned int *pFlags, void *p );
+    CUresult cuMemHostGetDevicePointer( CUdeviceptr *pdptr, void *p, unsigned int Flags );
+    CUresult cuMemHostGetFlags( unsigned int *pFlags, void *p );
 
     /************************************
      **
@@ -617,31 +701,31 @@ typedef struct
 
     // 1D functions
         // system <-> device memory
-        CUresult  CUDAAPI cuMemcpyHtoD (CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount );
-        CUresult  CUDAAPI cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount );
+        CUresult  cuMemcpyHtoD (CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount );
+        CUresult  cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount );
 
         // device <-> device memory
-        CUresult  CUDAAPI cuMemcpyDtoD (CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount );
+        CUresult  cuMemcpyDtoD (CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount );
 
         // device <-> array memory
-        CUresult  CUDAAPI cuMemcpyDtoA ( CUarray dstArray, unsigned int dstIndex, CUdeviceptr srcDevice, unsigned int ByteCount );
-        CUresult  CUDAAPI cuMemcpyAtoD ( CUdeviceptr dstDevice, CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount );
+        CUresult  cuMemcpyDtoA ( CUarray dstArray, unsigned int dstIndex, CUdeviceptr srcDevice, unsigned int ByteCount );
+        CUresult  cuMemcpyAtoD ( CUdeviceptr dstDevice, CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount );
 
         // system <-> array memory
-        CUresult  CUDAAPI cuMemcpyHtoA( CUarray dstArray, unsigned int dstIndex, const void *pSrc, unsigned int ByteCount );
-        CUresult  CUDAAPI cuMemcpyAtoH( void *dstHost, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount );
+        CUresult  cuMemcpyHtoA( CUarray dstArray, unsigned int dstIndex, const void *pSrc, unsigned int ByteCount );
+        CUresult  cuMemcpyAtoH( void *dstHost, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount );
 
         // array <-> array memory
-        CUresult  CUDAAPI cuMemcpyAtoA( CUarray dstArray, unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount );
+        CUresult  cuMemcpyAtoA( CUarray dstArray, unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount );
 
     // 2D memcpy
 
-        CUresult  CUDAAPI cuMemcpy2D( const CUDA_MEMCPY2D *pCopy );
-        CUresult  CUDAAPI cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy );
+        CUresult  cuMemcpy2D( const CUDA_MEMCPY2D *pCopy );
+        CUresult  cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy );
 
     // 3D memcpy
 
-        CUresult  CUDAAPI cuMemcpy3D( const CUDA_MEMCPY3D *pCopy );
+        CUresult  cuMemcpy3D( const CUDA_MEMCPY3D *pCopy );
 
     /************************************
      **
@@ -656,35 +740,39 @@ typedef struct
 
     // 1D functions
         // system <-> device memory
-        CUresult  CUDAAPI cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
+        CUresult  cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
             const void *srcHost, unsigned int ByteCount, CUstream hStream );
-        CUresult  CUDAAPI cuMemcpyDtoHAsync (void *dstHost, 
+        CUresult  cuMemcpyDtoHAsync (void *dstHost, 
+            CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream );
+
+        // device <-> device memory
+        CUresult cuMemcpyDtoDAsync (CUdeviceptr dstDevice,
             CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream );
 
         // system <-> array memory
-        CUresult  CUDAAPI cuMemcpyHtoAAsync( CUarray dstArray, unsigned int dstIndex, 
+        CUresult  cuMemcpyHtoAAsync( CUarray dstArray, unsigned int dstIndex, 
             const void *pSrc, unsigned int ByteCount, CUstream hStream );
-        CUresult  CUDAAPI cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, unsigned int srcIndex, 
+        CUresult  cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, unsigned int srcIndex, 
             unsigned int ByteCount, CUstream hStream );
 
         // 2D memcpy
-        CUresult  CUDAAPI cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, CUstream hStream );
+        CUresult  cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, CUstream hStream );
 
         // 3D memcpy
-        CUresult  CUDAAPI cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, CUstream hStream );
+        CUresult  cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, CUstream hStream );
 
     /************************************
      **
      **    Memset
      **
      ***********************************/
-        CUresult  CUDAAPI cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, unsigned int N );
-        CUresult  CUDAAPI cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, unsigned int N );
-        CUresult  CUDAAPI cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, unsigned int N );
+        CUresult  cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, unsigned int N );
+        CUresult  cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, unsigned int N );
+        CUresult  cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, unsigned int N );
 
-        CUresult  CUDAAPI cuMemsetD2D8( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height );
-        CUresult  CUDAAPI cuMemsetD2D16( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned short us, unsigned int Width, unsigned int Height );
-        CUresult  CUDAAPI cuMemsetD2D32( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned int ui, unsigned int Width, unsigned int Height );
+        CUresult  cuMemsetD2D8( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height );
+        CUresult  cuMemsetD2D16( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned short us, unsigned int Width, unsigned int Height );
+        CUresult  cuMemsetD2D32( CUdeviceptr dstDevice, unsigned int dstPitch, unsigned int ui, unsigned int Width, unsigned int Height );
 
     /************************************
      **
@@ -693,9 +781,10 @@ typedef struct
      ***********************************/
 
 
-    CUresult CUDAAPI cuFuncSetBlockShape (CUfunction hfunc, int x, int y, int z);
-    CUresult CUDAAPI cuFuncSetSharedSize (CUfunction hfunc, unsigned int bytes);
-    CUresult CUDAAPI cuFuncGetAttribute (int *pi, CUfunction_attribute attrib, CUfunction hfunc);
+    CUresult cuFuncSetBlockShape (CUfunction hfunc, int x, int y, int z);
+    CUresult cuFuncSetSharedSize (CUfunction hfunc, unsigned int bytes);
+    CUresult cuFuncGetAttribute (int *pi, CUfunction_attribute attrib, CUfunction hfunc);
+    CUresult cuFuncSetCacheConfig(CUfunction hfunc, CUfunc_cache config);
 
     /************************************
      **
@@ -703,12 +792,12 @@ typedef struct
      **
      ***********************************/
    
-    CUresult  CUDAAPI cuArrayCreate( CUarray *pHandle, const CUDA_ARRAY_DESCRIPTOR *pAllocateArray );
-    CUresult  CUDAAPI cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray );
-    CUresult  CUDAAPI cuArrayDestroy( CUarray hArray );
+    CUresult  cuArrayCreate( CUarray *pHandle, const CUDA_ARRAY_DESCRIPTOR *pAllocateArray );
+    CUresult  cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray );
+    CUresult  cuArrayDestroy( CUarray hArray );
 
-    CUresult  CUDAAPI cuArray3DCreate( CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray );
-    CUresult  CUDAAPI cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray );
+    CUresult  cuArray3DCreate( CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray );
+    CUresult  cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray );
 
 
     /************************************
@@ -716,23 +805,23 @@ typedef struct
      **    Texture reference management
      **
      ***********************************/
-    CUresult  CUDAAPI cuTexRefCreate( CUtexref *pTexRef );
-    CUresult  CUDAAPI cuTexRefDestroy( CUtexref hTexRef );
+    CUresult  cuTexRefCreate( CUtexref *pTexRef );
+    CUresult  cuTexRefDestroy( CUtexref hTexRef );
     
-    CUresult  CUDAAPI cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags );
-    CUresult  CUDAAPI cuTexRefSetAddress( unsigned int *ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes );
-    CUresult CUDAAPI  cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch);
-    CUresult  CUDAAPI cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents );
-    CUresult  CUDAAPI cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am );
-    CUresult  CUDAAPI cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm );
-    CUresult  CUDAAPI cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags );
+    CUresult  cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags );
+    CUresult  cuTexRefSetAddress( unsigned int *ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes );
+    CUresult  cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch);
+    CUresult  cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents );
+    CUresult  cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am );
+    CUresult  cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm );
+    CUresult  cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags );
 
-    CUresult  CUDAAPI cuTexRefGetAddress( CUdeviceptr *pdptr, CUtexref hTexRef );
-    CUresult  CUDAAPI cuTexRefGetArray( CUarray *phArray, CUtexref hTexRef );
-    CUresult  CUDAAPI cuTexRefGetAddressMode( CUaddress_mode *pam, CUtexref hTexRef, int dim );
-    CUresult  CUDAAPI cuTexRefGetFilterMode( CUfilter_mode *pfm, CUtexref hTexRef );
-    CUresult  CUDAAPI cuTexRefGetFormat( CUarray_format *pFormat, int *pNumChannels, CUtexref hTexRef );
-    CUresult  CUDAAPI cuTexRefGetFlags( unsigned int *pFlags, CUtexref hTexRef );
+    CUresult  cuTexRefGetAddress( CUdeviceptr *pdptr, CUtexref hTexRef );
+    CUresult  cuTexRefGetArray( CUarray *phArray, CUtexref hTexRef );
+    CUresult  cuTexRefGetAddressMode( CUaddress_mode *pam, CUtexref hTexRef, int dim );
+    CUresult  cuTexRefGetFilterMode( CUfilter_mode *pfm, CUtexref hTexRef );
+    CUresult  cuTexRefGetFormat( CUarray_format *pFormat, int *pNumChannels, CUtexref hTexRef );
+    CUresult  cuTexRefGetFlags( unsigned int *pFlags, CUtexref hTexRef );
 
     /************************************
      **
@@ -740,11 +829,11 @@ typedef struct
      **
      ***********************************/
 
-    CUresult  CUDAAPI cuParamSetSize (CUfunction hfunc, unsigned int numbytes);
-    CUresult  CUDAAPI cuParamSeti    (CUfunction hfunc, int offset, unsigned int value);
-    CUresult  CUDAAPI cuParamSetf    (CUfunction hfunc, int offset, float value);
-    CUresult  CUDAAPI cuParamSetv    (CUfunction hfunc, int offset, void * ptr, unsigned int numbytes);
-    CUresult  CUDAAPI cuParamSetTexRef(CUfunction hfunc, int texunit, CUtexref hTexRef);
+    CUresult  cuParamSetSize (CUfunction hfunc, unsigned int numbytes);
+    CUresult  cuParamSeti    (CUfunction hfunc, int offset, unsigned int value);
+    CUresult  cuParamSetf    (CUfunction hfunc, int offset, float value);
+    CUresult  cuParamSetv    (CUfunction hfunc, int offset, void *ptr, unsigned int numbytes);
+    CUresult  cuParamSetTexRef(CUfunction hfunc, int texunit, CUtexref hTexRef);
 
     /************************************
      **
@@ -752,31 +841,60 @@ typedef struct
      **
      ***********************************/
 
-    CUresult CUDAAPI cuLaunch ( CUfunction f );
-    CUresult CUDAAPI cuLaunchGrid (CUfunction f, int grid_width, int grid_height);
-    CUresult CUDAAPI cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream );
+    CUresult cuLaunch ( CUfunction f );
+    CUresult cuLaunchGrid (CUfunction f, int grid_width, int grid_height);
+    CUresult cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream );
 
     /************************************
      **
      **    Events
      **
      ***********************************/
-    CUresult CUDAAPI cuEventCreate( CUevent *phEvent, unsigned int Flags );
-    CUresult CUDAAPI cuEventRecord( CUevent hEvent, CUstream hStream );
-    CUresult CUDAAPI cuEventQuery( CUevent hEvent );
-    CUresult CUDAAPI cuEventSynchronize( CUevent hEvent );
-    CUresult CUDAAPI cuEventDestroy( CUevent hEvent );
-    CUresult CUDAAPI cuEventElapsedTime( float *pMilliseconds, CUevent hStart, CUevent hEnd );
+    CUresult cuEventCreate( CUevent *phEvent, unsigned int Flags );
+    CUresult cuEventRecord( CUevent hEvent, CUstream hStream );
+    CUresult cuEventQuery( CUevent hEvent );
+    CUresult cuEventSynchronize( CUevent hEvent );
+    CUresult cuEventDestroy( CUevent hEvent );
+    CUresult cuEventElapsedTime( float *pMilliseconds, CUevent hStart, CUevent hEnd );
 
     /************************************
      **
      **    Streams
      **
      ***********************************/
-    CUresult CUDAAPI  cuStreamCreate( CUstream *phStream, unsigned int Flags );
-    CUresult CUDAAPI  cuStreamQuery( CUstream hStream );
-    CUresult CUDAAPI  cuStreamSynchronize( CUstream hStream );
-    CUresult CUDAAPI  cuStreamDestroy( CUstream hStream );
+    CUresult  cuStreamCreate( CUstream *phStream, unsigned int Flags );
+    CUresult  cuStreamQuery( CUstream hStream );
+    CUresult  cuStreamSynchronize( CUstream hStream );
+    CUresult  cuStreamDestroy( CUstream hStream );
+
+    /************************************
+     **
+     **    Graphics interop
+     **
+     ***********************************/
+    CUresult cuGraphicsUnregisterResource(CUgraphicsResource resource);
+    CUresult cuGraphicsSubResourceGetMappedArray( CUarray *pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel );
+    CUresult cuGraphicsResourceGetMappedPointer( CUdeviceptr *pDevPtr, unsigned int *pSize, CUgraphicsResource resource );
+    CUresult cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ); 
+    CUresult cuGraphicsMapResources( unsigned int count, CUgraphicsResource *resources, CUstream hStream );
+    CUresult cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource *resources, CUstream hStream );
+
+    /************************************
+     **
+     **    OpenGL interop
+     **
+     ***********************************/
+	CUresult cuGLCtxCreate( CUcontext *pCtx, unsigned int Flags, CUdevice device );
+	CUresult cuGraphicsGLRegisterBuffer( CUgraphicsResource *pCudaResource, unsigned int buffer, unsigned int Flags );
+	CUresult cuGraphicsGLRegisterImage( CUgraphicsResource *pCudaResource, unsigned int image, int target, unsigned int Flags );
+
+
+    /************************************
+     **
+     **    Export tables
+     **
+     ***********************************/
+    CUresult cuGetExportTable( const void **ppExportTable, const CUuuid *pExportTableId );
 
 #ifdef __cplusplus
 }

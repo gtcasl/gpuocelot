@@ -5,6 +5,28 @@
 */
 
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/NVIDIAGPUDevice.h>
+
+#include <hydrazine/implementation/debug.h>
+
+executive::Device::MemoryAllocation::MemoryAllocation(bool g, 
+	bool h) : _global(g), _host(h) {
+
+}
+
+executive::Device::MemoryAllocation::~MemoryAllocation()
+{
+
+}
+
+bool executive::Device::MemoryAllocation::host() const {
+	return _host;
+}
+
+bool executive::Device::MemoryAllocation::global() const {
+	return _global;
+}
+
 
 executive::Device::Properties::Properties(int id) {
 	ISA = ir::Instruction::Emulated;
@@ -39,12 +61,41 @@ std::ostream& executive::Device::Properties::write(std::ostream &out) const {
 	return out;
 }
 
-executive::Device::Device(int guid) : _properties(guid), 
-	_driverVersion(0), _runtimeVersion(0) {
+executive::DeviceVector executive::Device::createDevices(ir::Instruction::Architecture isa, 
+	unsigned int flags) {
+	switch(isa) {
+		case ir::Instruction::SASS:
+		{
+			return NVIDIAGPUDevice::createDevices(flags);
+		}
+		break;
+		default: break;
+	}
+	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+}
+
+executive::Device::Device(int guid, unsigned int flags) : _properties(guid), 
+	_driverVersion(0), _runtimeVersion(0), _flags(flags) {
 }
 
 executive::Device::~Device() {
 }
+
+bool executive::Device::checkMemoryAccess(const void* pointer, 
+	size_t size) const
+{
+	MemoryAllocation* allocation = getMemoryAllocation(pointer, false);
+	if(allocation == 0) return false;
+	
+	if((char*)pointer + size 
+		< (char*)allocation->pointer() + allocation->size())
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 
 std::string executive::Device::nearbyAllocationsToString(void* pointer) const {
 	std::stringstream result;

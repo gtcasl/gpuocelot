@@ -101,7 +101,7 @@ test::TestGPUKernel::TestGPUKernel() {
 	kernelMVProduct = 0;
 	
 	description = "A test for the Executive and GPUKernel classes:\n";
-	description += " Load a PTX module. Translate to GPUExecutableKernel using the Executive and the GPU device.\n";
+	description += " Load a PTX module. Translate to NVIDIAExecutableKernel using the Executive and the GPU device.\n";
 	description += " Configure and launch kernel grid. Compare results to expectations.";
 }
 

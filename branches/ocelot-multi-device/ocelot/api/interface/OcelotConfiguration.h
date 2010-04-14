@@ -125,7 +125,10 @@ namespace api {
 			bool enableEmulated;
 
 			//! \brief filter enabling CUDA GPU devices if present
-			bool enableGPU;
+			bool enableNVIDIA;
+			
+			//! \brief filter enabling AMD GPU devices if present
+			bool enableAMD;
 
 			//! \brief maximum number of worker threads - a non-positive number indicates no limit
 			int workerThreadLimit;

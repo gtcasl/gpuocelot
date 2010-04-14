@@ -16,6 +16,129 @@
 extern "C" {
 #endif
 
+/*----------------------------------- Types ----------------------------------*/
+
+/*
+ * Cubin entry type for __cudaFat binary. 
+ * Cubins are specific to a particular gpu profile,
+ * although the gpuInfo module might 'know'
+ * that cubins will also run on other gpus.
+ * Based on the recompilation strategy, 
+ * fatGetCubinForGpu will return an existing
+ * compatible load image, or attempt a recompilation.
+ */
+typedef struct {
+    char*            gpuProfileName;
+    char*            cubin;
+} __cudaFatCubinEntry;
+
+
+/*
+ * Ptx entry type for __cudaFat binary.
+ * PTX might use particular chip features
+ * (such as double precision floating points).
+ * When attempting to recompile for a certain 
+ * gpu architecture, a ptx needs to be available
+ * that depends on features that are either 
+ * implemented by the gpu, or for which the ptx
+ * translator can provide an emulation. 
+ */
+typedef struct {
+    char*            gpuProfileName;            
+    char*            ptx;
+} __cudaFatPtxEntry;
+
+
+/*
+ * Debug entry type for __cudaFat binary.
+ * Such information might, but need not be available
+ * for Cubin entries (ptx files compiled in debug mode
+ * will contain their own debugging information) 
+ */
+typedef struct __cudaFatDebugEntryRec {
+    char*                   gpuProfileName;            
+    char*                   debug;
+    struct __cudaFatDebugEntryRec *next;
+    unsigned int                   size;
+} __cudaFatDebugEntry;
+
+typedef struct __cudaFatElfEntryRec {
+    char*                 gpuProfileName;            
+    char*                 elf;
+    struct __cudaFatElfEntryRec *next;
+    unsigned int                 size;
+} __cudaFatElfEntry;
+
+typedef enum {
+      __cudaFatDontSearchFlag = (1 << 0),
+      __cudaFatDontCacheFlag  = (1 << 1),
+      __cudaFatSassDebugFlag  = (1 << 2)
+} __cudaFatCudaBinaryFlag;
+
+
+/*
+ * Imported/exported symbol descriptor, needed for 
+ * __cudaFat binary linking. Not much information is needed,
+ * because this is only an index: full symbol information 
+ * is contained by the binaries.
+ */
+typedef struct {
+    char* name;
+} __cudaFatSymbol;
+
+/*
+ * Fat binary container.
+ * A mix of ptx intermediate programs and cubins,
+ * plus a global identifier that can be used for 
+ * further lookup in a translation cache or a resource
+ * file. This key is a checksum over the device text.
+ * The ptx and cubin array are each terminated with 
+ * entries that have NULL components.
+ */
+ 
+typedef struct __cudaFatCudaBinaryRec {
+    unsigned long            magic;
+    unsigned long            version;
+    unsigned long            gpuInfoVersion;
+    char*                   key;
+    char*                   ident;
+    char*                   usageMode;
+    __cudaFatPtxEntry             *ptx;
+    __cudaFatCubinEntry           *cubin;
+    __cudaFatDebugEntry           *debug;
+    void*                  debugInfo;
+    unsigned int                   flags;
+    __cudaFatSymbol               *exported;
+    __cudaFatSymbol               *imported;
+    struct __cudaFatCudaBinaryRec *dependends;
+    unsigned int                   characteristic;
+    __cudaFatElfEntry             *elf;
+} __cudaFatCudaBinary;
+
+
+/*
+ * Current version and magic numbers:
+ */
+#define __cudaFatVERSION   0x00000004
+#define __cudaFatMAGIC     0x1ee55a01
+
+/*
+ * Version history log:
+ *    1  : __cudaFatDebugEntry field added to __cudaFatCudaBinary struct
+ *    2  : flags and debugInfo field added.
+ *    3  : import/export symbol list
+ *    4  : characteristic added, elf added
+ */
+
+
+/*--------------------------------- Functions --------------------------------*/
+
+    typedef enum {
+        __cudaFatAvoidPTX,
+        __cudaFatPreferBestCode,
+        __cudaFatForcePTX
+    } __cudaFatCompilationPolicy;
+
 struct cudaArray;
 struct cudaMemcpy3DParms;
 struct textureReference;
@@ -114,13 +237,22 @@ enum cudaFuncCache
   cudaFuncCachePreferL1     = 2     ///< Prefer larger L1 cache and smaller shared memory
 };
 
-struct dim3 {
-	int x, y, z;
-};
-
 struct uint3 {
 	unsigned int x, y, z;
 };
+
+struct dim3
+{
+    unsigned int x, y, z;
+#if defined(__cplusplus) && !defined(__CUDABE__)
+    dim3(unsigned int x = 1, unsigned int y = 1, unsigned int z = 1) : x(x), y(y), z(z) {}
+    dim3(uint3 v) : x(v.x), y(v.y), z(v.z) {}
+    operator uint3(void) { uint3 t; t.x = x; t.y = y; t.z = z; return t; }
+#endif
+};
+
+/*DEVICE_BUILTIN*/
+typedef struct dim3 dim3;
 
 struct cudaExtent {
 	size_t width;
@@ -224,6 +356,50 @@ enum cudaTextureReadMode
   cudaReadModeElementType,
   cudaReadModeNormalizedFloat
 };
+
+
+/*
+ * Function        : Select a load image from the __cudaFat binary
+ *                   that will run on the specified GPU.
+ * Parameters      : binary  (I) Fat binary
+ *                   policy  (I) Parameter influencing the selection process in case no
+ *                               fully matching cubin can be found, but instead a choice can
+ *                               be made between ptx compilation or selection of a
+ *                               cubin for a less capable GPU.
+ *                   gpuName (I) Name of target GPU
+ *                   cubin   (O) Returned cubin text string, or NULL when 
+ *                               no matching cubin for the specified gpu
+ *                               could be found.
+ *                   dbgInfo (O) If this parameter is not NULL upon entry, then
+ *                               the name of a file containing debug information
+ *                               on the returned cubin will be returned, or NULL 
+ *                               will be returned when cubin or such debug info 
+ *                               cannot be found.
+ */
+void fatGetCubinForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *cubin, char* *dbgInfoFile );
+
+#define fatGetCubinForGpu(binary,gpuName,cubin,dbgInfoFile) \
+          fatGetCubinForGpuWithPolicy(binary,__cudaFatAvoidPTX,gpuName,cubin,dbgInfoFile)
+
+/*
+ * Function        : Check if a binary will be JITed for the specified target architecture
+ * Parameters      : binary  (I) Fat binary
+ *                   policy  (I) Compilation policy, as described by fatGetCubinForGpuWithPolicy
+ *                   gpuName (I) Name of target GPU
+ *                   ptx     (O) PTX string to be JITed
+ * Function Result : True if the given binary will be JITed; otherwise, False
+ */
+unsigned char fatCheckJitForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *ptx );
+
+#define fatCheckJitForGpu(binary,gpuName,ptx) \
+          fatCheckJitForGpuWithPolicy(binary,__cudaFatAvoidPTX,gpuName,ptx)
+
+/*
+ * Function        : Free information previously obtained via function fatGetCubinForGpu.
+ * Parameters      : cubin   (I) Cubin text string to free
+ *                   dbgInfo (I) Debug info filename to free, or NULL
+ */
+void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 /*******************************************************************************

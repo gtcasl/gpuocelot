@@ -6,8 +6,7 @@
 #ifndef CUDA_DRIVER_H_INCLUDED
 #define CUDA_DRIVER_H_INCLUDED
 
-#include <ocelot/cuda/include/cuda.h>
-#include <ocelot/cuda/include/cudaGL.h>
+#include <ocelot/cuda/interface/cuda.h>
 
 #include <string>
 
@@ -223,22 +222,29 @@ namespace cuda
 					CUresult (*cuStreamSynchronize)( CUstream hStream );
 					CUresult (*cuStreamDestroy)( CUstream hStream );
 
-					CUresult (*cuGLInit)(void);
-					CUresult (*cuGLCtxCreate)( CUcontext *pCtx, 
-						unsigned int Flags, CUdevice device );
-					CUresult (*cuGLRegisterBufferObject)( GLuint bufferobj );
-					CUresult (*cuGLMapBufferObject)( CUdeviceptr *dptr, 
-						unsigned int *size,  GLuint bufferobj ); 
-					CUresult (*cuGLUnmapBufferObject)( GLuint bufferobj );
-					CUresult (*cuGLUnregisterBufferObject)( GLuint bufferobj );
+					CUresult (*cuGraphicsUnregisterResource)(
+						CUgraphicsResource resource);
+					CUresult (*cuGraphicsSubResourceGetMappedArray)(
+						CUarray *pArray, CUgraphicsResource resource, 
+						unsigned int arrayIndex, unsigned int mipLevel );
+					CUresult (*cuGraphicsResourceGetMappedPointer)(
+						CUdeviceptr *pDevPtr, unsigned int *pSize, 
+						CUgraphicsResource resource );
+					CUresult (*cuGraphicsResourceSetMapFlags)(
+						CUgraphicsResource resource, unsigned int flags ); 
+					CUresult (*cuGraphicsMapResources)(unsigned int count, 
+						CUgraphicsResource *resources, CUstream hStream );
+					CUresult (*cuGraphicsUnmapResources)(unsigned int count, 
+						CUgraphicsResource *resources, CUstream hStream );
 
-					CUresult (*cuGLSetBufferObjectMapFlags)( GLuint bufferobj, 
+					CUresult (*cuGLCtxCreate)(CUcontext *pCtx, 
+						unsigned int Flags, CUdevice device);
+					CUresult (*cuGraphicsGLRegisterBuffer)( 
+						CUgraphicsResource *pCudaResource, unsigned int buffer, 
 						unsigned int Flags );
-					CUresult (*cuGLMapBufferObjectAsync)( CUdeviceptr *dptr, 
-						unsigned int *size,  GLuint bufferobj, 
-						CUstream hStream );
-					CUresult (*cuGLUnmapBufferObjectAsync)( GLuint bufferobj, 
-						CUstream hStream );
+					CUresult (*cuGraphicsGLRegisterImage)( 
+						CUgraphicsResource *pCudaResource, unsigned int image, 
+						int target, unsigned int Flags);
 				
 				public:
 					/*! \brief The constructor zeros out all of the pointers */
@@ -586,24 +592,37 @@ namespace cuda
 
 			/************************************
 			**
+			**    Graphics
+			**
+			***********************************/
+			static CUresult cuGraphicsUnregisterResource(
+				CUgraphicsResource resource);
+			static CUresult cuGraphicsSubResourceGetMappedArray(
+				CUarray *pArray, CUgraphicsResource resource, 
+				unsigned int arrayIndex, unsigned int mipLevel );
+			static CUresult cuGraphicsResourceGetMappedPointer(
+				CUdeviceptr *pDevPtr, unsigned int *pSize, 
+				CUgraphicsResource resource );
+			static CUresult cuGraphicsResourceSetMapFlags(
+				CUgraphicsResource resource, unsigned int flags ); 
+			static CUresult cuGraphicsMapResources(unsigned int count, 
+				CUgraphicsResource *resources, CUstream hStream );
+			static CUresult cuGraphicsUnmapResources(unsigned int count, 
+				CUgraphicsResource *resources, CUstream hStream );
+
+			/************************************
+			**
 			**    OpenGL
 			**
 			***********************************/
-			static CUresult cuGLInit(void);
-			static CUresult cuGLCtxCreate( CUcontext *pCtx, 
-				unsigned int Flags, CUdevice device );
-			static CUresult cuGLRegisterBufferObject( GLuint bufferobj );
-			static CUresult cuGLMapBufferObject( CUdeviceptr *dptr, 
-				unsigned int *size,  GLuint bufferobj ); 
-			static CUresult cuGLUnmapBufferObject( GLuint bufferobj );
-			static CUresult cuGLUnregisterBufferObject( GLuint bufferobj );
-
-			static CUresult cuGLSetBufferObjectMapFlags( GLuint bufferobj, 
+			static CUresult cuGLCtxCreate(CUcontext *pCtx, 
+				unsigned int Flags, CUdevice device);
+			static CUresult cuGraphicsGLRegisterBuffer( 
+				CUgraphicsResource *pCudaResource, unsigned int buffer, 
 				unsigned int Flags );
-			static CUresult cuGLMapBufferObjectAsync( CUdeviceptr *dptr, 
-				unsigned int *size,  GLuint bufferobj, CUstream hStream );
-			static CUresult cuGLUnmapBufferObjectAsync( GLuint bufferobj, 
-				CUstream hStream );
+			static CUresult cuGraphicsGLRegisterImage( 
+				CUgraphicsResource *pCudaResource, unsigned int image, 
+				int target, unsigned int Flags);
 
 			static std::string toString(CUresult result);
 

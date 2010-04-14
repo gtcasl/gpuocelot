@@ -227,11 +227,17 @@ namespace cuda {
 		//! Device vector
 		DeviceVector devices;
 		
+		//! Have the devices been loaded?
+		bool devicesLoaded;
+		
 		//! Currently selected device
 		int selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
 		int nextSymbol;
+		
+		//! The device flags
+		unsigned int flags;
 		
 		//! fatbinaries
 		FatBinaryVector fatBinaries;

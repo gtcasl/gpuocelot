@@ -12,7 +12,6 @@ AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
 INCLUDE = -I $(srcdir)/ocelot/cuda/include
 AM_LDFLAGS = 
-SDK_CFLAGS = -I ../../tests/cuda2.2/sdk/sdk
 ################################################################################
 
 ################################################################################
@@ -101,9 +100,10 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/ATIGPUDevice.cpp \
+	ocelot/executive/implementation/NVIDIAGPUDevice.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
-	ocelot/executive/implementation/GPUExecutableKernel.cpp \
+	ocelot/executive/implementation/NVIDIAExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
@@ -432,14 +432,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
-	ocelot/cuda/include/builtin_types.h \
-	ocelot/cuda/include/__cudaFatFormat.h \
-	ocelot/cuda/include/cuda_runtime_api.h \
-	ocelot/cuda/include/device_types.h \
-	ocelot/cuda/include/driver_types.h \
-	ocelot/cuda/include/host_defines.h \
-	ocelot/cuda/include/texture_types.h \
-	ocelot/cuda/include/vector_types.h \
 	regression/ocelotRegressionTests.txt	
 
 ################################################################################

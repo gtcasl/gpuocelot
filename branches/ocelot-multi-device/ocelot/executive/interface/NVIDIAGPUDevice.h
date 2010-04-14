@@ -9,6 +9,12 @@
 
 // ocelot includes
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/cuda/interface/cuda.h>
+
+namespace executive
+{
+	class NVIDIAExecutableKernel;
+};
 
 namespace executive 
 {
@@ -17,7 +23,7 @@ namespace executive
 	{
 		public:
 			/*! \brief An interface to a memory allocation on the cuda driver */
-			class MemoryAllocation : public DeviceMemoryAllocation
+			class MemoryAllocation : public Device::MemoryAllocation
 			{
 				private:
 					/*! \brief The flags for page-locked host memory */
@@ -76,12 +82,18 @@ namespace executive
 			/*! \brief A class for holding the state associated with a module */
 			class Module
 			{
+				private:
+					/*! \brief A handle to the module or 0*/
+					CUmodule _handle;
+
 				public:
 					/*! \brief This is a map from a global name to pointer */
 					typedef std::unordered_map<std::string, void*> GlobalMap;
 					/*! \brief A map from a kernel name to its translation */
 					typedef std::unordered_map<std::string, 
-						GPUExecutableKernel* > KernelMap;
+						NVIDIAExecutableKernel*> KernelMap;
+					/*! \brief A vector of memory allocations */
+					typedef std::vector<MemoryAllocation> AllocationVector;
 			
 				public:
 					/*! \brief The ir representation of a module */
@@ -100,12 +112,20 @@ namespace executive
 					~Module();
 					
 				public:
+					/*! \brief Load the module using the driver */
+					void load();
+					/*! \brief Has this module been loaded? */
+					bool loaded() const;
 					/*! \brief Translate all kernels in the module */
 					void translate();
 					/*! \brief Has this module been translated? */
 					bool translated() const;
+					/*! \brief Load all of the globals for this module */
+					AllocationVector loadGlobals();
 					/*! \brief Get a specific kernel or 0 */
-					GPUExecutableKernel* getKernel(const std::string& name);
+					NVIDIAExecutableKernel* getKernel(const std::string& name);
+					/*! \brief Get an opaque pointer to the texture or 0 */
+					void* getTexture(const std::string& name);
 			};
 
 			/*! \brief A map of registered modules */
@@ -118,13 +138,13 @@ namespace executive
 			typedef std::unordered_map<unsigned int, CUstream> StreamMap;
 			
 			/*! \brief A map of registered events */
-			typedef std::unordered_map<unsigned int CUevent> EventMap;
+			typedef std::unordered_map<unsigned int, CUevent> EventMap;
 			
 			/*! \brief A map of registered graphics resources */
 			typedef std::unordered_map<unsigned int, 
 				CUgraphicsResource> GraphicsMap;
 			
-		public:
+		private:
 			/*! \brief A map of memory allocations in device space */
 			AllocationMap _allocations;
 			
@@ -142,22 +162,48 @@ namespace executive
 			
 			/*! \brief Registered graphics resources */
 			GraphicsMap _graphics;
+		
+			/*! \brief The driver context for this device. */
+			CUcontext _context;
 			
+			/*! \brief Has this device been selected? */
+			bool _selected;
+			
+			/*! \brief The next handle to assign to an event, stream, etc */
+			unsigned int _next;
+		
+			/*! \brief The currently selected stream */
+			unsigned int _selectedStream;
+		
+			/*! \brief Has opengl been enabled for this context? */
+			bool _opengl;
+				
+		private:
+			/*! \brief Has the cuda driver been initialized? */
+			static bool _cudaDriverInitialized;
+			/*! \brief The last error code */
+			static CUresult _lastError;
+		
+		private:
+			/*! \brief Create an opengl context */
+			void _loadOpenGL();
+		
+		public:
+			/*! \brief Allocate a new device for each CUDA capable GPU */
+			static DeviceVector createDevices(unsigned int flags);
+		
 		public:
 			/*! \brief Sets the device properties, bind this to the cuda id */
-			NVIDIAGPUDevice(int id = 0);
+			NVIDIAGPUDevice(int id = 0, unsigned int flags = 0);
 			/*! \brief Clears all state */
 			~NVIDIAGPUDevice();
 			
 		public:
-			/*! \brief Check a memory access against all device allocations */
-			bool checkMemoryAccess(const void* pointer, size_t size) const;
-			/*! \brief Get the device allocation containing a pointer or 0 */
 			MemoryAllocation* getMemoryAllocation(const void* address, 
 				bool hostAllocation) const;
 			/*! \brief Get the address of a global by stream */
 			MemoryAllocation* getGlobalAllocation(const std::string& module, 
-				const std::string& name) const;
+				const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
 			MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
@@ -170,12 +216,12 @@ namespace executive
 		public:
 			/*! \brief Registers an opengl buffer with a resource */
 			void* glRegisterBuffer(unsigned int buffer, 
-				unsigned int flags) = 0;
+				unsigned int flags);
 			/*! \brief Registers an opengl image with a resource */
 			void* glRegisterImage(unsigned int image, 
-				unsigned int target, unsigned int flags) = 0;
+				unsigned int target, unsigned int flags);
 			/*! \brief Unregister a resource */
-			void unRegisterGraphicsResource(void* resource) = 0;
+			void unRegisterGraphicsResource(void* resource);
 			/*! \brief Map a graphics resource for use with this device */
 			void mapGraphicsResource(void* resource, int count, 
 				unsigned int stream);
@@ -193,10 +239,6 @@ namespace executive
 			void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
 			void unload(const std::string& name);
-
-		public:
-			/*! \brief Get the device properties */
-			const Properties& properties() const;
 
 		public:
 			/*! \brief Create a new event */
@@ -232,8 +274,6 @@ namespace executive
 			bool selected() const;
 			/*! \brief Deselect this device. */
 			void unselect();
-			/*! \brief Set flags for this device */
-			void setDeviceFlags(unsigned int flags);
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
@@ -261,12 +301,12 @@ namespace executive
 			void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
-				void* parameterBlock, size_t parameterBlockSize, 
+				const void* parameterBlock, size_t parameterBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector());
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& module, 
-				const std::string& kernel) const;
+				const std::string& kernel);
 			/*! \brief Get the last error from this device */
 			unsigned int getLastError() const;
 			/*! \brief Wait until all asynchronous operations have completed */
@@ -274,7 +314,7 @@ namespace executive
 			
 		public:
 			/*! \brief Limit the worker threads used by this device */
-			void limitWorkerThreads(unsigned int threads);
+			void limitWorkerThreads(unsigned int threads);			
 
 	};
 }

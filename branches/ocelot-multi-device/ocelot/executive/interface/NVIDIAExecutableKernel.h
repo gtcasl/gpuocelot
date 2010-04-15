@@ -16,7 +16,7 @@ namespace executive {
 	class NVIDIAExecutableKernel: public executive::ExecutableKernel {
 	public:
 		NVIDIAExecutableKernel( ir::Kernel& kernel, const CUfunction& function, 
-			const executive::Device* d = 0 );
+			executive::Device* d = 0 );
 		NVIDIAExecutableKernel();
 		~NVIDIAExecutableKernel();
 	

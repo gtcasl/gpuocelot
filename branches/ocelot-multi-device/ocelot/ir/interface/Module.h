@@ -28,9 +28,6 @@ namespace ir {
 		/*!	\brief Map from texture variable names to objects */
 		typedef std::map< std::string, Texture > TextureMap;
 
-		/*! \brief set of names */
-		typedef std::set< std::string > NameSet;
-	
 		/*! \brief Typedef for a vector of PTXStatements */
 		typedef std::vector< PTXStatement > StatementVector;
 
@@ -91,8 +88,7 @@ namespace ir {
 		void extractPTXKernels();
 
 	public:
-		/*!
-			Set of PTX statements loaded from PTX source file. This must not 
+		/*! Set of PTX statements loaded from PTX source file. This must not 
 			change after parsing, as all kernels have const_iterators into 
 			this vector.
 		*/
@@ -104,15 +100,9 @@ namespace ir {
 		/*! Set of textures in the module */
 		TextureMap textures;
 
-		/*! Set of all texture names in the module */
-		NameSet textureNames;
-
 		/*! Set of global variables in the modules */
 		GlobalMap globals;
 
-		/*! Set of all global names in the module */
-		NameSet globalNames;
-		
 		/*! Path from which Module was loaded */
 		std::string modulePath;
 		

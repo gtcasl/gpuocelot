@@ -390,7 +390,7 @@ namespace executive
 	{
 		if(!_cudaDriverInitialized)
 		{
-			checkError(driver::cuInit(0));
+			driver::cuInit(0);
 			_cudaDriverInitialized = true;
 		}
 
@@ -485,7 +485,7 @@ namespace executive
 		checkError(driver::cuCtxDestroy(_context));
 	}
 	
-	NVIDIAGPUDevice::MemoryAllocation* NVIDIAGPUDevice::getMemoryAllocation(
+	Device::MemoryAllocation* NVIDIAGPUDevice::getMemoryAllocation(
 		const void* address, bool hostAllocation) const
 	{
 		MemoryAllocation* allocation = 0;
@@ -525,7 +525,7 @@ namespace executive
 		return allocation;		
 	}
 
-	NVIDIAGPUDevice::MemoryAllocation* NVIDIAGPUDevice::getGlobalAllocation(
+	Device::MemoryAllocation* NVIDIAGPUDevice::getGlobalAllocation(
 		const std::string& moduleName, const std::string& name)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
@@ -550,14 +550,14 @@ namespace executive
 		return getMemoryAllocation(global->second, false);
 	}
 
-	NVIDIAGPUDevice::MemoryAllocation* NVIDIAGPUDevice::allocate(size_t size)
+	Device::MemoryAllocation* NVIDIAGPUDevice::allocate(size_t size)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size);
 		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
 		return allocation;
 	}
 
-	NVIDIAGPUDevice::MemoryAllocation* NVIDIAGPUDevice::allocateHost(
+	Device::MemoryAllocation* NVIDIAGPUDevice::allocateHost(
 		size_t size, unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
@@ -932,6 +932,7 @@ namespace executive
 		kernel->setExternSharedMemorySize(sharedMemory);
 		
 		kernel->launchGrid(grid.x, grid.y);
+		synchronize();
 	}
 
 	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(const std::string& path, 

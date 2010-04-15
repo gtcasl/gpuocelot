@@ -37,7 +37,7 @@
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
-	const Device* d, 
+	Device* d, 
 	bool _initialize) 
 : 
 	ExecutableKernel(*kernel, d) 
@@ -54,7 +54,7 @@ executive::EmulatedKernel::EmulatedKernel(
 }
 
 executive::EmulatedKernel::EmulatedKernel(
-	const Device* d): ExecutableKernel(d) {
+	Device* d): ExecutableKernel(d) {
 	ISA = ir::Instruction::Emulated;
 }
 
@@ -647,9 +647,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 */
 void executive::EmulatedKernel::initializeConstMemory() {
 	using namespace std;
-	if (module == 0) {
-		return;
-	}
+	assert(module != 0);
 
 	report("Initializing constant variables for kernel " << name);
 
@@ -726,13 +724,15 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	}
 	
 	// copy globals into constant memory
-	for (ConstantOffsetMap::iterator l_it = constant.begin(); l_it != constant.end(); ++l_it) {
+	for (ConstantOffsetMap::iterator l_it = constant.begin(); 
+		l_it != constant.end(); ++l_it) {
 
-		ir::Module::GlobalMap::const_iterator g_it = module->globals.find(l_it->first);
+		assert(device != 0);
+		Device::MemoryAllocation* global = device->getGlobalAllocation(
+			module->modulePath, l_it->first);
 
-		assert(g_it != module->globals.end());
-		assert(g_it->second.statement.directive == ir::PTXStatement::Const);
-		assert(g_it->second.statement.bytes() + l_it->second <= _constMemorySize);
+		assert(global != 0);
+		assert(global->size() + l_it->second <= _constMemorySize);
 
 		/*
 		report("  mapping constant: " << l_it->first << "(" << (void *)g_it->second.pointer 
@@ -741,7 +741,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		report("  byte representation (pointer = " << (void *)g_it->second.pointer << ":");
 		*/
 
-		memcpy( ConstMemory + l_it->second, g_it->second.pointer, g_it->second.statement.bytes() );
+		memcpy( ConstMemory + l_it->second, global->pointer(), global->size() );
 	}
 
 }
@@ -751,10 +751,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 */
 void executive::EmulatedKernel::initializeGlobalMemory() {
 	using namespace std;
-	if (module == 0) {
-		return;
-	}
-
+	if(module == 0) return;
+	
 	report("Initializing global variables for kernel " << name);
 
 	unordered_set<string> global;
@@ -781,14 +779,17 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
-					unordered_set<string>::iterator l_it = global.find((instr.*operands[n]).identifier);
+					unordered_set<string>::iterator l_it = 
+						global.find((instr.*operands[n]).identifier);
 					if (global.end() != l_it) {
 						(instr.*operands[n]).type = ir::PTXOperand::u64;
-						ir::Module::GlobalMap::const_iterator 
-							g_it = module->globals.find(*l_it);
-						assert(g_it != module->globals.end());
+						assert( device != 0);
+						Device::MemoryAllocation* allocation = 
+							device->getGlobalAllocation(
+							module->modulePath, *l_it);
+						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
-							(ir::PTXU64)g_it->second.pointer;
+							(ir::PTXU64)allocation->pointer();
 						report("Mapping global label " 
 							<< (instr.*operands[n]).identifier << " to " 
 							<< (void *)(instr.*operands[n]).imm_uint 
@@ -806,11 +807,13 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						l_it = global.find((instr.*operands[n]).identifier);
 					if (global.end() != l_it) {
 						(instr.*operands[n]).type = ir::PTXOperand::u64;
-						ir::Module::GlobalMap::const_iterator 
-							g_it = module->globals.find(*l_it);
-						assert(g_it != module->globals.end());
+						assert( device != 0);
+						Device::MemoryAllocation* allocation = 
+							device->getGlobalAllocation(
+							module->modulePath, *l_it);
+						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
-							(ir::PTXU64)g_it->second.pointer;
+							(ir::PTXU64)allocation->pointer();
 						report("Mapping ld/st global label " 
 							<< (instr.*operands[n]).identifier << " to " 
 							<< (void *)(instr.*operands[n]).imm_uint
@@ -824,9 +827,8 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 
 void executive::EmulatedKernel::initializeTextureMemory() {
 	typedef std::unordered_map<std::string, unsigned int> IndexMap;
-	if (module == 0) {
-		return;
-	}
+	if(module == 0) return;
+
 	report("\n\nInitializing texture variables for kernel " << name);
 
 	textures.clear();
@@ -834,17 +836,20 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 
 	unsigned int next = 0;
 
-	for (PTXInstructionVector::iterator fi = instructions.begin(); fi != instructions.end(); ++fi) {
+	for (PTXInstructionVector::iterator fi = instructions.begin(); 
+		fi != instructions.end(); ++fi) {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
-			ir::Module::TextureMap::const_iterator texture_it = module->textures.find(fi->a.identifier);
-
-			assert(texture_it != module->textures.end());
+			assert(device != 0);
+			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
+				module->modulePath, fi->a.identifier);
+			assert(texture != 0);
 
 			IndexMap::iterator index = indices.find(fi->a.identifier);
 
 			if (index == indices.end()) {
-				index = indices.insert(std::make_pair(fi->a.identifier,next++)).first;
-				textures.push_back(&texture_it->second);
+				index = indices.insert(std::make_pair(fi->a.identifier,
+					next++)).first;
+				textures.push_back(texture);
 			}
 
 			fi->a.reg = index->second;
@@ -853,10 +858,14 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 	}
 
 	report("Registered indices:");
-	for (IndexMap::const_iterator ind_it = indices.begin(); ind_it != indices.end(); ++ind_it) {
+	#if(REPORT_BASE > 0)
+	for (IndexMap::const_iterator ind_it = indices.begin(); 
+		ind_it != indices.end(); ++ind_it) {
 		report("  " << ind_it->first << ": " << ind_it->second 
-			<< " - type: " << textures[ind_it->second]->type << " - data: " << textures[ind_it->second]->data);
+			<< " - type: " << textures[ind_it->second]->type 
+			<< " - data: " << textures[ind_it->second]->data);
 	}
+	#endif
 }
 
 void executive::EmulatedKernel::updateGlobals() {

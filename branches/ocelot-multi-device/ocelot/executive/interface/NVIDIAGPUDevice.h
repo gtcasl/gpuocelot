@@ -195,15 +195,16 @@ namespace executive
 			~NVIDIAGPUDevice();
 			
 		public:
-			MemoryAllocation* getMemoryAllocation(const void* address, 
+			Device::MemoryAllocation* getMemoryAllocation(const void* address, 
 				bool hostAllocation) const;
 			/*! \brief Get the address of a global by stream */
-			MemoryAllocation* getGlobalAllocation(const std::string& module, 
-				const std::string& name);
+			Device::MemoryAllocation* getGlobalAllocation(
+				const std::string& module, const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
-			MemoryAllocation* allocate(size_t size);
+			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
-			MemoryAllocation* allocateHost(size_t size, unsigned int flags);
+			Device::MemoryAllocation* allocateHost(size_t size, 
+				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */

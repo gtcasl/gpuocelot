@@ -2465,7 +2465,7 @@ namespace executive
 	}
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
-		const executive::Device* d, 
+		executive::Device* d, 
 		translator::Translator::OptimizationLevel l,
 		const char *_overridePath ) : 
 		ExecutableKernel( k, d ), _module( 0 ), _optimizationLevel( l )

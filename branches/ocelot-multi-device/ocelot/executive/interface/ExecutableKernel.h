@@ -27,12 +27,12 @@ namespace executive {
 		typedef std::vector< const ir::Texture* > TextureVector;
 
 	public:
-		const executive::Device* const device;
+		executive::Device* device;
 
 	public:
 		ExecutableKernel(const ir::Kernel& k, 
-			const executive::Device* d = 0);
-		ExecutableKernel(const executive::Device* c = 0);
+			executive::Device* d = 0);
+		ExecutableKernel(executive::Device* d = 0);
 		virtual ~ExecutableKernel();
 	
 		/*!	\brief Determines whether kernel is executable */

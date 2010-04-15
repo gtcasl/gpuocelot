@@ -12,4 +12,5 @@
 ../TestCudaTextureArray
 ../TestCudaGlobals
 ../TestDeviceSwitching
+../TestCudaSequence
 

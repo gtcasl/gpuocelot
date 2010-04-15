@@ -152,7 +152,6 @@ namespace trace
 						|| *address >= _cache.base + _cache.extent
 						|| !_cache.valid )
 					{
-						assertM(false, "TODO: Reimplement this.");
 						const executive::Device::MemoryAllocation* allocation = 
 							_device->getMemoryAllocation( (void*)*address );
 						if( allocation == 0 )

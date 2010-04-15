@@ -619,6 +619,19 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGLUnregisterBufferObject(
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsGLRegisterBuffer(
+	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsGLRegisterImage(
+	struct cudaGraphicsResource **resource, GLuint image, int target, 
+	unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
 cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsUnregisterResource(
 	struct cudaGraphicsResource* resource) {
 	assert(0 && "unimplemented");

@@ -37,7 +37,7 @@ executive::NVIDIAExecutableKernel::~NVIDIAExecutableKernel() {
 */
 executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	ir::Kernel& kernel, const CUfunction& function, 
-	const executive::Device* d ): ExecutableKernel(kernel, d), ptxKernel(0), 
+	executive::Device* d ): ExecutableKernel(kernel, d), ptxKernel(0), 
 	cuFunction(function) {
 	
 	report("NVIDIAExecutableKernel()");

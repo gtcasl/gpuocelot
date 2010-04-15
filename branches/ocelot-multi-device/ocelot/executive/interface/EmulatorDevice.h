@@ -10,9 +10,15 @@
 // ocelot includes
 #include <ocelot/executive/interface/Device.h>
 
+// hydrazine includes
+#include <hydrazine/implementation/Timer.h>
+
+// stdnard library includes
+#include <unordered_set>
+
 namespace executive
 {
-	class EmulatedKernel;
+	class ExecutableKernel;
 };
 
 namespace executive 
@@ -29,6 +35,8 @@ namespace executive
 					size_t _size;
 					/*! \brief This is in the host address space */
 					void* _pointer;
+					/*! \brief The flags for host allocated memory */
+					unsigned int _flags;
 				
 				public:
 					/*! \brief Generic Construct */
@@ -77,44 +85,58 @@ namespace executive
 			/*! \brief A class for holding the state associated with a module */
 			class Module
 			{
-				private:
-					/*! \brief A handle to the module or 0*/
-					CUmodule _handle;
-
 				public:
 					/*! \brief This is a map from a global name to a pointer */
 					typedef std::unordered_map<std::string, void*> GlobalMap;
 					/*! \brief A map from a kernel name to its translation */
 					typedef std::unordered_map<std::string, 
-						EmulatedKernel*> KernelMap;
+						ExecutableKernel*> KernelMap;
 					/*! \brief A vector of memory allocations */
-					typedef std::vector<MemoryAllocation> AllocationVector;
+					typedef std::vector<MemoryAllocation*> AllocationVector;
+					/*! \brief A map from texture names to references */
+					typedef ir::Module::TextureMap TextureMap;
 			
 				public:
 					/*! \brief The ir representation of a module */
 					const ir::Module* ir;
+					/*! \brief The emulator */
+					EmulatorDevice* device;
 					/*! \brief The set of global allocations in the module */
 					GlobalMap globals;
 					/*! \brief The set of translated kernels */
 					KernelMap kernels;
+					/*! \brief A duplicate copy of textures */
+					TextureMap textures;
 					
 				public:
 					/*! \brief Construct this based on a module */
-					Module(const ir::Module* m = 0);
+					Module(const ir::Module* m = 0, EmulatorDevice* d = 0);
 					/*! \brief Copy constructor */
 					Module(const Module& m);
 					/*! \brief Clean up all translated kernels */
 					~Module();
 					
 				public:
-					/*! \brief Translate all kernels in the module */
-					void translate();
-					/*! \brief Has this module been translated? */
-					bool translated() const;
 					/*! \brief Load all of the globals for this module */
 					AllocationVector loadGlobals();
 					/*! \brief Get a specific kernel or 0 */
-					EmulatedKernel* getKernel(const std::string& name);
+					ExecutableKernel* getKernel(const std::string& name);
+					/*! \brief Get a handle to a specific texture or 0 */
+					ir::Texture* getTexture(const std::string& name);
+			};
+			
+			/*! \brief A graphics resource with an opengl buffer and pointer */
+			class OpenGLResource
+			{
+				public:
+					/*! \brief OpenGL handle to the buffer */
+					unsigned int buffer;
+					/*! \brief Pointer to the buffer if it is mapped, else 0 */
+					void* pointer;
+			
+				public:
+					OpenGLResource(unsigned int buffer = 0);
+					
 			};
 
 			/*! \brief A map of registered modules */
@@ -127,8 +149,13 @@ namespace executive
 			typedef std::unordered_set<unsigned int> StreamSet;
 			
 			/*! \brief A map of registered events */
-			typedef std::unordered_map<unsigned int, CUevent> EventMap;
+			typedef std::unordered_map<unsigned int, 
+				hydrazine::Timer::Second> EventMap;
 			
+			/*! \brief A set of registered graphics resourcs */
+			typedef std::unordered_map<unsigned int, 
+				OpenGLResource> GraphicsMap;
+
 		private:
 			/*! \brief A map of memory allocations in device space */
 			AllocationMap _allocations;
@@ -153,6 +180,9 @@ namespace executive
 			
 			/*! \brief The next handle to assign to an event, stream, etc */
 			unsigned int _next;
+			
+			/*! \brief Global timer */
+			hydrazine::Timer _timer;
 						
 		public:
 			/*! \brief Sets the device properties, bind this to the cuda id */
@@ -161,15 +191,16 @@ namespace executive
 			~EmulatorDevice();
 			
 		public:
-			MemoryAllocation* getMemoryAllocation(const void* address, 
+			Device::MemoryAllocation* getMemoryAllocation(const void* address, 
 				bool hostAllocation) const;
 			/*! \brief Get the address of a global by stream */
-			MemoryAllocation* getGlobalAllocation(const std::string& module, 
-				const std::string& name);
+			Device::MemoryAllocation* getGlobalAllocation(
+				const std::string& module, const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
-			MemoryAllocation* allocate(size_t size);
+			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
-			MemoryAllocation* allocateHost(size_t size, unsigned int flags);
+			Device::MemoryAllocation* allocateHost(size_t size, 
+				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */

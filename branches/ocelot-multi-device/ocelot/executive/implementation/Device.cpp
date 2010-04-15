@@ -6,6 +6,7 @@
 
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
+#include <ocelot/executive/interface/EmulatorDevice.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -34,23 +35,7 @@ bool executive::Device::MemoryAllocation::global() const {
 }
 
 
-executive::Device::Properties::Properties(int id) {
-	ISA = ir::Instruction::Emulated;
-	name = "PTX Emulator";
-	guid = id;
-	totalMemory = (1 << 22);
-	multiprocessorCount = 4;
-	maxThreadsPerBlock = 768;
-	maxThreadsDim[0] = maxThreadsDim[1] = maxThreadsDim[2] = maxThreadsPerBlock;
-	maxGridSize[0] = maxGridSize[1] = maxGridSize[2] = 65536;
-	sharedMemPerBlock = 16384;
-	totalConstantMemory = 8192;
-	SIMDWidth = 32;
-	memPitch = (4<<10);
-	regsPerBlock = 8192;
-	clockRate = 2400000;
-	textureAlign = 16;
-	addressSpace = 0;
+executive::Device::Properties::Properties(int id) : guid(id) {
 }
 
 std::ostream& executive::Device::Properties::write(std::ostream &out) const {
@@ -67,12 +52,19 @@ std::ostream& executive::Device::Properties::write(std::ostream &out) const {
 	return out;
 }
 
-executive::DeviceVector executive::Device::createDevices(ir::Instruction::Architecture isa, 
-	unsigned int flags) {
+executive::DeviceVector executive::Device::createDevices(
+	ir::Instruction::Architecture isa, unsigned int flags) {
 	switch(isa) {
 		case ir::Instruction::SASS:
 		{
 			return NVIDIAGPUDevice::createDevices(flags);
+		}
+		break;
+		case ir::Instruction::Emulated:
+		{
+			DeviceVector emulators;
+			emulators.push_back(new EmulatorDevice(flags));
+			return emulators;
 		}
 		break;
 		default: break;

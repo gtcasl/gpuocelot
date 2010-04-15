@@ -310,6 +310,13 @@ namespace cuda {
 		/*
 			Graphics interface
 		*/
+		virtual cudaError_t cudaGraphicsGLRegisterBuffer(
+			struct cudaGraphicsResource **resource, GLuint buffer, 
+			unsigned int flags);
+		virtual cudaError_t cudaGraphicsGLRegisterImage(
+			struct cudaGraphicsResource **resource, GLuint image, int target, 
+			unsigned int flags);
+
 		virtual cudaError_t cudaGraphicsUnregisterResource(
 			struct cudaGraphicsResource *resource);
 		virtual cudaError_t cudaGraphicsResourceSetMapFlags(

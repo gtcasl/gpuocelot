@@ -14,12 +14,20 @@ INFO       /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCuda
 INFO       /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray
 INFO       /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
 INFO       /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
+INFO     Test completed in 0.0327949523926 seconds
+INFO      It produced the following output:
+TestDeviceSwitching: ocelot/cuda/implementation/CudaRuntime.cpp:2615: virtual void cuda::CudaRuntime::reset(): Assertion `false' failed.
+(0.003308) CudaRuntime.cpp:2615: Assertion message: reset not implemented.
+
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestParser
-INFO     Test completed in 0.0234661102295 seconds
+INFO     Test completed in 0.0255818367004 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -32,21 +40,15 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1271264676
-Test time : 9.65595e-05
+Test Seed : 1271373391
+Test time : 9.20296e-05
 
 Status : 
 
 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
-INFO     Test completed in 0.0270068645477 seconds
-INFO      It produced the following output:
-TestDeviceSwitching: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:74: virtual void cuda::CudaRuntimeInterface::addTraceGenerator(trace::TraceGenerator&, bool, bool): Assertion `0 && "unimplemented"' failed.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer
-INFO     Test completed in 0.0208818912506 seconds
+INFO     Test completed in 0.0274999141693 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -58,15 +60,15 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1271264676
-Test time : 9.03606e-05
+Test Seed : 1271373391
+Test time : 7.93934e-05
 
 Status : 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph
-INFO     Test completed in 0.0389778614044 seconds
+INFO     Test completed in 0.0315771102905 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -81,8 +83,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1271264676
-Test time : 0.000106096
+Test Seed : 1271373392
+Test time : 0.000130177
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -93,9 +95,9 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions
-INFO     Test completed in 0.0512549877167 seconds
+INFO     Test completed in 0.0723669528961 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -105,8 +107,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1271264676
-Test time : 0.00380206
+Test Seed : 1271373392
+Test time : 0.00409031
 
 Status : Test output:
 Accessors test passed.
@@ -122,11 +124,11 @@ pass: control flow instructions
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels
-INFO     Test completed in 0.114691972733 seconds
+INFO     Test completed in 0.119025945663 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.000296354s (296406 ticks)
+Kernel launch time was 0.000313759s (313657 ticks)
 Pass/Fail : Pass
 
 
@@ -135,8 +137,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1271264676
-Test time : 0.0898304
+Test Seed : 1271373392
+Test time : 0.0926006
 
 Status : Test output:
 divergent control flow succeeded
@@ -145,9 +147,15 @@ looping kernel succeeded
 
 
 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
+INFO     Test completed in 0.547430992126 seconds
+INFO      It produced the following output:
+PASSED
+
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions
-INFO     Test completed in 0.0385839939117 seconds
+INFO     Test completed in 0.0363230705261 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -161,8 +169,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1271264676
-Test time : 0.00616264
+Test Seed : 1271373392
+Test time : 0.00699091
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -295,7 +303,7 @@ Zext Instruction Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0293579101562 seconds
+INFO     Test completed in 0.0298750400543 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -308,15 +316,15 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1271264676
-Test time : 0.000167847
+Test Seed : 1271373392
+Test time : 0.000101089
 
 Status : 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator
-INFO     Test completed in 0.0574779510498 seconds
+INFO     Test completed in 0.0524430274963 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -326,8 +334,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1271264676
-Test time : 0.0272558
+Test Seed : 1271373392
+Test time : 0.0291564
 
 Status : Test output:
 11 registers
@@ -341,30 +349,36 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc
-INFO     Test completed in 0.0302441120148 seconds
+INFO     Test completed in 0.228638887405 seconds
 INFO      It produced the following output:
-TestCudaMalloc: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:74: virtual void cuda::CudaRuntimeInterface::addTraceGenerator(trace::TraceGenerator&, bool, bool): Assertion `0 && "unimplemented"' failed.
+ERROR 0: (0, 1) - expected: 0.000000, got: 0.500000
+ERROR 0: (1, 1) - expected: 0.007812, got: 0.507812
+ERROR 0: (2, 1) - expected: 0.015625, got: 0.515625
+ERROR 0: (3, 1) - expected: 0.023438, got: 0.523438
+ERROR 0: (4, 1) - expected: 0.031250, got: 0.531250
+Pass/Fail : Fail
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D
-INFO     Test completed in 0.0407099723816 seconds
+INFO     Test completed in 0.0457499027252 seconds
 INFO      It produced the following output:
-TestCudaTexture2D: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:74: virtual void cuda::CudaRuntimeInterface::addTraceGenerator(trace::TraceGenerator&, bool, bool): Assertion `0 && "unimplemented"' failed.
+TestCudaTexture2D: ocelot/executive/implementation/EmulatedKernel.cpp:845: void executive::EmulatedKernel::initializeTextureMemory(): Assertion `texture != 0' failed.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray
-INFO     Test completed in 0.0376710891724 seconds
+INFO     Test completed in 0.0794730186462 seconds
 INFO      It produced the following output:
-TestCudaTextureArray: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:74: virtual void cuda::CudaRuntimeInterface::addTraceGenerator(trace::TraceGenerator&, bool, bool): Assertion `0 && "unimplemented"' failed.
+TestCudaTextureArray: ocelot/executive/implementation/EmulatedKernel.cpp:845: void executive::EmulatedKernel::initializeTextureMemory(): Assertion `texture != 0' failed.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
-INFO     Test completed in 0.0255270004272 seconds
+INFO     Test completed in 0.0734179019928 seconds
 INFO      It produced the following output:
-TestCudaGlobals: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:74: virtual void cuda::CudaRuntimeInterface::addTraceGenerator(trace::TraceGenerator&, bool, bool): Assertion `0 && "unimplemented"' failed.
+cudaSetDevice() - 0 - Ocelot PTX Emulator 
+cudaMemcpyToSymbol() failed to copy 4 bytes to symbol 'Pi'
 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels
-INFO     Test completed in 0.974474906921 seconds
+INFO     Test completed in 1.14503097534 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -376,8 +390,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1271264676
-Test time : 0.938452
+Test Seed : 1271373392
+Test time : 1.10602
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -414,22 +428,23 @@ R = [
 
 INFO     
 Passing tests:
- (0.039s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
- (0.974s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
- (0.021s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
- (0.023s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
- (0.115s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
- (0.029s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
- (0.057s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
- (0.039s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
- (0.051s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
+ (0.032s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
+ (1.145s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
+ (0.027s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
+ (0.026s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
+ (0.119s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
+ (0.030s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
+ (0.052s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
+ (0.036s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
+ (0.072s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
 
 Failing tests:
- (0.038s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Did not complete.
- (0.041s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Did not complete.
- (0.027s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Did not complete.
- (0.030s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Did not complete.
- (0.026s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Did not complete.
+ (0.079s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Did not complete.
+ (0.046s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Did not complete.
+ (0.547s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence : Did not complete.
+ (0.229s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Failed
+ (0.073s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Did not complete.
+ (0.033s) : /home/normal/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Did not complete.
 
 Non-Existent tests:
 

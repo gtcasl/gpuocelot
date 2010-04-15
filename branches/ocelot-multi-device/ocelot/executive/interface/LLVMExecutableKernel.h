@@ -315,7 +315,7 @@ namespace executive
 		public:
 			/*! \brief Creates a new instance of the runtime bound to a kernel*/
 			LLVMExecutableKernel( ir::Kernel& kernel, 
-				const executive::Device* d = 0,
+				executive::Device* d = 0,
 				translator::Translator::OptimizationLevel 
 				l = translator::Translator::NoOptimization,
 				const char *overridePath = 0);

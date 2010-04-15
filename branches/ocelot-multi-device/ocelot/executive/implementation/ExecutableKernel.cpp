@@ -29,7 +29,7 @@
 namespace executive 
 {
 ExecutableKernel::ExecutableKernel( const ir::Kernel& k, 
-	const executive::Device* d ) : ir::Kernel( k ), device( d ), 
+	executive::Device* d ) : ir::Kernel( k ), device( d ), 
 	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
 	_registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _parameterMemorySize( 0 )
@@ -37,7 +37,7 @@ ExecutableKernel::ExecutableKernel( const ir::Kernel& k,
 	mapParameterOffsets();
 }
 
-ExecutableKernel::ExecutableKernel( const executive::Device* d ) :
+ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
 	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 
 	_sharedMemorySize( 0 ), 	_externSharedMemorySize( 0 ), 

@@ -675,6 +675,12 @@ extern cudaError_t cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_
 *                                                                              *
 *******************************************************************************/
 
+extern cudaError_t cudaGraphicsGLRegisterBuffer(
+	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags);
+extern cudaError_t cudaGraphicsGLRegisterImage(
+	struct cudaGraphicsResource **resource, GLuint image, int target, 
+	unsigned int flags);
+
 extern cudaError_t cudaGraphicsUnregisterResource(
 	struct cudaGraphicsResource *resource);
 extern cudaError_t cudaGraphicsResourceSetMapFlags(

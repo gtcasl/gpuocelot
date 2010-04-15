@@ -554,6 +554,62 @@ cudaError_t cudaGLUnregisterBufferObject(GLuint bufObj) {
 *                                                                              *
 *******************************************************************************/
 
+cudaError_t cudaGraphicsGLRegisterBuffer(struct cudaGraphicsResource **resource,
+	GLuint buffer, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaGraphicsGLRegisterBuffer(
+		resource, buffer, flags);
+}
+
+cudaError_t cudaGraphicsGLRegisterImage(struct cudaGraphicsResource **resource,
+	GLuint image, int target, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaGraphicsGLRegisterImage(
+		resource, image, target, flags);
+}
+
+cudaError_t cudaGraphicsUnregisterResource(
+	struct cudaGraphicsResource *resource) {
+	return cuda::CudaRuntimeInterface::get()->cudaGraphicsUnregisterResource(
+		resource);
+}
+
+cudaError_t cudaGraphicsResourceSetMapFlags(
+	struct cudaGraphicsResource *resource, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaGraphicsResourceSetMapFlags(
+		resource, flags);
+}
+
+cudaError_t cudaGraphicsMapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	return cuda::CudaRuntimeInterface::get()->cudaGraphicsMapResources(
+		count, resources, stream);
+}
+
+cudaError_t cudaGraphicsUnmapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	return cuda::CudaRuntimeInterface::get()->cudaGraphicsUnmapResources(
+		count, resources, stream);
+}
+
+cudaError_t cudaGraphicsResourceGetMappedPointer(void **devPtr, 
+	size_t *size, struct cudaGraphicsResource *resource) {
+	return cuda::CudaRuntimeInterface::get(
+		)->cudaGraphicsResourceGetMappedPointer(devPtr, size, resource);
+}
+
+cudaError_t cudaGraphicsSubResourceGetMappedArray(
+	struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
+	unsigned int arrayIndex, unsigned int mipLevel) {
+	return cuda::CudaRuntimeInterface::get(
+		)->cudaGraphicsSubResourceGetMappedArray(arrayPtr, 
+		resource, arrayIndex, mipLevel);
+}
+
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
 cudaError_t  cudaThreadExit(void) {
 	return cuda::CudaRuntimeInterface::get()->cudaThreadExit();
 }

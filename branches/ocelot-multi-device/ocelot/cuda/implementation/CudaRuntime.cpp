@@ -38,7 +38,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -252,7 +252,21 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		report(" - Added " << d.size() << " nvidia gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
+	if(api::OcelotConfiguration::get().executive.enableEmulated) {
+		executive::DeviceVector d = 
+			executive::Device::createDevices(ir::Instruction::Emulated, _flags);
+		report(" - Added " << d.size() << " emulator devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
 	_devicesLoaded = true;
+	
+	if(_devices.empty())
+	{
+		std::cerr << "==Ocelot== WARNING - No CUDA devices found or all " 
+			<< "devices disabled!\n";
+		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
+			<< "configure.ocelot.\n";
+	}
 	
 	// register modules
 	for(ModuleMap::const_iterator module = _modules.begin(); 
@@ -407,10 +421,11 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 		std::make_pair(binary->ident, ir::Module())).first;
 	module->second.load(ptx, binary->ident);
 	
+	handle = _fatBinaries.size();
+	
 	FatBinaryContext cubinContext;
 	cubinContext.cubin_ptr = fatCubin;
 	_fatBinaries.push_back(cubinContext);
-	handle = _fatBinaries.size();
 	
 	_unlock();
 	
@@ -451,7 +466,7 @@ void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar,
 		<< ", deviceName: " << deviceName << ", size: " << size << " bytes,"
 		<< (constant ? " constant" : " ") << (global ? " global" : " "));
 
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	_lock();
 
 	std::string moduleName = _fatBinaries[handle].name();
@@ -480,7 +495,7 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	int norm,
 	int ext) {
 	
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	
 	_lock();
 	
@@ -508,7 +523,7 @@ void cuda::CudaRuntime::cudaRegisterShared(
 	void **fatCubinHandle,
 	void **devicePtr) {
 	
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	_lock();
 	
 	const char *moduleName = _fatBinaries[handle].name();
@@ -529,7 +544,7 @@ void cuda::CudaRuntime::cudaRegisterSharedVar(
 	size_t alignment,
 	int storage) {
 
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	_lock();
 	
 	const char *moduleName = _fatBinaries[handle].name();
@@ -557,7 +572,7 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	dim3 *gDim,
 	int *wSize) {
 
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	
 	_lock();
 
@@ -871,6 +886,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src,
 
 		report("cudaMemcpy(" << dst << ", " << src << ", " << count << ")");
 		_memcpy(dst, src, count, kind);
+		result = cudaSuccess;
 
 		_release();
 	}
@@ -972,7 +988,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	report("cudaMemcpyToArray()");
+	report("cudaMemcpyFromArray("<< dst << ", " << src << ", " << wOffset 
+		<< ", " << hOffset << ", " << count << ")");
 
 	if (kind == cudaMemcpyHostToDevice) {
 		executive::Device::MemoryAllocation* 
@@ -1007,7 +1024,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 				_release();
 				_memoryError(src, count, "cudaMemcpyToArray");
 			}
-			destination->copy(source, offset, 0, count);
+			size_t sourceOffset = (char*)src - (char*)source->pointer();
+			source->copy(destination, offset, sourceOffset, count);
 			result = cudaSuccess;
 		}
 	}
@@ -1039,7 +1057,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst,
 				_release();
 				_memoryError(address, count, "cudaMemcpyFromArray");
 			}
-			allocation->copy((void*)src, offset, count);
+			allocation->copy(dst, offset, count);
 			result = cudaSuccess;
 		}
 	}
@@ -1060,7 +1078,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst,
 				_release();
 				_memoryError(src, count, "cudaMemcpyFromArray");
 			}
-			destination->copy(source, 0, offset, count);
+			size_t destinationOffset = (char*)dst 
+				- (char*)destination->pointer();
+			source->copy(destination, destinationOffset, offset, count);
 			result = cudaSuccess;
 		}
 	}
@@ -1104,7 +1124,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst,
 				_memoryError(destinationAddress, 
 					count, "cudaMemcpyArrayToArray");
 			}
-			destination->copy(source, destinationOffset, sourceOffset, count);
+			source->copy(destination, destinationOffset, sourceOffset, count);
 			result = cudaSuccess;
 		}	
 	}
@@ -1214,7 +1234,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch,
 							width, "cudaMemcpy2D");
 					}
 					
-					destination->copy(source, dstOffset, srcOffset, width);
+					source->copy(destination, dstOffset, srcOffset, width);
 				}
 				result = cudaSuccess;
 			}
@@ -1313,7 +1333,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst,
 					width, "cudaMemcpy2DtoArray");
 			}
 			
-			destination->copy(source, dstOffset, srcOffset, width);
+			source->copy(destination, dstOffset, srcOffset, width);
 		}
 		
 		result = cudaSuccess;
@@ -1401,7 +1421,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 					"cudaMemcpy2DfromArray");
 			}
 			
-			source->copy(destination, srcOffset, dstOffset, width);
+			destination->copy(source, srcOffset, dstOffset, width);
 		}
 		
 		result = cudaSuccess;
@@ -1750,11 +1770,18 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 
 cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	cudaError_t result = cudaSuccess;
-	_lock();
+	_acquire();
 	
-	*count = _devices.size();
+	if (_devices.empty())
+	{
+		*count = 0;
+	}
+	else
+	{	
+		*count = _devices.size();
+		_release();
+	}
 	
-	_unlock();
 	return _setLastError(result);
 }
 
@@ -2421,6 +2448,39 @@ cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsGLRegisterBuffer(
+	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsGLRegisterBuffer");
+	
+	*resource = (struct cudaGraphicsResource*)_getDevice().glRegisterBuffer(
+		buffer, flags);
+
+	_release();
+	
+	return _setLastError(result);	
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsGLRegisterImage(
+	struct cudaGraphicsResource **resource, GLuint image, int target, 
+	unsigned int flags) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsGLRegisterImage");
+	
+	*resource = (struct cudaGraphicsResource*)_getDevice().glRegisterImage(
+		image, target, flags);
+
+	_release();
+	
+	return _setLastError(result);	
+}
 
 cudaError_t cuda::CudaRuntime::cudaGraphicsUnregisterResource(
 	struct cudaGraphicsResource *resource) {

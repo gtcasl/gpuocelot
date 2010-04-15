@@ -1,39 +1,34 @@
-/*! \file NVIDIAGPUDevice.h
+/*! \file EmulatorDevice.h
 	\author Gregory Diamos
-	\date April 7, 2010
-	\brief The header file for the NVIDIAGPUDevice class.
+	\date April 15, 2010
+	\brief The header file for the EmulatorDevice class.
 */
 
-#ifndef NVIDIA_GPU_DEVICE_H_INCLUDED
-#define NVIDIA_GPU_DEVICE_H_INCLUDED
+#ifndef EMULATOR_DEVICE_H_INCLUDED
+#define EMULATOR_DEVICE_H_INCLUDED
 
 // ocelot includes
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/cuda/interface/cuda.h>
 
 namespace executive
 {
-	class NVIDIAExecutableKernel;
+	class EmulatedKernel;
 };
 
 namespace executive 
 {
-	/*! Interface that should be bound to a single nvidia gpu */
-	class NVIDIAGPUDevice : public Device
+	/*! Interface that should be bound to the ptx emulator */
+	class EmulatorDevice : public Device
 	{
 		public:
-			/*! \brief An interface to a memory allocation on the cuda driver */
+			/*! \brief An interface to a managed memory allocation */
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
 				private:
-					/*! \brief The flags for page-locked host memory */
-					unsigned int _flags;
 					/*! \brief The size of the allocation in bytes */
 					size_t _size;
-					/*! \brief The pointer to the base of the allocation */
-					CUdeviceptr _devicePointer;
-					/*! \brief Host pointer to mapped/page-locked allocation */
-					void* _hostPointer;
+					/*! \brief This is in the host address space */
+					void* _pointer;
 				
 				public:
 					/*! \brief Generic Construct */
@@ -43,7 +38,7 @@ namespace executive
 					/*! \brief Construct a host allocation */
 					MemoryAllocation(size_t size, unsigned int flags);
 					/*! \brief Construct a global allocation */
-					MemoryAllocation(CUmodule module, const ir::Global& global);
+					MemoryAllocation(const ir::Global& global);
 					/*! \brief Desructor */
 					~MemoryAllocation();
 
@@ -87,11 +82,11 @@ namespace executive
 					CUmodule _handle;
 
 				public:
-					/*! \brief This is a map from a global name to pointer */
+					/*! \brief This is a map from a global name to a pointer */
 					typedef std::unordered_map<std::string, void*> GlobalMap;
 					/*! \brief A map from a kernel name to its translation */
 					typedef std::unordered_map<std::string, 
-						NVIDIAExecutableKernel*> KernelMap;
+						EmulatedKernel*> KernelMap;
 					/*! \brief A vector of memory allocations */
 					typedef std::vector<MemoryAllocation> AllocationVector;
 			
@@ -112,10 +107,6 @@ namespace executive
 					~Module();
 					
 				public:
-					/*! \brief Load the module using the driver */
-					void load();
-					/*! \brief Has this module been loaded? */
-					bool loaded() const;
 					/*! \brief Translate all kernels in the module */
 					void translate();
 					/*! \brief Has this module been translated? */
@@ -123,9 +114,7 @@ namespace executive
 					/*! \brief Load all of the globals for this module */
 					AllocationVector loadGlobals();
 					/*! \brief Get a specific kernel or 0 */
-					NVIDIAExecutableKernel* getKernel(const std::string& name);
-					/*! \brief Get an opaque pointer to the texture or 0 */
-					void* getTexture(const std::string& name);
+					EmulatedKernel* getKernel(const std::string& name);
 			};
 
 			/*! \brief A map of registered modules */
@@ -134,15 +123,11 @@ namespace executive
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
 			
-			/*! \brief A map of registered streams */
-			typedef std::unordered_map<unsigned int, CUstream> StreamMap;
+			/*! \brief A set of registered streams */
+			typedef std::unordered_set<unsigned int> StreamSet;
 			
 			/*! \brief A map of registered events */
 			typedef std::unordered_map<unsigned int, CUevent> EventMap;
-			
-			/*! \brief A map of registered graphics resources */
-			typedef std::unordered_map<unsigned int, 
-				CUgraphicsResource> GraphicsMap;
 			
 		private:
 			/*! \brief A map of memory allocations in device space */
@@ -155,7 +140,7 @@ namespace executive
 			ModuleMap _modules;
 			
 			/*! \brief Registered streams */
-			StreamMap _streams;
+			StreamSet _streams;
 			
 			/*! \brief Registered events */
 			EventMap _events;
@@ -163,36 +148,17 @@ namespace executive
 			/*! \brief Registered graphics resources */
 			GraphicsMap _graphics;
 		
-			/*! \brief The driver context for this device. */
-			CUcontext _context;
-			
 			/*! \brief Has this device been selected? */
 			bool _selected;
 			
 			/*! \brief The next handle to assign to an event, stream, etc */
 			unsigned int _next;
-		
-			/*! \brief The currently selected stream */
-			unsigned int _selectedStream;
-		
-			/*! \brief Has opengl been enabled for this context? */
-			bool _opengl;
-				
-		private:
-			/*! \brief Has the cuda driver been initialized? */
-			static bool _cudaDriverInitialized;
-			/*! \brief The last error code */
-			static CUresult _lastError;
-		
-		public:
-			/*! \brief Allocate a new device for each CUDA capable GPU */
-			static DeviceVector createDevices(unsigned int flags);
-		
+						
 		public:
 			/*! \brief Sets the device properties, bind this to the cuda id */
-			NVIDIAGPUDevice(int id = 0, unsigned int flags = 0);
+			EmulatorDevice(int id = 0, unsigned int flags = 0);
 			/*! \brief Clears all state */
-			~NVIDIAGPUDevice();
+			~EmulatorDevice();
 			
 		public:
 			MemoryAllocation* getMemoryAllocation(const void* address, 

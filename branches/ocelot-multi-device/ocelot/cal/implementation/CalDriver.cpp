@@ -43,6 +43,7 @@ namespace cal
 		hydrazine::bit_cast(_calResUnmap,          dlsym(_driver, "calResUnmap"));
 		hydrazine::bit_cast(_calCtxRunProgramGrid, dlsym(_driver, "calCtxRunProgramGrid"));
 		hydrazine::bit_cast(_calCtxIsEventDone,    dlsym(_driver, "calCtxIsEventDone"));
+		hydrazine::bit_cast(_calGetErrorString,    dlsym(_driver, "calGetErrorString"));
 
 		hydrazine::bit_cast(_calclCompile,    dlsym(_compiler, "calclCompile"));
 		hydrazine::bit_cast(_calclLink,       dlsym(_compiler, "calclLink"));
@@ -198,5 +199,10 @@ namespace cal
 	CALresult CalDriver::calclFreeImage(CALimage image)
 	{
 		return (*_calclFreeImage)(image);
+	}
+
+	const CALchar *CalDriver::calGetErrorString()
+	{
+		return (*_calGetErrorString)();
 	}
 }

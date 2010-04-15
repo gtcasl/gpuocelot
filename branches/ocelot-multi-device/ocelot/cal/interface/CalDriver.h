@@ -13,22 +13,6 @@
 
 namespace cal
 {
-	/*! \breif CAL Char type */
-	typedef CALchar Char;
-
-	/*! \brief CAL Device type */
-	typedef CALdevice Device;
-	/*! \brief CAL Device Info type */
-	typedef CALdeviceinfo DeviceInfo;
-	/*! \brief CAL Context type */
-	typedef CALcontext Context;
-	/*! \brief CAL Object type */
-	typedef CALobject Object;
-	/*! \brief CAL Image type */
-	typedef CALimage Image;
-	/*! \brief CAL Module type */
-	typedef CALmodule Module;
-
 	/*! \brief Provides access to the CAL runtime/driver
 	 *
 	 * Implemented as a Singleton. It is non-thread-safe for now (is CAL
@@ -106,6 +90,13 @@ namespace cal
 			CALresult calclFreeImage(CALimage image);
 			//@}
 
+			/*****************************//**
+			 * \name Error Reporting
+			 ********************************/
+			//@{
+			const CALchar *calGetErrorString();
+			//@}
+		
 		private:
 			/*! \brief Singleton instance */
 			static CalDriver *_instance;
@@ -142,6 +133,7 @@ namespace cal
 			CALresult (*_calclLink)(CALimage* image, CALobject* obj, CALuint objCount);
 			CALresult (*_calclFreeObject)(CALobject obj);
 			CALresult (*_calclFreeImage)(CALimage image);
+			const CALchar *(*_calGetErrorString)();
 			//@}
 
 			/*! \brief Constructor */

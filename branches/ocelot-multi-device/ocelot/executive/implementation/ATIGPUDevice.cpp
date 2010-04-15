@@ -4,39 +4,49 @@
  *  \brief The source file for the ATI GPU Device class.
  */
 
+// C standard library includes
+#include <string.h>
+
+// Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
+
+// Hydrazine includes
+#include <hydrazine/interface/Casts.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+
+#define checkError(x) if(x != CAL_RESULT_OK) { \
+	throw hydrazine::Exception(cal::CalDriver::Instance()->calGetErrorString()); }
+#define Throw(x) {std::stringstream s; s << x; \
+	throw hydrazine::Exception(s.str()); }
 
 namespace executive
 {
     ATIGPUDevice::ATIGPUDevice() 
-		: device(0), 
-		  context(0), 
-		  object(0), 
-		  image(0), 
-		  module(0)  
+		: _device(0), 
+		  _context(0), 
+		  _object(0), 
+		  _image(0), 
+		  _module(0)  
     {
-        CALresult result;
-
-        result = cal::CalDriver::Instance()->calDeviceOpen(&device, 0);
-        result = cal::CalDriver::Instance()->calDeviceGetInfo(&info, 0);
+        checkError(cal::CalDriver::Instance()->calDeviceOpen(&_device, 0));
+        checkError(cal::CalDriver::Instance()->calDeviceGetInfo(&_info, 0));
 
         // multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
-        result = cal::CalDriver::Instance()->calCtxCreate(&context, device);
+        checkError(cal::CalDriver::Instance()->calCtxCreate(&_context, _device));
     }
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
-        CALresult result;
-
-        result = cal::CalDriver::Instance()->calCtxDestroy(context);
-        result = cal::CalDriver::Instance()->calDeviceClose(device);
+        checkError(cal::CalDriver::Instance()->calCtxDestroy(_context));
+        checkError(cal::CalDriver::Instance()->calDeviceClose(_device));
     }
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {
 		// Use a fixed ILKernel for now (no PTX-to-IL translation yet)
-		const cal::Char *ILKernel = 
+		const CALchar *ILKernel = 
 			"il_cs_2_0\n"
 			"dcl_num_thread_per_group 10\n"
 			"dcl_raw_uav_id(0)\n"
@@ -50,20 +60,16 @@ namespace executive
 			"uav_raw_store_id(1) mem.xyzw, r0.x, r1\n"
 			"end\n";
 
-		CALresult result;
-
-		result = cal::CalDriver::Instance()->calclCompile(&object, CAL_LANGUAGE_IL, ILKernel, info.target);
-		result = cal::CalDriver::Instance()->calclLink(&image, &object, 1);
-		result = cal::CalDriver::Instance()->calModuleLoad(&module, context, image);
+		checkError(cal::CalDriver::Instance()->calclCompile(&_object, CAL_LANGUAGE_IL, ILKernel, _info.target));
+		checkError(cal::CalDriver::Instance()->calclLink(&_image, &_object, 1));
+		checkError(cal::CalDriver::Instance()->calModuleLoad(&_module, _context, _image));
     }
 
     void ATIGPUDevice::unload(const std::string& name)
     {
-		CALresult result;
-
-		result = cal::CalDriver::Instance()->calModuleUnload(context, module);
-		result = cal::CalDriver::Instance()->calclFreeImage(image);
-		result = cal::CalDriver::Instance()->calclFreeObject(object);
+		checkError(cal::CalDriver::Instance()->calModuleUnload(_context, _module));
+		checkError(cal::CalDriver::Instance()->calclFreeImage(_image));
+		checkError(cal::CalDriver::Instance()->calclFreeObject(_object));
     }
 
     void ATIGPUDevice::select()
@@ -81,4 +87,110 @@ namespace executive
     {
         // multiple devices is not supported yet
     }
+
+	ATIGPUDevice::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
+			const void *address, bool hostAllocation) const
+	{
+		MemoryAllocation *allocation = 0;
+
+		if (hostAllocation) {
+			assertM(false, "Not implemented yet");
+		} else {
+			if (!_allocations.empty()) {
+				// Device pointer arithmetic is not supported yet
+				const AllocationMap::const_iterator alloc = _allocations.find((void *)address);
+				if (alloc != _allocations.end()) {
+					allocation = alloc->second;
+				} else {
+					Throw("No allocation found for this pointer - " << address);
+				}
+			}
+		}
+
+		return allocation;
+	}
+
+	ATIGPUDevice::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
+	{
+		MemoryAllocation *allocation = new MemoryAllocation(_device, size);
+		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
+		return allocation;
+	}
+
+	void ATIGPUDevice::free(void *pointer)
+	{
+		if (pointer == 0) return;
+
+		AllocationMap::iterator allocation = _allocations.find(pointer);
+		if (allocation != _allocations.end()) {
+			delete allocation->second;
+			_allocations.erase(allocation);
+		} else {
+			Throw("Tried to free invalid pointer - " << pointer);
+		}
+	}
+
+	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALdevice device, size_t size) : _size(size) 
+	{
+		// Only CAL_FORMAT_SIGNED_INT32_1 is supported for now
+		CALuint width = size / sizeof(int);
+		checkError(cal::CalDriver::Instance()->calResAllocLocal1D(
+				&_resource, 
+				device, 
+				width,	
+				CAL_FORMAT_SIGNED_INT32_1,
+				CAL_RESALLOC_GLOBAL_BUFFER));
+	}
+
+	ATIGPUDevice::MemoryAllocation::~MemoryAllocation()
+	{
+		checkError(cal::CalDriver::Instance()->calResFree(_resource));
+	}
+
+	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void *ATIGPUDevice::MemoryAllocation::mappedPointer() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void *ATIGPUDevice::MemoryAllocation::pointer() const
+	{
+		return hydrazine::bit_cast<void*>(_resource);
+	}
+
+	size_t ATIGPUDevice::MemoryAllocation::size() const
+	{
+		return _size;
+	}
+
+	void ATIGPUDevice::MemoryAllocation::copy(size_t offset, const void* host, size_t size)
+	{
+		CALvoid *data = NULL;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		checkError(cal::CalDriver::Instance()->calResMap(&data, &pitch, _resource, flags));
+		memcpy(data, host, size);
+		checkError(cal::CalDriver::Instance()->calResUnmap(_resource));
+	}
+
+	void ATIGPUDevice::MemoryAllocation::copy(void *host, size_t offset, size_t size) const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::MemoryAllocation::memset(size_t offset, int value, size_t size)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation *allocation,
+			size_t toOffset, size_t fromOffset, size_t size) const
+	{
+		assertM(false, "Not implemented yet");
+	}
 }

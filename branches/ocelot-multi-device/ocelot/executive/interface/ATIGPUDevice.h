@@ -17,6 +17,40 @@ namespace executive
 	class ATIGPUDevice : public Device 
 	{
 		public:
+			/*! \brief ATI memory allocation */
+			class MemoryAllocation : public Device::MemoryAllocation
+			{
+				public:
+					/*! \brief Constructor */
+					MemoryAllocation(CALdevice device, size_t size);
+					/*! \brief Destructor */
+					~MemoryAllocation();
+
+					/*! \brief Get the flags if this is a host pointer */
+					unsigned int flags() const;
+					/*! \brief Get a host pointer if for a host allocation */
+					void* mappedPointer() const;
+					/*! \brief Get a device pointer to the base */
+					void* pointer() const;
+					/*! \brief The size of the allocation */
+					size_t size() const;
+					/*! \brief Copy from an external host pointer */
+					void copy(size_t offset, const void* host, size_t size );
+					/*! \brief Copy to an external host pointer */
+					void copy(void* host, size_t offset, size_t size) const;
+					/*! \brief Memset the allocation */
+					void memset(size_t offset, int value, size_t size);
+					/*! \brief Copy to another allocation */
+					void copy(Device::MemoryAllocation* allocation, 
+						size_t toOffset, size_t fromOffset, size_t size) const;
+
+				private:
+					/*! \brief CAL allocation */
+					CALresource _resource;
+					/*! \brief Size of the allocation (in byte) */
+					size_t _size;
+			};
+
 			/*! \brief Constructor */
 			ATIGPUDevice();
 			/*! \brief Destructor */
@@ -34,20 +68,34 @@ namespace executive
 			bool selected() const;
 			/*! \brief Deselect this device */
 			void unselect();
+			
+			/*! \brief Get the allocation containing a pointer or 0 */
+			MemoryAllocation* getMemoryAllocation(const void* address, 
+				bool hostAllocation) const;
+			/*! \brief Allocate some new dynamic memory on this device */
+			MemoryAllocation* allocate(size_t size);
+			/*! \brief Free an existing non-global allocation */
+			void free(void* pointer);
 
 		private:
+			/*! \brief A map of memory allocations */
+			typedef std::map<void*, MemoryAllocation*> AllocationMap;
+
+			/*! \brief A map of memory allocations in device space */
+			AllocationMap _allocations;
+
 			/*! \brief CAL Device */
-			cal::Device device;
+			CALdevice _device;
 			/*! \brief CAL Device Info */
-			cal::DeviceInfo info;
-            /*! \brief CAL Context. Multiple contexts per device is not supported yet */
-			cal::Context context;
+			CALdeviceinfo _info;
+			/*! \brief CAL Context. Multiple contexts per device is not supported yet */
+			CALcontext _context;
 			/*! \brief CAL Object */
-			cal::Object object;
+			CALobject _object;
 			/*! \brief CAL Image */
-			cal::Image image;
+			CALimage _image;
 			/*! \brief CAL Module */
-			cal::Module module;
+			CALmodule _module;
 	};
 }
 

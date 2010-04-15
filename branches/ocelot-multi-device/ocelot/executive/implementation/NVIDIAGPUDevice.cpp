@@ -954,6 +954,7 @@ namespace executive
 		
 		cudaFuncAttributes attributes;
 
+		memset(&attributes, 0, sizeof(cudaFuncAttributes));
 		attributes.sharedSizeBytes = kernel->sharedMemorySize();
 		attributes.constSizeBytes = kernel->constMemorySize();
 		attributes.localSizeBytes = kernel->localMemorySize();

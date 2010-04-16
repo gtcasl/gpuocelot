@@ -1,6 +1,6 @@
 /*! \file ATIGPUDevice.cpp
  *  \author Rodrigo Dominguez <rdomingu@ece.neu.edu>
- *  \cate April 7, 2010
+ *  \date April 7, 2010
  *  \brief The source file for the ATI GPU Device class.
  */
 
@@ -16,7 +16,7 @@
 #include <hydrazine/implementation/debug.h>
 
 #define checkError(x) if(x != CAL_RESULT_OK) { \
-	throw hydrazine::Exception(cal::CalDriver::Instance()->calGetErrorString()); }
+	throw hydrazine::Exception(CalDriver()->calGetErrorString()); }
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str()); }
 
@@ -29,19 +29,29 @@ namespace executive
 		  _image(0), 
 		  _module(0)  
     {
-        checkError(cal::CalDriver::Instance()->calDeviceOpen(&_device, 0));
-        checkError(cal::CalDriver::Instance()->calDeviceGetInfo(&_info, 0));
+        checkError(CalDriver()->calDeviceOpen(&_device, 0));
+        checkError(CalDriver()->calDeviceGetInfo(&_info, 0));
 
         // multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
-        checkError(cal::CalDriver::Instance()->calCtxCreate(&_context, _device));
+        checkError(CalDriver()->calCtxCreate(&_context, _device));
     }
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
-        checkError(cal::CalDriver::Instance()->calCtxDestroy(_context));
-        checkError(cal::CalDriver::Instance()->calDeviceClose(_device));
+        checkError(CalDriver()->calCtxDestroy(_context));
+        checkError(CalDriver()->calDeviceClose(_device));
     }
+
+	DeviceVector ATIGPUDevice::createDevices(unsigned int flags)
+	{
+		DeviceVector devices;
+
+        // multiple devices is not supported yet
+		devices.push_back(new ATIGPUDevice());
+
+		return std::move(devices);
+	}
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {
@@ -60,16 +70,16 @@ namespace executive
 			"uav_raw_store_id(1) mem.xyzw, r0.x, r1\n"
 			"end\n";
 
-		checkError(cal::CalDriver::Instance()->calclCompile(&_object, CAL_LANGUAGE_IL, ILKernel, _info.target));
-		checkError(cal::CalDriver::Instance()->calclLink(&_image, &_object, 1));
-		checkError(cal::CalDriver::Instance()->calModuleLoad(&_module, _context, _image));
+		checkError(CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, ILKernel, _info.target));
+		checkError(CalDriver()->calclLink(&_image, &_object, 1));
+		checkError(CalDriver()->calModuleLoad(&_module, _context, _image));
     }
 
     void ATIGPUDevice::unload(const std::string& name)
     {
-		checkError(cal::CalDriver::Instance()->calModuleUnload(_context, _module));
-		checkError(cal::CalDriver::Instance()->calclFreeImage(_image));
-		checkError(cal::CalDriver::Instance()->calclFreeObject(_object));
+		checkError(CalDriver()->calModuleUnload(_context, _module));
+		checkError(CalDriver()->calclFreeImage(_image));
+		checkError(CalDriver()->calclFreeObject(_object));
     }
 
     void ATIGPUDevice::select()
@@ -88,7 +98,7 @@ namespace executive
         // multiple devices is not supported yet
     }
 
-	ATIGPUDevice::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
+	Device::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
 			const void *address, bool hostAllocation) const
 	{
 		MemoryAllocation *allocation = 0;
@@ -109,12 +119,24 @@ namespace executive
 
 		return allocation;
 	}
-
-	ATIGPUDevice::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
+	
+	Device::MemoryAllocation *ATIGPUDevice::getGlobalAllocation(
+			const std::string &moduleName, const std::string &name)
 	{
-		MemoryAllocation *allocation = new MemoryAllocation(_device, size);
+		assertM(false, "Not implemented yet");
+	}
+
+	Device::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
+	{
+		MemoryAllocation *allocation = new MemoryAllocation(
+				_device, _context, _module, (unsigned int)_allocations.size(), size);
 		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
 		return allocation;
+	}
+
+	Device::MemoryAllocation *ATIGPUDevice::allocateHost(size_t size, unsigned int flags)
+	{
+		assertM(false, "Not implemented yet");
 	}
 
 	void ATIGPUDevice::free(void *pointer)
@@ -123,28 +145,233 @@ namespace executive
 
 		AllocationMap::iterator allocation = _allocations.find(pointer);
 		if (allocation != _allocations.end()) {
-			delete allocation->second;
 			_allocations.erase(allocation);
+			delete allocation->second;
 		} else {
 			Throw("Tried to free invalid pointer - " << pointer);
 		}
 	}
 
-	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALdevice device, size_t size) : _size(size) 
+	Device::MemoryAllocationVector ATIGPUDevice::getNearbyAllocations(void *pointer) const
 	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void *ATIGPUDevice::glRegisterBuffer(unsigned int buffer, unsigned int flags)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void *ATIGPUDevice::glRegisterImage(unsigned int image, unsigned int target, 
+			unsigned int flags)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::unRegisterGraphicsResource(void* resource)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::mapGraphicsResource(void* resource, int count, 
+			unsigned int stream)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void *ATIGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
+			void* resource) const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::setGraphicsResourceFlags(void* resource, unsigned int flags)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::unmapGraphicsResource(void* resource)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	unsigned int ATIGPUDevice::createEvent(int flags)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::destroyEvent(unsigned int event)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	bool ATIGPUDevice::queryEvent(unsigned int event) const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::recordEvent(unsigned int event, unsigned int stream)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::synchronizeEvent(unsigned int event)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	float ATIGPUDevice::getEventTime(unsigned int start, unsigned int end) const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	unsigned int ATIGPUDevice::createStream()
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::destroyStream(unsigned int stream)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	bool ATIGPUDevice::queryStream(unsigned int stream) const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::synchronizeStream(unsigned int stream)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::setStream(unsigned int stream)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::bindTexture(void* pointer, void* texture, 
+			const cudaChannelFormatDesc& desc, size_t size)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::unbindTexture(void* texture)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void* ATIGPUDevice::getTextureReference(const std::string& module, 
+			const std::string& name)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::launch(
+			const std::string& moduleName,
+			const std::string& kernelName, 
+			const ir::Dim3& grid, 
+			const ir::Dim3& block, 
+			size_t sharedMemory, 
+			const void *parameterBlock, 
+			size_t parameterBlockSize, 
+			const trace::TraceGeneratorVector& traceGenerators)
+	{
+		// Get module entry
+		CALfunc func = 0;
+		checkError(CalDriver()->calModuleGetEntry(
+					&func,
+					_context,
+					_module,
+					"main"));
+
+		// Invoke kernel
+		CALevent event = 0;
+		CALprogramGrid pg;
+		pg.func             = func;
+		pg.flags            = 0;
+		pg.gridBlock.width  = block.x;
+		pg.gridBlock.height = block.y;
+		pg.gridBlock.depth  = block.z;
+		pg.gridSize.width   = grid.x;
+		pg.gridSize.height  = grid.y;
+		pg.gridSize.depth   = grid.z;
+
+		checkError(CalDriver()->calCtxRunProgramGrid(
+					&event, 
+					_context, 
+					&pg));
+
+		while(CalDriver()->calCtxIsEventDone(_context, event) == CAL_RESULT_PENDING);
+	}
+
+	/*
+	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& module, 
+			const std::string& kernel)
+	{
+		assertM(false, "Not implemented yet");
+	}
+	*/
+
+	unsigned int ATIGPUDevice::getLastError() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::synchronize()
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::limitWorkerThreads(unsigned int threads)
+	{
+		assertM(false, "Not implemented yet");
+	}		
+
+	inline cal::CalDriver *ATIGPUDevice::CalDriver()
+	{
+		return cal::CalDriver::Instance();
+	}
+
+	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALdevice device, CALcontext context, 
+			CALmodule module, unsigned int uav, size_t size) : _context(context), _size(size)
+	{
+		// Allocate resource
 		// Only CAL_FORMAT_SIGNED_INT32_1 is supported for now
 		CALuint width = size / sizeof(int);
-		checkError(cal::CalDriver::Instance()->calResAllocLocal1D(
+		checkError(CalDriver()->calResAllocLocal1D(
 				&_resource, 
 				device, 
 				width,	
 				CAL_FORMAT_SIGNED_INT32_1,
 				CAL_RESALLOC_GLOBAL_BUFFER));
+
+		// Get memory handle
+		checkError(CalDriver()->calCtxGetMem(
+					&_mem,
+					_context,
+					_resource));
+
+		// Get module name
+		std::stringstream s;
+		s << "uav" << uav;
+		checkError(CalDriver()->calModuleGetName(
+					&_name, 
+					_context, 
+					module,
+					s.str().c_str()));
+
+		// Bind memory handle to module name
+		checkError(CalDriver()->calCtxSetMem(
+					_context,
+					_name,
+					_mem));
 	}
 
 	ATIGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
-		checkError(cal::CalDriver::Instance()->calResFree(_resource));
+		checkError(CalDriver()->calCtxReleaseMem(_context, _mem));
+		checkError(CalDriver()->calResFree(_resource));
 	}
 
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
@@ -159,7 +386,7 @@ namespace executive
 
 	void *ATIGPUDevice::MemoryAllocation::pointer() const
 	{
-		return hydrazine::bit_cast<void*>(_resource);
+		return (void *)_resource;
 	}
 
 	size_t ATIGPUDevice::MemoryAllocation::size() const
@@ -167,20 +394,26 @@ namespace executive
 		return _size;
 	}
 
-	void ATIGPUDevice::MemoryAllocation::copy(size_t offset, const void* host, size_t size)
+	void ATIGPUDevice::MemoryAllocation::copy(size_t offset, const void *host, size_t size)
 	{
 		CALvoid *data = NULL;
 		CALuint pitch = 0;
 		CALuint flags = 0;
 
-		checkError(cal::CalDriver::Instance()->calResMap(&data, &pitch, _resource, flags));
+		checkError(CalDriver()->calResMap(&data, &pitch, _resource, flags));
 		memcpy(data, host, size);
-		checkError(cal::CalDriver::Instance()->calResUnmap(_resource));
+		checkError(CalDriver()->calResUnmap(_resource));
 	}
 
 	void ATIGPUDevice::MemoryAllocation::copy(void *host, size_t offset, size_t size) const
 	{
-		assertM(false, "Not implemented yet");
+		CALvoid *data = NULL;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		checkError(CalDriver()->calResMap(&data, &pitch, _resource, flags));
+		memcpy(host, data, size);
+		checkError(CalDriver()->calResUnmap(_resource));
 	}
 
 	void ATIGPUDevice::MemoryAllocation::memset(size_t offset, int value, size_t size)

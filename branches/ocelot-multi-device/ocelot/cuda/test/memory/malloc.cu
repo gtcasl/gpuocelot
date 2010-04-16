@@ -16,6 +16,8 @@ static int test_malloc(bool verbose) {
 	const int height = 128;
 	
 	float *block = 0;
+
+	printf("test_malloc(%d, %d)\n", width, height);
 	
 	size_t bytes = width * height * sizeof(float);
 	
@@ -147,7 +149,7 @@ static int test_mallocArray(bool verbose) {
 	
 	if (cudaMemcpyFromArray(host, array, 0, 0, bytes, cudaMemcpyDeviceToHost) !=
 		cudaSuccess) {
-		printf("cudaMemcpyToArray() - failed to copy %d bytes from array\n", (int)bytes);
+		printf("cudaMemcpyFromArray() - failed to copy %d bytes from array\n", (int)bytes);
 		cudaFreeArray(array);
 		free(host);
 		return ++errors;

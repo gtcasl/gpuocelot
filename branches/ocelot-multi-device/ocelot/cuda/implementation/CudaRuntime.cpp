@@ -179,6 +179,10 @@ cuda::Dimension::Dimension(int _x, int _y, int _z,
 
 }
 
+size_t cuda::Dimension::pitch() const {
+	return ((format.x + format.y + format.z + format.w) / 8) * x;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count, 
@@ -675,7 +679,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocate(size);
-		_dimensions[allocation->pointer()] = Dimension(width, height, 1);
+		_dimensions[allocation->pointer()] = Dimension(width, height, 1, *desc);
 		*array = (struct cudaArray*)allocation->pointer();
 		result = cudaSuccess;
 	}
@@ -988,7 +992,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	report("cudaMemcpyFromArray("<< dst << ", " << src << ", " << wOffset 
+	report("cudaMemcpyToArray("<< dst << ", " << src << ", " << wOffset 
 		<< ", " << hOffset << ", " << count << ")");
 
 	if (kind == cudaMemcpyHostToDevice) {
@@ -997,7 +1001,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 
 		if (allocation != 0) {
 			Dimension& dimension = _dimensions[allocation->pointer()];
-			size_t offset = wOffset + hOffset * dimension.x;
+			size_t offset = wOffset + hOffset * dimension.pitch();
 			void* address = (char*)allocation->pointer() + offset;
 			if (!_getDevice().checkMemoryAccess(address, count)) {
 				_release();
@@ -1005,6 +1009,11 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 			}
 			allocation->copy(offset, src, count);
 			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			_memoryError(dst, count, "cudaMemcpyToArray");
 		}
 	}
 	else if (kind == cudaMemcpyDeviceToDevice) {
@@ -1014,7 +1023,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 			source = _getDevice().getMemoryAllocation(src);
 		if (destination != 0 && source != 0) {
 			Dimension& dimension = _dimensions[destination->pointer()];
-			size_t offset = wOffset + hOffset * dimension.x;
+			size_t offset = wOffset + hOffset * dimension.pitch();
 			void* address = (char*)destination->pointer() + offset;
 			if (!_getDevice().checkMemoryAccess(address, count)) {
 				_release();
@@ -1027,6 +1036,18 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst,
 			size_t sourceOffset = (char*)src - (char*)source->pointer();
 			source->copy(destination, offset, sourceOffset, count);
 			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			if(destination == 0)
+			{
+				_memoryError(dst, count, "cudaMemcpyToArray");
+			}
+			else
+			{
+				_memoryError(src, count, "cudaMemcpyToArray");
+			}
 		}
 	}
 
@@ -1051,7 +1072,8 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst,
 
 		if (allocation != 0) {
 			Dimension& dimension = _dimensions[allocation->pointer()];
-			size_t offset = wOffset + hOffset * dimension.x;
+			assert(_dimensions.count(allocation->pointer()) != 0);
+			size_t offset = wOffset + hOffset * dimension.pitch();
 			void* address = (char*)allocation->pointer() + offset;
 			if (!_getDevice().checkMemoryAccess(address, count)) {
 				_release();
@@ -1059,6 +1081,11 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst,
 			}
 			allocation->copy(dst, offset, count);
 			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			_memoryError(src, count, "cudaMemcpyFromArray");
 		}
 	}
 	else if (kind == cudaMemcpyDeviceToDevice) {
@@ -1068,7 +1095,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst,
 			source = _getDevice().getMemoryAllocation(src);
 		if (destination != 0 && source != 0) {
 			Dimension& dimension = _dimensions[source->pointer()];
-			size_t offset = wOffset + hOffset * dimension.x;
+			size_t offset = wOffset + hOffset * dimension.pitch();
 			void* address = (char*)destination->pointer() + offset;
 			if (!_getDevice().checkMemoryAccess(address, count)) {
 				_release();
@@ -1082,6 +1109,18 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst,
 				- (char*)destination->pointer();
 			source->copy(destination, destinationOffset, offset, count);
 			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			 if(destination == 0)
+			 {
+			 	_memoryError(dst, count, "cudaMemcpyFromArray");
+			 }
+			 else
+			 {
+			 	_memoryError(src, count, "cudaMemcpyFromArray");			 
+			 }
 		}
 	}
 
@@ -1103,15 +1142,26 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst,
 	if (kind == cudaMemcpyDeviceToDevice) {
 		executive::Device::MemoryAllocation* 
 			destination = _getDevice().getMemoryAllocation(dst);
+		if (destination->pointer() != dst) {
+			_release();
+			_memoryError(dst, count, "cudaMemcpyArrayToArray");
+		}
 		executive::Device::MemoryAllocation* 
 			source = _getDevice().getMemoryAllocation(src);
+		if (source->pointer() != src) {
+			_release();
+			_memoryError(src, count, "cudaMemcpyArrayToArray");
+		}
 		if (destination != 0 && source != 0) {
+			assert(_dimensions.count(source->pointer()) != 0);
+			assert(_dimensions.count(destination->pointer()) != 0);
 			Dimension& sourceDimension = _dimensions[source->pointer()];
 			Dimension& destinationDimension = 
 				_dimensions[destination->pointer()];
-			size_t sourceOffset = wOffsetSrc + hOffsetSrc * sourceDimension.x;
+			size_t sourceOffset = wOffsetSrc 
+				+ hOffsetSrc * sourceDimension.pitch();
 			size_t destinationOffset = wOffsetDst 
-				+ hOffsetDst * destinationDimension.x;
+				+ hOffsetDst * destinationDimension.pitch();
 			void* sourceAddress = (char*)source->pointer() + sourceOffset;
 			void* destinationAddress = (char*)destination->pointer() 
 				+ destinationOffset;
@@ -1187,7 +1237,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch,
 		{
 			executive::Device::MemoryAllocation* destination = 
 				_getDevice().getMemoryAllocation(dst);
-			size_t dstPitch = _dimensions[destination->pointer()].x;
+			size_t dstPitch = _dimensions[destination->pointer()].pitch();
 			if (destination != 0) {
 				for (size_t row = 0; row < height; row++) {
 					void* srcPtr = (char *)src + spitch * row;
@@ -1279,7 +1329,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst,
 			_memoryError(dst, width * height, "cudaMemcpy2DtoArray");
 		}
 		
-		size_t dstPitch = _dimensions[destination->pointer()].x;
+		size_t dstPitch = _dimensions[destination->pointer()].pitch();
 
 		for (size_t row = 0; row < height; ++row) {
 			void* srcPtr = (char*)src + row * spitch;
@@ -1313,7 +1363,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst,
 			_memoryError(src, width * height, "cudaMemcpy2DtoArray");
 		}
 		
-		size_t dstPitch = _dimensions[destination->pointer()].x;
+		size_t dstPitch = _dimensions[destination->pointer()].pitch();
 		
 		for (size_t row = 0; row < height; ++row) {
 			size_t srcOffset = row * spitch;
@@ -1367,7 +1417,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 		}
 		
 		assert(_dimensions.count(source->pointer()) != 0);
-		size_t srcPitch = _dimensions[source->pointer()].x;
+		size_t srcPitch = _dimensions[source->pointer()].pitch();
 
 		for (size_t row = 0; row < height; ++row) {
 			void* dstPtr = (char*)dst + row * dpitch;
@@ -1401,7 +1451,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch,
 			_memoryError(src, width * height, "cudaMemcpy2DfromArray");
 		}
 		
-		size_t srcPitch = _dimensions[source->pointer()].x;
+		size_t srcPitch = _dimensions[source->pointer()].pitch();
 		
 		for (size_t row = 0; row < height; ++row) {
 			size_t dstOffset = row * dpitch;
@@ -1441,7 +1491,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 
 	if (p->dstArray) {
 		dst.ptr = (void *)p->dstArray;
-		dst.pitch = 0;
+		dst.pitch = _dimensions[p->dstArray].pitch();
 		dst.xsize = _dimensions[p->dstArray].x;
 		dst.ysize = _dimensions[p->dstArray].y;		
 	}
@@ -1451,7 +1501,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 
 	if (p->srcArray) {
 		src.ptr = (void *)p->srcArray;
-		src.pitch = 0;
+		src.pitch = _dimensions[p->srcArray].pitch();
 		src.xsize = _dimensions[p->srcArray].x;
 		src.ysize = _dimensions[p->srcArray].y;
 	}

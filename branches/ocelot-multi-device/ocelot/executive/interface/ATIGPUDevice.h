@@ -195,6 +195,9 @@ namespace executive
 			/*! \brief CAL Module */
 			CALmodule _module;
 
+			/*! \brief Has this device been selected? */
+			bool _selected;
+			
 			/*! \brief Returns a pointer to an instance to the CalDriver singleton */
 			static cal::CalDriver *CalDriver();
 	};

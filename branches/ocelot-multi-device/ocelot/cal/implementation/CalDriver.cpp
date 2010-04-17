@@ -9,9 +9,20 @@
 
 // hydrazine includes
 #include <hydrazine/interface/Casts.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
 
 // Linux system headers
 #include <dlfcn.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
+#define checkError(x) if(x != CAL_RESULT_OK) { \
+	throw hydrazine::Exception(calGetErrorString()); }
 
 namespace cal
 {
@@ -50,14 +61,14 @@ namespace cal
 		hydrazine::bit_cast(_calclFreeObject, dlsym(_compiler, "calclFreeObject"));
 		hydrazine::bit_cast(_calclFreeImage,  dlsym(_compiler, "calclFreeImage"));
 
-		CALresult result;
-		result = calInit();
+		checkError(calInit());
+		report("calInit");
 	}
 
 	CalDriver::~CalDriver()
 	{
-		CALresult result;
-		result = calShutdown();
+		checkError(calShutdown());
+		report("calShutdown");
 
 		if (_driver) {
 			dlclose(_driver);

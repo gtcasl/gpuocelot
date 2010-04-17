@@ -15,6 +15,15 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
+// TODO Temporarily. Shouldn't be here
+#include <ocelot/cuda/interface/cuda_runtime.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 #define checkError(x) if(x != CAL_RESULT_OK) { \
 	throw hydrazine::Exception(CalDriver()->calGetErrorString()); }
 #define Throw(x) {std::stringstream s; s << x; \
@@ -27,27 +36,35 @@ namespace executive
 		  _context(0), 
 		  _object(0), 
 		  _image(0), 
-		  _module(0)  
+		  _module(0),
+		  _selected(false)
     {
         checkError(CalDriver()->calDeviceOpen(&_device, 0));
+		report("calDeviceOpen");
+
         checkError(CalDriver()->calDeviceGetInfo(&_info, 0));
+		report("calDeviceGetInfo");
 
         // multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
         checkError(CalDriver()->calCtxCreate(&_context, _device));
+		report("calCtxCreate");
     }
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
         checkError(CalDriver()->calCtxDestroy(_context));
+		report("calCtxDestroy");
+
         checkError(CalDriver()->calDeviceClose(_device));
+		report("calDeviceClose");
     }
 
 	DeviceVector ATIGPUDevice::createDevices(unsigned int flags)
 	{
 		DeviceVector devices;
 
-        // multiple devices is not supported yet
+		// multiple devices is not supported yet
 		devices.push_back(new ATIGPUDevice());
 
 		return std::move(devices);
@@ -71,31 +88,45 @@ namespace executive
 			"end\n";
 
 		checkError(CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, ILKernel, _info.target));
+		report("calclCompile");
+
 		checkError(CalDriver()->calclLink(&_image, &_object, 1));
+		report("calclLink");
+		
 		checkError(CalDriver()->calModuleLoad(&_module, _context, _image));
+		report("calModuleLoad");
     }
 
     void ATIGPUDevice::unload(const std::string& name)
     {
 		checkError(CalDriver()->calModuleUnload(_context, _module));
+		report("calModuleUnload");
+
 		checkError(CalDriver()->calclFreeImage(_image));
+		report("calclFreeImage");
+
 		checkError(CalDriver()->calclFreeObject(_object));
+		report("calclFreeObject");
     }
 
     void ATIGPUDevice::select()
     {
-        // multiple devices is not supported yet
+		// multiple devices is not supported yet
+		assert(!selected());
+		_selected = true;
     }
 
     bool ATIGPUDevice::selected() const
     {
-        // multiple devices is not supported yet
-        return true;
+		// multiple devices is not supported yet
+        return _selected;
     }
 
     void ATIGPUDevice::unselect()
     {
-        // multiple devices is not supported yet
+		// multiple devices is not supported yet
+		assert(selected());
+		_selected = false;
     }
 
 	Device::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
@@ -284,6 +315,7 @@ namespace executive
 					_context,
 					_module,
 					"main"));
+		report("calModuleGetEntry");
 
 		// Invoke kernel
 		CALevent event = 0;
@@ -301,17 +333,16 @@ namespace executive
 					&event, 
 					_context, 
 					&pg));
+		report("calCtxRunProgramGrid");
 
 		while(CalDriver()->calCtxIsEventDone(_context, event) == CAL_RESULT_PENDING);
 	}
 
-	/*
 	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& module, 
 			const std::string& kernel)
 	{
 		assertM(false, "Not implemented yet");
 	}
-	*/
 
 	unsigned int ATIGPUDevice::getLastError() const
 	{
@@ -339,18 +370,21 @@ namespace executive
 		// Allocate resource
 		// Only CAL_FORMAT_SIGNED_INT32_1 is supported for now
 		CALuint width = size / sizeof(int);
+
 		checkError(CalDriver()->calResAllocLocal1D(
 				&_resource, 
 				device, 
 				width,	
 				CAL_FORMAT_SIGNED_INT32_1,
 				CAL_RESALLOC_GLOBAL_BUFFER));
+		report("calResAllocLocal1D");
 
 		// Get memory handle
 		checkError(CalDriver()->calCtxGetMem(
 					&_mem,
 					_context,
 					_resource));
+		report("calCtxGetMem");
 
 		// Get module name
 		std::stringstream s;
@@ -360,18 +394,23 @@ namespace executive
 					_context, 
 					module,
 					s.str().c_str()));
+		report("calModuleGetName");
 
 		// Bind memory handle to module name
 		checkError(CalDriver()->calCtxSetMem(
 					_context,
 					_name,
 					_mem));
+		report("calCtxSetMem");
 	}
 
 	ATIGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
 		checkError(CalDriver()->calCtxReleaseMem(_context, _mem));
+		report("calCtxReleaseMem");
+
 		checkError(CalDriver()->calResFree(_resource));
+		report("calResFree");
 	}
 
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
@@ -401,8 +440,12 @@ namespace executive
 		CALuint flags = 0;
 
 		checkError(CalDriver()->calResMap(&data, &pitch, _resource, flags));
+		report("calResMap");
+
 		memcpy(data, host, size);
+
 		checkError(CalDriver()->calResUnmap(_resource));
+		report("calResUnmap");
 	}
 
 	void ATIGPUDevice::MemoryAllocation::copy(void *host, size_t offset, size_t size) const
@@ -412,8 +455,12 @@ namespace executive
 		CALuint flags = 0;
 
 		checkError(CalDriver()->calResMap(&data, &pitch, _resource, flags));
+		report("calResMap");
+
 		memcpy(host, data, size);
+
 		checkError(CalDriver()->calResUnmap(_resource));
+		report("calResUnmap");
 	}
 
 	void ATIGPUDevice::MemoryAllocation::memset(size_t offset, int value, size_t size)

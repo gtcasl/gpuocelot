@@ -79,7 +79,8 @@ namespace executive
 			/*! \brief Free an existing non-global allocation */
 			void free(void *pointer);
 			/*! \brief Get nearby allocations to a pointer */
-			Device::MemoryAllocationVector getNearbyAllocations(void *pointer) const;
+			Device::MemoryAllocationVector getNearbyAllocations(
+				void *pointer) const;
 		
 			/*! \brief Registers an opengl buffer with a resource */
 			void* glRegisterBuffer(unsigned int buffer, 
@@ -139,14 +140,16 @@ namespace executive
 			void unselect();
 			
 			/*! \brief Binds a texture to a memory allocation at a pointer */
-			void bindTexture(void* pointer, void* texture, 
+			void bindTexture(void* pointer, const std::string& moduleName,
+				const std::string& textureName, 
 				const cudaChannelFormatDesc& desc, size_t size);
 			/*! \brief unbinds anything bound to a particular texture */
-			void unbindTexture(void* texture);
-			/*! \brief Get a texture reference for a given symbol name */
-			void* getTextureReference(const std::string& module, 
-				const std::string& name);
-
+			void unbindTexture(const std::string& moduleName, 
+				const std::string& textureName);
+			/*! \brief Get's a reference to an internal texture */
+			void* getTextureReference(const std::string& moduleName, 
+				const std::string& textureName);
+			
 			/*! \brief helper function for launching a kernel
 			 *  \param module module name
 			 *  \param kernel kernel name
@@ -155,7 +158,8 @@ namespace executive
 			 *  \param sharedMemory shared memory size
 			 *  \param parameterBlock array of bytes for parameter memory
 			 *  \param parameterBlockSize number of bytes in parameter memory
-			 *  \param traceGenerators vector of trace generators to add and remove from kernel
+			 *  \param traceGenerators vector of trace generators to add and 
+			 	remove from kernel
 			 *  \param stream The stream to launch the kernel in
 			 */
 			void launch(const std::string& module, 

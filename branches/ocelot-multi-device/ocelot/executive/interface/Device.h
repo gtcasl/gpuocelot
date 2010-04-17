@@ -237,13 +237,15 @@ namespace executive
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
-			virtual void bindTexture(void* pointer, void* texture, 
+			virtual void bindTexture(void* pointer, 
+				const std::string& moduleName, const std::string& textureName,
 				const cudaChannelFormatDesc& desc, size_t size) = 0;
 			/*! \brief unbinds anything bound to a particular texture */
-			virtual void unbindTexture(void* texture) = 0;
-			/*! \brief Get a texture reference for a given symbol name */
-			virtual void* getTextureReference(const std::string& module, 
-				const std::string& name) = 0;
+			virtual void unbindTexture(const std::string& moduleName, 
+				const std::string& textureName) = 0;
+			/*! \brief Get's a reference to an internal texture */
+			virtual void* getTextureReference(const std::string& moduleName, 
+				const std::string& textureName) = 0;
 		
 		public:
 			/*! \brief Get the driver version */

@@ -281,19 +281,21 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::bindTexture(void* pointer, void* texture, 
-			const cudaChannelFormatDesc& desc, size_t size)
+	void ATIGPUDevice::bindTexture(void* pointer, const std::string& moduleName, 
+		const std::string& textureName, const cudaChannelFormatDesc& desc, 
+		size_t size)
 	{
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::unbindTexture(void* texture)
+	void ATIGPUDevice::unbindTexture(const std::string& moduleName, 
+		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
 	}
 
-	void* ATIGPUDevice::getTextureReference(const std::string& module, 
-			const std::string& name)
+	void* ATIGPUDevice::getTextureReference(const std::string& moduleName, 
+		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
 	}

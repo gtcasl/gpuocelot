@@ -48,14 +48,14 @@ namespace executive
 	}
 	
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(size_t size, 
-		unsigned int flags) : Device::MemoryAllocation(true, false), 
+		unsigned int flags) : Device::MemoryAllocation(false, true), 
 		_size(size), _pointer(std::malloc(size)), _flags(flags)
 	{
 		
 	}
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(const ir::Global& global)
-		: Device::MemoryAllocation(false, true), 
+		: Device::MemoryAllocation(true, false), 
 		_size(global.statement.bytes()), 
 		_pointer(std::malloc(global.statement.bytes())), _flags(0)
 	{
@@ -230,6 +230,11 @@ namespace executive
 	
 	ir::Texture* EmulatorDevice::Module::getTexture(const std::string& name)
 	{
+		if(textures.size() != ir->textures.size())
+		{
+			textures = ir->textures;
+		}
+
 		TextureMap::iterator texture = textures.find(name);
 		if(texture == textures.end()) return 0;
 		return &texture->second;
@@ -331,6 +336,35 @@ namespace executive
 	Device::MemoryAllocation* EmulatorDevice::getGlobalAllocation(
 		const std::string& moduleName, const std::string& name)
 	{
+		if(moduleName.empty())
+		{
+			// try a brute force search over all modules
+			for(ModuleMap::iterator module = _modules.begin(); 
+				module != _modules.end(); ++module)
+			{
+				if(module->second.globals.empty())
+				{
+					Module::AllocationVector allocations = std::move(
+						module->second.loadGlobals());
+					for(Module::AllocationVector::iterator 
+						allocation = allocations.begin(); 
+						allocation != allocations.end(); ++allocation)
+					{
+						_allocations.insert(std::make_pair(
+							(*allocation)->pointer(), *allocation));
+					}
+				}
+
+				Module::GlobalMap::iterator global = 
+					module->second.globals.find(name);
+				if(global != module->second.globals.end())
+				{
+					return getMemoryAllocation(global->second, false);
+				}
+			}
+			return 0;
+		}
+
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
 		
@@ -687,10 +721,24 @@ namespace executive
 		_selected = false;
 	}
 
-	void EmulatorDevice::bindTexture(void* pointer, void* ref, 
+	void EmulatorDevice::bindTexture(void* pointer, 
+		const std::string& moduleName, const std::string& textureName, 
 		const cudaChannelFormatDesc& desc, size_t size)
 	{
-		ir::Texture& texture = *(ir::Texture*)ref;
+		ModuleMap::iterator module = _modules.find(moduleName);
+		if(module == _modules.end())
+		{
+			Throw("Invalid Module - " << moduleName);
+		}
+		
+		ir::Texture* tex = module->second.getTexture(textureName);
+		if(tex == 0)
+		{
+			Throw("Invalid Texture - " << textureName 
+				<< " in Module - " << moduleName);
+		}
+		
+		ir::Texture& texture = *tex;
 
 		texture.x = desc.x;
 		texture.y = desc.y;
@@ -718,22 +766,36 @@ namespace executive
 		texture.data = pointer;
 	}
 
-	void EmulatorDevice::unbindTexture(void* ref)
+	void EmulatorDevice::unbindTexture(const std::string& moduleName, 
+		const std::string& textureName)
 	{
-		ir::Texture& texture = *(ir::Texture*)ref;
+		ModuleMap::iterator module = _modules.find(moduleName);
+		if(module == _modules.end())
+		{
+			Throw("Invalid Module - " << moduleName);
+		}
 		
-		texture.data = 0;		
+		ir::Texture* tex = module->second.getTexture(textureName);
+		if(tex == 0)
+		{
+			Throw("Invalid Texture - " << textureName 
+				<< " in Module - " << moduleName);
+		}
+		
+		ir::Texture& texture = *tex;
+		
+		texture.data = 0;
 	}
-	
-	void* EmulatorDevice::getTextureReference(const std::string& modulePath, 
-		const std::string& name)
+
+	void* EmulatorDevice::getTextureReference(const std::string& moduleName, 
+		const std::string& textureName)
 	{
-		ModuleMap::iterator module = _modules.find(modulePath);
+		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
 		
-		return module->second.getTexture(name);
+		return module->second.getTexture(textureName);
 	}
-	
+		
 	void EmulatorDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 

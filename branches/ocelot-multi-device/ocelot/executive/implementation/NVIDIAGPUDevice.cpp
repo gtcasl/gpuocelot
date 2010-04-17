@@ -858,29 +858,55 @@ namespace executive
 		checkError(driver::cuCtxPopCurrent(&_context));
 	}
 		
-	void NVIDIAGPUDevice::bindTexture(void* pointer, void* texture, 
+	void NVIDIAGPUDevice::bindTexture(void* pointer, 
+		const std::string& moduleName, const std::string& textureName, 
 		const cudaChannelFormatDesc& desc, size_t size)
 	{
-		CUtexref ref = hydrazine::bit_cast<CUtexref>(texture);
+		ModuleMap::iterator module = _modules.find(moduleName);
+		if(module == _modules.end())
+		{
+			Throw("Invalid Module - " << moduleName);
+		}
+		
+		void* tex = module->second.getTexture(textureName);
+		if(tex == 0)
+		{
+			Throw("Invalid Texture - " << textureName 
+				<< " in Module - " << moduleName);
+		}
+
+		CUtexref ref = hydrazine::bit_cast<CUtexref>(tex);
 		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
 		unsigned int offset = 0;
 		checkError(driver::cuTexRefSetAddress(&offset, ref, ptr, 0));
 		// TODO do the texture mapping
-		
 	}
 	
-	void NVIDIAGPUDevice::unbindTexture(void* texture)
+	void NVIDIAGPUDevice::unbindTexture(const std::string& moduleName, 
+		const std::string& textureName)
 	{
 		// this is a nop, textures cannot be unbound
+		ModuleMap::iterator module = _modules.find(moduleName);
+		if(module == _modules.end())
+		{
+			Throw("Invalid Module - " << moduleName);
+		}
+		
+		void* tex = module->second.getTexture(textureName);
+		if(tex == 0)
+		{
+			Throw("Invalid Texture - " << textureName 
+				<< " in Module - " << moduleName);
+		}
 	}
 	
 	void* NVIDIAGPUDevice::getTextureReference(const std::string& moduleName, 
-		const std::string& name)
+		const std::string& textureName)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
-	
-		return module->second.getTexture(name);		
+		
+		return module->second.getTexture(textureName);
 	}
 
 	void NVIDIAGPUDevice::launch(const std::string& moduleName, 

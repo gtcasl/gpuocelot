@@ -38,7 +38,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -318,7 +318,6 @@ cuda::HostThreadContext& cuda::CudaRuntime::_bind() {
 	executive::Device& device = _getDevice();
 
 	assert(!device.selected());
-	report("Selecting device - " << device.properties().name);
 	device.select();
 	
 	return thread;
@@ -331,7 +330,6 @@ void cuda::CudaRuntime::_unbind() {
 	
 	_selectedDevice = -1;
 	assert(device.selected());
-	report("UnSelecting device - " << device.properties().name);
 	device.unselect();
 }
 
@@ -424,6 +422,8 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(binary->ident, ir::Module())).first;
 	module->second.load(ptx, binary->ident);
+	
+	report("Loading module (fatbin) - " << module->first);
 	
 	handle = _fatBinaries.size();
 	
@@ -598,9 +598,6 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	report("cudaMalloc( *devPtr = " << (void *)*devPtr 
-		<< ", size = " << size << ")");
-
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocate(size);
@@ -611,6 +608,9 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 		
 	}
 	
+	report("cudaMalloc( *devPtr = " << (void *)*devPtr 
+	<< ", size = " << size << ")");
+
 	_release();
 
 	return _setLastError(result);
@@ -621,9 +621,6 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	report("cudaMallocHost( *pPtr = " << (void *)*ptr 
-		<< ", size = " << size << ")");
-		
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocateHost(size);
@@ -634,6 +631,9 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 		
 	}
 
+	report("cudaMallocHost( *pPtr = " << (void *)*ptr 
+		<< ", size = " << size << ")");
+		
 	_release();
 	return _setLastError(result);
 }
@@ -646,8 +646,6 @@ cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch,
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	*pitch = width;
-	report("cudaMallocPitch( *devPtr = " << (void *)*devPtr 
-		<< ", pitch = " << *pitch << ")");
 
 	try {
 		executive::Device::MemoryAllocation* 
@@ -660,6 +658,9 @@ cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch,
 	
 	}
 	
+	report("cudaMallocPitch( *devPtr = " << (void *)*devPtr 
+		<< ", pitch = " << *pitch << ")");
+
 	_release();
 	
 	return _setLastError(result);
@@ -670,8 +671,6 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	cudaError_t result = cudaErrorMemoryAllocation;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
-
-	report("cudaMallocArray( *array = " << (void *)*array << ")");
 	
 	size_t size = width * height * ( desc->x 
 		+ desc->y + desc->z + desc->w ) / 8;
@@ -687,6 +686,8 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	
 	}
 	
+	report("cudaMallocArray( *array = " << (void *)*array << ")");
+
 	_release();
 	
 	return _setLastError(result);
@@ -906,6 +907,10 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	report("cuda::CudaRuntime::cudaMemcpyToSymbol('" << symbol << "' - " 
 		<< (void *)symbol << " - value " 
 		<< hydrazine::dataToString(src, count));
+	
+	if (kind != cudaMemcpyHostToDevice) {
+		return _setLastError(cudaErrorInvalidMemcpyDirection);
+	}
 
 	cudaError_t result = cudaErrorInvalidDevicePointer;
 	_acquire();
@@ -927,9 +932,11 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 		_getDevice().getGlobalAllocation(module, name);
 
 	if (allocation != 0) {
-		if (!_getDevice().checkMemoryAccess((char*)src + offset, count)) {
+		if (!_getDevice().checkMemoryAccess((char*)allocation->pointer() 
+			+ offset, count)) {
 			_release();
-			_memoryError((char*)src + offset, count, "cudaMemcpyToSymbol");
+			_memoryError((char*)allocation->pointer() + offset, 
+				count, "cudaMemcpyToSymbol");
 		}
 	
 		allocation->copy(offset, src, count);
@@ -946,6 +953,10 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 		<< (void *)symbol << " - value " 
 		<< hydrazine::dataToString(dst, count));
 
+	if (kind != cudaMemcpyDeviceToHost) {
+		return _setLastError(cudaErrorInvalidMemcpyDirection);
+	}
+
 	cudaError_t result = cudaErrorInvalidDevicePointer;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
@@ -966,9 +977,11 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 		_getDevice().getGlobalAllocation(module, name);
 
 	if (allocation != 0) {
-		if (!_getDevice().checkMemoryAccess((char*)dst + offset, count)) {
+		if (!_getDevice().checkMemoryAccess((char*)allocation->pointer() 
+			+ offset, count)) {
 			_release();
-			_memoryError((char*)dst + offset, count, "cudaMemcpyFromSymbol");
+			_memoryError((char*)allocation->pointer() + offset, 
+				count, "cudaMemcpyFromSymbol");
 		}
 	
 		allocation->copy(dst, offset, count);
@@ -1962,17 +1975,25 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 	const struct cudaChannelFormatDesc *desc, size_t size) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	
+		
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	try {
-		_getDevice().bindTexture((void*)devPtr, (void*)texref, *desc, size);
-		*offset = 0;
-	}
-	catch(hydrazine::Exception& e) {
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
+				texture->second.texture, *desc, size);
+			if(offset != 0) *offset = 0;
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
 		
+		}
 	}
+	
+	report("cudaBindTexture(ref = " << texref 
+		<< ", devPtr = " << devPtr << ", size = " << size << ")");
 
 	_release();
 	return _setLastError(result);
@@ -1988,14 +2009,23 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	try {
-		_getDevice().bindTexture((void*)devPtr, (void*)texref, 
-			*desc, width * height);
-		result = cudaSuccess;
-	}
-	catch(hydrazine::Exception& e) {
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
+				texture->second.texture, *desc, width * height);
+			if(offset != 0) *offset = 0;
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
+
+		}
 	}
+	
+	report("cudaBindTexture2D(ref = " << texref 
+		<< ", devPtr = " << devPtr << ", width = " << width << ", height = " 
+		<< height << ", pitch = " << pitch << ")");
 
 	_release();
 	return _setLastError(result);
@@ -2019,14 +2049,18 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 	size_t size = dimension->second.x * dimension->second.y 
 		* dimension->second.z;
 
-	try {
-		_getDevice().bindTexture((void*)array, (void*)texref, *desc, size);
-		result = cudaSuccess;
-	}
-	catch(hydrazine::Exception& e) {
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().bindTexture((void*)array, texture->second.module, 
+				texture->second.texture, *desc, size);
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
 
+		}
 	}
-
+	
 	_release();
 	return _setLastError(result);
 }
@@ -2038,14 +2072,18 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	try {
-		_getDevice().unbindTexture((void*)texref);
-		result = cudaSuccess;
-	}
-	catch(hydrazine::Exception& e) {
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().unbindTexture(texture->second.module, 
+				texture->second.texture);
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
 
+		}
 	}
-
+	
 	_release();
 
 	return _setLastError(result);
@@ -2064,12 +2102,25 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	RegisteredTextureMap::iterator it = _textures.find((void*)symbol);
-	if (it != _textures.end()) {
-		*texref = (const struct textureReference*)
-			_getDevice().getTextureReference(it->second.module, 
-			it->second.texture);
-		result = cudaSuccess;
+	std::string name = symbol;
+	RegisteredTextureMap::iterator matchedTexture = _textures.end();
+	
+	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
+		texture != _textures.end(); ++texture) {
+		if(texture->second.texture == name) {
+			if(matchedTexture != _textures.end()) {
+				_release();
+				Ocelot_Exception("==Ocelot== Ambiguous texture '" << name 
+					<< "' declared in at least two modules ('" 
+					<< texture->second.module << "' and '" 
+					<< matchedTexture->second.module << "')");
+			}
+			matchedTexture = texture;
+		}
+	}
+	
+	if(matchedTexture != _textures.end()) {
+		*texref = (const struct textureReference*)matchedTexture->first;
 	}
 	
 	_release();

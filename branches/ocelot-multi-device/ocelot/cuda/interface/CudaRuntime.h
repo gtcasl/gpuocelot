@@ -17,7 +17,6 @@
 #include <pthread.h>
 
 // Ocelot libs
-#include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
 

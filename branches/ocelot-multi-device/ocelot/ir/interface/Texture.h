@@ -1,6 +1,6 @@
 /*! \file Texture.h 
 	
-	\author Gregory DIamos <gregory.diamos@gatech.edu>
+	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Sunday April 5, 2009
 	
 	\brief The header file for the Texture class
@@ -17,14 +17,6 @@ namespace ir
 	/*! \brief A class to represent the access format of a texture */
 	class Texture {		
 		public:
-			enum Binding {
-				Bind_array,
-				Bind_1D,
-				Bind_2D,
-				Bind_3D,
-				Bind_invalid
-			};
-		
 			enum Type {
 				Unsigned,
 				Signed,
@@ -54,10 +46,12 @@ namespace ir
 			}
 
 			unsigned int components() {
-				return (x ? 1 : 0) + (y ? 1 : 0) + (z ? 1 : 0) + (w ? 1 : 0);
+				return (x ? 1 : 0) + (y ? 1 : 0) + (z ? 1 : 0) 
+					+ (w ? 1 : 0);
 			}
 			unsigned int dimensions() {
-				return (size.x - 1 ? 1 : 0) + (size.y - 1 ? 1 : 0) + (size.z - 1 ? 1 : 0);
+				return (size.x - 1 ? 1 : 0) + (size.y - 1 ? 1 : 0) 
+					+ (size.z - 1 ? 1 : 0);
 			}
 
 		public:
@@ -73,12 +67,9 @@ namespace ir
 			Dim3 size; //! Texture dimensions
 			
 			Interpolation interpolation; //! Interpolation mode
-			AddressMode addressMode[3]; //! Wrap around or clamp to boundary
+			AddressMode addressMode[3]; //! Wrap around or clamp to bound
 
-			void * data; //! Pointer to mapped variable
-			
-			//! \brief indicates type of data structure texture is bound to
-			Binding binding;
+			void* data; //! Pointer to mapped variable
 			
 		public:
 			Texture();

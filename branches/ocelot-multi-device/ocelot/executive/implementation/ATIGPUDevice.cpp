@@ -282,8 +282,8 @@ namespace executive
 	}
 
 	void ATIGPUDevice::bindTexture(void* pointer, const std::string& moduleName, 
-		const std::string& textureName, const cudaChannelFormatDesc& desc, 
-		size_t size)
+		const std::string& textureName, const textureReference& ref, 
+		const cudaChannelFormatDesc& desc, const ir::Dim3& size)
 	{
 		assertM(false, "Not implemented yet");
 	}

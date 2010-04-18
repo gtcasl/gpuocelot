@@ -331,14 +331,6 @@ struct cudaMemcpy3DParms {
 	enum cudaMemcpyKind kind;
 };
 
-struct textureReference {
-  int normalized;
-  int filterMode;
-  int addressMode[3];
-  cudaChannelFormatDesc channelDesc;
-  int __cudaReserved[16];
-};
-
 enum cudaTextureAddressMode
 {
   cudaAddressModeWrap,
@@ -357,6 +349,13 @@ enum cudaTextureReadMode
   cudaReadModeNormalizedFloat
 };
 
+struct textureReference {
+  int normalized;
+  cudaTextureFilterMode filterMode;
+  cudaTextureAddressMode addressMode[3];
+  cudaChannelFormatDesc channelDesc;
+  int __cudaReserved[16];
+};
 
 /*
  * Function        : Select a load image from the __cudaFat binary

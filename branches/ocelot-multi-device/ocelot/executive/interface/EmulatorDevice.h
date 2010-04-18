@@ -272,7 +272,8 @@ namespace executive
 			/*! \brief Binds a texture to a memory allocation at a pointer */
 			void bindTexture(void* pointer,
 				const std::string& moduleName, const std::string& textureName, 
-				const cudaChannelFormatDesc& desc, size_t size);
+				const textureReference& ref, const cudaChannelFormatDesc& desc, 
+				const ir::Dim3& size);
 			/*! \brief unbinds anything bound to a particular texture */
 			void unbindTexture(const std::string& moduleName, 
 				const std::string& textureName);

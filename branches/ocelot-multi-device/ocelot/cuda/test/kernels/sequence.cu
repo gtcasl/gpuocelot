@@ -100,10 +100,10 @@ int main(int argc, char *arg[]) {
 	free(A_host);
 
 	if (errors) {
-		printf("FAILED\n");
+		printf("Pass/Fail : Fail\n");
 	}
 	else {
-		printf("PASSED\n");
+		printf("Pass/Fail : Pass\n");
 	}
 
 	return 0;

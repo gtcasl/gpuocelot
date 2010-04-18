@@ -860,7 +860,8 @@ namespace executive
 		
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
 		const std::string& moduleName, const std::string& textureName, 
-		const cudaChannelFormatDesc& desc, size_t size)
+		const textureReference& texref, const cudaChannelFormatDesc& desc, 
+		const ir::Dim3& size)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())

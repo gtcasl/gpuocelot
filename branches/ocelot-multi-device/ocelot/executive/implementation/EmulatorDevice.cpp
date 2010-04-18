@@ -721,9 +721,32 @@ namespace executive
 		_selected = false;
 	}
 
+	static ir::Texture::Interpolation convert(cudaTextureFilterMode filter)
+	{
+		switch(filter)
+		{
+			case cudaFilterModePoint: return ir::Texture::Nearest;
+			case cudaFilterModeLinear: return ir::Texture::Linear;
+		}
+		
+		return ir::Texture::Nearest;
+	}
+	
+	static ir::Texture::AddressMode convert(cudaTextureAddressMode mode)
+	{
+		switch(mode)
+		{
+			case cudaAddressModeWrap: return ir::Texture::Wrap;
+			case cudaAddressModeClamp: return ir::Texture::Clamp;
+		}
+		
+		return ir::Texture::Clamp;
+	}
+
 	void EmulatorDevice::bindTexture(void* pointer, 
 		const std::string& moduleName, const std::string& textureName, 
-		const cudaChannelFormatDesc& desc, size_t size)
+		const textureReference& ref, const cudaChannelFormatDesc& desc, 
+		const ir::Dim3& size)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())
@@ -761,8 +784,14 @@ namespace executive
 				break;
 		}
 		
-		texture.size.x = size;
-		texture.size.y = 0;
+		texture.interpolation = convert(ref.filterMode);
+		texture.addressMode[0] = convert(ref.addressMode[0]);
+		texture.addressMode[1] = convert(ref.addressMode[1]);
+		texture.addressMode[2] = convert(ref.addressMode[2]);
+		
+		texture.size.x = size.x;
+		texture.size.y = size.y;
+		texture.size.z = size.z;
 		texture.data = pointer;
 	}
 

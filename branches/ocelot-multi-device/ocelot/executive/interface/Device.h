@@ -19,6 +19,7 @@
 // forward declarations
 struct cudaChannelFormatDesc;
 struct cudaFuncAttributes;
+struct textureReference;
 
 namespace executive 
 {
@@ -239,7 +240,8 @@ namespace executive
 			/*! \brief Binds a texture to a memory allocation at a pointer */
 			virtual void bindTexture(void* pointer, 
 				const std::string& moduleName, const std::string& textureName,
-				const cudaChannelFormatDesc& desc, size_t size) = 0;
+				const textureReference& ref, const cudaChannelFormatDesc& desc, 
+				const ir::Dim3& size) = 0;
 			/*! \brief unbinds anything bound to a particular texture */
 			virtual void unbindTexture(const std::string& moduleName, 
 				const std::string& textureName) = 0;

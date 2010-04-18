@@ -1983,7 +1983,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 	if(texture != _textures.end()) {
 		try {
 			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
-				texture->second.texture, *desc, size);
+				texture->second.texture, *texref, *desc, ir::Dim3(size, 1, 1));
 			if(offset != 0) *offset = 0;
 			result = cudaSuccess;
 		}
@@ -2014,7 +2014,8 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	if(texture != _textures.end()) {
 		try {
 			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
-				texture->second.texture, *desc, width * height);
+				texture->second.texture, *texref, *desc, 
+				ir::Dim3(width, height, 1));
 			if(offset != 0) *offset = 0;
 			result = cudaSuccess;
 		}
@@ -2046,14 +2047,14 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 	DimensionMap::iterator dimension = _dimensions.find((void*)array);
 	assert(dimension != _dimensions.end());
 
-	size_t size = dimension->second.x * dimension->second.y 
-		* dimension->second.z;
+	ir::Dim3 size(dimension->second.x, dimension->second.y, 
+		dimension->second.z);
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
 		try {
 			_getDevice().bindTexture((void*)array, texture->second.module, 
-				texture->second.texture, *desc, size);
+				texture->second.texture, *texref, *desc, size);
 			result = cudaSuccess;
 		}
 		catch(hydrazine::Exception& e) {

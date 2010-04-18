@@ -6,6 +6,7 @@
 
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
+#include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/EmulatorDevice.h>
 
 #include <hydrazine/implementation/debug.h>
@@ -65,6 +66,11 @@ executive::DeviceVector executive::Device::createDevices(
 			DeviceVector emulators;
 			emulators.push_back(new EmulatorDevice(flags));
 			return emulators;
+		}
+		break;
+		case ir::Instruction::CAL:
+		{
+			return ATIGPUDevice::createDevices(flags);
 		}
 		break;
 		default: break;

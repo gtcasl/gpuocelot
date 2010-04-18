@@ -262,6 +262,12 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		report(" - Added " << d.size() << " emulator devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
+	if(api::OcelotConfiguration::get().executive.enableAMD) {
+		executive::DeviceVector d =
+			executive::Device::createDevices(ir::Instruction::CAL, _flags);
+		report(" - Added " << d.size() << " emulator devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
 	_devicesLoaded = true;
 	
 	if(_devices.empty())

@@ -204,8 +204,8 @@ static int test_mallocArray(bool verbose) {
 		host[i] = -1;
 	}
 	
-	if (cudaMemcpyArrayToArray(array2, width, height, array, 0, 0, bytes, cudaMemcpyDeviceToDevice)
-		!= cudaSuccess) {
+	if (cudaMemcpyArrayToArray(array2, width, height, array, 0, 0, bytes, 
+		cudaMemcpyDeviceToDevice) != cudaSuccess) {
 		printf("cudaMemcpyArrayToArray() - failed\n");
 		cudaFreeArray(array2);
 		cudaFreeArray(array);

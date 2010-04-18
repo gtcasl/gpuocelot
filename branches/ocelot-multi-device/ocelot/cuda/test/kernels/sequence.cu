@@ -99,6 +99,7 @@ int main(int argc, char *arg[]) {
 	cudaFree(A_gpu);
 	free(A_host);
 
+
 	if (errors) {
 		printf("Pass/Fail : Fail\n");
 	}

@@ -93,7 +93,7 @@ namespace executive
 					typedef std::unordered_map<std::string, 
 						NVIDIAExecutableKernel*> KernelMap;
 					/*! \brief A vector of memory allocations */
-					typedef std::vector<MemoryAllocation> AllocationVector;
+					typedef std::vector<MemoryAllocation*> AllocationVector;
 			
 				public:
 					/*! \brief The ir representation of a module */

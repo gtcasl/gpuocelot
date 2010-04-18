@@ -38,7 +38,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -265,7 +265,7 @@ void cuda::CudaRuntime::_enumerateDevices() {
 	if(api::OcelotConfiguration::get().executive.enableAMD) {
 		executive::DeviceVector d =
 			executive::Device::createDevices(ir::Instruction::CAL, _flags);
-		report(" - Added " << d.size() << " emulator devices." );
+		report(" - Added " << d.size() << " amd devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	_devicesLoaded = true;
@@ -380,10 +380,6 @@ cuda::CudaRuntime::~CudaRuntime() {
 	// free things that need freeing
 	//
 	// devices
-	for (DeviceVector::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		delete *device;
-	}
 	
 	// mutex
 	pthread_mutex_destroy(&_mutex);
@@ -2451,7 +2447,18 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
 	
-	// this is not required because state is shared across threads in Ocelot
+	_lock();
+	
+	report("Destroying " << _devices.size() << " devices");
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		report( " Destroying - " << (*device)->properties().name);
+		delete *device;
+	}
+	_devices.clear();
+	
+	_devicesLoaded = false;
+	_unlock();
 	
 	return _setLastError(result);
 }

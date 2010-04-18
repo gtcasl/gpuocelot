@@ -21,12 +21,18 @@
 // standard library includes
 #include <cstring>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
 typedef cuda::CudaDriver driver;
 
 #define checkError(x) if((_lastError = x) != CUDA_SUCCESS) { \
 	throw hydrazine::Exception(driver::toString(_lastError)); }
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str()); }
+
+#define REPORT_BASE 0
 
 namespace executive 
 {
@@ -307,6 +313,7 @@ namespace executive
 	
 	void NVIDIAGPUDevice::Module::load()
 	{
+		report("Loading module - " << ir->modulePath << " on NVIDIA GPU.");
 		assert(!loaded());
 		std::stringstream stream;
 		ir->write(stream);
@@ -322,7 +329,8 @@ namespace executive
 	void NVIDIAGPUDevice::Module::translate()
 	{
 		if(!loaded()) load();
-				
+		
+		report("Creating NVIDIA kernels for module - " << ir->modulePath);
 		for(ir::Module::KernelMap::const_iterator kernel = ir->kernels.begin(); 
 			kernel != ir->kernels.end(); ++kernel)
 		{
@@ -331,6 +339,7 @@ namespace executive
 				kernel->first.c_str()));
 			kernels.insert(std::make_pair(kernel->first, 
 				new NVIDIAExecutableKernel(*kernel->second, function)));
+			report(" - " << kernel->first);
 		}
 	}
 	
@@ -345,10 +354,12 @@ namespace executive
 		for(ir::Module::GlobalMap::const_iterator global = ir->globals.begin(); 
 			global != ir->globals.end(); ++global)
 		{
-			MemoryAllocation allocation(_handle, global->second);
+			MemoryAllocation* allocation = new MemoryAllocation(_handle, 
+				global->second);
 			
-			globals.insert(std::make_pair(global->first, allocation.pointer()));
-			allocations.push_back(std::move(allocation));
+			globals.insert(std::make_pair(global->first, 
+				allocation->pointer()));
+			allocations.push_back(allocation);
 		}
 		
 		return std::move(allocations);
@@ -356,7 +367,7 @@ namespace executive
 	
 	bool NVIDIAGPUDevice::Module::translated() const
 	{
-		return _handle != 0;
+		return !kernels.empty();
 	}
 	
 	NVIDIAExecutableKernel* NVIDIAGPUDevice::Module::getKernel(
@@ -438,11 +449,12 @@ namespace executive
 		checkError(driver::cuDeviceTotalMem(&total, device));
 		_properties.totalMemory = total;
 		
-		checkError(driver::cuDeviceGetAttribute(&_properties.multiprocessorCount, 
+		checkError(driver::cuDeviceGetAttribute(
+			&_properties.multiprocessorCount,
 			CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, device));
 		checkError(driver::cuDeviceGetAttribute(&_properties.memcpyOverlap, 
 			CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, device));
-		checkError(driver::cuDeviceGetAttribute(&_properties.maxThreadsPerBlock, 
+		checkError(driver::cuDeviceGetAttribute(&_properties.maxThreadsPerBlock,
 			CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, device));
 		
 		checkError(driver::cuDeviceGetAttribute(&_properties.maxThreadsDim[0], 
@@ -481,7 +493,8 @@ namespace executive
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()
 	{
 		assert(!selected());
-		
+		select();
+		_modules.clear();
 		checkError(driver::cuCtxDestroy(_context));
 	}
 	
@@ -528,6 +541,35 @@ namespace executive
 	Device::MemoryAllocation* NVIDIAGPUDevice::getGlobalAllocation(
 		const std::string& moduleName, const std::string& name)
 	{
+		if(moduleName.empty())
+		{
+			// try a brute force search over all modules
+			for(ModuleMap::iterator module = _modules.begin(); 
+				module != _modules.end(); ++module)
+			{
+				if(module->second.globals.empty())
+				{
+					Module::AllocationVector allocations = std::move(
+						module->second.loadGlobals());
+					for(Module::AllocationVector::iterator 
+						allocation = allocations.begin(); 
+						allocation != allocations.end(); ++allocation)
+					{
+						_allocations.insert(std::make_pair(
+							(*allocation)->pointer(), *allocation));
+					}
+				}
+
+				Module::GlobalMap::iterator global = 
+					module->second.globals.find(name);
+				if(global != module->second.globals.end())
+				{
+					return getMemoryAllocation(global->second, false);
+				}
+			}
+			return 0;
+		}
+
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
 		
@@ -539,8 +581,8 @@ namespace executive
 				allocation = allocations.begin(); 
 				allocation != allocations.end(); ++allocation)
 			{
-				_allocations.insert(std::make_pair(allocation->pointer(), 
-					new MemoryAllocation(std::move(*allocation))));
+				_allocations.insert(std::make_pair((*allocation)->pointer(), 
+					*allocation));
 			}
 		}
 		
@@ -750,7 +792,7 @@ namespace executive
 			Throw("Invalid stream - " << sHandle);
 		}
 
-		checkError(driver::cuEventRecord(event->second, stream->second));				
+		checkError(driver::cuEventRecord(event->second, stream->second));
 	}
 
 	void NVIDIAGPUDevice::synchronizeEvent(unsigned int handle)

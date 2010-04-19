@@ -49,6 +49,8 @@ namespace executive
         // only one context per device so we can create it in the constructor
         checkError(CalDriver()->calCtxCreate(&_context, _device));
 		report("calCtxCreate");
+
+		_properties.name = "CAL Device";
     }
 
     ATIGPUDevice::~ATIGPUDevice() 

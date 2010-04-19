@@ -13,4 +13,5 @@
 ../TestCudaGlobals
 ../TestDeviceSwitching
 ../TestCudaSequence
+../TestCalVectorScale
 

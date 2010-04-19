@@ -28,7 +28,8 @@ check_PROGRAMS = TestLexer TestParser \
 	TestDataflowGraph TestLLVMInstructions \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
-	TestCudaSequence TestLLVMKernels TestDeviceSwitching
+	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
+	TestCalVectorScale
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
@@ -360,6 +361,16 @@ TestDeviceSwitching_CXXFLAGS = $(INCLUDE) -Wall -ansi \
 TestDeviceSwitching_SOURCES = ocelot/api/test/TestDeviceSwitching.cpp
 TestDeviceSwitching_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestDeviceSwitching_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestCalVectorScale_CXXFLAGS = $(SDK_CFLAGS)
+TestCalVectorScale_SOURCES = \
+	ocelot/cal/test/vectorScale.cu.cpp
+TestCalVectorScale_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCalVectorScale_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

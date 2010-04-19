@@ -319,6 +319,18 @@ namespace executive
 		ir->write(stream);
 		
 		checkError(driver::cuModuleLoadData(&_handle, stream.str().c_str()));
+		
+		for(ir::Module::TextureMap::const_iterator 
+			texture = ir->textures.begin(); 
+			texture != ir->textures.end(); ++texture)
+		{
+			unsigned int flags = texture->second.normalizedFloat 
+				? 0 : CU_TRSF_READ_AS_INTEGER;
+			CUtexref reference;
+			checkError(driver::cuModuleGetTexRef(&reference, _handle, 
+				texture->first.c_str()));
+			checkError(driver::cuTexRefSetFlags(reference, flags));
+		}
 	}
 
 	bool NVIDIAGPUDevice::Module::loaded() const
@@ -367,7 +379,7 @@ namespace executive
 	
 	bool NVIDIAGPUDevice::Module::translated() const
 	{
-		return !kernels.empty();
+		return kernels.size() == ir->kernels.size();
 	}
 	
 	NVIDIAExecutableKernel* NVIDIAGPUDevice::Module::getKernel(
@@ -899,7 +911,76 @@ namespace executive
 		_selected = false;
 		checkError(driver::cuCtxPopCurrent(&_context));
 	}
+	
+	static unsigned int channels(const cudaChannelFormatDesc& desc)
+	{
+		unsigned int channels = 0;
 		
+		channels = (desc.x > 0) ? channels + 1 : channels;
+		channels = (desc.y > 0) ? channels + 1 : channels;
+		channels = (desc.z > 0) ? channels + 1 : channels;
+		channels = (desc.w > 0) ? channels + 1 : channels;
+	
+		return channels;
+	}
+	
+	static CUarray_format_enum format(const cudaChannelFormatDesc& desc)
+	{
+		switch(desc.f)
+		{
+			case cudaChannelFormatKindSigned:
+			{
+				if(desc.x == 8)
+				{
+					return CU_AD_FORMAT_SIGNED_INT8;
+				}
+				else if(desc.y == 16)
+				{
+					return CU_AD_FORMAT_SIGNED_INT16;
+				}
+				else
+				{
+					return CU_AD_FORMAT_SIGNED_INT32;
+				}			
+			}
+			case cudaChannelFormatKindUnsigned:
+			{
+				if(desc.x == 8)
+				{
+					return CU_AD_FORMAT_UNSIGNED_INT8;
+				}
+				else if(desc.y == 16)
+				{
+					return CU_AD_FORMAT_UNSIGNED_INT16;
+				}
+				else
+				{
+					return CU_AD_FORMAT_UNSIGNED_INT32;
+				}
+			}
+			case cudaChannelFormatKindFloat:
+			{
+				if(desc.x == 16)
+				{
+					return CU_AD_FORMAT_HALF;
+				}
+				else
+				{
+					return CU_AD_FORMAT_FLOAT;
+				}
+			}
+			case cudaChannelFormatKindNone: break;
+		}
+		return CU_AD_FORMAT_UNSIGNED_INT8;
+	}
+	
+	static CUaddress_mode_enum convert(cudaTextureAddressMode mode)
+	{
+		// Note that the cuda runtime does not expose CU_TR_ADDRESS_MODE_MIRROR 
+		if(mode == cudaAddressModeWrap) return CU_TR_ADDRESS_MODE_WRAP;
+		return CU_TR_ADDRESS_MODE_CLAMP;
+	}
+	
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
 		const std::string& moduleName, const std::string& textureName, 
 		const textureReference& texref, const cudaChannelFormatDesc& desc, 
@@ -921,8 +1002,50 @@ namespace executive
 		CUtexref ref = hydrazine::bit_cast<CUtexref>(tex);
 		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
 		unsigned int offset = 0;
-		checkError(driver::cuTexRefSetAddress(&offset, ref, ptr, 0));
-		// TODO do the texture mapping
+		unsigned int pitch = ((desc.x + desc.y + desc.z + desc.w) / 8) * size.x;
+		if(size.z > 1)
+		{
+			assertM(false, "No support for 3D textures.");
+		}
+		else if(size.y > 1)
+		{
+			CUDA_ARRAY_DESCRIPTOR descriptor;
+			descriptor.Width = size.x;
+			descriptor.Height = size.y;
+			descriptor.NumChannels = channels(desc);
+			descriptor.Format = format(desc);
+			
+			checkError(driver::cuTexRefSetAddress2D(ref, &descriptor, 
+				ptr, pitch));
+		}
+		else
+		{
+			checkError(driver::cuTexRefSetAddress(&offset, ref, ptr, pitch));
+		}
+		
+		if(texref.filterMode == cudaFilterModeLinear)
+		{
+			checkError(driver::cuTexRefSetFilterMode(ref, 
+				CU_TR_FILTER_MODE_LINEAR));
+		}
+		else
+		{
+			checkError(driver::cuTexRefSetFilterMode(ref, 
+				CU_TR_FILTER_MODE_POINT));
+		}
+
+		checkError(driver::cuTexRefSetAddressMode(ref, 0,
+			convert(texref.addressMode[0])));
+		checkError(driver::cuTexRefSetAddressMode(ref, 1,
+			convert(texref.addressMode[1])));
+		checkError(driver::cuTexRefSetAddressMode(ref, 2,
+			convert(texref.addressMode[2])));
+		
+		unsigned int flags = 0;
+		checkError(driver::cuTexRefGetFlags(&flags, ref));
+		flags &= CU_TRSF_READ_AS_INTEGER;
+		flags |= (texref.normalized) ? CU_TRSF_NORMALIZED_COORDINATES : 0;		
+		checkError(driver::cuTexRefSetFlags(ref, CU_TRSF_READ_AS_INTEGER));
 	}
 	
 	void NVIDIAGPUDevice::unbindTexture(const std::string& moduleName, 

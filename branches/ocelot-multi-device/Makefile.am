@@ -103,6 +103,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/ATIGPUDevice.cpp \
 	ocelot/executive/implementation/NVIDIAGPUDevice.cpp \
 	ocelot/executive/implementation/EmulatorDevice.cpp \
+	ocelot/executive/implementation/MulticoreCPUDevice.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
 	ocelot/executive/implementation/NVIDIAExecutableKernel.cpp \

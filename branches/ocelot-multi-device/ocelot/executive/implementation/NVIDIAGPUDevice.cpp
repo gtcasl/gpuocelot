@@ -1217,6 +1217,12 @@ namespace executive
 	{
 		// this is a nop here
 	}
+
+	void NVIDIAGPUDevice::setOptimizationLevel(
+		translator::Translator::OptimizationLevel level)
+	{
+		// TODO work in something with the PTX JIT optimization level here
+	}
 }
 
 #endif

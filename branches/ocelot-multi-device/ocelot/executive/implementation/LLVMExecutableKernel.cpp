@@ -2358,21 +2358,22 @@ namespace executive
 				{
 					report("  found texture instruction: " << ptx.toString());
 
-					ir::Module::TextureMap::const_iterator 
-						texture = module->textures.find(ptx.a.identifier);
-
-					assert( texture != module->textures.end() );
+					ir::Texture* texture = (ir::Texture*)
+						device->getTextureReference(
+						module->modulePath, ptx.a.identifier);
+					assert( texture != 0 );
 		
 					AllocationMap::iterator 
-						allocation = map.find( texture->first );
+						allocation = map.find( ptx.a.identifier );
 					if( allocation == map.end() )
 					{
-						report( "  Allocating texture " << texture->first 
+						report( "  Allocating texture " << ptx.a.identifier 
 							<< " to index " << index << " with data " 
-							<< texture->second.data << " and type " << texture->second.type);
+							<< texture->data << " and type " 
+							<< texture->type);
 						allocation = map.insert( 
-							std::make_pair( texture->first, index++ ) ).first;
-						_opaque.textures.push_back( &texture->second );
+							std::make_pair( ptx.a.identifier, index++ ) ).first;
+						_opaque.textures.push_back( texture );
 					}
 					ptx.a.reg = allocation->second;
 				}
@@ -2409,10 +2410,14 @@ namespace executive
 						value = _module->getNamedValue( global->first );
 					assertM( value != 0, "Global variable " << global->first 
 						<< " not found in llvm module." );
+					Device::MemoryAllocation* allocation = 
+						device->getGlobalAllocation( 
+						module->modulePath, global->first );
+					assert(allocation != 0);
 					report( " Binding global variable " << global->first 
-						<< " to " << (void*)global->second.pointer );
+						<< " to " << allocation->pointer() );
 					_state.jit->addGlobalMapping( value, 
-						global->second.pointer );
+						allocation->pointer() );
 					break;
 				}
 				default:
@@ -2439,8 +2444,12 @@ namespace executive
 				== ir::PTXStatement::Const );
 			assert( global->second.statement.bytes() 
 				+ constant->second <= _context.constantSize );
+			Device::MemoryAllocation* allocation = device->getGlobalAllocation(
+				module->modulePath, constant->first);
+			assert( allocation != 0 );
+			assert( allocation->size() == global->second.statement.bytes() );
 			memcpy( _context.constant + constant->second, 
-				global->second.pointer, global->second.statement.bytes() );
+				allocation->pointer(), global->second.statement.bytes() );
 		}
 	}
 	
@@ -2525,11 +2534,6 @@ namespace executive
 		_gridDim.x = x;
 		_gridDim.y = y;
 
-		{
-			// dump the function to stdout
-			
-		}
-		
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
 	}

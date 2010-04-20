@@ -296,7 +296,6 @@ namespace executive
 				\param parameterBlockSize number of bytes in parameter memory
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
-				\param stream The stream to launch the kernel in
 			*/
 			void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
@@ -315,6 +314,8 @@ namespace executive
 		public:
 			/*! \brief Limit the worker threads used by this device */
 			void limitWorkerThreads(unsigned int threads);			
+			/*! \brief Set the optimization level for kernels in this device */
+			void setOptimizationLevel(translator::Translator::OptimizationLevel level);
 
 	};
 }

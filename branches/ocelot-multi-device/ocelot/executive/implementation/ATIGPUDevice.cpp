@@ -363,6 +363,11 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}		
 
+	void ATIGPUDevice::setOptimizationLevel(translator::Translator::OptimizationLevel l)
+	{
+		assertM(false, "Not implemented yet");
+	}		
+
 	inline cal::CalDriver *ATIGPUDevice::CalDriver()
 	{
 		return cal::CalDriver::Instance();
@@ -477,4 +482,6 @@ namespace executive
 	{
 		assertM(false, "Not implemented yet");
 	}
+
+
 }

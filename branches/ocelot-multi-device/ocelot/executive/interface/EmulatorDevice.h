@@ -81,7 +81,7 @@ namespace executive
 						size_t toOffset, size_t fromOffset, size_t size) const;
 			};
 
-		private:
+		protected:
 			/*! \brief A class for holding the state associated with a module */
 			class Module
 			{
@@ -100,7 +100,7 @@ namespace executive
 					/*! \brief The ir representation of a module */
 					const ir::Module* ir;
 					/*! \brief The emulator */
-					EmulatorDevice* device;
+					Device* device;
 					/*! \brief The set of global allocations in the module */
 					GlobalMap globals;
 					/*! \brief The set of translated kernels */
@@ -110,17 +110,18 @@ namespace executive
 					
 				public:
 					/*! \brief Construct this based on a module */
-					Module(const ir::Module* m = 0, EmulatorDevice* d = 0);
+					Module(const ir::Module* m = 0, Device* d = 0);
 					/*! \brief Copy constructor */
 					Module(const Module& m);
 					/*! \brief Clean up all translated kernels */
-					~Module();
+					virtual ~Module();
 					
 				public:
 					/*! \brief Load all of the globals for this module */
 					AllocationVector loadGlobals();
 					/*! \brief Get a specific kernel or 0 */
-					ExecutableKernel* getKernel(const std::string& name);
+					virtual ExecutableKernel* getKernel(
+						const std::string& name);
 					/*! \brief Get a handle to a specific texture or 0 */
 					ir::Texture* getTexture(const std::string& name);
 			};
@@ -140,7 +141,7 @@ namespace executive
 			};
 
 			/*! \brief A map of registered modules */
-			typedef std::unordered_map<std::string, Module> ModuleMap;
+			typedef std::unordered_map<std::string, Module*> ModuleMap;
 
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
@@ -156,7 +157,7 @@ namespace executive
 			typedef std::unordered_map<unsigned int, 
 				OpenGLResource> GraphicsMap;
 
-		private:
+		protected:
 			/*! \brief A map of memory allocations in device space */
 			AllocationMap _allocations;
 			
@@ -188,7 +189,7 @@ namespace executive
 			/*! \brief Sets the device properties, bind this to the cuda id */
 			EmulatorDevice(int id = 0, unsigned int flags = 0);
 			/*! \brief Clears all state */
-			~EmulatorDevice();
+			virtual ~EmulatorDevice();
 			
 		public:
 			Device::MemoryAllocation* getMemoryAllocation(const void* address, 
@@ -229,7 +230,7 @@ namespace executive
 
 		public:
 			/*! \brief Load a module, must have a unique name */
-			void load(const ir::Module* module);
+			virtual void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
 			void unload(const std::string& name);
 
@@ -292,9 +293,8 @@ namespace executive
 				\param parameterBlockSize number of bytes in parameter memory
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
-				\param stream The stream to launch the kernel in
 			*/
-			void launch(const std::string& module, 
+			virtual void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* parameterBlock, size_t parameterBlockSize, 
@@ -310,8 +310,10 @@ namespace executive
 			
 		public:
 			/*! \brief Limit the worker threads used by this device */
-			void limitWorkerThreads(unsigned int threads);			
-
+			virtual void limitWorkerThreads(unsigned int threads);			
+			/*! \brief Set the optimization level for kernels in this device */
+			virtual void setOptimizationLevel(
+				translator::Translator::OptimizationLevel level);
 	};
 }
 

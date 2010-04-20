@@ -262,10 +262,16 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		report(" - Added " << d.size() << " emulator devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
+	if(api::OcelotConfiguration::get().executive.enableLLVM) {
+		executive::DeviceVector d = 
+			executive::Device::createDevices(ir::Instruction::LLVM, _flags);
+		report(" - Added " << d.size() << " llvm-cpu devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
 	if(api::OcelotConfiguration::get().executive.enableAMD) {
 		executive::DeviceVector d =
 			executive::Device::createDevices(ir::Instruction::CAL, _flags);
-		report(" - Added " << d.size() << " amd devices." );
+		report(" - Added " << d.size() << " amd gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	_devicesLoaded = true;

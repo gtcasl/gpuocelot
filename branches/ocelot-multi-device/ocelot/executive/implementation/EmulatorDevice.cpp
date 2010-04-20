@@ -27,7 +27,6 @@
 #include <cstring>
 
 // Macros
-
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str());}
 
@@ -168,7 +167,7 @@ namespace executive
 			(char*)pointer() + fromOffset, s);
 	}
 
-	EmulatorDevice::Module::Module(const ir::Module* m, EmulatorDevice* d) 
+	EmulatorDevice::Module::Module(const ir::Module* m, Device* d) 
 		: ir(m), device(d)
 	{
 		
@@ -342,10 +341,10 @@ namespace executive
 			for(ModuleMap::iterator module = _modules.begin(); 
 				module != _modules.end(); ++module)
 			{
-				if(module->second.globals.empty())
+				if(module->second->globals.empty())
 				{
 					Module::AllocationVector allocations = std::move(
-						module->second.loadGlobals());
+						module->second->loadGlobals());
 					for(Module::AllocationVector::iterator 
 						allocation = allocations.begin(); 
 						allocation != allocations.end(); ++allocation)
@@ -356,8 +355,8 @@ namespace executive
 				}
 
 				Module::GlobalMap::iterator global = 
-					module->second.globals.find(name);
-				if(global != module->second.globals.end())
+					module->second->globals.find(name);
+				if(global != module->second->globals.end())
 				{
 					return getMemoryAllocation(global->second, false);
 				}
@@ -368,10 +367,10 @@ namespace executive
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
 		
-		if(module->second.globals.empty())
+		if(module->second->globals.empty())
 		{
 			Module::AllocationVector allocations = std::move(
-				module->second.loadGlobals());
+				module->second->loadGlobals());
 			for(Module::AllocationVector::iterator 
 				allocation = allocations.begin(); 
 				allocation != allocations.end(); ++allocation)
@@ -381,8 +380,8 @@ namespace executive
 			}
 		}
 		
-		Module::GlobalMap::iterator global = module->second.globals.find(name);
-		if(global == module->second.globals.end()) return 0;
+		Module::GlobalMap::iterator global = module->second->globals.find(name);
+		if(global == module->second->globals.end()) return 0;
 		
 		return getMemoryAllocation(global->second, false);
 	}
@@ -570,7 +569,7 @@ namespace executive
 			Throw("Duplicate module - " << module->modulePath);
 		}
 		_modules.insert(std::make_pair(module->modulePath, 
-			Module(module, this)));
+			new Module(module, this)));
 	}
 	
 	void EmulatorDevice::unload(const std::string& name)
@@ -581,8 +580,8 @@ namespace executive
 			Throw("Cannot unload unknown module - " << name);
 		}
 		
-		for(Module::GlobalMap::iterator global = module->second.globals.begin();
-			global != module->second.globals.end(); ++global)
+		for(Module::GlobalMap::iterator global = module->second->globals.begin();
+			global != module->second->globals.end(); ++global)
 		{
 			AllocationMap::iterator allocation = 
 				_allocations.find(global->second);
@@ -590,6 +589,10 @@ namespace executive
 			delete allocation->second;
 			_allocations.erase(allocation);
 		}
+		
+		delete module->second;
+		
+		_modules.erase(module);
 	}
 
 	unsigned int EmulatorDevice::createEvent(int flags)
@@ -701,7 +704,7 @@ namespace executive
 
 	void EmulatorDevice::setStream(unsigned int handle)
 	{
-		// this is a nop	
+		// this is a nop, there are FOUR streams (I mean only one stream)
 	}
 	
 	void EmulatorDevice::select()
@@ -754,7 +757,7 @@ namespace executive
 			Throw("Invalid Module - " << moduleName);
 		}
 		
-		ir::Texture* tex = module->second.getTexture(textureName);
+		ir::Texture* tex = module->second->getTexture(textureName);
 		if(tex == 0)
 		{
 			Throw("Invalid Texture - " << textureName 
@@ -804,7 +807,7 @@ namespace executive
 			Throw("Invalid Module - " << moduleName);
 		}
 		
-		ir::Texture* tex = module->second.getTexture(textureName);
+		ir::Texture* tex = module->second->getTexture(textureName);
 		if(tex == 0)
 		{
 			Throw("Invalid Texture - " << textureName 
@@ -822,7 +825,7 @@ namespace executive
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
 		
-		return module->second.getTexture(textureName);
+		return module->second->getTexture(textureName);
 	}
 		
 	void EmulatorDevice::launch(const std::string& moduleName, 
@@ -838,7 +841,7 @@ namespace executive
 			Throw("Unknown module - " << moduleName);
 		}
 		
-		ExecutableKernel* kernel = module->second.getKernel(kernelName);
+		ExecutableKernel* kernel = module->second->getKernel(kernelName);
 		
 		if(kernel == 0)
 		{
@@ -922,7 +925,7 @@ namespace executive
 			Throw("Unknown module - " << path);
 		}
 		
-		ExecutableKernel* kernel = module->second.getKernel(kernelName);
+		ExecutableKernel* kernel = module->second->getKernel(kernelName);
 		
 		if(kernel == 0)
 		{
@@ -949,13 +952,19 @@ namespace executive
 
 	void EmulatorDevice::synchronize()
 	{
-		// nop
+		// nop - this device is still synchronous
 	}
 	
 	void EmulatorDevice::limitWorkerThreads(unsigned int threads)
 	{
 		// this should only be set after multithreading support is added 
 		// to the emulator
+	}
+
+	void EmulatorDevice::setOptimizationLevel(
+		translator::Translator::OptimizationLevel level)
+	{
+		// This is emulation so we probably don't ever want to do optimization
 	}
 }
 

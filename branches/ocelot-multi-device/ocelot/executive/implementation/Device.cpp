@@ -8,6 +8,7 @@
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/EmulatorDevice.h>
+#include <ocelot/executive/interface/MulticoreCPUDevice.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -64,8 +65,15 @@ executive::DeviceVector executive::Device::createDevices(
 		case ir::Instruction::Emulated:
 		{
 			DeviceVector emulators;
-			emulators.push_back(new EmulatorDevice(flags));
+			emulators.push_back(new EmulatorDevice(0, flags));
 			return emulators;
+		}
+		break;
+		case ir::Instruction::LLVM:
+		{
+			DeviceVector cpus;
+			cpus.push_back(new MulticoreCPUDevice(0, flags));
+			return cpus;
 		}
 		break;
 		case ir::Instruction::CAL:

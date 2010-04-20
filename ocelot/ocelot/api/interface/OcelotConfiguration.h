@@ -45,6 +45,21 @@ namespace api {
 		//! Configuration for trace generation facilities
 		class TraceGeneration {
 		public:
+
+			//! \brief configuration for the warp synchronous trace generator
+			class WarpSynchronous {
+			public:
+				WarpSynchronous();
+
+			public:
+				//! \brief whether trace generator is enabled
+				bool enabled;
+				
+				//! \brief emits dot file visualizing hot paths
+				bool emitHotPaths;
+			};
+
+		public:
 			TraceGeneration();
 
 		public:
@@ -82,8 +97,8 @@ namespace api {
 			//! \brief Race detection
 			bool raceDetector;
 
-			//! \brief warp synchronous control flow
-			bool warpSynchronous;
+			//! \brief warp synchronous control flow configuration
+			WarpSynchronous warpSynchronous;
 		};
 
 		class CudaRuntimeImplementation {

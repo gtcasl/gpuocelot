@@ -17,9 +17,11 @@
 #include <boost/archive/text_iarchive.hpp>
 
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/trace/interface/KernelEntry.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,6 +147,11 @@ namespace trace
 			*/
 			std::map< int, SynchronousInstructionCounter > WarpSynchronousCounters;
 			
+		public:
+
+			//! \brief configuration object for warp synchronous trace generator
+			api::OcelotConfiguration::TraceGeneration::WarpSynchronous configuration;
+
 		private:
 			/*! \brief Counter for creating unique file names. */
 			static unsigned int _counter;
@@ -152,6 +159,12 @@ namespace trace
 		private:
 			/*!	\brief Entry for the current kernel	*/
 			KernelEntry _entry;
+
+			/*! \brief control flow graph from kernel */
+			const ir::ControlFlowGraph *controlFlowGraph;
+
+			/*! \brief maps a PC to a basic block label */
+			std::map< int, std::string > branchTargetsToBlock;
 			
 		private:
 		
@@ -192,6 +205,19 @@ namespace trace
 				Add a databse entry for the trace as well.
 			*/
 			void finish();
+
+		protected:
+
+			/*!
+				\brief emits results of trace generator as JSON
+			*/
+			void outputSynchronousStatistics();
+
+			/*!
+				\brief emits DOT files for each kernel with blocks colored by hot path for a given
+					warp size
+			*/
+			void outputHotPaths(int warpSize);
 	};
 	
 }
@@ -199,4 +225,3 @@ namespace trace
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif
-

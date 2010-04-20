@@ -105,7 +105,6 @@ public:
 		EdgePointerVector in_edges;
 		/*! \brief Edges to direct successors */
 		EdgePointerVector out_edges;
-
 	};
 
 	/*! \brief A list of basic blocks */
@@ -142,6 +141,9 @@ public:
 
 	/*! \brief An instruction list */
 	typedef BasicBlock::InstructionList InstructionList;
+
+	/*! \brief maps a basic block [by label] to a coloring */
+	typedef std::unordered_map< std::string, unsigned int > BasicBlockColorMap;
 
 public:
 	ControlFlowGraph();
@@ -215,6 +217,11 @@ public:
 	
 	/*!	write a graphviz-compatible file for visualizing the CFG */
 	std::ostream& write(std::ostream& out) const;
+
+	/*!	\brief write a graphviz-compatible file for visualizing the CFG with color maps for blocks
+		and edges
+	*/
+	std::ostream& write(std::ostream& out, const BasicBlockColorMap & blockColors) const;
 	
 	/*! \brief Clears all basic blocks and edges in the CFG.*/
 	void clear();

@@ -78,9 +78,10 @@ namespace ocelot
 			report( "Creating memory race detector" );
 			ocelot::addTraceGenerator( _raceDetector, true, false );
 		}
-		if (c.trace.warpSynchronous) {
+		if (c.trace.warpSynchronous.enabled) {
 			report( "Creating warp synchronous detector" );
 			_warpSynchronous.database = c.trace.database;
+			_warpSynchronous.configuration = c.trace.warpSynchronous;
 			ocelot::addTraceGenerator(_warpSynchronous, true, false);
 		}
 	}

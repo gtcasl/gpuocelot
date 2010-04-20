@@ -10,9 +10,12 @@
 		instruction: false,
 		parallelism: false,
 		cacheSimulator: false,
-		memoryChecker: false,
+		memoryChecker: true,
 		raceDetector: false,
-		warpSynchronous: true
+		warpSynchronous: {
+			enabled: false,
+			emitHotPaths: true
+		}
 	},
 	cuda: {
 		implementation: "CudaRuntime",

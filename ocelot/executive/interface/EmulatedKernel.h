@@ -134,6 +134,9 @@ namespace executive {
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 
+		/*! Maps program counters of header instructions to basic block label */
+		std::map< int, std::string > branchTargetsToBlock;
+
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 

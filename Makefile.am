@@ -32,7 +32,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestCudaTextureFilters TestLLVMKernels TestDeviceSwitching \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer \
-	Module PtxToLlvmTranslator DFG CFG
+	Module PtxToLlvmTranslator DFG CFG TestBadRef TestDeadlock
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -368,6 +368,24 @@ TestCudaSequence_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaSequence_SOURCES = ocelot/cuda/test/kernels/sequence.cu.cpp
 TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCudaSequence_LDFLAGS = -static
+################################################################################
+
+
+################################################################################
+##
+##
+TestBadRef_CXXFLAGS = $(SDK_CFLAGS)
+TestBadRef_SOURCES = memory.cu.cpp
+TestBadRef_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestBadRef_LDFLAGS = -static
+################################################################################
+################################################################################
+##
+##
+TestDeadlock_CXXFLAGS = $(SDK_CFLAGS)
+TestDeadlock_SOURCES = deadlock.cu.cpp
+TestDeadlock_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestDeadlock_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

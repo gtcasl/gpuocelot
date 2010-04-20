@@ -274,6 +274,9 @@ trace::WarpSynchronousGenerator::~WarpSynchronousGenerator() {
 */
 void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& kernel) {
 
+	const executive::EmulatedKernel & emuKernel = 
+		static_cast<const executive::EmulatedKernel &>(kernel);
+
 	//
 	// initialize kernel header
 	//
@@ -333,6 +336,10 @@ void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& ker
 		}
 	}
 
+	// obtain control flow graph
+	controlFlowGraph = emuKernel.cfg();
+	branchTargetsToBlock = emuKernel.branchTargetsToBlock;
+
 	// for each warp size, initialize counters and create branch records
 	warpCounters.clear();
 	for (std::vector<int>::const_iterator ws_it = warpSizes.begin(); ws_it != warpSizes.end();
@@ -375,6 +382,22 @@ void trace::WarpSynchronousGenerator::event( const trace::TraceEvent& event ) {
 */
 void trace::WarpSynchronousGenerator::finish() {
 
+	report("WarpSynchronousGenerator::finish()");
+
+	// always update database and emit results as JSON
+	outputSynchronousStatistics();
+
+	if (configuration.emitHotPaths) {
+		// emit DOT files
+		for (std::vector<int>::const_iterator ws_it = warpSizes.begin();
+			ws_it != warpSizes.end(); ++ws_it) {
+			outputHotPaths(*ws_it);
+		}
+	}
+}
+
+void trace::WarpSynchronousGenerator::outputSynchronousStatistics() {
+
 	// update database
 	_entry.updateDatabase(database);
 
@@ -386,9 +409,12 @@ void trace::WarpSynchronousGenerator::finish() {
 	traceLog << "{\n";
 	traceLog << "\t\"kernel\": \"" << _entry.name << "\",\n";
 	traceLog << "\t\"module\": \"" << _entry.module << "\",\n";
-	traceLog << "\t\"threads\": " << _entry.blockDim.x * _entry.blockDim.y * _entry.blockDim.z << ",\n";
-	traceLog << "\t\"gridDim\": [" << _entry.gridDim.x << ", " << _entry.gridDim.y << ", " << _entry.gridDim.z << "],\n";
-	traceLog << "\t\"blockDim\": [" << _entry.blockDim.x << ", " << _entry.blockDim.y << ", " << _entry.blockDim.z << "],\n";
+	traceLog << "\t\"threads\": " 
+		<< _entry.blockDim.x * _entry.blockDim.y * _entry.blockDim.z << ",\n";
+	traceLog << "\t\"gridDim\": [" << _entry.gridDim.x << ", " << _entry.gridDim.y << ", " 
+		<< _entry.gridDim.z << "],\n";
+	traceLog << "\t\"blockDim\": [" << _entry.blockDim.x << ", " << _entry.blockDim.y << ", " 
+		<< _entry.blockDim.z << "],\n";
 	traceLog << "\t\"counters\":\n[\n";
 	for (std::map< int, SynchronousInstructionCounter >::iterator counter_it = warpCounters.begin();
 		counter_it != warpCounters.end(); ) {
@@ -398,6 +424,58 @@ void trace::WarpSynchronousGenerator::finish() {
 		traceLog << "\t}" << (counter_it != warpCounters.end() ? "," : "") << "\n";
 	}
 	traceLog << "]\n}\n\n";
+}
+
+/*!
+	\brief emits DOT files for each kernel with blocks colored by hot path for a given warp size
+*/
+void trace::WarpSynchronousGenerator::outputHotPaths(int warpSize) {
+	const SynchronousInstructionCounter & counter = warpCounters[warpSize];
+
+	ir::ControlFlowGraph::BasicBlockColorMap blockColors;
+	std::map< int, TargetCounter >::const_iterator target_it;
+	
+	size_t maxEvent = 0;
+	for (target_it = counter.counterTargets.begin(); target_it != counter.counterTargets.end(); 
+		++target_it) {
+		blockColors[branchTargetsToBlock[target_it->first]] = 0;
+		if (maxEvent < target_it->second.events) {
+			maxEvent = target_it->second.events;
+		}
+	}
+	if (maxEvent) {
+		for (target_it = counter.counterTargets.begin(); target_it != counter.counterTargets.end(); 
+			++target_it) {
+			float t = (float)target_it->second.events / (float)maxEvent;
+			unsigned int r = ((unsigned int)(t * 255.0f) & 0x0ff);
+			unsigned int g = 0;
+			unsigned int b = 0;
+			unsigned int color = ((r << 16) | (g << 8) | (b));
+
+			report("  intensity: " << (unsigned int)(t * 255.0f));
+			blockColors[branchTargetsToBlock[target_it->first]] = color;
+		}
+	}
+
+	std::stringstream ss;
+
+	boost::filesystem::path path( database );
+	path = path.parent_path();
+	path = boost::filesystem::system_complete( path );
+	ss << path.string() << "/" << _entry.program << "_" << _entry.name << "_" 
+		<< _counter << "_ws" << warpSize << "_hotpath.dot";
+	
+	std::string filename = ss.str();
+
+	report(" outputHotPaths(ws: " << warpSize << ", filename = " << filename << ")");
+
+	std::ofstream cfgFile(filename.c_str());
+	cfgFile << "/*\n";
+	cfgFile << "     kernel: " << " kernel-name " << "\n";
+	cfgFile << "  warp size: " << warpSize << "\n";
+	cfgFile << "*/\n";
+
+	controlFlowGraph->write(cfgFile, blockColors);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

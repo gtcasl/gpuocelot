@@ -9,6 +9,7 @@
 
 #include <hydrazine/implementation/debug.h>
 
+#include <iomanip>
 #include <unordered_set>
 #include <stack>
 #include <queue>
@@ -21,6 +22,9 @@
 #define REPORT_BASE 0
 
 namespace ir {
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
@@ -112,6 +116,8 @@ ControlFlowGraph::EdgePointerVector::iterator
 	}
 	return out_edges.end();
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::ControlFlowGraph(): 
 	_entry(_blocks.insert(end(), BasicBlock("entry"))),
@@ -253,7 +259,27 @@ ControlFlowGraph::const_iterator ControlFlowGraph::get_exit_block() const {
 	return _exit;
 }
 
-std::ostream& ControlFlowGraph::write(std::ostream &out) const {
+std::ostream& ControlFlowGraph::write(std::ostream &out) const { 
+	ControlFlowGraph::BasicBlockColorMap blockColors;
+	return write(out, blockColors);
+}
+
+static std::string colorToString(unsigned int color) {
+	std::stringstream ss;
+	unsigned short r = ((color >> 16) & 0x0ff);
+	unsigned short g = ((color >> 8) & 0x0ff);
+	unsigned short b = ((color) & 0x0ff);
+
+	ss << "#" << std::setfill('0') << std::setw(2) << std::hex << r;
+	ss << std::setfill('0') << std::setw(2) << std::hex << g;
+	ss << std::setfill('0') << std::setw(2) << std::hex << b;
+	
+	return ss.str();
+}
+
+std::ostream& ControlFlowGraph::write(std::ostream &out, 
+	const ControlFlowGraph::BasicBlockColorMap & blockColors) const {
+
 	using namespace std;
 
 	BlockMap blockIndices;
@@ -276,7 +302,12 @@ std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 
 		blockIndices[block] = n;
 	
-		out << "  bb_" << n << " [shape=record,label=";
+		out << "  bb_" << n << " [shape=record,";
+		ControlFlowGraph::BasicBlockColorMap::const_iterator color = blockColors.find(block->label);
+		if (color != blockColors.end()) {
+			out << "color=\"" << colorToString(color->second) << "\",style=filled,";
+		}
+		out << "label=";
 		out << "\"{" << make_label_dot_friendly(block->label);
 
 		BasicBlock::InstructionList::const_iterator instrs 
@@ -294,12 +325,14 @@ std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 		edge != edges_end(); ++edge) {
 		out << "  " << "bb_" << blockIndices[edge->head] << " -> "
 			<< "bb_" << blockIndices[edge->tail];
+		std::string colorStr;
 		if (edge->type == Edge::Dummy) {
 			out << " [style=dotted]";
 		}
 		else if (edge->type == Edge::Branch) {
-			out << " [color=blue]";
+			colorStr = "  [color=blue]";
 		}
+		out << colorStr;
 	
 		out << ";\n";
 	}

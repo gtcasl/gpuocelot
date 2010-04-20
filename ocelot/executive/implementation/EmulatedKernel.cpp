@@ -208,6 +208,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	report(" Packing instructions into a vector");
 	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
 		bb_it != bb_sequence.end(); ++bb_it) {
+		branchTargetsToBlock[(int)instructions.size()] = (*bb_it)->label;
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it) {

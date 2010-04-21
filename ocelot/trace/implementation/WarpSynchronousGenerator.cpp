@@ -339,6 +339,10 @@ void trace::WarpSynchronousGenerator::initialize(const ir::ExecutableKernel& ker
 	// obtain control flow graph
 	controlFlowGraph = emuKernel.cfg();
 	branchTargetsToBlock = emuKernel.branchTargetsToBlock;
+	for (std::map< int, std::string >::const_iterator it = branchTargetsToBlock.begin(); 
+		it != branchTargetsToBlock.end(); ++it) {
+		blockToBranchTarget[it->second] = it->first;
+	}
 
 	// for each warp size, initialize counters and create branch records
 	warpCounters.clear();
@@ -426,34 +430,115 @@ void trace::WarpSynchronousGenerator::outputSynchronousStatistics() {
 	traceLog << "]\n}\n\n";
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+			class DotFormatter : public ir::ControlFlowGraph::BasicBlock::DotFormatter {
+			public:
+	
+				const WarpSynchronousGenerator *traceGenerator;
+
+				static std::string colorToString(unsigned int color);
+			public:
+				std::string toString(const ir::ControlFlowGraph::BasicBlock *block);
+				std::string toString(const ir::ControlFlowGraph::Edge *edge);
+			};
+// trace::WarpSynchronousGenerator::DotFormatter::
+*/
+
+std::string trace::WarpSynchronousGenerator::DotFormatter::colorToString(unsigned int color) {
+
+	unsigned short a = ((color >> 24) & 0x0ff);
+	unsigned short r = ((color >> 16) & 0x0ff);
+	unsigned short g = ((color >> 8) & 0x0ff);
+	unsigned short b = ((color) & 0x0ff);
+	
+	return colorToString(r, g, b, a);
+}
+
+std::string trace::WarpSynchronousGenerator::DotFormatter::colorToString(
+	unsigned int r, unsigned int g, unsigned int b, unsigned int a) {
+	std::stringstream ss;
+
+	ss << "#";
+	ss << std::setfill('0') << std::setw(2) << std::hex << (r & 0x0ff);
+	ss << std::setfill('0') << std::setw(2) << std::hex << (g & 0x0ff);
+	ss << std::setfill('0') << std::setw(2) << std::hex << (b & 0x0ff);
+//	ss << std::setfill('0') << std::setw(2) << std::hex << (a & 0x0ff);
+	
+	return ss.str();
+}
+
+std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
+	const ir::ControlFlowGraph::BasicBlock *block) {
+	std::stringstream ss;
+
+	if (blockCounter.find(block->label) == blockCounter.end()) {
+		ss << "[shape=record,label=\"" << dotFriendly(block->label) << "\"] // no block counter";
+		return ss.str();
+	}
+
+	size_t events = blockCounter[block->label].events, 
+		synchronous = blockCounter[block->label].synchronous;
+	double activity = (events ? (double)synchronous / (double)events : 0);
+	float t = (float)events / (float)maxEvents;
+	unsigned int r = (unsigned int)(t * 255.0);
+	unsigned int g = 0, b = 0;
+	
+	ss << "[";
+	ss << "fillcolor=\"" << colorToString(r,g,b) << "\",style=filled,";
+	ss << "shape=record,label=\"{" << dotFriendly(block->label) 
+		<< " | events: " << events << " | synchronous: " << synchronous << " | activity: " 
+		<< activity << "}\"";
+	if (t < 0.5) {
+		ss << ",fontcolor=\"#aaaaaa\"";
+	}
+	ss << "]";
+	return ss.str();
+}
+
+std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
+	const ir::ControlFlowGraph::BasicBlock::Edge *edge) {
+	std::stringstream out;
+
+	if (edge->type == ir::ControlFlowGraph::BasicBlock::Edge::Dummy) {
+		out << "[style=dotted]";
+	}
+	else if (edge->type == ir::ControlFlowGraph::BasicBlock::Edge::Branch) {
+		out << "[color=blue]";
+	}
+
+	return out.str();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*!
 	\brief emits DOT files for each kernel with blocks colored by hot path for a given warp size
 */
 void trace::WarpSynchronousGenerator::outputHotPaths(int warpSize) {
 	const SynchronousInstructionCounter & counter = warpCounters[warpSize];
 
-	ir::ControlFlowGraph::BasicBlockColorMap blockColors;
+	//ir::ControlFlowGraph::BasicBlockColorMap blockColors;
+	DotFormatter formatter;
+	formatter.warpSize = warpSize;
+	formatter.traceGenerator = this;
+
 	std::map< int, TargetCounter >::const_iterator target_it;
 	
-	size_t maxEvent = 0;
+	formatter.maxEvents = 0;
 	for (target_it = counter.counterTargets.begin(); target_it != counter.counterTargets.end(); 
 		++target_it) {
-		blockColors[branchTargetsToBlock[target_it->first]] = 0;
-		if (maxEvent < target_it->second.events) {
-			maxEvent = target_it->second.events;
+		//blockColors[branchTargetsToBlock[target_it->first]] = 0;
+		if (formatter.maxEvents < target_it->second.events) {
+			formatter.maxEvents = target_it->second.events;
 		}
 	}
-	if (maxEvent) {
+	if (formatter.maxEvents) {
 		for (target_it = counter.counterTargets.begin(); target_it != counter.counterTargets.end(); 
 			++target_it) {
-			float t = (float)target_it->second.events / (float)maxEvent;
-			unsigned int r = ((unsigned int)(t * 255.0f) & 0x0ff);
-			unsigned int g = 0;
-			unsigned int b = 0;
-			unsigned int color = ((r << 16) | (g << 8) | (b));
-
-			report("  intensity: " << (unsigned int)(t * 255.0f));
-			blockColors[branchTargetsToBlock[target_it->first]] = color;
+			//blockColors[branchTargetsToBlock[target_it->first]] = color;
+			formatter.blockCounter[ branchTargetsToBlock[target_it->first] ] = target_it->second;
 		}
 	}
 
@@ -475,7 +560,7 @@ void trace::WarpSynchronousGenerator::outputHotPaths(int warpSize) {
 	cfgFile << "  warp size: " << warpSize << "\n";
 	cfgFile << "*/\n";
 
-	controlFlowGraph->write(cfgFile, blockColors);
+	controlFlowGraph->write(cfgFile, formatter);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

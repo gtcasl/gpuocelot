@@ -141,6 +141,27 @@ namespace trace
 				//! \brief maps a particular branch target's PC to its counter
 				std::map< int, TargetCounter > counterTargets;
 			};
+
+			/*!
+				\brief formatter for CFG
+			*/
+			class DotFormatter : public ir::ControlFlowGraph::BasicBlock::DotFormatter {
+			public:
+	
+				WarpSynchronousGenerator *traceGenerator;
+
+				int warpSize;
+
+				size_t maxEvents;
+				std::map< std::string , TargetCounter > blockCounter;
+
+			public:
+				static std::string colorToString(unsigned int color);
+				static std::string colorToString(unsigned int r, unsigned int g, unsigned int b, unsigned int a=0);
+
+				std::string toString(const ir::ControlFlowGraph::BasicBlock *block);
+				std::string toString(const ir::ControlFlowGraph::BasicBlock::Edge *edge);
+			};
 			
 			/*! 
 				\brief maps warp size to a particular structure of counters
@@ -156,7 +177,8 @@ namespace trace
 			/*! \brief Counter for creating unique file names. */
 			static unsigned int _counter;
 		
-		private:
+		public:
+
 			/*!	\brief Entry for the current kernel	*/
 			KernelEntry _entry;
 
@@ -165,8 +187,11 @@ namespace trace
 
 			/*! \brief maps a PC to a basic block label */
 			std::map< int, std::string > branchTargetsToBlock;
+
+			/*! \brief inverse of branchTargetsToBlock */
+			std::map< std::string, int > blockToBranchTarget;
 			
-		private:
+		public:
 		
 			/*!
 				\brief identifies collection of warp sizes to compute results for

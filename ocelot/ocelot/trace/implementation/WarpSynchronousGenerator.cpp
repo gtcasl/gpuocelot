@@ -480,8 +480,12 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 
 	size_t events = blockCounter[block->label].events, 
 		synchronous = blockCounter[block->label].synchronous;
+	float t = 0.0f;
 	double activity = (events ? (double)synchronous / (double)events : 0);
-	float t = (float)events / (float)maxEvents;
+
+	if (events) {
+		t = log10((float)events) / (float)log10((float)maxEvents);
+	}
 	unsigned int r = (unsigned int)(t * 255.0);
 	unsigned int g = 0, b = 0;
 	

@@ -105,6 +105,31 @@ public:
 		EdgePointerVector in_edges;
 		/*! \brief Edges to direct successors */
 		EdgePointerVector out_edges;
+
+	public:
+
+		/*!
+			\brief an object that formats the string representation of a basic block used
+				in the DOT output of the graph
+		*/
+		class DotFormatter {
+		public:
+			DotFormatter();
+			virtual ~DotFormatter();
+
+			static std::string dotFriendly(const std::string &str);
+
+		public:
+			/*!
+				\brief prints string representation of 
+			*/
+			virtual std::string toString(const BasicBlock *block);
+
+			/*!
+				\brief emits DOT representation of an edge
+			*/
+			virtual std::string toString(const Edge *edge);
+		};
 	};
 
 	/*! \brief A list of basic blocks */
@@ -215,19 +240,18 @@ public:
 	/*!	Returns the exit block of a control flow graph */
 	const_iterator get_exit_block() const;
 	
+	/* \brief Converts { to [ and } to ] for use in dot. */
+	static std::string make_label_dot_friendly( const std::string& string );
+
 	/*!	write a graphviz-compatible file for visualizing the CFG */
 	std::ostream& write(std::ostream& out) const;
 
-	/*!	\brief write a graphviz-compatible file for visualizing the CFG with color maps for blocks
-		and edges
+	/*!	\brief write a graphviz-compatible file for visualizing the CFG
 	*/
-	std::ostream& write(std::ostream& out, const BasicBlockColorMap & blockColors) const;
+	std::ostream& write(std::ostream& out, BasicBlock::DotFormatter &blockFormatter) const;
 	
 	/*! \brief Clears all basic blocks and edges in the CFG.*/
 	void clear();
-	
-	/* \brief Converts { to [ and } to ] for use in dot. */
-	static std::string make_label_dot_friendly( const std::string& string );
 	
 	/*! \brief Get the name of an edge type */
 	static std::string toString( Edge::Type t );

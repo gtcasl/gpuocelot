@@ -67,7 +67,7 @@ int main()
 		return -1;
 	}
 
-	int errors;
+	int errors = 0;
 	for (int i = 0 ; i < 10 ; i++) {
 		int expected = 2 * hA[i];
 		int got = hB[i];

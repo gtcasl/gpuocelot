@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000017b8_00000000-1_vectorScale.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000719b_00000000-1_vectorScale.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000017b8_00000000-1_vectorScale.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000719b_00000000-1_vectorScale.cudafe1.cpp"
 # 1 "vectorScale.cu"
 # 233 "/usr/include/c++/4.3/x86_64-linux-gnu/bits/c++config.h" 3
 namespace std __attribute__((visibility("default"))) {
@@ -5882,7 +5882,7 @@ printf("cudaFree() failed: %s\n", cudaGetErrorString(err));
 return -1;
 }
 
-auto int errors;
+auto int errors = 0;
 for (int i = 0; i < 10; i++) {
 auto int expected = (2 * (hA)[i]);
 auto int got = ((hB)[i]);
@@ -5897,11 +5897,11 @@ printf("Pass/Fail : %s\n", (errors) ? ((const char *)"Fail") : ((const char *)"P
 return 0;
 }
 
-# 1 "/tmp/tmpxft_000017b8_00000000-1_vectorScale.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000719b_00000000-1_vectorScale.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_000017b8_00000000-3_vectorScale.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000719b_00000000-3_vectorScale.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5963,7 +5963,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_000017b8_00000000-3_vectorScale.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000719b_00000000-3_vectorScale.fatbin.c" 2
 
 
 
@@ -5979,8 +5979,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f3862373130ull,0x372d303030303030ull,0x53726f746365765full,0x7070632e656c6163ull,
-0x6d742f2820692e33ull,0x2e23494263632f70ull,0x0a2953386a50436dull,0x2d2d2d2d2d2f2f09ull,
+0x30305f6239313730ull,0x372d303030303030ull,0x53726f746365765full,0x7070632e656c6163ull,
+0x6d742f2820692e33ull,0x2e23494263632f70ull,0x0a29627469733546ull,0x2d2d2d2d2d2f2f09ull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x0a0a2d2d2d2d2d2dull,0x2d2d2d2d2d2f2f09ull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -5995,7 +5995,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x0a0a2d2d2d2d2d2dull,0x3109656c69662e09ull,0x616d6d6f633c2209ull,
 0x3e656e696c2d646eull,0x656c69662e090a22ull,0x706d742f22093209ull,0x5f746678706d742full,
-0x3862373130303030ull,0x303030303030305full,0x746365765f362d30ull,0x2e656c616353726full,
+0x6239313730303030ull,0x303030303030305full,0x746365765f362d30ull,0x2e656c616353726full,
 0x2e32656661647563ull,0x662e090a22757067ull,0x2f22093309656c69ull,0x2f62696c2f727375ull,
 0x5f3638782f636367ull,0x78756e696c2d3436ull,0x332e342f756e672dull,0x756c636e692f342eull,
 0x65646474732f6564ull,0x662e090a22682e66ull,0x2f22093409656c69ull,0x61636f6c2f727375ull,
@@ -6094,8 +6094,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"7e71238f69b144d6",(char*)"vectorScale.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x627b6ff9};
-# 5 "/tmp/tmpxft_000017b8_00000000-1_vectorScale.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"51c81870b7c27ea4",(char*)"vectorScale.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xec05e7e7};
+# 5 "/tmp/tmpxft_0000719b_00000000-1_vectorScale.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -12075,13 +12075,13 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3864 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_000017b8_00000000-1_vectorScale.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_0000719b_00000000-1_vectorScale.cudafe1.stub.c" 2
 
 
 
 
 struct __T20 {int *__par0;int *__par1;int __dummy_field;};
-static void __sti____cudaRegisterAll_46_tmpxft_000017b8_00000000_4_vectorScale_cpp1_ii_hA(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_46_tmpxft_0000719b_00000000_4_vectorScale_cpp1_ii_hA(void) __attribute__((__constructor__));
 void __device_stub__Z11vectorScalePiS_(int *__par0, int *__par1){auto struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int *))vectorScale__entry)); (void)cudaLaunch(((char *)((void ( *)(int *, int *))vectorScale__entry))); };}
 
@@ -12089,8 +12089,8 @@ void __device_stub__Z11vectorScalePiS_(int *__par0, int *__par1){auto struct __T
 void vectorScale__entry( int *__cuda_0,int *__cuda_1)
 {__device_stub__Z11vectorScalePiS_( __cuda_0,__cuda_1);}
 extern "C"{
-# 29 "/tmp/tmpxft_000017b8_00000000-1_vectorScale.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_46_tmpxft_000017b8_00000000_4_vectorScale_cpp1_ii_hA(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *))vectorScale__entry), (char*)"_Z11vectorScalePiS_", "_Z11vectorScalePiS_", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
+# 29 "/tmp/tmpxft_0000719b_00000000-1_vectorScale.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_46_tmpxft_0000719b_00000000_4_vectorScale_cpp1_ii_hA(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *))vectorScale__entry), (char*)"_Z11vectorScalePiS_", "_Z11vectorScalePiS_", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
 
 }
 # 85 "vectorScale.cu" 2

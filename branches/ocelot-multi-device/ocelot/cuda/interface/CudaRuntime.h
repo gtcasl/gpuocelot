@@ -221,6 +221,8 @@ namespace cuda {
 		executive::Device& _getDevice();
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
+		// Get the current thread, create it if it doesn't exist
+		HostThreadContext& _getCurrentThread();
 
 	private:
 		//! locking object for cuda runtime
@@ -261,6 +263,7 @@ namespace cuda {
 		
 		//! fatbinaries
 		FatBinaryVector _fatBinaries;
+		
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 

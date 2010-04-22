@@ -31,7 +31,7 @@ namespace test
 	static void registerKernel()
 	{
 		std::string ptx = ".version 1.4\n";
-		ptx += ".target sm_13, map_f64_to_f32\n\n";
+		ptx += ".target sm_13, sm_10\n\n";
 		ptx += ".entry increment( .param .u64 memory )\n";
 		ptx += "{\n";
 		ptx += "	.reg .u64 %lr<1>;\n";

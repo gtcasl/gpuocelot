@@ -325,7 +325,7 @@ namespace ir {
 				}
 				stream << " ." << PTXOperand::toString( type ) << " " << name;
 				assert( array.stride.size() == 1 );
-				if( array.stride[0] != 1 )
+				if( array.stride[0] != 0 )
 				{
 					stream << "<" << array.stride[0] << ">";
 				}

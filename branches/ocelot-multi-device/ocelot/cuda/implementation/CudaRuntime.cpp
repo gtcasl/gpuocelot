@@ -38,7 +38,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -289,7 +289,9 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		module != _modules.end(); ++module) {
 		for(DeviceVector::iterator device = _devices.begin(); 
 			device != _devices.end(); ++device) {
+			(*device)->select();
 			(*device)->load(&module->second);
+			(*device)->unselect();
 		}
 	}
 }
@@ -307,7 +309,7 @@ void cuda::CudaRuntime::_unlock() {
 
 //! sets the last error state for the CudaRuntime object
 cudaError_t cuda::CudaRuntime::_setLastError(cudaError_t result) {
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	thread.lastError = result;
 	return result;
 }
@@ -315,14 +317,7 @@ cudaError_t cuda::CudaRuntime::_setLastError(cudaError_t result) {
 cuda::HostThreadContext& cuda::CudaRuntime::_bind() {
 	_enumerateDevices();
 
-	HostThreadContextMap::iterator t = _threads.find(pthread_self());
-	if (t == _threads.end()) {
-		report("Creating new context for thread " << pthread_self());
-		t = _threads.insert(std::make_pair(pthread_self(), 
-			HostThreadContext())).first;
-	}	
-	
-	HostThreadContext& thread = t->second;
+	HostThreadContext& thread = _getCurrentThread();
 
 	if (_devices.empty()) return thread;
 	
@@ -336,7 +331,7 @@ cuda::HostThreadContext& cuda::CudaRuntime::_bind() {
 }
 
 void cuda::CudaRuntime::_unbind() {
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	executive::Device& device = _getDevice();
 	assert(thread.selectedDevice == _selectedDevice);
 	
@@ -372,6 +367,16 @@ std::string cuda::CudaRuntime::_formatError( const std::string& message ) {
 		}
 	}
 	return result;
+}
+
+cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
+	HostThreadContextMap::iterator t = _threads.find(pthread_self());
+	if (t == _threads.end()) {
+		report("Creating new context for thread " << pthread_self());
+		t = _threads.insert(std::make_pair(pthread_self(), 
+			HostThreadContext())).first;
+	}
+	return t->second;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1928,8 +1933,10 @@ cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
 		result = cudaErrorInvalidDevice;
 	}
 	else {
-		HostThreadContext& thread = _threads[pthread_self()];
+		HostThreadContext& thread = _getCurrentThread();
 		thread.selectedDevice = device;
+		report("Setting device for thread " << pthread_self() << " to " 
+			<< device << " (" << _devices[device]->properties().name << ")");
 		result = cudaSuccess;
 	}
 
@@ -1941,7 +1948,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDevice(int *device) {
 	cudaError_t result = cudaSuccess;
 	
 	_lock();
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	*device = thread.selectedDevice;
 	_unlock();
 	
@@ -1951,7 +1958,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDevice(int *device) {
 cudaError_t cuda::CudaRuntime::cudaSetValidDevices(int *device_arr, int len) {
 	cudaError_t result = cudaSuccess;
 	_lock();
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	thread.validDevices.resize(len);
 	for (int i = 0 ; i < len; i++) {
 		thread.validDevices[i] = device_arr[i];
@@ -2166,7 +2173,7 @@ struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x,
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	return thread.lastError;
 }
 
@@ -2179,7 +2186,7 @@ cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim,
 	report("cudaConfigureCall()");
 	
 	cudaError_t result = cudaErrorInvalidConfiguration;
-	HostThreadContext &thread = _threads[pthread_self()];
+	HostThreadContext &thread = _getCurrentThread();
 	
 	KernelLaunchConfiguration launch(gridDim, blockDim, sharedMem, stream);
 	thread.launchConfigurations.push_back(launch);
@@ -2196,7 +2203,7 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size,
 	
 	_lock();
 	
-	HostThreadContext &thread = _threads[pthread_self()];
+	HostThreadContext &thread = _getCurrentThread();
 
 	report("cudaSetupArgument() - offset " << offset << ", size " << size);
 	
@@ -2223,7 +2230,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	ModuleMap::iterator module = _modules.find(moduleName);
 	assert(module != _modules.end());
 
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	cudaError_t result = cudaSuccess;
 	
 	assert(thread.launchConfigurations.size());
@@ -2703,7 +2710,7 @@ void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
 
 	_lock();
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	if (persistent) {
 		thread.persistentTraceGenerators.push_back(&gen);
 	}
@@ -2715,7 +2722,7 @@ void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 
 void cuda::CudaRuntime::clearTraceGenerators() {
 	_lock();
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	thread.persistentTraceGenerators.clear();
 	thread.nextTraceGenerators.clear();
 	_unlock();
@@ -2742,7 +2749,9 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 	
 	for (DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
+		(*device)->select();
 		(*device)->load(&module->second);
+		(*device)->unselect();
 	}
 	
 	_unlock();
@@ -2750,7 +2759,7 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 
 void cuda::CudaRuntime::clearErrors() {
 	_lock();
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	thread.lastError = cudaSuccess;
 	_unlock();
 }
@@ -2758,7 +2767,7 @@ void cuda::CudaRuntime::clearErrors() {
 void cuda::CudaRuntime::reset() {
 	_lock();
 	report("Resetting cuda runtime.");
-	HostThreadContext& thread = _threads[pthread_self()];
+	HostThreadContext& thread = _getCurrentThread();
 	thread.clear();	
 	_dimensions.clear();
 	
@@ -2789,7 +2798,9 @@ void cuda::CudaRuntime::reset() {
 			for(DeviceVector::iterator device = _devices.begin(); 
 				device != _devices.end(); ++device)
 			{
+				(*device)->select();
 				(*device)->unload(module->first);
+				(*device)->unselect();
 			}
 			
 			_modules.erase(module++);
@@ -2827,35 +2838,52 @@ ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId,
 	executive::Device& source = *_devices[sourceId];
 	executive::Device& destination = *_devices[destinationId];
 	
+	_unbind();
+	
+	source.select();
 	executive::Device::MemoryAllocationVector sourceAllocations = 
 		source.getAllAllocations();
-	
+	source.unselect();
+		
 	for(executive::Device::MemoryAllocationVector::iterator 
 		allocation = sourceAllocations.begin();
 		allocation != sourceAllocations.end(); ++allocation)
 	{
-		if(!(*allocation)->global())
+		size_t size = (*allocation)->size();
+		void* pointer = (*allocation)->pointer();
 		
+		if(!(*allocation)->global())
 		{
-			char* temp = new char[(*allocation)->size()];
-			(*allocation)->copy(temp, 0, (*allocation)->size());
+			char* temp = new char[size];
+			source.select();
+			(*allocation)->copy(temp, 0, size);
+			source.free(pointer);
+			source.unselect();
+
+			destination.select();
 			executive::Device::MemoryAllocation* dest = destination.allocate(
-				(*allocation)->size());
-			dest->copy(0, temp, (*allocation)->size());
-			mappings.insert(std::make_pair((*allocation)->pointer(), 
-				dest->pointer()));
-			source.free((*allocation)->pointer());
+				size);
+			dest->copy(0, temp, size);
+			destination.unselect();
+			
+			report(" Mapping device allocation at " << pointer 
+				<< " to " << dest->pointer());
+			mappings.insert(std::make_pair(pointer,	dest->pointer()));
 			delete[] temp;
 		}
 		else if((*allocation)->host())
 		{
+			destination.select();
 			executive::Device::MemoryAllocation* dest = 
-				destination.allocateHost((*allocation)->size(), 
-				(*allocation)->flags());
-			dest->copy(0, (*allocation)->pointer(), (*allocation)->size());
-			mappings.insert(std::make_pair((*allocation)->pointer(), 
-				dest->pointer()));
-			source.free((*allocation)->pointer());
+				destination.allocateHost(size, (*allocation)->flags());
+			dest->copy(0, pointer, size);
+			destination.unselect();
+
+			mappings.insert(std::make_pair(pointer, dest->pointer()));
+			
+			source.select();
+			source.free(pointer);
+			source.unselect();
 		}
 	}
 
@@ -2866,21 +2894,31 @@ ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId,
 			global = module->second.globals.begin();
 			global != module->second.globals.end(); ++global)
 		{
+			source.select();
 			executive::Device::MemoryAllocation* sourceGlobal = 
 				source.getGlobalAllocation(module->first, global->first);
 			assert(sourceGlobal != 0);
+			source.unselect();
+
+			destination.select();
 			executive::Device::MemoryAllocation* destinationGlobal = 
 				destination.getGlobalAllocation(module->first, global->first);
 			assert(destinationGlobal != 0);
+			destination.unselect();
 			
 			char* temp = new char[sourceGlobal->size()];
+			source.select();
 			sourceGlobal->copy(temp, 0, sourceGlobal->size());
+			source.unselect();
+
+			destination.select();
 			destinationGlobal->copy(0, temp, destinationGlobal->size());
+			destination.unselect();
 			delete[] temp;
 		}
 	}
-	
-	_release();
+		
+	_unlock();
 	
 	return mappings;	
 }

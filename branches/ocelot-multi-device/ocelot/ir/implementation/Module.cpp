@@ -122,6 +122,9 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 
 void ir::Module::write( std::ostream& stream ) const {
 
+	report("Writing module (statements) - " << modulePath 
+		<< " - to output stream.");
+
 	if( statements.empty() ) {
 		return;
 	}
@@ -159,6 +162,9 @@ void ir::Module::write( std::ostream& stream ) const {
 }
 
 void ir::Module::writeIR( std::ostream& stream ) const {
+	report("Writing module (IR) - " << modulePath 
+		<< " - to output stream.");
+
 	stream << "/* Module " << modulePath << " */\n\n";
 	
 	for (GlobalMap::const_iterator global = globals.begin(); 

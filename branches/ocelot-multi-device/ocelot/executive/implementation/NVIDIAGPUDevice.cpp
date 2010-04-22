@@ -32,7 +32,11 @@ typedef cuda::CudaDriver driver;
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str()); }
 
+// Turn on report messages
 #define REPORT_BASE 0
+
+// Print out the full ptx for each module as it is loaded
+#define REPORT_PTX 0
 
 namespace executive 
 {
@@ -318,7 +322,27 @@ namespace executive
 		std::stringstream stream;
 		ir->write(stream);
 		
-		checkError(driver::cuModuleLoadData(&_handle, stream.str().c_str()));
+		reportE(REPORT_PTX, " Binary is:\n" << stream.str());
+		
+		CUjit_option options[] = {CU_JIT_ERROR_LOG_BUFFER, 
+			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES};
+		const int errorLogSize = 2048;
+		int errorLogActualSize = errorLogSize;
+		char errorLogBuffer[errorLogSize];
+		memset(errorLogBuffer, 0, errorLogSize);
+
+		void* optionValues[2] = {(void*)errorLogBuffer, 
+			(void*)errorLogActualSize};
+		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
+			stream.str().c_str(), 2, options, optionValues);
+		
+		if(result != CUDA_SUCCESS)
+		{
+			Throw("Failed to JIT module - " << ir->modulePath 
+				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
+		}
+		
+		report(" Module loaded successfully.");
 		
 		for(ir::Module::TextureMap::const_iterator 
 			texture = ir->textures.begin(); 
@@ -795,6 +819,8 @@ namespace executive
 			delete allocation->second;
 			_allocations.erase(allocation);
 		}
+		
+		_modules.erase(module);
 	}
 
 	unsigned int NVIDIAGPUDevice::createEvent(int flags)

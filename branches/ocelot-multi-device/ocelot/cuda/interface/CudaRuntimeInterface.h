@@ -358,9 +358,7 @@ namespace cuda {
 		virtual void cudaMutexOperation( int lock );
 		virtual int cudaSynchronizeThreads( void** one, void* two );
 		
-		/*
-			Texture emulation
-		*/
+		/*	Texture emulation */
 		virtual void cudaTextureFetch(const void* tex, void* index, 
 			int integer, void* val);
 	public:
@@ -375,16 +373,13 @@ namespace cuda {
 		*/
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 			bool persistent = false );
-				
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
-	
 		/*! \brief Sets a limit on the number of host worker threads to launch
 			when executing a CUDA kernel on a Multi-Core CPU.
 			\param limit The max number of worker threads to launch per kernel.
 		*/
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
-	
 		/*! \brief Register an istream containing a PTX module.
 		
 			\param stream An input stream containing a PTX module
@@ -392,39 +387,18 @@ namespace cuda {
 		*/
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
-
-		/*! \brief Get a function pointer to a kernel in a registered module 
-			that can be passed directly to cudaLaunch
-		
-			This function will throw an exception if the kernel does not exist.
-		
-			\param name The name of the kernel to find. 
-			\param module The name of the module to find the kernel in.
-		
-			\return A function pointer that can be passed to cudaLaunch.
-		*/
-		virtual ocelot::KernelPointer getKernelPointer(const std::string& name, 
-			const std::string& module);
-
-		/*! \brief Get a handle to a fat binary from its name
-		
-			\param name The fat binary's name
-			\return A handle to the named fat binary
-		*/
-		virtual void** getFatBinaryHandle(const std::string& name);
-
 		/*! \brief Clear all errors in the Cuda Runtime */
 		virtual void clearErrors();
-		
 		/*! \brief Reset all CUDA runtime state */
 		virtual void reset();
-	
 		/*! \brief Perform a device context switch */
 		virtual ocelot::PointerMap contextSwitch(unsigned int destinationDevice, 
 			unsigned int sourceDevice);
-	
-		/*! \brief Unregister a module, either PTX or LLVM */
+		/*! \brief Unregister a module, either PTX or LLVM, not a fatbinary */
 		virtual void unregisterModule( const std::string& name );
+		/*! \brief Launch a cuda kernel by name */
+		virtual void launch(const std::string& moduleName, 
+			const std::string& kernelName);
 
 	};
 

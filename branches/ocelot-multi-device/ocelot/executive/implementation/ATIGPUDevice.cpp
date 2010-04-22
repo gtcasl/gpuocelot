@@ -185,7 +185,18 @@ namespace executive
 		}
 	}
 
-	Device::MemoryAllocationVector ATIGPUDevice::getNearbyAllocations(void *pointer) const
+	Device::MemoryAllocationVector ATIGPUDevice::getNearbyAllocations(
+		void *pointer) const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Device::MemoryAllocationVector ATIGPUDevice::getAllAllocations() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIGPUDevice::clearMemory()
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -218,7 +229,8 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::setGraphicsResourceFlags(void* resource, unsigned int flags)
+	void ATIGPUDevice::setGraphicsResourceFlags(void* resource, 
+		unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
 	}

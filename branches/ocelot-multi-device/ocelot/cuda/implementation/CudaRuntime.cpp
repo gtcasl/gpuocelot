@@ -38,7 +38,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -2214,9 +2214,14 @@ static ir::Dim3 convert(const dim3& d) {
 	return std::move(ir::Dim3(d.x, d.y, d.z));
 }
 
-cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
+cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName, 
+	const std::string& kernelName )
+{
 	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	if (_devices.empty()) return cudaErrorNoDevice;
+
+	ModuleMap::iterator module = _modules.find(moduleName);
+	assert(module != _modules.end());
 
 	HostThreadContext& thread = _threads[pthread_self()];
 	cudaError_t result = cudaSuccess;
@@ -2226,20 +2231,12 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
-	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
-	assert(kernel != _kernels.end());
-	std::string moduleName = kernel->second.module;
-	std::string kernelName = kernel->second.kernel;
-
-	ModuleMap::iterator module = _modules.find(moduleName);
-	assert(module != _modules.end());
-	
 	ir::Kernel* k = module->second.getKernel(kernelName);
 	assert(k != 0);
 
 	thread.mapParameters(k);
 	
-	report("cudaLaunch(" << kernelName 
+	report("kernel launch (" << kernelName 
 		<< ") on thread " << pthread_self());
 	
 	try {
@@ -2267,8 +2264,23 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 		_release();
 		throw e;
 	}
-
 	_release();
+	
+	return result;
+}
+
+cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
+	_lock();
+	
+	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
+	assert(kernel != _kernels.end());
+	std::string moduleName = kernel->second.module;
+	std::string kernelName = kernel->second.kernel;
+
+	_unlock();
+
+	cudaError_t result = _launchKernel(moduleName, kernelName);
+	
 	return _setLastError(result);
 }
 
@@ -2720,25 +2732,180 @@ void cuda::CudaRuntime::limitWorkerThreads(unsigned int limit) {
 
 void cuda::CudaRuntime::registerPTXModule(std::istream& ptx, 
 	const std::string& name) {
-	assertM(false, "registerPTXModule not implemented.");
+	_lock();
+	report("Loading module (ptx) - " << name);
+	assert(_modules.count(name) == 0);
+	
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(name, ir::Module())).first;
+	module->second.load(ptx, name);
+	
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->load(&module->second);
+	}
+	
+	_unlock();
 }
 
-void** cuda::CudaRuntime::getFatBinaryHandle(const std::string& name) {
-	assertM(false, "getFatBinaryHandle not implemented.");
-}
-
-ocelot::KernelPointer cuda::CudaRuntime::getKernelPointer(
-	const std::string& name, const std::string& module) {
-	assertM(false, "getKernelPointer not implemented.");
+void cuda::CudaRuntime::clearErrors() {
+	_lock();
+	HostThreadContext& thread = _threads[pthread_self()];
+	thread.lastError = cudaSuccess;
+	_unlock();
 }
 
 void cuda::CudaRuntime::reset() {
-	assertM(false, "reset not implemented.");
+	_lock();
+	report("Resetting cuda runtime.");
+	HostThreadContext& thread = _threads[pthread_self()];
+	thread.clear();	
+	_dimensions.clear();
+	
+	for(DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device)
+	{
+		report(" Clearing memory on device - " << (*device)->properties().name);
+		(*device)->clearMemory();
+	}
+	
+	for(ModuleMap::iterator module = _modules.begin(); module != _modules.end();
+		module != _modules.end())
+	{
+		bool found = false;
+		report(" Unloading module - " << module->first);
+		for(FatBinaryVector::iterator bin = _fatBinaries.begin(); 
+			bin != _fatBinaries.end(); ++bin)
+		{
+			if(bin->name() == module->first)
+			{
+				found = true;
+				break;
+			}
+		}
+		
+		if(!found)
+		{
+			for(DeviceVector::iterator device = _devices.begin(); 
+				device != _devices.end(); ++device)
+			{
+				(*device)->unload(module->first);
+			}
+			
+			_modules.erase(module++);
+		}
+		else
+		{
+			++module;
+		}
+	}
+	_unlock();
 }
 
-ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destination, 
-	unsigned int source) {
-	assertM(false, "contextSwitch not implemented.");
+ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId, 
+	unsigned int sourceId) {
+	report("Context switching from " << sourceId << " to " << destinationId);
+	
+	if(!_devicesLoaded) return ocelot::PointerMap();
+	
+	ocelot::PointerMap mappings;
+
+	_acquire();
+	
+	if(sourceId >= _devices.size())
+	{
+		_release();
+		Ocelot_Exception("Invalid source device - " << sourceId);
+	}
+	
+	if(destinationId >= _devices.size())
+	{
+		_release();
+		Ocelot_Exception("Invalid destination device - " << destinationId);
+	}
+	
+	executive::Device& source = *_devices[sourceId];
+	executive::Device& destination = *_devices[destinationId];
+	
+	executive::Device::MemoryAllocationVector sourceAllocations = 
+		source.getAllAllocations();
+	
+	for(executive::Device::MemoryAllocationVector::iterator 
+		allocation = sourceAllocations.begin();
+		allocation != sourceAllocations.end(); ++allocation)
+	{
+		if(!(*allocation)->global())
+		
+		{
+			char* temp = new char[(*allocation)->size()];
+			(*allocation)->copy(temp, 0, (*allocation)->size());
+			executive::Device::MemoryAllocation* dest = destination.allocate(
+				(*allocation)->size());
+			dest->copy(0, temp, (*allocation)->size());
+			mappings.insert(std::make_pair((*allocation)->pointer(), 
+				dest->pointer()));
+			source.free((*allocation)->pointer());
+			delete[] temp;
+		}
+		else if((*allocation)->host())
+		{
+			executive::Device::MemoryAllocation* dest = 
+				destination.allocateHost((*allocation)->size(), 
+				(*allocation)->flags());
+			dest->copy(0, (*allocation)->pointer(), (*allocation)->size());
+			mappings.insert(std::make_pair((*allocation)->pointer(), 
+				dest->pointer()));
+			source.free((*allocation)->pointer());
+		}
+	}
+
+	for(ModuleMap::iterator module = _modules.begin(); 
+		module != _modules.end(); ++module)
+	{
+		for(ir::Module::GlobalMap::iterator 
+			global = module->second.globals.begin();
+			global != module->second.globals.end(); ++global)
+		{
+			executive::Device::MemoryAllocation* sourceGlobal = 
+				source.getGlobalAllocation(module->first, global->first);
+			assert(sourceGlobal != 0);
+			executive::Device::MemoryAllocation* destinationGlobal = 
+				destination.getGlobalAllocation(module->first, global->first);
+			assert(destinationGlobal != 0);
+			
+			char* temp = new char[sourceGlobal->size()];
+			sourceGlobal->copy(temp, 0, sourceGlobal->size());
+			destinationGlobal->copy(0, temp, destinationGlobal->size());
+			delete[] temp;
+		}
+	}
+	
+	_release();
+	
+	return mappings;	
+}
+
+void cuda::CudaRuntime::unregisterModule(const std::string& name) {
+	_lock();
+	ModuleMap::iterator module = _modules.find(name);
+	if (module == _modules.end()) {
+		_unlock();
+		Ocelot_Exception("Module - " << name << " - is not registered.");
+	}
+	
+	_modules.erase(module);
+	
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->unload(name);
+	}
+	
+	_unlock();
+}
+
+void cuda::CudaRuntime::launch(const std::string& moduleName, 
+	const std::string& kernelName) {
+	_launchKernel(moduleName, kernelName);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

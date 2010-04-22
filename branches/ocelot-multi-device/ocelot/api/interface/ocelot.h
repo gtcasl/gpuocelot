@@ -18,9 +18,8 @@ namespace trace
 /*! \brief A namespace for ocelot API functions */
 namespace ocelot
 {
-
 	/*! \brief A map between pointer types */
-	typedef std::unordered_map< void*, void* > PointerMap;
+	typedef std::unordered_map<void*, void*> PointerMap;
 
 	/*! \brief Adds a trace generator for the next kernel invocation 
 	
@@ -42,7 +41,7 @@ namespace ocelot
 		when executing a CUDA kernel on a Multi-Core CPU.
 		\param limit The max number of worker threads to launch per kernel.
 	*/
-	void limitWorkerThreads( unsigned int limit = 1024 );
+	void limitWorkerThreads(unsigned int limit = 1024);
 	
 	/*! \brief Register an istream containing a PTX module.
 		
@@ -51,40 +50,21 @@ namespace ocelot
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
 	
-	typedef const char* KernelPointer;
-
-	/*! \brief Get a function pointer to a kernel in a registered module 
-		that can be passed directly to cudaLaunch
-		
-		This function will throw an exception if the kernel does not exist.
-		
-		\param name The name of the kernel to find. 
-		\param module The name of the module to find the kernel in.
-		
-		\return A function pointer that can be passed to cudaLaunch.
-	*/
-	KernelPointer getKernelPointer(const std::string& name, 
-		const std::string& module);
-
-	/*! \brief Get a handle to a fat binary from its name
-		
-		\param name The fat binary's name
-		\return A handle to the named fat binary
-	*/
-	void** getFatBinaryHandle(const std::string& name);
-
 	/*! \brief Clear all errors in the Cuda Runtime */
 	void clearErrors();
 	
 	/*! \brief Reset all CUDA runtime state */
 	void reset();
-	
+
 	/*! \brief Perform a device context switch */
-	PointerMap contextSwitch( unsigned int destinationDevice, 
-		unsigned int sourceDevice );
+	PointerMap contextSwitch(unsigned int destinationDevice, 
+		unsigned int sourceDevice);
 	
-	/*! \brief Unregister a module, either PTX or LLVM */
-	void unregisterModule( const std::string& name );
+	/*! \brief Unregister a module, either PTX or LLVM, not a fatbinary */
+	void unregisterModule(const std::string& name);
+
+	/*! \brief Launch a cuda kernel by name */
+	void launch(const std::string& moduleName, const std::string& kernelName);
 
 }
 

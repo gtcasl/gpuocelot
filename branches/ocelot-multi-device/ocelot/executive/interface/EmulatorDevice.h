@@ -206,7 +206,11 @@ namespace executive
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */
 			MemoryAllocationVector getNearbyAllocations(void* pointer) const;
-		
+			/*! \brief Get all allocations, host, global, and device */
+			MemoryAllocationVector getAllAllocations() const;
+			/*! \brief Wipe all memory allocations, but keep modules */
+			void clearMemory();			
+			
 		public:
 			/*! \brief Registers an opengl buffer with a resource */
 			void* glRegisterBuffer(unsigned int buffer, 

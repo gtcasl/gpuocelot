@@ -166,8 +166,12 @@ namespace executive
 			/*! \brief Get nearby allocations to a pointer */
 			virtual MemoryAllocationVector getNearbyAllocations(
 				void* pointer) const = 0;
+			/*! \brief Get all allocations, host, global, and device */
+			virtual MemoryAllocationVector getAllAllocations() const = 0;
 			/*! \brief Get a string representation of nearby allocations */
 			virtual std::string nearbyAllocationsToString(void* pointer) const;
+			/*! \brief Wipe all memory allocations, but keep modules */
+			virtual void clearMemory() = 0;
 		
 		public:
 			/*! \brief Registers an opengl buffer with a resource */

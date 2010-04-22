@@ -81,6 +81,10 @@ namespace executive
 			/*! \brief Get nearby allocations to a pointer */
 			Device::MemoryAllocationVector getNearbyAllocations(
 				void *pointer) const;
+			/*! \brief Get all allocations, host, global, and device */
+			Device::MemoryAllocationVector getAllAllocations() const;
+			/*! \brief Wipe all memory allocations, but keep modules */
+			void clearMemory();
 		
 			/*! \brief Registers an opengl buffer with a resource */
 			void* glRegisterBuffer(unsigned int buffer, 
@@ -179,7 +183,8 @@ namespace executive
 			/*! \brief Limit the worker threads used by this device */
 			void limitWorkerThreads(unsigned int threads);
 			/*! \brief Set the optimization level for kernels in this device */
-			void setOptimizationLevel(translator::Translator::OptimizationLevel level);
+			void setOptimizationLevel(translator::Translator::OptimizationLevel 
+				level);
 
 		private:
 			/*! \brief A map of memory allocations */
@@ -192,7 +197,8 @@ namespace executive
 			CALdevice _device;
 			/*! \brief CAL Device Info */
 			CALdeviceinfo _info;
-			/*! \brief CAL Context. Multiple contexts per device is not supported yet */
+			/*! \brief CAL Context. Multiple contexts per device is 
+				not supported yet */
 			CALcontext _context;
 			/*! \brief CAL Object */
 			CALobject _object;
@@ -204,7 +210,8 @@ namespace executive
 			/*! \brief Has this device been selected? */
 			bool _selected;
 			
-			/*! \brief Returns a pointer to an instance to the CalDriver singleton */
+			/*! \brief Returns a pointer to an instance to the 
+				CalDriver singleton */
 			static cal::CalDriver *CalDriver();
 	};
 }

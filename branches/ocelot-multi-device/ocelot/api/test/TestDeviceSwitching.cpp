@@ -28,7 +28,7 @@ namespace test
 {
 	typedef std::vector< unsigned int* > PointerVector;		
 
-	static ocelot::KernelPointer registerKernel()
+	static void registerKernel()
 	{
 		std::string ptx = ".version 1.4\n";
 		ptx += ".target sm_13, map_f64_to_f32\n\n";
@@ -47,7 +47,6 @@ namespace test
 		
 		std::stringstream stream( ptx );
 		ocelot::registerPTXModule( stream, "simpleKernels" );
-		return ocelot::getKernelPointer( "increment", "simpleKernels" );
 	}
 
 	static std::string getDeviceName( int device )
@@ -62,7 +61,6 @@ namespace test
 		public:
 			unsigned int device;
 			unsigned int* pointer;
-			ocelot::KernelPointer kernel;
 		
 		private:
 			void execute()
@@ -71,14 +69,13 @@ namespace test
 				cudaMemset( pointer, 0, sizeof( unsigned int ) );
 			
 				cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
-				cudaSetupArgument( &pointer, 
-					sizeof( long long unsigned int ), 0 );
-				cudaLaunch( kernel );
+				long long unsigned int p = (long long unsigned int)pointer;
+				cudaSetupArgument( &p, sizeof( long long unsigned int ), 0 );
+				ocelot::launch( "simpleKernels", "increment" );
 			}
 	};
 
-	static void launchThreads( PointerVector& pointers, 
-		ocelot::KernelPointer kernel )
+	static void launchThreads( PointerVector& pointers )
 	{
 		typedef std::vector< Thread > ThreadVector;
 	
@@ -90,7 +87,6 @@ namespace test
 			unsigned int index = std::distance( threads.begin(), thread );
 			thread->device = index;
 			thread->pointer = pointers[ index ];
-			thread->kernel = kernel;
 			thread->start();
 		}
 		
@@ -107,7 +103,7 @@ namespace test
 		report(" Resetting runtime state.");
 		ocelot::reset();
 		report(" Registering kernel.");
-		ocelot::KernelPointer kernel = registerKernel();
+		registerKernel();
 		
 		int devices;
 		cudaGetDeviceCount( &devices );
@@ -124,9 +120,9 @@ namespace test
 			cudaMemset( pointers[ device ], 0, sizeof( unsigned int ) );
 			
 			cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
-			cudaSetupArgument( &pointers[device], 
-				sizeof( long long unsigned int ), 0 );
-			cudaLaunch( kernel );
+			long long unsigned int p = (long long unsigned int)pointers[device];
+			cudaSetupArgument( &p, sizeof( long long unsigned int ), 0 );
+			ocelot::launch( "simpleKernels", "increment" );
 		}
 		
 		report(" Loading results.");
@@ -156,7 +152,7 @@ namespace test
 		report(" Resetting runtime state.");
 		ocelot::reset();
 		report(" Registering kernel.");
-		ocelot::KernelPointer kernel = registerKernel();
+		registerKernel();
 		
 		int devices;
 		cudaGetDeviceCount( &devices );
@@ -189,9 +185,10 @@ namespace test
 			}
 			
 			report("  Launching kernel.");
+			long long unsigned int p = (long long unsigned int)pointer;
 			cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
-			cudaSetupArgument( &pointer, sizeof( long long unsigned int ), 0 );
-			cudaLaunch( kernel );
+			cudaSetupArgument( &p, sizeof( long long unsigned int ), 0 );
+			ocelot::launch( "simpleKernels", "increment" );
 			cudaThreadSynchronize();
 		}
 		
@@ -217,7 +214,7 @@ namespace test
 	bool TestDeviceSwitching::testThreads()
 	{
 		ocelot::reset();
-		ocelot::KernelPointer kernel = registerKernel();
+		registerKernel();
 		
 		int devices;
 		cudaGetDeviceCount( &devices );
@@ -230,7 +227,7 @@ namespace test
 			cudaMalloc( (void**) &pointers[ device ], sizeof( unsigned int ) );
 		}
 
-		launchThreads( pointers, kernel );
+		launchThreads( pointers );
 		
 		for( int device = 0; device != devices; ++device )
 		{

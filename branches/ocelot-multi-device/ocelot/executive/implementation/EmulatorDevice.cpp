@@ -418,7 +418,7 @@ namespace executive
 		else
 		{
 			allocation = _hostAllocations.find(pointer);
-			if(allocation != _allocations.end())
+			if(allocation != _hostAllocations.end())
 			{
 				delete allocation->second;
 				_hostAllocations.erase(allocation);
@@ -440,6 +440,48 @@ namespace executive
 			allocations.push_back(allocation->second);
 		}
 		return std::move(allocations);
+	}
+
+	Device::MemoryAllocationVector EmulatorDevice::getAllAllocations() const
+	{
+		MemoryAllocationVector allocations;
+		for(AllocationMap::const_iterator allocation = _allocations.begin(); 
+			allocation != _allocations.end(); ++allocation)
+		{
+			allocations.push_back(allocation->second);
+		}
+		
+		for(AllocationMap::const_iterator allocation = _hostAllocations.begin();
+			allocation != _hostAllocations.end(); ++allocation)
+		{
+			allocations.push_back(allocation->second);
+		}
+
+		return std::move(allocations);
+	}
+
+	void EmulatorDevice::clearMemory()
+	{
+		for(AllocationMap::iterator allocation = _allocations.begin(); 
+			allocation != _allocations.end();)
+		{
+			if(allocation->second->global())
+			{
+				++allocation;			
+			}
+			else
+			{
+				delete allocation->second;
+				_allocations.erase(allocation++);
+			}
+		}
+		
+		for(AllocationMap::iterator allocation = _hostAllocations.begin();
+			allocation != _hostAllocations.end(); ++allocation)
+		{
+			delete allocation->second;
+		}
+		_hostAllocations.clear();
 	}
 
 	void* EmulatorDevice::glRegisterBuffer(unsigned int buffer, 

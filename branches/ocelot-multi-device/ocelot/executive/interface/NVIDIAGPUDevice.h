@@ -209,6 +209,10 @@ namespace executive
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */
 			MemoryAllocationVector getNearbyAllocations(void* pointer) const;
+			/*! \brief Get all allocations, host, global, and device */
+			Device::MemoryAllocationVector getAllAllocations() const;
+			/*! \brief Wipe all memory allocations, but keep modules */
+			void clearMemory();
 		
 		public:
 			/*! \brief Registers an opengl buffer with a resource */
@@ -282,7 +286,7 @@ namespace executive
 			void unbindTexture(const std::string& moduleName, 
 				const std::string& textureName);
 			/*! \brief Get's a reference to an internal texture */
-			void* getTextureReference(const std::string& moduleName, 
+			void* getTextureReference(const std::string& moduleName,
 				const std::string& textureName);
 
 		public:
@@ -315,7 +319,8 @@ namespace executive
 			/*! \brief Limit the worker threads used by this device */
 			void limitWorkerThreads(unsigned int threads);			
 			/*! \brief Set the optimization level for kernels in this device */
-			void setOptimizationLevel(translator::Translator::OptimizationLevel level);
+			void setOptimizationLevel(translator::Translator::OptimizationLevel 
+				level);
 
 	};
 }

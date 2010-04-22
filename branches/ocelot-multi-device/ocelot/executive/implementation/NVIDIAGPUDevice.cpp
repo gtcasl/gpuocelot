@@ -659,7 +659,50 @@ namespace executive
 		}
 		return std::move(allocations);
 	}
+
+	Device::MemoryAllocationVector NVIDIAGPUDevice::getAllAllocations() const
+	{
+		MemoryAllocationVector allocations;
+		for(AllocationMap::const_iterator allocation = _allocations.begin(); 
+			allocation != _allocations.end(); ++allocation)
+		{
+			allocations.push_back(allocation->second);
+		}
 		
+		for(AllocationMap::const_iterator allocation = _hostAllocations.begin();
+			allocation != _hostAllocations.end(); ++allocation)
+		{
+			allocations.push_back(allocation->second);
+		}
+
+		return std::move(allocations);
+	}
+
+	void NVIDIAGPUDevice::clearMemory()
+	{
+		for(AllocationMap::iterator allocation = _allocations.begin(); 
+			allocation != _allocations.end();)
+		{
+			if(allocation->second->global())
+			{
+				++allocation;		
+			}
+			else
+			{
+				delete allocation->second;
+				_allocations.erase(allocation++);
+			}
+		}
+		
+		for(AllocationMap::iterator allocation = _hostAllocations.begin();
+			allocation != _hostAllocations.end(); ++allocation)
+		{
+			delete allocation->second;
+		}
+
+		_hostAllocations.clear();
+	}
+
 	void* NVIDIAGPUDevice::glRegisterBuffer(unsigned int buffer, 
 		unsigned int flags)
 	{

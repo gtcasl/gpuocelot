@@ -13,7 +13,7 @@
 
 namespace ocelot
 {
-	cuda::CudaRuntimeInterface * get() {
+	static cuda::CudaRuntimeInterface* get() {
 		return cuda::CudaRuntimeInterface::get();
 	}
 
@@ -38,17 +38,6 @@ namespace ocelot
 		get()->registerPTXModule( stream, name );
 	}
 	
-	KernelPointer getKernelPointer(const std::string& name,
-		const std::string& module)
-	{
-		return get()->getKernelPointer( name, module );
-	}
-
-	void** getFatBinaryHandle(const std::string& name)
-	{
-		return get()->getFatBinaryHandle( name );
-	}
-	
 	void clearErrors()
 	{
 		get()->clearErrors();
@@ -69,6 +58,11 @@ namespace ocelot
 	void unregisterModule( const std::string& name )
 	{
 		get()->unregisterModule( name );
+	}
+	
+	void launch(const std::string& module, const std::string& name)
+	{
+		get()->launch(module, name);
 	}
 }
 

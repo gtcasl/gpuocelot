@@ -21,9 +21,10 @@ namespace executive
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
 				public:
-					/*! \brief Constructor */
-					MemoryAllocation(CALdevice device, CALcontext context, 
-							CALmodule module, unsigned int uav, size_t size);
+					/*! \brief Construct an allocation for a particular 
+					 * resource */
+					MemoryAllocation(CALresource *resource, unsigned int offset, 
+							size_t size);
 					/*! \brief Destructor */
 					~MemoryAllocation();
 
@@ -46,15 +47,11 @@ namespace executive
 						size_t toOffset, size_t fromOffset, size_t size) const;
 
 				private:
-					/*! \brief CAL resource */
-					CALresource _resource;
-					/*! \brief CAL Context */
-					CALcontext _context;
-					/*! \brief CAL memory handle */
-					CALmem _mem;
-					/*! \brief CAL module name */
-					CALname _name;
-					/*! \brief Size of the allocation (in byte) */
+					/*! \brief Resource where the allocation lives */
+					CALresource *_resource;
+					/*! \brief Base pointer of the allocation */
+					unsigned int _basePtr;
+					/*! \brief Size of the allocation */
 					size_t _size;
 			};
 
@@ -190,8 +187,28 @@ namespace executive
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
 
+			/*! \brief UAV0 base address (to avoid 0x0 be a valid address) */
+			static const unsigned int Uav0BaseAddr = 0x1000;
+
+			/********************************************************//**
+			 * \name UAV0 Memory Manager
+			 *
+			 * UAV0 acts as the global memory. The allocation policy is 
+			 * very simple. It allocates chuncks of memory sequentially 
+			 * and never reallocates a chunck that has been freed.
+			 ***********************************************************/
+			//@{
 			/*! \brief A map of memory allocations in device space */
-			AllocationMap _allocations;
+			AllocationMap _uav0Allocations;
+			/*! \brief Pointer to the next chunck of allocatable memory */
+			unsigned int _uav0AllocPtr;
+			/*! \brief CAL UAV0 resource */
+			CALresource _uav0Resource;
+			/*! \brief CAL UAV0 memory handle */
+			CALmem _uav0Mem;
+			/*! \brief CAL UAV0 module name */
+			CALname _uav0Name;
+			//@}
 
 			/*! \brief CAL Device */
 			CALdevice _device;
@@ -209,7 +226,7 @@ namespace executive
 
 			/*! \brief Has this device been selected? */
 			bool _selected;
-			
+
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */
 			static cal::CalDriver *CalDriver();

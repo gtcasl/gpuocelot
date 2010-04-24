@@ -32,34 +32,70 @@
 namespace executive
 {
     ATIGPUDevice::ATIGPUDevice() 
-		: _device(0), 
-		  _context(0), 
-		  _object(0), 
-		  _image(0), 
-		  _module(0),
-		  _selected(false)
+		: 
+			_uav0AllocPtr(Uav0BaseAddr),
+			_uav0Resource(0),
+			_uav0Mem(0),
+			_uav0Name(0),
+			_device(0), 
+			_info(),
+			_context(0), 
+			_object(0), 
+			_image(0), 
+			_module(0), 
+			_selected(false)
     {
-        checkError(CalDriver()->calDeviceOpen(&_device, 0));
-		report("calDeviceOpen");
+		checkError(CalDriver()->calDeviceOpen(&_device, 0));
+		report("calDeviceOpen(_device = " << std::hex << std::showbase 
+				<<  _device << ")");
 
-        checkError(CalDriver()->calDeviceGetInfo(&_info, 0));
-		report("calDeviceGetInfo");
+		checkError(CalDriver()->calDeviceGetInfo(&_info, 0));
+		report("calDeviceGetInfo()");
+
+		_properties.name = "CAL Device";
 
         // multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
-        checkError(CalDriver()->calCtxCreate(&_context, _device));
-		report("calCtxCreate");
+		checkError(CalDriver()->calCtxCreate(&_context, _device));
+		report("calCtxCreate(_context = " << std::hex << std::showbase
+				<< _context << ", _device = " << _device << ")");
 
-		_properties.name = "CAL Device";
+		// allocate UAV0 resource
+		checkError(CalDriver()->calResAllocLocal1D(
+				&_uav0Resource, 
+				_device, 
+				_info.maxResource1DWidth,
+				CAL_FORMAT_SIGNED_INT32_1,
+				CAL_RESALLOC_GLOBAL_BUFFER));
+		report("calResAllocLocal1D("
+				<< "_uav0Resource = " << std::hex << std::showbase 
+					<< _uav0Resource
+				<< ", _device = " << _device
+				<< ", width = " << std::dec << _info.maxResource1DWidth
+				<< ", CAL_FORMAT_SIGNED_INT32_1"
+				<< ", CAL_RESALLOC_GLOBAL_BUFFER)");
+
+		// Get memory handle
+		checkError(CalDriver()->calCtxGetMem(
+					&_uav0Mem,
+					_context,
+					_uav0Resource));
+		report("calCtxGetMem()");
     }
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
+		checkError(CalDriver()->calCtxReleaseMem(_context, _uav0Mem));
+		report("calCtxReleaseMem()");
+
+		checkError(CalDriver()->calResFree(_uav0Resource));
+		report("calResFree()");
+
         checkError(CalDriver()->calCtxDestroy(_context));
-		report("calCtxDestroy");
+		report("calCtxDestroy()");
 
         checkError(CalDriver()->calDeviceClose(_device));
-		report("calDeviceClose");
+		report("calDeviceClose()");
     }
 
 	DeviceVector ATIGPUDevice::createDevices(unsigned int flags)
@@ -77,38 +113,63 @@ namespace executive
 		// Use a fixed ILKernel for now (no PTX-to-IL translation yet)
 		const CALchar *ILKernel = 
 			"il_cs_2_0\n"
-			"dcl_num_thread_per_group 10\n"
+			"dcl_max_thread_per_group 256\n"
 			"dcl_raw_uav_id(0)\n"
-			"dcl_raw_uav_id(1)\n"
 			"dcl_literal l0, 4, 4, 4, 4\n"
 			"dcl_literal l1, 2, 2, 2, 2\n"
-			"mov r0.x, vAbsTidFlat.x\n"
-			"ishl r0.x, r0.x, l0.x\n"
-			"uav_raw_load_id(0) r1, r0.x\n"
-			"imul r1, r1, l1\n"
-			"uav_raw_store_id(1) mem.xyzw, r0.x, r1\n"
+			"dcl_literal l2, 0, 0, 0, 0\n"
+			"dcl_literal l3, 40, 40, 40, 40\n"
+			"mov r0, vAbsTidFlat.x\n"
+			"mov r1, r0\n"
+			"imul r2, r1, l0\n"
+			"mov r3, l2\n"
+			"iadd r4, r3, r2\n"
+			"uav_raw_load_id(0) r5, r4\n"
+			"imul r6, r5, l1\n"
+			"mov r7, l3\n"
+			"iadd r8, r7, r2\n"
+			"uav_raw_store_id(0) mem.xyzw, r8, r6\n"
 			"end\n";
 
-		checkError(CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, ILKernel, _info.target));
-		report("calclCompile");
+		checkError(CalDriver()->calclCompile(
+					&_object, 
+					CAL_LANGUAGE_IL, 
+					ILKernel, 
+					_info.target));
+		report("calclCompile()");
 
 		checkError(CalDriver()->calclLink(&_image, &_object, 1));
-		report("calclLink");
+		report("calclLink()");
 		
 		checkError(CalDriver()->calModuleLoad(&_module, _context, _image));
-		report("calModuleLoad");
+		report("calModuleLoad()");
+
+		// Get uav0 name
+		checkError(CalDriver()->calModuleGetName(
+					&_uav0Name, 
+					_context, 
+					_module,
+					"uav0"));
+		report("calModuleGetName()");
+
+		// Bind memory handle to module name
+		checkError(CalDriver()->calCtxSetMem(
+					_context,
+					_uav0Name,
+					_uav0Mem));
+		report("calCtxSetMem()");
     }
 
     void ATIGPUDevice::unload(const std::string& name)
     {
 		checkError(CalDriver()->calModuleUnload(_context, _module));
-		report("calModuleUnload");
+		report("calModuleUnload()");
 
 		checkError(CalDriver()->calclFreeImage(_image));
-		report("calclFreeImage");
+		report("calclFreeImage()");
 
 		checkError(CalDriver()->calclFreeObject(_object));
-		report("calclFreeObject");
+		report("calclFreeObject()");
     }
 
     void ATIGPUDevice::select()
@@ -139,10 +200,11 @@ namespace executive
 		if (hostAllocation) {
 			assertM(false, "Not implemented yet");
 		} else {
-			if (!_allocations.empty()) {
+			if (!_uav0Allocations.empty()) {
 				// Device pointer arithmetic is not supported yet
-				const AllocationMap::const_iterator alloc = _allocations.find((void *)address);
-				if (alloc != _allocations.end()) {
+				const AllocationMap::const_iterator alloc = 
+					_uav0Allocations.find((void *)address);
+				if (alloc != _uav0Allocations.end()) {
 					allocation = alloc->second;
 				} else {
 					Throw("No allocation found for this pointer - " << address);
@@ -161,13 +223,16 @@ namespace executive
 
 	Device::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
 	{
-		MemoryAllocation *allocation = new MemoryAllocation(
-				_device, _context, _module, (unsigned int)_allocations.size(), size);
-		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
+		MemoryAllocation *allocation = 
+			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
+		_uav0Allocations.insert(
+				std::make_pair(allocation->pointer(), allocation));
+		_uav0AllocPtr += size;
 		return allocation;
 	}
 
-	Device::MemoryAllocation *ATIGPUDevice::allocateHost(size_t size, unsigned int flags)
+	Device::MemoryAllocation *ATIGPUDevice::allocateHost(size_t size, 
+			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -176,9 +241,9 @@ namespace executive
 	{
 		if (pointer == 0) return;
 
-		AllocationMap::iterator allocation = _allocations.find(pointer);
-		if (allocation != _allocations.end()) {
-			_allocations.erase(allocation);
+		AllocationMap::iterator allocation = _uav0Allocations.find(pointer);
+		if (allocation != _uav0Allocations.end()) {
+			_uav0Allocations.erase(allocation);
 			delete allocation->second;
 		} else {
 			Throw("Tried to free invalid pointer - " << pointer);
@@ -201,7 +266,8 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void *ATIGPUDevice::glRegisterBuffer(unsigned int buffer, unsigned int flags)
+	void *ATIGPUDevice::glRegisterBuffer(unsigned int buffer, 
+			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -331,7 +397,7 @@ namespace executive
 					_context,
 					_module,
 					"main"));
-		report("calModuleGetEntry");
+		report("calModuleGetEntry()");
 
 		// Invoke kernel
 		CALevent event = 0;
@@ -349,7 +415,7 @@ namespace executive
 					&event, 
 					_context, 
 					&pg));
-		report("calCtxRunProgramGrid");
+		report("calCtxRunProgramGrid()");
 
 		while(CalDriver()->calCtxIsEventDone(_context, event) == CAL_RESULT_PENDING);
 	}
@@ -375,7 +441,8 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}		
 
-	void ATIGPUDevice::setOptimizationLevel(translator::Translator::OptimizationLevel l)
+	void ATIGPUDevice::setOptimizationLevel(
+			translator::Translator::OptimizationLevel l)
 	{
 		assertM(false, "Not implemented yet");
 	}		
@@ -385,53 +452,21 @@ namespace executive
 		return cal::CalDriver::Instance();
 	}
 
-	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALdevice device, CALcontext context, 
-			CALmodule module, unsigned int uav, size_t size) : _context(context), _size(size)
+	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALresource *resource, 
+			unsigned int basePtr, size_t size) 
+		: _resource(0), _basePtr(0), _size(0)
 	{
-		// Allocate resource
-		// Only CAL_FORMAT_SIGNED_INT32_1 is supported for now
-		CALuint width = size / sizeof(int);
+		assertM(resource, "Invalid resource");
+		assertM(basePtr, "Invalid device pointer");
+		assertM(size, "Invalid size");
 
-		checkError(CalDriver()->calResAllocLocal1D(
-				&_resource, 
-				device, 
-				width,	
-				CAL_FORMAT_SIGNED_INT32_1,
-				CAL_RESALLOC_GLOBAL_BUFFER));
-		report("calResAllocLocal1D");
-
-		// Get memory handle
-		checkError(CalDriver()->calCtxGetMem(
-					&_mem,
-					_context,
-					_resource));
-		report("calCtxGetMem");
-
-		// Get module name
-		std::stringstream s;
-		s << "uav" << uav;
-		checkError(CalDriver()->calModuleGetName(
-					&_name, 
-					_context, 
-					module,
-					s.str().c_str()));
-		report("calModuleGetName");
-
-		// Bind memory handle to module name
-		checkError(CalDriver()->calCtxSetMem(
-					_context,
-					_name,
-					_mem));
-		report("calCtxSetMem");
+		_resource = resource;
+		_basePtr = basePtr;
+		_size = size;
 	}
 
 	ATIGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
-		checkError(CalDriver()->calCtxReleaseMem(_context, _mem));
-		report("calCtxReleaseMem");
-
-		checkError(CalDriver()->calResFree(_resource));
-		report("calResFree");
 	}
 
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
@@ -446,7 +481,7 @@ namespace executive
 
 	void *ATIGPUDevice::MemoryAllocation::pointer() const
 	{
-		return (void *)_resource;
+		return (void *)_basePtr;
 	}
 
 	size_t ATIGPUDevice::MemoryAllocation::size() const
@@ -454,37 +489,60 @@ namespace executive
 		return _size;
 	}
 
-	void ATIGPUDevice::MemoryAllocation::copy(size_t offset, const void *host, size_t size)
+	/*! \brief Copy from an external host pointer */
+	void ATIGPUDevice::MemoryAllocation::copy(size_t offset, const void *host, 
+			size_t size)
 	{
+		assertM(host != 0, "Invalid host pointer");
+		assertM(offset + size <= _size, "Invalid copy size");
+		
 		CALvoid *data = NULL;
 		CALuint pitch = 0;
 		CALuint flags = 0;
 
-		checkError(CalDriver()->calResMap(&data, &pitch, _resource, flags));
-		report("calResMap");
+		checkError(CalDriver()->calResMap(&data, &pitch, *_resource, flags));
+		report("calResMap()");
 
-		memcpy(data, host, size);
+		unsigned int addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		std::memcpy((char *)data + addr, host, size);
+		report("MemoryAllocation::copy("
+				<< "offset = " << std::dec << offset
+				<< ", host = " << std::hex << std::showbase << host
+				<< ", size = " << std::dec << size
+				<< ")");
 
-		checkError(CalDriver()->calResUnmap(_resource));
-		report("calResUnmap");
+		checkError(CalDriver()->calResUnmap(*_resource));
+		report("calResUnmap()");
 	}
 
-	void ATIGPUDevice::MemoryAllocation::copy(void *host, size_t offset, size_t size) const
+	/*! \brief Copy to an external host pointer */
+	void ATIGPUDevice::MemoryAllocation::copy(void *host, size_t offset, 
+			size_t size) const
 	{
+		assertM(host != 0, "Invalid host pointer");
+		assertM(offset + size <= _size, "Invalid copy size");
+
 		CALvoid *data = NULL;
 		CALuint pitch = 0;
 		CALuint flags = 0;
 
-		checkError(CalDriver()->calResMap(&data, &pitch, _resource, flags));
-		report("calResMap");
+		checkError(CalDriver()->calResMap(&data, &pitch, *_resource, flags));
+		report("calResMap()");
 
-		memcpy(host, data, size);
-
-		checkError(CalDriver()->calResUnmap(_resource));
-		report("calResUnmap");
+		unsigned int addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		std::memcpy(host, (char *)data + addr, size);
+		report("MemoryAllocation::copy("
+				<< "host = " << std::hex << std::showbase << host
+				<< ", offset = " << std::dec << offset
+				<< ", size = " << size
+				<< ")");
+		
+		checkError(CalDriver()->calResUnmap(*_resource));
+		report("calResUnmap()");
 	}
 
-	void ATIGPUDevice::MemoryAllocation::memset(size_t offset, int value, size_t size)
+	void ATIGPUDevice::MemoryAllocation::memset(size_t offset, int value, 
+			size_t size)
 	{
 		assertM(false, "Not implemented yet");
 	}

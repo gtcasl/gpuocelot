@@ -36,12 +36,11 @@ bool executive::Device::MemoryAllocation::global() const {
 	return _global;
 }
 
-
-executive::Device::Properties::Properties(int id) : guid(id) {
+executive::Device::Properties::Properties() {
 }
 
 std::ostream& executive::Device::Properties::write(std::ostream &out) const {
-	out << name << "( " << guid << " ):\n";
+	out << name << " ):\n";
 	out << "  " << "total memory: " << (totalMemory >> 10) << " kB\n";
 	out << "  " << "ISA: " << ir::Instruction::toString(ISA) << "\n";
 	out << "  " << "multiprocessors: " << multiprocessorCount << "\n";
@@ -65,14 +64,14 @@ executive::DeviceVector executive::Device::createDevices(
 		case ir::Instruction::Emulated:
 		{
 			DeviceVector emulators;
-			emulators.push_back(new EmulatorDevice(0, flags));
+			emulators.push_back(new EmulatorDevice(flags));
 			return emulators;
 		}
 		break;
 		case ir::Instruction::LLVM:
 		{
 			DeviceVector cpus;
-			cpus.push_back(new MulticoreCPUDevice(0, flags));
+			cpus.push_back(new MulticoreCPUDevice(flags));
 			return cpus;
 		}
 		break;
@@ -86,8 +85,35 @@ executive::DeviceVector executive::Device::createDevices(
 	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
 }
 
-executive::Device::Device(int guid, unsigned int flags) : _properties(guid), 
-	_driverVersion(0), _runtimeVersion(0), _flags(flags) {
+unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa) {
+	switch(isa) {
+		case ir::Instruction::SASS:
+		{
+			return NVIDIAGPUDevice::deviceCount();
+		}
+		break;
+		case ir::Instruction::Emulated:
+		{
+			return 1;
+		}
+		break;
+		case ir::Instruction::LLVM:
+		{
+			return 1;
+		}
+		break;
+		case ir::Instruction::CAL:
+		{
+			return ATIGPUDevice::deviceCount();
+		}
+		break;
+		default: break;
+	}
+	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+}
+
+executive::Device::Device( unsigned int flags) : _driverVersion(0), 
+	_runtimeVersion(0), _flags(flags) {
 }
 
 executive::Device::~Device() {

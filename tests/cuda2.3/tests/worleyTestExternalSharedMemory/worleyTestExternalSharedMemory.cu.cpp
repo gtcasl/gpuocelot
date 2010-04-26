@@ -16308,7 +16308,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 
 struct __T20 {int *__par0;int __dummy_field;};
 static void __sti____cudaRegisterAll_65_tmpxft_00005e55_00000000_4_worleyTestExternalSharedMemory_cpp1_ii_84db3c43(void) __attribute__((__constructor__));
-void __device_stub__Z6kernelPi(int *__par0){auto struct __T20 *__T21;
+void __device_stub__Z6kernelPi(int *__par0){struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))kernel__entry)); (void)cudaLaunch(((char *)((void ( *)(int *))kernel__entry))); };}
 void kernel__entry( int *__cuda_0)
 # 29 "worleyTestExternalSharedMemory.cu"

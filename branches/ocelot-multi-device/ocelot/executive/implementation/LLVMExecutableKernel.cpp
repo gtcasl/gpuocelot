@@ -1361,10 +1361,6 @@ namespace executive
 	
 	LLVMExecutableKernel::LLVMState::~LLVMState()
 	{
-		#ifdef HAVE_LLVM
-		reportE( jit != 0, "Deleting the LLVM JIT-Compiler." );
-		delete jit;
-		#endif
 	}
 
 	LLVMExecutableKernel::AtomicOperationCache::AtomicOperationCache()

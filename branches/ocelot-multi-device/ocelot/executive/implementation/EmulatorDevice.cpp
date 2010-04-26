@@ -245,19 +245,17 @@ namespace executive
 	
 	}
 	
-	EmulatorDevice::EmulatorDevice(int id, unsigned int flags) : 
+	EmulatorDevice::EmulatorDevice( unsigned int flags) : 
 		_selected(false), _next(1)
 	{
+		_timer.start();
+	
 		_properties.ISA = ir::Instruction::Emulated;
 		_properties.addressSpace = 0;
 		_properties.name = "Ocelot PTX Emulator";
-		_properties.guid = id;
 		
-		struct sysinfo system;
-		sysinfo(&system);
-		
-		_properties.totalMemory = system.totalram;
-		_properties.multiprocessorCount = system.procs;
+		_properties.totalMemory = get_avphys_pages() * getpagesize();
+		_properties.multiprocessorCount = 1;
 		_properties.memcpyOverlap = false;
 		_properties.maxThreadsPerBlock = 1024;
 		_properties.maxThreadsDim[0] = 1024;
@@ -271,7 +269,7 @@ namespace executive
 		_properties.SIMDWidth = 512;
 		_properties.memPitch = 1;
 		_properties.regsPerBlock = 8192;
-		_properties.clockRate = 2000;
+		_properties.clockRate = 2;
 		_properties.textureAlign = 1;
 		_properties.major = 2;
 		_properties.minor = 0;
@@ -284,12 +282,6 @@ namespace executive
 		{
 			delete allocation->second;
 		}
-		
-		for(AllocationMap::iterator allocation = _hostAllocations.begin(); 
-			allocation != _hostAllocations.end(); ++allocation)
-		{
-			delete allocation->second;
-		}
 	}
 			
 	Device::MemoryAllocation* EmulatorDevice::getMemoryAllocation(
@@ -298,16 +290,18 @@ namespace executive
 		MemoryAllocation* allocation = 0;
 		if(hostAllocation)
 		{
-			if(!_hostAllocations.empty())
+			for(AllocationMap::const_iterator alloc = _allocations.begin(); 
+				alloc != _allocations.end(); ++alloc)
 			{
-				AllocationMap::const_iterator alloc = 
-					_hostAllocations.upper_bound((void*)address);
-				if(alloc != _hostAllocations.begin()) --alloc;
-				if(alloc != _hostAllocations.end())
+				if(alloc->second->host())
 				{
-					if((char*)address >= (char*)alloc->second->mappedPointer())
+					if((char*)address >= alloc->second->mappedPointer() 
+						&& (char*)address < 
+						(char*)alloc->second->mappedPointer()
+						+ alloc->second->size())
 					{
 						allocation = alloc->second;
+						break;
 					}
 				}
 			}
@@ -397,8 +391,9 @@ namespace executive
 		unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
-		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
-		return allocation;		
+		_allocations.insert(std::make_pair(allocation->mappedPointer(), 
+			allocation));
+		return allocation;
 	}
 	
 	void EmulatorDevice::free(void* pointer)
@@ -417,16 +412,7 @@ namespace executive
 		}
 		else
 		{
-			allocation = _hostAllocations.find(pointer);
-			if(allocation != _hostAllocations.end())
-			{
-				delete allocation->second;
-				_hostAllocations.erase(allocation);
-			}
-			else
-			{
-				Throw("Tried to free invalid pointer - " << pointer);
-			}
+			Throw("Tried to free invalid pointer - " << pointer);
 		}
 	}
 	
@@ -451,12 +437,6 @@ namespace executive
 			allocations.push_back(allocation->second);
 		}
 		
-		for(AllocationMap::const_iterator allocation = _hostAllocations.begin();
-			allocation != _hostAllocations.end(); ++allocation)
-		{
-			allocations.push_back(allocation->second);
-		}
-
 		return std::move(allocations);
 	}
 
@@ -475,13 +455,6 @@ namespace executive
 				_allocations.erase(allocation++);
 			}
 		}
-		
-		for(AllocationMap::iterator allocation = _hostAllocations.begin();
-			allocation != _hostAllocations.end(); ++allocation)
-		{
-			delete allocation->second;
-		}
-		_hostAllocations.clear();
 	}
 
 	void* EmulatorDevice::glRegisterBuffer(unsigned int buffer, 
@@ -640,7 +613,7 @@ namespace executive
 	unsigned int EmulatorDevice::createEvent(int flags)
 	{
 		unsigned int handle = _next++;
-		_events.insert(std::make_pair(handle, _timer.seconds()));
+		_events.insert(std::make_pair(handle, _timer.absolute()));
 		return handle;
 	}
 
@@ -678,7 +651,7 @@ namespace executive
 			Throw("Invalid stream - " << sHandle);
 		}
 		
-		event->second = _timer.seconds();
+		event->second = _timer.absolute();
 	}
 
 	void EmulatorDevice::synchronizeEvent(unsigned int handle)
@@ -705,7 +678,7 @@ namespace executive
 			Throw("Invalid event - " << endHandle);
 		}
 		
-		return (endEvent->second - startEvent->second) / 1000.0;
+		return (endEvent->second - startEvent->second) * 1000.0;
 	}
 
 	unsigned int EmulatorDevice::createStream()
@@ -833,6 +806,7 @@ namespace executive
 		texture.addressMode[0] = convert(ref.addressMode[0]);
 		texture.addressMode[1] = convert(ref.addressMode[1]);
 		texture.addressMode[2] = convert(ref.addressMode[2]);
+		texture.normalize = ref.normalized;
 		
 		texture.size.x = size.x;
 		texture.size.y = size.y;

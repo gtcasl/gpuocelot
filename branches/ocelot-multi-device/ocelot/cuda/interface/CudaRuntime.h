@@ -246,6 +246,9 @@ namespace cuda {
 		//! The dimensions for multi-dimensional allocations
 		DimensionMap _dimensions;
 		
+		//! The total number of enabled devices in the system
+		unsigned int _deviceCount;
+		
 		//! Device vector
 		DeviceVector _devices;
 		

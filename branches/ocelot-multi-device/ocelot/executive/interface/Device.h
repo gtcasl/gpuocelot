@@ -33,7 +33,7 @@ namespace executive
 			{
 				public:
 					/*! \brief constructor sets the default values */
-					Properties(int guid = 0);
+					Properties();
 			
 				public:
 					/*! "native" ISA of the device */
@@ -42,9 +42,6 @@ namespace executive
 					int addressSpace;
 					/*! human-readable device name */
 					std::string name;
-					/*! unique identifier for referencing the device within the
-						framework */
-					int guid;
 					/*! number of bytes of global memory available to the device */
 					size_t totalMemory;
 					/*! gets the number of multiprocessors/cores on the device */
@@ -145,6 +142,8 @@ namespace executive
 			/*! \brief Create devices with the selected isa */
 			static DeviceVector createDevices(ir::Instruction::Architecture isa,
 				unsigned int flags);
+			/*! \brief Get the total number of devices of a given ISA */
+			static unsigned int deviceCount(ir::Instruction::Architecture isa);
 
 		public:
 			/*! \brief Check a memory access against all allocations */
@@ -295,7 +294,7 @@ namespace executive
 			
 		public:
 			/*! \brief Sets the device properties */
-			Device(int guid = 0, unsigned int flags = 0);
+			Device(unsigned int flags = 0);
 			/*! \brief Virtual destructor is required */
 			virtual ~Device();
 			

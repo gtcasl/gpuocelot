@@ -48,8 +48,6 @@ namespace test
 		program << "}";
 		
 		ocelot::registerPTXModule( program, "callLatency" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"nop", "callLatency" );
 		
 		hydrazine::Timer timer;
 		
@@ -61,7 +59,7 @@ namespace test
 			cudaConfigureCall( dim3( ctas, 1, 1 ), 
 				dim3( threads, 1, 1 ), 0, 0 );
 			cudaSetupArgument( &address, sizeof( long long unsigned int ), 0 );
-			cudaLaunch( kernelPointer );
+			ocelot::launch( "callLatency", "nop" );
 			cudaMemcpy( &value, address, sizeof( unsigned int ), 
 				cudaMemcpyDeviceToHost );
 		}

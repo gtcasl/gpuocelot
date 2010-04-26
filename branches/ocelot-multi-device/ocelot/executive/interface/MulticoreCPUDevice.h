@@ -36,7 +36,7 @@ namespace executive
 
 		public:
 			/*! \brief Sets the device properties */
-			MulticoreCPUDevice(int id = 0, unsigned int flags = 0);
+			MulticoreCPUDevice(unsigned int flags = 0);
 
 		public:
 			/*! \brief Load a module, must have a unique name */

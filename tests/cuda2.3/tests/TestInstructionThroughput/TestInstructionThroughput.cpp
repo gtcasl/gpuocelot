@@ -61,13 +61,11 @@ namespace test
 		program << "}\n";
 			
 		ocelot::registerPTXModule( program, "throughput" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"testInstructionThroughput", "throughput" );
 
 		hydrazine::Timer timer;
 		
 		timer.start();
-		cudaLaunch( kernelPointer );
+		ocelot::launch( "throughput", "testInstructionThroughput" );
 		cudaThreadSynchronize();
 		timer.stop();
 		
@@ -142,13 +140,11 @@ namespace test
 		program << "}\n";
 			
 		ocelot::registerPTXModule( program, "u32throughput" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"testu32InstructionThroughput", "u32throughput" );
 
 		hydrazine::Timer timer;
 		
 		timer.start();
-		cudaLaunch( kernelPointer );
+		ocelot::launch( "u32throughput", "testu32InstructionThroughput" );
 		cudaThreadSynchronize();
 		timer.stop();
 		
@@ -224,13 +220,10 @@ namespace test
 		program << "}\n";
 			
 		ocelot::registerPTXModule( program, "f32throughput" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"testf32InstructionThroughput", "f32throughput" );
-
 		hydrazine::Timer timer;
 		
 		timer.start();
-		cudaLaunch( kernelPointer );
+		ocelot::launch( "f32throughput", "testf32InstructionThroughput" );
 		cudaThreadSynchronize();
 		timer.stop();
 		

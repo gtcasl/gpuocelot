@@ -79,13 +79,11 @@ namespace test
 		std::stringstream stream( program );
 	
 		ocelot::registerPTXModule( stream, "memory" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"stridedAccess", "memory" );
 
 		hydrazine::Timer timer;
 		
 		timer.start();
-		cudaLaunch( kernelPointer );
+		ocelot::launch( "memory", "stridedAccess" );
 		cudaThreadSynchronize();
 		timer.stop();
 		
@@ -184,13 +182,11 @@ namespace test
 		std::stringstream stream( program );
 	
 		ocelot::registerPTXModule( stream, "memory2" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"linearAccess", "memory2" );
 
 		hydrazine::Timer timer;
 		
 		timer.start();
-		cudaLaunch( kernelPointer );
+		ocelot::launch( "memory2", "linearAccess" );
 		cudaThreadSynchronize();
 		timer.stop();
 		

@@ -21,9 +21,6 @@ namespace test
 			bool testCos();
 			bool testLg2();
 			bool testEx2();
-			bool test1DTex();
-			bool test2DTex();
-			bool test3DTex();
 			bool doTest();
 		
 		public:

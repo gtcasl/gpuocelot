@@ -65,7 +65,6 @@ namespace ocelot
 
 	/*! \brief Launch a cuda kernel by name */
 	void launch(const std::string& moduleName, const std::string& kernelName);
-
 }
 
 #endif

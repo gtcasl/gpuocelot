@@ -714,14 +714,23 @@ cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 	state.convert( $<value>4, @1 );
 };
 
-divModifierType : TOKEN_FULL optionalFtz | TOKEN_APPROX optionalFtz | TOKEN_RN;
-
-divModifier : divModifierType
+divFullModifier : TOKEN_FULL optionalFtz
 {
-	state.modifier( $<value>1 );
+	state.full();
+}
+
+divApproxModifier : TOKEN_APPROX optionalFtz
+{
+	state.modifier($<value>1);
 };
 
-divModifier : /* empty string */;
+divRnModifier : TOKEN_RN
+{
+	state.modifier($<value>1);
+};
+
+divModifier : divFullModifier | divApproxModifier 
+	| divRnModifier | /* empty string */;
 
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'
 {

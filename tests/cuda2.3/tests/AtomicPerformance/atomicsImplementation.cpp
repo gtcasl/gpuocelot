@@ -48,10 +48,7 @@ long long unsigned int atomic_increment(long long unsigned int iterations,
 	std::stringstream stream( program );
 	
 	ocelot::registerPTXModule( stream, "atomics" );
-	const char* kernelPointer = ocelot::getKernelPointer( 
-		"atomic_increment", "atomics" );
-
-	cudaLaunch(kernelPointer);
+	ocelot::launch("atomics", "atomic_increment");
 	
 	long long unsigned int counterValue;
 	
@@ -101,10 +98,8 @@ long long unsigned int serial_increment(long long unsigned int iterations)
 	std::stringstream stream( program );
 	
 	ocelot::registerPTXModule( stream, "serial" );
-	const char* kernelPointer = ocelot::getKernelPointer( 
-		"serial_increment", "serial" );
 
-	cudaLaunch(kernelPointer);
+	ocelot::launch("serial", "serial_increment");
 	
 	long long unsigned int counterValue;
 	

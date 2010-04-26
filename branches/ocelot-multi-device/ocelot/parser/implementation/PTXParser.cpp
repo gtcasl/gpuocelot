@@ -976,6 +976,11 @@ namespace parser
 		}
 	}
 
+	void PTXParser::State::full()
+	{
+		statement.instruction.divideFull = true;
+	}
+
 	void PTXParser::State::modifier( int token )
 	{
 		statement.instruction.modifier |= tokenToModifier( token );

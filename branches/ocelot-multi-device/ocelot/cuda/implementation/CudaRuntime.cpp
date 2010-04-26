@@ -381,9 +381,23 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-cuda::CudaRuntime::CudaRuntime() : _devicesLoaded(false), 
+cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
 	_selectedDevice(-1), _nextSymbol(1), _flags(0) {
 	pthread_mutex_init(&_mutex, 0);
+
+	if(api::OcelotConfiguration::get().executive.enableNVIDIA) {
+		_deviceCount += executive::Device::deviceCount(ir::Instruction::SASS);
+	}
+	if(api::OcelotConfiguration::get().executive.enableEmulated) {
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::Emulated);
+	}
+	if(api::OcelotConfiguration::get().executive.enableLLVM) {
+		_deviceCount += executive::Device::deviceCount(ir::Instruction::LLVM);
+	}
+	if(api::OcelotConfiguration::get().executive.enableAMD) {
+		_deviceCount += executive::Device::deviceCount(ir::Instruction::CAL);
+	}
 }
 
 cuda::CudaRuntime::~CudaRuntime() {
@@ -637,7 +651,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocateHost(size);
-		*ptr = allocation->pointer();
+		*ptr = allocation->mappedPointer();
 		result = cudaSuccess;
 	}
 	catch(hydrazine::Exception& e) {
@@ -837,7 +851,7 @@ cudaError_t cuda::CudaRuntime::cudaHostAlloc(void **pHost, size_t bytes,
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocateHost(bytes, flags);
-		*pHost = allocation->pointer();
+		*pHost = allocation->mappedPointer();
 		result = cudaSuccess;
 	}
 	catch(hydrazine::Exception& e) {
@@ -863,8 +877,8 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 
 	if (allocation != 0) {	
 		if (allocation->host()) {
-			size_t offset = (char*)pHost - (char*)allocation->mappedPointer();
-			*pDevice = (char*)allocation->mappedPointer() + offset;
+			size_t offset = (char*)pHost - (char*)allocation->pointer();
+			*pDevice = (char*)allocation->pointer() + offset;
 			result = cudaSuccess;
 		}
 	}
@@ -1846,31 +1860,22 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 
 cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	cudaError_t result = cudaSuccess;
-	_acquire();
-	
-	if (_devices.empty())
-	{
-		*count = 0;
-	}
-	else
-	{	
-		*count = _devices.size();
-		_release();
-	}
-	
+	*count = _deviceCount;	
 	return _setLastError(result);
 }
 
 #define minimum(x, y) ((x) > (y) ? (y) : (x))
 
-cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *prop, int dev) {
+cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(
+	struct cudaDeviceProp *prop, int dev) {
 	cudaError_t result = cudaSuccess;
-	
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	if (dev < (int)_devices.size()) {
-		const executive::Device& device = *_devices[dev];
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (dev < (int)_devices.size() && dev >= 0) {
+		executive::Device& device = *_devices[dev];
 		const executive::Device::Properties& properties = device.properties();
 	
 		report("cuda::CudaRuntime::cudaGetDeviceProperties(dev = " << dev 
@@ -1912,7 +1917,18 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 		result = cudaErrorInvalidDevice;
 	}
 	
-	_release();
+	// this is a horrible hack needed because cudaGetDeviceProperties can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		_devices.clear();
+	}
+	
+	_unlock();
 	
 	return _setLastError(result);
 }
@@ -1920,23 +1936,24 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 cudaError_t cuda::CudaRuntime::cudaChooseDevice(int *device, 
 	const struct cudaDeviceProp *prop) {
 	cudaError_t result = cudaSuccess;
-	*device = _getDevice().properties().guid;
+	_lock();
+	_enumerateDevices();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	*device = 0;
+	_unlock();
 	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
-	cudaError_t result = cudaErrorSetOnActiveProcess;
+	cudaError_t result = cudaErrorInvalidDevice;
 	
 	_lock();
 
-	if ((int)_devices.size() <= device || device < 0) {
-		result = cudaErrorInvalidDevice;
-	}
-	else {
+	if ((int)_deviceCount > device && device >= 0) {
 		HostThreadContext& thread = _getCurrentThread();
 		thread.selectedDevice = device;
 		report("Setting device for thread " << pthread_self() << " to " 
-			<< device << " (" << _devices[device]->properties().name << ")");
+			<< device);
 		result = cudaSuccess;
 	}
 
@@ -2317,7 +2334,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 // CUDA event creation
 
 cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaSuccess;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
@@ -2331,7 +2348,7 @@ cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
 
 cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, 
 	int flags) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaSuccess;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
@@ -2345,12 +2362,18 @@ cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event,
 
 cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, 
 	cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().recordEvent(event, stream);
+	try {
+		_getDevice().recordEvent(event, stream);
+		result = cudaSuccess;
+	}
+	catch(...) {
+	
+	}
 	
 	_release();	
 	
@@ -2363,20 +2386,32 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().queryEvent(event);
-
+	try {
+		_getDevice().queryEvent(event);
+		result = cudaSuccess;
+	}
+	catch(...) {
+	
+	}
+	
 	_release();
 
 	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().synchronizeEvent(event);
+	try {
+		_getDevice().synchronizeEvent(event);
+		result = cudaSuccess;
+	}
+	catch(...) {
+	
+	}
 	
 	_release();
 	
@@ -2389,7 +2424,13 @@ cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().destroyEvent(event);
+	try {
+		_getDevice().destroyEvent(event);
+		result = cudaSuccess;
+	}
+	catch(...) {
+	
+	}	
 	
 	_release();
 	
@@ -2398,13 +2439,19 @@ cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 
 cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, 
 	cudaEvent_t start, cudaEvent_t end) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	*ms = _getDevice().getEventTime(start, end);
-	
+	try {
+		*ms = _getDevice().getEventTime(start, end);
+		result = cudaSuccess;
+	}
+	catch(...) {
+
+	}
+
 	_release();
 	
 	return _setLastError(result);
@@ -2416,38 +2463,54 @@ cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms,
 //
 
 cudaError_t cuda::CudaRuntime::cudaStreamCreate(cudaStream_t *pStream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	*pStream = _getDevice().createStream();
+	try {
+		*pStream = _getDevice().createStream();
+		result = cudaSuccess;
+	}
+	catch (...) {
 	
+	}
 	_release();
 	
 	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaStreamDestroy(cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().destroyStream(stream);
+	try {
+		_getDevice().destroyStream(stream);
+		result = cudaSuccess;
+	}
+	catch(...) {
 	
+	}
 	_release();
 	
 	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaStreamSynchronize(cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().synchronizeStream(stream);
+	try {
+		_getDevice().synchronizeStream(stream);
+		result = cudaSuccess;
+	}
+	catch(...) {
+	
+	}
 	
 	_release();
 
@@ -2455,12 +2518,18 @@ cudaError_t cuda::CudaRuntime::cudaStreamSynchronize(cudaStream_t stream) {
 }
 
 cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	_getDevice().queryStream(stream);
+	try {
+		_getDevice().queryStream(stream);
+		result = cudaSuccess;
+	}
+	catch(...) {
+	
+	}
 	
 	_release();
 	

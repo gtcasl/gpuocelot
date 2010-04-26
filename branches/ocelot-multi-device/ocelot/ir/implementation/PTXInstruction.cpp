@@ -192,16 +192,25 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case And: return "and"; break;
 		case Atom: return "atom"; break;
 		case Bar: return "bar"; break;
+		case Bfe: return "bfe"; break;
+		case Bfi: return "bfi"; break;
+		case Bfind: return "bfind"; break;
 		case Bra: return "bra"; break;
+		case Brev: return "brev"; break;
 		case Brkpt: return "brkpt"; break;
 		case Call: return "call"; break;
+		case Clz: return "clz"; break;
 		case CNot: return "cnot"; break;
 		case Cos: return "cos"; break;
 		case Cvt: return "cvt"; break;
+		case Cvta: return "cvta"; break;
 		case Div: return "div"; break;
 		case Ex2: return "ex2"; break;
 		case Exit: return "exit"; break;
+		case Fma: return "fma"; break;
+		case Isspacep: return "isspacep"; break;
 		case Ld: return "ld"; break;
+		case Ldu: return "ldu"; break;
 		case Lg2: return "lg2"; break;
 		case Mad24: return "mad24"; break;
 		case Mad: return "mad"; break;
@@ -213,8 +222,12 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Mul: return "mul"; break;
 		case Neg: return "neg"; break;
 		case Not: return "not"; break;
-		case Pmevent: return "pmevent"; break;
 		case Or: return "or"; break;
+		case Pmevent: return "pmevent"; break;
+		case Popc: return "popc"; break;
+		case Prefetch: return "prefetch"; break;
+		case Prefetchu: return "prefetchu"; break;
+		case Prmt: return "prmt"; break;
 		case Rcp: return "rcp"; break;
 		case Red: return "red"; break;
 		case Rem: return "rem"; break;
@@ -232,8 +245,22 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case St: return "st"; break;
 		case Sub: return "sub"; break;
 		case SubC: return "subc"; break;
+		case Suld: return "suld"; break;
+		case Sured: return "sured"; break;
+		case Sust: return "sust"; break;
+		case Suq: return "suq"; break;
 		case Tex: return "tex"; break;
+		case Txq: return "txq"; break;
 		case Trap: return "trap"; break;
+		case Vabsdiff: return "vabsdiff"; break;
+		case Vadd: return "vadd"; break;
+		case Vmad: return "vmad"; break;
+		case Vmax: return "vmax"; break;
+		case Vmin: return "vmin"; break;
+		case Vset: return "vset"; break;
+		case Vshl: return "vshl"; break;
+		case Vshr: return "vshr"; break;
+		case Vsub: return "vsub"; break;
 		case Vote: return "vote"; break;
 		case Xor: return "xor"; break;
 		case Reconverge: return "reconverge"; break;
@@ -1584,11 +1611,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( divideFull ) {
 				result += "full.";
 			}
-			Modifier local_modifier = (Modifier)modifier;
-			if (type == ir::PTXOperand::f32) {
-				local_modifier = approx;
-			}
-			result += modifierString( local_modifier, carry );
+			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString();
 			return result;

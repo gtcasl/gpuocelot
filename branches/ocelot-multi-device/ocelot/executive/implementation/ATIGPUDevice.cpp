@@ -107,6 +107,12 @@ namespace executive
 
 		return std::move(devices);
 	}
+	
+	unsigned int ATIGPUDevice::deviceCount()
+	{
+		// TODO change this when multiple device support is added
+		return 1;
+	}	
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {

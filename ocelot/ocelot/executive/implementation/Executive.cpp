@@ -13,7 +13,7 @@
 //#include <iostream>
 
 // Ocelot includes
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/interface/OcelomtConfiguration.h>
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>

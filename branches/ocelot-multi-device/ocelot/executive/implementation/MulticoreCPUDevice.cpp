@@ -15,6 +15,9 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
 
+// Linux includes
+#include <sys/sysinfo.h>
+
 // Macros
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str());}
@@ -53,12 +56,14 @@ namespace executive
 		return 0;
 	}
 
-	MulticoreCPUDevice::MulticoreCPUDevice(int id, 
-		unsigned int flags) : EmulatorDevice(id, flags), _workerThreads(-1),
+	MulticoreCPUDevice::MulticoreCPUDevice(unsigned int flags) 
+		: EmulatorDevice(flags), _workerThreads(-1),
 		_optimizationLevel(translator::Translator::NoOptimization)
 	{
 		_properties.ISA = ir::Instruction::LLVM;
 		_properties.name = "Ocelot Multicore CPU Backend (LLVM-JIT)";
+		_properties.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
+		_properties.clockRate = 2000;
 	}
 	
 	void MulticoreCPUDevice::load(const ir::Module* module)

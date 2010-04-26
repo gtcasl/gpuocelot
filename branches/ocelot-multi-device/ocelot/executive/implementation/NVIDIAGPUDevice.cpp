@@ -453,8 +453,22 @@ namespace executive
 		return std::move(devices);
 	}
 
+	unsigned int NVIDIAGPUDevice::deviceCount()
+	{
+		if(!_cudaDriverInitialized)
+		{
+			driver::cuInit(0);
+			_cudaDriverInitialized = true;
+		}
+		
+		int count;
+		checkError(driver::cuDeviceGetCount(&count));
+		
+		return count;
+	}
+
 	NVIDIAGPUDevice::NVIDIAGPUDevice(int id, unsigned int flags) : 
-		Device(id, flags), _selected(false), _next(0), _selectedStream(0), 
+		Device(flags), _selected(false), _next(0), _selectedStream(0), 
 		_opengl(true)
 	{
 		if(!_cudaDriverInitialized)
@@ -639,8 +653,9 @@ namespace executive
 		size_t size, unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
-		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
-		return allocation;		
+		_hostAllocations.insert(std::make_pair(allocation->pointer(), 
+			allocation));
+		return allocation;
 	}
 
 	void NVIDIAGPUDevice::free(void* pointer)

@@ -74,13 +74,11 @@ namespace test
 		program << "}\n";
 	
 		ocelot::registerPTXModule( program, "barriers" );
-		const char* kernelPointer = ocelot::getKernelPointer( 
-			"testBarriers", "barriers" );
 
 		hydrazine::Timer timer;
 		
 		timer.start();
-		cudaLaunch( kernelPointer );
+		ocelot::launch( "barriers", "testBarriers" );
 		cudaThreadSynchronize();
 		timer.stop();
 		

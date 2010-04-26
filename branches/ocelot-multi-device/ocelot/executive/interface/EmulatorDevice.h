@@ -78,7 +78,7 @@ namespace executive
 					void memset(size_t offset, int value, size_t size);
 					/*! \brief Copy to another allocation */
 					void copy(Device::MemoryAllocation* allocation, 
-						size_t toOffset, size_t fromOffset, size_t size) const;
+						size_t toOffset, size_t fromOffset, size_t size) const;				
 			};
 
 		protected:
@@ -158,11 +158,8 @@ namespace executive
 				OpenGLResource> GraphicsMap;
 
 		protected:
-			/*! \brief A map of memory allocations in device space */
+			/*! \brief A map of memory allocations in device/host space */
 			AllocationMap _allocations;
-			
-			/*! \brief A map of allocations in host space */
-			AllocationMap _hostAllocations;
 			
 			/*! \brief The modules that have been loaded */
 			ModuleMap _modules;
@@ -187,7 +184,7 @@ namespace executive
 						
 		public:
 			/*! \brief Sets the device properties, bind this to the cuda id */
-			EmulatorDevice(int id = 0, unsigned int flags = 0);
+			EmulatorDevice(unsigned int flags = 0);
 			/*! \brief Clears all state */
 			virtual ~EmulatorDevice();
 			

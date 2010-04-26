@@ -484,7 +484,7 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	double activity = (events ? (double)synchronous / (double)events : 0);
 
 	if (events) {
-		t = log10((float)events) / (float)log10((float)maxEvents);
+		t = log((float)(events)) / (float)log((float)(maxEvents));
 	}
 	unsigned int r = (unsigned int)(t * 255.0);
 	unsigned int g = 0, b = 0;
@@ -536,6 +536,10 @@ void trace::WarpSynchronousGenerator::outputHotPaths(int warpSize) {
 		//blockColors[branchTargetsToBlock[target_it->first]] = 0;
 		if (formatter.maxEvents < target_it->second.events) {
 			formatter.maxEvents = target_it->second.events;
+		}
+		if ( (!formatter.minEvents && target_it->second.events) || (target_it->second.events && 
+			target_it->second.events < formatter.minEvents)) {
+			formatter.minEvents = target_it->second.events;
 		}
 	}
 	if (formatter.maxEvents) {

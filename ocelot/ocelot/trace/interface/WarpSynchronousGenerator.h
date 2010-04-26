@@ -152,7 +152,8 @@ namespace trace
 
 				int warpSize;
 
-				size_t maxEvents;
+				size_t minEvents;	// minimum (nonzero) number of events
+				size_t maxEvents; // maximum number of events
 				std::map< std::string , TargetCounter > blockCounter;
 
 			public:

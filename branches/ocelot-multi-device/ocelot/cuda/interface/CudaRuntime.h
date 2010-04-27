@@ -189,6 +189,7 @@ namespace cuda {
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
 	typedef std::map< void*, Dimension > DimensionMap;
 	typedef std::map< std::string, ir::Module > ModuleMap;
+	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,6 +246,9 @@ namespace cuda {
 		
 		//! The dimensions for multi-dimensional allocations
 		DimensionMap _dimensions;
+		
+		//! Registered opengl buffers and mapping to graphics resources
+		GLBufferMap _buffers;
 		
 		//! The total number of enabled devices in the system
 		unsigned int _deviceCount;
@@ -493,6 +497,13 @@ namespace cuda {
 		virtual cudaError_t  cudaStreamDestroy(cudaStream_t stream);
 		virtual cudaError_t  cudaStreamSynchronize(cudaStream_t stream);
 		virtual cudaError_t  cudaStreamQuery(cudaStream_t stream);
+	
+	public:
+		/*
+			Version accessors
+		*/
+		virtual cudaError_t cudaDriverGetVersion(int *driverVersion);
+		virtual cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 	
 	public:
 		//

@@ -280,7 +280,16 @@ namespace cuda
 			*count = 0;
 			return CUDA_SUCCESS;
 		}
-		return (*_interface.cuDeviceGetCount)(count);
+		
+		CUresult result= (*_interface.cuDeviceGetCount)(count);
+		
+		if(result != CUDA_SUCCESS)
+		{
+			*count = 0;
+			return CUDA_SUCCESS;
+		}
+		
+		return result;
 	}
 
 	CUresult CudaDriver::cuDeviceGetName(char *name, int len, CUdevice dev)

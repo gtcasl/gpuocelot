@@ -873,7 +873,7 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
 	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getMemoryAllocation(pHost);
+		allocation = _getDevice().getMemoryAllocation(pHost, true);
 
 	if (allocation != 0) {	
 		if (allocation->host()) {
@@ -895,7 +895,7 @@ cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags,
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getMemoryAllocation(pHost);
+		allocation = _getDevice().getMemoryAllocation(pHost, true);
 	
 	if (allocation != 0) {
 		*pFlags = allocation->flags();
@@ -2537,6 +2537,67 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+cudaError_t cuda::CudaRuntime::cudaDriverGetVersion(int *driverVersion) {
+	cudaError_t result = cudaSuccess;
+
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (_devices.empty()) { 
+		result = cudaErrorNoDevice;
+	}
+	else {
+		*driverVersion = _devices[0]->driverVersion();
+	}
+	
+	// this is a horrible hack needed because this can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		_devices.clear();
+	}
+	
+	_unlock();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
+	cudaError_t result = cudaSuccess;
+
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (_devices.empty()) { 
+		result = cudaErrorNoDevice;
+	}
+	else {
+		*runtimeVersion = _devices[0]->runtimeVersion();
+	}
+	
+	// this is a horrible hack needed because this can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		_devices.clear();
+	}
+	
+	_unlock();
+	
+	return _setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
@@ -2582,21 +2643,32 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	report("cudaGLMapBufferObjectAsync()");
-	_getDevice().mapGraphicsResource(devPtr, bufObj, stream);
-	
+	report("cudaGLMapBufferObjectAsync(" << bufObj << ", " << stream << ")");
+	GLBufferMap::iterator buffer = _buffers.find(bufObj);
+	if (buffer != _buffers.end()) {
+		_getDevice().mapGraphicsResource(buffer->second, 1, stream);
+		size_t bytes = 0;
+		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
+			bytes, buffer->second);
+		result = cudaSuccess;
+	}	
 	_release();
 	
 	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLRegisterBufferObject(GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidValue;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	report("cudaGLRegisterBufferObject(" << bufObj << ")");	
-	_getDevice().glRegisterBuffer(bufObj, 0);
+
+	if (_buffers.count(bufObj) == 0) {
+		void* graphic = _getDevice().glRegisterBuffer(bufObj, 0);
+		_buffers.insert(std::make_pair(bufObj, graphic));
+		result = cudaSuccess;
+	}
 	
 	_release();
 	
@@ -2605,12 +2677,17 @@ cudaError_t cuda::CudaRuntime::cudaGLRegisterBufferObject(GLuint bufObj) {
 
 cudaError_t cuda::CudaRuntime::cudaGLSetBufferObjectMapFlags(GLuint bufObj, 
 	unsigned int flags) {
-	cudaError_t result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidValue;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	report("cudaGLRegisterBufferObjectMapFlags(" << bufObj << ")");	
-	_getDevice().glRegisterBuffer(bufObj, flags);
+
+	if (_buffers.count(bufObj) == 0) {
+		void* graphic = _getDevice().glRegisterBuffer(bufObj, flags);
+		_buffers.insert(std::make_pair(bufObj, graphic));
+		result = cudaSuccess;
+	}
 	
 	_release();
 	
@@ -2620,17 +2697,21 @@ cudaError_t cuda::CudaRuntime::cudaGLSetBufferObjectMapFlags(GLuint bufObj,
 
 cudaError_t cuda::CudaRuntime::cudaGLSetGLDevice(int device) {
 	report("cudaGLSetGLDevice(" << device << ")");
-	return cudaSuccess;
+	return cudaSetDevice(device);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidValue;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
 	report("cudaGLUnmapBufferObject(" << bufObj << ")");
 	
-	_getDevice().unmapGraphicsResource((void*)bufObj);
+	GLBufferMap::iterator buffer = _buffers.find(bufObj);
+	if (buffer != _buffers.end()) {
+		_getDevice().unmapGraphicsResource(buffer->second);
+		result = cudaSuccess;
+	}
 	
 	_release();
 	
@@ -2639,18 +2720,24 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 
 cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObjectAsync(GLuint bufObj, 
 	cudaStream_t stream) {
-	assert(0 && "unimplemented");
+	return cudaGLUnmapBufferObject(bufObj);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
+	cudaError_t result = cudaErrorInvalidValue;
+
 	report("cudaGLUnregisterBufferObject");
 	
-	_getDevice().unRegisterGraphicsResource((void*)bufObj);	
-
+	GLBufferMap::iterator buffer = _buffers.find(bufObj);
+	if (buffer != _buffers.end()) {
+		_getDevice().unRegisterGraphicsResource(buffer->second);	
+		_buffers.erase(buffer);
+		result = cudaSuccess;
+	}
+	
 	_release();
 	
 	return _setLastError(result);

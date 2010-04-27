@@ -112,8 +112,8 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa) {
 	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
 }
 
-executive::Device::Device( unsigned int flags) : _driverVersion(0), 
-	_runtimeVersion(0), _flags(flags) {
+executive::Device::Device( unsigned int flags) : _driverVersion(3000), 
+	_runtimeVersion(3000), _flags(flags) {
 }
 
 executive::Device::~Device() {

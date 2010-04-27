@@ -14,8 +14,13 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 // hydrazine includes
+#include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
 
 // OpenGL includes
 #include <GL/glew.h>
@@ -30,25 +35,29 @@
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str());}
 
+// Turn on report messages
+#define REPORT_BASE 0
+
 namespace executive 
 {
 	EmulatorDevice::MemoryAllocation::MemoryAllocation() 
 		: Device::MemoryAllocation(false, false), _size(0), 
-		_pointer(0), _flags(0)
+		_pointer(0), _flags(0), _external(false)
 	{
 	
 	}
 	
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(size_t size) 
 		: Device::MemoryAllocation(false, false), _size(size), 
-		_pointer(std::malloc(size)), _flags(0)
+		_pointer(std::malloc(size)), _flags(0), _external(false)
 	{
 	
 	}
 	
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(size_t size, 
 		unsigned int flags) : Device::MemoryAllocation(false, true), 
-		_size(size), _pointer(std::malloc(size)), _flags(flags)
+		_size(size), _pointer(std::malloc(size)), _flags(flags),
+		_external(false)
 	{
 		
 	}
@@ -56,14 +65,22 @@ namespace executive
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(const ir::Global& global)
 		: Device::MemoryAllocation(true, false), 
 		_size(global.statement.bytes()), 
-		_pointer(std::malloc(global.statement.bytes())), _flags(0)
+		_pointer(std::malloc(global.statement.bytes())), 
+		_flags(0), _external(false)
 	{
 		global.statement.copy(_pointer);
+	}
+
+	EmulatorDevice::MemoryAllocation::MemoryAllocation(void* pointer, 
+		size_t size) : Device::MemoryAllocation(false, false), _size(size),
+		_pointer(pointer), _flags(0), _external(true)
+	{
+	
 	}
 	
 	EmulatorDevice::MemoryAllocation::~MemoryAllocation()
 	{
-		std::free(_pointer);
+		if(!_external) std::free(_pointer);
 	}
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(
@@ -85,16 +102,24 @@ namespace executive
 	{
 		if(&a == this) return *this;
 		
-		std::free(_pointer);
+		if(!_external) std::free(_pointer);
 		
 		_global = a.global();
 		_host = a.host();
 		_size = a.size();
-		_pointer = std::malloc(size());
 		_flags = a.flags();
-		
-		std::memcpy(pointer(), a.pointer(), size());
-		
+		_external = a._external;
+
+		if(!a._external)
+		{
+			_pointer = std::malloc(size());
+			std::memcpy(pointer(), a.pointer(), size());
+		}
+		else
+		{
+			_pointer = a.pointer();
+		}
+				
 		return *this;
 	}
 
@@ -108,6 +133,7 @@ namespace executive
 		std::swap(_size, a._size);
 		std::swap(_pointer, a._pointer);
 		std::swap(_flags, a._flags);
+		std::swap(_external, a._external);
 		
 		return *this;
 	}
@@ -240,7 +266,7 @@ namespace executive
 	}
 	
 	EmulatorDevice::OpenGLResource::OpenGLResource(unsigned int b) : 
-		buffer(0), pointer(0)
+		buffer(b), pointer(0)
 	{
 	
 	}
@@ -315,7 +341,8 @@ namespace executive
 				if(alloc != _allocations.begin()) --alloc;
 				if(alloc != _allocations.end())
 				{
-					if((char*)address >= (char*)alloc->second->pointer())
+					if(!alloc->second->host()
+					 	&& (char*)address >= (char*)alloc->second->pointer())
 					{
 						allocation = alloc->second;
 					}
@@ -461,6 +488,8 @@ namespace executive
 		unsigned int flags)
 	{
 		unsigned int handle = _next++;
+		report(" Registering opengl buffer " << buffer 
+			<< " to handle " << handle);
 		_graphics.insert(std::make_pair(handle, OpenGLResource(buffer)));
 		return (void*) handle;
 	}
@@ -485,9 +514,12 @@ namespace executive
 		_graphics.erase(graphic);
 	}
 
-	void EmulatorDevice::mapGraphicsResource(void* resource, int buffer, 
+	void EmulatorDevice::mapGraphicsResource(void* resource, int count, 
 		unsigned int stream)
 	{
+		report("mapGraphicsResource(" << resource << ", " 
+			<< count << ", " << stream << ")");
+		
 		unsigned int handle = hydrazine::bit_cast<unsigned int>(resource);
 		GraphicsMap::iterator graphic = _graphics.find(handle);
 		if(graphic == _graphics.end())
@@ -495,17 +527,44 @@ namespace executive
 			Throw("Invalid graphics resource - " << handle);
 		}
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		
-		graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-		graphic->second.buffer = buffer;
-		
-		if(!glGetError() != GL_NO_ERROR)
+		report(" Binding GL array buffer to " << graphic->second.buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
+
+		if(glGetError() != GL_NO_ERROR)
 		{
-			Throw("OpenGL Error in glMapBuffer.")
+			Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer.")
+		}
+
+		report(" Mapping GL buffer.");
+		graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+		
+		if(glGetError() != GL_NO_ERROR)
+		{
+			Throw("OpenGL Error in mapGraphicsResource() - glMapBuffer1.")
 		}
 		
+		report(" Getting buffer size.");
+
+		int bytes = 0;
+		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes);
+		report("  size is - " << bytes);
+
+		if(glGetError() != GL_NO_ERROR)
+		{
+			Throw("OpenGL Error in mapGraphicsResource() " 
+				<< "- glGetBufferParameteriv.")
+		}
+				
+		_allocations.insert(std::make_pair(graphic->second.pointer, 
+			new MemoryAllocation(graphic->second.pointer, bytes)));
+		
+		report(" Binding GL array buffer back to 0.");
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		if(glGetError() != GL_NO_ERROR)
+		{
+			Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer2.")
+		}
 	}
 
 	void* EmulatorDevice::getPointerToMappedGraphicsResource(size_t& size, 
@@ -523,17 +582,11 @@ namespace executive
 			Throw("Graphics resource - " << handle << " is not mapped.");
 		}
 		
-		glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
+		AllocationMap::const_iterator allocation = _allocations.find(
+			graphic->second.pointer);
+		assert(allocation != _allocations.end());
 		
-		int bytes = 0;
-		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes);
-		
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in glGetBufferParameteriv.")
-		}
-		
-		size = bytes;
+		size = allocation->second->size();
 		
 		return graphic->second.pointer;
 	}
@@ -565,16 +618,34 @@ namespace executive
 		}
 		
 		glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
+
+		if(glGetError() != GL_NO_ERROR)
+		{
+			Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
+		}
+
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 
 		if(glGetError() != GL_NO_ERROR)
 		{
-			Throw("OpenGL Error in mapGraphicsResource.")
+			Throw("OpenGL Error in unmapGraphicsResource() - glUnmapBuffer.")
 		}
+
+		AllocationMap::iterator allocation = _allocations.find(
+			graphic->second.pointer);
+		assert(allocation != _allocations.end());
+		
+		delete allocation->second;
+		_allocations.erase(allocation);
 
 		graphic->second.pointer = 0;
 	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);			
+
+		if(glGetError() != GL_NO_ERROR)
+		{
+			Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
+		}
 	}
 
 	void EmulatorDevice::load(const ir::Module* module)

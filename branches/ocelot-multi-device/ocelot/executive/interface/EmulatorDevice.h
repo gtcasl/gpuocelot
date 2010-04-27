@@ -37,6 +37,8 @@ namespace executive
 					void* _pointer;
 					/*! \brief The flags for host allocated memory */
 					unsigned int _flags;
+					/*! \brief Is the allocation managed here or externally? */
+					bool _external;
 				
 				public:
 					/*! \brief Generic Construct */
@@ -47,6 +49,8 @@ namespace executive
 					MemoryAllocation(size_t size, unsigned int flags);
 					/*! \brief Construct a global allocation */
 					MemoryAllocation(const ir::Global& global);
+					/*! \brief Construct an external allocaton */
+					MemoryAllocation(void* pointer, size_t size);
 					/*! \brief Desructor */
 					~MemoryAllocation();
 
@@ -137,7 +141,7 @@ namespace executive
 			
 				public:
 					OpenGLResource(unsigned int buffer = 0);
-					
+				
 			};
 
 			/*! \brief A map of registered modules */

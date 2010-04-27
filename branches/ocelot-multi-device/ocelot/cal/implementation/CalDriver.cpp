@@ -49,6 +49,7 @@ namespace cal
 		hydrazine::bit_cast(_calModuleGetEntry,    dlsym(_driver, "calModuleGetEntry"));
 		hydrazine::bit_cast(_calModuleGetName,     dlsym(_driver, "calModuleGetName"));
 		hydrazine::bit_cast(_calResAllocLocal1D,   dlsym(_driver, "calResAllocLocal1D"));
+		hydrazine::bit_cast(_calResAllocRemote1D,  dlsym(_driver, "calResAllocRemote1D"));
 		hydrazine::bit_cast(_calResFree,           dlsym(_driver, "calResFree"));
 		hydrazine::bit_cast(_calResMap,            dlsym(_driver, "calResMap"));
 		hydrazine::bit_cast(_calResUnmap,          dlsym(_driver, "calResUnmap"));
@@ -62,13 +63,11 @@ namespace cal
 		hydrazine::bit_cast(_calclFreeImage,  dlsym(_compiler, "calclFreeImage"));
 
 		checkError(calInit());
-		report("calInit");
 	}
 
 	CalDriver::~CalDriver()
 	{
 		checkError(calShutdown());
-		report("calShutdown");
 
 		if (_driver) {
 			dlclose(_driver);
@@ -94,126 +93,344 @@ namespace cal
 	
 	CALresult CalDriver::calInit()
 	{
-		return (*_calInit)();
+		CALresult result;
+		result = (*_calInit)();
+
+		report("calInit()");
+
+		return result;
 	}
 
 	CALresult CalDriver::calShutdown()
 	{
-		return (*_calShutdown)();
+		CALresult result;
+		result = (*_calShutdown)();
+
+		report("calShutdown()");
+
+		return result;
 	}
 
 	CALresult CalDriver::calDeviceOpen(CALdevice *dev, CALuint ordinal)
 	{
-		return (*_calDeviceOpen)(dev, ordinal);
+		CALresult result;
+		result = (*_calDeviceOpen)(dev, ordinal);
+
+		report("calDeviceOpen("
+				<< "*dev = " << std::hex << std::showbase << *dev
+				<< ", ordinal = " << std::dec << ordinal
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calDeviceClose(CALdevice dev)
 	{
-		return (*_calDeviceClose)(dev);
+		CALresult result;
+		result = (*_calDeviceClose)(dev);
+
+		report("calDeviceClose("
+				<< "dev = " << std::hex << std::showbase << dev
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calDeviceGetInfo(CALdeviceinfo *info, CALuint ordinal)
 	{
-		return (*_calDeviceGetInfo)(info, ordinal);
+		CALresult result;
+		result = (*_calDeviceGetInfo)(info, ordinal);
+		
+		report("calDeviceGetInfo("
+				<< "info = " << std::hex << std::showbase << info
+				<< ", ordinal = " << std::dec << ordinal
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxCreate(CALcontext *ctx, CALdevice dev)
 	{
-		return (*_calCtxCreate)(ctx, dev);
+		CALresult result;
+		result = (*_calCtxCreate)(ctx, dev);
+		
+		report("calCtxCreate("
+				<< "*ctx = " << std::hex << std::showbase << *ctx
+				<< ", dev = " << std::hex << std::showbase << dev
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxDestroy(CALcontext ctx)
 	{
-		return (*_calCtxDestroy)(ctx);
+		CALresult result;
+		result = (*_calCtxDestroy)(ctx);
+		
+		report("calCtxDestroy("
+				<< "ctx = " << std::hex << std::showbase << ctx
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxGetMem(CALmem *mem, CALcontext ctx, CALresource res)
 	{
-		return (*_calCtxGetMem)(mem, ctx, res);
+		CALresult result;
+		result = (*_calCtxGetMem)(mem, ctx, res);
+
+		report("calCtxGetMem("
+				<< "*mem = " << std::hex << std::showbase << *mem
+				<< ", ctx = " << std::hex << std::showbase << ctx
+				<< ", res = " << std::hex << std::showbase << res
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxReleaseMem(CALcontext ctx, CALmem mem)
 	{
-		return (*_calCtxReleaseMem)(ctx, mem);
+		CALresult result;
+		result = (*_calCtxReleaseMem)(ctx, mem);
+
+		report("calCtxReleaseMem("
+				<< "ctx = " << std::hex << std::showbase << ctx
+				<< ", mem = " << std::hex << std::showbase << mem
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxSetMem(CALcontext ctx, CALname name, CALmem mem)
 	{
-		return (*_calCtxSetMem)(ctx, name, mem);
+		CALresult result;
+		result = (*_calCtxSetMem)(ctx, name, mem);
+
+		report("calCtxSetMem("
+				<< "ctx = " << std::hex << std::showbase << ctx
+				<< ", name = " << std::hex << std::showbase << name
+				<< ", mem = " << std::hex << std::showbase << mem
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calModuleLoad(CALmodule* module, CALcontext ctx, CALimage image)
 	{
-		return (*_calModuleLoad)(module, ctx, image);
+		CALresult result;
+		result = (*_calModuleLoad)(module, ctx, image);
+
+		report("calModuleLoad("
+				<< "*module = " << std::hex << std::showbase << *module
+				<< ", ctx = " << std::hex << std::showbase << ctx
+				<< ", image = " << std::hex << std::showbase << image
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calModuleUnload(CALcontext ctx, CALmodule module)
 	{
-		return (*_calModuleUnload)(ctx, module);
+		CALresult result;
+		result = (*_calModuleUnload)(ctx, module);
+
+		report("calModuleUnLoad("
+				<< "ctx = " << std::hex << std::showbase << ctx
+				<< ", module = " << std::hex << std::showbase << module
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calModuleGetEntry(CALfunc* func, CALcontext ctx, CALmodule module, const CALchar* procName)
 	{
-		return (*_calModuleGetEntry)(func, ctx, module, procName);
+		CALresult result;
+		result = (*_calModuleGetEntry)(func, ctx, module, procName);
+
+		report("calModuleGetEntry("
+				<< "*func = " << std::hex << std::showbase << *func
+				<< ", ctx = " << std::hex << std::showbase << ctx
+				<< ", module = " << std::hex << std::showbase << module
+				<< ", procName = " << procName
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calModuleGetName(CALname* name, CALcontext ctx, CALmodule module, const CALchar* varName)
 	{
-		return (*_calModuleGetName)(name, ctx, module, varName);
+		CALresult result;
+		result = (*_calModuleGetName)(name, ctx, module, varName);
+
+		report("calModuleGetName("
+				<< "*name = " << std::hex << std::showbase << *name
+				<< ", ctx = " << std::hex << std::showbase << ctx
+				<< ", module = " << std::hex << std::showbase << module
+				<< ", varName = " << varName
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calResAllocLocal1D(CALresource* res, CALdevice dev, CALuint width, CALformat format, CALuint flags)
 	{
-		return (*_calResAllocLocal1D)(res, dev, width, format, flags);
+		CALresult result;
+		result = (*_calResAllocLocal1D)(res, dev, width, format, flags);
+
+		report("calResAllocLocal1D("
+				<< "*res = " << std::hex << std::showbase << *res
+				<< ", dev = " << dev
+				<< ", width = " << std::dec << width
+				<< ", format = " << std::dec << format
+				<< ", flags = " << std::dec << flags 
+				<< ")");
+
+		return result;
+	}
+
+	CALresult CalDriver::calResAllocRemote1D(CALresource* res, CALdevice* dev, CALuint deviceCount, CALuint width, CALformat format, CALuint flags)
+	{
+		CALresult result;
+		result = (*_calResAllocRemote1D)(res, dev, deviceCount, width, format, flags);
+
+		report("calResAllocRemote1D("
+				<< "*res = " << std::hex << std::showbase << *res
+				<< ", *dev = " << *dev
+				<< ", deviceCount = " << std::dec << deviceCount
+				<< ", width = " << std::dec << width
+				<< ", format = " << std::dec << format
+				<< ", flags = " << std::dec << flags 
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calResFree(CALresource res)
 	{
-		return (*_calResFree)(res);
+		CALresult result;
+		result = (*_calResFree)(res);
+
+		report("calResFree("
+				<< "res = " << std::hex << std::showbase << res
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calResMap(CALvoid** pPtr, CALuint* pitch, CALresource res, CALuint flags)
 	{
-		return (*_calResMap)(pPtr, pitch, res, flags);
+		CALresult result;
+		result = (*_calResMap)(pPtr, pitch, res, flags);
+
+		report("calResMap("
+				<< "*pPtr = " << std::hex << std::showbase << *pPtr
+				<< ", *pitch = " << std::hex << std::showbase << *pitch
+				<< ", res = " << std::hex << std::showbase << res
+				<< ", flags = " << std::dec << flags
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calResUnmap(CALresource res)
 	{
-		return (*_calResUnmap)(res);
+		CALresult result;
+		result = (*_calResUnmap)(res);
+
+		report("calResUnmap("
+				<< "res = " << std::hex << std::showbase << res
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxRunProgramGrid(CALevent* event, CALcontext ctx, CALprogramGrid* pProgramGrid)
 	{
-		return (*_calCtxRunProgramGrid)(event, ctx, pProgramGrid);
+		CALresult result;
+		result = (*_calCtxRunProgramGrid)(event, ctx, pProgramGrid);
+
+		report("calCtxRunProgramGrid("
+				<< "event = " << std::hex << std::showbase << event
+				<< ", ctx = " << std::hex << std::showbase << ctx
+				<< ", pProgramGrid = " << std::hex << std::showbase << pProgramGrid
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calCtxIsEventDone(CALcontext ctx, CALevent event)
 	{
-		return (*_calCtxIsEventDone)(ctx, event);
+		CALresult result;
+		result = (*_calCtxIsEventDone)(ctx, event);
+
+		report("calCtxIsEventDone("
+				<< "ctx = " << std::hex << std::showbase << ctx
+				<< ", event = " << std::hex << std::showbase << event
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calclCompile(CALobject* obj, CALlanguage language, const CALchar* source, CALtarget target)
 	{
-		return (*_calclCompile)(obj, language, source, target);
+		CALresult result;
+		result = (*_calclCompile)(obj, language, source, target);
+
+		report("calclCompile("
+				<< "*obj = " << std::hex << std::showbase << *obj
+				<< ", language = " << std::dec << language
+				<< ", source = \"" << std::string(source).substr(0, 10) << "...\""
+				<< ", target = " << std::dec << target
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calclLink(CALimage* image, CALobject* obj, CALuint objCount)
 	{
-		return (*_calclLink)(image, obj, objCount);
+		CALresult result;
+		result = (*_calclLink)(image, obj, objCount);
+
+		report("calclLink("
+				<< "*image = " << std::hex << std::showbase << *image
+				<< ", *obj = " << std::hex << std::showbase << *obj
+				<< ", objCount = " << std::dec << objCount
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calclFreeObject(CALobject obj)
 	{
-		return (*_calclFreeObject)(obj);
+		CALresult result;
+		result = (*_calclFreeObject)(obj);
+
+		report("calclFreeObject("
+				<< "obj = " << std::hex << std::showbase << obj
+				<< ")");
+
+		return result;
 	}
 
 	CALresult CalDriver::calclFreeImage(CALimage image)
 	{
-		return (*_calclFreeImage)(image);
+		CALresult result;
+		result = (*_calclFreeImage)(image);
+
+		report("calclFreeImage("
+				<< "image = " << std::hex << std::showbase << image
+				<< ")");
+
+		return result;
 	}
 
 	const CALchar *CalDriver::calGetErrorString()
 	{
-		return (*_calGetErrorString)();
+		const CALchar *result;
+		result = (*_calGetErrorString)();
+
+		report("calGetErrorString()");
+
+		return result;
 	}
 }

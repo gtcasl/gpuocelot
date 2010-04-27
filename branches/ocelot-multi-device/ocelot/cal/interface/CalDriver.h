@@ -67,6 +67,7 @@ namespace cal
 			 ********************************/
 			//@{
 			CALresult calResAllocLocal1D(CALresource* res, CALdevice dev, CALuint width, CALformat format, CALuint flags);
+			CALresult calResAllocRemote1D(CALresource* res, CALdevice* dev, CALuint deviceCount, CALuint width, CALformat format, CALuint flags);
 			CALresult calResFree(CALresource res);
 			CALresult calResMap(CALvoid** pPtr, CALuint* pitch, CALresource res, CALuint flags);
 			CALresult calResUnmap(CALresource res);
@@ -124,6 +125,7 @@ namespace cal
 			CALresult (*_calModuleGetEntry)(CALfunc* func, CALcontext ctx, CALmodule module, const CALchar* procName);
 			CALresult (*_calModuleGetName)(CALname* name, CALcontext ctx, CALmodule module, const CALchar* varName);
 			CALresult (*_calResAllocLocal1D)(CALresource* res, CALdevice dev, CALuint width, CALformat format, CALuint flags);
+			CALresult (*_calResAllocRemote1D)(CALresource* res, CALdevice* dev, CALuint deviceCount, CALuint width, CALformat format, CALuint flags);
 			CALresult (*_calResFree)(CALresource res);
 			CALresult (*_calResMap)(CALvoid** pPtr, CALuint* pitch, CALresource res, CALuint flags);
 			CALresult (*_calResUnmap)(CALresource res);

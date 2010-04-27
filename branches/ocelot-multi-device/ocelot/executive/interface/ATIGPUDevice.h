@@ -23,7 +23,7 @@ namespace executive
 				public:
 					/*! \brief Construct an allocation for a particular 
 					 * resource */
-					MemoryAllocation(CALresource *resource, unsigned int offset, 
+					MemoryAllocation(CALresource *resource, int *basePtr, 
 							size_t size);
 					/*! \brief Destructor */
 					~MemoryAllocation();
@@ -50,7 +50,7 @@ namespace executive
 					/*! \brief Resource where the allocation lives */
 					CALresource *_resource;
 					/*! \brief Base pointer of the allocation */
-					unsigned int _basePtr;
+					int *_basePtr;
 					/*! \brief Size of the allocation */
 					size_t _size;
 			};
@@ -190,13 +190,13 @@ namespace executive
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
 
-			/*! \brief UAV0 base address (to avoid 0x0 be a valid address) */
-			static const unsigned int Uav0BaseAddr = 0x1000;
+			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
+			static int* const Uav0BaseAddr;
 
 			/********************************************************//**
-			 * \name UAV0 Memory Manager
+			 * \name uav0 Memory Manager
 			 *
-			 * UAV0 acts as the global memory. The allocation policy is 
+			 * uav0 acts as the global memory. The allocation policy is 
 			 * very simple. It allocates chuncks of memory sequentially 
 			 * and never reallocates a chunck that has been freed.
 			 ***********************************************************/
@@ -204,13 +204,29 @@ namespace executive
 			/*! \brief A map of memory allocations in device space */
 			AllocationMap _uav0Allocations;
 			/*! \brief Pointer to the next chunck of allocatable memory */
-			unsigned int _uav0AllocPtr;
-			/*! \brief CAL UAV0 resource */
+			int *_uav0AllocPtr;
+			/*! \brief CAL uav0 resource */
 			CALresource _uav0Resource;
-			/*! \brief CAL UAV0 memory handle */
+			/*! \brief CAL uav0 memory handle */
 			CALmem _uav0Mem;
-			/*! \brief CAL UAV0 module name */
+			/*! \brief CAL uav0 module name */
 			CALname _uav0Name;
+			//@}
+
+			/********************************************************//**
+			 * \name cb0 Memory Manager
+			 *
+			 * cb0 acts as the param memory.
+			 */
+			//@{
+			/*! \brief Type of the cb0 memory space (4 32-bit components) */
+			typedef int (*cb0Array)[][4];
+			/*! \brief CAL cb0 resource */
+			CALresource _cb0Resource;
+			/*! \brief CAL cb0 memory handle */
+			CALmem _cb0Mem;
+			/*! \brief CAL cb0 module name */
+			CALname _cb0Name;
 			//@}
 
 			/*! \brief CAL Device */
@@ -229,6 +245,9 @@ namespace executive
 
 			/*! \brief Has this device been selected? */
 			bool _selected;
+
+			/*! \brief Setup the parameter passing area */
+			void _updateParameterMemory(const void *parameterBlock);
 
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */

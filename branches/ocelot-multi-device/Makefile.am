@@ -67,6 +67,9 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/LLVMStatement.cpp \
 	ocelot/ir/implementation/Dim3.cpp \
 	ocelot/ir/implementation/Local.cpp \
+	ocelot/ir/implementation/ILInstruction.cpp \
+	ocelot/ir/implementation/ILKernel.cpp \
+	ocelot/ir/implementation/ILStatement.cpp \
 	hydrazine/implementation/Exception.cpp \
 	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \
@@ -122,7 +125,8 @@ libocelot_la_SOURCES = \
 	ocelot/parser/implementation/PTXParser.cpp \
 	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/translator/implementation/Translator.cpp \
-	ocelot/translator/implementation/PTXToLLVMTranslator.cpp
+	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
+	ocelot/translator/implementation/PTXToILTranslator.cpp
 	
 ################################################################################
 

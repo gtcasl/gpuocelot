@@ -9,6 +9,7 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
+#include <ocelot/translator/interface/PTXToILTranslator.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/Casts.h>
@@ -122,30 +123,15 @@ namespace executive
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {
-		// Use a fixed ILKernel for now (no PTX-to-IL translation yet)
-		const CALchar* ILKernel = 
-			"il_cs_2_0\n"
-			"dcl_max_thread_per_group 256\n"
-			"dcl_raw_uav_id(0)\n"
-			"dcl_cb cb0[2]\n"
-			"dcl_literal l0, 4, 4, 4, 4\n"
-			"dcl_literal l1, 2, 2, 2, 2\n"
-			"mov r0, vAbsTidFlat.x\n"
-			"mov r1, r0\n"
-			"imul r2, r1, l0\n"
-			"mov r3, cb0[0]\n"
-			"iadd r4, r3, r2\n"
-			"uav_raw_load_id(0) r5, r4\n"
-			"imul r6, r5, l1\n"
-			"mov r7, cb0[1]\n"
-			"iadd r8, r7, r2\n"
-			"uav_raw_store_id(0) mem.xyzw, r8, r6\n"
-			"end\n";
+		report("Running IL Translator");
+		translator::PTXToILTranslator translator;
+
+		std::string ILModule = translator.translate(irModule);
 
 		checkError(CalDriver()->calclCompile(
 					&_object, 
 					CAL_LANGUAGE_IL, 
-					ILKernel, 
+					ILModule.c_str(), 
 					_info.target));
 
 		checkError(CalDriver()->calclLink(&_image, &_object, 1));

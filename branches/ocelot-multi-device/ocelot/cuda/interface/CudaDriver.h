@@ -237,6 +237,7 @@ namespace cuda
 					CUresult (*cuGraphicsUnmapResources)(unsigned int count, 
 						CUgraphicsResource *resources, CUstream hStream );
 
+					CUresult (*cuGLInit)();
 					CUresult (*cuGLCtxCreate)(CUcontext *pCtx, 
 						unsigned int Flags, CUdevice device);
 					CUresult (*cuGraphicsGLRegisterBuffer)( 
@@ -615,6 +616,7 @@ namespace cuda
 			**    OpenGL
 			**
 			***********************************/
+			static CUresult cuGLInit();
 			static CUresult cuGLCtxCreate(CUcontext *pCtx, 
 				unsigned int Flags, CUdevice device);
 			static CUresult cuGraphicsGLRegisterBuffer( 

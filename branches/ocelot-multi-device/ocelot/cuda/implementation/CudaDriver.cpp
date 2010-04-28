@@ -25,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace cuda
 {
@@ -234,8 +234,8 @@ namespace cuda
 		hydrazine::bit_cast( cuGraphicsUnmapResources, dlsym( _driver,
 			"cuGraphicsUnmapResources" ) );
 
-		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver,
-			"cuGLCtxCreate" ) );
+		hydrazine::bit_cast( cuGLInit, dlsym( _driver, "cuGLInit" ) );
+		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver,	"cuGLCtxCreate" ) );
 		hydrazine::bit_cast( cuGraphicsGLRegisterBuffer, dlsym( _driver,
 			"cuGraphicsGLRegisterBuffer" ) );
 		hydrazine::bit_cast( cuGraphicsGLRegisterImage, dlsym( _driver,
@@ -1001,6 +1001,12 @@ namespace cuda
 		CHECK();
 		return (*_interface.cuGraphicsUnmapResources)(count, 
 			resources, hStream);
+	}
+
+	CUresult CudaDriver::cuGLInit()
+	{
+		CHECK();
+		return (*_interface.cuGLInit)();
 	}
 
 	CUresult CudaDriver::cuGLCtxCreate(CUcontext *pCtx, 

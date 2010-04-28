@@ -7,18 +7,23 @@
 #ifndef LLVM_EXECUTABLE_KERNEL_CPP_INCLUDED
 #define LLVM_EXECUTABLE_KERNEL_CPP_INCLUDED
 
+// C++ includes
+#include <fstream>
+
+// Ocelot includes
+#include <ocelot/analysis/interface/LLVMUniformVectorization.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 #include <ocelot/executive/interface/Executive.h>
-#include <hydrazine/implementation/macros.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/interface/Casts.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
-#include <fstream>
 
+// Hydrazine includes
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -1844,6 +1849,11 @@ namespace executive
 		llvm::PassManager manager;
 
         manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
+
+/*
+		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
+		manager.add(uniformVectorizationPass);
+		*/
 	
 		if( level < 2 )
 		{

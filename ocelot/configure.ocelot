@@ -2,7 +2,7 @@
 	ocelot: "ocelot-refactored",
 	version: "1.0.65",
 	trace: { 
-		enabled: true,
+		enabled: false,
 		database: "traces/database.trace",
 		memory: false,
 		branch: false,
@@ -22,7 +22,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

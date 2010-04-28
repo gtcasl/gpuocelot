@@ -32,7 +32,7 @@
 
 namespace executive
 {
-	int* const ATIGPUDevice::Uav0BaseAddr = (int *)0x1000;
+	const int *const ATIGPUDevice::Uav0BaseAddr = (int *)0x1000;
 
     ATIGPUDevice::ATIGPUDevice() 
 		: 
@@ -109,16 +109,34 @@ namespace executive
 	{
 		DeviceVector devices;
 
-		// Multiple devices is not supported yet
-		devices.push_back(new ATIGPUDevice());
+		try {
+			// Multiple devices is not supported yet
+			devices.push_back(new ATIGPUDevice());
+		} catch (hydrazine::Exception he) {
+			// Swallow the exception and return empty device vector
+			report(he.what());
+		}
 
 		return std::move(devices);
 	}
 	
 	unsigned int ATIGPUDevice::deviceCount()
 	{
-		// TODO change this when multiple device support is added
-		return 1;
+		CALuint count = 0;
+
+		try {
+			CalDriver()->calDeviceGetCount(&count);
+
+			// Multiple devices is not supported yet
+			if (count > 1) {
+				assertM(false, "Multiple devices is not supported yet");
+			}
+		} catch (hydrazine::Exception he) {
+			// Swallow the exception and return 0 devices
+			report(he.what());
+		}
+
+		return count;
 	}	
 
     void ATIGPUDevice::load(const ir::Module *irModule)
@@ -468,7 +486,7 @@ namespace executive
 	}
 
 	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALresource *resource, 
-			int *basePtr, size_t size) 
+			const int *basePtr, size_t size) 
 		: _resource(0), _basePtr(0), _size(0)
 	{
 		assertM(resource, "Invalid resource");

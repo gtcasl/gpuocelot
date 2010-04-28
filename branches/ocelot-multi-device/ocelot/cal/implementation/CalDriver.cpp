@@ -21,8 +21,8 @@
 
 #define REPORT_BASE 0
 
-#define checkError(x) if(x != CAL_RESULT_OK) { \
-	throw hydrazine::Exception(calGetErrorString()); }
+#define Throw(x) {std::stringstream s; s << x; \
+	throw hydrazine::Exception(s.str()); }
 
 namespace cal
 {
@@ -31,11 +31,23 @@ namespace cal
 
 	CalDriver::CalDriver() : _driver(0), _compiler(0)
 	{
+		report("Loading libaticalrt.so");
 		_driver   = dlopen("libaticalrt.so", RTLD_LAZY);
+		if (_driver == 0) {
+			Throw("Failed to load cal driver: " << dlerror());
+		}
+
+		report("Loading libaticalcl.so");
 		_compiler = dlopen("libaticalcl.so", RTLD_LAZY);
+		if (_compiler == 0) {
+			dlclose(_driver);
+			_driver = 0;
+			Throw("Failed to load cal compiler driver: " << dlerror());
+		}
 
 		hydrazine::bit_cast(_calInit,              dlsym(_driver, "calInit"));
 		hydrazine::bit_cast(_calShutdown,          dlsym(_driver, "calShutdown"));
+		hydrazine::bit_cast(_calDeviceGetCount,    dlsym(_driver, "calDeviceGetCount"));
 		hydrazine::bit_cast(_calDeviceOpen,        dlsym(_driver, "calDeviceOpen"));
 		hydrazine::bit_cast(_calDeviceClose,       dlsym(_driver, "calDeviceClose"));
 		hydrazine::bit_cast(_calDeviceGetInfo,     dlsym(_driver, "calDeviceGetInfo"));
@@ -62,12 +74,12 @@ namespace cal
 		hydrazine::bit_cast(_calclFreeObject, dlsym(_compiler, "calclFreeObject"));
 		hydrazine::bit_cast(_calclFreeImage,  dlsym(_compiler, "calclFreeImage"));
 
-		checkError(calInit());
+		_checkError(calInit());
 	}
 
 	CalDriver::~CalDriver()
 	{
-		checkError(calShutdown());
+		_checkError(calShutdown());
 
 		if (_driver) {
 			dlclose(_driver);
@@ -107,6 +119,18 @@ namespace cal
 		result = (*_calShutdown)();
 
 		report("calShutdown()");
+
+		return result;
+	}
+
+	CALresult CalDriver::calDeviceGetCount(CALuint *count)
+	{
+		CALresult result;
+		result = (*_calDeviceGetCount)(count);
+
+		report("calDeviceGetCount("
+				<< "*count = " << std::dec << *count
+				<< ")");
 
 		return result;
 	}
@@ -432,5 +456,10 @@ namespace cal
 		report("calGetErrorString()");
 
 		return result;
+	}
+
+	inline void CalDriver::_checkError(CALresult r)
+	{
+		if (r != CAL_RESULT_OK) throw hydrazine::Exception(calGetErrorString());
 	}
 }

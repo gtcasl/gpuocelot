@@ -23,7 +23,7 @@ namespace executive
 				public:
 					/*! \brief Construct an allocation for a particular 
 					 * resource */
-					MemoryAllocation(CALresource *resource, int *basePtr, 
+					MemoryAllocation(CALresource *resource, const int *basePtr, 
 							size_t size);
 					/*! \brief Destructor */
 					~MemoryAllocation();
@@ -50,7 +50,7 @@ namespace executive
 					/*! \brief Resource where the allocation lives */
 					CALresource *_resource;
 					/*! \brief Base pointer of the allocation */
-					int *_basePtr;
+					const int *_basePtr;
 					/*! \brief Size of the allocation */
 					size_t _size;
 			};
@@ -191,7 +191,7 @@ namespace executive
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
 
 			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
-			static int* const Uav0BaseAddr;
+			static const int *const Uav0BaseAddr;
 
 			/********************************************************//**
 			 * \name uav0 Memory Manager
@@ -204,7 +204,7 @@ namespace executive
 			/*! \brief A map of memory allocations in device space */
 			AllocationMap _uav0Allocations;
 			/*! \brief Pointer to the next chunck of allocatable memory */
-			int *_uav0AllocPtr;
+			const int *_uav0AllocPtr;
 			/*! \brief CAL uav0 resource */
 			CALresource _uav0Resource;
 			/*! \brief CAL uav0 memory handle */

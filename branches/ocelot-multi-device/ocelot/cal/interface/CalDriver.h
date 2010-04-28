@@ -36,6 +36,7 @@ namespace cal
 			 * \name Device Management
 			 ********************************/
 			//@{
+			CALresult calDeviceGetCount(CALuint *count);
 			CALresult calDeviceOpen(CALdevice *dev, CALuint ordinal);
 			CALresult calDeviceClose(CALdevice dev);
 			CALresult calDeviceGetInfo(CALdeviceinfo *info, CALuint ordinal);
@@ -112,6 +113,7 @@ namespace cal
 			//@{
 			CALresult (*_calInit)();
 			CALresult (*_calShutdown)();
+			CALresult (*_calDeviceGetCount)(CALuint *count);
 			CALresult (*_calDeviceOpen)(CALdevice *dev, CALuint ordinal);
 			CALresult (*_calDeviceClose)(CALdevice dev);
 			CALresult (*_calDeviceGetInfo)(CALdeviceinfo *info, CALuint ordinal);
@@ -137,6 +139,9 @@ namespace cal
 			CALresult (*_calclFreeImage)(CALimage image);
 			const CALchar *(*_calGetErrorString)();
 			//@}
+
+			/*! \brief Check result and throw exception if error */
+			void _checkError(CALresult r);
 
 			/*! \brief Constructor */
 			CalDriver();

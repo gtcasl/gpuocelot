@@ -1129,8 +1129,8 @@ namespace executive
 			
 			memcpy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
 			memcpy.srcDevice = ptr;
-			memcpy.srcPitch = 0;
-			memcpy.srcHeight = 0;
+			memcpy.srcPitch = bytesPerElement * size.x;
+			memcpy.srcHeight = size.y;
 			
 			memcpy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
 			memcpy.dstArray = array;
@@ -1212,7 +1212,7 @@ namespace executive
 		assert(array != _arrays.end());
 		if(array->second != 0)
 		{
-			checkError(cuArrayDestroy(array->second));
+			checkError(driver::cuArrayDestroy(array->second));
 		}
 		_arrays.erase(array);		
 	}

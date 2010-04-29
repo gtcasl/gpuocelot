@@ -1848,12 +1848,13 @@ namespace executive
 		#ifdef HAVE_LLVM
 		llvm::PassManager manager;
 
-        manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
+		manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
 
 /*
+		// experimental pass for uniform-control flow vectorization
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
 		manager.add(uniformVectorizationPass);
-		*/
+*/
 	
 		if( level < 2 )
 		{

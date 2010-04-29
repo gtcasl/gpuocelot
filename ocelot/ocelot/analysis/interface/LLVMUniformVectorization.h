@@ -35,6 +35,33 @@ namespace analysis
 		typedef std::map< llvm::BasicBlock *, llvm::BasicBlock *> BasicBlockMap;
 
 		/*!
+			\brief data structure associated with a divergent branch
+		*/
+		class DivergentBranch {
+		public:
+			DivergentBranch();
+			DivergentBranch(llvm::BasicBlock *scBlock, llvm::BasicBlock *wsBlock);
+			
+		public:
+			/*!
+				\brief basic block in scalar function terminated by divergent branch
+			*/
+			llvm::BasicBlock *scalarBlock;
+			
+			/*!
+				\brief basic block in warp-synchronous phase whose terminator must be modified
+			*/
+			llvm::BasicBlock *warpBlock;
+		
+			/*!
+				\brief basic block handling the event of a dynamic divergent branch
+			*/
+			llvm::BasicBlock *handler;
+		};
+		
+		typedef std::map< llvm::BasicBlock *, DivergentBranch > DivergentBranchMap;
+
+		/*!
 			\brief object storing intermediate results needed by the translation
 		*/
 		class Translation {
@@ -63,6 +90,12 @@ namespace analysis
 				\brief maps scalar blocks onto warp-synchronous blocks
 			*/
 			BasicBlockMap warpBlocksMap;
+			
+			/*!
+				\brief maps a warp-synchronous divergent branching block onto a data structure
+					for handling divergence
+			*/
+			DivergentBranchMap divergingBranchMap;
 			
 			/*!
 				\brief maps cloned getelementptr instruction obtaining ptr to tidx to its warp-sync thread ID
@@ -112,6 +145,9 @@ namespace analysis
 		*/
 		void updateDependencies(Translation &translation, llvm::Instruction *instr, int tid);
 		
+		/*!
+			\brief loaded tidx values are incremented by threadID within warp
+		*/
 		void updateThreadIdxUses(Translation &translation);
 		
 		/*!
@@ -120,6 +156,16 @@ namespace analysis
 				or returns to Ocelot multicore runtime
 		*/
 		void resolveControlFlow(Translation &translation);
+		
+		/*!
+			\brief deals with a particular divergent branch
+		*/
+		void handleDivergentBranch(Translation &translation, DivergentBranch &divergent);
+		
+		/*!
+			\brief emit spill code or handler for a branch known to be divergent
+		*/
+		void divergenceHandlerBranch(Translation &translation, DivergentBranch &divergent);
 		
 		/*!
 			\brief this could probably be implemented as a second function pass, but examine

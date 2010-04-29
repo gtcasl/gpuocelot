@@ -20,17 +20,31 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 1
-
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 analysis::LLVMUniformVectorization::Translation::~Translation() {
+
+}
+
+analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch()
+:
+	scalarBlock(0), warpBlock(0), handler(0) {
+
+}
+
+analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch(
+	llvm::BasicBlock *scBlock, llvm::BasicBlock *wsBlock)
+: 
+	scalarBlock(scBlock), warpBlock(wsBlock), handler(0) {
 
 }
 
@@ -75,6 +89,10 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	
 	breadthFirstTraversal(translation.traversal, translation.F);
 	addInterleavedInstructions(translation);
+	resolveControlFlow(translation);
+	
+	// debugging
+	translation.F->getParent()->dump();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,9 +179,8 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 		for (llvm::BasicBlock::iterator inst_it = srcBlock->begin(); inst_it != srcBlock->end(); 
 			++inst_it) {
 
-			// if instruction is control flow, don't replicate
 			if (llvm::Instruction::isTerminator(inst_it->getOpcode())) {
-				
+				// if instruction is control flow, don't replicate
 			}
 			else {
 				// insert into the mapping so dependent instructions get the correct value
@@ -212,9 +229,6 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 
 	updateThreadIdxUses(translation);
 
-	// debugging
-	translation.F->getParent()->dump();
-
 	report("end vectorization " << translation.F->getNameStr() << "\n");
 }
 
@@ -237,7 +251,8 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 				// now replace all uses of loadInst with
 				llvm::ConstantInt *tidxInst = llvm::ConstantInt::get(
 					llvm::Type::getInt16Ty(translation.F->getContext()), ptr_it->second);
-				llvm::BinaryOperator *addInst = llvm::BinaryOperator::CreateNSWAdd(loadInst, tidxInst, ss.str(), loadInst);
+				llvm::BinaryOperator *addInst = llvm::BinaryOperator::CreateNSWAdd(
+					loadInst, tidxInst, ss.str(), loadInst);
 				loadInst->moveBefore(addInst);
 				loadInst->replaceAllUsesWith(addInst);
 			}	
@@ -279,11 +294,11 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 								static_cast<llvm::Instruction*>(incoming)->getParent() );
 						}
 						else {
-							report("**** BIG PROBLEM - unhandled PHI NODE operand *** ");
+							Ocelot_Exception("unhandled PHI NODE operand");
 						}
 					}
 					else {
-						report("**** BIG PROBLEM - unhandled PHI NODE operand *** ");
+						Ocelot_Exception("unhandled PHI NODE operand");
 					}
 				}
 				instr->setOperand(i, phiClone);
@@ -292,16 +307,157 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 				// problem
 				operand->getType()->dump();
 				operand->dump();
-				report("**** BIG PROBLEM *** ");
+				Ocelot_Exception("undefined operand encountered");
 			}
 		}
 	}	
 }
 
+/*!
+	\brief replace dummy terminators in warp-synchronous block structure with
+		tests for warp-synchronous behavior and either branches to successor blocks
+		or returns to Ocelot multicore runtime
+*/
 void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &translation) {
+		
+	for (BasicBlockMap::iterator bb_it = translation.warpBlocksMap.begin();
+		bb_it != translation.warpBlocksMap.end(); ++bb_it) {
+		llvm::TerminatorInst *termInst = static_cast<llvm::TerminatorInst *>(
+			bb_it->first->getTerminator());
+		
+		if (llvm::BranchInst::classof(termInst)) {
+			llvm::BranchInst *braInst = static_cast<llvm::BranchInst *>(termInst);
+			if (braInst->isConditional()) {
+				llvm::Value *condition = braInst->getCondition();
+				if (llvm::Constant::classof(condition)) {
+					// constant expressions are warp synchronous
+					llvm::BranchInst *clonedBr = static_cast<llvm::BranchInst *>(braInst->clone());
+					for (unsigned int n = 0; n < clonedBr->getNumSuccessors(); n++) {
+						clonedBr->setSuccessor(n, translation.warpBlocksMap[clonedBr->getSuccessor(n)]);
+					}
+					bb_it->second->getTerminator()->eraseFromParent(); // erase dummy
+					bb_it->second->getInstList().push_back(clonedBr);
+				}
+				else {
+					// potentially divergent branch - add to map for subsequent handling
+					translation.divergingBranchMap[bb_it->second] = DivergentBranch(bb_it->first, 
+						bb_it->second);
+				}
+			}
+			else if (braInst->isUnconditional()) {
+				// erase dummy terminator
+				bb_it->second->getTerminator()->eraseFromParent();
+				
+				// insert uniform branch to successor
+				llvm::BasicBlock *succ = translation.warpBlocksMap[braInst->getSuccessor(0)];
+				llvm::BranchInst::Create(succ, bb_it->second);
+			}
+			else {
+				// how is this possible?
+				Ocelot_Exception("branch instruction is neither conditional nor uncondional");
+			}
+		}
+		else if (llvm::ReturnInst::classof(termInst)) {
+			llvm::Instruction *clonedInst = termInst->clone();
+			bb_it->second->getTerminator()->eraseFromParent();	// erase dummy
+			bb_it->second->getInstList().push_back(clonedInst);
+		}
+		else {
+			// what othe rkind of terminators are there?
+			Ocelot_Exception("unexpected terminator of type " << termInst->getNameStr() 
+				<< " encountered");
+		}
+	}
+	
+	// insert handling code for potentially diverging branches
+	for (DivergentBranchMap::iterator div_br_it = translation.divergingBranchMap.begin();
+		div_br_it != translation.divergingBranchMap.end(); ++div_br_it) {
+		handleDivergentBranch(translation, div_br_it->second);
+	}
+}
+
+/*!
+	\brief deals with a particular divergent branch
+*/
+void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &translation, 
+	DivergentBranch &divergent) {
+	
+	// we only know how to handle 1-bit integer conditions
+	llvm::TerminatorInst *scTerm = divergent.scalarBlock->getTerminator();
+	if (llvm::BranchInst::classof(scTerm)) {
+		llvm::BranchInst *scBranch = static_cast<llvm::BranchInst*>(scTerm);
+		llvm::Value *condition = scBranch->getCondition();
+		if (!condition->getType()->isIntegerTy(1)) {
+			Ocelot_Exception("condition was expected to be of type integer-1");
+		}
+	
+		WarpInstructionMap::iterator ws_it = translation.warpInstructionMap.find(condition);
+		if (ws_it == translation.warpInstructionMap.end()) {
+			Ocelot_Exception("divergent branch condition does not appear in the warp instruction map");
+		}
+		
+		divergent.warpBlock->getTerminator()->removeFromParent();	 // remove dummy
+		
+		// construct reduction
+		const llvm::Type *int16ty = llvm::Type::getInt16Ty(translation.F->getContext());
+		llvm::Constant *constOne = llvm::ConstantInt::get(int16ty, 1);
+		llvm::Instruction *z = new llvm::ZExtInst(ws_it->second[0], int16ty, "condZ", 
+			divergent.warpBlock);
+		
+		// insert reduction code 
+		for (int n = 1; n < warpSize; n++) {
+			llvm::BinaryOperator *shlOp = llvm::BinaryOperator::Create(llvm::Instruction::Shl, z, 
+				constOne, "condZsl", divergent.warpBlock);
+			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second[n], int16ty, "cmpws",
+				divergent.warpBlock);
+			z = llvm::BinaryOperator::Create(llvm::Instruction::Or, shlOp, cmpInt16, "condZ", 
+				divergent.warpBlock);
+		}
+		
+		// if z is 0, all conditions were 0s. if z is (warpSize-1), all conditions were 1
+		// else, diverge!
+		
+		llvm::ConstantInt *constZero = static_cast<llvm::ConstantInt *>(
+			llvm::ConstantInt::get(int16ty, 0));
+		llvm::ConstantInt *constFull = static_cast<llvm::ConstantInt *>(
+			llvm::ConstantInt::get(int16ty, (1<<warpSize)-1));
+		
+		std::stringstream ss;
+		ss << divergent.warpBlock->getNameStr() << "_diverge";
+		divergent.handler = llvm::BasicBlock::Create(
+			translation.F->getContext(), ss.str(), translation.F);
+			
+		llvm::BasicBlock *succZero = translation.warpBlocksMap[scBranch->getSuccessor(1)];
+		llvm::BasicBlock *succFull = translation.warpBlocksMap[scBranch->getSuccessor(0)];
+		
+		llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(
+			z, divergent.handler, 2, divergent.warpBlock);
+		switchInst->addCase(constFull, succFull);
+		switchInst->addCase(constZero, succZero);
+		
+		// insert dummy return statement
+		llvm::ReturnInst::Create(translation.F->getContext(), 0, divergent.handler);
+		
+		divergenceHandlerBranch(translation, divergent);
+	}
+	else {
+		Ocelot_Exception("unexpected divergent terminator");
+	}
+}
+
+/*!
+	\brief emit spill code or handler for a branch known to be divergent
+*/
+void analysis::LLVMUniformVectorization::divergenceHandlerBranch(Translation &translation, 
+	DivergentBranch &divergent) {
 
 }
 
+/*!
+	\brief this could probably be implemented as a second function pass, but examine
+		collections of instructions of size <warpSize>, hoist or sink instructions, and
+		make into vectors for vector processing
+*/
 void analysis::LLVMUniformVectorization::vectorize(Translation &translation) {
 
 }

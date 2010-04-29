@@ -246,8 +246,7 @@ void ir::Module::extractPTXKernels() {
 			globals.insert(std::make_pair(statement.name, Global(statement)));
 		}
 		else if (statement.directive == PTXStatement::Tex) {
-			assert(globals.count(statement.name) == 0);
-			globals.insert(std::make_pair(statement.name, Global(statement)));
+			assert(textures.count(statement.name) == 0);
 			textures.insert(std::make_pair(statement.name, Texture()));
 		}
 	}

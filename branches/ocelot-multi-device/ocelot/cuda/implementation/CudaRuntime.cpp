@@ -1907,6 +1907,8 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(
 		prop->totalConstMem = properties.totalConstantMemory;
 		prop->totalGlobalMem = properties.totalMemory;
 		prop->warpSize = properties.SIMDWidth;
+		prop->concurrentKernels = properties.concurrentKernels;
+		prop->integrated = properties.integrated;
 		
 		report("  returning: prop->major = " << prop->major 
 			<< ", prop->minor = " << prop->minor);

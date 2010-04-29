@@ -143,6 +143,9 @@ namespace executive
 			/*! \brief A map of registered graphics resources */
 			typedef std::unordered_map<unsigned int, 
 				CUgraphicsResource> GraphicsMap;
+				
+			/*! \brief A map of 3D array descriptors */
+			typedef std::unordered_map<std::string, CUarray> ArrayMap;
 			
 		private:
 			/*! \brief A map of memory allocations in device space */
@@ -175,8 +178,11 @@ namespace executive
 			/*! \brief The currently selected stream */
 			unsigned int _selectedStream;
 		
-			/*! \brief Has opengl been enabled for this context? */
-			bool _opengl;
+			/*! \brief The opengl context? */
+			CUcontext _glcontext;
+			
+			/*! \brief Bound 3d arrays */
+			ArrayMap _arrays;
 				
 		private:
 			/*! \brief Has the cuda driver been initialized? */

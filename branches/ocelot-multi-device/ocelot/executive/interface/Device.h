@@ -69,6 +69,10 @@ namespace executive
 					int clockRate;
 					/*! alignment requirement for textures */
 					int textureAlign;
+					/*! Is the device integrated or discrete */
+					int integrated;
+					/*! Concurrent kernel execution */
+					int concurrentKernels;
 					/*! major shader module revision */
 					int major;
 					/*! minor shader model revision */

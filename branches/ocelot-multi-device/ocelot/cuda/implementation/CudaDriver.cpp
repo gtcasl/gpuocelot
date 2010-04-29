@@ -25,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace cuda
 {
@@ -258,6 +258,7 @@ namespace cuda
 	{
 		_interface.load();
 		if( !_interface.loaded() ) return CUDA_ERROR_NO_DEVICE;
+		report("cuInit");
 		return (*_interface.cuInit)(Flags);
 	}
 

@@ -297,6 +297,8 @@ namespace executive
 		_properties.regsPerBlock = 8192;
 		_properties.clockRate = 2;
 		_properties.textureAlign = 1;
+		_properties.integrated = 1;
+		_properties.concurrentKernels = 0;
 		_properties.major = 2;
 		_properties.minor = 0;
 	}
@@ -716,10 +718,13 @@ namespace executive
 			Throw("Invalid event - " << handle);
 		}
 		
-		StreamSet::iterator stream = _streams.find(sHandle);
-		if(stream != _streams.end())
+		if(sHandle != 0)
 		{
-			Throw("Invalid stream - " << sHandle);
+			StreamSet::iterator stream = _streams.find(sHandle);
+			if(stream == _streams.end())
+			{
+				Throw("Invalid stream - " << sHandle);
+			}
 		}
 		
 		event->second = _timer.absolute();

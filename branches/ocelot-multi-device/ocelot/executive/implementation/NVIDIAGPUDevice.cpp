@@ -390,6 +390,8 @@ namespace executive
 		for(ir::Module::GlobalMap::const_iterator global = ir->globals.begin(); 
 			global != ir->globals.end(); ++global)
 		{
+			if(global->second.statement.directive 
+				== ir::PTXStatement::Shared) continue;
 			MemoryAllocation* allocation = new MemoryAllocation(_handle, 
 				global->second);
 			
@@ -469,7 +471,7 @@ namespace executive
 
 	NVIDIAGPUDevice::NVIDIAGPUDevice(int id, unsigned int flags) : 
 		Device(flags), _selected(false), _next(0), _selectedStream(0), 
-		_opengl(true)
+		_glcontext(0)
 	{
 		if(!_cudaDriverInitialized)
 		{
@@ -483,11 +485,7 @@ namespace executive
 		CUdevice device;
 		checkError(driver::cuDeviceGet(&device, id));
 		
-		if(driver::cuGLCtxCreate(&_context, flags, device) != CUDA_SUCCESS)
-		{
-			_opengl = false;
-			checkError(driver::cuCtxCreate(&_context, flags, device));
-		}
+		checkError(driver::cuCtxCreate(&_context, flags, device));
 
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
@@ -536,6 +534,11 @@ namespace executive
 			CU_DEVICE_ATTRIBUTE_CLOCK_RATE, device));
 		checkError(driver::cuDeviceGetAttribute(&_properties.textureAlign, 
 			CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, device));
+		
+		checkError(driver::cuDeviceGetAttribute(&_properties.integrated, 
+			CU_DEVICE_ATTRIBUTE_INTEGRATED, device));
+		checkError(driver::cuDeviceGetAttribute(&_properties.concurrentKernels, 
+			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
 			&_properties.major, device));
 	}
@@ -882,13 +885,19 @@ namespace executive
 			Throw("Invalid event - " << handle);
 		}
 
-		StreamMap::const_iterator stream = _streams.find(sHandle);
-		if(stream == _streams.end())
+		if(sHandle != 0)
 		{
-			Throw("Invalid stream - " << sHandle);
+			StreamMap::const_iterator stream = _streams.find(sHandle);
+			if(stream == _streams.end())
+			{
+				Throw("Invalid stream - " << sHandle);
+			}
+			checkError(driver::cuEventRecord(event->second, stream->second));
 		}
-
-		checkError(driver::cuEventRecord(event->second, stream->second));
+		else
+		{
+			checkError(driver::cuEventRecord(event->second, 0));
+		}
 	}
 
 	void NVIDIAGPUDevice::synchronizeEvent(unsigned int handle)
@@ -924,7 +933,7 @@ namespace executive
 		
 		return time;
 	}
-		
+	
 	unsigned int NVIDIAGPUDevice::createStream()
 	{
 		CUstream stream;
@@ -1083,13 +1092,60 @@ namespace executive
 				<< " in Module - " << moduleName);
 		}
 
+		if(_arrays.count(textureName) != 0)
+		{
+			Throw("Texture - " << textureName << " - already bound." );
+		}
+
 		CUtexref ref = hydrazine::bit_cast<CUtexref>(tex);
 		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
 		unsigned int offset = 0;
-		unsigned int pitch = ((desc.x + desc.y + desc.z + desc.w) / 8) * size.x;
+		unsigned int bytesPerElement = ((desc.x + desc.y 
+			+ desc.z + desc.w) / 8);
+		unsigned int pitch = bytesPerElement * size.x;
 		if(size.z > 1)
 		{
-			assertM(false, "No support for 3D textures.");
+			CUDA_ARRAY3D_DESCRIPTOR descriptor;
+			descriptor.Width = size.x;
+			descriptor.Height = size.y;
+			descriptor.Depth = size.z;
+			descriptor.NumChannels = channels(desc);
+			descriptor.Format = format(desc);
+			descriptor.Flags = 0;
+			
+			CUarray array;
+			checkError(driver::cuArray3DCreate(&array, &descriptor));
+			
+			_arrays[textureName] = array;
+						
+			CUDA_MEMCPY3D memcpy;
+			
+			memcpy.srcLOD = 0;
+			memcpy.dstLOD = 0;
+			
+			memcpy.WidthInBytes = bytesPerElement * size.x;
+			memcpy.Height = size.y;
+			memcpy.Depth = size.z;
+			
+			memcpy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+			memcpy.srcDevice = ptr;
+			memcpy.srcPitch = 0;
+			memcpy.srcHeight = 0;
+			
+			memcpy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+			memcpy.dstArray = array;
+			
+			memcpy.srcXInBytes = 0;
+			memcpy.srcY = 0;
+			memcpy.srcZ = 0;
+			
+			memcpy.dstXInBytes = 0;
+			memcpy.dstY = 0;
+			memcpy.dstZ = 0;
+			
+			checkError(driver::cuMemcpy3D(&memcpy));
+			checkError(driver::cuTexRefSetArray(ref, 
+				array, CU_TRSA_OVERRIDE_FORMAT));
 		}
 		else if(size.y > 1)
 		{
@@ -1101,10 +1157,13 @@ namespace executive
 			
 			checkError(driver::cuTexRefSetAddress2D(ref, &descriptor, 
 				ptr, pitch));
+
+			_arrays[textureName] = 0;
 		}
 		else
 		{
 			checkError(driver::cuTexRefSetAddress(&offset, ref, ptr, pitch));
+			_arrays[textureName] = 0;
 		}
 		
 		if(texref.filterMode == cudaFilterModeLinear)
@@ -1129,7 +1188,7 @@ namespace executive
 		checkError(driver::cuTexRefGetFlags(&flags, ref));
 		flags &= CU_TRSF_READ_AS_INTEGER;
 		flags |= (texref.normalized) ? CU_TRSF_NORMALIZED_COORDINATES : 0;		
-		checkError(driver::cuTexRefSetFlags(ref, CU_TRSF_READ_AS_INTEGER));
+		checkError(driver::cuTexRefSetFlags(ref, flags));
 	}
 	
 	void NVIDIAGPUDevice::unbindTexture(const std::string& moduleName, 
@@ -1148,6 +1207,14 @@ namespace executive
 			Throw("Invalid Texture - " << textureName 
 				<< " in Module - " << moduleName);
 		}
+		
+		ArrayMap::iterator array = _arrays.find(textureName);
+		assert(array != _arrays.end());
+		if(array->second != 0)
+		{
+			checkError(cuArrayDestroy(array->second));
+		}
+		_arrays.erase(array);		
 	}
 	
 	void* NVIDIAGPUDevice::getTextureReference(const std::string& moduleName, 

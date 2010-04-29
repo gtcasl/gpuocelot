@@ -22,86 +22,97 @@ namespace cal
 	{
 		public:
 			/*! \brief Singleton instance getter */
-			static CalDriver *Instance();
+			static const CalDriver *const Instance();
 
 			/*****************************//**
 			 * \name Initialization
 			 ********************************/
 			//@{
-			CALresult calInit();
-			CALresult calShutdown();
+			void calInit() const;
+			void calShutdown() const;
 			//@}
 
 			/*****************************//**
 			 * \name Device Management
 			 ********************************/
 			//@{
-			CALresult calDeviceGetCount(CALuint *count);
-			CALresult calDeviceOpen(CALdevice *dev, CALuint ordinal);
-			CALresult calDeviceClose(CALdevice dev);
-			CALresult calDeviceGetInfo(CALdeviceinfo *info, CALuint ordinal);
+			void calDeviceGetCount(CALuint *count) const;
+			void calDeviceOpen(CALdevice *dev, CALuint ordinal) const;
+			void calDeviceClose(CALdevice dev) const;
+			void calDeviceGetInfo(CALdeviceinfo *info, CALuint ordinal) const;
 			//@}
 
 			/*****************************//**
 			 * \name Context Management
 			 ********************************/
 			//@{
-			CALresult calCtxCreate(CALcontext *ctx, CALdevice dev);
-			CALresult calCtxDestroy(CALcontext ctx);
-			CALresult calCtxGetMem(CALmem *mem, CALcontext ctx, CALresource res);
-			CALresult calCtxReleaseMem(CALcontext ctx, CALmem mem);
-			CALresult calCtxSetMem(CALcontext ctx, CALname name, CALmem mem);
+			void calCtxCreate(CALcontext *ctx, CALdevice dev) const;
+			void calCtxDestroy(CALcontext ctx) const;
+			void calCtxGetMem(CALmem *mem, CALcontext ctx, 
+					CALresource res) const;
+			void calCtxReleaseMem(CALcontext ctx, CALmem mem) const;
+			void calCtxSetMem(CALcontext ctx, CALname name, CALmem mem) const;
 			//@}
 
 			/*****************************//**
 			 * \name Module Management
 			 ********************************/
 			//@{
-			CALresult calModuleLoad(CALmodule* module, CALcontext ctx, CALimage image);
-			CALresult calModuleUnload(CALcontext ctx, CALmodule module);
-			CALresult calModuleGetEntry(CALfunc* func, CALcontext ctx, CALmodule module, const CALchar* procName);
-			CALresult calModuleGetName(CALname* name, CALcontext ctx, CALmodule module, const CALchar* varName);
+			void calModuleLoad(CALmodule* module, CALcontext ctx, 
+					CALimage image) const;
+			void calModuleUnload(CALcontext ctx, CALmodule module) const;
+			void calModuleGetEntry(CALfunc* func, CALcontext ctx, 
+					CALmodule module, const CALchar* procName) const;
+			void calModuleGetName(CALname* name, CALcontext ctx, 
+					CALmodule module, const CALchar* varName) const;
 			//@}
 
 			/*****************************//**
 			 * \name Memory Management
 			 ********************************/
 			//@{
-			CALresult calResAllocLocal1D(CALresource* res, CALdevice dev, CALuint width, CALformat format, CALuint flags);
-			CALresult calResAllocRemote1D(CALresource* res, CALdevice* dev, CALuint deviceCount, CALuint width, CALformat format, CALuint flags);
-			CALresult calResFree(CALresource res);
-			CALresult calResMap(CALvoid** pPtr, CALuint* pitch, CALresource res, CALuint flags);
-			CALresult calResUnmap(CALresource res);
+			void calResAllocLocal1D(CALresource* res, CALdevice dev, 
+					CALuint width, CALformat format, CALuint flags) const;
+			void calResAllocRemote1D(CALresource* res, CALdevice* dev, 
+					CALuint deviceCount, CALuint width, CALformat format, 
+					CALuint flags) const;
+			void calResFree(CALresource res) const;
+			void calResMap(CALvoid** pPtr, CALuint* pitch, CALresource res, 
+					CALuint flags) const;
+			void calResUnmap(CALresource res) const;
 			//@}
 
 			/*****************************//**
 			 * \name Execution Management
 			 ********************************/
 			//@{
-			CALresult calCtxRunProgramGrid(CALevent* event, CALcontext ctx, CALprogramGrid* pProgramGrid);
-			CALresult calCtxIsEventDone(CALcontext ctx, CALevent event);
+			void calCtxRunProgramGrid(CALevent* event, CALcontext ctx, 
+					CALprogramGrid* pProgramGrid) const;
+			bool calCtxIsEventDone(CALcontext ctx, CALevent event) const;
 			//@}
 
 			/*****************************//**
 			 * \name Compiler Interface
 			 ********************************/
 			//@{
-			CALresult calclCompile(CALobject* obj, CALlanguage language, const CALchar* source, CALtarget target);
-			CALresult calclLink(CALimage* image, CALobject* obj, CALuint objCount);
-			CALresult calclFreeObject(CALobject obj);
-			CALresult calclFreeImage(CALimage image);
+			void calclCompile(CALobject* obj, CALlanguage language, 
+					const CALchar* source, CALtarget target) const;
+			void calclLink(CALimage* image, CALobject* obj, 
+					CALuint objCount) const;		
+			void calclFreeObject(CALobject obj) const;
+			void calclFreeImage(CALimage image) const;
 			//@}
 
 			/*****************************//**
 			 * \name Error Reporting
 			 ********************************/
 			//@{
-			const CALchar *calGetErrorString();
+			const CALchar *calGetErrorString() const;
 			//@}
 		
 		private:
 			/*! \brief Singleton instance */
-			static CalDriver *_instance;
+			static const CalDriver *_instance;
 			/*! \brief Runtime/Driver library (libaticalrt.so) handle */
             void *_driver;
 			/*! \brief Compiler library (libaticalcl.so) handle */
@@ -141,7 +152,7 @@ namespace cal
 			//@}
 
 			/*! \brief Check result and throw exception if error */
-			void _checkError(CALresult r);
+			void _checkError(CALresult r) const;
 
 			/*! \brief Constructor */
 			CalDriver();

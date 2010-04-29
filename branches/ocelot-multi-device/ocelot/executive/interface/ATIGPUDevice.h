@@ -251,7 +251,7 @@ namespace executive
 
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */
-			static cal::CalDriver *CalDriver();
+			static const cal::CalDriver *const CalDriver();
 	};
 }
 

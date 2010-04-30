@@ -190,7 +190,7 @@ namespace executive
 				unsigned int stream) = 0;
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			virtual void* getPointerToMappedGraphicsResource(size_t& size, 
-				void* resource) const = 0;
+				void* resource) = 0;
 			/*! \brief Change the flags of a mapped resource */
 			virtual void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags) = 0;

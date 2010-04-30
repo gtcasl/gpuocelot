@@ -252,7 +252,8 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		ocelot = main.parse<std::string>("ocelot", "ocelot-refactored");
 	}
 	catch (hydrazine::Exception exp) {
-		report("api::OcelotConfiguration::initialize() exception: " << exp.message);
+		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
+			<< path << "', loading defaults.\n";
 	}
 	if (config) {
 		delete config;

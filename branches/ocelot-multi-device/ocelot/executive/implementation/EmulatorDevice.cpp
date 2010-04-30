@@ -570,7 +570,7 @@ namespace executive
 	}
 
 	void* EmulatorDevice::getPointerToMappedGraphicsResource(size_t& size, 
-		void* resource) const
+		void* resource)
 	{
 		unsigned int handle = hydrazine::bit_cast<unsigned int>(resource);
 		GraphicsMap::const_iterator graphic = _graphics.find(handle);

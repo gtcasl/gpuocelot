@@ -2076,7 +2076,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 
 	report("cudaBindTextureToArray() - texref = '" << texref << "', array = " 
 		<< (void *)array << " - format: " << desc->f << " (" << desc->x 
-		<< ", " << desc->y << ", " << desc->z << ")");
+		<< ", " << desc->y << ", " << desc->z << ", " << desc->w << ")");
 
 	DimensionMap::iterator dimension = _dimensions.find((void*)array);
 	assert(dimension != _dimensions.end());

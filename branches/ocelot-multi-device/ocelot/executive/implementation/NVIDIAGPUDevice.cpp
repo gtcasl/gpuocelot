@@ -18,14 +18,15 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
+// opengl includes
+#include <GL/glx.h>
+
 // standard library includes
 #include <cstring>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
-
-typedef cuda::CudaDriver driver;
 
 #define checkError(x) if((_lastError = x) != CUDA_SUCCESS) { \
 	throw hydrazine::Exception(driver::toString(_lastError)); }
@@ -38,23 +39,25 @@ typedef cuda::CudaDriver driver;
 // Print out the full ptx for each module as it is loaded
 #define REPORT_PTX 0
 
+typedef cuda::CudaDriver driver;
+
 namespace executive 
 {
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation() : _flags(0), _size(0),
-		_devicePointer(0), _hostPointer(0)
+		_devicePointer(0), _hostPointer(0), _external(false)
 	{
 		
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(size_t size) : 
-		_flags(0), _size(size), _hostPointer(0)
+		_flags(0), _size(size), _hostPointer(0), _external(false)
 	{
 		checkError(driver::cuMemAlloc(&_devicePointer, size));
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(size_t size, 
 		unsigned int flags) : Device::MemoryAllocation(false, true), 
-		_flags(flags), _size(size)
+		_flags(flags), _size(size), _external(false)
 	{
 		// making all memory portable eases context switching
 		_flags |= CU_MEMHOSTALLOC_PORTABLE;
@@ -66,7 +69,7 @@ namespace executive
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(CUmodule module, 
 		const ir::Global& g) : Device::MemoryAllocation(true, false), _flags(0),
-		_size(g.statement.bytes()), _hostPointer(0)
+		_size(g.statement.bytes()), _hostPointer(0), _external(false)
 	{
 		unsigned int bytes;
 		checkError(driver::cuModuleGetGlobal(&_devicePointer, &bytes, module, 
@@ -79,22 +82,34 @@ namespace executive
 		}
 	}
 	
+	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(
+		void* pointer, size_t size) : Device::MemoryAllocation(false, false), 
+		_flags(0), _size(size), 
+		_devicePointer(hydrazine::bit_cast<CUdeviceptr>(pointer)), 
+		_hostPointer(0), _external(true)
+	{
+	
+	}
+	
 	NVIDIAGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
-		if(host())
+		if(!_external)
 		{
-			checkError(driver::cuMemFreeHost(_hostPointer));
-		}
-		else if(!global())
-		{
-			checkError(driver::cuMemFree(_devicePointer));
+			if(host())
+			{
+				checkError(driver::cuMemFreeHost(_hostPointer));
+			}
+			else if(!global())
+			{
+				checkError(driver::cuMemFree(_devicePointer));
+			}
 		}
 	}
 
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(
 		const MemoryAllocation& a) : Device::MemoryAllocation(
 		a.global(), a.host()), _flags(a.flags()), _size(a.size()), 
-		_devicePointer(0), _hostPointer(0)
+		_devicePointer(0), _hostPointer(0), _external(a._external)
 	{
 		if(host())
 		{
@@ -103,11 +118,11 @@ namespace executive
 				_hostPointer, 0));
 			memcpy(_hostPointer, a._hostPointer, _size);
 		}
-		else if(global())
+		else if(global() || _external)
 		{
 			_devicePointer = a._devicePointer;
 		}
-		else
+		else if(!_external)
 		{
 			checkError(driver::cuMemAlloc(&_devicePointer, _size));
 			checkError(driver::cuMemcpyDtoD(_devicePointer, 
@@ -124,6 +139,7 @@ namespace executive
 		std::swap(_size, a._size);
 		std::swap(_devicePointer, a._devicePointer);
 		std::swap(_hostPointer, a._hostPointer);
+		std::swap(_external, a._external);
 	}
 
 	NVIDIAGPUDevice::MemoryAllocation& 
@@ -135,7 +151,7 @@ namespace executive
 		{
 			checkError(driver::cuMemFreeHost(_hostPointer));
 		}
-		else if(!global())
+		else if(!global() && !_external)
 		{
 			checkError(driver::cuMemFree(_devicePointer));
 		}
@@ -146,6 +162,7 @@ namespace executive
 		_size = a._size;
 		_hostPointer = 0;
 		_devicePointer = 0;
+		_external = a._external;
 		
 		if(host())
 		{
@@ -154,7 +171,7 @@ namespace executive
 				_hostPointer, 0));
 			memcpy(_hostPointer, a._hostPointer, _size);
 		}
-		else if(global())
+		else if(global() || _external)
 		{
 			_devicePointer = a._devicePointer;
 		}
@@ -179,6 +196,7 @@ namespace executive
 		std::swap(_size, a._size);
 		std::swap(_devicePointer, a._devicePointer);
 		std::swap(_hostPointer, a._hostPointer);
+		std::swap(_external, a._external);
 
 		return *this;		
 	}
@@ -386,14 +404,16 @@ namespace executive
 		assert(globals.empty());
 		
 		AllocationVector allocations;
-		
+		report("Loading globals in module - " << ir->modulePath);
 		for(ir::Module::GlobalMap::const_iterator global = ir->globals.begin(); 
 			global != ir->globals.end(); ++global)
 		{
 			if(global->second.statement.directive 
 				== ir::PTXStatement::Shared) continue;
+			report(" " << global->first);
 			MemoryAllocation* allocation = new MemoryAllocation(_handle, 
 				global->second);
+			report("  pointer - " << allocation->pointer());
 			
 			globals.insert(std::make_pair(global->first, 
 				allocation->pointer()));
@@ -429,6 +449,133 @@ namespace executive
 		CUtexref texture;
 		checkError(driver::cuModuleGetTexRef(&texture, _handle, name.c_str()));
 		return texture;
+	}
+
+	static unsigned int channels(const cudaChannelFormatDesc& desc)
+	{
+		unsigned int channels = 0;
+		
+		channels = (desc.x > 0) ? channels + 1 : channels;
+		channels = (desc.y > 0) ? channels + 1 : channels;
+		channels = (desc.z > 0) ? channels + 1 : channels;
+		channels = (desc.w > 0) ? channels + 1 : channels;
+	
+		return channels;
+	}
+	
+	static CUarray_format_enum format(const cudaChannelFormatDesc& desc)
+	{
+		switch(desc.f)
+		{
+			case cudaChannelFormatKindSigned:
+			{
+				if(desc.x == 8)
+				{
+					return CU_AD_FORMAT_SIGNED_INT8;
+				}
+				else if(desc.y == 16)
+				{
+					return CU_AD_FORMAT_SIGNED_INT16;
+				}
+				else
+				{
+					return CU_AD_FORMAT_SIGNED_INT32;
+				}			
+			}
+			case cudaChannelFormatKindUnsigned:
+			{
+				if(desc.x == 8)
+				{
+					return CU_AD_FORMAT_UNSIGNED_INT8;
+				}
+				else if(desc.y == 16)
+				{
+					return CU_AD_FORMAT_UNSIGNED_INT16;
+				}
+				else
+				{
+					return CU_AD_FORMAT_UNSIGNED_INT32;
+				}
+			}
+			case cudaChannelFormatKindFloat:
+			{
+				if(desc.x == 16)
+				{
+					return CU_AD_FORMAT_HALF;
+				}
+				else
+				{
+					return CU_AD_FORMAT_FLOAT;
+				}
+			}
+			case cudaChannelFormatKindNone: break;
+		}
+		return CU_AD_FORMAT_UNSIGNED_INT8;
+	}
+	
+	static CUaddress_mode_enum convert(cudaTextureAddressMode mode)
+	{
+		// Note that the cuda runtime does not expose CU_TR_ADDRESS_MODE_MIRROR 
+		if(mode == cudaAddressModeWrap) return CU_TR_ADDRESS_MODE_WRAP;
+		return CU_TR_ADDRESS_MODE_CLAMP;
+	}
+
+	NVIDIAGPUDevice::Array3D::Array3D(const cudaChannelFormatDesc& desc, 
+		const ir::Dim3& size, CUdeviceptr d) : ptr(d), size(size)
+	{
+		CUDA_ARRAY3D_DESCRIPTOR descriptor;
+		descriptor.Width = size.x;
+		descriptor.Height = size.y;
+		descriptor.Depth = size.z;
+		descriptor.NumChannels = channels(desc);
+		descriptor.Format = format(desc);
+		descriptor.Flags = 0;
+		
+		bytesPerElement = ((desc.x + desc.y + desc.z + desc.w) / 8);
+		
+		checkError(driver::cuArray3DCreate(&array, &descriptor));
+	}
+
+	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
+	{
+		
+	}
+
+	NVIDIAGPUDevice::Array3D::~Array3D()
+	{
+		checkError(driver::cuArrayDestroy(array));
+	}
+
+	void NVIDIAGPUDevice::Array3D::update()
+	{
+		report("Updating texture.");
+	
+		CUDA_MEMCPY3D memcpy;
+		
+		memcpy.srcLOD = 0;
+		memcpy.dstLOD = 0;
+		
+		memcpy.WidthInBytes = bytesPerElement * size.x;
+		memcpy.Height = size.y;
+		memcpy.Depth = size.z;
+		
+		memcpy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+		memcpy.srcDevice = ptr;
+		memcpy.srcPitch = 0;
+		memcpy.srcHeight = 0;
+		
+		memcpy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+		memcpy.dstArray = array;
+		
+		memcpy.srcXInBytes = 0;
+		memcpy.srcY = 0;
+		memcpy.srcZ = 0;
+		
+		memcpy.dstXInBytes = 0;
+		memcpy.dstY = 0;
+		memcpy.dstZ = 0;
+		
+		checkError(driver::cuMemcpy3D(&memcpy));
 	}
 
 	bool NVIDIAGPUDevice::_cudaDriverInitialized = false;
@@ -471,7 +618,7 @@ namespace executive
 
 	NVIDIAGPUDevice::NVIDIAGPUDevice(int id, unsigned int flags) : 
 		Device(flags), _selected(false), _next(0), _selectedStream(0), 
-		_glcontext(0)
+		_opengl(false)
 	{
 		if(!_cudaDriverInitialized)
 		{
@@ -485,8 +632,17 @@ namespace executive
 		CUdevice device;
 		checkError(driver::cuDeviceGet(&device, id));
 		
-		checkError(driver::cuCtxCreate(&_context, flags, device));
-
+		GLXContext openglContext = glXGetCurrentContext();
+		if(openglContext != 0)
+		{
+			checkError(driver::cuGLCtxCreate(&_context, flags, device));
+			_opengl = true;
+		}
+		else
+		{
+			checkError(driver::cuCtxCreate(&_context, flags, device));
+		}
+		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
 		char name[256];
@@ -540,7 +696,7 @@ namespace executive
 		checkError(driver::cuDeviceGetAttribute(&_properties.concurrentKernels, 
 			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
-			&_properties.major, device));
+			&_properties.minor, device));
 	}
 
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()
@@ -748,23 +904,38 @@ namespace executive
 	void* NVIDIAGPUDevice::glRegisterBuffer(unsigned int buffer, 
 		unsigned int flags)
 	{
+		report("Regstering open gl buffer " << buffer);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
 		CUgraphicsResource resource;
-		checkError(driver::cuGraphicsGLRegisterBuffer(&resource, 
-			buffer, flags));
+		checkError(driver::cuGraphicsGLRegisterBuffer(&resource,
+			buffer, CU_GRAPHICS_MAP_RESOURCE_FLAGS_NONE));
+
+		report(" to resource - " << resource);
 		return hydrazine::bit_cast<void*>(resource);
 	}
 	
 	void* NVIDIAGPUDevice::glRegisterImage(unsigned int image, 
 		unsigned int target, unsigned int flags)
 	{
+		report("Regstering open gl image " << image << ", target " << target);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
 		CUgraphicsResource resource;
 		checkError(driver::cuGraphicsGLRegisterImage(&resource, image, 
 			target, flags));
+		report(" to resource " << resource);
 		return resource;
 	}
 	
 	void NVIDIAGPUDevice::unRegisterGraphicsResource(void* resource)
 	{
+		report("Unregistering graphics resource - " << resource);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
 		checkError(driver::cuGraphicsUnregisterResource(
 			hydrazine::bit_cast<CUgraphicsResource>(resource)));
 	}
@@ -772,42 +943,95 @@ namespace executive
 	void NVIDIAGPUDevice::mapGraphicsResource(void* resource, int count, 
 		unsigned int streamId)
 	{
-		StreamMap::iterator stream = _streams.find(streamId);
-
-		if(stream == _streams.end())
+		CUstream id = 0;
+		if(streamId != 0)
 		{
-			Throw("Invalid stream - " << streamId);
-		}
+			StreamMap::iterator stream = _streams.find(streamId);
 
-		checkError(driver::cuGraphicsMapResources(1, 
-			(CUgraphicsResource*)resource, stream->second));
-	}
-	
-	void* NVIDIAGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
-		void* resource) const
-	{
+			if(stream == _streams.end())
+			{
+				Throw("Invalid stream - " << streamId);
+			}
+
+			id = stream->second;
+		}
+		report("Mapping graphics resource " << resource 
+			<< " on stream " << streamId);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
+		checkError(driver::cuGraphicsMapResources(count,
+			(CUgraphicsResource*)&resource, id));
+		
 		CUdeviceptr pointer;
 		unsigned int bytes = 0;
 		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
 			(CUgraphicsResource)resource));
+		
+		void* p = (void*)pointer;
+		
+		_allocations.insert(std::make_pair(p, new MemoryAllocation(p, bytes)));
+	}
+	
+	void* NVIDIAGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
+		void* resource)
+	{
+		CUdeviceptr pointer;
+		unsigned int bytes = 0;
+		report("Getting pointer to mapped resource " << resource);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
+		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
+			(CUgraphicsResource)resource));
+
 		size = bytes;
+		report(" size - " << size << ", pointer - " << pointer);
 		return hydrazine::bit_cast<void*>(pointer);
 	}
 
 	void NVIDIAGPUDevice::setGraphicsResourceFlags(void* resource, 
 		unsigned int flags)
 	{
+		report("Setting flags to " << flags 
+			<< " for graphics resource " << resource);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
 		checkError(driver::cuGraphicsResourceSetMapFlags(
 			(CUgraphicsResource)resource, flags));
 	}
 
 	void NVIDIAGPUDevice::unmapGraphicsResource(void* resource)
 	{
-		StreamMap::iterator stream = _streams.find(_selectedStream);
-		assert(stream != _streams.end());
+		CUstream id = 0;
 		
+		if(_selectedStream != 0)
+		{
+			StreamMap::iterator stream = _streams.find(_selectedStream);
+			assert(stream != _streams.end());
+			id = stream->second;
+		}
+				
+		report("Unmapping graphics resource " << resource);
+
+		if(!_opengl) Throw("No active opengl contexts.");
+
+		CUdeviceptr pointer;
+		unsigned int bytes = 0;
+
+		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
+			(CUgraphicsResource)resource));
+
+		AllocationMap::iterator allocation = _allocations.find(
+			hydrazine::bit_cast<void*>(pointer));
+		assert(allocation != _allocations.end());
+		
+		delete allocation->second;
+		_allocations.erase(allocation);
+
 		checkError(driver::cuGraphicsUnmapResources(1, 
-			(CUgraphicsResource*)resource, stream->second));
+			(CUgraphicsResource*)&resource, id));
 	}
 
 	void NVIDIAGPUDevice::load(const ir::Module* module)
@@ -1004,76 +1228,7 @@ namespace executive
 		_selected = false;
 		checkError(driver::cuCtxPopCurrent(&_context));
 	}
-	
-	static unsigned int channels(const cudaChannelFormatDesc& desc)
-	{
-		unsigned int channels = 0;
 		
-		channels = (desc.x > 0) ? channels + 1 : channels;
-		channels = (desc.y > 0) ? channels + 1 : channels;
-		channels = (desc.z > 0) ? channels + 1 : channels;
-		channels = (desc.w > 0) ? channels + 1 : channels;
-	
-		return channels;
-	}
-	
-	static CUarray_format_enum format(const cudaChannelFormatDesc& desc)
-	{
-		switch(desc.f)
-		{
-			case cudaChannelFormatKindSigned:
-			{
-				if(desc.x == 8)
-				{
-					return CU_AD_FORMAT_SIGNED_INT8;
-				}
-				else if(desc.y == 16)
-				{
-					return CU_AD_FORMAT_SIGNED_INT16;
-				}
-				else
-				{
-					return CU_AD_FORMAT_SIGNED_INT32;
-				}			
-			}
-			case cudaChannelFormatKindUnsigned:
-			{
-				if(desc.x == 8)
-				{
-					return CU_AD_FORMAT_UNSIGNED_INT8;
-				}
-				else if(desc.y == 16)
-				{
-					return CU_AD_FORMAT_UNSIGNED_INT16;
-				}
-				else
-				{
-					return CU_AD_FORMAT_UNSIGNED_INT32;
-				}
-			}
-			case cudaChannelFormatKindFloat:
-			{
-				if(desc.x == 16)
-				{
-					return CU_AD_FORMAT_HALF;
-				}
-				else
-				{
-					return CU_AD_FORMAT_FLOAT;
-				}
-			}
-			case cudaChannelFormatKindNone: break;
-		}
-		return CU_AD_FORMAT_UNSIGNED_INT8;
-	}
-	
-	static CUaddress_mode_enum convert(cudaTextureAddressMode mode)
-	{
-		// Note that the cuda runtime does not expose CU_TR_ADDRESS_MODE_MIRROR 
-		if(mode == cudaAddressModeWrap) return CU_TR_ADDRESS_MODE_WRAP;
-		return CU_TR_ADDRESS_MODE_CLAMP;
-	}
-	
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
 		const std::string& moduleName, const std::string& textureName, 
 		const textureReference& texref, const cudaChannelFormatDesc& desc, 
@@ -1094,8 +1249,12 @@ namespace executive
 
 		if(_arrays.count(textureName) != 0)
 		{
-			Throw("Texture - " << textureName << " - already bound." );
+			unbindTexture(moduleName, textureName);
 		}
+
+		report("Binding texture " << textureName << " in module " << moduleName
+			<< " to pointer " << pointer << " with dimensions (" << size.x
+			<< "," << size.y << "," << size.z << ")");
 
 		CUtexref ref = hydrazine::bit_cast<CUtexref>(tex);
 		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
@@ -1103,49 +1262,14 @@ namespace executive
 		unsigned int bytesPerElement = ((desc.x + desc.y 
 			+ desc.z + desc.w) / 8);
 		unsigned int pitch = bytesPerElement * size.x;
+		
 		if(size.z > 1)
 		{
-			CUDA_ARRAY3D_DESCRIPTOR descriptor;
-			descriptor.Width = size.x;
-			descriptor.Height = size.y;
-			descriptor.Depth = size.z;
-			descriptor.NumChannels = channels(desc);
-			descriptor.Format = format(desc);
-			descriptor.Flags = 0;
-			
-			CUarray array;
-			checkError(driver::cuArray3DCreate(&array, &descriptor));
-			
+			Array3D* array = new Array3D(desc, size, ptr);
 			_arrays[textureName] = array;
-						
-			CUDA_MEMCPY3D memcpy;
 			
-			memcpy.srcLOD = 0;
-			memcpy.dstLOD = 0;
-			
-			memcpy.WidthInBytes = bytesPerElement * size.x;
-			memcpy.Height = size.y;
-			memcpy.Depth = size.z;
-			
-			memcpy.srcMemoryType = CU_MEMORYTYPE_DEVICE;
-			memcpy.srcDevice = ptr;
-			memcpy.srcPitch = bytesPerElement * size.x;
-			memcpy.srcHeight = size.y;
-			
-			memcpy.dstMemoryType = CU_MEMORYTYPE_ARRAY;
-			memcpy.dstArray = array;
-			
-			memcpy.srcXInBytes = 0;
-			memcpy.srcY = 0;
-			memcpy.srcZ = 0;
-			
-			memcpy.dstXInBytes = 0;
-			memcpy.dstY = 0;
-			memcpy.dstZ = 0;
-			
-			checkError(driver::cuMemcpy3D(&memcpy));
-			checkError(driver::cuTexRefSetArray(ref, 
-				array, CU_TRSA_OVERRIDE_FORMAT));
+			checkError(driver::cuTexRefSetArray(ref,
+				array->array, CU_TRSA_OVERRIDE_FORMAT));
 		}
 		else if(size.y > 1)
 		{
@@ -1208,12 +1332,12 @@ namespace executive
 				<< " in Module - " << moduleName);
 		}
 		
+		report("Unbinding texture " << textureName 
+			<< " in module " << moduleName);
+		
 		ArrayMap::iterator array = _arrays.find(textureName);
 		assert(array != _arrays.end());
-		if(array->second != 0)
-		{
-			checkError(driver::cuArrayDestroy(array->second));
-		}
+		delete array->second;
 		_arrays.erase(array);		
 	}
 	
@@ -1247,7 +1371,7 @@ namespace executive
 				<< " in module " << moduleName);
 		}
 		
-		if(kernel->sharedMemorySize() + sharedMemory > 
+/*		if(kernel->sharedMemorySize() + sharedMemory > 
 			(size_t)properties().sharedMemPerBlock)
 		{
 			Throw("Out of shared memory for kernel \""
@@ -1257,7 +1381,7 @@ namespace executive
 				<< properties().sharedMemPerBlock << " for device " 
 				<< properties().name);
 		}
-		
+	*/	
 		if(kernel->constMemorySize() > (size_t)properties().totalConstantMemory)
 		{
 			Throw("Out of shared memory for kernel \""
@@ -1273,6 +1397,12 @@ namespace executive
 		kernel->updateParameterMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		
+		for(ArrayMap::iterator array = _arrays.begin(); 
+			array != _arrays.end(); ++array)
+		{
+			if(array->second != 0) array->second->update();
+		}
 		
 		kernel->launchGrid(grid.x, grid.y);
 		synchronize();

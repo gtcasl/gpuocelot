@@ -305,7 +305,7 @@ namespace executive
 	}
 
 	void *ATIGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
-			void* resource) const
+			void* resource)
 	{
 		assertM(false, "Not implemented yet");
 	}

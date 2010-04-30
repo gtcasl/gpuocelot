@@ -21,13 +21,13 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
-INFO     Test completed in 3.59018683434 seconds
+INFO     Test completed in 2.3437538147 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
-INFO     Test completed in 3.70948410034 seconds
+INFO     Test completed in 2.41256308556 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -46,8 +46,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1272488854
-Test time : 0.719425
+Test Seed : 1272664423
+Test time : 0.679156
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -56,8 +56,14 @@ Test Point 3 Passed
 
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale
+INFO     Test completed in 0.176152944565 seconds
+INFO      It produced the following output:
+No CAL devices found
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser
-INFO     Test completed in 0.0506010055542 seconds
+INFO     Test completed in 0.249206781387 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -70,21 +76,15 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1272488855
-Test time : 4.02927e-05
+Test Seed : 1272664424
+Test time : 0.0147436
 
 Status : 
 
 
-INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer 
-INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale
-INFO     Test completed in 0.209475040436 seconds
-INFO      It produced the following output:
-No CAL devices found
-
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer
-INFO     Test completed in 0.0804409980774 seconds
+INFO     Test completed in 0.156329154968 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -96,15 +96,15 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1272488855
-Test time : 3.14713e-05
+Test Seed : 1272664424
+Test time : 2.52724e-05
 
 Status : 
 
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph
-INFO     Test completed in 0.0506370067596 seconds
+INFO     Test completed in 0.496818065643 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -119,8 +119,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1272488855
-Test time : 2.98023e-05
+Test Seed : 1272664424
+Test time : 7.05719e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -133,7 +133,7 @@ Testing SSA then back Dataflow
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator
-INFO     Test completed in 0.0867931842804 seconds
+INFO     Test completed in 0.590236902237 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -143,8 +143,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1272488855
-Test time : 0.0357454
+Test Seed : 1272664424
+Test time : 0.314529
 
 Status : Test output:
 11 registers
@@ -158,7 +158,7 @@ Full kernel test passed
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions
-INFO     Test completed in 0.0806000232697 seconds
+INFO     Test completed in 0.364567041397 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -168,8 +168,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1272488855
-Test time : 0.00101566
+Test Seed : 1272664424
+Test time : 0.00254822
 
 Status : Test output:
 Accessors test passed.
@@ -187,7 +187,7 @@ pass: control flow instructions
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions
-INFO     Test completed in 0.0661818981171 seconds
+INFO     Test completed in 0.214149951935 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -201,8 +201,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1272488855
-Test time : 0.00193262
+Test Seed : 1272664425
+Test time : 0.00518322
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -335,9 +335,9 @@ Zext Instruction Passed
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels
-INFO     Test completed in 0.113350868225 seconds
+INFO     Test completed in 0.495568037033 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.000111818s (111606 ticks)
+Kernel launch time was 0.0233164s (23316512 ticks)
 Pass/Fail : Pass
 
 
@@ -346,8 +346,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1272488855
-Test time : 0.0346107
+Test Seed : 1272664425
+Test time : 0.107823
 
 Status : Test output:
 divergent control flow succeeded
@@ -358,7 +358,7 @@ looping kernel succeeded
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0744540691376 seconds
+INFO     Test completed in 0.235954999924 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -371,15 +371,15 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1272488855
-Test time : 2.74181e-05
+Test Seed : 1272664425
+Test time : 3.17097e-05
 
 Status : 
 
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels
-INFO     Test completed in 0.321297168732 seconds
+INFO     Test completed in 0.295073986053 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -391,8 +391,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1272488855
-Test time : 0.27017
+Test Seed : 1272664425
+Test time : 0.248672
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -429,19 +429,29 @@ R = [
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D
-INFO     Test completed in 0.203217983246 seconds
+INFO     Test completed in 0.233537912369 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray
-INFO     Test completed in 0.171457052231 seconds
+INFO     Test completed in 0.263106107712 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
+INFO     Test completed in 2.35887598991 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Quadro NVS 140M 
+Pass/Fail : Pass
+cudaSetDevice() - 1 - Ocelot PTX Emulator 
+Pass/Fail : Pass
+cudaSetDevice() - 2 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc
-INFO     Test completed in 1.68598508835 seconds
+INFO     Test completed in 3.40161108971 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -458,36 +468,26 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
-INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
-INFO     Test completed in 1.60807085037 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Quadro NVS 140M 
-Pass/Fail : Pass
-cudaSetDevice() - 1 - Ocelot PTX Emulator 
-Pass/Fail : Pass
-cudaSetDevice() - 2 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
 INFO     
 Passing tests:
- (0.087s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
- (0.081s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
- (0.051s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
- (1.608s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Passed
- (0.203s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Passed
- (0.171s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Passed
- (0.080s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
- (0.066s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
- (0.051s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
- (0.113s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
- (1.686s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Passed
- (0.321s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
- (3.709s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Passed
- (3.590s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence : Passed
- (0.074s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
+ (0.590s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
+ (0.365s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
+ (0.497s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
+ (2.359s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Passed
+ (0.234s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Passed
+ (0.263s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Passed
+ (0.156s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
+ (0.214s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
+ (0.249s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
+ (0.496s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
+ (3.402s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Passed
+ (0.295s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
+ (2.413s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Passed
+ (2.344s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence : Passed
+ (0.236s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
 
 Failing tests:
- (0.209s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale : Did not complete.
+ (0.176s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale : Did not complete.
 
 Non-Existent tests:
 

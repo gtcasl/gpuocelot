@@ -34,6 +34,8 @@ namespace executive
 					CUdeviceptr _devicePointer;
 					/*! \brief Host pointer to mapped/page-locked allocation */
 					void* _hostPointer;
+					/*! \brief Is the allocation external? */
+					bool _external;
 				
 				public:
 					/*! \brief Generic Construct */
@@ -44,6 +46,8 @@ namespace executive
 					MemoryAllocation(size_t size, unsigned int flags);
 					/*! \brief Construct a global allocation */
 					MemoryAllocation(CUmodule module, const ir::Global& global);
+					/*! \brief Construct an external allocaton */
+					MemoryAllocation(void* pointer, size_t size);
 					/*! \brief Desructor */
 					~MemoryAllocation();
 
@@ -143,9 +147,36 @@ namespace executive
 			/*! \brief A map of registered graphics resources */
 			typedef std::unordered_map<unsigned int, 
 				CUgraphicsResource> GraphicsMap;
-				
+			
+			/*! \brief A 3d array description */
+			class Array3D
+			{
+				public:
+					/*! \brief The array or 0*/
+					CUarray array;
+					/*! \brief The device pointer that the array is mirroring */
+					CUdeviceptr ptr;
+					/*! \brief The dimensions of the array */
+					ir::Dim3 size;
+					/*! \brief Bytes per element in the array */
+					unsigned int bytesPerElement;
+					
+				public:
+					/*! \brief Create and allocate a new array */
+					Array3D(const cudaChannelFormatDesc& desc, 
+						const ir::Dim3& size, CUdeviceptr d);
+					/*! \brief Create a new blank array */
+					Array3D();
+					/*! \brief Destroy the array */
+					~Array3D();
+			
+				public:
+					/*! \brief Propagate updates from the device ptr to array*/
+					void update();
+			};
+			
 			/*! \brief A map of 3D array descriptors */
-			typedef std::unordered_map<std::string, CUarray> ArrayMap;
+			typedef std::unordered_map<std::string, Array3D*> ArrayMap;
 			
 		private:
 			/*! \brief A map of memory allocations in device space */
@@ -178,8 +209,8 @@ namespace executive
 			/*! \brief The currently selected stream */
 			unsigned int _selectedStream;
 		
-			/*! \brief The opengl context? */
-			CUcontext _glcontext;
+			/*! \brief Is opengl enabled? */
+			bool _opengl;
 			
 			/*! \brief Bound 3d arrays */
 			ArrayMap _arrays;
@@ -189,7 +220,7 @@ namespace executive
 			static bool _cudaDriverInitialized;
 			/*! \brief The last error code */
 			static CUresult _lastError;
-		
+			
 		public:
 			/*! \brief Allocate a new device for each CUDA capable GPU */
 			static DeviceVector createDevices(unsigned int flags);
@@ -236,7 +267,7 @@ namespace executive
 				unsigned int stream);
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			void* getPointerToMappedGraphicsResource(size_t& size, 
-				void* resource) const;
+				void* resource);
 			/*! \brief Change the flags of a mapped resource */
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);

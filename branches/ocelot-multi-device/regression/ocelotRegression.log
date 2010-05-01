@@ -20,15 +20,99 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence 
-INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
-INFO     Test completed in 2.3437538147 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
-INFO     Test completed in 2.41256308556 seconds
+INFO     Test completed in 0.27432179451 seconds
 INFO      It produced the following output:
+(0.110183) NVIDIAGPUDevice.cpp:339:  Loading module - simpleKernels on NVIDIA GPU.
+(0.110496) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module simpleKernels */
+4 
+5 /* Globals */
+6 
+7 /* Textures */
+8 
+9 /*
+10 * Ocelot Version : 1.0.278
+11 */
+12 .entry increment(.param  .u64 memory)
+13 {
+14 	.reg .u64 %r0;
+15 	.reg .u32 %r1;
+16 	.reg .u32 %r2;
+17 	$BB_1_1:				/* Entry */ 
+18 		ld.param.u64 %r0, [memory];
+19 		ld.global.u32 %r1, [%r0 + 0];
+20 		add.u32 %r2, %r1, 1;
+21 		st.global.u32 [%r0 + 0], %r2;
+22 	$BB_1_2:				/* Exit */ 
+23 		exit;
+24 }
+25 
+(0.110712) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.110737) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - simpleKernels
+(0.110884) NVIDIAGPUDevice.cpp:399:   - increment
+(0.139444) NVIDIAGPUDevice.cpp:339:  Loading module - simpleKernels on NVIDIA GPU.
+(0.139685) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module simpleKernels */
+4 
+5 /* Globals */
+6 
+7 /* Textures */
+8 
+9 /*
+10 * Ocelot Version : 1.0.278
+11 */
+12 .entry increment(.param  .u64 memory)
+13 {
+14 	.reg .u64 %r0;
+15 	.reg .u32 %r1;
+16 	.reg .u32 %r2;
+17 	$BB_1_1:				/* Entry */ 
+18 		ld.param.u64 %r0, [memory];
+19 		ld.global.u32 %r1, [%r0 + 0];
+20 		add.u32 %r2, %r1, 1;
+21 		st.global.u32 [%r0 + 0], %r2;
+22 	$BB_1_2:				/* Exit */ 
+23 		exit;
+24 }
+25 
+(0.139924) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.139949) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - simpleKernels
+(0.140095) NVIDIAGPUDevice.cpp:399:   - increment
+(0.159102) NVIDIAGPUDevice.cpp:339:  Loading module - simpleKernels on NVIDIA GPU.
+(0.159298) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module simpleKernels */
+4 
+5 /* Globals */
+6 
+7 /* Textures */
+8 
+9 /*
+10 * Ocelot Version : 1.0.278
+11 */
+12 .entry increment(.param  .u64 memory)
+13 {
+14 	.reg .u64 %r0;
+15 	.reg .u32 %r1;
+16 	.reg .u32 %r2;
+17 	$BB_1_1:				/* Entry */ 
+18 		ld.param.u64 %r0, [memory];
+19 		ld.global.u32 %r1, [%r0 + 0];
+20 		add.u32 %r2, %r1, 1;
+21 		st.global.u32 [%r0 + 0], %r2;
+22 	$BB_1_2:				/* Exit */ 
+23 		exit;
+24 }
+25 
+(0.173350) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.173401) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - simpleKernels
+(0.173677) NVIDIAGPUDevice.cpp:399:   - increment
 Pass/Fail : Pass
 
 
@@ -46,8 +130,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1272664423
-Test time : 0.679156
+Test Seed : 1272674922
+Test time : 0.183234
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -55,15 +139,144 @@ Test Point 3 Passed
 
 
 
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
+INFO     Test completed in 0.273720979691 seconds
+INFO      It produced the following output:
+(0.115177) NVIDIAGPUDevice.cpp:339:  Loading module - sequence.cu on NVIDIA GPU.
+(0.116372) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module sequence.cu */
+4 
+5 /* Globals */
+6 
+7 /* Textures */
+8 
+9 /*
+10 * Ocelot Version : 1.0.278
+11 */
+12 .entry sequence(.param  .u64 __cudaparm_sequence_A,
+13 		.param  .s32 __cudaparm_sequence_N)
+14 {
+15 	.reg .u16 %r0;
+16 	.reg .u16 %r1;
+17 	.reg .u32 %r2;
+18 	.reg .u32 %r3;
+19 	.reg .u32 %r4;
+20 	.reg .u32 %r5;
+21 	.reg .pred %p6;
+22 	.reg .u32 %r7;
+23 	.reg .u64 %r8;
+24 	.reg .u64 %r9;
+25 	.reg .u64 %r10;
+26 	.reg .u64 %r11;
+27 	$BB_1_1:				/* $LBB1_sequence */ 
+28 		mov.u16 %r0, %ctaid.x;
+29 		mov.u16 %r1, %ntid.x;
+30 		mul.wide.u16 %r2, %r0, %r1;
+31 		cvt.u32.u16 %r3, %tid.x;
+32 		add.u32 %r4, %r3, %r2;
+33 		ld.param.s32 %r5, [__cudaparm_sequence_N];
+34 		setp.le.s32 %p6, %r5, %r4;
+35 		@%p6 bra $BB_1_3;
+36 	$BB_1_2:
+37 		mul.lo.s32 %r7, %r4, 2;
+38 		ld.param.u64 %r8, [__cudaparm_sequence_A];
+39 		cvt.u64.s32 %r9, %r4;
+40 		mul.lo.u64 %r10, %r9, 4;
+41 		add.u64 %r11, %r8, %r10;
+42 		st.global.s32 [%r11 + 0], %r7;
+43 	$BB_1_3:				/* $Lt_0_1026 */ 
+44 		exit;
+45 }
+46 /*
+47 * Ocelot Version : 1.0.278
+48 */
+49 .entry testShr(.param  .u64 __cudaparm_testShr_A,
+50 		.param  .u64 __cudaparm_testShr_B)
+51 {
+52 	.shared .align 4 .b8 __cuda_storage32[1024];
+53 	.reg .u64 %r0;
+54 	.reg .u32 %r1;
+55 	.reg .u16 %r2;
+56 	.reg .u16 %r3;
+57 	.reg .u32 %r4;
+58 	.reg .u32 %r5;
+59 	.reg .u64 %r6;
+60 	.reg .u64 %r7;
+61 	.reg .u64 %r8;
+62 	.reg .u64 %r9;
+63 	.reg .u32 %r10;
+64 	.reg .u64 %r11;
+65 	.reg .u64 %r12;
+66 	.reg .u64 %r13;
+67 	.reg .u32 %r14;
+68 	.reg .u64 %r15;
+69 	.reg .u64 %r16;
+70 	.reg .u64 %r17;
+71 	.reg .u32 %r18;
+72 	.reg .u32 %r19;
+73 	.reg .u32 %r20;
+74 	.reg .pred %p21;
+75 	.reg .u32 %r22;
+76 	.reg .u64 %r23;
+77 	.reg .u64 %r24;
+78 	$BB_2_1:				/* $LBB1_testShr */ 
+79 		mov.u64 %r0, __cuda_storage32;
+80 		cvt.u32.u16 %r1, %tid.x;
+81 		mov.u16 %r2, %ctaid.x;
+82 		mov.u16 %r3, %ntid.x;
+83 		mul.wide.u16 %r4, %r2, %r3;
+84 		add.u32 %r5, %r1, %r4;
+85 		cvt.u64.s32 %r6, %r5;
+86 		mul.lo.u64 %r7, %r6, 4;
+87 		ld.param.u64 %r8, [__cudaparm_testShr_B];
+88 		add.u64 %r9, %r8, %r7;
+89 		ld.global.s32 %r10, [%r9 + 0];
+90 		cvt.u64.u32 %r11, %r1;
+91 		mul.lo.u64 %r12, %r11, 4;
+92 		add.u64 %r13, %r0, %r12;
+93 		st.shared.s32 [%r13 + 0], %r10;
+94 		bar.sync 0;
+95 		xor.b32 %r14, %r1, 1;
+96 		cvt.u64.u32 %r15, %r14;
+97 		mul.lo.u64 %r16, %r15, 4;
+98 		add.u64 %r17, %r0, %r16;
+99 		ld.shared.s32 %r18, [%r17 + 0];
+100 		and.b32 %r19, %r5, 1;
+101 		mov.u32 %r20, 0;
+102 		setp.eq.s32 %p21, %r19, %r20;
+103 		@%p21 bra $BB_2_3;
+104 	$BB_2_2:
+105 		ld.shared.s32 %r18, [%r17 + 0];
+106 		mul.lo.s32 %r22, %r18, 2;
+107 		bra.uni $BB_2_4;
+108 	$BB_2_3:				/* $Lt_1_1282 */ 
+109 		ld.shared.s32 %r18, [%r17 + 0];
+110 		mul.lo.s32 %r22, %r18, 3;
+111 	$BB_2_4:				/* $Lt_1_1026 */ 
+112 		ld.param.u64 %r23, [__cudaparm_testShr_A];
+113 		add.u64 %r24, %r23, %r7;
+114 		st.global.s32 [%r24 + 0], %r22;
+115 		exit;
+116 }
+117 
+(0.177155) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.177187) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - sequence.cu
+(0.177425) NVIDIAGPUDevice.cpp:399:   - sequence
+(0.177798) NVIDIAGPUDevice.cpp:399:   - testShr
+Pass/Fail : Pass
+
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale
-INFO     Test completed in 0.176152944565 seconds
+INFO     Test completed in 0.188595056534 seconds
 INFO      It produced the following output:
 No CAL devices found
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser
-INFO     Test completed in 0.249206781387 seconds
+INFO     Test completed in 0.163630008698 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -76,35 +289,15 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1272664424
-Test time : 0.0147436
+Test Seed : 1272674922
+Test time : 0.00958133
 
 Status : 
 
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph 
-INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer
-INFO     Test completed in 0.156329154968 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1272664424
-Test time : 2.52724e-05
-
-Status : 
-
-
-INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph
-INFO     Test completed in 0.496818065643 seconds
+INFO     Test completed in 0.060163974762 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -119,8 +312,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1272664424
-Test time : 7.05719e-05
+Test Seed : 1272674922
+Test time : 3.02792e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -131,9 +324,29 @@ Testing SSA then back Dataflow
 
 
 
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer
+INFO     Test completed in 0.0757699012756 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1272674922
+Test time : 2.43187e-05
+
+Status : 
+
+
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator
-INFO     Test completed in 0.590236902237 seconds
+INFO     Test completed in 0.0709550380707 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -143,8 +356,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1272664424
-Test time : 0.314529
+Test Seed : 1272674922
+Test time : 0.0161092
 
 Status : Test output:
 11 registers
@@ -158,7 +371,7 @@ Full kernel test passed
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions
-INFO     Test completed in 0.364567041397 seconds
+INFO     Test completed in 0.0998768806458 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -168,8 +381,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1272664424
-Test time : 0.00254822
+Test Seed : 1272674922
+Test time : 0.00111556
 
 Status : Test output:
 Accessors test passed.
@@ -187,7 +400,7 @@ pass: control flow instructions
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions
-INFO     Test completed in 0.214149951935 seconds
+INFO     Test completed in 0.0444529056549 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -201,8 +414,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1272664425
-Test time : 0.00518322
+Test Seed : 1272674922
+Test time : 0.0018785
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -335,9 +548,9 @@ Zext Instruction Passed
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels
-INFO     Test completed in 0.495568037033 seconds
+INFO     Test completed in 0.07759308815 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.0233164s (23316512 ticks)
+Kernel launch time was 0.00013876s (138635 ticks)
 Pass/Fail : Pass
 
 
@@ -346,8 +559,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1272664425
-Test time : 0.107823
+Test Seed : 1272674922
+Test time : 0.0330729
 
 Status : Test output:
 divergent control flow succeeded
@@ -358,7 +571,7 @@ looping kernel succeeded
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator
-INFO     Test completed in 0.235954999924 seconds
+INFO     Test completed in 0.0517389774323 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -371,15 +584,15 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1272664425
-Test time : 3.17097e-05
+Test Seed : 1272674922
+Test time : 2.6226e-05
 
 Status : 
 
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels
-INFO     Test completed in 0.295073986053 seconds
+INFO     Test completed in 0.338234901428 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -391,8 +604,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1272664425
-Test time : 0.248672
+Test Seed : 1272674922
+Test time : 0.284801
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -429,29 +642,171 @@ R = [
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D
-INFO     Test completed in 0.233537912369 seconds
+INFO     Test completed in 0.263109922409 seconds
 INFO      It produced the following output:
+(0.085789) NVIDIAGPUDevice.cpp:339:  Loading module - texture2D.cu on NVIDIA GPU.
+(0.086475) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module texture2D.cu */
+4 
+5 /* Globals */
+6 
+7 /* Textures */
+8 .tex .u32 surface;
+9 
+10 /*
+11 * Ocelot Version : 1.0.278
+12 */
+13 .entry _Z6kernelPfii(.param  .u64 __cudaparm__Z6kernelPfii_out,
+14 		.param  .s32 __cudaparm__Z6kernelPfii_width,
+15 		.param  .s32 __cudaparm__Z6kernelPfii_height)
+16 {
+17 	.reg .u16 %r0;
+18 	.reg .u16 %r1;
+19 	.reg .u32 %r2;
+20 	.reg .u16 %r3;
+21 	.reg .u16 %r4;
+22 	.reg .u32 %r5;
+23 	.reg .u32 %r6;
+24 	.reg .u32 %r7;
+25 	.reg .u32 %r8;
+26 	.reg .u32 %r9;
+27 	.reg .f32 %r10;
+28 	.reg .f32 %r11;
+29 	.reg .f32 %r12;
+30 	.reg .f32 %r13;
+31 	.reg .f32 %r14;
+32 	.reg .f32 %r15;
+33 	.reg .f32 %r16;
+34 	.reg .f32 %r17;
+35 	.reg .f32 %r18;
+36 	.reg .u64 %r19;
+37 	.reg .u32 %r20;
+38 	.reg .u32 %r21;
+39 	.reg .u32 %r22;
+40 	.reg .u64 %r23;
+41 	.reg .u64 %r24;
+42 	.reg .u64 %r25;
+43 	$BB_1_1:				/* $LBB1__Z6kernelPfii */ 
+44 		mov.u16 %r0, %ctaid.x;
+45 		mov.u16 %r1, %ntid.x;
+46 		mul.wide.u16 %r2, %r0, %r1;
+47 		mov.u16 %r3, %ctaid.y;
+48 		mov.u16 %r4, %ntid.y;
+49 		mul.wide.u16 %r5, %r3, %r4;
+50 		cvt.u32.u16 %r6, %tid.x;
+51 		add.u32 %r7, %r6, %r2;
+52 		cvt.u32.u16 %r8, %tid.y;
+53 		add.u32 %r9, %r8, %r5;
+54 		cvt.rn.f32.u32 %r10, %r7;
+55 		cvt.rn.f32.u32 %r11, %r9;
+56 		mov.f32 %r12, 0f00000000;
+57 		mov.f32 %r13, 0f00000000;
+58 		tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}];
+59 		mov.f32 %r18, %r14;
+60 		ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out];
+61 		ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width];
+62 		mul.lo.u32 %r21, %r20, %r9;
+63 		add.u32 %r22, %r7, %r21;
+64 		cvt.u64.u32 %r23, %r22;
+65 		mul.lo.u64 %r24, %r23, 4;
+66 		add.u64 %r25, %r19, %r24;
+67 		st.global.f32 [%r25 + 0], %r18;
+68 		exit;
+69 }
+70 
+(0.152659) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.152692) NVIDIAGPUDevice.cpp:1260: Binding texture surface in module texture2D.cu to pointer 0x110000 with dimensions (64,64,1)
+(0.152782) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - texture2D.cu
+(0.153020) NVIDIAGPUDevice.cpp:399:   - _Z6kernelPfii
 Pass/Fail : Pass
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray 
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray
-INFO     Test completed in 0.263106107712 seconds
+INFO     Test completed in 0.26639509201 seconds
 INFO      It produced the following output:
+(0.085859) NVIDIAGPUDevice.cpp:339:  Loading module - textureArray.cu on NVIDIA GPU.
+(0.086511) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module textureArray.cu */
+4 
+5 /* Globals */
+6 
+7 /* Textures */
+8 .tex .u32 surface;
+9 
+10 /*
+11 * Ocelot Version : 1.0.278
+12 */
+13 .entry _Z6kernelPfii(.param  .u64 __cudaparm__Z6kernelPfii_out,
+14 		.param  .s32 __cudaparm__Z6kernelPfii_width,
+15 		.param  .s32 __cudaparm__Z6kernelPfii_height)
+16 {
+17 	.reg .u16 %r0;
+18 	.reg .u16 %r1;
+19 	.reg .u32 %r2;
+20 	.reg .u16 %r3;
+21 	.reg .u16 %r4;
+22 	.reg .u32 %r5;
+23 	.reg .u32 %r6;
+24 	.reg .u32 %r7;
+25 	.reg .u32 %r8;
+26 	.reg .u32 %r9;
+27 	.reg .f32 %r10;
+28 	.reg .f32 %r11;
+29 	.reg .f32 %r12;
+30 	.reg .f32 %r13;
+31 	.reg .f32 %r14;
+32 	.reg .f32 %r15;
+33 	.reg .f32 %r16;
+34 	.reg .f32 %r17;
+35 	.reg .f32 %r18;
+36 	.reg .u64 %r19;
+37 	.reg .u32 %r20;
+38 	.reg .u32 %r21;
+39 	.reg .u32 %r22;
+40 	.reg .u64 %r23;
+41 	.reg .u64 %r24;
+42 	.reg .u64 %r25;
+43 	$BB_1_1:				/* $LBB1__Z6kernelPfii */ 
+44 		mov.u16 %r0, %ctaid.x;
+45 		mov.u16 %r1, %ntid.x;
+46 		mul.wide.u16 %r2, %r0, %r1;
+47 		mov.u16 %r3, %ctaid.y;
+48 		mov.u16 %r4, %ntid.y;
+49 		mul.wide.u16 %r5, %r3, %r4;
+50 		cvt.u32.u16 %r6, %tid.x;
+51 		add.u32 %r7, %r6, %r2;
+52 		cvt.u32.u16 %r8, %tid.y;
+53 		add.u32 %r9, %r8, %r5;
+54 		cvt.rn.f32.u32 %r10, %r7;
+55 		cvt.rn.f32.u32 %r11, %r9;
+56 		mov.f32 %r12, 0f00000000;
+57 		mov.f32 %r13, 0f00000000;
+58 		tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}];
+59 		mov.f32 %r18, %r14;
+60 		ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out];
+61 		ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width];
+62 		mul.lo.u32 %r21, %r20, %r9;
+63 		add.u32 %r22, %r7, %r21;
+64 		cvt.u64.u32 %r23, %r22;
+65 		mul.lo.u64 %r24, %r23, 4;
+66 		add.u64 %r25, %r19, %r24;
+67 		st.global.f32 [%r25 + 0], %r18;
+68 		exit;
+69 }
+70 
+(0.160940) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.160975) NVIDIAGPUDevice.cpp:1260: Binding texture surface in module textureArray.cu to pointer 0x110000 with dimensions (64,64,1)
+(0.161062) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - textureArray.cu
+(0.161300) NVIDIAGPUDevice.cpp:399:   - _Z6kernelPfii
 Pass/Fail : Pass
 
 INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals 
-INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
-INFO     Test completed in 2.35887598991 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Quadro NVS 140M 
-Pass/Fail : Pass
-cudaSetDevice() - 1 - Ocelot PTX Emulator 
-Pass/Fail : Pass
-cudaSetDevice() - 2 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
 INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc
-INFO     Test completed in 3.40161108971 seconds
+INFO     Test completed in 1.40299606323 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -468,26 +823,101 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
+INFO     Test completed in 1.76432800293 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Quadro NVS 140M 
+(0.263264) NVIDIAGPUDevice.cpp:339:  Loading module - global.cu on NVIDIA GPU.
+(0.263797) NVIDIAGPUDevice.cpp:346:   Binary is:
+1 .version 1.4
+2 .target sm_13
+3 /* Module global.cu */
+4 
+5 /* Globals */
+6 .global .f32 Pi;
+7 
+8 /* Textures */
+9 
+10 /*
+11 * Ocelot Version : 1.0.278
+12 */
+13 .entry copyFromGlobal(.param  .u64 __cudaparm_copyFromGlobal_result)
+14 {
+15 	.reg .u32 %r0;
+16 	.reg .u16 %r1;
+17 	.reg .u16 %r2;
+18 	.reg .u32 %r3;
+19 	.reg .u32 %r4;
+20 	.reg .u32 %r5;
+21 	.reg .u32 %r6;
+22 	.reg .u32 %r7;
+23 	.reg .u32 %r8;
+24 	.reg .u32 %r9;
+25 	.reg .u32 %r10;
+26 	.reg .u32 %r11;
+27 	.reg .f32 %r12;
+28 	.reg .f32 %r13;
+29 	.reg .f32 %r14;
+30 	.reg .u64 %r15;
+31 	.reg .u64 %r16;
+32 	.reg .u64 %r17;
+33 	.reg .u64 %r18;
+34 	$BB_1_1:				/* $LBB1_copyFromGlobal */ 
+35 		cvt.u32.u16 %r0, %tid.x;
+36 		mov.u16 %r1, %ctaid.x;
+37 		mov.u16 %r2, %ntid.x;
+38 		mul.wide.u16 %r3, %r1, %r2;
+39 		add.u32 %r4, %r0, %r3;
+40 		shr.s32 %r5, %r4, 31;
+41 		mov.s32 %r6, 127;
+42 		and.b32 %r7, %r5, %r6;
+43 		add.s32 %r8, %r7, %r4;
+44 		shr.s32 %r9, %r8, 7;
+45 		mul.lo.s32 %r10, %r9, 128;
+46 		sub.s32 %r11, %r4, %r10;
+47 		cvt.rn.f32.s32 %r12, %r11;
+48 		ld.global.f32 %r13, [Pi];
+49 		mul.f32 %r14, %r12, %r13;
+50 		ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result];
+51 		cvt.u64.s32 %r16, %r4;
+52 		mul.lo.u64 %r17, %r16, 4;
+53 		add.u64 %r18, %r15, %r17;
+54 		st.global.f32 [%r18 + 0], %r14;
+55 		exit;
+56 }
+57 
+(0.334533) NVIDIAGPUDevice.cpp:366:   Module loaded successfully.
+(0.334565) NVIDIAGPUDevice.cpp:410:  Loading globals in module - global.cu
+(0.334581) NVIDIAGPUDevice.cpp:416:   Pi
+(0.334602) NVIDIAGPUDevice.cpp:419:    pointer - 0x10d00
+(0.334715) NVIDIAGPUDevice.cpp:390:  Creating NVIDIA kernels for module - global.cu
+(0.334868) NVIDIAGPUDevice.cpp:399:   - copyFromGlobal
+Pass/Fail : Pass
+cudaSetDevice() - 1 - Ocelot PTX Emulator 
+Pass/Fail : Pass
+cudaSetDevice() - 2 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
 INFO     
 Passing tests:
- (0.590s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
- (0.365s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
- (0.497s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
- (2.359s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Passed
- (0.234s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Passed
- (0.263s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Passed
- (0.156s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
- (0.214s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
- (0.249s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
- (0.496s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
- (3.402s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Passed
- (0.295s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
- (2.413s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Passed
- (2.344s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence : Passed
- (0.236s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
+ (0.071s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
+ (0.100s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
+ (0.060s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
+ (1.764s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Passed
+ (0.263s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Passed
+ (0.266s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Passed
+ (0.076s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
+ (0.044s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
+ (0.164s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
+ (0.078s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
+ (1.403s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Passed
+ (0.338s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
+ (0.274s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Passed
+ (0.274s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence : Passed
+ (0.052s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
 
 Failing tests:
- (0.176s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale : Did not complete.
+ (0.189s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale : Did not complete.
 
 Non-Existent tests:
 

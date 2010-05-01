@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #include <fstream>
 
@@ -92,6 +92,9 @@ namespace analysis
 		report(" Loading module '" << input << "'");
 		ir::Module module( input );
 
+		report(" Running register allocation.");
+		module.createDataStructures();
+		
 		report(" Running passes that do not require SSA form.");
 		for( PassVector::iterator pass = noSsaPasses.begin(); 
 			pass != noSsaPasses.end(); ++pass)

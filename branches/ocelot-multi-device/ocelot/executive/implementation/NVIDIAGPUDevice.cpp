@@ -17,6 +17,7 @@
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 // opengl includes
 #include <GL/glx.h>
@@ -37,7 +38,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 0
+#define REPORT_PTX 1
 
 typedef cuda::CudaDriver driver;
 
@@ -338,9 +339,11 @@ namespace executive
 		report("Loading module - " << ir->modulePath << " on NVIDIA GPU.");
 		assert(!loaded());
 		std::stringstream stream;
-		ir->write(stream);
 		
-		reportE(REPORT_PTX, " Binary is:\n" << stream.str());
+		ir->writeIR(stream);
+		
+		reportE(REPORT_PTX, " Binary is:\n" 
+			<< hydrazine::addLineNumbers(stream.str()));
 		
 		CUjit_option options[] = {CU_JIT_ERROR_LOG_BUFFER, 
 			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES};

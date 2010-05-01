@@ -165,19 +165,46 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	report("Writing module (IR) - " << modulePath 
 		<< " - to output stream.");
 
+	stream << ".version 1.4\n";
+	stream << ".target sm_13\n";
+
 	stream << "/* Module " << modulePath << " */\n\n";
 	
+	stream << "/* Globals */\n";
 	for (GlobalMap::const_iterator global = globals.begin(); 
 		global != globals.end(); ++global) {
 		stream << global->second.statement.toString() << "\n";
 	}
 	stream << "\n";
+
+	stream << "/* Textures */\n";
+	for (TextureMap::const_iterator texture = textures.begin(); 
+		texture != textures.end(); ++texture) {
+		stream << texture->second.toString() << "\n";
+	}
+	stream << "\n";
 	
 	for (KernelMap::const_iterator kernel = kernels.begin(); 
-		kernel != kernels.end(); ++kernel)
-	{
+		kernel != kernels.end(); ++kernel) {
 		(kernel->second)->write(stream);
 	}
+}
+
+void ir::Module::createDataStructures() {
+	for (KernelMap::iterator kernel = kernels.begin(); 
+		kernel != kernels.end(); ++kernel) {
+		(kernel->second)->dfg();
+	}
+}
+
+static ir::Texture::Type convert(ir::PTXOperand::DataType t) {
+	switch(t) {
+		case ir::PTXOperand::s32: return ir::Texture::Signed; break;
+		case ir::PTXOperand::u32: return ir::Texture::Unsigned; break;
+		case ir::PTXOperand::f32: return ir::Texture::Float; break;
+		default: break;
+	}
+	return ir::Texture::Invalid;
 }
 
 /*!
@@ -247,7 +274,8 @@ void ir::Module::extractPTXKernels() {
 		}
 		else if (statement.directive == PTXStatement::Tex) {
 			assert(textures.count(statement.name) == 0);
-			textures.insert(std::make_pair(statement.name, Texture()));
+			textures.insert(std::make_pair(statement.name, 
+				Texture(statement.name, convert(statement.type))));
 		}
 	}
 }

@@ -55,6 +55,8 @@ namespace ir
 			}
 
 		public:
+			std::string name; //! texture name
+		
 			unsigned int x; //! Bits in x dim
 			unsigned int y; //! Bits in y dim
 			unsigned int z; //! Bits in z dim
@@ -72,10 +74,12 @@ namespace ir
 			void* data; //! Pointer to mapped variable
 			
 		public:
-			Texture();
+			Texture(const std::string& n = "", Type t = Invalid);
 
 		public:
-		
+			std::string toString() const;
+
+		public:
 			static std::string toString(Type type);			
 	};
 

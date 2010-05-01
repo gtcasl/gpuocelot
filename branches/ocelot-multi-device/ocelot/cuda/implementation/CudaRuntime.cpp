@@ -283,10 +283,11 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
 			<< "configure.ocelot.\n";
 	}
-	
+
 	// register modules
-	for(ModuleMap::const_iterator module = _modules.begin(); 
+	for(ModuleMap::iterator module = _modules.begin(); 
 		module != _modules.end(); ++module) {
+		module->second.createDataStructures();
 		for(DeviceVector::iterator device = _devices.begin(); 
 			device != _devices.end(); ++device) {
 			(*device)->select();
@@ -2904,6 +2905,7 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(name, ir::Module())).first;
 	module->second.load(ptx, name);
+	module->second.createDataStructures();
 	
 	for (DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {

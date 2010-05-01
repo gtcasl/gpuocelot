@@ -23,7 +23,7 @@ namespace ir
 			case Float:
 				typeStr = ".f32";
 				break;
-			case ir::Texture::Unsigned:
+			case Unsigned:
 			default:
 				typeStr = ".u32";
 				break;
@@ -31,12 +31,15 @@ namespace ir
 		return typeStr;
 	}
 
-	Texture::Texture() : normalize(false), type( Invalid ), 
-		size( Dim3(0, 0, 0) ), data( 0 )
-	{
+	Texture::Texture(const std::string& n, Type t) : name(n), normalize(false), 
+		type(t), size( Dim3(0, 0, 0) ), data( 0 ) {
 		
 	}
 	
+	std::string Texture::toString() const {
+		return ".tex " + toString(type) + " " + name + ";";
+	}
+
 }
 
 #endif

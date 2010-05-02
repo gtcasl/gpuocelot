@@ -1,0 +1,493 @@
+INFO     Reading in test file /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/regression/ocelotRegressionTests.txt
+INFO      Found the following tests:
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
+INFO       /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale
+INFO     ==== INDIVIDUAL TEST RESULTS ====
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching 
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence
+INFO     Test completed in 0.3547270298 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching
+INFO     Test completed in 0.430437803268 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1272676054
+Test time : 0.284212
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser
+INFO     Test completed in 0.0466611385345 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1272676054
+Test time : 3.76701e-05
+
+Status : 
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale
+INFO     Test completed in 0.168871879578 seconds
+INFO      It produced the following output:
+No CAL devices found
+
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer
+INFO     Test completed in 0.0619699954987 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1272676054
+Test time : 4.81606e-05
+
+Status : 
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph 
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph
+INFO     Test completed in 0.0527300834656 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDataflowGraph
+
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
+
+
+Test Seed : 1272676054
+Test time : 3.98159e-05
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator
+INFO     Test completed in 0.0654339790344 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1272676055
+Test time : 0.0110393
+
+Status : Test output:
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions
+INFO     Test completed in 0.0641479492188 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1272676055
+Test time : 0.00116944
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels
+INFO     Test completed in 0.0963768959045 seconds
+INFO      It produced the following output:
+Kernel launch time was 0.000103951s (103715 ticks)
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1272676055
+Test time : 0.0419407
+
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions
+INFO     Test completed in 0.0676548480988 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLLVMInstructions
+
+Description: A test for the assembly code generation and automatic 
+             verfication of individual LLVM instructions. Test Points: 1) For each 
+             instruction, generate several assembly strings using the 
+             instruction's toString method, make sure that these pass the valid() 
+             check, compare to references from the LLVM manual.
+
+
+Test Seed : 1272676055
+Test time : 0.00189638
+
+Status :  Checked instruction "<result> = add i32 4, %var"
+Add Instruction Passed
+ Checked instruction "%ptr = alloca i32"
+ Checked instruction "%ptr = alloca i32, i32 4"
+ Checked instruction "%ptr = alloca i32, i32 4, align 1024"
+ Checked instruction "%ptr = alloca i32, align 1024"
+Alloca Instruction Passed
+ Checked instruction "<result> = and i32 4, %var"
+ Checked instruction "<result> = and i32 15, 40"
+ Checked instruction "<result> = and i32 4, 8"
+And Instruction Passed
+ Checked instruction "<result> = ashr i32 4, 1"
+ Checked instruction "<result> = ashr i8 -2, 1"
+ Checked instruction "<result> = ashr < 2 x i32 > < i32 -2, i32 4 >, < i32 1, i32 3 >"
+Ashr Instruction Passed
+ Checked instruction "%X = bitcast i8 -1 to i8"
+ Checked instruction "%Z = bitcast < 2 x i32 > %V to i64"
+Bitcast Instruction Passed
+ Checked instruction "br i1 %cond, label %IfEqual, label %IfUnequal"
+Br Instruction Passed
+ Checked instruction "%retval = call i32 @test(i32 %argc)"
+ Checked instruction "call i32 (i8*, ...)* @printf(i8* %msg, i32 12, i8 42)"
+ Checked instruction "%X = tail call i32 @foo()"
+ Checked instruction "%Y = tail call fastcc i32 @foo()"
+ Checked instruction "call void @foo(i8 97 signext)"
+ Checked instruction "%r = call %struct.A @foo()"
+ Checked instruction "call void @foo() noreturn"
+ Checked instruction "%ZZ = call zeroext i32 @bar()"
+Call Instruction Passed
+ Checked instruction "%result = extractelement < 4 x i32 > %vec, i32 0"
+Extractelement Instruction Passed
+ Checked instruction "%result = extractvalue { i32, float } %agg, 0"
+Extractvalue Instruction Passed
+ Checked instruction "<result> = fadd float 0x4010000000000000, %var"
+Fadd Instruction Passed
+ Checked instruction "<result> = fcmp oeq float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp one float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp olt float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp ueq float 0x3ff0000000000000, 0x4000000000000000"
+Fcmp Instruction Passed
+ Checked instruction "<result> = fdiv float 0x4010000000000000, %var"
+Fdiv Instruction Passed
+ Checked instruction "<result> = fmul float 0x4010000000000000, %var"
+Fmul Instruction Passed
+ Checked instruction "%X = fpext float 0x400921cac0000000 to double"
+ Checked instruction "%Y = fpext float 0x3ff0000000000000 to float"
+Fpext Instruction Passed
+ Checked instruction "%X = fptosi double 0xc05ec00000000000 to i32"
+Fptosi Instruction Passed
+ Checked instruction "%X = fptoui double 0x405ec00000000000 to i32"
+Fptoui Instruction Passed
+ Checked instruction "%X = fptrunc double 0x405ec00000000000 to float"
+Fptrunc Instruction Passed
+ Checked instruction "free [ 4 x i8 ]* %array"
+Free Instruction Passed
+ Checked instruction "<result> = frem float 0x4010000000000000, %var"
+Frem Instruction Passed
+ Checked instruction "<result> = fsub float 0x0, %val"
+Fsub Instruction Passed
+ Checked instruction "%vptr = getelementptr { i32, < 2 x i8 > }* %svptr, i32 0, i32 1, i32 1"
+ Checked instruction "%eptr = getelementptr [ 12 x i8 ]* %aptr, i32 0, i32 1"
+Getelementptr Instruction Passed
+ Checked instruction "<result> = icmp ne float* %X, %X"
+Icmp Instruction Passed
+ Checked instruction "%result = insertelement < 4 x i32 > %vec, i32 1, i32 0"
+Insertelement Instruction Passed
+ Checked instruction "%result = insertvalue { i32, float } %agg, i32 1, 0"
+Insertvalue Instruction Passed
+ Checked instruction "%Y = inttoptr i64 0 to i32*"
+Inttoptr Instruction Passed
+ Checked instruction "%retval = invoke i32 @Test(i32 15) to label %Continue unwind label %TestCleanup"
+Invoke Instruction Passed
+ Checked instruction "%val = load i32* %ptr"
+Load Instruction Passed
+ Checked instruction "<result> = lshr i8 -2, 1"
+Lshr Instruction Passed
+ Checked instruction "%array2 = malloc [ 12 x i8 ], i32 %size"
+Malloc Instruction Passed
+ Checked instruction "<result> = mul i32 4, %var"
+Mul Instruction Passed
+ Checked instruction "<result> = or i32 15, 40"
+Or Instruction Passed
+ Checked instruction "%indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]"
+Phi Instruction Passed
+ Checked instruction "%Y = ptrtoint i32* %x to i64"
+Prtoint Instruction Passed
+ Checked instruction "ret void"
+Ret Instruction Passed
+ Checked instruction "<result> = sdiv i32 4, %var"
+Sdiv Instruction Passed
+ Checked instruction "%X = select i1 1, i8 17, i8 42"
+Select Instruction Passed
+ Checked instruction "%X = sext i8 -1 to i16"
+Sext Instruction Passed
+ Checked instruction "<result> = shl i32 1, 32"
+Shl Instruction Passed
+ Checked instruction "%result = shufflevector < 4 x i32 > %v1, < 4 x i32 > %v2, < 8 x i32 > < i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7 >"
+ShuffleVector Instruction Passed
+ Checked instruction "%X = sitofp i32 257 to float"
+Sitofp Instruction Passed
+ Checked instruction "<result> = srem i32 4, %var"
+Srem Instruction Passed
+ Checked instruction "store i32 3, i32* %ptr"
+Store Instruction Passed
+ Checked instruction "<result> = sub i32 4, %var"
+Sub Instruction Passed
+ Checked instruction "switch i32 %val, label %otherwise [ i32 0, label %onzero i32 1, label %onone i32 2, label %ontwo ]"
+Switch Instruction Passed
+ Checked instruction "%Y = trunc i32 123 to i1"
+Trunc Instruction Passed
+ Checked instruction "<result> = udiv i32 4, %var"
+Udiv Instruction Passed
+ Checked instruction "%Y = uitofp i8 -1 to double"
+Uitofp Instruction Passed
+ Checked instruction "unreachable"
+Unreachable Instruction Passed
+ Checked instruction "unwind"
+Unwind Instruction Passed
+ Checked instruction "<result> = urem i32 4, %var"
+Urem Instruction Passed
+ Checked instruction "%tmp = va_arg i8** %ap, i32"
+VarArg Instruction Passed
+ Checked instruction "<result> = xor i32 -1, %V"
+Xor Instruction Passed
+ Checked instruction "%X = zext i32 257 to i64"
+Zext Instruction Passed
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0487439632416 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1272676055
+Test time : 3.38554e-05
+
+Status : 
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels
+INFO     Test completed in 0.340773820877 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLLVMKernels
+
+Description: A unit test for the LLVM executive runtime. Test Points: 1) 
+             Execute a kernel with divergent control flow. 2) Execute a kernel with a 
+             loop. 3) Execute a matrix multiply kernel.
+
+
+Test Seed : 1272676055
+Test time : 0.284791
+
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
+
+
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D
+INFO     Test completed in 0.184292078018 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray
+INFO     Test completed in 0.166621923447 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals 
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals
+INFO     Test completed in 0.29970407486 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Quadro NVS 140M 
+Pass/Fail : Pass
+cudaSetDevice() - 1 - Ocelot PTX Emulator 
+Pass/Fail : Pass
+cudaSetDevice() - 2 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
+INFO     Test /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc
+INFO     Test completed in 1.46865606308 seconds
+INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+
+INFO     
+Passing tests:
+ (0.065s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestEmulator : Passed
+ (0.064s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestInstructions : Passed
+ (0.053s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDataflowGraph : Passed
+ (0.300s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaGlobals : Passed
+ (0.184s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTexture2D : Passed
+ (0.167s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaTextureArray : Passed
+ (0.062s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLexer : Passed
+ (0.068s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMInstructions : Passed
+ (0.047s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestParser : Passed
+ (0.096s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestKernels : Passed
+ (1.469s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaMalloc : Passed
+ (0.341s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestLLVMKernels : Passed
+ (0.430s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestDeviceSwitching : Passed
+ (0.355s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCudaSequence : Passed
+ (0.049s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestPTXToLLVMTranslator : Passed
+
+Failing tests:
+ (0.169s) : /home/sudnya/checkout/gpuocelot/branches/ocelot-multi-device/TestCalVectorScale : Did not complete.
+
+Non-Existent tests:
+

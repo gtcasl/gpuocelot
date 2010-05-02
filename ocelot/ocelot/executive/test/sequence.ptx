@@ -1,0 +1,111 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /home/normal/cuda/open64/lib//be
+	// nvopencc built on 2008-12-03
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_000001e8_00000000-7_sequence.cpp3.i (/tmp/ccBI#.HI8Zce)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_000001e8_00000000-6_sequence.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
+	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
+	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
+	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
+	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
+	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
+	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
+	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
+	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
+	.file	13	"/usr/include/bits/types.h"
+	.file	14	"/usr/include/time.h"
+	.file	15	"tests/ptx/synthetic/sequence.cu"
+	.file	16	"/home/normal/cuda/bin/../include/common_functions.h"
+	.file	17	"/home/normal/cuda/bin/../include/crt/func_macro.h"
+	.file	18	"/home/normal/cuda/bin/../include/math_functions.h"
+	.file	19	"/home/normal/cuda/bin/../include/device_functions.h"
+	.file	20	"/home/normal/cuda/bin/../include/math_constants.h"
+	.file	21	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+	.file	25	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry _Z10k_sequencePii( .param .u64 __cudaparm__Z10k_sequencePii_A,
+		.param .s32 __cudaparm__Z10k_sequencePii_N)
+	{
+	.reg .u16 %rh<4>;
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<6>;
+	.reg .pred %p<3>;
+	.loc	15	5	0
+$LBB1__Z10k_sequencePii:
+	mov.u16 	%rh1, %ctaid.x;      	// 
+	mov.u16 	%rh2, %ntid.x;       	// 
+	mul.wide.u16 	%r1, %rh1, %rh2;	// 
+	cvt.u32.u16 	%r2, %tid.x;     	// 
+	add.u32 	%r3, %r2, %r1;       	// 
+	ld.param.s32 	%r4, [__cudaparm__Z10k_sequencePii_N];	// id:16 __cudaparm__Z10k_sequencePii_N+0x0
+	setp.le.s32 	%p1, %r4, %r3;   	// 
+	@%p1 bra 	$Lt_0_4;            	// 
+	.loc	15	8	0
+	mul.lo.s32 	%r5, %r3, 2;      	// 
+	add.s32 	%r6, %r5, 1;         	// 
+	ld.param.u64 	%rd1, [__cudaparm__Z10k_sequencePii_A];	// id:17 __cudaparm__Z10k_sequencePii_A+0x0
+	cvt.u64.s32 	%rd2, %r3;       	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+	add.u64 	%rd4, %rd1, %rd3;    	// 
+	st.global.s32 	[%rd4+0], %r6; 	// id:18
+$Lt_0_4:
+	.loc	15	10	0
+	exit;                         	// 
+$LDWend__Z10k_sequencePii:
+	} // _Z10k_sequencePii
+
+	.entry _Z17k_simple_sequencePi( .param .u64 __cudaparm__Z17k_simple_sequencePi_A )
+	{
+	.reg .u16 %rh<4>;
+	.reg .u32 %r<7>;
+	.reg .u64 %rd<6>;
+	.loc	15	12	0
+$LBB1__Z17k_simple_sequencePi:
+	.loc	15	14	0
+	cvt.u32.u16 	%r1, %tid.x;     	// 
+	mov.u16 	%rh1, %ctaid.x;      	// 
+	mov.u16 	%rh2, %ntid.x;       	// 
+	mul.wide.u16 	%r2, %rh1, %rh2;	// 
+	add.u32 	%r3, %r1, %r2;       	// 
+	mul.lo.s32 	%r4, %r3, 2;      	// 
+	add.s32 	%r5, %r4, 1;         	// 
+	ld.param.u64 	%rd1, [__cudaparm__Z17k_simple_sequencePi_A];	// id:14 __cudaparm__Z17k_simple_sequencePi_A+0x0
+	cvt.u64.s32 	%rd2, %r3;       	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+	add.u64 	%rd4, %rd1, %rd3;    	// 
+	st.global.s32 	[%rd4+0], %r5; 	// id:15
+	.loc	15	15	0
+	exit;                         	// 
+$LDWend__Z17k_simple_sequencePi:
+	} // _Z17k_simple_sequencePi
+

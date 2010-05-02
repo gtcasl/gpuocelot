@@ -442,6 +442,7 @@ SimpleGL_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SimpleGL_SOURCES = tests/simpleGL/simpleGL_kernel.cu.cpp \
 	tests/simpleGL/simpleGL.cpp
 SimpleGL_LDADD = $(OCELOT_LIBS)
+SimpleGL_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

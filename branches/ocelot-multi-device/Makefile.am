@@ -70,6 +70,7 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/ILInstruction.cpp \
 	ocelot/ir/implementation/ILKernel.cpp \
 	ocelot/ir/implementation/ILStatement.cpp \
+	ocelot/ir/implementation/ILOperand.cpp \
 	hydrazine/implementation/Exception.cpp \
 	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \

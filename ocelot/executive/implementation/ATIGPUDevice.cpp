@@ -478,7 +478,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}		
 
-	inline const cal::CalDriver *const ATIGPUDevice::CalDriver()
+	inline const cal::CalDriver *ATIGPUDevice::CalDriver()
 	{
 		return cal::CalDriver::Instance();
 	}

@@ -19,7 +19,7 @@
 namespace executive
 {
 	class ExecutableKernel;
-};
+}
 
 namespace executive 
 {

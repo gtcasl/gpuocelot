@@ -14,7 +14,7 @@
 namespace executive
 {
 	class NVIDIAExecutableKernel;
-};
+}
 
 namespace executive 
 {

@@ -161,7 +161,7 @@ typedef enum CALresultEnum {
     CAL_RESULT_BAD_NAME_TYPE     = 7, /**< A name parameter is invalid */
     CAL_RESULT_PENDING           = 8, /**< An asynchronous operation is still pending */
     CAL_RESULT_BUSY              = 9,  /**< The resource in question is still in use */
-    CAL_RESULT_WARNING           = 10, /**< Compiler generated a warning */
+    CAL_RESULT_WARNING           = 10 /**< Compiler generated a warning */
 } CALresult;
 
 /** Data format representation */
@@ -244,7 +244,7 @@ typedef enum CALformatEnum {
     // End Deprecated formats.
 
     //CAL_FORMAT_LAST     = CAL_FORMAT_INT_1,
-    CAL_FORMAT_LAST     = CAL_FORMAT_FLOAT16_4,
+    CAL_FORMAT_LAST     = CAL_FORMAT_FLOAT16_4
 
 } CALformat;
 
@@ -252,7 +252,7 @@ typedef enum CALformatEnum {
 typedef enum _CALdimensionEnum {
     CAL_DIM_BUFFER,                     /**< A resource dimension type */
     CAL_DIM_1D,                         /**< A resource type */
-    CAL_DIM_2D,                         /**< A resource type */
+    CAL_DIM_2D                          /**< A resource type */
 } CALdimension;
 
 /** Device Kernel ISA */
@@ -266,7 +266,7 @@ typedef enum CALtargetEnum {
     CAL_TARGET_710,                /**< RV710 GPU ISA */
     CAL_TARGET_730,                /**< RV730 GPU ISA */
     CAL_TARGET_CYPRESS,            /**< CYPRESS GPU ISA */
-    CAL_TARGET_JUNIPER,            /**< JUNIPER GPU ISA */
+    CAL_TARGET_JUNIPER             /**< JUNIPER GPU ISA */
 } CALtarget;
 
 /** CAL object container */
@@ -339,7 +339,7 @@ typedef struct CALdevicestatusRec {
 /** CAL resource allocation flags **/
 typedef enum CALresallocflagsEnum {
     CAL_RESALLOC_GLOBAL_BUFFER  = 1, /**< used for global import/export buffer */
-    CAL_RESALLOC_CACHEABLE      = 2, /**< cacheable memory? */
+    CAL_RESALLOC_CACHEABLE      = 2  /**< cacheable memory? */
 } CALresallocflags;
 
 /** CAL computational 3D domain */

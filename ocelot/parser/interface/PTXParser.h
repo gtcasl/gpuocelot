@@ -177,6 +177,7 @@ namespace parser
 					void geometry( int token );
 					void vote( int token );
 					void level( int token );
+					void full();
 					
 					void instruction();
 					void instruction( const std::string& opcode, int dataType, 

@@ -1,8 +1,5 @@
-/*!
-	\file TestInstructions.cpp
-
+/*! \file TestInstructions.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
-
 	\brief unit tests for each instruction
 */
 
@@ -12,10 +9,11 @@
 #include <hydrazine/interface/Test.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
 
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
@@ -38,49 +36,53 @@ public:
 	int threadCount;
 	bool valid;
 
-	Executive context;
 	EmulatedKernel *kernel;
 	CooperativeThreadArray cta;
-	std::string module;
-
+	Module module;
+	
 	TestInstructions() {
 		valid = true;
 		name = "TestInstructions";
+		kernel = 0;
 
 		status << "Test output:\n";
 
 		threadCount = 16;
 
-		module = "ocelot/executive/test/sequence.ptx";
+		std::string path = "ocelot/executive/test/sequence.ptx";
+		bool loaded = false;
 		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
+		try {
+			loaded = module.load(path);
+		}
+		catch(const hydrazine::Exception& e) {
+			status << " error - " << e.what() << "\n";
+		}
+
+		if(!loaded) {
+			status << "failed to load module '" << path << "'\n";
 			valid = false;
 			return;
 		}
-
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			valid = false;
-			return;
-		}
-
-		Kernel *rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_simple_sequencePi");
+		
+		Kernel* rawKernel = module.getKernel("_Z17k_simple_sequencePi");
 		if (rawKernel == 0) {
 			status << "failed to get kernel\n";
 			valid = false;
 			return;
 		}
 		else {
-
-			kernel = static_cast<EmulatedKernel *>(rawKernel);
+			kernel = new EmulatedKernel(rawKernel, 0);
 			kernel->setKernelShape(threadCount, 1, 1);
 			kernel->setExternSharedMemorySize(64);
 			CooperativeThreadArray l_cta(kernel);
 			cta = l_cta;
 			l_cta.clear();
 		}
+	}
+
+	~TestInstructions() {
+		delete kernel;
 	}
 
 	/*!
@@ -3072,7 +3074,6 @@ public:
 		// register indirect
 		if (result) {
 			PTXU32 source[2] = { 0xaa551376 };
-			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a = reg("ra", PTXOperand::u64, 0);
 			ins.a.addressMode = PTXOperand::Indirect;
@@ -3091,13 +3092,11 @@ public:
 						<< cta.getRegAsU32(i, 5) << "\n";
 				}
 			}
-			context.free(source);
 		}
 
 		// register indirect with offset
 		if (result) {
 			PTXU32 source[4] = { 0xaa551376, 0x75320011, 0x9988aaff, 0x00};
-			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a = reg("ra", PTXOperand::u64, 0);
 			ins.a.addressMode = PTXOperand::Indirect;
@@ -3118,13 +3117,11 @@ public:
 						<< got << dec << "\n";
 				}
 			}
-			context.free(source);
 		}
 
 		// immediate
 		if (result) {
 			PTXU32 source[4] = { 0xaa551376, 0x75320011, 0x99b8aafd, 0x00};
-			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a.type = PTXOperand::u64;
 			ins.a.addressMode = PTXOperand::Immediate;
@@ -3146,7 +3143,6 @@ public:
 						<< got << dec << "\n";
 				}
 			}
-			context.free(source);
 		}
 		return result;
 	}
@@ -3364,7 +3360,6 @@ public:
 		if (result) {
 			PTXU32 source[2] __attribute__((aligned(2*sizeof(PTXU32)))) 
 				= { 0x0aa551376, 0x091834321 };
-			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 1);
 			ins.d.vec = PTXOperand::v2;
 			ins.a = reg("ra", PTXOperand::u64, 0);
@@ -3395,13 +3390,11 @@ public:
 						<< d0 << ", 0x" << d1 << dec << "}\n";
 				}
 			}
-			context.free(source);
 		}		
 
 		if (result) {
 			PTXU32 source[4] __attribute__((aligned(4*sizeof(PTXU32)))) 
 				= { 0x0aa551376, 0x091834321, 0x9f995432, 0x12345678 };
-			context.registerExternal(source, 4*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 1);
 			ins.d.vec = PTXOperand::v4;
 			ins.d.array.resize( 4 );
@@ -3433,7 +3426,6 @@ public:
 					}
 				}
 			}
-			context.free(source);
 		}
 
 
@@ -3472,7 +3464,6 @@ public:
 		// register indirect
 		if (result) {
 			PTXU32 source[64] = { 0 };
-			context.registerExternal(source, 64*sizeof(PTXU32));
 			ins.d = reg("ra", PTXOperand::u64, 5);
 			ins.a = reg("rd", PTXOperand::u32, 0);
 			ins.d.addressMode = PTXOperand::Indirect;
@@ -3490,13 +3481,11 @@ public:
 					status << "st.u32.global [reg] failed\n";
 				}
 			}
-			context.free(source);
 		}
 
 		// register indirect + offset
 		if (result) {
 			PTXU32 source[65] = { 0 };
-			context.registerExternal(source, 65*sizeof(PTXU32));
 			ins.d = reg("ra", PTXOperand::u64, 5);
 			ins.a = reg("rd", PTXOperand::u32, 0);
 			ins.d.addressMode = PTXOperand::Indirect;
@@ -3515,13 +3504,11 @@ public:
 					status << "st.u32.global [reg+off] failed. Expected " << (i+1) << ", got " << source[i+1] << "\n";
 				}
 			}
-			context.free(source);
 		}
 
 		// register indirect + offset
 		if (result) {
 			PTXU32 source[65] = { 0 };
-			context.registerExternal(source, 65*sizeof(PTXU32));
 			ins.d = reg("ra", PTXOperand::u64, 5);
 			ins.a = reg("rd", PTXOperand::u32, 0);
 			ins.d.addressMode = PTXOperand::Immediate;
@@ -3539,7 +3526,6 @@ public:
 				result = false;
 				status << "st.u32.global [imm] failed\n";
 			}
-			context.free(source);
 		}
 
 		return result;
@@ -3566,7 +3552,6 @@ public:
 		if (result) {
 			PTXU32 block[128] __attribute__((aligned(4*sizeof(PTXU32)))) = {0};
 
-			context.registerExternal(block, 128*sizeof(PTXU32));
 			ins.a = reg("rval", PTXOperand::u32, 1);
 			ins.a.array.resize( 4 );
 			ins.a.array[0] = reg("rval[0]", PTXOperand::u32, 1);
@@ -3596,7 +3581,6 @@ public:
 					}
 				}
 			}
-			context.free(block);
 		}
 
 		return result;
@@ -4228,7 +4212,6 @@ public:
 		// register indirect
 		if (result) {
 			PTXU32 source[2] = { 0xaa551376 };
-			context.registerExternal(source, 2*sizeof(PTXU32));
 			ins.d = reg("rd", PTXOperand::u32, 5);
 			ins.a = reg("ra", PTXOperand::u64, 0);
 			ins.a.addressMode = PTXOperand::Indirect;
@@ -4257,7 +4240,6 @@ public:
 					}
 				}
 			}
-			context.free(source);
 		}		
 
 		return result;

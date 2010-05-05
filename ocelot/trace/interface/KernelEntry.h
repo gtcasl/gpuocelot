@@ -11,7 +11,6 @@
 #define KERNEL_ENTRY_H_INCLUDED
 
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/ir/interface/Dim3.h>
 
 namespace trace
 {		
@@ -35,9 +34,7 @@ namespace trace
 			std::string path; //! The path to the kernel trace
 			std::string header; //! Path to the header file
 			std::string program; //! The program that generated the trace
-			ir::Dim3 gridDim;	//! dimensions of grid that launched kernel
-			ir::Dim3 blockDim;	//! dimensions of block in kernel grid
-
+			
 		public:
 			KernelEntry();
 			KernelEntry( TraceGenerator::TraceFormat, const std::string&, 
@@ -65,8 +62,6 @@ namespace boost
 			ar & entry.path;
 			ar & entry.header;
 			ar & entry.program;
-			ar & entry.gridDim.x & entry.gridDim.y & entry.gridDim.z;
-			ar & entry.blockDim.x & entry.blockDim.y & entry.blockDim.z;
 		}
 	}
 }

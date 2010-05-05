@@ -13,19 +13,19 @@
 
 namespace ocelot
 {
-	cuda::CudaRuntimeInterface * get() {
+	static cuda::CudaRuntimeInterface* get() {
 		return cuda::CudaRuntimeInterface::get();
 	}
 
 	void addTraceGenerator( trace::TraceGenerator& gen, 
-		bool persistent, bool safe )
+		bool persistent )
 	{
-		get()->addTraceGenerator(gen, persistent, safe );
+		get()->addTraceGenerator(gen, persistent );
 	}
 				
-	void clearTraceGenerators( bool safe )
+	void clearTraceGenerators( )
 	{
-		get()->clearTraceGenerators( safe );
+		get()->clearTraceGenerators( );
 	}
 	
 	void limitWorkerThreads( unsigned int limit )
@@ -36,17 +36,6 @@ namespace ocelot
 	void registerPTXModule(std::istream& stream, const std::string& name)
 	{
 		get()->registerPTXModule( stream, name );
-	}
-	
-	KernelPointer getKernelPointer(const std::string& name,
-		const std::string& module)
-	{
-		return get()->getKernelPointer( name, module );
-	}
-
-	void** getFatBinaryHandle(const std::string& name)
-	{
-		return get()->getFatBinaryHandle( name );
 	}
 	
 	void clearErrors()
@@ -69,6 +58,11 @@ namespace ocelot
 	void unregisterModule( const std::string& name )
 	{
 		get()->unregisterModule( name );
+	}
+	
+	void launch(const std::string& module, const std::string& name)
+	{
+		get()->launch(module, name);
 	}
 }
 

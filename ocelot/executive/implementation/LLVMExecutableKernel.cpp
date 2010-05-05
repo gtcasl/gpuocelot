@@ -9,7 +9,7 @@
 
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/Device.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
@@ -793,8 +793,7 @@ extern "C"
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
 		
-		if( !state->kernel->context->checkMemoryAccess( 
-			state->kernel->context->getSelected(), address, bytes ) )
+		if( !state->kernel->device->checkMemoryAccess( address, bytes ) )
 		{
 			unsigned int thread = context->tid.x 
 				+ context->ntid.x * context->tid.y 
@@ -812,8 +811,8 @@ extern "C"
 				<< address << " of size " << bytes
 				<< " is out of any allocated or mapped range.\n";
 			std::cerr << "Memory Map:\n";
-			std::cerr << executive::Executive::nearbyAllocationsToString(
-				*state->kernel->context, address);
+			std::cerr << 
+				state->kernel->device->nearbyAllocationsToString( address );
 			std::cerr << "\n";
 			std::cout << "\tNear: " << state->kernel->location( statement )
 				<< "\n\n";
@@ -1362,10 +1361,6 @@ namespace executive
 	
 	LLVMExecutableKernel::LLVMState::~LLVMState()
 	{
-		#ifdef HAVE_LLVM
-		reportE( jit != 0, "Deleting the LLVM JIT-Compiler." );
-		delete jit;
-		#endif
 	}
 
 	LLVMExecutableKernel::AtomicOperationCache::AtomicOperationCache()
@@ -2359,20 +2354,22 @@ namespace executive
 				{
 					report("  found texture instruction: " << ptx.toString());
 
-					TextureMap::const_iterator texture = context->textures.find(ptx.a.identifier);
-
-					assert( texture != module->textures.end() );
+					ir::Texture* texture = (ir::Texture*)
+						device->getTextureReference(
+						module->modulePath, ptx.a.identifier);
+					assert( texture != 0 );
 		
 					AllocationMap::iterator 
-						allocation = map.find( texture->first );
+						allocation = map.find( ptx.a.identifier );
 					if( allocation == map.end() )
 					{
-						report( "  Allocating texture " << texture->first 
+						report( "  Allocating texture " << ptx.a.identifier 
 							<< " to index " << index << " with data " 
-							<< texture->second.data << " and type " << texture->second.type);
+							<< texture->data << " and type " 
+							<< texture->type);
 						allocation = map.insert( 
-							std::make_pair( texture->first, index++ ) ).first;
-						_opaque.textures.push_back( &texture->second );
+							std::make_pair( ptx.a.identifier, index++ ) ).first;
+						_opaque.textures.push_back( texture );
 					}
 					ptx.a.reg = allocation->second;
 				}
@@ -2409,10 +2406,14 @@ namespace executive
 						value = _module->getNamedValue( global->first );
 					assertM( value != 0, "Global variable " << global->first 
 						<< " not found in llvm module." );
+					Device::MemoryAllocation* allocation = 
+						device->getGlobalAllocation( 
+						module->modulePath, global->first );
+					assert(allocation != 0);
 					report( " Binding global variable " << global->first 
-						<< " to " << (void*)global->second.pointer );
+						<< " to " << allocation->pointer() );
 					_state.jit->addGlobalMapping( value, 
-						global->second.pointer );
+						allocation->pointer() );
 					break;
 				}
 				default:
@@ -2439,8 +2440,12 @@ namespace executive
 				== ir::PTXStatement::Const );
 			assert( global->second.statement.bytes() 
 				+ constant->second <= _context.constantSize );
+			Device::MemoryAllocation* allocation = device->getGlobalAllocation(
+				module->modulePath, constant->first);
+			assert( allocation != 0 );
+			assert( allocation->size() == global->second.statement.bytes() );
 			memcpy( _context.constant + constant->second, 
-				global->second.pointer, global->second.statement.bytes() );
+				allocation->pointer(), global->second.statement.bytes() );
 		}
 	}
 	
@@ -2465,10 +2470,10 @@ namespace executive
 	}
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
-		const executive::Executive* c, 
+		executive::Device* d, 
 		translator::Translator::OptimizationLevel l,
 		const char *_overridePath ) : 
-		ExecutableKernel( k, c ), _module( 0 ), _optimizationLevel( l )
+		ExecutableKernel( k, d ), _module( 0 ), _optimizationLevel( l )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
@@ -2525,11 +2530,6 @@ namespace executive
 		_gridDim.x = x;
 		_gridDim.y = y;
 
-		{
-			// dump the function to stdout
-			
-		}
-		
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
 	}
@@ -2575,12 +2575,11 @@ namespace executive
 		}
 	}
 
-	void LLVMExecutableKernel::setDevice( const Device* device, 
-		unsigned int threadLimit )
+	void LLVMExecutableKernel::setWorkerThreads(unsigned int threadLimit )
 	{
-		_manager.setMaxThreadsPerCta( device->maxThreadsPerBlock );
+		_manager.setMaxThreadsPerCta( device->properties().maxThreadsPerBlock );
 		_manager.setThreadCount( 
-			std::min( (unsigned int)device->multiprocessorCount, 
+			std::min( (unsigned int)device->properties().multiprocessorCount, 
 			threadLimit ) );
 	}
 	
@@ -2613,16 +2612,10 @@ namespace executive
 		_updateConstantMemory();
 	}
 
-	/*! \brief Get a vector of all textures references by the kernel */
-	ir::StringSet LLVMExecutableKernel::textureReferences() const {
-		ir::StringSet set;
-		return set;
-	}
-
-	/*!  \brief get a set of all identifiers used as addresses by the kernel */
-	ir::StringSet LLVMExecutableKernel::addressReferences() const {
-		ir::StringSet set;
-		return set;
+	executive::ExecutableKernel::TextureVector 
+		LLVMExecutableKernel::textureReferences() const
+	{
+		return _opaque.textures;
 	}
 	
 	void LLVMExecutableKernel::addTraceGenerator(

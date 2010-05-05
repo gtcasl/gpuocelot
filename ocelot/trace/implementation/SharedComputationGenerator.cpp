@@ -56,7 +56,7 @@ trace::SharedComputationGenerator::~SharedComputationGenerator() {
 	called when a traced kernel is launched to retrieve some parameters from the kernel
 */
 void trace::SharedComputationGenerator::initialize(
-	const ir::ExecutableKernel& kernel) {
+	const executive::ExecutableKernel& kernel) {
 	using namespace ir;
 
 	_entry.name = kernel.name;
@@ -111,7 +111,7 @@ void trace::SharedComputationGenerator::initialize(
 
 */
 void trace::SharedComputationGenerator::selectMaskedStSet(
-	const ir::ExecutableKernel& kernel) {
+	const executive::ExecutableKernel& kernel) {
 	maskedStSet.clear();
 	
 	for (ir::ControlFlowGraph::const_iterator 

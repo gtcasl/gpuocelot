@@ -402,9 +402,11 @@ namespace parser
 
 		statement.array.stride.resize(1);
 		
+		statement.array.stride[0] = regs;
+		
 		if( regs == 0 )
 		{
-			statement.array.stride[0] = 1;
+			statement.array.stride[0] = 0;
 			
 			if( operands.count( statement.name ) != 0 ) 
 			{
@@ -426,10 +428,6 @@ namespace parser
 			{
 				localOperands.push_back( statement.name );
 			}
-		}
-		else
-		{
-			statement.array.stride[0] = regs;
 		}
 		
 		for( unsigned int i = 0; i < regs; ++i )
@@ -976,6 +974,11 @@ namespace parser
 			report( "  Rule: No Carry" );
 			statement.instruction.carry = ir::PTXInstruction::None;
 		}
+	}
+
+	void PTXParser::State::full()
+	{
+		statement.instruction.divideFull = true;
 	}
 
 	void PTXParser::State::modifier( int token )

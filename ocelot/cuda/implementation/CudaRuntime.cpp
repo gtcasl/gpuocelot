@@ -11,15 +11,13 @@
 #include <algorithm>
 
 // Ocelot includes
-#include <ocelot/cuda/include/__cudaFatFormat.h>
-#include <ocelot/executive/interface/ApplicationState.h>
 #include <ocelot/cuda/interface/CudaRuntime.h>
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 
 // Hydrazine includes
+#include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -48,12 +46,6 @@
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
-#if REPORT_BASE > 0
-#define TestError(x) { if (x != cudaSuccess) { report("CUDA Error: " << __func__); } }
-#else
-#define TestError(x) {}
-#endif
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 const char *cuda::FatBinaryContext::name() const {
@@ -68,107 +60,10 @@ const char *cuda::FatBinaryContext::ptx() const {
 	return binary->ptx->ptx;
 }
 
-static executive::ChannelFormatDesc convert(const cudaChannelFormatDesc &cudaDesc) {
-	executive::ChannelFormatDesc desc;
-	desc.w = cudaDesc.w;
-	desc.x = cudaDesc.x;
-	desc.y = cudaDesc.y;
-	desc.z = cudaDesc.z;
-	desc.kind = (executive::ChannelFormatDesc::Kind)(int)cudaDesc.f;
-	return desc;
-}
-
-static executive::MemcpyKind convert(const cudaMemcpyKind kind) {
-	switch (kind) {
-		case cudaMemcpyHostToHost:
-			return executive::HostToHost;
-		case cudaMemcpyDeviceToHost:
-			return executive::DeviceToHost;
-		case cudaMemcpyHostToDevice:
-			return executive::HostToDevice;
-		case cudaMemcpyDeviceToDevice:
-			return executive::DeviceToDevice;
-	}
-	return executive::MemcpyKind_invalid;
-}
-
-static void convert(executive::ChannelFormatDesc &format, 
-	const struct cudaChannelFormatDesc *desc) {
-	switch (desc->f) {
-		case cudaChannelFormatKindSigned: 
-			format.kind = executive::ChannelFormatDesc::Kind_signed; break;
-		case cudaChannelFormatKindUnsigned: 
-			format.kind = executive::ChannelFormatDesc::Kind_unsigned; break;
-		case cudaChannelFormatKindFloat: 
-			format.kind = executive::ChannelFormatDesc::Kind_float; break;
-		case cudaChannelFormatKindNone: // fall through
-		default:
-			format.kind = executive::ChannelFormatDesc::Kind_none;
-			break;
-	}
-
-	format.x = desc->x;
-	format.y = desc->y;
-	format.z = desc->z;
-	format.w = desc->w;
-}
-
-static void convert(struct cudaChannelFormatDesc *desc, 
-	const executive::ChannelFormatDesc &format) {
-	switch (format.kind) {
-		case executive::ChannelFormatDesc::Kind_signed: desc->f = cudaChannelFormatKindSigned; break;
-		case executive::ChannelFormatDesc::Kind_unsigned: desc->f = cudaChannelFormatKindUnsigned; break;
-		case executive::ChannelFormatDesc::Kind_float: desc->f = cudaChannelFormatKindFloat; break;
-		default:
-			desc->f = cudaChannelFormatKindNone;
-			break;
-	}
-	desc->x = format.x;
-	desc->y = format.y;
-	desc->z = format.z;
-	desc->w = format.w;
-}
-
-static executive::Extent convert(struct cudaExtent cudaExtent) {
-	executive::Extent extent;
-	extent.depth = cudaExtent.depth;
-	extent.height = cudaExtent.height;
-	extent.width = cudaExtent.width;
-	return extent;
-}
-
-static void convert(struct cudaPitchedPtr *cuda, const executive::PitchedPointer & pitched) {
-	cuda->pitch = pitched.pitch;
-	cuda->ptr = (char*)pitched.ptr + pitched.offset;
-	cuda->xsize = pitched.width;
-	cuda->ysize = pitched.height;
-}
-
-static executive::dim3 convert(dim3 dim) {
-	executive::dim3 ed3 = {dim.x, dim.y, dim.z};
-	return ed3;
-}
-
-static executive::dim3 convert(cudaPos pos) {
-	executive::dim3 ed3 = {(int)pos.x, (int)pos.y, (int)pos.z};
-	return ed3;
-}
-
-std::string cuda::CudaRuntime::formatError( const std::string& message ) {
-	std::string result = "==Ocelot== ";
-	for(std::string::const_iterator mi = message.begin(); mi != message.end(); ++mi) {
-		result.push_back(*mi);
-		if(*mi == '\n') {
-			result.append("==Ocelot== ");
-		}
-	}
-	return result;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
-	nextStream(0), nextEvent(0), parameterBlock(0), parameterBlockSize(1<<13) {
+	parameterBlock(0), parameterBlockSize(1<<13) {
 	parameterBlock = (unsigned char *)malloc(parameterBlockSize);
 }
 
@@ -180,17 +75,13 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	selectedDevice(c.selectedDevice),
 	validDevices(c.validDevices),
 	launchConfigurations(c.launchConfigurations),
-	nextStream(c.nextStream),
-	nextEvent(c.nextEvent),
 	lastError(c.lastError),
 	parameterBlock((unsigned char *)malloc(c.parameterBlockSize)),
 	parameterBlockSize(c.parameterBlockSize),
 	parameterIndices(c.parameterIndices),
 	parameterSizes(c.parameterSizes),
-	registeredGLbuffers(c.registeredGLbuffers),
 	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators)
-{
+	nextTraceGenerators(c.nextTraceGenerators) {
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
@@ -198,13 +89,10 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(const HostThreadCont
 	if(&c == this) return *this;
 	selectedDevice = c.selectedDevice;
 	validDevices = c.validDevices;
-	nextStream = c.nextStream;
-	nextEvent = c.nextEvent;
 	lastError = c.lastError;
 	launchConfigurations = c.launchConfigurations;
 	parameterIndices = c.parameterIndices;
 	parameterSizes = c.parameterSizes;
-	registeredGLbuffers = c.registeredGLbuffers;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
@@ -212,8 +100,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(const HostThreadCont
 }
 
 cuda::HostThreadContext::HostThreadContext(HostThreadContext&& c): 
-	selectedDevice(0), nextStream(0), nextEvent(0), parameterBlock(0), 
-	parameterBlockSize(1<<13) {
+	selectedDevice(0), parameterBlock(0), parameterBlockSize(1<<13) {
 	*this = std::move(c);
 }
 
@@ -221,14 +108,11 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(HostThreadContext&& 
 	if (this == &c) return *this;
 	std::swap(selectedDevice, c.selectedDevice);
 	std::swap(validDevices, c.validDevices);
-	std::swap(nextStream, c.nextStream);
-	std::swap(nextEvent, c.nextEvent);
 	std::swap(lastError, c.lastError);
 	std::swap(parameterBlock, c.parameterBlock);
 	std::swap(launchConfigurations, c.launchConfigurations);
 	std::swap(parameterIndices, c.parameterIndices);
 	std::swap(parameterSizes, c.parameterSizes);
-	std::swap(registeredGLbuffers, c.registeredGLbuffers);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
 	return *this;
@@ -242,35 +126,20 @@ void cuda::HostThreadContext::clearParameters() {
 void cuda::HostThreadContext::clear() {
 	validDevices.clear();
 	launchConfigurations.clear();
-	streams.clear();
-	events.clear();
 	clearParameters();
-	for (RegisteredGLBufferMap::iterator buffer = registeredGLbuffers.begin(); 
-		buffer != registeredGLbuffers.end(); ++buffer) {
-		if (buffer->second.mapped) {
-			glBindBuffer(GL_ARRAY_BUFFER, buffer->first);
-			glUnmapBuffer(GL_ARRAY_BUFFER);
-			assert( glGetError() != GL_NO_ERROR );
-		}
-	}
-	registeredGLbuffers.clear();
 	persistentTraceGenerators.clear();
 	nextTraceGenerators.clear();
 }
 
-void cuda::HostThreadContext::mapParameters(executive::Executive& context, 
-	const std::string& moduleName, const std::string& kernelName) {
-	ir::Instruction::Architecture isa = context.getSelectedISA();
-	ir::Kernel *kernel = context.getKernel(isa, moduleName, kernelName);
-	if (!kernel) {
-		kernel = context.translateToISA(isa, moduleName, kernelName);
-	}
+void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
+	
 	assert(kernel->parameters.size() == parameterIndices.size());
 	IndexVector::iterator offset = parameterIndices.begin();
 	SizeVector::iterator size = parameterSizes.begin();
 	unsigned int dst = 0;
 	unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
-	for (ir::Kernel::ParameterVector::iterator parameter = kernel->parameters.begin(); 
+	for (ir::Kernel::ParameterVector::const_iterator 
+		parameter = kernel->parameters.begin(); 
 		parameter != kernel->parameters.end(); ++parameter, ++offset, ++size) {
 		unsigned int misalignment = dst % parameter->getAlignment();
 		unsigned int alignmentOffset = misalignment == 0 
@@ -290,28 +159,256 @@ void cuda::HostThreadContext::mapParameters(executive::Executive& context,
 	clearParameters();
 }
 
-cuda::CudaContext::CudaContext(): thread(0), context(0) 
-{ }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
+cuda::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
+	const std::string& k) : handle(h), module(m), kernel(k) {
+}
 
-cuda::RegisteredGLBuffer::RegisteredGLBuffer(): flags(0), ptr(0), mapped(false) { 
+cuda::RegisteredTexture::RegisteredTexture(const std::string& m, 
+	const std::string& t) : module(m), texture(t) {
+	
+}
 
+cuda::RegisteredGlobal::RegisteredGlobal(const std::string& m, 
+	const std::string& g) : module(m), global(g) {
+
+}
+
+cuda::Dimension::Dimension(int _x, int _y, int _z, 
+	const cudaChannelFormatDesc& _f) : x(_x), y(_y), z(_z), format(_f) {
+
+}
+
+size_t cuda::Dimension::pitch() const {
+	return ((format.x + format.y + format.z + format.w) / 8) * x;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-cuda::CudaRuntime::CudaRuntime() : nextSymbol(1) {
-	pthread_mutex_init(&mutex, 0);
+void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count, 
+	enum cudaMemcpyKind kind) {
+	switch(kind) {
+		case cudaMemcpyHostToHost: {
+			memcpy(dst, src, count);
+		}
+		break;
+		case cudaMemcpyDeviceToHost: {
+			if (!_getDevice().checkMemoryAccess(src, count)) {
+				_release();
+				_memoryError(src, count, "cudaMemcpy");
+			}
+			
+			executive::Device::MemoryAllocation* allocation = 
+				_getDevice().getMemoryAllocation(src);
+			size_t offset = (char*)src - (char*)allocation->pointer();
+			allocation->copy(dst, offset, count);
+		}
+		break;
+		case cudaMemcpyDeviceToDevice: {
+			if (!_getDevice().checkMemoryAccess(src, count)) {
+				_release();
+				_memoryError(src, count, "cudaMemcpy");
+			}
+			if (!_getDevice().checkMemoryAccess(dst, count)) {
+				_release();
+				_memoryError(dst, count, "cudaMemcpy");
+			}
+				
+			executive::Device::MemoryAllocation* fromAllocation = 
+				_getDevice().getMemoryAllocation(src);
+			executive::Device::MemoryAllocation* toAllocation =
+				_getDevice().getMemoryAllocation(dst);
+			size_t fromOffset = (char*)src 
+				- (char*)fromAllocation->pointer();
+			size_t toOffset = (char*)dst - (char*)toAllocation->pointer();
+			fromAllocation->copy(toAllocation, toOffset, fromOffset, count);
+		}
+		break;
+		case cudaMemcpyHostToDevice: {
+			if (!_getDevice().checkMemoryAccess(dst, count)) {
+				_release();
+				_memoryError(dst, count, "cudaMemcpy");
+			}
+			
+			executive::Device::MemoryAllocation* allocation = 
+				_getDevice().getMemoryAllocation(dst);
+			size_t offset = (char*)dst - (char*)allocation->pointer();
+			allocation->copy(offset, src, count);
+		}
+		break;
+	}
+}
+
+void cuda::CudaRuntime::_memoryError(const void* address, size_t count, 
+	const std::string& function) {
+	std::stringstream stream;
+	stream << "In function - " << function << " - invalid memory access at " 
+		<< address << "(" << count << " bytes)"; 
+	throw hydrazine::Exception(stream.str());
+}
+
+void cuda::CudaRuntime::_enumerateDevices() {
+	if(_devicesLoaded) return;
+	report("Creating devices.");
+	if(api::OcelotConfiguration::get().executive.enableNVIDIA) {
+		executive::DeviceVector d = 
+			executive::Device::createDevices(ir::Instruction::SASS, _flags);
+		report(" - Added " << d.size() << " nvidia gpu devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
+	if(api::OcelotConfiguration::get().executive.enableEmulated) {
+		executive::DeviceVector d = 
+			executive::Device::createDevices(ir::Instruction::Emulated, _flags);
+		report(" - Added " << d.size() << " emulator devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
+	if(api::OcelotConfiguration::get().executive.enableLLVM) {
+		executive::DeviceVector d = 
+			executive::Device::createDevices(ir::Instruction::LLVM, _flags);
+		report(" - Added " << d.size() << " llvm-cpu devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
+	if(api::OcelotConfiguration::get().executive.enableAMD) {
+		executive::DeviceVector d =
+			executive::Device::createDevices(ir::Instruction::CAL, _flags);
+		report(" - Added " << d.size() << " amd gpu devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
+	_devicesLoaded = true;
+	
+	if(_devices.empty())
+	{
+		std::cerr << "==Ocelot== WARNING - No CUDA devices found or all " 
+			<< "devices disabled!\n";
+		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
+			<< "configure.ocelot.\n";
+	}
+
+	// register modules
+	for(ModuleMap::iterator module = _modules.begin(); 
+		module != _modules.end(); ++module) {
+		module->second.createDataStructures();
+		for(DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			(*device)->select();
+			(*device)->load(&module->second);
+			(*device)->unselect();
+		}
+	}
+}
+
+//! acquires mutex and locks the runtime
+void cuda::CudaRuntime::_lock() {
+	pthread_mutex_lock(&_mutex);
+}
+
+//! releases mutex
+void cuda::CudaRuntime::_unlock() {
+	pthread_mutex_unlock(&_mutex);
+}
+
+
+//! sets the last error state for the CudaRuntime object
+cudaError_t cuda::CudaRuntime::_setLastError(cudaError_t result) {
+	HostThreadContext& thread = _getCurrentThread();
+	thread.lastError = result;
+	return result;
+}
+
+cuda::HostThreadContext& cuda::CudaRuntime::_bind() {
+	_enumerateDevices();
+
+	HostThreadContext& thread = _getCurrentThread();
+
+	if (_devices.empty()) return thread;
+	
+	_selectedDevice = thread.selectedDevice;
+	executive::Device& device = _getDevice();
+
+	assert(!device.selected());
+	device.select();
+	
+	return thread;
+}
+
+void cuda::CudaRuntime::_unbind() {
+	HostThreadContext& thread = _getCurrentThread();
+	executive::Device& device = _getDevice();
+	assert(thread.selectedDevice == _selectedDevice);
+	
+	_selectedDevice = -1;
+	assert(device.selected());
+	device.unselect();
+}
+
+void cuda::CudaRuntime::_acquire() {
+	_lock();
+	_bind();
+	if (_devices.empty()) _unlock();
+}
+
+void cuda::CudaRuntime::_release() {
+	_unbind();
+	_unlock();
+}
+
+executive::Device& cuda::CudaRuntime::_getDevice() {
+	assert(_selectedDevice >= 0);
+	assert(_selectedDevice < (int)_devices.size());
+	return *_devices[_selectedDevice];
+}
+
+std::string cuda::CudaRuntime::_formatError( const std::string& message ) {
+	std::string result = "==Ocelot== ";
+	for(std::string::const_iterator mi = message.begin(); 
+		mi != message.end(); ++mi) {
+		result.push_back(*mi);
+		if(*mi == '\n') {
+			result.append("==Ocelot== ");
+		}
+	}
+	return result;
+}
+
+cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
+	HostThreadContextMap::iterator t = _threads.find(pthread_self());
+	if (t == _threads.end()) {
+		report("Creating new context for thread " << pthread_self());
+		t = _threads.insert(std::make_pair(pthread_self(), 
+			HostThreadContext())).first;
+	}
+	return t->second;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
+	_selectedDevice(-1), _nextSymbol(1), _flags(0) {
+	pthread_mutex_init(&_mutex, 0);
+
+	if(api::OcelotConfiguration::get().executive.enableNVIDIA) {
+		_deviceCount += executive::Device::deviceCount(ir::Instruction::SASS);
+	}
+	if(api::OcelotConfiguration::get().executive.enableEmulated) {
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::Emulated);
+	}
+	if(api::OcelotConfiguration::get().executive.enableLLVM) {
+		_deviceCount += executive::Device::deviceCount(ir::Instruction::LLVM);
+	}
+	if(api::OcelotConfiguration::get().executive.enableAMD) {
+		_deviceCount += executive::Device::deviceCount(ir::Instruction::CAL);
+	}
 }
 
 cuda::CudaRuntime::~CudaRuntime() {
 	//
 	// free things that need freeing
 	//
+	// devices
 	
 	// mutex
-	pthread_mutex_destroy(&mutex);
+	pthread_mutex_destroy(&_mutex);
 	
 	// thread contexts
 	
@@ -324,45 +421,6 @@ cuda::CudaRuntime::~CudaRuntime() {
 	// globals
 }
 
-//! acquires mutex and locks the runtime
-void cuda::CudaRuntime::lock() {
-	pthread_mutex_lock(&mutex);
-}
-
-//! releases mutex
-void cuda::CudaRuntime::unlock() {
-	pthread_mutex_unlock(&mutex);
-}
-
-
-//! sets the last error state for the CudaRuntime object
-cudaError_t cuda::CudaRuntime::setLastError(cudaError_t result) {
-	HostThreadContext &thread = getHostThreadContext();
-	thread.lastError = result;
-	return result;
-}
-
-//! sets the last error state for the CudaRuntime object
-cudaError_t cuda::CudaRuntime::setLastErrorAndUnlock(HostThreadContext &thread, 
-	cudaError_t result) {
-	thread.lastError = result;
-	unlock();
-	return result;
-}
-
-//! gets the context of a thread
-cuda::HostThreadContext & cuda::CudaRuntime::getHostThreadContext() {
-	pthread_t self = pthread_self();
-	
-	HostThreadContextMap::iterator it = threads.find(self);
-	if (it == threads.end()) {
-		it = threads.insert(std::make_pair(self, HostThreadContext())).first;
-	}
-	
-	context.selectDevice(it->second.selectedDevice);
-	
-	return it->second;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -373,36 +431,35 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)fatCubin;
 	
-	lock();
-	
-	//! inserts thread context if not already exists
-	getHostThreadContext();
-	
-	for (FatBinaryVector::const_iterator it = fatBinaries.begin();
-		it != fatBinaries.end(); ++it) {
+	_lock();
+		
+	for (FatBinaryVector::const_iterator it = _fatBinaries.begin();
+		it != _fatBinaries.end(); ++it) {
 		if (std::string(it->name()) == binary->ident) {
-			unlock();
+			_unlock();
 		
 			assert(0 && "binary already exists");		
 			return 0;
 		}	
 	}
 
+	assertM(binary->ptx->ptx != 0, "binary contains no PTX");
+
 	// register associated PTX
-	if( binary->ptx->ptx != 0 ) {
-		std::stringstream ptx( binary->ptx->ptx );
-		context.loadModule( binary->ident, false, ptx );
-	}
-	else {
-		assert(0 && "binary contains no PTX");
-	}
+	std::stringstream ptx( binary->ptx->ptx );
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(binary->ident, ir::Module())).first;
+	module->second.load(ptx, binary->ident);
+	
+	report("Loading module (fatbin) - " << module->first);
+	
+	handle = _fatBinaries.size();
 	
 	FatBinaryContext cubinContext;
 	cubinContext.cubin_ptr = fatCubin;
-	fatBinaries.push_back(cubinContext);
-	handle = fatBinaries.size();
+	_fatBinaries.push_back(cubinContext);
 	
-	unlock();
+	_unlock();
 	
 	return (void **)handle;
 }
@@ -415,6 +472,11 @@ void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 	// Greg: For most cuda applications, probably not.  The only use would be 
 	// to remove and reinsert a fat binary.  Let's use a different interface
 	//  for that
+	size_t handle = (size_t)fatCubinHandle;
+	if (handle >= _fatBinaries.size()) {
+		Ocelot_Exception("cudaUnregisterFatBinary(" << handle 
+			<< ") - invalid handle.");
+	}
 }
 
 /*!
@@ -429,26 +491,21 @@ void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 	\param global
 */
 void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar, 
-	char *deviceAddress, const char *deviceName, int ext, int size, int constant, int global) {
+	char *deviceAddress, const char *deviceName, int ext, int size, 
+	int constant, int global) {
 
 	report("cuda::CudaRuntime::cudaRegisterVar() - host var: " << (void *)hostVar 
 		<< ", deviceName: " << deviceName << ", size: " << size << " bytes,"
 		<< (constant ? " constant" : " ") << (global ? " global" : " "));
 
-	size_t handle = (size_t)fatCubinHandle - 1;
-	lock();
+	size_t handle = (size_t)fatCubinHandle;
+	_lock();
 
-	globalSymbolMap[(void *)hostVar] = deviceName;
+	std::string moduleName = _fatBinaries[handle].name();
 	
-	const char *moduleName = fatBinaries[handle].name();
-	void *hostVariable = (void *)hostVar;
+	_globals[(void *)hostVar] = RegisteredGlobal(moduleName, deviceName);
 	
-	executive::DeviceAddressSpace addrSpace = (constant ? executive::Device_constant : 
-		executive::Device_global);
-	context.registerGlobalVariable(moduleName, deviceName, hostVariable, (void *)deviceAddress, 
-		size, addrSpace);
-	
-	unlock();
+	_unlock();
 }
 
 /*!
@@ -470,51 +527,46 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	int norm,
 	int ext) {
 	
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	
-	lock();
+	_lock();
 	
-	getHostThreadContext();
-
+	std::string moduleName = _fatBinaries[handle].name();
 	
-	// register the texture object to the runtime and declare it to the executive
-	
-	RegisteredTexture texture;
-	
-	texture.handle = handle;
-	texture.pointer = (void *)hostVar;
-	texture.module = fatBinaries[handle].name();
-	texture.texture = deviceName;
-	
-	report("cudaRegisterTexture('" << texture.texture << ", dim: " << dim 
+	report("cudaRegisterTexture('" << deviceName << ", dim: " << dim 
 		<< ", norm: " << norm << ", ext: " << ext);
 
-	// now tell the executive about it
-	context.registerTexture(texture.module, texture.texture, dim, norm);
+	_textures[(void*)hostVar] = RegisteredTexture(moduleName, deviceName);
 	
-	textures[std::string(texture.texture)] = texture;
-	textureReferences[(const void *)hostVar] = texture.texture;
+	ModuleMap::iterator module = _modules.find(moduleName);
+	assert(module != _modules.end());
 	
-	unlock();
+	ir::Module::TextureMap::iterator texture = module->second.textures.find(
+		deviceName);
+	assertM(texture != module->second.textures.end(), "cudaRegisterTexture - " 
+		<< deviceName << " does not exist in module " << moduleName );
+	
+	texture->second.normalizedFloat = norm;
+	
+	_unlock();
 }
 
 void cuda::CudaRuntime::cudaRegisterShared(
 	void **fatCubinHandle,
 	void **devicePtr) {
 	
-	size_t handle = (size_t)fatCubinHandle - 1;
-	lock();
+	size_t handle = (size_t)fatCubinHandle;
+	_lock();
 	
-	const char *moduleName = fatBinaries[handle].name();
+	const char *moduleName = _fatBinaries[handle].name();
 	const char *variableName = (const char *)devicePtr;
 	
-	report("cudaRegisterShared() - module " << moduleName << ", devicePtr: " << std::hex 
-		<< devicePtr << std::dec << " named " << variableName);
+	report("cudaRegisterShared() - module " << moduleName << ", devicePtr: " 
+		<< devicePtr << " named " << variableName);
 	
-	context.registerGlobalVariable(moduleName, variableName, 0, 0, sizeof(void*), 
-		executive::Device_shared);
+	report(" Ignoring this variable.");
 	
-	unlock();
+	_unlock();
 }
 
 void cuda::CudaRuntime::cudaRegisterSharedVar(
@@ -524,22 +576,20 @@ void cuda::CudaRuntime::cudaRegisterSharedVar(
 	size_t alignment,
 	int storage) {
 
-	size_t handle = (size_t)fatCubinHandle - 1;
-	lock();
+	size_t handle = (size_t)fatCubinHandle;
+	_lock();
 	
-	const char *moduleName = fatBinaries[handle].name();
+	const char *moduleName = _fatBinaries[handle].name();
 	const char *variableName = (const char *)devicePtr;
 	
-	report("cudaRegisterSharedVar() - module " << moduleName << ", devicePtr: " << std::hex 
-		<< devicePtr << std::dec << " named " << variableName << ", size: " << size 
-		<< ", alignment: " << alignment << ", storage: " << storage);
+	report("cudaRegisterSharedVar() - module " << moduleName 
+		<< ", devicePtr: " << devicePtr << " named " << variableName 
+		<< ", size: " << size << ", alignment: " << alignment << ", storage: " 
+		<< storage);
 	
-	/*
-	context.registerGlobalVariable(moduleName, variableName, 0, 0, sizeof(void*), 
-		executive::Device_shared);
-	*/
-	
-	unlock();
+	report(" Ignoring this variable.");
+		
+	_unlock();
 }
 
 void cuda::CudaRuntime::cudaRegisterFunction(
@@ -554,28 +604,17 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	dim3 *gDim,
 	int *wSize) {
 
-	size_t handle = (size_t)fatCubinHandle - 1;
+	size_t handle = (size_t)fatCubinHandle;
 	
-	lock();
+	_lock();
 
-	getHostThreadContext();
-		
-	void *funcPtr = (void *)hostFun;
-	const char *funcName = deviceFun;
-	const char *moduleName = fatBinaries[handle].name();
-
-	globalSymbolMap[funcPtr] = std::string(funcName);
+	void *symbol = (void *)hostFun;
+	std::string kernelName = deviceFun;
+	std::string moduleName = _fatBinaries[handle].name();
 	
-	// associate the function pointer with the kernel name and maybe ir::Kernel
-	RegisteredKernel kernel;
-	kernel.handle = handle;
-	kernel.module = moduleName;
-	kernel.kernel = funcName;
-	kernel.pointer = funcPtr;
+	_kernels[symbol] = RegisteredKernel(handle, moduleName, kernelName);
 	
-	kernels[funcPtr] = kernel;
-	
-	unlock();
+	_unlock();
 }
 		
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,461 +623,1075 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 
 cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-		
-	if (context.malloc(devPtr, size)) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocate(size);
+		*devPtr = allocation->pointer();
 		result = cudaSuccess;
-
-		report("CudaRuntime::cudaMalloc( *devPtr = " << (void *)*devPtr << ", size = " << size << ")");
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+		
+	}
+	
+	report("cudaMalloc( *devPtr = " << (void *)*devPtr 
+	<< ", size = " << size << ")");
+
+	_release();
+
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	if (context.mallocHost(ptr, size)) {
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocateHost(size);
+		*ptr = allocation->mappedPointer();
 		result = cudaSuccess;
-		report("CudaRuntime::cudaMallocHost( *pPtr = " << (void *)*ptr << ", size = " << size << ")");
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+		
+	}
+
+	report("cudaMallocHost( *pPtr = " << (void *)*ptr 
+		<< ", size = " << size << ")");
+		
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, 
-	size_t height) {
+cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch, 
+	size_t width, size_t height) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	if (context.mallocPitch(devPtr, pitch, width, height)) {
+	
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	*pitch = width;
+
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocate(width * height);
+		_dimensions[allocation->pointer()] = Dimension(width, height, 1);
+		*devPtr = allocation->pointer();
 		result = cudaSuccess;
-		report("CudaRuntime::cudaMallocPitch( *devPtr = " << (void *)*devPtr << ", pitch = " 
-			<< *pitch << ")");
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+	
+	}
+	
+	report("cudaMallocPitch( *devPtr = " << (void *)*devPtr 
+		<< ", pitch = " << *pitch << ")");
+
+	_release();
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array, 
 	const struct cudaChannelFormatDesc *desc, size_t width, size_t height) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	if (context.mallocArray(array, convert(*desc), width, height)) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	size_t size = width * height * ( desc->x 
+		+ desc->y + desc->z + desc->w ) / 8;
+	
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocate(size);
+		_dimensions[allocation->pointer()] = Dimension(width, height, 1, *desc);
+		*array = (struct cudaArray*)allocation->pointer();
 		result = cudaSuccess;
-		report("CudaRuntime::cudaMallocArray( *array = " << (void *)*array << ")");
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+	
+	}
+	
+	report("cudaMallocArray( *array = " << (void *)*array << ")");
+
+	_release();
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	report("cudaFree()");
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	report("cudaFree(" << devPtr << ")");
 	
-	HostThreadContext & thread = getHostThreadContext();
-	if (!devPtr || context.free(devPtr)) {
+	try {
+		if (devPtr) {
+			_getDevice().free(devPtr);
+		}
 		result = cudaSuccess;
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+		
+	}
+
+	_release();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	if (!ptr || context.freeHost(ptr)) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	report("cudaFreeHost(" << ptr << ")");	
+	
+	try {
+		if (ptr) {
+			_getDevice().free(ptr);
+		}
 		result = cudaSuccess;
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+		
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	report("CudaRuntime::cudaFreeArray() array = " << (void *)array);
-	if (!array || context.freeArray(array)) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	try {
+		if (array) {
+			_getDevice().free(array);
+		}
 		result = cudaSuccess;
 	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+		
+	}
+
+	report("cudaFreeArray() array = " << (void *)array);
+
+	_release();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMalloc3D(struct cudaPitchedPtr* devPtr, 
 	struct cudaExtent extent) {
-
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	executive::PitchedPointer pitchedPointer;
-	if (context.mallocPitch(&pitchedPointer, convert(extent))) {
-		convert(devPtr, pitchedPointer);
+	report("cudaMalloc3D() extent - width " << extent.width 
+		<< " - height " << extent.height << " - depth " << extent.depth );
+
+	devPtr->pitch = 0;
+	devPtr->xsize = extent.width;
+	devPtr->ysize = extent.height * extent.depth;
+	
+	size_t size = devPtr->xsize * devPtr->ysize;
+
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocate(size);
+		devPtr->ptr = allocation->pointer();
+		_dimensions[allocation->pointer()] = Dimension(extent.width, 
+			extent.height, extent.depth);
 		result = cudaSuccess;
 	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	catch(hydrazine::Exception& e) {
+	
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr, 
 	const struct cudaChannelFormatDesc* desc, struct cudaExtent extent) {
 
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	executive::PitchedPointer pitchedPointer;
-	if (context.mallocPitch(&pitchedPointer, convert(extent))) {
-		result = cudaSuccess;
-		*arrayPtr = (struct cudaArray *)((char*)pitchedPointer.ptr 
-			+ pitchedPointer.offset);
+	size_t size = extent.width * extent.height * extent.depth * ( desc->x 
+		+ desc->y + desc->z + desc->w ) / 8;
 
-		report("cudaMalloc3DArray() - *arrayPtr = " << (void *)(*arrayPtr));
-	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
-}
-
-cudaError_t cuda::CudaRuntime::cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags) {
-
-	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	bool portable = (flags & cudaHostAllocPortable);
-	bool mapped = (flags & cudaHostAllocMapped);
-	bool writeCombined = (flags & cudaHostAllocWriteCombine);
-	if (context.mallocHost(pHost, bytes, portable, mapped, writeCombined)) {
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocate(size);
+		*arrayPtr = (struct cudaArray*)allocation->pointer();
+		_dimensions[allocation->pointer()] = Dimension(extent.width, 
+			extent.height, extent.depth, *desc);
 		result = cudaSuccess;
 	}
+	catch(hydrazine::Exception& e) {
+	
+	}
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	report("cudaMalloc3DArray() - *arrayPtr = " << (void *)(*arrayPtr));
+	
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, void *pHost, 
+cudaError_t cuda::CudaRuntime::cudaHostAlloc(void **pHost, size_t bytes, 
 	unsigned int flags) {
-
 	cudaError_t result = cudaErrorMemoryAllocation;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	const executive::MemoryAllocation* memory = context.getMemoryAllocation(pHost);
-	if (memory->get()) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	try {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().allocateHost(bytes, flags);
+		*pHost = allocation->mappedPointer();
 		result = cudaSuccess;
-		*pDevice = memory->get();
+	}
+	catch(hydrazine::Exception& e) {
+		
 	}
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	report("cudaHostAlloc() - *pHost = " << (void *)(*pHost) 
+		<< ", bytes " << bytes << ", " << flags);
+	
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags, void *pHost) {
+cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice, 
+	void *pHost, unsigned int flags) {
+
+	cudaError_t result = cudaErrorInvalidHostPointer;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	executive::Device::MemoryAllocation* 
+		allocation = _getDevice().getMemoryAllocation(pHost, true);
+
+	if (allocation != 0) {	
+		if (allocation->host()) {
+			size_t offset = (char*)pHost - (char*)allocation->pointer();
+			*pDevice = (char*)allocation->pointer() + offset;
+			result = cudaSuccess;
+		}
+	}
+
+	_release();
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags, 
+	void *pHost) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	assert(0 && "unimplemented");
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	executive::Device::MemoryAllocation* 
+		allocation = _getDevice().getMemoryAllocation(pHost, true);
+	
+	if (allocation != 0) {
+		*pFlags = allocation->flags();
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // memory copying
 
-cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, size_t count, 
-	enum cudaMemcpyKind kind) {
-	cudaError_t result = cudaSuccess;
+cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, 
+	size_t count, enum cudaMemcpyKind kind) {
+	cudaError_t result = cudaErrorInvalidDevicePointer;
 	if (kind >= 0 && kind <= 3) {
-		lock();
-		getHostThreadContext();
+		_acquire();
+		if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-		report("cudaMemcpy()");
-		bool success = context.deviceMemcpy(dst, src, count, convert(kind));
-		if (!success) {
-			result = cudaErrorInvalidDevicePointer;
-		}
-		unlock();
+		report("cudaMemcpy(" << dst << ", " << src << ", " << count << ")");
+		_memcpy(dst, src, count, kind);
+		result = cudaSuccess;
+
+		_release();
 	}
 	else {
 		result = cudaErrorInvalidMemcpyDirection;
 	}
 
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, const void *src,
-	size_t count, size_t offset, enum cudaMemcpyKind kind) {
-
+cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol, 
+	const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind) {
 	report("cuda::CudaRuntime::cudaMemcpyToSymbol('" << symbol << "' - " 
-		<< (void *)symbol << " - value " << hydrazine::dataToString(src, count));
-
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
-	if (sym_it != globalSymbolMap.end()) {
-		symbol = sym_it->second.c_str();
-	}
-
-	report("cudaMemcpyToSymbol() '" << symbol << "'");
-	bool success = context.deviceMemcpyToSymbol(symbol, src, count, offset, convert(kind));	
-	if (!success) {
-		result = cudaErrorInvalidDevicePointer;
-	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
-}
-
-cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, const char *symbol,
-	size_t count, size_t offset, enum cudaMemcpyKind kind) {
-
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
-	if (sym_it != globalSymbolMap.end()) {
-		symbol = sym_it->second.c_str();
-	}
-
-	report("cudaMemcpyFromSymbol() '" << symbol << "'");
-
-	bool success = context.deviceMemcpyFromSymbol(symbol, dst, count, offset, convert(kind));	
-	if (!success) {
-		result = cudaErrorInvalidDevicePointer;
-	}
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
-}
-
-cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, size_t count, 
-	enum cudaMemcpyKind kind, cudaStream_t streamHandle) {
+		<< (void *)symbol << " - value " 
+		<< hydrazine::dataToString(src, count));
 	
-	cudaError_t result = cudaErrorNotYetImplemented;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	if (kind != cudaMemcpyHostToDevice) {
+		return _setLastError(cudaErrorInvalidMemcpyDirection);
+	}
+
+	cudaError_t result = cudaErrorInvalidDevicePointer;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	StreamMap::iterator s_it = thread.streams.find(streamHandle);
-	if (!streamHandle || s_it != thread.streams.end()) {
-		if (!context.getDeviceAddressSpace()) {
-			if (kind >= 0 && kind <= 3) {
-				report("cudaMemcpyAsync()");
-				bool success = context.deviceMemcpy(dst, src, count, convert(kind));
-				if (!success) {
-					result = cudaErrorInvalidDevicePointer;
-				}
-			}
-			else {
-				result = cudaErrorInvalidMemcpyDirection;
-			}
-		}
-		else {
-			assert(0 && "unimplemented");
-		}
+	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
+	std::string name;
+	std::string module;
+	
+	if (global == _globals.end()) {
+		name = symbol;	
 	}
 	else {
-		result = cudaErrorInvalidValue;
+		name = global->second.global;
+		module = global->second.module;
+	}
+
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getGlobalAllocation(module, name);
+
+	if (allocation != 0) {
+		if (!_getDevice().checkMemoryAccess((char*)allocation->pointer() 
+			+ offset, count)) {
+			_release();
+			_memoryError((char*)allocation->pointer() + offset, 
+				count, "cudaMemcpyToSymbol");
+		}
+	
+		allocation->copy(offset, src, count);
+		result = cudaSuccess;
 	}
 	
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, 
-	size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind) {
+cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst, 
+	const char *symbol, size_t count, size_t offset, enum cudaMemcpyKind kind) {
+	report("cuda::CudaRuntime::cudaMemcpyFromSymbol('" << symbol << "' - " 
+		<< (void *)symbol << " - value " 
+		<< hydrazine::dataToString(dst, count));
 
-	cudaError_t result = cudaErrorInvalidValue ;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	report("cudaMemcpyToArray()");
-
-	if (context.deviceMemcpyToArray(dst, (void *)src, wOffset, hOffset, count, convert(kind))) {
-		result = cudaSuccess;
+	if (kind != cudaMemcpyDeviceToHost) {
+		return _setLastError(cudaErrorInvalidMemcpyDirection);
 	}
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
-}
-
-cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst, const struct cudaArray *src, 
-	size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind) {
-
-	cudaError_t result = cudaErrorInvalidValue ;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	report("cudaMemcpyFromArray()");
-
-	if (context.deviceMemcpyFromArray((struct cudaArray *)src, dst, wOffset, hOffset, count, 
-		convert(kind))) {
-		result = cudaSuccess;
+	cudaError_t result = cudaErrorInvalidDevicePointer;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
+	std::string name;
+	std::string module;
+	
+	if (global == _globals.end()) {
+		name = symbol;	
+	}
+	else {
+		name = global->second.global;
+		module = global->second.module;
 	}
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getGlobalAllocation(module, name);
+
+	if (allocation != 0) {
+		if (!_getDevice().checkMemoryAccess((char*)allocation->pointer() 
+			+ offset, count)) {
+			_release();
+			_memoryError((char*)allocation->pointer() + offset, 
+				count, "cudaMemcpyFromSymbol");
+		}
+	
+		allocation->copy(dst, offset, count);
+		result = cudaSuccess;
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst, size_t wOffsetDst, 
-	size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, 
-	size_t count, enum cudaMemcpyKind kind) {
+cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, 
+	size_t count, enum cudaMemcpyKind kind, cudaStream_t stream) {
+	return cudaMemcpy(dst, src, count, kind);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, 
+	size_t wOffset, size_t hOffset, const void *src, size_t count, 
+	enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue ;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	report("cudaMemcpyToArray("<< dst << ", " << src << ", " << wOffset 
+		<< ", " << hOffset << ", " << count << ")");
+
+	if (kind == cudaMemcpyHostToDevice) {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().getMemoryAllocation(dst);
+
+		if (allocation != 0) {
+			Dimension& dimension = _dimensions[allocation->pointer()];
+			size_t offset = wOffset + hOffset * dimension.pitch();
+			void* address = (char*)allocation->pointer() + offset;
+			if (!_getDevice().checkMemoryAccess(address, count)) {
+				_release();
+				_memoryError(address, count, "cudaMemcpyToArray");
+			}
+			allocation->copy(offset, src, count);
+			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			_memoryError(dst, count, "cudaMemcpyToArray");
+		}
+	}
+	else if (kind == cudaMemcpyDeviceToDevice) {
+		executive::Device::MemoryAllocation* 
+			destination = _getDevice().getMemoryAllocation(dst);
+		executive::Device::MemoryAllocation* 
+			source = _getDevice().getMemoryAllocation(src);
+		if (destination != 0 && source != 0) {
+			Dimension& dimension = _dimensions[destination->pointer()];
+			size_t offset = wOffset + hOffset * dimension.pitch();
+			void* address = (char*)destination->pointer() + offset;
+			if (!_getDevice().checkMemoryAccess(address, count)) {
+				_release();
+				_memoryError(address, count, "cudaMemcpyToArray");
+			}
+			if (!_getDevice().checkMemoryAccess(src, count)) {
+				_release();
+				_memoryError(src, count, "cudaMemcpyToArray");
+			}
+			size_t sourceOffset = (char*)src - (char*)source->pointer();
+			source->copy(destination, offset, sourceOffset, count);
+			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			if(destination == 0)
+			{
+				_memoryError(dst, count, "cudaMemcpyToArray");
+			}
+			else
+			{
+				_memoryError(src, count, "cudaMemcpyToArray");
+			}
+		}
+	}
+
+	_release();
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyFromArray(void *dst, 
+	const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, 
+	enum cudaMemcpyKind kind) {
+
+	cudaError_t result = cudaErrorInvalidValue ;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	report("cudaMemcpyFromArray("<< dst << ", " << src << ", " << wOffset 
+		<< ", " << hOffset << ", " << count << ")");
+
+	if (kind == cudaMemcpyDeviceToHost) {
+		executive::Device::MemoryAllocation* 
+			allocation = _getDevice().getMemoryAllocation(src);
+
+		if (allocation != 0) {
+			Dimension& dimension = _dimensions[allocation->pointer()];
+			assert(_dimensions.count(allocation->pointer()) != 0);
+			size_t offset = wOffset + hOffset * dimension.pitch();
+			void* address = (char*)allocation->pointer() + offset;
+			if (!_getDevice().checkMemoryAccess(address, count)) {
+				_release();
+				_memoryError(address, count, "cudaMemcpyFromArray");
+			}
+			allocation->copy(dst, offset, count);
+			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			_memoryError(src, count, "cudaMemcpyFromArray");
+		}
+	}
+	else if (kind == cudaMemcpyDeviceToDevice) {
+		executive::Device::MemoryAllocation* 
+			destination = _getDevice().getMemoryAllocation(dst);
+		executive::Device::MemoryAllocation* 
+			source = _getDevice().getMemoryAllocation(src);
+		if (destination != 0 && source != 0) {
+			Dimension& dimension = _dimensions[source->pointer()];
+			size_t offset = wOffset + hOffset * dimension.pitch();
+			void* address = (char*)destination->pointer() + offset;
+			if (!_getDevice().checkMemoryAccess(address, count)) {
+				_release();
+				_memoryError(address, count, "cudaMemcpyFromArray");
+			}
+			if (!_getDevice().checkMemoryAccess(dst, count)) {
+				_release();
+				_memoryError(src, count, "cudaMemcpyFromArray");
+			}
+			size_t destinationOffset = (char*)dst 
+				- (char*)destination->pointer();
+			source->copy(destination, destinationOffset, offset, count);
+			result = cudaSuccess;
+		}
+		else
+		{
+			_release();
+			 if(destination == 0)
+			 {
+			 	_memoryError(dst, count, "cudaMemcpyFromArray");
+			 }
+			 else
+			 {
+			 	_memoryError(src, count, "cudaMemcpyFromArray");			 
+			 }
+		}
+	}
+
+	_release();
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaMemcpyArrayToArray(struct cudaArray *dst, 
+	size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, 
+	size_t wOffsetSrc, size_t hOffsetSrc, size_t count, 
+	enum cudaMemcpyKind kind) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
 	report("cudaMemcpyArrayToArray()");
 
-	if (context.deviceMemcpyArrayToArray((struct cudaArray *)dst, wOffsetDst, hOffsetDst,
-		(struct cudaArray *)src, wOffsetSrc, hOffsetSrc, count, convert(kind))) {
-		result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	if (kind == cudaMemcpyDeviceToDevice) {
+		executive::Device::MemoryAllocation* 
+			destination = _getDevice().getMemoryAllocation(dst);
+		if (destination->pointer() != dst) {
+			_release();
+			_memoryError(dst, count, "cudaMemcpyArrayToArray");
+		}
+		executive::Device::MemoryAllocation* 
+			source = _getDevice().getMemoryAllocation(src);
+		if (source->pointer() != src) {
+			_release();
+			_memoryError(src, count, "cudaMemcpyArrayToArray");
+		}
+		if (destination != 0 && source != 0) {
+			assert(_dimensions.count(source->pointer()) != 0);
+			assert(_dimensions.count(destination->pointer()) != 0);
+			Dimension& sourceDimension = _dimensions[source->pointer()];
+			Dimension& destinationDimension = 
+				_dimensions[destination->pointer()];
+			size_t sourceOffset = wOffsetSrc 
+				+ hOffsetSrc * sourceDimension.pitch();
+			size_t destinationOffset = wOffsetDst 
+				+ hOffsetDst * destinationDimension.pitch();
+			void* sourceAddress = (char*)source->pointer() + sourceOffset;
+			void* destinationAddress = (char*)destination->pointer() 
+				+ destinationOffset;
+			if (!_getDevice().checkMemoryAccess(sourceAddress, count)) {
+				_release();
+				_memoryError(sourceAddress, count, "cudaMemcpyArrayToArray");
+			}
+			if (!_getDevice().checkMemoryAccess(destinationAddress, count)) {
+				_release();
+				_memoryError(destinationAddress, 
+					count, "cudaMemcpyArrayToArray");
+			}
+			source->copy(destination, destinationOffset, sourceOffset, count);
+			result = cudaSuccess;
+		}	
 	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	
+	_release();
+	return _setLastError(result);	
 }
 
 /*!
 	\brief perform a 2D memcpy from a dense buffer
 */
-cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch, const void *src, 
-	size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind) {
+cudaError_t cuda::CudaRuntime::cudaMemcpy2D(void *dst, size_t dpitch, 
+	const void *src, size_t spitch, size_t width, size_t height, 
+	enum cudaMemcpyKind kind) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	report("cudaMemcpy2D()");	
 
-	if (context.deviceMemcpy2D(dst, dpitch, src, spitch, width, height, convert(kind))) {
-		result = cudaSuccess;
-	}
+	switch (kind) {
+		case cudaMemcpyHostToHost:
+		{
+			for (size_t row = 0; row < height; row++) {
+				char* dstPtr = (char*)dst + dpitch * row;
+				char* srcPtr = (char*)src + spitch * row;
+				std::memcpy(dstPtr, srcPtr, width);
+			}
+			result = cudaSuccess;
+		}
+		break;
+		case cudaMemcpyDeviceToHost:
+		{
+			executive::Device::MemoryAllocation* source = 
+				_getDevice().getMemoryAllocation(src);
+			if (source != 0) {
+				for (size_t row = 0; row < height; row++) {
+					void* dstPtr = (char *)dst + dpitch * row;
+					size_t srcOffset = spitch * row;
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+					if (!_getDevice().checkMemoryAccess(
+						(char*)source->pointer() + srcOffset, width)) {
+						_release();
+						_memoryError((char*)source->pointer() + srcOffset, 
+							width, "cudaMemcpy2D");
+					}
+					
+					source->copy(dstPtr, srcOffset, width);
+				}
+				result = cudaSuccess;
+			}
+			else {
+				_release();
+				_memoryError(src, width * height, "cudaMemcpy2D");
+			}
+		}
+		break;		
+		case cudaMemcpyHostToDevice:
+		{
+			executive::Device::MemoryAllocation* destination = 
+				_getDevice().getMemoryAllocation(dst);
+			size_t dstPitch = _dimensions[destination->pointer()].pitch();
+			if (destination != 0) {
+				for (size_t row = 0; row < height; row++) {
+					void* srcPtr = (char *)src + spitch * row;
+					size_t dstOffset = dstPitch * row;
+
+					if (!_getDevice().checkMemoryAccess(
+						(char*)destination->pointer() + dstOffset, width)) {
+						_release();
+						_memoryError((char*)destination->pointer() + dstOffset, 
+							width, "cudaMemcpy2D");
+					}
+					
+					destination->copy(dstOffset, srcPtr, width);
+				}
+				result = cudaSuccess;
+			}
+			else {
+				_release();
+				_memoryError(dst, width * height, "cudaMemcpy2D");
+			}
+		}
+		break;
+		case cudaMemcpyDeviceToDevice:
+		{
+			executive::Device::MemoryAllocation* destination = 
+				_getDevice().getMemoryAllocation(dst);
+			executive::Device::MemoryAllocation* source = 
+				_getDevice().getMemoryAllocation(src);
+			if (destination != 0 && source != 0) {
+				for (size_t row = 0; row < height; row++) {
+					size_t srcOffset = spitch * row;
+					size_t dstOffset = dpitch * row;
+
+					if (!_getDevice().checkMemoryAccess(
+						(char*)destination->pointer() + dstOffset, width)) {
+						_release();
+						_memoryError((char*)destination->pointer() + dstOffset, 
+							width, "cudaMemcpy2D");
+					}
+					if (!_getDevice().checkMemoryAccess(
+						(char*)source->pointer() + srcOffset, width)) {
+						_release();
+						_memoryError((char*)source->pointer() + srcOffset, 
+							width, "cudaMemcpy2D");
+					}
+					
+					source->copy(destination, dstOffset, srcOffset, width);
+				}
+				result = cudaSuccess;
+			}
+			else {
+				_release();
+				if (destination == 0) {
+					_memoryError(dst, width * height, "cudaMemcpy2D");
+				}
+				else {
+					_memoryError(src, width * height, "cudaMemcpy2D");
+				}
+			}
+		}
+		break;
+		default: break;
+	}
+	
+	_release();
+	return _setLastError(result);	
 }
 
 /*!
 	\brief perform a 2D memcpy to an array
 */
-cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst, size_t wOffset, 
-	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, 
-	enum cudaMemcpyKind kind) {
+cudaError_t cuda::CudaRuntime::cudaMemcpy2DToArray(struct cudaArray *dst, 
+	size_t wOffset, size_t hOffset, const void *src, size_t spitch, 
+	size_t width, size_t height, enum cudaMemcpyKind kind) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	report("cudaMemcpy2DtoArray(dst = " << (void *)dst << ", src = " << (void *)src);
+	report("cudaMemcpy2DtoArray(dst = " << (void *)dst 
+		<< ", src = " << (void *)src);
 	
-	if (context.deviceMemcpy2DtoArray(dst, wOffset, hOffset, src, spitch, 
-		width, height, convert(kind))) {
+	if (kind == cudaMemcpyHostToDevice) {
+		executive::Device::MemoryAllocation* destination = 
+			_getDevice().getMemoryAllocation(dst);
+		
+		if (destination == 0) {
+			_release();
+			_memoryError(dst, width * height, "cudaMemcpy2DtoArray");
+		}
+		
+		size_t dstPitch = _dimensions[destination->pointer()].pitch();
 
+		for (size_t row = 0; row < height; ++row) {
+			void* srcPtr = (char*)src + row * spitch;
+			size_t dstOffset = (row + hOffset) * dstPitch + wOffset;
+			
+			if (!_getDevice().checkMemoryAccess((char*)destination->pointer() 
+				+ dstOffset, width)) {
+				_release();
+				_memoryError((char*)destination->pointer() + dstOffset, 
+					width, "cudaMemcpy2DtoArray");
+			}
+			
+			destination->copy(dstOffset, srcPtr, width);
+		}
+		
 		result = cudaSuccess;
 	}
+	else if (kind == cudaMemcpyDeviceToDevice) {
+		executive::Device::MemoryAllocation* destination = 
+			_getDevice().getMemoryAllocation(dst);
+		executive::Device::MemoryAllocation* source = 
+			_getDevice().getMemoryAllocation(src);
+		
+		if (destination == 0) {
+			_release();
+			_memoryError(dst, width * height, "cudaMemcpy2DtoArray");
+		}
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);		
+		if (source == 0) {
+			_release();
+			_memoryError(src, width * height, "cudaMemcpy2DtoArray");
+		}
+		
+		size_t dstPitch = _dimensions[destination->pointer()].pitch();
+		
+		for (size_t row = 0; row < height; ++row) {
+			size_t srcOffset = row * spitch;
+			size_t dstOffset = (row + hOffset) * dstPitch + wOffset;
+			
+			if (!_getDevice().checkMemoryAccess((char*)destination->pointer() 
+				+ dstOffset, width)) {
+				_release();
+				_memoryError((char*)destination->pointer() 
+					+ dstOffset, width, "cudaMemcpy2DtoArray");
+			}
+
+			if (!_getDevice().checkMemoryAccess((char*)source->pointer() 
+				+ srcOffset, width)) {
+				_release();
+				_memoryError((char*)source->pointer() + srcOffset, 
+					width, "cudaMemcpy2DtoArray");
+			}
+			
+			source->copy(destination, dstOffset, srcOffset, width);
+		}
+		
+		result = cudaSuccess;
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
 /*!
 	\brief perform a 2D memcpy from an array
 */
 cudaError_t cuda::CudaRuntime::cudaMemcpy2DFromArray(void *dst, size_t dpitch, 
-	const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, 
-	enum cudaMemcpyKind kind) {
+	const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, 
+	size_t height, enum cudaMemcpyKind kind) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	
-	if (context.deviceMemcpy2DfromArray(dst,dpitch, src, wOffset, hOffset, width, height, 
-		convert(kind))) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
+	report("cudaMemcpy2DfromArray(dst = " << (void *)dst 
+		<< ", src = " << (void *)src);
+	
+	if (kind == cudaMemcpyDeviceToHost) {
+		executive::Device::MemoryAllocation* source = 
+			_getDevice().getMemoryAllocation(dst);
+		
+		if (source == 0) {
+			_release();
+			_memoryError(src, width * height, "cudaMemcpy2DfromArray");
+		}
+		
+		assert(_dimensions.count(source->pointer()) != 0);
+		size_t srcPitch = _dimensions[source->pointer()].pitch();
+
+		for (size_t row = 0; row < height; ++row) {
+			void* dstPtr = (char*)dst + row * dpitch;
+			size_t srcOffset = (row + hOffset) * srcPitch + wOffset;
+			
+			if (!_getDevice().checkMemoryAccess((char*)source->pointer() 
+				+ srcOffset, width)) {
+				_release();
+				_memoryError((char*)source->pointer() 
+					+ srcOffset, width, "cudaMemcpy2DfromArray");
+			}
+			
+			source->copy(dstPtr, srcOffset, width);
+		}
+		
 		result = cudaSuccess;
 	}
+	else if (kind == cudaMemcpyDeviceToDevice) {
+		executive::Device::MemoryAllocation* destination = 
+			_getDevice().getMemoryAllocation(dst);
+		executive::Device::MemoryAllocation* source = 
+			_getDevice().getMemoryAllocation(src);
+		
+		if (destination == 0) {
+			_release();
+			_memoryError(dst, width * height, "cudaMemcpy2DfromArray");
+		}
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);		
+		if (source == 0) {
+			_release();
+			_memoryError(src, width * height, "cudaMemcpy2DfromArray");
+		}
+		
+		size_t srcPitch = _dimensions[source->pointer()].pitch();
+		
+		for (size_t row = 0; row < height; ++row) {
+			size_t dstOffset = row * dpitch;
+			size_t srcOffset = (row + hOffset) * srcPitch + wOffset;
+			
+			if (!_getDevice().checkMemoryAccess((char*)destination->pointer() 
+				+ dstOffset, width)) {
+				_release();
+				_memoryError((char*)destination->pointer() 
+					+ dstOffset, width, "cudaMemcpy2DfromArray");
+			}
+
+			if (!_getDevice().checkMemoryAccess((char*)source->pointer() 
+				+ srcOffset, width)) {
+				_release();
+				_memoryError((char*)source->pointer() + srcOffset, width, 
+					"cudaMemcpy2DfromArray");
+			}
+			
+			destination->copy(source, srcOffset, dstOffset, width);
+		}
+		
+		result = cudaSuccess;
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
 
-	executive::PitchedPointer dstPtr;
-	executive::PitchedPointer srcPtr;
+	cudaPitchedPtr dst;
+	cudaPitchedPtr src;
+	const cudaExtent& extent = p->extent;
 
 	if (p->dstArray) {
-		dstPtr.ptr = (void *)p->dstArray;
-		dstPtr.offset = 0;
-		dstPtr.xsize = 0;
-		dstPtr.ysize = 0;
+		dst.ptr = (void *)p->dstArray;
+		dst.pitch = _dimensions[p->dstArray].pitch();
+		dst.xsize = _dimensions[p->dstArray].x;
+		dst.ysize = _dimensions[p->dstArray].y;		
 	}
 	else {
-		dstPtr.ptr = p->dstPtr.ptr;
-		dstPtr.offset = 0;
-		dstPtr.xsize = p->dstPtr.xsize;
-		dstPtr.ysize = p->dstPtr.ysize;
-		dstPtr.pitch = p->dstPtr.pitch;
+		dst = p->dstPtr;
 	}
+
 	if (p->srcArray) {
-		srcPtr.ptr = (void *)p->srcArray;
-		srcPtr.offset = 0;
-		srcPtr.xsize = 0;
-		srcPtr.ysize = 0;
+		src.ptr = (void *)p->srcArray;
+		src.pitch = _dimensions[p->srcArray].pitch();
+		src.xsize = _dimensions[p->srcArray].x;
+		src.ysize = _dimensions[p->srcArray].y;
 	}
 	else {
-		srcPtr.ptr = p->srcPtr.ptr;
-		srcPtr.offset = 0;
-		srcPtr.xsize = p->srcPtr.xsize;
-		srcPtr.ysize = p->srcPtr.ysize;
-		srcPtr.pitch = p->srcPtr.pitch;
+		src = p->srcPtr;
 	}
 
-	report("cudaMemcpy3D() - dstPtr = (" << (void *)dstPtr.ptr << ", " << dstPtr.xsize << ", " 
-		<< dstPtr.ysize << ") - srcPtr = (" << (void *)p->srcPtr.ptr << ", " 
-		<< p->srcPtr.xsize << ", " << p->srcPtr.ysize << ")");
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	if (context.deviceMemcpy3D(dstPtr, convert(p->dstPos), convert(p->extent), convert(p->kind),
-		srcPtr, convert(p->srcPos))) {
-		result = cudaSuccess;
+	report("cudaMemcpy3D() - dstPtr = (" << (void *)dst.ptr << ", " 
+		<< dst.xsize << ", " << dst.ysize << ") - srcPtr = (" 
+		<< (void *)src.ptr << ", " << src.xsize << ", " 
+		<< src.ysize << ")");
+
+	switch(p->kind) {
+		case cudaMemcpyHostToHost:
+		{
+			for (size_t z = 0; z < extent.depth; ++z) {
+				for (size_t y = 0; y < extent.height; ++y) {
+					void* dstPtr = (char*)dst.ptr + p->dstPos.x + dst.xsize 
+						* ((p->dstPos.y+y) + (z+p->dstPos.z) * dst.ysize);
+					void* srcPtr = (char*)src.ptr + p->srcPos.x + src.xsize 
+						* ((p->srcPos.y+y) + (z+p->srcPos.z) * src.ysize);
+
+					std::memcpy(dstPtr, srcPtr, extent.width);
+				}
+			}
+			result = cudaSuccess;
+		}
+		break;
+		case cudaMemcpyHostToDevice:
+		{
+			executive::Device::MemoryAllocation* destination = 
+				_getDevice().getMemoryAllocation(dst.ptr);
+			
+			if (destination == 0) {
+				_release();
+				_memoryError(dst.ptr, extent.width 
+					* extent.height * extent.depth, "cudaMemcpy3D");
+			}
+			
+			for (size_t z = 0; z < extent.depth; ++z) {
+				for (size_t y = 0; y < extent.height; ++y) {
+					size_t dstPtr = p->dstPos.x + dst.xsize 
+						* ((p->dstPos.y+y) + (z+p->dstPos.z) * dst.ysize);
+					void* srcPtr = (char*)src.ptr + p->srcPos.x + src.xsize 
+						* ((p->srcPos.y+y) + (z+p->srcPos.z) * src.ysize);
+
+					if (!_getDevice().checkMemoryAccess(
+						(char*)destination->pointer() + dstPtr, extent.width)) {
+						_release();
+						_memoryError((char*)destination->pointer() + dstPtr, 
+							extent.width, "cudaMemcpy3D");
+					}
+
+					destination->copy(dstPtr, srcPtr, extent.width);
+				}
+			}
+			result = cudaSuccess;
+		}
+		break;
+		case cudaMemcpyDeviceToHost:
+		{
+			executive::Device::MemoryAllocation* source = 
+				_getDevice().getMemoryAllocation(src.ptr);
+			
+			if (source == 0) {
+				_release();
+				_memoryError(src.ptr, extent.width 
+					* extent.height * extent.depth, "cudaMemcpy3D");
+			}
+			
+			for (size_t z = 0; z < extent.depth; ++z) {
+				for (size_t y = 0; y < extent.height; ++y) {
+					void* dstPtr = (char*)dst.ptr + p->dstPos.x + dst.xsize 
+						* ((p->dstPos.y+y) + (z+p->dstPos.z) * dst.ysize);
+					size_t srcPtr = p->srcPos.x + src.xsize 
+						* ((p->srcPos.y+y) + (z+p->srcPos.z) * src.ysize);
+
+					if (!_getDevice().checkMemoryAccess(
+						(char*)source->pointer() + srcPtr, extent.width)) {
+						_release();
+						_memoryError((char*)source->pointer() + srcPtr, 
+							extent.width, "cudaMemcpy3D");
+					}
+
+					source->copy(dstPtr, srcPtr, extent.width);
+				}
+			}
+			result = cudaSuccess;
+		}
+		break;
+		case cudaMemcpyDeviceToDevice:
+		{
+			executive::Device::MemoryAllocation* source = 
+				_getDevice().getMemoryAllocation(src.ptr);
+			
+			if (source == 0) {
+				_release();
+				_memoryError(src.ptr, extent.width 
+					* extent.height * extent.depth, "cudaMemcpy3D");
+			}
+
+			executive::Device::MemoryAllocation* destination = 
+				_getDevice().getMemoryAllocation(dst.ptr);
+			
+			if (destination == 0) {
+				_release();
+				_memoryError(dst.ptr, extent.width 
+					* extent.height * extent.depth, "cudaMemcpy3D");
+			}
+			
+			for (size_t z = 0; z < extent.depth; ++z) {
+				for (size_t y = 0; y < extent.height; ++y) {
+					size_t dstPtr = p->dstPos.x + dst.xsize 
+						* ((p->dstPos.y+y) + (z+p->dstPos.z) * dst.ysize);
+					size_t srcPtr = p->srcPos.x + src.xsize 
+						* ((p->srcPos.y+y) + (z+p->srcPos.z) * src.ysize);
+
+					if (!_getDevice().checkMemoryAccess(
+						(char*)source->pointer() + srcPtr, extent.width)) {
+						_release();
+						_memoryError((char*)source->pointer() + srcPtr,
+							extent.width, "cudaMemcpy3D");
+					}
+
+					if (!_getDevice().checkMemoryAccess(
+						(char*)destination->pointer() + dstPtr, extent.width)) {
+						_release();
+						_memoryError((char*)destination->pointer() + dstPtr, 
+							extent.width, "cudaMemcpy3D");
+					}
+
+					source->copy(destination, dstPtr, srcPtr, extent.width);
+				}
+			}
+			result = cudaSuccess;
+		}
+		break;
 	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	
+	_release();
+	return _setLastError(result);	
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, 
 	cudaStream_t stream) {
-
-	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-
-	assert(0 && "unimplemented");
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	return cudaMemcpy3D(p);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1047,64 +1700,90 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms 
 //
 
 cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidDevicePointer;
 	
-	lock();
-	getHostThreadContext();
-	if (!context.getDeviceAddressSpace()) {
-		::memset((void *)devPtr, value, count);
-		result = cudaSuccess;
-	}
-	else {
-		assert(0 && "unimplemented");
-		result = cudaErrorNotYetImplemented;
-	}
-	unlock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	TestError(result);
-	return setLastError(result);
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getMemoryAllocation(devPtr);
+	
+	if (allocation == 0) {
+		_release();
+		_memoryError(devPtr, count, "cudaMemset");
+	}
+	
+	if (!_getDevice().checkMemoryAccess(devPtr, count)) {
+		_release();
+		_memoryError(devPtr, count, "cudaMemset");
+	}
+	
+	size_t offset = (char*)devPtr - (char*)allocation->pointer();
+	
+	allocation->memset(offset, value, count);
+	result = cudaSuccess;
+	
+	_release();
+	
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, 
-	size_t height) {
+cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, 
+	int value, size_t width, size_t height) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	if (context.getDeviceAddressSpace()) {
-		assert(0 && "unimplemented");
-		result = cudaErrorNotYetImplemented;
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getMemoryAllocation(devPtr);
+	
+	if (allocation == 0) {
+		_release();
+		_memoryError(devPtr, width * height, "cudaMemset2D");
+	}
+		
+	size_t offset = (char*)devPtr - (char*)allocation->pointer();
+	
+	if (pitch == width) {
+		if (!_getDevice().checkMemoryAccess(devPtr, width * height)) {
+			_release();
+			_memoryError(devPtr, width * height, "cudaMemset2D");
+		}
+		
+		allocation->memset(offset, value, pitch * height);
 	}
 	else {
-		if (pitch == width) {
-			::memset((void *)devPtr, value, pitch * height);
-		}
-		else {
-			for (size_t i = 0; i < height; i++) {
-				char *ptr = (char *)devPtr + pitch * i;
-				::memset((void *)ptr, value, width);
+		for (size_t i = 0; i < height; i++) {
+			size_t ptr = offset + pitch * i;
+			void* address = (char*)allocation->pointer() + ptr;
+			if (!_getDevice().checkMemoryAccess(address, width)) {
+				_release();
+				_memoryError(address, width, "cudaMemset2D");
 			}
+		
+			allocation->memset(ptr, value, width);
 		}
-		result = cudaSuccess;
 	}
+
+	result = cudaSuccess;
 	
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	_release();
+	return _setLastError(result);	
 }
 
 
-cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, 
-	struct cudaExtent extent) {
+cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
+	int value, struct cudaExtent extent) {
 
 	cudaError_t result = cudaErrorNotYetImplemented;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	assert(0 && "unimplemented");
 	
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	_release();
+	return _setLastError(result);	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1112,91 +1791,128 @@ cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 // memory allocation
 //
 
-cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, const char *symbol) {
+cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr, 
+	const char *symbol) {
 
-	report("cuda::CudaRuntime::cudaGetSymbolAddress(" << devPtr << ", " << (void*) symbol << ")");
+	report("cuda::CudaRuntime::cudaGetSymbolAddress(" << devPtr << ", " 
+		<< (void*)symbol << ")");
 	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	if (!*symbol) {
-		symbol = globalSymbolMap[(void *)symbol].c_str();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
+	
+	std::string name;
+	std::string module;
+	
+	if (global != _globals.end()) {
+		name = global->second.global;
+		module = global->second.module;
 	}
-	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
-	*devPtr = global.host_pointer;
+	else {
+		name = symbol;
+	}
+	
+	executive::Device::MemoryAllocation* 
+		allocation = _getDevice().getGlobalAllocation(module, name);
+	assertM(allocation != 0, "Invalid global name " << name 
+		<< " in module " << module);
 
+	*devPtr = allocation->pointer();
 	report("devPtr: " << *devPtr);	
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	
+	_release();
+	return _setLastError(result);	
 }
 
 cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbol) {
 	cudaError_t result = cudaSuccess;
-	report("cuda::CudaRuntime::cudaGetSymbolSize(" << size << ", " << (void*) symbol << ")");
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
-	if (!*symbol) {
-		symbol = globalSymbolMap[(void *)symbol].c_str();
-	}
-	executive::GlobalVariable & global = context.getGlobalVariable(symbol);
-	*size = global.size;
+	report("cuda::CudaRuntime::cudaGetSymbolSize(" << size << ", " 
+		<< (void*) symbol << ")");
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);	
+	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
+	
+	std::string name;
+	std::string module;
+	
+	if (global != _globals.end()) {
+		name = global->second.global;
+		module = global->second.module;
+	}
+	else {
+		name = symbol;
+	}
+	
+	executive::Device::MemoryAllocation* 
+		allocation = _getDevice().getGlobalAllocation(module, name);
+	assertM(allocation != 0, "Invalid global name " << name 
+		<< " in module " << module);
+
+	*size = allocation->size();
+	report("size: " << *size);	
+	
+	_release();
+	return _setLastError(result);	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	cudaError_t result = cudaSuccess;
-	lock();
-	
-	*count = context.getDevices().size();
-	
-	unlock();
-	TestError(result);
-	return setLastError(result);
+	*count = _deviceCount;	
+	return _setLastError(result);
 }
 
 #define minimum(x, y) ((x) > (y) ? (y) : (x))
 
-cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *prop, int dev) {
+cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(
+	struct cudaDeviceProp *prop, int dev) {
 	cudaError_t result = cudaSuccess;
-	
-	lock();
-	if (dev < (int)context.getDevices().size()) {
-		const executive::Device & device = context.getDevices().at(dev);
+
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (dev < (int)_devices.size() && dev >= 0) {
+		executive::Device& device = *_devices[dev];
+		const executive::Device::Properties& properties = device.properties();
 	
 		report("cuda::CudaRuntime::cudaGetDeviceProperties(dev = " << dev 
-			<< ") - major: " << device.major << ", minor: " << device.minor);
+			<< ") - major: " << properties.major 
+			<< ", minor: " << properties.minor);
 
 		memset(prop, 0, sizeof(prop));
-		hydrazine::strlcpy( prop->name, device.name.c_str(), 256 );
+		hydrazine::strlcpy( prop->name, properties.name.c_str(), 256 );
 		prop->canMapHostMemory = 1;
-		prop->clockRate = device.clockRate;
+		prop->clockRate = properties.clockRate;
 		prop->computeMode = cudaComputeModeDefault;
-		prop->deviceOverlap = device.memcpyOverlap;
+		prop->deviceOverlap = properties.memcpyOverlap;
 		prop->integrated = 0;
 		prop->kernelExecTimeoutEnabled = 0;
-		prop->major = device.major;
-		prop->minor = device.minor;
-		prop->maxGridSize[0] = device.maxGridSize[0];
-		prop->maxGridSize[1] = device.maxGridSize[1];
-		prop->maxGridSize[2] = device.maxGridSize[2];
-		prop->maxThreadsDim[0] = device.maxThreadsDim[0];
-		prop->maxThreadsDim[1] = device.maxThreadsDim[1];
-		prop->maxThreadsDim[2] = device.maxThreadsDim[2];
-		prop->maxThreadsPerBlock = device.maxThreadsPerBlock;
-		prop->memPitch = device.memPitch;
-		prop->multiProcessorCount = device.multiprocessorCount;
-		prop->regsPerBlock = device.regsPerBlock;
-		prop->sharedMemPerBlock = device.sharedMemPerBlock;
-		prop->textureAlignment = device.textureAlign;
-		prop->totalConstMem = device.totalConstantMemory;
-		prop->totalGlobalMem = device.totalMemory;
-		prop->warpSize = device.SIMDWidth;
+		prop->major = properties.major;
+		prop->minor = properties.minor;
+		prop->maxGridSize[0] = properties.maxGridSize[0];
+		prop->maxGridSize[1] = properties.maxGridSize[1];
+		prop->maxGridSize[2] = properties.maxGridSize[2];
+		prop->maxThreadsDim[0] = properties.maxThreadsDim[0];
+		prop->maxThreadsDim[1] = properties.maxThreadsDim[1];
+		prop->maxThreadsDim[2] = properties.maxThreadsDim[2];
+		prop->maxThreadsPerBlock = properties.maxThreadsPerBlock;
+		prop->memPitch = properties.memPitch;
+		prop->multiProcessorCount = properties.multiprocessorCount;
+		prop->regsPerBlock = properties.regsPerBlock;
+		prop->sharedMemPerBlock = properties.sharedMemPerBlock;
+		prop->textureAlignment = properties.textureAlign;
+		prop->totalConstMem = properties.totalConstantMemory;
+		prop->totalGlobalMem = properties.totalMemory;
+		prop->warpSize = properties.SIMDWidth;
+		prop->concurrentKernels = properties.concurrentKernels;
+		prop->integrated = properties.integrated;
 		
-		report("  returning: prop->major = " << prop->major << ", prop->minor = " << prop->minor);
+		report("  returning: prop->major = " << prop->major 
+			<< ", prop->minor = " << prop->minor);
 		
 		result = cudaSuccess;
 	}
@@ -1204,67 +1920,86 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(struct cudaDeviceProp *pr
 		result = cudaErrorInvalidDevice;
 	}
 	
-	unlock();
+	// this is a horrible hack needed because cudaGetDeviceProperties can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		_devices.clear();
+	}
 	
-	TestError(result);
-	return setLastError(result);
+	_unlock();
+	
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaChooseDevice(int *device, const struct cudaDeviceProp *prop) {
+cudaError_t cuda::CudaRuntime::cudaChooseDevice(int *device, 
+	const struct cudaDeviceProp *prop) {
 	cudaError_t result = cudaSuccess;
-	*device = context.getSelectedDevice();
-	TestError(result);
-	return setLastError(result);
+	_lock();
+	_enumerateDevices();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	*device = 0;
+	_unlock();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
-	cudaError_t result = cudaErrorSetOnActiveProcess;
+	cudaError_t result = cudaErrorInvalidDevice;
 	
-	lock();
-	if ((int)context.getDevices().size() <= device) {
-		result = cudaErrorInvalidDevice;
-	}
-	else {
-		HostThreadContext &thread = getHostThreadContext();
+	_lock();
+
+	if ((int)_deviceCount > device && device >= 0) {
+		HostThreadContext& thread = _getCurrentThread();
 		thread.selectedDevice = device;
-		context.selectDevice(device);
+		report("Setting device for thread " << pthread_self() << " to " 
+			<< device);
 		result = cudaSuccess;
 	}
-	unlock();
-	TestError(result);
-	return setLastError(result);
+
+	_unlock();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGetDevice(int *device) {
 	cudaError_t result = cudaSuccess;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_lock();
+	HostThreadContext& thread = _getCurrentThread();
 	*device = thread.selectedDevice;
-	unlock();
+	_unlock();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaSetValidDevices(int *device_arr, int len) {
 	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_lock();
+	HostThreadContext& thread = _getCurrentThread();
 	thread.validDevices.resize(len);
 	for (int i = 0 ; i < len; i++) {
 		thread.validDevices[i] = device_arr[i];
 	}
-	unlock();
-	TestError(result);
-	return setLastError(result);
+	_unlock();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags( int flags ) {
+cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags(int f) {
 	cudaError_t result = cudaSuccess;
-	
-	TestError(result);
-	return setLastError(result);
+	_lock();
+	if(!_devicesLoaded)
+	{
+		_flags = f;
+	}
+	else
+	{
+		result = cudaErrorSetOnActiveProcess;
+	}
+	_unlock();
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1275,133 +2010,180 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 	const struct cudaChannelFormatDesc *desc, size_t size) {
 
 	cudaError_t result = cudaErrorInvalidValue;
-	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+		
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	executive::ChannelFormatDesc format;
-	convert(format, desc);
-	if (context.bindTexture(offset, textureReferences[texref], devPtr, format, size, 
-		(ir::Texture::AddressMode *)texref->addressMode, 
-		(ir::Texture::Interpolation)texref->filterMode, texref->normalized)) {
-
-		result = cudaSuccess;
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
+				texture->second.texture, *texref, *desc, ir::Dim3(size, 1, 1));
+			if(offset != 0) *offset = 0;
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
+		
+		}
 	}
+	
+	report("cudaBindTexture(ref = " << texref 
+		<< ", devPtr = " << devPtr << ", size = " << size << ")");
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	_release();
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	const struct textureReference *texref, const void *devPtr, 
-	const struct cudaChannelFormatDesc *desc, size_t width, size_t height, size_t pitch) {
+	const struct cudaChannelFormatDesc *desc, size_t width, 
+	size_t height, size_t pitch) {
 	cudaError_t result = cudaErrorInvalidValue;
+	assert(pitch != 0);
 
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	executive::ChannelFormatDesc format;
-	convert(format, desc);
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 
-	if (context.bindTexture2D(offset, textureReferences[texref], devPtr, format, width, height, 
-		pitch, (ir::Texture::AddressMode *)texref->addressMode, 
-		(ir::Texture::Interpolation)texref->filterMode, texref->normalized)) {
-		result = cudaSuccess;
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
+				texture->second.texture, *texref, *desc, 
+				ir::Dim3(width, height, 1));
+			if(offset != 0) *offset = 0;
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
+
+		}
 	}
+	
+	report("cudaBindTexture2D(ref = " << texref 
+		<< ", devPtr = " << devPtr << ", width = " << width << ", height = " 
+		<< height << ", pitch = " << pitch << ")");
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(const struct textureReference *texref, 
-	const struct cudaArray *array, const struct cudaChannelFormatDesc *desc) {
+cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
+	const struct textureReference *texref, const struct cudaArray *array, 
+	const struct cudaChannelFormatDesc *desc) {
 	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	executive::ChannelFormatDesc format;
-	convert(format, desc);
+	report("cudaBindTextureToArray() - texref = '" << texref << "', array = " 
+		<< (void *)array << " - format: " << desc->f << " (" << desc->x 
+		<< ", " << desc->y << ", " << desc->z << ", " << desc->w << ")");
 
-	report("cudaBindTextureToArray() - texref = '" << textureReferences[texref] << "', array = " 
-		<< (void *)array << " - format: " << format.kind << " (" << format.x << ", " << format.y 
-		<< ", " << format.z << ")");
+	DimensionMap::iterator dimension = _dimensions.find((void*)array);
+	assert(dimension != _dimensions.end());
 
-	if (context.bindTextureToArray(textureReferences[texref], (void *)array, format, 
-		(ir::Texture::AddressMode *)texref->addressMode, 
-		(ir::Texture::Interpolation)texref->filterMode, texref->normalized)) {
+	ir::Dim3 size(dimension->second.x, dimension->second.y, 
+		dimension->second.z);
 
-		result = cudaSuccess;
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().bindTexture((void*)array, texture->second.module, 
+				texture->second.texture, *texref, *desc, size);
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
+
+		}
 	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	
+	_release();
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaUnbindTexture(const struct textureReference *texref) {
+cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
+	const struct textureReference *texref) {
 	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	context.unbindTexture(textureReferences[(void *)texref]);
-	result = cudaSuccess;
+	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
+	if(texture != _textures.end()) {
+		try {
+			_getDevice().unbindTexture(texture->second.module, 
+				texture->second.texture);
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception& e) {
 
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+		}
+	}
+	
+	_release();
+
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGetTextureAlignmentOffset(size_t *offset, 
 	const struct textureReference *texref) {
-	cudaError_t result = cudaErrorInvalidValue;
-
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
-
-	*offset = context.getTextureAlignmentOffset(textureReferences[texref]);
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	*offset = 0;
+	return _setLastError(cudaSuccess);
 }
 
-cudaError_t cuda::CudaRuntime::cudaGetTextureReference(const struct textureReference **texref, 
-	const char *symbol) {
+cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
+	const struct textureReference **texref, const char *symbol) {
 	cudaError_t result = cudaErrorInvalidTexture;
-	lock();
+
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	std::string name = symbol;
+	RegisteredTextureMap::iterator matchedTexture = _textures.end();
 	
-	RegisteredTextureMap::iterator it = textures.find(symbol);
-	if (it != textures.end()) {
-		*texref = (const struct textureReference *)it->second.pointer;
-		result = cudaSuccess;
+	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
+		texture != _textures.end(); ++texture) {
+		if(texture->second.texture == name) {
+			if(matchedTexture != _textures.end()) {
+				_release();
+				Ocelot_Exception("==Ocelot== Ambiguous texture '" << name 
+					<< "' declared in at least two modules ('" 
+					<< texture->second.module << "' and '" 
+					<< matchedTexture->second.module << "')");
+			}
+			matchedTexture = texture;
+		}
 	}
 	
-	unlock();
-	TestError(result);
-	return setLastError(result);
+	if(matchedTexture != _textures.end()) {
+		*texref = (const struct textureReference*)matchedTexture->first;
+	}
+	
+	_release();
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, 
-	const struct cudaArray *array) {
+cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(
+	struct cudaChannelFormatDesc *desc, const struct cudaArray *array) {
 	cudaError_t result = cudaErrorInvalidValue;
 
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_lock();
 
-	const executive::MemoryAllocation* memory = context.getMemoryAllocation(
-		(const void *)array);
-	if (memory->get()) {
-		convert(desc, memory->desc);
+	DimensionMap::iterator dimension = _dimensions.find((void*)array);
+	
+	if (dimension != _dimensions.end()) {
+		*desc = dimension->second.format;
 		result = cudaSuccess;
 	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	
+	_unlock();
+	return _setLastError(result);
 }
 
-struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x, int y, int z, int w, 
-	enum cudaChannelFormatKind f) {
+struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x, 
+	int y, int z, int w, enum cudaChannelFormatKind f) {
 
 	struct cudaChannelFormatDesc desc;
 	desc.w = w; desc.x = x; desc.y = y; desc.z = z; desc.f = f;
@@ -1411,37 +2193,37 @@ struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x, int
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
-	HostThreadContext &thread = getHostThreadContext();
+	HostThreadContext& thread = _getCurrentThread();
 	return thread.lastError;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
-cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, size_t sharedMem,
-	cudaStream_t stream) {
+cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, 
+	size_t sharedMem, cudaStream_t stream) {
 
-	lock();
+	_lock();
 	report("cudaConfigureCall()");
 	
 	cudaError_t result = cudaErrorInvalidConfiguration;
-	HostThreadContext &thread = getHostThreadContext();
+	HostThreadContext &thread = _getCurrentThread();
 	
 	KernelLaunchConfiguration launch(gridDim, blockDim, sharedMem, stream);
 	thread.launchConfigurations.push_back(launch);
 	result = cudaSuccess;
 	
-	unlock();
+	_unlock();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, size_t offset) {
+cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, 
+	size_t offset) {
 	cudaError_t result = cudaSuccess;
 	
-	lock();
+	_lock();
 	
-	HostThreadContext &thread = getHostThreadContext();
+	HostThreadContext &thread = _getCurrentThread();
 
 	report("cudaSetupArgument() - offset " << offset << ", size " << size);
 	
@@ -1450,112 +2232,104 @@ cudaError_t cuda::CudaRuntime::cudaSetupArgument(const void *arg, size_t size, s
 	thread.parameterIndices.push_back(offset);
 	thread.parameterSizes.push_back(size);
 	
-	unlock();
+	_unlock();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
+static ir::Dim3 convert(const dim3& d) {
+	return std::move(ir::Dim3(d.x, d.y, d.z));
+}
 
-	lock();
-	
+cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName, 
+	const std::string& kernelName )
+{
+	_acquire();
+	if (_devices.empty()) return cudaErrorNoDevice;
+
+	ModuleMap::iterator module = _modules.find(moduleName);
+	assert(module != _modules.end());
+
+	HostThreadContext& thread = _getCurrentThread();
 	cudaError_t result = cudaSuccess;
-	HostThreadContext & thread = getHostThreadContext();
 	
 	assert(thread.launchConfigurations.size());
 	
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
-	const RegisteredKernel & kernel = kernels[(void *)entry];
-	std::string moduleName = kernel.module;
-	std::string kernelName = kernel.kernel;
+	ir::Kernel* k = module->second.getKernel(kernelName);
+	assert(k != 0);
 
-	thread.mapParameters(context, moduleName, kernelName);
+	thread.mapParameters(k);
 	
-	report("CudaRuntime::cudaLaunch(" << kernelName 
+	report("kernel launch (" << kernelName 
 		<< ") on thread " << pthread_self());
 	
 	try {
-
 		trace::TraceGeneratorVector traceGens;
 
 		if (api::OcelotConfiguration::getTrace().enabled) {
 			traceGens = thread.persistentTraceGenerators;
-			traceGens.insert(traceGens.end(), thread.nextTraceGenerators.begin(), 
+			traceGens.insert(traceGens.end(), 
+				thread.nextTraceGenerators.begin(), 
 				thread.nextTraceGenerators.end());
 		}
 
-		context.launch(moduleName, kernelName, convert(launch.gridDim), 
+		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, thread.parameterBlockSize, traceGens);
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
-#if CUDA_VERBOSE == 1
 		std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
 			<< kernelName 
 			<< "\" with exception: \n";
-		std::cerr << formatError( e.toString() ) 
+		std::cerr << _formatError( e.toString() ) 
 			<< "\n" << std::flush;
-#endif
 		thread.lastError = cudaErrorLaunchFailure;
-#if CATCH_RUNTIME_EXCEPTIONS != 1
+		_release();
 		throw e;
-#endif
 	}
-
-	TestError(result);
-	return setLastErrorAndUnlock(thread, result);
+	_release();
+	
+	return result;
 }
 
-cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 
-	const char *func) {
+cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
+	_lock();
+	
+	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
+	assert(kernel != _kernels.end());
+	std::string moduleName = kernel->second.module;
+	std::string kernelName = kernel->second.kernel;
+
+	_unlock();
+
+	cudaError_t result = _launchKernel(moduleName, kernelName);
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
+	struct cudaFuncAttributes *attr, const char *symbol) {
 	cudaError_t result = cudaErrorInvalidDeviceFunction;
 		
-	lock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
 	//
 	// go find the kernel and fill out its attributes
 	//
-	const char *symbol = func;
-	std::map< void *, std::string >::const_iterator sym_it = globalSymbolMap.find((void *)symbol);
-	if (sym_it != globalSymbolMap.end()) {
-		ir::Kernel *kernel = 0;
-		RegisteredKernelMap::const_iterator kernel_it = kernels.begin(); 
-
-		symbol = sym_it->second.c_str();
-
-		for (; kernel_it != kernels.end(); ++kernel_it) {
-			if (std::string(kernel_it->second.kernel) == symbol) {
-				kernel = context.getKernel(context.getSelectedISA(), kernel_it->second.module, 
-					kernel_it->second.kernel);
-				break;
-			}
-		}
-
-		if (kernel && kernel->ISA != ir::Instruction::PTX) {
-			const ir::ExecutableKernel *exeKernel = static_cast<const ir::ExecutableKernel *>(kernel);
-
-			attr->constSizeBytes = exeKernel->constMemorySize();
-			attr->localSizeBytes = exeKernel->localMemorySize();
-			attr->maxThreadsPerBlock = exeKernel->maxThreadsPerBlock();
-			attr->numRegs = exeKernel->registerCount();
-			attr->sharedSizeBytes = exeKernel->sharedMemorySize();
-
-			result = cudaSuccess;
-		}
-		else if (kernel) {
-			report("cudaFuncGetAttributes() - got kernel '" << kernel->name << "' but ISA was " 
-				<< kernel->ISA << ", selected ISA is " << context.getSelectedISA());
-		}
+	RegisteredKernelMap::iterator kernel = _kernels.find((void*)symbol);
+	if (kernel != _kernels.end()) {
+		*attr = _getDevice().getAttributes(kernel->second.module, 
+			kernel->second.kernel);
 	}
 	
-	unlock();
+	_release();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1563,243 +2337,127 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(struct cudaFuncAttributes *
 // CUDA event creation
 
 cudaError_t cuda::CudaRuntime::cudaEventCreate(cudaEvent_t *event) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaSuccess;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	//
-	// create an event
-	//
-	Event createdEvent;
-	createdEvent.flags = 0;
-	createdEvent.handle = thread.events.size() + 1;
-	createdEvent.time = 0;
-	*event = createdEvent.handle;
-	result = cudaSuccess;
+	*event = _getDevice().createEvent( 0 );
 	
-	// special behavior for CUDA devices
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventCreate(&createdEvent.driverHandle, CU_EVENT_DEFAULT)) {
-			result = cudaErrorInitializationError;
-		}
-	}
+	_release();
 
-	report(" created event " << createdEvent.handle << " with driver handle " << createdEvent.driverHandle);
-	
-	thread.events[*event] = createdEvent;
-	unlock();
-
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, int flags) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+cudaError_t cuda::CudaRuntime::cudaEventCreateWithFlags(cudaEvent_t *event, 
+	int flags) {
+	cudaError_t result = cudaSuccess;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	//
-	// create an event
-	//
-	Event createdEvent;
-	createdEvent.flags = flags;
-	createdEvent.handle = thread.events.size() + 1;
-	createdEvent.time = 0;
-	*event = createdEvent.handle;
-	result = cudaSuccess;
+	*event = _getDevice().createEvent(flags);
+	
+	_release();
 
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (flags == cudaEventBlockingSync) {
-			flags = CU_EVENT_BLOCKING_SYNC;
-		}
-		else {
-			flags = CU_EVENT_DEFAULT;
-		}
-		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventCreate(&createdEvent.driverHandle, flags)) {
-			result = cudaErrorInitializationError;
-		}
-	}
-		
-	thread.events[*event] = createdEvent;
-	unlock();
-
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+cudaError_t cuda::CudaRuntime::cudaEventRecord(cudaEvent_t event, 
+	cudaStream_t stream) {
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	StreamMap::iterator s_it = thread.streams.find(stream);
-	EventMap::iterator e_it = thread.events.find(event);
-	if (e_it != thread.events.end() && (!stream || s_it != thread.streams.end())) {
-		e_it->second.time = timer.absolute();
-		if (stream) {
-			s_it->second.events.push_back(event);
-		}
-		
+	try {
+		_getDevice().recordEvent(event, stream);
 		result = cudaSuccess;
-
-		if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-			CUevent eventHandle = e_it->second.driverHandle;
-			CUstream driverStream = 0;
-			if (stream) {
-				driverStream = s_it->second.driverHandle;
-			}
-			CUresult cuResult = cuda::CudaDriver::cuEventRecord(eventHandle, driverStream);
-			if (CUDA_SUCCESS != cuResult) {
-				result = cudaErrorInvalidValue;
-				report("cuEventRecord() - failed with error " << cuResult);
-			}
-			else {
-				report("cudaEventRecord() - eventHandle = " << eventHandle << ", driverStream = " << driverStream);
-				result = cudaSuccess;
-			}
-		}
 	}
-	else {
-		if (e_it == thread.events.end()) {
-			report("event not found");
-		}
-		if (s_it == thread.streams.end()) {
-			report("stream not found");
-		}
-		result = cudaErrorInvalidResourceHandle;
-	}
-		
-	unlock();	
+	catch(...) {
 	
-	TestError(result);
-	return setLastError(result);
+	}
+	
+	_release();	
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	cudaError_t result = cudaErrorInvalidValue;
 
-	lock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	HostThreadContext &thread = getHostThreadContext();
-	
-	EventMap::iterator e_it = thread.events.find(event);
-	if (e_it != thread.events.end()) {
+	try {
+		_getDevice().queryEvent(event);
 		result = cudaSuccess;
 	}
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventQuery(e_it->second.driverHandle)) {
-			result = cudaErrorInvalidValue;
-		}
-		else {
-			result = cudaSuccess;
-		}
-	}	
-	unlock();
+	catch(...) {
+	
+	}
+	
+	_release();
 
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	HostThreadContext &thread = getHostThreadContext();
-	
-	EventMap::iterator e_it = thread.events.find(event);
-	if (e_it != thread.events.end()) {
+	try {
+		_getDevice().synchronizeEvent(event);
 		result = cudaSuccess;
 	}
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventSynchronize(e_it->second.driverHandle)) {
-			result = cudaErrorInvalidValue;
-		}
-		else {
-			result = cudaSuccess;
-		}
-	}	
-	unlock();
+	catch(...) {
 	
-	TestError(result);
-	return setLastError(result);
+	}
+	
+	_release();
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	HostThreadContext &thread = getHostThreadContext();
-	
-	EventMap::iterator e_it = thread.events.find(event);
-	if (e_it != thread.events.end()) {
-		thread.events.erase(e_it);
+	try {
+		_getDevice().destroyEvent(event);
 		result = cudaSuccess;
 	}
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (CUDA_SUCCESS != cuda::CudaDriver::cuEventDestroy(e_it->second.driverHandle)) {
-			result = cudaErrorInvalidValue;
-		}
-		else {
-			result = cudaSuccess;
-		}
-	}	
-	unlock();
+	catch(...) {
 	
-	TestError(result);
-	return setLastError(result);
+	}	
+	
+	_release();
+	
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, 
+	cudaEvent_t start, cudaEvent_t end) {
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	HostThreadContext &thread = getHostThreadContext();
-	
-	EventMap::iterator e_start_it = thread.events.find(start);
-	EventMap::iterator e_end_it = thread.events.find(end);
-	
-	if (e_start_it != thread.events.end() && e_end_it != thread.events.end()) {
-		if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-			CUevent hStart = e_start_it->second.driverHandle;
-			CUevent hEnd = e_end_it->second.driverHandle;
-			CUresult cuResult = cuda::CudaDriver::cuEventElapsedTime(ms, hStart, hEnd);
-			if (CUDA_ERROR_NOT_READY == cuResult) {
-				result = cudaErrorInvalidValue;
-				report("cudaEventElapsedTime() - hStart: " << hStart << ", hEnd: " << hEnd 
-					<< " returned with error 'CUDA_ERROR_NOT_READY'");
-
-			}
-			else if (CUDA_SUCCESS != cuResult) {
-				result = cudaErrorInvalidValue;
-				report("cudaEventElapsedTime() - hStart: " << hStart << ", hEnd: " << hEnd 
-					<< " returned with error " << cuResult);
-			}
-			else {
-				result = cudaSuccess;
-			}
-		}	
-		else {
-			hydrazine::Timer::Second end_time = e_end_it->second.time;
-			hydrazine::Timer::Second start_time = e_start_it->second.time;
-			hydrazine::Timer::Second total_time = end_time - start_time;
-
-			*ms = total_time / 1000.0;
-			result = cudaSuccess;
-		}
+	try {
+		*ms = _getDevice().getEventTime(start, end);
+		result = cudaSuccess;
 	}
-	else {
-		result = cudaErrorInvalidResourceHandle;
+	catch(...) {
+
 	}
-	unlock();
+
+	_release();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1808,113 +2466,138 @@ cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, cudaEvent_t start
 //
 
 cudaError_t cuda::CudaRuntime::cudaStreamCreate(cudaStream_t *pStream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	HostThreadContext &thread = getHostThreadContext();
-	
-	Stream stream;
-	stream.handle = (cudaStream_t)(thread.streams.size() + 1);
-	thread.streams[stream.handle] = stream;
-	*pStream = stream.handle;
-	result = cudaSuccess;
-	
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (cuda::CudaDriver::cuStreamCreate(&stream.driverHandle, 0) != CUDA_SUCCESS) {
-			result = cudaErrorInvalidValue;
-		}
+	try {
+		*pStream = _getDevice().createStream();
+		result = cudaSuccess;
 	}
-		
-	unlock();
+	catch (...) {
 	
-	TestError(result);
-	return setLastError(result);
+	}
+	_release();
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaStreamDestroy(cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 	
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
-	StreamMap::iterator s_it = thread.streams.find(stream);
-
-	if (s_it != thread.streams.end()) {
-		thread.streams.erase(s_it);
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	try {
+		_getDevice().destroyStream(stream);
 		result = cudaSuccess;
 	}
-	else {
-		result = cudaErrorInvalidResourceHandle;
-	}	
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (cuda::CudaDriver::cuStreamDestroy(s_it->second.driverHandle) != CUDA_SUCCESS) {
-			result = cudaErrorInvalidValue;
-		}
-		else {		
-			result = cudaSuccess;
-		}
+	catch(...) {
+	
 	}
+	_release();
 	
-	unlock();
-	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaStreamSynchronize(cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
-	StreamMap::iterator s_it = thread.streams.find(stream);
-
-	if (s_it != thread.streams.end()) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	try {
+		_getDevice().synchronizeStream(stream);
 		result = cudaSuccess;
 	}
-	else {
-		result = cudaErrorInvalidResourceHandle;
-	}	
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (cuda::CudaDriver::cuStreamSynchronize(s_it->second.driverHandle) != CUDA_SUCCESS) {
-			result = cudaErrorInvalidValue;
-		}
-		else {
-			result = cudaSuccess;
-		}
+	catch(...) {
+	
 	}
 	
-	unlock();
+	_release();
 
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
 
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
-	StreamMap::iterator s_it = thread.streams.find(stream);
-
-	if (s_it != thread.streams.end()) {
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	try {
+		_getDevice().queryStream(stream);
 		result = cudaSuccess;
 	}
+	catch(...) {
+	
+	}
+	
+	_release();
+	
+	return _setLastError(result);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+cudaError_t cuda::CudaRuntime::cudaDriverGetVersion(int *driverVersion) {
+	cudaError_t result = cudaSuccess;
+
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (_devices.empty()) { 
+		result = cudaErrorNoDevice;
+	}
 	else {
-		result = cudaErrorInvalidResourceHandle;
-	}	
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		if (cuda::CudaDriver::cuStreamQuery(s_it->second.driverHandle) != CUDA_SUCCESS) {
-			result = cudaErrorInvalidValue;
-		}
-		else {
-			result = cudaSuccess;
-		}
-	}	
+		*driverVersion = _devices[0]->driverVersion();
+	}
 	
-	unlock();
+	// this is a horrible hack needed because this can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		_devices.clear();
+	}
 	
-	TestError(result);
-	return setLastError(result);
+	_unlock();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
+	cudaError_t result = cudaSuccess;
+
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (_devices.empty()) { 
+		result = cudaErrorNoDevice;
+	}
+	else {
+		*runtimeVersion = _devices[0]->runtimeVersion();
+	}
+	
+	// this is a horrible hack needed because this can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		_devices.clear();
+	}
+	
+	_unlock();
+	
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1922,340 +2605,505 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
 	
-	lock();
-	getHostThreadContext();
+	_lock();
 	
-	//
-	// kill potentially running kernels
-	//
-	if (context.getSelectedISA() == ir::PTXInstruction::GPU) {
-		cuda::CudaDriver::cuCtxSynchronize();
+	report("Destroying " << _devices.size() << " devices");
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		report( " Destroying - " << (*device)->properties().name);
+		delete *device;
 	}
-	unlock();
+	_devices.clear();
 	
-	TestError(result);
-	return setLastError(result);
+	_devicesLoaded = false;
+	_unlock();
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	cudaError_t result = cudaSuccess;
-	lock();
-	getHostThreadContext();
-	unlock();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	_getDevice().synchronize();
+
+	_release();
 	
-	//
-	// block on executing threads
-	//
-	context.synchronize();
-	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
-
-	report("cudaGLMapBufferObject()");
-	
-	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
-	if (buf_it == thread.registeredGLbuffers.end()) {
-		result = cudaErrorMapBufferObjectFailed;
-	}
-	else {
-		if (context.getDeviceAddressSpace()) {
-			assert(0 && "unimplemented");
-		}
-		else {
-			glBindBuffer(GL_ARRAY_BUFFER, bufObj);
-			buf_it->second.ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-			int bytes = 0;
-			glGetBufferParameteriv( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes );
-
-			*devPtr = buf_it->second.ptr;
-			buf_it->second.mapped = true;
-
-			context.registerExternal(*devPtr, bytes);
-			
-			if( glGetError() != GL_NO_ERROR ) {
-				//report("  error - mapped " << bytes << " bytes");
-			}
-
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-		}
-	}
-	
-	unlock();
-	
-	TestError(result);
-	return setLastError(result);
+cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, 
+	GLuint bufObj) {
+	return cudaGLMapBufferObjectAsync(devPtr, bufObj, 0);
 }
 
-cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, 
-	cudaStream_t stream) {
-	assert(0 && "unimplemented");
+cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr, 
+	GLuint bufObj, cudaStream_t stream) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	report("cudaGLMapBufferObjectAsync(" << bufObj << ", " << stream << ")");
+	GLBufferMap::iterator buffer = _buffers.find(bufObj);
+	if (buffer != _buffers.end()) {
+		_getDevice().mapGraphicsResource(buffer->second, 1, stream);
+		size_t bytes = 0;
+		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
+			bytes, buffer->second);
+		result = cudaSuccess;
+	}	
+	_release();
+	
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLRegisterBufferObject(GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
+	cudaError_t result = cudaErrorInvalidValue;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	report("cudaGLRegisterBufferObject(" << bufObj << ")");	
-	
-	if (context.getDeviceAddressSpace()) {
-		report("context.deviceAddrSpace = " << context.getDeviceAddressSpace());
-		assert(0 && "unimplemented");
-	}
-	else {
-		glBindBuffer(GL_ARRAY_BUFFER, bufObj);
-		RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
-		if (buf_it != thread.registeredGLbuffers.end()) {
-			glUnmapBuffer(GL_ARRAY_BUFFER);
-		}
-		RegisteredGLBuffer buffer;
-		thread.registeredGLbuffers[bufObj] = buffer;
+
+	if (_buffers.count(bufObj) == 0) {
+		void* graphic = _getDevice().glRegisterBuffer(bufObj, 0);
+		_buffers.insert(std::make_pair(bufObj, graphic));
+		result = cudaSuccess;
 	}
 	
-	unlock();
+	_release();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags) {
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext &thread = getHostThreadContext();
-	
-	report("cudaGLSetBufferObjectMapFlags()");
-	
-	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
-	if (buf_it == thread.registeredGLbuffers.end()) {
-		result = cudaErrorMapBufferObjectFailed;
-	}
-	else {
-		if (context.getDeviceAddressSpace()) {
-			assert(0 && "unimplemented");
-		}
-		else {
-			buf_it->second.flags = flags;
-		}
+cudaError_t cuda::CudaRuntime::cudaGLSetBufferObjectMapFlags(GLuint bufObj, 
+	unsigned int flags) {
+	cudaError_t result = cudaErrorInvalidValue;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	report("cudaGLRegisterBufferObjectMapFlags(" << bufObj << ")");	
+
+	if (_buffers.count(bufObj) == 0) {
+		void* graphic = _getDevice().glRegisterBuffer(bufObj, flags);
+		_buffers.insert(std::make_pair(bufObj, graphic));
+		result = cudaSuccess;
 	}
 	
-	unlock();
+	_release();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLSetGLDevice(int device) {
 	report("cudaGLSetGLDevice(" << device << ")");
-	return cudaSuccess;
+	return cudaSetDevice(device);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	cudaError_t result = cudaErrorInvalidValue;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
 	report("cudaGLUnmapBufferObject(" << bufObj << ")");
 	
-	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
-	if (buf_it != thread.registeredGLbuffers.end()) {
-		if (buf_it->second.mapped) {
-			if (context.getDeviceAddressSpace()) {
-				assert(0 && "unimplemented");
-			}
-			else {
-				context.unregisterExternal(buf_it->second.ptr);
-
-				glBindBuffer(GL_ARRAY_BUFFER, bufObj);
-				glUnmapBuffer(GL_ARRAY_BUFFER);
-
-				if( glGetError() != GL_NO_ERROR ) {
-					report("  error");
-				}
-
-				buf_it->second.mapped = false;
-				buf_it->second.ptr = 0;
-			}
-		}
-	}
-	else {
-		result = cudaErrorMapBufferObjectFailed;
+	GLBufferMap::iterator buffer = _buffers.find(bufObj);
+	if (buffer != _buffers.end()) {
+		_getDevice().unmapGraphicsResource(buffer->second);
+		result = cudaSuccess;
 	}
 	
-	unlock();
+	_release();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream) {
-	assert(0 && "unimplemented");
+cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObjectAsync(GLuint bufObj, 
+	cudaStream_t stream) {
+	return cudaGLUnmapBufferObject(bufObj);
 }
 
 cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
-	cudaError_t result = cudaSuccess;
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
+	cudaError_t result = cudaErrorInvalidValue;
+
 	report("cudaGLUnregisterBufferObject");
 	
-	RegisteredGLBufferMap::iterator buf_it = thread.registeredGLbuffers.find(bufObj);
-	if (buf_it != thread.registeredGLbuffers.end()) {
-		if (buf_it->second.mapped) {
-			if (context.getDeviceAddressSpace()) {
-				assert(0 && "unimplemented");
-			}
-			else {
-			}
-			thread.registeredGLbuffers.erase(buf_it);
-		}
-	}
-	else {
-		result = cudaErrorMapBufferObjectFailed;
+	GLBufferMap::iterator buffer = _buffers.find(bufObj);
+	if (buffer != _buffers.end()) {
+		_getDevice().unRegisterGraphicsResource(buffer->second);	
+		_buffers.erase(buffer);
+		result = cudaSuccess;
 	}
 	
-	unlock();
+	_release();
 	
-	TestError(result);
-	return setLastError(result);
+	return _setLastError(result);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, bool persistent, 
-	bool safe ) {
+cudaError_t cuda::CudaRuntime::cudaGraphicsGLRegisterBuffer(
+	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsGLRegisterBuffer");
+	
+	*resource = (struct cudaGraphicsResource*)_getDevice().glRegisterBuffer(
+		buffer, flags);
 
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+	_release();
+	
+	return _setLastError(result);	
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsGLRegisterImage(
+	struct cudaGraphicsResource **resource, GLuint image, int target, 
+	unsigned int flags) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsGLRegisterImage");
+	
+	*resource = (struct cudaGraphicsResource*)_getDevice().glRegisterImage(
+		image, target, flags);
+
+	_release();
+	
+	return _setLastError(result);	
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsUnregisterResource(
+	struct cudaGraphicsResource *resource) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsUnregisterResource");
+	
+	_getDevice().unRegisterGraphicsResource(resource);	
+
+	_release();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsResourceSetMapFlags(
+	struct cudaGraphicsResource *resource, unsigned int flags) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsResourceSetMapFlags");
+	
+	_getDevice().setGraphicsResourceFlags(resource, flags);	
+
+	_release();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsMapResources(int count, 
+	struct cudaGraphicsResource **resource, cudaStream_t stream) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("mapGraphicsResource");
+	
+	_getDevice().mapGraphicsResource(resource, count, stream);	
+
+	_release();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsUnmapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsUnmapResources");
+	
+	_getDevice().mapGraphicsResource(resources, count, stream);	
+
+	_release();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsResourceGetMappedPointer(
+	void **devPtr, size_t *size, struct cudaGraphicsResource *resource) {
+	cudaError_t result = cudaSuccess;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	report("cudaGraphicsResourceGetMappedPointer");
+	
+	*devPtr = _getDevice().getPointerToMappedGraphicsResource(*size, resource);	
+
+	_release();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
+	struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
+	unsigned int arrayIndex, unsigned int mipLevel) {
+	assertM(false, "Not implemented.");
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, 
+	bool persistent ) {
+
+	_lock();
+	HostThreadContext& thread = _getCurrentThread();
 	if (persistent) {
 		thread.persistentTraceGenerators.push_back(&gen);
 	}
 	else {
 		thread.nextTraceGenerators.push_back(&gen);
 	}
-	unlock();
+	_unlock();
 }
 
-void cuda::CudaRuntime::clearTraceGenerators(bool safe) {
-	lock();
-	HostThreadContext & thread = getHostThreadContext();
+void cuda::CudaRuntime::clearTraceGenerators() {
+	_lock();
+	HostThreadContext& thread = _getCurrentThread();
 	thread.persistentTraceGenerators.clear();
 	thread.nextTraceGenerators.clear();
-	unlock();
+	_unlock();
 }
 
 void cuda::CudaRuntime::limitWorkerThreads(unsigned int limit) {
-	lock();
-	getHostThreadContext();
-	context.setWorkerThreadLimit((int)limit);
-	unlock();
+	_acquire();
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->limitWorkerThreads(limit);
+	}
+	_release();
 }
 
-void cuda::CudaRuntime::registerPTXModule(std::istream& ptx, const std::string& name) {
-	lock();
-	getHostThreadContext();
-	context.loadModule(name, false, ptx);
-	executive::StringVector kernelNames = context.enumerateKernels(name);
+void cuda::CudaRuntime::registerPTXModule(std::istream& ptx, 
+	const std::string& name) {
+	_lock();
+	report("Loading module (ptx) - " << name);
+	assert(_modules.count(name) == 0);
 	
-	FatBinaryContext cubinContext;
-	cubinContext.cubin_ptr = 0;
-	fatBinaries.push_back(cubinContext);
-	size_t handle = fatBinaries.size();
-
-	for (executive::StringVector::iterator kernel = kernelNames.begin(); 
-		kernel != kernelNames.end(); ++kernel) {
-		void* symbol = (void*)nextSymbol++;
-		assert(kernels.count(symbol) == 0);
-		
-		globalSymbolMap[symbol] = *kernel;
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(name, ir::Module())).first;
+	module->second.load(ptx, name);
+	module->second.createDataStructures();
 	
-		RegisteredKernel registeredKernel;
-		registeredKernel.handle = handle;
-		registeredKernel.module = name;
-		registeredKernel.kernel = *kernel;
-		registeredKernel.pointer = symbol;
-	
-		kernels[symbol] = registeredKernel;
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->select();
+		(*device)->load(&module->second);
+		(*device)->unselect();
 	}
 	
-	unlock();
+	_unlock();
 }
 
-void** cuda::CudaRuntime::getFatBinaryHandle(const std::string& name) {
-	for (RegisteredKernelMap::iterator kernel = kernels.begin(); 
-		kernel != kernels.end(); ++kernel) {
-		if (kernel->second.module == name) {
-			return (void**)kernel->second.handle;
-		}
-	}
-	
-	for (FatBinaryVector::iterator bin = fatBinaries.begin(); bin != fatBinaries.end(); ++bin) {
-		if (bin->name() == name) {
-			return (void**) std::distance(fatBinaries.begin(), bin);
-		}
-	}
-	Ocelot_Exception("FatBinary " << name << " not registered.");
-}
-
-ocelot::KernelPointer 
-	cuda::CudaRuntime::getKernelPointer(const std::string& name, 
-	const std::string& module) {
-	ocelot::KernelPointer symbol = 0;
-	lock();
-	for (RegisteredKernelMap::iterator kernel = kernels.begin(); 
-		kernel != kernels.end(); ++kernel) {
-		if (kernel->second.kernel == name && kernel->second.module == module) {
-			symbol = (const char*)kernel->second.pointer;
-			break;
-		}	
-	}
-	if (symbol == 0) {
-		unlock();
-		Ocelot_Exception("Kernel " << name 
-			<< " not registered in module " << module);
-	}
-	unlock();
-	return symbol;
+void cuda::CudaRuntime::clearErrors() {
+	_lock();
+	HostThreadContext& thread = _getCurrentThread();
+	thread.lastError = cudaSuccess;
+	_unlock();
 }
 
 void cuda::CudaRuntime::reset() {
-	lock();
+	_lock();
+	report("Resetting cuda runtime.");
+	HostThreadContext& thread = _getCurrentThread();
+	thread.clear();	
+	_dimensions.clear();
 	
-	for (HostThreadContextMap::iterator thread = threads.begin(); 
-		thread != threads.end(); ++thread) {
-		thread->second.clear();
+	for(DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device)
+	{
+		report(" Clearing memory on device - " << (*device)->properties().name);
+		(*device)->clearMemory();
 	}
-	context.clear();
-	kernels.clear();
-	textures.clear();
-	textureReferences.clear();
-	globalSymbolMap.clear();
-	fatBinaries.clear();
+	
+	for(ModuleMap::iterator module = _modules.begin(); module != _modules.end();
+		module != _modules.end())
+	{
+		bool found = false;
+		report(" Unloading module - " << module->first);
+		for(FatBinaryVector::iterator bin = _fatBinaries.begin(); 
+			bin != _fatBinaries.end(); ++bin)
+		{
+			if(bin->name() == module->first)
+			{
+				found = true;
+				break;
+			}
+		}
 		
-	unlock();
+		if(!found)
+		{
+			for(DeviceVector::iterator device = _devices.begin(); 
+				device != _devices.end(); ++device)
+			{
+				(*device)->select();
+				(*device)->unload(module->first);
+				(*device)->unselect();
+			}
+			
+			_modules.erase(module++);
+		}
+		else
+		{
+			++module;
+		}
+	}
+	_unlock();
 }
 
-ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destination, 
-	unsigned int source) {
-	lock();
-	ocelot::PointerMap map;
-	try {
-		map = std::move(context.contextSwitch(destination, source));
+ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId, 
+	unsigned int sourceId) {
+	report("Context switching from " << sourceId << " to " << destinationId);
+	
+	if(!_devicesLoaded) return ocelot::PointerMap();
+	
+	ocelot::PointerMap mappings;
+
+	_acquire();
+	
+	if(sourceId >= _devices.size())
+	{
+		_release();
+		Ocelot_Exception("Invalid source device - " << sourceId);
 	}
-	catch(...) {
-		unlock();
-		throw;
+	
+	if(destinationId >= _devices.size())
+	{
+		_release();
+		Ocelot_Exception("Invalid destination device - " << destinationId);
 	}
-	unlock();
-	return std::move(map);
+	
+	executive::Device& source = *_devices[sourceId];
+	executive::Device& destination = *_devices[destinationId];
+	
+	_unbind();
+	
+	source.select();
+	executive::Device::MemoryAllocationVector sourceAllocations = 
+		source.getAllAllocations();
+	source.unselect();
+		
+	for(executive::Device::MemoryAllocationVector::iterator 
+		allocation = sourceAllocations.begin();
+		allocation != sourceAllocations.end(); ++allocation)
+	{
+		size_t size = (*allocation)->size();
+		void* pointer = (*allocation)->pointer();
+		
+		if(!(*allocation)->global())
+		{
+			char* temp = new char[size];
+			source.select();
+			(*allocation)->copy(temp, 0, size);
+			source.free(pointer);
+			source.unselect();
+
+			destination.select();
+			executive::Device::MemoryAllocation* dest = destination.allocate(
+				size);
+			dest->copy(0, temp, size);
+			destination.unselect();
+			
+			report(" Mapping device allocation at " << pointer 
+				<< " to " << dest->pointer());
+			mappings.insert(std::make_pair(pointer,	dest->pointer()));
+			delete[] temp;
+		}
+		else if((*allocation)->host())
+		{
+			destination.select();
+			executive::Device::MemoryAllocation* dest = 
+				destination.allocateHost(size, (*allocation)->flags());
+			dest->copy(0, pointer, size);
+			destination.unselect();
+
+			mappings.insert(std::make_pair(pointer, dest->pointer()));
+			
+			source.select();
+			source.free(pointer);
+			source.unselect();
+		}
+	}
+
+	for(ModuleMap::iterator module = _modules.begin(); 
+		module != _modules.end(); ++module)
+	{
+		for(ir::Module::GlobalMap::iterator 
+			global = module->second.globals.begin();
+			global != module->second.globals.end(); ++global)
+		{
+			source.select();
+			executive::Device::MemoryAllocation* sourceGlobal = 
+				source.getGlobalAllocation(module->first, global->first);
+			assert(sourceGlobal != 0);
+			source.unselect();
+
+			destination.select();
+			executive::Device::MemoryAllocation* destinationGlobal = 
+				destination.getGlobalAllocation(module->first, global->first);
+			assert(destinationGlobal != 0);
+			destination.unselect();
+			
+			char* temp = new char[sourceGlobal->size()];
+			source.select();
+			sourceGlobal->copy(temp, 0, sourceGlobal->size());
+			source.unselect();
+
+			destination.select();
+			destinationGlobal->copy(0, temp, destinationGlobal->size());
+			destination.unselect();
+			delete[] temp;
+		}
+	}
+		
+	_unlock();
+	
+	return mappings;	
+}
+
+void cuda::CudaRuntime::unregisterModule(const std::string& name) {
+	_lock();
+	ModuleMap::iterator module = _modules.find(name);
+	if (module == _modules.end()) {
+		_unlock();
+		Ocelot_Exception("Module - " << name << " - is not registered.");
+	}
+	
+	_modules.erase(module);
+	
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->unload(name);
+	}
+	
+	_unlock();
+}
+
+void cuda::CudaRuntime::launch(const std::string& moduleName, 
+	const std::string& kernelName) {
+	_launchKernel(moduleName, kernelName);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -9,7 +9,6 @@
 
 #include <hydrazine/implementation/debug.h>
 
-#include <iomanip>
 #include <unordered_set>
 #include <stack>
 #include <queue>
@@ -22,68 +21,6 @@
 #define REPORT_BASE 0
 
 namespace ir {
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-ControlFlowGraph::BasicBlock::DotFormatter::DotFormatter() { }
-ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
-
-std::string ControlFlowGraph::make_label_dot_friendly( 
-	const std::string& string ) {
-	
-	std::string result;
-	for(std::string::const_iterator fi = string.begin(); 
-		fi != string.end(); ++fi) {
-		
-		if( *fi == '{' ) {
-			result.push_back('[');
-		}
-		else if( *fi == '}' ) {
-			result.push_back(']');
-		}
-		else {
-			result.push_back(*fi);
-		}	
-	}
-	return result;
-}
-
-std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(const std::string &str) {
-	return ControlFlowGraph::make_label_dot_friendly(str);
-}
-
-std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const BasicBlock *block) {
-	std::stringstream out;
-
-	out << "[shape=record,";
-	out << "label=";
-	out << "\"{" << make_label_dot_friendly(block->label);
-
-	BasicBlock::InstructionList::const_iterator instrs 
-		= block->instructions.begin();	
-	for (; instrs != block->instructions.end(); ++instrs) {
-		out << " | " << make_label_dot_friendly((*instrs)->toString());
-	}
-	out << "}\"]";
-
-	return out.str();
-}
-
-std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const Edge *edge) {
-	std::stringstream out;
-
-	if (edge->type == Edge::Dummy) {
-		out << "[style=dotted]";
-	}
-	else if (edge->type == Edge::Branch) {
-		out << "[color=blue]";
-	}
-
-	return out.str();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
@@ -175,8 +112,6 @@ ControlFlowGraph::EdgePointerVector::iterator
 	}
 	return out_edges.end();
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::ControlFlowGraph(): 
 	_entry(_blocks.insert(end(), BasicBlock("entry"))),
@@ -318,16 +253,7 @@ ControlFlowGraph::const_iterator ControlFlowGraph::get_exit_block() const {
 	return _exit;
 }
 
-std::ostream& ControlFlowGraph::write(std::ostream &out) const { 
-//	ControlFlowGraph::BasicBlockColorMap blockColors;
-	BasicBlock::DotFormatter defaultFormatter;
-	
-	return write(out, defaultFormatter);
-}
-
-std::ostream& ControlFlowGraph::write(std::ostream &out, 
-	ControlFlowGraph::BasicBlock::DotFormatter & blockFormatter) const {
-
+std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 	using namespace std;
 
 	BlockMap blockIndices;
@@ -349,9 +275,16 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 		if (block == _entry || block == _exit) continue;
 
 		blockIndices[block] = n;
+	
+		out << "  bb_" << n << " [shape=record,label=";
+		out << "\"{" << make_label_dot_friendly(block->label);
 
-		const BasicBlock *blockPtr = &*block;
-		out << "  bb_" << n << " " << blockFormatter.toString(blockPtr) << ";\n";
+		BasicBlock::InstructionList::const_iterator instrs 
+			= block->instructions.begin();	
+		for (; instrs != block->instructions.end(); ++instrs) {
+			out << " | " << make_label_dot_friendly((*instrs)->toString());
+		}
+		out << "}\"];\n";
 	}
 
 	out << "\n\n  // edges\n\n";
@@ -359,11 +292,14 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	// emit edges
 	for (const_edge_iterator edge = edges_begin(); 
 		edge != edges_end(); ++edge) {
-		const Edge *edgePtr = &*edge;
-
 		out << "  " << "bb_" << blockIndices[edge->head] << " -> "
 			<< "bb_" << blockIndices[edge->tail];
-		out << " " << blockFormatter.toString(edgePtr);
+		if (edge->type == Edge::Dummy) {
+			out << " [style=dotted]";
+		}
+		else if (edge->type == Edge::Branch) {
+			out << " [color=blue]";
+		}
 	
 		out << ";\n";
 	}
@@ -371,6 +307,26 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	out << "}\n";
 
 	return out;
+}
+
+std::string ControlFlowGraph::make_label_dot_friendly( 
+	const std::string& string ) {
+	
+	std::string result;
+	for(std::string::const_iterator fi = string.begin(); 
+		fi != string.end(); ++fi) {
+		
+		if( *fi == '{' ) {
+			result.push_back('[');
+		}
+		else if( *fi == '}' ) {
+			result.push_back(']');
+		}
+		else {
+			result.push_back(*fi);
+		}	
+	}
+	return result;
 }
 
 std::string ControlFlowGraph::toString( Edge::Type t ) {

@@ -106,9 +106,10 @@ namespace trace {
 		~SharedComputationGenerator();
 
 		/*!
-			called when a traced kernel is launched to retrieve some parameters from the kernel
+			called when a traced kernel is launched to retrieve 
+				some parameters from the kernel
 		*/
-		void initialize(const ir::ExecutableKernel& kernel);
+		void initialize(const executive::ExecutableKernel& kernel);
 
 		/*!
 			Called whenever an event takes place.
@@ -140,7 +141,7 @@ namespace trace {
 			std::set< ir::PTXU32 > maskedStSet;
 			
 	private:
-			void selectMaskedStSet(const ir::ExecutableKernel& kernel);
+			void selectMaskedStSet(const executive::ExecutableKernel& kernel);
 	};
 }
 

@@ -9,8 +9,6 @@
 
 #include <deque>
 #include <map>
-#include <string>
-#include <set>
 
 #include <ocelot/ir/interface/Local.h>
 #include <ocelot/ir/interface/Parameter.h>
@@ -97,8 +95,6 @@ namespace ir {
 	
 	};
 
-
-	typedef std::set< std::string > StringSet;
 }
 
 std::ostream& operator<<(std::ostream& s, const ir::Kernel& k);

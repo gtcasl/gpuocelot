@@ -18,7 +18,6 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/Global.h>
-#include <ocelot/cuda/include/cuda.h>
 
 namespace executive { class Executive; }
 
@@ -29,26 +28,14 @@ namespace ir {
 		/*!	\brief Map from texture variable names to objects */
 		typedef std::map< std::string, Texture > TextureMap;
 
-		/*! \brief set of names */
-		typedef std::set< std::string > NameSet;
-	
 		/*! \brief Typedef for a vector of PTXStatements */
 		typedef std::vector< PTXStatement > StatementVector;
 
 		typedef std::map< std::string, Kernel * > KernelMap;
 
-		typedef std::map< Instruction::Architecture, KernelMap > KernelArchitectureMap;
-
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::map< std::string, Global > GlobalMap;
-		
-		enum CUModuleState {
-			Unloaded,
-			Loaded,
-			Dirty,
-			Invalid
-		};
-		
+				
 	public:
 
 		/*! Given a path to a PTX source file, construct the Module, 
@@ -60,7 +47,8 @@ namespace ir {
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(std::istream& source, const std::string& path = "::unknown path::");
+		Module(std::istream& source, 
+			const std::string& path = "::unknown path::");
 
 		/*! Construct a Module from a name and a vector of PTXStatements */
 		Module(std::string, const StatementVector &);
@@ -77,6 +65,9 @@ namespace ir {
 		/*! \brief Write the module to an assembly file from the IR */
 		void writeIR( std::ostream& stream ) const;
 
+		/*! \brief Creates IR data structures for PTX kernels */
+		void createDataStructures();
+
 		/*!	Deletes everything associated with this particular module */
 		void unload();
 
@@ -84,66 +75,41 @@ namespace ir {
 		bool load(std::string path);
 
 		/*!	Unloads module and loads PTX source file in given stream */
-		bool load(std::istream& source, const std::string& path = "::unknown path::");
+		bool load(std::istream& source, 
+			const std::string& path = "::unknown path::");
 
 		/*!
-			Gets a kernel instance by ISA and name. Returned kernel 
-			is guaranteed to have ISA requested.
+			Gets a kernel instance by name. 
 
-			\param isa instruction set architecture of desired kernel
 			\param kernelName [mangled] name of kernel
 
-			\return pointer to kernel instance with (isa, name) 
+			\return pointer to kernel instance with (name) 
 				or 0 if kernel does not exist
 		*/
-		Kernel *getKernel(Instruction::Architecture isa, 
-			std::string kernelName);
-
-		Module::KernelMap::iterator begin(Instruction::Architecture isa) {
-			return kernels[isa].begin();
-		}
-
-		Module::KernelMap::iterator end(Instruction::Architecture isa) {
-			return kernels[isa].end();
-		}
+		Kernel *getKernel(std::string kernelName);
 		
 	protected:
 		/*! After a successful parse; constructs all kernels for PTX isa. */
 		void extractPTXKernels();
 
 	public:
-		/*!
-			Set of PTX statements loaded from PTX source file. This must not 
+		/*! Set of PTX statements loaded from PTX source file. This must not 
 			change after parsing, as all kernels have const_iterators into 
 			this vector.
 		*/
 		StatementVector statements;
 
-		/*! Set of kernels belonging to Module */
-		KernelArchitectureMap kernels;	
+		/*! Set of kernels belonging to Module.  These are PTX Kernels */
+		KernelMap kernels;	
 		
 		/*! Set of textures in the module */
 		TextureMap textures;
 
-		/*! Set of all texture names in the module */
-		NameSet textureNames;
-
 		/*! Set of global variables in the modules */
 		GlobalMap globals;
 
-		/*! Set of all global names in the module */
-		NameSet globalNames;
-		
 		/*! Path from which Module was loaded */
 		std::string modulePath;
-	
-		/*! CUDA Module owning this kernel, others, and globals - 
-			this value is shared among other GPUExecutableKernels of this module
-		*/
-		CUmodule cuModule;
-
-		/*! state of cuModule */
-		CUModuleState cuModuleState;
 		
 		friend class executive::Executive;
 	};

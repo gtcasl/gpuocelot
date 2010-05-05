@@ -1,14 +1,11 @@
-/*! \file GPUExecutableKernel.cpp
+/*! \file NVIDIAExecutableKernel.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date October 6, 2009
 	\brief implements the GPU kernel callable by the executive
 */
 
-// Ocelot includes
-#include <ocelot/executive/interface/GPUExecutableKernel.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
 
-// Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
@@ -25,25 +22,26 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::GPUExecutableKernel::GPUExecutableKernel(): ptxKernel(0) {
-	this->ISA = ir::Instruction::GPU;
+executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(): ptxKernel(0) {
+	this->ISA = ir::Instruction::SASS;
 }
 
-executive::GPUExecutableKernel::~GPUExecutableKernel() {
+executive::NVIDIAExecutableKernel::~NVIDIAExecutableKernel() {
 	if (ptxKernel) {
 		delete ptxKernel;
 	}
 }
 
 /*!
-	Construct a GPUExecutableKernel from an existing kernel
+	Construct a NVIDIAExecutableKernel from an existing kernel
 */
-executive::GPUExecutableKernel::GPUExecutableKernel(
-	ir::Kernel& kernel, const CUfunction& function, const executive::Executive* c ): 
-		ExecutableKernel(kernel, c), ptxKernel(0), cuFunction(function) {
+executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
+	ir::Kernel& kernel, const CUfunction& function, 
+	executive::Device* d ): ExecutableKernel(kernel, d), ptxKernel(0), 
+	cuFunction(function) {
 	
-	report("GPUExecutableKernel()");
-	this->ISA = ir::Instruction::GPU;
+	report("NVIDIAExecutableKernel()");
+	this->ISA = ir::Instruction::SASS;
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
 	_parameterMemorySize = mapParameterOffsets();
@@ -61,14 +59,14 @@ executive::GPUExecutableKernel::GPUExecutableKernel(
 		CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, cuFunction);
 	report(" Shared Memory - " << _sharedMemorySize);
 
-	report("  constructed new GPUExecutableKernel");
+	report("  constructed new NVIDIAExecutableKernel");
 }
 
 /*!
 	Launch a kernel on a 2D grid
 */
-void executive::GPUExecutableKernel::launchGrid(int width, int height) {
-	report("executive::GPUExecutableKernel::launchGrid(" << width 
+void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
+	report("executive::NVIDIAExecutableKernel::launchGrid(" << width 
 		<< ", " << height << ")");
 	CUresult result;
 
@@ -77,33 +75,24 @@ void executive::GPUExecutableKernel::launchGrid(int width, int height) {
 		report("  - cuLaunchGrid() failed: " << result);
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
 	}
-	// KERRDEBUG remove this before check in
-	{
-		result = cuda::CudaDriver::cuCtxSynchronize();
-		if (result != CUDA_SUCCESS) {
-			report ("  -cuLaunchGrid() failed on ctx synchronize(): " << result);
-			throw hydrazine::Exception("cuCtxSynchronize() failed after launchGrid() was called");
-		}
-		report("  -cuLaunchGrid() succeeded");
-	}
 }
 
 /*!
 	Sets the shape of a kernel
 */
-void executive::GPUExecutableKernel::setKernelShape(int x, int y, int z) {
+void executive::NVIDIAExecutableKernel::setKernelShape(int x, int y, int z) {
 	CUresult result = cuda::CudaDriver::cuFuncSetBlockShape(cuFunction, x, y, z);
 	if (result != CUDA_SUCCESS) {
 		report("failed to set kernel shape with result " << result);
-		throw hydrazine::Exception("GPUExecutableKernel::setKernelShape() failed");
+		throw hydrazine::Exception("NVIDIAExecutableKernel::setKernelShape() failed");
 	}
 }
 
-void executive::GPUExecutableKernel::setDevice(const Device* device,
+void executive::NVIDIAExecutableKernel::setDevice(const Device* device,
 	unsigned int limit) {
 }
 
-void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int bytes) {
+void executive::NVIDIAExecutableKernel::setExternSharedMemorySize(unsigned int bytes) {
 	_sharedMemorySize = bytes;
 	CUresult result;
 	result = cuda::CudaDriver::cuFuncSetSharedSize(cuFunction, bytes);
@@ -116,63 +105,59 @@ void executive::GPUExecutableKernel::setExternSharedMemorySize(unsigned int byte
 	}
 }
 
-void executive::GPUExecutableKernel::updateParameterMemory() {
+void executive::NVIDIAExecutableKernel::updateParameterMemory() {
 	configureParameters();
 }
 
-void executive::GPUExecutableKernel::updateMemory() {
+void executive::NVIDIAExecutableKernel::updateMemory() {
 	updateGlobalMemory();
 	updateConstantMemory();
 }
-		
-/*! \brief Get a vector of all textures references by the kernel */
-ir::StringSet executive::GPUExecutableKernel::textureReferences() const {
-	return ptxKernel->getReferencedTextures();
+
+executive::ExecutableKernel::TextureVector 
+	executive::NVIDIAExecutableKernel::textureReferences() const {
+	assertM(false, "no support for getting texture references");
 }
 
-/*!  \brief get a set of all identifiers used as addresses by the kernel */
-ir::StringSet executive::GPUExecutableKernel::addressReferences() const {
-	return ptxKernel->getReferencedAddressLabels();
-}
-
-void executive::GPUExecutableKernel::updateGlobalMemory() {
+void executive::NVIDIAExecutableKernel::updateGlobalMemory() {
 
 }
 
-void executive::GPUExecutableKernel::updateConstantMemory() {
+void executive::NVIDIAExecutableKernel::updateConstantMemory() {
 
 }
 
-void executive::GPUExecutableKernel::addTraceGenerator(
+void executive::NVIDIAExecutableKernel::addTraceGenerator(
 	trace::TraceGenerator *generator)
 {
 	assertM(false, "No trace generation support in GPU kernel.");
 }
 
-void executive::GPUExecutableKernel::removeTraceGenerator(
+void executive::NVIDIAExecutableKernel::removeTraceGenerator(
 	trace::TraceGenerator *generator)
 {
 	assertM(false, "No trace generation support in GPU kernel.");	
 }
 
+void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 
-void executive::GPUExecutableKernel::configureParameters() {
-	report("executive::GPUExecutableKernel::configureParameters() - size: " << _parameterMemorySize);
+}
+
+void executive::NVIDIAExecutableKernel::configureParameters() {
+	report("executive::NVIDIAExecutableKernel::configureParameters() - size: " << _parameterMemorySize);
 
 	char *paramBuffer = new char[_parameterMemorySize];
 	getParameterBlock((unsigned char*)paramBuffer, _parameterMemorySize);
 
 	if (cuda::CudaDriver::cuParamSetSize(cuFunction, _parameterMemorySize) != CUDA_SUCCESS) {
 		delete [] paramBuffer;
-		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter size to " 
+		Ocelot_Exception("NVIDIAExecutableKernel::configureParameters() - failed to set parameter size to " 
 			<< _parameterMemorySize);
 	}
 	if (cuda::CudaDriver::cuParamSetv(cuFunction, 0, paramBuffer, _parameterMemorySize) != CUDA_SUCCESS) {
 		delete [] paramBuffer;
-		Ocelot_Exception("GPUExecutableKernel::configureParameters() - failed to set parameter data");
+		Ocelot_Exception("NVIDIAExecutableKernel::configureParameters() - failed to set parameter data");
 	}
-
-	delete [] paramBuffer;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

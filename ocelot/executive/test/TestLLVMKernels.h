@@ -10,7 +10,7 @@
 
 #include <hydrazine/interface/Test.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/ir/interface/Module.h>
 
 namespace test
 {
@@ -29,7 +29,7 @@ namespace test
 			executive::LLVMExecutableKernel* _loopingKernel;
 			executive::LLVMExecutableKernel* _barrierKernel;
 			executive::LLVMExecutableKernel* _matrixMultiplyKernel;
-			executive::Executive _context;		
+			ir::Module _module;		
 
 		private:
 			bool _loadKernels();
@@ -43,6 +43,7 @@ namespace test
 		
 		public:
 			TestLLVMKernels();
+			~TestLLVMKernels();
 			
 		public:
 			std::string kernelFile;

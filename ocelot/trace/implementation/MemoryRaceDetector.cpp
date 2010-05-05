@@ -11,7 +11,7 @@
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/executive/interface/Device.h>
 
 // hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -117,7 +117,8 @@ namespace trace
 	
 	}
 	
-	void MemoryRaceDetector::initialize( const ir::ExecutableKernel& kernel )
+	void MemoryRaceDetector::initialize( 
+		const executive::ExecutableKernel& kernel )
 	{
 		_dim = kernel.blockDim();
 

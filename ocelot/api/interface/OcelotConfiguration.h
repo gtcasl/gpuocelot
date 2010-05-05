@@ -45,21 +45,6 @@ namespace api {
 		//! Configuration for trace generation facilities
 		class TraceGeneration {
 		public:
-
-			//! \brief configuration for the warp synchronous trace generator
-			class WarpSynchronous {
-			public:
-				WarpSynchronous();
-
-			public:
-				//! \brief whether trace generator is enabled
-				bool enabled;
-				
-				//! \brief emits dot file visualizing hot paths
-				bool emitHotPaths;
-			};
-
-		public:
 			TraceGeneration();
 
 		public:
@@ -96,9 +81,6 @@ namespace api {
 			
 			//! \brief Race detection
 			bool raceDetector;
-
-			//! \brief warp synchronous control flow configuration
-			WarpSynchronous warpSynchronous;
 		};
 
 		class CudaRuntimeImplementation {
@@ -143,7 +125,10 @@ namespace api {
 			bool enableEmulated;
 
 			//! \brief filter enabling CUDA GPU devices if present
-			bool enableGPU;
+			bool enableNVIDIA;
+			
+			//! \brief filter enabling AMD GPU devices if present
+			bool enableAMD;
 
 			//! \brief maximum number of worker threads - a non-positive number indicates no limit
 			int workerThreadLimit;

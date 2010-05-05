@@ -14,7 +14,7 @@
 
 namespace executive
 {
-	class Executive;
+	class Device;
 	class EmulatedKernel;
 }
 
@@ -41,9 +41,6 @@ namespace trace
 			/*! \brief The block dimensions */
 			ir::Dim3 _dim;
 		
-			/*! \brief The currently selected device */
-			int _device;
-		
 			/*! \brief The last allocation referenced */
 			Allocation _cache;
 			
@@ -60,7 +57,7 @@ namespace trace
 			Allocation _constant;
 			
 			/*! \brief A pointer to the executive class */
-			const executive::Executive* _context;
+			const executive::Device* _device;
 		
 			/*! \brief A pointer to the executable kernel */
 			const executive::EmulatedKernel* _kernel;
@@ -81,7 +78,7 @@ namespace trace
 			MemoryChecker();
 			
 			/*! \brief Set the cache and get a pointer to the memory mappings */
-			virtual void initialize(const ir::ExecutableKernel& kernel);
+			virtual void initialize(const executive::ExecutableKernel& kernel);
 
 			/*! \brief Called whenever an event takes place.
 

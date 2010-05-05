@@ -17,9 +17,10 @@ namespace ir {
 	public:
 		enum Architecture {
 			PTX,						// ir/interface/Kernel
-			Emulated,					// ir/interface/Emulated
-			GPU, 						// ir/interface/GpuKernel
-			LLVM,
+			Emulated,					// PTX Emulator
+			SASS, 						// NVIDIA GPU
+			LLVM,						// LLVM to x86
+			CAL,						// AMD Cal
 			x86,
 			x86_64,
 			SPU,

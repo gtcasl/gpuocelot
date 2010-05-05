@@ -145,17 +145,9 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 	switch( destination ) {
 		case b64: {
 			switch( source ) {
-				case s8: /* fall through */
-				case s16: /* fall through */
-				case s32: /* fall through */
 				case s64: /* fall through */
-				case u8: /* fall through */
-				case u16: /* fall through */
-				case u32: /* fall through */
 				case u64: /* fall through */
-				case b8: /* fall through */
-				case b16: /* fall through */
-				case b32: /* fall through */
+				case f64: /* fall through */
 				case b64: return true; break;
 				default: break;
 			}
@@ -163,14 +155,9 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case b32: {
 			switch( source ) {
-				case s8: /* fall through */
-				case s16: /* fall through */
 				case s32: /* fall through */
-				case u8: /* fall through */
-				case u16: /* fall through */
 				case u32: /* fall through */
-				case b8: /* fall through */
-				case b16: /* fall through */
+				case f32: /* fall through */
 				case b32: return true; break;
 				default: break;
 			}
@@ -178,11 +165,9 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case b16: {
 			switch( source ) {
-				case s8: /* fall through */
 				case s16: /* fall through */
-				case u8: /* fall through */
 				case u16: /* fall through */
-				case b8: /* fall through */
+				case f16: /* fall through */
 				case b16: return true; break;
 				default: break;
 			}
@@ -199,13 +184,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case u64: {
 			switch( source ) {
-				case u8: /* fall through */
-				case u16: /* fall through */
-				case u32: /* fall through */
+				case s64: /* fall through */
 				case u64: /* fall through */
-				case b8: /* fall through */
-				case b16: /* fall through */
-				case b32: /* fall through */
 				case b64: return true; break;
 				default: break;
 			}
@@ -213,14 +193,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case u32: {
 			switch( source ) {
-				case s8: /* fall through */
-				case s16: /* fall through */
 				case s32: /* fall through */
-				case u8: /* fall through */
-				case u16: /* fall through */
 				case u32: /* fall through */
-				case b8: /* fall through */
-				case b16: /* fall through */
 				case b32: return true; break;
 				default: break;
 			}
@@ -228,9 +202,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case u16: {
 			switch( source ) {
-				case u8: /* fall through */
+				case s16: /* fall through */
 				case u16: /* fall through */
-				case b8: /* fall through */
 				case b16: return true; break;
 				default: break;
 			}
@@ -238,8 +211,7 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case u8: {
 			switch( source ) {
-				case u16: /* fall through */
-				case b16: /* fall through */
+				case s8: /* fall through */
 				case u8: /* fall through */
 				case b8: return true; break;
 				default: break;
@@ -248,17 +220,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case s64: {
 			switch( source ) {
-				case s8: /* fall through */
-				case s16: /* fall through */
-				case s32: /* fall through */
 				case s64: /* fall through */
-				case u8: /* fall through */
-				case u16: /* fall through */
-				case u32: /* fall through */
 				case u64: /* fall through */
-				case b8: /* fall through */
-				case b16: /* fall through */
-				case b32: /* fall through */
 				case b64: return true; break;
 				default: break;
 			}
@@ -266,14 +229,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case s32: {
 			switch( source ) {
-				case s8: /* fall through */
-				case s16: /* fall through */
 				case s32: /* fall through */
-				case u8: /* fall through */
-				case u16: /* fall through */
 				case u32: /* fall through */
-				case b8: /* fall through */
-				case b16: /* fall through */
 				case b32: return true; break;
 				default: break;
 			}
@@ -281,11 +238,8 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case s16: {
 			switch( source ) {
-				case s8: /* fall through */
 				case s16: /* fall through */
-				case u8: /* fall through */
 				case u16: /* fall through */
-				case b8: /* fall through */
 				case b16: return true; break;
 				default: break;
 			}
@@ -293,9 +247,6 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case s8: {
 			switch( source ) {
-				case u16: /* fall through */
-				case s16: /* fall through */
-				case b16: /* fall through */
 				case s8: /* fall through */
 				case u8: /* fall through */
 				case b8: return true; break;
@@ -305,8 +256,7 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case f64: {
 			switch( source ) {
-				case f16: /* fall through */
-				case f32: /* fall through */
+				case b64: /* fall through */
 				case f64: return true; break;
 				default: break;
 			}
@@ -314,7 +264,7 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case f32: {
 			switch( source ) {
-				case f16: /* fall through */
+				case b32: /* fall through */
 				case f32: return true; break;
 				default: break;
 			}
@@ -322,6 +272,7 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 		}
 		case f16: {
 			switch( source ) {
+				case b16: /* fall through */
 				case f16: return true; break;
 				default: break;
 			}

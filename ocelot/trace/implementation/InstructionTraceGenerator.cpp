@@ -9,7 +9,7 @@
 #include <fstream>
 
 // Ocelot includes
-#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/trace/interface/TraceEvent.h>
@@ -314,7 +314,8 @@ trace::InstructionTraceGenerator::~InstructionTraceGenerator() {
 	\brief called when a traced kernel is launched to retrieve some 
 		parameters from the kernel
 */
-void trace::InstructionTraceGenerator::initialize(const ir::ExecutableKernel& kernel) {
+void trace::InstructionTraceGenerator::initialize(
+	const executive::ExecutableKernel& kernel) {
 	//
 	// initialize kernel entry
 	//

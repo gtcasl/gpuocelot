@@ -70,11 +70,11 @@ cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntimeInterface::addTraceGenerator( trace::TraceGenerator& gen, 
-	bool persistent, bool safe ) {
+	bool persistent ) {
 	assert(0 && "unimplemented");
 }
 			
-void cuda::CudaRuntimeInterface::clearTraceGenerators( bool safe ) {
+void cuda::CudaRuntimeInterface::clearTraceGenerators() {
 	assert(0 && "unimplemented");
 }
 
@@ -82,17 +82,8 @@ void cuda::CudaRuntimeInterface::limitWorkerThreads( unsigned int limit ) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, const std::string& name) {
-	assert(0 && "unimplemented");
-}
-
-ocelot::KernelPointer cuda::CudaRuntimeInterface::getKernelPointer(
-	const std::string& name, const std::string& module) {
-	assert(0 && "unimplemented");
-	return 0;
-}
-
-void** cuda::CudaRuntimeInterface::getFatBinaryHandle(const std::string& name) {
+void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream, 
+	const std::string& name) {
 	assert(0 && "unimplemented");
 }
 
@@ -110,6 +101,11 @@ ocelot::PointerMap cuda::CudaRuntimeInterface::contextSwitch(
 }
 
 void cuda::CudaRuntimeInterface::unregisterModule( const std::string& name ) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::launch(const std::string& moduleName, const 
+	std::string& kernelName) {
 	assert(0 && "unimplemented");
 }
 
@@ -606,16 +602,67 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGLUnmapBufferObject(GLuint bufObj) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLUnmapBufferObjectAsync(
+	GLuint bufObj, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLUnregisterBufferObject(GLuint bufObj) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLUnregisterBufferObject(
+	GLuint bufObj) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsGLRegisterBuffer(
+	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsGLRegisterImage(
+	struct cudaGraphicsResource **resource, GLuint image, int target, 
+	unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsUnregisterResource(
+	struct cudaGraphicsResource* resource) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsResourceSetMapFlags(
+	struct cudaGraphicsResource *resource, unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsMapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsUnmapResources(int count, 
+	struct cudaGraphicsResource **resources, cudaStream_t stream) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsResourceGetMappedPointer(
+	void **devPtr, size_t *size, struct cudaGraphicsResource *resource) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGraphicsSubResourceGetMappedArray(
+	struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
+	unsigned int arrayIndex, unsigned int mipLevel) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 cudaError_t cuda::CudaRuntimeInterface::cudaSetDoubleForDevice(double *d) {
 	assert(0 && "unimplemented");

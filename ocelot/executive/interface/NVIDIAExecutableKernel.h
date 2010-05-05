@@ -1,24 +1,24 @@
-/*! \file GPUExecutableKernel.h
+/*! \file NVIDIAExecutableKernel.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 19, 2009
 	\brief implements the GPU kernel callable by the executive
 */
 
-#ifndef EXECUTIVE_GPUKERNEL_H_INCLUDED
-#define EXECUTIVE_GPUKERNEL_H_INCLUDED
+#ifndef EXECUTIVE_NVIDIAKERNEL_H_INCLUDED
+#define EXECUTIVE_NVIDIAKERNEL_H_INCLUDED
 #include <ocelot/cuda/interface/CudaDriver.h>
 
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 
 namespace executive {
 
-	class GPUExecutableKernel: public ir::ExecutableKernel {
+	class NVIDIAExecutableKernel: public executive::ExecutableKernel {
 	public:
-		GPUExecutableKernel( ir::Kernel& kernel, const CUfunction& function, 
-			const executive::Executive* c = 0 );
-		GPUExecutableKernel();
-		~GPUExecutableKernel();
+		NVIDIAExecutableKernel( ir::Kernel& kernel, const CUfunction& function, 
+			executive::Device* d = 0 );
+		NVIDIAExecutableKernel();
+		~NVIDIAExecutableKernel();
 	
 		/*!
 			Launch a kernel on a 2D grid
@@ -46,10 +46,7 @@ namespace executive {
 		void updateMemory();
 		
 		/*! \brief Get a vector of all textures references by the kernel */
-		ir::StringSet textureReferences() const;
-
-		/*!  \brief get a set of all identifiers used as addresses by the kernel */
-		ir::StringSet addressReferences() const;
+		TextureVector textureReferences() const;
 
 		void updateGlobalMemory();
 
@@ -59,6 +56,8 @@ namespace executive {
 		void addTraceGenerator(trace::TraceGenerator *generator);
 		/*!	removes a trace generator from an EmulatedKernel */
 		void removeTraceGenerator(trace::TraceGenerator *generator);
+		
+		void setWorkerThreads(unsigned int limit);
 		
 	protected:
 		/*!
@@ -82,8 +81,6 @@ namespace executive {
 			CUDA function refering to this kernel
 		*/
 		CUfunction cuFunction;
-		
-		friend class executive::Executive;
 
 	};
 	

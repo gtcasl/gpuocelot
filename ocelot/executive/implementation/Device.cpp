@@ -1,52 +1,46 @@
-/*!
-	\file Device.cpp
-	
-	\author Andrew Kerr
-	
+/*! \file Device.cpp
+	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Jan 16, 2009
-	
-	\brief class for identifying and reporting properties of devices targeted
-		by the executive
+	\brief The source file for the Device class
 */
 
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/NVIDIAGPUDevice.h>
+#include <ocelot/executive/interface/ATIGPUDevice.h>
+#include <ocelot/executive/interface/EmulatorDevice.h>
+#include <ocelot/executive/interface/MulticoreCPUDevice.h>
 
-executive::Device::Device() {
-	ISA = ir::Instruction::Emulated;
-	name = "PTX Emulator";
-	guid = 0;
-	totalMemory = (1 << 22);
-	multiprocessorCount = 4;
-	maxThreadsPerBlock = 768;
-	maxThreadsDim[0] = maxThreadsDim[1] = maxThreadsDim[2] = maxThreadsPerBlock;
-	maxGridSize[0] = maxGridSize[1] = maxGridSize[2] = 65536;
-	sharedMemPerBlock = 16384;
-	totalConstantMemory = 8192;
-	SIMDWidth = 32;
-	memPitch = (4<<10);
-	regsPerBlock = 8192;
-	clockRate = 2400000;
-	textureAlign = 16;
-	addressSpace = 0;
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
+executive::Device::MemoryAllocation::MemoryAllocation(bool g, 
+	bool h) : _global(g), _host(h) {
+
 }
 
-executive::Device::~Device() {
-	
-}/*
-		enum Architecture {
-			PTX,
-			GPU,
-			Emulated,
-			LLVM,
-			x86,
-			x86_64,
-			SPU,
-			Unknown
-		};
-*/
+executive::Device::MemoryAllocation::~MemoryAllocation()
+{
 
-std::ostream & executive::Device::write(std::ostream &out) const {
-	out << name << "( " << guid << " ):\n";
+}
+
+bool executive::Device::MemoryAllocation::host() const {
+	return _host;
+}
+
+bool executive::Device::MemoryAllocation::global() const {
+	return _global;
+}
+
+executive::Device::Properties::Properties() {
+}
+
+std::ostream& executive::Device::Properties::write(std::ostream &out) const {
+	out << name << " ):\n";
 	out << "  " << "total memory: " << (totalMemory >> 10) << " kB\n";
 	out << "  " << "ISA: " << ir::Instruction::toString(ISA) << "\n";
 	out << "  " << "multiprocessors: " << multiprocessorCount << "\n";
@@ -59,4 +53,115 @@ std::ostream & executive::Device::write(std::ostream &out) const {
 	return out;
 }
 
+executive::DeviceVector executive::Device::createDevices(
+	ir::Instruction::Architecture isa, unsigned int flags) {
+	switch(isa) {
+		case ir::Instruction::SASS:
+		{
+			return NVIDIAGPUDevice::createDevices(flags);
+		}
+		break;
+		case ir::Instruction::Emulated:
+		{
+			DeviceVector emulators;
+			emulators.push_back(new EmulatorDevice(flags));
+			return emulators;
+		}
+		break;
+		case ir::Instruction::LLVM:
+		{
+			DeviceVector cpus;
+			cpus.push_back(new MulticoreCPUDevice(flags));
+			return cpus;
+		}
+		break;
+		case ir::Instruction::CAL:
+		{
+			return ATIGPUDevice::createDevices(flags);
+		}
+		break;
+		default: break;
+	}
+	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+}
+
+unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa) {
+	switch(isa) {
+		case ir::Instruction::SASS:
+		{
+			return NVIDIAGPUDevice::deviceCount();
+		}
+		break;
+		case ir::Instruction::Emulated:
+		{
+			return 1;
+		}
+		break;
+		case ir::Instruction::LLVM:
+		{
+			return 1;
+		}
+		break;
+		case ir::Instruction::CAL:
+		{
+			return ATIGPUDevice::deviceCount();
+		}
+		break;
+		default: break;
+	}
+	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+}
+
+executive::Device::Device( unsigned int flags) : _driverVersion(3000), 
+	_runtimeVersion(3000), _flags(flags) {
+}
+
+executive::Device::~Device() {
+}
+
+bool executive::Device::checkMemoryAccess(const void* pointer, 
+	size_t size) const
+{
+	MemoryAllocation* allocation = getMemoryAllocation(pointer, false);
+	if(allocation == 0) return false;
+	
+	report(" Checking access " << pointer << " (" << size 
+		<< " against allocation at " << allocation->pointer() 
+		<< " of size " << allocation->size());
+	if((char*)pointer + size 
+		<= (char*)allocation->pointer() + allocation->size())
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+
+std::string executive::Device::nearbyAllocationsToString(void* pointer) const {
+	std::stringstream result;
+	MemoryAllocationVector allocations = getNearbyAllocations(pointer);
+	
+	for(MemoryAllocationVector::iterator allocation = allocations.begin(); 
+		allocation != allocations.end(); ++allocation)
+	{
+		result << "[" << (*allocation)->pointer() << "] - [" 
+			<< ((char*)(*allocation)->pointer() + (*allocation)->size()) 
+			<< "]\n";
+	}
+	
+	return result.str();
+}
+
+const executive::Device::Properties& executive::Device::properties() const {
+	return _properties;
+}
+
+int executive::Device::driverVersion() const {
+	return _driverVersion;
+}
+
+int executive::Device::runtimeVersion() const {
+	return _runtimeVersion;
+}
 

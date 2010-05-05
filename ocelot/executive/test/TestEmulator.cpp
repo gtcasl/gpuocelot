@@ -11,24 +11,29 @@
 
 #include <hydrazine/interface/Test.h>
 
+#include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
 
-#include <ocelot/executive/interface/Executive.h>
+#include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
-#include <ocelot/trace/interface/TraceGenerator.h>
 #include <cmath>
 
 namespace test {
 
 class TestEmulator: public Test {
 public:
+	ir::Module module;
+	ir::Kernel* rawKernel;	
+
+public:
 	TestEmulator() {
 		name = "TestEmulator";
+		rawKernel = 0;
 
 		status << "Test output:\n";
 	}
@@ -44,23 +49,23 @@ public:
 
 		bool result = true;
 
-		Kernel *rawKernel = 0;
-		Executive context;
+		string path = "ocelot/executive/test/sequence.ptx";
 		
-		string module = "ocelot/executive/test/sequence.ptx";
+		bool loaded = false;
 		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
+		try {
+			loaded = module.load(path);
+		}
+		catch(const hydrazine::Exception& e) {
+			status << " error - " << e.what() << "\n";
+		}
+
+		if(!loaded) {
+			status << "failed to load module '" << path << "'\n";
 			return (result = false);
 		}
 
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			return (result = false);
-		}
-
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_simple_sequencePi");
+		rawKernel = module.getKernel("_Z17k_simple_sequencePi");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
@@ -82,33 +87,17 @@ public:
 
 		bool result = true;
 
-		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
-		Executive context;
-		string module = "ocelot/executive/test/sequence.ptx";
-		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
-			return (result = false);
-		}
 
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			return (result = false);
-		}
-
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_simple_sequencePi");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
 		}
 
-		kernel = static_cast<EmulatedKernel *>(rawKernel);
+		EmulatedKernel k(rawKernel, 0);
 		
-		trace::TraceGenerator generator;
-		kernel->addTraceGenerator( &generator );
-
+		kernel = &k;
+		
 		// construct a CooperativeThreadArray from kernel
 		const int Threads = 8;
 
@@ -190,41 +179,25 @@ public:
 
 		bool result = true;
 
-		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
-		Executive context;
-		string module = "ocelot/executive/test/sequence.ptx";
-		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
-			return (result = false);
-		}
 
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			return (result = false);
-		}
-
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_simple_sequencePi");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
 		}
 
+		EmulatedKernel k(rawKernel, 0);
+		
+		kernel = &k;
+
 		int Threads = 1;
 
-		kernel = static_cast<EmulatedKernel *>(rawKernel);
 		kernel->setKernelShape(Threads, 1, 1);
-
-		trace::TraceGenerator generator;
-		kernel->addTraceGenerator( &generator );
 
 		CooperativeThreadArray cta(kernel);
 
 		// load and store to global memory
 		PTXU32 block[64];
-		context.registerExternal(block, sizeof(PTXU32)*64);
 
 		PTXInstruction ld;
 		ld.opcode = PTXInstruction::Ld;
@@ -322,8 +295,6 @@ public:
 			status << "Load test passed\n";
 		}
 
-		context.free(block);
-
 		return result;
 	}
 
@@ -337,23 +308,8 @@ public:
 
 		bool result = true;
 
-		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
-		Executive context;
-		string module = "ocelot/executive/test/sequence.ptx";
-		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
-			return (result = false);
-		}
 
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			return (result = false);
-		}
-
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_simple_sequencePi");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
@@ -361,20 +317,16 @@ public:
 
 		int Threads = 1;
 
-		kernel = static_cast<EmulatedKernel *>(rawKernel);
-		kernel->setKernelShape(Threads, 1, 1);
+		EmulatedKernel k(rawKernel, 0);		
+		kernel = &k;
 
-		trace::TraceGenerator generator;
-		kernel->addTraceGenerator( &generator );
+		kernel->setKernelShape(Threads, 1, 1);
 
 		CooperativeThreadArray cta(kernel);
 
 		// load and store to global memory
 		PTXU32 u_block[4];
 		PTXF32 f_block[2];
-
-		context.registerExternal(u_block, 4*sizeof(PTXU32));
-		context.registerExternal(f_block, 2*sizeof(PTXF32));
 
 		PTXInstruction st;
 		st.opcode = PTXInstruction::St;
@@ -441,9 +393,6 @@ public:
 			status << "Store test passed\n";
 		}
 		
-		context.free(u_block);
-		context.free(f_block);
-		
 		return result;
 	}
 
@@ -458,38 +407,19 @@ public:
 
 		bool result = true;
 
-		Kernel *rawKernel = 0;
 		EmulatedKernel *kernel = 0;
-		Executive context;
-		string module = "ocelot/executive/test/sequence.ptx";
-		
-		if (!context.selectDeviceByISA(Instruction::Emulated)) {
-			status << "Failed to select Emulated device\n";
-			return (result = false);
-		}
 
-		if (!context.loadModule(module)) {
-			status << "failed to load module '" << module << "'\n";
-			return (result = false);
-		}
-
-		rawKernel = context.getKernel(Instruction::Emulated, module, 
-			"_Z17k_simple_sequencePi");
 		if (!rawKernel) {
 			status << "failed to get kernel\n";
 			return (result = false);
 		}
 		
-		// this cast is safe becuase a Kernel with ISA = Instruction::Emulated 
-		// is guaranteed to be of type EmulatedKernel.
-		kernel = static_cast<EmulatedKernel*>(rawKernel);
-
-		trace::TraceGenerator generator;
-		kernel->addTraceGenerator( &generator );
+		EmulatedKernel k(rawKernel, 0);
+		
+		kernel = &k;
 
 		const int N = 32;
 		int *inputSequence = new int[N];
-		context.registerExternal(inputSequence, N*sizeof(int));
 
 		// configure parameters
 		Parameter &param_A = kernel->getParameter(
@@ -531,8 +461,7 @@ public:
 			result = true;
 		}
 
-		context.free(inputSequence);
-		delete[] inputSequence; 
+		delete[] inputSequence;
 
 		if (result) {
 			status << "Full kernel test passed\n";
@@ -545,8 +474,8 @@ public:
 		Test driver
 	*/
 	bool doTest( ) {
-		bool result = testKernelLoading() && testRegisterAccessors() 
-			&& testLd();
+		bool result = testKernelLoading();
+		result = result && testRegisterAccessors() && testLd();
 		result = (result && testSt());
 		result = (result && testFullKernel());
 		return result;

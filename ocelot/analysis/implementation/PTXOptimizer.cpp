@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #include <fstream>
 
@@ -92,6 +92,9 @@ namespace analysis
 		report(" Loading module '" << input << "'");
 		ir::Module module( input );
 
+		report(" Running register allocation.");
+		module.createDataStructures();
+		
 		report(" Running passes that do not require SSA form.");
 		for( PassVector::iterator pass = noSsaPasses.begin(); 
 			pass != noSsaPasses.end(); ++pass)
@@ -99,9 +102,8 @@ namespace analysis
 			report("  Running pass '" << (*pass)->toString() << "'" );
 			(*pass)->initialize( module );
 			for( ir::Module::KernelMap::iterator 
-				kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-				kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-				++kernel )
+				kernel = module.kernels.begin(); 
+				kernel != module.kernels.end(); ++kernel )
 			{
 				(*pass)->runOnKernel( *(kernel->second) );
 			}
@@ -111,9 +113,8 @@ namespace analysis
 		
 		report(" Converting to SSA form.");
 		for( ir::Module::KernelMap::iterator 
-			kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-			kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-			++kernel )
+			kernel = module.kernels.begin(); 
+			kernel != module.kernels.end(); ++kernel )
 		{
 			(kernel->second)->dfg()->toSsa();
 		}
@@ -125,9 +126,8 @@ namespace analysis
 			report("  Running pass '" << (*pass)->toString() << "'" );
 			(*pass)->initialize( module );
 			for( ir::Module::KernelMap::iterator 
-				kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-				kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-				++kernel )
+				kernel = module.kernels.begin(); 
+				kernel != module.kernels.end(); ++kernel )
 			{
 				(*pass)->runOnKernel( *(kernel->second) );
 			}
@@ -135,10 +135,8 @@ namespace analysis
 			delete *pass;
 		}
 
-		for( ir::Module::KernelMap::iterator 
-			kernel = module.kernels[ ir::Instruction::PTX ].begin(); 
-			kernel != module.kernels[ ir::Instruction::PTX ].end(); 
-			++kernel )
+		for( ir::Module::KernelMap::iterator kernel = module.kernels.begin(); 
+			kernel != module.kernels.end(); ++kernel )
 		{
 			(kernel->second)->dfg()->fromSsa();
 		}

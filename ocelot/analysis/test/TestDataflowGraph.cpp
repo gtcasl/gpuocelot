@@ -279,8 +279,8 @@ namespace test
 			ir::Module module( *file );
 			
 			for( ir::Module::KernelMap::iterator 
-				ki = module.begin( ir::Instruction::PTX ); 
-				ki != module.end( ir::Instruction::PTX ); ++ki )
+				ki = module.kernels.begin(); 
+				ki != module.kernels.end(); ++ki )
 			{
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
 				status << "  For Kernel: " << kernel.name << std::endl;
@@ -306,8 +306,8 @@ namespace test
 			ir::Module module( *file );
 			
 			for( ir::Module::KernelMap::iterator 
-				ki = module.begin( ir::Instruction::PTX ); 
-				ki != module.end( ir::Instruction::PTX ); ++ki )
+				ki = module.kernels.begin(); 
+				ki != module.kernels.end(); ++ki )
 			{
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
 				status << "  For Kernel: " << kernel.name << std::endl;
@@ -334,8 +334,8 @@ namespace test
 			ir::Module module( *file );
 			
 			for( ir::Module::KernelMap::iterator 
-				ki = module.begin( ir::Instruction::PTX ); 
-				ki != module.end( ir::Instruction::PTX ); ++ki )
+				ki = module.kernels.begin(); 
+				ki != module.kernels.end(); ++ki )
 			{
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
 				status << "  For Kernel: " << kernel.name << std::endl;

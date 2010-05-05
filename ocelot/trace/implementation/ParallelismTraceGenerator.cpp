@@ -43,7 +43,7 @@ namespace trace
 	}
 
 	void ParallelismTraceGenerator::initialize( 
-		const ir::ExecutableKernel& kernel )
+		const executive::ExecutableKernel& kernel )
 	{
 		_entry.name = kernel.name;
 		_entry.module = kernel.module->modulePath;

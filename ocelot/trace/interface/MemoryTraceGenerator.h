@@ -121,7 +121,7 @@ namespace trace {
 				ar & ctaZ;
 				ar & accessCount;
 			
-				for (std::vector<trace::MemoryTraceGenerator::Access>::const_iterator it = accesses.begin(); 
+				for (AccessVector::const_iterator it = accesses.begin(); 
 					it != accesses.end(); ++it) {
 					const trace::MemoryTraceGenerator::Access &acc = *it;
 					ar & acc.threadID;
@@ -187,9 +187,10 @@ namespace trace {
 		~MemoryTraceGenerator();
 
 		/*!
-			called when a traced kernel is launched to retrieve some parameters from the kernel
+			called when a traced kernel is launched to retrieve some 
+				parameters from the kernel
 		*/
-		void initialize(const ir::ExecutableKernel& kernel);
+		void initialize(const executive::ExecutableKernel& kernel);
 
 		/*!
 			Called whenever an event takes place.

@@ -33,8 +33,8 @@ namespace trace
 		
 	}
 
-	void BranchTraceGenerator::initialize(const ir::ExecutableKernel& kernel)
-	
+	void BranchTraceGenerator::initialize(
+		const executive::ExecutableKernel& kernel)
 	{
 		_entry.name = kernel.name;
 		_entry.module = kernel.module->modulePath;

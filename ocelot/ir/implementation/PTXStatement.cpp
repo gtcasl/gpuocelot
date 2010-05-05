@@ -8,8 +8,7 @@
 #define IR_PTXSTATEMENT_CPP_INCLUDED
 
 #include <ocelot/ir/interface/PTXStatement.h>
-#include <sstream>
-#include <cassert>
+#include <cstring>
 #include <stack>
 #include <hydrazine/implementation/debug.h>
 
@@ -189,6 +188,14 @@ namespace ir {
 		return result;
 	}
 
+	void PTXStatement::copy(void* dest) const {
+		char* d = (char*) dest;
+		unsigned int bytes = PTXOperand::bytes(type);
+		for (ArrayVector::const_iterator element = array.values.begin(); 
+			element != array.values.end(); ++element, d += bytes) {
+			memcpy(d, &element->b8, bytes);
+		}
+	}
 	
 	unsigned int PTXStatement::accessAlignment() const {
 		return std::max( (unsigned int) alignment, 
@@ -318,7 +325,7 @@ namespace ir {
 				}
 				stream << " ." << PTXOperand::toString( type ) << " " << name;
 				assert( array.stride.size() == 1 );
-				if( array.stride[0] != 1 )
+				if( array.stride[0] != 0 )
 				{
 					stream << "<" << array.stride[0] << ">";
 				}

@@ -53,7 +53,7 @@ namespace trace {
 			\brief called when a traced kernel is launched to retrieve some 
 				parameters from the kernel
 		*/
-		virtual void initialize(const ir::ExecutableKernel& kernel);
+		virtual void initialize(const executive::ExecutableKernel& kernel);
 
 		/*!
 			\brief Called whenever an event takes place.

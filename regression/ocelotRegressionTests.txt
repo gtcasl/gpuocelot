@@ -3,7 +3,6 @@
 ../TestEmulator
 ../TestInstructions
 ../TestKernels
-../TestTrace
 ../TestDataflowGraph
 ../TestLLVMInstructions
 ../TestPTXToLLVMTranslator
@@ -13,4 +12,6 @@
 ../TestCudaTextureArray
 ../TestCudaGlobals
 ../TestDeviceSwitching
+../TestCudaSequence
+../TestCalVectorScale
 

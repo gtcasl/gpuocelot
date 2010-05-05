@@ -22,15 +22,15 @@
 
 #define REPORT_BASE 0
 
-ir::Module::Module(std::string path): cuModuleState(Invalid) {
+ir::Module::Module(std::string path) {
 	load(path);
 }
 
-ir::Module::Module(std::istream& stream, const std::string& path): cuModuleState(Invalid) {
+ir::Module::Module(std::istream& stream, const std::string& path) {
 	load(stream, path);
 }
 
-ir::Module::Module(): cuModuleState(Invalid) {
+ir::Module::Module() {
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
@@ -45,7 +45,7 @@ ir::Module::~Module() {
 }
 
 
-ir::Module::Module(std::string name, const StatementVector & _statements): cuModuleState(Invalid) {
+ir::Module::Module(std::string name, const StatementVector & _statements) {
 	modulePath = name;
 	statements = _statements;
 	extractPTXKernels();
@@ -58,13 +58,8 @@ ir::Module::Module(std::string name, const StatementVector & _statements): cuMod
 */
 void ir::Module::unload() {
 	// delete all available kernels
-	for (KernelArchitectureMap::iterator it = kernels.begin(); it != kernels.end(); ++it) {
-		KernelMap& map = it->second;
-		
-		for (KernelMap::iterator kern_it = map.begin(); kern_it != map.end(); ++kern_it) {
-			delete kern_it->second;
-		}
-		map.clear();
+	for (KernelMap::iterator kern_it = kernels.begin(); kern_it != kernels.end(); ++kern_it) {
+		delete kern_it->second;
 	}
 	kernels.clear();
 	modulePath = "::unloaded::";
@@ -127,6 +122,9 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 
 void ir::Module::write( std::ostream& stream ) const {
 
+	report("Writing module (statements) - " << modulePath 
+		<< " - to output stream.");
+
 	if( statements.empty() ) {
 		return;
 	}
@@ -164,22 +162,49 @@ void ir::Module::write( std::ostream& stream ) const {
 }
 
 void ir::Module::writeIR( std::ostream& stream ) const {
+	report("Writing module (IR) - " << modulePath 
+		<< " - to output stream.");
+
+	stream << ".version 1.4\n";
+	stream << ".target sm_13\n";
+
 	stream << "/* Module " << modulePath << " */\n\n";
 	
+	stream << "/* Globals */\n";
 	for (GlobalMap::const_iterator global = globals.begin(); 
 		global != globals.end(); ++global) {
 		stream << global->second.statement.toString() << "\n";
 	}
 	stream << "\n";
+
+	stream << "/* Textures */\n";
+	for (TextureMap::const_iterator texture = textures.begin(); 
+		texture != textures.end(); ++texture) {
+		stream << texture->second.toString() << "\n";
+	}
+	stream << "\n";
 	
-	KernelArchitectureMap::const_iterator architecture = kernels.find(Instruction::PTX);
-	assert(architecture != kernels.end());
-	
-	for (KernelMap::const_iterator kernel = architecture->second.begin(); 
-		kernel != architecture->second.end(); ++kernel)
-	{
+	for (KernelMap::const_iterator kernel = kernels.begin(); 
+		kernel != kernels.end(); ++kernel) {
 		(kernel->second)->write(stream);
 	}
+}
+
+void ir::Module::createDataStructures() {
+	for (KernelMap::iterator kernel = kernels.begin(); 
+		kernel != kernels.end(); ++kernel) {
+		(kernel->second)->dfg();
+	}
+}
+
+static ir::Texture::Type convert(ir::PTXOperand::DataType t) {
+	switch(t) {
+		case ir::PTXOperand::s32: return ir::Texture::Signed; break;
+		case ir::PTXOperand::u32: return ir::Texture::Unsigned; break;
+		case ir::PTXOperand::f32: return ir::Texture::Float; break;
+		default: break;
+	}
+	return ir::Texture::Invalid;
 }
 
 /*!
@@ -231,7 +256,7 @@ void ir::Module::extractPTXKernels() {
 				PTXKernel *kernel = new PTXKernel(startIterator, endIterator);
 				
 				kernel->module = this;
-				kernels[PTXInstruction::PTX][kernel->name] = (kernel);
+				kernels[kernel->name] = (kernel);
 				kernel->canonicalBlockLabels(kernelInstance++);
 			}
 		}
@@ -246,15 +271,11 @@ void ir::Module::extractPTXKernels() {
 			assert(globals.count(statement.name) == 0);
 
 			globals.insert(std::make_pair(statement.name, Global(statement)));
-			globalNames.insert(statement.name);
 		}
 		else if (statement.directive == PTXStatement::Tex) {
-			assert(globals.count(statement.name) == 0);
-			globals.insert(std::make_pair(statement.name, Global(statement)));
-			textures.insert(std::make_pair(statement.name, Texture()));
-
-			globalNames.insert(statement.name);
-			textureNames.insert(statement.name);
+			assert(textures.count(statement.name) == 0);
+			textures.insert(std::make_pair(statement.name, 
+				Texture(statement.name, convert(statement.type))));
 		}
 	}
 }
@@ -267,11 +288,9 @@ void ir::Module::extractPTXKernels() {
 
 	\return pointer to kernel instance with (isa, name) or 0 if kernel does not exist
 */
-ir::Kernel * ir::Module::getKernel(ir::Instruction::Architecture isa, std::string kernelName) {
-	if (kernels.find(isa) != kernels.end()) {
-		if (kernels[isa].find(kernelName) != kernels[isa].end()) {
-			return kernels[isa][kernelName];
-		}
+ir::Kernel * ir::Module::getKernel(std::string kernelName) {
+	if (kernels.find(kernelName) != kernels.end()) {
+		return kernels[kernelName];
 	}
 	return 0;
 }

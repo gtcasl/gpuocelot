@@ -11,9 +11,9 @@
 #include <map>
 
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 #include <hydrazine/interface/Stringable.h>
@@ -24,18 +24,18 @@ namespace trace {
 
 namespace executive {
 		
-	class EmulatedKernel: public ir::ExecutableKernel {
+	class EmulatedKernel: public ExecutableKernel {
 	public:
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
-		typedef std::vector< const ir::Texture * > TextureVector;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
 			unsigned int& offset, unsigned int& totalOffset);
 
 	public:
-		EmulatedKernel(ir::Kernel* kernel, const Executive* c, bool initialize=true);
-		EmulatedKernel(const Executive *c);
+		EmulatedKernel(ir::Kernel* kernel, Device* d = 0, 
+			bool initialize = true);
+		EmulatedKernel(Device *c);
 		EmulatedKernel();
 		virtual ~EmulatedKernel();
 	
@@ -54,7 +54,7 @@ namespace executive {
 		void setExternSharedMemorySize(unsigned int bytes);
 		
 		/*!	Sets device used to execute the kernel */
-		void setDevice(const Device* device, unsigned int limit);
+		void setWorkerThreads(unsigned int limit);
 
 		/*! \brief Indicate that the kernels parameters have been updated */
 		void updateParameterMemory();
@@ -63,10 +63,7 @@ namespace executive {
 		void updateMemory();
 
 		/*! \brief Get a vector of all textures references by the kernel */
-		ir::StringSet textureReferences() const;
-
-		/*!  \brief get a set of all identifiers used as addresses by the kernel */
-		ir::StringSet addressReferences() const;
+		TextureVector textureReferences() const;
 
 	public:
 		/*!	adds a trace generator to the EmulatedKernel */
@@ -133,9 +130,6 @@ namespace executive {
 
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
-
-		/*! Maps program counters of header instructions to basic block label */
-		std::map< int, std::string > branchTargetsToBlock;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

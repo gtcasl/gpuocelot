@@ -22,7 +22,7 @@ namespace cal
 	{
 		public:
 			/*! \brief Singleton instance getter */
-			static const CalDriver *const Instance();
+			static const CalDriver *Instance();
 
 			/*****************************//**
 			 * \name Initialization

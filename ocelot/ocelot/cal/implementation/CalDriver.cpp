@@ -93,7 +93,7 @@ namespace cal
         // let the memory be reclaimed when the program terminates
 	}
 
-	const CalDriver *const CalDriver::Instance()
+	const CalDriver *CalDriver::Instance()
 	{
 		if (_instance == 0) {
 			_instance = new CalDriver;

@@ -1265,7 +1265,8 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 
 /*!
 
-*/void executive::CooperativeThreadArray::eval_Abs(CTAContext &context, 
+*/
+void executive::CooperativeThreadArray::eval_Abs(CTAContext &context, 
 	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
@@ -4263,7 +4264,8 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			else {
 				d = dw;
 			}
-			setRegAsS32(threadID, instr.d.reg, d);
+			setRegAsS32(threadID, instr.d.reg, d);
+
 		}
 	}
 	else {
@@ -5411,7 +5413,8 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
 				}
 				
-				// now apply the bool op				switch (instr.booleanOperator) {
+				// now apply the bool op
+				switch (instr.booleanOperator) {
 					case PTXInstruction::BoolAnd:
 						t = (t && c);
 						break;
@@ -5511,7 +5514,8 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
 				}
 				
-				// now apply the bool op				switch (instr.booleanOperator) {
+				// now apply the bool op
+				switch (instr.booleanOperator) {
 					case PTXInstruction::BoolAnd:
 						t = (t && c);
 						break;
@@ -5597,7 +5601,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
 				}
 				
-				switch (instr.type) {
+				switch (instr.comparisonOperator) {
 					case PTXInstruction::Equ:
 					case PTXInstruction::Neu:
 					case PTXInstruction::Ltu:
@@ -5613,7 +5617,8 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						break;
 				}
 				
-				// now apply the bool op				switch (instr.booleanOperator) {
+				// now apply the bool op
+				switch (instr.booleanOperator) {
 					case PTXInstruction::BoolAnd:
 						t = (t && c);
 						break;
@@ -5701,7 +5706,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
 				}				
 				
-				switch (instr.type) {
+				switch (instr.comparisonOperator) {
 					case PTXInstruction::Equ:
 					case PTXInstruction::Neu:
 					case PTXInstruction::Ltu:
@@ -5718,7 +5723,8 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 				}
 				
 				
-				// now apply the bool op				switch (instr.booleanOperator) {
+				// now apply the bool op
+				switch (instr.booleanOperator) {
 					case PTXInstruction::BoolAnd:
 						t = (t && c);
 						break;

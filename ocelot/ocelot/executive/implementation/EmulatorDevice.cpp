@@ -97,7 +97,7 @@ namespace executive
 		*this = a;
 	}
 	
-	EmulatorDevice::MemoryAllocation::MemoryAllocation& 
+	EmulatorDevice::MemoryAllocation& 
 		EmulatorDevice::MemoryAllocation::operator=(const MemoryAllocation& a)
 	{
 		if(&a == this) return *this;
@@ -123,7 +123,7 @@ namespace executive
 		return *this;
 	}
 
-	EmulatorDevice::MemoryAllocation::MemoryAllocation& 
+	EmulatorDevice::MemoryAllocation& 
 		EmulatorDevice::MemoryAllocation::operator=(MemoryAllocation&& a)
 	{
 		if(&a == this) return *this;

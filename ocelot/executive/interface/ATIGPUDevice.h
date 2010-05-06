@@ -17,16 +17,17 @@ namespace executive
 	class ATIGPUDevice : public Device 
 	{
 		public:
+			/*! \brief CAL device pointer */
+			typedef unsigned int CALdeviceptr;
+
 			/*! \brief ATI memory allocation */
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
 				public:
 					/*! \brief Construct an allocation for a particular 
 					 * resource */
-					MemoryAllocation(CALresource *resource, const int *basePtr, 
-							size_t size);
-					/*! \brief Destructor */
-					~MemoryAllocation();
+					MemoryAllocation(CALresource *resource, 
+							const CALdeviceptr basePtr, size_t size);
 
 					/*! \brief Get the flags if this is a host pointer */
 					unsigned int flags() const;
@@ -48,11 +49,12 @@ namespace executive
 
 				private:
 					/*! \brief Resource where the allocation lives */
-					CALresource *_resource;
+					const CALresource *const _resource;
 					/*! \brief Base pointer of the allocation */
-					const int *_basePtr;
+					//const int *const _basePtr;
+					const CALdeviceptr _basePtr;
 					/*! \brief Size of the allocation */
-					size_t _size;
+					const size_t _size;
 			};
 
 			/*! \brief Allocate a new device for each CAL capable GPU */
@@ -66,9 +68,10 @@ namespace executive
 			/*! \brief Destructor */
 			~ATIGPUDevice();
 
+			/*! \brief Get the allocation containing a pointer or 0 */
 			Device::MemoryAllocation *getMemoryAllocation(const void *address, 
 				bool hostAllocation) const;
-			/*! \brief Get the address of a global by stream */
+			/*! \brief Get the address of a global by name */
 			Device::MemoryAllocation *getGlobalAllocation(
 				const std::string& module, const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
@@ -191,7 +194,7 @@ namespace executive
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
 
 			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
-			static const int *const Uav0BaseAddr;
+			static const CALdeviceptr Uav0BaseAddr;
 
 			/********************************************************//**
 			 * \name uav0 Memory Manager
@@ -204,7 +207,7 @@ namespace executive
 			/*! \brief A map of memory allocations in device space */
 			AllocationMap _uav0Allocations;
 			/*! \brief Pointer to the next chunck of allocatable memory */
-			const int *_uav0AllocPtr;
+			CALdeviceptr _uav0AllocPtr;
 			/*! \brief CAL uav0 resource */
 			CALresource _uav0Resource;
 			/*! \brief CAL uav0 memory handle */

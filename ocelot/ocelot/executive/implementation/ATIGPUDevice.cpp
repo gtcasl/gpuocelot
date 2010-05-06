@@ -30,14 +30,18 @@
 
 namespace executive
 {
-	const int *const ATIGPUDevice::Uav0BaseAddr = (int *)0x1000;
+	const ATIGPUDevice::CALdeviceptr ATIGPUDevice::Uav0BaseAddr = 0x1000;
 
     ATIGPUDevice::ATIGPUDevice() 
 		: 
+			_uav0Allocations(),
 			_uav0AllocPtr(Uav0BaseAddr),
 			_uav0Resource(0),
 			_uav0Mem(0),
 			_uav0Name(0),
+			_cb0Resource(0),
+			_cb0Mem(0),
+			_cb0Name(0),
 			_device(0), 
 			_info(),
 			_context(0), 
@@ -397,17 +401,19 @@ namespace executive
 
 	void ATIGPUDevice::_updateParameterMemory(const void *parameterBlock)
 	{
-		cb0Array data;
+		cb0Array cb0;
 		CALuint pitch = 0;
 		CALuint flags = 0;
 
-		CalDriver()->calResMap((CALvoid **)&data, &pitch, 
-					_cb0Resource, flags);
+		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, _cb0Resource, flags);
 
 		// Support only for (int *, int *) for now
-		(*data)[0][0] = ((int **)parameterBlock)[0] - Uav0BaseAddr; 
-		(*data)[1][0] = ((int **)parameterBlock)[1] - Uav0BaseAddr; 
-		
+		CALdeviceptr dptr;
+		hydrazine::bit_cast(dptr, ((int **)parameterBlock)[0]);
+		(*cb0)[0][0] = dptr - Uav0BaseAddr; 
+		hydrazine::bit_cast(dptr, ((int **)parameterBlock)[1]);
+		(*cb0)[1][0] = dptr - Uav0BaseAddr; 
+
 		CalDriver()->calResUnmap(_cb0Resource);
 	}
 
@@ -484,20 +490,12 @@ namespace executive
 	}
 
 	ATIGPUDevice::MemoryAllocation::MemoryAllocation(CALresource *resource, 
-			const int *basePtr, size_t size) 
-		: _resource(0), _basePtr(0), _size(0)
+			const CALdeviceptr basePtr, size_t size) 
+		: _resource(resource), _basePtr(basePtr), _size(size)
 	{
 		assertM(resource, "Invalid resource");
 		assertM(basePtr, "Invalid device pointer");
 		assertM(size, "Invalid size");
-
-		_resource = resource;
-		_basePtr = basePtr;
-		_size = size;
-	}
-
-	ATIGPUDevice::MemoryAllocation::~MemoryAllocation()
-	{
 	}
 
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
@@ -533,7 +531,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		unsigned int addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
 		std::memcpy((char *)data + addr, host, size);
 
 		CalDriver()->calResUnmap(*_resource);
@@ -552,7 +550,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		unsigned int addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
 		std::memcpy(host, (char *)data + addr, size);
 		report("MemoryAllocation::copy("
 				<< "host = " << std::hex << std::showbase << host

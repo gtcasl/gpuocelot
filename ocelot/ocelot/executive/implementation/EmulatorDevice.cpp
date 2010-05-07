@@ -290,11 +290,11 @@ namespace executive
 		_properties.maxGridSize[0] = 65536;
 		_properties.maxGridSize[1] = 65536;
 		_properties.maxGridSize[2] = 65536;
-		_properties.sharedMemPerBlock = 16384;
-		_properties.totalConstantMemory = 65536;
+		_properties.sharedMemPerBlock = _properties.totalMemory;
+		_properties.totalConstantMemory = _properties.totalMemory;
 		_properties.SIMDWidth = 512;
 		_properties.memPitch = 1;
-		_properties.regsPerBlock = 8192;
+		_properties.regsPerBlock = _properties.totalMemory;
 		_properties.clockRate = 2;
 		_properties.textureAlign = 1;
 		_properties.integrated = 1;

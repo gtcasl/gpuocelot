@@ -523,8 +523,7 @@ test : ocelotTest
 
 ################################################################################
 ## Extra clean rules
-CLEANFILES = ptxgrammar.h ptxgrammar.cpp ptx.cpp ptx1_4grammar.h \
-	ptx1_4grammar.cpp
+CLEANFILES = ptxgrammar.h ptxgrammar.cpp ptx.cpp
 CLEANFILES += *.linkinfo *.cu.cpp 
 ################################################################################
 

@@ -18,12 +18,7 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
-#include <math.h>
-
-static float fabs(float a) {
-	if (a < 0) return -a;
-	return a;
-}
+#include <cmath>
 
 using namespace std;
 using namespace ir;
@@ -163,7 +158,7 @@ public:
 			// set as float, get as float
 			if (result) {
 				cta.setRegAsF32(i, 1, 12.5f);
-				if (fabs(cta.getRegAsF32(i, 1) - 12.5f) > 0.01f) {
+				if (std::fabs(cta.getRegAsF32(i, 1) - 12.5f) > 0.01f) {
 					result = false;
 					status << "set/getRegAsF32 failed\n";
 				}
@@ -290,7 +285,7 @@ public:
 			}
 			cta.eval_Abs(cta.runtimeStack.back(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (fabs(cta.getRegAsF32(t, 0) - (float)t * 2.76f) > 0.01f) {
+				if (std::fabs(cta.getRegAsF32(t, 0) - (float)t * 2.76f) > 0.01f) {
 					result = false;
 					status << "abs.f32 failed: expected " << (float)t * 2.76f << ", got " << cta.getRegAsF32(t, 0) << "\n";
 				}
@@ -310,7 +305,7 @@ public:
 			}
 			cta.eval_Abs(cta.runtimeStack.back(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (fabs(cta.getRegAsF64(t, 0) - (double)t * 9.76) > 0.01f) {
+				if (std::fabs(cta.getRegAsF64(t, 0) - (double)t * 9.76) > 0.01f) {
 					result = false;
 					status << "abs.f64 failed: expected " << t << ", got " << cta.getRegAsF64(t, 0) << "\n";
 				}
@@ -512,7 +507,7 @@ public:
 			}
 			cta.eval_Add(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - (double)(i*2+4+i)) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - (double)(i*2+4+i)) > 0.1) {
 					result = false;
 					status << "add.f64 incorrect [" << i << "] - expected: " << (PTXF64)(i*2+4+i) 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -778,7 +773,7 @@ public:
 			}
 			cta.eval_Sub(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - (double)(i*2-(4+i))) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - (double)(i*2-(4+i))) > 0.1) {
 					result = false;
 					status << "sub.f64 incorrect [" << i << "] - expected: " << (PTXF64)(i*2+4+i) 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -1230,7 +1225,7 @@ public:
 			cta.eval_Min(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF64 expected = argmin(i*2, 4+i);
-				if (fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "min.f64 incorrect [" << i << "] - expected: " << expected 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -1434,7 +1429,7 @@ public:
 			cta.eval_Max(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF64 expected = argmax(i*2, 4+i);
-				if (fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "max.f64 incorrect [" << i << "] - expected: " << expected 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -1556,7 +1551,7 @@ public:
 			cta.eval_Neg(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF64 expected = -(i*2);
-				if (fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "neg.f64 incorrect [" << i << "] - expected: " << expected 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -1888,7 +1883,7 @@ public:
 			cta.eval_Div(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = ((PTXF32)(i * 8 + 8) / (PTXF32)(4 + i));
-				if (fabs(cta.getRegAsF32(i, 2) - expected) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - expected) > 0.1f) {
 					result = false;
 					status << "div.f32 incorrect [" << i << "] - expected: " << (float)expected 
 						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
@@ -1912,7 +1907,7 @@ public:
 			cta.eval_Div(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = ((PTXF64)(i * 8 + 8) / (PTXF64)(4 + i));
-				if (fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "div.f64 incorrect [" << i << "] - expected: " << expected 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2106,7 +2101,7 @@ public:
 			cta.eval_Mad(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF32)(i - 1) * (PTXF32)(4 + 2*i) + (PTXF32)(i);
-				if (fabs(cta.getRegAsF32(i, 3) - expected) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 3) - expected) > 0.1f) {
 					result = false;
 					status << "mad.f32 incorrect [" << i << "] - expected: " << (float)expected 
 						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
@@ -2133,7 +2128,7 @@ public:
 			cta.eval_Mad(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF64)(i - 1) * (PTXF64)(4 + 2*i) + (PTXF64)(i);
-				if (fabs(cta.getRegAsF64(i, 3) - expected) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 3) - expected) > 0.1) {
 					result = false;
 					status << "mad.f64 incorrect [" << i << "] - expected: " << expected 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2327,7 +2322,7 @@ public:
 			cta.eval_Mul(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF32)(i - 1) * (PTXF32)(4 + 2*i);
-				if (fabs(cta.getRegAsF32(i, 3) - expected) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 3) - expected) > 0.1f) {
 					result = false;
 					status << "mul.f32 incorrect [" << i << "] - expected: " << (float)expected 
 						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
@@ -2354,7 +2349,7 @@ public:
 			cta.eval_Mul(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF64)(i - 1) * (PTXF64)(4 + 2*i);
-				if (fabs(cta.getRegAsF64(i, 3) - expected) > 0.1) {
+				if (std::fabs(cta.getRegAsF64(i, 3) - expected) > 0.1) {
 					result = false;
 					status << "mul.f64 incorrect [" << i << "] - expected: " << expected 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2395,7 +2390,7 @@ public:
 			}
 			cta.eval_Rcp(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - 1.0f/(PTXF32)(0.1f + (float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - 1.0f/(PTXF32)(0.1f + (float)i * freq)) > 0.1f) {
 					result = false;
 					status << "rcp.f32 incorrect [" << i << "] - expected: " 
 						<< 1.0f/(PTXF32)(0.1f + (float)i * freq) 
@@ -2418,7 +2413,7 @@ public:
 			}
 			cta.eval_Rcp(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - 1.0/(0.1 + (double)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - 1.0/(0.1 + (double)i * freq)) > 0.1f) {
 					result = false;
 					status << "rcp.f64 incorrect [" << i << "] - expected: " << 1.0/(0.1 + (double)i * freq)
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2451,7 +2446,7 @@ public:
 			}
 			cta.eval_Cos(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - (PTXF32)cos((float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)cos((float)i * freq)) > 0.1f) {
 					result = false;
 					status << "cos.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)cos((float)i * freq) 
@@ -2477,7 +2472,7 @@ public:
 			}
 			cta.eval_Cos(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - cos((float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - cos((float)i * freq)) > 0.1f) {
 					result = false;
 					status << "cos.f64 incorrect [" << i << "] - expected: " << cos((double)i * freq) 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2510,7 +2505,7 @@ public:
 			}
 			cta.eval_Sin(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - (PTXF32)sin((float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)sin((float)i * freq)) > 0.1f) {
 					result = false;
 					status << "sin.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)sin((float)i * freq) 
@@ -2535,7 +2530,7 @@ public:
 			}
 			cta.eval_Sin(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - sin((float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - sin((float)i * freq)) > 0.1f) {
 					result = false;
 					status << "sin.f64 incorrect [" << i << "] - expected: " << sin((double)i * freq) 
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2566,7 +2561,7 @@ public:
 			}
 			cta.eval_Ex2(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - (PTXF32)exp2((float)i / (float)threadCount * 4.0f)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)exp2((float)i / (float)threadCount * 4.0f)) > 0.1f) {
 					result = false;
 					status << "ex2.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)exp2((float)i / (float)threadCount * 4.0f) 
@@ -2598,7 +2593,7 @@ public:
 			}
 			cta.eval_Lg2(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - (PTXF32)log2(0.5f + (float)i / (float)threadCount * 4.0f)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)log2(0.5f + (float)i / (float)threadCount * 4.0f)) > 0.1f) {
 					result = false;
 					status << "lg2.f32 incorrect [" << i 
 						<< "] - log2(" << (0.5f + (float)i / (float)threadCount * 4.0f) << ") - expected: " 
@@ -2632,7 +2627,7 @@ public:
 			}
 			cta.eval_Sqrt(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - (PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
 					result = false;
 					status << "sqrt.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)sqrt(0.1f + (float)i * freq) 
@@ -2655,7 +2650,7 @@ public:
 			}
 			cta.eval_Sqrt(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - sqrt(0.1 + (double)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - sqrt(0.1 + (double)i * freq)) > 0.1f) {
 					result = false;
 					status << "sqrt.f64 incorrect [" << i << "] - expected: " << sqrt(0.1 + (double)i * freq)
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
@@ -2688,7 +2683,7 @@ public:
 			}
 			cta.eval_Rsqrt(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF32(i, 2) - 1.0f/(PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF32(i, 2) - 1.0f/(PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
 					result = false;
 					status << "rsqrt.f32 incorrect [" << i << "] - expected: " 
 						<< 1.0f/(PTXF32)sqrt(0.1f + (float)i * freq) 
@@ -2711,7 +2706,7 @@ public:
 			}
 			cta.eval_Rsqrt(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (fabs(cta.getRegAsF64(i, 2) - 1.0/sqrt(0.1 + (double)i * freq)) > 0.1f) {
+				if (std::fabs(cta.getRegAsF64(i, 2) - 1.0/sqrt(0.1 + (double)i * freq)) > 0.1f) {
 					result = false;
 					status << "rsqrt.f64 incorrect [" << i << "] - expected: " << 1.0/sqrt(0.1 + (double)i * freq)
 						<< ", got " << cta.getRegAsF64(i, 2) << "\n";

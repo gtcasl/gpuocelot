@@ -2325,6 +2325,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	if (kernel != _kernels.end()) {
 		*attr = _getDevice().getAttributes(kernel->second.module, 
 			kernel->second.kernel);
+		result = cudaSuccess;
 	}
 	
 	_release();

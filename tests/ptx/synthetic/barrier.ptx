@@ -1,23 +1,23 @@
-	.version 1.4
-	.target sm_10, map_f64_to_f32
+	.version 2.0
+	.target sm_20
 	// compiled with /usr/local/cuda/open64/lib//be
-	// nvopencc 2.3 built on 2009-07-02
+	// nvopencc 3.0 built on 2010-02-19
 
 	//-----------------------------------------------------------
-	// Compiling /tmp/tmpxft_00006794_00000000-7_barrier.cpp3.i (/tmp/ccBI#.sma4uu)
+	// Compiling /tmp/tmpxft_00000a70_00000000-13_barrier.cpp3.i (/tmp/ccBI#.QcKsMb)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
 	// Options:
 	//-----------------------------------------------------------
-	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:32
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
 	//  -O3	(Optimization level)
 	//  -g0	(Debug level)
 	//  -m2	(Report advisories)
 	//-----------------------------------------------------------
 
 	.file	1	"<command-line>"
-	.file	2	"/tmp/tmpxft_00006794_00000000-6_barrier.cudafe2.gpu"
+	.file	2	"/tmp/tmpxft_00000a70_00000000-12_barrier.cudafe2.gpu"
 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h"
 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
@@ -30,7 +30,7 @@
 	.file	12	"/usr/local/cuda/bin/../include/crt/storage_class.h"
 	.file	13	"/usr/include/bits/types.h"
 	.file	14	"/usr/include/time.h"
-	.file	15	"barrier.cu"
+	.file	15	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 	.file	16	"/usr/local/cuda/bin/../include/common_functions.h"
 	.file	17	"/usr/local/cuda/bin/../include/crt/func_macro.h"
 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
@@ -39,9 +39,10 @@
 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-	.file	24	"/usr/local/cuda/bin/../include/common_types.h"
-	.file	25	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-	.file	26	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+	.file	27	"barrier.cu"
 
 
 	.entry _Z7barrierPiS_ (
@@ -50,30 +51,30 @@
 	{
 	.reg .u32 %r<17>;
 	.shared .align 4 .b8 __cuda_shared8[32];
-	.loc	15	2	0
+	.loc	27	2	0
 $LBB1__Z7barrierPiS_:
 	mov.u32 	%r1, __cuda_shared8;
-	.loc	15	5	0
-	cvt.u32.u16 	%r2, %tid.x;
-	mul24.lo.u32 	%r3, %r2, 4;
+	.loc	27	5	0
+	mov.u32 	%r2, %tid.x;
+	mul.lo.u32 	%r3, %r2, 4;
 	ld.param.u32 	%r4, [__cudaparm__Z7barrierPiS__in];
 	add.u32 	%r5, %r4, %r3;
 	ld.global.s32 	%r6, [%r5+0];
 	add.u32 	%r7, %r2, 1;
-	cvt.u32.u16 	%r8, %ntid.x;
+	mov.u32 	%r8, %ntid.x;
 	rem.u32 	%r9, %r7, %r8;
 	mul.lo.u32 	%r10, %r9, 4;
 	add.u32 	%r11, %r1, %r10;
 	st.shared.s32 	[%r11+0], %r6;
-	.loc	15	6	0
+	.loc	27	6	0
 	bar.sync 	0;
-	.loc	15	7	0
+	.loc	27	7	0
 	add.u32 	%r12, %r3, %r1;
 	ld.shared.s32 	%r13, [%r12+0];
 	ld.param.u32 	%r14, [__cudaparm__Z7barrierPiS__out];
 	add.u32 	%r15, %r14, %r3;
 	st.global.s32 	[%r15+0], %r13;
-	.loc	15	8	0
+	.loc	27	8	0
 	exit;
 $LDWend__Z7barrierPiS_:
 	} // _Z7barrierPiS_

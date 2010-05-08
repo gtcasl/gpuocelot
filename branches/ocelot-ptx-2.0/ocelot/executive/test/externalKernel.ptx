@@ -1,0 +1,34 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+
+	.entry testExternalKernel (
+		.param .u64 __cudaparm_testExternalKernel_A,
+		.param .s32 __cudaparm_testExternalKernel_N)
+	{
+	.reg .u16 %rh<4>;
+	.reg .u32 %r<7>;
+	.reg .u64 %rd<6>;
+	.reg .pred %p<3>;
+	.loc	15	10	0
+$LBB1_testExternalKernel:
+	mov.u16 	%rh1, %ctaid.x;
+	mov.u16 	%rh2, %ntid.x;
+	mul.wide.u16 	%r1, %rh1, %rh2;
+	cvt.u32.u16 	%r2, %tid.x;
+	add.u32 	%r3, %r2, %r1;
+	ld.param.s32 	%r4, [__cudaparm_testExternalKernel_N];
+	setp.le.s32 	%p1, %r4, %r3;
+	@%p1 bra 	$Lt_0_1026;
+	.loc	15	13	0
+	mul.lo.s32 	%r5, %r3, 4;
+	ld.param.u64 	%rd1, [__cudaparm_testExternalKernel_A];
+	cvt.u64.s32 	%rd2, %r3;
+	mul.lo.u64 	%rd3, %rd2, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	st.global.s32 	[%rd4+0], %r5;
+$Lt_0_1026:
+	.loc	15	15	0
+	exit;
+$LDWend_testExternalKernel:
+	} // testExternalKernel
+

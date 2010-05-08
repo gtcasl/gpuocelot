@@ -26,14 +26,14 @@ Ocelot Version 1.1.560 Features:
 	 	i) Recompiles PTX kernels using the NVIDIA Driver
  2) Reimplementation of the CUDA Runtime
  	a) Device Switching
- 		- The same host thread can simulatneously control multiple devices.
+ 		- The same host thread can simultaneously control multiple devices.
  	b) New Memory Model
  		- Device allocations are shared among all host threads
  3) PTXOptimizer
- 	a) Extendable optimization pass interface for PTX
+ 	a) Extendible optimization pass interface for PTX
  		- Per-Block, Per-Kernel, Per-Module passes 
  4) Trace Generator
- 	a) Extendable interface for instrumenting PTX kernels
+ 	a) Extendible interface for instrumenting PTX kernels
  	b) Can examine the complete system state after each instruction is executed
  		i) Registers
  		ii) Memory Accesses

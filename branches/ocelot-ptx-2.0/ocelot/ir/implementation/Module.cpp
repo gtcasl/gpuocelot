@@ -22,7 +22,7 @@
 
 #define REPORT_BASE 0
 
-ir::Module::Module(std::string path) {
+ir::Module::Module(const std::string& path) {
 	load(path);
 }
 
@@ -35,7 +35,7 @@ ir::Module::Module() {
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
 	version.major = 1; version.minor = 3;
-	target.targets.push_back("sm_13");
+	target.targets.push_back("sm_20");
 	statements.push_back(version);
 	statements.push_back(target);
 }
@@ -45,7 +45,8 @@ ir::Module::~Module() {
 }
 
 
-ir::Module::Module(std::string name, const StatementVector & _statements) {
+ir::Module::Module(const std::string& name, 
+	const StatementVector& _statements) {
 	modulePath = name;
 	statements = _statements;
 	extractPTXKernels();

@@ -42,7 +42,7 @@ namespace ir {
 			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(std::string path);
+		Module(const std::string& path);
 
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
@@ -51,7 +51,7 @@ namespace ir {
 			const std::string& path = "::unknown path::");
 
 		/*! Construct a Module from a name and a vector of PTXStatements */
-		Module(std::string, const StatementVector &);
+		Module(const std::string& , const StatementVector&);
 
 		/*!	Construct an empty module */
 		Module();
@@ -60,10 +60,10 @@ namespace ir {
 		~Module();
 		
 		/*! Write the module to an assembly file using statements */
-		void write( std::ostream& stream ) const;
+		void write(std::ostream& stream) const;
 
 		/*! \brief Write the module to an assembly file from the IR */
-		void writeIR( std::ostream& stream ) const;
+		void writeIR(std::ostream& stream) const;
 
 		/*! \brief Creates IR data structures for PTX kernels */
 		void createDataStructures();
@@ -75,7 +75,7 @@ namespace ir {
 		bool load(std::string path);
 
 		/*!	Unloads module and loads PTX source file in given stream */
-		bool load(std::istream& source, 
+		bool load(std::istream& source,
 			const std::string& path = "::unknown path::");
 
 		/*!

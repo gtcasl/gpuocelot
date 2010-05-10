@@ -58,9 +58,9 @@ namespace ir {
 
 	public:
 		/*!	Returns a reference to a parameter identified by 'name' */		
-		Parameter& getParameter(const std::string& name);
-		/*!	Returns a const reference to a parameter identified by 'name' */
-		const Parameter& getParameter(const std::string& name) const;
+		Parameter* getParameter(const std::string& name);
+		/*!	Returns a const pointer to a parameter identified by 'name' */
+		const Parameter* getParameter(const std::string& name) const;
 
 	public:
 		/*! \brief Builds the Pdom tree within the kernel */

@@ -1,5 +1,4 @@
-/*!
-	\file Kernel.cpp
+/*! \file Kernel.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date 15 Jan 2009 ; 21 Jan 2009
 	\brief implements the Kernel base class
@@ -69,28 +68,26 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	return *this;	
 }
 
-ir::Parameter& ir::Kernel::getParameter(const std::string& name) {
+ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
 	for (vector<Parameter>::iterator p_it = parameters.begin(); 
 		p_it != parameters.end(); ++p_it) {
 		if (p_it->name == name) {
-			return *p_it;
+			return &*p_it;
 		}
 	}
-	assertM(false,  "Invalid parameter " << name);
-	return parameters.front();
+	return 0;
 }
 
-const ir::Parameter& ir::Kernel::getParameter(const std::string& name) const {
+const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 	using namespace std;
 	for (vector<Parameter>::const_iterator p_it = parameters.begin(); 
 		p_it != parameters.end(); ++p_it) {
 		if (p_it->name == name) {
-			return *p_it;
+			return &*p_it;
 		}
 	}
-	assertM(false, "Invalid parameter " << name);
-	return parameters.front();
+	return 0;
 }
 
 ir::ControlFlowGraph* ir::Kernel::cfg() {

@@ -270,12 +270,12 @@ void executive::EmulatedKernel::updateParamReferences() {
 		if (instr.addressSpace == ir::PTXInstruction::Param 
 			&& instr.a.addressMode == ir::PTXOperand::Address) {
 			if (instr.opcode == ir::PTXInstruction::Ld) {
-				ir::Parameter &param = getParameter(instr.a.identifier);
+				ir::Parameter &param = *getParameter(instr.a.identifier);
 				instr.a.offset += param.offset;
 				instr.a.imm_uint = 0;
 			}
 			else if (instr.opcode == ir::PTXInstruction::St) {
-				ir::Parameter &param = getParameter(instr.d.identifier);
+				ir::Parameter &param = *getParameter(instr.d.identifier);
 				instr.d.offset += param.offset;
 				instr.d.imm_uint = 0;
 			}

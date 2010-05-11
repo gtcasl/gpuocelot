@@ -10,6 +10,9 @@
 // CAL includes
 #include <ocelot/cal/include/cal.h>
 #include <ocelot/cal/include/calcl.h>
+			
+/*! \brief CAL device pointer */
+typedef unsigned int CALdeviceptr;
 
 namespace cal
 {

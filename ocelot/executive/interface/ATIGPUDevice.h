@@ -17,9 +17,6 @@ namespace executive
 	class ATIGPUDevice : public Device 
 	{
 		public:
-			/*! \brief CAL device pointer */
-			typedef unsigned int CALdeviceptr;
-
 			/*! \brief ATI memory allocation */
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
@@ -189,12 +186,12 @@ namespace executive
 			void setOptimizationLevel(translator::Translator::OptimizationLevel 
 				level);
 
+			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
+			static const CALdeviceptr Uav0BaseAddr = 0x1000;
+
 		private:
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
-
-			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
-			static const CALdeviceptr Uav0BaseAddr;
 
 			/********************************************************//**
 			 * \name uav0 Memory Manager
@@ -216,20 +213,31 @@ namespace executive
 			CALname _uav0Name;
 			//@}
 
+			/*! \brief Maximum constant buffer size (in vectors) */
+			static const CALuint cbMaxSize = 1024;
+
 			/********************************************************//**
-			 * \name cb0 Memory Manager
-			 *
-			 * cb0 acts as the param memory.
-			 */
+			 * \name cb0 Memory Manager (ABI data)
+			 ***********************************************************/
 			//@{
-			/*! \brief Type of the cb0 memory space (4 32-bit components) */
-			typedef int (*cb0Array)[][4];
 			/*! \brief CAL cb0 resource */
 			CALresource _cb0Resource;
 			/*! \brief CAL cb0 memory handle */
 			CALmem _cb0Mem;
-			/*! \brief CAL cb0 module name */
+			/*! \brief CAL cb1 module name */
 			CALname _cb0Name;
+			//@}
+
+			/********************************************************//**
+			 * \name cb1 Memory Manager (param)
+			 ***********************************************************/
+			//@{
+			/*! \brief CAL cb1 resource */
+			CALresource _cb1Resource;
+			/*! \brief CAL cb1 memory handle */
+			CALmem _cb1Mem;
+			/*! \brief CAL cb1 module name */
+			CALname _cb1Name;
 			//@}
 
 			/*! \brief CAL Device */
@@ -246,11 +254,10 @@ namespace executive
 			/*! \brief CAL Module */
 			CALmodule _module;
 
+			/*! \brief The ir representation of the module */
+			const ir::Module *_ir;
 			/*! \brief Has this device been selected? */
 			bool _selected;
-
-			/*! \brief Setup the parameter passing area */
-			void _updateParameterMemory(const void *parameterBlock);
 
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */

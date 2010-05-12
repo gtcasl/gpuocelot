@@ -28,7 +28,8 @@ check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
 	TestThrustRunLengthEncoding TestThrustSaxpy TestThrustSegmentedScan \
 	TestThrustSort TestThrustAOSSorting TestThrustStreamCompact \
 	TestThrustSum TestThrustSummedArea TestThrustSumRows \
-	TestThrustTransformIterator TestThrustWrapPointer TestThrustUnwrapPointer
+	TestThrustTransformIterator TestThrustWrapPointer TestThrustUnwrapPointer \
+	vectorAdd
 	
 lib_LTLIBRARIES = libsdk.la
 ################################################################################
@@ -69,6 +70,14 @@ SortingNetwork_SOURCES = tests/sortingNetworks/bitonicSort.cu.cpp \
 	tests/sortingNetworks/sortingNetworks_validate.cpp
 SortingNetwork_LDADD = $(OCELOT_LIBS)
 SortingNetwork_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## vectorAdd
+vectorAdd_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+vectorAdd_SOURCES = tests/vectorAdd/vectorAdd.cu.cpp
+vectorAdd_LDADD = $(OCELOT_LIBS)
+vectorAdd_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

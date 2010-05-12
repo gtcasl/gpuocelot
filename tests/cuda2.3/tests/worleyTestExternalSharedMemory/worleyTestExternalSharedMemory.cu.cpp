@@ -1,23 +1,23 @@
-# 1 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.cpp"
-# 1 "worleyTestExternalSharedMemory.cu"
-# 46 "/home/normal/cuda/bin/../include/device_types.h"
-# 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
-typedef long ptrdiff_t;
-# 211 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
-typedef unsigned long size_t;
-# 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1 3
-# 108 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 3
-# 1 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 1 3
-# 53 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
-# 1 "/home/normal/cuda/bin/../include/host_defines.h" 1 3
-# 54 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/builtin_types.h" 1 3
-# 42 "/home/normal/cuda/bin/../include/builtin_types.h" 3
-# 1 "/home/normal/cuda/bin/../include/device_types.h" 1 3
-# 46 "/home/normal/cuda/bin/../include/device_types.h" 3
+# 1 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
+# 46 "/usr/local/cuda/bin/../include/device_types.h"
+# 149 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h" 3
+typedef int ptrdiff_t;
+# 211 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h" 3
+typedef unsigned size_t;
+# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
+# 108 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
+# 1 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 1 3
+# 53 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
+# 1 "/usr/local/cuda/bin/../include/host_defines.h" 1 3
+# 54 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
+# 42 "/usr/local/cuda/bin/../include/builtin_types.h" 3
+# 1 "/usr/local/cuda/bin/../include/device_types.h" 1 3
+# 46 "/usr/local/cuda/bin/../include/device_types.h" 3
 enum cudaRoundMode
 {
   cudaRoundNearest,
@@ -25,9 +25,9 @@ enum cudaRoundMode
   cudaRoundPosInf,
   cudaRoundMinInf
 };
-# 43 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/driver_types.h" 1 3
-# 91 "/home/normal/cuda/bin/../include/driver_types.h" 3
+# 43 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/driver_types.h" 1 3
+# 92 "/usr/local/cuda/bin/../include/driver_types.h" 3
 enum cudaError
 {
   cudaSuccess = 0,
@@ -67,8 +67,8 @@ enum cudaError
   cudaErrorNotReady = 34,
   cudaErrorInsufficientDriver = 35,
   cudaErrorSetOnActiveProcess = 36,
-  cudaErrorInvalidSurface = 37,
   cudaErrorNoDevice = 38,
+  cudaErrorECCUncorrectable = 39,
   cudaErrorStartupFailure = 0x7f,
   cudaErrorApiFailureBase = 10000
 };
@@ -221,7 +221,30 @@ struct cudaFuncAttributes
    size_t localSizeBytes;
    int maxThreadsPerBlock;
    int numRegs;
-   int __cudaReserved[8];
+
+
+
+
+
+   int ptxVersion;
+
+
+
+
+
+   int binaryVersion;
+   int __cudaReserved[6];
+};
+
+
+
+
+
+enum cudaFuncCache
+{
+  cudaFuncCachePreferNone = 0,
+  cudaFuncCachePreferShared = 1,
+  cudaFuncCachePreferL1 = 2
 };
 
 
@@ -261,9 +284,14 @@ struct cudaDeviceProp
   int integrated;
   int canMapHostMemory;
   int computeMode;
-  int __cudaReserved[36];
+  int maxTexture1D;
+  int maxTexture2D[2];
+  int maxTexture3D[3];
+  int maxTexture2DArray[3];
+  int concurrentKernels;
+  int __cudaReserved[26];
 };
-# 361 "/home/normal/cuda/bin/../include/driver_types.h" 3
+# 395 "/usr/local/cuda/bin/../include/driver_types.h" 3
 typedef enum cudaError cudaError_t;
 
 
@@ -277,35 +305,14 @@ typedef int cudaStream_t;
 
 
 typedef int cudaEvent_t;
-# 44 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/surface_types.h" 1 3
-# 54 "/home/normal/cuda/bin/../include/surface_types.h" 3
-enum cudaSurfaceBounderyMode
-{
-  cudaBounderyModeZero = 0,
-  cudaBounderyModeClamp = 1,
-  cudaBounderyModeTrap = 2
-};
-
-
-enum cudaSurfaceFormatMode
-{
-  cudaFormatModeForced,
-  cudaFormatModeAuto
-};
-
-
-struct surfaceReference
-{
-  struct cudaChannelFormatDesc channelDesc;
-};
-# 45 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/texture_types.h" 1 3
-# 54 "/home/normal/cuda/bin/../include/texture_types.h" 3
+# 44 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/texture_types.h" 1 3
+# 54 "/usr/local/cuda/bin/../include/texture_types.h" 3
 enum cudaTextureAddressMode
 {
   cudaAddressModeWrap,
-  cudaAddressModeClamp
+  cudaAddressModeClamp,
+  cudaAddressModeMirror
 };
 
 
@@ -331,9 +338,9 @@ struct textureReference
   struct cudaChannelFormatDesc channelDesc;
   int __cudaReserved[16];
 };
-# 46 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/vector_types.h" 1 3
-# 82 "/home/normal/cuda/bin/../include/vector_types.h" 3
+# 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/vector_types.h" 1 3
+# 82 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct char1
 {
   signed char x;
@@ -498,7 +505,7 @@ struct ulong1
   unsigned long x;
  
 };
-# 258 "/home/normal/cuda/bin/../include/vector_types.h" 3
+# 258 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct __attribute__((aligned(2*sizeof(long int)))) long2
 {
   long int x, y;
@@ -511,7 +518,38 @@ struct __attribute__((aligned(2*sizeof(unsigned long int)))) ulong2
   unsigned long int x, y;
  
 };
-# 306 "/home/normal/cuda/bin/../include/vector_types.h" 3
+
+
+
+
+struct long3
+{
+  long int x, y, z;
+ 
+};
+
+
+struct ulong3
+{
+  unsigned long int x, y, z;
+ 
+};
+
+
+struct __attribute__((aligned(16))) long4
+{
+  long int x, y, z, w;
+ 
+};
+
+
+struct __attribute__((aligned(16))) ulong4
+{
+  unsigned long int x, y, z, w;
+ 
+};
+
+
 struct float1
 {
   float x;
@@ -564,6 +602,34 @@ struct __attribute__((aligned(16))) ulonglong2
 };
 
 
+struct longlong3
+{
+  long long int x, y, z;
+ 
+};
+
+
+struct ulonglong3
+{
+  unsigned long long int x, y, z;
+ 
+};
+
+
+struct __attribute__((aligned(16))) longlong4
+{
+  long long int x, y, z ,w;
+ 
+};
+
+
+struct __attribute__((aligned(16))) ulonglong4
+{
+  unsigned long long int x, y, z, w;
+ 
+};
+
+
 struct double1
 {
   double x;
@@ -576,7 +642,21 @@ struct __attribute__((aligned(16))) double2
   double x, y;
  
 };
-# 378 "/home/normal/cuda/bin/../include/vector_types.h" 3
+
+
+struct double3
+{
+  double x, y, z;
+ 
+};
+
+
+struct __attribute__((aligned(16))) double4
+{
+  double x, y, z, w;
+ 
+};
+# 416 "/usr/local/cuda/bin/../include/vector_types.h" 3
 typedef struct char1 char1;
 
 typedef struct uchar1 uchar1;
@@ -632,7 +712,15 @@ typedef struct ulong1 ulong1;
 typedef struct long2 long2;
 
 typedef struct ulong2 ulong2;
-# 448 "/home/normal/cuda/bin/../include/vector_types.h" 3
+
+typedef struct long3 long3;
+
+typedef struct ulong3 ulong3;
+
+typedef struct long4 long4;
+
+typedef struct ulong4 ulong4;
+
 typedef struct float1 float1;
 
 typedef struct float2 float2;
@@ -649,10 +737,22 @@ typedef struct longlong2 longlong2;
 
 typedef struct ulonglong2 ulonglong2;
 
+typedef struct longlong3 longlong3;
+
+typedef struct ulonglong3 ulonglong3;
+
+typedef struct longlong4 longlong4;
+
+typedef struct ulonglong4 ulonglong4;
+
 typedef struct double1 double1;
 
 typedef struct double2 double2;
-# 475 "/home/normal/cuda/bin/../include/vector_types.h" 3
+
+typedef struct double3 double3;
+
+typedef struct double4 double4;
+# 519 "/usr/local/cuda/bin/../include/vector_types.h" 3
 struct dim3
 {
     unsigned int x, y, z;
@@ -665,16 +765,16 @@ struct dim3
 
 
 typedef struct dim3 dim3;
-# 46 "/home/normal/cuda/bin/../include/builtin_types.h" 2 3
-# 55 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 2 3
-# 80 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+# 45 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
+# 55 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 2 3
+# 80 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern "C" {
-# 89 "/home/normal/cuda/bin/../include/cuda_runtime_api.h" 3
+# 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h" 3
 extern cudaError_t cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, struct cudaExtent extent);
 extern cudaError_t cudaMalloc3DArray(struct cudaArray** arrayPtr, const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 extern cudaError_t cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent);
 extern cudaError_t cudaMemcpy3D(const struct cudaMemcpy3DParms *p);
-extern cudaError_t cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream);
+extern cudaError_t cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream );
 
 
 
@@ -718,14 +818,14 @@ extern cudaError_t cudaMemcpyFromSymbol(void *dst, const char *symbol, size_t co
 
 
 
-extern cudaError_t cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpyToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpyFromArrayAsync(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpy2DAsync(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpy2DToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpy2DFromArrayAsync(void *dst, size_t dpitch, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpyToSymbolAsync(const char *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream);
-extern cudaError_t cudaMemcpyFromSymbolAsync(void *dst, const char *symbol, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream);
+extern cudaError_t cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpyToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpyFromArrayAsync(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpy2DAsync(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpy2DToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpy2DFromArrayAsync(void *dst, size_t dpitch, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpyToSymbolAsync(const char *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream );
+extern cudaError_t cudaMemcpyFromSymbolAsync(void *dst, const char *symbol, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream );
 
 
 
@@ -778,17 +878,6 @@ extern cudaError_t cudaGetTextureReference(const struct textureReference **texre
 
 
 
-extern cudaError_t cudaBindSurfaceToAddr(size_t *offset, const struct surfaceReference *surfref, const void *devPtr, const struct cudaChannelFormatDesc *desc, size_t size );
-extern cudaError_t cudaBindSurfaceToArray(const struct surfaceReference *surfref, const struct cudaArray *array, const struct cudaChannelFormatDesc *desc);
-extern cudaError_t cudaGetSurfaceAlignmentOffset(size_t *offset, const struct surfaceReference *surfref);
-extern cudaError_t cudaGetSurfaceReference(const struct surfaceReference **surfref, const char *symbol);
-
-
-
-
-
-
-
 extern cudaError_t cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, const struct cudaArray *array);
 extern struct cudaChannelFormatDesc cudaCreateChannelDesc(int x, int y, int z, int w, enum cudaChannelFormatKind f);
 
@@ -809,6 +898,7 @@ extern const char* cudaGetErrorString(cudaError_t error);
 
 extern cudaError_t cudaConfigureCall(dim3 gridDim, dim3 blockDim, size_t sharedMem , cudaStream_t stream );
 extern cudaError_t cudaSetupArgument(const void *arg, size_t size, size_t offset);
+extern cudaError_t cudaFuncSetCacheConfig(const char *func, enum cudaFuncCache cacheConfig);
 extern cudaError_t cudaLaunch(const char *entry);
 extern cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *func);
 
@@ -831,7 +921,7 @@ extern cudaError_t cudaStreamQuery(cudaStream_t stream);
 
 extern cudaError_t cudaEventCreate(cudaEvent_t *event);
 extern cudaError_t cudaEventCreateWithFlags(cudaEvent_t *event, int flags);
-extern cudaError_t cudaEventRecord(cudaEvent_t event, cudaStream_t stream);
+extern cudaError_t cudaEventRecord(cudaEvent_t event, cudaStream_t stream );
 extern cudaError_t cudaEventQuery(cudaEvent_t event);
 extern cudaError_t cudaEventSynchronize(cudaEvent_t event);
 extern cudaError_t cudaEventDestroy(cudaEvent_t event);
@@ -872,984 +962,1156 @@ extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 
 extern cudaError_t cudaGraphicsUnregisterResource(struct cudaGraphicsResource *resource);
 extern cudaError_t cudaGraphicsResourceSetMapFlags(struct cudaGraphicsResource *resource, unsigned int flags);
-extern cudaError_t cudaGraphicsMapResources(int count, struct cudaGraphicsResource **resources, cudaStream_t stream);
-extern cudaError_t cudaGraphicsUnmapResources(int count, struct cudaGraphicsResource **resources, cudaStream_t stream);
+extern cudaError_t cudaGraphicsMapResources(int count, struct cudaGraphicsResource **resources, cudaStream_t stream );
+extern cudaError_t cudaGraphicsUnmapResources(int count, struct cudaGraphicsResource **resources, cudaStream_t stream );
 extern cudaError_t cudaGraphicsResourceGetMappedPointer(void **devPtr, size_t *size, struct cudaGraphicsResource *resource);
 extern cudaError_t cudaGraphicsSubResourceGetMappedArray(struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, unsigned int arrayIndex, unsigned int mipLevel);
 
 
 }
-# 109 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/crt/storage_class.h" 1 3
-# 110 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 213 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 2 3
-# 91 "/home/normal/cuda/bin/../include/driver_types.h"
-# 140 "/home/normal/cuda/bin/../include/driver_types.h"
-# 152 "/home/normal/cuda/bin/../include/driver_types.h"
-# 165 "/home/normal/cuda/bin/../include/driver_types.h"
-# 171 "/home/normal/cuda/bin/../include/driver_types.h"
-# 184 "/home/normal/cuda/bin/../include/driver_types.h"
-# 197 "/home/normal/cuda/bin/../include/driver_types.h"
-# 209 "/home/normal/cuda/bin/../include/driver_types.h"
-# 220 "/home/normal/cuda/bin/../include/driver_types.h"
-# 238 "/home/normal/cuda/bin/../include/driver_types.h"
-# 244 "/home/normal/cuda/bin/../include/driver_types.h"
-# 253 "/home/normal/cuda/bin/../include/driver_types.h"
-# 264 "/home/normal/cuda/bin/../include/driver_types.h"
-# 277 "/home/normal/cuda/bin/../include/driver_types.h"
-# 291 "/home/normal/cuda/bin/../include/driver_types.h"
-# 302 "/home/normal/cuda/bin/../include/driver_types.h"
-# 361 "/home/normal/cuda/bin/../include/driver_types.h"
-# 367 "/home/normal/cuda/bin/../include/driver_types.h"
-# 373 "/home/normal/cuda/bin/../include/driver_types.h"
-# 54 "/home/normal/cuda/bin/../include/surface_types.h"
-# 62 "/home/normal/cuda/bin/../include/surface_types.h"
-# 69 "/home/normal/cuda/bin/../include/surface_types.h"
-# 54 "/home/normal/cuda/bin/../include/texture_types.h"
-# 61 "/home/normal/cuda/bin/../include/texture_types.h"
-# 68 "/home/normal/cuda/bin/../include/texture_types.h"
-# 75 "/home/normal/cuda/bin/../include/texture_types.h"
-# 82 "/home/normal/cuda/bin/../include/vector_types.h"
-# 89 "/home/normal/cuda/bin/../include/vector_types.h"
-# 96 "/home/normal/cuda/bin/../include/vector_types.h"
-# 103 "/home/normal/cuda/bin/../include/vector_types.h"
-# 110 "/home/normal/cuda/bin/../include/vector_types.h"
-# 117 "/home/normal/cuda/bin/../include/vector_types.h"
-# 124 "/home/normal/cuda/bin/../include/vector_types.h"
-# 131 "/home/normal/cuda/bin/../include/vector_types.h"
-# 138 "/home/normal/cuda/bin/../include/vector_types.h"
-# 145 "/home/normal/cuda/bin/../include/vector_types.h"
-# 152 "/home/normal/cuda/bin/../include/vector_types.h"
-# 159 "/home/normal/cuda/bin/../include/vector_types.h"
-# 166 "/home/normal/cuda/bin/../include/vector_types.h"
-# 173 "/home/normal/cuda/bin/../include/vector_types.h"
-# 180 "/home/normal/cuda/bin/../include/vector_types.h"
-# 183 "/home/normal/cuda/bin/../include/vector_types.h"
-# 186 "/home/normal/cuda/bin/../include/vector_types.h"
-# 193 "/home/normal/cuda/bin/../include/vector_types.h"
-# 200 "/home/normal/cuda/bin/../include/vector_types.h"
-# 203 "/home/normal/cuda/bin/../include/vector_types.h"
-# 206 "/home/normal/cuda/bin/../include/vector_types.h"
-# 213 "/home/normal/cuda/bin/../include/vector_types.h"
-# 220 "/home/normal/cuda/bin/../include/vector_types.h"
-# 227 "/home/normal/cuda/bin/../include/vector_types.h"
-# 234 "/home/normal/cuda/bin/../include/vector_types.h"
-# 241 "/home/normal/cuda/bin/../include/vector_types.h"
-# 258 "/home/normal/cuda/bin/../include/vector_types.h"
-# 265 "/home/normal/cuda/bin/../include/vector_types.h"
-# 306 "/home/normal/cuda/bin/../include/vector_types.h"
-# 313 "/home/normal/cuda/bin/../include/vector_types.h"
-# 316 "/home/normal/cuda/bin/../include/vector_types.h"
-# 323 "/home/normal/cuda/bin/../include/vector_types.h"
-# 330 "/home/normal/cuda/bin/../include/vector_types.h"
-# 337 "/home/normal/cuda/bin/../include/vector_types.h"
-# 344 "/home/normal/cuda/bin/../include/vector_types.h"
-# 351 "/home/normal/cuda/bin/../include/vector_types.h"
-# 358 "/home/normal/cuda/bin/../include/vector_types.h"
-# 365 "/home/normal/cuda/bin/../include/vector_types.h"
-# 378 "/home/normal/cuda/bin/../include/vector_types.h"
-# 380 "/home/normal/cuda/bin/../include/vector_types.h"
-# 382 "/home/normal/cuda/bin/../include/vector_types.h"
-# 384 "/home/normal/cuda/bin/../include/vector_types.h"
-# 386 "/home/normal/cuda/bin/../include/vector_types.h"
-# 388 "/home/normal/cuda/bin/../include/vector_types.h"
-# 390 "/home/normal/cuda/bin/../include/vector_types.h"
-# 392 "/home/normal/cuda/bin/../include/vector_types.h"
-# 394 "/home/normal/cuda/bin/../include/vector_types.h"
-# 396 "/home/normal/cuda/bin/../include/vector_types.h"
-# 398 "/home/normal/cuda/bin/../include/vector_types.h"
-# 400 "/home/normal/cuda/bin/../include/vector_types.h"
-# 402 "/home/normal/cuda/bin/../include/vector_types.h"
-# 404 "/home/normal/cuda/bin/../include/vector_types.h"
-# 406 "/home/normal/cuda/bin/../include/vector_types.h"
-# 408 "/home/normal/cuda/bin/../include/vector_types.h"
-# 410 "/home/normal/cuda/bin/../include/vector_types.h"
-# 412 "/home/normal/cuda/bin/../include/vector_types.h"
-# 414 "/home/normal/cuda/bin/../include/vector_types.h"
-# 416 "/home/normal/cuda/bin/../include/vector_types.h"
-# 418 "/home/normal/cuda/bin/../include/vector_types.h"
-# 420 "/home/normal/cuda/bin/../include/vector_types.h"
-# 422 "/home/normal/cuda/bin/../include/vector_types.h"
-# 424 "/home/normal/cuda/bin/../include/vector_types.h"
-# 426 "/home/normal/cuda/bin/../include/vector_types.h"
-# 428 "/home/normal/cuda/bin/../include/vector_types.h"
-# 430 "/home/normal/cuda/bin/../include/vector_types.h"
-# 432 "/home/normal/cuda/bin/../include/vector_types.h"
-# 448 "/home/normal/cuda/bin/../include/vector_types.h"
-# 450 "/home/normal/cuda/bin/../include/vector_types.h"
-# 452 "/home/normal/cuda/bin/../include/vector_types.h"
-# 454 "/home/normal/cuda/bin/../include/vector_types.h"
-# 456 "/home/normal/cuda/bin/../include/vector_types.h"
-# 458 "/home/normal/cuda/bin/../include/vector_types.h"
-# 460 "/home/normal/cuda/bin/../include/vector_types.h"
-# 462 "/home/normal/cuda/bin/../include/vector_types.h"
-# 464 "/home/normal/cuda/bin/../include/vector_types.h"
-# 466 "/home/normal/cuda/bin/../include/vector_types.h"
-# 475 "/home/normal/cuda/bin/../include/vector_types.h"
-# 486 "/home/normal/cuda/bin/../include/vector_types.h"
-# 89 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 109 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
+# 110 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+# 213 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h" 2 3
+# 92 "/usr/local/cuda/bin/../include/driver_types.h"
+# 141 "/usr/local/cuda/bin/../include/driver_types.h"
+# 153 "/usr/local/cuda/bin/../include/driver_types.h"
+# 166 "/usr/local/cuda/bin/../include/driver_types.h"
+# 172 "/usr/local/cuda/bin/../include/driver_types.h"
+# 185 "/usr/local/cuda/bin/../include/driver_types.h"
+# 198 "/usr/local/cuda/bin/../include/driver_types.h"
+# 210 "/usr/local/cuda/bin/../include/driver_types.h"
+# 221 "/usr/local/cuda/bin/../include/driver_types.h"
+# 239 "/usr/local/cuda/bin/../include/driver_types.h"
+# 245 "/usr/local/cuda/bin/../include/driver_types.h"
+# 254 "/usr/local/cuda/bin/../include/driver_types.h"
+# 265 "/usr/local/cuda/bin/../include/driver_types.h"
+# 278 "/usr/local/cuda/bin/../include/driver_types.h"
+# 304 "/usr/local/cuda/bin/../include/driver_types.h"
+# 315 "/usr/local/cuda/bin/../include/driver_types.h"
+# 326 "/usr/local/cuda/bin/../include/driver_types.h"
+# 395 "/usr/local/cuda/bin/../include/driver_types.h"
+# 401 "/usr/local/cuda/bin/../include/driver_types.h"
+# 407 "/usr/local/cuda/bin/../include/driver_types.h"
+# 54 "/usr/local/cuda/bin/../include/texture_types.h"
+# 62 "/usr/local/cuda/bin/../include/texture_types.h"
+# 69 "/usr/local/cuda/bin/../include/texture_types.h"
+# 76 "/usr/local/cuda/bin/../include/texture_types.h"
+# 82 "/usr/local/cuda/bin/../include/vector_types.h"
+# 89 "/usr/local/cuda/bin/../include/vector_types.h"
+# 96 "/usr/local/cuda/bin/../include/vector_types.h"
+# 103 "/usr/local/cuda/bin/../include/vector_types.h"
+# 110 "/usr/local/cuda/bin/../include/vector_types.h"
+# 117 "/usr/local/cuda/bin/../include/vector_types.h"
+# 124 "/usr/local/cuda/bin/../include/vector_types.h"
+# 131 "/usr/local/cuda/bin/../include/vector_types.h"
+# 138 "/usr/local/cuda/bin/../include/vector_types.h"
+# 145 "/usr/local/cuda/bin/../include/vector_types.h"
+# 152 "/usr/local/cuda/bin/../include/vector_types.h"
+# 159 "/usr/local/cuda/bin/../include/vector_types.h"
+# 166 "/usr/local/cuda/bin/../include/vector_types.h"
+# 173 "/usr/local/cuda/bin/../include/vector_types.h"
+# 180 "/usr/local/cuda/bin/../include/vector_types.h"
+# 183 "/usr/local/cuda/bin/../include/vector_types.h"
+# 186 "/usr/local/cuda/bin/../include/vector_types.h"
+# 193 "/usr/local/cuda/bin/../include/vector_types.h"
+# 200 "/usr/local/cuda/bin/../include/vector_types.h"
+# 203 "/usr/local/cuda/bin/../include/vector_types.h"
+# 206 "/usr/local/cuda/bin/../include/vector_types.h"
+# 213 "/usr/local/cuda/bin/../include/vector_types.h"
+# 220 "/usr/local/cuda/bin/../include/vector_types.h"
+# 227 "/usr/local/cuda/bin/../include/vector_types.h"
+# 234 "/usr/local/cuda/bin/../include/vector_types.h"
+# 241 "/usr/local/cuda/bin/../include/vector_types.h"
+# 258 "/usr/local/cuda/bin/../include/vector_types.h"
+# 265 "/usr/local/cuda/bin/../include/vector_types.h"
+# 274 "/usr/local/cuda/bin/../include/vector_types.h"
+# 281 "/usr/local/cuda/bin/../include/vector_types.h"
+# 288 "/usr/local/cuda/bin/../include/vector_types.h"
+# 295 "/usr/local/cuda/bin/../include/vector_types.h"
+# 302 "/usr/local/cuda/bin/../include/vector_types.h"
+# 309 "/usr/local/cuda/bin/../include/vector_types.h"
+# 312 "/usr/local/cuda/bin/../include/vector_types.h"
+# 319 "/usr/local/cuda/bin/../include/vector_types.h"
+# 326 "/usr/local/cuda/bin/../include/vector_types.h"
+# 333 "/usr/local/cuda/bin/../include/vector_types.h"
+# 340 "/usr/local/cuda/bin/../include/vector_types.h"
+# 347 "/usr/local/cuda/bin/../include/vector_types.h"
+# 354 "/usr/local/cuda/bin/../include/vector_types.h"
+# 361 "/usr/local/cuda/bin/../include/vector_types.h"
+# 368 "/usr/local/cuda/bin/../include/vector_types.h"
+# 375 "/usr/local/cuda/bin/../include/vector_types.h"
+# 382 "/usr/local/cuda/bin/../include/vector_types.h"
+# 389 "/usr/local/cuda/bin/../include/vector_types.h"
+# 396 "/usr/local/cuda/bin/../include/vector_types.h"
+# 403 "/usr/local/cuda/bin/../include/vector_types.h"
+# 416 "/usr/local/cuda/bin/../include/vector_types.h"
+# 418 "/usr/local/cuda/bin/../include/vector_types.h"
+# 420 "/usr/local/cuda/bin/../include/vector_types.h"
+# 422 "/usr/local/cuda/bin/../include/vector_types.h"
+# 424 "/usr/local/cuda/bin/../include/vector_types.h"
+# 426 "/usr/local/cuda/bin/../include/vector_types.h"
+# 428 "/usr/local/cuda/bin/../include/vector_types.h"
+# 430 "/usr/local/cuda/bin/../include/vector_types.h"
+# 432 "/usr/local/cuda/bin/../include/vector_types.h"
+# 434 "/usr/local/cuda/bin/../include/vector_types.h"
+# 436 "/usr/local/cuda/bin/../include/vector_types.h"
+# 438 "/usr/local/cuda/bin/../include/vector_types.h"
+# 440 "/usr/local/cuda/bin/../include/vector_types.h"
+# 442 "/usr/local/cuda/bin/../include/vector_types.h"
+# 444 "/usr/local/cuda/bin/../include/vector_types.h"
+# 446 "/usr/local/cuda/bin/../include/vector_types.h"
+# 448 "/usr/local/cuda/bin/../include/vector_types.h"
+# 450 "/usr/local/cuda/bin/../include/vector_types.h"
+# 452 "/usr/local/cuda/bin/../include/vector_types.h"
+# 454 "/usr/local/cuda/bin/../include/vector_types.h"
+# 456 "/usr/local/cuda/bin/../include/vector_types.h"
+# 458 "/usr/local/cuda/bin/../include/vector_types.h"
+# 460 "/usr/local/cuda/bin/../include/vector_types.h"
+# 462 "/usr/local/cuda/bin/../include/vector_types.h"
+# 464 "/usr/local/cuda/bin/../include/vector_types.h"
+# 466 "/usr/local/cuda/bin/../include/vector_types.h"
+# 468 "/usr/local/cuda/bin/../include/vector_types.h"
+# 470 "/usr/local/cuda/bin/../include/vector_types.h"
+# 472 "/usr/local/cuda/bin/../include/vector_types.h"
+# 474 "/usr/local/cuda/bin/../include/vector_types.h"
+# 476 "/usr/local/cuda/bin/../include/vector_types.h"
+# 478 "/usr/local/cuda/bin/../include/vector_types.h"
+# 480 "/usr/local/cuda/bin/../include/vector_types.h"
+# 482 "/usr/local/cuda/bin/../include/vector_types.h"
+# 484 "/usr/local/cuda/bin/../include/vector_types.h"
+# 486 "/usr/local/cuda/bin/../include/vector_types.h"
+# 488 "/usr/local/cuda/bin/../include/vector_types.h"
+# 490 "/usr/local/cuda/bin/../include/vector_types.h"
+# 492 "/usr/local/cuda/bin/../include/vector_types.h"
+# 494 "/usr/local/cuda/bin/../include/vector_types.h"
+# 496 "/usr/local/cuda/bin/../include/vector_types.h"
+# 498 "/usr/local/cuda/bin/../include/vector_types.h"
+# 500 "/usr/local/cuda/bin/../include/vector_types.h"
+# 502 "/usr/local/cuda/bin/../include/vector_types.h"
+# 504 "/usr/local/cuda/bin/../include/vector_types.h"
+# 506 "/usr/local/cuda/bin/../include/vector_types.h"
+# 508 "/usr/local/cuda/bin/../include/vector_types.h"
+# 510 "/usr/local/cuda/bin/../include/vector_types.h"
+# 519 "/usr/local/cuda/bin/../include/vector_types.h"
+# 530 "/usr/local/cuda/bin/../include/vector_types.h"
+# 89 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3D(cudaPitchedPtr *, cudaExtent);
-# 90 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 90 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3DArray(cudaArray **, const cudaChannelFormatDesc *, cudaExtent);
-# 91 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 91 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset3D(cudaPitchedPtr, int, cudaExtent);
-# 92 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 92 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy3D(const cudaMemcpy3DParms *);
-# 93 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpy3DAsync(const cudaMemcpy3DParms *, cudaStream_t);
-# 101 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 93 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpy3DAsync(const cudaMemcpy3DParms *, cudaStream_t = 0);
+# 101 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc(void **, size_t);
-# 102 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 102 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMallocHost(void **, size_t);
-# 103 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 103 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMallocPitch(void **, size_t *, size_t, size_t);
-# 104 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 104 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMallocArray(cudaArray **, const cudaChannelFormatDesc *, size_t, size_t = (1));
-# 105 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 105 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFree(void *);
-# 106 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 106 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFreeHost(void *);
-# 107 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 107 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFreeArray(cudaArray *);
-# 109 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 109 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostAlloc(void **, size_t, unsigned);
-# 110 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 110 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostGetDevicePointer(void **, void *, unsigned);
-# 111 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 111 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostGetFlags(unsigned *, void *);
-# 119 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 119 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemGetInfo(size_t *, size_t *);
-# 120 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 120 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy(void *, const void *, size_t, cudaMemcpyKind);
-# 121 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 121 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyToArray(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind);
-# 122 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 122 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyFromArray(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind);
-# 123 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 123 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyArrayToArray(cudaArray *, size_t, size_t, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind = cudaMemcpyDeviceToDevice);
-# 124 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 124 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2D(void *, size_t, const void *, size_t, size_t, size_t, cudaMemcpyKind);
-# 125 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 125 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DToArray(cudaArray *, size_t, size_t, const void *, size_t, size_t, size_t, cudaMemcpyKind);
-# 126 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 126 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DFromArray(void *, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind);
-# 127 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 127 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DArrayToArray(cudaArray *, size_t, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind = cudaMemcpyDeviceToDevice);
-# 128 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 128 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyToSymbol(const char *, const void *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyHostToDevice);
-# 129 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 129 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyFromSymbol(void *, const char *, size_t, size_t = (0), cudaMemcpyKind = cudaMemcpyDeviceToHost);
-# 137 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpyAsync(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t);
-# 138 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpyToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind, cudaStream_t);
-# 139 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpyFromArrayAsync(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 140 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpy2DAsync(void *, size_t, const void *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 141 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpy2DToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 142 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpy2DFromArrayAsync(void *, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 143 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpyToSymbolAsync(const char *, const void *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 144 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaMemcpyFromSymbolAsync(void *, const char *, size_t, size_t, cudaMemcpyKind, cudaStream_t);
-# 152 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 137 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpyAsync(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 138 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpyToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 139 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpyFromArrayAsync(void *, const cudaArray *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 140 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpy2DAsync(void *, size_t, const void *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 141 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpy2DToArrayAsync(cudaArray *, size_t, size_t, const void *, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 142 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpy2DFromArrayAsync(void *, size_t, const cudaArray *, size_t, size_t, size_t, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 143 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpyToSymbolAsync(const char *, const void *, size_t, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 144 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaMemcpyFromSymbolAsync(void *, const char *, size_t, size_t, cudaMemcpyKind, cudaStream_t = 0);
+# 152 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset(void *, int, size_t);
-# 153 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 153 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset2D(void *, size_t, int, size_t, size_t);
-# 161 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 161 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolAddress(void **, const char *);
-# 162 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 162 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolSize(size_t *, const char *);
-# 170 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 170 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceCount(int *);
-# 171 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 171 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceProperties(cudaDeviceProp *, int);
-# 172 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 172 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaChooseDevice(int *, const cudaDeviceProp *);
-# 173 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 173 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDevice(int);
-# 174 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 174 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDevice(int *);
-# 175 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 175 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetValidDevices(int *, int);
-# 176 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 176 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDeviceFlags(int);
-# 184 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 184 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t = (((2147483647) * 2U) + 1U));
-# 185 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 185 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture2D(size_t *, const textureReference *, const void *, const cudaChannelFormatDesc *, size_t, size_t, size_t);
-# 186 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 186 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTextureToArray(const textureReference *, const cudaArray *, const cudaChannelFormatDesc *);
-# 187 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 187 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaUnbindTexture(const textureReference *);
-# 188 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 188 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetTextureAlignmentOffset(size_t *, const textureReference *);
-# 189 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 189 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetTextureReference(const textureReference **, const char *);
-# 197 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaBindSurfaceToAddr(size_t *, const surfaceReference *, const void *, const cudaChannelFormatDesc *, size_t = (((2147483647) * 2U) + 1U));
-# 198 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaBindSurfaceToArray(const surfaceReference *, const cudaArray *, const cudaChannelFormatDesc *);
-# 199 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaGetSurfaceAlignmentOffset(size_t *, const surfaceReference *);
-# 200 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaGetSurfaceReference(const surfaceReference **, const char *);
-# 208 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 197 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetChannelDesc(cudaChannelFormatDesc *, const cudaArray *);
-# 209 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 198 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaChannelFormatDesc cudaCreateChannelDesc(int, int, int, int, cudaChannelFormatKind);
-# 217 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 206 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetLastError();
-# 218 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 207 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" const char *cudaGetErrorString(cudaError_t);
-# 226 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 215 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaConfigureCall(dim3, dim3, size_t = (0), cudaStream_t = 0);
-# 227 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 216 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetupArgument(const void *, size_t, size_t);
-# 228 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 217 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaFuncSetCacheConfig(const char *, cudaFuncCache);
+# 218 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaLaunch(const char *);
-# 229 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 219 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFuncGetAttributes(cudaFuncAttributes *, const char *);
-# 237 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 227 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamCreate(cudaStream_t *);
-# 238 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 228 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamDestroy(cudaStream_t);
-# 239 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 229 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamSynchronize(cudaStream_t);
-# 240 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 230 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamQuery(cudaStream_t);
-# 248 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 238 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreate(cudaEvent_t *);
-# 249 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 239 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreateWithFlags(cudaEvent_t *, int);
-# 250 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaEventRecord(cudaEvent_t, cudaStream_t);
-# 251 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 240 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaEventRecord(cudaEvent_t, cudaStream_t = 0);
+# 241 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventQuery(cudaEvent_t);
-# 252 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 242 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventSynchronize(cudaEvent_t);
-# 253 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 243 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventDestroy(cudaEvent_t);
-# 254 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 244 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventElapsedTime(float *, cudaEvent_t, cudaEvent_t);
-# 262 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 252 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForDevice(double *);
-# 263 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 253 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForHost(double *);
-# 271 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 261 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaThreadExit();
-# 272 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 262 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaThreadSynchronize();
-# 280 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 270 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDriverGetVersion(int *);
-# 281 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 271 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaRuntimeGetVersion(int *);
-# 289 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 279 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsUnregisterResource(cudaGraphicsResource *);
-# 290 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 280 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsResourceSetMapFlags(cudaGraphicsResource *, unsigned);
-# 291 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaGraphicsMapResources(int, cudaGraphicsResource **, cudaStream_t);
-# 292 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaGraphicsUnmapResources(int, cudaGraphicsResource **, cudaStream_t);
-# 293 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 281 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaGraphicsMapResources(int, cudaGraphicsResource **, cudaStream_t = 0);
+# 282 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaGraphicsUnmapResources(int, cudaGraphicsResource **, cudaStream_t = 0);
+# 283 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsResourceGetMappedPointer(void **, size_t *, cudaGraphicsResource *);
-# 294 "/home/normal/cuda/bin/../include/cuda_runtime_api.h"
+# 284 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsSubResourceGetMappedArray(cudaArray **, cudaGraphicsResource *, unsigned, unsigned);
-# 93 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 93 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<class T> inline cudaChannelFormatDesc cudaCreateChannelDesc()
-# 94 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 94 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 95 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 95 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(0, 0, 0, 0, cudaChannelFormatKindNone);
-# 96 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 96 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 98 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 98 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 static inline cudaChannelFormatDesc cudaCreateChannelDescHalf()
-# 99 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 99 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 100 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 100 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 102 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 102 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindFloat);
-# 103 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 103 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 105 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 105 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 static inline cudaChannelFormatDesc cudaCreateChannelDescHalf1()
-# 106 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 106 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 107 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 107 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 109 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 109 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindFloat);
-# 110 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 110 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 112 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 112 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 static inline cudaChannelFormatDesc cudaCreateChannelDescHalf2()
-# 113 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 113 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 114 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 114 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 116 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 116 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindFloat);
-# 117 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 117 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 119 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 119 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 static inline cudaChannelFormatDesc cudaCreateChannelDescHalf4()
-# 120 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 120 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 121 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 121 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 123 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 123 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindFloat);
-# 124 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 124 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 126 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 126 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< char> ()
-# 127 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 127 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 128 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 128 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(char)) * 8);
-# 133 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 133 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 135 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 135 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 137 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 137 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< signed char> ()
-# 138 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 138 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 139 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 139 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(signed char)) * 8);
-# 141 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 141 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 142 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 142 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 144 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 144 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned char> ()
-# 145 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 145 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 146 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 146 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned char)) * 8);
-# 148 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 148 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 149 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 149 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 151 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 151 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< char1> ()
-# 152 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 152 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 153 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 153 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(signed char)) * 8);
-# 155 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 155 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 156 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 156 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 158 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 158 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< uchar1> ()
-# 159 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 159 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 160 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 160 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned char)) * 8);
-# 162 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 162 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 163 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 163 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 165 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 165 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< char2> ()
-# 166 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 166 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 167 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 167 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(signed char)) * 8);
-# 169 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 169 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 170 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 170 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 172 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 172 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< uchar2> ()
-# 173 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 173 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 174 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 174 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned char)) * 8);
-# 176 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 176 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 177 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 177 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 179 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 179 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< char4> ()
-# 180 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 180 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 181 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 181 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(signed char)) * 8);
-# 183 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 183 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 184 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 184 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 186 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 186 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< uchar4> ()
-# 187 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 187 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 188 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 188 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned char)) * 8);
-# 190 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 190 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 191 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 191 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 193 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 193 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< short> ()
-# 194 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 194 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 195 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 195 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(short)) * 8);
-# 197 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 197 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 198 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 198 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 200 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 200 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned short> ()
-# 201 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 201 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 202 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 202 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 204 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 204 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 205 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 205 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 207 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 207 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< short1> ()
-# 208 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 208 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 209 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 209 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(short)) * 8);
-# 211 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 211 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 212 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 212 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 214 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 214 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ushort1> ()
-# 215 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 215 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 216 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 216 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 218 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 218 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 219 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 219 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 221 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 221 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< short2> ()
-# 222 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 222 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 223 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 223 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(short)) * 8);
-# 225 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 225 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 226 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 226 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 228 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 228 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ushort2> ()
-# 229 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 229 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 230 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 230 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 232 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 232 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 233 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 233 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 235 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 235 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< short4> ()
-# 236 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 236 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 237 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 237 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(short)) * 8);
-# 239 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 239 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 240 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 240 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 242 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 242 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ushort4> ()
-# 243 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 243 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 244 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 244 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned short)) * 8);
-# 246 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 246 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 247 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 247 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 249 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 249 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< int> ()
-# 250 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 250 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 251 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 251 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(int)) * 8);
-# 253 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 253 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 254 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 254 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 256 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 256 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned> ()
-# 257 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 257 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 258 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 258 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned)) * 8);
-# 260 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 260 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 261 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 261 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 263 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 263 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< int1> ()
-# 264 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 264 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 265 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 265 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(int)) * 8);
-# 267 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 267 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 268 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 268 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 270 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 270 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< uint1> ()
-# 271 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 271 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 272 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 272 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned)) * 8);
-# 274 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 274 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 275 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 275 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 277 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 277 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< int2> ()
-# 278 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 278 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 279 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 279 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(int)) * 8);
-# 281 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 281 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 282 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 282 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 284 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 284 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< uint2> ()
-# 285 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 285 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 286 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 286 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned)) * 8);
-# 288 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 288 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 289 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 289 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 291 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 291 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< int4> ()
-# 292 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 292 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 293 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 293 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(int)) * 8);
-# 295 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 295 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 296 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 296 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 298 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 298 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< uint4> ()
-# 299 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 299 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 300 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 300 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(unsigned)) * 8);
-# 302 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 302 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 303 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 303 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 365 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 307 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long> ()
+# 308 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 309 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(long)) * 8);
+# 311 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
+# 312 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 314 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned long> ()
+# 315 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 316 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(unsigned long)) * 8);
+# 318 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
+# 319 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 321 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long1> ()
+# 322 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 323 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(long)) * 8);
+# 325 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
+# 326 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 328 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong1> ()
+# 329 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 330 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(unsigned long)) * 8);
+# 332 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
+# 333 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 335 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long2> ()
+# 336 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 337 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(long)) * 8);
+# 339 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
+# 340 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 342 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong2> ()
+# 343 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 344 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(unsigned long)) * 8);
+# 346 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
+# 347 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 349 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long4> ()
+# 350 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 351 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(long)) * 8);
+# 353 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
+# 354 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 356 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong4> ()
+# 357 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+{
+# 358 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+int e = (((int)sizeof(unsigned long)) * 8);
+# 360 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
+# 361 "/usr/local/cuda/bin/../include/channel_descriptor.h"
+}
+# 365 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
-# 366 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 366 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 367 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 367 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(float)) * 8);
-# 369 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 369 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindFloat);
-# 370 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 370 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 372 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 372 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float1> ()
-# 373 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 373 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 374 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 374 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(float)) * 8);
-# 376 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 376 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindFloat);
-# 377 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 377 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 379 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 379 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float2> ()
-# 380 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 380 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 381 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 381 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(float)) * 8);
-# 383 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 383 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindFloat);
-# 384 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 384 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 386 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 386 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float4> ()
-# 387 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 387 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 {
-# 388 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 388 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 int e = (((int)sizeof(float)) * 8);
-# 390 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 390 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindFloat);
-# 391 "/home/normal/cuda/bin/../include/channel_descriptor.h"
+# 391 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 54 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 54 "/usr/local/cuda/bin/../include/driver_functions.h"
 static inline cudaPitchedPtr make_cudaPitchedPtr(void *d, size_t p, size_t xsz, size_t ysz)
-# 55 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 55 "/usr/local/cuda/bin/../include/driver_functions.h"
 {
-# 56 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 56 "/usr/local/cuda/bin/../include/driver_functions.h"
 cudaPitchedPtr s;
-# 58 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 58 "/usr/local/cuda/bin/../include/driver_functions.h"
 (s.ptr) = d;
-# 59 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 59 "/usr/local/cuda/bin/../include/driver_functions.h"
 (s.pitch) = p;
-# 60 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 60 "/usr/local/cuda/bin/../include/driver_functions.h"
 (s.xsize) = xsz;
-# 61 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 61 "/usr/local/cuda/bin/../include/driver_functions.h"
 (s.ysize) = ysz;
-# 63 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 63 "/usr/local/cuda/bin/../include/driver_functions.h"
 return s;
-# 64 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 64 "/usr/local/cuda/bin/../include/driver_functions.h"
 }
-# 66 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 66 "/usr/local/cuda/bin/../include/driver_functions.h"
 static inline cudaPos make_cudaPos(size_t x, size_t y, size_t z)
-# 67 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 67 "/usr/local/cuda/bin/../include/driver_functions.h"
 {
-# 68 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 68 "/usr/local/cuda/bin/../include/driver_functions.h"
 cudaPos p;
-# 70 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 70 "/usr/local/cuda/bin/../include/driver_functions.h"
 (p.x) = x;
-# 71 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 71 "/usr/local/cuda/bin/../include/driver_functions.h"
 (p.y) = y;
-# 72 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 72 "/usr/local/cuda/bin/../include/driver_functions.h"
 (p.z) = z;
-# 74 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 74 "/usr/local/cuda/bin/../include/driver_functions.h"
 return p;
-# 75 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 75 "/usr/local/cuda/bin/../include/driver_functions.h"
 }
-# 77 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 77 "/usr/local/cuda/bin/../include/driver_functions.h"
 static inline cudaExtent make_cudaExtent(size_t w, size_t h, size_t d)
-# 78 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 78 "/usr/local/cuda/bin/../include/driver_functions.h"
 {
-# 79 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 79 "/usr/local/cuda/bin/../include/driver_functions.h"
 cudaExtent e;
-# 81 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 81 "/usr/local/cuda/bin/../include/driver_functions.h"
 (e.width) = w;
-# 82 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 82 "/usr/local/cuda/bin/../include/driver_functions.h"
 (e.height) = h;
-# 83 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 83 "/usr/local/cuda/bin/../include/driver_functions.h"
 (e.depth) = d;
-# 85 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 85 "/usr/local/cuda/bin/../include/driver_functions.h"
 return e;
-# 86 "/home/normal/cuda/bin/../include/driver_functions.h"
+# 86 "/usr/local/cuda/bin/../include/driver_functions.h"
 }
-# 54 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 54 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline char1 make_char1(signed char x)
-# 55 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 55 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 56 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 56 "/usr/local/cuda/bin/../include/vector_functions.h"
 char1 t; (t.x) = x; return t;
-# 57 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 57 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 59 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 59 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uchar1 make_uchar1(unsigned char x)
-# 60 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 60 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 61 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 61 "/usr/local/cuda/bin/../include/vector_functions.h"
 uchar1 t; (t.x) = x; return t;
-# 62 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 62 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 64 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 64 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline char2 make_char2(signed char x, signed char y)
-# 65 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 65 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 66 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 66 "/usr/local/cuda/bin/../include/vector_functions.h"
 char2 t; (t.x) = x; (t.y) = y; return t;
-# 67 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 67 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 69 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 69 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uchar2 make_uchar2(unsigned char x, unsigned char y)
-# 70 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 70 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 71 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 71 "/usr/local/cuda/bin/../include/vector_functions.h"
 uchar2 t; (t.x) = x; (t.y) = y; return t;
-# 72 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 72 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 74 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 74 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline char3 make_char3(signed char x, signed char y, signed char z)
-# 75 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 75 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 76 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 76 "/usr/local/cuda/bin/../include/vector_functions.h"
 char3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 77 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 77 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 79 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 79 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uchar3 make_uchar3(unsigned char x, unsigned char y, unsigned char z)
-# 80 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 80 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 81 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 81 "/usr/local/cuda/bin/../include/vector_functions.h"
 uchar3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 82 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 82 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 84 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 84 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline char4 make_char4(signed char x, signed char y, signed char z, signed char w)
-# 85 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 85 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 86 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 86 "/usr/local/cuda/bin/../include/vector_functions.h"
 char4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 87 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 87 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 89 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 89 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uchar4 make_uchar4(unsigned char x, unsigned char y, unsigned char z, unsigned char w)
-# 90 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 90 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 91 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 91 "/usr/local/cuda/bin/../include/vector_functions.h"
 uchar4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 92 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 92 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 94 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 94 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline short1 make_short1(short x)
-# 95 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 95 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 96 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 96 "/usr/local/cuda/bin/../include/vector_functions.h"
 short1 t; (t.x) = x; return t;
-# 97 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 97 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 99 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 99 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ushort1 make_ushort1(unsigned short x)
-# 100 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 100 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 101 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 101 "/usr/local/cuda/bin/../include/vector_functions.h"
 ushort1 t; (t.x) = x; return t;
-# 102 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 102 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 104 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 104 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline short2 make_short2(short x, short y)
-# 105 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 105 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 106 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 106 "/usr/local/cuda/bin/../include/vector_functions.h"
 short2 t; (t.x) = x; (t.y) = y; return t;
-# 107 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 107 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 109 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 109 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ushort2 make_ushort2(unsigned short x, unsigned short y)
-# 110 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 110 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 111 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 111 "/usr/local/cuda/bin/../include/vector_functions.h"
 ushort2 t; (t.x) = x; (t.y) = y; return t;
-# 112 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 112 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 114 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 114 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline short3 make_short3(short x, short y, short z)
-# 115 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 115 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 116 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 116 "/usr/local/cuda/bin/../include/vector_functions.h"
 short3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 117 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 117 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 119 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 119 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ushort3 make_ushort3(unsigned short x, unsigned short y, unsigned short z)
-# 120 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 120 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 121 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 121 "/usr/local/cuda/bin/../include/vector_functions.h"
 ushort3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 122 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 122 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 124 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 124 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline short4 make_short4(short x, short y, short z, short w)
-# 125 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 125 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 126 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 126 "/usr/local/cuda/bin/../include/vector_functions.h"
 short4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 127 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 127 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 129 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 129 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ushort4 make_ushort4(unsigned short x, unsigned short y, unsigned short z, unsigned short w)
-# 130 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 130 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 131 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 131 "/usr/local/cuda/bin/../include/vector_functions.h"
 ushort4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 132 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 132 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 134 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 134 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline int1 make_int1(int x)
-# 135 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 135 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 136 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 136 "/usr/local/cuda/bin/../include/vector_functions.h"
 int1 t; (t.x) = x; return t;
-# 137 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 137 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 139 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 139 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uint1 make_uint1(unsigned x)
-# 140 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 140 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 141 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 141 "/usr/local/cuda/bin/../include/vector_functions.h"
 uint1 t; (t.x) = x; return t;
-# 142 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 142 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 144 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 144 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline int2 make_int2(int x, int y)
-# 145 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 145 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 146 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 146 "/usr/local/cuda/bin/../include/vector_functions.h"
 int2 t; (t.x) = x; (t.y) = y; return t;
-# 147 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 147 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 149 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 149 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uint2 make_uint2(unsigned x, unsigned y)
-# 150 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 150 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 151 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 151 "/usr/local/cuda/bin/../include/vector_functions.h"
 uint2 t; (t.x) = x; (t.y) = y; return t;
-# 152 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 152 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 154 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 154 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline int3 make_int3(int x, int y, int z)
-# 155 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 155 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 156 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 156 "/usr/local/cuda/bin/../include/vector_functions.h"
 int3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 157 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 157 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 159 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 159 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uint3 make_uint3(unsigned x, unsigned y, unsigned z)
-# 160 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 160 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 161 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 161 "/usr/local/cuda/bin/../include/vector_functions.h"
 uint3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 162 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 162 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 164 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 164 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline int4 make_int4(int x, int y, int z, int w)
-# 165 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 165 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 166 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 166 "/usr/local/cuda/bin/../include/vector_functions.h"
 int4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 167 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 167 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 169 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 169 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline uint4 make_uint4(unsigned x, unsigned y, unsigned z, unsigned w)
-# 170 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 170 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 171 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 171 "/usr/local/cuda/bin/../include/vector_functions.h"
 uint4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 172 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 172 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 174 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 174 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline long1 make_long1(long x)
-# 175 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 175 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 176 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 176 "/usr/local/cuda/bin/../include/vector_functions.h"
 long1 t; (t.x) = x; return t;
-# 177 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 177 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 179 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 179 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ulong1 make_ulong1(unsigned long x)
-# 180 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 180 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 181 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 181 "/usr/local/cuda/bin/../include/vector_functions.h"
 ulong1 t; (t.x) = x; return t;
-# 182 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 182 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 184 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 184 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline long2 make_long2(long x, long y)
-# 185 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 185 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 186 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 186 "/usr/local/cuda/bin/../include/vector_functions.h"
 long2 t; (t.x) = x; (t.y) = y; return t;
-# 187 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 187 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 189 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 189 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ulong2 make_ulong2(unsigned long x, unsigned long y)
-# 190 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 190 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 191 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 191 "/usr/local/cuda/bin/../include/vector_functions.h"
 ulong2 t; (t.x) = x; (t.y) = y; return t;
-# 192 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 192 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 218 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 194 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline long3 make_long3(long x, long y, long z)
+# 195 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 196 "/usr/local/cuda/bin/../include/vector_functions.h"
+long3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
+# 197 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 199 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline ulong3 make_ulong3(unsigned long x, unsigned long y, unsigned long z)
+# 200 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 201 "/usr/local/cuda/bin/../include/vector_functions.h"
+ulong3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
+# 202 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 204 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline long4 make_long4(long x, long y, long z, long w)
+# 205 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 206 "/usr/local/cuda/bin/../include/vector_functions.h"
+long4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
+# 207 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 209 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline ulong4 make_ulong4(unsigned long x, unsigned long y, unsigned long z, unsigned long w)
+# 210 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 211 "/usr/local/cuda/bin/../include/vector_functions.h"
+ulong4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
+# 212 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 214 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline float1 make_float1(float x)
-# 219 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 215 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 220 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 216 "/usr/local/cuda/bin/../include/vector_functions.h"
 float1 t; (t.x) = x; return t;
-# 221 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 217 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 223 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 219 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline float2 make_float2(float x, float y)
-# 224 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 220 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 225 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 221 "/usr/local/cuda/bin/../include/vector_functions.h"
 float2 t; (t.x) = x; (t.y) = y; return t;
-# 226 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 222 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 228 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 224 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline float3 make_float3(float x, float y, float z)
-# 229 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 225 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 230 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 226 "/usr/local/cuda/bin/../include/vector_functions.h"
 float3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
-# 231 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 227 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 233 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 229 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline float4 make_float4(float x, float y, float z, float w)
-# 234 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 230 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 235 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 231 "/usr/local/cuda/bin/../include/vector_functions.h"
 float4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
-# 236 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 232 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 238 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 234 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline longlong1 make_longlong1(long long x)
-# 239 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 235 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 240 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 236 "/usr/local/cuda/bin/../include/vector_functions.h"
 longlong1 t; (t.x) = x; return t;
-# 241 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 237 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 243 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 239 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ulonglong1 make_ulonglong1(unsigned long long x)
-# 244 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 240 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 245 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 241 "/usr/local/cuda/bin/../include/vector_functions.h"
 ulonglong1 t; (t.x) = x; return t;
-# 246 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 242 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 248 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 244 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline longlong2 make_longlong2(long long x, long long y)
-# 249 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 245 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 250 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 246 "/usr/local/cuda/bin/../include/vector_functions.h"
 longlong2 t; (t.x) = x; (t.y) = y; return t;
-# 251 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 247 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 253 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 249 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline ulonglong2 make_ulonglong2(unsigned long long x, unsigned long long y)
-# 254 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 250 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 255 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 251 "/usr/local/cuda/bin/../include/vector_functions.h"
 ulonglong2 t; (t.x) = x; (t.y) = y; return t;
-# 256 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 252 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 258 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 254 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline longlong3 make_longlong3(long long x, long long y, long long z)
+# 255 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 256 "/usr/local/cuda/bin/../include/vector_functions.h"
+longlong3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
+# 257 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 259 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline ulonglong3 make_ulonglong3(unsigned long long x, unsigned long long y, unsigned long long z)
+# 260 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 261 "/usr/local/cuda/bin/../include/vector_functions.h"
+ulonglong3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
+# 262 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 264 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline longlong4 make_longlong4(long long x, long long y, long long z, long long w)
+# 265 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 266 "/usr/local/cuda/bin/../include/vector_functions.h"
+longlong4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
+# 267 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 269 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline ulonglong4 make_ulonglong4(unsigned long long x, unsigned long long y, unsigned long long z, unsigned long long w)
+# 270 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 271 "/usr/local/cuda/bin/../include/vector_functions.h"
+ulonglong4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
+# 272 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 274 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline double1 make_double1(double x)
-# 259 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 275 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 260 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 276 "/usr/local/cuda/bin/../include/vector_functions.h"
 double1 t; (t.x) = x; return t;
-# 261 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 277 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
-# 263 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 279 "/usr/local/cuda/bin/../include/vector_functions.h"
 static inline double2 make_double2(double x, double y)
-# 264 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 280 "/usr/local/cuda/bin/../include/vector_functions.h"
 {
-# 265 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 281 "/usr/local/cuda/bin/../include/vector_functions.h"
 double2 t; (t.x) = x; (t.y) = y; return t;
-# 266 "/home/normal/cuda/bin/../include/vector_functions.h"
+# 282 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 284 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline double3 make_double3(double x, double y, double z)
+# 285 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 286 "/usr/local/cuda/bin/../include/vector_functions.h"
+double3 t; (t.x) = x; (t.y) = y; (t.z) = z; return t;
+# 287 "/usr/local/cuda/bin/../include/vector_functions.h"
+}
+# 289 "/usr/local/cuda/bin/../include/vector_functions.h"
+static inline double4 make_double4(double x, double y, double z, double w)
+# 290 "/usr/local/cuda/bin/../include/vector_functions.h"
+{
+# 291 "/usr/local/cuda/bin/../include/vector_functions.h"
+double4 t; (t.x) = x; (t.y) = y; (t.z) = z; (t.w) = w; return t;
+# 292 "/usr/local/cuda/bin/../include/vector_functions.h"
 }
 # 31 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned char __u_char; }
@@ -1871,16 +2133,16 @@ extern "C" { typedef unsigned short __uint16_t; }
 extern "C" { typedef signed int __int32_t; }
 # 42 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uint32_t; }
-# 44 "/usr/include/bits/types.h" 3
-extern "C" { typedef signed long __int64_t; }
-# 45 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __uint64_t; }
-# 53 "/usr/include/bits/types.h" 3
-extern "C" { typedef long __quad_t; }
-# 54 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __u_quad_t; }
+# 47 "/usr/include/bits/types.h" 3
+extern "C" { typedef signed long long __int64_t; }
+# 48 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long long __uint64_t; }
+# 56 "/usr/include/bits/types.h" 3
+extern "C" { typedef long long __quad_t; }
+# 57 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long long __u_quad_t; }
 # 134 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __dev_t; }
+extern "C" { typedef __u_quad_t __dev_t; }
 # 135 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uid_t; }
 # 136 "/usr/include/bits/types.h" 3
@@ -1888,15 +2150,15 @@ extern "C" { typedef unsigned __gid_t; }
 # 137 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __ino_t; }
 # 138 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __ino64_t; }
+extern "C" { typedef __u_quad_t __ino64_t; }
 # 139 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __mode_t; }
 # 140 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __nlink_t; }
+extern "C" { typedef unsigned __nlink_t; }
 # 141 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __off_t; }
 # 142 "/usr/include/bits/types.h" 3
-extern "C" { typedef long __off64_t; }
+extern "C" { typedef __quad_t __off64_t; }
 # 143 "/usr/include/bits/types.h" 3
 extern "C" { typedef int __pid_t; }
 # 144 "/usr/include/bits/types.h" 3
@@ -1906,7 +2168,7 @@ extern "C" { typedef long __clock_t; }
 # 146 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim_t; }
 # 147 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __rlim64_t; }
+extern "C" { typedef __u_quad_t __rlim64_t; }
 # 148 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __id_t; }
 # 149 "/usr/include/bits/types.h" 3
@@ -1930,17 +2192,17 @@ extern "C" { typedef long __blksize_t; }
 # 169 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __blkcnt_t; }
 # 170 "/usr/include/bits/types.h" 3
-extern "C" { typedef long __blkcnt64_t; }
+extern "C" { typedef __quad_t __blkcnt64_t; }
 # 173 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt_t; }
 # 174 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __fsblkcnt64_t; }
+extern "C" { typedef __u_quad_t __fsblkcnt64_t; }
 # 177 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt_t; }
 # 178 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long __fsfilcnt64_t; }
+extern "C" { typedef __u_quad_t __fsfilcnt64_t; }
 # 180 "/usr/include/bits/types.h" 3
-extern "C" { typedef long __ssize_t; }
+extern "C" { typedef int __ssize_t; }
 # 184 "/usr/include/bits/types.h" 3
 extern "C" { typedef __off64_t __loff_t; }
 # 185 "/usr/include/bits/types.h" 3
@@ -1948,7 +2210,7 @@ extern "C" { typedef __quad_t *__qaddr_t; }
 # 186 "/usr/include/bits/types.h" 3
 extern "C" { typedef char *__caddr_t; }
 # 189 "/usr/include/bits/types.h" 3
-extern "C" { typedef long __intptr_t; }
+extern "C" { typedef int __intptr_t; }
 # 192 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __socklen_t; }
 # 60 "/usr/include/time.h" 3
@@ -2106,13 +2368,13 @@ extern "C" tm *getdate(const char *);
 # 413 "/usr/include/time.h" 3
 extern "C" int getdate_r(const char *__restrict__, tm *__restrict__);
 # 43 "/usr/include/string.h" 3
-extern "C" void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2)));
+extern "C" __attribute__((__weak__)) void *memcpy(void *__restrict__, const void *__restrict__, size_t) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2)));
 # 48 "/usr/include/string.h" 3
 extern "C" void *memmove(void *, const void *, size_t) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2)));
 # 56 "/usr/include/string.h" 3
 extern "C" void *memccpy(void *__restrict__, const void *__restrict__, int, size_t) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2)));
 # 64 "/usr/include/string.h" 3
-extern "C" void *memset(void *, int, size_t) throw() __attribute__((nonnull(1)));
+extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw() __attribute__((nonnull(1)));
 # 67 "/usr/include/string.h" 3
 extern "C" int memcmp(const void *, const void *, size_t) throw() __attribute__((__pure__)) __attribute__((nonnull(1))) __attribute__((nonnull(2)));
 # 74 "/usr/include/string.h" 3
@@ -2253,304 +2515,314 @@ extern "C" void *memfrob(void *, size_t) throw() __attribute__((nonnull(1)));
 char *basename(char *) throw() __asm__("basename") __attribute__((nonnull(1)));
 # 601 "/usr/include/string.h" 3
 const char *basename(const char *) throw() __asm__("basename") __attribute__((nonnull(1)));
-# 56 "/home/normal/cuda/bin/../include/common_functions.h"
+# 56 "/usr/local/cuda/bin/../include/common_functions.h"
 extern "C" __attribute__((__weak__)) clock_t clock() throw();
-# 65 "/home/normal/cuda/bin/../include/math_functions.h"
+# 59 "/usr/local/cuda/bin/../include/common_functions.h"
+extern "C" __attribute__((__weak__)) void *memset(void *, int, size_t) throw() __attribute__((nonnull(1)));
+# 62 "/usr/local/cuda/bin/../include/common_functions.h"
+extern "C" __attribute__((__weak__)) void *memcpy(void *, const void *, size_t) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2)));
+# 65 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
-# 67 "/home/normal/cuda/bin/../include/math_functions.h"
+# 67 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
-# 69 "/home/normal/cuda/bin/../include/math_functions.h"
+# 69 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llabs(long long) throw() __attribute__((__const__));
-# 71 "/home/normal/cuda/bin/../include/math_functions.h"
+# 71 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fabs(double) throw() __attribute__((__const__));
-# 73 "/home/normal/cuda/bin/../include/math_functions.h"
+# 73 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float fabsf(float) throw() __attribute__((__const__));
-# 76 "/home/normal/cuda/bin/../include/math_functions.h"
+# 76 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int min(int, int);
-# 78 "/home/normal/cuda/bin/../include/math_functions.h"
+# 78 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) unsigned umin(unsigned, unsigned);
-# 80 "/home/normal/cuda/bin/../include/math_functions.h"
+# 80 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llmin(long long, long long);
-# 82 "/home/normal/cuda/bin/../include/math_functions.h"
+# 82 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) unsigned long long ullmin(unsigned long long, unsigned long long);
-# 84 "/home/normal/cuda/bin/../include/math_functions.h"
+# 84 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float fminf(float, float) throw();
-# 86 "/home/normal/cuda/bin/../include/math_functions.h"
+# 86 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fmin(double, double) throw();
-# 89 "/home/normal/cuda/bin/../include/math_functions.h"
+# 89 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int max(int, int);
-# 91 "/home/normal/cuda/bin/../include/math_functions.h"
+# 91 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) unsigned umax(unsigned, unsigned);
-# 93 "/home/normal/cuda/bin/../include/math_functions.h"
+# 93 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llmax(long long, long long);
-# 95 "/home/normal/cuda/bin/../include/math_functions.h"
+# 95 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) unsigned long long ullmax(unsigned long long, unsigned long long);
-# 97 "/home/normal/cuda/bin/../include/math_functions.h"
+# 97 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float fmaxf(float, float) throw();
-# 99 "/home/normal/cuda/bin/../include/math_functions.h"
+# 99 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fmax(double, double) throw();
-# 102 "/home/normal/cuda/bin/../include/math_functions.h"
+# 102 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double sin(double) throw();
-# 104 "/home/normal/cuda/bin/../include/math_functions.h"
+# 104 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float sinf(float) throw();
-# 107 "/home/normal/cuda/bin/../include/math_functions.h"
+# 107 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double cos(double) throw();
-# 109 "/home/normal/cuda/bin/../include/math_functions.h"
+# 109 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float cosf(float) throw();
-# 112 "/home/normal/cuda/bin/../include/math_functions.h"
+# 112 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) void sincos(double, double *, double *) throw();
-# 114 "/home/normal/cuda/bin/../include/math_functions.h"
+# 114 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) void sincosf(float, float *, float *) throw();
-# 117 "/home/normal/cuda/bin/../include/math_functions.h"
+# 117 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double tan(double) throw();
-# 119 "/home/normal/cuda/bin/../include/math_functions.h"
+# 119 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float tanf(float) throw();
-# 122 "/home/normal/cuda/bin/../include/math_functions.h"
+# 122 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double sqrt(double) throw();
-# 124 "/home/normal/cuda/bin/../include/math_functions.h"
+# 124 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float sqrtf(float) throw();
-# 127 "/home/normal/cuda/bin/../include/math_functions.h"
+# 127 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double rsqrt(double);
-# 129 "/home/normal/cuda/bin/../include/math_functions.h"
+# 129 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float rsqrtf(float);
-# 132 "/home/normal/cuda/bin/../include/math_functions.h"
+# 132 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double exp2(double) throw();
-# 134 "/home/normal/cuda/bin/../include/math_functions.h"
+# 134 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float exp2f(float) throw();
-# 137 "/home/normal/cuda/bin/../include/math_functions.h"
+# 137 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double exp10(double) throw();
-# 139 "/home/normal/cuda/bin/../include/math_functions.h"
+# 139 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float exp10f(float) throw();
-# 142 "/home/normal/cuda/bin/../include/math_functions.h"
+# 142 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double expm1(double) throw();
-# 144 "/home/normal/cuda/bin/../include/math_functions.h"
+# 144 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float expm1f(float) throw();
-# 147 "/home/normal/cuda/bin/../include/math_functions.h"
+# 147 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double log2(double) throw();
-# 149 "/home/normal/cuda/bin/../include/math_functions.h"
+# 149 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float log2f(float) throw();
-# 152 "/home/normal/cuda/bin/../include/math_functions.h"
+# 152 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double log10(double) throw();
-# 154 "/home/normal/cuda/bin/../include/math_functions.h"
+# 154 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float log10f(float) throw();
-# 157 "/home/normal/cuda/bin/../include/math_functions.h"
+# 157 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double log(double) throw();
-# 159 "/home/normal/cuda/bin/../include/math_functions.h"
+# 159 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float logf(float) throw();
-# 162 "/home/normal/cuda/bin/../include/math_functions.h"
+# 162 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double log1p(double) throw();
-# 164 "/home/normal/cuda/bin/../include/math_functions.h"
+# 164 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float log1pf(float) throw();
-# 167 "/home/normal/cuda/bin/../include/math_functions.h"
+# 167 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double floor(double) throw() __attribute__((__const__));
-# 169 "/home/normal/cuda/bin/../include/math_functions.h"
+# 169 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float floorf(float) throw() __attribute__((__const__));
-# 172 "/home/normal/cuda/bin/../include/math_functions.h"
+# 172 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double exp(double) throw();
-# 174 "/home/normal/cuda/bin/../include/math_functions.h"
+# 174 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float expf(float) throw();
-# 177 "/home/normal/cuda/bin/../include/math_functions.h"
+# 177 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double cosh(double) throw();
-# 179 "/home/normal/cuda/bin/../include/math_functions.h"
+# 179 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float coshf(float) throw();
-# 182 "/home/normal/cuda/bin/../include/math_functions.h"
+# 182 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double sinh(double) throw();
-# 184 "/home/normal/cuda/bin/../include/math_functions.h"
+# 184 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float sinhf(float) throw();
-# 187 "/home/normal/cuda/bin/../include/math_functions.h"
+# 187 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double tanh(double) throw();
-# 189 "/home/normal/cuda/bin/../include/math_functions.h"
+# 189 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float tanhf(float) throw();
-# 192 "/home/normal/cuda/bin/../include/math_functions.h"
+# 192 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double acosh(double) throw();
-# 194 "/home/normal/cuda/bin/../include/math_functions.h"
+# 194 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float acoshf(float) throw();
-# 197 "/home/normal/cuda/bin/../include/math_functions.h"
+# 197 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double asinh(double) throw();
-# 199 "/home/normal/cuda/bin/../include/math_functions.h"
+# 199 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float asinhf(float) throw();
-# 202 "/home/normal/cuda/bin/../include/math_functions.h"
+# 202 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double atanh(double) throw();
-# 204 "/home/normal/cuda/bin/../include/math_functions.h"
+# 204 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float atanhf(float) throw();
-# 207 "/home/normal/cuda/bin/../include/math_functions.h"
+# 207 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double ldexp(double, int) throw();
-# 209 "/home/normal/cuda/bin/../include/math_functions.h"
+# 209 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float ldexpf(float, int) throw();
-# 212 "/home/normal/cuda/bin/../include/math_functions.h"
+# 212 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double logb(double) throw();
-# 214 "/home/normal/cuda/bin/../include/math_functions.h"
+# 214 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float logbf(float) throw();
-# 217 "/home/normal/cuda/bin/../include/math_functions.h"
+# 217 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int ilogb(double) throw();
-# 219 "/home/normal/cuda/bin/../include/math_functions.h"
+# 219 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int ilogbf(float) throw();
-# 222 "/home/normal/cuda/bin/../include/math_functions.h"
+# 222 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double scalbn(double, int) throw();
-# 224 "/home/normal/cuda/bin/../include/math_functions.h"
+# 224 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float scalbnf(float, int) throw();
-# 227 "/home/normal/cuda/bin/../include/math_functions.h"
+# 227 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double scalbln(double, long) throw();
-# 229 "/home/normal/cuda/bin/../include/math_functions.h"
+# 229 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float scalblnf(float, long) throw();
-# 232 "/home/normal/cuda/bin/../include/math_functions.h"
+# 232 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double frexp(double, int *) throw();
-# 234 "/home/normal/cuda/bin/../include/math_functions.h"
+# 234 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float frexpf(float, int *) throw();
-# 237 "/home/normal/cuda/bin/../include/math_functions.h"
+# 237 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double round(double) throw() __attribute__((__const__));
-# 239 "/home/normal/cuda/bin/../include/math_functions.h"
+# 239 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float roundf(float) throw() __attribute__((__const__));
-# 242 "/home/normal/cuda/bin/../include/math_functions.h"
+# 242 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long lround(double) throw();
-# 244 "/home/normal/cuda/bin/../include/math_functions.h"
+# 244 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long lroundf(float) throw();
-# 247 "/home/normal/cuda/bin/../include/math_functions.h"
+# 247 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llround(double) throw();
-# 249 "/home/normal/cuda/bin/../include/math_functions.h"
+# 249 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llroundf(float) throw();
-# 252 "/home/normal/cuda/bin/../include/math_functions.h"
+# 252 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double rint(double) throw();
-# 254 "/home/normal/cuda/bin/../include/math_functions.h"
+# 254 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float rintf(float) throw();
-# 257 "/home/normal/cuda/bin/../include/math_functions.h"
+# 257 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long lrint(double) throw();
-# 259 "/home/normal/cuda/bin/../include/math_functions.h"
+# 259 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long lrintf(float) throw();
-# 262 "/home/normal/cuda/bin/../include/math_functions.h"
+# 262 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llrint(double) throw();
-# 264 "/home/normal/cuda/bin/../include/math_functions.h"
+# 264 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) long long llrintf(float) throw();
-# 267 "/home/normal/cuda/bin/../include/math_functions.h"
+# 267 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double nearbyint(double) throw();
-# 269 "/home/normal/cuda/bin/../include/math_functions.h"
+# 269 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float nearbyintf(float) throw();
-# 272 "/home/normal/cuda/bin/../include/math_functions.h"
+# 272 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double ceil(double) throw() __attribute__((__const__));
-# 274 "/home/normal/cuda/bin/../include/math_functions.h"
+# 274 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float ceilf(float) throw() __attribute__((__const__));
-# 277 "/home/normal/cuda/bin/../include/math_functions.h"
+# 277 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double trunc(double) throw() __attribute__((__const__));
-# 279 "/home/normal/cuda/bin/../include/math_functions.h"
+# 279 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float truncf(float) throw() __attribute__((__const__));
-# 282 "/home/normal/cuda/bin/../include/math_functions.h"
+# 282 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fdim(double, double) throw();
-# 284 "/home/normal/cuda/bin/../include/math_functions.h"
+# 284 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float fdimf(float, float) throw();
-# 287 "/home/normal/cuda/bin/../include/math_functions.h"
+# 287 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double atan2(double, double) throw();
-# 289 "/home/normal/cuda/bin/../include/math_functions.h"
+# 289 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float atan2f(float, float) throw();
-# 292 "/home/normal/cuda/bin/../include/math_functions.h"
+# 292 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double atan(double) throw();
-# 294 "/home/normal/cuda/bin/../include/math_functions.h"
+# 294 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float atanf(float) throw();
-# 297 "/home/normal/cuda/bin/../include/math_functions.h"
+# 297 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double asin(double) throw();
-# 299 "/home/normal/cuda/bin/../include/math_functions.h"
+# 299 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float asinf(float) throw();
-# 302 "/home/normal/cuda/bin/../include/math_functions.h"
+# 302 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double acos(double) throw();
-# 304 "/home/normal/cuda/bin/../include/math_functions.h"
+# 304 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float acosf(float) throw();
-# 307 "/home/normal/cuda/bin/../include/math_functions.h"
+# 307 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double hypot(double, double) throw();
-# 309 "/home/normal/cuda/bin/../include/math_functions.h"
+# 309 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float hypotf(float, float) throw();
-# 312 "/home/normal/cuda/bin/../include/math_functions.h"
+# 312 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double cbrt(double) throw();
-# 314 "/home/normal/cuda/bin/../include/math_functions.h"
+# 314 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float cbrtf(float) throw();
-# 317 "/home/normal/cuda/bin/../include/math_functions.h"
+# 317 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double rcbrt(double);
-# 319 "/home/normal/cuda/bin/../include/math_functions.h"
+# 319 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float rcbrtf(float);
-# 322 "/home/normal/cuda/bin/../include/math_functions.h"
+# 322 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double sinpi(double);
-# 324 "/home/normal/cuda/bin/../include/math_functions.h"
+# 324 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float sinpif(float);
-# 327 "/home/normal/cuda/bin/../include/math_functions.h"
+# 327 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double pow(double, double) throw();
-# 329 "/home/normal/cuda/bin/../include/math_functions.h"
+# 329 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float powf(float, float) throw();
-# 332 "/home/normal/cuda/bin/../include/math_functions.h"
+# 332 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double modf(double, double *) throw();
-# 334 "/home/normal/cuda/bin/../include/math_functions.h"
+# 334 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float modff(float, float *) throw();
-# 337 "/home/normal/cuda/bin/../include/math_functions.h"
+# 337 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fmod(double, double) throw();
-# 339 "/home/normal/cuda/bin/../include/math_functions.h"
+# 339 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float fmodf(float, float) throw();
-# 342 "/home/normal/cuda/bin/../include/math_functions.h"
+# 342 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double remainder(double, double) throw();
-# 344 "/home/normal/cuda/bin/../include/math_functions.h"
+# 344 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float remainderf(float, float) throw();
-# 347 "/home/normal/cuda/bin/../include/math_functions.h"
+# 347 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double remquo(double, double, int *) throw();
-# 349 "/home/normal/cuda/bin/../include/math_functions.h"
+# 349 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float remquof(float, float, int *) throw();
-# 352 "/home/normal/cuda/bin/../include/math_functions.h"
+# 352 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double erf(double) throw();
-# 354 "/home/normal/cuda/bin/../include/math_functions.h"
+# 354 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float erff(float) throw();
-# 357 "/home/normal/cuda/bin/../include/math_functions.h"
+# 357 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double erfinv(double);
-# 359 "/home/normal/cuda/bin/../include/math_functions.h"
+# 359 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float erfinvf(float);
-# 362 "/home/normal/cuda/bin/../include/math_functions.h"
+# 362 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double erfc(double) throw();
-# 364 "/home/normal/cuda/bin/../include/math_functions.h"
+# 364 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float erfcf(float) throw();
-# 367 "/home/normal/cuda/bin/../include/math_functions.h"
+# 367 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double erfcinv(double);
-# 369 "/home/normal/cuda/bin/../include/math_functions.h"
+# 369 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float erfcinvf(float);
-# 372 "/home/normal/cuda/bin/../include/math_functions.h"
+# 372 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double lgamma(double) throw();
-# 374 "/home/normal/cuda/bin/../include/math_functions.h"
+# 374 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float lgammaf(float) throw();
-# 377 "/home/normal/cuda/bin/../include/math_functions.h"
+# 377 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double tgamma(double) throw();
-# 379 "/home/normal/cuda/bin/../include/math_functions.h"
+# 379 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float tgammaf(float) throw();
-# 382 "/home/normal/cuda/bin/../include/math_functions.h"
+# 382 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double copysign(double, double) throw() __attribute__((__const__));
-# 384 "/home/normal/cuda/bin/../include/math_functions.h"
+# 384 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float copysignf(float, float) throw() __attribute__((__const__));
-# 387 "/home/normal/cuda/bin/../include/math_functions.h"
+# 387 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double nextafter(double, double) throw() __attribute__((__const__));
-# 389 "/home/normal/cuda/bin/../include/math_functions.h"
+# 389 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float nextafterf(float, float) throw() __attribute__((__const__));
-# 392 "/home/normal/cuda/bin/../include/math_functions.h"
+# 392 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double nan(const char *) throw() __attribute__((__const__));
-# 394 "/home/normal/cuda/bin/../include/math_functions.h"
+# 394 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float nanf(const char *) throw() __attribute__((__const__));
-# 397 "/home/normal/cuda/bin/../include/math_functions.h"
+# 397 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isinf(double) throw() __attribute__((__const__));
-# 399 "/home/normal/cuda/bin/../include/math_functions.h"
+# 399 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isinff(float) throw() __attribute__((__const__));
-# 402 "/home/normal/cuda/bin/../include/math_functions.h"
+# 402 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isnan(double) throw() __attribute__((__const__));
-# 404 "/home/normal/cuda/bin/../include/math_functions.h"
+# 404 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isnanf(float) throw() __attribute__((__const__));
-# 418 "/home/normal/cuda/bin/../include/math_functions.h"
+# 418 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finite(double) throw() __attribute__((__const__));
-# 420 "/home/normal/cuda/bin/../include/math_functions.h"
+# 420 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finitef(float) throw() __attribute__((__const__));
-# 430 "/home/normal/cuda/bin/../include/math_functions.h"
+# 422 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__const__));
+# 427 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__const__));
+# 430 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) double fma(double, double, double) throw();
-# 432 "/home/normal/cuda/bin/../include/math_functions.h"
+# 432 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) float fmaf(float, float, float) throw();
-# 442 "/home/normal/cuda/bin/../include/math_functions.h"
+# 440 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
+# 442 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isinfl(long double) throw() __attribute__((__const__));
-# 444 "/home/normal/cuda/bin/../include/math_functions.h"
+# 444 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __isnanl(long double) throw() __attribute__((__const__));
-# 454 "/home/normal/cuda/bin/../include/math_functions.h"
+# 454 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((__weak__)) int __finitel(long double) throw() __attribute__((__const__));
-# 31 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef float float_t; }
-# 32 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef double double_t; }
+# 38 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef long double float_t; }
+# 40 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef long double double_t; }
 # 55 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((__weak__)) double acos(double) throw(); extern "C" double __acos(double) throw();
 # 57 "/usr/include/bits/mathcalls.h" 3
@@ -2704,7 +2976,7 @@ extern "C" __attribute__((__weak__)) double fmin(double, double) throw(); extern
 # 346 "/usr/include/bits/mathcalls.h" 3
 extern "C" int __fpclassify(double) throw() __attribute__((__const__));
 # 350 "/usr/include/bits/mathcalls.h" 3
-extern "C" int __signbit(double) throw() __attribute__((__const__));
+extern "C" __attribute__((__weak__)) int __signbit(double) throw() __attribute__((__const__));
 # 355 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((__weak__)) double fma(double, double, double) throw(); extern "C" double __fma(double, double, double) throw();
 # 364 "/usr/include/bits/mathcalls.h" 3
@@ -2862,7 +3134,7 @@ extern "C" __attribute__((__weak__)) float fminf(float, float) throw(); extern "
 # 346 "/usr/include/bits/mathcalls.h" 3
 extern "C" int __fpclassifyf(float) throw() __attribute__((__const__));
 # 350 "/usr/include/bits/mathcalls.h" 3
-extern "C" int __signbitf(float) throw() __attribute__((__const__));
+extern "C" __attribute__((__weak__)) int __signbitf(float) throw() __attribute__((__const__));
 # 355 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((__weak__)) float fmaf(float, float, float) throw(); extern "C" float __fmaf(float, float, float) throw();
 # 364 "/usr/include/bits/mathcalls.h" 3
@@ -3020,60 +3292,60 @@ extern "C" long double fminl(long double, long double) throw(); extern "C" long 
 # 346 "/usr/include/bits/mathcalls.h" 3
 extern "C" int __fpclassifyl(long double) throw() __attribute__((__const__));
 # 350 "/usr/include/bits/mathcalls.h" 3
-extern "C" int __signbitl(long double) throw() __attribute__((__const__));
+extern "C" __attribute__((__weak__)) int __signbitl(long double) throw() __attribute__((__const__));
 # 355 "/usr/include/bits/mathcalls.h" 3
 extern "C" long double fmal(long double, long double, long double) throw(); extern "C" long double __fmal(long double, long double, long double) throw();
 # 364 "/usr/include/bits/mathcalls.h" 3
 extern "C" long double scalbl(long double, long double) throw(); extern "C" long double __scalbl(long double, long double) throw();
-# 157 "/usr/include/math.h" 3
+# 161 "/usr/include/math.h" 3
 extern "C" { extern int signgam; }
-# 199 "/usr/include/math.h" 3
+# 203 "/usr/include/math.h" 3
 enum {
-# 200 "/usr/include/math.h" 3
-FP_NAN,
-# 202 "/usr/include/math.h" 3
-FP_INFINITE,
 # 204 "/usr/include/math.h" 3
-FP_ZERO,
+FP_NAN,
 # 206 "/usr/include/math.h" 3
-FP_SUBNORMAL,
+FP_INFINITE,
 # 208 "/usr/include/math.h" 3
-FP_NORMAL
+FP_ZERO,
 # 210 "/usr/include/math.h" 3
+FP_SUBNORMAL,
+# 212 "/usr/include/math.h" 3
+FP_NORMAL
+# 214 "/usr/include/math.h" 3
 };
-# 291 "/usr/include/math.h" 3
+# 302 "/usr/include/math.h" 3
 extern "C" { typedef
-# 285 "/usr/include/math.h" 3
-enum {
-# 286 "/usr/include/math.h" 3
-_IEEE_ = (-1),
-# 287 "/usr/include/math.h" 3
-_SVID_,
-# 288 "/usr/include/math.h" 3
-_XOPEN_,
-# 289 "/usr/include/math.h" 3
-_POSIX_,
-# 290 "/usr/include/math.h" 3
-_ISOC_
-# 291 "/usr/include/math.h" 3
-} _LIB_VERSION_TYPE; }
 # 296 "/usr/include/math.h" 3
-extern "C" { extern _LIB_VERSION_TYPE _LIB_VERSION; }
+enum {
+# 297 "/usr/include/math.h" 3
+_IEEE_ = (-1),
+# 298 "/usr/include/math.h" 3
+_SVID_,
+# 299 "/usr/include/math.h" 3
+_XOPEN_,
+# 300 "/usr/include/math.h" 3
+_POSIX_,
+# 301 "/usr/include/math.h" 3
+_ISOC_
+# 302 "/usr/include/math.h" 3
+} _LIB_VERSION_TYPE; }
 # 307 "/usr/include/math.h" 3
+extern "C" { extern _LIB_VERSION_TYPE _LIB_VERSION; }
+# 318 "/usr/include/math.h" 3
 extern "C" { struct __exception {
-# 312 "/usr/include/math.h" 3
+# 323 "/usr/include/math.h" 3
 int type;
-# 313 "/usr/include/math.h" 3
+# 324 "/usr/include/math.h" 3
 char *name;
-# 314 "/usr/include/math.h" 3
+# 325 "/usr/include/math.h" 3
 double arg1;
-# 315 "/usr/include/math.h" 3
+# 326 "/usr/include/math.h" 3
 double arg2;
-# 316 "/usr/include/math.h" 3
+# 327 "/usr/include/math.h" 3
 double retval;
-# 317 "/usr/include/math.h" 3
+# 328 "/usr/include/math.h" 3
 }; }
-# 320 "/usr/include/math.h" 3
+# 331 "/usr/include/math.h" 3
 extern "C" int matherr(__exception *) throw();
 # 67 "/usr/include/bits/waitstatus.h" 3
 extern "C" { union wait {
@@ -3240,7 +3512,7 @@ extern "C" { typedef short int16_t; }
 # 197 "/usr/include/sys/types.h" 3
 extern "C" { typedef int int32_t; }
 # 198 "/usr/include/sys/types.h" 3
-extern "C" { typedef long int64_t; }
+extern "C" { typedef long long int64_t; }
 # 201 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned char u_int8_t; }
 # 202 "/usr/include/sys/types.h" 3
@@ -3248,7 +3520,7 @@ extern "C" { typedef unsigned short u_int16_t; }
 # 203 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned u_int32_t; }
 # 204 "/usr/include/sys/types.h" 3
-extern "C" { typedef unsigned long u_int64_t; }
+extern "C" { typedef unsigned long long u_int64_t; }
 # 206 "/usr/include/sys/types.h" 3
 extern "C" { typedef int register_t; }
 # 24 "/usr/include/bits/sigset.h" 3
@@ -3278,7 +3550,7 @@ extern "C" { typedef
 # 68 "/usr/include/sys/select.h" 3
 struct {
 # 72 "/usr/include/sys/select.h" 3
-__fd_mask fds_bits[((1024) / ((8) * sizeof(__fd_mask)))];
+__fd_mask fds_bits[(1024 / (8 * ((int)sizeof(__fd_mask))))];
 # 78 "/usr/include/sys/select.h" 3
 } fd_set; }
 # 85 "/usr/include/sys/select.h" 3
@@ -3314,21 +3586,19 @@ extern "C" { typedef
 # 54 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 55 "/usr/include/bits/pthreadtypes.h" 3
-char __size[56];
+char __size[36];
 # 56 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 57 "/usr/include/bits/pthreadtypes.h" 3
 } pthread_attr_t; }
-# 65 "/usr/include/bits/pthreadtypes.h" 3
+# 70 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 61 "/usr/include/bits/pthreadtypes.h" 3
-struct __pthread_internal_list {
-# 63 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_internal_list *__prev;
-# 64 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_internal_list *__next;
-# 65 "/usr/include/bits/pthreadtypes.h" 3
-} __pthread_list_t; }
+# 67 "/usr/include/bits/pthreadtypes.h" 3
+struct __pthread_internal_slist {
+# 69 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_slist *__next;
+# 70 "/usr/include/bits/pthreadtypes.h" 3
+} __pthread_slist_t; }
 # 104 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
 # 77 "/usr/include/bits/pthreadtypes.h" 3
@@ -3341,18 +3611,22 @@ int __lock;
 unsigned __count;
 # 82 "/usr/include/bits/pthreadtypes.h" 3
 int __owner;
-# 84 "/usr/include/bits/pthreadtypes.h" 3
-unsigned __nusers;
 # 88 "/usr/include/bits/pthreadtypes.h" 3
 int __kind;
-# 90 "/usr/include/bits/pthreadtypes.h" 3
+# 94 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __nusers;
+# 96 "/usr/include/bits/pthreadtypes.h" 3
+union {
+# 97 "/usr/include/bits/pthreadtypes.h" 3
 int __spins;
-# 91 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_list_t __list;
+# 98 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_slist_t __list;
+# 99 "/usr/include/bits/pthreadtypes.h" 3
+};
 # 101 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 102 "/usr/include/bits/pthreadtypes.h" 3
-char __size[40];
+char __size[24];
 # 103 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 104 "/usr/include/bits/pthreadtypes.h" 3
@@ -3415,34 +3689,34 @@ extern "C" { typedef int pthread_once_t; }
 extern "C" { typedef
 # 151 "/usr/include/bits/pthreadtypes.h" 3
 union {
-# 154 "/usr/include/bits/pthreadtypes.h" 3
+# 171 "/usr/include/bits/pthreadtypes.h" 3
 struct {
-# 155 "/usr/include/bits/pthreadtypes.h" 3
+# 172 "/usr/include/bits/pthreadtypes.h" 3
 int __lock;
-# 156 "/usr/include/bits/pthreadtypes.h" 3
+# 173 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers;
-# 157 "/usr/include/bits/pthreadtypes.h" 3
+# 174 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __readers_wakeup;
-# 158 "/usr/include/bits/pthreadtypes.h" 3
+# 175 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __writer_wakeup;
-# 159 "/usr/include/bits/pthreadtypes.h" 3
+# 176 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers_queued;
-# 160 "/usr/include/bits/pthreadtypes.h" 3
+# 177 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_writers_queued;
-# 161 "/usr/include/bits/pthreadtypes.h" 3
+# 180 "/usr/include/bits/pthreadtypes.h" 3
+unsigned char __flags;
+# 181 "/usr/include/bits/pthreadtypes.h" 3
+unsigned char __shared;
+# 182 "/usr/include/bits/pthreadtypes.h" 3
+unsigned char __pad1;
+# 183 "/usr/include/bits/pthreadtypes.h" 3
+unsigned char __pad2;
+# 184 "/usr/include/bits/pthreadtypes.h" 3
 int __writer;
-# 162 "/usr/include/bits/pthreadtypes.h" 3
-int __shared;
-# 163 "/usr/include/bits/pthreadtypes.h" 3
-unsigned long __pad1;
-# 164 "/usr/include/bits/pthreadtypes.h" 3
-unsigned long __pad2;
-# 167 "/usr/include/bits/pthreadtypes.h" 3
-unsigned __flags;
-# 168 "/usr/include/bits/pthreadtypes.h" 3
+# 185 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 187 "/usr/include/bits/pthreadtypes.h" 3
-char __size[56];
+char __size[32];
 # 188 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 189 "/usr/include/bits/pthreadtypes.h" 3
@@ -3464,7 +3738,7 @@ extern "C" { typedef
 # 207 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 208 "/usr/include/bits/pthreadtypes.h" 3
-char __size[32];
+char __size[20];
 # 209 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 210 "/usr/include/bits/pthreadtypes.h" 3
@@ -3617,91 +3891,99 @@ extern "C" char *mktemp(char *) throw() __attribute__((nonnull(1)));
 extern "C" int mkstemp(char *) __attribute__((nonnull(1)));
 # 625 "/usr/include/stdlib.h" 3
 extern "C" int mkstemp64(char *) __attribute__((nonnull(1)));
-# 635 "/usr/include/stdlib.h" 3
+# 637 "/usr/include/stdlib.h" 3
+extern "C" int mkstemps(char *, int) __attribute__((nonnull(1)));
+# 647 "/usr/include/stdlib.h" 3
+extern "C" int mkstemps64(char *, int) __attribute__((nonnull(1)));
+# 658 "/usr/include/stdlib.h" 3
 extern "C" char *mkdtemp(char *) throw() __attribute__((nonnull(1)));
-# 646 "/usr/include/stdlib.h" 3
+# 669 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp(char *, int) __attribute__((nonnull(1)));
-# 656 "/usr/include/stdlib.h" 3
+# 679 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp64(char *, int) __attribute__((nonnull(1)));
-# 666 "/usr/include/stdlib.h" 3
+# 689 "/usr/include/stdlib.h" 3
+extern "C" int mkostemps(char *, int, int) __attribute__((nonnull(1)));
+# 701 "/usr/include/stdlib.h" 3
+extern "C" int mkostemps64(char *, int, int) __attribute__((nonnull(1)));
+# 712 "/usr/include/stdlib.h" 3
 extern "C" int system(const char *);
-# 673 "/usr/include/stdlib.h" 3
+# 719 "/usr/include/stdlib.h" 3
 extern "C" char *canonicalize_file_name(const char *) throw() __attribute__((nonnull(1)));
-# 683 "/usr/include/stdlib.h" 3
+# 729 "/usr/include/stdlib.h" 3
 extern "C" char *realpath(const char *__restrict__, char *__restrict__) throw();
-# 691 "/usr/include/stdlib.h" 3
+# 737 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_fn_t)(const void *, const void *); }
-# 694 "/usr/include/stdlib.h" 3
+# 740 "/usr/include/stdlib.h" 3
 extern "C" { typedef __compar_fn_t comparison_fn_t; }
-# 698 "/usr/include/stdlib.h" 3
+# 744 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_d_fn_t)(const void *, const void *, void *); }
-# 704 "/usr/include/stdlib.h" 3
+# 750 "/usr/include/stdlib.h" 3
 extern "C" void *bsearch(const void *, const void *, size_t, size_t, __compar_fn_t) __attribute__((nonnull(1))) __attribute__((nonnull(2))) __attribute__((nonnull(5)));
-# 710 "/usr/include/stdlib.h" 3
-extern "C" void qsort(void *, size_t, size_t, __compar_fn_t) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
-# 713 "/usr/include/stdlib.h" 3
-extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
-# 720 "/usr/include/stdlib.h" 3
-extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
-# 721 "/usr/include/stdlib.h" 3
-extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
-# 725 "/usr/include/stdlib.h" 3
-extern "C" __attribute__((__weak__)) long long llabs(long long) throw() __attribute__((__const__));
-# 734 "/usr/include/stdlib.h" 3
-extern "C" div_t div(int, int) throw() __attribute__((__const__));
-# 736 "/usr/include/stdlib.h" 3
-extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
-# 742 "/usr/include/stdlib.h" 3
-extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
 # 756 "/usr/include/stdlib.h" 3
-extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
-# 762 "/usr/include/stdlib.h" 3
-extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
-# 768 "/usr/include/stdlib.h" 3
-extern "C" char *gcvt(double, int, char *) throw() __attribute__((nonnull(3)));
-# 774 "/usr/include/stdlib.h" 3
-extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
-# 777 "/usr/include/stdlib.h" 3
-extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+extern "C" void qsort(void *, size_t, size_t, __compar_fn_t) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
+# 759 "/usr/include/stdlib.h" 3
+extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
+# 766 "/usr/include/stdlib.h" 3
+extern "C" __attribute__((__weak__)) int abs(int) throw() __attribute__((__const__));
+# 767 "/usr/include/stdlib.h" 3
+extern "C" __attribute__((__weak__)) long labs(long) throw() __attribute__((__const__));
+# 771 "/usr/include/stdlib.h" 3
+extern "C" __attribute__((__weak__)) long long llabs(long long) throw() __attribute__((__const__));
 # 780 "/usr/include/stdlib.h" 3
-extern "C" char *qgcvt(long double, int, char *) throw() __attribute__((nonnull(3)));
-# 786 "/usr/include/stdlib.h" 3
-extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
-# 789 "/usr/include/stdlib.h" 3
-extern "C" int fcvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
-# 793 "/usr/include/stdlib.h" 3
-extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
-# 797 "/usr/include/stdlib.h" 3
-extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+extern "C" div_t div(int, int) throw() __attribute__((__const__));
+# 782 "/usr/include/stdlib.h" 3
+extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
+# 788 "/usr/include/stdlib.h" 3
+extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
+# 802 "/usr/include/stdlib.h" 3
+extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
 # 808 "/usr/include/stdlib.h" 3
+extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+# 814 "/usr/include/stdlib.h" 3
+extern "C" char *gcvt(double, int, char *) throw() __attribute__((nonnull(3)));
+# 820 "/usr/include/stdlib.h" 3
+extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+# 823 "/usr/include/stdlib.h" 3
+extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+# 826 "/usr/include/stdlib.h" 3
+extern "C" char *qgcvt(long double, int, char *) throw() __attribute__((nonnull(3)));
+# 832 "/usr/include/stdlib.h" 3
+extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 835 "/usr/include/stdlib.h" 3
+extern "C" int fcvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 839 "/usr/include/stdlib.h" 3
+extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 843 "/usr/include/stdlib.h" 3
+extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 854 "/usr/include/stdlib.h" 3
 extern "C" int mblen(const char *, size_t) throw();
-# 811 "/usr/include/stdlib.h" 3
+# 857 "/usr/include/stdlib.h" 3
 extern "C" int mbtowc(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
-# 815 "/usr/include/stdlib.h" 3
-extern "C" int wctomb(char *, wchar_t) throw();
-# 819 "/usr/include/stdlib.h" 3
-extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
-# 822 "/usr/include/stdlib.h" 3
-extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
-# 833 "/usr/include/stdlib.h" 3
-extern "C" int rpmatch(const char *) throw() __attribute__((nonnull(1)));
-# 844 "/usr/include/stdlib.h" 3
-extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2))) __attribute__((nonnull(3)));
-# 853 "/usr/include/stdlib.h" 3
-extern "C" void setkey(const char *) throw() __attribute__((nonnull(1)));
 # 861 "/usr/include/stdlib.h" 3
+extern "C" int wctomb(char *, wchar_t) throw();
+# 865 "/usr/include/stdlib.h" 3
+extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
+# 868 "/usr/include/stdlib.h" 3
+extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
+# 879 "/usr/include/stdlib.h" 3
+extern "C" int rpmatch(const char *) throw() __attribute__((nonnull(1)));
+# 890 "/usr/include/stdlib.h" 3
+extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2))) __attribute__((nonnull(3)));
+# 899 "/usr/include/stdlib.h" 3
+extern "C" void setkey(const char *) throw() __attribute__((nonnull(1)));
+# 907 "/usr/include/stdlib.h" 3
 extern "C" int posix_openpt(int);
-# 869 "/usr/include/stdlib.h" 3
+# 915 "/usr/include/stdlib.h" 3
 extern "C" int grantpt(int) throw();
-# 873 "/usr/include/stdlib.h" 3
+# 919 "/usr/include/stdlib.h" 3
 extern "C" int unlockpt(int) throw();
-# 878 "/usr/include/stdlib.h" 3
+# 924 "/usr/include/stdlib.h" 3
 extern "C" char *ptsname(int) throw();
-# 885 "/usr/include/stdlib.h" 3
+# 931 "/usr/include/stdlib.h" 3
 extern "C" int ptsname_r(int, char *, size_t) throw() __attribute__((nonnull(2)));
-# 889 "/usr/include/stdlib.h" 3
+# 935 "/usr/include/stdlib.h" 3
 extern "C" int getpt();
-# 896 "/usr/include/stdlib.h" 3
+# 942 "/usr/include/stdlib.h" 3
 extern "C" int getloadavg(double [], int) throw() __attribute__((nonnull(1)));
 # 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
@@ -4874,3642 +5156,2856 @@ using __gnu_cxx::strtoull;
 using __gnu_cxx::strtold;
 # 217 "/usr/include/c++/4.4/cstdlib" 3
 }
-# 496 "/home/normal/cuda/bin/../include/math_functions.h"
+# 496 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace __gnu_cxx {
-# 498 "/home/normal/cuda/bin/../include/math_functions.h"
+# 498 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline long long abs(long long) __attribute__((visibility("default")));
-# 499 "/home/normal/cuda/bin/../include/math_functions.h"
+# 499 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 501 "/home/normal/cuda/bin/../include/math_functions.h"
+# 501 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace std {
-# 503 "/home/normal/cuda/bin/../include/math_functions.h"
+# 503 "/usr/local/cuda/bin/../include/math_functions.h"
 template<class T> extern inline T __pow_helper(T, int);
-# 504 "/home/normal/cuda/bin/../include/math_functions.h"
+# 504 "/usr/local/cuda/bin/../include/math_functions.h"
 template<class T> extern inline T __cmath_power(T, unsigned);
-# 505 "/home/normal/cuda/bin/../include/math_functions.h"
+# 505 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 507 "/home/normal/cuda/bin/../include/math_functions.h"
+# 507 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::abs;
-# 508 "/home/normal/cuda/bin/../include/math_functions.h"
+# 508 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::fabs;
-# 509 "/home/normal/cuda/bin/../include/math_functions.h"
+# 509 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::ceil;
-# 510 "/home/normal/cuda/bin/../include/math_functions.h"
+# 510 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::floor;
-# 511 "/home/normal/cuda/bin/../include/math_functions.h"
+# 511 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::sqrt;
-# 512 "/home/normal/cuda/bin/../include/math_functions.h"
+# 512 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::pow;
-# 513 "/home/normal/cuda/bin/../include/math_functions.h"
+# 513 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::log;
-# 514 "/home/normal/cuda/bin/../include/math_functions.h"
+# 514 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::log10;
-# 515 "/home/normal/cuda/bin/../include/math_functions.h"
+# 515 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::fmod;
-# 516 "/home/normal/cuda/bin/../include/math_functions.h"
+# 516 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::modf;
-# 517 "/home/normal/cuda/bin/../include/math_functions.h"
+# 517 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::exp;
-# 518 "/home/normal/cuda/bin/../include/math_functions.h"
+# 518 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::frexp;
-# 519 "/home/normal/cuda/bin/../include/math_functions.h"
+# 519 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::ldexp;
-# 520 "/home/normal/cuda/bin/../include/math_functions.h"
+# 520 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::asin;
-# 521 "/home/normal/cuda/bin/../include/math_functions.h"
+# 521 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::sin;
-# 522 "/home/normal/cuda/bin/../include/math_functions.h"
+# 522 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::sinh;
-# 523 "/home/normal/cuda/bin/../include/math_functions.h"
+# 523 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::acos;
-# 524 "/home/normal/cuda/bin/../include/math_functions.h"
+# 524 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::cos;
-# 525 "/home/normal/cuda/bin/../include/math_functions.h"
+# 525 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::cosh;
-# 526 "/home/normal/cuda/bin/../include/math_functions.h"
+# 526 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::atan;
-# 527 "/home/normal/cuda/bin/../include/math_functions.h"
+# 527 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::atan2;
-# 528 "/home/normal/cuda/bin/../include/math_functions.h"
+# 528 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::tan;
-# 529 "/home/normal/cuda/bin/../include/math_functions.h"
+# 529 "/usr/local/cuda/bin/../include/math_functions.h"
 using std::tanh;
-# 583 "/home/normal/cuda/bin/../include/math_functions.h"
+# 583 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace std {
-# 586 "/home/normal/cuda/bin/../include/math_functions.h"
+# 586 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline long abs(long) __attribute__((visibility("default")));
-# 587 "/home/normal/cuda/bin/../include/math_functions.h"
+# 587 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float abs(float) __attribute__((visibility("default")));
-# 588 "/home/normal/cuda/bin/../include/math_functions.h"
+# 588 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline double abs(double) __attribute__((visibility("default")));
-# 589 "/home/normal/cuda/bin/../include/math_functions.h"
+# 589 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float fabs(float) __attribute__((visibility("default")));
-# 590 "/home/normal/cuda/bin/../include/math_functions.h"
+# 590 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float ceil(float) __attribute__((visibility("default")));
-# 591 "/home/normal/cuda/bin/../include/math_functions.h"
+# 591 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float floor(float) __attribute__((visibility("default")));
-# 592 "/home/normal/cuda/bin/../include/math_functions.h"
+# 592 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float sqrt(float) __attribute__((visibility("default")));
-# 593 "/home/normal/cuda/bin/../include/math_functions.h"
+# 593 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float pow(float, float) __attribute__((visibility("default")));
-# 594 "/home/normal/cuda/bin/../include/math_functions.h"
+# 594 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float pow(float, int) __attribute__((visibility("default")));
-# 595 "/home/normal/cuda/bin/../include/math_functions.h"
+# 595 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline double pow(double, int) __attribute__((visibility("default")));
-# 596 "/home/normal/cuda/bin/../include/math_functions.h"
+# 596 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float log(float) __attribute__((visibility("default")));
-# 597 "/home/normal/cuda/bin/../include/math_functions.h"
+# 597 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float log10(float) __attribute__((visibility("default")));
-# 598 "/home/normal/cuda/bin/../include/math_functions.h"
+# 598 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float fmod(float, float) __attribute__((visibility("default")));
-# 599 "/home/normal/cuda/bin/../include/math_functions.h"
+# 599 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float modf(float, float *) __attribute__((visibility("default")));
-# 600 "/home/normal/cuda/bin/../include/math_functions.h"
+# 600 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float exp(float) __attribute__((visibility("default")));
-# 601 "/home/normal/cuda/bin/../include/math_functions.h"
+# 601 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float frexp(float, int *) __attribute__((visibility("default")));
-# 602 "/home/normal/cuda/bin/../include/math_functions.h"
+# 602 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float ldexp(float, int) __attribute__((visibility("default")));
-# 603 "/home/normal/cuda/bin/../include/math_functions.h"
+# 603 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float asin(float) __attribute__((visibility("default")));
-# 604 "/home/normal/cuda/bin/../include/math_functions.h"
+# 604 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float sin(float) __attribute__((visibility("default")));
-# 605 "/home/normal/cuda/bin/../include/math_functions.h"
+# 605 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float sinh(float) __attribute__((visibility("default")));
-# 606 "/home/normal/cuda/bin/../include/math_functions.h"
+# 606 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float acos(float) __attribute__((visibility("default")));
-# 607 "/home/normal/cuda/bin/../include/math_functions.h"
+# 607 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float cos(float) __attribute__((visibility("default")));
-# 608 "/home/normal/cuda/bin/../include/math_functions.h"
+# 608 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float cosh(float) __attribute__((visibility("default")));
-# 609 "/home/normal/cuda/bin/../include/math_functions.h"
+# 609 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float atan(float) __attribute__((visibility("default")));
-# 610 "/home/normal/cuda/bin/../include/math_functions.h"
+# 610 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float atan2(float, float) __attribute__((visibility("default")));
-# 611 "/home/normal/cuda/bin/../include/math_functions.h"
+# 611 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float tan(float) __attribute__((visibility("default")));
-# 612 "/home/normal/cuda/bin/../include/math_functions.h"
+# 612 "/usr/local/cuda/bin/../include/math_functions.h"
 extern inline float tanh(float) __attribute__((visibility("default")));
-# 615 "/home/normal/cuda/bin/../include/math_functions.h"
+# 615 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 618 "/home/normal/cuda/bin/../include/math_functions.h"
+# 618 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float logb(float a)
-# 619 "/home/normal/cuda/bin/../include/math_functions.h"
+# 619 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 620 "/home/normal/cuda/bin/../include/math_functions.h"
+# 620 "/usr/local/cuda/bin/../include/math_functions.h"
 return logbf(a);
-# 621 "/home/normal/cuda/bin/../include/math_functions.h"
+# 621 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 623 "/home/normal/cuda/bin/../include/math_functions.h"
+# 623 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline int ilogb(float a)
-# 624 "/home/normal/cuda/bin/../include/math_functions.h"
+# 624 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 625 "/home/normal/cuda/bin/../include/math_functions.h"
+# 625 "/usr/local/cuda/bin/../include/math_functions.h"
 return ilogbf(a);
-# 626 "/home/normal/cuda/bin/../include/math_functions.h"
+# 626 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 628 "/home/normal/cuda/bin/../include/math_functions.h"
+# 628 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float scalbn(float a, int b)
-# 629 "/home/normal/cuda/bin/../include/math_functions.h"
+# 629 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 630 "/home/normal/cuda/bin/../include/math_functions.h"
+# 630 "/usr/local/cuda/bin/../include/math_functions.h"
 return scalbnf(a, b);
-# 631 "/home/normal/cuda/bin/../include/math_functions.h"
+# 631 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 633 "/home/normal/cuda/bin/../include/math_functions.h"
+# 633 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float scalbln(float a, long b)
-# 634 "/home/normal/cuda/bin/../include/math_functions.h"
+# 634 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 635 "/home/normal/cuda/bin/../include/math_functions.h"
+# 635 "/usr/local/cuda/bin/../include/math_functions.h"
 return scalblnf(a, b);
-# 636 "/home/normal/cuda/bin/../include/math_functions.h"
+# 636 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 638 "/home/normal/cuda/bin/../include/math_functions.h"
+# 638 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float exp2(float a)
-# 639 "/home/normal/cuda/bin/../include/math_functions.h"
+# 639 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 640 "/home/normal/cuda/bin/../include/math_functions.h"
+# 640 "/usr/local/cuda/bin/../include/math_functions.h"
 return exp2f(a);
-# 641 "/home/normal/cuda/bin/../include/math_functions.h"
+# 641 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 643 "/home/normal/cuda/bin/../include/math_functions.h"
+# 643 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float exp10(float a)
-# 644 "/home/normal/cuda/bin/../include/math_functions.h"
+# 644 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 645 "/home/normal/cuda/bin/../include/math_functions.h"
+# 645 "/usr/local/cuda/bin/../include/math_functions.h"
 return exp10f(a);
-# 646 "/home/normal/cuda/bin/../include/math_functions.h"
+# 646 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 648 "/home/normal/cuda/bin/../include/math_functions.h"
+# 648 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float expm1(float a)
-# 649 "/home/normal/cuda/bin/../include/math_functions.h"
+# 649 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 650 "/home/normal/cuda/bin/../include/math_functions.h"
+# 650 "/usr/local/cuda/bin/../include/math_functions.h"
 return expm1f(a);
-# 651 "/home/normal/cuda/bin/../include/math_functions.h"
+# 651 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 653 "/home/normal/cuda/bin/../include/math_functions.h"
+# 653 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float log2(float a)
-# 654 "/home/normal/cuda/bin/../include/math_functions.h"
+# 654 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 655 "/home/normal/cuda/bin/../include/math_functions.h"
+# 655 "/usr/local/cuda/bin/../include/math_functions.h"
 return log2f(a);
-# 656 "/home/normal/cuda/bin/../include/math_functions.h"
+# 656 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 658 "/home/normal/cuda/bin/../include/math_functions.h"
+# 658 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float log1p(float a)
-# 659 "/home/normal/cuda/bin/../include/math_functions.h"
+# 659 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 660 "/home/normal/cuda/bin/../include/math_functions.h"
+# 660 "/usr/local/cuda/bin/../include/math_functions.h"
 return log1pf(a);
-# 661 "/home/normal/cuda/bin/../include/math_functions.h"
+# 661 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 663 "/home/normal/cuda/bin/../include/math_functions.h"
+# 663 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float rsqrt(float a)
-# 664 "/home/normal/cuda/bin/../include/math_functions.h"
+# 664 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 665 "/home/normal/cuda/bin/../include/math_functions.h"
+# 665 "/usr/local/cuda/bin/../include/math_functions.h"
 return rsqrtf(a);
-# 666 "/home/normal/cuda/bin/../include/math_functions.h"
+# 666 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 668 "/home/normal/cuda/bin/../include/math_functions.h"
+# 668 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float acosh(float a)
-# 669 "/home/normal/cuda/bin/../include/math_functions.h"
+# 669 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 670 "/home/normal/cuda/bin/../include/math_functions.h"
+# 670 "/usr/local/cuda/bin/../include/math_functions.h"
 return acoshf(a);
-# 671 "/home/normal/cuda/bin/../include/math_functions.h"
+# 671 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 673 "/home/normal/cuda/bin/../include/math_functions.h"
+# 673 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float asinh(float a)
-# 674 "/home/normal/cuda/bin/../include/math_functions.h"
+# 674 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 675 "/home/normal/cuda/bin/../include/math_functions.h"
+# 675 "/usr/local/cuda/bin/../include/math_functions.h"
 return asinhf(a);
-# 676 "/home/normal/cuda/bin/../include/math_functions.h"
+# 676 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 678 "/home/normal/cuda/bin/../include/math_functions.h"
+# 678 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float atanh(float a)
-# 679 "/home/normal/cuda/bin/../include/math_functions.h"
+# 679 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 680 "/home/normal/cuda/bin/../include/math_functions.h"
+# 680 "/usr/local/cuda/bin/../include/math_functions.h"
 return atanhf(a);
-# 681 "/home/normal/cuda/bin/../include/math_functions.h"
+# 681 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 683 "/home/normal/cuda/bin/../include/math_functions.h"
+# 683 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float hypot(float a, float b)
-# 684 "/home/normal/cuda/bin/../include/math_functions.h"
+# 684 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 685 "/home/normal/cuda/bin/../include/math_functions.h"
+# 685 "/usr/local/cuda/bin/../include/math_functions.h"
 return hypotf(a, b);
-# 686 "/home/normal/cuda/bin/../include/math_functions.h"
+# 686 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 688 "/home/normal/cuda/bin/../include/math_functions.h"
+# 688 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float cbrt(float a)
-# 689 "/home/normal/cuda/bin/../include/math_functions.h"
+# 689 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 690 "/home/normal/cuda/bin/../include/math_functions.h"
+# 690 "/usr/local/cuda/bin/../include/math_functions.h"
 return cbrtf(a);
-# 691 "/home/normal/cuda/bin/../include/math_functions.h"
+# 691 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 693 "/home/normal/cuda/bin/../include/math_functions.h"
+# 693 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float rcbrt(float a)
-# 694 "/home/normal/cuda/bin/../include/math_functions.h"
+# 694 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 695 "/home/normal/cuda/bin/../include/math_functions.h"
+# 695 "/usr/local/cuda/bin/../include/math_functions.h"
 return rcbrtf(a);
-# 696 "/home/normal/cuda/bin/../include/math_functions.h"
+# 696 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 698 "/home/normal/cuda/bin/../include/math_functions.h"
+# 698 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float sinpi(float a)
-# 699 "/home/normal/cuda/bin/../include/math_functions.h"
+# 699 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 700 "/home/normal/cuda/bin/../include/math_functions.h"
+# 700 "/usr/local/cuda/bin/../include/math_functions.h"
 return sinpif(a);
-# 701 "/home/normal/cuda/bin/../include/math_functions.h"
+# 701 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 703 "/home/normal/cuda/bin/../include/math_functions.h"
+# 703 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline void sincos(float a, float *sptr, float *cptr)
-# 704 "/home/normal/cuda/bin/../include/math_functions.h"
+# 704 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 705 "/home/normal/cuda/bin/../include/math_functions.h"
+# 705 "/usr/local/cuda/bin/../include/math_functions.h"
 sincosf(a, sptr, cptr);
-# 706 "/home/normal/cuda/bin/../include/math_functions.h"
+# 706 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 708 "/home/normal/cuda/bin/../include/math_functions.h"
+# 708 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float erf(float a)
-# 709 "/home/normal/cuda/bin/../include/math_functions.h"
+# 709 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 710 "/home/normal/cuda/bin/../include/math_functions.h"
+# 710 "/usr/local/cuda/bin/../include/math_functions.h"
 return erff(a);
-# 711 "/home/normal/cuda/bin/../include/math_functions.h"
+# 711 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 713 "/home/normal/cuda/bin/../include/math_functions.h"
+# 713 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float erfinv(float a)
-# 714 "/home/normal/cuda/bin/../include/math_functions.h"
+# 714 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 715 "/home/normal/cuda/bin/../include/math_functions.h"
+# 715 "/usr/local/cuda/bin/../include/math_functions.h"
 return erfinvf(a);
-# 716 "/home/normal/cuda/bin/../include/math_functions.h"
+# 716 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 718 "/home/normal/cuda/bin/../include/math_functions.h"
+# 718 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float erfc(float a)
-# 719 "/home/normal/cuda/bin/../include/math_functions.h"
+# 719 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 720 "/home/normal/cuda/bin/../include/math_functions.h"
+# 720 "/usr/local/cuda/bin/../include/math_functions.h"
 return erfcf(a);
-# 721 "/home/normal/cuda/bin/../include/math_functions.h"
+# 721 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 723 "/home/normal/cuda/bin/../include/math_functions.h"
+# 723 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float erfcinv(float a)
-# 724 "/home/normal/cuda/bin/../include/math_functions.h"
+# 724 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 725 "/home/normal/cuda/bin/../include/math_functions.h"
+# 725 "/usr/local/cuda/bin/../include/math_functions.h"
 return erfcinvf(a);
-# 726 "/home/normal/cuda/bin/../include/math_functions.h"
+# 726 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 728 "/home/normal/cuda/bin/../include/math_functions.h"
+# 728 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float lgamma(float a)
-# 729 "/home/normal/cuda/bin/../include/math_functions.h"
+# 729 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 730 "/home/normal/cuda/bin/../include/math_functions.h"
+# 730 "/usr/local/cuda/bin/../include/math_functions.h"
 return lgammaf(a);
-# 731 "/home/normal/cuda/bin/../include/math_functions.h"
+# 731 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 733 "/home/normal/cuda/bin/../include/math_functions.h"
+# 733 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float tgamma(float a)
-# 734 "/home/normal/cuda/bin/../include/math_functions.h"
+# 734 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 735 "/home/normal/cuda/bin/../include/math_functions.h"
+# 735 "/usr/local/cuda/bin/../include/math_functions.h"
 return tgammaf(a);
-# 736 "/home/normal/cuda/bin/../include/math_functions.h"
+# 736 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 738 "/home/normal/cuda/bin/../include/math_functions.h"
+# 738 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float copysign(float a, float b)
-# 739 "/home/normal/cuda/bin/../include/math_functions.h"
+# 739 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 740 "/home/normal/cuda/bin/../include/math_functions.h"
+# 740 "/usr/local/cuda/bin/../include/math_functions.h"
 return copysignf(a, b);
-# 741 "/home/normal/cuda/bin/../include/math_functions.h"
+# 741 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 743 "/home/normal/cuda/bin/../include/math_functions.h"
+# 743 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double copysign(double a, float b)
-# 744 "/home/normal/cuda/bin/../include/math_functions.h"
+# 744 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 745 "/home/normal/cuda/bin/../include/math_functions.h"
+# 745 "/usr/local/cuda/bin/../include/math_functions.h"
 return copysign(a, (double)b);
-# 746 "/home/normal/cuda/bin/../include/math_functions.h"
+# 746 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 748 "/home/normal/cuda/bin/../include/math_functions.h"
+# 748 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float copysign(float a, double b)
-# 749 "/home/normal/cuda/bin/../include/math_functions.h"
+# 749 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 750 "/home/normal/cuda/bin/../include/math_functions.h"
+# 750 "/usr/local/cuda/bin/../include/math_functions.h"
 return copysignf(a, (float)b);
-# 751 "/home/normal/cuda/bin/../include/math_functions.h"
+# 751 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 753 "/home/normal/cuda/bin/../include/math_functions.h"
+# 753 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float nextafter(float a, float b)
-# 754 "/home/normal/cuda/bin/../include/math_functions.h"
+# 754 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 755 "/home/normal/cuda/bin/../include/math_functions.h"
+# 755 "/usr/local/cuda/bin/../include/math_functions.h"
 return nextafterf(a, b);
-# 756 "/home/normal/cuda/bin/../include/math_functions.h"
+# 756 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 758 "/home/normal/cuda/bin/../include/math_functions.h"
+# 758 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float remainder(float a, float b)
-# 759 "/home/normal/cuda/bin/../include/math_functions.h"
+# 759 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 760 "/home/normal/cuda/bin/../include/math_functions.h"
+# 760 "/usr/local/cuda/bin/../include/math_functions.h"
 return remainderf(a, b);
-# 761 "/home/normal/cuda/bin/../include/math_functions.h"
+# 761 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 763 "/home/normal/cuda/bin/../include/math_functions.h"
+# 763 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float remquo(float a, float b, int *quo)
-# 764 "/home/normal/cuda/bin/../include/math_functions.h"
+# 764 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 765 "/home/normal/cuda/bin/../include/math_functions.h"
+# 765 "/usr/local/cuda/bin/../include/math_functions.h"
 return remquof(a, b, quo);
-# 766 "/home/normal/cuda/bin/../include/math_functions.h"
+# 766 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 768 "/home/normal/cuda/bin/../include/math_functions.h"
+# 768 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float round(float a)
-# 769 "/home/normal/cuda/bin/../include/math_functions.h"
+# 769 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 770 "/home/normal/cuda/bin/../include/math_functions.h"
+# 770 "/usr/local/cuda/bin/../include/math_functions.h"
 return roundf(a);
-# 771 "/home/normal/cuda/bin/../include/math_functions.h"
+# 771 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 773 "/home/normal/cuda/bin/../include/math_functions.h"
+# 773 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline long lround(float a)
-# 774 "/home/normal/cuda/bin/../include/math_functions.h"
+# 774 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 775 "/home/normal/cuda/bin/../include/math_functions.h"
+# 775 "/usr/local/cuda/bin/../include/math_functions.h"
 return lroundf(a);
-# 776 "/home/normal/cuda/bin/../include/math_functions.h"
+# 776 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 778 "/home/normal/cuda/bin/../include/math_functions.h"
+# 778 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline long long llround(float a)
-# 779 "/home/normal/cuda/bin/../include/math_functions.h"
+# 779 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 780 "/home/normal/cuda/bin/../include/math_functions.h"
+# 780 "/usr/local/cuda/bin/../include/math_functions.h"
 return llroundf(a);
-# 781 "/home/normal/cuda/bin/../include/math_functions.h"
+# 781 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 783 "/home/normal/cuda/bin/../include/math_functions.h"
+# 783 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float trunc(float a)
-# 784 "/home/normal/cuda/bin/../include/math_functions.h"
+# 784 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 785 "/home/normal/cuda/bin/../include/math_functions.h"
+# 785 "/usr/local/cuda/bin/../include/math_functions.h"
 return truncf(a);
-# 786 "/home/normal/cuda/bin/../include/math_functions.h"
+# 786 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 788 "/home/normal/cuda/bin/../include/math_functions.h"
+# 788 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float rint(float a)
-# 789 "/home/normal/cuda/bin/../include/math_functions.h"
+# 789 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 790 "/home/normal/cuda/bin/../include/math_functions.h"
+# 790 "/usr/local/cuda/bin/../include/math_functions.h"
 return rintf(a);
-# 791 "/home/normal/cuda/bin/../include/math_functions.h"
+# 791 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 793 "/home/normal/cuda/bin/../include/math_functions.h"
+# 793 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline long lrint(float a)
-# 794 "/home/normal/cuda/bin/../include/math_functions.h"
+# 794 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 795 "/home/normal/cuda/bin/../include/math_functions.h"
+# 795 "/usr/local/cuda/bin/../include/math_functions.h"
 return lrintf(a);
-# 796 "/home/normal/cuda/bin/../include/math_functions.h"
+# 796 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 798 "/home/normal/cuda/bin/../include/math_functions.h"
+# 798 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline long long llrint(float a)
-# 799 "/home/normal/cuda/bin/../include/math_functions.h"
+# 799 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 800 "/home/normal/cuda/bin/../include/math_functions.h"
+# 800 "/usr/local/cuda/bin/../include/math_functions.h"
 return llrintf(a);
-# 801 "/home/normal/cuda/bin/../include/math_functions.h"
+# 801 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 803 "/home/normal/cuda/bin/../include/math_functions.h"
+# 803 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float nearbyint(float a)
-# 804 "/home/normal/cuda/bin/../include/math_functions.h"
+# 804 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 805 "/home/normal/cuda/bin/../include/math_functions.h"
+# 805 "/usr/local/cuda/bin/../include/math_functions.h"
 return nearbyintf(a);
-# 806 "/home/normal/cuda/bin/../include/math_functions.h"
+# 806 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 808 "/home/normal/cuda/bin/../include/math_functions.h"
+# 808 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float fdim(float a, float b)
-# 809 "/home/normal/cuda/bin/../include/math_functions.h"
+# 809 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 810 "/home/normal/cuda/bin/../include/math_functions.h"
+# 810 "/usr/local/cuda/bin/../include/math_functions.h"
 return fdimf(a, b);
-# 811 "/home/normal/cuda/bin/../include/math_functions.h"
+# 811 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 813 "/home/normal/cuda/bin/../include/math_functions.h"
+# 813 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float fma(float a, float b, float c)
-# 814 "/home/normal/cuda/bin/../include/math_functions.h"
+# 814 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 815 "/home/normal/cuda/bin/../include/math_functions.h"
+# 815 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmaf(a, b, c);
-# 816 "/home/normal/cuda/bin/../include/math_functions.h"
+# 816 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 818 "/home/normal/cuda/bin/../include/math_functions.h"
+# 818 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float fmax(float a, float b)
-# 819 "/home/normal/cuda/bin/../include/math_functions.h"
+# 819 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 820 "/home/normal/cuda/bin/../include/math_functions.h"
+# 820 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmaxf(a, b);
-# 821 "/home/normal/cuda/bin/../include/math_functions.h"
+# 821 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 823 "/home/normal/cuda/bin/../include/math_functions.h"
+# 823 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float fmin(float a, float b)
-# 824 "/home/normal/cuda/bin/../include/math_functions.h"
+# 824 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 825 "/home/normal/cuda/bin/../include/math_functions.h"
+# 825 "/usr/local/cuda/bin/../include/math_functions.h"
 return fminf(a, b);
-# 826 "/home/normal/cuda/bin/../include/math_functions.h"
+# 826 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 828 "/home/normal/cuda/bin/../include/math_functions.h"
+# 828 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned min(unsigned a, unsigned b)
-# 829 "/home/normal/cuda/bin/../include/math_functions.h"
+# 829 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 830 "/home/normal/cuda/bin/../include/math_functions.h"
+# 830 "/usr/local/cuda/bin/../include/math_functions.h"
 return umin(a, b);
-# 831 "/home/normal/cuda/bin/../include/math_functions.h"
+# 831 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 833 "/home/normal/cuda/bin/../include/math_functions.h"
+# 833 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned min(int a, unsigned b)
-# 834 "/home/normal/cuda/bin/../include/math_functions.h"
+# 834 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 835 "/home/normal/cuda/bin/../include/math_functions.h"
+# 835 "/usr/local/cuda/bin/../include/math_functions.h"
 return umin((unsigned)a, b);
-# 836 "/home/normal/cuda/bin/../include/math_functions.h"
+# 836 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 838 "/home/normal/cuda/bin/../include/math_functions.h"
+# 838 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned min(unsigned a, int b)
-# 839 "/home/normal/cuda/bin/../include/math_functions.h"
+# 839 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 840 "/home/normal/cuda/bin/../include/math_functions.h"
+# 840 "/usr/local/cuda/bin/../include/math_functions.h"
 return umin(a, (unsigned)b);
-# 841 "/home/normal/cuda/bin/../include/math_functions.h"
+# 841 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 843 "/home/normal/cuda/bin/../include/math_functions.h"
+# 843 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline long long min(long long a, long long b)
-# 844 "/home/normal/cuda/bin/../include/math_functions.h"
+# 844 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 845 "/home/normal/cuda/bin/../include/math_functions.h"
+# 845 "/usr/local/cuda/bin/../include/math_functions.h"
 return llmin(a, b);
-# 846 "/home/normal/cuda/bin/../include/math_functions.h"
+# 846 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 848 "/home/normal/cuda/bin/../include/math_functions.h"
+# 848 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned long long min(unsigned long long a, unsigned long long b)
-# 849 "/home/normal/cuda/bin/../include/math_functions.h"
+# 849 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 850 "/home/normal/cuda/bin/../include/math_functions.h"
+# 850 "/usr/local/cuda/bin/../include/math_functions.h"
 return ullmin(a, b);
-# 851 "/home/normal/cuda/bin/../include/math_functions.h"
+# 851 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 853 "/home/normal/cuda/bin/../include/math_functions.h"
+# 853 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned long long min(long long a, unsigned long long b)
-# 854 "/home/normal/cuda/bin/../include/math_functions.h"
+# 854 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 855 "/home/normal/cuda/bin/../include/math_functions.h"
+# 855 "/usr/local/cuda/bin/../include/math_functions.h"
 return ullmin((unsigned long long)a, b);
-# 856 "/home/normal/cuda/bin/../include/math_functions.h"
+# 856 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 858 "/home/normal/cuda/bin/../include/math_functions.h"
+# 858 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned long long min(unsigned long long a, long long b)
-# 859 "/home/normal/cuda/bin/../include/math_functions.h"
+# 859 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 860 "/home/normal/cuda/bin/../include/math_functions.h"
+# 860 "/usr/local/cuda/bin/../include/math_functions.h"
 return ullmin(a, (unsigned long long)b);
-# 861 "/home/normal/cuda/bin/../include/math_functions.h"
+# 861 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 863 "/home/normal/cuda/bin/../include/math_functions.h"
+# 863 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float min(float a, float b)
-# 864 "/home/normal/cuda/bin/../include/math_functions.h"
+# 864 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 865 "/home/normal/cuda/bin/../include/math_functions.h"
+# 865 "/usr/local/cuda/bin/../include/math_functions.h"
 return fminf(a, b);
-# 866 "/home/normal/cuda/bin/../include/math_functions.h"
+# 866 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 868 "/home/normal/cuda/bin/../include/math_functions.h"
+# 868 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double min(double a, double b)
-# 869 "/home/normal/cuda/bin/../include/math_functions.h"
+# 869 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 870 "/home/normal/cuda/bin/../include/math_functions.h"
+# 870 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmin(a, b);
-# 871 "/home/normal/cuda/bin/../include/math_functions.h"
+# 871 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 873 "/home/normal/cuda/bin/../include/math_functions.h"
+# 873 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double min(float a, double b)
-# 874 "/home/normal/cuda/bin/../include/math_functions.h"
+# 874 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 875 "/home/normal/cuda/bin/../include/math_functions.h"
+# 875 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmin((double)a, b);
-# 876 "/home/normal/cuda/bin/../include/math_functions.h"
+# 876 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 878 "/home/normal/cuda/bin/../include/math_functions.h"
+# 878 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double min(double a, float b)
-# 879 "/home/normal/cuda/bin/../include/math_functions.h"
+# 879 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 880 "/home/normal/cuda/bin/../include/math_functions.h"
+# 880 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmin(a, (double)b);
-# 881 "/home/normal/cuda/bin/../include/math_functions.h"
+# 881 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 883 "/home/normal/cuda/bin/../include/math_functions.h"
+# 883 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned max(unsigned a, unsigned b)
-# 884 "/home/normal/cuda/bin/../include/math_functions.h"
+# 884 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 885 "/home/normal/cuda/bin/../include/math_functions.h"
+# 885 "/usr/local/cuda/bin/../include/math_functions.h"
 return umax(a, b);
-# 886 "/home/normal/cuda/bin/../include/math_functions.h"
+# 886 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 888 "/home/normal/cuda/bin/../include/math_functions.h"
+# 888 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned max(int a, unsigned b)
-# 889 "/home/normal/cuda/bin/../include/math_functions.h"
+# 889 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 890 "/home/normal/cuda/bin/../include/math_functions.h"
+# 890 "/usr/local/cuda/bin/../include/math_functions.h"
 return umax((unsigned)a, b);
-# 891 "/home/normal/cuda/bin/../include/math_functions.h"
+# 891 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 893 "/home/normal/cuda/bin/../include/math_functions.h"
+# 893 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned max(unsigned a, int b)
-# 894 "/home/normal/cuda/bin/../include/math_functions.h"
+# 894 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 895 "/home/normal/cuda/bin/../include/math_functions.h"
+# 895 "/usr/local/cuda/bin/../include/math_functions.h"
 return umax(a, (unsigned)b);
-# 896 "/home/normal/cuda/bin/../include/math_functions.h"
+# 896 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 898 "/home/normal/cuda/bin/../include/math_functions.h"
+# 898 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline long long max(long long a, long long b)
-# 899 "/home/normal/cuda/bin/../include/math_functions.h"
+# 899 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 900 "/home/normal/cuda/bin/../include/math_functions.h"
+# 900 "/usr/local/cuda/bin/../include/math_functions.h"
 return llmax(a, b);
-# 901 "/home/normal/cuda/bin/../include/math_functions.h"
+# 901 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 903 "/home/normal/cuda/bin/../include/math_functions.h"
+# 903 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned long long max(unsigned long long a, unsigned long long b)
-# 904 "/home/normal/cuda/bin/../include/math_functions.h"
+# 904 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 905 "/home/normal/cuda/bin/../include/math_functions.h"
+# 905 "/usr/local/cuda/bin/../include/math_functions.h"
 return ullmax(a, b);
-# 906 "/home/normal/cuda/bin/../include/math_functions.h"
+# 906 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 908 "/home/normal/cuda/bin/../include/math_functions.h"
+# 908 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned long long max(long long a, unsigned long long b)
-# 909 "/home/normal/cuda/bin/../include/math_functions.h"
+# 909 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 910 "/home/normal/cuda/bin/../include/math_functions.h"
+# 910 "/usr/local/cuda/bin/../include/math_functions.h"
 return ullmax((unsigned long long)a, b);
-# 911 "/home/normal/cuda/bin/../include/math_functions.h"
+# 911 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 913 "/home/normal/cuda/bin/../include/math_functions.h"
+# 913 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline unsigned long long max(unsigned long long a, long long b)
-# 914 "/home/normal/cuda/bin/../include/math_functions.h"
+# 914 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 915 "/home/normal/cuda/bin/../include/math_functions.h"
+# 915 "/usr/local/cuda/bin/../include/math_functions.h"
 return ullmax(a, (unsigned long long)b);
-# 916 "/home/normal/cuda/bin/../include/math_functions.h"
+# 916 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 918 "/home/normal/cuda/bin/../include/math_functions.h"
+# 918 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline float max(float a, float b)
-# 919 "/home/normal/cuda/bin/../include/math_functions.h"
+# 919 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 920 "/home/normal/cuda/bin/../include/math_functions.h"
+# 920 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmaxf(a, b);
-# 921 "/home/normal/cuda/bin/../include/math_functions.h"
+# 921 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 923 "/home/normal/cuda/bin/../include/math_functions.h"
+# 923 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double max(double a, double b)
-# 924 "/home/normal/cuda/bin/../include/math_functions.h"
+# 924 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 925 "/home/normal/cuda/bin/../include/math_functions.h"
+# 925 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmax(a, b);
-# 926 "/home/normal/cuda/bin/../include/math_functions.h"
+# 926 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 928 "/home/normal/cuda/bin/../include/math_functions.h"
+# 928 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double max(float a, double b)
-# 929 "/home/normal/cuda/bin/../include/math_functions.h"
+# 929 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 930 "/home/normal/cuda/bin/../include/math_functions.h"
+# 930 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmax((double)a, b);
-# 931 "/home/normal/cuda/bin/../include/math_functions.h"
+# 931 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 933 "/home/normal/cuda/bin/../include/math_functions.h"
+# 933 "/usr/local/cuda/bin/../include/math_functions.h"
 static inline double max(double a, float b)
-# 934 "/home/normal/cuda/bin/../include/math_functions.h"
+# 934 "/usr/local/cuda/bin/../include/math_functions.h"
 {
-# 935 "/home/normal/cuda/bin/../include/math_functions.h"
+# 935 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmax(a, (double)b);
-# 936 "/home/normal/cuda/bin/../include/math_functions.h"
+# 936 "/usr/local/cuda/bin/../include/math_functions.h"
 }
-# 59 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-template<class T, int dim = 1>
-# 60 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-struct surface : public surfaceReference {
-# 62 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-surface()
-# 63 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-{
-# 64 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-(channelDesc) = cudaCreateChannelDesc< T> ();
-# 65 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-}
-# 67 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-surface(cudaChannelFormatDesc desc)
-# 68 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-{
-# 69 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-(channelDesc) = desc;
-# 70 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-}
-# 71 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-};
-# 74 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-template<int dim>
-# 75 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-struct surface< void, dim> : public surfaceReference {
-# 77 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-surface()
-# 78 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-{
-# 79 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-(channelDesc) = cudaCreateChannelDesc< void> ();
-# 80 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-}
-# 81 "/home/normal/cuda/bin/../include/cuda_surface_types.h"
-};
-# 59 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 59 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 template<class T, int dim = 1, cudaTextureReadMode mode = cudaReadModeElementType>
-# 60 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 60 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 struct texture : public textureReference {
-# 62 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 62 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 texture(int norm = 0, cudaTextureFilterMode
-# 63 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 63 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 fMode = cudaFilterModePoint, cudaTextureAddressMode
-# 64 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 64 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 aMode = cudaAddressModeClamp)
-# 65 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 65 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 {
-# 66 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 66 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 (normalized) = norm;
-# 67 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 67 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 (filterMode) = fMode;
-# 68 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 68 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 ((addressMode)[0]) = aMode;
-# 69 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 69 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 ((addressMode)[1]) = aMode;
-# 70 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 70 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 ((addressMode)[2]) = aMode;
-# 71 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 71 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 (channelDesc) = cudaCreateChannelDesc< T> ();
-# 72 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 72 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 }
-# 74 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 74 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 texture(int norm, cudaTextureFilterMode
-# 75 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 75 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 fMode, cudaTextureAddressMode
-# 76 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 76 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 aMode, cudaChannelFormatDesc
-# 77 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 77 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 desc)
-# 78 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 78 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 {
-# 79 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 79 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 (normalized) = norm;
-# 80 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 80 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 (filterMode) = fMode;
-# 81 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 81 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 ((addressMode)[0]) = aMode;
-# 82 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 82 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 ((addressMode)[1]) = aMode;
-# 83 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 83 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 ((addressMode)[2]) = aMode;
-# 84 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 84 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 (channelDesc) = desc;
-# 85 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 85 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 }
-# 86 "/home/normal/cuda/bin/../include/cuda_texture_types.h"
+# 86 "/usr/local/cuda/bin/../include/cuda_texture_types.h"
 };
-# 316 "/home/normal/cuda/bin/../include/device_functions.h"
+# 312 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline int mulhi(int a, int b)
-# 317 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 319 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 321 "/home/normal/cuda/bin/../include/device_functions.h"
+# 313 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 315 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 317 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned mulhi(unsigned a, unsigned b)
-# 322 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 324 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 326 "/home/normal/cuda/bin/../include/device_functions.h"
+# 318 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 320 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 322 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned mulhi(int a, unsigned b)
-# 327 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 329 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 331 "/home/normal/cuda/bin/../include/device_functions.h"
+# 323 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 325 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 327 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned mulhi(unsigned a, int b)
-# 332 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 334 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 336 "/home/normal/cuda/bin/../include/device_functions.h"
+# 328 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 330 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 332 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline long long mul64hi(long long a, long long b)
-# 337 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 339 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 341 "/home/normal/cuda/bin/../include/device_functions.h"
+# 333 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 335 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 337 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned long long mul64hi(unsigned long long a, unsigned long long b)
-# 342 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 344 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 346 "/home/normal/cuda/bin/../include/device_functions.h"
+# 338 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 340 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 342 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned long long mul64hi(long long a, unsigned long long b)
-# 347 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 349 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 351 "/home/normal/cuda/bin/../include/device_functions.h"
+# 343 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 345 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 347 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned long long mul64hi(unsigned long long a, long long b)
-# 352 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 354 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 356 "/home/normal/cuda/bin/../include/device_functions.h"
+# 348 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 350 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 352 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline int float_as_int(float a)
-# 357 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 359 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 361 "/home/normal/cuda/bin/../include/device_functions.h"
+# 353 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 355 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 357 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline float int_as_float(int a)
-# 362 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 364 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 366 "/home/normal/cuda/bin/../include/device_functions.h"
+# 358 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 360 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 362 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline float saturate(float a)
-# 367 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 369 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 371 "/home/normal/cuda/bin/../include/device_functions.h"
+# 363 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 365 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 367 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline int mul24(int a, int b)
-# 372 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 374 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 376 "/home/normal/cuda/bin/../include/device_functions.h"
+# 368 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 370 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 372 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned umul24(unsigned a, unsigned b)
-# 377 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 379 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 381 "/home/normal/cuda/bin/../include/device_functions.h"
+# 373 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 375 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 377 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline void trap()
-# 382 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 384 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 386 "/home/normal/cuda/bin/../include/device_functions.h"
+# 378 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 380 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 382 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline void brkpt(int c)
-# 387 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 389 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 391 "/home/normal/cuda/bin/../include/device_functions.h"
+# 383 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 385 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 387 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline void syncthreads()
-# 392 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 394 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 396 "/home/normal/cuda/bin/../include/device_functions.h"
+# 388 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 390 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 392 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline void prof_trigger(int e)
-# 397 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 414 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 416 "/home/normal/cuda/bin/../include/device_functions.h"
+# 393 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 410 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 412 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline void threadfence(bool global = true)
-# 417 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 419 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 421 "/home/normal/cuda/bin/../include/device_functions.h"
+# 413 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 415 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 417 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline int float2int(float a, cudaRoundMode mode = cudaRoundZero)
-# 422 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 427 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 429 "/home/normal/cuda/bin/../include/device_functions.h"
+# 418 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 423 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 425 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline unsigned float2uint(float a, cudaRoundMode mode = cudaRoundZero)
-# 430 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 435 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 437 "/home/normal/cuda/bin/../include/device_functions.h"
+# 426 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 431 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 433 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline float int2float(int a, cudaRoundMode mode = cudaRoundNearest)
-# 438 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 443 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 445 "/home/normal/cuda/bin/../include/device_functions.h"
+# 434 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 439 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 441 "/usr/local/cuda/bin/../include/device_functions.h"
 static inline float uint2float(unsigned a, cudaRoundMode mode = cudaRoundNearest)
-# 446 "/home/normal/cuda/bin/../include/device_functions.h"
-{exit(1);
-# 451 "/home/normal/cuda/bin/../include/device_functions.h"
-}
-# 101 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 442 "/usr/local/cuda/bin/../include/device_functions.h"
+{volatile int ___ = 1;
+# 447 "/usr/local/cuda/bin/../include/device_functions.h"
+exit(___);}
+# 101 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicAdd(int *address, int val)
-# 102 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 104 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 106 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 102 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 104 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 106 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicAdd(unsigned *address, unsigned val)
-# 107 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 109 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 111 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 107 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 109 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 111 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicSub(int *address, int val)
-# 112 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 114 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 116 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 112 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 114 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 116 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicSub(unsigned *address, unsigned val)
-# 117 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 119 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 121 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 117 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 119 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 121 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicExch(int *address, int val)
-# 122 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 124 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 126 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 122 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 124 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 126 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicExch(unsigned *address, unsigned val)
-# 127 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 129 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 131 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 127 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 129 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 131 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline float atomicExch(float *address, float val)
-# 132 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 134 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 136 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 132 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 134 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 136 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicMin(int *address, int val)
-# 137 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 139 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 141 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 137 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 139 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 141 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicMin(unsigned *address, unsigned val)
-# 142 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 144 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 146 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 142 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 144 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 146 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicMax(int *address, int val)
-# 147 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 149 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 151 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 147 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 149 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 151 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicMax(unsigned *address, unsigned val)
-# 152 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 154 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 156 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 152 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 154 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 156 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicInc(unsigned *address, unsigned val)
-# 157 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 159 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 161 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 157 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 159 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 161 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicDec(unsigned *address, unsigned val)
-# 162 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 164 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 166 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 162 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 164 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 166 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicAnd(int *address, int val)
-# 167 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 169 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 171 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 167 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 169 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 171 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicAnd(unsigned *address, unsigned val)
-# 172 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 174 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 176 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 172 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 174 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 176 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicOr(int *address, int val)
-# 177 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 179 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 181 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 177 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 179 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 181 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicOr(unsigned *address, unsigned val)
-# 182 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 184 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 186 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 182 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 184 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 186 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicXor(int *address, int val)
-# 187 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 189 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 191 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 187 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 189 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 191 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicXor(unsigned *address, unsigned val)
-# 192 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 194 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 196 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 192 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 194 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 196 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline int atomicCAS(int *address, int compare, int val)
-# 197 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 199 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 201 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+# 197 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 199 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 201 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
 static inline unsigned atomicCAS(unsigned *address, unsigned compare, unsigned val)
-# 202 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-{exit(1);
-# 204 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-}
-# 74 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+# 202 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+{volatile int ___ = 1;
+# 204 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+exit(___);}
+# 74 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
 static inline unsigned long long atomicAdd(unsigned long long *address, unsigned long long val)
-# 75 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-{exit(1);
-# 77 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-}
-# 79 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+# 75 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+{volatile int ___ = 1;
+# 77 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+exit(___);}
+# 79 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
 static inline unsigned long long atomicExch(unsigned long long *address, unsigned long long val)
-# 80 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-{exit(1);
-# 82 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-}
-# 84 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+# 80 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+{volatile int ___ = 1;
+# 82 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+exit(___);}
+# 84 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
 static inline unsigned long long atomicCAS(unsigned long long *address, unsigned long long compare, unsigned long long val)
-# 85 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-{exit(1);
-# 87 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-}
-# 89 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+# 85 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+{volatile int ___ = 1;
+# 87 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+exit(___);}
+# 89 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
 static inline bool any(bool cond)
-# 90 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-{exit(1);
-# 92 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-}
-# 94 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+# 90 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+{volatile int ___ = 1;
+# 92 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+exit(___);}
+# 94 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
 static inline bool all(bool cond)
-# 95 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-{exit(1);
-# 97 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-}
-# 169 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 95 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+{volatile int ___ = 1;
+# 97 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+exit(___);}
+# 169 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double fma(double a, double b, double c, cudaRoundMode mode)
-# 170 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 175 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 177 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 170 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 175 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 177 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double dmul(double a, double b, cudaRoundMode mode = cudaRoundNearest)
-# 178 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 183 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 185 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 178 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 183 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 185 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double dadd(double a, double b, cudaRoundMode mode = cudaRoundNearest)
-# 186 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 191 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 193 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 186 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 191 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 193 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline int double2int(double a, cudaRoundMode mode = cudaRoundZero)
-# 194 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 199 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 201 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 194 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 199 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 201 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline unsigned double2uint(double a, cudaRoundMode mode = cudaRoundZero)
-# 202 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 207 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 209 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 202 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 207 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 209 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline long long double2ll(double a, cudaRoundMode mode = cudaRoundZero)
-# 210 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 215 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 217 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 210 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 215 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 217 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline unsigned long long double2ull(double a, cudaRoundMode mode = cudaRoundZero)
-# 218 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 223 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 225 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 218 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 223 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 225 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double ll2double(long long a, cudaRoundMode mode = cudaRoundNearest)
-# 226 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 231 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 233 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 226 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 231 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 233 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double ull2double(unsigned long long a, cudaRoundMode mode = cudaRoundNearest)
-# 234 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 239 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 241 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 234 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 239 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 241 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double int2double(int a, cudaRoundMode mode = cudaRoundNearest)
-# 242 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 244 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 246 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 242 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 244 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 246 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double uint2double(unsigned a, cudaRoundMode mode = cudaRoundNearest)
-# 247 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 249 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 251 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+# 247 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 249 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 251 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
 static inline double float2double(float a, cudaRoundMode mode = cudaRoundNearest)
-# 252 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-{exit(1);
-# 254 "/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-}
-# 65 "/home/normal/cuda/bin/../include/sm_20_atomic_functions.h"
+# 252 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+{volatile int ___ = 1;
+# 254 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+exit(___);}
+# 65 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
 static inline float atomicAdd(float *address, float val)
-# 66 "/home/normal/cuda/bin/../include/sm_20_atomic_functions.h"
-{exit(1);
-# 68 "/home/normal/cuda/bin/../include/sm_20_atomic_functions.h"
-}
-# 120 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
+# 66 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+{volatile int ___ = 1;
+# 68 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+exit(___);}
+# 120 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
 static inline unsigned ballot(bool pred)
-# 121 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-{exit(1);
-# 123 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-}
-# 125 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
+# 121 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+{volatile int ___ = 1;
+# 123 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+exit(___);}
+# 125 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
 static inline int syncthreads_count(bool pred)
-# 126 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-{exit(1);
-# 128 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-}
-# 130 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
+# 126 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+{volatile int ___ = 1;
+# 128 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+exit(___);}
+# 130 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
 static inline bool syncthreads_and(bool pred)
-# 131 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-{exit(1);
-# 133 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-}
-# 135 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
+# 131 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+{volatile int ___ = 1;
+# 133 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+exit(___);}
+# 135 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
 static inline bool syncthreads_or(bool pred)
-# 136 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-{exit(1);
-# 138 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h"
-}
-# 96 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 97 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf1Dread(T *res, surface< void, 1> surf, int x, int s, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 98 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 105 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 107 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline T
-# 108 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 109 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 115 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 117 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 118 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf1Dread(T *res, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 119 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 121 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 124 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 125 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 127 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 130 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline signed char surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 131 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 133 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 136 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned char surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 137 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 139 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 142 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 143 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 145 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 148 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uchar1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 149 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 151 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 154 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 155 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 159 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 162 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uchar2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 163 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 165 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 168 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 169 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 173 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 176 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uchar4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 177 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 179 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 182 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 183 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 185 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 188 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned short surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 189 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 191 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 194 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 195 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 197 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 200 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ushort1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 201 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 203 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 206 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 207 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 211 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 214 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ushort2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 215 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 217 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 220 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 221 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 225 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 228 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ushort4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 229 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 231 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 234 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 235 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 237 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 240 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 241 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 243 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 246 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 247 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 249 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 252 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uint1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 253 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 255 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 258 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 259 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 263 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 266 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uint2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 267 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 269 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 272 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 273 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 277 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 280 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uint4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 281 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 283 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 286 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline long long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 287 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 289 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 292 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned long long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 293 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 295 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 298 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline longlong1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 299 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 301 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 304 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ulonglong1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 305 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 307 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 310 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline longlong2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 311 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 315 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 318 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ulonglong2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 319 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 321 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 384 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 385 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 387 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 390 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 391 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 393 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 396 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 397 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 401 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 404 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode)
-# 405 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 409 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 456 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 457 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf2Dread(T *res, surface< void, 2> surf, int x, int y, int s, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 458 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 465 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 467 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline T
-# 468 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 469 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 475 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 477 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 478 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf2Dread(T *res, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 479 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 481 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 484 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 485 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 487 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 490 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline signed char surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 491 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 493 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 496 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned char surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 497 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 499 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 502 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 503 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 505 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 508 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uchar1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 509 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 511 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 514 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 515 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 519 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 522 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uchar2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 523 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 525 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 528 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline char4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 529 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 533 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 536 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uchar4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 537 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 539 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 542 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 543 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 545 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 548 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned short surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 549 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 551 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 554 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 555 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 557 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 560 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ushort1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 561 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 563 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 566 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 567 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 571 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 574 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ushort2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 575 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 577 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 580 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline short4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 581 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 585 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 588 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ushort4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 589 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 591 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 594 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 595 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 597 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 600 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 601 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 603 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 606 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 607 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 609 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 612 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uint1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 613 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 615 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 618 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 619 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 623 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 626 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uint2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 627 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 629 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 632 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline int4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 633 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 637 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 640 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline uint4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 641 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 643 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 646 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline long long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 647 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 649 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 652 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline unsigned long long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 653 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 655 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 658 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline longlong1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 659 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 661 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 664 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ulonglong1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 665 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 667 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 670 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline longlong2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 671 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 675 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 678 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline ulonglong2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 679 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 681 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 744 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 745 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 747 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 750 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 751 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 753 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 756 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 757 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 761 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 764 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<> inline float4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode)
-# 765 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 769 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 816 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 817 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf1Dwrite(T val, surface< void, 1> surf, int x, int s, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 818 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 836 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 838 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 839 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf1Dwrite(T val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 840 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 842 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 845 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(char val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 846 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 848 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 850 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(signed char val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 851 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 853 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 855 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(unsigned char val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 856 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 858 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 860 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(char1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 861 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 863 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 865 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(uchar1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 866 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 868 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 870 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(char2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 871 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 873 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 875 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(uchar2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 876 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 878 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 880 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(char4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 881 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 883 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 885 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(uchar4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 886 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 888 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 890 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(short val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 891 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 893 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 895 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(unsigned short val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 896 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 898 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 900 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(short1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 901 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 903 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 905 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(ushort1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 906 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 908 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 910 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(short2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 911 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 913 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 915 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(ushort2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 916 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 918 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 920 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(short4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 921 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 923 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 925 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(ushort4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 926 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 928 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 930 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(int val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 931 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 933 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 935 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(unsigned val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 936 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 938 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 940 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(int1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 941 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 943 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 945 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(uint1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 946 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 948 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 950 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(int2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 951 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 953 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 955 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(uint2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 956 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 958 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 960 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(int4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 961 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 963 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 965 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(uint4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 966 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 968 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 970 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(long long val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 971 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 973 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 975 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(unsigned long long val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 976 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 978 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 980 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(longlong1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 981 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 983 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 985 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(ulonglong1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 986 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 988 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 990 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(longlong2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 991 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 993 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 995 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(ulonglong2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 996 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 998 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1044 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(float val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1045 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1047 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1049 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(float1 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1050 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1052 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1054 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(float2 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1055 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1057 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1059 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf1Dwrite(float4 val, surface< void, 1> surf, int x, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1060 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1062 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1109 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 1110 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf2Dwrite(T val, surface< void, 2> surf, int x, int y, int s, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1111 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1129 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1131 "/home/normal/cuda/bin/../include/surface_functions.h"
-template<class T> static inline void
-# 1132 "/home/normal/cuda/bin/../include/surface_functions.h"
-surf2Dwrite(T val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1133 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1135 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1138 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(char val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1139 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1141 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1143 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(signed char val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1144 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1146 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1148 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(unsigned char val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1149 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1151 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1153 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(char1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1154 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1156 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1158 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(uchar1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1159 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1161 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1163 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(char2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1164 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1166 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1168 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(uchar2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1169 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1171 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1173 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(char4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1174 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1176 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1178 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(uchar4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1179 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1181 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1183 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(short val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1184 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1186 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1188 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(unsigned short val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1189 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1191 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1193 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(short1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1194 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1196 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1198 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(ushort1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1199 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1201 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1203 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(short2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1204 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1206 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1208 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(ushort2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1209 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1211 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1213 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(short4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1214 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1216 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1218 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(ushort4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1219 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1221 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1223 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(int val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1224 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1226 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1228 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(unsigned val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1229 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1231 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1233 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(int1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1234 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1236 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1238 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(uint1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1239 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1241 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1243 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(int2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1244 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1246 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1248 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(uint2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1249 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1251 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1253 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(int4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1254 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1256 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1258 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(uint4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1259 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1261 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1263 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(long long val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1264 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1266 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1268 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(unsigned long long val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1269 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1271 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1273 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(longlong1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1274 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1276 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1278 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(ulonglong1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1279 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1281 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1283 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(longlong2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1284 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1286 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1288 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(ulonglong2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1289 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1291 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1337 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(float val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1338 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1340 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1342 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(float1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1343 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1345 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1347 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(float2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1348 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1350 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 1352 "/home/normal/cuda/bin/../include/surface_functions.h"
-static inline void surf2Dwrite(float4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBounderyMode mode = cudaBounderyModeTrap)
-# 1353 "/home/normal/cuda/bin/../include/surface_functions.h"
-{exit(1);
-# 1355 "/home/normal/cuda/bin/../include/surface_functions.h"
-}
-# 60 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 136 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+{volatile int ___ = 1;
+# 138 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+exit(___);}
+# 60 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 template<class T, cudaTextureReadMode readMode> static uint4 __utexfetchi(texture< T, 1, readMode> , int4);
-# 62 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 62 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 template<class T, cudaTextureReadMode readMode> static int4 __itexfetchi(texture< T, 1, readMode> , int4);
-# 64 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 64 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 template<class T, cudaTextureReadMode readMode> static float4 __ftexfetchi(texture< T, 1, readMode> , int4);
-# 67 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 67 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 template<class T, int dim, cudaTextureReadMode readMode> static uint4 __utexfetch(texture< T, dim, readMode> , float4, int = dim);
-# 69 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 69 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 template<class T, int dim, cudaTextureReadMode readMode> static int4 __itexfetch(texture< T, dim, readMode> , float4, int = dim);
-# 71 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 71 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 template<class T, int dim, cudaTextureReadMode readMode> static float4 __ftexfetch(texture< T, dim, readMode> , float4, int = dim);
-# 79 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 79 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char tex1Dfetch(texture< char, 1, cudaReadModeElementType> t, int x)
-# 80 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 88 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 90 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 80 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 88 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 90 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline signed char tex1Dfetch(texture< signed char, 1, cudaReadModeElementType> t, int x)
-# 91 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 95 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 97 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 91 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 95 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 97 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned char tex1Dfetch(texture< unsigned char, 1, cudaReadModeElementType> t, int x)
-# 98 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 102 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 104 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 98 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 102 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 104 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char1 tex1Dfetch(texture< char1, 1, cudaReadModeElementType> t, int x)
-# 105 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 109 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 111 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 105 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 109 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 111 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar1 tex1Dfetch(texture< uchar1, 1, cudaReadModeElementType> t, int x)
-# 112 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 116 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 118 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 112 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 116 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 118 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char2 tex1Dfetch(texture< char2, 1, cudaReadModeElementType> t, int x)
-# 119 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 123 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 125 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 119 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 123 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 125 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar2 tex1Dfetch(texture< uchar2, 1, cudaReadModeElementType> t, int x)
-# 126 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 130 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 132 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 126 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 130 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 132 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char4 tex1Dfetch(texture< char4, 1, cudaReadModeElementType> t, int x)
-# 133 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 137 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 139 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 133 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 137 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 139 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar4 tex1Dfetch(texture< uchar4, 1, cudaReadModeElementType> t, int x)
-# 140 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 144 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 152 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 140 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 144 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 152 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short tex1Dfetch(texture< short, 1, cudaReadModeElementType> t, int x)
-# 153 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 157 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 159 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 153 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 157 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 159 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned short tex1Dfetch(texture< unsigned short, 1, cudaReadModeElementType> t, int x)
-# 160 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 164 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 166 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 160 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 164 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 166 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short1 tex1Dfetch(texture< short1, 1, cudaReadModeElementType> t, int x)
-# 167 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 171 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 173 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 167 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 171 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 173 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort1 tex1Dfetch(texture< ushort1, 1, cudaReadModeElementType> t, int x)
-# 174 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 178 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 180 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 174 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 178 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 180 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short2 tex1Dfetch(texture< short2, 1, cudaReadModeElementType> t, int x)
-# 181 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 185 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 187 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 181 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 185 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 187 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort2 tex1Dfetch(texture< ushort2, 1, cudaReadModeElementType> t, int x)
-# 188 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 192 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 194 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 188 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 192 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 194 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short4 tex1Dfetch(texture< short4, 1, cudaReadModeElementType> t, int x)
-# 195 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 199 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 201 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 195 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 199 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 201 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort4 tex1Dfetch(texture< ushort4, 1, cudaReadModeElementType> t, int x)
-# 202 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 206 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 214 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 202 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 206 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 214 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int tex1Dfetch(texture< int, 1, cudaReadModeElementType> t, int x)
-# 215 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 219 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 221 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 215 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 219 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 221 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned tex1Dfetch(texture< unsigned, 1, cudaReadModeElementType> t, int x)
-# 222 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 226 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 228 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 222 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 226 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 228 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int1 tex1Dfetch(texture< int1, 1, cudaReadModeElementType> t, int x)
-# 229 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 233 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 235 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 229 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 233 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 235 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint1 tex1Dfetch(texture< uint1, 1, cudaReadModeElementType> t, int x)
-# 236 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 240 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 242 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 236 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 240 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 242 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int2 tex1Dfetch(texture< int2, 1, cudaReadModeElementType> t, int x)
-# 243 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 247 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 249 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 243 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 247 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 249 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint2 tex1Dfetch(texture< uint2, 1, cudaReadModeElementType> t, int x)
-# 250 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 254 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 256 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 250 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 254 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 256 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int4 tex1Dfetch(texture< int4, 1, cudaReadModeElementType> t, int x)
-# 257 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 261 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 263 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 257 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 261 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 263 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint4 tex1Dfetch(texture< uint4, 1, cudaReadModeElementType> t, int x)
-# 264 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 268 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 342 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 264 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 268 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 278 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long tex1Dfetch(texture< long, 1, cudaReadModeElementType> t, int x)
+# 279 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 283 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 285 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline unsigned long tex1Dfetch(texture< unsigned long, 1, cudaReadModeElementType> t, int x)
+# 286 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 290 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 292 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long1 tex1Dfetch(texture< long1, 1, cudaReadModeElementType> t, int x)
+# 293 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 297 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 299 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong1 tex1Dfetch(texture< ulong1, 1, cudaReadModeElementType> t, int x)
+# 300 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 304 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 306 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long2 tex1Dfetch(texture< long2, 1, cudaReadModeElementType> t, int x)
+# 307 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 311 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 313 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong2 tex1Dfetch(texture< ulong2, 1, cudaReadModeElementType> t, int x)
+# 314 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 318 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 320 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long4 tex1Dfetch(texture< long4, 1, cudaReadModeElementType> t, int x)
+# 321 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 325 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 327 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong4 tex1Dfetch(texture< ulong4, 1, cudaReadModeElementType> t, int x)
+# 328 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 332 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 342 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1Dfetch(texture< float, 1, cudaReadModeElementType> t, int x)
-# 343 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 347 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 349 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 343 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 347 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 349 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1Dfetch(texture< float1, 1, cudaReadModeElementType> t, int x)
-# 350 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 354 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 356 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 350 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 354 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 356 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1Dfetch(texture< float2, 1, cudaReadModeElementType> t, int x)
-# 357 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 361 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 363 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 357 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 361 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 363 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1Dfetch(texture< float4, 1, cudaReadModeElementType> t, int x)
-# 364 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 368 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 376 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 364 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 368 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 376 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1Dfetch(texture< char, 1, cudaReadModeNormalizedFloat> t, int x)
-# 377 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 386 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 388 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 377 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 386 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 388 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1Dfetch(texture< signed char, 1, cudaReadModeNormalizedFloat> t, int x)
-# 389 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 394 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 396 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 389 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 394 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 396 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1Dfetch(texture< unsigned char, 1, cudaReadModeNormalizedFloat> t, int x)
-# 397 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 402 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 404 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 397 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 402 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 404 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1Dfetch(texture< char1, 1, cudaReadModeNormalizedFloat> t, int x)
-# 405 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 410 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 412 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 405 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 410 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 412 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1Dfetch(texture< uchar1, 1, cudaReadModeNormalizedFloat> t, int x)
-# 413 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 418 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 420 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 413 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 418 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 420 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1Dfetch(texture< char2, 1, cudaReadModeNormalizedFloat> t, int x)
-# 421 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 426 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 428 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 421 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 426 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 428 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1Dfetch(texture< uchar2, 1, cudaReadModeNormalizedFloat> t, int x)
-# 429 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 434 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 436 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 429 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 434 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 436 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1Dfetch(texture< char4, 1, cudaReadModeNormalizedFloat> t, int x)
-# 437 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 442 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 444 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 437 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 442 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 444 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1Dfetch(texture< uchar4, 1, cudaReadModeNormalizedFloat> t, int x)
-# 445 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 450 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 458 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 445 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 450 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 458 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1Dfetch(texture< short, 1, cudaReadModeNormalizedFloat> t, int x)
-# 459 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 464 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 466 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 459 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 464 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 466 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1Dfetch(texture< unsigned short, 1, cudaReadModeNormalizedFloat> t, int x)
-# 467 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 472 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 474 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 467 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 472 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 474 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1Dfetch(texture< short1, 1, cudaReadModeNormalizedFloat> t, int x)
-# 475 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 480 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 482 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 475 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 480 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 482 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1Dfetch(texture< ushort1, 1, cudaReadModeNormalizedFloat> t, int x)
-# 483 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 488 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 490 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 483 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 488 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 490 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1Dfetch(texture< short2, 1, cudaReadModeNormalizedFloat> t, int x)
-# 491 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 496 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 498 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 491 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 496 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 498 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1Dfetch(texture< ushort2, 1, cudaReadModeNormalizedFloat> t, int x)
-# 499 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 504 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 506 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 499 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 504 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 506 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1Dfetch(texture< short4, 1, cudaReadModeNormalizedFloat> t, int x)
-# 507 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 512 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 514 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 507 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 512 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 514 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1Dfetch(texture< ushort4, 1, cudaReadModeNormalizedFloat> t, int x)
-# 515 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 520 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 528 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 515 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 520 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 528 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char tex1D(texture< char, 1, cudaReadModeElementType> t, float x)
-# 529 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 537 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 539 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 529 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 537 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 539 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline signed char tex1D(texture< signed char, 1, cudaReadModeElementType> t, float x)
-# 540 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 544 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 546 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 540 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 544 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 546 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned char tex1D(texture< unsigned char, 1, cudaReadModeElementType> t, float x)
-# 547 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 551 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 553 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 547 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 551 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 553 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char1 tex1D(texture< char1, 1, cudaReadModeElementType> t, float x)
-# 554 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 558 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 560 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 554 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 558 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 560 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar1 tex1D(texture< uchar1, 1, cudaReadModeElementType> t, float x)
-# 561 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 565 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 567 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 561 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 565 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 567 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char2 tex1D(texture< char2, 1, cudaReadModeElementType> t, float x)
-# 568 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 572 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 574 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 568 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 572 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 574 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar2 tex1D(texture< uchar2, 1, cudaReadModeElementType> t, float x)
-# 575 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 579 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 581 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 575 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 579 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 581 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char4 tex1D(texture< char4, 1, cudaReadModeElementType> t, float x)
-# 582 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 586 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 588 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 582 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 586 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 588 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar4 tex1D(texture< uchar4, 1, cudaReadModeElementType> t, float x)
-# 589 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 593 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 601 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 589 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 593 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 601 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short tex1D(texture< short, 1, cudaReadModeElementType> t, float x)
-# 602 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 606 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 608 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 602 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 606 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 608 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned short tex1D(texture< unsigned short, 1, cudaReadModeElementType> t, float x)
-# 609 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 613 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 615 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 609 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 613 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 615 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short1 tex1D(texture< short1, 1, cudaReadModeElementType> t, float x)
-# 616 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 620 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 622 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 616 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 620 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 622 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort1 tex1D(texture< ushort1, 1, cudaReadModeElementType> t, float x)
-# 623 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 627 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 629 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 623 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 627 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 629 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short2 tex1D(texture< short2, 1, cudaReadModeElementType> t, float x)
-# 630 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 634 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 636 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 630 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 634 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 636 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort2 tex1D(texture< ushort2, 1, cudaReadModeElementType> t, float x)
-# 637 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 641 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 643 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 637 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 641 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 643 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short4 tex1D(texture< short4, 1, cudaReadModeElementType> t, float x)
-# 644 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 648 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 650 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 644 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 648 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 650 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort4 tex1D(texture< ushort4, 1, cudaReadModeElementType> t, float x)
-# 651 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 655 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 663 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 651 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 655 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 663 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int tex1D(texture< int, 1, cudaReadModeElementType> t, float x)
-# 664 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 668 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 670 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 664 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 668 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 670 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned tex1D(texture< unsigned, 1, cudaReadModeElementType> t, float x)
-# 671 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 675 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 677 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 671 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 675 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 677 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int1 tex1D(texture< int1, 1, cudaReadModeElementType> t, float x)
-# 678 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 682 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 684 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 678 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 682 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 684 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint1 tex1D(texture< uint1, 1, cudaReadModeElementType> t, float x)
-# 685 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 689 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 691 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 685 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 689 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 691 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int2 tex1D(texture< int2, 1, cudaReadModeElementType> t, float x)
-# 692 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 696 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 698 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 692 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 696 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 698 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint2 tex1D(texture< uint2, 1, cudaReadModeElementType> t, float x)
-# 699 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 703 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 705 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 699 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 703 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 705 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int4 tex1D(texture< int4, 1, cudaReadModeElementType> t, float x)
-# 706 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 710 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 712 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 706 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 710 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 712 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint4 tex1D(texture< uint4, 1, cudaReadModeElementType> t, float x)
-# 713 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 717 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 797 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 713 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 717 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 733 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long tex1D(texture< long, 1, cudaReadModeElementType> t, float x)
+# 734 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 738 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 740 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline unsigned long tex1D(texture< unsigned long, 1, cudaReadModeElementType> t, float x)
+# 741 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 745 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 747 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long1 tex1D(texture< long1, 1, cudaReadModeElementType> t, float x)
+# 748 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 752 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 754 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong1 tex1D(texture< ulong1, 1, cudaReadModeElementType> t, float x)
+# 755 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 759 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 761 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long2 tex1D(texture< long2, 1, cudaReadModeElementType> t, float x)
+# 762 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 766 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 768 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong2 tex1D(texture< ulong2, 1, cudaReadModeElementType> t, float x)
+# 769 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 773 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 775 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long4 tex1D(texture< long4, 1, cudaReadModeElementType> t, float x)
+# 776 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 780 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 782 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong4 tex1D(texture< ulong4, 1, cudaReadModeElementType> t, float x)
+# 783 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 787 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 797 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1D(texture< float, 1, cudaReadModeElementType> t, float x)
-# 798 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 802 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 804 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 798 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 802 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 804 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1D(texture< float1, 1, cudaReadModeElementType> t, float x)
-# 805 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 809 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 811 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 805 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 809 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 811 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1D(texture< float2, 1, cudaReadModeElementType> t, float x)
-# 812 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 816 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 818 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 812 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 816 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 818 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1D(texture< float4, 1, cudaReadModeElementType> t, float x)
-# 819 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 823 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 831 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 819 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 823 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 831 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1D(texture< char, 1, cudaReadModeNormalizedFloat> t, float x)
-# 832 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 841 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 843 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 832 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 841 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 843 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1D(texture< signed char, 1, cudaReadModeNormalizedFloat> t, float x)
-# 844 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 849 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 851 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 844 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 849 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 851 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1D(texture< unsigned char, 1, cudaReadModeNormalizedFloat> t, float x)
-# 852 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 857 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 859 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 852 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 857 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 859 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1D(texture< char1, 1, cudaReadModeNormalizedFloat> t, float x)
-# 860 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 865 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 867 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 860 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 865 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 867 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1D(texture< uchar1, 1, cudaReadModeNormalizedFloat> t, float x)
-# 868 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 873 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 875 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 868 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 873 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 875 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1D(texture< char2, 1, cudaReadModeNormalizedFloat> t, float x)
-# 876 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 881 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 883 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 876 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 881 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 883 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1D(texture< uchar2, 1, cudaReadModeNormalizedFloat> t, float x)
-# 884 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 889 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 891 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 884 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 889 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 891 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1D(texture< char4, 1, cudaReadModeNormalizedFloat> t, float x)
-# 892 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 897 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 899 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 892 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 897 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 899 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1D(texture< uchar4, 1, cudaReadModeNormalizedFloat> t, float x)
-# 900 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 905 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 913 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 900 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 905 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 913 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1D(texture< short, 1, cudaReadModeNormalizedFloat> t, float x)
-# 914 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 919 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 921 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 914 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 919 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 921 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex1D(texture< unsigned short, 1, cudaReadModeNormalizedFloat> t, float x)
-# 922 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 927 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 929 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 922 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 927 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 929 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1D(texture< short1, 1, cudaReadModeNormalizedFloat> t, float x)
-# 930 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 935 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 937 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 930 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 935 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 937 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex1D(texture< ushort1, 1, cudaReadModeNormalizedFloat> t, float x)
-# 938 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 943 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 945 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 938 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 943 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 945 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1D(texture< short2, 1, cudaReadModeNormalizedFloat> t, float x)
-# 946 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 951 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 953 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 946 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 951 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 953 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex1D(texture< ushort2, 1, cudaReadModeNormalizedFloat> t, float x)
-# 954 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 959 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 961 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 954 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 959 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 961 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1D(texture< short4, 1, cudaReadModeNormalizedFloat> t, float x)
-# 962 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 967 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 969 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 962 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 967 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 969 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex1D(texture< ushort4, 1, cudaReadModeNormalizedFloat> t, float x)
-# 970 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 975 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 983 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 970 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 975 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 983 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char tex2D(texture< char, 2, cudaReadModeElementType> t, float x, float y)
-# 984 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 992 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 994 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 984 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 992 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 994 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline signed char tex2D(texture< signed char, 2, cudaReadModeElementType> t, float x, float y)
-# 995 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 999 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1001 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 995 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 999 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1001 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned char tex2D(texture< unsigned char, 2, cudaReadModeElementType> t, float x, float y)
-# 1002 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1006 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1008 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1002 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1006 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1008 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char1 tex2D(texture< char1, 2, cudaReadModeElementType> t, float x, float y)
-# 1009 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1013 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1015 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1009 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1013 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1015 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar1 tex2D(texture< uchar1, 2, cudaReadModeElementType> t, float x, float y)
-# 1016 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1020 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1022 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1016 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1020 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1022 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char2 tex2D(texture< char2, 2, cudaReadModeElementType> t, float x, float y)
-# 1023 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1027 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1029 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1023 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1027 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1029 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar2 tex2D(texture< uchar2, 2, cudaReadModeElementType> t, float x, float y)
-# 1030 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1034 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1036 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1030 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1034 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1036 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char4 tex2D(texture< char4, 2, cudaReadModeElementType> t, float x, float y)
-# 1037 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1041 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1043 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1037 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1041 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1043 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar4 tex2D(texture< uchar4, 2, cudaReadModeElementType> t, float x, float y)
-# 1044 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1048 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1056 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1044 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1048 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1056 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short tex2D(texture< short, 2, cudaReadModeElementType> t, float x, float y)
-# 1057 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1061 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1063 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1057 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1061 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1063 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned short tex2D(texture< unsigned short, 2, cudaReadModeElementType> t, float x, float y)
-# 1064 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1068 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1070 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1064 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1068 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1070 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short1 tex2D(texture< short1, 2, cudaReadModeElementType> t, float x, float y)
-# 1071 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1075 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1077 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1071 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1075 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1077 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort1 tex2D(texture< ushort1, 2, cudaReadModeElementType> t, float x, float y)
-# 1078 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1082 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1084 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1078 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1082 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1084 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short2 tex2D(texture< short2, 2, cudaReadModeElementType> t, float x, float y)
-# 1085 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1089 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1091 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1085 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1089 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1091 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort2 tex2D(texture< ushort2, 2, cudaReadModeElementType> t, float x, float y)
-# 1092 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1096 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1098 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1092 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1096 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1098 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short4 tex2D(texture< short4, 2, cudaReadModeElementType> t, float x, float y)
-# 1099 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1103 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1105 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1099 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1103 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1105 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort4 tex2D(texture< ushort4, 2, cudaReadModeElementType> t, float x, float y)
-# 1106 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1110 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1118 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1106 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1110 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1118 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int tex2D(texture< int, 2, cudaReadModeElementType> t, float x, float y)
-# 1119 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1123 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1125 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1119 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1123 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1125 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned tex2D(texture< unsigned, 2, cudaReadModeElementType> t, float x, float y)
-# 1126 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1130 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1132 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1126 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1130 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1132 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int1 tex2D(texture< int1, 2, cudaReadModeElementType> t, float x, float y)
-# 1133 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1137 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1139 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1133 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1137 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1139 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint1 tex2D(texture< uint1, 2, cudaReadModeElementType> t, float x, float y)
-# 1140 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1144 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1146 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1140 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1144 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1146 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int2 tex2D(texture< int2, 2, cudaReadModeElementType> t, float x, float y)
-# 1147 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1151 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1153 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1147 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1151 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1153 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint2 tex2D(texture< uint2, 2, cudaReadModeElementType> t, float x, float y)
-# 1154 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1158 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1160 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1154 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1158 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1160 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int4 tex2D(texture< int4, 2, cudaReadModeElementType> t, float x, float y)
-# 1161 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1165 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1167 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1161 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1165 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1167 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint4 tex2D(texture< uint4, 2, cudaReadModeElementType> t, float x, float y)
-# 1168 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1172 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1246 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1168 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1172 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1182 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long tex2D(texture< long, 2, cudaReadModeElementType> t, float x, float y)
+# 1183 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1187 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1189 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline unsigned long tex2D(texture< unsigned long, 2, cudaReadModeElementType> t, float x, float y)
+# 1190 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1194 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1196 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long1 tex2D(texture< long1, 2, cudaReadModeElementType> t, float x, float y)
+# 1197 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1201 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1203 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong1 tex2D(texture< ulong1, 2, cudaReadModeElementType> t, float x, float y)
+# 1204 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1208 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1210 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long2 tex2D(texture< long2, 2, cudaReadModeElementType> t, float x, float y)
+# 1211 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1215 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1217 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong2 tex2D(texture< ulong2, 2, cudaReadModeElementType> t, float x, float y)
+# 1218 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1222 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1224 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long4 tex2D(texture< long4, 2, cudaReadModeElementType> t, float x, float y)
+# 1225 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1229 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1231 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong4 tex2D(texture< ulong4, 2, cudaReadModeElementType> t, float x, float y)
+# 1232 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1236 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1246 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex2D(texture< float, 2, cudaReadModeElementType> t, float x, float y)
-# 1247 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1251 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1253 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1247 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1251 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1253 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex2D(texture< float1, 2, cudaReadModeElementType> t, float x, float y)
-# 1254 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1258 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1260 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1254 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1258 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1260 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex2D(texture< float2, 2, cudaReadModeElementType> t, float x, float y)
-# 1261 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1265 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1267 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1261 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1265 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1267 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex2D(texture< float4, 2, cudaReadModeElementType> t, float x, float y)
-# 1268 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1272 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1280 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1268 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1272 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1280 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex2D(texture< char, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1281 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1290 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1292 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1281 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1290 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1292 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex2D(texture< signed char, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1293 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1298 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1300 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1293 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1298 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1300 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex2D(texture< unsigned char, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1301 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1306 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1308 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1301 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1306 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1308 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex2D(texture< char1, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1309 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1314 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1316 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1309 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1314 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1316 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex2D(texture< uchar1, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1317 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1322 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1324 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1317 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1322 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1324 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex2D(texture< char2, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1325 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1330 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1332 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1325 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1330 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1332 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex2D(texture< uchar2, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1333 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1338 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1340 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1333 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1338 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1340 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex2D(texture< char4, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1341 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1346 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1348 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1341 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1346 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1348 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex2D(texture< uchar4, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1349 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1354 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1362 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1349 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1354 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1362 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex2D(texture< short, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1363 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1368 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1370 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1363 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1368 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1370 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex2D(texture< unsigned short, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1371 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1376 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1378 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1371 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1376 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1378 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex2D(texture< short1, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1379 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1384 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1386 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1379 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1384 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1386 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex2D(texture< ushort1, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1387 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1392 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1394 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1387 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1392 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1394 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex2D(texture< short2, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1395 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1400 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1402 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1395 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1400 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1402 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex2D(texture< ushort2, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1403 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1408 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1410 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1403 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1408 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1410 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex2D(texture< short4, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1411 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1416 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1418 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1411 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1416 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1418 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex2D(texture< ushort4, 2, cudaReadModeNormalizedFloat> t, float x, float y)
-# 1419 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1424 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1432 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1419 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1424 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1432 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char tex3D(texture< char, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1433 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1441 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1443 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1433 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1441 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1443 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline signed char tex3D(texture< signed char, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1444 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1448 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1450 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1444 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1448 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1450 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned char tex3D(texture< unsigned char, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1451 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1455 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1457 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1451 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1455 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1457 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char1 tex3D(texture< char1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1458 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1462 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1464 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1458 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1462 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1464 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar1 tex3D(texture< uchar1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1465 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1469 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1471 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1465 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1469 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1471 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char2 tex3D(texture< char2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1472 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1476 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1478 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1472 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1476 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1478 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar2 tex3D(texture< uchar2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1479 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1483 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1485 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1479 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1483 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1485 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline char4 tex3D(texture< char4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1486 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1490 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1492 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1486 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1490 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1492 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uchar4 tex3D(texture< uchar4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1493 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1497 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1505 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1493 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1497 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1505 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short tex3D(texture< short, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1506 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1510 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1512 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1506 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1510 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1512 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned short tex3D(texture< unsigned short, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1513 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1517 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1519 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1513 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1517 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1519 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short1 tex3D(texture< short1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1520 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1524 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1526 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1520 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1524 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1526 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort1 tex3D(texture< ushort1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1527 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1531 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1533 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1527 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1531 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1533 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short2 tex3D(texture< short2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1534 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1538 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1540 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1534 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1538 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1540 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort2 tex3D(texture< ushort2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1541 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1545 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1547 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1541 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1545 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1547 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline short4 tex3D(texture< short4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1548 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1552 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1554 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1548 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1552 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1554 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline ushort4 tex3D(texture< ushort4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1555 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1559 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1567 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1555 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1559 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1567 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int tex3D(texture< int, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1568 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1572 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1574 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1568 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1572 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1574 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline unsigned tex3D(texture< unsigned, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1575 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1579 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1581 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1575 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1579 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1581 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int1 tex3D(texture< int1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1582 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1586 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1588 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1582 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1586 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1588 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint1 tex3D(texture< uint1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1589 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1593 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1595 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1589 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1593 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1595 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int2 tex3D(texture< int2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1596 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1600 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1602 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1596 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1600 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1602 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint2 tex3D(texture< uint2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1603 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1607 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1609 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1603 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1607 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1609 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline int4 tex3D(texture< int4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1610 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1614 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1616 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1610 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1614 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1616 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline uint4 tex3D(texture< uint4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1617 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1621 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1695 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1617 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1621 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1631 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long tex3D(texture< long, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1632 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1636 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1638 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline unsigned long tex3D(texture< unsigned long, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1639 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1643 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1645 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long1 tex3D(texture< long1, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1646 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1650 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1652 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong1 tex3D(texture< ulong1, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1653 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1657 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1659 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long2 tex3D(texture< long2, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1660 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1664 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1666 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong2 tex3D(texture< ulong2, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1667 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1671 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1673 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline long4 tex3D(texture< long4, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1674 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1678 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1680 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+static inline ulong4 tex3D(texture< ulong4, 3, cudaReadModeElementType> t, float x, float y, float z)
+# 1681 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1685 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1695 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex3D(texture< float, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1696 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1700 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1702 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1696 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1700 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1702 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex3D(texture< float1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1703 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1707 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1709 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1703 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1707 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1709 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex3D(texture< float2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1710 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1714 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1716 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1710 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1714 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1716 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex3D(texture< float4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1717 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1721 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1729 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1717 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1721 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1729 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex3D(texture< char, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1730 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1739 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1741 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1730 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1739 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1741 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex3D(texture< signed char, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1742 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1747 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1749 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1742 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1747 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1749 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex3D(texture< unsigned char, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1750 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1755 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1757 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1750 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1755 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1757 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex3D(texture< char1, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1758 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1763 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1765 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1758 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1763 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1765 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex3D(texture< uchar1, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1766 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1771 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1773 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1766 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1771 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1773 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex3D(texture< char2, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1774 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1779 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1781 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1774 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1779 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1781 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex3D(texture< uchar2, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1782 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1787 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1789 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1782 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1787 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1789 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex3D(texture< char4, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1790 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1795 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1797 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1790 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1795 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1797 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex3D(texture< uchar4, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1798 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1803 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1811 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1798 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1803 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1811 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex3D(texture< short, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1812 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1817 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1819 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1812 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1817 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1819 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float tex3D(texture< unsigned short, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1820 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1825 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1827 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1820 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1825 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1827 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex3D(texture< short1, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1828 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1833 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1835 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1828 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1833 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1835 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float1 tex3D(texture< ushort1, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1836 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1841 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1843 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1836 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1841 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1843 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex3D(texture< short2, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1844 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1849 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1851 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1844 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1849 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1851 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float2 tex3D(texture< ushort2, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1852 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1857 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1859 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1852 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1857 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1859 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex3D(texture< short4, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1860 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1865 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 1867 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+# 1860 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1865 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 1867 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 static inline float4 tex3D(texture< ushort4, 3, cudaReadModeNormalizedFloat> t, float x, float y, float z)
-# 1868 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-{exit(1);
-# 1873 "/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-}
-# 53 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 55 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 57 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 59 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 61 "/home/normal/cuda/bin/../include/device_launch_parameters.h"
-# 102 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 1868 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+{volatile int ___ = 1;
+# 1873 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+exit(___);}
+# 53 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 55 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 57 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 59 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 61 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+# 101 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 103 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 102 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaSetupArgument(T
-# 104 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 103 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 arg, size_t
-# 105 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 104 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset)
-# 107 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 106 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 108 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 107 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaSetupArgument((const void *)(&arg), sizeof(T), offset);
-# 109 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 108 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 111 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 110 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 112 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 111 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaHostAlloc(T **
-# 113 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 112 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 ptr, size_t
-# 114 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 113 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size, unsigned
-# 115 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 114 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 flags)
-# 117 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 116 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 118 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 117 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaHostAlloc((void **)((void *)ptr), size, flags);
-# 119 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 118 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 121 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 120 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 122 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 121 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaHostGetDevicePointer(T **
-# 123 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 122 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 pDevice, void *
-# 124 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 123 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 pHost, unsigned
-# 125 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 124 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 flags)
-# 127 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 126 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 128 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 127 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaHostGetDevicePointer((void **)((void *)pDevice), pHost, flags);
-# 129 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 128 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 131 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 130 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 132 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 131 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMalloc(T **
-# 133 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 132 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, size_t
-# 134 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 133 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size)
-# 136 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 135 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 137 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 136 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMalloc((void **)((void *)devPtr), size);
-# 138 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 137 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 140 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 139 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 141 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 140 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMallocHost(T **
-# 142 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 141 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 ptr, size_t
-# 143 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 142 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size)
-# 145 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 144 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 146 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 145 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMallocHost((void **)((void *)ptr), size);
-# 147 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 146 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 149 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 148 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 150 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 149 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMallocPitch(T **
-# 151 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 150 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, size_t *
-# 152 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 151 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 pitch, size_t
-# 153 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 152 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 width, size_t
-# 154 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 153 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 height)
-# 156 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 155 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 157 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 156 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMallocPitch((void **)((void *)devPtr), pitch, width, height);
-# 158 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 157 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 173 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 172 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyToSymbol(char *
-# 174 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 173 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, const void *
-# 175 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 174 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 src, size_t
-# 176 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 175 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 177 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 176 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset = (0), cudaMemcpyKind
-# 178 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 177 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 kind = cudaMemcpyHostToDevice)
-# 180 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 179 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 181 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 180 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyToSymbol((const char *)symbol, src, count, offset, kind);
-# 182 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 181 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 184 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 183 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 185 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 184 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMemcpyToSymbol(const T &
-# 186 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 185 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, const void *
-# 187 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 186 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 src, size_t
-# 188 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 187 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 189 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 188 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset = (0), cudaMemcpyKind
-# 190 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 189 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 kind = cudaMemcpyHostToDevice)
-# 192 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 191 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 193 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 192 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyToSymbol((const char *)(&symbol), src, count, offset, kind);
-# 194 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 193 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 196 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 195 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyToSymbolAsync(char *
-# 197 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 196 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, const void *
-# 198 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 197 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 src, size_t
-# 199 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 198 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 200 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-offset, cudaMemcpyKind
-# 201 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-kind, cudaStream_t
-# 202 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-stream)
-# 204 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 199 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+offset = (0), cudaMemcpyKind
+# 200 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+kind = cudaMemcpyHostToDevice, cudaStream_t
+# 201 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+stream = 0)
+# 203 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 205 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 204 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyToSymbolAsync((const char *)symbol, src, count, offset, kind, stream);
-# 206 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 205 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 208 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 207 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 209 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 208 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMemcpyToSymbolAsync(const T &
-# 210 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 209 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, const void *
-# 211 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 210 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 src, size_t
-# 212 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 211 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 213 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-offset, cudaMemcpyKind
-# 214 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-kind, cudaStream_t
-# 215 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-stream)
-# 217 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 212 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+offset = (0), cudaMemcpyKind
+# 213 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+kind = cudaMemcpyHostToDevice, cudaStream_t
+# 214 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+stream = 0)
+# 216 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 218 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 217 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyToSymbolAsync((const char *)(&symbol), src, count, offset, kind, stream);
-# 219 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 218 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 227 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 226 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyFromSymbol(void *
-# 228 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 227 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 dst, char *
-# 229 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 228 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, size_t
-# 230 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 229 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 231 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 230 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset = (0), cudaMemcpyKind
-# 232 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 231 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 kind = cudaMemcpyDeviceToHost)
-# 234 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 233 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 235 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 234 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyFromSymbol(dst, (const char *)symbol, count, offset, kind);
-# 236 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 235 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 238 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 237 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 239 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 238 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMemcpyFromSymbol(void *
-# 240 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 239 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 dst, const T &
-# 241 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 240 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, size_t
-# 242 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 241 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 243 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 242 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset = (0), cudaMemcpyKind
-# 244 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 243 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 kind = cudaMemcpyDeviceToHost)
-# 246 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 245 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 247 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 246 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyFromSymbol(dst, (const char *)(&symbol), count, offset, kind);
-# 248 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 247 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 250 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 249 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaMemcpyFromSymbolAsync(void *
-# 251 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 250 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 dst, char *
-# 252 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 251 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, size_t
-# 253 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 252 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 254 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-offset, cudaMemcpyKind
-# 255 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-kind, cudaStream_t
-# 256 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-stream)
-# 258 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 253 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+offset = (0), cudaMemcpyKind
+# 254 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+kind = cudaMemcpyDeviceToHost, cudaStream_t
+# 255 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+stream = 0)
+# 257 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 259 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 258 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyFromSymbolAsync(dst, (const char *)symbol, count, offset, kind, stream);
-# 260 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 259 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 262 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 261 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 263 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 262 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaMemcpyFromSymbolAsync(void *
-# 264 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 263 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 dst, const T &
-# 265 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 264 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol, size_t
-# 266 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 265 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 count, size_t
-# 267 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-offset, cudaMemcpyKind
-# 268 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-kind, cudaStream_t
-# 269 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-stream)
-# 271 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 266 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+offset = (0), cudaMemcpyKind
+# 267 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+kind = cudaMemcpyDeviceToHost, cudaStream_t
+# 268 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+stream = 0)
+# 270 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 272 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 271 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaMemcpyFromSymbolAsync(dst, (const char *)(&symbol), count, offset, kind, stream);
-# 273 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 272 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 275 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 274 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaGetSymbolAddress(void **
-# 276 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 275 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, char *
-# 277 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 276 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol)
-# 279 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 278 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 280 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 279 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaGetSymbolAddress(devPtr, (const char *)symbol);
-# 281 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 280 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 305 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 304 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 306 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 305 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaGetSymbolAddress(void **
-# 307 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 306 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, const T &
-# 308 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 307 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol)
-# 310 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 309 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 311 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 310 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaGetSymbolAddress(devPtr, (const char *)(&symbol));
-# 312 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 311 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 320 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 319 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 static inline cudaError_t cudaGetSymbolSize(size_t *
-# 321 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 320 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size, char *
-# 322 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 321 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol)
-# 324 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 323 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 325 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 324 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaGetSymbolSize(size, (const char *)symbol);
-# 326 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 325 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 349 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 348 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 350 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 349 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaGetSymbolSize(size_t *
-# 351 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 350 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size, const T &
-# 352 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 351 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 symbol)
-# 354 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 353 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 355 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 354 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaGetSymbolSize(size, (const char *)(&symbol));
-# 356 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 355 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 405 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 404 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 406 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 405 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaBindTexture(size_t *
-# 407 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 406 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset, const texture< T, dim, readMode> &
-# 408 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 407 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex, const void *
-# 409 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 408 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, const cudaChannelFormatDesc &
-# 410 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 409 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 desc, size_t
-# 411 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 410 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size = (((2147483647) * 2U) + 1U))
-# 413 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 412 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 414 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 413 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaBindTexture(offset, &tex, devPtr, &desc, size);
-# 415 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 414 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 449 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 448 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 450 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 449 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaBindTexture(size_t *
-# 451 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 450 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset, const texture< T, dim, readMode> &
-# 452 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 451 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex, const void *
-# 453 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 452 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, size_t
-# 454 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 453 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 size = (((2147483647) * 2U) + 1U))
-# 456 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 455 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 457 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 456 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaBindTexture(offset, tex, devPtr, (tex.texture< T, dim, readMode> ::channelDesc), size);
-# 458 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 457 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 504 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 503 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 505 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 504 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaBindTexture2D(size_t *
-# 506 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 505 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset, const texture< T, dim, readMode> &
-# 507 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 506 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex, const void *
-# 508 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 507 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 devPtr, const cudaChannelFormatDesc &
-# 509 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 508 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 desc, size_t
-# 510 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 509 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 width, size_t
-# 511 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 510 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 height, size_t
-# 512 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 511 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 pitch)
-# 514 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 513 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 515 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 514 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaBindTexture2D(offset, &tex, devPtr, &desc, width, height, pitch);
-# 516 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 515 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 546 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 545 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 547 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 546 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaBindTextureToArray(const texture< T, dim, readMode> &
-# 548 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 547 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex, const cudaArray *
-# 549 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 548 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 array, const cudaChannelFormatDesc &
-# 550 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 549 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 desc)
-# 552 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 551 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 553 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 552 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaBindTextureToArray(&tex, array, &desc);
-# 554 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 553 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 583 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 582 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 584 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 583 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaBindTextureToArray(const texture< T, dim, readMode> &
-# 585 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 584 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex, const cudaArray *
-# 586 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 585 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 array)
-# 588 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 587 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 589 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 588 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaChannelFormatDesc desc;
-# 590 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 589 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaError_t err = cudaGetChannelDesc(&desc, array);
-# 592 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 591 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return (err == (cudaSuccess)) ? cudaBindTextureToArray(tex, array, desc) : err;
-# 593 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 592 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 621 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 620 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 622 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 621 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaUnbindTexture(const texture< T, dim, readMode> &
-# 623 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 622 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex)
-# 625 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 624 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 626 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 625 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaUnbindTexture(&tex);
-# 627 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 626 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 660 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 659 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T, int dim, cudaTextureReadMode readMode> inline cudaError_t
-# 661 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 660 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaGetTextureAlignmentOffset(size_t *
-# 662 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 661 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 offset, const texture< T, dim, readMode> &
-# 663 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 662 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 tex)
-# 665 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 664 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 666 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 665 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaGetTextureAlignmentOffset(offset, &tex);
-# 667 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 666 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 709 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 716 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 710 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 717 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+cudaFuncSetCacheConfig(T *
+# 718 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+func, cudaFuncCache
+# 719 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+cacheConfig)
+# 721 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+{
+# 722 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+return cudaFuncSetCacheConfig((const char *)func, cacheConfig);
+# 723 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+}
+# 758 "/usr/local/cuda/bin/../include/cuda_runtime.h"
+template<class T> inline cudaError_t
+# 759 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaLaunch(T *
-# 711 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 760 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 entry)
-# 713 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 762 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 714 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 763 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaLaunch((const char *)entry);
-# 715 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 764 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 745 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 795 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 template<class T> inline cudaError_t
-# 746 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 796 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 cudaFuncGetAttributes(cudaFuncAttributes *
-# 747 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 797 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 attr, T *
-# 748 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 798 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 entry)
-# 750 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 800 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 {
-# 751 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 801 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 return cudaFuncGetAttributes(attr, (const char *)entry);
-# 752 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-}
-# 760 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-template<class T, int dim> inline cudaError_t
-# 761 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-cudaBindSurfaceToAddr(size_t *
-# 762 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-offset, const surface< T, dim> &
-# 763 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-surf, const void *
-# 764 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-devPtr, size_t
-# 765 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-size = (((2147483647) * 2U) + 1U))
-# 767 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-{
-# 768 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-return cudaBindSurfaceToAddr(offset, &surf, devPtr, &(surf.surface< T, dim> ::channelDesc), size);
-# 769 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-}
-# 771 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-template<class T, int dim> inline cudaError_t
-# 772 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-cudaBindSurfaceToArray(const surface< T, dim> &
-# 773 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-surf, const cudaArray *
-# 774 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-array)
-# 776 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-{
-# 777 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-cudaChannelFormatDesc desc;
-# 778 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-cudaError_t err = cudaGetChannelDesc(&desc, array);
-# 780 "/home/normal/cuda/bin/../include/cuda_runtime.h"
-return (err == (cudaSuccess)) ? cudaBindSurfaceToArray(&surf, array, &desc) : err;
-# 781 "/home/normal/cuda/bin/../include/cuda_runtime.h"
+# 802 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
 # 45 "/usr/include/stdio.h" 3
 struct _IO_FILE;
@@ -8561,7 +8057,7 @@ extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 # 56 "/usr/include/_G_config.h" 3
 extern "C" { typedef unsigned _G_uint32_t; }
-# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stdarg.h" 3
+# 40 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/va.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -8701,35 +8197,35 @@ extern "C" int __underflow(_IO_FILE *);
 extern "C" int __uflow(_IO_FILE *);
 # 418 "/usr/include/libio.h" 3
 extern "C" int __overflow(_IO_FILE *, int);
-# 458 "/usr/include/libio.h" 3
-extern "C" int _IO_getc(_IO_FILE *);
-# 459 "/usr/include/libio.h" 3
-extern "C" int _IO_putc(int, _IO_FILE *);
 # 460 "/usr/include/libio.h" 3
-extern "C" int _IO_feof(_IO_FILE *) throw();
+extern "C" int _IO_getc(_IO_FILE *);
 # 461 "/usr/include/libio.h" 3
-extern "C" int _IO_ferror(_IO_FILE *) throw();
+extern "C" int _IO_putc(int, _IO_FILE *);
+# 462 "/usr/include/libio.h" 3
+extern "C" int _IO_feof(_IO_FILE *) throw();
 # 463 "/usr/include/libio.h" 3
+extern "C" int _IO_ferror(_IO_FILE *) throw();
+# 465 "/usr/include/libio.h" 3
 extern "C" int _IO_peekc_locked(_IO_FILE *);
-# 469 "/usr/include/libio.h" 3
-extern "C" void _IO_flockfile(_IO_FILE *) throw();
-# 470 "/usr/include/libio.h" 3
-extern "C" void _IO_funlockfile(_IO_FILE *) throw();
 # 471 "/usr/include/libio.h" 3
+extern "C" void _IO_flockfile(_IO_FILE *) throw();
+# 472 "/usr/include/libio.h" 3
+extern "C" void _IO_funlockfile(_IO_FILE *) throw();
+# 473 "/usr/include/libio.h" 3
 extern "C" int _IO_ftrylockfile(_IO_FILE *) throw();
-# 488 "/usr/include/libio.h" 3
-extern "C" int _IO_vfscanf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list, int *__restrict__);
 # 490 "/usr/include/libio.h" 3
-extern "C" int _IO_vfprintf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
+extern "C" int _IO_vfscanf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list, int *__restrict__);
 # 492 "/usr/include/libio.h" 3
+extern "C" int _IO_vfprintf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
+# 494 "/usr/include/libio.h" 3
 extern "C" __ssize_t _IO_padn(_IO_FILE *, int, __ssize_t);
-# 493 "/usr/include/libio.h" 3
-extern "C" size_t _IO_sgetn(_IO_FILE *, void *, size_t);
 # 495 "/usr/include/libio.h" 3
+extern "C" size_t _IO_sgetn(_IO_FILE *, void *, size_t);
+# 497 "/usr/include/libio.h" 3
 extern "C" __off64_t _IO_seekoff(_IO_FILE *, __off64_t, int, int);
-# 496 "/usr/include/libio.h" 3
-extern "C" __off64_t _IO_seekpos(_IO_FILE *, __off64_t, int);
 # 498 "/usr/include/libio.h" 3
+extern "C" __off64_t _IO_seekpos(_IO_FILE *, __off64_t, int);
+# 500 "/usr/include/libio.h" 3
 extern "C" void _IO_free_backup_area(_IO_FILE *) throw();
 # 80 "/usr/include/stdio.h" 3
 extern "C" { typedef __gnuc_va_list va_list; }
@@ -9071,47 +8567,47 @@ using __gnu_cxx::vsnprintf;
 using __gnu_cxx::vsscanf;
 # 182 "/usr/include/c++/4.4/cstdio" 3
 }
-# 28 "worleyTestExternalSharedMemory.cu"
-void kernel__entry(int *source);
-# 36 "worleyTestExternalSharedMemory.cu"
+# 28 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
+void kernel(int *source);
+# 36 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 int main()
-# 37 "worleyTestExternalSharedMemory.cu"
+# 37 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 {
-# 38 "worleyTestExternalSharedMemory.cu"
+# 38 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 int *src;
-# 39 "worleyTestExternalSharedMemory.cu"
+# 39 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 int host[10000] = {0};
-# 41 "worleyTestExternalSharedMemory.cu"
+# 41 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 cudaSetDevice(0);
-# 42 "worleyTestExternalSharedMemory.cu"
+# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 cudaMalloc((void **)(&src), (10000) * sizeof(int));
-# 44 "worleyTestExternalSharedMemory.cu"
+# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 cudaMemcpy(src, host, (10000) * sizeof(int), cudaMemcpyHostToDevice);
-# 46 "worleyTestExternalSharedMemory.cu"
-cudaConfigureCall(128, 128, 15000) ? ((void)0) : kernel__entry(src);
-# 47 "worleyTestExternalSharedMemory.cu"
+# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
+cudaConfigureCall(128, 128, 15000) ? ((void)0) : kernel(src);
+# 47 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 printf("TEST PASSED\n");
-# 48 "worleyTestExternalSharedMemory.cu"
+# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 return 0;
-# 49 "worleyTestExternalSharedMemory.cu"
+# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 }
-# 1 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_00005e55_00000000-3_worleyTestExternalSharedMemory.fatbin.c" 1
-# 1 "/home/normal/cuda/bin/../include/__cudaFatFormat.h" 1
-# 83 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 1 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000613c_00000000-3_worleyTestExternalSharedMemory.fatbin.c" 1
+# 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
+# 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
-# 97 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 97 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* gpuProfileName;
     char* cubin;
 } __cudaFatCubinEntry;
-# 113 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 113 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* gpuProfileName;
     char* ptx;
 } __cudaFatPtxEntry;
-# 125 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 125 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct __cudaFatDebugEntryRec {
     char* gpuProfileName;
     char* debug;
@@ -9131,11 +8627,11 @@ typedef enum {
       __cudaFatDontCacheFlag = (1 << 1),
       __cudaFatSassDebugFlag = (1 << 2)
 } __cudaFatCudaBinaryFlag;
-# 152 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 152 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct {
     char* name;
 } __cudaFatSymbol;
-# 166 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 166 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 typedef struct __cudaFatCudaBinaryRec {
     unsigned long magic;
     unsigned long version;
@@ -9154,19 +8650,22 @@ typedef struct __cudaFatCudaBinaryRec {
     unsigned int characteristic;
     __cudaFatElfEntry *elf;
 } __cudaFatCudaBinary;
-# 203 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 203 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
     typedef enum {
         __cudaFatAvoidPTX,
-        __cudaFatPreferBestCode
+        __cudaFatPreferBestCode,
+        __cudaFatForcePTX
     } __cudaFatCompilationPolicy;
-# 226 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 227 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 void fatGetCubinForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *cubin, char* *dbgInfoFile );
-# 237 "/home/normal/cuda/bin/../include/__cudaFatFormat.h"
+# 240 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
+unsigned char fatCheckJitForGpuWithPolicy( __cudaFatCudaBinary *binary, __cudaFatCompilationPolicy policy, char* gpuName, char* *ptx );
+# 250 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00005e55_00000000-3_worleyTestExternalSharedMemory.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000613c_00000000-3_worleyTestExternalSharedMemory.fatbin.c" 2
 
 
 
@@ -9175,37 +8674,33 @@ extern "C" {
 
 
 static const unsigned long long __deviceText_$sm_10$[] = {
-0x33010102464c457full,0x0000000000000000ull,0x0000000100be0002ull,0x0000000000000000ull,
-0x0000000000000334ull,0x0000000000000040ull,0x003800400000000aull,0x0001000600400003ull,
-0x0000000000000000ull,0x0000000000000000ull,0x0000000000000000ull,0x0000000000000000ull,
-0x0000000000000000ull,0x0000000000000000ull,0x0000000000000000ull,0x0000000000000000ull,
-0x0000000300000001ull,0x0000000000000000ull,0x0000000000000000ull,0x00000000000001c0ull,
-0x000000000000005full,0x0000000000000000ull,0x0000000000000004ull,0x0000000000000000ull,
-0x000000030000000bull,0x0000000000000000ull,0x0000000000000000ull,0x000000000000021full,
-0x000000000000000dull,0x0000000000000000ull,0x0000000000000001ull,0x0000000000000000ull,
-0x0000000200000013ull,0x0000000000000000ull,0x0000000000000000ull,0x000000000000022cull,
-0x00000000000000d8ull,0x0000000800000002ull,0x0000000000000001ull,0x0000000000000018ull,
-0x0000000100000036ull,0x0000000000000006ull,0x0000000000000000ull,0x0000000000000304ull,
-0x0000000000000030ull,0x0200000600000003ull,0x0000000000000004ull,0x0000000000000000ull,
-0x0000000800000048ull,0x0000000000000003ull,0x0000000000000000ull,0x0000000000000334ull,
-0x0000000000000020ull,0x0000000400000000ull,0x0000000000000004ull,0x0000000000000000ull,
-0x7472747368732e00ull,0x747274732e006261ull,0x746d79732e006261ull,0x672e766e2e006261ull,
-0x6e692e6c61626f6cull,0x672e766e2e007469ull,0x742e006c61626f6cull,0x6b365a5f2e747865ull,
-0x0069506c656e7265ull,0x726168732e766e2eull,0x656b365a5f2e6465ull,0x000069506c656e72ull,
-0x656e72656b365a5full,0x000000000069506cull,0x0000000000000000ull,0x0000000000000000ull,
-0x0000000000000000ull,0x0000000000010003ull,0x0000000000000000ull,0x0000000000000000ull,
-0x0000000000020003ull,0x0000000000000000ull,0x0000000000000000ull,0x0000000000030003ull,
-0x0000000000000000ull,0x0000000000000000ull,0x0000000000000003ull,0x0000000000000000ull,
-0x0000000000000000ull,0x0000000000000003ull,0x0000000000000000ull,0x0000000000000000ull,
-0x0000000000040003ull,0x0000003000000000ull,0x0000000000000000ull,0x0000000000050003ull,
-0x0000000000000000ull,0x0000000100000000ull,0x0000000000041012ull,0x0000000000000000ull,
-0xa000000100000000ull,0x3002000504000780ull,0x2000c805c4100780ull,0x0002000504204780ull,
-0xd00e0201c0000780ull,0x0400100180c00780ull,0x00000006e4200781ull,0x0000033400000005ull,
-0x0000000000000000ull,0x0000000000000000ull,0x000000a800000000ull,0x000000a800000000ull,
-0x0000000400000000ull,0x6000000000000000ull,0x0000030400000805ull,0x0000000000000000ull,
-0x0000000000000000ull,0x0000003000000000ull,0x0000003000000000ull,0x0000000400000000ull,
-0x6000000000000000ull,0x0000033400000806ull,0x0000000000000000ull,0x0000000000000000ull,
-0x0000000000000000ull,0x0000002000000000ull,0x0000000400000000ull,0x0000000000000000ull
+0x33010101464c457full,0x0000000000000000ull,0x0000000100be0002ull,0x000002fc00000000ull,
+0x000a000a00000034ull,0x0028000300200034ull,0x0000000000010008ull,0x0000000000000000ull,
+0x0000000000000000ull,0x0000000000000000ull,0x0000000000000000ull,0x0000000100000000ull,
+0x0000000000000003ull,0x0000017400000000ull,0x000000000000008eull,0x0000000400000000ull,
+0x0000000b00000000ull,0x0000000000000003ull,0x0000020200000000ull,0x000000000000000dull,
+0x0000000100000000ull,0x0000001300000000ull,0x0000000000000002ull,0x0000020f00000000ull,
+0x00000002000000b0ull,0x000000010000000aull,0x0000003600000010ull,0x0000000600000001ull,
+0x000002bf00000000ull,0x0000000300000030ull,0x0000000403000006ull,0x0000005f00000000ull,
+0x0000000200000001ull,0x000002ef00000000ull,0x0000000000000004ull,0x0000000400000004ull,
+0x0000007900000000ull,0x0000000200000001ull,0x000002f300000000ull,0x0000000000000008ull,
+0x0000000100000004ull,0x0000004800000000ull,0x0000000300000008ull,0x000002fb00000000ull,
+0x0000000000000020ull,0x0000000400000004ull,0x68732e0000000000ull,0x2e00626174727473ull,
+0x2e00626174727473ull,0x2e006261746d7973ull,0x61626f6c672e766eull,0x2e0074696e692e6cull,
+0x61626f6c672e766eull,0x2e747865742e006cull,0x656e72656b365a5full,0x2e766e2e0069506cull,
+0x5f2e646572616873ull,0x6c656e72656b365aull,0x632e766e2e006950ull,0x31746e6174736e6full,
+0x6e72656b365a5f2eull,0x766e2e0069506c65ull,0x5a5f2e6f666e692eull,0x506c656e72656b36ull,
+0x656b365a5f000069ull,0x000069506c656e72ull,0x0000000000000000ull,0x0000000000000000ull,
+0x0000000000000000ull,0x0000010003000000ull,0x0000000000000000ull,0x0000020003000000ull,
+0x0000000000000000ull,0x0000030003000000ull,0x0000000000000000ull,0x0000000003000000ull,
+0x0000000000000000ull,0x0000000003000000ull,0x3000000000000000ull,0x0000040003000000ull,
+0x0000000000000000ull,0x0000070003000000ull,0x0000000000000000ull,0x0000050003000000ull,
+0x0000000000000000ull,0x0100060003000000ull,0x0000000000000000ull,0x0500041012000000ull,
+0x090423c7801000c8ull,0x0504000780a00000ull,0x0500000003600400ull,0x01c0000780000204ull,
+0x0180c00780d00e02ull,0x04e4200781040010ull,0x0000040b04000000ull,0x0000000600000000ull,
+0x00000000000002fcull,0x0000006000000000ull,0x0000000500000060ull,0x6000000000000004ull,
+0x00000000000002bfull,0x0000003c00000000ull,0x00000a050000003cull,0x6000000000000004ull,
+0x00000000000002fbull,0x0000000000000000ull,0x00000a0600000020ull,0x0000000000000004ull
 };
 
 
@@ -9220,13 +8715,13 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x6f69737265762e09ull,0x2e090a342e31206eull,0x7320746567726174ull,0x616d202c30315f6dull,
 0x6f745f3436665f70ull,0x2f2f090a3233665full,0x656c69706d6f6320ull,0x2f20687469772064ull,
 0x61636f6c2f727375ull,0x6f2f616475632f6cull,0x696c2f34366e6570ull,0x2f090a65622f2f62ull,
-0x6e65706f766e202full,0x6220302e33206363ull,0x206e6f20746c6975ull,0x2d30312d39303032ull,
-0x2d2f2f090a0a3632ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x6e65706f766e202full,0x6220302e33206363ull,0x206e6f20746c6975ull,0x2d32302d30313032ull,
+0x2d2f2f090a0a3931ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f3535653530ull,0x372d303030303030ull,0x5479656c726f775full,0x7265747845747365ull,
+0x30305f6333313630ull,0x372d303030303030ull,0x5479656c726f775full,0x7265747845747365ull,
 0x65726168536c616eull,0x2e79726f6d654d64ull,0x2820692e33707063ull,0x4263632f706d742full,
-0x39736f4f592e2349ull,0x2d2d2f2f090a2946ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
+0x5a367730442e2349ull,0x2d2d2f2f090a2950ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2f2f090a0a2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -9234,85 +8729,81 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f090a2d2d2d2d2dull,0x656772615420202full,
 0x49202c7874703a74ull,0x30315f6d733a4153ull,0x6e6169646e45202cull,0x2c656c7474696c3aull,
-0x7265746e696f5020ull,0x34363a657a695320ull,0x4f2d20202f2f090aull,0x6d6974704f280933ull,
+0x7265746e696f5020ull,0x32333a657a695320ull,0x4f2d20202f2f090aull,0x6d6974704f280933ull,
 0x206e6f6974617a69ull,0x090a296c6576656cull,0x0930672d20202f2full,0x6c20677562654428ull,
 0x2f090a296c657665ull,0x2809326d2d20202full,0x612074726f706552ull,0x6569726f73697664ull,
 0x2d2d2f2f090a2973ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x6c69662e090a0a2dull,0x6f633c2209310965ull,0x696c2d646e616d6dull,0x662e090a223e656eull,
-0x2f22093209656c69ull,0x78706d742f706d74ull,0x35303030305f7466ull,0x303030305f353565ull,
+0x2f22093209656c69ull,0x78706d742f706d74ull,0x36303030305f7466ull,0x303030305f633331ull,
 0x775f362d30303030ull,0x73655479656c726full,0x616e726574784574ull,0x4d6465726168536cull,
 0x75632e79726f6d65ull,0x70672e3265666164ull,0x6c69662e090a2275ull,0x73752f2209330965ull,
-0x63672f62696c2f72ull,0x34365f3638782f63ull,0x672d78756e696c2dull,0x312e342e342f756eull,
-0x6564756c636e692full,0x2e6665646474732full,0x6c69662e090a2268ull,0x6f682f2209340965ull,
-0x616d726f6e2f656dull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x72632f6564756c63ull,
-0x6563697665642f74ull,0x656d69746e75725full,0x69662e090a22682eull,0x682f22093509656cull,
-0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x682f6564756c636eull,
-0x696665645f74736full,0x090a22682e73656eull,0x093609656c69662eull,0x6e2f656d6f682f22ull,
-0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x69746c6975622f65ull,
-0x2e73657079745f6eull,0x6c69662e090a2268ull,0x6f682f2209370965ull,0x616d726f6e2f656dull,
-0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x65642f6564756c63ull,0x7079745f65636976ull,
-0x2e090a22682e7365ull,0x22093809656c6966ull,0x6f6e2f656d6f682full,0x6475632f6c616d72ull,
-0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x5f7265766972642full,0x22682e7365707974ull,
-0x09656c69662e090aull,0x656d6f682f220939ull,0x2f6c616d726f6e2full,0x6e69622f61647563ull,
-0x6c636e692f2e2e2full,0x667275732f656475ull,0x657079745f656361ull,0x662e090a22682e73ull,
-0x2209303109656c69ull,0x6f6e2f656d6f682full,0x6475632f6c616d72ull,0x2e2e2f6e69622f61ull,
-0x6564756c636e692full,0x657275747865742full,0x682e73657079745full,0x656c69662e090a22ull,
-0x6f682f2209313109ull,0x616d726f6e2f656dull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,
-0x65762f6564756c63ull,0x7079745f726f7463ull,0x2e090a22682e7365ull,0x09323109656c6966ull,
-0x6e2f656d6f682f22ull,0x75632f6c616d726full,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,
-0x6563697665642f65ull,0x5f68636e75616c5full,0x6574656d61726170ull,0x2e090a22682e7372ull,
-0x09333109656c6966ull,0x6e2f656d6f682f22ull,0x75632f6c616d726full,0x2e2f6e69622f6164ull,
-0x64756c636e692f2eull,0x74732f7472632f65ull,0x6c635f656761726full,0x090a22682e737361ull,
-0x343109656c69662eull,0x692f7273752f2209ull,0x622f6564756c636eull,0x657079742f737469ull,
-0x662e090a22682e73ull,0x2209353109656c69ull,0x636e692f7273752full,0x6d69742f6564756cull,
-0x662e090a22682e65ull,0x2209363109656c69ull,0x655479656c726f77ull,0x6e72657478457473ull,
-0x6465726168536c61ull,0x632e79726f6d654dull,0x6c69662e090a2275ull,0x682f220937310965ull,
-0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x632f6564756c636eull,
-0x75665f6e6f6d6d6full,0x2e736e6f6974636eull,0x6c69662e090a2268ull,0x682f220938310965ull,
-0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x632f6564756c636eull,
-0x5f636e75662f7472ull,0x22682e6f7263616dull,0x09656c69662e090aull,0x6d6f682f22093931ull,
-0x6c616d726f6e2f65ull,0x69622f616475632full,0x636e692f2e2e2f6eull,0x74616d2f6564756cull,
-0x6974636e75665f68ull,0x090a22682e736e6full,0x303209656c69662eull,0x2f656d6f682f2209ull,
-0x632f6c616d726f6eull,0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x63697665642f6564ull,
-0x6974636e75665f65ull,0x090a22682e736e6full,0x313209656c69662eull,0x2f656d6f682f2209ull,
-0x632f6c616d726f6eull,0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x5f6874616d2f6564ull,
-0x746e6174736e6f63ull,0x662e090a22682e73ull,0x2209323209656c69ull,0x6f6e2f656d6f682full,
-0x6475632f6c616d72ull,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x615f31315f6d732full,
-0x75665f63696d6f74ull,0x2e736e6f6974636eull,0x6c69662e090a2268ull,0x682f220933320965ull,
-0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x732f6564756c636eull,
-0x6f74615f32315f6dull,0x636e75665f63696dull,0x22682e736e6f6974ull,0x09656c69662e090aull,
-0x6d6f682f22093432ull,0x6c616d726f6e2f65ull,0x69622f616475632full,0x636e692f2e2e2f6eull,
-0x5f6d732f6564756cull,0x6c62756f645f3331ull,0x6974636e75665f65ull,0x090a22682e736e6full,
-0x353209656c69662eull,0x2f656d6f682f2209ull,0x632f6c616d726f6eull,0x2f6e69622f616475ull,
-0x756c636e692f2e2eull,0x6f6d6d6f632f6564ull,0x2e73657079745f6eull,0x6c69662e090a2268ull,
-0x682f220936320965ull,0x6d726f6e2f656d6full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,
-0x732f6564756c636eull,0x6f74615f30325f6dull,0x636e75665f63696dull,0x22682e736e6f6974ull,
-0x09656c69662e090aull,0x6d6f682f22093732ull,0x6c616d726f6e2f65ull,0x69622f616475632full,
-0x636e692f2e2e2f6eull,0x5f6d732f6564756cull,0x6972746e695f3032ull,0x22682e736369736eull,
-0x09656c69662e090aull,0x6d6f682f22093832ull,0x6c616d726f6e2f65ull,0x69622f616475632full,
-0x636e692f2e2e2f6eull,0x7275732f6564756cull,0x6e75665f65636166ull,0x682e736e6f697463ull,
-0x656c69662e090a22ull,0x6f682f2209393209ull,0x616d726f6e2f656dull,0x622f616475632f6cull,
-0x6e692f2e2e2f6e69ull,0x65742f6564756c63ull,0x65665f6572757478ull,0x636e75665f686374ull,
-0x22682e736e6f6974ull,0x09656c69662e090aull,0x6d6f682f22093033ull,0x6c616d726f6e2f65ull,
-0x69622f616475632full,0x636e692f2e2e2f6eull,0x74616d2f6564756cull,0x6974636e75665f68ull,
-0x5f6c62645f736e6full,0x0a22682e31787470ull,0x72657478652e090aull,0x65726168732e096eull,
-0x6e67696c612e2064ull,0x732038622e203420ull,0x652e090a0a3b5d5bull,0x365a5f207972746eull,
-0x69506c656e72656bull,0x61702e09090a2820ull,0x3436752e206d6172ull,0x70616475635f5f20ull,
-0x6b365a5f5f6d7261ull,0x5f69506c656e7265ull,0x0a29656372756f73ull,0x6765722e090a7b09ull,
-0x7225203233752e20ull,0x722e090a3b3e343cull,0x203436752e206765ull,0x0a3b3e383c647225ull,
-0x363109636f6c2e09ull,0x4c240a3009383209ull,0x6b365a5f5f314242ull,0x3a69506c656e7265ull,
-0x3109636f6c2e090aull,0x090a300932330936ull,0x2e3233752e747663ull,0x3172250920363175ull,
-0x782e64697425202cull,0x752e747663090a3bull,0x09203233752e3436ull,0x7225202c31647225ull,
-0x2e6c756d090a3b31ull,0x09203436752e6f6cull,0x7225202c32647225ull,0x090a3b34202c3164ull,
-0x6d617261702e646cull,0x722509203436752eull,0x635f5f5b202c3364ull,0x5f6d726170616475ull,
-0x656e72656b365a5full,0x72756f735f69506cull,0x6461090a3b5d6563ull,0x2509203436752e64ull,
-0x647225202c346472ull,0x3b32647225202c33ull,0x6f6c672e646c090aull,0x203233732e6c6162ull,
-0x255b202c32722509ull,0x0a3b5d302b346472ull,0x3436752e766f6d09ull,0x202c356472250920ull,
-0x2e646461090a3b73ull,0x6472250920343675ull,0x2c32647225202c36ull,0x090a3b3564722520ull,
-0x65726168732e7473ull,0x5b09203233732e64ull,0x2c5d302b36647225ull,0x2e090a3b32722520ull,
-0x3309363109636f6cull,0x697865090a300933ull,0x6557444c240a3b74ull,0x656b365a5f5f646eull,
-0x0a3a69506c656e72ull,0x5a5f202f2f207d09ull,0x506c656e72656b36ull,0x00000000000a0a69ull
+0x63672f62696c2f72ull,0x6c2d363834692f63ull,0x756e672d78756e69ull,0x692f332e342e342full,
+0x732f6564756c636eull,0x22682e6665646474ull,0x09656c69662e090aull,0x2f7273752f220934ull,
+0x75632f6c61636f6cull,0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x65642f7472632f65ull,
+0x6e75725f65636976ull,0x0a22682e656d6974ull,0x3509656c69662e09ull,0x6c2f7273752f2209ull,
+0x6475632f6c61636full,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x65645f74736f682full,
+0x22682e73656e6966ull,0x09656c69662e090aull,0x2f7273752f220936ull,0x75632f6c61636f6cull,
+0x2e2f6e69622f6164ull,0x64756c636e692f2eull,0x69746c6975622f65ull,0x2e73657079745f6eull,
+0x6c69662e090a2268ull,0x73752f2209370965ull,0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,
+0x6c636e692f2e2e2full,0x697665642f656475ull,0x73657079745f6563ull,0x69662e090a22682eull,
+0x752f22093809656cull,0x6c61636f6c2f7273ull,0x69622f616475632full,0x636e692f2e2e2f6eull,
+0x6972642f6564756cull,0x657079745f726576ull,0x662e090a22682e73ull,0x2f22093909656c69ull,
+0x61636f6c2f727375ull,0x622f616475632f6cull,0x6e692f2e2e2f6e69ull,0x65742f6564756c63ull,
+0x79745f6572757478ull,0x090a22682e736570ull,0x303109656c69662eull,0x6c2f7273752f2209ull,
+0x6475632f6c61636full,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x5f726f746365762full,
+0x22682e7365707974ull,0x09656c69662e090aull,0x7273752f22093131ull,0x632f6c61636f6c2full,
+0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x63697665642f6564ull,0x68636e75616c5f65ull,
+0x74656d617261705full,0x090a22682e737265ull,0x323109656c69662eull,0x6c2f7273752f2209ull,
+0x6475632f6c61636full,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x6f74732f7472632full,
+0x616c635f65676172ull,0x2e090a22682e7373ull,0x09333109656c6966ull,0x6e692f7273752f22ull,
+0x69622f6564756c63ull,0x73657079742f7374ull,0x69662e090a22682eull,0x2f2209343109656cull,
+0x6c636e692f727375ull,0x656d69742f656475ull,0x69662e090a22682eull,0x2f2209353109656cull,
+0x726f6e2f656d6f68ull,0x636568632f6c616dull,0x7570672f74756f6bull,0x742f746f6c65636full,
+0x6475632f73747365ull,0x7365742f332e3261ull,0x656c726f772f7374ull,0x7478457473655479ull,
+0x6168536c616e7265ull,0x726f6d654d646572ull,0x79656c726f772f79ull,0x6574784574736554ull,
+0x726168536c616e72ull,0x79726f6d654d6465ull,0x662e090a2275632eull,0x2209363109656c69ull,
+0x636f6c2f7273752full,0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x632f6564756c636eull,
+0x75665f6e6f6d6d6full,0x2e736e6f6974636eull,0x6c69662e090a2268ull,0x752f220937310965ull,
+0x6c61636f6c2f7273ull,0x69622f616475632full,0x636e692f2e2e2f6eull,0x7472632f6564756cull,
+0x616d5f636e75662full,0x090a22682e6f7263ull,0x383109656c69662eull,0x6c2f7273752f2209ull,
+0x6475632f6c61636full,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x75665f6874616d2full,
+0x2e736e6f6974636eull,0x6c69662e090a2268ull,0x752f220939310965ull,0x6c61636f6c2f7273ull,
+0x69622f616475632full,0x636e692f2e2e2f6eull,0x7665642f6564756cull,0x636e75665f656369ull,
+0x22682e736e6f6974ull,0x09656c69662e090aull,0x7273752f22093032ull,0x632f6c61636f6c2full,
+0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x5f6874616d2f6564ull,0x746e6174736e6f63ull,
+0x662e090a22682e73ull,0x2209313209656c69ull,0x636f6c2f7273752full,0x2f616475632f6c61ull,
+0x692f2e2e2f6e6962ull,0x732f6564756c636eull,0x6f74615f31315f6dull,0x636e75665f63696dull,
+0x22682e736e6f6974ull,0x09656c69662e090aull,0x7273752f22093232ull,0x632f6c61636f6c2full,
+0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x32315f6d732f6564ull,0x5f63696d6f74615full,
+0x6e6f6974636e7566ull,0x662e090a22682e73ull,0x2209333209656c69ull,0x636f6c2f7273752full,
+0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x732f6564756c636eull,0x756f645f33315f6dull,
+0x636e75665f656c62ull,0x22682e736e6f6974ull,0x09656c69662e090aull,0x7273752f22093432ull,
+0x632f6c61636f6c2full,0x2f6e69622f616475ull,0x756c636e692f2e2eull,0x6f6d6d6f632f6564ull,
+0x2e73657079745f6eull,0x6c69662e090a2268ull,0x752f220935320965ull,0x6c61636f6c2f7273ull,
+0x69622f616475632full,0x636e692f2e2e2f6eull,0x5f6d732f6564756cull,0x696d6f74615f3032ull,
+0x6974636e75665f63ull,0x090a22682e736e6full,0x363209656c69662eull,0x6c2f7273752f2209ull,
+0x6475632f6c61636full,0x2e2e2f6e69622f61ull,0x6564756c636e692full,0x695f30325f6d732full,
+0x6369736e6972746eull,0x662e090a22682e73ull,0x2209373209656c69ull,0x636f6c2f7273752full,
+0x2f616475632f6c61ull,0x692f2e2e2f6e6962ull,0x742f6564756c636eull,0x665f657275747865ull,
+0x6e75665f68637465ull,0x682e736e6f697463ull,0x656c69662e090a22ull,0x73752f2209383209ull,
+0x2f6c61636f6c2f72ull,0x6e69622f61647563ull,0x6c636e692f2e2e2full,0x6874616d2f656475ull,
+0x6f6974636e75665full,0x705f6c62645f736eull,0x0a0a22682e317874ull,0x6e72657478652e09ull,
+0x6465726168732e09ull,0x206e67696c612e20ull,0x5b732038622e2034ull,0x6e652e090a0a3b5dull,
+0x6b365a5f20797274ull,0x2069506c656e7265ull,0x7261702e09090a28ull,0x203233752e206d61ull,
+0x6170616475635f5full,0x656b365a5f5f6d72ull,0x735f69506c656e72ull,0x090a29656372756full,
+0x206765722e090a7bull,0x687225203631752eull,0x722e090a3b3e333cull,0x203233752e206765ull,
+0x090a3b3e383c7225ull,0x09353109636f6c2eull,0x424c240a30093832ull,0x656b365a5f5f3142ull,
+0x0a3a69506c656e72ull,0x353109636f6c2e09ull,0x6d090a3009323309ull,0x09203631752e766full,
+0x7425202c31687225ull,0x6d090a3b782e6469ull,0x2e656469772e6c75ull,0x3172250920363175ull,
+0x202c31687225202cull,0x702e646c090a3b34ull,0x3233752e6d617261ull,0x5b202c3272250920ull,
+0x6170616475635f5full,0x656b365a5f5f6d72ull,0x735f69506c656e72ull,0x0a3b5d656372756full,
+0x3233752e64646109ull,0x25202c3372250920ull,0x3b317225202c3272ull,0x6f6c672e646c090aull,
+0x203233732e6c6162ull,0x255b202c34722509ull,0x090a3b5d302b3372ull,0x203233752e766f6dull,
+0x3b73202c35722509ull,0x33752e646461090aull,0x202c367225092032ull,0x357225202c317225ull,
+0x68732e7473090a3bull,0x3233732e64657261ull,0x302b3672255b0920ull,0x0a3b347225202c5dull,
+0x353109636f6c2e09ull,0x65090a3009333309ull,0x444c240a3b746978ull,0x365a5f5f646e6557ull,
+0x69506c656e72656bull,0x202f2f207d090a3aull,0x656e72656b365a5full,0x0000000a0a69506cull
 };
 
 
@@ -9327,13 +8818,13 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"5adebb64653ee9aa",(char*)"worleyTestExternalSharedMemory.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xc1223013,&__elfEntries1};
-# 2 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 2
-# 1 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 1
-# 113 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
-# 1 "/home/normal/cuda/bin/../include/host_defines.h" 1
-# 114 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
-# 140 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"c060b90b0818296c",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xdf408f00,&__elfEntries1};
+# 2 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 2
+# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
+# 113 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
+# 114 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
+# 140 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
 
 
@@ -9421,11 +8912,11 @@ static void __cudaUnregisterBinaryUtil(void)
 {
   __cudaUnregisterFatBinary(__cudaFatCubinHandle);
 }
-# 279 "/home/normal/cuda/bin/../include/crt/host_runtime.h"
-# 1 "/home/normal/cuda/bin/../include/common_functions.h" 1
-# 68 "/home/normal/cuda/bin/../include/common_functions.h"
-# 1 "/home/normal/cuda/bin/../include/crt/func_macro.h" 1 3
-# 69 "/home/normal/cuda/bin/../include/common_functions.h" 2
+# 279 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
+# 1 "/usr/local/cuda/bin/../include/common_functions.h" 1
+# 68 "/usr/local/cuda/bin/../include/common_functions.h"
+# 1 "/usr/local/cuda/bin/../include/crt/func_macro.h" 1 3
+# 69 "/usr/local/cuda/bin/../include/common_functions.h" 2
 
 static __attribute__((__unused__)) clock_t __cuda_clock(void)
 {
@@ -9434,18 +8925,27 @@ static __attribute__((__unused__)) clock_t __cuda_clock(void)
 
 static __attribute__((__unused__)) void *__cuda_memset(void *s, int c, size_t n)
 {
-  return memset(s, c, n);
+  char *p = (char*)s;
+
+  while (n--) *p++ = (char)c;
+
+  return s;
 }
 
 static __attribute__((__unused__)) void *__cuda_memcpy(void *d, const void *s, size_t n)
 {
-  return memcpy(d, s, n);
+  char *p = (char*)d;
+  const char *r = (const char*)s;
+
+  while (n--) *p++ = *r++;
+
+  return d;
 }
-# 93 "/home/normal/cuda/bin/../include/common_functions.h"
-# 1 "/home/normal/cuda/bin/../include/math_functions.h" 1 3
-# 947 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 102 "/usr/local/cuda/bin/../include/common_functions.h"
+# 1 "/usr/local/cuda/bin/../include/math_functions.h" 1 3
+# 947 "/usr/local/cuda/bin/../include/math_functions.h" 3
 int __cuda_error_not_implememted(void);
-# 970 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 970 "/usr/local/cuda/bin/../include/math_functions.h" 3
 static __attribute__((__unused__)) int __cuda_abs(int a)
 {
   return abs(a);
@@ -9459,9 +8959,9 @@ static __attribute__((__unused__)) float __cuda_fabsf(float a)
 static __attribute__((__unused__)) long long int __cuda_llabs(long long int a)
 {
 
+
+
   return ::llabs(a);
-
-
 
 }
 
@@ -9470,13 +8970,13 @@ static __attribute__((__unused__)) float __cuda_exp2f(float a)
   return exp2f(a);
 }
 
-# 1 "/home/normal/cuda/bin/../include/device_functions.h" 1 3
-# 458 "/home/normal/cuda/bin/../include/device_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/math_constants.h" 1 3
-# 459 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 2404 "/home/normal/cuda/bin/../include/device_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/common_types.h" 1 3
-# 37 "/home/normal/cuda/bin/../include/common_types.h" 3
+# 1 "/usr/local/cuda/bin/../include/device_functions.h" 1 3
+# 454 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_constants.h" 1 3
+# 455 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 2400 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/common_types.h" 1 3
+# 37 "/usr/local/cuda/bin/../include/common_types.h" 3
 union __cudart_FloatUintCvt {
     float f;
     unsigned int i;
@@ -9506,7 +9006,7 @@ struct __cudart_UintUint {
     unsigned int lo;
     unsigned int hi;
 };
-# 2405 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
+# 2401 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
 
 static const unsigned char __internal_rcpTab[128] =
 {
@@ -10275,7 +9775,7 @@ static __attribute__((__unused__)) float __internal_fmaf_kernel (float a, float 
     if ((xx << 1) > 0xff000000) {
       return a + a;
     }
-# 3184 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 3180 "/usr/local/cuda/bin/../include/device_functions.h" 3
     if ((((xx << 1) == 0) && ((yy << 1) == 0xff000000)) ||
         (((yy << 1) == 0) && ((xx << 1) == 0xff000000))) {
       cvt.i = 0xffc00000;
@@ -10870,7 +10370,7 @@ static __attribute__((__unused__)) int __double2int_rz(double);
 static __attribute__((__unused__)) unsigned int __double2uint_rz(double);
 static __attribute__((__unused__)) long long int __double2ll_rz(double);
 static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double);
-# 3791 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 3787 "/usr/local/cuda/bin/../include/device_functions.h" 3
 static __attribute__((__unused__)) int __mulhi(int a, int b)
 {
   long long int c = (long long int)a * (long long int)b;
@@ -10931,22 +10431,18 @@ static __attribute__((__unused__)) unsigned int __usad(unsigned int a, unsigned 
 
 static __attribute__((__unused__)) int __mul24(int a, int b)
 {
-
   a &= 0xffffff;
   a = (a & 0x800000) != 0 ? a | ~0xffffff : a;
   b &= 0xffffff;
   b = (b & 0x800000) != 0 ? b | ~0xffffff : b;
-
 
   return a * b;
 }
 
 static __attribute__((__unused__)) unsigned int __umul24(unsigned int a, unsigned int b)
 {
-
   a &= 0xffffff;
   b &= 0xffffff;
-
 
   return a * b;
 }
@@ -11004,11 +10500,7 @@ static __attribute__((__unused__)) int __internal_float2int(float a, enum cudaRo
 
 static __attribute__((__unused__)) int __float2int_rz(float a)
 {
-
-
-
   return __internal_float2int(a, cudaRoundZero);
-
 }
 
 static __attribute__((__unused__)) int __float2int_ru(float a)
@@ -11033,11 +10525,7 @@ static __attribute__((__unused__)) long long int __internal_float2ll(float a, en
 
 static __attribute__((__unused__)) long long int __float2ll_rz(float a)
 {
-
-
-
   return __internal_float2ll(a, cudaRoundZero);
-
 }
 
 static __attribute__((__unused__)) long long int __float2ll_ru(float a)
@@ -11088,11 +10576,7 @@ static __attribute__((__unused__)) unsigned int __internal_float2uint(float a, e
 
 static __attribute__((__unused__)) unsigned int __float2uint_rz(float a)
 {
-
-
-
   return __internal_float2uint(a, cudaRoundZero);
-
 }
 
 static __attribute__((__unused__)) unsigned int __float2uint_ru(float a)
@@ -11117,11 +10601,7 @@ static __attribute__((__unused__)) unsigned long long int __internal_float2ull(f
 
 static __attribute__((__unused__)) unsigned long long int __float2ull_rz(float a)
 {
-
-
-
   return __internal_float2ull(a, cudaRoundZero);
-
 }
 
 static __attribute__((__unused__)) unsigned long long int __float2ull_ru(float a)
@@ -11222,11 +10702,7 @@ static __attribute__((__unused__)) float __int2float_rd(int a)
 
 static __attribute__((__unused__)) float __int2float_rn(int a)
 {
-
-
-
   return __internal_int2float_kernel(a, cudaRoundNearest);
-
 }
 
 static __attribute__((__unused__)) float __internal_uint2float_kernel(unsigned int a, enum cudaRoundMode rndMode)
@@ -11266,11 +10742,7 @@ static __attribute__((__unused__)) float __uint2float_rd(unsigned int a)
 
 static __attribute__((__unused__)) float __uint2float_rn(unsigned int a)
 {
-
-
-
   return __internal_uint2float_kernel(a, cudaRoundNearest);
-
 }
 
 static __attribute__((__unused__)) float __internal_ull2float_kernel(unsigned long long int a, enum cudaRoundMode rndMode)
@@ -11317,11 +10789,7 @@ static __attribute__((__unused__)) float __internal_ll2float_kernel(long long in
 
 static __attribute__((__unused__)) float __ll2float_rn(long long int a)
 {
-
-
-
   return __internal_ll2float_kernel(a, cudaRoundNearest);
-
 }
 
 static __attribute__((__unused__)) float __ll2float_rz(long long int a)
@@ -11341,11 +10809,7 @@ static __attribute__((__unused__)) float __ll2float_rd(long long int a)
 
 static __attribute__((__unused__)) float __ull2float_rn(unsigned long long int a)
 {
-
-
-
   return __internal_ull2float_kernel(a, cudaRoundNearest);
-
 }
 
 static __attribute__((__unused__)) float __ull2float_rz(unsigned long long int a)
@@ -11466,7 +10930,8 @@ static __attribute__((__unused__)) void __brkpt(int c)
 {
 
 }
-# 4395 "/home/normal/cuda/bin/../include/device_functions.h" 3
+
+
 extern "C" {
 
 
@@ -11483,7 +10948,7 @@ static __attribute__((__unused__)) inline __attribute__((always_inline)) void __
   volatile int _ = 0;
   L: if (__cudaSynchronizeThreads((void**)&&L, (void*)&_)) goto L;
 }
-# 4421 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 4372 "/usr/local/cuda/bin/../include/device_functions.h" 3
 static __attribute__((__unused__)) void __prof_trigger(int a)
 {
 }
@@ -11498,15 +10963,6 @@ static __attribute__((__unused__)) void __threadfence_block(void)
   __syncthreads();
 }
 
-static __attribute__((__unused__)) void __synchronous_start(int s)
-{
-
-}
-
-static __attribute__((__unused__)) void __synchronous_end(void)
-{
-
-}
 
 
 
@@ -11514,12 +10970,9 @@ static __attribute__((__unused__)) void __trap(void)
 {
   __builtin_trap();
 }
-# 4469 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 4411 "/usr/local/cuda/bin/../include/device_functions.h" 3
 static __attribute__((__unused__)) float __fdividef(float a, float b)
 {
-
-
-
   volatile float aa = a;
   volatile float bb = b;
 
@@ -11534,7 +10987,6 @@ static __attribute__((__unused__)) float __fdividef(float a, float b)
   } else {
     return aa / bb;
   }
-
 }
 
 
@@ -11570,66 +11022,38 @@ static __attribute__((__unused__)) float __log2f(float a)
 
 static __attribute__((__unused__)) float __tanf(float a)
 {
-
-
-
   return __fdividef (__sinf(a), __cosf(a));
-
 }
 
 static __attribute__((__unused__)) void __sincosf(float a, float *sptr, float *cptr)
 {
-
-
-
   *sptr = __sinf(a);
   *cptr = __cosf(a);
-
 }
 
 static __attribute__((__unused__)) float __expf(float a)
 {
-
-
-
   return __cuda_exp2f(a * 1.442695041f);
-
 }
 
 static __attribute__((__unused__)) float __exp10f(float a)
 {
-
-
-
   return __cuda_exp2f(a * 3.321928094f);
-
 }
 
 static __attribute__((__unused__)) float __log10f(float a)
 {
-
-
-
   return 0.301029996f * __log2f(a);
-
 }
 
 static __attribute__((__unused__)) float __logf(float a)
 {
-
-
-
   return 0.693147181f * __log2f(a);
-
 }
 
 static __attribute__((__unused__)) float __powf(float a, float b)
 {
-
-
-
   return __cuda_exp2f(b * __log2f(a));
-
 }
 
 static __attribute__((__unused__)) float fdividef(float a, float b)
@@ -11721,7 +11145,7 @@ static __attribute__((__unused__)) int __ffsll(long long int a)
 {
   return 64 - __clzll (a & -a);
 }
-# 4684 "/home/normal/cuda/bin/../include/device_functions.h" 3
+# 4594 "/usr/local/cuda/bin/../include/device_functions.h" 3
 static __attribute__((__unused__)) double fdivide(double a, double b)
 {
   return (double)fdividef((float)a, (float)b);
@@ -11748,9 +11172,9 @@ static __attribute__((__unused__)) unsigned long long int __double2ull_rz(double
 {
   return __float2ull_rz((float)a);
 }
-# 4761 "/home/normal/cuda/bin/../include/device_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
-# 258 "/home/normal/cuda/bin/../include/sm_11_atomic_functions.h" 3
+# 4671 "/usr/local/cuda/bin/../include/device_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 1 3
+# 215 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h" 3
 extern "C" {
 
 
@@ -11991,9 +11415,9 @@ static __attribute__((__unused__)) unsigned int __uAtomicCAS(unsigned int *addre
 
   return old;
 }
-# 4762 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
-# 119 "/home/normal/cuda/bin/../include/sm_12_atomic_functions.h" 3
+# 4672 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 1 3
+# 108 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h" 3
 extern "C" {
 
 
@@ -12043,8 +11467,6 @@ static __attribute__((__unused__)) unsigned long long int __ullAtomicCAS(unsigne
 
 
 
-
-
 static __attribute__((__unused__)) int __any(int cond)
 {
   return cond;
@@ -12054,9 +11476,9 @@ static __attribute__((__unused__)) int __all(int cond)
 {
   return cond;
 }
-# 4763 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 1 3
-# 272 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 3
+# 4673 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 1 3
+# 272 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
 static __attribute__((__unused__)) double __longlong_as_double(long long int a)
 {
   volatile union __cudart_DoubleLonglongCvt u;
@@ -12429,9 +11851,6 @@ static __attribute__((__unused__)) double __ull2double_ru(unsigned long long int
 
 static __attribute__((__unused__)) double __internal_fma_kernel(double x, double y, double z, enum cudaRoundMode rndMode)
 {
-
-
-
   struct __cudart_UintUint xx, yy, zz, ww;
   unsigned int s, t, u, prod0, prod1, prod2, prod3, expo_x, expo_y, expo_z;
 
@@ -12473,7 +11892,7 @@ static __attribute__((__unused__)) double __internal_fma_kernel(double x, double
       xx.hi |= 0x00080000;
       return __hiloint2double(xx.hi, xx.lo);
     }
-# 700 "/home/normal/cuda/bin/../include/sm_13_double_functions.h" 3
+# 697 "/usr/local/cuda/bin/../include/sm_13_double_functions.h" 3
     if (((((xx.hi << 1) | xx.lo) == 0) &&
          (((yy.hi << 1) | (yy.lo != 0)) == 0xffe00000)) ||
         ((((yy.hi << 1) | yy.lo) == 0) &&
@@ -12930,9 +12349,9 @@ static __attribute__((__unused__)) double __dmul_rn(double a, double b)
 {
   return __fma_rn(a, b, __hiloint2double(0x80000000, 0x00000000));
 }
-# 4764 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/sm_20_atomic_functions.h" 1 3
-# 86 "/home/normal/cuda/bin/../include/sm_20_atomic_functions.h" 3
+# 4674 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h" 1 3
+# 79 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h" 3
 extern "C" {
 
 
@@ -12957,9 +12376,9 @@ static __attribute__((__unused__)) float __fAtomicAdd(float *address, float val)
 
   return old;
 }
-# 4765 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h" 1 3
-# 156 "/home/normal/cuda/bin/../include/sm_20_intrinsics.h" 3
+# 4675 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h" 1 3
+# 156 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h" 3
 static __attribute__((__unused__)) void __threadfence_system(void)
 {
   __syncthreads();
@@ -13326,11 +12745,9 @@ static __attribute__((__unused__)) float __fmaf_ieee_rz(float a, float b, float 
 {
   return __fmaf_rz(a, b, c);
 }
-# 4766 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/surface_functions.h" 1 3
-# 4767 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 1 "/home/normal/cuda/bin/../include/texture_fetch_functions.h" 1 3
-# 1911 "/home/normal/cuda/bin/../include/texture_fetch_functions.h" 3
+# 4676 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 1 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 1 3
+# 1911 "/usr/local/cuda/bin/../include/texture_fetch_functions.h" 3
 extern "C" {
 
 
@@ -13393,8 +12810,8 @@ static __attribute__((__unused__)) float4 __ftexfetch(const void *tex, float4 in
 
   return val;
 }
-# 4768 "/home/normal/cuda/bin/../include/device_functions.h" 2 3
-# 995 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
+# 4677 "/usr/local/cuda/bin/../include/device_functions.h" 2 3
+# 995 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 
 
 static __attribute__((__unused__)) int __cuda___signbitf(float a)
@@ -13410,7 +12827,7 @@ static __attribute__((__unused__)) float __cuda_copysignf(float a, float b)
   return __int_as_float((__float_as_int(b) & 0x80000000) |
                         (__float_as_int(a) & ~0x80000000));
 }
-# 1019 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1019 "/usr/local/cuda/bin/../include/math_functions.h" 3
 static __attribute__((__unused__)) float __internal_nearbyintf(float a)
 {
   float fa = fabsf(a);
@@ -13467,14 +12884,10 @@ static __attribute__((__unused__)) float __internal_fmaxf(float a, float b)
   }
   return a > b ? a : b;
 }
-# 1084 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1084 "/usr/local/cuda/bin/../include/math_functions.h" 3
 static __attribute__((__unused__)) long int __cuda_labs(long int a)
 {
-
-
-
-  return a < 0ll ? -a : a;
-
+  return labs(a);
 }
 
 static __attribute__((__unused__)) float __cuda_ceilf(float a)
@@ -13576,11 +12989,7 @@ static __attribute__((__unused__)) unsigned long long int __cuda_ullmin(unsigned
 
 static __attribute__((__unused__)) long long int __cuda_llrintf(float a)
 {
-
-
-
   return __float2ll_rn(a);
-
 }
 
 static __attribute__((__unused__)) long int __cuda_lrintf(float a)
@@ -13588,18 +12997,12 @@ static __attribute__((__unused__)) long int __cuda_lrintf(float a)
 
 
 
-
-  return (long int)__cuda_llrintf(a);
-
-
-
+  return (long int)__float2int_rn(a);
 
 }
 
 static __attribute__((__unused__)) float __cuda_nearbyintf(float a)
 {
-
-
 
 
 
@@ -13612,16 +13015,12 @@ static __attribute__((__unused__)) float __cuda_fmaxf(float a, float b)
 
 
 
-
-
   return __internal_fmaxf(a, b);
 
 }
 
 static __attribute__((__unused__)) float __cuda_fminf(float a, float b)
 {
-
-
 
 
 
@@ -13638,7 +13037,7 @@ static __attribute__((__unused__)) int __cuda___finitef(float a)
 {
   return __cuda_fabsf(a) < __int_as_float(0x7f800000);
 }
-# 1264 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1246 "/usr/local/cuda/bin/../include/math_functions.h" 3
 static __attribute__((__unused__)) int __cuda___isinff(float a)
 {
   return __cuda_fabsf(a) == __int_as_float(0x7f800000);
@@ -13873,7 +13272,7 @@ static __attribute__((__unused__)) float2 __internal_log_ep(float a)
   float t_hi, t_lo;
   float f, g, u, v, q;
 
-
+  volatile
 
   float r, s, e;
   expo = (__float_as_int(a) >> 23) & 0xff;
@@ -13966,7 +13365,7 @@ static __attribute__((__unused__)) float2 __internal_dsmul (float2 x, float2 y)
     ml = (__fmul_rn(x.y,y.x) + __fmul_rn(x.x,y.y)) + ml;
     z.y = up = mh + ml;
     z.x = (mh - up) + ml;
-# 1604 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1586 "/usr/local/cuda/bin/../include/math_functions.h" 3
     return z;
 }
 
@@ -14069,7 +13468,7 @@ static __attribute__((__unused__)) float __internal_trig_reduction_kernel(float 
   *quadrant = q;
   return a;
 }
-# 1716 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 1698 "/usr/local/cuda/bin/../include/math_functions.h" 3
 static __attribute__((__unused__)) float __internal_expf_kernel(float a, float scale)
 {
   float j, z;
@@ -14247,17 +13646,11 @@ static __attribute__((__unused__)) float __internal_accurate_sinf(float a)
 
 static __attribute__((__unused__)) float __cuda_rintf(float a)
 {
-
-
-
   return __cuda_nearbyintf(a);
-
 }
 
 static __attribute__((__unused__)) float __cuda_sinf(float a)
 {
-
-
 
 
 
@@ -14295,8 +13688,6 @@ static __attribute__((__unused__)) float __cuda_cosf(float a)
 
 
 
-
-
   float z;
   int i;
 
@@ -14323,8 +13714,6 @@ static __attribute__((__unused__)) float __cuda_tanf(float a)
 
 
 
-
-
   float z;
   int i;
 
@@ -14346,8 +13735,6 @@ static __attribute__((__unused__)) float __cuda_log2f(float a)
 
 
 
-
-
   return __internal_accurate_log2f(a);
 
 }
@@ -14357,16 +13744,12 @@ static __attribute__((__unused__)) float __cuda_expf(float a)
 
 
 
-
-
   return __internal_accurate_expf(a);
 
 }
 
 static __attribute__((__unused__)) float __cuda_exp10f(float a)
 {
-
-
 
 
 
@@ -14445,9 +13828,6 @@ static __attribute__((__unused__)) float __cuda_tanhf(float a)
 
 static __attribute__((__unused__)) float __cuda_atan2f(float a, float b)
 {
-
-
-
   float t0, t1, fa, fb;
 
   fb = __cuda_fabsf(b);
@@ -14476,7 +13856,6 @@ static __attribute__((__unused__)) float __cuda_atan2f(float a, float b)
     }
   }
   return t0;
-
 }
 
 static __attribute__((__unused__)) float __cuda_atanf(float a)
@@ -14569,8 +13948,6 @@ static __attribute__((__unused__)) float __cuda_logf(float a)
 
 
 
-
-
   return __internal_accurate_logf(a);
 
 }
@@ -14580,17 +13957,12 @@ static __attribute__((__unused__)) float __cuda_log10f(float a)
 
 
 
-
-
   return 0.434294482f * __internal_accurate_logf(a);
 
 }
 
 static __attribute__((__unused__)) float __cuda_log1pf(float a)
 {
-
-
-
   float t;
 
 
@@ -14610,14 +13982,10 @@ static __attribute__((__unused__)) float __cuda_log1pf(float a)
     t = __internal_accurate_logf (1.0f + a);
   }
   return t;
-
 }
 
 static __attribute__((__unused__)) float __cuda_acoshf(float a)
 {
-
-
-
   float t;
 
 
@@ -14632,14 +14000,10 @@ static __attribute__((__unused__)) float __cuda_acoshf(float a)
     t = t + __cuda_sqrtf(__fadd_rn(__fmul_rz(a, t), t));
     return __cuda_log1pf(t);
   }
-
 }
 
 static __attribute__((__unused__)) float __cuda_asinhf(float a)
 {
-
-
-
   float fa, oofa, t;
 
   fa = __cuda_fabsf(a);
@@ -14657,14 +14021,10 @@ static __attribute__((__unused__)) float __cuda_asinhf(float a)
     t = __int_as_float(__float_as_int(t) | (__float_as_int(a) & 0x80000000));
   }
   return t;
-
 }
 
 static __attribute__((__unused__)) float __cuda_atanhf(float a)
 {
-
-
-
   float fa, t;
 
   fa = __cuda_fabsf(a);
@@ -14677,7 +14037,6 @@ static __attribute__((__unused__)) float __cuda_atanhf(float a)
     t = __int_as_float(__float_as_int(t) | (__float_as_int(a) & 0x80000000));
   }
   return t;
-
 }
 
 static __attribute__((__unused__)) float __cuda_expm1f(float a)
@@ -14718,9 +14077,6 @@ static __attribute__((__unused__)) float __cuda_expm1f(float a)
 
 static __attribute__((__unused__)) float __cuda_hypotf(float a, float b)
 {
-
-
-
   float v, w, s, t, fa, fb;
 
   fa = __cuda_fabsf(a);
@@ -14744,14 +14100,10 @@ static __attribute__((__unused__)) float __cuda_hypotf(float a, float b)
     t = v + w;
   }
   return t;
-
 }
 
 static __attribute__((__unused__)) float __cuda_cbrtf(float a)
 {
-
-
-
   float s, t;
 
 
@@ -14767,7 +14119,6 @@ static __attribute__((__unused__)) float __cuda_cbrtf(float a)
   s = a + a;
   if (s == a) t = s;
   return t;
-
 }
 
 static __attribute__((__unused__)) float __cuda_rcbrtf(float a)
@@ -14904,7 +14255,7 @@ static __attribute__((__unused__)) float __cuda_erfcf(float a)
     float h;
     float l;
     float t;
-# 2560 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2494 "/usr/local/cuda/bin/../include/math_functions.h" 3
     t = __fdividef(1.0f, a);
 
     p = - 9.9910025099425892E-001f;
@@ -15008,9 +14359,6 @@ static __attribute__((__unused__)) float __cuda_lgammaf(float a)
 
 static __attribute__((__unused__)) float __cuda_ldexpf(float a, int b)
 {
-
-
-
   float fa = __cuda_fabsf(a);
 
   if ((fa == 0.0f) || (fa == __int_as_float(0x7f800000)) || (b == 0)) {
@@ -15026,24 +14374,16 @@ static __attribute__((__unused__)) float __cuda_ldexpf(float a, int b)
     float t = __cuda_exp2f((float)bquarter);
     return a * t * t * t * __cuda_exp2f((float)(b - 3 * bquarter));
   }
-
 }
 
 static __attribute__((__unused__)) float __cuda_scalbnf(float a, int b)
 {
 
-
-
-
   return __cuda_ldexpf(a, b);
-
 }
 
 static __attribute__((__unused__)) float __cuda_scalblnf(float a, long int b)
 {
-
-
-
   int t;
   if (b > 2147483647L) {
     t = 2147483647;
@@ -15053,7 +14393,6 @@ static __attribute__((__unused__)) float __cuda_scalblnf(float a, long int b)
     t = (int)b;
   }
   return __cuda_scalbnf(a, t);
-
 }
 
 static __attribute__((__unused__)) float __cuda_frexpf(float a, int *b)
@@ -15082,9 +14421,6 @@ static __attribute__((__unused__)) float __cuda_frexpf(float a, int *b)
 
 static __attribute__((__unused__)) float __cuda_modff(float a, float *b)
 {
-
-
-
   float t;
   if (__cuda___finitef(a)) {
     t = __cuda_truncf(a);
@@ -15099,14 +14435,10 @@ static __attribute__((__unused__)) float __cuda_modff(float a, float *b)
     *b = a + a;
     return a + a;
   }
-
 }
 
 static __attribute__((__unused__)) float __cuda_fmodf(float a, float b)
 {
-
-
-
   float orig_a = a;
   float orig_b = b;
   a = __cuda_fabsf(a);
@@ -15147,7 +14479,6 @@ static __attribute__((__unused__)) float __cuda_fmodf(float a, float b)
     if (!(a > 0.0f)) orig_a = orig_a + orig_a;
     return orig_a;
   }
-
 }
 
 static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
@@ -15176,7 +14507,7 @@ static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2842 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2756 "/usr/local/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot0 = 0;
       if (a >= scaled_b) {
@@ -15194,7 +14525,7 @@ static __attribute__((__unused__)) float __cuda_remainderf(float a, float b)
     a -= b;
     a = __int_as_float(__float_as_int(a) | 0x80000000);
   }
-# 2874 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2788 "/usr/local/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   return a;
@@ -15231,7 +14562,7 @@ static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* q
     if (scaled_b <= 0.5f * a) {
       scaled_b *= 2.0f;
     }
-# 2930 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2844 "/usr/local/cuda/bin/../include/math_functions.h" 3
     while (scaled_b >= b) {
       quot <<= 1;
       if (a >= scaled_b) {
@@ -15250,7 +14581,7 @@ static __attribute__((__unused__)) float __cuda_remquof(float a, float b, int* q
     a -= b;
     a = __int_as_float(__float_as_int(a) | 0x80000000);
   }
-# 2965 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 2879 "/usr/local/cuda/bin/../include/math_functions.h" 3
   a = __int_as_float((__float_as_int(orig_a) & 0x80000000)^
                      __float_as_int(a));
   quot = quot & (~((~0)<<3));
@@ -15340,8 +14671,6 @@ static __attribute__((__unused__)) double __cuda_powi(double a, int b)
 
 static __attribute__((__unused__)) float __cuda_powf(float a, float b)
 {
-
-
 
 
 
@@ -15480,16 +14809,12 @@ static __attribute__((__unused__)) float __cuda_tgammaf(float a)
 
 static __attribute__((__unused__)) float __cuda_roundf(float a)
 {
-
-
-
   float fa = __cuda_fabsf(a);
   float u = __int_as_float (0x3f000000 | (__float_as_int(a) & 0x80000000));
   u = __cuda_truncf (a + u);
   if (fa > 8388608.0f) u = a;
   if (fa < 0.5f) u = __cuda_truncf (a);
   return u;
-
 }
 
 static __attribute__((__unused__)) long long int __internal_llroundf_kernel(float a)
@@ -15519,11 +14844,7 @@ static __attribute__((__unused__)) long long int __internal_llroundf_kernel(floa
 
 static __attribute__((__unused__)) long long int __cuda_llroundf(float a)
 {
-
-
-
   return __internal_llroundf_kernel(a);
-
 }
 
 static __attribute__((__unused__)) long int __cuda_lroundf(float a)
@@ -15532,8 +14853,12 @@ static __attribute__((__unused__)) long int __cuda_lroundf(float a)
 
 
 
-  return (long int)__cuda_llroundf(a);
-# 3256 "/home/normal/cuda/bin/../include/math_functions.h" 3
+  if (__cuda___isnanf(a)) return 0L;
+  if (a >= 2147483648.0f) return 2147483647L;
+  if (a <= -2147483648.0f) return (-2147483647L - 1L);
+
+  return (long int)(__cuda_roundf(a));
+
 }
 
 static __attribute__((__unused__)) float __cuda_fdimf(float a, float b)
@@ -15573,9 +14898,6 @@ static __attribute__((__unused__)) int __cuda_ilogbf(float a)
 
 static __attribute__((__unused__)) float __cuda_logbf(float a)
 {
-
-
-
   unsigned int i;
   int expo;
   float fa, res;
@@ -15597,7 +14919,6 @@ static __attribute__((__unused__)) float __cuda_logbf(float a)
     }
   }
   return res;
-
 }
 
 static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, float *cptr)
@@ -15605,9 +14926,8 @@ static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, flo
 
 
 
-
-
-  float t, u, s, c;
+  float t, s, c;
+  volatile float t2, u2;
   int quadrant;
   t = __cuda_fabsf(a);
   if ((t == __int_as_float(0x7f800000)) || (t == 0.0f)) {
@@ -15618,14 +14938,14 @@ static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, flo
     return;
   }
   t = __internal_trig_reduction_kernel(a, &quadrant);
-  u = __internal_cos_kernel(t);
-  t = __internal_sin_kernel(t);
+  u2 = __internal_cos_kernel(t);
+  t2 = __internal_sin_kernel(t);
   if (quadrant & 1) {
-    s = u;
-    c = t;
+    s = u2;
+    c = t2;
   } else {
-    s = t;
-    c = u;
+    s = t2;
+    c = u2;
   }
   if (quadrant & 2) {
     s = -s;
@@ -15638,7 +14958,7 @@ static __attribute__((__unused__)) void __cuda_sincosf(float a, float *sptr, flo
   *cptr = c;
 
 }
-# 5005 "/home/normal/cuda/bin/../include/math_functions.h" 3
+# 4905 "/usr/local/cuda/bin/../include/math_functions.h" 3
 
 
 extern __attribute__((__weak__)) double rsqrt(double a); double rsqrt(double a)
@@ -15905,11 +15225,6 @@ extern __attribute__((__weak__)) float erfcinvf(float a); float erfcinvf(float a
 
 
 
-extern __attribute__((__weak__)) long long int llabs(long long int a); long long int llabs(long long int a)
-{
-  return a < 0ll ? -a : a;
-}
-
 extern __attribute__((__weak__)) int min(int a, int b); int min(int a, int b)
 {
   return a < b ? a : b;
@@ -15951,9 +15266,9 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 }
 
 
-# 5330 "/home/normal/cuda/bin/../include/math_functions.h" 3
-# 1 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
-# 45 "/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h" 3
+# 5225 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
+# 45 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 3
 static __attribute__((__unused__)) double __cuda_fabs(double a)
 {
   return (float)__cuda_fabsf((float)a);
@@ -16298,28 +15613,28 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 {
   return (double)__cuda_fmaf((float)a, (float)b, (float)c);
 }
-# 5331 "/home/normal/cuda/bin/../include/math_functions.h" 2 3
-# 94 "/home/normal/cuda/bin/../include/common_functions.h" 2
-# 280 "/home/normal/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 2
+# 5226 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 103 "/usr/local/cuda/bin/../include/common_functions.h" 2
+# 280 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
+# 3 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 2
 
 
 
 
 struct __T20 {int *__par0;int __dummy_field;};
-static void __sti____cudaRegisterAll_65_tmpxft_00005e55_00000000_4_worleyTestExternalSharedMemory_cpp1_ii_84db3c43(void) __attribute__((__constructor__));
-void __device_stub__Z6kernelPi(int *__par0){struct __T20 *__T21;
-*(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))kernel__entry)); (void)cudaLaunch(((char *)((void ( *)(int *))kernel__entry))); };}
-void kernel__entry( int *__cuda_0)
-# 29 "worleyTestExternalSharedMemory.cu"
+static void __sti____cudaRegisterAll_65_tmpxft_0000613c_00000000_4_worleyTestExternalSharedMemory_cpp1_ii_84db3c43(void) __attribute__((__constructor__));
+void __device_stub__Z6kernelPi(int *__par0){ struct __T20 *__T21;
+*(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))kernel)); (void)cudaLaunch(((char *)((void ( *)(int *))kernel))); };}
+void kernel( int *__cuda_0)
+# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.3/tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu"
 {__device_stub__Z6kernelPi( __cuda_0);
 
 
 
 }
-# 1 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c"
 
 
 
-static void __sti____cudaRegisterAll_65_tmpxft_00005e55_00000000_4_worleyTestExternalSharedMemory_cpp1_ii_84db3c43(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))kernel__entry), (char*)"_Z6kernelPi", "_Z6kernelPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterShared(__cudaFatCubinHandle, (void**)"s"); }
-# 1 "/tmp/tmpxft_00005e55_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_65_tmpxft_0000613c_00000000_4_worleyTestExternalSharedMemory_cpp1_ii_84db3c43(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))kernel), (char*)"_Z6kernelPi", "_Z6kernelPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterShared(__cudaFatCubinHandle, (void**)"s"); }
+# 1 "/tmp/tmpxft_0000613c_00000000-1_worleyTestExternalSharedMemory.cudafe1.stub.c" 2

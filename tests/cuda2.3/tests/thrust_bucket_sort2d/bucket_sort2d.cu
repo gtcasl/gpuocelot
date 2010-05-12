@@ -40,7 +40,7 @@ struct point_to_bucket_index : public thrust::unary_function<float2,unsigned int
 
 int main(void)
 {
-  const size_t N = 100000;
+  const size_t N = 10000;
 
   srand(0);
   // allocate some random points in the unit square on the host
@@ -52,7 +52,7 @@ int main(void)
 
   // allocate storage for a 2D grid
   // of dimensions w x h
-  unsigned int w = 200, h = 100;
+  unsigned int w = 20, h = 10;
 
   // the grid data structure keeps a range per grid bucket:
   // each bucket_begin[i] indexes the first element of bucket i's list of points

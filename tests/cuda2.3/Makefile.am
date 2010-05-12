@@ -24,10 +24,10 @@ check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
 	TestThrustBucketSort2D TestThrustConstantIterator \
 	TestThrustCountingIterator TestThrustZipDot TestThrustFillCopy \
 	TestThrustHistogram TestThrustMaxAbsDiff TestThrustMinMax TestThrustMode \
-	TestThrustMonteCarlo TestThrustNorm TestThrustPaddedGridReduction \
-	TestThrustRunLengthEncoding TestThrustSaxpy TestThrustSegmentedScan \
+	TestThrustNorm TestThrustPaddedGridReduction \
+	TestThrustSaxpy TestThrustSegmentedScan \
 	TestThrustSort TestThrustAOSSorting TestThrustStreamCompact \
-	TestThrustSum TestThrustSummedArea TestThrustSumRows \
+	TestThrustSum \
 	TestThrustTransformIterator TestThrustWrapPointer TestThrustUnwrapPointer \
 	vectorAdd
 	
@@ -240,15 +240,6 @@ TestThrustMode_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-## TestThrustMonteCarlo
-TestThrustMonteCarlo_CXXFLAGS = $(CUDA_CFLAGS)
-TestThrustMonteCarlo_SOURCES = \
-	tests/thrust_monte_carlo/monte_carlo.cu.cpp
-TestThrustMonteCarlo_LDADD = $(OCELOT_LIBS)
-TestThrustMonteCarlo_LDFLAGS = -static
-################################################################################
-
-################################################################################
 ## TestThrustNorm
 TestThrustNorm_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustNorm_SOURCES = \
@@ -264,15 +255,6 @@ TestThrustPaddedGridReduction_SOURCES = \
 	tests/thrust_padded_grid_reduction/padded_grid_reduction.cu.cpp
 TestThrustPaddedGridReduction_LDADD = $(OCELOT_LIBS)
 TestThrustPaddedGridReduction_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## TestThrustRunLengthEncoding
-TestThrustRunLengthEncoding_CXXFLAGS = $(CUDA_CFLAGS)
-TestThrustRunLengthEncoding_SOURCES = \
-	tests/thrust_run_length_encoding/run_length_encoding.cu.cpp
-TestThrustRunLengthEncoding_LDADD = $(OCELOT_LIBS)
-TestThrustRunLengthEncoding_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -327,24 +309,6 @@ TestThrustSum_SOURCES = \
 	tests/thrust_sum/sum.cu.cpp
 TestThrustSum_LDADD = $(OCELOT_LIBS)
 TestThrustSum_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## TestThrustSummedArea
-TestThrustSummedArea_CXXFLAGS = $(CUDA_CFLAGS)
-TestThrustSummedArea_SOURCES = \
-	tests/thrust_summed_area_table/summed_area_table.cu.cpp
-TestThrustSummedArea_LDADD = $(OCELOT_LIBS)
-TestThrustSummedArea_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## TestThrustSumRows
-TestThrustSumRows_CXXFLAGS = $(CUDA_CFLAGS)
-TestThrustSumRows_SOURCES = \
-	tests/thrust_sum_rows/sum_rows.cu.cpp
-TestThrustSumRows_LDADD = $(OCELOT_LIBS)
-TestThrustSumRows_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

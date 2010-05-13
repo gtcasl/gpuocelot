@@ -18,9 +18,9 @@
 	#undef REPORT_BASE
 	#endif
 
-	#define REPORT_BASE 0
+	#define REPORT_BASE 1
 
-	namespace ptx1_4
+	namespace ptx
 	{
 	
 	int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer );
@@ -46,9 +46,8 @@
 %lex-param {parser::PTXLexer& lexer}
 %pure-parser
 
-%token<text> TOKEN_SPECIAL_REGISTER TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
+%token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
 %token<text> TOKEN_INV_PREDICATE_IDENTIFIER TOKEN_PREDICATE_IDENTIFIER
-%token<text> TOKEN_CLOCK
 
 %token<text> OPCODE_COS OPCODE_SQRT OPCODE_ADD OPCODE_RSQRT OPCODE_ADDC
 %token<text> OPCODE_MUL OPCODE_SAD OPCODE_SUB OPCODE_EX2 OPCODE_LG2
@@ -75,8 +74,8 @@
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
-%token<value> TOKEN_REG
-%token<value> TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA TOKEN_GL
+%token<value> TOKEN_REG TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA
+%token<value> TOKEN_GL TOKEN_SYS
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
 %token<value> TOKEN_U16 TOKEN_U64 TOKEN_B8 TOKEN_B16 TOKEN_B32 TOKEN_B64 
@@ -100,6 +99,20 @@
 %token<value> TOKEN_EXCH
 
 %token<value> TOKEN_1D TOKEN_2D TOKEN_3D
+
+%token<value> TOKEN_CA TOKEN_WB TOKEN_CG TOKEN_CS TOKEN_LU TOKEN_CV TOKEN_WT
+
+%token<value> TOKEN_L1 TOKEN_L2
+
+%token<value> TOKEN_WIDTH TOKEN_DEPTH TOKEN_HEIGHT TOKEN_NORMALIZED_COORDS
+%token<value> TOKEN_FILTER_MODE TOKEN_ADDR_MODE_0 TOKEN_ADDR_MODE_1
+%token<value> TOKEN_ADDR_MODE_2
+
+%token<value> TOKEN_TRAP TOKEN_CLAMP TOKEN_ZERO
+
+%token<value> TOKEN_ARRIVE TOKEN_RED TOKEN_POPC
+
+%token<value> TOKEN_BALLOT
 
 %token<value> TOKEN_DECIMAL_CONSTANT
 
@@ -501,16 +514,6 @@ baseOperand : TOKEN_DOUBLE_CONSTANT
 baseOperand : TOKEN_SINGLE_CONSTANT
 {
 	state.baseOperand( $<singleFloat>1 );
-};
-
-baseOperand : TOKEN_CLOCK
-{
-	state.clockOperand( $<text>1 );
-};
-
-baseOperand : TOKEN_SPECIAL_REGISTER
-{
-	state.specialOperand( $<text>1 );
 };
 
 addressableOperand : identifier

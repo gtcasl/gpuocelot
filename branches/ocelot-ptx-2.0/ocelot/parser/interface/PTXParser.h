@@ -39,6 +39,7 @@ namespace parser
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::deque< std::string > StringList;
+					typedef std::deque< unsigned int > UintStack;
 					typedef std::deque< unsigned int > DimensionVector;
 					typedef std::deque< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
@@ -62,7 +63,7 @@ namespace parser
 						InvalidArray,
 						NotPredicate,
 						NotSupported,
-						NotVersion1_4,
+						NotVersion2_0,
 						Invalid
 					};
 			
@@ -78,6 +79,7 @@ namespace parser
 					StringList identifiers;
 					OperandMap operands;
 					StringList localOperands;
+					UintStack localOperandCount;
 					
 					bool inEntry;
 					
@@ -155,8 +157,6 @@ namespace parser
 					void baseOperand( unsigned long long int value );
 					void baseOperand( float value );
 					void baseOperand( double value );
-					void clockOperand( const std::string& value );
-					void specialOperand( const std::string& value );
 					void addressableOperand( const std::string& name, 
 						long long int value, YYLTYPE& location, 
 						bool invert );

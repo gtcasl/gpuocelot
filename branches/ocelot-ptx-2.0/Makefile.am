@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale
+	TestCalVectorScale TestPTXAssembly
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
@@ -71,15 +71,11 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/ILKernel.cpp \
 	ocelot/ir/implementation/ILStatement.cpp \
 	hydrazine/implementation/Exception.cpp \
-	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \
 	hydrazine/implementation/LowLevelTimer.cpp \
 	hydrazine/implementation/ArgumentParser.cpp \
-	hydrazine/implementation/XmlParser.cpp \
 	hydrazine/implementation/math.cpp \
 	hydrazine/implementation/debug.cpp \
-	hydrazine/implementation/XmlArgumentParser.cpp \
-	hydrazine/implementation/XmlTree.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
 	hydrazine/interface/Configurable.cpp \
@@ -368,6 +364,16 @@ TestDeviceSwitching_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## TestPTXAssembly
+TestPTXAssembly_CXXFLAGS = $(INCLUDE) -Wall -ansi \
+	-pedantic -Werror -std=c++0x
+TestPTXAssembly_SOURCES = ocelot/ir/test/TestPTXAssembly.cpp
+TestPTXAssembly_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestPTXAssembly_LDFLAGS = -static
+################################################################################
+
+
+################################################################################
 ##
 ##
 TestCalVectorScale_CXXFLAGS = $(SDK_CFLAGS)
@@ -462,6 +468,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/Texture.h \
 	ocelot/ir/test/TestLLVMInstructions.h \
 	ocelot/ir/test/SamplePTX.h \
+	ocelot/ir/test/TestPTXAssembly.h \
 	ocelot/ir/interface/ILInstruction.h \
 	ocelot/ir/interface/ILStatement.h \
 	ocelot/ir/interface/ILKernel.h \
@@ -475,15 +482,11 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	ocelot/util/interface/OcelotConfig.h \
 	hydrazine/implementation/Exception.h \
-	hydrazine/implementation/XmlLexer.h \
 	hydrazine/implementation/Timer.h \
 	hydrazine/implementation/LowLevelTimer.h \
 	hydrazine/implementation/ArgumentParser.h \
-	hydrazine/implementation/XmlParser.h \
 	hydrazine/implementation/math.h \
 	hydrazine/implementation/debug.h \
-	hydrazine/implementation/XmlArgumentParser.h \
-	hydrazine/implementation/XmlTree.h \
 	hydrazine/implementation/string.h \
 	hydrazine/implementation/macros.h \
 	hydrazine/implementation/json.h \

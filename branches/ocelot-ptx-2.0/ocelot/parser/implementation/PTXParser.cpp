@@ -29,7 +29,7 @@
 #define REPORT_BASE 0
 
 /*! \brief A namespace for parsing PTX 1.4 */
-namespace ptx1_4
+namespace ptx
 { 
 	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );
 }
@@ -159,20 +159,12 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-		if( statement.minor == 0 && statement.major == 2 )
-		{
-			std::cerr << "==Ocelot== Warning: Support for PTX 2.0" 
-				<< " is currently experimental. " << std::endl 
-				<< "==Ocelot==  for PTX module - " << fileName << std::endl
-				<< "==Ocelot== Please report all errors to " 
-				<< "'http://groups.google.com/group/gpuocelot'" << std::endl;
-		}
-		else if( statement.minor != 4 || statement.major != 1 )
+		if( statement.minor != 0 || statement.major != 2 )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Cannot parse PTX version " << statement.major 
-				<< "." << statement.minor << " with version 1.4 parser.", 
-				NotVersion1_4 );
+				<< "." << statement.minor << " with version 2.0 parser.", 
+				NotVersion2_0 );
 		}
 	}
 	
@@ -775,26 +767,6 @@ namespace parser
 		operandVector.push_back( operand );
 	}
 	
-	void PTXParser::State::clockOperand( const std::string& value )
-	{
-		operand.addressMode = ir::PTXOperand::Special;
-		operand.identifier = value;
-		operand.type = ir::PTXOperand::u32;
-		operand.special = parser::PTXParser::stringToSpecial( value );
-		operand.vec = ir::PTXOperand::v1;
-		operandVector.push_back( operand );	
-	}
-	
-	void PTXParser::State::specialOperand( const std::string& value )
-	{
-		operand.addressMode = ir::PTXOperand::Special;
-		operand.identifier = value;
-		operand.type = ir::PTXOperand::b16;
-		operand.special = parser::PTXParser::stringToSpecial( value );
-		operand.vec = ir::PTXOperand::v1;
-		operandVector.push_back( operand );	
-	}
-	
 	void PTXParser::State::addressableOperand( const std::string& name, 
 		long long int value, YYLTYPE& location, bool invert )
 	{
@@ -1282,6 +1254,7 @@ namespace parser
 		state.identifiers.clear();
 		state.operands.clear();
 		state.localOperands.clear();
+		state.localOperandCount.clear();
 		state.operandVector.clear();
 		state.module.statements.clear();
 		state.module.kernels.clear();
@@ -1414,108 +1387,6 @@ namespace parser
 		return ir::PTXInstruction::Nop;
 	}
 
-	ir::PTXOperand::SpecialRegister 
-		PTXParser::stringToSpecial( std::string reg )
-	{
-		if( reg == "%ctaid.x" )
-		{
-			return ir::PTXOperand::ctaIdX;
-		}
-		if( reg == "%ctaid.y" )
-		{
-			return ir::PTXOperand::ctaIdY;
-		}
-		if( reg == "%ctaid.z" )
-		{
-			return ir::PTXOperand::ctaIdZ;
-		}
-		if( reg == "%nctaid.x" )
-		{
-			return ir::PTXOperand::nctaIdX;
-		}
-		if( reg == "%nctaid.y" )
-		{
-			return ir::PTXOperand::nctaIdY;
-		}
-		if( reg == "%nctaid.z" )
-		{
-			return ir::PTXOperand::nctaIdZ;
-		}
-		if( reg == "%tid.x" )
-		{
-			return ir::PTXOperand::tidX;
-		}
-		if( reg == "%tid.y" )
-		{
-			return ir::PTXOperand::tidY;
-		}
-		if( reg == "%tid.z" )
-		{
-			return ir::PTXOperand::tidZ;
-		}
-		if( reg == "%ntid.x" )
-		{
-			return ir::PTXOperand::ntidX;
-		}
-		if( reg == "%ntid.y" )
-		{
-			return ir::PTXOperand::ntidY;
-		}
-		if( reg == "%ntid.z" )
-		{
-			return ir::PTXOperand::ntidZ;
-		}
-		if( reg == "%gridid" )
-		{
-			return ir::PTXOperand::gridId;
-		}
-		if( reg == "%warpid" )
-		{
-			return ir::PTXOperand::warpId;
-		}
-		if( reg == "WARP_SZ" )
-		{
-			return ir::PTXOperand::warpSize;
-		}
-		if( reg == "%laneid" )
-		{
-			return ir::PTXOperand::laneId;
-		}
-		if( reg == "%nsmId" )
-		{
-			return ir::PTXOperand::nsmId;
-		}
-		if( reg == "%smId" )
-		{
-			return ir::PTXOperand::smId;
-		}
-		if( reg == "%clock" )
-		{
-			return ir::PTXOperand::clock;
-		}
-		if( reg == "%pm0" )
-		{
-			return ir::PTXOperand::pm0;
-		}
-		if( reg == "%pm1" )
-		{
-			return ir::PTXOperand::pm1;
-		}
-		if( reg == "%pm2" )
-		{
-			return ir::PTXOperand::pm2;
-		}
-		if( reg == "%pm3" )
-		{
-			return ir::PTXOperand::pm3;
-		}
-		if( reg == "WARP_SZ" )
-		{
-			return ir::PTXOperand::pm3;
-		}
-		
-		return ir::PTXOperand::SpecialRegister_invalid;
-	}
 	
 	ir::PTXInstruction::Modifier PTXParser::tokenToModifier( int token )
 	{
@@ -1727,7 +1598,7 @@ namespace parser
 		
 		try 
 		{
-			ptx1_4::yyparse( lexer, state );
+			ptx::yyparse( lexer, state );
 			assert( temp.str().empty() );
 		
 			checkLabels();

@@ -30,8 +30,6 @@
 	
 %}
 
-SPECIAL_REGISTER ("%ctaid."[xyz]|"%ntid."[xyz]|"%gridid"|"%nctaid."[xyz]|"%tid."[xyz]|"%laneid"|"%warpid"|"%simd"|"%nsimd"|"%pm"[1234]|"WARP_SZ")
-
 BIT [01]
 NON_ZERO_DIGIT [1-9]
 BINARY_CONSTANT (0[bB][{BIT}]+)
@@ -256,10 +254,9 @@ WHITESPACE [ \t]*
 
 ".surf"                         { yylval->value = TOKEN_SURF; \
                                     return TOKEN_SURF; }
-".cta"                          { yylval->value = TOKEN_CTA; 
-                                    return TOKEN_CTA; }
-".gl"                           { yylval->value = TOKEN_GL; 
-                                    return TOKEN_GL; }
+".cta"                          { yylval->value = TOKEN_CTA; return TOKEN_CTA; }
+".gl"                           { yylval->value = TOKEN_GL; return TOKEN_GL; }
+".sys"                          { yylval->value = TOKEN_SYS; return TOKEN_SYS; }
 
 "sm_10"                         { yylval->value = TOKEN_SM10; 
                                     return TOKEN_SM10; }
@@ -359,6 +356,51 @@ WHITESPACE [ \t]*
 ".2d"                           { yylval->value = TOKEN_2D; return TOKEN_2D; }
 ".3d"                           { yylval->value = TOKEN_3D; return TOKEN_3D; }
 
+".ca"                           { yylval->value = TOKEN_CA; return TOKEN_CA; }
+".wb"                           { yylval->value = TOKEN_WB; return TOKEN_WB; }
+".cg"                           { yylval->value = TOKEN_CG; return TOKEN_CG; }
+".cs"                           { yylval->value = TOKEN_CS; return TOKEN_CS; }
+".lu"                           { yylval->value = TOKEN_LU; return TOKEN_LU; }
+".cv"                           { yylval->value = TOKEN_CV; return TOKEN_CV; }
+".wt"                           { yylval->value = TOKEN_WT; return TOKEN_WT; }
+
+".L1"                           { yylval->value = TOKEN_L1; return TOKEN_L1; }
+".L2"                           { yylval->value = TOKEN_L2; return TOKEN_L2; }
+
+".width"                        { yylval->value = TOKEN_WIDTH; \
+                                    return TOKEN_WIDTH; }
+".height"                       { yylval->value = TOKEN_HEIGHT; \
+                                    return TOKEN_HEIGHT; }
+".depth"                        { yylval->value = TOKEN_DEPTH; \
+                                    return TOKEN_DEPTH; }
+".normalized_coords"            { yylval->value = TOKEN_NORMALIZED_COORDS; \
+                                    return TOKEN_NORMALIZED_COORDS; }
+".filter_mode"                  { yylval->value = TOKEN_FILTER_MODE; \
+                                    return TOKEN_FILTER_MODE; }
+".addr_mode_0"                  { yylval->value = TOKEN_ADDR_MODE_0; \
+                                    return TOKEN_ADDR_MODE_0; }
+".addr_mode_1"                  { yylval->value = TOKEN_ADDR_MODE_1; \
+                                    return TOKEN_ADDR_MODE_1; }
+".addr_mode_2"                  { yylval->value = TOKEN_ADDR_MODE_2; \
+                                    return TOKEN_ADDR_MODE_2; }
+
+".trap"                         { yylval->value = TOKEN_TRAP; \
+                                    return TOKEN_TRAP; }
+".clamp"                        { yylval->value = TOKEN_CLAMP; \
+                                    return TOKEN_CLAMP; }
+".zero"                         { yylval->value = TOKEN_ZERO; \
+                                    return TOKEN_ZERO; }
+
+".arrive"                       { yylval->value = TOKEN_ARRIVE; \
+                                    return TOKEN_ARRIVE; }
+".red"                          { yylval->value = TOKEN_RED; \
+                                    return TOKEN_RED; }
+".popc"                         { yylval->value = TOKEN_POPC; \
+                                    return TOKEN_POPC; }
+
+".ballot"                       { yylval->value = TOKEN_BALLOT; \
+                                    return TOKEN_BALLOT; }
+                                    
 {DECIMAL_CONSTANT}              { std::stringstream stream; stream << yytext; \
                                     stream >> yylval->value; \
                                     return TOKEN_DECIMAL_CONSTANT; }
@@ -399,10 +441,6 @@ WHITESPACE [ \t]*
                                     stream >> yylval->doubleFloat; \
                                     return TOKEN_DOUBLE_CONSTANT; }
 
-{SPECIAL_REGISTER}              { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return TOKEN_SPECIAL_REGISTER; }
-"%clock"                        { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return TOKEN_CLOCK; }
 {IDENTIFIER}":"                 { strlcpy( yylval->text, yytext, \
                                     MIN( strlen( yytext ), 1024 ) ); \
                                     return TOKEN_LABEL; }
@@ -466,30 +504,7 @@ int yywrap()
 
 long long unsigned int binaryToUint( const std::string& string )
 {
-
-	long long unsigned int result = 0;
-	assert( string.size() > 2 );
-	
-	std::string::const_iterator ci = string.begin();
-	assert( *ci == '0' );
-	++ci;
-	assert( *ci == 'b' );
-	++ci;
-	
-	long long unsigned int mask = 1;
-	
-	for( ; ci != string.end(); ++ci )
-	{
-	
-		assert( *ci == '0' || *ci == '1' );
-	
-		result |= mask & ( *ci == '1' );
-		mask <<= 1;
-	
-	}
-	
-	return result;
-
+	return hydrazine::binaryToUint( string );
 }
 
 void strlcpy( char* destination, const char* source, unsigned int max )

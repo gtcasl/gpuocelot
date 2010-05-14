@@ -17,7 +17,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace ir
 {
@@ -82,6 +82,7 @@ namespace ir
 			{
 				if( encountered.insert( phi->d.id ).second )
 				{
+					report( "  Added r" << phi->d.id );
 					regs.push_back( phi->d );
 				}
 			}
@@ -100,6 +101,7 @@ namespace ir
 				{
 					if( encountered.insert( *d->pointer ).second )
 					{
+						report( "   Added r" << *d->pointer );
 						analysis::DataflowGraph::Register live_reg(*d->pointer, 
 							static_cast<PTXInstruction*>(
 							instruction->i)->d.type);

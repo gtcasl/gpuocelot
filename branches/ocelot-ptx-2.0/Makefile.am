@@ -70,6 +70,7 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/ILInstruction.cpp \
 	ocelot/ir/implementation/ILKernel.cpp \
 	ocelot/ir/implementation/ILStatement.cpp \
+	ocelot/ir/implementation/ILOperand.cpp \
 	hydrazine/implementation/Exception.cpp \
 	hydrazine/implementation/Timer.cpp \
 	hydrazine/implementation/LowLevelTimer.cpp \
@@ -105,6 +106,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
 	ocelot/executive/implementation/NVIDIAExecutableKernel.cpp \
+	ocelot/executive/implementation/ATIExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
@@ -400,6 +402,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/CTAContext.h \
 	ocelot/executive/interface/ExternalKernel.h \
 	ocelot/executive/interface/NVIDIAExecutableKernel.h \
+	ocelot/executive/interface/ATIExecutableKernel.h \
 	ocelot/executive/interface/LLVMContext.h \
 	ocelot/executive/interface/LLVMExecutableKernel.h \
 	ocelot/executive/interface/TextureOperations.h \

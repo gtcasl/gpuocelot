@@ -135,6 +135,7 @@ namespace analysis
 			delete *pass;
 		}
 
+		report(" Converting out of SSA form.");
 		for( ir::Module::KernelMap::iterator kernel = module.kernels.begin(); 
 			kernel != module.kernels.end(); ++kernel )
 		{
@@ -174,7 +175,7 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;
 		}
-		else
+		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
 				<< "'\n";

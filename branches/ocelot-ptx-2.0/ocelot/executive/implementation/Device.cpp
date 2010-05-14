@@ -146,8 +146,8 @@ std::string executive::Device::nearbyAllocationsToString(void* pointer) const {
 		allocation != allocations.end(); ++allocation)
 	{
 		result << "[" << (*allocation)->pointer() << "] - [" 
-			<< ((char*)(*allocation)->pointer() + (*allocation)->size()) 
-			<< "]\n";
+			<< (void*)((char*)(*allocation)->pointer() + (*allocation)->size()) 
+			<< "] (" << (*allocation)->size() << " bytes)\n";
 	}
 	
 	return result.str();

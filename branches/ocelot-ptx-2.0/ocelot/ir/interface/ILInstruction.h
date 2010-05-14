@@ -9,6 +9,7 @@
 
 // Ocelot includes
 #include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/interface/ILOperand.h>
 
 namespace ir
 {
@@ -19,22 +20,17 @@ namespace ir
 			/*! \brief The opcode of the instruction */
 			enum Opcode
 			{
+				Add,
+				End,
+				EndIf,
+				Iadd,
+				IfLogicalZ,
+				Ige,
+				Imul,
 				Mov,
+				Uav_Raw_Load_Id,
+				Uav_Raw_Store_Id,
 				InvalidOpcode
-			};
-
-			/*! \brief A class for a basic IL Operand */
-			class Operand
-			{
-				public:
-					/*! \brief The name of the operand */
-					std::string name;
-
-					/*! \brief Default constructor */
-					Operand();
-
-					/*! \brief Return a parsable representation of the Operand */
-					std::string toString() const;
 			};
 
 			/*! \brief The opcode of the instruction */
@@ -58,15 +54,15 @@ namespace ir
 	{
 		public:
 			/*! \brief The destination operand */
-			Operand d;
+			ILOperand d;
 			
 			/*! \brief The source operand */
-			Operand a;
+			ILOperand a;
 	
 			/*! \brief Default constructor */
 			ILUnaryInstruction(Opcode op = InvalidOpcode,
-					const Operand &d = Operand(), 
-					const Operand &a = Operand());
+					const ILOperand &d = ILOperand(), 
+					const ILOperand &a = ILOperand());
 			
 			virtual std::string toString() const;
 			virtual std::string valid() const;
@@ -79,24 +75,96 @@ namespace ir
 	{
 		public:
 			/*! \brief The destination operand */
-			Operand d;
+			ILOperand d;
 			
 			/*! \brief The first source operand */
-			Operand a;
+			ILOperand a;
 
 			/*! \brief The second source operand */
-			Operand b;
+			ILOperand b;
 
 			/*! \brief Default constructor */
 			ILBinaryInstruction(Opcode op = InvalidOpcode,
-					const Operand &_d = Operand(), 
-					const Operand &_a = Operand(), 
-					const Operand &_b = Operand());
+					const ILOperand &_d = ILOperand(), 
+					const ILOperand &_a = ILOperand(), 
+					const ILOperand &_b = ILOperand());
 			
 			virtual std::string toString() const;
 			virtual std::string valid() const;
 
 			virtual Instruction* clone(bool copy=true) const = 0;
+	};
+
+	class ILAdd : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILAdd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILEnd : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILEnd();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILEndIf : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILEndIf();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIadd : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIadd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIfLogicalZ : public ILInstruction
+	{
+		public:
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief Default constructor */
+			ILIfLogicalZ();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIge : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIge();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILImul : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILImul();
+
+			Instruction *clone(bool copy=true) const;
 	};
 
 	class ILMov : public ILUnaryInstruction
@@ -107,6 +175,25 @@ namespace ir
 
 			Instruction *clone(bool copy=true) const;
 	};
+
+	class ILUav_Raw_Load_Id : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUav_Raw_Load_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Raw_Store_Id : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUav_Raw_Store_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 }
 
 #endif

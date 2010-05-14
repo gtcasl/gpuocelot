@@ -9,6 +9,7 @@
 
 //C++ standard library includes
 #include <string>
+#include <map>
 
 //Ocelot includes
 #include <ocelot/ir/interface/Module.h>
@@ -23,12 +24,40 @@ namespace translator
 			/*! \brief Translate a module from PTX to IL */
 			std::string translate(const ir::Module *module);
 
+			/*! \brief Default constructor */
+			PTXToILTranslator();
+
 		private:
+			typedef std::map<std::string, std::string> RegisterMap;
+			typedef std::map<long long unsigned int, std::string> LiteralMap;
+
 			ir::ILKernel *_ilKernel;
+			RegisterMap registerMap;
+			LiteralMap literalMap;
+
+			unsigned int literals;
+			unsigned int registers;
+
+			void _addKernelPrefix();
 
 			void _translate(const ir::PTXInstruction &i);
-			void _translateCvt(const ir::PTXInstruction &i);
+			ir::ILOperand _translate(const ir::PTXOperand &o);
+			ir::ILOperand::SpecialRegister _translate(
+					const ir::PTXOperand::SpecialRegister &s);
 
+			void _translateAdd(const ir::PTXInstruction &i);
+			void _translateBra(const ir::PTXInstruction &i);
+			void _translateCvt(const ir::PTXInstruction &i);
+			void _translateExit(const ir::PTXInstruction &i);
+			void _translateLd(const ir::PTXInstruction &i);
+			void _translateMov(const ir::PTXInstruction &i);
+			void _translateMul(const ir::PTXInstruction &i);
+			void _translateSetP(const ir::PTXInstruction &i);
+			void _translateSt(const ir::PTXInstruction &i);
+
+			std::string _translateRegister(const std::string &ident);
+			std::string _translateLiteral(long long unsigned int l);
+			std::string _translateConstantBuffer(const std::string &ident);
 			void _add(const ir::ILInstruction &i);
 	};
 }

@@ -9,10 +9,10 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
+#include <ocelot/executive/interface/ATIExecutableKernel.h>
 #include <ocelot/translator/interface/PTXToILTranslator.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -30,8 +30,6 @@
 
 namespace executive
 {
-	const ATIGPUDevice::CALdeviceptr ATIGPUDevice::Uav0BaseAddr = 0x1000;
-
     ATIGPUDevice::ATIGPUDevice() 
 		: 
 			_uav0Allocations(),
@@ -42,16 +40,28 @@ namespace executive
 			_cb0Resource(0),
 			_cb0Mem(0),
 			_cb0Name(0),
+			_cb1Resource(0),
+			_cb1Mem(0),
+			_cb1Name(0),
 			_device(0), 
 			_info(),
+			_status(),
+			_attribs(),
 			_context(0), 
 			_object(0), 
 			_image(0), 
 			_module(0), 
+			_ir(0),
 			_selected(false)
     {
 		CalDriver()->calDeviceOpen(&_device, 0);
 		CalDriver()->calDeviceGetInfo(&_info, 0);
+
+		_attribs.struct_size = sizeof(CALdeviceattribs);
+		CalDriver()->calDeviceGetAttribs(&_attribs, 0);
+
+		_status.struct_size = sizeof(CALdevicestatus);
+		CalDriver()->calDeviceGetStatus(&_status, _device);
 
 		_properties.name = "CAL Device";
 
@@ -60,7 +70,8 @@ namespace executive
 		CalDriver()->calCtxCreate(&_context, _device);
 
 		// Allocate uav0 resource
-		CALuint width = _info.maxResource1DWidth;
+		// TODO Define max resource allocation size
+		CALuint width = 150000;
 		CALuint flags = CAL_RESALLOC_GLOBAL_BUFFER;
 		CalDriver()->calResAllocLocal1D(
 				&_uav0Resource, 
@@ -76,15 +87,12 @@ namespace executive
 					_uav0Resource);
 
 		// Allocate cb0 resource
-		const CALuint deviceCount = 1;
-		width = _info.maxResource1DWidth;
 		flags = 0;
-		CalDriver()->calResAllocRemote1D(
+		CalDriver()->calResAllocLocal1D(
 				&_cb0Resource, 
-				&_device, 
-				deviceCount,
-				width,
-				CAL_FORMAT_INT_1,
+				_device, 
+				cbMaxSize,
+				CAL_FORMAT_INT_4,
 				flags);
 
 		// Get cb0 memory handle
@@ -93,15 +101,32 @@ namespace executive
 					_context,
 					_cb0Resource);
 
+		// Allocate cb1 resource
+		flags = 0;
+		CalDriver()->calResAllocLocal1D(
+				&_cb1Resource, 
+				_device, 
+				cbMaxSize,
+				CAL_FORMAT_INT_1,
+				flags);
+
+		// Get cb1 memory handle
+		CalDriver()->calCtxGetMem(
+					&_cb1Mem,
+					_context,
+					_cb1Resource);
+
     }
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
 		CalDriver()->calCtxReleaseMem(_context, _uav0Mem);
 		CalDriver()->calCtxReleaseMem(_context, _cb0Mem);
+		CalDriver()->calCtxReleaseMem(_context, _cb1Mem);
 
 		CalDriver()->calResFree(_uav0Resource);
 		CalDriver()->calResFree(_cb0Resource);
+		CalDriver()->calResFree(_cb1Resource);
 
         CalDriver()->calCtxDestroy(_context);
         CalDriver()->calDeviceClose(_device);
@@ -143,6 +168,10 @@ namespace executive
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {
+		assertM(_module == 0, "Multiple modules not supported yet");
+
+		_ir = irModule;
+
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;
 
@@ -182,6 +211,19 @@ namespace executive
 					_context,
 					_cb0Name,
 					_cb0Mem);
+
+		// Get cb1 name
+		CalDriver()->calModuleGetName(
+					&_cb1Name, 
+					_context, 
+					_module,
+					"cb1");
+
+		// Bind cb1 memory handle to module name
+		CalDriver()->calCtxSetMem(
+					_context,
+					_cb1Name,
+					_cb1Mem);
     }
 
     void ATIGPUDevice::unload(const std::string& name)
@@ -242,6 +284,7 @@ namespace executive
 
 	Device::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
 	{
+		// TODO Check uav0 size limits
 		MemoryAllocation *allocation = 
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
 		_uav0Allocations.insert(
@@ -399,24 +442,6 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::_updateParameterMemory(const void *parameterBlock)
-	{
-		cb0Array cb0;
-		CALuint pitch = 0;
-		CALuint flags = 0;
-
-		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, _cb0Resource, flags);
-
-		// Support only for (int *, int *) for now
-		CALdeviceptr dptr;
-		hydrazine::bit_cast(dptr, ((int **)parameterBlock)[0]);
-		(*cb0)[0][0] = dptr - Uav0BaseAddr; 
-		hydrazine::bit_cast(dptr, ((int **)parameterBlock)[1]);
-		(*cb0)[1][0] = dptr - Uav0BaseAddr; 
-
-		CalDriver()->calResUnmap(_cb0Resource);
-	}
-
 	void ATIGPUDevice::launch(
 			const std::string& moduleName,
 			const std::string& kernelName, 
@@ -427,7 +452,14 @@ namespace executive
 			size_t parameterBlockSize, 
 			const trace::TraceGeneratorVector& traceGenerators)
 	{
-		_updateParameterMemory(parameterBlock);
+		assertM(_ir->kernels.size() == 1, "Multiple kernels not supported yet");
+		ATIExecutableKernel kernel(*_ir->kernels.begin()->second, 
+				&_cb0Resource, &_cb1Resource);
+
+		kernel.setKernelShape(block.x, block.y, block.z);
+		kernel.setParameterBlock((const unsigned char *)parameterBlock,
+				parameterBlockSize);
+		kernel.updateParameterMemory();
 
 		// Get module entry
 		CALfunc func = 0;
@@ -534,6 +566,12 @@ namespace executive
 		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
 		std::memcpy((char *)data + addr, host, size);
 
+		report("MemoryAllocation::copy("
+				<< "offset = " << std::dec << offset
+				<< ", host = " << std::hex << std::showbase << host
+				<< ", size = " << std::dec << size
+				<< ")");
+		
 		CalDriver()->calResUnmap(*_resource);
 	}
 
@@ -555,7 +593,7 @@ namespace executive
 		report("MemoryAllocation::copy("
 				<< "host = " << std::hex << std::showbase << host
 				<< ", offset = " << std::dec << offset
-				<< ", size = " << size
+				<< ", size = " << std::dec << size
 				<< ")");
 		
 		CalDriver()->calResUnmap(*_resource);
@@ -572,6 +610,4 @@ namespace executive
 	{
 		assertM(false, "Not implemented yet");
 	}
-
-
 }

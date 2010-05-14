@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 #include <ocelot/ir/interface/Instruction.h>
 
 namespace ir {
@@ -121,6 +122,7 @@ namespace ir {
 		static std::string toString( DataType );
 		static std::string toString( SpecialRegister );
 		static std::string toString( AddressMode );
+		static std::string toString( DataType, RegisterType );
 		static bool isFloat( DataType );
 		static bool isInt( DataType );
 		static bool isSigned( DataType );
@@ -171,6 +173,14 @@ namespace ir {
 		
 	};
 
+}
+
+namespace std {
+	template<> inline size_t hash<ir::PTXOperand::DataType>::operator()( 
+		ir::PTXOperand::DataType t) const
+	{
+		return (size_t)t;
+	}
 }
 
 #endif

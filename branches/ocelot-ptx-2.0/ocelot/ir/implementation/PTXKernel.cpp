@@ -65,27 +65,18 @@ namespace ir
 
 		typedef std::unordered_set< analysis::DataflowGraph::RegisterId > 
 			RegisterSet;
-		typedef std::unordered_set< analysis::DataflowGraph::Register > 
-			DeadRegisterSet;
+		assert( !_dfg->ssa() );
 
 		RegisterSet encountered;
-		DeadRegisterSet deadRegisters;
-		
+		RegisterSet predicates;
+			
 		RegisterVector regs;
 		
 		for( analysis::DataflowGraph::const_iterator block = _dfg->begin(); 
 			block != _dfg->end(); ++block  )
 		{
 			report( " For block " << block->label() );
-			for( analysis::DataflowGraph::PhiInstructionVector::const_iterator 
-				phi = block->phis().begin(); phi != block->phis().end(); ++phi )
-			{
-				if( encountered.insert( phi->d.id ).second )
-				{
-					regs.push_back( phi->d );
-				}
-			}
-			
+						
 			for( analysis::DataflowGraph::InstructionVector::const_iterator 
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
@@ -98,52 +89,27 @@ namespace ir
 				for( RegisterPointerVector::const_iterator 
 					d = instruction->d.begin(); d != instruction->d.end(); ++d )
 				{
-					if( encountered.insert( *d->pointer ).second )
+					if( d->type != ir::PTXOperand::pred )
 					{
-						analysis::DataflowGraph::Register live_reg(*d->pointer, 
-							static_cast<PTXInstruction*>(
-							instruction->i)->d.type);
-						regs.push_back( live_reg );
+						if( encountered.insert( *d->pointer ).second )
+						{
+							report( "   Added %r" << *d->pointer );
+							analysis::DataflowGraph::Register live_reg( 
+								*d->pointer, d->type );
+							regs.push_back( live_reg );
+						}
+					}
+					else
+					{
+						if( predicates.insert( *d->pointer ).second )
+						{
+							report( "   Added %p" << *d->pointer );
+							analysis::DataflowGraph::Register live_reg( 
+								*d->pointer, d->type );
+							regs.push_back( live_reg );
+						}
 					}
 				}
-			}
-		}
-
-		// we've marked all values, so identify instructions whose operands are dead
-		for( analysis::DataflowGraph::const_iterator block = _dfg->begin(); 
-			block != _dfg->end(); ++block  )
-		{
-			report( " For block " << block->label() );
-			
-			for( analysis::DataflowGraph::InstructionVector::const_iterator 
-				instruction = block->instructions().begin(); 
-				instruction != block->instructions().end(); ++instruction )
-			{
-				report( "  For instruction " << instruction->i->toString() );
-
-				typedef analysis::DataflowGraph::RegisterPointerVector
-					RegisterPointerVector;
-
-				for( RegisterPointerVector::const_iterator 
-					s = instruction->s.begin(); s != instruction->s.end(); ++s )
-				{
-					analysis::DataflowGraph::RegisterId reg = *(s->pointer);
-					if(encountered.find(reg) == encountered.end())
-					{
-						// source operand was not produced by any instructions
-						analysis::DataflowGraph::Register dead(reg, s->type);
-						deadRegisters.insert(dead);
-					}
-				}
-			}
-		}
-
-		// either add the dead registers to regs or remove the instructions
-		
-		{
-			for (DeadRegisterSet::const_iterator dr = deadRegisters.begin(); 
-				dr != deadRegisters.end(); ++dr) {
-				regs.push_back(*dr);
 			}
 		}
 		

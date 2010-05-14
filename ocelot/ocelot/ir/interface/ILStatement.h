@@ -19,7 +19,8 @@ namespace ir
 			enum Type
 			{
 				Instruction,
-				Declaration,
+				ConstantBufferDcl,
+				OtherDeclarations,         // TODO Delete this
 				InvalidType
 			};
 
@@ -31,11 +32,14 @@ namespace ir
 			ILInstruction *instruction;
 			/*! \brief Statement type */
 			Type type;
+			/*! \brief The operand if this is a variable declaration */
+			ILOperand operand;
 
 			/*! \brief Default constructor */
 			ILStatement(Type type = InvalidType);
 			/*! \brief Construct a statement from an instruction */
 			explicit ILStatement(const ILInstruction &i);
+
 			/*! \brief Convert this statement into a string */
 			std::string toString() const;
 	};

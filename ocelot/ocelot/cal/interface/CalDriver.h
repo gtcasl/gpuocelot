@@ -40,6 +40,10 @@ namespace cal
 			 ********************************/
 			//@{
 			void calDeviceGetCount(CALuint *count) const;
+			void calDeviceGetAttribs(CALdeviceattribs *attribs, 
+					CALuint ordinal) const;
+			void calDeviceGetStatus(CALdevicestatus *status, 
+					CALdevice dev) const;
 			void calDeviceOpen(CALdevice *dev, CALuint ordinal) const;
 			void calDeviceClose(CALdevice dev) const;
 			void calDeviceGetInfo(CALdeviceinfo *info, CALuint ordinal) const;
@@ -128,6 +132,8 @@ namespace cal
 			CALresult (*_calInit)();
 			CALresult (*_calShutdown)();
 			CALresult (*_calDeviceGetCount)(CALuint *count);
+			CALresult (*_calDeviceGetAttribs)(CALdeviceattribs *attribs, CALuint ordinal);
+			CALresult (*_calDeviceGetStatus)(CALdevicestatus *status, CALdevice dev);
 			CALresult (*_calDeviceOpen)(CALdevice *dev, CALuint ordinal);
 			CALresult (*_calDeviceClose)(CALdevice dev);
 			CALresult (*_calDeviceGetInfo)(CALdeviceinfo *info, CALuint ordinal);

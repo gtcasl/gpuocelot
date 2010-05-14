@@ -27,12 +27,20 @@ namespace ir
 		switch(type)
 		{
 			case Instruction: return instruction->toString();
-			case Declaration: return \
+			case ConstantBufferDcl:
+			{
+				std::stringstream stream;
+
+				stream << "dcl_cb ";
+				stream << operand.toString();
+
+				return stream.str();
+			}
+			case OtherDeclarations: return \
 							  "il_cs_2_0\n"
 							  "dcl_max_thread_per_group 256\n"
 							  "dcl_raw_uav_id(0)\n"
 							  "dcl_cb cb0[1]\n"
-							  "dcl_cb cb1[2]\n"
 							  "dcl_literal l0, 4, 4, 4, 4\n"
 							  "dcl_literal l1, 2, 2, 2, 2";
 			default:

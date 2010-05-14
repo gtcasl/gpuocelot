@@ -244,6 +244,10 @@ namespace executive
 			CALdevice _device;
 			/*! \brief CAL Device Info */
 			CALdeviceinfo _info;
+			/*! \brief CAL Device Status */
+			CALdevicestatus _status;
+			/*! \brief CAL Device Attributes */
+			CALdeviceattribs _attribs;
 			/*! \brief CAL Context. Multiple contexts per device is 
 				not supported yet */
 			CALcontext _context;

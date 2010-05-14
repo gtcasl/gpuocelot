@@ -35,7 +35,21 @@ namespace executive
 
 	void ATIExecutableKernel::setKernelShape(int x, int y, int z)
 	{
-		assertM(false, "Not implemented yet");
+		cb_t *cb0;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
+
+		cb0[0] = (cb_t) {x, y, z, 0};
+		report("setKernelShape : cb0[0] = {" 
+				<< cb0[0].x
+				<< ", " << cb0[0].y
+				<< ", " << cb0[0].z
+				<< ", " << cb0[0].w
+				<< "}");
+
+		CalDriver()->calResUnmap(*_cb0Resource);
 	}
 
 	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int)
@@ -72,12 +86,16 @@ namespace executive
 				{
 					// CUDA pointers are 32-bits
 					assertM(v.val_u64 >> 32 == 0, "Pointer out of range");
-					cb1[i++].x = v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+					cb1[i].x = v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+					report("cb1[" << i << "] = {" << cb1[i].x << "}");
+					i++;
 					break;
 				}
 				case ir::PTXOperand::s32:
 				{
-					cb1[i++].x = v.val_s32;
+					cb1[i].x = v.val_s32;
+					report("cb1[" << i << "] = {" << cb1[i].x << "}");
+					i++;
 					break;
 				}
 				default:

@@ -20,6 +20,11 @@ namespace ir
 		ISA = Instruction::CAL;
 	}
 
+	ILKernel::ILKernel(const Kernel &k) : Kernel(k)
+	{
+		ISA = Instruction::CAL;
+	}
+
 	void ILKernel::write(std::ostream& stream) const
 	{
 		for(ILStatementVector::const_iterator

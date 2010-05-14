@@ -20,9 +20,13 @@ namespace ir
 			/*! \brief The opcode of the instruction */
 			enum Opcode
 			{
-				Iadd,
-				Imul,
+				Add,
 				End,
+				EndIf,
+				Iadd,
+				IfLogicalZ,
+				Ige,
+				Imul,
 				Mov,
 				Uav_Raw_Load_Id,
 				Uav_Raw_Store_Id,
@@ -91,6 +95,15 @@ namespace ir
 			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 
+	class ILAdd : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILAdd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILEnd : public ILInstruction
 	{
 		public:
@@ -102,11 +115,45 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILEndIf : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILEndIf();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIadd : public ILBinaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
 			ILIadd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIfLogicalZ : public ILInstruction
+	{
+		public:
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief Default constructor */
+			ILIfLogicalZ();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIge : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIge();
 
 			Instruction *clone(bool copy=true) const;
 	};

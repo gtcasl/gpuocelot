@@ -54,7 +54,7 @@ namespace executive
 			 * \name cb0 Memory Manager (ABI data)
 			 ***********************************************************/
 			//@{
-			/*! \brief CAL cb1 resource */
+			/*! \brief CAL cb0 resource */
 			CALresource *_cb0Resource;
 			//@}
 			
@@ -66,8 +66,6 @@ namespace executive
 			CALresource *_cb1Resource;
 			//@}
 			
-			CALprogramGrid pg;
-
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */
 			static const cal::CalDriver *CalDriver();

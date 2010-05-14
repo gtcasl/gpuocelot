@@ -30,12 +30,10 @@ namespace translator
 		private:
 			typedef std::map<std::string, std::string> RegisterMap;
 			typedef std::map<long long unsigned int, std::string> LiteralMap;
-			typedef std::map<std::string, unsigned int> ConstBufMap;
 
 			ir::ILKernel *_ilKernel;
 			RegisterMap registerMap;
 			LiteralMap literalMap;
-			ConstBufMap constbufMap;
 
 			unsigned int literals;
 			unsigned int registers;
@@ -48,10 +46,13 @@ namespace translator
 					const ir::PTXOperand::SpecialRegister &s);
 
 			void _translateAdd(const ir::PTXInstruction &i);
+			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
+			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
+			void _translateSetP(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
 
 			std::string _translateRegister(const std::string &ident);

@@ -45,6 +45,8 @@ namespace executive
 			_cb1Name(0),
 			_device(0), 
 			_info(),
+			_status(),
+			_attribs(),
 			_context(0), 
 			_object(0), 
 			_image(0), 
@@ -55,6 +57,12 @@ namespace executive
 		CalDriver()->calDeviceOpen(&_device, 0);
 		CalDriver()->calDeviceGetInfo(&_info, 0);
 
+		_attribs.struct_size = sizeof(CALdeviceattribs);
+		CalDriver()->calDeviceGetAttribs(&_attribs, 0);
+
+		_status.struct_size = sizeof(CALdevicestatus);
+		CalDriver()->calDeviceGetStatus(&_status, _device);
+
 		_properties.name = "CAL Device";
 
         // Multiple contexts per device is not supported yet
@@ -62,7 +70,8 @@ namespace executive
 		CalDriver()->calCtxCreate(&_context, _device);
 
 		// Allocate uav0 resource
-		CALuint width = _info.maxResource1DWidth;
+		// TODO Define max resource allocation size
+		CALuint width = 150000;
 		CALuint flags = CAL_RESALLOC_GLOBAL_BUFFER;
 		CalDriver()->calResAllocLocal1D(
 				&_uav0Resource, 
@@ -83,7 +92,7 @@ namespace executive
 				&_cb0Resource, 
 				_device, 
 				cbMaxSize,
-				CAL_FORMAT_INT_1,
+				CAL_FORMAT_INT_4,
 				flags);
 
 		// Get cb0 memory handle
@@ -159,7 +168,7 @@ namespace executive
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {
-		if (_module != 0) assertM(false, "Multiple modules not supported yet");
+		assertM(_module == 0, "Multiple modules not supported yet");
 
 		_ir = irModule;
 
@@ -275,6 +284,7 @@ namespace executive
 
 	Device::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
 	{
+		// TODO Check uav0 size limits
 		MemoryAllocation *allocation = 
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
 		_uav0Allocations.insert(
@@ -446,7 +456,7 @@ namespace executive
 		ATIExecutableKernel kernel(*_ir->kernels.begin()->second, 
 				&_cb0Resource, &_cb1Resource);
 
-		//kernel.setKernelShape(block.x, block.y, block.z);
+		kernel.setKernelShape(block.x, block.y, block.z);
 		kernel.setParameterBlock((const unsigned char *)parameterBlock,
 				parameterBlockSize);
 		kernel.updateParameterMemory();
@@ -556,6 +566,12 @@ namespace executive
 		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
 		std::memcpy((char *)data + addr, host, size);
 
+		report("MemoryAllocation::copy("
+				<< "offset = " << std::dec << offset
+				<< ", host = " << std::hex << std::showbase << host
+				<< ", size = " << std::dec << size
+				<< ")");
+		
 		CalDriver()->calResUnmap(*_resource);
 	}
 
@@ -577,7 +593,7 @@ namespace executive
 		report("MemoryAllocation::copy("
 				<< "host = " << std::hex << std::showbase << host
 				<< ", offset = " << std::dec << offset
-				<< ", size = " << size
+				<< ", size = " << std::dec << size
 				<< ")");
 		
 		CalDriver()->calResUnmap(*_resource);

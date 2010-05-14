@@ -20,9 +20,9 @@ static void analyze( const std::string& ptx, const std::string& dot, bool ssa )
 {
 	ir::Module module( ptx );
 
-	ir::Module::KernelMap::iterator k_it = module.begin( ir::Instruction::PTX );
+	ir::Module::KernelMap::iterator k_it = module.kernels.begin();
 
-	for (; k_it != module.end( ir::Instruction::PTX ); ++k_it) {
+	for (; k_it != module.kernels.end(); ++k_it) {
 
 		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(k_it->second);
 

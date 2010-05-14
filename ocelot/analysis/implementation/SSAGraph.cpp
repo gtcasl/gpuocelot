@@ -11,6 +11,8 @@
 
 #include <hydrazine/implementation/debug.h>
 
+#include <stack>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -124,9 +126,9 @@ namespace analysis
 							= predecessorBlock->second.regs.find( *reg );
 						assert( remapping 
 							!= predecessorBlock->second.regs.end() );
-						report( "     Mapping phi source " 
+						report( "     Mapping phi source r" 
 							<< remapping->second.id 
-							<< " to destination " << mapping->second.id );
+							<< " to destination r" << mapping->second.id );
 						phi->second.push_back( remapping->second );
 					}
 				}
@@ -146,8 +148,8 @@ namespace analysis
 				{
 					phi = map.insert( std::make_pair( mapping->second, 
 						IdVector() ) ).first;
-					report( "      Mapping phi source " << mapping->second.id 
-						<< " to destination " << mapping->second.id );
+					report( "      Mapping phi source r" << mapping->second.id 
+						<< " to destination r" << mapping->second.id );
 					phi->second.push_back( mapping->second );
 				}
 			}
@@ -182,7 +184,7 @@ namespace analysis
 				for( DataflowGraph::RegisterVector::iterator 
 					reg = phi->s.begin(); reg != phi->s.end(); ++reg )
 				{
-					report( "   Adding register " << reg->id );
+					report( "   Adding register r" << reg->id );
 					block->first->_aliveIn.insert( *reg );
 				}
 			}
@@ -203,8 +205,8 @@ namespace analysis
 			{
 				RegisterMap::iterator mapping = block->second.regs.find( *reg );
 				assert( mapping != block->second.regs.end() );
-				report( "   Mapping alive out register " << mapping->first.id 
-					<< " to " << mapping->second.id );
+				report( "   Mapping alive out register r" << mapping->first.id 
+					<< " to r" << mapping->second.id );
 				newAliveOut.insert( mapping->second );
 			}
 			block->first->_aliveOut = std::move( newAliveOut );
@@ -218,7 +220,7 @@ namespace analysis
 	void SSAGraph::toSsa()
 	{
 		report( "Converting dataflow graph to pure SSA form" );
-	
+		
 		assert( !_graph._ssa );
 		_graph._ssa = true;
 		_blocks.clear();
@@ -242,30 +244,88 @@ namespace analysis
 	
 	void SSAGraph::fromSsa()
 	{
+		report( "Converting dataflow graph out of pure SSA form" );
+		
+		typedef std::unordered_set< DataflowGraph::RegisterId > RegisterIdSet;
+		typedef std::unordered_map< DataflowGraph::RegisterId, 
+			RegisterIdSet > RegisterIdMap;
+		typedef std::stack< DataflowGraph::RegisterId > RegisterIdStack;
+		
 		assert( _graph._ssa );
 		_graph._ssa = false;
 		
 		RegisterMap map;
+		RegisterIdMap registerGraph;
 		
+		report( "Coalescing phi instructions." );
 		for( DataflowGraph::iterator fi = _graph.begin(); 
 			fi != _graph.end(); ++fi )
 		{
 			for( DataflowGraph::PhiInstructionVector::iterator 
 				phi = fi->_phis.begin(); phi != fi->_phis.end(); ++phi )
 			{
-				map.insert( std::make_pair( phi->d, *phi->s.begin() ) );
+				for( DataflowGraph::RegisterVector::iterator s = phi->s.begin();
+					s != phi->s.end(); ++s )
+				{
+					registerGraph[ phi->d.id ].insert( s->id );
+					registerGraph[ s->id ].insert( phi->d.id );
+				}
 			}
 			
 			fi->_phis.clear();
 		}
 
+		RegisterIdSet encountered;
+
+		for( RegisterIdMap::iterator node = registerGraph.begin(); 
+			node != registerGraph.end(); ++node )
+		{
+			if( encountered.insert( node->first ).second )
+			{
+				report(" Subgraph for r" << node->first);
+				RegisterIdStack stack;
+				DataflowGraph::RegisterId id = node->first;
+				for( RegisterIdSet::iterator connection = node->second.begin();
+					connection != node->second.end(); ++connection )
+				{
+					if( encountered.insert( *connection ).second )
+					{
+						stack.push( *connection );
+					}
+				}
+				while( !stack.empty() )
+				{
+					DataflowGraph::RegisterId nextId = stack.top();
+					stack.pop();
+					map[ nextId ] = id;
+					report( "  contains r" << nextId );
+					RegisterIdMap::iterator 
+						next = registerGraph.find( nextId );
+					assert( next != registerGraph.end() );
+					for( RegisterIdSet::iterator 
+						connection = next->second.begin();
+						connection != next->second.end(); ++connection )
+					{
+						if( encountered.insert( *connection ).second )
+						{
+							stack.push( *connection );
+						}
+					}
+				}
+			}
+		}
+
+		report( "Updating instructions." );
 		for( DataflowGraph::iterator fi = _graph.begin(); 
 			fi != _graph.end(); ++fi )
 		{
+			report( " Examining block " << fi->label() );
 			for( DataflowGraph::InstructionVector::iterator 
 				instruction = fi->_instructions.begin(); 
 				instruction != fi->_instructions.end(); ++instruction )
 			{
+				report( "  Examining instruction " 
+					<< instruction->i->toString() );
 				for( DataflowGraph::RegisterPointerVector::iterator 
 					reg = instruction->s.begin(); 
 					reg != instruction->s.end(); ++reg )
@@ -273,6 +333,8 @@ namespace analysis
 					RegisterMap::iterator mapping = map.find( *reg->pointer );
 					if( mapping != map.end() )
 					{
+						report( "   Mapping r" << *reg->pointer 
+							<< " to r" << mapping->second.id );
 						*reg->pointer = mapping->second.id;
 					}
 				}
@@ -284,13 +346,18 @@ namespace analysis
 					RegisterMap::iterator mapping = map.find( *reg->pointer );
 					if( mapping != map.end() )
 					{
+						report( "   Mapping r" << *reg->pointer 
+							<< " to r" << mapping->second.id );
 						*reg->pointer = mapping->second.id;
 					}
 				}
+				report( "   Modified instruction to " 
+					<< instruction->i->toString() );
 			}
 			
 			DataflowGraph::Block::RegisterSet newAlive;
 			
+			report(" Updating alive out set.");
 			for( DataflowGraph::Block::RegisterSet::iterator 
 				reg = fi->_aliveOut.begin(); 
 				reg != fi->_aliveOut.end(); ++reg )
@@ -298,14 +365,38 @@ namespace analysis
 				RegisterMap::iterator mapping = map.find( *reg );
 				if( mapping != map.end() )
 				{
+					report( "  r" << mapping->second.id );
 					newAlive.insert( mapping->second );
 				}
 				else
 				{
+					report( "  r" << reg->id );
 					newAlive.insert( *reg );
 				}
 			}
 			fi->_aliveOut = std::move( newAlive );
+			
+			newAlive.clear();
+			
+			report(" Updating alive in set.");
+			for( DataflowGraph::Block::RegisterSet::iterator 
+				reg = fi->_aliveIn.begin(); 
+				reg != fi->_aliveIn.end(); ++reg )
+			{
+				RegisterMap::iterator mapping = map.find( *reg );
+				if( mapping != map.end() )
+				{
+					report( "  r" << mapping->second.id );
+					newAlive.insert( mapping->second );
+				}
+				else
+				{
+					report( "  r" << reg->id );
+					newAlive.insert( *reg );
+				}
+			}
+			
+			fi->_aliveIn = std::move( newAlive );
 		}		
 		
 	}

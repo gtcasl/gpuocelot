@@ -135,6 +135,7 @@ namespace analysis
 			delete *pass;
 		}
 
+		report(" Converting out of SSA form.");
 		for( ir::Module::KernelMap::iterator kernel = module.kernels.begin(); 
 			kernel != module.kernels.end(); ++kernel )
 		{

@@ -78,6 +78,17 @@ std::string ir::PTXOperand::toString( AddressMode mode ) {
 	return "Invalid";
 }
 
+std::string ir::PTXOperand::toString( DataType type, RegisterType reg ) {
+	std::stringstream stream;
+	if( type == pred ) {
+		stream << "%p" << reg;
+	}
+	else {
+		stream << "%r_" << toString( type ) << "_" << reg;
+	}
+	return stream.str();
+}
+
 bool ir::PTXOperand::isFloat( DataType type ) {
 	bool result = false;
 	switch( type ) {

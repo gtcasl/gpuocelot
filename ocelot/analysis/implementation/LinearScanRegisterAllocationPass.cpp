@@ -305,7 +305,7 @@ namespace analysis
 				i = block->instructions().begin(); 
 				i != block->instructions().end(); ++i )
 			{
-				RegisterId temp = registers - _reserved;
+				RegisterId temp = _kernel->dfg()->newRegister();
 				unsigned int index = std::distance( 
 					block->instructions().begin(), i );
 				report( " For instruction " << i->i->toString() );
@@ -323,12 +323,13 @@ namespace analysis
 					report( "  Register " << coalesced.reg );
 					if( coalesced.spilled )
 					{
-						report( "   Was spilled, inserting spill code." );
-						*s->pointer = temp;
+						report( "   Was spilled, inserting fill code." );
 						ir::PTXInstruction load( ir::PTXInstruction::Ld );
+						*s->pointer = temp;
+						load.type = coalesced.type;
+						load.addressSpace = ir::PTXInstruction::Local;
 						load.a = ir::PTXOperand( ir::PTXOperand::Address, 
-							coalesced.type, coalesced.allocated, 
-							coalesced.offset );
+							coalesced.type, 0, coalesced.offset );
 						load.a.identifier =
 							"_Zocelot_linear_scan_register_allocation_stack";
 						load.d = ir::PTXOperand( ir::PTXOperand::Register, 
@@ -342,7 +343,6 @@ namespace analysis
 					{
 						report( "   No spill required, assigning to " 
 							<< coalesced.allocated );
-						*s->pointer = coalesced.allocated;
 					}
 				}
 
@@ -380,7 +380,6 @@ namespace analysis
 					{
 						report( "   No spill required, assigning to " 
 							<< coalesced.allocated );
-						*d->pointer = coalesced.allocated;
 					}
 				}
 

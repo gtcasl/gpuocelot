@@ -107,7 +107,8 @@ namespace trace
 		std::stringstream stream;
 		stream << prefix( thread, dim, event );
 		stream << "Global memory access " << (void*)address 
-			<< " is not within any allocated or mapped range.";
+			<< " is not within any allocated or mapped range.\n\n";
+		stream << "Nearby Device Allocations\n";
 		stream << device->nearbyAllocationsToString( (void*)address );
 		stream << "\n";
 		stream << "Near " << kernel->location( event.PC ) << "\n";

@@ -174,7 +174,7 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;
 		}
-		else
+		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
 				<< "'\n";

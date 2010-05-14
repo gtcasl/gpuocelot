@@ -799,6 +799,8 @@ namespace analysis
 		if( _consistent ) return;		
 		_consistent = true;
 		
+		if( _ssa ) fromSsa();
+		
 		BlockPointerSet worklist;
 		
 		for( iterator fi = begin(); fi != end(); ++fi )
@@ -875,7 +877,6 @@ namespace analysis
 
 	void DataflowGraph::fromSsa()
 	{
-		compute();
 		SSAGraph graph( *this );
 		graph.fromSsa();		
 	}

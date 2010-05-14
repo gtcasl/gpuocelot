@@ -31,6 +31,8 @@ namespace ir
 
 			/*! \brief Default constructor */
 			ILKernel();
+			/*! \brief Constructor from a base class */
+			ILKernel(const Kernel &k);
 
 		private:
 			ILStatementVector _statements;

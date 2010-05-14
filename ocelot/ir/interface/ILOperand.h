@@ -29,17 +29,23 @@ namespace ir
 
 			/*! \brief Special register names */
 			enum SpecialRegister {
-				vAbsTidFlatX,
+				vTidInGrpX,
+				vTidInGrpY,
+				vTidInGrpZ,
+				vNTidInGrpX,
+				vNTidInGrpY,
+				vNTidInGrpZ,
+				vThreadGrpIdX,
+				vThreadGrpIdY,
+				vThreadGrpIdZ,
 				SpecialRegister_invalid
 			};
 
 			/*! \brief Addressing mode of operand */
 			AddressMode addressMode;
-
 			/*! \brief Value of operand */
 			SpecialRegister special;
-
-			/*! Identifier of operand */
+			/*! \brief Identifier of operand */
 			std::string identifier;
 
 			std::string toString() const;

@@ -16,16 +16,23 @@ namespace ir
 	{
 		switch(opcode)
 		{
-			case Iadd:             return "iadd";                           break;
-			case Imul:             return "imul";                           break;
-			case End:              return "end";                            break;
-			case Mov:              return "mov";                            break;
-			case Uav_Raw_Load_Id:  return "uav_raw_load_id(0)";             break;
-			case Uav_Raw_Store_Id: return "uav_raw_store_id(0) mem.xyzw,"; break;
-			case InvalidOpcode:    return "INVALID_OPCODE";                 break;
+			case Add:              return "add";
+			case End:              return "end";
+			case EndIf:            return "endif";
+			case Iadd:             return "iadd";
+			case Ige:              return "ige";
+			case Imul:             return "imul";
+			case Mov:              return "mov";
+			case Uav_Raw_Load_Id:  return "uav_raw_load_id(0)";
+			case Uav_Raw_Store_Id: return "uav_raw_store_id(0) mem.xyzw,";
+			case InvalidOpcode:    return "INVALID_OPCODE";
+			default:
+			{
+				assertM(false, "Opcode " << opcode << " not supported");
+			}
 		}
 
-		return "";
+		assertM(false, "Unreachable line");
 	}
 
 	ILInstruction::ILInstruction(Opcode op) : opcode(op)
@@ -70,6 +77,15 @@ namespace ir
 		assertM(false, "Not implemented yet");
 	}
 
+	ILAdd::ILAdd() : ILBinaryInstruction(Add)
+	{
+	}
+
+	Instruction *ILAdd::clone(bool copy) const
+	{
+		return new ILAdd(*this);
+	}
+
 	ILEnd::ILEnd() : ILInstruction(End)
 	{
 	}
@@ -89,6 +105,25 @@ namespace ir
 		return new ILEnd(*this);
 	}
 
+	ILEndIf::ILEndIf() : ILInstruction(EndIf)
+	{
+	}
+
+	std::string ILEndIf::toString() const
+	{
+		return "endif";
+	}
+
+	std::string ILEndIf::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILEndIf::clone(bool copy) const
+	{
+		return new ILEndIf(*this);
+	}
+
 	ILIadd::ILIadd() : ILBinaryInstruction(Iadd)
 	{
 	}
@@ -96,6 +131,34 @@ namespace ir
 	Instruction *ILIadd::clone(bool copy) const
 	{
 		return new ILIadd(*this);
+	}
+
+	ILIfLogicalZ::ILIfLogicalZ() : ILInstruction(IfLogicalZ)
+	{
+	}
+
+	std::string ILIfLogicalZ::toString() const
+	{
+		return "if_logicalz " + a.toString();
+	}
+
+	std::string ILIfLogicalZ::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILIfLogicalZ::clone(bool copy) const
+	{
+		return new ILIfLogicalZ(*this);
+	}
+
+	ILIge::ILIge() : ILBinaryInstruction(Ige)
+	{
+	}
+
+	Instruction *ILIge::clone(bool copy) const
+	{
+		return new ILIge(*this);
 	}
 
 	ILImul::ILImul() : ILBinaryInstruction(Imul)

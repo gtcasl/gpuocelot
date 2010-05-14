@@ -48,6 +48,8 @@ namespace cal
 		hydrazine::bit_cast(_calInit,              dlsym(_driver, "calInit"));
 		hydrazine::bit_cast(_calShutdown,          dlsym(_driver, "calShutdown"));
 		hydrazine::bit_cast(_calDeviceGetCount,    dlsym(_driver, "calDeviceGetCount"));
+		hydrazine::bit_cast(_calDeviceGetAttribs,  dlsym(_driver, "calDeviceGetAttribs"));
+		hydrazine::bit_cast(_calDeviceGetStatus,   dlsym(_driver, "calDeviceGetStatus"));
 		hydrazine::bit_cast(_calDeviceOpen,        dlsym(_driver, "calDeviceOpen"));
 		hydrazine::bit_cast(_calDeviceClose,       dlsym(_driver, "calDeviceClose"));
 		hydrazine::bit_cast(_calDeviceGetInfo,     dlsym(_driver, "calDeviceGetInfo"));
@@ -125,6 +127,22 @@ namespace cal
 				<< "*count = " << std::dec << *count
 				<< ")");
 	}
+
+	void CalDriver::calDeviceGetAttribs(CALdeviceattribs *attribs,
+			CALuint ordinal) const
+	{
+		_checkError((*_calDeviceGetAttribs)(attribs, ordinal));
+
+		report("calDeviceGetAttribs()");
+	}
+
+	void CalDriver::calDeviceGetStatus(CALdevicestatus *status, 
+			CALdevice dev) const
+	{
+		_checkError((*_calDeviceGetStatus)(status, dev));
+
+		report("calDeviceGetStatus()");
+	}	
 
 	void CalDriver::calDeviceOpen(CALdevice *dev, CALuint ordinal) const
 	{

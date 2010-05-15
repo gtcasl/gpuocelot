@@ -41,7 +41,8 @@ namespace executive
 
 		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
 
-		cb0[0] = (cb_t) {x, y, z, 0};
+		cb_t temp = {x, y, z, 0};
+		cb0[0] = temp;
 		report("setKernelShape : cb0[0] = {" 
 				<< cb0[0].x
 				<< ", " << cb0[0].y

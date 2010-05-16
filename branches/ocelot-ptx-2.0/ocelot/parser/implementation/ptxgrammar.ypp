@@ -127,7 +127,8 @@
 %%
 
 nonEntryStatements : version | target | registerDeclaration | fileDeclaration | 
-	initializableDeclaration | uninitializableDeclaration | unsupported;
+	initializableDeclaration | uninitializableDeclaration | unsupported | 
+	preprocessor;
 
 nonEntryStatement : nonEntryStatements
 {
@@ -137,6 +138,16 @@ nonEntryStatement : nonEntryStatements
 statement : nonEntryStatement | entry;
 
 statements : statement | statements statement;
+
+preprocessorCommand : PREPROCESSOR_INCLUDE | PREPROCESSOR_DEFINE | PREPROCESSOR_IF 
+	| PREPROCESSOR_IFDEF | PREPROCESSOR_ELSE | PREPROCESSOR_ENDIF 
+	| PREPROCESSOR_LINE | PREPROCESSOR_FILE;
+
+
+preprocessor : preprocessorCommand
+{
+	state.preprocessor( $<value>1 );
+};
 
 version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT 
 { 

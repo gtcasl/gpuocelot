@@ -112,6 +112,11 @@ namespace parser
 		report( "  Rule: TOKEN_MAXNCTAPERSM ctapersmList" );
 	}
 
+	void PTXParser::State::preprocessor( int token )
+	{
+		throw_exception( "PTX preprocessor commands not supported in Ocelot." );
+	}
+
 	void PTXParser::State::version( double version, YYLTYPE& location )
 	{
 		report( "  Rule: VERSION DOUBLE_CONSTANT" );

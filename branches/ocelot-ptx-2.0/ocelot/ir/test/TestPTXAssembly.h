@@ -21,12 +21,12 @@ namespace test
 			/*! \brief Possible data types */
 			enum DataType
 			{
-				I8,
-				I16,
-				I32,
-				I64,
-				FP32,
-				FP64
+				I8 = 0,
+				I16 = 1,
+				I32 = 2,
+				I64 = 3,
+				FP32 = 4,
+				FP64 = 5
 			};
 		
 			/*! \brief A vector of data types */

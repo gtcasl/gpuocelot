@@ -112,6 +112,7 @@ namespace parser
 					void maxnctapersm();
 				
 				public:
+					void preprocessor( int token );
 					void version( double version, YYLTYPE& location );
 					void identifierList( const std::string& identifier );
 					void identifierList2( const std::string& identifier );

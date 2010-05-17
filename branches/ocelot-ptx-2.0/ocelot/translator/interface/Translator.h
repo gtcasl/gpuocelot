@@ -18,7 +18,6 @@ namespace ir
 /*! \brief A namespace for IR to IR translators */
 namespace translator
 {
-
 	/*! \brief Forward declaration of profiling data used for optimization */
 	class ProfilingData;
 

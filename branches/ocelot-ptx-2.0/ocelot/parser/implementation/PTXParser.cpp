@@ -114,7 +114,8 @@ namespace parser
 
 	void PTXParser::State::preprocessor( int token )
 	{
-		throw_exception( "PTX preprocessor commands not supported in Ocelot." );
+		throw_exception( "PTX preprocessor commands not supported in Ocelot.", 
+			NotSupported );
 	}
 
 	void PTXParser::State::version( double version, YYLTYPE& location )
@@ -391,7 +392,7 @@ namespace parser
 		statement.name = name;
 		statement.array.vec = ir::PTXOperand::v1;
 		statement.attribute = ir::PTXStatement::NoAttribute;
-	
+		
 		if( operand.type == ir::PTXOperand::pred )
 		{
 			operand.condition = ir::PTXOperand::Pred;
@@ -429,7 +430,6 @@ namespace parser
 		
 		for( unsigned int i = 0; i < regs; ++i )
 		{
-	
 			std::stringstream name;
 			name << statement.name << i;
 	
@@ -454,6 +454,13 @@ namespace parser
 				localOperands.push_back( name.str() );
 			}
 		}
+	}
+
+	void PTXParser::State::registerSeperator( YYLTYPE& location )
+	{
+		ir::PTXOperand::DataType type = statement.type;
+		statementEnd( location );
+		operand.type = type;
 	}
 
 	void PTXParser::State::initializableDeclaration( const std::string& name, 

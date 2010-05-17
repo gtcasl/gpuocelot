@@ -18,7 +18,7 @@
 	#undef REPORT_BASE
 	#endif
 
-	#define REPORT_BASE 1
+	#define REPORT_BASE 0
 
 	namespace ptx
 	{
@@ -306,15 +306,29 @@ assignment : '='
 initializer : assignment decimalInitializer | assignment floatInitializer 
 	| assignment singleInitializer;
 
-registerDeclaration : TOKEN_REG dataType identifier ';'
+registerIdentifierList : identifier
 {
-	state.registerDeclaration( $<text>3, @3 );	
+	state.registerDeclaration( $<text>1, @1 );
 };
 
-registerDeclaration : TOKEN_REG dataType identifier 
-	'<' TOKEN_DECIMAL_CONSTANT '>' ';'
+registerIdentifierList : identifier '<' TOKEN_DECIMAL_CONSTANT '>'
 {
-	state.registerDeclaration( $<text>3, @3, $<value>5 );	
+	state.registerDeclaration( $<text>1, @1, $<value>3 );
+};
+
+registerSeperator : ','
+{
+	state.registerSeperator( @1 );
+};
+
+registerIdentifierList : registerIdentifierList registerSeperator identifier
+{
+	state.registerDeclaration( $<text>3, @3 );
+};
+
+registerDeclaration : TOKEN_REG dataType registerIdentifierList ';'
+{
+
 };
 
 fileDeclaration : TOKEN_FILE TOKEN_DECIMAL_CONSTANT TOKEN_STRING

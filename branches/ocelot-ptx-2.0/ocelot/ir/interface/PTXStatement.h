@@ -138,6 +138,8 @@ namespace ir {
 		unsigned int initializedBytes() const;
 		unsigned int elements() const;
 		unsigned int accessAlignment() const;
+
+	public:
 		/*! \brief Copy all of the initial data into a packed array */
 		void copy(void* dest) const;
 		std::string toString() const;

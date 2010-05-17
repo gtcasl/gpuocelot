@@ -271,6 +271,8 @@ namespace cuda {
 		//! fatbinaries
 		FatBinaryVector _fatBinaries;
 		
+		//! optimization level
+		translator::Translator::OptimizationLevel _optimization;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 
@@ -568,6 +570,8 @@ namespace cuda {
 		virtual void unregisterModule(const std::string& name);
 		virtual void launch(const std::string& moduleName, 
 			const std::string& kernelName);
+		virtual void setOptimizationLevel(
+			translator::Translator::OptimizationLevel l);
 
 	};
 

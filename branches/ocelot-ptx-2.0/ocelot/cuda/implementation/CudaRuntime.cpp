@@ -48,6 +48,8 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+typedef api::OcelotConfiguration config;
+
 const char *cuda::FatBinaryContext::name() const {
 	if (!cubin_ptr) return "";
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
@@ -250,25 +252,25 @@ void cuda::CudaRuntime::_memoryError(const void* address, size_t count,
 void cuda::CudaRuntime::_enumerateDevices() {
 	if(_devicesLoaded) return;
 	report("Creating devices.");
-	if(api::OcelotConfiguration::get().executive.enableNVIDIA) {
+	if(config::get().executive.enableNVIDIA) {
 		executive::DeviceVector d = 
 			executive::Device::createDevices(ir::Instruction::SASS, _flags);
 		report(" - Added " << d.size() << " nvidia gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
-	if(api::OcelotConfiguration::get().executive.enableEmulated) {
+	if(config::get().executive.enableEmulated) {
 		executive::DeviceVector d = 
 			executive::Device::createDevices(ir::Instruction::Emulated, _flags);
 		report(" - Added " << d.size() << " emulator devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
-	if(api::OcelotConfiguration::get().executive.enableLLVM) {
+	if(config::get().executive.enableLLVM) {
 		executive::DeviceVector d = 
 			executive::Device::createDevices(ir::Instruction::LLVM, _flags);
 		report(" - Added " << d.size() << " llvm-cpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
-	if(api::OcelotConfiguration::get().executive.enableAMD) {
+	if(config::get().executive.enableAMD) {
 		executive::DeviceVector d =
 			executive::Device::createDevices(ir::Instruction::CAL, _flags);
 		report(" - Added " << d.size() << " amd gpu devices." );
@@ -292,6 +294,7 @@ void cuda::CudaRuntime::_enumerateDevices() {
 			device != _devices.end(); ++device) {
 			(*device)->select();
 			(*device)->load(&module->second);
+			(*device)->setOptimizationLevel(_optimization);
 			(*device)->unselect();
 		}
 	}
@@ -383,20 +386,22 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
-	_selectedDevice(-1), _nextSymbol(1), _flags(0) {
+	_selectedDevice(-1), _nextSymbol(1), _flags(0), 
+	_optimization((translator::Translator::OptimizationLevel)
+		config::get().executive.optimizationLevel) {
 	pthread_mutex_init(&_mutex, 0);
 
-	if(api::OcelotConfiguration::get().executive.enableNVIDIA) {
+	if(config::get().executive.enableNVIDIA) {
 		_deviceCount += executive::Device::deviceCount(ir::Instruction::SASS);
 	}
-	if(api::OcelotConfiguration::get().executive.enableEmulated) {
+	if(config::get().executive.enableEmulated) {
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::Emulated);
 	}
-	if(api::OcelotConfiguration::get().executive.enableLLVM) {
+	if(config::get().executive.enableLLVM) {
 		_deviceCount += executive::Device::deviceCount(ir::Instruction::LLVM);
 	}
-	if(api::OcelotConfiguration::get().executive.enableAMD) {
+	if(config::get().executive.enableAMD) {
 		_deviceCount += executive::Device::deviceCount(ir::Instruction::CAL);
 	}
 }
@@ -2269,7 +2274,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	try {
 		trace::TraceGeneratorVector traceGens;
 
-		if (api::OcelotConfiguration::getTrace().enabled) {
+		if (config::getTrace().enabled) {
 			traceGens = thread.persistentTraceGenerators;
 			traceGens.insert(traceGens.end(), 
 				thread.nextTraceGenerators.begin(), 
@@ -3105,6 +3110,21 @@ void cuda::CudaRuntime::unregisterModule(const std::string& name) {
 void cuda::CudaRuntime::launch(const std::string& moduleName, 
 	const std::string& kernelName) {
 	_launchKernel(moduleName, kernelName);
+}
+
+void cuda::CudaRuntime::setOptimizationLevel(
+	translator::Translator::OptimizationLevel l) {
+	_lock();
+
+	_optimization = l;
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->select();
+		(*device)->setOptimizationLevel(l);
+		(*device)->unselect();
+	}
+
+	_unlock();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

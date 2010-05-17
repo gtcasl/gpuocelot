@@ -15,8 +15,8 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#define ADD_TEST(x) add( #x, x##_REF, x##_PTX, x##_IN, \
-	x##_OUT, x##_THREADS, x##_CTAS);
+#define ADD_TEST(x) add( #x, x##_REF, x##_PTX, x##_OUT, \
+	x##_IN, x##_THREADS, x##_CTAS);
 
 template<typename T>
 T getParameter(void* in, unsigned int offset)
@@ -32,39 +32,39 @@ void setParameter(void* output, unsigned int offset, T value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST ADD U8
-const char* testAddU8_PTX = 
+const char* testAddU16_PTX = 
 ".version 2.0 \n\
-.entry test(.param .u64 in, .param .u64 out) \n\
+.entry test(.param .u64 out, .param .u64 in) \n\
 {	\n\
 	.reg .u64 %rIn, %rOut; \n\
-	.reg .u8 %r<3>; \n\
+	.reg .u16 %r<3>; \n\
 	ld.param.u64 %rIn, [in]; \n\
 	ld.param.u64 %rOut, [out]; \n\
-	ld.global.u8 %r0, [%rIn]; \n\
-	ld.global.u8 %r1, [%rIn + 1]; \n\
-	add.u8 %r2, %r0, %r1; \n\
-	st.global.u8 [%rOut], r2; \n\
+	ld.global.u16 %r0, [%rIn]; \n\
+	ld.global.u16 %r1, [%rIn + 2]; \n\
+	add.u16 %r2, %r0, %r1; \n\
+	st.global.u16 [%rOut], %r2; \n\
 	exit; \n\
 }";
 
-void testAddU8_REF(void* output, void* input)
+void testAddU16_REF(void* output, void* input)
 {
-	unsigned char r0 = getParameter<unsigned char>(input, 0);
-	unsigned char r1 = getParameter<unsigned char>(input, 1);
+	unsigned short r0 = getParameter<unsigned short>(input, 0);
+	unsigned short r1 = getParameter<unsigned short>(input, 2);
 
-	unsigned char result = r0 + r1;
+	unsigned short result = r0 + r1;
 	
 	setParameter(output, 0, result);
 }
 
-test::TestPTXAssembly::TypeVector testAddU8_IN = {test::TestPTXAssembly::I8, 
-	test::TestPTXAssembly::I8};
+test::TestPTXAssembly::TypeVector testAddU16_IN = {test::TestPTXAssembly::I16, 
+	test::TestPTXAssembly::I16};
 
-test::TestPTXAssembly::TypeVector testAddU8_OUT = {test::TestPTXAssembly::I8};
+test::TestPTXAssembly::TypeVector testAddU16_OUT = {test::TestPTXAssembly::I16};
 
-unsigned int testAddU8_THREADS = 1;
+unsigned int testAddU16_THREADS = 1;
 
-unsigned int testAddU8_CTAS = 1;
+unsigned int testAddU16_CTAS = 1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -161,7 +161,7 @@ namespace test
 		{
 			try
 			{
-				(*test.reference)(referenceBlock, outputBlock);
+				(*test.reference)(referenceBlock, inputBlock);
 			}
 			catch(const hydrazine::Exception& e)
 			{
@@ -242,7 +242,7 @@ namespace test
 					}
 					break;
 				}
-				case FP32: return 4;
+				case FP32:
 				{
 					float computed = getParameter<float>(outputBlock, index);
 					float reference = getParameter<float>(
@@ -295,7 +295,7 @@ namespace test
 		description += "through unit tests on all available devices until ";
 		description += "a timer expires.";
 		
-		ADD_TEST(testAddU8);
+		ADD_TEST(testAddU16);
 	}
 			
 	void TestPTXAssembly::add(const std::string& name, 

@@ -128,6 +128,7 @@ namespace ir {
 		static bool isSigned( DataType );
 		static unsigned int bytes( DataType );
 		static bool valid( DataType, DataType );
+		static bool relaxedValid( DataType, DataType );
 		
 	public:
 		PTXOperand();

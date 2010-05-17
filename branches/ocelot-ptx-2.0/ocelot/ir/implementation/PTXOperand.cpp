@@ -299,6 +299,198 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 	return false;
 }
 
+bool ir::PTXOperand::relaxedValid( DataType instructionType, 
+	DataType operand ) {
+	switch( instructionType ) {
+		case b64: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case f64: /* fall through */
+				case b64: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case b32: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case f64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case f32: /* fall through */
+				case b32: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case b16: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case f64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case f32: /* fall through */
+				case b32: /* fall through */
+				case s16: /* fall through */
+				case u16: /* fall through */
+				case f16: /* fall through */
+				case b16: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case b8: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case f64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case f32: /* fall through */
+				case b32: /* fall through */
+				case s16: /* fall through */
+				case u16: /* fall through */
+				case f16: /* fall through */
+				case b16: /* fall through */
+				case s8: /* fall through */
+				case u8: /* fall through */
+				case b8: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case u64: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case u32: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case b32: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case u16: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case b32: /* fall through */
+				case s16: /* fall through */
+				case u16: /* fall through */
+				case b16: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case u8: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case b32: /* fall through */
+				case s16: /* fall through */
+				case u16: /* fall through */
+				case b16: /* fall through */
+				case s8: /* fall through */
+				case u8: /* fall through */
+				case b8: return true; break;
+				default: break;
+			}
+			break;
+		}
+		// TODO start here
+		case s64: {
+			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case s32: {
+			switch( operand ) {
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case b32: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case s16: {
+			switch( operand ) {
+				case s16: /* fall through */
+				case u16: /* fall through */
+				case b16: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case s8: {
+			switch( operand ) {
+				case s8: /* fall through */
+				case u8: /* fall through */
+				case b8: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case f64: {
+			switch( operand ) {
+				case b64: /* fall through */
+				case f64: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case f32: {
+			switch( operand ) {
+				case b32: /* fall through */
+				case f32: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case f16: {
+			switch( operand ) {
+				case b16: /* fall through */
+				case f16: return true; break;
+				default: break;
+			}
+			break;
+		}
+		case pred: {
+			return source == pred;
+			break;
+		}
+		default: break;
+		
+	}
+	return false;
+}
+
+
 ir::PTXOperand::PTXOperand() {
 	identifier = "";
 	addressMode = Invalid;

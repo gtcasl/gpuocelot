@@ -327,8 +327,8 @@ namespace test
 		{
 			timer.stop();
 			timer.start();
-
-			for(unsigned int i = 0; timer.seconds() < perTestTimeLimit; ++i)
+			unsigned int i = 0;
+			for( ; timer.seconds() < perTestTimeLimit; ++i)
 			{
 				bool result = _doOneTest(*test, seed + i);
 				
@@ -340,7 +340,9 @@ namespace test
 				}
 				
 				timer.stop();
-			}			
+			}
+			status << "Ran '" << test->name << "' for " 
+				<< i << " iterations.\n";	
 		}
 		
 		return failures == 0;

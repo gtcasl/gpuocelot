@@ -11,7 +11,9 @@
 
 trace::TraceEvent::TraceEvent():
 	blockId(0, 0, 0),
-	PC(0) 
+	PC(0),
+	gridDim(0, 0, 0),
+	blockDim(0, 0, 0)
 {
 
 }
@@ -33,7 +35,9 @@ trace::TraceEvent::TraceEvent(
 	instruction(t_instruction),
 	active(t_active),
 	memory_addresses(t_memory_addresses),
-	memory_size(t_memory_size)
+	memory_size(t_memory_size),
+	gridDim(0, 0, 0),
+	blockDim(0, 0, 0)
 {
 
 }

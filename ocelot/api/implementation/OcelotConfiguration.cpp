@@ -67,6 +67,13 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+api::OcelotConfiguration::TraceGeneration::WarpSynchronous::WarpSynchronous():
+        enabled(false),
+        emitHotPaths(false)
+{
+
+}
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	enabled(false),
 	database("trace/database.trace"),
@@ -97,6 +104,11 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
 	trace.raceDetector = config.parse<bool>("raceDetector", true);
+
+	// more detailed configuration for this trace generator
+	hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
+	trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
+	trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

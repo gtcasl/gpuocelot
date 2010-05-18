@@ -8,6 +8,7 @@
 #define OCELOT_RUNTIME_H_INCLUDED
 
 #include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/trace/interface/WarpSynchronousGenerator.h>
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
@@ -32,7 +33,8 @@ namespace ocelot
 		trace::CacheSimulator _cacheSimulator;
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
-	
+		trace::WarpSynchronousGenerator _warpSynchronous;
+
 		bool _initialized;
 		
 	public:

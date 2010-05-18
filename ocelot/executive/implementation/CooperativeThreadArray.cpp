@@ -264,10 +264,11 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 	bool running = true;
 
 	counter = 0;
-
 	blockId = block;
 
 	currentEvent.blockId = blockId;
+	currentEvent.gridDim = gridDim;
+	currentEvent.blockDim = blockDim;
 
 	report("CooperativeThreadArray::execute called");
 	report("  block is " << block.x << ", " << block.y << ", " << block.z);

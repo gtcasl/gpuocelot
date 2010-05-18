@@ -526,6 +526,11 @@ std::string ir::PTXInstruction::valid() const {
 						+ " only valid for float point instructions.";
 				}
 			}
+			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type ) 
+					+ ", not even for relaxed typed instructions.";
+			}
 			break;
 		}
 		case Div: {
@@ -619,6 +624,11 @@ std::string ir::PTXInstruction::valid() const {
 			if( d.addressMode != PTXOperand::Register ) {
 				return "operand D must be a register not a " 
 					+ PTXOperand::toString( d.addressMode );
+			}
+			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type ) 
+					+ ", not even for relaxed typed instructions.";
 			}
 			break;
 		}
@@ -1369,6 +1379,11 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			if( a.addressMode != PTXOperand::Register ) {
 				return "operand A must be a register";
+			}
+			if( !PTXOperand::relaxedValid( type, a.type ) ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type ) 
+					+ ", not even for relaxed typed instructions.";
 			}
 			break;
 		}

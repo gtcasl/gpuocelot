@@ -15,6 +15,8 @@
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Module.h>
 
+#include <climits>
+
 #include <hydrazine/implementation/debug.h>
 
 #ifdef __i386__
@@ -1172,10 +1174,21 @@ namespace translator
 		if( ir::PTXOperand::isFloat( i.type ) )
 		{
 			ir::LLVMFadd add;
-		
-			add.d = _destination( i );
+			
+			ir::LLVMInstruction::Operand result = _destination( i );
+
 			add.a = _translate( i.a );
 			add.b = _translate( i.b );
+
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				add.d = result;
+			}
+			else
+			{
+				add.d = add.a;
+				add.a.name = _tempRegister();
+			}
 		
 			_add( add );	
 			
@@ -1202,9 +1215,7 @@ namespace translator
 				
 				ir::LLVMSelect select;
 				
-				select.d.name = _tempRegister();
-				select.d.type.type = add.d.type.type;
-				select.d.type.category = add.d.type.category;
+				select.d = result;
 				select.condition = compare.d;
 				select.a = compare.b;
 				select.b = add.d;
@@ -1215,16 +1226,94 @@ namespace translator
 		}
 		else
 		{
-			assertM( !(i.modifier & ir::PTXInstruction::sat), 
-				"Saturation for ptx int add not supported." );
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				assert( i.type == ir::PTXOperand::s32 );
+				
+				ir::LLVMSext extendA;
+				ir::LLVMSext extendB;
+								
+				extendA.a = _translate( i.a );
+				extendA.d.type.type = ir::LLVMInstruction::I64;
+				extendA.d.type.category = ir::LLVMInstruction::Type::Element;
+				extendA.d.name = _tempRegister();
+				
+				_add( extendA );
+				
+				extendB.a = _translate( i.b );
+				extendB.d.type.type = ir::LLVMInstruction::I64;
+				extendB.d.type.category = ir::LLVMInstruction::Type::Element;
+				extendB.d.name = _tempRegister();
+				
+				_add( extendB );
+				
+				ir::LLVMAdd add;
+				
+				add.a = extendA.d;
+				add.b = extendB.d;
+				add.d.name = _tempRegister();
+				add.d.type.type = ir::LLVMInstruction::I64;
+				add.d.type.category = ir::LLVMInstruction::Type::Element;
+				
+				_add( add );
+				
+				ir::LLVMIcmp compare;
+				
+				compare.d.name = _tempRegister();
+				compare.d.type.type = ir::LLVMInstruction::I1;
+				compare.d.type.category = ir::LLVMInstruction::Type::Element;
+				compare.comparison = ir::LLVMInstruction::Slt;
+				compare.a = add.d;
+				compare.b.type.type = ir::LLVMInstruction::I64;
+				compare.b.type.category = ir::LLVMInstruction::Type::Element;
+				compare.b.constant = true;
+				compare.b.i64 = INT_MIN;
 
-			ir::LLVMAdd add;
-			
-			add.d = _destination( i );
-			add.a = _translate( i.a );
-			add.b = _translate( i.b );
-		
-			_add( add );
+				_add( compare );
+				
+				ir::LLVMSelect select;
+				
+				select.d.name = _tempRegister();
+				select.d.type.type = ir::LLVMInstruction::I64;
+				select.d.type.category = ir::LLVMInstruction::Type::Element;
+
+				select.condition = compare.d;
+				select.a = compare.b;
+				select.b = compare.a;
+				
+				_add( select );
+				
+				compare.d.name = _tempRegister();
+				compare.comparison = ir::LLVMInstruction::Sgt;
+				compare.b.i64 = INT_MAX;
+				compare.a = select.d;
+				
+				_add( compare );
+
+				select.condition = compare.d;
+				select.a = compare.b;
+				select.b = compare.a;
+				select.d.name = _tempRegister();
+
+				_add( select );
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.a = select.d;
+				truncate.d = _destination( i );
+				
+				_add( truncate );
+			}
+			else
+			{
+				ir::LLVMAdd add;
+
+				add.d = _destination( i );
+				add.a = _translate( i.a );
+				add.b = _translate( i.b );
+				
+				_add( add );
+			}
 		}
 		
 	}

@@ -671,11 +671,14 @@ addModifier : TOKEN_CARRY
 	state.carry( true );
 };
 
+addModifier : TOKEN_SAT
+{
+	state.modifier( $<value>1 );
+};
+
 addModifier : floatRounding optionalFtz optionalSaturate
 {
 	state.carry( false );
-	state.modifier( $<value>1 );
-	state.modifier( $<value>3 );
 };
 
 addOrSubOpcode : OPCODE_ADD | OPCODE_SUB;

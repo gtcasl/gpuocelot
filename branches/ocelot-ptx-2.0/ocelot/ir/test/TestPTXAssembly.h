@@ -35,12 +35,16 @@ namespace test
 			/*! \brief A pointer to a reference function */
 			typedef void (*ReferenceFunction)(void* output, void* input);
 			
+			/*! \brief A pointer to an input generator function */
+			typedef char* (*GeneratorFunction)(MersenneTwister& generator);
+			
 			/*! \brief A class for representing a single test */
 			class TestHandle
 			{
 				public:
 					std::string name;
 					ReferenceFunction reference;
+					GeneratorFunction generator;
 					std::string ptx;
 					TypeVector inputTypes;
 					TypeVector outputTypes;
@@ -79,7 +83,7 @@ namespace test
 			void add(const std::string& name,
 				ReferenceFunction function, const std::string& ptx, 
 				const TypeVector& out, const TypeVector& in, 
-				unsigned int threads, unsigned int ctas);
+				GeneratorFunction gen, unsigned int threads, unsigned int ctas);
 				
 			/*! \brief Run the current set of tests, abort on the first error */
 			bool doTest();

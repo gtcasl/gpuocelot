@@ -419,7 +419,6 @@ bool ir::PTXOperand::relaxedValid( DataType instructionType,
 			}
 			break;
 		}
-		// TODO start here
 		case s64: {
 			switch( operand ) {
 				case s64: /* fall through */
@@ -431,6 +430,9 @@ bool ir::PTXOperand::relaxedValid( DataType instructionType,
 		}
 		case s32: {
 			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: /* fall through */
 				case s32: /* fall through */
 				case u32: /* fall through */
 				case b32: return true; break;
@@ -440,6 +442,12 @@ bool ir::PTXOperand::relaxedValid( DataType instructionType,
 		}
 		case s16: {
 			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case b32: /* fall through */
 				case s16: /* fall through */
 				case u16: /* fall through */
 				case b16: return true; break;
@@ -449,6 +457,15 @@ bool ir::PTXOperand::relaxedValid( DataType instructionType,
 		}
 		case s8: {
 			switch( operand ) {
+				case s64: /* fall through */
+				case u64: /* fall through */
+				case b64: /* fall through */
+				case s32: /* fall through */
+				case u32: /* fall through */
+				case b32: /* fall through */
+				case s16: /* fall through */
+				case u16: /* fall through */
+				case b16: /* fall through */
 				case s8: /* fall through */
 				case u8: /* fall through */
 				case b8: return true; break;
@@ -481,7 +498,7 @@ bool ir::PTXOperand::relaxedValid( DataType instructionType,
 			break;
 		}
 		case pred: {
-			return source == pred;
+			return operand == pred;
 			break;
 		}
 		default: break;

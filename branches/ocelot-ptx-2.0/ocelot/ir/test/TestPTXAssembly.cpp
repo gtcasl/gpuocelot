@@ -8,6 +8,8 @@
 #define TEST_PTX_ASSEMBLY_CPP_INCLUDED
 
 #include <ocelot/ir/test/TestPTXAssembly.h>
+#include <ocelot/ir/interface/PTXOperand.h>
+
 #include <ocelot/api/interface/ocelot.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -15,8 +17,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#define ADD_TEST(x) add( #x, x##_REF, x##_PTX, x##_OUT, \
-	x##_IN, x##_THREADS, x##_CTAS);
+#include <climits>
 
 template<typename T>
 T getParameter(void* in, unsigned int offset)
@@ -31,40 +32,84 @@ void setParameter(void* output, unsigned int offset, T value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TEST ADD U8
-const char* testAddU16_PTX = 
-".version 2.0 \n\
-.entry test(.param .u64 out, .param .u64 in) \n\
-{	\n\
-	.reg .u64 %rIn, %rOut; \n\
-	.reg .u16 %r<3>; \n\
-	ld.param.u64 %rIn, [in]; \n\
-	ld.param.u64 %rOut, [out]; \n\
-	ld.global.u16 %r0, [%rIn]; \n\
-	ld.global.u16 %r1, [%rIn + 2]; \n\
-	add.u16 %r2, %r0, %r1; \n\
-	st.global.u16 [%rOut], %r2; \n\
-	exit; \n\
-}";
-
-void testAddU16_REF(void* output, void* input)
+// TEST ADD
+std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat)
 {
-	unsigned short r0 = getParameter<unsigned short>(input, 0);
-	unsigned short r1 = getParameter<unsigned short>(input, 2);
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	unsigned short result = r0 + r1;
+	result << ".version 2.0 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<3>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	result << "\tadd";
+	if(sat) result << ".sat";
+	result << typeString << " %r2, %r0, %r1; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r2; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type, bool sat>
+void testAdd_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	
+	type result = 0;
+	
+	if(sat)
+	{
+		long long int t0 = r0;
+		long long int t1 = r1;
+		
+		long long int tresult = t0 + t1;
+		tresult = std::max(tresult, (long long int)INT_MIN);
+		tresult = std::min(tresult, (long long int)INT_MAX);
+		
+		result = (type)tresult;
+	}
+	else
+	{
+		result = r0 + r1;
+	}
 	
 	setParameter(output, 0, result);
 }
 
-test::TestPTXAssembly::TypeVector testAddU16_IN = {test::TestPTXAssembly::I16, 
-	test::TestPTXAssembly::I16};
+test::TestPTXAssembly::TypeVector testAdd_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
 
-test::TestPTXAssembly::TypeVector testAddU16_OUT = {test::TestPTXAssembly::I16};
+test::TestPTXAssembly::TypeVector testAdd_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
 
-unsigned int testAddU16_THREADS = 1;
+template <typename type>
+char* testAdd_GEN(test::Test::MersenneTwister& generator)
+{
+	type* allocation = new type[2];
+	char* result = (char*) allocation;
 
-unsigned int testAddU16_CTAS = 1;
+	for(unsigned int i = 0; i < 2*sizeof(type); ++i)
+	{
+		result[i] = generator();
+	}
+	
+	return result;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -103,15 +148,10 @@ namespace test
 			outputSize += bytes(*type);
 		}
 		
-		char* inputBlock = new char[inputSize];
+		char* inputBlock = (*test.generator)(random);
 		char* outputBlock = new char[outputSize];
 		char* referenceBlock = new char[outputSize];
-		
-		for(unsigned int i = 0; i < inputSize; ++i)
-		{
-			inputBlock[i] = random();
-		}
-		
+				
 		bool pass = true;
 		int devices = 0;
 		
@@ -295,17 +335,45 @@ namespace test
 		description += "through unit tests on all available devices until ";
 		description += "a timer expires.";
 		
-		ADD_TEST(testAddU16);
+		add("TestAdd-u16", testAdd_REF<unsigned short, false>, 
+			testAdd_PTX(ir::PTXOperand::u16, false), 
+			testAdd_OUT(I16), testAdd_IN(I16), 
+			testAdd_GEN<unsigned short>, 1, 1);
+		add("TestAdd-s16", testAdd_REF<signed short, false>, 
+			testAdd_PTX(ir::PTXOperand::s16, false), 
+			testAdd_OUT(I16), testAdd_IN(I16), 
+			testAdd_GEN<signed short>, 1, 1);
+		add("TestAdd-u32", testAdd_REF<unsigned int, false>, 
+			testAdd_PTX(ir::PTXOperand::u32, false), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			testAdd_GEN<unsigned int>, 1, 1);
+		add("TestAdd-s32", testAdd_REF<signed int, false>, 
+			testAdd_PTX(ir::PTXOperand::s32, false), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			testAdd_GEN<signed int>, 1, 1);
+		add("TestAdd-s32-sat", testAdd_REF<signed int, true>, 
+			testAdd_PTX(ir::PTXOperand::s32, true), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			testAdd_GEN<signed int>, 1, 1);
+		add("TestAdd-u64", testAdd_REF<long long unsigned int, false>, 
+			testAdd_PTX(ir::PTXOperand::u64, false), 
+			testAdd_OUT(I64), testAdd_IN(I64), 
+			testAdd_GEN<long long unsigned int>, 1, 1);
+		add("TestAdd-s64", testAdd_REF<long long signed int, false>, 
+			testAdd_PTX(ir::PTXOperand::s64, false), 
+			testAdd_OUT(I64), testAdd_IN(I64), 
+			testAdd_GEN<long long signed int>, 1, 1);
 	}
 			
 	void TestPTXAssembly::add(const std::string& name, 
 		ReferenceFunction function, const std::string& ptx, 
-		const TypeVector& out, const TypeVector& in, unsigned int threads, 
-		unsigned int ctas)
+		const TypeVector& out, const TypeVector& in, 
+		GeneratorFunction generator, unsigned int threads, unsigned int ctas)
 	{
 		TestHandle test;
 		test.name = name;
 		test.reference = function;
+		test.generator = generator;
 		test.ptx = ptx;
 		test.inputTypes = in;
 		test.outputTypes = out;

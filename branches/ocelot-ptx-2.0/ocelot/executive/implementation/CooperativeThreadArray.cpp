@@ -5,12 +5,6 @@
 		with associated code for emulating its execution
 */
 
-#include <assert.h>
-#include <math.h>
-#include <cstring>
-#include <float.h>
-#include <fenv.h> 
-
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
@@ -19,6 +13,13 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/TextureOperations.h>
+
+#include <cassert>
+#include <cmath>
+#include <cstring>
+#include <climits>
+#include <cfloat>
+#include <cfenv> 
 
 #include <hydrazine/implementation/debug.h>
 
@@ -1357,7 +1358,15 @@ void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
-			d = a + b;
+			if (instr.modifier & ir::PTXInstruction::sat) {
+				PTXS64 temp = (PTXS64)a + (PTXS64)b;
+				temp = min(temp, (PTXS64)INT_MAX);
+				temp = max(temp, (PTXS64)INT_MIN);
+				d = (PTXS32)temp;
+			}
+			else {
+				d = a + b;
+			}
 			setRegAsS32(threadID, instr.d.reg, d);
 		}
 	}

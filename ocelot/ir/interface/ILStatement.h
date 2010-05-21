@@ -7,6 +7,9 @@
 #ifndef IL_STATEMENT_H_INCLUDED
 #define IL_STATEMENT_H_INCLUDED
 
+//C++ standard library includes
+#include <vector>
+
 // Ocelot includes
 #include <ocelot/ir/interface/ILInstruction.h>
 
@@ -20,9 +23,12 @@ namespace ir
 			{
 				Instruction,
 				ConstantBufferDcl,
+				LiteralDcl,
 				OtherDeclarations,         // TODO Delete this
 				InvalidType
 			};
+
+			typedef std::vector<ILOperand> operandVector;
 
 			/*! \brief If this is an instruction, a pointer to the instruction
 			 * object.
@@ -32,8 +38,8 @@ namespace ir
 			ILInstruction *instruction;
 			/*! \brief Statement type */
 			Type type;
-			/*! \brief The operand if this is a variable declaration */
-			ILOperand operand;
+			/*! \brief The operands if this is a declaration */
+			operandVector operands;
 
 			/*! \brief Default constructor */
 			ILStatement(Type type = InvalidType);

@@ -18,10 +18,6 @@
 
 namespace translator
 {
-	PTXToILTranslator::PTXToILTranslator() : literals(0)
-	{
-	}
-
 	std::string PTXToILTranslator::translate(const ir::Module *module)
 	{
 		assertM(module->kernels.size() == 1, 
@@ -333,13 +329,13 @@ namespace translator
 	{
 		std::stringstream stream;
 
-		const LiteralMap::const_iterator it = literalMap.find(l);
+		const LiteralMap::const_iterator it = literals.find(l);
 
-		if (it != literalMap.end()) {
+		if (it != literals.end()) {
 			stream << it->second;
 		} else {
-			stream << "l" << literals++;
-			literalMap.insert(std::make_pair(l, stream.str()));
+			stream << "l" << literals.size();
+			literals.insert(std::make_pair(l, stream.str()));
 		}
 
 		return stream.str();
@@ -370,14 +366,49 @@ namespace translator
 
  	void PTXToILTranslator::_addKernelPrefix()
  	{
-		ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
+		report("Adding Kernel Prefix");
+
+		report("Adding dcl_literals");
+		if (literals.size() > 0) {
+			LiteralMap::const_iterator it;
+			for (it = literals.begin() ; it != literals.end() ; it++) 
+			{
+				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
+
+				dcl_literal.operands.resize(2);
+				dcl_literal.operands[0].identifier = it->second;
+				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
+
+				dcl_literal.operands[1].imm_uint = it->first;
+				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
+
+				_ilKernel->_statements.push_front(dcl_literal);
+			}
+		}
+
+		report("Adding dcl_cb1");
+		if (_ilKernel->parameters.size() > 0) {
+			ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
+
+			std::stringstream stream;
+			stream << "cb1[" << _ilKernel->parameters.size() << "]";
+			dcl_cb1.operands.resize(1);
+			dcl_cb1.operands[0].identifier = stream.str();
+			dcl_cb1.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
+
+			_ilKernel->_statements.push_front(dcl_cb1);
+		}
+
+		report("Adding dcl_cb0");
+		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
 
 		std::stringstream stream;
-		stream << "cb1[" << _ilKernel->parameters.size() << "]";
-		dcl_cb1.operand.identifier = stream.str();
-		dcl_cb1.operand.addressMode = ir::ILOperand::ConstantBuffer;
+		stream << "cb0[1]";
+		dcl_cb0.operands.resize(1);
+		dcl_cb0.operands[0].identifier = stream.str();
+		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
- 		_ilKernel->_statements.push_front(dcl_cb1);
+		_ilKernel->_statements.push_front(dcl_cb0);
 
  		_ilKernel->_statements.push_front(ir::ILStatement(
  					ir::ILStatement::OtherDeclarations));

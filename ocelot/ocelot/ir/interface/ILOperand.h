@@ -21,6 +21,7 @@ namespace ir
 			/*! \brief Addressing modes of operand */
 			enum AddressMode {
 				Register,              // use as a register variable
+				Immediate,             // immediate value
 				Literal,               // literal value (immediate)
 				ConstantBuffer,        // constant buffer (parameter)
 				Special,               // special register
@@ -47,6 +48,8 @@ namespace ir
 			SpecialRegister special;
 			/*! \brief Identifier of operand */
 			std::string identifier;
+			/*! \brief Immediate value */
+			long long unsigned int imm_uint;
 
 			std::string toString() const;
 			std::string toString(SpecialRegister sr) const;

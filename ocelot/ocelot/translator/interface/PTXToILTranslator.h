@@ -25,16 +25,11 @@ namespace translator
 			/*! \brief Translate a module from PTX to IL */
 			std::string translate(const ir::Module *module);
 
-			/*! \brief Default constructor */
-			PTXToILTranslator();
-
 		private:
 			typedef std::map<long long unsigned int, std::string> LiteralMap;
 
 			ir::ILKernel *_ilKernel;
-			LiteralMap literalMap;
-
-			unsigned int literals;
+			LiteralMap literals;
 
 			void _translateInstructions();
 

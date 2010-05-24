@@ -24,36 +24,24 @@ namespace executive {
 
 		~CTAContext();
 
-		/*!
-			Program counter - index into PTXInstruction vector
-		*/
+		/*! Program counter - index into PTXInstruction vector */
 		int PC;
 
-		/*!
-			Indicates whether the block is still running
-		*/
+		/*! Indicates whether the block is still running */
 		bool running;
 
-		/*!
-			Thread mask with a 1 indicating activity
-		*/
+		/*! Thread mask with a 1 indicating activity */
 		boost::dynamic_bitset<> active;
 
-		/*!
-			Pointer to owning kernel
-		*/
+		/*! Pointer to owning kernel */
 		const EmulatedKernel *kernel;
 
-		/*!
-			Pointer to owning CTA
-		*/
+		/*! Pointer to owning CTA */
 		CooperativeThreadArray *cta;
 
 	public:
 
-		/*!
-			Given a thread's ID, determine if the instruction should execute or not
-		*/
+		/*! Given a thread's ID, determine if the instruction should execute */
 		bool predicated(int threadID, const ir::PTXInstruction &instr);
 		
 	};

@@ -1859,7 +1859,6 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext &context, const PTXI
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXInstruction &instr) {
-	trace();
 	// if threads diverge
 	//		pop the activation stack, push an activation context for the reconverge instruction,
 	//			push the activation context for the branch target and for the fall-through target
@@ -1952,6 +1951,8 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		report("   divergent branching");
 #endif
 	}
+
+	trace();
 }
 
 /*!

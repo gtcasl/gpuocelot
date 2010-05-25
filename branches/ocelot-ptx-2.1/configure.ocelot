@@ -2,7 +2,6 @@
 	ocelot: "ocelot",
 	version: "1.1.520",
 	trace: { 
-		enabled: true,
 		database: "traces/database.trace",
 		memory: false,
 		branch: false,
@@ -18,7 +17,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia, emulated, llvm ],
+		devices: [ llvm, emulated, nvidia ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

@@ -1304,6 +1304,96 @@ namespace translator
 				
 				_add( truncate );
 			}
+			else if ( i.carry & ir::PTXInstruction::CC )
+			{
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				if( ir::PTXOperand::isSigned( i.type ) )
+				{
+					ir::LLVMSext sext;
+					
+					sext.d = extendedA;
+					sext.a = _translate( i.a );
+					
+					_add( sext );
+					
+					sext.d = extendedB;
+					sext.a = _translate( i.b );
+					
+					_add( sext );
+				}
+				else
+				{
+					ir::LLVMZext zext;
+					
+					zext.d = extendedA;
+					zext.a = _translate( i.a );
+					
+					_add( zext );
+					
+					zext.d = extendedB;
+					zext.a = _translate( i.b );
+					
+					_add( zext );					
+				}
+				
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				ir::LLVMAdd add;
+				
+				add.a = extendedA;
+				add.b = extendedB;
+				add.d = extendedD;
+				
+				_add( add );
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.d = _destination( i );
+				truncate.a = extendedD;
+				
+				_add( truncate );
+				
+				ir::LLVMLshr shift;
+				
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				shift.a = extendedD;
+				shift.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I32, 
+					ir::LLVMInstruction::Type::Element );
+				shift.b.constant = true;
+				shift.b.i32 = 32;
+				
+				_add( shift );
+				
+				ir::LLVMAnd mask;
+				
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				mask.a = shift.d;
+				mask.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element );
+				mask.b.constant = true;
+				mask.b.i64 = 1;
+				
+				_add( mask );
+				
+				truncate.d = _translate( i.pq );
+				truncate.a = mask.d;
+				
+				_add( truncate );
+			}
 			else
 			{
 				ir::LLVMAdd add;
@@ -1314,103 +1404,142 @@ namespace translator
 				
 				_add( add );
 			}
-		}
-		
+		}		
 	}
 
 	void PTXToLLVMTranslator::_translateAddC( const ir::PTXInstruction& i )
 	{
-		ir::LLVMInstruction::Operand destination = _destination( i );
-		ir::LLVMInstruction::Operand extendedA = _translate( i.a );
-		ir::LLVMInstruction::Operand extendedB = _translate( i.b );
-		
-		extendedA.type = ir::LLVMInstruction::I64;
-		extendedB.type = ir::LLVMInstruction::I64;
-		
-		if( ir::PTXOperand::isSigned( i.type ) )
+		if( i.carry & ir::PTXInstruction::CC )
 		{
-			ir::LLVMSext extend;
-			
-			extend.d = extendedA;
-			extend.a = extendedA;
-			extend.a.type = ir::LLVMInstruction::I32;
-			
-			_add( extend );
-			
-			extend.d = extendedB;
-			extend.a = extendedB;
-			extend.a.type = ir::LLVMInstruction::I32;
-			
-			_add( extend );
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedC( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				if( ir::PTXOperand::isSigned( i.type ) )
+				{
+					ir::LLVMSext sext;
+					
+					sext.d = extendedA;
+					sext.a = _translate( i.a );
+					
+					_add( sext );
+					
+					sext.d = extendedB;
+					sext.a = _translate( i.b );
+					
+					_add( sext );
+
+					sext.d = extendedC;
+					sext.a = _translate( i.c );
+					
+					_add( sext );
+				}
+				else
+				{
+					ir::LLVMZext zext;
+					
+					zext.d = extendedA;
+					zext.a = _translate( i.a );
+					
+					_add( zext );
+					
+					zext.d = extendedB;
+					zext.a = _translate( i.b );
+					
+					_add( zext );					
+
+					zext.d = extendedC;
+					zext.a = _translate( i.c );
+					
+					_add( zext );					
+				}
+				
+				ir::LLVMInstruction::Operand extendedDt( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				ir::LLVMAdd add;
+				
+				add.a = extendedA;
+				add.b = extendedB;
+				add.d = extendedDt;
+				
+				_add( add );
+
+				add.a = extendedDt;
+				add.b = extendedC;
+				add.d = extendedD;
+				
+				_add( add );
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.d = _destination( i );
+				truncate.a = extendedD;
+				
+				_add( truncate );
+				
+				ir::LLVMLshr shift;
+				
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				shift.a = extendedD;
+				shift.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I32, 
+					ir::LLVMInstruction::Type::Element );
+				shift.b.constant = true;
+				shift.b.i32 = 32;
+				
+				_add( shift );
+				
+				ir::LLVMAnd mask;
+				
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				mask.a = shift.d;
+				mask.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element );
+				mask.b.constant = true;
+				mask.b.i64 = 1;
+				
+				_add( mask );
+				
+				truncate.d = _translate( i.pq );
+				truncate.a = mask.d;
+				
+				_add( truncate );
 		}
 		else
 		{
-			ir::LLVMZext extend;
+			ir::LLVMInstruction::Operand destination = _destination( i );
+		
+			ir::LLVMAdd add;
 			
-			extend.d = extendedA;
-			extend.a = extendedA;
-			extend.a.type = ir::LLVMInstruction::I32;
+			add.d = destination;
+			add.d.name = _tempRegister();
+			add.a = _translate( i.a );
+			add.b = _translate( i.b );
 			
-			_add( extend );
+			_add( add );
 			
-			extend.d = extendedB;
-			extend.a = extendedB;
-			extend.a.type = ir::LLVMInstruction::I32;
+			add.a = add.d;
+			add.d = destination;
+			add.b = _translate( i.c );
 			
-			_add( extend );
-		}
-				
-		ir::LLVMAdd add;
-		
-		add.d = extendedB;
-		add.d.name = _tempRegister();
-		add.a = extendedB;
-		add.b = _conditionCodeRegister( i.c );
-		
-		_add( add );
-
-		ir::LLVMAdd add1;
-		
-		add1.d = destination;
-		add1.d.type.type = ir::LLVMInstruction::I64;
-		add1.d.name = _tempRegister();
-		add1.a = extendedA;
-		add1.b = add.d;
-		
-		_add( add1 );
-
-		ir::LLVMTrunc truncate;
-		
-		truncate.d = destination;
-		truncate.a = add1.d;
-		
-		_add( truncate );
-		
-		if( i.modifier & ir::PTXInstruction::CC )
-		{
-			ir::LLVMLshr shift;
-			
-			shift.d = add1.d;
-			shift.d.name = _tempRegister();
-			shift.a = add1.d;
-			shift.b.type.category = ir::LLVMInstruction::Type::Element;
-			shift.b.type.type = ir::LLVMInstruction::I32;
-			shift.b.constant = true;
-			shift.b.i32 = 32;
-			
-			_add( shift );
-		
-			ir::LLVMAnd And;
-			
-			And.d = _destinationCC( i );
-			And.a = shift.d;
-			And.b.type.category = ir::LLVMInstruction::Type::Element;
-			And.b.type.type = ir::LLVMInstruction::I64;
-			And.b.constant = true;
-			And.b.i64 = 1;
-		
-			_add( And );
-		}
+			_add( add );
+		}	
 	}
 
 	void PTXToLLVMTranslator::_translateAnd( const ir::PTXInstruction& i )
@@ -3510,112 +3639,324 @@ namespace translator
 		}
 		else
 		{
-			assertM( !(i.modifier & ir::PTXInstruction::sat), 
-				"Saturation for ptx int sub not supported." );
-		
-			ir::LLVMSub sub;
-			
-			sub.d = _destination( i );
-			sub.a = _translate( i.a );
-			sub.b = _translate( i.b );
-		
-			_add( sub );
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				assert( i.type == ir::PTXOperand::s32 );
+				
+				ir::LLVMSext extendA;
+				ir::LLVMSext extendB;
+								
+				extendA.a = _translate( i.a );
+				extendA.d.type.type = ir::LLVMInstruction::I64;
+				extendA.d.type.category = ir::LLVMInstruction::Type::Element;
+				extendA.d.name = _tempRegister();
+				
+				_add( extendA );
+				
+				extendB.a = _translate( i.b );
+				extendB.d.type.type = ir::LLVMInstruction::I64;
+				extendB.d.type.category = ir::LLVMInstruction::Type::Element;
+				extendB.d.name = _tempRegister();
+				
+				_add( extendB );
+				
+				ir::LLVMSub sub;
+				
+				sub.a = extendA.d;
+				sub.b = extendB.d;
+				sub.d.name = _tempRegister();
+				sub.d.type.type = ir::LLVMInstruction::I64;
+				sub.d.type.category = ir::LLVMInstruction::Type::Element;
+				
+				_add( sub );
+				
+				ir::LLVMIcmp compare;
+				
+				compare.d.name = _tempRegister();
+				compare.d.type.type = ir::LLVMInstruction::I1;
+				compare.d.type.category = ir::LLVMInstruction::Type::Element;
+				compare.comparison = ir::LLVMInstruction::Slt;
+				compare.a = sub.d;
+				compare.b.type.type = ir::LLVMInstruction::I64;
+				compare.b.type.category = ir::LLVMInstruction::Type::Element;
+				compare.b.constant = true;
+				compare.b.i64 = INT_MIN;
+
+				_add( compare );
+				
+				ir::LLVMSelect select;
+				
+				select.d.name = _tempRegister();
+				select.d.type.type = ir::LLVMInstruction::I64;
+				select.d.type.category = ir::LLVMInstruction::Type::Element;
+
+				select.condition = compare.d;
+				select.a = compare.b;
+				select.b = compare.a;
+				
+				_add( select );
+				
+				compare.d.name = _tempRegister();
+				compare.comparison = ir::LLVMInstruction::Sgt;
+				compare.b.i64 = INT_MAX;
+				compare.a = select.d;
+				
+				_add( compare );
+
+				select.condition = compare.d;
+				select.a = compare.b;
+				select.b = compare.a;
+				select.d.name = _tempRegister();
+
+				_add( select );
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.a = select.d;
+				truncate.d = _destination( i );
+				
+				_add( truncate );
+			}
+			else if( i.carry & ir::PTXInstruction::CC )
+			{
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				if( ir::PTXOperand::isSigned( i.type ) )
+				{
+					ir::LLVMSext sext;
+					
+					sext.d = extendedA;
+					sext.a = _translate( i.a );
+					
+					_add( sext );
+					
+					sext.d = extendedB;
+					sext.a = _translate( i.b );
+					
+					_add( sext );
+				}
+				else
+				{
+					ir::LLVMZext zext;
+					
+					zext.d = extendedA;
+					zext.a = _translate( i.a );
+					
+					_add( zext );
+					
+					zext.d = extendedB;
+					zext.a = _translate( i.b );
+					
+					_add( zext );					
+				}
+				
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				ir::LLVMSub sub;
+				
+				sub.a = extendedA;
+				sub.b = extendedB;
+				sub.d = extendedD;
+				
+				_add( sub );
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.d = _destination( i );
+				truncate.a = extendedD;
+				
+				_add( truncate );
+				
+				ir::LLVMLshr shift;
+				
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				shift.a = extendedD;
+				shift.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I32, 
+					ir::LLVMInstruction::Type::Element );
+				shift.b.constant = true;
+				shift.b.i32 = 32;
+				
+				_add( shift );
+				
+				ir::LLVMAnd mask;
+				
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				mask.a = shift.d;
+				mask.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element );
+				mask.b.constant = true;
+				mask.b.i64 = 1;
+				
+				_add( mask );
+				
+				truncate.d = _translate( i.pq );
+				truncate.a = mask.d;
+				
+				_add( truncate );			
+			}
+			else
+			{
+				ir::LLVMSub sub;
+
+				sub.d = _destination( i );
+				sub.a = _translate( i.a );
+				sub.b = _translate( i.b );
+				
+				_add( sub );
+			}
 		}
 	}
 
 	void PTXToLLVMTranslator::_translateSubC( const ir::PTXInstruction& i )
 	{	
-		ir::LLVMInstruction::Operand destination = _destination( i );
-		ir::LLVMInstruction::Operand extendedA = _translate( i.a );
-		ir::LLVMInstruction::Operand extendedB = _translate( i.b );
-		
-		extendedA.type = ir::LLVMInstruction::I64;
-		extendedB.type = ir::LLVMInstruction::I64;
-		
-		if( ir::PTXOperand::isSigned( i.type ) )
+		if( i.carry & ir::PTXInstruction::CC )
 		{
-			ir::LLVMSext extend;
-			
-			extend.d = extendedA;
-			extend.a = extendedA;
-			extend.a.type = ir::LLVMInstruction::I32;
-			
-			_add( extend );
-			
-			extend.d = extendedB;
-			extend.a = extendedB;
-			extend.a.type = ir::LLVMInstruction::I32;
-			
-			_add( extend );
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedC( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				if( ir::PTXOperand::isSigned( i.type ) )
+				{
+					ir::LLVMSext sext;
+					
+					sext.d = extendedA;
+					sext.a = _translate( i.a );
+					
+					_add( sext );
+					
+					sext.d = extendedB;
+					sext.a = _translate( i.b );
+					
+					_add( sext );
+
+					sext.d = extendedC;
+					sext.a = _translate( i.c );
+					
+					_add( sext );
+				}
+				else
+				{
+					ir::LLVMZext zext;
+					
+					zext.d = extendedA;
+					zext.a = _translate( i.a );
+					
+					_add( zext );
+					
+					zext.d = extendedB;
+					zext.a = _translate( i.b );
+					
+					_add( zext );					
+
+					zext.d = extendedC;
+					zext.a = _translate( i.c );
+					
+					_add( zext );					
+				}
+				
+				ir::LLVMInstruction::Operand extendedDt( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				ir::LLVMSub sub;
+				
+				sub.a = extendedA;
+				sub.b = extendedB;
+				sub.d = extendedDt;
+				
+				_add( sub );
+
+				ir::LLVMAdd add;
+
+				add.a = extendedDt;
+				add.b = extendedC;
+				add.d = extendedD;
+				
+				_add( add );
+				
+				ir::LLVMTrunc truncate;
+				
+				truncate.d = _destination( i );
+				truncate.a = extendedD;
+				
+				_add( truncate );
+				
+				ir::LLVMLshr shift;
+				
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				shift.a = extendedD;
+				shift.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I32, 
+					ir::LLVMInstruction::Type::Element );
+				shift.b.constant = true;
+				shift.b.i32 = 32;
+				
+				_add( shift );
+				
+				ir::LLVMAnd mask;
+				
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+				mask.a = shift.d;
+				mask.b.type = ir::LLVMInstruction::Type( 
+					ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element );
+				mask.b.constant = true;
+				mask.b.i64 = 1;
+				
+				_add( mask );
+				
+				truncate.d = _translate( i.pq );
+				truncate.a = mask.d;
+				
+				_add( truncate );
 		}
 		else
 		{
-			ir::LLVMZext extend;
+			ir::LLVMInstruction::Operand destination = _destination( i );
+		
+			ir::LLVMSub sub;
 			
-			extend.d = extendedA;
-			extend.a = extendedA;
-			extend.a.type = ir::LLVMInstruction::I32;
+			sub.d = destination;
+			sub.d.name = _tempRegister();
+			sub.a = _translate( i.a );
+			sub.b = _translate( i.b );
 			
-			_add( extend );
+			_add( sub );
 			
-			extend.d = extendedB;
-			extend.a = extendedB;
-			extend.a.type = ir::LLVMInstruction::I32;
+			ir::LLVMAdd add;
 			
-			_add( extend );
-		}
-				
-		ir::LLVMAdd add;
-		
-		add.d = extendedB;
-		add.d.name = _tempRegister();
-		add.a = extendedB;
-		add.b = _conditionCodeRegister( i.c );
-		
-		_add( add );
-
-		ir::LLVMSub sub;
-		
-		sub.d = destination;
-		sub.d.type.type = ir::LLVMInstruction::I64;
-		sub.d.name = _tempRegister();
-		sub.a = extendedA;
-		sub.b = add.d;
-		
-		_add( sub );
-
-		ir::LLVMTrunc truncate;
-		
-		truncate.d = destination;
-		truncate.a = sub.d;
-		
-		_add( truncate );
-		
-		if( i.modifier & ir::PTXInstruction::CC )
-		{
-			ir::LLVMLshr shift;
+			add.a = sub.d;
+			add.d = destination;
+			add.b = _translate( i.c );
 			
-			shift.d = sub.d;
-			shift.d.name = _tempRegister();
-			shift.a = sub.d;
-			shift.b.type.category = ir::LLVMInstruction::Type::Element;
-			shift.b.type.type = ir::LLVMInstruction::I32;
-			shift.b.constant = true;
-			shift.b.i32 = 32;
-			
-			_add( shift );
-		
-			ir::LLVMAnd And;
-			
-			And.d = _destinationCC( i );
-			And.a = shift.d;
-			And.b.type.category = ir::LLVMInstruction::Type::Element;
-			And.b.type.type = ir::LLVMInstruction::I64;
-			And.b.constant = true;
-			And.b.i64 = 1;
-		
-			_add( And );
-		}
+			_add( add );
+		}	
 	}
 
 	void PTXToLLVMTranslator::_translateTex( const ir::PTXInstruction& i )

@@ -39,6 +39,14 @@ ControlFlowGraph::BasicBlock::~BasicBlock() {
 
 }
 
+void ControlFlowGraph::BasicBlock::clear() {
+	for (InstructionList::iterator instruction = instructions.begin();
+		instruction != instructions.end(); ++instruction ) {
+		delete *instruction;
+	}
+	instructions.clear();
+}
+
 ControlFlowGraph::BasicBlock::EdgeList::iterator 
 	ControlFlowGraph::BasicBlock::get_fallthrough_edge() {
 	for (EdgePointerVector::iterator edge = out_edges.begin(); 
@@ -119,6 +127,7 @@ ControlFlowGraph::ControlFlowGraph():
 }
 
 ControlFlowGraph::~ControlFlowGraph() {
+	clear();
 }
 
 size_t ControlFlowGraph::size() const {
@@ -147,6 +156,7 @@ void ControlFlowGraph::remove_block(iterator block) {
 		remove_edge(*eit);
 	}
 	
+	block->clear();
 	_blocks.erase(block);
 }
 
@@ -341,6 +351,9 @@ std::string ControlFlowGraph::toString( Edge::Type t ) {
 
 
 void ControlFlowGraph::clear() {
+	for (iterator block = begin(); block != end(); ++block) {
+		block->clear();
+	}
 	_blocks.clear();
 	_edges.clear();
 	_entry = insert_block(BasicBlock("entry"));

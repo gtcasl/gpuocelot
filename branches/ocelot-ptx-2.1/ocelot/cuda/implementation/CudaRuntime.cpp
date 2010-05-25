@@ -411,6 +411,10 @@ cuda::CudaRuntime::~CudaRuntime() {
 	// free things that need freeing
 	//
 	// devices
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		delete *device;
+	}
 	
 	// mutex
 	pthread_mutex_destroy(&_mutex);
@@ -422,6 +426,9 @@ cuda::CudaRuntime::~CudaRuntime() {
 	// kernels
 	
 	// fat binaries
+	
+	// config
+	config::destroy();
 	
 	// globals
 }
@@ -2274,12 +2281,11 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	try {
 		trace::TraceGeneratorVector traceGens;
 
-		if (config::getTrace().enabled) {
-			traceGens = thread.persistentTraceGenerators;
-			traceGens.insert(traceGens.end(), 
-				thread.nextTraceGenerators.begin(), 
-				thread.nextTraceGenerators.end());
-		}
+		traceGens = thread.persistentTraceGenerators;
+		traceGens.insert(traceGens.end(), 
+			thread.nextTraceGenerators.begin(), 
+			thread.nextTraceGenerators.end());
+		thread.nextTraceGenerators.clear();
 
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 

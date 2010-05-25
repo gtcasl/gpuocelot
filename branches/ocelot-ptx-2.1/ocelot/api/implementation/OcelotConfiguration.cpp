@@ -15,6 +15,7 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/json.h>
+#include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -35,18 +36,10 @@ const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	return *ocelotConfiguration;
 }
 
-const api::OcelotConfiguration::Executive & api::OcelotConfiguration::getExecutive() {
-	return get().executive;
+void api::OcelotConfiguration::destroy() {
+	delete ocelotConfiguration;
+	ocelotConfiguration = 0;
 }
-
-const api::OcelotConfiguration::CudaRuntimeImplementation & api::OcelotConfiguration::getCuda() {
-	return get().cuda;
-}
-
-const api::OcelotConfiguration::TraceGeneration & api::OcelotConfiguration::getTrace() {
-	return get().trace;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::Checkpoint::Checkpoint():
@@ -68,9 +61,8 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
-	enabled(false),
 	database("trace/database.trace"),
-	inPlaceTraces(false),
+	inPlaceTraces(true),
 	memory(false),
 	branch(false),
 	sharedComputation(false),
@@ -86,9 +78,8 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
 
-	trace.enabled = config.parse<bool>("enabled", true);
 	trace.database = config.parse<std::string>("database", "trace/database.trace");
-	trace.inPlaceTraces = config.parse<bool>("inPlaceTraces", false);
+	trace.inPlaceTraces = config.parse<bool>("inPlaceTraces", true);
 	trace.memory = config.parse<bool>("memory", false);
 	trace.branch = config.parse<bool>("branch", false);
 	trace.sharedComputation = config.parse<bool>("sharedComputation", false);
@@ -248,8 +239,9 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		if (main.find("checkpoint")) {
 			initializeCheckpoint(checkpoint, main["checkpoint"]);
 		}
-		version = main.parse<std::string>("version", "1.0.65");
-		ocelot = main.parse<std::string>("ocelot", "ocelot-refactored");
+		version = main.parse<std::string>("version", 
+			hydrazine::Version().toString());
+		ocelot = main.parse<std::string>("ocelot", "ocelot");
 	}
 	catch (hydrazine::Exception exp) {
 		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 

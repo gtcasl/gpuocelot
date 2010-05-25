@@ -72,6 +72,15 @@ namespace test
 		private:
 			/*! \brief Perform a single unit test */
 			bool _doOneTest(const TestHandle& test, unsigned int seed);
+			/*! \brief Load the tests */
+			void _loadTests();
+
+		public:
+			/*! \brief Print out the ptx of each test as it is added */
+			bool print;
+			
+			/*! \brief Only add tests that match this regular expression */
+			std::string regularExpression;
 		
 		public:
 			/*! \brief Constructor */

@@ -307,7 +307,8 @@ namespace ir
 					*instruction);
 				PTXOperand PTXInstruction:: * operands[] = 
 				{ &PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c, 
-					&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq };
+					&PTXInstruction::d, &PTXInstruction::pg, 
+					&PTXInstruction::pq };
 		
 				report( " For instruction '" << instr.toString() << "'" );
 		

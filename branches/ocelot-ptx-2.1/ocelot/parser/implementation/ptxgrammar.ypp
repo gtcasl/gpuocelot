@@ -593,8 +593,7 @@ instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2
 	| setp | slct | st | tex | trap | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
-	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR 
-	| OPCODE_ADDC;
+	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR;
 
 basicInstruction3 : basicInstruction3Opcode dataType operand ',' operand ',' 
 	operand ';'
@@ -694,12 +693,18 @@ addCModifier : TOKEN_CARRY
 	state.carry( true );
 };
 
+addCModifier : /* empty string */
+{
+	state.carry( false );
+};
+
 addCOrSubCOpcode : OPCODE_ADDC | OPCODE_SUBC;
 
 addCOrSubC : addCOrSubCOpcode addCModifier dataType operand ',' operand 
 	',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.carryIn();
+	state.instruction( $<text>1, $<value>3, 5 );
 };
 
 atomicOperationId : TOKEN_AND | TOKEN_OR | TOKEN_XOR | TOKEN_CAS | TOKEN_EXCH 

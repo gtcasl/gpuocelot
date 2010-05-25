@@ -21,7 +21,7 @@ class Instruction;
 class ControlFlowGraph {
 public:
 	/*! \brief A basic block contains a series of instructions 
-		terminated by contorl flow */
+		terminated by control flow */
 	class BasicBlock {
 	public:
 		/*! \brief A list of blocks */
@@ -61,6 +61,9 @@ public:
 			const InstructionList& instructions = InstructionList());
 		~BasicBlock();
 	
+		/*! \brief Clear/delete all instructions owned by the block */
+		void clear();
+	
 		/*! \brief Get the fallthrough edge */
 		EdgeList::iterator get_fallthrough_edge();
 		/*! \brief Get the fallthrough edge */
@@ -73,7 +76,6 @@ public:
 
 		/*! \brief Get the edge connecting to the specified block */
 		EdgeList::iterator get_edge(BlockList::iterator b);
-
 		/*! \brief Get the edge connecting to the specified block */
 		EdgeList::const_iterator get_edge(BlockList::const_iterator b) const;
 

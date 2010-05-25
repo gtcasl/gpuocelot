@@ -952,6 +952,10 @@ namespace parser
 		{
 			report( "  Rule: Carry" );
 			statement.instruction.carry = ir::PTXInstruction::CC; 		
+			statement.instruction.pq.type = ir::PTXOperand::u32;
+			statement.instruction.pq.addressMode = ir::PTXOperand::Register;
+			statement.instruction.pq.vec = ir::PTXOperand::v1;
+			statement.instruction.pq.identifier = "%_ZconditionCode";
 		}
 		else
 		{
@@ -1085,6 +1089,14 @@ namespace parser
 		statement.instruction.d = operandVector[1];
 		statement.instruction.a = operandVector[2];
 		statement.instruction.c = operandVector[3];		
+	}
+	
+	void PTXParser::State::carryIn()
+	{
+		ir::PTXOperand conditionCode( ir::PTXOperand::Register, 
+			ir::PTXOperand::u32 );
+		conditionCode.identifier = "%_ZconditionCode";
+		operandVector.push_back( conditionCode );
 	}
 	
 	void PTXParser::State::convert( int token, YYLTYPE& location )

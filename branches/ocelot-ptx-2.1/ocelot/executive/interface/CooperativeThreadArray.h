@@ -23,17 +23,14 @@ namespace executive {
 
 	class EmulatedKernel;
 
-	/*!
-		Defines state of cooperative thread array
-	*/
+	/*! Defines state of cooperative thread array */
 	class CooperativeThreadArray {
 	public:
 		typedef std::deque <CTAContext> Stack;
 		typedef std::vector <int> ThreadIdVector;
 		
 	public:
-		/*!
-			Constructs a cooperative thread array from an EmulatedKernel instance
+		/*! Constructs a cooperative thread array from an EmulatedKernel instance
 
 			\param kernel pointer to EmulatedKernel to which this CTA belongs
 		*/
@@ -41,23 +38,16 @@ namespace executive {
 
 		CooperativeThreadArray();
 
-		/*!
-			Destroys state associated with CTA
-		*/
+		/*! Destroys state associated with CTA */
 		~CooperativeThreadArray();
 
-		/*!
-			Returns CTA to initial state
-		*/
+		/*! Returns CTA to initial state */
 		void initialize(ir::Dim3 grid = ir::Dim3(0,0,0), bool trace = false);
 
-		/*!
-			Initializes the CTA and executes the kernel for a given block
-		*/
+		/*! Initializes the CTA and executes the kernel for a given block */
 		void execute(ir::Dim3 block);
 
-		/*!
-			Overwrites member pointers to allocated memory with zero so 
+		/*! Overwrites member pointers to allocated memory with zero so 
 			that ~CooperativeThreadArray()
 			
 			does not attempt to delete them.
@@ -65,99 +55,63 @@ namespace executive {
 		void clear();
 
 	public:
-	
-		/*!
-			Dimensions of the kernel
-		*/
+		/*! Dimensions of the kernel */
 		ir::Dim3 gridDim;
 
-		/*!
-			Dimensions of the cooperative thread array
-		*/
+		/*! Dimensions of the cooperative thread array */
 		ir::Dim3 blockDim;
 
-		/*!
-			Number of threads in CTA 
-				(equal to blockDim.x * blockDim.y * blockDim.z)
-		*/
+		/*! Number of threads in CTA 
+				(equal to blockDim.x * blockDim.y * blockDim.z) */
 		int threadCount;
 
-		/*!
-			Pointer to EmulatedKernel instance that this CTA is executing
-		*/
+		/*! Pointer to EmulatedKernel instance that this CTA is executing */
 		const EmulatedKernel *kernel;
 
-		/*!
-			ID of block implemented by this CooperativeThreadArray instance
-		*/
+		/*! ID of block implemented by this CooperativeThreadArray instance */
 		ir::Dim3 blockId;
 
-		/*!
-			Row-major matrix of registers; 
+		/* Row-major matrix of registers; 
 				each row corresponds to an alloated register
 		*/
 		ir::PTXU64 *RegisterFile;
 
-		/*!
-			Number of elements in RegisterFile between successive registers 
+		/*! Number of elements in RegisterFile between successive registers 
 			in a thread
 		*/
 		int RegisterFilePitch;
 
-		/*!
-			CC register
-		*/
-		ir::PTXOperand::RegisterType CC_register;
-
-		/*!
-			Pointer to byte-addressable shared memory
-		*/
+		/*! Pointer to byte-addressable shared memory */
 		char *SharedMemory;
 		
 		/*! \brief The last writer for each byte in shared memory */
 		ThreadIdVector sharedMemoryWriters;
 
-		/*!
-			Pointer to byte-addressable local memory
-		*/
+		/*! Pointer to byte-addressable local memory */
 		char *LocalMemory;
 
-		/*!
-			Stack containing the active thread mask and the program counter
-		*/
+		/*! Stack containing the active thread mask and the program counter */
 		Stack runtimeStack;
 
-		/*!
-			Counter incremented 4 times per instruction
-		*/
+		/*! Counter incremented 4 times per instruction */
 		ir::PTXU64 clock;
 
-		/*!
-			Flag to enable or disable tracing of events
-		*/
+		/*! Flag to enable or disable tracing of events */
 		bool traceEvents;
 
-		/*!
-			Number of dynamic instructions executed
-		*/
+		/*! Number of dynamic instructions executed */
 		int counter;
 
-		/*!
-			An object used to trace execution of the CooperativeThreadArray
-		*/
+		/*! An object used to trace execution of the CooperativeThreadArray */
 		trace::TraceEvent currentEvent;
 
 	protected:
 		// internal functions for execution
 
-		/*!
-			Gets current instruction
-		*/
+		/*! Gets current instruction */
 		const ir::PTXInstruction& currentInstruction(CTAContext & context);
 
-		/*!
-			Gets special value
-		*/
+		/*! Gets special value */
 		ir::PTXU32 getSpecialValue( const int threadId,
 			const ir::PTXOperand::SpecialRegister ) const;
 		
@@ -166,6 +120,7 @@ namespace executive {
 
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
 		
+		// Set the trace event
 		void trace();
 
 	public:

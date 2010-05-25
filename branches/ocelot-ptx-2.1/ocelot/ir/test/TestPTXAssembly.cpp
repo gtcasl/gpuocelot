@@ -14,6 +14,7 @@
 
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/string.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -31,9 +32,22 @@ void setParameter(void* output, unsigned int offset, T value)
 	*(T*)((char*)output + offset) = value;
 }
 
+template <typename type, unsigned int size>
+char* uniformRandom(test::Test::MersenneTwister& generator)
+{
+	type* allocation = new type[size];
+	char* result = (char*) allocation;
+
+	for(unsigned int i = 0; i < size * sizeof(type); ++i)
+	{
+		result[i] = generator();
+	}
+	
+	return result;
+}
 ////////////////////////////////////////////////////////////////////////////////
-// TEST ADD
-std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat)
+// TEST ADD/SUB
+std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat, bool sub)
 {
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
@@ -48,7 +62,14 @@ std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat)
 	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
 	result << "\tld.global" << typeString << " %r1, [%rIn + " 
 		<< ir::PTXOperand::bytes(type) << "]; \n";
-	result << "\tadd";
+	if(sub)
+	{
+		result << "\tsub";
+	}
+	else
+	{
+		result << "\tadd";
+	}
 	if(sat) result << ".sat";
 	result << typeString << " %r2, %r0, %r1; \n";
 	result << "\tst.global" << typeString << " [%rOut], %r2; \n";
@@ -58,7 +79,7 @@ std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat)
 	return result.str();
 }
 
-template <typename type, bool sat>
+template <typename type, bool sat, bool sub>
 void testAdd_REF(void* output, void* input)
 {
 	type r0 = getParameter<type>(input, 0);
@@ -71,7 +92,15 @@ void testAdd_REF(void* output, void* input)
 		long long int t0 = r0;
 		long long int t1 = r1;
 		
-		long long int tresult = t0 + t1;
+		long long int tresult = 0;
+		if(sub)
+		{
+			tresult = t0 - t1;
+		}
+		else
+		{
+			tresult = t0 + t1;
+		}
 		tresult = std::max(tresult, (long long int)INT_MIN);
 		tresult = std::min(tresult, (long long int)INT_MAX);
 		
@@ -79,7 +108,14 @@ void testAdd_REF(void* output, void* input)
 	}
 	else
 	{
-		result = r0 + r1;
+		if(sub)
+		{
+			result = r0 - r1;
+		}
+		else
+		{
+			result = r0 + r1;
+		}
 	}
 	
 	setParameter(output, 0, result);
@@ -96,21 +132,93 @@ test::TestPTXAssembly::TypeVector testAdd_OUT(
 {
 	return test::TestPTXAssembly::TypeVector(1, type);
 }
+////////////////////////////////////////////////////////////////////////////////
 
-template <typename type>
-char* testAdd_GEN(test::Test::MersenneTwister& generator)
+////////////////////////////////////////////////////////////////////////////////
+// TEST Carry
+std::string testCarry_PTX(ir::PTXOperand::DataType type, bool sub)
 {
-	type* allocation = new type[2];
-	char* result = (char*) allocation;
-
-	for(unsigned int i = 0; i < 2*sizeof(type); ++i)
+	std::stringstream stream;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+	
+	stream << ".version 2.0\n";
+	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
+	stream << "{\n";
+	stream << "\t.reg .u64 %rIn, %rOut;\n";
+	stream << "\t.reg " << typeString << " %r<5>;\n";
+	stream << "\tld.param.u64 %rIn, [in];\n";
+	stream << "\tld.param.u64 %rOut, [out];\n";
+	stream << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	stream << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	
+	if(sub)
 	{
-		result[i] = generator();
+		stream << "\tsub.cc" << typeString << " %r2, %r1, %r0;\n";
+		stream << "\tsubc.cc" << typeString << " %r3, %r2, %r0;\n";
+		stream << "\tsubc" << typeString << " %r4, %r3, %r0;\n";
+	}
+	else
+	{
+		stream << "\tadd.cc" << typeString << " %r2, %r1, %r0;\n";
+		stream << "\taddc.cc" << typeString << " %r3, %r2, %r0;\n";
+		stream << "\taddc" << typeString << " %r4, %r3, %r0;\n";
 	}
 	
-	return result;
+	stream << "\tst.global" << typeString << " [%rOut], %r4;\n";
+	stream << "\texit;\n";
+	stream << "}\n";
+	
+	return stream.str();
 }
 
+template <typename type, bool sub>
+void testCarry_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	
+	type result = 0;
+	
+	long long int t0 = r0;
+	long long int t1 = r1;
+	
+	long long int tresult = 0;
+	long long int carry = 0;
+
+	if(sub)
+	{
+		tresult = t1 - t0;
+		carry = (tresult & 0x100000000LLU) >> 32;
+		tresult = (type)tresult - t0 + carry;
+		carry = (tresult & 0x100000000LLU) >> 32;
+		tresult = (type)tresult - t0 + carry;
+	}
+	else
+	{
+		tresult = t1 + t0;
+		carry = (tresult & 0x100000000LLU) >> 32;
+		tresult = (type)tresult + t0 + carry;
+		carry = (tresult & 0x100000000LLU) >> 32;
+		tresult = (type)tresult + t0 + carry;
+	}
+
+	result = (type)tresult;
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testCarry_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testCarry_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace test
@@ -326,6 +434,85 @@ namespace test
 		return pass;
 	}
 
+	void TestPTXAssembly::_loadTests()
+	{
+		add("TestAdd-u16", testAdd_REF<unsigned short, false, false>, 
+			testAdd_PTX(ir::PTXOperand::u16, false, false), 
+			testAdd_OUT(I16), testAdd_IN(I16), 
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestAdd-s16", testAdd_REF<signed short, false, false>, 
+			testAdd_PTX(ir::PTXOperand::s16, false, false), 
+			testAdd_OUT(I16), testAdd_IN(I16), 
+			uniformRandom<signed short, 2>, 1, 1);
+		add("TestAdd-u32", testAdd_REF<unsigned int, false, false>, 
+			testAdd_PTX(ir::PTXOperand::u32, false, false), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestAdd-s32", testAdd_REF<signed int, false, false>, 
+			testAdd_PTX(ir::PTXOperand::s32, false, false), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			uniformRandom<signed int, 2>, 1, 1);
+		add("TestAdd-s32-sat", testAdd_REF<signed int, true, false>, 
+			testAdd_PTX(ir::PTXOperand::s32, true, false), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			uniformRandom<signed int, 2>, 1, 1);
+		add("TestAdd-u64", testAdd_REF<long long unsigned int, false, false>, 
+			testAdd_PTX(ir::PTXOperand::u64, false, false), 
+			testAdd_OUT(I64), testAdd_IN(I64), 
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+		add("TestAdd-s64", testAdd_REF<long long signed int, false, false>, 
+			testAdd_PTX(ir::PTXOperand::s64, false, false), 
+			testAdd_OUT(I64), testAdd_IN(I64), 
+			uniformRandom<long long signed int, 2>, 1, 1);
+
+		add("TestSub-u16", testAdd_REF<unsigned short, false, true>, 
+			testAdd_PTX(ir::PTXOperand::u16, false, true), 
+			testAdd_OUT(I16), testAdd_IN(I16), 
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestSub-s16", testAdd_REF<signed short, false, true>, 
+			testAdd_PTX(ir::PTXOperand::s16, false, true), 
+			testAdd_OUT(I16), testAdd_IN(I16), 
+			uniformRandom<signed short, 2>, 1, 1);
+		add("TestSub-u32", testAdd_REF<unsigned int, false, true>, 
+			testAdd_PTX(ir::PTXOperand::u32, false, true), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestSub-s32", testAdd_REF<signed int, false, true>, 
+			testAdd_PTX(ir::PTXOperand::s32, false, true), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			uniformRandom<signed int, 2>, 1, 1);
+		add("TestSub-s32-sat", testAdd_REF<signed int, true, true>, 
+			testAdd_PTX(ir::PTXOperand::s32, true, true), 
+			testAdd_OUT(I32), testAdd_IN(I32), 
+			uniformRandom<signed int, 2>, 1, 1);
+		add("TestSub-u64", testAdd_REF<long long unsigned int, false, true>, 
+			testAdd_PTX(ir::PTXOperand::u64, false, true), 
+			testAdd_OUT(I64), testAdd_IN(I64), 
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+		add("TestSub-s64", testAdd_REF<long long signed int, false, true>, 
+			testAdd_PTX(ir::PTXOperand::s64, false, true), 
+			testAdd_OUT(I64), testAdd_IN(I64), 
+			uniformRandom<long long signed int, 2>, 1, 1);
+
+		add("TestSub-Carry-s32", testCarry_REF<signed int, true>, 
+			testCarry_PTX(ir::PTXOperand::s32, true), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<signed int, 2>, 1, 1);
+		add("TestSub-Carry-u32", testCarry_REF<unsigned int, true>, 
+			testCarry_PTX(ir::PTXOperand::u32, true), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+
+		add("TestAdd-Carry-s32", testCarry_REF<signed int, false>, 
+			testCarry_PTX(ir::PTXOperand::s32, false), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<signed int, 2>, 1, 1);
+		add("TestAdd-Carry-u32", testCarry_REF<unsigned int, false>, 
+			testCarry_PTX(ir::PTXOperand::u32, false), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);	
+	}
+
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
 		unsigned int t) : _timeLimit(l), _tolerableFailures(t)
 	{
@@ -333,43 +520,17 @@ namespace test
 		
 		description = "A unit test framework for PTX. Runs random inputs ";
 		description += "through unit tests on all available devices until ";
-		description += "a timer expires.";
-		
-		add("TestAdd-u16", testAdd_REF<unsigned short, false>, 
-			testAdd_PTX(ir::PTXOperand::u16, false), 
-			testAdd_OUT(I16), testAdd_IN(I16), 
-			testAdd_GEN<unsigned short>, 1, 1);
-		add("TestAdd-s16", testAdd_REF<signed short, false>, 
-			testAdd_PTX(ir::PTXOperand::s16, false), 
-			testAdd_OUT(I16), testAdd_IN(I16), 
-			testAdd_GEN<signed short>, 1, 1);
-		add("TestAdd-u32", testAdd_REF<unsigned int, false>, 
-			testAdd_PTX(ir::PTXOperand::u32, false), 
-			testAdd_OUT(I32), testAdd_IN(I32), 
-			testAdd_GEN<unsigned int>, 1, 1);
-		add("TestAdd-s32", testAdd_REF<signed int, false>, 
-			testAdd_PTX(ir::PTXOperand::s32, false), 
-			testAdd_OUT(I32), testAdd_IN(I32), 
-			testAdd_GEN<signed int>, 1, 1);
-		add("TestAdd-s32-sat", testAdd_REF<signed int, true>, 
-			testAdd_PTX(ir::PTXOperand::s32, true), 
-			testAdd_OUT(I32), testAdd_IN(I32), 
-			testAdd_GEN<signed int>, 1, 1);
-		add("TestAdd-u64", testAdd_REF<long long unsigned int, false>, 
-			testAdd_PTX(ir::PTXOperand::u64, false), 
-			testAdd_OUT(I64), testAdd_IN(I64), 
-			testAdd_GEN<long long unsigned int>, 1, 1);
-		add("TestAdd-s64", testAdd_REF<long long signed int, false>, 
-			testAdd_PTX(ir::PTXOperand::s64, false), 
-			testAdd_OUT(I64), testAdd_IN(I64), 
-			testAdd_GEN<long long signed int>, 1, 1);
+		description += "a timer expires.";		
 	}
-			
+	
 	void TestPTXAssembly::add(const std::string& name, 
 		ReferenceFunction function, const std::string& ptx, 
 		const TypeVector& out, const TypeVector& in, 
 		GeneratorFunction generator, unsigned int threads, unsigned int ctas)
 	{
+		// TODO change this to std::tr1::regex when gcc gets its act together
+		if(!regularExpression.empty() && regularExpression != name) return;
+		
 		TestHandle test;
 		test.name = name;
 		test.reference = function;
@@ -380,11 +541,21 @@ namespace test
 		test.threads = threads;
 		test.ctas = ctas;
 		
+		if(print)
+		{
+			std::cout << "Added test - '" << name << "'\n";
+			std::cout << ptx << "\n";
+		}
+		
 		_tests.push_back(std::move(test));
 	}
-		
+	
+	
+	
 	bool TestPTXAssembly::doTest()
 	{
+		_loadTests();
+		
 		hydrazine::Timer::Second perTestTimeLimit = _timeLimit / _tests.size();
 		hydrazine::Timer timer;
 		
@@ -425,6 +596,10 @@ int main(int argc, char** argv)
 
 	parser.parse("-v", "--verbose", test.verbose, false,
 		"Print out status info after the test.");
+	parser.parse("-p", "--print-ptx", test.print, false,
+		"Print test kernels as they are added.");
+	parser.parse("-t", "--test", test.regularExpression, "",
+		"Only select tests matching this expression.");
 	parser.parse("-s", "--seed", test.seed, 0,
 		"Random seed for generating input data. 0 implies seed with time.");
 	parser.parse();

@@ -537,7 +537,7 @@ public:
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
 				cta.setRegAsU32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_AddC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -548,7 +548,7 @@ public:
 					break;
 				}
 				// verify carry		
-				if (cta.getRegAsU32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsU32(i, 6) != 1) {
 					result = false;
 					status << "addc.u32 failed to set carry bit\n";
 					break;
@@ -568,7 +568,7 @@ public:
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
 				cta.setRegAsS32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_AddC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -579,7 +579,7 @@ public:
 					break;
 				}
 				// verify carry			
-				if (cta.getRegAsS32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsS32(i, 6) != 1) {
 					result = false;
 					status << "addc.s32 failed to set carry bit\n";
 					break;
@@ -803,7 +803,7 @@ public:
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
 				cta.setRegAsU32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_SubC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -814,7 +814,7 @@ public:
 					break;
 				}
 				// verify carry		
-				if (cta.getRegAsU32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsU32(i, 6) != 1) {
 					result = false;
 					status << "subc.u32 failed to set borrow bit\n";
 					break;
@@ -834,7 +834,7 @@ public:
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
 				cta.setRegAsS32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_SubC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -845,7 +845,7 @@ public:
 					break;
 				}
 				// verify carry			
-				if (cta.getRegAsS32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsS32(i, 6) != 1) {
 					result = false;
 					status << "subc.s32 failed to set borrow bit\n";
 					break;

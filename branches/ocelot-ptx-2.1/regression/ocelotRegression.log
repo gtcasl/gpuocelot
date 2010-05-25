@@ -1,28 +1,28 @@
-INFO     Reading in test file /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/regression/ocelotRegressionTests.txt
+INFO     Reading in test file /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/regression/ocelotRegressionTests.txt
 INFO      Found the following tests:
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLexer
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestParser
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestEmulator
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestInstructions
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestKernels
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDataflowGraph
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMInstructions
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXToLLVMTranslator
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMKernels
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaMalloc
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTexture2D
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTextureArray
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaGlobals
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDeviceSwitching
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaSequence
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCalVectorScale
-INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXAssembly
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
+INFO       /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMKernels 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaMalloc 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMKernels
-INFO     Test completed in 0.478234052658 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
+INFO     Test completed in 0.265340089798 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/kernels.ptx':
 1 	.version 1.4
@@ -356,9 +356,9 @@ Failed to parse file 'ocelot/executive/test/kernels.ptx':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  ocelot/executive/test/kernels.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaSequence 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaMalloc
-INFO     Test completed in 0.528132915497 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
+INFO     Test completed in 0.347848176956 seconds
 INFO      It produced the following output:
 Failed to parse file 'malloc.cu':
 1 	.version 1.4
@@ -412,9 +412,9 @@ Failed to parse file 'malloc.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  malloc.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTexture2D 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaSequence
-INFO     Test completed in 0.0514490604401 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
+INFO     Test completed in 0.158252000809 seconds
 INFO      It produced the following output:
 Failed to parse file 'sequence.cu':
 1 	.version 1.4
@@ -557,107 +557,9 @@ Failed to parse file 'sequence.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  sequence.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTextureArray 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTextureArray
-INFO     Test completed in 0.0439839363098 seconds
-INFO      It produced the following output:
-Failed to parse file 'textureArray.cu':
-1 	.version 1.4
-2 	.target sm_10, map_f64_to_f32
-3 	// compiled with /usr/local/cuda2.3/cuda/open64/lib//be
-4 	// nvopencc 2.3 built on 2009-07-30
-5 
-6 	//-----------------------------------------------------------
-7 	// Compiling /tmp/tmpxft_00007bcf_00000000-16_textureArray.cpp3.i (/tmp/ccBI#.KzpcM2)
-8 	//-----------------------------------------------------------
-9 
-10 	//-----------------------------------------------------------
-11 	// Options:
-12 	//-----------------------------------------------------------
-13 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
-14 	//  -O3	(Optimization level)
-15 	//  -g0	(Debug level)
-16 	//  -m2	(Report advisories)
-17 	//-----------------------------------------------------------
-18 
-19 	.file	1	"<command-line>"
-20 	.file	2	"/tmp/tmpxft_00007bcf_00000000-15_textureArray.cudafe2.gpu"
-21 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
-22 	.file	4	"/usr/local/cuda2.3/cuda/bin/../include/crt/device_runtime.h"
-23 	.file	5	"/usr/local/cuda2.3/cuda/bin/../include/host_defines.h"
-24 	.file	6	"/usr/local/cuda2.3/cuda/bin/../include/builtin_types.h"
-25 	.file	7	"/usr/local/cuda2.3/cuda/bin/../include/device_types.h"
-26 	.file	8	"/usr/local/cuda2.3/cuda/bin/../include/driver_types.h"
-27 	.file	9	"/usr/local/cuda2.3/cuda/bin/../include/texture_types.h"
-28 	.file	10	"/usr/local/cuda2.3/cuda/bin/../include/vector_types.h"
-29 	.file	11	"/usr/local/cuda2.3/cuda/bin/../include/device_launch_parameters.h"
-30 	.file	12	"/usr/local/cuda2.3/cuda/bin/../include/crt/storage_class.h"
-31 	.file	13	"/usr/include/bits/types.h"
-32 	.file	14	"/usr/include/time.h"
-33 	.file	15	"textureArray.cu"
-34 	.file	16	"/usr/local/cuda2.3/cuda/bin/../include/common_functions.h"
-35 	.file	17	"/usr/local/cuda2.3/cuda/bin/../include/crt/func_macro.h"
-36 	.file	18	"/usr/local/cuda2.3/cuda/bin/../include/math_functions.h"
-37 	.file	19	"/usr/local/cuda2.3/cuda/bin/../include/device_functions.h"
-38 	.file	20	"/usr/local/cuda2.3/cuda/bin/../include/math_constants.h"
-39 	.file	21	"/usr/local/cuda2.3/cuda/bin/../include/sm_11_atomic_functions.h"
-40 	.file	22	"/usr/local/cuda2.3/cuda/bin/../include/sm_12_atomic_functions.h"
-41 	.file	23	"/usr/local/cuda2.3/cuda/bin/../include/sm_13_double_functions.h"
-42 	.file	24	"/usr/local/cuda2.3/cuda/bin/../include/common_types.h"
-43 	.file	25	"/usr/local/cuda2.3/cuda/bin/../include/texture_fetch_functions.h"
-44 	.file	26	"/usr/local/cuda2.3/cuda/bin/../include/math_functions_dbl_ptx1.h"
-45 
-46 	.tex .u64 surface;
-47 
-48 	.entry _Z6kernelPfii (
-49 		.param .u64 __cudaparm__Z6kernelPfii_out,
-50 		.param .s32 __cudaparm__Z6kernelPfii_width,
-51 		.param .s32 __cudaparm__Z6kernelPfii_height)
-52 	{
-53 	.reg .u16 %rh<6>;
-54 	.reg .u32 %r<11>;
-55 	.reg .u64 %rd<6>;
-56 	.reg .f32 %f<11>;
-57 	.loc	15	25	0
-58 $LBB1__Z6kernelPfii:
-59 	mov.u16 	%rh1, %ctaid.x;
-60 	mov.u16 	%rh2, %ntid.x;
-61 	mul.wide.u16 	%r1, %rh1, %rh2;
-62 	mov.u16 	%rh3, %ctaid.y;
-63 	mov.u16 	%rh4, %ntid.y;
-64 	mul.wide.u16 	%r2, %rh3, %rh4;
-65 	cvt.u32.u16 	%r3, %tid.x;
-66 	add.u32 	%r4, %r3, %r1;
-67 	cvt.u32.u16 	%r5, %tid.y;
-68 	add.u32 	%r6, %r5, %r2;
-69 	cvt.rn.f32.u32 	%f1, %r4;
-70 	cvt.rn.f32.u32 	%f2, %r6;
-71 	mov.f32 	%f3, 0f00000000;     	// 0
-72 	mov.f32 	%f4, 0f00000000;     	// 0
-73 	tex.2d.v4.f32.f32 {%f5,%f6,%f7,%f8},[surface,{%f1,%f2,%f3,%f4}];
-74 	.loc	15	30	0
-75 	mov.f32 	%f9, %f5;
-76 	.loc	15	32	0
-77 	ld.param.u64 	%rd1, [__cudaparm__Z6kernelPfii_out];
-78 	ld.param.u32 	%r7, [__cudaparm__Z6kernelPfii_width];
-79 	mul.lo.u32 	%r8, %r7, %r6;
-80 	add.u32 	%r9, %r4, %r8;
-81 	cvt.u64.u32 	%rd2, %r9;
-82 	mul.lo.u64 	%rd3, %rd2, 4;
-83 	add.u64 	%rd4, %rd1, %rd3;
-84 	st.global.f32 	[%rd4+0], %f9;
-85 	.loc	15	33	0
-86 	exit;
-87 $LDWend__Z6kernelPfii:
-88 	} // _Z6kernelPfii
-89 
-90 
-terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  textureArray.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaGlobals 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTexture2D
-INFO     Test completed in 0.30287194252 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
+INFO     Test completed in 0.406746864319 seconds
 INFO      It produced the following output:
 Failed to parse file 'texture2D.cu':
 1 	.version 1.4
@@ -753,9 +655,107 @@ Failed to parse file 'texture2D.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  texture2D.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestParser 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestParser
-INFO     Test completed in 0.100282907486 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
+INFO     Test completed in 0.432453155518 seconds
+INFO      It produced the following output:
+Failed to parse file 'textureArray.cu':
+1 	.version 1.4
+2 	.target sm_10, map_f64_to_f32
+3 	// compiled with /usr/local/cuda2.3/cuda/open64/lib//be
+4 	// nvopencc 2.3 built on 2009-07-30
+5 
+6 	//-----------------------------------------------------------
+7 	// Compiling /tmp/tmpxft_00007bcf_00000000-16_textureArray.cpp3.i (/tmp/ccBI#.KzpcM2)
+8 	//-----------------------------------------------------------
+9 
+10 	//-----------------------------------------------------------
+11 	// Options:
+12 	//-----------------------------------------------------------
+13 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+14 	//  -O3	(Optimization level)
+15 	//  -g0	(Debug level)
+16 	//  -m2	(Report advisories)
+17 	//-----------------------------------------------------------
+18 
+19 	.file	1	"<command-line>"
+20 	.file	2	"/tmp/tmpxft_00007bcf_00000000-15_textureArray.cudafe2.gpu"
+21 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
+22 	.file	4	"/usr/local/cuda2.3/cuda/bin/../include/crt/device_runtime.h"
+23 	.file	5	"/usr/local/cuda2.3/cuda/bin/../include/host_defines.h"
+24 	.file	6	"/usr/local/cuda2.3/cuda/bin/../include/builtin_types.h"
+25 	.file	7	"/usr/local/cuda2.3/cuda/bin/../include/device_types.h"
+26 	.file	8	"/usr/local/cuda2.3/cuda/bin/../include/driver_types.h"
+27 	.file	9	"/usr/local/cuda2.3/cuda/bin/../include/texture_types.h"
+28 	.file	10	"/usr/local/cuda2.3/cuda/bin/../include/vector_types.h"
+29 	.file	11	"/usr/local/cuda2.3/cuda/bin/../include/device_launch_parameters.h"
+30 	.file	12	"/usr/local/cuda2.3/cuda/bin/../include/crt/storage_class.h"
+31 	.file	13	"/usr/include/bits/types.h"
+32 	.file	14	"/usr/include/time.h"
+33 	.file	15	"textureArray.cu"
+34 	.file	16	"/usr/local/cuda2.3/cuda/bin/../include/common_functions.h"
+35 	.file	17	"/usr/local/cuda2.3/cuda/bin/../include/crt/func_macro.h"
+36 	.file	18	"/usr/local/cuda2.3/cuda/bin/../include/math_functions.h"
+37 	.file	19	"/usr/local/cuda2.3/cuda/bin/../include/device_functions.h"
+38 	.file	20	"/usr/local/cuda2.3/cuda/bin/../include/math_constants.h"
+39 	.file	21	"/usr/local/cuda2.3/cuda/bin/../include/sm_11_atomic_functions.h"
+40 	.file	22	"/usr/local/cuda2.3/cuda/bin/../include/sm_12_atomic_functions.h"
+41 	.file	23	"/usr/local/cuda2.3/cuda/bin/../include/sm_13_double_functions.h"
+42 	.file	24	"/usr/local/cuda2.3/cuda/bin/../include/common_types.h"
+43 	.file	25	"/usr/local/cuda2.3/cuda/bin/../include/texture_fetch_functions.h"
+44 	.file	26	"/usr/local/cuda2.3/cuda/bin/../include/math_functions_dbl_ptx1.h"
+45 
+46 	.tex .u64 surface;
+47 
+48 	.entry _Z6kernelPfii (
+49 		.param .u64 __cudaparm__Z6kernelPfii_out,
+50 		.param .s32 __cudaparm__Z6kernelPfii_width,
+51 		.param .s32 __cudaparm__Z6kernelPfii_height)
+52 	{
+53 	.reg .u16 %rh<6>;
+54 	.reg .u32 %r<11>;
+55 	.reg .u64 %rd<6>;
+56 	.reg .f32 %f<11>;
+57 	.loc	15	25	0
+58 $LBB1__Z6kernelPfii:
+59 	mov.u16 	%rh1, %ctaid.x;
+60 	mov.u16 	%rh2, %ntid.x;
+61 	mul.wide.u16 	%r1, %rh1, %rh2;
+62 	mov.u16 	%rh3, %ctaid.y;
+63 	mov.u16 	%rh4, %ntid.y;
+64 	mul.wide.u16 	%r2, %rh3, %rh4;
+65 	cvt.u32.u16 	%r3, %tid.x;
+66 	add.u32 	%r4, %r3, %r1;
+67 	cvt.u32.u16 	%r5, %tid.y;
+68 	add.u32 	%r6, %r5, %r2;
+69 	cvt.rn.f32.u32 	%f1, %r4;
+70 	cvt.rn.f32.u32 	%f2, %r6;
+71 	mov.f32 	%f3, 0f00000000;     	// 0
+72 	mov.f32 	%f4, 0f00000000;     	// 0
+73 	tex.2d.v4.f32.f32 {%f5,%f6,%f7,%f8},[surface,{%f1,%f2,%f3,%f4}];
+74 	.loc	15	30	0
+75 	mov.f32 	%f9, %f5;
+76 	.loc	15	32	0
+77 	ld.param.u64 	%rd1, [__cudaparm__Z6kernelPfii_out];
+78 	ld.param.u32 	%r7, [__cudaparm__Z6kernelPfii_width];
+79 	mul.lo.u32 	%r8, %r7, %r6;
+80 	add.u32 	%r9, %r4, %r8;
+81 	cvt.u64.u32 	%rd2, %r9;
+82 	mul.lo.u64 	%rd3, %rd2, 4;
+83 	add.u64 	%rd4, %rd1, %rd3;
+84 	st.global.f32 	[%rd4+0], %f9;
+85 	.loc	15	33	0
+86 	exit;
+87 $LDWend__Z6kernelPfii:
+88 	} // _Z6kernelPfii
+89 
+90 
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  textureArray.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser
+INFO     Test completed in 0.0768392086029 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -768,15 +768,15 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1274183303
-Test time : 0.000506163
+Test Seed : 1274796455
+Test time : 0.000672579
 
 Status : 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDeviceSwitching 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDeviceSwitching
-INFO     Test completed in 0.0384249687195 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
+INFO     Test completed in 0.0628530979156 seconds
 INFO      It produced the following output:
 Failed to parse file 'simpleKernels':
 1 .version 1.4
@@ -798,9 +798,9 @@ Failed to parse file 'simpleKernels':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  simpleKernels (1, 9): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestKernels 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaGlobals
-INFO     Test completed in 0.408778905869 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
+INFO     Test completed in 0.334211111069 seconds
 INFO      It produced the following output:
 Failed to parse file 'global.cu':
 1 	.version 1.4
@@ -893,88 +893,9 @@ Failed to parse file 'global.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  global.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCalVectorScale 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCalVectorScale
-INFO     Test completed in 0.0369789600372 seconds
-INFO      It produced the following output:
-Failed to parse file 'vectorScale.cu':
-1 	.version 1.4
-2 	.target sm_10, map_f64_to_f32
-3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc 2.3 built on 2009-07-30
-5 
-6 	//-----------------------------------------------------------
-7 	// Compiling /tmp/tmpxft_0000719b_00000000-7_vectorScale.cpp3.i (/tmp/ccBI#.F5sitb)
-8 	//-----------------------------------------------------------
-9 
-10 	//-----------------------------------------------------------
-11 	// Options:
-12 	//-----------------------------------------------------------
-13 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
-14 	//  -O3	(Optimization level)
-15 	//  -g0	(Debug level)
-16 	//  -m2	(Report advisories)
-17 	//-----------------------------------------------------------
-18 
-19 	.file	1	"<command-line>"
-20 	.file	2	"/tmp/tmpxft_0000719b_00000000-6_vectorScale.cudafe2.gpu"
-21 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.4/include/stddef.h"
-22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-27 	.file	9	"/usr/local/cuda/bin/../include/texture_types.h"
-28 	.file	10	"/usr/local/cuda/bin/../include/vector_types.h"
-29 	.file	11	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-30 	.file	12	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-31 	.file	13	"/usr/include/bits/types.h"
-32 	.file	14	"/usr/include/time.h"
-33 	.file	15	"vectorScale.cu"
-34 	.file	16	"/usr/local/cuda/bin/../include/common_functions.h"
-35 	.file	17	"/usr/local/cuda/bin/../include/crt/func_macro.h"
-36 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-37 	.file	19	"/usr/local/cuda/bin/../include/device_functions.h"
-38 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
-39 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-40 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-41 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-42 	.file	24	"/usr/local/cuda/bin/../include/common_types.h"
-43 	.file	25	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-44 	.file	26	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h"
-45 
-46 
-47 	.entry _Z11vectorScalePiS_ (
-48 		.param .u64 __cudaparm__Z11vectorScalePiS__A,
-49 		.param .u64 __cudaparm__Z11vectorScalePiS__B)
-50 	{
-51 	.reg .u32 %r<5>;
-52 	.reg .u64 %rd<8>;
-53 	.loc	15	11	0
-54 $LBB1__Z11vectorScalePiS_:
-55 	.loc	15	14	0
-56 	cvt.s32.u16 	%r1, %tid.x;
-57 	cvt.u64.s32 	%rd1, %r1;
-58 	mul.lo.u64 	%rd2, %rd1, 4;
-59 	ld.param.u64 	%rd3, [__cudaparm__Z11vectorScalePiS__A];
-60 	add.u64 	%rd4, %rd3, %rd2;
-61 	ld.global.s32 	%r2, [%rd4+0];
-62 	mul.lo.s32 	%r3, %r2, 2;
-63 	ld.param.u64 	%rd5, [__cudaparm__Z11vectorScalePiS__B];
-64 	add.u64 	%rd6, %rd5, %rd2;
-65 	st.global.s32 	[%rd6+0], %r3;
-66 	.loc	15	15	0
-67 	exit;
-68 $LDWend__Z11vectorScalePiS_:
-69 	} // _Z11vectorScalePiS_
-70 
-71 
-terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  vectorScale.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXAssembly 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestKernels
-INFO     Test completed in 0.36031293869 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
+INFO     Test completed in 0.100788116455 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/kernels.ptx':
 1 	.version 1.4
@@ -1308,9 +1229,88 @@ Failed to parse file 'ocelot/executive/test/kernels.ptx':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  ocelot/executive/test/kernels.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLexer 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLexer
-INFO     Test completed in 0.0585579872131 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
+INFO     Test completed in 0.12255692482 seconds
+INFO      It produced the following output:
+Failed to parse file 'vectorScale.cu':
+1 	.version 1.4
+2 	.target sm_10, map_f64_to_f32
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 2.3 built on 2009-07-30
+5 
+6 	//-----------------------------------------------------------
+7 	// Compiling /tmp/tmpxft_0000719b_00000000-7_vectorScale.cpp3.i (/tmp/ccBI#.F5sitb)
+8 	//-----------------------------------------------------------
+9 
+10 	//-----------------------------------------------------------
+11 	// Options:
+12 	//-----------------------------------------------------------
+13 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+14 	//  -O3	(Optimization level)
+15 	//  -g0	(Debug level)
+16 	//  -m2	(Report advisories)
+17 	//-----------------------------------------------------------
+18 
+19 	.file	1	"<command-line>"
+20 	.file	2	"/tmp/tmpxft_0000719b_00000000-6_vectorScale.cudafe2.gpu"
+21 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.4/include/stddef.h"
+22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+27 	.file	9	"/usr/local/cuda/bin/../include/texture_types.h"
+28 	.file	10	"/usr/local/cuda/bin/../include/vector_types.h"
+29 	.file	11	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+30 	.file	12	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+31 	.file	13	"/usr/include/bits/types.h"
+32 	.file	14	"/usr/include/time.h"
+33 	.file	15	"vectorScale.cu"
+34 	.file	16	"/usr/local/cuda/bin/../include/common_functions.h"
+35 	.file	17	"/usr/local/cuda/bin/../include/crt/func_macro.h"
+36 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+37 	.file	19	"/usr/local/cuda/bin/../include/device_functions.h"
+38 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
+39 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+40 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+41 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+42 	.file	24	"/usr/local/cuda/bin/../include/common_types.h"
+43 	.file	25	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+44 	.file	26	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h"
+45 
+46 
+47 	.entry _Z11vectorScalePiS_ (
+48 		.param .u64 __cudaparm__Z11vectorScalePiS__A,
+49 		.param .u64 __cudaparm__Z11vectorScalePiS__B)
+50 	{
+51 	.reg .u32 %r<5>;
+52 	.reg .u64 %rd<8>;
+53 	.loc	15	11	0
+54 $LBB1__Z11vectorScalePiS_:
+55 	.loc	15	14	0
+56 	cvt.s32.u16 	%r1, %tid.x;
+57 	cvt.u64.s32 	%rd1, %r1;
+58 	mul.lo.u64 	%rd2, %rd1, 4;
+59 	ld.param.u64 	%rd3, [__cudaparm__Z11vectorScalePiS__A];
+60 	add.u64 	%rd4, %rd3, %rd2;
+61 	ld.global.s32 	%r2, [%rd4+0];
+62 	mul.lo.s32 	%r3, %r2, 2;
+63 	ld.param.u64 	%rd5, [__cudaparm__Z11vectorScalePiS__B];
+64 	add.u64 	%rd6, %rd5, %rd2;
+65 	st.global.s32 	[%rd6+0], %r3;
+66 	.loc	15	15	0
+67 	exit;
+68 $LDWend__Z11vectorScalePiS_:
+69 	} // _Z11vectorScalePiS_
+70 
+71 
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  vectorScale.cu (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer
+INFO     Test completed in 0.0444829463959 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1322,15 +1322,15 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1274183304
-Test time : 7.08103e-05
+Test Seed : 1274796455
+Test time : 8.89301e-05
 
 Status : 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestEmulator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestEmulator
-INFO     Test completed in 0.259351015091 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator
+INFO     Test completed in 0.114732980728 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/sequence.ptx':
 1 	.version 1.4
@@ -1448,9 +1448,9 @@ Failed to parse file 'ocelot/executive/test/sequence.ptx':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  ocelot/executive/test/sequence.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestInstructions 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestInstructions
-INFO     Test completed in 0.148205041885 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
+INFO     Test completed in 0.0990779399872 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/sequence.ptx':
 1 	.version 1.4
@@ -1568,9 +1568,9 @@ Failed to parse file 'ocelot/executive/test/sequence.ptx':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  ocelot/executive/test/sequence.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.0 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDataflowGraph 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDataflowGraph
-INFO     Test completed in 0.138802051544 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph
+INFO     Test completed in 0.043135881424 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1585,8 +1585,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1274183305
-Test time : 0.000151873
+Test Seed : 1274796455
+Test time : 0.000117064
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -1597,9 +1597,9 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMInstructions 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMInstructions
-INFO     Test completed in 0.0954959392548 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
+INFO     Test completed in 0.105115175247 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1613,8 +1613,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1274183305
-Test time : 0.00653243
+Test Seed : 1274796455
+Test time : 0.0133047
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -1745,9 +1745,9 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXToLLVMTranslator 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXToLLVMTranslator
-INFO     Test completed in 0.124741077423 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0769889354706 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1760,14 +1760,14 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1274183305
-Test time : 0.000102758
+Test Seed : 1274796456
+Test time : 0.000112534
 
 Status : 
 
 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXAssembly
-INFO     Test completed in 10.999008894 seconds
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
+INFO     Test completed in 10.9180629253 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1778,40 +1778,51 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1274183304
-Test time : 10.121
+Test Seed : 1274796455
+Test time : 10.6168
 
-Status : Ran 'TestAdd-u16' for 55 iterations.
-Ran 'TestAdd-s16' for 64 iterations.
-Ran 'TestAdd-u32' for 81 iterations.
-Ran 'TestAdd-s32' for 81 iterations.
-Ran 'TestAdd-s32-sat' for 63 iterations.
-Ran 'TestAdd-u64' for 79 iterations.
-Ran 'TestAdd-s64' for 79 iterations.
+Status : Ran 'TestAdd-u16' for 6 iterations.
+Ran 'TestAdd-s16' for 9 iterations.
+Ran 'TestAdd-u32' for 11 iterations.
+Ran 'TestAdd-s32' for 12 iterations.
+Ran 'TestAdd-s32-sat' for 3 iterations.
+Ran 'TestAdd-u64' for 15 iterations.
+Ran 'TestAdd-s64' for 15 iterations.
+Ran 'TestSub-u16' for 17 iterations.
+Ran 'TestSub-s16' for 26 iterations.
+Ran 'TestSub-u32' for 20 iterations.
+Ran 'TestSub-s32' for 23 iterations.
+Ran 'TestSub-s32-sat' for 14 iterations.
+Ran 'TestSub-u64' for 22 iterations.
+Ran 'TestSub-s64' for 22 iterations.
+Ran 'TestSub-Carry-s32' for 13 iterations.
+Ran 'TestSub-Carry-u32' for 12 iterations.
+Ran 'TestAdd-Carry-s32' for 12 iterations.
+Ran 'TestAdd-Carry-u32' for 12 iterations.
 
 
 
 INFO     
 Passing tests:
- (0.059s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLexer : Passed
- (0.095s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMInstructions : Passed
- (0.100s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestParser : Passed
- (0.139s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDataflowGraph : Passed
- (0.125s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXToLLVMTranslator : Passed
- (10.999s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestPTXAssembly : Passed
+ (0.077s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Passed
+ (10.918s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
+ (0.044s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
+ (0.077s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Passed
+ (0.105s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
+ (0.043s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Passed
 
 Failing tests:
- (0.259s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestEmulator : Did not complete.
- (0.051s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaSequence : Did not complete.
- (0.037s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCalVectorScale : Did not complete.
- (0.148s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestInstructions : Did not complete.
- (0.528s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaMalloc : Did not complete.
- (0.478s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestLLVMKernels : Did not complete.
- (0.044s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTextureArray : Did not complete.
- (0.303s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaTexture2D : Did not complete.
- (0.360s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestKernels : Did not complete.
- (0.409s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestCudaGlobals : Did not complete.
- (0.038s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.0/TestDeviceSwitching : Did not complete.
+ (0.123s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Did not complete.
+ (0.407s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Did not complete.
+ (0.099s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Did not complete.
+ (0.101s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Did not complete.
+ (0.115s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Did not complete.
+ (0.063s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Did not complete.
+ (0.158s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Did not complete.
+ (0.334s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Did not complete.
+ (0.432s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Did not complete.
+ (0.348s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Did not complete.
+ (0.265s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Did not complete.
 
 Non-Existent tests:
 

@@ -1842,7 +1842,7 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case SubC: {
-			std::string result = guard() + "sub.";
+			std::string result = guard() + "subc.";
 			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();

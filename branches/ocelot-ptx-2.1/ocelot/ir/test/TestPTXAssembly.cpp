@@ -221,6 +221,220 @@ test::TestPTXAssembly::TypeVector testCarry_OUT(
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST MUL
+enum MulType
+{
+	MulHi,
+	MulLo,
+	MulWide
+};
+
+std::string testMul_PTX(ir::PTXOperand::DataType type, MulType op)
+{
+	std::stringstream stream;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+	std::string dTypeString = "." + ir::PTXOperand::toString(type);
+
+	if(op == MulWide)
+	{
+		switch(type)
+		{
+			case ir::PTXOperand::u16: dTypeString = ".u32"; break;
+			case ir::PTXOperand::u32: dTypeString = ".u64"; break;
+			case ir::PTXOperand::s16: dTypeString = ".s32"; break;
+			case ir::PTXOperand::s32: dTypeString = ".s64"; break;
+			default: assertM(false, "Invalid data type.");
+		}
+	}
+	
+	stream << ".version 2.0\n";
+	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
+	stream << "{\n";
+	stream << "\t.reg .u64 %rIn, %rOut;\n";
+	stream << "\t.reg " << typeString << " %r<2>;\n";
+	stream << "\t.reg " << dTypeString << " %r2;\n";
+	stream << "\tld.param.u64 %rIn, [in];\n";
+	stream << "\tld.param.u64 %rOut, [out];\n";
+	stream << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	stream << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	
+	if( op == MulHi )
+	{
+		stream << "\tmul.hi" << typeString << " %r2, %r1, %r0;\n";
+	}
+	else if( op == MulLo )
+	{
+		stream << "\tmul.lo" << typeString << " %r2, %r1, %r0;\n";
+	}
+	else
+	{
+		stream << "\tmul.wide" << typeString << " %r2, %r1, %r0;\n";
+	}
+
+	
+	stream << "\tst.global" << dTypeString << " [%rOut], %r2;\n";
+	stream << "\texit;\n";
+	stream << "}\n";
+	
+	return stream.str();
+}
+
+template<typename T>
+class SignedToUnsigned
+{
+	public:
+		typedef T type;
+};
+
+template<>
+class SignedToUnsigned<char>
+{
+	public:
+		typedef unsigned char type;
+};
+
+template<>
+class SignedToUnsigned<short>
+{
+	public:
+		typedef unsigned short type;
+};
+
+template<>
+class SignedToUnsigned<int>
+{
+	public:
+		typedef unsigned int type;
+};
+
+template<>
+class SignedToUnsigned<long long int>
+{
+	public:
+		typedef long long unsigned int type;
+};
+
+template<typename type>
+void multiplyHiLo(type& hi, type& lo, type r0, type r1)
+{
+	bool r0Signed = r0 < 0;
+	bool r1Signed = r1 < 0;
+
+	r0 = (r0Signed) ? -r0 : r0;
+	r1 = (r1Signed) ? -r1 : r1;
+	
+	typedef typename SignedToUnsigned<type>::type utype;
+
+	bool negative = (r0Signed && !r1Signed) || (r1Signed && !r0Signed);
+
+	unsigned int bits = sizeof(type) * 4;
+	utype mask = ((type)1 << bits) - 1;
+	
+	// A B
+	// C D
+	//
+	//    DA DB
+	// CA CB
+
+	utype a = (utype)r0 >> bits;
+	utype b = (utype)r0 & mask;
+	utype c = (utype)r1 >> bits;
+	utype d = (utype)r1 & mask;
+
+	// 
+
+	utype da = d * a;
+	utype db = d * b;
+	utype ca = c * a;
+	utype cb = c * b;
+
+	utype totalBits = (sizeof(type) * 8 - 1);
+	utype upperMask = ((type)1 << totalBits) - 1;
+	utype daUpper = da >> totalBits;
+	utype cbUpper = cb >> totalBits;
+	utype xCarryIn = ((da & upperMask) + (cb & upperMask)) >> totalBits;
+	utype xCarryOut = (daUpper + cbUpper + xCarryIn) >> 1;
+
+	utype x = da + cb;
+
+	utype xUpper = x >> totalBits;
+	utype yCarryIn = ((x & upperMask) + (db >> bits)) >> totalBits;
+	utype yCarryOut = (yCarryIn + xUpper) >> 1;
+
+	utype y = (db >> bits) + x;
+
+	lo = (db & mask) | ((y & mask) << bits);
+	hi = (y >> bits) + ca + ((yCarryOut + xCarryOut) << bits);
+	
+	utype loUpperBit = (utype)(~(utype)lo) >> totalBits;
+	utype signCarryIn = (((utype)(~(utype)lo) & upperMask) + 1) >> totalBits;
+	utype signCarryOut = (loUpperBit + signCarryIn) >> 1;
+
+	lo = (negative) ? -lo : lo;
+	hi = (negative) ? (utype)(~(utype)hi) + signCarryOut : hi;
+}
+
+template <typename type, MulType op>
+void testMul_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	type hi;
+	type lo;
+	
+	multiplyHiLo(hi, lo, r0, r1);
+	
+	if(op == MulWide)
+	{
+		setParameter(output, 0, lo);
+		setParameter(output, sizeof(type), hi);
+	}
+	else if(op == MulLo)
+	{
+		setParameter(output, 0, lo);
+	}
+	else
+	{
+		setParameter(output, 0, hi);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testMul_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testMul_OUT(
+	test::TestPTXAssembly::DataType type, MulType op)
+{
+	if(op != MulWide)
+	{
+		return test::TestPTXAssembly::TypeVector(1, type);
+	}
+	else
+	{
+		switch(type)
+		{
+			case test::TestPTXAssembly::I16:
+			{
+				return test::TestPTXAssembly::TypeVector(1, 
+					test::TestPTXAssembly::I32);
+			}
+			case test::TestPTXAssembly::I32:
+			{
+				return test::TestPTXAssembly::TypeVector(1, 
+					test::TestPTXAssembly::I64);
+			}
+			default: assertM(false, "Invalid data type for wide multiply.");
+		}		
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -262,6 +476,7 @@ namespace test
 				
 		bool pass = true;
 		int devices = 0;
+		int device = 0;
 		
 		cudaGetDeviceCount(&devices);
 		
@@ -272,9 +487,7 @@ namespace test
 			
 			char* deviceInput;
 			char* deviceOutput;
-			
-			int device = 0;
-			
+						
 			if(devices > 0) device = random() % devices;
 			cudaSetDevice(device);
 			
@@ -302,6 +515,13 @@ namespace test
 		{
 			status << " Failed during CUDA run with exception - " 
 				<< e.what() << "\n";
+				
+			cudaDeviceProp properties;
+			cudaGetDeviceProperties(&properties, device);
+			
+			status << "  On device - " << device << " - '" 
+				<< properties.name << "'\n";
+			
 			pass = false;
 		}
 		
@@ -511,6 +731,76 @@ namespace test
 			testCarry_PTX(ir::PTXOperand::u32, false), 
 			testCarry_OUT(I32), testCarry_IN(I32), 
 			uniformRandom<unsigned int, 2>, 1, 1);	
+
+		add("TestMul-Lo-u16", testMul_REF<unsigned short, MulLo>, 
+			testMul_PTX(ir::PTXOperand::u16, MulLo), 
+			testCarry_OUT(I16), testCarry_IN(I16), 
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestMul-Hi-u16", testMul_REF<unsigned short, MulHi>, 
+			testMul_PTX(ir::PTXOperand::u16, MulHi), 
+			testCarry_OUT(I16), testCarry_IN(I16), 
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestMul-Wide-u16", testMul_REF<unsigned short, MulWide>, 
+			testMul_PTX(ir::PTXOperand::u16, MulWide), 
+			testCarry_OUT(I16), testCarry_IN(I16), 
+			uniformRandom<unsigned short, 2>, 1, 1);
+
+		add("TestMul-Lo-s16", testMul_REF<short, MulLo>, 
+			testMul_PTX(ir::PTXOperand::s16, MulLo), 
+			testCarry_OUT(I16), testCarry_IN(I16), 
+			uniformRandom<short, 2>, 1, 1);
+		add("TestMul-Hi-s16", testMul_REF<short, MulHi>, 
+			testMul_PTX(ir::PTXOperand::s16, MulHi), 
+			testCarry_OUT(I16), testCarry_IN(I16), 
+			uniformRandom<short, 2>, 1, 1);
+		add("TestMul-Wide-s16", testMul_REF<short, MulWide>, 
+			testMul_PTX(ir::PTXOperand::s16, MulWide), 
+			testCarry_OUT(I16), testCarry_IN(I16), 
+			uniformRandom<short, 2>, 1, 1);
+
+		add("TestMul-Lo-u32", testMul_REF<unsigned int, MulLo>, 
+			testMul_PTX(ir::PTXOperand::u32, MulLo), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestMul-Hi-u32", testMul_REF<unsigned int, MulHi>, 
+			testMul_PTX(ir::PTXOperand::u32, MulHi), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestMul-Wide-u32", testMul_REF<unsigned int, MulHi>, 
+			testMul_PTX(ir::PTXOperand::u32, MulHi), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+
+		add("TestMul-Lo-s32", testMul_REF<int, MulLo>, 
+			testMul_PTX(ir::PTXOperand::s32, MulLo), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<int, 2>, 1, 1);
+		add("TestMul-Hi-s32", testMul_REF<int, MulHi>, 
+			testMul_PTX(ir::PTXOperand::s32, MulHi), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<int, 2>, 1, 1);
+		add("TestMul-Wide-s32", testMul_REF<int, MulWide>, 
+			testMul_PTX(ir::PTXOperand::s32, MulWide), 
+			testCarry_OUT(I32), testCarry_IN(I32), 
+			uniformRandom<int, 2>, 1, 1);
+
+		add("TestMul-Lo-u64", testMul_REF<long long unsigned int, MulLo>, 
+			testMul_PTX(ir::PTXOperand::u64, MulLo), 
+			testCarry_OUT(I64), testCarry_IN(I64), 
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+		add("TestMul-Hi-u64", testMul_REF<long long unsigned int, MulHi>, 
+			testMul_PTX(ir::PTXOperand::u64, MulHi), 
+			testCarry_OUT(I64), testCarry_IN(I64), 
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+
+		add("TestMul-Lo-s64", testMul_REF<long long int, MulLo>, 
+			testMul_PTX(ir::PTXOperand::s64, MulLo), 
+			testCarry_OUT(I64), testCarry_IN(I64), 
+			uniformRandom<long long int, 2>, 1, 1);
+		add("TestMul-Hi-s64", testMul_REF<long long int, MulHi>, 
+			testMul_PTX(ir::PTXOperand::s64, MulHi), 
+			testCarry_OUT(I64), testCarry_IN(I64), 
+			uniformRandom<long long int, 2>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

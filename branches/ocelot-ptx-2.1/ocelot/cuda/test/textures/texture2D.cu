@@ -16,7 +16,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 // declare texture reference for 2D float texture
-texture<float, 2, cudaReadModeElementType> surface;
+texture<float, 2, cudaReadModeElementType> Surface;
 
 /*!
 	kernel in which each thread samples the texture and writes it to out, a row-major dense 
@@ -27,7 +27,7 @@ __global__ void kernel(float *out, int width, int height) {
 	unsigned int x = blockIdx.x*blockDim.x + threadIdx.x;
 	unsigned int y = blockIdx.y*blockDim.y + threadIdx.y;
 
-	float sample = tex2D(surface, x, y);
+	float sample = tex2D(Surface, x, y);
 
 	out[x + y * width] = sample;
 }
@@ -56,12 +56,12 @@ int main(int argc, char **arg) {
 	cudaMalloc((void **)&in_data_gpu, bytes);
 	cudaMemcpy(in_data_gpu, in_data_host, bytes, cudaMemcpyHostToDevice);
 
-	surface.addressMode[0] = cudaAddressModeWrap;
-	surface.addressMode[1] = cudaAddressModeWrap;
-	surface.filterMode = cudaFilterModePoint;
-	surface.normalized = false;
+	Surface.addressMode[0] = cudaAddressModeWrap;
+	Surface.addressMode[1] = cudaAddressModeWrap;
+	Surface.filterMode = cudaFilterModePoint;
+	Surface.normalized = false;
 
-	if (cudaBindTexture2D(0, &surface, in_data_gpu, &channelDesc, width, height, width*sizeof(float)) != cudaSuccess) {
+	if (cudaBindTexture2D(0, &Surface, in_data_gpu, &channelDesc, width, height, width*sizeof(float)) != cudaSuccess) {
 		printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
 		free(in_data_host);
 		free(out_data_host);

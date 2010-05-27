@@ -63,7 +63,7 @@ namespace parser
 						InvalidArray,
 						NotPredicate,
 						NotSupported,
-						NotVersion2_0,
+						NotVersion2_1,
 						Invalid
 					};
 			

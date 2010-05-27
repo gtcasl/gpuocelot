@@ -53,7 +53,7 @@ std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat, bool sub)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.0 \n";
+	result << ".version 2.1 \n";
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -142,7 +142,7 @@ std::string testCarry_PTX(ir::PTXOperand::DataType type, bool sub)
 	std::stringstream stream;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 	
-	stream << ".version 2.0\n";
+	stream << ".version 2.1\n";
 	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
 	stream << "{\n";
 	stream << "\t.reg .u64 %rIn, %rOut;\n";
@@ -249,7 +249,7 @@ std::string testMul_PTX(ir::PTXOperand::DataType type, MulType op)
 		}
 	}
 	
-	stream << ".version 2.0\n";
+	stream << ".version 2.1\n";
 	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
 	stream << "{\n";
 	stream << "\t.reg .u64 %rIn, %rOut;\n";

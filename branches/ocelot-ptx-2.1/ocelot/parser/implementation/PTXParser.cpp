@@ -165,12 +165,12 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-		if( statement.minor != 0 || statement.major != 2 )
+		if( statement.minor != 1 || statement.major != 2 )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Cannot parse PTX version " << statement.major 
-				<< "." << statement.minor << " with version 2.0 parser.", 
-				NotVersion2_0 );
+				<< "." << statement.minor << " with version 2.1 parser.", 
+				NotVersion2_1 );
 		}
 	}
 	

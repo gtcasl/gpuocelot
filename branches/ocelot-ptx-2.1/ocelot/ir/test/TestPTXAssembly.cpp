@@ -15,6 +15,7 @@
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/string.h>
+#include <hydrazine/implementation/math.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -281,101 +282,6 @@ std::string testMul_PTX(ir::PTXOperand::DataType type, MulType op)
 	return stream.str();
 }
 
-template<typename T>
-class SignedToUnsigned
-{
-	public:
-		typedef T type;
-};
-
-template<>
-class SignedToUnsigned<char>
-{
-	public:
-		typedef unsigned char type;
-};
-
-template<>
-class SignedToUnsigned<short>
-{
-	public:
-		typedef unsigned short type;
-};
-
-template<>
-class SignedToUnsigned<int>
-{
-	public:
-		typedef unsigned int type;
-};
-
-template<>
-class SignedToUnsigned<long long int>
-{
-	public:
-		typedef long long unsigned int type;
-};
-
-template<typename type>
-void multiplyHiLo(type& hi, type& lo, type r0, type r1)
-{
-	bool r0Signed = r0 < 0;
-	bool r1Signed = r1 < 0;
-
-	r0 = (r0Signed) ? -r0 : r0;
-	r1 = (r1Signed) ? -r1 : r1;
-	
-	typedef typename SignedToUnsigned<type>::type utype;
-
-	bool negative = (r0Signed && !r1Signed) || (r1Signed && !r0Signed);
-
-	unsigned int bits = sizeof(type) * 4;
-	utype mask = ((type)1 << bits) - 1;
-	
-	// A B
-	// C D
-	//
-	//    DA DB
-	// CA CB
-
-	utype a = (utype)r0 >> bits;
-	utype b = (utype)r0 & mask;
-	utype c = (utype)r1 >> bits;
-	utype d = (utype)r1 & mask;
-
-	// 
-
-	utype da = d * a;
-	utype db = d * b;
-	utype ca = c * a;
-	utype cb = c * b;
-
-	utype totalBits = (sizeof(type) * 8 - 1);
-	utype upperMask = ((type)1 << totalBits) - 1;
-	utype daUpper = da >> totalBits;
-	utype cbUpper = cb >> totalBits;
-	utype xCarryIn = ((da & upperMask) + (cb & upperMask)) >> totalBits;
-	utype xCarryOut = (daUpper + cbUpper + xCarryIn) >> 1;
-
-	utype x = da + cb;
-
-	utype xUpper = x >> totalBits;
-	utype yCarryIn = ((x & upperMask) + (db >> bits)) >> totalBits;
-	utype yCarryOut = (yCarryIn + xUpper) >> 1;
-
-	utype y = (db >> bits) + x;
-
-	lo = (db & mask) | ((y & mask) << bits);
-	hi = (y >> bits) + ca + ((yCarryOut + xCarryOut) << bits);
-	
-	utype loUpperBit = (utype)(~(utype)lo) >> totalBits;
-	utype signCarryIn = (((utype)(~(utype)lo) & upperMask) + 1) >> totalBits;
-	utype signCarryOut = (loUpperBit + signCarryIn) >> 1;
-
-	lo = (negative) ? -lo : lo;
-	hi = (negative) ? (utype)(~(utype)hi) + signCarryOut : hi;
-}
-
 template <typename type, MulType op>
 void testMul_REF(void* output, void* input)
 {
@@ -384,7 +290,7 @@ void testMul_REF(void* output, void* input)
 	type hi;
 	type lo;
 	
-	multiplyHiLo(hi, lo, r0, r1);
+	hydrazine::multiplyHiLo(hi, lo, r0, r1);
 	
 	if(op == MulWide)
 	{
@@ -513,7 +419,8 @@ namespace test
 		}
 		catch(const std::exception& e)
 		{
-			status << " Failed during CUDA run with exception - " 
+			status << " Test '" << test.name 
+				<< "' failed during CUDA run with exception - \n" 
 				<< e.what() << "\n";
 				
 			cudaDeviceProp properties;

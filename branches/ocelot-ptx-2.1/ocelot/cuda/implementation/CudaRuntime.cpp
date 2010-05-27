@@ -2293,14 +2293,30 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
-		std::cerr << "==Ocelot== Emulator failed to run kernel \"" 
+		std::cerr << "==Ocelot== PTX Emulator failed to run kernel \"" 
 			<< kernelName 
 			<< "\" with exception: \n";
 		std::cerr << _formatError( e.toString() ) 
 			<< "\n" << std::flush;
 		thread.lastError = cudaErrorLaunchFailure;
 		_release();
-		throw e;
+		throw;
+	}
+	catch( const std::exception& e ) {
+		std::cerr << "==Ocelot== " << _getDevice().properties().name 
+			<< " failed to run kernel \"" 
+			<< kernelName 
+			<< "\" with exception: \n";
+		std::cerr << _formatError( e.what() ) 
+			<< "\n" << std::flush;
+		thread.lastError = cudaErrorLaunchFailure;
+		_release();
+		throw;
+	}
+	catch(...) {
+		thread.lastError = cudaErrorLaunchFailure;
+		_release();
+		throw;
 	}
 	_release();
 	

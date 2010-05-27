@@ -117,7 +117,12 @@ namespace translator
 			}
 			case ir::LLVMInstruction::I64:
 			{
-				assertM( false, "Cannot double i64" );
+				t = ir::LLVMInstruction::I128;
+				break;
+			}
+			case ir::LLVMInstruction::I128:
+			{
+				assertM( false, "Cannot double i128" );
 				break;
 			}
 			case ir::LLVMInstruction::F32:
@@ -2504,7 +2509,7 @@ namespace translator
 		}
 		else
 		{
-			assertM( false, "No support for hi multiply" );
+			assertM( false, "No support for hi 24-bit multiply" );
 		}
 	}
 
@@ -2624,126 +2629,155 @@ namespace translator
 			}
 			else
 			{
-				ir::LLVMInstruction::Operand destination = _destination( i );
-				ir::LLVMInstruction::Operand extendedA = _translate( i.a );
-				ir::LLVMInstruction::Operand extendedB = _translate( i.b );
-				
-				if( ir::PTXOperand::isSigned( i.a.type ) )
+				if( ir::PTXOperand::s64 == i.type )
 				{
-					if( i.a.addressMode != ir::PTXOperand::Immediate )
-					{
-						ir::LLVMSext sextA;
+					ir::LLVMCall call;
+					call.name = "@__ocelot_mul_hi_s64";
+				
+					call.d = _destination( i );
+					call.parameters.push_back( _translate( i.a ) );
+					call.parameters.push_back( _translate( i.b ) );
 					
-						sextA.a = extendedA;
-						_doubleWidth( extendedA.type.type );
-						extendedA.name = _tempRegister();
-						sextA.d = extendedA;
+					_add( call );
+				}
+				else if( ir::PTXOperand::u64 == i.type )
+				{
+					ir::LLVMCall call;
+					call.name = "@__ocelot_mul_hi_u64";
+				
+					call.d = _destination( i );
+					call.parameters.push_back( _translate( i.a ) );
+					call.parameters.push_back( _translate( i.b ) );
 					
-						_add( sextA );
-					}
-					else
-					{
-						_doubleWidth( extendedA.type.type );
-					}
-					
-					if( i.b.addressMode != ir::PTXOperand::Immediate )
-					{
-						ir::LLVMSext sextB;
-					
-						sextB.a = extendedB;
-						_doubleWidth( extendedB.type.type );
-						extendedB.name = _tempRegister();
-						sextB.d = extendedB;
-					
-						_add( sextB );
-					}
-					else
-					{
-						_doubleWidth( extendedB.type.type );
-					}
+					_add( call );
 				}
 				else
 				{
-					if( i.a.addressMode != ir::PTXOperand::Immediate )
+					ir::LLVMInstruction::Operand 
+						destination = _destination( i );
+					ir::LLVMInstruction::Operand extendedA = _translate( i.a );
+					ir::LLVMInstruction::Operand extendedB = _translate( i.b );
+				
+					if( ir::PTXOperand::isSigned( i.a.type ) )
 					{
-						ir::LLVMZext sextA;
+						if( i.a.addressMode != ir::PTXOperand::Immediate )
+						{
+							ir::LLVMSext sextA;
 					
-						sextA.a = extendedA;
-						_doubleWidth( extendedA.type.type );
-						extendedA.name = _tempRegister();
-						sextA.d = extendedA;
+							sextA.a = extendedA;
+							_doubleWidth( extendedA.type.type );
+							extendedA.name = _tempRegister();
+							sextA.d = extendedA;
 					
-						_add( sextA );
+							_add( sextA );
+						}
+						else
+						{
+							_doubleWidth( extendedA.type.type );
+						}
+					
+						if( i.b.addressMode != ir::PTXOperand::Immediate )
+						{
+							ir::LLVMSext sextB;
+					
+							sextB.a = extendedB;
+							_doubleWidth( extendedB.type.type );
+							extendedB.name = _tempRegister();
+							sextB.d = extendedB;
+					
+							_add( sextB );
+						}
+						else
+						{
+							_doubleWidth( extendedB.type.type );
+						}
+					}
+					else
+					{
+						if( i.a.addressMode != ir::PTXOperand::Immediate )
+						{
+							ir::LLVMZext sextA;
+					
+							sextA.a = extendedA;
+							_doubleWidth( extendedA.type.type );
+							extendedA.name = _tempRegister();
+							sextA.d = extendedA;
+					
+							_add( sextA );
 
-					}
-					else
-					{
-						_doubleWidth( extendedA.type.type );
-					}
+						}
+						else
+						{
+							_doubleWidth( extendedA.type.type );
+						}
 					
-					if( i.b.addressMode != ir::PTXOperand::Immediate )
-					{
-						ir::LLVMZext sextB;
+						if( i.b.addressMode != ir::PTXOperand::Immediate )
+						{
+							ir::LLVMZext sextB;
 					
-						sextB.a = extendedB;
-						_doubleWidth( extendedB.type.type );
-						extendedB.name = _tempRegister();
-						sextB.d = extendedB;
+							sextB.a = extendedB;
+							_doubleWidth( extendedB.type.type );
+							extendedB.name = _tempRegister();
+							sextB.d = extendedB;
 					
-						_add( sextB );
+							_add( sextB );
+						}
+						else
+						{
+							_doubleWidth( extendedB.type.type );
+						}
 					}
-					else
-					{
-						_doubleWidth( extendedB.type.type );
-					}
-				}
 				
-				ir::LLVMMul mul;
+					ir::LLVMMul mul;
 						
-				mul.d = extendedA;
-				mul.d.name = _tempRegister();
-				mul.a = extendedA;
-				mul.b = extendedB;
+					mul.d = extendedA;
+					mul.d.name = _tempRegister();
+					mul.a = extendedA;
+					mul.b = extendedB;
 			
-				_add( mul );
+					_add( mul );
 				
-				ir::LLVMInstruction::Operand shiftedDestination = destination;
-				shiftedDestination.name = _tempRegister();
-				_doubleWidth( shiftedDestination.type.type );
+					ir::LLVMInstruction::Operand 
+						shiftedDestination = destination;
+					shiftedDestination.name = _tempRegister();
+					_doubleWidth( shiftedDestination.type.type );
 				
-				if( ir::PTXOperand::isSigned( i.a.type ) )
-				{
-					ir::LLVMAshr shift;
+					if( ir::PTXOperand::isSigned( i.a.type ) )
+					{
+						ir::LLVMAshr shift;
 					
-					shift.d = shiftedDestination;
-					shift.a = mul.d;
-					shift.b.constant = true;
-					shift.b.type.category = ir::LLVMInstruction::Type::Element;
-					shift.b.type.type = ir::LLVMInstruction::I32;
-					shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
+						shift.d = shiftedDestination;
+						shift.a = mul.d;
+						shift.b.constant = true;
+						shift.b.type.category = 
+							ir::LLVMInstruction::Type::Element;
+						shift.b.type.type = ir::LLVMInstruction::I32;
+						shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
 					
-					_add( shift );
+						_add( shift );
+					}
+					else
+					{
+						ir::LLVMLshr shift;
+					
+						shift.d = shiftedDestination;
+						shift.a = mul.d;
+						shift.b.constant = true;
+						shift.b.type.category = 
+							ir::LLVMInstruction::Type::Element;
+						shift.b.type.type = ir::LLVMInstruction::I32;
+						shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
+					
+						_add( shift );
+					}
+				
+					ir::LLVMTrunc truncate;
+				
+					truncate.d = destination;
+					truncate.a = shiftedDestination;
+				
+					_add( truncate );
 				}
-				else
-				{
-					ir::LLVMLshr shift;
-					
-					shift.d = shiftedDestination;
-					shift.a = mul.d;
-					shift.b.constant = true;
-					shift.b.type.category = ir::LLVMInstruction::Type::Element;
-					shift.b.type.type = ir::LLVMInstruction::I32;
-					shift.b.i32 = ir::PTXOperand::bytes( i.a.type ) * 8;
-					
-					_add( shift );
-				}
-				
-				ir::LLVMTrunc truncate;
-				
-				truncate.d = destination;
-				truncate.a = shiftedDestination;
-				
-				_add( truncate );
 			}
 		}
 	}
@@ -5950,6 +5984,33 @@ namespace translator
 			
 		_llvmKernel->_statements.push_front( atom );	
 	}
+
+	void PTXToLLVMTranslator::_addMathCalls()
+	{
+		ir::LLVMStatement mul( ir::LLVMStatement::FunctionDeclaration );
+
+		mul.label = "__ocelot_mul_hi_u64";
+		mul.linkage = ir::LLVMStatement::InvalidLinkage;
+		mul.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		mul.visibility = ir::LLVMStatement::Default;
+		
+		mul.operand.type.category = ir::LLVMInstruction::Type::Element;
+		mul.operand.type.type = ir::LLVMInstruction::I64;
+		
+		mul.parameters.resize( 2 );
+
+		mul.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		mul.parameters[0].type.type = ir::LLVMInstruction::I64;
+
+		mul.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		mul.parameters[1].type.type = ir::LLVMInstruction::I64;
+
+		_llvmKernel->_statements.push_front( mul );		
+
+		mul.label = "__ocelot_mul_hi_s64";
+		
+		_llvmKernel->_statements.push_front( mul );
+	}
 	
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
@@ -6175,6 +6236,7 @@ namespace translator
 		_insertDebugSymbols();
 		_addTextureCalls();
 		_addAtomicCalls();
+		_addMathCalls();
 
 		_llvmKernel->_statements.push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );

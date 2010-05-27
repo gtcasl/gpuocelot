@@ -17,10 +17,11 @@ namespace ir
 	typedef short LLVMI16;
 	typedef int LLVMI32;
 	typedef long long LLVMI64;
+	typedef long long LLVMI128;
 	
 	typedef float LLVMF32;
 	typedef double LLVMF64;
-	typedef double LLVMF128;
+	typedef LLVMI128 LLVMF128;
 
 	/*! \brief A class used to represent any LLVM Instruction */
 	class LLVMInstruction : public Instruction
@@ -93,6 +94,7 @@ namespace ir
 				I16,
 				I32,
 				I64,
+				I128,
 				F32,
 				F64,
 				F128,
@@ -221,6 +223,7 @@ namespace ir
 				LLVMI16 i16;
 				LLVMI32 i32;
 				LLVMI64 i64;
+				LLVMI128 i128;
 				LLVMF32 f32;
 				LLVMF64 f64;
 				LLVMF128 f128;
@@ -244,6 +247,7 @@ namespace ir
 						LLVMI16 i16;
 						LLVMI32 i32;
 						LLVMI64 i64;
+						LLVMI128 i128;
 						LLVMF32 f32;
 						LLVMF64 f64;
 						LLVMF128 f128;
@@ -275,6 +279,8 @@ namespace ir
 				public:
 					/*! \brief The constructor zeros out the attribute */
 					Parameter();
+					/*! \brief Construct from an operand */
+					Parameter( const Operand& op );
 					/*! \brief Assignment operator from an Operand */
 					const Parameter& operator=( const Operand& op );
 					/*! \brief Assignment operator from an Operand */

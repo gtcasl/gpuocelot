@@ -22,6 +22,7 @@
 #include <cfenv> 
 
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/math.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -4354,14 +4355,7 @@ void executive::CooperativeThreadArray::eval_Mul(CTAContext &context, const PTXI
 				setRegAsU32(threadID, instr.d.reg, d);
 			}
 		}
-	}/*
-	else if (instr.type == PTXOperand::u64) {
-		for (int threadID = 0; threadID < threadCount; threadID++) {
-			PTXU64 d, a = getRegAsU64(threadID, instr.a.reg), b = getRegAsU64(threadID, instr.b.reg);
-			
-			setRegAsU64(threadID, instr.d.reg, d);
-		}
-	}*/
+	}
 	else if (instr.type == PTXOperand::s16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
@@ -4410,26 +4404,46 @@ void executive::CooperativeThreadArray::eval_Mul(CTAContext &context, const PTXI
 		if (instr.modifier & PTXInstruction::lo) {
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
-				PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
+				PTXS64 d, a = operandAsS64(threadID, instr.a), 
+					b = operandAsS64(threadID, instr.b);
 				d = a * b;
 				setRegAsS64(threadID, instr.d.reg, d);
 			}
 		}
 		else {
-			throw RuntimeException("unsupported mul.hi.s64", context.PC, instr);
+			for (int threadID = 0; threadID < threadCount; threadID++) {
+				if (!context.predicated(threadID, instr)) continue;
+				PTXS64 d, a = operandAsS64(threadID, instr.a), 
+					b = operandAsS64(threadID, instr.b);
+				PTXS64 hi = 0;
+				PTXS64 lo = 0;
+				hydrazine::multiplyHiLo( hi, lo, a, b );
+				d = hi;
+				setRegAsS64(threadID, instr.d.reg, d);
+			}
 		}
 	} 
 	else if (instr.type == PTXOperand::u64) {
 		if (instr.modifier & PTXInstruction::lo) {
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
-				PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
+				PTXU64 d, a = operandAsU64(threadID, instr.a), 
+					b = operandAsU64(threadID, instr.b);
 				d = a * b;
 				setRegAsU64(threadID, instr.d.reg, d);
 			}
 		}
 		else {
-			throw RuntimeException("unsupported mul.hi.u64", context.PC, instr);
+			for (int threadID = 0; threadID < threadCount; threadID++) {
+				if (!context.predicated(threadID, instr)) continue;
+				PTXU64 d, a = operandAsU64(threadID, instr.a), 
+					b = operandAsU64(threadID, instr.b);
+				PTXU64 hi = 0;
+				PTXU64 lo = 0;
+				hydrazine::multiplyHiLo( hi, lo, a, b );
+				d = hi;
+				setRegAsU64(threadID, instr.d.reg, d);
+			}
 		}
 	}
 	else {

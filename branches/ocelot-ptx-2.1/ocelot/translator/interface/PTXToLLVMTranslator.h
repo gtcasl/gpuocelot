@@ -163,6 +163,7 @@ namespace translator
 			void _addStackAllocations();
 			void _addTextureCalls();
 			void _addAtomicCalls();
+			void _addMathCalls();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
 			void _addKernelSuffix();

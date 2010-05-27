@@ -10,15 +10,16 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 #include <ocelot/executive/interface/Device.h>
-#include <hydrazine/implementation/macros.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/interface/Casts.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <fstream>
 
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/Casts.h>
+#include <hydrazine/implementation/math.h>
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -100,9 +101,25 @@ static void __report( executive::LLVMContext* context,
 
 extern "C"
 {
-	void setRoundingMode( unsigned int mode )
+	long long int __ocelot_mul_hi_s64( long long int a, long long int b )
 	{
-		assertM( mode == 0, "No support for setting exotic rounding modes." );
+		long long int hi = 0;
+		long long int lo = 0;
+		
+		hydrazine::multiplyHiLo( hi, lo, a, b );
+		
+		return hi;
+	}
+
+	long long unsigned int __ocelot_mul_hi_u64( long long unsigned int a, 
+		long long unsigned int b )
+	{
+		long long unsigned int hi = 0;
+		long long unsigned int lo = 0;
+		
+		hydrazine::multiplyHiLo( hi, lo, a, b );
+		
+		return hi;
 	}
 
 	float __ocelot_ex2Ftz( float f )

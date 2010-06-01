@@ -114,6 +114,11 @@ ir::DominatorTree* ir::Kernel::dom_tree() {
 	return _dom_tree;
 }
 
+const analysis::DataflowGraph* ir::Kernel::dfg() const {
+	assertM(_dfg != 0, "DFG not created.");
+	return _dfg;
+}
+
 analysis::DataflowGraph* ir::Kernel::dfg() {
 	assertM(_dfg != 0, "DFG not created.");
 	return _dfg;

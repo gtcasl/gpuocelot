@@ -28,6 +28,7 @@ namespace translator
 		private:
 			typedef std::vector< analysis::DataflowGraph::Register > 
 				RegisterVector;
+			typedef std::vector< std::string > StringVector;
 		
 		private:
 			ir::LLVMKernel* _llvmKernel;
@@ -36,7 +37,7 @@ namespace translator
 			unsigned int _tempBlockCount;
 			bool _usesTextures;
 			RegisterVector _uninitialized;
-			ir::PTXKernel* _ptx;
+			const ir::PTXKernel* _ptx;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 
@@ -66,7 +67,6 @@ namespace translator
 			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 				const ir::PTXOperand& i );
 			
-			void _convertPtxToSsa();
 			void _translateInstructions();
 			void _newBlock( const std::string& name );
 			void _translate( const analysis::DataflowGraph::Instruction& i, 

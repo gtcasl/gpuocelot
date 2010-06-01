@@ -69,6 +69,8 @@ namespace ir {
 		DominatorTree* dom_tree();
 		/*! \brief Builds the data flow graph within the kernel */
 		virtual analysis::DataflowGraph* dfg();
+		/*! \brief Gets the const dfg */
+		virtual const analysis::DataflowGraph* dfg() const;
 		/*! brief Gets the cfg */
 		ControlFlowGraph* cfg();
 		/*! brief Gets the const cfg */

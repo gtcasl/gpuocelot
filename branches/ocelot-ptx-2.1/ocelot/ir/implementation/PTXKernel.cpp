@@ -125,6 +125,11 @@ namespace ir
 		return _dfg;
 	}
 
+	const analysis::DataflowGraph* PTXKernel::dfg() const 
+	{
+		return Kernel::dfg();
+	}
+
 	bool PTXKernel::executable() const {
 		return false;
 	}

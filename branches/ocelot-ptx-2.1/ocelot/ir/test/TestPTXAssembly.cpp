@@ -338,7 +338,169 @@ test::TestPTXAssembly::TypeVector testMul_OUT(
 		}		
 	}
 }
+////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST MAD
+std::string testMad_PTX(ir::PTXOperand::DataType type, MulType op, bool sat)
+{
+	std::stringstream stream;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+	std::string dTypeString = "." + ir::PTXOperand::toString(type);
+
+	if(op == MulWide)
+	{
+		switch(type)
+		{
+			case ir::PTXOperand::u16: dTypeString = ".u32"; break;
+			case ir::PTXOperand::u32: dTypeString = ".u64"; break;
+			case ir::PTXOperand::s16: dTypeString = ".s32"; break;
+			case ir::PTXOperand::s32: dTypeString = ".s64"; break;
+			default: assertM(false, "Invalid data type.");
+		}
+	}
+	
+	stream << ".version 2.1\n";
+	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
+	stream << "{\n";
+	stream << "\t.reg .u64 %rIn, %rOut;\n";
+	stream << "\t.reg " << typeString << " %r<2>;\n";
+	stream << "\t.reg " << dTypeString << " %r2;\n";
+	stream << "\t.reg " << dTypeString << " %r3;\n";
+	stream << "\tld.param.u64 %rIn, [in];\n";
+	stream << "\tld.param.u64 %rOut, [out];\n";
+	stream << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	stream << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	stream << "\tld.global" << dTypeString << " %r2, [%rIn + " 
+		<< 2 * ir::PTXOperand::bytes(type) << "]; \n";
+	
+	if( op == MulHi )
+	{
+		if( sat )
+		{
+			stream << "\tmad.hi.sat" << typeString << " %r3, %r0, %r1, %r2;\n";
+		}
+		else
+		{
+			stream << "\tmad.hi" << typeString << " %r3, %r0, %r1, %r2;\n";
+		}
+	}
+	else if( op == MulLo )
+	{
+		stream << "\tmad.lo" << typeString << " %r3, %r0, %r1, %r2;\n";
+	}
+	else
+	{
+		stream << "\tmad.wide" << typeString << " %r3, %r0, %r1, %r2;\n";
+	}
+
+	
+	stream << "\tst.global" << dTypeString << " [%rOut], %r3;\n";
+	stream << "\texit;\n";
+	stream << "}\n";
+	
+	return stream.str();
+}
+
+template <typename type, MulType op, bool sat>
+void testMad_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	type hi;
+	type lo;
+	
+	hydrazine::multiplyHiLo(hi, lo, r0, r1);
+	
+	if(op == MulWide)
+	{
+		type r2 = getParameter<type>(input, 2 * sizeof(type));
+		type r3 = getParameter<type>(input, 3 * sizeof(type));
+		hydrazine::addHiLo(hi, lo, r2);
+		hi += r3;
+		setParameter(output, 0, lo);
+		setParameter(output, sizeof(type), hi);
+	}
+	else if(op == MulLo)
+	{
+		type r2 = getParameter<type>(input, 2 * sizeof(type));
+		lo += r2;
+		setParameter(output, 0, lo);
+	}
+	else
+	{
+		type r2 = getParameter<type>(input, 2 * sizeof(type));
+		if(sat)
+		{
+			long long int t = (long long int)hi + (long long int)r2;
+			t = std::max(t, (long long int)INT_MIN);
+			t = std::min(t, (long long int)INT_MAX);
+			hi = t;
+		}
+		else
+		{
+			hi += r2;
+		}
+		setParameter(output, 0, hi);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testMad_IN(
+	test::TestPTXAssembly::DataType type, MulType op)
+{
+	test::TestPTXAssembly::TypeVector vector(2, type);
+
+	if(op != MulWide)
+	{
+		vector.push_back( type );
+	}
+	else
+	{
+		switch(type)
+		{
+			case test::TestPTXAssembly::I16:
+			{
+				vector.push_back( test::TestPTXAssembly::I32 );
+				break;
+			}
+			case test::TestPTXAssembly::I32:
+			{
+				vector.push_back( test::TestPTXAssembly::I64 );
+				break;
+			}
+			default: assertM(false, "Invalid data type for wide multiply.");
+		}	
+	}
+	
+	return vector;
+}
+
+test::TestPTXAssembly::TypeVector testMad_OUT(
+	test::TestPTXAssembly::DataType type, MulType op)
+{
+	if(op != MulWide)
+	{
+		return test::TestPTXAssembly::TypeVector(1, type);
+	}
+	else
+	{
+		switch(type)
+		{
+			case test::TestPTXAssembly::I16:
+			{
+				return test::TestPTXAssembly::TypeVector(1, 
+					test::TestPTXAssembly::I32);
+			}
+			case test::TestPTXAssembly::I32:
+			{
+				return test::TestPTXAssembly::TypeVector(1, 
+					test::TestPTXAssembly::I64);
+			}
+			default: assertM(false, "Invalid data type for wide multiply.");
+		}		
+	}
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace test
@@ -641,73 +803,147 @@ namespace test
 
 		add("TestMul-Lo-u16", testMul_REF<unsigned short, MulLo>, 
 			testMul_PTX(ir::PTXOperand::u16, MulLo), 
-			testCarry_OUT(I16), testCarry_IN(I16), 
+			testMul_OUT(I16, MulLo), testMul_IN(I16), 
 			uniformRandom<unsigned short, 2>, 1, 1);
 		add("TestMul-Hi-u16", testMul_REF<unsigned short, MulHi>, 
 			testMul_PTX(ir::PTXOperand::u16, MulHi), 
-			testCarry_OUT(I16), testCarry_IN(I16), 
+			testMul_OUT(I16, MulHi), testMul_IN(I16), 
 			uniformRandom<unsigned short, 2>, 1, 1);
 		add("TestMul-Wide-u16", testMul_REF<unsigned short, MulWide>, 
 			testMul_PTX(ir::PTXOperand::u16, MulWide), 
-			testCarry_OUT(I16), testCarry_IN(I16), 
+			testMul_OUT(I16, MulWide), testMul_IN(I16), 
 			uniformRandom<unsigned short, 2>, 1, 1);
 
 		add("TestMul-Lo-s16", testMul_REF<short, MulLo>, 
 			testMul_PTX(ir::PTXOperand::s16, MulLo), 
-			testCarry_OUT(I16), testCarry_IN(I16), 
+			testMul_OUT(I16, MulLo), testMul_IN(I16), 
 			uniformRandom<short, 2>, 1, 1);
 		add("TestMul-Hi-s16", testMul_REF<short, MulHi>, 
 			testMul_PTX(ir::PTXOperand::s16, MulHi), 
-			testCarry_OUT(I16), testCarry_IN(I16), 
+			testMul_OUT(I16, MulHi), testMul_IN(I16), 
 			uniformRandom<short, 2>, 1, 1);
 		add("TestMul-Wide-s16", testMul_REF<short, MulWide>, 
 			testMul_PTX(ir::PTXOperand::s16, MulWide), 
-			testCarry_OUT(I16), testCarry_IN(I16), 
+			testMul_OUT(I16, MulWide), testMul_IN(I16), 
 			uniformRandom<short, 2>, 1, 1);
 
 		add("TestMul-Lo-u32", testMul_REF<unsigned int, MulLo>, 
 			testMul_PTX(ir::PTXOperand::u32, MulLo), 
-			testCarry_OUT(I32), testCarry_IN(I32), 
+			testMul_OUT(I32, MulLo), testMul_IN(I32), 
 			uniformRandom<unsigned int, 2>, 1, 1);
 		add("TestMul-Hi-u32", testMul_REF<unsigned int, MulHi>, 
 			testMul_PTX(ir::PTXOperand::u32, MulHi), 
-			testCarry_OUT(I32), testCarry_IN(I32), 
+			testMul_OUT(I32, MulHi), testMul_IN(I32), 
 			uniformRandom<unsigned int, 2>, 1, 1);
-		add("TestMul-Wide-u32", testMul_REF<unsigned int, MulHi>, 
-			testMul_PTX(ir::PTXOperand::u32, MulHi), 
-			testCarry_OUT(I32), testCarry_IN(I32), 
+		add("TestMul-Wide-u32", testMul_REF<unsigned int, MulWide>, 
+			testMul_PTX(ir::PTXOperand::u32, MulWide), 
+			testMul_OUT(I32, MulWide), testMul_IN(I32), 
 			uniformRandom<unsigned int, 2>, 1, 1);
 
 		add("TestMul-Lo-s32", testMul_REF<int, MulLo>, 
 			testMul_PTX(ir::PTXOperand::s32, MulLo), 
-			testCarry_OUT(I32), testCarry_IN(I32), 
+			testMul_OUT(I32, MulLo), testMul_IN(I32), 
 			uniformRandom<int, 2>, 1, 1);
 		add("TestMul-Hi-s32", testMul_REF<int, MulHi>, 
 			testMul_PTX(ir::PTXOperand::s32, MulHi), 
-			testCarry_OUT(I32), testCarry_IN(I32), 
+			testMul_OUT(I32, MulHi), testMul_IN(I32), 
 			uniformRandom<int, 2>, 1, 1);
 		add("TestMul-Wide-s32", testMul_REF<int, MulWide>, 
 			testMul_PTX(ir::PTXOperand::s32, MulWide), 
-			testCarry_OUT(I32), testCarry_IN(I32), 
+			testMul_OUT(I32, MulWide), testMul_IN(I32), 
 			uniformRandom<int, 2>, 1, 1);
 
 		add("TestMul-Lo-u64", testMul_REF<long long unsigned int, MulLo>, 
 			testMul_PTX(ir::PTXOperand::u64, MulLo), 
-			testCarry_OUT(I64), testCarry_IN(I64), 
+			testMul_OUT(I64, MulLo), testMul_IN(I64), 
 			uniformRandom<long long unsigned int, 2>, 1, 1);
 		add("TestMul-Hi-u64", testMul_REF<long long unsigned int, MulHi>, 
 			testMul_PTX(ir::PTXOperand::u64, MulHi), 
-			testCarry_OUT(I64), testCarry_IN(I64), 
+			testMul_OUT(I64, MulHi), testMul_IN(I64), 
 			uniformRandom<long long unsigned int, 2>, 1, 1);
 
 		add("TestMul-Lo-s64", testMul_REF<long long int, MulLo>, 
 			testMul_PTX(ir::PTXOperand::s64, MulLo), 
-			testCarry_OUT(I64), testCarry_IN(I64), 
+			testMul_OUT(I64, MulLo), testMul_IN(I64), 
 			uniformRandom<long long int, 2>, 1, 1);
 		add("TestMul-Hi-s64", testMul_REF<long long int, MulHi>, 
 			testMul_PTX(ir::PTXOperand::s64, MulHi), 
-			testCarry_OUT(I64), testCarry_IN(I64), 
+			testMul_OUT(I64, MulHi), testMul_IN(I64), 
 			uniformRandom<long long int, 2>, 1, 1);
+
+		add("TestMad-Lo-u16", testMad_REF<unsigned short, MulLo, false>, 
+			testMad_PTX(ir::PTXOperand::u16, MulLo, false), 
+			testMad_OUT(I16, MulLo), testMad_IN(I16, MulLo), 
+			uniformRandom<unsigned short, 3>, 1, 1);
+		add("TestMad-Hi-u16", testMad_REF<unsigned short, MulHi, false>, 
+			testMad_PTX(ir::PTXOperand::u16, MulHi, false), 
+			testMad_OUT(I16, MulHi), testMad_IN(I16, MulHi), 
+			uniformRandom<unsigned short, 3>, 1, 1);
+		add("TestMad-Wide-u16", testMad_REF<unsigned short, MulWide, false>, 
+			testMad_PTX(ir::PTXOperand::u16, MulWide, false), 
+			testMad_OUT(I16, MulWide), testMad_IN(I16, MulWide), 
+			uniformRandom<unsigned short, 4>, 1, 1);
+
+		add("TestMad-Lo-s16", testMad_REF<short, MulLo, false>, 
+			testMad_PTX(ir::PTXOperand::s16, MulLo, false), 
+			testMad_OUT(I16, MulLo), testMad_IN(I16, MulLo), 
+			uniformRandom<short, 3>, 1, 1);
+		add("TestMad-Hi-s16", testMad_REF<short, MulHi, false>, 
+			testMad_PTX(ir::PTXOperand::s16, MulHi, false), 
+			testMad_OUT(I16, MulHi), testMad_IN(I16, MulHi), 
+			uniformRandom<short, 3>, 1, 1);
+		add("TestMad-Wide-s16", testMad_REF<short, MulWide, false>, 
+			testMad_PTX(ir::PTXOperand::s16, MulWide, false), 
+			testMad_OUT(I16, MulWide), testMad_IN(I16, MulWide), 
+			uniformRandom<short, 4>, 1, 1);
+
+		add("TestMad-Lo-u32", testMad_REF<unsigned int, MulLo, false>, 
+			testMad_PTX(ir::PTXOperand::u32, MulLo, false), 
+			testMad_OUT(I32, MulLo), testMad_IN(I32, MulLo), 
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestMad-Hi-u32", testMad_REF<unsigned int, MulHi, false>, 
+			testMad_PTX(ir::PTXOperand::u32, MulHi, false), 
+			testMad_OUT(I32, MulHi), testMad_IN(I32, MulHi), 
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestMad-Wide-u32", testMad_REF<unsigned int, MulWide, false>, 
+			testMad_PTX(ir::PTXOperand::u32, MulWide, false), 
+			testMad_OUT(I32, MulWide), testMad_IN(I32, MulWide), 
+			uniformRandom<unsigned int, 4>, 1, 1);
+
+		add("TestMad-Lo-s32", testMad_REF<int, MulLo, false>, 
+			testMad_PTX(ir::PTXOperand::s32, MulLo, false), 
+			testMad_OUT(I32, MulLo), testMad_IN(I32, MulLo), 
+			uniformRandom<int, 3>, 1, 1);
+		add("TestMad-Hi-s32", testMad_REF<int, MulHi, false>, 
+			testMad_PTX(ir::PTXOperand::s32, MulHi, false), 
+			testMad_OUT(I32, MulHi), testMad_IN(I32, MulHi), 
+			uniformRandom<int, 3>, 1, 1);
+		add("TestMad-Sat-Hi-s32", testMad_REF<int, MulHi, true>, 
+			testMad_PTX(ir::PTXOperand::s32, MulHi, true), 
+			testMad_OUT(I32, MulHi), testMad_IN(I32, MulHi), 
+			uniformRandom<int, 3>, 1, 1);
+		add("TestMad-Wide-s32", testMad_REF<int, MulWide, false>, 
+			testMad_PTX(ir::PTXOperand::s32, MulWide, false), 
+			testMad_OUT(I32, MulWide), testMad_IN(I32, MulWide), 
+			uniformRandom<int, 4>, 1, 1);
+
+		add("TestMad-Lo-u64", testMad_REF<long long unsigned int, MulLo, false>, 
+			testMad_PTX(ir::PTXOperand::u64, MulLo, false), 
+			testMad_OUT(I64, MulLo), testMad_IN(I64, MulLo), 
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+		add("TestMad-Hi-u64", testMad_REF<long long unsigned int, MulHi, false>, 
+			testMad_PTX(ir::PTXOperand::u64, MulHi, false), 
+			testMad_OUT(I64, MulHi), testMad_IN(I64, MulHi), 
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+
+		add("TestMad-Lo-s64", testMad_REF<long long int, MulLo, false>, 
+			testMad_PTX(ir::PTXOperand::s64, MulLo, false), 
+			testMad_OUT(I64, MulLo), testMad_IN(I64, MulLo), 
+			uniformRandom<long long int, 3>, 1, 1);
+		add("TestMad-Hi-s64", testMad_REF<long long int, MulHi, false>, 
+			testMad_PTX(ir::PTXOperand::s64, MulHi, false), 
+			testMad_OUT(I64, MulHi), testMad_IN(I64, MulHi), 
+			uniformRandom<long long int, 3>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

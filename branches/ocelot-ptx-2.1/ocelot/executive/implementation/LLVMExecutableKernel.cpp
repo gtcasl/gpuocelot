@@ -1755,6 +1755,9 @@ namespace executive
 		_barrierSupport = pass2.barriers();
 		_resumePoint = pass2.resume();
 
+		report( "  Converting to SSA." );
+		_ptx->dfg()->toSsa();
+
 		reportE( REPORT_ALL_PTX_SOURCE, "   Code after pass:\n" << *_ptx );
 	}
 
@@ -1795,15 +1798,9 @@ namespace executive
 			report( " Parsing llvm assembly." );
 			llvm::SMDiagnostic error;
 
-			if (overrideLLVMKernel) {
-				_module = llvm::ParseAssemblyFile(overrideLLVMKernelPath, error,
-					llvm::getGlobalContext());
-			}
-			else {
-				_module = new llvm::Module( name, llvm::getGlobalContext() );
-				_module = llvm::ParseAssemblyString( llvmKernel->code().c_str(), 
-					_module, error, llvm::getGlobalContext() );
-			}
+			_module = new llvm::Module( name, llvm::getGlobalContext() );
+			_module = llvm::ParseAssemblyString( llvmKernel->code().c_str(), 
+				_module, error, llvm::getGlobalContext() );
 
 			if( _module == 0 )
 			{
@@ -2488,18 +2485,12 @@ namespace executive
 	
 	LLVMExecutableKernel::LLVMExecutableKernel( ir::Kernel& k, 
 		executive::Device* d, 
-		translator::Translator::OptimizationLevel l,
-		const char *_overridePath ) : 
+		translator::Translator::OptimizationLevel l ) : 
 		ExecutableKernel( k, d ), _module( 0 ), _optimizationLevel( l )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"LLVMExecutable kernel must be constructed from a PTXKernel" );
 		ISA = ir::Instruction::LLVM;
-		overrideLLVMKernel = false;
-		if (_overridePath) {
-			overrideLLVMKernel = true;
-			overrideLLVMKernelPath = _overridePath;
-		}
 		
 		_ptx = new ir::PTXKernel( static_cast< ir::PTXKernel& >( k ) );
 		

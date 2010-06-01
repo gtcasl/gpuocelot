@@ -3543,49 +3543,59 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 	trace();
 	PTXOperand::DataType type = instr.type;
 
-	if (instr.modifier & PTXInstruction::wide) {
-		throw RuntimeException("mad.wide not YET implemented", context.PC, instr);
-	}
-
 	switch (type) {
 	case PTXOperand::u16:
 	{
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXU16 d = 0,
-				a = operandAsU16(threadID, instr.a), 
-				b = operandAsU16(threadID, instr.b), 
-				c = operandAsU16(threadID, instr.c);
+			PTXU16 a = operandAsU16(threadID, instr.a); 
+			PTXU16 b = operandAsU16(threadID, instr.b);
 
 			if (instr.modifier & PTXInstruction::hi) {
+				PTXU16 c = operandAsU16(threadID, instr.c);
 				PTXU16 t = (PTXU16)(((PTXU32)a * (PTXU32)b) >> 16);
-				d = t + c;
+				PTXU16 d = t + c;
+				setRegAsU16(threadID, instr.d.reg, d);
+			}
+			else if (instr.modifier & PTXInstruction::wide) {
+				PTXU32 c = operandAsU32(threadID, instr.c);
+				PTXU32 t = (PTXU32)a * (PTXU32)b;
+				PTXU32 d = t + c;
+				setRegAsU32(threadID, instr.d.reg, d);
 			}
 			else {
+				PTXU16 c = operandAsU16(threadID, instr.c);
 				PTXU16 t = a * b;
-				d = t + c;
+				PTXU16 d = t + c;
+				setRegAsU16(threadID, instr.d.reg, d);
 			}
-			setRegAsU16(threadID, instr.d.reg, d);
 		}
 	} break;
 	case PTXOperand::u32:
 	{
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXU32 d = 0,
-				a = operandAsU32(threadID, instr.a), 
-				b = operandAsU32(threadID, instr.b), 
-				c = operandAsU32(threadID, instr.c);
+			PTXU32 a = operandAsU32(threadID, instr.a); 
+			PTXU32 b = operandAsU32(threadID, instr.b);
 
 			if (instr.modifier & PTXInstruction::hi) {
-				PTXU32 t = (PTXU32)(((PTXU64)a * (PTXU64)b) >> 16);
-				d = t + c;
+				PTXU32 c = operandAsU32(threadID, instr.c);
+				PTXU32 t = (PTXU32)(((PTXU64)a * (PTXU64)b) >> 32);
+				PTXU32 d = t + c;
+				setRegAsU32(threadID, instr.d.reg, d);
 			}
-			else  {
+			else if (instr.modifier & PTXInstruction::wide) {
+				PTXU64 c = operandAsU64(threadID, instr.c);
+				PTXU64 t = (PTXU64)a * (PTXU64)b;
+				PTXU64 d = t + c;
+				setRegAsU64(threadID, instr.d.reg, d);
+			}
+			else {
+				PTXU32 c = operandAsU32(threadID, instr.c);
 				PTXU32 t = a * b;
-				d = t + c;
+				PTXU32 d = t + c;
+				setRegAsU32(threadID, instr.d.reg, d);
 			}
-			setRegAsU32(threadID, instr.d.reg, d);
 		}
 	} break;
 	case PTXOperand::u64:
@@ -3598,10 +3608,10 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 				c = operandAsU64(threadID, instr.c);
 
 			if (instr.modifier & PTXInstruction::hi) {
-				PTXU64 ah = ((a >> 32) & 0x0ffffffff), al = (a & 0x0ffffffff);
-				PTXU64 bh = ((b >> 32) & 0x0ffffffff), bl = (b & 0x0ffffffff);
-				PTXU64 t = ah * bh + ( (ah * bl) >> 32 ) + ((al * bh) >> 32);
-				d = t + c;
+				PTXU64 hi = 0;
+				PTXU64 lo = 0;
+				hydrazine::multiplyHiLo( hi, lo, a, b );
+				d = hi + c;
 			}
 			else {
 				PTXU64 t = a * b;
@@ -3614,40 +3624,63 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 	{
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXS16 d = 0,
-				a = operandAsS16(threadID, instr.a), 
-				b = operandAsS16(threadID, instr.b), 
-				c = operandAsS16(threadID, instr.c);
+			PTXS16 a = operandAsS16(threadID, instr.a); 
+			PTXS16 b = operandAsS16(threadID, instr.b);
 
 			if (instr.modifier & PTXInstruction::hi) {
+				PTXS16 c = operandAsS16(threadID, instr.c);
 				PTXS16 t = (PTXS16)(((PTXS32)a * (PTXS32)b) >> 16);
-				d = t + c;
+				PTXS16 d = t + c;
+				setRegAsS16(threadID, instr.d.reg, d);
+			}
+			else if (instr.modifier & PTXInstruction::wide) {
+				PTXS32 c = operandAsS32(threadID, instr.c);
+				PTXS32 t = (PTXS32)a * (PTXS32)b;
+				PTXS32 d = t + c;
+				setRegAsS32(threadID, instr.d.reg, d);
 			}
 			else {
+				PTXS16 c = operandAsS16(threadID, instr.c);
 				PTXS16 t = a * b;
-				d = t + c;
+				PTXS16 d = t + c;
+				setRegAsS16(threadID, instr.d.reg, d);
 			}
-			setRegAsS16(threadID, instr.d.reg, d);
 		}
 	} break;
 	case PTXOperand::s32:
 	{
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXS32 d = 0,
-				a = operandAsS32(threadID, instr.a), 
-				b = operandAsS32(threadID, instr.b), 
-				c = operandAsS32(threadID, instr.c);
+			PTXS32 a = operandAsS32(threadID, instr.a); 
+			PTXS32 b = operandAsS32(threadID, instr.b);
 
 			if (instr.modifier & PTXInstruction::hi) {
-				PTXS32 t = (PTXS32)(((PTXS64)a * (PTXS64)b) >> 16);
-				d = t + c;
+				PTXS32 c = operandAsS32(threadID, instr.c);
+				PTXS32 t = (PTXS32)(((PTXS64)a * (PTXS64)b) >> 32);
+				PTXS32 d = 0;
+				if (instr.modifier & PTXInstruction::sat) {
+					PTXS64 td = (PTXS64)t + (PTXS64)c;
+					td = max(td, (PTXS64)INT_MIN);
+					td = min(td, (PTXS64)INT_MAX);
+					d = td;
+				}
+				else {
+					d = t + c;
+				}
+				setRegAsS32(threadID, instr.d.reg, d);
+			}
+			else if (instr.modifier & PTXInstruction::wide) {
+				PTXS64 c = operandAsS64(threadID, instr.c);
+				PTXS64 t = (PTXS64)a * (PTXS64)b;
+				PTXS64 d = t + c;
+				setRegAsS64(threadID, instr.d.reg, d);
 			}
 			else {
+				PTXS32 c = operandAsS32(threadID, instr.c);
 				PTXS32 t = a * b;
-				d = t + c;
+				PTXS32 d = t + c;
+				setRegAsS32(threadID, instr.d.reg, d);
 			}
-			setRegAsS32(threadID, instr.d.reg, d);
 		}
 	} break;
 	case PTXOperand::s64:
@@ -3660,10 +3693,10 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 				c = operandAsS64(threadID, instr.c);
 
 			if (instr.modifier & PTXInstruction::hi) {
-				PTXS64 ah = ((a >> 32) & 0x0ffffffff), al = (a & 0x0ffffffff);
-				PTXS64 bh = ((b >> 32) & 0x0ffffffff), bl = (b & 0x0ffffffff);
-				PTXS64 t = ah * bh + ( (ah * bl) >> 32 ) + ((al * bh) >> 32);
-				d = t + c;
+				PTXS64 hi = 0;
+				PTXS64 lo = 0;
+				hydrazine::multiplyHiLo( hi, lo, a, b );
+				d = hi + c;
 			}
 			else {
 				PTXS64 t = a * b;

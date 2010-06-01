@@ -69,6 +69,9 @@ namespace ir
 			/*! \brief Builds the data flow graph within the kernel */
 			virtual analysis::DataflowGraph* dfg();
 
+			/*! \brief Gets the datalow graph */
+			virtual const analysis::DataflowGraph* dfg() const;
+
 			/*! \brief renames all the blocks with canonical names */
 			virtual void canonicalBlockLabels(int kernelID=1);
 	

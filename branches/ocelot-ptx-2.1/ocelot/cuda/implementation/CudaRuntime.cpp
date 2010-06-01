@@ -2932,7 +2932,15 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 	
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(name, ir::Module())).first;
-	module->second.load(ptx, name);
+	
+	try {
+		module->second.load(ptx, name);
+	}
+	catch(...) {
+		_unlock();
+		_modules.erase(module);
+		throw;
+	}
 	module->second.createDataStructures();
 	
 	for (DeviceVector::iterator device = _devices.begin(); 

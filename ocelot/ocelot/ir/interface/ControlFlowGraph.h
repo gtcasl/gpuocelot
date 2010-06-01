@@ -123,6 +123,17 @@ public:
 			static std::string dotFriendly(const std::string &str);
 
 		public:
+		
+			/*!
+				\brief emits label for entry block
+			*/
+			virtual std::string entryLabel(const BasicBlock *block);
+			
+			/*!
+				\brief emits label for exit block
+			*/
+			virtual std::string exitLabel(const BasicBlock *block);
+		
 			/*!
 				\brief prints string representation of 
 			*/

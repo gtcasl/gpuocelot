@@ -18,7 +18,7 @@
 #include <ocelot/trace/interface/CacheSimulator.h>
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
-
+#include <ocelot/trace/interface/PerformanceBoundGenerator.h>
 
 namespace ocelot
 {
@@ -34,7 +34,8 @@ namespace ocelot
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
 		trace::WarpSynchronousGenerator _warpSynchronous;
-
+		trace::PerformanceBoundGenerator _performanceBound;
+		
 		bool _initialized;
 		
 	public:

@@ -57,6 +57,29 @@ namespace api {
 				//! \brief emits dot file visualizing hot paths
 				bool emitHotPaths;
 			};
+			
+			class PerformanceBound {
+			public:
+				//! \brief specifies how memory bandwidth is computed
+				enum CoalescingProtocol {
+					Protocol_sm_10,
+					Protocol_sm_11,
+					Protocol_sm_12,
+					Protocol_sm_13,
+					Protocol_sm_20,
+					Protocol_ideal,
+					Protocol_invalid
+				};
+		
+			public:
+				PerformanceBound();
+				
+			public:
+			
+				bool enabled;
+				
+				CoalescingProtocol protocol;
+			};
 
 		public:
 			TraceGeneration();
@@ -98,6 +121,9 @@ namespace api {
 
 			//! \brief warp synchronous trace generator
 			WarpSynchronous warpSynchronous;
+			
+			//! \brief performance bound generator
+			PerformanceBound performanceBound;
 		};
 
 		class CudaRuntimeImplementation {

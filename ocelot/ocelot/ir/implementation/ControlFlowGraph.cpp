@@ -29,6 +29,24 @@ namespace ir {
 ControlFlowGraph::BasicBlock::DotFormatter::DotFormatter() { }
 ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
 
+/*!
+	\brief emits label for entry block
+*/
+std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(const BasicBlock *block) {
+	std::stringstream out;
+	out << "[shape=Mdiamond,label=\"" << block->label << "\"]";	
+	return out.str();
+}
+
+/*!
+	\brief emits label for exit block
+*/
+std::string ControlFlowGraph::BasicBlock::DotFormatter::exitLabel(const BasicBlock *block) {
+	std::stringstream out;
+	out << "[shape=Msquare,label=\"" << block->label << "\"]";	
+	return out.str();
+}
+
 std::string ControlFlowGraph::make_label_dot_friendly( 
 	const std::string& string ) {
 	
@@ -338,8 +356,13 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 
 	out << "  // basic blocks\n\n";
 
+	/*
 	out << "  bb_0 [shape=Mdiamond,label=\"" << _entry->label << "\"];\n";
 	out << "  bb_1 [shape=Msquare,label=\"" << _exit->label << "\"];\n";
+	*/
+	
+	out << "  bb_0 " << blockFormatter.entryLabel(&*_entry) << ";\n";
+	out << "  bb_1 " << blockFormatter.exitLabel(&*_entry) << ";\n";
 
 	blockIndices[_entry] = 0;
 	blockIndices[_exit] = 1;

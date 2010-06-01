@@ -205,12 +205,14 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	InstructionIdMap ids;
 
 	report(" Packing instructions into a vector");
+	size_t lastPC = 0;
 	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
 		bb_it != bb_sequence.end(); ++bb_it) {
 		branchTargetsToBlock[(int)instructions.size()] = (*bb_it)->label;
+		int n = 0;
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
-			i_it != (*bb_it)->instructions.end(); ++i_it) {
+			i_it != (*bb_it)->instructions.end(); ++i_it, ++n) {
 			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
 			if (ptx.opcode == ir::PTXInstruction::Reconverge 
 				|| i_it == (*bb_it)->instructions.begin()) {
@@ -220,7 +222,12 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 #if REPORT_KERNEL_INSTRUCTIONS
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
 #endif
+			lastPC = instructions.size();
+			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
+		}
+		if (n) {
+			basicBlockMap[lastPC] = (*bb_it)->label;
 		}
 	}
 
@@ -932,5 +939,19 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	std::stringstream stream;
 	stream << fileName << ":" << line << ":" << col;
 	return stream.str();
+}
+
+
+/*!
+	\brief gets the basic block label owning the instruction specified by the PC
+*/
+std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
+
+	std::map< int, std::string >::const_iterator bt_it = basicBlockMap.lower_bound(PC);
+	if (bt_it != basicBlockMap.end()) {
+		return bt_it->second;
+	}
+	
+	return "";
 }
 

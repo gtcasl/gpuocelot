@@ -13,16 +13,20 @@
 		memoryChecker: true,
 		raceDetector: true,
 		warpSynchronous: {
-			enabled: true,
+			enabled: false,
 			emitHotPaths: true
+		},
+		performanceBound: {
+			enabled: true,
+			protocol: "sm_20"
 		}
 	},
 	cuda: {
-		implementation: "CudaRuntime",
+		implementation: CudaRuntime,
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
+		devices: [ emulated ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

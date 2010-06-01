@@ -84,7 +84,12 @@ namespace ocelot
 			_warpSynchronous.configuration = c.trace.warpSynchronous;
 			ocelot::addTraceGenerator(_warpSynchronous, true);
 		}
-
+		if (c.trace.performanceBound.enabled) {
+			report("Creating performance bound trace generator");
+			_performanceBound.database = c.trace.database;
+			_performanceBound.protocol = c.trace.performanceBound.protocol;
+			ocelot::addTraceGenerator(_performanceBound, true);
+		}
 	}
 
 }

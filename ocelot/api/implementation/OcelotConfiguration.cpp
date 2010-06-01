@@ -74,6 +74,14 @@ api::OcelotConfiguration::TraceGeneration::WarpSynchronous::WarpSynchronous():
 
 }
 
+api::OcelotConfiguration::TraceGeneration::PerformanceBound::PerformanceBound():
+	enabled(false), protocol(Protocol_sm_20)
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	enabled(false),
 	database("trace/database.trace"),
@@ -88,6 +96,26 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	raceDetector(false)
 {
 
+}
+
+static api::OcelotConfiguration::TraceGeneration::PerformanceBound::CoalescingProtocol
+convertProtocol(const std::string &str) {
+	if (str == "sm_10") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_10;
+	}
+	else	if (str == "sm_11") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_11;
+	}
+	else	if (str == "sm_12") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_12;
+	}
+	else	if (str == "sm_13") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_13;
+	}
+	else	if (str == "ideal") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_ideal;
+	}
+	return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_20;
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
@@ -109,6 +137,10 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
 	trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
 	trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
+	
+	hydrazine::json::Visitor perfConfig = config["performanceBound"];
+	trace.performanceBound.enabled = perfConfig.parse<bool>("enabled", false);
+	trace.performanceBound.protocol = convertProtocol(perfConfig.parse<std::string>("protocol", "sm_20"));
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

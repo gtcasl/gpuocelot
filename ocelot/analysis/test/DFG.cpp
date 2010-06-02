@@ -65,6 +65,8 @@ int main( int argc, char** argv )
 	}
 	
 	analyze( ptx, dot, ssa );
+	
+	return 0;
 }
 
 #endif

@@ -556,6 +556,55 @@ test::TestPTXAssembly::TypeVector testSad_OUT(
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST DIV
+std::string testDiv_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<4>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	result << "\tdiv" << typeString << " %r2, %r0, %r1; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r2; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testDiv_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	
+	type result = r0 / r1;
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testDiv_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testDiv_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -1025,6 +1074,32 @@ namespace test
 			testSad_OUT(I64), testSad_IN(I64), 
 			uniformRandom<long long int, 3>, 1, 1);
 
+		add("TestDiv-u16", testDiv_REF<unsigned short>, 
+			testDiv_PTX(ir::PTXOperand::u16), 
+			testDiv_OUT(I16), testDiv_IN(I16), 
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestDiv-s16", testDiv_REF<short>, 
+			testDiv_PTX(ir::PTXOperand::s16), 
+			testDiv_OUT(I16), testDiv_IN(I16), 
+			uniformRandom<short, 2>, 1, 1);
+
+		add("TestDiv-u32", testDiv_REF<unsigned int>, 
+			testDiv_PTX(ir::PTXOperand::u32), 
+			testDiv_OUT(I32), testDiv_IN(I32), 
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestDiv-s32", testDiv_REF<int>, 
+			testDiv_PTX(ir::PTXOperand::s32), 
+			testDiv_OUT(I32), testDiv_IN(I32), 
+			uniformRandom<int, 2>, 1, 1);
+
+		add("TestDiv-u64", testDiv_REF<long long unsigned int>, 
+			testDiv_PTX(ir::PTXOperand::u64), 
+			testDiv_OUT(I64), testDiv_IN(I64), 
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+		add("TestDiv-s64", testDiv_REF<long long int>, 
+			testDiv_PTX(ir::PTXOperand::s64), 
+			testDiv_OUT(I64), testDiv_IN(I64), 
+			uniformRandom<long long int, 2>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

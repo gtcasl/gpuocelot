@@ -86,7 +86,7 @@ void trace::PerformanceBoundGenerator::initialize(const executive::ExecutableKer
 	//
 	_entry.name = kernel.name;
 	_entry.module = kernel.module->modulePath;
-	_entry.format = TraceGenerator::WarpSynchronousTraceFormat;
+	_entry.format = TraceGenerator::PerformanceBoundTraceFormat;
 	_entry.path = "";
 	_entry.header = "";
 	_entry.program = "";

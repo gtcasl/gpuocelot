@@ -43,6 +43,8 @@ namespace trace {
 			MachineAttributesFormat,
 			WatchTraceFormat,
 			WarpSynchronousTraceFormat,
+			PerformanceBoundTraceFormat,
+			ConvergenceTraceFormat,
 			InvalidTraceFormat
 		};
 		

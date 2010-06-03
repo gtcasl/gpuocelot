@@ -90,6 +90,12 @@ namespace ocelot
 			_performanceBound.protocol = c.trace.performanceBound.protocol;
 			ocelot::addTraceGenerator(_performanceBound, true);
 		}
+		if (c.trace.convergence.enabled) {
+			report("Creating convergence trace generator");
+			_convergence.database = c.trace.database;
+			_convergence.configuration = c.trace.convergence;
+			ocelot::addTraceGenerator(_convergence, true);
+		}
 	}
 
 }

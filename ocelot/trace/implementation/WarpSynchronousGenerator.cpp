@@ -29,6 +29,9 @@
 #define REPORT_BASE 0
 #define REPORT_KERNEL_INSTRUCTIONS 0
 
+//! if 1, warp size is set to the number of threads in the CTA
+#define UNIFORM_CONTROL_FLOW_ONLY 1
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 trace::WarpSynchronousGenerator::WarpCounter::WarpCounter() :
@@ -256,6 +259,7 @@ unsigned int trace::WarpSynchronousGenerator::_counter = 0;
 
 trace::WarpSynchronousGenerator::WarpSynchronousGenerator() {
 
+
 	// warp sizes
 //	int sizes[] = {2, 4, 8, 16, 32, 0};
 	int sizes[] = {4, 0};
@@ -289,6 +293,13 @@ void trace::WarpSynchronousGenerator::initialize(const executive::ExecutableKern
 	_entry.gridDim = kernel.gridDim();
 	_entry.blockDim = kernel.blockDim();
 		std::string name = kernel.name;
+
+	// only look for complete uniformity
+#if UNIFORM_CONTROL_FLOW_ONLY	
+	warpSizes.clear();
+	warpSizes.push_back(_entry.blockDim.x * _entry.blockDim.y * _entry.blockDim.z);
+#endif
+	
 		
 	if( name.size() > 20 ) {
 		name.resize( 20 );
@@ -395,7 +406,9 @@ void trace::WarpSynchronousGenerator::finish() {
 		// emit DOT files
 		for (std::vector<int>::const_iterator ws_it = warpSizes.begin();
 			ws_it != warpSizes.end(); ++ws_it) {
-			outputHotPaths(*ws_it);
+			int warpSize = *ws_it;
+			report("  outputting hot paths - ws: " << warpSize);
+			outputHotPaths(warpSize);
 		}
 	}
 }
@@ -483,8 +496,17 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	float t = 0.0f;
 	double activity = (events ? (double)synchronous / (double)events : 0);
 
+	/*
+	// log-scale color intensity based on number of times block has been reached by a warp
 	if (events) {
 		t = log((float)(events)) / (float)log((float)(maxEvents));
+	}
+	unsigned int r = (unsigned int)(t * 255.0);
+	unsigned int g = 0, b = 0;
+	*/
+	if (events) {
+		t = (float)activity;
+		if (t < 0.95) { t = 0.0f; }
 	}
 	unsigned int r = (unsigned int)(t * 255.0);
 	unsigned int g = 0, b = 0;
@@ -508,8 +530,13 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	if (edge->type == ir::ControlFlowGraph::BasicBlock::Edge::Dummy) {
 		out << "[style=dotted]";
 	}
-	else if (edge->type == ir::ControlFlowGraph::BasicBlock::Edge::Branch) {
-		out << "[color=blue]";
+	else {
+		// color it blue if the edge is entirely uniform or not
+		if (counterEdges.find(edge) != counterEdges.end()) {
+			if (counterEdges[edge].synchronous == counterEdges[edge].events) {
+				out << "[color=blue,style=bold]";
+			}
+		}
 	}
 
 	return out.str();
@@ -523,7 +550,6 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 void trace::WarpSynchronousGenerator::outputHotPaths(int warpSize) {
 	const SynchronousInstructionCounter & counter = warpCounters[warpSize];
 
-	//ir::ControlFlowGraph::BasicBlockColorMap blockColors;
 	DotFormatter formatter;
 	formatter.warpSize = warpSize;
 	formatter.traceGenerator = this;

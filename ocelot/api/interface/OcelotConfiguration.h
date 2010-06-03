@@ -56,8 +56,14 @@ namespace api {
 
 				//! \brief emits dot file visualizing hot paths
 				bool emitHotPaths;
+				
+				//! \brief path to CSV collecting results
+				std::string csv;
 			};
 			
+			/*!
+				\brief configuration properties for trace::PerformanceBoundGenerator trace generator
+			*/
 			class PerformanceBound {
 			public:
 				//! \brief specifies how memory bandwidth is computed
@@ -79,6 +85,28 @@ namespace api {
 				bool enabled;
 				
 				CoalescingProtocol protocol;
+			};
+			
+			/*!
+				\brief configuration properties for trace::ConvergenceGenerator
+			*/
+			class Convergence {
+			public:
+				Convergence();
+			
+			public:
+			
+				//! \brief indicates trace generator is enabled
+				bool enabled;
+				
+				//! \brief log file to append results
+				std::string logfile;		
+				
+				//! \brief emit CFG as dot file
+				bool dot;	
+				
+				//! \brief if true, a PDF is constructed from the generated DOT file
+				bool render;
 			};
 
 		public:
@@ -124,6 +152,9 @@ namespace api {
 			
 			//! \brief performance bound generator
 			PerformanceBound performanceBound;
+			
+			//! \brief trace::ConvergenceGenerator
+			Convergence convergence;
 		};
 
 		class CudaRuntimeImplementation {

@@ -26,8 +26,10 @@ namespace ir
 			/*! \brief A vector of IL Statements */
 			typedef std::deque< ILStatement > ILStatementVector;
 
-			/*! \brief Write this kernel to a parseable string */
-			void write(std::ostream& stream) const;
+			/*! \brief Assemble the IL kernel from the set of statements */
+			void assemble();
+			/*! \brief Get the assembly code */
+			const std::string& code() const;
 
 			/*! \brief Default constructor */
 			ILKernel();
@@ -35,6 +37,9 @@ namespace ir
 			ILKernel(const Kernel &k);
 
 		private:
+			/*! \brief The assembled IL kernel */
+			std::string _code;
+			/*! \brief The set of statements representing the kernel */
 			ILStatementVector _statements;
 	};
 }

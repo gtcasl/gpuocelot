@@ -25,15 +25,23 @@ namespace ir
 		ISA = Instruction::CAL;
 	}
 
-	void ILKernel::write(std::ostream& stream) const
+	void ILKernel::assemble()
 	{
-		for(ILStatementVector::const_iterator
-				statement = _statements.begin();
-				statement != _statements.end(); statement++)
+		_code.clear();
+
+		ILStatementVector::const_iterator statement;
+		for (statement = _statements.begin() ; 
+				statement != _statements.end() ; statement++)
 		{
-			stream << statement->toString() << std::endl;
+			_code += statement->toString() + "\n";
 		}
 	}
+
+	const std::string& ILKernel::code() const
+	{
+		return _code;
+	}
+	
 }
 
 

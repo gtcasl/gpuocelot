@@ -6,6 +6,7 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/ATIExecutableKernel.h>
+#include <ocelot/translator/interface/PTXToILTranslator.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -22,35 +23,105 @@
 
 namespace executive
 {
-	ATIExecutableKernel::ATIExecutableKernel(ir::Kernel &k,
-			CALresource *cb0, CALresource *cb1)
-		: ExecutableKernel(k), _cb0Resource(cb0), _cb1Resource(cb1)
+	ATIExecutableKernel::ATIExecutableKernel(ir::Kernel &k, CALcontext *context,
+			CALevent *event, CALresource *uav0, CALresource *cb0, CALresource *cb1)
+		: 
+			ExecutableKernel(k), 
+			_context(context),
+			_event(event),
+			_info(),
+			_module(0), 
+			_object(0), 
+			_image(0), 
+			_uav0Resource(uav0),
+			_uav0Mem(0),
+			_uav0Name(0),
+			_cb0Resource(cb0), 
+			_cb0Mem(0),
+			_cb0Name(0),
+			_cb1Resource(cb1),
+			_cb1Mem(0),
+			_cb1Name(0)
 	{
 	}
 
 	void ATIExecutableKernel::launchGrid(int width, int height)
 	{
-		assertM(false, "Not implemented yet");
+		// initialize ABI data
+		cb_t *cb0;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+		cb_t temp;
+
+		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
+		temp = {_blockDim.x, _blockDim.y, _blockDim.z, 0}; cb0[0] = temp;
+		temp = {width, height, 0, 0}; cb0[1] = temp;
+		CalDriver()->calResUnmap(*_cb0Resource);
+
+		// translate ptx kernel
+		report("Running IL Translator");
+		translator::PTXToILTranslator translator;
+		ir::ILKernel *ilKernel = 
+			static_cast<ir::ILKernel*>(translator.translate(this));
+
+		report("Assembling il module");
+		ilKernel->assemble();
+
+		// query device info
+		CalDriver()->calDeviceGetInfo(&_info, 0);
+
+		// compile, link, and load module
+		CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
+				ilKernel->code().c_str(), _info.target);
+
+		CalDriver()->calclLink(&_image, &_object, 1);
+		CalDriver()->calModuleLoad(&_module, *_context, _image);
+
+		// bind memory handles to module names
+		CalDriver()->calCtxGetMem(&_uav0Mem, *_context, *_uav0Resource);
+		CalDriver()->calModuleGetName(&_uav0Name, *_context, _module, "uav0");
+		CalDriver()->calCtxSetMem(*_context, _uav0Name, _uav0Mem);
+
+		CalDriver()->calCtxGetMem(&_cb0Mem, *_context, *_cb0Resource);
+		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
+		CalDriver()->calCtxSetMem(*_context, _cb0Name, _cb0Mem);
+
+		CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
+		CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
+		CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+
+		// get module entry
+		CALfunc func = 0;
+		CalDriver()->calModuleGetEntry(&func, *_context, _module, "main");
+
+		// invoke kernel
+		CALprogramGrid pg;
+		pg.func      = func;
+		pg.flags     = 0;
+		pg.gridBlock = (CALdomain3D) {_blockDim.x, _blockDim.y, _blockDim.z};
+		pg.gridSize  = (CALdomain3D) {width, height, 1};
+		CalDriver()->calCtxRunProgramGrid(_event, *_context, &pg);
+		while(!CalDriver()->calCtxIsEventDone(*_context, *_event));
+
+		// clean up
+		// release memory handles
+		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
+		CalDriver()->calCtxReleaseMem(*_context, _cb0Mem);
+		CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
+
+		// unload module
+		CalDriver()->calModuleUnload(*_context, _module);
+
+		// free object and image
+		CalDriver()->calclFreeImage(_image);
+		CalDriver()->calclFreeObject(_object);
 	}
 
 	void ATIExecutableKernel::setKernelShape(int x, int y, int z)
 	{
-		cb_t *cb0;
-		CALuint pitch = 0;
-		CALuint flags = 0;
-
-		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
-
-		cb_t temp = {x, y, z, 0};
-		cb0[0] = temp;
-		report("setKernelShape : cb0[0] = {" 
-				<< cb0[0].x
-				<< ", " << cb0[0].y
-				<< ", " << cb0[0].z
-				<< ", " << cb0[0].w
-				<< "}");
-
-		CalDriver()->calResUnmap(*_cb0Resource);
+		_blockDim.x = x;
+		_blockDim.y = y;
+		_blockDim.z = z;
 	}
 
 	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int)

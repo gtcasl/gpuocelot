@@ -12,24 +12,29 @@
 #include <map>
 
 //Ocelot includes
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 
 namespace translator
 {
 	/*! \brief A translator from PTX to IL */
-	class PTXToILTranslator
+	class PTXToILTranslator : public Translator
 	{
 		public:
 			/*! \brief Translate a module from PTX to IL */
-			std::string translate(const ir::Module *module);
+			ir::Kernel *translate(const ir::Kernel *k);
+
+			void addProfile(const ProfilingData &d);
+
+			PTXToILTranslator(OptimizationLevel l = NoOptimization);
 
 		private:
 			typedef std::map<long long unsigned int, std::string> LiteralMap;
 
 			ir::ILKernel *_ilKernel;
-			LiteralMap literals;
+			LiteralMap _literals;
 
 			void _translateInstructions();
 

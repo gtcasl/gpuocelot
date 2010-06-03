@@ -10,7 +10,6 @@
 // Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/ATIExecutableKernel.h>
-#include <ocelot/translator/interface/PTXToILTranslator.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -35,27 +34,18 @@ namespace executive
 			_uav0Allocations(),
 			_uav0AllocPtr(Uav0BaseAddr),
 			_uav0Resource(0),
-			_uav0Mem(0),
-			_uav0Name(0),
 			_cb0Resource(0),
-			_cb0Mem(0),
-			_cb0Name(0),
 			_cb1Resource(0),
-			_cb1Mem(0),
-			_cb1Name(0),
 			_device(0), 
-			_info(),
 			_status(),
 			_attribs(),
 			_context(0), 
-			_object(0), 
-			_image(0), 
-			_module(0), 
-			_ir(0),
+			_event(0),
 			_selected(false)
     {
+		report("Creating new ATIGPUDevice");
+
 		CalDriver()->calDeviceOpen(&_device, 0);
-		CalDriver()->calDeviceGetInfo(&_info, 0);
 
 		_attribs.struct_size = sizeof(CALdeviceattribs);
 		CalDriver()->calDeviceGetAttribs(&_attribs, 0);
@@ -63,7 +53,10 @@ namespace executive
 		_status.struct_size = sizeof(CALdevicestatus);
 		CalDriver()->calDeviceGetStatus(&_status, _device);
 
+		_properties.ISA = ir::Instruction::CAL;
 		_properties.name = "CAL Device";
+		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
+		_properties.major = 1;
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
@@ -71,20 +64,14 @@ namespace executive
 
 		// Allocate uav0 resource
 		// TODO Define max resource allocation size
-		CALuint width = 150000;
+		CALuint width = 400000;
 		CALuint flags = CAL_RESALLOC_GLOBAL_BUFFER;
 		CalDriver()->calResAllocLocal1D(
 				&_uav0Resource, 
 				_device, 
 				width,
-				CAL_FORMAT_INT_1,
+				CAL_FORMAT_UNSIGNED_INT8_4,
 				flags);
-
-		// Get uav0 memory handle
-		CalDriver()->calCtxGetMem(
-					&_uav0Mem,
-					_context,
-					_uav0Resource);
 
 		// Allocate cb0 resource
 		flags = 0;
@@ -95,12 +82,6 @@ namespace executive
 				CAL_FORMAT_INT_4,
 				flags);
 
-		// Get cb0 memory handle
-		CalDriver()->calCtxGetMem(
-					&_cb0Mem,
-					_context,
-					_cb0Resource);
-
 		// Allocate cb1 resource
 		flags = 0;
 		CalDriver()->calResAllocLocal1D(
@@ -109,20 +90,11 @@ namespace executive
 				cbMaxSize,
 				CAL_FORMAT_INT_1,
 				flags);
-
-		// Get cb1 memory handle
-		CalDriver()->calCtxGetMem(
-					&_cb1Mem,
-					_context,
-					_cb1Resource);
-
     }
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
-		CalDriver()->calCtxReleaseMem(_context, _uav0Mem);
-		CalDriver()->calCtxReleaseMem(_context, _cb0Mem);
-		CalDriver()->calCtxReleaseMem(_context, _cb1Mem);
+		_modules.clear();
 
 		CalDriver()->calResFree(_uav0Resource);
 		CalDriver()->calResFree(_cb0Resource);
@@ -168,69 +140,24 @@ namespace executive
 
     void ATIGPUDevice::load(const ir::Module *irModule)
     {
-		assertM(_module == 0, "Multiple modules not supported yet");
+		report("Loading Module...");
 
-		_ir = irModule;
-
-		report("Running IL Translator");
-		translator::PTXToILTranslator translator;
-
-		std::string ILModule = translator.translate(irModule);
-
-		CalDriver()->calclCompile(
-					&_object, 
-					CAL_LANGUAGE_IL, 
-					ILModule.c_str(), 
-					_info.target);
-
-		CalDriver()->calclLink(&_image, &_object, 1);
-		CalDriver()->calModuleLoad(&_module, _context, _image);
-
-		// Get uav0 name
-		CalDriver()->calModuleGetName(
-					&_uav0Name, 
-					_context, 
-					_module,
-					"uav0");
-
-		// Bind uav0 memory handle to module name
-		CalDriver()->calCtxSetMem(
-					_context,
-					_uav0Name,
-					_uav0Mem);
-
-		// Get cb0 name
-		CalDriver()->calModuleGetName(
-					&_cb0Name, 
-					_context, 
-					_module,
-					"cb0");
-
-		// Bind cb0 memory handle to module name
-		CalDriver()->calCtxSetMem(
-					_context,
-					_cb0Name,
-					_cb0Mem);
-
-		// Get cb1 name
-		CalDriver()->calModuleGetName(
-					&_cb1Name, 
-					_context, 
-					_module,
-					"cb1");
-
-		// Bind cb1 memory handle to module name
-		CalDriver()->calCtxSetMem(
-					_context,
-					_cb1Name,
-					_cb1Mem);
+		if (_modules.count(irModule->modulePath) != 0)
+		{
+			Throw("Duplicate module - " << irModule->modulePath);
+		}
+		_modules.insert(std::make_pair(irModule->modulePath, irModule));
     }
 
     void ATIGPUDevice::unload(const std::string& name)
     {
-		CalDriver()->calModuleUnload(_context, _module);
-		CalDriver()->calclFreeImage(_image);
-		CalDriver()->calclFreeObject(_object);
+		ModuleMap::iterator module = _modules.find(name);
+		if (module == _modules.end())
+		{
+			Throw("Cannot unload unknown module - " << name);
+		}
+
+		_modules.erase(module);
     }
 
     void ATIGPUDevice::select()
@@ -452,41 +379,31 @@ namespace executive
 			size_t parameterBlockSize, 
 			const trace::TraceGeneratorVector& traceGenerators)
 	{
-		assertM(_ir->kernels.size() == 1, "Multiple kernels not supported yet");
-		ATIExecutableKernel kernel(*_ir->kernels.begin()->second, 
-				&_cb0Resource, &_cb1Resource);
+		ModuleMap::iterator module = _modules.find(moduleName);
+
+		if (module == _modules.end())
+		{
+			Throw("Unknown module - " << moduleName);
+		}
+
+		ir::Module::KernelMap::const_iterator irKernel = 
+			module->second->kernels.find(kernelName);
+
+		if (irKernel == module->second->kernels.end())
+		{
+			Throw("Unknown kernel - " << kernelName
+					<< " in module " << moduleName);
+		}
+
+		ATIExecutableKernel kernel(*irKernel->second, &_context, &_event, 
+				&_uav0Resource, &_cb0Resource, &_cb1Resource);
 
 		kernel.setKernelShape(block.x, block.y, block.z);
-		kernel.setParameterBlock((const unsigned char *)parameterBlock,
+		kernel.setParameterBlock((const unsigned char *)parameterBlock, 
 				parameterBlockSize);
 		kernel.updateParameterMemory();
-
-		// Get module entry
-		CALfunc func = 0;
-		CalDriver()->calModuleGetEntry(
-					&func,
-					_context,
-					_module,
-					"main");
-
-		// Invoke kernel
-		CALevent event = 0;
-		CALprogramGrid pg;
-		pg.func             = func;
-		pg.flags            = 0;
-		pg.gridBlock.width  = block.x;
-		pg.gridBlock.height = block.y;
-		pg.gridBlock.depth  = block.z;
-		pg.gridSize.width   = grid.x;
-		pg.gridSize.height  = grid.y;
-		pg.gridSize.depth   = grid.z;
-
-		CalDriver()->calCtxRunProgramGrid(
-					&event, 
-					_context, 
-					&pg);
-
-		while(!CalDriver()->calCtxIsEventDone(_context, event));
+		kernel.launchGrid(grid.x, grid.y);
+		synchronize();
 	}
 
 	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& module, 
@@ -502,7 +419,7 @@ namespace executive
 
 	void ATIGPUDevice::synchronize()
 	{
-		assertM(false, "Not implemented yet");
+		while(!CalDriver()->calCtxIsEventDone(_context, _event));
 	}
 
 	void ATIGPUDevice::limitWorkerThreads(unsigned int threads)
@@ -602,7 +519,24 @@ namespace executive
 	void ATIGPUDevice::MemoryAllocation::memset(size_t offset, int value, 
 			size_t size)
 	{
-		assertM(false, "Not implemented yet");
+		assertM(offset + size <= _size, "Invalid memset size");
+		
+		CALvoid *data = NULL;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
+
+		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		std::memset((char *)data + addr, value, size);
+
+		report("MemoryAllocation::memset("
+				<< "offset = " << std::dec << offset
+				<< ", value = " << std::dec << value
+				<< ", size = " << std::dec << size
+				<< ")");
+		
+		CalDriver()->calResUnmap(*_resource);
 	}
 
 	void ATIGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation *allocation,

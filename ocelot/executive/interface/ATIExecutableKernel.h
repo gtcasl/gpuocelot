@@ -16,7 +16,8 @@ namespace executive
 	class ATIExecutableKernel : public executive::ExecutableKernel {
 		public:
 			/*! \brief Constructor */
-			ATIExecutableKernel(ir::Kernel &k, CALresource *cb0, 
+			ATIExecutableKernel(ir::Kernel &k, CALcontext *context, 
+					CALevent *event, CALresource *uav0, CALresource *cb0, 
 					CALresource *cb1);
 
 			/*!	\brief Launch a kernel on a 2D grid */
@@ -50,12 +51,41 @@ namespace executive
 			/*! \brief Type of the constant buffer (cb) */
 			typedef struct { int32_t x, y, z, w; } cb_t;
 
+			/*! \brief CAL Context */
+			CALcontext *_context;
+			/*! \brief CAL Event */
+			CALevent *_event;
+			/*! \brief CAL Device Info */
+			CALdeviceinfo _info;
+			/*! \brief CAL Module */
+			CALmodule _module;
+			/*! \brief CAL Object */
+			CALobject _object;
+			/*! \brief CAL Image */
+			CALimage _image;
+
+			/********************************************************//**
+			 * \name uav0 Memory Manager
+			 ***********************************************************/
+			//@{
+			/*! \brief CAL uav0 resource */
+			CALresource *_uav0Resource;
+			/*! \brief CAL uav0 memory handle */
+			CALmem _uav0Mem;
+			/*! \brief CAL uav0 module name */
+			CALname _uav0Name;
+			//@}
+
 			/********************************************************//**
 			 * \name cb0 Memory Manager (ABI data)
 			 ***********************************************************/
 			//@{
 			/*! \brief CAL cb0 resource */
 			CALresource *_cb0Resource;
+			/*! \brief CAL cb0 memory handle */
+			CALmem _cb0Mem;
+			/*! \brief CAL cb0 module name */
+			CALname _cb0Name;
 			//@}
 			
 			/********************************************************//**
@@ -64,6 +94,10 @@ namespace executive
 			//@{
 			/*! \brief CAL cb1 resource */
 			CALresource *_cb1Resource;
+			/*! \brief CAL cb1 memory handle */
+			CALmem _cb1Mem;
+			/*! \brief CAL cb1 module name */
+			CALname _cb1Name;
 			//@}
 			
 			/*! \brief Returns a pointer to an instance to the 

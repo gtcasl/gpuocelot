@@ -18,13 +18,15 @@
 
 namespace translator
 {
-	std::string PTXToILTranslator::translate(const ir::Module *module)
+	PTXToILTranslator::PTXToILTranslator(OptimizationLevel l)
+		:
+			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
+			_ilKernel(0)
 	{
-		assertM(module->kernels.size() == 1, 
-				"Multiple kernels not supported yet");
+	}
 
-		ir::Kernel *k = module->kernels.begin()->second;
-
+	ir::Kernel *PTXToILTranslator::translate(const ir::Kernel *k)
+	{
 		assertM(k->ISA == ir::Instruction::PTX,
 				"Kernel must be a PTXKernel to translate to an ILKernel");
 
@@ -33,13 +35,7 @@ namespace translator
 		_translateInstructions();
 		_addKernelPrefix();
 
-		std::stringstream stream;
- 		_ilKernel->write(stream);
-		report("_ilKernel = " << std::endl << stream.str());
-
- 		delete _ilKernel;
-
- 		return stream.str();
+ 		return _ilKernel;
   	}
 
 	void PTXToILTranslator::_translateInstructions()
@@ -329,13 +325,13 @@ namespace translator
 	{
 		std::stringstream stream;
 
-		const LiteralMap::const_iterator it = literals.find(l);
+		const LiteralMap::const_iterator it = _literals.find(l);
 
-		if (it != literals.end()) {
+		if (it != _literals.end()) {
 			stream << it->second;
 		} else {
-			stream << "l" << literals.size();
-			literals.insert(std::make_pair(l, stream.str()));
+			stream << "l" << _literals.size();
+			_literals.insert(std::make_pair(l, stream.str()));
 		}
 
 		return stream.str();
@@ -369,9 +365,9 @@ namespace translator
 		report("Adding Kernel Prefix");
 
 		report("Adding dcl_literals");
-		if (literals.size() > 0) {
+		if (_literals.size() > 0) {
 			LiteralMap::const_iterator it;
-			for (it = literals.begin() ; it != literals.end() ; it++) 
+			for (it = _literals.begin() ; it != _literals.end() ; it++) 
 			{
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
@@ -418,5 +414,10 @@ namespace translator
 	{
 		report("Added instruction '" << i.toString() << "'");
 		_ilKernel->_statements.push_back(ir::ILStatement(i));
+	}
+
+	void PTXToILTranslator::addProfile(const ProfilingData &d)
+	{
+		assertM(false, "Not implemented yet");
 	}
 }

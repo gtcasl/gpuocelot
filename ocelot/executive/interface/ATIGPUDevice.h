@@ -190,6 +190,9 @@ namespace executive
 			static const CALdeviceptr Uav0BaseAddr = 0x1000;
 
 		private:
+			/*! \brief A map of registered modules */
+			typedef std::unordered_map<std::string, const ir::Module*> ModuleMap;
+
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
 
@@ -207,10 +210,6 @@ namespace executive
 			CALdeviceptr _uav0AllocPtr;
 			/*! \brief CAL uav0 resource */
 			CALresource _uav0Resource;
-			/*! \brief CAL uav0 memory handle */
-			CALmem _uav0Mem;
-			/*! \brief CAL uav0 module name */
-			CALname _uav0Name;
 			//@}
 
 			/*! \brief Maximum constant buffer size (in vectors) */
@@ -222,10 +221,6 @@ namespace executive
 			//@{
 			/*! \brief CAL cb0 resource */
 			CALresource _cb0Resource;
-			/*! \brief CAL cb0 memory handle */
-			CALmem _cb0Mem;
-			/*! \brief CAL cb1 module name */
-			CALname _cb0Name;
 			//@}
 
 			/********************************************************//**
@@ -234,16 +229,10 @@ namespace executive
 			//@{
 			/*! \brief CAL cb1 resource */
 			CALresource _cb1Resource;
-			/*! \brief CAL cb1 memory handle */
-			CALmem _cb1Mem;
-			/*! \brief CAL cb1 module name */
-			CALname _cb1Name;
 			//@}
 
 			/*! \brief CAL Device */
 			CALdevice _device;
-			/*! \brief CAL Device Info */
-			CALdeviceinfo _info;
 			/*! \brief CAL Device Status */
 			CALdevicestatus _status;
 			/*! \brief CAL Device Attributes */
@@ -251,15 +240,12 @@ namespace executive
 			/*! \brief CAL Context. Multiple contexts per device is 
 				not supported yet */
 			CALcontext _context;
-			/*! \brief CAL Object */
-			CALobject _object;
-			/*! \brief CAL Image */
-			CALimage _image;
-			/*! \brief CAL Module */
-			CALmodule _module;
+			/*! \brief CAL Event */
+			CALevent _event;
 
-			/*! \brief The ir representation of the module */
-			const ir::Module *_ir;
+			/*! \brief The modules that have been loaded */
+			ModuleMap _modules;
+
 			/*! \brief Has this device been selected? */
 			bool _selected;
 

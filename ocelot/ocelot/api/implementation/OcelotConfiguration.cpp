@@ -80,6 +80,15 @@ api::OcelotConfiguration::TraceGeneration::PerformanceBound::PerformanceBound():
 
 }
 
+api::OcelotConfiguration::TraceGeneration::Convergence::Convergence():
+	enabled(false), 
+	logfile("convergence.csv"), 
+	dot(false),
+	render(false)
+{
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
@@ -135,12 +144,24 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 
 	// more detailed configuration for this trace generator
 	hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
-	trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
-	trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
+	if (!warpSyncConfig.is_null()) {
+		trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
+		trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
+	}
 	
 	hydrazine::json::Visitor perfConfig = config["performanceBound"];
-	trace.performanceBound.enabled = perfConfig.parse<bool>("enabled", false);
-	trace.performanceBound.protocol = convertProtocol(perfConfig.parse<std::string>("protocol", "sm_20"));
+	if (!perfConfig.is_null()) {
+		trace.performanceBound.enabled = perfConfig.parse<bool>("enabled", false);
+		trace.performanceBound.protocol = convertProtocol(perfConfig.parse<std::string>("protocol", "sm_20"));
+	}
+	
+	hydrazine::json::Visitor convConfig = config["convergence"];
+	if (!convConfig.is_null()) {
+		trace.convergence.enabled = convConfig.parse<bool>("enabled", false);
+		trace.convergence.logfile = convConfig.parse<std::string>("logfile", "traces/convergence.csv");
+		trace.convergence.dot = convConfig.parse<bool>("dot", false);
+		trace.convergence.render = convConfig.parse<bool>("render", false);
+	}
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

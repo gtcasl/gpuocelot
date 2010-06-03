@@ -122,6 +122,8 @@ namespace trace
 				TargetCounter();
 			};
 			
+			typedef std::map< const ir::ControlFlowGraph::BasicBlock::Edge *, WarpCounter > EdgeCounterMap;
+
 			/*!
 				\brief all such counters for a particular warp size
 			*/
@@ -141,6 +143,9 @@ namespace trace
 
 				//! \brief maps a particular branch target's PC to its counter
 				std::map< int, TargetCounter > counterTargets;
+
+				//! \brief maps a particular edge to a counter
+				EdgeCounterMap counterEdges;
 			};
 
 			/*!
@@ -156,6 +161,7 @@ namespace trace
 				size_t minEvents;	// minimum (nonzero) number of events
 				size_t maxEvents; // maximum number of events
 				std::map< std::string , TargetCounter > blockCounter;
+				EdgeCounterMap counterEdges;
 
 			public:
 				static std::string colorToString(unsigned int color);
@@ -169,6 +175,7 @@ namespace trace
 				\brief maps warp size to a particular structure of counters
 			*/
 			std::map< int, SynchronousInstructionCounter > WarpSynchronousCounters;
+
 			
 		public:
 

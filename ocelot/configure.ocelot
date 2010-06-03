@@ -19,16 +19,22 @@
 		performanceBound: {
 			enabled: false,
 			protocol: "sm_20"
+		},
+		convergence: {
+			enabled: false,
+			logfile: "traces/convergence.csv",
+			dot: true,
+			render: true
 		}
 	},
 	cuda: {
 		implementation: CudaRuntime,
-		runtimeApiTrace: "trace/CudaAPI.trace"
+		runtimeApiTrace: "traces/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia, llvm, emulated ],
+		devices: [ llvm, nvidia, emulated ],
 		optimizationLevel: basic,
-		workerThreadLimit: 2
+		workerThreadLimit: 1
 	}
 }
 

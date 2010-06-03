@@ -589,8 +589,8 @@ intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | branch | addOrSub | addCOrSubC | atom | bar | brkpt 
 	| cvt | div | exit | ld | mad | mad24 | membar | mov | mul24 | mul 
-	| notInstruction | pmevent | rcpSqrtInstruction | red | ret | selp | set 
-	| setp | slct | st | tex | trap | vote;
+	| notInstruction | pmevent | rcpSqrtInstruction | red | ret | sad | selp 
+	| set | setp | slct | st | tex | trap | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR;
@@ -942,6 +942,11 @@ boolOperatorId : TOKEN_AND | TOKEN_OR | TOKEN_XOR;
 boolOperator : boolOperatorId
 {
 	state.boolean( $<value>1 );
+};
+
+sad : OPCODE_SAD dataType operand ',' operand ',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 5 );
 };
 
 selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'

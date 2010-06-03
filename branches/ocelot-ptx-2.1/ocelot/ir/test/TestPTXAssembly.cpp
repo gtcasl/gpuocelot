@@ -46,6 +46,7 @@ char* uniformRandom(test::Test::MersenneTwister& generator)
 	
 	return result;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 // TEST ADD/SUB
 std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat, bool sub)
@@ -503,6 +504,58 @@ test::TestPTXAssembly::TypeVector testMad_OUT(
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST SAD
+std::string testSad_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<4>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	result << "\tld.global" << typeString << " %r2, [%rIn + " 
+		<< 2 * ir::PTXOperand::bytes(type) << "]; \n";
+	result << "\tsad" << typeString << " %r3, %r0, %r1, %r2; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r3; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testSad_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	type r2 = getParameter<type>(input, 2 * sizeof(type));
+	
+	type result = r2 + ( ( r0 < r1 ) ? ( r1 - r0 ) : ( r0 - r1 ) );
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testSad_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(3, type);
+}
+
+test::TestPTXAssembly::TypeVector testSad_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -927,11 +980,11 @@ namespace test
 			testMad_OUT(I32, MulWide), testMad_IN(I32, MulWide), 
 			uniformRandom<int, 4>, 1, 1);
 
-		add("TestMad-Lo-u64", testMad_REF<long long unsigned int, MulLo, false>, 
+		add("TestMad-Lo-u64", testMad_REF<long long unsigned int, MulLo, false>,
 			testMad_PTX(ir::PTXOperand::u64, MulLo, false), 
 			testMad_OUT(I64, MulLo), testMad_IN(I64, MulLo), 
 			uniformRandom<long long unsigned int, 3>, 1, 1);
-		add("TestMad-Hi-u64", testMad_REF<long long unsigned int, MulHi, false>, 
+		add("TestMad-Hi-u64", testMad_REF<long long unsigned int, MulHi, false>,
 			testMad_PTX(ir::PTXOperand::u64, MulHi, false), 
 			testMad_OUT(I64, MulHi), testMad_IN(I64, MulHi), 
 			uniformRandom<long long unsigned int, 3>, 1, 1);
@@ -944,6 +997,34 @@ namespace test
 			testMad_PTX(ir::PTXOperand::s64, MulHi, false), 
 			testMad_OUT(I64, MulHi), testMad_IN(I64, MulHi), 
 			uniformRandom<long long int, 3>, 1, 1);
+
+		add("TestSad-u16", testSad_REF<unsigned short>, 
+			testSad_PTX(ir::PTXOperand::u16), 
+			testSad_OUT(I16), testSad_IN(I16), 
+			uniformRandom<unsigned short, 3>, 1, 1);
+		add("TestSad-s16", testSad_REF<short>, 
+			testSad_PTX(ir::PTXOperand::s16), 
+			testSad_OUT(I16), testSad_IN(I16), 
+			uniformRandom<short, 3>, 1, 1);
+
+		add("TestSad-u32", testSad_REF<unsigned int>, 
+			testSad_PTX(ir::PTXOperand::u32), 
+			testSad_OUT(I32), testSad_IN(I32), 
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestSad-s32", testSad_REF<int>, 
+			testSad_PTX(ir::PTXOperand::s32), 
+			testSad_OUT(I32), testSad_IN(I32), 
+			uniformRandom<int, 3>, 1, 1);
+
+		add("TestSad-u64", testSad_REF<long long unsigned int>, 
+			testSad_PTX(ir::PTXOperand::u64), 
+			testSad_OUT(I64), testSad_IN(I64), 
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+		add("TestSad-s64", testSad_REF<long long int>, 
+			testSad_PTX(ir::PTXOperand::s64), 
+			testSad_OUT(I64), testSad_IN(I64), 
+			uniformRandom<long long int, 3>, 1, 1);
+
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

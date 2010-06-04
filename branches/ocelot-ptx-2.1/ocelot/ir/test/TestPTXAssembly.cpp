@@ -47,6 +47,21 @@ char* uniformRandom(test::Test::MersenneTwister& generator)
 	return result;
 }
 
+template <typename type, unsigned int size>
+char* uniformNonZero(test::Test::MersenneTwister& generator)
+{
+	type* allocation = new type[size];
+	char* result = (char*) allocation;
+
+	for(unsigned int i = 0; i < size * sizeof(type); ++i)
+	{
+		char value = generator();
+		result[i] = ( value == 0 ) ? 1 : value;
+	}
+	
+	return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // TEST ADD/SUB
 std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat, bool sub)
@@ -605,6 +620,55 @@ test::TestPTXAssembly::TypeVector testDiv_OUT(
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST REM
+std::string testRem_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<4>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	result << "\trem" << typeString << " %r2, %r0, %r1; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r2; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testRem_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	
+	type result = r0 % r1;
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testRem_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testRem_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -1077,29 +1141,56 @@ namespace test
 		add("TestDiv-u16", testDiv_REF<unsigned short>, 
 			testDiv_PTX(ir::PTXOperand::u16), 
 			testDiv_OUT(I16), testDiv_IN(I16), 
-			uniformRandom<unsigned short, 2>, 1, 1);
+			uniformNonZero<unsigned short, 2>, 1, 1);
 		add("TestDiv-s16", testDiv_REF<short>, 
 			testDiv_PTX(ir::PTXOperand::s16), 
 			testDiv_OUT(I16), testDiv_IN(I16), 
-			uniformRandom<short, 2>, 1, 1);
+			uniformNonZero<short, 2>, 1, 1);
 
 		add("TestDiv-u32", testDiv_REF<unsigned int>, 
 			testDiv_PTX(ir::PTXOperand::u32), 
 			testDiv_OUT(I32), testDiv_IN(I32), 
-			uniformRandom<unsigned int, 2>, 1, 1);
+			uniformNonZero<unsigned int, 2>, 1, 1);
 		add("TestDiv-s32", testDiv_REF<int>, 
 			testDiv_PTX(ir::PTXOperand::s32), 
 			testDiv_OUT(I32), testDiv_IN(I32), 
-			uniformRandom<int, 2>, 1, 1);
+			uniformNonZero<int, 2>, 1, 1);
 
 		add("TestDiv-u64", testDiv_REF<long long unsigned int>, 
 			testDiv_PTX(ir::PTXOperand::u64), 
 			testDiv_OUT(I64), testDiv_IN(I64), 
-			uniformRandom<long long unsigned int, 2>, 1, 1);
+			uniformNonZero<long long unsigned int, 2>, 1, 1);
 		add("TestDiv-s64", testDiv_REF<long long int>, 
 			testDiv_PTX(ir::PTXOperand::s64), 
 			testDiv_OUT(I64), testDiv_IN(I64), 
-			uniformRandom<long long int, 2>, 1, 1);
+			uniformNonZero<long long int, 2>, 1, 1);
+
+		add("TestRem-u16", testRem_REF<unsigned short>, 
+			testRem_PTX(ir::PTXOperand::u16), 
+			testRem_OUT(I16), testRem_IN(I16), 
+			uniformNonZero<unsigned short, 2>, 1, 1);
+		add("TestRem-s16", testRem_REF<short>, 
+			testRem_PTX(ir::PTXOperand::s16), 
+			testRem_OUT(I16), testRem_IN(I16), 
+			uniformNonZero<short, 2>, 1, 1);
+
+		add("TestRem-u32", testRem_REF<unsigned int>, 
+			testRem_PTX(ir::PTXOperand::u32), 
+			testRem_OUT(I32), testRem_IN(I32), 
+			uniformNonZero<unsigned int, 2>, 1, 1);
+		add("TestRem-s32", testRem_REF<int>, 
+			testRem_PTX(ir::PTXOperand::s32), 
+			testRem_OUT(I32), testRem_IN(I32), 
+			uniformNonZero<int, 2>, 1, 1);
+
+		add("TestRem-u64", testRem_REF<long long unsigned int>, 
+			testRem_PTX(ir::PTXOperand::u64), 
+			testRem_OUT(I64), testRem_IN(I64), 
+			uniformNonZero<long long unsigned int, 2>, 1, 1);
+		add("TestRem-s64", testRem_REF<long long int>, 
+			testRem_PTX(ir::PTXOperand::s64), 
+			testRem_OUT(I64), testRem_IN(I64), 
+			uniformNonZero<long long int, 2>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

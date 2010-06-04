@@ -1089,7 +1089,7 @@ namespace analysis
 					ri = block->aliveOut().begin();
 				out << "<r" << ri->id << "> ";
 				out << "r" << ri->id;
-				for( ++ri; ri != block->aliveIn().end(); ++ri )
+				for( ++ri; ri != block->aliveOut().end(); ++ri )
 				{
 					out << " | <r" << ri->id << "> "; 
 					out << "r" << ri->id << ""; 

@@ -18,76 +18,64 @@
 
 namespace translator
 {
-	PTXToILTranslator::PTXToILTranslator() : literals(0), registers(0)
+	PTXToILTranslator::PTXToILTranslator(OptimizationLevel l)
+		:
+			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
+			_ilKernel(0)
 	{
 	}
 
-	std::string PTXToILTranslator::translate(const ir::Module *module)
+	ir::Kernel *PTXToILTranslator::translate(const ir::Kernel *k)
 	{
-		assertM(module->kernels.size() == 1, 
-				"Multiple kernels not supported yet");
-
-		ir::Kernel *k = module->kernels.begin()->second;
-
 		assertM(k->ISA == ir::Instruction::PTX,
 				"Kernel must be a PTXKernel to translate to an ILKernel");
 
 		_ilKernel = new ir::ILKernel(*k);
 
+		_translateInstructions();
 		_addKernelPrefix();
 
-		for (ir::Module::StatementVector::const_iterator
-				stmt = module->statements.begin() ;
-				stmt != module->statements.end() ; stmt++) {
-			if (stmt->directive == ir::PTXStatement::Instr)
-				_translate(stmt->instruction);
-			// Ugly hack to make vectorAdd pass. 
-			if (stmt->directive == ir::PTXStatement::Label && 
-					stmt->name == "$Lt_0_1026") {
-				ir::ILEndIf endif;
-				_add(endif);
-			}
-
-		}
-
-		std::stringstream stream;
- 		_ilKernel->write(stream);
-		report("_ilKernel = " << std::endl << stream.str());
-
- 		delete _ilKernel;
-
- 		return stream.str();
+ 		return _ilKernel;
   	}
+
+	void PTXToILTranslator::_translateInstructions()
+	{
+		ir::ControlFlowGraph::iterator blockIt;
+		for (blockIt = _ilKernel->cfg()->begin() ; 
+				blockIt != _ilKernel->cfg()->end(); blockIt++) 
+		{
+			ir::ControlFlowGraph::BasicBlock block = *blockIt;
+			_translate(&block);
+		}
+	}
+
+	void PTXToILTranslator::_translate(ir::ControlFlowGraph::BasicBlock *block)
+	{
+		if (block->visited) return;
+		block->visited = true;
+
+		ir::ControlFlowGraph::InstructionList::const_iterator ins;
+		for (ins = block->instructions.begin() ; 
+				ins != block->instructions.end() ; ins++) {
+			_translate(static_cast<ir::PTXInstruction &>(**ins), block);
+		}
+	}
   
- 	void PTXToILTranslator::_addKernelPrefix()
- 	{
-		ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
-
-		std::stringstream stream;
-		stream << "cb1[" << _ilKernel->parameters.size() << "]";
-		dcl_cb1.operand.identifier = stream.str();
-		dcl_cb1.operand.addressMode = ir::ILOperand::ConstantBuffer;
-
- 		_ilKernel->_statements.push_front(dcl_cb1);
-
- 		_ilKernel->_statements.push_front(ir::ILStatement(
- 					ir::ILStatement::OtherDeclarations));
- 	}
- 
-	void PTXToILTranslator::_translate(const ir::PTXInstruction &i)
+	void PTXToILTranslator::_translate(const ir::PTXInstruction &i, 
+		   ir::ControlFlowGraph::BasicBlock *b)
 	{
 		report("Translating: " << i.toString());
 		switch(i.opcode) 
 		{
- 			case ir::PTXInstruction::Add:  _translateAdd(i);  break;
-			case ir::PTXInstruction::Bra:  _translateBra(i);  break;
- 			case ir::PTXInstruction::Cvt:  _translateCvt(i);  break;
- 			case ir::PTXInstruction::Exit: _translateExit(i); break;
- 			case ir::PTXInstruction::Ld:   _translateLd(i);   break;
-			case ir::PTXInstruction::Mov:  _translateMov(i);  break;
- 			case ir::PTXInstruction::Mul:  _translateMul(i);  break;
-			case ir::PTXInstruction::SetP: _translateSetP(i); break;
- 			case ir::PTXInstruction::St:   _translateSt(i);   break;
+ 			case ir::PTXInstruction::Add:  _translateAdd(i);     break;
+			case ir::PTXInstruction::Bra:  _translateBra(i, b);  break;
+ 			case ir::PTXInstruction::Cvt:  _translateCvt(i);     break;
+ 			case ir::PTXInstruction::Exit: _translateExit(i);    break;
+ 			case ir::PTXInstruction::Ld:   _translateLd(i);      break;
+			case ir::PTXInstruction::Mov:  _translateMov(i);     break;
+ 			case ir::PTXInstruction::Mul:  _translateMul(i);     break;
+			case ir::PTXInstruction::SetP: _translateSetP(i);    break;
+ 			case ir::PTXInstruction::St:   _translateSt(i);      break;
 			default:
 			{
 				assertM(false, "Opcode "
@@ -95,6 +83,77 @@ namespace translator
 						<< " not supported");
 			}
 		}
+	}
+
+	ir::ILOperand PTXToILTranslator::_translate(const ir::PTXOperand &o)
+	{
+		ir::ILOperand op;
+
+		// TODO asserM(o.is64bits, "64-bit operands not supported yet");
+		switch(o.addressMode)
+		{
+			case ir::PTXOperand::Register:
+			case ir::PTXOperand::Indirect:
+			{
+				op.addressMode = ir::ILOperand::Register;
+				op.identifier = _translate(o.reg);
+				break;
+			}
+			case ir::PTXOperand::Immediate:
+			{
+				op.addressMode = ir::ILOperand::Literal;
+				op.identifier = _translateLiteral(o.imm_uint);
+				break;
+			}
+			case ir::PTXOperand::Address:
+			{
+				op.addressMode = ir::ILOperand::ConstantBuffer;
+				op.identifier = _translateConstantBuffer(o.identifier);
+				break;
+			}
+			case ir::PTXOperand::Special:
+			{
+				op.addressMode = ir::ILOperand::Special;
+				op.special = _translate(o.special);
+				break;
+			}
+			default:
+			{
+				assertM(false, "Address Mode " << o.addressMode << " not supported");
+			}
+		}
+
+		return op;
+	}
+
+	std::string PTXToILTranslator::_translate(
+			const ir::PTXOperand::RegisterType &reg)
+	{
+		std::stringstream stream;
+		stream << "r" << reg;
+		return stream.str();
+	}
+
+	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
+			const ir::PTXOperand::SpecialRegister &s)
+	{
+		ir::ILOperand::SpecialRegister sr;
+
+		switch(s)
+		{
+			case ir::PTXOperand::tidX:   sr = ir::ILOperand::vTidInGrpX;    break;
+			case ir::PTXOperand::tidY:   sr = ir::ILOperand::vTidInGrpY;    break;
+			case ir::PTXOperand::tidZ:   sr = ir::ILOperand::vTidInGrpZ;    break;
+			case ir::PTXOperand::ntidX:  sr = ir::ILOperand::vNTidInGrpX;   break;
+			case ir::PTXOperand::ntidY:  sr = ir::ILOperand::vNTidInGrpY;   break;
+			case ir::PTXOperand::ntidZ:  sr = ir::ILOperand::vNTidInGrpZ;   break;
+			case ir::PTXOperand::ctaIdX: sr = ir::ILOperand::vThreadGrpIdX; break;
+			case ir::PTXOperand::ctaIdY: sr = ir::ILOperand::vThreadGrpIdY; break;
+			case ir::PTXOperand::ctaIdZ: sr = ir::ILOperand::vThreadGrpIdZ; break;
+			default: assertM(false, "Special Register " << s << " not supported");
+		}
+
+		return sr;
 	}
 
 	void PTXToILTranslator::_translateAdd(const ir::PTXInstruction &i)
@@ -135,13 +194,21 @@ namespace translator
 		}
 	}
 
-	void PTXToILTranslator::_translateBra(const ir::PTXInstruction &i)
+	void PTXToILTranslator::_translateBra(const ir::PTXInstruction &i,
+			ir::ControlFlowGraph::BasicBlock *b)
 	{
+		// Only supports single forward branches (as in vectorAdd) for now
 		ir::ILIfLogicalZ if_logicalz;
+		ir::ILEndIf endif;
 
 		if_logicalz.a = _translate(i.pg);
 
 		_add(if_logicalz);
+
+		// Add fall-through as the body of if_logicalz
+		_translate(&(*b->get_fallthrough_edge()->tail));
+
+		_add(endif);
 	}
 
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
@@ -254,81 +321,22 @@ namespace translator
 		_add(uav_raw_store_id);
 	}
 
-	ir::ILOperand PTXToILTranslator::_translate(const ir::PTXOperand &o)
-	{
-		ir::ILOperand op;
-
-		// TODO asserM(o.is64bits, "64-bit operands not supported yet");
-		switch(o.addressMode)
-		{
-			case ir::PTXOperand::Register:
-			case ir::PTXOperand::Indirect:
-			{
-				op.addressMode = ir::ILOperand::Register;
-				op.identifier = _translateRegister(o.identifier);
-				break;
-			}
-			case ir::PTXOperand::Immediate:
-			{
-				op.addressMode = ir::ILOperand::Literal;
-				op.identifier = _translateLiteral(o.imm_uint);
-				break;
-			}
-			case ir::PTXOperand::Address:
-			{
-				op.addressMode = ir::ILOperand::ConstantBuffer;
-				op.identifier = _translateConstantBuffer(o.identifier);
-				break;
-			}
-			case ir::PTXOperand::Special:
-			{
-				op.addressMode = ir::ILOperand::Special;
-				op.special = _translate(o.special);
-				break;
-			}
-			default:
-			{
-				assertM(false, "Address Mode " << o.addressMode << " not supported");
-			}
-		}
-
-		return op;
-	}
-
-	std::string PTXToILTranslator::_translateRegister(
-			const std::string &ident)
-	{
-		std::stringstream stream;
-
-		const RegisterMap::const_iterator it = registerMap.find(ident);
-
-		if (it != registerMap.end()) {
-			stream << it->second;
-		} else {
-			stream << "r" << registers++;
-			registerMap.insert(std::make_pair(ident, stream.str()));
-		}
-
-		return stream.str();
-	}
-
 	std::string PTXToILTranslator::_translateLiteral(long long unsigned int l)
 	{
 		std::stringstream stream;
 
-		const LiteralMap::const_iterator it = literalMap.find(l);
+		const LiteralMap::const_iterator it = _literals.find(l);
 
-		if (it != literalMap.end()) {
+		if (it != _literals.end()) {
 			stream << it->second;
 		} else {
-			stream << "l" << literals++;
-			literalMap.insert(std::make_pair(l, stream.str()));
+			stream << "l" << _literals.size();
+			_literals.insert(std::make_pair(l, stream.str()));
 		}
 
 		return stream.str();
 	}
 
-	//TODO Rename to _translate(ir::PTXOperand::Address)
 	std::string PTXToILTranslator::_translateConstantBuffer(
 			const std::string &ident)
 	{
@@ -352,31 +360,64 @@ namespace translator
 		return stream.str();
 	}
 
-	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
-			const ir::PTXOperand::SpecialRegister &s)
-	{
-		ir::ILOperand::SpecialRegister sr;
+ 	void PTXToILTranslator::_addKernelPrefix()
+ 	{
+		report("Adding Kernel Prefix");
 
-		switch(s)
-		{
-			case ir::PTXOperand::tidX:   sr = ir::ILOperand::vTidInGrpX;    break;
-			case ir::PTXOperand::tidY:   sr = ir::ILOperand::vTidInGrpY;    break;
-			case ir::PTXOperand::tidZ:   sr = ir::ILOperand::vTidInGrpZ;    break;
-			case ir::PTXOperand::ntidX:  sr = ir::ILOperand::vNTidInGrpX;   break;
-			case ir::PTXOperand::ntidY:  sr = ir::ILOperand::vNTidInGrpY;   break;
-			case ir::PTXOperand::ntidZ:  sr = ir::ILOperand::vNTidInGrpZ;   break;
-			case ir::PTXOperand::ctaIdX: sr = ir::ILOperand::vThreadGrpIdX; break;
-			case ir::PTXOperand::ctaIdY: sr = ir::ILOperand::vThreadGrpIdY; break;
-			case ir::PTXOperand::ctaIdZ: sr = ir::ILOperand::vThreadGrpIdZ; break;
-			default: assertM(false, "Special Register " << s << " not supported");
+		report("Adding dcl_literals");
+		if (_literals.size() > 0) {
+			LiteralMap::const_iterator it;
+			for (it = _literals.begin() ; it != _literals.end() ; it++) 
+			{
+				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
+
+				dcl_literal.operands.resize(2);
+				dcl_literal.operands[0].identifier = it->second;
+				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
+
+				dcl_literal.operands[1].imm_uint = it->first;
+				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
+
+				_ilKernel->_statements.push_front(dcl_literal);
+			}
 		}
 
-		return sr;
-	}
+		report("Adding dcl_cb1");
+		if (_ilKernel->parameters.size() > 0) {
+			ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
+
+			std::stringstream stream;
+			stream << "cb1[" << _ilKernel->parameters.size() << "]";
+			dcl_cb1.operands.resize(1);
+			dcl_cb1.operands[0].identifier = stream.str();
+			dcl_cb1.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
+
+			_ilKernel->_statements.push_front(dcl_cb1);
+		}
+
+		report("Adding dcl_cb0");
+		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
+
+		std::stringstream stream;
+		stream << "cb0[1]";
+		dcl_cb0.operands.resize(1);
+		dcl_cb0.operands[0].identifier = stream.str();
+		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
+
+		_ilKernel->_statements.push_front(dcl_cb0);
+
+ 		_ilKernel->_statements.push_front(ir::ILStatement(
+ 					ir::ILStatement::OtherDeclarations));
+ 	}
 
 	void PTXToILTranslator::_add(const ir::ILInstruction &i)
 	{
 		report("Added instruction '" << i.toString() << "'");
 		_ilKernel->_statements.push_back(ir::ILStatement(i));
+	}
+
+	void PTXToILTranslator::addProfile(const ProfilingData &d)
+	{
+		assertM(false, "Not implemented yet");
 	}
 }

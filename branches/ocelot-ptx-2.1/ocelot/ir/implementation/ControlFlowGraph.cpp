@@ -24,11 +24,65 @@ namespace ir {
 
 ControlFlowGraph::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
+}
 
+ControlFlowGraph::BasicBlock::DotFormatter::DotFormatter() { }
+ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
+
+/*!
+	\brief emits label for entry block
+*/
+std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(const BasicBlock *block) {
+	std::stringstream out;
+	out << "[shape=Mdiamond,label=\"" << block->label << "\"]";	
+	return out.str();
+}
+
+/*!
+	\brief emits label for exit block
+*/
+std::string ControlFlowGraph::BasicBlock::DotFormatter::exitLabel(const BasicBlock *block) {
+	std::stringstream out;
+	out << "[shape=Msquare,label=\"" << block->label << "\"]";	
+	return out.str();
+}
+
+std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(const std::string &str) {
+	return make_label_dot_friendly(str);
+}
+
+std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const BasicBlock *block) {
+	std::stringstream out;
+
+	out << "[shape=record,";
+	out << "label=";
+	out << "\"{" << make_label_dot_friendly(block->label);
+
+	BasicBlock::InstructionList::const_iterator instrs 
+		= block->instructions.begin();	
+	for (; instrs != block->instructions.end(); ++instrs) {
+		out << " | " << make_label_dot_friendly((*instrs)->toString());
+	}
+	out << "}\"]";
+
+	return out.str();
+}
+
+std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const Edge *edge) {
+	std::stringstream out;
+
+	if (edge->type == Edge::Dummy) {
+		out << "[style=dotted]";
+	}
+	else if (edge->type == Edge::Branch) {
+		out << "[color=blue]";
+	}
+
+	return out.str();
 }
 
 ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i, 
-	const InstructionList& is) : label(l), id(i) {
+	const InstructionList& is) : label(l), id(i), visited(false) {
 	for (InstructionList::const_iterator instruction = is.begin();
 		instruction != is.end(); ++instruction ) {
 		instructions.push_back((*instruction)->clone(true));
@@ -263,7 +317,15 @@ ControlFlowGraph::const_iterator ControlFlowGraph::get_exit_block() const {
 	return _exit;
 }
 
-std::ostream& ControlFlowGraph::write(std::ostream &out) const {
+std::ostream& ControlFlowGraph::write(std::ostream &out) const { 
+	BasicBlock::DotFormatter defaultFormatter;
+	
+	return write(out, defaultFormatter);
+}
+
+std::ostream& ControlFlowGraph::write(std::ostream &out, 
+	ControlFlowGraph::BasicBlock::DotFormatter & blockFormatter) const {
+
 	using namespace std;
 
 	BlockMap blockIndices;
@@ -273,9 +335,8 @@ std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 	// emit nodes
 
 	out << "  // basic blocks\n\n";
-
-	out << "  bb_0 [shape=Mdiamond,label=\"" << _entry->label << "\"];\n";
-	out << "  bb_1 [shape=Msquare,label=\"" << _exit->label << "\"];\n";
+	out << "  bb_0 " << blockFormatter.entryLabel(&*_entry) << ";\n";
+	out << "  bb_1 " << blockFormatter.exitLabel(&*_entry) << ";\n";
 
 	blockIndices[_entry] = 0;
 	blockIndices[_exit] = 1;
@@ -285,16 +346,8 @@ std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 		if (block == _entry || block == _exit) continue;
 
 		blockIndices[block] = n;
-	
-		out << "  bb_" << n << " [shape=record,label=";
-		out << "\"{" << make_label_dot_friendly(block->label);
-
-		BasicBlock::InstructionList::const_iterator instrs 
-			= block->instructions.begin();	
-		for (; instrs != block->instructions.end(); ++instrs) {
-			out << " | " << make_label_dot_friendly((*instrs)->toString());
-		}
-		out << "}\"];\n";
+		const BasicBlock *blockPtr = &*block;
+		out << "  bb_" << n << " " << blockFormatter.toString(blockPtr) << ";\n";
 	}
 
 	out << "\n\n  // edges\n\n";
@@ -302,14 +355,11 @@ std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 	// emit edges
 	for (const_edge_iterator edge = edges_begin(); 
 		edge != edges_end(); ++edge) {
+		const Edge *edgePtr = &*edge;
+
 		out << "  " << "bb_" << blockIndices[edge->head] << " -> "
 			<< "bb_" << blockIndices[edge->tail];
-		if (edge->type == Edge::Dummy) {
-			out << " [style=dotted]";
-		}
-		else if (edge->type == Edge::Branch) {
-			out << " [color=blue]";
-		}
+		out << " " << blockFormatter.toString(edgePtr);
 	
 		out << ";\n";
 	}
@@ -348,7 +398,6 @@ std::string ControlFlowGraph::toString( Edge::Type t ) {
 	}
 	return "Invalid";
 }
-
 
 void ControlFlowGraph::clear() {
 	for (iterator block = begin(); block != end(); ++block) {

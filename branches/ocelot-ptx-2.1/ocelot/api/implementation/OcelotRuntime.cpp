@@ -77,6 +77,25 @@ namespace ocelot
 			report( "Creating memory race detector" );
 			ocelot::addTraceGenerator( _raceDetector, true );
 		}
+
+		if (c.trace.warpSynchronous.enabled) {
+			report( "Creating warp synchronous detector" );
+			_warpSynchronous.database = c.trace.database;
+			_warpSynchronous.configuration = c.trace.warpSynchronous;
+			ocelot::addTraceGenerator(_warpSynchronous, true);
+		}
+		if (c.trace.performanceBound.enabled) {
+			report("Creating performance bound trace generator");
+			_performanceBound.database = c.trace.database;
+			_performanceBound.protocol = c.trace.performanceBound.protocol;
+			ocelot::addTraceGenerator(_performanceBound, true);
+		}
+		if (c.trace.convergence.enabled) {
+			report("Creating convergence trace generator");
+			_convergence.database = c.trace.database;
+			_convergence.configuration = c.trace.convergence;
+			ocelot::addTraceGenerator(_convergence, true);
+		}
 	}
 
 }

@@ -60,6 +60,30 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+api::OcelotConfiguration::TraceGeneration::WarpSynchronous::WarpSynchronous():
+        enabled(false),
+        emitHotPaths(false)
+{
+
+}
+
+api::OcelotConfiguration::TraceGeneration::PerformanceBound::PerformanceBound():
+	enabled(false), protocol(Protocol_sm_20)
+{
+
+}
+
+api::OcelotConfiguration::TraceGeneration::Convergence::Convergence():
+	enabled(false), 
+	logfile("convergence.csv"), 
+	dot(false),
+	render(false)
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	database("trace/database.trace"),
 	inPlaceTraces(true),
@@ -75,6 +99,26 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 
 }
 
+static api::OcelotConfiguration::TraceGeneration::PerformanceBound::CoalescingProtocol
+convertProtocol(const std::string &str) {
+	if (str == "sm_10") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_10;
+	}
+	else	if (str == "sm_11") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_11;
+	}
+	else	if (str == "sm_12") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_12;
+	}
+	else	if (str == "sm_13") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_13;
+	}
+	else	if (str == "ideal") {
+		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_ideal;
+	}
+	return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_20;
+}
+
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
 
@@ -88,6 +132,27 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
 	trace.raceDetector = config.parse<bool>("raceDetector", true);
+
+	// more detailed configuration for this trace generator
+	hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
+	if (!warpSyncConfig.is_null()) {
+		trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
+		trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
+	}
+	
+	hydrazine::json::Visitor perfConfig = config["performanceBound"];
+	if (!perfConfig.is_null()) {
+		trace.performanceBound.enabled = perfConfig.parse<bool>("enabled", false);
+		trace.performanceBound.protocol = convertProtocol(perfConfig.parse<std::string>("protocol", "sm_20"));
+	}
+	
+	hydrazine::json::Visitor convConfig = config["convergence"];
+	if (!convConfig.is_null()) {
+		trace.convergence.enabled = convConfig.parse<bool>("enabled", false);
+		trace.convergence.logfile = convConfig.parse<std::string>("logfile", "traces/convergence.csv");
+		trace.convergence.dot = convConfig.parse<bool>("dot", false);
+		trace.convergence.render = convConfig.parse<bool>("render", false);
+	}
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

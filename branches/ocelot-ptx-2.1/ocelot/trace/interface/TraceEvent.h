@@ -93,7 +93,18 @@ namespace trace {
 				instruction
 		*/
 		ir::PTXU32 memory_size;
-		
+
+		/*!
+			dimensions of the kernel grid that generated the event
+		*/
+		ir::Dim3 gridDim;
+
+
+		/*!
+				dimensions of the kernel block that generated the event
+		*/
+		ir::Dim3 blockDim;
+
 	public:
 	
 		/*!

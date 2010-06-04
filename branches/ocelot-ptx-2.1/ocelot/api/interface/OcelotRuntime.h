@@ -8,6 +8,7 @@
 #define OCELOT_RUNTIME_H_INCLUDED
 
 #include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/trace/interface/WarpSynchronousGenerator.h>
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
@@ -17,7 +18,8 @@
 #include <ocelot/trace/interface/CacheSimulator.h>
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
-
+#include <ocelot/trace/interface/PerformanceBoundGenerator.h>
+#include <ocelot/trace/interface/ConvergenceGenerator.h>
 
 namespace ocelot
 {
@@ -32,7 +34,10 @@ namespace ocelot
 		trace::CacheSimulator _cacheSimulator;
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
-	
+		trace::WarpSynchronousGenerator _warpSynchronous;
+		trace::PerformanceBoundGenerator _performanceBound;
+		trace::ConvergenceGenerator _convergence;
+		
 		bool _initialized;
 		
 	public:

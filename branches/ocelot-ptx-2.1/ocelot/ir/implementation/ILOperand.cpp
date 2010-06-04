@@ -23,6 +23,12 @@ namespace ir
 		switch (addressMode)
 		{
 			case Register: return identifier;
+			case Immediate:
+			{
+				std::stringstream stream;
+				stream << imm_uint;
+				return stream.str();	
+			}
 			case Literal: return identifier;
 			case ConstantBuffer: return identifier;
 			case Special: return toString(special);

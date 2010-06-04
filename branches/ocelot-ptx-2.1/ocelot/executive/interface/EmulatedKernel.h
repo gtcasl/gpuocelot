@@ -131,6 +131,15 @@ namespace executive {
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 
+		/*! Maps program counters of header instructions to basic block label */
+		std::map< int, std::string > branchTargetsToBlock;
+		
+		/*! maps the program counter of the terminating instructions to owning basic block */
+		std::map< int, std::string > basicBlockMap;
+		
+		/*! maps a PC to the basic block it starts */
+		std::map< int, std::string > basicBlockPC;
+
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 
@@ -151,6 +160,11 @@ namespace executive {
 		
 		/*! \brief Get the nearest location to an instruction at a given PC */
 		std::string location( unsigned int PC ) const;
+		
+		/*!
+			\brief gets the basic block label owning the instruction specified by the PC
+		*/
+		std::string getInstructionBlock(int PC) const;
 	};
 
 }

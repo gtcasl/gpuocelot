@@ -95,8 +95,11 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/KernelEntry.cpp \
 	ocelot/trace/implementation/CacheSimulator.cpp \
 	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
+	ocelot/trace/implementation/WarpSynchronousGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
+	ocelot/trace/implementation/PerformanceBoundGenerator.cpp \
+	ocelot/trace/implementation/ConvergenceGenerator.cpp \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/ATIGPUDevice.cpp \
@@ -437,6 +440,8 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/trace/interface/WatchTraceGenerator.h \
 	ocelot/trace/interface/MemoryRaceDetector.h \
 	ocelot/trace/interface/MemoryChecker.h \
+	ocelot/trace/interface/PerformanceBoundGenerator.h \
+	ocelot/trace/interface/ConvergenceGenerator.h \
 	ocelot/parser/interface/PTXLexer.h \
 	ocelot/parser/interface/Parser.h \
 	ocelot/parser/interface/PTXParser.h \

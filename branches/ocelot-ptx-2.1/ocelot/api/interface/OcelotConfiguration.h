@@ -45,6 +45,71 @@ namespace api {
 		//! Configuration for trace generation facilities
 		class TraceGeneration {
 		public:
+			//! \brief configuration for the warp synchronous trace generator
+			class WarpSynchronous {
+			public:
+				WarpSynchronous();
+
+			public:
+				//! \brief whether trace generator is enabled
+				bool enabled;
+
+				//! \brief emits dot file visualizing hot paths
+				bool emitHotPaths;
+				
+				//! \brief path to CSV collecting results
+				std::string csv;
+			};
+			
+			/*!
+				\brief configuration properties for trace::PerformanceBoundGenerator trace generator
+			*/
+			class PerformanceBound {
+			public:
+				//! \brief specifies how memory bandwidth is computed
+				enum CoalescingProtocol {
+					Protocol_sm_10,
+					Protocol_sm_11,
+					Protocol_sm_12,
+					Protocol_sm_13,
+					Protocol_sm_20,
+					Protocol_ideal,
+					Protocol_invalid
+				};
+		
+			public:
+				PerformanceBound();
+				
+			public:
+			
+				bool enabled;
+				
+				CoalescingProtocol protocol;
+			};
+			
+			/*!
+				\brief configuration properties for trace::ConvergenceGenerator
+			*/
+			class Convergence {
+			public:
+				Convergence();
+			
+			public:
+			
+				//! \brief indicates trace generator is enabled
+				bool enabled;
+				
+				//! \brief log file to append results
+				std::string logfile;		
+				
+				//! \brief emit CFG as dot file
+				bool dot;	
+				
+				//! \brief if true, a PDF is constructed from the generated DOT file
+				bool render;
+			};
+
+		public:
 			TraceGeneration();
 
 		public:
@@ -77,6 +142,15 @@ namespace api {
 			
 			//! \brief Race detection
 			bool raceDetector;
+
+			//! \brief warp synchronous trace generator
+			WarpSynchronous warpSynchronous;
+			
+			//! \brief performance bound generator
+			PerformanceBound performanceBound;
+			
+			//! \brief trace::ConvergenceGenerator
+			Convergence convergence;
 		};
 
 		class CudaRuntimeImplementation {

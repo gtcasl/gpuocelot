@@ -42,6 +42,9 @@ namespace trace {
 			KernelDimensionsFormat,
 			MachineAttributesFormat,
 			WatchTraceFormat,
+			WarpSynchronousTraceFormat,
+			PerformanceBoundTraceFormat,
+			ConvergenceTraceFormat,
 			InvalidTraceFormat
 		};
 		

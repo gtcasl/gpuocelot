@@ -51,11 +51,13 @@ namespace executive
 		cb_t *cb0;
 		CALuint pitch = 0;
 		CALuint flags = 0;
-		cb_t temp;
+
+		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
+		cb_t gridDim = {width, height, 1, 0};
 
 		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
-		temp = {_blockDim.x, _blockDim.y, _blockDim.z, 0}; cb0[0] = temp;
-		temp = {width, height, 0, 0}; cb0[1] = temp;
+		cb0[0] = blockDim;
+		cb0[1] = gridDim;
 		CalDriver()->calResUnmap(*_cb0Resource);
 
 		// translate ptx kernel
@@ -95,13 +97,15 @@ namespace executive
 		CalDriver()->calModuleGetEntry(&func, *_context, _module, "main");
 
 		// invoke kernel
+		CALdomain3D gridBlock = {_blockDim.x, _blockDim.y, _blockDim.z};
+		CALdomain3D gridSize = {width, height, 1};
+
 		CALprogramGrid pg;
 		pg.func      = func;
 		pg.flags     = 0;
-		pg.gridBlock = (CALdomain3D) {_blockDim.x, _blockDim.y, _blockDim.z};
-		pg.gridSize  = (CALdomain3D) {width, height, 1};
+		pg.gridBlock = gridBlock;
+		pg.gridSize  = gridSize;
 		CalDriver()->calCtxRunProgramGrid(_event, *_context, &pg);
-		while(!CalDriver()->calCtxIsEventDone(*_context, *_event));
 
 		// clean up
 		// release memory handles

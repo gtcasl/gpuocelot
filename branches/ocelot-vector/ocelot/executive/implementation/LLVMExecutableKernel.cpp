@@ -1517,7 +1517,8 @@ namespace executive
 			for( int y = 0; y < c->ntid.y; ++y )
 			{
 				c->tid.y = y;
-				for( int x = 0; x < c->ntid.x; ++x )
+//				for( int x = 0; x < c->ntid.x; ++x )
+				for( int x = 0; x < c->ntid.x; x += 4 )
 				{
 					c->tid.x = x;
 					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
@@ -1850,12 +1851,12 @@ namespace executive
 
 		manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
 
-/*
 		// experimental pass for uniform-control flow vectorization
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
 		manager.add(uniformVectorizationPass);
-*/
-	
+		level = 1;
+
+		
 		if( level < 2 )
 		{
 		    manager.add( llvm::createInstructionCombiningPass() );
@@ -1897,8 +1898,11 @@ namespace executive
 			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
 
 		}
+		
 		manager.run( *module );
 		#endif
+		
+		report("end optimization");
 	}
 	
 	void LLVMExecutableKernel::_optimize()

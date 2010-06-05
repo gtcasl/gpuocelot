@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,33 @@ analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch()
 	scalarBlock(0), warpBlock(0), handler(0) {
 
 }
+
+
+//! \brief gets a warp-synchronous block from a scalar block
+llvm::BasicBlock * analysis::LLVMUniformVectorization::Translation::getWarpBlockFromScalar(
+	llvm::BasicBlock *scalarBlock) {
+
+	BasicBlockMap::const_iterator bl_it = warpBlocksMap.find(scalarBlock);
+	if (bl_it != warpBlocksMap.end()) {
+		return bl_it->second;
+	}	
+	return 0;
+}
+
+//! \brief gets a scalar block corresponding to a warp-synchronous block
+llvm::BasicBlock * analysis::LLVMUniformVectorization::Translation::getScalarBlockFromWarp(
+	llvm::BasicBlock *warpBlock) {
+	
+	BasicBlockMap::const_iterator bl_it = warpBlocksMap.begin();
+	for (; bl_it != warpBlocksMap.end(); ++bl_it) {
+		if (bl_it->second == warpBlock) {
+			return bl_it->first;
+		}
+	}
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch(
 	llvm::BasicBlock *scBlock, llvm::BasicBlock *wsBlock)
@@ -90,6 +117,7 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	breadthFirstTraversal(translation.traversal, translation.F);
 	addInterleavedInstructions(translation);
 	resolveControlFlow(translation);
+	createSchedulerBlock(translation);
 	
 	// debugging
 	translation.F->getParent()->dump();
@@ -255,6 +283,7 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 					loadInst, tidxInst, ss.str(), loadInst);
 				loadInst->moveBefore(addInst);
 				loadInst->replaceAllUsesWith(addInst);
+				addInst->setOperand(0, loadInst);
 			}	
 		}
 	}
@@ -269,11 +298,15 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 */	
 void analysis::LLVMUniformVectorization::updateDependencies(Translation &translation, 
 	llvm::Instruction *instr, int tid) {
-	
+		
 	for (unsigned int i = 0; i < instr->getNumOperands(); ++i) {
 		llvm::Value *operand = instr->getOperand(i);
 		
-		if (llvm::Instruction::classof(operand)) {
+		if (llvm::BasicBlock::classof(operand)) {
+			instr->setOperand(i, translation.getWarpBlockFromScalar(
+				static_cast<llvm::BasicBlock *>(operand)));
+		}
+		else if (llvm::Instruction::classof(operand)) {
 			WarpInstructionMap::iterator op_it = translation.warpInstructionMap.find(operand);
 			
 			if (op_it != translation.warpInstructionMap.end()) {
@@ -284,14 +317,18 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 				llvm::PHINode *phiNode = static_cast<llvm::PHINode *>(operand);
 				llvm::PHINode *phiClone = llvm::PHINode::Create(phiNode->getType(), 
 					phiNode->getNameStr(), instr);
-
+				
 				for (unsigned int j = 0; j < phiNode->getNumIncomingValues(); ++j) {
 					op_it = translation.warpInstructionMap.find(phiNode->getIncomingValue(j));
 					if (op_it != translation.warpInstructionMap.end()) {
 						llvm::Value *incoming = op_it->second[tid];
 						if (llvm::Instruction::classof(incoming)) {
-							phiClone->addIncoming(incoming, 
-								static_cast<llvm::Instruction*>(incoming)->getParent() );
+							llvm::BasicBlock *scalar = static_cast<llvm::Instruction*>(incoming)->getParent();
+							llvm::BasicBlock *warpBlock = translation.getWarpBlockFromScalar(scalar);
+							if (!warpBlock) {
+								warpBlock = scalar;
+							}
+							phiClone->addIncoming(incoming, warpBlock );
 						}
 						else {
 							Ocelot_Exception("unhandled PHI NODE operand");
@@ -400,6 +437,7 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		
 		// construct reduction
 		const llvm::Type *int16ty = llvm::Type::getInt16Ty(translation.F->getContext());
+		const llvm::Type *int32ty = llvm::Type::getInt32Ty(translation.F->getContext());
 		llvm::Constant *constOne = llvm::ConstantInt::get(int16ty, 1);
 		llvm::Instruction *z = new llvm::ZExtInst(ws_it->second[0], int16ty, "condZ", 
 			divergent.warpBlock);
@@ -421,6 +459,8 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 			llvm::ConstantInt::get(int16ty, 0));
 		llvm::ConstantInt *constFull = static_cast<llvm::ConstantInt *>(
 			llvm::ConstantInt::get(int16ty, (1<<warpSize)-1));
+		llvm::ConstantInt *constZero32 = static_cast<llvm::ConstantInt *>(
+			llvm::ConstantInt::get(int32ty, 0));
 		
 		std::stringstream ss;
 		ss << divergent.warpBlock->getNameStr() << "_diverge";
@@ -436,7 +476,7 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		switchInst->addCase(constZero, succZero);
 		
 		// insert dummy return statement
-		llvm::ReturnInst::Create(translation.F->getContext(), 0, divergent.handler);
+		llvm::ReturnInst::Create(translation.F->getContext(), constZero32, divergent.handler);
 		
 		divergenceHandlerBranch(translation, divergent);
 	}
@@ -445,6 +485,8 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*!
 	\brief emit spill code or handler for a branch known to be divergent
 */
@@ -452,6 +494,26 @@ void analysis::LLVMUniformVectorization::divergenceHandlerBranch(Translation &tr
 	DivergentBranch &divergent) {
 
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+	\brief inserts a schedular block that handles control flow
+*/
+void analysis::LLVMUniformVectorization::createSchedulerBlock(Translation &translation) {
+	llvm::BasicBlock *entry = & translation.F->front();
+	translation.schedulerBlock = llvm::BasicBlock::Create(translation.F->getContext(),
+		"WarpSyncScheduler", 
+		translation.F, 
+		entry);
+	
+	// for now, have scheduler block chain to previous entry point
+	llvm::BranchInst *braInst = llvm::BranchInst::Create(
+		translation.getWarpBlockFromScalar(entry), translation.schedulerBlock);
+	assert(braInst);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	\brief this could probably be implemented as a second function pass, but examine

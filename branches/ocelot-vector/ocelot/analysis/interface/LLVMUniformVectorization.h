@@ -68,6 +68,13 @@ namespace analysis
 		public:
 			Translation(llvm::Function *f): F(f) { }
 			~Translation();
+			
+			//! \brief gets a warp-synchronous block from a scalar block
+			llvm::BasicBlock * getWarpBlockFromScalar(llvm::BasicBlock *scalarBlock);
+			
+			//! \brief gets a scalar block corresponding to a warp-synchronous block
+			llvm::BasicBlock * getScalarBlockFromWarp(llvm::BasicBlock *warpBlock);
+			
 		
 		public:
 		
@@ -101,6 +108,11 @@ namespace analysis
 				\brief maps cloned getelementptr instruction obtaining ptr to tidx to its warp-sync thread ID
 			*/
 			std::map< llvm::Instruction *, int > threadIdxMap;
+			
+			/*!
+				\brief indirect jumps based on warp id and last divergent branch handled by this block
+			*/
+			llvm::BasicBlock *schedulerBlock;
 		};
 
 	public:
@@ -166,6 +178,11 @@ namespace analysis
 			\brief emit spill code or handler for a branch known to be divergent
 		*/
 		void divergenceHandlerBranch(Translation &translation, DivergentBranch &divergent);
+		
+		/*!
+			\brief inserts a schedular block that handles control flow
+		*/
+		void createSchedulerBlock(Translation &translation);
 		
 		/*!
 			\brief this could probably be implemented as a second function pass, but examine

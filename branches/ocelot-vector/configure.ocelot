@@ -1,6 +1,6 @@
 {
-	ocelot: "ocelot-refactored",
-	version: "1.0.65",
+	ocelot: "ocelot",
+	version: "1.1.520",
 	trace: { 
 		enabled: false,
 		database: "traces/database.trace",
@@ -11,15 +11,25 @@
 		parallelism: false,
 		cacheSimulator: false,
 		memoryChecker: true,
-		raceDetector: false,
+		raceDetector: true,
 		warpSynchronous: {
-			enabled: true,
+			enabled: false,
 			emitHotPaths: true
+		},
+		performanceBound: {
+			enabled: false,
+			protocol: "sm_20"
+		},
+		convergence: {
+			enabled: false,
+			logfile: "traces/convergence.csv",
+			dot: true,
+			render: true
 		}
 	},
 	cuda: {
-		implementation: "CudaRuntime",
-		runtimeApiTrace: "trace/CudaAPI.trace"
+		implementation: CudaRuntime,
+		runtimeApiTrace: "traces/CudaAPI.trace"
 	},
 	executive: {
 		devices: [ llvm ],

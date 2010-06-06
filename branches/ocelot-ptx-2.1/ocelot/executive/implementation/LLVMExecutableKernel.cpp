@@ -101,6 +101,26 @@ static void __report( executive::LLVMContext* context,
 
 extern "C"
 {
+	unsigned int __ocelot_clz_b32( unsigned int a )
+	{
+		return hydrazine::countLeadingZeros( a );
+	}
+
+	unsigned int __ocelot_clz_b64( long long unsigned int a )
+	{
+		return hydrazine::countLeadingZeros( a );
+	}
+
+	unsigned int __ocelot_popc_b32( unsigned int a )
+	{
+		return hydrazine::popc( a );
+	}
+
+	unsigned int __ocelot_popc_b64( long long unsigned int a )
+	{
+		return hydrazine::popc( a );
+	}
+
 	long long int __ocelot_mul_hi_s64( long long int a, long long int b )
 	{
 		long long int hi = 0;

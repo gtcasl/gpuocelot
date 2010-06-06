@@ -470,6 +470,23 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Clz: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
+			}
+			break;
+		}
 		case CNot: {
 			if( !( type == PTXOperand::b16 || type == PTXOperand::b32 || 
 				type == PTXOperand::b64 ) ) {
@@ -934,6 +951,23 @@ std::string ir::PTXInstruction::valid() const {
 		case Pmevent: {
 			if( d.addressMode != PTXOperand::Immediate ) {
 				return "only support Immediate targets";
+			}
+			break;
+		}
+		case Popc: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
 			}
 			break;
 		}
@@ -1583,6 +1617,10 @@ std::string ir::PTXInstruction::toString() const {
 			}
 			return result + d.toString();
 		}
+		case Clz: {
+			return guard() + "clz." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString();
+		}
 		case CNot: {
 			return guard() + "cnot." + PTXOperand::toString( type ) 
 				+ d.toString() + a.toString();
@@ -1714,6 +1752,10 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Pmevent: {
 			return guard() + "pmevent." + toString( level );
+		}
+		case Popc: {
+			return guard() + "popc." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString();
 		}
 		case Or: {
 			return guard() + "or." + PTXOperand::toString( type ) + " "

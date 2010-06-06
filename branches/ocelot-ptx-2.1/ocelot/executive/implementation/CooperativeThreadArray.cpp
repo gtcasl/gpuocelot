@@ -307,6 +307,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				eval_Brkpt(context, instr); break;
 			case PTXInstruction::Call:
 				eval_Call(context, instr); break;
+			case PTXInstruction::Clz:
+				eval_Clz(context, instr); break;
 			case PTXInstruction::CNot:
 				eval_CNot(context, instr); break;
 			case PTXInstruction::Cos:
@@ -347,6 +349,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				eval_Or(context, instr); break;
 			case PTXInstruction::Pmevent:
 				eval_Pmevent(context, instr); break;
+			case PTXInstruction::Popc:
+				eval_Popc(context, instr); break;
 			case PTXInstruction::Rcp:
 				eval_Rcp(context, instr); break;
 			case PTXInstruction::Red:
@@ -2008,6 +2012,35 @@ void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PT
 void executive::CooperativeThreadArray::eval_Call(CTAContext &context, const PTXInstruction &instr) {
 	trace();
 	throw RuntimeException("instruction not implemented", context.PC, instr);
+}
+
+
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Clz(CTAContext &context, 
+	const PTXInstruction &instr) {
+	trace();
+	if (instr.type == PTXOperand::b32) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXB32 d, a = operandAsB32(threadID, instr.a);
+			d = hydrazine::countLeadingZeros(a);
+			setRegAsB32(threadID, instr.d.reg, d);
+		}
+	}	
+	else if (instr.type == PTXOperand::b64) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB64 a = operandAsB64(threadID, instr.a);
+			PTXB32 d = hydrazine::countLeadingZeros(a);
+			setRegAsB32(threadID, instr.d.reg, d);
+		}
+	}
+	else {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
 }
 
 /*!
@@ -4640,9 +4673,38 @@ void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXIn
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Pmevent(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Pmevent(CTAContext &context, 
+	const PTXInstruction &instr) {
 	trace();
 	/*! No need to do anything here. */
+}
+
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Popc(CTAContext &context, 
+	const PTXInstruction &instr) {
+	trace();
+	if (instr.type == PTXOperand::b32) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXB32 d, a = operandAsB32(threadID, instr.a);
+			d = hydrazine::popc(a);
+			setRegAsB32(threadID, instr.d.reg, d);
+		}
+	}	
+	else if (instr.type == PTXOperand::b64) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB64 a = operandAsB64(threadID, instr.a);
+			PTXB32 d = hydrazine::popc(a);
+			setRegAsB32(threadID, instr.d.reg, d);
+		}
+	}
+	else {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
 }
 
 /*!

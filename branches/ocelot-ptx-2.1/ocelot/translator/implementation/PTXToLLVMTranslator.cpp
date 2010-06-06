@@ -1006,6 +1006,7 @@ namespace translator
 			case ir::PTXInstruction::Bra: _translateBra( i, block ); break;
 			case ir::PTXInstruction::Brkpt: _translateBrkpt( i ); break;
 			case ir::PTXInstruction::Call: _translateCall( i ); break;
+			case ir::PTXInstruction::Clz: _translateClz( i ); break;
 			case ir::PTXInstruction::CNot: _translateCNot( i ); break;
 			case ir::PTXInstruction::Cos: _translateCos( i ); break;
 			case ir::PTXInstruction::Cvt: _translateCvt( i ); break;
@@ -1026,6 +1027,7 @@ namespace translator
 			case ir::PTXInstruction::Not: _translateNot( i ); break;
 			case ir::PTXInstruction::Or: _translateOr( i ); break;
 			case ir::PTXInstruction::Pmevent: _translatePmevent( i ); break;
+			case ir::PTXInstruction::Popc: _translatePopc( i ); break;
 			case ir::PTXInstruction::Rcp: _translateRcp( i ); break;
 			case ir::PTXInstruction::Red: _translateRed( i ); break;
 			case ir::PTXInstruction::Rem: _translateRem( i ); break;
@@ -1695,6 +1697,26 @@ namespace translator
 		assertM( false, "Opcode " 
 			<< ir::PTXInstruction::toString( i.opcode ) 
 			<< " not supported." );
+	}
+
+	void PTXToLLVMTranslator::_translateClz( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		if( i.type == ir::PTXOperand::b32 )
+		{
+			call.name = "@__ocelot_clz_b32";
+		}
+		else
+		{
+			call.name = "@__ocelot_clz_b64";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateCNot( const ir::PTXInstruction& i )
@@ -3164,6 +3186,26 @@ namespace translator
 		
 		call.name = "@pmevent";
 		
+		call.parameters.resize( 1 );
+		call.parameters[0] = _translate( i.a );
+		
+		_add( call );
+	}
+
+	void PTXToLLVMTranslator::_translatePopc( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		if( i.type == ir::PTXOperand::b32 )
+		{
+			call.name = "@__ocelot_popc_b32";
+		}
+		else
+		{
+			call.name = "@__ocelot_popc_b64";
+		}
+		
+		call.d = _destination( i );
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
 		
@@ -6515,6 +6557,29 @@ namespace translator
 		_llvmKernel->_statements.push_front( rsqrt );		
 		rsqrt.label = "__ocelot_rsqrtFtz";
 		_llvmKernel->_statements.push_front( rsqrt );		
+
+		ir::LLVMStatement popc( ir::LLVMStatement::FunctionDeclaration );
+
+		popc.label = "__ocelot_popc_b32";
+		popc.linkage = ir::LLVMStatement::InvalidLinkage;
+		popc.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		popc.visibility = ir::LLVMStatement::Default;
+		
+		popc.operand.type.category = ir::LLVMInstruction::Type::Element;
+		popc.operand.type.type = ir::LLVMInstruction::I32;
+		
+		popc.parameters.resize( 1 );
+		popc.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		popc.parameters[0].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( popc );		
+		popc.label = "__ocelot_clz_b32";
+		_llvmKernel->_statements.push_front( popc );		
+		popc.label = "__ocelot_popc_b64";
+		popc.parameters[0].type.type = ir::LLVMInstruction::I64;
+		_llvmKernel->_statements.push_front( popc );		
+		popc.label = "__ocelot_clz_b64";
+		_llvmKernel->_statements.push_front( popc );		
 
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );

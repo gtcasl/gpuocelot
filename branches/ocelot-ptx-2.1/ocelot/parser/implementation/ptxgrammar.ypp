@@ -60,6 +60,7 @@
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
 %token<text> OPCODE_SHR OPCODE_SHL
 %token<text> OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
+%token<text> OPCODE_POPC OPCODE_CLZ
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -487,7 +488,8 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
-	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT;
+	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT
+	| OPCODE_POPC | OPCODE_CLZ;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -588,9 +590,9 @@ intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | branch | addOrSub | addCOrSubC | atom | bar | brkpt 
-	| cvt | div | exit | ld | mad | mad24 | membar | mov | mul24 | mul 
-	| notInstruction | pmevent | rcpSqrtInstruction | red | ret | sad | selp 
-	| set | setp | slct | st | tex | trap | vote;
+	| clz | cvt | div | exit | ld | mad | mad24 | membar | mov | mul24 | mul 
+	| notInstruction | pmevent | popc | rcpSqrtInstruction | red | ret | sad 
+	| selp | set | setp | slct | st | tex | trap | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR;
@@ -735,6 +737,11 @@ bar : OPCODE_BARSYNC operand ';'
 brkpt : OPCODE_BRKPT ';'
 {
 	state.instruction( $<text>1, 1 );
+};
+
+clz : OPCODE_CLZ dataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 3 );
 };
 
 cvtModifier1 : floatRounding | intRounding;
@@ -883,6 +890,11 @@ notInstruction : notOpcode dataType operand ',' operand ';'
 pmevent : OPCODE_PMEVENT operand
 {
 	state.instruction( $<text>1, 2 );
+};
+
+popc : OPCODE_POPC dataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 3 );
 };
 
 rcpSqrtModifier : TOKEN_APPROX optionalFtz

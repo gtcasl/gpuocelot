@@ -429,6 +429,7 @@ namespace executive {
 		void eval_Bra(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Brkpt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Call(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Clz(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_CNot(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cos(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cvt(CTAContext &context, const ir::PTXInstruction &instr);
@@ -449,6 +450,7 @@ namespace executive {
 		void eval_Not(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Or(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Pmevent(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Popc(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rcp(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Red(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rem(CTAContext &context, const ir::PTXInstruction &instr);		

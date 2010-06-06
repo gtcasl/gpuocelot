@@ -113,6 +113,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_BRKPT; }
 "call"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CALL; }
+"clz"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CLZ; }
 "cnot"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CNOT; }
 "cos"                           { strlcpy( yylval->text, yytext, 1024 ); \
@@ -155,6 +157,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_OR; }
 "pmevent"                       { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_PMEVENT; }
+"popc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_POPC; }
 "rcp"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RCP; }
 "red"                           { strlcpy( yylval->text, yytext, 1024 ); \

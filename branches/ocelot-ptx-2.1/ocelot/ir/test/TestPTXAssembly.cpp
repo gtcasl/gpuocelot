@@ -669,6 +669,257 @@ test::TestPTXAssembly::TypeVector testRem_OUT(
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST ABS
+std::string testAbs_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<2>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tabs" << typeString << " %r1, %r0; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testAbs_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	type result = std::abs( r0 );
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testAbs_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testAbs_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST NEG
+std::string testNeg_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<2>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tneg" << typeString << " %r1, %r0; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testNeg_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	type result = -r0;
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testNeg_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testNeg_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST POPC
+std::string testPopc_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r0; \n";
+	result << "\t.reg .u32 %r1; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tpopc" << typeString << " %r1, %r0; \n";
+	result << "\tst.global.u32 [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testPopc_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	unsigned int result = hydrazine::popc( r0 );
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testPopc_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testPopc_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST MIN-MAX
+std::string testMinMax_PTX(ir::PTXOperand::DataType type, bool max)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<3>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	if(max)
+	{
+		result << "\tmax" << typeString << " %r2, %r0, %r1; \n";
+	}
+	else
+	{
+		result << "\tmin" << typeString << " %r2, %r0, %r1; \n";
+	}
+	result << "\tst.global" << typeString << " [%rOut], %r2; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type, bool max>
+void testMinMax_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	
+	type result = 0;
+	
+	if(max)
+	{
+		result = std::max(r0, r1);
+	}
+	else
+	{
+		result = std::min(r0, r1);
+	}
+
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testMinMax_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testMinMax_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST CLZ
+std::string testClz_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r0; \n";
+	result << "\t.reg .u32 %r1; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tclz" << typeString << " %r1, %r0; \n";
+	result << "\tst.global.u32 [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testClz_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	unsigned int result = hydrazine::countLeadingZeros( r0 );
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testClz_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testClz_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -1173,7 +1424,6 @@ namespace test
 			testRem_PTX(ir::PTXOperand::s16), 
 			testRem_OUT(I16), testRem_IN(I16), 
 			uniformNonZero<short, 2>, 1, 1);
-
 		add("TestRem-u32", testRem_REF<unsigned int>, 
 			testRem_PTX(ir::PTXOperand::u32), 
 			testRem_OUT(I32), testRem_IN(I32), 
@@ -1182,7 +1432,6 @@ namespace test
 			testRem_PTX(ir::PTXOperand::s32), 
 			testRem_OUT(I32), testRem_IN(I32), 
 			uniformNonZero<int, 2>, 1, 1);
-
 		add("TestRem-u64", testRem_REF<long long unsigned int>, 
 			testRem_PTX(ir::PTXOperand::u64), 
 			testRem_OUT(I64), testRem_IN(I64), 
@@ -1191,6 +1440,100 @@ namespace test
 			testRem_PTX(ir::PTXOperand::s64), 
 			testRem_OUT(I64), testRem_IN(I64), 
 			uniformNonZero<long long int, 2>, 1, 1);
+
+		add("TestAbs-s16", testAbs_REF<short>, 
+			testAbs_PTX(ir::PTXOperand::s16), 
+			testAbs_OUT(I16), testAbs_IN(I16), 
+			uniformNonZero<short, 1>, 1, 1);
+		add("TestAbs-s32", testAbs_REF<int>, 
+			testAbs_PTX(ir::PTXOperand::s32), 
+			testAbs_OUT(I32), testAbs_IN(I32), 
+			uniformNonZero<int, 1>, 1, 1);
+		add("TestAbs-s64", testAbs_REF<long long int>, 
+			testAbs_PTX(ir::PTXOperand::s64), 
+			testAbs_OUT(I64), testAbs_IN(I64), 
+			uniformNonZero<long long int, 1>, 1, 1);
+
+		add("TestNeg-s16", testNeg_REF<short>, 
+			testNeg_PTX(ir::PTXOperand::s16), 
+			testNeg_OUT(I16), testNeg_IN(I16), 
+			uniformNonZero<short, 1>, 1, 1);
+		add("TestNeg-s32", testNeg_REF<int>, 
+			testNeg_PTX(ir::PTXOperand::s32), 
+			testNeg_OUT(I32), testNeg_IN(I32), 
+			uniformNonZero<int, 1>, 1, 1);
+		add("TestNeg-s64", testNeg_REF<long long int>, 
+			testNeg_PTX(ir::PTXOperand::s64), 
+			testNeg_OUT(I64), testNeg_IN(I64), 
+			uniformNonZero<long long int, 1>, 1, 1);
+
+		add("TestMax-u16", testMinMax_REF<unsigned short, true>, 
+			testMinMax_PTX(ir::PTXOperand::u16, true), 
+			testMinMax_OUT(I16), testMinMax_IN(I16), 
+			uniformNonZero<unsigned short, 2>, 1, 1);
+		add("TestMax-u32", testMinMax_REF<unsigned int, true>, 
+			testMinMax_PTX(ir::PTXOperand::u32, true), 
+			testMinMax_OUT(I32), testMinMax_IN(I32), 
+			uniformNonZero<unsigned int, 2>, 1, 1);
+		add("TestMax-u64", testMinMax_REF<long long unsigned int, true>, 
+			testMinMax_PTX(ir::PTXOperand::u64, true), 
+			testMinMax_OUT(I64), testMinMax_IN(I64), 
+			uniformNonZero<long long unsigned int, 2>, 1, 1);
+		add("TestMax-s16", testMinMax_REF<short, true>, 
+			testMinMax_PTX(ir::PTXOperand::s16, true), 
+			testMinMax_OUT(I16), testMinMax_IN(I16), 
+			uniformNonZero<short, 2>, 1, 1);
+		add("TestMax-s32", testMinMax_REF<int, true>, 
+			testMinMax_PTX(ir::PTXOperand::s32, true), 
+			testMinMax_OUT(I32), testMinMax_IN(I32), 
+			uniformNonZero<int, 2>, 1, 1);
+		add("TestMax-s64", testMinMax_REF<long long int, true>, 
+			testMinMax_PTX(ir::PTXOperand::s64, true), 
+			testMinMax_OUT(I64), testMinMax_IN(I64), 
+			uniformNonZero<long long int, 2>, 1, 1);
+
+		add("TestMin-u16", testMinMax_REF<unsigned short, false>, 
+			testMinMax_PTX(ir::PTXOperand::u16, false), 
+			testMinMax_OUT(I16), testMinMax_IN(I16), 
+			uniformNonZero<unsigned short, 2>, 1, 1);
+		add("TestMin-u32", testMinMax_REF<unsigned int, false>, 
+			testMinMax_PTX(ir::PTXOperand::u32, false), 
+			testMinMax_OUT(I32), testMinMax_IN(I32), 
+			uniformNonZero<unsigned int, 2>, 1, 1);
+		add("TestMin-u64", testMinMax_REF<long long unsigned int, false>, 
+			testMinMax_PTX(ir::PTXOperand::u64, false), 
+			testMinMax_OUT(I64), testMinMax_IN(I64), 
+			uniformNonZero<long long unsigned int, 2>, 1, 1);
+		add("TestMin-s16", testMinMax_REF<short, false>, 
+			testMinMax_PTX(ir::PTXOperand::s16, false), 
+			testMinMax_OUT(I16), testMinMax_IN(I16), 
+			uniformNonZero<short, 2>, 1, 1);
+		add("TestMin-s32", testMinMax_REF<int, false>, 
+			testMinMax_PTX(ir::PTXOperand::s32, false), 
+			testMinMax_OUT(I32), testMinMax_IN(I32), 
+			uniformNonZero<int, 2>, 1, 1);
+		add("TestMin-s64", testMinMax_REF<long long int, false>, 
+			testMinMax_PTX(ir::PTXOperand::s64, false), 
+			testMinMax_OUT(I64), testMinMax_IN(I64), 
+			uniformNonZero<long long int, 2>, 1, 1);
+
+		add("TestPopc-b32", testPopc_REF<unsigned int>, 
+			testPopc_PTX(ir::PTXOperand::b32), 
+			testPopc_OUT(I32), testPopc_IN(I32), 
+			uniformNonZero<int, 1>, 1, 1);
+		add("TestPopc-b64", testPopc_REF<long long unsigned int>, 
+			testPopc_PTX(ir::PTXOperand::b64), 
+			testPopc_OUT(I32), testPopc_IN(I64), 
+			uniformNonZero<long long unsigned int, 1>, 1, 1);
+
+		add("TestClz-b32", testClz_REF<unsigned int>, 
+			testClz_PTX(ir::PTXOperand::b32), 
+			testClz_OUT(I32), testClz_IN(I32), 
+			uniformNonZero<int, 1>, 1, 1);
+		add("TestClz-b64", testClz_REF<long long unsigned int>, 
+			testClz_PTX(ir::PTXOperand::b64), 
+			testClz_OUT(I32), testClz_IN(I64), 
+			uniformNonZero<long long unsigned int, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

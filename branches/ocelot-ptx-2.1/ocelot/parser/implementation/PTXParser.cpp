@@ -1365,6 +1365,7 @@ namespace parser
 		if( string == "bra" ) return ir::PTXInstruction::Bra;
 		if( string == "brkpt" ) return ir::PTXInstruction::Brkpt;
 		if( string == "call" ) return ir::PTXInstruction::Call;
+		if( string == "clz" ) return ir::PTXInstruction::Clz;
 		if( string == "cnot" ) return ir::PTXInstruction::CNot;
 		if( string == "cos" ) return ir::PTXInstruction::Cos;
 		if( string == "cvt" ) return ir::PTXInstruction::Cvt;
@@ -1385,6 +1386,7 @@ namespace parser
 		if( string == "neg" ) return ir::PTXInstruction::Neg;
 		if( string == "not" ) return ir::PTXInstruction::Not;
 		if( string == "pmevent" ) return ir::PTXInstruction::Pmevent;
+		if( string == "popc" ) return ir::PTXInstruction::Popc;
 		if( string == "or" ) return ir::PTXInstruction::Or;
 		if( string == "rcp" ) return ir::PTXInstruction::Rcp;
 		if( string == "red" ) return ir::PTXInstruction::Red;

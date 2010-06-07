@@ -102,7 +102,6 @@ namespace trace
 		ifile.close();
 	
 		std::ofstream file( name.c_str() );
-		boost::archive::text_oarchive archive( file );
 	
 		if( !file.is_open() )
 		{		
@@ -111,6 +110,8 @@ namespace trace
 				"Failed to open trace database file " 
 				+ name + " for writing" );
 		}
+		
+		boost::archive::text_oarchive archive( file );
 		
 		unsigned int count = entries.size() + 1;
 		

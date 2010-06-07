@@ -41,7 +41,7 @@
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 0
+#define NTH_THREAD 73
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 

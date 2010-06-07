@@ -107,6 +107,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_ABS; }
 "bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BARSYNC; }
+"bfind"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BFIND; }
 "bra"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRA; }
 "brkpt"                         { strlcpy( yylval->text, yytext, 1024 ); \
@@ -239,6 +241,8 @@ WHITESPACE [ \t]*
                                     return TOKEN_SECTION; }
 ".shared"                       { yylval->value = TOKEN_SHARED; \
                                     return TOKEN_SHARED;}
+".shiftamt"                     { yylval->value = TOKEN_SHIFT_AMOUNT; \
+                                    return TOKEN_SHIFT_AMOUNT;}
 ".sreg"                         { yylval->value = TOKEN_SREG; \
                                     return TOKEN_SREG; }
 ".target"                       { yylval->value = TOKEN_TARGET; \

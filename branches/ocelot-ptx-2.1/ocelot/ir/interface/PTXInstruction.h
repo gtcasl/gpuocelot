@@ -284,17 +284,18 @@ namespace ir {
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
-			/*!
-				For load and store instructions, indicates which addressing 
+			/*! For load and store instructions, indicates which addressing 
 					mode to use
 			*/
 			AddressSpace addressSpace;
 			
-			/*!
-				For membar instructions the visibility level in the
+			/*! For membar instructions the visibility level in the
 					thread hierarchy
 			*/
 			Level level;
+			
+			/*! Shift amount flag for bfind instructions */
+			bool shiftAmount;
 		};
 	
 		/*!

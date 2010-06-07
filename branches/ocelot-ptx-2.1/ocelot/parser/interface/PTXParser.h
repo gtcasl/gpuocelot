@@ -129,6 +129,7 @@ namespace parser
 					void statementVectorType( int token );
 					void instructionVectorType( int token );
 					void attribute( bool visible, bool external );
+					void shiftAmount( bool shift );
 					
 					void arrayDimensionSet( long long int value, 
 						YYLTYPE& location, bool add );

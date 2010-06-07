@@ -1600,6 +1600,13 @@ std::string ir::PTXInstruction::toString() const {
 		case Bar: {
 			return guard() + "bar.sync " + d.toString();
 		}
+		case Bfind: {
+			std::string result = guard() + "bfind.";
+			if( shiftAmount ) result += "shiftamt.";
+			result += PTXOperand::toString( type ) + " " 
+				+ d.toString() + ", " + a.toString();
+			return result;
+		}
 		case Bra: {
 			std::string result = guard() + "bra";
 			if( uni ) {

@@ -101,6 +101,16 @@ static void __report( executive::LLVMContext* context,
 
 extern "C"
 {
+	unsigned int __ocelot_bfind_b32( unsigned int a, bool shift )
+	{
+		return hydrazine::bfind( a, shift );
+	}
+
+	unsigned int __ocelot_bfind_b64( long long unsigned int a, bool shift )
+	{
+		return hydrazine::bfind( a, shift );
+	}
+
 	unsigned int __ocelot_clz_b32( unsigned int a )
 	{
 		return hydrazine::countLeadingZeros( a );

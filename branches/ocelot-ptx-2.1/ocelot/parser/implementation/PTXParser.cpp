@@ -325,6 +325,11 @@ namespace parser
 		}
 	}
 
+	void PTXParser::State::shiftAmount( bool shift )
+	{
+		statement.instruction.shiftAmount = shift;
+	}
+
 	void PTXParser::State::arrayDimensionSet( long long int value, 
 		YYLTYPE& location, bool add )
 	{
@@ -1362,6 +1367,7 @@ namespace parser
 		if( string == "and" ) return ir::PTXInstruction::And;
 		if( string == "atom" ) return ir::PTXInstruction::Atom;
 		if( string == "bar.sync" ) return ir::PTXInstruction::Bar;
+		if( string == "bfind" ) return ir::PTXInstruction::Bfind;
 		if( string == "bra" ) return ir::PTXInstruction::Bra;
 		if( string == "brkpt" ) return ir::PTXInstruction::Brkpt;
 		if( string == "call" ) return ir::PTXInstruction::Call;

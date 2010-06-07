@@ -301,6 +301,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				eval_Atom(context, instr); break;
 			case PTXInstruction::Bar:
 				eval_Bar(context, instr); break;
+			case PTXInstruction::Bfind:
+				eval_Bfind(context, instr); break;
 			case PTXInstruction::Bra:
 				eval_Bra(context, instr); break;
 			case PTXInstruction::Brkpt:
@@ -1848,6 +1850,59 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 				throw RuntimeException("Invalid atomic operation", 
 					context.PC, instr);
 		}
+	}
+}
+
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Bfind(CTAContext &context, 
+	const PTXInstruction &instr) {
+	trace();
+	switch (instr.type) {
+	case ir::PTXOperand::u32: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXU32 d, a = operandAsU32(threadID, instr.a);
+			d = hydrazine::bfind(a, instr.shiftAmount);
+			setRegAsU32(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	case ir::PTXOperand::s32: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXS32 a = operandAsS32(threadID, instr.a);
+			PTXU32 d = hydrazine::bfind(a, instr.shiftAmount);
+			setRegAsU32(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	case ir::PTXOperand::s64: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXS64 a = operandAsS64(threadID, instr.a);
+			PTXU32 d = hydrazine::bfind(a, instr.shiftAmount);
+			setRegAsU32(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	case ir::PTXOperand::u64: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXU64 a = operandAsU64(threadID, instr.a);
+			PTXU32 d = hydrazine::bfind(a, instr.shiftAmount);
+			setRegAsU32(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	default: {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
 	}
 }
 

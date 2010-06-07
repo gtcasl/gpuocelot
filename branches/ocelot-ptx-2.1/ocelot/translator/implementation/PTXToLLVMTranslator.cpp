@@ -1003,6 +1003,7 @@ namespace translator
 			case ir::PTXInstruction::And: _translateAnd( i ); break;
 			case ir::PTXInstruction::Atom: _translateAtom( i ); break;
 			case ir::PTXInstruction::Bar: _translateBar( i ); break;
+			case ir::PTXInstruction::Bfind: _translateBfind( i ); break;
 			case ir::PTXInstruction::Bra: _translateBra( i, block ); break;
 			case ir::PTXInstruction::Brkpt: _translateBrkpt( i ); break;
 			case ir::PTXInstruction::Call: _translateCall( i ); break;
@@ -1632,6 +1633,30 @@ namespace translator
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	{
 		_yield( i.reentryPoint );
+	}
+
+	void PTXToLLVMTranslator::_translateBfind( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		if( ir::PTXOperand::bytes( i.type ) == 4 )
+		{
+			call.name = "@__ocelot_bfind_b32";
+		}
+		else
+		{
+			call.name = "@__ocelot_bfind_b64";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.resize( 2 );
+		call.parameters[0] = _translate( i.a );
+		call.parameters[1].constant = true;
+		call.parameters[1].i1 = i.shiftAmount;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].type.type = ir::LLVMInstruction::I1;
+		
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i, 
@@ -6580,6 +6605,29 @@ namespace translator
 		_llvmKernel->_statements.push_front( popc );		
 		popc.label = "__ocelot_clz_b64";
 		_llvmKernel->_statements.push_front( popc );		
+
+		ir::LLVMStatement bfind( ir::LLVMStatement::FunctionDeclaration );
+
+		bfind.label = "__ocelot_bfind_b32";
+		bfind.linkage = ir::LLVMStatement::InvalidLinkage;
+		bfind.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		bfind.visibility = ir::LLVMStatement::Default;
+		
+		bfind.operand.type.category = ir::LLVMInstruction::Type::Element;
+		bfind.operand.type.type = ir::LLVMInstruction::I32;
+		
+		bfind.parameters.resize( 2 );
+		bfind.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		bfind.parameters[0].type.type = ir::LLVMInstruction::I32;
+		bfind.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		bfind.parameters[1].type.type = ir::LLVMInstruction::I1;
+	
+		_llvmKernel->_statements.push_front( bfind );		
+		bfind.label = "__ocelot_popc_b64";
+		bfind.parameters[0].type.type = ir::LLVMInstruction::I64;
+		bfind.label = "__ocelot_bfind_b64";
+		_llvmKernel->_statements.push_front( bfind );		
+
 
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );

@@ -762,53 +762,6 @@ test::TestPTXAssembly::TypeVector testNeg_OUT(
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// TEST POPC
-std::string testPopc_PTX(ir::PTXOperand::DataType type)
-{
-	std::stringstream result;
-	std::string typeString = "." + ir::PTXOperand::toString(type);
-
-	result << ".version 2.1 \n";
-	result << ".entry test(.param .u64 out, .param .u64 in) \n";
-	result << "{\t\n";
-	result << "\t.reg .u64 %rIn, %rOut; \n";
-	result << "\t.reg " << typeString << " %r0; \n";
-	result << "\t.reg .u32 %r1; \n";
-	result << "\tld.param.u64 %rIn, [in]; \n";
-	result << "\tld.param.u64 %rOut, [out]; \n";
-	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
-	result << "\tpopc" << typeString << " %r1, %r0; \n";
-	result << "\tst.global.u32 [%rOut], %r1; \n";
-	result << "\texit; \n";
-	result << "}\n";
-	
-	return result.str();
-}
-
-template <typename type>
-void testPopc_REF(void* output, void* input)
-{
-	type r0 = getParameter<type>(input, 0);
-	
-	unsigned int result = hydrazine::popc( r0 );
-	
-	setParameter(output, 0, result);
-}
-
-test::TestPTXAssembly::TypeVector testPopc_IN(
-	test::TestPTXAssembly::DataType type)
-{
-	return test::TestPTXAssembly::TypeVector(1, type);
-}
-
-test::TestPTXAssembly::TypeVector testPopc_OUT(
-	test::TestPTXAssembly::DataType type)
-{
-	return test::TestPTXAssembly::TypeVector(1, type);
-}
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 // TEST MIN-MAX
 std::string testMinMax_PTX(ir::PTXOperand::DataType type, bool max)
 {
@@ -874,6 +827,53 @@ test::TestPTXAssembly::TypeVector testMinMax_OUT(
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST POPC
+std::string testPopc_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r0; \n";
+	result << "\t.reg .u32 %r1; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tpopc" << typeString << " %r1, %r0; \n";
+	result << "\tst.global.u32 [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testPopc_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	unsigned int result = hydrazine::popc( r0 );
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testPopc_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testPopc_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST CLZ
 std::string testClz_PTX(ir::PTXOperand::DataType type)
 {
@@ -917,6 +917,59 @@ test::TestPTXAssembly::TypeVector testClz_OUT(
 	test::TestPTXAssembly::DataType type)
 {
 	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST BFIND
+std::string testBfind_PTX(ir::PTXOperand::DataType type, bool shift)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r0; \n";
+	result << "\t.reg .u32 %r1; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	if(shift)
+	{
+		result << "\tbfind.shiftamt" << typeString << " %r1, %r0; \n";
+	}
+	else
+	{
+		result << "\tbfind" << typeString << " %r1, %r0; \n";
+	}
+	result << "\tst.global.u32 [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type, bool shift>
+void testBfind_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	unsigned int result = hydrazine::bfind(r0, shift);
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testBfind_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testBfind_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1520,7 +1573,7 @@ namespace test
 		add("TestPopc-b32", testPopc_REF<unsigned int>, 
 			testPopc_PTX(ir::PTXOperand::b32), 
 			testPopc_OUT(I32), testPopc_IN(I32), 
-			uniformNonZero<int, 1>, 1, 1);
+			uniformNonZero<unsigned int, 1>, 1, 1);
 		add("TestPopc-b64", testPopc_REF<long long unsigned int>, 
 			testPopc_PTX(ir::PTXOperand::b64), 
 			testPopc_OUT(I32), testPopc_IN(I64), 
@@ -1529,11 +1582,38 @@ namespace test
 		add("TestClz-b32", testClz_REF<unsigned int>, 
 			testClz_PTX(ir::PTXOperand::b32), 
 			testClz_OUT(I32), testClz_IN(I32), 
-			uniformNonZero<int, 1>, 1, 1);
+			uniformNonZero<unsigned int, 1>, 1, 1);
 		add("TestClz-b64", testClz_REF<long long unsigned int>, 
 			testClz_PTX(ir::PTXOperand::b64), 
 			testClz_OUT(I32), testClz_IN(I64), 
 			uniformNonZero<long long unsigned int, 1>, 1, 1);
+
+		add("TestBfind-u32", testBfind_REF<unsigned int, false>, 
+			testBfind_PTX(ir::PTXOperand::u32, false), testBfind_OUT(), 
+			testBfind_IN(I32), uniformNonZero<unsigned int, 1>, 1, 1);
+		add("TestBfind-u64", testBfind_REF<long long unsigned int, false>, 
+			testBfind_PTX(ir::PTXOperand::u64, false), testBfind_OUT(), 
+			testBfind_IN(I64), uniformNonZero<long long unsigned int, 1>, 1, 1);
+		add("TestBfind-s32", testBfind_REF<int, false>, 
+			testBfind_PTX(ir::PTXOperand::s32, false), testBfind_OUT(), 
+			testBfind_IN(I32), uniformNonZero<int, 1>, 1, 1);
+		add("TestBfind-s64", testBfind_REF<long long int, false>, 
+			testBfind_PTX(ir::PTXOperand::s64, false), testBfind_OUT(), 
+			testBfind_IN(I64), uniformNonZero<long long int, 1>, 1, 1);
+
+		add("TestBfind-shiftamount-u32", testBfind_REF<unsigned int, true>, 
+			testBfind_PTX(ir::PTXOperand::u32, true), testBfind_OUT(), 
+			testBfind_IN(I32), uniformNonZero<unsigned int, 1>, 1, 1);
+		add("TestBfind-shiftamount-u64", 
+			testBfind_REF<long long unsigned int, true>, 
+			testBfind_PTX(ir::PTXOperand::u64, true), testBfind_OUT(), 
+			testBfind_IN(I64), uniformNonZero<long long unsigned int, 1>, 1, 1);
+		add("TestBfind-shiftamount-s32", testBfind_REF<int, true>, 
+			testBfind_PTX(ir::PTXOperand::s32, true), testBfind_OUT(), 
+			testBfind_IN(I32), uniformNonZero<int, 1>, 1, 1);
+		add("TestBfind-shiftamount-s64", testBfind_REF<long long int, true>, 
+			testBfind_PTX(ir::PTXOperand::s64, true), testBfind_OUT(), 
+			testBfind_IN(I64), uniformNonZero<long long int, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
@@ -1571,9 +1651,7 @@ namespace test
 		}
 		
 		_tests.push_back(std::move(test));
-	}
-	
-	
+	}	
 	
 	bool TestPTXAssembly::doTest()
 	{

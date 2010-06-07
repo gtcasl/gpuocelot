@@ -31,6 +31,15 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+analysis::LLVMUniformVectorization::WarpScheduler::WarpScheduler():
+	start(0),
+	end(0)
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 analysis::LLVMUniformVectorization::Translation::~Translation() {
 
 }
@@ -118,6 +127,7 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	addInterleavedInstructions(translation);
 	resolveControlFlow(translation);
 	createSchedulerBlock(translation);
+	updateSchedulerBlocks(translation);
 	
 	// debugging
 	translation.F->getParent()->dump();
@@ -170,6 +180,9 @@ void analysis::LLVMUniformVectorization::breadthFirstTraversal(
 	
 }
 
+/*!
+	\brief 
+*/
 void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation &translation) {
 
 	llvm::Function::BasicBlockListType & basicBlocks = translation.F->getBasicBlockList();
@@ -184,6 +197,12 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 		
 		llvm::BasicBlock *bb = *bb_it;
 		if (bb->getNameStr() == "") { continue; }
+		
+		// ignore ocelot-inserted blocks for fusing thread blocks together
+		if (bb->getNameStr().substr(0, 30) == "$__ocelot_remove_barrier_entry") { 
+			WarpScheduler warpSched;
+			translation.warpSchedulerBlocks[bb] = warpSched;
+		}
 
 		// construct a warp-synchronous block
 		std::stringstream ss;
@@ -199,7 +218,13 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 
 		llvm::BasicBlock *srcBlock = *bb_it;
 
+		// ignore empty blocks
 		if (srcBlock->getNameStr() == "") { continue; }
+		
+		// ignore the warp-scheduler block
+		if (translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
+			continue;
+		}
 
 		llvm::BasicBlock *warpBlock = translation.warpBlocksMap[srcBlock];
 		llvm::BasicBlock::InstListType & instList = warpBlock->getInstList();
@@ -359,6 +384,11 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 		
 	for (BasicBlockMap::iterator bb_it = translation.warpBlocksMap.begin();
 		bb_it != translation.warpBlocksMap.end(); ++bb_it) {
+		
+		if (translation.warpSchedulerBlocks.find(bb_it->first) != translation.warpSchedulerBlocks.end()) {
+			continue;
+		}
+		
 		llvm::TerminatorInst *termInst = static_cast<llvm::TerminatorInst *>(
 			bb_it->first->getTerminator());
 		
@@ -508,9 +538,36 @@ void analysis::LLVMUniformVectorization::createSchedulerBlock(Translation &trans
 		entry);
 	
 	// for now, have scheduler block chain to previous entry point
+	llvm::BasicBlock *startBlock = entry;
+	if (!translation.warpSchedulerBlocks.size()) {
+		startBlock = translation.getWarpBlockFromScalar(entry);
+	}
 	llvm::BranchInst *braInst = llvm::BranchInst::Create(
-		translation.getWarpBlockFromScalar(entry), translation.schedulerBlock);
+		startBlock, translation.schedulerBlock);
 	assert(braInst);
+}
+
+/*
+	\brief visits each of the warp scheduler blocks and changes control flow to point
+		to warp-synchronous regions
+*/
+void analysis::LLVMUniformVectorization::updateSchedulerBlocks(Translation &translation) {
+	WarpSchedulerMap::const_iterator ws_it = translation.warpSchedulerBlocks.begin();
+	for (; ws_it != translation.warpSchedulerBlocks.end(); ++ws_it) {
+		llvm::BasicBlock *scalar = ws_it->first;
+		llvm::TerminatorInst *termInst = scalar->getTerminator();
+
+		if (llvm::BranchInst::classof(termInst)) {
+			llvm::BranchInst *braInst = static_cast<llvm::BranchInst *>(termInst);
+			for (unsigned int i = 0; i < braInst->getNumSuccessors(); i++) {
+				llvm::BasicBlock *wsBlock = translation.getWarpBlockFromScalar(braInst->getSuccessor(i));
+				braInst->setSuccessor(i, wsBlock);
+			}
+		}
+		else {
+			throw hydrazine::Exception("updateSchedulerBlock() - expected terminator to be branch instruction");
+		}		
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

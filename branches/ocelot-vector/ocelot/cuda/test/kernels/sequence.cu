@@ -16,25 +16,41 @@ extern "C" __global__ void sequence(int *A, int N) {
 	}
 }
 
-extern "C" __global__ void testShr(int *A, const int *B) {
+extern "C" __global__ void testShr(int *A, const int *B, int shameless) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
-	int b;
+
+	/*
 	__shared__ int storage[256];
+	int b;
 	
 	storage[threadIdx.x] = B[i];
+	
 	__syncthreads();
-	if (i & 1) {
-		b = storage[threadIdx.x ^ 1] * 2;
-	}
-	else {
-		b = storage[threadIdx.x ^ 1] * 3;
-	}
+	b = storage[threadIdx.x ^ 2] * 3;
+		*/
+	
+
+	__shared__ int storage[256];
+	storage[threadIdx.x] = i * 3;
+	__syncthreads();
+	
+	int b = threadIdx.x + shameless * storage[threadIdx.x] + i * 3;
+
+/*
+	
+	int b = i * 3;
+	
+	__syncthreads();
+	
+	b += threadIdx.x;	
+	*/
+	
 	A[i] = b;
 }
 
 int main(int argc, char *arg[]) {
 
-	const int N = 1024;
+	const int N = 64;
 	int *A_host, *A_gpu =0;
 	int errors = 0;
 
@@ -61,34 +77,35 @@ int main(int argc, char *arg[]) {
 			++errors;
 		}
 	}
+	
+	if (errors) {
+		printf("sequence<< >>() failed. Exiting\n");
+	}
 
-	if (false) {
+	if (true && !errors) {
 		int *B_gpu = 0;
 		if (cudaMalloc((void **)&B_gpu, bytes) != cudaSuccess) {
 			printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
+			++errors;
 			cudaFree(A_gpu);
 			free(A_host);
 			return -1;
 		}
 	
 		sequence<<< grid, block >>>(A_gpu, N);
-		testShr<<< grid, block >>>(B_gpu, A_gpu);
+		testShr<<< grid, block >>>(B_gpu, A_gpu, 0);
 	
 		if (cudaMemcpy(A_host, B_gpu, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
 			printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
+			++errors;
 			cudaFree(A_gpu);
 			cudaFree(B_gpu);
 			free(A_host);
 		}
 	
-		for (int i = 0; (errors < 5) && i < N; ++i) {
+		for (int i = 0; (errors < 15) && i < N; ++i) {
 			int b;
-			if (i & 1) {
-				b = (i ^ 1) * 2 * 2;
-			}
-			else {
-				b = (i ^ 1) * 2 * 3;
-			}
+			b = (i % 32) + 3 * i;
 			int got = A_host[i];
 			if (b != got) {
 				printf("ERROR 1 [%d] - expected: %d, got: %d\n", i, b, got);

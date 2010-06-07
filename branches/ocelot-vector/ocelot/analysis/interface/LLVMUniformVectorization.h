@@ -62,6 +62,24 @@ namespace analysis
 		typedef std::map< llvm::BasicBlock *, DivergentBranch > DivergentBranchMap;
 
 		/*!
+			\brief warp scheduler block
+		*/
+		class WarpScheduler {
+		public:
+			WarpScheduler();
+			
+		public:
+		
+			//! \brief start of region
+			llvm::BasicBlock *start;
+			
+			//! \brief end of region
+			llvm::BasicBlock *end;
+		};
+		
+		typedef std::map< llvm::BasicBlock *, WarpScheduler > WarpSchedulerMap;
+
+		/*!
 			\brief object storing intermediate results needed by the translation
 		*/
 		class Translation {
@@ -113,6 +131,12 @@ namespace analysis
 				\brief indirect jumps based on warp id and last divergent branch handled by this block
 			*/
 			llvm::BasicBlock *schedulerBlock;
+			
+			/*!
+				\brief maps basic blocks to warp scheduler blocks
+			*/
+			WarpSchedulerMap warpSchedulerBlocks;
+			
 		};
 
 	public:
@@ -168,6 +192,12 @@ namespace analysis
 				or returns to Ocelot multicore runtime
 		*/
 		void resolveControlFlow(Translation &translation);
+		
+		/*!
+			\brief visits each of the warp scheduler blocks and changes control flow to point
+				to warp-synchronous regions
+		*/
+		void updateSchedulerBlocks(Translation &translation);
 		
 		/*!
 			\brief deals with a particular divergent branch

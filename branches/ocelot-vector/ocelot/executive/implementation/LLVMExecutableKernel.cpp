@@ -40,7 +40,7 @@
 #define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_NTH_THREAD_ONLY 0
 #define NTH_THREAD 0
-#define DEBUG_PTX_INSTRUCTION_TRACE 1
+#define DEBUG_PTX_INSTRUCTION_TRACE 0
 #define DEBUG_PTX_BASIC_BLOCK_TRACE 1
 #define DEBUG_LLVM 0
 
@@ -1483,7 +1483,8 @@ namespace executive
 				for( int y = 0; y < c->ntid.y; ++y )
 				{
 					c->tid.y = y;
-					for( int x = 0; x < c->ntid.x; ++x )
+//					for( int x = 0; x < c->ntid.x; ++x )
+					for( int x = 0; x < c->ntid.x; x += 4 )
 					{
 						c->tid.x = x;
 						c->local = localBase + c->localSize * threadId( *c );
@@ -1854,10 +1855,12 @@ namespace executive
 		// experimental pass for uniform-control flow vectorization
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
 		manager.add(uniformVectorizationPass);
-		level = 1;
-
+		level = 0;
 		
-		if( level < 2 )
+		if (level == 0) {
+		
+		}
+		else if( level < 2 )
 		{
 		    manager.add( llvm::createInstructionCombiningPass() );
 		    manager.add( llvm::createReassociatePass() );

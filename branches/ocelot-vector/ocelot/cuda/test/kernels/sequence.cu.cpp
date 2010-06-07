@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_0000595b_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000595b_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.cpp"
 # 1 "sequence.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
@@ -5814,11 +5814,11 @@ extern "C" void funlockfile(FILE *) throw();
 # 12 "sequence.cu"
 extern "C" void sequence__entry(int *A, int N);
 # 19 "sequence.cu"
-extern "C" void testShr__entry(int *A, const int *B);
-# 35 "sequence.cu"
+extern "C" void testShr__entry(int *A, const int *B, int shameless);
+# 51 "sequence.cu"
 int main(int argc, char *arg[]) {
 
-auto const int N = 1024;
+auto const int N = 64;
 auto int *A_host; auto int *A_gpu = (0);
 auto int errors = 0;
 
@@ -5846,33 +5846,34 @@ if ((A_host[i]) != (2 * i)) {
 }
 }
 
-if (false) {
+if (errors) {
+printf("sequence<< >>() failed. Exiting\n");
+}
+
+if (true && (!(errors))) {
 auto int *B_gpu = (0);
 if ((cudaMalloc((void **)(&B_gpu), bytes)) != (cudaSuccess)) {
 printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
+++errors;
 cudaFree(A_gpu);
 free(A_host);
 return -1;
 }
 
 cudaConfigureCall(grid, block) ? ((void)0) : sequence__entry(A_gpu, N);
-cudaConfigureCall(grid, block) ? ((void)0) : testShr__entry(B_gpu, A_gpu);
+cudaConfigureCall(grid, block) ? ((void)0) : testShr__entry(B_gpu, A_gpu, 0);
 
 if ((cudaMemcpy(A_host, B_gpu, bytes, cudaMemcpyDeviceToHost)) != (cudaSuccess)) {
 printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
+++errors;
 cudaFree(A_gpu);
 cudaFree(B_gpu);
 free(A_host);
 }
 
-for (int i = 0; (errors < 5) && (i < N); ++i) {
+for (int i = 0; (errors < 15) && (i < N); ++i) {
 auto int b;
-if (i & 1) {
-b = ((i ^ 1) * 2) * 2;
-} else
-{
-b = ((i ^ 1) * 2) * 3;
-}
+b = i % 32 + 3 * i;
 auto int got = (A_host[i]);
 if (b != got) {
 printf("ERROR 1 [%d] - expected: %d, got: %d\n", i, b, got);
@@ -5896,11 +5897,11 @@ printf("PASSED\n");
 return 0;
 }
 
-# 1 "/tmp/tmpxft_0000595b_00000000-1_sequence.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_0000595b_00000000-3_sequence.fatbin.c" 1
+# 1 "/tmp/tmpxft_00004934_00000000-3_sequence.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5962,7 +5963,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_0000595b_00000000-3_sequence.fatbin.c" 2
+# 2 "/tmp/tmpxft_00004934_00000000-3_sequence.fatbin.c" 2
 
 
 
@@ -5978,8 +5979,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f6235393530ull,0x372d303030303030ull,0x636e65757165735full,0x692e337070632e65ull,
-0x632f706d742f2820ull,0x35494e2e23494263ull,0x2f2f090a29733377ull,0x2d2d2d2d2d2d2d2dull,
+0x30305f3433393430ull,0x372d303030303030ull,0x636e65757165735full,0x692e337070632e65ull,
+0x632f706d742f2820ull,0x796f692e23494263ull,0x2f2f090a29793731ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f2f090a0a2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -5994,7 +5995,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x662e090a0a2d2d2dull,0x3c22093109656c69ull,0x2d646e616d6d6f63ull,
 0x090a223e656e696cull,0x093209656c69662eull,0x6d742f706d742f22ull,0x3030305f74667870ull,
-0x30305f6235393530ull,0x362d303030303030ull,0x636e65757165735full,0x6566616475632e65ull,
+0x30305f3433393430ull,0x362d303030303030ull,0x636e65757165735full,0x6566616475632e65ull,
 0x090a227570672e32ull,0x093309656c69662eull,0x696c2f7273752f22ull,0x38782f6363672f62ull,
 0x6e696c2d34365f36ull,0x342f756e672d7875ull,0x636e692f312e342eull,0x6474732f6564756cull,
 0x090a22682e666564ull,0x093409656c69662eull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,
@@ -6063,46 +6064,36 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x757165735f646e65ull,0x7d090a3a65636e65ull,0x75716573202f2f20ull,0x2e090a0a65636e65ull,
 0x6574207972746e65ull,0x0a28207268537473ull,0x6d617261702e0909ull,0x5f5f203436752e20ull,
 0x6d72617061647563ull,0x726853747365745full,0x702e09090a2c415full,0x36752e206d617261ull,
-0x616475635f5f2034ull,0x7365745f6d726170ull,0x0a29425f72685374ull,0x6765722e090a7b09ull,
-0x7225203631752e20ull,0x2e090a3b3e343c68ull,0x3233752e20676572ull,0x3b3e31313c722520ull,
-0x2e206765722e090aull,0x3c64722520343675ull,0x722e090a3b3e3531ull,0x646572702e206765ull,
-0x0a3b3e333c702520ull,0x6465726168732e09ull,0x206e67696c612e20ull,0x5f5f2038622e2034ull,
-0x6f74735f61647563ull,0x315b323365676172ull,0x2e090a3b5d343230ull,0x3109353109636f6cull,
-0x42424c240a300939ull,0x6853747365745f31ull,0x2e766f6d090a3a72ull,0x6472250920343675ull,
-0x6475635f5f202c31ull,0x6761726f74735f61ull,0x6c2e090a3b323365ull,0x343209353109636full,
-0x2e747663090a3009ull,0x203631752e323375ull,0x7425202c31722509ull,0x6d090a3b782e6469ull,
-0x09203631752e766full,0x6325202c31687225ull,0x0a3b782e64696174ull,0x3631752e766f6d09ull,
-0x202c326872250920ull,0x3b782e6469746e25ull,0x69772e6c756d090aull,0x09203631752e6564ull,
-0x687225202c327225ull,0x3b32687225202c31ull,0x33752e646461090aull,0x202c337225092032ull,
-0x327225202c317225ull,0x752e747663090a3bull,0x09203233732e3436ull,0x7225202c32647225ull,
-0x2e6c756d090a3b33ull,0x09203436752e6f6cull,0x7225202c33647225ull,0x090a3b34202c3264ull,
-0x6d617261702e646cull,0x722509203436752eull,0x635f5f5b202c3464ull,0x5f6d726170616475ull,
-0x5f72685374736574ull,0x646461090a3b5d42ull,0x722509203436752eull,0x34647225202c3564ull,
-0x0a3b33647225202cull,0x626f6c672e646c09ull,0x09203233732e6c61ull,0x72255b202c347225ull,
-0x090a3b5d302b3564ull,0x2e3436752e747663ull,0x6472250920323375ull,0x0a3b317225202c36ull,
-0x2e6f6c2e6c756d09ull,0x6472250920343675ull,0x2c36647225202c37ull,0x646461090a3b3420ull,
-0x722509203436752eull,0x31647225202c3864ull,0x0a3b37647225202cull,0x726168732e747309ull,
-0x09203233732e6465ull,0x5d302b386472255bull,0x090a3b347225202cull,0x09353109636f6c2eull,
-0x6162090a30093532ull,0x0920636e79732e72ull,0x2e726f78090a3b30ull,0x3572250920323362ull,
-0x31202c317225202cull,0x752e747663090a3bull,0x09203233752e3436ull,0x7225202c39647225ull,
-0x2e6c756d090a3b35ull,0x09203436752e6f6cull,0x25202c3031647225ull,0x0a3b34202c396472ull,
-0x3436752e64646109ull,0x2c31316472250920ull,0x25202c3164722520ull,0x6c090a3b30316472ull,
-0x6465726168732e64ull,0x722509203233732eull,0x316472255b202c36ull,0x61090a3b5d302b31ull,
-0x09203233622e646eull,0x337225202c377225ull,0x6f6d090a3b31202cull,0x2509203233752e76ull,
-0x090a3b30202c3872ull,0x2e71652e70746573ull,0x3170250920323373ull,0x25202c377225202cull,
-0x702540090a3b3872ull,0x2409206172622031ull,0x3832315f315f744cull,0x732e646c090a3b32ull,
-0x33732e6465726168ull,0x202c367225092032ull,0x302b31316472255bull,0x636f6c2e090a3b5dull,
-0x3009373209353109ull,0x6f6c2e6c756d090aull,0x722509203233732eull,0x202c367225202c39ull,
-0x2e617262090a3b32ull,0x744c240920696e75ull,0x3b363230315f315full,0x315f315f744c240aull,
-0x6c2e090a3a323832ull,0x353209353109636full,0x732e646c090a3009ull,0x33732e6465726168ull,
-0x202c367225092032ull,0x302b31316472255bull,0x636f6c2e090a3b5dull,0x3009303309353109ull,
-0x6f6c2e6c756d090aull,0x722509203233732eull,0x202c367225202c39ull,0x315f744c240a3b33ull,
-0x090a3a363230315full,0x09353109636f6c2eull,0x646c090a30093233ull,0x752e6d617261702eull,
-0x3164722509203436ull,0x75635f5f5b202c32ull,0x745f6d7261706164ull,0x415f726853747365ull,
-0x2e646461090a3b5dull,0x6472250920343675ull,0x31647225202c3331ull,0x3b33647225202c32ull,
-0x6f6c672e7473090aull,0x203233732e6c6162ull,0x2b33316472255b09ull,0x3b397225202c5d30ull,
-0x3109636f6c2e090aull,0x090a300933330935ull,0x4c240a3b74697865ull,0x65745f646e655744ull,
-0x090a3a7268537473ull,0x736574202f2f207dull,0x00000a0a72685374ull
+0x616475635f5f2034ull,0x7365745f6d726170ull,0x0a2c425f72685374ull,0x6d617261702e0909ull,
+0x5f5f203233732e20ull,0x6d72617061647563ull,0x726853747365745full,0x656c656d6168735full,
+0x090a7b090a297373ull,0x31752e206765722eull,0x3e343c6872252036ull,0x206765722e090a3bull,
+0x3c7225203233752eull,0x722e090a3b3e3131ull,0x203436752e206765ull,0x3b3e30313c647225ull,
+0x65726168732e090aull,0x6e67696c612e2064ull,0x5f2038622e203420ull,0x74735f616475635full,
+0x5b3633656761726full,0x090a3b5d34323031ull,0x09353109636f6c2eull,0x424c240a30093931ull,
+0x53747365745f3142ull,0x6f6c2e090a3a7268ull,0x0934330935310963ull,0x752e766f6d090a30ull,
+0x3168722509203631ull,0x646961746325202cull,0x766f6d090a3b782eull,0x722509203631752eull,
+0x69746e25202c3268ull,0x756d090a3b782e64ull,0x752e656469772e6cull,0x2c31722509203631ull,
+0x25202c3168722520ull,0x7663090a3b326872ull,0x31752e3233752e74ull,0x202c327225092036ull,
+0x0a3b782e64697425ull,0x3233752e64646109ull,0x25202c3372250920ull,0x3b327225202c3172ull,
+0x6f6c2e6c756d090aull,0x722509203233732eull,0x202c337225202c34ull,0x2e766f6d090a3b33ull,
+0x6472250920343675ull,0x6475635f5f202c31ull,0x6761726f74735f61ull,0x7663090a3b363365ull,
+0x33752e3436752e74ull,0x2c32647225092032ull,0x6d090a3b32722520ull,0x36752e6f6c2e6c75ull,
+0x2c33647225092034ull,0x34202c3264722520ull,0x752e646461090a3bull,0x3464722509203436ull,
+0x202c31647225202cull,0x73090a3b33647225ull,0x6465726168732e74ull,0x255b09203233732eull,
+0x202c5d302b346472ull,0x6c2e090a3b347225ull,0x353309353109636full,0x2e726162090a3009ull,
+0x3b300920636e7973ull,0x3109636f6c2e090aull,0x090a300938340935ull,0x65726168732e646cull,
+0x2509203233732e64ull,0x6472255b202c3572ull,0x6c090a3b5d302b34ull,0x2e6d617261702e64ull,
+0x3672250920323373ull,0x6475635f5f5b202cull,0x65745f6d72617061ull,0x68735f7268537473ull,
+0x5d7373656c656d61ull,0x6c2e6c756d090a3bull,0x2509203233732e6full,0x2c357225202c3772ull,
+0x61090a3b36722520ull,0x09203233752e6464ull,0x347225202c387225ull,0x090a3b377225202cull,
+0x203233752e646461ull,0x7225202c39722509ull,0x0a3b387225202c32ull,0x617261702e646c09ull,
+0x2509203436752e6dull,0x5f5f5b202c356472ull,0x6d72617061647563ull,0x726853747365745full,
+0x7663090a3b5d415full,0x33732e3436752e74ull,0x2c36647225092032ull,0x6d090a3b33722520ull,
+0x36752e6f6c2e6c75ull,0x2c37647225092034ull,0x34202c3664722520ull,0x752e646461090a3bull,
+0x3864722509203436ull,0x202c35647225202cull,0x73090a3b37647225ull,0x6c61626f6c672e74ull,
+0x255b09203233732eull,0x202c5d302b386472ull,0x6c2e090a3b397225ull,0x393409353109636full,
+0x74697865090a3009ull,0x6e6557444c240a3bull,0x6853747365745f64ull,0x2f2f207d090a3a72ull,
+0x7268537473657420ull,0x0000000000000a0aull
 };
 
 
@@ -6117,33 +6108,30 @@ static const unsigned long long __deviceText_$sm_10$[] = {
 0x6365746968637261ull,0x6d737b2065727574ull,0x6962610a7d30315full,0x206e6f6973726576ull,
 0x6f6d0a7d317b2020ull,0x202020656d616e64ull,0x696275637b202020ull,0x2065646f630a7d6eull,
 0x20656d616e090a7bull,0x685374736574203dull,0x206d656d6c090a72ull,0x656d73090a30203dull,
-0x36353031203d206dull,0x3d2020676572090aull,0x20726162090a3420ull,0x6f63090a31203d20ull,
-0x09090a7b2074736eull,0x656d616e67657309ull,0x74736e6f63203d20ull,0x6e6765730909090aull,
-0x0a31203d20206d75ull,0x657366666f090909ull,0x090a30203d202074ull,0x2073657479620909ull,
-0x09090a34203d2020ull,0x09090a7b206d656dull,0x3030303030783009ull,0x7d09090a20313030ull,
-0x6e6962090a7d090aull,0x090a7b2065646f63ull,0x3430303031783009ull,0x3030783020353032ull,
-0x3020303837633332ull,0x3030303030306178ull,0x3030343078302035ull,0x09090a2030383730ull,
-0x6334313030367830ull,0x3230307830203930ull,0x7830203038373430ull,0x3130343032303033ull,
-0x3030313463783020ull,0x3009090a20303837ull,0x3063633030303278ull,0x3032343078302064ull,
-0x3078302030383730ull,0x2035303230323030ull,0x3730303030637830ull,0x783009090a203038ull,
-0x6430363065303064ull,0x3030633038783020ull,0x3430783020303837ull,0x3020313030313030ull,
-0x3837633032346578ull,0x38783009090a2030ull,0x2033306566663136ull,0x3030303030307830ull,
-0x3830647830203030ull,0x7830203530323030ull,0x3038373830343430ull,0x3064783009090a20ull,
-0x3020646635303038ull,0x6337303034343078ull,0x3230303078302038ull,0x6378302035303230ull,
-0x2030383730303030ull,0x303433783009090aull,0x7830203530306431ull,0x3038363030333463ull,
-0x6431303433783020ull,0x3463783020353030ull,0x0a20303031303033ull,0x3030343278300909ull,
-0x3078302035303064ull,0x2030303134303234ull,0x3863303030327830ull,0x3234307830203130ull,
-0x090a203038373030ull,0x3065303064783009ull,0x3061783020353030ull,0x0a20313837303063ull,
-0x646f630a7d0a7d09ull,0x6d616e090a7b2065ull,0x75716573203d2065ull,0x6d6c090a65636e65ull,
-0x090a30203d206d65ull,0x32203d206d656d73ull,0x2020676572090a38ull,0x726162090a33203dull,
-0x62090a30203d2020ull,0x7b2065646f636e69ull,0x303031783009090aull,0x7830203530323430ull,
-0x3038376333323030ull,0x3030303061783020ull,0x3430783020353030ull,0x0a20303837303030ull,
-0x3130303678300909ull,0x3078302031306334ull,0x2030383734303230ull,0x6463303030337830ull,
-0x3263367830206466ull,0x090a203863376330ull,0x3030303033783009ull,0x3030783020333030ull,
-0x3020303832303030ull,0x3030303230303378ull,0x3031346378302035ull,0x09090a2030383730ull,
-0x3030313030337830ull,0x3134637830203930ull,0x7830203038373030ull,0x3130386330303032ull,
-0x3430323430783020ull,0x3009090a20303837ull,0x3030306530306478ull,0x3063306178302039ull,
-0x7d090a2031383730ull,0x00000000000a7d0aull
+0x30363031203d206dull,0x3d2020676572090aull,0x20726162090a3620ull,0x6962090a31203d20ull,
+0x0a7b2065646f636eull,0x3030303178300909ull,0x3078302035303234ull,0x2030383763333230ull,
+0x3030303030617830ull,0x3034307830203930ull,0x090a203038373030ull,0x3431303036783009ull,
+0x3030783020643063ull,0x3020303837383032ull,0x3036303130303378ull,0x3031346378302031ull,
+0x09090a2030383730ull,0x3430323030307830ull,0x3030637830203530ull,0x7830203038373030ull,
+0x3131363030303032ull,0x3030303430783020ull,0x3009090a20303837ull,0x3032313030343078ull,
+0x3132346578302031ull,0x3878302030383730ull,0x2033306566663136ull,0x3030303030307830ull,
+0x783009090a203030ull,0x3530343032303030ull,0x3030303063783020ull,0x3131783020303837ull,
+0x3020343030663030ull,0x3032663030353178ull,0x34783009090a2030ull,0x2035313030333030ull,
+0x3730303030307830ull,0x3030367830203038ull,0x7830203531323032ull,0x3038373431303030ull,
+0x3033783009090a20ull,0x3020353161303031ull,0x3837303031346378ull,0x3230303678302030ull,
+0x3078302031303030ull,0x2030383734313030ull,0x303032783009090aull,0x7830203530383030ull,
+0x3038373030303430ull,0x3032303033783020ull,0x3463783020313036ull,0x0a20303837303031ull,
+0x3130303278300909ull,0x3278302034303438ull,0x2030303865303031ull,0x3030653030647830ull,
+0x6330617830203530ull,0x090a203138373030ull,0x65646f630a7d0a7dull,0x656d616e090a7b20ull,
+0x6575716573203d20ull,0x656d6c090a65636eull,0x73090a30203d206dull,0x3832203d206d656dull,
+0x3d2020676572090aull,0x20726162090a3320ull,0x6962090a30203d20ull,0x0a7b2065646f636eull,
+0x3030303178300909ull,0x3078302035303234ull,0x2030383763333230ull,0x3030303030617830ull,
+0x3034307830203530ull,0x090a203038373030ull,0x3431303036783009ull,0x3030783020313063ull,
+0x3020303837343032ull,0x6664633030303378ull,0x3032633678302064ull,0x09090a2038633763ull,
+0x3030303030337830ull,0x3030307830203330ull,0x7830203038323030ull,0x3530303032303033ull,
+0x3030313463783020ull,0x3009090a20303837ull,0x3030303130303378ull,0x3031346378302039ull,
+0x3278302030383730ull,0x2031303863303030ull,0x3734303234307830ull,0x783009090a203038ull,
+0x3930303065303064ull,0x3030633061783020ull,0x0a7d090a20313837ull,0x0000000000000a7dull
 };
 
 
@@ -6156,8 +6144,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"85a69d92dd2bd633",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x8f61865f};
-# 5 "/tmp/tmpxft_0000595b_00000000-1_sequence.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"9357cb9fc32f2383",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xe3ad82df};
+# 5 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -12137,7 +12125,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3865 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_0000595b_00000000-1_sequence.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c" 2
 
 
 
@@ -12147,8 +12135,8 @@ struct __T20 {int *__par0;int __par1;int __dummy_field;};
 
 
 
-struct __T21 {int *__par0;const int *__par1;int __dummy_field;};
-static void __sti____cudaRegisterAll_43_tmpxft_0000595b_00000000_4_sequence_cpp1_ii_sequence(void) __attribute__((__constructor__));
+struct __T21 {int *__par0;const int *__par1;int __par2;int __dummy_field;};
+static void __sti____cudaRegisterAll_43_tmpxft_00004934_00000000_4_sequence_cpp1_ii_sequence(void) __attribute__((__constructor__));
 void __device_stub__Z8sequencePii(int *__par0, int __par1){auto struct __T20 *__T22;
 *(void**)(void*)&__T22 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T22->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T22->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))sequence__entry)); (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence__entry))); };}
 
@@ -12157,15 +12145,15 @@ void sequence__entry( int *__cuda_0,int __cuda_1)
 {__device_stub__Z8sequencePii( __cuda_0,__cuda_1);}
 extern "C"{
 
-void __device_stub__Z7testShrPiPKi(int *__par0, const int *__par1){auto struct __T21 *__T23;
-*(void**)(void*)&__T23 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, const int *))testShr__entry)); (void)cudaLaunch(((char *)((void ( *)(int *, const int *))testShr__entry))); };}
+void __device_stub__Z7testShrPiPKii(int *__par0, const int *__par1, int __par2){auto struct __T21 *__T23;
+*(void**)(void*)&__T23 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T23->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, const int *, int))testShr__entry)); (void)cudaLaunch(((char *)((void ( *)(int *, const int *, int))testShr__entry))); };}
 
 }
-void testShr__entry( int *__cuda_0,const int *__cuda_1)
-{__device_stub__Z7testShrPiPKi( __cuda_0,__cuda_1);}
+void testShr__entry( int *__cuda_0,const int *__cuda_1,int __cuda_2)
+{__device_stub__Z7testShrPiPKii( __cuda_0,__cuda_1,__cuda_2);}
 extern "C"{
-# 51 "/tmp/tmpxft_0000595b_00000000-1_sequence.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_0000595b_00000000_4_sequence_cpp1_ii_sequence(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, const int *))testShr__entry), (char*)"testShr", "testShr", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence__entry), (char*)"sequence", "sequence", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
+# 51 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_00004934_00000000_4_sequence_cpp1_ii_sequence(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, const int *, int))testShr__entry), (char*)"testShr", "testShr", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence__entry), (char*)"sequence", "sequence", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
 
 }
-# 115 "sequence.cu" 2
+# 132 "sequence.cu" 2

@@ -81,7 +81,9 @@ int main(int argc, char *arg[]) {
 	if (errors) {
 		printf("sequence<< >>() failed.\n");
 	}
-
+	
+	printf("\n- - -\n");
+	
 	if (true && !errors) {
 		int *B_gpu = 0;
 		if (cudaMalloc((void **)&B_gpu, bytes) != cudaSuccess) {

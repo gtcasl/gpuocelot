@@ -1484,7 +1484,7 @@ namespace executive
 				{
 					c->tid.y = y;
 //					for( int x = 0; x < c->ntid.x; ++x )
-					for( int x = 0; x < c->ntid.x; x += 4 )
+					for( int x = 0; x < c->ntid.x; x += LLVM_UNIFORMCONTROL_WARPSIZE )
 					{
 						c->tid.x = x;
 						c->local = localBase + c->localSize * threadId( *c );
@@ -1519,7 +1519,7 @@ namespace executive
 			{
 				c->tid.y = y;
 //				for( int x = 0; x < c->ntid.x; ++x )
-				for( int x = 0; x < c->ntid.x; x += 4 )
+				for( int x = 0; x < c->ntid.x; x += LLVM_UNIFORMCONTROL_WARPSIZE )
 				{
 					c->tid.x = x;
 					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
@@ -1856,7 +1856,7 @@ namespace executive
 		
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
 		manager.add(uniformVectorizationPass);
-		level = 0;
+		level = 1;
 		
 		
 		if (level == 0) {

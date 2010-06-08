@@ -21,6 +21,9 @@
 #include <llvm/Module.h>
 #include <llvm/PassManager.h>
 
+// toggles uniform control flow warp-synchronous execution or scalar execution (1)
+#define LLVM_UNIFORMCONTROL_WARPSIZE 1
+
 namespace analysis
 {
 
@@ -191,7 +194,8 @@ namespace analysis
 		*/
 		void updateThreadIdxUses(Translation &translation);
 
-		/*!			\brief local memory is owned by each thread - compute the thread's actual localMemPointer 
+		/*!
+			\brief local memory is owned by each thread - compute the thread's actual localMemPointer 
 				from its thread ID and LLVMContext::localSize
 		*/
 		void updateLocalMemAddresses(Translation &translation);
@@ -223,6 +227,13 @@ namespace analysis
 			\brief inserts a schedular block that handles control flow
 		*/
 		void createSchedulerBlock(Translation &translation);
+		
+		void debugInsertCFGTraces(Translation &translation);
+		
+		/*!
+			\brief prints a .dot file of the function's control flow graph - no instrucitons, just bb labels
+		*/
+		void debugEmitCFG(Translation &translation);
 		
 		/*!
 			\brief this could probably be implemented as a second function pass, but examine

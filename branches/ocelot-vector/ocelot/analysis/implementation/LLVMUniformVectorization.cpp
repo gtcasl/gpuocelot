@@ -27,7 +27,7 @@
 #endif
 
 #define REPORT_BASE 0
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -124,15 +124,20 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	Translation translation(&F);
 	
 	breadthFirstTraversal(translation.traversal, translation.F);
+	
 	addInterleavedInstructions(translation);
 	updateThreadIdxUses(translation);
 	updateLocalMemAddresses(translation);
 	resolveControlFlow(translation);
 	createSchedulerBlock(translation);
-	updateSchedulerBlocks(translation);
+	
+	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
+		updateSchedulerBlocks(translation);
+	}
 	
 	// debugging
-	translation.F->getParent()->dump();
+	//debugEmitCFG(translation);
+	//translation.F->getParent()->dump();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,12 +147,14 @@ void analysis::LLVMUniformVectorization::breadthFirstTraversal(
 
 	BasicBlockList blockList;
 	
+	
 	// copy block pointers into a mutable structure
 	llvm::Function::BasicBlockListType & llvmBasicBlocks = F->getBasicBlockList();
 	for (llvm::Function::BasicBlockListType::iterator bb_it = llvmBasicBlocks.begin();
 		bb_it != llvmBasicBlocks.end(); ++bb_it) {
 		blockList.push_back(&*bb_it);
 	}
+	report("breadthFirstTraversal() - " << llvmBasicBlocks.size() << " blocks");
 
 	BasicBlockList workList; 
 	std::set< llvm::BasicBlock *> visited;
@@ -171,6 +178,7 @@ void analysis::LLVMUniformVectorization::breadthFirstTraversal(
 		}
 		if (!bb) { break; }
 
+		report(" visiting: " << std::string(bb->getName()));
 		traversal.push_back(bb);
 		visited.insert(bb);
 
@@ -180,6 +188,7 @@ void analysis::LLVMUniformVectorization::breadthFirstTraversal(
 		}
 	}
 	
+	report(" end BF traversal");
 }
 
 /*!
@@ -215,16 +224,17 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 	}
 
 	// breadth-first traversal
+	report("translation.traversal.size() = " << translation.traversal.size());
+	
 	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
 		bb_it != translation.traversal.end(); ++bb_it) {
 
 		llvm::BasicBlock *srcBlock = *bb_it;
 
-		// ignore empty blocks
-		if (srcBlock->getNameStr() == "") { continue; }
-		
+		// ignore empty blocks		
 		// ignore the warp-scheduler block
-		if (translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
+		if (srcBlock->getNameStr() == "" || 
+			translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
 			continue;
 		}
 
@@ -250,6 +260,71 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 					}
 					instList.push_back(instr);
 
+					/*
+					updateDependencies(translation, instr, tid);
+					
+					// replace element ptr instructions with computations of thread idx
+					if (llvm::GetElementPtrInst::classof(instr)) {
+						llvm::GetElementPtrInst *ptrInst = static_cast<llvm::GetElementPtrInst *>(instr);
+						
+						if (ptrInst->getPointerOperand()->getNameStr() == "__ctaContext") {
+							int indices[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+							for (unsigned int idx = 1; idx < ptrInst->getNumOperands(); idx++) {
+							
+								if (llvm::ConstantInt::classof(ptrInst->getOperand(idx))) {
+									llvm::ConstantInt *constInt = static_cast<llvm::ConstantInt *>(
+										ptrInst->getOperand(idx));
+									
+									indices[idx] = (int)constInt->getZExtValue();
+								}
+							}
+							
+							if (indices[1] == 0 && indices[2] == 0 && indices[3] == 0) {
+								// tidx
+								translation.threadIdxMap[ptrInst] = tid;
+							}
+							else if (indices[1] == 0 && indices[2] == 4 && indices[3] < 0) {
+								// local memory
+								translation.localMemPtrMap[ptrInst] = tid;
+							}
+						}
+					}
+					*/
+					translation.warpInstructionMap[(&*inst_it)].push_back(instr);
+				}
+			}
+		}
+
+		// insert a dummy terminator
+		llvm::ReturnInst::Create(translation.F->getContext(), 0, warpBlock);	
+		basicBlocks.push_back(warpBlock);
+	}
+
+	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
+		bb_it != translation.traversal.end(); ++bb_it) {
+
+		llvm::BasicBlock *srcBlock = *bb_it;
+		
+		// ignore empty blocks		
+		// ignore the warp-scheduler block
+		if (srcBlock->getNameStr() == "" ||
+			translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
+			continue;
+		}
+
+		for (llvm::BasicBlock::iterator inst_it = srcBlock->begin(); inst_it != srcBlock->end(); 
+			++inst_it) {
+
+			if (llvm::Instruction::isTerminator(inst_it->getOpcode())) {
+				// if instruction is control flow, don't replicate
+			}
+			else {
+				// insert into the mapping so dependent instructions get the correct value
+				// else, replicate over all threads in warp
+				for (int tid = 0; tid < warpSize; tid++) {
+					// clone instruction
+					
+					llvm::Instruction *instr = translation.warpInstructionMap[(&*inst_it)][tid];
 					updateDependencies(translation, instr, tid);
 					
 					// replace element ptr instructions with computations of thread idx
@@ -279,14 +354,9 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 						}
 					}
 					
-					translation.warpInstructionMap[(&*inst_it)].push_back(instr);
 				}
 			}
 		}
-
-		// insert a dummy terminator
-		llvm::ReturnInst::Create(translation.F->getContext(), 0, warpBlock);	
-		basicBlocks.push_back(warpBlock);
 	}
 
 	report("end vectorization " << translation.F->getNameStr() << "\n");
@@ -420,11 +490,17 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 							phiClone->addIncoming(incoming, warpBlock );
 						}
 						else {
-							Ocelot_Exception("unhandled PHI NODE operand");
+							// why does this happen
+							phiNode->dump();
+							
+							Ocelot_Exception("PHI NODE operand present but not an instruction (op " << j << ")");
 						}
 					}
 					else {
-						Ocelot_Exception("unhandled PHI NODE operand");
+							// why does this happen
+						std::cerr << "operand " << j << ": ";
+						phiNode->getIncomingValue(j)->dump();
+						Ocelot_Exception("PHI NODE operand not present (operand " << j << ")");
 					}
 				}
 				instr->setOperand(i, phiClone);
@@ -624,14 +700,67 @@ void analysis::LLVMUniformVectorization::updateSchedulerBlocks(Translation &tran
 		if (llvm::BranchInst::classof(termInst)) {
 			llvm::BranchInst *braInst = static_cast<llvm::BranchInst *>(termInst);
 			for (unsigned int i = 0; i < braInst->getNumSuccessors(); i++) {
-				llvm::BasicBlock *wsBlock = translation.getWarpBlockFromScalar(braInst->getSuccessor(i));
-				braInst->setSuccessor(i, wsBlock);
+				if (translation.warpSchedulerBlocks.find(braInst->getSuccessor(i)) == translation.warpSchedulerBlocks.end()) {
+					llvm::BasicBlock *wsBlock = translation.getWarpBlockFromScalar(braInst->getSuccessor(i));
+					braInst->setSuccessor(i, wsBlock);
+				}
 			}
 		}
 		else {
 			throw hydrazine::Exception("updateSchedulerBlock() - expected terminator to be branch instruction");
 		}		
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+	\brief prints a .dot file of the function's control flow graph - no instrucitons, just bb labels
+*/
+void analysis::LLVMUniformVectorization::debugEmitCFG(Translation &translation) {
+	std::ostream & out = std::cout;
+	
+	std::map< llvm::BasicBlock *, int > blockMap;
+	
+	out << " digraph G {\n";
+	
+	int bbn = 1;
+	for (llvm::Function::iterator bb_it = translation.F->begin(); 
+		bb_it != translation.F->end(); ++bb_it) {
+		llvm::BasicBlock *block = &*bb_it;
+		
+		out << "  bb_" << bbn << " [label=\"" << std::string(block->getName()) << "\"]\n";
+		blockMap[block] = bbn;
+		++bbn;
+	}
+	
+	bbn = 1;
+	int errors = 1;
+	for (llvm::Function::iterator bb_it = translation.F->begin(); 
+		bb_it != translation.F->end(); ++bb_it) {
+		llvm::BasicBlock *block = &*bb_it;
+		llvm::TerminatorInst *terminator = block->getTerminator();
+		
+		for (unsigned int i = 0; i < terminator->getNumSuccessors(); ++i) {
+			llvm::BasicBlock *succ = terminator->getSuccessor(i);
+			if (blockMap.find(succ) != blockMap.end()) {
+				out << "  bb_" << blockMap[block] << " -> bb_" 
+					<< blockMap[succ] << ";\n";
+			}
+			else {
+				std::cerr << "bad terminator in block " << std::string(block->getName()) << ":" << std::endl;
+				terminator->dump();
+				std::cerr << std::endl;
+				
+				out << "  bb_error_" << (errors) << " [label=\"" << std::string(block->getName()) <<
+					" - successor " << i << " not found\"];\n";
+				out << "  bb_" << blockMap[block] << " -> bb_error_" << errors << ";\n";
+				++errors;
+			}
+		}
+	}
+	
+	out << "}\n";
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

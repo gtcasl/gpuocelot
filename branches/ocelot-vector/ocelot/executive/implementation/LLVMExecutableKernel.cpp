@@ -1853,9 +1853,11 @@ namespace executive
 		manager.add( new llvm::TargetData( *_state.jit->getTargetData() ) );
 
 		// experimental pass for uniform-control flow vectorization
+		
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
 		manager.add(uniformVectorizationPass);
 		level = 0;
+		
 		
 		if (level == 0) {
 		

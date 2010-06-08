@@ -79,7 +79,7 @@ int main(int argc, char *arg[]) {
 	}
 	
 	if (errors) {
-		printf("sequence<< >>() failed. Exiting\n");
+		printf("sequence<< >>() failed.\n");
 	}
 
 	if (true && !errors) {
@@ -114,6 +114,9 @@ int main(int argc, char *arg[]) {
 		}
 
 		cudaFree(B_gpu);
+	}
+	if (errors) {
+		printf("testShr<< >>() failed.\n");
 	}
 	
 	cudaFree(A_gpu);

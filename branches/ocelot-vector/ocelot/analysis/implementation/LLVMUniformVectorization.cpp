@@ -125,6 +125,8 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	
 	breadthFirstTraversal(translation.traversal, translation.F);
 	addInterleavedInstructions(translation);
+	updateThreadIdxUses(translation);
+	updateLocalMemAddresses(translation);
 	resolveControlFlow(translation);
 	createSchedulerBlock(translation);
 	updateSchedulerBlocks(translation);
@@ -241,6 +243,11 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 				for (int tid = 0; tid < warpSize; tid++) {
 					// clone instruction
 					llvm::Instruction *instr = inst_it->clone();
+					std::stringstream newName;
+					newName << std::string(inst_it->getName()) << ".t" << tid;
+					if (!instr->getType()->isVoidTy()) {
+						instr->setName(newName.str());
+					}
 					instList.push_back(instr);
 
 					updateDependencies(translation, instr, tid);
@@ -250,22 +257,24 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 						llvm::GetElementPtrInst *ptrInst = static_cast<llvm::GetElementPtrInst *>(instr);
 						
 						if (ptrInst->getPointerOperand()->getNameStr() == "__ctaContext") {
-							//ptrInst->dump();
-							
-							bool allZeros = (ptrInst->getNumOperands() == 4);
-							for (unsigned int idx = 1; allZeros && idx < ptrInst->getNumOperands(); idx++) {
+							int indices[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+							for (unsigned int idx = 1; idx < ptrInst->getNumOperands(); idx++) {
 							
 								if (llvm::ConstantInt::classof(ptrInst->getOperand(idx))) {
 									llvm::ConstantInt *constInt = static_cast<llvm::ConstantInt *>(
 										ptrInst->getOperand(idx));
 									
-									allZeros = constInt->isZero();
+									indices[idx] = (int)constInt->getZExtValue();
 								}
 							}
 							
-							if (allZeros) {
+							if (indices[1] == 0 && indices[2] == 0 && indices[3] == 0) {
 								// tidx
 								translation.threadIdxMap[ptrInst] = tid;
+							}
+							else if (indices[1] == 0 && indices[2] == 4 && indices[3] < 0) {
+								// local memory
+								translation.localMemPtrMap[ptrInst] = tid;
 							}
 						}
 					}
@@ -279,8 +288,6 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 		llvm::ReturnInst::Create(translation.F->getContext(), 0, warpBlock);	
 		basicBlocks.push_back(warpBlock);
 	}
-
-	updateThreadIdxUses(translation);
 
 	report("end vectorization " << translation.F->getNameStr() << "\n");
 }
@@ -309,6 +316,63 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 				loadInst->moveBefore(addInst);
 				loadInst->replaceAllUsesWith(addInst);
 				addInst->setOperand(0, loadInst);
+			}	
+		}
+	}
+}
+
+/*!
+	\brief local memory is owned by each thread - compute the thread's actual local mem ptr from its
+		thread ID and LLVMContext::localSize
+*/
+void analysis::LLVMUniformVectorization::updateLocalMemAddresses(Translation &translation) {
+	// TODO
+	
+	// visit all tidx dereferences and add threadID to result
+	for (std::map< llvm::Instruction *, int >::iterator ptr_it = translation.localMemPtrMap.begin();
+		ptr_it != translation.localMemPtrMap.end(); ++ptr_it) {
+
+		// visit all users
+		for (llvm::Value::use_iterator use_it = ptr_it->first->use_begin(); 
+			use_it != ptr_it->first->use_end(); ++use_it) {
+		
+			if (llvm::LoadInst::classof(*use_it)) {
+				std::stringstream ss;
+
+				llvm::LoadInst *loadInst = static_cast<llvm::LoadInst *>(*use_it);
+				// now replace all uses of loadInst with
+				std::vector< llvm::Value * > idx;
+				idx.push_back(llvm::ConstantInt::get(
+					llvm::Type::getInt32Ty(translation.F->getContext()), 0));
+				idx.push_back(llvm::ConstantInt::get(
+					llvm::Type::getInt32Ty(translation.F->getContext()), 8));
+				
+				llvm::Value *ctaContextPtr = ptr_it->first->getOperand(0);
+
+				assert(ctaContextPtr->getName() == "__ctaContext");
+				
+				llvm::GetElementPtrInst *gepInst = llvm::GetElementPtrInst::Create(
+					ctaContextPtr, idx.begin(), idx.end(), "ptrLocalMemSize", loadInst);
+
+				llvm::ConstantInt *tidxInst = llvm::ConstantInt::get(
+					llvm::Type::getInt64Ty(translation.F->getContext()), ptr_it->second);				
+					
+				llvm::LoadInst *localSize = new llvm::LoadInst(gepInst, "localMemSize.", loadInst);
+				
+				llvm::BinaryOperator *mulInst = llvm::BinaryOperator::CreateMul(
+					localSize, tidxInst, "tOffset", loadInst);
+					
+				assert(mulInst);
+				for (llvm::Value::use_iterator lduse_it = loadInst->use_begin(); 
+					lduse_it != loadInst->use_end(); ++lduse_it) {
+				
+					llvm::Instruction *ptrtoint = static_cast<llvm::Instruction *>(*lduse_it);
+					llvm::Instruction *consumingAddInst = static_cast<llvm::Instruction *>(
+						*(ptrtoint->use_begin()));
+					llvm::BinaryOperator *addTdOff = llvm::BinaryOperator::CreateNSWAdd(
+						ptrtoint, mulInst, "tdOff", consumingAddInst);	
+					consumingAddInst->setOperand(1, addTdOff);
+				}
 			}	
 		}
 	}

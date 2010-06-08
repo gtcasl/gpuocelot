@@ -126,6 +126,11 @@ namespace analysis
 				\brief maps cloned getelementptr instruction obtaining ptr to tidx to its warp-sync thread ID
 			*/
 			std::map< llvm::Instruction *, int > threadIdxMap;
+
+			/*!
+				\brief maps cloned getelementptr instruction obtaining ptr to localMem to its warp-sync thread ID
+			*/
+			std::map< llvm::Instruction *, int > localMemPtrMap;
 			
 			/*!
 				\brief indirect jumps based on warp id and last divergent branch handled by this block
@@ -185,7 +190,12 @@ namespace analysis
 			\brief loaded tidx values are incremented by threadID within warp
 		*/
 		void updateThreadIdxUses(Translation &translation);
-		
+
+		/*!			\brief local memory is owned by each thread - compute the thread's actual localMemPointer 
+				from its thread ID and LLVMContext::localSize
+		*/
+		void updateLocalMemAddresses(Translation &translation);
+				
 		/*!
 			\brief replace dummy terminators in warp-synchronous block structure with
 				tests for warp-synchronous behavior and either branches to successor blocks

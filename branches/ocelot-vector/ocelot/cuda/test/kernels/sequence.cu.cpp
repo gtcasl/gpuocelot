@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000063f1_00000000-1_sequence.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000063f1_00000000-1_sequence.cudafe1.cpp"
 # 1 "sequence.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
@@ -5847,7 +5847,7 @@ if ((A_host[i]) != (2 * i)) {
 }
 
 if (errors) {
-printf("sequence<< >>() failed. Exiting\n");
+printf("sequence<< >>() failed.\n");
 }
 
 if (true && (!(errors))) {
@@ -5883,6 +5883,9 @@ printf("ERROR 1 [%d] - expected: %d, got: %d\n", i, b, got);
 
 cudaFree(B_gpu);
 }
+if (errors) {
+printf("testShr<< >>() failed.\n");
+}
 
 cudaFree(A_gpu);
 free(A_host);
@@ -5897,11 +5900,11 @@ printf("PASSED\n");
 return 0;
 }
 
-# 1 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000063f1_00000000-1_sequence.cudafe1.stub.c" 1
 
 extern "C" {
 
-# 1 "/tmp/tmpxft_00004934_00000000-3_sequence.fatbin.c" 1
+# 1 "/tmp/tmpxft_000063f1_00000000-3_sequence.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -5963,7 +5966,7 @@ void fatFreeCubin( char* cubin, char* dbgInfoFile );
 
 
 }
-# 2 "/tmp/tmpxft_00004934_00000000-3_sequence.fatbin.c" 2
+# 2 "/tmp/tmpxft_000063f1_00000000-3_sequence.fatbin.c" 2
 
 
 
@@ -5979,8 +5982,8 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2f2f090a0a3033ull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x43202f2f090a2d2dull,0x676e696c69706d6full,0x6d742f706d742f20ull,0x3030305f74667870ull,
-0x30305f3433393430ull,0x372d303030303030ull,0x636e65757165735full,0x692e337070632e65ull,
-0x632f706d742f2820ull,0x796f692e23494263ull,0x2f2f090a29793731ull,0x2d2d2d2d2d2d2d2dull,
+0x30305f3166333630ull,0x372d303030303030ull,0x636e65757165735full,0x692e337070632e65ull,
+0x632f706d742f2820ull,0x57376d2e23494263ull,0x2f2f090a29656872ull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2f2f090a0a2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
@@ -5995,7 +5998,7 @@ static const unsigned long long __deviceText_$compute_10$[] = {
 0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,0x2d2d2d2d2d2d2d2dull,
 0x2d2d2d2d2d2d2d2dull,0x662e090a0a2d2d2dull,0x3c22093109656c69ull,0x2d646e616d6d6f63ull,
 0x090a223e656e696cull,0x093209656c69662eull,0x6d742f706d742f22ull,0x3030305f74667870ull,
-0x30305f3433393430ull,0x362d303030303030ull,0x636e65757165735full,0x6566616475632e65ull,
+0x30305f3166333630ull,0x362d303030303030ull,0x636e65757165735full,0x6566616475632e65ull,
 0x090a227570672e32ull,0x093309656c69662eull,0x696c2f7273752f22ull,0x38782f6363672f62ull,
 0x6e696c2d34365f36ull,0x342f756e672d7875ull,0x636e692f312e342eull,0x6474732f6564756cull,
 0x090a22682e666564ull,0x093409656c69662eull,0x6f6c2f7273752f22ull,0x616475632f6c6163ull,
@@ -6144,8 +6147,8 @@ static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"9357cb9fc32f2383",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xe3ad82df};
-# 5 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000003,0x8ecc680c,(char*)"c69bad2e8e07b743",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x2f3c7d7e};
+# 5 "/tmp/tmpxft_000063f1_00000000-1_sequence.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 112 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 # 1 "/usr/local/cuda/bin/../include/host_defines.h" 1
@@ -12125,7 +12128,7 @@ static __attribute__((__unused__)) double __cuda_fma(double a, double b, double 
 # 3865 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 94 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 275 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-# 6 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c" 2
+# 6 "/tmp/tmpxft_000063f1_00000000-1_sequence.cudafe1.stub.c" 2
 
 
 
@@ -12136,7 +12139,7 @@ struct __T20 {int *__par0;int __par1;int __dummy_field;};
 
 
 struct __T21 {int *__par0;const int *__par1;int __par2;int __dummy_field;};
-static void __sti____cudaRegisterAll_43_tmpxft_00004934_00000000_4_sequence_cpp1_ii_sequence(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_000063f1_00000000_4_sequence_cpp1_ii_sequence(void) __attribute__((__constructor__));
 void __device_stub__Z8sequencePii(int *__par0, int __par1){auto struct __T20 *__T22;
 *(void**)(void*)&__T22 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T22->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T22->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))sequence__entry)); (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence__entry))); };}
 
@@ -12152,8 +12155,8 @@ void __device_stub__Z7testShrPiPKii(int *__par0, const int *__par1, int __par2){
 void testShr__entry( int *__cuda_0,const int *__cuda_1,int __cuda_2)
 {__device_stub__Z7testShrPiPKii( __cuda_0,__cuda_1,__cuda_2);}
 extern "C"{
-# 51 "/tmp/tmpxft_00004934_00000000-1_sequence.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_00004934_00000000_4_sequence_cpp1_ii_sequence(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, const int *, int))testShr__entry), (char*)"testShr", "testShr", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence__entry), (char*)"sequence", "sequence", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
+# 51 "/tmp/tmpxft_000063f1_00000000-1_sequence.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_000063f1_00000000_4_sequence_cpp1_ii_sequence(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)(&__fatDeviceText)); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, const int *, int))testShr__entry), (char*)"testShr", "testShr", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence__entry), (char*)"sequence", "sequence", (-1), (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
 
 }
-# 132 "sequence.cu" 2
+# 135 "sequence.cu" 2

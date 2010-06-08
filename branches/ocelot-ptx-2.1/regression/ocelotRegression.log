@@ -22,343 +22,404 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
-INFO     Test completed in 0.125104904175 seconds
+INFO     Test completed in 0.126045942307 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/kernels.ptx':
-1 	.version 1.4
-2 	.target sm_10, map_f64_to_f32
+1 	.version 2.1
+2 	.target sm_20
 3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc built on 2008-12-03
+4 	// nvopencc 3.1 built on 2010-04-27
 5 
-6 	.reg .u32 %ra<17>;
-7 	.reg .u64 %rda<17>;
-8 	.reg .f32 %fa<17>;
-9 	.reg .f64 %fda<17>;
-10 	.reg .u32 %rv<5>;
-11 	.reg .u64 %rdv<5>;
-12 	.reg .f32 %fv<5>;
-13 	.reg .f64 %fdv<5>;
-14 
-15 
-16 	//-----------------------------------------------------------
-17 	// Compiling /tmp/tmpxft_00000725_00000000-7_kernels.cpp3.i (/tmp/ccBI#.QPuVas)
-18 	//-----------------------------------------------------------
-19 
-20 	//-----------------------------------------------------------
-21 	// Options:
-22 	//-----------------------------------------------------------
-23 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
-24 	//  -O3	(Optimization level)
-25 	//  -g0	(Debug level)
-26 	//  -m2	(Report advisories)
-27 	//-----------------------------------------------------------
-28 
-29 	.file	1	"<command-line>"
-30 	.file	2	"/tmp/tmpxft_00000725_00000000-6_kernels.cudafe2.gpu"
-31 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include/stddef.h"
-32 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-33 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-34 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-35 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-36 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-37 	.file	9	"/usr/local/cuda/bin/../include/texture_types.h"
-38 	.file	10	"/usr/local/cuda/bin/../include/vector_types.h"
-39 	.file	11	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-40 	.file	12	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-41 	.file	13	"/usr/include/bits/types.h"
-42 	.file	14	"/usr/include/time.h"
-43 	.file	15	"kernels.cu"
-44 	.file	16	"/usr/local/cuda/bin/../include/common_functions.h"
-45 	.file	17	"/usr/local/cuda/bin/../include/crt/func_macro.h"
-46 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-47 	.file	19	"/usr/local/cuda/bin/../include/device_functions.h"
-48 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
-49 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-50 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-51 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-52 	.file	24	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-53 	.file	25	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h"
-54 
-55 
-56 	.entry _Z10k_sequencePi(.param .u64 __cudaparm__Z10k_sequencePi_ptr)
-57 	{
-58 	.reg .u32 %r<3>;
-59 	.reg .u64 %rd<6>;
-60 	.loc	15	13	0
-61 $LBB1__Z10k_sequencePi:
-62 	.loc	15	14	0
-63 	cvt.s32.u16 	%r1, %tid.x;     	// 
-64 	ld.param.u64 	%rd1, [__cudaparm__Z10k_sequencePi_ptr];	// id:8 __cudaparm__Z10k_sequencePi_ptr+0x0
-65 	cvt.u64.u32 	%rd2, %r1;       	// 
-66 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-67 	add.u64 	%rd4, %rd1, %rd3;    	// 
-68 	st.global.s32 	[%rd4+0], %r1; 	// id:9
-69 	.loc	15	15	0
-70 	exit;                         	// 
-71 $LDWend__Z10k_sequencePi:
-72 	} // _Z10k_sequencePi
-73 
-74 	.entry _Z15k_sequenceMultiPii(.param .u64 __cudaparm__Z15k_sequenceMultiPii___val_paramptr, 
-75 		.param .s32 __cudaparm__Z15k_sequenceMultiPii_N)
-76 	{
-77 	.reg .u16 %rh<5>;
-78 	.reg .u32 %r<8>;
-79 	.reg .u64 %rd<5>;
-80 	.reg .pred %p<4>;
-81 	.loc	15	23	0
-82 $LBB1__Z15k_sequenceMultiPii:
-83 	ld.param.u64 	%rd1, [__cudaparm__Z15k_sequenceMultiPii___val_paramptr];	// id:25 __cudaparm__Z15k_sequenceMultiPii___val_paramptr+0x0
-84 	.loc	15	25	0
-85 	mov.u16 	%rh1, %ntid.x;       	// 
-86 	mov.u16 	%rh2, %ctaid.x;      	// 
-87 	mul.wide.u16 	%r1, %rh2, %rh1;	// 
-88 	cvt.u32.u16 	%r2, %tid.x;     	// 
-89 	add.u32 	%r3, %r2, %r1;       	// 
-90 	mov.s32 	%r4, %r3;            	// 
-91 	ld.param.s32 	%r5, [__cudaparm__Z15k_sequenceMultiPii_N];	// id:23 __cudaparm__Z15k_sequenceMultiPii_N+0x0
-92 	setp.le.s32 	%p1, %r5, %r3;   	// 
-93 	@%p1 bra 	$Lt_1_5;            	// 
-94 	mov.u16 	%rh3, %nctaid.x;     	// 
-95 	mul.wide.u16 	%r6, %rh3, %rh1;	// 
-96 	cvt.u64.s32 	%rd2, %r6;       	// 
-97 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-98 $Lt_1_7:
-99  //<loop> Loop body line 25, nesting depth: 1, estimated iterations: unknown
-100 	.loc	15	28	0
-101 	st.global.s32 	[%rd1+0], %r4; 	// id:29
-102 	.loc	15	29	0
-103 	add.u64 	%rd1, %rd3, %rd1;    	// 
-104 	add.s32 	%r4, %r4, %r6;       	// 
-105 	setp.lt.s32 	%p2, %r4, %r5;   	// 
-106 	@%p2 bra 	$Lt_1_7;            	// 
-107 $Lt_1_5:
-108 	.loc	15	32	0
-109 	exit;                         	// 
-110 $LDWend__Z15k_sequenceMultiPii:
-111 	} // _Z15k_sequenceMultiPii
-112 
-113 	.entry _Z19k_sequenceDivergentPf(.param .u64 __cudaparm__Z19k_sequenceDivergentPf_ptr)
-114 	{
-115 	.reg .u32 %r<5>;
-116 	.reg .u64 %rd<6>;
-117 	.reg .f32 %f<7>;
-118 	.reg .pred %p<3>;
-119 	.loc	15	37	0
-120 $LBB1__Z19k_sequenceDivergentPf:
-121 	cvt.u32.u16 	%r1, %tid.x;     	// 
-122 	cvt.rn.f32.u32 	%f1, %r1;     	// 
-123 	mov.f32 	%f2, 0f3d800000;     	// 0.0625
-124 	mul.f32 	%f3, %f1, %f2;       	// 
-125 	ld.param.u64 	%rd1, [__cudaparm__Z19k_sequenceDivergentPf_ptr];	// id:23 __cudaparm__Z19k_sequenceDivergentPf_ptr+0x0
-126 	cvt.u64.u32 	%rd2, %r1;       	// 
-127 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-128 	add.u64 	%rd4, %rd1, %rd3;    	// 
-129 	and.b32 	%r2, %r1, 1;         	// 
-130 	mov.u32 	%r3, 0;              	// 
-131 	setp.eq.u32 	%p1, %r2, %r3;   	// 
-132 	@%p1 bra 	$Lt_2_5;            	// 
-133 	.loc	15	40	0
-134 	cos.approx.f32 	%f4, %f3;            	// 
-135 	st.global.f32 	[%rd4+0], %f4; 	// id:24
-136 	bra.uni 	$Lt_2_4;             	// 
-137 $Lt_2_5:
-138 	.loc	15	43	0
-139 	sin.approx.f32 	%f5, %f3;            	// 
-140 	st.global.f32 	[%rd4+0], %f5; 	// id:25
-141 $Lt_2_4:
-142 	.loc	15	45	0
-143 	exit;                         	// 
-144 $LDWend__Z19k_sequenceDivergentPf:
-145 	} // _Z19k_sequenceDivergentPf
-146 
-147 	.entry _Z17k_sequenceLoopingPfi( .param .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr, 
-148 	.param .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
-149 	{
-150 	.reg .u32 %r<8>;
-151 	.reg .u64 %rd<8>;
-152 	.reg .f32 %f<7>;
-153 	.reg .pred %p<5>;
-154 	.loc	15	51	0
-155 $LBB1__Z17k_sequenceLoopingPfi:
-156 	.loc	15	52	0
-157 	cvt.s32.u16 	%r1, %tid.x;     	// 
-158 	mov.s32 	%r2, %r1;            	// 
-159 	ld.param.s32 	%r3, [__cudaparm__Z17k_sequenceLoopingPfi_N];	// id:31 __cudaparm__Z17k_sequenceLoopingPfi_N+0x0
-160 	setp.le.s32 	%p1, %r3, %r1;   	// 
-161 	@%p1 bra 	$Lt_3_8;            	// 
-162 	cvt.u32.u16 	%r4, %ntid.x;    	// 
-163 	cvt.u64.s32 	%rd1, %r1;       	// 
-164 	mul.lo.u64 	%rd2, %rd1, 4;    	// 
-165 	cvt.s64.u32 	%rd3, %r4;       	// 
-166 	mul.lo.u64 	%rd4, %rd3, 4;    	// 
-167 	ld.param.u64 	%rd5, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];	// id:29 __cudaparm__Z17k_sequenceLoopingPfi_ptr+0x0
-168 $Lt_3_10:
-169  //<loop> Loop body line 52, nesting depth: 1, estimated iterations: unknown
-170 	cvt.rn.f32.s32 	%f1, %r2;     	// 
-171 	mov.f32 	%f2, 0f3d800000;     	// 0.0625
-172 	mul.f32 	%f3, %f1, %f2;       	// 
-173 	add.u64 	%rd6, %rd2, %rd5;    	// 
-174 	and.b32 	%r5, %r2, 1;         	// 
-175 	mov.u32 	%r6, 0;              	// 
-176 	setp.eq.u32 	%p2, %r5, %r6;   	// 
-177 	@%p2 bra 	$Lt_3_12;           	// 
-178  //<loop> Part of loop body line 52, head labeled $Lt_3_10
-179 	.loc	15	56	0
-180 	cos.approx.f32 	%f4, %f3;            	// 
-181 	st.global.f32 	[%rd6+0], %f4; 	// id:33
-182 	bra.uni 	$Lt_3_11;            	// 
-183 $Lt_3_12:
-184  //<loop> Part of loop body line 52, head labeled $Lt_3_10
-185 	.loc	15	59	0
-186 	sin.approx.f32 	%f5, %f3;            	// 
-187 	st.global.f32 	[%rd6+0], %f5; 	// id:34
-188 $Lt_3_11:
-189  //<loop> Part of loop body line 52, head labeled $Lt_3_10
-190 	add.u32 	%r2, %r2, %r4;       	// 
-191 	add.u64 	%rd2, %rd2, %rd4;    	// 
-192 	setp.lt.s32 	%p3, %r2, %r3;   	// 
-193 	@%p3 bra 	$Lt_3_10;           	// 
-194 $Lt_3_8:
-195 	.loc	15	63	0
-196 	exit;                         	// 
-197 $LDWend__Z17k_sequenceLoopingPfi:
-198 	} // _Z17k_sequenceLoopingPfi
-199 
-200 	.entry _Z7barrierPiS_(.param .u32 __cudaparm__Z7barrierPiS__in,
-201 		.param .u32 __cudaparm__Z7barrierPiS__out)
-202 	{
-203 	.reg .u32 %r<17>;
-204 	.shared .align 4 .b8 __cuda_shared8[32];
-205 	.loc	15	2	0
-206 $LBB1__Z7barrierPiS_:
-207 	mov.u32 	%r1, __cuda_shared8;
-208 	.loc	15	5	0
-209 	cvt.u32.u16 	%r2, %tid.x;
-210 	mul24.lo.u32 	%r3, %r2, 4;
-211 	ld.param.u32 	%r4, [__cudaparm__Z7barrierPiS__in];
-212 	add.u32 	%r5, %r4, %r3;
-213 	ld.global.s32 	%r6, [%r5+0];
-214 	add.u32 	%r7, %r2, 1;
-215 	cvt.u32.u16 	%r8, %ntid.x;
-216 	rem.u32 	%r9, %r7, %r8;
-217 	mul.lo.u32 	%r10, %r9, 4;
-218 	add.u32 	%r11, %r1, %r10;
-219 	st.shared.s32 	[%r11+0], %r6;
-220 	.loc	15	6	0
-221 	bar.sync 	0;
-222 	.loc	15	7	0
-223 	add.u32 	%r12, %r3, %r1;
-224 	ld.shared.s32 	%r13, [%r12+0];
-225 	ld.param.u32 	%r14, [__cudaparm__Z7barrierPiS__out];
-226 	add.u32 	%r15, %r14, %r3;
-227 	st.global.s32 	[%r15+0], %r13;
-228 	.loc	15	8	0
-229 	exit;
-230 $LDWend__Z7barrierPiS_:
-231 	} // _Z7barrierPiS_
-232 
-233 
-234 	.entry _Z21k_matrixVectorProductPKfS0_Pfii(.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
-235 	.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
-236 	.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
-237 	.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
-238 	.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
-239 	{
-240 	.reg .u32 %r<15>;
-241 	.reg .u64 %rd<22>;
-242 	.reg .f32 %f<6>;
-243 	.reg .pred %p<6>;
-244 	.shared .align 4 .b8 __cuda_V_buffer80[32];
-245 	.loc	15	74	0
-246 $LBB1__Z21k_matrixVectorProductPKfS0_Pfii:
-247 	.loc	15	79	0
-248 	cvt.u32.u16 	%r1, %ntid.x;    	// 
-249 	cvt.u32.u16 	%r2, %ctaid.x;   	// 
-250 	mul.lo.u32 	%r3, %r2, %r1;    	// 
-251 	cvt.u32.u16 	%r4, %tid.x;     	// 
-252 	add.u32 	%r5, %r3, %r4;       	// 
-253 	cvt.u64.u32 	%rd1, %r5;       	// 
-254 	mul.lo.u64 	%rd2, %rd1, 4;    	// 
-255 	ld.param.u64 	%rd3, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];	// id:58 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA+0x0
-256 	add.u64 	%rd4, %rd3, %rd2;    	// 
-257 	.loc	15	80	0
-258 	cvt.u64.u32 	%rd5, %r4;       	// 
-259 	mul.lo.u64 	%rd6, %rd5, 4;    	// 
-260 	ld.param.u64 	%rd7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];	// id:59 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV+0x0
-261 	add.u64 	%rd8, %rd7, %rd6;    	// 
-262 	ld.param.s32 	%r6, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];	// id:52 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N+0x0
-263 	mov.u32 	%r7, 0;              	// 
-264 	setp.le.s32 	%p1, %r6, %r7;   	// 
-265 	mov.f32 	%f1, 0f00000000;     	// 0
-266 	@%p1 bra 	$Lt_4_17;           	// 
-267 	mov.u64 	%rd9, __cuda_V_buffer80;	// 
-268 	mov.u32 	%r8, 0;              	// 
-269 	setp.gt.u32 	%p2, %r1, %r8;   	// 
-270 	cvt.u64.u32 	%rd10, %r1;      	// 
-271 	mul.lo.u64 	%rd11, %rd10, 4;  	// 
-272 	add.u64 	%rd12, %rd6, %rd9;   	// 
-273 	mov.s32 	%r9, 0;              	// 
-274 $Lt_4_11:
-275  //<loop> Loop body line 80, nesting depth: 1, estimated iterations: unknown
-276 	.loc	15	85	0
-277 	ld.global.f32 	%f2, [%rd8+0]; 	// id:60
-278 	st.shared.f32 	[%rd12+0], %f2;	// id:61 __cuda_V_buffer80+0x0
-279 	.loc	15	86	0
-280 	bar.sync 	0;                 	// 
-281 	@!%p2 bra 	$Lt_4_12;          	// 
-282  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-283 	mov.s32 	%r10, %r1;           	// 
-284 	ld.param.s32 	%r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];	// id:62 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M+0x0
-285 	cvt.u64.s32 	%rd13, %r11;     	// 
-286 	mul.lo.u64 	%rd14, %rd13, 4;  	// 
-287 	mov.s64 	%rd15, %rd9;         	// 
-288 	mov.s64 	%rd16, %rd4;         	// 
-289 	mov.s32 	%r12, 0;             	// 
-290  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-291 	mov.s32 	%r13, %r10;          	// 
-292 $Lt_4_14:
-293  //<loop> Loop body line 86, nesting depth: 2, estimated iterations: unknown
-294 	.loc	15	90	0
-295 	ld.global.f32 	%f3, [%rd16+0];	// id:63
-296 	ld.shared.f32 	%f4, [%rd15+0];	// id:64 __cuda_V_buffer80+0x0
-297 	mad.f32 	%f1, %f3, %f4, %f1;  	// 
-298 	add.s32 	%r12, %r12, 1;       	// 
-299 	add.u64 	%rd15, %rd15, 4;     	// 
-300 	add.u64 	%rd16, %rd14, %rd16; 	// 
-301 	setp.ne.u32 	%p3, %r12, %r1;  	// 
-302 	@%p3 bra 	$Lt_4_14;           	// 
-303  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-304 	mul.lo.u64 	%rd17, %rd10, %rd13;	// 
-305 	mul.lo.u64 	%rd18, %rd17, 4;  	// 
-306 	add.u64 	%rd4, %rd4, %rd18;   	// 
-307 $Lt_4_12:
-308  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-309 	.loc	15	93	0
-310 	add.u64 	%rd8, %rd11, %rd8;   	// 
-311 	.loc	15	95	0
-312 	bar.sync 	0;                  	// 
-313 	add.u32 	%r9, %r9, %r1;       	// 
-314 	setp.gt.s32 	%p4, %r6, %r9;   	// 
-315 	@%p4 bra 	$Lt_4_11;           	// 
-316 	bra.uni 	$Lt_4_9;             	// 
-317 $Lt_4_17:
-318 $Lt_4_9:
-319 	.loc	15	98	0
-320 	ld.param.u64 	%rd19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];	// id:65 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R+0x0
-321 	add.u64 	%rd20, %rd19, %rd2;  	// 
-322 	st.global.f32 	[%rd20+0], %f1;	// id:66
-323 	.loc	15	99	0
-324 	exit;                         	// 
-325 $LDWend__Z21k_matrixVectorProductPKfS0_Pfii:
-326 	} // _Z21k_matrixVectorProductPKfS0_Pfii
-327 
-328 
+6 	//-----------------------------------------------------------
+7 	// Compiling /tmp/tmpxft_00000b2d_00000000-7_kernels.cpp3.i (/tmp/ccBI#.iFWQMU)
+8 	//-----------------------------------------------------------
+9 
+10 	//-----------------------------------------------------------
+11 	// Options:
+12 	//-----------------------------------------------------------
+13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
+14 	//  -O3	(Optimization level)
+15 	//  -g0	(Debug level)
+16 	//  -m2	(Report advisories)
+17 	//-----------------------------------------------------------
+18 
+19 	.file	1	"<command-line>"
+20 	.file	2	"/tmp/tmpxft_00000b2d_00000000-6_kernels.cudafe2.gpu"
+21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+32 	.file	14	"/usr/include/bits/types.h"
+33 	.file	15	"/usr/include/time.h"
+34 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+35 	.file	17	"kernels.cu"
+36 	.file	18	"/usr/local/cuda/bin/../include/common_functions.h"
+37 	.file	19	"/usr/local/cuda/bin/../include/math_functions.h"
+38 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
+39 	.file	21	"/usr/local/cuda/bin/../include/device_functions.h"
+40 	.file	22	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+41 	.file	23	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+42 	.file	24	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+44 	.file	26	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+45 	.file	27	"/usr/local/cuda/bin/../include/surface_functions.h"
+46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+47 
+48 	.const .align 4 .b8 __cudart_i2opi_f[24] = {65,144,67,60,153,149,98,219,192,221,52,245,209,87,39,252,41,21,68,78,110,131,249,162};
+49 
+50 	.entry _Z17k_sequenceLoopingPfi (
+51 		.param .u32 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+52 		.param .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+53 	{
+54 	.reg .u32 %r<89>;
+55 	.reg .f32 %f<37>;
+56 	.reg .pred %p<14>;
+57 	.local .align 4 .b8 __cuda___cuda_result_168[28];
+58 	.loc	17	6	0
+59 $LBB1__Z17k_sequenceLoopingPfi:
+60 	.loc	19	1702	0
+61 	cvt.s32.u32 	%r1, %tid.x;
+62 	cvt.rn.f32.s32 	%f1, %r1;
+63 	abs.f32 	%f2, %f1;
+64 	mov.f32 	%f3, 0f7f800000;     	// ((1.0F)/(0.0F))
+65 	setp.eq.f32 	%p1, %f2, %f3;
+66 	@!%p1 bra 	$Lt_0_11778;
+67 	neg.f32 	%f4, %f1;
+68 	add.rn.f32 	%f5, %f1, %f4;
+69 	bra.uni 	$Lt_0_258;
+70 $Lt_0_11778:
+71 	mov.f32 	%f6, 0f473ba700;     	// 48039
+72 	setp.gt.f32 	%p2, %f2, %f6;
+73 	@!%p2 bra 	$Lt_0_12290;
+74 	.loc	19	1396	0
+75 	mov.u32 	%r2, __cudart_i2opi_f;
+76 	mov.b32 	%r3, %f1;
+77 	and.b32 	%r4, %r3, -2147483648;
+78 	mov.s32 	%r5, %r4;
+79 	.loc	19	24	0
+80 	mov.s32 	%r6, %r2;
+81 	add.u32 	%r7, %r2, 24;
+82 	mov.u32 	%r8, __cuda___cuda_result_168;
+83 	shl.b32 	%r9, %r3, 8;
+84 	or.b32 	%r10, %r9, -2147483648;
+85 	mov.u32 	%r11, 0;
+86 $Lt_0_13314:
+87 	.pragma "nounroll";
+88  //<loop> Loop body line 24, nesting depth: 1, iterations: 6
+89 	.loc	19	1410	0
+90 	ld.const.u32 	%r12, [%r6+0];
+91 	mul.lo.u32 	%r13, %r12, %r10;
+92 	add.u32 	%r14, %r13, %r11;
+93 	.loc	19	1411	0
+94 	set.gt.u32.u32 	%r15, %r13, %r14;
+95 	neg.s32 	%r16, %r15;
+96 	mul.hi.u32 	%r17, %r12, %r10;
+97 	add.u32 	%r11, %r16, %r17;
+98 	.loc	19	1412	0
+99 	st.local.u32 	[%r8+0], %r14;
+100 	add.u32 	%r8, %r8, 4;
+101 	add.u32 	%r6, %r6, 4;
+102 	setp.ne.u32 	%p3, %r6, %r7;
+103 	@%p3 bra 	$Lt_0_13314;
+104 	.loc	19	1414	0
+105 	st.local.u32 	[__cuda___cuda_result_168+24], %r11;
+106 	.loc	19	1419	0
+107 	shl.b32 	%r18, %r3, 1;
+108 	shr.u32 	%r19, %r18, 24;
+109 	sub.u32 	%r20, %r19, 128;
+110 	shr.u32 	%r21, %r20, 5;
+111 	mov.s32 	%r22, 4;
+112 	sub.s32 	%r23, %r22, %r21;
+113 	mul.lo.u32 	%r24, %r23, 4;
+114 	mov.u32 	%r25, __cuda___cuda_result_168;
+115 	add.u32 	%r26, %r24, %r25;
+116 	ld.local.u32 	%r11, [%r26+8];
+117 	.loc	19	1420	0
+118 	ld.local.u32 	%r27, [%r26+4];
+119 	and.b32 	%r28, %r20, 31;
+120 	mov.u32 	%r29, 0;
+121 	setp.eq.u32 	%p4, %r28, %r29;
+122 	@%p4 bra 	$Lt_0_13826;
+123 	.loc	19	1423	0
+124 	mov.s32 	%r30, 32;
+125 	sub.s32 	%r31, %r30, %r28;
+126 	shr.u32 	%r32, %r27, %r31;
+127 	shl.b32 	%r33, %r11, %r28;
+128 	add.u32 	%r11, %r32, %r33;
+129 	.loc	19	1424	0
+130 	ld.local.u32 	%r34, [%r26+0];
+131 	shr.u32 	%r35, %r34, %r31;
+132 	shl.b32 	%r36, %r27, %r28;
+133 	add.u32 	%r27, %r35, %r36;
+134 $Lt_0_13826:
+135 	.loc	19	1426	0
+136 	shr.u32 	%r37, %r11, 30;
+137 	.loc	19	1428	0
+138 	shr.u32 	%r38, %r27, 30;
+139 	shl.b32 	%r39, %r11, 2;
+140 	add.u32 	%r11, %r38, %r39;
+141 	.loc	19	1429	0
+142 	shl.b32 	%r27, %r27, 2;
+143 	mov.u32 	%r40, 0;
+144 	setp.eq.u32 	%p5, %r27, %r40;
+145 	@%p5 bra 	$Lt_0_14594;
+146 	.loc	19	1430	0
+147 	add.u32 	%r41, %r11, 1;
+148 	mov.u32 	%r42, -2147483648;
+149 	set.gt.u32.u32 	%r43, %r41, %r42;
+150 	neg.s32 	%r44, %r43;
+151 	bra.uni 	$Lt_0_14338;
+152 $Lt_0_14594:
+153 	mov.u32 	%r45, -2147483648;
+154 	set.gt.u32.u32 	%r46, %r11, %r45;
+155 	neg.s32 	%r44, %r46;
+156 $Lt_0_14338:
+157 	.loc	19	1431	0
+158 	add.u32 	%r47, %r37, %r44;
+159 	.loc	19	1430	0
+160 	neg.s32 	%r48, %r47;
+161 	mov.u32 	%r49, 0;
+162 	setp.ne.u32 	%p6, %r4, %r49;
+163 	selp.s32 	%r50, %r48, %r47, %p6;
+164 	mov.u32 	%r51, 0;
+165 	setp.eq.u32 	%p7, %r44, %r51;
+166 	@%p7 bra 	$Lt_0_14850;
+167 	.loc	19	1436	0
+168 	neg.s32 	%r27, %r27;
+169 	.loc	19	1438	0
+170 	mov.u32 	%r52, 0;
+171 	set.eq.u32.u32 	%r53, %r27, %r52;
+172 	neg.s32 	%r54, %r53;
+173 	not.b32 	%r55, %r11;
+174 	add.u32 	%r11, %r54, %r55;
+175 	.loc	19	1439	0
+176 	xor.b32 	%r5, %r4, -2147483648;
+177 $Lt_0_14850:
+178 	.loc	19	1441	0
+179 	mov.s32 	%r56, %r50;
+180 	mov.u32 	%r57, 0;
+181 	setp.le.s32 	%p8, %r11, %r57;
+182 	@%p8 bra 	$Lt_0_17410;
+183 	mov.u32 	%r58, 0;
+184 $Lt_0_15874:
+185  //<loop> Loop body line 1441, nesting depth: 1, estimated iterations: unknown
+186 	.loc	19	1445	0
+187 	shr.u32 	%r59, %r27, 31;
+188 	shl.b32 	%r60, %r11, 1;
+189 	add.u32 	%r11, %r59, %r60;
+190 	.loc	19	1446	0
+191 	shl.b32 	%r27, %r27, 1;
+192 	.loc	19	1447	0
+193 	sub.u32 	%r58, %r58, 1;
+194 	mov.u32 	%r61, 0;
+195 	setp.gt.s32 	%p9, %r11, %r61;
+196 	@%p9 bra 	$Lt_0_15874;
+197 	bra.uni 	$Lt_0_15362;
+198 $Lt_0_17410:
+199 	mov.u32 	%r58, 0;
+200 $Lt_0_15362:
+201 	.loc	19	1449	0
+202 	mul.lo.u32 	%r27, %r11, -921707870;
+203 	.loc	19	1450	0
+204 	mov.s32 	%r62, -921707870;
+205 	mul.hi.u32 	%r11, %r11, %r62;
+206 	mov.u32 	%r63, 0;
+207 	setp.le.s32 	%p10, %r11, %r63;
+208 	@%p10 bra 	$Lt_0_16386;
+209 	.loc	19	1452	0
+210 	shr.u32 	%r64, %r27, 31;
+211 	shl.b32 	%r65, %r11, 1;
+212 	add.u32 	%r11, %r64, %r65;
+213 	.loc	19	1453	0
+214 	shl.b32 	%r27, %r27, 1;
+215 	.loc	19	1454	0
+216 	sub.u32 	%r58, %r58, 1;
+217 $Lt_0_16386:
+218 	.loc	19	1456	0
+219 	mov.u32 	%r66, 0;
+220 	set.ne.u32.u32 	%r67, %r27, %r66;
+221 	neg.s32 	%r68, %r67;
+222 	add.u32 	%r11, %r68, %r11;
+223 	shl.b32 	%r69, %r11, 24;
+224 	mov.s32 	%r70, 0;
+225 	set.lt.u32.s32 	%r71, %r69, %r70;
+226 	neg.s32 	%r72, %r71;
+227 	shr.u32 	%r73, %r11, 8;
+228 	add.u32 	%r74, %r58, 126;
+229 	shl.b32 	%r75, %r74, 23;
+230 	add.u32 	%r76, %r73, %r75;
+231 	add.u32 	%r77, %r72, %r76;
+232 	or.b32 	%r78, %r5, %r77;
+233 	mov.b32 	%f7, %r78;
+234 	bra.uni 	$Lt_0_514;
+235 $Lt_0_12290:
+236 	.loc	19	1470	0
+237 	mov.f32 	%f8, 0f3f22f983;     	// 0.63662
+238 	mul.f32 	%f9, %f1, %f8;
+239 	cvt.rni.s32.f32 	%r79, %f9;
+240 	cvt.rn.f32.s32 	%f10, %r79;
+241 	neg.f32 	%f11, %f10;
+242 	mov.f32 	%f12, 0f2e85a309;    	// 6.0771e-11
+243 	mov.f32 	%f13, 0f39fdaa20;    	// 0.000483827
+244 	mov.f32 	%f14, 0f3fc90000;    	// 1.57031
+245 	fma.rn.f32 	%f15, %f11, %f14, %f1;
+246 	fma.rn.f32 	%f16, %f11, %f13, %f15;
+247 	fma.rn.f32 	%f17, %f11, %f12, %f16;
+248 	.loc	19	1471	0
+249 	mov.s32 	%r56, %r79;
+250 	mov.f32 	%f7, %f17;
+251 $Lt_0_514:
+252 	.loc	19	1705	0
+253 	add.s32 	%r80, %r56, 1;
+254 	mov.f32 	%f18, %f7;
+255 	mul.f32 	%f19, %f18, %f18;
+256 	and.b32 	%r81, %r80, 1;
+257 	mov.u32 	%r82, 0;
+258 	setp.eq.s32 	%p11, %r81, %r82;
+259 	@%p11 bra 	$Lt_0_17154;
+260 	.loc	19	1709	0
+261 	mov.f32 	%f20, 0f37ccf5ce;    	// 2.44332e-05
+262 	mov.f32 	%f21, 0fbab6061a;    	// -0.00138873
+263 	fma.rn.f32 	%f22, %f20, %f19, %f21;
+264 	mov.f32 	%f23, 0f3d2aaaa5;    	// 0.0416666
+265 	fma.rn.f32 	%f24, %f22, %f19, %f23;
+266 	mov.f32 	%f25, 0fbf000000;    	// -0.5
+267 	fma.rn.f32 	%f26, %f24, %f19, %f25;
+268 	mov.f32 	%f27, 0f3f800000;    	// 1
+269 	fma.rn.f32 	%f28, %f26, %f19, %f27;
+270 	bra.uni 	$Lt_0_16898;
+271 $Lt_0_17154:
+272 	.loc	19	1711	0
+273 	mov.f32 	%f29, 0fb94ca1f9;    	// -0.000195153
+274 	mov.f32 	%f30, 0f3c08839e;    	// 0.00833216
+275 	fma.rn.f32 	%f31, %f29, %f19, %f30;
+276 	mov.f32 	%f32, 0fbe2aaaa3;    	// -0.166667
+277 	fma.rn.f32 	%f33, %f31, %f19, %f32;
+278 	mul.f32 	%f34, %f19, %f33;
+279 	fma.rn.f32 	%f28, %f34, %f18, %f18;
+280 $Lt_0_16898:
+281 	.loc	19	1713	0
+282 	neg.f32 	%f35, %f28;
+283 	and.b32 	%r83, %r80, 2;
+284 	mov.s32 	%r84, 0;
+285 	setp.ne.s32 	%p12, %r83, %r84;
+286 	selp.f32 	%f28, %f35, %f28, %p12;
+287 	mov.f32 	%f5, %f28;
+288 $Lt_0_258:
+289 	.loc	17	8	0
+290 	ld.param.u32 	%r85, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];
+291 	mul.lo.u32 	%r86, %r1, 4;
+292 	add.u32 	%r87, %r85, %r86;
+293 	st.global.f32 	[%r87+0], %f5;
+294 	.loc	17	10	0
+295 	exit;
+296 $LDWend__Z17k_sequenceLoopingPfi:
+297 	} // _Z17k_sequenceLoopingPfi
+298 
+299 	.entry _Z21k_matrixVectorProductPKfS0_Pfii (
+300 		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
+301 		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
+302 		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
+303 		.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
+304 		.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
+305 	{
+306 	.reg .u32 %r<31>;
+307 	.reg .f32 %f<6>;
+308 	.reg .pred %p<6>;
+309 	.shared .align 4 .b8 __cuda___cuda_local_var_24531_32_V_buffer56[32];
+310 	.loc	17	21	0
+311 $LBB1__Z21k_matrixVectorProductPKfS0_Pfii:
+312 	.loc	17	26	0
+313 	mov.u32 	%r1, %ntid.x;
+314 	mov.u32 	%r2, %ctaid.x;
+315 	mul.lo.u32 	%r3, %r2, %r1;
+316 	mov.u32 	%r4, %tid.x;
+317 	add.u32 	%r5, %r3, %r4;
+318 	mul.lo.u32 	%r6, %r5, 4;
+319 	ld.param.u32 	%r7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];
+320 	add.u32 	%r8, %r7, %r6;
+321 	.loc	17	27	0
+322 	mul.lo.u32 	%r9, %r4, 4;
+323 	ld.param.u32 	%r10, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];
+324 	add.u32 	%r11, %r10, %r9;
+325 	ld.param.s32 	%r12, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];
+326 	mov.u32 	%r13, 0;
+327 	setp.le.s32 	%p1, %r12, %r13;
+328 	@%p1 bra 	$Lt_1_4354;
+329 	mov.u32 	%r14, __cuda___cuda_local_var_24531_32_V_buffer56;
+330 	mov.u32 	%r15, 0;
+331 	setp.gt.u32 	%p2, %r1, %r15;
+332 	mul.lo.u32 	%r16, %r1, 4;
+333 	add.u32 	%r17, %r9, %r14;
+334 	mov.s32 	%r18, 0;
+335 	mov.f32 	%f1, 0f00000000;     	// 0
+336 $Lt_1_2818:
+337  //<loop> Loop body line 27, nesting depth: 1, estimated iterations: unknown
+338 	.loc	17	32	0
+339 	ld.global.f32 	%f2, [%r11+0];
+340 	st.shared.f32 	[%r17+0], %f2;
+341 	.loc	17	33	0
+342 	bar.sync 	0;
+343 	@!%p2 bra 	$Lt_1_3074;
+344  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+345 	mov.s32 	%r19, %r1;
+346 	mov.s32 	%r20, %r14;
+347 	add.u32 	%r21, %r16, %r14;
+348 	ld.param.u32 	%r22, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];
+349 	mul.lo.u32 	%r23, %r22, 4;
+350 	mov.s32 	%r24, %r8;
+351  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+352 	mov.s32 	%r25, %r19;
+353 $Lt_1_3586:
+354  //<loop> Loop body line 33, nesting depth: 2, estimated iterations: unknown
+355 	.loc	17	37	0
+356 	ld.shared.f32 	%f3, [%r20+0];
+357 	ld.global.f32 	%f4, [%r24+0];
+358 	fma.rn.f32 	%f1, %f3, %f4, %f1;
+359 	add.u32 	%r24, %r23, %r24;
+360 	add.u32 	%r20, %r20, 4;
+361 	setp.ne.u32 	%p3, %r20, %r21;
+362 	@%p3 bra 	$Lt_1_3586;
+363  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+364 	mul.lo.u32 	%r26, %r22, %r1;
+365 	mul.lo.u32 	%r27, %r26, 4;
+366 	add.u32 	%r8, %r8, %r27;
+367 $Lt_1_3074:
+368  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+369 	.loc	17	40	0
+370 	add.u32 	%r11, %r16, %r11;
+371 	.loc	17	42	0
+372 	bar.sync 	0;
+373 	add.u32 	%r18, %r18, %r1;
+374 	setp.gt.s32 	%p4, %r12, %r18;
+375 	@%p4 bra 	$Lt_1_2818;
+376 	bra.uni 	$Lt_1_2306;
+377 $Lt_1_4354:
+378 	mov.f32 	%f1, 0f00000000;     	// 0
+379 $Lt_1_2306:
+380 	.loc	17	45	0
+381 	ld.param.u32 	%r28, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];
+382 	add.u32 	%r29, %r28, %r6;
+383 	st.global.f32 	[%r29+0], %f1;
+384 	.loc	17	46	0
+385 	exit;
+386 $LDWend__Z21k_matrixVectorProductPKfS0_Pfii:
+387 	} // _Z21k_matrixVectorProductPKfS0_Pfii
+388 
+389 
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ocelot/executive/test/kernels.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.1 parser.
+  what():  ocelot/executive/test/kernels.ptx (61, 26): Operand %tid not declared in this scope.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
-INFO     Test completed in 0.0604898929596 seconds
+INFO     Test completed in 0.0692658424377 seconds
 INFO      It produced the following output:
 Failed to parse file 'sequence.cu':
 1 	.version 2.1
@@ -492,7 +553,7 @@ terminate called after throwing an instance of 'parser::PTXParser::Exception'
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
-INFO     Test completed in 0.255511045456 seconds
+INFO     Test completed in 0.274925947189 seconds
 INFO      It produced the following output:
 Failed to parse file 'texture2D.cu':
 1 	.version 2.1
@@ -588,27 +649,8 @@ terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  texture2D.cu (48, 13):  syntax error, unexpected TOKEN_TEX
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
-INFO     Test completed in 0.651040077209 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
-INFO     Test completed in 0.201623916626 seconds
+INFO     Test completed in 0.0934779644012 seconds
 INFO      It produced the following output:
 Failed to parse file 'textureArray.cu':
 1 	.version 2.1
@@ -703,30 +745,28 @@ Failed to parse file 'textureArray.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  textureArray.cu (48, 13):  syntax error, unexpected TOKEN_TEX
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser
-INFO     Test completed in 0.0439081192017 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
+INFO     Test completed in 0.781673192978 seconds
 INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
 Pass/Fail : Pass
 
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1275861641
-Test time : 0.000431299
-
-Status : 
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
-INFO     Test completed in 0.256726026535 seconds
+INFO     Test completed in 0.211447000504 seconds
 INFO      It produced the following output:
 Failed to parse file 'global.cu':
 1 	.version 2.1
@@ -814,8 +854,427 @@ Failed to parse file 'global.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  global.cu (58, 22): Operand %ctaid not declared in this scope.
 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser
+INFO     Test completed in 0.0618889331818 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1276002728
+Test time : 0.000440359
+
+Status : 
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
+INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
+INFO     Test completed in 0.113924026489 seconds
+INFO      It produced the following output:
+Failed to parse file 'ocelot/executive/test/kernels.ptx':
+1 	.version 2.1
+2 	.target sm_20
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 3.1 built on 2010-04-27
+5 
+6 	//-----------------------------------------------------------
+7 	// Compiling /tmp/tmpxft_00000b2d_00000000-7_kernels.cpp3.i (/tmp/ccBI#.iFWQMU)
+8 	//-----------------------------------------------------------
+9 
+10 	//-----------------------------------------------------------
+11 	// Options:
+12 	//-----------------------------------------------------------
+13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
+14 	//  -O3	(Optimization level)
+15 	//  -g0	(Debug level)
+16 	//  -m2	(Report advisories)
+17 	//-----------------------------------------------------------
+18 
+19 	.file	1	"<command-line>"
+20 	.file	2	"/tmp/tmpxft_00000b2d_00000000-6_kernels.cudafe2.gpu"
+21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+32 	.file	14	"/usr/include/bits/types.h"
+33 	.file	15	"/usr/include/time.h"
+34 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+35 	.file	17	"kernels.cu"
+36 	.file	18	"/usr/local/cuda/bin/../include/common_functions.h"
+37 	.file	19	"/usr/local/cuda/bin/../include/math_functions.h"
+38 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
+39 	.file	21	"/usr/local/cuda/bin/../include/device_functions.h"
+40 	.file	22	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+41 	.file	23	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+42 	.file	24	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+44 	.file	26	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+45 	.file	27	"/usr/local/cuda/bin/../include/surface_functions.h"
+46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+47 
+48 	.const .align 4 .b8 __cudart_i2opi_f[24] = {65,144,67,60,153,149,98,219,192,221,52,245,209,87,39,252,41,21,68,78,110,131,249,162};
+49 
+50 	.entry _Z17k_sequenceLoopingPfi (
+51 		.param .u32 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+52 		.param .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+53 	{
+54 	.reg .u32 %r<89>;
+55 	.reg .f32 %f<37>;
+56 	.reg .pred %p<14>;
+57 	.local .align 4 .b8 __cuda___cuda_result_168[28];
+58 	.loc	17	6	0
+59 $LBB1__Z17k_sequenceLoopingPfi:
+60 	.loc	19	1702	0
+61 	cvt.s32.u32 	%r1, %tid.x;
+62 	cvt.rn.f32.s32 	%f1, %r1;
+63 	abs.f32 	%f2, %f1;
+64 	mov.f32 	%f3, 0f7f800000;     	// ((1.0F)/(0.0F))
+65 	setp.eq.f32 	%p1, %f2, %f3;
+66 	@!%p1 bra 	$Lt_0_11778;
+67 	neg.f32 	%f4, %f1;
+68 	add.rn.f32 	%f5, %f1, %f4;
+69 	bra.uni 	$Lt_0_258;
+70 $Lt_0_11778:
+71 	mov.f32 	%f6, 0f473ba700;     	// 48039
+72 	setp.gt.f32 	%p2, %f2, %f6;
+73 	@!%p2 bra 	$Lt_0_12290;
+74 	.loc	19	1396	0
+75 	mov.u32 	%r2, __cudart_i2opi_f;
+76 	mov.b32 	%r3, %f1;
+77 	and.b32 	%r4, %r3, -2147483648;
+78 	mov.s32 	%r5, %r4;
+79 	.loc	19	24	0
+80 	mov.s32 	%r6, %r2;
+81 	add.u32 	%r7, %r2, 24;
+82 	mov.u32 	%r8, __cuda___cuda_result_168;
+83 	shl.b32 	%r9, %r3, 8;
+84 	or.b32 	%r10, %r9, -2147483648;
+85 	mov.u32 	%r11, 0;
+86 $Lt_0_13314:
+87 	.pragma "nounroll";
+88  //<loop> Loop body line 24, nesting depth: 1, iterations: 6
+89 	.loc	19	1410	0
+90 	ld.const.u32 	%r12, [%r6+0];
+91 	mul.lo.u32 	%r13, %r12, %r10;
+92 	add.u32 	%r14, %r13, %r11;
+93 	.loc	19	1411	0
+94 	set.gt.u32.u32 	%r15, %r13, %r14;
+95 	neg.s32 	%r16, %r15;
+96 	mul.hi.u32 	%r17, %r12, %r10;
+97 	add.u32 	%r11, %r16, %r17;
+98 	.loc	19	1412	0
+99 	st.local.u32 	[%r8+0], %r14;
+100 	add.u32 	%r8, %r8, 4;
+101 	add.u32 	%r6, %r6, 4;
+102 	setp.ne.u32 	%p3, %r6, %r7;
+103 	@%p3 bra 	$Lt_0_13314;
+104 	.loc	19	1414	0
+105 	st.local.u32 	[__cuda___cuda_result_168+24], %r11;
+106 	.loc	19	1419	0
+107 	shl.b32 	%r18, %r3, 1;
+108 	shr.u32 	%r19, %r18, 24;
+109 	sub.u32 	%r20, %r19, 128;
+110 	shr.u32 	%r21, %r20, 5;
+111 	mov.s32 	%r22, 4;
+112 	sub.s32 	%r23, %r22, %r21;
+113 	mul.lo.u32 	%r24, %r23, 4;
+114 	mov.u32 	%r25, __cuda___cuda_result_168;
+115 	add.u32 	%r26, %r24, %r25;
+116 	ld.local.u32 	%r11, [%r26+8];
+117 	.loc	19	1420	0
+118 	ld.local.u32 	%r27, [%r26+4];
+119 	and.b32 	%r28, %r20, 31;
+120 	mov.u32 	%r29, 0;
+121 	setp.eq.u32 	%p4, %r28, %r29;
+122 	@%p4 bra 	$Lt_0_13826;
+123 	.loc	19	1423	0
+124 	mov.s32 	%r30, 32;
+125 	sub.s32 	%r31, %r30, %r28;
+126 	shr.u32 	%r32, %r27, %r31;
+127 	shl.b32 	%r33, %r11, %r28;
+128 	add.u32 	%r11, %r32, %r33;
+129 	.loc	19	1424	0
+130 	ld.local.u32 	%r34, [%r26+0];
+131 	shr.u32 	%r35, %r34, %r31;
+132 	shl.b32 	%r36, %r27, %r28;
+133 	add.u32 	%r27, %r35, %r36;
+134 $Lt_0_13826:
+135 	.loc	19	1426	0
+136 	shr.u32 	%r37, %r11, 30;
+137 	.loc	19	1428	0
+138 	shr.u32 	%r38, %r27, 30;
+139 	shl.b32 	%r39, %r11, 2;
+140 	add.u32 	%r11, %r38, %r39;
+141 	.loc	19	1429	0
+142 	shl.b32 	%r27, %r27, 2;
+143 	mov.u32 	%r40, 0;
+144 	setp.eq.u32 	%p5, %r27, %r40;
+145 	@%p5 bra 	$Lt_0_14594;
+146 	.loc	19	1430	0
+147 	add.u32 	%r41, %r11, 1;
+148 	mov.u32 	%r42, -2147483648;
+149 	set.gt.u32.u32 	%r43, %r41, %r42;
+150 	neg.s32 	%r44, %r43;
+151 	bra.uni 	$Lt_0_14338;
+152 $Lt_0_14594:
+153 	mov.u32 	%r45, -2147483648;
+154 	set.gt.u32.u32 	%r46, %r11, %r45;
+155 	neg.s32 	%r44, %r46;
+156 $Lt_0_14338:
+157 	.loc	19	1431	0
+158 	add.u32 	%r47, %r37, %r44;
+159 	.loc	19	1430	0
+160 	neg.s32 	%r48, %r47;
+161 	mov.u32 	%r49, 0;
+162 	setp.ne.u32 	%p6, %r4, %r49;
+163 	selp.s32 	%r50, %r48, %r47, %p6;
+164 	mov.u32 	%r51, 0;
+165 	setp.eq.u32 	%p7, %r44, %r51;
+166 	@%p7 bra 	$Lt_0_14850;
+167 	.loc	19	1436	0
+168 	neg.s32 	%r27, %r27;
+169 	.loc	19	1438	0
+170 	mov.u32 	%r52, 0;
+171 	set.eq.u32.u32 	%r53, %r27, %r52;
+172 	neg.s32 	%r54, %r53;
+173 	not.b32 	%r55, %r11;
+174 	add.u32 	%r11, %r54, %r55;
+175 	.loc	19	1439	0
+176 	xor.b32 	%r5, %r4, -2147483648;
+177 $Lt_0_14850:
+178 	.loc	19	1441	0
+179 	mov.s32 	%r56, %r50;
+180 	mov.u32 	%r57, 0;
+181 	setp.le.s32 	%p8, %r11, %r57;
+182 	@%p8 bra 	$Lt_0_17410;
+183 	mov.u32 	%r58, 0;
+184 $Lt_0_15874:
+185  //<loop> Loop body line 1441, nesting depth: 1, estimated iterations: unknown
+186 	.loc	19	1445	0
+187 	shr.u32 	%r59, %r27, 31;
+188 	shl.b32 	%r60, %r11, 1;
+189 	add.u32 	%r11, %r59, %r60;
+190 	.loc	19	1446	0
+191 	shl.b32 	%r27, %r27, 1;
+192 	.loc	19	1447	0
+193 	sub.u32 	%r58, %r58, 1;
+194 	mov.u32 	%r61, 0;
+195 	setp.gt.s32 	%p9, %r11, %r61;
+196 	@%p9 bra 	$Lt_0_15874;
+197 	bra.uni 	$Lt_0_15362;
+198 $Lt_0_17410:
+199 	mov.u32 	%r58, 0;
+200 $Lt_0_15362:
+201 	.loc	19	1449	0
+202 	mul.lo.u32 	%r27, %r11, -921707870;
+203 	.loc	19	1450	0
+204 	mov.s32 	%r62, -921707870;
+205 	mul.hi.u32 	%r11, %r11, %r62;
+206 	mov.u32 	%r63, 0;
+207 	setp.le.s32 	%p10, %r11, %r63;
+208 	@%p10 bra 	$Lt_0_16386;
+209 	.loc	19	1452	0
+210 	shr.u32 	%r64, %r27, 31;
+211 	shl.b32 	%r65, %r11, 1;
+212 	add.u32 	%r11, %r64, %r65;
+213 	.loc	19	1453	0
+214 	shl.b32 	%r27, %r27, 1;
+215 	.loc	19	1454	0
+216 	sub.u32 	%r58, %r58, 1;
+217 $Lt_0_16386:
+218 	.loc	19	1456	0
+219 	mov.u32 	%r66, 0;
+220 	set.ne.u32.u32 	%r67, %r27, %r66;
+221 	neg.s32 	%r68, %r67;
+222 	add.u32 	%r11, %r68, %r11;
+223 	shl.b32 	%r69, %r11, 24;
+224 	mov.s32 	%r70, 0;
+225 	set.lt.u32.s32 	%r71, %r69, %r70;
+226 	neg.s32 	%r72, %r71;
+227 	shr.u32 	%r73, %r11, 8;
+228 	add.u32 	%r74, %r58, 126;
+229 	shl.b32 	%r75, %r74, 23;
+230 	add.u32 	%r76, %r73, %r75;
+231 	add.u32 	%r77, %r72, %r76;
+232 	or.b32 	%r78, %r5, %r77;
+233 	mov.b32 	%f7, %r78;
+234 	bra.uni 	$Lt_0_514;
+235 $Lt_0_12290:
+236 	.loc	19	1470	0
+237 	mov.f32 	%f8, 0f3f22f983;     	// 0.63662
+238 	mul.f32 	%f9, %f1, %f8;
+239 	cvt.rni.s32.f32 	%r79, %f9;
+240 	cvt.rn.f32.s32 	%f10, %r79;
+241 	neg.f32 	%f11, %f10;
+242 	mov.f32 	%f12, 0f2e85a309;    	// 6.0771e-11
+243 	mov.f32 	%f13, 0f39fdaa20;    	// 0.000483827
+244 	mov.f32 	%f14, 0f3fc90000;    	// 1.57031
+245 	fma.rn.f32 	%f15, %f11, %f14, %f1;
+246 	fma.rn.f32 	%f16, %f11, %f13, %f15;
+247 	fma.rn.f32 	%f17, %f11, %f12, %f16;
+248 	.loc	19	1471	0
+249 	mov.s32 	%r56, %r79;
+250 	mov.f32 	%f7, %f17;
+251 $Lt_0_514:
+252 	.loc	19	1705	0
+253 	add.s32 	%r80, %r56, 1;
+254 	mov.f32 	%f18, %f7;
+255 	mul.f32 	%f19, %f18, %f18;
+256 	and.b32 	%r81, %r80, 1;
+257 	mov.u32 	%r82, 0;
+258 	setp.eq.s32 	%p11, %r81, %r82;
+259 	@%p11 bra 	$Lt_0_17154;
+260 	.loc	19	1709	0
+261 	mov.f32 	%f20, 0f37ccf5ce;    	// 2.44332e-05
+262 	mov.f32 	%f21, 0fbab6061a;    	// -0.00138873
+263 	fma.rn.f32 	%f22, %f20, %f19, %f21;
+264 	mov.f32 	%f23, 0f3d2aaaa5;    	// 0.0416666
+265 	fma.rn.f32 	%f24, %f22, %f19, %f23;
+266 	mov.f32 	%f25, 0fbf000000;    	// -0.5
+267 	fma.rn.f32 	%f26, %f24, %f19, %f25;
+268 	mov.f32 	%f27, 0f3f800000;    	// 1
+269 	fma.rn.f32 	%f28, %f26, %f19, %f27;
+270 	bra.uni 	$Lt_0_16898;
+271 $Lt_0_17154:
+272 	.loc	19	1711	0
+273 	mov.f32 	%f29, 0fb94ca1f9;    	// -0.000195153
+274 	mov.f32 	%f30, 0f3c08839e;    	// 0.00833216
+275 	fma.rn.f32 	%f31, %f29, %f19, %f30;
+276 	mov.f32 	%f32, 0fbe2aaaa3;    	// -0.166667
+277 	fma.rn.f32 	%f33, %f31, %f19, %f32;
+278 	mul.f32 	%f34, %f19, %f33;
+279 	fma.rn.f32 	%f28, %f34, %f18, %f18;
+280 $Lt_0_16898:
+281 	.loc	19	1713	0
+282 	neg.f32 	%f35, %f28;
+283 	and.b32 	%r83, %r80, 2;
+284 	mov.s32 	%r84, 0;
+285 	setp.ne.s32 	%p12, %r83, %r84;
+286 	selp.f32 	%f28, %f35, %f28, %p12;
+287 	mov.f32 	%f5, %f28;
+288 $Lt_0_258:
+289 	.loc	17	8	0
+290 	ld.param.u32 	%r85, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];
+291 	mul.lo.u32 	%r86, %r1, 4;
+292 	add.u32 	%r87, %r85, %r86;
+293 	st.global.f32 	[%r87+0], %f5;
+294 	.loc	17	10	0
+295 	exit;
+296 $LDWend__Z17k_sequenceLoopingPfi:
+297 	} // _Z17k_sequenceLoopingPfi
+298 
+299 	.entry _Z21k_matrixVectorProductPKfS0_Pfii (
+300 		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
+301 		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
+302 		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
+303 		.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
+304 		.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
+305 	{
+306 	.reg .u32 %r<31>;
+307 	.reg .f32 %f<6>;
+308 	.reg .pred %p<6>;
+309 	.shared .align 4 .b8 __cuda___cuda_local_var_24531_32_V_buffer56[32];
+310 	.loc	17	21	0
+311 $LBB1__Z21k_matrixVectorProductPKfS0_Pfii:
+312 	.loc	17	26	0
+313 	mov.u32 	%r1, %ntid.x;
+314 	mov.u32 	%r2, %ctaid.x;
+315 	mul.lo.u32 	%r3, %r2, %r1;
+316 	mov.u32 	%r4, %tid.x;
+317 	add.u32 	%r5, %r3, %r4;
+318 	mul.lo.u32 	%r6, %r5, 4;
+319 	ld.param.u32 	%r7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];
+320 	add.u32 	%r8, %r7, %r6;
+321 	.loc	17	27	0
+322 	mul.lo.u32 	%r9, %r4, 4;
+323 	ld.param.u32 	%r10, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];
+324 	add.u32 	%r11, %r10, %r9;
+325 	ld.param.s32 	%r12, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];
+326 	mov.u32 	%r13, 0;
+327 	setp.le.s32 	%p1, %r12, %r13;
+328 	@%p1 bra 	$Lt_1_4354;
+329 	mov.u32 	%r14, __cuda___cuda_local_var_24531_32_V_buffer56;
+330 	mov.u32 	%r15, 0;
+331 	setp.gt.u32 	%p2, %r1, %r15;
+332 	mul.lo.u32 	%r16, %r1, 4;
+333 	add.u32 	%r17, %r9, %r14;
+334 	mov.s32 	%r18, 0;
+335 	mov.f32 	%f1, 0f00000000;     	// 0
+336 $Lt_1_2818:
+337  //<loop> Loop body line 27, nesting depth: 1, estimated iterations: unknown
+338 	.loc	17	32	0
+339 	ld.global.f32 	%f2, [%r11+0];
+340 	st.shared.f32 	[%r17+0], %f2;
+341 	.loc	17	33	0
+342 	bar.sync 	0;
+343 	@!%p2 bra 	$Lt_1_3074;
+344  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+345 	mov.s32 	%r19, %r1;
+346 	mov.s32 	%r20, %r14;
+347 	add.u32 	%r21, %r16, %r14;
+348 	ld.param.u32 	%r22, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];
+349 	mul.lo.u32 	%r23, %r22, 4;
+350 	mov.s32 	%r24, %r8;
+351  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+352 	mov.s32 	%r25, %r19;
+353 $Lt_1_3586:
+354  //<loop> Loop body line 33, nesting depth: 2, estimated iterations: unknown
+355 	.loc	17	37	0
+356 	ld.shared.f32 	%f3, [%r20+0];
+357 	ld.global.f32 	%f4, [%r24+0];
+358 	fma.rn.f32 	%f1, %f3, %f4, %f1;
+359 	add.u32 	%r24, %r23, %r24;
+360 	add.u32 	%r20, %r20, 4;
+361 	setp.ne.u32 	%p3, %r20, %r21;
+362 	@%p3 bra 	$Lt_1_3586;
+363  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+364 	mul.lo.u32 	%r26, %r22, %r1;
+365 	mul.lo.u32 	%r27, %r26, 4;
+366 	add.u32 	%r8, %r8, %r27;
+367 $Lt_1_3074:
+368  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
+369 	.loc	17	40	0
+370 	add.u32 	%r11, %r16, %r11;
+371 	.loc	17	42	0
+372 	bar.sync 	0;
+373 	add.u32 	%r18, %r18, %r1;
+374 	setp.gt.s32 	%p4, %r12, %r18;
+375 	@%p4 bra 	$Lt_1_2818;
+376 	bra.uni 	$Lt_1_2306;
+377 $Lt_1_4354:
+378 	mov.f32 	%f1, 0f00000000;     	// 0
+379 $Lt_1_2306:
+380 	.loc	17	45	0
+381 	ld.param.u32 	%r28, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];
+382 	add.u32 	%r29, %r28, %r6;
+383 	st.global.f32 	[%r29+0], %f1;
+384 	.loc	17	46	0
+385 	exit;
+386 $LDWend__Z21k_matrixVectorProductPKfS0_Pfii:
+387 	} // _Z21k_matrixVectorProductPKfS0_Pfii
+388 
+389 
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  ocelot/executive/test/kernels.ptx (61, 26): Operand %tid not declared in this scope.
+
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
-INFO     Test completed in 0.178205013275 seconds
+INFO     Test completed in 0.258731126785 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -834,8 +1293,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1275861641
-Test time : 0.14487
+Test Seed : 1276002728
+Test time : 0.200057
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -843,10 +1302,9 @@ Test Point 3 Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
+INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
-INFO     Test completed in 0.0487239360809 seconds
+INFO     Test completed in 0.0858721733093 seconds
 INFO      It produced the following output:
 Failed to parse file 'vectorScale.cu':
 1 	.version 1.4
@@ -923,345 +1381,9 @@ Failed to parse file 'vectorScale.cu':
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
   what():  vectorScale.cu (1, 13): Cannot parse PTX version 1.4 with version 2.1 parser.
 
-INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
-INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
-INFO     Test completed in 0.0644619464874 seconds
-INFO      It produced the following output:
-Failed to parse file 'ocelot/executive/test/kernels.ptx':
-1 	.version 1.4
-2 	.target sm_10, map_f64_to_f32
-3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc built on 2008-12-03
-5 
-6 	.reg .u32 %ra<17>;
-7 	.reg .u64 %rda<17>;
-8 	.reg .f32 %fa<17>;
-9 	.reg .f64 %fda<17>;
-10 	.reg .u32 %rv<5>;
-11 	.reg .u64 %rdv<5>;
-12 	.reg .f32 %fv<5>;
-13 	.reg .f64 %fdv<5>;
-14 
-15 
-16 	//-----------------------------------------------------------
-17 	// Compiling /tmp/tmpxft_00000725_00000000-7_kernels.cpp3.i (/tmp/ccBI#.QPuVas)
-18 	//-----------------------------------------------------------
-19 
-20 	//-----------------------------------------------------------
-21 	// Options:
-22 	//-----------------------------------------------------------
-23 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
-24 	//  -O3	(Optimization level)
-25 	//  -g0	(Debug level)
-26 	//  -m2	(Report advisories)
-27 	//-----------------------------------------------------------
-28 
-29 	.file	1	"<command-line>"
-30 	.file	2	"/tmp/tmpxft_00000725_00000000-6_kernels.cudafe2.gpu"
-31 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include/stddef.h"
-32 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-33 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-34 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-35 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-36 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-37 	.file	9	"/usr/local/cuda/bin/../include/texture_types.h"
-38 	.file	10	"/usr/local/cuda/bin/../include/vector_types.h"
-39 	.file	11	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-40 	.file	12	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-41 	.file	13	"/usr/include/bits/types.h"
-42 	.file	14	"/usr/include/time.h"
-43 	.file	15	"kernels.cu"
-44 	.file	16	"/usr/local/cuda/bin/../include/common_functions.h"
-45 	.file	17	"/usr/local/cuda/bin/../include/crt/func_macro.h"
-46 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-47 	.file	19	"/usr/local/cuda/bin/../include/device_functions.h"
-48 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
-49 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-50 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-51 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-52 	.file	24	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-53 	.file	25	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h"
-54 
-55 
-56 	.entry _Z10k_sequencePi(.param .u64 __cudaparm__Z10k_sequencePi_ptr)
-57 	{
-58 	.reg .u32 %r<3>;
-59 	.reg .u64 %rd<6>;
-60 	.loc	15	13	0
-61 $LBB1__Z10k_sequencePi:
-62 	.loc	15	14	0
-63 	cvt.s32.u16 	%r1, %tid.x;     	// 
-64 	ld.param.u64 	%rd1, [__cudaparm__Z10k_sequencePi_ptr];	// id:8 __cudaparm__Z10k_sequencePi_ptr+0x0
-65 	cvt.u64.u32 	%rd2, %r1;       	// 
-66 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-67 	add.u64 	%rd4, %rd1, %rd3;    	// 
-68 	st.global.s32 	[%rd4+0], %r1; 	// id:9
-69 	.loc	15	15	0
-70 	exit;                         	// 
-71 $LDWend__Z10k_sequencePi:
-72 	} // _Z10k_sequencePi
-73 
-74 	.entry _Z15k_sequenceMultiPii(.param .u64 __cudaparm__Z15k_sequenceMultiPii___val_paramptr, 
-75 		.param .s32 __cudaparm__Z15k_sequenceMultiPii_N)
-76 	{
-77 	.reg .u16 %rh<5>;
-78 	.reg .u32 %r<8>;
-79 	.reg .u64 %rd<5>;
-80 	.reg .pred %p<4>;
-81 	.loc	15	23	0
-82 $LBB1__Z15k_sequenceMultiPii:
-83 	ld.param.u64 	%rd1, [__cudaparm__Z15k_sequenceMultiPii___val_paramptr];	// id:25 __cudaparm__Z15k_sequenceMultiPii___val_paramptr+0x0
-84 	.loc	15	25	0
-85 	mov.u16 	%rh1, %ntid.x;       	// 
-86 	mov.u16 	%rh2, %ctaid.x;      	// 
-87 	mul.wide.u16 	%r1, %rh2, %rh1;	// 
-88 	cvt.u32.u16 	%r2, %tid.x;     	// 
-89 	add.u32 	%r3, %r2, %r1;       	// 
-90 	mov.s32 	%r4, %r3;            	// 
-91 	ld.param.s32 	%r5, [__cudaparm__Z15k_sequenceMultiPii_N];	// id:23 __cudaparm__Z15k_sequenceMultiPii_N+0x0
-92 	setp.le.s32 	%p1, %r5, %r3;   	// 
-93 	@%p1 bra 	$Lt_1_5;            	// 
-94 	mov.u16 	%rh3, %nctaid.x;     	// 
-95 	mul.wide.u16 	%r6, %rh3, %rh1;	// 
-96 	cvt.u64.s32 	%rd2, %r6;       	// 
-97 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-98 $Lt_1_7:
-99  //<loop> Loop body line 25, nesting depth: 1, estimated iterations: unknown
-100 	.loc	15	28	0
-101 	st.global.s32 	[%rd1+0], %r4; 	// id:29
-102 	.loc	15	29	0
-103 	add.u64 	%rd1, %rd3, %rd1;    	// 
-104 	add.s32 	%r4, %r4, %r6;       	// 
-105 	setp.lt.s32 	%p2, %r4, %r5;   	// 
-106 	@%p2 bra 	$Lt_1_7;            	// 
-107 $Lt_1_5:
-108 	.loc	15	32	0
-109 	exit;                         	// 
-110 $LDWend__Z15k_sequenceMultiPii:
-111 	} // _Z15k_sequenceMultiPii
-112 
-113 	.entry _Z19k_sequenceDivergentPf(.param .u64 __cudaparm__Z19k_sequenceDivergentPf_ptr)
-114 	{
-115 	.reg .u32 %r<5>;
-116 	.reg .u64 %rd<6>;
-117 	.reg .f32 %f<7>;
-118 	.reg .pred %p<3>;
-119 	.loc	15	37	0
-120 $LBB1__Z19k_sequenceDivergentPf:
-121 	cvt.u32.u16 	%r1, %tid.x;     	// 
-122 	cvt.rn.f32.u32 	%f1, %r1;     	// 
-123 	mov.f32 	%f2, 0f3d800000;     	// 0.0625
-124 	mul.f32 	%f3, %f1, %f2;       	// 
-125 	ld.param.u64 	%rd1, [__cudaparm__Z19k_sequenceDivergentPf_ptr];	// id:23 __cudaparm__Z19k_sequenceDivergentPf_ptr+0x0
-126 	cvt.u64.u32 	%rd2, %r1;       	// 
-127 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-128 	add.u64 	%rd4, %rd1, %rd3;    	// 
-129 	and.b32 	%r2, %r1, 1;         	// 
-130 	mov.u32 	%r3, 0;              	// 
-131 	setp.eq.u32 	%p1, %r2, %r3;   	// 
-132 	@%p1 bra 	$Lt_2_5;            	// 
-133 	.loc	15	40	0
-134 	cos.approx.f32 	%f4, %f3;            	// 
-135 	st.global.f32 	[%rd4+0], %f4; 	// id:24
-136 	bra.uni 	$Lt_2_4;             	// 
-137 $Lt_2_5:
-138 	.loc	15	43	0
-139 	sin.approx.f32 	%f5, %f3;            	// 
-140 	st.global.f32 	[%rd4+0], %f5; 	// id:25
-141 $Lt_2_4:
-142 	.loc	15	45	0
-143 	exit;                         	// 
-144 $LDWend__Z19k_sequenceDivergentPf:
-145 	} // _Z19k_sequenceDivergentPf
-146 
-147 	.entry _Z17k_sequenceLoopingPfi( .param .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr, 
-148 	.param .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
-149 	{
-150 	.reg .u32 %r<8>;
-151 	.reg .u64 %rd<8>;
-152 	.reg .f32 %f<7>;
-153 	.reg .pred %p<5>;
-154 	.loc	15	51	0
-155 $LBB1__Z17k_sequenceLoopingPfi:
-156 	.loc	15	52	0
-157 	cvt.s32.u16 	%r1, %tid.x;     	// 
-158 	mov.s32 	%r2, %r1;            	// 
-159 	ld.param.s32 	%r3, [__cudaparm__Z17k_sequenceLoopingPfi_N];	// id:31 __cudaparm__Z17k_sequenceLoopingPfi_N+0x0
-160 	setp.le.s32 	%p1, %r3, %r1;   	// 
-161 	@%p1 bra 	$Lt_3_8;            	// 
-162 	cvt.u32.u16 	%r4, %ntid.x;    	// 
-163 	cvt.u64.s32 	%rd1, %r1;       	// 
-164 	mul.lo.u64 	%rd2, %rd1, 4;    	// 
-165 	cvt.s64.u32 	%rd3, %r4;       	// 
-166 	mul.lo.u64 	%rd4, %rd3, 4;    	// 
-167 	ld.param.u64 	%rd5, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];	// id:29 __cudaparm__Z17k_sequenceLoopingPfi_ptr+0x0
-168 $Lt_3_10:
-169  //<loop> Loop body line 52, nesting depth: 1, estimated iterations: unknown
-170 	cvt.rn.f32.s32 	%f1, %r2;     	// 
-171 	mov.f32 	%f2, 0f3d800000;     	// 0.0625
-172 	mul.f32 	%f3, %f1, %f2;       	// 
-173 	add.u64 	%rd6, %rd2, %rd5;    	// 
-174 	and.b32 	%r5, %r2, 1;         	// 
-175 	mov.u32 	%r6, 0;              	// 
-176 	setp.eq.u32 	%p2, %r5, %r6;   	// 
-177 	@%p2 bra 	$Lt_3_12;           	// 
-178  //<loop> Part of loop body line 52, head labeled $Lt_3_10
-179 	.loc	15	56	0
-180 	cos.approx.f32 	%f4, %f3;            	// 
-181 	st.global.f32 	[%rd6+0], %f4; 	// id:33
-182 	bra.uni 	$Lt_3_11;            	// 
-183 $Lt_3_12:
-184  //<loop> Part of loop body line 52, head labeled $Lt_3_10
-185 	.loc	15	59	0
-186 	sin.approx.f32 	%f5, %f3;            	// 
-187 	st.global.f32 	[%rd6+0], %f5; 	// id:34
-188 $Lt_3_11:
-189  //<loop> Part of loop body line 52, head labeled $Lt_3_10
-190 	add.u32 	%r2, %r2, %r4;       	// 
-191 	add.u64 	%rd2, %rd2, %rd4;    	// 
-192 	setp.lt.s32 	%p3, %r2, %r3;   	// 
-193 	@%p3 bra 	$Lt_3_10;           	// 
-194 $Lt_3_8:
-195 	.loc	15	63	0
-196 	exit;                         	// 
-197 $LDWend__Z17k_sequenceLoopingPfi:
-198 	} // _Z17k_sequenceLoopingPfi
-199 
-200 	.entry _Z7barrierPiS_(.param .u32 __cudaparm__Z7barrierPiS__in,
-201 		.param .u32 __cudaparm__Z7barrierPiS__out)
-202 	{
-203 	.reg .u32 %r<17>;
-204 	.shared .align 4 .b8 __cuda_shared8[32];
-205 	.loc	15	2	0
-206 $LBB1__Z7barrierPiS_:
-207 	mov.u32 	%r1, __cuda_shared8;
-208 	.loc	15	5	0
-209 	cvt.u32.u16 	%r2, %tid.x;
-210 	mul24.lo.u32 	%r3, %r2, 4;
-211 	ld.param.u32 	%r4, [__cudaparm__Z7barrierPiS__in];
-212 	add.u32 	%r5, %r4, %r3;
-213 	ld.global.s32 	%r6, [%r5+0];
-214 	add.u32 	%r7, %r2, 1;
-215 	cvt.u32.u16 	%r8, %ntid.x;
-216 	rem.u32 	%r9, %r7, %r8;
-217 	mul.lo.u32 	%r10, %r9, 4;
-218 	add.u32 	%r11, %r1, %r10;
-219 	st.shared.s32 	[%r11+0], %r6;
-220 	.loc	15	6	0
-221 	bar.sync 	0;
-222 	.loc	15	7	0
-223 	add.u32 	%r12, %r3, %r1;
-224 	ld.shared.s32 	%r13, [%r12+0];
-225 	ld.param.u32 	%r14, [__cudaparm__Z7barrierPiS__out];
-226 	add.u32 	%r15, %r14, %r3;
-227 	st.global.s32 	[%r15+0], %r13;
-228 	.loc	15	8	0
-229 	exit;
-230 $LDWend__Z7barrierPiS_:
-231 	} // _Z7barrierPiS_
-232 
-233 
-234 	.entry _Z21k_matrixVectorProductPKfS0_Pfii(.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
-235 	.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
-236 	.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
-237 	.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
-238 	.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
-239 	{
-240 	.reg .u32 %r<15>;
-241 	.reg .u64 %rd<22>;
-242 	.reg .f32 %f<6>;
-243 	.reg .pred %p<6>;
-244 	.shared .align 4 .b8 __cuda_V_buffer80[32];
-245 	.loc	15	74	0
-246 $LBB1__Z21k_matrixVectorProductPKfS0_Pfii:
-247 	.loc	15	79	0
-248 	cvt.u32.u16 	%r1, %ntid.x;    	// 
-249 	cvt.u32.u16 	%r2, %ctaid.x;   	// 
-250 	mul.lo.u32 	%r3, %r2, %r1;    	// 
-251 	cvt.u32.u16 	%r4, %tid.x;     	// 
-252 	add.u32 	%r5, %r3, %r4;       	// 
-253 	cvt.u64.u32 	%rd1, %r5;       	// 
-254 	mul.lo.u64 	%rd2, %rd1, 4;    	// 
-255 	ld.param.u64 	%rd3, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];	// id:58 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA+0x0
-256 	add.u64 	%rd4, %rd3, %rd2;    	// 
-257 	.loc	15	80	0
-258 	cvt.u64.u32 	%rd5, %r4;       	// 
-259 	mul.lo.u64 	%rd6, %rd5, 4;    	// 
-260 	ld.param.u64 	%rd7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];	// id:59 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV+0x0
-261 	add.u64 	%rd8, %rd7, %rd6;    	// 
-262 	ld.param.s32 	%r6, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];	// id:52 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N+0x0
-263 	mov.u32 	%r7, 0;              	// 
-264 	setp.le.s32 	%p1, %r6, %r7;   	// 
-265 	mov.f32 	%f1, 0f00000000;     	// 0
-266 	@%p1 bra 	$Lt_4_17;           	// 
-267 	mov.u64 	%rd9, __cuda_V_buffer80;	// 
-268 	mov.u32 	%r8, 0;              	// 
-269 	setp.gt.u32 	%p2, %r1, %r8;   	// 
-270 	cvt.u64.u32 	%rd10, %r1;      	// 
-271 	mul.lo.u64 	%rd11, %rd10, 4;  	// 
-272 	add.u64 	%rd12, %rd6, %rd9;   	// 
-273 	mov.s32 	%r9, 0;              	// 
-274 $Lt_4_11:
-275  //<loop> Loop body line 80, nesting depth: 1, estimated iterations: unknown
-276 	.loc	15	85	0
-277 	ld.global.f32 	%f2, [%rd8+0]; 	// id:60
-278 	st.shared.f32 	[%rd12+0], %f2;	// id:61 __cuda_V_buffer80+0x0
-279 	.loc	15	86	0
-280 	bar.sync 	0;                 	// 
-281 	@!%p2 bra 	$Lt_4_12;          	// 
-282  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-283 	mov.s32 	%r10, %r1;           	// 
-284 	ld.param.s32 	%r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];	// id:62 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M+0x0
-285 	cvt.u64.s32 	%rd13, %r11;     	// 
-286 	mul.lo.u64 	%rd14, %rd13, 4;  	// 
-287 	mov.s64 	%rd15, %rd9;         	// 
-288 	mov.s64 	%rd16, %rd4;         	// 
-289 	mov.s32 	%r12, 0;             	// 
-290  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-291 	mov.s32 	%r13, %r10;          	// 
-292 $Lt_4_14:
-293  //<loop> Loop body line 86, nesting depth: 2, estimated iterations: unknown
-294 	.loc	15	90	0
-295 	ld.global.f32 	%f3, [%rd16+0];	// id:63
-296 	ld.shared.f32 	%f4, [%rd15+0];	// id:64 __cuda_V_buffer80+0x0
-297 	mad.f32 	%f1, %f3, %f4, %f1;  	// 
-298 	add.s32 	%r12, %r12, 1;       	// 
-299 	add.u64 	%rd15, %rd15, 4;     	// 
-300 	add.u64 	%rd16, %rd14, %rd16; 	// 
-301 	setp.ne.u32 	%p3, %r12, %r1;  	// 
-302 	@%p3 bra 	$Lt_4_14;           	// 
-303  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-304 	mul.lo.u64 	%rd17, %rd10, %rd13;	// 
-305 	mul.lo.u64 	%rd18, %rd17, 4;  	// 
-306 	add.u64 	%rd4, %rd4, %rd18;   	// 
-307 $Lt_4_12:
-308  //<loop> Part of loop body line 80, head labeled $Lt_4_11
-309 	.loc	15	93	0
-310 	add.u64 	%rd8, %rd11, %rd8;   	// 
-311 	.loc	15	95	0
-312 	bar.sync 	0;                  	// 
-313 	add.u32 	%r9, %r9, %r1;       	// 
-314 	setp.gt.s32 	%p4, %r6, %r9;   	// 
-315 	@%p4 bra 	$Lt_4_11;           	// 
-316 	bra.uni 	$Lt_4_9;             	// 
-317 $Lt_4_17:
-318 $Lt_4_9:
-319 	.loc	15	98	0
-320 	ld.param.u64 	%rd19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];	// id:65 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R+0x0
-321 	add.u64 	%rd20, %rd19, %rd2;  	// 
-322 	st.global.f32 	[%rd20+0], %f1;	// id:66
-323 	.loc	15	99	0
-324 	exit;                         	// 
-325 $LDWend__Z21k_matrixVectorProductPKfS0_Pfii:
-326 	} // _Z21k_matrixVectorProductPKfS0_Pfii
-327 
-328 
-terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ocelot/executive/test/kernels.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.1 parser.
-
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer
-INFO     Test completed in 0.029816865921 seconds
+INFO     Test completed in 0.0643768310547 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1273,255 +1395,233 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1275861642
-Test time : 7.1764e-05
+Test Seed : 1276002728
+Test time : 0.000105381
 
 Status : 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator
-INFO     Test completed in 0.0710959434509 seconds
+INFO     Test completed in 0.0926549434662 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/sequence.ptx':
-1 	.version 1.4
-2 	.target sm_10, map_f64_to_f32
-3 	// compiled with /home/normal/cuda/open64/lib//be
-4 	// nvopencc built on 2008-12-03
+1 	.version 2.1
+2 	.target sm_20
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 3.1 built on 2010-04-27
 5 
-6 	.reg .u32 %ra<17>;
-7 	.reg .u64 %rda<17>;
-8 	.reg .f32 %fa<17>;
-9 	.reg .f64 %fda<17>;
-10 	.reg .u32 %rv<5>;
-11 	.reg .u64 %rdv<5>;
-12 	.reg .f32 %fv<5>;
-13 	.reg .f64 %fdv<5>;
-14 
-15 
-16 	//-----------------------------------------------------------
-17 	// Compiling /tmp/tmpxft_000001e8_00000000-7_sequence.cpp3.i (/tmp/ccBI#.HI8Zce)
-18 	//-----------------------------------------------------------
-19 
-20 	//-----------------------------------------------------------
-21 	// Options:
-22 	//-----------------------------------------------------------
-23 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
-24 	//  -O3	(Optimization level)
-25 	//  -g0	(Debug level)
-26 	//  -m2	(Report advisories)
-27 	//-----------------------------------------------------------
-28 
-29 	.file	1	"<command-line>"
-30 	.file	2	"/tmp/tmpxft_000001e8_00000000-6_sequence.cudafe2.gpu"
-31 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
-32 	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
-33 	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
-34 	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
-35 	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
-36 	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
-37 	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
-38 	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
-39 	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
-40 	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
-41 	.file	13	"/usr/include/bits/types.h"
-42 	.file	14	"/usr/include/time.h"
-43 	.file	15	"tests/ptx/synthetic/sequence.cu"
-44 	.file	16	"/home/normal/cuda/bin/../include/common_functions.h"
-45 	.file	17	"/home/normal/cuda/bin/../include/crt/func_macro.h"
-46 	.file	18	"/home/normal/cuda/bin/../include/math_functions.h"
-47 	.file	19	"/home/normal/cuda/bin/../include/device_functions.h"
-48 	.file	20	"/home/normal/cuda/bin/../include/math_constants.h"
-49 	.file	21	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-50 	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-51 	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-52 	.file	24	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-53 	.file	25	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
-54 
-55 
-56 	.entry _Z10k_sequencePii( .param .u64 __cudaparm__Z10k_sequencePii_A,
-57 		.param .s32 __cudaparm__Z10k_sequencePii_N)
-58 	{
-59 	.reg .u16 %rh<4>;
-60 	.reg .u32 %r<8>;
-61 	.reg .u64 %rd<6>;
-62 	.reg .pred %p<3>;
-63 	.loc	15	5	0
-64 $LBB1__Z10k_sequencePii:
-65 	mov.u16 	%rh1, %ctaid.x;      	// 
-66 	mov.u16 	%rh2, %ntid.x;       	// 
-67 	mul.wide.u16 	%r1, %rh1, %rh2;	// 
-68 	cvt.u32.u16 	%r2, %tid.x;     	// 
-69 	add.u32 	%r3, %r2, %r1;       	// 
-70 	ld.param.s32 	%r4, [__cudaparm__Z10k_sequencePii_N];	// id:16 __cudaparm__Z10k_sequencePii_N+0x0
-71 	setp.le.s32 	%p1, %r4, %r3;   	// 
-72 	@%p1 bra 	$Lt_0_4;            	// 
-73 	.loc	15	8	0
-74 	mul.lo.s32 	%r5, %r3, 2;      	// 
-75 	add.s32 	%r6, %r5, 1;         	// 
-76 	ld.param.u64 	%rd1, [__cudaparm__Z10k_sequencePii_A];	// id:17 __cudaparm__Z10k_sequencePii_A+0x0
-77 	cvt.u64.s32 	%rd2, %r3;       	// 
-78 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-79 	add.u64 	%rd4, %rd1, %rd3;    	// 
-80 	st.global.s32 	[%rd4+0], %r6; 	// id:18
-81 $Lt_0_4:
-82 	.loc	15	10	0
-83 	exit;                         	// 
-84 $LDWend__Z10k_sequencePii:
-85 	} // _Z10k_sequencePii
-86 
-87 	.entry _Z17k_simple_sequencePi( .param .u64 __cudaparm__Z17k_simple_sequencePi_A )
-88 	{
-89 	.reg .u16 %rh<4>;
-90 	.reg .u32 %r<7>;
-91 	.reg .u64 %rd<6>;
-92 	.loc	15	12	0
-93 $LBB1__Z17k_simple_sequencePi:
-94 	.loc	15	14	0
-95 	cvt.u32.u16 	%r1, %tid.x;     	// 
-96 	mov.u16 	%rh1, %ctaid.x;      	// 
-97 	mov.u16 	%rh2, %ntid.x;       	// 
-98 	mul.wide.u16 	%r2, %rh1, %rh2;	// 
-99 	add.u32 	%r3, %r1, %r2;       	// 
-100 	mul.lo.s32 	%r4, %r3, 2;      	// 
-101 	add.s32 	%r5, %r4, 1;         	// 
-102 	ld.param.u64 	%rd1, [__cudaparm__Z17k_simple_sequencePi_A];	// id:14 __cudaparm__Z17k_simple_sequencePi_A+0x0
-103 	cvt.u64.s32 	%rd2, %r3;       	// 
-104 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-105 	add.u64 	%rd4, %rd1, %rd3;    	// 
-106 	st.global.s32 	[%rd4+0], %r5; 	// id:15
-107 	.loc	15	15	0
-108 	exit;                         	// 
-109 $LDWend__Z17k_simple_sequencePi:
-110 	} // _Z17k_simple_sequencePi
-111 
-112 
+6 	//-----------------------------------------------------------
+7 	// Compiling /tmp/tmpxft_00000a1f_00000000-7_sequence.cpp3.i (/tmp/ccBI#.VbGDGX)
+8 	//-----------------------------------------------------------
+9 
+10 	//-----------------------------------------------------------
+11 	// Options:
+12 	//-----------------------------------------------------------
+13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
+14 	//  -O3	(Optimization level)
+15 	//  -g0	(Debug level)
+16 	//  -m2	(Report advisories)
+17 	//-----------------------------------------------------------
+18 
+19 	.file	1	"<command-line>"
+20 	.file	2	"/tmp/tmpxft_00000a1f_00000000-6_sequence.cudafe2.gpu"
+21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+32 	.file	14	"/usr/include/bits/types.h"
+33 	.file	15	"/usr/include/time.h"
+34 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+35 	.file	17	"sequence.cu"
+36 	.file	18	"/usr/local/cuda/bin/../include/common_functions.h"
+37 	.file	19	"/usr/local/cuda/bin/../include/math_functions.h"
+38 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
+39 	.file	21	"/usr/local/cuda/bin/../include/device_functions.h"
+40 	.file	22	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+41 	.file	23	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+42 	.file	24	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+44 	.file	26	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+45 	.file	27	"/usr/local/cuda/bin/../include/surface_functions.h"
+46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+47 
+48 
+49 	.entry _Z10k_sequencePii (
+50 		.param .u32 __cudaparm__Z10k_sequencePii_A,
+51 		.param .s32 __cudaparm__Z10k_sequencePii_N)
+52 	{
+53 	.reg .u32 %r<13>;
+54 	.reg .pred %p<3>;
+55 	.loc	17	5	0
+56 $LBB1__Z10k_sequencePii:
+57 	mov.u32 	%r1, %ctaid.x;
+58 	mov.u32 	%r2, %ntid.x;
+59 	mul.lo.u32 	%r3, %r1, %r2;
+60 	mov.u32 	%r4, %tid.x;
+61 	add.u32 	%r5, %r4, %r3;
+62 	ld.param.s32 	%r6, [__cudaparm__Z10k_sequencePii_N];
+63 	setp.le.s32 	%p1, %r6, %r5;
+64 	@%p1 bra 	$Lt_0_1026;
+65 	.loc	17	8	0
+66 	mul.lo.s32 	%r7, %r5, 2;
+67 	add.s32 	%r8, %r7, 1;
+68 	ld.param.u32 	%r9, [__cudaparm__Z10k_sequencePii_A];
+69 	mul.lo.u32 	%r10, %r5, 4;
+70 	add.u32 	%r11, %r9, %r10;
+71 	st.global.s32 	[%r11+0], %r8;
+72 $Lt_0_1026:
+73 	.loc	17	10	0
+74 	exit;
+75 $LDWend__Z10k_sequencePii:
+76 	} // _Z10k_sequencePii
+77 
+78 	.entry _Z17k_simple_sequencePi (
+79 		.param .u32 __cudaparm__Z17k_simple_sequencePi_A)
+80 	{
+81 	.reg .u32 %r<12>;
+82 	.loc	17	12	0
+83 $LBB1__Z17k_simple_sequencePi:
+84 	.loc	17	14	0
+85 	mov.u32 	%r1, %ctaid.x;
+86 	mov.u32 	%r2, %ntid.x;
+87 	mul.lo.u32 	%r3, %r1, %r2;
+88 	mov.u32 	%r4, %tid.x;
+89 	add.u32 	%r5, %r4, %r3;
+90 	mul.lo.s32 	%r6, %r5, 2;
+91 	add.s32 	%r7, %r6, 1;
+92 	ld.param.u32 	%r8, [__cudaparm__Z17k_simple_sequencePi_A];
+93 	mul.lo.u32 	%r9, %r5, 4;
+94 	add.u32 	%r10, %r8, %r9;
+95 	st.global.s32 	[%r10+0], %r7;
+96 	.loc	17	15	0
+97 	exit;
+98 $LDWend__Z17k_simple_sequencePi:
+99 	} // _Z17k_simple_sequencePi
+100 
+101 
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ocelot/executive/test/sequence.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.1 parser.
+  what():  ocelot/executive/test/sequence.ptx (57, 22): Operand %ctaid not declared in this scope.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
-INFO     Test completed in 0.0667369365692 seconds
+INFO     Test completed in 0.108510971069 seconds
 INFO      It produced the following output:
 Failed to parse file 'ocelot/executive/test/sequence.ptx':
-1 	.version 1.4
-2 	.target sm_10, map_f64_to_f32
-3 	// compiled with /home/normal/cuda/open64/lib//be
-4 	// nvopencc built on 2008-12-03
+1 	.version 2.1
+2 	.target sm_20
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 3.1 built on 2010-04-27
 5 
-6 	.reg .u32 %ra<17>;
-7 	.reg .u64 %rda<17>;
-8 	.reg .f32 %fa<17>;
-9 	.reg .f64 %fda<17>;
-10 	.reg .u32 %rv<5>;
-11 	.reg .u64 %rdv<5>;
-12 	.reg .f32 %fv<5>;
-13 	.reg .f64 %fdv<5>;
-14 
-15 
-16 	//-----------------------------------------------------------
-17 	// Compiling /tmp/tmpxft_000001e8_00000000-7_sequence.cpp3.i (/tmp/ccBI#.HI8Zce)
-18 	//-----------------------------------------------------------
-19 
-20 	//-----------------------------------------------------------
-21 	// Options:
-22 	//-----------------------------------------------------------
-23 	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
-24 	//  -O3	(Optimization level)
-25 	//  -g0	(Debug level)
-26 	//  -m2	(Report advisories)
-27 	//-----------------------------------------------------------
-28 
-29 	.file	1	"<command-line>"
-30 	.file	2	"/tmp/tmpxft_000001e8_00000000-6_sequence.cudafe2.gpu"
-31 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
-32 	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
-33 	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
-34 	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
-35 	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
-36 	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
-37 	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
-38 	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
-39 	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
-40 	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
-41 	.file	13	"/usr/include/bits/types.h"
-42 	.file	14	"/usr/include/time.h"
-43 	.file	15	"tests/ptx/synthetic/sequence.cu"
-44 	.file	16	"/home/normal/cuda/bin/../include/common_functions.h"
-45 	.file	17	"/home/normal/cuda/bin/../include/crt/func_macro.h"
-46 	.file	18	"/home/normal/cuda/bin/../include/math_functions.h"
-47 	.file	19	"/home/normal/cuda/bin/../include/device_functions.h"
-48 	.file	20	"/home/normal/cuda/bin/../include/math_constants.h"
-49 	.file	21	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
-50 	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
-51 	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
-52 	.file	24	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
-53 	.file	25	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
-54 
-55 
-56 	.entry _Z10k_sequencePii( .param .u64 __cudaparm__Z10k_sequencePii_A,
-57 		.param .s32 __cudaparm__Z10k_sequencePii_N)
-58 	{
-59 	.reg .u16 %rh<4>;
-60 	.reg .u32 %r<8>;
-61 	.reg .u64 %rd<6>;
-62 	.reg .pred %p<3>;
-63 	.loc	15	5	0
-64 $LBB1__Z10k_sequencePii:
-65 	mov.u16 	%rh1, %ctaid.x;      	// 
-66 	mov.u16 	%rh2, %ntid.x;       	// 
-67 	mul.wide.u16 	%r1, %rh1, %rh2;	// 
-68 	cvt.u32.u16 	%r2, %tid.x;     	// 
-69 	add.u32 	%r3, %r2, %r1;       	// 
-70 	ld.param.s32 	%r4, [__cudaparm__Z10k_sequencePii_N];	// id:16 __cudaparm__Z10k_sequencePii_N+0x0
-71 	setp.le.s32 	%p1, %r4, %r3;   	// 
-72 	@%p1 bra 	$Lt_0_4;            	// 
-73 	.loc	15	8	0
-74 	mul.lo.s32 	%r5, %r3, 2;      	// 
-75 	add.s32 	%r6, %r5, 1;         	// 
-76 	ld.param.u64 	%rd1, [__cudaparm__Z10k_sequencePii_A];	// id:17 __cudaparm__Z10k_sequencePii_A+0x0
-77 	cvt.u64.s32 	%rd2, %r3;       	// 
-78 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-79 	add.u64 	%rd4, %rd1, %rd3;    	// 
-80 	st.global.s32 	[%rd4+0], %r6; 	// id:18
-81 $Lt_0_4:
-82 	.loc	15	10	0
-83 	exit;                         	// 
-84 $LDWend__Z10k_sequencePii:
-85 	} // _Z10k_sequencePii
-86 
-87 	.entry _Z17k_simple_sequencePi( .param .u64 __cudaparm__Z17k_simple_sequencePi_A )
-88 	{
-89 	.reg .u16 %rh<4>;
-90 	.reg .u32 %r<7>;
-91 	.reg .u64 %rd<6>;
-92 	.loc	15	12	0
-93 $LBB1__Z17k_simple_sequencePi:
-94 	.loc	15	14	0
-95 	cvt.u32.u16 	%r1, %tid.x;     	// 
-96 	mov.u16 	%rh1, %ctaid.x;      	// 
-97 	mov.u16 	%rh2, %ntid.x;       	// 
-98 	mul.wide.u16 	%r2, %rh1, %rh2;	// 
-99 	add.u32 	%r3, %r1, %r2;       	// 
-100 	mul.lo.s32 	%r4, %r3, 2;      	// 
-101 	add.s32 	%r5, %r4, 1;         	// 
-102 	ld.param.u64 	%rd1, [__cudaparm__Z17k_simple_sequencePi_A];	// id:14 __cudaparm__Z17k_simple_sequencePi_A+0x0
-103 	cvt.u64.s32 	%rd2, %r3;       	// 
-104 	mul.lo.u64 	%rd3, %rd2, 4;    	// 
-105 	add.u64 	%rd4, %rd1, %rd3;    	// 
-106 	st.global.s32 	[%rd4+0], %r5; 	// id:15
-107 	.loc	15	15	0
-108 	exit;                         	// 
-109 $LDWend__Z17k_simple_sequencePi:
-110 	} // _Z17k_simple_sequencePi
-111 
-112 
+6 	//-----------------------------------------------------------
+7 	// Compiling /tmp/tmpxft_00000a1f_00000000-7_sequence.cpp3.i (/tmp/ccBI#.VbGDGX)
+8 	//-----------------------------------------------------------
+9 
+10 	//-----------------------------------------------------------
+11 	// Options:
+12 	//-----------------------------------------------------------
+13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
+14 	//  -O3	(Optimization level)
+15 	//  -g0	(Debug level)
+16 	//  -m2	(Report advisories)
+17 	//-----------------------------------------------------------
+18 
+19 	.file	1	"<command-line>"
+20 	.file	2	"/tmp/tmpxft_00000a1f_00000000-6_sequence.cudafe2.gpu"
+21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+32 	.file	14	"/usr/include/bits/types.h"
+33 	.file	15	"/usr/include/time.h"
+34 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+35 	.file	17	"sequence.cu"
+36 	.file	18	"/usr/local/cuda/bin/../include/common_functions.h"
+37 	.file	19	"/usr/local/cuda/bin/../include/math_functions.h"
+38 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
+39 	.file	21	"/usr/local/cuda/bin/../include/device_functions.h"
+40 	.file	22	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+41 	.file	23	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+42 	.file	24	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+44 	.file	26	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+45 	.file	27	"/usr/local/cuda/bin/../include/surface_functions.h"
+46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+47 
+48 
+49 	.entry _Z10k_sequencePii (
+50 		.param .u32 __cudaparm__Z10k_sequencePii_A,
+51 		.param .s32 __cudaparm__Z10k_sequencePii_N)
+52 	{
+53 	.reg .u32 %r<13>;
+54 	.reg .pred %p<3>;
+55 	.loc	17	5	0
+56 $LBB1__Z10k_sequencePii:
+57 	mov.u32 	%r1, %ctaid.x;
+58 	mov.u32 	%r2, %ntid.x;
+59 	mul.lo.u32 	%r3, %r1, %r2;
+60 	mov.u32 	%r4, %tid.x;
+61 	add.u32 	%r5, %r4, %r3;
+62 	ld.param.s32 	%r6, [__cudaparm__Z10k_sequencePii_N];
+63 	setp.le.s32 	%p1, %r6, %r5;
+64 	@%p1 bra 	$Lt_0_1026;
+65 	.loc	17	8	0
+66 	mul.lo.s32 	%r7, %r5, 2;
+67 	add.s32 	%r8, %r7, 1;
+68 	ld.param.u32 	%r9, [__cudaparm__Z10k_sequencePii_A];
+69 	mul.lo.u32 	%r10, %r5, 4;
+70 	add.u32 	%r11, %r9, %r10;
+71 	st.global.s32 	[%r11+0], %r8;
+72 $Lt_0_1026:
+73 	.loc	17	10	0
+74 	exit;
+75 $LDWend__Z10k_sequencePii:
+76 	} // _Z10k_sequencePii
+77 
+78 	.entry _Z17k_simple_sequencePi (
+79 		.param .u32 __cudaparm__Z17k_simple_sequencePi_A)
+80 	{
+81 	.reg .u32 %r<12>;
+82 	.loc	17	12	0
+83 $LBB1__Z17k_simple_sequencePi:
+84 	.loc	17	14	0
+85 	mov.u32 	%r1, %ctaid.x;
+86 	mov.u32 	%r2, %ntid.x;
+87 	mul.lo.u32 	%r3, %r1, %r2;
+88 	mov.u32 	%r4, %tid.x;
+89 	add.u32 	%r5, %r4, %r3;
+90 	mul.lo.s32 	%r6, %r5, 2;
+91 	add.s32 	%r7, %r6, 1;
+92 	ld.param.u32 	%r8, [__cudaparm__Z17k_simple_sequencePi_A];
+93 	mul.lo.u32 	%r9, %r5, 4;
+94 	add.u32 	%r10, %r8, %r9;
+95 	st.global.s32 	[%r10+0], %r7;
+96 	.loc	17	15	0
+97 	exit;
+98 $LDWend__Z17k_simple_sequencePi:
+99 	} // _Z17k_simple_sequencePi
+100 
+101 
 terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ocelot/executive/test/sequence.ptx (1, 13): Cannot parse PTX version 1.4 with version 2.1 parser.
+  what():  ocelot/executive/test/sequence.ptx (57, 22): Operand %ctaid not declared in this scope.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph
-INFO     Test completed in 0.0469138622284 seconds
+INFO     Test completed in 0.0756168365479 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1536,8 +1636,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1275861642
-Test time : 0.000402927
+Test Seed : 1276002728
+Test time : 0.000124693
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -1550,7 +1650,7 @@ Testing SSA then back Dataflow
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
-INFO     Test completed in 0.0389819145203 seconds
+INFO     Test completed in 0.0811200141907 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1564,8 +1664,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1275861642
-Test time : 0.00652933
+Test Seed : 1276002728
+Test time : 0.0180683
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -1698,7 +1798,7 @@ Zext Instruction Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0431780815125 seconds
+INFO     Test completed in 0.0727958679199 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1711,14 +1811,14 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1275861642
-Test time : 9.17912e-05
+Test Seed : 1276002728
+Test time : 0.000123501
 
 Status : 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
-INFO     Test completed in 12.2194519043 seconds
+INFO     Test completed in 12.6962602139 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1729,124 +1829,132 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1275861642
-Test time : 11.9353
+Test Seed : 1276002728
+Test time : 12.6402
 
 Status : Ran 'TestAdd-u16' for 1 iterations.
-Ran 'TestAdd-s16' for 4 iterations.
-Ran 'TestAdd-u32' for 7 iterations.
-Ran 'TestAdd-s32' for 7 iterations.
-Ran 'TestAdd-s32-sat' for 4 iterations.
-Ran 'TestAdd-u64' for 6 iterations.
-Ran 'TestAdd-s64' for 5 iterations.
-Ran 'TestSub-u16' for 4 iterations.
-Ran 'TestSub-s16' for 4 iterations.
-Ran 'TestSub-u32' for 7 iterations.
-Ran 'TestSub-s32' for 7 iterations.
+Ran 'TestAdd-s16' for 2 iterations.
+Ran 'TestAdd-u32' for 5 iterations.
+Ran 'TestAdd-s32' for 5 iterations.
+Ran 'TestAdd-s32-sat' for 5 iterations.
+Ran 'TestAdd-u64' for 2 iterations.
+Ran 'TestAdd-s64' for 2 iterations.
+Ran 'TestSub-u16' for 2 iterations.
+Ran 'TestSub-s16' for 2 iterations.
+Ran 'TestSub-u32' for 5 iterations.
+Ran 'TestSub-s32' for 5 iterations.
 Ran 'TestSub-s32-sat' for 5 iterations.
-Ran 'TestSub-u64' for 6 iterations.
-Ran 'TestSub-s64' for 6 iterations.
-Ran 'TestSub-Carry-s32' for 4 iterations.
-Ran 'TestSub-Carry-u32' for 4 iterations.
-Ran 'TestAdd-Carry-s32' for 4 iterations.
-Ran 'TestAdd-Carry-u32' for 4 iterations.
-Ran 'TestMul-Lo-u16' for 4 iterations.
-Ran 'TestMul-Hi-u16' for 4 iterations.
-Ran 'TestMul-Wide-u16' for 4 iterations.
-Ran 'TestMul-Lo-s16' for 4 iterations.
-Ran 'TestMul-Hi-s16' for 4 iterations.
-Ran 'TestMul-Wide-s16' for 4 iterations.
-Ran 'TestMul-Lo-u32' for 7 iterations.
-Ran 'TestMul-Hi-u32' for 7 iterations.
-Ran 'TestMul-Wide-u32' for 7 iterations.
-Ran 'TestMul-Lo-s32' for 7 iterations.
-Ran 'TestMul-Hi-s32' for 7 iterations.
-Ran 'TestMul-Wide-s32' for 4 iterations.
-Ran 'TestMul-Lo-u64' for 5 iterations.
-Ran 'TestMul-Hi-u64' for 5 iterations.
-Ran 'TestMul-Lo-s64' for 6 iterations.
-Ran 'TestMul-Hi-s64' for 6 iterations.
-Ran 'TestMad-Lo-u16' for 7 iterations.
-Ran 'TestMad-Hi-u16' for 7 iterations.
-Ran 'TestMad-Wide-u16' for 7 iterations.
-Ran 'TestMad-Lo-s16' for 5 iterations.
-Ran 'TestMad-Hi-s16' for 7 iterations.
-Ran 'TestMad-Wide-s16' for 4 iterations.
-Ran 'TestMad-Lo-u32' for 4 iterations.
-Ran 'TestMad-Hi-u32' for 4 iterations.
-Ran 'TestMad-Wide-u32' for 6 iterations.
-Ran 'TestMad-Lo-s32' for 4 iterations.
+Ran 'TestSub-u64' for 2 iterations.
+Ran 'TestSub-s64' for 2 iterations.
+Ran 'TestSub-Carry-s32' for 5 iterations.
+Ran 'TestSub-Carry-u32' for 3 iterations.
+Ran 'TestAdd-Carry-s32' for 5 iterations.
+Ran 'TestAdd-Carry-u32' for 5 iterations.
+Ran 'TestMul-Lo-u16' for 2 iterations.
+Ran 'TestMul-Hi-u16' for 2 iterations.
+Ran 'TestMul-Wide-u16' for 2 iterations.
+Ran 'TestMul-Lo-s16' for 3 iterations.
+Ran 'TestMul-Hi-s16' for 2 iterations.
+Ran 'TestMul-Wide-s16' for 2 iterations.
+Ran 'TestMul-Lo-u32' for 5 iterations.
+Ran 'TestMul-Hi-u32' for 5 iterations.
+Ran 'TestMul-Wide-u32' for 5 iterations.
+Ran 'TestMul-Lo-s32' for 5 iterations.
+Ran 'TestMul-Hi-s32' for 5 iterations.
+Ran 'TestMul-Wide-s32' for 5 iterations.
+Ran 'TestMul-Lo-u64' for 2 iterations.
+Ran 'TestMul-Hi-u64' for 2 iterations.
+Ran 'TestMul-Lo-s64' for 2 iterations.
+Ran 'TestMul-Hi-s64' for 2 iterations.
+Ran 'TestMad-Lo-u16' for 3 iterations.
+Ran 'TestMad-Hi-u16' for 3 iterations.
+Ran 'TestMad-Wide-u16' for 5 iterations.
+Ran 'TestMad-Lo-s16' for 3 iterations.
+Ran 'TestMad-Hi-s16' for 3 iterations.
+Ran 'TestMad-Wide-s16' for 5 iterations.
+Ran 'TestMad-Lo-u32' for 3 iterations.
+Ran 'TestMad-Hi-u32' for 3 iterations.
+Ran 'TestMad-Wide-u32' for 2 iterations.
+Ran 'TestMad-Lo-s32' for 3 iterations.
 Ran 'TestMad-Hi-s32' for 3 iterations.
 Ran 'TestMad-Sat-Hi-s32' for 3 iterations.
-Ran 'TestMad-Wide-s32' for 5 iterations.
+Ran 'TestMad-Wide-s32' for 2 iterations.
 Ran 'TestMad-Lo-u64' for 4 iterations.
 Ran 'TestMad-Hi-u64' for 4 iterations.
 Ran 'TestMad-Lo-s64' for 4 iterations.
 Ran 'TestMad-Hi-s64' for 4 iterations.
-Ran 'TestSad-u16' for 6 iterations.
-Ran 'TestSad-s16' for 5 iterations.
-Ran 'TestSad-u32' for 4 iterations.
-Ran 'TestSad-s32' for 4 iterations.
+Ran 'TestSad-u16' for 3 iterations.
+Ran 'TestSad-s16' for 3 iterations.
+Ran 'TestSad-u32' for 2 iterations.
+Ran 'TestSad-s32' for 3 iterations.
 Ran 'TestSad-u64' for 4 iterations.
-Ran 'TestSad-s64' for 4 iterations.
-Ran 'TestDiv-u16' for 4 iterations.
-Ran 'TestDiv-s16' for 4 iterations.
-Ran 'TestDiv-u32' for 7 iterations.
-Ran 'TestDiv-s32' for 7 iterations.
-Ran 'TestDiv-u64' for 6 iterations.
-Ran 'TestDiv-s64' for 6 iterations.
-Ran 'TestRem-u16' for 4 iterations.
-Ran 'TestRem-s16' for 4 iterations.
-Ran 'TestRem-u32' for 7 iterations.
-Ran 'TestRem-s32' for 7 iterations.
-Ran 'TestRem-u64' for 5 iterations.
-Ran 'TestRem-s64' for 6 iterations.
-Ran 'TestAbs-s16' for 5 iterations.
-Ran 'TestAbs-s32' for 4 iterations.
-Ran 'TestAbs-s64' for 7 iterations.
-Ran 'TestNeg-s16' for 5 iterations.
-Ran 'TestNeg-s32' for 4 iterations.
-Ran 'TestNeg-s64' for 7 iterations.
-Ran 'TestMax-u16' for 4 iterations.
-Ran 'TestMax-u32' for 7 iterations.
-Ran 'TestMax-u64' for 6 iterations.
-Ran 'TestMax-s16' for 4 iterations.
-Ran 'TestMax-s32' for 7 iterations.
-Ran 'TestMax-s64' for 6 iterations.
-Ran 'TestMin-u16' for 4 iterations.
-Ran 'TestMin-u32' for 4 iterations.
-Ran 'TestMin-u64' for 5 iterations.
-Ran 'TestMin-s16' for 4 iterations.
-Ran 'TestMin-s32' for 7 iterations.
-Ran 'TestMin-s64' for 6 iterations.
-Ran 'TestPopc-b32' for 4 iterations.
-Ran 'TestPopc-b64' for 4 iterations.
-Ran 'TestClz-b32' for 4 iterations.
-Ran 'TestClz-b64' for 7 iterations.
+Ran 'TestSad-s64' for 2 iterations.
+Ran 'TestDiv-u16' for 2 iterations.
+Ran 'TestDiv-s16' for 2 iterations.
+Ran 'TestDiv-u32' for 5 iterations.
+Ran 'TestDiv-s32' for 5 iterations.
+Ran 'TestDiv-u64' for 2 iterations.
+Ran 'TestDiv-s64' for 2 iterations.
+Ran 'TestRem-u16' for 2 iterations.
+Ran 'TestRem-s16' for 2 iterations.
+Ran 'TestRem-u32' for 5 iterations.
+Ran 'TestRem-s32' for 5 iterations.
+Ran 'TestRem-u64' for 2 iterations.
+Ran 'TestRem-s64' for 2 iterations.
+Ran 'TestAbs-s16' for 3 iterations.
+Ran 'TestAbs-s32' for 2 iterations.
+Ran 'TestAbs-s64' for 5 iterations.
+Ran 'TestNeg-s16' for 4 iterations.
+Ran 'TestNeg-s32' for 3 iterations.
+Ran 'TestNeg-s64' for 5 iterations.
+Ran 'TestMax-u16' for 2 iterations.
+Ran 'TestMax-u32' for 5 iterations.
+Ran 'TestMax-u64' for 1 iterations.
+Ran 'TestMax-s16' for 3 iterations.
+Ran 'TestMax-s32' for 5 iterations.
+Ran 'TestMax-s64' for 2 iterations.
+Ran 'TestMin-u16' for 3 iterations.
+Ran 'TestMin-u32' for 5 iterations.
+Ran 'TestMin-u64' for 2 iterations.
+Ran 'TestMin-s16' for 2 iterations.
+Ran 'TestMin-s32' for 5 iterations.
+Ran 'TestMin-s64' for 2 iterations.
+Ran 'TestPopc-b32' for 2 iterations.
+Ran 'TestPopc-b64' for 5 iterations.
+Ran 'TestClz-b32' for 2 iterations.
+Ran 'TestClz-b64' for 5 iterations.
+Ran 'TestBfind-u32' for 3 iterations.
+Ran 'TestBfind-u64' for 5 iterations.
+Ran 'TestBfind-s32' for 2 iterations.
+Ran 'TestBfind-s64' for 5 iterations.
+Ran 'TestBfind-shiftamount-u32' for 2 iterations.
+Ran 'TestBfind-shiftamount-u64' for 5 iterations.
+Ran 'TestBfind-shiftamount-s32' for 3 iterations.
+Ran 'TestBfind-shiftamount-s64' for 5 iterations.
 
 
 
 INFO     
 Passing tests:
- (0.043s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Passed
- (12.219s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
- (0.030s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
- (0.178s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
- (0.044s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Passed
- (0.039s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
- (0.047s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Passed
- (0.651s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
+ (0.073s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Passed
+ (12.696s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
+ (0.064s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
+ (0.259s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
+ (0.062s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Passed
+ (0.081s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
+ (0.076s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Passed
+ (0.782s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
 
 Failing tests:
- (0.049s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Did not complete.
- (0.256s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Did not complete.
- (0.067s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Did not complete.
- (0.064s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Did not complete.
- (0.071s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Did not complete.
- (0.060s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Did not complete.
- (0.257s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Did not complete.
- (0.202s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Did not complete.
- (0.125s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Did not complete.
+ (0.086s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Did not complete.
+ (0.275s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Did not complete.
+ (0.109s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Did not complete.
+ (0.114s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Did not complete.
+ (0.093s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Did not complete.
+ (0.069s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Did not complete.
+ (0.211s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Did not complete.
+ (0.093s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Did not complete.
+ (0.126s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Did not complete.
 
 Non-Existent tests:
 

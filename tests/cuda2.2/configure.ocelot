@@ -1,0 +1,34 @@
+{
+	ocelot: "ocelot",
+	version: "1.1.520",
+	trace: { 
+		enabled: false,
+		database: "traces/database.trace",
+		memory: false,
+		branch: false,
+		sharedComputation: false,
+		instruction: false,
+		parallelism: false,
+		cacheSimulator: false,
+		memoryChecker: true,
+		raceDetector: true,
+		warpSynchronous: {
+			enabled: false,
+			emitHotPaths: true
+		},
+		performanceBound: {
+			enabled: false,
+			protocol: "sm_20"
+		}
+	},
+	cuda: {
+		implementation: CudaRuntime,
+		runtimeApiTrace: "trace/CudaAPI.trace"
+	},
+	executive: {
+		devices: [ amd ],
+		optimizationLevel: basic,
+		workerThreadLimit: 2
+	}
+}
+

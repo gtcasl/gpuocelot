@@ -141,15 +141,18 @@ namespace translator
 
 		switch(s)
 		{
-			case ir::PTXOperand::tidX:   sr = ir::ILOperand::vTidInGrpX;    break;
-			case ir::PTXOperand::tidY:   sr = ir::ILOperand::vTidInGrpY;    break;
-			case ir::PTXOperand::tidZ:   sr = ir::ILOperand::vTidInGrpZ;    break;
-			case ir::PTXOperand::ntidX:  sr = ir::ILOperand::vNTidInGrpX;   break;
-			case ir::PTXOperand::ntidY:  sr = ir::ILOperand::vNTidInGrpY;   break;
-			case ir::PTXOperand::ntidZ:  sr = ir::ILOperand::vNTidInGrpZ;   break;
-			case ir::PTXOperand::ctaIdX: sr = ir::ILOperand::vThreadGrpIdX; break;
-			case ir::PTXOperand::ctaIdY: sr = ir::ILOperand::vThreadGrpIdY; break;
-			case ir::PTXOperand::ctaIdZ: sr = ir::ILOperand::vThreadGrpIdZ; break;
+			case ir::PTXOperand::tidX:    sr = ir::ILOperand::vTidInGrpX;     break;
+			case ir::PTXOperand::tidY:    sr = ir::ILOperand::vTidInGrpY;     break;
+			case ir::PTXOperand::tidZ:    sr = ir::ILOperand::vTidInGrpZ;     break;
+			case ir::PTXOperand::ntidX:   sr = ir::ILOperand::vNTidInGrpX;    break;
+			case ir::PTXOperand::ntidY:   sr = ir::ILOperand::vNTidInGrpY;    break;
+			case ir::PTXOperand::ntidZ:   sr = ir::ILOperand::vNTidInGrpZ;    break;
+			case ir::PTXOperand::ctaIdX:  sr = ir::ILOperand::vThreadGrpIdX;  break;
+			case ir::PTXOperand::ctaIdY:  sr = ir::ILOperand::vThreadGrpIdY;  break;
+			case ir::PTXOperand::ctaIdZ:  sr = ir::ILOperand::vThreadGrpIdZ;  break;
+			case ir::PTXOperand::nctaIdX: sr = ir::ILOperand::vNThreadGrpIdX; break;
+			case ir::PTXOperand::nctaIdY: sr = ir::ILOperand::vNThreadGrpIdY; break;
+			case ir::PTXOperand::nctaIdZ: sr = ir::ILOperand::vNThreadGrpIdZ; break;
 			default: assertM(false, "Special Register " << s << " not supported");
 		}
 
@@ -162,6 +165,7 @@ namespace translator
 		{
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
+			case ir::PTXOperand::s32:
 			{
 				ir::ILIadd iadd;
 

@@ -39,6 +39,9 @@ namespace ir
 				vThreadGrpIdX,
 				vThreadGrpIdY,
 				vThreadGrpIdZ,
+				vNThreadGrpIdX,
+				vNThreadGrpIdY,
+				vNThreadGrpIdZ,
 				SpecialRegister_invalid
 			};
 

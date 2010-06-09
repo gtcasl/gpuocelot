@@ -123,9 +123,13 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	Translation translation(&F);
 	
+	report("Vectorization: " << translation.F->getNameStr());
+	
 	breadthFirstTraversal(translation.traversal, translation.F);
 	
 	addInterleavedInstructions(translation);
+	resolveDependencies(translation);
+	
 	updateThreadIdxUses(translation);
 	updateLocalMemAddresses(translation);
 	resolveControlFlow(translation);
@@ -134,6 +138,8 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
 		updateSchedulerBlocks(translation);
 	}
+	
+	report("end vectorization " << translation.F->getNameStr() << "\n");
 	
 	// debugging
 	//debugEmitCFG(translation);
@@ -147,14 +153,12 @@ void analysis::LLVMUniformVectorization::breadthFirstTraversal(
 
 	BasicBlockList blockList;
 	
-	
 	// copy block pointers into a mutable structure
 	llvm::Function::BasicBlockListType & llvmBasicBlocks = F->getBasicBlockList();
 	for (llvm::Function::BasicBlockListType::iterator bb_it = llvmBasicBlocks.begin();
 		bb_it != llvmBasicBlocks.end(); ++bb_it) {
 		blockList.push_back(&*bb_it);
 	}
-	report("breadthFirstTraversal() - " << llvmBasicBlocks.size() << " blocks");
 
 	BasicBlockList workList; 
 	std::set< llvm::BasicBlock *> visited;
@@ -187,22 +191,18 @@ void analysis::LLVMUniformVectorization::breadthFirstTraversal(
 			workList.push_back(termInst->getSuccessor(i));
 		}
 	}
-	
-	report(" end BF traversal");
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	\brief 
 */
 void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation &translation) {
 
+	// create blocks	
 	llvm::Function::BasicBlockListType & basicBlocks = translation.F->getBasicBlockList();
 
-	breadthFirstTraversal(translation.traversal, translation.F);
-
-	report("Vectorization: " << translation.F->getNameStr());
-
-	// create blocks
 	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
 		bb_it != translation.traversal.end(); ++bb_it) {
 		
@@ -222,9 +222,6 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 			translation.F->getContext(), ss.str(), 0, 0);
 		translation.warpBlocksMap[bb] = warpBlock;
 	}
-
-	// breadth-first traversal
-	report("translation.traversal.size() = " << translation.traversal.size());
 	
 	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
 		bb_it != translation.traversal.end(); ++bb_it) {
@@ -260,36 +257,6 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 					}
 					instList.push_back(instr);
 
-					/*
-					updateDependencies(translation, instr, tid);
-					
-					// replace element ptr instructions with computations of thread idx
-					if (llvm::GetElementPtrInst::classof(instr)) {
-						llvm::GetElementPtrInst *ptrInst = static_cast<llvm::GetElementPtrInst *>(instr);
-						
-						if (ptrInst->getPointerOperand()->getNameStr() == "__ctaContext") {
-							int indices[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
-							for (unsigned int idx = 1; idx < ptrInst->getNumOperands(); idx++) {
-							
-								if (llvm::ConstantInt::classof(ptrInst->getOperand(idx))) {
-									llvm::ConstantInt *constInt = static_cast<llvm::ConstantInt *>(
-										ptrInst->getOperand(idx));
-									
-									indices[idx] = (int)constInt->getZExtValue();
-								}
-							}
-							
-							if (indices[1] == 0 && indices[2] == 0 && indices[3] == 0) {
-								// tidx
-								translation.threadIdxMap[ptrInst] = tid;
-							}
-							else if (indices[1] == 0 && indices[2] == 4 && indices[3] < 0) {
-								// local memory
-								translation.localMemPtrMap[ptrInst] = tid;
-							}
-						}
-					}
-					*/
 					translation.warpInstructionMap[(&*inst_it)].push_back(instr);
 				}
 			}
@@ -299,7 +266,12 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 		llvm::ReturnInst::Create(translation.F->getContext(), 0, warpBlock);	
 		basicBlocks.push_back(warpBlock);
 	}
+}
 
+/*!
+	\brief visits all cloned instructions and resolves dependencies
+*/
+void analysis::LLVMUniformVectorization::resolveDependencies(Translation &translation) {
 	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
 		bb_it != translation.traversal.end(); ++bb_it) {
 
@@ -353,13 +325,10 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 							}
 						}
 					}
-					
 				}
 			}
 		}
 	}
-
-	report("end vectorization " << translation.F->getNameStr() << "\n");
 }
 
 /*!
@@ -396,8 +365,7 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 		thread ID and LLVMContext::localSize
 */
 void analysis::LLVMUniformVectorization::updateLocalMemAddresses(Translation &translation) {
-	// TODO
-	
+
 	// visit all tidx dereferences and add threadID to result
 	for (std::map< llvm::Instruction *, int >::iterator ptr_it = translation.localMemPtrMap.begin();
 		ptr_it != translation.localMemPtrMap.end(); ++ptr_it) {
@@ -514,6 +482,8 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 		}
 	}	
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	\brief replace dummy terminators in warp-synchronous block structure with

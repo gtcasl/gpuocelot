@@ -1856,8 +1856,7 @@ namespace executive
 		
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
 		manager.add(uniformVectorizationPass);
-		level = 1;
-		
+		level = 2;
 		
 		if (level == 0) {
 		
@@ -1905,8 +1904,9 @@ namespace executive
 		}
 		
 		manager.run( *module );
-		#endif
+		module->dump();
 		
+		#endif		
 		report("end optimization");
 	}
 	

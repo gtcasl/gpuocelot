@@ -22,7 +22,7 @@
 #include <llvm/PassManager.h>
 
 // toggles uniform control flow warp-synchronous execution or scalar execution (1)
-#define LLVM_UNIFORMCONTROL_WARPSIZE 1
+#define LLVM_UNIFORMCONTROL_WARPSIZE 4
 
 namespace analysis
 {
@@ -153,7 +153,7 @@ namespace analysis
 
 			\param warpSize number of logical threads per warp
 		*/
-		LLVMUniformVectorization(int warpSize=4);
+		LLVMUniformVectorization(int warpSize = LLVM_UNIFORMCONTROL_WARPSIZE);
 		~LLVMUniformVectorization();
 
 	public:
@@ -182,6 +182,11 @@ namespace analysis
 				instructions in the parallel warp-synchronous block structure
 		*/
 		void addInterleavedInstructions(Translation &translation);
+		
+		/*!
+			\brief visits all cloned instructions and resolves dependencies
+		*/
+		void resolveDependencies(Translation &translation);
 		
 		/*!
 			\brief given a cloned instruction, update data dependencies to correspond to

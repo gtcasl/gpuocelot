@@ -139,7 +139,8 @@ namespace translator
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
-				ir::PTXOperand::SpecialRegister s );
+				ir::PTXOperand::SpecialRegister s, 
+				ir::PTXOperand::VectorIndex index );
 			ir::LLVMInstruction::Operand 
 				_getMemoryBasePointer( ir::PTXInstruction::AddressSpace space );
 			ir::LLVMInstruction::Operand _getAddressableVariablePointer( 

@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /*! \brief A namespace for parsing PTX 1.4 */
 namespace ptx
@@ -272,6 +272,7 @@ namespace parser
 		else if( token == TOKEN_SM12 ) statement.targets.push_back( "sm_12" );
 		else if( token == TOKEN_SM13 ) statement.targets.push_back( "sm_13" );
 		else if( token == TOKEN_SM20 ) statement.targets.push_back( "sm_20" );
+		else if( token == TOKEN_SM21 ) statement.targets.push_back( "sm_21" );
 		else if( token == TOKEN_MAP_F64_TO_F32 )
 		{
 			statement.targets.push_back( "map_f64_to_f32" );
@@ -328,6 +329,11 @@ namespace parser
 	void PTXParser::State::shiftAmount( bool shift )
 	{
 		statement.instruction.shiftAmount = shift;
+	}
+
+	void PTXParser::State::vectorIndex( int token )
+	{
+		operand.vIndex = tokenToVectorIndex( token );
 	}
 
 	void PTXParser::State::arrayDimensionSet( long long int value, 
@@ -395,7 +401,6 @@ namespace parser
 		statement.directive = ir::PTXStatement::Reg;
 		statement.type = operand.type;
 		statement.name = name;
-		statement.array.vec = ir::PTXOperand::v1;
 		statement.attribute = ir::PTXStatement::NoAttribute;
 		
 		if( operand.type == ir::PTXOperand::pred )
@@ -421,7 +426,7 @@ namespace parser
 
 			operand.addressMode = ir::PTXOperand::Register;
 			operand.identifier = statement.name;
-			operand.vec = ir::PTXOperand::v1;
+			operand.vec = statement.array.vec;
 
 			operands.insert( std::make_pair( statement.name, 
 				OperandWrapper( operand, 
@@ -448,7 +453,7 @@ namespace parser
 
 			operand.identifier = name.str();
 			operand.addressMode = ir::PTXOperand::Register;
-			operand.vec = ir::PTXOperand::v1;
+			operand.vec = statement.array.vec;
 
 			operands.insert( std::make_pair( name.str(), 
 				OperandWrapper( operand, 
@@ -664,7 +669,7 @@ namespace parser
 		if( inEntry )
 		{
 			localOperands.push_back( statement.name );
-		}		
+		}
 	}
 
 	void PTXParser::State::location( long long int one, long long int two, 
@@ -1358,7 +1363,19 @@ namespace parser
 		
 		return ir::PTXOperand::v1;
 	}
-	
+
+	ir::PTXOperand::VectorIndex PTXParser::tokenToVectorIndex( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_X: return ir::PTXOperand::ix;
+			case TOKEN_Y: return ir::PTXOperand::iy;
+			case TOKEN_Z: return ir::PTXOperand::iz;
+			case TOKEN_W: return ir::PTXOperand::iw;
+		}
+		return ir::PTXOperand::ix;
+	}
+
 	ir::PTXInstruction::Opcode PTXParser::stringToOpcode( std::string string )
 	{
 		if( string == "abs" ) return ir::PTXInstruction::Abs; 

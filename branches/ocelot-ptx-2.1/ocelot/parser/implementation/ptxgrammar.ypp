@@ -73,6 +73,7 @@
 %token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_SM10
 %token<value> TOKEN_MINNCTAPERSM
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
+%token<value> TOKEN_SM21
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
 %token<value> TOKEN_REG TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA
@@ -93,6 +94,7 @@
 %token<value> TOKEN_FTZ TOKEN_APPROX TOKEN_FULL TOKEN_SHIFT_AMOUNT
 
 %token<value> TOKEN_V2 TOKEN_V4
+%token<value> TOKEN_X TOKEN_Y TOKEN_Z TOKEN_W
 
 %token<value> TOKEN_ANY TOKEN_ALL
 
@@ -327,10 +329,10 @@ registerIdentifierList : registerIdentifierList registerSeperator identifier
 	state.registerDeclaration( $<text>3, @3 );
 };
 
-registerDeclaration : TOKEN_REG dataType registerIdentifierList ';'
-{
+registerPrefix : statementVectorType dataType;
+registerPrefix : dataType;
 
-};
+registerDeclaration : TOKEN_REG registerPrefix registerIdentifierList ';';
 
 fileDeclaration : TOKEN_FILE TOKEN_DECIMAL_CONSTANT TOKEN_STRING
 {
@@ -513,7 +515,19 @@ labelOperand : identifier
 	state.labelOperand( $<text>1 );
 };
 
-nonLabelOperand : identifier
+vectorIndex : TOKEN_X | TOKEN_Y | TOKEN_Z | TOKEN_W;
+
+optionalVectorIndex : vectorIndex
+{
+	state.vectorIndex( $<value>1 );
+};
+
+optionalVectorIndex : /* empty string */
+{
+
+};
+
+nonLabelOperand : identifier optionalVectorIndex
 {
 	state.nonLabelOperand( $<text>1, @1, false );
 };

@@ -859,7 +859,7 @@ namespace translator
 			}
 			case ir::PTXOperand::Special:
 			{
-				op.name = _loadSpecialRegister( o.special );
+				op.name = _loadSpecialRegister( o.special, o.vIndex );
 				break;
 			}
 			case ir::PTXOperand::Invalid:
@@ -5518,7 +5518,7 @@ namespace translator
 	}
 
 	std::string PTXToLLVMTranslator::_loadSpecialRegister( 
-		ir::PTXOperand::SpecialRegister s )
+		ir::PTXOperand::SpecialRegister s, ir::PTXOperand::VectorIndex index )
 	{
 		std::string reg;
 
@@ -5531,40 +5531,58 @@ namespace translator
 		
 		switch( s )
 		{
-			case ir::PTXOperand::tidX:
+			case ir::PTXOperand::tid:
 			{
-				get.indices.push_back( 0 );
-				get.indices.push_back( 0 );
+				switch( index )
+				{
+					case ir::PTXOperand::ix:
+					{
+						get.indices.push_back( 0 );
+						get.indices.push_back( 0 );
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						get.indices.push_back( 0 );
+						get.indices.push_back( 1 );
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						get.indices.push_back( 0 );
+						get.indices.push_back( 2 );
+						break;
+					}
+					default: assertM( false, "Invalid Special register " 
+						<< ir::PTXOperand::toString( s ) << "." );
+				}
 				break;
 			}
-			case ir::PTXOperand::tidY:
+			case ir::PTXOperand::ntid:
 			{
-				get.indices.push_back( 0 );
-				get.indices.push_back( 1 );
-				break;
-			}
-			case ir::PTXOperand::tidZ:
-			{
-				get.indices.push_back( 0 );
-				get.indices.push_back( 2 );
-				break;
-			}
-			case ir::PTXOperand::ntidX:
-			{
-				get.indices.push_back( 1 );
-				get.indices.push_back( 0 );
-				break;
-			}
-			case ir::PTXOperand::ntidY:
-			{
-				get.indices.push_back( 1 );
-				get.indices.push_back( 1 );
-				break;
-			}
-			case ir::PTXOperand::ntidZ:
-			{
-				get.indices.push_back( 1 );
-				get.indices.push_back( 2 );
+				switch( index )
+				{
+					case ir::PTXOperand::ix:
+					{
+						get.indices.push_back( 1 );
+						get.indices.push_back( 0 );
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						get.indices.push_back( 1 );
+						get.indices.push_back( 1 );
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						get.indices.push_back( 1 );
+						get.indices.push_back( 2 );
+						break;
+					}
+					default: assertM( false, "Invalid Special register " 
+						<< ir::PTXOperand::toString( s ) << "." );
+				}
 				break;
 			}
 			case ir::PTXOperand::laneId:
@@ -5585,40 +5603,58 @@ namespace translator
 					<< ir::PTXOperand::toString( s ) << " not supported." );
 				break;
 			}
-			case ir::PTXOperand::ctaIdX:
+			case ir::PTXOperand::ctaId:
 			{
-				get.indices.push_back( 2 );
-				get.indices.push_back( 0 );
+				switch( index )
+				{
+					case ir::PTXOperand::ix:
+					{
+						get.indices.push_back( 2 );
+						get.indices.push_back( 0 );
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						get.indices.push_back( 2 );
+						get.indices.push_back( 1 );
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						get.indices.push_back( 2 );
+						get.indices.push_back( 2 );
+						break;
+					}
+					default: assertM( false, "Invalid Special register " 
+						<< ir::PTXOperand::toString( s ) << "." );
+				}
 				break;
 			}
-			case ir::PTXOperand::ctaIdY:
+			case ir::PTXOperand::nctaId:
 			{
-				get.indices.push_back( 2 );
-				get.indices.push_back( 1 );
-				break;
-			}
-			case ir::PTXOperand::ctaIdZ:
-			{
-				get.indices.push_back( 2 );
-				get.indices.push_back( 2 );
-				break;
-			}
-			case ir::PTXOperand::nctaIdX:
-			{
-				get.indices.push_back( 3 );
-				get.indices.push_back( 0 );
-				break;
-			}
-			case ir::PTXOperand::nctaIdY:
-			{
-				get.indices.push_back( 3 );
-				get.indices.push_back( 1 );
-				break;
-			}
-			case ir::PTXOperand::nctaIdZ:
-			{
-				get.indices.push_back( 3 );
-				get.indices.push_back( 2 );
+				switch( index )
+				{
+					case ir::PTXOperand::ix:
+					{
+						get.indices.push_back( 3 );
+						get.indices.push_back( 0 );
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						get.indices.push_back( 3 );
+						get.indices.push_back( 1 );
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						get.indices.push_back( 3 );
+						get.indices.push_back( 2 );
+						break;
+					}
+					default: assertM( false, "Invalid Special register " 
+						<< ir::PTXOperand::toString( s ) << "." );
+				}
 				break;
 			}
 			case ir::PTXOperand::smId:

@@ -112,8 +112,9 @@ namespace executive {
 		const ir::PTXInstruction& currentInstruction(CTAContext & context);
 
 		/*! Gets special value */
-		ir::PTXU32 getSpecialValue( const int threadId,
-			const ir::PTXOperand::SpecialRegister ) const;
+		ir::PTXU32 getSpecialValue(const int threadId,
+			const ir::PTXOperand::SpecialRegister,
+			const ir::PTXOperand::VectorIndex) const;
 		
 	protected:
 		// execution helper functions

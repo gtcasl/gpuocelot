@@ -29,7 +29,7 @@
 #endif
 
 // global control for enabling reporting within the emulator
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
@@ -195,7 +195,8 @@ const ir::PTXInstruction& executive::CooperativeThreadArray::currentInstruction(
 }
 
 ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue( 
-	const int threadId, const ir::PTXOperand::SpecialRegister reg ) const
+	const int threadId, const ir::PTXOperand::SpecialRegister reg, 
+	const ir::PTXOperand::VectorIndex index ) const
 {
 	assert( reg != ir::PTXOperand::SpecialRegister_invalid );
 	assert( reg != ir::PTXOperand::laneId );
@@ -208,23 +209,74 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	assert( reg != ir::PTXOperand::gridId );
 
 	switch( reg ) {
-		case ir::PTXOperand::tidX: return ( threadId % blockDim.x ); break;
-		case ir::PTXOperand::tidY: return ( ( threadId / blockDim.x ) 
-			% blockDim.y ); break;
-		case ir::PTXOperand::tidZ: return ( ( threadId 
-			/ ( blockDim.x * blockDim.y ) ) ); break;
-		case ir::PTXOperand::ntidX: return blockDim.x; break;
-		case ir::PTXOperand::ntidY: return blockDim.y; break;
-		case ir::PTXOperand::ntidZ: return blockDim.z; break;
-		case ir::PTXOperand::warpId: return 0; break;
-		case ir::PTXOperand::warpSize: 
-			return blockDim.z * blockDim.y * blockDim.x; break;
-		case ir::PTXOperand::ctaIdX: return blockId.x; break;
-		case ir::PTXOperand::ctaIdY: return blockId.y; break;
-		case ir::PTXOperand::ctaIdZ: return blockId.z; break;
-		case ir::PTXOperand::nctaIdX: return gridDim.x; break;
-		case ir::PTXOperand::nctaIdY: return gridDim.y; break;
-		case ir::PTXOperand::nctaIdZ: return gridDim.z; break;
+		case ir::PTXOperand::tid: {
+			switch( index ) {
+				case ir::PTXOperand::ix: {
+					return ( threadId % blockDim.x );
+				}
+				case ir::PTXOperand::iy: {
+					return ( ( threadId / blockDim.x ) % blockDim.y );
+				}
+				case ir::PTXOperand::iz: {
+					return ( ( threadId / ( blockDim.x * blockDim.y ) ) ); 
+				}
+				case ir::PTXOperand::iw: assertM(false, "%tid.w is invalid.");
+				case ir::PTXOperand::iAll: assertM(false, "%tid is invalid.");
+			}
+			break;
+		}
+		case ir::PTXOperand::ntid: {
+			switch( index ) {
+				case ir::PTXOperand::ix: {
+					return blockDim.x;
+				}
+				case ir::PTXOperand::iy: {
+					return blockDim.y;
+				}
+				case ir::PTXOperand::iz: {
+					return blockDim.z; 
+				}
+				case ir::PTXOperand::iw: assertM(false, "%ntid.w is invalid.");
+				case ir::PTXOperand::iAll: assertM(false, "%ntid is invalid.");
+			}
+			break;
+		}
+		case ir::PTXOperand::warpId: return 0;
+		case ir::PTXOperand::warpSize: {
+			return blockDim.z * blockDim.y * blockDim.x;
+		}
+		case ir::PTXOperand::ctaId: {
+			switch( index ) {
+				case ir::PTXOperand::ix: {
+					return blockId.x;
+				}
+				case ir::PTXOperand::iy: {
+					return blockId.y;
+				}
+				case ir::PTXOperand::iz: {
+					return blockId.z; 
+				}
+				case ir::PTXOperand::iw: assertM(false, "%ctaid.w is invalid.");
+				case ir::PTXOperand::iAll: assertM(false, "%ctaid is invalid.");
+			}
+			break;
+		}
+		case ir::PTXOperand::nctaId: {
+			switch( index ) {
+				case ir::PTXOperand::ix: {
+					return gridDim.x;
+				}
+				case ir::PTXOperand::iy: {
+					return gridDim.y;
+				}
+				case ir::PTXOperand::iz: {
+					return gridDim.z; 
+				}
+				case ir::PTXOperand::iw: assertM(false,"%nctaid.w is invalid.");
+				case ir::PTXOperand::iAll: assertM(false,"%nctaid is invalid.");
+			}
+			break;
+		}
 		case ir::PTXOperand::clock: return clock; break;
 		default: break;
 	}
@@ -435,8 +487,10 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXU8 executive::CooperativeThreadArray::getRegAsU8(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXU8 r = *( (ir::PTXU8*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXU8 executive::CooperativeThreadArray::getRegAsU8(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXU8 r = *( (ir::PTXU8*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -455,8 +509,10 @@ ir::PTXU8 executive::CooperativeThreadArray::getRegAsU8(int threadID, ir::PTXOpe
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXU16 executive::CooperativeThreadArray::getRegAsU16(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXU16 r = *( (ir::PTXU16*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXU16 executive::CooperativeThreadArray::getRegAsU16(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXU16 r = *( (ir::PTXU16*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -475,8 +531,10 @@ ir::PTXU16 executive::CooperativeThreadArray::getRegAsU16(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXU32 executive::CooperativeThreadArray::getRegAsU32(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXU32 r = *( (ir::PTXU32*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXU32 executive::CooperativeThreadArray::getRegAsU32(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXU32 r = *( (ir::PTXU32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -495,8 +553,10 @@ ir::PTXU32 executive::CooperativeThreadArray::getRegAsU32(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXU64 executive::CooperativeThreadArray::getRegAsU64(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXU64 r = *( (ir::PTXU64*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXU64 executive::CooperativeThreadArray::getRegAsU64(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXU64 r = *( (ir::PTXU64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -515,8 +575,10 @@ ir::PTXU64 executive::CooperativeThreadArray::getRegAsU64(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXS8 executive::CooperativeThreadArray::getRegAsS8(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXS8 r = *( (ir::PTXS8*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXS8 executive::CooperativeThreadArray::getRegAsS8(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXS8 r = *( (ir::PTXS8*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -535,8 +597,10 @@ ir::PTXS8 executive::CooperativeThreadArray::getRegAsS8(int threadID, ir::PTXOpe
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXS16 executive::CooperativeThreadArray::getRegAsS16(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXS16 r = *( (ir::PTXS16*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXS16 executive::CooperativeThreadArray::getRegAsS16(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXS16 r = *( (ir::PTXS16*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -555,8 +619,10 @@ ir::PTXS16 executive::CooperativeThreadArray::getRegAsS16(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXS32 executive::CooperativeThreadArray::getRegAsS32(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXS32 r = *( (ir::PTXS32*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXS32 executive::CooperativeThreadArray::getRegAsS32(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXS32 r = *( (ir::PTXS32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -575,8 +641,10 @@ ir::PTXS32 executive::CooperativeThreadArray::getRegAsS32(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXS64 executive::CooperativeThreadArray::getRegAsS64(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXS64 r = *( (ir::PTXS64*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXS64 executive::CooperativeThreadArray::getRegAsS64(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXS64 r = *( (ir::PTXS64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -595,8 +663,10 @@ ir::PTXS64 executive::CooperativeThreadArray::getRegAsS64(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXF32 executive::CooperativeThreadArray::getRegAsF32(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXF32 r = *( (ir::PTXF32*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXF32 executive::CooperativeThreadArray::getRegAsF32(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXF32 r = *( (ir::PTXF32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -615,8 +685,10 @@ ir::PTXF32 executive::CooperativeThreadArray::getRegAsF32(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXF64 executive::CooperativeThreadArray::getRegAsF64(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXF64 r = *( (ir::PTXF64*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXF64 executive::CooperativeThreadArray::getRegAsF64(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXF64 r = *( (ir::PTXF64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -635,8 +707,10 @@ ir::PTXF64 executive::CooperativeThreadArray::getRegAsF64(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXB8 executive::CooperativeThreadArray::getRegAsB8(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXB8 r = *( (ir::PTXB8*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXB8 executive::CooperativeThreadArray::getRegAsB8(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXB8 r = *( (ir::PTXB8*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -655,8 +729,10 @@ ir::PTXB8 executive::CooperativeThreadArray::getRegAsB8(int threadID, ir::PTXOpe
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXB16 executive::CooperativeThreadArray::getRegAsB16(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXB16 r = *( (ir::PTXB16*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXB16 executive::CooperativeThreadArray::getRegAsB16(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXB16 r = *( (ir::PTXB16*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -675,8 +751,10 @@ ir::PTXB16 executive::CooperativeThreadArray::getRegAsB16(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXB32 executive::CooperativeThreadArray::getRegAsB32(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXB32 r = *( (ir::PTXB32*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXB32 executive::CooperativeThreadArray::getRegAsB32(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXB32 r = *( (ir::PTXB32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -695,8 +773,10 @@ ir::PTXB32 executive::CooperativeThreadArray::getRegAsB32(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-ir::PTXB64 executive::CooperativeThreadArray::getRegAsB64(int threadID, ir::PTXOperand::RegisterType reg) {
-	ir::PTXB64 r = *( (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch + threadID ));
+ir::PTXB64 executive::CooperativeThreadArray::getRegAsB64(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	ir::PTXB64 r = *( (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID ));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -715,7 +795,8 @@ ir::PTXB64 executive::CooperativeThreadArray::getRegAsB64(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\param reg index of register
 */
-bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID, ir::PTXOperand::RegisterType reg) {
+bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
 	bool r = (bool)getRegAsU64(threadID, reg);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
@@ -737,8 +818,10 @@ bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsU8(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXU8 value) {
-	ir::PTXU8* r = (ir::PTXU8*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsU8(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXU8 value) {
+	ir::PTXU8* r = (ir::PTXU8*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -757,8 +840,10 @@ void  executive::CooperativeThreadArray::setRegAsU8(int threadID, ir::PTXOperand
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsU16(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXU16 value) {
-	ir::PTXU16* r = (ir::PTXU16*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsU16(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXU16 value) {
+	ir::PTXU16* r = (ir::PTXU16*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -777,8 +862,10 @@ void  executive::CooperativeThreadArray::setRegAsU16(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsU32(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXU32 value) {
-	ir::PTXU32* r = (ir::PTXU32*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsU32(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXU32 value) {
+	ir::PTXU32* r = (ir::PTXU32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -797,8 +884,10 @@ void  executive::CooperativeThreadArray::setRegAsU32(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsU64(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXU64 value) {
-	ir::PTXU64* r = (ir::PTXU64*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsU64(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXU64 value) {
+	ir::PTXU64* r = (ir::PTXU64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -817,8 +906,10 @@ void  executive::CooperativeThreadArray::setRegAsU64(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsS8(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXS8 value) {
-	ir::PTXS8* r = (ir::PTXS8*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsS8(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXS8 value) {
+	ir::PTXS8* r = (ir::PTXS8*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -837,8 +928,10 @@ void  executive::CooperativeThreadArray::setRegAsS8(int threadID, ir::PTXOperand
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsS16(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXS16 value) {
-	ir::PTXS16* r = (ir::PTXS16*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsS16(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXS16 value) {
+	ir::PTXS16* r = (ir::PTXS16*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -857,8 +950,10 @@ void  executive::CooperativeThreadArray::setRegAsS16(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsS32(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXS32 value) {
-	ir::PTXS32* r = (ir::PTXS32*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsS32(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXS32 value) {
+	ir::PTXS32* r = (ir::PTXS32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -877,8 +972,10 @@ void  executive::CooperativeThreadArray::setRegAsS32(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsS64(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXS64 value) {
-	ir::PTXS64* r = (ir::PTXS64*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsS64(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXS64 value) {
+	ir::PTXS64* r = (ir::PTXS64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -897,8 +994,10 @@ void  executive::CooperativeThreadArray::setRegAsS64(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsF32(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXF32 value) {
-	ir::PTXF32* r = (ir::PTXF32*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsF32(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXF32 value) {
+	ir::PTXF32* r = (ir::PTXF32*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -917,8 +1016,10 @@ void  executive::CooperativeThreadArray::setRegAsF32(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsF64(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXF64 value) {
-	ir::PTXF64* r = (ir::PTXF64*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsF64(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXF64 value) {
+	ir::PTXF64* r = (ir::PTXF64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -937,8 +1038,10 @@ void  executive::CooperativeThreadArray::setRegAsF64(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsB8(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXB8 value) {
-	ir::PTXB8* r = (ir::PTXB8*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsB8(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXB8 value) {
+	ir::PTXB8* r = (ir::PTXB8*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -957,8 +1060,10 @@ void  executive::CooperativeThreadArray::setRegAsB8(int threadID, ir::PTXOperand
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsB16(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXB16 value) {
-	ir::PTXB16* r = (ir::PTXB16*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsB16(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXB16 value) {
+	ir::PTXB16* r = (ir::PTXB16*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -977,8 +1082,10 @@ void  executive::CooperativeThreadArray::setRegAsB16(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsB32(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXB32 value) {
-	ir::PTXB32* r = (ir::PTXB32*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsB32(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXB32 value) {
+	ir::PTXB32* r = (ir::PTXB32*)( RegisterFile + reg * RegisterFilePitch 
+	+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -997,8 +1104,10 @@ void  executive::CooperativeThreadArray::setRegAsB32(int threadID, ir::PTXOperan
 	\param threadID ID of the active thread
 	\reg register index
 */
-void  executive::CooperativeThreadArray::setRegAsB64(int threadID, ir::PTXOperand::RegisterType reg, ir::PTXB64 value) {
-	ir::PTXB64* r = (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void  executive::CooperativeThreadArray::setRegAsB64(int threadID, 
+	ir::PTXOperand::RegisterType reg, ir::PTXB64 value) {
+	ir::PTXB64* r = (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1018,8 +1127,10 @@ void  executive::CooperativeThreadArray::setRegAsB64(int threadID, ir::PTXOperan
 	\param reg index of register
 	\param value value of predicate register
 */
-void executive::CooperativeThreadArray::setRegAsPredicate(int threadID, ir::PTXOperand::RegisterType reg, bool value) {
-	ir::PTXB64* r = (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch + threadID );
+void executive::CooperativeThreadArray::setRegAsPredicate(int threadID, 
+	ir::PTXOperand::RegisterType reg, bool value) {
+	ir::PTXB64* r = (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch 
+		+ threadID );
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1033,7 +1144,8 @@ void executive::CooperativeThreadArray::setRegAsPredicate(int threadID, ir::PTXO
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-ir::PTXU8 executive::CooperativeThreadArray::operandAsU8(int threadID, const PTXOperand &op) {
+ir::PTXU8 executive::CooperativeThreadArray::operandAsU8(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsU8(threadID, op.reg) + op.offset;
@@ -1042,14 +1154,15 @@ ir::PTXU8 executive::CooperativeThreadArray::operandAsU8(int threadID, const PTX
 		case PTXOperand::Immediate:
 			return (PTXU8)(op.imm_uint);
 		case PTXOperand::Special:
-			return (PTXU8)getSpecialValue(threadID, op.special);
+			return (PTXU8)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
 	return 0;
 }
 
-ir::PTXU16 executive::CooperativeThreadArray::operandAsU16(int threadID, const PTXOperand &op) {
+ir::PTXU16 executive::CooperativeThreadArray::operandAsU16(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsU16(threadID, op.reg) + op.offset;
@@ -1058,14 +1171,15 @@ ir::PTXU16 executive::CooperativeThreadArray::operandAsU16(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXU16)(op.imm_uint);
 		case PTXOperand::Special:
-			return (PTXU16)getSpecialValue(threadID, op.special);
+			return (PTXU16)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
 	return 0;
 }
 
-ir::PTXU32 executive::CooperativeThreadArray::operandAsU32(int threadID, const PTXOperand &op) {
+ir::PTXU32 executive::CooperativeThreadArray::operandAsU32(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsU32(threadID, op.reg) + op.offset;
@@ -1076,14 +1190,15 @@ ir::PTXU32 executive::CooperativeThreadArray::operandAsU32(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXU32)(op.imm_uint);
 		case PTXOperand::Special:
-			return (PTXU32)getSpecialValue(threadID, op.special);
+			return (PTXU32)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
 	return 0;
 }
 
-ir::PTXU64 executive::CooperativeThreadArray::operandAsU64(int threadID, const PTXOperand &op) {
+ir::PTXU64 executive::CooperativeThreadArray::operandAsU64(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsU64(threadID, op.reg) + op.offset;
@@ -1099,7 +1214,8 @@ ir::PTXU64 executive::CooperativeThreadArray::operandAsU64(int threadID, const P
 	return 0;
 }
 
-ir::PTXS8 executive::CooperativeThreadArray::operandAsS8(int threadID, const PTXOperand &op) {
+ir::PTXS8 executive::CooperativeThreadArray::operandAsS8(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsS8(threadID, op.reg) + op.offset;
@@ -1108,14 +1224,15 @@ ir::PTXS8 executive::CooperativeThreadArray::operandAsS8(int threadID, const PTX
 		case PTXOperand::Immediate:
 			return (PTXS8)(op.imm_int);
 		case PTXOperand::Special:
-			return (PTXS8)getSpecialValue(threadID, op.special);
+			return (PTXS8)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
 	return 0;
 }
 
-ir::PTXS16 executive::CooperativeThreadArray::operandAsS16(int threadID, const PTXOperand &op) {
+ir::PTXS16 executive::CooperativeThreadArray::operandAsS16(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsS16(threadID, op.reg) + op.offset;
@@ -1124,14 +1241,15 @@ ir::PTXS16 executive::CooperativeThreadArray::operandAsS16(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXS16)(op.imm_int);
 		case PTXOperand::Special:
-			return (PTXS16)getSpecialValue(threadID, op.special);
+			return (PTXS16)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
 	return 0;
 }
 
-ir::PTXS32 executive::CooperativeThreadArray::operandAsS32(int threadID, const PTXOperand &op) {
+ir::PTXS32 executive::CooperativeThreadArray::operandAsS32(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsS32(threadID, op.reg) + op.offset;
@@ -1141,14 +1259,15 @@ ir::PTXS32 executive::CooperativeThreadArray::operandAsS32(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXS32)(op.imm_int);
 		case PTXOperand::Special:
-			return (PTXS32)getSpecialValue(threadID, op.special);
+			return (PTXS32)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
 	return 0;
 }
 
-ir::PTXS64 executive::CooperativeThreadArray::operandAsS64(int threadID, const PTXOperand &op) {
+ir::PTXS64 executive::CooperativeThreadArray::operandAsS64(int threadID, 
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsS64(threadID, op.reg) + op.offset;
@@ -1197,7 +1316,7 @@ ir::PTXB8 executive::CooperativeThreadArray::operandAsB8(int threadID, const PTX
 		case PTXOperand::Immediate:
 			return (PTXB8)(op.imm_uint);
 		case PTXOperand::Special:
-			return (PTXB8)getSpecialValue(threadID, op.special);
+			return (PTXB8)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
@@ -1214,7 +1333,7 @@ ir::PTXB16 executive::CooperativeThreadArray::operandAsB16(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXB16)(op.imm_uint);
 		case PTXOperand::Special:
-			return (PTXB16)getSpecialValue(threadID, op.special);
+			return (PTXB16)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
@@ -1231,7 +1350,7 @@ ir::PTXB32 executive::CooperativeThreadArray::operandAsB32(int threadID, const P
 		case PTXOperand::Immediate:
 			return (PTXB32)(op.imm_uint);
 		case PTXOperand::Special:
-			return (PTXB32)getSpecialValue(threadID, op.special);
+			return (PTXB32)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
@@ -4010,11 +4129,12 @@ void executive::CooperativeThreadArray::eval_Membar(CTAContext &context, const P
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Mov(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mov(CTAContext &context, 
+	const PTXInstruction &instr) {
 	trace();
 
 	if (instr.a.addressMode == PTXOperand::Register) {
-		eval_Mov_reg(context, instr);		
+		eval_Mov_reg(context, instr);
 	}
 	else if (instr.a.addressMode == PTXOperand::Special) {
 		eval_Mov_sreg(context, instr);		
@@ -4026,7 +4146,8 @@ void executive::CooperativeThreadArray::eval_Mov(CTAContext &context, const PTXI
 		eval_Mov_addr(context, instr);
 	}
 	else {
-		throw RuntimeException(std::string("unimplemented address mode ") + PTXOperand::toString(instr.a.addressMode), context.PC, instr);
+		throw RuntimeException(std::string("unimplemented address mode ") 
+			+ PTXOperand::toString(instr.a.addressMode), context.PC, instr);
 	}
 }
 
@@ -4063,7 +4184,8 @@ static D scatter(S s)
 	return s;
 }
 
-void executive::CooperativeThreadArray::eval_Mov_reg(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mov_reg(CTAContext &context, 
+	const ir::PTXInstruction &instr) {
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 		
@@ -4112,8 +4234,9 @@ void executive::CooperativeThreadArray::eval_Mov_reg(CTAContext &context, const 
 					a = operandAsU32(threadID, instr.a);
 				}
 				else if (instr.a.array.size() == 2) {
-					a = gather<PTXB32>(operandAsB16(threadID, instr.a.array[0]), 
-						operandAsB16(threadID, instr.a.array[1]));
+					a = gather<PTXB32>(operandAsB16(threadID, 
+						instr.a.array[0]), operandAsB16(threadID, 
+						instr.a.array[1]));
 				}
 				else {
 					assert(instr.a.array.size() == 4);
@@ -4158,12 +4281,14 @@ void executive::CooperativeThreadArray::eval_Mov_reg(CTAContext &context, const 
 					a = operandAsU64(threadID, instr.a);
 				}
 				else if (instr.a.array.size() == 2) {
-					a = gather<PTXB64>(operandAsB32(threadID, instr.a.array[0]), 
+					a = gather<PTXB64>(operandAsB32(threadID, 
+						instr.a.array[0]), 
 						operandAsB32(threadID, instr.a.array[1]));
 				}
 				else {
 					assert(instr.a.array.size() == 4);
-					a = gather<PTXB64>(operandAsB16(threadID, instr.a.array[0]), 
+					a = gather<PTXB64>(
+						operandAsB16(threadID, instr.a.array[0]), 
 						operandAsB16(threadID, instr.a.array[1]), 
 						operandAsB16(threadID, instr.a.array[2]), 
 						operandAsB16(threadID, instr.a.array[3]));
@@ -4214,72 +4339,22 @@ void executive::CooperativeThreadArray::eval_Mov_reg(CTAContext &context, const 
 	}
 }
 
-void executive::CooperativeThreadArray::eval_Mov_sreg(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mov_sreg(CTAContext &context, 
+	const ir::PTXInstruction &instr) {
 	
 	if (instr.type == PTXOperand::u16) {
-		int threadID = 0;
-		for (PTXU16 z = 0; z < blockDim.z; z++) {
-			for (PTXU16 y = 0; y < blockDim.y; y++) {
-				for (PTXU16 x = 0; x < blockDim.x; x++, threadID++) {
-					if (!context.predicated(threadID, instr)) continue;
-					
-					PTXU64 d;
-					switch (instr.a.special) {
-						case PTXOperand::tidX:
-							d = x; break;
-						case PTXOperand::tidY:
-							d = y; break;
-						case PTXOperand::tidZ:
-							d = z; break;
-						case PTXOperand::ntidX:
-							d = blockDim.x; break;
-						case PTXOperand::ntidY:
-							d = blockDim.y; break;
-						case PTXOperand::ntidZ:
-							d = blockDim.z; break;
-						case PTXOperand::ctaIdX:
-							d = blockId.x; break;
-						case PTXOperand::ctaIdY:
-							d = blockId.y; break;
-						case PTXOperand::ctaIdZ:
-							d = blockId.z; break;
-						case PTXOperand::nctaIdX:
-							d = gridDim.x; break;
-						case PTXOperand::nctaIdY:
-							d = gridDim.y; break;
-						case PTXOperand::clock:
-							d = clock; break;
-						default:
-							throw RuntimeException("unimplemented special register class", context.PC, instr);
-					}
-					setRegAsU64(threadID, instr.d.reg, d);
-				}
-			}
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXU16 d = operandAsU16(threadID, instr.a);
+			setRegAsU16(threadID, instr.d.reg, d);			
 		}
-		
 	}
 	else if (instr.type == PTXOperand::u32) {
-		int threadID = 0;
-		for (PTXU16 z = 0; z < blockDim.z; z++) {
-			for (PTXU16 y = 0; y < blockDim.y; y++) {
-				for (PTXU16 x = 0; x < blockDim.x; x++, threadID++) {
-					if (!context.predicated(threadID, instr)) continue;
-					
-					PTXU64 d;
-					switch (instr.a.special) {
-						case PTXOperand::clock:
-							d = clock; break;
-						case PTXOperand::warpSize:
-							d = blockDim.z * blockDim.y * blockDim.x;
-							break;
-						default:
-							throw RuntimeException("Special register not valid for U32 type", context.PC, instr);
-					}
-					setRegAsU64(threadID, instr.d.reg, d);
-				}
-			}
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXU32 d = operandAsU32(threadID, instr.a);
+			setRegAsU32(threadID, instr.d.reg, d);			
 		}
-		
 	}
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);

@@ -130,6 +130,7 @@ namespace parser
 					void instructionVectorType( int token );
 					void attribute( bool visible, bool external );
 					void shiftAmount( bool shift );
+					void vectorIndex( int token );
 					
 					void arrayDimensionSet( long long int value, 
 						YYLTYPE& location, bool add );
@@ -219,6 +220,7 @@ namespace parser
 		public:
 			static std::string toString( YYLTYPE&, State& );
 			static ir::PTXOperand::DataType tokenToDataType( int );
+			static ir::PTXOperand::VectorIndex tokenToVectorIndex( int );
 			static ir::PTXInstruction::Vec tokenToVec( int );
 			static ir::PTXInstruction::Opcode stringToOpcode( std::string );
 			static ir::PTXOperand::SpecialRegister 

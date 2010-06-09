@@ -68,6 +68,7 @@ FLOAT_CONSTANT ({DFC}|{HFC})
 
 FOLLOWSYM  [[:alnum:]_$]
 IDENTIFIER ([[:alpha:]]{FOLLOWSYM}*|[_$%]{FOLLOWSYM}+)
+VECTOR_SUFFIX {""}
 
 NEW_LINE ([\n]*)
 TAB [\t]*
@@ -276,6 +277,8 @@ WHITESPACE [ \t]*
                                     return TOKEN_SM13; }
 "sm_20"                         { yylval->value = TOKEN_SM20; 
                                     return TOKEN_SM20; }
+"sm_21"                         { yylval->value = TOKEN_SM21; 
+                                    return TOKEN_SM21; }
 "map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
                                     return TOKEN_MAP_F64_TO_F32; }
 
@@ -347,6 +350,15 @@ WHITESPACE [ \t]*
 
 ".v2"                           { yylval->value = TOKEN_V2; return TOKEN_V2; }
 ".v4"                           { yylval->value = TOKEN_V4; return TOKEN_V4; }
+
+".x"                            { yylval->value = TOKEN_X; return TOKEN_X; }
+".y"                            { yylval->value = TOKEN_Y; return TOKEN_Y; }
+".z"                            { yylval->value = TOKEN_Z; return TOKEN_Z; }
+".w"                            { yylval->value = TOKEN_W; return TOKEN_W; }
+".r"                            { yylval->value = TOKEN_X; return TOKEN_X; }
+".g"                            { yylval->value = TOKEN_Y; return TOKEN_Y; }
+".b"                            { yylval->value = TOKEN_Z; return TOKEN_Z; }
+".a"                            { yylval->value = TOKEN_W; return TOKEN_W; }
 
 ".any"                          { yylval->value = TOKEN_ANY; return TOKEN_ANY; }
 ".all"                          { yylval->value = TOKEN_ALL; return TOKEN_ALL; }

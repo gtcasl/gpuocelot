@@ -114,7 +114,7 @@ namespace translator
 			case ir::PTXOperand::Special:
 			{
 				op.addressMode = ir::ILOperand::Special;
-				op.special = _translate(o.special);
+				op.special = _translate(o.special, o.vIndex);
 				break;
 			}
 			default:
@@ -135,22 +135,87 @@ namespace translator
 	}
 
 	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
-			const ir::PTXOperand::SpecialRegister &s)
+			const ir::PTXOperand::SpecialRegister &s, 
+			const ir::PTXOperand::VectorIndex &i)
 	{
 		ir::ILOperand::SpecialRegister sr;
 
 		switch(s)
 		{
-			case ir::PTXOperand::tidX:   sr = ir::ILOperand::vTidInGrpX;    break;
-			case ir::PTXOperand::tidY:   sr = ir::ILOperand::vTidInGrpY;    break;
-			case ir::PTXOperand::tidZ:   sr = ir::ILOperand::vTidInGrpZ;    break;
-			case ir::PTXOperand::ntidX:  sr = ir::ILOperand::vNTidInGrpX;   break;
-			case ir::PTXOperand::ntidY:  sr = ir::ILOperand::vNTidInGrpY;   break;
-			case ir::PTXOperand::ntidZ:  sr = ir::ILOperand::vNTidInGrpZ;   break;
-			case ir::PTXOperand::ctaIdX: sr = ir::ILOperand::vThreadGrpIdX; break;
-			case ir::PTXOperand::ctaIdY: sr = ir::ILOperand::vThreadGrpIdY; break;
-			case ir::PTXOperand::ctaIdZ: sr = ir::ILOperand::vThreadGrpIdZ; break;
-			default: assertM(false, "Special Register " << s << " not supported");
+			case ir::PTXOperand::tid:
+			{
+				switch(i)
+				{
+					case ir::PTXOperand::ix:
+					{
+						sr = ir::ILOperand::vTidInGrpX;
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						sr = ir::ILOperand::vTidInGrpY;
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						sr = ir::ILOperand::vTidInGrpZ;
+						break;
+					}
+					default: assertM(false, "Special Register " 
+						<< s << " not supported");
+				}
+				break;
+			}
+			case ir::PTXOperand::ntid:
+			{
+				switch(i)
+				{
+					case ir::PTXOperand::ix:
+					{
+						sr = ir::ILOperand::vNTidInGrpX;
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						sr = ir::ILOperand::vNTidInGrpY;
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						sr = ir::ILOperand::vNTidInGrpZ;
+						break;
+					}
+					default: assertM(false, "Special Register " 
+						<< s << " not supported");
+				}
+				break;
+			}		
+			case ir::PTXOperand::ctaId: 
+			{
+				switch(i)
+				{
+					case ir::PTXOperand::ix:
+					{
+						sr = ir::ILOperand::vThreadGrpIdX;
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						sr = ir::ILOperand::vThreadGrpIdY;
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						sr = ir::ILOperand::vThreadGrpIdZ;
+						break;
+					}
+					default: assertM(false, "Special Register " 
+						<< s << " not supported");
+				}
+				break;
+			}
+			default: assertM(false, "Special Register " << s 
+				<< " not supported");
 		}
 
 		return sr;

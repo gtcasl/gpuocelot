@@ -63,6 +63,55 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST VECTOR ELEMENTS
+std::string testVectorElements_PTX()
+{
+	std::stringstream result;
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg .v4 .u32 %rv<2>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global.v4.u32 %rv0, [%rIn]; \n";
+	result << "\tmov.u32 %rv1.x, %rv0.y; \n";
+	result << "\tmov.u32 %rv1.y, %rv0.z; \n";
+	result << "\tmov.u32 %rv1.z, %rv0.w; \n";
+	result << "\tmov.u32 %rv1.w, %rv0.x; \n";
+	result << "\tst.global.v4.u32 [%rOut], %rv1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+void testVectorElements_REF(void* output, void* input)
+{
+	unsigned int r0 = getParameter<unsigned int>(input, 0);
+	unsigned int r1 = getParameter<unsigned int>(input, sizeof(unsigned int));
+	unsigned int r2 = getParameter<unsigned int>(input, 2*sizeof(unsigned int));
+	unsigned int r3 = getParameter<unsigned int>(input, 3*sizeof(unsigned int));
+		
+	setParameter(output, 0, r1);
+	setParameter(output, sizeof(unsigned int), r2);
+	setParameter(output, 2*sizeof(unsigned int), r3);
+	setParameter(output, 3*sizeof(unsigned int), r0);
+}
+
+test::TestPTXAssembly::TypeVector testVectorElements_IN()
+{
+	return test::TestPTXAssembly::TypeVector(4, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testVectorElements_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(4, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST ADD/SUB
 std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat, bool sub)
 {
@@ -1195,6 +1244,10 @@ namespace test
 
 	void TestPTXAssembly::_loadTests()
 	{
+		add("TestVectorElements-u32", testVectorElements_REF, 
+			testVectorElements_PTX(), testVectorElements_OUT(), 
+			testVectorElements_IN(), uniformRandom<unsigned int, 4>, 1, 1);
+		
 		add("TestAdd-u16", testAdd_REF<unsigned short, false, false>, 
 			testAdd_PTX(ir::PTXOperand::u16, false, false), 
 			testAdd_OUT(I16), testAdd_IN(I16), 

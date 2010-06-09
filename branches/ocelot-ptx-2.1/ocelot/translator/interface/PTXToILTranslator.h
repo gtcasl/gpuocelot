@@ -44,7 +44,8 @@ namespace translator
 			ir::ILOperand _translate(const ir::PTXOperand &o);
 			std::string _translate(const ir::PTXOperand::RegisterType &reg);
 			ir::ILOperand::SpecialRegister _translate(
-					const ir::PTXOperand::SpecialRegister &s);
+					const ir::PTXOperand::SpecialRegister &s, 
+					const ir::PTXOperand::VectorIndex &i);
 
 			void _translateAdd(const ir::PTXInstruction &i);
 			void _translateBra(const ir::PTXInstruction &i, 

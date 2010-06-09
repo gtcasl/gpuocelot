@@ -69,21 +69,13 @@ namespace ir {
 
 		/*!	Special register names */
 		enum SpecialRegister {
-			tidX,
-			tidY,
-			tidZ,
-			ntidX,
-			ntidY,
-			ntidZ,
+			tid,
+			ntid,
 			laneId,
 			warpId,
 			warpSize,
-			ctaIdX,
-			ctaIdY,
-			ctaIdZ,
-			nctaIdX,
-			nctaIdY,
-			nctaIdZ,
+			ctaId,
+			nctaId,
 			smId,
 			nsmId,
 			gridId,
@@ -113,12 +105,21 @@ namespace ir {
 			v2 = 2,				//< vector2
 			v4 = 4				//< vector4
 		};
+		
+		enum VectorIndex {
+			iAll = 0, //! Refers to the complete vector
+			ix = 1, //! Only refers to the x index of the vector
+			iy = 2, //! Only refers to the y index of the vector
+			iz = 3, //! Only refers to the z index of the vector
+			iw = 4 //! Only refers to the w index of the vector
+		};
 
 		typedef std::vector< PTXOperand > Array;
 
 		typedef Instruction::RegisterType RegisterType;
 
 	public:
+		static std::string toString( VectorIndex );
 		static std::string toString( DataType );
 		static std::string toString( SpecialRegister );
 		static std::string toString( AddressMode );
@@ -132,7 +133,7 @@ namespace ir {
 		
 	public:
 		PTXOperand();
-		PTXOperand(SpecialRegister r);
+		PTXOperand(SpecialRegister r, VectorIndex i = iAll);
 		PTXOperand(const std::string& label);
 		PTXOperand(AddressMode m, DataType t, RegisterType r = 0, 
 			int o = 0, Vec v = v1);
@@ -152,8 +153,11 @@ namespace ir {
 		DataType type;
 
 		//!	offset when used with an indirect addressing mode
-		int offset;
-
+		union {
+			int offset;
+			VectorIndex vIndex;
+		};
+		
 		//! immediate-mode value of operand
 		union {
 			long long unsigned int imm_uint;

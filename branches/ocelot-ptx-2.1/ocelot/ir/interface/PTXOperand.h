@@ -137,6 +137,8 @@ namespace ir {
 		PTXOperand(const std::string& label);
 		PTXOperand(AddressMode m, DataType t, RegisterType r = 0, 
 			int o = 0, Vec v = v1);
+		PTXOperand(AddressMode m, DataType t, const std::string& identifier, 
+			int o = 0, Vec v = v1);
 		~PTXOperand();
 
 		std::string toString() const;

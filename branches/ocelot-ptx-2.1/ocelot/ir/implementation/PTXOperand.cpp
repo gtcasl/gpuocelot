@@ -532,6 +532,11 @@ ir::PTXOperand::PTXOperand(AddressMode m, DataType t, RegisterType r,
 	int o, Vec v) : addressMode(m), type(t), offset(o), reg(r), vec(v) {
 }
 
+ir::PTXOperand::PTXOperand(AddressMode m, DataType t, 
+	const std::string& i, int o, Vec v) : identifier(i), 
+	addressMode(m), type(t), offset(o), vec(v) {
+}
+
 ir::PTXOperand::~PTXOperand() {
 
 }

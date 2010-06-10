@@ -409,8 +409,10 @@ namespace parser
 		}
 
 		statement.array.stride.resize(1);
-		
 		statement.array.stride[0] = regs;
+		
+		operand.vec = statement.array.vec;
+		operand.addressMode = ir::PTXOperand::Register;
 		
 		if( regs == 0 )
 		{
@@ -423,15 +425,31 @@ namespace parser
 					<< " already declared in this scope.", 
 					DuplicateDeclaration );
 			}
-
-			operand.addressMode = ir::PTXOperand::Register;
+			
+			if( operand.vec != ir::PTXOperand::v1 )
+			{
+				operand.array.push_back( ir::PTXOperand( 
+					ir::PTXOperand::Register, operand.type, 
+					statement.name + ".x" ) );
+				operand.array.push_back( ir::PTXOperand( 
+					ir::PTXOperand::Register, operand.type, 
+					statement.name + ".y" ) );
+				if( operand.vec != ir::PTXOperand::v2 ) {
+					operand.array.push_back( ir::PTXOperand( 
+						ir::PTXOperand::Register, operand.type, 
+						statement.name + ".z" ) );
+					operand.array.push_back( ir::PTXOperand( 
+						ir::PTXOperand::Register, operand.type, 
+						statement.name + ".w" ) );
+				}
+			}
+		
 			operand.identifier = statement.name;
-			operand.vec = statement.array.vec;
-
+		
 			operands.insert( std::make_pair( statement.name, 
 				OperandWrapper( operand, 
 				statement.instruction.addressSpace ) ) );
-			
+						
 			if( inEntry )
 			{
 				localOperands.push_back( statement.name );
@@ -452,13 +470,30 @@ namespace parser
 			}
 
 			operand.identifier = name.str();
-			operand.addressMode = ir::PTXOperand::Register;
-			operand.vec = statement.array.vec;
 
+			if( operand.vec != ir::PTXOperand::v1 )
+			{
+				operand.array.push_back( ir::PTXOperand( 
+					ir::PTXOperand::Register, operand.type, 
+					statement.name + ".x" ) );
+				operand.array.push_back( ir::PTXOperand( 
+					ir::PTXOperand::Register, operand.type, 
+					statement.name + ".y" ) );
+				if( operand.vec != ir::PTXOperand::v2 ) {
+					operand.array.push_back( ir::PTXOperand( 
+						ir::PTXOperand::Register, operand.type, 
+						statement.name + ".z" ) );
+					operand.array.push_back( ir::PTXOperand( 
+						ir::PTXOperand::Register, operand.type, 
+						statement.name + ".w" ) );
+				}
+			}
+			
 			operands.insert( std::make_pair( name.str(), 
 				OperandWrapper( operand, 
 				statement.instruction.addressSpace ) ) );
 		
+			operand.array.clear();
 			if( inEntry )
 			{
 				localOperands.push_back( name.str() );
@@ -731,13 +766,48 @@ namespace parser
 			throw_exception( toString( location, *this ) << "Operand " 
 				<< string << " not declared in this scope.", NoDeclaration );
 		}
-		else
+
+		if( mode->second.operand.addressMode == ir::PTXOperand::Address )
 		{
-			if( mode->second.operand.addressMode == ir::PTXOperand::Address )
+			statement.instruction.addressSpace = mode->second.space;
+		}
+		else if( mode->second.operand.addressMode == ir::PTXOperand::Register )
+		{
+			if( mode->second.operand.vec != ir::PTXOperand::v1 )
 			{
-				statement.instruction.addressSpace = mode->second.space;
+				switch( operand.vIndex )
+				{
+					case ir::PTXOperand::ix:
+					{
+						operand = mode->second.operand.array[ 0 ];
+						break;
+					}
+					case ir::PTXOperand::iy:
+					{
+						operand = mode->second.operand.array[ 1 ];
+						break;
+					}
+					case ir::PTXOperand::iz:
+					{
+						operand = mode->second.operand.array[ 2 ];
+						break;
+					}
+					case ir::PTXOperand::iw:
+					{
+						operand = mode->second.operand.array[ 3 ];
+						break;
+					}
+					default:
+					{
+						operand = mode->second.operand;
+						break;
+					}
+				}
 			}
-			operand = mode->second.operand;
+			else
+			{
+				operand = mode->second.operand;
+			}
 		}
 		
 		if( invert )
@@ -780,6 +850,7 @@ namespace parser
 		operand.type = ir::PTXOperand::f32;	
 		operandVector.push_back( operand );
 	}
+
 	void PTXParser::State::baseOperand( double value )
 	{
 		operand.addressMode = ir::PTXOperand::Immediate;

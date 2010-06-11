@@ -104,6 +104,8 @@ namespace parser
 					void _setImmediateTypes();
 				
 				public:
+					void addSpecialRegisters();
+				
 					void maxnreg( unsigned int regs );
 					void maxntid( unsigned int tidx, unsigned int tidy = 1024, 
 						unsigned int tidz = 1024 );

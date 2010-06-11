@@ -93,11 +93,12 @@ public:
 		return op;
 	}
 
-	PTXOperand sreg(PTXOperand::SpecialRegister reg) {
+	PTXOperand sreg(PTXOperand::SpecialRegister reg, PTXOperand::VectorIndex v) {
 		PTXOperand op;
 		op.addressMode = PTXOperand::Special;
 		op.type = PTXOperand::u16;
 		op.special = reg;
+		op.vIndex = v;
 		return op;
 	}
 
@@ -531,7 +532,7 @@ public:
 			ins.type = PTXOperand::u32;
 			ins.a = reg("r1", PTXOperand::u32, 0);
 			ins.b = imm_uint("r2", PTXOperand::u32, 0x0fffffffe);
-			ins.c = reg("r3", PTXOperand::u32, 2);
+			ins.c = reg("r3", PTXOperand::u32, 6);
 			ins.d = reg("r6", PTXOperand::u32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
@@ -562,7 +563,7 @@ public:
 			ins.type = PTXOperand::s32;
 			ins.a = reg("r1", PTXOperand::s32, 0);
 			ins.b = imm_uint("r2", PTXOperand::s32, 0x0fffffffe);
-			ins.c = reg("r3", PTXOperand::s32, 2);
+			ins.c = reg("r3", PTXOperand::s32, 6);
 			ins.d = reg("r6", PTXOperand::s32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
@@ -795,9 +796,10 @@ public:
 		//
 		if (result) {
 			ins.type = PTXOperand::u32;
+			ins.cc = PTXInstruction::CC;
 			ins.a = imm_uint("r2", PTXOperand::u32, 0x0fffffffe);
 			ins.b = reg("r1", PTXOperand::u32, 0);
-			ins.c = reg("r3", PTXOperand::u32, 2);
+			ins.c = reg("r3", PTXOperand::u32, 6);
 			ins.d = reg("r6", PTXOperand::u32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
@@ -807,7 +809,7 @@ public:
 			}
 			cta.eval_SubC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2) + 1));
+				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)) + 1);
 				if (cta.getRegAsU32(i, 5) != expected) {
 					result = false;
 					status << "subc.u32 incorrect\n";
@@ -826,9 +828,10 @@ public:
 		//
 		if (result) {
 			ins.type = PTXOperand::s32;
+			ins.cc = PTXInstruction::CC;
 			ins.a = imm_uint("r2", PTXOperand::s32, 0x0fffffffe);
 			ins.b = reg("r1", PTXOperand::s32, 0);
-			ins.c = reg("r3", PTXOperand::s32, 2);
+			ins.c = reg("r3", PTXOperand::s32, 6);
 			ins.d = reg("r6", PTXOperand::s32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
@@ -838,7 +841,7 @@ public:
 			}
 			cta.eval_SubC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2) + 1));
+				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)) + 1);
 				if (cta.getRegAsS32(i, 5) != expected) {
 					result = false;
 					status << "subc.s32 incorrect\n";
@@ -3619,7 +3622,7 @@ public:
 		// from special register tidX
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::tidX);
+			ins.a = sreg(PTXOperand::tid, PTXOperand::ix);
 			ins.type = PTXOperand::u16;
 			cta.eval_Mov(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3633,7 +3636,7 @@ public:
 		// from special register tidY
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::tidY);
+			ins.a = sreg(PTXOperand::tid, PTXOperand::iy);
 			ins.type = PTXOperand::u16;
 			cta.eval_Mov(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3647,7 +3650,7 @@ public:
 		// from special register ntidX
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::ntidX);
+			ins.a = sreg(PTXOperand::ntid, PTXOperand::ix);
 			ins.type = PTXOperand::u16;
 			cta.eval_Mov(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3661,7 +3664,7 @@ public:
 		// from special register ntidY
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::ntidY);
+			ins.a = sreg(PTXOperand::ntid, PTXOperand::iy);
 			ins.type = PTXOperand::u16;
 			cta.eval_Mov(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {

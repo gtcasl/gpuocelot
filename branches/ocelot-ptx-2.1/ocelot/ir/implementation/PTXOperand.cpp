@@ -48,21 +48,60 @@ std::string ir::PTXOperand::toString( DataType type ) {
 
 std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 	switch( reg ) {
-		case tid:      return "%tid";    break;
-		case ntid:     return "%ntid";   break;
-		case laneId:   return "%laneid"; break;
-		case warpId:   return "%warpid"; break;
-		case warpSize: return "WARP_SZ"; break;
-		case ctaId:    return "%ctaid";  break;
-		case nctaId:   return "%nctaid"; break;
-		case smId:     return "%smid";   break;
-		case nsmId:    return "%nsmid";  break;
-		case gridId:   return "%gridid"; break;
-		case clock:    return "%clock";  break;
-		case pm0:      return "%pm0";    break;
-		case pm1:      return "%pm1";    break;
-		case pm2:      return "%pm2";    break;
-		case pm3:      return "%pm3";    break;
+		case tid:          return "%tid";          break;
+		case ntid:         return "%ntid";         break;
+		case laneId:       return "%laneid";       break;
+		case warpId:       return "%warpid";       break;
+		case nwarpId:      return "%nwarpid";       break;
+		case warpSize:     return "WARP_SZ";       break;
+		case ctaId:        return "%ctaid";        break;
+		case nctaId:       return "%nctaid";       break;
+		case smId:         return "%smid";         break;
+		case nsmId:        return "%nsmid";        break;
+		case gridId:       return "%gridid";       break;
+		case clock:        return "%clock";        break;
+		case clock64:      return "%clock64";      break;
+		case lanemask_eq:  return "%lanemask_eq";  break;
+		case lanemask_le:  return "%lanemask_le";  break;
+		case lanemask_lt:  return "%lanemask_lt";  break;
+		case lanemask_ge:  return "%lanemask_ge";  break;
+		case lanemask_gt:  return "%lanemask_gt";  break;
+		case pm0:          return "%pm0";          break;
+		case pm1:          return "%pm1";          break;
+		case pm2:          return "%pm2";          break;
+		case pm3:          return "%pm3";          break;
+		case envreg0:      return "%envreg0";      break;
+		case envreg1:      return "%envreg1";      break;
+		case envreg2:      return "%envreg2";      break;
+		case envreg3:      return "%envreg3";      break;
+		case envreg4:      return "%envreg4";      break;
+		case envreg5:      return "%envreg5";      break;
+		case envreg6:      return "%envreg6";      break;
+		case envreg7:      return "%envreg7";      break;
+		case envreg8:      return "%envreg8";      break;
+		case envreg9:      return "%envreg9";      break;
+		case envreg10:     return "%envreg10";     break;
+		case envreg11:     return "%envreg11";     break;
+		case envreg12:     return "%envreg12";     break;
+		case envreg13:     return "%envreg13";     break;
+		case envreg14:     return "%envreg14";     break;
+		case envreg15:     return "%envreg15";     break;
+		case envreg16:     return "%envreg16";     break;
+		case envreg17:     return "%envreg17";     break;
+		case envreg18:     return "%envreg18";     break;
+		case envreg19:     return "%envreg19";     break;
+		case envreg20:     return "%envreg20";     break;
+		case envreg21:     return "%envreg21";     break;
+		case envreg22:     return "%envreg22";     break;
+		case envreg23:     return "%envreg23";     break;
+		case envreg24:     return "%envreg24";     break;
+		case envreg25:     return "%envreg25";     break;
+		case envreg26:     return "%envreg26";     break;
+		case envreg27:     return "%envreg27";     break;
+		case envreg28:     return "%envreg28";     break;
+		case envreg29:     return "%envreg29";     break;
+		case envreg30:     return "%envreg30";     break;
+		case envreg31:     return "%envreg31";     break;
 		default: break;
 	}
 	return "SpecialRegister_invalid";
@@ -520,8 +559,23 @@ ir::PTXOperand::PTXOperand() {
 	vec = v1;
 }
 
-ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i) : 
-	addressMode(Special), vIndex(i), special(r) {
+ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i, DataType t) : 
+	addressMode(Special), type(t), vIndex(i), special(r), 
+	vec(i == iAll ? v4 : v1) {
+	std::stringstream name;
+	name << toString(r);
+	if( i != iAll )
+	{
+		name << "." << toString(i);
+	}
+	else
+	{
+		array.push_back( PTXOperand( r, ix, t ) );
+		array.push_back( PTXOperand( r, iy, t ) );
+		array.push_back( PTXOperand( r, iz, t ) );
+		array.push_back( PTXOperand( r, iw, t ) );
+	}
+	identifier = name.str();
 }
 
 ir::PTXOperand::PTXOperand(const std::string& l) : identifier(l), 

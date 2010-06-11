@@ -73,6 +73,7 @@ namespace ir {
 			ntid,
 			laneId,
 			warpId,
+			nwarpId,
 			warpSize,
 			ctaId,
 			nctaId,
@@ -90,6 +91,38 @@ namespace ir {
 			pm1,
 			pm2,
 			pm3,
+			envreg0,
+			envreg1,
+			envreg2,
+			envreg3,
+			envreg4,
+			envreg5,
+			envreg6,
+			envreg7,
+			envreg8,
+			envreg9,
+			envreg10,
+			envreg11,
+			envreg12,
+			envreg13,
+			envreg14,
+			envreg15,
+			envreg16,
+			envreg17,
+			envreg18,
+			envreg19,
+			envreg20,
+			envreg21,
+			envreg22,
+			envreg23,
+			envreg24,
+			envreg25,
+			envreg26,
+			envreg27,
+			envreg28,
+			envreg29,
+			envreg30,
+			envreg31,
 			SpecialRegister_invalid
 		};
 		
@@ -133,7 +166,7 @@ namespace ir {
 		
 	public:
 		PTXOperand();
-		PTXOperand(SpecialRegister r, VectorIndex i = iAll);
+		PTXOperand(SpecialRegister r, VectorIndex i = iAll, DataType t = u32);
 		PTXOperand(const std::string& label);
 		PTXOperand(AddressMode m, DataType t, RegisterType r = 0, 
 			int o = 0, Vec v = v1);

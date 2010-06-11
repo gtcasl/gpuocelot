@@ -353,23 +353,25 @@ namespace ir
 								a_it->identifier.clear();
 							}
 						}
-						RegisterMap::iterator it 
-							= map.find((instr.*operands[i]).registerName());
-
-						PTXOperand::RegisterType reg = 0;
-						if (it == map.end()) {
-							reg = (PTXOperand::RegisterType) map.size();
-							map.insert(std::make_pair( 
-								(instr.*operands[i]).registerName(), reg));
-						}
 						else {
-							reg = it->second;
+							RegisterMap::iterator it 
+								= map.find((instr.*operands[i]).registerName());
+
+							PTXOperand::RegisterType reg = 0;
+							if (it == map.end()) {
+								reg = (PTXOperand::RegisterType) map.size();
+								map.insert(std::make_pair( 
+									(instr.*operands[i]).registerName(), reg));
+							}
+							else {
+								reg = it->second;
+							}
+							(instr.*operands[i]).reg = reg;
+							report("  Assigning register " 
+								<< (instr.*operands[i]).registerName() 
+								<< " to " << reg);
+							(instr.*operands[i]).identifier.clear();
 						}
-						(instr.*operands[i]).reg = reg;
-						report("  Assigning register " 
-							<< (instr.*operands[i]).registerName() 
-							<< " to " << reg);
-						(instr.*operands[i]).identifier.clear();
 					}
 				}
 			}

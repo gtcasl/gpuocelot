@@ -12,7 +12,7 @@
 	#include <cassert>
 	#include <cstring>
 
-	#define YYERROR_VERBOSE 1
+	#define YYERROR_VERBOSE 0
 
 	#ifdef REPORT_BASE
 	#undef REPORT_BASE

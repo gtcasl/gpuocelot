@@ -278,11 +278,12 @@ namespace test
 			status << " For File: " << *file << std::endl;
 			ir::Module module( *file );
 			
-			for( ir::Module::KernelMap::iterator 
-				ki = module.kernels.begin(); 
-				ki != module.kernels.end(); ++ki )
+			for( ir::Module::KernelMap::const_iterator 
+				ki = module.kernels().begin(); 
+				ki != module.kernels().end(); ++ki )
 			{
-				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( 
+					*module.getKernel( ki->first ) );
 				status << "  For Kernel: " << kernel.name << std::endl;
 				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
@@ -305,11 +306,12 @@ namespace test
 			status << " For File: " << *file << std::endl;
 			ir::Module module( *file );
 			
-			for( ir::Module::KernelMap::iterator 
-				ki = module.kernels.begin(); 
-				ki != module.kernels.end(); ++ki )
+			for( ir::Module::KernelMap::const_iterator 
+				ki = module.kernels().begin(); 
+				ki != module.kernels().end(); ++ki )
 			{
-				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( 
+					*module.getKernel( ki->first ) );
 				status << "  For Kernel: " << kernel.name << std::endl;
 				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();
@@ -333,11 +335,12 @@ namespace test
 			status << " For File: " << *file << std::endl;
 			ir::Module module( *file );
 			
-			for( ir::Module::KernelMap::iterator 
-				ki = module.kernels.begin(); 
-				ki != module.kernels.end(); ++ki )
+			for( ir::Module::KernelMap::const_iterator 
+				ki = module.kernels().begin(); 
+				ki != module.kernels().end(); ++ki )
 			{
-				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( *(ki->second) );
+				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( 
+					*module.getKernel( ki->first ) );
 				status << "  For Kernel: " << kernel.name << std::endl;
 				ir::PTXKernel::assignRegisters( *kernel.cfg() );
 				kernel.dfg()->compute();

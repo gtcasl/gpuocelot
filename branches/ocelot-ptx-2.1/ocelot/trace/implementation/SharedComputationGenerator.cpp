@@ -60,7 +60,7 @@ void trace::SharedComputationGenerator::initialize(
 	using namespace ir;
 
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = SharedComputationTraceFormat;
 
 	std::stringstream stream;

@@ -127,26 +127,26 @@ namespace test
 			return false;
 		}
 	
-		if( first.statements.size() != second.statements.size() )
+		if( first.statements().size() != second.statements().size() )
 		{
 		
-			status << "First pass parsed " << first.statements.size()
+			status << "First pass parsed " << first.statements().size()
 				<< " statements while second parsed " 
-				<< second.statements.size() << "\n";
+				<< second.statements().size() << "\n";
 			return false;
 		
 		}
 		
-		for( ir::Module::StatementVector::iterator 
-			fi = first.statements.begin(), 
-			si = second.statements.begin(); fi != first.statements.end() && 
-			si != second.statements.end(); ++fi, ++si )
+		for( ir::Module::StatementVector::const_iterator 
+			fi = first.statements().begin(), 
+			si = second.statements().begin(); fi != first.statements().end() && 
+			si != second.statements().end(); ++fi, ++si )
 		{
 		
 			if( !( si->toString() == fi->toString() ) )
 			{
 			
-				unsigned int index = fi - first.statements.begin();
+				unsigned int index = fi - first.statements().begin();
 				status << "At index " << index << " first pass parsed \"" 
 					<< fi->toString() << "\" while second parsed \"" 
 					<< si->toString() << "\"\n";

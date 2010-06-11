@@ -494,15 +494,15 @@ namespace parser
 		statement.column = location.first_column;		
 
 		report( "   At (" << statement.line << "," << statement.column
-			<< ") : Parsed statement " << module.statements.size() 
+			<< ") : Parsed statement " << statements.size() 
 			<< " \"" << statement.toString() << "\"" );
-		module.statements.push_back( statement );
+		statements.push_back( statement );
 
 		operand = ir::PTXOperand();
 		statement.array.values.clear();
 		alignment = 1;
 		statement.array.vec = ir::PTXOperand::v1;
-		statement.instruction.statementIndex = module.statements.size();
+		statement.instruction.statementIndex = statements.size();
 	}
 	
 	void PTXParser::State::assignment()
@@ -769,20 +769,20 @@ namespace parser
 		statementEnd( location );
 	
 		report( "  Rule: guard instruction : " 
-			<< module.statements.back().instruction.toString() );
+			<< statements.back().instruction.toString() );
 	
 		// check for an error
-		assert( !module.statements.empty() );
-		assert( module.statements.back().directive == ir::PTXStatement::Instr );
+		assert( !statements.empty() );
+		assert( statements.back().directive == ir::PTXStatement::Instr );
 	
 		std::string message = 
-			module.statements.back().instruction.valid();
+			statements.back().instruction.valid();
 	
 		if( message != "" )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Parsed invalid instruction " 
-				<< module.statements.back().instruction.toString() 
+				<< statements.back().instruction.toString() 
 				<< " : " << message, InvalidInstruction );
 		}
 	
@@ -1231,7 +1231,7 @@ namespace parser
 	void PTXParser::State::instruction()
 	{
 		statement.instruction = ir::PTXInstruction( );
-		statement.instruction.statementIndex = module.statements.size();
+		statement.instruction.statementIndex = statements.size();
 	}
 
 	void PTXParser::State::instruction( const std::string& opcode, int dataType, 
@@ -1403,11 +1403,11 @@ namespace parser
 		StatementMap labels;
 		
 		ir::Module::StatementVector::iterator 
-			begin = state.module.statements.begin();
+			begin = state.statements.begin();
 		
 		for( ir::Module::StatementVector::iterator 
-			statement = state.module.statements.begin(); 
-			statement != state.module.statements.end(); ++statement )
+			statement = state.statements.begin(); 
+			statement != state.statements.end(); ++statement )
 		{
 			if( statement->directive == ir::PTXStatement::Label )
 			{
@@ -1486,9 +1486,7 @@ namespace parser
 		state.localOperands.clear();
 		state.localOperandCount.clear();
 		state.operandVector.clear();
-		state.module.statements.clear();
-		state.module.kernels.clear();
-		state.module.modulePath = fileName;
+		state.statements.clear();
 		state.fileName = fileName;
 		
 		ir::PTXOperand bucket;
@@ -1830,7 +1828,7 @@ namespace parser
 		state.inEntry = false;
 	}
 				
-	ir::Module PTXParser::parse( std::istream& input, 
+	void PTXParser::parse( std::istream& input, 
 		ir::Instruction::Architecture language )
 	{
 		assert( language == ir::Instruction::PTX );
@@ -1841,7 +1839,7 @@ namespace parser
 		reset();
 		
 		report( "Parsing file " << fileName );
-		report( "Running 1.4 main parse pass." );
+		report( "Running 2.1 main parse pass." );
 		
 		try 
 		{
@@ -1866,8 +1864,11 @@ namespace parser
 			
 			throw;
 		}
-		
-		return state.module;
+	}
+	
+	ir::Module::StatementVector&& PTXParser::statements()
+	{
+		return std::move( state.statements );
 	}
 		
 	void PTXParser::configure( const Configuration& configuration )

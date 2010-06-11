@@ -99,51 +99,51 @@ namespace test
 
 	bool TestDeviceSwitching::testSwitching()
 	{
-		report("Running device switching test.");
-		report(" Resetting runtime state.");
-		ocelot::reset();
-		report(" Registering kernel.");
-		registerKernel();
-		
-		int devices;
-		cudaGetDeviceCount( &devices );
-		report(" Found " << devices << " devices.");
-		
-		PointerVector pointers( devices );
-		
-		report(" Launching kernels...");
-		for( int device = 0; device != devices; ++device )
-		{
-			report("  for device " << device);
-			cudaSetDevice( device );
-			cudaMalloc( (void**) &pointers[ device ], sizeof( unsigned int ) );
-			cudaMemset( pointers[ device ], 0, sizeof( unsigned int ) );
-			
-			cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
-			long long unsigned int p = (long long unsigned int)pointers[device];
-			cudaSetupArgument( &p, sizeof( long long unsigned int ), 0 );
-			ocelot::launch( "simpleKernels", "increment" );
-		}
-		
-		report(" Loading results.");
-		for( int device = 0; device != devices; ++device )
-		{
-			cudaSetDevice( device );
-			unsigned int result = 0;
-			cudaMemcpy( &result, pointers[ device ], 
-				sizeof( unsigned int ), cudaMemcpyDeviceToHost );
-			if( result != 1 )
-			{
-				status << "Test Point 1 FAILED:\n";
-				status << " Expected result 1 for device " << device << " (" 
-					<< getDeviceName(device) << "), but got " << result << "\n";
-				return false;
-			}			
-			cudaFree( pointers[ device ] );
-		}
-		
-		status << "Test Point 1 Passed\n";
-		return true;
+report("Running device switching test.");
+report(" Resetting runtime state.");
+ocelot::reset();
+report(" Registering kernel.");
+registerKernel();
+
+int devices;
+cudaGetDeviceCount( &devices );
+report(" Found " << devices << " devices.");
+
+PointerVector pointers( devices );
+
+report(" Launching kernels...");
+for( int device = 0; device != devices; ++device )
+{
+	report("  for device " << device);
+	cudaSetDevice( device );
+	cudaMalloc( (void**) &pointers[ device ], sizeof( unsigned int ) );
+	cudaMemset( pointers[ device ], 0, sizeof( unsigned int ) );
+	
+	cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
+	long long unsigned int p = (long long unsigned int)pointers[device];
+	cudaSetupArgument( &p, sizeof( long long unsigned int ), 0 );
+	ocelot::launch( "simpleKernels", "increment" );
+}
+
+report(" Loading results.");
+for( int device = 0; device != devices; ++device )
+{
+	cudaSetDevice( device );
+	unsigned int result = 0;
+	cudaMemcpy( &result, pointers[ device ], 
+		sizeof( unsigned int ), cudaMemcpyDeviceToHost );
+	if( result != 1 )
+	{
+		status << "Test Point 1 FAILED:\n";
+		status << " Expected result 1 for device " << device << " (" 
+			<< getDeviceName(device) << "), but got " << result << "\n";
+		return false;
+	}			
+	cudaFree( pointers[ device ] );
+}
+
+status << "Test Point 1 Passed\n";
+return true;
 	}
 	
 	bool TestDeviceSwitching::testContextSwitching()

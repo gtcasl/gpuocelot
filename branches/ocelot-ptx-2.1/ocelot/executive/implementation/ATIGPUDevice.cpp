@@ -142,11 +142,11 @@ namespace executive
     {
 		report("Loading Module...");
 
-		if (_modules.count(irModule->modulePath) != 0)
+		if (_modules.count(irModule->path()) != 0)
 		{
-			Throw("Duplicate module - " << irModule->modulePath);
+			Throw("Duplicate module - " << irModule->path());
 		}
-		_modules.insert(std::make_pair(irModule->modulePath, irModule));
+		_modules.insert(std::make_pair(irModule->path(), irModule));
     }
 
     void ATIGPUDevice::unload(const std::string& name)
@@ -387,9 +387,9 @@ namespace executive
 		}
 
 		ir::Module::KernelMap::const_iterator irKernel = 
-			module->second->kernels.find(kernelName);
+			module->second->kernels().find(kernelName);
 
-		if (irKernel == module->second->kernels.end())
+		if (irKernel == module->second->kernels().end())
 		{
 			Throw("Unknown kernel - " << kernelName
 					<< " in module " << moduleName);

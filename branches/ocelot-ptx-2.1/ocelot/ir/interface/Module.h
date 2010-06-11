@@ -72,44 +72,89 @@ namespace ir {
 		void unload();
 
 		/*!	Unloads module and loads PTX source file in given path */
-		bool load(std::string path);
+		bool load(const std::string& path);
 
 		/*!	Unloads module and loads PTX source file in given stream */
 		bool load(std::istream& source,
 			const std::string& path = "::unknown path::");
 
-		/*!
-			Gets a kernel instance by name. 
+		/*!	Unloads module and loads PTX source string via a destructive copy */
+		bool lazyLoad(std::string&& source,
+			const std::string& path = "::unknown path::");
+		
+		/*! \brief Load the module if it has not already been loaded */
+		void loadNow();
+		
+		/*! \brief Is the module loaded? */
+		bool loaded() const;
+		
+		/*! \brief Gets a kernel instance by name. 
 
-			\param kernelName [mangled] name of kernel
+			\param name [mangled] name of kernel
 
 			\return pointer to kernel instance with (name) 
 				or 0 if kernel does not exist
 		*/
-		Kernel *getKernel(std::string kernelName);
+		Kernel* getKernel(const std::string& name);
 		
-	protected:
+		/*! \brief Gets a texture instance by name. 
+
+			\param name [mangled] name of texture
+
+			\return pointer to texture instance with (name) 
+				or 0 if it does not exist
+		*/
+		Texture* getTexture(const std::string& name);
+
+		/*! \brief Gets a global instance by name. 
+
+			\param name [mangled] name of global
+
+			\return pointer to global instance with (name) 
+				or 0 if it does not exist
+		*/
+		Global* getGlobal(const std::string& name);
+
+		/*! \brief Gets the module path */
+		const std::string& path() const;
+		
+		/*! \brief Gets the kernel map */
+		const KernelMap& kernels() const;
+
+		/*! \brief Gets the global map */
+		const GlobalMap& globals() const;
+
+		/*! \brief Gets the texture map */
+		const TextureMap& textures() const;
+
+		/*! \brief Gets the statement vector */
+		const StatementVector& statements() const;
+	
+	private:
 		/*! After a successful parse; constructs all kernels for PTX isa. */
 		void extractPTXKernels();
 
-	public:
+	private:
+		/*! \brief This is a copy of the original ptx source for lazy loading */
+		std::string _ptx;
+	
 		/*! Set of PTX statements loaded from PTX source file. This must not 
 			change after parsing, as all kernels have const_iterators into 
 			this vector.
 		*/
-		StatementVector statements;
+		StatementVector _statements;
 
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
-		KernelMap kernels;	
+		KernelMap _kernels;	
 		
 		/*! Set of textures in the module */
-		TextureMap textures;
+		TextureMap _textures;
 
 		/*! Set of global variables in the modules */
-		GlobalMap globals;
+		GlobalMap _globals;
 
 		/*! Path from which Module was loaded */
-		std::string modulePath;
+		std::string _modulePath;
 		
 		friend class executive::Executive;
 	};

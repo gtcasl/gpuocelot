@@ -167,7 +167,7 @@ cuda::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m,
 }
 
 cuda::RegisteredTexture::RegisteredTexture(const std::string& m, 
-	const std::string& t) : module(m), texture(t) {
+	const std::string& t, bool n) : module(m), texture(t), norm(n) {
 	
 }
 
@@ -285,19 +285,6 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
 			<< "configure.ocelot.\n";
 	}
-
-	// register modules
-	for(ModuleMap::iterator module = _modules.begin(); 
-		module != _modules.end(); ++module) {
-		module->second.createDataStructures();
-		for(DeviceVector::iterator device = _devices.begin(); 
-			device != _devices.end(); ++device) {
-			(*device)->select();
-			(*device)->load(&module->second);
-			(*device)->setOptimizationLevel(_optimization);
-			(*device)->unselect();
-		}
-	}
 }
 
 //! acquires mutex and locks the runtime
@@ -383,6 +370,41 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 	return t->second;
 }
 
+void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
+	if(module->second.loaded()) return;
+	module->second.createDataStructures();
+	
+	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
+		texture != _textures.end(); ++texture) {
+		if(texture->second.module != module->first) continue;
+		ir::Texture* tex = module->second.getTexture(texture->second.texture);
+		assert(tex != 0);
+		tex->normalizedFloat = texture->second.norm;
+	}
+	
+	for(DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		(*device)->select();
+		(*device)->load(&module->second);
+		(*device)->setOptimizationLevel(_optimization);
+		(*device)->unselect();
+	}
+}
+
+void cuda::CudaRuntime::_registerModule(const std::string& name) {
+	ModuleMap::iterator module = _modules.find(name);
+	if(module != _modules.end()) {
+		_registerModule(module);
+	}
+}
+
+void cuda::CudaRuntime::_registerAllModules() {
+	for(ModuleMap::iterator module = _modules.begin(); 
+		module != _modules.end(); ++module) {
+		_registerModule(module);
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
@@ -458,10 +480,9 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	assertM(binary->ptx->ptx != 0, "binary contains no PTX");
 
 	// register associated PTX
-	std::stringstream ptx( binary->ptx->ptx );
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(binary->ident, ir::Module())).first;
-	module->second.load(ptx, binary->ident);
+	module->second.lazyLoad(std::string(binary->ptx->ptx), binary->ident);
 	
 	report("Loading module (fatbin) - " << module->first);
 	
@@ -480,7 +501,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	unregister a cuda fat binary
 */
 void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
-	// do we really care?
+	// Andy: do we really care?
 	// Greg: For most cuda applications, probably not.  The only use would be 
 	// to remove and reinsert a fat binary.  Let's use a different interface
 	//  for that
@@ -548,17 +569,7 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	report("cudaRegisterTexture('" << deviceName << ", dim: " << dim 
 		<< ", norm: " << norm << ", ext: " << ext);
 
-	_textures[(void*)hostVar] = RegisteredTexture(moduleName, deviceName);
-	
-	ModuleMap::iterator module = _modules.find(moduleName);
-	assert(module != _modules.end());
-	
-	ir::Module::TextureMap::iterator texture = module->second.textures.find(
-		deviceName);
-	assertM(texture != module->second.textures.end(), "cudaRegisterTexture - " 
-		<< deviceName << " does not exist in module " << moduleName );
-	
-	texture->second.normalizedFloat = norm;
+	_textures[(void*)hostVar] = RegisteredTexture(moduleName, deviceName, norm);
 	
 	_unlock();
 }
@@ -953,20 +964,29 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	}
 
 	cudaError_t result = cudaErrorInvalidDevicePointer;
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 	
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	std::string name;
 	std::string module;
 	
 	if (global == _globals.end()) {
-		name = symbol;	
+		name = symbol;
+		_registerAllModules();
 	}
 	else {
 		name = global->second.global;
 		module = global->second.module;
+		_registerModule(module);
 	}
+
+	_bind();
 
 	executive::Device::MemoryAllocation* allocation = 
 		_getDevice().getGlobalAllocation(module, name);
@@ -998,8 +1018,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	}
 
 	cudaError_t result = cudaErrorInvalidDevicePointer;
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 	
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	std::string name;
@@ -1007,11 +1032,15 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	
 	if (global == _globals.end()) {
 		name = symbol;	
+		_registerAllModules();
 	}
 	else {
 		name = global->second.global;
 		module = global->second.module;
+		_registerModule(module);
 	}
+	
+	_bind();
 
 	executive::Device::MemoryAllocation* allocation = 
 		_getDevice().getGlobalAllocation(module, name);
@@ -1809,8 +1838,13 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 	report("cuda::CudaRuntime::cudaGetSymbolAddress(" << devPtr << ", " 
 		<< (void*)symbol << ")");
 	cudaError_t result = cudaSuccess;
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+	
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 	
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	
@@ -1820,10 +1854,15 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 	if (global != _globals.end()) {
 		name = global->second.global;
 		module = global->second.module;
+		
+		_registerModule(module);
 	}
 	else {
 		name = symbol;
+		_registerAllModules();
 	}
+	
+	_bind();
 	
 	executive::Device::MemoryAllocation* 
 		allocation = _getDevice().getGlobalAllocation(module, name);
@@ -1841,8 +1880,14 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	cudaError_t result = cudaSuccess;
 	report("cuda::CudaRuntime::cudaGetSymbolSize(" << size << ", " 
 		<< (void*) symbol << ")");
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	
+	_lock();
+	
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 	
 	RegisteredGlobalMap::iterator global = _globals.find((void*)symbol);
 	
@@ -1852,10 +1897,14 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	if (global != _globals.end()) {
 		name = global->second.global;
 		module = global->second.module;
+		_registerModule(module);
 	}
 	else {
 		name = symbol;
+		_registerAllModules();
 	}
+	
+	_bind();
 	
 	executive::Device::MemoryAllocation* 
 		allocation = _getDevice().getGlobalAllocation(module, name);
@@ -2023,11 +2072,19 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 
 	cudaError_t result = cudaErrorInvalidValue;
 		
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+	
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
+		_registerModule(texture->second.module);
+		
+		_bind();
 		try {
 			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
 				texture->second.texture, *texref, *desc, ir::Dim3(size, 1, 1));
@@ -2037,12 +2094,14 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 		catch(hydrazine::Exception& e) {
 		
 		}
+		
+		_unbind();
 	}
 	
 	report("cudaBindTexture(ref = " << texref 
 		<< ", devPtr = " << devPtr << ", size = " << size << ")");
 
-	_release();
+	_unlock();
 	return _setLastError(result);
 }
 
@@ -2053,12 +2112,19 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	cudaError_t result = cudaErrorInvalidValue;
 	assert(pitch != 0);
 
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+	
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 
 	if(texture != _textures.end()) {
+		_registerModule(texture->second.module);
+		_bind();
 		try {
 			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
 				texture->second.texture, *texref, *desc, 
@@ -2069,13 +2135,14 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 		catch(hydrazine::Exception& e) {
 
 		}
+		_unbind();
 	}
 	
 	report("cudaBindTexture2D(ref = " << texref 
 		<< ", devPtr = " << devPtr << ", width = " << width << ", height = " 
 		<< height << ", pitch = " << pitch << ")");
 
-	_release();
+	_unlock();
 	return _setLastError(result);
 }
 
@@ -2084,8 +2151,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 	const struct cudaChannelFormatDesc *desc) {
 	cudaError_t result = cudaErrorInvalidValue;
 	
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+	
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 
 	report("cudaBindTextureToArray() - texref = '" << texref << "', array = " 
 		<< (void *)array << " - format: " << desc->f << " (" << desc->x 
@@ -2099,6 +2171,8 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
+		_registerModule(texture->second.module);
+		_bind();
 		try {
 			_getDevice().bindTexture((void*)array, texture->second.module, 
 				texture->second.texture, *texref, *desc, size);
@@ -2107,9 +2181,10 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 		catch(hydrazine::Exception& e) {
 
 		}
+		_unbind();
 	}
 	
-	_release();
+	_unlock();
 	return _setLastError(result);
 }
 
@@ -2117,11 +2192,18 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 	const struct textureReference *texref) {
 	cudaError_t result = cudaErrorInvalidValue;
 	
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	_lock();
+	
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
+		_registerModule(texture->second.module);
+		_bind();
 		try {
 			_getDevice().unbindTexture(texture->second.module, 
 				texture->second.texture);
@@ -2130,9 +2212,10 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 		catch(hydrazine::Exception& e) {
 
 		}
+		_unbind();
 	}
 	
-	_release();
+	_unlock();
 
 	return _setLastError(result);
 }
@@ -2147,9 +2230,8 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 	const struct textureReference **texref, const char *symbol) {
 	cudaError_t result = cudaErrorInvalidTexture;
 
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
-
+	_lock();
+	
 	std::string name = symbol;
 	RegisteredTextureMap::iterator matchedTexture = _textures.end();
 	
@@ -2157,7 +2239,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 		texture != _textures.end(); ++texture) {
 		if(texture->second.texture == name) {
 			if(matchedTexture != _textures.end()) {
-				_release();
+				_unlock();
 				Ocelot_Exception("==Ocelot== Ambiguous texture '" << name 
 					<< "' declared in at least two modules ('" 
 					<< texture->second.module << "' and '" 
@@ -2171,7 +2253,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 		*texref = (const struct textureReference*)matchedTexture->first;
 	}
 	
-	_release();
+	_unlock();
 	return _setLastError(result);
 }
 
@@ -2256,11 +2338,21 @@ static ir::Dim3 convert(const dim3& d) {
 cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName, 
 	const std::string& kernelName )
 {
-	_acquire();
-	if (_devices.empty()) return cudaErrorNoDevice;
-
+	_lock();
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
+	
 	ModuleMap::iterator module = _modules.find(moduleName);
 	assert(module != _modules.end());
+
+	_registerModule( module );
+	ir::Kernel* k = module->second.getKernel(kernelName);
+	assert(k != 0);
+
+	_bind();
 
 	HostThreadContext& thread = _getCurrentThread();
 	cudaError_t result = cudaSuccess;
@@ -2270,9 +2362,6 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
-	ir::Kernel* k = module->second.getKernel(kernelName);
-	assert(k != 0);
-
 	thread.mapParameters(k);
 	
 	report("kernel launch (" << kernelName 
@@ -2340,22 +2429,25 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 
 cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	struct cudaFuncAttributes *attr, const char *symbol) {
-	cudaError_t result = cudaErrorInvalidDeviceFunction;
-		
-	_acquire();
+	cudaError_t result = cudaErrorInvalidDeviceFunction;		
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	_lock();
 	
 	//
 	// go find the kernel and fill out its attributes
 	//
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)symbol);
+	
+	
 	if (kernel != _kernels.end()) {
+		_registerModule( kernel->second.module );
+		_bind();
 		*attr = _getDevice().getAttributes(kernel->second.module, 
 			kernel->second.kernel);
 		result = cudaSuccess;
+		_release();
 	}
-	
-	_release();
 	
 	return _setLastError(result);
 }
@@ -2933,23 +3025,24 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(name, ir::Module())).first;
 	
+	std::string temp;
+	
+	ptx.seekg(0, std::ios::end);
+	size_t size = ptx.tellg();
+	ptx.seekg(0, std::ios::beg);
+	
+	temp.resize(size);
+	ptx.read((char*)temp.data(), size);
+	
 	try {
-		module->second.load(ptx, name);
+		module->second.lazyLoad(temp, name);
 	}
 	catch(...) {
 		_unlock();
 		_modules.erase(module);
 		throw;
 	}
-	module->second.createDataStructures();
-	
-	for (DeviceVector::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		(*device)->select();
-		(*device)->load(&module->second);
-		(*device)->unselect();
-	}
-	
+		
 	_unlock();
 }
 
@@ -3086,9 +3179,10 @@ ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId,
 	for(ModuleMap::iterator module = _modules.begin(); 
 		module != _modules.end(); ++module)
 	{
-		for(ir::Module::GlobalMap::iterator 
-			global = module->second.globals.begin();
-			global != module->second.globals.end(); ++global)
+		if( !module->second.loaded() ) continue;
+		for(ir::Module::GlobalMap::const_iterator 
+			global = module->second.globals().begin();
+			global != module->second.globals().end(); ++global)
 		{
 			source.select();
 			executive::Device::MemoryAllocation* sourceGlobal = 

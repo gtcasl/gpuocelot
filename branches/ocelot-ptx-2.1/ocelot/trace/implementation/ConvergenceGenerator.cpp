@@ -65,7 +65,7 @@ void trace::ConvergenceGenerator::initialize(const executive::ExecutableKernel &
 	// initialize kernel header
 	//
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = TraceGenerator::ConvergenceTraceFormat;
 	_entry.path = "";
 	_entry.header = "";

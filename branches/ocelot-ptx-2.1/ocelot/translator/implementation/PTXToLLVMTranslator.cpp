@@ -3170,15 +3170,30 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateNeg( const ir::PTXInstruction& i )
 	{
-		ir::LLVMSub sub;
+		if( ir::PTXOperand::isFloat( i.type ) )
+		{
+			ir::LLVMFsub sub;
 		
-		sub.d = _destination( i );
-		sub.b = _translate( i.a );
-		sub.a = sub.b;
-		sub.a.constant = true;
-		sub.a.i64 = 0;
+			sub.d = _destination( i );
+			sub.b = _translate( i.a );
+			sub.a = sub.b;
+			sub.a.constant = true;
+			sub.a.i64 = 0;
 		
-		_add( sub );
+			_add( sub );
+		}
+		else
+		{
+			ir::LLVMSub sub;
+		
+			sub.d = _destination( i );
+			sub.b = _translate( i.a );
+			sub.a = sub.b;
+			sub.a.constant = true;
+			sub.a.i64 = 0;
+		
+			_add( sub );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateNot( const ir::PTXInstruction& i )
@@ -5826,8 +5841,8 @@ namespace translator
 		const ir::PTXOperand& o )
 	{
 		ir::Module::GlobalMap::const_iterator 
-			global = _llvmKernel->module->globals.find( o.identifier );
-		assert( global != _llvmKernel->module->globals.end() );
+			global = _llvmKernel->module->globals().find( o.identifier );
+		assert( global != _llvmKernel->module->globals().end() );
 		
 		if( global->second.statement.elements() == 1 )
 		{
@@ -6136,8 +6151,8 @@ namespace translator
 	void PTXToLLVMTranslator::_addGlobalDeclarations()
 	{
 		for( ir::Module::GlobalMap::const_iterator 
-			global = _llvmKernel->module->globals.begin(); 
-			global != _llvmKernel->module->globals.end(); ++global )
+			global = _llvmKernel->module->globals().begin(); 
+			global != _llvmKernel->module->globals().end(); ++global )
 		{
 			if( global->second.statement.directive 
 				!= ir::PTXStatement::Global ) continue;

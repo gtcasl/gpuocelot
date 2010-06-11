@@ -320,7 +320,7 @@ void trace::InstructionTraceGenerator::initialize(
 	// initialize kernel entry
 	//
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = InstructionTraceFormat;
 
 	std::string name = kernel.name;

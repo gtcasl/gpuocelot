@@ -2069,8 +2069,8 @@ namespace executive
 		assert( module != 0 ); 
 
 		for( ir::Module::GlobalMap::const_iterator 
-			global = module->globals.begin(); 
-			global != module->globals.end(); ++global ) 
+			global = module->globals().begin(); 
+			global != module->globals().end(); ++global ) 
 		{
 			if( global->second.statement.directive 
 				== ir::PTXStatement::Shared ) 
@@ -2315,8 +2315,8 @@ namespace executive
 		_constants.clear();
 
 		for( ir::Module::GlobalMap::const_iterator 
-			global = module->globals.begin(); 
-			global != module->globals.end(); ++global ) 
+			global = module->globals().begin(); 
+			global != module->globals().end(); ++global ) 
 		{
 			if( global->second.statement.directive 
 				== ir::PTXStatement::Const ) 
@@ -2400,7 +2400,7 @@ namespace executive
 
 					ir::Texture* texture = (ir::Texture*)
 						device->getTextureReference(
-						module->modulePath, ptx.a.identifier);
+						module->path(), ptx.a.identifier);
 					assert( texture != 0 );
 		
 					AllocationMap::iterator 
@@ -2439,8 +2439,8 @@ namespace executive
 		report( "Updating global memory." );
 		_state.jit->clearAllGlobalMappings();
 		for( ir::Module::GlobalMap::const_iterator 
-			global = module->globals.begin(); 
-			global != module->globals.end(); ++global ) 
+			global = module->globals().begin(); 
+			global != module->globals().end(); ++global ) 
 		{
 			switch( global->second.statement.directive ) 
 			{
@@ -2452,7 +2452,7 @@ namespace executive
 						<< " not found in llvm module." );
 					Device::MemoryAllocation* allocation = 
 						device->getGlobalAllocation( 
-						module->modulePath, global->first );
+						module->path(), global->first );
 					assert(allocation != 0);
 					report( " Binding global variable " << global->first 
 						<< " to " << allocation->pointer() );
@@ -2478,14 +2478,14 @@ namespace executive
 		{
 			report( " Updating constant variable " << constant->first );
 			ir::Module::GlobalMap::const_iterator 
-				global = module->globals.find( constant->first );
-			assert( global != module->globals.end() );
+				global = module->globals().find( constant->first );
+			assert( global != module->globals().end() );
 			assert( global->second.statement.directive 
 				== ir::PTXStatement::Const );
 			assert( global->second.statement.bytes() 
 				+ constant->second <= _context.constantSize );
 			Device::MemoryAllocation* allocation = device->getGlobalAllocation(
-				module->modulePath, constant->first);
+				module->path(), constant->first);
 			assert( allocation != 0 );
 			assert( allocation->size() == global->second.statement.bytes() );
 			memcpy( _context.constant + constant->second, 
@@ -2682,14 +2682,14 @@ namespace executive
 	std::string LLVMExecutableKernel::location( unsigned int statement ) const
 	{
 		ir::Module::StatementVector::const_iterator s_it 
-			= module->statements.begin();
+			= module->statements().begin();
 		std::advance(s_it, statement);
 		ir::Module::StatementVector::const_reverse_iterator s_rit 
 			= ir::Module::StatementVector::const_reverse_iterator(s_it);
 		unsigned int program = 0;
 		unsigned int line = 0;
 		unsigned int col = 0;
-		for ( ; s_rit != module->statements.rend(); ++s_rit) {
+		for ( ; s_rit != module->statements().rend(); ++s_rit) {
 			if (s_rit->directive == ir::PTXStatement::Loc) {
 				line = s_rit->sourceLine;
 				col = s_rit->sourceColumn;
@@ -2699,8 +2699,8 @@ namespace executive
 		}
 	
 		std::string fileName;
-		for ( s_it = module->statements.begin(); 
-			s_it != module->statements.end(); ++s_it ) {
+		for ( s_it = module->statements().begin(); 
+			s_it != module->statements().end(); ++s_it ) {
 			if (s_it->directive == ir::PTXStatement::File) {
 				if (s_it->sourceFile == program) {
 					fileName = s_it->name;
@@ -2717,10 +2717,10 @@ namespace executive
 	std::string LLVMExecutableKernel::instruction( 
 		unsigned int statement ) const
 	{
-		report("For module " << module->modulePath);
-		assert(statement < module->statements.size());
+		report("For module " << module->path());
+		assert(statement < module->statements().size());
 		ir::Module::StatementVector::const_iterator s_it 
-			= module->statements.begin();
+			= module->statements().begin();
 		std::advance(s_it, statement);
 		assertM(s_it->instruction.valid() == "", s_it->instruction.valid());
 		return s_it->instruction.toString();

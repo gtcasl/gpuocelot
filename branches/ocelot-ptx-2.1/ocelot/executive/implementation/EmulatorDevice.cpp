@@ -221,8 +221,9 @@ namespace executive
 
 		AllocationVector allocations;
 		
-		for(ir::Module::GlobalMap::const_iterator global = ir->globals.begin(); 
-			global != ir->globals.end(); ++global)
+		for(ir::Module::GlobalMap::const_iterator 
+			global = ir->globals().begin(); 
+			global != ir->globals().end(); ++global)
 		{
 			MemoryAllocation* allocation = new MemoryAllocation(global->second);
 			globals.insert(std::make_pair(global->first, 
@@ -242,8 +243,8 @@ namespace executive
 		}
 		
 		ir::Module::KernelMap::const_iterator ptxKernel = 
-			ir->kernels.find(name);
-		if(ptxKernel != ir->kernels.end())
+			ir->kernels().find(name);
+		if(ptxKernel != ir->kernels().end())
 		{
 			kernel = kernels.insert(std::make_pair(name, 
 				new EmulatedKernel(ptxKernel->second, device))).first;
@@ -255,9 +256,9 @@ namespace executive
 	
 	ir::Texture* EmulatorDevice::Module::getTexture(const std::string& name)
 	{
-		if(textures.size() != ir->textures.size())
+		if(textures.size() != ir->textures().size())
 		{
-			textures = ir->textures;
+			textures = ir->textures();
 		}
 
 		TextureMap::iterator texture = textures.find(name);
@@ -652,11 +653,11 @@ namespace executive
 
 	void EmulatorDevice::load(const ir::Module* module)
 	{
-		if(_modules.count(module->modulePath) != 0)
+		if(_modules.count(module->path()) != 0)
 		{
-			Throw("Duplicate module - " << module->modulePath);
+			Throw("Duplicate module - " << module->path());
 		}
-		_modules.insert(std::make_pair(module->modulePath, 
+		_modules.insert(std::make_pair(module->path(), 
 			new Module(module, this)));
 	}
 	

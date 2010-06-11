@@ -16,7 +16,7 @@ namespace executive
 	class ATIExecutableKernel : public executive::ExecutableKernel {
 		public:
 			/*! \brief Constructor */
-			ATIExecutableKernel(ir::Kernel &k, CALcontext *context, 
+			ATIExecutableKernel(const ir::Kernel &k, CALcontext *context, 
 					CALevent *event, CALresource *uav0, CALresource *cb0, 
 					CALresource *cb1);
 

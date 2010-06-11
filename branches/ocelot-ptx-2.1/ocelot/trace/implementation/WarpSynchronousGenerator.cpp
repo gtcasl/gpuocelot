@@ -285,7 +285,7 @@ void trace::WarpSynchronousGenerator::initialize(const executive::ExecutableKern
 	// initialize kernel header
 	//
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = TraceGenerator::WarpSynchronousTraceFormat;
 	_entry.path = "";
 	_entry.header = "";

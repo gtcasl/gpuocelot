@@ -336,7 +336,7 @@ namespace executive
 	
 	void NVIDIAGPUDevice::Module::load()
 	{
-		report("Loading module - " << ir->modulePath << " on NVIDIA GPU.");
+		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
 		assert(!loaded());
 		std::stringstream stream;
 		
@@ -359,15 +359,15 @@ namespace executive
 		
 		if(result != CUDA_SUCCESS)
 		{
-			Throw("Failed to JIT module - " << ir->modulePath 
+			Throw("Failed to JIT module - " << ir->path() 
 				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
 		}
 		
 		report(" Module loaded successfully.");
 		
 		for(ir::Module::TextureMap::const_iterator 
-			texture = ir->textures.begin(); 
-			texture != ir->textures.end(); ++texture)
+			texture = ir->textures().begin(); 
+			texture != ir->textures().end(); ++texture)
 		{
 			unsigned int flags = texture->second.normalizedFloat 
 				? 0 : CU_TRSF_READ_AS_INTEGER;
@@ -387,9 +387,10 @@ namespace executive
 	{
 		if(!loaded()) load();
 		
-		report("Creating NVIDIA kernels for module - " << ir->modulePath);
-		for(ir::Module::KernelMap::const_iterator kernel = ir->kernels.begin(); 
-			kernel != ir->kernels.end(); ++kernel)
+		report("Creating NVIDIA kernels for module - " << ir->path());
+		for(ir::Module::KernelMap::const_iterator 
+			kernel = ir->kernels().begin(); 
+			kernel != ir->kernels().end(); ++kernel)
 		{
 			CUfunction function;
 			checkError(driver::cuModuleGetFunction(&function, _handle, 
@@ -407,9 +408,10 @@ namespace executive
 		assert(globals.empty());
 		
 		AllocationVector allocations;
-		report("Loading globals in module - " << ir->modulePath);
-		for(ir::Module::GlobalMap::const_iterator global = ir->globals.begin(); 
-			global != ir->globals.end(); ++global)
+		report("Loading globals in module - " << ir->path());
+		for(ir::Module::GlobalMap::const_iterator 
+			global = ir->globals().begin(); 
+			global != ir->globals().end(); ++global)
 		{
 			if(global->second.statement.directive 
 				== ir::PTXStatement::Shared) continue;
@@ -428,7 +430,7 @@ namespace executive
 	
 	bool NVIDIAGPUDevice::Module::translated() const
 	{
-		return kernels.size() == ir->kernels.size();
+		return kernels.size() == ir->kernels().size();
 	}
 	
 	NVIDIAExecutableKernel* NVIDIAGPUDevice::Module::getKernel(
@@ -1039,11 +1041,11 @@ namespace executive
 
 	void NVIDIAGPUDevice::load(const ir::Module* module)
 	{
-		if(_modules.count(module->modulePath) != 0)
+		if(_modules.count(module->path()) != 0)
 		{
-			Throw("Duplicate module - " << module->modulePath);
+			Throw("Duplicate module - " << module->path());
 		}
-		_modules.insert(std::make_pair(module->modulePath, 
+		_modules.insert(std::make_pair(module->path(), 
 			Module(module)));
 	}
 	

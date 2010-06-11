@@ -140,13 +140,15 @@ namespace cuda {
 	{
 		public:
 			RegisteredTexture(const std::string& module = "", 
-				const std::string& texture = "");
+				const std::string& texture = "", bool norm = false);
 	
 		public:
 			/*! \brief The module that the texture is declared in */
 			std::string module;
 			/*! \brief The name of the texture */
 			std::string texture;
+			// Should the texture be normalized?
+			bool norm;
 	};
 	
 	class RegisteredGlobal
@@ -224,6 +226,12 @@ namespace cuda {
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
 		HostThreadContext& _getCurrentThread();
+		// Load module and register it with all devices
+		void _registerModule(ModuleMap::iterator module);
+		// Load module and register it with all devices
+		void _registerModule(const std::string& name);
+		// Load all modules and register them with all devices
+		void _registerAllModules();
 
 	private:
 		//! locking object for cuda runtime

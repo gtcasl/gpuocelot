@@ -14,6 +14,7 @@
 #include <FlexLexer.h>
 
 #include <ocelot/parser/interface/PTXLexer.h>
+#include <ocelot/ir/interface/Module.h>
 #include <unordered_map>
 #include <deque>
 
@@ -68,7 +69,7 @@ namespace parser
 					};
 			
 				public:
-					ir::Module module;
+					ir::Module::StatementVector statements;
 					StringMap labels;
 					std::string fileName;
 				
@@ -245,9 +246,10 @@ namespace parser
 			
 		public:
 			PTXParser();
-			ir::Module parse( std::istream& input, 
+			void parse( std::istream& input, 
 				ir::Instruction::Architecture language = ir::Instruction::PTX );
-				
+			ir::Module::StatementVector&& statements();
+			
 			void configure( const Configuration& configuration );
 	
 	};

@@ -403,8 +403,9 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	OperandVector externalOperands;
 	
 	if(module != 0) {
-		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
-			it != module->globals.end(); ++it) {
+		for(ir::Module::GlobalMap::const_iterator 
+			it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
 			if (it->second.statement.directive == ir::PTXStatement::Shared) {
 				if(it->second.statement.attribute == ir::PTXStatement::Extern) {
 					report("Found global external shared variable " 
@@ -575,8 +576,9 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	map<string, unsigned int> label_map;
 	
 	if(module != 0) {
-		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
-			it != module->globals.end(); ++it) {
+		for(ir::Module::GlobalMap::const_iterator 
+			it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
 			if (it->second.statement.directive == ir::PTXStatement::Local) {
 				unsigned int offset;
 
@@ -664,8 +666,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	typedef map<string, unsigned int> ConstantOffsetMap;
 
 	ConstantOffsetMap constant;
-	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
-	for (; it != module->globals.end(); ++it) {
+	ir::Module::GlobalMap::const_iterator it = module->globals().begin();
+	for (; it != module->globals().end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Const) {
 			unsigned int offset;
 
@@ -737,7 +739,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 		assert(device != 0);
 		Device::MemoryAllocation* global = device->getGlobalAllocation(
-			module->modulePath, l_it->first);
+			module->path(), l_it->first);
 
 		assert(global != 0);
 		assert(global->size() + l_it->second <= _constMemorySize);
@@ -765,8 +767,8 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 
 	unordered_set<string> global;
 	
-	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
-	for (; it != module->globals.end(); ++it) {
+	ir::Module::GlobalMap::const_iterator it = module->globals().begin();
+	for (; it != module->globals().end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Global) {
 			report(" Found global variable " << it->second.statement.name);
 			global.insert(it->second.statement.name);
@@ -794,7 +796,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						assert( device != 0);
 						Device::MemoryAllocation* allocation = 
 							device->getGlobalAllocation(
-							module->modulePath, *l_it);
+							module->path(), *l_it);
 						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
 							(ir::PTXU64)allocation->pointer();
@@ -818,7 +820,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						assert( device != 0);
 						Device::MemoryAllocation* allocation = 
 							device->getGlobalAllocation(
-							module->modulePath, *l_it);
+							module->path(), *l_it);
 						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
 							(ir::PTXU64)allocation->pointer();
@@ -849,7 +851,7 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
 			assert(device != 0);
 			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
-				module->modulePath, fi->a.identifier);
+				module->path(), fi->a.identifier);
 			assert(texture != 0);
 
 			IndexMap::iterator index = indices.find(fi->a.identifier);
@@ -901,7 +903,7 @@ std::string executive::EmulatedKernel::toString() const {
 
 std::string executive::EmulatedKernel::fileName() const {
 	assert(module != 0);
-	return module->modulePath;
+	return module->path();
 }
 
 std::string executive::EmulatedKernel::location( unsigned int PC ) const {
@@ -909,14 +911,14 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	assert(PC < instructions.size());
 	unsigned int statement = instructions[PC].statementIndex;
 	ir::Module::StatementVector::const_iterator s_it 
-		= module->statements.begin();
+		= module->statements().begin();
 	std::advance(s_it, statement);
 	ir::Module::StatementVector::const_reverse_iterator s_rit 
 		= ir::Module::StatementVector::const_reverse_iterator(s_it);
 	unsigned int program = 0;
 	unsigned int line = 0;
 	unsigned int col = 0;
-	for ( ; s_rit != module->statements.rend(); ++s_rit) {
+	for ( ; s_rit != module->statements().rend(); ++s_rit) {
 		if (s_rit->directive == ir::PTXStatement::Loc) {
 			line = s_rit->sourceLine;
 			col = s_rit->sourceColumn;
@@ -926,8 +928,8 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	}
 	
 	std::string fileName;
-	for ( s_it = module->statements.begin(); 
-		s_it != module->statements.end(); ++s_it ) {
+	for ( s_it = module->statements().begin(); 
+		s_it != module->statements().end(); ++s_it ) {
 		if (s_it->directive == ir::PTXStatement::File) {
 			if (s_it->sourceFile == program) {
 				fileName = s_it->name;
@@ -946,7 +948,8 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 */
 std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 
-	std::map< int, std::string >::const_iterator bt_it = basicBlockMap.lower_bound(PC);
+	std::map< int, std::string >::const_iterator 
+		bt_it = basicBlockMap.lower_bound(PC);
 	if (bt_it != basicBlockMap.end()) {
 		return bt_it->second;
 	}

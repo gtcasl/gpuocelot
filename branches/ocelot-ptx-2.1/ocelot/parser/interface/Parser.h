@@ -8,7 +8,7 @@
 #ifndef PARSER_H_INCLUDED
 #define PARSER_H_INCLUDED
 
-#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/Instruction.h>
 #include <hydrazine/interface/Configurable.h>
 
 /*!
@@ -23,9 +23,7 @@ namespace parser
 	*/
 	class Parser : public hydrazine::Configurable
 	{
-	
-		public:
-		
+		public:		
 			/*! \brief Name of the file being parsed */
 			std::string fileName;
 					
@@ -47,7 +45,7 @@ namespace parser
 					of the parsed program
 							
 			*/
-			virtual ir::Module parse( std::istream& input, 
+			virtual void parse( std::istream& input, 
 				ir::Instruction::Architecture 
 				language = ir::Instruction::PTX ) = 0;
 	

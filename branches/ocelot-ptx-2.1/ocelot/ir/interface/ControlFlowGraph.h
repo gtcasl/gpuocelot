@@ -264,7 +264,8 @@ public:
 
 	/*!	\brief write a graphviz-compatible file for visualizing the CFG
 	*/
-	std::ostream& write(std::ostream& out, BasicBlock::DotFormatter &blockFormatter) const;
+	std::ostream& write(std::ostream& out, 
+		BasicBlock::DotFormatter &blockFormatter) const;
 	
 	/*! \brief Clears all basic blocks and edges in the CFG.*/
 	void clear();

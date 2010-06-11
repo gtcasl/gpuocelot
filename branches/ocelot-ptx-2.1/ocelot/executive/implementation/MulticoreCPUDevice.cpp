@@ -41,11 +41,11 @@ namespace executive
 		}
 		
 		ir::Module::KernelMap::const_iterator ptxKernel = 
-			ir->kernels.find(name);
+			ir->kernels().find(name);
 			
 		MulticoreCPUDevice* cpu = static_cast<MulticoreCPUDevice*>(device);
 		
-		if(ptxKernel != ir->kernels.end())
+		if(ptxKernel != ir->kernels().end())
 		{
 			kernel = kernels.insert(std::make_pair(name, 
 				new LLVMExecutableKernel(*ptxKernel->second, device, 
@@ -68,11 +68,11 @@ namespace executive
 	
 	void MulticoreCPUDevice::load(const ir::Module* module)
 	{
-		if(_modules.count(module->modulePath) != 0)
+		if(_modules.count(module->path()) != 0)
 		{
-			Throw("Duplicate module - " << module->modulePath);
+			Throw("Duplicate module - " << module->path());
 		}
-		_modules.insert(std::make_pair(module->modulePath, 
+		_modules.insert(std::make_pair(module->path(), 
 			new Module(module, this)));	
 	}
 	

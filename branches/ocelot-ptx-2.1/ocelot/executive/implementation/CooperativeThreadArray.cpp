@@ -357,6 +357,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				eval_Bfind(context, instr); break;
 			case PTXInstruction::Bra:
 				eval_Bra(context, instr); break;
+			case PTXInstruction::Brev:
+				eval_Brev(context, instr); break;
 			case PTXInstruction::Brkpt:
 				eval_Brkpt(context, instr); break;
 			case PTXInstruction::Call:
@@ -2025,10 +2027,38 @@ void executive::CooperativeThreadArray::eval_Bfind(CTAContext &context,
 	}
 }
 
+void executive::CooperativeThreadArray::eval_Brev(CTAContext& context, 
+	const PTXInstruction& instr) {
+	trace();
+	switch (instr.type) {
+	case ir::PTXOperand::b32: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB32 a = operandAsB32(threadID, instr.a);
+			PTXB32 d = hydrazine::brev(a);
+			setRegAsB32(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	case ir::PTXOperand::b64: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB64 a = operandAsB64(threadID, instr.a);
+			PTXB64 d = hydrazine::brev(a);
+			setRegAsB64(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	default: {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
+	}
+}
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Bar(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Bar(CTAContext& context, 
+	const PTXInstruction& instr) {
 	trace();
 #if IDEAL_RECONVERGENCE
 	if (context.active.count() < context.active.size()) {

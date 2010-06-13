@@ -56,8 +56,6 @@ namespace test
 			typedef std::vector<TestHandle> TestVector;
 	
 		private:
-			/*! \brief Total amount of time to spend on tests in seconds */
-			hydrazine::Timer::Second _timeLimit;
 			/*! \brief The list of tests to run */
 			TestVector _tests;
 			/*! \brief The number of tolerable failures */
@@ -78,9 +76,10 @@ namespace test
 		public:
 			/*! \brief Print out the ptx of each test as it is added */
 			bool print;
-			
 			/*! \brief Only add tests that match this regular expression */
 			std::string regularExpression;
+			/*! \brief Total amount of time to spend on tests in seconds */
+			hydrazine::Timer::Second timeLimit;
 		
 		public:
 			/*! \brief Constructor */

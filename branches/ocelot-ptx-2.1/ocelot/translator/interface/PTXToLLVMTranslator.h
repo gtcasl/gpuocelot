@@ -82,6 +82,7 @@ namespace translator
 			void _translateBfind( const ir::PTXInstruction& i );
 			void _translateBra( const ir::PTXInstruction& i, 
 				const analysis::DataflowGraph::Block& block );
+			void _translateBrev( const ir::PTXInstruction& i );
 			void _translateBrkpt( const ir::PTXInstruction& i );
 			void _translateCall( const ir::PTXInstruction& i );
 			void _translateClz( const ir::PTXInstruction& i );

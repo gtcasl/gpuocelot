@@ -1022,6 +1022,52 @@ test::TestPTXAssembly::TypeVector testBfind_OUT()
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST BREV
+std::string testBrev_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<2>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tbrev" << typeString << " %r1, %r0; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r1; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testBrev_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	
+	type result = hydrazine::brev(r0);
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testBrev_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testBrev_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -1060,7 +1106,7 @@ namespace test
 		char* inputBlock = (*test.generator)(random);
 		char* outputBlock = new char[outputSize];
 		char* referenceBlock = new char[outputSize];
-				
+		
 		bool pass = true;
 		int devices = 0;
 		int device = 0;
@@ -1123,6 +1169,12 @@ namespace test
 			{
 				status << " Failed during reference run with exception - " 
 					<< e.what() << "\n";
+
+				cudaDeviceProp properties;
+				cudaGetDeviceProperties(&properties, device);
+			
+				status << "  On device - " << device << " - '" 
+					<< properties.name << "'\n";
 				pass = false;
 			}
 		}
@@ -1145,6 +1197,11 @@ namespace test
 							<< " (I8) computed value - " << (int)computed 
 							<< " does not match reference value - " 
 							<< (int)reference << "\n";
+						cudaDeviceProp properties;
+						cudaGetDeviceProperties(&properties, device);
+			
+						status << "  On device - " << device << " - '" 
+							<< properties.name << "'\n";
 					}
 					break;
 				}
@@ -1161,6 +1218,11 @@ namespace test
 							<< " (I16) computed value - " << computed 
 							<< " does not match reference value - " 
 							<< reference << "\n";
+						cudaDeviceProp properties;
+						cudaGetDeviceProperties(&properties, device);
+			
+						status << "  On device - " << device << " - '" 
+							<< properties.name << "'\n";
 					}
 					break;
 				}				
@@ -1177,6 +1239,11 @@ namespace test
 							<< " (I32) computed value - " << computed 
 							<< " does not match reference value - " 
 							<< reference << "\n";
+						cudaDeviceProp properties;
+						cudaGetDeviceProperties(&properties, device);
+			
+						status << "  On device - " << device << " - '" 
+							<< properties.name << "'\n";
 					}
 					break;
 				}
@@ -1195,6 +1262,11 @@ namespace test
 							<< " (I64) computed value - " << computed 
 							<< " does not match reference value - " 
 							<< reference << "\n";
+						cudaDeviceProp properties;
+						cudaGetDeviceProperties(&properties, device);
+			
+						status << "  On device - " << device << " - '" 
+							<< properties.name << "'\n";
 					}
 					break;
 				}
@@ -1211,6 +1283,11 @@ namespace test
 							<< " (F32) computed value - " << computed 
 							<< " does not match reference value - " 
 							<< reference << "\n";
+						cudaDeviceProp properties;
+						cudaGetDeviceProperties(&properties, device);
+			
+						status << "  On device - " << device << " - '" 
+							<< properties.name << "'\n";
 					}
 					break;
 				}
@@ -1227,6 +1304,11 @@ namespace test
 							<< " (F64) computed value - " << computed 
 							<< " does not match reference value - " 
 							<< reference << "\n";
+						cudaDeviceProp properties;
+						cudaGetDeviceProperties(&properties, device);
+			
+						status << "  On device - " << device << " - '" 
+							<< properties.name << "'\n";
 					}
 					break;
 				}
@@ -1550,127 +1632,134 @@ namespace test
 		add("TestAbs-s16", testAbs_REF<short>, 
 			testAbs_PTX(ir::PTXOperand::s16), 
 			testAbs_OUT(I16), testAbs_IN(I16), 
-			uniformNonZero<short, 1>, 1, 1);
+			uniformRandom<short, 1>, 1, 1);
 		add("TestAbs-s32", testAbs_REF<int>, 
 			testAbs_PTX(ir::PTXOperand::s32), 
 			testAbs_OUT(I32), testAbs_IN(I32), 
-			uniformNonZero<int, 1>, 1, 1);
+			uniformRandom<int, 1>, 1, 1);
 		add("TestAbs-s64", testAbs_REF<long long int>, 
 			testAbs_PTX(ir::PTXOperand::s64), 
 			testAbs_OUT(I64), testAbs_IN(I64), 
-			uniformNonZero<long long int, 1>, 1, 1);
+			uniformRandom<long long int, 1>, 1, 1);
 
 		add("TestNeg-s16", testNeg_REF<short>, 
 			testNeg_PTX(ir::PTXOperand::s16), 
 			testNeg_OUT(I16), testNeg_IN(I16), 
-			uniformNonZero<short, 1>, 1, 1);
+			uniformRandom<short, 1>, 1, 1);
 		add("TestNeg-s32", testNeg_REF<int>, 
 			testNeg_PTX(ir::PTXOperand::s32), 
 			testNeg_OUT(I32), testNeg_IN(I32), 
-			uniformNonZero<int, 1>, 1, 1);
+			uniformRandom<int, 1>, 1, 1);
 		add("TestNeg-s64", testNeg_REF<long long int>, 
 			testNeg_PTX(ir::PTXOperand::s64), 
 			testNeg_OUT(I64), testNeg_IN(I64), 
-			uniformNonZero<long long int, 1>, 1, 1);
+			uniformRandom<long long int, 1>, 1, 1);
 
 		add("TestMax-u16", testMinMax_REF<unsigned short, true>, 
 			testMinMax_PTX(ir::PTXOperand::u16, true), 
 			testMinMax_OUT(I16), testMinMax_IN(I16), 
-			uniformNonZero<unsigned short, 2>, 1, 1);
+			uniformRandom<unsigned short, 2>, 1, 1);
 		add("TestMax-u32", testMinMax_REF<unsigned int, true>, 
 			testMinMax_PTX(ir::PTXOperand::u32, true), 
 			testMinMax_OUT(I32), testMinMax_IN(I32), 
-			uniformNonZero<unsigned int, 2>, 1, 1);
+			uniformRandom<unsigned int, 2>, 1, 1);
 		add("TestMax-u64", testMinMax_REF<long long unsigned int, true>, 
 			testMinMax_PTX(ir::PTXOperand::u64, true), 
 			testMinMax_OUT(I64), testMinMax_IN(I64), 
-			uniformNonZero<long long unsigned int, 2>, 1, 1);
+			uniformRandom<long long unsigned int, 2>, 1, 1);
 		add("TestMax-s16", testMinMax_REF<short, true>, 
 			testMinMax_PTX(ir::PTXOperand::s16, true), 
 			testMinMax_OUT(I16), testMinMax_IN(I16), 
-			uniformNonZero<short, 2>, 1, 1);
+			uniformRandom<short, 2>, 1, 1);
 		add("TestMax-s32", testMinMax_REF<int, true>, 
 			testMinMax_PTX(ir::PTXOperand::s32, true), 
 			testMinMax_OUT(I32), testMinMax_IN(I32), 
-			uniformNonZero<int, 2>, 1, 1);
+			uniformRandom<int, 2>, 1, 1);
 		add("TestMax-s64", testMinMax_REF<long long int, true>, 
 			testMinMax_PTX(ir::PTXOperand::s64, true), 
 			testMinMax_OUT(I64), testMinMax_IN(I64), 
-			uniformNonZero<long long int, 2>, 1, 1);
+			uniformRandom<long long int, 2>, 1, 1);
 
 		add("TestMin-u16", testMinMax_REF<unsigned short, false>, 
 			testMinMax_PTX(ir::PTXOperand::u16, false), 
 			testMinMax_OUT(I16), testMinMax_IN(I16), 
-			uniformNonZero<unsigned short, 2>, 1, 1);
+			uniformRandom<unsigned short, 2>, 1, 1);
 		add("TestMin-u32", testMinMax_REF<unsigned int, false>, 
 			testMinMax_PTX(ir::PTXOperand::u32, false), 
 			testMinMax_OUT(I32), testMinMax_IN(I32), 
-			uniformNonZero<unsigned int, 2>, 1, 1);
+			uniformRandom<unsigned int, 2>, 1, 1);
 		add("TestMin-u64", testMinMax_REF<long long unsigned int, false>, 
 			testMinMax_PTX(ir::PTXOperand::u64, false), 
 			testMinMax_OUT(I64), testMinMax_IN(I64), 
-			uniformNonZero<long long unsigned int, 2>, 1, 1);
+			uniformRandom<long long unsigned int, 2>, 1, 1);
 		add("TestMin-s16", testMinMax_REF<short, false>, 
 			testMinMax_PTX(ir::PTXOperand::s16, false), 
 			testMinMax_OUT(I16), testMinMax_IN(I16), 
-			uniformNonZero<short, 2>, 1, 1);
+			uniformRandom<short, 2>, 1, 1);
 		add("TestMin-s32", testMinMax_REF<int, false>, 
 			testMinMax_PTX(ir::PTXOperand::s32, false), 
 			testMinMax_OUT(I32), testMinMax_IN(I32), 
-			uniformNonZero<int, 2>, 1, 1);
+			uniformRandom<int, 2>, 1, 1);
 		add("TestMin-s64", testMinMax_REF<long long int, false>, 
 			testMinMax_PTX(ir::PTXOperand::s64, false), 
 			testMinMax_OUT(I64), testMinMax_IN(I64), 
-			uniformNonZero<long long int, 2>, 1, 1);
+			uniformRandom<long long int, 2>, 1, 1);
 
 		add("TestPopc-b32", testPopc_REF<unsigned int>, 
 			testPopc_PTX(ir::PTXOperand::b32), 
 			testPopc_OUT(I32), testPopc_IN(I32), 
-			uniformNonZero<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestPopc-b64", testPopc_REF<long long unsigned int>, 
 			testPopc_PTX(ir::PTXOperand::b64), 
 			testPopc_OUT(I32), testPopc_IN(I64), 
-			uniformNonZero<long long unsigned int, 1>, 1, 1);
+			uniformRandom<long long unsigned int, 1>, 1, 1);
 
 		add("TestClz-b32", testClz_REF<unsigned int>, 
 			testClz_PTX(ir::PTXOperand::b32), 
 			testClz_OUT(I32), testClz_IN(I32), 
-			uniformNonZero<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestClz-b64", testClz_REF<long long unsigned int>, 
 			testClz_PTX(ir::PTXOperand::b64), 
 			testClz_OUT(I32), testClz_IN(I64), 
-			uniformNonZero<long long unsigned int, 1>, 1, 1);
+			uniformRandom<long long unsigned int, 1>, 1, 1);
 
 		add("TestBfind-u32", testBfind_REF<unsigned int, false>, 
 			testBfind_PTX(ir::PTXOperand::u32, false), testBfind_OUT(), 
-			testBfind_IN(I32), uniformNonZero<unsigned int, 1>, 1, 1);
+			testBfind_IN(I32), uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestBfind-u64", testBfind_REF<long long unsigned int, false>, 
 			testBfind_PTX(ir::PTXOperand::u64, false), testBfind_OUT(), 
-			testBfind_IN(I64), uniformNonZero<long long unsigned int, 1>, 1, 1);
+			testBfind_IN(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
 		add("TestBfind-s32", testBfind_REF<int, false>, 
 			testBfind_PTX(ir::PTXOperand::s32, false), testBfind_OUT(), 
-			testBfind_IN(I32), uniformNonZero<int, 1>, 1, 1);
+			testBfind_IN(I32), uniformRandom<int, 1>, 1, 1);
 		add("TestBfind-s64", testBfind_REF<long long int, false>, 
 			testBfind_PTX(ir::PTXOperand::s64, false), testBfind_OUT(), 
-			testBfind_IN(I64), uniformNonZero<long long int, 1>, 1, 1);
+			testBfind_IN(I64), uniformRandom<long long int, 1>, 1, 1);
 
 		add("TestBfind-shiftamount-u32", testBfind_REF<unsigned int, true>, 
 			testBfind_PTX(ir::PTXOperand::u32, true), testBfind_OUT(), 
-			testBfind_IN(I32), uniformNonZero<unsigned int, 1>, 1, 1);
+			testBfind_IN(I32), uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestBfind-shiftamount-u64", 
 			testBfind_REF<long long unsigned int, true>, 
 			testBfind_PTX(ir::PTXOperand::u64, true), testBfind_OUT(), 
-			testBfind_IN(I64), uniformNonZero<long long unsigned int, 1>, 1, 1);
+			testBfind_IN(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
 		add("TestBfind-shiftamount-s32", testBfind_REF<int, true>, 
 			testBfind_PTX(ir::PTXOperand::s32, true), testBfind_OUT(), 
-			testBfind_IN(I32), uniformNonZero<int, 1>, 1, 1);
+			testBfind_IN(I32), uniformRandom<int, 1>, 1, 1);
 		add("TestBfind-shiftamount-s64", testBfind_REF<long long int, true>, 
 			testBfind_PTX(ir::PTXOperand::s64, true), testBfind_OUT(), 
-			testBfind_IN(I64), uniformNonZero<long long int, 1>, 1, 1);
+			testBfind_IN(I64), uniformRandom<long long int, 1>, 1, 1);
+
+		add("TestBrev-b32", testBrev_REF<unsigned int>, 
+			testBrev_PTX(ir::PTXOperand::b32), testBrev_OUT(I32), 
+			testBrev_IN(I32), uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestBrev-b64", testBrev_REF<long long unsigned int>, 
+			testBrev_PTX(ir::PTXOperand::b64), testBrev_OUT(I64), 
+			testBrev_IN(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
-		unsigned int t) : _timeLimit(l), _tolerableFailures(t)
+		unsigned int t) : _tolerableFailures(t), timeLimit(l)
 	{
 		name = "TestPTXAssembly";
 		
@@ -1710,7 +1799,7 @@ namespace test
 	{
 		_loadTests();
 		
-		hydrazine::Timer::Second perTestTimeLimit = _timeLimit / _tests.size();
+		hydrazine::Timer::Second perTestTimeLimit = timeLimit / _tests.size();
 		hydrazine::Timer timer;
 		
 		unsigned int failures = 0;
@@ -1756,6 +1845,8 @@ int main(int argc, char** argv)
 		"Only select tests matching this expression.");
 	parser.parse("-s", "--seed", test.seed, 0,
 		"Random seed for generating input data. 0 implies seed with time.");
+	parser.parse("-l", "--time-limit", test.timeLimit, 10, 
+		"How many seconds to run tests.");
 	parser.parse();
 
 	test.test();

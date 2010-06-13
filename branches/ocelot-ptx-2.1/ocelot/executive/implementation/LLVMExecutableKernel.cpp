@@ -111,6 +111,16 @@ extern "C"
 		return hydrazine::bfind( a, shift );
 	}
 
+	unsigned int __ocelot_brev_b32( unsigned int a )
+	{
+		return hydrazine::brev( a );
+	}
+
+	long long unsigned int __ocelot_brev_b64( long long unsigned int a )
+	{
+		return hydrazine::brev( a );
+	}
+
 	unsigned int __ocelot_clz_b32( unsigned int a )
 	{
 		return hydrazine::countLeadingZeros( a );

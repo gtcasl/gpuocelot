@@ -1582,6 +1582,7 @@ namespace parser
 		if( string == "bar.sync" ) return ir::PTXInstruction::Bar;
 		if( string == "bfind" ) return ir::PTXInstruction::Bfind;
 		if( string == "bra" ) return ir::PTXInstruction::Bra;
+		if( string == "brev" ) return ir::PTXInstruction::Brev;
 		if( string == "brkpt" ) return ir::PTXInstruction::Brkpt;
 		if( string == "call" ) return ir::PTXInstruction::Call;
 		if( string == "clz" ) return ir::PTXInstruction::Clz;

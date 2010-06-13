@@ -453,10 +453,45 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Bfind: {
+			if( !( type == PTXOperand::u32 || type == PTXOperand::u64 
+				|| type == PTXOperand::s32 || type == PTXOperand::s64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
+			}
+			break;
+		}
 		case Bra: {
 			if( !( d.addressMode == PTXOperand::Label 
 				|| d.addressMode == PTXOperand::Register ) ) {
 				return "no support for types other than Label and Register";
+			}
+			break;
+		}
+		case Brev: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, d.type ) 
+				&& d.addressMode != PTXOperand::Immediate ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			break;
 		}
@@ -1544,7 +1579,7 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
-		default: break;
+		default: return "check not implemented for " + toString(opcode); break;
 	}
 	return "";
 }
@@ -1613,6 +1648,10 @@ std::string ir::PTXInstruction::toString() const {
 				result += ".uni";
 			}
 			return result + " " + d.toString();
+		}
+		case Brev: {
+			return guard() + "brev." + PTXOperand::toString( type ) + " " 
+				+ d.toString() + ", " + a.toString();
 		}
 		case Brkpt: {
 			return guard() + "brkpt";

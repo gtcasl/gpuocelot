@@ -112,6 +112,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_BFIND; }
 "bra"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRA; }
+"brev"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BREV; }
 "brkpt"                         { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRKPT; }
 "call"                          { strlcpy( yylval->text, yytext, 1024 ); \

@@ -477,6 +477,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 		}	
 	}
 
+	assertM(binary->ptx != 0, "binary contains no PTX");
 	assertM(binary->ptx->ptx != 0, "binary contains no PTX");
 
 	// register associated PTX
@@ -635,6 +636,8 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	std::string kernelName = deviceFun;
 	std::string moduleName = _fatBinaries[handle].name();
 	
+	report("Registered kernel - " << kernelName 
+		<< " in module '" << moduleName << "'");
 	_kernels[symbol] = RegisteredKernel(handle, moduleName, kernelName);
 	
 	_unlock();
@@ -2348,7 +2351,14 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	ModuleMap::iterator module = _modules.find(moduleName);
 	assert(module != _modules.end());
 
-	_registerModule( module );
+	try {
+		_registerModule(module);
+	}
+	catch(...) {
+		_unlock();
+		throw;
+	}
+
 	ir::Kernel* k = module->second.getKernel(kernelName);
 	assert(k != 0);
 

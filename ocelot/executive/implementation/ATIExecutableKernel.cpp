@@ -119,6 +119,8 @@ namespace executive
 		// free object and image
 		CalDriver()->calclFreeImage(_image);
 		CalDriver()->calclFreeObject(_object);
+
+		delete ilKernel;
 	}
 
 	void ATIExecutableKernel::setKernelShape(int x, int y, int z)

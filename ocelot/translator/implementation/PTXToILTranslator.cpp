@@ -32,6 +32,9 @@ namespace translator
 
 		_ilKernel = new ir::ILKernel(*k);
 
+		// build the control tree
+		_ilKernel->ctrl_tree();
+
 		_translateInstructions();
 		_addKernelPrefix();
 

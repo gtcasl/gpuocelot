@@ -71,6 +71,7 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/ILKernel.cpp \
 	ocelot/ir/implementation/ILStatement.cpp \
 	ocelot/ir/implementation/ILOperand.cpp \
+	ocelot/ir/implementation/ControlTree.cpp \
 	hydrazine/implementation/Exception.cpp \
 	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \
@@ -468,6 +469,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/PTXOperand.h \
 	ocelot/ir/interface/Global.h \
 	ocelot/ir/interface/Texture.h \
+	ocelot/ir/interface/ControlTree.h \
 	ocelot/ir/test/TestLLVMInstructions.h \
 	ocelot/ir/test/SamplePTX.h \
 	ocelot/ir/interface/ILInstruction.h \

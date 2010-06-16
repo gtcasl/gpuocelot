@@ -5,7 +5,7 @@
 */
 
 #ifndef CONVERT_PREDICATION_TO_SELECT_PASS_H_INCLUDED
-#define CONVERT_PREDICATION_TO_SELECT_H_INCLUDED
+#define CONVERT_PREDICATION_TO_SELECT_PASS_H_INCLUDED
 
 #include <ocelot/analysis/interface/Pass.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>

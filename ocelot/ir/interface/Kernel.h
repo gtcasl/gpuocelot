@@ -23,6 +23,7 @@ namespace ir {
 	class ControlFlowGraph;
 	class DominatorTree;
 	class PostdominatorTree;
+	class ControlTree;
 }
 
 namespace ir {
@@ -45,6 +46,8 @@ namespace ir {
 		PostdominatorTree* _pdom_tree;
 		/*! \brief Dataflow graph constructed from ptxCFG */
 		analysis::DataflowGraph* _dfg;
+		/*! \brief Control tree constructed from ptxCFG */
+		ControlTree* _ct;
 		
 	public:
 		/*!	Constructs an empty kernel */
@@ -69,6 +72,8 @@ namespace ir {
 		DominatorTree* dom_tree();
 		/*! \brief Builds the data flow graph within the kernel */
 		virtual analysis::DataflowGraph* dfg();
+		/*! \brief Builds the Control tree within the kernel */
+		ControlTree* ctrl_tree();
 		/*! brief Gets the cfg */
 		ControlFlowGraph* cfg();
 		/*! brief Gets the const cfg */

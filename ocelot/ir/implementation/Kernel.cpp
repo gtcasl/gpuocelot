@@ -10,6 +10,7 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/ir/interface/DominatorTree.h>
+#include <ocelot/ir/interface/ControlTree.h>
 
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
@@ -25,6 +26,7 @@ ir::Kernel::Kernel(Instruction::Architecture isa) : ISA(isa) {
 	_dom_tree = 0;
 	_pdom_tree = 0;
 	_dfg = 0;
+	_ct = 0;
 	module = 0;
 }
 
@@ -33,6 +35,7 @@ ir::Kernel::~Kernel() {
 	delete _dom_tree;
 	delete _cfg;
 	delete _dfg;
+	delete _ct;
 }
 
 ir::Kernel::Kernel(const Kernel &kernel) {
@@ -43,7 +46,7 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 	parameters = kernel.parameters;
 	locals = kernel.locals;
 
-	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0;
+	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
@@ -58,9 +61,9 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	parameters = kernel.parameters;
 	locals = kernel.locals;
 
-	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg;
+	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg; delete _ct;
 
-	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0;
+	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
@@ -120,6 +123,14 @@ ir::DominatorTree* ir::Kernel::dom_tree() {
 analysis::DataflowGraph* ir::Kernel::dfg() {
 	assertM(_dfg != 0, "DFG not created.");
 	return _dfg;
+}
+
+ir::ControlTree* ir::Kernel::ctrl_tree()
+{
+	assertM(_cfg != 0, "Must create cfg before building control tree.");
+	if (_ct) return _ct;
+	_ct = new ControlTree(_cfg);
+	return _ct;
 }
 
 bool ir::Kernel::executable() const {

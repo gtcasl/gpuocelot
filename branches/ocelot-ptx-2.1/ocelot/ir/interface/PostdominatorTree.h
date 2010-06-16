@@ -19,8 +19,8 @@ namespace ir {
 	
 	/*!
 		A tree structure in which each node corresponds to a BasicBlock in the
-		control flow graph such that each node's block is immediately dominated
-		by its parent. Each node is owned by its parent.
+		control flow graph such that each node's block is immediately 
+		post-dominated by its parent. Each node is owned by its parent.
 	*/
 	class PostdominatorTree {
 		

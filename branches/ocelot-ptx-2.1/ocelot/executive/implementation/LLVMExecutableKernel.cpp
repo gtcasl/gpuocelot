@@ -210,13 +210,13 @@ namespace executive
 		while( !done )
 		{
 			done = true;
-			for( int z = 0; z < c->ntid.z; ++z )
+			for( unsigned int z = 0; z < c->ntid.z; ++z )
 			{
 				c->tid.z = z;
-				for( int y = 0; y < c->ntid.y; ++y )
+				for( unsigned int y = 0; y < c->ntid.y; ++y )
 				{
 					c->tid.y = y;
-					for( int x = 0; x < c->ntid.x; ++x )
+					for( unsigned int x = 0; x < c->ntid.x; ++x )
 					{
 						c->tid.x = x;
 						c->local = localBase + c->localSize * threadId( *c );
@@ -244,13 +244,13 @@ namespace executive
 	{
 		char* localBase = c->local;
 		bool done = true;
-		for( int z = 0; z < c->ntid.z; ++z )
+		for( unsigned int z = 0; z < c->ntid.z; ++z )
 		{
 			c->tid.z = z;
-			for( int y = 0; y < c->ntid.y; ++y )
+			for( unsigned int y = 0; y < c->ntid.y; ++y )
 			{
 				c->tid.y = y;
-				for( int x = 0; x < c->ntid.x; ++x )
+				for( unsigned int x = 0; x < c->ntid.x; ++x )
 				{
 					c->tid.x = x;
 					reportE( REPORT_INSIDE_TRANSLATED_CODE, 

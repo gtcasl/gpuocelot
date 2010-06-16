@@ -314,6 +314,10 @@ namespace ir {
 				return stream.str();
 				break;
 			}
+			case Pragma: {
+				return ".pragma \"" + name + "\"";
+				break;
+			}
 			case Reg: {
 				std::stringstream stream;
 				if( attribute != NoAttribute ) {
@@ -358,7 +362,8 @@ namespace ir {
 					" ." + PTXOperand::toString( type ) + " " + name + ";";
 				break;
 			case Struct:
-				assert( " The current version of PTX does not implement structures or unions." == 0 );
+				assertM( false, " The current version of PTX does not " 
+					<< "implement structures or unions." );
 				break;
 			case Surf:
 				assert( "No support for Surf" == 0 );
@@ -391,10 +396,11 @@ namespace ir {
 				break;
 			}
 			case Union:
-				assert( " The current version of PTX does not implement structures or unions." == 0 );
+				assertM( false, " The current version of PTX does not " 
+					<< "implement structures or unions." );
 				break;
 			case Version: {
-				return ".version 1.4";
+				return ".version 2.1";
 				break;
 			}
 			case StartEntry:

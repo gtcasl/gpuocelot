@@ -32,18 +32,7 @@ namespace test
 			return false;
 		}
 		
-		ir::Kernel* kernel = _module.getKernel( "_Z19k_sequenceDivergentPf" );
-		if( !kernel )
-		{
-			status << "Failed to get kernel _Z19k_sequenceDivergentPf\n";
-			return false;
-		}
-		
-		_divergentKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
-			translator::Translator::BasicOptimization );
-		_divergentKernel->setKernelShape( 8, 1, 1 );
-
-		kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
+		ir::Kernel* kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel _Z17k_sequenceLoopingPfi\n";
@@ -54,17 +43,6 @@ namespace test
 			translator::Translator::BasicOptimization );
 		_loopingKernel->setKernelShape( 8, 1, 1 );
 
-		kernel = _module.getKernel( "_Z7barrierPiS_" );
-		if( !kernel )
-		{
-			status << "Failed to get kernel _Z7barrierPiS_\n";
-			return false;
-		}
-		
-		_barrierKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
-			translator::Translator::BasicOptimization );
-		_barrierKernel->setKernelShape( 8, 1, 1 );
-		
 		kernel = _module.getKernel( "_Z21k_matrixVectorProductPKfS0_Pfii" );
 		if( !kernel )
 		{
@@ -80,67 +58,11 @@ namespace test
 		return true;
 	}
 
-	bool TestLLVMKernels::testDivergent()
-	{
-		executive::LLVMExecutableKernel* kernel = _divergentKernel;
-		
-		unsigned int N = 8;
-		
-		float* sequence = new float[ N ];
-
-		for( unsigned int i = 0; i < N; ++i ) 
-		{
-			sequence[ i ] = -2.0;
-		}
-
-		// configure parameters
-		ir::Parameter& param_A = *kernel->getParameter(
-			"__cudaparm__Z19k_sequenceDivergentPf_ptr" );
-
-		// set parameter values
-		param_A.arrayValues.resize( 1 );
-		param_A.arrayValues[ 0 ].val_u64 = (ir::PTXU64)sequence;
-		kernel->updateParameterMemory();
-
-		// launch the kernel
-		kernel->setKernelShape( N, 1, 1 );
-		kernel->launchGrid( 1, 1 );
-	
-		for( unsigned int i = 0; i < N; i++ )
-		{
-			float w = i * 0.0625f;
-			if( i % 2 ) 
-			{
-				if( fabs( cos( w ) - sequence[ i ] ) > 0.001f ) 
-				{
-					status << "error on element " << i << " - cos(" 
-						<< w << ") = " << cos( w ) << ", encountered " 
-						<< sequence[ i ] << "\n";
-					return false;
-				}
-			}
-			else
-			{
-				if( fabs( sin( w ) - sequence[ i ] ) > 0.001f ) 
-				{
-					status << "error on element " << i << " - sin(" 
-						<< w << ") = " << sin( w ) << ", encountered " 
-						<< sequence[ i ] << "\n";
-					return false;
-				}
-			}
-		}
-
-		delete[] sequence;
-	
-		return true;
-	}
-
 	bool TestLLVMKernels::testLooping()
 	{
 		executive::LLVMExecutableKernel* kernel = _loopingKernel;
 		
-		unsigned int N = 8 * 5;
+		unsigned int N = 8;
 		float* sequence = new float[ N ];
 
 		for( unsigned int i = 0; i < N; ++i ) 
@@ -164,76 +86,17 @@ namespace test
 
 		for( unsigned int i = 0; i < N; ++i ) 
 		{
-			float w = i * 0.0625f;
-			if( i % 2 )
+			float w = i;
+			if( fabs( cos( w ) - sequence[ i ] ) > 0.001f ) 
 			{
-				if( fabs( cos( w ) - sequence[ i ] ) > 0.001f ) 
-				{
-					status << "error on element " << i 
-						<< " - cos(" << w << ") = " << cos( w ) 
-						<< ", encountered " << sequence[ i ] << "\n";
-					return false;
-				}
-			}
-			else 
-			{
-				if( fabs( sin( w ) - sequence[ i ] ) > 0.001f ) 
-				{
-					status << "error on element " << i 
-						<< " - sin(" << w << ") = " << sin(w) 
-						<< ", encountered " << sequence[i] << "\n";
-					return false;
-				}
-			}
-		}
-		
-		delete[] sequence;
-		
-		return true;
-	}
-
-	bool TestLLVMKernels::testBarrier()
-	{
-		executive::LLVMExecutableKernel* kernel = _barrierKernel;
-		
-		unsigned int N = 8;
-		int* in = new int[ N ];
-		int* out = new int[ N ];
-
-		for( unsigned int i = 0; i < N; ++i ) 
-		{
-			in[ i ] = i;
-			out[ i ] = -2;
-		}
-
-		ir::Parameter& param_A = *kernel->getParameter(
-			"__cudaparm__Z7barrierPiS__in");
-		ir::Parameter& param_B = *kernel->getParameter(
-			"__cudaparm__Z7barrierPiS__out");
-
-		param_A.arrayValues.resize( 1 );
-		param_A.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) in;
-		param_B.arrayValues.resize( 1 );
-		param_B.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) out;
-		kernel->updateParameterMemory();
-
-		kernel->setKernelShape( 8, 1, 1 );
-		kernel->launchGrid( 1, 1 );
-
-		for( unsigned int i = 0; i < N; ++i ) 
-		{
-			if( in[i] != out[ ( i + 1 ) % N ] )
-			{
-				status << "At index " << i << " input " 
-					<< in[ i ] 
-					<< " does not match output " 
-					<< out[ ( i + 1 ) % N ] << "\n";
+				status << "error on element " << i 
+					<< " - cos(" << w << ") = " << cos( w ) 
+					<< ", encountered " << sequence[ i ] << "\n";
 				return false;
 			}
 		}
 		
-		delete[] in;
-		delete[] out;
+		delete[] sequence;
 		
 		return true;
 	}
@@ -335,8 +198,7 @@ namespace test
 	{
 		bool result = _loadKernels();
 		
-		return result && testDivergent() && testLooping()
-			&& testBarrier() 
+		return result && testLooping()
 			&& testMatrixMultiply();
 	}
 	
@@ -345,21 +207,16 @@ namespace test
 		name = "TestLLVMKernels";
 
 		description = "A unit test for the LLVM executive runtime.";
-		description += " Test Points: 1) Execute a kernel with divergent ";
-		description += "control flow. 2) Execute a kernel with a loop. ";
-		description += "3) Execute a matrix multiply kernel.";
+		description += " Test Points: 1) Execute a kernel with a loop. ";
+		description += "2) Execute a matrix multiply kernel.";
 
-		_divergentKernel = 0;
 		_loopingKernel = 0;
-		_barrierKernel = 0;
 		_matrixMultiplyKernel = 0;
 	}
 	
 	TestLLVMKernels::~TestLLVMKernels()
 	{
-		delete _divergentKernel;
 		delete _loopingKernel;
-		delete _barrierKernel;
 		delete _matrixMultiplyKernel;
 	}
 }

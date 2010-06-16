@@ -157,6 +157,7 @@ namespace parser
 					void location( long long int one, long long int two, 
 						long long int three );
 					void label( const std::string& string );
+					void pragma( const std::string& string );
 					void labelOperand( const std::string& string );
 					void nonLabelOperand( const std::string& string, 
 						YYLTYPE& location, bool invert );

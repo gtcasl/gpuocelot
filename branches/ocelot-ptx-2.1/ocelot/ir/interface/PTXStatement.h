@@ -28,6 +28,7 @@ namespace ir {
 			Local,
 			Loc,
 			Param,
+			Pragma,
 			Reg,
 			Section,
 			Shared,

@@ -419,7 +419,7 @@ namespace executive
 
 	void ATIGPUDevice::synchronize()
 	{
-		while(!CalDriver()->calCtxIsEventDone(_context, _event));
+		while(_event && !CalDriver()->calCtxIsEventDone(_context, _event));
 	}
 
 	void ATIGPUDevice::limitWorkerThreads(unsigned int threads)

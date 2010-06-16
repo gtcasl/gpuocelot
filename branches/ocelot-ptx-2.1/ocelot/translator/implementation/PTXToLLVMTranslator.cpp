@@ -1186,12 +1186,12 @@ namespace translator
 
 			if( i.modifier & ir::PTXInstruction::sat )
 			{
-				add.d = result;
+				add.d = add.a;
+				add.a.name = _tempRegister();
 			}
 			else
 			{
-				add.d = add.a;
-				add.a.name = _tempRegister();
+				add.d = result;
 			}
 		
 			_add( add );	
@@ -5637,7 +5637,7 @@ namespace translator
 		ir::LLVMGetelementptr get;
 			
 		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
-		get.d.type.type = ir::LLVMInstruction::I16;
+		get.d.type.type = ir::LLVMInstruction::I32;
 		get.a = _context();
 		get.indices.push_back( 0 );
 		
@@ -5839,7 +5839,7 @@ namespace translator
 		
 		load.d.name = _tempRegister();;
 		load.d.type.category = ir::LLVMInstruction::Type::Element;
-		load.d.type.type = ir::LLVMInstruction::I16;
+		load.d.type.type = ir::LLVMInstruction::I32;
 		load.a = get.d;
 		
 		_add( load );
@@ -6598,7 +6598,7 @@ namespace translator
 		dim3.operand.type.members.resize( 3 );
 		dim3.operand.type.members[0].category 
 			= ir::LLVMInstruction::Type::Element;
-		dim3.operand.type.members[0].type = ir::LLVMInstruction::I16;
+		dim3.operand.type.members[0].type = ir::LLVMInstruction::I32;
 		dim3.operand.type.members[1] = dim3.operand.type.members[0];
 		dim3.operand.type.members[2] = dim3.operand.type.members[0];
 		

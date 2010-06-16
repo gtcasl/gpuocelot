@@ -20,9 +20,9 @@ namespace executive
 			class Dimension
 			{
 				public:
-					unsigned short x;
-					unsigned short y;
-					unsigned short z;
+					unsigned int x;
+					unsigned int y;
+					unsigned int z;
 			};
 	
 		public:

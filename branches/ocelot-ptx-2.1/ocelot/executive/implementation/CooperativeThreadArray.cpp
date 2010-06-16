@@ -40,7 +40,7 @@
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 0
+#define NTH_THREAD 1
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 
@@ -2400,6 +2400,22 @@ static Float round(Float a, int modifier) {
 		fd = a;
 	}
 	return fd;
+}
+
+static ir::PTXF32 round(ir::PTXF64 a, int modifier) { 
+	int mode = fegetround();
+	if (modifier & PTXInstruction::rn) {
+		fesetround(FE_TONEAREST);
+	} else if (modifier & PTXInstruction::rz) {
+		fesetround(FE_TOWARDZERO);
+	} else if (modifier & PTXInstruction::rm) {
+		fesetround(FE_DOWNWARD);
+	} else if (modifier & PTXInstruction::rp) {
+		fesetround(FE_UPWARD);
+	}
+	ir::PTXF32 d = a;
+	fesetround(mode);
+	return d;
 }
 
 /*!

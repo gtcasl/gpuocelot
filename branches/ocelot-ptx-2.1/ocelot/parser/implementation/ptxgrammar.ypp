@@ -395,7 +395,7 @@ entry : entryStart2 entryMid2 entryDeclarations '}'
 };
 
 entryStatement : registerDeclaration | uninitializableDeclaration 
-	| location | label;
+	| location | label | pragma;
 
 entryDeclaration : entryStatement
 {
@@ -515,6 +515,11 @@ label : TOKEN_LABEL
 labelOperand : identifier
 {
 	state.labelOperand( $<text>1 );
+};
+
+pragma : TOKEN_PRAGMA TOKEN_STRING ';'
+{
+	state.pragma( $<text>2 );
 };
 
 vectorIndex : TOKEN_X | TOKEN_Y | TOKEN_Z | TOKEN_W;

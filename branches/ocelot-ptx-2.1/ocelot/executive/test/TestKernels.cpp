@@ -37,7 +37,6 @@ namespace test {
 class TestKernels: public Test {
 public:
 	
-	EmulatedKernel *kernelDivergence;
 	EmulatedKernel *kernelLooping;
 	EmulatedKernel *kernelMVProduct;
 
@@ -52,13 +51,11 @@ public:
 
 		ThreadCount = 8;
 
-		kernelDivergence = 0;
 		kernelLooping = 0;
 		kernelMVProduct = 0;
 	}
 	
 	~TestKernels() {
-		delete kernelDivergence;
 		delete kernelLooping;
 		delete kernelMVProduct;
 	}
@@ -109,15 +106,6 @@ public:
 			status << "failed to load module '" << path << "'\n";
 			return (result = false);
 		}
-		
-		rawKernel = module.getKernel("_Z19k_sequenceDivergentPf");
-		if (!rawKernel) {
-			status << "failed to get kernel\n";
-			return (result = false);
-		}
-
-		kernelDivergence = new EmulatedKernel(rawKernel);
-		kernelDivergence->setKernelShape(ThreadCount, 1, 1);
 
 		rawKernel = module.getKernel("_Z17k_sequenceLoopingPfi");
 		if (!rawKernel) {
@@ -139,86 +127,6 @@ public:
 		return true;
 	}
 	
-	bool testDivergent() {
-		using namespace std;
-
-		bool result = true;
-		EmulatedKernel *kernel = kernelDivergence;
-
-		stringstream out;
-		
-		out << "divergent control flow kernel\n";
-		print(out, kernel);
-
-		if (result) {
-			// allocate some data
-			int N = ThreadCount;
-			float *sequence = (float *)malloc(sizeof(float)*N);
-
-			for (int i = 0; i < N; i++) {
-				sequence[i] = -2;	
-			}
-
-			// configure parameters
-			Parameter &param_A = *kernel->getParameter(
-				"__cudaparm__Z19k_sequenceDivergentPf_ptr");
-
-			// set parameter values
-			param_A.arrayValues.resize(1);
-			param_A.arrayValues[0].val_u64 = (PTXU64)sequence;
-			kernel->updateParameterMemory();
-
-			hydrazine::Timer timer;
-			timer.start();
-
-			// launch the kernel
-			try {
-				kernel->setKernelShape(N,1,1);
-				kernel->launchGrid(1,1);
-			}
-			catch (RuntimeException &exp) {
-				out << "[divergent test] Runtime exception on instruction [ " 
-					<< exp.instruction.toString() << " ]:\n" 
-					<< exp.message << "\n";
-				result = false;
-			}
-			
-			timer.stop();
-			
-			cout << "Kernel launch time was " << timer.toString() << "\n";
-
-			if (result) {
-				for (int i = 0; i < N; i++) {
-					float w = (float)i * 0.0625f;
-					if (i % 2) {
-						if (fabs(cos(w) - sequence[i]) > 0.001f) {
-							out << "error on element " << i << " - cos(" << w << ") = " << cos(w) 
-								<< ", encountered " << sequence[i] << "\n";
-							result = false;
-						}
-					}
-					else {
-						if (fabs(sin(w) - sequence[i]) > 0.001f) {
-							out << "error on element " << i << " - sin(" << w << ") = " << sin(w) 
-								<< ", encountered " << sequence[i] << "\n";
-							result = false;
-						}
-					}
-				}
-			}
-			free(sequence);
-		}
-
-		if (!result) {
-			status << out.str();
-		}
-		else {
-			status << "divergent control flow succeeded\n";
-		}
-		return result;
-	}
-	
-	
 	bool testLooping() {
 		using namespace std;
 
@@ -234,7 +142,7 @@ public:
 
 		if (result) {
 			// allocate some data
-			int N = ThreadCount * 5;
+			int N = ThreadCount;
 			float *sequence = (float *)malloc(sizeof(float)*N);
 
 			for (int i = 0; i < N; i++) {
@@ -267,20 +175,11 @@ public:
 			}
 
 			for (int i = 0; i < N; i++) {
-				float w = (float)i * 0.0625f;
-				if (i % 2) {
-					if (fabs(cos(w) - sequence[i]) > 0.001f) {
-						out << "error on element " << i << " - cos(" << w << ") = " << cos(w) 
-							<< ", encountered " << sequence[i] << "\n";
-						result = false;
-					}
-				}
-				else {
-					if (fabs(sin(w) - sequence[i]) > 0.001f) {
-						out << "error on element " << i << " - sin(" << w << ") = " << sin(w) 
-							<< ", encountered " << sequence[i] << "\n";
-						result = false;
-					}
+				float w = (float)i;
+				if (fabs(cos(w) - sequence[i]) > 0.001f) {
+					out << "error on element " << i << " - cos(" << w << ") = " << cos(w) 
+						<< ", encountered " << sequence[i] << "\n";
+					result = false;
 				}
 			}
 			
@@ -401,7 +300,7 @@ public:
 			delete [] A;
 		}
 		if (result) {
-			status << "looping kernel succeeded\n";
+			status << "matrix vector kernel succeeded\n";
 		}
 		if (local_verbose || !result) {
 			status << out.str();
@@ -413,7 +312,7 @@ public:
 		Test driver
 	*/
 	bool doTest( ) {
-		return loadKernels() && testDivergent() && testLooping() 
+		return loadKernels() && testLooping() 
 			&& testMatrixVectorProduct();
 	}
 

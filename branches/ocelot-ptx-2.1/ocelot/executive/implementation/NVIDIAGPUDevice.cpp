@@ -30,7 +30,8 @@
 #endif
 
 #define checkError(x) if((_lastError = x) != CUDA_SUCCESS) { \
-	throw hydrazine::Exception(driver::toString(_lastError)); }
+	throw hydrazine::Exception("Cuda Driver Error - " #x + \
+		driver::toString(_lastError)); }
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str()); }
 
@@ -49,7 +50,7 @@ namespace executive
 	{
 		
 	}
-	
+
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(size_t size) : 
 		_flags(0), _size(size), _hostPointer(0), _external(false)
 	{

@@ -227,6 +227,7 @@ namespace translator
 		{
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
+			case ir::PTXOperand::s32:
 			{
 				ir::ILIadd iadd;
 

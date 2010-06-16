@@ -851,6 +851,14 @@ namespace parser
 		statement.directive = ir::PTXStatement::Label;
 		statement.name = string;
 	}
+
+	void PTXParser::State::pragma( const std::string& string )
+	{
+		report( "  Rule: PRAGMA : " << string );
+
+		statement.directive = ir::PTXStatement::Pragma;
+		statement.name = string;
+	}
 	
 	void PTXParser::State::labelOperand( const std::string& string )
 	{

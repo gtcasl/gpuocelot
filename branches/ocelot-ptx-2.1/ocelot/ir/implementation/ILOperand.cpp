@@ -46,15 +46,18 @@ namespace ir
 	{
 		switch (sr)
 		{
-			case vTidInGrpX:    return "vTidInGrp.x";    break;
-			case vTidInGrpY:    return "vTidInGrp.y";    break;
-			case vTidInGrpZ:    return "vTidInGrp.z";    break;
-			case vNTidInGrpX:   return "cb0[0].x";       break;
-			case vNTidInGrpY:   return "cb0[0].y";       break;
-			case vNTidInGrpZ:   return "cb0[0].z";       break;
-			case vThreadGrpIdX: return "vThreadGrpId.x"; break;
-			case vThreadGrpIdY: return "vThreadGrpId.y"; break;
-			case vThreadGrpIdZ: return "vThreadGrpId.z"; break;
+			case vTidInGrpX:     return "vTidInGrp.x";    break;
+			case vTidInGrpY:     return "vTidInGrp.y";    break;
+			case vTidInGrpZ:     return "vTidInGrp.z";    break;
+			case vNTidInGrpX:    return "cb0[0].x";       break;
+			case vNTidInGrpY:    return "cb0[0].y";       break;
+			case vNTidInGrpZ:    return "cb0[0].z";       break;
+			case vThreadGrpIdX:  return "vThreadGrpId.x"; break;
+			case vThreadGrpIdY:  return "vThreadGrpId.y"; break;
+			case vThreadGrpIdZ:  return "vThreadGrpId.z"; break;
+			case vNThreadGrpIdX: return "cb0[1].x";       break;
+			case vNThreadGrpIdY: return "cb0[1].y";       break;
+			case vNThreadGrpIdZ: return "cb0[1].z";       break;
 			default: break;
 		}
 		

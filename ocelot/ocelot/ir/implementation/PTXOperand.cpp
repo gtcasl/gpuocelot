@@ -343,7 +343,7 @@ static std::ostream & write(std::ostream &stream, float value) {
 */
 static std::ostream & write(std::ostream &stream, double value) {
 	union {
-		unsigned int imm_uint;
+		long long unsigned int imm_uint;
 		double value;
 	} double_union;
 	double_union.value = value;

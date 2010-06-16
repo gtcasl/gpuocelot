@@ -362,7 +362,7 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	*/
 	
 	out << "  bb_0 " << blockFormatter.entryLabel(&*_entry) << ";\n";
-	out << "  bb_1 " << blockFormatter.exitLabel(&*_entry) << ";\n";
+	out << "  bb_1 " << blockFormatter.exitLabel(&*_exit) << ";\n";
 
 	blockIndices[_entry] = 0;
 	blockIndices[_exit] = 1;

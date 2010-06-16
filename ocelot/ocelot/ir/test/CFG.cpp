@@ -15,9 +15,11 @@
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
+#include <ocelot/ir/interface/ControlTree.h>
 #include <ocelot/parser/interface/PTXParser.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,10 +40,12 @@ void analyze(const char *filename) {
 		string cfg_fname = filename + "_cfg.dot";
 		string dom_fname = filename + "_dom.dot";
 		string pdom_fname = filename + "_pdom.dot";
+		string ct_fname = filename + "_ct.dot";
 
 		ofstream cfg_file(cfg_fname.c_str());
 		ofstream dom_file(dom_fname.c_str());
 		ofstream pdom_file(pdom_fname.c_str());
+		ofstream ct_file(ct_fname.c_str());
 		
 		cfg_file << "// Kernel: " << kernel->name << "\n";
 		cfg_file << "// Control flow graph\n";
@@ -55,6 +59,9 @@ void analyze(const char *filename) {
 		pdom_file << "// Post dominator tree\n";
 		kernel->pdom_tree()->write(pdom_file);
 
+		ct_file << "// Kernel: " << kernel->name << "\n";
+		ct_file << "// Control tree\n";
+		kernel->ctrl_tree()->write(ct_file);
 	}
 }
 

@@ -108,6 +108,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_ABS; }
 "bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BARSYNC; }
+"bfi"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BFI; }
 "bfind"                         { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFIND; }
 "bra"                           { strlcpy( yylval->text, yytext, 1024 ); \
@@ -164,6 +166,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_PMEVENT; }
 "popc"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_POPC; }
+"prmt"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_PRMT; }
 "rcp"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RCP; }
 "red"                           { strlcpy( yylval->text, yytext, 1024 ); \
@@ -422,6 +426,14 @@ WHITESPACE [ \t]*
 
 ".ballot"                       { yylval->value = TOKEN_BALLOT; \
                                     return TOKEN_BALLOT; }
+                                    
+".f4e"                          { yylval->value = TOKEN_F4E; return TOKEN_F4E; }
+".b4e"                          { yylval->value = TOKEN_B4E; return TOKEN_B4E; }
+".rc8"                          { yylval->value = TOKEN_RC8; return TOKEN_RC8; }
+".ecl"                          { yylval->value = TOKEN_ECL; return TOKEN_ECL; }
+".ecr"                          { yylval->value = TOKEN_ECR; return TOKEN_ECR; }
+".rc16"                         { yylval->value = TOKEN_RC16; \
+                                    return TOKEN_RC16; }
                                     
 {DECIMAL_CONSTANT}              { std::stringstream stream; stream << yytext; \
                                     stream >> yylval->value; \

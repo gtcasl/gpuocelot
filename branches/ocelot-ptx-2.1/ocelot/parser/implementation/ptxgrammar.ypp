@@ -58,9 +58,9 @@
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
 %token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC 
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
-%token<text> OPCODE_SHR OPCODE_SHL
-%token<text> OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
-%token<text> OPCODE_POPC OPCODE_CLZ OPCODE_BFIND OPCODE_BREV
+%token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
+%token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
+%token<text> OPCODE_BFI
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -116,6 +116,8 @@
 %token<value> TOKEN_ARRIVE TOKEN_RED TOKEN_POPC
 
 %token<value> TOKEN_BALLOT
+
+%token<value> TOKEN_F4E TOKEN_B4E TOKEN_RC8 TOKEN_ECL TOKEN_ECR TOKEN_RC16
 
 %token<value> TOKEN_DECIMAL_CONSTANT
 
@@ -491,7 +493,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
 	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT
-	| OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV;
+	| OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV | OPCODE_BFI;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -603,10 +605,11 @@ floatRounding : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ;
 intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
-	| basicInstruction3 | bfind | brev | branch | addOrSub | addCOrSubC | atom 
-	| bar | brkpt | clz | cvt | div | exit | ld | mad | mad24 | membar | mov 
-	| mul24 | mul | notInstruction | pmevent | popc | rcpSqrtInstruction | red 
-	| ret | sad | selp | set | setp | slct | st | tex | trap | vote;
+	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
+	| atom | bar | brkpt | clz | cvt | div | exit | ld | mad | mad24 | membar 
+	| mov | mul24 | mul | notInstruction | pmevent | popc | prmt 
+	| rcpSqrtInstruction | red | ret | sad | selp | set | setp | slct | st 
+	| tex | trap | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR;
@@ -751,6 +754,12 @@ shiftAmount : TOKEN_SHIFT_AMOUNT
 shiftAmount : /* empty string */
 {
 	state.shiftAmount( false );
+};
+
+bfi : OPCODE_BFI dataType operand ',' operand ',' operand 
+	',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 6 );
 };
 
 bfind : OPCODE_BFIND shiftAmount dataType operand ',' operand ';'
@@ -929,6 +938,25 @@ pmevent : OPCODE_PMEVENT operand
 popc : OPCODE_POPC dataType operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>2, 3 );
+};
+
+permuteModeType : TOKEN_F4E | TOKEN_B4E | TOKEN_RC8 
+	| TOKEN_ECL | TOKEN_ECR | TOKEN_RC16;
+
+permuteMode : permuteModeType
+{
+	state.permute( $<value>1 );
+};
+
+permuteMode : /* empty string */
+{
+	state.defaultPermute();
+};
+
+prmt : OPCODE_PRMT dataType permuteMode operand ',' operand 
+	',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 5 );
 };
 
 rcpSqrtModifier : TOKEN_APPROX optionalFtz

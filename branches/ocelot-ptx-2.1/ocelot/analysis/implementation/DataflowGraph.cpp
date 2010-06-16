@@ -86,6 +86,11 @@ namespace analysis
 		{
 			limit = 5;
 		}
+		else if( ir::PTXInstruction::Bfi == i.opcode )
+		{
+			limit = 5;
+			sources[ 4 ] = &ir::PTXInstruction::pq;
+		}
 
 		for( unsigned int j = 0; j < limit; ++j )
 		{
@@ -135,6 +140,11 @@ namespace analysis
 		if( ir::PTXInstruction::St == i.opcode )
 		{
 			limit = 1;
+		}
+		else if( ir::PTXInstruction::Bfi == i.opcode )
+		{
+			limit = 1;
+			destinations[ 0 ] = &ir::PTXInstruction::d;
 		}
 		else
 		{

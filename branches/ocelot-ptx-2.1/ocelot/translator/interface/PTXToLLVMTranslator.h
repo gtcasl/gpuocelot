@@ -79,6 +79,7 @@ namespace translator
 			void _translateAnd( const ir::PTXInstruction& i );
 			void _translateAtom( const ir::PTXInstruction& i );
 			void _translateBar( const ir::PTXInstruction& i );
+			void _translateBfi( const ir::PTXInstruction& i );
 			void _translateBfind( const ir::PTXInstruction& i );
 			void _translateBra( const ir::PTXInstruction& i, 
 				const analysis::DataflowGraph::Block& block );
@@ -107,6 +108,7 @@ namespace translator
 			void _translateOr( const ir::PTXInstruction& i );
 			void _translatePmevent( const ir::PTXInstruction& i );
 			void _translatePopc( const ir::PTXInstruction& i );
+			void _translatePrmt( const ir::PTXInstruction& i );
 			void _translateRcp( const ir::PTXInstruction& i );
 			void _translateRed( const ir::PTXInstruction& i );
 			void _translateRem( const ir::PTXInstruction& i );

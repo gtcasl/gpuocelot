@@ -1003,6 +1003,7 @@ namespace translator
 			case ir::PTXInstruction::And: _translateAnd( i ); break;
 			case ir::PTXInstruction::Atom: _translateAtom( i ); break;
 			case ir::PTXInstruction::Bar: _translateBar( i ); break;
+			case ir::PTXInstruction::Bfi: _translateBfi( i ); break;
 			case ir::PTXInstruction::Bfind: _translateBfind( i ); break;
 			case ir::PTXInstruction::Bra: _translateBra( i, block ); break;
 			case ir::PTXInstruction::Brev: _translateBrev( i ); break;
@@ -1030,6 +1031,7 @@ namespace translator
 			case ir::PTXInstruction::Or: _translateOr( i ); break;
 			case ir::PTXInstruction::Pmevent: _translatePmevent( i ); break;
 			case ir::PTXInstruction::Popc: _translatePopc( i ); break;
+			case ir::PTXInstruction::Prmt: _translatePrmt( i ); break;
 			case ir::PTXInstruction::Rcp: _translateRcp( i ); break;
 			case ir::PTXInstruction::Red: _translateRed( i ); break;
 			case ir::PTXInstruction::Rem: _translateRem( i ); break;
@@ -1634,6 +1636,29 @@ namespace translator
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	{
 		_yield( i.reentryPoint );
+	}
+
+	void PTXToLLVMTranslator::_translateBfi( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		if( i.type == ir::PTXOperand::b32 )
+		{
+			call.name = "@__ocelot_bfi_b32";
+		}
+		else
+		{
+			call.name = "@__ocelot_bfi_b64";
+		}
+		
+		call.d = _destination( i );
+		
+		call.parameters.push_back( _translate( i.pq ) );
+		call.parameters.push_back( _translate( i.a ) );
+		call.parameters.push_back( _translate( i.b ) );
+		call.parameters.push_back( _translate( i.c ) );
+		
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateBfind( const ir::PTXInstruction& i )
@@ -3270,6 +3295,57 @@ namespace translator
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
 		
+		_add( call );
+	}
+
+	void PTXToLLVMTranslator::_translatePrmt( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+
+		switch( i.permuteMode )
+		{
+			case ir::PTXInstruction::DefaultPermute:
+			{
+				call.name = "@__ocelot_prmt";
+				break;
+			}
+			case ir::PTXInstruction::ForwardFourExtract:
+			{
+				call.name = "@__ocelot_prmt_f4e";
+				break;
+			}
+			case ir::PTXInstruction::BackwardFourExtract:
+			{
+				call.name = "@__ocelot_prmt_b4e";
+				break;
+			}
+			case ir::PTXInstruction::ReplicateEight:
+			{
+				call.name = "@__ocelot_prmt_rc8";
+				break;
+			}
+			case ir::PTXInstruction::EdgeClampLeft:
+			{
+				call.name = "@__ocelot_prmt_ecl";
+				break;
+			}
+			case ir::PTXInstruction::EdgeClampRight:
+			{
+				call.name = "@__ocelot_prmt_ecr";
+				break;
+			}
+			case ir::PTXInstruction::ReplicateSixteen:
+			{
+				call.name = "@__ocelot_prmt_rc16";
+				break;
+			}
+		}
+		
+		call.d = _destination( i );
+		call.parameters.push_back( _translate( i.a ) );
+		call.parameters.push_back( _translate( i.b ) );
+		call.parameters.push_back( _translate( i.c ) );
+	
 		_add( call );
 	}
 
@@ -6698,6 +6774,34 @@ namespace translator
 		brev.label = "__ocelot_brev_b64";
 		_llvmKernel->_statements.push_front( brev );		
 
+		ir::LLVMStatement bfi( ir::LLVMStatement::FunctionDeclaration );
+
+		bfi.label = "__ocelot_bfi_b32";
+		bfi.linkage = ir::LLVMStatement::InvalidLinkage;
+		bfi.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		bfi.visibility = ir::LLVMStatement::Default;
+		
+		bfi.operand.type.category = ir::LLVMInstruction::Type::Element;
+		bfi.operand.type.type = ir::LLVMInstruction::I32;
+		
+		bfi.parameters.resize( 4 );
+		bfi.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		bfi.parameters[0].type.type = ir::LLVMInstruction::I32;
+		bfi.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		bfi.parameters[1].type.type = ir::LLVMInstruction::I32;
+		bfi.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		bfi.parameters[2].type.type = ir::LLVMInstruction::I32;
+		bfi.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
+		bfi.parameters[3].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( bfi );		
+		
+		bfi.label = "__ocelot_bfi_b64";
+		bfi.operand.type.type = ir::LLVMInstruction::I64;
+		bfi.parameters[0].type.type = ir::LLVMInstruction::I64;
+		bfi.parameters[1].type.type = ir::LLVMInstruction::I64;
+		_llvmKernel->_statements.push_front( bfi );
+		
 		ir::LLVMStatement bfind( ir::LLVMStatement::FunctionDeclaration );
 
 		bfind.label = "__ocelot_bfind_b32";
@@ -6719,6 +6823,38 @@ namespace translator
 		bfind.parameters[0].type.type = ir::LLVMInstruction::I64;
 		bfind.label = "__ocelot_bfind_b64";
 		_llvmKernel->_statements.push_front( bfind );		
+
+		ir::LLVMStatement prmt( ir::LLVMStatement::FunctionDeclaration );
+
+		prmt.label = "__ocelot_prmt";
+		prmt.linkage = ir::LLVMStatement::InvalidLinkage;
+		prmt.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		prmt.visibility = ir::LLVMStatement::Default;
+		
+		prmt.operand.type.category = ir::LLVMInstruction::Type::Element;
+		prmt.operand.type.type = ir::LLVMInstruction::I32;
+		
+		prmt.parameters.resize( 3 );
+		prmt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		prmt.parameters[0].type.type = ir::LLVMInstruction::I32;
+		prmt.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		prmt.parameters[1].type.type = ir::LLVMInstruction::I32;
+		prmt.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		prmt.parameters[2].type.type = ir::LLVMInstruction::I32;
+	
+		_llvmKernel->_statements.push_front( prmt );		
+		prmt.label = "__ocelot_prmt_f4e";
+		_llvmKernel->_statements.push_front( prmt );		
+		prmt.label = "__ocelot_prmt_b4e";
+		_llvmKernel->_statements.push_front( prmt );		
+		prmt.label = "__ocelot_prmt_rc8";
+		_llvmKernel->_statements.push_front( prmt );		
+		prmt.label = "__ocelot_prmt_ecl";
+		_llvmKernel->_statements.push_front( prmt );		
+		prmt.label = "__ocelot_prmt_ecr";
+		_llvmKernel->_statements.push_front( prmt );		
+		prmt.label = "__ocelot_prmt_rc16";
+		_llvmKernel->_statements.push_front( prmt );		
 
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );

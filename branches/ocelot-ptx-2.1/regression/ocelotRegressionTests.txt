@@ -1,11 +1,11 @@
-../TestLexer
-../TestParser
+../TestLexer -i ../../tests/ptx
+../TestParser -i ../../tests/ptx
 ../TestEmulator
 ../TestInstructions
 ../TestKernels
-../TestDataflowGraph
+../TestDataflowGraph -i ../../tests/ptx
 ../TestLLVMInstructions
-../TestPTXToLLVMTranslator
+../TestPTXToLLVMTranslator -i ../../tests/ptx
 ../TestLLVMKernels
 ../TestCudaMalloc 
 ../TestCudaTexture2D

@@ -184,6 +184,8 @@ namespace parser
 					void geometry( int token );
 					void vote( int token );
 					void level( int token );
+					void permute( int token );
+					void defaultPermute();
 					void full();
 					
 					void instruction();
@@ -240,6 +242,7 @@ namespace parser
 			static ir::PTXInstruction::Geometry tokenToGeometry( int );
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );
 			static ir::PTXInstruction::Level tokenToLevel( int );
+			static ir::PTXInstruction::PermuteMode tokenToPermuteMode( int );
 			static ir::PTXOperand::DataType smallestType( long long int );
 			static ir::PTXOperand::DataType 
 				smallestType( long long unsigned int );

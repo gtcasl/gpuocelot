@@ -8,7 +8,7 @@
 #define TEST_PTX_ASSEMBLY_CPP_INCLUDED
 
 #include <ocelot/ir/test/TestPTXAssembly.h>
-#include <ocelot/ir/interface/PTXOperand.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 
 #include <ocelot/api/interface/ocelot.h>
 
@@ -1068,6 +1068,167 @@ test::TestPTXAssembly::TypeVector testBrev_OUT(
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST BFI
+std::string testBfi_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream result;
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg " << typeString << " %r<3>; \n";
+	result << "\t.reg .u32 %r3, %r4; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global" << typeString << " %r0, [%rIn]; \n";
+	result << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "]; \n";
+	result << "\tld.global.u32 %r3, [%rIn + " 
+		<< (2 * ir::PTXOperand::bytes(type)) << "]; \n";
+	result << "\tld.global.u32 %r4, [%rIn + " 
+		<< (2 * ir::PTXOperand::bytes(type) 
+		+ ir::PTXOperand::bytes(ir::PTXOperand::u32)) << "]; \n";
+	result << "\tbfi" << typeString << " %r2, %r0, %r1, %r3, %r4; \n";
+	result << "\tst.global" << typeString << " [%rOut], %r2; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <typename type>
+void testBfi_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	type r2 = getParameter<type>(input, 2 * sizeof(type));
+	type r3 = getParameter<type>(input, 2 * sizeof(type) 
+		+ sizeof(unsigned int));
+	
+	type result = hydrazine::bitFieldInsert(r0, r1, r2, r3);
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testBfi_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	test::TestPTXAssembly::TypeVector input(4, type);
+	
+	input[2] = test::TestPTXAssembly::I32;
+	input[3] = test::TestPTXAssembly::I32;
+	
+	return input;
+}
+
+test::TestPTXAssembly::TypeVector testBfi_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST PRMT
+std::string testPrmt_PTX(ir::PTXInstruction::PermuteMode mode)
+{
+	std::string modeString;
+	
+	if( mode != ir::PTXInstruction::DefaultPermute )
+	{
+		modeString = "." + ir::PTXInstruction::toString( mode );
+	}
+	
+	std::stringstream result;
+
+	result << ".version 2.1 \n";
+	result << ".entry test(.param .u64 out, .param .u64 in) \n";
+	result << "{\t\n";
+	result << "\t.reg .u64 %rIn, %rOut; \n";
+	result << "\t.reg .u32 %r<4>; \n";
+	result << "\tld.param.u64 %rIn, [in]; \n";
+	result << "\tld.param.u64 %rOut, [out]; \n";
+	result << "\tld.global.u32 %r0, [%rIn]; \n";
+	result << "\tld.global.u32 %r1, [%rIn + 4]; \n";
+	result << "\tld.global.u32 %r2, [%rIn + 8]; \n";
+	result << "\tprmt.b32" << modeString << " %r3, %r0, %r1, %r2; \n";
+	result << "\tst.global.u32 [%rOut], %r3; \n";
+	result << "\texit; \n";
+	result << "}\n";
+	
+	return result.str();
+}
+
+template <ir::PTXInstruction::PermuteMode mode>
+void testPrmt_REF(void* output, void* input)
+{
+	unsigned int r0 = getParameter<unsigned int>(input, 0);
+	unsigned int r1 = getParameter<unsigned int>(input, sizeof(unsigned int));
+	unsigned int r2 = getParameter<unsigned int>(input, 
+		2 * sizeof(unsigned int));
+	
+	unsigned int result = 0;
+	
+	switch( mode )
+	{
+		case ir::PTXInstruction::ForwardFourExtract:
+		{
+			result = hydrazine::permute<hydrazine::ForwardFourExtract>(
+				r0,r1,r2);
+			break;
+		}
+		case ir::PTXInstruction::BackwardFourExtract:
+		{
+			result = hydrazine::permute<hydrazine::BackwardFourExtract>(
+				r0,r1,r2);
+			break;
+		}
+		case ir::PTXInstruction::ReplicateEight:
+		{
+			result = hydrazine::permute<hydrazine::ReplicateEight>(r0,r1,r2);
+			break;
+		}
+		case ir::PTXInstruction::EdgeClampLeft:
+		{
+			result = hydrazine::permute<hydrazine::EdgeClampLeft>(r0,r1,r2);
+			break;
+		}
+		case ir::PTXInstruction::EdgeClampRight:
+		{
+			result = hydrazine::permute<hydrazine::EdgeClampRight>(r0,r1,r2);
+			break;
+		}
+		case ir::PTXInstruction::ReplicateSixteen:
+		{
+			result = hydrazine::permute<hydrazine::ReplicateSixteen>(r0,r1,r2);
+			break;
+		}
+		case ir::PTXInstruction::DefaultPermute:
+		{
+			result = hydrazine::permute<hydrazine::DefaultPermute>(
+				r0,r1,r2);
+			break;
+		}
+	}
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testPrmt_IN()
+{
+	return test::TestPTXAssembly::TypeVector(3, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testPrmt_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
 namespace test
 {
 	unsigned int TestPTXAssembly::bytes(DataType t)
@@ -1756,6 +1917,42 @@ namespace test
 		add("TestBrev-b64", testBrev_REF<long long unsigned int>, 
 			testBrev_PTX(ir::PTXOperand::b64), testBrev_OUT(I64), 
 			testBrev_IN(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
+
+		add("TestBfi-b32", testBfi_REF<unsigned int>, 
+			testBfi_PTX(ir::PTXOperand::b32), testBfi_OUT(I32), 
+			testBfi_IN(I32), uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestBfi-b64", testBfi_REF<long long unsigned int>, 
+			testBfi_PTX(ir::PTXOperand::b64), testBfi_OUT(I64), 
+			testBfi_IN(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
+	
+		add("TestPrmt-b32", testPrmt_REF<ir::PTXInstruction::DefaultPermute>, 
+			testPrmt_PTX(ir::PTXInstruction::DefaultPermute), testPrmt_OUT(), 
+			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestPrmt-f4e-b32", 
+			testPrmt_REF<ir::PTXInstruction::ForwardFourExtract>, 
+			testPrmt_PTX(ir::PTXInstruction::ForwardFourExtract), 
+			testPrmt_OUT(), testPrmt_IN(), uniformRandom<unsigned int, 3>, 
+			1, 1);
+		add("TestPrmt-b4e-b32", 
+			testPrmt_REF<ir::PTXInstruction::BackwardFourExtract>, 
+			testPrmt_PTX(ir::PTXInstruction::BackwardFourExtract), 
+			testPrmt_OUT(), testPrmt_IN(), uniformRandom<unsigned int, 3>, 
+			1, 1);
+		add("TestPrmt-rc8-b32", 
+			testPrmt_REF<ir::PTXInstruction::ReplicateEight>, 
+			testPrmt_PTX(ir::PTXInstruction::ReplicateEight), testPrmt_OUT(), 
+			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestPrmt-ecl-b32", testPrmt_REF<ir::PTXInstruction::EdgeClampLeft>, 
+			testPrmt_PTX(ir::PTXInstruction::EdgeClampLeft), testPrmt_OUT(), 
+			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestPrmt-ecr-b32", 
+			testPrmt_REF<ir::PTXInstruction::EdgeClampRight>, 
+			testPrmt_PTX(ir::PTXInstruction::EdgeClampRight), testPrmt_OUT(), 
+			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestPrmt-rc16-b32", 
+			testPrmt_REF<ir::PTXInstruction::ReplicateSixteen>, 
+			testPrmt_PTX(ir::PTXInstruction::ReplicateSixteen), testPrmt_OUT(), 
+			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
@@ -1818,7 +2015,7 @@ namespace test
 				{
 					status << "Test '" << test->name << "' seed '" 
 						<< (seed + i) << "' failed.\n";
-					if(++failures > _tolerableFailures) return 0;
+					if(++failures > _tolerableFailures) return false;
 				}
 				
 				timer.stop();

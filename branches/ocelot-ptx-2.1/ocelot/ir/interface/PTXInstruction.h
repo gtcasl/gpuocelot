@@ -205,6 +205,16 @@ namespace ir {
 			CmpOp_Invalid
 		};
 		
+		enum PermuteMode {
+			DefaultPermute,
+			ForwardFourExtract,
+			BackwardFourExtract,
+			ReplicateEight,
+			EdgeClampLeft,
+			EdgeClampRight,
+			ReplicateSixteen
+			};
+		
 		/*! Vector operation */
 		typedef PTXOperand::Vec Vec;
 		
@@ -226,8 +236,8 @@ namespace ir {
 		};
 
 	public:
-	
 		static std::string toString( Level );
+		static std::string toString( PermuteMode );
 		static std::string toString( Vec );
 		static std::string toString( AddressSpace );
 		static std::string toString( AtomicOperation );
@@ -296,6 +306,9 @@ namespace ir {
 			
 			/*! Shift amount flag for bfind instructions */
 			bool shiftAmount;
+			
+			/*! Permute mode for prmt instructions */
+			PermuteMode permuteMode;
 		};
 	
 		/*!

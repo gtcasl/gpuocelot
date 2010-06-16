@@ -931,8 +931,6 @@ namespace parser
 			}
 		}
 		
-		report( "Operand " << operand.identifier << " array size " << operand.array.size() );
-		
 		if( invert )
 		{
 			if( operand.type != ir::PTXOperand::pred )
@@ -1226,6 +1224,16 @@ namespace parser
 	void PTXParser::State::level( int token )
 	{
 		statement.instruction.level = tokenToLevel( token );
+	}
+	
+	void PTXParser::State::permute( int token )
+	{
+		statement.instruction.permuteMode = tokenToPermuteMode( token );
+	}
+	
+	void PTXParser::State::defaultPermute()
+	{
+		statement.instruction.permuteMode = ir::PTXInstruction::DefaultPermute;
 	}
 
 	void PTXParser::State::instruction()
@@ -1580,6 +1588,7 @@ namespace parser
 		if( string == "and" ) return ir::PTXInstruction::And;
 		if( string == "atom" ) return ir::PTXInstruction::Atom;
 		if( string == "bar.sync" ) return ir::PTXInstruction::Bar;
+		if( string == "bfi" ) return ir::PTXInstruction::Bfi;
 		if( string == "bfind" ) return ir::PTXInstruction::Bfind;
 		if( string == "bra" ) return ir::PTXInstruction::Bra;
 		if( string == "brev" ) return ir::PTXInstruction::Brev;
@@ -1607,6 +1616,7 @@ namespace parser
 		if( string == "not" ) return ir::PTXInstruction::Not;
 		if( string == "pmevent" ) return ir::PTXInstruction::Pmevent;
 		if( string == "popc" ) return ir::PTXInstruction::Popc;
+		if( string == "prmt" ) return ir::PTXInstruction::Prmt;
 		if( string == "or" ) return ir::PTXInstruction::Or;
 		if( string == "rcp" ) return ir::PTXInstruction::Rcp;
 		if( string == "red" ) return ir::PTXInstruction::Red;
@@ -1810,6 +1820,25 @@ namespace parser
 		}
 		
 		return ir::PTXInstruction::Level_Invalid;		
+	}
+	
+	ir::PTXInstruction::PermuteMode PTXParser::tokenToPermuteMode( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_F4E: return ir::PTXInstruction::ForwardFourExtract; 
+				break;
+			case TOKEN_B4E: return ir::PTXInstruction::BackwardFourExtract; 
+				break;
+			case TOKEN_RC8: return ir::PTXInstruction::ReplicateEight;    break;
+			case TOKEN_ECL: return ir::PTXInstruction::EdgeClampLeft;     break;
+			case TOKEN_ECR: return ir::PTXInstruction::EdgeClampRight;    break;
+			case TOKEN_RC16: return ir::PTXInstruction::ReplicateSixteen; break;
+				break;
+			default: break;
+		}
+		
+		return ir::PTXInstruction::DefaultPermute;
 	}
 	
 	ir::PTXOperand::DataType PTXParser::smallestType( long long int value )

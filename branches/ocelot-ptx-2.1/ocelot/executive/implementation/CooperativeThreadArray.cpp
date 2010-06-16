@@ -353,6 +353,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				eval_Atom(context, instr); break;
 			case PTXInstruction::Bar:
 				eval_Bar(context, instr); break;
+			case PTXInstruction::Bfi:
+				eval_Bfi(context, instr); break;
 			case PTXInstruction::Bfind:
 				eval_Bfind(context, instr); break;
 			case PTXInstruction::Bra:
@@ -407,6 +409,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 				eval_Pmevent(context, instr); break;
 			case PTXInstruction::Popc:
 				eval_Popc(context, instr); break;
+			case PTXInstruction::Prmt:
+				eval_Prmt(context, instr); break;
 			case PTXInstruction::Rcp:
 				eval_Rcp(context, instr); break;
 			case PTXInstruction::Red:
@@ -452,8 +456,10 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 			case PTXInstruction::Reconverge:
 				eval_Reconverge(context, instr); break;
 			default:
-				assertM(false, "Hit invalid instruction opcode at pc " 
-					<< context.PC);
+				assertM(false, "Opcode at pc " 
+					<< context.PC << " - " 
+					<< PTXInstruction::toString(instr.opcode) 
+					<< " not supported.");
 				break;
 		}
 	
@@ -1971,6 +1977,40 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 				throw RuntimeException("Invalid atomic operation", 
 					context.PC, instr);
 		}
+	}
+}
+
+void executive::CooperativeThreadArray::eval_Bfi(CTAContext &context, const 
+	ir::PTXInstruction &instr) {
+	trace();
+	switch (instr.type) {
+	case ir::PTXOperand::b32: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB32 pq = operandAsB32(threadID, instr.pq);
+			PTXB32 a = operandAsB32(threadID, instr.a);
+			PTXU32 b = operandAsU32(threadID, instr.b);
+			PTXU32 c = operandAsU32(threadID, instr.c);
+			PTXB32 d = hydrazine::bitFieldInsert(pq, a, b, c);
+			setRegAsB32(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	case ir::PTXOperand::b64: {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXB64 pq = operandAsB64(threadID, instr.pq);
+			PTXB64 a = operandAsB64(threadID, instr.a);
+			PTXU32 b = operandAsU32(threadID, instr.b);
+			PTXU32 c = operandAsU32(threadID, instr.c);
+			PTXB64 d = hydrazine::bitFieldInsert(pq, a, b, c);
+			setRegAsB64(threadID, instr.d.reg, d);
+		}
+		break;
+	}
+	default: {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
 	}
 }
 
@@ -4862,6 +4902,113 @@ void executive::CooperativeThreadArray::eval_Popc(CTAContext &context,
 			setRegAsB32(threadID, instr.d.reg, d);
 		}
 	}
+	else {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
+}
+
+
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Prmt(CTAContext &context, 
+	const PTXInstruction &instr) {
+	trace();
+	if (instr.type == PTXOperand::b32) {
+		switch( instr.permuteMode ) {
+			case ir::PTXInstruction::DefaultPermute: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = hydrazine::permute<hydrazine::DefaultPermute>(
+						a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+			case ir::PTXInstruction::ForwardFourExtract: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = hydrazine::permute<
+						hydrazine::ForwardFourExtract>(a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+			case ir::PTXInstruction::BackwardFourExtract: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = hydrazine::permute<
+						hydrazine::BackwardFourExtract>(a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+			case ir::PTXInstruction::ReplicateEight: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = 0;
+					d = hydrazine::permute<hydrazine::ReplicateEight>(a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+			case ir::PTXInstruction::EdgeClampLeft: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = 0;
+					d = hydrazine::permute<hydrazine::EdgeClampLeft>(a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+			case ir::PTXInstruction::EdgeClampRight: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = 0;
+					d = hydrazine::permute<hydrazine::EdgeClampRight>(a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+			case ir::PTXInstruction::ReplicateSixteen: {
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+			
+					PTXB32 a = operandAsB32(threadID, instr.a);
+					PTXB32 b = operandAsB32(threadID, instr.b);
+					PTXB32 c = operandAsB32(threadID, instr.c);
+					PTXB32 d = hydrazine::permute<hydrazine::ReplicateSixteen>(
+						a, b, c);
+					setRegAsB32(threadID, instr.d.reg, d);
+				}
+				break;
+			}
+		}
+	}	
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}

@@ -15,6 +15,7 @@
 
 // hydrazine includes
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
 
 namespace trace
 {
@@ -54,6 +55,7 @@ namespace trace
 						<< " without a memory barrier in between.";
 					stream << "\n";
 					stream << "Near " << _kernel->location( event.PC ) << "\n";
+					throw hydrazine::Exception( stream.str() );
 				}
 				else if( _readers[ byte ] != -1 && _readers[ byte ] != thread )
 				{
@@ -65,6 +67,7 @@ namespace trace
 						<< " without a memory barrier in between.";
 					stream << "\n";
 					stream << "Near " << _kernel->location( event.PC ) << "\n";
+					throw hydrazine::Exception( stream.str() );
 				}
 				else
 				{
@@ -96,6 +99,7 @@ namespace trace
 						<< " without a memory barrier in between.";
 					stream << "\n";
 					stream << "Near " << _kernel->location( event.PC ) << "\n";
+					throw hydrazine::Exception( stream.str() );
 				}
 				else
 				{
@@ -132,6 +136,7 @@ namespace trace
 	{
 		if( event.instruction->addressSpace == ir::PTXInstruction::Shared )
 		{
+			report( "Checking instruction " << event.instruction->toString() );
 			if( event.instruction->opcode == ir::PTXInstruction::Ld )
 			{
 				_read( event );

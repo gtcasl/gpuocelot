@@ -14,6 +14,9 @@
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
+
+#include <ocelot/parser/interface/PTXParser.h>
+
 #include <boost/filesystem.hpp>
 #include <queue>
 
@@ -276,8 +279,25 @@ namespace test
 			file != _files.end(); ++file )
 		{
 			status << " For File: " << *file << std::endl;
-			ir::Module module( *file );
-			
+
+			ir::Module module;
+			try 
+			{
+				module.load( *file );
+			}
+			catch(parser::PTXParser::Exception& e)
+			{
+				if(e.error == parser::PTXParser::State::NotVersion2_1)
+				{
+					status << "  Skipping file with incompatible ptx version." 
+						<< std::endl;
+					continue;
+				}
+				status << "Load module failed with exception: " 
+					<< e.what() << std::endl;
+				return false;
+			}
+
 			for( ir::Module::KernelMap::const_iterator 
 				ki = module.kernels().begin(); 
 				ki != module.kernels().end(); ++ki )
@@ -304,7 +324,23 @@ namespace test
 			file != _files.end(); ++file )
 		{
 			status << " For File: " << *file << std::endl;
-			ir::Module module( *file );
+			ir::Module module;
+			try 
+			{
+				module.load( *file );
+			}
+			catch(parser::PTXParser::Exception& e)
+			{
+				if(e.error == parser::PTXParser::State::NotVersion2_1)
+				{
+					status << "  Skipping file with incompatible ptx version." 
+						<< std::endl;
+					continue;
+				}
+				status << "Load module failed with exception: " 
+					<< e.what() << std::endl;
+				return false;
+			}
 			
 			for( ir::Module::KernelMap::const_iterator 
 				ki = module.kernels().begin(); 
@@ -333,7 +369,23 @@ namespace test
 			file != _files.end(); ++file )
 		{
 			status << " For File: " << *file << std::endl;
-			ir::Module module( *file );
+			ir::Module module;
+			try 
+			{
+				module.load( *file );
+			}
+			catch(parser::PTXParser::Exception& e)
+			{
+				if(e.error == parser::PTXParser::State::NotVersion2_1)
+				{
+					status << "  Skipping file with incompatible ptx version." 
+						<< std::endl;
+					continue;
+				}
+				status << "Load module failed with exception: " 
+					<< e.what() << std::endl;
+				return false;
+			}
 			
 			for( ir::Module::KernelMap::const_iterator 
 				ki = module.kernels().begin(); 

@@ -24,23 +24,6 @@ namespace ir
 	PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
 		PTXStatementVector::const_iterator end): Kernel( Instruction::PTX )
 	{
-		// get parameters/locals, extract kernel name
-		for( PTXStatementVector::const_iterator it = start; it != end; ++it ) 
-		{
-			if( (*it).directive == PTXStatement::Param )
-			{
-				parameters.push_back( Parameter( *it ) );
-			}
-			else if( (*it).directive == PTXStatement::Local
-				|| (*it).directive == PTXStatement::Shared )
-			{
-				locals.insert( std::make_pair( ( *it ).name, Local( *it ) ) );
-			}
-			else if( (*it).directive == PTXStatement::Entry )
-			{
-				name = (*it).name;
-			}
-		}
 		_cfg = new ControlFlowGraph;
 		constructCFG( *_cfg, start, end );
 	}
@@ -235,6 +218,20 @@ namespace ir
 				{
 					// any special handling with respect to control flow?
 				}
+			}
+			else if( statement.directive == PTXStatement::Param )
+			{
+				parameters.push_back( Parameter( statement ) );
+			}
+			else if( statement.directive == PTXStatement::Local
+				|| statement.directive == PTXStatement::Shared )
+			{
+				locals.insert( std::make_pair( 
+					statement.name, Local( statement ) ) );
+			}
+			else if( statement.directive == PTXStatement::Entry )
+			{
+				name = statement.name;
 			}
 		}
 

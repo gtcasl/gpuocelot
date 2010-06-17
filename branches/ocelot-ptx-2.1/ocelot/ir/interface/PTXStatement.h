@@ -33,11 +33,8 @@ namespace ir {
 			Section,
 			Shared,
 			Sreg,
-			Struct,
-			Surf,
 			Target,
-			Tex,
-			Union,
+			Texref,
 			Version,
 			StartEntry,		//< synthetic directive to indicate start of entry
 			EndEntry,		//< synthetic to indicate the end of an entry
@@ -88,8 +85,15 @@ namespace ir {
 			Extern,
 			NoAttribute
 		};
+		
+		enum TextureSpace {
+			GlobalSpace,
+			ParameterSpace,
+			InvalidSpace
+		};
 
 	public:	
+		static std::string toString( TextureSpace );
 		static std::string toString( Attribute );
 		static std::string toString( Data, PTXOperand::DataType );
 	
@@ -108,6 +112,7 @@ namespace ir {
 		union {
 			unsigned int sourceFile;
 			int alignment;
+			TextureSpace space;
 		};
 		
 		std::string section_type;

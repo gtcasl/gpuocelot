@@ -74,13 +74,10 @@ namespace ir
 			void* data; //! Pointer to mapped variable
 			
 		public:
-			Texture(const std::string& n = "", Type t = Invalid);
+			Texture(const std::string& n = "");
 
 		public:
 			std::string toString() const;
-
-		public:
-			static std::string toString(Type type);			
 	};
 
 }

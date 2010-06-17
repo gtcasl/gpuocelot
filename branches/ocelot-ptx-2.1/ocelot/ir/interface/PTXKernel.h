@@ -37,8 +37,7 @@ namespace ir
 					[i.e. the EndEntry statement]
 				\return true on successful creation
 			*/
-			static void constructCFG(
-				ControlFlowGraph &cfg,
+			void constructCFG( ControlFlowGraph &cfg,
 				PTXStatementVector::const_iterator kernelStart,
 				PTXStatementVector::const_iterator kernelEnd );
 

@@ -225,16 +225,6 @@ void ir::Module::createDataStructures() {
 	}
 }
 
-static ir::Texture::Type convert(ir::PTXOperand::DataType t) {
-	switch(t) {
-		case ir::PTXOperand::s32: return ir::Texture::Signed; break;
-		case ir::PTXOperand::u32: return ir::Texture::Unsigned; break;
-		case ir::PTXOperand::f32: return ir::Texture::Float; break;
-		default: break;
-	}
-	return ir::Texture::Invalid;
-}
-
 ir::Texture* ir::Module::getTexture(const std::string& name) {
 	loadNow();
 	TextureMap::iterator texture = _textures.find(name);
@@ -353,10 +343,10 @@ void ir::Module::extractPTXKernels() {
 
 			_globals.insert(std::make_pair(statement.name, Global(statement)));
 		}
-		else if (statement.directive == PTXStatement::Tex) {
+		else if (statement.directive == PTXStatement::Texref) {
 			assert(_textures.count(statement.name) == 0);
 			_textures.insert(std::make_pair(statement.name, 
-				Texture(statement.name, convert(statement.type))));
+				Texture(statement.name)));
 		}
 	}
 }

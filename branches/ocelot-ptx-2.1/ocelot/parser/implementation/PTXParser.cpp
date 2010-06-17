@@ -52,7 +52,6 @@ namespace parser
 			case ir::PTXStatement::Param : return ir::PTXInstruction::Param;
 			case ir::PTXStatement::Global : return ir::PTXInstruction::Global;
 			case ir::PTXStatement::Const : return ir::PTXInstruction::Const;
-			case ir::PTXStatement::Tex : return ir::PTXInstruction::Texture;
 			default: break;
 		}
 		return ir::PTXInstruction::AddressSpace_Invalid;
@@ -634,8 +633,7 @@ namespace parser
 			<< "arrayDimensions initializer';'" );
 
 		assert( directive == ir::PTXStatement::Const 
-			|| directive == ir::PTXStatement::Global 
-			|| directive == ir::PTXStatement::Tex );
+			|| directive == ir::PTXStatement::Global );
 
 		statement.directive = directive;
 		report( "   Name = " << name );
@@ -701,6 +699,30 @@ namespace parser
 		{
 			localOperands.push_back( statement.name );
 		}
+	}
+
+	void PTXParser::State::textureDeclaration( const std::string& name, 
+		YYLTYPE& location )
+	{
+		report( "  Rule: TOKEN_GLOBAL TOKEN_TEXREF identifier ';'" );
+
+		assert( directive == ir::PTXStatement::Global );
+
+		statement.directive = ir::PTXStatement::Texref;
+		statement.name = name;
+
+		if( operands.count( statement.name ) != 0 ) 
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Texture reference name " << statement.name 
+				<< " already declared in this scope.", 
+				DuplicateDeclaration );
+		}
+	
+		operand.identifier = statement.name;
+		operand.addressMode = ir::PTXOperand::Address;
+		operands.insert( std::make_pair( statement.name, 
+			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
 	}
 
 	void PTXParser::State::fileDeclaration( unsigned int file, 
@@ -1369,18 +1391,6 @@ namespace parser
 		statement.instruction.d.type = tokenToDataType( token );
 	}
 
-	void PTXParser::State::structure( YYLTYPE& location )
-	{
-		throw_exception( parser::PTXParser::toString( location, *this ) 
-			<< "Structs not supported in this version.", NotSupported );
-	}
-	
-	void PTXParser::State::aUnion( YYLTYPE& location )
-	{
-		throw_exception( parser::PTXParser::toString( location, *this ) 
-			<< "Unions not supported in this version.", NotSupported );
-	}
-
 	void PTXParser::State::function( YYLTYPE& location )
 	{
 		throw_exception( parser::PTXParser::toString( location, *this ) 
@@ -1687,7 +1697,6 @@ namespace parser
 			case TOKEN_LOCAL: return ir::PTXInstruction::Local; break;
 			case TOKEN_PARAM: return ir::PTXInstruction::Param; break;
 			case TOKEN_SHARED: return ir::PTXInstruction::Shared; break;
-			case TOKEN_TEX: return ir::PTXInstruction::Texture; break;
 			default: break;
 		}
 		
@@ -1703,7 +1712,6 @@ namespace parser
 			case TOKEN_LOCAL: return ir::PTXStatement::Local; break;
 			case TOKEN_PARAM: return ir::PTXStatement::Param; break;
 			case TOKEN_SHARED: return ir::PTXStatement::Shared; break;
-			case TOKEN_TEX: return ir::PTXStatement::Tex; break;
 			default: break;
 		}
 		
@@ -1896,11 +1904,11 @@ namespace parser
 			char* temp = new char[ length + 1 ];
 			temp[ length ] = '\0';
 			input.read( temp, length );
-			std::cerr << "Failed to parse file '" << fileName << "':\n";
-			std::cerr << hydrazine::addLineNumbers(temp) << "\n" << std::flush;
+			e.message = "\nFailed to parse file '" + fileName + "':\n" 
+				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
 			delete[] temp;
 			
-			throw;
+			throw e;
 		}
 	}
 	

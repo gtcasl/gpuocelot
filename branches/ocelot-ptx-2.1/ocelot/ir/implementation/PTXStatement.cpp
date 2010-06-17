@@ -120,6 +120,15 @@ namespace ir {
 		return stream.str();
 		
 	}
+
+	std::string PTXStatement::toString( TextureSpace space ) {
+		switch ( space ) {
+			case GlobalSpace: return "global";
+			case ParameterSpace: return "param";
+			default: break;
+		}
+		return "";
+	}
 	
 	std::string PTXStatement::toString( Attribute attribute ) {
 		switch( attribute ) {
@@ -361,44 +370,15 @@ namespace ir {
 				return ".sreg " + PTXInstruction::toString( array.vec ) + 
 					" ." + PTXOperand::toString( type ) + " " + name + ";";
 				break;
-			case Struct:
-				assertM( false, " The current version of PTX does not " 
-					<< "implement structures or unions." );
-				break;
-			case Surf:
-				assert( "No support for Surf" == 0 );
-				break;
 			case Target: {
 				return ".target " + hydrazine::toString( targets.begin(), 
 					targets.end(), ", " );
 				break;
 			}
-			case Tex: {
-				std::stringstream stream;
-				if( attribute != NoAttribute ) {
-					stream << "." << toString( attribute ) << " ";
-				}
-				stream << ".tex";
-				assert( alignment != 0);
-				if( alignment != 1 ) {
-					stream << " .align " << alignment;
-				}
-				if( array.vec != PTXOperand::v1 ) {
-					stream << " ." << PTXInstruction::toString( array.vec );
-				}
-				stream << " ." << PTXOperand::toString( type ) << " " << name;
-				stream << array.dimensions();
-				if( !array.values.empty() ) { 
-					stream << " = " << array.initializer( type );
-				}
-				stream << ";";
-				return stream.str();
+			case Texref: {
+				return "." + toString( space ) + " .texref " + name + ";";
 				break;
 			}
-			case Union:
-				assertM( false, " The current version of PTX does not " 
-					<< "implement structures or unions." );
-				break;
 			case Version: {
 				return ".version 2.1";
 				break;

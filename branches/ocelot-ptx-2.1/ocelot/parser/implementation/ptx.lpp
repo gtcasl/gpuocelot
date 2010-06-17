@@ -254,21 +254,13 @@ WHITESPACE [ \t]*
                                     return TOKEN_SREG; }
 ".target"                       { yylval->value = TOKEN_TARGET; \
                                     return TOKEN_TARGET; }
-".tex"                          { yylval->value = TOKEN_TEX; \
-                                    return TOKEN_TEX; }
+".texref"                       { yylval->value = TOKEN_TEXREF; \
+                                    return TOKEN_TEXREF; }
 ".version"                      { yylval->value = TOKEN_VERSION; \
                                     return TOKEN_VERSION; }
 ".visible"                      { yylval->value = TOKEN_VISIBLE; \
                                     return TOKEN_VISIBLE; }
 
-
-".struct"                       { yylval->value = TOKEN_STRUCT; \
-                                    return TOKEN_STRUCT; }
-".union"                        { yylval->value = TOKEN_UNION; \
-                                    return TOKEN_UNION; }
-
-".surf"                         { yylval->value = TOKEN_SURF; \
-                                    return TOKEN_SURF; }
 ".cta"                          { yylval->value = TOKEN_CTA; return TOKEN_CTA; }
 ".gl"                           { yylval->value = TOKEN_GL; return TOKEN_GL; }
 ".sys"                          { yylval->value = TOKEN_SYS; return TOKEN_SYS; }

@@ -147,6 +147,8 @@ namespace parser
 						const std::string& name );
 					void initializableDeclaration( const std::string& name, 
 						YYLTYPE& one, YYLTYPE& two );
+					void textureDeclaration( const std::string& name, 
+						YYLTYPE& location );
 					void entry( const std::string& name, YYLTYPE& location, 
 						bool paramList = false );
 					void entryMid( YYLTYPE& location, bool paramList = false );
@@ -200,8 +202,6 @@ namespace parser
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );
 					
-					void structure( YYLTYPE& location );
-					void aUnion( YYLTYPE& location );
 					void function( YYLTYPE& location );
 			};
 			

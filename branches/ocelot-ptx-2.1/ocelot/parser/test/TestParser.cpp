@@ -116,12 +116,18 @@ namespace test
 			parse_attempt = 2;
 			second.load(stream2);
 		}
-		catch (hydrazine::Exception exp) {
+		catch (const parser::PTXParser::Exception& exp) {
+			if (exp.error == parser::PTXParser::State::NotVersion2_1)
+			{
+				status << "Skipping file with incompatible ptx version." 
+					<< std::endl;
+				return true;
+			}
 			status << "Parse " << parse_attempt << " failed with exception: " 
 				<< exp.what() << std::endl;
 			return false;
 		}
-		catch (parser::PTXParser::Exception exp) {
+		catch (const hydrazine::Exception& exp) {
 			status << "Parse " << parse_attempt << " failed with exception: " 
 				<< exp.what() << std::endl;
 			return false;

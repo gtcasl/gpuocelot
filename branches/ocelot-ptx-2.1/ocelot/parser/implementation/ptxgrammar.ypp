@@ -76,7 +76,7 @@
 %token<value> TOKEN_SM21
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
-%token<value> TOKEN_REG TOKEN_SHARED TOKEN_SREG TOKEN_TEX TOKEN_SURF TOKEN_CTA
+%token<value> TOKEN_REG TOKEN_SHARED TOKEN_SREG TOKEN_TEXREF TOKEN_CTA
 %token<value> TOKEN_GL TOKEN_SYS
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
@@ -133,7 +133,7 @@
 
 nonEntryStatements : version | target | registerDeclaration | fileDeclaration | 
 	initializableDeclaration | uninitializableDeclaration | unsupported | 
-	preprocessor;
+	preprocessor | textureDeclaration;
 
 nonEntryStatement : nonEntryStatements
 {
@@ -236,7 +236,7 @@ target : TOKEN_TARGET targetElementList
 	state.target();
 };
 
-addressSpaceIdentifier : TOKEN_REG | TOKEN_SREG | TOKEN_TEX | TOKEN_CONST 
+addressSpaceIdentifier : TOKEN_REG | TOKEN_SREG | TOKEN_CONST 
 	| TOKEN_GLOBAL | TOKEN_LOCAL | TOKEN_PARAM | TOKEN_SHARED;
 
 addressSpace : addressSpaceIdentifier
@@ -345,6 +345,11 @@ initializableDeclaration : initializable addressableVariablePrefix
 	identifier arrayDimensions initializer ';'
 {
 	state.initializableDeclaration( $<text>3, @3, @5 );
+};
+
+textureDeclaration : initializable TOKEN_TEXREF identifier ';'
+{
+	state.textureDeclaration( $<text>3, @3 );
 };
 
 parameter : TOKEN_PARAM
@@ -471,7 +476,7 @@ externOrVisible : /* empty string */
 };
 
 uninitializableAddress : TOKEN_LOCAL | TOKEN_SHARED;
-initializableAddress : TOKEN_CONST | TOKEN_TEX | TOKEN_GLOBAL;
+initializableAddress : TOKEN_CONST | TOKEN_GLOBAL;
 
 uninitializable : externOrVisible uninitializableAddress
 {
@@ -1106,16 +1111,6 @@ voteOperation : voteOperationId
 vote : OPCODE_VOTE voteOperation TOKEN_PRED operand ',' operand ';'
 {
 	state.instruction( $<text>1, TOKEN_PRED, 3 );
-};
-
-unsupported: TOKEN_STRUCT
-{
-	state.structure( @1 );
-};
-
-unsupported: TOKEN_UNION
-{
-	state.aUnion( @1 );
 };
 
 unsupported: TOKEN_FUNCTION

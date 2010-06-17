@@ -483,7 +483,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	// register associated PTX
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(binary->ident, ir::Module())).first;
-	module->second.lazyLoad(std::string(binary->ptx->ptx), binary->ident);
+	module->second.lazyLoad(binary->ptx->ptx, binary->ident);
 	
 	report("Loading module (fatbin) - " << module->first);
 	

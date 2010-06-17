@@ -79,7 +79,12 @@ namespace ir {
 			const std::string& path = "::unknown path::");
 
 		/*!	Unloads module and loads PTX source string via a destructive copy */
-		bool lazyLoad(std::string&& source,
+		bool lazyLoad(std::string& source,
+			const std::string& path = "::unknown path::");
+		
+		/*!	Unloads module and loads PTX source, this pointer must be valid 
+			until the module is loaded */
+		bool lazyLoad(const char* source,
 			const std::string& path = "::unknown path::");
 		
 		/*! \brief Load the module if it has not already been loaded */
@@ -137,6 +142,10 @@ namespace ir {
 	private:
 		/*! \brief This is a copy of the original ptx source for lazy loading */
 		std::string _ptx;
+
+		/*! \brief This is a pointer to the original ptx source 
+			for lazy loading */
+		const char* _ptxPointer;
 	
 		/*! Set of PTX statements loaded from PTX source file. This must not 
 			change after parsing, as all kernels have const_iterators into 

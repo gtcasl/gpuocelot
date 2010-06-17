@@ -22,15 +22,16 @@
 
 #define REPORT_BASE 0
 
-ir::Module::Module(const std::string& path) {
+ir::Module::Module(const std::string& path) : _ptxPointer(0) {
 	load(path);
 }
 
-ir::Module::Module(std::istream& stream, const std::string& path) {
+ir::Module::Module(std::istream& stream, 
+	const std::string& path) : _ptxPointer(0) {
 	load(stream, path);
 }
 
-ir::Module::Module() {
+ir::Module::Module() : _ptxPointer(0) {
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
@@ -117,7 +118,7 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 	return true;
 }
 
-bool ir::Module::lazyLoad(std::string&& source, const std::string& path) {
+bool ir::Module::lazyLoad(std::string& source, const std::string& path) {
 	unload();
 	
 	_ptx = std::move( source );
@@ -126,21 +127,45 @@ bool ir::Module::lazyLoad(std::string&& source, const std::string& path) {
 	return true;
 }
 
+bool ir::Module::lazyLoad(const char* source, const std::string& path) {
+	unload();
+	
+	_ptxPointer = source;
+	_modulePath = path;
+	
+	return true;
+}
+
 void ir::Module::loadNow() {
-	if( _ptx.empty() ) return;
-	std::stringstream stream( std::move( _ptx ) );
-	_ptx.clear();
+	if( loaded() ) return;
+	if( !_ptx.empty() )
+	{
+		std::stringstream stream( std::move( _ptx ) );
+		_ptx.clear();
 	
-	parser::PTXParser parser;
-	parser.fileName = path();
+		parser::PTXParser parser;
+		parser.fileName = path();
 	
-	parser.parse( stream );
-	_statements = std::move( parser.statements() );
-	extractPTXKernels();
+		parser.parse( stream );
+		_statements = std::move( parser.statements() );
+		extractPTXKernels();
+	}
+	else
+	{
+		std::stringstream stream( _ptxPointer );
+		_ptxPointer = 0;
+	
+		parser::PTXParser parser;
+		parser.fileName = path();
+	
+		parser.parse( stream );
+		_statements = std::move( parser.statements() );
+		extractPTXKernels();
+	}
 }	
 	
 bool ir::Module::loaded() const {
-	return _ptx.empty();
+	return _ptx.empty() && ( _ptxPointer == 0 );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

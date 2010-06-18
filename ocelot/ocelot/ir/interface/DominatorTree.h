@@ -31,7 +31,7 @@ namespace ir {
 		/*! Parent control flow graph */
 		ControlFlowGraph *cfg;
 	
-		/*! the basic blocks in the CFG and dominator tree in post-order */
+		/*! the basic blocks in the CFG and dominator tree */
 		ControlFlowGraph::BlockPointerVector blocks;
 	
 		/*! nth element stores the immediate 

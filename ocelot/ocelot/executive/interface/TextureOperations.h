@@ -98,9 +98,7 @@ namespace executive
 			{
 				b = b * texture.size.x;
 			}
-	
-			b -= 0.5f;
-	
+		
 			if (texture.interpolation == ir::Texture::Nearest) 
 			{
 				ir::PTXF64 index = (ir::PTXF64)b;
@@ -133,6 +131,7 @@ namespace executive
 				}
 			} 
 			else {
+				b -= 0.5f;
 
 				ir::PTXF64 low = floor(b);
 				ir::PTXF64 high = floor(b + 1);
@@ -227,14 +226,14 @@ namespace executive
 				b[1] = b[1] * texture.size.y;
 			}		
 			
-			b[0] -= 0.5f;
-			b[1] -= 0.5f;
-			
 			if (texture.interpolation == ir::Texture::Nearest) {
-				ir::PTXF64 index[2] = { ( ir::PTXF64 )(ir::PTXS64)b[0], ( ir::PTXF64 )(ir::PTXS64)b[1] };
+				ir::PTXF64 index[2] = { ( ir::PTXF64 )(ir::PTXS64)b[0], 
+					( ir::PTXF64 )(ir::PTXS64)b[1] };
 				unsigned int windex[2];
-				windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
-				windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
+				windex[0] = wrap(index[0], texture.size.x, 
+					texture.addressMode[0]);
+				windex[1] = wrap(index[1], texture.size.y, 
+					texture.addressMode[1]);
 				switch (texture.type) {
 					case ir::Texture::Unsigned:
 					{
@@ -266,6 +265,9 @@ namespace executive
 
 			} 
 			else {
+				b[0] -= 0.5f;
+				b[1] -= 0.5f;
+			
 				ir::PTXF64 low[2] = {floor(b[0]), floor(b[1])};
 				ir::PTXF64 high[2] = {floor(b[0] + 1), floor(b[1] + 1)};
 				unsigned int wlow[2];
@@ -386,10 +388,6 @@ namespace executive
 				b[2] = b[2] * texture.size.z;
 			}
 
-			b[0] -= 0.5f;
-			b[1] -= 0.5f;
-			b[2] -= 0.5f;
-
 			if (texture.interpolation == ir::Texture::Nearest) {
 				ir::PTXF64 index[3] = { (ir::PTXF64)b[0], (ir::PTXF64)b[1], 
 					(ir::PTXF64)b[2]};
@@ -431,6 +429,10 @@ namespace executive
 				}
 			} 
 			else {
+				b[0] -= 0.5f;
+				b[1] -= 0.5f;
+				b[2] -= 0.5f;
+
 				ir::PTXF64 low[3] = {floor(b[0]), floor(b[1]), floor(b[2])};
 				ir::PTXF64 high[3] = {floor(b[0] + 1), floor(b[1] + 1), 
 					floor(b[2] + 1)};

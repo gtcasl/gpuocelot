@@ -169,10 +169,7 @@ namespace ir
 					edge.tail = block;
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 				}
-				else 
-				{
-
-				}
+				
 				block->label = statement.name;
 				assertM( blocksByLabel.count( block->label ) == 0, 
 					"Duplicate blocks with label " << block->label )
@@ -185,14 +182,21 @@ namespace ir
 				if (statement.instruction.opcode == PTXInstruction::Bra) 
 				{
 					last_inserted_block = block;
-					if (edge.type != ControlFlowGraph::Edge::Invalid) {
+					// dont't add fall through edges for unconditional branches
+					if (edge.type != ControlFlowGraph::Edge::Invalid ) {
 						cfg.insert_edge(edge);
 					}
 					edge.head = block;
 					branchBlocks.push_back(block);
 					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
-					edge.tail = block;
-					edge.type = ControlFlowGraph::Edge::FallThrough;
+					if (statement.instruction.pg.condition 
+						!= ir::PTXOperand::PT) {
+						edge.tail = block;
+						edge.type = ControlFlowGraph::Edge::FallThrough;
+					}
+					else {
+						edge.type = ControlFlowGraph::Edge::Invalid;
+					}
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Exit )
 				{
@@ -203,7 +207,6 @@ namespace ir
 					edge.head = block;
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::FallThrough;
-					cfg.insert_edge( edge );
 
 					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
 					edge.type = ControlFlowGraph::Edge::Invalid;
@@ -221,14 +224,9 @@ namespace ir
 					edge.head = block;
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::Branch;
-					cfg.insert_edge( edge );
 
 					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
 					edge.type = ControlFlowGraph::Edge::Invalid;
-				}
-				else 
-				{
-					// any special handling with respect to control flow?
 				}
 			}
 		}
@@ -276,19 +274,18 @@ namespace ir
 		{
 			PTXInstruction& bra = *static_cast<PTXInstruction*>(
 				(*it)->instructions.back());
+			// skip always false branches
+			if( bra.pg.condition == ir::PTXOperand::nPT ) continue;
+			
 			BlockToLabelMap::iterator labeledBlockIt = 
 				blocksByLabel.find( bra.d.identifier );
 		
-			if( labeledBlockIt != blocksByLabel.end() ) 
-			{
-				bra.d.identifier = labeledBlockIt->second->label;
-				cfg.insert_edge(ControlFlowGraph::Edge(*it, 
-					labeledBlockIt->second, ControlFlowGraph::Edge::Branch));
-			}
-			else 
-			{
-				assertM(false, "undefined label " << bra.d.identifier);
-			}
+			assertM(labeledBlockIt != blocksByLabel.end(), 
+				"undefined label " << bra.d.identifier);
+		
+			bra.d.identifier = labeledBlockIt->second->label;
+			cfg.insert_edge(ControlFlowGraph::Edge(*it, 
+				labeledBlockIt->second, ControlFlowGraph::Edge::Branch));
 		}
 	}
 

@@ -16,6 +16,9 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/ControlTree.h>
+
+typedef ir::ControlTree ControlTree;
 
 namespace translator
 {
@@ -36,19 +39,20 @@ namespace translator
 			ir::ILKernel *_ilKernel;
 			LiteralMap _literals;
 
-			void _translateInstructions();
+			void _translate(const ControlTree::Node& node);
+			void _translate(const ControlTree::InstNode& insts);
+			void _translate(const ControlTree::BlockNode& block);
+			//void _translateInstructions();
 
-			void _translate(ir::ControlFlowGraph::BasicBlock *block);
-			void _translate(const ir::PTXInstruction &i, 
-					ir::ControlFlowGraph::BasicBlock *b);
+			//void _translate(ir::ControlFlowGraph::BasicBlock *block);
+			void _translate(const ir::PTXInstruction &i); 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
 			std::string _translate(const ir::PTXOperand::RegisterType &reg);
 			ir::ILOperand::SpecialRegister _translate(
 					const ir::PTXOperand::SpecialRegister &s);
 
 			void _translateAdd(const ir::PTXInstruction &i);
-			void _translateBra(const ir::PTXInstruction &i, 
-					ir::ControlFlowGraph::BasicBlock *b);
+			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);

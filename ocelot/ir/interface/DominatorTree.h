@@ -45,6 +45,10 @@ namespace ir {
 		/*! Mapping from a BasicBlock to an index into the blocks vector */
 		ControlFlowGraph::BlockMap blocksToIndex;
 	
+		/*! Does a particular block dominate another block? */
+		bool dominates(ControlFlowGraph::iterator block, 
+			ControlFlowGraph::iterator potentialSuccessor);
+	
 	private:
 		void computeDT();
 		int intersect(int b1, int b2) const;

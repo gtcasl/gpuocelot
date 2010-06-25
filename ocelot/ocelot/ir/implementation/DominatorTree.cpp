@@ -80,6 +80,26 @@ std::ostream& ir::DominatorTree::write(std::ostream& out) {
 	return out;
 }
 
+bool ir::DominatorTree::dominates(ControlFlowGraph::iterator block, 
+	ControlFlowGraph::iterator potentialSuccessor) {
+	int id = blocksToIndex[block];
+	int successorId = blocksToIndex[potentialSuccessor];
+	int startId = blocksToIndex[cfg->get_entry_block()];
+	
+	bool dominates = false;
+	
+	int nextId = successorId;
+	
+	do
+	{
+		dominates = nextId == id;
+		nextId = i_dom[nextId];
+	}
+	while(startId != nextId && dominates);
+	
+	return dominates;
+}
+
 /*! Computes the dominator tree from a CFG using algorithm __ */
 void ir::DominatorTree::computeDT() {
 	using namespace std;

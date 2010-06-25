@@ -12,6 +12,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
+#include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
@@ -170,6 +171,8 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
 		unsigned int> InstructionIdMap;
+	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
+		ir::ControlFlowGraph::iterator> ReconvergeToBlockMap;
 	report("Constructing emulated instruction sequence.");
 
 	// visit basic blocks and add reconverge instructions
@@ -177,6 +180,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		bb_sequence = cfg()->executable_sequence();
 	
 	InstructionMap reconvergeTargets;
+	ReconvergeToBlockMap reconvergeSources;
 	
 	report(" Adding reconverge instructions");
 	// Create reconverge instructions
@@ -191,13 +195,38 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				ir::ControlFlowGraph::iterator 
 					pdom = pdom_tree()->getPostDominator(*bb_it);
 
-				pdom->instructions.push_front(ir::PTXInstruction(
-					ir::PTXInstruction::Reconverge).clone());
-				report( "  Getting post dominator block " << pdom->label 
-					<< " of instruction " << ptx_instr.toString() << ", " 
-					<< pdom->instructions.front()->toString() );
-				reconvergeTargets.insert(std::make_pair(i_it, 
-					pdom->instructions.begin()));
+				// only add a new reconverge point if all other reconverge 
+				// points originate from branches that dominate this branch
+				bool allDominate = true;
+				ir::ControlFlowGraph::InstructionList::iterator 
+					reconverge = pdom->instructions.begin();
+				for ( ; reconverge != pdom->instructions.end(); ++reconverge) {
+					ir::PTXInstruction& ptx = static_cast<
+						ir::PTXInstruction&>(**reconverge);
+					if (ptx.opcode != ir::PTXInstruction::Reconverge) {
+						break;
+					}
+					
+					if( !dom_tree()->dominates(
+						reconvergeSources[reconverge], *bb_it) ) {
+						allDominate = false;
+						break;
+					}
+				}
+				
+				if (allDominate) {
+					pdom->instructions.push_front(ir::PTXInstruction(
+						ir::PTXInstruction::Reconverge).clone());
+					report( "  Getting post dominator block " << pdom->label 
+						<< " of instruction " << ptx_instr.toString() );
+					reconvergeTargets.insert(std::make_pair(i_it, 
+						pdom->instructions.begin()));
+					reconvergeSources.insert(std::make_pair(
+						pdom->instructions.begin(), *bb_it));
+				}
+				else {
+					reconvergeTargets.insert(std::make_pair(i_it, reconverge));
+				}
 			}
 		}
 	}
@@ -691,8 +720,10 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
-					ConstantOffsetMap::iterator	l_it = constant.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
+					ConstantOffsetMap::iterator	l_it = constant.find(
+						(instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -706,8 +737,10 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		else if ( instr.opcode == ir::PTXInstruction::Ld 
 			|| instr.opcode == ir::PTXInstruction::St ) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
-					ConstantOffsetMap::iterator l_it = constant.find((instr.*operands[n]).identifier);
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
+					ConstantOffsetMap::iterator l_it = constant.find(
+						(instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -778,15 +811,15 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	ir::PTXOperand ir::PTXInstruction:: *operands[] = {
 		&ir::PTXInstruction::d, &ir::PTXInstruction::a, &ir::PTXInstruction::b, 
 		&ir::PTXInstruction::c };
-	PTXInstructionVector::iterator 
-		i_it = instructions.begin();
+	PTXInstructionVector::iterator i_it = instructions.begin();
 	for (; i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st instruction
 		if (instr.opcode == ir::PTXInstruction::Mov) {
 			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode == ir::PTXOperand::Address) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
 					unordered_set<string>::iterator l_it = 
 						global.find((instr.*operands[n]).identifier);
 					if (global.end() != l_it) {
@@ -947,7 +980,8 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 */
 std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 
-	std::map< int, std::string >::const_iterator bt_it = basicBlockMap.lower_bound(PC);
+	std::map< int, std::string >::const_iterator 
+		bt_it = basicBlockMap.lower_bound(PC);
 	if (bt_it != basicBlockMap.end()) {
 		return bt_it->second;
 	}

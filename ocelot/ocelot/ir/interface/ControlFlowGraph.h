@@ -116,9 +116,8 @@ public:
 
 	public:
 
-		/*!
-			\brief an object that formats the string representation of a basic block used
-				in the DOT output of the graph
+		/*! \brief an object that formats the string representation of a 
+				basic block used in the DOT output of the graph
 		*/
 		class DotFormatter {
 		public:
@@ -127,26 +126,17 @@ public:
 
 			static std::string dotFriendly(const std::string &str);
 
-		public:
-		
-			/*!
-				\brief emits label for entry block
-			*/
+		public:		
+			/*! \brief emits label for entry block */
 			virtual std::string entryLabel(const BasicBlock *block);
 			
-			/*!
-				\brief emits label for exit block
-			*/
+			/*! \brief emits label for exit block */
 			virtual std::string exitLabel(const BasicBlock *block);
 		
-			/*!
-				\brief prints string representation of 
-			*/
+			/*!	\brief prints string representation of */
 			virtual std::string toString(const BasicBlock *block);
 
-			/*!
-				\brief emits DOT representation of an edge
-			*/
+			/*! \brief emits DOT representation of an edge	*/
 			virtual std::string toString(const Edge *edge);
 		};
 	};

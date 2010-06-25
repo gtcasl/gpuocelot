@@ -51,13 +51,22 @@ namespace ir
 			{
 				public:
 					typedef std::list<Node> NodeList;
-					typedef std::vector<NodeList::iterator> NodePointerVector;
+					typedef NodeList::iterator iterator;
+					typedef NodeList::const_iterator const_iterator;
+					typedef std::vector<iterator> NodePointerVector;
+					typedef NodePointerVector::iterator pointer_iterator;
 
-					std::string label() const;
+					Node(const std::string& l = "", RegionType rtype = Invalid);
+
+					std::string& label();
+					const RegionType& rtype() const;
 					NodePointerVector& successors();
 					NodePointerVector& predecessors();
 
-					Node(const std::string& l = "", RegionType rtype = Invalid);
+					void add_successor(iterator succ);
+					void remove_successor(iterator succ);
+					void add_predecessor(iterator pred);
+					void remove_predecessor(iterator pred);
 
 				private:
 					std::string _label;
@@ -66,11 +75,62 @@ namespace ir
 					NodePointerVector _predecessors;
 			};
 
+			/*! \brief A version of the cfg basic block with branches removed */
+			class InstNode : public Node
+			{
+				public:
+					typedef ControlFlowGraph::InstructionList InstructionList;
+					typedef InstructionList::const_iterator const_iterator;
+
+					InstNode(const ControlFlowGraph::const_iterator& bb);
+
+					const_iterator begin() const;
+					const_iterator end() const;
+
+				private:
+					InstructionList _instructions;
+			};
+
+			class BlockNode : public Node
+			{
+				public:
+					BlockNode(const NodePointerVector& nodes, 
+							const std::string& l = "");
+
+					const_iterator begin() const;
+					const_iterator end() const;
+
+				private:
+					NodeList _nodes;
+			};
+
+			class IfThenNode : public Node
+			{
+				public:
+					IfThenNode(const Node& cond, const Node& ifTrue, 
+							const std::string& l = "");
+
+				private:
+					Node _cond;
+					Node _ifTrue;
+			};
+
+			class SelfLoopNode : public Node
+			{
+				public:
+					SelfLoopNode(const std::string& l = "");
+
+				private:
+					Node _body;
+					Node _cond;
+			};
+
 			typedef Node::NodeList NodeList;
-			typedef Node::NodePointerVector NodePointerVector;
-			typedef NodeList::iterator iterator;
+			typedef Node::iterator iterator;
 			typedef NodeList::const_iterator const_iterator;
-			typedef NodePointerVector::iterator pointer_iterator;
+			typedef Node::NodePointerVector NodePointerVector;
+			typedef Node::pointer_iterator pointer_iterator;
+			typedef NodePointerVector::const_iterator const_pointer_iterator;
 			typedef std::unordered_set<iterator> NodeSet;
 
 			/*!	\brief write a graphviz-compatible file for visualizing the 
@@ -87,56 +147,23 @@ namespace ir
 			/*! \brief Get an const iterator to the last node */
 			const_iterator end() const;
 
+			/*! \brief Returns the entry block of a control tree */
+			const_iterator get_entry_block() const;
+
 		private:
-			class InstNode : public Node
-			{
-				public:
-					InstNode(const std::string& l = "");
-
-				private:
-					typedef std::list<PTXInstruction*> InstructionList;
-					InstructionList _instructions;
-			};
-
-			class BlockNode : public Node
-			{
-				public:
-					BlockNode(const std::string& l = "");
-
-				private:
-					NodeList _nodes;
-			};
-
-			class IfThenNode : public Node
-			{
-				public:
-					IfThenNode(const std::string& l = "");
-
-				private:
-					InstNode _cond;
-					NodeList _ifTrue;
-					NodeList _ifFalse;
-			};
-
-			class SelfLoopNode : public Node
-			{
-				public:
-					SelfLoopNode(const std::string& l = "");
-
-				private:
-					NodeList _body;
-					InstNode _cond;
-			};
-
+			std::ostream& writeCFG(std::ostream& out);
 			iterator insert_node(const Node& node);
-			void insert_edge(iterator head, iterator tail);
+			iterator erase_node(iterator node);
 			void dfs_postorder(iterator x);
+			Node acyclic_region_type(iterator& node, NodeSet& nset);
+			iterator compact(Node node, NodeSet nodeSet);
+			iterator replace(Node node, NodeSet nodeSet);
+			iterator reduce(Node node, NodeSet nodeSet);
 			void structural_analysis(iterator entry);
 
 			/*! \brief Node list */
 			NodeList _nodes;
 			iterator _entry;
-			iterator _exit;
 
 			/******************************************//**
 			 * \name Postorder traversal of the flowgraph
@@ -154,6 +181,13 @@ namespace std
 	template<> inline size_t hash< 
 		ir::ControlTree::iterator >::operator()( 
 		ir::ControlTree::iterator it ) const
+	{
+		return ( size_t )&( *it );
+	}
+
+	template<> inline size_t hash< 
+		ir::ControlTree::const_iterator >::operator()( 
+		ir::ControlTree::const_iterator it ) const
 	{
 		return ( size_t )&( *it );
 	}

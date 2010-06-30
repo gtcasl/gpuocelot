@@ -21,7 +21,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.620396852493 seconds
+INFO     Test completed in 0.398473024368 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -33,8 +33,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1277857010
-Test time : 0.386479
+Test Seed : 1277859544
+Test time : 0.275982
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -71,7 +71,7 @@ R = [
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc
-INFO     Test completed in 0.332546949387 seconds
+INFO     Test completed in 0.343563079834 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -90,19 +90,19 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D
-INFO     Test completed in 0.260737895966 seconds
+INFO     Test completed in 0.243269920349 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray
-INFO     Test completed in 0.306506872177 seconds
+INFO     Test completed in 0.263798952103 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestParser
-INFO     Test completed in 40.8863589764 seconds
+INFO     Test completed in 40.9239590168 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -115,8 +115,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1277857012
-Test time : 40.7856
+Test Seed : 1277859545
+Test time : 40.8394
 
 Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Parse): Passed
@@ -199,7 +199,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Parse): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals
-INFO     Test completed in 0.389896869659 seconds
+INFO     Test completed in 0.445327997208 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
 Pass/Fail : Pass
@@ -208,7 +208,7 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0719637870789 seconds
+INFO     Test completed in 0.131500005722 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -218,8 +218,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1277857053
-Test time : 0.0118613
+Test Seed : 1277859586
+Test time : 0.0202973
 
 Status : Test output:
 11 registers
@@ -233,19 +233,19 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence
-INFO     Test completed in 0.242907047272 seconds
+INFO     Test completed in 0.281919002533 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale
-INFO     Test completed in 0.0694990158081 seconds
+INFO     Test completed in 0.0865750312805 seconds
 INFO      It produced the following output:
 No CAL devices found
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLexer 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 8.63028597832 seconds
+INFO     Test completed in 8.25320005417 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -257,8 +257,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1277857053
-Test time : 8.5907
+Test Seed : 1277859587
+Test time : 8.2021
 
 Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
@@ -341,7 +341,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0808620452881 seconds
+INFO     Test completed in 0.0674479007721 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -351,8 +351,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1277857062
-Test time : 0.01298
+Test Seed : 1277859595
+Test time : 0.00527787
 
 Status : Test output:
 Accessors test passed.
@@ -370,9 +370,9 @@ pass: control flow instructions
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.100829124451 seconds
+INFO     Test completed in 0.0772459506989 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.00176454s (1764280 ticks)
+Kernel launch time was 0.00192428s (1924085 ticks)
 Pass/Fail : Pass
 
 
@@ -381,8 +381,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1277857062
-Test time : 0.031816
+Test Seed : 1277859595
+Test time : 0.0256958
 
 Status : Test output:
 divergent control flow succeeded
@@ -393,7 +393,7 @@ looping kernel succeeded
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching
-INFO     Test completed in 0.126070976257 seconds
+INFO     Test completed in 0.136049985886 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -412,8 +412,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1277857062
-Test time : 0.0630677
+Test Seed : 1277859595
+Test time : 0.0626364
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -423,7 +423,7 @@ Test Point 3 Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 59.6829919815 seconds
+INFO     Test completed in 59.2246310711 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -436,8 +436,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1277857010
-Test time : 59.5116
+Test Seed : 1277859544
+Test time : 59.0276
 
 Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Translate): Passed
@@ -520,7 +520,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Translate): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0431749820709 seconds
+INFO     Test completed in 0.0496621131897 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -534,8 +534,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1277857070
-Test time : 0.00514865
+Test Seed : 1277859603
+Test time : 0.00457597
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -667,7 +667,7 @@ Zext Instruction Passed
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 49.4333789349 seconds
+INFO     Test completed in 49.789755106 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -682,8 +682,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1277857062
-Test time : 49.3496
+Test Seed : 1277859595
+Test time : 49.716
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/apps/bounding_box.ptx
@@ -3930,24 +3930,24 @@ Testing SSA then back Dataflow
 
 INFO     
 Passing tests:
- (0.043s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.126s) : /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching : Passed
- (40.886s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
- (0.390s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals : Passed
- (49.433s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Passed
- (0.243s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence : Passed
- (0.307s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray : Passed
- (0.261s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D : Passed
- (0.333s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc : Passed
- (0.620s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
- (59.683s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
- (0.072s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
- (0.081s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
- (8.630s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
- (0.101s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
+ (0.050s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.136s) : /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (40.924s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Passed
+ (0.445s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals : Passed
+ (49.790s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (0.282s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence : Passed
+ (0.264s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray : Passed
+ (0.243s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D : Passed
+ (0.344s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc : Passed
+ (0.398s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (59.225s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
+ (0.132s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
+ (0.067s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
+ (8.253s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
+ (0.077s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
 
 Failing tests:
- (0.069s) : /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale : Did not complete.
+ (0.087s) : /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale : Did not complete.
 
 Non-Existent tests:
 

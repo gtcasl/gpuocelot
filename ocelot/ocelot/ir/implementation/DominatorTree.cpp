@@ -30,13 +30,8 @@ ir::DominatorTree::DominatorTree(ControlFlowGraph *c) {
 	ControlFlowGraph::BlockPointerVector 
 		post_order = cfg->post_order_sequence();
 	
-	report("  " << cfg->get_entry_block()->label);
-	blocks.push_back(cfg->get_entry_block());
-	blocksToIndex[cfg->get_entry_block()] = 0;
-	i_dom.push_back(-1);
-	
-	ControlFlowGraph::pointer_iterator it = post_order.begin();
-	ControlFlowGraph::pointer_iterator end = --post_order.end();
+	ControlFlowGraph::reverse_pointer_iterator it = post_order.rbegin();
+	ControlFlowGraph::reverse_pointer_iterator end = post_order.rend();
 	for (; it != end; ++it) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
@@ -100,7 +95,10 @@ bool ir::DominatorTree::dominates(ControlFlowGraph::iterator block,
 	return dominates;
 }
 
-/*! Computes the dominator tree from a CFG using algorithm __ */
+/*! Computes the dominator tree from a CFG using algorithm desrcibed in
+	"A simple and fast dominance algorithm" by 
+		Keith D. Cooper, Timothy J. Harvey, and Ken Kennedy
+ */
 void ir::DominatorTree::computeDT() {
 	using namespace std;
 	int start_node = blocksToIndex[cfg->get_entry_block()];
@@ -112,26 +110,31 @@ void ir::DominatorTree::computeDT() {
 		changed = false;
 
 		// reverse post-order
-		for (int b_ind = (int)blocks.size() - 1; b_ind >= 0 ; b_ind--) {
-			if (b_ind == start_node) {
-				continue;
-			}
+		for (int b_ind = 0; b_ind >= (int)blocks.size(); b_ind--) {
+			if (b_ind == start_node) continue;
+			
 			ControlFlowGraph::iterator b = blocks[b_ind];
-			int new_idom = blocksToIndex[b->predecessors.front()];
+			int new_idom = 0;
+			bool processed = false;
 
 			ControlFlowGraph::pointer_iterator 
 				pred_it = b->predecessors.begin();
-			++pred_it;
 			for (; pred_it != b->predecessors.end(); ++pred_it) {
 				int p = blocksToIndex[*pred_it];
-				if (i_dom[p] != -1) {
-					new_idom = intersect(p, new_idom);
+				if( !processed ) {
+					new_idom = p;
+					processed = true;
 				}
+				else {
+					new_idom = intersect(p, new_idom);
+				}			
 			}
 			
-			if (i_dom[b_ind] != new_idom) {
-				i_dom[b_ind] = new_idom;
-				changed = true;
+			if( processed ) {			
+				if (i_dom[b_ind] != new_idom) {
+					i_dom[b_ind] = new_idom;
+					changed = true;
+				}
 			}
 		}
 	}

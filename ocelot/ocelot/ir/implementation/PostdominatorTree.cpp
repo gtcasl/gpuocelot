@@ -24,20 +24,15 @@ ir::PostdominatorTree::~PostdominatorTree() {
 
 ir::PostdominatorTree::PostdominatorTree(ControlFlowGraph *c) {
 	// form a vector of the basic blocks in reverse post-order
-	report("Building dominator tree.");
+	report("Building post-dominator tree.");
 	cfg = c;
 	report(" Starting with post order sequence");
 	// form a vector of the basic blocks in reverse post-order
 	ControlFlowGraph::BlockPointerVector 
 		post_order = cfg->post_order_sequence();
 	
-	report("  " << cfg->get_entry_block()->label);
-	blocks.push_back(cfg->get_entry_block());
-	blocksToIndex[cfg->get_entry_block()] = 0;
-	p_dom.push_back(-1);
-	
 	ControlFlowGraph::pointer_iterator it = post_order.begin();
-	ControlFlowGraph::pointer_iterator end = --post_order.end();
+	ControlFlowGraph::pointer_iterator end = post_order.end();
 	for (; it != end; ++it) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
@@ -62,6 +57,8 @@ void ir::PostdominatorTree::computeDT() {
 	bool changed = true;
 	p_dom[end_node] = end_node;
 
+	report( " Computing tree" );
+
 	while (changed) {
 		changed = false;
 
@@ -72,22 +69,30 @@ void ir::PostdominatorTree::computeDT() {
 			}
 			ControlFlowGraph::iterator b = blocks[b_ind];
 			assert(!b->successors.empty());
-			assert(blocksToIndex.count(b->successors.front())!=0);
-			int new_pdom = blocksToIndex[b->successors.front()];
+			int new_pdom = 0;
+			bool processed = false;
 
-			ControlFlowGraph::pointer_iterator succ_it = b->successors.begin();
-			++succ_it;
+			ControlFlowGraph::pointer_iterator 
+				succ_it = b->successors.begin();
 			for (; succ_it != b->successors.end(); ++succ_it) {
 				int p = blocksToIndex[*succ_it];
 				assert(p<(int)p_dom.size());
 				if (p_dom[p] != -1) {
-					new_pdom = intersect(p, new_pdom);
+					if( !processed ) {
+						new_pdom = p;
+						processed = true;
+					}
+					else {
+						new_pdom = intersect(p, new_pdom);
+					}
 				}
 			}
-			
-			if (p_dom[b_ind] != new_pdom) {
-				p_dom[b_ind] = new_pdom;
-				changed = true;
+		
+			if( processed ) {			
+				if (p_dom[b_ind] != new_pdom) {
+					p_dom[b_ind] = new_pdom;
+					changed = true;
+				}
 			}
 		}
 	}
@@ -97,6 +102,9 @@ int ir::PostdominatorTree::intersect(int b1, int b2) const {
 	int finger1 = b1;
 	int finger2 = b2;
 	while (finger1 != finger2) {
+		report( "finger1 " << finger1 << " finger2 " << finger2 );
+		assert(finger1 != -1);
+		assert(finger2 != -1);
 		while (finger1 > finger2) {
 			finger1 = p_dom[finger1];
 		}

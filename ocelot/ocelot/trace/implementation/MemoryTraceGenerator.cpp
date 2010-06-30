@@ -6,6 +6,7 @@
 
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/Device.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/Exception.h>
@@ -216,7 +217,19 @@ static ir::PTXU64 extent(const executive::ExecutableKernel& kernel) {
 		}
 	}
 	
-	assertM(false, "This function needs porting to the new Device interface.");
+	for(AddressSet::iterator pointer = pointers.begin(); 
+		pointer != pointers.end(); ++pointer)
+	{
+		executive::Device::MemoryAllocation* 
+			allocation = kernel.device->getMemoryAllocation((void*)*pointer);
+		if(allocation != 0)
+		{
+			if(encountered.insert((ir::PTXU64)allocation->pointer()).second)
+			{
+				extent += allocation->size();
+			}
+		}
+	}
 	
 	return extent;
 	

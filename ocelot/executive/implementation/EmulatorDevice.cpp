@@ -38,8 +38,18 @@
 // Turn on report messages
 #define REPORT_BASE 0
 
+// Memory Alignment (must be a power of 2) 
+// (cuda currently requires 256-byte alignment)
+#define ALIGNMENT 256
+
 namespace executive 
 {
+	static void* align(void* pointer)
+	{
+		size_t address = (size_t) pointer;
+		return (void*) (address + (address & (ALIGNMENT-1)));
+	}
+
 	EmulatorDevice::MemoryAllocation::MemoryAllocation() 
 		: Device::MemoryAllocation(false, false), _size(0), 
 		_pointer(0), _flags(0), _external(false)
@@ -49,14 +59,14 @@ namespace executive
 	
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(size_t size) 
 		: Device::MemoryAllocation(false, false), _size(size), 
-		_pointer(std::malloc(size)), _flags(0), _external(false)
+		_pointer(std::malloc(size + ALIGNMENT)), _flags(0), _external(false)
 	{
 	
 	}
 	
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(size_t size, 
 		unsigned int flags) : Device::MemoryAllocation(false, true), 
-		_size(size), _pointer(std::malloc(size)), _flags(flags),
+		_size(size), _pointer(std::malloc(size + ALIGNMENT)), _flags(flags),
 		_external(false)
 	{
 		
@@ -65,10 +75,10 @@ namespace executive
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(const ir::Global& global)
 		: Device::MemoryAllocation(true, false), 
 		_size(global.statement.bytes()), 
-		_pointer(std::malloc(global.statement.bytes())), 
+		_pointer(std::malloc(global.statement.bytes() + ALIGNMENT)), 
 		_flags(0), _external(false)
 	{
-		global.statement.copy(_pointer);
+		global.statement.copy(pointer());
 	}
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(void* pointer, 
@@ -85,9 +95,10 @@ namespace executive
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(
 		const MemoryAllocation& a) : Device::MemoryAllocation(a), 
-		_size(a.size()), _pointer(std::malloc(a.size())), _flags(a.flags())
+		_size(a.size()), _pointer(std::malloc(a.size() + ALIGNMENT)),
+		_flags(a.flags())
 	{
-		std::memcpy(_pointer, a.pointer(), size());
+		std::memcpy(pointer(), a.pointer(), size());
 	}
 	
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(MemoryAllocation&& a) 
@@ -112,12 +123,12 @@ namespace executive
 
 		if(!a._external)
 		{
-			_pointer = std::malloc(size());
+			_pointer = std::malloc(size() + ALIGNMENT);
 			std::memcpy(pointer(), a.pointer(), size());
 		}
 		else
 		{
-			_pointer = a.pointer();
+			_pointer = a._pointer;
 		}
 				
 		return *this;
@@ -146,13 +157,13 @@ namespace executive
 	void* EmulatorDevice::MemoryAllocation::mappedPointer() const
 	{
 		assert(host());
-		return _pointer;
+		return align(_pointer);
 	}
 	
 	void* EmulatorDevice::MemoryAllocation::pointer() const
 	{
 		assert(!host() || (_flags & cudaHostAllocMapped));
-		return _pointer;
+		return align(_pointer);
 	}
 
 	size_t EmulatorDevice::MemoryAllocation::size() const

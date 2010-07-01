@@ -20,22 +20,14 @@ INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo
-ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding
-ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea
-ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows
-ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer
 INFO       /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer
@@ -44,7 +36,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator
-INFO     Test completed in 0.806304931641 seconds
+INFO     Test completed in 1.20662283897 seconds
 INFO      It produced the following output:
 13
 17
@@ -52,16 +44,16 @@ INFO      It produced the following output:
 15
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox
-INFO     Test completed in 1.00559401512 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm
+INFO     Test completed in 4.5082449913 seconds
 INFO      It produced the following output:
-bounding box (0.020023,0.0163006) (0.972775,0.998924)
+norm is 5.47723
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot
-INFO     Test completed in 0.741605043411 seconds
+INFO     Test completed in 1.76278710365 seconds
 INFO      It produced the following output:
 (0.840188,0.45724,0.0860517) * (0.0587587,0.456151,0.322409) = 0.285683
 (0.394383,0.640368,0.180886) * (0.0138811,0.24875,0.0221609) = 0.168775
@@ -71,7 +63,7 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/vectorAdd 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/vectorAdd
-INFO     Test completed in 1.39443397522 seconds
+INFO     Test completed in 0.668776988983 seconds
 INFO      It produced the following output:
 Vector addition
 Test PASSED 
@@ -80,7 +72,7 @@ Press ENTER to exit...
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy
-INFO     Test completed in 2.7214012146 seconds
+INFO     Test completed in 1.07016897202 seconds
 INFO      It produced the following output:
 D[0] = 0
 D[1] = 1
@@ -96,7 +88,7 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram
-INFO     Test completed in 11.3552830219 seconds
+INFO     Test completed in 79.4379301071 seconds
 INFO      It produced the following output:
 initial data
 3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
@@ -110,14 +102,22 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff
-INFO     Test completed in 0.94250702858 seconds
+INFO     Test completed in 6.97532105446 seconds
 INFO      It produced the following output:
 maximum absolute difference: 4
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D
+INFO     Test completed in 98.9591498375 seconds
+INFO      It produced the following output:
+bucket (150, 50)'s list of points:
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  In function - cudaMemcpy - invalid memory access at 0xa0da408(4 bytes)
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax
-INFO     Test completed in 0.841197967529 seconds
+INFO     Test completed in 6.49572014809 seconds
 INFO      It produced the following output:
 -4
 7
@@ -125,7 +125,7 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator
-INFO     Test completed in 1.73202395439 seconds
+INFO     Test completed in 44.8415749073 seconds
 INFO      It produced the following output:
 found 4 nonzero values at indices:
 1
@@ -134,22 +134,9 @@ found 4 nonzero values at indices:
 7
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode
-INFO     Test completed in 13.6991949081 seconds
-INFO      It produced the following output:
-initial data
-3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
-sorted data
-0 0 0 1 1 2 2 2 2 2 3 3 3 3 5 5 5 6 6 6 6 6 7 7 7 7 8 9 9 9 
-counts
-1 2 3 1 2 1 2 3 4 5 1 2 3 4 1 2 3 1 2 3 4 5 1 2 3 4 1 1 2 3 
-Modal value 2 occurs 5 times 
-TEST PASSED
-
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction
-INFO     Test completed in 1.8565030098 seconds
+INFO     Test completed in 14.8838858604 seconds
 INFO      It produced the following output:
 padded grid
   9383    886   2777   6915   7793   8335   5386    492   6649   1421   2362   9999   9999   9999   9999   9999 
@@ -169,13 +156,13 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy
-INFO     Test completed in 0.84845495224 seconds
+INFO     Test completed in 2.13828492165 seconds
 INFO      It produced the following output:
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan
-INFO     Test completed in 2.36833286285 seconds
+INFO     Test completed in 45.9110980034 seconds
 INFO      It produced the following output:
 keys:       0 0 0 1 1 2 2 2 2 3 4 4 5 5 5 
 head flags: 1 0 0 1 0 1 0 0 0 1 1 0 1 0 0 
@@ -183,46 +170,41 @@ output:     2 4 6 2 4 2 4 6 8 2 2 4 2 4 6
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort
-INFO     Test completed in 13.2841069698 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode
+INFO     Test completed in 138.304325104 seconds
 INFO      It produced the following output:
+initial data
+3 6 7 5 3 5 6 2 9 1 2 7 0 9 3 6 0 6 2 6 1 8 7 9 2 0 2 3 7 5 
+sorted data
+0 0 0 1 1 2 2 2 2 2 3 3 3 3 5 5 5 6 6 6 6 6 7 7 7 7 8 9 9 9 
+counts
+1 2 3 1 2 1 2 3 4 5 1 2 3 4 1 2 3 1 2 3 4 5 1 2 3 4 1 1 2 3 
+Modal value 2 occurs 5 times 
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting
-INFO     Test completed in 52.4794101715 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort
+INFO     Test completed in 150.576550007 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  [PC 97] [thread 73] [cta 0] ld.global.s32 %r68, [%r67 + 0] - Global memory access 0xd7e24f8 is not within any allocated or mapped range.[0xb04f870] - []
-[0xb089ef0] - [!]
-[0xb08a170] - [7]
-[0xb08a3f0] - [!]
-[0xb08a550] - []
-[0xb08df00] - []
-[0xb0d8e00] - []
-
-Near /home/normal/checkout/thrust/thrust/detail/device/cuda/detail/stable_merge_sort.inl:514:0
-
+TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact
-INFO     Test completed in 4.14771485329 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting
+INFO     Test completed in 208.02747798 seconds
 INFO      It produced the following output:
-values: 0 1 2 3 4 5 6 7 8 9 
-output: 1 3 5 7 9 
-small_output: 1 3 5 7 9 
-values: 0 2 4 6 8 
+AoS sort took 17100.2 milliseconds
+SoA sort took 168826 milliseconds
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum
-INFO     Test completed in 0.508850812912 seconds
+INFO     Test completed in 5.27613210678 seconds
 INFO      It produced the following output:
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator
-INFO     Test completed in 1.1560151577 seconds
+INFO     Test completed in 6.66202712059 seconds
 INFO      It produced the following output:
 values         : 2 5 7 1 6 0 3 8 
 clamped values : 2 5 5 1 5 1 3 5 
@@ -235,26 +217,26 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer
-INFO     Test completed in 0.227730035782 seconds
+INFO     Test completed in 0.896186828613 seconds
 INFO      It produced the following output:
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer
-INFO     Test completed in 0.329787015915 seconds
+INFO     Test completed in 1.13885784149 seconds
 INFO      It produced the following output:
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm
-INFO     Test completed in 0.639250993729 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox
+INFO     Test completed in 7.62515997887 seconds
 INFO      It produced the following output:
-norm is 5.47723
+bounding box (0.020023,0.0163006) (0.972775,0.998924)
 TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses
-INFO     Test completed in 37.7023410797 seconds
+INFO     Test completed in 1.00933694839 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -264,110 +246,31 @@ Name : TestMemoryAccesses
 Description: A benchmark for PTX memory operations.
 
 
-Test Seed : 1273682432
-Test time : 37.5184
+Test Seed : 1277954230
+Test time : 0.82935
 
 Status : Strided copy test (0.000931323 GB):
- time: 3.45025s
- strided bandwidth: 0.000269929 GB/s
+ time: 0.355309s
+ strided bandwidth: 0.00262116 GB/s
 Linear copy test (0.000931323 GB):
- time: 34.005s
- linear bandwidth: 2.73878e-05 GB/s
+ time: 0.360854s
+ linear bandwidth: 0.00258088 GB/s
 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork
-INFO     Test completed in 9.60442996025 seconds
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact
+INFO     Test completed in 110.931923866 seconds
 INFO      It produced the following output:
-Starting up CUDA context...
-Allocating and initializing host arrays...
-Allocating and initializing CUDA arrays...
-Running GPU bitonic sort (1 identical iterations)...
-Testing array length 64 (1024 arrays per batch)...
-	Average time: 974.437988 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
+values: 0 1 2 3 4 5 6 7 8 9 
+output: 1 3 5 7 9 
+small_output: 1 3 5 7 9 
+values: 0 2 4 6 8 
 TEST PASSED
-Testing array length 128 (512 arrays per batch)...
-	Average time: 172.225998 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 256 (256 arrays per batch)...
-	Average time: 267.283997 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 512 (128 arrays per batch)...
-	Average time: 310.989014 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 1024 (64 arrays per batch)...
-	Average time: 383.442993 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 2048 (32 arrays per batch)...
-	Average time: 1671.616943 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 4096 (16 arrays per batch)...
-	Average time: 581.479980 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 8192 (8 arrays per batch)...
-	Average time: 696.898010 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 16384 (4 arrays per batch)...
-	Average time: 756.713989 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 32768 (2 arrays per batch)...
-	Average time: 857.283020 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Testing array length 65536 (1 arrays per batch)...
-	Average time: 1042.839966 ms
-	Reading back GPU results...
-	Inspecting sorted results...
-validateSortedKeys(): result key array is ordered correctly
-validateValues(): key and val arrays match
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector
-INFO     Test completed in 0.19109582901 seconds
+INFO     Test completed in 0.26620388031 seconds
 INFO      It produced the following output:
 H has size 4
 H[0] = 14
@@ -381,7 +284,7 @@ TEST PASSED
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics
-INFO     Test completed in 114.571949005 seconds
+INFO     Test completed in 0.831637144089 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -391,18 +294,18 @@ Name : TestAtomics
 Description: A performance test of the atomic implementation. 
 
 
-Test Seed : 1273682479
-Test time : 114.406
+Test Seed : 1277954235
+Test time : 0.605223
 
-Status : Serial Time: 107.843 seconds 
-Atomic Time: 6.56259 seconds 
-Serial Speedup: 0.060853x
+Status : Serial Time: 0.129296 seconds 
+Atomic Time: 0.475802 seconds 
+Serial Speedup: 3.67996x
 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions
-INFO     Test completed in 8.52788996696 seconds
+INFO     Test completed in 9.36255908012 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -412,53 +315,142 @@ Name : TestSpecialFunctions
 Description: Benchmark for special function and texture throughput.
 
 
-Test Seed : 1273682594
-Test time : 8.33665
+Test Seed : 1277954235
+Test time : 9.29533
 
 Status : Test RCP (640000 operations):
- RCP throughput: 762228 ops/s
+ RCP throughput: 1.96517e+06 ops/s
 Test SQRT (640000 operations):
- SQRT throughput: 549301 ops/s
+ SQRT throughput: 674869 ops/s
 Test RSQRT (640000 operations):
- RSQRT throughput: 590000 ops/s
+ RSQRT throughput: 424652 ops/s
 Test SIN (640000 operations):
- SIN throughput: 453553 ops/s
+ SIN throughput: 498040 ops/s
 Test COS (640000 operations):
- COS throughput: 569559 ops/s
+ COS throughput: 407940 ops/s
 Test LG2 (640000 operations):
- LG2 throughput: 587713 ops/s
+ LG2 throughput: 345928 ops/s
 Test EX2 (640000 operations):
- EX2 throughput: 502146 ops/s
+ EX2 throughput: 542001 ops/s
 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD
-INFO     Test completed in 8.17342305183 seconds
+INFO     Test completed in 2.14451408386 seconds
 INFO      It produced the following output:
-3DFD running on: Ocelot PTX Emulator
-Total GPU Memory: 454.6953 MB
+3DFD running on: Ocelot Multicore CPU Backend (LLVM-JIT)
+Total GPU Memory: 50.9688 MB
 48x48x40
 allocated 0.7 MB on device
 (3,3)x(16,16) grid
 -------------------------------
-time:        7838.44 ms
-throughput:     0.01 MPoints/s
+time:        1661.13 ms
+throughput:     0.04 MPoints/s
 CUDA: cudaSuccess
 -------------------------------
 comparing to CPU result...
   Result within epsilon
   TEST PASSED!
 
+INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork
+INFO     Test completed in 16.1283109188 seconds
+INFO      It produced the following output:
+Starting up CUDA context...
+Allocating and initializing host arrays...
+Allocating and initializing CUDA arrays...
+Running GPU bitonic sort (1 identical iterations)...
+Testing array length 64 (1024 arrays per batch)...
+	Average time: 1685.121948 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 128 (512 arrays per batch)...
+	Average time: 221.488007 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 256 (256 arrays per batch)...
+	Average time: 252.076996 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 512 (128 arrays per batch)...
+	Average time: 469.552002 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 1024 (64 arrays per batch)...
+	Average time: 689.041992 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 2048 (32 arrays per batch)...
+	Average time: 2722.645996 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 4096 (16 arrays per batch)...
+	Average time: 1092.482056 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 8192 (8 arrays per batch)...
+	Average time: 876.452026 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 16384 (4 arrays per batch)...
+	Average time: 910.374023 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 32768 (2 arrays per batch)...
+	Average time: 943.484009 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Testing array length 65536 (1 arrays per batch)...
+	Average time: 1100.308960 ms
+	Reading back GPU results...
+	Inspecting sorted results...
+validateSortedKeys(): result key array is ordered correctly
+validateValues(): key and val arrays match
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
 INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory
-INFO     Test completed in 0.481905937195 seconds
+INFO     Test completed in 0.390175104141 seconds
 INFO      It produced the following output:
 TEST PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput
-INFO     Test completed in 6.19737100601 seconds
+INFO     Test completed in 0.506978988647 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -468,18 +460,17 @@ Name : TestInstructionThroughput
 Description: A benchmark for PTX Instruction Throughput.
 
 
-Test Seed : 1273682611
-Test time : 6.00842
+Test Seed : 1277954247
+Test time : 0.46516
 
-Status : u64 Operations/sec 382241 seconds. 
-u32 Operations/sec 431965 seconds. 
-f32 Operations/sec 802676 seconds. 
+Status : u64 Operations/sec 6.0136e+06 seconds. 
+u32 Operations/sec 5.79126e+06 seconds. 
+f32 Operations/sec 1.36622e+07 seconds. 
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform 
 INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform
-INFO     Test completed in 0.592286109924 seconds
+INFO     Test completed in 0.845184087753 seconds
 INFO      It produced the following output:
 3 + 6 * 2 = 15
 4 + 7 * 5 = 39
@@ -488,61 +479,41 @@ INFO      It produced the following output:
 2 + 8 * 3 = 26
 TEST PASSED
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D
-INFO     Test completed in 507.98295784 seconds
-INFO      It produced the following output:
-bucket (150, 50)'s list of points:
- bucket_begin[10150] = 50631
- bucket_end[10150] = 50638
-(0.752784,0.502192)
-(0.75383,0.501019)
-(0.753117,0.502096)
-(0.75194,0.502707)
-(0.750026,0.505462)
-(0.75426,0.502098)
-(0.751639,0.509133)
-Done!
-TEST PASSED
-
 INFO     
 Passing tests:
- (0.191s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector : Passed
- (0.841s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax : Passed
- (1.857s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction : Passed
- (0.943s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff : Passed
- (37.702s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses : Passed
- (0.848s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy : Passed
- (0.806s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator : Passed
- (507.983s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D : Passed
- (114.572s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics : Passed
- (1.732s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator : Passed
- (0.482s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory : Passed
- (4.148s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact : Passed
- (9.604s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork : Passed
- (8.528s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions : Passed
- (0.509s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum : Passed
- (1.006s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox : Passed
- (0.592s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform : Passed
- (8.173s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD : Passed
- (11.355s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram : Passed
- (0.330s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer : Passed
- (2.368s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan : Passed
- (6.197s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput : Passed
- (2.721s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy : Passed
- (0.228s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer : Passed
- (13.284s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort : Passed
- (1.394s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/vectorAdd : Passed
- (13.699s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode : Passed
- (0.639s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm : Passed
- (1.156s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator : Passed
- (0.742s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot : Passed
+ (0.266s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBasicVector : Passed
+ (6.496s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMinMax : Passed
+ (14.884s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustPaddedGridReduction : Passed
+ (6.975s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMaxAbsDiff : Passed
+ (1.009s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestMemoryAccesses : Passed
+ (2.138s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSaxpy : Passed
+ (1.207s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustConstantIterator : Passed
+ (0.832s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestAtomics : Passed
+ (44.842s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustCountingIterator : Passed
+ (0.390s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/worleyTestExternalSharedMemory : Passed
+ (110.932s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustStreamCompact : Passed
+ (16.128s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/SortingNetwork : Passed
+ (9.363s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestSpecialFunctions : Passed
+ (5.276s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSum : Passed
+ (7.625s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBoundingBox : Passed
+ (0.845s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustArbitraryTransform : Passed
+ (2.145s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/3DFD : Passed
+ (79.438s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustHistogram : Passed
+ (1.139s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustUnwrapPointer : Passed
+ (45.911s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSegmentedScan : Passed
+ (0.507s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestInstructionThroughput : Passed
+ (1.070s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustFillCopy : Passed
+ (0.896s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustWrapPointer : Passed
+ (150.577s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSort : Passed
+ (0.669s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/vectorAdd : Passed
+ (138.304s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMode : Passed
+ (4.508s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustNorm : Passed
+ (6.662s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustTransformIterator : Passed
+ (208.027s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting : Passed
+ (1.763s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustZipDot : Passed
 
 Failing tests:
- (52.479s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustAOSSorting : Did not complete.
+ (98.959s) : /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustBucketSort2D : Did not complete.
 
 Non-Existent tests:
- /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSumRows
- /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustSummedArea
- /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustRunLengthEncoding
- /home/normal/checkout/gpuocelot/tests/cuda2.3/TestThrustMonteCarlo
 

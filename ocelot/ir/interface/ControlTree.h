@@ -20,20 +20,18 @@
 
 // Ocelot includes
 #include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/PTXInstruction.h>
 
 // STL includes
 #include <list>
 #include <vector>
 #include <unordered_set>
-#include <unordered_map>
 
 namespace ir
 {
 	class ControlTree
 	{
 		public:
-			/*! \brief Construct ControlTree given the cfg */
+			/*! \brief Construct ControlTree given the CFG */
 			ControlTree(ControlFlowGraph *cfg);
 			/*! \brief Default destructor */
 			~ControlTree();
@@ -50,18 +48,26 @@ namespace ir
 			class Node
 			{
 				public:
-					typedef std::list<Node> NodeList;
+					typedef std::list<Node*> NodeList;
 					typedef NodeList::iterator iterator;
 					typedef NodeList::const_iterator const_iterator;
+
 					typedef std::vector<iterator> NodePointerVector;
 					typedef NodePointerVector::iterator pointer_iterator;
+					typedef NodePointerVector::const_iterator const_pointer_iterator;
 
-					Node(const std::string& l = "", RegionType rtype = Invalid);
+					typedef std::unordered_set<iterator> NodeSet;
 
-					std::string& label();
+					Node(const std::string& l = "", 
+							RegionType rtype = Invalid, 
+							const NodePointerVector& children = NodePointerVector());
+
+					const std::string& label() const;
 					const RegionType& rtype() const;
-					NodePointerVector& successors();
-					NodePointerVector& predecessors();
+					NodePointerVector& children();
+					const NodePointerVector& children() const;
+					NodeSet& successors();
+					NodeSet& predecessors();
 
 					void add_successor(iterator succ);
 					void remove_successor(iterator succ);
@@ -71,8 +77,9 @@ namespace ir
 				private:
 					std::string _label;
 					RegionType _rtype;
-					NodePointerVector _successors;
-					NodePointerVector _predecessors;
+					NodePointerVector _children;
+					NodeSet _successors;
+					NodeSet _predecessors;
 			};
 
 			/*! \brief A version of the cfg basic block with branches removed */
@@ -87,6 +94,8 @@ namespace ir
 					const_iterator begin() const;
 					const_iterator end() const;
 
+					InstructionList& instructions();
+
 				private:
 					InstructionList _instructions;
 			};
@@ -94,76 +103,63 @@ namespace ir
 			class BlockNode : public Node
 			{
 				public:
-					BlockNode(const NodePointerVector& nodes, 
+					BlockNode(const NodePointerVector& children, 
 							const std::string& l = "");
 
-					const_iterator begin() const;
-					const_iterator end() const;
-
-				private:
-					NodeList _nodes;
+					const_pointer_iterator begin() const;
+					const_pointer_iterator end() const;
 			};
 
 			class IfThenNode : public Node
 			{
 				public:
-					IfThenNode(const Node& cond, const Node& ifTrue, 
+					IfThenNode(iterator cond, iterator ifTrue, 
 							const std::string& l = "");
 
-				private:
-					Node _cond;
-					Node _ifTrue;
+					Node* cond() const;
+					Node* ifTrue() const;
 			};
 
 			class SelfLoopNode : public Node
 			{
 				public:
-					SelfLoopNode(const std::string& l = "");
+					SelfLoopNode(iterator body, const std::string& l = "");
 
-				private:
-					Node _body;
-					Node _cond;
+					Node* body() const;
 			};
 
 			typedef Node::NodeList NodeList;
 			typedef Node::iterator iterator;
 			typedef NodeList::const_iterator const_iterator;
+
 			typedef Node::NodePointerVector NodePointerVector;
 			typedef Node::pointer_iterator pointer_iterator;
 			typedef NodePointerVector::const_iterator const_pointer_iterator;
-			typedef std::unordered_set<iterator> NodeSet;
 
-			/*!	\brief write a graphviz-compatible file for visualizing the 
+			typedef Node::NodeSet NodeSet;
+
+			/*! \brief write a graphviz-compatible file for visualizing the 
 			 * control tree */
 			std::ostream& write(std::ostream& out) const;
 
-			/*! \brief Get an iterator to the first node */
-			iterator begin();
-			/*! \brief Get an iterator to the last node */
-			iterator end();
-
-			/*! \brief Get an const iterator to the first node */
-			const_iterator begin() const;
-			/*! \brief Get an const iterator to the last node */
-			const_iterator end() const;
-
 			/*! \brief Returns the entry block of a control tree */
-			const_iterator get_entry_block() const;
+			const_iterator get_root_node() const;
 
 		private:
-			std::ostream& writeCFG(std::ostream& out);
-			iterator insert_node(const Node& node);
-			iterator erase_node(iterator node);
+			iterator insert_node(Node* node);
 			void dfs_postorder(iterator x);
-			Node acyclic_region_type(iterator& node, NodeSet& nset);
-			iterator compact(Node node, NodeSet nodeSet);
-			iterator replace(Node node, NodeSet nodeSet);
-			iterator reduce(Node node, NodeSet nodeSet);
+			Node* acyclic_region_type(iterator& node, NodeSet& nset);
+			iterator compact(Node* node, NodeSet nodeSet);
+			iterator replace(Node* node, NodeSet nodeSet);
+			Node* cyclic_region_type(iterator& node, NodeSet& nset);
 			void structural_analysis(iterator entry);
 
 			/*! \brief Node list */
 			NodeList _nodes;
-			iterator _entry;
+			/*! \brief Control Tree entry node */
+			iterator _root;
+			/*! \brief Current number of nodes in the CFG */
+			unsigned int _size;
 
 			/******************************************//**
 			 * \name Postorder traversal of the flowgraph

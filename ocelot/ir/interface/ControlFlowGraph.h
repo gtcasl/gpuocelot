@@ -111,9 +111,6 @@ public:
 		/*! \brief Edges to direct successors */
 		EdgePointerVector out_edges;
 
-		/*! \brief Has this block been visited before */
-		bool visited;
-
 	public:
 
 		/*! \brief an object that formats the string representation of a 

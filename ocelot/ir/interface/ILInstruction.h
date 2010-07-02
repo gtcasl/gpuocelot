@@ -21,15 +21,19 @@ namespace ir
 			enum Opcode
 			{
 				Add,
+				Break,
 				End,
 				EndIf,
+				EndLoop,
 				Iadd,
 				IfLogicalZ,
 				Ige,
+				Ilt,
 				Imul,
 				Mov,
 				Uav_Raw_Load_Id,
 				Uav_Raw_Store_Id,
+				WhileLoop,
 				InvalidOpcode
 			};
 
@@ -44,7 +48,7 @@ namespace ir
 
 			/*! \brief Return a pointer to a new Instruction */
 			virtual Instruction* clone(bool copy=true) const = 0;
-	
+			
 			virtual std::string toString() const = 0;
 			virtual std::string valid() const = 0;
 	};
@@ -95,6 +99,17 @@ namespace ir
 			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 
+	class ILBreak: public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILBreak();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILAdd : public ILBinaryInstruction
 	{
 		public:
@@ -120,6 +135,17 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILEndIf();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILEndLoop : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILEndLoop();
 
 			std::string toString() const;
 			std::string valid() const;
@@ -154,6 +180,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILIge();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIlt : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIlt();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -194,7 +229,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILWhileLoop : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILWhileLoop();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
 }
-
 #endif
-

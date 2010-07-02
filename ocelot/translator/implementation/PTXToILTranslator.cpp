@@ -33,7 +33,7 @@ namespace translator
 		_ilKernel = new ir::ILKernel(*k);
 
 		// translate iterating thru the control tree
-		_translate(*_ilKernel->ctrl_tree()->get_entry_block());
+		_translate(*_ilKernel->ctrl_tree()->get_root_node());
 
 		//_translateInstructions();
 		_addKernelPrefix();
@@ -41,71 +41,104 @@ namespace translator
  		return _ilKernel;
   	}
 
-	void PTXToILTranslator::_translate(const ControlTree::Node& node)
+	void PTXToILTranslator::_translate(const ControlTree::Node* node)
 	{
-		// TODO use polymorphism here (or is it reflection? I don't know. Maybe
-		// I am mixing-up Java with C++!)
-		switch(node.rtype())
+		report("Translating " << node->label());
+
+		switch(node->rtype())
 		{
 			case ControlTree::Inst:
 			{
-				_translate(static_cast<const ControlTree::InstNode&>(node)); 
+				_translate(static_cast<const ControlTree::InstNode*>(node));
 				break;
 			}
 			case ControlTree::Block:
 			{
-				_translate(static_cast<const ControlTree::BlockNode&>(node)); 
+				_translate(static_cast<const ControlTree::BlockNode*>(node));
 				break;
 			}
 			case ControlTree::IfThen:
+			{
+				_translate(static_cast<const ControlTree::IfThenNode*>(node));
+				break;
+			}
 			case ControlTree::SelfLoop:
-			default: assertM(false, "Invalid region type");
+			{
+				_translate(static_cast<const ControlTree::SelfLoopNode*>(node));
+				break;
+			}
+			default: assertM(false, "Invalid region type " << node->rtype());
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::InstNode& insts)
+	void PTXToILTranslator::_translate(const ControlTree::InstNode* insts)
 	{
 		ControlTree::InstNode::const_iterator ins;
-		for (ins = insts.begin() ; ins != insts.end() ; ins++)
+		for (ins = insts->begin() ; ins != insts->end() ; ins++)
 		{
 			_translate(static_cast<ir::PTXInstruction &>(**ins));
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::BlockNode& block)
+	void PTXToILTranslator::_translate(const ControlTree::BlockNode* block)
 	{
-		ControlTree::const_iterator node;
-		for (node = block.begin() ; node != block.end() ; node++)
+		ControlTree::const_pointer_iterator node;
+		for (node = block->begin() ; node != block->end() ; node++)
 		{
-			_translate(*node);
+			_translate(**node);
 		}
 	}
 
-/*
-	void PTXToILTranslator::_translateInstructions()
+	void PTXToILTranslator::_translate(const ControlTree::IfThenNode* ifthen)
 	{
-		ir::ControlFlowGraph::iterator blockIt;
-		for (blockIt = _ilKernel->cfg()->begin() ; 
-				blockIt != _ilKernel->cfg()->end(); blockIt++) 
-		{
-			ir::ControlFlowGraph::BasicBlock block = *blockIt;
-			_translate(&block);
-		}
+		ControlTree::Node* cond = ifthen->cond();
+
+		assertM(cond->rtype() == ControlTree::Inst, "Invalid condition node");
+
+		ir::Instruction* ins =
+			static_cast<ControlTree::InstNode*>(cond)->instructions().back();
+
+		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
+
+		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+		
+		_translate(cond);
+
+		ir::ILIfLogicalZ if_logicalz;
+		if_logicalz.a = _translate(bra.pg);
+		_add(if_logicalz);
+
+		_translate(ifthen->ifTrue());
+
+		_add(ir::ILEndIf());
 	}
 
-	void PTXToILTranslator::_translate(ir::ControlFlowGraph::BasicBlock *block)
+	void PTXToILTranslator::_translate(const ControlTree::SelfLoopNode* selfloop)
 	{
-		if (block->visited) return;
-		block->visited = true;
+		_add(ir::ILWhileLoop());
 
-		ir::ControlFlowGraph::InstructionList::const_iterator ins;
-		for (ins = block->instructions.begin() ; 
-				ins != block->instructions.end() ; ins++) {
-			_translate(static_cast<ir::PTXInstruction &>(**ins), block);
-		}
+		ControlTree::Node* body = selfloop->body();
+
+		//TODO only simple InstNode bodies are handled for now
+		assertM(body->rtype() == ControlTree::Inst, "Invalid loop body node");
+
+		_translate(body);
+
+		ir::Instruction* ins =
+			static_cast<ControlTree::InstNode*>(body)->instructions().back();
+
+		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
+
+		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+		
+		ir::ILIfLogicalZ if_logicalz;
+		if_logicalz.a = _translate(bra.pg);
+		_add(if_logicalz);
+		_add(ir::ILBreak());
+		_add(ir::ILEndIf());
+		_add(ir::ILEndLoop());
 	}
-*/
-  
+
 	void PTXToILTranslator::_translate(const ir::PTXInstruction &i)
 	{
 		report("Translating: " << i.toString());
@@ -244,21 +277,7 @@ namespace translator
 
 	void PTXToILTranslator::_translateBra(const ir::PTXInstruction &i)
 	{
-/*
-		// Only supports single forward branches (as in vectorAdd) for now
-		ir::ILIfLogicalZ if_logicalz;
-		ir::ILEndIf endif;
-
-		if_logicalz.a = _translate(i.pg);
-
-		_add(if_logicalz);
-
-		// Add fall-through as the body of if_logicalz
-		_translate(&(*b->get_fallthrough_edge()->tail));
-
-		_add(endif);
-*/
-		assertM(false, "Not implemented yet");
+		// do nothing (bra instructions are handled using the control tree)
 	}
 
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
@@ -349,6 +368,18 @@ namespace translator
 				ige.d = _translate(i.d);
 
 				_add(ige);
+
+				break;
+			}
+			case ir::PTXInstruction::Lt:
+			{
+				ir::ILIlt ilt;
+
+				ilt.a = _translate(i.a);
+				ilt.b = _translate(i.b);
+				ilt.d = _translate(i.d);
+
+				_add(ilt);
 
 				break;
 			}

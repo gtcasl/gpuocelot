@@ -71,7 +71,8 @@ static void print_usage() {
 
 	cout << "CFG <input path>:\n\n";
 	cout << " - parses the input file, performs control flow analysis on each kernel\n";
-	cout << "   and emits .dot files for the CFG, dominator tree, and post dominator tree\n";
+	cout << "   and emits .dot files for the CFG, dominator tree, post dominator tree,\n";
+	cout << "   and control tree.\n";
 
 	cout << "\n  To construct graphs of them, use the following command:\n\n";
 	cout << "    for f in *.dot; do dot -Tpdf -o $f.pdf $f; done\n\n";

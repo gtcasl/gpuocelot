@@ -114,7 +114,7 @@ ControlFlowGraph::Edge::Edge(BlockList::iterator h,
 }
 
 ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i, 
-	const InstructionList& is) : label(l), id(i), visited(false) {
+	const InstructionList& is) : label(l), id(i) {
 	for (InstructionList::const_iterator instruction = is.begin();
 		instruction != is.end(); ++instruction ) {
 		instructions.push_back((*instruction)->clone(true));

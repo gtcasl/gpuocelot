@@ -39,12 +39,12 @@ namespace translator
 			ir::ILKernel *_ilKernel;
 			LiteralMap _literals;
 
-			void _translate(const ControlTree::Node& node);
-			void _translate(const ControlTree::InstNode& insts);
-			void _translate(const ControlTree::BlockNode& block);
-			//void _translateInstructions();
+			void _translate(const ControlTree::Node* node);
+			void _translate(const ControlTree::InstNode* insts);
+			void _translate(const ControlTree::BlockNode* block);
+			void _translate(const ControlTree::IfThenNode* ifthen);
+			void _translate(const ControlTree::SelfLoopNode* selfloop);
 
-			//void _translate(ir::ControlFlowGraph::BasicBlock *block);
 			void _translate(const ir::PTXInstruction &i); 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
 			std::string _translate(const ir::PTXOperand::RegisterType &reg);

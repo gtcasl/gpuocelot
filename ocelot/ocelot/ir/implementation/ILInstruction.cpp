@@ -17,14 +17,18 @@ namespace ir
 		switch(opcode)
 		{
 			case Add:              return "add";
+			case Break:            return "break";
 			case End:              return "end";
 			case EndIf:            return "endif";
+			case EndLoop:          return "endloop";
 			case Iadd:             return "iadd";
 			case Ige:              return "ige";
+			case Ilt:              return "ilt";
 			case Imul:             return "imul";
 			case Mov:              return "mov";
 			case Uav_Raw_Load_Id:  return "uav_raw_load_id(0)";
 			case Uav_Raw_Store_Id: return "uav_raw_store_id(0) mem.xyzw,";
+			case WhileLoop:        return "whileloop";
 			case InvalidOpcode:    return "INVALID_OPCODE";
 			default:
 			{
@@ -86,6 +90,25 @@ namespace ir
 		return new ILAdd(*this);
 	}
 
+	ILBreak::ILBreak() : ILInstruction(Break)
+	{
+	}
+
+	std::string ILBreak::toString() const
+	{
+		return ILInstruction::toString(opcode);
+	}
+
+	std::string ILBreak::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILBreak::clone(bool copy) const
+	{
+		return new ILBreak(*this);
+	}
+
 	ILEnd::ILEnd() : ILInstruction(End)
 	{
 	}
@@ -122,6 +145,25 @@ namespace ir
 	Instruction *ILEndIf::clone(bool copy) const
 	{
 		return new ILEndIf(*this);
+	}
+
+	ILEndLoop::ILEndLoop() : ILInstruction(EndLoop)
+	{
+	}
+
+	std::string ILEndLoop::toString() const
+	{
+		return ILInstruction::toString(opcode);
+	}
+
+	std::string ILEndLoop::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILEndLoop::clone(bool copy) const
+	{
+		return new ILEndLoop(*this);
 	}
 
 	ILIadd::ILIadd() : ILBinaryInstruction(Iadd)
@@ -161,6 +203,15 @@ namespace ir
 		return new ILIge(*this);
 	}
 
+	ILIlt::ILIlt() : ILBinaryInstruction(Ilt)
+	{
+	}
+
+	Instruction *ILIlt::clone(bool copy) const
+	{
+		return new ILIlt(*this);
+	}
+
 	ILImul::ILImul() : ILBinaryInstruction(Imul)
 	{
 	}
@@ -197,6 +248,25 @@ namespace ir
 	Instruction *ILUav_Raw_Store_Id::clone(bool copy) const
 	{
 		return new ILUav_Raw_Store_Id(*this);
+	}
+
+	ILWhileLoop::ILWhileLoop() : ILInstruction(WhileLoop)
+	{
+	}
+
+	std::string ILWhileLoop::toString() const
+	{
+		return ILInstruction::toString(opcode);
+	}
+
+	std::string ILWhileLoop::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILWhileLoop::clone(bool copy) const
+	{
+		return new ILWhileLoop(*this);
 	}
 }
 

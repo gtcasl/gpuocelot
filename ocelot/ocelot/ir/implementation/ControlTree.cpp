@@ -6,58 +6,75 @@
 
 // Ocelot includes
 #include <ocelot/ir/interface/ControlTree.h>
+#include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
+#include <unordered_set>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 namespace ir
 {
-	ControlTree::ControlTree(ControlFlowGraph *cfg)
+	ControlTree::ControlTree(ControlFlowGraph *cfg) : _size(0)
 	{
+		iterator entryNode, exitNode;
 		std::unordered_map<ControlFlowGraph::const_iterator, iterator> bmap;
 
 		ControlFlowGraph::const_iterator bb;
 		for (bb = cfg->begin() ; bb != cfg->end() ; bb++)
 		{
-			iterator node = insert_node(InstNode(bb));
+			report("Inserting node " << bb->label);
+			iterator node = insert_node(new InstNode(bb));
 			bmap[bb] = node;
 
-			if (bb == cfg->get_entry_block()) _entry = node;
+			if (bb == cfg->get_entry_block()) entryNode = node;
+			if (bb == cfg->get_exit_block()) exitNode = node;
 		}
 
 		ControlFlowGraph::const_edge_iterator edge;
 		for (edge = cfg->edges_begin() ; edge != cfg->edges_end() ; edge++)
 		{
-			bmap[edge->head]->add_successor(bmap[edge->tail]);
-			bmap[edge->tail]->add_predecessor(bmap[edge->head]);
+			report("Adding edge " 
+					<< edge->head->label << " -> " << edge->tail->label);
+			(*bmap[edge->head])->add_successor(bmap[edge->tail]);
+			(*bmap[edge->tail])->add_predecessor(bmap[edge->head]);
 		}
 
-		structural_analysis(_entry);
+		assertM((*entryNode)->predecessors().size() == 0,
+				"Entry node should have no predecessors");
+
+		assertM((*exitNode)->successors().size() == 0,
+				"Exit node should have no successors");
+
+		structural_analysis(entryNode);
 	}
 
 	ControlTree::~ControlTree()
 	{
+		const_iterator i;
+		for (i = _nodes.begin() ; i != _nodes.end() ; i++) delete *i;
 		_nodes.clear();
 	}
 
-	// TODO rename to add_node
-	ControlTree::iterator ControlTree::insert_node(const Node& node)
+	ControlTree::iterator ControlTree::insert_node(Node* node)
 	{
-		return _nodes.insert(end(), node);
+		_size++;
+		return _nodes.insert(_nodes.end(), node);
 	}
 
-	// TODO rename to remove_node
-	ControlTree::iterator ControlTree::erase_node(iterator node)
-	{
-		return _nodes.erase(node);
-	}
-
-	ControlTree::Node::Node(const std::string& l, RegionType rtype) 
-		: _label(l), _rtype(rtype)
+	ControlTree::Node::Node(const std::string& l, RegionType rtype, 
+			const NodePointerVector& children) 
+		: _label(l), _rtype(rtype), _children(children)
 	{
 	}
 
-	std::string& ControlTree::Node::label()
+	const std::string& ControlTree::Node::label() const
 	{
 		return _label;
 	}
@@ -67,52 +84,44 @@ namespace ir
 		return _rtype;
 	}
 
-	ControlTree::Node::NodePointerVector& ControlTree::Node::successors()
+	ControlTree::NodePointerVector& ControlTree::Node::children()
+	{
+		return _children;
+	}
+
+	const ControlTree::NodePointerVector& ControlTree::Node::children() const
+	{
+		return _children;
+	}
+
+	ControlTree::NodeSet& ControlTree::Node::successors()
 	{
 		return _successors;
 	}
 
-	ControlTree::Node::NodePointerVector& ControlTree::Node::predecessors()
+	ControlTree::NodeSet& ControlTree::Node::predecessors()
 	{
 		return _predecessors;
 	}
 
 	void ControlTree::Node::add_successor(iterator succ)
 	{
-		successors().push_back(succ);
+		successors().insert(succ);
 	}
 
 	void ControlTree::Node::remove_successor(iterator succ)
 	{
-		pointer_iterator pnode;
-		for (pnode = successors().begin() ; 
-				pnode != successors().end() ; pnode++)
-		{
-			if (*pnode == succ)
-			{
-				successors().erase(pnode);
-				break;
-			}
-		}
+		successors().erase(successors().find(succ));
 	}
 
 	void ControlTree::Node::add_predecessor(iterator pred)
 	{
-		predecessors().push_back(pred);
+		predecessors().insert(pred);
 	}
 
 	void ControlTree::Node::remove_predecessor(iterator pred)
 	{
-		pointer_iterator pnode;
-		for (pnode = predecessors().begin() ;
-				pnode != predecessors().end() ; pnode++)
-		{
-			if (*pnode == pred)
-			{
-				predecessors().erase(pnode);
-				break;
-			}
-		}
+		predecessors().erase(predecessors().find(pred));
 	}
 
 	std::ostream& ControlTree::write(std::ostream& out) const
@@ -126,26 +135,44 @@ namespace ir
 		// emit nodes
 		out << "  // nodes" << endl;
 
-		int n;
-		const_pointer_iterator pnode;
-		for (pnode = _post.begin(), n = 0 ; pnode != _post.end() ; pnode++, n++)
+		int n = 0;
+		const_iterator nodeIt;
+		for (nodeIt = _nodes.begin() ; nodeIt != _nodes.end() ; nodeIt++, n++)
 		{
-			bmap[*pnode] = n;
-			out << "  bb_" << n << " [label=\"" << (*pnode)->label() << "\"];";
+			bmap[nodeIt] = n;
+			Node* node = *nodeIt;
+			if (node->rtype() != Inst)
+			{
+				out << "  bb_" << n << " [label=\"" << node->label() << "\"];";
+			} else 
+			{
+				out << "  bb_" << n << " [shape=record,label=\"{" << node->label();
+
+				InstNode::const_iterator ins;
+				const InstNode inode = static_cast<const InstNode&>(*node);
+				for (ins = inode.begin() ; ins != inode.end() ; ins++)
+				{
+					out << " | " << (*ins)->toString();
+				} 
+
+				out << "}\"];";
+			}
 			out << endl;
 		}
 
 		// emit edges
 		out << endl << "  // edges" << endl;
 
-		for (pnode = _post.begin() ; pnode != _post.end() ; pnode++)
+		for (nodeIt = _nodes.begin() ; nodeIt != _nodes.end() ; nodeIt++)
 		{
-			const_pointer_iterator tail = pnode + 1;
-			if (tail != _post.end())
+			Node *node = *nodeIt;
+			const_pointer_iterator child;
+			for (child = node->children().begin() ; 
+					child != node->children().end() ; child++)
 			{
-				out << "  bb_" << bmap[*pnode];
+				out << "  bb_" << bmap[nodeIt];
 				out	<< " -> ";
-				out	<< "bb_" << bmap[*tail];
+				out	<< "bb_" << bmap[*child];
 				out << ";" << endl;
 			}
 		}
@@ -155,82 +182,15 @@ namespace ir
 		return out;
 	}
 
-	std::ostream& ControlTree::writeCFG(std::ostream& out)
+	ControlTree::const_iterator ControlTree::get_root_node() const
 	{
-		using namespace std;
-
-		std::unordered_map<const_iterator, unsigned int> bmap;
-
-		out << "digraph {" << endl;
-
-		// emit nodes
-		out << "  // nodes" << endl;
-
-		int n;
-		iterator node;
-		for (node = begin(), n = 0 ; node != end() ; node++, n++)
-		{
-			bmap[node] = n;
-			out << "  bb_" << n << " [label=\"" << node->label() << "\"];";
-			out << endl;
-		}
-
-		// emit edges
-		out << endl << "  // edges" << endl;
-
-		for (node = begin() ; node != end() ; node++)
-		{
-			const_pointer_iterator succ;
-			for (succ = node->successors().begin() ; 
-					succ != node->successors().end() ; succ++)
-			{
-				out << "  bb_" << bmap[node] << " -> " << "bb_" << bmap[*succ];
-				out << ";" << endl;
-			}
-		}
-
-		out << "}" << endl;
-
-		return out;
-	}
-
-	ControlTree::iterator ControlTree::begin()
-	{
-		return _nodes.begin();
-	}
-
-	ControlTree::iterator ControlTree::end()
-	{
-		return _nodes.end();
-	}
-
-	ControlTree::const_iterator ControlTree::begin() const
-	{
-		return _nodes.begin();
-	}
-
-	ControlTree::const_iterator ControlTree::end() const
-	{
-		return _nodes.end();
-	}
-
-	ControlTree::const_iterator ControlTree::get_entry_block() const
-	{
-		return _entry;
+		return _root;
 	}
 
 	ControlTree::InstNode::InstNode(const ControlFlowGraph::const_iterator& bb)
 		: Node(bb->label, Inst)
 	{
-		// copy the instructions except for the branches
-		ControlFlowGraph::InstructionList::const_iterator first;
-		ControlFlowGraph::InstructionList::const_reverse_iterator last;
-	   
-		first = bb->instructions.begin();
-		last = bb->instructions.rbegin();
-
-		//if ((*last)->opcode == PTXInstruction::Bra) last++;
-		//_instructions.assign(first, last);
+		_instructions = bb->instructions;
 	}
 
 	ControlTree::InstNode::const_iterator ControlTree::InstNode::begin() const
@@ -243,144 +203,174 @@ namespace ir
 		return _instructions.end();
 	}
 
-	ControlTree::BlockNode::BlockNode(const NodePointerVector& nodes, 
-			const std::string& l) : Node(l, Block)
+	ControlTree::InstNode::InstructionList& 
+		ControlTree::InstNode::instructions()
 	{
-		const_pointer_iterator pnode;
-		for (pnode = nodes.begin() ; pnode != nodes.end() ; pnode++)
-		{
-			_nodes.push_back(**pnode);
-		}
+		return _instructions;
 	}
 
-	ControlTree::const_iterator ControlTree::BlockNode::begin() const
-	{
-		return _nodes.begin();
-	}
-
-	ControlTree::const_iterator ControlTree::BlockNode::end() const
-	{
-		return _nodes.end();
-	}
-
-	ControlTree::IfThenNode::IfThenNode(const Node& cond, const Node& ifTrue, 
-			const std::string& l) 
-		: Node(l, IfThen), _cond(cond), _ifTrue(ifTrue)
+	ControlTree::BlockNode::BlockNode(const NodePointerVector& children, 
+			const std::string& l) : Node(l, Block, children)
 	{
 	}
 
-	ControlTree::SelfLoopNode::SelfLoopNode(const std::string& l) 
+	ControlTree::const_pointer_iterator ControlTree::BlockNode::begin() const
+	{
+		return children().begin();
+	}
+
+	ControlTree::const_pointer_iterator ControlTree::BlockNode::end() const
+	{
+		return children().end();
+	}
+
+	ControlTree::IfThenNode::IfThenNode(iterator cond, 
+			iterator ifTrue, const std::string& l) 
+		: Node(l, IfThen)
+	{
+		children().push_back(cond);
+		children().push_back(ifTrue);
+	}
+
+	ControlTree::Node* ControlTree::IfThenNode::cond() const
+	{
+		return *children().front();
+	}
+
+	ControlTree::Node* ControlTree::IfThenNode::ifTrue() const
+	{
+		return *children().back();
+	}
+
+	ControlTree::SelfLoopNode::SelfLoopNode(iterator body, const std::string& l) 
 		: Node(l, SelfLoop)
 	{
+		children().push_back(body);
+	}
+
+	ControlTree::Node* ControlTree::SelfLoopNode::body() const
+	{
+		return *children().front();
 	}
 
 	void ControlTree::dfs_postorder(iterator x)
 	{
 		_visit.insert(x);
 
-		const_pointer_iterator y;
-		for (y = x->successors().begin() ; y != x->successors().end() ; y++)
+		NodeSet::iterator y;
+		for (y = (*x)->successors().begin() ; y != (*x)->successors().end() ; y++)
 		{
 			if (_visit.find(*y) != _visit.end()) continue;
 			dfs_postorder(*y);
 		}
 		_postMax++;
 		_post.push_back(x);
+		report("dfs_postorder: Added " << (*x)->label());
 	}
 
-	ControlTree::Node ControlTree::acyclic_region_type
-		(iterator& node, NodeSet& nset)
+	ControlTree::Node* ControlTree::acyclic_region_type(iterator& node, 
+			NodeSet& nset)
 	{
 		iterator n;
 		bool p, s;
 		NodePointerVector nodes;
 
+		nset.clear();
+
 		// check for a Block containing node
 		n = node;
 		p = true;
-		s = (n->successors().size() == 1);
+		s = ((*n)->successors().size() == 1);
 
 		while (p && s)
 		{
-			nodes.push_back(n);
-			n = *(n->successors().begin());
-			p = (n->predecessors().size() == 1);
-			s = (n->successors().size() == 1);
+			if (nset.insert(n).second) nodes.push_back(n);
+			n = *((*n)->successors().begin());
+			p = ((*n)->predecessors().size() == 1);
+			s = ((*n)->successors().size() == 1);
 		}
 
-		if (p) nodes.push_back(n);
+		if (p)
+		{
+			if (nset.insert(n).second) nodes.push_back(n);
+		}
 
 		n = node;
-		p = (n->predecessors().size() == 1);
+		p = ((*n)->predecessors().size() == 1);
 		s = true;
 
 		while (p && s)
 		{
-			n = *(n->predecessors().begin());
-			p = (n->predecessors().size() == 1);
-			s = (n->successors().size() == 1);
-			nodes.insert(nodes.begin(), n);
+			if (nset.insert(n).second) nodes.insert(nodes.begin(), n);
+			n = *((*n)->predecessors().begin());
+			p = ((*n)->predecessors().size() == 1);
+			s = ((*n)->successors().size() == 1);
 		}
 
-		//if (s) nlist.push_front(*n);
+		if (s)
+		{
+			if (nset.insert(n).second) nodes.insert(nodes.begin(), n);
+		}
 
 		node = n;
 		if (nodes.size() >= 2)
 		{
-			nset.clear();
-			for (pointer_iterator i = nodes.begin() ; i != nodes.end() ; i++)
-			{
-				nset.insert(*i);
-			}
-			return BlockNode(nodes);
-		} else if (node->successors().size() == 2)
+			std::stringstream label;
+			label << "BlockNode_" << _nodes.size();
+
+			report("Found " << label.str() << ": "
+					<< (*(nodes.front()))->label()
+					<< " ... "
+					<< (*(nodes.back()))->label());
+
+			return new BlockNode(nodes, label.str());
+		} else if ((*node)->successors().size() == 2)
 		{
 			iterator m;
-		   
-			m = node->successors()[0];
-			n = node->successors()[1];
+
+			m = *((*node)->successors().begin());
+			n = *(++((*node)->successors().begin()));
 
 			// check for an IfThen (if node then n)
-			if (n->successors().size() == 1 && n->predecessors().size() == 1 &&
-					m->predecessors().size() == 2 && 
-					*(n->successors().begin()) == m)
+			if ((*n)->successors().size() == 1 && (*n)->predecessors().size() == 1 &&
+					(*m)->predecessors().size() == 2 && 
+					*((*n)->successors().begin()) == m)
 			{
-				nset.clear();
-				nset.insert(node);
-				nset.insert(n);
-				return IfThenNode(*node, *n);
+				nset.clear(); nset.insert(node); nset.insert(n);
+				std::stringstream label;
+				label << "IfThenNode_" << _nodes.size();
+
+				report("Found " << label.str() << ":"
+						<< " if " << (*node)->label()
+						<< " then " << (*n)->label()
+						);
+
+				return new IfThenNode(node, n, label.str());
 			}
 
 			// check for an IfThen (if node then m)
-			if (m->successors().size() == 1 && m->predecessors().size() == 1 &&
-					n->predecessors().size() == 2 && 
-					*(m->successors().begin()) == n)
+			if ((*m)->successors().size() == 1 && (*m)->predecessors().size() == 1 &&
+					(*n)->predecessors().size() == 2 && 
+					*((*m)->successors().begin()) == n)
 			{
-				nset.clear();
-				nset.insert(node);
-				nset.insert(m);
-				return IfThenNode(*node, *m);
+				nset.clear(); nset.insert(node); nset.insert(m);
+				std::stringstream label;
+				label << "IfThenNode_" << _nodes.size();
+
+				report("Found " << label.str() << ":"
+						<< " if " << (*node)->label()
+						<< " then " << (*m)->label()
+						);
+
+				return new IfThenNode(node, m, label.str());
 			}
 		}
 
-		return Node(); 
+		report("Couldn't find any acyclic regions");
+		return new Node(); 
 	}
 
-	/*
-	ControlTree::Node ControlTree::create_node(RegionType rtype)
-	{
-		switch (rtype)
-		{
-			case Inst:     return InstNode();
-			case Block:    return BlockNode();
-			case IfThen:   return IfThenNode();
-			case SelfLoop: return SelfLoopNode();
-			default:       assertM(false, "Invalid region type");
-		}
-	}
-	*/
-
-	ControlTree::iterator ControlTree::compact(Node n, NodeSet nodeSet)
+	ControlTree::iterator ControlTree::compact(Node* n, NodeSet nodeSet)
 	{
 		iterator node = insert_node(n);
 
@@ -406,6 +396,7 @@ namespace ir
 			pnode = _post.erase(pnode);
 			pos = pnode;
 			_postMax--;
+			_size--;
 		}
 
 		_postMax++;
@@ -415,7 +406,7 @@ namespace ir
 		return node;
 	}
 
-	ControlTree::iterator ControlTree::replace(Node n, NodeSet nodeSet)
+	ControlTree::iterator ControlTree::replace(Node* n, NodeSet nodeSet)
 	{
 		// link region node into abstract flowgraph, adjust the post order
 		// traversal and predecessor and successor functions, and augment the
@@ -425,67 +416,126 @@ namespace ir
 		NodeSet::iterator ns;
 		for (ns = nodeSet.begin() ; ns != nodeSet.end() ; ns++)
 		{
-			pointer_iterator pred;
-			for (pred = (*ns)->predecessors().begin() ; 
-					pred != (*ns)->predecessors().end() ; pred++)
+			NodeSet::iterator pred;
+			for (pred = (**ns)->predecessors().begin() ; 
+					pred != (**ns)->predecessors().end() ; pred++)
 			{
-				// if (!nodeSet.find(pred))
-				(*pred)->remove_successor(*ns);
-				(*pred)->add_successor(node);
+				if (nodeSet.find(*pred) != nodeSet.end()) continue;
+
+				(**pred)->remove_successor(*ns);
+				(**pred)->add_successor(node);
+				(*node)->add_predecessor(*pred);
 			}
 
-			pointer_iterator succ;
-			for (succ = (*ns)->successors().begin() ;
-					succ != (*ns)->successors().end() ; succ++)
+			NodeSet::iterator succ;
+			for (succ = (**ns)->successors().begin() ;
+					succ != (**ns)->successors().end() ; succ++)
 			{
-				// if (!nodeSet.find(succ))
-				(*succ)->remove_predecessor(*ns);
-				(*succ)->add_predecessor(node);
-			}
+				if (nodeSet.find(*succ) != nodeSet.end()) continue;
 
-			erase_node(*ns);
+				(**succ)->remove_predecessor(*ns);
+				(**succ)->add_predecessor(node);
+				(*node)->add_successor(*succ);
+			}
 		}
 
 		return node;
 	}
 
-	// TODO reduce can disappear
-	ControlTree::iterator ControlTree::reduce(Node node, NodeSet nodeSet)
+	ControlTree::Node* ControlTree::cyclic_region_type(iterator& node, 
+			NodeSet& nset)
 	{
-		// replace nodeSet by an abstract region node
-		return replace(node, nodeSet);
+		if (nset.size() == 1)
+		{
+			if ((*node)->successors().find(node) != (*node)->successors().end())
+			{
+				std::stringstream label;
+				label << "SelfLoopNode_" << _nodes.size();
+
+				report("Found " << label.str() << ": "
+						<< (*node)->label());
+
+				return new SelfLoopNode(node, label.str());
+			} else
+			{
+				report("Couldn't find any cyclic regions");
+				return new Node();
+			}
+		}
+
+		report("Couldn't find any cyclic regions");
+		return new Node(); 
 	}
 
 	void ControlTree::structural_analysis(iterator entry)
 	{
 		iterator n;
-		NodeSet nodeSet;
+		NodeSet nodeSet, reachUnder;
+		bool changed;
 
+		report("Starting Structural Analysis...");
 		do
 		{
+			changed = false;
+
 			_post.clear(); 
 			_visit.clear();
 
 			_postMax = 0; 
 			_postCtr = 0;
 
+			report("DFS Postorder");
 			dfs_postorder(entry);
 
-			while (_nodes.size() > 1 && _postCtr < _postMax)
+			while (_size > 1 && _postCtr < _postMax)
 			{
 				n = _post[_postCtr];
 
 				// locate an acyclic region, if present
-				Node region = acyclic_region_type(n, nodeSet);
-				if (region.rtype() != Invalid)
+				report("Looking for acyclic region from " << (*n)->label());
+				Node* region = acyclic_region_type(n, nodeSet);
+
+				if (region->rtype() != Invalid)
 				{
-					iterator p = reduce(region, nodeSet);
-					if (nodeSet.find(_entry) != nodeSet.end())
+					report("Replacing nodeSet for " << region->label());
+					iterator p = replace(region, nodeSet);
+
+					changed = true;
+
+					if (nodeSet.find(entry) != nodeSet.end())
 					{
-						_entry = p;
+						entry = p;
+					}
+				} else
+				{
+					// locate a cyclic region, if present
+					reachUnder.clear(); reachUnder.insert(n);
+
+					// TODO cyclic control structure with multiples nodes are
+					// not handled yet
+					region = cyclic_region_type(n, reachUnder);
+
+					if (region->rtype() != Invalid)
+					{
+						report("Replacing nodeSet for " << region->label());
+						iterator p = replace(region, reachUnder);
+
+						changed = true;
+
+						if (reachUnder.find(entry) != reachUnder.end())
+						{
+							entry = p;
+						}
+					} else
+					{
+						_postCtr++;
 					}
 				}
 			}
-		} while (_nodes.size() > 1);
+
+			assertM(changed, "Irreducible CFG");
+		} while (_size > 1);
+
+		_root = entry;
 	}
 }

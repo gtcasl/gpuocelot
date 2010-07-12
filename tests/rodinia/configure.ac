@@ -28,69 +28,21 @@ AC_CONFIG_HEADER([configure.h])
 
 ################################################################################
 # Check for non-compiler programs
-AC_CHECK_PROG(HAVE_LLVM_CONFIG, llvm-config, yes, no)
+AC_CHECK_PROG(HAVE_OCELOT_CONFIG, OcelotConfig, yes, no)
 
-if test $HAVE_LLVM_CONFIG = yes
+if test $HAVE_OCELOT_CONFIG = yes
 then
-	LLVM_VERSION=$(llvm-config --version)
-	if test $LLVM_VERSION = 2.7svn
-	then
-		AC_DEFINE(HAVE_LLVM, [], ["Define to 1 if llvm is installed"])
-		AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))
-		AC_SUBST(LLVM_LDFLAGS, "$(llvm-config --ldflags --libs core jit native \
-			asmparser instcombine | tr '\n' ' ') -rdynamic")
-	else
-		AC_WARN(LLVM Support Not Enabled: version $LLVM_VERSION found but \
-			requires 2.7svn )
-		AC_SUBST(LLVM_CFLAGS, "")
-		AC_SUBST(LLVM_LDFLAGS, "")
-	fi
+	AC_DEFINE(HAVE_OCELOT, [1], ["Define to 1 if ocelot is installed"])
+	AC_SUBST(OCELOT_LDFLAGS, "$(OcelotConfig -l | tr '\n' ' ')")
 else
-	AC_SUBST(LLVM_CFLAGS, "")
-	AC_SUBST(LLVM_LDFLAGS, "")
+	AC_MSG_ERROR("Ocelot needs to be installed.")
 fi
 ################################################################################
 
 ################################################################################
 ## Checks for libraries.
-AC_CHECK_LIB([rt], [clock_gettime], [], \
-	AC_MSG_ERROR("librt required"))
-AC_CHECK_LIB([GL], [glIsTexture], [], \
-	AC_MSG_ERROR("libGL required"))
-AC_CHECK_LIB([GLEW], [glewInit], [], \
-	AC_MSG_ERROR("libGLEW required"))
-AC_CHECK_LIB([GLU], [gluGetString], [], \
-	AC_MSG_ERROR("libGLU required"))
 AC_CHECK_LIB([glut], [glutMainLoop], [], \
 	AC_MSG_ERROR("libglut required"))
-
-AC_CHECK_LIB([cuda], [cuInit], HAVE_CUDA_DRIVER_API=yes, \
-	HAVE_CUDA_DRIVER_API=no)
-
-gpu_default="yes"
-AC_ARG_ENABLE(gpu, [  --enable-gpu=[no/yes] turn on NVIDIA GPU 
-	support [default=$gpu_default]],, enable_gpu=$gpu_default)
-
-if test "x$enable_gpu" = "xyes"; then
-	if test $HAVE_CUDA_DRIVER_API = yes
-	then
-		AC_DEFINE(HAVE_CUDA_DRIVER_API, [1], \
-			["Define to 1 if the cuda driver api is found"])
-		AC_SUBST(CUDA_DRIVER_API_LIBARY, "-lcuda")
-	else
-		AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
-			["Define to 1 if the cuda driver api is found"])
-		AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
-	fi
-else
-	AC_MSG_NOTICE(Disabled NVIDIA GPU support via libcuda)
-	AC_DEFINE(HAVE_CUDA_DRIVER_API, [0], \
-		["Define to 1 if the cuda driver api is found"])
-	AC_SUBST(CUDA_DRIVER_API_LIBARY, "")
-fi
-
-AC_CHECK_LIB([ocelot], [main],[AC_DEFINE(HAVE_OCELOT, [], [""])], \
-	AC_MSG_ERROR("libocelot required"), [$LLVM_LDFLAGS])
 ################################################################################
 
 ################################################################################

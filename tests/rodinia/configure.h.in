@@ -1,8 +1,5 @@
 /* configure.h.in.  Generated from configure.ac by autoheader.  */
 
-/* "Define to 1 if the cuda driver api is found" */
-#undef HAVE_CUDA_DRIVER_API
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -27,26 +24,11 @@
 /* Define to 1 if you have the `isascii' function. */
 #undef HAVE_ISASCII
 
-/* Define to 1 if you have the `GL' library (-lGL). */
-#undef HAVE_LIBGL
-
-/* Define to 1 if you have the `GLEW' library (-lGLEW). */
-#undef HAVE_LIBGLEW
-
-/* Define to 1 if you have the `GLU' library (-lGLU). */
-#undef HAVE_LIBGLU
-
 /* Define to 1 if you have the `glut' library (-lglut). */
 #undef HAVE_LIBGLUT
 
-/* Define to 1 if you have the `rt' library (-lrt). */
-#undef HAVE_LIBRT
-
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
-
-/* "Define to 1 if llvm is installed" */
-#undef HAVE_LLVM
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -57,7 +39,7 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
-/* "" */
+/* "Define to 1 if ocelot is installed" */
 #undef HAVE_OCELOT
 
 /* Define to 1 if you have the `pow' function. */

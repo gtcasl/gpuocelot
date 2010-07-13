@@ -23,11 +23,13 @@ namespace ir
 		{
 			case PTXStatement::Local: space = PTXInstruction::Local; break;
 			case PTXStatement::Shared: space = PTXInstruction::Shared; break;
+			case PTXStatement::Param: space = PTXInstruction::Param; break;
 			default:
 			{
-			assertM( space == PTXInstruction::Local 
-				|| space == PTXInstruction::Shared, 
-				"Directive is not valid for local variables." );
+				assertM( space == PTXInstruction::Local 
+					|| space == PTXInstruction::Shared 
+					|| space == PTXInstruction::Param, 
+					"Directive is not valid for local variables." );
 			}
 		}	
 	}

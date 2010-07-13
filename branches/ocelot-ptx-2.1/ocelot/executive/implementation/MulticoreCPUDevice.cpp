@@ -75,6 +75,16 @@ namespace executive
 		_modules.insert(std::make_pair(module->path(), 
 			new Module(module, this)));	
 	}
+
+	ExecutableKernel* MulticoreCPUDevice::getKernel(
+		const std::string& moduleName, const std::string& kernelName)
+	{
+		ModuleMap::iterator module = _modules.find(moduleName);
+		
+		if(module == _modules.end()) return 0;
+		
+		return module->second->getKernel(kernelName);
+	}
 	
 	void MulticoreCPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 

@@ -645,7 +645,7 @@ std::string ir::PTXOperand::toString() const {
 			stream << " + " << offset;
 			return stream.str();
 		}
-	} if( addressMode == Address ) {
+	} else if( addressMode == Address ) {
 		std::stringstream stream;
 		if( offset == 0 ) {
 			return identifier;
@@ -684,17 +684,26 @@ std::string ir::PTXOperand::toString() const {
 				+ PTXOperand::toString( type ) ); break;
 		}
 		return stream.str();
-	} 
-	else if( addressMode == Special ) {
-		if( vec == v1 ) {
+	} else if( addressMode == Special ) {
+		if( vec != v1 ) {
 			return toString( special );
 		}
 		else {
+			assert( vec == v1 );
 			assert( array.empty() );
 			return toString( special ) + "." + toString( vIndex );
 		}
-	} 
-	else if( type == pred ) {
+	} else if( addressMode == ArgumentList ) {
+		std::string result = "(";
+		for( Array::const_iterator fi = array.begin(); 
+			fi != array.end(); ++fi ) {
+			result += fi->toString();
+			if( fi != --array.end() ) {
+				result += ", ";
+			}
+		}
+		return result + ")";
+	} else if( type == pred ) {
 		switch( condition ) {
 			case PT: return "%pt"; break;
 			case nPT: return "%pt"; break;

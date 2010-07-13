@@ -9,6 +9,7 @@
 #define TRACE_PERFORMANCEBOUNDGENERATOR_H_INCLUDED
 
 // Ocelot includes
+#include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <fstream>
@@ -116,7 +117,7 @@ namespace trace {
 		OperationCounterMap counterMap;
 		
 		//! maps the PC of the last instruction of each block to the block's label
-		std::map< int, std::string > PCsToBlocks;
+		executive::EmulatedKernel::ProgramCounterMap PCsToBlocks;
 	};
 }
 

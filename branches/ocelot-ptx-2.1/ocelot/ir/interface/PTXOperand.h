@@ -37,12 +37,14 @@ namespace ir {
 	public:
 		//! addressing mode of operand
 		enum AddressMode {
-			Register,			//< use as register variable
-			Indirect,			//< indirect access
-			Immediate,			//< treat as immediate value
-			Address,			//< treat as addressable variable
-			Label,				//< operand is a label
-			Special,			//< special register
+			Register,			//! use as register variable
+			Indirect,			//! indirect access
+			Immediate,			//! treat as immediate value
+			Address,			//! treat as addressable variable
+			Label,				//! operand is a label
+			Special,			//! special register
+			ArgumentList,       //! treat as argument list for function call
+			FunctionName,       //! operand is a function name
 			Invalid
 		};
 
@@ -147,22 +149,22 @@ namespace ir {
 			iw = 4 //! Only refers to the w index of the vector
 		};
 
-		typedef std::vector< PTXOperand > Array;
+		typedef std::vector<PTXOperand> Array;
 
 		typedef Instruction::RegisterType RegisterType;
 
 	public:
-		static std::string toString( VectorIndex );
-		static std::string toString( DataType );
-		static std::string toString( SpecialRegister );
-		static std::string toString( AddressMode );
-		static std::string toString( DataType, RegisterType );
-		static bool isFloat( DataType );
-		static bool isInt( DataType );
-		static bool isSigned( DataType );
-		static unsigned int bytes( DataType );
-		static bool valid( DataType, DataType );
-		static bool relaxedValid( DataType, DataType );
+		static std::string toString(VectorIndex);
+		static std::string toString(DataType);
+		static std::string toString(SpecialRegister);
+		static std::string toString(AddressMode);
+		static std::string toString(DataType, RegisterType);
+		static bool isFloat(DataType);
+		static bool isInt(DataType);
+		static bool isSigned(DataType);
+		static unsigned int bytes(DataType);
+		static bool valid(DataType, DataType);
+		static bool relaxedValid(DataType, DataType);
 		
 	public:
 		PTXOperand();
@@ -191,6 +193,7 @@ namespace ir {
 		union {
 			int offset;
 			VectorIndex vIndex;
+			unsigned int registerCount;
 		};
 		
 		//! immediate-mode value of operand
@@ -200,13 +203,21 @@ namespace ir {
 			double imm_float;
 			PredicateCondition condition;
 			SpecialRegister special;
+			unsigned int localMemorySize;
 		};
 
-		/*! Identifier for register */
-		RegisterType reg;
+		union {
+			/*! Identifier for register */
+			RegisterType reg;
+			bool isArgument;
+			unsigned int sharedMemorySize;
+		};
 		
-		//! Indicates whether target or source is a vector or scalar
-		Vec vec;
+		union {
+			//! Indicates whether target or source is a vector or scalar
+			Vec vec;
+			unsigned int stackMemorySize;
+		};
 		
 		//! Array if this is a vector
 		Array array;

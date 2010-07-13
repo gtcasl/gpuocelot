@@ -18,11 +18,13 @@ namespace ir {
 	public:
 		/*!	PTX directive types */
 		enum Directive {
-			Instr,			//< indicates the is an actual instruction
+			Instr,			//! indicates this is an actual instruction
+			CallTargets,
 			Const,
 			Entry,
 			File,
 			Func,
+			FunctionPrototype,
 			Global,
 			Label,
 			Local,
@@ -36,10 +38,12 @@ namespace ir {
 			Target,
 			Texref,
 			Version,
-			StartEntry,		//< synthetic directive to indicate start of entry
-			EndEntry,		//< synthetic to indicate the end of an entry
-			StartParam,		//< synthetic to indicate start of a parameter list
-			EndParam,		//< synthetic to indicate end of a parameter list
+			StartScope,		//! synthetic directive to indicate start of entry
+			EndScope,		//! synthetic to indicate the end of an entry
+			StartParam,		//! synthetic to indicate start of a parameter list
+			EndParam,		//! synthetic to indicate end of a parameter list
+			FunctionName,	//! synthetic to indicate the function name
+			EndFuncDec, 	//! synthetic ending a function declaration
 			Directive_invalid
 		};
 
@@ -65,6 +69,8 @@ namespace ir {
 		
 		typedef std::vector< unsigned int > ArrayStrideVector;
 		typedef std::vector< Data > ArrayVector;
+		typedef std::vector< std::string > StringVector;
+		typedef std::vector< PTXOperand::DataType > TypeVector;
 
 		class StaticArray {
 			public:
@@ -116,7 +122,6 @@ namespace ir {
 		};
 		
 		std::string section_type;
-
 		std::string section_name;
 
 		union {
@@ -134,7 +139,10 @@ namespace ir {
 		
 		Attribute attribute;
 
-		std::vector< std::string > targets;
+		StringVector targets;
+
+		TypeVector returnTypes;
+		TypeVector argumentTypes;
 
 	public:
 		PTXStatement( Directive directive = Directive_invalid );

@@ -169,8 +169,8 @@ static ir::PTXU64 extent(const executive::ExecutableKernel& kernel) {
 	}
 	
 	for (ir::Kernel::ParameterVector::const_iterator 
-		parameter = kernel.parameters.begin();
-		parameter != kernel.parameters.end(); ++parameter) {
+		parameter = kernel.arguments.begin();
+		parameter != kernel.arguments.end(); ++parameter) {
 		ir::PTXU64 address = 0;
 		
 		for (ir::Parameter::ValueVector::const_iterator 

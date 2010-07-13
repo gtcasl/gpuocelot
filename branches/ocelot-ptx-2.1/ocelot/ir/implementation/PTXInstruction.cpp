@@ -545,9 +545,20 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Call: {
-			if( !( d.addressMode == PTXOperand::Label 
-				|| d.addressMode == PTXOperand::Register ) ) {
-				return "no support for types other than Label and Register";
+			if( a.addressMode != PTXOperand::Register
+				&& a.addressMode != PTXOperand::FunctionName ) {
+				return "operand A must be a function name or register.";
+			}
+			if( d.addressMode != PTXOperand::ArgumentList 
+				&& d.addressMode != PTXOperand::Invalid ) {
+				return "operand D must be an argument list if it is specified.";
+			}
+			if( b.addressMode != PTXOperand::ArgumentList ) {
+				return "operand B must be an argument list.";
+			}
+			if( a.addressMode == PTXOperand::Register
+				&& c.addressMode != PTXOperand::FunctionName ) {
+				return "operand C must be function name if A is a register.";
 			}
 			break;
 		}
@@ -1738,15 +1749,23 @@ std::string ir::PTXInstruction::toString() const {
 			if( uni ) {
 				result += ".uni";
 			}
-			return result + d.toString();
+			result += " ";
+			if( d.addressMode != PTXOperand::Invalid ) {
+				result += d.toString() + ", ";
+			}
+			result += a.toString() + ", " + b.toString();
+			if( a.addressMode == PTXOperand::Register ) {
+				result += ", " + c.toString();
+			}
+			return result;
 		}
 		case Clz: {
 			return guard() + "clz." + PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
 		}
 		case CNot: {
-			return guard() + "cnot." + PTXOperand::toString( type ) 
-				+ d.toString() + a.toString();
+			return guard() + "cnot." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString();
 		}
 		case Cos: {
 			std::string result = guard() + "cos.";
@@ -1807,7 +1826,9 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			result += toString(addressSpace) + ".";
+			if( addressSpace != AddressSpace_Invalid ) {
+				result += toString(addressSpace) + ".";
+			}
 			if( d.vec != PTXOperand::v1 ) {
 				result += toString( d.vec ) + ".";
 			}
@@ -2002,7 +2023,9 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			result += toString(addressSpace) + ".";
+			if( addressSpace != AddressSpace_Invalid ) {
+				result += toString(addressSpace) + ".";
+			}
 			if( a.vec != PTXOperand::v1 ) {
 				result += toString( a.vec ) + ".";
 			}

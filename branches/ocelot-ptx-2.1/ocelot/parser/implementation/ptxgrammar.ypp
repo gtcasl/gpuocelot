@@ -12,7 +12,7 @@
 	#include <cassert>
 	#include <cstring>
 
-	#define YYERROR_VERBOSE 0
+	#define YYERROR_VERBOSE 1
 
 	#ifdef REPORT_BASE
 	#undef REPORT_BASE
@@ -93,6 +93,8 @@
 %token<value> TOKEN_RNI TOKEN_RMI TOKEN_RZI TOKEN_RPI
 %token<value> TOKEN_FTZ TOKEN_APPROX TOKEN_FULL TOKEN_SHIFT_AMOUNT
 
+%token<value> TOKEN_CALL_PROTOTYPE TOKEN_CALL_TARGETS
+
 %token<value> TOKEN_V2 TOKEN_V4
 %token<value> TOKEN_X TOKEN_Y TOKEN_Z TOKEN_W
 
@@ -131,23 +133,22 @@
 
 %%
 
-nonEntryStatements : version | target | registerDeclaration | fileDeclaration | 
-	initializableDeclaration | uninitializableDeclaration | unsupported | 
-	preprocessor | textureDeclaration;
+nonEntryStatements : version | target | registerDeclaration | fileDeclaration 
+	| preprocessor | textureDeclaration | globalSharedDeclaration;
 
 nonEntryStatement : nonEntryStatements
 {
 	state.statementEnd( @1 );
 };
 
-statement : nonEntryStatement | entry;
+statement : initializableDeclaration | nonEntryStatement | entry | functionBody
+	| functionDeclaration;
 
 statements : statement | statements statement;
 
-preprocessorCommand : PREPROCESSOR_INCLUDE | PREPROCESSOR_DEFINE | PREPROCESSOR_IF 
-	| PREPROCESSOR_IFDEF | PREPROCESSOR_ELSE | PREPROCESSOR_ENDIF 
-	| PREPROCESSOR_LINE | PREPROCESSOR_FILE;
-
+preprocessorCommand : PREPROCESSOR_INCLUDE | PREPROCESSOR_DEFINE 
+	| PREPROCESSOR_IF | PREPROCESSOR_IFDEF | PREPROCESSOR_ELSE 
+	| PREPROCESSOR_ENDIF | PREPROCESSOR_LINE | PREPROCESSOR_FILE;
 
 preprocessor : preprocessorCommand
 {
@@ -267,8 +268,8 @@ instructionVectorType : vectorToken
 
 alignment : TOKEN_ALIGN TOKEN_DECIMAL_CONSTANT { state.alignment = $<value>2; };
 
-addressableVariablePrefix : dataType statementVectorType { state.alignment = 1; };
-addressableVariablePrefix : statementVectorType dataType { state.alignment = 1; };
+addressableVariablePrefix : dataType statementVectorType {state.alignment = 1;};
+addressableVariablePrefix : statementVectorType dataType {state.alignment = 1;};
 addressableVariablePrefix : dataType { state.alignment = 1; };
 addressableVariablePrefix : alignment dataType statementVectorType;
 addressableVariablePrefix : alignment statementVectorType dataType;
@@ -341,15 +342,25 @@ fileDeclaration : TOKEN_FILE TOKEN_DECIMAL_CONSTANT TOKEN_STRING
 	state.fileDeclaration( $<value>2, $<text>3 );
 };
 
+globalSharedDeclaration : externOrVisible TOKEN_SHARED 
+	addressableVariablePrefix identifier arrayDimensions ';'
+{
+	state.locationAddress( $<value>2 );
+	state.initializableDeclaration( $<text>4, @4, @6 );
+};
+
 initializableDeclaration : initializable addressableVariablePrefix 
 	identifier arrayDimensions initializer ';'
 {
 	state.initializableDeclaration( $<text>3, @3, @5 );
+	state.statementEnd( @3 );
 };
 
-textureDeclaration : initializable TOKEN_TEXREF identifier ';'
+textureSpace : TOKEN_PARAM | TOKEN_GLOBAL;
+
+textureDeclaration : externOrVisible textureSpace TOKEN_TEXREF identifier ';'
 {
-	state.textureDeclaration( $<text>3, @3 );
+	state.textureDeclaration( $<value>2, $<text>4, @1 );
 };
 
 parameter : TOKEN_PARAM
@@ -360,62 +371,104 @@ parameter : TOKEN_PARAM
 parameterDeclaration : parameter addressableVariablePrefix identifier 
 	arrayDimensions
 {
-	state.statement.attribute = ir::PTXStatement::NoAttribute;
-	state.uninitializableDeclaration( $<text>3 );	
+	state.attribute( false, false );
+	state.parameterDeclaration( $<text>3, @1 );
+};
+
+returnParameterListBegin : '('
+{
+	state.returnParameterListBegin( @1 );
+};
+
+returnParameterListEnd : ')'
+{
+	state.returnParameterListEnd( @1 );
+};
+
+parameterListBegin : '('
+{
+	state.parameterListBegin( @1 );
+};
+
+parameterListEnd : ')'
+{
+	state.parameterListEnd( @1 );
+};
+
+openBrace : '{'
+{
+	state.openBrace( @1 );
+};
+
+closeBrace : '}'
+{
+	state.closeBrace( @1 );
+};
+
+parameterListBody : parameterDeclaration;
+parameterListBody : /* empty string */;
+parameterListBody : parameterListBody ',' parameterDeclaration;
+
+returnParameterList : returnParameterListBegin parameterListBody 
+	returnParameterListEnd;
+parameterList : parameterListBegin parameterListBody parameterListEnd;
+
+optionalReturnParameterList : returnParameterList | /* empty string */;
+
+functionBegin : TOKEN_FUNCTION
+{
+	state.functionBegin( @1 );
+};
+
+functionName : identifier
+{
+	state.functionName( $<text>1, @1 );
+};
+
+functionDeclaration : externOrVisible functionBegin optionalReturnParameterList 
+	functionName parameterList
+{
+	state.functionDeclaration( @4, false );
+};
+
+functionBodyDefinition : externOrVisible functionBegin 
+	optionalReturnParameterList functionName parameterList
+{
+	state.functionDeclaration( @4, true );
+};
+
+functionBody : functionBodyDefinition openBrace entryStatements closeBrace;
+
+entryName : TOKEN_ENTRY identifier
+{
+	state.entry( $<text>2, @1 );
+};
+
+entryDeclaration : entryName parameterList performanceDirectives
+{
+	state.entryDeclaration( @1 );
+};
+
+entry : entryDeclaration openBrace entryStatements closeBrace;
+
+entryStatement : registerDeclaration | location | label | pragma 
+	| callprototype | calltargets;
+
+completeEntryStatement : uninitializableDeclaration;
+
+completeEntryStatement : entryStatement
+{
 	state.statementEnd( @1 );
 };
 
-parameterList : parameterDeclaration;
-parameterList : /* empty string */;
-parameterList : parameterList ',' parameterDeclaration;
-
-entryStart1 : TOKEN_ENTRY identifier
+completeEntryStatement : guard instruction
 {
-	state.entry( $<text>2, @1, true );
-};
-
-entryStart2 : TOKEN_ENTRY identifier
-{
-	state.entry( $<text>2, @1, false );
-};
-
-entryMid1 : '(' parameterList ')' performanceDirectives '{'
-{
-	state.entryMid( @4, true );
-};
-
-entryMid2 : performanceDirectives '{'
-{
-	state.entryMid( @1, false );
-};
-
-entry : entryStart1 entryMid1 entryDeclarations '}'
-{
-	state.entryEnd( @4 );
-};
-
-entry : entryStart2 entryMid2 entryDeclarations '}'
-{
-	state.entryEnd( @4 );
-};
-
-entryStatement : registerDeclaration | uninitializableDeclaration 
-	| location | label | pragma;
-
-entryDeclaration : entryStatement
-{
-	state.statementEnd( @1 );
-};
-
-entryDeclaration : guard instruction
-{
-	state.entryDeclaration( @2 );
+	state.entryStatement( @2 );
 	state.instruction();
 };
 
-entryDeclarations : entryDeclaration;
-
-entryDeclarations : entryDeclarations entryDeclaration;
+entryStatements : completeEntryStatement;
+entryStatements : entryStatements completeEntryStatement;
 
 maxnreg : TOKEN_MAXNREG TOKEN_DECIMAL_CONSTANT
 {
@@ -475,7 +528,7 @@ externOrVisible : /* empty string */
 	state.attribute( false, false );
 };
 
-uninitializableAddress : TOKEN_LOCAL | TOKEN_SHARED;
+uninitializableAddress : TOKEN_LOCAL | TOKEN_SHARED | TOKEN_PARAM;
 initializableAddress : TOKEN_CONST | TOKEN_GLOBAL;
 
 uninitializable : externOrVisible uninitializableAddress
@@ -504,6 +557,7 @@ uninitializableDeclaration : uninitializable addressableVariablePrefix
 	identifier arrayDimensions ';'
 {
 	state.uninitializableDeclaration( $<text>3 );
+	state.statementEnd( @2 );
 };
 
 location : TOKEN_LOC TOKEN_DECIMAL_CONSTANT TOKEN_DECIMAL_CONSTANT 
@@ -520,6 +574,35 @@ label : TOKEN_LABEL
 labelOperand : identifier
 {
 	state.labelOperand( $<text>1 );
+};
+
+returnType : TOKEN_PARAM dataTypeId identifier
+{
+	state.returnType( $<value>2 );
+};
+
+returnTypeListBody : returnType;
+returnTypeListBody : returnTypeListBody ',' returnType;
+returnTypeList : '(' returnTypeListBody ')';
+
+argumentType : TOKEN_PARAM dataTypeId identifier
+{
+	state.argumentType( $<value>2 );
+};
+
+argumentTypeListBody : argumentType;
+argumentTypeListBody : argumentTypeListBody ',' argumentType;
+argumentTypeList : '(' argumentTypeListBody ')';
+
+callprototype : TOKEN_LABEL TOKEN_CALL_PROTOTYPE returnTypeList identifier 
+	argumentTypeList ';'
+{
+	state.callPrototype( $<text>1, @1 );
+};
+
+calltargets : TOKEN_LABEL TOKEN_CALL_TARGETS identifierList ';'
+{
+	state.callTargets( $<text>1, @1 );
 };
 
 pragma : TOKEN_PRAGMA TOKEN_STRING ';'
@@ -549,24 +632,24 @@ nonLabelOperand : '!' identifier
 	state.nonLabelOperand( $<text>2, @1, true );
 };
 
-baseOperand : TOKEN_DECIMAL_CONSTANT
+constantOperand : TOKEN_DECIMAL_CONSTANT
 {
-	state.baseOperand( $<value>1 );
+	state.constantOperand( $<value>1 );
 };
 
-baseOperand : TOKEN_UNSIGNED_DECIMAL_CONSTANT
+constantOperand : TOKEN_UNSIGNED_DECIMAL_CONSTANT
 {
-	state.baseOperand( $<uvalue>1 );
+	state.constantOperand( $<uvalue>1 );
 };
 
-baseOperand : TOKEN_DOUBLE_CONSTANT
+constantOperand : TOKEN_DOUBLE_CONSTANT
 {
-	state.baseOperand( $<doubleFloat>1 );
+	state.constantOperand( $<doubleFloat>1 );
 };
 
-baseOperand : TOKEN_SINGLE_CONSTANT
+constantOperand : TOKEN_SINGLE_CONSTANT
 {
-	state.baseOperand( $<singleFloat>1 );
+	state.constantOperand( $<singleFloat>1 );
 };
 
 addressableOperand : identifier
@@ -584,11 +667,12 @@ offsetAddressableOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
 	state.addressableOperand( $<text>1, $<value>3, @1, true );
 };
 
-operand : baseOperand | nonLabelOperand;
+callOperand : constantOperand | addressableOperand;
+operand : constantOperand | nonLabelOperand;
 
-memoryOperand : baseOperand | addressableOperand | offsetAddressableOperand;
+memoryOperand : constantOperand | addressableOperand | offsetAddressableOperand;
 
-branchOperand : baseOperand | labelOperand;
+branchOperand : labelOperand;
 
 arrayOperand : operand;
 arrayOperand : '{' identifierList '}'
@@ -689,9 +773,30 @@ branch : OPCODE_BRA optionalUni branchOperand ';'
 	state.instruction( $<text>1, 2 );
 };
 
-branch : OPCODE_CALL branchOperand ';'
+returnOperand : callOperand
 {
-	state.instruction( $<text>1, 2 );
+	state.returnOperand();
+};
+
+returnOperandList : returnOperand;
+returnOperandList : returnOperandList ',' returnOperand;
+
+optionalReturnOperandList : '(' returnOperandList ')' ',' | /* empty string */;
+
+callParameterList : callOperand;
+callParameterList : callParameterList ',' callOperand;
+
+optionalPrototypeName : ',' identifier
+{
+	state.callPrototypeName( $<text>2 );
+};
+
+optionalPrototypeName : /* empty string */;
+
+branch : OPCODE_CALL optionalUni optionalReturnOperandList identifier 
+	',' '(' callParameterList ')' optionalPrototypeName ';'
+{
+	state.call( $<text>4, @1 );
 };
 
 addModifier : TOKEN_CARRY
@@ -857,6 +962,12 @@ ldModifier : addressSpace instructionVectorType
 
 ldModifier : addressSpace
 {
+	state.volatileFlag( false );		
+};
+
+ldModifier : /* empty string */
+{
+	state.noAddressSpace();
 	state.volatileFlag( false );		
 };
 
@@ -1111,11 +1222,6 @@ voteOperation : voteOperationId
 vote : OPCODE_VOTE voteOperation TOKEN_PRED operand ',' operand ';'
 {
 	state.instruction( $<text>1, TOKEN_PRED, 3 );
-};
-
-unsupported: TOKEN_FUNCTION
-{
-	state.function( @1 );
 };
 
 %%

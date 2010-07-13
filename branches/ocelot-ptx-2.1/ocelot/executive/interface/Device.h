@@ -202,6 +202,9 @@ namespace executive
 			virtual void load(const ir::Module* module) = 0;
 			/*! \brief Unload a module by name */
 			virtual void unload(const std::string& name) = 0;
+			/*! \brief Get a translated kernel from the device */
+			virtual ExecutableKernel* getKernel(const std::string& module, 
+				const std::string& kernel) = 0;
 
 		public:
 			/*! \brief Get the device properties */
@@ -308,3 +311,4 @@ namespace executive
 }
 
 #endif
+

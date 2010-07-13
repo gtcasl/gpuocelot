@@ -682,8 +682,8 @@ namespace executive
 		
 		AllocationMap map;
 		
-		for( ParameterVector::iterator parameter = _ptx->parameters.begin(); 
-			parameter != _ptx->parameters.end(); ++parameter )
+		for( ParameterVector::iterator parameter = _ptx->arguments.begin(); 
+			parameter != _ptx->arguments.end(); ++parameter )
 		{
 			_pad( _context.parameterSize, parameter->getAlignment() );
 			
@@ -1322,8 +1322,8 @@ namespace executive
 		_translateKernel();
 	
 		size_t size = 0;
-		for( ParameterVector::iterator parameter = parameters.begin();
-			parameter != parameters.end(); ++parameter ) 
+		for( ParameterVector::iterator parameter = arguments.begin();
+			parameter != arguments.end(); ++parameter ) 
 		{
 			_pad( size, parameter->getAlignment() );
 			for( ir::Parameter::ValueVector::iterator 

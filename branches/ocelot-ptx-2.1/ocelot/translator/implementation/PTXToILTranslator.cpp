@@ -32,6 +32,9 @@ namespace translator
 
 		_ilKernel = new ir::ILKernel(*k);
 
+		// build the control tree
+		_ilKernel->ctrl_tree();
+
 		_translateInstructions();
 		_addKernelPrefix();
 
@@ -410,12 +413,12 @@ namespace translator
 
 		int i = 0;
 		ir::Kernel::ParameterVector::const_iterator it;
-		for (it = _ilKernel->parameters.begin() ; 
-				it != _ilKernel->parameters.end() ; it++, i++) {
+		for (it = _ilKernel->arguments.begin() ; 
+				it != _ilKernel->arguments.end() ; it++, i++) {
 			if (it->name == ident) break;
 		}
 
-		if (it != _ilKernel->parameters.end()) {
+		if (it != _ilKernel->arguments.end()) {
 			stream << "cb1[" << i << "]";
 		} else {
 			assertM(false, "Parameter "

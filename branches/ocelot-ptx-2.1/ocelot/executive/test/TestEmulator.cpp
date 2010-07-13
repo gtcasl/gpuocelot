@@ -104,9 +104,8 @@ public:
 		kernel->setKernelShape(Threads,1,1);
 		status << kernel->registerCount() << " registers\n";
 
-		CooperativeThreadArray cta(kernel);
-		cta.initialize();
-
+		CooperativeThreadArray cta(kernel, ir::Dim3(), false);
+		
 		for (int j = 0; j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; i < Threads; i++) {
 				cta.setRegAsU32(i, j, i*(j+1));
@@ -194,7 +193,7 @@ public:
 
 		kernel->setKernelShape(Threads, 1, 1);
 
-		CooperativeThreadArray cta(kernel);
+		CooperativeThreadArray cta(kernel, ir::Dim3(), false);
 
 		// load and store to global memory
 		PTXU32 block[64];
@@ -322,7 +321,7 @@ public:
 
 		kernel->setKernelShape(Threads, 1, 1);
 
-		CooperativeThreadArray cta(kernel);
+		CooperativeThreadArray cta(kernel, ir::Dim3(), false);
 
 		// load and store to global memory
 		PTXU32 u_block[4];

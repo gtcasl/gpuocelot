@@ -160,6 +160,13 @@ namespace executive
 		_modules.erase(module);
     }
 
+	ExecutableKernel* ATIGPUDevice::getKernel(const std::string& moduleName, 
+		const std::string& kernelName)
+	{
+		assertM(false, "Not implemented.");
+		return 0;
+	}
+
     void ATIGPUDevice::select()
     {
 		// Multiple devices is not supported yet

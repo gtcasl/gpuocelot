@@ -1139,7 +1139,6 @@ namespace analysis
 		return out;
 	}
 
-
 }
 
 #endif

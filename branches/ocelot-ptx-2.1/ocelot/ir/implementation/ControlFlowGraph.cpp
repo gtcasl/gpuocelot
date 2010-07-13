@@ -27,12 +27,12 @@ ControlFlowGraph::Edge::Edge(BlockList::iterator h,
 }
 
 ControlFlowGraph::BasicBlock::DotFormatter::DotFormatter() { }
-ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
 
 /*!
 	\brief emits label for entry block
 */
-std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(const BasicBlock *block) {
+std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(
+	const BasicBlock *block) {
 	std::stringstream out;
 	out << "[shape=Mdiamond,label=\"" << block->label << "\"]";	
 	return out.str();
@@ -41,17 +41,22 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(const BasicBl
 /*!
 	\brief emits label for exit block
 */
-std::string ControlFlowGraph::BasicBlock::DotFormatter::exitLabel(const BasicBlock *block) {
+std::string ControlFlowGraph::BasicBlock::DotFormatter::exitLabel(
+	const BasicBlock *block) {
 	std::stringstream out;
 	out << "[shape=Msquare,label=\"" << block->label << "\"]";	
 	return out.str();
 }
 
-std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(const std::string &str) {
+ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
+
+std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(
+	const std::string &str) {
 	return make_label_dot_friendly(str);
 }
 
-std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const BasicBlock *block) {
+std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
+	const BasicBlock *block) {
 	std::stringstream out;
 
 	out << "[shape=record,";
@@ -68,7 +73,8 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const BasicBloc
 	return out.str();
 }
 
-std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(const Edge *edge) {
+std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
+	const Edge *edge) {
 	std::stringstream out;
 
 	if (edge->type == Edge::Dummy) {
@@ -119,6 +125,14 @@ ControlFlowGraph::BasicBlock::EdgeList::const_iterator
 	assertM(false, "No fallthrough edge in block " << label);
 }
 
+bool ControlFlowGraph::BasicBlock::has_fallthrough_edge() const {
+	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->type == Edge::FallThrough) return true;
+	}
+	return false;
+}
+
 ControlFlowGraph::BasicBlock::EdgeList::iterator 
 	ControlFlowGraph::BasicBlock::get_branch_edge() {
 	for (EdgePointerVector::iterator edge = out_edges.begin(); 
@@ -135,6 +149,14 @@ ControlFlowGraph::BasicBlock::EdgeList::const_iterator
 		if ((*edge)->type == Edge::Branch) return *edge;
 	}
 	assertM(false, "No branch edge in block " << label);
+}
+
+bool ControlFlowGraph::BasicBlock::has_branch_edge() const {
+	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
+		edge != out_edges.end(); ++edge) {
+		if ((*edge)->type == Edge::Branch) return true;
+	}
+	return false;
 }
 
 ControlFlowGraph::BasicBlock::EdgeList::iterator 
@@ -198,16 +220,13 @@ ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 }
 
 void ControlFlowGraph::remove_block(iterator block) {
-	EdgePointerVector in_edges = block->in_edges;
-	for (edge_pointer_iterator eit = in_edges.begin(); 
-		eit != in_edges.end(); ++eit) {
-		remove_edge(*eit);
+	
+	while (!block->in_edges.empty()) {
+		remove_edge(*block->in_edges.begin());
 	}
 
-	EdgePointerVector out_edges = block->out_edges;
-	for (edge_pointer_iterator eit = out_edges.begin();
-		eit != out_edges.end(); ++eit) {
-		remove_edge(*eit);
+	while (!block->out_edges.empty()) {
+		remove_edge(*block->out_edges.begin());
 	}
 	
 	block->clear();
@@ -333,7 +352,6 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	out << "digraph {\n";
 
 	// emit nodes
-
 	out << "  // basic blocks\n\n";
 	out << "  bb_0 " << blockFormatter.entryLabel(&*_entry) << ";\n";
 	out << "  bb_1 " << blockFormatter.exitLabel(&*_entry) << ";\n";
@@ -420,8 +438,6 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 	Stack stack;
 	
 	if (!empty()) {
-		report(" Adding block " << get_entry_block()->label);
-		visited.insert(get_entry_block());
 		for (pointer_iterator 
 			block = get_entry_block()->successors.begin(); 
 			block != get_entry_block()->successors.end(); ++block) {
@@ -429,7 +445,6 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 				stack.push(*block);
 			}
 		}
-		sequence.push_back(get_entry_block());
 	}
 	
 	while (!stack.empty()) {
@@ -450,7 +465,10 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 			report(" Adding block " << current->label);
 		}
 	}
-	
+
+	report(" Adding block " << get_entry_block()->label);
+	sequence.push_back(get_entry_block());
+			
 	return std::move(sequence);
 }
 
@@ -484,41 +502,51 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
-	typedef std::list<iterator> BlockPointerList;
-	BlockPointerVector _blocks = post_order_sequence();
-	BlockPointerList blocks(_blocks.begin(), _blocks.end());
-	BlockPointerVector kill;
+	typedef std::unordered_set<iterator> BlockSet;
 	BlockPointerVector sequence;
+	BlockSet unscheduled;
+
+	for(iterator i = begin(); i != end(); ++i)
+	{
+		unscheduled.insert(i);
+	}
 
 	report("Getting executable sequence.");
 
-	while (blocks.size()) {
-		iterator target = blocks.front();
-		kill.clear();
-		
-		for (BlockPointerList::iterator block = blocks.begin(); 
-			block != blocks.end() && target != end(); ++block) {
-			if ((*block)==target) {
-				kill.push_back(*block);
-				sequence.push_back(*block);
-				report(" " << (*block)->label);
-				target = end();
-			
-				for (edge_pointer_iterator edge = (*block)->out_edges.begin(); 
-					edge != (*block)->out_edges.end(); ++edge) {
+	sequence.push_back(get_entry_block());
+	unscheduled.erase(get_entry_block());
+	report(" added " << get_entry_block()->label);
+
+	while (!unscheduled.empty()) {
+		if (sequence.back()->has_fallthrough_edge()) {
+			edge_iterator fallthroughEdge 	
+				= sequence.back()->get_fallthrough_edge();
+			sequence.push_back(fallthroughEdge->tail);
+			unscheduled.erase(fallthroughEdge->tail);
+		}
+		else {
+			// rewind through fallthrough edges to find the beginning of the 
+			// next chain of fall throughs
+			iterator next = *unscheduled.begin();
+			report("  restarting at " << next->label);
+			bool rewinding = true;
+			while (rewinding) {
+				rewinding = false;
+				for (edge_pointer_iterator edge = next->in_edges.begin(); 
+					edge != next->in_edges.end(); ++edge) {
 					if ((*edge)->type == Edge::FallThrough) {
-						target = (*edge)->tail;
-						block = blocks.begin();
+						next = (*edge)->head;
+						report("   rewinding to " << next->label );
+						rewinding = true;
 						break;
 					}
 				}
 			}
+			sequence.push_back(next);
+			unscheduled.erase(next);			
 		}
 		
-		for (pointer_iterator killed = kill.begin(); 
-			killed != kill.end(); ++killed) {
-			blocks.remove(*killed);
-		}
+		report(" added " << sequence.back()->label);
 	}
 
 	return std::move(sequence);
@@ -594,3 +622,4 @@ ControlFlowGraph::const_edge_iterator ControlFlowGraph::edges_end() const {
 }
 
 }
+

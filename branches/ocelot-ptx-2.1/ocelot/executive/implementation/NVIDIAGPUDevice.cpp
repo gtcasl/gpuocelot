@@ -1071,6 +1071,16 @@ namespace executive
 		_modules.erase(module);
 	}
 
+	ExecutableKernel* NVIDIAGPUDevice::getKernel(const std::string& moduleName, 
+		const std::string& kernelName)
+	{
+		ModuleMap::iterator module = _modules.find(moduleName);
+		
+		if(module == _modules.end()) return 0;
+		
+		return module->second.getKernel(kernelName);	
+	}
+	
 	unsigned int NVIDIAGPUDevice::createEvent(int flags)
 	{
 		CUevent event;

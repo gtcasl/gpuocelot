@@ -9,6 +9,7 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/ir/interface/DominatorTree.h>
+#include <ocelot/ir/interface/ControlTree.h>
 
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
@@ -19,11 +20,13 @@
 
 #define REPORT_BASE 0
 
-ir::Kernel::Kernel(Instruction::Architecture isa) : ISA(isa) {
+ir::Kernel::Kernel(Instruction::Architecture isa, bool isFunction) : 
+	_function(isFunction), ISA(isa) {
 	_cfg = 0;
 	_dom_tree = 0;
 	_pdom_tree = 0;
 	_dfg = 0;
+	_ct = 0;
 	module = 0;
 }
 
@@ -32,6 +35,7 @@ ir::Kernel::~Kernel() {
 	delete _dom_tree;
 	delete _cfg;
 	delete _dfg;
+	delete _ct;
 }
 
 ir::Kernel::Kernel(const Kernel &kernel) {
@@ -40,9 +44,11 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 	name = kernel.name;
 	ISA = kernel.ISA;
 	parameters = kernel.parameters;
+	arguments = kernel.arguments;
 	locals = kernel.locals;
+	_function = kernel.function();
 
-	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0;
+	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
@@ -55,11 +61,13 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	name = kernel.name;
 	ISA = kernel.ISA;
 	parameters = kernel.parameters;
+	arguments = kernel.arguments;
 	locals = kernel.locals;
+	_function = kernel.function();
 
-	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg;
+	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg; delete _ct;
 
-	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0;
+	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
@@ -70,8 +78,14 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 
 ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
-	for (vector<Parameter>::iterator p_it = parameters.begin(); 
-		p_it != parameters.end(); ++p_it) {
+	
+	ParameterMap::iterator p_it = parameters.find(name);
+	if (p_it != parameters.end()) {
+		return &p_it->second;
+	}
+	
+	for (ParameterVector::iterator p_it = arguments.begin(); 
+		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
 			return &*p_it;
 		}
@@ -81,8 +95,14 @@ ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 
 const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 	using namespace std;
-	for (vector<Parameter>::const_iterator p_it = parameters.begin(); 
-		p_it != parameters.end(); ++p_it) {
+
+	ParameterMap::const_iterator p_it = parameters.find(name);
+	if (p_it != parameters.end()) {
+		return &p_it->second;
+	}
+
+	for (ParameterVector::const_iterator p_it = arguments.begin(); 
+		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
 			return &*p_it;
 		}
@@ -124,8 +144,20 @@ analysis::DataflowGraph* ir::Kernel::dfg() {
 	return _dfg;
 }
 
+ir::ControlTree* ir::Kernel::ctrl_tree()
+{
+	assertM(_cfg != 0, "Must create cfg before building control tree.");
+	if (_ct) return _ct;
+	_ct = new ControlTree(_cfg);
+	return _ct;
+}
+
 bool ir::Kernel::executable() const {
 	return false;
+}
+
+bool ir::Kernel::function() const {
+	return _function;
 }
 
 void ir::Kernel::write(std::ostream& stream) const {

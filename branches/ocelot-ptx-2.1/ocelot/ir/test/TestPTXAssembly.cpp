@@ -63,6 +63,72 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST FUNCTION CALLS
+std::string testFunctionCalls_PTX()
+{
+	std::stringstream ptx;
+	
+	ptx << ".version 2.1\n";
+	ptx << ".visible .func (.param .u32 return) " 
+		<< "add(.param .u32 a, .param .u32 b)\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in) \n";
+	ptx << "{\t\n";
+	ptx << "\t.reg .u64 %rIn, %rOut; \n";
+	ptx << "\t.reg .u32 %r<3>; \n";
+	ptx << "\t.param .u32 operandA;\n";
+	ptx << "\t.param .u32 operandB;\n";
+	ptx << "\t.param .u32 result;\n";
+	ptx << "\tld.param.u64 %rIn, [in]; \n";
+	ptx << "\tld.param.u64 %rOut, [out]; \n";
+	ptx << "\tld.global.u32 %r0, [%rIn]; \n";
+	ptx << "\tld.global.u32 %r1, [%rIn + 4]; \n";
+	ptx << "\tst.param.u32 [operandA], %r0; \n";
+	ptx << "\tst.param.u32 [operandB], %r1; \n";
+	ptx << "\tcall.uni (result), add, (operandA, operandB); \n";
+	ptx << "\tld.param.u32 %r2, [result]; \n";
+	ptx << "\tst.global.u32 [%rOut], %r2; \n";
+	ptx << "\texit; \n";
+	ptx << "}\n";
+	ptx << "\n";
+
+	ptx << ".visible .func (.param .u32 return) " 
+		<< "add(.param .u32 a, .param .u32 b) \n";
+	ptx << "{\t\n";
+	ptx << "\t.reg .u32 %r<3>; \n";
+	ptx << "\tld.param.u32 %r0, [a];\n";
+	ptx << "\tld.param.u32 %r1, [b];\n";
+	ptx << "\tadd.u32 %r2, %r1, %r0;\n";
+	ptx << "\tst.param.u32 [return], %r2;\n";
+	ptx << "\tret 0;\n";
+	ptx << "}\n";
+	
+	return ptx.str();
+}
+
+void testFunctionCalls_REF(void* output, void* input)
+{
+	unsigned int r0 = getParameter<unsigned int>(input, 0);
+	unsigned int r1 = getParameter<unsigned int>(input, sizeof(unsigned int));
+	
+	unsigned int result = r0 + r1;
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testFunctionCalls_IN()
+{
+	return test::TestPTXAssembly::TypeVector(2, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testFunctionCalls_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST VECTOR ELEMENTS
 std::string testVectorElements_PTX()
 {
@@ -1104,8 +1170,8 @@ void testBfi_REF(void* output, void* input)
 {
 	type r0 = getParameter<type>(input, 0);
 	type r1 = getParameter<type>(input, sizeof(type));
-	type r2 = getParameter<type>(input, 2 * sizeof(type));
-	type r3 = getParameter<type>(input, 2 * sizeof(type) 
+	unsigned int r2 = getParameter<unsigned int>(input, 2 * sizeof(type));
+	unsigned int r3 = getParameter<unsigned int>(input, 2 * sizeof(type) 
 		+ sizeof(unsigned int));
 	
 	type result = hydrazine::bitFieldInsert(r0, r1, r2, r3);
@@ -1920,10 +1986,10 @@ namespace test
 
 		add("TestBfi-b32", testBfi_REF<unsigned int>, 
 			testBfi_PTX(ir::PTXOperand::b32), testBfi_OUT(I32), 
-			testBfi_IN(I32), uniformRandom<unsigned int, 1>, 1, 1);
+			testBfi_IN(I32), uniformRandom<unsigned int, 4>, 1, 1);
 		add("TestBfi-b64", testBfi_REF<long long unsigned int>, 
 			testBfi_PTX(ir::PTXOperand::b64), testBfi_OUT(I64), 
-			testBfi_IN(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
+			testBfi_IN(I64), uniformRandom<long long unsigned int, 3>, 1, 1);
 	
 		add("TestPrmt-b32", testPrmt_REF<ir::PTXInstruction::DefaultPermute>, 
 			testPrmt_PTX(ir::PTXInstruction::DefaultPermute), testPrmt_OUT(), 
@@ -1953,6 +2019,10 @@ namespace test
 			testPrmt_REF<ir::PTXInstruction::ReplicateSixteen>, 
 			testPrmt_PTX(ir::PTXInstruction::ReplicateSixteen), testPrmt_OUT(), 
 			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
+			
+		add("TestFunctionCalls", testFunctionCalls_REF, 
+			testFunctionCalls_PTX(), testFunctionCalls_OUT(), 
+			testFunctionCalls_IN(), uniformRandom<unsigned int, 2>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
@@ -1972,6 +2042,12 @@ namespace test
 	{
 		// TODO change this to std::tr1::regex when gcc gets its act together
 		if(!regularExpression.empty() && regularExpression != name) return;
+		
+		if(enumerate)
+		{
+			std::cout << name << "\n";
+			return;	
+		}
 		
 		TestHandle test;
 		test.name = name;
@@ -2038,6 +2114,8 @@ int main(int argc, char** argv)
 		"Print out status info after the test.");
 	parser.parse("-p", "--print-ptx", test.print, false,
 		"Print test kernels as they are added.");
+	parser.parse("-e", "--enumerate", test.enumerate, false,
+		"Only enumerate tests, do not run them.");
 	parser.parse("-t", "--test", test.regularExpression, "",
 		"Only select tests matching this expression.");
 	parser.parse("-s", "--seed", test.seed, 0,

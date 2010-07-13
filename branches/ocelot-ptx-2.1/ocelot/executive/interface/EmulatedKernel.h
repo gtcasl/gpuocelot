@@ -7,9 +7,6 @@
 #ifndef EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 #define EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 
-#include <list>
-#include <map>
-
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 
@@ -26,7 +23,9 @@ namespace executive {
 		
 	class EmulatedKernel: public ExecutableKernel {
 	public:
-		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
+		typedef std::deque<ir::PTXInstruction> PTXInstructionVector;
+		typedef std::map<int, std::string> ProgramCounterMap;
+		typedef std::unordered_map<std::string, int> FunctionNameMap;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -76,10 +75,14 @@ namespace executive {
 		void initialize();
 
 		/*!	Maps identifiers to global memory allocations. */
-		void initializeGlobalMemory();		
+		void initializeGlobalMemory();
+		
+		/*! Lazily sets the target of a call instruction to the entry point
+			of the specified function.  This function will be inserted into
+			the instruction sequence if it does not already exist */
+		void lazyLink(int callPC, const std::string& functionName);
 
 	protected:
-	
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();
 
@@ -114,13 +117,23 @@ namespace executive {
 		/*!	Maps identifiers to global shared memory allocations. */
 		void initializeGlobalSharedMemory();
 		
+		/*! Determines stack memory size and maps identifiers to allocations */
+		void initializeStackMemory();
+		
 		/*!	Scans the kernel and builds the set of textures using references 
 				in tex instructions */
 		void initializeTextureMemory();
 
+		/*! Sets the target of call instructions to invalid pcs so that they
+			can be lazily compiled and allocated */
+		void invalidateCallTargets();
+
 	public:
 		/*! A map of register name to register number */
 		ir::PTXKernel::RegisterMap registerMap;
+		
+		/*! A map of function names to the PC of their entry point */
+		FunctionNameMap functionEntryPoints;
 
 		/*!	Pointer to block of memory used to store parameter data */
 		char* ParameterMemory;
@@ -131,17 +144,20 @@ namespace executive {
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 
-		/*! Maps program counters of header instructions to basic block label */
-		std::map< int, std::string > branchTargetsToBlock;
+		/*! Maps program counters of header instructions to block labels */
+		ProgramCounterMap branchTargetsToBlock;
 		
-		/*! maps the program counter of the terminating instructions to owning basic block */
-		std::map< int, std::string > basicBlockMap;
+		/*! maps the program counter of the terminating 
+			instructions to owning basic block */
+		ProgramCounterMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
-		std::map< int, std::string > basicBlockPC;
+		ProgramCounterMap basicBlockPC;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
+
+		/*! Kernels that may be */
 
 	public:
 		/*! \brief Check to see if a memory access is valid */
@@ -149,7 +165,7 @@ namespace executive {
 	
 	public:
 		/*! Copies data from global objects into const and global memory */
-		void updateGlobals();	
+		void updateGlobals();
 
 	public:
 		/*!	Print out every instruction	*/
@@ -159,14 +175,14 @@ namespace executive {
 		std::string fileName() const;
 		
 		/*! \brief Get the nearest location to an instruction at a given PC */
-		std::string location( unsigned int PC ) const;
+		std::string location(unsigned int PC) const;
 		
-		/*!
-			\brief gets the basic block label owning the instruction specified by the PC
-		*/
+		/*!	\brief gets the basic block label owning the instruction 
+			specified by the PC */
 		std::string getInstructionBlock(int PC) const;
 	};
 
 }
 
 #endif
+

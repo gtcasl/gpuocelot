@@ -40,7 +40,7 @@
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 1
+#define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
 
@@ -123,36 +123,20 @@ bool isF64NaN(PTXF64 f) {
 
 	\param kernel pointer to EmulatedKernel to which this CTA belongs
 */
-executive::CooperativeThreadArray::CooperativeThreadArray(const EmulatedKernel *k):
-	kernel(k) {
-
-	traceEvents = true;
-
-	blockDim = k->blockDim();
-	threadCount = blockDim.x*blockDim.y*blockDim.z;
-
-	RegisterFilePitch = threadCount;
-	RegisterFile = new PTXU64[RegisterFilePitch * k->registerCount()];
-
-	sharedMemoryWriters.assign(k->totalSharedMemorySize(), -1);
-
-	if(k->totalSharedMemorySize() > 0) {
-		SharedMemory = new char[k->totalSharedMemorySize()];
-	} else {
-		SharedMemory = 0;
-	}
-	
-	if(k->localMemorySize() > 0) {
-		LocalMemory = new char[k->localMemorySize() * threadCount];
-	} else {
-		LocalMemory = 0;
-	}
-	
-	initialize();
+executive::CooperativeThreadArray::CooperativeThreadArray(
+	EmulatedKernel *k, const ir::Dim3& grid, bool trace):
+	blockDim(k->blockDim()),
+	gridDim(grid),
+	threadCount(blockDim.x*blockDim.y*blockDim.z),
+	kernel(k), 
+	runtimeStack(1, CTAContext(kernel, this)),
+	functionCallStack(blockDim.x*blockDim.y*blockDim.z, k->stackMemorySize(), 
+		k->registerCount(), k->localMemorySize(), k->totalSharedMemorySize()),
+	clock(0),
+	traceEvents(trace) {
 }
 
-executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0), 
-	RegisterFile(0), SharedMemory(0), LocalMemory(0) {
+executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0) {
 
 }
 
@@ -160,36 +144,13 @@ executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0),
 	Destroys state associated with CTA
 */
 executive::CooperativeThreadArray::~CooperativeThreadArray() {
-	delete [] RegisterFile;
-	delete [] SharedMemory;
-	delete [] LocalMemory;
 }
-
-/*!
-	Destroys state associated with CTA
-*/
-void executive::CooperativeThreadArray::clear() {
-	RegisterFile = 0;
-	SharedMemory = 0;
-}
-
-/*!
-	Returns CTA to initial state
-*/
-void executive::CooperativeThreadArray::initialize(ir::Dim3 grid, bool trace ) {
-	CTAContext context(kernel, this);
-	runtimeStack.clear();
-	runtimeStack.push_back(context);
-	clock = 0;
-	gridDim = grid;
-	traceEvents = trace;
-}
-
 
 /*!
 	Gets current instruction
 */
-const ir::PTXInstruction& executive::CooperativeThreadArray::currentInstruction(
+const ir::PTXInstruction&
+	executive::CooperativeThreadArray::currentInstruction(
 	CTAContext & context) {
 	return kernel->instructions[context.PC];
 }
@@ -303,7 +264,7 @@ void executive::CooperativeThreadArray::trace() {
 /*!
 	Called by the worker thread to evaluate a block
 */
-void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
+void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	using namespace ir;
 
 	bool running = true;
@@ -315,6 +276,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 	currentEvent.gridDim = gridDim;
 	currentEvent.blockDim = blockDim;
 
+	assert(runtimeStack.size());
+
 	report("CooperativeThreadArray::execute called");
 	report("  block is " << block.x << ", " << block.y << ", " << block.z);
 	reportE(REPORT_STATIC_INSTRUCTIONS, "Running " << kernel->toString());
@@ -323,7 +286,7 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 		assert(runtimeStack.size());
 
 		// get the context and advance the program counter
-		CTAContext & context = runtimeStack.back();
+		CTAContext& context = runtimeStack.back();
 		const PTXInstruction& instr = currentInstruction(context);
 
 		reportE(REPORT_DYNAMIC_INSTRUCTIONS, " [PC: " << context.PC 
@@ -465,6 +428,7 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 	
 		// advance to next instruction if the current instruction wasn't a branch
 		if (instr.opcode != PTXInstruction::Bra && 
+			instr.opcode != PTXInstruction::Call && 
 #if IDEAL_RECONVERGENCE == 0
 			instr.opcode != PTXInstruction::Bar &&
 #endif
@@ -481,6 +445,10 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 	report("kernel finished in " << counter << " instructions");
 }
 
+void executive::CooperativeThreadArray::reset() {
+	runtimeStack.clear();
+	runtimeStack.push_back(CTAContext(kernel, this));
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -497,8 +465,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 */
 ir::PTXU8 executive::CooperativeThreadArray::getRegAsU8(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXU8 r = *( (ir::PTXU8*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXU8 r = *( (ir::PTXU8*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -519,8 +487,8 @@ ir::PTXU8 executive::CooperativeThreadArray::getRegAsU8(int threadID,
 */
 ir::PTXU16 executive::CooperativeThreadArray::getRegAsU16(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXU16 r = *( (ir::PTXU16*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXU16 r = *( (ir::PTXU16*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -541,8 +509,8 @@ ir::PTXU16 executive::CooperativeThreadArray::getRegAsU16(int threadID,
 */
 ir::PTXU32 executive::CooperativeThreadArray::getRegAsU32(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXU32 r = *( (ir::PTXU32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXU32 r = *( (ir::PTXU32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -563,8 +531,8 @@ ir::PTXU32 executive::CooperativeThreadArray::getRegAsU32(int threadID,
 */
 ir::PTXU64 executive::CooperativeThreadArray::getRegAsU64(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXU64 r = *( (ir::PTXU64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXU64 r = *( (ir::PTXU64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -585,8 +553,8 @@ ir::PTXU64 executive::CooperativeThreadArray::getRegAsU64(int threadID,
 */
 ir::PTXS8 executive::CooperativeThreadArray::getRegAsS8(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXS8 r = *( (ir::PTXS8*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXS8 r = *( (ir::PTXS8*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -607,8 +575,8 @@ ir::PTXS8 executive::CooperativeThreadArray::getRegAsS8(int threadID,
 */
 ir::PTXS16 executive::CooperativeThreadArray::getRegAsS16(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXS16 r = *( (ir::PTXS16*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXS16 r = *( (ir::PTXS16*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -629,8 +597,8 @@ ir::PTXS16 executive::CooperativeThreadArray::getRegAsS16(int threadID,
 */
 ir::PTXS32 executive::CooperativeThreadArray::getRegAsS32(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXS32 r = *( (ir::PTXS32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXS32 r = *( (ir::PTXS32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -651,8 +619,8 @@ ir::PTXS32 executive::CooperativeThreadArray::getRegAsS32(int threadID,
 */
 ir::PTXS64 executive::CooperativeThreadArray::getRegAsS64(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXS64 r = *( (ir::PTXS64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXS64 r = *( (ir::PTXS64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -673,8 +641,8 @@ ir::PTXS64 executive::CooperativeThreadArray::getRegAsS64(int threadID,
 */
 ir::PTXF32 executive::CooperativeThreadArray::getRegAsF32(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXF32 r = *( (ir::PTXF32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXF32 r = *( (ir::PTXF32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -695,8 +663,8 @@ ir::PTXF32 executive::CooperativeThreadArray::getRegAsF32(int threadID,
 */
 ir::PTXF64 executive::CooperativeThreadArray::getRegAsF64(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXF64 r = *( (ir::PTXF64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXF64 r = *( (ir::PTXF64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -717,8 +685,8 @@ ir::PTXF64 executive::CooperativeThreadArray::getRegAsF64(int threadID,
 */
 ir::PTXB8 executive::CooperativeThreadArray::getRegAsB8(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXB8 r = *( (ir::PTXB8*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXB8 r = *( (ir::PTXB8*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -739,8 +707,8 @@ ir::PTXB8 executive::CooperativeThreadArray::getRegAsB8(int threadID,
 */
 ir::PTXB16 executive::CooperativeThreadArray::getRegAsB16(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXB16 r = *( (ir::PTXB16*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXB16 r = *( (ir::PTXB16*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -761,8 +729,8 @@ ir::PTXB16 executive::CooperativeThreadArray::getRegAsB16(int threadID,
 */
 ir::PTXB32 executive::CooperativeThreadArray::getRegAsB32(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXB32 r = *( (ir::PTXB32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXB32 r = *( (ir::PTXB32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -783,8 +751,8 @@ ir::PTXB32 executive::CooperativeThreadArray::getRegAsB32(int threadID,
 */
 ir::PTXB64 executive::CooperativeThreadArray::getRegAsB64(int threadID, 
 	ir::PTXOperand::RegisterType reg) {
-	ir::PTXB64 r = *( (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID ));
+	ir::PTXB64 r = *( (ir::PTXB64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]));
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -828,8 +796,8 @@ bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsU8(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXU8 value) {
-	ir::PTXU8* r = (ir::PTXU8*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXU8* r = (ir::PTXU8*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -850,8 +818,8 @@ void  executive::CooperativeThreadArray::setRegAsU8(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsU16(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXU16 value) {
-	ir::PTXU16* r = (ir::PTXU16*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXU16* r = (ir::PTXU16*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -872,8 +840,8 @@ void  executive::CooperativeThreadArray::setRegAsU16(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsU32(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXU32 value) {
-	ir::PTXU32* r = (ir::PTXU32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXU32* r = (ir::PTXU32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -894,8 +862,8 @@ void  executive::CooperativeThreadArray::setRegAsU32(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsU64(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXU64 value) {
-	ir::PTXU64* r = (ir::PTXU64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXU64* r = (ir::PTXU64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -916,8 +884,8 @@ void  executive::CooperativeThreadArray::setRegAsU64(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsS8(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXS8 value) {
-	ir::PTXS8* r = (ir::PTXS8*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXS8* r = (ir::PTXS8*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -938,8 +906,8 @@ void  executive::CooperativeThreadArray::setRegAsS8(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsS16(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXS16 value) {
-	ir::PTXS16* r = (ir::PTXS16*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXS16* r = (ir::PTXS16*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -960,8 +928,8 @@ void  executive::CooperativeThreadArray::setRegAsS16(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsS32(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXS32 value) {
-	ir::PTXS32* r = (ir::PTXS32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXS32* r = (ir::PTXS32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -982,8 +950,8 @@ void  executive::CooperativeThreadArray::setRegAsS32(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsS64(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXS64 value) {
-	ir::PTXS64* r = (ir::PTXS64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXS64* r = (ir::PTXS64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1004,8 +972,8 @@ void  executive::CooperativeThreadArray::setRegAsS64(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsF32(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXF32 value) {
-	ir::PTXF32* r = (ir::PTXF32*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXF32* r = (ir::PTXF32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1026,8 +994,8 @@ void  executive::CooperativeThreadArray::setRegAsF32(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsF64(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXF64 value) {
-	ir::PTXF64* r = (ir::PTXF64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXF64* r = (ir::PTXF64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1048,8 +1016,8 @@ void  executive::CooperativeThreadArray::setRegAsF64(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsB8(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXB8 value) {
-	ir::PTXB8* r = (ir::PTXB8*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXB8* r = (ir::PTXB8*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1070,8 +1038,8 @@ void  executive::CooperativeThreadArray::setRegAsB8(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsB16(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXB16 value) {
-	ir::PTXB16* r = (ir::PTXB16*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXB16* r = (ir::PTXB16*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1092,8 +1060,8 @@ void  executive::CooperativeThreadArray::setRegAsB16(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsB32(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXB32 value) {
-	ir::PTXB32* r = (ir::PTXB32*)( RegisterFile + reg * RegisterFilePitch 
-	+ threadID );
+	ir::PTXB32* r = (ir::PTXB32*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1114,8 +1082,8 @@ void  executive::CooperativeThreadArray::setRegAsB32(int threadID,
 */
 void  executive::CooperativeThreadArray::setRegAsB64(int threadID, 
 	ir::PTXOperand::RegisterType reg, ir::PTXB64 value) {
-	ir::PTXB64* r = (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXB64* r = (ir::PTXB64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1137,8 +1105,8 @@ void  executive::CooperativeThreadArray::setRegAsB64(int threadID,
 */
 void executive::CooperativeThreadArray::setRegAsPredicate(int threadID, 
 	ir::PTXOperand::RegisterType reg, bool value) {
-	ir::PTXB64* r = (ir::PTXB64*)( RegisterFile + reg * RegisterFilePitch 
-		+ threadID );
+	ir::PTXB64* r = (ir::PTXB64*)(
+		&functionCallStack.registerFilePointer(threadID)[reg]);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
@@ -1726,7 +1694,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 				break;
 			case PTXInstruction::Shared:
 				{
-					source += (PTXU64) SharedMemory;
+					source += (PTXU64) functionCallStack.sharedMemoryPointer();
 				}
 				break;
 			default:
@@ -2119,7 +2087,6 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 		runtimeStack.push_back(continuation);
 	}
 #endif
-	sharedMemoryWriters.assign(sharedMemoryWriters.size(), -1);
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXInstruction &instr) {
@@ -2191,7 +2158,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 
 #if IDEAL_RECONVERGENCE
 		bool reconvergeContextAlreadyExists = false;
-		for(Stack::reverse_iterator si = runtimeStack.rbegin(); 
+		for(ContextStack::reverse_iterator si = runtimeStack.rbegin(); 
 			si != runtimeStack.rend(); ++si ) {
 			if(si->PC == reconvergeContext.PC) {
 				reconvergeContextAlreadyExists = true;
@@ -2245,17 +2212,104 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, 
+	const PTXInstruction &instr) {
 	trace();
 	context.running = false;
+}
+
+void executive::CooperativeThreadArray::copyArgument(unsigned int offset, 
+	const ir::PTXOperand& s, CTAContext& context,
+	const ir::PTXInstruction& instr) {
+	reportE(REPORT_CALL, " Copying " << ir::PTXOperand::bytes(s.type) 
+		<< " bytes from previous stack frame at " << s.offset
+		<< " to current frame at " << offset );
+	for (int thread = 0; thread < threadCount; ++thread) {
+		if (!context.predicated(thread, instr)) continue;
+		char* stackPointer = (char*)functionCallStack.stackFramePointer(thread);
+		char* previousStackPointer =
+			(char*)functionCallStack.previousStackFramePointer(thread);
+		std::memcpy(stackPointer + offset, previousStackPointer + s.offset,
+			ir::PTXOperand::bytes(s.type));
+	}
+}
+
+void executive::CooperativeThreadArray::copyArgument(const ir::PTXOperand& d, 
+	unsigned int offset) {
+	reportE(REPORT_CALL, " Copying " << ir::PTXOperand::bytes(d.type) 
+		<< " bytes from returned stack frame at " << offset
+		<< " to current frame at " << d.offset );
+	for (int thread = 0; thread < threadCount; ++thread) {
+		char* stackPointer = (char*)functionCallStack.stackFramePointer(thread);
+		char* previousStackPointer =
+			(char*)functionCallStack.previousStackFramePointer(thread);
+		report("  From " << (void*)(stackPointer + offset) << " to " 
+			<< (void*)(previousStackPointer + d.offset));
+		std::memcpy(previousStackPointer + d.offset, stackPointer + offset,
+			ir::PTXOperand::bytes(d.type));
+	}
 }
 
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Call(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Call(CTAContext &context, 
+	const PTXInstruction &instr) {
 	trace();
-	throw RuntimeException("instruction not implemented", context.PC, instr);
+		
+	// Is this a direct or indirect call?
+	if (instr.a.addressMode == ir::PTXOperand::Register) {
+		// Complex indirect call handling
+		throw RuntimeException("indirect calls not implemented", 
+			context.PC, instr);
+	}
+	else {
+		reportE(REPORT_CALL, " direct call to PC " 
+			<< instr.branchTargetInstruction)
+		// Handle lazy function linking
+		if (instr.branchTargetInstruction == -1) {
+			reportE(REPORT_CALL, " lazy linking against kernel '" 
+				<< instr.a.identifier << "'");
+			kernel->lazyLink(context.PC, instr.a.identifier);
+			assert(instr.branchTargetInstruction != -1);
+		}
+		// Simple direct call handling
+		if (instr.uni) {
+			reportE(REPORT_CALL, " uniform call" );
+			int firstActive = context.active.find_first();
+			bool taken = context.predicated(firstActive, instr);		
+			
+			if (taken) {
+				reportE(REPORT_CALL, 
+					"  call was taken, increasing stack size by (" 
+					<< instr.a.stackMemorySize << " stack) (" 
+					<< instr.a.registerCount << " registers) (" 
+					<< instr.a.localMemorySize << " local memory) (" 
+					<< instr.a.sharedMemorySize << " sharedMemorySize)");
+				functionCallStack.pushFrame(instr.a.stackMemorySize, 
+					instr.a.registerCount, instr.a.localMemorySize, 
+					instr.a.sharedMemorySize);
+				unsigned int offset = instr.b.offset;
+				for (ir::PTXOperand::Array::const_iterator 
+					argument = instr.b.array.begin();
+					argument != instr.b.array.end(); ++argument) {
+					copyArgument(offset, *argument, context, instr);
+					offset += ir::PTXOperand::bytes(argument->type);
+				}
+				
+				CTAContext targetContext(context);
+				
+				targetContext.PC = instr.branchTargetInstruction;
+				++context.PC;
+				
+				runtimeStack.push_back(targetContext);
+			}
+		}
+		else {
+			throw RuntimeException("divergent calls not implemented", 
+				context.PC, instr);			
+		}
+	}
 }
 
 
@@ -3757,7 +3811,13 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
 				{
-					source += (PTXU64) kernel->ParameterMemory;
+					if (instr.a.isArgument) {
+						source += (PTXU64) kernel->ParameterMemory;
+					}
+					else {
+						source += (PTXU64) 
+							functionCallStack.stackFramePointer(threadID);
+					}
 				}
 				break;
 			case PTXInstruction::Const:
@@ -3772,13 +3832,13 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			case PTXInstruction::Shared:
 				{
 					source = (char*)(0xffffffff & (PTXU64) source);
-					source += (PTXU64) SharedMemory;
+					source += (PTXU64) functionCallStack.sharedMemoryPointer();
 				}
 				break;
 			case PTXInstruction::Local:
 				{
-					source += (PTXU64) LocalMemory 
-						+ threadID * kernel->localMemorySize();
+					source += (PTXU64) 
+						functionCallStack.localMemoryPointer(threadID);
 				}
 				break;
 			default:
@@ -5069,13 +5129,15 @@ void executive::CooperativeThreadArray::eval_Red(CTAContext &context, const PTXI
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Rem(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::s16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS16 d, a = operandAsS16(threadID, instr.a), b = operandAsS16(threadID, instr.b);
+			PTXS16 d, a = operandAsS16(threadID, instr.a),
+				b = operandAsS16(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Modulus by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -5088,7 +5150,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
+			PTXS32 d, a = operandAsS32(threadID, instr.a),
+				b = operandAsS32(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Modulus by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -5101,7 +5164,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
+			PTXS64 d, a = operandAsS64(threadID, instr.a),
+				b = operandAsS64(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Modulus by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -5114,7 +5178,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU16 d, a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
+			PTXU16 d, a = operandAsU16(threadID, instr.a),
+				b = operandAsU16(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Modulus by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -5127,7 +5192,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU32 d, a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
+			PTXU32 d, a = operandAsU32(threadID, instr.a),
+				b = operandAsU32(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Modulus by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -5140,7 +5206,8 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
+			PTXU64 d, a = operandAsU64(threadID, instr.a), 
+				b = operandAsU64(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Modulus by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -5157,15 +5224,26 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context, const PTXI
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, 
+	const PTXInstruction &instr) {
 	trace();
-	throw RuntimeException("instruction not implemented", context.PC, instr);
+	runtimeStack.pop_back();
+	const PTXInstruction& call = kernel->instructions[runtimeStack.back().PC-1];
+	unsigned int offset = 0;
+	for (ir::PTXOperand::Array::const_iterator 
+		argument = call.d.array.begin();
+		argument != call.d.array.end(); ++argument) {
+		copyArgument(*argument, offset);
+		offset += ir::PTXOperand::bytes(argument->type);
+	}
+	functionCallStack.popFrame();
 }
 
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context, 
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -6892,7 +6970,8 @@ void executive::CooperativeThreadArray::vectorStore(int threadID,
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_St(CTAContext &context, 
+	const PTXInstruction &instr) {
 	size_t elementSize = 0;
 
 	switch (instr.type) {
@@ -7055,7 +7134,13 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
 				{
-					source += (PTXU64) kernel->ParameterMemory;
+					if (instr.d.isArgument) {
+						source += (PTXU64) kernel->ParameterMemory;
+					}
+					else {
+						source += (PTXU64) 
+							functionCallStack.stackFramePointer(threadID);
+					}
 				}
 				break;
 			case PTXInstruction::Global:			
@@ -7065,13 +7150,13 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context, const PTXIn
 			case PTXInstruction::Shared:
 				{
 					source = (char*)(0xffffffff & (PTXU64)source);
-					source += (PTXU64) SharedMemory;
+					source += (PTXU64) functionCallStack.sharedMemoryPointer();
 				}
 				break;
 			case PTXInstruction::Local:
 				{
-					source += (PTXU64) LocalMemory 
-						+ kernel->localMemorySize() * threadID;
+					source += (PTXU64) 
+						functionCallStack.localMemoryPointer(threadID);
 				}
 				break;
 			default:

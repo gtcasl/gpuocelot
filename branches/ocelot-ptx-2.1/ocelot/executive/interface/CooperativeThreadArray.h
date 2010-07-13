@@ -1,5 +1,4 @@
-/*!
-	\file CooperativeThreadArray.h
+/*! \file CooperativeThreadArray.h
 
 	\author Andrew Kerr <arkerr@gatech.edu>
 
@@ -14,6 +13,7 @@
 
 #include <deque>
 #include <ocelot/executive/interface/CTAContext.h>
+#include <ocelot/executive/interface/EmulatorCallStack.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Texture.h>
@@ -26,72 +26,51 @@ namespace executive {
 	/*! Defines state of cooperative thread array */
 	class CooperativeThreadArray {
 	public:
-		typedef std::deque <CTAContext> Stack;
-		typedef std::vector <int> ThreadIdVector;
-		
+		typedef std::vector<CTAContext> ContextStack;
+
 	public:
 		/*! Constructs a cooperative thread array from an EmulatedKernel instance
 
 			\param kernel pointer to EmulatedKernel to which this CTA belongs
+			\param gridDim The dimensions of the kernel
+			\param trace Enable trace generation
 		*/
-		CooperativeThreadArray(const EmulatedKernel *kernel);
+		CooperativeThreadArray(EmulatedKernel *kernel, 
+			const ir::Dim3& gridDim, bool trace);
 
 		CooperativeThreadArray();
 
 		/*! Destroys state associated with CTA */
 		~CooperativeThreadArray();
 
-		/*! Returns CTA to initial state */
-		void initialize(ir::Dim3 grid = ir::Dim3(0,0,0), bool trace = false);
-
 		/*! Initializes the CTA and executes the kernel for a given block */
-		void execute(ir::Dim3 block);
+		void execute(const ir::Dim3& block);
 
-		/*! Overwrites member pointers to allocated memory with zero so 
-			that ~CooperativeThreadArray()
-			
-			does not attempt to delete them.
-		*/
-		void clear();
+		/*! Reset the state of the CTA */
+		void reset();
 
 	public:
-		/*! Dimensions of the kernel */
-		ir::Dim3 gridDim;
-
 		/*! Dimensions of the cooperative thread array */
 		ir::Dim3 blockDim;
+
+		/*! Dimensions of the kernel */
+		ir::Dim3 gridDim;
 
 		/*! Number of threads in CTA 
 				(equal to blockDim.x * blockDim.y * blockDim.z) */
 		int threadCount;
 
 		/*! Pointer to EmulatedKernel instance that this CTA is executing */
-		const EmulatedKernel *kernel;
+		EmulatedKernel *kernel;
 
 		/*! ID of block implemented by this CooperativeThreadArray instance */
 		ir::Dim3 blockId;
 
-		/* Row-major matrix of registers; 
-				each row corresponds to an alloated register
-		*/
-		ir::PTXU64 *RegisterFile;
-
-		/*! Number of elements in RegisterFile between successive registers 
-			in a thread
-		*/
-		int RegisterFilePitch;
-
-		/*! Pointer to byte-addressable shared memory */
-		char *SharedMemory;
-		
-		/*! \brief The last writer for each byte in shared memory */
-		ThreadIdVector sharedMemoryWriters;
-
-		/*! Pointer to byte-addressable local memory */
-		char *LocalMemory;
-
 		/*! Stack containing the active thread mask and the program counter */
-		Stack runtimeStack;
+		ContextStack runtimeStack;
+
+		/*! Function call stack */
+		EmulatorCallStack functionCallStack;
 
 		/*! Counter incremented 4 times per instruction */
 		ir::PTXU64 clock;
@@ -109,7 +88,7 @@ namespace executive {
 		// internal functions for execution
 
 		/*! Gets current instruction */
-		const ir::PTXInstruction& currentInstruction(CTAContext & context);
+		const ir::PTXInstruction& currentInstruction(CTAContext& context);
 
 		/*! Gets special value */
 		ir::PTXU32 getSpecialValue(const int threadId,
@@ -386,7 +365,6 @@ namespace executive {
 			bool value);
 	
 	public:
-
 		ir::PTXU8 operandAsU8(int, const ir::PTXOperand &);
 		ir::PTXU16 operandAsU16(int, const ir::PTXOperand &);
 		ir::PTXU32 operandAsU32(int, const ir::PTXOperand &);
@@ -406,18 +384,11 @@ namespace executive {
 		ir::PTXB64 operandAsB64(int, const ir::PTXOperand &);
 
 	private:
-		
 		void normalStore(int, const ir::PTXInstruction &, char*);
 		void vectorStore(int, const ir::PTXInstruction &, char*, unsigned int);
 		void normalLoad(int, const ir::PTXInstruction &, const char*);
 		void vectorLoad(int, const ir::PTXInstruction &, const char*, 
 			unsigned int);
-
-	private:
-		void writeSharedMemory(ir::PTXU64 address, unsigned int bytes, 
-			int threadID, int pc, const ir::PTXInstruction& instr);
-		void readSharedMemory(ir::PTXU64 address, unsigned int bytes,
-			int threadID, int pc, const ir::PTXInstruction& instr);
 
 	public:
 		/*Handlers for each instruction */
@@ -488,6 +459,10 @@ namespace executive {
 		void eval_Mov_indirect(CTAContext &context, 
 			const ir::PTXInstruction &instr);
 		void eval_Mov_addr(CTAContext &context, const ir::PTXInstruction &instr);
+
+		void copyArgument(unsigned int offset, const ir::PTXOperand& s, 
+			CTAContext& context, const ir::PTXInstruction& instr);
+		void copyArgument(const ir::PTXOperand& s, unsigned int offset);
 
 	};
 

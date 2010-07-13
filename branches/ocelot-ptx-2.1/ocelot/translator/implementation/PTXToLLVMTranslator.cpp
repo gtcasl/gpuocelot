@@ -857,6 +857,16 @@ namespace translator
 					+ " not supported." );
 				break;
 			}
+			case ir::PTXOperand::ArgumentList:
+			{
+				assertM( false, "Argument Lists not supported yet ." );
+				break;
+			}
+			case ir::PTXOperand::FunctionName:
+			{
+				assertM( false, "Function Names not supported yet ." );
+				break;
+			}
 			case ir::PTXOperand::Special:
 			{
 				op.name = _loadSpecialRegister( o.special, o.vIndex );

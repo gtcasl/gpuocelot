@@ -135,14 +135,14 @@ void cuda::HostThreadContext::clear() {
 
 void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 	
-	assert(kernel->parameters.size() == parameterIndices.size());
+	assert(kernel->arguments.size() == parameterIndices.size());
 	IndexVector::iterator offset = parameterIndices.begin();
 	SizeVector::iterator size = parameterSizes.begin();
 	unsigned int dst = 0;
 	unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
 	for (ir::Kernel::ParameterVector::const_iterator 
-		parameter = kernel->parameters.begin(); 
-		parameter != kernel->parameters.end(); ++parameter, ++offset, ++size) {
+		parameter = kernel->arguments.begin(); 
+		parameter != kernel->arguments.end(); ++parameter, ++offset, ++size) {
 		unsigned int misalignment = dst % parameter->getAlignment();
 		unsigned int alignmentOffset = misalignment == 0 
 			? 0 : parameter->getAlignment() - misalignment;
@@ -2381,7 +2381,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		trace::TraceGeneratorVector traceGens;
 
 		traceGens = thread.persistentTraceGenerators;
-		traceGens.insert(traceGens.end(), 
+		traceGens.insert(traceGens.end(),
 			thread.nextTraceGenerators.begin(), 
 			thread.nextTraceGenerators.end());
 		thread.nextTraceGenerators.clear();
@@ -2402,11 +2402,11 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		throw;
 	}
 	catch( const std::exception& e ) {
-		std::cerr << "==Ocelot== " << _getDevice().properties().name 
-			<< " failed to run kernel \"" 
-			<< kernelName 
+		std::cerr << "==Ocelot== " << _getDevice().properties().name
+			<< " failed to run kernel \""
+			<< kernelName
 			<< "\" with exception: \n";
-		std::cerr << _formatError( e.what() ) 
+		std::cerr << _formatError( e.what() )
 			<< "\n" << std::flush;
 		thread.lastError = cudaErrorLaunchFailure;
 		_release();
@@ -2449,9 +2449,8 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	//
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)symbol);
 	
-	
 	if (kernel != _kernels.end()) {
-		_registerModule( kernel->second.module );
+		_registerModule(kernel->second.module);
 		_bind();
 		*attr = _getDevice().getAttributes(kernel->second.module, 
 			kernel->second.kernel);

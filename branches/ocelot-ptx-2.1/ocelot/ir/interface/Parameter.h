@@ -17,7 +17,6 @@ namespace ir {
 
 	class Parameter {
 	public:
-
 		/*! Union of possible variables containing each value */		
 		union ValueType {
 			PTXU8 val_u8;
@@ -44,10 +43,10 @@ namespace ir {
 
 	public:
 		/*!	\brief Get value */
-		static std::string value( const Parameter& p );
+		static std::string value(const Parameter& p);
 
 	public:
-		explicit Parameter(const PTXStatement& statement);
+		explicit Parameter(const PTXStatement& statement, bool arg);
 		Parameter();
 		~Parameter();
 
@@ -59,6 +58,9 @@ namespace ir {
 		
 		/*! \brief Return the alignment restriction of the parameter */
 		unsigned int getAlignment() const;
+
+		/*! \brief Is this parameter a kernel argument? */ 
+		bool isArgument() const;
 		
 		/*! \brief Return a parsable string representing the parameter */
 		std::string toString() const;
@@ -75,6 +77,9 @@ namespace ir {
 		/*! \brief Vector attribute */
 		ir::PTXInstruction::Vec vector;
 
+		/*! \brief Is this kernel argument */
+		bool argument;
+
 		/*	Runtime bindings */
 	public:
 		/*!	Offset in bytes from the beginning of the parameter block */
@@ -87,3 +92,4 @@ namespace ir {
 }
 
 #endif
+

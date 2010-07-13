@@ -108,7 +108,7 @@ namespace trace {
 		OperationCounterMap counterMap;
 		
 		//! \brief maps the PC of the last instruction of each block to the block's label
-		std::map< int, std::string > PCsToBlocks;
+		executive::EmulatedKernel::ProgramCounterMap PCsToBlocks;
 		
 	public:
 	
@@ -117,7 +117,8 @@ namespace trace {
 	};
 }
 
-std::ostream & operator<<(std::ostream &out, const trace::ConvergenceGenerator::Counter &counter);
+std::ostream & operator<<(std::ostream &out, 
+	const trace::ConvergenceGenerator::Counter &counter);
 
 #endif
 

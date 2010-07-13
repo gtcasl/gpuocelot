@@ -12,20 +12,37 @@
 #include <ocelot/ir/interface/Instruction.h>
 #include <hydrazine/implementation/debug.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 ir::PostdominatorTree::~PostdominatorTree() {
 
 }
 
 ir::PostdominatorTree::PostdominatorTree(ControlFlowGraph *c) {
 	// form a vector of the basic blocks in reverse post-order
+	report("Building dominator tree.");
 	cfg = c;
-	ControlFlowGraph::BlockPointerVector order = cfg->post_order_sequence();
+	report(" Starting with post order sequence");
+	// form a vector of the basic blocks in reverse post-order
+	ControlFlowGraph::BlockPointerVector 
+		post_order = cfg->post_order_sequence();
 	
-	ControlFlowGraph::pointer_iterator it = order.begin();
-	for (; it != order.end(); ++it) {
+	report("  " << cfg->get_entry_block()->label);
+	blocks.push_back(cfg->get_entry_block());
+	blocksToIndex[cfg->get_entry_block()] = 0;
+	p_dom.push_back(-1);
+	
+	ControlFlowGraph::pointer_iterator it = post_order.begin();
+	ControlFlowGraph::pointer_iterator end = --post_order.end();
+	for (; it != end; ++it) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
 		p_dom.push_back(-1);
+		report("  " << (*it)->label);
 	}
 	
 	computeDT();

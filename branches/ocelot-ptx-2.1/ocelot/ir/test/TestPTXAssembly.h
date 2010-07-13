@@ -80,6 +80,8 @@ namespace test
 			std::string regularExpression;
 			/*! \brief Total amount of time to spend on tests in seconds */
 			hydrazine::Timer::Second timeLimit;
+			/*! \brief Only enumerate the tests, do not run them */
+			bool enumerate;
 		
 		public:
 			/*! \brief Constructor */

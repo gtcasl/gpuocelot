@@ -136,7 +136,8 @@ std::ostream & operator<<(std::ostream &out, const trace::ConvergenceGenerator::
 class ConvergenceFormatter : public ir::ControlFlowGraph::BasicBlock::DotFormatter {
 public:	
 	ConvergenceFormatter(trace::ConvergenceGenerator * gen): generator(gen) {
-		for (std::map< int, std::string >::const_iterator bl_it = generator->kernel->basicBlockPC.begin();
+		for (executive::EmulatedKernel::ProgramCounterMap::const_iterator 
+			bl_it = generator->kernel->basicBlockPC.begin();
 			bl_it != generator->kernel->basicBlockPC.end(); ++bl_it) {
 			
 			blocksToPC[bl_it->second] = bl_it->first;

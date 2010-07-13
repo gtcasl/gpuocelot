@@ -22,7 +22,7 @@
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/EmulatedKernel.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,11 +37,9 @@ namespace boost
 namespace trace
 {
 	
-	/*!
-		\brief For each kernel, identify a set of instructions potentially worth promoting to
-			vectorized instructions, then measure the activity mask for each n-wide virtual warp
-			that might execute them.
-
+	/*! \brief For each kernel, identify a set of instructions potentially 
+			worth promoting to vectorized instructions, then measure the 
+			activity mask for each n-wide virtual warp that might execute them.
 	*/
 	class WarpSynchronousGenerator : public TraceGenerator {
 		public:
@@ -66,7 +64,8 @@ namespace trace
 			};
 			
 			/*!
-				\brief control-flow sensitive counter recording potentially vectorizable instructions
+				\brief control-flow sensitive counter recording 
+					potentially vectorizable instructions
 			*/
 			class InstructionCounter: public WarpCounter {
 			public:
@@ -77,7 +76,8 @@ namespace trace
 
 			};
 			
-			typedef std::map< ir::PTXOperand::DataType, InstructionCounter> DataInstructionCounter;
+			typedef std::map< ir::PTXOperand::DataType, 
+				InstructionCounter> DataInstructionCounter;
 
 			/*!
 				\brief maps an opcode and data type onto an instruction counter
@@ -122,7 +122,8 @@ namespace trace
 				TargetCounter();
 			};
 			
-			typedef std::map< const ir::ControlFlowGraph::BasicBlock::Edge *, WarpCounter > EdgeCounterMap;
+			typedef std::map< const ir::ControlFlowGraph::BasicBlock::Edge *, 
+				WarpCounter > EdgeCounterMap;
 
 			/*!
 				\brief all such counters for a particular warp size
@@ -165,7 +166,8 @@ namespace trace
 
 			public:
 				static std::string colorToString(unsigned int color);
-				static std::string colorToString(unsigned int r, unsigned int g, unsigned int b, unsigned int a=0);
+				static std::string colorToString(unsigned int r, 
+					unsigned int g, unsigned int b, unsigned int a=0);
 
 				std::string toString(const ir::ControlFlowGraph::BasicBlock *block);
 				std::string toString(const ir::ControlFlowGraph::BasicBlock::Edge *edge);
@@ -195,7 +197,7 @@ namespace trace
 			const ir::ControlFlowGraph *controlFlowGraph;
 
 			/*! \brief maps a PC to a basic block label */
-			std::map< int, std::string > branchTargetsToBlock;
+			executive::EmulatedKernel::ProgramCounterMap branchTargetsToBlock;
 
 			/*! \brief inverse of branchTargetsToBlock */
 			std::map< std::string, int > blockToBranchTarget;

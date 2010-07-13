@@ -68,11 +68,16 @@ public:
 		EdgeList::iterator get_fallthrough_edge();
 		/*! \brief Get the fallthrough edge */
 		EdgeList::const_iterator get_fallthrough_edge() const;
+		/*! \brief Does this have a fallthrough edge */
+		bool has_fallthrough_edge() const;
 
 		/*! \brief Get the branch edge */
 		EdgeList::iterator get_branch_edge();
 		/*! \brief Get the branch edge */
 		EdgeList::const_iterator get_branch_edge() const;
+		/*! \brief Does this have a branch edge */
+		bool has_branch_edge() const;
+
 
 		/*! \brief Get the edge connecting to the specified block */
 		EdgeList::iterator get_edge(BlockList::iterator b);

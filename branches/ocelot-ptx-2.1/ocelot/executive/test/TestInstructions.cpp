@@ -70,9 +70,8 @@ public:
 			kernel = new EmulatedKernel(rawKernel, 0);
 			kernel->setKernelShape(threadCount, 1, 1);
 			kernel->setExternSharedMemorySize(64);
-			CooperativeThreadArray l_cta(kernel);
+			CooperativeThreadArray l_cta(kernel, ir::Dim3(), false);
 			cta = l_cta;
-			l_cta.clear();
 		}
 	}
 
@@ -139,7 +138,7 @@ public:
 		using namespace executive;
 
 		bool result = true;
-		cta.initialize();
+		cta.reset();
 
 		for (int j = 0; j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; i < threadCount; i++) {
@@ -214,7 +213,7 @@ public:
 
 		PTXInstruction ins;
 
-		cta.initialize();
+		cta.reset();
 
 		// s16
 		//
@@ -2737,7 +2736,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::And;
 
-		cta.initialize();
+		cta.reset();
 
 		// b16
 		//
@@ -2816,7 +2815,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Or;
 
-		cta.initialize();
+		cta.reset();
 
 		// b16
 		//
@@ -2895,7 +2894,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Xor;
 
-		cta.initialize();
+		cta.reset();
 
 		// b16
 		//
@@ -2975,7 +2974,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Not;
 
-		cta.initialize();
+		cta.reset();
 
 		// b16
 		//
@@ -3061,7 +3060,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Global memory
@@ -3151,13 +3150,13 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Shared memory
 		//
 
-		PTXU32 *shared = (PTXU32 *)cta.SharedMemory;
+		PTXU32 *shared = (PTXU32 *)cta.functionCallStack.sharedMemoryPointer();
 
 		ins.addressSpace = PTXInstruction::Shared;
 
@@ -3245,7 +3244,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Parameter memory
@@ -3340,7 +3339,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Global memory
@@ -3451,7 +3450,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::St;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Global memory
@@ -3538,7 +3537,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::St;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Global memory
@@ -3615,7 +3614,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Mov;
 
-		cta.initialize();
+		cta.reset();
 
 		// from register
 
@@ -3686,7 +3685,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Cvt;
 
-		cta.initialize();
+		cta.reset();
 
 		// 
 	
@@ -3703,7 +3702,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Set;
 
-		cta.initialize();
+		cta.reset();
 
 		if (result) {
 			// set.u32.s32.ge
@@ -3800,7 +3799,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SetP;
 
-		cta.initialize();
+		cta.reset();
 
 		if (result) {
 			// setp.s32.lt p|q, a, b; // p = (a < b); q = !(a < b);
@@ -4028,7 +4027,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SelP;
 
-		cta.initialize();
+		cta.reset();
 
 		if (result) {
 			// selp.s32 r4, a, b, p
@@ -4109,7 +4108,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SlCt;
 
-		cta.initialize();
+		cta.reset();
 
 		if (result) {
 			// slct.f32.f32 r, a, b, c
@@ -4158,7 +4157,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Add;
 
-		cta.initialize();
+		cta.reset();
 
 		ins.a = reg("a", PTXOperand::s32, 0);
 		ins.b = reg("b", PTXOperand::s32, 1);
@@ -4199,7 +4198,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.initialize();
+		cta.reset();
 
 		//
 		// Global memory
@@ -4253,7 +4252,7 @@ public:
 		ins.branchTargetInstruction = 3;
 		ins.reconvergeInstruction = 7;
 
-		cta.initialize();
+		cta.reset();
 		if (cta.runtimeStack.size() != 1) {
 			result = false;
 			status << "test_Bra_uni failed - expected runtime stack to include 1 context before Bra instruction. " 
@@ -4305,7 +4304,7 @@ public:
 		ins.pg.reg = 1;
 		ins.pg.condition = PTXOperand::Pred;
 		
-		cta.initialize();
+		cta.reset();
 		if (cta.runtimeStack.size() != 1) {
 			result = false;
 			status << "test_Bra_div failed - expected runtime stack to include 1 context before Bra instruction. " 
@@ -4326,7 +4325,8 @@ public:
 				<< cta.runtimeStack.size() << " context(s) encountered\n";
 		}
 
-		deque<CTAContext>::const_reverse_iterator ctx_it = cta.runtimeStack.rbegin();
+		CooperativeThreadArray::ContextStack::const_reverse_iterator 
+			ctx_it = cta.runtimeStack.rbegin();
 
 		if (result && ctx_it->PC != 1) {
 			for (int i = 0; i < threadCount; i++) {
@@ -4377,7 +4377,7 @@ public:
 		ins.pg.reg = 1;
 		ins.pg.condition = PTXOperand::Pred;
 		
-		cta.initialize();
+		cta.reset();
 
 		for (int i = 0; i < threadCount; i++) {
 			cta.runtimeStack.back().active[i] = (i > 3);										// turn off some threads

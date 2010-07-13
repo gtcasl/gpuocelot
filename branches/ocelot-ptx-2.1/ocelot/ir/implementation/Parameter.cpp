@@ -1,5 +1,4 @@
-/*!
-	\file Parameter.cpp
+/*! \file Parameter.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief describes a parameter declaration
@@ -66,13 +65,15 @@ ir::Parameter::Parameter() {
 	type = PTXOperand::u64;
 	offset = 0;
 	vector = PTXOperand::v1;
+	argument = false;
 }
 
 ir::Parameter::~Parameter() {
 
 }
 
-ir::Parameter::Parameter(const PTXStatement& statement) {
+ir::Parameter::Parameter(const PTXStatement& statement,
+	bool arg) : argument(arg) {
 	type = PTXOperand::u64;
 	offset = 0;
 	
@@ -118,6 +119,10 @@ unsigned int ir::Parameter::getElementSize() const {
 
 unsigned int ir::Parameter::getAlignment() const {
 	return std::max( getElementSize(), alignment );
+}
+
+bool ir::Parameter::isArgument() const {
+	return argument;
 }
 
 std::string ir::Parameter::toString() const {

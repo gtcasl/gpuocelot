@@ -214,9 +214,22 @@ namespace ir {
 	std::string PTXStatement::toString() const {
 	
 		switch( directive ) {
-			case Instr:
+			case Instr: {
 				return instruction.toString() + ";";
 				break;
+			}
+			case CallTargets: {
+				std::string result = name + ": .calltargets ";
+				for( StringVector::const_iterator target = targets.begin(); 
+					target != targets.end(); ++target ) {
+					if( target != targets.begin() ) {
+						result += ", ";
+					}
+					result += *target;
+				}
+				return result + ";";
+				break;
+			}
 			case Const: {
 				std::stringstream stream;
 				if( attribute != NoAttribute ) {
@@ -249,9 +262,29 @@ namespace ir {
 				return stream.str();
 				break;
 			}
-			case Func:
-				return ".func " + name;
+			case Func: {
+				std::string result;
+				if( attribute != NoAttribute ) {
+					result += "." + toString( attribute ) + " ";
+				}
+				return result + ".func";
 				break;
+			}
+			case FunctionPrototype: {
+				std::string result = name + ": .callprototype (";
+				for(TypeVector::const_iterator type = returnTypes.begin(); 
+					type != returnTypes.end(); ++type) {
+					if( type != returnTypes.begin() ) result += ", ";
+					result += ".param ." + PTXOperand::toString( *type ) + " _";
+				}
+				result += ") _ (";
+				for(TypeVector::const_iterator type = argumentTypes.begin(); 
+					type != argumentTypes.end(); ++type) {
+					if( type != argumentTypes.begin() ) result += ", ";
+					result += ".param ." + PTXOperand::toString( *type ) + " _";
+				}
+				return result + ");";
+			}
 			case Global: {
 				std::stringstream stream;
 				if( attribute != NoAttribute ) {
@@ -383,10 +416,10 @@ namespace ir {
 				return ".version 2.1";
 				break;
 			}
-			case StartEntry:
+			case StartScope:
 				return "{";
 				break;		
-			case EndEntry:
+			case EndScope:
 				return "}";
 				break;			
 			case StartParam:
@@ -394,7 +427,13 @@ namespace ir {
 				break;		
 			case EndParam:
 				return ")";
-				break;				
+				break;
+			case FunctionName:
+				return name;
+				break;
+			case EndFuncDec:
+				return "";
+				break;
 			case Directive_invalid:
 				return "";
 				break;		

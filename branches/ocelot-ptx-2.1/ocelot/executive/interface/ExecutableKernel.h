@@ -102,6 +102,7 @@ namespace executive {
 		unsigned int externSharedMemorySize() const;
 		unsigned int totalSharedMemorySize() const;
 		unsigned int parameterMemorySize() const;
+		unsigned int stackMemorySize() const;
 		const ir::Dim3& blockDim() const;
 		const ir::Dim3& gridDim() const;
 
@@ -120,6 +121,8 @@ namespace executive {
 		unsigned int _externSharedMemorySize;
 		/*! \brief Total amount of packed parameter memory */
 		unsigned int _parameterMemorySize;
+		/*! \brief Kernel stack parameter memory space */
+		unsigned int _stackMemorySize;
 		/*! \brief The block dimensions */
 		ir::Dim3 _blockDim;
 		/*!	\brief Dimension of grid in blocks */

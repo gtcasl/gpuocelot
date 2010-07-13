@@ -16,7 +16,7 @@ namespace executive
 	class NVIDIAExecutableKernel;
 }
 
-namespace executive 
+namespace executive
 {
 	/*! Interface that should be bound to a single nvidia gpu */
 	class NVIDIAGPUDevice : public Device
@@ -279,6 +279,9 @@ namespace executive
 			void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
 			void unload(const std::string& name);
+			/*! \brief Get a translated kernel from the device */
+			ExecutableKernel* getKernel(const std::string& module, 
+				const std::string& kernel);
 
 		public:
 			/*! \brief Create a new event */

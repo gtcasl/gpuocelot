@@ -54,7 +54,8 @@ bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &i
 				bool pred = cta->getRegAsPredicate(threadID, instr.pg.reg);
 				report("  with value " << pred);
 
-				on = ((pred && condition == PTXOperand::Pred) || (!pred && condition == PTXOperand::InvPred));
+				on = ((pred && condition == PTXOperand::Pred) 
+					|| (!pred && condition == PTXOperand::InvPred));
 			}
 			break;
 		}

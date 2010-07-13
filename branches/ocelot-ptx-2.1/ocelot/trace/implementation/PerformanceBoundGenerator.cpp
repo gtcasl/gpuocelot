@@ -14,7 +14,6 @@
 // Ocelot includes
 #include <ocelot/trace/interface/WarpSynchronousGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/trace/interface/PerformanceBoundGenerator.h>
 
@@ -134,7 +133,8 @@ public:
 public:
 
 	Formatter(trace::PerformanceBoundGenerator * gen): generator(gen) {
-		for (std::map< int, std::string >::const_iterator bl_it = generator->kernel->basicBlockPC.begin();
+		for (executive::EmulatedKernel::ProgramCounterMap::const_iterator 
+			bl_it = generator->kernel->basicBlockPC.begin();
 			bl_it != generator->kernel->basicBlockPC.end(); ++bl_it) {
 			
 			blocksToPC[bl_it->second] = bl_it->first;

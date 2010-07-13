@@ -13,7 +13,7 @@
 namespace ir {
 
 	class PTXInstruction: public Instruction {
-	public:		
+	public:
 		/*! Hierarchy Level */
 		enum Level {
 			CtaLevel,
@@ -294,14 +294,10 @@ namespace ir {
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
-			/*! For load and store instructions, indicates which addressing 
-					mode to use
-			*/
+			/*! For load and store, indicates which addressing mode to use */
 			AddressSpace addressSpace;
 			
-			/*! For membar instructions the visibility level in the
-					thread hierarchy
-			*/
+			/*! For membar, the visibility level in the thread hierarchy */
 			Level level;
 			
 			/*! Shift amount flag for bfind instructions */
@@ -311,10 +307,7 @@ namespace ir {
 			PermuteMode permuteMode;
 		};
 	
-		/*!
-			If the instruction is predicated, which predicate register to use
-			as a guard 
-		*/
+		/*! If the instruction is predicated, the guard */
 		PTXOperand pg;
 				
 		/*! Second destination register for SetP, otherwise unused */
@@ -380,6 +373,8 @@ namespace ir {
 			int branchTargetInstruction;
 			/*! \brief Context switch reentry point */
 			int reentryPoint;
+			/*! \brief Is this a kernel argument in the parameter space? */
+			bool isArgument;
 		};
 		/*!	The following are used for debugging information at runtime. */
 	public:

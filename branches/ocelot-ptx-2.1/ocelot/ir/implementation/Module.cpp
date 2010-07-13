@@ -182,19 +182,36 @@ void ir::Module::write( std::ostream& stream ) const {
 		
 	PTXStatement::Directive previous = PTXStatement::Directive_invalid;
 	
+	bool inEntry = false;
+	
 	for( StatementVector::const_iterator statement = _statements.begin(); 
 		statement != _statements.end(); ++statement ) {
 		report( "Line " << ( statement - _statements.begin() ) 
 			<< ": " << statement->toString() );
+		if( statement->directive == PTXStatement::StartScope )
+		{
+			inEntry = true;
+		}
+		else if( statement->directive == PTXStatement::EndScope ) {
+			inEntry = false;
+		}
+		
 		if( statement->directive == PTXStatement::Param )
 		{
-			if( previous != PTXStatement::StartParam )
+			if( !inEntry )
 			{
-				stream << ",\n\t" << statement->toString();
+				if( previous != PTXStatement::StartParam )
+				{
+					stream << ",\n\t" << statement->toString();
+				}
+				else
+				{
+					stream << "\n\t" << statement->toString();
+				}
 			}
 			else
 			{
-				stream << "\n\t" << statement->toString();
+				stream << "\n\t" << statement->toString() << ";";
 			}
 		}
 		else
@@ -314,7 +331,8 @@ void ir::Module::extractPTXKernels() {
 	bool inKernel = false;
 	int instructionCount = 0;
 	int kernelInstance = 1;
-
+	bool isFunction = false;
+	
 	/*
 	// KERRDEBUG
 	static int moduleIndex = 0;
@@ -338,33 +356,44 @@ void ir::Module::extractPTXKernels() {
 	for (StatementVector::const_iterator it = _statements.begin(); 
 		it != _statements.end(); ++it) {
 		const PTXStatement &statement = (*it);
-		if (statement.directive == PTXStatement::Entry) {
+		if (statement.directive == PTXStatement::Entry 
+			|| statement.directive == PTXStatement::Func) {
 			// new kernel
+			assert(!inKernel);
 			startIterator = it;
 			inKernel = true;
+			isFunction = statement.directive == PTXStatement::Func;
 			instructionCount = 0;
 		}
-		else if (statement.directive == PTXStatement::EndEntry) {
+		else if (statement.directive == PTXStatement::EndScope) {
 			// construct the kernel and push it onto something
+			assert(inKernel);
 			inKernel = false;
 			endIterator = ++StatementVector::const_iterator(it);
 			if (instructionCount) {
-				PTXKernel *kernel = new PTXKernel(startIterator, endIterator);
+				PTXKernel *kernel = new PTXKernel(startIterator, 
+					endIterator, isFunction);
 				
 				kernel->module = this;
 				_kernels[kernel->name] = (kernel);
 				kernel->canonicalBlockLabels(kernelInstance++);
 			}
 		}
+		else if (statement.directive == PTXStatement::EndFuncDec) {
+			assert(inKernel);
+			inKernel = false;
+			isFunction = false;
+		}
 		if (inKernel) {
 			if (statement.directive == PTXStatement::Instr) {
-				instructionCount ++;
+				instructionCount++;
 			}
 		}
 		else if (statement.directive == PTXStatement::Const
 			|| statement.directive == PTXStatement::Global
 			|| statement.directive == PTXStatement::Shared) {
-			assert(_globals.count(statement.name) == 0);
+			assertM(_globals.count(statement.name) == 0, "Global operand '" 
+				<< statement.name << "' declared more than once." );
 
 			_globals.insert(std::make_pair(statement.name, Global(statement)));
 		}

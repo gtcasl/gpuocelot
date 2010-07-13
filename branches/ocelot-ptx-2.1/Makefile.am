@@ -40,6 +40,10 @@ lib_LTLIBRARIES = libocelot.la
 ## libocelot
 libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x
 libocelot_la_SOURCES = \
+	ocelot/parser/implementation/ptx.lpp \
+	ocelot/parser/implementation/ptxgrammar.ypp \
+	ocelot/parser/implementation/PTXParser.cpp \
+	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
@@ -71,6 +75,7 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/ILKernel.cpp \
 	ocelot/ir/implementation/ILStatement.cpp \
 	ocelot/ir/implementation/ILOperand.cpp \
+	ocelot/ir/implementation/ControlTree.cpp \
 	hydrazine/implementation/Exception.cpp \
 	hydrazine/implementation/Timer.cpp \
 	hydrazine/implementation/LowLevelTimer.cpp \
@@ -107,6 +112,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/EmulatorDevice.cpp \
 	ocelot/executive/implementation/MulticoreCPUDevice.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
+	ocelot/executive/implementation/EmulatorCallStack.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
 	ocelot/executive/implementation/NVIDIAExecutableKernel.cpp \
 	ocelot/executive/implementation/ATIExecutableKernel.cpp \
@@ -120,10 +126,6 @@ libocelot_la_SOURCES = \
 	ocelot/cuda/implementation/CudaDriver.cpp \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
 	ocelot/cal/implementation/CalDriver.cpp \
-	ocelot/parser/implementation/ptx.lpp \
-	ocelot/parser/implementation/ptxgrammar.ypp \
-	ocelot/parser/implementation/PTXParser.cpp \
-	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
 	ocelot/translator/implementation/PTXToILTranslator.cpp
@@ -474,6 +476,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/PTXOperand.h \
 	ocelot/ir/interface/Global.h \
 	ocelot/ir/interface/Texture.h \
+	ocelot/ir/interface/ControlTree.h \
 	ocelot/ir/test/TestLLVMInstructions.h \
 	ocelot/ir/test/SamplePTX.h \
 	ocelot/ir/test/TestPTXAssembly.h \

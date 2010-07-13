@@ -16,7 +16,7 @@
 #include <cstring>
 #include <cassert>
 
-#define CASE(x) case x: { return "x"; break; }
+#define CASE(x) case x: { return #x; break; }
 
 namespace parser
 {
@@ -187,6 +187,8 @@ namespace parser
 			CASE(TOKEN_VOLATILE)
 			CASE(TOKEN_UNI)
 			CASE(TOKEN_ALIGN)
+			CASE(TOKEN_CALL_PROTOTYPE)
+			CASE(TOKEN_CALL_TARGETS)
 			CASE(TOKEN_BYTE)
 			CASE(TOKEN_WIDE)
 			CASE(TOKEN_CARRY)

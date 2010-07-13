@@ -350,7 +350,8 @@ void trace::WarpSynchronousGenerator::initialize(const executive::ExecutableKern
 	// obtain control flow graph
 	controlFlowGraph = emuKernel.cfg();
 	branchTargetsToBlock = emuKernel.branchTargetsToBlock;
-	for (std::map< int, std::string >::const_iterator it = branchTargetsToBlock.begin(); 
+	for (executive::EmulatedKernel::ProgramCounterMap::const_iterator 
+		it = branchTargetsToBlock.begin(); 
 		it != branchTargetsToBlock.end(); ++it) {
 		blockToBranchTarget[it->second] = it->first;
 	}

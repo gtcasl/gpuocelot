@@ -16,7 +16,8 @@
 #include <ocelot/parser/interface/PTXLexer.h>
 #include <ocelot/ir/interface/Module.h>
 #include <unordered_map>
-#include <deque>
+#include <unordered_set>
+#include <vector>
 
 namespace parser
 {
@@ -31,21 +32,42 @@ namespace parser
 					{
 						public:
 							OperandWrapper( const ir::PTXOperand& o, 
-								ir::PTXInstruction::AddressSpace s );
+								ir::PTXInstruction::AddressSpace s 
+								= ir::PTXInstruction::AddressSpace_Invalid );
 						public:
 							ir::PTXOperand operand;
 							ir::PTXInstruction::AddressSpace space;
 					};
+					
+					class FunctionPrototype
+					{
+						public:
+							typedef std::vector< ir::PTXOperand::DataType > 
+								TypeVector;
+					
+						public:
+							TypeVector returnTypes;
+							TypeVector argumentTypes;
+							std::string name;
+					
+						public:
+							void clear();
+							bool compare( const FunctionPrototype& t );
+							std::string toString() const;
+					};
 				
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
-					typedef std::deque< std::string > StringList;
-					typedef std::deque< unsigned int > UintStack;
-					typedef std::deque< unsigned int > DimensionVector;
-					typedef std::deque< double > DoubleVector;
+					typedef std::vector< std::string > StringList;
+					typedef std::vector< unsigned int > UintStack;
+					typedef std::vector< unsigned int > DimensionVector;
+					typedef std::vector< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
 						OperandWrapper > OperandMap;
-					typedef std::deque< ir::PTXOperand > OperandVector;
+					typedef std::unordered_set< std::string > StringSet;
+					typedef std::vector< ir::PTXOperand > OperandVector;
+					typedef std::unordered_map< std::string, 
+						FunctionPrototype > PrototypeMap;
 			
 					enum Error
 					{
@@ -60,6 +82,8 @@ namespace parser
 						NoDeclaration,
 						InvalidOpcode,
 						DuplicateLabel,
+						NoPrototype,
+						PrototypeMismatch,
 						NoLabel,
 						InvalidArray,
 						NotPredicate,
@@ -80,23 +104,23 @@ namespace parser
 					StringList identifiers;
 					OperandMap operands;
 					StringList localOperands;
-					UintStack localOperandCount;
+
+					PrototypeMap prototypes;
+					StringList localPrototypes;
 					
 					bool inEntry;
+					bool inArgumentList;
+					bool inReturnList;
 					
+					unsigned int returnOperands;
 					unsigned int alignment;
 					ir::PTXOperand operand;
 					OperandVector operandVector;
 					ir::PTXStatement statement;
+					FunctionPrototype prototype;
 					
 					ir::PTXStatement::Directive directive;
 									
-				public:
-					/*! \brief Warn if part of the input file is ignored by 
-							the lexer
-					*/
-					bool warnLexer;
-
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
 						ir::PTXStatement::Directive directive );
@@ -127,6 +151,7 @@ namespace parser
 					void singleList1( float value );
 					void targetElement( int token );
 					void target();
+					void noAddressSpace();
 					void addressSpace( int token );
 					void dataType( int token );
 					void statementVectorType( int token );
@@ -147,13 +172,27 @@ namespace parser
 						const std::string& name );
 					void initializableDeclaration( const std::string& name, 
 						YYLTYPE& one, YYLTYPE& two );
-					void textureDeclaration( const std::string& name, 
+					void textureDeclaration( int token, const std::string& name, 
 						YYLTYPE& location );
-					void entry( const std::string& name, YYLTYPE& location, 
-						bool paramList = false );
-					void entryMid( YYLTYPE& location, bool paramList = false );
-					void entryEnd( YYLTYPE& location );
+					void parameterDeclaration( const std::string& name, 
+						YYLTYPE& location );
+					
+					void openBrace( YYLTYPE& location );
+					void closeBrace( YYLTYPE& location );
+					void returnParameterListBegin( YYLTYPE& location );
+					void returnParameterListEnd( YYLTYPE& location );
+					void parameterListBegin( YYLTYPE& location );
+					void parameterListEnd( YYLTYPE& location );
+					
+					void functionBegin( YYLTYPE& location );
+					void functionName( const std::string& name, 
+						YYLTYPE& location );
+					void functionDeclaration( YYLTYPE& location, bool body );
+					
+					void entry( const std::string& name, YYLTYPE& location );
 					void entryDeclaration( YYLTYPE& location );
+					void entryStatement( YYLTYPE& location );
+					
 					void locationAddress( int token );
 					void uninitializableDeclaration( const std::string& name );
 					void location( long long int one, long long int two, 
@@ -163,14 +202,15 @@ namespace parser
 					void labelOperand( const std::string& string );
 					void nonLabelOperand( const std::string& string, 
 						YYLTYPE& location, bool invert );
-					void baseOperand( long long int value );
-					void baseOperand( unsigned long long int value );
-					void baseOperand( float value );
-					void baseOperand( double value );
+					void constantOperand( long long int value );
+					void constantOperand( unsigned long long int value );
+					void constantOperand( float value );
+					void constantOperand( double value );
 					void addressableOperand( const std::string& name, 
 						long long int value, YYLTYPE& location, 
 						bool invert );
 					void arrayOperand( YYLTYPE& location );
+					void returnOperand();
 					void guard( const std::string& name, YYLTYPE& one, 
 						bool invert );
 					void guard();
@@ -197,12 +237,20 @@ namespace parser
 					void instruction( const std::string& opcode, 
 						unsigned int operands );
 					void tex( int dataType );
+					void callPrototypeName( const std::string& identifier );
+					void call( const std::string& identifier,
+						YYLTYPE& location );
 					void carryIn();
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );
 					
-					void function( YYLTYPE& location );
+					void returnType( int token );
+					void argumentType( int token );
+					void callPrototype( const std::string& name, 
+						YYLTYPE& location );
+					void callTargets( const std::string& name, 
+						YYLTYPE& location );
 			};
 			
 			class Exception : public std::exception
@@ -244,6 +292,7 @@ namespace parser
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );
 			static ir::PTXInstruction::Level tokenToLevel( int );
 			static ir::PTXInstruction::PermuteMode tokenToPermuteMode( int );
+			static ir::PTXStatement::TextureSpace tokenToTextureSpace( int );
 			static ir::PTXOperand::DataType smallestType( long long int );
 			static ir::PTXOperand::DataType 
 				smallestType( long long unsigned int );
@@ -252,10 +301,7 @@ namespace parser
 			PTXParser();
 			void parse( std::istream& input, 
 				ir::Instruction::Architecture language = ir::Instruction::PTX );
-			ir::Module::StatementVector&& statements();
-			
-			void configure( const Configuration& configuration );
-	
+			ir::Module::StatementVector&& statements();	
 	};
 
 }

@@ -9,7 +9,6 @@
 #define PARSER_H_INCLUDED
 
 #include <ocelot/ir/interface/Instruction.h>
-#include <hydrazine/interface/Configurable.h>
 
 /*!
 	\brief A namespace for parser related classes
@@ -21,7 +20,7 @@ namespace parser
 		\brief An interface that parses a text or binary file and generates
 			an internal representation of a program.
 	*/
-	class Parser : public hydrazine::Configurable
+	class Parser
 	{
 		public:		
 			/*! \brief Name of the file being parsed */

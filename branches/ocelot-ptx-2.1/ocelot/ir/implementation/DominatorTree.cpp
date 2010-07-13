@@ -9,22 +9,39 @@
 #include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/ir/interface/Instruction.h>
 
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 ir::DominatorTree::~DominatorTree() {
 	dominated.clear();
 }
 
 ir::DominatorTree::DominatorTree(ControlFlowGraph *c) {
 	
-	// form a vector of the basic blocks in reverse post-order
+	report("Building dominator tree.");
 	cfg = c;
+	report(" Starting with post order sequence");
+	// form a vector of the basic blocks in reverse post-order
 	ControlFlowGraph::BlockPointerVector 
 		post_order = cfg->post_order_sequence();
 	
+	report("  " << cfg->get_entry_block()->label);
+	blocks.push_back(cfg->get_entry_block());
+	blocksToIndex[cfg->get_entry_block()] = 0;
+	i_dom.push_back(-1);
+	
 	ControlFlowGraph::pointer_iterator it = post_order.begin();
-	for (; it != post_order.end(); ++it) {
+	ControlFlowGraph::pointer_iterator end = --post_order.end();
+	for (; it != end; ++it) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
 		i_dom.push_back(-1);
+		report("  " << (*it)->label);
 	}
 	
 	computeDT();

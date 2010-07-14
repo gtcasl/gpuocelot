@@ -3,7 +3,7 @@
  *  \date June 10, 2010
  *  \brief The header file for the ControlTree class.
  *
- *  Computes the Control Tree as defined in Muchnick's textbook (sec 7.7):
+ *  Computes the control tree as defined in Muchnick's textbook (sec 7.7):
  *
  *  1. The root of the control tree is an abstract graph representing the
  *  original flowgraph.
@@ -23,8 +23,9 @@
 
 // STL includes
 #include <list>
-#include <vector>
 #include <unordered_set>
+
+using namespace std;
 
 namespace ir
 {
@@ -32,158 +33,158 @@ namespace ir
 	{
 		public:
 			/*! \brief Construct ControlTree given the CFG */
-			ControlTree(ControlFlowGraph *cfg);
+			ControlTree(ControlFlowGraph* cfg);
 			/*! \brief Default destructor */
 			~ControlTree();
 
-			enum RegionType
-			{
-				Inst,
-				Block,
-				IfThen,
-				SelfLoop,
-				Invalid
-			};
-
+			/*! \brief A polymorphic base class that represents any node */
 			class Node
 			{
 				public:
+					/*! \brief Region type */
+					enum RegionType
+					{
+						Inst,           // Instructions (e.g. basic block)
+						Block,          // Block of nodes
+						IfThen,         // If-then
+						SelfLoop,       // Loop of only one node
+						Invalid
+					};
+
 					typedef std::list<Node*> NodeList;
-					typedef NodeList::iterator iterator;
-					typedef NodeList::const_iterator const_iterator;
+					typedef std::unordered_set<Node*> NodeSet;
 
-					typedef std::vector<iterator> NodePointerVector;
-					typedef NodePointerVector::iterator pointer_iterator;
-					typedef NodePointerVector::const_iterator const_pointer_iterator;
+					/*! \brief Get the label */
+					const string label() const;
+					/*! \brief Get the region type */
+					const RegionType rtype() const;
+					/*! \brief Get the children */
+					const NodeList& children() const;
+					/*! \brief Get successors from the abstract flowgraph */
+					NodeSet& succs();
+					/*! \brief Get predecessors from the abstract flowgraph */
+					NodeSet& preds();
 
-					typedef std::unordered_set<iterator> NodeSet;
+					/*! \brief Destructor (virtual because polymorphic) */
+					virtual ~Node();
 
-					Node(const std::string& l = "", 
-							RegionType rtype = Invalid, 
-							const NodePointerVector& children = NodePointerVector());
-
-					const std::string& label() const;
-					const RegionType& rtype() const;
-					NodePointerVector& children();
-					const NodePointerVector& children() const;
-					NodeSet& successors();
-					NodeSet& predecessors();
-
-					void add_successor(iterator succ);
-					void remove_successor(iterator succ);
-					void add_predecessor(iterator pred);
-					void remove_predecessor(iterator pred);
+				protected:
+					/*! \brief Constructor (protected to avoid instantiation) */
+					Node(const string& label, RegionType rtype, 
+							const NodeList& children);
 
 				private:
-					std::string _label;
-					RegionType _rtype;
-					NodePointerVector _children;
+					/*! \brief Node label */
+					const string _label;
+					/*! \brief Region type */
+					const RegionType _rtype;
+					/*! \brief Children in the control tree */
+					const NodeList _children;
+					/*! \brief Successors in the abstract flowgraph */
 					NodeSet _successors;
+					/*! \brief Predecessors in the abstract flowgraph */
 					NodeSet _predecessors;
 			};
 
-			/*! \brief A version of the cfg basic block with branches removed */
+			typedef Node::NodeList NodeList;
+			typedef Node::NodeSet NodeSet;
+
+			/*! \brief A representation of the cfg basic block */
 			class InstNode : public Node
 			{
 				public:
-					typedef ControlFlowGraph::InstructionList InstructionList;
-					typedef InstructionList::const_iterator const_iterator;
-
+					/*! \brief Constructor */
 					InstNode(const ControlFlowGraph::const_iterator& bb);
 
-					const_iterator begin() const;
-					const_iterator end() const;
-
-					InstructionList& instructions();
+					/*! /brief Get iterator to the basic block in the cfg */
+					const ControlFlowGraph::const_iterator bb() const;
 
 				private:
-					InstructionList _instructions;
+					/*! \brief Iterator to the basic block in the cfg */
+					const ControlFlowGraph::const_iterator _bb;
 			};
 
+			/*! \brief A sequence of nodes */
 			class BlockNode : public Node
 			{
 				public:
-					BlockNode(const NodePointerVector& children, 
-							const std::string& l = "");
-
-					const_pointer_iterator begin() const;
-					const_pointer_iterator end() const;
+					/*! \brief Constructor */
+					BlockNode(const string& label, const NodeList& children);
 			};
 
+			/*! \brief If-then node */
 			class IfThenNode : public Node
 			{
 				public:
-					IfThenNode(iterator cond, iterator ifTrue, 
-							const std::string& l = "");
+					/*! \brief Constructor */
+					IfThenNode(const string& label, Node* cond, Node* ifTrue);
 
-					Node* cond() const;
-					Node* ifTrue() const;
+					/*! \brief Get condition node */
+					const Node* cond() const;
+					/*! \brief Get if-true node */
+					const Node* ifTrue() const;
+
+				private:
+					const NodeList buildChildren(Node* cond, 
+							Node* ifTrue) const;
 			};
 
+			/*! \brief Loop with only one node */
 			class SelfLoopNode : public Node
 			{
 				public:
-					SelfLoopNode(iterator body, const std::string& l = "");
+					/*! \brief Constructor */
+					SelfLoopNode(const string& label, Node* body);
 
-					Node* body() const;
+					/*! \brief Get the node for the body loop */
+					const Node* body() const;
 			};
 
-			typedef Node::NodeList NodeList;
-			typedef Node::iterator iterator;
-			typedef NodeList::const_iterator const_iterator;
-
-			typedef Node::NodePointerVector NodePointerVector;
-			typedef Node::pointer_iterator pointer_iterator;
-			typedef NodePointerVector::const_iterator const_pointer_iterator;
-
-			typedef Node::NodeSet NodeSet;
+			/*! \brief Invalid node */
+			class InvalidNode : public Node
+			{
+				public:
+					/*! \brief Constructor */
+					InvalidNode();
+			};
 
 			/*! \brief write a graphviz-compatible file for visualizing the 
 			 * control tree */
 			std::ostream& write(std::ostream& out) const;
 
-			/*! \brief Returns the entry block of a control tree */
-			const_iterator get_root_node() const;
+			/*! \brief Returns the root node of the control tree */
+			const Node* const get_root_node() const;
 
 		private:
-			iterator insert_node(Node* node);
-			void dfs_postorder(iterator x);
-			Node* acyclic_region_type(iterator& node, NodeSet& nset);
-			iterator compact(Node* node, NodeSet nodeSet);
-			iterator replace(Node* node, NodeSet nodeSet);
-			Node* cyclic_region_type(iterator& node, NodeSet& nset);
-			void structural_analysis(iterator entry);
+			Node* insert_node(Node* node);
+			void dfs_postorder(Node* x);
+			Node* acyclic_region_type(Node* node, NodeSet& nset);
+			void compact(Node* node, NodeSet nodeSet);
+			void reduce(Node* node, NodeSet nodeSet);
+			Node* cyclic_region_type(Node* node, NodeSet& nset);
+			void structural_analysis(Node* entry);
 
-			/*! \brief Node list */
 			NodeList _nodes;
-			/*! \brief Control Tree entry node */
-			iterator _root;
-			/*! \brief Current number of nodes in the CFG */
-			unsigned int _size;
-
-			/******************************************//**
-			 * \name Postorder traversal of the flowgraph
-			 *********************************************/
-			//@{
-			int _postCtr, _postMax;
-			NodePointerVector _post;
+			NodeList _post;
+			NodeList::iterator _postCtr;
 			NodeSet _visit;
-			//@}
+			Node* _root;
+			unsigned int _size;
 	};
 }
 
 namespace std
 {
 	template<> inline size_t hash< 
-		ir::ControlTree::iterator >::operator()( 
-		ir::ControlTree::iterator it ) const
+		ir::ControlTree::NodeList::iterator >::operator()( 
+		ir::ControlTree::NodeList::iterator it ) const
 	{
 		return ( size_t )&( *it );
 	}
 
 	template<> inline size_t hash< 
-		ir::ControlTree::const_iterator >::operator()( 
-		ir::ControlTree::const_iterator it ) const
+		ir::ControlTree::NodeList::const_iterator >::operator()( 
+		ir::ControlTree::NodeList::const_iterator it ) const
 	{
 		return ( size_t )&( *it );
 	}

@@ -163,6 +163,7 @@ namespace cal
 			/*! \brief Check result and throw exception if error */
 			void _checkError(CALresult r) const;
 
+		private:
 			/*! \brief Constructor */
 			CalDriver();
 			/*! \brief Destructor */

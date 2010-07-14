@@ -16,20 +16,22 @@ namespace ir
 	{
 		switch(opcode)
 		{
-			case Add:              return "add";
-			case Break:            return "break";
-			case End:              return "end";
-			case EndIf:            return "endif";
-			case EndLoop:          return "endloop";
-			case Iadd:             return "iadd";
-			case Ige:              return "ige";
-			case Ilt:              return "ilt";
-			case Imul:             return "imul";
-			case Mov:              return "mov";
-			case Uav_Raw_Load_Id:  return "uav_raw_load_id(0)";
-			case Uav_Raw_Store_Id: return "uav_raw_store_id(0) mem.xyzw,";
-			case WhileLoop:        return "whileloop";
-			case InvalidOpcode:    return "INVALID_OPCODE";
+			case Add:                return "add";
+			case Break:              return "break";
+			case End:                return "end";
+			case EndIf:              return "endif";
+			case EndLoop:            return "endloop";
+			case Iadd:               return "iadd";
+			case Ige:                return "ige";
+			case Ilt:                return "ilt";
+			case Imul:               return "imul";
+			case Mov:                return "mov";
+			case Uav_Arena_Load_Id:  return "uav_arena_load_id(1)";
+			case Uav_Arena_Store_Id: return "uav_arena_store_id(1)";
+			case Uav_Raw_Load_Id:    return "uav_raw_load_id(0)";
+			case Uav_Raw_Store_Id:   return "uav_raw_store_id(0) mem.xyzw,";
+			case WhileLoop:          return "whileloop";
+			case InvalidOpcode:      return "INVALID_OPCODE";
 			default:
 			{
 				assertM(false, "Opcode " << opcode << " not supported");
@@ -37,6 +39,20 @@ namespace ir
 		}
 
 		assertM(false, "Unreachable line");
+	}
+
+	std::string ILInstruction::toString(DataType d)
+	{
+		switch(d)
+		{
+			case Short: return "short";
+			case Byte:  return "byte";
+			case Dword: return "dword";
+			default:
+			{
+				assertM(false, "DataType " << d << " not supported");
+			}
+		};
 	}
 
 	ILInstruction::ILInstruction(Opcode op) : opcode(op)
@@ -228,6 +244,40 @@ namespace ir
 	Instruction *ILMov::clone(bool copy) const
 	{
 		return new ILMov(*this);
+	}
+
+	ILUav_Arena_Load_Id::ILUav_Arena_Load_Id() 
+		: ILUnaryInstruction(Uav_Arena_Load_Id)
+	{
+	}
+
+	std::string ILUav_Arena_Load_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + "_size(" 
+			+ ILInstruction::toString(type) + ") " + d.toString() + ", " 
+			+ a.toString();
+	}
+
+	Instruction *ILUav_Arena_Load_Id::clone(bool copy) const
+	{
+		return new ILUav_Arena_Load_Id(*this);
+	}
+
+	ILUav_Arena_Store_Id::ILUav_Arena_Store_Id() 
+		: ILUnaryInstruction(Uav_Arena_Store_Id)
+	{
+	}
+
+	Instruction *ILUav_Arena_Store_Id::clone(bool copy) const
+	{
+		return new ILUav_Arena_Store_Id(*this);
+	}
+
+	std::string ILUav_Arena_Store_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + "_size(" 
+			+ ILInstruction::toString(type) + ") " + d.toString() + ", " 
+			+ a.toString();
 	}
 
 	ILUav_Raw_Load_Id::ILUav_Raw_Load_Id() 

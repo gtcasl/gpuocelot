@@ -74,6 +74,8 @@ namespace executive
 			CALmem _uav0Mem;
 			/*! \brief CAL uav0 module name */
 			CALname _uav0Name;
+			/*! \brief CAL uav1 module name (for less-than-32bits memory ops) */
+			CALname _uav1Name;
 			//@}
 
 			/********************************************************//**

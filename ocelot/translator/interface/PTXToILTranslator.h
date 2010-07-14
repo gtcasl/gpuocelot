@@ -38,6 +38,7 @@ namespace translator
 
 			ir::ILKernel *_ilKernel;
 			LiteralMap _literals;
+			ir::ILInstruction::RegisterType _tempRegisterCount;
 
 			void _translate(const ControlTree::Node* node);
 			void _translate(const ControlTree::InstNode* insts);
@@ -47,6 +48,8 @@ namespace translator
 
 			void _translate(const ir::PTXInstruction &i); 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
+			ir::ILInstruction::DataType _translate(
+					const ir::PTXOperand::DataType d);
 			std::string _translate(const ir::PTXOperand::RegisterType &reg);
 			ir::ILOperand::SpecialRegister _translate(
 					const ir::PTXOperand::SpecialRegister &s);
@@ -61,11 +64,12 @@ namespace translator
 			void _translateSetP(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
 
-			std::string _translateLiteral(long long unsigned int l);
+			ir::ILOperand _translateLiteral(long long unsigned int l);
 			std::string _translateConstantBuffer(const std::string &ident);
 
 			void _addKernelPrefix();
 
+			ir::ILOperand _tempRegister();
 			void _add(const ir::ILInstruction &i);
 	};
 }

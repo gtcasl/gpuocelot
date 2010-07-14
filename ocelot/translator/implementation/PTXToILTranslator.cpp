@@ -21,7 +21,8 @@ namespace translator
 	PTXToILTranslator::PTXToILTranslator(OptimizationLevel l)
 		:
 			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
-			_ilKernel(0)
+			_ilKernel(0),
+			_tempRegisterCount(100)
 	{
 	}
 
@@ -32,8 +33,10 @@ namespace translator
 
 		_ilKernel = new ir::ILKernel(*k);
 
+		report("Translating kernel " << k->name);
+
 		// translate iterating thru the control tree
-		_translate(*_ilKernel->ctrl_tree()->get_root_node());
+		_translate(_ilKernel->ctrl_tree()->get_root_node());
 
 		//_translateInstructions();
 		_addKernelPrefix();
@@ -45,24 +48,24 @@ namespace translator
 	{
 		report("Translating " << node->label());
 
-		switch(node->rtype())
+		switch (node->rtype())
 		{
-			case ControlTree::Inst:
+			case ControlTree::Node::Inst:
 			{
 				_translate(static_cast<const ControlTree::InstNode*>(node));
 				break;
 			}
-			case ControlTree::Block:
+			case ControlTree::Node::Block:
 			{
 				_translate(static_cast<const ControlTree::BlockNode*>(node));
 				break;
 			}
-			case ControlTree::IfThen:
+			case ControlTree::Node::IfThen:
 			{
 				_translate(static_cast<const ControlTree::IfThenNode*>(node));
 				break;
 			}
-			case ControlTree::SelfLoop:
+			case ControlTree::Node::SelfLoop:
 			{
 				_translate(static_cast<const ControlTree::SelfLoopNode*>(node));
 				break;
@@ -73,8 +76,11 @@ namespace translator
 
 	void PTXToILTranslator::_translate(const ControlTree::InstNode* insts)
 	{
-		ControlTree::InstNode::const_iterator ins;
-		for (ins = insts->begin() ; ins != insts->end() ; ins++)
+		//ControlTree::InstNode::const_iterator ins;
+		ir::ControlFlowGraph::InstructionList::const_iterator ins;
+		//for (ins = insts->begin() ; ins != insts->end() ; ins++)
+		for (ins = insts->bb()->instructions.begin() ; 
+				ins != insts->bb()->instructions.end() ; ins++)
 		{
 			_translate(static_cast<ir::PTXInstruction &>(**ins));
 		}
@@ -82,21 +88,23 @@ namespace translator
 
 	void PTXToILTranslator::_translate(const ControlTree::BlockNode* block)
 	{
-		ControlTree::const_pointer_iterator node;
-		for (node = block->begin() ; node != block->end() ; node++)
+		ControlTree::NodeList::const_iterator node;
+		for (node = block->children().begin() ; 
+				node != block->children().end() ; node++)
 		{
-			_translate(**node);
-		}
+			_translate(*node);
+		}	
 	}
 
 	void PTXToILTranslator::_translate(const ControlTree::IfThenNode* ifthen)
 	{
-		ControlTree::Node* cond = ifthen->cond();
+		const ControlTree::Node* cond = ifthen->cond();
 
-		assertM(cond->rtype() == ControlTree::Inst, "Invalid condition node");
+		assertM(cond->rtype() == ControlTree::Node::Inst, 
+				"Invalid condition node");
 
 		ir::Instruction* ins =
-			static_cast<ControlTree::InstNode*>(cond)->instructions().back();
+			static_cast<const ControlTree::InstNode*>(cond)->bb()->instructions.back();
 
 		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
 
@@ -117,15 +125,16 @@ namespace translator
 	{
 		_add(ir::ILWhileLoop());
 
-		ControlTree::Node* body = selfloop->body();
+		const ControlTree::Node* body = selfloop->body();
 
 		//TODO only simple InstNode bodies are handled for now
-		assertM(body->rtype() == ControlTree::Inst, "Invalid loop body node");
+		assertM(body->rtype() == ControlTree::Node::Inst, 
+				"Invalid loop body node");
 
 		_translate(body);
 
 		ir::Instruction* ins =
-			static_cast<ControlTree::InstNode*>(body)->instructions().back();
+			static_cast<const ControlTree::InstNode*>(body)->bb()->instructions.back();
 
 		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
 
@@ -142,7 +151,7 @@ namespace translator
 	void PTXToILTranslator::_translate(const ir::PTXInstruction &i)
 	{
 		report("Translating: " << i.toString());
-		switch(i.opcode) 
+		switch (i.opcode) 
 		{
  			case ir::PTXInstruction::Add:  _translateAdd(i);     break;
 			case ir::PTXInstruction::Bra:  _translateBra(i);     break;
@@ -166,8 +175,7 @@ namespace translator
 	{
 		ir::ILOperand op;
 
-		// TODO asserM(o.is64bits, "64-bit operands not supported yet");
-		switch(o.addressMode)
+		switch (o.addressMode)
 		{
 			case ir::PTXOperand::Register:
 			case ir::PTXOperand::Indirect:
@@ -178,8 +186,7 @@ namespace translator
 			}
 			case ir::PTXOperand::Immediate:
 			{
-				op.addressMode = ir::ILOperand::Literal;
-				op.identifier = _translateLiteral(o.imm_uint);
+				op = _translateLiteral(o.imm_uint);
 				break;
 			}
 			case ir::PTXOperand::Address:
@@ -196,16 +203,46 @@ namespace translator
 			}
 			default:
 			{
-				assertM(false, "Address Mode " << o.addressMode << " not supported");
+				assertM(false, "Address Mode " 
+						<< o.addressMode << " not supported");
 			}
 		}
 
 		return op;
 	}
 
+	ir::ILInstruction::DataType PTXToILTranslator::_translate(
+			const ir::PTXOperand::DataType d)
+	{
+		switch(ir::PTXOperand::bytes(d))
+		{
+			case 1: return ir::ILInstruction::Byte;
+			case 2: return ir::ILInstruction::Short;
+			case 8: return ir::ILInstruction::Dword;
+			default:
+			{
+				assertM(false, "DataType " << d << " not supported");
+			}
+		}
+	}
+
+	ir::ILOperand PTXToILTranslator::_tempRegister()
+	{
+		std::stringstream stream;
+		stream << "r" << _tempRegisterCount++;
+
+		ir::ILOperand r;
+		r.addressMode = ir::ILOperand::Register;
+		r.identifier = stream.str();
+
+		return r;
+	}
+
 	std::string PTXToILTranslator::_translate(
 			const ir::PTXOperand::RegisterType &reg)
 	{
+		assertM(reg < 100, "Register name collides with temp registers");
+
 		std::stringstream stream;
 		stream << "r" << reg;
 		return stream.str();
@@ -216,7 +253,7 @@ namespace translator
 	{
 		ir::ILOperand::SpecialRegister sr;
 
-		switch(s)
+		switch (s)
 		{
 			case ir::PTXOperand::tidX:    sr = ir::ILOperand::vTidInGrpX;     break;
 			case ir::PTXOperand::tidY:    sr = ir::ILOperand::vTidInGrpY;     break;
@@ -299,28 +336,110 @@ namespace translator
 
 	void PTXToILTranslator::_translateLd(const ir::PTXInstruction &i)
 	{
-		switch(i.addressSpace)
+		switch (i.addressSpace)
 		{
 			case ir::PTXInstruction::Param:
 			{
 				ir::ILMov mov;
-
 				mov.a = _translate(i.a);
 				mov.d = _translate(i.d);
-
 				_add(mov);
 
 				break;
 			}
 			case ir::PTXInstruction::Global:
 			{
-				ir::ILUav_Raw_Load_Id uav_raw_load_id;
+				switch (i.vec)
+				{
+					case ir::PTXOperand::v1:
+					{
+						if (i.a.offset == 0)
+						{
+							if (ir::PTXOperand::bytes(i.type) == 4)
+							{
+								ir::ILUav_Raw_Load_Id uav_raw_load_id;
+								uav_raw_load_id.a = _translate(i.a);
+								uav_raw_load_id.d = _translate(i.d);
+								_add(uav_raw_load_id);
+							} else
+							{
+								ir::ILUav_Arena_Load_Id uav_arena_load_id;
+								uav_arena_load_id.a = _translate(i.a);
+								uav_arena_load_id.d = _translate(i.d);
+								uav_arena_load_id.type = _translate(i.type);
+								_add(uav_arena_load_id);
+							}
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
 
-				uav_raw_load_id.a = _translate(i.a);
-				uav_raw_load_id.d = _translate(i.d);
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.a);
+							iadd.b = _translateLiteral(i.a.offset);
+							iadd.d = temp;
+							_add(iadd);
 
-				_add(uav_raw_load_id);
+							if (ir::PTXOperand::bytes(i.type) == 4)
+							{
+								ir::ILUav_Raw_Load_Id uav_raw_load_id;
+								uav_raw_load_id.a = temp;
+								uav_raw_load_id.d = _translate(i.d);
+								_add(uav_raw_load_id);
+							}
+							else
+							{
+								ir::ILUav_Arena_Load_Id uav_arena_load_id;
+								uav_arena_load_id.a = temp;
+								uav_arena_load_id.d = _translate(i.d);
+								uav_arena_load_id.type = _translate(i.type);
+								_add(uav_arena_load_id);
+							}
+						}
 
+						break;
+					}
+					case ir::PTXOperand::v2:
+					case ir::PTXOperand::v4:
+					{
+						ir::ILOperand temp = _tempRegister();
+						ir::PTXOperand::Array::const_iterator dst;
+						int offset = i.a.offset;
+						for (dst = i.d.array.begin() ;
+								dst != i.d.array.end() ; dst++)
+						{
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.a);
+							iadd.b = _translateLiteral(offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							if (ir::PTXOperand::bytes(i.type) == 4)
+							{
+								ir::ILUav_Raw_Load_Id uav_raw_load_id;
+								uav_raw_load_id.a = temp;
+								uav_raw_load_id.d = _translate(*dst);
+								_add(uav_raw_load_id);
+							} else
+							{
+								ir::ILUav_Arena_Load_Id uav_arena_load_id;
+								uav_arena_load_id.a = temp;
+								uav_arena_load_id.d = _translate(*dst);
+								uav_arena_load_id.type = _translate(i.type);
+								_add(uav_arena_load_id);
+							}
+
+							offset += ir::PTXOperand::bytes(i.type);
+						}
+
+						break;
+					}
+					default:
+					{
+						assertM(false, "Vector operation " 
+								<< i.vec 
+								<< " not supported");
+					}
+				}
 				break;
 			}
 			default:
@@ -346,7 +465,6 @@ namespace translator
 	{
 		ir::ILImul imul;
 
-		// TODO assertM(mul.wide.u32, "32-bit multiplication not supported yet");
 		imul.a = _translate(i.a);
 		imul.b = _translate(i.b);
 		imul.d = _translate(i.d);
@@ -356,7 +474,7 @@ namespace translator
 
 	void PTXToILTranslator::_translateSetP(const ir::PTXInstruction &i)
 	{
-		switch(i.comparisonOperator)
+		switch (i.comparisonOperator)
 		{
 			case ir::PTXInstruction::Le:
 			{
@@ -394,15 +512,99 @@ namespace translator
 
 	void PTXToILTranslator::_translateSt(const ir::PTXInstruction &i)
 	{
-		ir::ILUav_Raw_Store_Id uav_raw_store_id;
+		switch (i.vec)
+		{
+			case ir::PTXOperand::v1:
+			{
+				if (i.d.offset == 0)
+				{
+					if (ir::PTXOperand::bytes(i.type) == 4)
+					{
+						ir::ILUav_Raw_Store_Id uav_raw_store_id;
+						uav_raw_store_id.a = _translate(i.a);
+						uav_raw_store_id.d = _translate(i.d);
+						_add(uav_raw_store_id);
+					} else
+					{
+						ir::ILUav_Arena_Store_Id uav_arena_store_id;
+						uav_arena_store_id.a = _translate(i.a);
+						uav_arena_store_id.d = _translate(i.d);
+						uav_arena_store_id.type = _translate(i.type);
+						_add(uav_arena_store_id);
+					}
+				} else
+				{
+					ir::ILOperand temp = _tempRegister();
 
-		uav_raw_store_id.a = _translate(i.a);
-		uav_raw_store_id.d = _translate(i.d);
+					ir::ILIadd iadd;
+					iadd.a = _translate(i.d);
+					iadd.b = _translateLiteral(i.d.offset);
+					iadd.d = temp;
+					_add(iadd);
 
-		_add(uav_raw_store_id);
+					if (ir::PTXOperand::bytes(i.type) == 4)
+					{
+						ir::ILUav_Raw_Store_Id uav_raw_store_id;
+						uav_raw_store_id.a = _translate(i.a);
+						uav_raw_store_id.d = temp;
+						_add(uav_raw_store_id);
+					} else
+					{
+						ir::ILUav_Arena_Store_Id uav_arena_store_id;
+						uav_arena_store_id.a = _translate(i.a);
+						uav_arena_store_id.d = temp;
+						uav_arena_store_id.type = _translate(i.type);
+						_add(uav_arena_store_id);
+					}
+				}
+
+				break;
+			}
+			case ir::PTXOperand::v2:
+			case ir::PTXOperand::v4:
+			{
+				ir::ILOperand temp = _tempRegister();
+				ir::PTXOperand::Array::const_iterator src;
+				int offset = i.d.offset;
+				for (src = i.a.array.begin() ;
+						src != i.a.array.end() ; src++)
+				{
+					ir::ILIadd iadd;
+					iadd.a = _translate(i.d);
+					iadd.b = _translateLiteral(offset);
+					iadd.d = temp;
+					_add(iadd);
+
+					if (ir::PTXOperand::bytes(i.type) == 4)
+					{
+						ir::ILUav_Raw_Store_Id uav_raw_store_id;
+						uav_raw_store_id.a = _translate(*src);
+						uav_raw_store_id.d = temp;
+						_add(uav_raw_store_id);
+					} else
+					{
+						ir::ILUav_Arena_Store_Id uav_arena_store_id;
+						uav_arena_store_id.a = _translate(*src);
+						uav_arena_store_id.d = temp;
+						uav_arena_store_id.type = _translate(i.type);
+						_add(uav_arena_store_id);
+					}
+
+					offset += ir::PTXOperand::bytes(i.type);
+				}
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Vector operation " 
+						<< i.vec 
+						<< " not supported");
+			}
+		}
 	}
 
-	std::string PTXToILTranslator::_translateLiteral(long long unsigned int l)
+	ir::ILOperand PTXToILTranslator::_translateLiteral(long long unsigned int l)
 	{
 		std::stringstream stream;
 
@@ -415,7 +617,11 @@ namespace translator
 			_literals.insert(std::make_pair(l, stream.str()));
 		}
 
-		return stream.str();
+		ir::ILOperand op;
+		op.addressMode = ir::ILOperand::Literal;
+		op.identifier = stream.str();
+
+		return op;
 	}
 
 	std::string PTXToILTranslator::_translateConstantBuffer(
@@ -450,6 +656,8 @@ namespace translator
 			LiteralMap::const_iterator it;
 			for (it = _literals.begin() ; it != _literals.end() ; it++) 
 			{
+				report("Added statement 'dcl_literal " << it->second
+						<< ", " << it->first << "'");
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
 				dcl_literal.operands.resize(2);

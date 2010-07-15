@@ -5262,17 +5262,27 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context,
 void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, 
 	const PTXInstruction &instr) {
 	trace();
-	CTAContext previousContext = context;
-	runtimeStack.pop_back();
-	const PTXInstruction& call = kernel->instructions[runtimeStack.back().PC-1];
+	assert(runtimeStack.size() > 1);
+	unsigned int previousContextIndex = runtimeStack.size() - 2;
+	
+	// get the pc of the corresponding call to determine the stack format
+	unsigned int callPC = runtimeStack[previousContextIndex].PC - 1;
+	const PTXInstruction& call = kernel->instructions[callPC];
+	
+	// copy return data from the callee's stack frame
 	unsigned int offset = 0;
 	for (ir::PTXOperand::Array::const_iterator 
 		argument = call.d.array.begin();
 		argument != call.d.array.end(); ++argument) {
-		copyArgument(*argument, offset, previousContext);
+		copyArgument(*argument, offset, runtimeStack.back());
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
+	
+	// destroy the stack and context used for the call
+	runtimeStack.pop_back();
 	functionCallStack.popFrame();
+	
+	// execution should resume at the next context
 }
 
 /*!

@@ -63,6 +63,83 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST DIVERGENT FUNCTION CALLS
+std::string testDivergentFunctionCall_PTX()
+{
+	std::stringstream ptx;
+	
+	ptx << ".version 2.1\n";
+	ptx << ".visible .func (.param .u32 return) " 
+		<< "add(.param .u32 a, .param .u32 b)\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in) \n";
+	ptx << "{\t\n";
+	ptx << "\t.reg .u64 %rIn, %rOut; \n";
+	ptx << "\t.reg .u32 %r<3>;               \n";
+	ptx << "\t.reg .pred %less;              \n";
+	ptx << "\t.reg .u32 %thread;             \n";
+	ptx << "\t.reg .u64 %offset;             \n";
+	ptx << "\t.param .u32 operandA;          \n";
+	ptx << "\t.param .u32 operandB;          \n";
+	ptx << "\t.param .u32 result;            \n";
+	ptx << "\tmov.u32 %thread, %tid.x;       \n";
+	ptx << "\tld.param.u64 %rIn, [in];       \n";
+	ptx << "\tld.param.u64 %rOut, [out];     \n";
+	ptx << "\tld.global.u32 %r0, [%rIn];     \n";
+	ptx << "\tld.global.u32 %r1, [%rIn + 4]; \n";
+	ptx << "\tst.param.u32 [operandA], %r0; \n";
+	ptx << "\tst.param.u32 [operandB], %r1; \n";
+	ptx << "\tst.param.u32 [result], %r1; \n";
+	ptx << "\tsetp.lt.u32 %less, %thread, 1; \n";
+	ptx << "\t@%less call (result), add, (operandA, operandB); \n";
+	ptx << "\tld.param.u32 %r2, [result]; \n";
+	ptx << "\tcvt.u64.u32 %offset, %thread; \n";
+	ptx << "\tmul.lo.u64 %offset, %offset, 4; \n";
+	ptx << "\tadd.u64 %rOut, %rOut, %offset; \n";
+	ptx << "\tst.global.u32 [%rOut], %r2; \n";
+	ptx << "\texit; \n";
+	ptx << "}\n";
+	ptx << "\n";
+
+	ptx << ".visible .func (.param .u32 return) " 
+		<< "add(.param .u32 a, .param .u32 b) \n";
+	ptx << "{\t\n";
+	ptx << "\t.reg .u32 %r<3>; \n";
+	ptx << "\tld.param.u32 %r0, [a];\n";
+	ptx << "\tld.param.u32 %r1, [b];\n";
+	ptx << "\tadd.u32 %r2, %r1, %r0;\n";
+	ptx << "\tst.param.u32 [return], %r2;\n";
+	ptx << "\tret 0;\n";
+	ptx << "}\n";
+	
+	return ptx.str();
+}
+
+void testDivergentFunctionCall_REF(void* output, void* input)
+{
+	unsigned int r0 = getParameter<unsigned int>(input, 0);
+	unsigned int r1 = getParameter<unsigned int>(input, sizeof(unsigned int));
+	
+	unsigned int result = r0 + r1;
+	
+	setParameter(output, 0, result);
+	setParameter(output, sizeof(unsigned int), r1);
+}
+
+test::TestPTXAssembly::TypeVector testDivergentFunctionCall_IN()
+{
+	return test::TestPTXAssembly::TypeVector(2, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testDivergentFunctionCall_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(2, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST FUNCTION CALLS
 std::string testFunctionCalls_PTX(bool uni)
 {
@@ -2028,6 +2105,10 @@ namespace test
 		add("TestCall-Nondivergent", testFunctionCalls_REF, 
 			testFunctionCalls_PTX(false), testFunctionCalls_OUT(), 
 			testFunctionCalls_IN(), uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestCall-Divergent", testDivergentFunctionCall_REF, 
+			testDivergentFunctionCall_PTX(), testDivergentFunctionCall_OUT(), 
+			testDivergentFunctionCall_IN(), 
+			uniformRandom<unsigned int, 4>, 2, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

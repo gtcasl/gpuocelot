@@ -11,7 +11,6 @@
 #ifndef EXECUTIVE_COOPERATIVETHREADARRAY_H_INCLUDED
 #define EXECUTIVE_COOPERATIVETHREADARRAY_H_INCLUDED
 
-#include <deque>
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/EmulatorCallStack.h>
 #include <ocelot/ir/interface/PTXOperand.h>
@@ -461,8 +460,9 @@ namespace executive {
 		void eval_Mov_addr(CTAContext &context, const ir::PTXInstruction &instr);
 
 		void copyArgument(unsigned int offset, const ir::PTXOperand& s, 
-			CTAContext& context, const ir::PTXInstruction& instr);
-		void copyArgument(const ir::PTXOperand& s, unsigned int offset);
+			CTAContext& context);
+		void copyArgument(const ir::PTXOperand& s, unsigned int offset, 
+			CTAContext& context);
 
 	};
 

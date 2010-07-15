@@ -2219,13 +2219,12 @@ void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context,
 }
 
 void executive::CooperativeThreadArray::copyArgument(unsigned int offset, 
-	const ir::PTXOperand& s, CTAContext& context,
-	const ir::PTXInstruction& instr) {
+	const ir::PTXOperand& s, CTAContext& context) {
 	reportE(REPORT_CALL, " Copying " << ir::PTXOperand::bytes(s.type) 
 		<< " bytes from previous stack frame at " << s.offset
 		<< " to current frame at " << offset );
 	for (int thread = 0; thread < threadCount; ++thread) {
-		if (!context.predicated(thread, instr)) continue;
+		if (!context.active[thread]) continue;
 		char* stackPointer = (char*)functionCallStack.stackFramePointer(thread);
 		char* previousStackPointer =
 			(char*)functionCallStack.previousStackFramePointer(thread);
@@ -2235,11 +2234,12 @@ void executive::CooperativeThreadArray::copyArgument(unsigned int offset,
 }
 
 void executive::CooperativeThreadArray::copyArgument(const ir::PTXOperand& d, 
-	unsigned int offset) {
+	unsigned int offset, CTAContext& context) {
 	reportE(REPORT_CALL, " Copying " << ir::PTXOperand::bytes(d.type) 
 		<< " bytes from returned stack frame at " << offset
 		<< " to current frame at " << d.offset );
 	for (int thread = 0; thread < threadCount; ++thread) {
+		if (!context.active[thread]) continue;
 		char* stackPointer = (char*)functionCallStack.stackFramePointer(thread);
 		char* previousStackPointer =
 			(char*)functionCallStack.previousStackFramePointer(thread);
@@ -2295,7 +2295,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				for (ir::PTXOperand::Array::const_iterator 
 					argument = instr.b.array.begin();
 					argument != instr.b.array.end(); ++argument) {
-					copyArgument(offset, *argument, context, instr);
+					copyArgument(offset, *argument, context);
 					offset += ir::PTXOperand::bytes(argument->type);
 				}
 				
@@ -2311,7 +2311,6 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 			reportE(REPORT_CALL, " divergent direct call" );
 
 			CTAContext targetContext(context);
-			++context.PC;
 
 			for (int threadID = 0; threadID != threadCount; ++threadID) {
 				targetContext.active[threadID] = 
@@ -2332,13 +2331,17 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				for (ir::PTXOperand::Array::const_iterator 
 					argument = instr.b.array.begin();
 					argument != instr.b.array.end(); ++argument) {
-					copyArgument(offset, *argument, context, instr);
+					copyArgument(offset, *argument, targetContext);
 					offset += ir::PTXOperand::bytes(argument->type);
 				}
 				
 				targetContext.PC = instr.branchTargetInstruction;
 				
+				++context.PC;
 				runtimeStack.push_back(targetContext);
+			}
+			else {
+				++context.PC;
 			}
 		}
 	}
@@ -5259,13 +5262,14 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context,
 void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, 
 	const PTXInstruction &instr) {
 	trace();
+	CTAContext previousContext = context;
 	runtimeStack.pop_back();
 	const PTXInstruction& call = kernel->instructions[runtimeStack.back().PC-1];
 	unsigned int offset = 0;
 	for (ir::PTXOperand::Array::const_iterator 
 		argument = call.d.array.begin();
 		argument != call.d.array.end(); ++argument) {
-		copyArgument(*argument, offset);
+		copyArgument(*argument, offset, previousContext);
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
 	functionCallStack.popFrame();

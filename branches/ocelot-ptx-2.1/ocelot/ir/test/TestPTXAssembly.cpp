@@ -64,7 +64,7 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST FUNCTION CALLS
-std::string testFunctionCalls_PTX()
+std::string testFunctionCalls_PTX(bool uni)
 {
 	std::stringstream ptx;
 	
@@ -86,7 +86,9 @@ std::string testFunctionCalls_PTX()
 	ptx << "\tld.global.u32 %r1, [%rIn + 4]; \n";
 	ptx << "\tst.param.u32 [operandA], %r0; \n";
 	ptx << "\tst.param.u32 [operandB], %r1; \n";
-	ptx << "\tcall.uni (result), add, (operandA, operandB); \n";
+	ptx << "\tcall";
+	if(uni) ptx << ".uni";
+	ptx << " (result), add, (operandA, operandB); \n";
 	ptx << "\tld.param.u32 %r2, [result]; \n";
 	ptx << "\tst.global.u32 [%rOut], %r2; \n";
 	ptx << "\texit; \n";
@@ -2020,8 +2022,11 @@ namespace test
 			testPrmt_PTX(ir::PTXInstruction::ReplicateSixteen), testPrmt_OUT(), 
 			testPrmt_IN(), uniformRandom<unsigned int, 3>, 1, 1);
 			
-		add("TestFunctionCalls", testFunctionCalls_REF, 
-			testFunctionCalls_PTX(), testFunctionCalls_OUT(), 
+		add("TestCall-Uni", testFunctionCalls_REF, 
+			testFunctionCalls_PTX(true), testFunctionCalls_OUT(), 
+			testFunctionCalls_IN(), uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestCall-Nondivergent", testFunctionCalls_REF, 
+			testFunctionCalls_PTX(false), testFunctionCalls_OUT(), 
 			testFunctionCalls_IN(), uniformRandom<unsigned int, 2>, 1, 1);
 	}
 

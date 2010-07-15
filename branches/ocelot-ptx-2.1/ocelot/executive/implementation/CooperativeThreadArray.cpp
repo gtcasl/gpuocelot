@@ -2266,6 +2266,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 	else {
 		reportE(REPORT_CALL, " direct call to PC " 
 			<< instr.branchTargetInstruction)
+
 		// Handle lazy function linking
 		if (instr.branchTargetInstruction == -1) {
 			reportE(REPORT_CALL, " lazy linking against kernel '" 
@@ -2273,9 +2274,10 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 			kernel->lazyLink(context.PC, instr.a.identifier);
 			assert(instr.branchTargetInstruction != -1);
 		}
+
 		// Simple direct call handling
 		if (instr.uni) {
-			reportE(REPORT_CALL, " uniform call" );
+			reportE(REPORT_CALL, " uniform direct call" );
 			int firstActive = context.active.find_first();
 			bool taken = context.predicated(firstActive, instr);		
 			
@@ -2306,8 +2308,38 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 			}
 		}
 		else {
-			throw RuntimeException("divergent calls not implemented", 
-				context.PC, instr);			
+			reportE(REPORT_CALL, " divergent direct call" );
+
+			CTAContext targetContext(context);
+			++context.PC;
+
+			for (int threadID = 0; threadID != threadCount; ++threadID) {
+				targetContext.active[threadID] = 
+					context.predicated(threadID, instr);
+			}
+			
+			if (targetContext.active.any()) {
+				reportE(REPORT_CALL, 
+					"  call was taken, increasing stack size by (" 
+					<< instr.a.stackMemorySize << " stack) (" 
+					<< instr.a.registerCount << " registers) (" 
+					<< instr.a.localMemorySize << " local memory) (" 
+					<< instr.a.sharedMemorySize << " sharedMemorySize)");
+				functionCallStack.pushFrame(instr.a.stackMemorySize, 
+					instr.a.registerCount, instr.a.localMemorySize, 
+					instr.a.sharedMemorySize);
+				unsigned int offset = instr.b.offset;
+				for (ir::PTXOperand::Array::const_iterator 
+					argument = instr.b.array.begin();
+					argument != instr.b.array.end(); ++argument) {
+					copyArgument(offset, *argument, context, instr);
+					offset += ir::PTXOperand::bytes(argument->type);
+				}
+				
+				targetContext.PC = instr.branchTargetInstruction;
+				
+				runtimeStack.push_back(targetContext);
+			}
 		}
 	}
 }

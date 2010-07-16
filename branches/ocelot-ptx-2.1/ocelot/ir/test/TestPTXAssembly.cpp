@@ -63,6 +63,66 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST RECURSIVE FUNCTION CALLS
+std::string testRecursiveFunctionCall_PTX()
+{
+	std::stringstream ptx;
+	
+	ptx << ".version 2.1\n";
+	ptx << ".visible .func (.param .u32 return) count(.param .u32 a)\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;            \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\t.param .u32 operandA;             \n";
+	ptx << "\t.param .u32 result;               \n";
+	ptx << "\tld.param.u64 %rIn, [in];          \n";
+	ptx << "\tld.param.u64 %rOut, [out];        \n";
+	ptx << "\tld.global.u32 %r0, [%rIn];        \n";
+	ptx << "\trem.u32 %r0, %r0, 10;             \n";
+	ptx << "\tst.param.u32 [operandA], %r0;     \n";
+	ptx << "\tcall (result), count, (operandA); \n";
+	ptx << "\tld.param.u32 %r2, [result];       \n";
+	ptx << "\tst.global.u32 [%rOut], %r2;       \n";
+	ptx << "\texit;                             \n";
+	ptx << "}                                   \n";
+	ptx << "                                    \n";
+
+	ptx << ".visible .func (.param .u32 return) count(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\t.reg .pred %p0;                   \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tsetp.ne.u32 %p0, %r0, 0;          \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tsub.u32 %r0, %r0, 1;              \n";
+	ptx << "\tst.param.u32 [a], %r0;            \n";
+	ptx << "\t@%p0 call (return), count, (a);   \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+	
+	return ptx.str();
+}
+
+void testRecursiveFunctionCall_REF(void* output, void* input)
+{
+	setParameter(output, 0, (unsigned int)0);
+}
+
+test::TestPTXAssembly::TypeVector testRecursiveFunctionCall_IN()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testRecursiveFunctionCall_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST DIVERGENT FUNCTION CALLS
 std::string testDivergentFunctionCall_PTX()
 {
@@ -137,7 +197,6 @@ test::TestPTXAssembly::TypeVector testDivergentFunctionCall_OUT()
 	return test::TestPTXAssembly::TypeVector(2, test::TestPTXAssembly::I32);
 }
 ////////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST FUNCTION CALLS
@@ -2109,6 +2168,10 @@ namespace test
 			testDivergentFunctionCall_PTX(), testDivergentFunctionCall_OUT(), 
 			testDivergentFunctionCall_IN(), 
 			uniformRandom<unsigned int, 4>, 2, 1);
+		add("TestCall-Recursive", testRecursiveFunctionCall_REF, 
+			testRecursiveFunctionCall_PTX(), testRecursiveFunctionCall_OUT(), 
+			testRecursiveFunctionCall_IN(), 
+			uniformRandom<unsigned int, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

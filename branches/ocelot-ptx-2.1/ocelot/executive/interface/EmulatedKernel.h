@@ -26,6 +26,7 @@ namespace executive {
 		typedef std::deque<ir::PTXInstruction> PTXInstructionVector;
 		typedef std::map<int, std::string> ProgramCounterMap;
 		typedef std::unordered_map<std::string, int> FunctionNameMap;
+		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -81,6 +82,9 @@ namespace executive {
 			of the specified function.  This function will be inserted into
 			the instruction sequence if it does not already exist */
 		void lazyLink(int callPC, const std::string& functionName);
+
+		/*! Finds the kernel beginning at the specified PC */
+		const EmulatedKernel* getKernel(int PC) const;
 
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
@@ -157,7 +161,8 @@ namespace executive {
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 
-		/*! Kernels that may be */
+		/*! Maps program counter to the kernel that begins there */
+		PCToKernelMap kernelEntryPoints;
 
 	public:
 		/*! \brief Check to see if a memory access is valid */

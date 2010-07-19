@@ -451,17 +451,20 @@ namespace executive {
 
 	protected:
 		
-		void eval_Mov_reg(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Mov_reg(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Mov_sreg(CTAContext &context, 
 			const ir::PTXInstruction &instr);
-		void eval_Mov_imm(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Mov_imm(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Mov_indirect(CTAContext &context, 
 			const ir::PTXInstruction &instr);
-		void eval_Mov_addr(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Mov_addr(CTAContext &context,
+			const ir::PTXInstruction &instr);
+		void eval_Mov_func(CTAContext &context,
+			const ir::PTXInstruction &instr);
 
 		void copyArgument(unsigned int offset, const ir::PTXOperand& s, 
-			CTAContext& context);
-		void copyArgument(const ir::PTXOperand& s, unsigned int offset, 
 			CTAContext& context);
 
 	};

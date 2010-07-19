@@ -39,7 +39,7 @@
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
-#define REPORT_NTH_THREAD_ONLY 1
+#define REPORT_NTH_THREAD_ONLY 0
 #define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
@@ -2233,35 +2233,90 @@ void executive::CooperativeThreadArray::copyArgument(unsigned int offset,
 	}
 }
 
-void executive::CooperativeThreadArray::copyArgument(const ir::PTXOperand& d, 
-	unsigned int offset, CTAContext& context) {
-	reportE(REPORT_CALL, " Copying " << ir::PTXOperand::bytes(d.type) 
-		<< " bytes from returned stack frame at " << offset
-		<< " to current frame at " << d.offset );
-	for (int thread = 0; thread < threadCount; ++thread) {
-		if (!context.active[thread]) continue;
-		char* stackPointer = (char*)functionCallStack.stackFramePointer(thread);
-		char* previousStackPointer =
-			(char*)functionCallStack.previousStackFramePointer(thread);
-		report("  From " << (void*)(stackPointer + offset) << " to " 
-			<< (void*)(previousStackPointer + d.offset));
-		std::memcpy(previousStackPointer + d.offset, stackPointer + offset,
-			ir::PTXOperand::bytes(d.type));
-	}
-}
-
 /*!
 
 */
 void executive::CooperativeThreadArray::eval_Call(CTAContext &context, 
 	const PTXInstruction &instr) {
+	typedef std::unordered_map<int, CTAContext> TargetMap;
 	trace();
 		
 	// Is this a direct or indirect call?
 	if (instr.a.addressMode == ir::PTXOperand::Register) {
 		// Complex indirect call handling
-		throw RuntimeException("indirect calls not implemented", 
-			context.PC, instr);
+		reportE(REPORT_CALL, " indirect call [" << context.active << "]" );
+		
+		// Create contexts for all unique targets
+		TargetMap targets;
+		
+		for (int threadID = 0; threadID != threadCount; ++threadID) {
+			if(!context.predicated(threadID, instr)) continue;
+			PTXU64 targetPC = getRegAsU64(threadID, instr.a.reg);
+			reportE(REPORT_CALL, "  Thread " << threadID 
+				<< " jumped to PC " << targetPC )
+			TargetMap::iterator targetContext = targets.find(targetPC);
+			if (targetContext == targets.end()) {
+				CTAContext newContext(context);
+				newContext.active.reset();
+				newContext.PC = targetPC;
+				targetContext = targets.insert(
+					std::make_pair(targetPC, newContext)).first;
+			}
+			
+			targetContext->second.active[threadID] = true;
+		}
+		
+		reportE(REPORT_CALL, " Created " << targets.size() 
+			<< " unique target contexts.");
+		
+		// Get a reference to the base stack pointer
+		unsigned int stackSize = functionCallStack.stackFrameSize();
+		unsigned int stackOffset = functionCallStack.offset();
+		unsigned int callPC = context.PC;
+
+		++context.PC;
+		
+		reportE(REPORT_CALL, " Caller stack starts at offset " << stackOffset);
+		reportE(REPORT_CALL, " Caller size " << stackSize);
+		
+		// Push all active contexts
+		for (TargetMap::iterator targetContext = targets.begin(); 
+			targetContext != targets.end(); ++targetContext) {
+
+			const EmulatedKernel* targetKernel = kernel->getKernel(
+				targetContext->second.PC);
+			assert( targetKernel != 0 );
+
+			reportE(REPORT_CALL, 
+				"  call was taken, increasing stack size by (" 
+				<< targetKernel->stackMemorySize() << " stack) (" 
+				<< targetKernel->registerCount() << " registers) (" 
+				<< targetKernel->localMemorySize() << " local memory) (" 
+				<< targetKernel->totalSharedMemorySize() 
+				<< " sharedMemorySize)");
+
+			functionCallStack.pushFrame(targetKernel->stackMemorySize(), 
+				targetKernel->registerCount(), targetKernel->localMemorySize(), 
+				targetKernel->totalSharedMemorySize(), callPC, 
+				stackOffset, stackSize);
+			unsigned int offset = instr.b.offset;
+			for (ir::PTXOperand::Array::const_iterator 
+				argument = instr.b.array.begin();
+				argument != instr.b.array.end(); ++argument) {
+				for (int threadID = 0; threadID != threadCount; ++threadID) {
+					if(!targetContext->second.active[threadID]) continue;
+					char* base = (char*)functionCallStack.offsetToPointer(
+						stackOffset) + stackSize * threadID;
+					char* target = (char*)functionCallStack.stackFramePointer(
+						threadID);
+					std::memcpy(target + offset, base + argument->offset, 
+						ir::PTXOperand::bytes(argument->type));
+				}
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+
+			runtimeStack.push_back(targetContext->second);			
+		}
 	}
 	else {
 		reportE(REPORT_CALL, " direct call to PC " 
@@ -2290,7 +2345,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					<< instr.a.sharedMemorySize << " sharedMemorySize)");
 				functionCallStack.pushFrame(instr.a.stackMemorySize, 
 					instr.a.registerCount, instr.a.localMemorySize, 
-					instr.a.sharedMemorySize);
+					instr.a.sharedMemorySize, context.PC, 
+					functionCallStack.offset(), functionCallStack.stackSize());
 				unsigned int offset = instr.b.offset;
 				for (ir::PTXOperand::Array::const_iterator 
 					argument = instr.b.array.begin();
@@ -2326,7 +2382,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					<< instr.a.sharedMemorySize << " sharedMemorySize)");
 				functionCallStack.pushFrame(instr.a.stackMemorySize, 
 					instr.a.registerCount, instr.a.localMemorySize, 
-					instr.a.sharedMemorySize);
+					instr.a.sharedMemorySize, context.PC, 
+					functionCallStack.offset(), functionCallStack.stackSize());
 				unsigned int offset = instr.b.offset;
 				for (ir::PTXOperand::Array::const_iterator 
 					argument = instr.b.array.begin();
@@ -4326,6 +4383,9 @@ void executive::CooperativeThreadArray::eval_Mov(CTAContext &context,
 	else if (instr.a.addressMode == PTXOperand::Address) {
 		eval_Mov_addr(context, instr);
 	}
+	else if (instr.a.addressMode == PTXOperand::FunctionName) {
+		eval_Mov_func(context, instr);
+	}
 	else {
 		throw RuntimeException(std::string("unimplemented address mode ") 
 			+ PTXOperand::toString(instr.a.addressMode), context.PC, instr);
@@ -4542,7 +4602,8 @@ void executive::CooperativeThreadArray::eval_Mov_sreg(CTAContext &context,
 	}
 }
 
-void executive::CooperativeThreadArray::eval_Mov_imm(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mov_imm(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
 		
@@ -4595,12 +4656,25 @@ void executive::CooperativeThreadArray::eval_Mov_imm(CTAContext &context, const 
 	}
 }
 
-void executive::CooperativeThreadArray::eval_Mov_indirect(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mov_indirect(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	
 }
 
-void executive::CooperativeThreadArray::eval_Mov_addr(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mov_addr(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	eval_Mov_imm(context, instr);
+}
+
+void executive::CooperativeThreadArray::eval_Mov_func(CTAContext &context,
+	const ir::PTXInstruction &instr) {
+	if (instr.branchTargetInstruction == -1) {
+		kernel->lazyLink(context.PC, instr.a.identifier);
+	}
+	for (int threadID = 0; threadID < threadCount; threadID++) {
+		if (!context.predicated(threadID, instr)) continue;
+		setRegAsU64(threadID, instr.d.reg, instr.branchTargetInstruction);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5262,27 +5336,36 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context,
 void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, 
 	const PTXInstruction &instr) {
 	trace();
-	assert(runtimeStack.size() > 1);
-	unsigned int previousContextIndex = runtimeStack.size() - 2;
-	
-	// get the pc of the corresponding call to determine the stack format
-	unsigned int callPC = runtimeStack[previousContextIndex].PC - 1;
-	const PTXInstruction& call = kernel->instructions[callPC];
-	
-	// copy return data from the callee's stack frame
+	reportE(REPORT_RET, "Returned from function call at PC " 
+		<< functionCallStack.returnPC() );
+	const PTXInstruction& call = kernel->instructions[
+		functionCallStack.returnPC()];
+	reportE(REPORT_RET, " Previous stack size (" 
+		<< functionCallStack.callerFrameSize() << ") offset (" 
+		<< functionCallStack.callerOffset() << ")" );
+	char* callerStack = (char*)functionCallStack.offsetToPointer(
+		functionCallStack.callerOffset());
+	unsigned int callerStackSize = functionCallStack.callerFrameSize();
 	unsigned int offset = 0;
 	for (ir::PTXOperand::Array::const_iterator 
 		argument = call.d.array.begin();
 		argument != call.d.array.end(); ++argument) {
-		copyArgument(*argument, offset, runtimeStack.back());
+		for (int threadID = 0; threadID != threadCount; ++threadID) {
+			if (!context.predicated(threadID, instr)) continue;
+			char* callerPointer = callerStack + threadID * callerStackSize;
+			char* pointer = 
+				(char*)functionCallStack.stackFramePointer(threadID);
+			reportE(REPORT_RET, " For thread " << threadID << " copying " 
+				<< argument->toString() << " from new frame at " 
+				<< (void*) pointer << " to caller frame at " 
+				<< (void*) callerPointer );
+			std::memcpy(callerPointer + argument->offset, pointer + offset, 
+				ir::PTXOperand::bytes(argument->type));
+		}
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
-	
-	// destroy the stack and context used for the call
-	runtimeStack.pop_back();
 	functionCallStack.popFrame();
-	
-	// execution should resume at the next context
+	runtimeStack.pop_back();
 }
 
 /*!

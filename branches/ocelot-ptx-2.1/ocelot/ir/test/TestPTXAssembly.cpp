@@ -63,6 +63,114 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST INDIRECT FUNCTION CALLS
+std::string testIndirectFunctionCall_PTX()
+{
+	std::stringstream ptx;
+	
+	ptx << ".version 2.1\n";
+	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a)\n";
+	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a)\n";
+	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a)\n";
+	ptx << ".visible .func (.param .u32 return) add3(.param .u32 a)\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg .u32 %r<3>;                             \n";
+	ptx << "\t.reg .u64 %functionPointer;                  \n";
+	ptx << "\t.reg .pred %p0;                              \n";
+	ptx << "\t.reg .u32 %thread;                           \n";
+	ptx << "\t.reg .u64 %offset;                           \n";
+	ptx << "\t.param .u32 operandA;                        \n";
+	ptx << "\t.param .u32 result;                          \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global.u32 %r0, [%rIn];                   \n";
+	ptx << "\tst.param.u32 [operandA], %r0;                \n";
+	ptx << "\tmov.u32 %thread, %tid.x;                     \n";
+	ptx << "\tmov.u64 %functionPointer, add0;              \n";
+	ptx << "\tsetp.eq.u32 %p0, %thread, 1;                 \n";
+	ptx << "\t@%p0 mov.u64 %functionPointer, add1;         \n";
+	ptx << "\tsetp.eq.u32 %p0, %thread, 2;                 \n";
+	ptx << "\t@%p0 mov.u64 %functionPointer, add2;         \n";
+	ptx << "\tsetp.eq.u32 %p0, %thread, 3;                 \n";
+	ptx << "\t@%p0 mov.u64 %functionPointer, add3;         \n";
+	ptx << "\tprototype: .callprototype (.param .u32 _)    \n";
+	ptx << "\t    _ (.param .u32 _);                       \n";
+	ptx << "\tcall (result), %functionPointer,             \n";
+	ptx << "\t    (operandA), prototype;                   \n";
+	ptx << "\tld.param.u32 %r2, [result];                  \n";
+	ptx << "\tcvt.u64.u32 %offset, %thread;                \n";
+	ptx << "\tmul.lo.u64 %offset, %offset, 4;              \n";
+	ptx << "\tadd.u64 %rOut, %offset, %rOut;               \n";
+	ptx << "\tst.global.u32 [%rOut], %r2;                  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+
+	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 0;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+
+	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 1;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+
+	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 2;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+
+	ptx << ".visible .func (.param .u32 return) add3(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 3;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+	
+	return ptx.str();
+}
+
+void testIndirectFunctionCall_REF(void* output, void* input)
+{
+	unsigned int r0 = getParameter<unsigned int>(input, 0);
+
+	setParameter(output, 0, (unsigned int)r0);
+	setParameter(output, sizeof(unsigned int), (unsigned int)(r0 + 1));
+	setParameter(output, 2 * sizeof(unsigned int), (unsigned int)(r0 + 2));
+	setParameter(output, 3 * sizeof(unsigned int), (unsigned int)(r0 + 3));
+}
+
+test::TestPTXAssembly::TypeVector testIndirectFunctionCall_IN()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testIndirectFunctionCall_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(4, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST RECURSIVE FUNCTION CALLS
 std::string testRecursiveFunctionCall_PTX()
 {
@@ -2172,6 +2280,10 @@ namespace test
 			testRecursiveFunctionCall_PTX(), testRecursiveFunctionCall_OUT(), 
 			testRecursiveFunctionCall_IN(), 
 			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCall-Indirect", testIndirectFunctionCall_REF, 
+			testIndirectFunctionCall_PTX(), testIndirectFunctionCall_OUT(), 
+			testIndirectFunctionCall_IN(), 
+			uniformRandom<unsigned int, 1>, 4, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

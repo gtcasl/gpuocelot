@@ -1185,6 +1185,10 @@ namespace parser
 				operand = mode->second.operand;
 			}
 		}
+		else if( mode->second.operand.addressMode 
+			== ir::PTXOperand::FunctionName ) {
+			operand = mode->second.operand;
+		}
 		
 		if( invert )
 		{

@@ -855,11 +855,15 @@ void executive::EmulatedKernel::lazyLink(int callPC,
 	const std::string& functionName) {
 	EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
 		device->getKernel(module->path(), functionName));
+	assertM(kernel != 0, "Kernel function '" << functionName 
+		<< "' not found in module '" << module->path() << "'");
 	FunctionNameMap::iterator 
 		entryPoint = functionEntryPoints.find(functionName);
 
 	if (entryPoint == functionEntryPoints.end()) {
 		int newPC = instructions.size();
+		report("Linking kernel '" << functionName << "' at pc " << newPC);
+		kernelEntryPoints.insert(std::make_pair(newPC, kernel));
 		instructions.insert(instructions.end(), kernel->instructions.begin(), 
 			kernel->instructions.end());
 		entryPoint = functionEntryPoints.insert(
@@ -867,10 +871,21 @@ void executive::EmulatedKernel::lazyLink(int callPC,
 	}
 	
 	instructions[callPC].branchTargetInstruction = entryPoint->second;
-	instructions[callPC].a.stackMemorySize = kernel->stackMemorySize();
-	instructions[callPC].a.localMemorySize = kernel->localMemorySize();
-	instructions[callPC].a.sharedMemorySize = kernel->sharedMemorySize();
-	instructions[callPC].a.registerCount = kernel->registerCount();
+	
+	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
+		instructions[callPC].a.stackMemorySize = kernel->stackMemorySize();
+		instructions[callPC].a.localMemorySize = kernel->localMemorySize();
+		instructions[callPC].a.sharedMemorySize = kernel->sharedMemorySize();
+		instructions[callPC].a.registerCount = kernel->registerCount();
+	}
+}
+
+const executive::EmulatedKernel* 
+	executive::EmulatedKernel::getKernel(int PC) const {
+	report("Getting kernel at pc " << PC);
+	PCToKernelMap::const_iterator kernel = kernelEntryPoints.find(PC);
+	if (kernel == kernelEntryPoints.end()) return 0;
+	return kernel->second;
 }
 
 static unsigned int align(unsigned int offset, unsigned int size) {
@@ -1004,8 +1019,13 @@ void executive::EmulatedKernel::invalidateCallTargets() {
 	report( "Invalidating call instruction targets." );
 	for (PTXInstructionVector::iterator fi = instructions.begin(); 
 		fi != instructions.end(); ++fi) {
-		
-		if (fi->opcode == ir::PTXInstruction::Call) {
+		if (fi->opcode == ir::PTXInstruction::Mov) {
+			if (fi->a.addressMode == ir::PTXOperand::FunctionName) {
+				report( " For '" << fi->toString() << "'" );
+				fi->branchTargetInstruction = -1;
+			}
+		}
+		else if (fi->opcode == ir::PTXInstruction::Call) {
 			report( " For '" << fi->toString() << "'" );
 			fi->branchTargetInstruction = -1;
 		}

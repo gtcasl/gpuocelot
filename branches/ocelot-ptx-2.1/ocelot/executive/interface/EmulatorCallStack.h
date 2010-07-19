@@ -56,6 +56,11 @@ class EmulatorCallStack
 		/*! \brief Get a pointer to the previous stack frame */
 		void* previousStackFramePointer(unsigned int thread);
 
+		/*! \brief Get a pointer to an offset from the base of the stack */
+		void* offsetToPointer(unsigned int offset);
+		/*! \brief Get the offset of the current stack frame */
+		unsigned int offset() const;
+
 		/*! \brief Get a pointer to the register file for a given thread */
 		RegisterType* registerFilePointer(unsigned int thread);
 		/*! \brief Get a pointer to local memory for a given thread */
@@ -74,12 +79,20 @@ class EmulatorCallStack
 		unsigned int stackFrameSize() const;
 		/*! \brief Get the size of the previous frame */
 		unsigned int previousFrameSize() const;
+		/*! \brief Get the return program counter */
+		unsigned int returnPC() const;
+		/*! \brief Get the offset of the caller frame */
+		unsigned int callerOffset() const;
+		/*! \brief Get the offset of the caller frame */
+		unsigned int callerFrameSize() const;
 		/*! \brief Get the total size of the stack in bytes */
 		unsigned int stackSize() const;
 
 		/*! \brief Push a new frame onto the stack */
 		void pushFrame(unsigned int stackSize, unsigned int registers, 
-			unsigned int localSize, unsigned int sharedSize);
+			unsigned int localSize, unsigned int sharedSize, 
+			unsigned int callPC, unsigned int callerStackFrame,
+			unsigned int callerStackSize);
 		/*! \brief Pop the current frame */
 		void popFrame();
 };

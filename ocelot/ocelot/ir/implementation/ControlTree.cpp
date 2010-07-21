@@ -28,8 +28,8 @@ namespace ir
 			_root(0),
 			_size(0)
 	{
-		Node* start;
-		Node* end;
+		Node* start = 0;
+		Node* end = 0;
 		std::unordered_map<ControlFlowGraph::const_iterator, Node*> bmap;
 
 		ControlFlowGraph::const_iterator bb;

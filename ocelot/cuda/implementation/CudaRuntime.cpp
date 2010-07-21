@@ -2586,7 +2586,9 @@ cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
 	}
 	
 	// this is a horrible hack needed because this can be 
-	// called before setflags
+	// called before setflags, it creates the devices, gets their attributes
+	// then deletes them at the end of the function so that there is still
+	// no set device
 	if (notLoaded) {
 		_devicesLoaded = false;
 		for (DeviceVector::iterator device = _devices.begin(); 

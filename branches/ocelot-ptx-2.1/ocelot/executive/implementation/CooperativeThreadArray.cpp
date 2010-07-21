@@ -450,6 +450,26 @@ void executive::CooperativeThreadArray::reset() {
 	runtimeStack.push_back(CTAContext(kernel, this));
 }
 
+void executive::CooperativeThreadArray::jumpToPC(int PC) {
+	assert(!runtimeStack.empty());
+	assert(PC < (int)kernel->instructions.size());
+	
+	runtimeStack.back().PC = PC;
+}
+
+executive::CooperativeThreadArray::RegisterFile 
+	executive::CooperativeThreadArray::getCurrentRegisterFile() const {
+	RegisterFile file(threadCount * functionCallStack.registerCount());	
+	RegisterFile::iterator ri = file.begin();
+	for (int thread = 0; thread != threadCount; ++thread) {
+		for (unsigned int reg = 0; 
+			reg != functionCallStack.registerCount(); ++reg, ++ri) {
+			*ri = functionCallStack.registerFilePointer(thread)[reg];
+		}
+	}
+	return file;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Execution support

@@ -26,6 +26,7 @@ namespace executive {
 	class CooperativeThreadArray {
 	public:
 		typedef std::vector<CTAContext> ContextStack;
+		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	public:
 		/*! Constructs a cooperative thread array from an EmulatedKernel instance
@@ -47,6 +48,12 @@ namespace executive {
 
 		/*! Reset the state of the CTA */
 		void reset();
+		
+		/*! Jump to a specific PC for the current context */
+		void jumpToPC(int PC);
+
+		/* Get a snapshot of the current register file */
+		RegisterFile getCurrentRegisterFile() const;
 
 	public:
 		/*! Dimensions of the cooperative thread array */

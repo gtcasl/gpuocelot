@@ -20,13 +20,18 @@ namespace trace {
 }
 
 namespace executive {
-		
+	class CooperativeThreadArray;
+}
+
+namespace executive {
+	
 	class EmulatedKernel: public ExecutableKernel {
 	public:
 		typedef std::deque<ir::PTXInstruction> PTXInstructionVector;
 		typedef std::map<int, std::string> ProgramCounterMap;
 		typedef std::unordered_map<std::string, int> FunctionNameMap;
 		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
+		typedef CooperativeThreadArray::RegisterFile RegisterFile;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -85,6 +90,12 @@ namespace executive {
 
 		/*! Finds the kernel beginning at the specified PC */
 		const EmulatedKernel* getKernel(int PC) const;
+		
+		/*! If the kernel is executing, jump to the specified PC */
+		void jumpToPC(int PC);
+
+		/* Get a snapshot of the current register file */
+		RegisterFile getCurrentRegisterFile() const;
 
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
@@ -136,9 +147,6 @@ namespace executive {
 		/*! A map of register name to register number */
 		ir::PTXKernel::RegisterMap registerMap;
 		
-		/*! A map of function names to the PC of their entry point */
-		FunctionNameMap functionEntryPoints;
-
 		/*!	Pointer to block of memory used to store parameter data */
 		char* ParameterMemory;
 
@@ -161,8 +169,15 @@ namespace executive {
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 
+	private:
 		/*! Maps program counter to the kernel that begins there */
 		PCToKernelMap kernelEntryPoints;
+
+		/*! A map of function names to the PC of their entry point */
+		FunctionNameMap functionEntryPoints;
+
+		/*! A handle to the current CTA, or 0 if none is executing */
+		executive::CooperativeThreadArray *CTA;
 
 	public:
 		/*! \brief Check to see if a memory access is valid */

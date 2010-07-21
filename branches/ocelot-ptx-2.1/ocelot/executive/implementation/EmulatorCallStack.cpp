@@ -75,6 +75,15 @@ namespace executive
 		return (RegisterType*)&_stack[_registerFileBase 
 			+ thread * registerCount() * sizeof(RegisterType)];
 	}
+
+	const EmulatorCallStack::RegisterType* 
+		EmulatorCallStack::registerFilePointer(unsigned int thread) const
+	{
+		assert(thread < _threadCount);
+		assert(!_registerFileSizes.empty());
+		return (RegisterType*)&_stack[_registerFileBase 
+			+ thread * registerCount() * sizeof(RegisterType)];
+	}
 	
 	void* EmulatorCallStack::localMemoryPointer(unsigned int thread)
 	{

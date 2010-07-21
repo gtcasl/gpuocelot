@@ -12,6 +12,11 @@
 		cacheSimulator: false,
 		memoryChecker: true,
 		raceDetector: true,
+		debugger: {
+			enabled: false,
+			kernelFilter: "testShr",
+			alwaysAttach: false
+		},
 		warpSynchronous: {
 			enabled: false,
 			emitHotPaths: true

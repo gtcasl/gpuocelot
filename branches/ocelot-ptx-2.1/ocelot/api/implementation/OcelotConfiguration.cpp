@@ -82,6 +82,13 @@ api::OcelotConfiguration::TraceGeneration::Convergence::Convergence():
 
 }
 
+api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
+	kernelFilter(""),
+	alwaysAttach(false)
+{
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
@@ -94,8 +101,7 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	instruction(false),
 	cacheSimulator(false),
 	memoryChecker(false),
-	raceDetector(false)
-{
+	raceDetector(false){
 
 }
 
@@ -152,6 +158,13 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 		trace.convergence.logfile = convConfig.parse<std::string>("logfile", "traces/convergence.csv");
 		trace.convergence.dot = convConfig.parse<bool>("dot", false);
 		trace.convergence.render = convConfig.parse<bool>("render", false);
+	}
+
+	hydrazine::json::Visitor debugConfig = config["debugger"];
+	if (!debugConfig.is_null()) {
+		trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
+		trace.debugger.kernelFilter = debugConfig.parse<std::string>("kernelFilter", "");
+		trace.debugger.alwaysAttach = debugConfig.parse<bool>("alwaysAttach", false);
 	}
 }
 

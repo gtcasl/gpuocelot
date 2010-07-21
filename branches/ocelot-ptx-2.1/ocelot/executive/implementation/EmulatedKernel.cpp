@@ -40,7 +40,8 @@ executive::EmulatedKernel::EmulatedKernel(
 	Device* d, 
 	bool _initialize) 
 : 
-	ExecutableKernel(*kernel, d) 
+	ExecutableKernel(*kernel, d),
+	CTA(0)
 {
 	report("Created emulated kernel " << name);
 	assertM(kernel->ISA == ir::Instruction::PTX, 
@@ -54,11 +55,11 @@ executive::EmulatedKernel::EmulatedKernel(
 }
 
 executive::EmulatedKernel::EmulatedKernel(
-	Device* d): ExecutableKernel(d) {
+	Device* d): ExecutableKernel(d), CTA(0) {
 	ISA = ir::Instruction::Emulated;
 }
 
-executive::EmulatedKernel::EmulatedKernel() {
+executive::EmulatedKernel::EmulatedKernel(): CTA(0) {
 	ISA = ir::Instruction::Emulated;
 }
 
@@ -98,7 +99,8 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
 #endif
 
-	CooperativeThreadArray cta(this, gridDim(), _generators.empty());
+	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
+	CTA = &cta;
 	for (int x = 0; x < width; ++x) {
 		for (int y = 0; y < height; ++y) {
 			cta.reset();
@@ -111,6 +113,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 		it != _generators.end(); ++it) {
 		(*it)->finish();
 	}
+	CTA = 0;
 }
 
 void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
@@ -887,6 +890,19 @@ const executive::EmulatedKernel*
 	if (kernel == kernelEntryPoints.end()) return 0;
 	return kernel->second;
 }
+
+void executive::EmulatedKernel::jumpToPC(int PC) {
+	assert(CTA != 0);
+	
+	CTA->jumpToPC(PC);
+}
+
+executive::EmulatedKernel::RegisterFile 
+	executive::EmulatedKernel::getCurrentRegisterFile() const {
+	assert(CTA != 0);
+	return CTA->getCurrentRegisterFile();		
+}
+
 
 static unsigned int align(unsigned int offset, unsigned int size) {
 	unsigned int difference = offset & (size - 1);

@@ -63,6 +63,8 @@ class EmulatorCallStack
 
 		/*! \brief Get a pointer to the register file for a given thread */
 		RegisterType* registerFilePointer(unsigned int thread);
+		/*! \brief Get a pointer to the register file for a given thread */
+		const RegisterType* registerFilePointer(unsigned int thread) const;
 		/*! \brief Get a pointer to local memory for a given thread */
 		void* localMemoryPointer(unsigned int thread);
 		/*! \brief Get a pointer to shared memory */

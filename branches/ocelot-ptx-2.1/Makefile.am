@@ -105,6 +105,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
 	ocelot/trace/implementation/PerformanceBoundGenerator.cpp \
 	ocelot/trace/implementation/ConvergenceGenerator.cpp \
+	ocelot/trace/implementation/InteractiveDebugger.cpp \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/ATIGPUDevice.cpp \

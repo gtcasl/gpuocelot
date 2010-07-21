@@ -20,6 +20,7 @@
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
 #include <ocelot/trace/interface/PerformanceBoundGenerator.h>
 #include <ocelot/trace/interface/ConvergenceGenerator.h>
+#include <ocelot/trace/interface/InteractiveDebugger.h>
 
 namespace ocelot
 {
@@ -37,6 +38,7 @@ namespace ocelot
 		trace::WarpSynchronousGenerator _warpSynchronous;
 		trace::PerformanceBoundGenerator _performanceBound;
 		trace::ConvergenceGenerator _convergence;
+		trace::InteractiveDebugger _debugger;
 		
 		bool _initialized;
 		

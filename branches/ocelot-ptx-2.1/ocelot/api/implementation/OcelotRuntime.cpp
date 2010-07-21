@@ -77,6 +77,13 @@ namespace ocelot
 			report( "Creating memory race detector" );
 			ocelot::addTraceGenerator( _raceDetector, true );
 		}
+		if (c.trace.debugger.enabled) {
+			report("Creating interactive PTX debugger");
+			_debugger.database = c.trace.database;
+			_debugger.filter = c.trace.debugger.kernelFilter;
+			_debugger.alwaysAttach = c.trace.debugger.alwaysAttach;
+			ocelot::addTraceGenerator(_debugger, true);
+		}
 
 		if (c.trace.warpSynchronous.enabled) {
 			report( "Creating warp synchronous detector" );

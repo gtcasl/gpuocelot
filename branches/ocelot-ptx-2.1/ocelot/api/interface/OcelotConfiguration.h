@@ -108,6 +108,23 @@ namespace api {
 				//! \brief if true, a PDF is constructed from the generated DOT file
 				bool render;
 			};
+			
+			/*! \brief configuration properties for trace::InteractiveDebugger */
+			class Debugger
+			{
+			public:
+				Debugger();
+				
+			public:
+				//! \brief indicates trace generator is enabled
+				bool enabled;
+
+				//! \brief Only attach to kernels matching this substring
+				std::string kernelFilter;
+				
+				//! \brief Attach to all kernels by default?
+				bool alwaysAttach;
+			};
 
 		public:
 			TraceGeneration();
@@ -151,6 +168,9 @@ namespace api {
 			
 			//! \brief trace::ConvergenceGenerator
 			Convergence convergence;
+			
+			//! \brief trace::InteractiveDebugger
+			Debugger debugger;
 		};
 
 		class CudaRuntimeImplementation {

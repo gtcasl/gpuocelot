@@ -7,6 +7,9 @@
 #ifndef INTERACTIVE_DEBUGGER_CPP_INCLUDED
 #define INTERACTIVE_DEBUGGER_CPP_INCLUDED
 
+// C++ includes
+#include <algorithm>
+
 // Ocelot Includes
 #include <ocelot/trace/interface/InteractiveDebugger.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
@@ -465,7 +468,7 @@ void InteractiveDebugger::_printAssembly(unsigned int PC) const
 			static_cast<const executive::EmulatedKernel&>(*_kernel);
 		
 		for(unsigned int pc = PC; 
-			pc < std::min(kernel.instructions.size(), PC + 10); ++pc)
+			pc < std::min(kernel.instructions.size(), (size_t)PC + 10); ++pc)
 		{
 			std::cout << "(" << pc << ") - " 
 				<< kernel.instructions[pc].toString() << "\n";

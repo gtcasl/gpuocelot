@@ -170,7 +170,7 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter,
 			val_it = it->arrayValues.begin();
 			val_it != it->arrayValues.end(); 
 			++val_it, ptr += it->getElementSize()) {
-			assert(ptr - parameter + it->getElementSize() < paramSize);
+			assert((size_t)ptr - (size_t)parameter + it->getElementSize() < (size_t)paramSize);
 			memcpy(&val_it->val_u64, ptr, it->getElementSize());
 		}
 

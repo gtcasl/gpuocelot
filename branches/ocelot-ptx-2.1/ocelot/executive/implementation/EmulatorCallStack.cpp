@@ -182,7 +182,7 @@ namespace executive
 		*((unsigned int*) &_stack[
 			_stackPointer + 2 * sizeof(unsigned int)]) = callerFrameSize;	
 		
-		_sharedMemory.resize(std::max(_sharedMemory.size(), sharedSize));
+		_sharedMemory.resize(std::max(_sharedMemory.size(), (size_t)sharedSize));
 	}
 
 	void EmulatorCallStack::popFrame()

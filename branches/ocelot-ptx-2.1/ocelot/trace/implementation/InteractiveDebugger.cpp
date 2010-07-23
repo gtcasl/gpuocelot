@@ -49,6 +49,7 @@ void InteractiveDebugger::initialize(const executive::ExecutableKernel& kernel)
 {
 	_breakNow = alwaysAttach || kernel.name == filter;
 	_attached = _breakNow;
+	_breakNext = false;
 	if(_attached)
 	{
 		std::cout << "(ocelot-dbg) Attaching debugger to kernel '" 
@@ -152,6 +153,11 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		_event = event;
 		_break();
 	}
+	
+	if (_breakNext) {
+		_breakNext = false;
+		_breakNow = true;
+	}
 }
 
 void InteractiveDebugger::finish()
@@ -201,7 +207,7 @@ void InteractiveDebugger::_command(const std::string& command)
 		_setBreakpoint(PC);
 	}
 	else if (base == "list" || base == "list") {
-		_printWatchpoints(command);
+		_listWatchpoints(command);
 	}
 	else if (base == "clear" || base == "clear") {
 		_clearWatchpoint(command);
@@ -214,7 +220,23 @@ void InteractiveDebugger::_command(const std::string& command)
 		std::string modifier;
 		stream >> modifier;
 		_processCommands = true;
-		if(modifier == "asm" || modifier == "a")
+		if (modifier == "watch") {
+			int wp;
+			stream >> wp;
+			if (wp >= 1 && wp <= (int)_watchpoints.size()) {
+				WatchpointList::iterator wpit = _watchpoints.begin();
+				for (int i = 1; i < wp && wpit != _watchpoints.end(); i++, ++wpit) {
+				}
+				if (wpit != _watchpoints.end()) {
+					_printWatchpoint(*wpit);
+				}
+			}
+			else {
+				std::cout << "watchpoint #" << wp << " out of range\n";
+				_breakNow = true;
+			}
+		}
+		else if(modifier == "asm" || modifier == "a")
 		{
 			unsigned int PC = _event.PC;
 			stream >> PC;
@@ -299,12 +321,13 @@ void InteractiveDebugger::_help() const
 	std::cout << "    global address <address> <ptx-type>[elements]\n";
 	
 	std::cout << "  print    (p) - Print the value of a megdmory resource.\n";
-	std::cout << "   asm  (a) - Print instructions near the specified PC.\n";
-	std::cout << "   reg  (r) - Print the value of a register.\n";
-	std::cout << "   mem  (m) - Print the values near an address.\n";
-	std::cout << "   warp (w) - Print the current warp status.\n";
-	std::cout << "   pc       - Print the PC of the current warp.\n";
-	std::cout << "   loc  (l) - Print the nearest CUDA source line.\n";
+	std::cout << "   asm  (a)  - Print instructions near the specified PC.\n";
+	std::cout << "   reg  (r)  - Print the value of a register.\n";
+	std::cout << "   mem  (m)  - Print the values near an address.\n";
+	std::cout << "   warp (w)  - Print the current warp status.\n";
+	std::cout << "   pc        - Print the PC of the current warp.\n";
+	std::cout << "   loc  (l)  - Print the nearest CUDA source line.\n";
+	std::cout << "   watch <#> - Print the value of a watch point identified by #.\n";
 	std::cout << "  step     (s) - Execute the next instruction.\n";
 	std::cout << "  continue (c) - Run until the next breakpoint.\n";
 	std::cout << "  quit     (q) - Detach the debugger, resume execution.\n";
@@ -841,40 +864,40 @@ InteractiveDebugger::Watchpoint::Watchpoint():
 {
 }
 
-static void printPtxValue(std::ostream &out, const void *ptr, ir::PTXOperand::DataType dataType) {
+static void printPtxValue(std::ostream &out, volatile const void *ptr, ir::PTXOperand::DataType dataType) {
 	switch (dataType) {
 	case ir::PTXOperand::s8:
-		out << (int)(*(const ir::PTXS8 *)ptr);
+		out << (int)(*(volatile const ir::PTXS8 *)ptr);
 		break;
 	case ir::PTXOperand::s16:
-		out << *(const ir::PTXS16 *)ptr;
+		out << *(volatile const ir::PTXS16 *)ptr;
 		break;
 	case ir::PTXOperand::s32:
-		out << *(const ir::PTXS32 *)ptr;
+		out << *(volatile const ir::PTXS32 *)ptr;
 		break;
 	case ir::PTXOperand::s64:
-		out << *(const ir::PTXS64 *)ptr;
+		out << *(volatile const ir::PTXS64 *)ptr;
 		break;
 		
 	case ir::PTXOperand::u8:
-		out << (int)(*(const ir::PTXU8 *)ptr);
+		out << (int)(*(volatile const ir::PTXU8 *)ptr);
 		break;
 	case ir::PTXOperand::u16:
-		out << *(const ir::PTXU16 *)ptr;
+		out << *(volatile const ir::PTXU16 *)ptr;
 		break;
 	case ir::PTXOperand::u32:
-		out << *(const ir::PTXU32 *)ptr;
+		out << *(volatile const ir::PTXU32 *)ptr;
 		break;
 	case ir::PTXOperand::u64:
-		out << *(const ir::PTXU64 *)ptr;
+		out << *(volatile const ir::PTXU64 *)ptr;
 		break;
 		
 	case ir::PTXOperand::f32:
-		out << *(const ir::PTXF32 *)ptr;
+		out << *(volatile const ir::PTXF32 *)ptr;
 		break;
 		
 	case ir::PTXOperand::f64:
-		out << *(const ir::PTXF64 *)ptr;
+		out << *(volatile const ir::PTXF64 *)ptr;
 		break;
 		
 	default:
@@ -991,11 +1014,24 @@ bool InteractiveDebugger::Watchpoint::_testGlobal(const trace::TraceEvent &event
 }
 
 /*! \brief prints watchpoints according to formatting information from command */
-void InteractiveDebugger::_printWatchpoints(const std::string &command) const {
+void InteractiveDebugger::_listWatchpoints(const std::string &command) const {
 	int n = 1;
 	for (WatchpointList::const_iterator w_it = _watchpoints.begin(); 
 		w_it != _watchpoints.end(); ++w_it, n++) {
 		std::cout << "#" << n << " - " << *w_it << "\n";
+	}
+}
+
+/*! \brief print the value of the region specified in a watchpoint */
+void InteractiveDebugger::_printWatchpoint(const Watchpoint &watch) const {
+	if (watch.type == Watchpoint::Global_location && watch.reference == Watchpoint::Address) {
+		std::cout << watch << "\n";
+		for (size_t i = 0; i < watch.elements; i++) {
+			volatile const char *ptr = (const char *)watch.ptr + i * ir::PTXOperand::bytes(watch.dataType);
+			std::cout << "  [" << i << "]  " << (void *)ptr << "   ";
+			printPtxValue(std::cout, ptr, watch.dataType);
+			std::cout << "\n";
+		}
 	}
 }
 
@@ -1018,7 +1054,7 @@ void InteractiveDebugger::_clearWatchpoint(const std::string &command) {
 		}
 		else {
 			std::cout << "undefined watchpoint\n";
-			_printWatchpoints(command);
+			_listWatchpoints(command);
 		}
 	}
 	else {
@@ -1047,57 +1083,65 @@ void InteractiveDebugger::_setWatchpoint(const std::string &command) {
 		return;
 	}
 	
+	Watchpoint watch;
+			
 	if (tokens[1].valString == "global") {
 		
-		if (tokens.size() >= 3 &&
+		if (tokens.size() >= 4 &&
 			tokens[2].valString == "address") {
-			
-			if (!(tokens.size() >= 5 &&
-				tokens[3].type == Token::Number &&
-				tokens[4].type == Token::PtxType) ) {
-				
-				std::cout << "expected: watch global address <.global address> <ptx-type> - no watchpoint set\n";
-				return;
-			}
-			
-			Watchpoint watch;
-			
+
 			watch.ptr = (void *)tokens[3].valNumber;
-			watch.type = Watchpoint::Global_location;
 			watch.reference = Watchpoint::Address;
-			watch.dataType = tokens[4].valPtxType;
-			watch.threadId = -1;
-			watch.hitType = Watchpoint::Write_access;
-			watch.breakOnAccess = true;
-			watch.debugger = this;
-			
-			if (tokens.size() >= 8 &&
-				tokens[5].type == Token::BracketOpen &&
-				tokens[6].type == Token::Number &&
-				tokens[7].type == Token::BracketClose) {
-				//
-				// watch global allocation <address> <ptx-type>[<number>] - 8 tokens
-				//
-				watch.elements = tokens[6].valNumber;
-			}
-			else {
-				//
-				// watch global allocation <address> <ptx-type>	
-				//
-				watch.elements = 1;
-			}
-			watch.size = watch.elements * ir::PTXOperand::bytes(watch.dataType);
-			
-			_watchpoints.push_back(watch);
-			
-			std::cout << "set #" << _watchpoints.size() << ": " << watch << "\n";
+		}
+		else if (tokens.size() >= 4 && tokens[2].valString == "symbol") {
+			std::cout << "watch global symbol not yet implemented\n";
+			return;
 		}
 		else {
-			std::cout << "only global addresses may be watched at this time - no watchpoint set\n";
+			std::cout << "unrecognized reference type '" << tokens[2].valString 
+				<< "' - only 'address' and 'symbol' supported\n";
+			return;
 		}
+			
+		if (!(tokens.size() >= 5 &&
+			tokens[3].type == Token::Number &&
+			tokens[4].type == Token::PtxType) ) {
+			
+			std::cout << "expected: watch global address <.global address> <ptx-type> - no watchpoint set\n";
+			return;
+		}
+			
+		watch.type = Watchpoint::Global_location;
+		watch.dataType = tokens[4].valPtxType;
+		watch.threadId = -1;
+		watch.hitType = Watchpoint::Write_access;
+		watch.breakOnAccess = true;
+		watch.debugger = this;
+		
+		if (tokens.size() >= 8 &&
+			tokens[5].type == Token::BracketOpen &&
+			tokens[6].type == Token::Number &&
+			tokens[7].type == Token::BracketClose) {
+			//
+			// watch global allocation <address> <ptx-type>[<number>] - 8 tokens
+			//
+			watch.elements = tokens[6].valNumber;
+		}
+		else {
+			//
+			// watch global allocation <address> <ptx-type>	
+			//
+			watch.elements = 1;
+		}
+		watch.size = watch.elements * ir::PTXOperand::bytes(watch.dataType);
+		
+		_watchpoints.push_back(watch);
+		
+		std::cout << "set #" << _watchpoints.size() << ": " << watch << "\n";
 	}
 	else {
-		std::cout << "unrecognized state space '" << tokens[1].valString << "' - no watchpoint set\n";
+		std::cout << "only global addresses may be watched at this time - no watchpoint set\n";
+		std::cout << "expected: watch global address <.global address> <ptx-type> - no watchpoint set\n";
 	}
 }
 

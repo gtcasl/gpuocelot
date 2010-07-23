@@ -144,6 +144,8 @@ namespace trace
 		ProgramCounterSet _breakpoints;
 		/*! \brief Should the debugger break on the next instruction */
 		bool _breakNow;
+		/*! \brief Should the compiler break after the current instruction */
+		bool _breakNext;
 		/*! \brief Should the debugger continue processing commands */
 		bool _processCommands;
 		/*! \brief Is the debugger attached? */
@@ -181,7 +183,9 @@ public:
 		/*! \brief View the value of a register */
 		void _printRegister(unsigned int thread, ir::PTXOperand::RegisterType reg) const;
 		/*! \brief prints watchpoints according to formatting information from command */
-		void _printWatchpoints(const std::string &command) const;
+		void _listWatchpoints(const std::string &command) const;
+		/*! \brief print the value of the region specified in a watchpoint */
+		void _printWatchpoint(const Watchpoint &watch) const;
 		/*! \brief */
 		void _clearWatchpoint(const std::string &command);
 		/*! \brief sets a watchpoint */

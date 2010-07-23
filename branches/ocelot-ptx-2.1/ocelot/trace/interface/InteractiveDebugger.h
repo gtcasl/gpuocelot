@@ -14,6 +14,7 @@
 
 // Standard Library Includes
 #include <unordered_set>
+#include <list>
 
 namespace executive
 {
@@ -22,6 +23,8 @@ namespace executive
 
 namespace trace
 {
+	class InteractiveDebugger;
+	
 	/*! \brief A heavy-weight tool for debugging the emulator.
 	
 		This should provide an interface similar to the gdb command line for 
@@ -30,6 +33,96 @@ namespace trace
 	*/
 	class InteractiveDebugger : public TraceGenerator
 	{	
+	public:
+	
+		/*!
+			\brief watchpoint datastructure
+		*/
+		class Watchpoint {
+		public:
+		
+			enum Type {
+				Register_location,
+				Global_location,
+				Shared_location,
+				Param_location,
+				Texture_location,
+				Local_location,
+				Unknown_location,			
+			};
+			
+			enum Reference {
+				Address,
+				Symbol,
+				Unknown_reference
+			};
+			
+			enum HitType {
+				Any_access,
+				Read_access,
+				Write_access,
+				Unknown_access
+			};
+			
+		public:
+			Watchpoint();
+			
+			//! \brief tests an event against a watch point and returns true if it hit
+			bool test(const trace::TraceEvent &event);
+			
+		private:
+		
+			bool _testGlobal(const trace::TraceEvent &event);
+			
+		public:
+		
+			//! \brief state space of watchpoint
+			Type type;
+			
+			//! \brief reference type of watchpoint
+			Reference reference;
+		
+			//! \brief symbol name (assumes reference == Symbol)
+			std::string symbol;
+			
+			//! \brief indicates type of data
+			ir::PTXOperand::DataType dataType;
+			
+			//! \brief location in memory
+			void *ptr;
+			
+			//! \brief number of dataType elements in watched region
+			size_t elements;
+			
+			//! \brief size of watched region in bytes
+			size_t size;
+			
+			//! \brief filters on a particular thread
+			int threadId;
+			
+			//! \brief indicates whether to break on read, write, or any access to watchpoint
+			HitType hitType;
+			
+			//! \brief if true, watchpoint is a breakpoint
+			bool breakOnAccess;
+			
+			//! \brief number of times a thread reads the watchpoint
+			size_t reads;
+			
+			//! \brief number of times a thread writes to the watchpoint
+			size_t writes;
+			
+			//! \brief debugger
+			InteractiveDebugger *debugger;
+		
+		public:
+		
+			//! \brief message recorded on most recent hit of watchpoint
+			std::string hitMessage;
+		};
+		
+		typedef std::list< Watchpoint > WatchpointList;
+	
 	public:
 		std::string filter;
 		bool alwaysAttach;
@@ -57,6 +150,8 @@ namespace trace
 		bool _attached;
 		/*! \brief The current trace event */
 		TraceEvent _event;
+		/*! \brife list of watchpoints */
+		WatchpointList _watchpoints;
 
 	private:
 		/*! \brief Parse a command */
@@ -79,9 +174,20 @@ namespace trace
 		void _removeBreakpoint(unsigned int PC);
 		/*! \brief Set a breakpoint at a specific PC */
 		void _setBreakpoint(unsigned int PC);
+public:
+		/*! \brief gets the value of a register */
+		ir::PTXU64 _getRegister(unsigned int thread, ir::PTXOperand::RegisterType reg) const;
+public:
 		/*! \brief View the value of a register */
-		void _printRegister(unsigned int thread, 
-			ir::PTXOperand::RegisterType reg) const;
+		void _printRegister(unsigned int thread, ir::PTXOperand::RegisterType reg) const;
+		/*! \brief prints watchpoints according to formatting information from command */
+		void _printWatchpoints(const std::string &command) const;
+		/*! \brief */
+		void _clearWatchpoint(const std::string &command);
+		/*! \brief sets a watchpoint */
+		void _setWatchpoint(const std::string &command);
+		/*! \brief finds the watch points triggered by the event and prints their values */
+		void _testWatchpoints(const trace::TraceEvent &event);
 		/*! \brief View values in memory near the specified device address */
 		void _printMemory(ir::PTXU64 address) const;
 		/*! \brief View the kernel assembly code near the specified address */
@@ -92,6 +198,7 @@ namespace trace
 		void _printPC() const;
 		/*! \brief Print the location of the nearest source code line */
 		void _printLocation() const;
+		
 	};
 }
 

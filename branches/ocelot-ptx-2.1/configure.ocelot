@@ -2,7 +2,7 @@
 	ocelot: "ocelot",
 	version: "1.1.520",
 	trace: { 
-		enabled: false,
+		enabled: true,
 		database: "traces/database.trace",
 		memory: false,
 		branch: false,
@@ -13,9 +13,9 @@
 		memoryChecker: true,
 		raceDetector: true,
 		debugger: {
-			enabled: false,
-			kernelFilter: "testShr",
-			alwaysAttach: false
+			enabled: true,
+			kernelFilter: "sequence",
+			alwaysAttach: true
 		},
 		warpSynchronous: {
 			enabled: false,

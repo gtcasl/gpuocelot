@@ -10,6 +10,9 @@
 // C++ includes
 #include <algorithm>
 
+// Boost includes
+#include <boost/tokenizer.hpp>
+
 // Ocelot Includes
 #include <ocelot/trace/interface/InteractiveDebugger.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
@@ -17,6 +20,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Casts.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -29,6 +33,12 @@
 
 namespace trace
 {
+
+
+
+//
+//
+//
 
 InteractiveDebugger::InteractiveDebugger() : alwaysAttach(false)
 {
@@ -115,6 +125,8 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		break;	
 		}
 	}
+	
+	_testWatchpoints(event);
 
 	if(memoryError && !_attached)
 	{
@@ -161,7 +173,10 @@ void InteractiveDebugger::_command(const std::string& command)
 	
 	_processCommands = false;
 	
-	if(base == "help" || base == "h")
+	if (base == "") {
+		_processCommands = true;
+	}
+	else if(base == "help" || base == "h")
 	{
 		_help();
 		_processCommands = true;
@@ -185,6 +200,15 @@ void InteractiveDebugger::_command(const std::string& command)
 		stream >> PC;
 		_setBreakpoint(PC);
 	}
+	else if (base == "list" || base == "list") {
+		_printWatchpoints(command);
+	}
+	else if (base == "clear" || base == "clear") {
+		_clearWatchpoint(command);
+	}
+	else if (base == "watch" || base == "watch") {
+		_setWatchpoint(command);
+	}	
 	else if(base == "print" || base == "p")
 	{
 		std::string modifier;
@@ -267,7 +291,14 @@ void InteractiveDebugger::_help() const
 	std::cout << "  jump     (j) - Jump current warp to the specified PC.\n";
 	std::cout << "  remove   (r) - Remove a breakpoint from a specific PC.\n";
 	std::cout << "  break    (b) - Set a breakpoint at the specified PC.\n";
-	std::cout << "  print    (p) - Print the value of a memory resource.\n";
+	
+	std::cout << "  list         - List watchpoints.\n";
+	std::cout << "  clear        - Clear location or register from watch list.\n";
+	std::cout << "  watch        - Break on accesses to location or register.\n";
+	std::cout << "    global address <address> <ptx-type>\n";
+	std::cout << "    global address <address> <ptx-type>[elements]\n";
+	
+	std::cout << "  print    (p) - Print the value of a megdmory resource.\n";
 	std::cout << "   asm  (a) - Print instructions near the specified PC.\n";
 	std::cout << "   reg  (r) - Print the value of a register.\n";
 	std::cout << "   mem  (m) - Print the values near an address.\n";
@@ -346,6 +377,20 @@ void InteractiveDebugger::_removeBreakpoint(unsigned int PC)
 void InteractiveDebugger::_setBreakpoint(unsigned int PC)
 {
 	_breakpoints.insert(PC);
+}
+
+
+/*! \brief gets the value of a register */
+ir::PTXU64 InteractiveDebugger::_getRegister(unsigned int tid, 
+	ir::PTXOperand::RegisterType reg) const {
+	
+	const executive::EmulatedKernel& kernel =	static_cast<const executive::EmulatedKernel&>(*_kernel);
+	executive::EmulatedKernel::RegisterFile file = kernel.getCurrentRegisterFile();
+	
+	unsigned int threads = _event.blockDim.x * _event.blockDim.y * _event.blockDim.z;
+	unsigned int registers = file.size() / threads;
+	
+	return file[tid * registers + reg];
 }
 
 void InteractiveDebugger::_printRegister(unsigned int thread, 
@@ -468,7 +513,7 @@ void InteractiveDebugger::_printAssembly(unsigned int PC) const
 			static_cast<const executive::EmulatedKernel&>(*_kernel);
 		
 		for(unsigned int pc = PC; 
-			pc < std::min(kernel.instructions.size(), (size_t)PC + 10); ++pc)
+			pc < std::min(kernel.instructions.size(), (size_t)(PC + 10)); ++pc)
 		{
 			std::cout << "(" << pc << ") - " 
 				<< kernel.instructions[pc].toString() << "\n";
@@ -520,6 +565,572 @@ void InteractiveDebugger::_printLocation() const
 	break;
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*!
+	\brief command token
+*/
+class Token {
+public:
+	enum Type {
+		String,
+		Number,
+		PtxType,
+		VectorType,
+		BracketOpen,
+		BracketClose,
+		Unknown
+	};
+	
+private:
+	/*!
+		\brief accept either hexadecimal or decimal
+	*/
+	bool _lexNumber(const std::string &str) {
+		if (str.size() >= 3 && str[0] == '0' && str[1] == 'x') {
+			valNumber = 0;
+			for (size_t n = 2; n < str.size(); n++) {
+				char c = str[n];
+				size_t d = 0;
+				if ( (c >= '0' && c <= '9') ) {
+					d = (size_t)(c - '0');
+				}
+				else if (c >= 'a' && c <= 'f') {
+					d = (size_t)(c - 'a') + 10;
+				}
+				else if (c >= 'A' && c <= 'F') {
+					d = (size_t)(c - 'A') + 10;
+				}
+				else {
+					return false;
+				}
+				valNumber = (valNumber << 4) + d;
+			}
+			type = Number;
+			return true;
+		}
+		else {
+			valNumber = 0;
+			for (size_t n = 0; n < str.size(); n++) {
+				char c = str[n];
+				if (c >= '0' && c <= '9') {
+					valNumber = (valNumber * 10) + (size_t)(c - '0');
+				}
+				else {
+					return false;
+				}
+			}
+			type = Number;
+			return true;
+		}
+		return false;
+	}
+	
+	bool _lexPtxType(const std::string &str) {
+		ir::PTXOperand::DataType types[] = {
+			ir::PTXOperand::s8,
+			ir::PTXOperand::u8,
+			ir::PTXOperand::b8,
+			ir::PTXOperand::s16,
+			ir::PTXOperand::u16,
+			ir::PTXOperand::b16,
+			ir::PTXOperand::s32,
+
+			ir::PTXOperand::u32,
+			ir::PTXOperand::b32,
+			ir::PTXOperand::f32,
+			ir::PTXOperand::s64,
+			ir::PTXOperand::u64,
+			ir::PTXOperand::b64,
+			ir::PTXOperand::f64
+		};
+		const char *names[] = {
+			"s8", "u8", "b8", "s16", "u16", "b16", "s32", "u32", "b32", "f32", "s64", "u64", "b64", "f64",0
+		};
+		for (int n = 0; names[n]; n++) {
+			if (str == std::string(names[n])) {
+				valPtxType = types[n];
+				type = PtxType;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	bool _lexVecType(const std::string &str) {
+		ir::PTXOperand::Vec types[] = {
+			ir::PTXOperand::v1,
+			ir::PTXOperand::v2,
+			ir::PTXOperand::v4,
+		};
+		const char *names[] = {
+			"v1", "v2", "v4", 0
+		};
+		for (int n = 0; names[n]; n++) {
+			if (str == std::string(names[n])) {
+				valVecType = types[n];
+				type = VectorType;
+				return true;
+			}
+		}
+		return false;
+	}
+
+public:
+
+	Token(const std::string &str) {
+		valString = str;
+		if (str == "[") {
+			type = BracketOpen;
+		}
+		else if (str == "]") {
+			type = BracketClose;
+		}
+		else if (_lexNumber(str)) {
+			
+		}
+		else if (_lexPtxType(str)) {
+		
+		}
+		else if (_lexVecType(str)) {
+		
+		}
+		else {
+			type = String;
+		}
+	}
+
+	/*!
+		\brief given a command, break into a sequence of tokens
+	*/
+	static std::vector< Token > tokenize(const std::string & str) {
+		std::vector< Token > tokenVector;
+		boost::char_separator<char> sep(" ", "[]");
+		typedef boost::tokenizer<boost::char_separator<char> > Tokenizer;
+		Tokenizer tokens(str, sep);
+		for (Tokenizer::iterator tok = tokens.begin(); tok != tokens.end(); ++tok) {
+			Token token(*tok);
+			tokenVector.push_back(token);
+		}
+		return tokenVector;
+	}
+
+public:
+	Type type;
+	
+	std::string valString;
+	
+	size_t valNumber;
+	
+	ir::PTXOperand::DataType valPtxType;
+	
+	ir::PTXOperand::Vec valVecType;
+};
+typedef std::vector< Token > TokenVector;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::ostream & operator<< (std::ostream &out, const InteractiveDebugger::Watchpoint &watch) {
+	std::stringstream ss;
+
+	switch (watch.type) {	
+	case trace::InteractiveDebugger::Watchpoint::Register_location:
+	{
+		unsigned int reg = 0;
+		hydrazine::bit_cast(reg, watch.ptr);
+		switch (watch.reference) {
+		case trace::InteractiveDebugger::Watchpoint::Symbol:
+			ss << "watchpoint register " << watch.symbol;
+			break;
+		case trace::InteractiveDebugger::Watchpoint::Address:
+			ss << "watchpoint register " << reg;
+			break;
+		default:
+			return out;
+		}
+	}
+		break;
+	case trace::InteractiveDebugger::Watchpoint::Global_location:
+	{
+		switch (watch.reference) {
+		case trace::InteractiveDebugger::Watchpoint::Symbol:
+			ss << "watchpoint global symbol " << watch.symbol;
+			break;
+		case trace::InteractiveDebugger::Watchpoint::Address:
+			ss << "watch global address " << watch.ptr << " " 
+				<< ir::PTXOperand::toString(watch.dataType) << "[" << watch.elements << "] - " 
+				<< watch.size << " bytes";
+			break;
+		default:
+			return out;
+		}
+	}
+		break;
+	case trace::InteractiveDebugger::Watchpoint::Shared_location:
+	{
+		switch (watch.reference) {
+		case trace::InteractiveDebugger::Watchpoint::Symbol:
+			ss << "watchpoint shared symbol " << watch.symbol;
+			break;
+		case trace::InteractiveDebugger::Watchpoint::Address:
+			ss << "watchpoint shared address " << watch.ptr;
+			break;
+		default:
+			return out;
+		}
+	}
+		break;
+	case trace::InteractiveDebugger::Watchpoint::Param_location:
+	{
+		switch (watch.reference) {
+		case trace::InteractiveDebugger::Watchpoint::Symbol:
+			ss << "watchpoint parameter " << watch.symbol;
+			break;
+		default:
+			return out;
+		}
+	}
+		break;
+	case trace::InteractiveDebugger::Watchpoint::Local_location:
+	{
+		switch (watch.reference) {
+		case trace::InteractiveDebugger::Watchpoint::Symbol:
+			ss << "watchpoint local symbol " << watch.symbol;
+			break;
+		case trace::InteractiveDebugger::Watchpoint::Address:
+			ss << "watchpoint local address " << watch.ptr;
+			break;
+		default:
+			return out;
+		}
+	}
+		break;
+	case trace::InteractiveDebugger::Watchpoint::Texture_location:
+	{
+		switch (watch.reference) {
+		case trace::InteractiveDebugger::Watchpoint::Symbol:
+			ss << "watchpoint texture symbol " << watch.symbol;
+			break;
+		case trace::InteractiveDebugger::Watchpoint::Address:
+			ss << "watchpoint texture address " << watch.ptr;
+			break;
+		default:
+			return out;
+		}
+	}
+		break;
+	default:
+		return out;
+	}
+	
+	out << ss.str();
+	return out;
+}
+
+InteractiveDebugger::Watchpoint::Watchpoint():
+	type(Unknown_location),
+	reference(Address),
+	ptr(0),
+	size(0),
+	hitType(Any_access),
+	breakOnAccess(true),
+	reads(0),
+	writes(0)
+{
+}
+
+static void printPtxValue(std::ostream &out, const void *ptr, ir::PTXOperand::DataType dataType) {
+	switch (dataType) {
+	case ir::PTXOperand::s8:
+		out << (int)(*(const ir::PTXS8 *)ptr);
+		break;
+	case ir::PTXOperand::s16:
+		out << *(const ir::PTXS16 *)ptr;
+		break;
+	case ir::PTXOperand::s32:
+		out << *(const ir::PTXS32 *)ptr;
+		break;
+	case ir::PTXOperand::s64:
+		out << *(const ir::PTXS64 *)ptr;
+		break;
+		
+	case ir::PTXOperand::u8:
+		out << (int)(*(const ir::PTXU8 *)ptr);
+		break;
+	case ir::PTXOperand::u16:
+		out << *(const ir::PTXU16 *)ptr;
+		break;
+	case ir::PTXOperand::u32:
+		out << *(const ir::PTXU32 *)ptr;
+		break;
+	case ir::PTXOperand::u64:
+		out << *(const ir::PTXU64 *)ptr;
+		break;
+		
+	case ir::PTXOperand::f32:
+		out << *(const ir::PTXF32 *)ptr;
+		break;
+		
+	case ir::PTXOperand::f64:
+		out << *(const ir::PTXF64 *)ptr;
+		break;
+		
+	default:
+		break;
+	}
+}
+
+//! \brief tests an event against a watch point and returns true if it hit
+bool InteractiveDebugger::Watchpoint::test(const trace::TraceEvent &event) {
+		
+	bool hitLd = (hitType == Any_access || hitType == Read_access);
+	bool hitSt = (hitType == Any_access || hitType == Write_access);
+	
+	if (!(event.instruction->addressSpace == ir::PTXInstruction::Global &&
+			((event.instruction->opcode == ir::PTXInstruction::Ld && hitLd) || 
+				(event.instruction->opcode == ir::PTXInstruction::St && hitSt))
+		)) {
+		return false;
+	}
+	bool result = false;
+	switch (type) {
+	case Global_location:
+		{
+			result = _testGlobal(event);
+		}
+	break;
+	default:
+		break;
+	}
+	return result;
+}
+
+/*!
+	\brief tests for accesses to global memory
+*/
+bool InteractiveDebugger::Watchpoint::_testGlobal(const trace::TraceEvent &event) {
+	
+	int hitTid = -1;	// tid of first thread to hit a watchpoint or -1 if not hit
+	std::stringstream ss;
+	
+	trace::TraceEvent::U64Vector::const_iterator addr_itr = event.memory_addresses.begin();
+	for (size_t tid = 0; tid < event.active.size(); tid++) {
+		if (event.active[tid]) {
+			void *addr = 0;
+			hydrazine::bit_cast(addr, *addr_itr);
+
+			bool store = (event.instruction->opcode == ir::PTXInstruction::St);
+			size_t elementCount = (store ? event.instruction->a.vec : event.instruction->d.vec);
+			
+			size_t memorySize = event.memory_size * elementCount;
+			
+			char *regStart = (char *)ptr, *regEnd = (char *)ptr + size;
+			char *hitStart = (char *)addr, *hitEnd = (char *)hitStart + memorySize;
+			
+			if (hitEnd > regStart && hitStart < regEnd) {
+
+				if (hitTid < 0) {
+					hitTid = (int)tid;
+					hitMessage = "";
+					ss << "CTA (" << event.blockId.x << ", " << event.blockId.y << ")" << "\n";
+				}
+				
+				size_t tidz = tid / (event.blockDim.x * event.blockDim.y);
+				size_t tidy = ((tid - tidz * (event.blockDim.x * event.blockDim.y)) / event.blockDim.x);
+				size_t tidx = tid - (tidy + tidz * event.blockDim.y) * event.blockDim.x;
+				
+				ss << "  thread (" << tidx << ", " << tidy << ", " << tidz << ") - " 
+					<< (store ? "store to " : "load from ")
+					<< addr << " " << memorySize << " bytes\n";
+				
+				for (int i = 0; i * ir::PTXOperand::bytes(dataType) < memorySize; i++) {
+					if (!i) {
+						ss << "  " << (store ? "old": "   ") << " value = ";
+					}
+					else {
+						ss << "            = ";
+					}
+					printPtxValue(ss, addr, dataType);
+					ss << "\n";
+				}	
+				if (store) {
+					// print the value from the register file
+					ir::PTXU64 srcValues[4];
+					
+					if (event.instruction->a.vec > 1) {
+						for (int i = 0; i < event.instruction->a.vec; i++) {
+							ir::PTXU64 srcValue = debugger->_getRegister(tid, event.instruction->a.array[i].reg);
+							srcValues[i] = srcValue;
+						}
+					}
+					else {
+						ir::PTXU64 srcValue = debugger->_getRegister(tid, event.instruction->a.reg);
+						srcValues[0] = srcValue;
+					}
+					for (int i = 0; i * ir::PTXOperand::bytes(dataType) < memorySize; i++) {
+						if (!i) {
+							ss << "  new value = ";
+						}
+						else {
+							ss << "            = ";
+						}
+						printPtxValue(ss, srcValues + i, dataType);
+						ss << "\n";
+					}	
+				}			
+			}
+			++addr_itr;
+		}
+	}
+	if (hitTid >= 0) {
+		hitMessage = ss.str();
+	}
+	return (hitTid >= 0);
+}
+
+/*! \brief prints watchpoints according to formatting information from command */
+void InteractiveDebugger::_printWatchpoints(const std::string &command) const {
+	int n = 1;
+	for (WatchpointList::const_iterator w_it = _watchpoints.begin(); 
+		w_it != _watchpoints.end(); ++w_it, n++) {
+		std::cout << "#" << n << " - " << *w_it << "\n";
+	}
+}
+
+/*! \brief clears indicated watchpoints
+
+*/
+void InteractiveDebugger::_clearWatchpoint(const std::string &command) {
+	// clear number
+	TokenVector tokens = Token::tokenize(command);
+	if (tokens.size() == 1 && tokens[0].valString == "clear") {
+		_watchpoints.clear();
+	}
+	else if (tokens.size() > 1 && tokens[1].type == Token::Number) {
+		WatchpointList::iterator wit = _watchpoints.begin();
+		for (size_t n = 1; n < tokens[1].valNumber; n++) {
+			++wit;
+		}
+		if (wit != _watchpoints.end()) {
+			_watchpoints.erase(wit);
+		}
+		else {
+			std::cout << "undefined watchpoint\n";
+			_printWatchpoints(command);
+		}
+	}
+	else {
+		std::cout 
+			<< "expected:\n  clear\n"
+			<< "  clear <watchpoint number>\n";
+	}
+}
+
+/*! \brief sets a watchpoint */
+void InteractiveDebugger::_setWatchpoint(const std::string &command) {
+	//
+	// future features:
+	//
+	// watch register {symbol|number} {|read|write} {|break|nobreak} {thread number}
+	// watch global {symbol|address {ptx-type|number}} {|read|write} {|break|nobreak} {thread number}
+	// watch shared {symbol|address {ptx-type|number}} {|read|write} {|break|nobreak} {thread number}
+	// watch local {symbol|address {ptx-type|number}} {|read|write} {|break|nobreak} {thread number}
+	// watch texture {symbol|address vector-type ptx-type} {|read|write} {|break|nobreak} {thread number}
+	// watch parameter {symbol|address ptx-type} {|read|write} {|break|nobreak} {thread number}
+	
+	TokenVector tokens = Token::tokenize(command);
+	
+	if (tokens.size() < 3) {
+		std::cout << "expected: watch global address <.global address> <ptx-type> - no watchpoint set\n";
+		return;
+	}
+	
+	if (tokens[1].valString == "global") {
+		
+		if (tokens.size() >= 3 &&
+			tokens[2].valString == "address") {
+			
+			if (!(tokens.size() >= 5 &&
+				tokens[3].type == Token::Number &&
+				tokens[4].type == Token::PtxType) ) {
+				
+				std::cout << "expected: watch global address <.global address> <ptx-type> - no watchpoint set\n";
+				return;
+			}
+			
+			Watchpoint watch;
+			
+			watch.ptr = (void *)tokens[3].valNumber;
+			watch.type = Watchpoint::Global_location;
+			watch.reference = Watchpoint::Address;
+			watch.dataType = tokens[4].valPtxType;
+			watch.threadId = -1;
+			watch.hitType = Watchpoint::Write_access;
+			watch.breakOnAccess = true;
+			watch.debugger = this;
+			
+			if (tokens.size() >= 8 &&
+				tokens[5].type == Token::BracketOpen &&
+				tokens[6].type == Token::Number &&
+				tokens[7].type == Token::BracketClose) {
+				//
+				// watch global allocation <address> <ptx-type>[<number>] - 8 tokens
+				//
+				watch.elements = tokens[6].valNumber;
+			}
+			else {
+				//
+				// watch global allocation <address> <ptx-type>	
+				//
+				watch.elements = 1;
+			}
+			watch.size = watch.elements * ir::PTXOperand::bytes(watch.dataType);
+			
+			_watchpoints.push_back(watch);
+			
+			std::cout << "set #" << _watchpoints.size() << ": " << watch << "\n";
+		}
+		else {
+			std::cout << "only global addresses may be watched at this time - no watchpoint set\n";
+		}
+	}
+	else {
+		std::cout << "unrecognized state space '" << tokens[1].valString << "' - no watchpoint set\n";
+	}
+}
+
+/*! \brief finds the watch points triggered by the event and prints their values */
+void InteractiveDebugger::_testWatchpoints(const trace::TraceEvent &event) {
+	
+	const executive::EmulatedKernel& kernel =
+		static_cast<const executive::EmulatedKernel&>(*_kernel);
+		
+	int n = 1;
+	int hittingWPs = 0;
+	
+	for (WatchpointList::iterator w_it = _watchpoints.begin(); 
+		w_it != _watchpoints.end(); ++w_it, n++) {
+		
+		if (w_it->test(event)) {
+			if (!hittingWPs) {
+				std::cout << kernel.instructions[event.PC].toString() << "\n";
+			}
+			++hittingWPs;
+			std::cout << "watchpoint #" << n << " - " << " " << w_it->hitMessage;
+			
+			if (w_it->breakOnAccess) {
+				_breakNow = true;
+			}
+		}
+	}
+	if (hittingWPs && _breakNow) {
+		std::cout << "break on watchpoint\n";
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
 

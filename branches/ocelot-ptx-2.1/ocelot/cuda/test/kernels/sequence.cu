@@ -32,6 +32,12 @@ extern "C" __global__ void testShr(int *A, const int *B) {
 	A[i] = b;
 }
 
+extern "C" __global__ void v4sequence(int4 *A, int N) {
+	int i = threadIdx.x + blockIdx.x * blockDim.x + 1;
+	int4 b = make_int4(i, 2*i, 3*i, 4*i);
+	A[i-1] = b;
+}
+
 int main(int argc, char *arg[]) {
 
 	const int N = 1024;
@@ -51,9 +57,12 @@ int main(int argc, char *arg[]) {
 	}
 	
 	cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
+	
+	printf("A_gpu = 0x%x\n", A_gpu);
 
 	dim3 grid((N+31)/32,1);
 	dim3 block(32, 1);
+	
 	sequence<<< grid, block >>>(A_gpu, N);
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	for (int i = 0; i < N; i++) {
@@ -61,6 +70,11 @@ int main(int argc, char *arg[]) {
 			++errors;
 		}
 	}
+	
+	grid.x /= 4;
+	v4sequence<<< grid, block >>>((int4 *)A_gpu, N/4);
+	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
+	grid.x *= 4;
 
 	int *B_gpu = 0;
 	if (cudaMalloc((void **)&B_gpu, bytes) != cudaSuccess) {

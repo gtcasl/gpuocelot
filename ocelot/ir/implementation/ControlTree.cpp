@@ -15,7 +15,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace ir
 {
@@ -86,7 +86,7 @@ namespace ir
 		return _label;
 	}
 
-	const ControlTree::Node::RegionType ControlTree::Node::rtype() const
+	ControlTree::Node::RegionType ControlTree::Node::rtype() const
 	{
 		return _rtype;
 	}
@@ -164,7 +164,7 @@ namespace ir
 		return out;
 	}
 
-	const ControlTree::Node* const ControlTree::get_root_node() const
+	ControlTree::Node* const ControlTree::get_root_node() const
 	{
 		return _root;
 	}

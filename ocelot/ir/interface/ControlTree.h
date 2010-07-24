@@ -57,7 +57,7 @@ namespace ir
 					/*! \brief Get the label */
 					const string label() const;
 					/*! \brief Get the region type */
-					const RegionType rtype() const;
+					RegionType rtype() const;
 					/*! \brief Get the children */
 					const NodeList& children() const;
 					/*! \brief Get successors from the abstract flowgraph */
@@ -153,7 +153,7 @@ namespace ir
 			std::ostream& write(std::ostream& out) const;
 
 			/*! \brief Returns the root node of the control tree */
-			const Node* const get_root_node() const;
+			Node* const get_root_node() const;
 
 		private:
 			Node* insert_node(Node* node);

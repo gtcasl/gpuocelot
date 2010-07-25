@@ -31,6 +31,18 @@ std::string ir::PTXInstruction::toString( PermuteMode m ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( FloatingPointMode m ) {
+	switch( m ) {
+		case Finite: return "finite"; break;
+		case Infinite: return "infinite"; break;
+		case Number: return "number"; break;
+		case NotANumber: return "notanumber"; break;
+		case Normal: return "normal"; break;
+		case SubNormal: return "subnormal"; break;
+		default: break;
+	}
+	return "";
+}
 std::string ir::PTXInstruction::toString( Vec v ) {
 	switch( v ) {
 		case PTXOperand::v1: return "v1"; break;
@@ -262,6 +274,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Sured: return "sured"; break;
 		case Sust: return "sust"; break;
 		case Suq: return "suq"; break;
+		case TestP: return "testp"; break;
 		case Tex: return "tex"; break;
 		case Txq: return "txq"; break;
 		case Trap: return "trap"; break;
@@ -1502,8 +1515,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
-			if( !PTXOperand::valid( type, d.type ) 
-				&& d.addressMode != PTXOperand::Immediate ) {
+			if( !PTXOperand::valid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
@@ -1560,8 +1572,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}			
-			if( !PTXOperand::valid( type, d.type ) 
-				&& d.addressMode != PTXOperand::Immediate ) {
+			if( !PTXOperand::valid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
@@ -1583,20 +1594,35 @@ std::string ir::PTXInstruction::valid() const {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
 			}
+			if( !PTXOperand::valid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
 			if( !PTXOperand::valid( type, a.type ) 
 				&& a.addressMode != PTXOperand::Immediate ) {
 				return "operand A type " + PTXOperand::toString( a.type ) 
-					+ " cannot be assigned to " + PTXOperand::toString( type );
-			}
-			if( !PTXOperand::valid( type, d.type ) 
-				&& d.addressMode != PTXOperand::Immediate ) {
-				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( !PTXOperand::valid( type, b.type ) 
 				&& b.addressMode != PTXOperand::Immediate ) {
 				return "operand B type " + PTXOperand::toString( b.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
+		case TestP: {
+			if( !( type == PTXOperand::f32 || type == PTXOperand::f64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( d.type != ir::PTXOperand::pred ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " should be a predicate instead.";
 			}
 			break;
 		}
@@ -2046,6 +2072,11 @@ std::string ir::PTXInstruction::toString() const {
 			result += PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;
+		}
+		case TestP: {
+			return guard() + "testp." + toString( floatingPointMode ) 
+				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
+				+ a.toString();
 		}
 		case Tex: {
 			return guard() + "tex." + toString( geometry ) + ".v4." 

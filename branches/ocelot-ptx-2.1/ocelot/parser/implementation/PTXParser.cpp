@@ -1495,6 +1495,12 @@ namespace parser
 		statement.instruction.permuteMode = tokenToPermuteMode( token );
 	}
 	
+	void PTXParser::State::floatingPointMode( int token )
+	{
+		statement.instruction.floatingPointMode
+			= tokenToFloatingPointMode( token );
+	}
+	
 	void PTXParser::State::defaultPermute()
 	{
 		statement.instruction.permuteMode = ir::PTXInstruction::DefaultPermute;
@@ -1521,11 +1527,11 @@ namespace parser
 
 		if( operands == 6 )
 		{
-			statement.instruction.d = operandVector[1];
+			statement.instruction.d  = operandVector[1];
 			statement.instruction.pq = operandVector[2];
-			statement.instruction.a = operandVector[3];
-			statement.instruction.b = operandVector[4];
-			statement.instruction.c = operandVector[5];		
+			statement.instruction.a  = operandVector[3];
+			statement.instruction.b  = operandVector[4];
+			statement.instruction.c  = operandVector[5];		
 		}
 		else
 		{
@@ -1560,13 +1566,13 @@ namespace parser
 
 		assert( operandVector.size() == 4 );
 
-		statement.directive = ir::PTXStatement::Instr;
-		statement.instruction.type = tokenToDataType( dataType );
+		statement.directive          = ir::PTXStatement::Instr;
+		statement.instruction.type   = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( "tex" );
-		statement.instruction.pg = operandVector[0];
-		statement.instruction.d = operandVector[1];
-		statement.instruction.a = operandVector[2];
-		statement.instruction.c = operandVector[3];		
+		statement.instruction.pg     = operandVector[0];
+		statement.instruction.d      = operandVector[1];
+		statement.instruction.a      = operandVector[2];
+		statement.instruction.c      = operandVector[3];		
 	}
 	
 	void PTXParser::State::callPrototypeName( const std::string& identifier )
@@ -1781,6 +1787,7 @@ namespace parser
 
 	PTXParser::Exception::~Exception() throw()
 	{
+
 	}
 
 	std::string PTXParser::toString( YYLTYPE& location, State& state )
@@ -1912,22 +1919,22 @@ namespace parser
 	{
 		switch( token )
 		{
-			case TOKEN_U8: return ir::PTXOperand::u8; break;
-			case TOKEN_U16: return ir::PTXOperand::u16; break;
-			case TOKEN_U32: return ir::PTXOperand::u32; break;
-			case TOKEN_U64: return ir::PTXOperand::u64; break;
-			case TOKEN_S8: return ir::PTXOperand::s8; break;
-			case TOKEN_S16: return ir::PTXOperand::s16; break;
-			case TOKEN_S32: return ir::PTXOperand::s32; break;
-			case TOKEN_S64: return ir::PTXOperand::s64; break;
-			case TOKEN_B8: return ir::PTXOperand::b8; break;
-			case TOKEN_B16: return ir::PTXOperand::b16; break;
-			case TOKEN_B32: return ir::PTXOperand::b32; break;
-			case TOKEN_B64: return ir::PTXOperand::b64; break;
+			case TOKEN_U8:   return ir::PTXOperand::u8; break;
+			case TOKEN_U16:  return ir::PTXOperand::u16; break;
+			case TOKEN_U32:  return ir::PTXOperand::u32; break;
+			case TOKEN_U64:  return ir::PTXOperand::u64; break;
+			case TOKEN_S8:   return ir::PTXOperand::s8; break;
+			case TOKEN_S16:  return ir::PTXOperand::s16; break;
+			case TOKEN_S32:  return ir::PTXOperand::s32; break;
+			case TOKEN_S64:  return ir::PTXOperand::s64; break;
+			case TOKEN_B8:   return ir::PTXOperand::b8; break;
+			case TOKEN_B16:  return ir::PTXOperand::b16; break;
+			case TOKEN_B32:  return ir::PTXOperand::b32; break;
+			case TOKEN_B64:  return ir::PTXOperand::b64; break;
 			case TOKEN_PRED: return ir::PTXOperand::pred; break;
-			case TOKEN_F16: return ir::PTXOperand::f16; break;
-			case TOKEN_F32: return ir::PTXOperand::f32; break;
-			case TOKEN_F64: return ir::PTXOperand::f64; break;
+			case TOKEN_F16:  return ir::PTXOperand::f16; break;
+			case TOKEN_F32:  return ir::PTXOperand::f32; break;
+			case TOKEN_F64:  return ir::PTXOperand::f64; break;
 			default:
 			{
 				Exception exception;
@@ -2033,6 +2040,7 @@ namespace parser
 		if( string == "st" ) return ir::PTXInstruction::St;
 		if( string == "sub" ) return ir::PTXInstruction::Sub;
 		if( string == "subc" ) return ir::PTXInstruction::SubC;
+		if( string == "testp" ) return ir::PTXInstruction::TestP;
 		if( string == "tex" ) return ir::PTXInstruction::Tex;
 		if( string == "trap" ) return ir::PTXInstruction::Trap;
 		if( string == "vote" ) return ir::PTXInstruction::Vote;
@@ -2177,7 +2185,7 @@ namespace parser
 		
 		}
 		
-		return ir::PTXInstruction::BoolOp_Invalid;		
+		return ir::PTXInstruction::BoolOp_Invalid;
 	}
 
 	ir::PTXInstruction::Geometry PTXParser::tokenToGeometry( int token )
@@ -2235,6 +2243,24 @@ namespace parser
 		}
 		
 		return ir::PTXInstruction::DefaultPermute;
+	}
+
+	ir::PTXInstruction::FloatingPointMode PTXParser::tokenToFloatingPointMode( 
+		int token )
+	{
+		switch( token )
+		{
+			case TOKEN_FINITE:    return ir::PTXInstruction::Finite;    break;
+			case TOKEN_INFINITE:  return ir::PTXInstruction::Infinite;  break;
+			case TOKEN_NUMBER:    return ir::PTXInstruction::Number;    break;
+			case TOKEN_NOT_A_NUMBER: 
+				return ir::PTXInstruction::NotANumber; break;
+			case TOKEN_NORMAL:    return ir::PTXInstruction::Normal;    break;
+			case TOKEN_SUBNORMAL: return ir::PTXInstruction::SubNormal; break;
+			default: break;
+		}
+		
+		return ir::PTXInstruction::FloatingPointMode_Invalid;
 	}
 
 	ir::PTXStatement::TextureSpace PTXParser::tokenToTextureSpace( int token )

@@ -13,7 +13,7 @@
 		memoryChecker: true,
 		raceDetector: true,
 		debugger: {
-			enabled: true,
+			enabled: false,
 			kernelFilter: "sequence",
 			alwaysAttach: true
 		},

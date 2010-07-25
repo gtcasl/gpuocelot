@@ -1059,6 +1059,7 @@ namespace translator
 			case ir::PTXInstruction::St: _translateSt( i ); break;
 			case ir::PTXInstruction::Sub: _translateSub( i ); break;
 			case ir::PTXInstruction::SubC: _translateSubC( i ); break;
+			case ir::PTXInstruction::TestP: _translateTestP( i ); break;
 			case ir::PTXInstruction::Tex: _translateTex( i ); break;
 			case ir::PTXInstruction::Trap: _translateTrap( i ); break;
 			case ir::PTXInstruction::Vote: _translateVote( i ); break;
@@ -4521,6 +4522,60 @@ namespace translator
 		}	
 	}
 
+	void PTXToLLVMTranslator::_translateTestP( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		switch( i.floatingPointMode )
+		{
+		case ir::PTXInstruction::Finite:
+		{
+			call.name = "@__ocelot_testp_finite";
+		}
+		break;
+		case ir::PTXInstruction::Infinite:
+		{
+			call.name = "@__ocelot_testp_infinite";
+		}
+		break;
+		case ir::PTXInstruction::Number:
+		{
+			call.name = "@__ocelot_testp_number";
+		}
+		break;
+		case ir::PTXInstruction::NotANumber:
+		{
+			call.name = "@__ocelot_testp_notanumber";
+		}
+		break;
+		case ir::PTXInstruction::Normal:
+		{
+			call.name = "@__ocelot_testp_normal";
+		}
+		break;
+		case ir::PTXInstruction::SubNormal:
+		{
+			call.name = "@__ocelot_testp_subnormal";
+		}
+		break;
+		default: assertM(false, "Invalid floating point mode.");
+		}
+		
+		if( i.type == ir::PTXOperand::f32 )
+		{
+			call.name += "_f32";
+		}
+		else
+		{
+			call.name += "_f64";
+		}
+		
+		call.d = _destination( i );
+		call.parameters.push_back( _translate( i.a ) );
+		
+		_add( call );
+	}
+
 	void PTXToLLVMTranslator::_translateTex( const ir::PTXInstruction& i )
 	{
 		_usesTextures = true;
@@ -6865,6 +6920,47 @@ namespace translator
 		_llvmKernel->_statements.push_front( prmt );		
 		prmt.label = "__ocelot_prmt_rc16";
 		_llvmKernel->_statements.push_front( prmt );		
+
+		ir::LLVMStatement testp( ir::LLVMStatement::FunctionDeclaration );
+
+		testp.linkage = ir::LLVMStatement::InvalidLinkage;
+		testp.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		testp.visibility = ir::LLVMStatement::Default;
+		
+		testp.operand.type.category = ir::LLVMInstruction::Type::Element;
+		testp.operand.type.type = ir::LLVMInstruction::I1;
+		
+		testp.parameters.resize( 1 );
+		testp.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		testp.parameters[0].type.type = ir::LLVMInstruction::F32;
+	
+		testp.label = "__ocelot_testp_finite_f32";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_infinite_f32";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_number_f32";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_notanumber_f32";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_normal_f32";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_subnormal_f32";
+		_llvmKernel->_statements.push_front( testp );
+
+		testp.parameters[0].type.type = ir::LLVMInstruction::F64;
+		
+		testp.label = "__ocelot_testp_finite_f64";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_infinite_f64";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_number_f64";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_notanumber_f64";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_normal_f64";
+		_llvmKernel->_statements.push_front( testp );
+		testp.label = "__ocelot_testp_subnormal_f64";
+		_llvmKernel->_statements.push_front( testp );
 
 		ir::LLVMStatement setRoundingMode( 
 			ir::LLVMStatement::FunctionDeclaration );

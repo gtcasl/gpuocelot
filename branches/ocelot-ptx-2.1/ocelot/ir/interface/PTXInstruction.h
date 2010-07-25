@@ -86,6 +86,7 @@ namespace ir {
 			Sured,
 			Sust,
 			Suq,
+			TestP,
 			Tex,
 			Txq,
 			Trap,
@@ -213,7 +214,17 @@ namespace ir {
 			EdgeClampLeft,
 			EdgeClampRight,
 			ReplicateSixteen
-			};
+		};
+			
+		enum FloatingPointMode {
+			Finite,
+			Infinite,
+			Number,
+			NotANumber,
+			Normal,
+			SubNormal,
+			FloatingPointMode_Invalid
+		};
 		
 		/*! Vector operation */
 		typedef PTXOperand::Vec Vec;
@@ -238,6 +249,7 @@ namespace ir {
 	public:
 		static std::string toString( Level );
 		static std::string toString( PermuteMode );
+		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );
 		static std::string toString( AddressSpace );
 		static std::string toString( AtomicOperation );
@@ -325,6 +337,9 @@ namespace ir {
 			
 			/* If instruction type is vote, specifies the mode of voting */
 			VoteMode vote;
+			
+			/* For TestP instructions, specifies the floating point mode */
+			FloatingPointMode floatingPointMode;
 			
 			/* If instruction is a branch, is it .uni */
 			bool uni;

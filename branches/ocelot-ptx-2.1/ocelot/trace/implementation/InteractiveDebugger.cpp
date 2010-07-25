@@ -34,12 +34,6 @@
 namespace trace
 {
 
-
-
-//
-//
-//
-
 InteractiveDebugger::InteractiveDebugger() : alwaysAttach(false)
 {
 
@@ -69,7 +63,7 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		{
 		case ir::PTXInstruction::Const:
 		{
-			if(*address + _event.memory_size > _kernel->constMemorySize())
+			if(*address + event.memory_size > _kernel->constMemorySize())
 			{
 				std::cout << "(ocelot-dbg) Constant memory access violation at " 
 					<< (void*)*address << "\n";
@@ -80,7 +74,7 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		case ir::PTXInstruction::Global:
 		{
 			if(!_kernel->device->checkMemoryAccess(
-				(void*)*address, _event.memory_size))
+				(void*)*address, event.memory_size))
 			{
 				std::cout << "(ocelot-dbg) Global memory access violation at " 
 					<< (void*)*address << "\n";
@@ -90,7 +84,7 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		break;
 		case ir::PTXInstruction::Local:
 		{
-			if(*address + _event.memory_size > _kernel->localMemorySize())
+			if(*address + event.memory_size > _kernel->localMemorySize())
 			{
 				std::cout << "(ocelot-dbg) Local memory access violation at " 
 					<< (void*)*address << "\n";
@@ -100,10 +94,11 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		break;
 		case ir::PTXInstruction::Param:
 		{
-			if(*address + _event.memory_size > _kernel->parameterMemorySize())
+			if(*address + event.memory_size > _kernel->parameterMemorySize())
 			{
 				std::cout << "(ocelot-dbg) Parameter memory access " 
-					<< "violation at " << (void*)*address << "\n";
+					<< "violation at " << (void*)*address << " (" 
+					<< _event.memory_size << " bytes)\n";
 
 				memoryError = true;
 			}
@@ -111,7 +106,7 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		break;
 		case ir::PTXInstruction::Shared:
 		{
-			if(*address + _event.memory_size > _kernel->totalSharedMemorySize())
+			if(*address + event.memory_size > _kernel->totalSharedMemorySize())
 			{
 				std::cout << "(ocelot-dbg) Shared memory access violation at " 
 					<< (void*)*address << "\n";
@@ -402,15 +397,17 @@ void InteractiveDebugger::_setBreakpoint(unsigned int PC)
 	_breakpoints.insert(PC);
 }
 
-
 /*! \brief gets the value of a register */
 ir::PTXU64 InteractiveDebugger::_getRegister(unsigned int tid, 
 	ir::PTXOperand::RegisterType reg) const {
 	
-	const executive::EmulatedKernel& kernel =	static_cast<const executive::EmulatedKernel&>(*_kernel);
-	executive::EmulatedKernel::RegisterFile file = kernel.getCurrentRegisterFile();
+	const executive::EmulatedKernel& kernel = static_cast<
+		const executive::EmulatedKernel&>(*_kernel);
+	executive::EmulatedKernel::RegisterFile file =
+		kernel.getCurrentRegisterFile();
 	
-	unsigned int threads = _event.blockDim.x * _event.blockDim.y * _event.blockDim.z;
+	unsigned int threads = _event.blockDim.x *
+		_event.blockDim.y * _event.blockDim.z;
 	unsigned int registers = file.size() / threads;
 	
 	return file[tid * registers + reg];
@@ -519,8 +516,8 @@ void InteractiveDebugger::_printMemory(ir::PTXU64 address) const
 			}
 			std::cout.width( 1 );
 			std::cout << " ";
+			address += 8;
 		}
-		address += 8;
 		std::cout << std::dec << "\n";
 	}
 

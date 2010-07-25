@@ -60,7 +60,7 @@
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
-%token<text> OPCODE_BFI
+%token<text> OPCODE_BFI OPCODE_TESTP
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -120,6 +120,9 @@
 %token<value> TOKEN_BALLOT
 
 %token<value> TOKEN_F4E TOKEN_B4E TOKEN_RC8 TOKEN_ECL TOKEN_ECR TOKEN_RC16
+
+%token<value> TOKEN_FINITE TOKEN_INFINITE TOKEN_NUMBER TOKEN_NOT_A_NUMBER
+%token<value> TOKEN_NORMAL TOKEN_SUBNORMAL
 
 %token<value> TOKEN_DECIMAL_CONSTANT
 
@@ -551,7 +554,8 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
 	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT
-	| OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV | OPCODE_BFI;
+	| OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV | OPCODE_BFI
+	| OPCODE_TESTP;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -703,7 +707,7 @@ instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2
 	| atom | bar | brkpt | clz | cvt | div | exit | ld | mad | mad24 | membar 
 	| mov | mul24 | mul | notInstruction | pmevent | popc | prmt 
 	| rcpSqrtInstruction | red | ret | sad | selp | set | setp | slct | st 
-	| tex | trap | vote;
+	| testp | tex | trap | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR;
@@ -1198,6 +1202,19 @@ geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D;
 geometry : geometryId
 {
 	state.geometry( $<value>1 );
+};
+
+floatingPointModeType : TOKEN_FINITE | TOKEN_INFINITE | TOKEN_NUMBER 
+	| TOKEN_NOT_A_NUMBER | TOKEN_NORMAL | TOKEN_SUBNORMAL;
+
+floatingPointMode : floatingPointModeType
+{
+	state.floatingPointMode( $<value>1 );
+}; 
+
+testp : OPCODE_TESTP floatingPointMode dataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
 };
 
 tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '[' 

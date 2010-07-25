@@ -126,6 +126,7 @@ namespace translator
 			void _translateSt( const ir::PTXInstruction& i );
 			void _translateSub( const ir::PTXInstruction& i );
 			void _translateSubC( const ir::PTXInstruction& i );
+			void _translateTestP( const ir::PTXInstruction& i );
 			void _translateTex( const ir::PTXInstruction& i );
 			void _translateTrap( const ir::PTXInstruction& i );
 			void _translateVote( const ir::PTXInstruction& i );

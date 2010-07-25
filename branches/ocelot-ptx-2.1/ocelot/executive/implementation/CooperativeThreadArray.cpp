@@ -408,6 +408,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				eval_Sub(context, instr); break;
 			case PTXInstruction::SubC:
 				eval_SubC(context, instr); break;
+			case PTXInstruction::TestP:
+				eval_TestP(context, instr); break;
 			case PTXInstruction::Tex:
 				eval_Tex(context, instr); break;
 			case PTXInstruction::Trap:
@@ -7500,6 +7502,108 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 
 	default:
 		throw RuntimeException("invalid datatype", context.PC, instr);
+	}
+}
+
+void executive::CooperativeThreadArray::eval_TestP(CTAContext &context,
+	const ir::PTXInstruction &instr) {
+	trace();
+	const PTXInstruction::FloatingPointMode mode = instr.floatingPointMode;
+
+	switch(instr.type) {
+	case PTXOperand::f32:
+	{
+		for (int threadID = 0; threadID  < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			bool d = false;
+			PTXF32 a = operandAsF32(threadID, instr.a);
+			
+			switch(mode)
+			{
+			case PTXInstruction::Finite:
+			{
+				d = !std::isinf(a);
+			}
+			break;
+			case PTXInstruction::Infinite:
+			{
+				d = std::isinf(a);
+			}
+			break;
+			case PTXInstruction::Number:
+			{
+				d = !std::isnan(a);			
+			}
+			break;
+			case PTXInstruction::NotANumber:
+			{
+				d = std::isnan(a);			
+			}
+			break;
+			case PTXInstruction::Normal:
+			{
+				d = std::isnormal(a);
+			}
+			break;
+			case PTXInstruction::SubNormal:
+			{
+				d = !std::isnormal(a) && !std::isnan(a) && !std::isinf(a);
+			}
+			break;
+			default: assertM(false, "Invalid floating point mode.");
+			}
+			
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}	
+	}
+	break;
+	case PTXOperand::f64:
+	{
+		for (int threadID = 0; threadID  < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			bool d = false;
+			PTXF64 a = operandAsF64(threadID, instr.a);
+			
+			switch(mode)
+			{
+			case PTXInstruction::Finite:
+			{
+				d = !std::isinf(a);
+			}
+			break;
+			case PTXInstruction::Infinite:
+			{
+				d = std::isinf(a);
+			}
+			break;
+			case PTXInstruction::Number:
+			{
+				d = !std::isnan(a);			
+			}
+			break;
+			case PTXInstruction::NotANumber:
+			{
+				d = std::isnan(a);			
+			}
+			break;
+			case PTXInstruction::Normal:
+			{
+				d = std::isnormal(a);
+			}
+			break;
+			case PTXInstruction::SubNormal:
+			{
+				d = !std::isnormal(a) && !std::isnan(a) && !std::isinf(a);
+			}
+			break;
+			default: assertM(false, "Invalid floating point mode.");
+			}
+			
+			setRegAsPredicate(threadID, instr.d.reg, d);
+		}	
+	}
+	break;
+	default: throw RuntimeException("invalid datatype", context.PC, instr);
 	}
 }
 

@@ -329,6 +329,7 @@ void executive::EmulatedKernel::initializeParameterMemory() {
 			_parameterMemorySize += parameter.getSize();
 		}
 	}
+	report(" Total parameter size is " << parameterMemorySize());
 }
 
 bool executive::EmulatedKernel::checkMemoryAccess(const void* base, 

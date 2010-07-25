@@ -202,6 +202,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_SUB; }
 "subc"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUBC; }
+"testp"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TESTP; }
 "tex"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TEX; }
 "trap"                          { strlcpy( yylval->text, yytext, 1024 ); \
@@ -430,6 +432,20 @@ WHITESPACE [ \t]*
 ".ecr"                          { yylval->value = TOKEN_ECR; return TOKEN_ECR; }
 ".rc16"                         { yylval->value = TOKEN_RC16; \
                                     return TOKEN_RC16; }
+
+                                    
+".finite"                       { yylval->value = TOKEN_FINITE; \
+                                    return TOKEN_FINITE; }
+".infinite"                     { yylval->value = TOKEN_INFINITE; \
+                                    return TOKEN_INFINITE; }
+".number"                       { yylval->value = TOKEN_NUMBER; \
+                                    return TOKEN_NUMBER; }
+".notanumber"                   { yylval->value = TOKEN_NOT_A_NUMBER; \
+                                    return TOKEN_NOT_A_NUMBER; }
+".normal"                       { yylval->value = TOKEN_NORMAL; \
+                                    return TOKEN_NORMAL; }
+".subnormal"                    { yylval->value = TOKEN_SUBNORMAL; \
+                                    return TOKEN_SUBNORMAL; }
                                     
 {DECIMAL_CONSTANT}              { std::stringstream stream; stream << yytext; \
                                     stream >> yylval->value; \

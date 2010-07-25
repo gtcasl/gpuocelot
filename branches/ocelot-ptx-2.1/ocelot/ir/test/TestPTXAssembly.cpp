@@ -12,6 +12,7 @@
 
 #include <ocelot/api/interface/ocelot.h>
 
+#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/string.h>
@@ -19,7 +20,10 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+#include <limits>
+
 #include <climits>
+#include <cmath>
 
 template<typename T>
 T getParameter(void* in, unsigned int offset)
@@ -61,6 +65,144 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 	
 	return result;
 }
+
+template <typename type, unsigned int size>
+char* uniformFloat(test::Test::MersenneTwister& generator)
+{
+	type* allocation = new type[size];
+	char* result = (char*) allocation;
+
+	for(unsigned int i = 0; i < size * sizeof(type); ++i)
+	{
+		unsigned int fptype = generator();
+		
+		if(fptype & 0x1)
+		{
+			if(fptype & 0x10)
+			{
+				result[i] = std::numeric_limits<type>::signaling_NaN();
+			}
+			else
+			{
+				result[i] = std::numeric_limits<type>::denorm_min();
+			}
+		}
+		else
+		{
+			if(fptype & 0x10)
+			{
+				result[i] = std::numeric_limits<type>::infinity();		
+			}
+			else
+			{
+				result[i] = hydrazine::bit_cast<type>(generator());
+			}
+		}
+	}
+	
+	return result;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST TESTP
+std::string testTestp_PTX(ir::PTXOperand::DataType type, 
+	ir::PTXInstruction::FloatingPointMode mode)
+{
+	std::stringstream ptx;
+	
+	std::string typeString;
+	
+	if(type == ir::PTXOperand::f32)
+	{
+		typeString = ".f32";
+	}
+	else
+	{
+		typeString = ".f64";
+	}
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString << " %f0;               \n";
+	ptx << "\t.reg .u32 %r0;                               \n";
+	ptx << "\t.reg .pred %p0;                              \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %f0, [%rIn];                   \n";
+	ptx << "\ttestp." << ir::PTXInstruction::toString(mode) 
+		<< typeString << " %p0, %f0;\n";
+	ptx << "\tselp.u32 %r0, 0xffffffff, 0x0, %p0;          \n";
+	ptx << "\tst.global.u32 [%rOut], %r0;                  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type, ir::PTXInstruction::FloatingPointMode mode>
+void testTestP_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+
+	bool condition = false;
+
+	switch(mode)
+	{
+	default:
+	case ir::PTXInstruction::Finite:
+	{
+		condition = !std::isinf(r0);
+	}
+	break;
+	case ir::PTXInstruction::Infinite:
+	{
+		condition = std::isinf(r0);
+	}
+	break;
+	case ir::PTXInstruction::Number:
+	{
+		condition = !std::isnan(r0);
+	}
+	break;
+	case ir::PTXInstruction::NotANumber:
+	{
+		condition = std::isnan(r0);
+	}
+	break;
+	case ir::PTXInstruction::Normal:
+	{
+		condition = std::isnormal(r0);
+	}
+	break;
+	case ir::PTXInstruction::SubNormal:
+	{
+		condition = !std::isnormal(r0) && !std::isnan(r0) && !std::isinf(r0);
+	}
+	break;
+	}
+
+	unsigned int result = condition ? 0xffffffff : 0x0;
+
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testTestp_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+
+test::TestPTXAssembly::TypeVector testTestp_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST INDIRECT FUNCTION CALLS
@@ -2284,6 +2426,57 @@ namespace test
 			testIndirectFunctionCall_PTX(), testIndirectFunctionCall_OUT(), 
 			testIndirectFunctionCall_IN(), 
 			uniformRandom<unsigned int, 1>, 4, 1);
+
+		add("TestTestP-f32-Finite", 
+			testTestP_REF<float, ir::PTXInstruction::Finite>, 
+			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::Finite), 
+			testTestp_OUT(), testTestp_IN(FP32), uniformFloat<float, 1>, 1, 1);
+		add("TestTestP-f32-Infinite", 
+			testTestP_REF<float, ir::PTXInstruction::Infinite>, 
+			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::Infinite), 
+			testTestp_OUT(), testTestp_IN(FP32), uniformFloat<float, 1>, 1, 1);
+		add("TestTestP-f32-Number", 
+			testTestP_REF<float, ir::PTXInstruction::Number>, 
+			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::Number), 
+			testTestp_OUT(), testTestp_IN(FP32), uniformFloat<float, 1>, 1, 1);
+		add("TestTestP-f32-NotANumber", 
+			testTestP_REF<float, ir::PTXInstruction::NotANumber>, 
+			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::NotANumber), 
+			testTestp_OUT(), testTestp_IN(FP32), uniformFloat<float, 1>, 1, 1);
+		add("TestTestP-f32-Normal", 
+			testTestP_REF<float, ir::PTXInstruction::Normal>, 
+			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::Normal), 
+			testTestp_OUT(), testTestp_IN(FP32), uniformFloat<float, 1>, 1, 1);
+		add("TestTestP-f32-SubNormal", 
+			testTestP_REF<float, ir::PTXInstruction::SubNormal>, 
+			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::SubNormal), 
+			testTestp_OUT(), testTestp_IN(FP32), uniformFloat<float, 1>, 1, 1);
+
+		add("TestTestP-f64-Finite", 
+			testTestP_REF<double, ir::PTXInstruction::Finite>, 
+			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::Finite), 
+			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
+		add("TestTestP-f64-Infinite", 
+			testTestP_REF<double, ir::PTXInstruction::Infinite>, 
+			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::Infinite), 
+			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
+		add("TestTestP-f64-Number", 
+			testTestP_REF<double, ir::PTXInstruction::Number>, 
+			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::Number), 
+			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
+		add("TestTestP-f64-NotANumber", 
+			testTestP_REF<double, ir::PTXInstruction::NotANumber>, 
+			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::NotANumber), 
+			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
+		add("TestTestP-f64-Normal", 
+			testTestP_REF<double, ir::PTXInstruction::Normal>, 
+			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::Normal), 
+			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
+		add("TestTestP-f64-SubNormal", 
+			testTestP_REF<double, ir::PTXInstruction::SubNormal>, 
+			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::SubNormal), 
+			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
+
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

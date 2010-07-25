@@ -1,5 +1,4 @@
-/*!
-	\file PTXLexer.cpp
+/*! \file PTXLexer.cpp
 	\date Monday January 19, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the PTXLexer class.
@@ -247,6 +246,12 @@ namespace parser
 			CASE(TOKEN_ECL)
 			CASE(TOKEN_ECR)
 			CASE(TOKEN_RC16)
+			CASE(TOKEN_FINITE)
+			CASE(TOKEN_INFINITE)
+			CASE(TOKEN_NUMBER)
+			CASE(TOKEN_NOT_A_NUMBER)
+			CASE(TOKEN_NORMAL)
+			CASE(TOKEN_SUBNORMAL)
 			CASE(TOKEN_DECIMAL_CONSTANT)
 			CASE(TOKEN_UNSIGNED_DECIMAL_CONSTANT)
 			CASE(TOKEN_SINGLE_CONSTANT)

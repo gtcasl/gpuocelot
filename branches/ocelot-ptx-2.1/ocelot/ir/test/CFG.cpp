@@ -30,9 +30,9 @@ void analyze(const char *filename) {
 
 	ir::Module module(filename);
 
-	Module::KernelMap::iterator k_it = module.kernels.begin();
+	Module::KernelMap::const_iterator k_it = module.kernels().begin();
 
-	for (; k_it != module.kernels.end(); ++k_it) {
+	for (; k_it != module.kernels().end(); ++k_it) {
 
 		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(k_it->second);
 

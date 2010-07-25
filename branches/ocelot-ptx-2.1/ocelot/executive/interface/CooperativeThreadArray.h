@@ -450,7 +450,8 @@ namespace executive {
 		void eval_St(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Sub(CTAContext &context, const ir::PTXInstruction &instr);	
 		void eval_SubC(CTAContext &context, const ir::PTXInstruction &instr);		
-		void eval_Tex(CTAContext &context, const ir::PTXInstruction &instr);		
+		void eval_TestP(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Tex(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Trap(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Vote(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Xor(CTAContext &context, const ir::PTXInstruction &instr);		

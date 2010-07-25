@@ -164,7 +164,7 @@ namespace ir
 		return out;
 	}
 
-	ControlTree::Node* const ControlTree::get_root_node() const
+	const ControlTree::Node* ControlTree::get_root_node() const
 	{
 		return _root;
 	}

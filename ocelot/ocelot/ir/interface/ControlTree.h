@@ -153,7 +153,7 @@ namespace ir
 			std::ostream& write(std::ostream& out) const;
 
 			/*! \brief Returns the root node of the control tree */
-			Node* const get_root_node() const;
+			const Node* get_root_node() const;
 
 		private:
 			Node* insert_node(Node* node);

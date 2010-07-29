@@ -146,7 +146,8 @@ namespace trace
 				_write( event );
 			}
 		}
-		else if( event.instruction->opcode == ir::PTXInstruction::Bar )
+		else if( event.instruction->opcode == ir::PTXInstruction::Bar 
+			|| event.instruction->opcode == ir::PTXInstruction::Exit )
 		{
 			_barrier();
 		}

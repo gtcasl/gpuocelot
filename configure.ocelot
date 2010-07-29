@@ -2,7 +2,7 @@
 	ocelot: "ocelot",
 	version: "1.1.520",
 	trace: { 
-		enabled: false,
+		enabled: true,
 		database: "traces/database.trace",
 		memory: false,
 		branch: false,
@@ -10,8 +10,8 @@
 		instruction: false,
 		parallelism: false,
 		cacheSimulator: false,
-		memoryChecker: true,
-		raceDetector: true,
+		memoryChecker: false,
+		raceDetector: false,
 		warpSynchronous: {
 			enabled: false,
 			emitHotPaths: true
@@ -25,14 +25,15 @@
 			logfile: "traces/convergence.csv",
 			dot: true,
 			render: true
-		}
+		},
+		activity: false
 	},
 	cuda: {
 		implementation: CudaRuntime,
 		runtimeApiTrace: "traces/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm, nvidia, emulated ],
+		devices: [ nvidia ],
 		optimizationLevel: basic,
 		workerThreadLimit: 1
 	}

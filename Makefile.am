@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale TestT22
+	TestCalVectorScale 
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
@@ -383,15 +383,6 @@ TestCalVectorScale_SOURCES = \
 	ocelot/cal/test/vectorScale.cu.cpp
 TestCalVectorScale_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCalVectorScale_LDFLAGS = -static
-################################################################################
-
-################################################################################
-##
-##
-TestT22_CXXFLAGS = $(SDK_CFLAGS)
-TestT22_SOURCES = ocelot/executive/test/TestT22.cu.cpp
-TestT22_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestT22_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

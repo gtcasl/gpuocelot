@@ -1039,35 +1039,48 @@ namespace cuda
 	{
 		switch( r )
 		{
-			case CUDA_SUCCESS: return "no errors";
-			case CUDA_ERROR_INVALID_VALUE: return "invalid value";
-			case CUDA_ERROR_OUT_OF_MEMORY: return "out of memory";
-			case CUDA_ERROR_NOT_INITIALIZED: return "driver not initialized";
-			case CUDA_ERROR_DEINITIALIZED: return "deinitialized";
-			case CUDA_ERROR_NO_DEVICE: return "no device";
-			case CUDA_ERROR_INVALID_DEVICE: return "invalid device";
-			case CUDA_ERROR_INVALID_IMAGE: return "invalid kernel image";
-			case CUDA_ERROR_INVALID_CONTEXT: return "invalid context";
+			case CUDA_SUCCESS: return "CUDA DRIVER - no errors";
+			case CUDA_ERROR_INVALID_VALUE: return "CUDA DRIVER - invalid value";
+			case CUDA_ERROR_OUT_OF_MEMORY: return "CUDA DRIVER - out of memory";
+			case CUDA_ERROR_NOT_INITIALIZED:
+				return "CUDA DRIVER - driver not initialized";
+			case CUDA_ERROR_DEINITIALIZED: return "CUDA DRIVER - deinitialized";
+			case CUDA_ERROR_NO_DEVICE: return "CUDA DRIVER - no device";
+			case CUDA_ERROR_INVALID_DEVICE:
+				return "CUDA DRIVER - invalid device";
+			case CUDA_ERROR_INVALID_IMAGE:
+				return "CUDA DRIVER - invalid kernel image";
+			case CUDA_ERROR_INVALID_CONTEXT:
+				return "CUDA DRIVER - invalid context";
 			case CUDA_ERROR_CONTEXT_ALREADY_CURRENT: 
-				return "context already current";
-			case CUDA_ERROR_MAP_FAILED: return "map failed";
-			case CUDA_ERROR_UNMAP_FAILED: return "unmap failed";
-			case CUDA_ERROR_ARRAY_IS_MAPPED: return "array is mapped";
-			case CUDA_ERROR_ALREADY_MAPPED: return "already mapped";
-			case CUDA_ERROR_NO_BINARY_FOR_GPU: return "no gpu binary";
-			case CUDA_ERROR_ALREADY_ACQUIRED: return "already aquired";
-			case CUDA_ERROR_NOT_MAPPED: return "not mapped";
-			case CUDA_ERROR_INVALID_SOURCE: return "invalid source";
-			case CUDA_ERROR_FILE_NOT_FOUND: return "file not found";
-			case CUDA_ERROR_INVALID_HANDLE: return "invalid handle";
-			case CUDA_ERROR_NOT_FOUND: return "not found";
-			case CUDA_ERROR_NOT_READY: return "not ready";
-			case CUDA_ERROR_LAUNCH_FAILED: return "launch failed";
-			case CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES: return "out of resources";
-			case CUDA_ERROR_LAUNCH_TIMEOUT: return "launch timeout";
+				return "CUDA DRIVER - context already current";
+			case CUDA_ERROR_MAP_FAILED: return "CUDA DRIVER - map failed";
+			case CUDA_ERROR_UNMAP_FAILED: return "CUDA DRIVER - unmap failed";
+			case CUDA_ERROR_ARRAY_IS_MAPPED:
+				return "CUDA DRIVER - array is mapped";
+			case CUDA_ERROR_ALREADY_MAPPED:
+				return "CUDA DRIVER - already mapped";
+			case CUDA_ERROR_NO_BINARY_FOR_GPU:
+				return "CUDA DRIVER - no gpu binary";
+			case CUDA_ERROR_ALREADY_ACQUIRED:
+				return "CUDA DRIVER - already aquired";
+			case CUDA_ERROR_NOT_MAPPED: return "CUDA DRIVER - not mapped";
+			case CUDA_ERROR_INVALID_SOURCE:
+				return "CUDA DRIVER - invalid source";
+			case CUDA_ERROR_FILE_NOT_FOUND:
+				return "CUDA DRIVER - file not found";
+			case CUDA_ERROR_INVALID_HANDLE:
+				return "CUDA DRIVER - invalid handle";
+			case CUDA_ERROR_NOT_FOUND: return "CUDA DRIVER - not found";
+			case CUDA_ERROR_NOT_READY: return "CUDA DRIVER - not ready";
+			case CUDA_ERROR_LAUNCH_FAILED: return "CUDA DRIVER - launch failed";
+			case CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES:
+				return "CUDA DRIVER - out of resources";
+			case CUDA_ERROR_LAUNCH_TIMEOUT:
+				return "CUDA DRIVER - launch timeout";
 			case CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING: 
-				return "incompatible texturing";
-			case CUDA_ERROR_UNKNOWN: return "unknown error";
+				return "CUDA DRIVER - incompatible texturing";
+			case CUDA_ERROR_UNKNOWN: return "CUDA DRIVER - unknown error";
 			default: break;
 		}
 		return "invalid_error";

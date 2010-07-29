@@ -27,6 +27,7 @@ namespace executive {
 	class EmulatedKernel: public ExecutableKernel {
 	public:
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
+		typedef std::map< int, std::string > ProgramCounterBlockMap;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -132,13 +133,13 @@ namespace executive {
 		PTXInstructionVector instructions;
 
 		/*! Maps program counters of header instructions to basic block label */
-		std::map< int, std::string > branchTargetsToBlock;
+		ProgramCounterBlockMap branchTargetsToBlock;
 		
 		/*! maps the program counter of the terminating instructions to owning basic block */
-		std::map< int, std::string > basicBlockMap;
+		ProgramCounterBlockMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
-		std::map< int, std::string > basicBlockPC;
+		ProgramCounterBlockMap basicBlockPC;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

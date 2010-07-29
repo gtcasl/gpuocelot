@@ -102,7 +102,8 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	instruction(false),
 	cacheSimulator(false),
 	memoryChecker(false),
-	raceDetector(false)
+	raceDetector(false),
+	activity(false)
 {
 
 }
@@ -162,6 +163,8 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 		trace.convergence.dot = convConfig.parse<bool>("dot", false);
 		trace.convergence.render = convConfig.parse<bool>("render", false);
 	}
+	
+	trace.activity = config.parse<bool>("activity", false);
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

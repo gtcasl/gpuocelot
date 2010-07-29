@@ -96,6 +96,11 @@ namespace ocelot
 			_convergence.configuration = c.trace.convergence;
 			ocelot::addTraceGenerator(_convergence, true);
 		}
+		if (c.trace.activity) {
+			//report("Creating activity generator");
+			//_activity.database = c.trace.database;
+			//ocelot::addTraceGenerator(_activity, true);
+		}
 	}
 
 }

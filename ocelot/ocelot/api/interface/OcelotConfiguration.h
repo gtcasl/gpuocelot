@@ -155,6 +155,9 @@ namespace api {
 			
 			//! \brief trace::ConvergenceGenerator
 			Convergence convergence;
+			
+			//! \brief enables trace::ActivityGenerator
+			bool activity;
 		};
 
 		class CudaRuntimeImplementation {

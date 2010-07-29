@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale
+	TestCalVectorScale TestT22
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer
@@ -132,6 +132,8 @@ libocelot_la_SOURCES = \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
 	ocelot/translator/implementation/PTXToILTranslator.cpp
+
+# 	ocelot/trace/implementation/ActivityGenerator.cpp 
 	
 ################################################################################
 
@@ -384,6 +386,15 @@ TestCalVectorScale_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+##
+##
+TestT22_CXXFLAGS = $(SDK_CFLAGS)
+TestT22_SOURCES = ocelot/executive/test/TestT22.cu.cpp
+TestT22_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestT22_LDFLAGS = -static
+################################################################################
+
+################################################################################
 ## Headers
 nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/api/interface/OcelotConfiguration.h \
@@ -509,6 +520,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/python/RunRegression.py \
 	regression/ocelotRegressionTests.txt	
 
+# 	ocelot/trace/interface/ActivityGenerator.h 
 ################################################################################
 
 ################################################################################

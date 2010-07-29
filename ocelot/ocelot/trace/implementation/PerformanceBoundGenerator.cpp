@@ -45,16 +45,32 @@ trace::PerformanceBoundGenerator::Counter::Counter():
 
 }
 
+struct thousands: std::numpunct<char> { 
+   char do_thousands_sep() const { return ','; } 
+   std::string do_grouping() const { return "\3"; }
+};
+
+	
+/*!
+\brief place commas between every three digits
+*/
+static std::string formatInteger(size_t n) {
+	std::stringstream ss;
+	ss.imbue(std::locale(std::locale(), new thousands));
+	ss << n;
+	return ss.str();
+}
+
 std::ostream & operator <<(std::ostream &out, 
 	const trace::PerformanceBoundGenerator::Counter &counter) {
 
-	out << " | memory demand: " << counter.memoryDemand << " bytes ";
+	out << " | memory demand: " << formatInteger(counter.memoryDemand) << " bytes ";
 	if (counter.sharedBytes) {
-		out << " | shared mem demand: " << counter.sharedBytes << " bytes ";
-		out << " | shared conflicts: " << counter.bankConflicts << " ";
+		out << " | shared mem demand: " << formatInteger(counter.sharedBytes) << " bytes ";
+		out << " | shared conflicts: " << formatInteger(counter.bankConflicts) << " ";
 	}
-	out << " | dynamic instr: " << counter.instructions << " ";
-	out << " | FLOPs: " << counter.flops << " ";
+	out << " | dynamic instr: " << formatInteger(counter.instructions) << " ";
+	out << " | FLOPs: " << formatInteger(counter.flops) << " ";
 	if (counter.memoryDemand) {
 		out << " | FLOPs per word: " << (double)counter.flops / (double)(counter.memoryDemand) * 4.0 << " ";
 		out << " | OPs per byte: " << (double)counter.instructions / (double)(counter.memoryDemand) << " ";
@@ -133,7 +149,20 @@ public:
 	std::map< std::string, int > blocksToPC;
 public:
 
-	Formatter(trace::PerformanceBoundGenerator * gen): generator(gen) {
+	static std::string colorToString(
+		unsigned int r, unsigned int g, unsigned int b, unsigned int a=0) {
+		std::stringstream ss;
+
+		ss << "#";
+		ss << std::setfill('0') << std::setw(2) << std::hex << (r & 0x0ff);
+		ss << std::setfill('0') << std::setw(2) << std::hex << (g & 0x0ff);
+		ss << std::setfill('0') << std::setw(2) << std::hex << (b & 0x0ff);
+	//	ss << std::setfill('0') << std::setw(2) << std::hex << (a & 0x0ff);
+	
+		return ss.str();
+	}
+
+	Formatter(trace::PerformanceBoundGenerator * gen): generator(gen), maxEvents(1) {
 		for (std::map< int, std::string >::const_iterator bl_it = generator->kernel->basicBlockPC.begin();
 			bl_it != generator->kernel->basicBlockPC.end(); ++bl_it) {
 			
@@ -148,7 +177,7 @@ public:
 		std::stringstream out;
 		out << "[shape=record,style=\"bold,filled\",fillcolor=\"#4444cc\",";
 		out << "label=";
-		out << "\"{ ENTRY: " << ir::ControlFlowGraph::make_label_dot_friendly(generator->kernel->name);
+		out << "\"{ KERNEL: " << ir::ControlFlowGraph::make_label_dot_friendly(generator->kernel->name);
 		
 		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
 		
@@ -176,28 +205,52 @@ public:
 	}
 	
 	/*!
-		\brief prints string representation of 
+		\brief prints string representation of a block
 	*/
 	virtual std::string toString(const ir::ControlFlowGraph::BasicBlock *block) {
 		std::stringstream out;
 
-
-		out << "[shape=record,";
-		out << "label=";
-		out << "\"{" << ir::ControlFlowGraph::make_label_dot_friendly(block->label);
+		float t = 1.0f;
 		
 		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
 		
 			const trace::PerformanceBoundGenerator::Counter & 
 				counter = generator->counterMap[block->label];
 				
+			t = 0.0f;
+			// log-scale color intensity based on number of times block has been reached by a warp
+			if (counter.instructions) {
+				t = log((float)(counter.instructions)) / (float)log((float)(maxEvents) + 1.0f);
+			}
+			unsigned int r = (unsigned int)(t * 255.0);
+			unsigned int g = (unsigned int)(t * 64.0), b = (unsigned int)(t * 64.0);
+
+			out << "[";
+			out << "fillcolor=\"" << Formatter::colorToString(r,g,b) << "\",style=filled,";
+			out << "shape=record,label=\"{";
+	
+			out << ir::ControlFlowGraph::make_label_dot_friendly(block->label);
+		
 			if (blocksToPC.find(block->label) != blocksToPC.end()) {
-				out << " | near " << generator->kernel->location(blocksToPC[block->label]);
+				std::string loc = generator->kernel->location(blocksToPC[block->label]);
+				if (loc != ":0:0") {
+					out << " | near " << generator->kernel->location(blocksToPC[block->label]);
+				}
 			}	
 			out << counter;
 		}
+		else {
+			out << "[shape=record,";
+			out << "label=";
+			out << "\"{" << ir::ControlFlowGraph::make_label_dot_friendly(block->label);
+		}
 		
-		out << "}\"]";
+		out << "}\"";
+		
+		if (t < 0.5) {
+			out << ",fontcolor=\"#aaaaaa\"";
+		}
+		out << "]";
 
 		return out.str();
 	}
@@ -206,6 +259,10 @@ public:
 
 	trace::PerformanceBoundGenerator *generator;
 	
+	/*!
+		\brief maximum number of operations performed by some block
+	*/
+	size_t maxEvents;
 };
 
 //! \brief aggregates statistics and emits kernel results
@@ -223,6 +280,12 @@ void trace::PerformanceBoundGenerator::finish() {
 	Formatter formatter(this);
 	
 	std::stringstream ss;
+	
+	for (OperationCounterMap::const_iterator opit = counterMap.begin(); opit != counterMap.end(); ++opit) {
+		if (opit->second.instructions > formatter.maxEvents) {
+			formatter.maxEvents = opit->second.instructions;
+		}
+	}
 
 	boost::filesystem::path path( database );
 	path = path.parent_path();

@@ -253,6 +253,13 @@ void executive::CooperativeThreadArray::trace() {
 	}
 }
 
+void executive::CooperativeThreadArray::postTrace() {
+	if (traceEvents) {
+		currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
+		kernel->tracePostEvent(currentEvent);
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -421,6 +428,8 @@ void executive::CooperativeThreadArray::execute(ir::Dim3 block) {
 			context.PC++;
 			running = context.running;
 		}
+		
+		postTrace();
 
 		clock += 4;
 		++counter;

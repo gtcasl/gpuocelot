@@ -166,7 +166,15 @@ namespace executive {
 
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
 		
+		/*!
+			\brief invokes TraceGenerator::event() on all trace generators
+		*/
 		void trace();
+
+		/*!
+			\brief invokes TraceGenerator::postEvent() on all trace generators
+		*/		
+		void postTrace();
 
 	public:
 		// Register accessors

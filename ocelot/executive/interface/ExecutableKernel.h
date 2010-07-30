@@ -86,6 +86,9 @@ namespace executive {
 		/*!	Notifies all attached TraceGenerators of an event */
 		void traceEvent(const trace::TraceEvent & event) const;
 
+		/*!	Notifies all attached TraceGenerators of completion of an event */
+		void tracePostEvent(const trace::TraceEvent & event) const;
+		
 		/*!	adds a trace generator to the EmulatedKernel */
 		virtual void addTraceGenerator(trace::TraceGenerator* generator)=0;
 

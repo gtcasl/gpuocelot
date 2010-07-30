@@ -17,6 +17,12 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 namespace trace
 {
 	static std::string prefix( unsigned int thread, const ir::Dim3& dim, 
@@ -124,6 +130,8 @@ namespace trace
 	void MemoryRaceDetector::initialize( 
 		const executive::ExecutableKernel& kernel )
 	{
+		report("Attaching memory race detector to kernel '" 
+			<< kernel.name << "'");
 		_dim = kernel.blockDim();
 
 		_writers.assign( kernel.totalSharedMemorySize(), -1 );
@@ -136,7 +144,6 @@ namespace trace
 	{
 		if( event.instruction->addressSpace == ir::PTXInstruction::Shared )
 		{
-			report( "Checking instruction " << event.instruction->toString() );
 			if( event.instruction->opcode == ir::PTXInstruction::Ld )
 			{
 				_read( event );

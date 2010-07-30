@@ -979,14 +979,11 @@ namespace executive
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
 	
-		if(api::OcelotConfiguration::getTrace().enabled) 
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
 		{
-			for(trace::TraceGeneratorVector::const_iterator 
-				gen = traceGenerators.begin(); 
-				gen != traceGenerators.end(); ++gen) 
-			{
-				kernel->addTraceGenerator(*gen);
-			}
+			kernel->addTraceGenerator(*gen);
 		}
 	
 		try
@@ -995,26 +992,20 @@ namespace executive
 		}
 		catch(...)
 		{
-			if(api::OcelotConfiguration::getTrace().enabled) 
-			{
-				for(trace::TraceGeneratorVector::const_iterator 
-					gen = traceGenerators.begin(); 
-					gen != traceGenerators.end(); ++gen) 
-				{
-					kernel->removeTraceGenerator(*gen);
-				}
-			}
-			throw;		
-		}
-		
-		if(api::OcelotConfiguration::getTrace().enabled) 
-		{
 			for(trace::TraceGeneratorVector::const_iterator 
 				gen = traceGenerators.begin(); 
 				gen != traceGenerators.end(); ++gen) 
 			{
 				kernel->removeTraceGenerator(*gen);
 			}
+			throw;		
+		}
+		
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
+		{
+			kernel->removeTraceGenerator(*gen);
 		}
 	}
 	

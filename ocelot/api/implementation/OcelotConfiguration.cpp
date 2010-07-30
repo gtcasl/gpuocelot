@@ -1,5 +1,4 @@
-/*!
-	\file OcelotConfiguration.cpp
+/*! \file OcelotConfiguration.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\brief configuration class for GPU Ocelot
 */
@@ -24,9 +23,9 @@
 
 #define REPORT_BASE 0
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-static api::OcelotConfiguration * ocelotConfiguration = 0;
+static api::OcelotConfiguration* ocelotConfiguration = 0;
 
 const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	if (!ocelotConfiguration) {
@@ -35,19 +34,22 @@ const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	return *ocelotConfiguration;
 }
 
-const api::OcelotConfiguration::Executive & api::OcelotConfiguration::getExecutive() {
+const api::OcelotConfiguration::Executive& 
+	api::OcelotConfiguration::getExecutive() {
 	return get().executive;
 }
 
-const api::OcelotConfiguration::CudaRuntimeImplementation & api::OcelotConfiguration::getCuda() {
+const api::OcelotConfiguration::CudaRuntimeImplementation& 
+	api::OcelotConfiguration::getCuda() {
 	return get().cuda;
 }
 
-const api::OcelotConfiguration::TraceGeneration & api::OcelotConfiguration::getTrace() {
+const api::OcelotConfiguration::TraceGeneration& 
+	api::OcelotConfiguration::getTrace() {
 	return get().trace;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::Checkpoint::Checkpoint():
 	enabled(false), path("."), prefix("check"), suffix(".binary"), verify(false)
@@ -65,106 +67,19 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 	check.verify = config.parse<bool>("verify", false);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-api::OcelotConfiguration::TraceGeneration::WarpSynchronous::WarpSynchronous():
-        enabled(false),
-        emitHotPaths(false)
-{
-
-}
-
-api::OcelotConfiguration::TraceGeneration::PerformanceBound::PerformanceBound():
-	enabled(false), protocol(Protocol_sm_20)
-{
-
-}
-
-api::OcelotConfiguration::TraceGeneration::Convergence::Convergence():
-	enabled(false), 
-	logfile("convergence.csv"), 
-	dot(false),
-	render(false)
-{
-
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
-	enabled(false),
-	database("trace/database.trace"),
-	inPlaceTraces(false),
-	memory(false),
-	branch(false),
-	sharedComputation(false),
-	parallelism(false),
-	instruction(false),
-	cacheSimulator(false),
 	memoryChecker(false),
-	raceDetector(false),
-	activity(false)
+	raceDetector(false)
 {
 
-}
-
-static api::OcelotConfiguration::TraceGeneration::PerformanceBound::CoalescingProtocol
-convertProtocol(const std::string &str) {
-	if (str == "sm_10") {
-		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_10;
-	}
-	else	if (str == "sm_11") {
-		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_11;
-	}
-	else	if (str == "sm_12") {
-		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_12;
-	}
-	else	if (str == "sm_13") {
-		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_13;
-	}
-	else	if (str == "ideal") {
-		return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_ideal;
-	}
-	return api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_20;
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
-
-	trace.enabled = config.parse<bool>("enabled", true);
-	trace.database = config.parse<std::string>("database", "trace/database.trace");
-	trace.inPlaceTraces = config.parse<bool>("inPlaceTraces", false);
-	trace.memory = config.parse<bool>("memory", false);
-	trace.branch = config.parse<bool>("branch", false);
-	trace.sharedComputation = config.parse<bool>("sharedComputation", false);
-	trace.instruction = config.parse<bool>("instruction", false);
-	trace.parallelism = config.parse<bool>("parallelism", false);
-	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
 	trace.raceDetector = config.parse<bool>("raceDetector", true);
-
-	// more detailed configuration for this trace generator
-	hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
-	if (!warpSyncConfig.is_null()) {
-		trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
-		trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
-	}
-	
-	hydrazine::json::Visitor perfConfig = config["performanceBound"];
-	if (!perfConfig.is_null()) {
-		trace.performanceBound.enabled = perfConfig.parse<bool>("enabled", false);
-		trace.performanceBound.protocol = convertProtocol(perfConfig.parse<std::string>("protocol", "sm_20"));
-	}
-	
-	hydrazine::json::Visitor convConfig = config["convergence"];
-	if (!convConfig.is_null()) {
-		trace.convergence.enabled = convConfig.parse<bool>("enabled", false);
-		trace.convergence.logfile = convConfig.parse<std::string>("logfile", "traces/convergence.csv");
-		trace.convergence.dot = convConfig.parse<bool>("dot", false);
-		trace.convergence.render = convConfig.parse<bool>("render", false);
-	}
-	
-	trace.activity = config.parse<bool>("activity", false);
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():
@@ -178,8 +93,10 @@ static void initializeCudaRuntimeImplementation(
 	api::OcelotConfiguration::CudaRuntimeImplementation &cuda, 
 	hydrazine::json::Visitor config) {
 
-	cuda.implementation = config.parse<std::string>("implementation", "CudaRuntime");
-	cuda.runtimeApiTrace = config.parse<std::string>("runtimeApiTrace", "trace/CudaAPI.trace");
+	cuda.implementation = config.parse<std::string>(
+		"implementation", "CudaRuntime");
+	cuda.runtimeApiTrace = config.parse<std::string>(
+		"runtimeApiTrace", "trace/CudaAPI.trace");
 }
 
 api::OcelotConfiguration::Executive::Executive():
@@ -199,8 +116,10 @@ api::OcelotConfiguration::Executive::Executive():
 static void initializeExecutive(api::OcelotConfiguration::Executive &executive, 
 	hydrazine::json::Visitor config) {
 
-	std::string strPrefISA = config.parse<std::string>("preferredISA", "emulated");
-	std::string strOptLevel = config.parse<std::string>("optimizationLevel", "full");
+	std::string strPrefISA = config.parse<std::string>(
+		"preferredISA", "emulated");
+	std::string strOptLevel = config.parse<std::string>(
+		"optimizationLevel", "full");
 
 	executive.preferredISA = (int)ir::Instruction::Emulated;
 	if (strPrefISA == "emulated" || strPrefISA == "Emulated") {
@@ -221,31 +140,40 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 
 	executive.optimizationLevel = (int)translator::Translator::NoOptimization;
 	if (strOptLevel == "full") {
-		executive.optimizationLevel = (int)translator::Translator::FullOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::FullOptimization;
 	}
 	else if (strOptLevel == "debug") {
-		executive.optimizationLevel = (int)translator::Translator::DebugOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::DebugOptimization;
 	}
 	else if (strOptLevel == "report") {
-		executive.optimizationLevel = (int)translator::Translator::ReportOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::ReportOptimization;
 	}
 	else if (strOptLevel == "basic") {
-		executive.optimizationLevel = (int)translator::Translator::BasicOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::BasicOptimization;
 	}
 	else if (strOptLevel == "aggressive") {
-		executive.optimizationLevel = (int)translator::Translator::AggressiveOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::AggressiveOptimization;
 	}
 	else if (strOptLevel == "space") {
-		executive.optimizationLevel = (int)translator::Translator::SpaceOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::SpaceOptimization;
 	}
 	else if (strOptLevel == "instrument") {
-		executive.optimizationLevel = (int)translator::Translator::InstrumentOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::InstrumentOptimization;
 	}
 	else if (strOptLevel == "memcheck") {
-		executive.optimizationLevel = (int)translator::Translator::MemoryCheckOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::MemoryCheckOptimization;
 	}
 	else if (strOptLevel == "none") {
-		executive.optimizationLevel = (int)translator::Translator::NoOptimization;
+		executive.optimizationLevel = 
+			(int)translator::Translator::NoOptimization;
 	}
 	else {
 		report("Unknown optimization level - using none");
@@ -261,12 +189,16 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];
-		hydrazine::json::Array *array = static_cast<hydrazine::json::Array *>(devices.value);
+		hydrazine::json::Array *array = 
+			static_cast<hydrazine::json::Array *>(devices.value);
 		
-		executive.enableLLVM = executive.enableEmulated = executive.enableNVIDIA = executive.enableAMD = false;
+		executive.enableLLVM = false;
+		executive.enableEmulated = false;
+		executive.enableNVIDIA = false;
+		executive.enableAMD = false;
 		
-		for (hydrazine::json::Array::ValueVector::iterator it = array->begin(); it != array->end(); 
-			++it) {
+		for (hydrazine::json::Array::ValueVector::iterator it = array->begin();
+			it != array->end(); ++it) {
 			hydrazine::json::Visitor dev(*it);
 			if ((std::string)dev == "llvm") {
 				executive.enableLLVM = true;
@@ -292,7 +224,8 @@ api::OcelotConfiguration::OcelotConfiguration(std::istream &stream) {
 	initialize(stream);
 }
 
-api::OcelotConfiguration::OcelotConfiguration(const std::string &_path): path(_path) {
+api::OcelotConfiguration::OcelotConfiguration(
+	const std::string &_path): path(_path) {
 	std::ifstream file(path.c_str());
 	initialize(file);
 }
@@ -332,8 +265,9 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 	if (executive.enableLLVM) device = "llvm";
 	if (executive.enableNVIDIA) device = "nvidia";
 	if (executive.enableAMD) device = "amd";
-	report("Ocelot Configuration: " << ocelot << " " << version << " " << device);
+	report("Ocelot Configuration: " << ocelot 
+		<< " " << version << " " << device);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 

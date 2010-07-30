@@ -21,38 +21,46 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc
-INFO     Test completed in 0.807229042053 seconds
+INFO     Test completed in 0.233747005463 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
+==Ocelot== WARNING - No CUDA devices found or all devices disabled!
+==Ocelot==  Consider enabling the emulator in configure.ocelot.
+cudaMalloc() 0 - failed to allocate 131072 bytes
+Pass/Fail : Fail
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D
-INFO     Test completed in 0.293292999268 seconds
+INFO     Test completed in 0.246192932129 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+==Ocelot== WARNING - No CUDA devices found or all devices disabled!
+==Ocelot==  Consider enabling the emulator in configure.ocelot.
+failed to bind texture: cudaErrorNoDevice
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray
-INFO     Test completed in 0.293860912323 seconds
+INFO     Test completed in 0.0705718994141 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+==Ocelot== WARNING - No CUDA devices found or all devices disabled!
+==Ocelot==  Consider enabling the emulator in configure.ocelot.
+failed to malloc array: cudaErrorNoDevice
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence
+INFO     Test completed in 0.0874938964844 seconds
+INFO      It produced the following output:
+==Ocelot== WARNING - No CUDA devices found or all devices disabled!
+==Ocelot==  Consider enabling the emulator in configure.ocelot.
+cudaMalloc() - failed to allocate 4096 bytes on device
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals
+INFO     Test completed in 0.269731998444 seconds
+INFO      It produced the following output:
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestParser 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 1.41641616821 seconds
+INFO     Test completed in 1.67537593842 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -64,8 +72,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1280409274
-Test time : 1.11015
+Test Seed : 1280462059
+Test time : 1.5732
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -100,24 +108,9 @@ R = [
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence
-INFO     Test completed in 0.296643972397 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestParser 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals
-INFO     Test completed in 0.44399189949 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
-Pass/Fail : Pass
-cudaSetDevice() - 1 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching
-INFO     Test completed in 0.190222978592 seconds
+INFO     Test completed in 0.064022064209 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -136,8 +129,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1280409276
-Test time : 0.153077
+Test Seed : 1280462061
+Test time : 0.0180168
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -147,9 +140,9 @@ Test Point 3 Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.11821103096 seconds
+INFO     Test completed in 0.168027162552 seconds
 INFO      It produced the following output:
-Kernel launch time was 0.000285387s (285441 ticks)
+Kernel launch time was 0.00106692s (1066966 ticks)
 Pass/Fail : Pass
 
 
@@ -158,8 +151,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1280409276
-Test time : 0.0923982
+Test Seed : 1280462061
+Test time : 0.114736
 
 Status : Test output:
 divergent control flow succeeded
@@ -170,13 +163,15 @@ looping kernel succeeded
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale
-INFO     Test completed in 0.0593309402466 seconds
+INFO     Test completed in 0.060665845871 seconds
 INFO      It produced the following output:
+==Ocelot== WARNING - No CUDA devices found or all devices disabled!
+==Ocelot==  Consider enabling the emulator in configure.ocelot.
 No CAL devices found
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLexer 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 76.1026818752 seconds
+INFO     Test completed in 94.3196480274 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -188,8 +183,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1280409276
-Test time : 76.0774
+Test Seed : 1280462061
+Test time : 94.2836
 
 Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
@@ -363,7 +358,7 @@ For file ../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0533008575439 seconds
+INFO     Test completed in 0.0814180374146 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -373,8 +368,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1280409353
-Test time : 0.0279281
+Test Seed : 1280462155
+Test time : 0.0362499
 
 Status : Test output:
 11 registers
@@ -388,7 +383,7 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0548570156097 seconds
+INFO     Test completed in 0.10567688942 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -398,8 +393,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1280409353
-Test time : 0.0041976
+Test Seed : 1280462155
+Test time : 0.0140653
 
 Status : Test output:
 Accessors test passed.
@@ -417,7 +412,7 @@ pass: control flow instructions
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 72.3779349327 seconds
+INFO     Test completed in 100.547605038 seconds
 INFO      It produced the following output:
 Failed to parse file '../tests/ptx/synthetic/printf.ptx':
 1 	.version 3.0
@@ -506,7 +501,7 @@ terminate called after throwing an instance of 'parser::PTXParser::Exception'
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0302700996399 seconds
+INFO     Test completed in 0.0536108016968 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -520,8 +515,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1280409425
-Test time : 0.00605822
+Test Seed : 1280462256
+Test time : 0.00736356
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -654,7 +649,7 @@ Zext Instruction Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestParser
-INFO     Test completed in 150.071979046 seconds
+INFO     Test completed in 197.3501091 seconds
 INFO      It produced the following output:
 Failed to parse file '::unknown path::':
 1 	.version 3.0
@@ -749,8 +744,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1280409276
-Test time : 150.004
+Test Seed : 1280462060
+Test time : 197.249
 
 Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Parse): Passed
@@ -830,113 +825,29 @@ For file ../tests/ptx/synthetic/printf.ptx, Test Point 1 (Parse): Failed
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 161.634013176 seconds
+INFO     Test completed in 204.561540127 seconds
 INFO      It produced the following output:
-Failed to parse file '../tests/ptx/synthetic/printf.ptx':
-1 	.version 3.0
-2 	.target sm_30
-3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc 3.1 built on 2010-04-27
-5 
-6 	.extern .func (.param .s32 __cudaretf_printf) printf (.param .u32 __cudaparmf1_printf)
-7 
-8 	.extern .func (.param .s32 __cudaretf_vprintf) vprintf (.param .u32 __cudaparmf1_vprintf, .param .u32 __cudaparmf2_vprintf)
-9 
-10 	//-----------------------------------------------------------
-11 	// Compiling /tmp/tmpxft_00005648_00000000-7_printf.cpp3.i (/tmp/ccBI#.WeDFUc)
-12 	//-----------------------------------------------------------
-13 
-14 	//-----------------------------------------------------------
-15 	// Options:
-16 	//-----------------------------------------------------------
-17 	//  Target:ptx, ISA:sm_30, Endian:little, Pointer Size:32
-18 	//  -O3	(Optimization level)
-19 	//  -g0	(Debug level)
-20 	//  -m2	(Report advisories)
-21 	//-----------------------------------------------------------
-22 
-23 	.file	1	"<command-line>"
-24 	.file	2	"/tmp/tmpxft_00005648_00000000-6_printf.cudafe2.gpu"
-25 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
-26 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-27 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-28 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-29 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-30 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-31 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
-32 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
-33 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
-34 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-35 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-36 	.file	14	"/usr/include/bits/types.h"
-37 	.file	15	"/usr/include/time.h"
-38 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-39 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
-40 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-41 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
-42 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
-43 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-44 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-45 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-46 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
-47 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
-48 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
-49 	.file	27	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
-50 	.file	28	"printf.cu"
-51 
-52 	.global .align 1 .b8 __constant844[23] = {0x48,0x65,0x6c,0x6c,0x6f,0x20,0x74,0x68,0x72,0x65,0x61,0x64,0x20,0x25,0x64,0x2c,0x20,0x66,0x3d,0x25,0x66,0xa,0x0};
-53 
-54 	.entry _Z9helloCUDAf (
-55 		.param .f32 __cudaparm__Z9helloCUDAf_f)
-56 	{
-57 	.reg .u32 %r<5>;
-58 	.reg .f32 %f<3>;
-59 	.reg .f64 %fd<3>;
-60 	.local .align 8 .b8 __cuda___cuda__temp__valist_array_41_168[16];
-61 	.param .u32 __cudaparma1_vprintf;
-62 	.param .u32 __cudaparma2_vprintf;
-63 	.loc	28	1	0
-64 $LBB1__Z9helloCUDAf:
-65 	.loc	28	2	0
-66 	mov.u32 	%r1, %tid.x;
-67 	st.local.u32 	[__cuda___cuda__temp__valist_array_41_168+0], %r1;
-68 	ld.param.f32 	%f1, [__cudaparm__Z9helloCUDAf_f];
-69 	cvt.f64.f32 	%fd1, %f1;
-70 	st.local.f64 	[__cuda___cuda__temp__valist_array_41_168+8], %fd1;
-71 	cvta.global.u32 	%r2, __constant844;
-72 	st.param.u32 	[__cudaparma1_vprintf], %r2;
-73 	cvta.local.u32 	%r3, __cuda___cuda__temp__valist_array_41_168;
-74 	st.param.u32 	[__cudaparma2_vprintf], %r3;
-75 	call.uni (_), vprintf, (__cudaparma1_vprintf, __cudaparma2_vprintf);
-76 	.loc	28	3	0
-77 	exit;
-78 $LDWend__Z9helloCUDAf:
-79 	} // _Z9helloCUDAf
-80 
-81 
-terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ../tests/ptx/synthetic/printf.ptx (1, 13): Cannot parse PTX version 3.0 with version 1.4 parser.
 
 INFO     
 Passing tests:
- (0.030s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.190s) : /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching : Passed
- (0.444s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals : Passed
- (0.297s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence : Passed
- (0.294s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray : Passed
- (0.807s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc : Passed
- (1.416s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
- (0.293s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D : Passed
- (0.053s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
- (0.118s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
- (76.103s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
- (0.055s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
+ (0.054s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.064s) : /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (1.675s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (0.081s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
+ (0.106s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
+ (94.320s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
+ (0.168s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
 
 Failing tests:
- (161.634s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Did not complete.
- (0.059s) : /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale : Did not complete.
- (72.378s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Did not complete.
- (150.072s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Failed
+ (204.562s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Did not complete.
+ (197.350s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Failed
+ (0.270s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals : Did not complete.
+ (100.548s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Did not complete.
+ (0.087s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence : Did not complete.
+ (0.071s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray : Did not complete.
+ (0.061s) : /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale : Did not complete.
+ (0.234s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc : Failed
+ (0.246s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D : Did not complete.
 
 Non-Existent tests:
 

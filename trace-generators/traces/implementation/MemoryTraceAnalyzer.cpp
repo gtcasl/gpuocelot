@@ -10,7 +10,7 @@
 #define MEMORY_TRACE_ANALYZER_CPP_INCLUDED
 
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/trace/interface/MemoryTraceAnalyzer.h>
+#include <traces/interface/MemoryTraceAnalyzer.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <boost/archive/text_iarchive.hpp>

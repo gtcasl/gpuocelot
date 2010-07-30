@@ -10,7 +10,7 @@
 #ifndef PARALLELISM_TRACE_ANALYZER_CPP_INCLUDED
 #define PARALLELISM_TRACE_ANALYZER_CPP_INCLUDED
 
-#include <ocelot/trace/interface/ParallelismTraceAnalyzer.h>
+#include <traces/interface/ParallelismTraceAnalyzer.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <boost/archive/text_iarchive.hpp>

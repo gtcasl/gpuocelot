@@ -8,7 +8,7 @@
 #ifndef BRANCH_TRACE_ANALYZER_CPP_INCLUDED
 #define BRANCH_TRACE_ANALYZER_CPP_INCLUDED
 
-#include <ocelot/trace/interface/BranchTraceAnalyzer.h>
+#include <traces/interface/BranchTraceAnalyzer.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <fstream>

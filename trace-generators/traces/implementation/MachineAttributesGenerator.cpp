@@ -14,7 +14,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/trace/interface/TraceEvent.h>
-#include <ocelot/trace/interface/MachineAttributesGenerator.h>
+#include <traces/interface/MachineAttributesGenerator.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>

@@ -2269,12 +2269,10 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	try {
 		trace::TraceGeneratorVector traceGens;
 
-		if (api::OcelotConfiguration::getTrace().enabled) {
-			traceGens = thread.persistentTraceGenerators;
-			traceGens.insert(traceGens.end(), 
-				thread.nextTraceGenerators.begin(), 
-				thread.nextTraceGenerators.end());
-		}
+		traceGens = thread.persistentTraceGenerators;
+		traceGens.insert(traceGens.end(), 
+			thread.nextTraceGenerators.begin(), 
+			thread.nextTraceGenerators.end());
 
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 

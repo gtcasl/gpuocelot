@@ -7,7 +7,7 @@
 		emulator
 */
 
-#include <ocelot/trace/interface/SharedComputationGenerator.h>
+#include <traces/interface/SharedComputationGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 
 #include <ocelot/ir/interface/Module.h>

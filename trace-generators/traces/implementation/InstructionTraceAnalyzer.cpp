@@ -14,8 +14,8 @@
 #include <cfloat>
 
 // Ocelot includes
-#include <ocelot/trace/interface/InstructionTraceAnalyzer.h>
-#include <ocelot/trace/interface/InstructionTraceGenerator.h>
+#include <traces/interface/InstructionTraceAnalyzer.h>
+#include <traces/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/ArgumentParser.h>

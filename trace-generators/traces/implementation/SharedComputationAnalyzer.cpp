@@ -8,7 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <ocelot/trace/interface/SharedComputationAnalyzer.h>
+#include <traces/interface/SharedComputationAnalyzer.h>
 
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <hydrazine/implementation/ArgumentParser.h>

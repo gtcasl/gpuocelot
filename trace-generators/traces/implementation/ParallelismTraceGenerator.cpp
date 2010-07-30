@@ -10,7 +10,7 @@
 #ifndef PARALLELISM_TRACE_GENERATOR_CPP_INCLUDED
 #define PARALLELISM_TRACE_GENERATOR_CPP_INCLUDED
 
-#include <ocelot/trace/interface/ParallelismTraceGenerator.h>
+#include <traces/interface/ParallelismTraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>
 #include <hydrazine/implementation/Exception.h>

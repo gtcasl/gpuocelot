@@ -12,7 +12,7 @@
 #include <boost/filesystem.hpp>
 
 // Ocelot includes
-#include <ocelot/trace/interface/ConvergenceGenerator.h>
+#include <traces/interface/ConvergenceGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>

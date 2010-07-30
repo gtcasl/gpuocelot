@@ -13,7 +13,7 @@
 #include <boost/filesystem.hpp>
 
 // Ocelot includes
-#include <ocelot/trace/interface/WarpSynchronousGenerator.h>
+#include <traces/interface/WarpSynchronousGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>

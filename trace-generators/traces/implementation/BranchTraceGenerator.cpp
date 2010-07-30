@@ -8,7 +8,7 @@
 #ifndef BRANCH_TRACE_GENERATOR_CPP_INCLUDED
 #define BRANCH_TRACE_GENERATOR_CPP_INCLUDED
 
-#include <ocelot/trace/interface/BranchTraceGenerator.h>
+#include <traces/interface/BranchTraceGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>

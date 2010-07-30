@@ -10,7 +10,7 @@
 #ifndef TRACE_CACHESIMULATOR_CPP_INCLUDED
 #define TRACE_CACHESIMULATOR_CPP_INCLUDED
 
-#include <ocelot/trace/interface/CacheSimulator.h>
+#include <traces/interface/CacheSimulator.h>
 #include <hydrazine/implementation/debug.h>
 #include <cmath>
 

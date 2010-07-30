@@ -4,7 +4,7 @@
 		emulator
 */
 
-#include <ocelot/trace/interface/MemoryTraceGenerator.h>
+#include <traces/interface/MemoryTraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/ir/interface/Module.h>

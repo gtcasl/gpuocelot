@@ -8,7 +8,7 @@
 #include <iostream>
 
 // Ocelot includes
-#include <ocelot/trace/interface/WatchTraceGenerator.h>
+#include <traces/interface/WatchTraceGenerator.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -30,9 +30,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale 
-EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker \
-	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
-	ParallelismTraceAnalyzer SharedComputationAnalyzer
+EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -73,38 +71,23 @@ libocelot_la_SOURCES = \
 	ocelot/ir/implementation/ILOperand.cpp \
 	ocelot/ir/implementation/ControlTree.cpp \
 	hydrazine/implementation/Exception.cpp \
-	hydrazine/implementation/XmlLexer.cpp \
 	hydrazine/implementation/Timer.cpp \
 	hydrazine/implementation/LowLevelTimer.cpp \
 	hydrazine/implementation/ArgumentParser.cpp \
-	hydrazine/implementation/XmlParser.cpp \
 	hydrazine/implementation/math.cpp \
 	hydrazine/implementation/debug.cpp \
-	hydrazine/implementation/XmlArgumentParser.cpp \
-	hydrazine/implementation/XmlTree.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
 	hydrazine/interface/Stringable.cpp \
-	hydrazine/interface/ActiveTimer.cpp \
 	hydrazine/interface/Clonable.cpp \
 	hydrazine/interface/Thread.cpp \
 	hydrazine/interface/Version.cpp \
 	ocelot/trace/implementation/TraceEvent.cpp \
 	ocelot/trace/implementation/TraceGenerator.cpp \
-	ocelot/trace/implementation/BranchTraceGenerator.cpp \
-	ocelot/trace/implementation/ParallelismTraceGenerator.cpp \
-	ocelot/trace/implementation/SharedComputationGenerator.cpp \
-	ocelot/trace/implementation/MemoryTraceGenerator.cpp \
-	ocelot/trace/implementation/KernelEntry.cpp \
-	ocelot/trace/implementation/CacheSimulator.cpp \
-	ocelot/trace/implementation/InstructionTraceGenerator.cpp \
-	ocelot/trace/implementation/WarpSynchronousGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
-	ocelot/trace/implementation/PerformanceBoundGenerator.cpp \
-	ocelot/trace/implementation/ConvergenceGenerator.cpp \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/ATIGPUDevice.cpp \
@@ -132,8 +115,6 @@ libocelot_la_SOURCES = \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
 	ocelot/translator/implementation/PTXToILTranslator.cpp
-
-# 	ocelot/trace/implementation/ActivityGenerator.cpp 
 	
 ################################################################################
 
@@ -187,46 +168,6 @@ PtxToLlvmTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PtxToLlvmTranslator_SOURCES = ocelot/translator/test/PtxToLlvmTranslator.cpp
 PtxToLlvmTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
 PtxToLlvmTranslator_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## ParallelismTraceAnalyzer
-ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-ParallelismTraceAnalyzer_SOURCES = ocelot/trace/implementation/ParallelismTraceAnalyzer.cpp
-ParallelismTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-ParallelismTraceAnalyzer_LDFLAGS = -static
-################################################################################
-	
-################################################################################
-## InstructionTraceAnalyzer
-InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-InstructionTraceAnalyzer_SOURCES = ocelot/trace/implementation/InstructionTraceAnalyzer.cpp
-InstructionTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-InstructionTraceAnalyzer_LDFLAGS = -static
-################################################################################
-	
-################################################################################
-## BranchTraceAnalyzer
-BranchTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-BranchTraceAnalyzer_SOURCES = ocelot/trace/implementation/BranchTraceAnalyzer.cpp
-BranchTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-BranchTraceAnalyzer_LDFLAGS = -static
-################################################################################
-	
-################################################################################
-## SharedComputationAnalyzer
-SharedComputationAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-SharedComputationAnalyzer_SOURCES = ocelot/trace/implementation/SharedComputationAnalyzer.cpp
-SharedComputationAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-SharedComputationAnalyzer_LDFLAGS = -static
-################################################################################
-	
-################################################################################
-## MemoryTraceAnalyzer
-MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-MemoryTraceAnalyzer_SOURCES = ocelot/trace/implementation/MemoryTraceAnalyzer.cpp
-MemoryTraceAnalyzer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-MemoryTraceAnalyzer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -418,27 +359,10 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/cuda/interface/CudaRuntimeInterface.h \
 	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
 	ocelot/cuda/interface/cuda.h \
-	ocelot/trace/interface/MemoryTraceGenerator.h \
 	ocelot/trace/interface/TraceEvent.h \
-	ocelot/trace/interface/BranchTraceAnalyzer.h \
 	ocelot/trace/interface/TraceGenerator.h \
-	ocelot/trace/interface/SharedComputationGenerator.h \
-	ocelot/trace/interface/ParallelismTraceGenerator.h \
-	ocelot/trace/interface/MemoryTraceAnalyzer.h \
-	ocelot/trace/interface/SharedComputationAnalyzer.h \
-	ocelot/trace/interface/BranchTraceGenerator.h \
-	ocelot/trace/interface/ParallelismTraceAnalyzer.h \
-	ocelot/trace/interface/KernelEntry.h \
-	ocelot/trace/interface/CacheSimulator.h \
-	ocelot/trace/interface/InstructionTraceGenerator.h \
-	ocelot/trace/interface/MachineAttributesGenerator.h \
-	ocelot/trace/interface/InstructionTraceAnalyzer.h \
-	ocelot/trace/interface/KernelDimensionsGenerator.h \
-	ocelot/trace/interface/WatchTraceGenerator.h \
 	ocelot/trace/interface/MemoryRaceDetector.h \
 	ocelot/trace/interface/MemoryChecker.h \
-	ocelot/trace/interface/PerformanceBoundGenerator.h \
-	ocelot/trace/interface/ConvergenceGenerator.h \
 	ocelot/parser/interface/PTXLexer.h \
 	ocelot/parser/interface/Parser.h \
 	ocelot/parser/interface/PTXParser.h \
@@ -487,15 +411,11 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	ocelot/util/interface/OcelotConfig.h \
 	hydrazine/implementation/Exception.h \
-	hydrazine/implementation/XmlLexer.h \
 	hydrazine/implementation/Timer.h \
 	hydrazine/implementation/LowLevelTimer.h \
 	hydrazine/implementation/ArgumentParser.h \
-	hydrazine/implementation/XmlParser.h \
 	hydrazine/implementation/math.h \
 	hydrazine/implementation/debug.h \
-	hydrazine/implementation/XmlArgumentParser.h \
-	hydrazine/implementation/XmlTree.h \
 	hydrazine/implementation/string.h \
 	hydrazine/implementation/macros.h \
 	hydrazine/implementation/json.h \
@@ -503,7 +423,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Configurable.h \
 	hydrazine/interface/Test.h \
 	hydrazine/interface/Stringable.h \
-	hydrazine/interface/ActiveTimer.h \
 	hydrazine/interface/Clonable.h \
 	hydrazine/interface/Thread.h \
 	hydrazine/interface/Thread.hpp \
@@ -511,7 +430,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/python/RunRegression.py \
 	regression/ocelotRegressionTests.txt	
 
-# 	ocelot/trace/interface/ActivityGenerator.h 
 ################################################################################
 
 ################################################################################

@@ -13,7 +13,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/trace/interface/TraceEvent.h>
-#include <ocelot/trace/interface/InstructionTraceGenerator.h>
+#include <traces/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>

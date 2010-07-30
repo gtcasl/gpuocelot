@@ -31,7 +31,9 @@ namespace ir {
 		/*! \brief Typedef for a vector of PTXStatements */
 		typedef std::vector< PTXStatement > StatementVector;
 
-		typedef std::map< std::string, Kernel * > KernelMap;
+		typedef std::map< std::string, Kernel* > KernelMap;
+		
+		typedef std::vector< Kernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::map< std::string, Global > GlobalMap;

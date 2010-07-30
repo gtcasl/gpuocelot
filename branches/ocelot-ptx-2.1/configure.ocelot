@@ -13,9 +13,9 @@
 		memoryChecker: true,
 		raceDetector: true,
 		debugger: {
-			enabled: false,
+			enabled: true,
 			kernelFilter: "sequence",
-			alwaysAttach: true
+			alwaysAttach: false
 		},
 		warpSynchronous: {
 			enabled: false,

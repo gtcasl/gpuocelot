@@ -24,6 +24,7 @@ namespace util
 			std::string _includedir() const;
 			std::string _libdir() const;
 			std::string _bindir() const;
+			std::string _tracelibs() const;
 
 		public:
 			bool version;
@@ -33,6 +34,7 @@ namespace util
 			bool includedir;
 			bool libdir;
 			bool bindir;
+			bool trace;
 	
 		public:
 			OcelotConfig();

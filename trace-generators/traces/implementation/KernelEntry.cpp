@@ -12,7 +12,7 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <ocelot/trace/interface/KernelEntry.h>
+#include <traces/interface/KernelEntry.h>
 #include <fstream>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>

@@ -13,6 +13,7 @@
 #include <boost/filesystem.hpp>
 
 // Ocelot includes
+#include <traces/interface/TraceConfiguration.h>
 #include <traces/interface/WarpSynchronousGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
@@ -402,7 +403,7 @@ void trace::WarpSynchronousGenerator::finish() {
 	// always update database and emit results as JSON
 	outputSynchronousStatistics();
 
-	if (configuration.emitHotPaths) {
+	if (TraceConfiguration::Singleton.warpSynchronous.emitHotPaths) {
 		// emit DOT files
 		for (std::vector<int>::const_iterator ws_it = warpSizes.begin();
 			ws_it != warpSizes.end(); ++ws_it) {
@@ -433,7 +434,8 @@ void trace::WarpSynchronousGenerator::outputSynchronousStatistics() {
 	traceLog << "\t\"blockDim\": [" << _entry.blockDim.x << ", " << _entry.blockDim.y << ", " 
 		<< _entry.blockDim.z << "],\n";
 	traceLog << "\t\"counters\":\n[\n";
-	for (std::map< int, SynchronousInstructionCounter >::iterator counter_it = warpCounters.begin();
+	for (std::map< int, SynchronousInstructionCounter >::iterator 
+		counter_it = warpCounters.begin();
 		counter_it != warpCounters.end(); ) {
 		traceLog << "\t{\n\t\"warpSize\": " << counter_it->first << ",\n";
 		write(traceLog, counter_it->second);

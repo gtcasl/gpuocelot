@@ -109,11 +109,6 @@ namespace trace {
 		
 		//! \brief maps the PC of the last instruction of each block to the block's label
 		std::map< int, std::string > PCsToBlocks;
-		
-	public:
-	
-		//! \brief configuration object
-		api::OcelotConfiguration::TraceGeneration::Convergence configuration;
 	};
 }
 

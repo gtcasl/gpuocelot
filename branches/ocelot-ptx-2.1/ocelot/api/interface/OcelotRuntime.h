@@ -8,8 +8,8 @@
 #define OCELOT_RUNTIME_H_INCLUDED
 
 #include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/trace/interface/WarpSynchronousGenerator.h>
 
+#include <ocelot/trace/interface/WarpSynchronousGenerator.h>
 #include <ocelot/trace/interface/MemoryTraceGenerator.h>
 #include <ocelot/trace/interface/InstructionTraceGenerator.h>
 #include <ocelot/trace/interface/ParallelismTraceGenerator.h>

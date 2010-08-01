@@ -61,14 +61,19 @@ void SubkernelFormationPass::ExtractKernelPass::runOnKernel(ir::Kernel& k)
 	
 	ir::PTXKernel& ptx = static_cast<ir::PTXKernel&>(k);
 	
-	ir::PTXKernel* kernel = new ir::PTXKernel;
+	// This is the new kernel entry point
+	splitKernels.push_back(new ir::PTXKernel(k.name, false));
 	
 	for(ir::ControlFlowGraph::const_iterator 
 		block = ptx.cfg().get_entry_block(); 
-		block != ptx.cfg().get_exit_block(); 
-		block = ptx.pdom().getPostDominator( block ) )
+		block != ptx.cfg().get_exit_block(); /* empty */)
 	{
+		ir::ControlFlowGraph::const_iterator 
+			pdom = ptx.pdom().getPostDominator(block);
 		
+		
+		
+		block = pdom;
 	}
 	
 	kernels.insert(std::make_pair(k.name, std::move(splitKernels)));

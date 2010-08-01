@@ -176,12 +176,6 @@ namespace trace
 			*/
 			std::map< int, SynchronousInstructionCounter > WarpSynchronousCounters;
 
-			
-		public:
-
-			//! \brief configuration object for warp synchronous trace generator
-			api::OcelotConfiguration::TraceGeneration::WarpSynchronous configuration;
-
 		private:
 			/*! \brief Counter for creating unique file names. */
 			static unsigned int _counter;

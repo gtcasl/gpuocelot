@@ -37,7 +37,9 @@ libocelotTrace_la_SOURCES = \
 	traces/implementation/InstructionTraceGenerator.cpp \
 	traces/implementation/WarpSynchronousGenerator.cpp \
 	traces/implementation/PerformanceBoundGenerator.cpp \
-	traces/implementation/ConvergenceGenerator.cpp
+	traces/implementation/ConvergenceGenerator.cpp \
+	traces/implementation/TraceConfiguration.cpp \
+	traces/implementation/KernelEntry.cpp
 	
 ################################################################################
 
@@ -47,7 +49,7 @@ ParallelismTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 ParallelismTraceAnalyzer_SOURCES = \
 	traces/implementation/ParallelismTraceAnalyzer.cpp
 ParallelismTraceAnalyzer_LDADD = libocelotTrace.la
-ParallelismTraceAnalyzer_LDFLAGS = -static
+ParallelismTraceAnalyzer_LDFLAGS = -static $(OCELOT_LDFLAGS)
 ################################################################################
 	
 ################################################################################
@@ -56,7 +58,7 @@ InstructionTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 InstructionTraceAnalyzer_SOURCES = \
 	traces/implementation/InstructionTraceAnalyzer.cpp
 InstructionTraceAnalyzer_LDADD = libocelotTrace.la
-InstructionTraceAnalyzer_LDFLAGS = -static
+InstructionTraceAnalyzer_LDFLAGS = -static $(OCELOT_LDFLAGS)
 ################################################################################
 	
 ################################################################################
@@ -64,7 +66,7 @@ InstructionTraceAnalyzer_LDFLAGS = -static
 BranchTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 BranchTraceAnalyzer_SOURCES = traces/implementation/BranchTraceAnalyzer.cpp
 BranchTraceAnalyzer_LDADD = libocelotTrace.la
-BranchTraceAnalyzer_LDFLAGS = -static
+BranchTraceAnalyzer_LDFLAGS = -static $(OCELOT_LDFLAGS)
 ################################################################################
 	
 ################################################################################
@@ -73,7 +75,7 @@ SharedComputationAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 SharedComputationAnalyzer_SOURCES = \
 	traces/implementation/SharedComputationAnalyzer.cpp
 SharedComputationAnalyzer_LDADD = libocelotTrace.la
-SharedComputationAnalyzer_LDFLAGS = -static
+SharedComputationAnalyzer_LDFLAGS = -static $(OCELOT_LDFLAGS)
 ################################################################################
 	
 ################################################################################
@@ -82,7 +84,7 @@ MemoryTraceAnalyzer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 MemoryTraceAnalyzer_SOURCES = \
 	traces/implementation/MemoryTraceAnalyzer.cpp
 MemoryTraceAnalyzer_LDADD = libocelotTrace.la
-MemoryTraceAnalyzer_LDFLAGS = -static
+MemoryTraceAnalyzer_LDFLAGS = -static $(OCELOT_LDFLAGS)
 ################################################################################
 
 ################################################################################

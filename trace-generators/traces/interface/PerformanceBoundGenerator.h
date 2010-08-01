@@ -10,7 +10,7 @@
 
 // Ocelot includes
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/executive/interface/EmulatedKernel.h>
 #include <fstream>
 
 namespace trace {
@@ -20,6 +20,16 @@ namespace trace {
 	*/
 	class PerformanceBoundGenerator: public TraceGenerator {	
 	public:
+		//! \brief specifies how memory bandwidth is computed
+		enum CoalescingProtocol {
+			Protocol_sm_10,
+			Protocol_sm_11,
+			Protocol_sm_12,
+			Protocol_sm_13,
+			Protocol_sm_20,
+			Protocol_ideal,
+			Protocol_invalid
+		};
 	
 		class Counter {
 		public:
@@ -86,7 +96,7 @@ namespace trace {
 		
 		//! \brief computes the number of bytes of effective demand from an event given a coalescing protocol
 		static size_t computeMemoryDemand(const trace::TraceEvent &event, 
-			api::OcelotConfiguration::TraceGeneration::PerformanceBound::CoalescingProtocol protocol);
+			CoalescingProtocol protocol);
 		
 		//! \brief determines if instruction is a significant floating-point operation
 		static int isFlop(const ir::PTXInstruction &instr);
@@ -100,7 +110,7 @@ namespace trace {
 	public:
 	
 		//! \brief specifies the active memory coalescing protocol to employ
-		api::OcelotConfiguration::TraceGeneration::PerformanceBound::CoalescingProtocol protocol;
+		CoalescingProtocol protocol;
 		
 		//! \brief kernel
 		const executive::EmulatedKernel * kernel;

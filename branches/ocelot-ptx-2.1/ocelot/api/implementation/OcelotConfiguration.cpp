@@ -325,9 +325,7 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
 			<< path << "', loading defaults.\n";
 	}
-	if (config) {
-		delete config;
-	}
+	delete config;
 
 	std::string device;
 	if (executive.enableEmulated) device = "emulated";

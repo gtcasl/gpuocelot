@@ -387,7 +387,7 @@ size_t trace::PerformanceBoundGenerator::computeSharedDemand(const trace::TraceE
 
 //! \brief computes the number of bytes of effective demand from an event given a coalescing protocol
 size_t trace::PerformanceBoundGenerator::computeMemoryDemand(const trace::TraceEvent &event, 
-	api::OcelotConfiguration::TraceGeneration::PerformanceBound::CoalescingProtocol protocol) {
+	CoalescingProtocol protocol) {
 	
 	size_t bytes = 0;
 	
@@ -433,8 +433,8 @@ size_t trace::PerformanceBoundGenerator::computeMemoryDemand(const trace::TraceE
 	}
 	
 	switch (protocol) {
-	case api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_10:	// fall through
-	case api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_11:
+	case Protocol_sm_10:	// fall through
+	case Protocol_sm_11:
 	{
 		size_t tid = 0;
 		TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin();
@@ -480,9 +480,9 @@ size_t trace::PerformanceBoundGenerator::computeMemoryDemand(const trace::TraceE
 	}
 		break;
 		
-	case api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_12:	// fall through
-	case api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_13:	// fall through
-	case api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_sm_20:
+	case Protocol_sm_12:	// fall through
+	case Protocol_sm_13:	// fall through
+	case Protocol_sm_20:
 	{
 		size_t tid = 0;
 		TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin();
@@ -520,7 +520,7 @@ size_t trace::PerformanceBoundGenerator::computeMemoryDemand(const trace::TraceE
 		break;
 	
 	// only count the actual number of distinct loads or stores	
-	case api::OcelotConfiguration::TraceGeneration::PerformanceBound::Protocol_ideal:
+	case Protocol_ideal:
 	{
 		std::map< size_t, size_t > transactions;
 		for (TraceEvent::U64Vector::const_iterator addr_it = event.memory_addresses.begin();

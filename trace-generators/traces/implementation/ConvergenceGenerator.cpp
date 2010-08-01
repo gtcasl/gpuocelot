@@ -13,6 +13,7 @@
 
 // Ocelot includes
 #include <traces/interface/ConvergenceGenerator.h>
+#include <traces/interface/TraceConfiguration.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -253,7 +254,7 @@ void trace::ConvergenceGenerator::writeCFG() {
 	controlFlowGraph->write(cfgFile, formatter);
 	cfgFile.close();	
 	
-	if (configuration.render) {
+	if (TraceConfiguration::Singleton.convergence.render) {
 		std::stringstream ss;		
 		ss << "dot -Tpdf -o " << path.string() << "/" << _entry.program << "_" << _entry.name << "." << _counter 
 			<< ".convergence.pdf " << filename;
@@ -281,11 +282,13 @@ void trace::ConvergenceGenerator::finish() {
 	path = path.parent_path();
 	path = boost::filesystem::system_complete( path );
 		
-	std::fstream resultFile(configuration.logfile.c_str(), std::ios_base::out | std::ios_base::app);
+	std::fstream resultFile(
+		TraceConfiguration::Singleton.convergence.logfile.c_str(), 
+		std::ios_base::out | std::ios_base::app);
 
 	write(resultFile);
 	
-	if (configuration.dot) {
+	if (TraceConfiguration::Singleton.convergence.dot) {
 		writeCFG();
 	}
 }

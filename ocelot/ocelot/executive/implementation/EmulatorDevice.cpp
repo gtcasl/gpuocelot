@@ -893,7 +893,7 @@ namespace executive
 		texture.addressMode[0] = convert(ref.addressMode[0]);
 		texture.addressMode[1] = convert(ref.addressMode[1]);
 		texture.addressMode[2] = convert(ref.addressMode[2]);
-		texture.normalize = ref.normalized;
+		texture.normalize = ref.normalized != 0;
 		
 		texture.size.x = size.x;
 		texture.size.y = size.y;

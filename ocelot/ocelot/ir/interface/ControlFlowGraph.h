@@ -314,33 +314,45 @@ private:
 
 namespace std
 {
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::iterator >::operator()( 
-		ir::ControlFlowGraph::iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::const_iterator >::operator()( 
-		ir::ControlFlowGraph::const_iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::const_iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::const_iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::InstructionList::iterator >::operator()( 
-		ir::ControlFlowGraph::InstructionList::iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::InstructionList::iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::InstructionList::iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::InstructionList::const_iterator >::operator()( 
-		ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::InstructionList::const_iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 }
 
 

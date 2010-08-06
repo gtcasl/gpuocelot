@@ -35,6 +35,8 @@ AC_CHECK_LIB([boost_wserialization-mt], [main], [], \
 	AC_MSG_ERROR("libboost_wserialization required"))
 AC_CHECK_LIB([boost_serialization-mt], [main], [], \
 	AC_MSG_ERROR("libboost_serialization required"))
+AC_CHECK_LIB([boost_thread-mt], [main], [], \
+	AC_MSG_ERROR("libboost_thread required"))
 AC_CHECK_LIB([GLEW], [glewInit], [], \
 	AC_MSG_ERROR("libglew required"))
 AC_CHECK_LIB([rt], [clock_gettime], [],\

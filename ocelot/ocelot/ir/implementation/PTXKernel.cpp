@@ -113,7 +113,7 @@ namespace ir
 			}
 		}
 		
-		return std::move( regs );
+		return regs;
 	}
 
 	analysis::DataflowGraph* PTXKernel::dfg() 
@@ -372,7 +372,7 @@ namespace ir
 			}
 		}
 
-		return std::move( map );
+		return map;
 	}
 
 	void PTXKernel::write(std::ostream& stream) const 

@@ -108,7 +108,7 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-ControlFlowGraph::Edge::Edge(BlockList::iterator h, 
+ControlFlowGraph::BasicBlock::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
 
 }
@@ -474,8 +474,8 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 
 	report(" Adding block " << get_entry_block()->label);
 	sequence.push_back(get_entry_block());
-			
-	return std::move(sequence);
+
+	return sequence;
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
@@ -504,7 +504,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 		}
 	}
 	
-	return std::move(sequence);
+	return sequence;
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
@@ -555,7 +555,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 		report(" added " << sequence.back()->label);
 	}
 
-	return std::move(sequence);
+	return sequence;
 }
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 

@@ -11,6 +11,8 @@
 #include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 
+#include <boost/cstdint.hpp>
+
 namespace executive 
 {
 	class ATIExecutableKernel : public executive::ExecutableKernel {
@@ -49,7 +51,7 @@ namespace executive
 
 		private:
 			/*! \brief Type of the constant buffer (cb) */
-			typedef struct { int32_t x, y, z, w; } cb_t;
+			typedef struct { unsigned int x, y, z, w; } cb_t;
 
 			/*! \brief CAL Context */
 			CALcontext *_context;

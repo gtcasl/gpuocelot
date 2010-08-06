@@ -56,7 +56,7 @@ namespace ir
 	
 	std::string LLVMKernel::numberedCode() const
 	{
-		return std::move( hydrazine::addLineNumbers( _code ) );
+		return hydrazine::addLineNumbers( _code );
 	}
 	
 	const LLVMKernel::LLVMStatementVector& LLVMKernel::llvmStatements() const

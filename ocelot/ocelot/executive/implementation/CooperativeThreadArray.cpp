@@ -734,7 +734,7 @@ ir::PTXB64 executive::CooperativeThreadArray::getRegAsB64(int threadID, ir::PTXO
 	\param reg index of register
 */
 bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID, ir::PTXOperand::RegisterType reg) {
-	bool r = (bool)getRegAsU64(threadID, reg);
+	bool r = getRegAsU64(threadID, reg) != 0;
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -1427,7 +1427,7 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTX
 			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000ULL) >> 32);
 			}
 		}
 	} break;
@@ -1444,7 +1444,7 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context, const PTX
 			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000ULL) >> 32);
 			}
 		}
 	} break;
@@ -4268,7 +4268,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			
 			if( a < 0 )
 			{
-				a |= 0xffffffffff000000LLU;
+				a |= 0xffffffffff000000ULL;
 			}
 			else
 			{
@@ -4276,7 +4276,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			}
 			if( b < 0 )
 			{
-				b |= 0xffffffffff000000LLU;
+				b |= 0xffffffffff000000ULL;
 			}
 			else
 			{
@@ -6778,7 +6778,7 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTX
 			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000ULL) >> 32);
 			}
 		}
 	} break;
@@ -6795,7 +6795,7 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context, const PTX
 			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
 
 			if (instr.modifier & PTXInstruction::CC) {
-				setRegAsU32(threadID, CC_register, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, CC_register, (d & 0x100000000ULL) >> 32);
 			}
 		}
 	} break;

@@ -108,6 +108,8 @@ namespace executive
 	{
 		DeviceVector devices;
 
+		if(deviceCount() == 0) return devices;
+
 		try {
 			// Multiple devices is not supported yet
 			devices.push_back(new ATIGPUDevice());
@@ -116,7 +118,7 @@ namespace executive
 			report(he.what());
 		}
 
-		return std::move(devices);
+		return devices;
 	}
 	
 	unsigned int ATIGPUDevice::deviceCount()

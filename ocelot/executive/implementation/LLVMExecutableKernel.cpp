@@ -122,7 +122,7 @@ extern "C"
 
 	float __ocelot_rsqrtFtz( float f )
 	{
-		float value = 1.0 / sqrt( f );
+		float value = 1.0f / sqrt( f );
 		if( _isnan( value ) || _isinf( value ) )
 		{
 			value = 0;
@@ -132,7 +132,7 @@ extern "C"
 
 	float __ocelot_rsqrt( float value )
 	{
-		return 1.0 / sqrt( value );
+		return 1.0f / sqrt( value );
 	}
 	
 	double __ocelot_sqrt( double f )
@@ -594,7 +594,7 @@ extern "C"
 		executive::LLVMExecutableKernel::OpaqueState* state = 
 			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
 		
-		return state->timer.cycles();
+		return (unsigned int) state->timer.cycles();
 	}
 	
 	void __ocelot_debug_block( executive::LLVMContext* context, 
@@ -1365,22 +1365,22 @@ namespace executive
 
 	LLVMExecutableKernel::AtomicOperationCache::AtomicOperationCache()
 	{
-		pthread_mutex_init( &_mutex, 0 );
+
 	}
 	
 	LLVMExecutableKernel::AtomicOperationCache::~AtomicOperationCache()
 	{
-		pthread_mutex_destroy( &_mutex );
+	
 	}
 
 	void LLVMExecutableKernel::AtomicOperationCache::lock()
 	{
-		pthread_mutex_lock( &_mutex );
+		_mutex.lock();
 	}
 
 	void LLVMExecutableKernel::AtomicOperationCache::unlock()
 	{
-		pthread_mutex_unlock( &_mutex );
+		_mutex.unlock();
 	}
 
 	LLVMExecutableKernel::Worker::Message::Message( Type t, 

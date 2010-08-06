@@ -424,7 +424,7 @@ namespace executive
 			allocations.push_back(allocation);
 		}
 		
-		return std::move(allocations);
+		return allocations;
 	}
 	
 	bool NVIDIAGPUDevice::Module::translated() const
@@ -603,7 +603,7 @@ namespace executive
 			devices.push_back(new NVIDIAGPUDevice(i, flags));
 		}
 		
-		return std::move(devices);
+		return devices;
 	}
 
 	unsigned int NVIDIAGPUDevice::deviceCount()
@@ -877,7 +877,7 @@ namespace executive
 			allocations.push_back(allocation->second);
 		}
 
-		return std::move(allocations);
+		return allocations;
 	}
 
 	void NVIDIAGPUDevice::clearMemory()

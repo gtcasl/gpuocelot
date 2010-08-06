@@ -299,12 +299,12 @@ void cuda::CudaRuntime::_enumerateDevices() {
 
 //! acquires mutex and locks the runtime
 void cuda::CudaRuntime::_lock() {
-	pthread_mutex_lock(&_mutex);
+	_mutex.lock();
 }
 
 //! releases mutex
 void cuda::CudaRuntime::_unlock() {
-	pthread_mutex_unlock(&_mutex);
+	_mutex.unlock();
 }
 
 
@@ -371,10 +371,10 @@ std::string cuda::CudaRuntime::_formatError( const std::string& message ) {
 }
 
 cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
-	HostThreadContextMap::iterator t = _threads.find(pthread_self());
+	HostThreadContextMap::iterator t = _threads.find(boost::this_thread::get_id());
 	if (t == _threads.end()) {
-		report("Creating new context for thread " << pthread_self());
-		t = _threads.insert(std::make_pair(pthread_self(), 
+		report("Creating new context for thread " << boost::this_thread::get_id());
+		t = _threads.insert(std::make_pair(boost::this_thread::get_id(), 
 			HostThreadContext())).first;
 	}
 	return t->second;
@@ -384,7 +384,6 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 
 cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
 	_selectedDevice(-1), _nextSymbol(1), _flags(0) {
-	pthread_mutex_init(&_mutex, 0);
 
 	if(api::OcelotConfiguration::get().executive.enableNVIDIA) {
 		_deviceCount += executive::Device::deviceCount(ir::Instruction::SASS);
@@ -408,7 +407,6 @@ cuda::CudaRuntime::~CudaRuntime() {
 	// devices
 	
 	// mutex
-	pthread_mutex_destroy(&_mutex);
 	
 	// thread contexts
 	
@@ -546,7 +544,7 @@ void cuda::CudaRuntime::cudaRegisterTexture(
 	assertM(texture != module->second.textures.end(), "cudaRegisterTexture - " 
 		<< deviceName << " does not exist in module " << moduleName );
 	
-	texture->second.normalizedFloat = norm;
+	texture->second.normalizedFloat = norm != 0;
 	
 	_unlock();
 }
@@ -632,7 +630,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 		*devPtr = allocation->pointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 		
 	}
 	
@@ -655,7 +653,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 		*ptr = allocation->mappedPointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 		
 	}
 
@@ -682,7 +680,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocPitch(void **devPtr, size_t *pitch,
 		*devPtr = allocation->pointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 	
 	}
 	
@@ -710,7 +708,7 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 		*array = (struct cudaArray*)allocation->pointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 	
 	}
 	
@@ -734,7 +732,7 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 		}
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 		
 	}
 
@@ -755,7 +753,7 @@ cudaError_t cuda::CudaRuntime::cudaFreeHost(void *ptr) {
 		}
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 		
 	}
 	
@@ -774,7 +772,7 @@ cudaError_t cuda::CudaRuntime::cudaFreeArray(struct cudaArray *array) {
 		}
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 		
 	}
 
@@ -807,7 +805,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3D(struct cudaPitchedPtr* devPtr,
 			extent.height, extent.depth);
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 	
 	}
 	
@@ -833,7 +831,7 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr,
 			extent.height, extent.depth, *desc);
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 	
 	}
 
@@ -855,7 +853,7 @@ cudaError_t cuda::CudaRuntime::cudaHostAlloc(void **pHost, size_t bytes,
 		*pHost = allocation->mappedPointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& e) {
+	catch(hydrazine::Exception&) {
 		
 	}
 
@@ -1955,7 +1953,8 @@ cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
 	if ((int)_deviceCount > device && device >= 0) {
 		HostThreadContext& thread = _getCurrentThread();
 		thread.selectedDevice = device;
-		report("Setting device for thread " << pthread_self() << " to " 
+		report("Setting device for thread " 
+			<< boost::this_thread::get_id() << " to " 
 			<< device);
 		result = cudaSuccess;
 	}
@@ -2022,7 +2021,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 			if(offset != 0) *offset = 0;
 			result = cudaSuccess;
 		}
-		catch(hydrazine::Exception& e) {
+		catch(hydrazine::Exception&) {
 		
 		}
 	}
@@ -2054,7 +2053,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 			if(offset != 0) *offset = 0;
 			result = cudaSuccess;
 		}
-		catch(hydrazine::Exception& e) {
+		catch(hydrazine::Exception&) {
 
 		}
 	}
@@ -2092,7 +2091,7 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 				texture->second.texture, *texref, *desc, size);
 			result = cudaSuccess;
 		}
-		catch(hydrazine::Exception& e) {
+		catch(hydrazine::Exception&) {
 
 		}
 	}
@@ -2115,7 +2114,7 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 				texture->second.texture);
 			result = cudaSuccess;
 		}
-		catch(hydrazine::Exception& e) {
+		catch(hydrazine::Exception&) {
 
 		}
 	}
@@ -2264,7 +2263,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	thread.mapParameters(k);
 	
 	report("kernel launch (" << kernelName 
-		<< ") on thread " << pthread_self());
+		<< ") on thread " << boost::this_thread::get_id());
 	
 	try {
 		trace::TraceGeneratorVector traceGens;

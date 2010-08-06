@@ -23,7 +23,6 @@ namespace ir
 		: 
 			_nodes(NodeList()),
 			_post(NodeList()),
-			_postCtr(0),
 			_visit(NodeSet()),
 			_root(0),
 			_size(0)

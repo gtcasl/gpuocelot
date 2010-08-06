@@ -121,11 +121,18 @@ namespace cal
 
 	void CalDriver::calDeviceGetCount(CALuint *count) const
 	{
+		if(_driver == 0)
+		{
+			*count = 0;
+		}
+		else
+		{	
 		_checkError((*_calDeviceGetCount)(count));
 
 		report("calDeviceGetCount("
 				<< "*count = " << std::dec << *count
 				<< ")");
+		}
 	}
 
 	void CalDriver::calDeviceGetAttribs(CALdeviceattribs *attribs,

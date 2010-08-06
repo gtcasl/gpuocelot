@@ -1,33 +1,27 @@
-INFO     Reading in test file /home/andrew/repositories/gpuocelot/ocelot/regression/ocelotRegressionTests.txt
+INFO     Reading in test file /home/normal/checkout/gpuocelot/ocelot/regression/ocelotRegressionTests.txt
 INFO      Found the following tests:
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
-INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCalVectorScale
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestLexer
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestParser
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestEmulator
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestInstructions
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestKernels
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence
+INFO       /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
-INFO     Test completed in 0.0419850349426 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc
-INFO     Test completed in 0.0499081611633 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc
+INFO     Test completed in 0.549096822739 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -44,167 +38,36 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 0.289222955704 seconds
-INFO      It produced the following output:
-Failed to parse file '../tests/ptx/sdk3.0/template.ptx':
-1 	.version 2.1
-2 	.target sm_20
-3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc 3.1 built on 2010-04-27
-5 
-6 	//-----------------------------------------------------------
-7 	// Compiling /tmp/tmpxft_00004de1_00000000-7_template.cpp3.i (/tmp/ccBI#.VCXCEW)
-8 	//-----------------------------------------------------------
-9 
-10 	//-----------------------------------------------------------
-11 	// Options:
-12 	//-----------------------------------------------------------
-13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
-14 	//  -O3	(Optimization level)
-15 	//  -g0	(Debug level)
-16 	//  -m2	(Report advisories)
-17 	//-----------------------------------------------------------
-18 
-19 	.file	1	"<command-line>"
-20 	.file	2	"/tmp/tmpxft_00004de1_00000000-6_template.cudafe2.gpu"
-21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
-22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
-28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
-29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
-30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-32 	.file	14	"/usr/include/bits/types.h"
-33 	.file	15	"/usr/include/time.h"
-34 	.file	16	"/home/normal/NVIDIA_GPU_Computing_SDK/C/src/template/template_kernel.cu"
-35 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
-36 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-37 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
-38 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
-39 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-40 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-41 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-42 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
-43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
-44 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
-45 	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
-47 
-48 	.extern	.shared .align 4 .b8 sdata[];
-49 
-50 	.entry _Z10testKernelPfS_ (
-51 		.param .u32 __cudaparm__Z10testKernelPfS__g_idata,
-52 		.param .u32 __cudaparm__Z10testKernelPfS__g_odata)
-53 	{
-54 	.reg .u32 %r<11>;
-55 	.reg .f32 %f<7>;
-56 	.loc	16	34	0
-57 $LBB1__Z10testKernelPfS_:
-58 	.loc	16	48	0
-59 	mov.u32 	%r1, %tid.x;
-60 	mul.lo.u32 	%r2, %r1, 4;
-61 	mov.u32 	%r3, sdata;
-62 	add.u32 	%r4, %r2, %r3;
-63 	ld.param.u32 	%r5, [__cudaparm__Z10testKernelPfS__g_idata];
-64 	add.u32 	%r6, %r5, %r2;
-65 	ld.global.f32 	%f1, [%r6+0];
-66 	st.shared.f32 	[%r4+0], %f1;
-67 	.loc	16	49	0
-68 	bar.sync 	0;
-69 	.loc	16	52	0
-70 	mov.u32 	%r7, %ntid.x;
-71 	cvt.rn.f32.u32 	%f2, %r7;
-72 	ld.shared.f32 	%f3, [%r4+0];
-73 	mul.f32 	%f4, %f2, %f3;
-74 	st.shared.f32 	[%r4+0], %f4;
-75 	.loc	16	53	0
-76 	bar.sync 	0;
-77 	.loc	16	56	0
-78 	ld.shared.f32 	%f5, [%r4+0];
-79 	ld.param.u32 	%r8, [__cudaparm__Z10testKernelPfS__g_odata];
-80 	add.u32 	%r9, %r8, %r2;
-81 	st.global.f32 	[%r9+0], %f5;
-82 	.loc	16	57	0
-83 	exit;
-84 $LDWend__Z10testKernelPfS_:
-85 	} // _Z10testKernelPfS_
-86 
-87 
-terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ../tests/ptx/sdk3.0/template.ptx (1, 13): Cannot parse PTX version 2.1 with version 1.4 parser.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0409080982208 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D
+INFO     Test completed in 0.122388124466 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1280471682
-Test time : 0.000548363
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0313310623169 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray
+INFO     Test completed in 0.120030879974 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence
+INFO     Test completed in 0.108915090561 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
 
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1280471682
-Test time : 0.00379014
-
-Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals
-INFO     Test completed in 0.0582990646362 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals
+INFO     Test completed in 0.421733856201 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
 Pass/Fail : Pass
 cudaSetDevice() - 1 - Ocelot Multicore CPU Backend (LLVM-JIT) 
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.141227006912 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestParser 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels
+INFO     Test completed in 1.41298818588 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -216,8 +79,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1280471683
-Test time : 0.0953813
+Test Seed : 1281099073
+Test time : 1.33242
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -252,255 +115,9 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.0387439727783 seconds
-INFO      It produced the following output:
-Kernel launch time was 7.96318e-05s (79619 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1280471683
-Test time : 0.0119998
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCalVectorScale
-INFO     Test completed in 0.0326278209686 seconds
-INFO      It produced the following output:
-No CAL devices found
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 0.121701002121 seconds
-INFO      It produced the following output:
-Failed to parse file '../tests/ptx/sdk3.0/template.ptx':
-1 	.version 2.1
-2 	.target sm_20
-3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc 3.1 built on 2010-04-27
-5 
-6 	//-----------------------------------------------------------
-7 	// Compiling /tmp/tmpxft_00004de1_00000000-7_template.cpp3.i (/tmp/ccBI#.VCXCEW)
-8 	//-----------------------------------------------------------
-9 
-10 	//-----------------------------------------------------------
-11 	// Options:
-12 	//-----------------------------------------------------------
-13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
-14 	//  -O3	(Optimization level)
-15 	//  -g0	(Debug level)
-16 	//  -m2	(Report advisories)
-17 	//-----------------------------------------------------------
-18 
-19 	.file	1	"<command-line>"
-20 	.file	2	"/tmp/tmpxft_00004de1_00000000-6_template.cudafe2.gpu"
-21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
-22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
-28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
-29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
-30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-32 	.file	14	"/usr/include/bits/types.h"
-33 	.file	15	"/usr/include/time.h"
-34 	.file	16	"/home/normal/NVIDIA_GPU_Computing_SDK/C/src/template/template_kernel.cu"
-35 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
-36 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-37 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
-38 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
-39 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-40 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-41 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-42 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
-43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
-44 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
-45 	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
-47 
-48 	.extern	.shared .align 4 .b8 sdata[];
-49 
-50 	.entry _Z10testKernelPfS_ (
-51 		.param .u32 __cudaparm__Z10testKernelPfS__g_idata,
-52 		.param .u32 __cudaparm__Z10testKernelPfS__g_odata)
-53 	{
-54 	.reg .u32 %r<11>;
-55 	.reg .f32 %f<7>;
-56 	.loc	16	34	0
-57 $LBB1__Z10testKernelPfS_:
-58 	.loc	16	48	0
-59 	mov.u32 	%r1, %tid.x;
-60 	mul.lo.u32 	%r2, %r1, 4;
-61 	mov.u32 	%r3, sdata;
-62 	add.u32 	%r4, %r2, %r3;
-63 	ld.param.u32 	%r5, [__cudaparm__Z10testKernelPfS__g_idata];
-64 	add.u32 	%r6, %r5, %r2;
-65 	ld.global.f32 	%f1, [%r6+0];
-66 	st.shared.f32 	[%r4+0], %f1;
-67 	.loc	16	49	0
-68 	bar.sync 	0;
-69 	.loc	16	52	0
-70 	mov.u32 	%r7, %ntid.x;
-71 	cvt.rn.f32.u32 	%f2, %r7;
-72 	ld.shared.f32 	%f3, [%r4+0];
-73 	mul.f32 	%f4, %f2, %f3;
-74 	st.shared.f32 	[%r4+0], %f4;
-75 	.loc	16	53	0
-76 	bar.sync 	0;
-77 	.loc	16	56	0
-78 	ld.shared.f32 	%f5, [%r4+0];
-79 	ld.param.u32 	%r8, [__cudaparm__Z10testKernelPfS__g_odata];
-80 	add.u32 	%r9, %r8, %r2;
-81 	st.global.f32 	[%r9+0], %f5;
-82 	.loc	16	57	0
-83 	exit;
-84 $LDWend__Z10testKernelPfS_:
-85 	} // _Z10testKernelPfS_
-86 
-87 
-terminate called after throwing an instance of 'parser::PTXParser::Exception'
-  what():  ../tests/ptx/sdk3.0/template.ptx (1, 13): Cannot parse PTX version 2.1 with version 1.4 parser.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
-INFO     Test completed in 0.0409529209137 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO     Test completed in 0.250056028366 seconds
-INFO      It produced the following output:
-Failed to parse file '::unknown path::':
-1 	.version 2.1
-2 	.target sm_20
-3 	// compiled with /usr/local/cuda/open64/lib//be
-4 	// nvopencc 3.1 built on 2010-04-27
-5 
-6 	//-----------------------------------------------------------
-7 	// Compiling /tmp/tmpxft_00004de1_00000000-7_template.cpp3.i (/tmp/ccBI#.VCXCEW)
-8 	//-----------------------------------------------------------
-9 
-10 	//-----------------------------------------------------------
-11 	// Options:
-12 	//-----------------------------------------------------------
-13 	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
-14 	//  -O3	(Optimization level)
-15 	//  -g0	(Debug level)
-16 	//  -m2	(Report advisories)
-17 	//-----------------------------------------------------------
-18 
-19 	.file	1	"<command-line>"
-20 	.file	2	"/tmp/tmpxft_00004de1_00000000-6_template.cudafe2.gpu"
-21 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
-22 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
-23 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
-24 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
-25 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
-26 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
-27 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
-28 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
-29 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
-30 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
-31 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
-32 	.file	14	"/usr/include/bits/types.h"
-33 	.file	15	"/usr/include/time.h"
-34 	.file	16	"/home/normal/NVIDIA_GPU_Computing_SDK/C/src/template/template_kernel.cu"
-35 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
-36 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
-37 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
-38 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
-39 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-40 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-41 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-42 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
-43 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
-44 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
-45 	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-46 	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
-47 
-48 	.extern	.shared .align 4 .b8 sdata[];
-49 
-50 	.entry _Z10testKernelPfS_ (
-51 		.param .u32 __cudaparm__Z10testKernelPfS__g_idata,
-52 		.param .u32 __cudaparm__Z10testKernelPfS__g_odata)
-53 	{
-54 	.reg .u32 %r<11>;
-55 	.reg .f32 %f<7>;
-56 	.loc	16	34	0
-57 $LBB1__Z10testKernelPfS_:
-58 	.loc	16	48	0
-59 	mov.u32 	%r1, %tid.x;
-60 	mul.lo.u32 	%r2, %r1, 4;
-61 	mov.u32 	%r3, sdata;
-62 	add.u32 	%r4, %r2, %r3;
-63 	ld.param.u32 	%r5, [__cudaparm__Z10testKernelPfS__g_idata];
-64 	add.u32 	%r6, %r5, %r2;
-65 	ld.global.f32 	%f1, [%r6+0];
-66 	st.shared.f32 	[%r4+0], %f1;
-67 	.loc	16	49	0
-68 	bar.sync 	0;
-69 	.loc	16	52	0
-70 	mov.u32 	%r7, %ntid.x;
-71 	cvt.rn.f32.u32 	%f2, %r7;
-72 	ld.shared.f32 	%f3, [%r4+0];
-73 	mul.f32 	%f4, %f2, %f3;
-74 	st.shared.f32 	[%r4+0], %f4;
-75 	.loc	16	53	0
-76 	bar.sync 	0;
-77 	.loc	16	56	0
-78 	ld.shared.f32 	%f5, [%r4+0];
-79 	ld.param.u32 	%r8, [__cudaparm__Z10testKernelPfS__g_odata];
-80 	add.u32 	%r9, %r8, %r2;
-81 	st.global.f32 	[%r9+0], %f5;
-82 	.loc	16	57	0
-83 	exit;
-84 $LDWend__Z10testKernelPfS_:
-85 	} // _Z10testKernelPfS_
-86 
-87 
-Pass/Fail : Fail
-
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1280471683
-Test time : 0.220491
-
-Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Parse): Passed
-For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Parse): Passed
-For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Parse): Passed
-For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Parse): Passed
-For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Parse): Passed
-Parse 0 failed with exception: ::unknown path:: (1, 13): Cannot parse PTX version 2.1 with version 1.4 parser.
-For file ../tests/ptx/sdk3.0/template.ptx, Test Point 1 (Parse): Failed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
-INFO     Test completed in 0.0465929508209 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching
+INFO     Test completed in 0.212453842163 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -519,8 +136,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1280471683
-Test time : 0.0164111
+Test Seed : 1281099074
+Test time : 0.159265
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -528,9 +145,368 @@ Test Point 3 Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0266609191895 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestKernels 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestKernels
+INFO     Test completed in 0.12150478363 seconds
+INFO      It produced the following output:
+Kernel launch time was 0.000315905s (315962 ticks)
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1281099074
+Test time : 0.0935724
+
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale
+INFO     Test completed in 0.0573761463165 seconds
+INFO      It produced the following output:
+No CAL devices found
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLexer 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLexer
+INFO     Test completed in 89.6749808788 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1281099075
+Test time : 89.6454
+
+Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/printf.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/recursion.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simplePitchLinearTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/dct8x8_kernel_quantization.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/particles_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/reduction_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/transpose.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/oddEvenMergeSort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/vectorAdd.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_kernel_large_onei.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/BlackScholes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/convolutionTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_kernel_large.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/clock_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/dxtc.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/main.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bitonicSort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/histogram256.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/Mandelbrot_sm11.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_util.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/threadFenceReduction_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/transposeNew.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/dct8x8_kernel_short.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/cppIntegration_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/dct8x8_kernel2.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_kernel_large_multi.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/recursiveGaussian_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_kernel_small.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/sobol_gpu.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/concurrentKernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/clock.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/scalarProd_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/template.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/threadMigration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/ParticleSystem1.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleVote_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/tests.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/Mandelbrot_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/particleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/transpose_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleTexture.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/nbody_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/simpleTemplates_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestEmulator 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestEmulator
+INFO     Test completed in 0.0828678607941 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1281099164
+Test time : 0.0295277
+
+Status : Test output:
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestInstructions
+INFO     Test completed in 0.0720481872559 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1281099164
+Test time : 0.00630713
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph
+INFO     Test completed in 91.9354870319 seconds
+INFO      It produced the following output:
+Failed to parse file '../tests/ptx/synthetic/printf.ptx':
+1 	.version 3.0
+2 	.target sm_30
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 3.1 built on 2010-04-27
+5 
+6 	.extern .func (.param .s32 __cudaretf_printf) printf (.param .u32 __cudaparmf1_printf)
+7 
+8 	.extern .func (.param .s32 __cudaretf_vprintf) vprintf (.param .u32 __cudaparmf1_vprintf, .param .u32 __cudaparmf2_vprintf)
+9 
+10 	//-----------------------------------------------------------
+11 	// Compiling /tmp/tmpxft_00005648_00000000-7_printf.cpp3.i (/tmp/ccBI#.WeDFUc)
+12 	//-----------------------------------------------------------
+13 
+14 	//-----------------------------------------------------------
+15 	// Options:
+16 	//-----------------------------------------------------------
+17 	//  Target:ptx, ISA:sm_30, Endian:little, Pointer Size:32
+18 	//  -O3	(Optimization level)
+19 	//  -g0	(Debug level)
+20 	//  -m2	(Report advisories)
+21 	//-----------------------------------------------------------
+22 
+23 	.file	1	"<command-line>"
+24 	.file	2	"/tmp/tmpxft_00005648_00000000-6_printf.cudafe2.gpu"
+25 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+26 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+27 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+28 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+29 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+30 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+31 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+32 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+33 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+34 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+35 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+36 	.file	14	"/usr/include/bits/types.h"
+37 	.file	15	"/usr/include/time.h"
+38 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+39 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+40 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+41 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+42 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+43 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+44 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+45 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+46 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+47 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+48 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+49 	.file	27	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+50 	.file	28	"printf.cu"
+51 
+52 	.global .align 1 .b8 __constant844[23] = {0x48,0x65,0x6c,0x6c,0x6f,0x20,0x74,0x68,0x72,0x65,0x61,0x64,0x20,0x25,0x64,0x2c,0x20,0x66,0x3d,0x25,0x66,0xa,0x0};
+53 
+54 	.entry _Z9helloCUDAf (
+55 		.param .f32 __cudaparm__Z9helloCUDAf_f)
+56 	{
+57 	.reg .u32 %r<5>;
+58 	.reg .f32 %f<3>;
+59 	.reg .f64 %fd<3>;
+60 	.local .align 8 .b8 __cuda___cuda__temp__valist_array_41_168[16];
+61 	.param .u32 __cudaparma1_vprintf;
+62 	.param .u32 __cudaparma2_vprintf;
+63 	.loc	28	1	0
+64 $LBB1__Z9helloCUDAf:
+65 	.loc	28	2	0
+66 	mov.u32 	%r1, %tid.x;
+67 	st.local.u32 	[__cuda___cuda__temp__valist_array_41_168+0], %r1;
+68 	ld.param.f32 	%f1, [__cudaparm__Z9helloCUDAf_f];
+69 	cvt.f64.f32 	%fd1, %f1;
+70 	st.local.f64 	[__cuda___cuda__temp__valist_array_41_168+8], %fd1;
+71 	cvta.global.u32 	%r2, __constant844;
+72 	st.param.u32 	[__cudaparma1_vprintf], %r2;
+73 	cvta.local.u32 	%r3, __cuda___cuda__temp__valist_array_41_168;
+74 	st.param.u32 	[__cudaparma2_vprintf], %r3;
+75 	call.uni (_), vprintf, (__cudaparma1_vprintf, __cudaparma2_vprintf);
+76 	.loc	28	3	0
+77 	exit;
+78 $LDWend__Z9helloCUDAf:
+79 	} // _Z9helloCUDAf
+80 
+81 
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  ../tests/ptx/synthetic/printf.ptx (1, 13): Cannot parse PTX version 3.0 with version 1.4 parser.
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions
+INFO     Test completed in 0.0991530418396 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -544,8 +520,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1280471683
-Test time : 0.00135636
+Test Seed : 1281099256
+Test time : 0.0066762
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -676,216 +652,291 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
-INFO     Test completed in 0.0351579189301 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestParser
+INFO     Test completed in 184.625129938 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+Failed to parse file '::unknown path::':
+1 	.version 3.0
+2 	.target sm_30
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 3.1 built on 2010-04-27
+5 
+6 	.extern .func (.param .s32 __cudaretf_printf) printf (.param .u32 __cudaparmf1_printf)
+7 
+8 	.extern .func (.param .s32 __cudaretf_vprintf) vprintf (.param .u32 __cudaparmf1_vprintf, .param .u32 __cudaparmf2_vprintf)
+9 
+10 	//-----------------------------------------------------------
+11 	// Compiling /tmp/tmpxft_00005648_00000000-7_printf.cpp3.i (/tmp/ccBI#.WeDFUc)
+12 	//-----------------------------------------------------------
+13 
+14 	//-----------------------------------------------------------
+15 	// Options:
+16 	//-----------------------------------------------------------
+17 	//  Target:ptx, ISA:sm_30, Endian:little, Pointer Size:32
+18 	//  -O3	(Optimization level)
+19 	//  -g0	(Debug level)
+20 	//  -m2	(Report advisories)
+21 	//-----------------------------------------------------------
+22 
+23 	.file	1	"<command-line>"
+24 	.file	2	"/tmp/tmpxft_00005648_00000000-6_printf.cudafe2.gpu"
+25 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+26 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+27 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+28 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+29 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+30 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+31 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+32 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+33 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+34 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+35 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+36 	.file	14	"/usr/include/bits/types.h"
+37 	.file	15	"/usr/include/time.h"
+38 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+39 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+40 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+41 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+42 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+43 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+44 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+45 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+46 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+47 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+48 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+49 	.file	27	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+50 	.file	28	"printf.cu"
+51 
+52 	.global .align 1 .b8 __constant844[23] = {0x48,0x65,0x6c,0x6c,0x6f,0x20,0x74,0x68,0x72,0x65,0x61,0x64,0x20,0x25,0x64,0x2c,0x20,0x66,0x3d,0x25,0x66,0xa,0x0};
+53 
+54 	.entry _Z9helloCUDAf (
+55 		.param .f32 __cudaparm__Z9helloCUDAf_f)
+56 	{
+57 	.reg .u32 %r<5>;
+58 	.reg .f32 %f<3>;
+59 	.reg .f64 %fd<3>;
+60 	.local .align 8 .b8 __cuda___cuda__temp__valist_array_41_168[16];
+61 	.param .u32 __cudaparma1_vprintf;
+62 	.param .u32 __cudaparma2_vprintf;
+63 	.loc	28	1	0
+64 $LBB1__Z9helloCUDAf:
+65 	.loc	28	2	0
+66 	mov.u32 	%r1, %tid.x;
+67 	st.local.u32 	[__cuda___cuda__temp__valist_array_41_168+0], %r1;
+68 	ld.param.f32 	%f1, [__cudaparm__Z9helloCUDAf_f];
+69 	cvt.f64.f32 	%fd1, %f1;
+70 	st.local.f64 	[__cuda___cuda__temp__valist_array_41_168+8], %fd1;
+71 	cvta.global.u32 	%r2, __constant844;
+72 	st.param.u32 	[__cudaparma1_vprintf], %r2;
+73 	cvta.local.u32 	%r3, __cuda___cuda__temp__valist_array_41_168;
+74 	st.param.u32 	[__cudaparma2_vprintf], %r3;
+75 	call.uni (_), vprintf, (__cudaparma1_vprintf, __cudaparma2_vprintf);
+76 	.loc	28	3	0
+77 	exit;
+78 $LDWend__Z9helloCUDAf:
+79 	} // _Z9helloCUDAf
+80 
+81 
+Pass/Fail : Fail
 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 12.6173279285 seconds
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1281099074
+Test time : 184.509
+
+Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Parse): Passed
+Parse 0 failed with exception: ::unknown path:: (1, 13): Cannot parse PTX version 3.0 with version 1.4 parser.
+For file ../tests/ptx/synthetic/printf.ptx, Test Point 1 (Parse): Failed
+
+
+
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator
+INFO     Test completed in 176.738950968 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1280471682
-Test time : 12.5903
-
-Status : For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/template.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/clock_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/cppIntegration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bandwidthTest.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/ParticleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleTemplates_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_kernel_small.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_large.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/dct8x8_kernel_short.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/MersenneTwister.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/lineOfSight.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bicubicTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/concurrentKernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/Mandelbrot_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/fluidsGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/transpose_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/scalarProd_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_small.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/vectorAdd.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_kernel_large_onei.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/oddEvenMergeSort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simplePitchLinearTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/dxtc.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/transpose.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleTemplates.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/sobol_gpu.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleStreams.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/dct8x8_kernel_quantization.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_kernel_large.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/threadFenceReduction_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/matrixMul.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/particleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/dct8x8.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/nbody_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/histogram64.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleVote_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bitonicSort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/alignedTypes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/tests.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/main.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/reduction_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/threadMigration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/histogram256.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/convolutionTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/transposeNew.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_kernel_large_multi.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/dct8x8_kernel2.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/postProcessGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/particles_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bisect_util.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/imageDenoising.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/recursiveGaussian_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/clock.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/BlackScholes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/scalarProd.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/asyncAPI.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/cppIntegration_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk3.0/Mandelbrot_sm11.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
-
-
+Failed to parse file '../tests/ptx/synthetic/printf.ptx':
+1 	.version 3.0
+2 	.target sm_30
+3 	// compiled with /usr/local/cuda/open64/lib//be
+4 	// nvopencc 3.1 built on 2010-04-27
+5 
+6 	.extern .func (.param .s32 __cudaretf_printf) printf (.param .u32 __cudaparmf1_printf)
+7 
+8 	.extern .func (.param .s32 __cudaretf_vprintf) vprintf (.param .u32 __cudaparmf1_vprintf, .param .u32 __cudaparmf2_vprintf)
+9 
+10 	//-----------------------------------------------------------
+11 	// Compiling /tmp/tmpxft_00005648_00000000-7_printf.cpp3.i (/tmp/ccBI#.WeDFUc)
+12 	//-----------------------------------------------------------
+13 
+14 	//-----------------------------------------------------------
+15 	// Options:
+16 	//-----------------------------------------------------------
+17 	//  Target:ptx, ISA:sm_30, Endian:little, Pointer Size:32
+18 	//  -O3	(Optimization level)
+19 	//  -g0	(Debug level)
+20 	//  -m2	(Report advisories)
+21 	//-----------------------------------------------------------
+22 
+23 	.file	1	"<command-line>"
+24 	.file	2	"/tmp/tmpxft_00005648_00000000-6_printf.cudafe2.gpu"
+25 	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+26 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+27 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+28 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+29 	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+30 	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+31 	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+32 	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+33 	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+34 	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+35 	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+36 	.file	14	"/usr/include/bits/types.h"
+37 	.file	15	"/usr/include/time.h"
+38 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+39 	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+40 	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+41 	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+42 	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+43 	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+44 	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+45 	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+46 	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+47 	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+48 	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+49 	.file	27	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+50 	.file	28	"printf.cu"
+51 
+52 	.global .align 1 .b8 __constant844[23] = {0x48,0x65,0x6c,0x6c,0x6f,0x20,0x74,0x68,0x72,0x65,0x61,0x64,0x20,0x25,0x64,0x2c,0x20,0x66,0x3d,0x25,0x66,0xa,0x0};
+53 
+54 	.entry _Z9helloCUDAf (
+55 		.param .f32 __cudaparm__Z9helloCUDAf_f)
+56 	{
+57 	.reg .u32 %r<5>;
+58 	.reg .f32 %f<3>;
+59 	.reg .f64 %fd<3>;
+60 	.local .align 8 .b8 __cuda___cuda__temp__valist_array_41_168[16];
+61 	.param .u32 __cudaparma1_vprintf;
+62 	.param .u32 __cudaparma2_vprintf;
+63 	.loc	28	1	0
+64 $LBB1__Z9helloCUDAf:
+65 	.loc	28	2	0
+66 	mov.u32 	%r1, %tid.x;
+67 	st.local.u32 	[__cuda___cuda__temp__valist_array_41_168+0], %r1;
+68 	ld.param.f32 	%f1, [__cudaparm__Z9helloCUDAf_f];
+69 	cvt.f64.f32 	%fd1, %f1;
+70 	st.local.f64 	[__cuda___cuda__temp__valist_array_41_168+8], %fd1;
+71 	cvta.global.u32 	%r2, __constant844;
+72 	st.param.u32 	[__cudaparma1_vprintf], %r2;
+73 	cvta.local.u32 	%r3, __cuda___cuda__temp__valist_array_41_168;
+74 	st.param.u32 	[__cudaparma2_vprintf], %r3;
+75 	call.uni (_), vprintf, (__cudaparma1_vprintf, __cudaparma2_vprintf);
+76 	.loc	28	3	0
+77 	exit;
+78 $LDWend__Z9helloCUDAf:
+79 	} // _Z9helloCUDAf
+80 
+81 
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  ../tests/ptx/synthetic/printf.ptx (1, 13): Cannot parse PTX version 3.0 with version 1.4 parser.
 
 INFO     
 Passing tests:
- (0.041s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
- (0.031s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
- (0.041s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
- (0.027s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.042s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
- (0.039s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
- (12.617s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
- (0.141s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
- (0.050s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (0.099s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.212s) : /home/normal/checkout/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (0.422s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaGlobals : Passed
+ (0.109s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaSequence : Passed
+ (0.120s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTextureArray : Passed
+ (0.549s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaMalloc : Passed
+ (1.413s) : /home/normal/checkout/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (0.122s) : /home/normal/checkout/gpuocelot/ocelot/TestCudaTexture2D : Passed
+ (0.083s) : /home/normal/checkout/gpuocelot/ocelot/TestEmulator : Passed
+ (0.122s) : /home/normal/checkout/gpuocelot/ocelot/TestKernels : Passed
+ (89.675s) : /home/normal/checkout/gpuocelot/ocelot/TestLexer : Passed
+ (0.072s) : /home/normal/checkout/gpuocelot/ocelot/TestInstructions : Passed
 
 Failing tests:
- (0.122s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Did not complete.
- (0.033s) : /home/andrew/repositories/gpuocelot/ocelot/TestCalVectorScale : Did not complete.
- (0.289s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Did not complete.
- (0.250s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Failed
+ (176.739s) : /home/normal/checkout/gpuocelot/ocelot/TestPTXToLLVMTranslator : Did not complete.
+ (0.057s) : /home/normal/checkout/gpuocelot/ocelot/TestCalVectorScale : Did not complete.
+ (91.935s) : /home/normal/checkout/gpuocelot/ocelot/TestDataflowGraph : Did not complete.
+ (184.625s) : /home/normal/checkout/gpuocelot/ocelot/TestParser : Failed
 
 Non-Existent tests:
 

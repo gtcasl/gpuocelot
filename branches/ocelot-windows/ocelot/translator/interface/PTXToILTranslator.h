@@ -1,0 +1,77 @@
+/*! \file PTXToILTranslator.h
+ *  \author Rodrigo Dominguez <rdomingu@ece.neu.edu>
+ *  \date April 19, 2010
+ *  \brief The header file for the PTX to IL Translator class.
+ */
+
+#ifndef PTX_TO_IL_TRANSLATOR_H_INCLUDED
+#define PTX_TO_IL_TRANSLATOR_H_INCLUDED
+
+//C++ standard library includes
+#include <string>
+#include <map>
+
+//Ocelot includes
+#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/ILKernel.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/ControlTree.h>
+
+typedef ir::ControlTree ControlTree;
+
+namespace translator
+{
+	/*! \brief A translator from PTX to IL */
+	class PTXToILTranslator : public Translator
+	{
+		public:
+			/*! \brief Translate a module from PTX to IL */
+			ir::Kernel *translate(const ir::Kernel *k);
+
+			void addProfile(const ProfilingData &d);
+
+			PTXToILTranslator(OptimizationLevel l = NoOptimization);
+
+		private:
+			typedef std::map<long long unsigned int, std::string> LiteralMap;
+
+			ir::ILKernel *_ilKernel;
+			LiteralMap _literals;
+			ir::ILInstruction::RegisterType _tempRegisterCount;
+
+			void _translate(const ControlTree::Node* node);
+			void _translate(const ControlTree::InstNode* insts);
+			void _translate(const ControlTree::BlockNode* block);
+			void _translate(const ControlTree::IfThenNode* ifthen);
+			void _translate(const ControlTree::SelfLoopNode* selfloop);
+
+			void _translate(const ir::PTXInstruction &i); 
+			ir::ILOperand _translate(const ir::PTXOperand &o);
+			ir::ILInstruction::DataType _translate(
+					const ir::PTXOperand::DataType d);
+			std::string _translate(const ir::PTXOperand::RegisterType &reg);
+			ir::ILOperand::SpecialRegister _translate(
+					const ir::PTXOperand::SpecialRegister &s);
+
+			void _translateAdd(const ir::PTXInstruction &i);
+			void _translateBra(const ir::PTXInstruction &i);
+			void _translateCvt(const ir::PTXInstruction &i);
+			void _translateExit(const ir::PTXInstruction &i);
+			void _translateLd(const ir::PTXInstruction &i);
+			void _translateMov(const ir::PTXInstruction &i);
+			void _translateMul(const ir::PTXInstruction &i);
+			void _translateSetP(const ir::PTXInstruction &i);
+			void _translateSt(const ir::PTXInstruction &i);
+
+			ir::ILOperand _translateLiteral(long long unsigned int l);
+			std::string _translateConstantBuffer(const std::string &ident);
+
+			void _addKernelPrefix();
+
+			ir::ILOperand _tempRegister();
+			void _add(const ir::ILInstruction &i);
+	};
+}
+
+#endif

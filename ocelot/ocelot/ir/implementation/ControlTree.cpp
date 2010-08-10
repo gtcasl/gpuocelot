@@ -48,6 +48,9 @@ namespace ir
 			report("Add edge " << e->head->label << " -> " << e->tail->label);
 			bmap[e->head]->succs().insert(bmap[e->tail]);
 			bmap[e->tail]->preds().insert(bmap[e->head]);
+
+			if (e->type == ir::ControlFlowGraph::Edge::FallThrough)
+				bmap[e->head]->fallthrough() = bmap[e->tail];
 		}
 
 		assertM(start->preds().size() == 0, "Start shouldn't have predecessor");
@@ -72,7 +75,7 @@ namespace ir
 
 	ControlTree::Node::Node(const std::string& label, RegionType rtype, 
 			const NodeList& children) 
-		: _label(label), _rtype(rtype), _children(children)
+		: _label(label), _rtype(rtype), _children(children), _fallthrough(0)
 	{
 	}
 
@@ -97,12 +100,17 @@ namespace ir
 
 	ControlTree::NodeSet& ControlTree::Node::succs()
 	{
-		return _successors;
+		return _succs;
 	}
 
 	ControlTree::NodeSet& ControlTree::Node::preds()
 	{
-		return _predecessors;
+		return _preds;
+	}
+
+	ControlTree::Node*& ControlTree::Node::fallthrough()
+	{
+		return _fallthrough;
 	}
 
 	std::ostream& ControlTree::write(std::ostream& out) const
@@ -183,13 +191,13 @@ namespace ir
 	{
 	}
 
-	ControlTree::IfThenNode::IfThenNode(const std::string& label, Node *cond, 
-			Node *ifTrue) : Node(label, IfThen, buildChildren(cond, ifTrue))
+	ControlTree::IfThenNode::IfThenNode(const std::string& label, Node* cond, 
+			Node* ifTrue) : Node(label, IfThen, buildChildren(cond, ifTrue))
 	{
 	}
 
 	const ControlTree::NodeList ControlTree::IfThenNode::buildChildren(
-			Node *cond, Node *ifTrue) const
+			Node* cond, Node* ifTrue) const
 	{
 		NodeList nodes;
 
@@ -205,6 +213,39 @@ namespace ir
 	}
 
 	const ControlTree::Node* ControlTree::IfThenNode::ifTrue() const
+	{
+		return children().back();
+	}
+
+	ControlTree::IfThenElseNode::IfThenElseNode(const std::string& label, 
+			Node* cond, Node* ifTrue, Node* ifFalse) 
+		: Node(label, IfThenElse, buildChildren(cond, ifTrue, ifFalse))
+	{
+	}
+
+	const ControlTree::NodeList ControlTree::IfThenElseNode::buildChildren(
+			Node* cond, Node* ifTrue, Node* ifFalse) const
+	{
+		NodeList nodes;
+
+		nodes.push_back(cond);
+		nodes.push_back(ifTrue);
+		nodes.push_back(ifFalse);
+
+		return nodes;
+	}
+
+	const ControlTree::Node* ControlTree::IfThenElseNode::cond() const
+	{
+		return children().front();
+	}
+
+	const ControlTree::Node* ControlTree::IfThenElseNode::ifTrue() const
+	{
+		return *(++(children().begin()));
+	}
+
+	const ControlTree::Node* ControlTree::IfThenElseNode::ifFalse() const
 	{
 		return children().back();
 	}
@@ -336,6 +377,46 @@ namespace ir
 
 				return new IfThenNode(label, node, m);
 			}
+
+			// check for an IfThenElse (if node then n else m)
+			if (m->succs().size() == 1 && n->succs().size() == 1 &&
+					m->preds().size() == 1 && n->preds().size() == 1 &&
+					*(m->succs().begin()) == *(n->succs().begin()) &&
+					node->fallthrough() == n)
+			{
+				nset.clear(); nset.insert(node); nset.insert(n); nset.insert(m);
+
+				std::string label("IfThenElseNode_");
+
+				std::stringstream ss;
+				ss << _nodes.size();
+				label += ss.str();
+
+				report("Found " << label << ":" << " if " << node->label()
+						<< " then " << n->label() << " else " << m->label());
+
+				return new IfThenElseNode(label, node, n, m);
+			}
+
+			// check for an IfThenElse (if node then m else n)
+			if (m->succs().size() == 1 && n->succs().size() == 1 &&
+					m->preds().size() == 1 && n->preds().size() == 1 &&
+					*(m->succs().begin()) == *(n->succs().begin()) &&
+					node->fallthrough() == m)
+			{
+				nset.clear(); nset.insert(node); nset.insert(m); nset.insert(n);
+
+				std::string label("IfThenElseNode_");
+
+				std::stringstream ss;
+				ss << _nodes.size();
+				label += ss.str();
+
+				report("Found " << label << ":" << " if " << node->label()
+						<< " then " << m->label() << " else " << n->label());
+
+				return new IfThenElseNode(label, node, m, n);
+			}
 		}
 
 		report("Couldn't find any acyclic regions");
@@ -384,6 +465,8 @@ namespace ir
 				report("Add edge " << (*p)->label() << " -> " << node->label());
 				(*p)->succs().insert(node);
 				node->preds().insert(*p);
+
+				if ((*p)->fallthrough() == *n) (*p)->fallthrough() = node;
 			}
 
 			NodeSet::iterator s;
@@ -397,6 +480,8 @@ namespace ir
 				report("Add edge " << node->label() << " -> " << (*s)->label());
 				(*s)->preds().insert(node);
 				node->succs().insert(*s);
+
+				if ((*n)->fallthrough() == *s) node->fallthrough() = *s;
 			}
 		}
 	}

@@ -13,7 +13,6 @@
 
 //Ocelot includes
 #include <ocelot/translator/interface/Translator.h>
-#include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/ControlTree.h>
@@ -34,7 +33,7 @@ namespace translator
 			PTXToILTranslator(OptimizationLevel l = NoOptimization);
 
 		private:
-			typedef std::map<long long unsigned int, std::string> LiteralMap;
+			typedef std::map<int, std::string> LiteralMap;
 
 			ir::ILKernel *_ilKernel;
 			LiteralMap _literals;
@@ -44,6 +43,7 @@ namespace translator
 			void _translate(const ControlTree::InstNode* insts);
 			void _translate(const ControlTree::BlockNode* block);
 			void _translate(const ControlTree::IfThenNode* ifthen);
+			void _translate(const ControlTree::IfThenElseNode* ifthenelse);
 			void _translate(const ControlTree::SelfLoopNode* selfloop);
 
 			void _translate(const ir::PTXInstruction &i); 
@@ -55,14 +55,19 @@ namespace translator
 					const ir::PTXOperand::SpecialRegister &s);
 
 			void _translateAdd(const ir::PTXInstruction &i);
+			void _translateAnd(const ir::PTXInstruction &i);
+			void _translateBar(const ir::PTXInstruction &i);
 			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
+			void _translateMad(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
 			void _translateSetP(const ir::PTXInstruction &i);
+			void _translateShr(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
+			void _translateSub(const ir::PTXInstruction &i);
 
 			ir::ILOperand _translateLiteral(long long unsigned int l);
 			std::string _translateConstantBuffer(const std::string &ident);

@@ -70,7 +70,7 @@ namespace executive
 				&_uav0Resource, 
 				_device, 
 				width,
-				CAL_FORMAT_UNSIGNED_INT8_4,
+				CAL_FORMAT_UNSIGNED_INT32_1,
 				flags);
 
 		// Allocate cb0 resource

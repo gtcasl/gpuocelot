@@ -46,22 +46,98 @@ namespace executive
 	{
 	}
 
-	void ATIExecutableKernel::launchGrid(int width, int height)
+	unsigned int ATIExecutableKernel::_pad(size_t& size, unsigned int alignment)
 	{
-		// initialize ABI data
-		cb_t *cb0;
-		CALuint pitch = 0;
-		CALuint flags = 0;
+		unsigned int padding = alignment - (size % alignment);
+		padding = (alignment == padding) ? 0 : padding;
+		size += padding;
+		return padding;
+	}
 
-		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
-		cb_t gridDim = {width, height, 1, 0};
+	void ATIExecutableKernel::_allocateSharedMemory()
+	{
+		report("Allocating shared memory");
 
-		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
-		cb0[0] = blockDim;
-		cb0[1] = gridDim;
-		CalDriver()->calResUnmap(*_cb0Resource);
+		typedef std::unordered_map<std::string, size_t> AllocationMap;
 
-		// translate ptx kernel
+		AllocationMap map;
+		size_t sharedSize = 0;
+
+		// global shared variable declaration not supported yet
+		assertM(module->globals.size() == 0, 
+				"Global shared variable declaration not supported yet");
+
+		// local shared variables	
+		LocalMap::const_iterator local;
+		for (local = locals.begin() ; local != locals.end() ; local++)
+		{
+			if (local->second.space == ir::PTXInstruction::Shared)
+			{
+				// extern shared variable declaration not supported yet
+				assertM(local->second.attribute != ir::PTXStatement::Extern,
+						"Extern shared variable declaration not supported yet");
+
+				report("Found local shared variable "
+						<< local->second.name << " of size "
+						<< local->second.getSize());
+
+				_pad(sharedSize, local->second.alignment);
+				map.insert(std::make_pair(local->second.name, sharedSize));
+				sharedSize += local->second.getSize();
+			}
+		}
+
+		ir::ControlFlowGraph::iterator block;
+		for (block = cfg()->begin() ; block != cfg()->end() ; block++)
+		{
+			ir::ControlFlowGraph::InstructionList insts = block->instructions;
+			ir::ControlFlowGraph::InstructionList::iterator inst;
+			for (inst = insts.begin() ; inst != insts.end() ; inst++)
+			{
+				ir::PTXInstruction& ptx = 
+					static_cast<ir::PTXInstruction&>(**inst);
+
+				if (ptx.opcode == ir::PTXInstruction::Mov ||
+						ptx.opcode == ir::PTXInstruction::Ld ||
+						ptx.opcode == ir::PTXInstruction::St)
+				{
+					ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, 
+						&ptx.c};
+
+					for (unsigned int i = 0 ; i != 4 ; i++)
+					{
+						ir::PTXOperand* operand = operands[i];
+
+						if (operand->addressMode == ir::PTXOperand::Address)
+						{
+							AllocationMap::iterator mapping = 
+								map.find(operand->identifier);
+
+							if (mapping != map.end())
+							{
+								report("For instruction " << ptx.toString()
+										<< ", mapping shared label "
+										<< mapping->first << " to " << 
+										mapping ->second);
+
+								operand->addressMode = 
+									ir::PTXOperand::Immediate;
+								operand->imm_uint = mapping->second;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void ATIExecutableKernel::_translateKernel()
+	{
+		report("Translating PTX kernel \"" << name << "\" to IL");
+
+		// allocate shared memory
+		_allocateSharedMemory();
+		
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;
 		ir::ILKernel *ilKernel = 
@@ -79,6 +155,27 @@ namespace executive
 
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);
+
+		delete ilKernel;
+	}
+
+	void ATIExecutableKernel::launchGrid(int width, int height)
+	{
+		// initialize ABI data
+		cb_t *cb0;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
+		cb_t gridDim = {width, height, 1, 0};
+
+		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
+		cb0[0] = blockDim;
+		cb0[1] = gridDim;
+		CalDriver()->calResUnmap(*_cb0Resource);
+
+		// translate ptx kernel
+		_translateKernel();
 
 		// bind memory handles to module names
 		CalDriver()->calCtxGetMem(&_uav0Mem, *_context, *_uav0Resource);
@@ -124,8 +221,6 @@ namespace executive
 		// free object and image
 		CalDriver()->calclFreeImage(_image);
 		CalDriver()->calclFreeObject(_object);
-
-		delete ilKernel;
 	}
 
 	void ATIExecutableKernel::setKernelShape(int x, int y, int z)

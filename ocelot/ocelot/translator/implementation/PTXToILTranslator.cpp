@@ -37,8 +37,6 @@ namespace translator
 
 		// translate iterating thru the control tree
 		_translate(_ilKernel->ctrl_tree()->get_root_node());
-
-		//_translateInstructions();
 		_addKernelPrefix();
 
  		return _ilKernel;
@@ -63,6 +61,11 @@ namespace translator
 			case ControlTree::Node::IfThen:
 			{
 				_translate(static_cast<const ControlTree::IfThenNode*>(node));
+				break;
+			}
+			case ControlTree::Node::IfThenElse:
+			{
+				_translate(static_cast<const ControlTree::IfThenElseNode*>(node));
 				break;
 			}
 			case ControlTree::Node::SelfLoop:
@@ -121,6 +124,33 @@ namespace translator
 		_add(ir::ILEndIf());
 	}
 
+	void PTXToILTranslator::_translate(const ControlTree::IfThenElseNode* ifthenelse)
+	{
+		const ControlTree::Node* cond = ifthenelse->cond();
+
+		assertM(cond->rtype() == ControlTree::Node::Inst, 
+				"Invalid condition node");
+
+		ir::Instruction* ins =
+			static_cast<const ControlTree::InstNode*>(cond)->bb()->instructions.back();
+
+		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
+
+		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+		
+		_translate(cond);
+
+		ir::ILIfLogicalZ if_logicalz;
+		if_logicalz.a = _translate(bra.pg);
+		_add(if_logicalz);
+		_translate(ifthenelse->ifTrue());
+
+		_add(ir::ILElse());
+		_translate(ifthenelse->ifFalse());
+
+		_add(ir::ILEndIf());
+	}
+
 	void PTXToILTranslator::_translate(const ControlTree::SelfLoopNode* selfloop)
 	{
 		_add(ir::ILWhileLoop());
@@ -153,15 +183,21 @@ namespace translator
 		report("Translating: " << i.toString());
 		switch (i.opcode) 
 		{
- 			case ir::PTXInstruction::Add:  _translateAdd(i);     break;
-			case ir::PTXInstruction::Bra:  _translateBra(i);     break;
- 			case ir::PTXInstruction::Cvt:  _translateCvt(i);     break;
- 			case ir::PTXInstruction::Exit: _translateExit(i);    break;
- 			case ir::PTXInstruction::Ld:   _translateLd(i);      break;
-			case ir::PTXInstruction::Mov:  _translateMov(i);     break;
- 			case ir::PTXInstruction::Mul:  _translateMul(i);     break;
-			case ir::PTXInstruction::SetP: _translateSetP(i);    break;
- 			case ir::PTXInstruction::St:   _translateSt(i);      break;
+ 			case ir::PTXInstruction::Add:   _translateAdd(i);  break;
+			case ir::PTXInstruction::And:   _translateAnd(i);  break;
+			case ir::PTXInstruction::Bar:   _translateBar(i);  break;
+			case ir::PTXInstruction::Bra:   _translateBra(i);  break;
+ 			case ir::PTXInstruction::Cvt:   _translateCvt(i);  break;
+ 			case ir::PTXInstruction::Exit:  _translateExit(i); break;
+ 			case ir::PTXInstruction::Ld:    _translateLd(i);   break;
+			case ir::PTXInstruction::Mad:   _translateMad(i);  break;
+			case ir::PTXInstruction::Mov:   _translateMov(i);  break;
+ 			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
+			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
+			case ir::PTXInstruction::SetP:  _translateSetP(i); break;
+			case ir::PTXInstruction::Shr:   _translateShr(i);  break;
+ 			case ir::PTXInstruction::St:    _translateSt(i);   break;
+			case ir::PTXInstruction::Sub:   _translateSub(i);  break;
 			default:
 			{
 				assertM(false, "Opcode "
@@ -186,7 +222,7 @@ namespace translator
 			}
 			case ir::PTXOperand::Immediate:
 			{
-				op = _translateLiteral(o.imm_uint);
+				op = _translateLiteral(o.imm_int);
 				break;
 			}
 			case ir::PTXOperand::Address:
@@ -241,7 +277,8 @@ namespace translator
 	std::string PTXToILTranslator::_translate(
 			const ir::PTXOperand::RegisterType &reg)
 	{
-		assertM(reg < 100, "Register name collides with temp registers");
+		assertM(reg < 100, "Register name " << reg 
+				<< " collides with temp registers");
 
 		std::stringstream stream;
 		stream << "r" << reg;
@@ -310,6 +347,25 @@ namespace translator
 						<< " not supported");
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateAnd(const ir::PTXInstruction &i)
+	{
+		ir::ILIand iand;
+
+		iand.a = _translate(i.a);
+		iand.b = _translate(i.b);
+		iand.d = _translate(i.d);
+
+		_add(iand);
+
+	}
+
+	void PTXToILTranslator::_translateBar(const ir::PTXInstruction &i)
+	{
+		ir::ILFence fence;
+
+		_add(fence);
 	}
 
 	void PTXToILTranslator::_translateBra(const ir::PTXInstruction &i)
@@ -435,6 +491,77 @@ namespace translator
 					}
 					default:
 					{
+						assertM(false, "Vector operation " << i.vec 
+								<< " not supported");
+					}
+				}
+				break;
+			}
+			case ir::PTXInstruction::Shared:
+			{
+				switch (i.vec)
+				{
+					case ir::PTXOperand::v1:
+					{
+						assertM(ir::PTXOperand::bytes(i.type) == 4,
+								"Less-than-32-bits memory operation "
+								"not supported");
+
+						if (i.a.offset == 0)
+						{
+							ir::ILLds_Load_Id lds_load_id;
+							lds_load_id.a = _translate(i.a);
+							lds_load_id.d = _translate(i.d);
+							_add(lds_load_id);
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.a);
+							iadd.b = _translateLiteral(i.a.offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							ir::ILLds_Load_Id lds_load_id;
+							lds_load_id.a = temp;
+							lds_load_id.d = _translate(i.d);
+							_add(lds_load_id);
+						}
+
+						break;
+					}
+					case ir::PTXOperand::v2:
+					case ir::PTXOperand::v4:
+					{
+						assertM(ir::PTXOperand::bytes(i.type) == 4,
+								"Less-than-32-bits memory operation "
+								"not supported");
+
+						ir::ILOperand temp = _tempRegister();
+						ir::PTXOperand::Array::const_iterator dst;
+						int offset = i.a.offset;
+						for (dst = i.d.array.begin() ;
+								dst != i.d.array.end() ; dst++)
+						{
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.a);
+							iadd.b = _translateLiteral(offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							ir::ILLds_Load_Id lds_load_id;
+							lds_load_id.a = temp;
+							lds_load_id.d = _translate(*dst);
+							_add(lds_load_id);
+
+							offset += ir::PTXOperand::bytes(i.type);
+						}
+
+						break;
+					}
+					default:
+					{
 						assertM(false, "Vector operation " 
 								<< i.vec 
 								<< " not supported");
@@ -444,11 +571,22 @@ namespace translator
 			}
 			default:
 			{
-				assertM(false, "Address Space "
-						<< i.addressSpace 
+				assertM(false, "Address Space " << i.addressSpace 
 						<< " not supported");
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateMad(const ir::PTXInstruction &i)
+	{
+		ir::ILMad mad;
+
+		mad.a = _translate(i.a);
+		mad.b = _translate(i.b);
+		mad.c = _translate(i.c);
+		mad.d = _translate(i.d);
+
+		_add(mad);
 	}
 
 	void PTXToILTranslator::_translateMov(const ir::PTXInstruction &i)
@@ -510,95 +648,219 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateShr(const ir::PTXInstruction &i)
+	{
+		ir::ILIshr ishr;
+
+		ishr.a = _translate(i.a);
+		ishr.b = _translate(i.b);
+		ishr.d = _translate(i.d);
+
+		_add(ishr);
+	}
+
 	void PTXToILTranslator::_translateSt(const ir::PTXInstruction &i)
 	{
-		switch (i.vec)
+		switch (i.addressSpace)
 		{
-			case ir::PTXOperand::v1:
+			case ir::PTXInstruction::Global:
 			{
-				if (i.d.offset == 0)
+				switch (i.vec)
 				{
-					if (ir::PTXOperand::bytes(i.type) == 4)
+					case ir::PTXOperand::v1:
 					{
-						ir::ILUav_Raw_Store_Id uav_raw_store_id;
-						uav_raw_store_id.a = _translate(i.a);
-						uav_raw_store_id.d = _translate(i.d);
-						_add(uav_raw_store_id);
-					} else
-					{
-						ir::ILUav_Arena_Store_Id uav_arena_store_id;
-						uav_arena_store_id.a = _translate(i.a);
-						uav_arena_store_id.d = _translate(i.d);
-						uav_arena_store_id.type = _translate(i.type);
-						_add(uav_arena_store_id);
+						if (i.d.offset == 0)
+						{
+							if (ir::PTXOperand::bytes(i.type) == 4)
+							{
+								ir::ILUav_Raw_Store_Id uav_raw_store_id;
+								uav_raw_store_id.a = _translate(i.a);
+								uav_raw_store_id.d = _translate(i.d);
+								_add(uav_raw_store_id);
+							} else
+							{
+								ir::ILUav_Arena_Store_Id uav_arena_store_id;
+								uav_arena_store_id.a = _translate(i.a);
+								uav_arena_store_id.d = _translate(i.d);
+								uav_arena_store_id.type = _translate(i.type);
+								_add(uav_arena_store_id);
+							}
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.d);
+							iadd.b = _translateLiteral(i.d.offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							if (ir::PTXOperand::bytes(i.type) == 4)
+							{
+								ir::ILUav_Raw_Store_Id uav_raw_store_id;
+								uav_raw_store_id.a = _translate(i.a);
+								uav_raw_store_id.d = temp;
+								_add(uav_raw_store_id);
+							} else
+							{
+								ir::ILUav_Arena_Store_Id uav_arena_store_id;
+								uav_arena_store_id.a = _translate(i.a);
+								uav_arena_store_id.d = temp;
+								uav_arena_store_id.type = _translate(i.type);
+								_add(uav_arena_store_id);
+							}
+						}
+
+						break;
 					}
-				} else
-				{
-					ir::ILOperand temp = _tempRegister();
-
-					ir::ILIadd iadd;
-					iadd.a = _translate(i.d);
-					iadd.b = _translateLiteral(i.d.offset);
-					iadd.d = temp;
-					_add(iadd);
-
-					if (ir::PTXOperand::bytes(i.type) == 4)
+					case ir::PTXOperand::v2:
+					case ir::PTXOperand::v4:
 					{
-						ir::ILUav_Raw_Store_Id uav_raw_store_id;
-						uav_raw_store_id.a = _translate(i.a);
-						uav_raw_store_id.d = temp;
-						_add(uav_raw_store_id);
-					} else
+						ir::ILOperand temp = _tempRegister();
+						ir::PTXOperand::Array::const_iterator src;
+						int offset = i.d.offset;
+						for (src = i.a.array.begin() ;
+								src != i.a.array.end() ; src++)
+						{
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.d);
+							iadd.b = _translateLiteral(offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							if (ir::PTXOperand::bytes(i.type) == 4)
+							{
+								ir::ILUav_Raw_Store_Id uav_raw_store_id;
+								uav_raw_store_id.a = _translate(*src);
+								uav_raw_store_id.d = temp;
+								_add(uav_raw_store_id);
+							} else
+							{
+								ir::ILUav_Arena_Store_Id uav_arena_store_id;
+								uav_arena_store_id.a = _translate(*src);
+								uav_arena_store_id.d = temp;
+								uav_arena_store_id.type = _translate(i.type);
+								_add(uav_arena_store_id);
+							}
+
+							offset += ir::PTXOperand::bytes(i.type);
+						}
+						break;
+					}
+					default:
 					{
-						ir::ILUav_Arena_Store_Id uav_arena_store_id;
-						uav_arena_store_id.a = _translate(i.a);
-						uav_arena_store_id.d = temp;
-						uav_arena_store_id.type = _translate(i.type);
-						_add(uav_arena_store_id);
+						assertM(false, "Vector operation " << i.vec 
+								<< " not supported");
 					}
 				}
-
 				break;
 			}
-			case ir::PTXOperand::v2:
-			case ir::PTXOperand::v4:
+			case ir::PTXInstruction::Shared:
 			{
-				ir::ILOperand temp = _tempRegister();
-				ir::PTXOperand::Array::const_iterator src;
-				int offset = i.d.offset;
-				for (src = i.a.array.begin() ;
-						src != i.a.array.end() ; src++)
+				switch (i.vec)
 				{
-					ir::ILIadd iadd;
-					iadd.a = _translate(i.d);
-					iadd.b = _translateLiteral(offset);
-					iadd.d = temp;
-					_add(iadd);
+					case ir::PTXOperand::v1:
+					{
+						assertM(ir::PTXOperand::bytes(i.type) == 4,
+								"Less-than-32-bits memory operation "
+								"not supported");
 
-					if (ir::PTXOperand::bytes(i.type) == 4)
-					{
-						ir::ILUav_Raw_Store_Id uav_raw_store_id;
-						uav_raw_store_id.a = _translate(*src);
-						uav_raw_store_id.d = temp;
-						_add(uav_raw_store_id);
-					} else
-					{
-						ir::ILUav_Arena_Store_Id uav_arena_store_id;
-						uav_arena_store_id.a = _translate(*src);
-						uav_arena_store_id.d = temp;
-						uav_arena_store_id.type = _translate(i.type);
-						_add(uav_arena_store_id);
+						if (i.d.offset == 0)
+						{
+							ir::ILLds_Store_Id lds_store_id;
+							lds_store_id.a = _translate(i.a);
+							lds_store_id.d = _translate(i.d);
+							_add(lds_store_id);
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.d);
+							iadd.b = _translateLiteral(i.d.offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							ir::ILLds_Store_Id lds_store_id;
+							lds_store_id.a = _translate(i.a);
+							lds_store_id.d = temp;
+							_add(lds_store_id);
+						}
+
+						break;
 					}
+					case ir::PTXOperand::v2:
+					case ir::PTXOperand::v4:
+					{
+						assertM(ir::PTXOperand::bytes(i.type) == 4,
+								"Less-than-32-bits memory operation "
+								"not supported");
 
-					offset += ir::PTXOperand::bytes(i.type);
+						ir::ILOperand temp = _tempRegister();
+						ir::PTXOperand::Array::const_iterator src;
+						int offset = i.d.offset;
+						for (src = i.a.array.begin() ;
+								src != i.a.array.end() ; src++)
+						{
+							ir::ILIadd iadd;
+							iadd.a = _translate(i.d);
+							iadd.b = _translateLiteral(offset);
+							iadd.d = temp;
+							_add(iadd);
+
+							ir::ILLds_Store_Id lds_store_id;
+							lds_store_id.a = _translate(*src);
+							lds_store_id.d = temp;
+							_add(lds_store_id);
+
+							offset += ir::PTXOperand::bytes(i.type);
+						}
+						break;
+					}
+					default:
+					{
+						assertM(false, "Vector operation " << i.vec 
+								<< " not supported");
+					}
 				}
+				break;
+			}
+			default:
+			{
+				assertM(false, "Address Space " << i.addressSpace 
+						<< " not supported");
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateSub(const ir::PTXInstruction& i)
+	{
+		// There's no sub instruction in IL so we need to use add
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				assertM(i.b.addressMode == ir::PTXOperand::Immediate,
+						"Subtract operation not supported");
+
+				ir::ILIadd iadd;
+				ir::PTXOperand b;
+
+				b.addressMode = ir::PTXOperand::Immediate;
+				b.imm_int = -1 * i.b.imm_int;
+
+				iadd.a = _translate(i.a);
+				iadd.b = _translate(b);
+				iadd.d = _translate(i.d);
+
+				_add(iadd);
 
 				break;
 			}
 			default:
 			{
-				assertM(false, "Vector operation " 
-						<< i.vec 
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
 						<< " not supported");
 			}
 		}
@@ -664,7 +926,7 @@ namespace translator
 				dcl_literal.operands[0].identifier = it->second;
 				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
 
-				dcl_literal.operands[1].imm_uint = it->first;
+				dcl_literal.operands[1].imm_int = it->first;
 				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
 
 				_ilKernel->_statements.push_front(dcl_literal);
@@ -688,7 +950,7 @@ namespace translator
 		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
 
 		std::stringstream stream;
-		stream << "cb0[1]";
+		stream << "cb0[2]";
 		dcl_cb0.operands.resize(1);
 		dcl_cb0.operands[0].identifier = stream.str();
 		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;

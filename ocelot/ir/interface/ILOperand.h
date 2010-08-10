@@ -52,7 +52,7 @@ namespace ir
 			/*! \brief Identifier of operand */
 			std::string identifier;
 			/*! \brief Immediate value */
-			long long unsigned int imm_uint;
+			int imm_int;
 
 			std::string toString() const;
 			std::string toString(SpecialRegister sr) const;

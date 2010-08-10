@@ -26,7 +26,7 @@ namespace ir
 			case Immediate:
 			{
 				std::stringstream stream;
-				stream << imm_uint;
+				stream << imm_int;
 				return stream.str();	
 			}
 			case Literal: return identifier;

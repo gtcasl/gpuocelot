@@ -18,18 +18,26 @@ namespace ir
 		{
 			case Add:                return "add";
 			case Break:              return "break";
+			case Else:				 return "else";
 			case End:                return "end";
 			case EndIf:              return "endif";
 			case EndLoop:            return "endloop";
+			case Fence:              return "fence_threads_lds";
 			case Iadd:               return "iadd";
+			case Iand:               return "iand";
+			case IfLogicalZ:         return "if_logicalz";
 			case Ige:                return "ige";
 			case Ilt:                return "ilt";
 			case Imul:               return "imul";
+			case Ishr:               return "ishr";
+			case Lds_Load_Id:        return "lds_load_id(1)";
+			case Lds_Store_Id:       return "lds_store_id(1)";
+			case Mad:                return "mad";
 			case Mov:                return "mov";
 			case Uav_Arena_Load_Id:  return "uav_arena_load_id(1)";
 			case Uav_Arena_Store_Id: return "uav_arena_store_id(1)";
 			case Uav_Raw_Load_Id:    return "uav_raw_load_id(0)";
-			case Uav_Raw_Store_Id:   return "uav_raw_store_id(0) mem.xyzw,";
+			case Uav_Raw_Store_Id:   return "uav_raw_store_id(0) mem.x,";
 			case WhileLoop:          return "whileloop";
 			case InvalidOpcode:      return "INVALID_OPCODE";
 			default:
@@ -97,6 +105,25 @@ namespace ir
 		assertM(false, "Not implemented yet");
 	}
 
+	ILTrinaryInstruction::ILTrinaryInstruction(Opcode op,
+			const ILOperand &_d, const ILOperand &_a, const ILOperand &_b,
+			const ILOperand &_c)
+		:
+			ILInstruction(op), d(_d), a(_a), b(_b), c(_c)
+	{
+	}
+
+	std::string ILTrinaryInstruction::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
+			+ a.toString() + ", " + b.toString() + ", " + c.toString();
+	}
+
+	std::string ILTrinaryInstruction::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
 	ILAdd::ILAdd() : ILBinaryInstruction(Add)
 	{
 	}
@@ -125,6 +152,25 @@ namespace ir
 		return new ILBreak(*this);
 	}
 
+	ILElse::ILElse() : ILInstruction(Else)
+	{
+	}
+
+	std::string ILElse::toString() const
+	{
+		return ILInstruction::toString(opcode);
+	}
+
+	std::string ILElse::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILElse::clone(bool copy) const
+	{
+		return new ILElse(*this);
+	}
+
 	ILEnd::ILEnd() : ILInstruction(End)
 	{
 	}
@@ -150,7 +196,7 @@ namespace ir
 
 	std::string ILEndIf::toString() const
 	{
-		return "endif";
+		return ILInstruction::toString(opcode);
 	}
 
 	std::string ILEndIf::valid() const
@@ -182,6 +228,25 @@ namespace ir
 		return new ILEndLoop(*this);
 	}
 
+	ILFence::ILFence() : ILInstruction(Fence)
+	{
+	}
+
+	std::string ILFence::toString() const
+	{
+		return ILInstruction::toString(opcode);
+	}
+
+	std::string ILFence::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILFence::clone(bool copy) const
+	{
+		return new ILFence(*this);
+	}
+
 	ILIadd::ILIadd() : ILBinaryInstruction(Iadd)
 	{
 	}
@@ -191,13 +256,22 @@ namespace ir
 		return new ILIadd(*this);
 	}
 
+	ILIand::ILIand() : ILBinaryInstruction(Iand)
+	{
+	}
+
+	Instruction *ILIand::clone(bool copy) const
+	{
+		return new ILIand(*this);
+	}
+
 	ILIfLogicalZ::ILIfLogicalZ() : ILInstruction(IfLogicalZ)
 	{
 	}
 
 	std::string ILIfLogicalZ::toString() const
 	{
-		return "if_logicalz " + a.toString();
+		return ILInstruction::toString(opcode) + " " + a.toString();
 	}
 
 	std::string ILIfLogicalZ::valid() const
@@ -235,6 +309,56 @@ namespace ir
 	Instruction *ILImul::clone(bool copy) const
 	{
 		return new ILImul(*this);
+	}
+
+	ILIshr::ILIshr() : ILBinaryInstruction(Ishr)
+	{
+	}
+
+	Instruction *ILIshr::clone(bool copy) const
+	{
+		return new ILIshr(*this);
+	}
+
+	ILLds_Load_Id::ILLds_Load_Id() 
+		: ILUnaryInstruction(Lds_Load_Id)
+	{
+	}
+
+	std::string ILLds_Load_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + d.toString() + ".x, "
+			+ a.toString();
+	}
+
+	Instruction *ILLds_Load_Id::clone(bool copy) const
+	{
+		return new ILLds_Load_Id(*this);
+	}
+
+	ILLds_Store_Id::ILLds_Store_Id() 
+		: ILUnaryInstruction(Lds_Store_Id)
+	{
+	}
+
+	std::string ILLds_Store_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
+			+ a.toString() + ".x";
+	}
+
+	Instruction *ILLds_Store_Id::clone(bool copy) const
+	{
+		return new ILLds_Store_Id(*this);
+	}
+
+	ILMad::ILMad() : ILTrinaryInstruction(Mad)
+	{
+	}
+
+	Instruction *ILMad::clone(bool copy) const
+	{
+		return new ILMad(*this);
 	}
 
 	ILMov::ILMov() : ILUnaryInstruction(Mov)

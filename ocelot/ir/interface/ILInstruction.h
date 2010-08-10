@@ -22,14 +22,21 @@ namespace ir
 			{
 				Add,
 				Break,
+				Else,
 				End,
 				EndIf,
 				EndLoop,
+				Fence,
 				Iadd,
+				Iand,
 				IfLogicalZ,
 				Ige,
 				Ilt,
 				Imul,
+				Ishr,
+				Lds_Load_Id,
+				Lds_Store_Id,
+				Mad,
 				Mov,
 				Uav_Arena_Load_Id,
 				Uav_Arena_Store_Id,
@@ -110,6 +117,35 @@ namespace ir
 			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 
+	/*! \brief A generic 3 operand instruction */
+	class ILTrinaryInstruction : public ILInstruction
+	{
+		public:
+			/*! \brief The destination operand */
+			ILOperand d;
+			
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
+
+			/*! \brief The third source operand */
+			ILOperand c;
+
+			/*! \brief Default constructor */
+			ILTrinaryInstruction(Opcode op = InvalidOpcode,
+					const ILOperand &_d = ILOperand(), 
+					const ILOperand &_a = ILOperand(), 
+					const ILOperand &_b = ILOperand(),
+					const ILOperand &_c = ILOperand());
+			
+			virtual std::string toString() const;
+			virtual std::string valid() const;
+
+			virtual Instruction* clone(bool copy=true) const = 0;
+	};
+
 	class ILBreak: public ILInstruction
 	{
 		public:
@@ -127,6 +163,17 @@ namespace ir
 			/*! \brief Default constructor */
 			ILAdd();
 
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILElse : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILElse();
+
+			std::string toString() const;
+			std::string valid() const;
 			Instruction *clone(bool copy=true) const;
 	};
 
@@ -163,11 +210,31 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILFence: public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILFence();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIadd : public ILBinaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
 			ILIadd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIand : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIand();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -209,6 +276,44 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILImul();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIshr : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIshr();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILLds_Load_Id : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLds_Load_Id();
+
+			std::string toString() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILLds_Store_Id : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLds_Store_Id();
+
+			std::string toString() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILMad : public ILTrinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILMad();
 
 			Instruction *clone(bool copy=true) const;
 	};

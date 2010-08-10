@@ -30,7 +30,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale 
-EXTRA_PROGRAMS = Module PtxToLlvmTranslator DFG CFG PTXChecker
+EXTRA_PROGRAMS = Module PtxToLlvmTranslator PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -169,6 +169,14 @@ PtxToLlvmTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PtxToLlvmTranslator_SOURCES = ocelot/translator/test/PtxToLlvmTranslator.cpp
 PtxToLlvmTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
 PtxToLlvmTranslator_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## PtxToIlTranslator
+PtxToIlTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+PtxToIlTranslator_SOURCES = ocelot/translator/test/PtxToIlTranslator.cpp
+PtxToIlTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
+PtxToIlTranslator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -410,6 +418,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/interface/Translator.h \
 	ocelot/translator/test/PtxToLlvmTranslator.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
+	ocelot/translator/test/PtxToIlTranslator.h \
 	ocelot/util/interface/OcelotConfig.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/Timer.h \

@@ -53,27 +53,97 @@ void SubkernelFormationPass::ExtractKernelPass::initialize(const ir::Module& m)
 	
 }
 
+/* algorithm
+    1) start at a kernel entry point that dominates all remaining blocks
+    2) create a connected subgraph with N instructions and no barriers
+      a) This is a new kernel
+    3) For all edges leaving the graph
+      a) save all live registers
+      b) save the target block's id
+      c) create a new scheduler block includes an indirect branch to each 
+         of the targets
+      d) redirect each edge to the kernel exit point
+      e) create a new kernel rooted in the new scheduler block, goto 1
+*/
 void SubkernelFormationPass::ExtractKernelPass::runOnKernel(ir::Kernel& k)
 {
+	typedef std::unordered_set<ir::ControlFlowGraph::const_iterator> BlockSet;
+	typedef std::queue<ir::ControlFlowGraph::const_iterator> BlockQueue;
+	typedef std::vector<ir::ControlFlowGraph::const_iterator> BlockVector;
 	report("Splitting kernel '" << k.name << "' into sub-kernel regions.");
 	
+	BlockQueue queue;
 	KernelVector splitKernels;
+	BlockVector region;
+	BlockSet encountered;
+	BlockSet inEdges;
+	unsigned int currentRegionSize = 0;
 	
-	ir::PTXKernel& ptx = static_cast<ir::PTXKernel&>(k);
+	const ir::PTXKernel& ptx = static_cast<const ir::PTXKernel&>(k);
 	
 	// This is the new kernel entry point
-	splitKernels.push_back(new ir::PTXKernel(k.name, false));
+	kernels.push_back(new ir::PTXKernel(k.name, false));
+
+	ir::PTXKernel& newKernel = static_cast<ir::PTXKernel&>(
+		*splitKernels.back());
+
+	// Start at the entry block	
+	queue.push(ptx.cfg().get_entry_block());
 	
-	for(ir::ControlFlowGraph::const_iterator 
-		block = ptx.cfg().get_entry_block(); 
-		block != ptx.cfg().get_exit_block(); /* empty */)
+	while(true)
 	{
-		ir::ControlFlowGraph::const_iterator 
-			pdom = ptx.pdom().getPostDominator(block);
+		// The front of the queue becomes part of the region
+		ir::ControlFlowGraph::const_iterator block = queue.front();
+		queue.pop();
+
+		// Remove this block from the entering list (if it exists)
+		inEdges.erase(block);
+
+		// Keep track of all blocks entering the region
+		for(ir::ControlFlowGraph::const_edge_pointer_iterator 
+			edge = current->in_edges.begin(); 
+			edge != current->in_edges.end(); ++edge)
+		{
+			inEdges.insert((*edge)->head);
+		}
+
+		// Blocks leaving the region become candidates for the next block
+		for(ir::ControlFlowGraph::const_edge_pointer_iterator 
+			edge = current->out_edges.begin(); 
+			edge != current->out_edges.end(); ++edge)
+		{
+			ir::ControlFlowGraph::const_iterator tail = (*edge)->tail;
+
+			// skip the exit block
+			if(tail == ptx.cfg().get_exit_block()) continue;
+			
+			// skip already encountered blocks
+			if(!encountered.insert(tail).second) continue;
+			
+			// push successor blocks
+			queue.push(tail);
+		}
+
+		// Add the block to the new kernel (skip the entry)
+		if(block == ptx.cfg().get_entry_block()) continue;
+
+		currentRegionSize += block->instructions.size();
+		region.push_back(block);
 		
+		// create a new region if there are enough blocks
+		if(currentRegionSize < expectedRegionSize && !queue.empty()) continue;
 		
+		_createRegion(newKernel, region, inEdges);
 		
-		block = pdom;
+		// restart with a new kernel if there are any blocks left
+		if(queue.empty()) break;
+
+		currentRegionSize = 0;
+		splitKernels.push_back(new ir::PTXKernel(k.name, false));
+		encountered.clear();
+		inEdges.clear();
+
+		newKernel = static_cast<ir::PTXKernel&>(*splitKernels.back());
 	}
 	
 	kernels.insert(std::make_pair(k.name, std::move(splitKernels)));

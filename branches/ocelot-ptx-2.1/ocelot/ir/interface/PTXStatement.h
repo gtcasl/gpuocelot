@@ -57,9 +57,9 @@ namespace ir {
 			PTXS16 s16;
 			PTXS32 s32;
 			PTXS64 s64;
-	
-			PTXF32 f32;
-			PTXF64 f64;
+
+            PTXF32 f32;
+            PTXF64 f64;
 	
 			PTXB8 b8;
 			PTXB16 b16;

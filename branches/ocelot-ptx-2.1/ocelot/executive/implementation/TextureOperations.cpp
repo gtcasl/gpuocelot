@@ -31,8 +31,8 @@ namespace executive
 				}
 			}
 			else {
-				b = fmax(b, 0);
-				b = fmin(b, limit - 1);
+				b = std::max(b, 0.0);
+				b = std::min(b, (double)(limit - 1));
 			}
 	
 			return b;

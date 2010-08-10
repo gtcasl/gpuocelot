@@ -101,12 +101,12 @@ namespace ir
 		statement.array.stride.push_back( elements );
 		statement.attribute = attribute;
 		
-		return std::move( statement );		
+		return statement;
 	}
 
 	std::string Local::toString() const
 	{
-		return std::move( statement().toString() );
+		return statement().toString();
 	}
 }
 

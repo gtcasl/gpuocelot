@@ -23,7 +23,7 @@
 
 namespace executive
 {
-	ATIExecutableKernel::ATIExecutableKernel(const ir::Kernel &k, CALcontext *context,
+	ATIExecutableKernel::ATIExecutableKernel(ir::Kernel &k, CALcontext *context,
 			CALevent *event, CALresource *uav0, CALresource *cb0, CALresource *cb1)
 		: 
 			ExecutableKernel(k), 
@@ -36,6 +36,7 @@ namespace executive
 			_uav0Resource(uav0),
 			_uav0Mem(0),
 			_uav0Name(0),
+			_uav1Name(0),
 			_cb0Resource(cb0), 
 			_cb0Mem(0),
 			_cb0Name(0),
@@ -83,6 +84,10 @@ namespace executive
 		CalDriver()->calCtxGetMem(&_uav0Mem, *_context, *_uav0Resource);
 		CalDriver()->calModuleGetName(&_uav0Name, *_context, _module, "uav0");
 		CalDriver()->calCtxSetMem(*_context, _uav0Name, _uav0Mem);
+
+		// uav1Name is binded to uav0Mem (for less-than-32bits memory ops)
+		CalDriver()->calModuleGetName(&_uav1Name, *_context, _module, "uav1");
+		CalDriver()->calCtxSetMem(*_context, _uav1Name, _uav0Mem);
 
 		CalDriver()->calCtxGetMem(&_cb0Mem, *_context, *_cb0Resource);
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");

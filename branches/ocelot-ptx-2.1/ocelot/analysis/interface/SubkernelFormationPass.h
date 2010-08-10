@@ -32,9 +32,9 @@ namespace analysis
 		class ExtractKernelsPass : KernelPass
 		{
 		public:
-			typedef std::vector< ir::Kernel* > KernelVector;
-			typedef std::unordered_map< std::string, 
-				KernelVector > KernelVectorMap;
+			typedef std::vector<ir::Kernel*> KernelVector;
+			typedef std::unordered_map<std::string, 
+				KernelVector> KernelVectorMap;
 		
 		public:
 			void initialize(const ir::Module& m);
@@ -42,7 +42,10 @@ namespace analysis
 			void finalize();
 			
 		public:
-			KernelVectorMap kernels;		
+			KernelVectorMap kernels;
+		
+		public:
+			unsigned int expectedRegionSize;
 		};
 	};
 }

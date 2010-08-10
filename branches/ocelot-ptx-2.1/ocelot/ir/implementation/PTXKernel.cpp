@@ -98,7 +98,7 @@ namespace ir
 			}
 		}
 		
-		return std::move( regs );
+		return regs;
 	}
 
 	analysis::DataflowGraph* PTXKernel::dfg() 
@@ -129,9 +129,11 @@ namespace ir
 		BlockToLabelMap blocksByLabel;
 		BlockPointerVector branchBlocks;
 
+		unsigned int blockIndex = 0;
+
 		ControlFlowGraph::iterator last_inserted_block = cfg.end();
 		ControlFlowGraph::iterator block = cfg.insert_block(
-			ControlFlowGraph::BasicBlock());
+			ControlFlowGraph::BasicBlock("", blockIndex++));
 		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
 			ControlFlowGraph::Edge::FallThrough);
 	
@@ -156,7 +158,8 @@ namespace ir
 				
 					edge.head = block;
 					last_inserted_block = block;
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", blockIndex++));
 					edge.tail = block;
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 				}
@@ -179,7 +182,8 @@ namespace ir
 					}
 					edge.head = block;
 					branchBlocks.push_back(block);
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", blockIndex++));
 					if (statement.instruction.pg.condition 
 						!= ir::PTXOperand::PT) {
 						edge.tail = block;
@@ -199,7 +203,8 @@ namespace ir
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", blockIndex++));
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Ret )
@@ -212,7 +217,8 @@ namespace ir
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::Branch;
 
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock());
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", blockIndex++));
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
@@ -489,29 +495,24 @@ namespace ir
 		// visit every block and map the old label to the new label
 		std::map<std::string, std::string> labelMap;
 		
-		ControlFlowGraph::BlockPointerVector 
-			blocks = _cfg->executable_sequence();
-		int n = 1;
+		for (ControlFlowGraph::iterator 
+			block = cfg()->begin(); 
+			block != cfg()->end(); ++block) { 
 
-		for (ControlFlowGraph::BlockPointerVector::iterator 
-			bb_it = blocks.begin(); 
-			bb_it != blocks.end(); ++bb_it) { 
-
-			ControlFlowGraph::iterator block = *bb_it;
-			if (block->label != "entry" && block->label != "exit") {
-				std::stringstream ss;
-				ss << "$BB_" << kernelID << "_" << n;
-				labelMap[block->label] = ss.str();
-				block->comment = block->label;
-				block->label = ss.str();
-				n++;
-			}
+			if (block == cfg()->get_entry_block()) continue;
+			if (block == cfg()->get_exit_block()) continue;
+			
+			std::stringstream ss;
+			ss << "$BB_" << kernelID << "_" << block->id;
+			labelMap[block->label] = ss.str();
+			block->comment = block->label;
+			block->label = ss.str();
 		}
 		
-		// visit branchs and set the branch target according to the labelmap
+		// visit every branch and rewrite the branch target according to the label map
 
-		for (ControlFlowGraph::iterator block = _cfg->begin(); 
-			block != _cfg->end(); ++block) {
+		for (ControlFlowGraph::iterator block = cfg()->begin(); 
+			block != cfg()->end(); ++block) {
 			for (ControlFlowGraph::InstructionList::iterator 
 				instruction = block->instructions.begin(); 
 				instruction != block->instructions.end(); ++instruction) {

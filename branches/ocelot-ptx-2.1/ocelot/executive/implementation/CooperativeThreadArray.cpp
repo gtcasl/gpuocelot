@@ -259,6 +259,13 @@ void executive::CooperativeThreadArray::trace() {
 	}
 }
 
+void executive::CooperativeThreadArray::postTrace() {
+	if (traceEvents) {
+		currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
+		kernel->tracePostEvent(currentEvent);
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -438,6 +445,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			context.PC++;
 			running = context.running;
 		}
+		
+		postTrace();
 
 		clock += 4;
 		++counter;
@@ -2234,8 +2243,7 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, 
-	const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PTXInstruction &instr) {
 	trace();
 	context.running = false;
 }
@@ -4732,7 +4740,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			
 			if( a < 0 )
 			{
-				a |= 0xffffffffff000000LLU;
+				a |= 0xffffffffff000000ULL;
 			}
 			else
 			{
@@ -4740,7 +4748,7 @@ void executive::CooperativeThreadArray::eval_Mul24(CTAContext &context, const PT
 			}
 			if( b < 0 )
 			{
-				b |= 0xffffffffff000000LLU;
+				b |= 0xffffffffff000000ULL;
 			}
 			else
 			{

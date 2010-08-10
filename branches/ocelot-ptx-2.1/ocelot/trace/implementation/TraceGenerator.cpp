@@ -40,7 +40,12 @@ void trace::TraceGenerator::initialize(
 
 void trace::TraceGenerator::event(const TraceEvent & event) {
 	// do something meaningful with the trace
-	report( "Default Trace: " << event.toString() );
+	report( "Default Event(): " << event.toString() );
+}
+
+void trace::TraceGenerator::postEvent(const TraceEvent & event) {
+	// do something meaningful with the trace
+	report( "Default PostEvent(): " << event.toString() );
 }
 
 void trace::TraceGenerator::finish() {

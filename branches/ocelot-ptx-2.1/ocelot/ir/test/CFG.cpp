@@ -15,7 +15,6 @@
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>

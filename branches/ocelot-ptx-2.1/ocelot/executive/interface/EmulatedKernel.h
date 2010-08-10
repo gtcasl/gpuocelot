@@ -20,15 +20,11 @@ namespace trace {
 }
 
 namespace executive {
-	class CooperativeThreadArray;
-}
-
-namespace executive {
-	
+		
 	class EmulatedKernel: public ExecutableKernel {
 	public:
 		typedef std::deque<ir::PTXInstruction> PTXInstructionVector;
-		typedef std::map<int, std::string> ProgramCounterMap;
+		typedef std::map<int, std::string> ProgramCounterBlockMap;
 		typedef std::unordered_map<std::string, int> FunctionNameMap;
 		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
 		typedef CooperativeThreadArray::RegisterFile RegisterFile;
@@ -146,7 +142,7 @@ namespace executive {
 	public:
 		/*! A map of register name to register number */
 		ir::PTXKernel::RegisterMap registerMap;
-		
+
 		/*!	Pointer to block of memory used to store parameter data */
 		char* ParameterMemory;
 
@@ -156,15 +152,14 @@ namespace executive {
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 
-		/*! Maps program counters of header instructions to block labels */
-		ProgramCounterMap branchTargetsToBlock;
+		/*! Maps program counters of header instructions to basic block label */
+		ProgramCounterBlockMap branchTargetsToBlock;
 		
-		/*! maps the program counter of the terminating 
-			instructions to owning basic block */
-		ProgramCounterMap basicBlockMap;
+		/*! maps the program counter of the terminating instructions to owning basic block */
+		ProgramCounterBlockMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
-		ProgramCounterMap basicBlockPC;
+		ProgramCounterBlockMap basicBlockPC;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

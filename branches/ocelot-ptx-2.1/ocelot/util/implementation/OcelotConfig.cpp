@@ -50,6 +50,11 @@ namespace util
 		return OCELOT_BIN_PATH;
 	}
 
+	std::string OcelotConfig::_tracelibs() const
+	{
+		return "-locelotTrace";
+	}
+
 	std::string OcelotConfig::string() const
 	{
 		std::string result;
@@ -85,6 +90,11 @@ namespace util
 		{
 			return "";
 		}
+
+		if( trace )
+		{
+			result += _tracelibs();
+		}
 		
 		return result + "\n";
 	}
@@ -103,6 +113,8 @@ int main(int argc, char** argv)
 	
 	parser.parse( "-l", "--libs", config.libs, false,
 		"Libraries needed to link against Ocelot." );
+	parser.parse( "-t", "--trace", config.trace, false,
+		"Link against ocelot trace generators." );
 	parser.parse( "-x", "--cxxflags", config.flags, false,
 		"C++ flags for programs that include Ocelot headers." );
 	parser.parse( "-L", "--libdir", config.libdir,  false,

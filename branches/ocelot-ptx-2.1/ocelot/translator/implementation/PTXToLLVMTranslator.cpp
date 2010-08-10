@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -826,7 +826,7 @@ namespace translator
 					}
 					case ir::PTXOperand::f32:
 					{
-						op.f32 = o.imm_float;
+						op.f32 = (float) o.imm_float;
 						break;
 					}
 					case ir::PTXOperand::f64:
@@ -914,7 +914,7 @@ namespace translator
 					{
 						node.label = "%" + block->producer( *s );
 					}
-					catch( analysis::DataflowGraph::NoProducerException& e )
+					catch( analysis::DataflowGraph::NoProducerException& )
 					{
 						node.label = "%$OcelotRegisterInitializerBlock";
 						_uninitialized.push_back( *s );

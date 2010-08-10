@@ -15,6 +15,8 @@
 #include <ocelot/translator/interface/Translator.h>
 #include <hydrazine/interface/Thread.h>
 
+#include <boost/thread.hpp>
+
 #include <stack>
 
 namespace llvm
@@ -62,7 +64,7 @@ namespace executive
 			{
 				private:
 					/*! \brief Controls access to the cache */
-					pthread_mutex_t _mutex;
+					boost::mutex _mutex;
 				
 				public:
 					/*! \brief Create the mutex */

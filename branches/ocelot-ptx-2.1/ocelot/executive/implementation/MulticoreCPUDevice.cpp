@@ -15,9 +15,6 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
 
-// Linux includes
-#include <sys/sysinfo.h>
-
 // Macros
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str());}
@@ -62,7 +59,7 @@ namespace executive
 	{
 		_properties.ISA = ir::Instruction::LLVM;
 		_properties.name = "Ocelot Multicore CPU Backend (LLVM-JIT)";
-		_properties.multiprocessorCount = sysconf(_SC_NPROCESSORS_ONLN);
+		_properties.multiprocessorCount = hydrazine::getHardwareThreadCount();
 		_properties.clockRate = 2000;
 	}
 	

@@ -17,11 +17,12 @@
 	#ifndef PTX_LPP_INCLUDED
 	#define PTX_LPP_INCLUDED
 
-	#include <sstream>
 	#include <hydrazine/implementation/macros.h>
 	#include <hydrazine/implementation/string.h>
 	#include <ocelot/parser/interface/PTXLexer.h>
 	#include <cassert>
+	#include <sstream>
+	#include <cstring>
 	
 	void strlcpy( char* destination, const char* source, unsigned int max );
 	

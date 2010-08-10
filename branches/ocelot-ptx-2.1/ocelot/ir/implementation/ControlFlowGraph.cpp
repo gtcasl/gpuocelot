@@ -22,11 +22,11 @@
 
 namespace ir {
 
-ControlFlowGraph::Edge::Edge(BlockList::iterator h, 
-	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
-}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::BasicBlock::DotFormatter::DotFormatter() { }
+ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
 
 /*!
 	\brief emits label for entry block
@@ -48,7 +48,25 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::exitLabel(
 	return out.str();
 }
 
-ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
+std::string ControlFlowGraph::make_label_dot_friendly( 
+	const std::string& string ) {
+	
+	std::string result;
+	for(std::string::const_iterator fi = string.begin(); 
+		fi != string.end(); ++fi) {
+		
+		if( *fi == '{' ) {
+			result.push_back('[');
+		}
+		else if( *fi == '}' ) {
+			result.push_back(']');
+		}
+		else {
+			result.push_back(*fi);
+		}	
+	}
+	return result;
+}
 
 std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(
 	const std::string &str) {
@@ -87,8 +105,15 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
 	return out.str();
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ControlFlowGraph::BasicBlock::Edge::Edge(BlockList::iterator h, 
+	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
+
+}
+
 ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i, 
-	const InstructionList& is) : label(l), id(i), visited(false) {
+	const InstructionList& is) : label(l), id(i) {
 	for (InstructionList::const_iterator instruction = is.begin();
 		instruction != is.end(); ++instruction ) {
 		instructions.push_back((*instruction)->clone(true));
@@ -196,6 +221,8 @@ ControlFlowGraph::EdgePointerVector::iterator
 	}
 	return out_edges.end();
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::ControlFlowGraph(): 
 	_entry(_blocks.insert(end(), BasicBlock("entry"))),
@@ -354,7 +381,7 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	// emit nodes
 	out << "  // basic blocks\n\n";
 	out << "  bb_0 " << blockFormatter.entryLabel(&*_entry) << ";\n";
-	out << "  bb_1 " << blockFormatter.exitLabel(&*_entry) << ";\n";
+	out << "  bb_1 " << blockFormatter.exitLabel(&*_exit) << ";\n";
 
 	blockIndices[_entry] = 0;
 	blockIndices[_exit] = 1;
@@ -387,26 +414,6 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	return out;
 }
 
-std::string ControlFlowGraph::make_label_dot_friendly( 
-	const std::string& string ) {
-	
-	std::string result;
-	for(std::string::const_iterator fi = string.begin(); 
-		fi != string.end(); ++fi) {
-		
-		if( *fi == '{' ) {
-			result.push_back('[');
-		}
-		else if( *fi == '}' ) {
-			result.push_back(']');
-		}
-		else {
-			result.push_back(*fi);
-		}	
-	}
-	return result;
-}
-
 std::string ControlFlowGraph::toString( Edge::Type t ) {
 	switch( t )
 	{
@@ -416,6 +423,7 @@ std::string ControlFlowGraph::toString( Edge::Type t ) {
 	}
 	return "Invalid";
 }
+
 
 void ControlFlowGraph::clear() {
 	for (iterator block = begin(); block != end(); ++block) {
@@ -468,8 +476,8 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 
 	report(" Adding block " << get_entry_block()->label);
 	sequence.push_back(get_entry_block());
-			
-	return std::move(sequence);
+
+	return sequence;
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
@@ -498,7 +506,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 		}
 	}
 	
-	return std::move(sequence);
+	return sequence;
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
@@ -549,7 +557,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 		report(" added " << sequence.back()->label);
 	}
 
-	return std::move(sequence);
+	return sequence;
 }
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 
@@ -576,6 +584,7 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 			block_map[bl_it] = newBlock;
 		}
 	}
+
 
 	// duplicate edges using the block_map
 	for (const_edge_iterator e_it = cfg.edges_begin(); 

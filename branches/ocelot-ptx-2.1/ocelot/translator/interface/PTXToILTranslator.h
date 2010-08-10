@@ -16,6 +16,9 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/ControlTree.h>
+
+typedef ir::ControlTree ControlTree;
 
 namespace translator
 {
@@ -35,21 +38,25 @@ namespace translator
 
 			ir::ILKernel *_ilKernel;
 			LiteralMap _literals;
+			ir::ILInstruction::RegisterType _tempRegisterCount;
 
-			void _translateInstructions();
+			void _translate(const ControlTree::Node* node);
+			void _translate(const ControlTree::InstNode* insts);
+			void _translate(const ControlTree::BlockNode* block);
+			void _translate(const ControlTree::IfThenNode* ifthen);
+			void _translate(const ControlTree::SelfLoopNode* selfloop);
 
-			void _translate(ir::ControlFlowGraph::BasicBlock *block);
-			void _translate(const ir::PTXInstruction &i, 
-					ir::ControlFlowGraph::BasicBlock *b);
+			void _translate(const ir::PTXInstruction &i); 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
+			ir::ILInstruction::DataType _translate(
+					const ir::PTXOperand::DataType d);
 			std::string _translate(const ir::PTXOperand::RegisterType &reg);
 			ir::ILOperand::SpecialRegister _translate(
-					const ir::PTXOperand::SpecialRegister &s, 
-					const ir::PTXOperand::VectorIndex &i);
+					const ir::PTXOperand::SpecialRegister &s,
+					const ir::PTXOperand::VectorIndex& d);
 
 			void _translateAdd(const ir::PTXInstruction &i);
-			void _translateBra(const ir::PTXInstruction &i, 
-					ir::ControlFlowGraph::BasicBlock *b);
+			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
@@ -58,11 +65,12 @@ namespace translator
 			void _translateSetP(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
 
-			std::string _translateLiteral(long long unsigned int l);
+			ir::ILOperand _translateLiteral(long long unsigned int l);
 			std::string _translateConstantBuffer(const std::string &ident);
 
 			void _addKernelPrefix();
 
+			ir::ILOperand _tempRegister();
 			void _add(const ir::ILInstruction &i);
 	};
 }

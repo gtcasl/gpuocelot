@@ -61,3 +61,4 @@ std::string executive::RuntimeException::toString() const {
 const char* executive::RuntimeException::what() const  throw() {
 	return message.c_str();
 }
+

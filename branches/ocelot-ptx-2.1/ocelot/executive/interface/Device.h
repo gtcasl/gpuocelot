@@ -6,7 +6,6 @@
 
 #ifndef DEVICE_H_INCLUDED
 #define DEVICE_H_INCLUDED
-
 // C++ standard library includes
 #include <fstream>
 #include <string>
@@ -311,4 +310,3 @@ namespace executive
 }
 
 #endif
-

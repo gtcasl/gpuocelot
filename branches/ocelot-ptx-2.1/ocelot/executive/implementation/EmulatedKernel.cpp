@@ -11,6 +11,7 @@
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
@@ -170,9 +171,11 @@ void executive::EmulatedKernel::initialize() {
 
 void executive::EmulatedKernel::constructInstructionSequence() {
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
-		ir::ControlFlowGraph::InstructionList::iterator> InstructionMap;
+		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
 		unsigned int> InstructionIdMap;
+	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
+		ir::ControlFlowGraph::iterator> ReconvergeToBlockMap;
 	report("Constructing emulated instruction sequence.");
 
 	// This kernel/function begins at the first instruction
@@ -183,6 +186,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		bb_sequence = cfg()->executable_sequence();
 	
 	InstructionMap reconvergeTargets;
+	ReconvergeToBlockMap reconvergeSources;
 	
 	report(" Adding reconverge instructions");
 	// Create reconverge instructions
@@ -197,13 +201,38 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				ir::ControlFlowGraph::iterator 
 					pdom = pdom_tree()->getPostDominator(*bb_it);
 
-				pdom->instructions.push_front(ir::PTXInstruction(
-					ir::PTXInstruction::Reconverge).clone());
-				report( "  Getting post dominator block " << pdom->label 
-					<< " of instruction " << ptx_instr.toString() << ", " 
-					<< pdom->instructions.front()->toString() );
-				reconvergeTargets.insert(std::make_pair(i_it, 
-					pdom->instructions.begin()));
+				// only add a new reconverge point if all other reconverge 
+				// points originate from branches that dominate this branch
+				bool allDominate = true;
+				ir::ControlFlowGraph::InstructionList::iterator 
+					reconverge = pdom->instructions.begin();
+				for ( ; reconverge != pdom->instructions.end(); ++reconverge) {
+					ir::PTXInstruction& ptx = static_cast<
+						ir::PTXInstruction&>(**reconverge);
+					if (ptx.opcode != ir::PTXInstruction::Reconverge) {
+						break;
+					}
+					
+					if( !dom_tree()->dominates(
+						reconvergeSources[reconverge], *bb_it) ) {
+						allDominate = false;
+						break;
+					}
+				}
+				
+				if (allDominate) {
+					pdom->instructions.push_front(ir::PTXInstruction(
+						ir::PTXInstruction::Reconverge).clone());
+					report( "  Getting post dominator block " << pdom->label 
+						<< " of instruction " << ptx_instr.toString() );
+					reconvergeTargets.insert(std::make_pair(i_it, 
+						pdom->instructions.begin()));
+					reconvergeSources.insert(std::make_pair(
+						pdom->instructions.begin(), *bb_it));
+				}
+				else {
+					reconvergeTargets.insert(std::make_pair(i_it, reconverge));
+				}
 			}
 		}
 	}
@@ -226,6 +255,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			}
 			ptx.pc = instructions.size();
 #if REPORT_KERNEL_INSTRUCTIONS
+
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
 #endif
 			lastPC = instructions.size();
@@ -1116,7 +1146,8 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 
 std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 
-	ProgramCounterMap::const_iterator bt_it = basicBlockMap.lower_bound(PC);
+	ProgramCounterBlockMap::const_iterator 
+		bt_it = basicBlockMap.lower_bound(PC);
 	if (bt_it != basicBlockMap.end()) {
 		return bt_it->second;
 	}

@@ -113,9 +113,6 @@ public:
 		/*! \brief Edges to direct successors */
 		EdgePointerVector out_edges;
 
-		/*! \brief Has this block been visited before */
-		bool visited;
-
 	public:
 
 		/*!
@@ -129,26 +126,17 @@ public:
 
 			static std::string dotFriendly(const std::string &str);
 
-		public:
-		
-			/*!
-				\brief emits label for entry block
-			*/
+		public:		
+			/*! \brief emits label for entry block */
 			virtual std::string entryLabel(const BasicBlock *block);
 			
-			/*!
-				\brief emits label for exit block
-			*/
+			/*! \brief emits label for exit block */
 			virtual std::string exitLabel(const BasicBlock *block);
 		
-			/*!
-				\brief prints string representation of 
-			*/
+			/*!	\brief prints string representation of */
 			virtual std::string toString(const BasicBlock *block);
 
-			/*!
-				\brief emits DOT representation of an edge
-			*/
+			/*! \brief emits DOT representation of an edge	*/
 			virtual std::string toString(const Edge *edge);
 		};
 	};
@@ -179,6 +167,8 @@ public:
 
 	/*! \brief A pointer to an edge iterator */
 	typedef EdgePointerVector::iterator edge_pointer_iterator;
+	/*! \brief A const pointer to an edge iterator */
+	typedef EdgePointerVector::const_iterator const_edge_pointer_iterator;
 
 	/*! \brief A map from a block pointer to an int */
 	typedef std::unordered_map<const_iterator, unsigned int> BlockMap;
@@ -329,33 +319,45 @@ private:
 
 namespace std
 {
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::iterator >::operator()( 
-		ir::ControlFlowGraph::iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::const_iterator >::operator()( 
-		ir::ControlFlowGraph::const_iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::const_iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::const_iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::InstructionList::iterator >::operator()( 
-		ir::ControlFlowGraph::InstructionList::iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::InstructionList::iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::InstructionList::iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		ir::ControlFlowGraph::InstructionList::const_iterator >::operator()( 
-		ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+	template<> 
+	class hash< ir::ControlFlowGraph::InstructionList::const_iterator >
 	{
-		return ( size_t )&( *it );
-	}
+	public:
+		size_t operator()( ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
+	};
 }
 
 

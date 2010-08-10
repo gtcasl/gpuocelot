@@ -13,7 +13,7 @@
 // hydrazine includes
 #include <hydrazine/implementation/Timer.h>
 
-// standard library includes
+// stdnard library includes
 #include <unordered_set>
 
 namespace executive
@@ -326,4 +326,3 @@ namespace executive
 }
 
 #endif
-

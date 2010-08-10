@@ -86,6 +86,9 @@ namespace executive {
 		/*!	Notifies all attached TraceGenerators of an event */
 		void traceEvent(const trace::TraceEvent & event) const;
 
+		/*!	Notifies all attached TraceGenerators of completion of an event */
+		void tracePostEvent(const trace::TraceEvent & event) const;
+		
 		/*!	adds a trace generator to the EmulatedKernel */
 		virtual void addTraceGenerator(trace::TraceGenerator* generator)=0;
 
@@ -121,8 +124,8 @@ namespace executive {
 		unsigned int _externSharedMemorySize;
 		/*! \brief Total amount of packed parameter memory */
 		unsigned int _parameterMemorySize;
-		/*! \brief Kernel stack parameter memory space */
-		unsigned int _stackMemorySize;
+        /*! \brief Kernel stack parameter memory space */
+        unsigned int _stackMemorySize;
 		/*! \brief The block dimensions */
 		ir::Dim3 _blockDim;
 		/*!	\brief Dimension of grid in blocks */

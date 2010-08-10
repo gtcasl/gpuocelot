@@ -2,35 +2,13 @@
 	ocelot: "ocelot",
 	version: "1.1.520",
 	trace: { 
-		enabled: true,
-		database: "traces/database.trace",
-		memory: false,
-		branch: false,
-		sharedComputation: false,
-		instruction: false,
-		parallelism: false,
-		cacheSimulator: false,
-		memoryChecker: true,
-		raceDetector: true,
+		memoryChecker: false,
+		raceDetector: false,
 		debugger: {
-			enabled: true,
+			enabled: false,
 			kernelFilter: "sequence",
 			alwaysAttach: false
 		},
-		warpSynchronous: {
-			enabled: false,
-			emitHotPaths: true
-		},
-		performanceBound: {
-			enabled: false,
-			protocol: "sm_20"
-		},
-		convergence: {
-			enabled: false,
-			logfile: "traces/convergence.csv",
-			dot: true,
-			render: true
-		}
 	},
 	cuda: {
 		implementation: CudaRuntime,

@@ -21,16 +21,29 @@ namespace ir
 			enum Opcode
 			{
 				Add,
+				Break,
 				End,
 				EndIf,
+				EndLoop,
 				Iadd,
 				IfLogicalZ,
 				Ige,
+				Ilt,
 				Imul,
 				Mov,
+				Uav_Arena_Load_Id,
+				Uav_Arena_Store_Id,
 				Uav_Raw_Load_Id,
 				Uav_Raw_Store_Id,
+				WhileLoop,
 				InvalidOpcode
+			};
+
+			enum DataType
+			{
+				Byte,
+				Short,
+				Dword
 			};
 
 			/*! \brief The opcode of the instruction */
@@ -38,13 +51,15 @@ namespace ir
 
 			/*! \brief Convert an opcode to a string parsable by IL */
 			static std::string toString(Opcode o);
+			/*! \brief Convert a datatype to a string parsable by IL */
+			static std::string toString(DataType d);
 
 			/*! \brief Default constructor */
 			ILInstruction(Opcode op = InvalidOpcode);
 
 			/*! \brief Return a pointer to a new Instruction */
 			virtual Instruction* clone(bool copy=true) const = 0;
-	
+			
 			virtual std::string toString() const = 0;
 			virtual std::string valid() const = 0;
 	};
@@ -95,6 +110,17 @@ namespace ir
 			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 
+	class ILBreak: public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILBreak();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILAdd : public ILBinaryInstruction
 	{
 		public:
@@ -120,6 +146,17 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILEndIf();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILEndLoop : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILEndLoop();
 
 			std::string toString() const;
 			std::string valid() const;
@@ -158,6 +195,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILIlt : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIlt();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILImul : public ILBinaryInstruction
 	{
 		public:
@@ -173,6 +219,30 @@ namespace ir
 			/*! \brief Default constructor */
 			ILMov();
 
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Arena_Load_Id : public ILUnaryInstruction
+	{
+		public:
+			DataType type;
+
+			/*! \brief Default constructor */
+			ILUav_Arena_Load_Id();
+
+			std::string toString() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Arena_Store_Id : public ILUnaryInstruction
+	{
+		public:
+			DataType type;
+
+			/*! \brief Default constructor */
+			ILUav_Arena_Store_Id();
+
+			std::string toString() const;
 			Instruction *clone(bool copy=true) const;
 	};
 
@@ -194,7 +264,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILWhileLoop : public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILWhileLoop();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
 }
-
 #endif
-

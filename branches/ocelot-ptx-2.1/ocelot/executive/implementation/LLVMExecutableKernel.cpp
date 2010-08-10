@@ -32,6 +32,7 @@
 #define REPORT_OPTIMIZED_LLVM_SOURCE 0
 #define REPORT_INSIDE_TRANSLATED_CODE 0
 #define REPORT_CTA_INSIDE_TRANSLATED_CODE 0
+#define REPORT_ATOMIC_OPERATIONS 0
 #define PRINT_OPTIMIZED_CFG 0
 #define DEBUG_NTH_THREAD_ONLY 0
 #define NTH_THREAD 0
@@ -108,22 +109,22 @@ namespace executive
 
 	LLVMExecutableKernel::AtomicOperationCache::AtomicOperationCache()
 	{
-		pthread_mutex_init( &_mutex, 0 );
+
 	}
 	
 	LLVMExecutableKernel::AtomicOperationCache::~AtomicOperationCache()
 	{
-		pthread_mutex_destroy( &_mutex );
+	
 	}
 
 	void LLVMExecutableKernel::AtomicOperationCache::lock()
 	{
-		pthread_mutex_lock( &_mutex );
+		_mutex.lock();
 	}
 
 	void LLVMExecutableKernel::AtomicOperationCache::unlock()
 	{
-		pthread_mutex_unlock( &_mutex );
+		_mutex.unlock();
 	}
 
 	LLVMExecutableKernel::Worker::Message::Message( Type t, 

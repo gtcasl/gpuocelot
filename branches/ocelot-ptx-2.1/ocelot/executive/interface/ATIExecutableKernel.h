@@ -11,12 +11,14 @@
 #include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 
+#include <boost/cstdint.hpp>
+
 namespace executive 
 {
 	class ATIExecutableKernel : public executive::ExecutableKernel {
 		public:
 			/*! \brief Constructor */
-			ATIExecutableKernel(const ir::Kernel &k, CALcontext *context, 
+			ATIExecutableKernel(ir::Kernel &k, CALcontext *context, 
 					CALevent *event, CALresource *uav0, CALresource *cb0, 
 					CALresource *cb1);
 
@@ -49,7 +51,7 @@ namespace executive
 
 		private:
 			/*! \brief Type of the constant buffer (cb) */
-			typedef struct { int32_t x, y, z, w; } cb_t;
+			typedef struct { unsigned int x, y, z, w; } cb_t;
 
 			/*! \brief CAL Context */
 			CALcontext *_context;
@@ -74,6 +76,8 @@ namespace executive
 			CALmem _uav0Mem;
 			/*! \brief CAL uav0 module name */
 			CALname _uav0Name;
+			/*! \brief CAL uav1 module name (for less-than-32bits memory ops) */
+			CALname _uav1Name;
 			//@}
 
 			/********************************************************//**

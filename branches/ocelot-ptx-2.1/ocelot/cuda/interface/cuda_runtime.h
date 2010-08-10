@@ -10,7 +10,7 @@
 #include <cstring>
 
 #include <limits.h>
-#include <stdint.h>
+#include <cstdint>
 
 #ifdef __cplusplus
 extern "C" {

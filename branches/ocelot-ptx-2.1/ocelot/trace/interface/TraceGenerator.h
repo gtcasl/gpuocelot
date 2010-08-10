@@ -70,6 +70,10 @@ namespace trace {
 		*/
 		virtual void event(const TraceEvent & event);
 		
+		/*! \brief called when an event is committed
+		*/
+		virtual void postEvent(const TraceEvent & event);
+		
 		/*! \brief Called when a kernel is finished. There will be no more 
 				events for this kernel.
 		*/

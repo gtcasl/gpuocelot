@@ -13,8 +13,8 @@
 #include <map>
 #include <set>
 
-// UNIX libs
-#include <pthread.h>
+// Boost libs
+#include <boost/thread/thread.hpp>
 
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
@@ -51,7 +51,7 @@ namespace cuda {
 	typedef std::list< KernelLaunchConfiguration > KernelLaunchStack;
 	
 	/*!	\brief Set of thread ids */
-	typedef std::set< pthread_t > ThreadSet;	
+	typedef std::set< boost::thread::id > ThreadSet;	
 	
 	typedef std::vector< unsigned int > IndexVector;
 	typedef std::vector< unsigned int > SizeVector;
@@ -104,7 +104,7 @@ namespace cuda {
 		void mapParameters(const ir::Kernel* kernel);
 	};
 	
-	typedef std::map< pthread_t, HostThreadContext > HostThreadContextMap;
+	typedef std::map< boost::thread::id, HostThreadContext > HostThreadContextMap;
 	
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
@@ -235,7 +235,7 @@ namespace cuda {
 
 	private:
 		//! locking object for cuda runtime
-		pthread_mutex_t _mutex;
+		boost::mutex _mutex;
 		
 		//! Registered modules
 		ModuleMap _modules;

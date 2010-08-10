@@ -295,7 +295,7 @@ namespace ir {
 
 		/*! indicates data type of instruction */
 		PTXOperand::DataType type;
-	
+
 		/*! optionally writes carry-out value to condition code register */
 		CarryFlag carry;
 

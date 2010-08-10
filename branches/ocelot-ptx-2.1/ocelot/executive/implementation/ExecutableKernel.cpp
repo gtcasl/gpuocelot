@@ -65,6 +65,14 @@ void ExecutableKernel::traceEvent(const trace::TraceEvent & event) const
 	}
 }
 
+void ExecutableKernel::tracePostEvent(const trace::TraceEvent & event) const
+{
+	for(TraceGeneratorVector::const_iterator generator = _generators.begin(); 
+		generator != _generators.end(); ++generator) {
+		(*generator)->postEvent(event);
+	}
+}
+
 unsigned int ExecutableKernel::constMemorySize() const
 {
 	return _constMemorySize; 

@@ -700,7 +700,7 @@ namespace parser
 				fi = statement.array.values.begin();
 				fi != statement.array.values.end(); ++fi )
 			{
-				fi->f32 = fi->f64;			
+				fi->f32 = (float) fi->f64;			
 			}	
 		}
 	
@@ -1084,9 +1084,9 @@ namespace parser
 		stream << one << " " << two << " " << three;
 
 		statement.directive = ir::PTXStatement::Loc;
-		statement.sourceFile = one;
-		statement.sourceLine = two;
-		statement.sourceColumn = three;
+		statement.sourceFile = (unsigned int) one;
+		statement.sourceLine = (unsigned int) two;
+		statement.sourceColumn = (unsigned int) three;
 		
 		statement.name = stream.str();
 	}
@@ -1270,7 +1270,7 @@ namespace parser
 		{ 
 			value = -value;
 		}
-		operand.offset = value;
+		operand.offset = (int) value;
 		operand.type = mode->second.operand.type;
 	
 		operandVector.push_back( operand );
@@ -1787,7 +1787,6 @@ namespace parser
 
 	PTXParser::Exception::~Exception() throw()
 	{
-
 	}
 
 	std::string PTXParser::toString( YYLTYPE& location, State& state )

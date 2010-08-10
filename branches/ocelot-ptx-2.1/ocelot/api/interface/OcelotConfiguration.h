@@ -45,132 +45,35 @@ namespace api {
 		//! Configuration for trace generation facilities
 		class TraceGeneration {
 		public:
-			//! \brief configuration for the warp synchronous trace generator
-			class WarpSynchronous {
-			public:
-				WarpSynchronous();
-
-			public:
-				//! \brief whether trace generator is enabled
-				bool enabled;
-
-				//! \brief emits dot file visualizing hot paths
-				bool emitHotPaths;
-				
-				//! \brief path to CSV collecting results
-				std::string csv;
-			};
-			
-			/*!
-				\brief configuration properties for trace::PerformanceBoundGenerator trace generator
-			*/
-			class PerformanceBound {
-			public:
-				//! \brief specifies how memory bandwidth is computed
-				enum CoalescingProtocol {
-					Protocol_sm_10,
-					Protocol_sm_11,
-					Protocol_sm_12,
-					Protocol_sm_13,
-					Protocol_sm_20,
-					Protocol_ideal,
-					Protocol_invalid
-				};
-		
-			public:
-				PerformanceBound();
-				
-			public:
-			
-				bool enabled;
-				
-				CoalescingProtocol protocol;
-			};
-			
-			/*!
-				\brief configuration properties for trace::ConvergenceGenerator
-			*/
-			class Convergence {
-			public:
-				Convergence();
-			
-			public:
-			
-				//! \brief indicates trace generator is enabled
-				bool enabled;
-				
-				//! \brief log file to append results
-				std::string logfile;		
-				
-				//! \brief emit CFG as dot file
-				bool dot;	
-				
-				//! \brief if true, a PDF is constructed from the generated DOT file
-				bool render;
-			};
-			
 			/*! \brief configuration properties for trace::InteractiveDebugger */
 			class Debugger
 			{
 			public:
-				Debugger();
+					Debugger();
 				
 			public:
-				//! \brief indicates trace generator is enabled
-				bool enabled;
+					//! \brief indicates trace generator is enabled
+					bool enabled;
 
-				//! \brief Only attach to kernels matching this substring
-				std::string kernelFilter;
+					//! \brief Only attach to kernels matching this substring
+					std::string kernelFilter;
 				
-				//! \brief Attach to all kernels by default?
-				bool alwaysAttach;
+					//! \brief Attach to all kernels by default?
+					bool alwaysAttach;
 			};
 
 		public:
 			TraceGeneration();
 
 		public:
-			//! \brief path to trace generation database
-			std::string database;
-
-			//! \brief indicates traces are in place
-			bool inPlaceTraces;
-
-			//! \brief trace::MemoryTraceGenerator
-			bool memory;
-
-			//! \brief trace::BranchTraceGenerator
-			bool branch;
-
-			//! \brief trace::SharedComputationTraceGenerator
-			bool sharedComputation;
-
-			//! \brief trace::ParallelismTraceGenerator
-			bool parallelism;
-
-			//! \brief trace::InstructionTraceGenerator
-			bool instruction;
-
-			//! \brief trace::CacheSimulator
-			bool cacheSimulator;
-
 			//! \brief Check memory errors
 			bool memoryChecker;
 			
 			//! \brief Race detection
 			bool raceDetector;
-
-			//! \brief warp synchronous trace generator
-			WarpSynchronous warpSynchronous;
-			
-			//! \brief performance bound generator
-			PerformanceBound performanceBound;
-			
-			//! \brief trace::ConvergenceGenerator
-			Convergence convergence;
-			
-			//! \brief trace::InteractiveDebugger
-			Debugger debugger;
+                        
+            //! \brief Interactive Debugger
+            Debugger debugger;
 		};
 
 		class CudaRuntimeImplementation {
@@ -179,7 +82,8 @@ namespace api {
 
 		public:
 
-			//! \brief names particular CUDA Runtime implementation to instantiate
+			//! \brief names particular CUDA Runtime implementation 
+			//         to instantiate
 			std::string implementation;
 			
 			//! \brief for TraceGeneratingRuntime, path to output file
@@ -191,21 +95,20 @@ namespace api {
 			Executive();
 
 		public:
-			
 			//! \brief ID of device to select by default
 			int defaultDeviceID;
 
-			/*! \brief selects preferred ISA [if multiple are available] - cast to 
-				ir::Instruction::Architecture
+			/*! \brief selects preferred ISA [if multiple are available] 
+				- cast to ir::Instruction::Architecture
 			*/
 			int preferredISA;
 
-			/*! 
-				\brief selects optimization level - cast to translator::Translator::OptimizationLevel
-			*/
+			/*!  \brief selects optimization level - cast to 
+				translator::Translator::OptimizationLevel */
 			int optimizationLevel;
 
-			//! \brief if true, Ocelot will either choose only the preferred ISA or die
+			//! \brief if true, Ocelot will either choose only 
+			//                  the preferred ISA or die
 			bool required;
 
 			//! \brief filter enabling LLVM devices if present
@@ -220,7 +123,8 @@ namespace api {
 			//! \brief filter enabling AMD GPU devices if present
 			bool enableAMD;
 
-			//! \brief maximum number of worker threads - a non-positive number indicates no limit
+			//! \brief maximum number of worker threads - a non-positive 
+			//         number indicates no limit
 			int workerThreadLimit;
 		};
 
@@ -238,12 +142,12 @@ namespace api {
 		//! \brief initializes configuration object from a stream as JSON
 		void initialize(std::istream &stream);
 
-		//! \brief gets singleton configuration object or constructs from 'configure.ocelot'
-		static const OcelotConfiguration& get();
+        //! \brief gets singleton configuration object or 
+        //	constructs from 'configure.ocelot'
+        static const OcelotConfiguration& get();
 
-		//! \brief destroys the singleton
-		static void destroy();
-		
+        //! \brief destroys the singleton
+        static void destroy();
 
 	public:
 		//! \brief path to configuration file for reparsing 

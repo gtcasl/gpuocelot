@@ -109,6 +109,11 @@ namespace executive {
 		// Set the trace event
 		void trace();
 
+		/*!
+			\brief invokes TraceGenerator::postEvent() on all trace generators
+		*/		
+		void postTrace();
+
 	public:
 		// Register accessors
 

@@ -18,7 +18,7 @@ namespace ir
 		{
 			case Add:                return "add";
 			case Break:              return "break";
-			case Else:				 return "else";
+			case Else:               return "else";
 			case End:                return "end";
 			case EndIf:              return "endif";
 			case EndLoop:            return "endloop";

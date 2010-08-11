@@ -11,6 +11,9 @@
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
+// STL includes
+#include <algorithm>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -35,7 +38,7 @@ namespace ir
 		for (bb = cfg->begin() ; bb != cfg->end() ; bb++)
 		{
 			report("Inserting node " << bb->label);
-			Node *node = insert_node(new InstNode(bb));
+			Node *node = _insert_node(new InstNode(bb));
 			bmap[bb] = node;
 
 			if (bb == cfg->get_entry_block()) start = node;
@@ -56,7 +59,7 @@ namespace ir
 		assertM(start->preds().size() == 0, "Start shouldn't have predecessor");
 		assertM(end->succs().size() == 0, "End shouldn't have successor");
 
-		structural_analysis(start);
+		_structural_analysis(start);
 	}
 
 	ControlTree::~ControlTree()
@@ -66,7 +69,7 @@ namespace ir
 		_nodes.clear();
 	}
 
-	ControlTree::Node* ControlTree::insert_node(Node* node)
+	ControlTree::Node* ControlTree::_insert_node(Node* node)
 	{
 		_size++;
 		_nodes.push_back(node);
@@ -264,7 +267,7 @@ namespace ir
 	{
 	}
 
-	void ControlTree::dfs_postorder(Node* x)
+	void ControlTree::_dfs_postorder(Node* x)
 	{
 		_visit.insert(x);
 
@@ -272,13 +275,13 @@ namespace ir
 		for (y = x->succs().begin() ; y != x->succs().end() ; y++)
 		{
 			if (_visit.find(*y) != _visit.end()) continue;
-			dfs_postorder(*y);
+			_dfs_postorder(*y);
 		}
 		_post.push_back(x);
-		report("dfs_postorder: Added " << x->label());
+		report("_dfs_postorder: Added " << x->label());
 	}
 
-	ControlTree::Node* ControlTree::acyclic_region_type(Node* node, 
+	ControlTree::Node* ControlTree::_acyclic_region_type(Node* node, 
 			NodeSet& nset)
 	{
 		Node* n;
@@ -344,7 +347,7 @@ namespace ir
 
 			// check for an IfThen (if node then n)
 			if (n->succs().size() == 1 && n->preds().size() == 1 &&
-					m->preds().size() == 2 && *(n->succs().begin()) == m)
+					*(n->succs().begin()) == m)
 			{
 				nset.clear(); nset.insert(node); nset.insert(n);
 
@@ -362,7 +365,7 @@ namespace ir
 
 			// check for an IfThen (if node then m)
 			if (m->succs().size() == 1 && m->preds().size() == 1 &&
-					n->preds().size() == 2 && *(m->succs().begin()) == n)
+					*(m->succs().begin()) == n)
 			{
 				nset.clear(); nset.insert(node); nset.insert(m);
 
@@ -423,9 +426,9 @@ namespace ir
 		return new InvalidNode();
 	}
 
-	void ControlTree::compact(Node* node, NodeSet nodeSet)
+	void ControlTree::_compact(Node* node, NodeSet nodeSet)
 	{
-		insert_node(node);
+		_insert_node(node);
 
 		NodeList::iterator n, pos;
 		for (n = _post.begin() ; n != _post.end() && !nodeSet.empty() ; )
@@ -444,25 +447,38 @@ namespace ir
 		_postCtr = _post.insert(pos, node);
 	}
 
-	void ControlTree::reduce(Node* node, NodeSet nodeSet)
+	bool ControlTree::_backedge(Node* head, Node* tail)
 	{
-		// link region node into abstract flowgraph, adjust the post order
-		// traversal and predecessor and successor functions, and augment the
-		// control tree
-		compact(node, nodeSet);
+		// head->tail is a back-edge if tail dominates head
+		// (tail dominates head if head appears first in the _post lists)
+		Node* match[] = {head, tail};
+		NodeList::iterator n = 
+			find_first_of(_post.begin(), _post.end(), match, match + 2);
+		
+		if (*n == head) return true;
+		if (*n == tail) return false;
 
+		assertM(false, "Neither head nor tail are valid nodes");
+	}
+
+	void ControlTree::_reduce(Node* node, NodeSet nodeSet)
+	{
+		// link region node into abstract flowgraph, adjust the predecessor and 
+		// successor functions, and augment the control tree
 		NodeSet::iterator n;
 		for (n = nodeSet.begin() ; n != nodeSet.end() ; n++)
 		{
 			NodeSet::iterator p;
 			for (p = (*n)->preds().begin() ; p != (*n)->preds().end() ; p++)
 			{
+				// ignore edges between nodeSet nodes
+				// (except for back-edges which we check below)
 				if (nodeSet.find(*p) != nodeSet.end()) continue;
 
-				report("Rem edge " << (*p)->label() << " -> " << (*n)->label());
+				report("Del " << (*p)->label() << " -> " << (*n)->label());
 				(*p)->succs().erase(*n);
 
-				report("Add edge " << (*p)->label() << " -> " << node->label());
+				report("Add " << (*p)->label() << " -> " << node->label());
 				(*p)->succs().insert(node);
 				node->preds().insert(*p);
 
@@ -472,21 +488,50 @@ namespace ir
 			NodeSet::iterator s;
 			for (s = (*n)->succs().begin() ; s != (*n)->succs().end() ; s++)
 			{
+				// ignore edges between nodeSet nodes
+				// (except for back-edges which we check below)
 				if (nodeSet.find(*s) != nodeSet.end()) continue;
 
-				report("Rem edge " << (*n)->label() << " -> " << (*s)->label());
+				report("Del " << (*n)->label() << " -> " << (*s)->label());
 				(*s)->preds().erase(*n);
 
-				report("Add edge " << node->label() << " -> " << (*s)->label());
+				report("Add " << node->label() << " -> " << (*s)->label());
 				(*s)->preds().insert(node);
 				node->succs().insert(*s);
 
 				if ((*n)->fallthrough() == *s) node->fallthrough() = *s;
 			}
 		}
+
+		// check for back-edges between (different) nodeSet nodes
+		for (n = nodeSet.begin() ; n != nodeSet.end() ; n++)
+		{
+			bool shouldbreak = false;
+			NodeSet::iterator p;
+			for (p = (*n)->preds().begin() ; p != (*n)->preds().end() ; p++)
+			{
+				if (*n == *p || nodeSet.find(*p) == nodeSet.end()) continue;
+
+				if (_backedge(*p, *n)) 
+				{
+					// add back-edge region->region
+					report("Add " << node->label() << " -> " << node->label());
+					node->preds().insert(node);
+					node->succs().insert(node);
+
+					// no need to add more than one back-edge
+					shouldbreak = true;
+					break;
+				}
+			}
+			if (shouldbreak) break;
+		}
+
+		// adjust the postorder traversal
+		_compact(node, nodeSet);
 	}
 
-	ControlTree::Node* ControlTree::cyclic_region_type(Node* node, 
+	ControlTree::Node* ControlTree::_cyclic_region_type(Node* node, 
 			NodeSet& nset)
 	{
 		if (nset.size() == 1)
@@ -512,7 +557,7 @@ namespace ir
 		return new InvalidNode();
 	}
 
-	void ControlTree::structural_analysis(Node* entry)
+	void ControlTree::_structural_analysis(Node* entry)
 	{
 		Node* n;
 		NodeSet nodeSet, reachUnder;
@@ -527,7 +572,7 @@ namespace ir
 			_visit.clear();
 
 			report("DFS Postorder");
-			dfs_postorder(entry);
+			_dfs_postorder(entry);
 
 			_postCtr = _post.begin();
 
@@ -537,12 +582,12 @@ namespace ir
 
 				// locate an acyclic region, if present
 				report("Looking for acyclic region from " << n->label());
-				Node* region = acyclic_region_type(n, nodeSet);
+				Node* region = _acyclic_region_type(n, nodeSet);
 
 				if (region->rtype() != Node::Invalid)
 				{
 					report("Replacing nodeSet for " << region->label());
-					reduce(region, nodeSet);
+					_reduce(region, nodeSet);
 
 					changed = true;
 
@@ -558,12 +603,12 @@ namespace ir
 					// TODO cyclic control structure with multiples nodes are
 					// not handled yet
 					report("Looking for cyclic region from " << n->label());
-					region = cyclic_region_type(n, reachUnder);
+					region = _cyclic_region_type(n, reachUnder);
 
 					if (region->rtype() != Node::Invalid)
 					{
 						report("Replacing nodeSet for " << region->label());
-						reduce(region, reachUnder);
+						_reduce(region, reachUnder);
 
 						changed = true;
 

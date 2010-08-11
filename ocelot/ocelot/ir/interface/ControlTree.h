@@ -181,13 +181,14 @@ namespace ir
 			const Node* get_root_node() const;
 
 		private:
-			Node* insert_node(Node* node);
-			void dfs_postorder(Node* x);
-			Node* acyclic_region_type(Node* node, NodeSet& nset);
-			void compact(Node* node, NodeSet nodeSet);
-			void reduce(Node* node, NodeSet nodeSet);
-			Node* cyclic_region_type(Node* node, NodeSet& nset);
-			void structural_analysis(Node* entry);
+			Node* _insert_node(Node* node);
+			void _dfs_postorder(Node* x);
+			Node* _acyclic_region_type(Node* node, NodeSet& nset);
+			void _compact(Node* node, NodeSet nodeSet);
+			bool _backedge(Node* head, Node* tail);
+			void _reduce(Node* node, NodeSet nodeSet);
+			Node* _cyclic_region_type(Node* node, NodeSet& nset);
+			void _structural_analysis(Node* entry);
 
 			NodeList _nodes;
 			NodeList _post;

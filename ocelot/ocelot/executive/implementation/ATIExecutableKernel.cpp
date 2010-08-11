@@ -54,7 +54,7 @@ namespace executive
 		return padding;
 	}
 
-	void ATIExecutableKernel::_allocateSharedMemory()
+	void ATIExecutableKernel::allocateSharedMemory()
 	{
 		report("Allocating shared memory");
 
@@ -136,7 +136,7 @@ namespace executive
 		report("Translating PTX kernel \"" << name << "\" to IL");
 
 		// allocate shared memory
-		_allocateSharedMemory();
+		allocateSharedMemory();
 		
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;

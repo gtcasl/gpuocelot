@@ -50,7 +50,7 @@ namespace executive
 			void removeTraceGenerator(trace::TraceGenerator* generator);
 
 			/*! \brief Allocate shared memory */
-			void _allocateSharedMemory();
+			void allocateSharedMemory();
 
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */

@@ -413,7 +413,7 @@ namespace analysis
 	void LinearScanRegisterAllocationPass::initialize( const ir::Module& m )
 	{
 		report( "Initializing linear scan register allocation pass for module " 
-			<< m.modulePath );
+			<< m.path() );
 	}
 
 	void LinearScanRegisterAllocationPass::runOnKernel( ir::Kernel& k )

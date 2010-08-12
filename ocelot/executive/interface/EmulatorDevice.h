@@ -238,6 +238,9 @@ namespace executive
 			virtual void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
 			void unload(const std::string& name);
+			/*! \brief Get a translated kernel from the device */
+			virtual ExecutableKernel* getKernel(const std::string& module, 
+				const std::string& kernel);
 
 		public:
 			/*! \brief Create a new event */

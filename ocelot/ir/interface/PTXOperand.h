@@ -37,12 +37,12 @@ namespace ir {
 	public:
 		//! addressing mode of operand
 		enum AddressMode {
-			Register,			//< use as register variable
-			Indirect,			//< indirect access
-			Immediate,			//< treat as immediate value
-			Address,			//< treat as addressable variable
-			Label,				//< operand is a label
-			Special,			//< special register
+			Register,			//! use as register variable
+			Indirect,			//! indirect access
+			Immediate,			//! treat as immediate value
+			Address,			//! treat as addressable variable
+			Label,				//! operand is a label
+			Special,			//! special register
 			Invalid
 		};
 
@@ -108,7 +108,7 @@ namespace ir {
 			v4 = 4				//< vector4
 		};
 
-		typedef std::vector< PTXOperand > Array;
+		typedef std::vector<PTXOperand> Array;
 
 		typedef Instruction::RegisterType RegisterType;
 
@@ -122,6 +122,7 @@ namespace ir {
 		static bool isSigned( DataType );
 		static unsigned int bytes( DataType );
 		static bool valid( DataType, DataType );
+		static bool relaxedValid(DataType, DataType);
 		
 	public:
 		PTXOperand();

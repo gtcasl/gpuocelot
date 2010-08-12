@@ -17,7 +17,6 @@ namespace ir {
 
 	class Parameter {
 	public:
-
 		/*! Union of possible variables containing each value */		
 		union ValueType {
 			PTXU8 val_u8;
@@ -44,7 +43,7 @@ namespace ir {
 
 	public:
 		/*!	\brief Get value */
-		static std::string value( const Parameter& p );
+		static std::string value(const Parameter& p);
 
 	public:
 		explicit Parameter(const PTXStatement& statement);

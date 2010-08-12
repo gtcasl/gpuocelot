@@ -1,5 +1,4 @@
-/*!
-	\file PTXLexer.cpp
+/*! \file PTXLexer.cpp
 	\date Monday January 19, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The header file for the PTXLexer class.
@@ -16,9 +15,10 @@
 #include <cstring>
 #include <cassert>
 
+#define CASE(x) case x: { return #x; break; }
+
 namespace parser
 {
-
 	PTXLexer::PTXLexer( std::istream* arg_yyin, std::ostream* arg_yyout ):
 		yyFlexLexer( arg_yyin, arg_yyout ), yylval( 0 ), column( 0 ), 
 		nextColumn( 0 )
@@ -961,15 +961,11 @@ namespace parser
 			default:
 			{
 				return "INVALID";
-			
 			}
-		
 		}
 		
 		return "";
-		
 	}
-
 }
 
 #endif

@@ -18,7 +18,7 @@ namespace ir {
 	public:
 		/*!	PTX directive types */
 		enum Directive {
-			Instr,			//< indicates the is an actual instruction
+			Instr,			//! indicates this is an actual instruction
 			Const,
 			Entry,
 			File,
@@ -55,9 +55,9 @@ namespace ir {
 			PTXS16 s16;
 			PTXS32 s32;
 			PTXS64 s64;
-	
-			PTXF32 f32;
-			PTXF64 f64;
+        
+            PTXF32 f32;
+            PTXF64 f64;
 	
 			PTXB8 b8;
 			PTXB16 b16;
@@ -67,6 +67,8 @@ namespace ir {
 		
 		typedef std::vector< unsigned int > ArrayStrideVector;
 		typedef std::vector< Data > ArrayVector;
+		typedef std::vector< std::string > StringVector;
+		typedef std::vector< PTXOperand::DataType > TypeVector;
 
 		class StaticArray {
 			public:
@@ -110,7 +112,6 @@ namespace ir {
 		};
 		
 		std::string section_type;
-
 		std::string section_name;
 
 		union {
@@ -128,7 +129,7 @@ namespace ir {
 		
 		Attribute attribute;
 
-		std::vector< std::string > targets;
+		StringVector targets;
 
 	public:
 		PTXStatement( Directive directive = Directive_invalid );
@@ -138,6 +139,8 @@ namespace ir {
 		unsigned int initializedBytes() const;
 		unsigned int elements() const;
 		unsigned int accessAlignment() const;
+
+	public:
 		/*! \brief Copy all of the initial data into a packed array */
 		void copy(void* dest) const;
 		std::string toString() const;

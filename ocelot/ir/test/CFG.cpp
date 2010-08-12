@@ -29,9 +29,9 @@ void analyze(const char *filename) {
 
 	ir::Module module(filename);
 
-	Module::KernelMap::iterator k_it = module.kernels.begin();
+	Module::KernelMap::const_iterator k_it = module.kernels().begin();
 
-	for (; k_it != module.kernels.end(); ++k_it) {
+	for (; k_it != module.kernels().end(); ++k_it) {
 
 		ir::PTXKernel* kernel = static_cast< ir::PTXKernel* >(k_it->second);
 
@@ -71,8 +71,7 @@ static void print_usage() {
 
 	cout << "CFG <input path>:\n\n";
 	cout << " - parses the input file, performs control flow analysis on each kernel\n";
-	cout << "   and emits .dot files for the CFG, dominator tree, post dominator tree,\n";
-	cout << "   and control tree.\n";
+	cout << "   and emits .dot files for the CFG, dominator tree, and post dominator tree\n";
 
 	cout << "\n  To construct graphs of them, use the following command:\n\n";
 	cout << "    for f in *.dot; do dot -Tpdf -o $f.pdf $f; done\n\n";

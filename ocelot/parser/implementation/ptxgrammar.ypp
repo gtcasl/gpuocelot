@@ -20,7 +20,7 @@
 
 	#define REPORT_BASE 0
 
-	namespace ptx1_4
+	namespace ptx
 	{
 	
 	int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer );

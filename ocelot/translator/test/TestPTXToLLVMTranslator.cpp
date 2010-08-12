@@ -21,6 +21,8 @@
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 
+#include <ocelot/parser/interface/PTXParser.h>
+
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/debug.h>
@@ -86,15 +88,32 @@ namespace test
 		report( " Loading file " << ptxFile );
 		
 		translator::PTXToLLVMTranslator translator;
-		ir::Module module( ptxFile );
-
+		ir::Module module;
+		
+		try 
+		{
+			module.load( ptxFile );
+		}
+		catch(parser::PTXParser::Exception& e)
+		{
+			if(e.error == parser::PTXParser::State::NotVersion1_4)
+			{
+				status << "Skipping file with incompatible ptx version." 
+					<< std::endl;
+				return true;
+			}
+			status << "Load module failed with exception: " 
+				<< e.what() << std::endl;
+			return false;
+		}
+		
 		report( " Translating file " << ptxFile );
-		ir::Module::KernelMap::iterator 
-			k_it = module.kernels.begin();
+		ir::Module::KernelMap::const_iterator 
+			k_it = module.kernels().begin();
 
-		for (; k_it != module.kernels.end(); ++k_it) {
-
-			ir::Kernel* kernel = (k_it->second);
+		for (; k_it != module.kernels().end(); ++k_it) 
+		{
+			ir::Kernel* kernel = module.getKernel( k_it->first );
 
 			kernel->dfg();
 
@@ -109,6 +128,8 @@ namespace test
 			pass2.initialize( module );
 			pass2.runOnKernel( *kernel );
 			pass2.finalize();
+
+			kernel->dfg()->toSsa();
 
 			ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
 				translator.translate( kernel ) );

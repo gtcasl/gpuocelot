@@ -14,6 +14,7 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/json.h>
+#include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -34,19 +35,9 @@ const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	return *ocelotConfiguration;
 }
 
-const api::OcelotConfiguration::Executive& 
-	api::OcelotConfiguration::getExecutive() {
-	return get().executive;
-}
-
-const api::OcelotConfiguration::CudaRuntimeImplementation& 
-	api::OcelotConfiguration::getCuda() {
-	return get().cuda;
-}
-
-const api::OcelotConfiguration::TraceGeneration& 
-	api::OcelotConfiguration::getTrace() {
-	return get().trace;
+void api::OcelotConfiguration::destroy() {
+        delete ocelotConfiguration;
+        ocelotConfiguration = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,6 +60,13 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 
 ////////////////////////////////////////////////////////////////////////////////
 
+api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
+        kernelFilter(""),
+        alwaysAttach(false)
+{
+
+}
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 	memoryChecker(false),
 	raceDetector(false)
@@ -80,6 +78,13 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	hydrazine::json::Visitor config) {
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
 	trace.raceDetector = config.parse<bool>("raceDetector", true);
+
+    hydrazine::json::Visitor debugConfig = config["debugger"];
+    if (!debugConfig.is_null()) {
+            trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
+            trace.debugger.kernelFilter = debugConfig.parse<std::string>("kernelFilter", "");
+            trace.debugger.alwaysAttach = debugConfig.parse<bool>("alwaysAttach", false);
+    }
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():
@@ -249,16 +254,15 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		if (main.find("checkpoint")) {
 			initializeCheckpoint(checkpoint, main["checkpoint"]);
 		}
-		version = main.parse<std::string>("version", "1.0.65");
-		ocelot = main.parse<std::string>("ocelot", "ocelot-refactored");
+		version = main.parse<std::string>("version", 
+			hydrazine::Version().toString());
+		ocelot = main.parse<std::string>("ocelot", "ocelot");
 	}
 	catch (hydrazine::Exception exp) {
 		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
 			<< path << "', loading defaults.\n";
 	}
-	if (config) {
-		delete config;
-	}
+	delete config;
 
 	std::string device;
 	if (executive.enableEmulated) device = "emulated";

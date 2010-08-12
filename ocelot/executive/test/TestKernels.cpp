@@ -160,7 +160,7 @@ public:
 			}
 
 			// configure parameters
-			Parameter &param_A = kernel->getParameter(
+			Parameter &param_A = *kernel->getParameter(
 				"__cudaparm__Z19k_sequenceDivergentPf_ptr");
 
 			// set parameter values
@@ -242,9 +242,9 @@ public:
 			}
 
 			// configure parameters
-			Parameter &param_A = kernel->getParameter(
+			Parameter &param_A = *kernel->getParameter(
 				"__cudaparm__Z17k_sequenceLoopingPfi_ptr");
-			Parameter &param_B = kernel->getParameter(
+			Parameter &param_B = *kernel->getParameter(
 				"__cudaparm__Z17k_sequenceLoopingPfi_N");
 
 			// set parameter values
@@ -340,15 +340,15 @@ public:
 			out << "];\n";
 
 			// configure parameters
-			Parameter &param_A = kernel->getParameter(
+			Parameter &param_A = *kernel->getParameter(
 				"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA");
-			Parameter &param_V = kernel->getParameter(
+			Parameter &param_V = *kernel->getParameter(
 				"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV");
-			Parameter &param_R = kernel->getParameter(
+			Parameter &param_R = *kernel->getParameter(
 				"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R");
-			Parameter &param_M = kernel->getParameter(
+			Parameter &param_M = *kernel->getParameter(
 				"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M");
-			Parameter &param_N = kernel->getParameter(
+			Parameter &param_N = *kernel->getParameter(
 				"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N");
 
 			// set parameter values

@@ -17,6 +17,10 @@ executive::RuntimeException::RuntimeException( ):
 
 }
 
+executive::RuntimeException::~RuntimeException( ) throw() {
+
+}
+
 executive::RuntimeException::RuntimeException(std::string msg): 
 	message(msg), PC(-1), thread(0), cta(0) {
 
@@ -54,3 +58,6 @@ std::string executive::RuntimeException::toString() const {
 	return error;
 }
 
+const char* executive::RuntimeException::what() const  throw() {
+	return message.c_str();
+}

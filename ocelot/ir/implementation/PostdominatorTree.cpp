@@ -103,8 +103,6 @@ int ir::PostdominatorTree::intersect(int b1, int b2) const {
 	int finger2 = b2;
 	while (finger1 != finger2) {
 		report( "finger1 " << finger1 << " finger2 " << finger2 );
-		assert(finger1 != -1);
-		assert(finger2 != -1);
 		while (finger1 > finger2) {
 			finger1 = p_dom[finger1];
 		}

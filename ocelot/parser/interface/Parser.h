@@ -8,8 +8,7 @@
 #ifndef PARSER_H_INCLUDED
 #define PARSER_H_INCLUDED
 
-#include <ocelot/ir/interface/Module.h>
-#include <hydrazine/interface/Configurable.h>
+#include <ocelot/ir/interface/Instruction.h>
 
 /*!
 	\brief A namespace for parser related classes
@@ -21,11 +20,9 @@ namespace parser
 		\brief An interface that parses a text or binary file and generates
 			an internal representation of a program.
 	*/
-	class Parser : public hydrazine::Configurable
+	class Parser
 	{
-	
-		public:
-		
+		public:		
 			/*! \brief Name of the file being parsed */
 			std::string fileName;
 					
@@ -47,7 +44,7 @@ namespace parser
 					of the parsed program
 							
 			*/
-			virtual ir::Module parse( std::istream& input, 
+			virtual void parse( std::istream& input, 
 				ir::Instruction::Architecture 
 				language = ir::Instruction::PTX ) = 0;
 	

@@ -39,6 +39,14 @@ namespace ocelot
 			report( "Creating memory race detector" );
 			ocelot::addTraceGenerator( _raceDetector, true );
 		}
+		if (c.trace.debugger.enabled)
+		{
+				report("Creating interactive PTX debugger");
+				_debugger.filter = c.trace.debugger.kernelFilter;
+				_debugger.alwaysAttach = c.trace.debugger.alwaysAttach;
+				ocelot::addTraceGenerator(_debugger, true);
+		}
+
 	}
 
 }

@@ -462,30 +462,7 @@ int yywrap()
 
 long long unsigned int binaryToUint( const std::string& string )
 {
-
-	long long unsigned int result = 0;
-	assert( string.size() > 2 );
-	
-	std::string::const_iterator ci = string.begin();
-	assert( *ci == '0' );
-	++ci;
-	assert( *ci == 'b' );
-	++ci;
-	
-	long long unsigned int mask = 1;
-	
-	for( ; ci != string.end(); ++ci )
-	{
-	
-		assert( *ci == '0' || *ci == '1' );
-	
-		result |= mask & ( *ci == '1' );
-		mask <<= 1;
-	
-	}
-	
-	return result;
-
+	return hydrazine::binaryToUint( string );
 }
 
 void strlcpy( char* destination, const char* source, unsigned int max )

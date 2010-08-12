@@ -116,37 +116,43 @@ namespace test
 			parse_attempt = 2;
 			second.load(stream2);
 		}
-		catch (hydrazine::Exception exp) {
+		catch (const parser::PTXParser::Exception& exp) {
+			if (exp.error == parser::PTXParser::State::NotVersion1_4)
+			{
+				status << "Skipping file with incompatible ptx version." 
+					<< std::endl;
+				return true;
+			}
 			status << "Parse " << parse_attempt << " failed with exception: " 
 				<< exp.what() << std::endl;
 			return false;
 		}
-		catch (parser::PTXParser::Exception exp) {
+		catch (const hydrazine::Exception& exp) {
 			status << "Parse " << parse_attempt << " failed with exception: " 
 				<< exp.what() << std::endl;
 			return false;
 		}
 	
-		if( first.statements.size() != second.statements.size() )
+		if( first.statements().size() != second.statements().size() )
 		{
 		
-			status << "First pass parsed " << first.statements.size()
+			status << "First pass parsed " << first.statements().size()
 				<< " statements while second parsed " 
-				<< second.statements.size() << "\n";
+				<< second.statements().size() << "\n";
 			return false;
 		
 		}
 		
-		for( ir::Module::StatementVector::iterator 
-			fi = first.statements.begin(), 
-			si = second.statements.begin(); fi != first.statements.end() && 
-			si != second.statements.end(); ++fi, ++si )
+		for( ir::Module::StatementVector::const_iterator 
+			fi = first.statements().begin(), 
+			si = second.statements().begin(); fi != first.statements().end() && 
+			si != second.statements().end(); ++fi, ++si )
 		{
 		
 			if( !( si->toString() == fi->toString() ) )
 			{
 			
-				unsigned int index = fi - first.statements.begin();
+				unsigned int index = fi - first.statements().begin();
 				status << "At index " << index << " first pass parsed \"" 
 					<< fi->toString() << "\" while second parsed \"" 
 					<< si->toString() << "\"\n";

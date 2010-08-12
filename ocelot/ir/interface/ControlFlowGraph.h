@@ -21,7 +21,7 @@ class Instruction;
 class ControlFlowGraph {
 public:
 	/*! \brief A basic block contains a series of instructions 
-		terminated by contorl flow */
+		terminated by control flow */
 	class BasicBlock {
 	public:
 		/*! \brief A list of blocks */
@@ -61,6 +61,9 @@ public:
 			const InstructionList& instructions = InstructionList());
 		~BasicBlock();
 	
+		/*! \brief Clear/delete all instructions owned by the block */
+		void clear();
+	
 		/*! \brief Get the fallthrough edge */
 		EdgeList::iterator get_fallthrough_edge();
 		/*! \brief Get the fallthrough edge */
@@ -78,7 +81,6 @@ public:
 
 		/*! \brief Get the edge connecting to the specified block */
 		EdgeList::iterator get_edge(BlockList::iterator b);
-
 		/*! \brief Get the edge connecting to the specified block */
 		EdgeList::const_iterator get_edge(BlockList::const_iterator b) const;
 
@@ -113,8 +115,9 @@ public:
 
 	public:
 
-		/*! \brief an object that formats the string representation of a 
-				basic block used in the DOT output of the graph
+		/*!
+			\brief an object that formats the string representation of a basic block used
+				in the DOT output of the graph
 		*/
 		class DotFormatter {
 		public:
@@ -164,6 +167,8 @@ public:
 
 	/*! \brief A pointer to an edge iterator */
 	typedef EdgePointerVector::iterator edge_pointer_iterator;
+	/*! \brief A const pointer to an edge iterator */
+	typedef EdgePointerVector::const_iterator const_edge_pointer_iterator;
 
 	/*! \brief A map from a block pointer to an int */
 	typedef std::unordered_map<const_iterator, unsigned int> BlockMap;

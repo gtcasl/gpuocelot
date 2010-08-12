@@ -28,8 +28,8 @@
 
 #define REPORT_BASE 0
 
-/*! \brief A namespace for parsing PTX 1.4 */
-namespace ptx1_4
+/*! \brief A namespace for parsing PTX */
+namespace ptx
 { 
 	extern int yyparse( parser::PTXLexer&, parser::PTXParser::State& );
 }
@@ -363,19 +363,19 @@ namespace parser
 	
 	void PTXParser::State::statementEnd( YYLTYPE& location )
 	{
-		statement.line = location.first_line;
+		statement.line   = location.first_line;
 		statement.column = location.first_column;		
 
 		report( "   At (" << statement.line << "," << statement.column
-			<< ") : Parsed statement " << module.statements.size() 
+			<< ") : Parsed statement " << statements.size() 
 			<< " \"" << statement.toString() << "\"" );
-		module.statements.push_back( statement );
+		statements.push_back( statement );
 
 		operand = ir::PTXOperand();
 		statement.array.values.clear();
 		alignment = 1;
 		statement.array.vec = ir::PTXOperand::v1;
-		statement.instruction.statementIndex = module.statements.size();
+		statement.instruction.statementIndex = statements.size();
 	}
 	
 	void PTXParser::State::assignment()
@@ -394,14 +394,13 @@ namespace parser
 		statement.name = name;
 		statement.array.vec = ir::PTXOperand::v1;
 		statement.attribute = ir::PTXStatement::NoAttribute;
-	
+
 		if( operand.type == ir::PTXOperand::pred )
 		{
 			operand.condition = ir::PTXOperand::Pred;
 		}
 
 		statement.array.stride.resize(1);
-		
 		statement.array.stride[0] = regs;
 		
 		if( regs == 0 )
@@ -432,7 +431,6 @@ namespace parser
 		
 		for( unsigned int i = 0; i < regs; ++i )
 		{
-	
 			std::stringstream name;
 			name << statement.name << i;
 	
@@ -463,7 +461,7 @@ namespace parser
 		YYLTYPE& one, YYLTYPE& two )
 	{
 		report( "  Rule: initializable addressableVariablePrefix IDENTIFIER " 
-			<< "arrayDimensions initializer';'" );
+			<< "arrayDimensions initializer ';'" );
 
 		assert( directive == ir::PTXStatement::Const 
 			|| directive == ir::PTXStatement::Global 
@@ -601,20 +599,20 @@ namespace parser
 		statementEnd( location );
 	
 		report( "  Rule: guard instruction : " 
-			<< module.statements.back().instruction.toString() );
+			<< statements.back().instruction.toString() );
 	
 		// check for an error
-		assert( !module.statements.empty() );
-		assert( module.statements.back().directive == ir::PTXStatement::Instr );
+		assert( !statements.empty() );
+		assert( statements.back().directive == ir::PTXStatement::Instr );
 	
 		std::string message = 
-			module.statements.back().instruction.valid();
+			statements.back().instruction.valid();
 	
 		if( message != "" )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Parsed invalid instruction " 
-				<< module.statements.back().instruction.toString() 
+				<< statements.back().instruction.toString() 
 				<< " : " << message, InvalidInstruction );
 		}
 	
@@ -655,7 +653,7 @@ namespace parser
 		if( inEntry )
 		{
 			localOperands.push_back( statement.name );
-		}		
+		}
 	}
 
 	void PTXParser::State::location( long long int one, long long int two, 
@@ -1037,7 +1035,7 @@ namespace parser
 	void PTXParser::State::instruction()
 	{
 		statement.instruction = ir::PTXInstruction( );
-		statement.instruction.statementIndex = module.statements.size();
+		statement.instruction.statementIndex = statements.size();
 	}
 
 	void PTXParser::State::instruction( const std::string& opcode, int dataType, 
@@ -1055,11 +1053,11 @@ namespace parser
 
 		if( operands == 6 )
 		{
-			statement.instruction.d = operandVector[1];
+			statement.instruction.d  = operandVector[1];
 			statement.instruction.pq = operandVector[2];
-			statement.instruction.a = operandVector[3];
-			statement.instruction.b = operandVector[4];
-			statement.instruction.c = operandVector[5];		
+			statement.instruction.a  = operandVector[3];
+			statement.instruction.b  = operandVector[4];
+			statement.instruction.c  = operandVector[5];		
 		}
 		else
 		{
@@ -1094,8 +1092,8 @@ namespace parser
 
 		assert( operandVector.size() == 4 );
 
-		statement.directive = ir::PTXStatement::Instr;
-		statement.instruction.type = tokenToDataType( dataType );
+		statement.directive          = ir::PTXStatement::Instr;
+		statement.instruction.type   = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( "tex" );
 		statement.instruction.pg = operandVector[0];
 		statement.instruction.d = operandVector[1];
@@ -1201,11 +1199,11 @@ namespace parser
 		StatementMap labels;
 		
 		ir::Module::StatementVector::iterator 
-			begin = state.module.statements.begin();
+			begin = state.statements.begin();
 		
 		for( ir::Module::StatementVector::iterator 
-			statement = state.module.statements.begin(); 
-			statement != state.module.statements.end(); ++statement )
+			statement = state.statements.begin(); 
+			statement != state.statements.end(); ++statement )
 		{
 			if( statement->directive == ir::PTXStatement::Label )
 			{
@@ -1276,16 +1274,14 @@ namespace parser
 		}	
 	}
 	
-	void PTXParser::reset( )
+	void PTXParser::reset()
 	{
 		state.inEntry = false;
 		state.identifiers.clear();
 		state.operands.clear();
 		state.localOperands.clear();
 		state.operandVector.clear();
-		state.module.statements.clear();
-		state.module.kernels.clear();
-		state.module.modulePath = fileName;
+		state.statements.clear();
 		state.fileName = fileName;
 		
 		ir::PTXOperand bucket;
@@ -1296,29 +1292,29 @@ namespace parser
 		
 		state.operands.insert( std::make_pair( "_", 
 			State::OperandWrapper( bucket, 
-			ir::PTXInstruction::Global ) ) );		
+			ir::PTXInstruction::Global ) ) );
 	}
 
 	ir::PTXOperand::DataType PTXParser::tokenToDataType( int token )
 	{
 		switch( token )
 		{
-			case TOKEN_U8: return ir::PTXOperand::u8; break;
-			case TOKEN_U16: return ir::PTXOperand::u16; break;
-			case TOKEN_U32: return ir::PTXOperand::u32; break;
-			case TOKEN_U64: return ir::PTXOperand::u64; break;
-			case TOKEN_S8: return ir::PTXOperand::s8; break;
-			case TOKEN_S16: return ir::PTXOperand::s16; break;
-			case TOKEN_S32: return ir::PTXOperand::s32; break;
-			case TOKEN_S64: return ir::PTXOperand::s64; break;
-			case TOKEN_B8: return ir::PTXOperand::b8; break;
-			case TOKEN_B16: return ir::PTXOperand::b16; break;
-			case TOKEN_B32: return ir::PTXOperand::b32; break;
-			case TOKEN_B64: return ir::PTXOperand::b64; break;
+			case TOKEN_U8:   return ir::PTXOperand::u8; break;
+			case TOKEN_U16:  return ir::PTXOperand::u16; break;
+			case TOKEN_U32:  return ir::PTXOperand::u32; break;
+			case TOKEN_U64:  return ir::PTXOperand::u64; break;
+			case TOKEN_S8:   return ir::PTXOperand::s8; break;
+			case TOKEN_S16:  return ir::PTXOperand::s16; break;
+			case TOKEN_S32:  return ir::PTXOperand::s32; break;
+			case TOKEN_S64:  return ir::PTXOperand::s64; break;
+			case TOKEN_B8:   return ir::PTXOperand::b8; break;
+			case TOKEN_B16:  return ir::PTXOperand::b16; break;
+			case TOKEN_B32:  return ir::PTXOperand::b32; break;
+			case TOKEN_B64:  return ir::PTXOperand::b64; break;
 			case TOKEN_PRED: return ir::PTXOperand::pred; break;
-			case TOKEN_F16: return ir::PTXOperand::f16; break;
-			case TOKEN_F32: return ir::PTXOperand::f32; break;
-			case TOKEN_F64: return ir::PTXOperand::f64; break;
+			case TOKEN_F16:  return ir::PTXOperand::f16; break;
+			case TOKEN_F32:  return ir::PTXOperand::f32; break;
+			case TOKEN_F64:  return ir::PTXOperand::f64; break;
 			default:
 			{
 				Exception exception;
@@ -1654,7 +1650,7 @@ namespace parser
 		
 		}
 		
-		return ir::PTXInstruction::BoolOp_Invalid;		
+		return ir::PTXInstruction::BoolOp_Invalid;
 	}
 
 	ir::PTXInstruction::Geometry PTXParser::tokenToGeometry( int token )
@@ -1708,11 +1704,10 @@ namespace parser
 
 	PTXParser::PTXParser()
 	{
-		state.warnLexer = false;
-		state.inEntry = false;
+
 	}
 				
-	ir::Module PTXParser::parse( std::istream& input, 
+	void PTXParser::parse( std::istream& input, 
 		ir::Instruction::Architecture language )
 	{
 		assert( language == ir::Instruction::PTX );
@@ -1727,12 +1722,12 @@ namespace parser
 		
 		try 
 		{
-			ptx1_4::yyparse( lexer, state );
+			ptx::yyparse( lexer, state );
 			assert( temp.str().empty() );
 		
 			checkLabels();
 		}
-		catch( Exception& )
+		catch( Exception& e )
 		{
 			input.seekg( 0, std::ios::end );
 			unsigned int length = input.tellg();
@@ -1741,22 +1736,19 @@ namespace parser
 			char* temp = new char[ length + 1 ];
 			temp[ length ] = '\0';
 			input.read( temp, length );
-			std::cerr << "Failed to parse file '" << fileName << "':\n";
-			std::cerr << hydrazine::addLineNumbers(temp) << "\n" << std::flush;
+			e.message = "\nFailed to parse file '" + fileName + "':\n" 
+				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
 			delete[] temp;
 			
-			throw;
+			throw e;
 		}
-		
-		return state.module;
-	}
-		
-	void PTXParser::configure( const Configuration& configuration )
-	{
-		hydrazine::Configurable::parse( "WarnLexer", state.warnLexer, 
-			false, configuration );
 	}
 	
+	ir::Module::StatementVector&& PTXParser::statements()
+	{
+		return std::move( state.statements );
+	}
+		
 }
 
 #endif

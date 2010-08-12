@@ -1,5 +1,4 @@
-/*!
-	\file Parameter.cpp
+/*! \file Parameter.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief describes a parameter declaration

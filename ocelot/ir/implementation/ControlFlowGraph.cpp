@@ -9,7 +9,6 @@
 
 #include <hydrazine/implementation/debug.h>
 
-#include <iomanip>
 #include <unordered_set>
 #include <stack>
 #include <queue>
@@ -71,7 +70,7 @@ std::string ControlFlowGraph::make_label_dot_friendly(
 
 std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(
 	const std::string &str) {
-	return ControlFlowGraph::make_label_dot_friendly(str);
+	return make_label_dot_friendly(str);
 }
 
 std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
@@ -123,6 +122,14 @@ ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i,
 
 ControlFlowGraph::BasicBlock::~BasicBlock() {
 
+}
+
+void ControlFlowGraph::BasicBlock::clear() {
+	for (InstructionList::iterator instruction = instructions.begin();
+		instruction != instructions.end(); ++instruction ) {
+		delete *instruction;
+	}
+	instructions.clear();
 }
 
 ControlFlowGraph::BasicBlock::EdgeList::iterator 
@@ -223,6 +230,7 @@ ControlFlowGraph::ControlFlowGraph():
 }
 
 ControlFlowGraph::~ControlFlowGraph() {
+	clear();
 }
 
 size_t ControlFlowGraph::size() const {
@@ -248,6 +256,7 @@ void ControlFlowGraph::remove_block(iterator block) {
 		remove_edge(*block->out_edges.begin());
 	}
 	
+	block->clear();
 	_blocks.erase(block);
 }
 
@@ -355,7 +364,6 @@ ControlFlowGraph::const_iterator ControlFlowGraph::get_exit_block() const {
 }
 
 std::ostream& ControlFlowGraph::write(std::ostream &out) const { 
-//	ControlFlowGraph::BasicBlockColorMap blockColors;
 	BasicBlock::DotFormatter defaultFormatter;
 	
 	return write(out, defaultFormatter);
@@ -371,14 +379,7 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	out << "digraph {\n";
 
 	// emit nodes
-
 	out << "  // basic blocks\n\n";
-
-	/*
-	out << "  bb_0 [shape=Mdiamond,label=\"" << _entry->label << "\"];\n";
-	out << "  bb_1 [shape=Msquare,label=\"" << _exit->label << "\"];\n";
-	*/
-	
 	out << "  bb_0 " << blockFormatter.entryLabel(&*_entry) << ";\n";
 	out << "  bb_1 " << blockFormatter.exitLabel(&*_exit) << ";\n";
 
@@ -390,10 +391,8 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 		if (block == _entry || block == _exit) continue;
 
 		blockIndices[block] = n;
-
 		const BasicBlock *blockPtr = &*block;
 		out << "  bb_" << n << " " << blockFormatter.toString(blockPtr) << ";\n";
-
 	}
 
 	out << "\n\n  // edges\n\n";
@@ -427,6 +426,9 @@ std::string ControlFlowGraph::toString( Edge::Type t ) {
 
 
 void ControlFlowGraph::clear() {
+	for (iterator block = begin(); block != end(); ++block) {
+		block->clear();
+	}
 	_blocks.clear();
 	_edges.clear();
 	_entry = insert_block(BasicBlock("entry"));

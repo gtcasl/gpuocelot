@@ -14,8 +14,9 @@
 #include <FlexLexer.h>
 
 #include <ocelot/parser/interface/PTXLexer.h>
+#include <ocelot/ir/interface/Module.h>
 #include <unordered_map>
-#include <deque>
+#include <vector>
 
 namespace parser
 {
@@ -38,12 +39,12 @@ namespace parser
 				
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
-					typedef std::deque< std::string > StringList;
-					typedef std::deque< unsigned int > DimensionVector;
-					typedef std::deque< double > DoubleVector;
+					typedef std::vector< std::string > StringList;
+					typedef std::vector< unsigned int > DimensionVector;
+					typedef std::vector< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
 						OperandWrapper > OperandMap;
-					typedef std::deque< ir::PTXOperand > OperandVector;
+					typedef std::vector< ir::PTXOperand > OperandVector;
 			
 					enum Error
 					{
@@ -67,7 +68,7 @@ namespace parser
 					};
 			
 				public:
-					ir::Module module;
+					ir::Module::StatementVector statements;
 					StringMap labels;
 					std::string fileName;
 				
@@ -88,12 +89,6 @@ namespace parser
 					
 					ir::PTXStatement::Directive directive;
 									
-				public:
-					/*! \brief Warn if part of the input file is ignored by 
-							the lexer
-					*/
-					bool warnLexer;
-
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
 						ir::PTXStatement::Directive directive );
@@ -237,11 +232,9 @@ namespace parser
 			
 		public:
 			PTXParser();
-			ir::Module parse( std::istream& input, 
+			void parse( std::istream& input, 
 				ir::Instruction::Architecture language = ir::Instruction::PTX );
-				
-			void configure( const Configuration& configuration );
-	
+			ir::Module::StatementVector&& statements();	
 	};
 
 }

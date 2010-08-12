@@ -11,6 +11,7 @@
 
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
+#include <ocelot/trace/interface/InteractiveDebugger.h>
 
 namespace ocelot
 {
@@ -19,6 +20,7 @@ namespace ocelot
 	private:
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
+		trace::InteractiveDebugger _debugger;
 		
 		bool _initialized;
 		

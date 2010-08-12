@@ -38,13 +38,30 @@ namespace api {
 			//! \brief suffix for all checkpoint files
 			std::string suffix;
 			
-			//! \brief if existing checkpoints exist, 
-			// verify allocations match them
+			//! \brief if existing checkpoints exist, verify allocations match them
 			bool verify;
 		};
 
 		//! Configuration for trace generation facilities
 		class TraceGeneration {
+		public:
+			/*! \brief configuration properties for trace::InteractiveDebugger */
+			class Debugger
+			{
+			public:
+					Debugger();
+				
+			public:
+					//! \brief indicates trace generator is enabled
+					bool enabled;
+
+					//! \brief Only attach to kernels matching this substring
+					std::string kernelFilter;
+				
+					//! \brief Attach to all kernels by default?
+					bool alwaysAttach;
+			};
+
 		public:
 			TraceGeneration();
 
@@ -54,6 +71,9 @@ namespace api {
 			
 			//! \brief Race detection
 			bool raceDetector;
+                        
+            //! \brief Interactive Debugger
+            Debugger debugger;
 		};
 
 		class CudaRuntimeImplementation {
@@ -122,18 +142,12 @@ namespace api {
 		//! \brief initializes configuration object from a stream as JSON
 		void initialize(std::istream &stream);
 
-		//! \brief gets singleton configuration object or 
-		//         constructs from 'configure.ocelot'
-		static const OcelotConfiguration& get();
+        //! \brief gets singleton configuration object or 
+        //	constructs from 'configure.ocelot'
+        static const OcelotConfiguration& get();
 
-		//! \brief gets singleton config object's .executive member
-		static const OcelotConfiguration::Executive& getExecutive();
-
-		//! \brief gets singleton config object's .cuda member
-		static const OcelotConfiguration::CudaRuntimeImplementation& getCuda();
-
-		//! \brief gets singleton config object's .trace member
-		static const OcelotConfiguration::TraceGeneration& getTrace();
+        //! \brief destroys the singleton
+        static void destroy();
 
 	public:
 		//! \brief path to configuration file for reparsing 

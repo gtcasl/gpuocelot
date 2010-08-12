@@ -531,13 +531,13 @@ public:
 			ins.type = PTXOperand::u32;
 			ins.a = reg("r1", PTXOperand::u32, 0);
 			ins.b = imm_uint("r2", PTXOperand::u32, 0x0fffffffe);
-			ins.c = reg("r3", PTXOperand::u32, 2);
+			ins.c = reg("r3", PTXOperand::u32, 6);
 			ins.d = reg("r6", PTXOperand::u32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
 				cta.setRegAsU32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_AddC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -548,7 +548,7 @@ public:
 					break;
 				}
 				// verify carry		
-				if (cta.getRegAsU32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsU32(i, 6) != 1) {
 					result = false;
 					status << "addc.u32 failed to set carry bit\n";
 					break;
@@ -562,13 +562,13 @@ public:
 			ins.type = PTXOperand::s32;
 			ins.a = reg("r1", PTXOperand::s32, 0);
 			ins.b = imm_uint("r2", PTXOperand::s32, 0x0fffffffe);
-			ins.c = reg("r3", PTXOperand::s32, 2);
+			ins.c = reg("r3", PTXOperand::s32, 6);
 			ins.d = reg("r6", PTXOperand::s32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
 				cta.setRegAsS32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_AddC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -579,7 +579,7 @@ public:
 					break;
 				}
 				// verify carry			
-				if (cta.getRegAsS32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsS32(i, 6) != 1) {
 					result = false;
 					status << "addc.s32 failed to set carry bit\n";
 					break;
@@ -795,26 +795,27 @@ public:
 		//
 		if (result) {
 			ins.type = PTXOperand::u32;
+			ins.cc = PTXInstruction::CC;
 			ins.a = imm_uint("r2", PTXOperand::u32, 0x0fffffffe);
 			ins.b = reg("r1", PTXOperand::u32, 0);
-			ins.c = reg("r3", PTXOperand::u32, 2);
+			ins.c = reg("r3", PTXOperand::u32, 6);
 			ins.d = reg("r6", PTXOperand::u32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
 				cta.setRegAsU32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_SubC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2) + 1));
+				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)) + 1);
 				if (cta.getRegAsU32(i, 5) != expected) {
 					result = false;
 					status << "subc.u32 incorrect\n";
 					break;
 				}
 				// verify carry		
-				if (cta.getRegAsU32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsU32(i, 6) != 1) {
 					result = false;
 					status << "subc.u32 failed to set borrow bit\n";
 					break;
@@ -826,26 +827,27 @@ public:
 		//
 		if (result) {
 			ins.type = PTXOperand::s32;
+			ins.cc = PTXInstruction::CC;
 			ins.a = imm_uint("r2", PTXOperand::s32, 0x0fffffffe);
 			ins.b = reg("r1", PTXOperand::s32, 0);
-			ins.c = reg("r3", PTXOperand::s32, 2);
+			ins.c = reg("r3", PTXOperand::s32, 6);
 			ins.d = reg("r6", PTXOperand::s32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
 				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
 				cta.setRegAsS32(i, 5, 0);
-				cta.setRegAsU32(i, cta.CC_register, 1);	// set the carry flag
+				cta.setRegAsU32(i, 6, 1);	// set the carry flag
 			}
 			cta.eval_SubC(cta.runtimeStack.back(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2) + 1));
+				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)) + 1);
 				if (cta.getRegAsS32(i, 5) != expected) {
 					result = false;
 					status << "subc.s32 incorrect\n";
 					break;
 				}
 				// verify carry			
-				if (cta.getRegAsS32(i, cta.CC_register) != 1) {
+				if (cta.getRegAsS32(i, 6) != 1) {
 					result = false;
 					status << "subc.s32 failed to set borrow bit\n";
 					break;

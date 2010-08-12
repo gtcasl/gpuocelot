@@ -40,7 +40,7 @@ ExecutableKernel::ExecutableKernel( const ir::Kernel& k,
 ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
 	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 
-	_sharedMemorySize( 0 ), 	_externSharedMemorySize( 0 ), 
+	_sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
 	_parameterMemorySize( 0 )
 {
 	mapParameterOffsets();
@@ -56,22 +56,18 @@ bool ExecutableKernel::executable()
 	return true;
 }
 
-void ExecutableKernel::traceEvent( const trace::TraceEvent & event) const
+void ExecutableKernel::traceEvent(const trace::TraceEvent & event) const
 {
-	for( TraceGeneratorVector::const_iterator 
-		generator = _generators.begin(); 
-		generator != _generators.end(); ++generator ) 
-	{
+	for(TraceGeneratorVector::const_iterator generator = _generators.begin(); 
+		generator != _generators.end(); ++generator) {
 		(*generator)->event(event);
 	}
 }
 
-void ExecutableKernel::tracePostEvent( const trace::TraceEvent & event) const
+void ExecutableKernel::tracePostEvent(const trace::TraceEvent & event) const
 {
-	for( TraceGeneratorVector::const_iterator 
-		generator = _generators.begin(); 
-		generator != _generators.end(); ++generator ) 
-	{
+	for(TraceGeneratorVector::const_iterator generator = _generators.begin(); 
+		generator != _generators.end(); ++generator) {
 		(*generator)->postEvent(event);
 	}
 }
@@ -130,15 +126,17 @@ const ir::Dim3& ExecutableKernel::gridDim() const
 	\brief compute parameter offsets for parameter data
 */
 size_t ExecutableKernel::mapParameterOffsets() {
-	std::vector< ir::Parameter >::iterator it = parameters.begin();
 	unsigned int paramSize = 0;
 
-	for (; it != parameters.end(); ++it) {
-		unsigned int misAlignment = paramSize % it->getAlignment();
-		paramSize += misAlignment == 0 ? 0 : it->getAlignment() - misAlignment;
+	for (ParameterVector::iterator it = parameters.begin(); 
+		it != parameters.end(); ++it) {
+		ir::Parameter& parameter = *it;
+		unsigned int misAlignment = paramSize % parameter.getAlignment();
+		paramSize += misAlignment == 0 
+			? 0 : parameter.getAlignment() - misAlignment;
 
-		it->offset = paramSize;
-		paramSize += it->getSize();
+		parameter.offset = paramSize;
+		paramSize += parameter.getSize();
 	}
 
 	report("ExecutableKernels::mapParameterOffsets() - '" << name 
@@ -158,38 +156,16 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter,
 
 	report("ExecutableKernel::setParameterBlock() - paramSize = " << paramSize);
 
-	std::vector< ir::Parameter >::iterator it = parameters.begin();
-	for (it = parameters.begin(); it != parameters.end(); ++it) {
-
-		switch (it->type) {
-			case ir::PTXOperand::b8:	// fall through
-			case ir::PTXOperand::s8:	// fall through
-			case ir::PTXOperand::s16:	// fall through
-			case ir::PTXOperand::u8:	// fall through
-			case ir::PTXOperand::u16: // fall through
-			case ir::PTXOperand::f32: // fall through
-			case ir::PTXOperand::s32:	// fall through
-			case ir::PTXOperand::u32:	// fall through
-			case ir::PTXOperand::s64:	// fall through
-			case ir::PTXOperand::u64:
-			{
-				const unsigned char *ptr = parameter + it->offset;
-				for (ir::Parameter::ValueVector::iterator 
-					val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); 
-					++val_it, ptr += it->getElementSize()) {
-
-					memcpy(&val_it->val_u64, ptr, it->getElementSize());
-				}
-				break;
-			}
-
-			default:
-			{
-				throw hydrazine::Exception(std::string("Parameter type ") + 
-					ir::PTXOperand::toString(it->type) 
-					+ " not supported for kernel " + name);
-			}
+	for (ParameterVector::iterator it = parameters.begin();
+		it != parameters.end(); ++it) {
+		const unsigned char *ptr = parameter + it->offset;
+		for (ir::Parameter::ValueVector::iterator 
+			val_it = it->arrayValues.begin();
+			val_it != it->arrayValues.end(); 
+			++val_it, ptr += it->getElementSize()) {
+			assert((size_t)ptr - (size_t)parameter 
+				+ it->getElementSize() < (size_t)paramSize);
+			memcpy(&val_it->val_u64, ptr, it->getElementSize());
 		}
 
 		report("Configuring parameter " << it->name 
@@ -206,52 +182,53 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter,
 	\param maxSize maximum number of bytes to write to parameter memory
 	\return actual number of bytes required by parameter memory
 */
-size_t ExecutableKernel::getParameterBlock(unsigned char *parameter, 
+size_t ExecutableKernel::getParameterBlock(unsigned char* block, 
 	size_t maxSize) const {
 	size_t offset = 0;
-	std::vector< ir::Parameter >::const_iterator it = parameters.begin();
-	for (it = parameters.begin(); it != parameters.end(); ++it) {
-		report("Getting parameter " << it->name 
+	for (ParameterVector::const_iterator it = parameters.begin();
+		it != parameters.end(); ++it) {
+		const ir::Parameter& parameter = *it;
+		report("Getting parameter " << parameter.name 
 			<< " " 
-			<< " - type: " << it->arrayValues.size() << " x " 
-			<< ir::PTXOperand::toString(it->type)
-			<< " - value: " << ir::Parameter::value(*it));
+			<< " - type: " << parameter.arrayValues.size() << " x " 
+			<< ir::PTXOperand::toString(parameter.type)
+			<< " - value: " << ir::Parameter::value(parameter));
 
-		switch (it->type) {
-			case ir::PTXOperand::b8:	// fall through
-			case ir::PTXOperand::s8:	// fall through
-			case ir::PTXOperand::s16:	// fall through
-			case ir::PTXOperand::u8:	// fall through
-			case ir::PTXOperand::u16: // fall through
-			case ir::PTXOperand::f32: // fall through
-			case ir::PTXOperand::s32:	// fall through
-			case ir::PTXOperand::u32:	// fall through
-			case ir::PTXOperand::s64:	// fall through
-			case ir::PTXOperand::u64:
-			{
-				unsigned char *ptr = parameter + it->offset;
-				for (ir::Parameter::ValueVector::const_iterator 
-					val_it = it->arrayValues.begin();
-					val_it != it->arrayValues.end(); 
-					++val_it, ptr += it->getElementSize()) {
-					
-					memcpy(ptr, &val_it->val_u64, it->getElementSize());
-				}
-				break;
-			}
-
-			default:
-			{
-				throw hydrazine::Exception(std::string("Parameter type ") + 
-					ir::PTXOperand::toString(it->type) 
-					+ " not supported for kernel " + name);
-			}
+		unsigned char *ptr = block + parameter.offset;
+		for (ir::Parameter::ValueVector::const_iterator 
+			val_it = parameter.arrayValues.begin();
+			val_it != parameter.arrayValues.end(); 
+			++val_it, ptr += parameter.getElementSize()) {
+			
+			memcpy(ptr, &val_it->val_u64, parameter.getElementSize());
 		}
-		offset = it->offset + it->getElementSize();
+		offset = parameter.offset + parameter.getElementSize();
 	}
+	
+	for (ParameterVector::const_iterator it = parameters.begin();
+		it != parameters.end(); ++it) {
+		const ir::Parameter& parameter = *it;
+		report("Getting parameter " << parameter.name 
+			<< " " 
+			<< " - type: " << parameter.arrayValues.size() << " x " 
+			<< ir::PTXOperand::toString(parameter.type)
+			<< " - value: " << ir::Parameter::value(parameter));
+
+		unsigned char *ptr = block + parameter.offset;
+		for (ir::Parameter::ValueVector::const_iterator 
+			val_it = parameter.arrayValues.begin();
+			val_it != parameter.arrayValues.end(); 
+			++val_it, ptr += parameter.getElementSize()) {
+			
+			memcpy(ptr, &val_it->val_u64, parameter.getElementSize());
+		}
+		offset = parameter.offset + parameter.getElementSize();
+	}
+	
 	return offset;
 }
 
 }
 
 #endif
+

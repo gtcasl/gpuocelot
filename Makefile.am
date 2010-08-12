@@ -38,6 +38,10 @@ lib_LTLIBRARIES = libocelot.la
 ## libocelot
 libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x
 libocelot_la_SOURCES = \
+	ocelot/parser/implementation/ptx.lpp \
+	ocelot/parser/implementation/ptxgrammar.ypp \
+	ocelot/parser/implementation/PTXParser.cpp \
+	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
@@ -89,6 +93,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/TraceGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
+	ocelot/trace/implementation/InteractiveDebugger.cpp \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
 	ocelot/executive/implementation/Device.cpp \
 	ocelot/executive/implementation/ATIGPUDevice.cpp \
@@ -109,10 +114,6 @@ libocelot_la_SOURCES = \
 	ocelot/cuda/implementation/CudaDriver.cpp \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
 	ocelot/cal/implementation/CalDriver.cpp \
-	ocelot/parser/implementation/ptx.lpp \
-	ocelot/parser/implementation/ptxgrammar.ypp \
-	ocelot/parser/implementation/PTXParser.cpp \
-	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
 	ocelot/translator/implementation/PTXToILTranslator.cpp

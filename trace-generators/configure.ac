@@ -47,16 +47,6 @@ AM_PROG_CC_C_O
 
 ################################################################################
 # Check for libraries
-AC_CHECK_LIB([boost_system-mt], [main], [], \
-	AC_MSG_ERROR("libboost_system required"))
-AC_CHECK_LIB([boost_filesystem-mt], [main], [], \
-	AC_MSG_ERROR("libboost_filesystem required"))
-AC_CHECK_LIB([boost_wserialization-mt], [main], [], \
-	AC_MSG_ERROR("libboost_wserialization required"))
-AC_CHECK_LIB([boost_serialization-mt], [main], [], \
-	AC_MSG_ERROR("libboost_serialization required"))
-AC_CHECK_LIB([rt], [clock_gettime], [],\
-	AC_MSG_ERROR("librt required"))
 ################################################################################
 
 ################################################################################

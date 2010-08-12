@@ -422,7 +422,7 @@ public:
 		int *inputSequence = new int[N];
 
 		// configure parameters
-		Parameter &param_A = kernel->getParameter(
+		Parameter &param_A = *kernel->getParameter(
 			"__cudaparm__Z17k_simple_sequencePi_A");
 
 		// set parameter values

@@ -141,6 +141,7 @@ namespace ir
 						case I16: stream << i16; break;
 						case I32: stream << i32; break;
 						case I64: stream << i64; break;
+						case I128: stream << i128; break;
 						case F32:
 						{
 							union
@@ -205,6 +206,7 @@ namespace ir
 							case I16: stream << fi->i16; break;
 							case I32: stream << fi->i32; break;
 							case I64: stream << fi->i64; break;
+							case I128: stream << fi->i128; break;
 							case F32:
 							{
 								union
@@ -248,6 +250,12 @@ namespace ir
 	
 	LLVMInstruction::Parameter::Parameter() 
 		: attribute( InvalidParameterAttribute )
+	{
+	
+	}
+
+	LLVMInstruction::Parameter::Parameter( const Operand& op ) 
+		: Operand(op), attribute( InvalidParameterAttribute )
 	{
 	
 	}
@@ -339,6 +347,7 @@ namespace ir
 			case I16: return "i16"; break;
 			case I32: return "i32"; break;
 			case I64: return "i64"; break;
+			case I128: return "i128"; break;
 			case F32: return "float"; break;
 			case F64: return "double"; break;
 			case F128: return "fp128"; break;
@@ -480,7 +489,8 @@ namespace ir
 			case I8: /* fall through */
 			case I16: /* fall through */
 			case I32: /* fall through */
-			case I64: return true; break;
+			case I64: /* fall through */
+			case I128: return true; break;
 			case F32: /* fall through */
 			case F64: /* fall through */
 			case F128: /* fall through */
@@ -498,6 +508,7 @@ namespace ir
 			case 16: return I16; break;
 			case 32: return I32; break;
 			case 64: return I64; break;
+			case 128: return I128; break;
 			default: break;
 		}
 		return InvalidDataType;
@@ -514,6 +525,7 @@ namespace ir
 			case I32: return 32; break;
 			case F64: /* fall through */
 			case I64: return 64; break;
+			case I128: /* fall through */
 			case F128: return 128; break;
 			default: break;
 		}

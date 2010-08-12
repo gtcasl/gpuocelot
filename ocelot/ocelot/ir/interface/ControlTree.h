@@ -3,7 +3,7 @@
  *  \date June 10, 2010
  *  \brief The header file for the ControlTree class.
  *
- *  Computes the control tree as defined in Muchnick's textbook (sec 7.7):
+ *  Computes the Control Tree as defined in Muchnick's textbook (sec 7.7):
  *
  *  1. The root of the control tree is an abstract graph representing the
  *  original flowgraph.
@@ -24,8 +24,6 @@
 // STL includes
 #include <list>
 #include <unordered_set>
-
-using namespace std;
 
 namespace ir
 {
@@ -56,7 +54,7 @@ namespace ir
 					typedef std::unordered_set<Node*> NodeSet;
 
 					/*! \brief Get the label */
-					const string label() const;
+					const std::string& label() const;
 					/*! \brief Get the region type */
 					RegionType rtype() const;
 					/*! \brief Get the children */
@@ -73,12 +71,12 @@ namespace ir
 
 				protected:
 					/*! \brief Constructor (protected to avoid instantiation) */
-					Node(const string& label, RegionType rtype, 
+					Node(const std::string& label, RegionType rtype, 
 							const NodeList& children);
 
 				private:
 					/*! \brief Node label */
-					const string _label;
+					const std::string& _label;
 					/*! \brief Region type */
 					const RegionType _rtype;
 					/*! \brief Children in the control tree */
@@ -114,7 +112,8 @@ namespace ir
 			{
 				public:
 					/*! \brief Constructor */
-					BlockNode(const string& label, const NodeList& children);
+					BlockNode(const std::string& label, 
+						const NodeList& children);
 			};
 
 			/*! \brief If-Then node */
@@ -122,7 +121,8 @@ namespace ir
 			{
 				public:
 					/*! \brief Constructor */
-					IfThenNode(const string& label, Node* cond, Node* ifTrue);
+					IfThenNode(const std::string& label, 
+						Node* cond, Node* ifTrue);
 
 					/*! \brief Get condition node */
 					const Node* cond() const;
@@ -139,7 +139,7 @@ namespace ir
 			{
 				public:
 					/*! \brief Constructor */
-					IfThenElseNode(const string& label, Node* cond, 
+					IfThenElseNode(const std::string& label, Node* cond, 
 							Node* ifTrue, Node* ifFalse);
 
 					/*! \brief Get condition node */
@@ -159,7 +159,7 @@ namespace ir
 			{
 				public:
 					/*! \brief Constructor */
-					SelfLoopNode(const string& label, Node* body);
+					SelfLoopNode(const std::string& label, Node* body);
 
 					/*! \brief Get the node for the body loop */
 					const Node* body() const;
@@ -216,3 +216,4 @@ namespace std
 	}
 }
 #endif
+

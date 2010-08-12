@@ -6,7 +6,7 @@
 */
 
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <cassert>
+#include <hydrazine/implementation/debug.h>
 #include <sstream>
 
 std::string ir::PTXInstruction::toString( Level l ) {
@@ -18,6 +18,31 @@ std::string ir::PTXInstruction::toString( Level l ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( PermuteMode m ) {
+	switch( m ) {
+		case ForwardFourExtract: return "f4e"; break;
+		case BackwardFourExtract: return "b4e"; break;
+		case ReplicateEight: return "rc8"; break;
+		case EdgeClampLeft: return "ecl"; break;
+		case EdgeClampRight: return "ecr"; break;
+		case ReplicateSixteen: return "rc16"; break;
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( FloatingPointMode m ) {
+	switch( m ) {
+		case Finite: return "finite"; break;
+		case Infinite: return "infinite"; break;
+		case Number: return "number"; break;
+		case NotANumber: return "notanumber"; break;
+		case Normal: return "normal"; break;
+		case SubNormal: return "subnormal"; break;
+		default: break;
+	}
+	return "";
+}
 std::string ir::PTXInstruction::toString( Vec v ) {
 	switch( v ) {
 		case PTXOperand::v1: return "v1"; break;
@@ -249,6 +274,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Sured: return "sured"; break;
 		case Sust: return "sust"; break;
 		case Suq: return "suq"; break;
+		case TestP: return "testp"; break;
 		case Tex: return "tex"; break;
 		case Txq: return "txq"; break;
 		case Trap: return "trap"; break;
@@ -453,6 +479,57 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Bfi: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, pq.type ) 
+				&& pq.addressMode != PTXOperand::Immediate ) {
+				return "operand 1 type " + PTXOperand::toString( pq.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand 2 type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, b.type ) 
+				&& b.addressMode != PTXOperand::Immediate ) {
+				return "operand 3 type " + PTXOperand::toString( b.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, b.type ) 
+				&& c.addressMode != PTXOperand::Immediate ) {
+				return "operand 4 type " + PTXOperand::toString( c.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
+			}
+			break;
+		}
+		case Bfind: {
+			if( !( type == PTXOperand::u32 || type == PTXOperand::u64 
+				|| type == PTXOperand::s32 || type == PTXOperand::s64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
+			}
+			break;
+		}
 		case Bra: {
 			if( !( d.addressMode == PTXOperand::Label 
 				|| d.addressMode == PTXOperand::Register ) ) {
@@ -460,13 +537,43 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Brev: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, d.type ) 
+				&& d.addressMode != PTXOperand::Immediate ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
 		case Brkpt: {
 			break;
 		}
 		case Call: {
-			if( !( d.addressMode == PTXOperand::Label 
-				|| d.addressMode == PTXOperand::Register ) ) {
-				return "no support for types other than Label and Register";
+			break;
+		}
+		case Clz: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
 			}
 			break;
 		}
@@ -525,6 +632,11 @@ std::string ir::PTXInstruction::valid() const {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
 				}
+			}
+			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type ) 
+					+ ", not even for relaxed typed instructions.";
 			}
 			break;
 		}
@@ -619,6 +731,11 @@ std::string ir::PTXInstruction::valid() const {
 			if( d.addressMode != PTXOperand::Register ) {
 				return "operand D must be a register not a " 
 					+ PTXOperand::toString( d.addressMode );
+			}
+			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type ) 
+					+ ", not even for relaxed typed instructions.";
 			}
 			break;
 		}
@@ -924,6 +1041,49 @@ std::string ir::PTXInstruction::valid() const {
 		case Pmevent: {
 			if( d.addressMode != PTXOperand::Immediate ) {
 				return "only support Immediate targets";
+			}
+			break;
+		}
+		case Popc: {
+			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( PTXOperand::u32, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " 
+					+ PTXOperand::toString( PTXOperand::u32 );
+			}
+			break;
+		}
+		case Prmt: {
+			if( type != PTXOperand::b32 ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, b.type ) 
+				&& b.addressMode != PTXOperand::Immediate ) {
+				return "operand B type " + PTXOperand::toString( b.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, c.type ) 
+				&& c.addressMode != PTXOperand::Immediate ) {
+				return "operand C type " + PTXOperand::toString( c.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			break;
 		}
@@ -1340,8 +1500,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
-			if( !PTXOperand::valid( type, d.type ) 
-				&& d.addressMode != PTXOperand::Immediate ) {
+			if( !PTXOperand::valid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
@@ -1370,6 +1529,11 @@ std::string ir::PTXInstruction::valid() const {
 			if( a.addressMode != PTXOperand::Register ) {
 				return "operand A must be a register";
 			}
+			if( !PTXOperand::relaxedValid( type, a.type ) ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type ) 
+					+ ", not even for relaxed typed instructions.";
+			}
 			break;
 		}
 		case Sub: {
@@ -1393,8 +1557,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}			
-			if( !PTXOperand::valid( type, d.type ) 
-				&& d.addressMode != PTXOperand::Immediate ) {
+			if( !PTXOperand::valid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
@@ -1416,20 +1579,35 @@ std::string ir::PTXInstruction::valid() const {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
 			}
+			if( !PTXOperand::valid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
 			if( !PTXOperand::valid( type, a.type ) 
 				&& a.addressMode != PTXOperand::Immediate ) {
 				return "operand A type " + PTXOperand::toString( a.type ) 
-					+ " cannot be assigned to " + PTXOperand::toString( type );
-			}
-			if( !PTXOperand::valid( type, d.type ) 
-				&& d.addressMode != PTXOperand::Immediate ) {
-				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			if( !PTXOperand::valid( type, b.type ) 
 				&& b.addressMode != PTXOperand::Immediate ) {
 				return "operand B type " + PTXOperand::toString( b.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
+		case TestP: {
+			if( !( type == PTXOperand::f32 || type == PTXOperand::f64 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type ) 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( d.type != ir::PTXOperand::pred ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " should be a predicate instead.";
 			}
 			break;
 		}
@@ -1495,7 +1673,7 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
-		default: break;
+		default: return "check not implemented for " + toString(opcode); break;
 	}
 	return "";
 }
@@ -1551,12 +1729,28 @@ std::string ir::PTXInstruction::toString() const {
 		case Bar: {
 			return guard() + "bar.sync " + d.toString();
 		}
+		case Bfi: {
+			return guard() + "bfi." + PTXOperand::toString( type ) + " " 
+				+ d.toString() + ", " + pq.toString() + ", " + a.toString()
+				+ ", " + b.toString() + ", " + c.toString();
+		}
+		case Bfind: {
+			std::string result = guard() + "bfind.";
+			if( shiftAmount ) result += "shiftamt.";
+			result += PTXOperand::toString( type ) + " " 
+				+ d.toString() + ", " + a.toString();
+			return result;
+		}
 		case Bra: {
 			std::string result = guard() + "bra";
 			if( uni ) {
 				result += ".uni";
 			}
 			return result + " " + d.toString();
+		}
+		case Brev: {
+			return guard() + "brev." + PTXOperand::toString( type ) + " " 
+				+ d.toString() + ", " + a.toString();
 		}
 		case Brkpt: {
 			return guard() + "brkpt";
@@ -1566,11 +1760,23 @@ std::string ir::PTXInstruction::toString() const {
 			if( uni ) {
 				result += ".uni";
 			}
-			return result + d.toString();
+			result += " ";
+			if( d.addressMode != PTXOperand::Invalid ) {
+				result += d.toString() + ", ";
+			}
+			result += a.toString() + ", " + b.toString();
+			if( a.addressMode == PTXOperand::Register ) {
+				result += ", " + c.toString();
+			}
+			return result;
+		}
+		case Clz: {
+			return guard() + "clz." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString();
 		}
 		case CNot: {
-			return guard() + "cnot." + PTXOperand::toString( type ) 
-				+ d.toString() + a.toString();
+			return guard() + "cnot." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString();
 		}
 		case Cos: {
 			std::string result = guard() + "cos.";
@@ -1631,7 +1837,9 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			result += toString(addressSpace) + ".";
+			if( addressSpace != AddressSpace_Invalid ) {
+				result += toString(addressSpace) + ".";
+			}
 			if( d.vec != PTXOperand::v1 ) {
 				result += toString( d.vec ) + ".";
 			}
@@ -1699,6 +1907,21 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Pmevent: {
 			return guard() + "pmevent." + toString( level );
+		}
+		case Popc: {
+			return guard() + "popc." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString();
+		}
+		case Prmt: {
+			std::string result = guard() + "prmt." 
+				+ PTXOperand::toString( type );
+			if( permuteMode != DefaultPermute )
+			{
+				result += "." + toString( permuteMode );
+			}
+			result += " " + d.toString() + ", " + a.toString() + ", " 
+				+ b.toString() + ", " + c.toString();
+			return result;
 		}
 		case Or: {
 			return guard() + "or." + PTXOperand::toString( type ) + " "
@@ -1811,7 +2034,9 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			result += toString(addressSpace) + ".";
+			if( addressSpace != AddressSpace_Invalid ) {
+				result += toString(addressSpace) + ".";
+			}
 			if( a.vec != PTXOperand::v1 ) {
 				result += toString( a.vec ) + ".";
 			}
@@ -1827,11 +2052,16 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case SubC: {
-			std::string result = guard() + "sub.";
+			std::string result = guard() + "subc.";
 			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;
+		}
+		case TestP: {
+			return guard() + "testp." + toString( floatingPointMode ) 
+				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
+				+ a.toString();
 		}
 		case Tex: {
 			return guard() + "tex." + toString( geometry ) + ".v4." 
@@ -1855,7 +2085,8 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		default: break;
 	}
-	return "";
+	assertM(false, "Instruction opcode " << toString(opcode) 
+		<< " not implemented.");
 }
 
 ir::Instruction* ir::PTXInstruction::clone(bool copy) const {

@@ -109,8 +109,7 @@ namespace analysis
 						fi != ( i.*sources[ j ] ).array.end(); ++fi )
 					{
 						reportE( REPORT_CONVERT, "  Converting register \"" 
-							<< fi->identifier 
-							<< "\" to id " << fi->reg );
+							<< fi->identifier << "\" to id " << fi->reg );
 						_maxRegister = std::max( _maxRegister, fi->reg );
 						result.s.push_back( 
 							RegisterPointer( &fi->reg, fi->type ) );
@@ -1129,7 +1128,6 @@ namespace analysis
 
 		return out;
 	}
-
 
 }
 

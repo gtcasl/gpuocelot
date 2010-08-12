@@ -20,8 +20,8 @@ namespace ir
 			typedef std::vector<PTXStatement> PTXStatementVector;
 
 			/*! \brief A map from strings to registers */
-			typedef std::unordered_map< std::string, 
-				PTXOperand::RegisterType > RegisterMap;
+			typedef std::unordered_map<std::string, 
+				PTXOperand::RegisterType> RegisterMap;
 
 			/*! \brief A set of registers */
 			typedef analysis::DataflowGraph::RegisterVector RegisterVector;
@@ -43,7 +43,7 @@ namespace ir
 				PTXStatementVector::const_iterator kernelEnd );
 
 			/*! \brief Assigns register IDs to identifiers */
-			static RegisterMap assignRegisters( ControlFlowGraph& cfg );
+			static RegisterMap assignRegisters(ControlFlowGraph& cfg);
 
 		public:
 			/*! Constructs a kernel from an iterator into the PTXStatementVector
@@ -51,14 +51,14 @@ namespace ir
 				\param start iterator into start of kernel
 				\param end iterator into end of kernel
 			*/
-			PTXKernel( PTXStatementVector::const_iterator start,
-				PTXStatementVector::const_iterator end );
+			PTXKernel(PTXStatementVector::const_iterator start,
+				PTXStatementVector::const_iterator end, bool isFunction);
 
 			/*! \brief Copy constructor (deep) */
-			PTXKernel( const PTXKernel& k );
+			PTXKernel(const PTXKernel& k);
 		
 			/*! \brief Assignment operator (deep) */
-			const PTXKernel& operator=( const PTXKernel& k );
+			const PTXKernel& operator=(const PTXKernel& k);
 	
 		public:
 			/*! \brief Get the set of all referenced 
@@ -69,9 +69,12 @@ namespace ir
 			/*! \brief Builds the data flow graph within the kernel */
 			virtual analysis::DataflowGraph* dfg();
 
+			/*! \brief Gets the datalow graph */
+			virtual const analysis::DataflowGraph* dfg() const;
+
 			/*! \brief renames all the blocks with canonical names */
 			virtual void canonicalBlockLabels(int kernelID=1);
-	
+
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */
 			virtual bool executable() const;

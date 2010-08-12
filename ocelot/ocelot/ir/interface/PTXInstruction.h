@@ -13,7 +13,7 @@
 namespace ir {
 
 	class PTXInstruction: public Instruction {
-	public:		
+	public:
 		/*! Hierarchy Level */
 		enum Level {
 			CtaLevel,
@@ -86,6 +86,7 @@ namespace ir {
 			Sured,
 			Sust,
 			Suq,
+			TestP,
 			Tex,
 			Txq,
 			Trap,
@@ -205,6 +206,26 @@ namespace ir {
 			CmpOp_Invalid
 		};
 		
+		enum PermuteMode {
+			DefaultPermute,
+			ForwardFourExtract,
+			BackwardFourExtract,
+			ReplicateEight,
+			EdgeClampLeft,
+			EdgeClampRight,
+			ReplicateSixteen
+		};
+			
+		enum FloatingPointMode {
+			Finite,
+			Infinite,
+			Number,
+			NotANumber,
+			Normal,
+			SubNormal,
+			FloatingPointMode_Invalid
+		};
+		
 		/*! Vector operation */
 		typedef PTXOperand::Vec Vec;
 		
@@ -226,8 +247,9 @@ namespace ir {
 		};
 
 	public:
-	
 		static std::string toString( Level );
+		static std::string toString( PermuteMode );
+		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );
 		static std::string toString( AddressSpace );
 		static std::string toString( AtomicOperation );
@@ -273,7 +295,7 @@ namespace ir {
 
 		/*! indicates data type of instruction */
 		PTXOperand::DataType type;
-	
+
 		/*! optionally writes carry-out value to condition code register */
 		CarryFlag carry;
 
@@ -284,23 +306,20 @@ namespace ir {
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
-			/*!
-				For load and store instructions, indicates which addressing 
-					mode to use
-			*/
+			/*! For load and store, indicates which addressing mode to use */
 			AddressSpace addressSpace;
 			
-			/*!
-				For membar instructions the visibility level in the
-					thread hierarchy
-			*/
+			/*! For membar, the visibility level in the thread hierarchy */
 			Level level;
+			
+			/*! Shift amount flag for bfind instructions */
+			bool shiftAmount;
+			
+			/*! Permute mode for prmt instructions */
+			PermuteMode permuteMode;
 		};
 	
-		/*!
-			If the instruction is predicated, which predicate register to use
-			as a guard 
-		*/
+		/*! If the instruction is predicated, the guard */
 		PTXOperand pg;
 				
 		/*! Second destination register for SetP, otherwise unused */
@@ -318,6 +337,9 @@ namespace ir {
 			
 			/* If instruction type is vote, specifies the mode of voting */
 			VoteMode vote;
+			
+			/* For TestP instructions, specifies the floating point mode */
+			FloatingPointMode floatingPointMode;
 			
 			/* If instruction is a branch, is it .uni */
 			bool uni;
@@ -366,6 +388,8 @@ namespace ir {
 			int branchTargetInstruction;
 			/*! \brief Context switch reentry point */
 			int reentryPoint;
+			/*! \brief Is this a kernel argument in the parameter space? */
+			bool isArgument;
 		};
 		/*!	The following are used for debugging information at runtime. */
 	public:

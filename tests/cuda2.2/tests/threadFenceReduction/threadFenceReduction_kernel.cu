@@ -65,11 +65,11 @@ reduceBlock(float *sdata, const unsigned int tid)
     if (blockSize >= 128) { if (tid <  64) { sdata[tid] += sdata[tid +  64]; } __syncthreads(); }
 
     if (tid < 32 && blockSize >=  64) { sdata[tid] += sdata[tid + 32]; } EMUSYNC;
-    if (tid < 32 && blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
-    if (tid < 32 && blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
-    if (tid < 32 && blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
-    if (tid < 32 && blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
-    if (tid < 32 && blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
+    if (tid < 16 && blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
+    if (tid < 8 && blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
+    if (tid < 4 && blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
+    if (tid < 2 && blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
+    if (tid < 1 && blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
 }
 
 template <unsigned int blockSize, bool nIsPow2>

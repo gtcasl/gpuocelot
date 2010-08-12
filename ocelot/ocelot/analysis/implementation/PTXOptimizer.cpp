@@ -101,22 +101,22 @@ namespace analysis
 		{
 			report("  Running pass '" << (*pass)->toString() << "'" );
 			(*pass)->initialize( module );
-			for( ir::Module::KernelMap::iterator 
-				kernel = module.kernels.begin(); 
-				kernel != module.kernels.end(); ++kernel )
+			for( ir::Module::KernelMap::const_iterator 
+				kernel = module.kernels().begin(); 
+				kernel != module.kernels().end(); ++kernel )
 			{
-				(*pass)->runOnKernel( *(kernel->second) );
+				(*pass)->runOnKernel( *module.getKernel(kernel->first) );
 			}
 			(*pass)->finalize();
 			delete *pass;
 		}
 		
 		report(" Converting to SSA form.");
-		for( ir::Module::KernelMap::iterator 
-			kernel = module.kernels.begin(); 
-			kernel != module.kernels.end(); ++kernel )
+		for( ir::Module::KernelMap::const_iterator 
+			kernel = module.kernels().begin(); 
+			kernel != module.kernels().end(); ++kernel )
 		{
-			(kernel->second)->dfg()->toSsa();
+			module.getKernel(kernel->first)->dfg()->toSsa();
 		}
 	
 		report(" Running passes that require SSA form.");
@@ -125,21 +125,22 @@ namespace analysis
 		{
 			report("  Running pass '" << (*pass)->toString() << "'" );
 			(*pass)->initialize( module );
-			for( ir::Module::KernelMap::iterator 
-				kernel = module.kernels.begin(); 
-				kernel != module.kernels.end(); ++kernel )
+			for( ir::Module::KernelMap::const_iterator 
+				kernel = module.kernels().begin(); 
+				kernel != module.kernels().end(); ++kernel )
 			{
-				(*pass)->runOnKernel( *(kernel->second) );
+				(*pass)->runOnKernel( *module.getKernel(kernel->first) );
 			}
 			(*pass)->finalize();
 			delete *pass;
 		}
 
 		report(" Converting out of SSA form.");
-		for( ir::Module::KernelMap::iterator kernel = module.kernels.begin(); 
-			kernel != module.kernels.end(); ++kernel )
+		for( ir::Module::KernelMap::const_iterator 
+			kernel = module.kernels().begin(); 
+			kernel != module.kernels().end(); ++kernel )
 		{
-			(kernel->second)->dfg()->fromSsa();
+			module.getKernel(kernel->first)->dfg()->fromSsa();
 		}
 		
 		std::ofstream out( output.c_str() );

@@ -256,9 +256,6 @@ namespace executive
 			translator::Translator::OptimizationLevel _optimizationLevel;
 			/*! \brief Cache atomics from different threads */
 			AtomicOperationCache _cache;
-
-			bool overrideLLVMKernel;
-			std::string overrideLLVMKernelPath;
 		
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
@@ -319,8 +316,7 @@ namespace executive
 			LLVMExecutableKernel( ir::Kernel& kernel, 
 				executive::Device* d = 0,
 				translator::Translator::OptimizationLevel 
-				l = translator::Translator::NoOptimization,
-				const char *overridePath = 0);
+				l = translator::Translator::NoOptimization);
 			/*! \brief Clean up the runtime */
 			~LLVMExecutableKernel();
 
@@ -353,9 +349,9 @@ namespace executive
 			unsigned int threadId() const;
 			/*! \brief Determine the location of a given PTX statement 
 				in the original source file */
-			std::string location( unsigned int statement ) const;
+			std::string location(unsigned int statement) const;
 			/*! \brieg Get the instruction contained in a given statement */
-			std::string instruction( unsigned int statement ) const;
+			std::string instruction(unsigned int statement) const;
 
 	};
 }

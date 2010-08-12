@@ -109,6 +109,10 @@ void cuda::CudaRuntimeInterface::launch(const std::string& moduleName, const
 	assert(0 && "unimplemented");
 }
 
+void cuda::CudaRuntimeInterface::setOptimizationLevel(
+	translator::Translator::OptimizationLevel l) {
+	assert(0 && "unimplemented");
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void** cuda::CudaRuntimeInterface::cudaRegisterFatBinary(void *fatCubin) {

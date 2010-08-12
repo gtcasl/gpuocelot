@@ -64,7 +64,7 @@ namespace executive
 		size_t sharedSize = 0;
 
 		// global shared variable declaration not supported yet
-		assertM(module->globals.size() == 0, 
+		assertM(module->globals().size() == 0, 
 				"Global shared variable declaration not supported yet");
 
 		// local shared variables	
@@ -253,8 +253,8 @@ namespace executive
 		CalDriver()->calResMap((CALvoid **)&cb1, &pitch, *_cb1Resource, flags);
 
 		int i = 0;
-		std::vector<ir::Parameter>::const_iterator it;
-		for (it = parameters.begin() ; it != parameters.end(); it++) {
+		ParameterVector::const_iterator it;
+		for (it = parameters.begin(); it != parameters.end(); it++) {
 			assertM(it->arrayValues.size() == 1, 
 					"Array parameters not supported yet");
 			ir::Parameter::ValueType v = it->arrayValues[0];

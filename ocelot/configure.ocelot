@@ -4,6 +4,11 @@
 	trace: { 
 		memoryChecker: false,
 		raceDetector: false,
+		debugger: {
+			enabled: false,
+			kernelFilter: "sequence",
+			alwaysAttach: false
+		},
 	},
 	cuda: {
 		implementation: CudaRuntime,

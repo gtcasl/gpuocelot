@@ -156,6 +156,8 @@ __global__ void transposeCoalesced(float *odata, float *idata, int width, int he
     for (int i=0; i<TILE_DIM; i+=BLOCK_ROWS) {
       odata[index_out+i*height] = tile[threadIdx.x][threadIdx.y+i];
     }
+    
+    __syncthreads();
   }
 }
 
@@ -183,6 +185,8 @@ __global__ void transposeNoBankConflicts(float *odata, float *idata, int width, 
     for (int i=0; i<TILE_DIM; i+=BLOCK_ROWS) {
       odata[index_out+i*height] = tile[threadIdx.x][threadIdx.y+i];
     }
+    
+    __syncthreads();
   }
 }
 
@@ -234,6 +238,8 @@ __global__ void transposeDiagonal(float *odata, float *idata, int width, int hei
     for (int i=0; i<TILE_DIM; i+=BLOCK_ROWS) {
       odata[index_out+i*height] = tile[threadIdx.x][threadIdx.y+i];
     }
+    
+    __syncthreads();
   }
 }
 
@@ -264,6 +270,8 @@ __global__ void transposeFineGrained(float *odata, float *idata, int width, int 
     for (int i=0; i < TILE_DIM; i += BLOCK_ROWS) {
       odata[index+i*height] = block[threadIdx.x][threadIdx.y+i];
     }
+    
+    __syncthreads();
   }
 }
 
@@ -290,6 +298,8 @@ __global__ void transposeCoarseGrained(float *odata, float *idata, int width, in
     for (int i=0; i<TILE_DIM; i += BLOCK_ROWS) {
       odata[index_out+i*height] = block[threadIdx.y+i][threadIdx.x];
     }
+    
+    __syncthreads();
   }
 }
 

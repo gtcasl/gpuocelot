@@ -22,7 +22,8 @@
 namespace ir
 {
 	PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
-		PTXStatementVector::const_iterator end): Kernel( Instruction::PTX )
+		PTXStatementVector::const_iterator end, bool function) : 
+		Kernel( Instruction::PTX, function )
 	{
 		// get parameters/locals, extract kernel name
 		for( PTXStatementVector::const_iterator it = start; it != end; ++it ) 
@@ -55,7 +56,8 @@ namespace ir
 		if( &kernel == this ) return *this;
 		
 		Kernel::operator=(kernel);
-		
+		_function = kernel.function();
+
 		return *this;	
 	}
 
@@ -123,6 +125,11 @@ namespace ir
 		assignRegisters( *_cfg );
 		_dfg = new analysis::DataflowGraph( *_cfg );
 		return _dfg;
+	}
+
+	const analysis::DataflowGraph* PTXKernel::dfg() const 
+	{
+		return Kernel::dfg();
 	}
 
 	bool PTXKernel::executable() const {
@@ -310,7 +317,8 @@ namespace ir
 					*instruction);
 				PTXOperand PTXInstruction:: * operands[] = 
 				{ &PTXInstruction::a, &PTXInstruction::b, &PTXInstruction::c, 
-					&PTXInstruction::d, &PTXInstruction::pg, &PTXInstruction::pq };
+					&PTXInstruction::d, &PTXInstruction::pg, 
+					&PTXInstruction::pq };
 		
 				report( " For instruction '" << instr.toString() << "'" );
 		
@@ -399,9 +407,8 @@ namespace ir
 		}
 		stream << "{\n";
 		
-		for( LocalMap::const_iterator local = locals.begin();
-			local != locals.end(); ++local )
-		{
+		for (LocalMap::const_iterator local = locals.begin();
+			local != locals.end(); ++local) {
 			stream << "\t" << local->second.toString() << "\n";
 		}
 		
@@ -423,30 +430,25 @@ namespace ir
 			}
 		}
 		
-		if( _cfg != 0 )
-		{
+		if (_cfg != 0) {
 			ControlFlowGraph::BlockPointerVector 
 				blocks = _cfg->executable_sequence();
 		
 			int blockIndex = 1;
-			for( ControlFlowGraph::BlockPointerVector::iterator 
+			for (ControlFlowGraph::BlockPointerVector::iterator 
 				block = blocks.begin(); block != blocks.end(); 
-				++block, ++blockIndex )
-			{
+				++block, ++blockIndex) {
 				std::string label = (*block)->label;
 				std::string comment = (*block)->comment;
 				if ((*block)->instructions.size() 
-					|| (label != "entry" && label != "exit" && label != "")) 
-				{
-					if (label == "") 
-					{
+					|| (label != "entry" && label != "exit" && label != "")) {
+					if (label == "") {
 						std::stringstream ss;
 						ss << "$__Block_" << blockIndex;
 						label = ss.str();
 					}
 					stream << "\t" << label << ":";
-					if (comment != "") 
-					{
+					if (comment != "") {
 						stream << "\t\t\t\t/* " << comment << " */ ";
 					}
 					stream << "\n";
@@ -454,8 +456,8 @@ namespace ir
 				
 				for( ControlFlowGraph::InstructionList::iterator 
 					instruction = (*block)->instructions.begin(); 
-					instruction != (*block)->instructions.end(); ++instruction )
-				{
+					instruction != (*block)->instructions.end();
+					++instruction ) {
 					stream << "\t\t" << (*instruction)->toString() << ";\n";
 				}
 			}
@@ -467,7 +469,7 @@ namespace ir
 	void PTXKernel::canonicalBlockLabels(int kernelID) {
 
 		// visit every block and map the old label to the new label
-		std::map< std::string, std::string > labelMap;
+		std::map<std::string, std::string> labelMap;
 		
 		for (ControlFlowGraph::iterator 
 			block = cfg()->begin(); 

@@ -1,5 +1,4 @@
-/*!
-	\file CooperativeThreadArray.h
+/*! \file CooperativeThreadArray.h
 
 	\author Andrew Kerr <arkerr@gatech.edu>
 
@@ -30,7 +29,8 @@ namespace executive {
 	public:
 		typedef std::deque <CTAContext> Stack;
 		typedef std::vector <int> ThreadIdVector;
-		
+		typedef std::vector<ir::PTXU64> RegisterFileType;
+
 	public:
 		/*!
 			Constructs a cooperative thread array from an EmulatedKernel instance
@@ -54,7 +54,13 @@ namespace executive {
 		/*!
 			Initializes the CTA and executes the kernel for a given block
 		*/
-		void execute(ir::Dim3 block);
+		void execute(const ir::Dim3& block);
+
+		/*! Jump to a specific PC for the current context */
+		void jumpToPC(int PC);
+
+		/* Get a snapshot of the current register file */
+		RegisterFileType getCurrentRegisterFile() const;
 
 		/*!
 			Overwrites member pointers to allocated memory with zero so 
@@ -438,7 +444,6 @@ namespace executive {
 			bool value);
 	
 	public:
-
 		ir::PTXU8 operandAsU8(int, const ir::PTXOperand &);
 		ir::PTXU16 operandAsU16(int, const ir::PTXOperand &);
 		ir::PTXU32 operandAsU32(int, const ir::PTXOperand &);
@@ -458,18 +463,11 @@ namespace executive {
 		ir::PTXB64 operandAsB64(int, const ir::PTXOperand &);
 
 	private:
-		
 		void normalStore(int, const ir::PTXInstruction &, char*);
 		void vectorStore(int, const ir::PTXInstruction &, char*, unsigned int);
 		void normalLoad(int, const ir::PTXInstruction &, const char*);
 		void vectorLoad(int, const ir::PTXInstruction &, const char*, 
 			unsigned int);
-
-	private:
-		void writeSharedMemory(ir::PTXU64 address, unsigned int bytes, 
-			int threadID, int pc, const ir::PTXInstruction& instr);
-		void readSharedMemory(ir::PTXU64 address, unsigned int bytes,
-			int threadID, int pc, const ir::PTXInstruction& instr);
 
 	public:
 		/*Handlers for each instruction */
@@ -527,13 +525,16 @@ namespace executive {
 
 	protected:
 		
-		void eval_Mov_reg(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Mov_reg(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Mov_sreg(CTAContext &context, 
 			const ir::PTXInstruction &instr);
-		void eval_Mov_imm(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Mov_imm(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Mov_indirect(CTAContext &context, 
 			const ir::PTXInstruction &instr);
-		void eval_Mov_addr(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Mov_addr(CTAContext &context,
+			const ir::PTXInstruction &instr);
 
 	};
 

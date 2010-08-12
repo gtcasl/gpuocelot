@@ -86,7 +86,7 @@ namespace ir
 	{
 	}
 
-	const std::string ControlTree::Node::label() const
+	const std::string& ControlTree::Node::label() const
 	{
 		return _label;
 	}
@@ -121,10 +121,10 @@ namespace ir
 		//std::unordered_map<NodeList::const_iterator, unsigned int> bmap;
 		std::unordered_map<Node*, unsigned int> bmap;
 
-		out << "digraph {" << endl;
+		out << "digraph {" << std::endl;
 
 		// emit nodes
-		out << "  // nodes" << endl;
+		out << "  // nodes" << std::endl;
 
 		int i;
 		NodeList::const_iterator n;
@@ -151,11 +151,11 @@ namespace ir
 				out << "  bb_" << i;
 				out << " [label=\"" << (*n)->label() << "\"];";
 			}
-			out << endl;
+			out << std::endl;
 		}
 
 		// emit edges
-		out << endl << "  // edges" << endl;
+		out << std::endl << "  // edges" << std::endl;
 
 		for (n = _nodes.begin() ; n != _nodes.end() ; n++)
 		{
@@ -166,10 +166,10 @@ namespace ir
 				out << "  bb_" << bmap[*n];
 				out	<< " -> ";
 				out	<< "bb_" << bmap[*child];
-				out << ";" << endl;
+				out << ";" << std::endl;
 			}
 		}
-		out << "}" << endl;
+		out << "}" << std::endl;
 
 		return out;
 	}

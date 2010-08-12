@@ -11,8 +11,8 @@
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/ir/interface/DominatorTree.h>
+#include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
@@ -41,11 +41,12 @@ executive::EmulatedKernel::EmulatedKernel(
 	Device* d, 
 	bool _initialize) 
 : 
-	ExecutableKernel(*kernel, d) 
+	ExecutableKernel(*kernel, d),
+	CTA(0)
 {
 	report("Created emulated kernel " << name);
-	assertM( kernel->ISA == ir::Instruction::PTX, 
-		"Can only build an emulated kernel from a PTXKernel." );
+	assertM(kernel->ISA == ir::Instruction::PTX, 
+		"Can only build an emulated kernel from a PTXKernel.");
 	
 	ISA = ir::Instruction::Emulated;
 	ConstMemory = ParameterMemory = 0;
@@ -55,11 +56,11 @@ executive::EmulatedKernel::EmulatedKernel(
 }
 
 executive::EmulatedKernel::EmulatedKernel(
-	Device* d): ExecutableKernel(d) {
+	Device* d): ExecutableKernel(d), CTA(0) {
 	ISA = ir::Instruction::Emulated;
 }
 
-executive::EmulatedKernel::EmulatedKernel() {
+executive::EmulatedKernel::EmulatedKernel(): CTA(0) {
 	ISA = ir::Instruction::Emulated;
 }
 
@@ -104,6 +105,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 			ir::Dim3 block(x,y,0);
 			CooperativeThreadArray cta(this);
 
+			CTA = &cta;
 			cta.initialize( _gridDim, !_generators.empty() );
 			cta.execute(block);
 		}
@@ -114,6 +116,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 		it != _generators.end(); ++it) {
 		(*it)->finish();
 	}
+	CTA = 0;
 }
 
 void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
@@ -255,6 +258,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
 		}
+
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
 		}
@@ -293,8 +297,8 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 }
 
 /*!
-	After emitting the instruction sequence, visit each memory move operation and replace
-	references to parameters with offsets into parameter memory.
+	After emitting the instruction sequence, visit each memory move operation 
+	and replace references to parameters with offsets into parameter memory.
 
 	Data movement instructions: ld, st
 */
@@ -307,13 +311,13 @@ void executive::EmulatedKernel::updateParamReferences() {
 		if (instr.addressSpace == ir::PTXInstruction::Param 
 			&& instr.a.addressMode == ir::PTXOperand::Address) {
 			if (instr.opcode == ir::PTXInstruction::Ld) {
-				ir::Parameter &param = getParameter(instr.a.identifier);
-				instr.a.offset += param.offset;
+				ir::Parameter* param = getParameter(instr.a.identifier);
+				instr.a.offset += param->offset;
 				instr.a.imm_uint = 0;
 			}
 			else if (instr.opcode == ir::PTXInstruction::St) {
-				ir::Parameter &param = getParameter(instr.d.identifier);
-				instr.d.offset += param.offset;
+				ir::Parameter* param = getParameter(instr.d.identifier);
+				instr.d.offset += param->offset;
 				instr.d.imm_uint = 0;
 			}
 		}
@@ -432,8 +436,9 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	OperandVector externalOperands;
 	
 	if(module != 0) {
-		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
-			it != module->globals.end(); ++it) {
+		for(ir::Module::GlobalMap::const_iterator 
+			it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
 			if (it->second.statement.directive == ir::PTXStatement::Shared) {
 				if(it->second.statement.attribute == ir::PTXStatement::Extern) {
 					report("Found global external shared variable " 
@@ -525,7 +530,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 						(instr.*operands[n]).imm_uint = l_it->second;
 						report("For instruction " << instr.toString() 
 							<< ", mapping shared label " << l_it->first 
-							<< " to " << l_it->second );
+							<< " to " << l_it->second);
 					}
 				}
 			}
@@ -572,12 +577,12 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	
 	// compute necessary padding for alignment of external shared memory
 	unsigned int padding = externalAlignment 
-		- ( sharedOffset % externalAlignment );
-	padding = ( padding == externalAlignment ) ? 0 : padding;
+		- (sharedOffset % externalAlignment);
+	padding = (padding == externalAlignment) ? 0 : padding;
 	sharedOffset += padding;
 
-	report( "Padding shared memory by " << padding << " bytes to handle " 
-		<< externalAlignment << " byte alignment requirement." );
+	report("Padding shared memory by " << padding << " bytes to handle " 
+		<< externalAlignment << " byte alignment requirement.");
 		
 	for (OperandVector::iterator operand = externalOperands.begin(); 
 		operand != externalOperands.end(); ++operand) {
@@ -604,8 +609,9 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	map<string, unsigned int> label_map;
 	
 	if(module != 0) {
-		for(ir::Module::GlobalMap::const_iterator it = module->globals.begin(); 
-			it != module->globals.end(); ++it) {
+		for(ir::Module::GlobalMap::const_iterator 
+			it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
 			if (it->second.statement.directive == ir::PTXStatement::Local) {
 				unsigned int offset;
 
@@ -631,9 +637,8 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		}
 	}
 
-	ir::PTXOperand ir::PTXInstruction:: *operands[] = { &ir::PTXInstruction::d,
-		&ir::PTXInstruction::a, &ir::PTXInstruction::b, &ir::PTXInstruction::c
-	};
+	ir::PTXOperand ir::PTXInstruction:: *operands[] = {&ir::PTXInstruction::d,
+		&ir::PTXInstruction::a, &ir::PTXInstruction::b, &ir::PTXInstruction::c};
 	PTXInstructionVector::iterator 
 		i_it = instructions.begin();
 	for (; i_it != instructions.end(); ++i_it) {
@@ -651,7 +656,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 						(instr.*operands[n]).imm_uint = l_it->second;
 						report("For instruction " << instr.toString() 
 							<< ", mapping local label " << l_it->first 
-							<< " to " << l_it->second );
+							<< " to " << l_it->second);
 					}
 				}
 			}
@@ -679,9 +684,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	_localMemorySize = localOffset;
 }
 
-/*!
-	Maps identifiers to const memory allocations.
-*/
+/*! Maps identifiers to const memory allocations. */
 void executive::EmulatedKernel::initializeConstMemory() {
 	using namespace std;
 	assert(module != 0);
@@ -693,8 +696,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 	typedef map<string, unsigned int> ConstantOffsetMap;
 
 	ConstantOffsetMap constant;
-	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
-	for (; it != module->globals.end(); ++it) {
+	ir::Module::GlobalMap::const_iterator it = module->globals().begin();
+	for (; it != module->globals().end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Const) {
 			unsigned int offset;
 
@@ -712,8 +715,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		&ir::PTXInstruction::d, &ir::PTXInstruction::a, &ir::PTXInstruction::b, 
 		&ir::PTXInstruction::c
 	};
-	PTXInstructionVector::iterator 
-		i_it = instructions.begin();
+	PTXInstructionVector::iterator i_it = instructions.begin();
 	for (; i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction &instr = *i_it;
 
@@ -722,8 +724,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
-					ConstantOffsetMap::iterator	l_it = constant.find(
-						(instr.*operands[n]).identifier);
+					ConstantOffsetMap::iterator	l_it 
+						= constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -739,8 +741,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
-					ConstantOffsetMap::iterator l_it = constant.find(
-						(instr.*operands[n]).identifier);
+					ConstantOffsetMap::iterator l_it 
+						= constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
 							<< ", mapping constant label " << l_it->first 
@@ -770,19 +772,12 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 		assert(device != 0);
 		Device::MemoryAllocation* global = device->getGlobalAllocation(
-			module->modulePath, l_it->first);
+			module->path(), l_it->first);
 
 		assert(global != 0);
 		assert(global->size() + l_it->second <= _constMemorySize);
 
-		/*
-		report("  mapping constant: " << l_it->first << "(" << (void *)g_it->second.pointer 
-			<< ") of size " << g_it->second.statement.bytes() 
-			<< " bytes to constant memory with offset " << l_it->second);
-		report("  byte representation (pointer = " << (void *)g_it->second.pointer << ":");
-		*/
-
-		memcpy( ConstMemory + l_it->second, global->pointer(), global->size() );
+		memcpy(ConstMemory + l_it->second, global->pointer(), global->size());
 	}
 
 }
@@ -798,8 +793,8 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 
 	unordered_set<string> global;
 	
-	ir::Module::GlobalMap::const_iterator it = module->globals.begin();
-	for (; it != module->globals.end(); ++it) {
+	ir::Module::GlobalMap::const_iterator it = module->globals().begin();
+	for (; it != module->globals().end(); ++it) {
 		if (it->second.statement.directive == ir::PTXStatement::Global) {
 			report(" Found global variable " << it->second.statement.name);
 			global.insert(it->second.statement.name);
@@ -811,7 +806,8 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	ir::PTXOperand ir::PTXInstruction:: *operands[] = {
 		&ir::PTXInstruction::d, &ir::PTXInstruction::a, &ir::PTXInstruction::b, 
 		&ir::PTXInstruction::c };
-	PTXInstructionVector::iterator i_it = instructions.begin();
+	PTXInstructionVector::iterator 
+		i_it = instructions.begin();
 	for (; i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction &instr = *i_it;
 
@@ -827,7 +823,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						assert( device != 0);
 						Device::MemoryAllocation* allocation = 
 							device->getGlobalAllocation(
-							module->modulePath, *l_it);
+							module->path(), *l_it);
 						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
 							(ir::PTXU64)allocation->pointer();
@@ -851,7 +847,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						assert( device != 0);
 						Device::MemoryAllocation* allocation = 
 							device->getGlobalAllocation(
-							module->modulePath, *l_it);
+							module->path(), *l_it);
 						assert(allocation != 0);
 						(instr.*operands[n]).imm_uint = 
 							(ir::PTXU64)allocation->pointer();
@@ -864,6 +860,18 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 			}
 		}
 	}
+}
+
+void executive::EmulatedKernel::jumpToPC(int PC) {
+	assert(CTA != 0);
+	
+	CTA->jumpToPC(PC);
+}
+
+executive::EmulatedKernel::RegisterFile 
+	executive::EmulatedKernel::getCurrentRegisterFile() const {
+	assert(CTA != 0);
+	return CTA->getCurrentRegisterFile();		
 }
 
 void executive::EmulatedKernel::initializeTextureMemory() {
@@ -882,7 +890,7 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 		if (fi->opcode == ir::PTXInstruction::Tex) {
 			assert(device != 0);
 			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
-				module->modulePath, fi->a.identifier);
+				module->path(), fi->a.identifier);
 			assert(texture != 0);
 
 			IndexMap::iterator index = indices.find(fi->a.identifier);
@@ -934,7 +942,7 @@ std::string executive::EmulatedKernel::toString() const {
 
 std::string executive::EmulatedKernel::fileName() const {
 	assert(module != 0);
-	return module->modulePath;
+	return module->path();
 }
 
 std::string executive::EmulatedKernel::location( unsigned int PC ) const {
@@ -942,14 +950,14 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	assert(PC < instructions.size());
 	unsigned int statement = instructions[PC].statementIndex;
 	ir::Module::StatementVector::const_iterator s_it 
-		= module->statements.begin();
+		= module->statements().begin();
 	std::advance(s_it, statement);
 	ir::Module::StatementVector::const_reverse_iterator s_rit 
 		= ir::Module::StatementVector::const_reverse_iterator(s_it);
 	unsigned int program = 0;
 	unsigned int line = 0;
 	unsigned int col = 0;
-	for ( ; s_rit != module->statements.rend(); ++s_rit) {
+	for ( ; s_rit != module->statements().rend(); ++s_rit) {
 		if (s_rit->directive == ir::PTXStatement::Loc) {
 			line = s_rit->sourceLine;
 			col = s_rit->sourceColumn;
@@ -959,8 +967,8 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	}
 	
 	std::string fileName;
-	for ( s_it = module->statements.begin(); 
-		s_it != module->statements.end(); ++s_it ) {
+	for ( s_it = module->statements().begin(); 
+		s_it != module->statements().end(); ++s_it ) {
 		if (s_it->directive == ir::PTXStatement::File) {
 			if (s_it->sourceFile == program) {
 				fileName = s_it->name;
@@ -974,13 +982,9 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	return stream.str();
 }
 
-
-/*!
-	\brief gets the basic block label owning the instruction specified by the PC
-*/
 std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 
-	std::map< int, std::string >::const_iterator 
+	ProgramCounterBlockMap::const_iterator 
 		bt_it = basicBlockMap.lower_bound(PC);
 	if (bt_it != basicBlockMap.end()) {
 		return bt_it->second;

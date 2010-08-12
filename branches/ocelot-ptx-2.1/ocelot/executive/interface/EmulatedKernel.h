@@ -172,7 +172,7 @@ namespace executive {
 		FunctionNameMap functionEntryPoints;
 
 		/*! A handle to the current CTA, or 0 if none is executing */
-		executive::CooperativeThreadArray *CTA;
+		executive::CooperativeThreadArray* CTA;
 
 	public:
 		/*! \brief Check to see if a memory access is valid */

@@ -32,7 +32,7 @@ namespace analysis
 				BasicBlockPass,
 				InvalidPass
 			};
-					
+			
 		public:
 			/*! \brief The type of this pass */
 			Type type;

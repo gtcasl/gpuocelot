@@ -98,7 +98,9 @@ __global__ void scalarProdGPU(
             for(int iAccum = threadIdx.x; iAccum < stride; iAccum += blockDim.x)
                 accumResult[iAccum] += accumResult[stride + iAccum];
         }
-
+		
+		__syncthreads();
+		
         if(threadIdx.x == 0) d_C[vec] = accumResult[0];
     }
 }

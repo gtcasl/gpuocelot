@@ -226,11 +226,11 @@ FUNC(reduce4)(T *g_idata, T *g_odata, unsigned int n)
     }
 
 	if (tid < 32) if (blockSize >=  64) { sdata[tid] += sdata[tid + 32]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
+	if (tid < 16) if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
+	if (tid < 8) if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
+	if (tid < 4) if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
+	if (tid < 2) if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
+	if (tid < 1) if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
 
     // write result for this block to global mem 
     if (tid == 0) g_odata[blockIdx.x] = sdata[0];
@@ -266,11 +266,11 @@ FUNC(reduce5)(T *g_idata, T *g_odata, unsigned int n)
     if (blockSize >= 128) { if (tid <  64) { sdata[tid] += sdata[tid +  64]; } __syncthreads(); }
     
 	if (tid < 32) if (blockSize >=  64) { sdata[tid] += sdata[tid + 32]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
+	if (tid < 16) if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
+	if (tid < 8) if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
+	if (tid < 4) if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
+	if (tid < 2) if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
+	if (tid < 1) if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
     
     // write result for this block to global mem 
     if (tid == 0) g_odata[blockIdx.x] = sdata[0];
@@ -314,11 +314,11 @@ FUNC(reduce6)(T *g_idata, T *g_odata, unsigned int n)
     if (blockSize >= 128) { if (tid <  64) { sdata[tid] += sdata[tid +  64]; } __syncthreads(); }
     
 	if (tid < 32) if (blockSize >=  64) { sdata[tid] += sdata[tid + 32]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
-	if (tid < 32) if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
+	if (tid < 16) if (blockSize >=  32) { sdata[tid] += sdata[tid + 16]; } EMUSYNC;
+	if (tid < 8) if (blockSize >=  16) { sdata[tid] += sdata[tid +  8]; } EMUSYNC;
+	if (tid < 4) if (blockSize >=   8) { sdata[tid] += sdata[tid +  4]; } EMUSYNC;
+	if (tid < 2) if (blockSize >=   4) { sdata[tid] += sdata[tid +  2]; } EMUSYNC;
+	if (tid < 1) if (blockSize >=   2) { sdata[tid] += sdata[tid +  1]; } EMUSYNC;
         
     // write result for this block to global mem 
     if (tid == 0) g_odata[blockIdx.x] = sdata[0];

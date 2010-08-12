@@ -127,7 +127,7 @@ void ir::DominatorTree::computeDT() {
 				}
 				else {
 					new_idom = intersect(p, new_idom);
-				}			
+				}
 			}
 			
 			if( processed ) {			

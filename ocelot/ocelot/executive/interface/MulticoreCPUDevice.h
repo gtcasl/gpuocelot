@@ -41,6 +41,9 @@ namespace executive
 		public:
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module* module);
+			/*! \brief Get a translated kernel from the device */
+			ExecutableKernel* getKernel(const std::string& module, 
+				const std::string& kernel);
 			
 		public:
 			/*! \brief helper function for launching a kernel

@@ -1,24 +1,12 @@
 {
 	ocelot: "ocelot",
-	version: "1.1.520",
 	trace: { 
-		enabled: false,
-		database: "traces/database.trace",
-		memory: false,
-		branch: false,
-		sharedComputation: false,
-		instruction: false,
-		parallelism: false,
-		cacheSimulator: false,
 		memoryChecker: true,
-		raceDetector: true,
-		warpSynchronous: {
+		raceDetector: false,
+		debugger: {
 			enabled: false,
-			emitHotPaths: true
-		},
-		performanceBound: {
-			enabled: false,
-			protocol: "sm_20"
+			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
+			alwaysAttach: false
 		}
 	},
 	cuda: {
@@ -26,7 +14,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm, emulated ],
+		devices: [ emulated ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

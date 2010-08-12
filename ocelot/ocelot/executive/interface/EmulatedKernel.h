@@ -7,9 +7,6 @@
 #ifndef EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 #define EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 
-#include <list>
-#include <map>
-
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 
@@ -28,6 +25,7 @@ namespace executive {
 	public:
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
 		typedef std::map< int, std::string > ProgramCounterBlockMap;
+		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -77,10 +75,15 @@ namespace executive {
 		void initialize();
 
 		/*!	Maps identifiers to global memory allocations. */
-		void initializeGlobalMemory();		
+		void initializeGlobalMemory();
+
+		/*! If the kernel is executing, jump to the specified PC */
+		void jumpToPC(int PC);
+
+		/* Get a snapshot of the current register file */
+		RegisterFile getCurrentRegisterFile() const;
 
 	protected:
-	
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();
 
@@ -144,13 +147,16 @@ namespace executive {
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 
+		/*! A handle to the current CTA, or 0 if none is executing */
+		executive::CooperativeThreadArray* CTA;
+
 	public:
 		/*! \brief Check to see if a memory access is valid */
 		bool checkMemoryAccess(const void* base, size_t size) const;
 	
 	public:
 		/*! Copies data from global objects into const and global memory */
-		void updateGlobals();	
+		void updateGlobals();
 
 	public:
 		/*!	Print out every instruction	*/
@@ -160,14 +166,14 @@ namespace executive {
 		std::string fileName() const;
 		
 		/*! \brief Get the nearest location to an instruction at a given PC */
-		std::string location( unsigned int PC ) const;
+		std::string location(unsigned int PC) const;
 		
-		/*!
-			\brief gets the basic block label owning the instruction specified by the PC
-		*/
+		/*!	\brief gets the basic block label owning the instruction 
+			specified by the PC */
 		std::string getInstructionBlock(int PC) const;
 	};
 
 }
 
 #endif
+

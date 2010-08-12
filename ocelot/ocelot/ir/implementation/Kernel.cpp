@@ -1,5 +1,4 @@
-/*!
-	\file Kernel.cpp
+/*! \file Kernel.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date 15 Jan 2009 ; 21 Jan 2009
 	\brief implements the Kernel base class
@@ -21,7 +20,8 @@
 
 #define REPORT_BASE 0
 
-ir::Kernel::Kernel(Instruction::Architecture isa) : ISA(isa) {
+ir::Kernel::Kernel(Instruction::Architecture isa, bool isFunction) : 
+	_function(isFunction), ISA(isa) {
 	_cfg = 0;
 	_dom_tree = 0;
 	_pdom_tree = 0;
@@ -45,6 +45,7 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 	ISA = kernel.ISA;
 	parameters = kernel.parameters;
 	locals = kernel.locals;
+	_function = kernel.function();
 
 	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
 	_cfg = new ControlFlowGraph;
@@ -60,6 +61,7 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	ISA = kernel.ISA;
 	parameters = kernel.parameters;
 	locals = kernel.locals;
+	_function = kernel.function();
 
 	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg; delete _ct;
 
@@ -72,28 +74,26 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	return *this;	
 }
 
-ir::Parameter& ir::Kernel::getParameter(const std::string& name) {
+ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
 	for (vector<Parameter>::iterator p_it = parameters.begin(); 
 		p_it != parameters.end(); ++p_it) {
 		if (p_it->name == name) {
-			return *p_it;
+			return &*p_it;
 		}
 	}
-	assertM(false,  "Invalid parameter " << name);
-	return parameters.front();
+	return 0;
 }
 
-const ir::Parameter& ir::Kernel::getParameter(const std::string& name) const {
+const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 	using namespace std;
 	for (vector<Parameter>::const_iterator p_it = parameters.begin(); 
 		p_it != parameters.end(); ++p_it) {
 		if (p_it->name == name) {
-			return *p_it;
+			return &*p_it;
 		}
 	}
-	assertM(false, "Invalid parameter " << name);
-	return parameters.front();
+	return 0;
 }
 
 ir::ControlFlowGraph* ir::Kernel::cfg() {
@@ -120,6 +120,11 @@ ir::DominatorTree* ir::Kernel::dom_tree() {
 	return _dom_tree;
 }
 
+const analysis::DataflowGraph* ir::Kernel::dfg() const {
+	assertM(_dfg != 0, "DFG not created.");
+	return _dfg;
+}
+
 analysis::DataflowGraph* ir::Kernel::dfg() {
 	assertM(_dfg != 0, "DFG not created.");
 	return _dfg;
@@ -135,6 +140,10 @@ ir::ControlTree* ir::Kernel::ctrl_tree()
 
 bool ir::Kernel::executable() const {
 	return false;
+}
+
+bool ir::Kernel::function() const {
+	return _function;
 }
 
 void ir::Kernel::write(std::ostream& stream) const {

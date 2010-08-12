@@ -14,9 +14,9 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/translator/interface/Translator.h>
 
 namespace cuda {
-
 	/*!
 		Singleton object called directly by CUDA Runtime API wrapper 
 			- on instantiation, selects appropriate CUDA Runtime 
@@ -399,6 +399,9 @@ namespace cuda {
 		/*! \brief Launch a cuda kernel by name */
 		virtual void launch(const std::string& moduleName, 
 			const std::string& kernelName);
+		/*! \brief Set the optimization level */
+		virtual void setOptimizationLevel(
+			translator::Translator::OptimizationLevel l);
 
 	};
 

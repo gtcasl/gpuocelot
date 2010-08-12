@@ -205,9 +205,10 @@ namespace ir {
 	std::string PTXStatement::toString() const {
 	
 		switch( directive ) {
-			case Instr:
+			case Instr: {
 				return instruction.toString() + ";";
 				break;
+			}
 			case Const: {
 				std::stringstream stream;
 				if( attribute != NoAttribute ) {

@@ -570,7 +570,7 @@ namespace parser
 		statement.type = operand.type;
 		statement.name = name;
 		statement.attribute = ir::PTXStatement::NoAttribute;
-		
+
 		if( operand.type == ir::PTXOperand::pred )
 		{
 			operand.condition = ir::PTXOperand::Pred;

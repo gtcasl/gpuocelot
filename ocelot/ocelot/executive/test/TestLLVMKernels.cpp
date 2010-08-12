@@ -94,7 +94,7 @@ namespace test
 		}
 
 		// configure parameters
-		ir::Parameter& param_A = kernel->getParameter(
+		ir::Parameter& param_A = *kernel->getParameter(
 			"__cudaparm__Z19k_sequenceDivergentPf_ptr" );
 
 		// set parameter values
@@ -148,9 +148,9 @@ namespace test
 			sequence[ i ] = -2;	
 		}
 
-		ir::Parameter& param_A = kernel->getParameter(
+		ir::Parameter& param_A = *kernel->getParameter(
 			"__cudaparm__Z17k_sequenceLoopingPfi_ptr");
-		ir::Parameter& param_B = kernel->getParameter(
+		ir::Parameter& param_B = *kernel->getParameter(
 			"__cudaparm__Z17k_sequenceLoopingPfi_N");
 
 		param_A.arrayValues.resize( 1 );
@@ -206,9 +206,9 @@ namespace test
 			out[ i ] = -2;
 		}
 
-		ir::Parameter& param_A = kernel->getParameter(
+		ir::Parameter& param_A = *kernel->getParameter(
 			"__cudaparm__Z7barrierPiS__in");
-		ir::Parameter& param_B = kernel->getParameter(
+		ir::Parameter& param_B = *kernel->getParameter(
 			"__cudaparm__Z7barrierPiS__out");
 
 		param_A.arrayValues.resize( 1 );
@@ -274,15 +274,15 @@ namespace test
 		}
 		status << "];\n";
 			
-		ir::Parameter &param_A = kernel->getParameter(
+		ir::Parameter &param_A = *kernel->getParameter(
 			"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA" );
-		ir::Parameter &param_V = kernel->getParameter(
+		ir::Parameter &param_V = *kernel->getParameter(
 			"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV" );
-		ir::Parameter &param_R = kernel->getParameter(
+		ir::Parameter &param_R = *kernel->getParameter(
 			"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R" );
-		ir::Parameter &param_M = kernel->getParameter(
+		ir::Parameter &param_M = *kernel->getParameter(
 			"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M" );
-		ir::Parameter &param_N = kernel->getParameter(
+		ir::Parameter &param_N = *kernel->getParameter(
 			"__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N" );
 
 		param_A.arrayValues.resize( 1 );

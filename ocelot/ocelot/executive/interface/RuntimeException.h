@@ -13,6 +13,7 @@
 #define EXECUTIVE_RUNTIMEEXCEPTION_H_INCLUDED
 
 #include <string>
+#include <exception>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
 namespace executive {
@@ -20,15 +21,17 @@ namespace executive {
 	/*!
 
 	*/
-	class RuntimeException {
+	class RuntimeException : public std::exception {
 	public:
 		RuntimeException( );
 		RuntimeException(std::string);
 		RuntimeException(std::string, ir::PTXInstruction);
 		RuntimeException(std::string, int, ir::PTXInstruction);
 		RuntimeException(std::string, int, int, int, ir::PTXInstruction);
+		~RuntimeException() throw();
 		
 		std::string toString() const;
+		const char* what() const throw();
 
 		/*!
 			Human-readable message

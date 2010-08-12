@@ -255,13 +255,13 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			}
 			ptx.pc = instructions.size();
 #if REPORT_KERNEL_INSTRUCTIONS
-
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
 #endif
 			lastPC = instructions.size();
 			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
 		}
+
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
 		}
@@ -933,7 +933,6 @@ executive::EmulatedKernel::RegisterFile
 	assert(CTA != 0);
 	return CTA->getCurrentRegisterFile();		
 }
-
 
 static unsigned int align(unsigned int offset, unsigned int size) {
 	unsigned int difference = offset & (size - 1);

@@ -874,6 +874,11 @@ executive::EmulatedKernel::RegisterFile
 	return CTA->getCurrentRegisterFile();		
 }
 
+const char* executive::EmulatedKernel::getSharedMemory() const {
+	assert(CTA != 0);
+	return CTA->SharedMemory;		
+}
+
 void executive::EmulatedKernel::initializeTextureMemory() {
 	typedef std::unordered_map<std::string, unsigned int> IndexMap;
 	if(module == 0) return;

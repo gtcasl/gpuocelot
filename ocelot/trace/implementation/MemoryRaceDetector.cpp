@@ -68,9 +68,11 @@ namespace trace
 			for( ir::PTXU64 byte = *address; 
 				byte < *address + event.memory_size; ++byte )
 			{
+				bool mismatch = _alwaysCheckWrites ||
+					 _kernel->getSharedMemory()[ byte ] 
+					 != _previousData[ byte ];
 				if( _writers[ byte ] != -1 && _writers[ byte ] != thread 
-					&& _kernel->getSharedMemory()[ byte ] 
-					!= _previousData[ byte ] )
+					&& mismatch )
 				{
 					std::stringstream stream;
 					stream << prefix( thread, _dim, event );
@@ -85,8 +87,7 @@ namespace trace
 					throw hydrazine::Exception( stream.str() );
 				}
 				else if( _readers[ byte ] != -1 && _readers[ byte ] != thread
-					&& _kernel->getSharedMemory()[ byte ]
-					!= _previousData[ byte ] )
+					&& mismatch )
 				{
 					std::stringstream stream;
 					stream << prefix( thread, _dim, event );
@@ -145,11 +146,17 @@ namespace trace
 		_readers.assign( _readers.size(), -1 );
 	}
 	
-	MemoryRaceDetector::MemoryRaceDetector()
+	MemoryRaceDetector::MemoryRaceDetector() :
+		_alwaysCheckWrites( false )
 	{
 	
 	}
-	
+
+	void MemoryRaceDetector::checkAllWrites( bool writes )
+	{
+		_alwaysCheckWrites = writes;
+	}
+				
 	void MemoryRaceDetector::initialize( 
 		const executive::ExecutableKernel& kernel )
 	{

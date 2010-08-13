@@ -61,6 +61,21 @@ namespace api {
 					//! \brief Attach to all kernels by default?
 					bool alwaysAttach;
 			};
+			
+			/*! \brief configuration properties for trace::RaceDetector */
+			class RaceDetector
+			{
+			public:
+					RaceDetector();
+				
+			public:
+					//! \brief indicates trace generator is enabled
+					bool enabled;
+					
+					//! \brief Do not report races that write over a value
+					//	with the same value
+					bool ignoreIrrelevantWrites;
+			};
 
 		public:
 			TraceGeneration();
@@ -70,7 +85,7 @@ namespace api {
 			bool memoryChecker;
 			
 			//! \brief Race detection
-			bool raceDetector;
+			RaceDetector raceDetector;
                         
             //! \brief Interactive Debugger
             Debugger debugger;

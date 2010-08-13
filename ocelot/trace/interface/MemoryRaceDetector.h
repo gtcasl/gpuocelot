@@ -38,6 +38,8 @@ namespace trace
 			ByteVector _previousData;
 			/*! \brief A pointer to the executable kernel */
 			const executive::EmulatedKernel* _kernel;
+			/*! \brief Always check writes even if the data matches */
+			bool _alwaysCheckWrites;
 		
 		private:
 			/*! \brief Check a shared memory write */
@@ -52,7 +54,12 @@ namespace trace
 		public:
 			/*! \brief The constructor initializes the cached allocations */
 			MemoryRaceDetector();
+		
+			/*! \brief Determine whether writes should be checked regardless
+				of whether or not the previous data matches */
+			void checkAllWrites( bool check );
 			
+		public:
 			/*! \brief Set the cache and get a pointer to the memory mappings */
 			virtual void initialize( 
 				const executive::ExecutableKernel& kernel );

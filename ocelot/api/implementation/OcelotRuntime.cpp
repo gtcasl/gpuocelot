@@ -34,9 +34,11 @@ namespace ocelot
 			report( "Creating memory checker" );
 			ocelot::addTraceGenerator( _memoryChecker, true );
 		}
-		if (c.trace.raceDetector)
+		if (c.trace.raceDetector.enabled)
 		{
 			report( "Creating memory race detector" );
+			_raceDetector.checkAllWrites( 
+				!c.trace.raceDetector.ignoreIrrelevantWrites );
 			ocelot::addTraceGenerator( _raceDetector, true );
 		}
 		if (c.trace.debugger.enabled)

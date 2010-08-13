@@ -1,23 +1,25 @@
 {
 	ocelot: "ocelot",
-	version: "1.1.520",
 	trace: { 
-		memoryChecker: false,
-		raceDetector: false,
+		memoryChecker: true,
+		raceDetector: {
+			enabled: true,
+			ignoreIrrelevantWrites: true
+		},
 		debugger: {
 			enabled: false,
-			kernelFilter: "sequence",
+			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: false
-		},
+		}
 	},
 	cuda: {
 		implementation: CudaRuntime,
-		runtimeApiTrace: "traces/CudaAPI.trace"
+		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated, llvm, nvidia ],
+		devices: [ emulated ],
 		optimizationLevel: basic,
-		workerThreadLimit: 1
+		workerThreadLimit: 2
 	}
 }
 

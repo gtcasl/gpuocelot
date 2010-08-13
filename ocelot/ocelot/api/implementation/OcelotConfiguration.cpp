@@ -60,6 +60,12 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 
 ////////////////////////////////////////////////////////////////////////////////
 
+api::OcelotConfiguration::TraceGeneration::RaceDetector::RaceDetector():
+        enabled(false),
+        ignoreIrrelevantWrites(true)
+{
+
+}
 api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
         kernelFilter(""),
         alwaysAttach(false)
@@ -68,8 +74,7 @@ api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
 }
 
 api::OcelotConfiguration::TraceGeneration::TraceGeneration():
-	memoryChecker(false),
-	raceDetector(false)
+	memoryChecker(false)
 {
 
 }
@@ -77,7 +82,12 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
-	trace.raceDetector = config.parse<bool>("raceDetector", true);
+    
+    hydrazine::json::Visitor raceConfig = config["raceDetector"];
+    if (!raceConfig.is_null()) {
+            trace.raceDetector.enabled = raceConfig.parse<bool>("enabled", false);
+            trace.raceDetector.ignoreIrrelevantWrites = raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
+    }
 
     hydrazine::json::Visitor debugConfig = config["debugger"];
     if (!debugConfig.is_null()) {

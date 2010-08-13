@@ -2,7 +2,10 @@
 	ocelot: "ocelot",
 	trace: { 
 		memoryChecker: true,
-		raceDetector: false,
+		raceDetector: {
+			enabled: true,
+			ignoreIrrelevantWrites: true
+		},
 		debugger: {
 			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",

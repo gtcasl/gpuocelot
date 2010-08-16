@@ -59,13 +59,51 @@ namespace executive
 		report("Allocating shared memory");
 
 		typedef std::unordered_map<std::string, size_t> AllocationMap;
+		typedef std::unordered_set<std::string> StringSet;
+		typedef std::deque<ir::PTXOperand*> OperandVector;
+		typedef std::unordered_map<std::string,
+				ir::Module::GlobalMap::const_iterator> GlobalMap;
 
 		AllocationMap map;
+		GlobalMap sharedGlobals;
+		StringSet external;
+		OperandVector externalOperands;
+
+		unsigned int externalAlignment = 1;
 		size_t sharedSize = 0;
 
-		// global shared variable declaration not supported yet
-		assertM(module->globals().size() == 0, 
-				"Global shared variable declaration not supported yet");
+		assert(module != 0);
+
+		// global shared variables
+		ir::Module::GlobalMap globals = module->globals();
+		ir::Module::GlobalMap::const_iterator global;
+		for (global = globals.begin() ; global != globals.end() ; global++)
+		{
+			ir::PTXStatement statement = global->second.statement;
+			if (statement.directive == ir::PTXStatement::Shared)
+			{
+				if (statement.attribute == ir::PTXStatement::Extern)
+				{
+					report("Found global external shared variable \""
+							<< statement.name << "\"");
+
+					assertM(external.count(statement.name) == 0,
+							"External global \"" << statement.name
+							<< "\" declared more than once.");
+
+					external.insert(statement.name);
+					externalAlignment = std::max(externalAlignment,
+							(unsigned int)statement.alignment);
+					externalAlignment = std::max(externalAlignment,
+							ir::PTXOperand::bytes(statement.type));
+				} else {
+					report("Found global shared variable \"" 
+							<< statement.name << "\"");
+					sharedGlobals.insert(
+							std::make_pair(statement.name, global));
+				}
+			}
+		}
 
 		// local shared variables	
 		LocalMap::const_iterator local;
@@ -73,17 +111,30 @@ namespace executive
 		{
 			if (local->second.space == ir::PTXInstruction::Shared)
 			{
-				// extern shared variable declaration not supported yet
-				assertM(local->second.attribute != ir::PTXStatement::Extern,
-						"Extern shared variable declaration not supported yet");
+				if (local->second.attribute == ir::PTXStatement::Extern)
+				{
+					report("Found local external shared variable \"" 
+							<< local->second.name << "\"");
 
-				report("Found local shared variable "
-						<< local->second.name << " of size "
-						<< local->second.getSize());
+					assertM(external.count(local->second.name) == 0,
+							"External local \"" << local->second.name
+							<< "\" declared more than once.");
 
-				_pad(sharedSize, local->second.alignment);
-				map.insert(std::make_pair(local->second.name, sharedSize));
-				sharedSize += local->second.getSize();
+					external.insert(local->second.name);
+					externalAlignment = std::max(externalAlignment,
+							(unsigned int)local->second.alignment);
+					externalAlignment = std::max(externalAlignment,
+							ir::PTXOperand::bytes(local->second.type));
+				} else
+				{
+					report("Allocating local shared variable \""
+							<< local->second.name << "\" of size "
+							<< local->second.getSize());
+
+					_pad(sharedSize, local->second.alignment);
+					map.insert(std::make_pair(local->second.name, sharedSize));
+					sharedSize += local->second.getSize();
+				}
 			}
 		}
 
@@ -110,9 +161,37 @@ namespace executive
 
 						if (operand->addressMode == ir::PTXOperand::Address)
 						{
+							StringSet::iterator si = 
+								external.find(operand->identifier);
+							if (si != external.end())
+							{
+								report("For instruction \""
+										<< ptx.toString()
+										<< "\", mapping shared label \"" << *si
+										<< "\" to external shared memory.");
+								externalOperands.push_back(operand);
+								continue;
+							}
+
+							GlobalMap::iterator gi = 
+								sharedGlobals.find(operand->identifier);
+							if (gi != sharedGlobals.end())
+							{
+								ir::Module::GlobalMap::const_iterator it = 
+									gi->second;
+								sharedGlobals.erase(gi);
+
+								report("Allocating global shared variable \""
+										<< it->second.statement.name << "\"");
+
+								map.insert(std::make_pair(
+											it->second.statement.name, 
+											sharedSize));
+								sharedSize += it->second.statement.bytes();
+							}
+
 							AllocationMap::iterator mapping = 
 								map.find(operand->identifier);
-
 							if (mapping != map.end())
 							{
 								report("For instruction " << ptx.toString()
@@ -128,6 +207,19 @@ namespace executive
 					}
 				}
 			}
+		}
+
+		_pad(sharedSize, externalAlignment);
+
+		report("Mapping external shared variables.");
+		OperandVector::iterator operand;
+		for (operand = externalOperands.begin() ; 
+				operand != externalOperands.end() ; operand++)
+		{
+			report("Mapping external shared label \""
+					<< (*operand)->identifier << "\" to " << sharedSize);
+			(*operand)->addressMode = ir::PTXOperand::Immediate;
+			(*operand)->imm_uint = sharedSize;
 		}
 	}
 
@@ -225,6 +317,9 @@ namespace executive
 
 	void ATIExecutableKernel::setKernelShape(int x, int y, int z)
 	{
+		report("Setting kernel shape: " << x << ", " << y << ", " << z);
+		assertM(x * y * z <= 512, "Invalid kernel shape");
+
 		_blockDim.x = x;
 		_blockDim.y = y;
 		_blockDim.z = z;
@@ -272,6 +367,13 @@ namespace executive
 				case ir::PTXOperand::s32:
 				{
 					cb1[i].x = v.val_s32;
+					report("cb1[" << i << "] = {" << cb1[i].x << "}");
+					i++;
+					break;
+				}
+				case ir::PTXOperand::u32:
+				{
+					cb1[i].x = v.val_u32;
 					report("cb1[" << i << "] = {" << cb1[i].x << "}");
 					i++;
 					break;

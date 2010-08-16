@@ -33,11 +33,15 @@ namespace ir
 				Ige,
 				Ilt,
 				Imul,
+				Ine,
+				Ishl,
 				Ishr,
 				Lds_Load_Id,
 				Lds_Store_Id,
 				Mad,
 				Mov,
+				Mul,
+				Sub,
 				Uav_Arena_Load_Id,
 				Uav_Arena_Store_Id,
 				Uav_Raw_Load_Id,
@@ -280,6 +284,24 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILIne : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIne();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIshl : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIshl();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIshr : public ILBinaryInstruction
 	{
 		public:
@@ -323,6 +345,24 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILMov();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILMul : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILMul();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILSub : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILSub();
 
 			Instruction *clone(bool copy=true) const;
 	};

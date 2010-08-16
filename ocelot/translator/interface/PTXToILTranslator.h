@@ -33,10 +33,12 @@ namespace translator
 			PTXToILTranslator(OptimizationLevel l = NoOptimization);
 
 		private:
-			typedef std::map<int, std::string> LiteralMap;
+			typedef std::map<int, std::string> ILiteralMap;
+			typedef std::map<float, std::string> FLiteralMap;
 
 			ir::ILKernel *_ilKernel;
-			LiteralMap _literals;
+			ILiteralMap _intLiterals;
+			FLiteralMap _floatLiterals;
 			ir::ILInstruction::RegisterType _tempRegisterCount;
 
 			void _translate(const ControlTree::Node* node);
@@ -65,11 +67,13 @@ namespace translator
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
 			void _translateSetP(const ir::PTXInstruction &i);
+			void _translateShl(const ir::PTXInstruction &i);
 			void _translateShr(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
 			void _translateSub(const ir::PTXInstruction &i);
 
-			ir::ILOperand _translateLiteral(long long unsigned int l);
+			ir::ILOperand _translateLiteral(int l);
+			ir::ILOperand _translateLiteral(float l);
 			std::string _translateConstantBuffer(const std::string &ident);
 
 			void _addKernelPrefix();
@@ -77,6 +81,9 @@ namespace translator
 			ir::ILOperand _tempRegister();
 			void _add(const ir::ILInstruction &i);
 	};
+
+	/*! \brief returns the last instruction in a control tree node */
+	ir::PTXInstruction* getLastIns(const ControlTree::Node* node);
 }
 
 #endif

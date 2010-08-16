@@ -450,7 +450,7 @@ namespace ir
 	bool ControlTree::_backedge(Node* head, Node* tail)
 	{
 		// head->tail is a back-edge if tail dominates head
-		// (tail dominates head if head appears first in the _post lists)
+		// (tail dominates head if head appears first in the _post list)
 		Node* match[] = {head, tail};
 		NodeList::iterator n = 
 			find_first_of(_post.begin(), _post.end(), match, match + 2);

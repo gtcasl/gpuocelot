@@ -29,11 +29,15 @@ namespace ir
 			case Ige:                return "ige";
 			case Ilt:                return "ilt";
 			case Imul:               return "imul";
+			case Ine:                return "ine";
+			case Ishl:               return "ishl";
 			case Ishr:               return "ishr";
 			case Lds_Load_Id:        return "lds_load_id(1)";
 			case Lds_Store_Id:       return "lds_store_id(1)";
 			case Mad:                return "mad";
 			case Mov:                return "mov";
+			case Mul:                return "mul";
+			case Sub:                return "sub";
 			case Uav_Arena_Load_Id:  return "uav_arena_load_id(1)";
 			case Uav_Arena_Store_Id: return "uav_arena_store_id(1)";
 			case Uav_Raw_Load_Id:    return "uav_raw_load_id(0)";
@@ -311,6 +315,24 @@ namespace ir
 		return new ILImul(*this);
 	}
 
+	ILIne::ILIne() : ILBinaryInstruction(Ine)
+	{
+	}
+
+	Instruction *ILIne::clone(bool copy) const
+	{
+		return new ILIne(*this);
+	}
+
+	ILIshl::ILIshl() : ILBinaryInstruction(Ishl)
+	{
+	}
+
+	Instruction *ILIshl::clone(bool copy) const
+	{
+		return new ILIshl(*this);
+	}
+
 	ILIshr::ILIshr() : ILBinaryInstruction(Ishr)
 	{
 	}
@@ -368,6 +390,24 @@ namespace ir
 	Instruction *ILMov::clone(bool copy) const
 	{
 		return new ILMov(*this);
+	}
+
+	ILMul::ILMul() : ILBinaryInstruction(Mul)
+	{
+	}
+
+	Instruction *ILMul::clone(bool copy) const
+	{
+		return new ILMul(*this);
+	}
+
+	ILSub::ILSub() : ILBinaryInstruction(Sub)
+	{
+	}
+
+	Instruction *ILSub::clone(bool copy) const
+	{
+		return new ILSub(*this);
 	}
 
 	ILUav_Arena_Load_Id::ILUav_Arena_Load_Id() 

@@ -26,7 +26,12 @@ namespace ir
 			case Immediate:
 			{
 				std::stringstream stream;
-				stream << imm_int;
+				switch (type)
+				{
+					case I32: stream << imm_int; break;
+					case F32: stream << imm_float; break;
+					default: assertM(false, "Invalid data type");
+				}
 				return stream.str();	
 			}
 			case Literal: return identifier;
@@ -34,8 +39,7 @@ namespace ir
 			case Special: return toString(special);
 			default:
 			{
-				assertM(false, "Address Mode "
-						<< addressMode 
+				assertM(false, "Address Mode " << addressMode 
 						<< " not supported");
 				break;
 			}

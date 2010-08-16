@@ -151,27 +151,43 @@ namespace translator
 		_add(ir::ILEndIf());
 	}
 
+	ir::PTXInstruction* getLastIns(const ControlTree::Node* node)
+	{
+		switch (node->rtype())
+		{
+			case ControlTree::Node::Inst:
+			{
+				const ControlTree::InstNode* inode = 
+					static_cast<const ControlTree::InstNode*>(node);
+
+				return static_cast<ir::PTXInstruction*>(
+						inode->bb()->instructions.back());
+			}
+			case ControlTree::Node::Block:
+			{
+				const ControlTree::BlockNode* bnode =
+					static_cast<const ControlTree::BlockNode*>(node);
+
+				return getLastIns(bnode->children().back());
+			}
+			default: assertM(false, "Invalid region type " << node->rtype());
+		}
+	}
+
 	void PTXToILTranslator::_translate(const ControlTree::SelfLoopNode* selfloop)
 	{
 		_add(ir::ILWhileLoop());
 
 		const ControlTree::Node* body = selfloop->body();
-
-		//TODO only simple InstNode bodies are handled for now
-		assertM(body->rtype() == ControlTree::Node::Inst, 
-				"Invalid loop body node");
-
 		_translate(body);
 
-		ir::Instruction* ins =
-			static_cast<const ControlTree::InstNode*>(body)->bb()->instructions.back();
+		// the last instruction of the body of a SeflLoop should be a branch
+		// we need to translate that branch into an if_logicalz instruction
+		ir::PTXInstruction* ins = getLastIns(body);
+		assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
 
-		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
-
-		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-		
 		ir::ILIfLogicalZ if_logicalz;
-		if_logicalz.a = _translate(bra.pg);
+		if_logicalz.a = _translate(ins->pg);
 		_add(if_logicalz);
 		_add(ir::ILBreak());
 		_add(ir::ILEndIf());
@@ -195,6 +211,7 @@ namespace translator
  			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
 			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
 			case ir::PTXInstruction::SetP:  _translateSetP(i); break;
+			case ir::PTXInstruction::Shl:   _translateShl(i);  break;
 			case ir::PTXInstruction::Shr:   _translateShr(i);  break;
  			case ir::PTXInstruction::St:    _translateSt(i);   break;
 			case ir::PTXInstruction::Sub:   _translateSub(i);  break;
@@ -222,7 +239,29 @@ namespace translator
 			}
 			case ir::PTXOperand::Immediate:
 			{
-				op = _translateLiteral(o.imm_int);
+				switch (o.type)
+				{
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::u64:
+					case ir::PTXOperand::b8:
+					{
+						//TODO Need to check for out-of-range literals
+						op = _translateLiteral((int)o.imm_uint);
+						break;
+					}
+					case ir::PTXOperand::f32:
+					{
+						op = _translateLiteral((float)o.imm_float);
+						break;
+					}
+					default:
+					{
+						assertM(false, "Immediate operand type "
+							   << ir::PTXOperand::toString(o.type) 
+							   << " not supported");
+					}
+				}
 				break;
 			}
 			case ir::PTXOperand::Address:
@@ -601,13 +640,41 @@ namespace translator
 
 	void PTXToILTranslator::_translateMul(const ir::PTXInstruction &i)
 	{
-		ir::ILImul imul;
+		switch (i.type)
+		{
+			case ir::PTXOperand::u16:
+			case ir::PTXOperand::u32:
+			case ir::PTXOperand::u64:
+			case ir::PTXOperand::s32:
+			{
+				ir::ILImul imul;
 
-		imul.a = _translate(i.a);
-		imul.b = _translate(i.b);
-		imul.d = _translate(i.d);
+				imul.a = _translate(i.a);
+				imul.b = _translate(i.b);
+				imul.d = _translate(i.d);
 
-		_add(imul);
+				_add(imul);
+
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				ir::ILMul mul;
+
+				mul.a = _translate(i.a);
+				mul.b = _translate(i.b);
+				mul.d = _translate(i.d);
+
+				_add(mul);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type " << ir::PTXOperand::toString(i.type)
+						<< " not supported");
+			}
+		}
 	}
 
 	void PTXToILTranslator::_translateSetP(const ir::PTXInstruction &i)
@@ -639,6 +706,43 @@ namespace translator
 
 				break;
 			}
+			case ir::PTXInstruction::Ge:
+			{
+				ir::ILIge ige;
+
+				ige.a = _translate(i.a);
+				ige.b = _translate(i.b);
+				ige.d = _translate(i.d);
+
+				_add(ige);
+
+				break;
+			}
+			case ir::PTXInstruction::Ne:
+			{
+				ir::ILIne ine;
+
+				ine.a = _translate(i.a);
+				ine.b = _translate(i.b);
+				ine.d = _translate(i.d);
+
+				_add(ine);
+
+				break;
+			}
+			case ir::PTXInstruction::Gt:
+			{
+				// IL doesn't have gt but it has lt so switch a & b operands
+				ir::ILIlt ilt;
+
+				ilt.a = _translate(i.b);
+				ilt.b = _translate(i.a);
+				ilt.d = _translate(i.d);
+
+				_add(ilt);
+
+				break;
+			}
 			default:
 			{
 				assertM(false, "comparisonOperator "
@@ -646,6 +750,17 @@ namespace translator
 						<< " not supported");
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateShl(const ir::PTXInstruction &i)
+	{
+		ir::ILIshl ishl;
+
+		ishl.a = _translate(i.a);
+		ishl.b = _translate(i.b);
+		ishl.d = _translate(i.d);
+
+		_add(ishl);
 	}
 
 	void PTXToILTranslator::_translateShr(const ir::PTXInstruction &i)
@@ -839,6 +954,7 @@ namespace translator
 		switch (i.type)
 		{
 			case ir::PTXOperand::s32:
+			case ir::PTXOperand::u32:
 			{
 				assertM(i.b.addressMode == ir::PTXOperand::Immediate,
 						"Subtract operation not supported");
@@ -857,6 +973,18 @@ namespace translator
 
 				break;
 			}
+			case ir::PTXOperand::f32:
+			{
+				ir::ILSub sub;
+
+				sub.a = _translate(i.a);
+				sub.b = _translate(i.b);
+				sub.d = _translate(i.d);
+
+				_add(sub);
+
+				break;
+			}
 			default:
 			{
 				assertM(false, "Type "
@@ -866,17 +994,35 @@ namespace translator
 		}
 	}
 
-	ir::ILOperand PTXToILTranslator::_translateLiteral(long long unsigned int l)
+	ir::ILOperand PTXToILTranslator::_translateLiteral(int l)
 	{
 		std::stringstream stream;
 
-		const LiteralMap::const_iterator it = _literals.find(l);
-
-		if (it != _literals.end()) {
+		const ILiteralMap::const_iterator it = _intLiterals.find(l);
+		if (it != _intLiterals.end()) {
 			stream << it->second;
 		} else {
-			stream << "l" << _literals.size();
-			_literals.insert(std::make_pair(l, stream.str()));
+			stream << "l" << _intLiterals.size() + _floatLiterals.size();
+			_intLiterals.insert(std::make_pair(l, stream.str()));
+		}
+
+		ir::ILOperand op;
+		op.addressMode = ir::ILOperand::Literal;
+		op.identifier = stream.str();
+
+		return op;
+	}
+
+	ir::ILOperand PTXToILTranslator::_translateLiteral(float l)
+	{
+		std::stringstream stream;
+
+		const FLiteralMap::const_iterator it = _floatLiterals.find(l);
+		if (it != _floatLiterals.end()) {
+			stream << it->second;
+		} else {
+			stream << "l" << _intLiterals.size() + _floatLiterals.size();
+			_floatLiterals.insert(std::make_pair(l, stream.str()));
 		}
 
 		ir::ILOperand op;
@@ -914,12 +1060,12 @@ namespace translator
 		report("Adding Kernel Prefix");
 
 		report("Adding dcl_literals");
-		if (_literals.size() > 0) {
-			LiteralMap::const_iterator it;
-			for (it = _literals.begin() ; it != _literals.end() ; it++) 
+		if (_intLiterals.size() > 0) {
+			ILiteralMap::const_iterator it;
+			for (it = _intLiterals.begin() ; it != _intLiterals.end() ; it++) 
 			{
 				report("Added statement 'dcl_literal " << it->second
-						<< ", " << it->first << "'");
+						<< ", " << (int)it->first << "'");
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
 				dcl_literal.operands.resize(2);
@@ -928,6 +1074,27 @@ namespace translator
 
 				dcl_literal.operands[1].imm_int = it->first;
 				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
+				dcl_literal.operands[1].type = ir::ILOperand::I32;
+
+				_ilKernel->_statements.push_front(dcl_literal);
+			}
+		}
+
+		if (_floatLiterals.size() > 0) {
+			FLiteralMap::const_iterator it;
+			for (it = _floatLiterals.begin() ; it != _floatLiterals.end() ; it++) 
+			{
+				report("Added statement 'dcl_literal " << it->second
+						<< ", " << (float)it->first << "'");
+				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
+
+				dcl_literal.operands.resize(2);
+				dcl_literal.operands[0].identifier = it->second;
+				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
+
+				dcl_literal.operands[1].imm_float = it->first;
+				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
+				dcl_literal.operands[1].type = ir::ILOperand::F32;
 
 				_ilKernel->_statements.push_front(dcl_literal);
 			}

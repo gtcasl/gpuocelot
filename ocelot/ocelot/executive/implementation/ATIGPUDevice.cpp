@@ -404,6 +404,8 @@ namespace executive
 					<< " in module " << moduleName);
 		}
 
+		report("Launching " << moduleName << ":" << kernelName);
+
 		ATIExecutableKernel kernel(*irKernel->second, &_context, &_event, 
 				&_uav0Resource, &_cb0Resource, &_cb1Resource);
 
@@ -439,7 +441,6 @@ namespace executive
 	void ATIGPUDevice::setOptimizationLevel(
 			translator::Translator::OptimizationLevel l)
 	{
-		assertM(false, "Not implemented yet");
 	}		
 
 	inline const cal::CalDriver *ATIGPUDevice::CalDriver()
@@ -548,9 +549,37 @@ namespace executive
 		CalDriver()->calResUnmap(*_resource);
 	}
 
-	void ATIGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation *allocation,
+	/*! \brief Copy to another allocation */
+	void ATIGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation *a,
 			size_t toOffset, size_t fromOffset, size_t size) const
 	{
-		assertM(false, "Not implemented yet");
+		MemoryAllocation* allocation = static_cast<MemoryAllocation*>(a);
+
+		assertM(_resource == allocation->_resource, "Invalid copy resources");
+		assert(fromOffset + size <= _size);
+		assert(toOffset + size <= allocation->_size);
+
+		CALvoid *data = NULL;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
+
+		CALdeviceptr baseFromAddr = (_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr fromAddr = baseFromAddr + fromOffset;
+
+		CALdeviceptr baseToAddr = (allocation->_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr toAddr = baseToAddr + toOffset;
+
+		std::memcpy((char*)data + toAddr, (char *)data + fromAddr, size);
+		report("MemoryAllocation::copy("
+				<< "dev = " << std::hex << std::showbase << baseFromAddr
+				<< ", offset = " << std::dec << fromOffset
+				<< " dev = " << std::hex << std::showbase << baseToAddr
+				<< ", offset = " << std::dec << toOffset
+				<< ", size = " << std::dec << size
+				<< ")");
+		
+		CalDriver()->calResUnmap(*_resource);
 	}
 }

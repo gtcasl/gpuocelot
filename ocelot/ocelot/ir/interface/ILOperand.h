@@ -28,6 +28,13 @@ namespace ir
 				Invalid
 			};
 
+			/*! \brief Type specifier */
+			enum DataType {
+				I32,
+				F32,
+				InvalidDataType
+			};
+
 			/*! \brief Special register names */
 			enum SpecialRegister {
 				vTidInGrpX,
@@ -47,12 +54,17 @@ namespace ir
 
 			/*! \brief Addressing mode of operand */
 			AddressMode addressMode;
+			/*! \brief Data type */
+			DataType type;
 			/*! \brief Value of operand */
 			SpecialRegister special;
 			/*! \brief Identifier of operand */
 			std::string identifier;
 			/*! \brief Immediate value */
-			int imm_int;
+			union {
+			   int imm_int;
+			   float imm_float;
+			};
 
 			std::string toString() const;
 			std::string toString(SpecialRegister sr) const;

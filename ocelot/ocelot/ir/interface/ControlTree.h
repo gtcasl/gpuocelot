@@ -76,7 +76,7 @@ namespace ir
 
 				private:
 					/*! \brief Node label */
-					const std::string& _label;
+					const std::string _label;
 					/*! \brief Region type */
 					const RegionType _rtype;
 					/*! \brief Children in the control tree */

@@ -22,10 +22,10 @@ void PtxToIlTranslator::translate()
 	translator::PTXToILTranslator translator;
 	ir::Module module( input );
 
-	ir::Module::KernelMap::iterator 
-		k_it = module.kernels.begin();
+	ir::Module::KernelMap::const_iterator 
+		k_it = module.kernels().begin();
 
-	for (; k_it != module.kernels.end(); ++k_it) {
+	for (; k_it != module.kernels().end(); ++k_it) {
 
 		ir::PTXKernel* ptx = dynamic_cast<ir::PTXKernel*>(k_it->second);
 		ir::PTXKernel::assignRegisters(*ptx->cfg());

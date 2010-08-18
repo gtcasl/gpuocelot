@@ -35,17 +35,18 @@ namespace analysis
 			
 		public:
 			/*! \brief The type of this pass */
-			Type type;
+			const Type type;
 
 			/*! \brief Should the pass be run before or after ssa conversion */
-			bool ssa;
+			const bool ssa;
 			
 			/*! \brief The name of the pass */
-			std::string name;
+			const std::string name;
 		
 		public:
 			/*! \brief The default constructor sets the type */
-			explicit Pass( Type t = InvalidPass );
+			explicit Pass( Type t = InvalidPass, bool s = false,
+				const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~Pass();
 			/*! \brief The type requires a new copy constructor */
@@ -63,7 +64,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			ImmutablePass();
+			ImmutablePass( bool s = false, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~ImmutablePass();
 			
@@ -77,7 +78,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			ModulePass();
+			ModulePass( bool s = false, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~ModulePass();
 			
@@ -91,7 +92,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			KernelPass();
+			KernelPass( bool s = false, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~KernelPass();
 			
@@ -109,7 +110,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			BasicBlockPass();
+			BasicBlockPass( bool s = false, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~BasicBlockPass();
 			

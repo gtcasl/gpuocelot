@@ -11,6 +11,8 @@
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/analysis/interface/SubkernelFormationPass.h>
+
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -22,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #include <fstream>
 
@@ -34,53 +36,95 @@ namespace analysis
 	
 	}
 
+	static void runPass( ir::Module& module, Pass* pass )
+	{
+		report("  Running pass '" << pass->toString() << "'" );
+		switch( pass->type )
+		{
+			case Pass::ImmutablePass:
+			{
+				ImmutablePass* immutablePass = 
+					static_cast< ImmutablePass* >( pass );
+				immutablePass->runOnModule( module );
+			}
+			break;
+			case Pass::ModulePass:
+			{
+				ModulePass* modulePass = 
+					static_cast< ModulePass* >( pass );
+				modulePass->runOnModule( module );
+			}
+			break;
+			case Pass::KernelPass:
+			{
+				KernelPass* kernelPass = static_cast< KernelPass* >( pass );
+				kernelPass->initialize( module );
+				for( ir::Module::KernelMap::const_iterator 
+					kernel = module.kernels().begin(); 
+					kernel != module.kernels().end(); ++kernel )
+				{
+					kernelPass->runOnKernel( 
+						*module.getKernel( kernel->first ) );
+				}
+				kernelPass->finalize();
+			}
+			break;
+			case Pass::BasicBlockPass:
+			{
+				BasicBlockPass* bbPass = static_cast< BasicBlockPass* >( pass );
+				bbPass->initialize( module );
+				for( ir::Module::KernelMap::const_iterator 
+					kernel = module.kernels().begin(); 
+					kernel != module.kernels().end(); ++kernel )
+				{
+					ir::PTXKernel* ptx = module.getKernel( kernel->first );
+					bbPass->initialize( *ptx );
+					for( ir::ControlFlowGraph::iterator 
+						block = ptx->cfg()->begin(); 
+						block != ptx->cfg()->end(); ++block )
+					{
+						bbPass->runOnBlock( *block );
+					}
+					bbPass->finalizeKernel();
+				}
+				bbPass->finalize();				
+			}
+			break;
+			default: break;
+		}
+	}
+
 	void PTXOptimizer::optimize()
 	{
-		typedef std::vector< KernelPass* > PassVector;
+		typedef std::vector< Pass* > PassVector;
 		
 		report("Running PTX to PTX Optimizer.");
 		
-		PassVector ssaPasses;
-		PassVector noSsaPasses;
+		PassVector allPasses;
 		
 		if( registerAllocationType == LinearScan )
 		{
-			KernelPass* pass = new analysis::LinearScanRegisterAllocationPass( 
+			Pass* pass = new analysis::LinearScanRegisterAllocationPass( 
 				registerCount );
-			if( pass->ssa )
-			{
-				ssaPasses.push_back( pass );
-			}
-			else
-			{
-				noSsaPasses.push_back( pass );
-			}
+			allPasses.push_back( pass );
 		}
 		
 		if( passes & RemoveBarriers )
 		{
-			KernelPass* pass = new analysis::RemoveBarrierPass;
-			if( pass->ssa )
-			{
-				ssaPasses.push_back( pass );
-			}
-			else
-			{
-				noSsaPasses.push_back( pass );
-			}			
+			Pass* pass = new analysis::RemoveBarrierPass;
+			allPasses.push_back( pass );		
 		}
 
 		if( passes & ReverseIfConversion )
 		{
-			KernelPass* pass = new analysis::ConvertPredicationToSelectPass;
-			if( pass->ssa )
-			{
-				ssaPasses.push_back( pass );
-			}
-			else
-			{
-				noSsaPasses.push_back( pass );
-			}			
+			Pass* pass = new analysis::ConvertPredicationToSelectPass;
+			allPasses.push_back( pass );
+		}
+
+		if( passes & SubkernelFormation )
+		{
+			Pass* pass = new analysis::SubkernelFormationPass;
+			allPasses.push_back( pass );
 		}
 		
 		if( input.empty() )
@@ -92,22 +136,15 @@ namespace analysis
 		report(" Loading module '" << input << "'");
 		ir::Module module( input );
 
-		report(" Running register allocation.");
+		report(" Running infinite register allocation.");
 		module.createDataStructures();
 		
 		report(" Running passes that do not require SSA form.");
-		for( PassVector::iterator pass = noSsaPasses.begin(); 
-			pass != noSsaPasses.end(); ++pass)
+		for( PassVector::iterator pass = allPasses.begin(); 
+			pass != allPasses.end(); ++pass)
 		{
-			report("  Running pass '" << (*pass)->toString() << "'" );
-			(*pass)->initialize( module );
-			for( ir::Module::KernelMap::const_iterator 
-				kernel = module.kernels().begin(); 
-				kernel != module.kernels().end(); ++kernel )
-			{
-				(*pass)->runOnKernel( *module.getKernel(kernel->first) );
-			}
-			(*pass)->finalize();
+			if( (*pass)->ssa ) continue;
+			runPass( module, *pass );
 			delete *pass;
 		}
 		
@@ -120,18 +157,11 @@ namespace analysis
 		}
 	
 		report(" Running passes that require SSA form.");
-		for( PassVector::iterator pass = ssaPasses.begin(); 
-			pass != ssaPasses.end(); ++pass)
+		for( PassVector::iterator pass = allPasses.begin(); 
+			pass != allPasses.end(); ++pass)
 		{
-			report("  Running pass '" << (*pass)->toString() << "'" );
-			(*pass)->initialize( module );
-			for( ir::Module::KernelMap::const_iterator 
-				kernel = module.kernels().begin(); 
-				kernel != module.kernels().end(); ++kernel )
-			{
-				(*pass)->runOnKernel( *module.getKernel(kernel->first) );
-			}
-			(*pass)->finalize();
+			if( !(*pass)->ssa ) continue;
+			runPass( module, *pass );
 			delete *pass;
 		}
 
@@ -140,7 +170,7 @@ namespace analysis
 			kernel = module.kernels().begin(); 
 			kernel != module.kernels().end(); ++kernel )
 		{
-			module.getKernel(kernel->first)->dfg()->fromSsa();
+			module.getKernel( kernel->first )->dfg()->fromSsa();
 		}
 		
 		std::ofstream out( output.c_str() );
@@ -152,6 +182,24 @@ namespace analysis
 		}
 		
 		module.writeIR( out );
+
+		if(!cfg) return;
+		
+		for( ir::Module::KernelMap::const_iterator 
+			kernel = module.kernels().begin(); 
+			kernel != module.kernels().end(); ++kernel )
+		{
+			report(" Writing CFG for kernel '" << kernel->first << "'");
+			std::ofstream out( kernel->first + "_cfg.dot" );
+		
+			if( !out.is_open() )
+			{
+				throw hydrazine::Exception( "Could not open output file " 
+					+ output + " for writing." );
+			}
+		
+			module.getKernel( kernel->first )->cfg()->write( out );
+		}
 	}
 }
 
@@ -175,6 +223,11 @@ static int parsePassTypes( const std::string& passList )
 		{
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;
+		}
+		else if( *pass == "subkernel-formation" )
+		{
+			report( "  Matched subkernel-formation." );
+			types |= analysis::PTXOptimizer::SubkernelFormation;
 		}
 		else if( !pass->empty() )
 		{
@@ -203,7 +256,9 @@ int main( int argc, char** argv )
 		"The number of registers available for allocation." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
-		+ std::string( "reverse-if-conversion)") );
+		"reverse-if-conversion, subkernel-formation)" );
+	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
+		"Dump out the CFG's of all generated kernels." );
 	parser.parse();
 
 	if( allocator == "linearscan" )

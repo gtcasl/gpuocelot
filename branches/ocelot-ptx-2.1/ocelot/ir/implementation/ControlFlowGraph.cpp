@@ -5,8 +5,9 @@
 */
 
 #include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 
+#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 #include <unordered_set>
@@ -25,13 +26,13 @@ namespace ir {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-ControlFlowGraph::BasicBlock::DotFormatter::DotFormatter() { }
-ControlFlowGraph::BasicBlock::DotFormatter::~DotFormatter() { }
+BasicBlock::DotFormatter::DotFormatter() { }
+BasicBlock::DotFormatter::~DotFormatter() { }
 
 /*!
 	\brief emits label for entry block
 */
-std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(
+std::string BasicBlock::DotFormatter::entryLabel(
 	const BasicBlock *block) {
 	std::stringstream out;
 	out << "[shape=Mdiamond,label=\"" << block->label << "\"]";	
@@ -41,57 +42,33 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::entryLabel(
 /*!
 	\brief emits label for exit block
 */
-std::string ControlFlowGraph::BasicBlock::DotFormatter::exitLabel(
+std::string BasicBlock::DotFormatter::exitLabel(
 	const BasicBlock *block) {
 	std::stringstream out;
 	out << "[shape=Msquare,label=\"" << block->label << "\"]";	
 	return out.str();
 }
 
-std::string ControlFlowGraph::make_label_dot_friendly( 
-	const std::string& string ) {
-	
-	std::string result;
-	for(std::string::const_iterator fi = string.begin(); 
-		fi != string.end(); ++fi) {
-		
-		if( *fi == '{' ) {
-			result.push_back('[');
-		}
-		else if( *fi == '}' ) {
-			result.push_back(']');
-		}
-		else {
-			result.push_back(*fi);
-		}	
-	}
-	return result;
-}
-
-std::string ControlFlowGraph::BasicBlock::DotFormatter::dotFriendly(
-	const std::string &str) {
-	return make_label_dot_friendly(str);
-}
-
-std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
+std::string BasicBlock::DotFormatter::toString(
 	const BasicBlock *block) {
 	std::stringstream out;
 
 	out << "[shape=record,";
 	out << "label=";
-	out << "\"{" << make_label_dot_friendly(block->label);
+	out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
 
 	BasicBlock::InstructionList::const_iterator instrs 
 		= block->instructions.begin();	
 	for (; instrs != block->instructions.end(); ++instrs) {
-		out << " | " << make_label_dot_friendly((*instrs)->toString());
+		out << " | " 
+		<< hydrazine::toGraphVizParsableLabel((*instrs)->toString());
 	}
 	out << "}\"]";
 
 	return out.str();
 }
 
-std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
+std::string BasicBlock::DotFormatter::toString(
 	const Edge *edge) {
 	std::stringstream out;
 
@@ -107,12 +84,12 @@ std::string ControlFlowGraph::BasicBlock::DotFormatter::toString(
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-ControlFlowGraph::BasicBlock::Edge::Edge(BlockList::iterator h, 
+BasicBlock::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
 
 }
 
-ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i, 
+BasicBlock::BasicBlock(const std::string& l, Id i, 
 	const InstructionList& is) : label(l), id(i) {
 	for (InstructionList::const_iterator instruction = is.begin();
 		instruction != is.end(); ++instruction ) {
@@ -120,11 +97,11 @@ ControlFlowGraph::BasicBlock::BasicBlock(const std::string& l, Id i,
 	}
 }
 
-ControlFlowGraph::BasicBlock::~BasicBlock() {
+BasicBlock::~BasicBlock() {
 
 }
 
-void ControlFlowGraph::BasicBlock::clear() {
+void BasicBlock::clear() {
 	for (InstructionList::iterator instruction = instructions.begin();
 		instruction != instructions.end(); ++instruction ) {
 		delete *instruction;
@@ -132,8 +109,8 @@ void ControlFlowGraph::BasicBlock::clear() {
 	instructions.clear();
 }
 
-ControlFlowGraph::BasicBlock::EdgeList::iterator 
-	ControlFlowGraph::BasicBlock::get_fallthrough_edge() {
+BasicBlock::EdgeList::iterator 
+	BasicBlock::get_fallthrough_edge() {
 	for (EdgePointerVector::iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->type == Edge::FallThrough) return *edge;
@@ -141,8 +118,8 @@ ControlFlowGraph::BasicBlock::EdgeList::iterator
 	assertM(false, "No fallthrough edge in block " << label);
 }
 
-ControlFlowGraph::BasicBlock::EdgeList::const_iterator 
-	ControlFlowGraph::BasicBlock::get_fallthrough_edge() const {
+BasicBlock::EdgeList::const_iterator 
+	BasicBlock::get_fallthrough_edge() const {
 	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->type == Edge::FallThrough) return *edge;
@@ -150,7 +127,7 @@ ControlFlowGraph::BasicBlock::EdgeList::const_iterator
 	assertM(false, "No fallthrough edge in block " << label);
 }
 
-bool ControlFlowGraph::BasicBlock::has_fallthrough_edge() const {
+bool BasicBlock::has_fallthrough_edge() const {
 	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->type == Edge::FallThrough) return true;
@@ -158,8 +135,8 @@ bool ControlFlowGraph::BasicBlock::has_fallthrough_edge() const {
 	return false;
 }
 
-ControlFlowGraph::BasicBlock::EdgeList::iterator 
-	ControlFlowGraph::BasicBlock::get_branch_edge() {
+BasicBlock::EdgeList::iterator 
+	BasicBlock::get_branch_edge() {
 	for (EdgePointerVector::iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->type == Edge::Branch) return *edge;
@@ -167,8 +144,8 @@ ControlFlowGraph::BasicBlock::EdgeList::iterator
 	assertM(false, "No branch edge in block " << label);
 }
 
-ControlFlowGraph::BasicBlock::EdgeList::const_iterator 
-	ControlFlowGraph::BasicBlock::get_branch_edge() const {
+BasicBlock::EdgeList::const_iterator 
+	BasicBlock::get_branch_edge() const {
 	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->type == Edge::Branch) return *edge;
@@ -176,7 +153,7 @@ ControlFlowGraph::BasicBlock::EdgeList::const_iterator
 	assertM(false, "No branch edge in block " << label);
 }
 
-bool ControlFlowGraph::BasicBlock::has_branch_edge() const {
+bool BasicBlock::has_branch_edge() const {
 	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->type == Edge::Branch) return true;
@@ -184,8 +161,8 @@ bool ControlFlowGraph::BasicBlock::has_branch_edge() const {
 	return false;
 }
 
-ControlFlowGraph::BasicBlock::EdgeList::iterator 
-	ControlFlowGraph::BasicBlock::get_edge(BlockList::iterator b) {
+BasicBlock::EdgeList::iterator 
+	BasicBlock::get_edge(BlockList::iterator b) {
 	for (EdgePointerVector::iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->tail == b) return *edge;
@@ -193,8 +170,8 @@ ControlFlowGraph::BasicBlock::EdgeList::iterator
 	assertM(false, "No edge from " << label << " to " << b->label);
 }
 
-ControlFlowGraph::BasicBlock::EdgeList::const_iterator 
-	ControlFlowGraph::BasicBlock::get_edge(BlockList::const_iterator b) const {
+BasicBlock::EdgeList::const_iterator 
+	BasicBlock::get_edge(BlockList::const_iterator b) const {
 	for (EdgePointerVector::const_iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
 		if ((*edge)->tail == b) return *edge;
@@ -203,7 +180,7 @@ ControlFlowGraph::BasicBlock::EdgeList::const_iterator
 }
 
 ControlFlowGraph::EdgePointerVector::iterator 
-	ControlFlowGraph::BasicBlock::find_in_edge(
+	BasicBlock::find_in_edge(
 	BlockList::const_iterator head) {
 	for (EdgePointerVector::iterator edge = in_edges.begin(); 
 		edge != in_edges.end(); ++edge) {
@@ -213,7 +190,7 @@ ControlFlowGraph::EdgePointerVector::iterator
 }
 
 ControlFlowGraph::EdgePointerVector::iterator 
-	ControlFlowGraph::BasicBlock::find_out_edge(
+	BasicBlock::find_out_edge(
 	BlockList::const_iterator tail) {
 	for (EdgePointerVector::iterator edge = out_edges.begin(); 
 		edge != out_edges.end(); ++edge) {
@@ -225,12 +202,17 @@ ControlFlowGraph::EdgePointerVector::iterator
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 ControlFlowGraph::ControlFlowGraph(): 
-	_entry(_blocks.insert(end(), BasicBlock("entry"))),
-	_exit(_blocks.insert(end(), BasicBlock("exit"))) {
+	_entry(_blocks.insert(end(), BasicBlock("entry", 0))),
+	_exit(_blocks.insert(end(), BasicBlock("exit", 1))),
+	_nextId(2) {
 }
 
 ControlFlowGraph::~ControlFlowGraph() {
 	clear();
+}
+
+BasicBlock::Id ControlFlowGraph::newId() {
+	return _nextId++;
 }
 
 size_t ControlFlowGraph::size() const {
@@ -370,7 +352,7 @@ std::ostream& ControlFlowGraph::write(std::ostream &out) const {
 }
 
 std::ostream& ControlFlowGraph::write(std::ostream &out, 
-	ControlFlowGraph::BasicBlock::DotFormatter & blockFormatter) const {
+	BasicBlock::DotFormatter & blockFormatter) const {
 
 	using namespace std;
 
@@ -431,8 +413,9 @@ void ControlFlowGraph::clear() {
 	}
 	_blocks.clear();
 	_edges.clear();
-	_entry = insert_block(BasicBlock("entry"));
-	_exit = insert_block(BasicBlock("exit"));
+	_entry = insert_block(BasicBlock("entry", 0));
+	_exit = insert_block(BasicBlock("exit", 1));
+	_nextId = 2;
 }
 
 
@@ -543,6 +526,9 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 				for (edge_pointer_iterator edge = next->in_edges.begin(); 
 					edge != next->in_edges.end(); ++edge) {
 					if ((*edge)->type == Edge::FallThrough) {
+						assertM(unscheduled.count((*edge)->head) != 0, 
+							(*edge)->head->label 
+							<< " has multiple fallthrough branches.");
 						next = (*edge)->head;
 						report("   rewinding to " << next->label );
 						rewinding = true;
@@ -551,7 +537,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 				}
 			}
 			sequence.push_back(next);
-			unscheduled.erase(next);			
+			unscheduled.erase(next);
 		}
 		
 		report(" added " << sequence.back()->label);

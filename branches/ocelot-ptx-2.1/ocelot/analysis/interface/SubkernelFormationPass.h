@@ -10,6 +10,10 @@
 // Ocelot Includes
 #include <ocelot/analysis/interface/Pass.h>
 
+// Standard Library Includes
+#include <vector>
+#include <unordered_map>
+
 // Forward Declarations
 namespace ir
 {
@@ -22,21 +26,31 @@ namespace analysis
 		should be called as functions from the main kernel.  The assumption
 		is that all threads will execute a sub-kernel, hit a barrier, and
 		enter the next sub-kernel.
+		
+		This pass may optionally insert an explicit scheduler kernel that is
+		responsible for doing fine-grained scheduling of the next function
+		to execute and control transition between functions.  This is necessary
+		to support intelligent scheduling on architectures without runtime 
+		support (mainly GPUs).
 	 */
-	class SubkernelFormationPass : ModulePass
+	class SubkernelFormationPass : public ModulePass
 	{
 	public:
+		SubkernelFormationPass(unsigned int expectedRegionSize = 5, 
+			bool insertScheduler = false);
 		void runOnModule(ir::Module& m);
 
 	private:
-		class ExtractKernelsPass : KernelPass
+		class ExtractKernelsPass : public KernelPass
 		{
 		public:
-			typedef std::vector<ir::Kernel*> KernelVector;
+			typedef std::vector<ir::PTXKernel*> KernelVector;
 			typedef std::unordered_map<std::string, 
 				KernelVector> KernelVectorMap;
 		
 		public:
+			ExtractKernelsPass(unsigned int expectedRegionSize, 
+				bool insertScheduler);
 			void initialize(const ir::Module& m);
 			void runOnKernel(ir::Kernel& k);
 			void finalize();
@@ -44,9 +58,14 @@ namespace analysis
 		public:
 			KernelVectorMap kernels;
 		
-		public:
-			unsigned int expectedRegionSize;
+		private:
+			unsigned int _expectedRegionSize;
+			bool _insertScheduler;
 		};
+		
+	private:
+		unsigned int _expectedRegionSize;
+		bool _insertScheduler;
 	};
 }
 

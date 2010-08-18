@@ -20,8 +20,9 @@
 
 #define REPORT_BASE 0
 
-ir::Kernel::Kernel(Instruction::Architecture isa, bool isFunction) : 
-	_function(isFunction), ISA(isa) {
+ir::Kernel::Kernel(Instruction::Architecture isa,
+	const std::string& n, bool isFunction) : 
+	_function(isFunction), name(n), ISA(isa) {
 	_cfg = 0;
 	_dom_tree = 0;
 	_pdom_tree = 0;

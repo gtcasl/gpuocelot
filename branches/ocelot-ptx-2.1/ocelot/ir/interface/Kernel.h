@@ -55,7 +55,7 @@ namespace ir {
 	public:
 		/*!	Constructs an empty kernel */
 		Kernel(Instruction::Architecture isa = Instruction::Unknown,
-			bool isFunction = false);
+			const std::string& name = "", bool isFunction = false);
 		/*!	Destructs kernel */
 		virtual ~Kernel();
 		/*! \brief Copy constructor (deep) */

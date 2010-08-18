@@ -9,6 +9,7 @@
 #include <ocelot/ir/interface/DominatorTree.h>
 #include <ocelot/ir/interface/Instruction.h>
 
+#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -50,15 +51,14 @@ std::ostream& ir::DominatorTree::write(std::ostream& out) {
 
 	for (int n = 0; n < (int)blocks.size(); n++) {
 		out << "  bb_" << n << " [shape=record,label=\"{" << 
-			ControlFlowGraph::make_label_dot_friendly(blocks[n]->label) 
-			<< " | ";
+			hydrazine::toGraphVizParsableLabel(blocks[n]->label) << " | ";
 		ControlFlowGraph::InstructionList::iterator 
 			instr_it = blocks[n]->instructions.begin();
 		for (int j = 0; instr_it != blocks[n]->instructions.end(); 
 			++instr_it, ++j) {
 			string str = (*instr_it)->toString();
 			out << (j > 0 ? " | " : "") 
-				<< ControlFlowGraph::make_label_dot_friendly(str);
+				<< hydrazine::toGraphVizParsableLabel(str);
 		}
 		out << "}\"];\n";
 	}

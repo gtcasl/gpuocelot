@@ -22,7 +22,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator -i ../../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
-INFO     Test completed in 0.102923870087 seconds
+INFO     Test completed in 0.0377659797668 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -36,8 +36,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1281425913
-Test time : 0.0143774
+Test Seed : 1282134163
+Test time : 0.00632381
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -170,141 +170,56 @@ Zext Instruction Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
-INFO     Test completed in 0.369328022003 seconds
+INFO     Test completed in 1.33810019493 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  LLVM Verifier failed for kernel: _Z17k_sequenceLoopingPfi : "Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r5 = phi i32 [ %r0, %"$BB_1_0" ]               ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r9 = phi i32 [ %r45, %"$BB_1_0" ]              ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r24 = phi i32 [ %r9, %"$BB_1_0" ], [ %r256, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r33 = phi i32 [ %r24, %"$BB_1_0" ]             ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r45 = phi i32 [ %r0, %"$BB_1_0" ]              ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r50 = phi i32 [ %r45, %"$BB_1_0" ]             ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r66 = phi i32 [ %r57, %"$BB_1_0" ], [ %r66, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r81 = phi i32 [ %r62, %"$BB_1_0" ]             ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r100 = phi i32 [ %r81, %"$BB_1_0" ]            ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r116 = phi i32 [ %r81, %"$BB_1_0" ], [ %r100, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r132 = phi i32 [ %r121, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r138 = phi i32 [ %r24, %"$BB_1_0" ]            ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r149 = phi i32 [ %r33, %"$BB_1_0" ], [ %r138, %"$BB_1_0" ] ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r158 = phi i32 [ %r5, %"$BB_1_0" ], [ %r149, %"$BB_1_0" ] ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r165 = phi i32 [ %r118, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r176 = phi i32 [ %r131, %"$BB_1_0" ], [ %r167, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r187 = phi i32 [ %r173, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r198 = phi i32 [ %r173, %"$BB_1_0" ], [ %r187, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r209 = phi i32 [ %r203, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r212 = phi i32 [ %r212, %"$BB_1_0" ], [ %r206, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r225 = phi i32 [ %r212, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r231 = phi i32 [ %r199, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r235 = phi i32 [ %r230, %"$BB_1_0" ], [ %r225, %"$BB_1_0" ] ; <i32> [#uses=2]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r245 = phi i32 [ %r235, %"$BB_1_0" ]           ; <i32> [#uses=1]
-label %"$BB_1_0"
-Terminator found in the middle of a basic block!
-label %"$BB_1_0"
-PHI nodes not grouped at top of basic block!
-  %r256 = phi i32 [ %r235, %"$BB_1_0" ], [ %r245, %"$BB_1_0" ] ; <i32> [#uses=1]
-label %"$BB_1_0"
-Broken module found, compilation terminated.
-Broken module found, compilation terminated.
-"
+Pass/Fail : Pass
+
+
+Name : TestLLVMKernels
+
+Description: A unit test for the LLVM executive runtime. Test Points: 1) 
+             Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
+
+
+Test Seed : 1282134163
+Test time : 1.19658
+
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
+
+
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
-INFO     Test completed in 0.851022958755 seconds
+INFO     Test completed in 0.828115940094 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -323,19 +238,19 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser -i ../../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 4.55816912651 seconds
+INFO     Test completed in 4.25782084465 seconds
 INFO      It produced the following output:
 TestPTXToLLVMTranslator: ocelot/translator/implementation/PTXToLLVMTranslator.cpp:7069: virtual ir::Kernel* translator::PTXToLLVMTranslator::translate(const ir::Kernel*): Assertion `_ptx->dfg()->ssa()' failed.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
-INFO     Test completed in 0.350023984909 seconds
+INFO     Test completed in 0.400262832642 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator
-INFO     Test completed in 0.0712430477142 seconds
+INFO     Test completed in 0.0750260353088 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -345,8 +260,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1281425918
-Test time : 0.0284636
+Test Seed : 1282134168
+Test time : 0.03581
 
 Status : Test output:
 10 registers
@@ -360,7 +275,7 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
-INFO     Test completed in 0.0644619464874 seconds
+INFO     Test completed in 0.238718986511 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -379,8 +294,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1281425918
-Test time : 0.0275741
+Test Seed : 1282134168
+Test time : 0.0319972
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -390,21 +305,21 @@ Test Point 3 Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
-INFO     Test completed in 0.175973176956 seconds
+INFO     Test completed in 0.188579082489 seconds
 INFO      It produced the following output:
-A_gpu = 0xaf39600
+A_gpu = 0xa91c600
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
-INFO     Test completed in 0.0376379489899 seconds
+INFO     Test completed in 0.160355806351 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser
-INFO     Test completed in 8.60026097298 seconds
+INFO     Test completed in 7.90197587013 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -417,8 +332,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1281425914
-Test time : 8.54994
+Test Seed : 1282134165
+Test time : 7.85227
 
 Status : Skipping file with incompatible ptx version.
 For file ../../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Parse): Passed
@@ -7744,7 +7659,7 @@ For file ../../tests/ptx/sdk3.0/bodysystemcuda.ptx, Test Point 1 (Parse): Failed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer -i ../../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
-INFO     Test completed in 10.7530109882 seconds
+INFO     Test completed in 10.9667370319 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -7755,134 +7670,134 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1281425918
-Test time : 10.7163
+Test Seed : 1282134168
+Test time : 10.9313
 
 Status : Ran 'TestVectorElements-u32' for 9 iterations.
 Ran 'TestAdd-u16' for 10 iterations.
-Ran 'TestAdd-s16' for 9 iterations.
-Ran 'TestAdd-u32' for 8 iterations.
+Ran 'TestAdd-s16' for 10 iterations.
+Ran 'TestAdd-u32' for 10 iterations.
 Ran 'TestAdd-s32' for 9 iterations.
-Ran 'TestAdd-s32-sat' for 9 iterations.
+Ran 'TestAdd-s32-sat' for 10 iterations.
 Ran 'TestAdd-u64' for 9 iterations.
-Ran 'TestAdd-s64' for 9 iterations.
-Ran 'TestSub-u16' for 9 iterations.
+Ran 'TestAdd-s64' for 4 iterations.
+Ran 'TestSub-u16' for 7 iterations.
 Ran 'TestSub-s16' for 8 iterations.
-Ran 'TestSub-u32' for 9 iterations.
+Ran 'TestSub-u32' for 7 iterations.
 Ran 'TestSub-s32' for 9 iterations.
 Ran 'TestSub-s32-sat' for 9 iterations.
-Ran 'TestSub-u64' for 9 iterations.
-Ran 'TestSub-s64' for 9 iterations.
-Ran 'TestSub-Carry-s32' for 8 iterations.
-Ran 'TestSub-Carry-u32' for 7 iterations.
+Ran 'TestSub-u64' for 7 iterations.
+Ran 'TestSub-s64' for 7 iterations.
+Ran 'TestSub-Carry-s32' for 4 iterations.
+Ran 'TestSub-Carry-u32' for 6 iterations.
 Ran 'TestAdd-Carry-s32' for 8 iterations.
 Ran 'TestAdd-Carry-u32' for 8 iterations.
 Ran 'TestMul-Lo-u16' for 9 iterations.
 Ran 'TestMul-Hi-u16' for 9 iterations.
 Ran 'TestMul-Wide-u16' for 9 iterations.
-Ran 'TestMul-Lo-s16' for 8 iterations.
+Ran 'TestMul-Lo-s16' for 9 iterations.
 Ran 'TestMul-Hi-s16' for 9 iterations.
 Ran 'TestMul-Wide-s16' for 9 iterations.
 Ran 'TestMul-Lo-u32' for 9 iterations.
 Ran 'TestMul-Hi-u32' for 9 iterations.
 Ran 'TestMul-Wide-u32' for 9 iterations.
-Ran 'TestMul-Lo-s32' for 7 iterations.
+Ran 'TestMul-Lo-s32' for 9 iterations.
 Ran 'TestMul-Hi-s32' for 9 iterations.
-Ran 'TestMul-Wide-s32' for 7 iterations.
-Ran 'TestMul-Lo-u64' for 8 iterations.
-Ran 'TestMul-Hi-u64' for 6 iterations.
+Ran 'TestMul-Wide-s32' for 9 iterations.
+Ran 'TestMul-Lo-u64' for 7 iterations.
+Ran 'TestMul-Hi-u64' for 5 iterations.
 Ran 'TestMul-Lo-s64' for 5 iterations.
-Ran 'TestMul-Hi-s64' for 8 iterations.
-Ran 'TestMad-Lo-u16' for 8 iterations.
-Ran 'TestMad-Hi-u16' for 8 iterations.
-Ran 'TestMad-Wide-u16' for 8 iterations.
-Ran 'TestMad-Lo-s16' for 8 iterations.
-Ran 'TestMad-Hi-s16' for 7 iterations.
-Ran 'TestMad-Wide-s16' for 7 iterations.
-Ran 'TestMad-Lo-u32' for 6 iterations.
-Ran 'TestMad-Hi-u32' for 7 iterations.
-Ran 'TestMad-Wide-u32' for 7 iterations.
-Ran 'TestMad-Lo-s32' for 7 iterations.
-Ran 'TestMad-Hi-s32' for 8 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 8 iterations.
-Ran 'TestMad-Wide-s32' for 9 iterations.
-Ran 'TestMad-Lo-u64' for 7 iterations.
-Ran 'TestMad-Hi-u64' for 4 iterations.
-Ran 'TestMad-Lo-s64' for 6 iterations.
-Ran 'TestMad-Hi-s64' for 4 iterations.
-Ran 'TestSad-u16' for 6 iterations.
-Ran 'TestSad-s16' for 8 iterations.
+Ran 'TestMul-Hi-s64' for 5 iterations.
+Ran 'TestMad-Lo-u16' for 5 iterations.
+Ran 'TestMad-Hi-u16' for 5 iterations.
+Ran 'TestMad-Wide-u16' for 5 iterations.
+Ran 'TestMad-Lo-s16' for 4 iterations.
+Ran 'TestMad-Hi-s16' for 4 iterations.
+Ran 'TestMad-Wide-s16' for 6 iterations.
+Ran 'TestMad-Lo-u32' for 4 iterations.
+Ran 'TestMad-Hi-u32' for 5 iterations.
+Ran 'TestMad-Wide-u32' for 5 iterations.
+Ran 'TestMad-Lo-s32' for 8 iterations.
+Ran 'TestMad-Hi-s32' for 6 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 6 iterations.
+Ran 'TestMad-Wide-s32' for 8 iterations.
+Ran 'TestMad-Lo-u64' for 4 iterations.
+Ran 'TestMad-Hi-u64' for 5 iterations.
+Ran 'TestMad-Lo-s64' for 5 iterations.
+Ran 'TestMad-Hi-s64' for 5 iterations.
+Ran 'TestSad-u16' for 5 iterations.
+Ran 'TestSad-s16' for 5 iterations.
 Ran 'TestSad-u32' for 9 iterations.
-Ran 'TestSad-s32' for 8 iterations.
-Ran 'TestSad-u64' for 8 iterations.
-Ran 'TestSad-s64' for 9 iterations.
-Ran 'TestDiv-u16' for 9 iterations.
+Ran 'TestSad-s32' for 5 iterations.
+Ran 'TestSad-u64' for 5 iterations.
+Ran 'TestSad-s64' for 5 iterations.
+Ran 'TestDiv-u16' for 6 iterations.
 Ran 'TestDiv-s16' for 5 iterations.
 Ran 'TestDiv-u32' for 5 iterations.
-Ran 'TestDiv-s32' for 9 iterations.
-Ran 'TestDiv-u64' for 9 iterations.
-Ran 'TestDiv-s64' for 8 iterations.
-Ran 'TestRem-u16' for 9 iterations.
-Ran 'TestRem-s16' for 9 iterations.
-Ran 'TestRem-u32' for 9 iterations.
-Ran 'TestRem-s32' for 8 iterations.
-Ran 'TestRem-u64' for 8 iterations.
+Ran 'TestDiv-s32' for 7 iterations.
+Ran 'TestDiv-u64' for 5 iterations.
+Ran 'TestDiv-s64' for 10 iterations.
+Ran 'TestRem-u16' for 5 iterations.
+Ran 'TestRem-s16' for 5 iterations.
+Ran 'TestRem-u32' for 5 iterations.
+Ran 'TestRem-s32' for 5 iterations.
+Ran 'TestRem-u64' for 5 iterations.
 Ran 'TestRem-s64' for 8 iterations.
-Ran 'TestAbs-s16' for 10 iterations.
-Ran 'TestAbs-s32' for 9 iterations.
-Ran 'TestAbs-s64' for 8 iterations.
-Ran 'TestNeg-s16' for 8 iterations.
-Ran 'TestNeg-s32' for 8 iterations.
-Ran 'TestNeg-s64' for 5 iterations.
-Ran 'TestMax-u16' for 4 iterations.
-Ran 'TestMax-u32' for 9 iterations.
-Ran 'TestMax-u64' for 9 iterations.
+Ran 'TestAbs-s16' for 7 iterations.
+Ran 'TestAbs-s32' for 7 iterations.
+Ran 'TestAbs-s64' for 10 iterations.
+Ran 'TestNeg-s16' for 9 iterations.
+Ran 'TestNeg-s32' for 10 iterations.
+Ran 'TestNeg-s64' for 10 iterations.
+Ran 'TestMax-u16' for 10 iterations.
+Ran 'TestMax-u32' for 10 iterations.
+Ran 'TestMax-u64' for 10 iterations.
 Ran 'TestMax-s16' for 9 iterations.
-Ran 'TestMax-s32' for 9 iterations.
-Ran 'TestMax-s64' for 6 iterations.
-Ran 'TestMin-u16' for 9 iterations.
-Ran 'TestMin-u32' for 8 iterations.
-Ran 'TestMin-u64' for 6 iterations.
-Ran 'TestMin-s16' for 7 iterations.
-Ran 'TestMin-s32' for 7 iterations.
-Ran 'TestMin-s64' for 9 iterations.
+Ran 'TestMax-s32' for 10 iterations.
+Ran 'TestMax-s64' for 10 iterations.
+Ran 'TestMin-u16' for 10 iterations.
+Ran 'TestMin-u32' for 10 iterations.
+Ran 'TestMin-u64' for 10 iterations.
+Ran 'TestMin-s16' for 8 iterations.
+Ran 'TestMin-s32' for 10 iterations.
+Ran 'TestMin-s64' for 10 iterations.
 Ran 'TestPopc-b32' for 10 iterations.
 Ran 'TestPopc-b64' for 10 iterations.
-Ran 'TestClz-b32' for 9 iterations.
-Ran 'TestClz-b64' for 10 iterations.
+Ran 'TestClz-b32' for 10 iterations.
+Ran 'TestClz-b64' for 9 iterations.
 Ran 'TestBfind-u32' for 10 iterations.
-Ran 'TestBfind-u64' for 9 iterations.
+Ran 'TestBfind-u64' for 10 iterations.
 Ran 'TestBfind-s32' for 10 iterations.
 Ran 'TestBfind-s64' for 10 iterations.
-Ran 'TestBfind-shiftamount-u32' for 8 iterations.
+Ran 'TestBfind-shiftamount-u32' for 10 iterations.
 Ran 'TestBfind-shiftamount-u64' for 9 iterations.
-Ran 'TestBfind-shiftamount-s32' for 6 iterations.
-Ran 'TestBfind-shiftamount-s64' for 5 iterations.
-Ran 'TestBrev-b32' for 4 iterations.
-Ran 'TestBrev-b64' for 7 iterations.
-Ran 'TestBfi-b32' for 4 iterations.
-Ran 'TestBfi-b64' for 6 iterations.
-Ran 'TestPrmt-b32' for 6 iterations.
-Ran 'TestPrmt-f4e-b32' for 3 iterations.
-Ran 'TestPrmt-b4e-b32' for 4 iterations.
-Ran 'TestPrmt-rc8-b32' for 7 iterations.
+Ran 'TestBfind-shiftamount-s32' for 10 iterations.
+Ran 'TestBfind-shiftamount-s64' for 10 iterations.
+Ran 'TestBrev-b32' for 10 iterations.
+Ran 'TestBrev-b64' for 10 iterations.
+Ran 'TestBfi-b32' for 9 iterations.
+Ran 'TestBfi-b64' for 9 iterations.
+Ran 'TestPrmt-b32' for 9 iterations.
+Ran 'TestPrmt-f4e-b32' for 9 iterations.
+Ran 'TestPrmt-b4e-b32' for 9 iterations.
+Ran 'TestPrmt-rc8-b32' for 9 iterations.
 Ran 'TestPrmt-ecl-b32' for 9 iterations.
 Ran 'TestPrmt-ecr-b32' for 9 iterations.
 Ran 'TestPrmt-rc16-b32' for 9 iterations.
-Ran 'TestCall-Uni' for 6 iterations.
+Ran 'TestCall-Uni' for 7 iterations.
 Ran 'TestCall-Nondivergent' for 6 iterations.
-Ran 'TestCall-Divergent' for 6 iterations.
+Ran 'TestCall-Divergent' for 5 iterations.
 Ran 'TestCall-Recursive' for 6 iterations.
 Ran 'TestCall-Indirect' for 3 iterations.
-Ran 'TestTestP-f32-Finite' for 8 iterations.
-Ran 'TestTestP-f32-Infinite' for 8 iterations.
-Ran 'TestTestP-f32-Number' for 9 iterations.
-Ran 'TestTestP-f32-NotANumber' for 5 iterations.
-Ran 'TestTestP-f32-Normal' for 7 iterations.
-Ran 'TestTestP-f32-SubNormal' for 7 iterations.
-Ran 'TestTestP-f64-Finite' for 8 iterations.
-Ran 'TestTestP-f64-Infinite' for 8 iterations.
-Ran 'TestTestP-f64-Number' for 8 iterations.
+Ran 'TestTestP-f32-Finite' for 9 iterations.
+Ran 'TestTestP-f32-Infinite' for 9 iterations.
+Ran 'TestTestP-f32-Number' for 8 iterations.
+Ran 'TestTestP-f32-NotANumber' for 9 iterations.
+Ran 'TestTestP-f32-Normal' for 9 iterations.
+Ran 'TestTestP-f32-SubNormal' for 8 iterations.
+Ran 'TestTestP-f64-Finite' for 9 iterations.
+Ran 'TestTestP-f64-Infinite' for 9 iterations.
+Ran 'TestTestP-f64-Number' for 9 iterations.
 Ran 'TestTestP-f64-NotANumber' for 9 iterations.
 Ran 'TestTestP-f64-Normal' for 8 iterations.
 Ran 'TestTestP-f64-SubNormal' for 9 iterations.
@@ -7891,13 +7806,13 @@ Ran 'TestTestP-f64-SubNormal' for 9 iterations.
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
-INFO     Test completed in 0.534981012344 seconds
+INFO     Test completed in 0.392151832581 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
-INFO     Test completed in 0.16453909874 seconds
+INFO     Test completed in 0.0880761146545 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -7907,8 +7822,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1281425930
-Test time : 0.0368831
+Test Seed : 1282134180
+Test time : 0.0144961
 
 Status : Test output:
 Accessors test passed.
@@ -7926,7 +7841,7 @@ pass: control flow instructions
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
-INFO     Test completed in 0.293776035309 seconds
+INFO     Test completed in 0.146035194397 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -7936,8 +7851,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1281425930
-Test time : 0.199202
+Test Seed : 1282134180
+Test time : 0.102959
 
 Status : Test output:
 looping kernel succeeded
@@ -7947,14 +7862,14 @@ matrix vector kernel succeeded
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
-INFO     Test completed in 0.284101009369 seconds
+INFO     Test completed in 0.227672815323 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph -i ../../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph
-INFO     Test completed in 7.74746990204 seconds
+INFO     Test completed in 5.48235702515 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -7969,8 +7884,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1281425930
-Test time : 7.67715
+Test Seed : 1282134180
+Test time : 5.44081
 
 Status : Testing Generic Dataflow
  For File: ../../tests/ptx/apps/bounding_box.ptx
@@ -8126,35 +8041,35 @@ Status : Testing Generic Dataflow
  For File: ../../tests/ptx/synthetic/kernels.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/synthetic/recursion.ptx
-  For Kernel: call
-  For Kernel: divergentCall
-  For Kernel: loop
   For Kernel: stack
+  For Kernel: loop
+  For Kernel: divergentCall
+  For Kernel: call
  For File: ../../tests/ptx/synthetic/blockIsOwnPredecessor.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk3.0/lineOfSight.ptx
   For Kernel: _Z11getLocation3Rayi
-  For Kernel: _Z20computeAngles_kernel3RayPf
   For Kernel: _Z26computeVisibilities_kernelPKfS0_iPh
   For Kernel: _Z8getAngle3Ray6float2f
+  For Kernel: _Z20computeAngles_kernel3RayPf
  For File: ../../tests/ptx/sdk3.0/simplePitchLinearTexture.ptx
-  For Kernel: _Z10shiftArrayPfiiiii
   For Kernel: _Z16shiftPitchLinearPfiiiii
+  For Kernel: _Z10shiftArrayPfiiiii
  For File: ../../tests/ptx/sdk3.0/dct8x8.ptx
-  For Kernel: _Z14CUDAkernel1DCTPfiii
-  For Kernel: _Z14CUDAkernel2DCTPfS_i
-  For Kernel: _Z15CUDAkernel1IDCTPfiii
-  For Kernel: _Z15CUDAkernel2IDCTPfS_i
-  For Kernel: _Z18CUDAkernelShortDCTPsi
-  For Kernel: _Z19CUDAkernelShortIDCTPsi
   For Kernel: _Z19CUDAshortInplaceDCTPj
-  For Kernel: _Z19CUDAshortInplaceDCTPsi
-  For Kernel: _Z20CUDAshortInplaceIDCTPj
+  For Kernel: _Z19CUDAkernelShortIDCTPsi
   For Kernel: _Z20CUDAshortInplaceIDCTPsi
-  For Kernel: _Z27CUDAkernelQuantizationFloatPfi
+  For Kernel: _Z19CUDAshortInplaceDCTPsi
+  For Kernel: _Z31CUDAsubroutineInplaceIDCTvectorPfi
+  For Kernel: _Z20CUDAshortInplaceIDCTPj
+  For Kernel: _Z15CUDAkernel1IDCTPfiii
+  For Kernel: _Z14CUDAkernel2DCTPfS_i
+  For Kernel: _Z14CUDAkernel1DCTPfiii
   For Kernel: _Z27CUDAkernelQuantizationShortPsi
   For Kernel: _Z30CUDAsubroutineInplaceDCTvectorPfi
-  For Kernel: _Z31CUDAsubroutineInplaceIDCTvectorPfi
+  For Kernel: _Z27CUDAkernelQuantizationFloatPfi
+  For Kernel: _Z15CUDAkernel2IDCTPfS_i
+  For Kernel: _Z18CUDAkernelShortDCTPsi
  For File: ../../tests/ptx/sdk3.0/histogram64.ptx
   For Kernel: _Z17histogram64KernelPjP5uint4j
   For Kernel: _Z22mergeHistogram64KernelPjS_j
@@ -15325,7 +15240,7 @@ Failed to parse file '../../tests/ptx/sdk3.0/bodysystemcuda.ptx':
 
 
 INFO     Test /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer
-INFO     Test completed in 67.2983829975 seconds
+INFO     Test completed in 56.5009069443 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -15337,8 +15252,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1281425923
-Test time : 67.2677
+Test Seed : 1282134173
+Test time : 56.456
 
 Status : For file ../../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
@@ -15512,25 +15427,25 @@ For file ../../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
 
 INFO     
 Passing tests:
- (0.038s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Passed
- (0.535s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Passed
- (0.165s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Passed
- (0.284s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Passed
- (10.753s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
- (0.294s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Passed
- (67.298s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
- (0.071s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Passed
- (0.064s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
- (0.176s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Passed
- (0.103s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
- (0.350s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Passed
- (0.851s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
+ (0.160s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Passed
+ (0.392s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Passed
+ (0.088s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Passed
+ (0.228s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Passed
+ (10.967s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
+ (0.146s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Passed
+ (56.501s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
+ (0.075s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Passed
+ (0.239s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
+ (0.189s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Passed
+ (0.038s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
+ (0.400s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Passed
+ (0.828s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
+ (1.338s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Passed
 
 Failing tests:
- (4.558s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Did not complete.
- (8.600s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Failed
- (0.369s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Did not complete.
- (7.747s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Failed
+ (4.258s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Did not complete.
+ (7.902s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Failed
+ (5.482s) : /home/normal/checkout/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Failed
 
 Non-Existent tests:
 

@@ -21,9 +21,15 @@
 
 namespace ir
 {
+	PTXKernel::PTXKernel( const std::string& name, bool isFunction ) :
+		Kernel( Instruction::PTX, name, isFunction )
+	{
+		_cfg = new ControlFlowGraph;
+	}
+
 	PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
 		PTXStatementVector::const_iterator end, bool function) : 
-		Kernel( Instruction::PTX, function )
+		Kernel( Instruction::PTX, "", function )
 	{
 		_cfg = new ControlFlowGraph;
 		constructCFG( *_cfg, start, end );
@@ -39,7 +45,6 @@ namespace ir
 		if( &kernel == this ) return *this;
 		
 		Kernel::operator=(kernel);
-		_function = kernel.function();
 
 		return *this;	
 	}
@@ -129,11 +134,9 @@ namespace ir
 		BlockToLabelMap blocksByLabel;
 		BlockPointerVector branchBlocks;
 
-		unsigned int blockIndex = 0;
-
 		ControlFlowGraph::iterator last_inserted_block = cfg.end();
 		ControlFlowGraph::iterator block = cfg.insert_block(
-			ControlFlowGraph::BasicBlock("", blockIndex++));
+			ControlFlowGraph::BasicBlock("", cfg.newId()));
 		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
 			ControlFlowGraph::Edge::FallThrough);
 	
@@ -159,7 +162,7 @@ namespace ir
 					edge.head = block;
 					last_inserted_block = block;
 					block = cfg.insert_block(
-						ControlFlowGraph::BasicBlock("", blockIndex++));
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.tail = block;
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 				}
@@ -183,7 +186,7 @@ namespace ir
 					edge.head = block;
 					branchBlocks.push_back(block);
 					block = cfg.insert_block(
-						ControlFlowGraph::BasicBlock("", blockIndex++));
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					if (statement.instruction.pg.condition 
 						!= ir::PTXOperand::PT) {
 						edge.tail = block;
@@ -204,7 +207,7 @@ namespace ir
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 
 					block = cfg.insert_block(
-						ControlFlowGraph::BasicBlock("", blockIndex++));
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Ret )
@@ -218,7 +221,7 @@ namespace ir
 					edge.type = ControlFlowGraph::Edge::Branch;
 
 					block = cfg.insert_block(
-						ControlFlowGraph::BasicBlock("", blockIndex++));
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}

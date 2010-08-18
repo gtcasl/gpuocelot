@@ -10,6 +10,8 @@
 
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/ir/interface/Instruction.h>
+
+#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -127,8 +129,7 @@ std::ostream& ir::PostdominatorTree::write(std::ostream& out) {
 		for (int j = 0; instr_it != blocks[n]->instructions.end(); 
 			++instr_it, ++j) {
 			out << (j > 0 ? " | " : "") 
-			<< ControlFlowGraph::make_label_dot_friendly(
-			(*instr_it)->toString());
+			<< hydrazine::toGraphVizParsableLabel((*instr_it)->toString());
 		}
 		out << "}\"];\n";
 	}

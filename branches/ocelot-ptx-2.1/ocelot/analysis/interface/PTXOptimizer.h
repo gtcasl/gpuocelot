@@ -27,7 +27,8 @@ namespace analysis
 			{
 				InvalidPassType = 0x0,
 				RemoveBarriers = 0x1,
-				ReverseIfConversion = 0x2
+				ReverseIfConversion = 0x2,
+				SubkernelFormation = 0x4
 			};
 	
 		public:
@@ -45,6 +46,9 @@ namespace analysis
 			
 			/*! \brief The number of registers to allocate */
 			unsigned int registerCount;
+			
+			/*! \brief Print out the CFG of optimized kernels */
+			bool cfg;
 			
 		public:
 			/*! \brief The constructor sets the defaults */

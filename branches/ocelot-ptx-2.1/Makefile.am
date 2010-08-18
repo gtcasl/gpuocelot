@@ -48,6 +48,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
+	ocelot/analysis/implementation/SubkernelFormationPass.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
 	ocelot/api/implementation/OcelotConfiguration.cpp \

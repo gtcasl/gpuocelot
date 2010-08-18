@@ -2,10 +2,10 @@
 	ocelot: "ocelot",
 	version: "1.1.520",
 	trace: { 
-		memoryChecker: false,
-		raceDetector: false,
+		memoryChecker: true,
+		raceDetector: true,
 		debugger: {
-			enabled: true,
+			enabled: false,
 			kernelFilter: "sequence",
 			alwaysAttach: false
 		}

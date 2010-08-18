@@ -9,6 +9,9 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/SSAGraph.h>
+
+#include <hydrazine/implementation/string.h>
+
 #include <unordered_map>
 
 #ifdef REPORT_BASE
@@ -1034,8 +1037,8 @@ namespace analysis
 				}
 				
 				out << "\t\t" << instructionPrefix.str() << "[ label = \"{ " 
-					<< ir::ControlFlowGraph::make_label_dot_friendly( 
-					ii->label ) << " | { ";
+					<< hydrazine::toGraphVizParsableLabel( ii->label )
+					<< " | { ";
 				
 				bool any = false;
 				

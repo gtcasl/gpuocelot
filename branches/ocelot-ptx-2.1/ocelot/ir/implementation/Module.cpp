@@ -311,13 +311,30 @@ const ir::Module::StatementVector& ir::Module::statements() const {
 }
 		
 
-ir::Kernel* ir::Module::getKernel(const std::string& kernelName) {
+ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
 	loadNow();
 	KernelMap::iterator kernel = _kernels.find(kernelName);
 	if (kernel != _kernels.end()) {
 		return kernel->second;
 	}
 	return 0;
+}
+
+void ir::Module::removeKernel(const std::string& name) {
+	loadNow();
+	KernelMap::iterator kernel = _kernels.find(name);
+	if (kernel != _kernels.end()) {
+		delete kernel->second;
+		_kernels.erase(kernel);
+	}
+}
+
+void ir::Module::insertKernel(PTXKernel* kernel) {
+	loadNow();
+	if(!_kernels.insert(std::make_pair(kernel->name, kernel)).second) {
+		throw hydrazine::Exception("Inserted duplicated kernel - " 
+			+ kernel->name);
+	}
 }
 
 /*!
@@ -332,26 +349,6 @@ void ir::Module::extractPTXKernels() {
 	int instructionCount = 0;
 	int kernelInstance = 1;
 	bool isFunction = false;
-	
-	/*
-	// KERRDEBUG
-	static int moduleIndex = 0;
-	std::stringstream ss;
-	ss << "raw_modules/module" << moduleIndex << ".ptx";
-	std::string str = ss.str();
-	std::ofstream moduleStream(str.c_str());
-	moduleIndex ++;
-
-	// temporary debugging
-	{
-		// get parameters/locals, extract kernel name
-		for( StatementVector::const_iterator it = statements.begin(); it != statements.end(); ++it ) 
-		{
-			moduleStream << (*it).toString() << "\n";
-		}					
-	}
-	// end KERRDEBUG
-	*/
 
 	for (StatementVector::const_iterator it = _statements.begin(); 
 		it != _statements.end(); ++it) {

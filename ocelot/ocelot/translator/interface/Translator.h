@@ -29,7 +29,7 @@ namespace translator
 			class Exception : public hydrazine::Exception
 			{
 				public:
-					Exception( const std::string& message, int code = 0 );
+					Exception( const std::string& message );
 			};
 
 			/*! \brief All possible optimization levels */

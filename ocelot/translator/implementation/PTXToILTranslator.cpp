@@ -22,7 +22,7 @@ namespace translator
 		:
 			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
 			_ilKernel(0),
-			_tempRegisterCount(100)
+			_tempRegisterCount(1000)
 	{
 	}
 
@@ -201,15 +201,19 @@ namespace translator
 		{
  			case ir::PTXInstruction::Add:   _translateAdd(i);  break;
 			case ir::PTXInstruction::And:   _translateAnd(i);  break;
+			case ir::PTXInstruction::Atom:  _translateAtom(i); break;
 			case ir::PTXInstruction::Bar:   _translateBar(i);  break;
 			case ir::PTXInstruction::Bra:   _translateBra(i);  break;
  			case ir::PTXInstruction::Cvt:   _translateCvt(i);  break;
+			case ir::PTXInstruction::Div:   _translateDiv(i);  break;
  			case ir::PTXInstruction::Exit:  _translateExit(i); break;
  			case ir::PTXInstruction::Ld:    _translateLd(i);   break;
 			case ir::PTXInstruction::Mad:   _translateMad(i);  break;
 			case ir::PTXInstruction::Mov:   _translateMov(i);  break;
  			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
 			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
+			case ir::PTXInstruction::Or:    _translateOr(i);   break;
+			case ir::PTXInstruction::SelP:  _translateSelP(i); break;
 			case ir::PTXInstruction::SetP:  _translateSetP(i); break;
 			case ir::PTXInstruction::Shl:   _translateShl(i);  break;
 			case ir::PTXInstruction::Shr:   _translateShr(i);  break;
@@ -217,9 +221,9 @@ namespace translator
 			case ir::PTXInstruction::Sub:   _translateSub(i);  break;
 			default:
 			{
-				assertM(false, "Opcode "
-						<< ir::PTXInstruction::toString(i.opcode)
-						<< " not supported");
+				assertM(false, "Opcode \""
+						<< i.toString()
+						<< "\" not supported");
 			}
 		}
 	}
@@ -242,6 +246,7 @@ namespace translator
 				switch (o.type)
 				{
 					case ir::PTXOperand::s32:
+					case ir::PTXOperand::u16:
 					case ir::PTXOperand::u32:
 					case ir::PTXOperand::u64:
 					case ir::PTXOperand::b8:
@@ -257,9 +262,9 @@ namespace translator
 					}
 					default:
 					{
-						assertM(false, "Immediate operand type "
+						assertM(false, "Immediate operand type \""
 							   << ir::PTXOperand::toString(o.type) 
-							   << " not supported");
+							   << "\" not supported");
 					}
 				}
 				break;
@@ -316,7 +321,7 @@ namespace translator
 	std::string PTXToILTranslator::_translate(
 			const ir::PTXOperand::RegisterType &reg)
 	{
-		assertM(reg < 100, "Register name " << reg 
+		assertM(reg < 1000, "Register name " << reg 
 				<< " collides with temp registers");
 
 		std::stringstream stream;
@@ -353,9 +358,10 @@ namespace translator
 	{
 		switch (i.type)
 		{
+			case ir::PTXOperand::s32:
+			case ir::PTXOperand::u16:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
-			case ir::PTXOperand::s32:
 			{
 				ir::ILIadd iadd;
 
@@ -400,6 +406,42 @@ namespace translator
 
 	}
 
+	void PTXToILTranslator::_translateAtom(const ir::PTXInstruction& i)
+	{
+		switch(i.addressSpace)
+		{
+			case ir::PTXInstruction::Global:
+			{
+				switch(i.atomicOperation)
+				{
+					case ir::PTXInstruction::AtomicAdd:
+					{
+						ir::ILUav_Read_Add_Id uav_read_add_id;
+
+						uav_read_add_id.d = _translate(i.d);
+						uav_read_add_id.a = _translate(i.a);
+						uav_read_add_id.b = _translate(i.b);
+
+						_add(uav_read_add_id);
+
+						break;
+					}
+					default:
+					{
+						assertM(false, "Atomic operation \"" 
+								<< i.atomicOperation << "\" not supported");
+					}
+				}
+				break;
+			}
+			default:
+			{
+				assertM(false, "Address Space \"" << i.addressSpace 
+						<< "\" not supported");
+			}
+		}
+	}
+
 	void PTXToILTranslator::_translateBar(const ir::PTXInstruction &i)
 	{
 		ir::ILFence fence;
@@ -420,6 +462,106 @@ namespace translator
 		mov.d = _translate(i.d);
 
 		_add(mov);
+	}
+
+	void PTXToILTranslator::_translateDiv(const ir::PTXInstruction &i)
+	{
+		// There is no signed integer division in IL so we need to use this 
+		// macro based on unsigned integer division:
+		//
+		// (w/o operand modifiers)                // (with operand modifiers)
+		// out0 = in0 / in1
+		// mdef(222)_out(1)_in(2)
+		// mov r0x, i.a                           // mov r0, in0
+		// mov r1x, i.b                           // mov r1, in1
+		// mov r0y, r1x                           // mov r0._y__, r1.x
+		// ilt r1x, r0x, 0                        // ilt r1.xy, r0, 0
+		// ilt r1y, r0y, 0
+		// iadd r0x, r0x, r1x                     // iadd r0.xy, r0, r1
+		// iadd r0y, r0y, r1y
+		// ixor r0x, r0x, r1x                     // ixor r0.xy, r0, r1
+		// ixor r1y, r0y, r1y
+		// udiv r0x, r0x, r0y                     // udiv r0.x, r0.x, r0.y
+		// ixor r1x, r1x, r1y                     // ixor r1.x, r1.x, r1.y
+		// iadd r0x, r0x, r1x                     // iadd r0.x, r0.x, r1.x
+		// ixor r0x, r0x, r1x                     // ixor r0.x, r0.x, r1.x
+		// mov i.d, r0x                           // mov out0, r0
+		// mend
+
+		ir::ILOperand r0x = _tempRegister();
+		ir::ILOperand r0y = _tempRegister();
+		ir::ILOperand r1x = _tempRegister();
+		ir::ILOperand r1y = _tempRegister();
+
+		// mov r0x, i.a
+		ir::ILMov mov1;
+		mov1.d = r0x; mov1.a = _translate(i.a);
+		_add(mov1);
+
+		// mov r1x, i.b
+		ir::ILMov mov2;
+		mov2.d = r1x; mov2.a = _translate(i.b);
+		_add(mov2);
+
+		// mov r0y, r1x
+		ir::ILMov mov3;
+		mov3.d = r0y; mov3.a = r1x;
+		_add(mov3);
+
+		// ilt r1x, r0x, 0
+		ir::ILIlt ilt1;
+		ilt1.d = r1x; ilt1.a = r0x; ilt1.b = _translateLiteral(0);
+		_add(ilt1);
+
+		// ilt r1y, r0y, 0
+		ir::ILIlt ilt2;
+		ilt2.d = r1y; ilt2.a = r0y; ilt2.b = _translateLiteral(0);
+		_add(ilt2);
+
+		// iadd r0x, r0x, r1x
+		ir::ILIadd iadd1;
+		iadd1.d = r0x; iadd1.a = r0x; iadd1.b = r1x;
+		_add(iadd1);
+
+		// iadd r0y, r0y, r1y
+		ir::ILIadd iadd2;
+		iadd2.d = r0y; iadd2.a = r0y; iadd2.b = r1y;
+		_add(iadd2);
+
+		// ixor r0x, r0x, r1x
+		ir::ILIxor ixor1;
+		ixor1.d = r0x; ixor1.a = r0x; ixor1.b = r1x;
+		_add(ixor1);
+
+		// ixor r1y, r0y, r1y
+		ir::ILIxor ixor2;
+		ixor2.d = r1y; ixor2.a = r0y; ixor2.b = r1y;
+		_add(ixor2);
+
+		// udiv r0x, r0x, r0y
+		ir::ILUdiv udiv1;
+		udiv1.d = r0x; udiv1.a = r0x; udiv1.b = r0y;
+		_add(udiv1);
+
+		// ixor r1x, r1x, r1y
+		ir::ILIxor ixor3;
+		ixor3.d = r1x; ixor3.a = r1x; ixor3.b = r1y;
+		_add(ixor3);
+
+		// iadd r0x, r0x, r1x
+		ir::ILIadd iadd3;
+		iadd3.d = r0x; iadd3.a = r0x; iadd3.b = r1x;
+		_add(iadd3);
+
+		// ixor r0x, r0x, r1x
+		ir::ILIxor ixor4;
+		ixor4.d = r0x; ixor4.a = r0x; ixor4.b = r1x;
+		_add(ixor4);
+
+		// mov i.d, r0x
+		ir::ILMov mov4;
+		mov4.d = _translate(i.d); mov4.a = r0x;
+		_add(mov4);
 	}
 
 	void PTXToILTranslator::_translateExit(const ir::PTXInstruction &i)
@@ -542,32 +684,16 @@ namespace translator
 				{
 					case ir::PTXOperand::v1:
 					{
-						assertM(ir::PTXOperand::bytes(i.type) == 4,
-								"Less-than-32-bits memory operation "
-								"not supported");
-
-						if (i.a.offset == 0)
+						switch (ir::PTXOperand::bytes(i.type))
 						{
-							ir::ILLds_Load_Id lds_load_id;
-							lds_load_id.a = _translate(i.a);
-							lds_load_id.d = _translate(i.d);
-							_add(lds_load_id);
-						} else
-						{
-							ir::ILOperand temp = _tempRegister();
-
-							ir::ILIadd iadd;
-							iadd.a = _translate(i.a);
-							iadd.b = _translateLiteral(i.a.offset);
-							iadd.d = temp;
-							_add(iadd);
-
-							ir::ILLds_Load_Id lds_load_id;
-							lds_load_id.a = temp;
-							lds_load_id.d = _translate(i.d);
-							_add(lds_load_id);
+							case 1: _translateLdSharedByte(i);  break;
+							case 4: _translateLdSharedDword(i); break;
+							default:
+							{
+								assertM(false, "Less-than-32-bits memory "
+										" operation not supported");
+							}
 						}
-
 						break;
 					}
 					case ir::PTXOperand::v2:
@@ -616,6 +742,97 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateLdSharedByte(const ir::PTXInstruction &i)
+	{
+		// LDS is byte-addressable and the result of a load is a dword. 
+		// However, the two least significant bits of the address must be set to 
+		// zero. Therefore, we need to extract the correct byte from the dword:
+		//
+		// and temp1, i.a, 3
+		// imul temp1, temp1, 8
+		// and temp2, i.a, 0xFFFFFFFC
+		// lds_load_id(1) i.d, temp2
+		// ishr i.d, i.d, temp1
+		// ishl i.d, i.d, 24
+		// ishr i.d, i.d, 24
+		
+		assertM(i.a.offset == 0, "Ld Shared Byte from offset not supported");
+
+		ir::ILOperand temp1 = _tempRegister();
+		ir::ILOperand temp2 = _tempRegister();
+
+		// get the two lsb's of the address.
+		ir::ILAnd iland1;
+		iland1.d = temp1;
+		iland1.a = _translate(i.a);
+		iland1.b = _translateLiteral(3);
+		_add(iland1);
+
+		// calculate the offset inside the dword
+		ir::ILImul imul;
+		imul.d = temp1;
+		imul.a = temp1;
+		imul.b = _translateLiteral(8);
+		_add(imul);
+
+		// set the two lsb's of the address to zero
+		ir::ILAnd iland2;
+		iland2.d = temp2;
+		iland2.a = _translate(i.a);
+		iland2.b = _translateLiteral((int)0xFFFFFFFC);
+		_add(iland2);
+
+		// load dword
+		ir::ILLds_Load_Id lds_load_id;
+		lds_load_id.d = _translate(i.d);
+		lds_load_id.a = temp2;
+		_add(lds_load_id);
+
+		// extract the correct byte from the dword
+		ir::ILIshr ishr1;
+		ishr1.d = _translate(i.d);
+		ishr1.a = _translate(i.d);
+		ishr1.b = temp1;
+		_add(ishr1);
+
+		ir::ILIshl ishl;
+		ishl.d = _translate(i.d);
+		ishl.a = _translate(i.d);
+		ishl.b = _translateLiteral(24);
+		_add(ishl);
+
+		ir::ILIshr ishr2;
+		ishr2.d = _translate(i.d);
+		ishr2.a = _translate(i.d);
+		ishr2.b = _translateLiteral(24);
+		_add(ishr2);
+	}
+
+	void PTXToILTranslator::_translateLdSharedDword(const ir::PTXInstruction &i)
+	{
+		if (i.a.offset == 0)
+		{
+			ir::ILLds_Load_Id lds_load_id;
+			lds_load_id.a = _translate(i.a);
+			lds_load_id.d = _translate(i.d);
+			_add(lds_load_id);
+		} else
+		{
+			ir::ILOperand temp = _tempRegister();
+
+			ir::ILIadd iadd;
+			iadd.a = _translate(i.a);
+			iadd.b = _translateLiteral(i.a.offset);
+			iadd.d = temp;
+			_add(iadd);
+
+			ir::ILLds_Load_Id lds_load_id;
+			lds_load_id.a = temp;
+			lds_load_id.d = _translate(i.d);
+			_add(lds_load_id);
+		}
+	}
+
 	void PTXToILTranslator::_translateMad(const ir::PTXInstruction &i)
 	{
 		ir::ILMad mad;
@@ -642,9 +859,6 @@ namespace translator
 	{
 		switch (i.type)
 		{
-			case ir::PTXOperand::u16:
-			case ir::PTXOperand::u32:
-			case ir::PTXOperand::u64:
 			case ir::PTXOperand::s32:
 			{
 				ir::ILImul imul;
@@ -654,6 +868,20 @@ namespace translator
 				imul.d = _translate(i.d);
 
 				_add(imul);
+
+				break;
+			}
+			case ir::PTXOperand::u16:
+			case ir::PTXOperand::u32:
+			case ir::PTXOperand::u64:
+			{
+				ir::ILUmul umul;
+
+				umul.a = _translate(i.a);
+				umul.b = _translate(i.b);
+				umul.d = _translate(i.d);
+
+				_add(umul);
 
 				break;
 			}
@@ -677,10 +905,47 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateOr(const ir::PTXInstruction &i)
+	{
+		ir::ILIor ior;
+
+		ior.a = _translate(i.a);
+		ior.b = _translate(i.b);
+		ior.d = _translate(i.d);
+
+		_add(ior);
+	}
+
+	void PTXToILTranslator::_translateSelP(const ir::PTXInstruction &i)
+	{
+		// Note that IL semantic is cmov_logical dest, pred, iftrue, iffalse
+		// while PTX is selp dest, iftrue, iffalse, pred.
+		ir::ILCmov_Logical cmov_logical;
+
+		cmov_logical.d = _translate(i.d);
+		cmov_logical.a = _translate(i.c);
+		cmov_logical.b = _translate(i.a);
+		cmov_logical.c = _translate(i.b);
+
+		_add(cmov_logical);
+	}
+
 	void PTXToILTranslator::_translateSetP(const ir::PTXInstruction &i)
 	{
 		switch (i.comparisonOperator)
 		{
+			case ir::PTXInstruction::Eq:
+			{
+				ir::ILIeq ieq;
+
+				ieq.a = _translate(i.a);
+				ieq.b = _translate(i.b);
+				ieq.d = _translate(i.d);
+
+				_add(ieq);
+
+				break;
+			}
 			case ir::PTXInstruction::Le:
 			{
 				// IL doesn't have le but it has ge so switch a & b operands
@@ -754,6 +1019,9 @@ namespace translator
 
 	void PTXToILTranslator::_translateShl(const ir::PTXInstruction &i)
 	{
+		assertM(i.type == ir::PTXOperand::b32, 
+				"Type " << ir::PTXOperand::toString(i.type) << " not supported");
+
 		ir::ILIshl ishl;
 
 		ishl.a = _translate(i.a);
@@ -765,13 +1033,38 @@ namespace translator
 
 	void PTXToILTranslator::_translateShr(const ir::PTXInstruction &i)
 	{
-		ir::ILIshr ishr;
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				ir::ILIshr ishr;
 
-		ishr.a = _translate(i.a);
-		ishr.b = _translate(i.b);
-		ishr.d = _translate(i.d);
+				ishr.a = _translate(i.a);
+				ishr.b = _translate(i.b);
+				ishr.d = _translate(i.d);
 
-		_add(ishr);
+				_add(ishr);
+
+				break;
+			}
+			case ir::PTXOperand::u32:
+			{
+				ir::ILUshr ushr;
+
+				ushr.a = _translate(i.a);
+				ushr.b = _translate(i.b);
+				ushr.d = _translate(i.d);
+
+				_add(ushr);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type " << ir::PTXOperand::toString(i.type)
+						<< " not supported");
+			}
+		}
 	}
 
 	void PTXToILTranslator::_translateSt(const ir::PTXInstruction &i)
@@ -780,6 +1073,7 @@ namespace translator
 		{
 			case ir::PTXInstruction::Global:
 			{
+				// TODO uav0 accesses should be aligned to 4
 				switch (i.vec)
 				{
 					case ir::PTXOperand::v1:
@@ -876,32 +1170,16 @@ namespace translator
 				{
 					case ir::PTXOperand::v1:
 					{
-						assertM(ir::PTXOperand::bytes(i.type) == 4,
-								"Less-than-32-bits memory operation "
-								"not supported");
-
-						if (i.d.offset == 0)
+						switch(ir::PTXOperand::bytes(i.type))
 						{
-							ir::ILLds_Store_Id lds_store_id;
-							lds_store_id.a = _translate(i.a);
-							lds_store_id.d = _translate(i.d);
-							_add(lds_store_id);
-						} else
-						{
-							ir::ILOperand temp = _tempRegister();
-
-							ir::ILIadd iadd;
-							iadd.a = _translate(i.d);
-							iadd.b = _translateLiteral(i.d.offset);
-							iadd.d = temp;
-							_add(iadd);
-
-							ir::ILLds_Store_Id lds_store_id;
-							lds_store_id.a = _translate(i.a);
-							lds_store_id.d = temp;
-							_add(lds_store_id);
+							case 1: _translateStSharedByte(i);  break;
+							case 4: _translateStSharedDword(i); break;
+							default:
+							{
+								assertM(false, "Less-than-32-bits memory "
+										"operation not supported");
+							}
 						}
-
 						break;
 					}
 					case ir::PTXOperand::v2:
@@ -948,6 +1226,130 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateStSharedByte(const ir::PTXInstruction& i)
+	{
+		// LDS is byte-addressable but the result of a store is a dword. 
+		// Therefore, we need to merge the byte with the dword:
+		//
+		// and temp1, i.a, 0x000000FF
+		// and temp2, i.d, 3
+		// iadd temp3X, temp2, 0
+		// iadd temp3Y, temp2, -1
+		// iadd temp3Z, temp2, -2
+		// iadd temp3W, temp2, -3
+		// imul temp4, temp2, 8
+		// cmov_logical temp5, temp3W, 0xFFFFFF00, 0x00FFFFFF
+		// cmov_logical temp5, temp3Z, temp5, 0xFF00FFFF
+		// cmov_logical temp5, temp3Y, temp5, 0xFFFF00FF
+		// ishl temp2, temp1, temp4
+		// lds_and_resource(1) i.d, temp5
+		// lds_or_resource(1) i.d, temp2
+
+		assertM(i.a.offset == 0, "St Shared Byte from offset not supported");
+
+		ir::ILOperand temp1  = _tempRegister();
+		ir::ILOperand temp2  = _tempRegister();
+		ir::ILOperand temp3X = _tempRegister();
+		ir::ILOperand temp3Y = _tempRegister();
+		ir::ILOperand temp3Z = _tempRegister();
+		ir::ILOperand temp3W = _tempRegister();
+		ir::ILOperand temp4  = _tempRegister();
+		ir::ILOperand temp5  = _tempRegister();
+
+		// set the value to a byte
+		ir::ILAnd iland1;
+		iland1.d = temp1;
+		iland1.a = _translate(i.a);
+		iland1.b = _translateLiteral((int)0x000000FF);
+		_add(iland1);
+
+		// get the two lsb's of the address.
+		ir::ILAnd iland2;
+		iland2.d = temp2;
+		iland2.a = _translate(i.d);
+		iland2.b = _translateLiteral(3);
+		_add(iland2);
+
+		// calculate the mask to merge with the dword
+		ir::ILIadd iaddX,iaddY, iaddZ, iaddW;
+		iaddX.d = temp3X; iaddY.d = temp3Y; iaddZ.d = temp3Z; iaddW.d = temp3W;
+		iaddX.a = iaddY.a = iaddZ.a = iaddW.a = temp2;
+		iaddX.b = _translateLiteral(0);
+		iaddY.b = _translateLiteral(-1);
+		iaddZ.b = _translateLiteral(-2);
+		iaddW.b = _translateLiteral(-3);
+		_add(iaddX); _add(iaddY); _add(iaddZ); _add(iaddW);
+
+		// calculate the offset inside the dword
+		ir::ILImul imul;
+		imul.d = temp4;
+		imul.a = temp2;
+		imul.b = _translateLiteral(8);
+		_add(imul);
+
+		ir::ILCmov_Logical cmov_logical1;
+		cmov_logical1.d = temp5;
+		cmov_logical1.a = temp3W;
+		cmov_logical1.b = _translateLiteral((int)0xFFFFFF00);
+		cmov_logical1.c = _translateLiteral((int)0x00FFFFFF);
+		_add(cmov_logical1);
+
+		ir::ILCmov_Logical cmov_logical2;
+		cmov_logical2.d = temp5;
+		cmov_logical2.a = temp3Z;
+		cmov_logical2.b = temp5;
+		cmov_logical2.c = _translateLiteral((int)0xFF00FFFF);
+		_add(cmov_logical2);
+
+		ir::ILCmov_Logical cmov_logical3;
+		cmov_logical3.d = temp5;
+		cmov_logical3.a = temp3Y;
+		cmov_logical3.b = temp5;
+		cmov_logical3.c = _translateLiteral((int)0xFFFF00FF);
+		_add(cmov_logical3);
+
+		ir::ILIshl ishl;
+		ishl.d = temp2;
+		ishl.a = temp1;
+		ishl.b = temp4;
+		_add(ishl);
+
+		ir::ILLds_And_Resource lds_and_resource;
+		lds_and_resource.d = _translate(i.d);
+		lds_and_resource.a = temp5;
+		_add(lds_and_resource);
+
+		ir::ILLds_Or_Resource lds_or_resource;
+		lds_or_resource.d = _translate(i.d);
+		lds_or_resource.a = temp2;
+		_add(lds_or_resource);
+	}
+
+	void PTXToILTranslator::_translateStSharedDword(const ir::PTXInstruction& i)
+	{
+		if (i.d.offset == 0)
+		{
+			ir::ILLds_Store_Id lds_store_id;
+			lds_store_id.a = _translate(i.a);
+			lds_store_id.d = _translate(i.d);
+			_add(lds_store_id);
+		} else
+		{
+			ir::ILOperand temp = _tempRegister();
+
+			ir::ILIadd iadd;
+			iadd.a = _translate(i.d);
+			iadd.b = _translateLiteral(i.d.offset);
+			iadd.d = temp;
+			_add(iadd);
+
+			ir::ILLds_Store_Id lds_store_id;
+			lds_store_id.a = _translate(i.a);
+			lds_store_id.d = temp;
+			_add(lds_store_id);
+		}
+	}
+
 	void PTXToILTranslator::_translateSub(const ir::PTXInstruction& i)
 	{
 		// There's no sub instruction in IL so we need to use add
@@ -956,21 +1358,47 @@ namespace translator
 			case ir::PTXOperand::s32:
 			case ir::PTXOperand::u32:
 			{
-				assertM(i.b.addressMode == ir::PTXOperand::Immediate,
-						"Subtract operation not supported");
+				switch (i.b.addressMode)
+				{
+					case ir::PTXOperand::Immediate:
+					{
+						ir::ILIadd iadd;
+						ir::PTXOperand b;
 
-				ir::ILIadd iadd;
-				ir::PTXOperand b;
+						b.addressMode = ir::PTXOperand::Immediate;
+						b.imm_int = -1 * i.b.imm_int;
 
-				b.addressMode = ir::PTXOperand::Immediate;
-				b.imm_int = -1 * i.b.imm_int;
+						iadd.d = _translate(i.d);
+						iadd.a = _translate(i.a);
+						iadd.b = _translate(b);
 
-				iadd.a = _translate(i.a);
-				iadd.b = _translate(b);
-				iadd.d = _translate(i.d);
+						_add(iadd);
 
-				_add(iadd);
+						break;
+					}
+					case ir::PTXOperand::Register:
+					{
+						ir::ILOperand temp = _tempRegister();
 
+						ir::ILInegate inegate;
+						inegate.d = temp;
+						inegate.a = _translate(i.b);
+						_add(inegate);
+
+						ir::ILIadd iadd;
+						iadd.d = _translate(i.d);
+						iadd.a = _translate(i.a);
+						iadd.b = temp;
+						_add(iadd);
+
+						break;
+					}
+					default:
+					{
+						assertM(i.b.addressMode == ir::PTXOperand::Immediate,
+								"Subtract operation not supported");
+					}
+				}
 				break;
 			}
 			case ir::PTXOperand::f32:

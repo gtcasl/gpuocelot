@@ -21,7 +21,9 @@ namespace ir
 			enum Opcode
 			{
 				Add,
+				And,
 				Break,
+				Cmov_Logical,
 				Else,
 				End,
 				EndIf,
@@ -29,14 +31,20 @@ namespace ir
 				Fence,
 				Iadd,
 				Iand,
+				Ieq,
 				IfLogicalZ,
 				Ige,
 				Ilt,
 				Imul,
 				Ine,
+				Inegate,
+				Ior,
 				Ishl,
 				Ishr,
+				Ixor,
+				Lds_And_Resource,
 				Lds_Load_Id,
+				Lds_Or_Resource,
 				Lds_Store_Id,
 				Mad,
 				Mov,
@@ -46,6 +54,10 @@ namespace ir
 				Uav_Arena_Store_Id,
 				Uav_Raw_Load_Id,
 				Uav_Raw_Store_Id,
+				Uav_Read_Add_Id,
+				Udiv,
+				Umul,
+				Ushr,
 				WhileLoop,
 				InvalidOpcode
 			};
@@ -161,11 +173,29 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILCmov_Logical : public ILTrinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILCmov_Logical();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILAdd : public ILBinaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
 			ILAdd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILAnd : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILAnd();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -243,6 +273,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILIeq : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIeq();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIfLogicalZ : public ILInstruction
 	{
 		public:
@@ -293,6 +332,24 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILInegate : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILInegate();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIor : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIor();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIshl : public ILBinaryInstruction
 	{
 		public:
@@ -311,11 +368,40 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILIxor : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILIxor();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILLds_And_Resource : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLds_And_Resource();
+
+			std::string toString() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILLds_Load_Id : public ILUnaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
 			ILLds_Load_Id();
+
+			std::string toString() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILLds_Or_Resource : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLds_Or_Resource();
 
 			std::string toString() const;
 			Instruction *clone(bool copy=true) const;
@@ -405,6 +491,42 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILUav_Raw_Store_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Read_Add_Id : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUav_Read_Add_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUdiv : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUdiv();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUmul : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUmul();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUshr : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUshr();
 
 			Instruction *clone(bool copy=true) const;
 	};

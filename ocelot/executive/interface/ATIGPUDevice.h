@@ -255,6 +255,9 @@ namespace executive
 				CalDriver singleton */
 			static const cal::CalDriver *CalDriver();
 	};
+
+	/*! \brief Align a to nearest higher multiple of b */
+	size_t AlignUp(size_t a, size_t b);
 }
 
 #endif

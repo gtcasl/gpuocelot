@@ -241,9 +241,20 @@ namespace executive
 		// query device info
 		CalDriver()->calDeviceGetInfo(&_info, 0);
 
+		// TODO only for debugging
+		//report("Reading IL from file");
+		std::string file, temp;
+		std::ifstream input("/home/rdomingu/gpuocelot/ocelot/histogram64.il");
+		while (!input.eof()) {
+			getline(input, temp);
+			file += temp;
+			file += "\n";
+		}
+
 		// compile, link, and load module
 		CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
 				ilKernel->code().c_str(), _info.target);
+				//file.c_str(), _info.target);
 
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);
@@ -257,6 +268,11 @@ namespace executive
 		cb_t *cb0;
 		CALuint pitch = 0;
 		CALuint flags = 0;
+
+		report("Launching grid");
+		report("Grid = " << width << ", " << height);
+		report("Block = " << _blockDim.x << ", " << _blockDim.y << ", " 
+				<< _blockDim.z);
 
 		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
 		cb_t gridDim = {width, height, 1, 0};

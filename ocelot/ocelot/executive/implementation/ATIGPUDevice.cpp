@@ -57,6 +57,7 @@ namespace executive
 		_properties.name = "CAL Device";
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
 		_properties.major = 1;
+		_properties.minor = 0;
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
@@ -225,7 +226,10 @@ namespace executive
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
 		_uav0Allocations.insert(
 				std::make_pair(allocation->pointer(), allocation));
-		_uav0AllocPtr += size;
+
+		// uav0 accesses should be aligned to 4
+		_uav0AllocPtr += AlignUp(size, 4);
+
 		return allocation;
 	}
 
@@ -581,5 +585,10 @@ namespace executive
 				<< ")");
 		
 		CalDriver()->calResUnmap(*_resource);
+	}
+
+	size_t AlignUp(size_t a, size_t b)
+	{
+		return (a % b != 0) ? (a - a % b + b) : a;
 	}
 }

@@ -58,18 +58,26 @@ namespace translator
 
 			void _translateAdd(const ir::PTXInstruction &i);
 			void _translateAnd(const ir::PTXInstruction &i);
+			void _translateAtom(const ir::PTXInstruction& i);
 			void _translateBar(const ir::PTXInstruction &i);
 			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
+			void _translateDiv(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
+			void _translateLdSharedByte(const ir::PTXInstruction &i);
+			void _translateLdSharedDword(const ir::PTXInstruction &i);
 			void _translateMad(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
+			void _translateOr(const ir::PTXInstruction &i);
+			void _translateSelP(const ir::PTXInstruction &i);
 			void _translateSetP(const ir::PTXInstruction &i);
 			void _translateShl(const ir::PTXInstruction &i);
 			void _translateShr(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
+			void _translateStSharedByte(const ir::PTXInstruction &i);
+			void _translateStSharedDword(const ir::PTXInstruction &i);
 			void _translateSub(const ir::PTXInstruction &i);
 
 			ir::ILOperand _translateLiteral(int l);

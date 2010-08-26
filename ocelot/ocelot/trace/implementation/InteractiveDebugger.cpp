@@ -331,7 +331,13 @@ void InteractiveDebugger::_help() const
 void InteractiveDebugger::_step()
 {
 	std::cout << "(" << _event.PC << ") - " 
-		<< _event.instruction->toString() << "\n";
+		<< _event.instruction->toString();
+	if(_event.instruction->opcode == ir::PTXInstruction::Bra) 
+	{
+		std::cout << " [target " 
+			<< _event.instruction->branchTargetInstruction << "]";
+	}
+	std::cout << "\n";
 }
 
 void InteractiveDebugger::_break()

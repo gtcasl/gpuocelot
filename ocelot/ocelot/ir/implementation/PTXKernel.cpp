@@ -479,7 +479,11 @@ namespace ir
 			if (block == cfg()->get_exit_block()) continue;
 			
 			std::stringstream ss;
-			ss << "$BB_" << kernelID << "_" << block->id;
+			ss << "$BB_" << kernelID << "_";
+			ss.fill('0');
+			ss.width(4);
+			ss << block->id;
+			ss.width(0);
 			labelMap[block->label] = ss.str();
 			block->comment = block->label;
 			block->label = ss.str();

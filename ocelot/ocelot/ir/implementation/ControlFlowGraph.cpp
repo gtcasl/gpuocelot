@@ -10,6 +10,7 @@
 #include <hydrazine/implementation/debug.h>
 
 #include <unordered_set>
+#include <map>
 #include <stack>
 #include <queue>
 #include <algorithm>
@@ -510,52 +511,28 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
-	typedef std::unordered_set<iterator> BlockSet;
-	BlockPointerVector sequence;
-	BlockSet unscheduled;
-
-	for(iterator i = begin(); i != end(); ++i)
+	typedef std::map<std::string, iterator> LabelMap;
+	
+	LabelMap map;
+	
+	for(iterator b = begin(); b != end(); ++b)
 	{
-		unscheduled.insert(i);
+		if(b == get_entry_block()) continue;
+		if(b == get_exit_block()) continue;
+		map.insert(std::make_pair(b->label, b));
 	}
-
-	report("Getting executable sequence.");
-
+	
+	ControlFlowGraph::BlockPointerVector sequence;
+	
 	sequence.push_back(get_entry_block());
-	unscheduled.erase(get_entry_block());
-	report(" added " << get_entry_block()->label);
-
-	while (!unscheduled.empty()) {
-		if (sequence.back()->has_fallthrough_edge()) {
-			edge_iterator fallthroughEdge 	
-				= sequence.back()->get_fallthrough_edge();
-			sequence.push_back(fallthroughEdge->tail);
-			unscheduled.erase(fallthroughEdge->tail);
-		}
-		else {
-			// rewind through fallthrough edges to find the beginning of the 
-			// next chain of fall throughs
-			iterator next = *unscheduled.begin();
-			report("  restarting at " << next->label);
-			bool rewinding = true;
-			while (rewinding) {
-				rewinding = false;
-				for (edge_pointer_iterator edge = next->in_edges.begin(); 
-					edge != next->in_edges.end(); ++edge) {
-					if ((*edge)->type == Edge::FallThrough) {
-						next = (*edge)->head;
-						report("   rewinding to " << next->label );
-						rewinding = true;
-						break;
-					}
-				}
-			}
-			sequence.push_back(next);
-			unscheduled.erase(next);			
-		}
-		
-		report(" added " << sequence.back()->label);
+	
+	for(LabelMap::iterator i = map.begin(); i != map.end(); ++i)
+	{
+		sequence.push_back(i->second);
+		report("  added " << sequence.back()->label);
 	}
+	
+	sequence.push_back(get_exit_block());
 
 	return sequence;
 }
@@ -584,6 +561,7 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 			block_map[bl_it] = newBlock;
 		}
 	}
+
 
 	// duplicate edges using the block_map
 	for (const_edge_iterator e_it = cfg.edges_begin(); 

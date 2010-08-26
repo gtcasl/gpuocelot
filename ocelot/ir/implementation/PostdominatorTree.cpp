@@ -64,9 +64,8 @@ void ir::PostdominatorTree::computeDT() {
 
 		// post-order
 		for (int b_ind = 0; b_ind < (int)blocks.size(); b_ind++) {
-			if (b_ind == end_node) {
-				continue;
-			}
+			if (b_ind == end_node)  continue;
+
 			ControlFlowGraph::iterator b = blocks[b_ind];
 			assert(!b->successors.empty());
 			int new_pdom = 0;
@@ -94,6 +93,13 @@ void ir::PostdominatorTree::computeDT() {
 					changed = true;
 				}
 			}
+		}
+	}
+	
+	dominated.resize(blocks.size());
+	for (int n = 0; n < (int)blocks.size(); n++) {
+		if (p_dom[n] >= 0) {
+			dominated[p_dom[n]].push_back(n);
 		}
 	}
 }

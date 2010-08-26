@@ -133,6 +133,8 @@ executive::CooperativeThreadArray::CooperativeThreadArray(const EmulatedKernel *
 
 	RegisterFilePitch = threadCount;
 	RegisterFile = new PTXU64[RegisterFilePitch * (k->registerCount())];
+	std::memset(RegisterFile, 0,
+		RegisterFilePitch * (k->registerCount()) * sizeof(PTXU64));
 	
 	if(k->totalSharedMemorySize() > 0) {
 		SharedMemory = new char[k->totalSharedMemorySize()];
@@ -436,10 +438,10 @@ void executive::CooperativeThreadArray::jumpToPC(int PC) {
 
 executive::CooperativeThreadArray::RegisterFileType
 	executive::CooperativeThreadArray::getCurrentRegisterFile() const {
-	RegisterFileType file(threadCount * RegisterFilePitch);	
+	RegisterFileType file(threadCount * kernel->registerCount());	
 	RegisterFileType::iterator ri = file.begin();
 	for (int thread = 0; thread != threadCount; ++thread) {
-		for (int reg = 0; reg != RegisterFilePitch; ++reg, ++ri) {
+		for (unsigned int reg = 0; reg != kernel->registerCount(); ++reg, ++ri) {
 			*ri = RegisterFile[reg * RegisterFilePitch + thread];
 		}
 	}
@@ -1927,7 +1929,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 	for (int i = 0; i < threadCount; i++) {
 		if (context.predicated(i, instr)) {
 			// typical branch
-			branch[i] = true;
+			branch[i] = context.active[i];
 			fall_through[i] = false;
 		}
 		else {

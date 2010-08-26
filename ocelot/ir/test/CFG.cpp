@@ -49,18 +49,22 @@ void analyze(const char *filename) {
 		cfg_file << "// Kernel: " << kernel->name << "\n";
 		cfg_file << "// Control flow graph\n";
 		kernel->cfg()->write(cfg_file);
+		cfg_file.close();
 
 		dom_file << "// Kernel: " << kernel->name << "\n";
 		dom_file << "// Dominator tree\n";
 		kernel->dom_tree()->write(dom_file);
-
+		dom_file.close();
+		
 		pdom_file << "// Kernel: " << kernel->name << "\n";
 		pdom_file << "// Post dominator tree\n";
 		kernel->pdom_tree()->write(pdom_file);
-
+		pdom_file.close();
+		
 		ct_file << "// Kernel: " << kernel->name << "\n";
 		ct_file << "// Control tree\n";
 		kernel->ctrl_tree()->write(ct_file);
+		ct_file.close();
 	}
 }
 
